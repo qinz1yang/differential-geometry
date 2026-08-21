@@ -545,7 +545,6 @@ theorem atom_disjoint_conv
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
-    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (alpha gamma : Fin (pb.A r))
     {U : Set E} (hU : IsOpen U)
     (hsource : ∀ᶠ k in Filter.atTop,
@@ -566,12 +565,12 @@ theorem atom_disjoint_conv
       (fun _ : Nat => fun _ : E => (0 : Real)) (fun _ => 0) :=
     mapCInfConv_const (fun _ : E => (0 : Real))
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
-  filter_upwards [hsource, hdisjoint, hgp] with k hsourceK hdisjointK hgpK
+  filter_upwards [hsource, hdisjoint] with k hsourceK hdisjointK
   intro z hz
   by_contra hne
   apply hdisjointK
   exact L.binter_of_mem_hat hd hD P pb r k (hsourceK hz)
-    (seqAtom_mem_hat hd hD P L pb r k hgpK gamma (by
+    (seqAtom_mem_hat hd hD P L pb r k gamma (by
       simpa only [seqAtomChart, seqAtomOn, legacyChart_apply] using hne))
 
 theorem seqAtoms_conv

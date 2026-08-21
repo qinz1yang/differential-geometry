@@ -316,7 +316,7 @@ theorem path_jetL2_le
       (fun q : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) q.1 ((Φ q.2).toSection q.1))
       ((Set.univ : Set M) ×ˢ S))
-    {B : ℝ} (hB : 0 ≤ B)
+    {B : ℝ}
     (hΦjet : ∀ t ∈ Set.Icc (0 : ℝ) 1,
       (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ r s i (Φ t)‖ ^ 2) ≤ B ^ 2) :
@@ -355,6 +355,6 @@ theorem path_jetL2_le
           (fun t => iteratedCovGrad (I := I) g₀ r s i (Φ t)) S hS hSI (hji i hi) :=
     fun i hi => iteratedCovGrad_path_comm (I := I) g₀ r s i Φ S hS hSI hjoint (hji i hi)
   exact iteratedCovGrad_pathIntegralCoeffField_jetL2_le (I := I) (M := M)
-    g₀ r s a Φ B hB S hS hSI hjoint hΦjet hji hci hri hii hcomm
+    g₀ r s a Φ B S hS hSI hjoint hΦjet hji hci hri hii hcomm
 
 end DifferentialGeometry.Integral.L2

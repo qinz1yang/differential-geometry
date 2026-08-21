@@ -31,7 +31,7 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_zero_restrictOpen_apply
     (g gRef : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] (x : U)
+    [T2Space U] (x : U)
     (slots : Fin 2 -> TangentSpace I x) :
     metricCovDeriv (I := I) (g.restrictOpen (I := I) U)
         (gRef.restrictOpen (I := I) U) 0 x slots =
@@ -46,6 +46,7 @@ theorem metricCovDeriv_restrictOpen_apply
       metricCovDeriv (I := I) (h.restrictOpen (I := I) U)
           (gRef.restrictOpen (I := I) U) a x slots =
         metricCovDeriv (I := I) h gRef a (x : M) slots := by
+  let _ := (inferInstance : (SigmaCompactSpace ↥U))
   classical
   intro a
   induction a with
@@ -245,7 +246,7 @@ theorem metricDiffCovDerivAt_restrictOpen_apply
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem normSq0S_restrictOpen_apply
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] (s : Nat) (x : U)
+    [T2Space U] (s : Nat) (x : U)
     (A : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := U) s x) :
     Tensor0SBundle.normSq0S (I := I) (M := U) (g.restrictOpen (I := I) U) x s A =
@@ -345,7 +346,6 @@ variable {Idx : Type*} [Fintype Idx]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem iterCovComp_restrict {r : Nat} (U : TopologicalSpace.Opens E)
-    [SigmaCompactSpace U] [T2Space U]
     (e : Idx → E) (chr : E → Idx → Idx → Idx → Real)
     (base : E → (Fin r → Idx) → Real)
     (hdiff : ∀ (a : Nat) (x : U) (n : Fin (r + a) → Idx),

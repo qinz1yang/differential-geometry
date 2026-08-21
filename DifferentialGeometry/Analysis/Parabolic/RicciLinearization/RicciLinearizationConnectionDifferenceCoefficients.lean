@@ -1288,6 +1288,7 @@ private def symmVelocityDiffCovGradRealizedSec (g₀ : SmoothRiemannianMetric I 
       (unitZeroSec (I := I) (M := M) y)
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma kOneSec_tsmdiffAt (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1314,6 +1315,7 @@ private lemma kZeroSec_eval (g₀ : SmoothRiemannianMetric I M)
     funext fun j => by fin_cases j <;> rfl] at h
   exact h
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma kOneSec_eval (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1338,6 +1340,7 @@ private lemma kOneSec_eval (g₀ : SmoothRiemannianMetric I M)
       symmVelocityDiffSec (I := I) (M := M) g₀ T T' from rfl] at h
   exact h
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma kSec_bridge (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1359,6 +1362,7 @@ private lemma kSec_bridge (g₀ : SmoothRiemannianMetric I M)
     (symmVelocityDiffSec (I := I) (M := M) g₀ T T')
     (hUnitSec_tsmdiffAt (I := I) (M := M) g₀ T T' y) p q r
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma velFibre_toModel_eval (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1504,6 +1508,7 @@ lemma toModel2_add_slot1 {x : M} (T : Tensor0SBundle.Tensor0SSpace 2 I x)
   rw [hupd (q + q'), hupd q, hupd q']
   exact ContinuousMultilinearMap.map_update_add _ _ 1 _ _
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem kOneSec_deriv_eq_threeArm_kernel (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1813,6 +1818,9 @@ private theorem kOneSec_deriv_eq_threeArm_kernel (g₀ : SmoothRiemannianMetric 
   linarith [hL, hR, hExt, hexpC1, hexpC2, hE1, hE0]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1957,6 +1965,7 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
   rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
   ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (_hδ_lt : δ < 1)

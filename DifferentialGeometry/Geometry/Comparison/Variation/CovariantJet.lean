@@ -35,7 +35,8 @@ private theorem covFst_shift
     (covDerivAlong_const_add_shift
       (I := I) g (fun s : Real => f s t) (fun s : Real => V s t) c)
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [IsManifold I ∞ M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem varFst_shift
     (f : Real -> Real -> M) (hf : IsSmoothVariation (I := I) f)
     (c t : Real) :

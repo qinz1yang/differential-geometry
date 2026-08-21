@@ -114,6 +114,7 @@ theorem deGiorgiCutoffTest_memW01p_of_truncWitness
     (hη_comp : HasCompactSupport η)
     (hη_sub : tsupport η ⊆ Ω) :
     MemW01p 2 (deGiorgiCutoffTestGeneral η u k) Ω := by
+  let _ := (inferInstance : (MeasureTheory.IsFiniteMeasure (MeasureTheory.volume.restrict Ω)))
   let hwη :=
     hw_trunc.mul_smooth_bounded hΩ hη
       (C₀ := C₀) (C₁ := C₁) hC₀ hC₁ hη_bound hη_grad_bound
@@ -210,6 +211,7 @@ theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPart
         MemW1pWitness 2 v (Metric.ball x₀ s) →
           MemW1pWitness 2 (fun x => max (v x) 0) (Metric.ball x₀ s)) :
     MemW01p 2 (deGiorgiCutoffTestGeneral η u k) (Metric.ball x₀ s) := by
+  let _ := _hs
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -250,6 +252,7 @@ theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
                 2 (volume.restrict (Metric.ball x₀ s)))
             atTop (nhds 0))) :
     MemW01p 2 (deGiorgiCutoffTestGeneral η u k) (Metric.ball x₀ s) := by
+  let _ := _hs
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -285,6 +288,7 @@ noncomputable def positivePartSub_memW1pWitness_on_ball
                 2 (volume.restrict (Metric.ball x₀ s)))
             atTop (nhds 0))) :
     MemW1pWitness 2 (positivePartSub u k) (Metric.ball x₀ s) := by
+  let _ := _hs
   have hΩ : IsOpen (Metric.ball x₀ s) := isOpen_ball
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]

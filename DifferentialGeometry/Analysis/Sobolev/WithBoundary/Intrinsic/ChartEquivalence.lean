@@ -153,8 +153,8 @@ private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
   have hu_cont : Continuous u := hu.continuous
   have hX_div_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
     have hdiv_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ tsupport X :=
-      tsupport_divergence_g_with_boundary_subset_of_interior_support
-        (I := I) g X hX_int
+      tsupport_divergence_g_with_boundary_subset
+        (I := I) g X
     have hdiv_supp_int :
         tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
       hdiv_supp.trans hX_int
@@ -178,7 +178,7 @@ private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
     tangentSectionAction_continuous_of_X_interior_support
       (I := I) (M := M) hu X hX_int
   have hX_div_cs : HasCompactSupport (divergence_g_with_boundary (I := I) g X) :=
-    hasCompactSupport_divergence_g_with_boundary (I := I) g hX hX_int
+    hasCompactSupport_divergence_g_with_boundary (I := I) g hX
   have hAct_cs : HasCompactSupport (tangentSectionAction (I := I) X u) :=
     hasCompactSupport_tangentSectionAction (I := I) hX u
   have hMul_cont : Continuous (fun x : M =>
@@ -291,7 +291,7 @@ private lemma hasWeakRiemannianGradLp_withBoundary_gradFun_interior
       (I := I) g hu hu_int X hX hX_int
 
 theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff_interior
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -315,8 +315,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff_interior
         (I := I) (M := M) g p hu hu_int⟩
 
 theorem MemW1pIntrinsicLp_withBoundary_of_MemWkpChart_smooth_interior
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
-    [Module.Finite ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -640,7 +639,7 @@ private lemma hasWeakRiemannianGradLp_withBoundary_gradFun_smooth
       (I := I) g hu X hX hX_int
 
 theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -662,8 +661,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff
       memLp_g_norm_gradFun_smooth (I := I) (M := M) g p hu⟩
 
 theorem MemW1pIntrinsicLp_withBoundary_of_MemWkpChart_smooth
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
-    [Module.Finite ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -676,8 +674,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_MemWkpChart_smooth
     (I := I) (M := M) g p hu_smooth
 
 theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
-    [Module.Finite ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -703,8 +700,7 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff
   exact hG_p.2
 
 theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
-    [Module.Finite ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -781,18 +777,18 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
     [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
-    {p : ℝ≥0∞} (_hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
+    {p : ℝ≥0∞}
     {u : M → ℝ} (hu_smooth :
       ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u)
     (h_chart_lt_top :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-        (n := n) (M := M) g 1 p u < ⊤)
+        (n := n) (M := M) 1 p u < ⊤)
     (h_intr_pos :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u ≠ 0) :
     ∃ C : ℝ, 0 ≤ C ∧
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-          (n := n) (M := M) g 1 p u ≤
+          (n := n) (M := M) 1 p u ≤
         ENNReal.ofReal C *
           w1pNormIntrinsicLp_withBoundary
             (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u := by
@@ -804,14 +800,14 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
       (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p hu_smooth
   have h_chart_ne_top :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-        (n := n) (M := M) g 1 p u ≠ ⊤ := h_chart_lt_top.ne
+        (n := n) (M := M) 1 p u ≠ ⊤ := h_chart_lt_top.ne
   have h_intr_ne_top :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u ≠ ⊤ :=
     h_intr_lt_top.ne
   set a : ℝ :=
     (DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-      (n := n) (M := M) g 1 p u).toReal with ha_def
+      (n := n) (M := M) 1 p u).toReal with ha_def
   set b : ℝ :=
     (DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
       (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u).toReal with hb_def
@@ -825,7 +821,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
     exact add_nonneg (div_nonneg ha_nn (le_of_lt hb_pos)) (le_of_lt one_pos)
   refine ⟨C, hC_nn, ?_⟩
   rw [show DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-      (n := n) (M := M) g 1 p u = ENNReal.ofReal a from
+      (n := n) (M := M) 1 p u = ENNReal.ofReal a from
     (ENNReal.ofReal_toReal h_chart_ne_top).symm]
   rw [show
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
@@ -844,13 +840,13 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
     [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
     ∀ {u : M → ℝ}, ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u →
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.AllChartsInteriorSupport
         (n := n) (M := M) u →
       ∃ C : ℝ, 0 ≤ C ∧
         DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-            (n := n) (M := M) g 1 p u ≤
+            (n := n) (M := M) 1 p u ≤
           ENNReal.ofReal C *
             w1pNormIntrinsicLp_withBoundary
               (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u := by
@@ -858,14 +854,14 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
   classical
   have h_mem_chart :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.MemWkpChart
-        (n := n) (M := M) g 1 p u :=
+        (n := n) (M := M) 1 p u :=
     Analysis.Sobolev.WithBoundary.MemWkpChart_of_contMDiff_AllChartsInteriorSupport
-      (n := n) (M := M) g hp_one hu_smooth h_int
+      (n := n) (M := M) hp_one hu_smooth h_int
   have h_chart_lt_top :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-        (n := n) (M := M) g 1 p u < ⊤ :=
-    DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart_lt_top_of_memWkpChart
-      (n := n) (M := M) g hp_one h_mem_chart
+        (n := n) (M := M) 1 p u < ⊤ :=
+      DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart_lt_top_of_memWkpChart
+      (n := n) (M := M) hp_one h_mem_chart
   by_cases h_intr_zero :
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u = 0
@@ -876,11 +872,11 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
         hu_smooth h_intr_zero
     rw [h_u_zero]
     rw [DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart_zero_fun
-      (n := n) (M := M) g hp_one]
+      (n := n) (M := M) hp_one]
     simp
   · obtain ⟨C, hC_nn, hC_bound⟩ :=
       wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
-        (n := n) (M := M) g hp_one hp_top hu_smooth h_chart_lt_top h_intr_zero
+        (n := n) (M := M) g hu_smooth h_chart_lt_top h_intr_zero
     exact ⟨C, hC_nn, hC_bound⟩
 
 theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_uniform_full
@@ -889,18 +885,18 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_uniform
     [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
     ∀ {u : M → ℝ}, ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u →
       DifferentialGeometry.Analysis.Sobolev.WithBoundary.AllChartsInteriorSupport
         (n := n) (M := M) u →
       ∃ C : ℝ, 0 ≤ C ∧
         DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-            (n := n) (M := M) g 1 p u ≤
+            (n := n) (M := M) 1 p u ≤
           ENNReal.ofReal C *
             w1pNormIntrinsicLp_withBoundary
               (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u :=
   wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
-    (n := n) (M := M) g hp_one hp_top
+    (n := n) (M := M) g hp_one
 
 end EquivalenceFull
 end WithBoundary

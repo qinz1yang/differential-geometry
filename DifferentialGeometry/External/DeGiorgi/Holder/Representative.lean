@@ -473,6 +473,7 @@ theorem moserRepresentative_large_distance_bound
     (hlarge : (1 / 8 : ℝ) ≤ ‖x - y‖) :
     |moserRepresentative u x - moserRepresentative u y| ≤
       C_holder_Moser d * moserHolderNorm A u p₀ * ‖x - y‖ ^ moserDecayAlpha A := by
+  let _ := _hxy_ne
   let α : ℝ := moserDecayAlpha A
   let N : ℝ := moserHolderNorm A u p₀
   have hα_le : α ≤ 1 := by

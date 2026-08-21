@@ -153,6 +153,7 @@ private lemma flatReconstruction_eq_basisVector (g₀ : SmoothRiemannianMetric I
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma deTurckPrincipalCometricCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (w : Tensor0SSpace 4 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -197,6 +198,7 @@ private lemma deTurckPrincipalCometricCoeff_toModel_eq (g₀ g₁ : SmoothRieman
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma deTurckPrincipalCometricCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g₀.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
@@ -354,6 +356,7 @@ private lemma deTurckPrincipalCometricCoeff_componentSqSum_eq (n : ℕ) (f : Fin
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma riemannianFiberNormSq_deTurckPrincipalCometricCoeff_sub_le
     (g₀ ga gb : SmoothRiemannianMetric I M)
     (ha hb : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -486,6 +489,7 @@ private lemma combinedTrace42Model_apply
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
@@ -526,6 +530,7 @@ private lemma ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma traceHessianCoeff_sub_eq_reindex_principalCometricCoeff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ - traceHessianCoeff (I := I) (M := M) g₀ g₀ =
@@ -638,15 +643,16 @@ private theorem jointTotalSpaceRS_add {r s : ℕ} {S : Set ℝ}
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma metricPrincipalDefect_metricPerturbationPath_eq_lie_sub_lichnerowicz
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
-          (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
+          (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
         - (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
             + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
   rw [deTurckMetricPrincipalDefectTotal, linearizedRicciArm2FieldLichnerowicz]
@@ -663,17 +669,18 @@ private lemma metricPrincipalDefect_metricPerturbationPath_eq_lie_sub_lichnerowi
   abel
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPath
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
-      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') := by
   have hLie :=
     deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth
-      (I := I) g₀ T T' hδ hδ' g_bg
+      (I := I) g₀ T T' hδ hδ'
   have hLich := linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ'
   have hadd := jointTotalSpaceRS_add (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -686,7 +693,7 @@ theorem deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPa
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
       (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
-        (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1)
+        (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     (fun p : M × ℝ =>
       (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1
         + (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
@@ -695,7 +702,7 @@ theorem deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPa
   beta_reduce
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [metricPrincipalDefect_metricPerturbationPath_eq_lie_sub_lichnerowicz (I := I) (M := M) g₀ g_bg T T' hδ hδ' p.2,
+  rw [metricPrincipalDefect_metricPerturbationPath_eq_lie_sub_lichnerowicz (I := I) (M := M) g₀ T T' hδ hδ' p.2,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
@@ -742,7 +749,7 @@ private lemma metricPerturbationPath_cometric_difference_ratio_le (t δ : ℝ)
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3) (hδ0 : 0 ≤ δ) (hδ_lt : δ < 1)
     (h1δ : (0 : ℝ) < 1 - δ)
     (hδT : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -753,10 +760,10 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
     (hg₁_def : g₁ = tensorSectionRealizeMetric (I := I) g₀ T₀
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT)
     (C1 Δ1 : SmoothCcTensor g₀ 4 2)
-    (hC1_def : C1 = deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+    (hC1_def : C1 = deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
     (hΔ1_def : Δ1 = deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
     (Φ : ℝ → SmoothCcTensor g₀ 4 2)
-    (hΦ_def : Φ = fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+    (hΦ_def : Φ = fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s))
     (x : M) (Cx : Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (hCx_def : Cx = Tensor0SBundle.TensorRSSpace.toModel (C1.toSection x)
@@ -872,8 +879,8 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
     refine le_trans (Real.sqrt_le_sqrt hdev_riemannianFiberNormSq) ?_
     rw [hsqrt_n3 _ (div_nonneg (mul_nonneg (sub_nonneg.mpr ht1) hδ0)
       (le_of_lt (mul_pos h1tδ h1δ)))]
-  have hdec_t := deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g_bg g_t
-  have hdec_0 := deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g_bg g₀
+  have hdec_t := deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g_t
+  have hdec_0 := deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₀
   set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
     with hρA_def
   set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
@@ -921,9 +928,9 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
           - Δ1 := by
           rw [hΦ_def]
           beta_reduce
-          rw [show deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+          rw [show deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t) =
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g_t from by rw [hg_t_def]]
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_t from by rw [hg_t_def]]
           rw [hdec_t, hC1_def, hdec_0, hρA_def, hρAT_def]
           abel
       _ = (reindexCoeffGen (I := I) (M := M) g₀ 4 2
@@ -1078,8 +1085,8 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
 
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoeff_fibreSup_le
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+    {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
@@ -1093,7 +1100,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
         ∀ (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x
-            ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+            ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -1103,7 +1110,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
                           from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                         tensorHs_norm_smul]
                       simpa using hR₀)) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
                 deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
                   (tensorSectionRealizeMetric (I := I) g₀ T₀
                     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -1142,7 +1149,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
         simpa using hR₀)
     set g₁ : SmoothRiemannianMetric I M := tensorSectionRealizeMetric (I := I) g₀ T₀
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball) with hg₁_def
-    set P : SmoothCcTensor g₀ 4 2 := deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    set P : SmoothCcTensor g₀ 4 2 := deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
       (0 : SmoothCcTensor g₀ 0 2)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -1151,16 +1158,16 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
           rw [show (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2)
               from (zero_smul _ _).symm, smoothCcToTensorHs_smul, tensorHs_norm_smul]
           simpa using hR₀)) with hP_def
-    set C1 : SmoothCcTensor g₀ 4 2 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀
+    set C1 : SmoothCcTensor g₀ 4 2 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀
       with hC1_def
     set Δ1 : SmoothCcTensor g₀ 4 2 := deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁
       with hΔ1_def
     set Φ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) with hΦ_def
     have hjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ
         (δ := δ) (δ' := δ) :=
-      deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPath (I := I) (M := M) g₀ g_bg T₀
+      deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPath (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2) hδT hδZ
     have hSIu : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
       rw [Set.uIcc_of_le zero_le_one]
@@ -1235,7 +1242,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
       intro r hr
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hr, hfC_sqrt]
     have hsup :=
-      deTurckPhiTotPath_integrand_fibreSupremum_le (I := I) (M := M) g₀ g_bg T₀
+      deTurckPhiTotPath_integrand_fibreSupremum_le (I := I) (M := M) g₀ T₀
         hδ_le hδ0 hδ_lt h1δ hδT hδZ g₁ hg₁_def C1 Δ1 hC1_def hΔ1_def
         Φ hΦ_def x Cx hCx_def fC κ hfC_nn hκ_def htpn_val htpn_neg hsqrt_n3 hIccS
     have hriemannianFiberNormSq_tpn : riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x

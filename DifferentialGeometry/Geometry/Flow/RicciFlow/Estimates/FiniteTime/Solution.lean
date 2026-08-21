@@ -143,7 +143,7 @@ theorem flow_end_le
   have hKExists : ∀ U : Real, 0 < U → U < T →
       U < scalarBlowupTime 3 c0 →
       ∃ K : NNReal, ∀ t : Real, t ∈ Set.Icc 0 U →
-        LipschitzOnWith K (fun a : Real => scalarLowerReaction 3 a t)
+        LipschitzOnWith K (fun a : Real => scalarLowerReaction 3 a)
           (DifferentialGeometry.Integral.Connection.scalarWMPValueSet (M := M) U
             S.scalar (scalarLowerBarrier 3 c0)) := by
     intro U hU hUT hPole
@@ -199,7 +199,7 @@ theorem flow_end_le
   have hF_lip : ∀ U : Real, 0 < U → U < T →
       U < scalarBlowupTime 3 c0 →
       ∀ t : Real, t ∈ Set.Icc 0 U →
-        LipschitzOnWith (K U) (fun a : Real => scalarLowerReaction 3 a t)
+        LipschitzOnWith (K U) (fun a : Real => scalarLowerReaction 3 a)
           (DifferentialGeometry.Integral.Connection.scalarWMPValueSet (M := M) U
             S.scalar (scalarLowerBarrier 3 c0)) := by
     intro U hU hUT hPole t ht

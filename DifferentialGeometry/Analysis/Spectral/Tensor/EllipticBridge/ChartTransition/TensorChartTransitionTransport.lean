@@ -156,7 +156,7 @@ private lemma cutoffComponentScalar_eq_pou_transport_sum
     cutoffComponentScalar (I := I) (M := M) g r s S α P₀.1 P₀.2 x =
       ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+          transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
             tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x := by
   classical
   unfold cutoffComponentScalar
@@ -178,7 +178,7 @@ private lemma cutoffComponentScalar_eq_pou_transport_sum
     have h_rhs :
         (∑ β ∈ transportChartCenters (I := I) (M := M) α,
           ∑ Q : TensorCompIdx (E := E) r s,
-            transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+            transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
               tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x) =
         χα *
           ∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -238,7 +238,7 @@ private lemma cutoffComponentEuclid_eq_pou_transport_sum
         ∑ Q : TensorCompIdx (E := E) r s,
           chartPushedRaw I α
             (fun x : M =>
-              transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+              transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
                 tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x)
             y := by
   classical
@@ -249,7 +249,7 @@ private lemma cutoffComponentEuclid_eq_pou_transport_sum
         fun x : M =>
           ∑ β ∈ transportChartCenters (I := I) (M := M) α,
             ∑ Q : TensorCompIdx (E := E) r s,
-              transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+              transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
                 tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x := by
     funext x
     exact cutoffComponentScalar_eq_pou_transport_sum
@@ -258,12 +258,12 @@ private lemma cutoffComponentEuclid_eq_pou_transport_sum
   rw [chartPushedRaw_finsetSum (I := I) (M := M) α
     (transportChartCenters (I := I) (M := M) α)
     (fun β x => ∑ Q : TensorCompIdx (E := E) r s,
-      transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+      transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
         tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x) y]
   refine Finset.sum_congr rfl (fun β _ => ?_)
   exact chartPushedRaw_finsetSum (I := I) (M := M) α
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-    (fun Q x => transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+    (fun Q x => transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
       tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x) y
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
@@ -287,6 +287,7 @@ lemma finsetSum_ae_eq
       rw [Finset.sum_insert ha, Finset.sum_insert ha, hya, hyt]
 
 omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -295,7 +296,7 @@ private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
         (S : TensorL2 r s g) α P₀ =
       ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+          chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s
               (S : TensorL2 r s g) β Q) := by
   classical
@@ -305,7 +306,7 @@ private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
   have h_rhs_coeFn :
       ((∑ β ∈ transportChartCenters (I := I) (M := M) α,
           ∑ Q : TensorCompIdx (E := E) r s,
-            chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+            chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s
                 (S : TensorL2 r s g) β Q)) :
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) =ᵐ[
@@ -314,20 +315,20 @@ private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
           ∑ Q : TensorCompIdx (E := E) r s,
             chartPushedRaw I α
               (fun x : M =>
-                transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+                transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
                   tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x)
               y := by
     refine (coeFn_finsetSum_chartL2 (I := I) (M := M) α
       (transportChartCenters (I := I) (M := M) α)
       (fun β => ∑ Q : TensorCompIdx (E := E) r s,
-        chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+        chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s
             (S : TensorL2 r s g) β Q))).trans ?_
     refine finsetSum_ae_eq (I := I) (M := M) α
       (transportChartCenters (I := I) (M := M) α) (fun β _ => ?_)
     refine (coeFn_finsetSum_chartL2 (I := I) (M := M) α
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun Q => chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+      (fun Q => chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s
           (S : TensorL2 r s g) β Q))).trans ?_
     refine finsetSum_ae_eq (I := I) (M := M) α
@@ -340,7 +341,7 @@ private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
           ∑ Q : TensorCompIdx (E := E) r s,
             chartPushedRaw I α
               (fun x : M =>
-                transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
+                transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
                   tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x)
               y := by
     funext y
@@ -350,21 +351,22 @@ private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
   exact h_rhs_coeFn.symm
 
 omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma continuous_transport_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
     Continuous (fun u : TensorL2 r s g =>
       ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+          chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s u β Q)) := by
   classical
   refine continuous_finset_sum _ (fun β _ => ?_)
   refine continuous_finset_sum _ (fun Q _ => ?_)
-  exact (chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q).continuous.comp
+  exact (chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q).continuous.comp
     (continuous_tensorL2ChartComponent (I := I) (M := M) g r s β Q)
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 theorem tensorL2ChartComponentCutoff_eq_pou_transport_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M)
@@ -372,7 +374,7 @@ theorem tensorL2ChartComponentCutoff_eq_pou_transport_sum
     tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ =
       ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+          chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) := by
   classical
   set lhs : TensorL2 r s g → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
@@ -381,7 +383,7 @@ theorem tensorL2ChartComponentCutoff_eq_pou_transport_sum
   set rhs : TensorL2 r s g → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
     fun v => ∑ β ∈ transportChartCenters (I := I) (M := M) α,
       ∑ Q : TensorCompIdx (E := E) r s,
-        chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+        chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s v β Q)
     with hrhs_def
   suffices h_eq : lhs = rhs by
@@ -407,7 +409,7 @@ theorem tensorL2ChartComponentCutoff_eq_pou_transport_sum
   exact tensorL2ChartComponentCutoff_smooth_eq_transport_sum
     (I := I) (M := M) g r s S α P₀
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 theorem tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M)
@@ -417,7 +419,7 @@ theorem tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
       =ᵐ[chartL2Measure (I := I) (M := M) α]
       (fun y => ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          ((chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+          ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
   classical
@@ -426,13 +428,13 @@ theorem tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
   refine (coeFn_finsetSum_chartL2 (I := I) (M := M) α
     (transportChartCenters (I := I) (M := M) α)
     (fun β => ∑ Q : TensorCompIdx (E := E) r s,
-      chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+      chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s u β Q))).trans ?_
   refine finsetSum_ae_eq (I := I) (M := M) α
     (transportChartCenters (I := I) (M := M) α) (fun β _ => ?_)
   exact coeFn_finsetSum_chartL2 (I := I) (M := M) α
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-    (fun Q => chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+    (fun Q => chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
       (tensorL2ChartComponent (I := I) (M := M) g r s u β Q))
 
 section ElaborationTests
@@ -445,7 +447,7 @@ example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ =
       ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+          chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :=
   tensorL2ChartComponentCutoff_eq_pou_transport_sum
     (I := I) (M := M) g r s u α P₀

@@ -385,7 +385,7 @@ theorem unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s' + 2) I x from
           U.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [slotExtend_toSection]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g (s' + 1) (s' + 1) x _ _
+  rw [slotExtendFib_apply_eval (I := I) (M := M) (s' + 1) (s' + 1) x _ _
     ((a : TangentSpace I x) : E)
     (Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E)))]
   rw [show (show Tensor0SSpace (s' + 1) I x →L[ℝ] Tensor0SSpace (s' + 1) I x from

@@ -96,12 +96,14 @@ theorem le_essInf_halfBall_of_ae_bound
     simpa [not_le] using hlow'
 
 /-- The low-power exponent used in the Chapter 07 Harnack proof. -/
-noncomputable def harnack_q (d : ℕ) [NeZero d] : ℝ :=
-  ((d : ℝ) - 1) / (d : ℝ)
+noncomputable def harnack_q (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+  let _ := hNeZero
+  exact ((d : ℝ) - 1) / (d : ℝ)
 
 /-- The corresponding `L^p` exponent in the Chapter 07 Harnack proof. -/
-noncomputable def harnack_p (d : ℕ) [NeZero d] : ℝ :=
-  ((d : ℝ) - 1) / ((d : ℝ) - 2)
+noncomputable def harnack_p (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+  let _ := hNeZero
+  exact ((d : ℝ) - 1) / ((d : ℝ) - 2)
 
 omit [NeZero d] in
 private theorem harnack_dim_ge_three (hd : 2 < (d : ℝ)) : 3 ≤ d := by

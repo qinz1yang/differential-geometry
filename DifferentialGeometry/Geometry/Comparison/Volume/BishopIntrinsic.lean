@@ -167,7 +167,7 @@ private theorem intrJacobi_diff
     rfl
   constructor
   · have h :=
-      variationField_chartRep_differentiableAt (I := I) g F hF t
+      variationField_chartRep_differentiableAt (I := I) F hF t
     rw [hbase, hfield] at h
     exact h
   · have h :=

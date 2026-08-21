@@ -232,7 +232,7 @@ theorem unifHatSuppData
     (by simpa [ptsSeq] using hstrict)
     (by
       simpa [ptsSeq, decodedCompPts] using
-        NetLimitData.hatSuppPtsOfComp (I := I) (X := X) hd P L pb r n mu center
+        NetLimitData.hatSuppPtsOfComp (I := I) (X := X) hd P L n mu center
           sourceK U V B Binf A Ainf hconn hKsrc hSupp hsrcK hVopen hB hA
           hBcont hAcont hid hKU hKV)
 

@@ -38,7 +38,7 @@ open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 def IsSmoothVariation
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (f : ℝ → ℝ → M) : Prop :=
   ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I (8 : ℕ) (fun p : ℝ × ℝ => f p.1 p.2)
 
@@ -180,7 +180,7 @@ private lemma mixed_partialFderiv_comm (F : ℝ → ℝ → E) (s t : ℝ)
   exact hsymm (1, 0) (0, 1)
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartPulled_contDiffAt
     (f : ℝ → ℝ → M) (hf : IsSmoothVariation (I := I) f) (s t : ℝ) :
     ContDiffAt ℝ 2

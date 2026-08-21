@@ -365,7 +365,7 @@ private theorem full_slot_pointwise
           (1 / (1 - (1 / 3 : ℝ))) ^ 2) := by
   have hsharp := riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one
     (I := I) (M := M) g (δ₀ := (1 : ℝ) / 3)
-    (by norm_num) (by norm_num) gm P htie hdelta_le hdelta0 hP x
+    (by norm_num) gm P htie hdelta_le hdelta0 hP x
   have hslot := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
     (I := I) (M := M) g q
       (metricComparisonEndomorphismField (I := I) (M := M) g gm) 0 x
@@ -925,6 +925,7 @@ private theorem perm_left_jet_four_le
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem conn_low_nf
     (g gm : SmoothRiemannianMetric I M) :
     RicciDeTurckLowOrder.connectionDifferenceLowOrderOperator (I := I) (M := M) g gm =
@@ -2153,8 +2154,8 @@ theorem ricciDeTurckTopOrderCoefficient_h3_uniform_bound
           (∑ j ∈ Finset.range 4,
             ‖iteratedCovGrad (I := I) g 4 2 j
               (lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a +
-                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g) +
+                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
                 (-2 * a : ℝ) •
                   RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T)‖ ^ 2) ≤
             (C * ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖) ^ 2 := by
@@ -2177,8 +2178,8 @@ theorem ricciDeTurckTopOrderCoefficient_h3_uniform_bound
   let L : SmoothCcTensor g 4 2 :=
     lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a
   let P : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let R : SmoothCcTensor g 4 2 :=
     RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T
   have hT2L : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ rhoL :=

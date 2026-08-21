@@ -309,7 +309,6 @@ theorem contMDiffOn_isLocalDiffeomorphOn_infty
 omit [I.Boundaryless] [J.Boundaryless] in
 omit [CompleteSpace F] in
 theorem isLocalDiffeomorphAt_of_coordinates
-    [IsManifold I ∞ M] [IsManifold J ∞ N]
     (c : PartialDiffeomorph I 𝓘(ℝ, E) M E ∞)
     (d : PartialDiffeomorph J 𝓘(ℝ, F) N F ∞)
     {f : M → N} {x : M} {V : Set E} (hV : IsOpen V)

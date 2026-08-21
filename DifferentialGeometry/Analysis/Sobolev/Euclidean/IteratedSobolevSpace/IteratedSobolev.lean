@@ -882,7 +882,7 @@ theorem chosenWeakPartial'_mono_set_ae
 
 theorem MemWkp.mono_set
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω Ω' : Set E}
-    (_hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
+    (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
     {u : E → ℝ} (hu : MemWkp (d := d) k p u Ω) :
     MemWkp (d := d) k p u Ω' := by
   induction k generalizing u with
@@ -934,7 +934,7 @@ theorem iterWeakPartial_mono_set_ae
 
 theorem wkpNorm_mono_set
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω Ω' : Set E}
-    (_hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
+    (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
     {u : E → ℝ} (hu : MemWkp (d := d) k p u Ω) :
     iteratedWeakSobolevNorm (d := d) k p u Ω' ≤ iteratedWeakSobolevNorm (d := d) k p u Ω := by
   classical

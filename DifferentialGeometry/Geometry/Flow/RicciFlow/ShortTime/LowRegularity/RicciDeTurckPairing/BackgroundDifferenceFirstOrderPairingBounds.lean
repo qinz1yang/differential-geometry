@@ -1775,6 +1775,7 @@ private noncomputable def deTurckInsertionCorrectionEndomorphism
     endoDiffSection (I := I) (M := M) g gm g_bg
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckInsertionCorrectionEndomorphism_apply
     (g gm g_bg : SmoothRiemannianMetric I M) (x : M) :
     deTurckInsertionCorrectionEndomorphism (I := I) (M := M) g gm g_bg x =
@@ -1794,6 +1795,7 @@ private lemma deTurckInsertionCorrectionEndomorphism_apply
   simp only [deTurckVectorFieldCovariantDerivativeEndomorphismSection_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
     (g gm g_bg : SmoothRiemannianMetric I M) :
     (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g gm g_bg -
@@ -1922,6 +1924,7 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
   ac_rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem cometricRaiseSlot0Field_zero_sub
     (g : SmoothRiemannianMetric I M)
     (W W' : SmoothCcTensor g 0 2) :
@@ -1936,6 +1939,7 @@ private theorem cometricRaiseSlot0Field_zero_sub
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem cometricRaiseSlot0Field_zero_add
     (g : SmoothRiemannianMetric I M)
     (W W' : SmoothCcTensor g 0 2) :
@@ -1970,6 +1974,7 @@ private theorem slotInsertEndoCc_zero_deTurckInsertionCorrectionEndomorphism
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckVectorFieldCovector_backgroundDifference_sub
     (g g_bg gT gU : SmoothRiemannianMetric I M) :
     (deTurckVectorFieldCovector (I := I) (M := M) g gT g_bg -
@@ -2529,6 +2534,7 @@ private noncomputable def lieCorrectionZeroKappaBackgroundDifference
     lieCorrectionZeroKappa (I := I) (M := M) g gm g
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem lieCorrectionZeroKappaBackgroundDifference_sub
     (g gT gU g_bg : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -2579,6 +2585,7 @@ private theorem slotExtendIter_sub
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroMixedConnectionHalfRF_backgroundDifference
     (g gm g_bg : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -3101,6 +3108,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionBackgroundHalf_pairing_fi
   simpa only [N] using hS1D
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
     (g gm g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g gm g_bg -
@@ -3207,6 +3215,8 @@ theorem exists_lieCorrectionZeroMixedConnection_backgroundDifference_pairing_fir
       dsimp only [C]
       ring
 
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieCoefficient_backgroundDifference_decomposition
     (g gT gU gB : SmoothRiemannianMetric I M) :
     ((deTurckLieCoeffField (I := I) (M := M) g gT gB +

@@ -230,6 +230,7 @@ private lemma conjCovFun_torsion_free
         mfderiv_symm_apply_mfderiv (I := I) Φ x ((VectorField.mlieBracket I X Y) x)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma pullbackMetric_inner_eval
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (Y Z : ∀ x : M, TangentSpace I x) (b : M) :
@@ -240,6 +241,7 @@ private lemma pullbackMetric_inner_eval
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.precomp_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma conjCovFun_metric_compatible
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     {Y Z : ∀ x : M, TangentSpace I x} {x : M}
@@ -339,6 +341,7 @@ private lemma conjCovFun_metric_compatible
   rw [hrhs1, hrhs2]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma conjCovFun_eq_LeviCivita_pullback
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     {X Y : ∀ x : M, TangentSpace I x} {x : M}
@@ -379,6 +382,7 @@ private lemma conjCovFun_eq_LeviCivita_pullback
   exact koszul_local_uniqueness (s := Set.univ) hTF₁ hTF₂ hMC₁ hMC₂ hX hY (Set.mem_univ _)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem LeviCivita_covariantDerivative_pullback_pointwise
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     {X : ∀ y : M, TangentSpace I y} {x : M} (v : TangentSpace I x)

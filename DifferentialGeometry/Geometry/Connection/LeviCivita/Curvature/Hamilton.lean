@@ -296,6 +296,7 @@ private theorem curvatureAction_basis
   simp [rmAction4, Finset.sum_add_distrib]
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem canRmActionSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -409,6 +410,7 @@ private theorem canRmActionSum
   simpa [cov, hcov, Rm13, Rm04, R] using hAlg
 
 omit [I.Boundaryless] [IsManifold I 1 M] in
+omit [SigmaCompactSpace M] in
 private theorem canRic_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -456,7 +458,7 @@ private theorem canRic_basis
   have h := hTrace a b
   simpa [cov, hcov, Rm04, Ric, identityInvMetric, diagonalInvMetric] using h
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem canRawLowering
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -675,6 +677,7 @@ theorem canRmHessComm
     comm_eq B V A D C V] at hAlg
   simpa [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04, N] using hAlg
 
+omit [SigmaCompactSpace M] in
 theorem canRicHessSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -785,6 +788,7 @@ theorem canRicHessSum
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_neg_distrib]
 
+omit [SigmaCompactSpace M] in
 theorem hamiltonRm04Id
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}

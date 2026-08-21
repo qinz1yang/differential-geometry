@@ -223,6 +223,8 @@ def deTurckRHSBase (g₀ g_bg : SmoothRiemannianMetric I M)
     (deTurckRHSSection (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).hasCompactSupport
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem metricDiff_pde
     (q g_bg : SmoothRiemannianMetric I M)
     (G : ℝ → SmoothRiemannianMetric I M) {T δ : ℝ} (hδ_lt : δ < 1)

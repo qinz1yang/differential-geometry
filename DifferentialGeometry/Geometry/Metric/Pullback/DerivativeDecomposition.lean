@@ -26,6 +26,7 @@ theorem mfderiv_time_derivative_along_flow
   h_deriv.congr_of_eventuallyEq h_eq.symm
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem pullback_metric_derivative_decomposition
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)
@@ -57,6 +58,7 @@ theorem pullback_metric_derivative_decomposition
   exact pullbackMetric_inner_hasDerivAt_of_eval g_fam Φ_fam x v w h_total_eval
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem combine_pullback_derivative_pieces
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)
@@ -73,6 +75,7 @@ theorem combine_pullback_derivative_pieces
   pullbackMetric_inner_hasDerivAt_of_eval g_fam Φ_fam x v w h_chain_eval
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem pullback_time_derivative_chain_rule
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)

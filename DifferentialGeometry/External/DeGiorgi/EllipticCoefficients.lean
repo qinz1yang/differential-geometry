@@ -256,7 +256,7 @@ variable {d : ℕ} [NeZero d] {Ω : Set (AmbientSpace d)}
 @[simp] theorem lam_eq_one : A.1.lam = 1 :=
   A.2
 
-@[simp] theorem ellipticityRatio_eq_Λ :
+theorem ellipticityRatio_eq_Λ :
     ellipticityRatio A.1 = A.1.Λ := by
   simp [ellipticityRatio]
 

@@ -1320,7 +1320,7 @@ theorem MemWkp.comp_smoothDiffeoBoundedAtOrder
             have h_pos : 0 < 2 * K_const := by positivity
             field_simp
   obtain ⟨v, hv_mem, hv_tendsto⟩ :=
-    MemWkp.exists_limit_of_wkpNorm_cauchy (d := d) hΩ k p hp_one hp_top
+    MemWkp.exists_limit_of_wkpNorm_cauchy (d := d) hΩ k p hp_one
       hψ_comp_mem h_cauchy
   have h_Lp_close : ∀ n,
       eLpNorm (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) p

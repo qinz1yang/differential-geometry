@@ -23,7 +23,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [IsManifold I ∞ M] in
 theorem chartPushedRaw_sq_eq_compositionSq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (α : M) (u : M → ℝ)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -35,9 +34,8 @@ theorem chartPushedRaw_sq_eq_compositionSq
 
 omit [IsManifold I ∞ M] in
 theorem fderiv_chartPushedRaw_sq_le_compFderivSq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless]
     (α : M) (u : M → ℝ)
-    (_hu : ContDiffOn ℝ 1 (u ∘ (extChartAt I α).symm) (extChartAt I α).target)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
       (I := I) (M := M) α) :
@@ -99,9 +97,8 @@ theorem fderiv_chartPushedRaw_sq_le_compFderivSq
 
 omit [IsManifold I ∞ M] in
 theorem iteratedFDeriv_two_chartPushedRaw_sq_le_compIterSq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless]
     (α : M) (u : M → ℝ)
-    (_hu : ContDiffOn ℝ 2 (u ∘ (extChartAt I α).symm) (extChartAt I α).target)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
       (I := I) (M := M) α) :

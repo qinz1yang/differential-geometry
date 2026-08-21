@@ -49,7 +49,7 @@ theorem tangent_closedBall_isCompact
     {M : Type*}
     (I : ModelWithCorners ℝ E H)
     [TopologicalSpace M] [ChartedSpace H M]
-    (p : M) {R : ℝ} (_hR : 0 ≤ R) :
+    (p : M) {R : ℝ} :
     IsCompact (Metric.closedBall (0 : TangentSpace I p) R) := by
   haveI : ProperSpace E := FiniteDimensional.proper_real E
   exact isCompact_closedBall (0 : TangentSpace I p) R
@@ -414,7 +414,7 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
                   (fun s => Real.sin (Real.pi * s / L)) (e i)).toFun) t)
               MeasureTheory.volume 0 L :=
         DifferentialGeometry.Geometry.Riemannian.Variation.indexFormIntegrand_intervalIntegrable
-          (I := I) g γ L hL_pos hγ_C1 hγ_geoOn hγ_unit_mfderiv e heDiff hParallel hON hPerp
+          (I := I) g γ L hL_pos hγ_C1 e heDiff hParallel
       have hRicIntegrable :
           IntervalIntegrable
             (fun t : ℝ => ricciTensor (I := I) g (γ t) (uPrime t) (uPrime t))
@@ -517,7 +517,7 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
             (I := I) hγ_smooth hχ_smooth (hEbundle i)
         exact hprod
       exact bonnet_myers_length_le_of_ricci_bound (I := I) g γ hL_pos hEnorm
-        hγ_smooth hγ_C1 hγ_geoOn hK hdim hRic' uPrime huPrimeEq hγ_unit
+        hγ_smooth hγ_geoOn hK hdim hRic' uPrime huPrimeEq hγ_unit
         e heDiff hParallel hON hPerp hIntegrandSum hRicIntegrable hγ_min hVbundle
   exact hL_le
 
@@ -644,8 +644,7 @@ theorem isCompact_image_closedBall_under_expMapIntrinsic
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [T2Space (TangentBundle I M)]
-    [SigmaCompactSpace M] [ConnectedSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     [PseudoEMetricSpace M]
     (g : SmoothRiemannianMetric I M)
     [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]

@@ -52,7 +52,7 @@ private lemma half_sq_three_term_le
     (1 / 2 : ℝ) ^ 2 * x ≤ 3 * q := by
   nlinarith
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma sieSplit (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     slotInsertEndoCc (I := I) (M := M) g₀ s
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁) =
@@ -162,7 +162,7 @@ private theorem endoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I
     le_trans (hSid i x) (le_mul_of_one_le_right (hSid_nn i) hone)
   nlinarith [hA, hB, hWnn]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma clSplit (g₀ : SmoothRiemannianMetric I M) :
     ∃ Z : SmoothCcTensor g₀ 3 3, ∀ g₁ : SmoothRiemannianMetric I M,
       connectionDifferenceLowOrderOperator (I := I) (M := M) g₀ g₁ =
@@ -523,7 +523,7 @@ private theorem pairCap (g₀ : SmoothRiemannianMetric I M)
   exact capCongr (I := I) (M := M) g₀ P hpair
     (capApp (I := I) (M := M) g₀ P _ _ hK2_nn hK4_nn hP2 hP4)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma curvSmul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (t : ℝ) :
     riemannCurvatureCoefficientField (I := I) (M := M) g₀ (t • T) = t • riemannCurvatureCoefficientField (I := I) (M := M) g₀ T := by
@@ -1348,7 +1348,7 @@ private lemma permRe (g₀ : SmoothRiemannianMetric I M) {d : ℕ}
       (slotPermCLM (I := I) ρ x D) = _
   rw [slotPermCLM_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma clZ (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceLowOrderOperator (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 3 (permCoeff (I := I) (M := M) g₀ connectionDifferenceLowOrderPermutation)

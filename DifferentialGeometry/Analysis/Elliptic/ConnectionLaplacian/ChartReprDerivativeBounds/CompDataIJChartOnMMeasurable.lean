@@ -33,7 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma iteratedFDeriv_tensorChartComponentRaw_comp_symm_continuousOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

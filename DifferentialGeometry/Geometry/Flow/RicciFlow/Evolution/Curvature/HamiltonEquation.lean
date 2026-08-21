@@ -325,7 +325,7 @@ private theorem gammaLower_eq
   simpa [nablaGammaDtFromNabla2RicInFrame, metricCompInFrame, basis,
     coordinateFrameAt_toBasis_apply] using h
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem rawCoord_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -388,7 +388,7 @@ private theorem rawCoord_eq
         fin_cases q <;> rfl]
       rw [rawTensor_eval]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem rm04Var_eq_tensor
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -480,6 +480,7 @@ private theorem rm04Var_eq_tensor
       simp only [coordNab2_eq]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem varTensor_eq_ham
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -579,6 +580,7 @@ theorem rm04Deriv_of_coord
   exact (hD m).mul_const _
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem rm04Var_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -739,6 +741,7 @@ private theorem rm04Var_of_solution
   simpa only [component0S_apply, coordinateFrameAt_toBasis_apply] using hexp.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04Base_of_solution_any
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

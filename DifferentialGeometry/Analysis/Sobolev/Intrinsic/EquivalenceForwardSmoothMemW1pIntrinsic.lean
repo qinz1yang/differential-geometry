@@ -104,7 +104,7 @@ lemma memLp_g_norm_gradFun_smooth
   exact continuous_memLp_of_compactSpace g p hG_cont
 
 lemma hasWeakRiemannianGradLp_gradFun
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     HasWeakRiemannianGradLp (I := I) (M := M) g u (gradFun (I := I) g u) := by
@@ -168,12 +168,11 @@ theorem MemW1pIntrinsicLp_of_MemWkpChart
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hu_meas : Measurable u)
-    (_hu : MemWkpChart (I := I) (M := M) g 1 p u) :
+    :
     DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.MemW1pIntrinsicLp
       (I := I) (M := M) g p u := by
   let _ := hp_one
@@ -186,18 +185,16 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
-    (_hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u)
-    (h_chart_pos : wkpNormChart (I := I) (M := M) g 1 p u ≠ 0) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u)
+    (h_chart_pos : wkpNormChart (I := I) (M := M) 1 p u ≠ 0) :
     ∃ C : ℝ, 0 ≤ C ∧
       DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
         (I := I) (M := M) g p u
         ≤ ENNReal.ofReal C *
-          wkpNormChart (I := I) (M := M) g 1 p u := by
+          wkpNormChart (I := I) (M := M) 1 p u := by
   letI : MeasurableSpace E := borel E
   haveI : BorelSpace E := ⟨rfl⟩
   letI : MeasurableSpace M := borel M
@@ -206,14 +203,14 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth
       (I := I) (M := M) g p u < ⊤ :=
     w1pNormIntrinsicLp_lt_top_of_MemWkpChart_smooth
       (I := I) (M := M) g p hu_smooth
-  have h_chart_lt_top : wkpNormChart (I := I) (M := M) g 1 p u < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_one hu
-  have h_chart_ne_top : wkpNormChart (I := I) (M := M) g 1 p u ≠ ⊤ := h_chart_lt_top.ne
+  have h_chart_lt_top : wkpNormChart (I := I) (M := M) 1 p u < ⊤ :=
+    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_one hu
+  have h_chart_ne_top : wkpNormChart (I := I) (M := M) 1 p u ≠ ⊤ := h_chart_lt_top.ne
   have h_intrinsic_ne_top : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
       (I := I) (M := M) g p u ≠ ⊤ := h_intrinsic_lt_top.ne
   set a : ℝ := (DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
     (I := I) (M := M) g p u).toReal with ha_def
-  set b : ℝ := (wkpNormChart (I := I) (M := M) g 1 p u).toReal with hb_def
+  set b : ℝ := (wkpNormChart (I := I) (M := M) 1 p u).toReal with hb_def
   have hb_pos : 0 < b := by
     rw [hb_def]
     exact ENNReal.toReal_pos h_chart_pos h_chart_ne_top
@@ -226,7 +223,7 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth
   rw [show DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
       (I := I) (M := M) g p u = ENNReal.ofReal a from
     (ENNReal.ofReal_toReal h_intrinsic_ne_top).symm]
-  rw [show wkpNormChart (I := I) (M := M) g 1 p u = ENNReal.ofReal b from
+  rw [show wkpNormChart (I := I) (M := M) 1 p u = ENNReal.ofReal b from
     (ENNReal.ofReal_toReal h_chart_ne_top).symm]
   rw [← ENNReal.ofReal_mul hC_nn]
   apply ENNReal.ofReal_le_ofReal
@@ -241,24 +238,22 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
     ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
-      Measurable u →
-      MemWkpChart (I := I) (M := M) g 1 p u →
-      wkpNormChart (I := I) (M := M) g 1 p u ≠ 0 →
+      MemWkpChart (I := I) (M := M) 1 p u →
+      wkpNormChart (I := I) (M := M) 1 p u ≠ 0 →
       ∃ C : ℝ, 0 ≤ C ∧
         DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
           (I := I) (M := M) g p u
           ≤ ENNReal.ofReal C *
-            wkpNormChart (I := I) (M := M) g 1 p u := by
-  intro u hu_smooth hu_meas hu_chart h_chart_pos
+            wkpNormChart (I := I) (M := M) 1 p u := by
+  intro u hu_smooth hu_chart h_chart_pos
   exact w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth
-    (I := I) (M := M) g hp_one hp_top hu_smooth hu_meas hu_chart h_chart_pos
+    (I := I) (M := M) g hp_one hu_smooth hu_chart h_chart_pos
 
 lemma continuous_g_norm_gradFun
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     Continuous (fun x : M => Real.sqrt
@@ -378,11 +373,10 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤) (α : M)
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (α : M)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
-    (h_chart_pos : wkpNormChart (I := I) (M := M) g 1 p u ≠ 0) :
+    (h_chart_pos : wkpNormChart (I := I) (M := M) 1 p u ≠ 0) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm (Set.indicator (chartAt H α).source
           (fun x : M => Real.sqrt
@@ -394,7 +388,7 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
         (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M))
       ≤ ENNReal.ofReal C *
-          wkpNormChart (I := I) (M := M) g 1 p u := by
+          wkpNormChart (I := I) (M := M) 1 p u := by
   classical
   letI : MeasurableSpace E := borel E
   haveI : BorelSpace E := ⟨rfl⟩
@@ -402,12 +396,12 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
   haveI : BorelSpace M := ⟨rfl⟩
   have h_lt_top := eLpNorm_g_norm_gradFun_chart_local_lt_top_smooth
     (I := I) (M := M) g hp_one α hu_smooth
-  have hu_chart : MemWkpChart (I := I) (M := M) g 1 p u :=
+  have hu_chart : MemWkpChart (I := I) (M := M) 1 p u :=
     DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-      (I := I) (M := M) g hp_one hu_smooth
-  have h_chart_lt_top : wkpNormChart (I := I) (M := M) g 1 p u < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_one hu_chart
-  have h_chart_ne_top : wkpNormChart (I := I) (M := M) g 1 p u ≠ ⊤ := h_chart_lt_top.ne
+      (I := I) (M := M) hp_one hu_smooth
+  have h_chart_lt_top : wkpNormChart (I := I) (M := M) 1 p u < ⊤ :=
+    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_one hu_chart
+  have h_chart_ne_top : wkpNormChart (I := I) (M := M) 1 p u ≠ ⊤ := h_chart_lt_top.ne
   set a : ℝ := (eLpNorm (Set.indicator (chartAt H α).source
         (fun x : M => Real.sqrt
           (g.inner x
@@ -417,7 +411,7 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
               (I := I) g u x)))) p
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M))).toReal with ha_def
-  set b : ℝ := (wkpNormChart (I := I) (M := M) g 1 p u).toReal with hb_def
+  set b : ℝ := (wkpNormChart (I := I) (M := M) 1 p u).toReal with hb_def
   have hb_pos : 0 < b := by
     rw [hb_def]
     exact ENNReal.toReal_pos h_chart_pos h_chart_ne_top
@@ -447,7 +441,7 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M))
         = ENNReal.ofReal a from
     (ENNReal.ofReal_toReal h_LHS_ne_top).symm]
-  rw [show wkpNormChart (I := I) (M := M) g 1 p u = ENNReal.ofReal b from
+  rw [show wkpNormChart (I := I) (M := M) 1 p u = ENNReal.ofReal b from
     (ENNReal.ofReal_toReal h_chart_ne_top).symm]
   rw [← ENNReal.ofReal_mul hC_nn]
   apply ENNReal.ofReal_le_ofReal

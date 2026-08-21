@@ -67,7 +67,7 @@ private theorem cometricCastG0_sup_and_jetL2_bound_generic
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_mos, hK_mos_nn, hK_mos⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ
-      (I := I) (M := M) g₀ a ha_super hR hδ₀
+      (I := I) (M := M) g₀ a ha_super hR
   have hSΦ_ex : ∀ i : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i) x
         ((iteratedCovGrad (I := I) g₀ 3 1 i Φ).toSection x) ≤ K :=
@@ -395,6 +395,7 @@ private lemma metricComparisonEndomorphism_self' (g₀ : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_decomp' (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -438,6 +439,7 @@ private lemma slotInsertEndoCc_add' (g₀ : SmoothRiemannianMetric I M) (s : ℕ
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma sharpFlatEndoCc_eq_insert_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -565,7 +567,7 @@ private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_mos, hK_mos_nn, hK_mos⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+      ha_super hR
   obtain ⟨Λw, hΛw_nn, hΛw⟩ :=
     exists_window_pointwise_jet_le (I := I) (M := M) g₀ a ha_super hR
   set IdIns : SmoothCcTensor g₀ 1 1 :=
@@ -846,6 +848,7 @@ private theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma connectionDifferenceSection_eq_cometricRaiseSlot0Field' (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1

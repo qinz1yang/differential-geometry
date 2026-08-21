@@ -79,7 +79,7 @@ theorem tensorChartComponentScalar_embedding_C0
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentScalar
             (I := I) (M := M) g r s T α Idx Jdx x) ∧
       (∀ x : M, ‖ũ x‖ ≤ C *
-        (DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart (I := I) (M := M) g k 2
+        (DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart (I := I) (M := M) k 2
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentScalar
             (I := I) (M := M) g r s T α Idx Jdx)).toReal) := by
   classical
@@ -97,11 +97,11 @@ theorem tensorChartComponentScalar_embedding_C0
           (I := I) (M := M) g r s T α Idx Jdx) :=
     h_smooth.continuous.measurable
   have h_mem :
-      DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart (I := I) (M := M) g k 2
+      DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart (I := I) (M := M) k 2
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentScalar
           (I := I) (M := M) g r s T α Idx Jdx) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.memWkpChart_of_contMDiff_k
-      (I := I) (M := M) g (p := 2) (by norm_num) k h_smooth
+      (I := I) (M := M) (p := 2) (by norm_num) k h_smooth
   exact DifferentialGeometry.Analysis.Sobolev.Chart.sobolev_embedding_chart_C0_Hk
     (I := I) (M := M) g hk hreg h_meas h_mem
 

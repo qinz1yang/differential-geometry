@@ -58,6 +58,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ s =
@@ -154,7 +155,8 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
               (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
-        exact toModel_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (E := E) x (Tensor0SSpace.toModel Z)
+        exact toModel_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (E := E)
+          (Tensor0SSpace.toModel Z)
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
@@ -172,7 +174,8 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
             (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
               (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun c _ => ?_
-        have hsum := toModel_cons_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (E := E) x (Tensor0SSpace.toModel Z)
+        have hsum := toModel_cons_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (E := E)
+          (Tensor0SSpace.toModel Z)
           ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
           (Module.finrank ℝ E)
           (fun a => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
@@ -199,6 +202,7 @@ def deTurckLieConnectionDifferenceDerivativePairTraceOperator (g₀ g₁ : Smoot
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -279,6 +283,8 @@ def deTurckLieConnectionDifferenceDerivativeSymCc (g₀ : SmoothRiemannianMetric
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeLoweredG1Cc_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -294,6 +300,8 @@ private lemma deTurckLieConnectionDifferenceDerivativeLoweredG1Cc_unitModel_appl
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeSymCc_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -569,6 +577,8 @@ theorem exists_deTurckLieConnectionDifferenceDerivativePairTraceOperator_fiberNo
         rw [← Finset.sum_mul, ← mul_assoc]
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_eq_pairTrace
     (g₀ g_bg g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

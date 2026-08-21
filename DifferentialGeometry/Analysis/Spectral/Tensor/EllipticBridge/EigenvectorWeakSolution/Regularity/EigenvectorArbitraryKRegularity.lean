@@ -149,13 +149,6 @@ private lemma eigenvector_chartComponent_memWkp_global
         Ω'' :=
     eigenvector_chartComponent_memWkp g r s i α P₀
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
-  have h_global_Lp :
-      MemLp (eigenvectorChartComponentFun (I := I) (M := M)
-        g r s i α P₀) 2
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-    eigenvectorChartComponentFun_memLp_volume
-      (I := I) (M := M) g r s i α P₀
   have h_ae_zero :
       eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀
         =ᵐ[(volume : Measure EuclN).restrict
@@ -164,9 +157,8 @@ private lemma eigenvector_chartComponent_memWkp_global
       (I := I) (M := M) g r s i α P₀
   exact MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
     (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
     h_chart_open hΩ''_open hK_compact hK_in_Ω'' h_closureΩ''_in_chart
-    h_global_Lp h_ae_zero h_interior
+    h_ae_zero h_interior
 
 omit [CompleteSpace E] in
 private theorem eigenvector_chartComponent_memWkp_pm

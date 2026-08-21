@@ -22,9 +22,11 @@ def klTailRoot (t : ℝ) : ℝ :=
   (klTailCore (V := V) t) ^ (1 / klQDual V)
 
 def klLateTailC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
-  klTailRoot (V := V) 1
+    [hFinite : FiniteDimensional ℝ V] : ℝ := by
+  let _ := hFinite
+  exact klTailRoot (V := V) 1
 
+omit [FiniteDimensional ℝ V] in
 theorem klTailMass_pos {p : ℝ} (hp : 0 < p) :
     0 < klTailMass V p := by
   unfold klTailMass
@@ -32,6 +34,7 @@ theorem klTailMass_pos {p : ℝ} (hp : 0 < p) :
     (Real.rpow_pos_of_pos (inv_pos.mpr (baseHeatMass_pos (V := V))) _)
     (klBasePow_pos (V := V) (half_pos hp))
 
+omit [FiniteDimensional ℝ V] in
 theorem klTailCore_pos {t : ℝ} (ht : 0 < t) :
     0 < klTailCore (V := V) t := by
   have ha : 0 < klHeatExp V + 1 := by
@@ -41,6 +44,7 @@ theorem klTailCore_pos {t : ℝ} (ht : 0 < t) :
     (div_pos (Real.rpow_pos_of_pos (half_pos ht) _) ha)
     (klTailMass_pos (V := V) (klQ_holder (V := V)).pos)
 
+omit [FiniteDimensional ℝ V] in
 theorem klTailCore_scale {R : ℝ} (hR : 0 < R) :
     klTailCore (V := V) (R ^ 2) =
       (klLqScaleR (V := V) R) ^ klQDual V *

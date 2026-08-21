@@ -207,7 +207,7 @@ lemma chartTransitionMap_comp_self_of_mem_source
   exact (extChartAt I α).right_inv hy_tgt
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
-lemma chartTransitionMap_mapsTo_source [I.Boundaryless]
+lemma chartTransitionMap_mapsTo_source
     (α β : M) :
     Set.MapsTo (chartTransitionMap (I := I) α β)
       (chartTransitionSource (I := I) α β)

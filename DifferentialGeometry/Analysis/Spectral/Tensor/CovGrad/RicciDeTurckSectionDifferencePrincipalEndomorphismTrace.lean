@@ -642,7 +642,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciDeTurckPrincipalCoefficientZFib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
@@ -748,7 +748,7 @@ noncomputable def ricciDeTurckPrincipalCoefficientZSlot (g₀ g₁ : SmoothRiema
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 @[simp] theorem ricciDeTurckPrincipalCoefficientZ_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁).toSection x =
       (show Tensor0SBundle.TensorRSSpace 4 2 I x from ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁ x)
@@ -756,7 +756,7 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciDeTurckPrincipalCoefficientZ_operatorFieldApplication_eq_combinedTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → TangentSpace I x) :

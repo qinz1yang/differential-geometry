@@ -82,6 +82,7 @@ private lemma mfderiv_compose_symm
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma pushforward_covApply_eq
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     {Y Z : ∀ x : M, TangentSpace I x}
@@ -113,6 +114,7 @@ private lemma pushforward_covApply_eq
   rw [hchain, hb]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma riemannSec_pullback_pointwise
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     {X Y Z : ∀ x : M, TangentSpace I x} {x : M}
@@ -185,6 +187,7 @@ private lemma riemannSec_pullback_pointwise
   rw [hcovYZ_eq, hcovXZ_eq, hX_eval, hY_eval, hbracket_eq]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma riemannOp_pullback_pointwise
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (v w u : TangentSpace I x) :
@@ -220,6 +223,7 @@ private lemma riemannOp_pullback_pointwise
       pushforward_eval_at_image (I := I) Φ W x]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma ricciEndo_conjugation
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (v w : TangentSpace I x) :
@@ -239,6 +243,7 @@ private lemma ricciEndo_conjugation
   rw [mfderiv_symm_compose (I := I) Φ x]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciTensor_pullback
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (v w : TangentSpace I x) :

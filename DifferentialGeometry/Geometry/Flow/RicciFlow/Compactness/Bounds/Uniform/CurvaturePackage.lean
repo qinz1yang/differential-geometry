@@ -181,7 +181,7 @@ theorem exists_rmJetSups (g : SmoothRiemannianMetric I M) (a : ℕ) :
 
 
 theorem uniformRmSecSup
-    (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) (hΛ2 : Λ < 2)
+    (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
         g₀.inner x v v ≤ Λ * gBase.inner x v v)
@@ -191,7 +191,7 @@ theorem uniformRmSecSup
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
           ((rmSection (I := I) (M := M) g₀).toSection x) ≤ C ^ 2 := by
   obtain ⟨C, hC0, hC⟩ :=
-    uniformRm04Sup (I := I) (M := M) gBase g₀ hΛ hΛ2 hcomp hjet1 hjet2
+    uniformRm04Sup (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2
   refine ⟨C, hC0, fun x => ?_⟩
   have hkey : riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
         ((rmSection (I := I) (M := M) g₀).toSection x) =

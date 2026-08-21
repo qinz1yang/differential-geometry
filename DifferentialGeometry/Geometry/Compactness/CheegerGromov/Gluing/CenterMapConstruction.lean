@@ -506,7 +506,6 @@ theorem binfMemClosed {U V' : Set E} {B : Nat -> E -> E} {Binf : E -> E}
 
 theorem HasAtomWeightLim.binf_of_live
     (inp : MetricCompactnessInputs (I := I) X)
-    (_hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -580,7 +579,6 @@ theorem HasAtomWeightLim.binf_of_live
 
 theorem HasAtomWeightLim.binf_of_slot
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -605,12 +603,11 @@ theorem HasAtomWeightLim.binf_of_slot
         (baseIndex inp.decay inp.realizes inp.pack hr)) z target.1.1 ≠ 0) :
     Binf target z ∈
       Metric.closedBall 0 (6 * L.lamInf (target.1.1 : Nat)) := by
-  exact hlim.binf_of_live inp hradD hradRatio P L r hr hgp alpha U aInf
+  exact hlim.binf_of_live inp hradRatio P L r hr hgp alpha U aInf
     phi hphi target.1 (Binf target) hB hz hweight
 
 theorem HasAtomWeightLim.binf_of_weight
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -660,17 +657,16 @@ theorem HasAtomWeightLim.binf_of_weight
   have hinter : ∀ᶠ k in Filter.atTop,
       BInter inp.decay inp.D P L.lamInf
         (alpha.1 : Nat) (gamma : Nat) (L.φ k) :=
-    hlim.binter_of_weight hgp alpha.1 gamma hz hsource hweight
+    hlim.binter_of_weight alpha.1 gamma hz hsource hweight
   let target : InterSlot L inp.pack r alpha :=
     ⟨⟨gamma, hgammaLive⟩, hinter⟩
   refine ⟨target, rfl, ?_⟩
   simpa only [target] using
-    (hlim.binf_of_slot inp hradD hradRatio P L r hr hgp alpha U aInf
+    (hlim.binf_of_slot inp hradRatio P L r hr hgp alpha U aInf
       phi hphi target Binf (hB target) hz (by simpa only [target] using hweight))
 
 theorem MetricCompactnessInputs.exists_supp_trans
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -740,20 +736,19 @@ theorem MetricCompactnessInputs.exists_supp_trans
         apply Subtype.ext
         exact hab)
   obtain ⟨phi, hphi, Jinf, Jbarinf, hspec⟩ :=
-    inp.exists_pair_trans hradD hradRatio P L r
+    inp.exists_pair_trans hradRatio P L r
       (fun _ : InterSlot L inp.pack r alpha => alpha)
       (fun target : InterSlot L inp.pack r alpha => target.1)
       (fun target : InterSlot L inp.pack r alpha => target.2)
   refine ⟨phi, hphi, Jinf, Jbarinf, hspec, ?_⟩
   intro z hz gamma hweight
-  exact hlim.binf_of_weight inp hradD hradRatio P L r hr hgp alpha U aInf
+  exact hlim.binf_of_weight inp hradRatio P L r hr hgp alpha U aInf
     hsource phi hphi Jinf (fun target K hK hKU p =>
       (hspec target).2.2.2.2.1 K hK (hKU.trans hUsub) p)
     hz gamma hweight
 
 theorem MetricCompactnessInputs.exists_supp_fin
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -835,7 +830,7 @@ theorem MetricCompactnessInputs.exists_supp_fin
         exact hab)
   letI : Finite PairSlot := inferInstance
   obtain ⟨phi, hphi, J, Jbar, hspec⟩ :=
-    inp.exists_pair_trans hradD hradRatio P L r
+    inp.exists_pair_trans hradRatio P L r
       (fun pair : PairSlot => pair.1)
       (fun pair : PairSlot => pair.2.1)
       (fun pair : PairSlot => pair.2.2)
@@ -849,7 +844,7 @@ theorem MetricCompactnessInputs.exists_supp_fin
   · intro alpha target
     exact hspec ⟨alpha, target⟩
   · intro alpha z hz gamma hweight
-    exact (hlim alpha).binf_of_weight inp hradD hradRatio P L r hr hgp
+    exact (hlim alpha).binf_of_weight inp hradRatio P L r hr hgp
       alpha (U alpha) (aInf alpha) (hsource alpha) phi hphi (Jinf alpha)
       (fun target K hK hKU p =>
         (hspec ⟨alpha, target⟩).2.2.2.2.1 K hK
@@ -936,7 +931,6 @@ theorem activeFill_totalPts_of_ne
 theorem MetricCompactnessInputs.exists_atom_supp_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1090,7 +1084,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
   letI : Finite PairSlot := inferInstance
   obtain ⟨psi, hpsi, gInf, U, C0, C1, hginf, hg, hUopen, hU8,
       hC0, hC1, hC01, hC1U, hC0convex, hC0zero, eta, heta, hcore⟩ :=
-    inp.exists_live_cores h8 hradD hradRatio P L r
+    inp.exists_live_cores h8 hradRatio P L r
   have hcover : ∀ᶠ k in Filter.atTop,
       let Y := X.obj (L.φ (psi k))
       letI : TopologicalSpace Y.M := Y.topology
@@ -1133,7 +1127,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
       Function.comp_apply] using
         hpsi.tendsto_atTop.eventually pair.2.2
   obtain ⟨tau, htau, J, Jbar, hspec⟩ :=
-    inp.exists_pair_trans hradD hradRatio P L0 r
+    inp.exists_pair_trans hradRatio P L0 r
       (fun pair : PairSlot => live0 pair.1)
       (fun pair : PairSlot => live0 pair.2.1)
       hinter0
@@ -1153,10 +1147,10 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
         NormalOverlapOn (I := I) Y x y
           (Metric.ball 0 (8 * L0.lamInf ((live0 pair.1).1 : Nat))) :=
     Filter.eventually_all.mpr fun pair =>
-      (inp.pair_overlap_tail hradD hradRatio P L0 r
+      (inp.pair_overlap_tail hradRatio P L0 r
         (live0 pair.1) (live0 pair.2.1) (hinter0 pair)).mono fun _ hk =>
           ⟨hk.2.2.2.2.1, hk.2.2.2.2.2.1⟩
-  obtain ⟨hgp, _hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  obtain ⟨hgp, _hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgp0 : ExponentialRadiusScaleTail (I := I)
       inp.decay inp.D P L0 inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hpsi
@@ -1396,9 +1390,6 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
                 simpa only [Lphi, NetLimitData.subseq, Function.comp_apply,
                   NetLimitData.subseq_lamInf] using
                     hphi.tendsto_atTop.eventually hdisjoint
-              have hgpTail : ExponentialRadiusScaleTail (I := I)
-                  inp.decay inp.D P Lphi inp.pack r :=
-                Filter.Eventually.of_forall hgpPhi
               have hsourceTail : ∀ᶠ k in Filter.atTop,
                   letI : TopologicalSpace (X.obj (Lphi.φ k)).M :=
                     (X.obj (Lphi.φ k)).topology
@@ -1416,7 +1407,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
                 Filter.Eventually.of_forall hsourcePhi
               simpa only [aInf, dif_neg htarget] using
                 (atom_disjoint_conv (I := I) inp.decay inp.hD P Lphi inp.pack r
-                  hgpTail beta alpha.1 gamma (hUopen alpha) hsourceTail
+                  beta alpha.1 gamma (hUopen alpha) hsourceTail
                   hdisjointPhi)
     have hdead (gamma : Fin (inp.pack.A r))
         (hgamma : Lphi.alive (gamma : Nat) = false) :
@@ -1454,7 +1445,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
           (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun _ : E => (0 : Real)) (U alpha))
     exact HasAtomWeightLim.of_atoms (I := I) inp.hD P Lphi inp.realizes inp.pack
-      r hr hgpPhi beta (U alpha) (hUopen alpha) hcoverPhi (aInf alpha)
+      r hr beta (U alpha) (hUopen alpha) hcoverPhi (aInf alpha)
       hdead hatom hatomSmooth hatomInfSmooth
   refine ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, ?_⟩
   dsimp only
@@ -1537,7 +1528,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
         NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq,
         NetLimitData.subseq_lamInf] using hconv
     refine ⟨target, hslot, ?_⟩
-    have hmem := hlimPhi.binf_of_live inp hradD hradRatio P Lphi r hr
+    have hmem := hlimPhi.binf_of_live inp hradRatio P Lphi r hr
       hgpPhi alphaPhi (U alpha) (aInf alpha) (fun k : Nat => k)
       strictMono_id gammaPhi (Jinf alpha target) (by
         simpa only [Function.id_def] using hB) hz (by
@@ -1948,7 +1939,6 @@ theorem HasSuppConvData.subseq
 theorem MetricCompactnessInputs.exists_supp_pts_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -2039,8 +2029,8 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
       hC0, hC1, hC01, hC1U, hC0convex, hC0zero,
       hbuffer, hcore, hgeom, hlim, htrans, hstage,
       hsupp⟩ :=
-    inp.exists_atom_supp_fin h8 hradD hradRatio P L hstable r hr
-  obtain ⟨hgp0, _hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+    inp.exists_atom_supp_fin h8 hradRatio P L hstable r hr
+  obtain ⟨hgp0, _hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       (L.subseq hphi) inp.pack r :=
     hgp0.subseq inp.decay inp.D P L inp.pack r hphi
@@ -2071,7 +2061,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           (⋃ gamma : Fin (inp.pack.A r),
             (L.subseq hphi).innerBall inp.decay inp.D P inp.pack r k gamma) :=
       Filter.Eventually.of_forall fun k z hz => ((hgeom k).1 alpha).2.2 hz |>.2
-    exact (hlim alpha).weight_data_of_innerCover hgpPhi hcoverU
+    exact (hlim alpha).weight_data_of_innerCover hcoverU
   refine ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, ?_⟩
   dsimp only
   refine ⟨⟨hUopen, hU8, hC0, hC1, hC01, hC1U, hC0convex, hC0zero,
@@ -2373,7 +2363,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
         simpa only [V6, htarget] using hmem
       obtain ⟨sourceK, hK, hSuppK, hsrcK, hKU_K, hKV6⟩ :=
         NetLimitData.hatSuppCageData (I := I) (X := X) inp.decay P
-          (L.subseq hphi) inp.pack r n (s := sourcePatch alpha)
+          (L.subseq hphi) n (s := sourcePatch alpha)
           pairWeight centerPair sourceCage U8 V6 (Jinf alpha)
           hCageCompact hSuppCage (by
             intro target
@@ -2400,7 +2390,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat))
         nlinarith
       have hpoints := NetLimitData.hatSuppPtsOfComp (I := I) (X := X)
-        inp.decay P (L.subseq hphi) inp.pack r n (s := sourcePatch alpha)
+        inp.decay P (L.subseq hphi) n (s := sourcePatch alpha)
         pairWeight centerPair sourceK U8 V8 B (Jinf alpha) A (Jbarinf alpha)
         (hconn ((L.subseq hphi).φ n)) hK hSuppK hsrcK
         (fun _ => Metric.isOpen_ball)

@@ -417,7 +417,6 @@ theorem maximalGeodesic_rescale_at_one_of_agreement
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalGeodesic_rescale_at_one
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) (a : ℝ)
-    (_ha_pos : 0 < a)
     (ha_dom : a ∈ maximalGeodesicInterval (I := I) g p v)
     (h1_dom : (1 : ℝ) ∈ maximalGeodesicInterval (I := I) g p (a • v))
     (h1_in_agreement : (1 : ℝ) ∈ {s : ℝ |

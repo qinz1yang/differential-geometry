@@ -403,7 +403,7 @@ theorem hamilton_scalar_slab_lipschitz
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
           forall t : Real, t ∈ Set.Icc 0 T ->
             LipschitzOnWith (K T)
-              (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
+              (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a)
               (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
                 (hamiltonScalar (I := I) P)
                 (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) := by
@@ -414,7 +414,7 @@ theorem hamilton_scalar_slab_lipschitz
         ∃ K : NNReal,
           ∀ t : Real, t ∈ Set.Icc 0 T ->
             LipschitzOnWith K
-              (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
+              (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a)
               (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
                 (hamiltonScalar (I := I) P)
                 (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) := by
@@ -498,7 +498,7 @@ theorem hamilton_scalar_evolution_data
           T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
             forall t : Real, t ∈ Set.Icc 0 T ->
               LipschitzOnWith (K T)
-                (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
+                (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a)
                 (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet
                   (M := M) T scalar
                   (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0))) := by

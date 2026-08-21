@@ -78,8 +78,7 @@ theorem time_dependent_vf_hflow_transported_of_chartLocal
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem time_dependent_vf_diffeomorph_family_of_smooth_bijective
-    (Φ Ψ : ℝ → M → M) (T : ℝ) (_hT : 0 < T)
-    (_hΦ_init : ∀ x : M, Φ 0 x = x)
+    (Φ Ψ : ℝ → M → M) (T : ℝ)
     (hΦ_smooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Φ t))
     (hΨ_smooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Ψ t))
     (hΨΦ : ∀ s ∈ Set.Ico (0 : ℝ) T, ∀ x : M, Ψ s (Φ s x) = x)

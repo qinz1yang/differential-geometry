@@ -291,7 +291,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
                     (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) y *
                 euclidPartial (E := E) l φ y) :=
       (density_scalarPrincipal_eq_principalIntegrand (I := I) (M := M) g α hK
-        hK_target hT_K φ hy).symm
+        hK_target hT_K φ).symm
     have hscalar : ∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramEuclid (I := I) g α k l y *
@@ -327,7 +327,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
       covPrincipalIntegrand_rotated_collapse (I := I) (M := M) g r s T α P₀
         hχs hχt hy,
       covPrincipalRotationRemainder_eq_coeff_mul (I := I) (M := M) g r s T α P₀
-        hχs hχt y,
+        y,
       covLowerOrderIntegrand_rotated_collapse (I := I) (M := M) g r s T α P₀
         hχs hχt hy,
       hscalar, hgrad, hbump_eqOn hy, hPI]

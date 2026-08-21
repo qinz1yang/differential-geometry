@@ -3938,76 +3938,69 @@ private lemma nf_D1R_h56 {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
   rw [higs d b, hga0s j i c, hfs b a]
   try ring
 
-private def d1rA {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+private def d1rA {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
-  (∑ w, deTurckVectorFieldDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb w *
-        r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb w i j)
+  (∑ w, deTurckVectorFieldDifference ig ga1 gbg w *
+        r3B f ga0 w i j)
 
 private def d1rB {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
   ((∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i m p *
+        (r3B f ga0 i m p *
           (∑ q, (ga1 l1 j q - ga0 l1 j q) * cg q k1)))) -
       (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i m p *
+        (r3B f ga0 i m p *
           (∑ q, (ga1 k1 l1 q - gbg k1 l1 q) * cg q j)))) -
       (∑ w, (∑ a, ∑ b, ig a b * (ga1 a b w - ga0 a b w)) *
-        r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j w) -
+        r3B f ga0 i j w) -
       (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m j p *
+        (r3B f ga0 m j p *
           (∑ q, (ga1 k1 i q - ga0 k1 i q) * cg q l1)))) -
       (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 j i q - ga0 j i q) *
-        r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb p q k1)) -
+        r3B f ga0 p q k1)) -
       (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m j p *
+        (r3B f ga0 m j p *
           (∑ q, (ga1 l1 i q - ga0 l1 i q) * cg q k1)))))
 
 private def d1rC {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
   ((∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j m p *
+        (r3B f ga0 j m p *
           (∑ q, (ga1 l1 i q - ga0 l1 i q) * cg q k1)))) -
       (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j m p *
+        (r3B f ga0 j m p *
           (∑ q, (ga1 k1 l1 q - gbg k1 l1 q) * cg q i)))) -
       (∑ w, (∑ a, ∑ b, ig a b * (ga1 a b w - ga0 a b w)) *
-        r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j i w) -
+        r3B f ga0 j i w) -
       (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m i p *
+        (r3B f ga0 m i p *
           (∑ q, (ga1 k1 j q - ga0 k1 j q) * cg q l1)))) -
       (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 i j q - ga0 i j q) *
-        r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb p q k1)) -
+        r3B f ga0 p q k1)) -
       (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-        (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m i p *
+        (r3B f ga0 m i p *
           (∑ q, (ga1 l1 j q - ga0 l1 j q) * cg q k1)))))
 
-private def d1rD {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+private def d1rD {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (ga0 ga1 : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
   (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 j i q - ga0 j i q) *
-      r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb q p k1))
+      r3B f ga0 q p k1))
 
 private theorem d1r_parts {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) :
-    firstDerivativeRemainder ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j = d1rA ig cg f dg dig ga0 ga1
-      gbg gb f3 ddg dga0 dga1 dgbg dgb i j + d1rB ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1
-      dgbg dgb i j + d1rC ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j + d1rD ig cg f
-      dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j := rfl
+    firstDerivativeRemainder ig cg f ga0 ga1 gbg i j =
+      d1rA ig f ga0 ga1 gbg i j + d1rB ig cg f ga0 ga1 gbg i j +
+      d1rC ig cg f ga0 ga1 gbg i j + d1rD ig f ga0 ga1 i j := rfl
 
-private theorem d1rA_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+private theorem d1rA_expand {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) :
-    d1rA ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    d1rA ig f ga0 ga1 gbg i j =
   -((∑ b0, ∑ b3, ∑ b1, ∑ b2, ig b1 b2 * ga1 b1 b2 b0 * (ga0 b0 i b3 * f b3 j)) -
     (∑ b0, ∑ b3, ∑ b1, ∑ b2, ig b1 b2 * gbg b1 b2 b0 * (ga0 b0 i b3 * f b3 j))) +
     (-((∑ b0, ∑ b4, ∑ b1, ∑ b2, ig b1 b2 * ga1 b1 b2 b0 * (ga0 b0 j b4 * f i b4)) -
@@ -4019,10 +4012,9 @@ private theorem d1rA_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
   try ring
 
 private theorem d1rB_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) :
-    d1rB ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    d1rB ig cg f ga0 ga1 gbg i j =
   (-((∑ b5, ∑ b6, ∑ b7, ∑ b8, ∑ b11, ∑ b9, ig b5 b6 *
     (ig b7 b8 * (ga0 i b8 b9 * f b9 b6 * (ga1 b7 j b11 * cg b11 b5)))) -
     (∑ b5, ∑ b6, ∑ b7, ∑ b8, ∑ b11, ∑ b9, ig b5 b6 *
@@ -4070,10 +4062,9 @@ private theorem d1rB_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
   try ring
 
 private theorem d1rC_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) :
-    d1rC ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    d1rC ig cg f ga0 ga1 gbg i j =
   (-((∑ b43, ∑ b44, ∑ b45, ∑ b46, ∑ b49, ∑ b47, ig b43 b44 *
     (ig b45 b46 * (ga0 j b46 b47 * f b47 b44 * (ga1 b45 i b49 * cg b49 b43)))) -
     (∑ b43, ∑ b44, ∑ b45, ∑ b46, ∑ b49, ∑ b47, ig b43 b44 *
@@ -4120,11 +4111,10 @@ private theorem d1rC_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
     Finset.sum_sub_distrib, Finset.sum_neg_distrib]
   try ring
 
-private theorem d1rD_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+private theorem d1rD_expand {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (ga0 ga1 : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) :
-    d1rD ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    d1rD ig f ga0 ga1 i j =
   (-((∑ b81, ∑ b82, ∑ b83, ∑ b84, ig b81 b82 * (ga1 j i b83 * (ga0 b83 b82 b84 * f b84 b81))) -
     (∑ b81, ∑ b82, ∑ b83, ∑ b84, ig b81 b82 * (ga0 j i b83 * (ga0 b83 b82 b84 * f b84 b81)))) +
     (-((∑ b81, ∑ b82, ∑ b83, ∑ b85, ig b81 b82 * (ga1 j i b83 * (ga0 b83 b81 b85 * f b82 b85))) -
@@ -4138,10 +4128,9 @@ private theorem d1rD_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
 
 
 private theorem d1r_expand {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) :
-    firstDerivativeRemainder ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    firstDerivativeRemainder ig cg f ga0 ga1 gbg i j =
     -((∑ b0, ∑ b3, ∑ b1, ∑ b2, ig b1 b2 * ga1 b1 b2 b0 * (ga0 b0 i b3 * f b3 j)) -
       (∑ b0, ∑ b3, ∑ b1, ∑ b2, ig b1 b2 * gbg b1 b2 b0 * (ga0 b0 i b3 * f b3 j))) +
       (-((∑ b0, ∑ b4, ∑ b1, ∑ b2, ig b1 b2 * ga1 b1 b2 b0 * (ga0 b0 j b4 * f i b4)) -
@@ -4509,7 +4498,7 @@ theorem first_derivative_remainder_normal_form {n : ℕ} (ig cg f : Fin n → Fi
     (hgbe : ∀ a b l, gb a b l = dg a l b + dg b l a - dg l a b)
     (hdgbe : ∀ m a b l, dgb m a b l = ddg m a l b + ddg m b l a - ddg m l a b)
     (i j : Fin n) :
-    firstDerivativeRemainder ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    firstDerivativeRemainder ig cg f ga0 ga1 gbg i j =
       ((2 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ r, cg i a * f b c * ga0 j d b * ga1 e r a * ig c e * ig
         d r))
       + ((-2 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ r, cg i a * f b c * ga0 j d b * gbg e r a * ig c e *
@@ -4529,7 +4518,7 @@ theorem first_derivative_remainder_normal_form {n : ℕ} (ig cg f : Fin n → Fi
       + ((-4 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, f a b * ga0 i j a * ga0 c d b * ig c d))
       + ((2 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, f a b * ga0 i j a * ga1 c d b * ig c d))
       + ((2 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, f a b * ga0 c d a * ga1 i j b * ig c d)) := by
-  exact (d1r_expand ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j).trans
+  exact (d1r_expand ig cg f ga0 ga1 gbg i j).trans
     (d1r_normalized ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb higs hcgs hfs
       hdgs2 hga0s hga1s hgbgs hdga0s hdga1s hdgbgs hddgs hf3s hgbs hdgbs hdigs hcol hga1e
       hdga1e hdige hgbe hdgbe i j)

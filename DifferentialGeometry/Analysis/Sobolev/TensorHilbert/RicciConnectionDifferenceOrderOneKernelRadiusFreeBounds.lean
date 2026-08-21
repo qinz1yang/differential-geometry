@@ -198,6 +198,7 @@ theorem fourTrAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {�
   rwa [hwin] at h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem dltcEqPure (g₀ g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4)) :
     deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
@@ -307,7 +308,7 @@ theorem sfEndoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {�
     (covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P x) (by omega)
 
 theorem kappaAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
-    {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {Λ₀ : ℝ} :
     ∃ Kκ : ℕ → ℝ, (∀ l, 0 ≤ Kκ l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -325,7 +326,7 @@ theorem kappaAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M
           Kκ l * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (l + 2) := by
   classical
-  obtain ⟨Kmcd, hKmcd_nn, hmcd⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+  obtain ⟨Kmcd, hKmcd_nn, hmcd⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨Kmcd, hKmcd_nn, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup l x
   have hraise : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
@@ -353,7 +354,7 @@ theorem kappaAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M
   rwa [hbase] at h
 
 theorem psiBAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
-    {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {Λ₀ : ℝ} :
     ∃ Kψ : ℕ → ℝ, (∀ n, 0 ≤ Kψ n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -369,7 +370,7 @@ theorem psiBAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
           Kψ n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
-  obtain ⟨Kκ, hKκ_nn, hκ⟩ := kappaAntidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+  obtain ⟨Kκ, hKκ_nn, hκ⟩ := kappaAntidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨Ksf, hKsf_nn, hsf⟩ := sfEndoAntidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀
   refine ⟨fun n => operatorFieldCompositionGridConstant (E := E) 1 0 Kκ Ksf n,
     fun n => operatorFieldCompositionGridConstant_nonneg (E := E) hKκ_nn hKsf_nn n, ?_⟩
@@ -571,7 +572,7 @@ theorem pieceAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ
 
 theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
-    {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {Λ₀ : ℝ} :
     ∃ Kl : ℕ → ℝ, (∀ n, 0 ≤ Kl n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -589,7 +590,7 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
   classical
   obtain ⟨Kcd, hKcd_nn, hcd⟩ := riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kbg, hKbg_nn, hbg⟩ := bgCcAntidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
-  obtain ⟨Kψ, hKψ_nn, hψ⟩ := psiBAntidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+  obtain ⟨Kψ, hKψ_nn, hψ⟩ := psiBAntidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
   set KΨ : ℕ → ℝ := fun l => Kcd l + Kbg l + Kψ l with hKΨ_def
   have hKΨ_nn : ∀ l, 0 ≤ KΨ l := fun l => by
     have := hKcd_nn l
@@ -767,7 +768,7 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
   exact le_of_eq (by ring)
 
 theorem lieA1AntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ Kl : ℕ → ℝ, (∀ n, 0 ≤ Kl n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -782,11 +783,11 @@ theorem lieA1AntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
               (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤
           Kl n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) :=
-  lieA1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g₀ hδ₀ hΛ₀0
+  lieA1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g₀ hδ₀
 
 theorem low1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
-    {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {Λ₀ : ℝ} :
     ∃ K : ℕ → ℝ, (∀ n, 0 ≤ K n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -804,7 +805,7 @@ theorem low1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianM
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
   obtain ⟨Kr, hKr_nn, hr⟩ := exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ hδ₀
-  obtain ⟨Kl, hKl_nn, hl⟩ := lieA1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+  obtain ⟨Kl, hKl_nn, hl⟩ := lieA1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun n => 8 * Kr n + 2 * Kl n,
     fun n => by have := hKr_nn n; have := hKl_nn n; linarith, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup n x
@@ -839,7 +840,7 @@ theorem low1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianM
     _ = (8 * Kr n + 2 * Kl n) * W := by ring
 
 theorem low1AntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ K : ℕ → ℝ, (∀ n, 0 ≤ K n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -855,7 +856,7 @@ theorem low1AntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
                 deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤
           K n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) :=
-  low1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g₀ hδ₀ hΛ₀0
+  low1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g₀ hδ₀
 
 end DifferentialGeometry.Integral.Connection
 

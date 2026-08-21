@@ -288,7 +288,7 @@ private lemma slotExtend_rsDomDomCongrSection (g : SmoothRiemannianMetric I M) (
           ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
             ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) d (v 0)))
           (fun k : Fin s => v (Fin.succ (ρ k))) from
-      slotExtendFib_apply_eval (I := I) (M := M) g r s x
+      slotExtendFib_apply_eval (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
         d (v 0) (fun k : Fin s => v (Fin.succ (ρ k)))]
     conv_lhs => rw [show v = Fin.cons (v 0) (Matrix.vecTail v) from (Fin.cons_self_tail v).symm]
@@ -302,7 +302,7 @@ private lemma slotExtend_rsDomDomCongrSection (g : SmoothRiemannianMetric I M) (
             (rsDomDomCongrSection (I := I) (M := M) g r s ρ S).toSection x)
             ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) d (v 0)))
           (Matrix.vecTail v) from
-      slotExtendFib_apply_eval (I := I) (M := M) g r s x
+      slotExtendFib_apply_eval (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           (rsDomDomCongrSection (I := I) (M := M) g r s ρ S).toSection x)
         d (v 0) (Matrix.vecTail v)]
@@ -352,7 +352,7 @@ private lemma covGrad_slotExtend_toSection
       rw [Fin.cons_zero]; rfl
     · change m (Fin.succ (Fin.succ i)) = _
       rw [Fin.cons_succ]]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       tensorCovDerivAt (I := I) (M := M) g r s Φ x (m 0))
     d (m 1) (fun k : Fin s => m (Fin.succ (Fin.succ k)))]
@@ -365,7 +365,7 @@ private lemma covGrad_slotExtend_toSection
     · simp only [Fin.cons_zero]
       rw [Equiv.swap_apply_left]
     · rw [Fin.cons_succ]]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r (s + 1) x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r (s + 1) x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (covGrad (I := I) (M := M) g r s Φ).toSection x)
     d (m 1) (fun k : Fin (s + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ k)))]
@@ -575,7 +575,7 @@ private def slotExtendIteratedPointwise (g : SmoothRiemannianMetric I M) (b c : 
     (A : Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x) :
     ∀ w : ℕ, Tensor0SSpace (b + w) I x →L[ℝ] Tensor0SSpace (c + w) I x
   | 0 => A
-  | (w + 1) => slotExtendPointwise (I := I) (M := M) g (b + w) (c + w) x
+  | (w + 1) => slotExtendPointwise (I := I) (M := M) (b + w) (c + w) x
       (slotExtendIteratedPointwise g b c x A w)
 
 omit [BoundarylessManifold I M] in
@@ -619,7 +619,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diag_toSection (g : SmoothRiema
       rw [hdiag]
       rw [show (slotExtendIteratedPointwise (I := I) (M := M) g b c x
             (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) (i + 1)) =
-          slotExtendPointwise (I := I) (M := M) g (b + i) (c + i) x
+          slotExtendPointwise (I := I) (M := M) (b + i) (c + i) x
             (slotExtendIteratedPointwise (I := I) (M := M) g b c x
               (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) i)
           from rfl]
@@ -627,6 +627,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diag_toSection (g : SmoothRiema
       rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma secondMetricPairTraceOperator_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (Z : Tensor0SSpace 6 I x) (v : Fin 2 → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -738,6 +739,7 @@ private lemma secondMetricPairTraceFrameTuple_succ (g₁ : SmoothRiemannianMetri
             exact congrArg u (Fin.ext (by simp))
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma slotExtendIteratedPointwise_secondMetricPairTraceOperator_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     ∀ (i : ℕ) (Y : Tensor0SSpace (6 + i) I x) (u : Fin (2 + i) → TangentSpace I x),
     Tensor0SSpace.toModel
@@ -765,12 +767,12 @@ private lemma slotExtendIteratedPointwise_secondMetricPairTraceOperator_toModel 
       rw [show slotExtendIteratedPointwise (I := I) (M := M) g₀ 6 2 x
           (show Tensor0SSpace 6 I x →L[ℝ] Tensor0SSpace 2 I x from
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁).toSection x) (w + 1) Y =
-          slotExtendPointwise (I := I) (M := M) g₀ (6 + w) (2 + w) x
+          slotExtendPointwise (I := I) (M := M) (6 + w) (2 + w) x
             (slotExtendIteratedPointwise (I := I) (M := M) g₀ 6 2 x
               (show Tensor0SSpace 6 I x →L[ℝ] Tensor0SSpace 2 I x from
                 (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁).toSection x) w) Y from rfl]
       rw [hu]
-      refine Eq.trans (slotExtendFib_apply_eval (I := I) (M := M) g₀ (6 + w) (2 + w) x
+      refine Eq.trans (slotExtendFib_apply_eval (I := I) (M := M) (6 + w) (2 + w) x
         (slotExtendIteratedPointwise (I := I) (M := M) g₀ 6 2 x
           (show Tensor0SSpace 6 I x →L[ℝ] Tensor0SSpace 2 I x from
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁).toSection x) w)

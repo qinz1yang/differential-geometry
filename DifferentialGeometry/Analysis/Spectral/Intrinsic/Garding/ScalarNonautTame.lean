@@ -65,6 +65,7 @@ noncomputable def traceCast
     (cometricDoubleTraceField (I := I) h 0)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem trace_retag_eq
     (q h : SmoothRiemannianMetric I M) :
     traceCast (I := I) q h =
@@ -86,6 +87,7 @@ theorem trace_retag_eq
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem traceCast_self (q : SmoothRiemannianMetric I M) :
     traceCast (I := I) q q = cometricDoubleTraceField (I := I) q 0 := by
   apply SmoothCcTensor.ext
@@ -99,6 +101,7 @@ noncomputable def scalarFluxCoeff
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem scalarFlux_eval (q h : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (w : TangentSpace I x) :
     cotangentToDual (I := I)
@@ -130,6 +133,7 @@ theorem scalarFlux_eval (q h : SmoothRiemannianMetric I M) (x : M)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cc_flux_slot (q h : SmoothRiemannianMetric I M)
     (A : SmoothCcTensor q 0 1) :
     operatorFieldApply (I := I) (M := M) q 1 1 (scalarFluxCoeff (I := I) q h) A =
@@ -362,6 +366,7 @@ noncomputable def scalarTraceCoeff
   traceCast (I := I) q h - cometricDoubleTraceField (I := I) q 0
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem scalar_trace_factor
     (q h : SmoothRiemannianMetric I M) :
     scalarTraceCoeff (I := I) q h =
@@ -847,6 +852,7 @@ theorem cc_lap_pair
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem traceCast_apply
     (q h : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 2) (x : M) :
     Tensor0SSpace.toModel
@@ -866,6 +872,7 @@ theorem traceCast_apply
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem scalarTrace_apply
     (q h : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 2) (x : M) :
     Tensor0SSpace.toModel
@@ -903,6 +910,7 @@ theorem scalarTrace_apply
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem connTrace_apply
     (q h : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 1) (x : M) :
     Tensor0SSpace.toModel

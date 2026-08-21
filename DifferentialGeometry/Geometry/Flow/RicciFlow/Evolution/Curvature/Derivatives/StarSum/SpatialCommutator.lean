@@ -115,6 +115,8 @@ private theorem tensor04_vec4_sum_last_idx
   simp [smul_eq_mul]
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem slotdiffBasisEq
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -301,7 +303,7 @@ private theorem slotdiffBasisEq
           exact Finset.sum_congr rfl (fun q _ => hq q)
 
 omit [Module.Finite ℝ E] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem curvactReduce
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ) {x : M}
@@ -360,6 +362,8 @@ private theorem curvactReduce
   rw [Finset.sum_comm]
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem slotdiffReduce
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D)
@@ -443,7 +447,7 @@ private theorem sumDiag {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   · intro h; exact absurd (Finset.mem_univ i) h
 
 omit [Module.Finite ℝ E] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem curvRoute
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ) {x : M}
@@ -505,6 +509,7 @@ def commStarField
 
 set_option backward.isDefEq.respectTransparency false in
 
+omit [SigmaCompactSpace M] in
 private theorem commStarField_data
     (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -726,6 +731,7 @@ private theorem commStarField_data
     simp [T, tensor0SComponent_apply, hTAp, hTBp, hTCp, Finset.sum_add_distrib]
     ring_nf
 
+omit [SigmaCompactSpace M] in
 theorem commStarField_cost
     (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -735,6 +741,7 @@ theorem commStarField_cost
   classical
   exact (commStarField_data (I := I) S t k).1
 
+omit [SigmaCompactSpace M] in
 theorem commStarField_spec
     (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -754,6 +761,7 @@ theorem commStarField_spec
   letI : Fintype Idx := Fintype.ofFinite Idx
   exact (commStarField_data (I := I) S t k).2 x basis horth I0
 
+omit [SigmaCompactSpace M] in
 theorem spatialCommStarSum
     (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)

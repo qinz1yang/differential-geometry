@@ -81,11 +81,11 @@ private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage
           preimageFun (I := I) (M := M) g hu_h x))
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  have h_preimage_h2 : MemWkpChart (I := I) (M := M) g 2 2
+  have h_preimage_h2 : MemWkpChart (I := I) (M := M) 2 2
       (preimageFun (I := I) (M := M) g hu_h) := by
     unfold preimageFun
     exact (laplacianDomainPow_two_h2_plus_rhs_h2 (I := I) (M := M) g hu_h).2.1
-  have h_preimage_h1 : MemWkpChart (I := I) (M := M) g 1 2
+  have h_preimage_h1 : MemWkpChart (I := I) (M := M) 1 2
       (preimageFun (I := I) (M := M) g hu_h) := by
     intro β
     have h_β := h_preimage_h2 β
@@ -93,7 +93,7 @@ private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage
       (k := 1) (k' := 2) (by norm_num : 1 ≤ 2) h_β
   have h_bridge :=
     DifferentialGeometry.Analysis.Sobolev.Chart.memW1p_chartPushedRaw_pou_mul_of_memWkpChart
-      (I := I) (M := M) g (p := 2) (u := preimageFun (I := I) (M := M) g hu_h)
+      (I := I) (M := M) (p := 2) (u := preimageFun (I := I) (M := M) g hu_h)
       h_preimage_h1 α
   convert h_bridge using 1
 
@@ -114,13 +114,13 @@ private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage_smoothMulH1Compl
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h ∈
         laplacianDomain (I := I) (M := M) g :=
     laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 h_mem
-  have h_smHC_h2 : MemWkpChart (I := I) (M := M) g 2 2
+  have h_smHC_h2 : MemWkpChart (I := I) (M := M) 2 2
       (preimageSmoothMulH1ComplFun (I := I) (M := M) g α hu_h) := by
     have h := (laplacianDomainPow_two_h2_plus_rhs_h2
       (I := I) (M := M) g h_mem).2.1
     unfold preimageSmoothMulH1ComplFun
     convert h using 0
-  have h_smHC_h1 : MemWkpChart (I := I) (M := M) g 1 2
+  have h_smHC_h1 : MemWkpChart (I := I) (M := M) 1 2
       (preimageSmoothMulH1ComplFun (I := I) (M := M) g α hu_h) := by
     intro β
     have h_β := h_smHC_h2 β
@@ -128,10 +128,11 @@ private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage_smoothMulH1Compl
       (k := 1) (k' := 2) (by norm_num : 1 ≤ 2) h_β
   have h_bridge :=
     DifferentialGeometry.Analysis.Sobolev.Chart.memW1p_chartPushedRaw_pou_mul_of_memWkpChart
-      (I := I) (M := M) g (p := 2)
+      (I := I) (M := M) (p := 2)
       (u := preimageSmoothMulH1ComplFun (I := I) (M := M) g α hu_h) h_smHC_h1 α
   convert h_bridge using 1
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma fChartResidual_aeEq_chartPushedRaw_diff
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -185,7 +186,7 @@ private lemma fChartResidual_aeEq_chartPushedRaw_diff
     rw [h_residual_eq]
   have h_coeFn_sub :=
     DifferentialGeometry.Analysis.Laplacian.GradInnerCLMLeibniz.chartPushedRawLpFromLp_coeFn_sub
-    (I := I) (M := M) g inferInstance α preimage_smHC_Lp smoothMul_Lp
+    (I := I) (M := M) g α preimage_smHC_Lp smoothMul_Lp
   have h_coeFn_eq :
       ((chartPushedRawLpFromLp (I := I) (M := M) g α
           (fHLeibnizResidualLp (I := I) (M := M) g α u_h) :

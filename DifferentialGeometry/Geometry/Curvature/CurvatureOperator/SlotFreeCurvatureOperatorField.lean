@@ -161,10 +161,10 @@ lemma slotInsertEndoFib_zero (s : ℕ) (x : M)
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-lemma slotInsertEndoFib_succ (g : SmoothRiemannianMetric I M) (s : ℕ) (j : Fin s) (x : M)
+lemma slotInsertEndoFib_succ (s : ℕ) (j : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
     slotInsertEndoFib (I := I) (M := M) (s + 1) j.succ x Λ =
-      slotExtendPointwise (I := I) (M := M) g s s x
+      slotExtendPointwise (I := I) (M := M) s s x
         (slotInsertEndoFib (I := I) (M := M) s j x Λ) := by
   apply ContinuousLinearMap.ext
   intro A
@@ -181,7 +181,7 @@ lemma slotInsertEndoFib_succ (g : SmoothRiemannianMetric I M) (s : ℕ) (j : Fin
       tensor0S_curry_apply_eval]
     congr 1
     rw [Fin.cons_succ, ← Fin.cons_update]
-  rw [slotExtendFib_apply (I := I) (M := M) g s s x, ← hcurry,
+  rw [slotExtendFib_apply (I := I) (M := M) s s x, ← hcurry,
     ContinuousLinearEquiv.symm_apply_apply]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -261,9 +261,9 @@ theorem slotInsertEndoFib_contMDiff (g : SmoothRiemannianMetric I M) :
           intro x
           rw [show TensorRSSpace.ofCLM
                 (slotInsertEndoFib (I := I) (M := M) (s + 1) (Fin.succ j) x (φ x)) =
-              slotExtendPointwise (I := I) (M := M) g s s x
+              slotExtendPointwise (I := I) (M := M) s s x
                 (slotInsertEndoFib (I := I) (M := M) s j x (φ x)) from
-            slotInsertEndoFib_succ (I := I) (M := M) g s j x (φ x)]
+            slotInsertEndoFib_succ (I := I) (M := M) s j x (φ x)]
           rfl
 
 set_option backward.isDefEq.respectTransparency false in

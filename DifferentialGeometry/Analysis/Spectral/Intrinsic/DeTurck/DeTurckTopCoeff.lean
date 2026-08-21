@@ -23,9 +23,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-def deTurckMetricPrincipalDefectTotal (g₀ g_bg g : SmoothRiemannianMetric I M) :
+def deTurckMetricPrincipalDefectTotal (g₀ g : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
-  deTurckLieArm2PrincipalCoeff (I := I) g₀ g g_bg
+  deTurckLieArm2PrincipalCoeff (I := I) g₀ g
     + traceHessianCoeff (I := I) (M := M) g₀ g
     - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
         + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g)
@@ -36,6 +36,7 @@ private theorem trace_perm_comp (σ : Equiv.Perm (Fin 4)) (j : Fin 4) :
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
@@ -66,8 +67,9 @@ private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [harg]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem metricPrincipalDefect_reindex (g₀ g_bg g : SmoothRiemannianMetric I M) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g =
+omit [I.Boundaryless] in
+theorem metricPrincipalDefect_reindex (g₀ g : SmoothRiemannianMetric I M) :
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
           (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
@@ -76,7 +78,7 @@ theorem metricPrincipalDefect_reindex (g₀ g_bg g : SmoothRiemannianMetric I M)
           (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
         - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
             + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := by
-  have hPhi : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g =
+  have hPhi : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
       (deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
         + deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermAT
         - traceHessianCoeff (I := I) (M := M) g₀ g)
@@ -93,17 +95,18 @@ theorem metricPrincipalDefect_reindex (g₀ g_bg g : SmoothRiemannianMetric I M)
   abel
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem phi_realized_eq
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T') δ')
     (s : ℝ) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
       deTurckLieArm2PrincipalCoeff (I := I) g₀
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
         - (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
             + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
   rw [deTurckMetricPrincipalDefectTotal, linearizedRicciArm2FieldLichnerowicz]

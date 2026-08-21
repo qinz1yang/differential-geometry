@@ -71,7 +71,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_rie
     exists_fixed_covDerivConnectionDifference_sqrt_bound (I := I) (M := M) g₀ g_bg
   obtain ⟨Cc, hCc_nn, hCc⟩ := exists_fixed_connectionDifference_sqrt_bound (I := I) (M := M) g₀ g_bg
   obtain ⟨Ca0, hCa0_nn, hCa0⟩ :=
-    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₁_nn hδ₁_lt
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₁_lt
   set CaB : ℝ := Ca0 * B with hCaB_def
   have hCaB_nn : 0 ≤ CaB := mul_nonneg hCa0_nn hB_nn
   set CK : ℝ := (Cq + Cbg + 3 * (CaB * (CaB + Cc))) * (κ * κ) with hCK_def

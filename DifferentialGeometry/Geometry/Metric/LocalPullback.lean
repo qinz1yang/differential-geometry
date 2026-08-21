@@ -119,7 +119,7 @@ private theorem push_smooth
   exact (hf.contMDiff_tangentMap (le_refl _)).comp hY
 
 noncomputable def localPullMetric
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f) :
     SmoothRiemannianMetric I M where
@@ -189,7 +189,7 @@ noncomputable def localPullMetric
 
 omit [FiniteDimensional ℝ F] in
 theorem localPullMetric_inner
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f)
     (x : M) (v w : TangentSpace I x) :
@@ -199,7 +199,7 @@ theorem localPullMetric_inner
 
 omit [FiniteDimensional ℝ F] in
 theorem localPull_enorm
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [RiemannianBundle (fun y : N ↦ TangentSpace J y)]
     (g : SmoothRiemannianMetric J N)
     (hEnorm : ∀ (y : N) (w : TangentSpace J y),
@@ -223,7 +223,7 @@ theorem localPull_enorm
 
 omit [FiniteDimensional ℝ F] in
 theorem localPull_pathLen
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [RiemannianBundle (fun y : N ↦ TangentSpace J y)]
     (g : SmoothRiemannianMetric J N)
     (hEnorm : ∀ (y : N) (w : TangentSpace J y),

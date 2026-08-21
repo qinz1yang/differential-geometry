@@ -440,7 +440,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem iteratedCovGrad_pathIntegralCoeffField_jetL2_le
     (g₀ : SmoothRiemannianMetric I M) (r sIdx a : ℕ)
-    (Φ : ℝ → SmoothCcTensor g₀ r sIdx) (B : ℝ) (_hB : 0 ≤ B)
+    (Φ : ℝ → SmoothCcTensor g₀ r sIdx) (B : ℝ)
     (S : Set ℝ) (hS : IsOpen S) (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r sIdx ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (TensorRSModel r sIdx ℝ E)

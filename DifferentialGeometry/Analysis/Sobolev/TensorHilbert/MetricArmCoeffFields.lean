@@ -59,7 +59,7 @@ def sharpArmEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma sharpArmEndo_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v0 w : TangentSpace I x) :
     sharpArmEndo (I := I) g₀ g₁ x v0 w =
@@ -73,7 +73,7 @@ lemma sharpArmEndo_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma endoCov_eq_connArm_add_sharpArm (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v0 : TangentSpace I x) :
     (endoCovariantDerivative (I := I) (M := M) g₀)
@@ -103,7 +103,7 @@ private theorem leviCivitaSection_contMDiff_aux (g : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connArmEndo_inner_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (V0 W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -121,7 +121,7 @@ theorem connArmEndo_inner_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem sharpArmEndo_inner_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (V0 W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -186,7 +186,7 @@ def sharpArmCc (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma connArmCc_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (connArmCc (I := I) g₀ g₁).toSection x =
       TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 1 x
@@ -194,7 +194,7 @@ omit [SigmaCompactSpace M] in
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma sharpArmCc_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (sharpArmCc (I := I) g₀ g₁).toSection x =
       TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 1 x
@@ -224,7 +224,7 @@ def sharpArmEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor g�
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma connArmEndoCc_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (connArmEndoCc (I := I) g₀ g₁).toSection x =
       TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 0 x
@@ -232,7 +232,7 @@ omit [SigmaCompactSpace M] in
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma sharpArmEndoCc_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (sharpArmEndoCc (I := I) g₀ g₁).toSection x =
       TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 0 x
@@ -363,18 +363,18 @@ def sharpArmEndoField (g₀ g₁ : SmoothRiemannianMetric I M) :
       (sharpArmEndo_inner_contMDiff (I := I) g₀ g₁)⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma connArmEndoField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     connArmEndoField (I := I) g₀ g₁ x = connArmEndo (I := I) g₀ g₁ x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma sharpArmEndoField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     sharpArmEndoField (I := I) g₀ g₁ x = sharpArmEndo (I := I) g₀ g₁ x := rfl
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma connArmCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     connArmCc (I := I) g₀ g₁ = bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1
       (connArmEndoField (I := I) g₀ g₁) := by
@@ -385,7 +385,7 @@ lemma connArmCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma sharpArmCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpArmCc (I := I) g₀ g₁ = bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1
       (sharpArmEndoField (I := I) g₀ g₁) := by
@@ -396,7 +396,7 @@ lemma sharpArmCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma connArmEndoCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     connArmEndoCc (I := I) g₀ g₁ = bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0
       (connArmEndoField (I := I) g₀ g₁) := by
@@ -407,7 +407,7 @@ lemma connArmEndoCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma sharpArmEndoCc_eq_armSlotEndoCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpArmEndoCc (I := I) g₀ g₁ = bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0
       (sharpArmEndoField (I := I) g₀ g₁) := by

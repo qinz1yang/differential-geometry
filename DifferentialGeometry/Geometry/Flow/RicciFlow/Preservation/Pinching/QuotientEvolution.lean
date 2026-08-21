@@ -397,9 +397,6 @@ theorem quotHeat1_of_nonneg
     (hpsiDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       MDifferentiableAt I 𝓘(Real, Real) (psi (t : Real)) y)
-    (_hphiNonneg : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
-      D) y,
-      0 <= phi (t : Real) y)
     (hpsiPos : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       0 < psi (t : Real) y)
@@ -559,9 +556,6 @@ theorem quotient_evolution_of_nonnegative_numerator_and_laplacian_identities
     (hpsiDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       MDifferentiableAt I 𝓘(Real, Real) (psi (t : Real)) y)
-    (hphiNonneg : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
-      D) y,
-      0 <= phi (t : Real) y)
     (hpsiPos : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       0 < psi (t : Real) y)
@@ -585,7 +579,7 @@ theorem quotient_evolution_of_nonnegative_numerator_and_laplacian_identities
   quotHeat1_of_nonneg (I := I) (D := D) G
     phi psi phiLap psiLap phiHeat psiHeat beta
     hphiDt hpsiDt hphiLap hpsiLap hphiDiff hpsiDiff
-    hphiNonneg hpsiPos hgradPhi hgradPsi hgradPsiPow
+    hpsiPos hgradPhi hgradPsi hgradPsiPow
 
 omit [Module.Finite ℝ E] in
 theorem quotHeatDiv

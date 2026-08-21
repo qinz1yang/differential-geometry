@@ -172,7 +172,7 @@ def volInput_of_bg
     intro j hj
     rw [hbridge (centers j) z]
     exact ENNReal.ofReal_le_ofReal (hJz j hj)
-  exact segBall_card (I := I) (X.obj k).metric hEnorm hq hr0 hRic hr hcap
+  exact segBall_card (I := I) (X.obj k).metric hEnorm hq hRic hr hcap
     centers hsep' z J hJz'
 
 def packInput_of_bg
@@ -209,9 +209,12 @@ def packInput_of_bg
       have hcap : (r / s) * s ≤ r + 1 := by
         rw [hmul_eq]
         linarith
+      have hcap' : (r / s) * s ≤ vc.r0 := by
+        change (r / s) * s ≤ r + 1
+        exact hcap
       have hmul := vc.ballMult (r / s) k
         (centers := fun i : {x // x ∈ J} => (i : (X.obj k).M))
-        (r := s) hs hcap
+        (r := s) hs hcap'
         (fun i j hij => by
           rw [hvc]
           exact hsep i i.2 j j.2 (fun h => hij (Subtype.ext h)))

@@ -71,7 +71,6 @@ private lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
 private lemma per_chart_mul_smooth_bound
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     ∃ K_α : ℝ, 0 ≤ K_α ∧
@@ -134,7 +133,7 @@ private lemma per_chart_mul_smooth_bound
         (chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α v) Ω := by
     have h := DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-      (I := I) (M := M) g hp_one hv
+      (I := I) (M := M) hp_one hv
     exact h α
   have h_eucl_bound :=
     hK_bound (u := chartPushed (I := I) (M := M)
@@ -150,15 +149,14 @@ theorem mul_smooth_chart_bound_C1
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p) :
     ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       ∃ Cu : ℝ, 0 ≤ Cu ∧
         ∀ {v : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ v →
-          wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p)
+          wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p)
               (fun x => u x * v x) ≤
             ENNReal.ofReal Cu *
-              wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) v := by
+              wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v := by
   classical
   letI : MeasurableSpace E := borel E
   haveI : BorelSpace E := ⟨rfl⟩
@@ -191,7 +189,7 @@ theorem mul_smooth_chart_bound_C1
               (chartPushed (I := I) (M := M)
                 (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α v)
               (chartTargetEuclid (I := I) (M := M) α) := fun α _ =>
-    per_chart_mul_smooth_bound (I := I) (M := M) g hp_enn_one hp_enn_top α hu
+    per_chart_mul_smooth_bound (I := I) (M := M) hp_enn_one hp_enn_top α hu
   set Kfun : M → ℝ := fun α =>
     if hα : α ∈ S then Classical.choose (h_per_α α hα) else 0 with hKfun_def
   have hKfun_eq_of_mem : ∀ α (hα : α ∈ S), Kfun α = Classical.choose (h_per_α α hα) := by
@@ -223,8 +221,8 @@ theorem mul_smooth_chart_bound_C1
   refine ⟨∑ α ∈ S, Kfun α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α hα => hKfun_nn α hα)
   intro v hv
-  rw [wkpNormChart_eq_finset_sum (I := I) (M := M) g 1 hp_enn_one (fun x => u x * v x),
-    wkpNormChart_eq_finset_sum (I := I) (M := M) g 1 hp_enn_one v]
+  rw [wkpNormChart_eq_finset_sum (I := I) (M := M) 1 hp_enn_one (fun x => u x * v x),
+    wkpNormChart_eq_finset_sum (I := I) (M := M) 1 hp_enn_one v]
   refine (Finset.sum_le_sum (fun α hα => hKfun_bound α hα hv)).trans ?_
   set sumK : ℝ := ∑ α ∈ S, Kfun α with hsumK_def
   have hKfun_sum_le : ∀ α ∈ S, ENNReal.ofReal (Kfun α) ≤ ENNReal.ofReal sumK := by
@@ -780,18 +778,17 @@ private lemma per_chart_bilinear_bound
 private lemma mul_smooth_chart_bound_explicit_form
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p) :
     ∃ B : ℝ, 0 ≤ B ∧
       ∀ {u v : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u → ContMDiff I 𝓘(ℝ, ℝ) ∞ v →
         ∀ {uMax vMax : ℝ}, 0 ≤ uMax → 0 ≤ vMax →
           (∀ x : M, ‖u x‖ ≤ uMax) → (∀ x : M, ‖v x‖ ≤ vMax) →
-          wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p)
+          wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p)
               (fun x => u x * v x) ≤
             ENNReal.ofReal vMax *
-              wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u +
+              wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u +
             ENNReal.ofReal uMax *
-              wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) v +
+              wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v +
             ENNReal.ofReal (B * uMax * vMax) := by
   classical
   letI : MeasurableSpace E := borel E
@@ -848,9 +845,9 @@ private lemma mul_smooth_chart_bound_explicit_form
   refine ⟨∑ α ∈ S, Bfun α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α hα => hBfun_nn α hα)
   intro u v hu hv uMax vMax huMax_nn hvMax_nn hu_bound hv_bound
-  rw [wkpNormChart_eq_finset_sum (I := I) (M := M) g 1 hp_enn_one (fun x => u x * v x),
-      wkpNormChart_eq_finset_sum (I := I) (M := M) g 1 hp_enn_one u,
-      wkpNormChart_eq_finset_sum (I := I) (M := M) g 1 hp_enn_one v]
+  rw [wkpNormChart_eq_finset_sum (I := I) (M := M) 1 hp_enn_one (fun x => u x * v x),
+      wkpNormChart_eq_finset_sum (I := I) (M := M) 1 hp_enn_one u,
+      wkpNormChart_eq_finset_sum (I := I) (M := M) 1 hp_enn_one v]
   have hBfun_bound : ∀ α ∈ S,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 (ENNReal.ofReal p)
@@ -918,17 +915,17 @@ theorem mul_smooth_chart_bound
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u v : M → ℝ},
         ContMDiff I 𝓘(ℝ, ℝ) ∞ u → ContMDiff I 𝓘(ℝ, ℝ) ∞ v →
-        wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (fun x => u x * v x) ≤
+        wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) (fun x => u x * v x) ≤
           ENNReal.ofReal C *
-            wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u *
-            wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) v := by
+            wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u *
+            wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v := by
   classical
   letI : MeasurableSpace E := borel E
   haveI : BorelSpace E := ⟨rfl⟩
   letI : MeasurableSpace M := borel M
   haveI : BorelSpace M := ⟨rfl⟩
   obtain ⟨B, hB_nn, hB_bound⟩ :=
-    mul_smooth_chart_bound_explicit_form (I := I) (M := M) g hp
+    mul_smooth_chart_bound_explicit_form (I := I) (M := M) hp
   obtain ⟨M_M, hM_M_nn, hM_M_bound⟩ :=
     smooth_manifold_morrey_sup_bound_uniform (I := I) (M := M) g hp
   set C : ℝ := 2 * M_M + B * M_M ^ 2 with hC_def
@@ -947,14 +944,14 @@ theorem mul_smooth_chart_bound
   have hp_enn_one : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal hp_one
-  set NU : ℝ≥0∞ := wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u with hNU_def
-  set NV : ℝ≥0∞ := wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) v with hNV_def
-  have hNU_lt : NU < ⊤ := wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_enn_one
+  set NU : ℝ≥0∞ := wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u with hNU_def
+  set NV : ℝ≥0∞ := wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v with hNV_def
+  have hNU_lt : NU < ⊤ := wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_enn_one
     (DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-      (I := I) (M := M) g hp_enn_one hu)
-  have hNV_lt : NV < ⊤ := wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_enn_one
+      (I := I) (M := M) hp_enn_one hu)
+  have hNV_lt : NV < ⊤ := wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_enn_one
     (DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-      (I := I) (M := M) g hp_enn_one hv)
+      (I := I) (M := M) hp_enn_one hv)
   have hNU_ne_top : NU ≠ ⊤ := hNU_lt.ne
   have hNV_ne_top : NV ≠ ⊤ := hNV_lt.ne
   set uMax : ℝ := M_M * NU.toReal with huMax_def

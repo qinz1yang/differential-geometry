@@ -192,22 +192,18 @@ theorem eLpNorm_le_wkpNorm
 end EuclideanIterated
 
 theorem wkpNormChart_one_le_wkpNormChart_succ
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (k : ℕ) (hk : 1 ≤ k) (p : ℝ≥0∞) (u : M → ℝ) :
-    wkpNormChart (I := I) (M := M) g 1 p u ≤
-      wkpNormChart (I := I) (M := M) g k p u := by
+    [T2Space M] [SigmaCompactSpace M] (k : ℕ) (hk : 1 ≤ k) (p : ℝ≥0∞) (u : M → ℝ) :
+    wkpNormChart (I := I) (M := M) 1 p u ≤
+      wkpNormChart (I := I) (M := M) k p u := by
   unfold wkpNormChart
   refine ENNReal.tsum_le_tsum ?_
   intro α
   exact EuclideanIterated.wkpNorm_mono_order (d := Module.finrank ℝ E) hk
 
 theorem MemWkpChart.le_one
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {k : ℕ} (hk : 1 ≤ k) {p : ℝ≥0∞} {u : M → ℝ}
-    (h : MemWkpChart (I := I) (M := M) g k p u) :
-    MemWkpChart (I := I) (M := M) g 1 p u :=
+    [T2Space M] [SigmaCompactSpace M] {k : ℕ} (hk : 1 ≤ k) {p : ℝ≥0∞} {u : M → ℝ}
+    (h : MemWkpChart (I := I) (M := M) k p u) :
+    MemWkpChart (I := I) (M := M) 1 p u :=
   MemWkpChart.le_of_le hk h
 
 theorem iterated_sobolev_embedding_chart_C0_supercritical
@@ -217,32 +213,32 @@ theorem iterated_sobolev_embedding_chart_C0_supercritical
     {k : ℕ} (hk : 1 ≤ k)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : (Module.finrank ℝ E : ℝ) < p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g k (ENNReal.ofReal p) u) :
+    (hu : MemWkpChart (I := I) (M := M) k (ENNReal.ofReal p) u) :
     ∃ (ũ : M → ℝ) (C : ℝ),
       Continuous ũ ∧ 0 ≤ C ∧
       (∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)),
         ũ x = u x) ∧
       (∀ x : M, ‖ũ x‖ ≤ C *
-        (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal) := by
-  have hu_one : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u :=
+        (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal) := by
+  have hu_one : MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) u :=
     MemWkpChart.le_one hk hu
   obtain ⟨ũ, C, hũ_cont, hC_nn, hũ_ae, hũ_bound⟩ :=
     morrey_C0_embedding_of_compact (I := I) (M := M) g hp_dim hu_meas hu_one
   refine ⟨ũ, C, hũ_cont, hC_nn, hũ_ae, ?_⟩
   intro x
   refine (hũ_bound x).trans ?_
-  have h_k_lt_top : wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g
+  have h_k_lt_top : wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u < ⊤ :=
+    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M)
       (by
         rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
         exact ENNReal.ofReal_le_ofReal hp_one)
       hu
   have h_norm_le := wkpNormChart_one_le_wkpNormChart_succ
-    (I := I) (M := M) g k hk (ENNReal.ofReal p) u
+    (I := I) (M := M) k hk (ENNReal.ofReal p) u
   have h_toReal_le :
-      (wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u).toReal ≤
-        (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal :=
+      (wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u).toReal ≤
+        (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal :=
     ENNReal.toReal_mono h_k_lt_top.ne h_norm_le
   exact mul_le_mul_of_nonneg_left h_toReal_le hC_nn
 
@@ -697,9 +693,8 @@ lemma tsupport_chartPushedRaw_pou_mul_subset_target
     (toEuclidean_extChartAt_tsupport_pou_compact_subset (I := I) (M := M) α).2
 
 lemma memWkp_chartPushedRaw_pou_mul_of_memWkpChart
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) (α : M) :
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) k p u) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E)
       k p
@@ -758,15 +753,15 @@ theorem wkpNormChart_succ_subcritical_step
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ},
-        MemWkpChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u →
-          MemWkpChart (I := I) (M := M) g k
+        MemWkpChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u →
+          MemWkpChart (I := I) (M := M) k
             (ENNReal.ofReal ((Module.finrank ℝ E : ℝ) * p /
               ((Module.finrank ℝ E : ℝ) - p))) u ∧
-          wkpNormChart (I := I) (M := M) g k
+          wkpNormChart (I := I) (M := M) k
               (ENNReal.ofReal ((Module.finrank ℝ E : ℝ) * p /
                 ((Module.finrank ℝ E : ℝ) - p))) u
             ≤ ENNReal.ofReal C *
-              wkpNormChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u := by
+              wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u := by
   classical
   letI : MeasurableSpace E := borel E
   haveI : BorelSpace E := ⟨rfl⟩
@@ -809,7 +804,7 @@ theorem wkpNormChart_succ_subcritical_step
   have hf_memWkp : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp (d := d)
         (k + 1) p_enn (f α) (chartTargetEuclid (I := I) (M := M) α) := fun α =>
-    ChartTower.memWkp_chartPushedRaw_pou_mul_of_memWkpChart (I := I) (M := M) g
+    ChartTower.memWkp_chartPushedRaw_pou_mul_of_memWkpChart (I := I) (M := M)
       (k := k + 1) hp_enn_one hu α
   have h_step : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp (d := d) k p_1_enn
@@ -873,7 +868,7 @@ theorem wkpNormChart_succ_subcritical_step
       chartTargetEuclid_isOpen (I := I) (M := M) α
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
       (d := d) hp_1_enn_one hOpen h_ae).mp (h_step α).1
-  have h_mem_chart : MemWkpChart (I := I) (M := M) g k p_1_enn u := h_mem_pushed
+  have h_mem_chart : MemWkpChart (I := I) (M := M) k p_1_enn u := h_mem_pushed
   have h_per_chart_norm : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm (d := d) k p_1_enn
           (chartPushed (I := I) (M := M)
@@ -950,19 +945,19 @@ private def Statement
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)),
       ũ x = u x) ∧
     (∀ x : M, ‖ũ x‖ ≤ C *
-      (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal)
+      (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal)
 
 private theorem succ_subcritical_step
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ))
     (hu_meas_persists : ∀ {v : M → ℝ}, Measurable v →
-      MemWkpChart (I := I) (M := M) g k
+      MemWkpChart (I := I) (M := M) k
         (ENNReal.ofReal ((Module.finrank ℝ E : ℝ) * p /
           ((Module.finrank ℝ E : ℝ) - p))) v →
       Statement (I := I) (M := M) g k
         ((Module.finrank ℝ E : ℝ) * p / ((Module.finrank ℝ E : ℝ) - p)) v) :
     ∀ {u : M → ℝ}, Measurable u →
-      MemWkpChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u →
+      MemWkpChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u →
         Statement (I := I) (M := M) g (k + 1) p u := by
   classical
   intro u hu_meas hu
@@ -975,11 +970,11 @@ private theorem succ_subcritical_step
   intro x
   refine (hũ_bound x).trans ?_
   have h_wkp_kplus1_lt_top :
-      wkpNormChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u < ⊤ := by
+      wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u < ⊤ := by
     have hp_enn_one : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
       rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
       exact ENNReal.ofReal_le_ofReal hp_one
-    exact wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_enn_one hu
+    exact wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_enn_one hu
   have h_p_1_real_pos : 0 <
       (Module.finrank ℝ E : ℝ) * p / ((Module.finrank ℝ E : ℝ) - p) := by
     have hp_pos : 0 < p := by linarith
@@ -1004,25 +999,25 @@ private theorem succ_subcritical_step
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal h_p_1_real_one
   have h_wkp_p1_lt_top :
-      wkpNormChart (I := I) (M := M) g k
+      wkpNormChart (I := I) (M := M) k
         (ENNReal.ofReal ((Module.finrank ℝ E : ℝ) * p /
           ((Module.finrank ℝ E : ℝ) - p))) u < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g h_p_1_enn_one h_mem_p1
+    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) h_p_1_enn_one h_mem_p1
   have h_wkp_p1_ne_top := h_wkp_p1_lt_top.ne
   have h_C_wkp_lt_top : ENNReal.ofReal C_step *
-      wkpNormChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u < ⊤ :=
+      wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u < ⊤ :=
     ENNReal.mul_lt_top ENNReal.ofReal_lt_top h_wkp_kplus1_lt_top
   have h_toReal_le := ENNReal.toReal_mono h_C_wkp_lt_top.ne h_norm_p1
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hC_step_nn] at h_toReal_le
   calc C_IH *
-        (wkpNormChart (I := I) (M := M) g k
+        (wkpNormChart (I := I) (M := M) k
           (ENNReal.ofReal ((Module.finrank ℝ E : ℝ) * p /
             ((Module.finrank ℝ E : ℝ) - p))) u).toReal
       ≤ C_IH * (C_step *
-          (wkpNormChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u).toReal) :=
+          (wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u).toReal) :=
         mul_le_mul_of_nonneg_left h_toReal_le hC_IH_nn
     _ = C_IH * C_step *
-          (wkpNormChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u).toReal := by
+          (wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u).toReal := by
         ring
 
 end IteratedC0
@@ -1092,7 +1087,7 @@ private theorem statement_holds_aux :
         RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) p (k + 1) →
         (Module.finrank ℝ E : ℝ) < (k + 1 : ℝ) * p →
         ∀ {u : M → ℝ}, Measurable u →
-          MemWkpChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p) u →
+          MemWkpChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u →
             Statement (I := I) (M := M) g (k + 1) p u := by
   intro k
   induction k with
@@ -1145,35 +1140,35 @@ private theorem statement_holds_aux :
           rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
           exact ENNReal.ofReal_le_ofReal hp_one
         have h_wkp_kp2_lt_top :
-            wkpNormChart (I := I) (M := M) g (k + 1 + 1) (ENNReal.ofReal p) u < ⊤ :=
-          wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_enn_one hu
+            wkpNormChart (I := I) (M := M) (k + 1 + 1) (ENNReal.ofReal p) u < ⊤ :=
+          wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_enn_one hu
         have h_wkp_kp1_lt_top :
-            wkpNormChart (I := I) (M := M) g (k + 1)
+            wkpNormChart (I := I) (M := M) (k + 1)
               (ENNReal.ofReal p_1) u < ⊤ := by
           have hp_1_enn_one : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p_1 := by
             rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
             exact ENNReal.ofReal_le_ofReal hp_1_one
-          exact wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g
+          exact wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M)
             hp_1_enn_one h_mem_p1
         have h_C_wkp_lt_top : ENNReal.ofReal C_step *
-            wkpNormChart (I := I) (M := M) g (k + 1 + 1) (ENNReal.ofReal p) u < ⊤ :=
+            wkpNormChart (I := I) (M := M) (k + 1 + 1) (ENNReal.ofReal p) u < ⊤ :=
           ENNReal.mul_lt_top ENNReal.ofReal_lt_top h_wkp_kp2_lt_top
         have h_norm_p1' :
-            wkpNormChart (I := I) (M := M) g (k + 1)
+            wkpNormChart (I := I) (M := M) (k + 1)
               (ENNReal.ofReal p_1) u ≤
               ENNReal.ofReal C_step *
-                wkpNormChart (I := I) (M := M) g (k + 1 + 1) (ENNReal.ofReal p) u := by
+                wkpNormChart (I := I) (M := M) (k + 1 + 1) (ENNReal.ofReal p) u := by
           rw [hp_1_def]
           exact h_norm_p1
         have h_toReal_le := ENNReal.toReal_mono h_C_wkp_lt_top.ne h_norm_p1'
         rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hC_step_nn] at h_toReal_le
         calc C_IH *
-              (wkpNormChart (I := I) (M := M) g (k + 1) (ENNReal.ofReal p_1) u).toReal
+              (wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p_1) u).toReal
             ≤ C_IH * (C_step *
-              (wkpNormChart (I := I) (M := M) g (k + 1 + 1) (ENNReal.ofReal p) u).toReal) :=
+              (wkpNormChart (I := I) (M := M) (k + 1 + 1) (ENNReal.ofReal p) u).toReal) :=
               mul_le_mul_of_nonneg_left h_toReal_le hC_IH_nn
           _ = C_IH * C_step *
-              (wkpNormChart (I := I) (M := M) g (k + 1 + 1) (ENNReal.ofReal p) u).toReal := by
+              (wkpNormChart (I := I) (M := M) (k + 1 + 1) (ENNReal.ofReal p) u).toReal := by
               ring
       · exact iterated_sobolev_embedding_chart_C0_supercritical (I := I) (M := M) g
           (k := k + 2) (by omega) hp_one hp_gt hu_meas hu
@@ -1191,14 +1186,14 @@ theorem iterated_sobolev_embedding_chart_C0
     (hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) p k)
     (hkp : (Module.finrank ℝ E : ℝ) < (k : ℝ) * p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g k (ENNReal.ofReal p) u) :
+    (hu : MemWkpChart (I := I) (M := M) k (ENNReal.ofReal p) u) :
     ∃ (ũ : M → ℝ) (C : ℝ),
       Continuous ũ ∧ 0 ≤ C ∧
       (∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)),
         ũ x = u x) ∧
       (∀ x : M, ‖ũ x‖ ≤ C *
-        (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal) := by
+        (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal) := by
   classical
   obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : k ≠ 0)
   have hkp' : (Module.finrank ℝ E : ℝ) < (j + 1 : ℝ) * p := by
@@ -1217,14 +1212,14 @@ theorem sobolev_embedding_chart_C0_Hk
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)
     (hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) 2 k)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
+    (hu : MemWkpChart (I := I) (M := M) k 2 u) :
     ∃ (ũ : M → ℝ) (C : ℝ),
       Continuous ũ ∧ 0 ≤ C ∧
       (∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)),
         ũ x = u x) ∧
       (∀ x : M, ‖ũ x‖ ≤ C *
-        (wkpNormChart (I := I) (M := M) g k 2 u).toReal) := by
+        (wkpNormChart (I := I) (M := M) k 2 u).toReal) := by
   classical
   have hk_pos : 1 ≤ k := by
     by_contra h_not
@@ -1541,11 +1536,9 @@ private lemma tsupport_chartPushedRaw_pou_mul_subset_carrier [CompactSpace M]
   exact ChartTower.tsupport_chartPushedRaw_pou_mul_subset (I := I) (M := M) α u
 
 theorem memWkp_chartPushed_mono_exponent [CompactSpace M]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p p' : ℝ≥0∞} (hp'_one : 1 ≤ p') (hp'_le_p : p' ≤ p)
     {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u) (α : M) :
+    (hu : MemWkpChart (I := I) (M := M) k p u) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E)
       k p'
@@ -1571,7 +1564,7 @@ theorem memWkp_chartPushed_mono_exponent [CompactSpace M]
             : C^∞⟮I, M; ℝ⟯) x * u x))
         (chartTargetEuclid (I := I) (M := M) α) :=
     ChartTower.memWkp_chartPushedRaw_pou_mul_of_memWkpChart
-      (I := I) (M := M) g hp_one hu α
+      (I := I) (M := M) hp_one hu α
   have h_chartRaw_memWkp_p' :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E)
@@ -1600,14 +1593,12 @@ theorem memWkp_chartPushed_mono_exponent [CompactSpace M]
     h_chartRaw_memWkp_p'
 
 theorem memWkpChart_mono_exponent [CompactSpace M]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p p' : ℝ≥0∞} (hp'_one : 1 ≤ p') (hp'_le_p : p' ≤ p)
     {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u) :
-    MemWkpChart (I := I) (M := M) g k p' u := by
+    (hu : MemWkpChart (I := I) (M := M) k p u) :
+    MemWkpChart (I := I) (M := M) k p' u := by
   intro α
-  exact memWkp_chartPushed_mono_exponent (I := I) (M := M) g hp'_one hp'_le_p hu α
+  exact memWkp_chartPushed_mono_exponent (I := I) (M := M) hp'_one hp'_le_p hu α
 
 end ChartLevelMonoExp
 
@@ -1622,14 +1613,14 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
     (hkp : (Module.finrank ℝ E : ℝ) < (k : ℝ) * p)
     (h_n_ge_2_or_p_gt_1 : 2 ≤ Module.finrank ℝ E ∨ 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g k (ENNReal.ofReal p) u) :
+    (hu : MemWkpChart (I := I) (M := M) k (ENNReal.ofReal p) u) :
     ∃ (ũ : M → ℝ) (C : ℝ),
       Continuous ũ ∧ 0 ≤ C ∧
       (∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)),
         ũ x = u x) ∧
       (∀ x : M, ‖ũ x‖ ≤ C *
-        (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal) := by
+        (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal) := by
   classical
   by_cases hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) p k
   · exact iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk hp_one hreg
@@ -1646,21 +1637,21 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
       have hp_enn_one : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
         rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
         exact ENNReal.ofReal_le_ofReal hp_one
-      have hu_p' : MemWkpChart (I := I) (M := M) g k (ENNReal.ofReal p') u :=
-        ChartLevelMonoExp.memWkpChart_mono_exponent (I := I) (M := M) g
+      have hu_p' : MemWkpChart (I := I) (M := M) k (ENNReal.ofReal p') u :=
+        ChartLevelMonoExp.memWkpChart_mono_exponent (I := I) (M := M)
           hp'_one_enn hp'_le_p_enn hu
       obtain ⟨ũ, C₁, hũ_cont, hC₁_nn, hũ_ae, hũ_bound₁⟩ :=
         iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk hp'_one
           hp'_reg hkp' hu_meas hu_p'
       have h_norm_p_lt :
-          wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u < ⊤ :=
-        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_enn_one hu
+          wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u < ⊤ :=
+        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_enn_one hu
       have h_norm_p'_lt :
-          wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p') u < ⊤ :=
-        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp'_one_enn hu_p'
-      set N_p : ℝ := (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal
+          wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p') u < ⊤ :=
+        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp'_one_enn hu_p'
+      set N_p : ℝ := (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal
         with hN_p_def
-      set N_p' : ℝ := (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p') u).toReal
+      set N_p' : ℝ := (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p') u).toReal
         with hN_p'_def
       have hN_p_nn : 0 ≤ N_p := ENNReal.toReal_nonneg
       have hN_p'_nn : 0 ≤ N_p' := ENNReal.toReal_nonneg
@@ -1673,14 +1664,14 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
               ≤ C₁ * N_p' := h_bnd
             _ = (C₁ * N_p' / N_p) * N_p := by field_simp
             _ = C₁ * N_p' / N_p *
-                (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal := rfl
+                (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal := rfl
       · rw [not_lt] at hN_p_pos
         have hN_p_zero : N_p = 0 := le_antisymm hN_p_pos hN_p_nn
         have h_wkpNormChart_p_eq_zero :
-            wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u = 0 := by
+            wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u = 0 := by
           have hN_eq : N_p = 0 := hN_p_zero
           rw [show N_p =
-            (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal
+            (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal
             from rfl] at hN_eq
           exact (ENNReal.toReal_eq_zero_iff _).mp hN_eq |>.resolve_right h_norm_p_lt.ne
         have h_per_chart_p_zero : ∀ α : M,
@@ -1703,7 +1694,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
                   (chartPushed (I := I) (M := M)
                     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) β u)
                   (chartTargetEuclid (I := I) (M := M) β)) =
-              wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u from rfl] at h_le
+              wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u from rfl] at h_le
           rw [h_wkpNormChart_p_eq_zero] at h_le
           exact le_antisymm h_le (zero_le _)
         have h_chart_pushed_ae_zero : ∀ α : M,
@@ -1749,12 +1740,12 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
           exact DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
             (d := Module.finrank ℝ E) hp'_one_enn h_target_open
         have h_N_p'_enn_zero :
-            wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p') u = 0 := by
+            wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p') u = 0 := by
           unfold wkpNormChart
           simp only [h_per_chart_p'_zero]
           exact tsum_zero
         have hN_p'_zero : N_p' = 0 := by
-          change (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p') u).toReal = 0
+          change (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p') u).toReal = 0
           rw [h_N_p'_enn_zero]; simp
         refine ⟨ũ, 0, hũ_cont, le_refl _, hũ_ae, ?_⟩
         intro x
@@ -1820,10 +1811,10 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
       have hp_1_enn_one : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p_1 := by
         rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
         exact ENNReal.ofReal_le_ofReal hp_1_ge_one
-      have h_mem_p1' : MemWkpChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u := by
+      have h_mem_p1' : MemWkpChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u := by
         rw [hp_1_def] at h_mem_p1; exact h_mem_p1
-      have hu_p' : MemWkpChart (I := I) (M := M) g k' (ENNReal.ofReal p') u :=
-        ChartLevelMonoExp.memWkpChart_mono_exponent (I := I) (M := M) g
+      have hu_p' : MemWkpChart (I := I) (M := M) k' (ENNReal.ofReal p') u :=
+        ChartLevelMonoExp.memWkpChart_mono_exponent (I := I) (M := M)
           hp'_one_enn hp'_le_p_1_enn h_mem_p1'
       obtain ⟨ũ, C₁, hũ_cont, hC₁_nn, hũ_ae, hũ_bound₁⟩ :=
         iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk'_pos hp'_one
@@ -1831,28 +1822,28 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
       have hp_enn_one : (1 : ℝ≥0∞) ≤ (ENNReal.ofReal 1) := by
         rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
       have h_norm_1_lt :
-          wkpNormChart (I := I) (M := M) g (k' + 1) (ENNReal.ofReal 1) u < ⊤ :=
-        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_enn_one hu
+          wkpNormChart (I := I) (M := M) (k' + 1) (ENNReal.ofReal 1) u < ⊤ :=
+        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_enn_one hu
       have h_norm_p1_lt :
-          wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u < ⊤ :=
-        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_1_enn_one h_mem_p1'
-      set N_1 : ℝ := (wkpNormChart (I := I) (M := M) g (k' + 1) (ENNReal.ofReal 1) u).toReal
+          wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u < ⊤ :=
+        wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_1_enn_one h_mem_p1'
+      set N_1 : ℝ := (wkpNormChart (I := I) (M := M) (k' + 1) (ENNReal.ofReal 1) u).toReal
         with hN_1_def
-      set N_p1 : ℝ := (wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u).toReal
+      set N_p1 : ℝ := (wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u).toReal
         with hN_p1_def
-      set N_p' : ℝ := (wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p') u).toReal
+      set N_p' : ℝ := (wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p') u).toReal
         with hN_p'_def
       have hN_1_nn : 0 ≤ N_1 := ENNReal.toReal_nonneg
       have hN_p1_nn : 0 ≤ N_p1 := ENNReal.toReal_nonneg
       have hN_p'_nn : 0 ≤ N_p' := ENNReal.toReal_nonneg
       have h_step_real : N_p1 ≤ C_step * N_1 := by
         have h_norm_p1_le :
-            wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u ≤
+            wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u ≤
               ENNReal.ofReal C_step *
-                wkpNormChart (I := I) (M := M) g (k' + 1) (ENNReal.ofReal 1) u := by
+                wkpNormChart (I := I) (M := M) (k' + 1) (ENNReal.ofReal 1) u := by
           rw [hp_1_def]; exact h_norm_p1
         have h_C_lt : ENNReal.ofReal C_step *
-            wkpNormChart (I := I) (M := M) g (k' + 1) (ENNReal.ofReal 1) u < ⊤ :=
+            wkpNormChart (I := I) (M := M) (k' + 1) (ENNReal.ofReal 1) u < ⊤ :=
           ENNReal.mul_lt_top ENNReal.ofReal_lt_top h_norm_1_lt
         have h_le := ENNReal.toReal_mono h_C_lt.ne h_norm_p1_le
         rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hC_step_nn] at h_le
@@ -1870,15 +1861,15 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
                 mul_le_mul_of_nonneg_left h_step_real
                   (div_nonneg (mul_nonneg hC₁_nn hN_p'_nn) hN_p1_nn)
             _ = C₁ * N_p' / N_p1 * C_step *
-                (wkpNormChart (I := I) (M := M) g (k' + 1) (ENNReal.ofReal 1) u).toReal :=
+                (wkpNormChart (I := I) (M := M) (k' + 1) (ENNReal.ofReal 1) u).toReal :=
                 by ring
       · rw [not_lt] at hN_p1_pos
         have hN_p1_zero : N_p1 = 0 := le_antisymm hN_p1_pos hN_p1_nn
         have h_wkpNormChart_p1_eq_zero :
-            wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u = 0 := by
+            wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u = 0 := by
           have hN_eq : N_p1 = 0 := hN_p1_zero
           rw [show N_p1 =
-            (wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u).toReal
+            (wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u).toReal
             from rfl] at hN_eq
           exact (ENNReal.toReal_eq_zero_iff _).mp hN_eq |>.resolve_right h_norm_p1_lt.ne
         have h_per_chart_p1_zero : ∀ α : M,
@@ -1901,7 +1892,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
                   (chartPushed (I := I) (M := M)
                     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) β u)
                   (chartTargetEuclid (I := I) (M := M) β)) =
-              wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p_1) u from rfl] at h_le
+              wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u from rfl] at h_le
           rw [h_wkpNormChart_p1_eq_zero] at h_le
           exact le_antisymm h_le (zero_le _)
         have h_chart_pushed_ae_zero : ∀ α : M,
@@ -1947,12 +1938,12 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
           exact DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
             (d := Module.finrank ℝ E) hp'_one_enn h_target_open
         have h_N_p'_enn_zero :
-            wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p') u = 0 := by
+            wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p') u = 0 := by
           unfold wkpNormChart
           simp only [h_per_chart_p'_zero]
           exact tsum_zero
         have hN_p'_zero : N_p' = 0 := by
-          change (wkpNormChart (I := I) (M := M) g k' (ENNReal.ofReal p') u).toReal = 0
+          change (wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p') u).toReal = 0
           rw [h_N_p'_enn_zero]; simp
         refine ⟨ũ, 0, hũ_cont, le_refl _, hũ_ae, ?_⟩
         intro x

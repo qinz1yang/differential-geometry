@@ -35,6 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometricTrace_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 2 x
@@ -195,6 +196,7 @@ private theorem traceSucc_fib
       ((Module.finBasis ℝ E) k) (Fin.cons (m 0) (Fin.tail m)))
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem traceSucc_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (p : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g ((p + 1) + 2) (p + 1) x
@@ -209,6 +211,7 @@ private theorem traceSucc_riemannianFiberNormSq
     (cometricDoubleTraceFib (I := I) g p x)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometricTrace_riemannianFiberNormSq_p
     (p : ℕ) (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g (p + 2) p x
@@ -301,6 +304,7 @@ private lemma combinedTrace42Model_apply_symbolic
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem ricciSelf_twice_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g +
@@ -352,6 +356,7 @@ private theorem ricciSelf_twice_eq
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem ricciSelf_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =

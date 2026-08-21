@@ -194,7 +194,7 @@ theorem maxRegDuhamelSolFieldHa1_sub_const_norm_le_ofCompact (hT : 0 < T) (hT1 :
       (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce -
+    ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
         TimeSobolev.const T
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
             (show (a + 1) ≤ a + 2 by linarith) u₀)‖ ≤
@@ -204,11 +204,11 @@ theorem maxRegDuhamelSolFieldHa1_sub_const_norm_le_ofCompact (hT : 0 < T) (hT1 :
         2 * Real.sqrt T * ‖gforce‖ := by
   set ιu₀ := tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
     (show (a + 1) ≤ a + 2 by linarith) u₀ with hιu₀
-  have hsplit : maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce -
+  have hsplit : maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
         TimeSobolev.const T ιu₀ =
       (maxRegHomogeneousSolFieldTraceScale (I := I) (M := M) a T u₀ -
           TimeSobolev.const T ιu₀) +
-        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 gforce := by
+        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT gforce := by
     rw [maxRegDuhamelSolFieldHa1]; abel
   rw [hsplit]
   refine le_trans (norm_add_le _ _) ?_
@@ -223,10 +223,10 @@ theorem maxRegDuhamelSolFieldTraceScale_tendsto_const_ofCompact
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2)) (B : ℝ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1) (_hTT₀ : T ≤ T₀)
+    ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀)
         (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
         (_hgB : ‖gforce‖ ≤ B),
-      ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce -
+      ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
           TimeSobolev.const T
             (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
               (show (a + 1) ≤ a + 2 by linarith) u₀)‖ ≤ ε := by
@@ -240,7 +240,8 @@ theorem maxRegDuhamelSolFieldTraceScale_tendsto_const_ofCompact
   · have hden : 0 < Mcoef + 1 := by positivity
     have : 0 < (ε / (Mcoef + 1)) ^ 2 := by positivity
     exact lt_min one_pos this
-  intro T hT hT1 hTT₀ gforce hgB
+  intro T hT hTT₀ gforce hgB
+  have hT1 : T ≤ 1 := hTT₀.trans (min_le_left _ _)
   have hden : 0 < Mcoef + 1 := by positivity
   have hT_le : T ≤ (ε / (Mcoef + 1)) ^ 2 := le_trans hTT₀ (min_le_right _ _)
   have hsqrtT_le : Real.sqrt T ≤ ε / (Mcoef + 1) := by

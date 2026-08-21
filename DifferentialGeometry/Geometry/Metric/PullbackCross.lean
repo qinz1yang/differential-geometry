@@ -142,7 +142,7 @@ private theorem mfderiv_apply_section_smooth_along_diffeoCross
   exact h
 
 noncomputable def Diffeomorph.pullbackMetricCross
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) :
     SmoothRiemannianMetric I M where
   inner x := Diffeomorph.pullbackInnerCross g Φ x
@@ -209,14 +209,14 @@ noncomputable def Diffeomorph.pullbackMetricCross
 
 omit [FiniteDimensional ℝ F] in
 theorem diffeomorph_pullback_metric_existsCross
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) :
     ∃ g' : SmoothRiemannianMetric I M, g' = Diffeomorph.pullbackMetricCross g Φ :=
   ⟨Diffeomorph.pullbackMetricCross g Φ, rfl⟩
 
 omit [FiniteDimensional ℝ F] in
 theorem Diffeomorph.pullbackMetricCross_inner
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) (x : M) (v w : TangentSpace I x) :
     (Diffeomorph.pullbackMetricCross g Φ).inner x v w
       = g.inner (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w) :=
@@ -224,7 +224,7 @@ theorem Diffeomorph.pullbackMetricCross_inner
 
 omit [FiniteDimensional ℝ F] in
 theorem Diffeomorph.pullbackInnerCross_contMDiff
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) x

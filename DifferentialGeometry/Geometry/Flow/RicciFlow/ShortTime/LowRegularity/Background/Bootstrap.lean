@@ -92,6 +92,8 @@ structure BackgroundSmoothRicciDeTurckSolution (g g_bg : SmoothRiemannianMetric 
         (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
           (deTurckRemainderSectionBackground (I := I) (M := M) g g_bg (F t) hδ_lt (hδ t))) i
 
+attribute [nolint simpNF] BackgroundSmoothRicciDeTurckSolution.mk.sizeOf_spec
+
 theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
     (g g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
     (hK : HasLowRegularityBoundsAt (I := I) (M := M) g g_bg K)
@@ -120,14 +122,14 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
   have hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR K.threshold_lt hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t) := by
     simpa only [R, hreal, boundedDeTurckRemainderOnLowerState] using hsol.force_eq
   obtain ⟨carrier, _fHi, modePath, radius, htrace, _hmap, _hpin,
       hsmooth, hjet, hmode, hradius, hrealize, hforceCoeff, hstate⟩ :=
     direct_jet_of_mass (I := I) (M := M) g g_bg hR K.threshold_lt hreal
-      hK.core_cont hT hT1 gforce (by simpa only [R] using hsol.field_mem)
+      hK.core_cont hT gforce (by simpa only [R] using hsol.field_mem)
       hforce hmass
   refine ⟨{
     carrier := carrier
@@ -191,7 +193,7 @@ theorem exists_jointly_smooth_ricciDeTurck_metric_solution_of_spectral_solution 
       (deTurckRicciRHS (I := I) g_bg)
       (deTurckRemainderSectionBackground (I := I) (M := M) g g_bg) hrepr hT hT1
       P.carrier P.trace_zero P.modePath P.mode_smooth P.mode_mass P.mode_eq
-      C hC_pos hC hstate P.radius_pos P.realize_bound P.force_coeff
+      C hC_pos hC hstate P.realize_bound P.force_coeff
   refine ⟨fun t : ℝ => tensorSectionRealizeMetric (I := I) g
       (F t) hδ_lt (hδ t), ⟨hT, ?_, ?_⟩, hJ⟩
   · apply smoothRiemannianMetric_ext_inner
@@ -220,7 +222,7 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
     ∃ v : CrossScaleField (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) T,
       v.lo = u ∧
         v.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
-          ((1 : ℕ) : ℝ) hT hT1 0 gforce ∧
+          ((1 : ℕ) : ℝ) hT 0 gforce ∧
         (∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1 by linarith)
@@ -228,16 +230,16 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
         ∀ t ∈ Set.Icc (0 : ℝ) T, ‖v.repr t‖ ≤
           lowRegularityStateRadius K.top K.slope K.outer K.realize := by
   let v := duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
-    hT hT1 0 gforce
+    hT 0 gforce
   have hvlo : v.lo = u := by
     change maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-      hT hT1 0 gforce = u
+      hT 0 gforce = u
     exact hsol.map_eq.symm
   have hfield : ∀ᵐ t ∂(timeMeasure T),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ)
-            hT hT1 0 gforce t)‖ ≤
+            hT 0 gforce t)‖ ≤
         lowRegularityStateRadius K.top K.slope K.outer K.realize := by
     filter_upwards [hsol.field_mem] with t ht
     simpa only [lowerState, lowerBall] using ht

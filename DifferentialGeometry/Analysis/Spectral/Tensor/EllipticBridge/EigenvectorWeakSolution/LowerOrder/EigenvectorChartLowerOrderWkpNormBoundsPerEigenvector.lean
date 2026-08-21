@@ -118,7 +118,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ F partAtom
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
-      Csum hCsum_nn
+      Csum
       (fun x hx => (h_data x hx).1)
       (fun x _ => hCsum_bd x)
   have h_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s
@@ -284,7 +284,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fpart partAtom
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
-      Cpart hCpart_nn
+      Cpart
       (fun x hx => (h_part_data x hx).1)
       (fun x _ => hCpart_bd x)
   have h_comp_bound :
@@ -302,7 +302,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fcomp compAtom
       (fun x => x.2.2.2.2) (fun x _ => Finset.mem_univ _)
-      Ccomp hCcomp_nn
+      Ccomp
       (fun x hx => (h_comp_data x hx).1)
       (fun x _ => hCcomp_bd x)
   have h_part_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s
@@ -623,7 +623,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fcomp compAtom
       (fun x => x.2.2.2) (fun x _ => Finset.mem_univ _)
-      Ccomp hCcomp_nn
+      Ccomp
       (fun x hx => (h_comp_data x hx).1)
       (fun x _ => hCcomp_bd x)
   have h_part_bound :
@@ -639,7 +639,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fpart partAtom
       (fun x => (x.2.2.2, l)) (fun x _ => Finset.mem_univ _)
-      Cpart hCpart_nn
+      Cpart
       (fun x hx => (h_part_data x hx).1)
       (fun x _ => hCpart_bd x)
   have h_comp_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s

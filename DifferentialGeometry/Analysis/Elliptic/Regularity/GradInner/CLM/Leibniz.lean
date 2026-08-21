@@ -240,7 +240,7 @@ theorem gradInner_leibniz_H1Compl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartPushedRawLpFromLp_coeFn_sub
-    (g : SmoothRiemannianMetric I M) (_h : NeZero (Module.finrank ℝ E)) (α : M)
+    (g : SmoothRiemannianMetric I M) (α : M)
     (F G : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
     ((chartPushedRawLpFromLp (I := I) (M := M) g α (F - G) :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -253,7 +253,6 @@ lemma chartPushedRawLpFromLp_coeFn_sub
         ((chartPushedRawLpFromLp (I := I) (M := M) g α G :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
-  letI := _h
   classical
   have h_FG_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α (F - G)
   have h_F_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α F
@@ -397,7 +396,7 @@ theorem chartPushedRawLpFromLp_gradInner_leibniz_H1Compl
   have h_M_eq := gradInner_leibniz_H1Compl (I := I) (M := M) g ρα u_h
   rw [h_M_eq]
   have h_sub_chartPushed := chartPushedRawLpFromLp_coeFn_sub
-    (I := I) (M := M) g inferInstance α
+    (I := I) (M := M) g α
     (gradInnerCLM (I := I) (M := M) g ρα
       (smoothMulH1Compl (I := I) (M := M) g ρα u_h))
     (smoothMulLp (I := I) (M := M) g

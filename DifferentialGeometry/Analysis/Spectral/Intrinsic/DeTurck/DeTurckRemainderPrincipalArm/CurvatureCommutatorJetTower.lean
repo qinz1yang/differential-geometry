@@ -82,8 +82,9 @@ lemma norm_iteratedCovGrad_iteratedCovGrad_eq (g : SmoothRiemannianMetric I M) (
       ‖iteratedCovGrad (I := I) g r s (j + i) Ψ‖)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [CompactSpace M] in
 lemma normSq_le_sum_normSq_of_pointwise_fiberNormSq_window (g : SmoothRiemannianMetric I M)
-    {rz sz rw : ℕ} (Z : SmoothCcTensor g rz sz) (c : ℝ) (_hc : 0 ≤ c)
+    {rz sz rw : ℕ} (Z : SmoothCcTensor g rz sz) (c : ℝ)
     (sw : ℕ → ℕ) (F : (i : ℕ) → SmoothCcTensor g rw (sw i)) (n : ℕ)
     (hpt : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g rz sz x (Z.toSection x) ≤
       c * ∑ i ∈ Finset.range n,
@@ -143,7 +144,7 @@ private lemma pointwiseTensorCurvRS_jet_le (g : SmoothRiemannianMetric I M) (r s
     have hsq := normSq_le_sum_normSq_of_pointwise_fiberNormSq_window (I := I) (M := M) g
       (iteratedCovGrad (I := I) g r (s + 1) j
         (homTensorRSFieldApply (I := I) (M := M) g r s (s + 1) Q₀ S))
-      (cc₀ j) (hcc₀_nn j) (fun i => s + i)
+      (cc₀ j) (fun i => s + i)
       (fun i => iteratedCovGrad (I := I) g r s i S) (j + 1) (fun x => hcc₀ S j x)
     have hsum_le : ∑ i ∈ Finset.range (j + 1),
         ‖iteratedCovGrad (I := I) g r s i S‖ ^ 2 ≤ Sj ^ 2 := by
@@ -160,7 +161,7 @@ private lemma pointwiseTensorCurvRS_jet_le (g : SmoothRiemannianMetric I M) (r s
       (iteratedCovGrad (I := I) g r (s + 1) j
         (homTensorRSFieldApply (I := I) (M := M) g r (s + 1) (s + 1) Q₁
           (iteratedCovGrad (I := I) g r s 1 S)))
-      (cc₁ j) (hcc₁_nn j) (fun i => s + (i + 1))
+      (cc₁ j) (fun i => s + (i + 1))
       (fun i => iteratedCovGrad (I := I) g r s (i + 1) S) (1 + j) (fun x => hcc₁ S j x)
     have hsum_le : ∑ i ∈ Finset.range (1 + j),
         ‖iteratedCovGrad (I := I) g r s (i + 1) S‖ ^ 2 ≤ Sj ^ 2 :=
@@ -176,7 +177,7 @@ private lemma pointwiseTensorCurvRS_jet_le (g : SmoothRiemannianMetric I M) (r s
       (iteratedCovGrad (I := I) g r (s + 1) j
         (homTensorRSFieldApply (I := I) (M := M) g r (s + 2) (s + 1) Q₂
           (iteratedCovGrad (I := I) g r s 2 S)))
-      (cc₂ j) (hcc₂_nn j) (fun i => s + (i + 2))
+      (cc₂ j) (fun i => s + (i + 2))
       (fun i => iteratedCovGrad (I := I) g r s (i + 2) S) (1 + j) (fun x => hcc₂ S j x)
     have hsum_le : ∑ i ∈ Finset.range (1 + j),
         ‖iteratedCovGrad (I := I) g r s (i + 2) S‖ ^ 2 ≤ Sj ^ 2 :=

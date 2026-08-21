@@ -33,6 +33,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg := by

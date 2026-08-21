@@ -439,7 +439,7 @@ theorem bg0_pair_h1
     exact hp.trans (pow_le_pow_left₀ hactual0 hlin 2)
   have hpath := path_jetL2_le (I := I) (M := M)
     g 2 2 1 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := B) hB
+    (B := B)
     (by
       intro s hs
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint s hs)
@@ -667,7 +667,7 @@ theorem bg0_pair_h2
     exact hp.trans (pow_le_pow_left₀ hactual0 hlin 2)
   have hpath := path_jetL2_le (I := I) (M := M)
     g 2 2 2 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := B) hB
+    (B := B)
     (by
       intro s hs
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint s hs)
@@ -994,6 +994,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_background_pairing_h2_bound
       simp only [B0, B1, XR, XL]
       ring
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem rhs1_bg_sub
     (g gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -1215,7 +1216,7 @@ theorem firstOrderBackgroundCoefficient_pairing_h2_bound
     exact hraw.trans (pow_le_pow_left₀ hbase0 hbase 2)
   have hpath := path_jetL2_le (I := I) (M := M)
     g 3 2 2 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := B) hB hpoint
+    (B := B) hpoint
   simpa only [covariantJetNormSq, firstOrderBackgroundCoefficientDifference, Φ, S, N, B, Nat.reduceAdd,
     hδ_lt] using hpath
 

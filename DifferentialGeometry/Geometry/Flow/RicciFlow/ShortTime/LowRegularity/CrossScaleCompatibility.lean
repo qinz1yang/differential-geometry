@@ -78,18 +78,18 @@ def liftSecondOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {T R : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T R : ℝ} (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
     (hR : 0 ≤ R)
     (hball : ∀ᵐ t ∂timeMeasure T,
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT hT1
+        (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)‖ ≤ R) :
     ℝ → (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
-    (lowRegularitySecondOrderActionTotal (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f hR hball
+    (lowRegularitySecondOrderActionTotal (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f hR hball
       t).comp
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num))
@@ -109,26 +109,26 @@ theorem liftSecondOrderActionToH2_data
             gFibreOpBound (I := I) (M := M) g
               (ccTensorBilinSymm (I := I) g S) δ)
         {R : ℝ} (hR : 0 ≤ R), R ≤ ρ →
-        ∀ {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+        ∀ {T : ℝ} (hT : 0 < T)
           (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
           (hball : ∀ᵐ t ∂timeMeasure T,
             ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-              (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT hT1
+              (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
                 (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
                 f t)‖ ≤ R),
           AEStronglyMeasurable
-              (liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT hT1 f hR
+              (liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT f hR
                 hball)
               (timeMeasure T) ∧
             (∀ᵐ t ∂timeMeasure T,
-              ‖liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT hT1 f hR
+              ‖liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT f hR
                 hball t‖ ≤ C * ρ) := by
   obtain ⟨ρ, C, hρ, hρle, hC, hdata⟩ :=
     lowRegularitySecondOrderActionTotal_data (I := I) (M := M) hDim g hρ₀ hδ0 hδ_le hreal
   refine ⟨ρ, C, hρ, hρle, hC, ?_⟩
-  intro hρ0 hreal' R hR hRρ T hT hT1 f hball
-  obtain ⟨hmeas, hbd⟩ := hdata hρ0 hreal' hR hRρ hT hT1 f hball
+  intro hρ0 hreal' R hR hRρ T hT f hball
+  obtain ⟨hmeas, hbd⟩ := hdata hρ0 hreal' hR hRρ hT f hball
   exact ⟨congrOp_aemeas (I := I) (M := M) _ _ hmeas,
     congrOp_norm_le (I := I) (M := M) _ _ hbd⟩
 
@@ -138,12 +138,12 @@ def liftFirstOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
     ℝ → (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
-    (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f t).comp
+    (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t).comp
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 1 = (3 : ℝ) by norm_num))
 
@@ -160,15 +160,15 @@ theorem liftFirstOrderActionToH2_data
       ‖show tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
           tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) from
         lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ Φ * (1 + ‖v‖))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
     AEStronglyMeasurable
-        (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f)
+        (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f)
         (timeMeasure T) ∧
-      MemLp (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f) 2
+      MemLp (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f) 2
         (timeMeasure T) := by
   obtain ⟨hmeas, -, hmem⟩ :=
-    lowRegularityFirstOrderActionTime_memLp (I := I) (M := M) g hρ hδ0 hδ_le hreal hcont hΦ hlin hT hT1 f
+    lowRegularityFirstOrderActionTime_memLp (I := I) (M := M) g hρ hδ0 hδ_le hreal hcont hΦ hlin hT f
   exact ⟨congrOp_aemeas (I := I) (M := M) _ _ hmeas,
     congrOp_memLp (I := I) (M := M) _ _ hmem⟩
 
@@ -223,7 +223,7 @@ theorem exists_compatible_cross_scale_field_realization
       (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 aHi) T)
       (u : CrossScaleField (I := I) (M := M) g 0 2 aHi T),
       u.lo = uHi ∧
-        u.hiL2 = maxRegDuhamelSolField (I := I) (M := M) aHi hT hT1 0 fHi ∧
+        u.hiL2 = maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M) hT hT1
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
@@ -241,7 +241,7 @@ theorem exists_compatible_cross_scale_field_realization
         (∀ t ∈ Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrd (u.lo.toFun t) =
-            (maxRegDuhamelMap (I := I) (M := M) aLo hT hT1 0 fLo).toFun t) ∧
+            (maxRegDuhamelMap (I := I) (M := M) aLo hT 0 fLo).toFun t) ∧
         u.repr 0 = (0 : tensorHs (I := I) (M := M) g 0 2 (aHi + 1)) ∧
         ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
         (∀ t ∈ Icc (0 : ℝ) T,
@@ -250,10 +250,11 @@ theorem exists_compatible_cross_scale_field_realization
         (fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           hOrdRp (u.repr t)) =ᵐ[timeMeasure T]
             fun t => maxRegDuhamelSolField (I := I) (M := M)
-              aLo hT hT1 0 fLo t := by
+              aLo hT 0 fLo t := by
   subst hlo
   obtain ⟨uHi, fHi, huHi, hfHi, htrace, hderiv, hforce, hfield, hforce_ae, -⟩ :=
-    exists_compatible_cross_scale_solution (I := I) (M := M) (g := g) rfl hOrd hOrdA1 hOrdSt hT hT1
+    exists_compatible_cross_scale_solution (I := I) (M := M) (g := g)
+      rfl hOrd hOrdA1 hOrdSt hT hT1
       A2Hi hA2Hi C2Hi hC2Hi A1Hi hA1Hi f0Hi hsmallHi
       A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo f0Lo hsmallLo
       hA2compat hA1compat hf0 fLo hfLo
@@ -287,25 +288,25 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
           (ccTensorBilinSymm (I := I) g₀ S) δ)
     (hcont : Continuous (deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal))
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
-    (hρ : 0 < ρ) (hRρ : R ≤ ρ) (hT : 0 < T) (hT1 : T ≤ 1)
+    (hρ : 0 < ρ) (hRρ : R ≤ ρ) (hT : 0 < T)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t))
     (hball : ∀ᵐ t ∂timeMeasure T,
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
         lowerState (I := I) (M := M) g₀ 1 R) :
     (∀ᵐ t ∂timeMeasure T,
         lowRadialH3 (I := I) (M := M) g₀ ρ
             (tensorHsCongr (I := I) (M := M) g₀ 0 2
               (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-              (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+              (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
                 (0 : tensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t)) =
           tensorHsCongr (I := I) (M := M) g₀ 0 2
             (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : tensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) gforce t)) ∧
       (∀ᵐ t ∂timeMeasure T,
@@ -314,25 +315,25 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
               (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
               (tensorHsCongr (I := I) (M := M) g₀ 0 2
                 (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-                (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+                (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
                   (0 : tensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2)) gforce t))) =
           tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
             (tensorHsCongr (I := I) (M := M) g₀ 0 2
               (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-              (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+              (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
                 (0 : tensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t))) := by
   have hsymm := duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (I := I) (M := M) g₀ g_bg hR hδ hreal
     hcont hcore (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-    hT hT1 u gforce hforce
+    hT u gforce hforce
   have hballT : ∀ᵐ t ∂timeMeasure T,
       ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
           (tensorHsCongr (I := I) (M := M) g₀ 0 2
             (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : tensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) gforce t))‖ ≤ R := by
     filter_upwards [hball] with t ht

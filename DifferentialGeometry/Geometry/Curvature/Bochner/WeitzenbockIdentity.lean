@@ -23,14 +23,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+variable [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem leibniz_inner [I.Boundaryless]
+theorem leibniz_inner
     (g : SmoothRiemannianMetric I M)
     {V W : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
@@ -45,9 +44,7 @@ theorem leibniz_inner [I.Boundaryless]
   exact (LeviCivita_isMetricCompatible (I := I) g).apply hV_at hW_at X
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem leibniz_inner_globally [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
+theorem leibniz_inner_globally (g : SmoothRiemannianMetric I M)
     {V W : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
     (hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W))
@@ -61,11 +58,10 @@ theorem leibniz_inner_globally [I.Boundaryless]
   exact leibniz_inner (I := I) g hV hW (X b)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem laplacian_inner_self_half [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
-    (_hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
     (hgVV : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b : M => g.inner b (V b) (V b)))
     (x : M)
     (hLeibniz :
@@ -78,7 +74,7 @@ theorem laplacian_inner_self_half [I.Boundaryless]
   rw [hLeibniz]
   ring
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacian_grad_eq_grad_laplacian_plus_ricciSharp [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
@@ -95,7 +91,6 @@ theorem laplacian_grad_eq_grad_laplacian_plus_ricciSharp [I.Boundaryless]
     (I := I) g hf x hInner
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem laplacian_grad_inner_eq_grad_laplacian_plus_ricci [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
@@ -112,7 +107,6 @@ theorem laplacian_grad_inner_eq_grad_laplacian_plus_ricci [I.Boundaryless]
   rw [hInner w, inner_ricciSharp (I := I) g x (gradFun (I := I) g f x) w]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem bochner_abstract [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
@@ -139,11 +133,8 @@ theorem bochner_abstract [I.Boundaryless]
         frobeniusSq_grad_vector (I := I) g
           (fun b => gradFun (I := I) g f b) x := by
   classical
-  have h_grad_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b : M => gradFun (I := I) g f b)) :=
-    gradFun_contMDiff_total_section (I := I) g hf
   have hB2 :=
-    laplacian_inner_self_half (I := I) g h_grad_smooth hgVV x hLeibniz
+    laplacian_inner_self_half (I := I) g hgVV x hLeibniz
   rw [hB2]
   have hB3 :=
     laplacian_grad_inner_eq_grad_laplacian_plus_ricci (I := I) g hf x hInner
@@ -151,7 +142,6 @@ theorem bochner_abstract [I.Boundaryless]
   rw [hB3]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem bochner_abstract_of_heart_of_bochner [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
@@ -178,11 +168,8 @@ theorem bochner_abstract_of_heart_of_bochner [I.Boundaryless]
         frobeniusSq_grad_vector (I := I) g
           (fun b => gradFun (I := I) g f b) x := by
   classical
-  have h_grad_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b : M => gradFun (I := I) g f b)) :=
-    gradFun_contMDiff_total_section (I := I) g hf
   have hB2 :=
-    laplacian_inner_self_half (I := I) g h_grad_smooth hgVV x hLeibniz
+    laplacian_inner_self_half (I := I) g hgVV x hLeibniz
   rw [hB2]
   rw [hHeart]
   rw [show g.inner x
@@ -197,7 +184,7 @@ theorem bochner_abstract_of_heart_of_bochner [I.Boundaryless]
   rw [inner_ricciSharp (I := I) g x (gradFun (I := I) g f x)
         (gradFun (I := I) g f x)]
 
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+omit [T2Space M] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normGradSq_contMDiff [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -208,7 +195,6 @@ theorem normGradSq_contMDiff [I.Boundaryless]
   exact normGradSqFun_contMDiff (I := I) g hf
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem bochner_abstract_packaged [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
@@ -235,7 +221,6 @@ theorem bochner_abstract_packaged [I.Boundaryless]
     hLeibniz hInner
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem bochner_abstract_of_heart_of_bochner_packaged [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
@@ -292,7 +277,6 @@ structure BochnerReductionAt [I.Boundaryless]
   heart : IsHeartOfBochnerInnerAt (I := I) g hf x
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
@@ -307,7 +291,6 @@ theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
   bochner_abstract_packaged (I := I) g hf x hRed.leibniz hRed.heart
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_abstract [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
@@ -372,9 +355,7 @@ theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian [I.Boundaryless]
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem abstractHessian_innerSelf_apply [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
+theorem abstractHessian_innerSelf_apply (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
     {Y : Π b : M, TangentSpace I b}
@@ -641,7 +622,6 @@ section HessianSkewVanishing
 
 variable (g : SmoothRiemannianMetric I M)
 
-omit [SigmaCompactSpace M] in
 private theorem sum_abstractHessian_smoothOrthoFrame_cov_eq_zero
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (v : TangentSpace I x) :
@@ -849,7 +829,6 @@ private lemma sum_abstractHessian_smoothOrthoFrame_eventuallyEq_laplacian
 
 end LaplacianTraceOnNbhd
 
-omit [SigmaCompactSpace M] in
 private lemma heart_per_summand_swap [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
@@ -951,7 +930,6 @@ private lemma heart_per_summand_swap [I.Boundaryless]
   rw [hQx_inner, hPx_inner] at h_combined
   linarith
 
-omit [SigmaCompactSpace M] in
 private lemma heart_per_summand_riemann_form [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (_hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
@@ -1025,7 +1003,6 @@ private lemma heart_per_summand_riemann_form [I.Boundaryless]
     ring
   linarith
 
-omit [SigmaCompactSpace M] in
 private lemma heart_per_summand_assembled [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
@@ -1077,7 +1054,7 @@ private lemma heart_per_summand_assembled [I.Boundaryless]
     have hQb : Q b = cov.toFun Gf b (B b) := rfl
     rw [hQb]
     exact inner_cov_gradFun_eq_abstractHessian (I := I) g hf
-      (X := B) (Y := B) (x := b) hB_smooth hB_smooth
+      (X := B) (Y := B) (x := b) hB_smooth
   rw [show (mfderiv I 𝓘(ℝ) (fun b : M => g.inner b (Q b) (B b)) x) (W x) =
       (mfderiv I 𝓘(ℝ) (fun b : M =>
           abstractHessian (I := I) g f b (B b) (B b)) x) (W x) from by
@@ -1121,7 +1098,7 @@ private lemma heart_per_summand_assembled [I.Boundaryless]
     have hXv_eq : Xv x = v := smoothExtensionTangent_eq x v
     rw [show v = Xv x from hXv_eq.symm]
     rw [inner_cov_gradFun_eq_abstractHessian (I := I) g hf
-        (X := Xv) (Y := B) (x := x) hXv_smooth hB_smooth]
+        (X := Xv) (Y := B) (x := x) hB_smooth]
     exact (abstractHessian_symm (I := I) g (hf.contMDiffAt.of_le (by
       have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
@@ -1141,7 +1118,7 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
     smoothExtensionTangent_contMDiff x w
   have hW_eq : W x = w := smoothExtensionTangent_eq x w
   rw [show w = W x from hW_eq.symm]
-  rw [connLaplacian_grad_inner (I := I) g hf hW_smooth x]
+  rw [connLaplacian_grad_inner (I := I) g x]
   rw [show ∑ i : Fin (Module.finrank ℝ E),
         (g.inner x ((LeviCivita (I := I) g).toFun
                     (covApply (LeviCivita (I := I) g)
@@ -1259,7 +1236,7 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
               (fun b => gradFun (I := I) g f b) x from rfl,
           h_riemOp]
     rw [Finset.sum_congr rfl (fun i _ => h_per_summand i)]
-    exact heart_curvature_orthonormal_sum_eq_ricci (I := I) g hf x w
+    exact heart_curvature_orthonormal_sum_eq_ricci (I := I) g x w
   rw [h_curv_sum_eq]
   have h_hess_sum_eventuallyEq :=
     sum_abstractHessian_smoothOrthoFrame_eventuallyEq_laplacian (I := I) g hf x
@@ -1295,7 +1272,7 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
         exact (inner_cov_gradFun_eq_abstractHessian (I := I) g hf
           (X := smoothOrthoFrame (I := I) g x i)
           (Y := smoothOrthoFrame (I := I) g x i) (x := b)
-          (hB_smooth i) (hB_smooth i)).symm
+          (hB_smooth i)).symm
       rw [h_conv]
       have hQ_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
           (T% (covApply (LeviCivita (I := I) g)
@@ -1456,26 +1433,6 @@ theorem bochner_pointwise_abstract_of_smooth [I.Boundaryless]
   bochner_pointwise_abstract (I := I) g hf x
     (leibnizTraceIdentity_holds (I := I) g hf x)
     (heartOfBochnerInner_holds (I := I) g hf x)
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem laplacian_inner_self [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
-    {V : Π b : M, TangentSpace I b}
-    (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
-    (hgVV : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b : M => g.inner b (V b) (V b)))
-    (x : M)
-    (hLeibniz :
-      Δ_g (I := I) g ⟨_, hgVV⟩ x =
-        2 * g.inner x (connLaplacian_vector (I := I) g V x) (V x) +
-          2 * frobeniusSq_grad_vector (I := I) g V x) :
-    Δ_g (I := I) g ⟨_, hgVV⟩ x =
-      2 * g.inner x (connLaplacian_vector (I := I) g V x) (V x) +
-        2 * frobeniusSq_grad_vector (I := I) g V x := by
-  have h := connLaplacian_inner_self_of_trace (I := I) g hV hgVV x hLeibniz
-  rw [connLaplacian_function_def] at h
-  exact h
-
-
 end Curvature
 end Geometry
 end DifferentialGeometry

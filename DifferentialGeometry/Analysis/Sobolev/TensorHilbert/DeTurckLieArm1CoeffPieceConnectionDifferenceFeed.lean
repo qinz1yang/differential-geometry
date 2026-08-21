@@ -150,6 +150,7 @@ private def lieArm1TraceArg (g₁ : SmoothRiemannianMetric I M) (σ' : Equiv.Per
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieArm1Piece_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (Ψ : SmoothCcTensor g₀ 1 2)
     (K : ∀ y : M, TangentSpace I y → TangentSpace I y → TangentSpace I y) (x : M)
@@ -177,8 +178,8 @@ theorem lieArm1Piece_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
   have happ : (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 2 I x from
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ).toSection x) D =
       deTurckLieTraceFib (I := I) g₁ σ' x
-        (slotExtendPointwise (I := I) (M := M) g₀ 2 3 x
-          (slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+        (slotExtendPointwise (I := I) (M := M) 2 3 x
+          (slotExtendPointwise (I := I) (M := M) 1 2 x
             (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from Ψ.toSection x)) D') := by
     rw [deTurckLieTraceCoeffPiece, reindexCoeffGen_toSection]
     rw [reindexCoeffFibGen_apply (I := I) 3 2 ρ x
@@ -194,8 +195,8 @@ theorem lieArm1Piece_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
     rfl
   rw [happ]
   set U : Tensor0SSpace 4 I x :=
-    slotExtendPointwise (I := I) (M := M) g₀ 2 3 x
-      (slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+    slotExtendPointwise (I := I) (M := M) 2 3 x
+      (slotExtendPointwise (I := I) (M := M) 1 2 x
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from Ψ.toSection x)) D' with hU
   have htr : Tensor0SSpace.toModel (deTurckLieTraceFib (I := I) g₁ σ' x U)
       (fun j : Fin 2 => ((m j : TangentSpace I x) : E)) =
@@ -222,20 +223,20 @@ theorem lieArm1Piece_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
       = Tensor0SSpace.toModel U (Fin.cons (w 0) (Matrix.vecTail w)) :=
         congrArg (Tensor0SSpace.toModel U) (Fin.cons_self_tail w).symm
     _ = Tensor0SSpace.toModel
-          (slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+          (slotExtendPointwise (I := I) (M := M) 1 2 x
             (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from Ψ.toSection x) D₂)
           (Matrix.vecTail w) := by
         rw [hU]
-        exact slotExtendFib_apply_eval (I := I) (M := M) g₀ 2 3 x _ D' (w 0) (Matrix.vecTail w)
+        exact slotExtendFib_apply_eval (I := I) (M := M) 2 3 x _ D' (w 0) (Matrix.vecTail w)
     _ = Tensor0SSpace.toModel
-          (slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+          (slotExtendPointwise (I := I) (M := M) 1 2 x
             (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from Ψ.toSection x) D₂)
           (Fin.cons (Matrix.vecTail w 0) (Matrix.vecTail (Matrix.vecTail w))) :=
         congrArg (Tensor0SSpace.toModel _) (Fin.cons_self_tail (Matrix.vecTail w)).symm
     _ = Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from Ψ.toSection x) om)
           (Matrix.vecTail (Matrix.vecTail w)) := by
-        exact slotExtendFib_apply_eval (I := I) (M := M) g₀ 1 2 x _ D₂ (Matrix.vecTail w 0)
+        exact slotExtendFib_apply_eval (I := I) (M := M) 1 2 x _ D₂ (Matrix.vecTail w 0)
           (Matrix.vecTail (Matrix.vecTail w))
     _ = om (fun _ : Fin 1 =>
           K x ((w 2 : E) : TangentSpace I x) ((w 3 : E) : TangentSpace I x)) :=
@@ -364,6 +365,7 @@ private theorem lieArm1_traceHessianSlotPerm_inv_mul_apply (σ : Equiv.Perm (Fin
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieArm1_dLTC_eq_reindex_traceHessian
     (g₀ g₁ : SmoothRiemannianMetric I M) (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
@@ -394,6 +396,7 @@ private theorem lieArm1_dLTC_eq_reindex_traceHessian
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieArm1_riemannianFiberNormSq_dLTC_toSection_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ' : Equiv.Perm (Fin 4)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
@@ -475,6 +478,8 @@ theorem lieArm1_convexPerturbation_ball (g₀ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieArm1_metricPerturbationPath_pack (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_le : δ ≤ δ₀)
@@ -542,6 +547,7 @@ private lemma lieArm1_g0_inner_inverseMetricSharp_mixed (g₀ g₁ : SmoothRiema
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieArm1_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -574,6 +580,7 @@ private lemma lieArm1_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRiem
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieArm1_fullRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -620,6 +627,7 @@ private lemma lieArm1_slotInsert_add (g₀ : SmoothRiemannianMetric I M) (s : �
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieArm1_sharpFlat_decomp (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) +
@@ -650,7 +658,7 @@ theorem lieArm1_sharpFlat_feed (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Km, hKm_nn, hKm⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
-      (I := I) (M := M) g₀ a ha_super hR hδ₀
+      (I := I) (M := M) g₀ a ha_super hR
   set IdIns : SmoothCcTensor g₀ 1 1 :=
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) with hIdIns_def

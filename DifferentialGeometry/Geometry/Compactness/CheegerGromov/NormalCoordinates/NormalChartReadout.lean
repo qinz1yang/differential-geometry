@@ -120,6 +120,7 @@ theorem chartCmC_zero_of_sum
     _ = 0 := map_zero _
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M] in
+omit [T2Space (TangentBundle I M)] in
 theorem chartCmEqnC_cdAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -183,7 +184,8 @@ theorem chartCmEqnC_cdAt
         (z₀, params₀) hread hinner
     exact hcomp
 
-omit [CompleteSpace E] [ConnectedSpace M] [T3Space M] in
+omit [CompleteSpace E] [ConnectedSpace M] [T3Space M]
+  [T2Space (TangentBundle I M)] in
 theorem readoutSolC_strict
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -225,7 +227,8 @@ theorem readoutSolC_strict
     (fun z params => chartCmEqnC (I := I) g hEnorm p c B z params)
     z₀ params₀ _ hjoint hinv hzero
 
-omit [CompleteSpace E] [ConnectedSpace M] [T3Space M] in
+omit [CompleteSpace E] [ConnectedSpace M] [T3Space M]
+  [T2Space (TangentBundle I M)] in
 theorem readoutSolC_cdAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)

@@ -41,7 +41,6 @@ variable
 section Integrand
 
 theorem firstOrderKernel_jet_bound_background
-    (_hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Kk : ℕ → ℝ, (∀ i, 0 ≤ Kk i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -65,7 +64,7 @@ theorem firstOrderKernel_jet_bound_background
   have h31 : (1 / 3 : ℝ) < 1 := by norm_num
   have hΛ₀0 : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) * (1 / 3) :=
     mul_nonneg (Nat.cast_nonneg _) h30
-  obtain ⟨Kw, hKw_nn, hw⟩ := low1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g g_bg h31 hΛ₀0
+  obtain ⟨Kw, hKw_nn, hw⟩ := low1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g g_bg h31
   obtain ⟨Kint, hKint_nn, hint⟩ := antidiagonalTupleGridWindow_bound_to_covariant_jet_bound (I := I) (M := M) g hΛ₀0
   refine ⟨fun i => ∑ q ∈ Finset.range (i + 1),
       Kw q * (∑ k ∈ Finset.range (q + 2), Kint k),
@@ -140,7 +139,6 @@ theorem firstOrderKernel_jet_bound_background
         rw [Finset.sum_mul]
 
 theorem firstOrderKernel_jet_bound
-    (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ Kk : ℕ → ℝ, (∀ i, 0 ≤ Kk i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -159,7 +157,7 @@ theorem firstOrderKernel_jet_bound
               (0 : SmoothCcTensor g 0 2) hδg hδZ s) ≤
           Kk i * (1 + ∑ j ∈ Finset.range (i + 2),
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :=
-  firstOrderKernel_jet_bound_background (I := I) (M := M) hDim g g
+  firstOrderKernel_jet_bound_background (I := I) (M := M) g g
 
 theorem selfLow_split_bg
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -1108,7 +1106,6 @@ end Integrand
 section Towers
 
 theorem firstOrderCoefficient_jet_tower_quadratic_background
-    (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -1128,7 +1125,7 @@ theorem firstOrderCoefficient_jet_tower_quadratic_background
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
-  obtain ⟨Kk, hKk_nn, hker⟩ := firstOrderKernel_jet_bound_background (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kk, hKk_nn, hker⟩ := firstOrderKernel_jet_bound_background (I := I) (M := M) g g_bg
   refine ⟨Kk, hKk_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ i
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
@@ -1149,7 +1146,6 @@ theorem firstOrderCoefficient_jet_tower_quadratic_background
     metricPerturbationPathDomain_isOpen hSI
     (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g g_bg T
       (0 : SmoothCcTensor g 0 2) hδg hδZ)
-    (Real.sqrt_nonneg Λ)
     (fun s hs => by
       rw [hsΛ, hΛdef]
       simpa only [covariantJetNormSq] using
@@ -1167,7 +1163,6 @@ theorem firstOrderCoefficient_jet_tower_quadratic_background
     (Finset.mem_range.mpr (Nat.lt_succ_self i))
 
 theorem firstOrderCoefficient_jet_tower_quadratic
-    (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -1186,12 +1181,11 @@ theorem firstOrderCoefficient_jet_tower_quadratic
                 (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderCoefficient‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :=
-  firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) hDim g g
+  firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) g g
 
 theorem firstOrderCoefficient_jet_tower_background
-    (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M)
-    (a : ℕ) {R₀ : ℝ} (_hR₀ : 0 ≤ R₀) :
+    (a : ℕ) {R₀ : ℝ} :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
         (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1210,14 +1204,13 @@ theorem firstOrderCoefficient_jet_tower_background
                 (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderCoefficient‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
-  obtain ⟨Kc, hKc_nn, h⟩ := firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, h⟩ := firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) g g_bg
   refine ⟨Kc, hKc_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ _ i
   exact h T hT hδ0 hδ_le hδg hδZ i
 
 theorem firstOrderCoefficient_jet_tower
-    (hDim : Module.finrank ℝ E = 3)
-    (g : SmoothRiemannianMetric I M) (a : ℕ) {R₀ : ℝ} (hR₀ : 0 ≤ R₀) :
+    (g : SmoothRiemannianMetric I M) (a : ℕ) {R₀ : ℝ} :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
         (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1236,7 +1229,7 @@ theorem firstOrderCoefficient_jet_tower
                 (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderCoefficient‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :=
-  firstOrderCoefficient_jet_tower_background (I := I) (M := M) hDim g g a hR₀
+  firstOrderCoefficient_jet_tower_background (I := I) (M := M) g g a
 
 theorem zeroOrderCoefficient_jet_tower
     (hDim : Module.finrank ℝ E = 3)
@@ -1263,10 +1256,10 @@ theorem zeroOrderCoefficient_jet_tower
   classical
   obtain ⟨Kk, hKk_nn, hker⟩ := selfLow_jet (I := I) (M := M) hDim g a ha hR₀
   refine ⟨fun i => 2 * (Kk i +
-      covariantJetNormSq (I := I) (M := M) g i (-metricPrincipalDefectCurvCoeff (I := I) g g g)),
+      covariantJetNormSq (I := I) (M := M) g i (-metricPrincipalDefectCurvCoeff (I := I) g g)),
     fun i => by
       have := covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g
-        (-metricPrincipalDefectCurvCoeff (I := I) g g g)
+        (-metricPrincipalDefectCurvCoeff (I := I) g g)
       have := hKk_nn i
       linarith, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ hball i
@@ -1286,7 +1279,6 @@ theorem zeroOrderCoefficient_jet_tower
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
     (selfLow_joint (I := I) (M := M) g g T hδg hδZ)
-    (Real.sqrt_nonneg Λ)
     (fun s hs => by
       rw [hsΛ, hΛdef]
       simpa only [covariantJetNormSq] using
@@ -1296,24 +1288,24 @@ theorem zeroOrderCoefficient_jet_tower
       (selfLowInt (I := I) (M := M) g g T hδ_lt hδg hδZ) ≤ Λ := by
     simpa only [selfLowInt, covariantJetNormSq] using hpath
   have hfix : (0 : ℝ) ≤ covariantJetNormSq (I := I) (M := M) g i
-      (-metricPrincipalDefectCurvCoeff (I := I) g g g) :=
-    covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g (-metricPrincipalDefectCurvCoeff (I := I) g g g)
+      (-metricPrincipalDefectCurvCoeff (I := I) g g) :=
+    covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g (-metricPrincipalDefectCurvCoeff (I := I) g g)
   have hjet : covariantJetNormSq (I := I) (M := M) g i
       (lowerScaleActionCoefficients (I := I) (M := M) g g T hδ_lt hδg hδZ).zeroOrderCoefficient ≤
       2 * (Kk i +
-        covariantJetNormSq (I := I) (M := M) g i (-metricPrincipalDefectCurvCoeff (I := I) g g g)) *
+        covariantJetNormSq (I := I) (M := M) g i (-metricPrincipalDefectCurvCoeff (I := I) g g)) *
         (1 + ∑ j ∈ Finset.range (i + 2),
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
     have hsplit := covariantJetNormSq_sub_le (I := I) (M := M) g i
       (selfLowInt (I := I) (M := M) g g T hδ_lt hδg hδZ)
-      (-metricPrincipalDefectCurvCoeff (I := I) g g g)
+      (-metricPrincipalDefectCurvCoeff (I := I) g g)
     rw [sub_neg_eq_add] at hsplit
     rw [zeroOrderCoefficient_eq (I := I) (M := M) g g T hδ_lt hδg hδZ]
     refine hsplit.trans ?_
     have : Λ + covariantJetNormSq (I := I) (M := M) g i
-          (-metricPrincipalDefectCurvCoeff (I := I) g g g) ≤
+          (-metricPrincipalDefectCurvCoeff (I := I) g g) ≤
         (Kk i + covariantJetNormSq (I := I) (M := M) g i
-            (-metricPrincipalDefectCurvCoeff (I := I) g g g)) *
+            (-metricPrincipalDefectCurvCoeff (I := I) g g)) *
           (1 + ∑ j ∈ Finset.range (i + 2),
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
       rw [hΛdef]
@@ -1352,11 +1344,11 @@ theorem zeroOrderCoefficient_jet_tower_quadratic_background
   obtain ⟨Kk0, Kk2, hKk0_nn, hKk2_nn, hker⟩ :=
     selfLowJetQBackground (I := I) (M := M) hDim g g_bg
   refine ⟨fun i => 2 * (Kk0 i +
-      covariantJetNormSq (I := I) (M := M) g i (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)),
+      covariantJetNormSq (I := I) (M := M) g i (-metricPrincipalDefectCurvCoeff (I := I) g g)),
     fun i => 2 * Kk2 i,
     fun i => by
       have := covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g
-        (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)
+        (-metricPrincipalDefectCurvCoeff (I := I) g g)
       have := hKk0_nn i
       linarith,
     fun i => by have := hKk2_nn i; linarith, ?_⟩
@@ -1385,7 +1377,6 @@ theorem zeroOrderCoefficient_jet_tower_quadratic_background
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
     (selfLow_joint (I := I) (M := M) g g_bg T hδg hδZ)
-    (Real.sqrt_nonneg Λ)
     (fun s hs => by
       rw [hsΛ, hΛdef]
       simpa only [covariantJetNormSq] using
@@ -1395,26 +1386,26 @@ theorem zeroOrderCoefficient_jet_tower_quadratic_background
       (selfLowInt (I := I) (M := M) g g_bg T hδ_lt hδg hδZ) ≤ Λ := by
     simpa only [selfLowInt, covariantJetNormSq] using hpath
   have hfix : (0 : ℝ) ≤ covariantJetNormSq (I := I) (M := M) g i
-      (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g) :=
-    covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)
+      (-metricPrincipalDefectCurvCoeff (I := I) g g) :=
+    covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g (-metricPrincipalDefectCurvCoeff (I := I) g g)
   have hjet : covariantJetNormSq (I := I) (M := M) g i
       (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T hδ_lt hδg hδZ).zeroOrderCoefficient ≤
       (2 * (Kk0 i + covariantJetNormSq (I := I) (M := M) g i
-            (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)) +
+            (-metricPrincipalDefectCurvCoeff (I := I) g g)) +
           2 * Kk2 i * ∑ j ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g 0 2 (1 + j) T‖ ^ 2) *
         (1 + ∑ j ∈ Finset.range (i + 2),
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
     have hsplit := covariantJetNormSq_sub_le (I := I) (M := M) g i
       (selfLowInt (I := I) (M := M) g g_bg T hδ_lt hδg hδZ)
-      (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)
+      (-metricPrincipalDefectCurvCoeff (I := I) g g)
     rw [sub_neg_eq_add] at hsplit
     rw [zeroOrderCoefficient_eq (I := I) (M := M) g g_bg T hδ_lt hδg hδZ]
     refine hsplit.trans ?_
     have hstep : 2 * (Λ + covariantJetNormSq (I := I) (M := M) g i
-          (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)) ≤
+          (-metricPrincipalDefectCurvCoeff (I := I) g g)) ≤
         (2 * (Kk0 i + covariantJetNormSq (I := I) (M := M) g i
-              (-metricPrincipalDefectCurvCoeff (I := I) g g_bg g)) +
+              (-metricPrincipalDefectCurvCoeff (I := I) g g)) +
             2 * Kk2 i * ∑ j ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g 0 2 (1 + j) T‖ ^ 2) *
           (1 + ∑ j ∈ Finset.range (i + 2),

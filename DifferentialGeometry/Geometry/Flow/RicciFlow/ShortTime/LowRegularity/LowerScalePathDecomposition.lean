@@ -71,15 +71,15 @@ theorem lowerScaleActionCoefficients_sum_eq_path_integral_decomposition
       operatorFieldApply (I := I) (M := M) g 2 2
           (ricciDeTurckRemainderZeroOrderPathIntegral (I := I) (M := M) g g_bg T 0
               hδ_lt hδ hδ_lt hδZ +
-            metricPrincipalDefectCurvCoeff (I := I) g g_bg g) T +
+            metricPrincipalDefectCurvCoeff (I := I) g g) T +
         operatorFieldApply (I := I) (M := M) g 3 2
           (ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M) g g_bg T 0
             hδ_lt hδ hδ_lt hδZ)
           (iteratedCovGrad (I := I) g 0 2 1 T) +
         operatorFieldApply (I := I) (M := M) g 4 2
-          (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+          (rhsTopPathIntegral (I := I) (M := M) g T 0
               hδ_lt hδ hδ_lt hδZ -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g)
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)
           (iteratedCovGrad (I := I) g 0 2 2 T) := by
   classical
   let hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
@@ -114,15 +114,15 @@ theorem lowerScaleActionCoefficients_sum_eq_path_integral_decomposition
     hTsymm (zero_metricPerturbation_symmetric (I := I) (M := M) g)
     hδ_lt hδ hδ_lt hδZ]
   simp only [sub_zero, iteratedCovGrad_zero]
-  have htop := principalCoefficientAction_decomposition (I := I) (M := M) g g_bg g T
+  have htop := principalCoefficientAction_decomposition (I := I) (M := M) g g T
   simp only [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
     sub_self, operatorFieldApplication_zero_left, add_zero] at htop
   have hlap : rawTensorConnLapSmooth (I := I) g 0 2 T =
       operatorFieldApply (I := I) (M := M) g 4 2
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g)
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)
           (iteratedCovGrad (I := I) g 0 2 2 T) -
         operatorFieldApply (I := I) (M := M) g 2 2
-          (metricPrincipalDefectCurvCoeff (I := I) g g_bg g) T := by
+          (metricPrincipalDefectCurvCoeff (I := I) g g) T := by
     exact (eq_sub_iff_add_eq).2 htop.symm
   rw [hlap]
   simp only [operatorFieldApplication_add_left, operatorFieldApplication_sub_left]
@@ -145,10 +145,10 @@ theorem oneMinusConnectionLaplacian_lowerScaleActionCoefficients_eq_path_terms
       hδ_lt hδ hδ_lt hδZ
     let P1 := ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M) g g_bg T 0
       hδ_lt hδ hδ_lt hδZ
-    let P2 := rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+    let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
       hδ_lt hδ hδ_lt hδZ
-    let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
-    let K0 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+    let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
+    let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
     let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
     let B02 :=
       oneMinusConnLapSmooth (I := I) g 0 2
@@ -174,10 +174,10 @@ theorem oneMinusConnectionLaplacian_lowerScaleActionCoefficients_eq_path_terms
     hδ_lt hδ hδ_lt hδZ
   let P1 := ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M) g g_bg T 0
     hδ_lt hδ hδ_lt hδZ
-  let P2 := rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+  let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
     hδ_lt hδ hδ_lt hδZ
-  let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
-  let K0 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+  let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
+  let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
   let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
   let B02 :=
     oneMinusConnLapSmooth (I := I) g 0 2
@@ -227,8 +227,8 @@ theorem oneMinusConnectionLaplacian_lowerScaleActionCoefficients_eq_path_terms
         rawTensorConnLapSmooth (I := I) g 0 2 LT := by
     simp only [LT, oneMinusConnLapSmooth,
       rawTensorConnLapSmooth_sub]
-  have htopT := principalCoefficientAction_decomposition (I := I) (M := M) g g_bg g T
-  have htopLT := principalCoefficientAction_decomposition (I := I) (M := M) g g_bg g LT
+  have htopT := principalCoefficientAction_decomposition (I := I) (M := M) g g T
+  have htopLT := principalCoefficientAction_decomposition (I := I) (M := M) g g LT
   simp only [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
     sub_self, operatorFieldApplication_zero_left, add_zero] at htopT htopLT
   have hinside :
@@ -380,7 +380,7 @@ theorem lowerScaleZerothSecondOrderTerms_eq_raw_commutator_decomposition
         (0 : SmoothCcTensor g 0 2)) delta) :
     let P0 := ricciDeTurckRemainderZeroOrderPathIntegral (I := I) (M := M) g g_bg T 0
       hdelta_lt hdelta hdelta_lt hdeltaZ
-    let P2 := rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+    let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
       hdelta_lt hdelta hdelta_lt hdeltaZ
     let R0 := rhsDecomposition0Int (I := I) (M := M) g g_bg T
       hdelta_lt hdelta hdeltaZ
@@ -436,12 +436,12 @@ theorem lowerScaleZerothSecondOrderTerms_eq_centered_commutator_decomposition
         (0 : SmoothCcTensor g 0 2)) delta) :
     let P0 := ricciDeTurckRemainderZeroOrderPathIntegral (I := I) (M := M) g g_bg T 0
       hdelta_lt hdelta hdelta_lt hdeltaZ
-    let P2 := rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+    let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
       hdelta_lt hdelta hdelta_lt hdeltaZ
     let R0 := rhsDecomposition0Int (I := I) (M := M) g g_bg T
       hdelta_lt hdelta hdeltaZ
-    let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
-    let K0 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+    let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
+    let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
     let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
     let Q := fun U : SmoothCcTensor g 0 2 =>
       ricciDeTurckTopOrderPathIntegralCoefficient (I := I) (M := M) g T U hdelta_lt
@@ -492,8 +492,8 @@ theorem lowerScaleZerothSecondOrderTerms_eq_centered_commutator_decomposition
           (rawTensorConnLapSmooth (I := I) g 0 2 T) =
         rawTensorConnLapSmooth (I := I) g 0 2 LT := by
     simp only [LT, oneMinusConnLapSmooth, rawTensorConnLapSmooth_sub]
-  have htopT := principalCoefficientAction_decomposition (I := I) (M := M) g g_bg g T
-  have htopLT := principalCoefficientAction_decomposition (I := I) (M := M) g g_bg g LT
+  have htopT := principalCoefficientAction_decomposition (I := I) (M := M) g g T
+  have htopLT := principalCoefficientAction_decomposition (I := I) (M := M) g g LT
   simp only [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
     sub_self, operatorFieldApplication_zero_left, add_zero] at htopT htopLT
   rw [operatorFieldApplication_add_left, oneMinusConn_add (I := I) (M := M) g 0 2,

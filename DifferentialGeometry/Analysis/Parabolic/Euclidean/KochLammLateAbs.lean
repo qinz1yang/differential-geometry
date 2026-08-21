@@ -28,7 +28,7 @@ theorem klLatePiece_abs {T R k : ℝ} {A₁ A_q : ℝ≥0}
   let μ := klTailMeasure (V := V) R S
   have hkMem : MemLp (klTermKernel (R ^ 2) x)
       (ENNReal.ofReal (klQDual V)) μ :=
-    (klTermKernel_memLp (V := V) (sq_pos_of_pos hR) x).mono_measure
+    (klTermKernel_memLp (V := V) (t := R ^ 2) x).mono_measure
       (klTailTerm_le (V := V) R S)
   have hfMem : MemLp f (ENNReal.ofReal (klQReal V)) μ := by
     simpa only [klQReal_ofReal] using

@@ -65,7 +65,7 @@ def ricEndoRaisedFib (g : SmoothRiemannianMetric I M) (x : M) :
         rfl }
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [SigmaCompactSpace M] in
 @[simp] lemma ricEndoRaisedFib_apply (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
@@ -84,8 +84,8 @@ lemma inner_ricEndoRaisedFib (g : SmoothRiemannianMetric I M) (x : M)
   exact inner_metricSharp (I := I) g x (ricciTensor (I := I) g x v).toLinearMap w
 
 set_option backward.isDefEq.respectTransparency false in
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
@@ -189,6 +189,7 @@ lemma ricSlotOpFib_apply_eval (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel (s + 1) (s + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel (s + 1) (s + 1) ℝ E)
@@ -257,6 +258,7 @@ def ricSlotOpField (g : SmoothRiemannianMetric I M) (s : ℕ) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma ricSlotOpField_toSection (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     (ricSlotOpField (I := I) (M := M) g s).toSection x =
       (show TensorRSSpace (s + 1) (s + 1) I x from ricSlotOpFib (I := I) (M := M) g s x) := rfl

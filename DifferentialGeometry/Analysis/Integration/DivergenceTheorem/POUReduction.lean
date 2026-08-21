@@ -219,7 +219,7 @@ private lemma localDivergence_at_self_smoothSmul [I.Boundaryless]
         (extChartAt I x x)
     ring
 
-theorem divergence_g_smoothSmul [I.Boundaryless] [T2Space M]
+theorem divergence_g_smoothSmul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -334,8 +334,7 @@ theorem tangentSectionAction_pou_tsum_eq_zero
   rw [mfderiv_const]
   rfl
 
-theorem divergence_g_pou_tsum [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+theorem divergence_g_pou_tsum [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M, divergence_g (I := I) g X x =
@@ -409,7 +408,7 @@ theorem divergence_g_pou_tsum [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
   rw [hsum_action]
   ring
 
-theorem divergence_g_add [I.Boundaryless] [T2Space M]
+theorem divergence_g_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M, divergence_g (I := I) g (X + Y) x =
@@ -505,7 +504,7 @@ theorem divergence_g_add [I.Boundaryless] [T2Space M]
   rw [Finset.sum_add_distrib]
   rw [add_div]
 
-theorem divergence_g_zero [I.Boundaryless] [T2Space M]
+theorem divergence_g_zero [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
     ∀ x : M, divergence_g (I := I) g
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by

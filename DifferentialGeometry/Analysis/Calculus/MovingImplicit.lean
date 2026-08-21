@@ -51,7 +51,7 @@ theorem exists_eq_of_fderiv
 theorem exists_preim_tail
     {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace Real E] [FiniteDimensional Real E]
-    [NormedAddCommGroup F] [NormedSpace Real F] [FiniteDimensional Real F]
+    [NormedAddCommGroup F] [NormedSpace Real F]
     {D : Set E} (hD : IsOpen D)
     {H : Nat → E → F} {HInf : E → F}
     (hH : ∀ n, ContDiffOn Real ∞ (H n) D)
@@ -295,9 +295,6 @@ theorem rootDeriv_contDiffOn
 
 noncomputable def pinnedRootMap
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P]
-    [NormedAddCommGroup X] [NormedSpace Real X]
-    [NormedAddCommGroup Y] [NormedSpace Real Y]
     (F : P × X → Y) : P × X → Y × P :=
   fun z => (F z, z.1)
 
@@ -414,7 +411,7 @@ theorem mem_closedTube
 
 theorem closedTube_compact
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
+    [NormedAddCommGroup P] [NormedSpace Real P]
     [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     {D : Set (P × X)} {W₀ K : Set P}
@@ -533,7 +530,7 @@ theorem mem_closedAnnulus
 
 theorem annulus_compact
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
+    [NormedAddCommGroup P] [NormedSpace Real P]
     [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     {D : Set (P × X)} {W₀ K : Set P}
@@ -552,9 +549,8 @@ theorem annulus_compact
 
 theorem exists_residual_gap
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
-    [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
-    [NormedAddCommGroup Y] [NormedSpace Real Y] [FiniteDimensional Real Y]
+    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
+    [NormedAddCommGroup Y] [NormedSpace Real Y]
     {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
@@ -585,9 +581,8 @@ theorem exists_residual_gap
 
 theorem eventually_no_root
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
-    [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
-    [NormedAddCommGroup Y] [NormedSpace Real Y] [FiniteDimensional Real Y]
+    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
+    [NormedAddCommGroup Y] [NormedSpace Real Y]
     {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
@@ -614,10 +609,8 @@ theorem eventually_no_root
 
 theorem exists_deriv_radius
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
-    [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
-    [NormedAddCommGroup Y] [NormedSpace Real Y] [FiniteDimensional Real Y]
-    {D : Set (P × X)} {W₀ K : Set P}
+    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
+    [NormedAddCommGroup Y] [NormedSpace Real Y] {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
@@ -738,8 +731,7 @@ theorem exists_root_buffer
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
     [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
-    [NormedAddCommGroup Y] [NormedSpace Real Y] [FiniteDimensional Real Y]
-    {D : Set (P × X)} {W₀ K : Set P}
+    [NormedAddCommGroup Y] [NormedSpace Real Y] {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
@@ -964,8 +956,7 @@ theorem exists_root_c0
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
     [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
-    [NormedAddCommGroup Y] [NormedSpace Real Y] [FiniteDimensional Real Y]
-    {D : Set (P × X)} {W₀ K : Set P}
+    [NormedAddCommGroup Y] [NormedSpace Real Y] {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}

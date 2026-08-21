@@ -49,6 +49,7 @@ noncomputable def ipLowCc (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ipLowCc_eq_ccOperatorFieldComp
     (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1) :
     ipLowCc (I := I) (M := M) g om =
@@ -57,6 +58,7 @@ theorem ipLowCc_eq_ccOperatorFieldComp
           (slotExtend (I := I) (M := M) g 0 1 om)) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem ipLowCc_sub
     (g : SmoothRiemannianMetric I M) (a b : SmoothCcTensor g 0 1) :
     ipLowCc (I := I) (M := M) g (a - b) =
@@ -250,6 +252,7 @@ private lemma ipjb_cons_sum_smul {n : ℕ}
 end Eval
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1)
     (x : M) (V : TangentSpace I x)
     (hflat : ∀ z : TangentSpace I x,

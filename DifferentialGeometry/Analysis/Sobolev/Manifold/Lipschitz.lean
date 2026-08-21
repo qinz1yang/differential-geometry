@@ -343,7 +343,7 @@ theorem mem_chart_one_of_lip
     (hu : ∀ x y, edist (u x) (u y) ≤ L *
       DifferentialGeometry.riemannianEDistOf (I := I) g x y)
     (hB : ∀ x, ‖u x‖₊ ≤ B) :
-    MemWkpChart (I := I) (M := M) g 1 p u := by
+    MemWkpChart (I := I) (M := M) 1 p u := by
   classical
   intro α
   let ρ : M → ℝ := fun x =>

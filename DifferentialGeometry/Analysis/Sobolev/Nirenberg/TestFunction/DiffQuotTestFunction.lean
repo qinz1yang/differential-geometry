@@ -102,7 +102,7 @@ theorem nirenbergTestFunction_hasCompactSupport
 omit [NeZero d] in
 theorem sq_nirenbergTestFunction_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
-    {M_η : ℝ} (_hM_η_nn : 0 ≤ M_η) (hM_η : ∀ x, |η x| ≤ M_η) (x : EuclN) :
+    {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η) (x : EuclN) :
     (nirenbergTestFunction k h η u x)^2 ≤
       M_η^4 *
         (diffQuot k h u (x + (-h) • EuclideanSpace.single k 1))^2 := by
@@ -188,7 +188,7 @@ private lemma lintegral_translate_diffQuot_sq
 omit [NeZero d] in
 theorem eLpNorm_nirenbergTestFunction_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
-    {M_η : ℝ} (hM_η_nn : 0 ≤ M_η) (hM_η : ∀ x, |η x| ≤ M_η) :
+    {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η) :
     eLpNorm (nirenbergTestFunction k h η u) 2 (volume : Measure EuclN) ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
@@ -206,7 +206,7 @@ theorem eLpNorm_nirenbergTestFunction_le
             : ℝ≥0∞)^(2 : ℕ) := by
     intro x
     have h_real :=
-      sq_nirenbergTestFunction_le (d := d) (u := u) k h hM_η_nn hM_η x
+      sq_nirenbergTestFunction_le (d := d) (u := u) k h hM_η x
     have h_lhs_eq :
         (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) =
           ENNReal.ofReal ((nirenbergTestFunction k h η u x)^2) := by
@@ -305,12 +305,12 @@ private lemma volume_compact_lt_top {K : Set EuclN} (hK : IsCompact K) :
 omit [NeZero d] in
 theorem eLpNorm_nirenbergTestFunction_restrict_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
-    {M_η : ℝ} (hM_η_nn : 0 ≤ M_η) (hM_η : ∀ x, |η x| ≤ M_η)
+    {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η)
     (Ω' : Set EuclN) :
     eLpNorm (nirenbergTestFunction k h η u) 2 ((volume : Measure EuclN).restrict Ω') ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
-  refine le_trans ?_ (eLpNorm_nirenbergTestFunction_le (d := d) k h hM_η_nn hM_η)
+  refine le_trans ?_ (eLpNorm_nirenbergTestFunction_le (d := d) k h hM_η)
   exact eLpNorm_mono_measure _ Measure.restrict_le_self
 
 omit [NeZero d] in

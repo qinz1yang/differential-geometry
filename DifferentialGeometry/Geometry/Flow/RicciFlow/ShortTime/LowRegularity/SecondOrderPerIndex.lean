@@ -124,7 +124,7 @@ private theorem c2SupJet (hDim : Module.finrank ℝ E = 3)
           Ks i * (1 + ∑ j ∈ Finset.range (i + 3),
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
-  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_sharp (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_sharp (I := I) (M := M) g g_bg
   choose Csh hCsh_nn hCsh using fun i : ℕ =>
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
       (I := I) (M := M) g (2 + 2) (2 + i)

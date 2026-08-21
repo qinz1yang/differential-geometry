@@ -561,7 +561,7 @@ def fineSecTerm
 
 theorem fineTerm_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
@@ -593,7 +593,7 @@ theorem fineTerm_joint
     fineCoeff_joint (I := I) (M := M)
       rFine hr r s k z α P Q hp hp_top
   obtain ⟨K_cross, hK_cross, hcross⟩ :=
-    crossChartJointK (I := I) (M := M) g k hp hp_top α
+    crossChartJointK (I := I) (M := M) k hp hp_top α
       (canonFlatBase (I := I) (M := M) rFine hr z)
       (K_α := tsupport
         (((canonFlatChi (I := I) (M := M) rFine hr z :

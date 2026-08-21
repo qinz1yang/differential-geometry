@@ -23,15 +23,12 @@ theorem pinch_quotient_evolution_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (hdim : forall (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3)
     {epsilon : Real}
-    (_heps_pos : 0 < epsilon)
-    (_heps_lt : epsilon < 1)
     (hscalar : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       0 < S.scalar (t : Real) x) :
@@ -58,8 +55,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_heat_equation_of_diagonal_frame_components
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D)
+    [CompleteSpace E] (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
     (frame : Fin 3 -> (x : M) -> TangentSpace I x)
@@ -125,8 +121,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_heat_equation_of_curvature_trace_data
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D)
+    [CompleteSpace E] (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
     (frame : Fin 3 -> (x : M) -> TangentSpace I x)
@@ -195,8 +190,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_heat_equation_of_first_trace_frame_data
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D)
+    [CompleteSpace E] (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
     (frame : Fin 3 -> (x : M) -> TangentSpace I x)

@@ -45,7 +45,7 @@ noncomputable def chartSobolevRawNorm
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
     ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
       ENNReal.ofReal
-        (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+        (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
           (fun b : M =>
             rawTensorConnLap (I := I) g r s
               (fun z : M => T.toSection z) b)
@@ -60,7 +60,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           ENNReal.ofReal
-            (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+            (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
               (fun b : M =>
                 rawTensorConnLap (I := I) g r s
                   (fun z : M => T.toSection z) b)
@@ -120,7 +120,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNorm_of_section
               ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M =>
                         rawTensorConnLap (I := I) g r s
                           (fun z : M => T₀ z) b)

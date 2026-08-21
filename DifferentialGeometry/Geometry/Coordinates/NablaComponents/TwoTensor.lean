@@ -115,7 +115,7 @@ theorem tensor0S_two_eval_coordFrame_sum
 
 omit [IsManifold I 2 M] in
 omit h_mfd in
-theorem tensor0S_two_symm_of_coordFrame [IsManifold I ∞ M]
+theorem tensor0S_two_symm_of_coordFrame
     {Idx : Type*} [Finite Idx]
     {x₀ : M}
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x₀))

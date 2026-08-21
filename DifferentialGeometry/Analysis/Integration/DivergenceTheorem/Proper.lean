@@ -110,7 +110,7 @@ private lemma localDivergence_zero_of_eventuallyEq_zero [I.Boundaryless]
     exact hsum_zero i]
   rw [zero_div]
 
-lemma divergence_g_zero_of_eventuallyEq_zero [I.Boundaryless] [T2Space M]
+lemma divergence_g_zero_of_eventuallyEq_zero [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) {x : M}
     (hev : (X : ∀ x, TangentSpace I x) =ᶠ[𝓝 x] (0 : ∀ x, TangentSpace I x)) :
@@ -118,8 +118,7 @@ lemma divergence_g_zero_of_eventuallyEq_zero [I.Boundaryless] [T2Space M]
   rw [divergence_g_def]
   exact localDivergence_zero_of_eventuallyEq_zero (I := I) g x X (mem_chart_source H x) hev
 
-lemma support_divergence_g_subset [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+lemma support_divergence_g_subset [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Function.support (divergence_g (I := I) g X) ⊆ tsupport X := by
   intro x hx
@@ -133,14 +132,12 @@ lemma support_divergence_g_subset [I.Boundaryless] [T2Space M]
     exact hy (subset_tsupport _ hyS)
   exact hx (divergence_g_zero_of_eventuallyEq_zero (I := I) g X hev)
 
-lemma tsupport_divergence_g_subset [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+lemma tsupport_divergence_g_subset [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     tsupport (divergence_g (I := I) g X) ⊆ tsupport X :=
   closure_minimal (support_divergence_g_subset (I := I) g X) (isClosed_tsupport _)
 
-lemma hasCompactSupport_divergence_g [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+lemma hasCompactSupport_divergence_g [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯} (hX : HasCompactSupport X) :
     HasCompactSupport (divergence_g (I := I) g X) :=
   hX.mono' (support_divergence_g_subset (I := I) g X)

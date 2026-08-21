@@ -23,7 +23,6 @@ open scoped Manifold ContDiff
 
 def limitPointed
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
     {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {A : ℕ → Type u} [∀ k, TopologicalSpace (A k)] [∀ k, ChartedSpace H (A k)]
     [∀ k, IsManifold I ∞ (A k)] [∀ k, Nonempty (A k)]
@@ -37,7 +36,7 @@ def limitPointed
 
 def limitPointedCoc
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {A : ℕ → Type u} [∀ k, TopologicalSpace (A k)] [∀ k, ChartedSpace H (A k)]
     [∀ k, IsManifold I ∞ (A k)] [∀ k, Nonempty (A k)]
@@ -164,17 +163,9 @@ def limitCGConverges
       metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
     letI : T2Space (MetricSourceDomain (I := I) Φ k) :=
       metricSourceDomT2 (I := I) Φ k
-    let sourceSigma : SigmaCompactSpace (metricSourceOpen (I := I) Φ k) := by
-      change SigmaCompactSpace (MetricSourceDomain (I := I) Φ k)
-      exact metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
-    let sourceT2 : T2Space (metricSourceOpen (I := I) Φ k) := by
-      change T2Space (MetricSourceDomain (I := I) Φ k)
-      exact metricSourceDomT2 (I := I) Φ k
-    exact @SmoothRiemannianMetric.restrictOpen E inferInstance inferInstance H inferInstance I
-      S.toSeqSystem.Lim inferInstance inferInstance inferInstance inferInstance
-      (S.limitMetric gLim hgLim) (metricSourceOpen (I := I) Φ k) sourceSigma sourceT2
+    exact (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpen (I := I) Φ k)
   refine PointedRiemannianCGConverges.ofRestrictPullback (I := I)
-    Φ hσsrc hσtgt refMetric ?_
+    Φ hσsrc refMetric ?_
   intro K hK p ε hε
   obtain ⟨kSrc, hkSrc⟩ := Φ.source_subset hK
   obtain ⟨kConv, hkConv⟩ := hstage ε hε p
@@ -210,12 +201,6 @@ def limitCGConverges
   letI : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomSigmaOf (I := I) Φ k (hσtgt k)
   let F := metricSourceTargetDiff (I := I) Φ k
-  let sourceSigma : SigmaCompactSpace (metricSourceOpen (I := I) Φ k) := by
-    change SigmaCompactSpace (MetricSourceDomain (I := I) Φ k)
-    exact metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
-  let sourceT2 : T2Space (metricSourceOpen (I := I) Φ k) := by
-    change T2Space (MetricSourceDomain (I := I) Φ k)
-    exact metricSourceDomT2 (I := I) Φ k
   letI targetSigma : SigmaCompactSpace (metricTargetOpen (I := I) Φ k) := by
     change SigmaCompactSpace (MetricTargetDomain (I := I) Φ k)
     exact metricTargetDomSigmaOf (I := I) Φ k (hσtgt k)
@@ -223,17 +208,11 @@ def limitCGConverges
     change T2Space (MetricTargetDomain (I := I) Φ k)
     exact metricTargetDomT2 (I := I) Φ k
   let sourceMetric : SmoothRiemannianMetric I (MetricSourceDomain (I := I) Φ k) :=
-    @SmoothRiemannianMetric.restrictOpen E inferInstance inferInstance H inferInstance I
-      S.toSeqSystem.Lim inferInstance inferInstance inferInstance inferInstance
-      (S.limitMetric gLim hgLim) (metricSourceOpen (I := I) Φ k) sourceSigma sourceT2
+    (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpen (I := I) Φ k)
   let targetSeq : SmoothRiemannianMetric I (MetricTargetDomain (I := I) Φ k) :=
-    @SmoothRiemannianMetric.restrictOpen E inferInstance inferInstance H inferInstance I
-      (A k) inferInstance inferInstance inferInstance inferInstance
-      (gSeq k) (metricTargetOpen (I := I) Φ k) targetSigma targetT2
+    (gSeq k).restrictOpen (I := I) (metricTargetOpen (I := I) Φ k)
   let targetLim : SmoothRiemannianMetric I (MetricTargetDomain (I := I) Φ k) :=
-    @SmoothRiemannianMetric.restrictOpen E inferInstance inferInstance H inferInstance I
-      (A k) inferInstance inferInstance inferInstance inferInstance
-      (gLim k) (metricTargetOpen (I := I) Φ k) targetSigma targetT2
+    (gLim k).restrictOpen (I := I) (metricTargetOpen (I := I) Φ k)
   have hlim : sourceMetric = Diffeomorph.pullbackMetric (I := I) targetLim F := by
     have metric_ext : ∀ (g₁ g₂ : SmoothRiemannianMetric I
         (MetricSourceDomain (I := I) Φ k)),
@@ -641,7 +620,8 @@ theorem compact_cball_cover (S : SmoothSeqSystem I A)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem limitComplete_cover [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+omit [CompleteSpace E] in
+theorem limitComplete_cover
     (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g)
     [∀ k, PreconnectedSpace (A k)]
@@ -679,7 +659,8 @@ theorem limitComplete_cover [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem limitComplete [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+omit [CompleteSpace E] in
+theorem limitComplete
     (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g)
     [∀ k, PreconnectedSpace (A k)]

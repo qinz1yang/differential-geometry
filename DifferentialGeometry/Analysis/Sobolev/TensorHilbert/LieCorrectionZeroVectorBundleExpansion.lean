@@ -40,6 +40,7 @@ theorem metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (g₀
   rw [metricLoweredConnectionDifference_unitModel_apply, connectionDifferenceLoweredCc_unitModel_apply']
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem operatorFieldComposition_cometricCast_eq_reindexedPureTrace (g₀ g₁ : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 3) :
     ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 1
@@ -67,6 +68,7 @@ theorem operatorFieldComposition_cometricCast_eq_reindexedPureTrace (g₀ g₁ :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp (g₀ g₁ : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g₀ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 1
@@ -84,6 +86,7 @@ theorem deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp (g�
     _ = _ := operatorFieldComposition_cometricCast_eq_reindexedPureTrace (I := I) (M := M) g₀ g₁ _
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem deTurckVectorFieldCovector_sub_eq_reindexedPureTrace_ccOperatorFieldComp (g₀ g₁ gA gB : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gA -
         deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gB =
@@ -139,6 +142,7 @@ noncomputable def lieCorrectionZeroVectorBundleExpansion (g₀ g₁ : SmoothRiem
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g₀)))
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVectorBundle_eq_expansion (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁ =
       lieCorrectionZeroVectorBundleExpansion (I := I) (M := M) g₀ g₁ := by

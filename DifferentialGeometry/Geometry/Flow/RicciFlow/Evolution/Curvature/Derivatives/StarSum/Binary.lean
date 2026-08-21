@@ -978,6 +978,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rmComp_eq_rm
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) {x : M}
@@ -1217,6 +1218,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem e0Field_comp
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) {x : M}
@@ -1262,6 +1264,7 @@ open DifferentialGeometry.Dim3Reaction in
 set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem residualStarSum_zero
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D)

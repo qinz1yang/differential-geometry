@@ -139,11 +139,10 @@ lemma divergence_g_with_boundary_zero_of_eventuallyEq_zero
 
 
 omit [InnerProductSpace ℝ E] in
-lemma support_divergence_g_with_boundary_subset_of_interior_support
-    [T2Space M]
+lemma support_divergence_g_with_boundary_subset
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (_hX_int : tsupport X ⊆ I.interior M) :
+    :
     Function.support (divergence_g_with_boundary (I := I) g X) ⊆ tsupport X := by
   intro x hx
   by_contra hxnotin
@@ -157,26 +156,23 @@ lemma support_divergence_g_with_boundary_subset_of_interior_support
   exact hx (divergence_g_with_boundary_zero_of_eventuallyEq_zero (I := I) g X hev)
 
 omit [InnerProductSpace ℝ E] in
-lemma tsupport_divergence_g_with_boundary_subset_of_interior_support
-    [T2Space M]
+lemma tsupport_divergence_g_with_boundary_subset
     (g : SmoothRiemannianMetric I M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (hX_int : tsupport X ⊆ I.interior M) :
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     tsupport (divergence_g_with_boundary (I := I) g X) ⊆ tsupport X :=
   closure_minimal
-    (support_divergence_g_with_boundary_subset_of_interior_support
-      (I := I) g X hX_int) (isClosed_tsupport _)
+    (support_divergence_g_with_boundary_subset
+      (I := I) g X) (isClosed_tsupport _)
 
 omit [InnerProductSpace ℝ E] in
 lemma hasCompactSupport_divergence_g_with_boundary
-    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯}
-    (hX : HasCompactSupport X) (hX_int : tsupport X ⊆ I.interior M) :
+    (hX : HasCompactSupport X) :
     HasCompactSupport (divergence_g_with_boundary (I := I) g X) :=
   hX.mono'
-    (support_divergence_g_with_boundary_subset_of_interior_support
-      (I := I) g X hX_int)
+    (support_divergence_g_with_boundary_subset
+      (I := I) g X)
 
 omit [InnerProductSpace ℝ E] in
 private lemma tangentSectionAction_continuous_of_interior_support
@@ -619,8 +615,8 @@ theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
   have hX_compact : IsCompact (tsupport X) :=
     .of_isClosed_subset isCompact_univ (isClosed_tsupport _) (Set.subset_univ _)
   have hdiv_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ tsupport X :=
-    tsupport_divergence_g_with_boundary_subset_of_interior_support
-      (I := I) g X hX_int
+    tsupport_divergence_g_with_boundary_subset
+      (I := I) g X
   have hdiv_supp_int : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
     hdiv_supp.trans hX_int
   have hdiv_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
@@ -879,12 +875,12 @@ theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interi
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) :=
     chartAtlasPOU_isSubordinate I M
   have hdiv_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ K :=
-    tsupport_divergence_g_with_boundary_subset_of_interior_support
-      (I := I) g X hX_int
+    tsupport_divergence_g_with_boundary_subset
+      (I := I) g X
   have hdiv_supp_int : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
     hdiv_supp.trans hX_int
   have hdiv_cs : HasCompactSupport (divergence_g_with_boundary (I := I) g X) :=
-    hasCompactSupport_divergence_g_with_boundary (I := I) g hX hX_int
+    hasCompactSupport_divergence_g_with_boundary (I := I) g hX
   have hdiv_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
     rw [continuous_iff_continuousAt]
     intro x

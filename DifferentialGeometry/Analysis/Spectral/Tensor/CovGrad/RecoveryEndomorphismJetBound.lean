@@ -84,7 +84,7 @@ private lemma fiberNormSqComponent_zero_toModel
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma fiberNormSqComponent_cometricRaiseSlot0Field_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : SmoothCcTensor g₀ 0 (s + 2))
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -132,7 +132,7 @@ private lemma fiberNormSqComponent_cometricRaiseSlot0Field_eq
   rw [hLHS, hRHS]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_cometricRaiseSlot0Field_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : SmoothCcTensor g₀ 0 (s + 2)) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 1 (s + 1) x
@@ -353,6 +353,7 @@ private lemma flatArmFib_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma flatArmCc_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) :
     flatArmCc (I := I) g₀ g₀ kind = 0 := by
   apply SmoothCcTensor.ext
@@ -390,7 +391,7 @@ private lemma unitModel_eq_ccTensorBilin_loc (g₀ : SmoothRiemannianMetric I M)
   fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma omRecoverEndoCc_eq_idEndo_add_raise
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -493,6 +494,7 @@ private lemma omRecoverEndoCc_eq_idEndo_add_raise
   rw [htie]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem riemannianFiberNormSq_idEndo_le (g₀ : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 1 1 x
         ((sharpFlatEndoCc (I := I) g₀ g₀).toSection x) ≤
@@ -507,7 +509,7 @@ theorem riemannianFiberNormSq_idEndo_le (g₀ : SmoothRiemannianMetric I M) (x :
     intro y v w
     rw [ccTensorBilinSymm_zero_apply]
     simp
-  have hb := riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one (I := I) g₀ (δ₀ := 0) (le_refl 0)
+  have hb := riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one (I := I) g₀ (δ₀ := 0)
     (by norm_num : (0 : ℝ) < 1) g₀ (0 : SmoothCcTensor g₀ 0 2) htie0
     (le_refl (0 : ℝ)) (le_refl 0) hbnd x
   have hsimp : (Module.finrank ℝ E : ℝ) ^ 2 * (1 / (1 - (0 : ℝ))) ^ 2 =
@@ -520,7 +522,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_omRecoverEndoCc_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
-    {R : ℝ} (_hR : 0 ≤ R) {δ : ℝ} (_hδ0 : 0 ≤ δ) (_hδ1 : δ < 1)
+    {R : ℝ}
     (hTjet : ∀ j : ℕ, j ≤ a + 1 → ∀ y : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) y
         ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection y) ≤ R ^ 2) :

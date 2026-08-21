@@ -341,7 +341,6 @@ namespace NormalCoordMetricBoundInput
 
 theorem chart_mem_norm_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (_h : NormalCoordMetricBoundInput (I := I) X)
     (k : Nat) (c y : (X.obj k).M)
     (hdist :
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1754,8 +1753,7 @@ theorem exists_pair_branch
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    0 < ρ →
-      ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
       ∃ B : DiagInvBranch (I := I) (X.obj k).metric
@@ -1784,7 +1782,7 @@ theorem exists_pair_branch
   letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
   letI : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  intro hρ hρExp hpairs
+  intro hρExp hpairs
   change ∃ hq : 0 < q,
     ∃ e : OpenPartialHomeomorph (E × E) (E × E),
       ∃ he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e,
@@ -1926,8 +1924,9 @@ theorem exists_pair_readout
   letI : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
   intro hρ hρExp hpairs
+  let _ := hρ
   obtain ⟨B, hB⟩ := exists_pair_branch (I := I) hb k hcomplete hconn x hdom
-    a b hρ hρExp hpairs
+    a b hρExp hpairs
   refine ⟨B, fun i => ⟨hB i, ?_⟩⟩
   have haLt : riemannianEDist I x (a i) < ENNReal.ofReal (ρ / 2) :=
     (le_max_left _ _).trans_lt (hpairs i)
@@ -1936,7 +1935,8 @@ theorem exists_pair_readout
   have haReal : (riemannianEDist I x (a i)).toReal < ρ / 2 :=
     (ENNReal.lt_ofReal_iff_toReal_lt haFin).mp haLt
   have haSource :=
-    (hb.chart_mem_norm_le k x (a i) ⟨haFin, haReal.trans hρExp⟩).1
+    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I)
+      k x (a i) ⟨haFin, haReal.trans hρExp⟩).1
   rw [TangentBundle.trivializationAt_baseSet]
   apply NormalCoordinates.exp_target_sub_chart (I := I) (X.obj k).metric x
   simpa only [NormalCoordinates.framedChartAt,

@@ -1281,6 +1281,8 @@ theorem eigenTimeSpatialProductMode_iteratedFDerivWithin_summable_majorant_ofOrd
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 lemma chartGramOnE_realize_eq_add_half_rawCompOnE
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

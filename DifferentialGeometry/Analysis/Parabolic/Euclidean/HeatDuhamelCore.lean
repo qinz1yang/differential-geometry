@@ -28,6 +28,7 @@ theorem slice_compact (f : ℝ × V → ℝ) (hfc : HasCompactSupport f) (s : �
   exact hy
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 private theorem heat_sub_fderiv {t : ℝ} (v x y : V) :
     fderiv ℝ (fun z : V ↦ heatKernel t (x - z)) y v =
       -heatD1 t v (x - y) := by
@@ -43,6 +44,7 @@ private theorem heat_sub_fderiv {t : ℝ} (v x y : V) :
   simp
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 private theorem d1_sub_fderiv {t : ℝ} (v w x y : V) :
     fderiv ℝ (fun z : V ↦ heatD1 t v (x - z)) y w =
       -heatD2 t v w (x - y) := by

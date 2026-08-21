@@ -665,12 +665,12 @@ lemma hs_extreme_interp {f : ℕ → ℝ} (hf_nn : ∀ k, 0 ≤ f k)
     by_cases hge : γ ≤ σ₁ + σ₂
     · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := σ₁ + σ₂ - γ) (τ₂ := γ)
-        (by omega) hle (by omega) (by omega)
+        (by omega) hle (by omega)
       have hlowB : f (σ₁ + σ₂ - γ) ≤ B := hB _ (by omega)
       exact le_trans hex (mul_le_mul_of_nonneg_right hlowB (hf_nn γ))
     · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := 0) (τ₂ := σ₁ + σ₂)
-        (Nat.zero_le _) hle (by omega) (by omega)
+        (Nat.zero_le _) hle (by omega)
       have hf0B : f 0 ≤ B := hB 0 (Nat.zero_le _)
       have hαβγ : f (σ₁ + σ₂) ≤ f γ := hmono (by omega)
       exact le_trans hex (mul_le_mul hf0B hαβγ (hf_nn _) (le_trans (hf_nn 0) hf0B))

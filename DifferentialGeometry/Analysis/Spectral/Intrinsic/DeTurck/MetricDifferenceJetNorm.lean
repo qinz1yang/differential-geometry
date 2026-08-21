@@ -127,6 +127,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem metricDiff2JetNorm_eq_riemannianNorm_sum
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
@@ -150,6 +151,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem metricDiff2JetNorm_nonneg
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     0 ≤ metricDiff2JetNorm (I := I) g₀ g₁ g₂ x := by
@@ -175,6 +177,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem metricDiff2JetNorm_continuous
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Continuous (fun x : M => metricDiff2JetNorm (I := I) g₀ g₁ g₂ x) := by

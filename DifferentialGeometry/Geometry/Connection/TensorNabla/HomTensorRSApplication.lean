@@ -152,7 +152,7 @@ theorem appFullRSFib_add_left (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   rw [homTensorRSApplyFib, homTensorRSApplyFib, homTensorRSApplyFib, ContinuousLinearMap.add_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-noncomputable def slotInsertHomTensorRSFib (_g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
+noncomputable def slotInsertHomTensorRSFib (r a c : ℕ) (x : M)
     (A : TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x) :
     TensorRSSpace r (a + 1) I x →L[ℝ] TensorRSSpace r (c + 1) I x :=
   haveI : FiniteDimensional ℝ (TensorRSSpace r (a + 1) I x) :=
@@ -174,9 +174,9 @@ noncomputable def slotInsertHomTensorRSFib (_g : SmoothRiemannianMetric I M) (r 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma slotExtendFullFib_apply (g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
+@[simp] lemma slotExtendFullFib_apply (r a c : ℕ) (x : M)
     (A : TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x) (D : TensorRSSpace r (a + 1) I x) :
-    slotInsertHomTensorRSFib (I := I) (M := M) g r a c x A D =
+    slotInsertHomTensorRSFib (I := I) (M := M) r a c x A D =
       covGradBundleEquiv (I := I) (M := M) r c x
         (A.comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm D)) :=
   rfl
@@ -184,16 +184,16 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma slotExtendFullFib_apply_eval (g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
+lemma slotExtendFullFib_apply_eval (r a c : ℕ) (x : M)
     (A : TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x) (D : TensorRSSpace r (a + 1) I x)
     (Dlow : Tensor0SSpace r I x) (v0 : TangentSpace I x) (vs : Fin c → TangentSpace I x) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (c + 1) I x from
-          slotInsertHomTensorRSFib (I := I) (M := M) g r a c x A D) Dlow) (Fin.cons v0 vs) =
+          slotInsertHomTensorRSFib (I := I) (M := M) r a c x A D) Dlow) (Fin.cons v0 vs) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace c I x from
           A ((covGradBundleEquiv (I := I) (M := M) r a x).symm D v0)) Dlow) vs := by
-  rw [slotExtendFullFib_apply (I := I) (M := M) g r a c x A D]
+  rw [slotExtendFullFib_apply (I := I) (M := M) r a c x A D]
   rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r c x
     (A.comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm D)) Dlow (Fin.cons v0 vs)]
   have htail : Matrix.vecTail (Fin.cons v0 vs : Fin (c + 1) → TangentSpace I x) = vs := by
@@ -308,7 +308,7 @@ theorem covGradBundleEquiv_section_contMDiff (r c : ℕ)
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem slotExtendFullFib_contMDiff (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+theorem slotExtendFullFib_contMDiff (r a c : ℕ)
     (Ψ : Π x : M, TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x)
     (hΨ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r a ℝ E →L[ℝ] TensorRSModel r c ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r a ℝ E →L[ℝ] TensorRSModel r c ℝ E)
@@ -316,11 +316,11 @@ theorem slotExtendFullFib_contMDiff (g : SmoothRiemannianMetric I M) (r a c : �
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (a + 1) ℝ E →L[ℝ] TensorRSModel r (c + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r (a + 1) ℝ E →L[ℝ] TensorRSModel r (c + 1) ℝ E)
         (E := fun z : M => TensorRSSpace r (a + 1) I z →L[ℝ] TensorRSSpace r (c + 1) I z) x
-        (slotInsertHomTensorRSFib (I := I) (M := M) g r a c x (Ψ x))) := by
+        (slotInsertHomTensorRSFib (I := I) (M := M) r a c x (Ψ x))) := by
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (V₁ := fun z : M => TensorRSSpace r (a + 1) I z)
     (V₂ := fun z : M => TensorRSSpace r (c + 1) I z)
-    (φ := fun x => slotInsertHomTensorRSFib (I := I) (M := M) g r a c x (Ψ x))
+    (φ := fun x => slotInsertHomTensorRSFib (I := I) (M := M) r a c x (Ψ x))
   intro D
   have hG := slotExtendFullFib_apply_contMDiff (I := I) (M := M) r a c Ψ hΨ D
   have hcov := covGradBundleEquiv_section_contMDiff (I := I) (M := M) r c

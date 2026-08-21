@@ -330,7 +330,7 @@ theorem metricCovDeriv_one_eval_localFrame
 
 omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_one_component_localFrame
-    {Idx : Type*} [Finite Idx] {u : Set M}
+    {Idx : Type*} {u : Set M}
     (h gRef : SmoothRiemannianMetric I M)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
@@ -390,7 +390,7 @@ noncomputable def metricDerivNormSupOn
         metricDerivNorm (I := I) a gk gInf gRef x = r}
 
 def MetricCPConvOn
-    (K : Set M) (_hK : IsCompact K) (p : Nat)
+    (K : Set M) (p : Nat)
     (gSeq : Nat -> SmoothRiemannianMetric I M)
     (gInf gRef : SmoothRiemannianMetric I M) : Prop :=
   forall ε : Real, 0 < ε ->
@@ -398,16 +398,16 @@ def MetricCPConvOn
       metricDerivNormSupOn (I := I) K p (gSeq k) gInf gRef < ε
 
 def MetricCInfConvOn
-    (K : Set M) (hK : IsCompact K)
+    (K : Set M)
     (gSeq : Nat -> SmoothRiemannianMetric I M)
     (gInf gRef : SmoothRiemannianMetric I M) : Prop :=
-  forall p : Nat, MetricCPConvOn (I := I) K hK p gSeq gInf gRef
+  forall p : Nat, MetricCPConvOn (I := I) K p gSeq gInf gRef
 
 def MetricCInfConvOnCompacts
     (gSeq : Nat -> SmoothRiemannianMetric I M)
     (gInf gRef : SmoothRiemannianMetric I M) : Prop :=
-  forall K : Set M, forall hK : IsCompact K,
-    MetricCInfConvOn (I := I) K hK gSeq gInf gRef
+  forall K : Set M, forall _hK : IsCompact K,
+    MetricCInfConvOn (I := I) K gSeq gInf gRef
 
 structure MetricCInfConvData
     (I : ModelWithCorners Real E H) (M : Type*)

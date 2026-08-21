@@ -210,11 +210,10 @@ theorem ricciEvolOfSol
       (t : Real) := by
   exact coordRicciEvol (I := I) S hS x0 t i j
 
-omit [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] in
 theorem invSymmOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S)
     (x0 : M) :
     ∀ t i j,
       coordInv (I := I) S x0 t x0 i j =
@@ -224,10 +223,10 @@ theorem invSymmOfSol
     DifferentialGeometry.Tensor.Coordinates.gInvChart_symm (I := I) (S.family.metric t) x0
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x0) i j
 
+omit [SigmaCompactSpace M] in
 theorem ricciSymmOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S)
     (x0 : M) :
     ∀ t i j,
       ricciCompInFrame (I := I) S
@@ -601,8 +600,7 @@ theorem rough_laplacian_ricci_component_of_coordinate_realization
 omit [SigmaCompactSpace M] in
 theorem ricciLapOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S) :
+    (S : SolutionOn (I := I) (M := M) D) :
     ∀ t x,
       ricciNormLap (I := I) S t x =
         2 *
@@ -812,8 +810,8 @@ theorem smoothOfSol
       scalarEvolution := scalarEvolution_of_isSolution (I := I) S hS
       invEvol := invEvolOfSol (I := I) S hS
       ricciEvol := ricciEvolOfSol (I := I) S hS
-      invSymm := invSymmOfSol (I := I) S hS
-      ricciSymm := ricciSymmOfSol (I := I) S hS
-      ricciLap := ricciLapOfSol (I := I) S hS }
+      invSymm := invSymmOfSol (I := I) S
+      ricciSymm := ricciSymmOfSol (I := I) S
+      ricciLap := ricciLapOfSol (I := I) S }
 
 end DifferentialGeometry.PDE.RicciFlow

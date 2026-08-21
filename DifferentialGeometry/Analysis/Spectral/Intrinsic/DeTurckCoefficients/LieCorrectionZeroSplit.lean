@@ -94,6 +94,7 @@ theorem nEndo_diff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem insert_base (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
@@ -145,6 +146,8 @@ theorem insert_base (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZero_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg =
       ((lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg +
@@ -160,6 +163,7 @@ theorem lieCorrectionZero_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem tail_base_split (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =

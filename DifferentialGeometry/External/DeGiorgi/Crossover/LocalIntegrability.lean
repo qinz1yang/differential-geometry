@@ -33,13 +33,16 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 /-- The small exponent `c(d)` in the crossover estimate.
 This is chosen small enough for the local John-Nirenberg step fed by the
 regularized-log BMO bound. -/
-noncomputable def c_crossover_bmo_scale (d : ℕ) [NeZero d] : ℝ :=
+noncomputable def c_crossover_bmo_scale (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+  let _ := hNeZero
+  exact
   ((volume.real (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
     (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) *
     (8 * (Mst : ℝ) * (volume.real (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1)) ^ ((1 : ℝ) / 2))
 
-noncomputable def crossover_big_bmo_scale (d : ℕ) [NeZero d] : ℝ :=
-  12 * (Mst : ℝ) * C_poinc_val d * (4 / 3 : ℝ) ^ ((d : ℝ) / 2)
+noncomputable def crossover_big_bmo_scale (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+  let _ := hNeZero
+  exact 12 * (Mst : ℝ) * C_poinc_val d * (4 / 3 : ℝ) ^ ((d : ℝ) / 2)
 
 noncomputable def c_crossover' (d : ℕ) [NeZero d] : ℝ :=
   1 / (2 * C_JN d * c_crossover_bmo_scale d + 1)

@@ -223,7 +223,7 @@ theorem fixed_pullback_drift
   rwa [hcurve]
 
 omit [CompactSpace M]
-  [I.Boundaryless] in
+  [I.Boundaryless] [SigmaCompactSpace M] in
 theorem scaled_hmf_target
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (r : ScalarField (I := I) (M := M)) (x : M) :
@@ -241,7 +241,7 @@ theorem scaled_hmf_target
   rw [trScalar_image, smul_neg]
 
 omit [CompactSpace M]
-  [I.Boundaryless] in
+  [I.Boundaryless] [SigmaCompactSpace M] in
 theorem scaled_inv_vel
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)

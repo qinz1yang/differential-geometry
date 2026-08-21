@@ -123,7 +123,7 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀ B hB
   obtain ⟨C0, hC0_nn, hC0⟩ :=
-    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hm0 hm1
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hm1
   refine ⟨2 * CA + 2 * (C0 ^ 2 * B ^ 2), by positivity, ?_⟩
   intro g₁ P δ hδ_le hδ htie x henv v w u
   set X : Π b : M, TangentSpace I b := smoothExtensionTangent (I := I) x v with hX_def

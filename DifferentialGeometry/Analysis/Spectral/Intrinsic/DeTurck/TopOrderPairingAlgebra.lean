@@ -159,6 +159,7 @@ private lemma pair_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 theorem pairTrace_decomposition (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g gm s =
       ccOperatorFieldComp (I := I) (M := M) g (s + 2) (s + 2) s
@@ -371,10 +372,10 @@ private lemma pair_extend_cons
   rw [show ((show Tensor0SSpace (r + 1) I x →L[Real]
       Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g r s Φ).toSection x) D) =
-      slotExtendPointwise (I := I) (M := M) g r s x
+      slotExtendPointwise (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[Real] Tensor0SSpace s I x from
           Φ.toSection x) D from rfl]
-  exact slotExtendFib_apply_eval (I := I) (M := M) g r s x
+  exact slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[Real] Tensor0SSpace s I x from
       Φ.toSection x) D (show E from v0) vs
 

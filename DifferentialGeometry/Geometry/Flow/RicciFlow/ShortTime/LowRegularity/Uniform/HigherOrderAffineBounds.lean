@@ -55,9 +55,9 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) *
             galerkinSolutionMode (I := I) (M := M) g fseq N t i +
           galTameForce (I := I) (M := M) g 1
-            (lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP).le
-            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hsol.hδ hsol.hCtop hsol.hB1
-              hsol.hρ hsol.hP hsol.hreal)
+            (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos).le
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase K.threshold_lt K.top_nonneg K.slope_nonneg
+              K.outer_pos K.realize_pos hsol.hreal)
             (eigenIdxFinset (I := I) (M := M) g N)
             (galerkinSolutionMode (I := I) (M := M) g fseq N t) i)
         (Set.Ici t) t)
@@ -83,11 +83,11 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
         Real.sqrt (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (m : ℝ) *
             ((galerkinActionVectorBackground (I := I) (M := M) g gBase
-              (lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP).le
-              hsol.hδ
+              (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos).le
+              K.threshold_lt
               (lowRegularityMetricRealization (I := I) (M := M) g
                 (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
-                hsol.hP.le hsol.hreal) F c).coeff i) ^ 2) ≤
+                K.realize_pos.le hsol.hreal) F c).coeff i) ^ 2) ≤
           Karm * (K.threshold / (1 - K.threshold) ^ 2 +
               lowRegularityStateRadius K.top K.slope K.outer K.realize) *
             Real.sqrt (∑ i ∈ F,
@@ -176,11 +176,11 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
     rw [← hTint] at hfin
     linarith
   have hRpos : 0 < lowRegularityStateRadius K.top K.slope K.outer K.realize :=
-    lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP
+    lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos
   let hrealR := lowRegularityMetricRealization (I := I) (M := M) g
-    (Ctop := K.top) (B1 := K.slope) (ρ := K.outer) hsol.hP.le hsol.hreal
+    (Ctop := K.top) (B1 := K.slope) (ρ := K.outer) K.realize_pos.le hsol.hreal
   obtain ⟨Cseed, hCseed, hseed⟩ := exists_zero_state_deTurck_remainder_spectral_bound (I := I) (M := M) g gBase
-    hRpos hsol.hδ hrealR hsol.hcore
+    hRpos K.threshold_lt hrealR hsol.hcore
   let α : ℝ := Karm * (K.threshold / (1 - K.threshold) ^ 2 +
     lowRegularityStateRadius K.top K.slope K.outer K.realize)
   have hα : 0 ≤ α := by
@@ -199,8 +199,8 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
       2 * ∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
           tensorSobolevWeight (I := I) (M := M) i (5 + (k : ℝ)) *
             (U N t i * galTameForce (I := I) (M := M) g 1 hRpos.le
-              (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hsol.hδ hsol.hCtop hsol.hB1
-                hsol.hρ hsol.hP hsol.hreal)
+              (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase K.threshold_lt K.top_nonneg K.slope_nonneg
+                K.outer_pos K.realize_pos hsol.hreal)
               (eigenIdxFinset (I := I) (M := M) g N) (U N t) i) ≤
         (2 * α + 1) * galerkinEnergy (I := I) (M := M)
             (eigenIdxFinset (I := I) (M := M) g N) (U N)
@@ -215,18 +215,18 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
             (5 + (k : ℝ)) t) + 0 := by
     intro N t ht
     let F := eigenIdxFinset (I := I) (M := M) g N
-    let arm := galerkinActionVectorBackground (I := I) (M := M) g gBase hRpos.le hsol.hδ hrealR F (U N t)
-    let seed := boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hsol.hδ hsol.hCtop hsol.hB1
-      hsol.hρ hsol.hP hsol.hreal
+    let arm := galerkinActionVectorBackground (I := I) (M := M) g gBase hRpos.le K.threshold_lt hrealR F (U N t)
+    let seed := boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase K.threshold_lt K.top_nonneg K.slope_nonneg
+      K.outer_pos K.realize_pos hsol.hreal
       ⟨0, zero_mem_lowerState (I := I) (M := M) g 1 hRpos.le⟩
     let force := galTameForce (I := I) (M := M) g 1 hRpos.le
-      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hsol.hδ hsol.hCtop hsol.hB1
-        hsol.hρ hsol.hP hsol.hreal) F (U N t)
+      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase K.threshold_lt K.top_nonneg K.slope_nonneg
+        K.outer_pos K.realize_pos hsol.hreal) F (U N t)
     have hsplit : ∀ i ∈ F, force i = arm.coeff i + seed.coeff i := by
       intro i hi
       dsimp only [force, arm, seed]
-      rw [galForceArmBackground (I := I) (M := M) g gBase hsol.hδ hsol.hδ0 hsol.hδ3
-        hsol.hCtop hsol.hB1 hsol.hρ hsol.hP hsol.hreal hsol.hcore F (U N t) i,
+      rw [galForceArmBackground (I := I) (M := M) g gBase K.threshold_lt hsol.hδ0 hsol.hδ3
+        K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos hsol.hreal hsol.hcore F (U N t) i,
         if_pos hi]
       exact add_comm _ _
     have hstatRaw := hseed (5 + k) F
@@ -289,8 +289,8 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
   refine gal_rider_bound_at (I := I) (M := M) (g := g)
     (r := 0) (s₀ := 2) (U := U)
     (Fseq := fun N t => galTameForce (I := I) (M := M) g 1 hRpos.le
-      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hsol.hδ hsol.hCtop hsol.hB1
-        hsol.hρ hsol.hP hsol.hreal)
+      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase K.threshold_lt K.top_nonneg K.slope_nonneg
+        K.outer_pos K.realize_pos hsol.hreal)
       (eigenIdxFinset (I := I) (M := M) g N) (U N t))
     (sseq := fun N => eigenIdxFinset (I := I) (M := M) g N)
     (T := T) (σ := 5 + (k : ℝ)) (ρ := 5) (Cδ := 2 * α + 1)

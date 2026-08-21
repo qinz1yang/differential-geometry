@@ -23,7 +23,6 @@ variable [CompleteSpace E] [T2Space M]
 
 omit [CompleteSpace E] [T2Space M] in
 theorem parabolicOperatorWithDrift_affine_sub
-    [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (X : Real -> (x : M) -> TangentSpace I x)

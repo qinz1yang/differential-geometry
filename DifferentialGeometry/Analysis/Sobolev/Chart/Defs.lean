@@ -28,8 +28,7 @@ def chartTargetEuclid (α : M) :
     Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
   toEuclidean '' (extChartAt I α).target
 
-def MemWkpChart [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
+def MemWkpChart [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) : Prop :=
   ∀ α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -39,8 +38,7 @@ def MemWkpChart [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
       (chartTargetEuclid (I := I) (M := M) α)
 
-def wkpNormChart [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
+def wkpNormChart [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) : ℝ≥0∞ :=
   ∑' α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -51,10 +49,8 @@ def wkpNormChart [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
       (chartTargetEuclid (I := I) (M := M) α)
 
 theorem wkpNormChart_eq_tsum
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
-    wkpNormChart (I := I) (M := M) g k p u =
+    [T2Space M] [SigmaCompactSpace M] (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
+    wkpNormChart (I := I) (M := M) k p u =
       ∑' α : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E)
@@ -64,10 +60,8 @@ theorem wkpNormChart_eq_tsum
           (chartTargetEuclid (I := I) (M := M) α) := rfl
 
 theorem MemWkpChart_iff
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
-    MemWkpChart (I := I) (M := M) g k p u ↔
+    [T2Space M] [SigmaCompactSpace M] (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
+    MemWkpChart (I := I) (M := M) k p u ↔
       ∀ α : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E)
@@ -96,9 +90,8 @@ theorem chartTargetEuclid_isOpen
 
 theorem MemWkpChart_zero_fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) :
-    MemWkpChart (I := I) (M := M) g k p (fun _ : M => (0 : ℝ)) := by
+    MemWkpChart (I := I) (M := M) k p (fun _ : M => (0 : ℝ)) := by
   intro α
   rw [chartPushed_zero]
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_zero_fun
@@ -106,9 +99,8 @@ theorem MemWkpChart_zero_fun
 
 theorem wkpNormChart_zero_fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) :
-    wkpNormChart (I := I) (M := M) g k p (fun _ : M => (0 : ℝ)) = 0 := by
+    wkpNormChart (I := I) (M := M) k p (fun _ : M => (0 : ℝ)) = 0 := by
   unfold wkpNormChart
   have hpt : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -149,12 +141,11 @@ theorem chartPushed_const_smul
 
 theorem MemWkpChart_add
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u)
-    (hv : MemWkpChart (I := I) (M := M) g k p v) :
-    MemWkpChart (I := I) (M := M) g k p (fun x => u x + v x) := by
+    (hu : MemWkpChart (I := I) (M := M) k p u)
+    (hv : MemWkpChart (I := I) (M := M) k p v) :
+    MemWkpChart (I := I) (M := M) k p (fun x => u x + v x) := by
   intro α
   rw [chartPushed_add]
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.add
@@ -164,11 +155,10 @@ theorem MemWkpChart_add
 
 theorem MemWkpChart_const_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u) :
-    MemWkpChart (I := I) (M := M) g k p (fun x => c * u x) := by
+    (hu : MemWkpChart (I := I) (M := M) k p u) :
+    MemWkpChart (I := I) (M := M) k p (fun x => c * u x) := by
   intro α
   rw [chartPushed_const_smul]
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.const_smul
@@ -178,12 +168,11 @@ theorem MemWkpChart_const_smul
 
 theorem MemWkpChart_neg
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u) :
-    MemWkpChart (I := I) (M := M) g k p (fun x => -u x) := by
-  have h := MemWkpChart_const_smul (I := I) (M := M) g hp (-1) hu
+    (hu : MemWkpChart (I := I) (M := M) k p u) :
+    MemWkpChart (I := I) (M := M) k p (fun x => -u x) := by
+  have h := MemWkpChart_const_smul (I := I) (M := M) hp (-1) hu
   have hEq : (fun x : M => (-1 : ℝ) * u x) = (fun x : M => -u x) := by
     funext x; ring
   rw [hEq] at h
@@ -191,14 +180,13 @@ theorem MemWkpChart_neg
 
 theorem MemWkpChart_sub
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u)
-    (hv : MemWkpChart (I := I) (M := M) g k p v) :
-    MemWkpChart (I := I) (M := M) g k p (fun x => u x - v x) := by
-  have hneg := MemWkpChart_neg (I := I) (M := M) g hp hv
-  have h := MemWkpChart_add (I := I) (M := M) g hp hu hneg
+    (hu : MemWkpChart (I := I) (M := M) k p u)
+    (hv : MemWkpChart (I := I) (M := M) k p v) :
+    MemWkpChart (I := I) (M := M) k p (fun x => u x - v x) := by
+  have hneg := MemWkpChart_neg (I := I) (M := M) hp hv
+  have h := MemWkpChart_add (I := I) (M := M) hp hu hneg
   have hEq : (fun x : M => u x + -v x) = (fun x : M => u x - v x) := by
     funext x; ring
   rw [hEq] at h
@@ -206,22 +194,20 @@ theorem MemWkpChart_sub
 
 def wkpChartAddSubgroup
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : AddSubgroup (M → ℝ) where
-  carrier := { u | MemWkpChart (I := I) (M := M) g k p u }
-  zero_mem' := MemWkpChart_zero_fun (I := I) (M := M) g hp
-  add_mem' := fun hu hv => MemWkpChart_add (I := I) (M := M) g hp hu hv
-  neg_mem' := fun hu => MemWkpChart_neg (I := I) (M := M) g hp hu
+  carrier := { u | MemWkpChart (I := I) (M := M) k p u }
+  zero_mem' := MemWkpChart_zero_fun (I := I) (M := M) hp
+  add_mem' := fun hu hv => MemWkpChart_add (I := I) (M := M) hp hu hv
+  neg_mem' := fun hu => MemWkpChart_neg (I := I) (M := M) hp hu
 
 def wkpChartSubmodule
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Submodule ℝ (M → ℝ) where
-  carrier := { u | MemWkpChart (I := I) (M := M) g k p u }
-  zero_mem' := MemWkpChart_zero_fun (I := I) (M := M) g hp
-  add_mem' := fun hu hv => MemWkpChart_add (I := I) (M := M) g hp hu hv
+  carrier := { u | MemWkpChart (I := I) (M := M) k p u }
+  zero_mem' := MemWkpChart_zero_fun (I := I) (M := M) hp
+  add_mem' := fun hu hv => MemWkpChart_add (I := I) (M := M) hp hu hv
   smul_mem' := fun c u hu => by
-    have h := MemWkpChart_const_smul (I := I) (M := M) g hp c hu
+    have h := MemWkpChart_const_smul (I := I) (M := M) hp c hu
     have hEq : (c • u : M → ℝ) = fun x => c * u x := by
       funext x
       simp [Pi.smul_apply, smul_eq_mul]
@@ -230,45 +216,37 @@ def wkpChartSubmodule
 
 def WkpChart
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
-  ↥(wkpChartSubmodule (I := I) (M := M) g k p hp)
+  ↥(wkpChartSubmodule (I := I) (M := M) k p hp)
 
 instance
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    AddCommGroup (WkpChart (I := I) (M := M) g k p hp) :=
-  inferInstanceAs (AddCommGroup ↥(wkpChartSubmodule (I := I) (M := M) g k p hp))
+    AddCommGroup (WkpChart (I := I) (M := M) k p hp) :=
+  inferInstanceAs (AddCommGroup ↥(wkpChartSubmodule (I := I) (M := M) k p hp))
 
 instance
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Module ℝ (WkpChart (I := I) (M := M) g k p hp) :=
-  inferInstanceAs (Module ℝ ↥(wkpChartSubmodule (I := I) (M := M) g k p hp))
+    Module ℝ (WkpChart (I := I) (M := M) k p hp) :=
+  inferInstanceAs (Module ℝ ↥(wkpChartSubmodule (I := I) (M := M) k p hp))
 
 theorem MemWkpChart.le_succ
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {k : ℕ} {p : ℝ≥0∞} {u : M → ℝ}
-    (h : MemWkpChart (I := I) (M := M) g (k + 1) p u) :
-    MemWkpChart (I := I) (M := M) g k p u := by
+    [T2Space M] [SigmaCompactSpace M] {k : ℕ} {p : ℝ≥0∞} {u : M → ℝ}
+    (h : MemWkpChart (I := I) (M := M) (k + 1) p u) :
+    MemWkpChart (I := I) (M := M) k p u := by
   intro α
   exact (h α).le_succ
 
 theorem MemWkpChart.le_of_le
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {k k' : ℕ} {p : ℝ≥0∞} {u : M → ℝ}
-    (hk : k ≤ k') (h : MemWkpChart (I := I) (M := M) g k' p u) :
-    MemWkpChart (I := I) (M := M) g k p u := by
+    [T2Space M] [SigmaCompactSpace M] {k k' : ℕ} {p : ℝ≥0∞} {u : M → ℝ}
+    (hk : k ≤ k') (h : MemWkpChart (I := I) (M := M) k' p u) :
+    MemWkpChart (I := I) (M := M) k p u := by
   intro α
   exact (h α).le_of_le hk
 
 def ChartPushedAEEq
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M]
     (u v : M → ℝ) : Prop :=
   ∀ α : M,
     chartPushed (I := I) (M := M)
@@ -279,38 +257,31 @@ def ChartPushedAEEq
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α v
 
 theorem ChartPushedAEEq.rfl
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (u : M → ℝ) :
-    ChartPushedAEEq (I := I) (M := M) g u u := by
+    [T2Space M] [SigmaCompactSpace M] (u : M → ℝ) :
+    ChartPushedAEEq (I := I) (M := M) u u := by
   intro α
   exact Filter.EventuallyEq.rfl
 
 theorem ChartPushedAEEq.symm
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {u v : M → ℝ} (h : ChartPushedAEEq (I := I) (M := M) g u v) :
-    ChartPushedAEEq (I := I) (M := M) g v u := by
+    [T2Space M] [SigmaCompactSpace M] {u v : M → ℝ} (h : ChartPushedAEEq (I := I) (M := M) u v) :
+    ChartPushedAEEq (I := I) (M := M) v u := by
   intro α
   exact (h α).symm
 
 theorem ChartPushedAEEq.trans
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {u v w : M → ℝ}
-    (huv : ChartPushedAEEq (I := I) (M := M) g u v)
-    (hvw : ChartPushedAEEq (I := I) (M := M) g v w) :
-    ChartPushedAEEq (I := I) (M := M) g u w := by
+    [T2Space M] [SigmaCompactSpace M] {u v w : M → ℝ}
+    (huv : ChartPushedAEEq (I := I) (M := M) u v)
+    (hvw : ChartPushedAEEq (I := I) (M := M) v w) :
+    ChartPushedAEEq (I := I) (M := M) u w := by
   intro α
   exact (huv α).trans (hvw α)
 
 theorem MemWkpChart_congr_chartPushed_ae
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
-    {u v : M → ℝ} (huv : ChartPushedAEEq (I := I) (M := M) g u v) :
-    MemWkpChart (I := I) (M := M) g k p u ↔
-      MemWkpChart (I := I) (M := M) g k p v := by
+    {u v : M → ℝ} (huv : ChartPushedAEEq (I := I) (M := M) u v) :
+    MemWkpChart (I := I) (M := M) k p u ↔
+      MemWkpChart (I := I) (M := M) k p v := by
   refine ⟨fun h α => ?_, fun h α => ?_⟩
   · exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
       (d := Module.finrank ℝ E) hp
@@ -323,11 +294,10 @@ theorem MemWkpChart_congr_chartPushed_ae
 
 theorem wkpNormChart_congr_chartPushed_ae
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
-    {u v : M → ℝ} (huv : ChartPushedAEEq (I := I) (M := M) g u v) :
-    wkpNormChart (I := I) (M := M) g k p u =
-      wkpNormChart (I := I) (M := M) g k p v := by
+    {u v : M → ℝ} (huv : ChartPushedAEEq (I := I) (M := M) u v) :
+    wkpNormChart (I := I) (M := M) k p u =
+      wkpNormChart (I := I) (M := M) k p v := by
   unfold wkpNormChart
   refine tsum_congr ?_
   intro α
@@ -338,14 +308,13 @@ theorem wkpNormChart_congr_chartPushed_ae
 
 theorem wkpNormChart_add_le
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u)
-    (hv : MemWkpChart (I := I) (M := M) g k p v) :
-    wkpNormChart (I := I) (M := M) g k p (fun x => u x + v x) ≤
-      wkpNormChart (I := I) (M := M) g k p u +
-        wkpNormChart (I := I) (M := M) g k p v := by
+    (hu : MemWkpChart (I := I) (M := M) k p u)
+    (hv : MemWkpChart (I := I) (M := M) k p v) :
+    wkpNormChart (I := I) (M := M) k p (fun x => u x + v x) ≤
+      wkpNormChart (I := I) (M := M) k p u +
+        wkpNormChart (I := I) (M := M) k p v := by
   unfold wkpNormChart
   rw [← ENNReal.tsum_add]
   refine ENNReal.tsum_le_tsum ?_
@@ -358,12 +327,11 @@ theorem wkpNormChart_add_le
 
 theorem wkpNormChart_const_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u) :
-    wkpNormChart (I := I) (M := M) g k p (fun x => c * u x) =
-      ‖c‖ₑ * wkpNormChart (I := I) (M := M) g k p u := by
+    (hu : MemWkpChart (I := I) (M := M) k p u) :
+    wkpNormChart (I := I) (M := M) k p (fun x => c * u x) =
+      ‖c‖ₑ * wkpNormChart (I := I) (M := M) k p u := by
   unfold wkpNormChart
   rw [← ENNReal.tsum_mul_left]
   refine tsum_congr ?_
@@ -376,10 +344,9 @@ theorem wkpNormChart_const_smul
 
 theorem wkpNormChart_lt_top_of_memWkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) :
-    wkpNormChart (I := I) (M := M) g k p u < ⊤ := by
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) k p u) :
+    wkpNormChart (I := I) (M := M) k p u < ⊤ := by
   classical
   unfold wkpNormChart
   set f : M → ℝ≥0∞ := fun α =>

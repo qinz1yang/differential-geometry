@@ -91,9 +91,6 @@ theorem HasStageJetData.mapsTo_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (U C0 C1 : LiveSlot L inp.pack s → Set E)
     (aInf : (alpha : LiveSlot L inp.pack s) →
       Fin (inp.pack.A s) → E → Real)
@@ -101,14 +98,14 @@ theorem HasStageJetData.mapsTo_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
     (hR1s : R1 < s) :
     ∃ N : Nat, ∀ k l : Nat, N ≤ k → N ≤ l →
       let Lphi := L.subseq hphi
-      Set.MapsTo (stageComparisonMap inp P Lphi s hs hconn k l)
+      Set.MapsTo (stageComparisonMap inp P Lphi s hs k l)
         (Lphi.hatSourceBall inp.decay P R0 k)
         (Lphi.hatSourceBall inp.decay P R1 l) := by
   classical
@@ -140,7 +137,7 @@ theorem HasStageJetData.mapsTo_tail
     exact lt_min (div_pos (heta alpha) (by norm_num))
       (div_pos hgap (by norm_num))
   have hjetA : ∀ alpha : LiveSlot L inp.pack s,
-      HasStageJetTail (I := I) inp P L hs phi hphi hconn C0 R0 0
+      HasStageJetTail (I := I) inp P L hs phi hphi C0 R0 0
         (epsA alpha) := fun alpha =>
     hjets R0 hR0s 0 (epsA alpha) (hepsA alpha)
   choose Njet hNjet using hjetA
@@ -166,7 +163,7 @@ theorem HasStageJetData.mapsTo_tail
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let F := stageComparisonMap inp P Lphi s hs hconn k l
+  let F := stageComparisonMap inp P Lphi s hs k l
   intro x hx
   have hxLarge : x ∈ Lphi.hatSourceBall inp.decay P s k :=
     cball_subset_of_le hR0s.le
@@ -314,9 +311,6 @@ theorem HasStageJetData.return_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (U C0 C1 : LiveSlot L inp.pack s → Set E)
     (aInf : (alpha : LiveSlot L inp.pack s) →
       Fin (inp.pack.A s) → E → Real)
@@ -324,7 +318,7 @@ theorem HasStageJetData.return_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -337,12 +331,12 @@ theorem HasStageJetData.return_tail
       letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
       ∀ x ∈ Lphi.hatSourceBall inp.decay P R0 k,
         dist
-          (stageComparisonMap inp P Lphi s hs hconn l k
-            (stageComparisonMap inp P Lphi s hs hconn k l x))
+          (stageComparisonMap inp P Lphi s hs l k
+            (stageComparisonMap inp P Lphi s hs k l x))
           x < eps := by
   classical
   obtain ⟨Nmap, hmap⟩ := HasStageJetData.mapsTo_tail inp P L hs phi hphi
-    hconn U C0 C1 aInf Jinf Jbarinf gInf hstage R0 R1 hroom hR1s
+    U C0 C1 aInf Jinf Jbarinf gInf hstage R0 R1 hroom hR1s
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
   dsimp only [HasSuppConvData] at hraw
@@ -365,11 +359,11 @@ theorem HasStageJetData.return_tail
     exact lt_min (div_pos (heta alpha) (by norm_num))
       (div_pos heps (by norm_num))
   have hfwd : ∀ alpha : LiveSlot L inp.pack s,
-      HasStageJetTail (I := I) inp P L hs phi hphi hconn C0 R0 0
+      HasStageJetTail (I := I) inp P L hs phi hphi C0 R0 0
         (delta alpha) := fun alpha =>
     hjets R0 hR0s 0 (delta alpha) (hdelta alpha)
   have hrev : ∀ alpha : LiveSlot L inp.pack s,
-      HasStageJetTail (I := I) inp P L hs phi hphi hconn C0 R1 0
+      HasStageJetTail (I := I) inp P L hs phi hphi C0 R1 0
         (delta alpha) := fun alpha =>
     hjets R1 hR1s 0 (delta alpha) (hdelta alpha)
   choose Nfwd hNfwd using hfwd
@@ -395,8 +389,8 @@ theorem HasStageJetData.return_tail
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let Fkl := stageComparisonMap inp P Lphi s hs hconn k l
-  let Flk := stageComparisonMap inp P Lphi s hs hconn l k
+  let Fkl := stageComparisonMap inp P Lphi s hs k l
+  let Flk := stageComparisonMap inp P Lphi s hs l k
   intro x hx
   have hy := hmap k l hkMap hlMap hx
   have hxLarge : x ∈ Lphi.hatSourceBall inp.decay P s k :=

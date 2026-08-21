@@ -129,16 +129,8 @@ theorem ricci_flow_forward_unique
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
-    (h1cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-      ContinuousOn
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
-        (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
-        (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
-    (h2cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-      ContinuousOn
         (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1pde : ∀ t ∈ Set.Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
@@ -150,13 +142,13 @@ theorem ricci_flow_forward_unique
     (h0 : g₁ a = g₂ a) :
     ∀ t ∈ Set.Ico a b, g₁ t = g₂ t := by
   exact forward_unique_of_gram (I := I) g₁ g₂ hab
-    h1smooth h1cont h2smooth h2cont h1pde h2pde h0
+    h1smooth h2smooth h1pde h2pde h0
     (fuSlab_of_gram (I := I) g₁ g₂ h1smooth h2smooth h1pde h2pde)
     (energyEdgeCont (I := I) g₁ g₂ hab h1smooth h2smooth)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem extend_construction_of_restart
-    (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (_hαω : α < omega)
+    (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ}
     (hleft : ∀ t ∈ Set.Ico α omega, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
         ((-2 : ℝ) * ricciTensor (I := I) (g_fam t) x v w) (Set.Ici α) t)

@@ -28,7 +28,7 @@ private theorem connAddTarget_cd
     (g : SmoothRiemannianMetric I M) (p : M) :
     ContDiffAt ℝ 2 (localAddTarget (I := I) g p)
       (localAddZeroCoord (I := I) p) := by
-  have hmd := connAdd_cd (I := I) g p 2 (by norm_num)
+  have hmd := connAdd_cd (I := I) g p 2
   rw [contMDiffAt_iff] at hmd
   obtain ⟨_, hcd⟩ := hmd
   have hrange : range I.tangent = (univ : Set (E × E)) :=

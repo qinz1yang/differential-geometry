@@ -124,13 +124,13 @@ theorem intrinsic_gauss
         (chartRepAt (I := I) γ V t) t := by
     intro t
     simpa only [γ, V] using
-      velocityField_chartRep_differentiableAt (I := I) g F hF t
+      velocityField_chartRep_differentiableAt (I := I) F hF t
   have hWdiff : ∀ t : Real,
       DifferentiableAt Real
         (chartRepAt (I := I) γ W t) t := by
     intro t
     simpa only [γ, W] using
-      variationField_chartRep_differentiableAt (I := I) g F hF t
+      variationField_chartRep_differentiableAt (I := I) F hF t
   have hphi_deriv : ∀ t : Real,
       HasDerivAt (fun r : Real => g.inner (γ r) (V r) (W r))
         (g.inner p u w) t := by

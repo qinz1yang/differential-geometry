@@ -65,6 +65,7 @@ private theorem endoSlotZero_sub_traceLip
   exact slotInsertEndoCc_sub (I := I) (M := M) g s A B
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem inverseMetricDifferenceSlotCoefficient_eq_endoSlotZero
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁ =
@@ -508,6 +509,7 @@ theorem trace24_h2_lip_uniform
       (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hK₂) hN) 2
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem ptSelf (g : SmoothRiemannianMetric I M) (p : ℕ) :
     pureTrace (I := I) (M := M) g g p =
       DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceField
@@ -587,6 +589,7 @@ private theorem jetAbs (g : SmoothRiemannianMetric I M) {r s : ℕ}
       mul_le_mul_of_nonneg_left (add_le_add hd hb) (by norm_num)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem pairSplit (g gT gU : SmoothRiemannianMetric I M) :
     cometricDoublePairTraceCoefficient (I := I) (M := M) g gT -
         cometricDoublePairTraceCoefficient (I := I) (M := M) g gU =
@@ -887,6 +890,7 @@ theorem pair_trace_sobolev_two_uniform_bound
   exact happ g hEq hjet1 hjet2 _ _ B₂ B₄ hB₂ hB₄ hT₂ hT₄
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem monoSplit (g gT gU : SmoothRiemannianMetric I M)
     (S R : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4)) :
     curvatureDecompositionMonomialCoeffField (I := I) (M := M) g gT

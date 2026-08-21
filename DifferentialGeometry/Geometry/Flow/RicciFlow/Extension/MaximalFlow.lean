@@ -69,13 +69,7 @@ theorem flow_to_agree
     exact (P.joint x0 i j).mono fun p hp =>
       ⟨⟨hp.1.1, lt_of_lt_of_le hp.1.2 (min_le_left T U)⟩, hp.2⟩
   · intro x0 i j
-    exact ((P.joint x0 i j).continuousOn).mono fun p hp =>
-      ⟨⟨hp.1.1, lt_of_lt_of_le hp.1.2 (min_le_left T U)⟩, hp.2⟩
-  · intro x0 i j
     exact (Q.joint x0 i j).mono fun p hp =>
-      ⟨⟨hp.1.1, lt_of_lt_of_le hp.1.2 (min_le_right T U)⟩, hp.2⟩
-  · intro x0 i j
-    exact ((Q.joint x0 i j).continuousOn).mono fun p hp =>
       ⟨⟨hp.1.1, lt_of_lt_of_le hp.1.2 (min_le_right T U)⟩, hp.2⟩
   · intro t ht x v w
     exact P.pde t ⟨ht.1, lt_of_lt_of_le ht.2 (min_le_left T U)⟩ x v w

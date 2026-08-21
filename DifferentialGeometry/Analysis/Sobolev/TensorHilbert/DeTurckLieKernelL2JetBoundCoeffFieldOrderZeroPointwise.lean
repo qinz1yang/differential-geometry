@@ -43,6 +43,7 @@ noncomputable def covDerivConnectionDifferenceSqrt
   Real.sqrt (g₀.inner x A A)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem connectionDifferenceCovDerivOp_sqrt_le_of_bounds
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (Cq Cbg CaB Cc κ CK : ℝ)
@@ -195,6 +196,7 @@ private theorem connectionDifferenceCovDerivOp_sqrt_le_of_bounds
   nlinarith only [hA1_le, hA2_le, hQ1_le, hQ2_le, hQ3_le]
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieConnectionDifferenceDerivCoeffField_component_sq_le
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {δP : ℝ}
@@ -354,6 +356,7 @@ private theorem deTurckLieConnectionDifferenceDerivCoeffField_component_sq_le
   exact pow_le_pow_left₀ (abs_nonneg _) habs_comp 2
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_kernel_bound
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {δP : ℝ}

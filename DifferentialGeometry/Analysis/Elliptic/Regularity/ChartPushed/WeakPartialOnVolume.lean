@@ -943,7 +943,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
     exact hΩ_in_K.trans hK_in
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.hasWeakPartialDeriv_of_tendsto_eLpNorm
     (d := Module.finrank ℝ E)
-    (p := 2) (by norm_num) (by norm_num) hΩ_open j
+    (p := 2) (by norm_num) j
     (u_n := u_n_chart) (g_n := g_n_chart)
     (u := u_lim_chart) (g := g_lim_chart)
     hu_n_memLp hg_n_memLp hu_lim_memLp hg_lim_memLp h_weak_n

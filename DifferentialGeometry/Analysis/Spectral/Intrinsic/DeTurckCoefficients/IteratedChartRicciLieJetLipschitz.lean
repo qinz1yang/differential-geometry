@@ -55,6 +55,7 @@ theorem hasChartJetLip_gramBracket
   ring
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartChristoffel
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -80,6 +81,7 @@ theorem hasChartJetLip_chartChristoffel
   rw [chartChristoffel_eq_sum_invGramOnE_bracket]
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartDeTurckVFComp
     (g₁ g₂ g_bg : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -134,6 +136,7 @@ theorem hasChartJetLip_chartDeTurckVFComp
   rw [chartDeTurckVFComp_def]
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartRiemannTensor
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -191,6 +194,7 @@ theorem hasChartJetLip_chartRiemannTensor
   ring
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartRicciTensor
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -206,6 +210,7 @@ theorem hasChartJetLip_chartRicciTensor
   rw [chartRicciTensor_def]
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartLieDeTurckComp
     (g₁ g₂ g_bg : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)

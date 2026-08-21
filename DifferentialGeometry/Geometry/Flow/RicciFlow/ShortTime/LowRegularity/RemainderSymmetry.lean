@@ -136,6 +136,8 @@ theorem bilin_symm_of_symmS (g₀ : SmoothRiemannianMetric I M)
     ccTensorBilin_symmS (I := I) (M := M) g₀ X x w v,
     ccTensorBilinSymm_symm (I := I) g₀ X x v w]
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem swap_deTurckRHSArm (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
@@ -157,6 +159,7 @@ theorem swap_deTurckRHSArm (g₀ g_bg : SmoothRiemannianMetric I M)
   exact deTurckRicciRHS_symm (I := I) g_bg
     (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x (v 1) (v 0)
 
+omit [SigmaCompactSpace M] in
 private theorem smoothRem_eq_arm_sub (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
@@ -312,18 +315,18 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_ae (g₀ g_bg : SmoothRi
     (hcont : Continuous (deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal))
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
     (ha : (0 : ℝ) ≤ ((1 : ℕ) : ℝ)) (h2 : (0 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t)) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g₀ h2
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t) =
-        maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+        maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t :=
-  duhamel_solution_symmetric_ae (I := I) (M := M) g₀ ha h2 hT hT1 gforce
+  duhamel_solution_symmetric_ae (I := I) (M := M) g₀ ha h2 hT gforce
     (deTurck_remainder_forcing_symmetric_ae (I := I) (M := M) g₀ g_bg hR hδ hreal hcont hcore ha u
       gforce hforce)
 
@@ -347,7 +350,7 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (g₀ g_bg : Smoot
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
     (ha : (0 : ℝ) ≤ ((1 : ℕ) : ℝ)) (h2 : (0 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)
     (h3 : (0 : ℝ) ≤ (3 : ℝ)) (hex : ((1 : ℕ) : ℝ) + 2 = (3 : ℝ))
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
@@ -355,15 +358,15 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (g₀ g_bg : Smoot
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g₀ h3
           (tensorHsCongr (I := I) (M := M) g₀ 0 2 hex
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               gforce t)) =
         tensorHsCongr (I := I) (M := M) g₀ 0 2 hex
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce t) := by
   filter_upwards [duhamel_solution_of_deTurck_remainder_symmetric_ae (I := I) (M := M) g₀ g_bg hR hδ hreal
-    hcont hcore ha h2 hT hT1 u gforce hforce] with t ht
+    hcont hcore ha h2 hT u gforce hforce] with t ht
   rw [symmHs_congr (I := I) (M := M) g₀ hex h2 h3, ht]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

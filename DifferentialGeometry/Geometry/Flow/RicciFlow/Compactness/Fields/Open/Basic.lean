@@ -455,7 +455,7 @@ theorem exists_openConv_raw
                   metricDerivNorm (I := I) q
                     (srcMetric (I := I) Φ hsrc htgt k s)
                     (srcMetric (I := I) Φ hsrc htgt k t)
-                    (refRes (I := I) Φ R hsrc k) y <= Ls * |s - t|) :
+                    (refRes (I := I) Φ R k) y <= Ls * |s - t|) :
     Nonempty (OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) := by
   classical
   letI : TopologicalSpace P.M := P.topology
@@ -541,7 +541,7 @@ theorem exists_openConv_raw
                 metricDerivNorm (I := I) q
                   (srcMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k s)
                   (srcMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k t)
-                  (refRes (I := I) (Φ.compSubseq ρ hρ) R hsrcρ k) y <=
+                  (refRes (I := I) (Φ.compSubseq ρ hρ) R k) y <=
                     Ls * |s - t| := by
     intro k C hC p
     obtain ⟨Ls, hLs0, hLs⟩ := hlipSrc n (ρ k) C hC p

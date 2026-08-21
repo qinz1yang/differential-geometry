@@ -30,24 +30,18 @@ noncomputable def stageMapCast
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L')
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) :
     (X.obj K).M → (X.obj L').M := by
   subst K
   subst L'
-  exact stageComparisonMap inp P L s hs hconn k l (chart := chart)
+  exact stageComparisonMap inp P L s hs k l (chart := chart)
 
 private theorem cast_geom
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L') (R : Real)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X)
@@ -67,12 +61,12 @@ private theorem cast_geom
       letI : MetricSpace Yk.M := (P (L.φ k)).ms
       letI : MetricSpace Yl.M := (P (L.φ l)).ms
       IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞)
-          (stageComparisonMap inp P L s hs hconn k l (chart := chart))
+          (stageComparisonMap inp P L s hs k l (chart := chart))
           (Metric.closedBall Yk.basepoint R) ∧
         Set.InjOn
-          (stageComparisonMap inp P L s hs hconn k l (chart := chart))
+          (stageComparisonMap inp P L s hs k l (chart := chart))
           (Metric.closedBall Yk.basepoint R) ∧
-        stageComparisonMap inp P L s hs hconn k l
+        stageComparisonMap inp P L s hs k l
             Yk.basepoint (chart := chart) =
           Yl.basepoint) :
     let YK := X.obj K
@@ -90,14 +84,14 @@ private theorem cast_geom
     letI : MetricSpace YK.M := (P K).ms
     letI : MetricSpace YL.M := (P L').ms
     IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞)
-        (stageMapCast inp P L s hs hconn k l K L' hk hl
+        (stageMapCast inp P L s hs k l K L' hk hl
           (chart := chart))
         (Metric.closedBall YK.basepoint R) ∧
       Set.InjOn
-        (stageMapCast inp P L s hs hconn k l K L' hk hl
+        (stageMapCast inp P L s hs k l K L' hk hl
           (chart := chart))
         (Metric.closedBall YK.basepoint R) ∧
-      stageMapCast inp P L s hs hconn k l K L' hk hl
+      stageMapCast inp P L s hs k l K L' hk hl
           (chart := chart) YK.basepoint =
         YL.basepoint := by
   subst K
@@ -108,9 +102,6 @@ private theorem cast_local
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L') (R : Real)
     (chart : NormalChartFamily (I := I) X)
     (hgeom :
@@ -129,9 +120,9 @@ private theorem cast_local
       letI : MetricSpace Yk.M := (P (L.φ k)).ms
       letI : MetricSpace Yl.M := (P (L.φ l)).ms
       IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞)
-          (stageComparisonMap inp P L s hs hconn k l (chart := chart))
+          (stageComparisonMap inp P L s hs k l (chart := chart))
           (Metric.closedBall Yk.basepoint R) ∧
-        stageComparisonMap inp P L s hs hconn k l
+        stageComparisonMap inp P L s hs k l
             Yk.basepoint (chart := chart) =
           Yl.basepoint) :
     let YK := X.obj K
@@ -149,10 +140,10 @@ private theorem cast_local
     letI : MetricSpace YK.M := (P K).ms
     letI : MetricSpace YL.M := (P L').ms
     IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞)
-        (stageMapCast inp P L s hs hconn k l K L' hk hl
+        (stageMapCast inp P L s hs k l K L' hk hl
           (chart := chart))
         (Metric.closedBall YK.basepoint R) ∧
-      stageMapCast inp P L s hs hconn k l K L' hk hl
+      stageMapCast inp P L s hs k l K L' hk hl
           (chart := chart) YK.basepoint =
         YL.basepoint := by
   subst K
@@ -167,7 +158,7 @@ theorem HasRadiusTailOn.local_tail
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart)
+    (hseed : HasStageSeedOn inp P L0 chart)
     (psi : Nat → Nat) (q : Nat)
     (htail : HasRadiusTailOn inp P L0 hconn chart hseed psi q)
     (R : Real) (hRq : R < (q : Real)) :
@@ -179,7 +170,7 @@ theorem HasRadiusTailOn.local_tail
             (d.phi_strict.comp hrho)).φ n) = psi (q + n)),
       HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
           (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-          hconn chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf ∧
+          chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf ∧
         ∃ (N : Nat) (hNq : q ≤ N), ∀ (k : Nat) (hk : N ≤ k)
           (l : Nat) (hl : N ≤ l),
         let Xpsi := X.subseq psi
@@ -210,7 +201,7 @@ theorem HasRadiusTailOn.local_tail
           (hindex (l - q)).trans
             (congrArg psi (Nat.add_sub_of_le hlq))
         let F : Yk.M → Yl.M :=
-          stageMapCast inp P Lq q (Nat.cast_nonneg q) hconn
+          stageMapCast inp P Lq q (Nat.cast_nonneg q)
             (k - q) (l - q) (psi k) (psi l) hki hli
             (chart := chart)
         IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞) F
@@ -225,7 +216,7 @@ theorem HasRadiusTailOn.local_tail
   let Lq := Lbase.subseq (d.phi_strict.comp hrho)
   obtain ⟨Nloc, hloc⟩ := hstage.hloc_tail inp P Lbase
     (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-      hconn chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf R hRq
+      chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf R hRq
   rcases hstage with ⟨hdata, hmetric, hjets, hbase⟩
   dsimp only [HasStageBaseTail] at hbase
   obtain ⟨Nbase, hbase⟩ := eventually_atTop.mp hbase
@@ -249,7 +240,7 @@ theorem HasRadiusTailOn.local_tail
     exact (hindex (l - q)).trans (congrArg psi (Nat.add_sub_of_le hlq))
   have hloc0 := hloc (k - q) hkLoc (l - q) hlLoc
   have hbase0 := hbase (k - q) hkBase (l - q)
-  apply cast_local inp P Lq q (Nat.cast_nonneg q) hconn
+  apply cast_local inp P Lq q (Nat.cast_nonneg q)
     (k - q) (l - q) (psi k) (psi l) hki hli R chart
   dsimp only
   exact ⟨by
@@ -265,7 +256,7 @@ theorem HasRadiusTailOn.geom_tail
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeedOn inp P L0 hconn d.chart)
+    (hseed : HasStageSeedOn inp P L0 d.chart)
     (psi : Nat → Nat) (q : Nat)
     (htail : HasRadiusTailOn inp P L0 hconn d.chart hseed psi q)
     (R0 R1 : Real)
@@ -279,7 +270,7 @@ theorem HasRadiusTailOn.geom_tail
             (a.phi_strict.comp hrho)).φ n) = psi (q + n)),
       HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
           (Nat.cast_nonneg q) (a.phi ∘ rho) (a.phi_strict.comp hrho)
-          hconn d.chart a.V a.U a.C0 a.C1 a.aInf a.Jinf a.Jbarinf a.gInf ∧
+          d.chart a.V a.U a.C0 a.C1 a.aInf a.Jinf a.Jbarinf a.gInf ∧
         ∃ (N : Nat) (hNq : q ≤ N), ∀ (k : Nat) (hk : N ≤ k)
           (l : Nat) (hl : N ≤ l),
         let Xpsi := X.subseq psi
@@ -310,7 +301,7 @@ theorem HasRadiusTailOn.geom_tail
           (hindex (l - q)).trans
             (congrArg psi (Nat.add_sub_of_le hlq))
         let F : Yk.M → Yl.M :=
-          stageMapCast inp P Lq q (Nat.cast_nonneg q) hconn
+          stageMapCast inp P Lq q (Nat.cast_nonneg q)
             (k - q) (l - q) (psi k) (psi l) hki hli
             (chart := d.chart)
         IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞) F
@@ -333,7 +324,7 @@ theorem HasRadiusTailOn.geom_tail
     linarith
   obtain ⟨Nloc, hloc⟩ := hstage.hloc_tail inp P Lbase
     (Nat.cast_nonneg q) (a.phi ∘ rho) (a.phi_strict.comp hrho)
-      hconn d.chart a.V a.U a.C0 a.C1 a.aInf a.Jinf a.Jbarinf a.gInf
+      d.chart a.V a.U a.C0 a.C1 a.aInf a.Jinf a.Jbarinf a.gInf
       R0 hR0q
   obtain ⟨Ninj, hinj⟩ := d.inj_tail inp P Lbase
     (Nat.cast_nonneg q) (a.phi ∘ rho) (a.phi_strict.comp hrho)
@@ -372,7 +363,7 @@ theorem HasRadiusTailOn.geom_tail
   have hloc0 := hloc (k - q) hkLoc (l - q) hlLoc
   have hinj0 := hinj (k - q) hkInj (l - q) hlInj
   have hbase0 := hbase (k - q) hkBase (l - q)
-  apply cast_geom inp P Lq q (Nat.cast_nonneg q) hconn
+  apply cast_geom inp P Lq q (Nat.cast_nonneg q)
     (k - q) (l - q) (psi k) (psi l) hki hli R0
       (chart := d.chart)
   dsimp only
@@ -389,7 +380,7 @@ theorem HasRadiusTail.geom_tail
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn)
+    (hseed : HasStageSeed inp P L0)
     (psi : Nat → Nat) (q : Nat)
     (htail : HasRadiusTail inp P L0 hconn hseed psi q)
     (R0 R1 : Real)
@@ -403,7 +394,7 @@ theorem HasRadiusTail.geom_tail
             (d.phi_strict.comp hrho)).φ n) = psi (q + n)),
       HasStageJetData inp P (L0.subseq S.sigma_strict)
           (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-          hconn d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf ∧
+          d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf ∧
         ∃ (N : Nat) (hNq : q ≤ N), ∀ (k : Nat) (hk : N ≤ k)
           (l : Nat) (hl : N ≤ l),
         let Xpsi := X.subseq psi
@@ -434,7 +425,7 @@ theorem HasRadiusTail.geom_tail
           (hindex (l - q)).trans
             (congrArg psi (Nat.add_sub_of_le hlq))
         let F : Yk.M → Yl.M :=
-          stageMapCast inp P Lq q (Nat.cast_nonneg q) hconn
+          stageMapCast inp P Lq q (Nat.cast_nonneg q)
             (k - q) (l - q) (psi k) (psi l) hki hli
         IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞) F
             (Metric.closedBall Yk.basepoint R0) ∧
@@ -456,7 +447,7 @@ theorem HasRadiusTail.geom_tail
     linarith
   obtain ⟨Nloc, hloc⟩ := hstage.hloc_tail inp P Lbase
     (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-      hconn d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf R0 hR0q
+      d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf R0 hR0q
   obtain ⟨Ninj, hinj⟩ := hstage.inj_tail inp P Lbase
     (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
       hcomplete hconn d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
@@ -489,7 +480,7 @@ theorem HasRadiusTail.geom_tail
   have hloc0 := hloc (k - q) hkLoc (l - q) hlLoc
   have hinj0 := hinj (k - q) hkInj (l - q) hlInj
   have hbase0 := hbase (k - q) hkBase (l - q)
-  apply cast_geom inp P Lq q (Nat.cast_nonneg q) hconn
+  apply cast_geom inp P Lq q (Nat.cast_nonneg q)
     (k - q) (l - q) (psi k) (psi l) hki hli R0
   dsimp only
   exact ⟨by

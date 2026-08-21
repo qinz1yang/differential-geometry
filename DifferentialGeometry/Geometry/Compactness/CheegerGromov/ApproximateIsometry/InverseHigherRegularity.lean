@@ -48,7 +48,7 @@ theorem BoundedGeometryNormalData.inv_chart_conv
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     (S T Vrad : Real) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -92,7 +92,7 @@ theorem BoundedGeometryNormalData.inv_chart_conv
         (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
       let chiL := d.chart (Lphi.φ (ln n))
         (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-      let F := stageComparisonMap inp P Lphi r hr hconn
+      let F := stageComparisonMap inp P Lphi r hr
         (kn n) (ln n) (chart := d.chart)
       chiK.inv
         (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.hom w))
@@ -121,7 +121,7 @@ theorem BoundedGeometryNormalData.inv_chart_conv
       (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
     let chiL := d.chart (Lphi.φ (ln n))
       (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-    chiL.inv (stageComparisonMap inp P Lphi r hr hconn
+    chiL.inv (stageComparisonMap inp P Lphi r hr
       (kn n) (ln n) (chiK.hom z) (chart := d.chart))
   let G : Nat → E → E := fun n w ↦
     let Yk := X.obj (Lphi.φ (kn n))
@@ -142,7 +142,7 @@ theorem BoundedGeometryNormalData.inv_chart_conv
       (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
     let chiL := d.chart (Lphi.φ (ln n))
       (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-    let F := stageComparisonMap inp P Lphi r hr hconn
+    let F := stageComparisonMap inp P Lphi r hr
       (kn n) (ln n) (chart := d.chart)
     chiK.inv
       (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.hom w))
@@ -176,7 +176,7 @@ theorem BoundedGeometryNormalData.inv_chart_conv
       hn.mono_left (subset_closure.trans hQW)
   have hAconv : MapCInfConvOnCompacts Q A id := by
     simpa only [A, Lphi] using
-      HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi hconn
+      HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi
         d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha Q hQint
         kn ln hkn hln hsourceQ
@@ -214,7 +214,7 @@ theorem BoundedGeometryNormalData.inv_chart_conv
     letI : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
     letI : MetricSpace Yl.M := (P (Lphi.φ (ln n))).ms
     letI : Nonempty Yk.M := ⟨Yk.basepoint⟩
-    let F := stageComparisonMap inp P Lphi r hr hconn
+    let F := stageComparisonMap inp P Lphi r hr
       (kn n) (ln n) (chart := d.chart)
     let ck := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
     let cl := seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat)

@@ -1266,7 +1266,7 @@ omit [Module.Finite ℝ E] [I.Boundaryless]
     [SigmaCompactSpace M] in
 theorem hevComp_of_solutions
     [Module.Finite ℝ E]
-    {K : Set M} {β ψ : Real}
+    {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
     {gRef : SmoothRiemannianMetric I M} {N : Nat}
     (D : Nat -> RealTimeInterval)
@@ -1283,12 +1283,12 @@ theorem hevComp_of_solutions
           (fun a : Fin (p + 2) => V a p'))
         (fun r p' => (covDerivOfField (I := I) gRef (solnEvolField (I := I) (S i) r) p) p'
           (fun a : Fin (p + 2) => V a p'))) :
-    ∀ i : Nat, ∀ x ∈ K, ∀ s ∈ Set.Icc β ψ,
+    ∀ i : Nat, ∀ x, ∀ s ∈ Set.Icc β ψ,
       ∀ v : Fin (N + 2) → TangentSpace I x,
         HasDerivAt
           (fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef N x v)
           (((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v) s := by
-  intro i x hx s hs v
+  intro i x s hs v
   have h := solnTower_hasDerivAt (I := I) gRef (S i) (hS i) N (hswap i)
     N le_rfl s (hreg i hs) x v
   have hfun : (fun r : Real =>
@@ -1518,11 +1518,11 @@ theorem covOrderBound_of_soln
         MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef r Cw := by
   refine covOrderBound_tower (I := I) hKc hU hKU N B hequiv Bmax hBmax1 hBmax
     KShi hKShi0 hShi ht0 ?_ initC hinitC0 hinit timeRadius htime
-  intro r h1 hrN
-  exact hevComp_of_solutions (I := I) (K := U) D S hS hmet hreg
-    (fun i p hp V x₀ =>
-      solnTowerSwap_reg (I := I) gRef (S i) (hS i) N (hDreg i)
-        p (lt_of_lt_of_le hp hrN) V x₀)
+  intro r h1 hrN i x _hx
+  exact hevComp_of_solutions (I := I) D S hS hmet hreg
+    (fun j p hp V x₀ =>
+      solnTowerSwap_reg (I := I) gRef (S j) (hS j) N (hDreg j)
+        p (lt_of_lt_of_le hp hrN) V x₀) i x
 
 end HCGCompactness
 end DifferentialGeometry

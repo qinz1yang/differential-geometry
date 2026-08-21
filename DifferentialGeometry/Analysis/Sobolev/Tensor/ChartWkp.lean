@@ -293,8 +293,7 @@ noncomputable def secChartCompLin (r s : ℕ) (α : M)
   map_smul' c S := secChartComp_smul (I := I) (M := M) r s c S α Idx Jdx
 
 def MemWkpTensor
-    (_g : SmoothRiemannianMetric I M) {r s : ℕ}
-    (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) : Prop :=
+    {r s : ℕ} (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) : Prop :=
   ∀ (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)),
@@ -304,9 +303,9 @@ def MemWkpTensor
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem MemWkpTensor_def
-    (g : SmoothRiemannianMetric I M) {r s : ℕ}
+    {r s : ℕ}
     (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) :
-    MemWkpTensor (I := I) (M := M) g k p S ↔
+    MemWkpTensor (I := I) (M := M) k p S ↔
       ∀ (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
@@ -316,9 +315,9 @@ theorem MemWkpTensor_def
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem MemWkpTensor.zero
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) :
-    MemWkpTensor (I := I) (M := M) g k p
+    MemWkpTensor (I := I) (M := M) k p
       (0 : RSTensorSection I M r s) := by
   intro α Idx Jdx
   rw [secChartComp_zero (I := I) (M := M)]
@@ -327,11 +326,11 @@ theorem MemWkpTensor.zero
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem MemWkpTensor.add
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S)
-    (hT : MemWkpTensor (I := I) (M := M) g k p T) :
-    MemWkpTensor (I := I) (M := M) g k p (S + T) := by
+    (hS : MemWkpTensor (I := I) (M := M) k p S)
+    (hT : MemWkpTensor (I := I) (M := M) k p T) :
+    MemWkpTensor (I := I) (M := M) k p (S + T) := by
   intro α Idx Jdx
   rw [secChartComp_add (I := I) (M := M)]
   exact MemWkp.add (d := Module.finrank ℝ E) hp
@@ -340,10 +339,10 @@ theorem MemWkpTensor.add
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem MemWkpTensor.smul
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ) {S : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S) :
-    MemWkpTensor (I := I) (M := M) g k p (c • S) := by
+    (hS : MemWkpTensor (I := I) (M := M) k p S) :
+    MemWkpTensor (I := I) (M := M) k p (c • S) := by
   intro α Idx Jdx
   rw [secChartComp_smul (I := I) (M := M)]
   have hfun :
@@ -357,39 +356,39 @@ theorem MemWkpTensor.smul
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem MemWkpTensor.neg
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S) :
-    MemWkpTensor (I := I) (M := M) g k p (-S) := by
-  have h := MemWkpTensor.smul (I := I) (M := M) g hp (-1 : ℝ) hS
+    (hS : MemWkpTensor (I := I) (M := M) k p S) :
+    MemWkpTensor (I := I) (M := M) k p (-S) := by
+  have h := MemWkpTensor.smul (I := I) (M := M) hp (-1 : ℝ) hS
   simpa only [neg_one_smul] using h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem MemWkpTensor.sub
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S)
-    (hT : MemWkpTensor (I := I) (M := M) g k p T) :
-    MemWkpTensor (I := I) (M := M) g k p (S - T) := by
+    (hS : MemWkpTensor (I := I) (M := M) k p S)
+    (hT : MemWkpTensor (I := I) (M := M) k p T) :
+    MemWkpTensor (I := I) (M := M) k p (S - T) := by
   rw [sub_eq_add_neg]
-  exact MemWkpTensor.add (I := I) (M := M) g hp hS
-    (MemWkpTensor.neg (I := I) (M := M) g hp hT)
+  exact MemWkpTensor.add (I := I) (M := M) hp hS
+    (MemWkpTensor.neg (I := I) (M := M) hp hT)
 
 def wkpTensorSub
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) : Submodule ℝ (RSTensorSection I M r s) where
-  carrier := {S | MemWkpTensor (I := I) (M := M) g k p S}
-  zero_mem' := MemWkpTensor.zero (I := I) (M := M) g r s k hp
-  add_mem' := fun hS hT => MemWkpTensor.add (I := I) (M := M) g hp hS hT
-  smul_mem' := fun c _ hS => MemWkpTensor.smul (I := I) (M := M) g hp c hS
+  carrier := {S | MemWkpTensor (I := I) (M := M) k p S}
+  zero_mem' := MemWkpTensor.zero (I := I) (M := M) r s k hp
+  add_mem' := fun hS hT => MemWkpTensor.add (I := I) (M := M) hp hS hT
+  smul_mem' := fun c _ hS => MemWkpTensor.smul (I := I) (M := M) hp c hS
 
 abbrev WkpTensor
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :=
-  ↥(wkpTensorSub (I := I) (M := M) g r s k p hp)
+  ↥(wkpTensorSub (I := I) (M := M) r s k p hp)
 
 def wkpTensorNorm
-    (_g : SmoothRiemannianMetric I M) {r s : ℕ}
+    {r s : ℕ}
     (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) : ℝ≥0∞ :=
   ∑' α : M,
     ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -400,9 +399,9 @@ def wkpTensorNorm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem wkpTensorNorm_zero
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) :
-    wkpTensorNorm (I := I) (M := M) g k p
+    wkpTensorNorm (I := I) (M := M) k p
       (0 : RSTensorSection I M r s) = 0 := by
   unfold wkpTensorNorm
   have hzero : ∀ α : M,
@@ -425,13 +424,13 @@ theorem wkpTensorNorm_zero
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem wkpTensorNorm_add_le
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S)
-    (hT : MemWkpTensor (I := I) (M := M) g k p T) :
-    wkpTensorNorm (I := I) (M := M) g k p (S + T) ≤
-      wkpTensorNorm (I := I) (M := M) g k p S +
-        wkpTensorNorm (I := I) (M := M) g k p T := by
+    (hS : MemWkpTensor (I := I) (M := M) k p S)
+    (hT : MemWkpTensor (I := I) (M := M) k p T) :
+    wkpTensorNorm (I := I) (M := M) k p (S + T) ≤
+      wkpTensorNorm (I := I) (M := M) k p S +
+        wkpTensorNorm (I := I) (M := M) k p T := by
   unfold wkpTensorNorm
   rw [← ENNReal.tsum_add]
   refine ENNReal.tsum_le_tsum ?_
@@ -449,11 +448,11 @@ theorem wkpTensorNorm_add_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem wkpTensorNorm_smul
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ) {S : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S) :
-    wkpTensorNorm (I := I) (M := M) g k p (c • S) =
-      ‖c‖₊ * wkpTensorNorm (I := I) (M := M) g k p S := by
+    (hS : MemWkpTensor (I := I) (M := M) k p S) :
+    wkpTensorNorm (I := I) (M := M) k p (c • S) =
+      ‖c‖₊ * wkpTensorNorm (I := I) (M := M) k p S := by
   unfold wkpTensorNorm
   rw [← ENNReal.tsum_mul_left]
   refine tsum_congr ?_
@@ -496,10 +495,10 @@ theorem secComp_zero_off
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpTensorNorm_lt_top
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S : RSTensorSection I M r s}
-    (hS : MemWkpTensor (I := I) (M := M) g k p S) :
-    wkpTensorNorm (I := I) (M := M) g k p S < ⊤ := by
+    (hS : MemWkpTensor (I := I) (M := M) k p S) :
+    wkpTensorNorm (I := I) (M := M) k p S < ⊤ := by
   classical
   unfold wkpTensorNorm
   have hcollapse :
@@ -534,8 +533,7 @@ theorem wkpTensorNorm_lt_top
   exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E) (hS α Idx Jdx)
 
 def TensorAEEq
-    (_g : SmoothRiemannianMetric I M) {r s : ℕ}
-    (S T : RSTensorSection I M r s) : Prop :=
+    {r s : ℕ} (S T : RSTensorSection I M r s) : Prop :=
   ∀ (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)),
@@ -545,38 +543,38 @@ def TensorAEEq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.rfl
-    (g : SmoothRiemannianMetric I M) {r s : ℕ}
+    {r s : ℕ}
     (S : RSTensorSection I M r s) :
-    TensorAEEq (I := I) (M := M) g S S := by
+    TensorAEEq (I := I) (M := M) S S := by
   intro α Idx Jdx
   exact Filter.EventuallyEq.rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.symm
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {r s : ℕ}
     {S T : RSTensorSection I M r s}
-    (h : TensorAEEq (I := I) (M := M) g S T) :
-    TensorAEEq (I := I) (M := M) g T S := by
+    (h : TensorAEEq (I := I) (M := M) S T) :
+    TensorAEEq (I := I) (M := M) T S := by
   intro α Idx Jdx
   exact (h α Idx Jdx).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.trans
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {r s : ℕ}
     {S T U : RSTensorSection I M r s}
-    (hST : TensorAEEq (I := I) (M := M) g S T)
-    (hTU : TensorAEEq (I := I) (M := M) g T U) :
-    TensorAEEq (I := I) (M := M) g S U := by
+    (hST : TensorAEEq (I := I) (M := M) S T)
+    (hTU : TensorAEEq (I := I) (M := M) T U) :
+    TensorAEEq (I := I) (M := M) S U := by
   intro α Idx Jdx
   exact (hST α Idx Jdx).trans (hTU α Idx Jdx)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.add
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {r s : ℕ}
     {S₁ S₂ T₁ T₂ : RSTensorSection I M r s}
-    (hS : TensorAEEq (I := I) (M := M) g S₁ S₂)
-    (hT : TensorAEEq (I := I) (M := M) g T₁ T₂) :
-    TensorAEEq (I := I) (M := M) g (S₁ + T₁) (S₂ + T₂) := by
+    (hS : TensorAEEq (I := I) (M := M) S₁ S₂)
+    (hT : TensorAEEq (I := I) (M := M) T₁ T₂) :
+    TensorAEEq (I := I) (M := M) (S₁ + T₁) (S₂ + T₂) := by
   intro α Idx Jdx
   rw [secChartComp_add (I := I) (M := M),
     secChartComp_add (I := I) (M := M)]
@@ -586,10 +584,10 @@ theorem TensorAEEq.add
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.smul
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {r s : ℕ}
     {S T : RSTensorSection I M r s}
-    (h : TensorAEEq (I := I) (M := M) g S T) (c : ℝ) :
-    TensorAEEq (I := I) (M := M) g (c • S) (c • T) := by
+    (h : TensorAEEq (I := I) (M := M) S T) (c : ℝ) :
+    TensorAEEq (I := I) (M := M) (c • S) (c • T) := by
   intro α Idx Jdx
   rw [secChartComp_smul (I := I) (M := M),
     secChartComp_smul (I := I) (M := M)]
@@ -599,29 +597,29 @@ theorem TensorAEEq.smul
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.neg
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {r s : ℕ}
     {S T : RSTensorSection I M r s}
-    (h : TensorAEEq (I := I) (M := M) g S T) :
-    TensorAEEq (I := I) (M := M) g (-S) (-T) := by
+    (h : TensorAEEq (I := I) (M := M) S T) :
+    TensorAEEq (I := I) (M := M) (-S) (-T) := by
   simpa only [neg_one_smul] using h.smul (-1 : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem TensorAEEq.sub
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {r s : ℕ}
     {S₁ S₂ T₁ T₂ : RSTensorSection I M r s}
-    (hS : TensorAEEq (I := I) (M := M) g S₁ S₂)
-    (hT : TensorAEEq (I := I) (M := M) g T₁ T₂) :
-    TensorAEEq (I := I) (M := M) g (S₁ - T₁) (S₂ - T₂) := by
+    (hS : TensorAEEq (I := I) (M := M) S₁ S₂)
+    (hT : TensorAEEq (I := I) (M := M) T₁ T₂) :
+    TensorAEEq (I := I) (M := M) (S₁ - T₁) (S₂ - T₂) := by
   rw [sub_eq_add_neg, sub_eq_add_neg]
   exact hS.add hT.neg
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem wkpTensorNorm_congr
-    (g : SmoothRiemannianMetric I M) {r s k : ℕ}
+    {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
-    (hST : TensorAEEq (I := I) (M := M) g S T) :
-    wkpTensorNorm (I := I) (M := M) g k p S =
-      wkpTensorNorm (I := I) (M := M) g k p T := by
+    (hST : TensorAEEq (I := I) (M := M) S T) :
+    wkpTensorNorm (I := I) (M := M) k p S =
+      wkpTensorNorm (I := I) (M := M) k p T := by
   unfold wkpTensorNorm
   refine tsum_congr ?_
   intro α
@@ -633,39 +631,39 @@ theorem wkpTensorNorm_congr
     (chartTargetEuclid_isOpen (I := I) (M := M) α) (hST α Idx Jdx)
 
 def tensorChartSetoid
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Setoid (WkpTensor (I := I) (M := M) g r s k p hp) where
-  r S T := TensorAEEq (I := I) (M := M) g S.1 T.1
+    Setoid (WkpTensor (I := I) (M := M) r s k p hp) where
+  r S T := TensorAEEq (I := I) (M := M) S.1 T.1
   iseqv := {
-    refl := fun S => TensorAEEq.rfl (I := I) (M := M) g S.1
+    refl := fun S => TensorAEEq.rfl (I := I) (M := M) S.1
     symm := fun h => h.symm
     trans := fun hST hTU => hST.trans hTU }
 
 def WkpTensorQuot
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
-  Quotient (tensorChartSetoid (I := I) (M := M) g r s k p hp)
+  Quotient (tensorChartSetoid (I := I) (M := M) r s k p hp)
 
 noncomputable def wkpTensorQNorm
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    WkpTensorQuot (I := I) (M := M) g r s k p hp → ℝ≥0∞ :=
+    WkpTensorQuot (I := I) (M := M) r s k p hp → ℝ≥0∞ :=
   Quotient.lift
-    (fun S : WkpTensor (I := I) (M := M) g r s k p hp =>
-      wkpTensorNorm (I := I) (M := M) g k p S.1)
+    (fun S : WkpTensor (I := I) (M := M) r s k p hp =>
+      wkpTensorNorm (I := I) (M := M) k p S.1)
     (fun S T hST =>
-      wkpTensorNorm_congr (I := I) (M := M) g hp
-        (show TensorAEEq (I := I) (M := M) g S.1 T.1 from hST))
+      wkpTensorNorm_congr (I := I) (M := M) hp
+        (show TensorAEEq (I := I) (M := M) S.1 T.1 from hST))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 @[simp] theorem wkpTensorQNorm_mk
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p)
-    (S : WkpTensor (I := I) (M := M) g r s k p hp) :
-    wkpTensorQNorm (I := I) (M := M) g r s k p hp
-      (Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S) =
-        wkpTensorNorm (I := I) (M := M) g k p S.1 := rfl
+    (S : WkpTensor (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+      (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S) =
+        wkpTensorNorm (I := I) (M := M) k p S.1 := rfl
 
 end Tensor
 end Sobolev

@@ -544,7 +544,6 @@ theorem HasSuppConvDataOn.weightSub_ev
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
-    (_hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (chart : NormalChartFamily (I := I) X)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
@@ -565,7 +564,6 @@ theorem HasSuppConvData.weightSub_ev
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
-    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
@@ -580,14 +578,11 @@ theorem HasSuppConvData.weightSub_ev
         (stageWeightSub inp P L hr phi hphi alpha k) := by
   classical
   let Lphi := L.subseq hphi
-  have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
-      Lphi inp.pack r :=
-    hgp.subseq inp.decay inp.D P L inp.pack r hphi
   dsimp only [HasSuppConvData] at hdata
   rcases hdata with
     ⟨_hUopen, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom, _hlim, _hweightData, _htrans, _hstage⟩
-  filter_upwards [hgpPhi] with k hgpK
+  filter_upwards with k
   intro alpha
   let Y := X.obj (Lphi.φ k)
   letI : TopologicalSpace Y.M := Y.topology
@@ -606,7 +601,7 @@ theorem HasSuppConvData.weightSub_ev
     intro z hz
     simpa only [f, s, Lphi, beta] using (((hgeom k).1 alpha).2.2 hz).2
   have hw := seqWeights_data (I := I) inp.decay inp.hD P Lphi inp.pack r k
-    hgpK i0 (s := s) Set.Subset.rfl
+    i0 (s := s) Set.Subset.rfl
   have hpull := hw.comp hf
   have hweight : centerAverage.WeightDataOn (U alpha)
       (fun gamma => f ⁻¹' Lphi.hatBall inp.decay inp.D P inp.pack r k gamma)
@@ -1773,7 +1768,6 @@ theorem HasSuppConvData.ptsSub_conv
 theorem HasSuppConvData.pts_eq_ne
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1815,7 +1809,7 @@ theorem HasSuppConvData.pts_eq_ne
   rcases hdata with
     ⟨_hUopen, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom, _hlim, _hweightData, _htrans, _hstage⟩
-  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       Lphi inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hphi
@@ -1884,7 +1878,7 @@ theorem HasSuppConvData.pts_eq_ne
       (num_ne_of_cut_ne (num_ne_of_raw_ne hweight))
   have hhatGamma : q ∈
       Lphi.hatBall inp.decay inp.D P inp.pack r k gamma :=
-    seqAtom_mem_hat inp.decay inp.hD P Lphi inp.pack r k hgpK gamma (by
+    seqAtom_mem_hat inp.decay inp.hD P Lphi inp.pack r k gamma (by
       simpa only [seqAtomChart, q, beta] using hnum)
   have hcurrent := Lphi.binter_of_mem_hat inp.decay inp.hD P inp.pack r k
     hhatAlpha hhatGamma
@@ -1910,7 +1904,6 @@ theorem HasSuppConvData.pts_eq_ne
 
 theorem pairFill_smooth
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1926,9 +1919,9 @@ theorem pairFill_smooth
         (target.1.1 : Nat) (alpha.1 : Nat) (L.φ n) :=
     target.2.mono fun _ hn =>
       BInter.symm inp.decay inp.D P L.lamInf hn
-  have hforward := inp.pair_overlap_tail hradD hradRatio P L r
+  have hforward := inp.pair_overlap_tail hradRatio P L r
     alpha target.1 target.2
-  have hreverse := inp.pair_overlap_tail hradD hradRatio P L r
+  have hreverse := inp.pair_overlap_tail hradRatio P L r
     target.1 alpha hinterRev
   filter_upwards [hforward] with k hk
   filter_upwards [hreverse] with l hl

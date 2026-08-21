@@ -34,8 +34,7 @@ variable [I.Boundaryless] [CompleteSpace E]
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
     [CompleteSpace E] in
 lemma exists_uniform_orbit_in_inner_ball
-    (p : M)
-    {x₀ : E} (_hx₀_def : x₀ = extChartAt I p p)
+    {x₀ : E}
     {b : ContDiffBump ((x₀, (0 : E)) : E × E)}
     {ρ_V4 T_V4 : ℝ} (hρ_V4_pos : 0 < ρ_V4) (hT_V4_pos : 0 < T_V4)
     {Φ : (E × E) × ℝ → E × E}
@@ -168,8 +167,8 @@ theorem exists_chartFlow_uniform_orbit
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   obtain ⟨ρ, T, hρ_pos, hT_pos, _hρ_le_V4, _hT_lt_V4, h_orbit_in⟩ :=
-    exists_uniform_orbit_in_inner_ball (I := I) (p := p)
-      (x₀ := x₀) hx₀_def
+    exists_uniform_orbit_in_inner_ball
+      (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
       (Φ := Φ) hΦ_cd hΦ_init0
   exact ⟨b, r, ε, ρ, T, Φ, hr, hε, hρ_pos, hT_pos, hb_sub, hΦ_ILF, hΦ_init0,
@@ -185,16 +184,14 @@ variable [I.Boundaryless] [CompleteSpace E]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
 lemma orbit_hasDerivAt_chartPhaseVF_uniform
     (g : SmoothRiemannianMetric I M) (p : M)
-    {x₀ : E} (_hx₀_def : x₀ = extChartAt I p p)
+    {x₀ : E}
     {b : ContDiffBump ((x₀, (0 : E)) : E × E)}
-    {r : ℝ≥0} {ε : ℝ} (_hr_pos : 0 < r) (_hε_pos : 0 < ε)
+    {r : ℝ≥0} {ε : ℝ}
     {Φ : (E × E) × ℝ → E × E}
     (hΦ_ILF : DifferentialGeometry.Analysis.ODE.Flow.IsLocalFlow
         (chartPhaseVFTime (I := I) g p ((x₀, (0 : E)) : E × E) b)
         (0 : ℝ) ((x₀, (0 : E)) : E × E) r (-ε) ε Φ)
-    (_hb_sub : Metric.closedBall ((x₀, (0 : E)) : E × E) b.rOut ⊆
-      (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E))
-    {ρ T : ℝ} (_hρ_pos : 0 < ρ) (_hT_pos : 0 < T) (hT_lt_ε : T < ε)
+    {ρ T : ℝ} (hT_lt_ε : T < ε)
     (hρ_le_r : ρ ≤ (r : ℝ))
     (h_orbit_in : ∀ v ∈ Metric.ball (0 : E) ρ, ∀ s ∈ Set.Icc (-T) T,
       Φ (((x₀, v) : E × E), s) ∈
@@ -332,10 +329,10 @@ theorem exists_uniform_orbit_hasDerivAt_chartPhaseVF
         · linarith [hs'.2]
       exact h_orbit_in v' hv'_ρ₀ s' hs'_T₀
     exact orbit_hasDerivAt_chartPhaseVF_uniform
-      (I := I) (g := g) (p := p) (x₀ := extChartAt I p p) rfl
-      (b := b) (r := r) (ε := ε) hr hε
-      (Φ := Φ) hΦ_ILF hb_sub
-      (ρ := ρ) (T := T) hρ_pos hT_pos hT_lt_ε hρ_le_r h_inner_T
+      (I := I) (g := g) (p := p) (x₀ := extChartAt I p p)
+      (b := b) (r := r) (ε := ε)
+      (Φ := Φ) hΦ_ILF
+      (ρ := ρ) (T := T) hT_lt_ε hρ_le_r h_inner_T
       v hv s hs
 
 end UniformChartPhaseODE

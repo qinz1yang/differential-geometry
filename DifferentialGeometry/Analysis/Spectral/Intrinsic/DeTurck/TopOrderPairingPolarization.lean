@@ -45,6 +45,7 @@ def topOrderBilinearPairingAdjointCoefficient (g gm : SmoothRiemannianMetric I M
       (secondSlotMetricComparisonCoefficient (I := I) (M := M) g gm P) V)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem topOrderBilinearPairingAdjointCoefficient_self (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (sigma : Equiv.Perm (Fin 4)) :
     topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g gm S S sigma =
@@ -273,6 +274,7 @@ private lemma edge_sum4 {A : Type*} [Fintype A] (F : (Fin 4 → A) → Real) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem topOrderBilinearPairingAdjointCoefficient_apply (g gm : SmoothRiemannianMetric I M)
     (P V : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4))
     (x : M) (v : Fin 4 → E) :
@@ -338,6 +340,7 @@ private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
     (P V : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
@@ -536,6 +539,7 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
           Equiv.apply_symm_apply]
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem topOrderBilinearPairing_l2 (g gm : SmoothRiemannianMetric I M)
     (P V : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -551,6 +555,7 @@ theorem topOrderBilinearPairing_l2 (g gm : SmoothRiemannianMetric I M)
   exact topOrderBilinearPairing_pointwise (I := I) (M := M) g gm P V G σ x
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem topOrderBilinearPairing_inner (g gm : SmoothRiemannianMetric I M)
     (P V : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -632,6 +637,7 @@ def ricciDeTurckTopOrderBilinearPairingCoefficient (g : SmoothRiemannianMetric I
     (iteratedCovGrad (I := I) g 0 2 2 U) hdelta hdeltaZ qA qB q epsilon s
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_coefficientForJet (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : gFibreOpBound (I := I) (M := M) g
@@ -647,6 +653,7 @@ theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_coefficientForJet (g :
         hdelta hdeltaZ qA qB q epsilon s := rfl
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem ricciDeTurckTopOrderPairingCoefficientForJet_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (G : SmoothCcTensor g 0 4) {delta : Real}

@@ -149,6 +149,7 @@ private noncomputable def deTurckLieConnectionDifferenceDerivKernelCLM (g₁ g_b
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeCovKernelCLM_apply (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
     deTurckLieConnectionDifferenceDerivKernelCLM (I := I) (M := M) g₁ g_bg x v0 p q =
@@ -208,6 +209,7 @@ private noncomputable def deTurckLieConnectionDifferenceDerivativeLoweredCovec (
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 @[simp] private lemma deTurckLieConnectionDifferenceDerivativeLoweredCovec_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
     deTurckLieConnectionDifferenceDerivativeLoweredCovec (I := I) g₀ g₁ g_bg x m =
@@ -218,6 +220,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeLoweredScalar_global (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     {V0 W p q : Π b : M, TangentSpace I b}
     (hV0 : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V0))
@@ -234,7 +237,6 @@ private lemma deTurckLieConnectionDifferenceDerivativeLoweredScalar_global (g₀
       (fun x : M => g₀.inner x (deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg V0 p q x) (W x)) := by
     funext x
     rw [deTurckLieConnectionDifferenceDerivativeCovKernel_apply_field3 (I := I) g₁ g_bg x V0 p q
-      (hV0.contMDiffAt.mdifferentiableAt (by simp))
       (hp.contMDiffAt.mdifferentiableAt (by simp))
       (hq.contMDiffAt.mdifferentiableAt (by simp))]
   rw [hcongr]
@@ -243,6 +245,7 @@ private lemma deTurckLieConnectionDifferenceDerivativeLoweredScalar_global (g₀
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeLoweredScalar_contMDiffAt (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (V0 V1 V2 V3 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x₀ : M) :
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
@@ -256,6 +259,7 @@ private lemma deTurckLieConnectionDifferenceDerivativeLoweredScalar_contMDiffAt 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieConnectionDifferenceDerivativeLoweredCovec_section_contMDiff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
@@ -305,6 +309,7 @@ def deTurckLieConnectionDifferenceDerivativeLoweredCc (g₀ g₁ g_bg : SmoothRi
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x =
       Tensor0SSpace.toModel (deTurckLieConnectionDifferenceDerivativeLoweredCovec (I := I) g₀ g₁ g_bg x) := by
@@ -321,6 +326,7 @@ private lemma deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel (g₀ 
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 lemma deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x m =

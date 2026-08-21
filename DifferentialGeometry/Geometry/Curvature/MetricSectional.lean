@@ -184,7 +184,6 @@ omit [IsManifold I 2 M]
   [IsManifold I 3 M]
   [SigmaCompactSpace M] in
 theorem riemannOp_of_rm
-    [NeZero (Module.finrank Real E)]
     [I.Boundaryless] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (hRm : ∀ X Y Z W : TangentSpace I x,

@@ -103,6 +103,7 @@ private noncomputable def raiseLast
       (domDomCongrSection (I := I) g (finRotate 3) S))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem raised_inner
     (g gm : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
@@ -118,6 +119,7 @@ private theorem raised_inner
   rw [cotangentToDual_g0FlatCLM]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem kappa_split
     (g gm : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2)
@@ -136,6 +138,8 @@ private theorem kappa_split
   exact htie x
     (PDE.DeTurck.connectionDifference (I := I) gm g x (v 0) (v 1)) (v 2)
 
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem pb_eq_corr
     (g gm : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2)
@@ -296,6 +300,8 @@ private theorem kappa_pair
   rw [← operatorFieldComposition_sub_right, ← covGrad_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem moving_pair
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -446,6 +452,7 @@ private noncomputable def corrPhi
     (corrPk3 (I := I) (M := M) g P)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem corr_formula
     (g gm g_bg : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2) :
@@ -459,6 +466,7 @@ private theorem corr_formula
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem corr_cross
     (g gT gU : SmoothRiemannianMetric I M)
     (U : SmoothCcTensor g 0 2) :
@@ -530,6 +538,7 @@ private theorem corr_cross
     _ = _ := by rw [hA', hB']; module
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem raise_cross
     (g gT gU : SmoothRiemannianMetric I M) :
     raiseLast (I := I) (M := M) g gU
@@ -605,6 +614,7 @@ private theorem raise_cross
   rw [hc, map_add, ContinuousLinearMap.add_apply]
   ring
 
+omit [I.Boundaryless] in
 private theorem moving_corr
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -906,6 +916,7 @@ private theorem dom_h1
       (I := I) (M := M) g σ S q x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem connSec_eq_raise
     (g gm : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) gm g =
@@ -1005,6 +1016,7 @@ private theorem dom_sub
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem raise_sub
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 (s + 2)) :
@@ -1036,6 +1048,7 @@ private theorem raise_sub
   exact ContinuousLinearMap.map_sub _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem connSec_sub_eq
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) gT g -
@@ -1448,6 +1461,7 @@ private theorem ricciKer_sub_eq
     ← kerOfIns_sub (I := I) (M := M) g]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem sharp_eq_slot0
     (g gm : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g gm =
@@ -1519,7 +1533,7 @@ theorem sharp_h2_low
   obtain ⟨Λ, Flow, hΛ, hFlow0, hFlow⟩ :=
     sharpFlatEndoCc_lowOrder_jetL2_radiusFree
       (I := I) (M := M) g
-        (2 * Module.finrank ℝ E + 10) le_rfl hδ₀ hΛ₀0
+        (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro gm P hP htie δ hδ_le hδ0 hδ
   have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
@@ -1852,7 +1866,7 @@ private theorem wXi_h2_low
   obtain ⟨Flow, hFlow0, hFlow⟩ :=
     metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_le
       (I := I) (M := M) g g
-      (2 * Module.finrank ℝ E + 10) le_rfl hδ₀ hΛ₀0
+      (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro gm P hP htie δ hδ_le hδ0 hδ
   have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
@@ -2878,6 +2892,7 @@ theorem ricciKer_sub_tame
       ring
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem raise_rev
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -2915,6 +2930,7 @@ private theorem raise_cancel
   rw [inverseMetricSharpFib_g0FlatCLM (I := I) b x v]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem raise_pair
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -3002,6 +3018,7 @@ private noncomputable def perturb0
     (symmRaiseEndo (I := I) (M := M) g T)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem sharp_pair
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -3264,6 +3281,7 @@ private noncomputable def fourOf
         fourTraceArgPerm2301)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem pure_eq_trace1
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g gm =
@@ -3274,6 +3292,7 @@ private theorem pure_eq_trace1
   rw [cometricDoubleTraceCoefficient_toSection, pureTrace_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem four_eq
     (g gm : SmoothRiemannianMetric I M) :
     ricciCometricFourTraceCastG0 (I := I) g gm =
@@ -3349,6 +3368,7 @@ private theorem four_h2
     _ ≤ 22 * covariantJetNormSq (I := I) (M := M) g 2 P := h1234
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g gT -
@@ -3749,6 +3769,7 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_pairing_se
       pow_le_pow_left₀ hlin0 hlin 2
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieTrace_eq
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -3777,6 +3798,7 @@ private theorem slots_h2
   exact h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem liePiece_sub
     (g gT gU : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
@@ -3944,6 +3966,7 @@ private noncomputable def psiLeft
       (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gm g))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem psi_eq
     (g gm : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gm g =
@@ -3953,6 +3976,7 @@ private theorem psi_eq
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem psi_sub_eq
     (g gT gU : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g -
@@ -4177,6 +4201,7 @@ theorem sharp_pair_h2
   exact hY
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem corr_tel
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
@@ -4416,6 +4441,7 @@ theorem metricCorr_pair_h1
       ring
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem mcd_sub_eq
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -4438,6 +4464,7 @@ private theorem mcd_sub_eq
 namespace RicciDeTurckLowOrder
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem fullRev_sub
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)

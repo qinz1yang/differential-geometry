@@ -1195,7 +1195,6 @@ theorem partial_u_in_h2_loc
     (hf : ContDiff ℝ (⊤ : ℕ∞) f)
     {Ω'' : Set E} (hΩ'' : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω''))
-    (hΩ''_in_Ω : closure Ω'' ⊆ Ω)
     (h_room : Metric.cthickening 2 (closure Ω'') ⊆ Ω) (l : Fin d) :
     ∀ i k : Fin d, ∃ g : E → ℝ,
       MemLp g 2 (volume.restrict Ω'') ∧
@@ -1243,7 +1242,7 @@ theorem partial_u_in_h2_loc
     rw [Real.norm_eq_abs]
     exact h.trans (le_max_left _ _)
   obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution (d := d) B
-    hΩ'' hΩ''_compact_closure hΩ''_in_Ω h_room
+    hΩ'' hΩ''_compact_closure h_room
   intro i k
   obtain ⟨g, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
     hΩ'_compact, hbound⟩ := h_eng h_part_weak h_pert_l2 i k

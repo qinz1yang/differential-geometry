@@ -1216,6 +1216,7 @@ theorem metricFlatDiff_chartComponent_contMDiffOn_local (g₁ g₁' : SmoothRiem
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem combinedLowerRaisedEndo0_contMDiff (g₁ g₁' : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
@@ -1318,7 +1319,7 @@ lemma combinedLowerCoeff0Fib_apply_eval (g₁ g₁' : SmoothRiemannianMetric I M
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    [I.Boundaryless] [SigmaCompactSpace M] in
 theorem combinedLowerCoeff0Fib_contMDiff (g₁ g₁' : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
@@ -1388,14 +1389,16 @@ noncomputable def combinedLowerCoeff0 (g₀ g₁ g₁' : SmoothRiemannianMetric 
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
 @[simp] theorem combinedLowerCoeff0_toSection (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M) :
     (combinedLowerCoeff0 (I := I) (M := M) g₀ g₁ g₁').toSection x =
       (show Tensor0SBundle.TensorRSSpace 2 2 I x from combinedLowerCoeff0Fib (I := I) g₁ g₁' x) :=
         rfl
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem combinedLowerCoeff0_operatorFieldApplication_eq
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 2)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -1527,7 +1530,7 @@ noncomputable def ricciArmSubleadingCoeff (g₀ g₁ g₁' : SmoothRiemannianMet
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem ricciArmSubleadingCoeff_operatorFieldApplication_eq
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -1666,6 +1669,7 @@ omit [SigmaCompactSpace M] in
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciArmOrder0CurvCoeffFibSlot_contMDiff (g₁ : SmoothRiemannianMetric I M) (k : Fin 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
@@ -1686,6 +1690,7 @@ noncomputable def ricciArmOrder0CurvCoeffSlot (g₀ g₁ : SmoothRiemannianMetri
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem ricciArmOrder0CurvCoeffSlot_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (k : Fin 2) (x : M) :
     (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ k).toSection x =
@@ -1699,6 +1704,7 @@ noncomputable def ricciArmOrder0CurvCoeff (g₀ g₁ : SmoothRiemannianMetric I 
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem ricciArmOrder0CurvCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁).toSection x =
       (show Tensor0SBundle.TensorRSSpace 2 2 I x from
@@ -1709,6 +1715,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciArmOrder0CurvCoeff_operatorFieldApplication_eq_curvatureAction
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 2)
     (x : M) (v : Fin 2 → TangentSpace I x) :

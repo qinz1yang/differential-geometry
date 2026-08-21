@@ -51,7 +51,7 @@ variable {V : Type*}
 def baseD2Half (x : V) : ℝ :=
   Real.sqrt ‖x‖ * baseD2Maj x
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD2Half_nonneg (x : V) : 0 ≤ baseD2Half x := by
   unfold baseD2Half
   exact mul_nonneg (Real.sqrt_nonneg _) (baseD2Maj_nonneg x)
@@ -109,7 +109,7 @@ def heatD2Half (t : ℝ) (x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * t⁻¹ *
     Real.sqrt (heatScale t) * baseD2Half ((heatScale t)⁻¹ • x)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD2Half_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     0 ≤ heatD2Half t x := by
   unfold heatD2Half
@@ -121,6 +121,7 @@ theorem heatD2Half_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD2Half_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2Half_eq {t : ℝ} (ht : 0 < t) (x : V) :
     heatD2Half t x = Real.sqrt ‖x‖ * heatD2Maj t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -172,7 +173,7 @@ theorem heatScale34_eq {t : ℝ} (ht : 0 < t) :
   congr 1
   ring
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD2_half_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
     ‖heatD2 t v w x‖ * Real.sqrt ‖x‖ ≤
       ‖v‖ * ‖w‖ * heatD2Half t x := by
@@ -247,7 +248,7 @@ private theorem holder_half_bound {K : ℝ≥0} {f : V → F}
   rw [dist_eq_norm, hxy] at h
   simpa [Real.sqrt_eq_rpow] using h
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
 private theorem cancel_bound {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     {f : V → F} (hf : HolderWith K (1 / 2 : ℝ≥0) f)
     (v w x y : V) :

@@ -53,15 +53,15 @@ theorem top_path_dev_uniform
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ R →
             (∀ x : M,
               riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-                  ((rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+                  ((rhsTopPathIntegral (I := I) (M := M) g T T'
                       hδ_lt hδ hδ'_lt hδ' -
-                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x) ≤
+                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) ≤
                 (C * R) ^ 2) ∧
               (∑ i ∈ Finset.range 3,
                 ‖iteratedCovGrad (I := I) g 4 2 i
-                  (rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+                  (rhsTopPathIntegral (I := I) (M := M) g T T'
                       hδ_lt hδ hδ'_lt hδ' -
-                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g)‖ ^ 2) ≤
+                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)‖ ^ 2) ≤
                 (C * R) ^ 2 := by
   classical
   obtain ⟨ρ, C, hρ, hC, hdev⟩ :=
@@ -74,26 +74,26 @@ theorem top_path_dev_uniform
   have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     metricPerturbationPathDomain_isOpen
   let Φ : ℝ → SmoothCcTensor g 4 2 := fun s =>
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T T' hδ hδ' s) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
-  have hjpath := rhs_top_path_joint (I := I) (M := M) g gBase T T' hδ hδ'
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
+  have hjpath := rhs_top_path_joint (I := I) (M := M) g T T' hδ hδ'
   have hjdev : linearizedRicciThreeArmHjoint (I := I) (M := M) g 4 Φ
       (δ := δ) (δ' := δ') := by
-    simpa [Φ] using phi_dev_joint (I := I) (M := M) g gBase T T' hδ hδ'
+    simpa [Φ] using phi_dev_joint (I := I) (M := M) g T T' hδ hδ'
   let Pdev : SmoothCcTensor g 4 2 :=
     pathIntegralCoeffField (I := I) (M := M) g 4 2 Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev
   have hcpath : ∀ x : M, ContinuousOn (fun t : ℝ =>
       TensorRSSpace.toModel
-        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T T' hδ hδ' t)).toSection x))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro x
     have h := hjpath
     rw [linearizedRicciThreeArmHjoint] at h
     exact jointContMDiff_toModel_continuous_slice (I := I) g 4 2
-      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T T' hδ hδ' s))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) h x
   have hcdev : ∀ x : M, ContinuousOn (fun t : ℝ =>
@@ -101,13 +101,13 @@ theorem top_path_dev_uniform
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun x =>
     jointContMDiff_toModel_continuous_slice (I := I) g 4 2 Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hjdev x
-  have heq : rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+  have heq : rhsTopPathIntegral (I := I) (M := M) g T T'
       hδ_lt hδ hδ'_lt hδ' -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g = Pdev := by
-    have hPeq : rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g = Pdev := by
+    have hPeq : rhsTopPathIntegral (I := I) (M := M) g T T'
         hδ_lt hδ hδ'_lt hδ' =
         pathIntegralCoeffField (I := I) (M := M) g 4 2
-          (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+          (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T T' hδ hδ' s))
           (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjpath := rfl
     apply SmoothCcTensor.ext
@@ -115,41 +115,41 @@ theorem top_path_dev_uniform
     intro x
     apply TensorRSSpace.toModel_injective
     change TensorRSSpace.toModel
-        ((rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+        ((rhsTopPathIntegral (I := I) (M := M) g T T'
           hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x) =
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) =
       TensorRSSpace.toModel (Pdev.toSection x)
-    rw [show (rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+    rw [show (rhsTopPathIntegral (I := I) (M := M) g T T'
           hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x =
-        (rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x =
+        (rhsTopPathIntegral (I := I) (M := M) g T T'
           hδ_lt hδ hδ'_lt hδ').toSection x -
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x from by
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x from by
       rw [SmoothCcTensor.toSection_sub]; rfl]
     rw [TensorRSSpace.toModel_sub, hPeq]
     dsimp [Pdev]
     rw [pathIntegralFib_toModel, pathIntegralFib_toModel]
     have hint : IntervalIntegrable (fun t : ℝ =>
         TensorRSSpace.toModel
-          ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+          ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T T' hδ hδ' t)).toSection x))
         MeasureTheory.volume 0 1 :=
       ((hcpath x).mono hSI).intervalIntegrable
     rw [show (∫ t in (0 : ℝ)..1, TensorRSSpace.toModel ((Φ t).toSection x)) =
         ∫ t in (0 : ℝ)..1,
           (TensorRSSpace.toModel
-              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g T T' hδ hδ' t)).toSection x) -
             TensorRSSpace.toModel
-              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x)) from
+              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x)) from
       intervalIntegral.integral_congr (fun t _ => by
         simp only [Φ]
-        rw [show (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+        rw [show (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T T' hδ hδ' t) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x =
-              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x =
+              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g T T' hδ hδ' t)).toSection x -
-              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x from by
+              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x from by
           rw [SmoothCcTensor.toSection_sub]; rfl]
         rw [TensorRSSpace.toModel_sub])]
     rw [intervalIntegral.integral_sub hint intervalIntegrable_const,
@@ -184,7 +184,7 @@ theorem top_path_dev_uniform
   · rw [heq]
     dsimp [Pdev]
     exact path_jetL2_le (I := I) (M := M) g 4 2 2 Φ
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev hCR
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev
       (fun t ht => by simpa using (hper t ht).2)
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

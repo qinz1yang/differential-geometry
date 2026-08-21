@@ -36,15 +36,18 @@ variable {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
 def timeConstL2 (T : ℝ) (x : X) : timeL2 X T :=
   (memLp_const (μ := timeMeasure T) (p := 2) x).toLp _
 
+omit [InnerProductSpace ℝ X] [CompleteSpace X] in
 theorem timeConstL2_coeFn (T : ℝ) (x : X) :
     timeConstL2 T x =ᵐ[timeMeasure T] fun _ => x :=
   MemLp.coeFn_toLp _
 
+omit [InnerProductSpace ℝ X] [CompleteSpace X] in
 theorem norm_timeConstL2_le (T : ℝ) (x : X) :
     ‖timeConstL2 T x‖ ≤ ‖x‖ * Real.sqrt T :=
   norm_toLp_le_bd (memLp_const (μ := timeMeasure T) (p := 2) x) (norm_nonneg x)
     (Filter.Eventually.of_forall fun _ => le_rfl)
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 theorem compLpL_timeConstL2 (L : X →L[ℝ] Y) (T : ℝ) (x : X) :
     L.compLpL 2 (timeMeasure T) (timeConstL2 T x) = timeConstL2 T (L x) := by
   refine Lp.ext ?_

@@ -79,7 +79,6 @@ theorem riemannCurvatureAux_eq_nabla2VectorField_skew_of_torsion_zero
     (I := I) cov hX hY htor
 
 theorem leviCivita_connectionRiemannCurvatureField_eq_nabla2VectorField_skew
-    [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :

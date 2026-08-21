@@ -31,6 +31,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -135,7 +137,7 @@ private lemma hasDerivAt_partialDeriv_comm_at'
   unfold partialDeriv
   exact hasDerivAt_fderiv_comm_at' Φ s₀ y₀ (chartModelBasis E p) hΦ
 
-omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -209,6 +211,7 @@ theorem hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (g₀ : SmoothRiema
   ring
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_partial_chartDeTurckVFComp (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -262,6 +265,7 @@ def lieDeTurckChartSlope (g₀ : SmoothRiemannianMetric I M)
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j y
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -365,6 +369,7 @@ theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (g₀ :
   rw [lieDeTurckChartSlope, lieDeTurckSlopeExprRaw]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -386,6 +391,8 @@ theorem deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (g₀ : S
     hδ_lt hδ hδ'_lt hδ' g_bg x i j hy hmem).deriv
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma realizedGramDeriv_differentiableAt' (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -409,6 +416,8 @@ private lemma realizedGramDeriv_differentiableAt' (g₀ : SmoothRiemannianMetric
   exact h1.sub h2
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma partial_realizedGramDeriv_differentiableAt' (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -441,6 +450,8 @@ private lemma partial_realizedGramDeriv_differentiableAt' (g₀ : SmoothRiemanni
   exact (hpd.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieDeTurckChartSlope_eq_orderSplit (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -451,7 +462,7 @@ theorem lieDeTurckChartSlope_eq_orderSplit (g₀ : SmoothRiemannianMetric I M)
     (s₀ : ℝ) {y : E} (hy : y ∈ interior (extChartAt I x).target) :
     lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg x i j s₀ y =
       chartDeTurckCorrPrincipalSymbolExprRaw (I := I)
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j y +
         lieDeTurckOrder1Raw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j y +

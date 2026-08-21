@@ -27,6 +27,7 @@ variable
       [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem invGram_buffer_bnd
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)

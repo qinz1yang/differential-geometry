@@ -50,9 +50,9 @@ def HasGalerkinApproximationEnergyFiveBoundBackground (g₀ g_bg : SmoothRiemann
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) *
             galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i +
           galTameForce (I := I) (M := M) g₀ 1
-            (lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP).le
-            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hsol.hδ hsol.hCtop hsol.hB1
-              hsol.hρ hsol.hP hsol.hreal)
+            (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos).le
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg K.threshold_lt K.top_nonneg K.slope_nonneg
+              K.outer_pos K.realize_pos hsol.hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N)
             (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i)
         (Set.Ici t) t) ∧
@@ -80,17 +80,17 @@ theorem exists_galerkin_approximation_energy_five_bound_background
     exists_galerkin_projected_forcing_sequence_with_mode_convergence_background (I := I) (M := M) g₀ g_bg K hT hT1 sol fLo hsol
   obtain ⟨A, B, hgate, hA3, hB3, ε, hε, hbudget⟩ := hlo.exists_absorption_constants_and_margin
   have hstate : 0 ≤ lowRegularityStateRadius K.top K.slope K.outer K.realize :=
-    (lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP).le
+    (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos).le
   have hdom3 := energyLadder_absorption_coefficient_le hA3 hB3 hsol.hδ0 hstate
   have habs3 :
       Ctop₂ * (Kcap * (K.threshold / (1 - K.threshold) ^ 2)) +
           Kr2 * lowRegularityStateRadius K.top K.slope K.outer K.realize +
           Kr1 * lowRegularityStateRadius K.top K.slope K.outer K.realize + ε < 1 := by
     linarith only [hdom3, hbudget]
-  have hL2H3 (N : ℕ) := galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT hT1 N fseq _
+  have hL2H3 (N : ℕ) := galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT N fseq _
     ((hpack N).2.2.1) ((hpack N).2.2.2.2.2)
-  obtain ⟨Φ3, hE3⟩ := exists_uniform_galerkin_energy_three_bound_of_integral_bound_background (I := I) (M := M) g₀ g_bg hT hT1
-    hsol.hδ hsol.hδ0 hsol.hδ3 hsol.hCtop hsol.hB0 hsol.hB1 hsol.hρ hsol.hP
+  obtain ⟨Φ3, hE3⟩ := exists_uniform_galerkin_energy_three_bound_of_integral_bound_background (I := I) (M := M) g₀ g_bg hT
+    K.threshold_lt hsol.hδ0 hsol.hδ3 K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
     hsol.hreal hsol.hcore hsol.htame fseq (fun N => (hpack N).2.1)
     (fun N => (hpack N).2.2.1) (Bd := ((1 + T) *
       (lowRegularityStateRadius K.top K.slope K.outer K.realize / 4)) ^ 2) hL2H3
@@ -116,16 +116,16 @@ theorem exists_galerkin_approximation_energy_five_bound_background
       HasDerivWithinAt (fun s => U N s i)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
           galTameForce (I := I) (M := M) g₀ 1 hstate
-            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hsol.hδ hsol.hCtop hsol.hB1
-              hsol.hρ hsol.hP hsol.hreal)
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg K.threshold_lt K.top_nonneg K.slope_nonneg
+              K.outer_pos K.realize_pos hsol.hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)
         (Set.Ici t) t := by
     intro N t ht i _
     refine galerkinSolutionMode_hasDerivWithinAt (I := I) (M := M) g₀ hT hstate N fseq i ?_ ?_ ht
-    · exact galerkinProjectedForce_mode_continuous (I := I) (M := M) g₀ g_bg hsol.hδ hsol.hCtop hsol.hB0
-        hsol.hB1 hsol.hρ hsol.hP hsol.hreal hsol.htame N (U N)
+    · exact galerkinProjectedForce_mode_continuous (I := I) (M := M) g₀ g_bg K.threshold_lt K.top_nonneg K.base_nonneg
+        K.slope_nonneg K.outer_pos K.realize_pos hsol.hreal hsol.htame N (U N)
         (fun j _ => hUcont N j (by assumption)) i
-    · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g₀ hstate hT hT1 N fseq
+    · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g₀ hstate hT N fseq
         ((hpack N).2.1) ((hpack N).2.2.1) i
   obtain ⟨C3, Kr24, Kr14, K3, hord4, hA4, hB4⟩ := hgate.2.2.2.1
   have hdom4 := energyLadder_absorption_coefficient_le hA4 hB4 hsol.hδ0 hstate
@@ -137,7 +137,7 @@ theorem exists_galerkin_approximation_energy_five_bound_background
   obtain ⟨Φ4, hE4⟩ := hord4.2.2.2.2
     (δ := K.threshold) (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
     (P := K.realize) (T := T) (R3 := R3)
-    hsol.hδ hsol.hδ0 hsol.hδ3 hsol.hCtop hsol.hB1 hsol.hρ hsol.hP
+    K.threshold_lt hsol.hδ0 hsol.hδ3 K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos
     hsol.hreal hsol.hcore hUcont hUderiv hUinit hR3 hE3cap hε habs4
   let R4 : ℝ := Real.sqrt (max Φ4 0)
   have hR4 : 0 ≤ R4 := by dsimp only [R4]; positivity
@@ -158,7 +158,7 @@ theorem exists_galerkin_approximation_energy_five_bound_background
   obtain ⟨Φ5, hE5⟩ := hord5.2.2.2.2
     (δ := K.threshold) (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
     (P := K.realize) (T := T) (R3 := R3) (R4 := R4)
-    hsol.hδ hsol.hδ0 hsol.hδ3 hsol.hCtop hsol.hB1 hsol.hρ hsol.hP
+    K.threshold_lt hsol.hδ0 hsol.hδ3 K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos
     hsol.hreal hsol.hcore hUcont hUderiv hUinit hR3 hE3cap hR4 hE4cap hε habs5
   refine ⟨fseq, ?_⟩
   exact ⟨hmode, hUcont, by simpa only [U] using hUderiv,

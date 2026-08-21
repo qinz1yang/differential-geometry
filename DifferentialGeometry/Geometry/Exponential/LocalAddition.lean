@@ -108,6 +108,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   exact ⟨fun _ _ => rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private theorem connComp_enorm
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle
@@ -186,7 +187,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem connAdd_cd
-    (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
+    (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
       (connDiagExp (I := I) g p)
       (⟨connCompPt (I := I) p, (0 : E)⟩ :
@@ -211,7 +212,7 @@ theorem connAdd_cd
       TangentBundle I (connCompOpen (I := I) p))
   exact diagExp_contMDiffAt_zero (I := I)
     (connCompMetric (I := I) g p) (connComp_enorm (I := I) g p)
-    (connCompPt (I := I) p) n hn
+    (connCompPt (I := I) p) n
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

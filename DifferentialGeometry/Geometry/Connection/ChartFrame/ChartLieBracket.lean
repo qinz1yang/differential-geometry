@@ -65,7 +65,7 @@ omit [FiniteDimensional ℝ E] in
 theorem mlieBracket_eq_chart_fderiv_diff
     (x : M) (X Y : Π y : M, TangentSpace I y)
     (hxint : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E))
-    (_hX : MDiffAt (T% X) x) (_hY : MDiffAt (T% Y) x) :
+    :
     VectorField.mlieBracket I X Y x =
       fderiv ℝ (chartE_section_repr (I := I) x Y ∘ (extChartAt I x).symm)
           (extChartAt I x x) (X x)
@@ -453,7 +453,7 @@ theorem extDerivFun_apply_mlieBracket
   have hbracket_chart :
       VectorField.mlieBracket I X Y x =
         fderiv ℝ Ychart (φ x) (X x) - fderiv ℝ Xchart (φ x) (Y x) :=
-    mlieBracket_eq_chart_fderiv_diff x X Y hx_int hX hY
+    mlieBracket_eq_chart_fderiv_diff x X Y hx_int
   have hsymm : IsSymmSndFDerivAt ℝ ftilde (φ x) :=
     hftilde_cda.isSymmSndFDerivAt (by simp)
   have hftilde_lieBracket :

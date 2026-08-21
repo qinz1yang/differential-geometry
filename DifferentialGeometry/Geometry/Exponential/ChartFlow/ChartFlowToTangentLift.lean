@@ -81,20 +81,20 @@ lemma extChartAt_tangent_zero_symm_proj
   have hq_chsrc : q ∈
       (chartAt (ModelProd H E) (⟨p, (0 : E)⟩ : TangentBundle I M)).source := by
     rwa [extChartAt_source] at hq_extsrc
-  have hq_proj_src : q.proj ∈ (chartAt H p).source :=
-    (mem_chartAt_modelProd_zero_source_iff (I := I) p q).mp hq_chsrc
   have hright :
       extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M) q = z :=
     (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).right_inv htgt
   have hfst :=
     extChartAt_tangent_apply_fst (I := I)
-      (q := (⟨p, (0 : E)⟩ : TangentBundle I M)) (p := q) hq_proj_src
+      (q := (⟨p, (0 : E)⟩ : TangentBundle I M)) (p := q)
   have h_z1 : z.1 = extChartAt I p q.proj := by
     have := congrArg Prod.fst hright
     rw [hfst] at this
     exact this.symm
   have hq_extsrc_base : q.proj ∈ (extChartAt I p).source := by
-    rwa [extChartAt_source]
+    rw [extChartAt_source]
+    exact (TangentBundle.mem_chart_source_iff (I := I) (M := M) q
+      (⟨p, (0 : E)⟩ : TangentBundle I M)).mp hq_chsrc
   have hinv : (extChartAt I p).symm (extChartAt I p q.proj) = q.proj :=
     (extChartAt I p).left_inv hq_extsrc_base
   rw [h_z1, hinv]

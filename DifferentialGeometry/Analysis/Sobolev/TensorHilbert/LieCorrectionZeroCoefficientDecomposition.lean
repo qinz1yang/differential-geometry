@@ -51,6 +51,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg := by
@@ -108,6 +109,7 @@ noncomputable def reindexedCometricDoubleTrace (g₀ g₁ : SmoothRiemannianMetr
       reindexedCometricDoubleTracePerm
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem reindexedCometricDoubleTrace_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (reindexedCometricDoubleTrace (I := I) (M := M) g₀ g₁).toSection x) =
@@ -139,6 +141,7 @@ theorem reindexedCometricDoubleTrace_toSection (g₀ g₁ : SmoothRiemannianMetr
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem reindexedCometricDoubleTrace_eq_pureTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     reindexedCometricDoubleTrace (I := I) (M := M) g₀ g₁ =
@@ -161,6 +164,7 @@ private noncomputable def lieCorrectionZeroRiemannLiftFib (g₀ : SmoothRiemanni
         (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroRiemannLiftFib_contMDiff (g₀ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 4 ℝ E)
@@ -197,6 +201,7 @@ noncomputable def lieCorrectionZeroRiemannLift (g₀ : SmoothRiemannianMetric I 
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieCorrectionZeroRiemannLift_sum
     (g : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 4 → TangentSpace I x) :
@@ -272,6 +277,7 @@ private lemma lieCorrectionZeroRiemannLift_sum
   rfl
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroRiemannLift_toModel
     (g : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 4 → TangentSpace I x) :
@@ -319,7 +325,7 @@ theorem lieCorrectionZeroRiemannLift_toModel
             (∑ e, g.inner x (B e) Rv • (B e : E))
             (fun _ : Fin 1 ↦ (v 1 : E))) :=
       (CurvatureCoefficientDifferenceJetTower.toModel_cons_sum_smul
-        (E := E) x
+        (E := E)
         (Tensor0SSpace.toModel D)
         (Module.finrank ℝ E)
         (fun e ↦ g.inner x (B e) Rv)
@@ -446,6 +452,7 @@ private lemma lieCorrectionZeroRiemannDecomposition_toModel
   fin_cases i <;> rfl
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroRiemannLift_eq_decomposition
     (g : SmoothRiemannianMetric I M) :
     lieCorrectionZeroRiemannLift (I := I) (M := M) g =
@@ -484,6 +491,7 @@ theorem lieCorrectionZeroRiemannLift_eq_decomposition
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroRiemannFib_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     lieCorrectionZeroRiemFib (I := I) g₀ g₁ x =
       -((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -494,6 +502,7 @@ private theorem lieCorrectionZeroRiemannFib_eq (g₀ g₁ : SmoothRiemannianMetr
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroRiemann_eq_ccOperatorFieldComp (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroRiemann (I := I) (M := M) g₀ g₁ =
       -ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
@@ -752,6 +761,7 @@ def endoDiffSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_bg
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma endoDiffSection_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     endoDiffSection (I := I) (M := M) g₀ g₁ g_bg x =
       lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x - lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x := by
@@ -759,6 +769,7 @@ private lemma endoDiffSection_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M
   exact (nEndo_diff (I := I) (M := M) g₀ g₁ g_bg x).symm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg - lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀ =
       slotInsertEndoCc (I := I) (M := M) g₀ 1 (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)
@@ -1080,6 +1091,7 @@ noncomputable def lieCorrectionZeroVectorBundleLift (g₀ g₁ : SmoothRiemannia
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroVectorBundleFib_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     lieCorrectionZeroVBFib (I := I) g₀ g₁ x =
       (2 : ℝ) • ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -1090,6 +1102,7 @@ private theorem lieCorrectionZeroVectorBundleFib_eq (g₀ g₁ : SmoothRiemannia
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVectorBundle_eq_ccOperatorFieldComp (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
@@ -1286,6 +1299,7 @@ lemma norm_iteratedCovGrad_lieCorrectionZeroVectorBundleMetricConnectionDifferen
     ← SmoothCcTensor.norm_def]
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVectorBundleLift_eq_ccOperatorFieldComp (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroVectorBundleLift (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 4 (lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g₀ g₁)

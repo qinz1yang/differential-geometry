@@ -36,6 +36,7 @@ def reindexedPureTrace (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (pureTrace (I := I) (M := M) g₀ g₁ p) σ
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem reindexedPureTrace_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
@@ -115,7 +116,7 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
               (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D
           from rfl]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) 1 4 x _ D
+    rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 1 4 x _ D
       (m 0) (Fin.tail m)]
     set D₁ : Tensor0SSpace 1 I x :=
       tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD₁
@@ -129,7 +130,7 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
         Fin.cons (m 1) (fun j : Fin 3 => m (Fin.natAdd 2 j)) from by
       funext k
       fin_cases k <;> rfl]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x _ D₁
+    rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 0 3 x _ D₁
       (m 1) (fun j : Fin 3 => m (Fin.natAdd 2 j))]
     rw [curry_zero (I := I) (M := M) x D₁ (m 1)]
     rw [clm_unit_smul (I := I) (M := M) x 3 _ _]
@@ -184,7 +185,7 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
               (slotExtendIter (I := I) (M := M) g₀ 0 3 2 K).toSection x) D
           from rfl]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) 2 5 x _ D
+    rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 2 5 x _ D
       (m 0) (Fin.tail m)]
     set D₂ : Tensor0SSpace 2 I x :=
       tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (m 0) with hD₂
@@ -300,6 +301,7 @@ def lieCorrectionZeroMixedConnectionExpansion (g₀ g₁ gB : SmoothRiemannianMe
         (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieCorrectionZeroMixedConnectionHalfExpansion_apply (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (σlast : Equiv.Perm (Fin 4)) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -348,6 +350,7 @@ private lemma lieCorrectionZeroMixedConnectionHalfExpansion_apply (g₀ g₁ gB 
     (reindexedPureTrace_toSection (I := I) (M := M) g₀ g₁ 2 σlast x)) _
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieCorrectionZeroMixedConnectionExpansion_apply (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -377,6 +380,7 @@ private lemma lieCorrectionZeroMixedConnectionExpansion_apply (g₀ g₁ gB : Sm
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnection_eq_expansion (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB =
       lieCorrectionZeroMixedConnectionExpansion (I := I) (M := M) g₀ g₁ gB := by
@@ -408,6 +412,7 @@ def lieCorrectionZeroMixedConnectionBackgroundDifferenceHalfExpansion (g₀ g₁
             (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀)))))
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnectionHalfExpansion_sub_eq_backgroundDifferenceHalfExpansion
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -420,6 +425,7 @@ theorem lieCorrectionZeroMixedConnectionHalfExpansion_sub_eq_backgroundDifferenc
     ← DifferentialGeometry.Analysis.Spectral.slotExtendIter_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnection_sub_reference_eq_backgroundDifferenceExpansion
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -

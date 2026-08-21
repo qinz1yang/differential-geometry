@@ -68,7 +68,7 @@ theorem hatPOUDataTwo
         (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
           (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
           Set (X.obj (L.φ n)).M)))
-    (_a _b : Nat) {x : (X.obj (L.φ n)).M}
+    {x : (X.obj (L.φ n)).M}
     (hx : x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -218,7 +218,7 @@ theorem exists_hat_radius
         exact hN a ha b hb x hx
           ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd) (D := D)
             (P := P) (L := L) (pb := pb) (r := r) (n := n) (rho := rho)
-            (hrho := hrho) a b hx).2 gamma hne))
+            (hrho := hrho) hx).2 gamma hne))
   exact ⟨radSeq, fun a b x _hx => hpos a b x, hactive, htail⟩
 
 end NetLimitData

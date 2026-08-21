@@ -122,8 +122,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [
     [CompactSpace M] [SigmaCompactSpace M] in
 theorem time_dependent_vf_manifold_integral_flow_family
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (T : ℝ) (_hT : 0 < T) (Φ : ℝ → M → M)
-    (_hΦ0 : ∀ x : M, Φ 0 x = x)
+    (T : ℝ) (Φ : ℝ → M → M)
     (hdiffeo : ∀ t, 0 < t → t < T → ∃ d : M ≃ₘ⟮I, I⟯ M, ∀ x : M, d x = Φ t x)
     (hflow : ∀ t, 0 < t → t < T → ∀ x : M,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x) (Ici 0) t

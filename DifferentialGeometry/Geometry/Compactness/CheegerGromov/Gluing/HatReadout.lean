@@ -555,7 +555,7 @@ theorem exists_hat_cm_tail
     let hcomplete' :=
       NetLimitData.sourceComplete (I := I) hd P L n hcomplete (hconn (L.φ n))
     have hdata := NetLimitData.hatPOUDataTwo
-      (I := I) hd P L pb r n rho _hrho a b hx
+      (I := I) hd P L pb r n rho _hrho hx
     have hcm : CenterInput (I := I) (X.obj (L.φ n)).metric
         (fun gamma ↦ rho gamma x) pts join x (radSeq a b x) := by
       simpa only [weights, pts] using

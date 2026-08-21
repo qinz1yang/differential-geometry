@@ -129,10 +129,10 @@ theorem hessPairingMChartContribution_smoothCase_eq_weighted_chartLocal
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) (α : M) (x : M) :
     hessPairingMChartContribution (I := I) (M := M) g φ α
-        (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) v) x =
+        (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
       (chartAtlasPOU I M α : M → ℝ) x *
         hessPairingChartLocal (I := I) (M := M) g α φ
-          (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) v)
+          (u_h := smoothToH1Compl (I := I) (M := M) g v)
           ((toEuclidean (E := E)) (extChartAt I α x)) := rfl
 
 end HessianChartAlphaChristoffelDischarge

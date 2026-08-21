@@ -512,11 +512,11 @@ theorem negative_region_parabolic_lower_bound
   exact le_trans hlow hupper
 
 theorem parabolic_sub_time_curve_identity
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (c : Real -> Real)
-    (t : Real) (_ht : t ∈ Set.Icc 0 T)
+    (t : Real)
     (hu_space : forall y : M, MDifferentiableAt I 𝓘(Real, Real) (u t) y)
     (x : M)
     (hu : DifferentiableWithinAt Real (fun s : Real => u s x) (Set.Icc 0 T) t)
@@ -524,6 +524,7 @@ theorem parabolic_sub_time_curve_identity
     parabolicOperatorWithDrift (I := I) G T X (fun s y => u s y - c s) t x =
       parabolicOperatorWithDrift (I := I) G T X u t x -
         derivWithin c (Set.Icc 0 T) t := by
+  let _ := hVectorBundle
   unfold parabolicOperatorWithDrift
   have htime :
       derivWithin (fun s : Real => u s x - c s) (Set.Icc 0 T) t =
@@ -542,7 +543,7 @@ theorem parabolic_exp_rescale_identity
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T L : Real) (X : Real -> (x : M) -> TangentSpace I x)
     (v : Real -> M -> Real)
-    (t : Real) (_ht : t ∈ Set.Icc 0 T)
+    (t : Real)
     (huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t)
     (hv_space : forall y : M, MDifferentiableAt I 𝓘(Real, Real) (v t) y)
     (x : M)
@@ -667,10 +668,10 @@ private theorem derivWithin_add_eps_mul_time
 
 theorem strict_barrier_nonnegative_of_positive_time
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (_hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (w : Real -> M -> Real)
     (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2) (spacetimeSlab (M := M) T))
@@ -779,10 +780,10 @@ theorem strict_barrier_nonnegative_of_positive_time
 
 theorem strict_barrier_posReg
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (_hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (w : Real -> M -> Real)
     (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2) (spacetimeSlab (M := M) T))
@@ -891,10 +892,9 @@ theorem strict_barrier_posReg
 
 theorem strict_barrier_cpt
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (_hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (w : Real -> M -> Real)
     (K : Set M) (hK : IsCompact K)
@@ -1013,10 +1013,9 @@ theorem strict_barrier_cpt
 
 theorem strict_barrier_cpt_of_upperSupport
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (_hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (w : Real -> M -> Real)
     (K : Set M) (hK : IsCompact K)
@@ -1173,10 +1172,10 @@ theorem strict_barrier_cpt_of_upperSupport
 
 theorem strict_barrier_nonnegative
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (w : Real -> M -> Real)
     (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2) (spacetimeSlab (M := M) T))
@@ -1192,16 +1191,16 @@ theorem strict_barrier_nonnegative
       forall x : M, w t x < 0 ->
         0 <= parabolicOperatorWithDrift (I := I) G T X w t x) :
     forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-  strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
+  strict_barrier_nonnegative_of_positive_time (I := I) G T X w
     hw_cont hw0 hw_time hw_mdiff hw_grad
     (fun t ht _htpos x hwneg => hnegative t ht x hwneg)
 
 theorem scalar_wmp_sub_const_of_parabolic_nonpos
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (C : Real)
     (hw_cont : ContinuousOn
@@ -1238,7 +1237,7 @@ theorem scalar_wmp_sub_const_of_parabolic_nonpos
     exact neg_nonneg.mpr (hsub t ht htpos x)
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-    strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
+    strict_barrier_nonnegative_of_positive_time (I := I) G T X w
       (by simpa [w] using hw_cont) hw0
       (by simpa [w] using hw_time)
       (by simpa [w] using hw_mdiff)
@@ -1249,10 +1248,10 @@ theorem scalar_wmp_sub_const_of_parabolic_nonpos
 
 theorem scalar_sub_const_posReg
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (C : Real)
     (hw_cont : ContinuousOn
@@ -1290,7 +1289,7 @@ theorem scalar_sub_const_posReg
     exact neg_nonneg.mpr (hsub t ht htpos x)
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-    strict_barrier_posReg (I := I) G T hT X w
+    strict_barrier_posReg (I := I) G T X w
       (by simpa [w] using hw_cont) hw0
       (by simpa [w] using hw_time)
       (by simpa [w] using hw_mdiff)
@@ -1301,10 +1300,10 @@ theorem scalar_sub_const_posReg
 
 theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (c : Real -> Real)
     (F : Real -> Real -> Real) (L : Real)
@@ -1378,7 +1377,7 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
         rw [← hexpCalc t ht x]
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-    strict_barrier_nonnegative (I := I) G T hT X w
+    strict_barrier_nonnegative (I := I) G T X w
       (by simpa [w, v] using hw_cont) hw0
       (by simpa [w, v] using hw_time)
       (by simpa [w, v] using hw_mdiff) (by simpa [w, v] using hw_grad)
@@ -1394,10 +1393,10 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
 
 theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_positive_time
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (c : Real -> Real)
     (F : Real -> Real -> Real) (L : Real)
@@ -1471,7 +1470,7 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_p
         rw [← hexpCalc t ht x]
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-    strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
+    strict_barrier_nonnegative_of_positive_time (I := I) G T X w
       (by simpa [w, v] using hw_cont) hw0
       (by simpa [w, v] using hw_time)
       (by simpa [w, v] using hw_mdiff) (by simpa [w, v] using hw_grad)
@@ -1487,10 +1486,10 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_p
 
 theorem msm110_ch4_scalar_supersolutions
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (alpha : Real)
     (hw_cont : ContinuousOn (fun p : Real × M => u p.1 p.2 - alpha)
@@ -1521,7 +1520,7 @@ theorem msm110_ch4_scalar_supersolutions
     exact hnegative t ht x (by simpa [w] using hwneg)
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-    strict_barrier_nonnegative (I := I) G T hT X w
+    strict_barrier_nonnegative (I := I) G T X w
       (by simpa [w] using hw_cont) hw0
       (by simpa [w] using hw_time)
       (by simpa [w] using hw_mdiff) (by simpa [w] using hw_grad)
@@ -1531,12 +1530,12 @@ theorem msm110_ch4_scalar_supersolutions
 
 theorem msm110_ch4_scalar_pointwise_bounds
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
-    (u : Real -> M -> Real) (C1 C2 : Real) (_hC : C1 <= C2)
+    (u : Real -> M -> Real) (C1 C2 : Real)
     (hlower_cont : ContinuousOn (fun p : Real × M => u p.1 p.2 - C1)
       (spacetimeSlab (M := M) T))
     (hlower_time : forall t : Real, t ∈ Set.Icc 0 T ->
@@ -1573,12 +1572,12 @@ theorem msm110_ch4_scalar_pointwise_bounds
       C1 <= u t x ∧ u t x <= C2 := by
   have hlower :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, C1 <= u t x :=
-    msm110_ch4_scalar_supersolutions (I := I) G T hT X u C1
+    msm110_ch4_scalar_supersolutions (I := I) G T X u C1
       hlower_cont hlower_time hlower_mdiff hlower_grad hinit_lower hlower_negative
   have hupper_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= C2 - u t x := by
     simpa using
-      (msm110_ch4_scalar_supersolutions (I := I) G T hT X
+      (msm110_ch4_scalar_supersolutions (I := I) G T X
         (fun t x => C2 - u t x) 0
         (by simpa using hupper_cont)
         (by simpa using hupper_time)
@@ -1592,14 +1591,12 @@ theorem msm110_ch4_scalar_pointwise_bounds
 
 theorem msm110_ch4_scalar_linear_reaction
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (hT : 0 <= T)
+    (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
-    (u : Real -> M -> Real) (beta : Real -> M -> Real) (C : Real)
-    (_hbeta_bound : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
-      beta t x <= C)
+    (u : Real -> M -> Real) (C : Real)
     (hJ_cont : ContinuousOn
       (fun p : Real × M => Real.exp (-C * p.1) * u p.1 p.2)
       (spacetimeSlab (M := M) T))
@@ -1623,7 +1620,7 @@ theorem msm110_ch4_scalar_linear_reaction
   have hJ_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= J t x := by
     simpa [J] using
-      (msm110_ch4_scalar_supersolutions (I := I) G T hT X J 0
+      (msm110_ch4_scalar_supersolutions (I := I) G T X J 0
         (by simpa [J] using hJ_cont)
         (by simpa [J] using hJ_time)
         (by simpa [J] using hJ_mdiff)
@@ -1637,7 +1634,7 @@ theorem msm110_ch4_scalar_linear_reaction
 
 theorem linear_react_nonneg
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
@@ -1671,7 +1668,7 @@ theorem linear_react_nonneg
         beta t x * u t x)
     (hinit : forall x : M, 0 <= u 0 x) :
     forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= u t x := by
-  refine msm110_ch4_scalar_linear_reaction (I := I) G T hT X u beta C hbeta
+  refine msm110_ch4_scalar_linear_reaction (I := I) G T X u C
     hJ_cont hJ_time hJ_mdiff hJ_grad hinit ?_
   intro t ht x hJneg
   by_cases hTpos : 0 < T
@@ -1686,7 +1683,7 @@ theorem linear_react_nonneg
         simpa using
           (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-C)
       exact hlinear.exp
-    rw [parabolic_exp_rescale_identity (I := I) G T C X u t ht huniq
+    rw [parabolic_exp_rescale_identity (I := I) G T C X u t huniq
       (hu_space t ht) x (hu_grad t ht x) (hu_time t ht x) hscale]
     rw [hreaction t ht x]
     have hu_neg : u t x < 0 :=
@@ -1709,7 +1706,7 @@ theorem linear_react_nonneg
 
 theorem scalar_weak_maximum_principle_supersolutions_of_weighted_lipschitz_on_values
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
@@ -1802,7 +1799,7 @@ theorem scalar_weak_maximum_principle_supersolutions_of_weighted_lipschitz_on_va
         rw [← hweightCalc t ht x]
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
-    strict_barrier_nonnegative (I := I) G T hT X w
+    strict_barrier_nonnegative (I := I) G T X w
       (by simpa [w, v] using hw_cont) hw0
       (by simpa [w, v] using hw_time)
       (by simpa [w, v] using hw_mdiff) (by simpa [w, v] using hw_grad)
@@ -1818,7 +1815,7 @@ theorem scalar_weak_maximum_principle_supersolutions_of_weighted_lipschitz_on_va
 
 theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
@@ -1857,7 +1854,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
     forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
   by_cases hTpos : 0 < T
   · refine scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
-      (I := I) G T hT X u c F L hw_cont ?_ hw_mdiff hw_grad
+      (I := I) G T X u c F L hw_cont ?_ hw_mdiff hw_grad
       hsuper hode hinit hlip ?_ ?_
     · intro t ht x
       have hv_time :
@@ -1874,7 +1871,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
         exact hlinear.exp
       exact hscale.mul hv_time
     · intro t ht x
-      exact parabolic_sub_time_curve_identity (I := I) G T X u c t ht
+      exact parabolic_sub_time_curve_identity (I := I) G T X u c t
         (hu_space t ht) x (hu_time t ht x) (hc_time t ht)
     · intro t ht x
       have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
@@ -1892,7 +1889,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
             (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
         exact hlinear.exp
       exact parabolic_exp_rescale_identity (I := I) G T L X
-        (fun s y => u s y - c s) t ht huniq (hv_space t ht) x
+        (fun s y => u s y - c s) t huniq (hv_space t ht) x
         (hv_grad t ht x) hv_time hscale
   · have hTle : T <= 0 := le_of_not_gt hTpos
     have hT0 : T = 0 := le_antisymm hTle hT
@@ -1905,7 +1902,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
 
 theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_time
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
@@ -1944,7 +1941,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_tim
     forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
   by_cases hTpos : 0 < T
   · refine scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_positive_time
-      (I := I) G T hT X u c F L hw_cont ?_ hw_mdiff hw_grad
+      (I := I) G T X u c F L hw_cont ?_ hw_mdiff hw_grad
       hsuper hode hinit hlip ?_ ?_
     · intro t ht x
       have hv_time :
@@ -1961,7 +1958,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_tim
         exact hlinear.exp
       exact hscale.mul hv_time
     · intro t ht x
-      exact parabolic_sub_time_curve_identity (I := I) G T X u c t ht
+      exact parabolic_sub_time_curve_identity (I := I) G T X u c t
         (hu_space t ht) x (hu_time t ht x) (hc_time t ht)
     · intro t ht x
       have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
@@ -1979,7 +1976,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_tim
             (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
         exact hlinear.exp
       exact parabolic_exp_rescale_identity (I := I) G T L X
-        (fun s y => u s y - c s) t ht huniq (hv_space t ht) x
+        (fun s y => u s y - c s) t huniq (hv_space t ht) x
         (hv_grad t ht x) hv_time hscale
   · have hTle : T <= 0 := le_of_not_gt hTpos
     have hT0 : T = 0 := le_antisymm hTle hT
@@ -2120,7 +2117,7 @@ theorem scalarWMP_lipschitz_on_valueSet_bound
 
 theorem scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
@@ -2166,7 +2163,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
 
 theorem scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular_positive_time
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
@@ -2212,14 +2209,14 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular_positive_
 
 theorem scalar_wmp_super_theorem_7_1
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [hComplete : CompleteSpace E] [hSigma : SigmaCompactSpace M]
+    [hT2 : T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (c : Real -> Real)
     (F : Real -> Real -> Real) (K : NNReal)
-    (_hF_mono : forall t : Real, t ∈ Set.Icc 0 T -> Monotone (fun a : Real => F a t))
     (hw_cont : ContinuousOn
       (fun p : Real × M => Real.exp (-(K : Real) * p.1) * (u p.1 p.2 - c p.1))
       (spacetimeSlab (M := M) T))
@@ -2250,8 +2247,11 @@ theorem scalar_wmp_super_theorem_7_1
     (hF_lip : forall t : Real, t ∈ Set.Icc 0 T ->
       LipschitzOnWith K (fun a : Real => F a t)
         (scalarWMPValueSet (M := M) T u c)) :
-    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x :=
-  scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
+  let _ := hComplete
+  let _ := hSigma
+  let _ := hT2
+  exact scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
     (I := I) G T hT X u c F K hw_cont hw_mdiff hw_grad hu_time hc_time
     hu_space hv_space hv_grad hsuper hode hinit hF_lip
 
@@ -2313,7 +2313,7 @@ theorem scalar_wmp_sub_theorem_7_2
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, -c t <= -u t x :=
     scalar_wmp_super_theorem_7_1
       (I := I) G T hT X (fun t x => -u t x) (fun t => -c t)
-      (fun a t => -F (-a) t) K hG_mono
+      (fun a t => -F (-a) t) K
       hw_cont hw_mdiff hw_grad hneg_u_time hneg_c_time
       hneg_u_space hneg_v_space hneg_v_grad hsub_as_super hode_neg
       (fun x => by linarith [hinit x]) hF_lip_neg
@@ -2328,7 +2328,7 @@ theorem msm110_ch4_scalar_ode_lower
     (T : Real) (hT : 0 <= T)
     (X : Real -> (x : M) -> TangentSpace I x)
     (u : Real -> M -> Real) (c : Real -> Real)
-    (F : Real -> Real) (K : NNReal) (_hF_mono : Monotone F)
+    (F : Real -> Real) (K : NNReal)
     (hw_cont : ContinuousOn
       (fun p : Real × M => Real.exp (-(K : Real) * p.1) * (u p.1 p.2 - c p.1))
       (spacetimeSlab (M := M) T))
@@ -2360,6 +2360,9 @@ theorem msm110_ch4_scalar_ode_lower
       LipschitzOnWith K (fun a : Real => F a)
         (scalarWMPValueSet (M := M) T u c)) :
     forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
+  let _ := (inferInstance : (CompleteSpace E))
+  let _ := (inferInstance : (SigmaCompactSpace M))
+  let _ := (inferInstance : (T2Space M))
   refine scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
     (I := I) G T hT X u c (fun a _ => F a) K
     hw_cont hw_mdiff hw_grad hu_time hc_time hu_space hv_space hv_grad

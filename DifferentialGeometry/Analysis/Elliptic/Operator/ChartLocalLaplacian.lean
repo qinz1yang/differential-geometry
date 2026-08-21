@@ -155,7 +155,7 @@ private lemma chartPullback_eq_compose_on_chartTargetEuclid
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartPullback_contDiffOn_chartTargetEuclid [I.Boundaryless]
+lemma chartPullback_contDiffOn_chartTargetEuclid
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContDiffOn ℝ ∞ (chartPullback (I := I) α f)
       (chartTargetEuclid (I := I) (M := M) α) := by
@@ -233,7 +233,7 @@ lemma chartPullback_contDiff [I.Boundaryless]
         rw [hsymm_eq, h1, hz_eq]
     · exact chartPullback_apply_of_notMem (I := I) α f hyT
 
-def negDensityLaplacianPullback [I.Boundaryless] [T2Space M]
+def negDensityLaplacianPullback [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (α : M) : EuclN → ℝ :=
   fun y => (chartTargetEuclid (I := I) (M := M) α).indicator
@@ -242,8 +242,7 @@ def negDensityLaplacianPullback [I.Boundaryless] [T2Space M]
         ((toEuclidean (E := E)).symm z))) y
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma negDensityLaplacianPullback_apply_of_mem [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
+@[simp] lemma negDensityLaplacianPullback_apply_of_mem [I.Boundaryless] (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (α : M) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     negDensityLaplacianPullback (I := I) g hf α y =
@@ -253,16 +252,14 @@ omit [NeZero (Module.finrank ℝ E)] in
   Set.indicator_of_mem hy _
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma negDensityLaplacianPullback_apply_of_notMem [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
+@[simp] lemma negDensityLaplacianPullback_apply_of_notMem [I.Boundaryless] (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (α : M) {y : EuclN}
     (hy : y ∉ chartTargetEuclid (I := I) (M := M) α) :
     negDensityLaplacianPullback (I := I) g hf α y = 0 :=
   Set.indicator_of_notMem hy _
 
 theorem exists_chart_metric_bilinearForm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ Ω' : Set EuclN,
@@ -275,8 +272,7 @@ theorem exists_chart_metric_bilinearForm
   exists_smooth_metric_extension (I := I) (M := M) g α hK hK_target
 
 theorem chart_pulled_smooth_weak_solution_of_chartIdentity
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)
     (hf_supp : tsupport f ⊆ (chartAt H α).source)

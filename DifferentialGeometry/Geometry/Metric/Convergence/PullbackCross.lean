@@ -449,6 +449,7 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
     Tensor0SBundle.normSq0S (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x s Tpb =
       Tensor0SBundle.normSq0S (I := J) g (Phi x) s T := by
+  let _ := (inferInstance : (SigmaCompactSpace M))
   classical
   letI : Fintype Idx := Fintype.ofFinite Idx
   let dPhi : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=

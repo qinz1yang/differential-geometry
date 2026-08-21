@@ -383,7 +383,7 @@ theorem covGrad_operatorFieldComposition_eq (g : SmoothRiemannianMetric I M) (a 
         (covGrad (I := I) (M := M) g a b W) x, ContinuousLinearMap.comp_apply,
       slotExtend_toSection (I := I) (M := M) g b c Φ x]
     rw [show v = Fin.cons (v 0) (Matrix.vecTail v) from (Fin.cons_self_tail v).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g b c x
+    rw [slotExtendFib_apply_eval (I := I) (M := M) b c x
       (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
       ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace (b + 1) I x from
         (covGrad (I := I) (M := M) g a b W).toSection x) d) (v 0) (Matrix.vecTail v)]

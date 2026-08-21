@@ -840,6 +840,8 @@ theorem ccTensorBilin_symmS_symm
   rw [ccTensorBilin_symmS, ccTensorBilin_symmS, ccTensorBilinSymm_symm]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem tensorSectionRealizeMetric_symmS_eq
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -952,6 +954,8 @@ def deTurckRHSArmG0 (g₀ g_bg : SmoothRiemannianMetric I M)
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).hasCompactSupport
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckRHSArmG0_symmS_eq
     (g₀ g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -969,6 +973,7 @@ theorem deTurckRHSArmG0_symmS_eq
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).toSection
   rw [tensorSectionRealizeMetric_symmS_eq (I := I) g₀ T hδ_lt hδ hδ₁_lt hδ₁]
 
+omit [SigmaCompactSpace M] in
 private theorem deTurckSmoothRemainder_eq_arm_sub_connLap
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)

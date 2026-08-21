@@ -73,7 +73,7 @@ private lemma slotExtend_toModel_cons
       slotExtendFib (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           Phi.toSection x) D from rfl]
-  exact slotExtendFib_apply_eval (I := I) (M := M) r s x
+  exact DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       Phi.toSection x) D (show E from v0) vs
 
@@ -165,6 +165,7 @@ def movingMetricPairTraceOperator (g gm : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem movingMetricPairTraceOperator_apply
     (g gm : SmoothRiemannianMetric I M) (X : SmoothCcTensor g 0 4)
     (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :

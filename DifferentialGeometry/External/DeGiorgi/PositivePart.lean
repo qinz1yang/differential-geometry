@@ -137,6 +137,8 @@ noncomputable def MemW1pWitness.mul_smooth_bounded
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ C₁) :
     MemW1pWitness 2 (fun x => η x * u x) Ω where
   memLp := by
+    let _ := _hC₀
+    let _ := _hC₁
     refine MemLp.of_le_mul (g := u) (c := C₀) hw.memLp ?_ ?_
     · exact hη.continuous.aestronglyMeasurable.mul hw.memLp.aestronglyMeasurable
     · exact Filter.Eventually.of_forall fun x => by
@@ -288,6 +290,7 @@ theorem HasWeakPartialDeriv.of_eLpNormApprox
       Tendsto (fun n => eLpNorm (fun x => gψ n x - g x) 2 (volume.restrict Ω))
         atTop (nhds 0)) :
     HasWeakPartialDeriv i g f Ω := by
+  let _ := _hΩ
   intro φ hφ hφ_supp hφ_sub
   let μ : Measure E := volume.restrict Ω
   let dφ : E → ℝ := fun x => (fderiv ℝ φ x) (EuclideanSpace.single i 1)
@@ -681,6 +684,7 @@ noncomputable def MemW1pWitness.posPart_of_aux
             2 (volume.restrict Ω))
           atTop (nhds 0))) :
     MemW1pWitness 2 (fun x => max (u x) 0) Ω := by
+  let _ := (inferInstance : (MeasureTheory.IsFiniteMeasure (MeasureTheory.volume.restrict Ω)))
   let ψ : ℕ → E → ℝ := Classical.choose happrox
   have hψspec := Classical.choose_spec happrox
   have hψ_smooth : ∀ n, ContDiff ℝ 1 (ψ n) := hψspec.1

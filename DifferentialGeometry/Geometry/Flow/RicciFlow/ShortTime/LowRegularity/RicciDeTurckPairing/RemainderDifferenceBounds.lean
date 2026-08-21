@@ -456,7 +456,7 @@ theorem exists_ricciDeTurckLowOrderDifference_covariantJetNormSq_tame_bound
       hTn hUn hTUn hs
   have hpath := path_jetL2_le (I := I) (M := M)
     g 2 2 2 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := Btot) hBn
+    (B := Btot)
     (by
       intro t ht
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint t ht)
@@ -767,7 +767,7 @@ theorem exists_ricciDeTurckLowOrderDifference_covariantJetNormSq_bound
         hTU2 hTU3 hTn hUn hTUn hs
   have hpath := path_jetL2_le (I := I) (M := M)
     g 2 2 2 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := Btot) hBn
+    (B := Btot)
     (by
       intro t ht
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint t ht)

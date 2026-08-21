@@ -24,6 +24,7 @@ variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 
+@[nolint unusedArguments]
 abbrev CoordinateIdx (E : Type*) [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     [FiniteDimensional 𝕜 E] :=
   Fin (Module.finrank 𝕜 E)

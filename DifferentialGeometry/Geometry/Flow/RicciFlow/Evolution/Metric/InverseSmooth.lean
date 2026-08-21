@@ -311,10 +311,6 @@ theorem frameGramCLM_comp_frameGInvCLM_at
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (p : Real × M)
-    (_hleft : forall a b : Idx,
-      (∑ k : Idx,
-        gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
-        (if a = b then 1 else 0))
     (hright : forall a b : Idx,
       (∑ k : Idx,
         metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
@@ -341,10 +337,7 @@ theorem frameGInvCLM_comp_frameGramCLM_at
       (∑ k : Idx,
         gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
         (if a = b then 1 else 0))
-    (_hright : forall a b : Idx,
-      (∑ k : Idx,
-        metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
-        (if a = b then 1 else 0)) :
+    :
     frameGInvCLM (Idx := Idx) gInv p ∘L frameGramCLM (I := I) S frame p =
       ContinuousLinearMap.id Real (Idx -> Real) := by
   classical
@@ -373,8 +366,8 @@ theorem frameGramCLM_isInvertible_at
         (if a = b then 1 else 0)) :
     (frameGramCLM (I := I) S frame p).IsInvertible := by
   exact ContinuousLinearMap.IsInvertible.of_inverse
-    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hleft hright)
-    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft hright)
+    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hright)
+    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft)
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem frameGInvCLM_eq_inverse_at
@@ -395,8 +388,8 @@ theorem frameGInvCLM_eq_inverse_at
     ContinuousLinearMap.inverse (frameGramCLM (I := I) S frame p) =
       frameGInvCLM (Idx := Idx) gInv p := by
   exact ContinuousLinearMap.inverse_eq
-    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hleft hright)
-    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft hright)
+    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hright)
+    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft)
 
 omit [SigmaCompactSpace M] in
 theorem frameGramCLM_hasDerivWithinAt

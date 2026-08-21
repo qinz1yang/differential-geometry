@@ -133,7 +133,7 @@ theorem intrJacobi_diff
     rfl
   constructor
   · have h :=
-      variationField_chartRep_differentiableAt (I := I) g F hF t
+      variationField_chartRep_differentiableAt (I := I) F hF t
     rw [hbase, hfield] at h
     exact h
   · have h :=
@@ -470,7 +470,7 @@ theorem endpointJacobi_eq
       (chartRepAt (I := I) η V 0) 0 := by
     simpa only [η, V, F, intrinsicVelocityLift] using
       slice_longitudinalField_transverse_chartRep_differentiableAt
-        (I := I) g F hF 1
+        (I := I) F hF 1
   have hsq := launch_sq_deriv (I := I) g p (u : E) (w : E)
   have ha : HasDerivAt a
       ((2 * g.inner p u w) /

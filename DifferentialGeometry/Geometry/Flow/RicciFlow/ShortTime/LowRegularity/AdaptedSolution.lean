@@ -58,7 +58,7 @@ theorem IsAdaptedLowRegularitySolution.toIsLowRegularitySolution {g₀ : SmoothR
     (h : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    IsLowRegularitySolution (I := I) (M := M) g₀ hT hT1 fLo :=
+    IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo :=
   h.toIsLowRegularitySolutionAt.toIsLowRegularitySolution
 
 theorem IsAdaptedLowRegularitySolution.toHasGalerkinEnergyThreeBound {g₀ : SmoothRiemannianMetric I M}

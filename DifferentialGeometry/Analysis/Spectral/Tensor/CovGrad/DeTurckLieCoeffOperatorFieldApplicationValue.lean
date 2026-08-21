@@ -85,6 +85,7 @@ private lemma unitModel_sub2_apply_local (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckLieTraceCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (D : SmoothCcTensor g₀ 0 4) (x : M)
     (v : Fin 2 → TangentSpace I x) :
@@ -121,11 +122,12 @@ theorem deTurckLieTraceCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+omit [I.Boundaryless] in
+theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁ g_bg) D) x v =
+          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x v =
       ((∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0,
@@ -559,6 +561,7 @@ private lemma deTurckLieArm1_koszulZero_eval (g₀ g₁ : SmoothRiemannianMetric
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 0 3) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
@@ -721,6 +724,7 @@ theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I 
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
@@ -755,6 +759,7 @@ theorem deTurckLieCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
@@ -808,6 +813,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_apply_eq (g₀ g₁ g_bg :
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeInsertionField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
@@ -1034,6 +1040,7 @@ theorem deTurckLieCovariantDerivativeW_chartBasis_eq (g₁ g_bg : SmoothRiemanni
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (i j k : Fin (Module.finrank ℝ E)) :
     deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg

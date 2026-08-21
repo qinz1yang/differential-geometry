@@ -75,9 +75,6 @@ theorem pinch_quotient_evolution_of_heat_equations
     (hscalarDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
       MDifferentiableAt I 𝓘(Real, Real) (scalar (t : Real)) y)
-    (htfNonneg : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
-      D) y,
-      0 <= traceFreeRicciNormSq scalar ricciNormSq (t : Real) y)
     (hscalarPos : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
       0 < scalar (t : Real) y)
@@ -103,7 +100,7 @@ theorem pinch_quotient_evolution_of_heat_equations
     tfNormLap scalarLap
     (traceFreeRicciNormSqHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
     (scalarHeatTerm ricciNormSq) (2 - epsilon) ?_ ?_
-    htfLap hscalarLap htfDiff hscalarDiff htfNonneg hscalarPos
+    htfLap hscalarLap htfDiff hscalarDiff hscalarPos
     hgradTf hgradScalar hgradScalarPow
   · intro t x
     exact htf t x (ne_of_gt (hscalarPos t x))
@@ -559,7 +556,7 @@ def pinchEvolutionRHS
 omit [Module.Finite ℝ E] in
 theorem pinchDrift_exp
     [FiniteDimensional Real E]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (scalar ricciNormSq gradScalarNormSq : Real -> M -> Real)
     (epsilon t : Real) (x : M)
@@ -582,6 +579,7 @@ theorem pinchDrift_exp
           (2 - epsilon) *
             traceFreeRicciNormSq scalar ricciNormSq t x *
             gradScalarNormSq t x / scalar t x ^ (4 - epsilon)) := by
+  let _ := hVectorBundle
   let phi : M -> Real := traceFreeRicciNormSq scalar ricciNormSq t
   let R : M -> Real := scalar t
   let Rpow : M -> Real := fun y => R y ^ (-(2 - epsilon))

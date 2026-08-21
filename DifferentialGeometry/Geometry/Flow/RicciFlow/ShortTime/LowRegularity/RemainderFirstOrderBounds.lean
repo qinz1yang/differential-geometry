@@ -146,7 +146,7 @@ theorem rem_h1_of_bounds
             (Clow + Ccoef * (B₀ + B₀' + B₁)) *
               ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) (T - T')‖ := by
   obtain ⟨ρ, Ctop, Clow, hρ, hCtop, hClow, htop⟩ :=
-    top_path_ball_h1 (I := I) (M := M) hDim g₀ g_bg
+    top_path_ball_h1 (I := I) (M := M) hDim g₀
   obtain ⟨Ccoef, hCcoef, hlower⟩ := lower_coeff_h1 (I := I) (M := M) hDim g₀
   refine ⟨ρ, Ctop, Clow, Ccoef, hρ, hCtop, hClow, hCcoef, ?_⟩
   intro T T' hTsymm hT'symm δ hδ_lt hδ δ' hδ'_lt hδ' R hR hRρ hT hT'
@@ -157,7 +157,7 @@ theorem rem_h1_of_bounds
   let Φ₁ : SmoothCcTensor g₀ 3 2 :=
     ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
   let Φ₂ : SmoothCcTensor g₀ 4 2 :=
-    rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
+    rhsTopPathIntegral (I := I) (M := M) g₀ T T' hδ_lt hδ hδ'_lt hδ'
   have hpath :
       deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ -
           deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ' =
@@ -268,7 +268,7 @@ theorem rem_h1_of_jets
             (Clow + Ccoef * (A₀ + A₁)) *
               ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) (T - T')‖ := by
   obtain ⟨ρ, Ctop, Clow, hρ, hCtop, hClow, htop⟩ :=
-    top_path_ball_h1 (I := I) (M := M) hDim g₀ g_bg
+    top_path_ball_h1 (I := I) (M := M) hDim g₀
   obtain ⟨Ccoef, hCcoef, hlower⟩ := lower_jet_h1 (I := I) (M := M) hDim g₀
   refine ⟨ρ, Ctop, Clow, Ccoef, hρ, hCtop, hClow, hCcoef, ?_⟩
   intro T T' hTsymm hT'symm δ hδ_lt hδ δ' hδ'_lt hδ' R hR hRρ hT hT'
@@ -279,7 +279,7 @@ theorem rem_h1_of_jets
   let Φ₁ : SmoothCcTensor g₀ 3 2 :=
     ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
   let Φ₂ : SmoothCcTensor g₀ 4 2 :=
-    rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
+    rhsTopPathIntegral (I := I) (M := M) g₀ T T' hδ_lt hδ hδ'_lt hδ'
   have hpath :
       deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ -
           deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ' =

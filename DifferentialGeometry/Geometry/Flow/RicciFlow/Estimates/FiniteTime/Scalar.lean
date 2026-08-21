@@ -38,7 +38,7 @@ theorem scalarBlowupTime_pos
 
 theorem scalarLowerBarrier_denominator_pos_of_lt_blowup
     {n c0 t : Real} (hn : 0 < n) (hc0 : 0 < c0)
-    (_ht_nonneg : 0 <= t) (ht : t < scalarBlowupTime n c0) :
+    (ht : t < scalarBlowupTime n c0) :
     0 < 1 - (2 / n) * c0 * t := by
   have ha_pos : 0 < (2 / n) * c0 := mul_pos (div_pos two_pos hn) hc0
   have hmul :
@@ -60,7 +60,7 @@ theorem scalarLowerBarrier_denominator_pos_on_Icc_of_lt_blowup
       0 < 1 - (2 / n) * c0 * t := by
   intro t ht
   exact scalarLowerBarrier_denominator_pos_of_lt_blowup
-    (n := n) (c0 := c0) hn hc0 ht.1 (lt_of_le_of_lt ht.2 hT)
+    (n := n) (c0 := c0) hn hc0 (lt_of_le_of_lt ht.2 hT)
 
 theorem exists_lt_scalarLowerBarrier_before_blowup
     {n c0 : Real} (hn : 0 < n) (hc0 : 0 < c0) (B : Real) :
@@ -185,7 +185,7 @@ theorem scalarLowerBarrierBoundUpToPole_of_scalarEvolution_closedOpen
     (hF_lip : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime n c0 ->
         forall t : Real, t ∈ Set.Icc 0 T ->
-          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction n a t)
+          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction n a)
             (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet
               (M := M) T scalar
               (scalarLowerBarrier n c0))) :
@@ -236,7 +236,7 @@ theorem positive_scalar_finite_time_of_scalarEvolution_closedOpen
     (hF_lip : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime n c0 ->
         forall t : Real, t ∈ Set.Icc 0 T ->
-          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction n a t)
+          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction n a)
             (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet
               (M := M) T scalar
               (scalarLowerBarrier n c0))) :
@@ -291,7 +291,7 @@ theorem finiteTime3D
     (hF_lip : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime 3 c0 ->
         forall t : Real, t ∈ Set.Icc 0 T ->
-          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction 3 a t)
+          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction 3 a)
             (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet
               (M := M) T scalar
               (scalarLowerBarrier 3 c0))) :

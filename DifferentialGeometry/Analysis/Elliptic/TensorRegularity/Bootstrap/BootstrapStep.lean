@@ -42,6 +42,7 @@ section ChartPerturbedSource
 
 variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
+omit [T2Space M] in
 theorem tensorComponent_perturbedSource_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
@@ -55,19 +56,19 @@ theorem tensorComponent_perturbedSource_contDiff
       (perturbedSource (d := Module.finrank ℝ E)
         (tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
         l) := by
   classical
   have hu_cd : ContDiff ℝ ∞
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
     tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_supp
   have hf_cd : ContDiff ℝ ∞
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_supp hF_supp
   set B := tensorPrincipalForm (I := I) (M := M) g α hK hK_target with hB_def
   set u := tensorComponentEuclid (I := I) (M := M) g r s T α P₀ with hu_def
-  set f := tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀
+  set f := tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀
     with hf_def
   unfold perturbedSource
   have h_dlf : ContDiff ℝ (⊤ : ℕ∞) (fun x : EuclN =>
@@ -135,19 +136,19 @@ theorem tensorComponent_partial_isSmoothWeakSolution
       (perturbedSource (d := Module.finrank ℝ E)
         (tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
         l) := by
   classical
   have h_base :
       (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).IsSmoothWeakSolution
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponent_isSmoothWeakSolution (I := I) (M := M)
       g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
   have hf_cd : ContDiff ℝ (⊤ : ℕ∞)
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_supp hF_supp
   exact partial_smooth_weak_solution (d := Module.finrank ℝ E)
     (Ω := (Set.univ : Set EuclN)) isOpen_univ
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
@@ -325,11 +326,9 @@ theorem smooth_cc_h2_loc_memWkp_two
   have h_room :
       Metric.cthickening 2 (closure Ω'') ⊆ (Set.univ : Set EE) :=
     fun y _ => Set.mem_univ y
-  have h_closure_in :
-      closure Ω'' ⊆ (Set.univ : Set EE) := fun y _ => Set.mem_univ y
   obtain ⟨C_engine, hC_engine_nn, h_engine⟩ :=
     loc_smooth_solution (d := d) B hΩ'' hΩ''_compact_closure
-      h_closure_in h_room
+      h_room
   set C₀ : ℝ :=
     ((Fintype.card (Fin d) : ℝ) * (Fintype.card (Fin d) : ℝ)) * C_engine + 1
     with hC₀_def

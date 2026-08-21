@@ -65,6 +65,8 @@ def deTurckLieCovariantDerivativeDecompositionC2Family (g₀ : SmoothRiemannianM
 
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] lemma deTurckLieCovariantDerivativeDecompositionC2Family_zero (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -288,6 +290,8 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS
 
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

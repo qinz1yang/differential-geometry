@@ -13,6 +13,7 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
+omit [FiniteDimensional ℝ V] in
 theorem baseHeat_le (x : V) :
     baseHeat x ≤ (baseHeatMass V)⁻¹ := by
   unfold baseHeat
@@ -23,6 +24,7 @@ theorem baseHeat_le (x : V) :
     mul_le_mul_of_nonneg_left hexp
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
 
+omit [FiniteDimensional ℝ V] in
 theorem baseHeat_decay {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
     baseHeat x ≤
       (baseHeatMass V)⁻¹ * Real.exp (-(4 : ℝ)⁻¹ * R ^ 2) := by
@@ -34,6 +36,7 @@ theorem baseHeat_decay {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
   exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr harg)
     (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
 
+omit [FiniteDimensional ℝ V] in
 theorem baseD1Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
     (hlo : R ≤ ‖x‖) (hhi : ‖x‖ ≤ Q) :
     baseD1Maj x ≤
@@ -47,6 +50,7 @@ theorem baseD1Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
     (mul_le_mul_of_nonneg_left hhi (by positivity)) hheat
     (baseHeat_nonneg x) (mul_nonneg (by positivity) hQ0)
 
+omit [FiniteDimensional ℝ V] in
 theorem baseD2Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
     (hlo : R ≤ ‖x‖) (hhi : ‖x‖ ≤ Q) :
     baseD2Maj x ≤
@@ -65,6 +69,7 @@ theorem baseD2Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
   exact mul_le_mul hcoeff hheat (baseHeat_nonneg x)
     (add_nonneg (mul_nonneg (by positivity) (sq_nonneg Q)) (by positivity))
 
+omit [FiniteDimensional ℝ V] in
 theorem heatKernel_le (t : ℝ) (x : V) :
     heatKernel t x ≤
       ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (baseHeatMass V)⁻¹ := by
@@ -72,7 +77,8 @@ theorem heatKernel_le (t : ℝ) (x : V) :
   exact mul_le_mul_of_nonneg_left (baseHeat_le _)
     (inv_nonneg.mpr (pow_nonneg (by simp [heatScale]) _))
 
-theorem heatKernel_half {t s : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
+omit [FiniteDimensional ℝ V] in
+theorem heatKernel_half {t s : ℝ} (ht : 0 < t)
     (hst : s ≤ t / 2) (x : V) :
     heatKernel (t - s) x ≤
       ((heatScale (t / 2)) ^ Module.finrank ℝ V)⁻¹ *
@@ -96,6 +102,7 @@ theorem heatKernel_half {t s : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
     (mul_le_mul_of_nonneg_right hinv
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le))
 
+omit [FiniteDimensional ℝ V] in
 theorem heatKernel_decay {t R : ℝ} (ht : 0 < t) (hR : 0 ≤ R)
     {x : V} (hx : R * heatScale t ≤ ‖x‖) :
     heatKernel t x ≤
@@ -110,6 +117,7 @@ theorem heatKernel_decay {t R : ℝ} (ht : 0 < t) (hR : 0 ≤ R)
   exact mul_le_mul_of_nonneg_left (baseHeat_decay hR hscaled)
     (inv_nonneg.mpr (pow_nonneg hs.le _))
 
+omit [FiniteDimensional ℝ V] in
 theorem heatKernel_early {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (hst : s ≤ t / 2) (hR : 0 ≤ R) {x : V}
     (hx : R * heatScale t ≤ ‖x‖) :
@@ -145,7 +153,7 @@ theorem heatKernel_early {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
 
 omit [FiniteDimensional ℝ V] in
 theorem earlyScaled_lo {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
-    (hst : s ≤ t / 2) (_hR : 0 ≤ R) {x : V}
+    (hst : s ≤ t / 2) {x : V}
     (hx : R * heatScale t ≤ ‖x‖) :
     R ≤ ‖(heatScale (t - s))⁻¹ • x‖ := by
   have hdiff : 0 < t - s := by linarith
@@ -163,8 +171,8 @@ theorem earlyScaled_lo {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (mul_le_mul_of_nonneg_right hinv (norm_nonneg x))
 
 omit [FiniteDimensional ℝ V] in
-theorem earlyScaled_hi {t s Q : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
-    (hst : s ≤ t / 2) (_hQ : 0 ≤ Q) {x : V}
+theorem earlyScaled_hi {t s Q : ℝ} (ht : 0 < t)
+    (hst : s ≤ t / 2) {x : V}
     (hx : ‖x‖ ≤ Q * heatScale t) :
     ‖(heatScale (t - s))⁻¹ • x‖ ≤ Real.sqrt 2 * Q := by
   have hhalf : 0 < t / 2 := half_pos ht
@@ -194,7 +202,8 @@ theorem earlyScaled_hi {t s Q : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
       rw [hscaleEq]
       field_simp [(heatScale_pos hhalf).ne']
 
-theorem heatD1Maj_early {t s R Q : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
+omit [FiniteDimensional ℝ V] in
+theorem heatD1Maj_early {t s R Q : ℝ} (ht : 0 < t)
     (hst : s ≤ t / 2) (hR : 0 ≤ R) {x : V}
     (hlo : R ≤ ‖(heatScale (t - s))⁻¹ • x‖)
     (hhi : ‖(heatScale (t - s))⁻¹ • x‖ ≤ Q) :

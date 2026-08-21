@@ -58,8 +58,8 @@ theorem metric_converges_on_compact_sets
             sourceDomSigmaOf (I := I) Phi k (hsrc k)
          metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Phi k K) 0
            (srcMetric (I := I) Phi hsrc htgt k 0)
-           (resSrc (I := I) Phi hsrc k mc.limit.metric)
-           (refRes (I := I) Phi mc.limit.metric hsrc k) < eps) := by
+           (resSrc (I := I) Phi k mc.limit.metric)
+           (refRes (I := I) Phi mc.limit.metric k) < eps) := by
   dsimp only
   intro K hK eps heps
   obtain ⟨k0, hk0⟩ := D.compactness.convergence.metrics.converges K hK 0 eps heps
@@ -94,7 +94,7 @@ theorem metric_uniformly_equivalent
         sourceDomSmooth (I := I) Phi k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Phi k))
-        (refRes (I := I) Phi mc.limit.metric hsrc k)
+        (refRes (I := I) Phi mc.limit.metric k)
         (srcMetric (I := I) Phi hsrc htgt k 0) Crel := by
   dsimp only
   obtain ⟨Crel, hCrel, hrel⟩ := D.uniformly_equivalent
@@ -132,7 +132,7 @@ theorem metric_covariant_derivatives_bounded
       forall y : SourceDomain (I := I) Phi k,
         metricCovDerivNorm (I := I) q
           (srcMetric (I := I) Phi hsrc htgt k 0)
-          (refRes (I := I) Phi mc.limit.metric hsrc k) y <= Cq := by
+          (refRes (I := I) Phi mc.limit.metric k) y <= Cq := by
   dsimp only
   intro q
   obtain ⟨Cq, hCq, hcov⟩ := D.covariant_derivatives_bounded q

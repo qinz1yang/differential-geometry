@@ -186,8 +186,6 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivita_apply_eq_of_smooth
     {cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
-    (_hcovSmooth : CovariantDerivative.ContMDiffCovariantDerivative cov ∞)
-    (_hcov'Smooth : CovariantDerivative.ContMDiffCovariantDerivative cov' ∞)
     (hcov : IsLeviCivita (I := I) cov g)
     (hcov' : IsLeviCivita (I := I) cov' g)
     {X Y : (p : M) -> TangentSpace I p} {x : M}
@@ -216,8 +214,6 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivita_apply_eq_of_smooth_direction
     {cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
-    (hcovSmooth : CovariantDerivative.ContMDiffCovariantDerivative cov ∞)
-    (hcov'Smooth : CovariantDerivative.ContMDiffCovariantDerivative cov' ∞)
     (hcov : IsLeviCivita (I := I) cov g)
     (hcov' : IsLeviCivita (I := I) cov' g)
     {x : M} (Y : (p : M) -> TangentSpace I p)
@@ -228,7 +224,7 @@ theorem leviCivita_apply_eq_of_smooth_direction
     mdifferentiableAt_tangentConstAt_self (I := I) x v
   have h := leviCivita_apply_eq_of_smooth
     (I := I) (cov := cov) (cov' := cov') (g := g)
-    hcovSmooth hcov'Smooth hcov hcov' (X := X) (Y := Y) hX hY
+    hcov hcov' (X := X) (Y := Y) hX hY
   have hXx : X x = v := by
     change tangentConstAt (I := I) x v x = v
     rw [tangentConstAt_self]
@@ -240,9 +236,9 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionUniqueOnSmooth
     (g : SmoothRiemannianMetric I M) :
     LeviCivitaConnectionUniqueOnSmooth (I := I) g := by
-  intro cov cov' hcovSmooth hcov'Smooth hcov hcov' x Y hY v
+  intro cov cov' _hcovSmooth _hcov'Smooth hcov hcov' x Y hY v
   exact leviCivita_apply_eq_of_smooth_direction
     (I := I) (cov := cov) (cov' := cov') (g := g)
-    hcovSmooth hcov'Smooth hcov hcov' (x := x) Y hY v
+    hcov hcov' (x := x) Y hY v
 
 end DifferentialGeometry.Geometry.Connection

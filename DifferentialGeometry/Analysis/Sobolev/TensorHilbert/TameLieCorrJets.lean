@@ -96,7 +96,7 @@ theorem mcdBackgroundAntidiagonalTupleGridWindow (g₀ gB : SmoothRiemannianMetr
         (iteratedCovGrad (I := I) g₀ 0 3 i Wfix))
   choose Kphi hKphi_nn hphi using
     (fun σ : Equiv.Perm (Fin 5) =>
-      metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ (Λ₀ := 1) zero_le_one)
+      metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ (Λ₀ := 1))
   set SPhi : ℕ → ℝ := fun i => ∑ σ : Equiv.Perm (Fin 5), Kphi σ i with hSPhi_def
   have hSPhi_nn : ∀ i, 0 ≤ SPhi i := fun i =>
     Finset.sum_nonneg (fun σ _ => hKphi_nn σ i)
@@ -180,7 +180,7 @@ theorem mcdMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ�
   obtain ⟨Kwx, hKwx_nn, hwx⟩ := exists_metricLoweredConnectionDifference_markWindow (I := I) (M := M) g₀ hδ₀
   choose Kphi hKphi_nn hphi using
     (fun σ : Equiv.Perm (Fin 5) =>
-      metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ (Λ₀ := 1) zero_le_one)
+      metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ (Λ₀ := 1))
   set SPhi : ℕ → ℝ := fun i => ∑ σ : Equiv.Perm (Fin 5), Kphi σ i with hSPhi_def
   have hSPhi_nn : ∀ i, 0 ≤ SPhi i := fun i =>
     Finset.sum_nonneg (fun σ _ => hKphi_nn σ i)

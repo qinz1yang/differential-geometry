@@ -750,7 +750,7 @@ private lemma eLpNorm_chartSmoothExt_ball_le_wkpNormChart
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
           : C^∞⟮I_hs, M; ℝ⟯) x * u x)) q
       (volume.restrict (Metric.ball (0 : EuN) (chartRadius (n := n) (M := M) α))) ≤
-      wkpNormChart (n := n) (M := M) g 1 q u := by
+      wkpNormChart (n := n) (M := M) 1 q u := by
   classical
   rw [eLpNorm_chartSmoothExt_pou_mul_restrict_ball_eq_restrict_interior
     (n := n) (M := M) h_int α q]
@@ -1125,7 +1125,7 @@ private lemma wkpNormHalfSpace_chartPushed_target_le_wkpNormChart
         (chartPushed (n := n) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α u)
         (chartTargetEuclid (n := n) (M := M) α) ≤
-      wkpNormChart (n := n) (M := M) g 1 q u := by
+      wkpNormChart (n := n) (M := M) 1 q u := by
   classical
   let _ := g
   unfold wkpNormChart
@@ -1140,7 +1140,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_ball_le_wkpNormChart
           : C^∞⟮I_hs, M; ℝ⟯) x * u x)) z‖) q
       (volume.restrict (Metric.ball (0 : EuN) (chartRadius (n := n) (M := M) α))) ≤
       ((n : ℕ) : ℝ≥0∞) *
-        wkpNormChart (n := n) (M := M) g 1 q u := by
+        wkpNormChart (n := n) (M := M) 1 q u := by
   classical
   rw [eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball_eq_restrict_interior
     (n := n) (M := M) h_int α q]
@@ -1154,7 +1154,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_ball_le_wkpNormChart
         (chartPushed (n := n) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α u)
         (chartTargetEuclid (n := n) (M := M) α) ≤
-    wkpNormChart (n := n) (M := M) g 1 q u
+    wkpNormChart (n := n) (M := M) 1 q u
   exact wkpNormHalfSpace_chartPushed_target_le_wkpNormChart
     (n := n) (M := M) g α u
 
@@ -1167,7 +1167,7 @@ private lemma per_chart_smooth_sup_bound
         ∀ y : EuN, ‖chartSmoothExt (n := n) (M := M) α
           (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
             : C^∞⟮I_hs, M; ℝ⟯) x * u x) y‖ ≤ C *
-          (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal := by
+          (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   have hp_pos : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg _) hp
   have hp_one : 1 ≤ p := by
@@ -1194,7 +1194,7 @@ private lemma per_chart_smooth_sup_bound
       (n := n) (M := M) g h_int α (ENNReal.ofReal p)
     have hgrad_bd := eLpNorm_norm_fderiv_chartSmoothExt_ball_le_wkpNormChart
       (n := n) (M := M) g hp_enn_one hu h_int α
-    have hwkp_lt_top : wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u < ⊤ := by
+    have hwkp_lt_top : wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u < ⊤ := by
       have h_per_α_mem : ∀ β : M,
           DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkpHalfSpace
             (d := n) 1 (ENNReal.ofReal p)
@@ -1259,12 +1259,12 @@ private lemma per_chart_smooth_sup_bound
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
             (d := n) hp_enn_one hOpen_int h_ae).mp hext_β_W1p
         exact h_chartPushed_W1p
-      have h_mem_chart : MemWkpChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u :=
+      have h_mem_chart : MemWkpChart (n := n) (M := M) 1 (ENNReal.ofReal p) u :=
         h_per_α_mem
-      exact wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) g hp_enn_one h_mem_chart
-    have hwkp_ne_top : wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u ≠ ⊤ :=
+      exact wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) hp_enn_one h_mem_chart
+    have hwkp_ne_top : wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u ≠ ⊤ :=
       hwkp_lt_top.ne
-    set N : ℝ := (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal with hN_def
+    set N : ℝ := (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal with hN_def
     have hN_nn : 0 ≤ N := ENNReal.toReal_nonneg
     have hLp_real : (eLpNorm f (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : EuN) (chartRadius (n := n) (M := M) α)))).toReal
@@ -1275,7 +1275,7 @@ private lemma per_chart_smooth_sup_bound
         (volume.restrict (Metric.ball (0 : EuN) (chartRadius (n := n) (M := M) α)))).toReal
         ≤ (n : ℝ) * N := by
       have h_ne_top : ((n : ℕ) : ℝ≥0∞) *
-          wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u ≠ ⊤ :=
+          wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u ≠ ⊤ :=
         ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hwkp_ne_top
       have h_le := ENNReal.toReal_mono h_ne_top hgrad_bd
       rwa [ENNReal.toReal_mul, ENNReal.toReal_natCast] at h_le
@@ -1369,7 +1369,7 @@ private lemma perChartMorreyConst_bound
         (fun z : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
           : C^∞⟮I_hs, M; ℝ⟯) z * u z) y‖ ≤
       perChartMorreyConst (n := n) (M := M) g hp α *
-        (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal :=
+        (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal :=
   (Classical.choose_spec
     (per_chart_smooth_sup_bound (n := n) (M := M) g hp α)).2 hu h_int y
 
@@ -1380,7 +1380,7 @@ theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary
       ∀ {u : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u →
         AllChartsInteriorSupport (n := n) (M := M) u →
         ∀ x : M, ‖u x‖ ≤ C *
-          (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal := by
+          (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   set S : Finset M :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I_hs) (M := M)
@@ -1404,7 +1404,7 @@ theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary
   have hC_α_nn : 0 ≤ perChartMorreyConst (n := n) (M := M) g hp α :=
     perChartMorreyConst_nn (n := n) (M := M) g hp α
   have hCN_nn : 0 ≤ perChartMorreyConst (n := n) (M := M) g hp α *
-      (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal :=
+      (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal :=
     mul_nonneg hC_α_nn ENNReal.toReal_nonneg
   refine norm_pou_mul_le_norm_chartSmoothExt_at_some_point
     (n := n) (M := M) α u x ?_ hCN_nn
@@ -1427,7 +1427,7 @@ private lemma chartSmoothExt_holder_uniform_half_ball
               (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
                 : C^∞⟮I_hs, M; ℝ⟯) x * u x) y₂‖ ≤
             C * ‖y₁ - y₂‖ ^ (1 - (n : ℝ) / p) *
-              (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal := by
+              (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   have hd_pos : (0 : ℝ) < (n : ℝ) := by
     exact_mod_cast NeZero.pos n
@@ -1459,7 +1459,7 @@ private lemma chartSmoothExt_holder_uniform_half_ball
   have h_pair := hbound (u := f) hf_smooth_top hy₁ hy₂
   have h_grad_bd := eLpNorm_norm_fderiv_chartSmoothExt_ball_le_wkpNormChart
     (n := n) (M := M) g (q := ENNReal.ofReal p) hp_enn_one hu h_int α
-  have hwkp_lt_top : wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u < ⊤ := by
+  have hwkp_lt_top : wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u < ⊤ := by
     have h_per_α_mem : ∀ β : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkpHalfSpace
           (d := n) 1 (ENNReal.ofReal p)
@@ -1517,13 +1517,13 @@ private lemma chartSmoothExt_holder_uniform_half_ball
         exact chartSmoothExt_ae_eq_chartPushed_interior (n := n) (M := M) β u
       exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
         (d := n) hp_enn_one hOpen_int h_ae).mp hext_β_W1p
-    exact wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) g hp_enn_one h_per_α_mem
-  have hwkp_ne_top : wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u ≠ ⊤ :=
+    exact wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) hp_enn_one h_per_α_mem
+  have hwkp_ne_top : wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u ≠ ⊤ :=
     hwkp_lt_top.ne
-  set N : ℝ := (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal with hN_def
+  set N : ℝ := (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal with hN_def
   have hN_nn : 0 ≤ N := ENNReal.toReal_nonneg
   have h_d_wkp_ne_top : ((n : ℕ) : ℝ≥0∞) *
-      wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u ≠ ⊤ :=
+      wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u ≠ ⊤ :=
     ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hwkp_ne_top
   have h_grad_real :
       (eLpNorm (fun z : EuN => ‖fderiv ℝ f z‖) (ENNReal.ofReal p)
@@ -1572,7 +1572,7 @@ private lemma pou_mul_holder_chart_uniform_tsupport
               : C^∞⟮I_hs, M; ℝ⟯) y * u y‖ ≤
             C * ‖(extChartAt I_hs α x) - (extChartAt I_hs α y)‖ ^
                 (1 - (n : ℝ) / p) *
-              (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal := by
+              (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   obtain ⟨C, hC_nn, hbound⟩ :=
     chartSmoothExt_holder_uniform_half_ball (n := n) (M := M) g α hp
@@ -1626,7 +1626,7 @@ theorem smooth_manifold_morrey_holder_modulus_per_chart_withBoundary
               : C^∞⟮I_hs, M; ℝ⟯) y * u y‖ ≤
             C * ‖(extChartAt I_hs α x) - (extChartAt I_hs α y)‖ ^
                 (1 - (n : ℝ) / p) *
-              (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal := by
+              (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   set Tα : Set M := tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
@@ -1678,7 +1678,7 @@ theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary_unconditional
       ∀ {u : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u →
         AllChartsInteriorSupport (n := n) (M := M) u →
         ∀ x : M, ‖u x‖ ≤ C *
-          (wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u).toReal :=
+          (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal :=
   smooth_manifold_morrey_sup_bound_uniform_withBoundary
     (n := n) (M := M) g hp
 

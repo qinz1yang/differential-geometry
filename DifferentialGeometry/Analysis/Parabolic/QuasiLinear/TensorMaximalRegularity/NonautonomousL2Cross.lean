@@ -19,7 +19,7 @@ open DifferentialGeometry.Analysis.Spectral
 
 theorem memLp_clm_affine
     {T : ℝ} {X Y Z : Type*}
-    [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
+    [NormedAddCommGroup X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     (u : timeL2 X T) (A : ℝ → Y →L[ℝ] Z)
@@ -93,9 +93,9 @@ theorem duhamel_incl
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 u₀ f) =
+          a hT u₀ f) =
       maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-        a hT hT1 u₀ f := by
+        a hT u₀ f := by
   refine timeModeCoeff_injective (I := I) (M := M) hcompact (fun i => ?_)
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M),
     maxRegDuhamelSolField, maxRegDuhamelSolFieldHa1,

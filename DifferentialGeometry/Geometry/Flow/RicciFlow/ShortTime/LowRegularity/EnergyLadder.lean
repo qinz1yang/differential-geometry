@@ -84,9 +84,9 @@ theorem exists_galerkin_approximation_energy_five_bound
           Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
           Kr1 * lowRegularityStateRadius Ctop B1 ρ P + ε < 1 := by
     linarith only [hdom3, hbudget]
-  have hL2H3 (N : ℕ) := galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT hT1 N fseq _
+  have hL2H3 (N : ℕ) := galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT N fseq _
     ((hpack N).2.2.1) ((hpack N).2.2.2.2.2)
-  obtain ⟨Φ3, hE3⟩ := exists_uniform_galerkin_energy_three_bound_of_integral_bound (I := I) (M := M) g₀ hT hT1
+  obtain ⟨Φ3, hE3⟩ := exists_uniform_galerkin_energy_three_bound_of_integral_bound (I := I) (M := M) g₀ hT
     hsol.hδ hsol.hδ0 hsol.hδ3 hsol.hCtop hsol.hB0 hsol.hB1 hsol.hρ hsol.hP
     hsol.hreal hsol.hcore hsol.htame fseq (fun N => (hpack N).2.1)
     (fun N => (hpack N).2.2.1) (Bd := ((1 + T) *
@@ -122,7 +122,7 @@ theorem exists_galerkin_approximation_energy_five_bound
     · exact galerkinProjectedForce_mode_continuous (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB0
         hsol.hB1 hsol.hρ hsol.hP hsol.hreal hsol.htame N (U N)
         (fun j _ => hUcont N j (by assumption)) i
-    · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g₀ hstate hT hT1 N fseq
+    · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g₀ hstate hT N fseq
         ((hpack N).2.1) ((hpack N).2.2.1) i
   obtain ⟨C3, Kr24, Kr14, K3, hord4, hA4, hB4⟩ := hgate.2.2.2.1
   have hdom4 := energyLadder_absorption_coefficient_le hA4 hB4 hsol.hδ0 hstate

@@ -162,6 +162,7 @@ private lemma sum_eLpNorm_norm_iteratedFDeriv_chartSmoothExt_le_wkpNorm
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.eLpNorm_iteratedFDeriv_le_wkpNorm
     (d := Module.finrank ℝ E) hΩ_open hp_one k hh_smooth_top hh_compact hh_supp
 
+omit [I.Boundaryless] in
 private lemma wkpNorm_chartPushed_target_le_wkpNormChart_k
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {q : ℝ≥0∞} (k : ℕ) (α : M) (u : M → ℝ) :
@@ -170,7 +171,7 @@ private lemma wkpNorm_chartPushed_target_le_wkpNormChart_k
         (chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      wkpNormChart (I := I) (M := M) g k q u := by
+      wkpNormChart (I := I) (M := M) k q u := by
   classical
   let _ := g
   unfold wkpNormChart
@@ -203,7 +204,7 @@ private lemma wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart_k
           (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) x * u x))
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      wkpNormChart (I := I) (M := M) g k q u := by
+      wkpNormChart (I := I) (M := M) k q u := by
   classical
   rw [wkpNorm_chartSmoothExt_target_eq_wkpNorm_chartPushed_target_k
     (I := I) (M := M) hq_one k α u]
@@ -263,20 +264,18 @@ private lemma memWkp_chartPushed_of_contMDiff
     (d := Module.finrank ℝ E) hp_one hΩ_open h_ae).mp hExt
 
 theorem memWkpChart_of_contMDiff_k
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (k : ℕ)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    MemWkpChart (I := I) (M := M) g k p u := by
+    MemWkpChart (I := I) (M := M) k p u := by
   intro α
   exact memWkp_chartPushed_of_contMDiff (I := I) (M := M) α hu hp_one k
 
 private lemma wkpNormChart_lt_top_of_contMDiff_k
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (k : ℕ)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    wkpNormChart (I := I) (M := M) g k p u < (⊤ : ℝ≥0∞) :=
-  wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_one
-    (memWkpChart_of_contMDiff_k (I := I) (M := M) g hp_one k hu)
+    wkpNormChart (I := I) (M := M) k p u < (⊤ : ℝ≥0∞) :=
+  wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_one
+    (memWkpChart_of_contMDiff_k (I := I) (M := M) hp_one k hu)
 
 private lemma chartSmoothExt_morrey_iteratedFDeriv_sup_uniform
     (α : M) {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p) (m : ℕ)
@@ -330,7 +329,7 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
         ∀ y : EuclN, ‖iteratedFDeriv ℝ m (chartSmoothExt (I := I) (M := M) α
           (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) x * u x)) y‖ ≤ C *
-          (wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u).toReal := by
+          (wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u).toReal := by
   classical
   have hp_pos : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg _) hp
   have hp_one : 1 ≤ p := by
@@ -356,7 +355,7 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
       (eLpNorm (fun z : EuclN => ‖iteratedFDeriv ℝ j f z‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : EuclN) (chartRadius (I := I) (M := M) α)))).toReal
     with htotal_def
-  set N : ℝ := (wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u).toReal
+  set N : ℝ := (wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u).toReal
     with hN_def
   have h_step_BR_eq_Ω : ∀ j : ℕ,
       (eLpNorm (fun z : EuclN => ‖iteratedFDeriv ℝ j f z‖) (ENNReal.ofReal p)
@@ -392,7 +391,7 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) (m + 1) (ENNReal.ofReal p) f
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u := by
+      wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u := by
     rw [hf_def]
     exact wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart_k
       (I := I) (M := M) g hp_enn_one (m + 1) α u
@@ -400,11 +399,11 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
       ∑ j ∈ Finset.range (m + 2),
         eLpNorm (fun z : EuclN => ‖iteratedFDeriv ℝ j f z‖) (ENNReal.ofReal p)
           (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) ≤
-      wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u :=
+      wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u :=
     h_sum_eLpNorm_le_wkpNorm.trans h_wkpNorm_le_wkpNormChart
-  have hwkp_ne_top : wkpNormChart (I := I) (M := M) g (m + 1)
+  have hwkp_ne_top : wkpNormChart (I := I) (M := M) (m + 1)
       (ENNReal.ofReal p) u ≠ ⊤ :=
-    (wkpNormChart_lt_top_of_contMDiff_k (I := I) (M := M) g hp_enn_one (m + 1) hu).ne
+    (wkpNormChart_lt_top_of_contMDiff_k (I := I) (M := M) hp_enn_one (m + 1) hu).ne
   have h_sum_le_N : total_Ω ≤ N := by
     have h_sum_eq :
         (∑ j ∈ Finset.range (m + 2),
@@ -416,7 +415,7 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
       have h_sum_j_le :
           eLpNorm (fun z : EuclN => ‖iteratedFDeriv ℝ j f z‖) (ENNReal.ofReal p)
             (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) ≤
-          wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u := by
+          wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u := by
         refine le_trans ?_ h_wkpNorm_le_wkpNormChart
         refine le_trans ?_ h_sum_eLpNorm_le_wkpNorm
         exact Finset.single_le_sum
@@ -425,7 +424,7 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
               (volume.restrict (chartTargetEuclid (I := I) (M := M) α)))
           (fun _ _ => zero_le _) hj
       exact lt_of_le_of_lt h_sum_j_le
-        (wkpNormChart_lt_top_of_contMDiff_k (I := I) (M := M) g hp_enn_one (m + 1) hu) |>.ne
+        (wkpNormChart_lt_top_of_contMDiff_k (I := I) (M := M) hp_enn_one (m + 1) hu) |>.ne
     rw [← h_sum_eq]
     exact ENNReal.toReal_mono hwkp_ne_top h_wkp_chain
   have h_total_le_N : total_eLpNorm ≤ N := by
@@ -462,7 +461,7 @@ private lemma perChartMorreyIteratedConst_bound
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) x * u x)) y‖ ≤
       perChartMorreyIteratedConst (I := I) (M := M) g hp m α *
-        (wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u).toReal :=
+        (wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u).toReal :=
   (Classical.choose_spec
     (per_chart_smooth_iteratedFDeriv_sup_bound
       (I := I) (M := M) g hp m α)).2 hu y
@@ -481,7 +480,7 @@ theorem smooth_manifold_morrey_iteratedFDeriv_bound_uniform_perChart
           ‖iteratedFDeriv ℝ m (chartSmoothExt (I := I) (M := M) α
             (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) x * v x)) y‖ ≤ C *
-            (wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) v).toReal :=
+            (wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) v).toReal :=
   per_chart_smooth_iteratedFDeriv_sup_bound (I := I) (M := M) g hp m α
 
 theorem smooth_manifold_morrey_iteratedFDeriv_bound_uniform
@@ -498,7 +497,7 @@ theorem smooth_manifold_morrey_iteratedFDeriv_bound_uniform
           ‖iteratedFDeriv ℝ m (chartSmoothExt (I := I) (M := M) α
             (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) x * v x)) y‖ ≤ C *
-            (wkpNormChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) v).toReal :=
+            (wkpNormChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) v).toReal :=
   fun α => per_chart_smooth_iteratedFDeriv_sup_bound (I := I) (M := M) g hp m α
 
 end Chart

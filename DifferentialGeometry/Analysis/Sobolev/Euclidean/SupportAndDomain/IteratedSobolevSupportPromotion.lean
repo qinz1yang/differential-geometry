@@ -17,12 +17,11 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 omit [NeZero d] in
 theorem MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
-    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {Ω Ω' K : Set E} {u : E → ℝ}
     (hΩ_open : IsOpen Ω) (hΩ'_open : IsOpen Ω')
     (hK_compact : IsCompact K) (hKΩ' : K ⊆ Ω')
     (hΩ'_cl : closure Ω' ⊆ Ω)
-    (_hu_global_Lp : MemLp u p ((volume : Measure E).restrict Ω))
     (hu_ae_zero : u =ᵐ[(volume : Measure E).restrict (Ω \ K)] 0)
     (hu_precompact : MemWkp (d := d) k p u Ω') :
     MemWkp (d := d) k p u Ω := by
@@ -46,7 +45,7 @@ theorem MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
     (tsupport_smul_subset_left χ u).trans hχ_supp
   have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_memWkp_Ω : MemWkp (d := d) k p v Ω :=
-    MemWkp.extend_zero (d := d) hp hp_top hΩ'_open hΩ_open hΩ'Ω
+    MemWkp.extend_zero (d := d) hp hΩ'_open hΩ_open hΩ'Ω
       hv_memWkp_Ω' hv_tsupp hv_compact
   have hv_ae_eq_u : v =ᵐ[(volume : Measure E).restrict Ω] u := by
     have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by

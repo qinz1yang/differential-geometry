@@ -771,7 +771,7 @@ theorem integral_rpow_root_le_exp_bombieriGiustiThreshold
 
 theorem integral_rpow_root_le_exp_tsum_bombieriGiustiThreshold_of_dominated
     (mu : ℕ → Measure α) [∀ k, IsFiniteMeasure (mu k)]
-    (nu : Measure α) [IsFiniteMeasure nu]
+    (nu : Measure α)
     (f : α → ℝ) (reverseCost : ℕ → ℝ) {p₀ c₀ : ℝ}
     (hp₀ : 0 < p₀) (hc₀ : 0 < c₀)
     (hreverseCost : ∀ k, 1 ≤ reverseCost k)
@@ -819,7 +819,7 @@ theorem integral_rpow_root_le_exp_tsum_bombieriGiustiThreshold_of_dominated
 
 theorem integral_rpow_root_le_exp_bombieriGiustiThreshold_of_dominated
     (mu : ℕ → Measure α) [∀ k, IsFiniteMeasure (mu k)]
-    (nu : Measure α) [IsFiniteMeasure nu]
+    (nu : Measure α)
     (f : α → ℝ) {p₀ c₀ reverseCost : ℝ}
     (hp₀ : 0 < p₀) (hc₀ : 0 < c₀) (hreverseCost : 1 ≤ reverseCost)
     (hf : Measurable f) (hf_pos : ∀ x, 0 < f x)

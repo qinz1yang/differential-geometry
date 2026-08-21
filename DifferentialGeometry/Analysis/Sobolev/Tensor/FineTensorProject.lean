@@ -425,39 +425,39 @@ theorem canonChi_weight
 
 noncomputable def canonFineQMap
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
-    WkpTensorQuot (I := I) (M := M) g r s k p hp →
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
       FineWkpArray (E := E)
         (CanonFineFlat (I := I) (M := M) rFine hr) r s k p hp :=
-  fineExtractMap (I := I) (M := M) g r s k hp hp_top
+  fineExtractMap (I := I) (M := M) r s k hp hp_top
     (canonFlatWeight (I := I) (M := M) rFine hr)
     (canonFlatBase (I := I) (M := M) rFine hr)
 
 theorem canonFineQ_add
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (a b : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    canonFineQMap (I := I) (M := M) rFine hr g r s k hp hp_top
-        (qadd (I := I) (M := M) g r s k p hp a b) =
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top
+        (qadd (I := I) (M := M) r s k p hp a b) =
       fun z P => eadd k p hp Set.univ
-        (canonFineQMap (I := I) (M := M) rFine hr g r s k hp hp_top a z P)
-        (canonFineQMap (I := I) (M := M) rFine hr g r s k hp hp_top b z P) := by
-  exact fineExtract_add (I := I) (M := M) g r s k hp hp_top
+        (canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top a z P)
+        (canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top b z P) := by
+  exact fineExtract_add (I := I) (M := M) r s k hp hp_top
     (canonFlatWeight (I := I) (M := M) rFine hr)
     (canonFlatBase (I := I) (M := M) rFine hr) a b
 
 theorem canonFineQ_smul
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (c : ℝ) (a : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    canonFineQMap (I := I) (M := M) rFine hr g r s k hp hp_top
-        (qsmul (I := I) (M := M) g r s k p hp c a) =
+    (c : ℝ) (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top
+        (qsmul (I := I) (M := M) r s k p hp c a) =
       fun z P => esmul k p hp Set.univ c
-        (canonFineQMap (I := I) (M := M) rFine hr g r s k hp hp_top a z P) := by
-  exact fineExtract_smul (I := I) (M := M) g r s k hp hp_top
+        (canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top a z P) := by
+  exact fineExtract_smul (I := I) (M := M) r s k hp hp_top
     (canonFlatWeight (I := I) (M := M) rFine hr)
     (canonFlatBase (I := I) (M := M) rFine hr) c a
 

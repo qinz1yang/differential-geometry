@@ -9,13 +9,11 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBije
 open scoped Manifold Topology ContDiff
 
 theorem time_dependent_vf_globalflow_diffeomorph
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    {T : ℝ} (_hT : 0 < T)
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {T : ℝ}
     {Φ Ψ : ℝ → M → M}
-    (_hΦ_init : ∀ x, Φ 0 x = x) (_hΨ_init : ∀ x, Ψ 0 x = x)
     (hΦ_smooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Φ t))
     (hΨ_smooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Ψ t))
     (hΨΦ : ∀ s ∈ Set.Ico (0 : ℝ) T, ∀ x : M, Ψ s (Φ s x) = x)
@@ -78,15 +76,11 @@ theorem picard_data_chart_coord_in_closedBall
   exact Metric.ball_subset_closedBall hx.2
 
 
-omit [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem time_dependent_vf_flow_diffeomorph_on_closed_manifold
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
-    (_hSmoothX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      (X t ((chartAt H α).symm (I.symm y)) : E)))
-    (_hSmoothNegX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      ((-X t ((chartAt H α).symm (I.symm y))) : E)))
     (hLocalFwd : ∀ (Φ : ℝ → M → M) (T : ℝ), 0 < T →
       (∀ x : M, ∃ α : M, x ∈ (hper α).U ∧
         ∀ s : ℝ, Φ s x = (chartAt H α).symm
@@ -158,15 +152,15 @@ theorem time_dependent_vf_flow_diffeomorph_on_closed_manifold
     intro x; obtain ⟨α, _, hrepr⟩ := hΨ_repr' x; exact ⟨α, hrepr⟩
   have hLocalFwd_data := hLocalFwd Φ T_fwd hT_fwd_pos hΦ_repr'
   have hΦ_smooth : ∀ t : ℝ, 0 < t → t < T_fwd → ContMDiff I I ∞ (Φ t) :=
-    time_dependent_vf_flow_smooth_in_space X T_fwd hT_fwd_pos Φ hLocalFwd_data
+    time_dependent_vf_flow_smooth_in_space T_fwd hT_fwd_pos Φ hLocalFwd_data
   have hLocalRev_data := hLocalRev Ψ T_rev hT_rev_pos hΨ_repr'
   have hΨ_smooth : ∀ t : ℝ, 0 < t → t < T_rev → ContMDiff I I ∞ (Ψ t) :=
     time_dependent_vf_flow_smooth_in_space
-      (fun t x => -(X t x)) T_rev hT_rev_pos Ψ hLocalRev_data
+      T_rev hT_rev_pos Ψ hLocalRev_data
   have hBij := hBijPerChart Φ Ψ hΦ_init hΨ_init hΦ_repr_simple hΨ_repr_simple
   obtain ⟨T_bij, hT_bij_pos, hΨΦ_eq, hΦΨ_eq⟩ :=
     chart_cover_flow_bijective_two_sided_uniform_horizon
-      X hper hperNeg Φ Ψ hΦ_init hΨ_init hΦ_repr_simple hΨ_repr_simple hBij
+      X hper hperNeg Φ Ψ hBij
   set T : ℝ := min (min T_fwd T_rev) T_bij with hT_def
   have hT_pos : 0 < T := lt_min (lt_min hT_fwd_pos hT_rev_pos) hT_bij_pos
   have hΦ_smooth_T : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Φ t) := by
@@ -184,7 +178,7 @@ theorem time_dependent_vf_flow_diffeomorph_on_closed_manifold
     intro s hs x
     exact hΦΨ_eq s ⟨hs.1, lt_of_lt_of_le hs.2 (min_le_right _ _)⟩ x
   have hDiffeo := time_dependent_vf_globalflow_diffeomorph
-    (I := I) hT_pos hΦ_init hΨ_init hΦ_smooth_T hΨ_smooth_T hΨΦ hΦΨ
+    (I := I) hΦ_smooth_T hΨ_smooth_T hΨΦ hΦΨ
   refine ⟨T, hT_pos, Φ, hΦ_init, hΦ_repr_simple, ?_⟩
   intro t ht htT
   obtain ⟨d, hd_fwd, _⟩ := hDiffeo t ht htT

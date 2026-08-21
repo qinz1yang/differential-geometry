@@ -104,13 +104,13 @@ theorem AllChartsInteriorSupport.mul_right
 theorem AllChartsInteriorSupport.mul
     {u v : M → ℝ}
     (hu : AllChartsInteriorSupport (n := n) (M := M) u)
-    (_hv : AllChartsInteriorSupport (n := n) (M := M) v) :
+    :
     AllChartsInteriorSupport (n := n) (M := M) (fun x => u x * v x) :=
   AllChartsInteriorSupport.mul_left (n := n) (M := M) v hu
 
 theorem chartPushed_mul_norm_le_uMax_chartPushed
     (α : M) {u v : M → ℝ} {uMax : ℝ}
-    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (_huMax_nn : 0 ≤ uMax) (y : EuN) :
+    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (y : EuN) :
     ‖chartPushed (n := n) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
         (fun x => u x * v x) y‖ ≤
@@ -134,7 +134,7 @@ theorem chartPushed_mul_norm_le_uMax_chartPushed
 
 theorem eLpNorm_chartPushed_mul_le_uMax_mul
     (α : M) {u v : M → ℝ} {uMax : ℝ}
-    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (huMax_nn : 0 ≤ uMax)
+    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax)
     (q : ℝ≥0∞) (μ : Measure EuN) :
     eLpNorm (chartPushed (n := n) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
@@ -146,11 +146,11 @@ theorem eLpNorm_chartPushed_mul_le_uMax_mul
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α v)
     (c := uMax) ?_ q
   refine Filter.Eventually.of_forall (fun y => ?_)
-  exact chartPushed_mul_norm_le_uMax_chartPushed (n := n) (M := M) α hu_bound huMax_nn y
+  exact chartPushed_mul_norm_le_uMax_chartPushed (n := n) (M := M) α hu_bound y
 
 theorem wkpNormHalfSpace_zero_chartPushed_mul_le
     (α : M) {u v : M → ℝ} {uMax : ℝ}
-    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (huMax_nn : 0 ≤ uMax)
+    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax)
     (p : ℝ≥0∞) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
         (d := n) 0 p
@@ -168,20 +168,19 @@ theorem wkpNormHalfSpace_zero_chartPushed_mul_le
         (d := n) p _ _,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace_zero
         (d := n) p _ _]
-  exact eLpNorm_chartPushed_mul_le_uMax_mul (n := n) (M := M) α hu_bound huMax_nn p _
+  exact eLpNorm_chartPushed_mul_le_uMax_mul (n := n) (M := M) α hu_bound p _
 
 theorem wkpNormChart_zero_mul_le_const_mul_wkpNormChart_withBoundary
-    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {u v : M → ℝ} {uMax : ℝ}
-    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (huMax_nn : 0 ≤ uMax) (p : ℝ≥0∞) :
-    wkpNormChart (n := n) (M := M) g 0 p (fun x => u x * v x) ≤
+    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (p : ℝ≥0∞) :
+    wkpNormChart (n := n) (M := M) 0 p (fun x => u x * v x) ≤
       ENNReal.ofReal uMax *
-        wkpNormChart (n := n) (M := M) g 0 p v := by
+        wkpNormChart (n := n) (M := M) 0 p v := by
   classical
   unfold wkpNormChart
   rw [← ENNReal.tsum_mul_left]
   refine ENNReal.tsum_le_tsum (fun α => ?_)
-  exact wkpNormHalfSpace_zero_chartPushed_mul_le (n := n) (M := M) α hu_bound huMax_nn p
+  exact wkpNormHalfSpace_zero_chartPushed_mul_le (n := n) (M := M) α hu_bound p
 
 private noncomputable def chartPullbackZeroExtend (α : M) (f : M → ℝ) :
     EuclideanSpace ℝ (Fin n) → ℝ := by
@@ -453,9 +452,8 @@ private lemma chartSmoothExt_ae_eq_chartPushed_interior_local
 omit [CompactSpace M] in
 theorem wkpNormChart_eq_finset_sum_withBoundary
     [CompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
-    wkpNormChart (n := n) (M := M) g k p u =
+    wkpNormChart (n := n) (M := M) k p u =
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
               (I := I_hs) (M := M),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
@@ -501,7 +499,6 @@ theorem wkpNormChart_eq_finset_sum_withBoundary
 omit [CompactSpace M] in
 theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
     [CompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
     (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
@@ -538,12 +535,12 @@ theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
         AllChartsInteriorSupport (n := n) (M := M) v →
         ∀ {uMax vMax : ℝ}, 0 ≤ uMax → 0 ≤ vMax →
           (∀ x : M, ‖u x‖ ≤ uMax) → (∀ x : M, ‖v x‖ ≤ vMax) →
-          wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p)
+          wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p)
               (fun x => u x * v x) ≤
             ENNReal.ofReal vMax *
-              wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u +
+              wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u +
             ENNReal.ofReal uMax *
-              wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) v +
+              wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) v +
             ENNReal.ofReal (B * uMax * vMax) := by
   classical
   have hd_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast NeZero.pos n
@@ -561,10 +558,10 @@ theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
   refine ⟨∑ α ∈ S, Bα α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α hα => hBα_nn α hα)
   intro u v hu hv h_int_u h_int_v uMax vMax huMax_nn hvMax_nn hu_bound hv_bound
-  rw [wkpNormChart_eq_finset_sum_withBoundary (n := n) (M := M) g 1 hp_enn_one
+  rw [wkpNormChart_eq_finset_sum_withBoundary (n := n) (M := M) 1 hp_enn_one
       (fun x => u x * v x),
-    wkpNormChart_eq_finset_sum_withBoundary (n := n) (M := M) g 1 hp_enn_one u,
-    wkpNormChart_eq_finset_sum_withBoundary (n := n) (M := M) g 1 hp_enn_one v]
+    wkpNormChart_eq_finset_sum_withBoundary (n := n) (M := M) 1 hp_enn_one u,
+    wkpNormChart_eq_finset_sum_withBoundary (n := n) (M := M) 1 hp_enn_one v]
   have hBα_bound : ∀ α ∈ S,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p)
@@ -657,20 +654,20 @@ theorem mul_smooth_chart_bound_withBoundary_interior_of_per_chart
               ENNReal.ofReal (Bα α * uMax * vMax))
     (hMembership : ∀ {u : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u →
         AllChartsInteriorSupport (n := n) (M := M) u →
-        MemWkpChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u) :
+        MemWkpChart (n := n) (M := M) 1 (ENNReal.ofReal p) u) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u v : M → ℝ},
         ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u → ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ v →
         AllChartsInteriorSupport (n := n) (M := M) u →
         AllChartsInteriorSupport (n := n) (M := M) v →
-        wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) (fun x => u x * v x) ≤
+        wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) (fun x => u x * v x) ≤
           ENNReal.ofReal C *
-            wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u *
-            wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) v := by
+            wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u *
+            wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) v := by
   classical
   obtain ⟨B, hB_nn, hB_bound⟩ :=
     mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
-      (n := n) (M := M) g hp Bα hBα_nn hBα_per_chart
+      (n := n) (M := M) hp Bα hBα_nn hBα_per_chart
   obtain ⟨M_M, hM_M_nn, hM_M_bound⟩ :=
     smooth_manifold_morrey_sup_bound_uniform_withBoundary
       (n := n) (M := M) g hp
@@ -690,12 +687,12 @@ theorem mul_smooth_chart_bound_withBoundary_interior_of_per_chart
   have hp_enn_one : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal hp_one
-  set NU : ℝ≥0∞ := wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u with hNU_def
-  set NV : ℝ≥0∞ := wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) v with hNV_def
+  set NU : ℝ≥0∞ := wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u with hNU_def
+  set NV : ℝ≥0∞ := wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) v with hNV_def
   have hNU_lt : NU < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) g hp_enn_one (hMembership hu h_int_u)
+    wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) hp_enn_one (hMembership hu h_int_u)
   have hNV_lt : NV < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) g hp_enn_one (hMembership hv h_int_v)
+    wkpNormChart_lt_top_of_memWkpChart (n := n) (M := M) hp_enn_one (hMembership hv h_int_v)
   have hNU_ne_top : NU ≠ ⊤ := hNU_lt.ne
   have hNV_ne_top : NV ≠ ⊤ := hNV_lt.ne
   set uMax : ℝ := M_M * NU.toReal with huMax_def
@@ -745,11 +742,10 @@ theorem mul_smooth_chart_bound_withBoundary_interior_of_per_chart
 omit [CompactSpace M] in
 theorem MemWkpChart_of_contMDiff_AllChartsInteriorSupport
     [CompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u)
     (h_int : AllChartsInteriorSupport (n := n) (M := M) u) :
-    MemWkpChart (n := n) (M := M) g 1 p u := by
+    MemWkpChart (n := n) (M := M) 1 p u := by
   classical
   intro β
   set fβ : M → ℝ := fun x : M =>
@@ -839,10 +835,10 @@ theorem mul_smooth_chart_bound_withBoundary_interior
         ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u → ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ v →
         AllChartsInteriorSupport (n := n) (M := M) u →
         AllChartsInteriorSupport (n := n) (M := M) v →
-        wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) (fun x => u x * v x) ≤
+        wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) (fun x => u x * v x) ≤
           ENNReal.ofReal C *
-            wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u *
-            wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) v := by
+            wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u *
+            wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) v := by
   classical
   have hd_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast NeZero.pos n
   have hd_one_le : (1 : ℝ) ≤ (n : ℝ) := by
@@ -856,7 +852,7 @@ theorem mul_smooth_chart_bound_withBoundary_interior
   exact mul_smooth_chart_bound_withBoundary_interior_of_per_chart
     (n := n) (M := M) g hp Bα hBα_nn hBα_per_chart
     (fun {u} hu h_int => MemWkpChart_of_contMDiff_AllChartsInteriorSupport
-      (n := n) (M := M) g hp_enn_one hu h_int)
+      (n := n) (M := M) hp_enn_one hu h_int)
 
 private noncomputable def chartLifted_local (α : M) (v : M → ℝ) :
     EuclideanSpace ℝ (Fin n) → ℝ := by

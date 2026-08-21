@@ -526,10 +526,10 @@ theorem gSeqJet_of_soln
     sourceDomT2 (I := I) Φ k
   let Vi := @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection E inferInstance
     inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
-    (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σi
+    (sourceOpen (I := I) Φ k) σi
   let Vj := @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection E inferInstance
     inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
-    (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σj
+    (sourceOpen (I := I) Φ k) σj
   letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
@@ -621,12 +621,12 @@ theorem gSeqJet_of_soln
       exact @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply E
         inferInstance
         inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
-        (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σi ⟨z, hps⟩
+        (sourceOpen (I := I) Φ k) σi ⟨z, hps⟩
     have hVjz : Vj (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σj z := by
       exact @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply E
         inferInstance
         inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
-        (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σj ⟨z, hps⟩
+        (sourceOpen (I := I) Φ k) σj ⟨z, hps⟩
     have hV0 : V 0 (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σi z := by
       simpa only [V, Matrix.cons_val_zero] using hViz
     have hV1 : V 1 (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σj z := by

@@ -382,11 +382,11 @@ private theorem memW1p_chartPushed_of_contMDiff
     (chartTargetEuclid_isOpen' (I := I) (M := M) α) hae_eq).mp hExt_memW1p
 
 theorem MemWkpChart_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    MemWkpChart (I := I) (M := M) g 1 p u := by
+    MemWkpChart (I := I) (M := M) 1 p u := by
   intro α
   rw [show (1 : ℕ) = 0 + 1 from rfl,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_succ]
@@ -413,24 +413,22 @@ theorem MemW1pIntrinsic_of_contMDiff_explicit
 theorem memWkpChart_iff_memW1pIntrinsic_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    MemWkpChart (I := I) (M := M) g 1 p u ↔
+    MemWkpChart (I := I) (M := M) 1 p u ↔
       DifferentialGeometry.Analysis.Sobolev.Intrinsic.MemW1pIntrinsic
         (I := I) (M := M) g p u := by
-  let _ := hp_top
   refine ⟨fun _ => ?_, fun _ => ?_⟩
   · exact MemW1pIntrinsic_of_contMDiff_explicit (I := I) (M := M) g p hu_smooth
-  · exact MemWkpChart_of_contMDiff (I := I) (M := M) g hp_one hu_smooth
+  · exact MemWkpChart_of_contMDiff (I := I) (M := M) hp_one hu_smooth
 
 theorem wkpNormChart_lt_top_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    wkpNormChart (I := I) (M := M) g 1 p u < ⊤ :=
-  wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp
-    (MemWkpChart_of_contMDiff (I := I) (M := M) g hp hu)
+    wkpNormChart (I := I) (M := M) 1 p u < ⊤ :=
+  wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp
+    (MemWkpChart_of_contMDiff (I := I) (M := M) hp hu)
 
 theorem w1pNormIntrinsic_lt_top_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]

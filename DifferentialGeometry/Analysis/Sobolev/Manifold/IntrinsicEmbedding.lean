@@ -52,8 +52,8 @@ theorem sobolev_intrinsic
   refine ⟨Cs * Cr, mul_nonneg hCs hCr, ?_⟩
   intro u hu
   have hmem :
-      Chart.MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u :=
-    Equivalence.MemWkpChart_of_contMDiff (I := I) (M := M) g hp_enn hu
+      Chart.MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) u :=
+    Equivalence.MemWkpChart_of_contMDiff (I := I) (M := M) hp_enn hu
   calc
     eLpNorm u
           (ENNReal.ofReal
@@ -61,7 +61,7 @@ theorem sobolev_intrinsic
               ((Module.finrank Real E : Real) - p)))
           (riemannianVolumeMeasure I M g) ≤
         ENNReal.ofReal Cs *
-          Chart.wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u :=
+          Chart.wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u :=
       hs hu.continuous.measurable hmem
     _ ≤ ENNReal.ofReal Cs *
         (ENNReal.ofReal Cr *

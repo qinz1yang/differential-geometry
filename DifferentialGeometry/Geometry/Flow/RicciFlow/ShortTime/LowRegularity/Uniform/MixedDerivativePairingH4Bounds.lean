@@ -323,8 +323,8 @@ theorem mixed_derivative_action_pairing_h4_uniform_bound
             (I := I) g T 0 hdelta hdeltaZ a
           let B : SmoothCcTensor g 4 2 :=
             lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a +
-              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g) +
+              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
               (-2 * a : ℝ) •
                 RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T
           let HT : SmoothCcTensor g 0 4 :=
@@ -393,8 +393,8 @@ theorem mixed_derivative_action_pairing_h4_uniform_bound
       (I := I) g T 0 hdelta hdeltaZ a
   let B : SmoothCcTensor g 4 2 :=
     lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a +
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g) +
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
       (-2 * a : ℝ) • RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient
         (I := I) (M := M) g gm T
   let HT : SmoothCcTensor g 0 4 :=

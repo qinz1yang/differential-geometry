@@ -108,6 +108,8 @@ theorem metric_ext_inner
       rfl
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem realize_metricDiff (q h : SmoothRiemannianMetric I M)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q

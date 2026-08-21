@@ -541,6 +541,7 @@ private theorem exists_calabi_coeff
   exact ⟨q, hq, hRicLower, hnq⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem ricci_quad_of_curv
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

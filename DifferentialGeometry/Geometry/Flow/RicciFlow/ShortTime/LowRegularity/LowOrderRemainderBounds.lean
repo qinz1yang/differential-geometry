@@ -149,7 +149,7 @@ theorem ricciDeTurckRemainderZeroOrderPathIntegral_h1_bound
     (fun s => ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
     (metricPerturbationPathDomain (δ := δ₀) (δ' := δ₀)) metricPerturbationPathDomain_isOpen hSI
     (ricciDeTurckRemainderZeroOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ')
-    (hB R hR) (hcoeff T T' hδ hδ' R hR hT hT')
+    (hcoeff T T' hδ hδ' R hR hT hT')
   simpa only [ricciDeTurckRemainderZeroOrderPathIntegral] using hpath
 
 end DifferentialGeometry.PDE.RicciFlow

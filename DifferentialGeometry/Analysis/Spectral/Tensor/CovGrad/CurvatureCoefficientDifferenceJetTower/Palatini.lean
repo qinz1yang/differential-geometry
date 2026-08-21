@@ -482,6 +482,7 @@ lemma inner_perturbationSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem perturbationSharpEndoFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -553,6 +554,7 @@ lemma unitModel_eq_ccTensorBilin_pt (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -626,6 +628,7 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1273,6 +1276,7 @@ lemma toModel_om_eval_lc (x : M) (om : Tensor0SSpace 1 I x) (V : TangentSpace I 
 end CurvatureCoefficientDifferenceJetTower
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g₀ 0 (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁) -
@@ -1983,6 +1987,7 @@ theorem mixedKernelScalar_global (g₀ g₁ : SmoothRiemannianMetric I M)
     ⟨fun b => riemannSec (LeviCivita (I := I) g₁) Y p q b, hRsec⟩ ⟨fun b => W b, hW⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannMixedKernelBilin_homSection_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     {p q : Π b : M, TangentSpace I b}
     (hp : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% p))
@@ -2011,6 +2016,7 @@ theorem riemannMixedKernelBilin_homSection_contMDiff (g₀ g₁ : SmoothRiemanni
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -2100,6 +2106,7 @@ theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannMixedBiContrFibFixedFrame_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
@@ -2181,6 +2188,7 @@ theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemanni
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₀ x₀ hy i j)
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannMixedBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
@@ -2212,6 +2220,7 @@ def ricciArmOrder0RiemannMixedCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciArmOrder0RiemannMixedCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from
@@ -2219,6 +2228,7 @@ theorem ricciArmOrder0RiemannMixedCoeff_toSection (g₀ g₁ : SmoothRiemannianM
 
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciArmOrder0RiemannMixedCoeff_self (g₀ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₀ =
       ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ := by

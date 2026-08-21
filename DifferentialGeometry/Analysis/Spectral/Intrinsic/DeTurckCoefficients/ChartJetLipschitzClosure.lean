@@ -275,7 +275,7 @@ theorem HasChartJetLip.mul
     have hyS : y ∈ s := hKsub hy
     have hbnd := norm_iteratedFDerivWithin_two_prod_sub_le (s := s) hs_open
       (hF.contDiff g₁) (hG.contDiff g₁) (hF.contDiff g₂) (hG.contDiff g₂)
-      hKsub hB_nn N
+      hKsub N
       (fun y' hy' m hm => le_trans (hBG y' hy' m hm).1 (le_max_right _ _))
       (fun y' hy' m hm => le_trans (hBF y' hy' m hm).2 (le_max_left _ _))
       hy
@@ -446,6 +446,7 @@ theorem hasChartJetLip_chartGramOnE
       norm_iteratedFDerivWithin_le_seminorm (le_refl N) _ s y
     exact h1.trans (iteratedFDerivSeminorm_gramDiff_le_sum (I := I) (M := M) N g₁ g₂ α s y a b)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartInvGramOnE
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)

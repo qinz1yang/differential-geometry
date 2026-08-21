@@ -39,8 +39,6 @@ theorem deturck_nemytskii_operator_hs_lipschitz_of_l2coeff_lipschitz
     (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (N_cont : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
       tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
-    (repr : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
-      DifferentialGeometry.Integral.L2.SmoothCcTensor g_bg 0 2)
     (Nsec : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
       DifferentialGeometry.Integral.L2.SmoothCcTensor g_bg 0 2)
     (hN_coeff : ∀ (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
@@ -50,14 +48,6 @@ theorem deturck_nemytskii_operator_hs_lipschitz_of_l2coeff_lipschitz
         tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2)
           (DifferentialGeometry.Integral.L2.SmoothCcTensor.toL2 (Nsec u)) i)
-    (_hNsec_realize : ∀ (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
-        (x : M) (v w : TangentSpace I x),
-      ccTensorBilinSymm (I := I) g_bg (Nsec u) x v w =
-        ccTensorBilinSymm (I := I) g_bg (repr u) x v w)
-    (_hrepr_small : ∀ u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1),
-      ∃ δ' : ℝ, δ' < 1 ∧
-        metricCauchySchwarzBound (I := I) (M := M) g_bg
-          (ccTensorBilinSymm (I := I) g_bg (repr u)) δ')
     (hNsec_lip : ∃ K : ℝ≥0, ∀ u u' : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1),
       Summable (fun i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
             (I := I) (M := M) g_bg 0 2 =>

@@ -199,8 +199,8 @@ theorem curvature_commutator_pairing_h5_uniform_bound
             let gm := metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ a
             let B : SmoothCcTensor g 4 2 :=
               lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a +
-                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g) +
+                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
                 (-2 * a : ℝ) •
                   RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T
             let GT : SmoothCcTensor g 0 4 :=
@@ -232,8 +232,8 @@ theorem curvature_commutator_pairing_h5_uniform_bound
     metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ a
   let B : SmoothCcTensor g 4 2 :=
     lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a +
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g) +
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
       (-2 * a : ℝ) •
         RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T
   let GT : SmoothCcTensor g 0 4 :=
@@ -332,8 +332,8 @@ theorem curvature_commutator_pairing_h5_young_bound
               let gm := metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ a
               let B : SmoothCcTensor g 4 2 :=
                 lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a +
-                  (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g) +
+                  (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
                   (-2 * a : ℝ) •
                     RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T
               let GT : SmoothCcTensor g 0 4 :=

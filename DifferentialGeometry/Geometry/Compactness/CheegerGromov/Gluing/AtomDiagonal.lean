@@ -55,7 +55,6 @@ theorem HasAtomWeightLim.of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -80,7 +79,7 @@ theorem HasAtomWeightLim.of_atoms
     (hatomInfSmooth : ∀ gamma : Fin (pb.A r),
       ContDiffOn Real (∞ : WithTop ℕ∞) (aInf gamma) U) :
     HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf := by
-  exact atomWeight_of_atoms (I := I) hD P L hre pb r hr hgp beta U hU hcoverU
+  exact atomWeight_of_atoms (I := I) hD P L hre pb r hr beta U hU hcoverU
     aInf hdead hatom hatomSmooth hatomInfSmooth
 
 theorem HasAtomWeightLim.subseq
@@ -145,7 +144,6 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf)
-    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hcoverU : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -176,8 +174,8 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
         (rawWeights
           (cutRaw (seqAtom hd hD P L pb r k i0)
             (seqAtom hd hD P L pb r k) i0)) := by
-    filter_upwards [hgp] with k hgpK
-    exact seqWeights_data hd hD P L pb r k hgpK i0 Set.Subset.rfl
+    exact Filter.Eventually.of_forall fun k =>
+      seqWeights_data hd hD P L pb r k i0 Set.Subset.rfl
   dsimp only [HasAtomWeightLim] at hlim
   rcases hlim with
     ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
@@ -248,7 +246,6 @@ theorem HasAtomWeightLim.weight_data
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf)
-    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -283,7 +280,7 @@ theorem HasAtomWeightLim.weight_data
     intro z hz
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz
-  exact hlim.weight_data_of_innerCover hgp hcoverU
+  exact hlim.weight_data_of_innerCover hcoverU
 
 theorem HasAtomWeightLim.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -294,7 +291,6 @@ theorem HasAtomWeightLim.binter_of_weight
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf)
-    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (alpha gamma : Fin (pb.A r)) {z : E} (hz : z ∈ U)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -334,9 +330,9 @@ theorem HasAtomWeightLim.binter_of_weight
           (fun target => seqAtomChart (I := I) hd hD P L pb r beta target k)
           (baseIndex hd hre pb hr)) z gamma ≠ 0 :=
     hweightTendsto.eventually_ne hweight
-  filter_upwards [hsource, hgp, hweightEventually] with k hsourceK hgpK hweightK
+  filter_upwards [hsource, hweightEventually] with k hsourceK hweightK
   exact L.binter_of_mem_hat hd hD P pb r k (hsourceK hz)
-    (seqAtom_mem_hat hd hD P L pb r k hgpK gamma (by
+    (seqAtom_mem_hat hd hD P L pb r k gamma (by
       simpa only [seqAtomChart] using
         (num_ne_of_cut_ne (num_ne_of_raw_ne hweightK))))
 
@@ -641,7 +637,6 @@ theorem HasAtomWeightLimOn.of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (_hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -842,7 +837,6 @@ theorem HasAtomWeightLimOn.weight_data_of_innerCover
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLimOn (I := I) chart
       hd hD P L hre pb r hr beta U aInf)
-    (_hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hcoverU : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -869,7 +863,6 @@ theorem HasAtomWeightLimOn.weight_data
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLimOn (I := I) chart
       hd hD P L hre pb r hr beta U aInf)
-    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -904,7 +897,7 @@ theorem HasAtomWeightLimOn.weight_data
     intro z hz
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz
-  exact hlim.weight_data_of_innerCover hgp hcoverU
+  exact hlim.weight_data_of_innerCover hcoverU
 
 theorem HasAtomWeightLimOn.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -917,7 +910,6 @@ theorem HasAtomWeightLimOn.binter_of_weight
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLimOn (I := I) chart
       hd hD P L hre pb r hr beta U aInf)
-    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (alpha gamma : Fin (pb.A r)) {z : E} (hz : z ∈ U)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -959,9 +951,9 @@ theorem HasAtomWeightLimOn.binter_of_weight
             hd hD P L pb r beta target k)
           (baseIndex hd hre pb hr)) z gamma ≠ 0 :=
     hweightTendsto.eventually_ne hweight
-  filter_upwards [hsource, hgp, hweightEventually] with k hsourceK hgpK hweightK
+  filter_upwards [hsource, hweightEventually] with k hsourceK hweightK
   exact L.binter_of_mem_hat hd hD P pb r k (hsourceK hz)
-    (seqAtom_mem_hat hd hD P L pb r k hgpK gamma (by
+    (seqAtom_mem_hat hd hD P L pb r k gamma (by
       simpa only [seqAtomOn] using
         (num_ne_of_cut_ne (num_ne_of_raw_ne hweightK))))
 

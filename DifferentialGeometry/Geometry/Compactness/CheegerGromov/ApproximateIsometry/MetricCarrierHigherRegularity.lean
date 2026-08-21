@@ -41,7 +41,7 @@ theorem BoundedGeometryNormalData.preapprox_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -68,7 +68,7 @@ theorem BoundedGeometryNormalData.preapprox_tail
       letI : T2Space Yl.M := Yl.t2
       letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
       letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-      let F := stageComparisonMap inp P Lphi s hs hconn k l
+      let F := stageComparisonMap inp P Lphi s hs k l
         (chart := d.chart)
       Nonempty (MapMetricApproximationOn (I := I)
           (Metric.closedBall Yk.basepoint R) eps p F Yk.metric Yl.metric) ∧
@@ -83,13 +83,13 @@ theorem BoundedGeometryNormalData.preapprox_tail
   have hTr : T < s := by linarith
   have hSr : S < s := hST.trans hTr
   obtain ⟨Nfwd, hfwd⟩ :=
-    d.fwd_norm_tail inp P L hs phi hphi hconn Vmetric U C0 C1 aInf
+    d.fwd_norm_tail inp P L hs phi hphi Vmetric U C0 C1 aInf
       Jinf Jbarinf gInf hstage hRS hSr p eps heps
   obtain ⟨Nrev, hrev⟩ :=
     d.inv_norm_tail inp P L hs phi hphi hcomplete hconn Vmetric U C0 C1
       aInf Jinf Jbarinf gInf hstage hRS hST hroom hVr p eps heps
   obtain ⟨Nloc, hloc⟩ :=
-    hstage.hloc_tail inp P L hs phi hphi hconn d.chart Vmetric
+    hstage.hloc_tail inp P L hs phi hphi d.chart Vmetric
       U C0 C1 aInf Jinf Jbarinf gInf T hTr
   obtain ⟨Ninj, hinj⟩ :=
     d.inj_tail inp P L hs phi hphi hcomplete hconn Vmetric
@@ -136,7 +136,7 @@ theorem BoundedGeometryNormalData.preapprox_tail
   letI : T2Space Yl.M := Yl.t2
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let F := stageComparisonMap inp P Lphi s hs hconn k l
+  let F := stageComparisonMap inp P Lphi s hs k l
     (chart := d.chart)
   let K : Set Yk.M := Metric.closedBall Yk.basepoint R
   let K' : Set Yk.M := Metric.closedBall Yk.basepoint S

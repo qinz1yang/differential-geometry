@@ -134,8 +134,7 @@ private theorem lieArm1Piece_connectionDifference_metricPerturbationPath_allOrde
   classical
   obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
     Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
-      (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+      (I := I) (M := M) g₀ a (R := R) hδ₀
   obtain ⟨Qth, hQth_nn, hQth⟩ :=
     pAO_traceHessian_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fcd, hFcd_nn, hFcd⟩ :=
@@ -389,8 +388,7 @@ private theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPa
   classical
   obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
     Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
-      (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+      (I := I) (M := M) g₀ a (R := R) hδ₀
   obtain ⟨Qth, hQth_nn, hQth⟩ :=
     pAO_traceHessian_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fcd, hFcd_nn, hFcd⟩ :=
@@ -698,8 +696,7 @@ private theorem lieArm1Piece_psiB_metricPerturbationPath_allOrder_tameEnvelope
   classical
   obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
     Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
-      (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+      (I := I) (M := M) g₀ a (R := R) hδ₀
   obtain ⟨Qth, hQth_nn, hQth⟩ :=
     pAO_traceHessian_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fpb, hFpb_nn, hFpbJ⟩ :=

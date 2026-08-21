@@ -50,7 +50,7 @@ instance homTensorRSModel_normedSpace (r a c : ℕ) :
   exact @ContinuousLinearMap.toNormedSpace 𝕜 𝕜
     (TensorRSModel r a 𝕜 E) (TensorRSModel r c 𝕜 E) _ _ _ _ _ _ _ _ 𝕜 _ nsV scc
 
-noncomputable instance homTensorRSModel_finiteDimensional [CompleteSpace 𝕜] (r a c : ℕ) :
+noncomputable instance homTensorRSModel_finiteDimensional (r a c : ℕ) :
     @FiniteDimensional 𝕜 (HomTensorRSModel r a c 𝕜 E) _
       (homTensorRSModel_normedAddCommGroup r a c).toAddCommGroup
       (homTensorRSModel_normedSpace r a c).toModule := by
@@ -99,7 +99,7 @@ noncomputable instance homTensorRSBundle_vector (r a c : ℕ) :
     (TensorRSModel r a 𝕜 E) (fun x : M => TensorRSSpace r a I x)
     (TensorRSModel r c 𝕜 E) (fun x : M => TensorRSSpace r c I x)
 
-noncomputable instance homTensorRSBundle_smooth [CompleteSpace 𝕜] (n : WithTop ℕ∞)
+noncomputable instance homTensorRSBundle_smooth (n : WithTop ℕ∞)
     [IsManifold I (n + 1) M] (r a c : ℕ) :
     @ContMDiffVectorBundle n 𝕜 M (HomTensorRSModel r a c 𝕜 E)
       (fun x : M => HomTensorRSSpace r a c I x)

@@ -84,7 +84,7 @@ theorem open_upgrade_of_canonical_metric_compactness
   dsimp only at hcanonRel
   obtain ⟨Crel, hCrel, hrelZero⟩ := hcanonRel
   have hsrcZero (k : Nat) :
-      tgtRefSrc (I := I) Phi gRefT hsrc htgt k =
+      tgtRefSrc (I := I) Phi gRefT k =
         srcMetric (I := I) Phi hsrc htgt k 0 := by
     letI : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
@@ -108,8 +108,8 @@ theorem open_upgrade_of_canonical_metric_compactness
         sourceDomSmooth (I := I) Phi k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Phi k))
-        (refRes (I := I) Phi mc.limit.metric hsrc k)
-        (tgtRefSrc (I := I) Phi gRefT hsrc htgt k) Crel := by
+        (refRes (I := I) Phi mc.limit.metric k)
+        (tgtRefSrc (I := I) Phi gRefT k) Crel := by
     intro k
     rw [hsrcZero k]
     exact hrelZero k
@@ -239,7 +239,7 @@ theorem open_upgrade_of_canonical_metric_compactness
       ∀ t : Real, t ∈ Set.Icc (beta n) (psi n) →
         MetricUniformEquivalentOn (I := I)
           (Set.univ : Set (SourceDomain (I := I) Phi k))
-          (refRes (I := I) Phi mc.limit.metric hsrc k)
+          (refRes (I := I) Phi mc.limit.metric k)
           (srcMetric (I := I) Phi hsrc htgt k t) (Crel * Bmax n) := by
     intro k t ht
     letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
@@ -259,7 +259,7 @@ theorem open_upgrade_of_canonical_metric_compactness
   have srcData (n : Nat) : SrcCovLipData (I := I) Phi mc.limit.metric
       hsrc htgt (beta n) (psi n) :=
     srcCovLip_of_soln (I := I) Phi mc.limit.metric hsrc htgt
-      (hbetaPsi n) (hzeroWindow n) (hregular n)
+      (hzeroWindow n) (hregular n)
       (Crel * Bmax n) (hBsrc n) (hequivSrc n) (hShiSrc n) hinit
   let cLow : Nat → Real := fun n => (Crel * Bmax n)⁻¹
   have hcLow (n : Nat) : 0 < cLow n := by
@@ -309,7 +309,7 @@ theorem open_upgrade_of_canonical_metric_compactness
               sourceDomSigmaOf (I := I) Phi k (hsrc k)
             metricCovDerivNorm (I := I) q
               (srcMetric (I := I) Phi hsrc htgt k t)
-              (refRes (I := I) Phi mc.limit.metric hsrc k) y ≤ C := by
+              (refRes (I := I) Phi mc.limit.metric k) y ≤ C := by
       intro q
       obtain ⟨C, hC, hboundC⟩ := (srcData n).cov q
       exact ⟨C, hC, fun k t ht y _ => hboundC k t ht y⟩
@@ -347,7 +347,7 @@ theorem open_upgrade_of_canonical_metric_compactness
               metricDerivNorm (I := I) q
                 (srcMetric (I := I) Phi hsrc htgt k s)
                 (srcMetric (I := I) Phi hsrc htgt k t)
-                (refRes (I := I) Phi mc.limit.metric hsrc k) y ≤ Lt * |s - t| := by
+                (refRes (I := I) Phi mc.limit.metric k) y ≤ Lt * |s - t| := by
       intro p
       obtain ⟨Lt, hLt, hlip⟩ := (srcData n).lip p
       exact ⟨Lt, hLt, fun k s t hs ht q hq y _ =>
@@ -386,7 +386,7 @@ theorem open_upgrade_of_canonical_metric_compactness
                 metricDerivNorm (I := I) q
                   (srcMetric (I := I) Phi hsrc htgt k s)
                   (srcMetric (I := I) Phi hsrc htgt k t)
-                  (refRes (I := I) Phi mc.limit.metric hsrc k) y ≤
+                  (refRes (I := I) Phi mc.limit.metric k) y ≤
                     Ls * |s - t| := by
     intro n k C _hC p
     obtain ⟨Ls, hLs, hlip⟩ := (srcData n).lip p

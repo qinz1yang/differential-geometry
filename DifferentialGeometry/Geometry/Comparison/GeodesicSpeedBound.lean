@@ -357,8 +357,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
 theorem maximalGeodesic_edist_le_speed_mul_time
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     {s t : ℝ}
-    (_hs : s ∈ maximalGeodesicInterval (I := I) g p v)
-    (_ht : t ∈ maximalGeodesicInterval (I := I) g p v)
     (hst : s ≤ t)
     (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1
       (maximalGeodesic (I := I) g p v) (Set.Icc s t))
@@ -413,9 +411,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [CompleteSpace M] in
 theorem maximalGeodesic_cauchySeq_of_tendsto_sup
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
-    {T : ℝ} (_hT : IsLUB (maximalGeodesicInterval (I := I) g p v) T)
+    {T : ℝ}
     {tₙ : ℕ → ℝ}
-    (htₙ_mem : ∀ n, tₙ n ∈ maximalGeodesicInterval (I := I) g p v)
     (htₙ_lim : Tendsto tₙ atTop (𝓝 T))
     (hγ_smooth : ContMDiff 𝓘(ℝ, ℝ) I 1 (maximalGeodesic (I := I) g p v))
     (hSpeedBound : ∀ τ : ℝ,
@@ -440,19 +437,11 @@ theorem maximalGeodesic_cauchySeq_of_tendsto_sup
   set s : ℝ := min (tₙ m) (tₙ n) with hs_def
   set t : ℝ := max (tₙ m) (tₙ n) with ht_def
   have hst : s ≤ t := min_le_max
-  have hs_mem : s ∈ maximalGeodesicInterval (I := I) g p v := by
-    rcases le_total (tₙ m) (tₙ n) with h | h
-    · rw [hs_def, min_eq_left h]; exact htₙ_mem m
-    · rw [hs_def, min_eq_right h]; exact htₙ_mem n
-  have ht_mem : t ∈ maximalGeodesicInterval (I := I) g p v := by
-    rcases le_total (tₙ m) (tₙ n) with h | h
-    · rw [ht_def, max_eq_right h]; exact htₙ_mem n
-    · rw [ht_def, max_eq_left h]; exact htₙ_mem m
   have h_bound :
       riemannianEDist I (γ s) (γ t) ≤ ENNReal.ofReal (c * (t - s)) := by
     have :=
       maximalGeodesic_edist_le_speed_mul_time (I := I) g p v (s := s) (t := t)
-        hs_mem ht_mem hst (hγ_smooth.contMDiffOn) hSpeedBound
+        hst (hγ_smooth.contMDiffOn) hSpeedBound
     simpa [hγ_def, hc_def] using this
   have h_edist_bound :
       edist (γ s) (γ t) ≤ ENNReal.ofReal (c * (t - s)) := by
@@ -498,18 +487,12 @@ theorem maximalGeodesic_cauchySeq_of_tendsto_sup
           exact h_cdelta_lt_real
     _ < ε := hδ₀_ofReal_lt
 
-omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
  [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem maximalGeodesic_limit_exists_tangent_speed_eq
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
-    {T : ℝ} (_hT : IsLUB (maximalGeodesicInterval (I := I) g p v) T)
-    {tₙ : ℕ → ℝ}
-    (_htₙ_mem : ∀ n, tₙ n ∈ maximalGeodesicInterval (I := I) g p v)
-    (_htₙ_lim : Tendsto tₙ atTop (𝓝 T))
-    {y : M}
-    (_hy : Tendsto (fun n => maximalGeodesic (I := I) g p v (tₙ n))
-      atTop (𝓝 y)) :
+    {y : M} :
     ∃ w : TangentSpace I y,
       (g.inner y) w w = (g.inner p) v v := by
   have hfin_pos : 0 < Module.finrank ℝ E :=

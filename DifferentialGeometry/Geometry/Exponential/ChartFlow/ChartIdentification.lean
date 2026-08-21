@@ -60,7 +60,7 @@ theorem extChartAt_tangent_apply_snd
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem extChartAt_tangent_apply_fst
     (q : TangentBundle I M) {p : TangentBundle I M}
-    (_hp : p.proj ∈ (chartAt H q.proj).source) :
+    :
     (extChartAt I.tangent q p).1 = extChartAt I q.proj p.proj := by
   classical
   have hext : extChartAt I.tangent q p =
@@ -83,7 +83,7 @@ theorem extChartAt_tangent_zero_apply
   classical
   apply Prod.ext
   · have h := extChartAt_tangent_apply_fst (I := I)
-      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := p) (by exact hp)
+      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := p)
     exact h
   · have h := extChartAt_tangent_apply_snd (I := I)
       (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := p) (by exact hp)
@@ -95,17 +95,14 @@ theorem extChartAt_tangent_zero_apply_chartFiber
     (hp : p.proj ∈ (chartAt H α).source) :
     extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) p =
       (extChartAt I α p.proj, chartFiberCoord (I := I) α p) := by
-  classical
+  rw [extChartAt_tangent_zero_apply (I := I) α hp]
   apply Prod.ext
-  · exact extChartAt_tangent_apply_fst (I := I)
-      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := p) hp
-  · have hext : extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) p =
-        ((extChartAt I α) (trivializationAt E (TangentSpace I) α p).1,
-          (trivializationAt E (TangentSpace I) α p).2) := by
-      rw [FiberBundle.extChartAt]
-      rfl
-    rw [hext]
-    rfl
+  · rfl
+  · rw [Trivialization.continuousLinearMapAt_apply,
+      (trivializationAt E (TangentSpace I) α).coe_linearMapAt_of_mem]
+    · rfl
+    · rw [TangentBundle.trivializationAt_baseSet]
+      exact hp
 
 end ChartOfTM
 

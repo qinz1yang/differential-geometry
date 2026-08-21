@@ -37,8 +37,7 @@ theorem early_vol_low
     {omega : Real} (h0omega : 0 < omega)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 omega h0omega))
     (hS : IsSolutionOn (I := I) S)
-    (_hDim : Module.finrank Real E = 3)
-    {rho : Real} (hrho : 0 < rho) :
+    {rho : Real} :
     ∃ tau kappa : Real, 0 < tau ∧ tau < omega ∧ 0 < kappa ∧
       ∀ (t : RealTimeInterval.FlowTime (RealTimeInterval.closedOpen 0 omega h0omega)),
         (t : Real) ≤ tau →
@@ -49,7 +48,7 @@ theorem early_vol_low
               {x : M | DifferentialGeometry.riemannianEDistOf
                 (I := I) (S.base.metric t) p x < ENNReal.ofReal r} := by
   simpa only [SolutionOn.family_metric] using
-    family_vol_low (I := I) (M := M) h0omega S.family.metric hS.smoothMetric hrho
+    family_vol_low (I := I) (M := M) (rho := rho) h0omega S.family.metric hS.smoothMetric
 
 omit [ConnectedSpace M] [BoundarylessManifold I M] in
 theorem early_ball_low
@@ -57,8 +56,7 @@ theorem early_ball_low
     {omega : Real} (h0omega : 0 < omega)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 omega h0omega))
     (hS : IsSolutionOn (I := I) S)
-    (hDim : Module.finrank Real E = 3)
-    {rho : Real} (hrho : 0 < rho) :
+    {rho : Real} :
     ∃ tau kappa : Real, 0 < tau ∧ tau < omega ∧ 0 < kappa ∧
       ∀ (t : RealTimeInterval.FlowTime (RealTimeInterval.closedOpen 0 omega h0omega)),
         (t : Real) ≤ tau →
@@ -66,7 +64,7 @@ theorem early_ball_low
           B.IsKappaNoncollapsed kappa := by
   classical
   obtain ⟨tau, kappa, htau0, htauomega, hkappa, hvol⟩ :=
-    early_vol_low (I := I) (M := M) h0omega S hS hDim hrho
+    early_vol_low (I := I) (M := M) (rho := rho) h0omega S hS
   refine ⟨tau, kappa, htau0, htauomega, hkappa, ?_⟩
   intro t ht B hBrho hsq
   refine ⟨hkappa, ?_⟩
@@ -97,7 +95,7 @@ theorem no_local_open
     NoLocalCollapsing S rho := by
   classical
   obtain ⟨tau, kappa0, htau0, htauomega, hkappa0, hearly⟩ :=
-    early_ball_low (I := I) (M := M) h0omega S hS hDim hrho
+    early_ball_low (I := I) (M := M) (rho := rho) h0omega S hS
   have htau2 : 0 < tau / 2 := half_pos htau0
   have htau2tau : tau / 2 < tau := half_lt_self htau0
   obtain ⟨kappa1, hkappa1, hafter⟩ :=

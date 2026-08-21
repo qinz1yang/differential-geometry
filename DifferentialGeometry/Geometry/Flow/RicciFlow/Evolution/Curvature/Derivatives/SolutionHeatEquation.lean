@@ -27,6 +27,7 @@ variable [I.Boundaryless]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
+omit [SigmaCompactSpace M] in
 theorem towerHeatSol_raw
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -178,6 +179,7 @@ theorem towerHeatSol_raw
   linarith [le_abs_self (nablaKReactionAt (I := I) S' k (t : Real) x basis
     (gInv (t : Real)) ric Tdot), hreact]
 
+omit [SigmaCompactSpace M] in
 theorem towerHeatSol_any
     {alpha t0 omega : Real} {halphaomega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

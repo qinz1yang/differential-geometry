@@ -152,6 +152,7 @@ private theorem koszulOp_app
     operatorFieldComposition_add_left, permCoeff_app, permCoeff_app, permCoeff_app]
   rw [koszulCovecCc, symmSCovGrad3, hs]
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem raised_inner
     (g gm : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
@@ -410,6 +411,7 @@ private def ricciConnectionDifferenceDerivativeMetricWeight
     (slotInsertEndoCc (I := I) (M := M) g 1
       (metricComparisonEndomorphismField (I := I) (M := M) g gm)) W
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem daWeight_cap
     (g gm : SmoothRiemannianMetric I M)
     (P W : SmoothCcTensor g 0 2)
@@ -483,6 +485,8 @@ private def ricciConnectionDifferenceDerivativeTransposedMonomial
     (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g
       (ricciConnectionDifferenceDerivativeMetricWeight (I := I) (M := M) g gm W)) σ
 omit [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem daMono_cap
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -569,6 +573,8 @@ private def ricciConnectionDifferenceDerivativeTransposedCoefficient
   ricciConnectionDifferenceDerivativeTransposedMonomial (I := I) (M := M) g gm W ricciConnectionDifferenceDerivativeCyclicPermutation -
     ricciConnectionDifferenceDerivativeTransposedMonomial (I := I) (M := M) g gm W ricciConnectionDifferenceDerivativeFirstPairSwap
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -796,6 +802,7 @@ private theorem mono_trans
   rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem daMono_trans
     (g gm : SmoothRiemannianMetric I M) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g 0 2) :
@@ -808,6 +815,7 @@ private theorem daMono_trans
     (ricciConnectionDifferenceDerivativeMetricWeight (I := I) (M := M) g gm W)
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem daContr_trans
     (g gm : SmoothRiemannianMetric I M) (G : SmoothCcTensor g 0 4)
     (W : SmoothCcTensor g 0 2) :
@@ -819,6 +827,7 @@ private theorem daContr_trans
     daMono_trans, daMono_trans]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem daMono_eval
     (g gm : SmoothRiemannianMetric I M) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g 0 2)
@@ -1790,6 +1799,8 @@ private theorem arm_comp
     (a := a) (b := b) (c := 2) g A (fun _ => B) hA' hB
 
 omit [CompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem fullRaised_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1834,6 +1845,8 @@ private theorem fullRaised_joint
   refine hout.congr (fun p _ => ?_)
   rfl
 
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem slotInsert_joint
     (g : SmoothRiemannianMetric I M) (d : ℕ)
     (T : SmoothCcTensor g 0 2) {δ : ℝ}
@@ -1877,6 +1890,7 @@ private theorem slotInsert_joint
     (E := fun x : M => Tensor0SSpace (d + 1) I x) p.1 z) ?_
   rw [slotInsertEndoCc_toSection]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem connectionDifferenceLowOrderOperator_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1900,6 +1914,7 @@ private theorem connectionDifferenceLowOrderOperator_joint
   have hout := joint_app (I := I) (M := M) g _ _ hp hinner
   simpa only [connectionDifferenceLowOrderOperator] using hout
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem dagTop_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1920,6 +1935,7 @@ private theorem dagTop_joint
   have hout := joint_app (I := I) (M := M) g _ _ hp hs
   simpa only [ricciConnectionPrincipalCoefficient] using hout
 
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem daMono_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1941,6 +1957,7 @@ private theorem daMono_joint
   have hout := joint_app (I := I) (M := M) g _ _ hk hi
   simpa only [linearizedRicciThreeArmHjoint, ricciConnectionDifferenceDerivativeContractionMonomial] using hout
 
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem daContr_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1961,6 +1978,7 @@ private theorem daContr_joint
   simpa only [ricciConnectionDifferenceDerivativeContraction] using
     threeArmJoint_sub (I := I) (M := M) g _ _ hA hB
 
+omit [BoundarylessManifold I M] in
 private theorem daTrans_joint
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -2014,6 +2032,7 @@ private theorem daTrans_joint
   simpa only [operatorFieldComposition_zero_eq_operatorFieldApply, operatorFieldApplication_toSection,
     ContinuousLinearMap.comp_apply] using hunit.symm
 
+omit [BoundarylessManifold I M] in
 private theorem ricciTop_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -2039,6 +2058,7 @@ private theorem ricciTop_joint
     (a := 4) (b := 4) (c := 2) g _ _ hA' hB
   simpa only [ricciConnectionDifferenceTopOrderCoefficient, ricciCovariantDerivativeConnectionDifferenceTopOrder] using hout
 
+omit [BoundarylessManifold I M] in
 private theorem danger_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -2296,8 +2316,10 @@ private def ricciDeTurckSelfTopOrderCoefficient
     (-1 : ℝ) • ricciDecomposition2 (I := I) (M := M) g T hδ hδZ s
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem topKernel_eq
-    (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
+    (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
@@ -2306,16 +2328,17 @@ private theorem topKernel_eq
         (0 : SmoothCcTensor g 0 2)) δ)
     (s : ℝ) :
     let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
-    rhsDecompositionTop (I := I) (M := M) g g_bg T hδ hδZ s +
+    rhsDecompositionTop (I := I) (M := M) g T hδ hδZ s +
           ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδ hδZ s -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g =
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g =
       lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gm -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g) +
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
         (-2 * s : ℝ) • ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T := by
   simp only [rhsDecompositionTop, rhsDecomposition2, ricciDeTurckSelfTopOrderCoefficient]
   module
 
+omit [I.Boundaryless] in
 private theorem lieLow_decomp
     (g gm g_bg : SmoothRiemannianMetric I M)
     (Q : SmoothCcTensor g 2 2) :
@@ -2456,6 +2479,7 @@ private theorem selfLow_joint
   exact selfLow_eq (I := I) (M := M)
     g g_bg T hδ hδZ s
 
+omit [BoundarylessManifold I M] in
 private theorem selfTop_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -2766,7 +2790,7 @@ private theorem zero_order_decomposition_self
       unitModel (I := I) (M := M) g 2 Z x v) hdecomposition
   simpa only [Ψ, L, Q, unitModel_add (I := I) (M := M) g] using hmodel
 private theorem secondOrderCoefficient_fibre_bound
-    (g g_bg : SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (T : SmoothCcTensor g 0 2)
         (_hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -2779,26 +2803,26 @@ private theorem secondOrderCoefficient_fibre_bound
           (ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2)) δ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-            ((rhsDecompositionTopInt (I := I) (M := M) g g_bg T hδ_lt hδ hδZ +
+            ((rhsDecompositionTopInt (I := I) (M := M) g T hδ_lt hδ hδZ +
               selfTopInt (I := I) (M := M) g T hδ_lt hδ hδZ -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g).toSection x) ≤
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) ≤
           (K * (δ / (1 - δ) ^ 2)) ^ 2 := by
-  obtain ⟨KP, hKP, hPb⟩ := metricPrincipalDefect_cap (I := I) (M := M) g g_bg
+  obtain ⟨KP, hKP, hPb⟩ := metricPrincipalDefect_cap (I := I) (M := M) g
   obtain ⟨KR, hKR, hRb⟩ := ricciTop_cap (I := I) (M := M) g
   let KL := 4 * deTurckArmFibreConst (Module.finrank ℝ E)
   let K0 := 4 * KL ^ 2 + 4 * KP ^ 2 + 8 * KR ^ 2
   have hK0 : 0 ≤ K0 := by positivity
   refine ⟨Real.sqrt K0, Real.sqrt_nonneg _, ?_⟩
   intro T hT δ hδ_le hδ0 hδ_lt hδ hδZ x
-  let Φ := rhsDecompositionTop (I := I) (M := M) g g_bg T hδ hδZ
+  let Φ := rhsDecompositionTop (I := I) (M := M) g T hδ hδZ
   let Ψ := ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδ hδZ
-  let C := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
+  let C := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hΦ := rhsDecompositionTop_joint (I := I) (M := M)
-    g g_bg T hδ_lt hδ hδZ
+    g T hδ_lt hδ hδZ
   have hΨ := selfTop_joint (I := I) (M := M) g T hδ hδZ
   have hC := arm_const (I := I) (M := M) g (δ := δ) (δ' := δ) C
   have hKern := threeArmJoint_sub (I := I) (M := M) g _ _
@@ -2852,15 +2876,15 @@ private theorem secondOrderCoefficient_fibre_bound
               (riemannianFiberNormSq_nonneg
                 (I := I) (M := M) g 4 2 x _)
       _ ≤ 4 * (KR * r2) ^ 2 := mul_le_mul_of_nonneg_left hR2 (by norm_num)
-  rw [topKernel_eq (I := I) (M := M) g g_bg T hδ hδZ s]
+  rw [topKernel_eq (I := I) (M := M) g T hδ hδZ s]
   have hAB := riemannianFiberNormSq_add_le (I := I) (M := M) g 4 2 x
     ((lieDecomposition2 (I := I) (M := M) g T hδ hδZ s).toSection x)
-    ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gm -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g).toSection x)
+    ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x)
   have hABC := riemannianFiberNormSq_add_le (I := I) (M := M) g 4 2 x
     ((lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gm -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g)).toSection x)
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)).toSection x)
     (((-2 * s : ℝ) • ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T).toSection x)
   have htarget : (Real.sqrt K0 * r2) ^ 2 = K0 * r2 ^ 2 := by
     rw [mul_pow, Real.sq_sqrt hK0]
@@ -2870,16 +2894,16 @@ private theorem secondOrderCoefficient_fibre_bound
     Pi.add_apply] at hAB hABC ⊢
   linarith
 private theorem top_sub_lap
-    (g g_bg : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (C : SmoothCcTensor g 4 2) (U : SmoothCcTensor g 0 2) :
     operatorFieldApply (I := I) (M := M) g 4 2 C
           (iteratedCovGrad (I := I) g 0 2 2 U) -
         rawTensorConnLapSmooth (I := I) g 0 2 U =
       operatorFieldApply (I := I) (M := M) g 4 2
-          (C - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g)
+          (C - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)
           (iteratedCovGrad (I := I) g 0 2 2 U) +
         operatorFieldApply (I := I) (M := M) g 2 2
-          (metricPrincipalDefectCurvCoeff (I := I) g g_bg g) U := by
+          (metricPrincipalDefectCurvCoeff (I := I) g g) U := by
   have hlap : rawTensorConnLapSmooth (I := I) g 0 2 U =
       operatorFieldApply (I := I) (M := M) g 4 2
         (cometricDoubleTraceCoefficient (I := I) (M := M) g g)
@@ -2891,7 +2915,7 @@ private theorem top_sub_lap
     exact rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
       (I := I) (M := M) g U x v
   have hcurv := metricPrincipalDefect_curv_fold
-    (I := I) (M := M) g g_bg g U
+    (I := I) (M := M) g g U
   rw [operatorFieldApplication_sub_left] at hcurv
   simp only [iteratedCovGrad_zero] at hcurv
   rw [hlap, operatorFieldApplication_sub_left, ← hcurv]
@@ -2923,7 +2947,7 @@ private theorem path_add_sub_h2
       (δ := δ) (δ' := δ'))
     (hK : linearizedRicciThreeArmHjoint (I := I) (M := M) g r
       (fun t => Φ t + Ψ t - C) (δ := δ) (δ' := δ'))
-    (B : ℝ) (hB : 0 ≤ B)
+    (B : ℝ)
     (hcap : ∀ t ∈ Set.Icc (0 : ℝ) 1,
       covariantJetNormSq (I := I) (M := M) g 2 (Φ t + Ψ t - C) ≤ B ^ 2) :
     covariantJetNormSq (I := I) (M := M) g 2
@@ -2978,7 +3002,7 @@ private theorem path_add_sub_h2
   simpa only [PK, covariantJetNormSq, Nat.reduceAdd] using
     path_jetL2_le (I := I) (M := M) g r 2 2 K
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      metricPerturbationPathDomain_isOpen hSI hK hB hcap
+      metricPerturbationPathDomain_isOpen hSI hK hcap
 
 omit [BoundarylessManifold I M] in
 private theorem jet2_fiber
@@ -3170,7 +3194,7 @@ private theorem conn_h2_rf
   obtain ⟨Flow, hFlow0, hFlow⟩ :=
     connectionDifferenceSection_lowOrder_jetL2_radiusFree
       (I := I) (M := M) g
-        (2 * Module.finrank ℝ E + 10) le_rfl hδ₀ hΛ₀0
+        (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -3371,13 +3395,13 @@ noncomputable def lowerScaleActionCoefficients
         (0 : SmoothCcTensor g 0 2)) δ) :
     LowerScaleActionCoefficients g where
   zeroOrderCoefficient := selfLowInt (I := I) (M := M) g g_bg T
-      hδ_lt hδ hδZ + metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+      hδ_lt hδ hδZ + metricPrincipalDefectCurvCoeff (I := I) g g
   firstOrderCoefficient := ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M)
       g g_bg T 0 hδ_lt hδ hδ_lt hδZ
   secondOrderCoefficient := rhsDecompositionTopInt (I := I) (M := M)
-      g g_bg T hδ_lt hδ hδZ +
+      g T hδ_lt hδ hδZ +
     selfTopInt (I := I) (M := M) g T hδ_lt hδ hδZ -
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
 
 namespace RicciDeTurckLowOrder
 
@@ -3414,6 +3438,7 @@ theorem connectionDifferenceLowOrderOperator_apply
       metricLoweredConnectionDifferenceCoefficient (I := I) g gm :=
   connLowOp_app (I := I) (M := M) g gm T hT htie
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connectionDifferenceLowOrderOperator_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -3484,6 +3509,8 @@ noncomputable def ricciConnectionDifferenceDerivativeTransposedCoefficient
     ricciConnectionDifferenceDerivativeTransposedMonomial (I := I) (M := M) g gm W ricciConnectionDifferenceDerivativeFirstPairSwap
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -3505,6 +3532,7 @@ theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_fiberNormSq_le
     (I := I) (M := M) g T hT hδ_lt hδ hTδ hδZ s hs x
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem daMono_swap
     (g gm : SmoothRiemannianMetric I M) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g 0 2) :
@@ -3517,6 +3545,7 @@ private theorem daMono_swap
     (ricciConnectionDifferenceDerivativeMetricWeight (I := I) (M := M) g gm W)
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem daContr_swap
     (g gm : SmoothRiemannianMetric I M) (G : SmoothCcTensor g 0 4)
     (W : SmoothCcTensor g 0 2) :
@@ -3561,6 +3590,7 @@ theorem ricciCovariantDerivativeConnectionDifferenceLowOrder_apply
   simp only [ricciConnectionDerivativeTransposedCoefficient, operatorFieldComposition_zero_eq_operatorFieldApply]
   rw [operatorFieldApplication_assoc]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem dagLow_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -3714,6 +3744,7 @@ theorem selfLow_good
   exact IntrinsicSpectral.rhsSelf_good
     (I := I) (M := M) g g_bg T hT hδ_lt hδ hδZ hs
 
+omit [BoundarylessManifold I M] in
 theorem selfTop_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -3779,8 +3810,10 @@ noncomputable def selfLowInt
     (selfLow_joint (I := I) (M := M) g g_bg T hδ hδZ)
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem topKernel_eq
-    (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
+    (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
@@ -3789,12 +3822,12 @@ theorem topKernel_eq
         (0 : SmoothCcTensor g 0 2)) δ)
     (s : ℝ) :
     let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
-    rhsDecompositionTop (I := I) (M := M) g g_bg T hδ hδZ s +
+    rhsDecompositionTop (I := I) (M := M) g T hδ hδZ s +
           ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδ hδZ s -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g =
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g =
       lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gm -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g) +
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
         (-2 * s : ℝ) • ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T := by
   simp only [rhsDecompositionTop, rhsDecomposition2, ricciDeTurckSelfTopOrderCoefficient]
   module
@@ -3809,9 +3842,9 @@ theorem secondOrderCoefficient_eq
         (0 : SmoothCcTensor g 0 2)) δ) :
     (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T hδ_lt hδ hδZ).secondOrderCoefficient =
       rhsDecompositionTopInt (I := I) (M := M)
-          g g_bg T hδ_lt hδ hδZ +
+          g T hδ_lt hδ hδZ +
         selfTopInt (I := I) (M := M) g T hδ_lt hδ hδZ -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g := by
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g := by
   rfl
 
 theorem zeroOrderCoefficient_eq
@@ -3824,7 +3857,7 @@ theorem zeroOrderCoefficient_eq
         (0 : SmoothCcTensor g 0 2)) δ) :
     (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T hδ_lt hδ hδZ).zeroOrderCoefficient =
       selfLowInt (I := I) (M := M) g g_bg T hδ_lt hδ hδZ +
-        metricPrincipalDefectCurvCoeff (I := I) g g_bg g := by
+        metricPrincipalDefectCurvCoeff (I := I) g g := by
   rfl
 
 theorem firstOrderCoefficient_eq
@@ -3867,7 +3900,7 @@ theorem lowData_split
           riemannianFiberNormSq (I := I) (M := M) g 4 2 x
               (A.secondOrderCoefficient.toSection x) ≤
             (K * (δ / (1 - δ) ^ 2)) ^ 2 := by
-  obtain ⟨K, hK, hcap⟩ := secondOrderCoefficient_fibre_bound (I := I) (M := M) g g_bg
+  obtain ⟨K, hK, hcap⟩ := secondOrderCoefficient_fibre_bound (I := I) (M := M) g
   refine ⟨K, hK, ?_⟩
   intro T hT δ hδ_le hδ0 hδ hδZ
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
@@ -3916,12 +3949,12 @@ theorem lowData_split
           (iteratedCovGrad (I := I) g 0 2 1 T) +
         operatorFieldApply (I := I) (M := M) g 4 2
           (rhsDecompositionTopInt (I := I) (M := M)
-            g g_bg T hδ_lt hδ hδZ)
+            g T hδ_lt hδ hδZ)
           (iteratedCovGrad (I := I) g 0 2 2 T)) -
         rawTensorConnLapSmooth (I := I) g 0 2 T =
       (operatorFieldApply (I := I) (M := M) g 4 2
           (rhsDecompositionTopInt (I := I) (M := M)
-              g g_bg T hδ_lt hδ hδZ +
+              g T hδ_lt hδ hδZ +
             selfTopInt (I := I) (M := M) g T
               hδ_lt hδ hδZ)
           (iteratedCovGrad (I := I) g 0 2 2 T) -
@@ -3935,12 +3968,13 @@ theorem lowData_split
           (iteratedCovGrad (I := I) g 0 2 1 T)) by
       rw [operatorFieldApplication_add_left]
       abel]
-  rw [top_sub_lap (I := I) (M := M) g g_bg]
+  rw [top_sub_lap (I := I) (M := M) g]
   simp only [lowerScaleActionCoefficients, LowerScaleActionCoefficients.firstOrderAction,
     LowerScaleActionCoefficients.secondOrderAction, operatorFieldApplication_add_left, operatorFieldApplication_sub_left]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem pure_eq_trace
     (g g₁ : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g g₁ =
@@ -5189,6 +5223,7 @@ private theorem app_h3_mul
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem sharp_eq_slot0
     (g g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g g₁ =
@@ -5256,7 +5291,7 @@ private theorem sharp_h3_rf
   obtain ⟨Λ, Flow, hΛ, hFlow0, hFlow⟩ :=
     sharpFlatEndoCc_lowOrder_jetL2_radiusFree
       (I := I) (M := M) g
-        (2 * Module.finrank ℝ E + 10) le_rfl hδ₀ hΛ₀0
+        (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 3, hFlow0 3, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -5361,7 +5396,7 @@ private theorem sharp_h2_low
   obtain ⟨Λ, Flow, hΛ, hFlow0, hFlow⟩ :=
     sharpFlatEndoCc_lowOrder_jetL2_radiusFree
       (I := I) (M := M) g
-        (2 * Module.finrank ℝ E + 10) le_rfl hδ₀ hΛ₀0
+        (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -6192,6 +6227,7 @@ private lemma zeroRank_decomp (x : M) (t : Tensor0SSpace 0 I x) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem curvMono_pair
     (g g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4)) :
@@ -7016,7 +7052,7 @@ private theorem cometric_h2_rf
     mul_nonneg (Nat.cast_nonneg _) hδ₀0
   obtain ⟨Λ, F, hΛ, hF, hcast⟩ :=
     cometricCastG0_order0sup_jetL2_radiusFree
-      (I := I) (M := M) g aStar le_rfl hδ₀ hΛ₀0
+      (I := I) (M := M) g aStar hδ₀ hΛ₀0
   refine ⟨F 2, hF 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -7066,7 +7102,7 @@ private theorem exists_cometricCastG0_covariantJetNormSq_two_low_bound
     mul_nonneg (Nat.cast_nonneg _) hδ₀0
   obtain ⟨Λ, F, hΛ, hF, hcast⟩ :=
     cometricCastG0_order0sup_jetL2_radiusFree
-      (I := I) (M := M) g aStar le_rfl hδ₀ hΛ₀0
+      (I := I) (M := M) g aStar hδ₀ hΛ₀0
   refine ⟨F 2, hF 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -8640,6 +8676,8 @@ private def lcvR4
     lcvQuad (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ s)
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem lcvR4_eq
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -8654,6 +8692,7 @@ private theorem lcvR4_eq
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lcvPair_eq
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoublePairTraceCoefficient (I := I) (M := M) g gm =
@@ -8669,6 +8708,7 @@ def monoPerm (σ : Equiv.Perm (Fin 4)) : Equiv.Perm (Fin 6) :=
     (Equiv.sumCongr σ (Equiv.refl (Fin 2)))).trans deTurckLieCovariantDerivativePairTracePermutation
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem curvMono_eq
     (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4)) :
@@ -8684,6 +8724,7 @@ theorem curvMono_eq
     curvMono_pair (I := I) (M := M) g gm S σ
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem pairTrace_eq
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoublePairTraceCoefficient (I := I) (M := M) g gm =
@@ -10486,6 +10527,7 @@ private theorem lcvR4_h2_tame
       simp only [D, X, mul_pow, hsqrt]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem edgePair_eq
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -11175,7 +11217,7 @@ private theorem selfInt_act_tame
   have hB : 0 ≤ D R * (A + A ^ 2) :=
     mul_nonneg (hD R hR) (add_nonneg hA (sq_nonneg A))
   have hpath := path_jetL2_le (I := I) (M := M) g 0 2 2
-    Ψ S metricPerturbationPathDomain_isOpen hSI hΨ hB
+    Ψ S metricPerturbationPathDomain_isOpen hSI hΨ
     (fun s hs => by
       simpa only [Ψ, Φ, operatorFieldComposition_zero_eq_operatorFieldApply, covariantJetNormSq] using
         hcoeff T hT hδ_le hδ0 hδ hδZ R A hR hA hT2 hT3 hs)
@@ -11195,12 +11237,12 @@ private theorem curvC0_act_tame
         covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
       covariantJetNormSq (I := I) (M := M) g 2
           (operatorFieldApply (I := I) (M := M) g 2 2
-            (metricPrincipalDefectCurvCoeff (I := I) g g g) T) ≤
+            (metricPrincipalDefectCurvCoeff (I := I) g g) T) ≤
         (D * (A + A ^ 2)) ^ 2 := by
   obtain ⟨C, hC, happ⟩ :=
     app_h2_mul (I := I) (M := M) hDim g 0 2 2
   let F : SmoothCcTensor g 2 2 :=
-    metricPrincipalDefectCurvCoeff (I := I) g g g
+    metricPrincipalDefectCurvCoeff (I := I) g g
   let JF : ℝ := covariantJetNormSq (I := I) (M := M) g 2 F
   let K : ℝ := C * JF
   let D : ℝ := Real.sqrt K
@@ -11219,7 +11261,7 @@ private theorem curvC0_act_tame
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (metricPrincipalDefectCurvCoeff (I := I) g g g) T) ≤
+          (metricPrincipalDefectCurvCoeff (I := I) g g) T) ≤
       C * JF * covariantJetNormSq (I := I) (M := M) g 2 T := by
         simpa only [F, JF, operatorFieldComposition_zero_eq_operatorFieldApply] using happ F T
     _ ≤ C * JF * A ^ 2 :=
@@ -11271,7 +11313,7 @@ private theorem lowC0_act_tame
         (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ) T
   let V : SmoothCcTensor g 0 2 :=
     operatorFieldApply (I := I) (M := M) g 2 2
-      (metricPrincipalDefectCurvCoeff (I := I) g g g) T
+      (metricPrincipalDefectCurvCoeff (I := I) g g) T
   have hU :
       covariantJetNormSq (I := I) (M := M) g 2 U ≤ (Di R * X) ^ 2 := by
     simpa only [U, X] using
@@ -11522,7 +11564,7 @@ private theorem oneInt_act_tame
   have hB : 0 ≤ D R * (A + A ^ 2) :=
     mul_nonneg (hD R hR) (add_nonneg hA (sq_nonneg A))
   have hpath := path_jetL2_le (I := I) (M := M) g 0 2 2
-    Ψ S metricPerturbationPathDomain_isOpen hSI hΨ hB
+    Ψ S metricPerturbationPathDomain_isOpen hSI hΨ
     (fun s hs => by
       simpa only [Ψ, Φ, W, operatorFieldComposition_zero_eq_operatorFieldApply, covariantJetNormSq] using
         hcoeff T hδ_le hδ0 hδ hδZ R A hR hA hT2 hT3 hs)
@@ -11788,7 +11830,6 @@ private theorem selfInt_h2_rf
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
     (selfLow_joint (I := I) (M := M) g g T hδ hδZ)
-    (Real.sqrt_nonneg X)
     (fun s hs => by
       rw [hsX]
       simpa only [covariantJetNormSq, X] using
@@ -11818,7 +11859,7 @@ private theorem lowC0_h2_rf
   obtain ⟨Ki, hKi, hint⟩ :=
     selfInt_h2_rf (I := I) (M := M) hDim g hδ₀0 hδ₀
   let F : SmoothCcTensor g 2 2 :=
-    metricPrincipalDefectCurvCoeff (I := I) g g g
+    metricPrincipalDefectCurvCoeff (I := I) g g
   let Kf : ℝ := covariantJetNormSq (I := I) (M := M) g 2 F
   let K : ℝ := 2 * (Ki + Kf)
   have hKf : 0 ≤ Kf :=
@@ -11881,6 +11922,7 @@ private theorem raise1_jet
   exact raise1_l2_sq (I := I) (M := M) g W q
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem traceHess_eq
     (g g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g g₁ =
@@ -12699,7 +12741,6 @@ private theorem oneInt_h2_rf
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
     (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g g T 0 hδ hδZ)
-    (Real.sqrt_nonneg X)
     (fun s hs => by
       rw [hsX]
       simpa only [covariantJetNormSq, X] using
@@ -12914,7 +12955,7 @@ theorem exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bo
             (A.secondOrderCoefficient.toSection x) ≤ (C * R) ^ 2) ∧
         covariantJetNormSq (I := I) (M := M) g 2 A.secondOrderCoefficient ≤ (C * R) ^ 2 := by
   obtain ⟨ρp, Cp, hρp, hCp, hphi⟩ :=
-    phi_dev_h2 (I := I) (M := M) hDim g g
+    phi_dev_h2 (I := I) (M := M) hDim g
   obtain ⟨Chs, hChs, hhs⟩ :=
     hs2_low2 (I := I) (M := M) g 2
   obtain ⟨Cl, hCl, hlie⟩ :=
@@ -12975,17 +13016,17 @@ theorem exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bo
           (mul_le_mul_of_nonneg_left hTHs hChs) 2
       _ = A0 ^ 2 := by rfl
   let Φ : ℝ → SmoothCcTensor g 4 2 :=
-    rhsDecompositionTop (I := I) (M := M) g g T hδ hδZ
+    rhsDecompositionTop (I := I) (M := M) g T hδ hδZ
   let Ψ : ℝ → SmoothCcTensor g 4 2 :=
     ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδ hδZ
   let K : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΦ := rhsDecompositionTop_joint (I := I) (M := M)
-    g g T hδ_lt hδ hδZ
+    g T hδ_lt hδ hδZ
   have hjΨ := selfTop_joint (I := I) (M := M) g T hδ hδZ
   have hjK := arm_const (I := I) (M := M) g
     (δ := δ) (δ' := δ) K
@@ -13057,8 +13098,8 @@ theorem exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bo
         hδ_lt hδ hδ_lt hδZ hR0 hRphi hTHs hzeroHs hs.1 hs.2
     have hPhi :
         covariantJetNormSq (I := I) (M := M) g 2
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g gm -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g) ≤
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) ≤
           (Cp * R) ^ 2 := by
       simpa only [covariantJetNormSq, Nat.reduceAdd, gm] using hP0.2
     have hRic0 :=
@@ -13086,17 +13127,17 @@ theorem exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bo
           ring
     rw [show Φ s + Ψ s - K =
         lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g gm -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g) +
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
           (-2 * s : ℝ) •
             ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T by
       simpa only [Φ, Ψ, K, gm] using
-        topKernel_eq (I := I) (M := M) g g T hδ hδZ s]
+        topKernel_eq (I := I) (M := M) g T hδ hδZ s]
     have hLP :
         covariantJetNormSq (I := I) (M := M) g 2
             (lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g gm -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g)) ≤
+              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)) ≤
           2 * ((Bl * R) ^ 2 + (Cp * R) ^ 2) := by
       exact (covariantJetNormSq_add_le (I := I) (M := M) g 2 _ _).trans
         (mul_le_mul_of_nonneg_left
@@ -13104,14 +13145,14 @@ theorem exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bo
     calc
       covariantJetNormSq (I := I) (M := M) g 2
           (lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g gm -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g) +
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) +
             (-2 * s : ℝ) •
               ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T) ≤
         2 * (covariantJetNormSq (I := I) (M := M) g 2
               (lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g gm -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g)) +
+                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)) +
           covariantJetNormSq (I := I) (M := M) g 2
               ((-2 * s : ℝ) •
                 ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T)) :=
@@ -13127,14 +13168,13 @@ theorem exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bo
           simpa only [B] using Real.sq_sqrt hZ]
   have hJetRaw :
       covariantJetNormSq (I := I) (M := M) g 2
-          (rhsDecompositionTopInt (I := I) (M := M) g g T
+          (rhsDecompositionTopInt (I := I) (M := M) g T
               hδ_lt hδ hδZ +
             selfTopInt (I := I) (M := M) g T hδ_lt hδ hδZ -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g) ≤
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) ≤
         (B * R) ^ 2 := by
     apply path_add_sub_h2 (I := I) (M := M) g 4
       hSI Φ Ψ K hjΦ hjΨ hjAll (B * R)
-      (mul_nonneg hB hR0)
     exact hkernel
   let A : LowerScaleActionCoefficients g :=
     lowerScaleActionCoefficients (I := I) (M := M) g g T hδ_lt hδ hδZ

@@ -37,13 +37,14 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 abbrev MIdxC (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] (r : ℕ) :=
+    (r : ℕ) :=
   Fin r → Fin (Module.finrank ℝ E)
 
 noncomputable def midxPairCard (r s : ℕ) : ℝ :=
   ((Finset.univ : Finset (MIdxC E r × MIdxC E s)).card : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [FiniteDimensional ℝ E] in
 lemma midxPairCard_nonneg (r s : ℕ) :
     0 ≤ midxPairCard (E := E) r s := Nat.cast_nonneg _
 

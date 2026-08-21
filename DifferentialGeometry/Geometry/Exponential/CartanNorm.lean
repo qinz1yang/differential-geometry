@@ -191,14 +191,14 @@ theorem expDiff_sq_xfer
       DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
     intro t _ht
     have h :=
-      velocityField_chartRep_differentiableAt (I := I) g Fvar hFvar t
+      velocityField_chartRep_differentiableAt (I := I) Fvar hFvar t
     rw [hcentral] at h
     simpa only [V] using h
   have hVdiff' : ∀ t ∈ Icc (0 : ℝ) 1,
       DifferentiableAt ℝ (chartRepAt (I := I') γ' V' t) t := by
     intro t _ht
     have h :=
-      velocityField_chartRep_differentiableAt (I := I') g' Fvar' hFvar' t
+      velocityField_chartRep_differentiableAt (I := I') Fvar' hFvar' t
     rw [hcentral'] at h
     simpa only [V'] using h
   have hVpar : ∀ t ∈ Icc (0 : ℝ) 1,
@@ -315,14 +315,14 @@ theorem expDiff_sq_xfer
       DifferentiableAt ℝ (chartRepAt (I := I) γ Y t) t := by
     intro t _ht
     have h :=
-      variationField_chartRep_differentiableAt (I := I) g Fvar hFvar t
+      variationField_chartRep_differentiableAt (I := I) Fvar hFvar t
     rw [hcentral] at h
     simpa only [Y] using h
   have hYdiff' : ∀ t ∈ Icc (0 : ℝ) 1,
       DifferentiableAt ℝ (chartRepAt (I := I') γ' Y' t) t := by
     intro t _ht
     have h :=
-      variationField_chartRep_differentiableAt (I := I') g' Fvar' hFvar' t
+      variationField_chartRep_differentiableAt (I := I') Fvar' hFvar' t
     rw [hcentral'] at h
     simpa only [Y'] using h
   have hDYdiff : ∀ t ∈ Icc (0 : ℝ) 1,

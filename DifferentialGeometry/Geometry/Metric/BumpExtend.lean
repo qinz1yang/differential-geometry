@@ -18,7 +18,6 @@ namespace Geometry
 
 open scoped Classical in
 def extZeroForm (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   if hx : x ∈ U then gU.inner ⟨x, hx⟩ else 0
@@ -26,7 +25,6 @@ def extZeroForm (U : Opens M)
 omit [FiniteDimensional ℝ E] in
 open scoped Classical in
 @[simp] lemma extZeroForm_of_mem (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) {x : M} (hx : x ∈ U)
     (v w : TangentSpace I x) :
     extZeroForm (I := I) U gU x v w = gU.inner ⟨x, hx⟩ v w := by
@@ -36,7 +34,6 @@ open scoped Classical in
 omit [FiniteDimensional ℝ E] in
 open scoped Classical in
 lemma extZeroForm_of_not_mem (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) {x : M} (hx : x ∉ U)
     (v w : TangentSpace I x) :
     extZeroForm (I := I) U gU x v w = 0 := by
@@ -46,14 +43,12 @@ lemma extZeroForm_of_not_mem (U : Opens M)
 
 
 def bumpForm (R : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   χ x • extZeroForm (I := I) U gU x + (1 - χ x) • R.inner x
 
 omit [FiniteDimensional ℝ E] in
 lemma bumpForm_apply (R : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ) (x : M) (v w : TangentSpace I x) :
     bumpForm (I := I) R U gU χ x v w =
       χ x • extZeroForm (I := I) U gU x v w + (1 - χ x) • R.inner x v w := by
@@ -62,7 +57,6 @@ lemma bumpForm_apply (R : SmoothRiemannianMetric I M) (U : Opens M)
 
 omit [FiniteDimensional ℝ E] in
 lemma bumpForm_symm (R : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ) (x : M) (v w : TangentSpace I x) :
     bumpForm (I := I) R U gU χ x v w = bumpForm (I := I) R U gU χ x w v := by
   rw [bumpForm_apply, bumpForm_apply, R.symm x v w]
@@ -74,7 +68,6 @@ lemma bumpForm_symm (R : SmoothRiemannianMetric I M) (U : Opens M)
 
 omit [FiniteDimensional ℝ E] in
 lemma bumpForm_pos (R : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
     (hχsupp : tsupport χ ⊆ (U : Set M))
@@ -116,7 +109,6 @@ lemma frameVec_cmdiffAt' (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
   exact hfr.mono (fun y hy => congrArg (TotalSpace.mk' E y) hy)
 
 lemma frameVec_sub_cmdiffAt (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
     (hxb : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) (hxU : x ∈ U) :
     letI : TopologicalSpace U := inferInstance
@@ -157,7 +149,6 @@ lemma frameVec_sub_cmdiffAt (U : Opens M)
   rfl
 
 lemma chiGU_coeff_cmdiffAt (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (x₀ : M) (i j : Fin (Module.finrank ℝ E))
     {x : M} (hxb : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) (hxU : x ∈ U) :
@@ -187,7 +178,6 @@ lemma chiGU_coeff_cmdiffAt (U : Opens M)
   exact hχsub.smul hgUinner
 
 lemma chiGU_coeff_cmdiffOn (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχsupp : tsupport χ ⊆ (U : Set M))
     (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
@@ -218,6 +208,8 @@ lemma bumpForm_coeff_contMDiffOn (R : SmoothRiemannianMetric I M) (U : Opens M)
       (fun x => bumpForm (I := I) R U gU χ x
         (frameVec (I := I) x₀ i x) (frameVec (I := I) x₀ j x))
       (trivializationAt E (TangentSpace I) x₀).baseSet := by
+  let _ := (inferInstance : (SigmaCompactSpace ↥U))
+  let _ := (inferInstance : (T2Space ↥U))
   have hrw : (fun x => bumpForm (I := I) R U gU χ x
         (frameVec (I := I) x₀ i x) (frameVec (I := I) x₀ j x))
       = (fun x => (χ x • extZeroForm (I := I) U gU x

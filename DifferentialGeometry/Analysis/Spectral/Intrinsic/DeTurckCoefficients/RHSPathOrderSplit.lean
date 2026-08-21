@@ -133,7 +133,7 @@ def rhsPathSlope
     lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       g_bg α i k s y
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_rhsPath
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -164,7 +164,7 @@ theorem hasDerivAt_rhsPath
     g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg α i k hy hs
   simpa only [rhsPathSlope] using (hRic.const_mul (-2 : ℝ)).add hLie
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem deriv_rhsPath
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -181,9 +181,8 @@ theorem deriv_rhsPath
         g_bg α i k s y := by
   exact (hasDerivAt_rhsPath (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
     g_bg α i k hy (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨hs.1.le, hs.2.le⟩)).deriv
-
-
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricPerturbationPath_zero
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -196,9 +195,8 @@ theorem metricPerturbationPath_zero
   rw [metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ'
       (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨le_rfl, zero_le_one⟩),
     tensorSectionRealizeMetric_inner, convexPerturbation_zero]
-
-
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricPerturbationPath_one
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -255,7 +253,7 @@ def lieSumSlope
 
 
 def lieTopSum
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -265,12 +263,12 @@ def lieTopSum
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
     ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
       chartDeTurckCorrPrincipalSymbolExprRaw (I := I)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
         i k (extChartAt I x x)
 
 def lieTopCovSum
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -282,7 +280,7 @@ def lieTopCovSum
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
         ![(chartModelBasis E) i, (chartModelBasis E) k]
@@ -316,50 +314,51 @@ def lieTopTailSwap
 omit [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieTopRaw_symm
-    (g g_bg : SmoothRiemannianMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g g_bg x f i j y =
-      chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g g_bg x f j i y := by
+    chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g x f i j y =
+      chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g x f j i y := by
   unfold chartDeTurckCorrPrincipalSymbolExprRaw
   have h₁ : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g x k j y *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g x a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g g_bg x f i a b k y) =
+            chartDeTurckCorrHessBlockRaw (I := I) g x f i a b k y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x j k y *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g x a b y *
-              chartDeTurckCorrHessBlockRaw (I := I) g g_bg x f i a b k y := by
+              chartDeTurckCorrHessBlockRaw (I := I) g x f i a b k y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x k j y]
   have h₂ : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g x i k y *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g x a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g g_bg x f j a b k y) =
+            chartDeTurckCorrHessBlockRaw (I := I) g x f j a b k y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x k i y *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g x a b y *
-              chartDeTurckCorrHessBlockRaw (I := I) g g_bg x f j a b k y := by
+              chartDeTurckCorrHessBlockRaw (I := I) g x f j a b k y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x i k y]
   rw [h₁, h₂]
   ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieTop_add_tail
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) :
-    lieTopSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
+    lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
         lieTopTailSum (I := I) g₀ T T' hδ hδ' x v w s =
-      lieTopCovSum (I := I) g₀ g_bg T T' hδ hδ' x v w s := by
+      lieTopCovSum (I := I) g₀ T T' hδ hδ' x v w s := by
   classical
   unfold lieTopSum lieTopTailSum lieTopCovSum
   rw [← Finset.sum_add_distrib]
@@ -368,22 +367,23 @@ theorem lieTop_add_tail
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [← mul_add]
   rw [← lieTop_cov_eq_raw (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i k]
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieTop_add_swap
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) :
-    lieTopSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
+    lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
         lieTopTailSwap (I := I) g₀ T T' hδ hδ' x v w s =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x ![v, w] := by
   classical
@@ -395,7 +395,7 @@ theorem lieTop_add_swap
           unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 4 2
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
             ![(chartModelBasis E) k, (chartModelBasis E) i] := by
@@ -404,16 +404,16 @@ theorem lieTop_add_swap
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [← mul_add]
       rw [lieTopRaw_symm (I := I)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i k
         (extChartAt I x x)]
       rw [← lieTop_cov_eq_raw (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k i]
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k i]
     _ = _ := by
       simpa using unitModel_basis_expand_two (I := I) (M := M) g₀
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x ![v, w]
 
@@ -450,7 +450,9 @@ def lieZeroSum
         i k (extChartAt I x x)
 
 omit [CompactSpace M] in
-theorem lieSum_eq_split [BoundarylessManifold I M]
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+theorem lieSum_eq_split
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -459,7 +461,7 @@ theorem lieSum_eq_split [BoundarylessManifold I M]
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) :
     lieSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
-      lieTopSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
+      lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieZeroSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s := by
   have hy : extChartAt I x x ∈ interior (extChartAt I x).target :=
@@ -469,8 +471,8 @@ theorem lieSum_eq_split [BoundarylessManifold I M]
     hδ_lt hδ hδ'_lt hδ' g_bg x _ _ s hy]
   simp only [mul_add, Finset.sum_add_distrib]
 
-omit [CompactSpace M] in
-theorem ricciSum_eq_lin [BoundarylessManifold I M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+theorem ricciSum_eq_lin
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -493,7 +495,8 @@ theorem ricciSum_eq_lin [BoundarylessManifold I M]
         g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w hs).symm
 
 omit [CompactSpace M] in
-theorem rhsSlope_eq_lin [BoundarylessManifold I M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem rhsSlope_eq_lin
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -556,7 +559,7 @@ theorem rhsSlope_eq_raw [BoundarylessManifold I M]
           operatorFieldApply (I := I) (M := M) g₀ 4 2
             (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x ![v, w] +
-      lieTopSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
+      lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieZeroSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s := by
   rw [rhsSlope_eq_lin (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w hs]
@@ -583,7 +586,7 @@ theorem rhsSlope_eq_raw [BoundarylessManifold I M]
   ring
 
 def rhsTopTerm
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -592,7 +595,7 @@ def rhsTopTerm
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   unitModel (I := I) (M := M) g₀ 2
     (operatorFieldApply (I := I) (M := M) g₀ 4 2
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
       (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x ![v, w]
 
@@ -619,8 +622,9 @@ def rhsLowTerm
     lieZeroSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s -
     lieTopTailSwap (I := I) g₀ T T' hδ hδ' x v w s
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem rhsTop_eq_raw [BoundarylessManifold I M]
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -631,12 +635,12 @@ theorem rhsTop_eq_raw [BoundarylessManifold I M]
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) :
-    rhsTopTerm (I := I) g₀ g_bg T T' hδ hδ' x v w s =
+    rhsTopTerm (I := I) g₀ T T' hδ hδ' x v w s =
       (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x ![v, w] +
-      lieTopSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
+      lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieTopTailSwap (I := I) g₀ T T' hδ hδ' x v w s := by
   have hSsymm : ∀ (y : M) (u z : TangentSpace I y),
       smoothCcTensorBilinForm (I := I) g₀ (T - T') y u z =
@@ -647,11 +651,11 @@ theorem rhsTop_eq_raw [BoundarylessManifold I M]
       hTsymm y u z, hT'symm y u z]
   have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
     symmS_eq_self (I := I) (M := M) g₀ (T - T') hSsymm
-  have hLie := lieTop_add_swap (I := I) g₀ g_bg T T'
+  have hLie := lieTop_add_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
   rw [hsymmS] at hLie
   unfold rhsTopTerm
-  rw [phi_realized_eq (I := I) (M := M) g₀ g_bg T T' hδ hδ' s,
+  rw [phi_realized_eq (I := I) (M := M) g₀ T T' hδ hδ' s,
     operatorFieldApplication_sub_left, operatorFieldApplication_add_left, unitModel_sub_app, unitModel_add_app,
     ← hLie]
   ring
@@ -669,17 +673,18 @@ theorem rhsSlope_eq_split [BoundarylessManifold I M]
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
     rhsSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
-      rhsTopTerm (I := I) g₀ g_bg T T' hδ hδ' x v w s +
+      rhsTopTerm (I := I) g₀ T T' hδ hδ' x v w s +
         rhsLowTerm (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s := by
   rw [rhsSlope_eq_raw (I := I) g₀ g_bg T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w hs]
-  rw [rhsTop_eq_raw (I := I) g₀ g_bg T T' hTsymm hT'symm
+  rw [rhsTop_eq_raw (I := I) g₀ T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w s]
   unfold rhsLowTerm
   rw [unitModel_add_app, unitModel_add_app]
   ring
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rhsSum_contDiffAt [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -707,8 +712,8 @@ theorem rhsSum_contDiffAt [BoundarylessManifold I M]
   exact realizedDeTurckRicciChartSum_contDiffAt (I := I)
     g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w hs
 
-omit [CompactSpace M] in
-theorem hasDerivAt_rhsSum [BoundarylessManifold I M]
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem hasDerivAt_rhsSum
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -728,8 +733,8 @@ theorem hasDerivAt_rhsSum [BoundarylessManifold I M]
     g_bg x i k hy hs).const_mul _
 
 
-omit [CompactSpace M] in
-theorem deriv_rhsSum [BoundarylessManifold I M]
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem deriv_rhsSum
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -744,6 +749,7 @@ theorem deriv_rhsSum [BoundarylessManifold I M]
 
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rhsSum_continuous [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -757,7 +763,7 @@ theorem rhsSum_continuous [BoundarylessManifold I M]
   exact (rhsSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
     x v w (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rhsSlope_integrable [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -799,7 +805,7 @@ theorem rhsSlope_integrable [BoundarylessManifold I M]
   refine measure_mono_null (fun s hs => ?_) hnull
   exact fun hs' => hs (hsub hs')
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rhsSum_sub_eq_int [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)

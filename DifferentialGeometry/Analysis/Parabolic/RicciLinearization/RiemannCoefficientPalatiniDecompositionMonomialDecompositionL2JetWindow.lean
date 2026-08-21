@@ -147,6 +147,7 @@ private lemma curvatureDecompositionSlotPerm_natAdd (σ : Equiv.Perm (Fin 4)) (k
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (σ : Equiv.Perm (Fin 4)) :
     curvatureActionMonomialCoeffField (I := I) (M := M) g₀ g₁

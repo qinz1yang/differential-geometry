@@ -109,13 +109,12 @@ theorem MemWkpChart_smooth_mul_per_chart_quant
 theorem wkpNormChart_smooth_mul_le
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞}
     (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) :
-    ∃ C : ℝ, 0 < C ∧ ∀ {u : M → ℝ}, MemWkpChart (I := I) (M := M) g k p u →
-      wkpNormChart (I := I) (M := M) g k p (fun x => (φ : M → ℝ) x * u x)
-        ≤ ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g k p u := by
+    ∃ C : ℝ, 0 < C ∧ ∀ {u : M → ℝ}, MemWkpChart (I := I) (M := M) k p u →
+      wkpNormChart (I := I) (M := M) k p (fun x => (φ : M → ℝ) x * u x)
+        ≤ ENNReal.ofReal C * wkpNormChart (I := I) (M := M) k p u := by
   classical
   set S : Finset M :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
@@ -209,12 +208,12 @@ theorem wkpNormChart_smooth_mul_le
       exact DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
         (d := Module.finrank ℝ E) hp_one
         (chartTargetEuclid_isOpen (I := I) (M := M) α)
-    have h_lhs_zero : wkpNormChart (I := I) (M := M) g k p
+    have h_lhs_zero : wkpNormChart (I := I) (M := M) k p
         (fun x => (φ : M → ℝ) x * u x) = 0 := by
       unfold wkpNormChart
       rw [tsum_congr h_per_α_zero_φu]
       exact tsum_zero
-    have h_rhs_zero : wkpNormChart (I := I) (M := M) g k p u = 0 := by
+    have h_rhs_zero : wkpNormChart (I := I) (M := M) k p u = 0 := by
       unfold wkpNormChart
       rw [tsum_congr h_per_α_zero]
       exact tsum_zero

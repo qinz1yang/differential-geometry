@@ -54,7 +54,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
 theorem hmfSpecMap_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
-    (n : ℕ) (hn : 1 ≤ n) :
+    (n : ℕ) :
     ∃ R : ℝ, 0 < R ∧
       ContMDiffOn (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I
         (n : ℕ∞)
@@ -62,7 +62,7 @@ theorem hmfSpecMap_cd
           hmfSpecMap (I := I) (M := M) q S p.2 p.1)
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hjoint⟩ :=
-    hmfSpecAdd_cd (I := I) (M := M) q S n hn
+    hmfSpecAdd_cd (I := I) (M := M) q S n
   refine ⟨R, hR, ?_⟩
   intro p hp
   simpa only [hmfSpecMap_def, hmfAdd, hmfSpecLaunch] using (hjoint p hp).snd
@@ -77,7 +77,7 @@ theorem hmfSpecMap_md
           MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
             (hmfSpecMap (I := I) (M := M) q S x) u := by
   obtain ⟨R, hR, hjoint⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S 1 (by norm_num)
+    hmfSpecMap_cd (I := I) (M := M) q S 1
   refine ⟨R, hR, ?_⟩
   intro u hu x
   have hp : (u, x) ∈
@@ -101,14 +101,14 @@ omit [BoundarylessManifold I M]
 theorem hmfSpecSlice_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
-    (n : ℕ) (hn : 1 ≤ n) :
+    (n : ℕ) :
     ∃ R : ℝ, 0 < R ∧
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ContMDiff I I (n : ℕ∞)
           (hmfAdd (I := I) (M := M) q
             (hmfSpecIncl (I := I) (M := M) q S u)) := by
   obtain ⟨R, hR, hjoint⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S n hn
+    hmfSpecMap_cd (I := I) (M := M) q S n
   refine ⟨R, hR, ?_⟩
   intro u hu x
   have hp :
@@ -134,7 +134,7 @@ theorem hmfSpecTan_cd
             (hmfAdd (I := I) (M := M) q
               (hmfSpecIncl (I := I) (M := M) q S u))) := by
   obtain ⟨R, hR, hslice⟩ :=
-    hmfSpecSlice_cd (I := I) (M := M) q S 2 (by norm_num)
+    hmfSpecSlice_cd (I := I) (M := M) q S 2
   refine ⟨R, hR, ?_⟩
   intro u hu
   exact (hslice u hu).contMDiff_tangentMap (by norm_num)

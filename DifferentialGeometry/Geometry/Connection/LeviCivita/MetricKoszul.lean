@@ -217,7 +217,6 @@ theorem const_cov_eq_nhds
     _ = MetricKoszul.koszulVec hco (fderiv Real B z) v w := rfl
 
 theorem cov_eq_fderiv_add
-    [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric 𝓘(Real, E) E)
     (B : E → E →L[Real] E →L[Real] Real) {z : E}
     (hB : (fun y : E ↦ g.inner y) =ᶠ[nhds z] B)

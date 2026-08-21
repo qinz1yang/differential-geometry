@@ -86,6 +86,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [Module.Finite ℝ E] in
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem rmFrozenSlotSharp_mdiffAt
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -119,6 +120,7 @@ def rmFrozenSlotSharpSection
 omit [Module.Finite ℝ E] in
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem rmFrozenSlotSharpSection_apply [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (q : Fin 4)
@@ -141,6 +143,7 @@ def rmRaiseSlotSections
 
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem rmRaise_summand_covDeriv
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -390,6 +393,8 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
   rw [hfield]
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem nablaLapComm_T1_eq_rm04_raise_leibniz
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -713,6 +718,7 @@ theorem rmFrozenSlot_basis_component
 
 open DifferentialGeometry.TensorLieDeriv in
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T1_covConst_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -912,6 +918,7 @@ theorem abs_nablaLapComm_T1_covConst_le
 
 open DifferentialGeometry.TensorLieDeriv in
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T1_orthoBasis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1019,6 +1026,7 @@ theorem compNormSqMulti_eq_compNormSq4_basis
   · intro h; exact absurd (Finset.mem_univ _) h
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_nablaLapCommReactionTermF_orthoBasis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1054,6 +1062,7 @@ theorem abs_nablaLapCommReactionTermF_orthoBasis_le
   ring
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1094,6 +1103,7 @@ theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
   ring
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_spatialCommNablaRm_orthoFrame_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

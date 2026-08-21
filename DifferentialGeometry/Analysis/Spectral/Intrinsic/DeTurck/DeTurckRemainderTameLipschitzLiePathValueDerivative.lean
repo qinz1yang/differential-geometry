@@ -109,6 +109,8 @@ private noncomputable def realizedDeTurckLiePathValue
       (smoothRiemannianMetricToInfty (I := I) g_bg)) x v w
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_one
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -140,6 +142,8 @@ private theorem realizedDeTurckLiePathValue_one
   rw [realizedDeTurckLiePathValue, hmetric]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_zero
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -195,6 +199,8 @@ noncomputable def realizedDeTurckLieChartSum
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLieChartSum_contDiffAt
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -228,6 +234,8 @@ private theorem realizedDeTurckLieChartSum_contDiffAt
   exact hjoint.comp s₀ ((contDiffAt_id).prodMk contDiffAt_const)
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -268,6 +276,7 @@ private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
         (I := I) g₀ T T' hδ hδ' s) g_bg x i j hxgood]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_differentiableAt_Ioo
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -289,6 +298,8 @@ private theorem realizedDeTurckLiePathValue_differentiableAt_Ioo
     hmem).differentiableAt (by simp)).congr_of_eventuallyEq heq
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem linearizedDeTurckLieAt_eq_deriv_chartSum_on_Ioo
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -309,6 +320,7 @@ theorem linearizedDeTurckLieAt_eq_deriv_chartSum_on_Ioo
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem deriv_realizedDeTurckLieChartSum_continuousOn
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -326,6 +338,7 @@ private theorem deriv_realizedDeTurckLieChartSum_continuousOn
   exact hcd.continuousOn_deriv_of_isOpen metricPerturbationPathDomain_isOpen (by exact_mod_cast le_top)
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedDeTurckLieAt_intervalIntegrable
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -368,6 +381,7 @@ theorem linearizedDeTurckLieAt_intervalIntegrable
   exact fun hs' => hs (hsub hs')
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_continuousOn_Icc
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -387,7 +401,7 @@ private theorem realizedDeTurckLiePathValue_continuousOn_Icc
     exact realizedDeTurckLiePathValue_eq_chartSum_on_Icc (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
       x v w hs
 
-omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem hasDerivAt_lieDeTurck_realizedMetricPath
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -411,6 +425,7 @@ private theorem hasDerivAt_lieDeTurck_realizedMetricPath
   · exact linearizedDeTurckLieAt_intervalIntegrable (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lieDerivMetricClm_realized_sub_eq_integral_linearizedDeTurckLie
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -447,6 +462,8 @@ theorem lieDerivMetricClm_realized_sub_eq_integral_linearizedDeTurckLie
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem hasDerivAt_realizedDeTurckLieChartSum_general
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -501,6 +518,8 @@ private noncomputable def deTurckLieArm0Field
   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCoeffField (I := I) (M := M)
     g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
 
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieArm0Field_eq_coeffField
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

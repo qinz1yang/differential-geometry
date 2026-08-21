@@ -22,12 +22,14 @@ def aeSetLift {S : Set X} (hzero : (0 : X) ∈ S) (f : timeL2 X T) : ℝ → S :
     classical
     exact fun t => if ht : f t ∈ S then ⟨f t, ht⟩ else ⟨0, hzero⟩
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem aeSetLift_coe_ae {S : Set X} (hzero : (0 : X) ∈ S)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
     (fun t => ((aeSetLift hzero f t : S) : X)) =ᵐ[timeMeasure T] fun t => f t := by
   filter_upwards [hf] with t ht
   simp only [aeSetLift, dif_pos ht]
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem aeSetLift_aesm {S : Set X} (hzero : (0 : X) ∈ S)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
     AEStronglyMeasurable (aeSetLift hzero f) (timeMeasure T) := by
@@ -36,6 +38,7 @@ theorem aeSetLift_aesm {S : Set X} (hzero : (0 : X) ∈ S)
     (aeSetLift_coe_ae hzero f hf).symm
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem memLp_on {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
@@ -69,6 +72,8 @@ def nemytskiiOn {S : Set X} (hzero : (0 : X) ∈ S)
     timeL2 Y T :=
   (memLp_on hzero hN f hf).toLp (fun t => N (aeSetLift hzero f t))
 
+omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem nemytskiiOn_coeFn {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
@@ -76,6 +81,8 @@ theorem nemytskiiOn_coeFn {S : Set X} (hzero : (0 : X) ∈ S)
       fun t => N (aeSetLift hzero f t) :=
   (memLp_on hzero hN f hf).coeFn_toLp
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
+omit [NormedSpace ℝ Y] [CompleteSpace Y] in
 theorem nemytskiiOn_zero_le {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N) {T : ℝ}
     (hf : ∀ᵐ t ∂(timeMeasure T), ((0 : timeL2 X T) t) ∈ S) :
@@ -93,11 +100,12 @@ theorem nemytskiiOn_zero_le {S : Set X} (hzero : (0 : X) ∈ S)
     Subtype.ext hval
   rw [hsub]
 
+omit [NormedSpace ℝ X] [CompleteSpace X] [NormedSpace ℝ Y] [CompleteSpace Y] in
 theorem timeL2_norm_le_four
     {Z W V : Type*}
-    [NormedAddCommGroup Z] [NormedSpace ℝ Z] [CompleteSpace Z]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V]
+    [NormedAddCommGroup Z]
+    [NormedAddCommGroup W]
+    [NormedAddCommGroup V]
     (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T)
     (r : timeL2 W T) (s : timeL2 V T) {A B C D : ℝ}
     (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C) (hD : 0 ≤ D)
@@ -206,6 +214,7 @@ theorem timeL2_norm_le_four
     ENNReal.toReal_ofReal hC, ENNReal.toReal_ofReal hD]
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [CompleteSpace X] in
 theorem memLp_tame {S : Set X} (hzero : (0 : X) ∈ S) {R : ℝ} (hR : 0 ≤ R)
     {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     (J : X →L[ℝ] Z) (hstate : ∀ u : S, ‖J (u : X)‖ ≤ R)
@@ -288,6 +297,8 @@ def nemytskiiTameOn {S : Set X} (hzero : (0 : X) ∈ S) {R : ℝ} (hR : 0 ≤ R)
   (memLp_tame hzero hR J hstate N hN A B C htame f hf).toLp
     (fun t => N (aeSetLift hzero f t))
 
+omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [CompleteSpace X] in
 theorem nemytskiiTameOn_coeFn {S : Set X} (hzero : (0 : X) ∈ S) {R : ℝ}
     (hR : 0 ≤ R) {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     (J : X →L[ℝ] Z) (hstate : ∀ u : S, ‖J (u : X)‖ ≤ R)

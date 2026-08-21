@@ -135,7 +135,7 @@ theorem pinchReactNull
 
 theorem pinchReact_ge
     (delta l1 l2 l3 : Real)
-    (_hdelta0 : 0 <= delta) (hdelta13 : delta <= (1 : Real) / 3)
+    (hdelta13 : delta <= (1 : Real) / 3)
     (hnull : l1 = delta * DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3) :
     0 <= pinchReact delta (DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3)
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3) 0 0 := by
@@ -188,7 +188,7 @@ theorem shiftNull3
 
 theorem pinchShiftNull_ge
     (delta a b : Real)
-    (hdelta0 : 0 <= delta) (hdelta13 : delta < (1 : Real) / 3) :
+    (hdelta13 : delta < (1 : Real) / 3) :
     0 <= pinchReact delta
       (DifferentialGeometry.Geometry.Curvature.stdRmDiag3
         (shiftRic1 delta a b) (shiftRic2 delta a b) (shiftRic3 delta a b))
@@ -197,7 +197,7 @@ theorem pinchShiftNull_ge
       0 0 := by
   exact pinchReact_ge delta
     (shiftRic1 delta a b) (shiftRic2 delta a b) (shiftRic3 delta a b)
-    hdelta0 (le_of_lt hdelta13) (shiftNull3 delta a b hdelta13)
+    (le_of_lt hdelta13) (shiftNull3 delta a b hdelta13)
 
 def shiftReact3 (delta a b : Real) : Real :=
   pinchReact delta
@@ -210,9 +210,9 @@ def shiftReact3 (delta a b : Real) : Real :=
 
 theorem shiftReact3_nonneg
     (delta a b : Real)
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3) :
+    (hdelta13 : delta < (1 : Real) / 3) :
     0 <= shiftReact3 delta a b := by
-  exact pinchShiftNull_ge delta a b (le_of_lt hdelta0) hdelta13
+  exact pinchShiftNull_ge delta a b hdelta13
 
 def shiftBlockS3 (a b c : Real) (i j : Fin 3) : Real :=
   if i = 0 then 0
@@ -274,7 +274,7 @@ theorem shiftReactBlock3_nonneg_of_lt
 
 theorem shiftReactBlock3_nonneg
     (delta a b c : Real)
-    (_hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3) :
+    (hdelta13 : delta < (1 : Real) / 3) :
     0 <= shiftReactBlock3 delta a b c := by
   exact shiftReactBlock3_nonneg_of_lt delta a b c hdelta13
 
@@ -1580,7 +1580,7 @@ theorem shiftNRaw_null_symm_of_lt
 omit [IsManifold I 2 M] in
 theorem shiftNRaw_null_symm
     {G : Real -> SmoothRiemannianMetric I M} {U : Set Real} {delta : Real}
-    (_hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3) :
     TensorNullEigenvectorConditionSymm (I := I) (M := M) G
       (shiftNRaw (I := I) (M := M) delta) U := by

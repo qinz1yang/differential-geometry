@@ -25,7 +25,7 @@ omit [CompactSpace M] in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricScalar_chartTrace_eq [I.Boundaryless]
+theorem metricScalar_chartTrace_eq
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     metricScalarAt (I := I) g x =

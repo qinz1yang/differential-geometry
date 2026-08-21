@@ -119,6 +119,7 @@ private lemma ric_perm_riemannianFiberNormSq (g : SmoothRiemannianMetric I M)
     (I := I) (M := M) g sigma Q j x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [CompactSpace M] in
 private theorem ric_l2_of_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (ra sa rb sb : Nat)
     (A : SmoothCcTensor g ra sa) (B : SmoothCcTensor g rb sb)
@@ -439,7 +440,6 @@ theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
   obtain ⟨C, hC0, hconn⟩ :=
     connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
       (I := I) (M := M) g (δ₀ := 1 / 2)
-        (show (0 : Real) ≤ 1 / 2 by norm_num)
         (show (1 / 2 : Real) < 1 by norm_num)
   refine ⟨C, hC0, ?_⟩
   intro gm P htie delta hdelta hdelta0 hPbound
@@ -497,7 +497,7 @@ private lemma mul_mul_le_sixteenth_sq_add_four_sq (A δ w d : Real) :
       (1 / 16 : Real) * d ^ 2 + 4 * A ^ 2 * δ ^ 2 * w ^ 2 := by
   nlinarith only [sq_nonneg (d - 8 * (A * δ * w))]
 
-theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le [Nonempty M]
+theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le
     (g : SmoothRiemannianMetric I M) :
     ∃ delta0 K : Real,
       0 < delta0 ∧ delta0 < 1 / 2 ∧ 0 ≤ K ∧

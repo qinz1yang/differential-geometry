@@ -357,8 +357,7 @@ theorem hasWeakPartialDeriv_indicator_chosenWeakPartial_univ
 
 
 omit [NeZero d] in
-theorem MemWkp.extend_zero {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) (_hp_top : p ≠ (⊤ : ℝ≥0∞))
-    {Ω V : Set E} (hΩ : IsOpen Ω) (hV : IsOpen V) (hΩV : Ω ⊆ V)
+theorem MemWkp.extend_zero {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set E} (hΩ : IsOpen Ω) (hV : IsOpen V) (hΩV : Ω ⊆ V)
     {u : E → ℝ} (hu : MemWkp (d := d) k p u Ω)
     (hu_supp : tsupport u ⊆ Ω) (hu_compactSupport : HasCompactSupport u) :
     MemWkp (d := d) k p u V := by

@@ -17,7 +17,7 @@ namespace DifferentialGeometry
 
 noncomputable def flatModelMetric
     (E : Type uE) [NormedAddCommGroup E] [InnerProductSpace Real E]
-    [FiniteDimensional Real E] :
+    :
     SmoothRiemannianMetric 𝓘(Real, E) E where
   inner := (riemannianMetricVectorSpace E).inner
   symm := (riemannianMetricVectorSpace E).symm

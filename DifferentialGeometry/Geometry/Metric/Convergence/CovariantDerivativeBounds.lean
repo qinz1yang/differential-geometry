@@ -1227,7 +1227,7 @@ noncomputable def lcMetricFamily
 
 omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_one_component_eq_metricCovAtBase
-    {Idx : Type*} [Finite Idx] {u : Set M}
+    {Idx : Type*} {u : Set M}
     (g : Real -> SmoothRiemannianMetric I M)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)

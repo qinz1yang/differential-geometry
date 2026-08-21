@@ -102,7 +102,7 @@ theorem open_upgrade_of_raw
                   metricDerivNorm (I := I) q
                     (srcMetric (I := I) Phi hsrc htgt k s)
                     (srcMetric (I := I) Phi hsrc htgt k t)
-                    (refRes (I := I) Phi mc.limit.metric hsrc k) y <=
+                    (refRes (I := I) Phi mc.limit.metric k) y <=
                       Ls * |s - t|)
     (hcp : letI : TopologicalSpace mc.limit.M := mc.limit.topology
         letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -122,8 +122,8 @@ theorem open_upgrade_of_raw
               sourceDomSigmaOf (I := I) Phi k (hsrc k)
            metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Phi k K) 0
              (srcMetric (I := I) Phi hsrc htgt k 0)
-             (resSrc (I := I) Phi hsrc k mc.limit.metric)
-             (refRes (I := I) Phi mc.limit.metric hsrc k) < eps)) :
+             (resSrc (I := I) Phi k mc.limit.metric)
+             (refRes (I := I) Phi mc.limit.metric k) < eps)) :
     exists d : FlowUpgrade (I := I) X mc,
       forall t : Real, t ∈ X.D.carrier ->
         MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by

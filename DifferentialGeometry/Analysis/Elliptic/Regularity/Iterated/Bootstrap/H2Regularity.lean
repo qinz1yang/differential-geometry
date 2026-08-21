@@ -60,7 +60,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkpChart_zero_of_lp
     (g : SmoothRiemannianMetric I M)
     (u_lp : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
-    MemWkpChart (I := I) (M := M) g 0 2 ((u_lp : M → ℝ)) := by
+    MemWkpChart (I := I) (M := M) 0 2 ((u_lp : M → ℝ)) := by
   intro α
   rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_zero]
   set K : Set EuclN := chartImagePOUTsupport (I := I) (M := M) α with hK_def
@@ -111,7 +111,7 @@ theorem iteratedH2Regularity_zero
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl (I := I) (M := M) g) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 0 2
+      (I := I) (M := M) 0 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) :=
   memWkpChart_zero_of_lp (I := I) (M := M) g
@@ -122,11 +122,11 @@ theorem iteratedH2Regularity_one
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 1) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
   rw [laplacianDomainPow_one] at hu_h
@@ -139,7 +139,7 @@ theorem laplacianDomainPow_memWkpChart_two_k_le_one
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * k) 2
+      (I := I) (M := M) (2 * k) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   interval_cases k

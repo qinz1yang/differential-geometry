@@ -32,6 +32,7 @@ noncomputable def rmResidualField
   | k + 1 => resStarNext (I := I) S t k (rmResidualField S t k)
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rmResidualField_cost
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -53,6 +54,7 @@ theorem rmResidualField_cost
           (rmResidualField (I := I) S t k) ih
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem rmResidual_local
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -127,6 +129,7 @@ private theorem rmResidual_local
       intro y hy I0
       simpa only [rmResidualField] using hnext.2 y hy I0
 
+omit [SigmaCompactSpace M] in
 theorem rmResidual_cost
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -189,7 +192,7 @@ theorem rmResidual_cost
       baseDt chrDt hrm hchr hchrId hswap k x hx I0
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem resStarSol [CompactSpace M]
+theorem resStarSol
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}

@@ -55,12 +55,6 @@ theorem chart_cover_flow_bijective_two_sided_uniform_horizon
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
     (Φ Ψ : ℝ → M → M)
-    (_hΦ_init : ∀ x, Φ 0 x = x)
-    (_hΨ_init : ∀ x, Ψ 0 x = x)
-    (_hΦ_repr : ∀ x : M, ∃ α : M, ∀ s : ℝ,
-      Φ s x = (chartAt H α).symm (I.symm ((hper α).flow (I ((chartAt H α) x)) s)))
-    (_hΨ_repr : ∀ x : M, ∃ α : M, ∀ s : ℝ,
-      Ψ s x = (chartAt H α).symm (I.symm ((hperNeg α).flow (I ((chartAt H α) x)) s)))
     (hBijPerChart : ∀ α : M,
       ∃ S_α : ℝ, 0 < S_α ∧
         ∀ x ∈ (hper α).U ∩ (hperNeg α).U,

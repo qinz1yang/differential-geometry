@@ -260,7 +260,7 @@ theorem ricciDeTurckRemainderZeroOrderPathIntegral_h1_uniform_bound
   have hpath := path_jetL2_le (I := I) (M := M) g 2 2 1
     (fun s => ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g gBase T T' hδ hδ' s)
     (metricPerturbationPathDomain (δ := δ₀) (δ' := δ₀)) metricPerturbationPathDomain_isOpen hSI
-    (ricciDeTurckRemainderZeroOrderCoefficient_path_joint (I := I) (M := M) g gBase T T' hδ hδ') hBA
+    (ricciDeTurckRemainderZeroOrderCoefficient_path_joint (I := I) (M := M) g gBase T T' hδ hδ')
     (hcoeff g hEq hjet T T' hδ hδ' R A hR hA hT2 hT2' hT3 hT3')
   simpa only [ricciDeTurckRemainderZeroOrderPathIntegral] using hpath
 
@@ -451,7 +451,7 @@ theorem ricciDeTurckRemainderFirstOrderPathIntegral_h2_uniform_bound
   have hpath := path_jetL2_le (I := I) (M := M) g 3 2 2
     (fun s => ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g gBase T T' hδ hδ' s)
     (metricPerturbationPathDomain (δ := δ₀) (δ' := δ₀)) metricPerturbationPathDomain_isOpen hSI
-    (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gBase T T' hδ hδ') hBA
+    (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gBase T T' hδ hδ')
     (hcoeff g hEq hjet T T' hδ hδ' R A hR hA hT2 hT2' hT3 hT3')
   simpa only [ricciDeTurckRemainderFirstOrderPathIntegral] using hpath
 

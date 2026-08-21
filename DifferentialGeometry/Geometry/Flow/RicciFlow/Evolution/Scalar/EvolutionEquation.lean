@@ -98,9 +98,6 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution
     (hOutput : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
       DifferentialGeometry.Geometry.Curvature.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
-    (hFirst : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
-      (x : M),
-      DifferentialGeometry.Geometry.Curvature.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
     (h_inv : InverseMetricEvolutionEquationInFrame (I := I) S gInv frame Set.univ)
     (h_ricci : RicciEvolutionEquationInFrame (I := I) S Rm04 gInv frame roughLapRic)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -117,7 +114,7 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution
       (I := I) S Rm04 gInv frame roughLapRic h_inv h_ricci t x
   have hRmTrace : ScalarRmRicciTraceInFrame (I := I) S Rm04 gInv frame :=
     scalarRmRicciTraceInFrame_of_rm04_first_trace
-      (I := I) S Rm04 gInv frame hframe hcover hTrace hOutput hFirst hinv hRicSym
+      (I := I) S Rm04 gInv frame hframe hcover hTrace hOutput hinv hRicSym
   have hInvSym : forall s y i j, gInv s y i j = gInv s y j i := by
     intro s y i j
     have hy : y ∈ u := hcover y
@@ -155,9 +152,6 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_regular
     (hOutput : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
       DifferentialGeometry.Geometry.Curvature.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
-    (hFirst : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
-      (x : M),
-      DifferentialGeometry.Geometry.Curvature.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
     (h_inv : InverseMetricEvolutionEquationInFrame (I := I) S gInv frame Set.univ)
     (h_ricci : RicciEvolutionEquationInFrame (I := I) S Rm04 gInv frame roughLapRic)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -172,7 +166,7 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_regular
       (I := I) S Rm04 gInv frame roughLapRic h_inv h_ricci t x
   have hRmTrace : ScalarRmRicciTraceInFrame (I := I) S Rm04 gInv frame :=
     scalarRmRicciTraceInFrame_of_rm04_first_trace_regular
-      (I := I) S Rm04 gInv frame hframe hcover hTrace hOutput hFirst hinv hRicSym
+      (I := I) S Rm04 gInv frame hframe hcover hTrace hOutput hinv hRicSym
   have hInvSym : forall (τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
     D) y i j,
       gInv (τ : Real) y i j = gInv (τ : Real) y j i := by
@@ -191,9 +185,9 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_regular
       (scalarLaplacianTraceInFrame_realizes (M := M) gInv roughLapRic)
       hInvSym hRicSym hRmTrace t x)
 
+omit [SigmaCompactSpace M] in
 theorem scalarEvolutionEquationOn_of_ricciEvolution_lc
     [DecidableEq Idx]
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
@@ -227,8 +221,6 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_lc
       (ricciNormSqInFrame (I := I) S gInv frame) := by
   have hOutput :=
     rm04OutputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
-  have hFirst :=
-    rm04FirstBianchi_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hPair :=
     rm04PairSymm_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hInput :=
@@ -237,7 +229,7 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_lc
     ricciSymm_regular (I := I) S Rm04 gInv frame hframe hcover hinv
       hTrace hPair hOutput hInput
   exact scalarEvolutionEquationOn_of_ricciEvolution_regular
-    (I := I) S Rm04 gInv frame roughLapRic hframe hcover hTrace hOutput hFirst
+    (I := I) S Rm04 gInv frame roughLapRic hframe hcover hTrace hOutput
     h_inv h_ricci hinv hRicSym
 
 

@@ -106,7 +106,7 @@ theorem MetricCompactnessInputs.atom_trans_small
       let q := Geometry.Riemannian.NormalCoordinates.expMapDiffeo
         (I := I) (X.obj (L.φ k)).metric x z
       have hqHat : q ∈ L.hatBall inp.decay inp.D P inp.pack r k gamma :=
-        seqAtom_mem_hat inp.decay inp.hD P L inp.pack r k hgp gamma hne
+        seqAtom_mem_hat inp.decay inp.hD P L inp.pack r k gamma hne
       have hqBall : q ∈ Metric.ball y (4 * L.lamInf (gamma : Nat)) := by
         simpa only [NetLimitData.hatBall, hc] using hqHat
       have hlam : 0 < L.lamInf (gamma : Nat) :=
@@ -208,7 +208,6 @@ theorem MetricCompactnessInputs.weight_trans_small
 
 theorem MetricCompactnessInputs.pair_exp_maps_tail
     (inp : MetricCompactnessInputs (I := I) X)
-    (_hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -281,7 +280,6 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
 
 theorem MetricCompactnessInputs.pair_overlap_tail
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -314,7 +312,7 @@ theorem MetricCompactnessInputs.pair_overlap_tail
           (normalTransition (I := I) (X.obj (L.φ k)) x y) U ∧
         NormalOverlapOn (I := I) (X.obj (L.φ k)) x y U ∧
         Set.MapsTo (normalTransition (I := I) (X.obj (L.φ k)) x y) U Va := by
-  have hmaps := inp.pair_exp_maps_tail hradD hradRatio P L r α β hinter
+  have hmaps := inp.pair_exp_maps_tail hradRatio P L r α β hinter
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
     inp.normalRadius.radiusScaleTail inp.hD
@@ -387,7 +385,6 @@ theorem MetricCompactnessInputs.pair_overlap_tail
 
 theorem MetricCompactnessInputs.exists_pair_trans
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -450,9 +447,9 @@ theorem MetricCompactnessInputs.exists_pair_trans
           ((β i).1 : Nat) ((α i).1 : Nat) (L.φ k) :=
       (hinter i).mono fun _ hk =>
         BInter.symm inp.decay inp.D P L.lamInf hk
-    have hforward := inp.pair_overlap_tail hradD hradRatio P L r
+    have hforward := inp.pair_overlap_tail hradRatio P L r
       (α i) (β i) (hinter i)
-    have hreverse := inp.pair_overlap_tail hradD hradRatio P L r
+    have hreverse := inp.pair_overlap_tail hradRatio P L r
       (β i) (α i) hinterRev
     filter_upwards [hforward, hreverse] with k hf hr
     exact

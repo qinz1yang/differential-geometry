@@ -163,7 +163,7 @@ end Window
 section Transfer
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private theorem norm_sq_le_of_riemannianFiberNormSq_le
     (g : SmoothRiemannianMetric I M) {a b a' b' : ℕ}
     (X : SmoothCcTensor g a b) (Y : SmoothCcTensor g a' b') {K : ℝ}
@@ -469,7 +469,7 @@ theorem HasMoserTameBounds.symmetrization
     have := covariantJetNormSq_nonneg (I := I) (M := M) (m := n) g T
     linarith
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem sharpFlatEndomorphism_slot_zero
     (g g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g g₁ =
@@ -532,7 +532,7 @@ theorem HasMoserTameBounds.sharpFlatEndomorphism (g : SmoothRiemannianMetric I M
     intro n
     obtain ⟨Λ, Flow, hΛ, hFlow0, hFlow⟩ :=
       sharpFlatEndoCc_lowOrder_jetL2_radiusFree (I := I) (M := M) g
-        (2 * Module.finrank ℝ E + 10 + n) (by omega) hδ₀
+        (2 * Module.finrank ℝ E + 10 + n) hδ₀
         (Λ₀ := (Module.finrank ℝ E : ℝ) * δ₀)
         (mul_nonneg (Nat.cast_nonneg _) hδ₀0)
     refine ⟨Λ, Flow n, hΛ, hFlow0 n, ?_⟩
@@ -612,7 +612,7 @@ private lemma metricComparisonEndomorphism_unitModel
   rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM,
     ContinuousLinearMap.id_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [CompactSpace M] in
 private lemma metricComparisonEndomorphism_sub_decomposition
     (g g₁ : SmoothRiemannianMetric I M) :
@@ -880,15 +880,15 @@ theorem HasMoserTameBounds.ricciConnectionDifferenceTopOrderCoefficient
   exact happ T AT AD ST SD _ _ (hT T hTsup g₁ P hpert) (hD T g₁ P hpert)
 
 theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
-    (g g_bg : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
     ∃ (A : ℕ → ℝ) (S : ℝ),
       ∀ (T : SmoothCcTensor g 0 2) (g₁ : SmoothRiemannianMetric I M)
         (P : SmoothCcTensor g 0 2),
         IsControlledMetricPerturbation (I := I) (M := M) g g₁ P T δ₀ →
         HasMoserTameBounds (I := I) (M := M) g T A S
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g₁ -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g) := by
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g₁ -
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) := by
   obtain ⟨AG, SG, hG⟩ := HasMoserTameBounds.inverseMetricDifferenceCoefficient (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨CTp, hCTp0, hCTp⟩ :=
     traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
@@ -935,8 +935,8 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
         Finset.sum_range_one]
         using hCRp g₁ 0 x
     · simpa only [covariantJetNormSq] using hCRj g₁ i
-  have hdev : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g₁ -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g =
+  have hdev : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g₁ -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g =
       (reindexCoeffGen (I := I) (M := M) g 4 2
           (traceHessianCoeff (I := I) (M := M) g g₁ -
             traceHessianCoeff (I := I) (M := M) g g) ρA +
@@ -947,8 +947,8 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
           ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g) +
         (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g₁ -
           ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g)) := by
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g_bg g₁,
-      metricPrincipalDefect_reindex (I := I) (M := M) g g_bg g,
+    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g₁,
+      metricPrincipalDefect_reindex (I := I) (M := M) g g,
       reindexCoeffGen_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρA,
       reindexCoeffGen_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρAT]
     abel
@@ -1048,6 +1048,7 @@ private lemma convexPerturbation_zero (g : SmoothRiemannianMetric I M)
   simp [convexPerturbation]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricPerturbationPath_isControlledMetricPerturbation
     (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {δ₀ δ : ℝ} (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ δ₀)

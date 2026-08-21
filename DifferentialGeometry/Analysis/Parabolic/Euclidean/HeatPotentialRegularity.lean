@@ -82,6 +82,7 @@ private theorem heatD1LocalMajor_int {t : Real} (ht : 0 < t) (x : V) :
       (baseHeatMass V)⁻¹ * Real.exp (1 / 4 : Real))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem heatD1Maj_le_localMajor {t : Real} (ht : 0 < t)
     (x₀ y : V) {x : V} (hx : x ∈ Metric.ball x₀ (heatScale t)) :
     heatD1Maj t (x - y) ≤ heatD1LocalMajor (V := V) t x₀ y := by
@@ -208,6 +209,7 @@ private theorem heatD2LocalMajor_int {t : Real} (ht : 0 < t) (x : V) :
       (heatScale t)⁻¹ * (baseHeatMass V)⁻¹ * Real.exp (1 / 4 : Real))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem heatD2Maj_le_localMajor {t : Real} (ht : 0 < t)
     (x₀ y : V) {x : V} (hx : x ∈ Metric.ball x₀ (heatScale t)) :
     heatD2Maj t (x - y) ≤ heatD2LocalMajor (V := V) t x₀ y := by

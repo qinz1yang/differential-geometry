@@ -37,9 +37,6 @@ theorem BoundedGeometryNormalData.cov_comp_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (Vmetric U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
@@ -47,7 +44,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     {R S : Real} (hRS : R < S) (hSr : S < r)
     (e : Module.Basis (Fin (Module.finrank Real E)) Real E)
@@ -71,7 +68,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         let chiL := d.chart (Lphi.φ l)
           (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-        chiL.inv (stageComparisonMap inp P Lphi r hr hconn k l
+        chiL.inv (stageComparisonMap inp P Lphi r hr k l
           (chiK.hom z) (chart := d.chart))
     let B : LiveSlot L inp.pack r → Nat →
         E → (E →L[Real] E →L[Real] Real) := fun alpha k =>
@@ -142,7 +139,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
       let chiL := d.chart (Lphi.φ l)
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-      chiL.inv (stageComparisonMap inp P Lphi r hr hconn k l
+      chiL.inv (stageComparisonMap inp P Lphi r hr k l
         (chiK.hom z) (chart := d.chart))
   let B : LiveSlot L inp.pack r → Nat →
       E → (E →L[Real] E →L[Real] Real) := fun alpha k =>
@@ -281,7 +278,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
     have hQconv : MapCInfConvOnCompacts V
         (fun n => Q alpha (kn n) (ln n)) (gInf alpha) := by
       simpa only [V, W, Q, B, A, BoundedGeometryNormalData.chartMetric, Lphi] using
-        HasStageJetDataOn.pb_conv (I := I) inp P L hr phi hphi hconn
+        HasStageJetDataOn.pb_conv (I := I) inp P L hr phi hphi
           d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha V W
           hVopen hVcompact hVW hWint kn ln hkn hln hstay'
@@ -351,7 +348,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
     have hAconvW : MapCInfConvOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi hconn
+        HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi
           d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'
@@ -860,9 +857,6 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (Vmetric U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
@@ -870,7 +864,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     {R S : Real} (hRS : R < S) (hSr : S < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
@@ -891,7 +885,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
       letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
       letI : T2Space Yl.M := Yl.t2
       letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-      let F := stageComparisonMap inp P Lphi r hr hconn k l
+      let F := stageComparisonMap inp P Lphi r hr k l
         (chart := d.chart)
       ∀ (G : SmoothRiemannianMetric I Yk.M),
         (∀ y ∈ Lphi.hatSourceBall inp.decay P S k,
@@ -930,12 +924,12 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     rw [← mul_div_assoc, div_le_iff₀ hden]
     nlinarith
   obtain ⟨eta, heta, Ncomp, hcomp⟩ :=
-    d.cov_comp_tail inp P L hr phi hphi hconn
+    d.cov_comp_tail inp P L hr phi hphi
       Vmetric U C0 C1 aInf Jinf Jbarinf gInf hstage
       hRS hSr e p epsComp hepsComp
   obtain ⟨Njet, hjet⟩ := hstage.2.2.1 S hSr 0 1 (by norm_num)
   obtain ⟨Nloc, hloc⟩ :=
-    hstage.hloc_tail inp P L hr phi hphi hconn d.chart
+    hstage.hloc_tail inp P L hr phi hphi d.chart
       Vmetric U C0 C1 aInf Jinf Jbarinf gInf S hSr
   refine ⟨max Ncomp (max Njet Nloc), ?_⟩
   intro k hk l hl
@@ -956,7 +950,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
   letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
   letI : T2Space Yl.M := Yl.t2
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  let F := stageComparisonMap inp P Lphi r hr hconn k l
+  let F := stageComparisonMap inp P Lphi r hr k l
     (chart := d.chart)
   have hkComp : Ncomp ≤ k := (Nat.le_max_left _ _).trans hk
   have hlComp : Ncomp ≤ l := (Nat.le_max_left _ _).trans hl
@@ -1212,7 +1206,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -1237,7 +1231,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
       letI : T2Space Yl.M := Yl.t2
       letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
       letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-      let F := stageComparisonMap inp P Lphi r hr hconn k l
+      let F := stageComparisonMap inp P Lphi r hr k l
         (chart := d.chart)
       let Hinv := Function.invFunOn F (Metric.ball Yk.basepoint T)
       ∀ (G : SmoothRiemannianMetric I Yl.M),
@@ -1286,7 +1280,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
       Vmetric U C0 C1 aInf Jinf Jbarinf gInf hstage
       hRS hST hroom hVr e p epsComp hepsComp
   have hmove : ∀ alpha : LiveSlot L inp.pack r,
-      HasStageJetTail (I := I) inp P L hr phi hphi hconn C0 S 0
+      HasStageJetTail (I := I) inp P L hr phi hphi C0 S 0
         (eta alpha / 2) (chart := d.chart) := by
     intro alpha
     exact hstage.2.2.1 S hSr 0 (eta alpha / 2)
@@ -1295,7 +1289,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
   letI := Fintype.ofFinite (LiveSlot L inp.pack r)
   let NmoveAll : Nat := Finset.univ.sup Nmove
   obtain ⟨Nloc, hloc⟩ :=
-    hstage.hloc_tail inp P L hr phi hphi hconn d.chart
+    hstage.hloc_tail inp P L hr phi hphi d.chart
       Vmetric U C0 C1 aInf Jinf Jbarinf gInf T hTr
   obtain ⟨Ninj, hinj⟩ :=
     d.inj_tail inp P L hr phi hphi hcomplete hconn
@@ -1323,7 +1317,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
   letI : T2Space Yl.M := Yl.t2
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let F := stageComparisonMap inp P Lphi r hr hconn k l
+  let F := stageComparisonMap inp P Lphi r hr k l
     (chart := d.chart)
   let Hinv := Function.invFunOn F (Metric.ball Yk.basepoint T)
   have hkComp : Ncomp ≤ k := by dsimp only [N] at hk; omega

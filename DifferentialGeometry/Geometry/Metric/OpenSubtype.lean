@@ -51,7 +51,7 @@ variable [FiniteDimensional Real E]
 
 theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] :
+    [T2Space U] :
     letI : TopologicalSpace U := inferInstance
     letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := M) (s := U)
@@ -126,7 +126,7 @@ theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
 
 noncomputable def SmoothRiemannianMetric.restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] :
+    [T2Space U] :
     letI : TopologicalSpace U := inferInstance
     letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := M) (s := U)
@@ -142,7 +142,7 @@ noncomputable def SmoothRiemannianMetric.restrictOpen
 @[simp]
 theorem SmoothRiemannianMetric.restrictOpen_inner
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U]
+    [T2Space U]
     (x : U) (v w : TangentSpace I x) :
     letI : TopologicalSpace U := inferInstance
     letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
@@ -154,7 +154,7 @@ theorem SmoothRiemannianMetric.restrictOpen_inner
 
 noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
     {U V : TopologicalSpace.Opens M} (g : SmoothRiemannianMetric I U) (hVU : V ≤ U)
-    [SigmaCompactSpace V] [T2Space V] : SmoothRiemannianMetric I V where
+    [T2Space V] : SmoothRiemannianMetric I V where
   inner x := g.inner (TopologicalSpace.Opens.inclusion hVU x)
   symm x v w := g.symm (TopologicalSpace.Opens.inclusion hVU x) v w
   pos x v hv := g.pos (TopologicalSpace.Opens.inclusion hVU x) v hv
@@ -218,7 +218,7 @@ noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
 
 @[simp] theorem SmoothRiemannianMetric.restrictSubset_inner
     {U V : TopologicalSpace.Opens M} (g : SmoothRiemannianMetric I U) (hVU : V ≤ U)
-    [SigmaCompactSpace V] [T2Space V] (x : V) (v w : TangentSpace I x) :
+    [T2Space V] (x : V) (v w : TangentSpace I x) :
     (g.restrictOpenOfSubset (I := I) hVU).inner x v w =
       g.inner (TopologicalSpace.Opens.inclusion hVU x) v w := rfl
 
@@ -236,7 +236,7 @@ private theorem metric_eq_inner
 
 @[simp] theorem SmoothRiemannianMetric.restrictOpen_flat
     (g : SmoothRiemannianMetric I M) {U V : TopologicalSpace.Opens M} (hVU : V ≤ U)
-    [SigmaCompactSpace U] [T2Space U] [SigmaCompactSpace V] [T2Space V] :
+    [T2Space U] [T2Space V] :
     (g.restrictOpen (I := I) U).restrictOpenOfSubset (I := I) hVU =
       g.restrictOpen (I := I) V := by
   apply metric_eq_inner

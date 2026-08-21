@@ -255,7 +255,7 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β_unconditional
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ :=
     eigenvector_chartComponent_perK_from_uniform_β_unconditional
-      (I := I) (M := M) g r s N CN hCN_nn eN hCN_bd α P K' hK' i
+      (I := I) (M := M) g r s N CN eN hCN_bd α P K' hK' i
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
     rw [Real.enorm_eq_ofReal hμ_pos.le]
@@ -479,7 +479,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β_unconditional
       ≤ iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
         (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
           g r s i α P) Ω :=
-    wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) K' hΩ_open
+    wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) K'
       (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
         g r s i α P) k
   have h_eig_bd : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
@@ -491,7 +491,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β_unconditional
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ :=
     eigenvector_chartComponent_perK_from_uniform_β_unconditional
-      (I := I) (M := M) g r s N CN hCN_nn eN hCN_bd α P (K' + 1) hK' i
+      (I := I) (M := M) g r s N CN eN hCN_bd α P (K' + 1) hK' i
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
     rw [Real.enorm_eq_ofReal hμ_pos.le]
@@ -818,7 +818,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β_unconditional
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
-    wkpNorm_chosenWeakPartial_le (d := d) K' hΩ_open
+    wkpNorm_chosenWeakPartial_le (d := d) K'
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -858,7 +858,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β_unconditional
               g r s) i‖ := by
     intro β Q
     exact eigenvector_chartComponent_perK_from_uniform_β_unconditional
-      (I := I) (M := M) g r s N CN hCN_nn eN hCN_bd β Q (K' + 1) hK' i
+      (I := I) (M := M) g r s N CN eN hCN_bd β Q (K' + 1) hK' i
   set RHS_each : ℝ≥0∞ := ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
     ENNReal.ofReal ‖tensorResolventEigenbasisVec (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M)

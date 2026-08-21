@@ -23,6 +23,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [T2Space M] [SigmaCompactSpace M]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
+omit [SigmaCompactSpace M] in
 theorem scalar_le_of_rm
     {S : SolutionOn (I := I) (M := M) D}
     {time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D}

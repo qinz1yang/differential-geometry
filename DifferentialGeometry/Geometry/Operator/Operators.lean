@@ -635,6 +635,7 @@ theorem divergence_zero
 
 omit [FiniteDimensional ℝ E]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+@[nolint unusedArguments]
 theorem divergence_add
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (_hVB : VectorBundle ℝ E (TangentSpace I : M → Type _))
@@ -649,6 +650,7 @@ theorem divergence_add
 
 omit [FiniteDimensional ℝ E]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+@[nolint unusedArguments]
 theorem divergence_const_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (_hVB : VectorBundle ℝ E (TangentSpace I : M → Type _))
@@ -662,6 +664,7 @@ theorem divergence_const_smul
   simp
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+@[nolint unusedArguments]
 theorem divergence_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (_hVB : VectorBundle ℝ E (TangentSpace I : M → Type _))

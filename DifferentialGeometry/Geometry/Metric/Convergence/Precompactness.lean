@@ -1368,7 +1368,7 @@ theorem chartGram_pou_d1
 
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_d2
-    [NeZero (Module.finrank Real E)] [CompactSpace M]
+    [CompactSpace M]
     {ι : Type*}
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -1428,7 +1428,7 @@ theorem chartGram_pou_d2
 
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_d3
-    [NeZero (Module.finrank Real E)] [CompactSpace M]
+    [CompactSpace M]
     {ι : Type*}
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)

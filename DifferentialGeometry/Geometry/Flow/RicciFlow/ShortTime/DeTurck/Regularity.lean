@@ -28,7 +28,7 @@ theorem maxreg_solution_in_c1_via_sobolev_embedding
     (T : ℝ) (g_DT : ℝ → SmoothRiemannianMetric I M)
     (_hsol : IsQuasilinearMetricParabolicSolution (I := I)
               (deTurckRicciRHS (I := I) g_bg) (g_DT 0) T g_DT)
-    (_h_super : 2 * 3 > Module.finrank ℝ E + 2 * 1) :
+    :
     ∀ x : M, ∀ v w : TangentSpace I x,
       ContinuousOn (fun t : ℝ => (g_DT t).inner x v w)
         (Set.Ico (0 : ℝ) T) := by
@@ -62,9 +62,6 @@ omit [SigmaCompactSpace M] in
 theorem deturck_vf_continuous_in_c1_input
     (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (g_DT : ℝ → SmoothRiemannianMetric I M)
-    (_h_metric_cont : ∀ x : M, ∀ v w : TangentSpace I x,
-      ContinuousOn (fun t : ℝ => (g_DT t).inner x v w)
-        (Set.Ico (0 : ℝ) T))
     (h_pointwise_vf : ∀ x : M,
       ContinuousOn
         (fun t : ℝ =>

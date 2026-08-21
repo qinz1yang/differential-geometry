@@ -54,7 +54,7 @@ noncomputable def pathIntegralLowerScaleActionCoefficients
     LowerScaleActionCoefficients g where
   zeroOrderCoefficient := affineLowOrderZeroCoefficientPathIntegral (I := I) (M := M)
       g T hT hδ_lt hδ hδZ +
-    metricPrincipalDefectCurvCoeff (I := I) g g g
+    metricPrincipalDefectCurvCoeff (I := I) g g
   firstOrderCoefficient := lowOrderFirstDerivativePathIntegral (I := I) (M := M) g T hδ_lt hδ hδZ +
     ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M)
       g g T 0 hδ_lt hδ hδ_lt hδZ
@@ -85,7 +85,7 @@ theorem exists_pathIntegralLowerScaleZeroCoefficient_covariantJetNormSq_two_boun
   obtain ⟨ρ, Bz, hρ, hBz, hz⟩ :=
     exists_affineLowOrderZeroCoefficientPathIntegral_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
   let J : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (metricPrincipalDefectCurvCoeff (I := I) g g g)
+    (metricPrincipalDefectCurvCoeff (I := I) g g)
   let L : ℝ → ℝ := fun R => 2 * (Bz R ^ 2 + J)
   let B : ℝ → ℝ := fun R => Real.sqrt (L R)
   have hJ : 0 ≤ J := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _
@@ -103,7 +103,7 @@ theorem exists_pathIntegralLowerScaleZeroCoefficient_covariantJetNormSq_two_boun
           (affineLowOrderZeroCoefficientPathIntegral (I := I) (M := M) g T hT
             (lt_of_le_of_lt hδ_le (by norm_num)) hδT hδZ) +
         covariantJetNormSq (I := I) (M := M) g 2
-          (metricPrincipalDefectCurvCoeff (I := I) g g g)) ≤
+          (metricPrincipalDefectCurvCoeff (I := I) g g)) ≤
       2 * (Bz R ^ 2 + J) :=
         mul_le_mul_of_nonneg_left (add_le_add hzero le_rfl) (by norm_num)
     _ = L R := by rfl
@@ -390,7 +390,7 @@ noncomputable def affineLowerScaleActionCoefficients
     LowerScaleActionCoefficients g where
   zeroOrderCoefficient := affineLowOrderZeroCoefficientPathIntegral (I := I) (M := M)
       g T hT hδ_lt hδ hδZ +
-    metricPrincipalDefectCurvCoeff (I := I) g g g
+    metricPrincipalDefectCurvCoeff (I := I) g g
   firstOrderCoefficient := lowOrderFirstDerivativePathIntegral (I := I) (M := M) g T hδ_lt hδ hδZ
   secondOrderCoefficient := 0
 

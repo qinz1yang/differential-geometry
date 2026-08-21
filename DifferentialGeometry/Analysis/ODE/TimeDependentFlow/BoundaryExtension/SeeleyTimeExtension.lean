@@ -263,7 +263,7 @@ theorem seeley_time_extend
     intro α
     have hgK : ContDiffOn ℝ ∞ (Function.uncurry (g α)) (Set.Icc (0:ℝ) T ×ˢ K α) :=
       (hgC α).mono (Set.prod_mono_right (hKtgt α))
-    exact DifferentialGeometry.Analysis.borel_interval_extend_param (g α) T hT (K α) (hKcompact α)
+    exact DifferentialGeometry.Analysis.borel_interval_extend_param (g α) T hT (K α)
       (extChartAt I α α) (hKint α) hgK
   choose gext V hVnhds hgextC hgextEq using hborel
   have hVoexists : ∀ α : M, ∃ Vo : Set E, IsOpen Vo ∧ extChartAt I α α ∈ Vo ∧

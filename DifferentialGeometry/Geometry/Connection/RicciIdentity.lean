@@ -25,8 +25,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 
-def nablaDualEval {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V]
-    (act : V -> R -> R) (conn : V -> V -> V)
+def nablaDualEval {R V : Type*} [CommRing R] (act : V -> R -> R) (conn : V -> V -> V)
     (X : V) (alpha : V -> R) (Y : V) : R :=
   act X (alpha Y) - alpha (conn X Y)
 

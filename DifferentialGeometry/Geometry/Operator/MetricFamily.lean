@@ -453,7 +453,6 @@ theorem driftTerm_eq_zero_at_spatial_min
     (I := I) G t X hmin BoundarylessManifold.isInteriorPoint hf
 
 def laplacianNonnegativeAtSpatialMinFamily
-    [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Time) : Prop :=
   forall t : Time,

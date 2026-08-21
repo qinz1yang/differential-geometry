@@ -362,6 +362,7 @@ theorem ricciDeTurckLowOrderAction_pairing_upper_bound [Nonempty M]
   nlinarith only [hp, hs2]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [CompactSpace M] in
 private theorem edge_l2_of_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (ra sa rb sb : Nat)
     (A : SmoothCcTensor g ra sa) (B : SmoothCcTensor g rb sb)

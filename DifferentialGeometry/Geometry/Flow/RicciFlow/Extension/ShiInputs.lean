@@ -258,7 +258,7 @@ private theorem ric_quad_le_of_rm04
   rw [← metricRicciAt_apply_eq_ricciTensor g x v v]
   exact hquad
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ric_quad_le_of_realizes
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm04sec : Tensor04Section (I := I) (M := M))
@@ -368,7 +368,7 @@ theorem chartGram_cont_of_soln
   rw [Tensor0SBundle.metricTensorField_apply]
   simp [Integral.Measure.chartGramMatrix_apply, SolutionOn.family]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ric_quad_le_of_soln
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
@@ -448,13 +448,13 @@ theorem shiCovBound_of_soln
           HasDerivAt
             (fun r : ℝ => metricCovDeriv (I := I) (gSeq i r) gRef q x v)
             (((-2 : ℝ) • nablaRicReal (I := I) gSeq gRef q i s x) v) s := by
-    intro ψ hψ q _hq1 _hq3
-    exact hevComp_of_solutions (I := I) (K := Set.univ) (β := t₂) (ψ := ψ) (N := q)
+    intro ψ hψ q _hq1 _hq3 i x _hx
+    exact (hevComp_of_solutions (I := I) (β := t₂) (ψ := ψ) (N := q)
       (fun _ => D) (fun _ => S) (fun _ => _hS) (fun _ _ => rfl)
       (fun _ t ht => by
         change t ∈ Set.Ioo alpha omega
         exact ⟨lt_of_lt_of_le hαt₂ ht.1, lt_of_le_of_lt ht.2 hψ.2⟩)
-      (fun _ p hp V x₀ => solnTowerSwap_reg (I := I) gRef S _hS q hDreg p hp V x₀)
+      (fun _ p hp V x₀ => solnTowerSwap_reg (I := I) gRef S _hS q hDreg p hp V x₀)) i x
   obtain ⟨initC, hinitC0, hinit⟩ := exists_initC (I := I) (S.base.metric t₂) gRef
   have htime : ∀ t ∈ Set.Ico t₂ omega, |t - t₂| ≤ omega - t₂ := by
     intro t ht

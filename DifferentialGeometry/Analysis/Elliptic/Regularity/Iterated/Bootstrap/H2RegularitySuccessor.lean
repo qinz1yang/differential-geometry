@@ -59,21 +59,21 @@ theorem laplacianDomainPow_two_h2_plus_rhs_h2
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 2 2
+        (I := I) (M := M) 2 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 2 2
+        (I := I) (M := M) 2 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤) ∧
     (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 2 2
+        (I := I) (M := M) 2 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 2 2
+        (I := I) (M := M) 2 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
@@ -100,11 +100,11 @@ theorem laplacianDomainPow_two_iterated_h2
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((laplacianDomain.preimage (I := I) (M := M) g
           ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
             (I := I) (M := M) g 1 hu_h⟩ :

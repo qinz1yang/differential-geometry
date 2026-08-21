@@ -54,7 +54,7 @@ structure SrcCovLipData
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y ≤ Cq
+                (refRes (I := I) Φ R k) y ≤ Cq
 
   lip :
     letI : TopologicalSpace P.M := P.topology
@@ -80,13 +80,13 @@ structure SrcCovLipData
               metricDerivNorm (I := I) q
                   (srcMetric (I := I) Φ hsrc htgt k s)
                   (srcMetric (I := I) Φ hsrc htgt k t)
-                  (refRes (I := I) Φ R hsrc k) y ≤ Lp * |s - t|
+                  (refRes (I := I) Φ R k) y ≤ Lp * |s - t|
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
 theorem covRic0_le
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M]
+    [IsManifold I ∞ M]
     (gSeq : Nat → Real → SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
     {i : Nat} {t B K : Real}
@@ -175,7 +175,6 @@ theorem srcCovLip_of_flow
         sourceDomSigmaOf (I := I) Φ k (hsrc k)
       (S k).family.metric r = srcMetric (I := I) Φ hsrc htgt k r)
     {β ψ t₀ : ℝ}
-    (_hβψ : β ≤ ψ)
     (ht₀ : t₀ ∈ Set.Icc β ψ)
     (hreg : ∀ k : Nat, Set.Icc β ψ ⊆ (D k).regular)
     (Bmax : ℝ) (hBmax : 1 ≤ Bmax)
@@ -199,7 +198,7 @@ theorem srcCovLip_of_flow
         ∀ t : ℝ, t ∈ Set.Icc β ψ →
           MetricUniformEquivalentOn (I := I)
             (Set.univ : Set (SourceDomain (I := I) Φ k))
-            (refRes (I := I) Φ R hsrc k)
+            (refRes (I := I) Φ R k)
             (srcMetric (I := I) Φ hsrc htgt k t) Bmax)
     (hShi :
       letI : TopologicalSpace P.M := P.topology
@@ -243,7 +242,7 @@ theorem srcCovLip_of_flow
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k t₀)
-                (refRes (I := I) Φ R hsrc k) y ≤ Cq) :
+                (refRes (I := I) Φ R k) y ≤ Cq) :
     SrcCovLipData (I := I) Φ R hsrc htgt β ψ := by
   classical
   letI : TopologicalSpace P.M := P.topology
@@ -267,7 +266,7 @@ theorem srcCovLip_of_flow
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) 0
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y ≤ C0) ∧
+                (refRes (I := I) Φ R k) y ≤ C0) ∧
       (∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
           sourceDomTop (I := I) Φ k
@@ -283,11 +282,11 @@ theorem srcCovLip_of_flow
           ∀ y : SourceDomain (I := I) Φ k,
             Real.sqrt
                 (Tensor0SBundle.normSq0S (I := I)
-                  (refRes (I := I) Φ R hsrc k) y 2
+                  (refRes (I := I) Φ R k) y 2
                   ((-2 : ℝ) •
                     nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) 0 0 t y)) ≤ L0) := by
+                      (refRes (I := I) Φ R k) 0 0 t y)) ≤ L0) := by
     obtain ⟨K0, hK0, hShi0⟩ := hShi 0
     refine ⟨Bmax * Real.sqrt (Module.finrank ℝ E : ℝ),
       2 * (Real.sqrt (Bmax ^ 2) * K0), ?_, ?_, ?_, ?_⟩
@@ -309,7 +308,7 @@ theorem srcCovLip_of_flow
       exact
         (covRic0_le (I := I)
           (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-          (refRes (I := I) Φ R hsrc k) (i := 0) (t := t)
+          (refRes (I := I) Φ R k) (i := 0) (t := t)
           (B := Bmax) (K := K0) hBmax (hequiv k t ht) y
           (hShi0 k 0 le_rfl 0 t ht y (Set.mem_univ y))).1
     · intro k
@@ -327,7 +326,7 @@ theorem srcCovLip_of_flow
       exact
         (covRic0_le (I := I)
           (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-          (refRes (I := I) Φ R hsrc k) (i := 0) (t := t)
+          (refRes (I := I) Φ R k) (i := 0) (t := t)
           (B := Bmax) (K := K0) hBmax (hequiv k t ht) y
           (hShi0 k 0 le_rfl 0 t ht y (Set.mem_univ y))).2
   have hcore : ∀ q : Nat, ∃ Cq Lq : ℝ, 0 ≤ Cq ∧ 0 ≤ Lq ∧
@@ -346,7 +345,7 @@ theorem srcCovLip_of_flow
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y ≤ Cq) ∧
+                (refRes (I := I) Φ R k) y ≤ Cq) ∧
       (∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
           sourceDomTop (I := I) Φ k
@@ -362,11 +361,11 @@ theorem srcCovLip_of_flow
           ∀ y : SourceDomain (I := I) Φ k,
             Real.sqrt
                 (Tensor0SBundle.normSq0S (I := I)
-                  (refRes (I := I) Φ R hsrc k) y (q + 2)
+                  (refRes (I := I) Φ R k) y (q + 2)
                   ((-2 : ℝ) •
                     nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤ Lq) := by
+                      (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq) := by
     intro q
     induction q using Nat.strong_induction_on with
     | _ q ih =>
@@ -417,7 +416,7 @@ theorem srcCovLip_of_flow
                 ∀ y : SourceDomain (I := I) Φ k,
                   metricCovDerivNorm (I := I) q
                       (srcMetric (I := I) Φ hsrc htgt k t)
-                      (refRes (I := I) Φ R hsrc k) y ≤ Cq := by
+                      (refRes (I := I) Φ R k) y ≤ Cq := by
           intro k
           letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
@@ -443,31 +442,30 @@ theorem srcCovLip_of_flow
               (D k).regular ∈ nhds r :=
             fun {r} hr => (D k).regular_isOpen.mem_nhds hr
           have hev := hevComp_of_solutions (I := I)
-            (K := (Set.univ : Set (SourceDomain (I := I) Φ k)))
             (β := β) (ψ := ψ)
             (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-            (gRef := refRes (I := I) Φ R hsrc k) (N := q)
+            (gRef := refRes (I := I) Φ R k) (N := q)
             (fun _ ↦ D k)
             (fun _ ↦ S k)
             (fun _ ↦ hS k)
             (fun _ r ↦ hmet k r)
             (fun _ ↦ hreg k)
             (fun _ p' hp V x₀ ↦
-              solnTowerSwap_reg (I := I) (refRes (I := I) Φ R hsrc k)
+              solnTowerSwap_reg (I := I) (refRes (I := I) Φ R k)
                 (S k) (hS k)
                 q hDreg p' hp V x₀)
           have hstage := covOrderBound_stage_on (I := I)
             (U := (Set.univ : Set (SourceDomain (I := I) Φ k)))
             (β := β) (ψ := ψ) (t0 := t₀)
             (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-            (gRef := refRes (I := I) Φ R hsrc k)
+            (gRef := refRes (I := I) Φ R k)
             isOpen_univ q hq_pos Bmax hBmax
             (fun _ t ht ↦ hequiv k t ht) Cg
             (fun r _hr1 hrq _ t ht y _hy => by
               simpa only [Cg, dif_pos hrq] using
                 hcovPrev ⟨r, hrq⟩ k t ht y)
             Kq hKq0 (hShiQ k) ht₀
-            (fun i y _hy t ht v => hev i y (Set.mem_univ y) t ht v)
+            (fun i y _hy t ht v => hev i y t ht v)
             initC hinitC0 (fun _ y _hy => hinitQ k y)
             (ψ - β) htime
           intro t ht y
@@ -489,11 +487,11 @@ theorem srcCovLip_of_flow
                 ∀ y : SourceDomain (I := I) Φ k,
                   Real.sqrt
                       (Tensor0SBundle.normSq0S (I := I)
-                        (refRes (I := I) Φ R hsrc k) y (q + 2)
+                        (refRes (I := I) Φ R k) y (q + 2)
                         ((-2 : ℝ) •
                           nablaRicReal (I := I)
                             (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                            (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤ Lq := by
+                            (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq := by
           intro k
           letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
@@ -520,21 +518,21 @@ theorem srcCovLip_of_flow
           have hfield :
               Real.sqrt
                   (Tensor0SBundle.normSq0S (I := I)
-                    (refRes (I := I) Φ R hsrc k) y (q + 2)
+                    (refRes (I := I) Φ R k) y (q + 2)
                     (nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤
+                      (refRes (I := I) Φ R k) q 0 t y)) ≤
                 coeff.slope *
                     metricCovDerivNorm (I := I) q
                       (srcMetric (I := I) Φ hsrc htgt k t)
-                      (refRes (I := I) Φ R hsrc k) y +
+                      (refRes (I := I) Φ R k) y +
                   coeff.offset := by
             simpa only [coeff] using
               ric_bound_field_on (I := I)
                 (U := (Set.univ : Set (SourceDomain (I := I) Φ k)))
                 (β := β) (ψ := ψ)
                 (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                (gRef := refRes (I := I) Φ R hsrc k)
+                (gRef := refRes (I := I) Φ R k)
                 isOpen_univ q hq_pos Bmax hBmax
                 (fun _ t' ht' ↦ hequiv k t' ht') Cg
                 (fun r _hr1 hrq _ t' ht' y' _hy' => by
@@ -544,10 +542,10 @@ theorem srcCovLip_of_flow
           have hbase :
               Real.sqrt
                   (Tensor0SBundle.normSq0S (I := I)
-                    (refRes (I := I) Φ R hsrc k) y (q + 2)
+                    (refRes (I := I) Φ R k) y (q + 2)
                     (nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤
+                      (refRes (I := I) Φ R k) q 0 t y)) ≤
                 coeff.slope * Cq + coeff.offset :=
             hfield.trans <|
               by
@@ -582,11 +580,11 @@ theorem srcCovLip_of_flow
             ∀ y : SourceDomain (I := I) Φ k,
               Real.sqrt
                   (Tensor0SBundle.normSq0S (I := I)
-                    (refRes (I := I) Φ R hsrc k) y (q + 2)
+                    (refRes (I := I) Φ R k) y (q + 2)
                     ((-2 : ℝ) •
                       nablaRicReal (I := I)
                         (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                        (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤ Lq := by
+                        (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq := by
       intro q
       obtain ⟨_Cq, Lq, _hCq, hLq, _hcov, hric⟩ := hcore q
       exact ⟨Lq, hLq, hric⟩
@@ -621,32 +619,31 @@ theorem srcCovLip_of_flow
     have hDreg : ∀ {r : ℝ}, r ∈ (D k).regular → (D k).regular ∈ nhds r :=
       fun {r} hr => (D k).regular_isOpen.mem_nhds hr
     have hev := hevComp_of_solutions (I := I)
-      (K := (Set.univ : Set (SourceDomain (I := I) Φ k)))
       (β := β) (ψ := ψ)
       (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-      (gRef := refRes (I := I) Φ R hsrc k) (N := q)
+      (gRef := refRes (I := I) Φ R k) (N := q)
       (fun _ ↦ D k)
       (fun _ ↦ S k)
       (fun _ ↦ hS k)
       (fun _ r ↦ hmet k r)
       (fun _ ↦ hreg k)
       (fun _ p' hp V x₀ ↦
-        solnTowerSwap_reg (I := I) (refRes (I := I) Φ R hsrc k)
+        solnTowerSwap_reg (I := I) (refRes (I := I) Φ R k)
           (S k) (hS k)
           q hDreg p' hp V x₀)
     have hqLip : metricDerivNorm (I := I) q
           (srcMetric (I := I) Φ hsrc htgt k s)
           (srcMetric (I := I) Φ hsrc htgt k t)
-          (refRes (I := I) Φ R hsrc k) y ≤ Lq q * |s - t| := by
+          (refRes (I := I) Φ R k) y ≤ Lq q * |s - t| := by
       exact timeLipschitz_of_hasDerivAt (I := I)
-        (refRes (I := I) Φ R hsrc k) q
+        (refRes (I := I) Φ R k) q
         (fun t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
         (fun t' y' ↦ (-2 : ℝ) •
           nablaRicReal (I := I)
             (fun _ r ↦ srcMetric (I := I) Φ hsrc htgt k r)
-            (refRes (I := I) Φ R hsrc k) q 0 t' y')
+            (refRes (I := I) Φ R k) q 0 t' y')
         Set.univ β ψ (Lq q)
-        (fun y' _hy' t' ht' v ↦ hev 0 y' (Set.mem_univ y') t' ht' v)
+        (fun y' _hy' t' ht' v ↦ hev 0 y' t' ht' v)
         (fun y' _hy' t' ht' ↦ hric q k t' ht' y')
         s hs t ht y (Set.mem_univ y)
     have hqmem : q ∈ Finset.range (p + 1) :=
@@ -667,7 +664,6 @@ theorem srcCovLip_of_soln
       SmoothRiemannianMetric I P.M)
     (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
     {β ψ t₀ : ℝ}
-    (_hβψ : β ≤ ψ)
     (ht₀ : t₀ ∈ Set.Icc β ψ)
     (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (Bmax : ℝ) (hBmax : 1 ≤ Bmax)
@@ -691,7 +687,7 @@ theorem srcCovLip_of_soln
         ∀ t : ℝ, t ∈ Set.Icc β ψ →
           MetricUniformEquivalentOn (I := I)
             (Set.univ : Set (SourceDomain (I := I) Φ k))
-            (refRes (I := I) Φ R hsrc k)
+            (refRes (I := I) Φ R k)
             (srcMetric (I := I) Φ hsrc htgt k t) Bmax)
     (hShi :
       letI : TopologicalSpace P.M := P.topology
@@ -735,7 +731,7 @@ theorem srcCovLip_of_soln
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k t₀)
-                (refRes (I := I) Φ R hsrc k) y ≤ Cq) :
+                (refRes (I := I) Φ R k) y ≤ Cq) :
     SrcCovLipData (I := I) Φ R hsrc htgt β ψ := by
   classical
   letI : TopologicalSpace P.M := P.topology
@@ -759,7 +755,7 @@ theorem srcCovLip_of_soln
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) 0
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y ≤ C0) ∧
+                (refRes (I := I) Φ R k) y ≤ C0) ∧
       (∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
           sourceDomTop (I := I) Φ k
@@ -775,11 +771,11 @@ theorem srcCovLip_of_soln
           ∀ y : SourceDomain (I := I) Φ k,
             Real.sqrt
                 (Tensor0SBundle.normSq0S (I := I)
-                  (refRes (I := I) Φ R hsrc k) y 2
+                  (refRes (I := I) Φ R k) y 2
                   ((-2 : ℝ) •
                     nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) 0 0 t y)) ≤ L0) := by
+                      (refRes (I := I) Φ R k) 0 0 t y)) ≤ L0) := by
     obtain ⟨K0, hK0, hShi0⟩ := hShi 0
     refine ⟨Bmax * Real.sqrt (Module.finrank ℝ E : ℝ),
       2 * (Real.sqrt (Bmax ^ 2) * K0), ?_, ?_, ?_, ?_⟩
@@ -801,7 +797,7 @@ theorem srcCovLip_of_soln
       exact
         (covRic0_le (I := I)
           (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-          (refRes (I := I) Φ R hsrc k) (i := 0) (t := t)
+          (refRes (I := I) Φ R k) (i := 0) (t := t)
           (B := Bmax) (K := K0) hBmax (hequiv k t ht) y
           (hShi0 k 0 le_rfl 0 t ht y (Set.mem_univ y))).1
     · intro k
@@ -819,7 +815,7 @@ theorem srcCovLip_of_soln
       exact
         (covRic0_le (I := I)
           (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-          (refRes (I := I) Φ R hsrc k) (i := 0) (t := t)
+          (refRes (I := I) Φ R k) (i := 0) (t := t)
           (B := Bmax) (K := K0) hBmax (hequiv k t ht) y
           (hShi0 k 0 le_rfl 0 t ht y (Set.mem_univ y))).2
   have hcore : ∀ q : Nat, ∃ Cq Lq : ℝ, 0 ≤ Cq ∧ 0 ≤ Lq ∧
@@ -838,7 +834,7 @@ theorem srcCovLip_of_soln
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y ≤ Cq) ∧
+                (refRes (I := I) Φ R k) y ≤ Cq) ∧
       (∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
           sourceDomTop (I := I) Φ k
@@ -854,11 +850,11 @@ theorem srcCovLip_of_soln
           ∀ y : SourceDomain (I := I) Φ k,
             Real.sqrt
                 (Tensor0SBundle.normSq0S (I := I)
-                  (refRes (I := I) Φ R hsrc k) y (q + 2)
+                  (refRes (I := I) Φ R k) y (q + 2)
                   ((-2 : ℝ) •
                     nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤ Lq) := by
+                      (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq) := by
     intro q
     induction q using Nat.strong_induction_on with
     | _ q ih =>
@@ -909,7 +905,7 @@ theorem srcCovLip_of_soln
                 ∀ y : SourceDomain (I := I) Φ k,
                   metricCovDerivNorm (I := I) q
                       (srcMetric (I := I) Φ hsrc htgt k t)
-                      (refRes (I := I) Φ R hsrc k) y ≤ Cq := by
+                      (refRes (I := I) Φ R k) y ≤ Cq := by
           intro k
           letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
@@ -935,17 +931,16 @@ theorem srcCovLip_of_soln
               X.D.regular ∈ nhds r :=
             fun {r} hr => X.D.regular_isOpen.mem_nhds hr
           have hev := hevComp_of_solutions (I := I)
-            (K := (Set.univ : Set (SourceDomain (I := I) Φ k)))
             (β := β) (ψ := ψ)
             (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-            (gRef := refRes (I := I) Φ R hsrc k) (N := q)
+            (gRef := refRes (I := I) Φ R k) (N := q)
             (fun _ ↦ X.D)
             (fun _ ↦ sourceFlow (I := I) Φ k (hsrc k) (htgt k))
             (fun _ ↦ isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k))
             (fun _ _ ↦ rfl)
             (fun _ ↦ hwin)
             (fun _ p' hp V x₀ ↦
-              solnTowerSwap_reg (I := I) (refRes (I := I) Φ R hsrc k)
+              solnTowerSwap_reg (I := I) (refRes (I := I) Φ R k)
                 (sourceFlow (I := I) Φ k (hsrc k) (htgt k))
                 (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k))
                 q hDreg p' hp V x₀)
@@ -953,14 +948,14 @@ theorem srcCovLip_of_soln
             (U := (Set.univ : Set (SourceDomain (I := I) Φ k)))
             (β := β) (ψ := ψ) (t0 := t₀)
             (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-            (gRef := refRes (I := I) Φ R hsrc k)
+            (gRef := refRes (I := I) Φ R k)
             isOpen_univ q hq_pos Bmax hBmax
             (fun _ t ht ↦ hequiv k t ht) Cg
             (fun r _hr1 hrq _ t ht y _hy => by
               simpa only [Cg, dif_pos hrq] using
                 hcovPrev ⟨r, hrq⟩ k t ht y)
             Kq hKq0 (hShiQ k) ht₀
-            (fun i y _hy t ht v => hev i y (Set.mem_univ y) t ht v)
+            (fun i y _hy t ht v => hev i y t ht v)
             initC hinitC0 (fun _ y _hy => hinitQ k y)
             (ψ - β) htime
           intro t ht y
@@ -982,11 +977,11 @@ theorem srcCovLip_of_soln
                 ∀ y : SourceDomain (I := I) Φ k,
                   Real.sqrt
                       (Tensor0SBundle.normSq0S (I := I)
-                        (refRes (I := I) Φ R hsrc k) y (q + 2)
+                        (refRes (I := I) Φ R k) y (q + 2)
                         ((-2 : ℝ) •
                           nablaRicReal (I := I)
                             (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                            (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤ Lq := by
+                            (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq := by
           intro k
           letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
@@ -1013,21 +1008,21 @@ theorem srcCovLip_of_soln
           have hfield :
               Real.sqrt
                   (Tensor0SBundle.normSq0S (I := I)
-                    (refRes (I := I) Φ R hsrc k) y (q + 2)
+                    (refRes (I := I) Φ R k) y (q + 2)
                     (nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤
+                      (refRes (I := I) Φ R k) q 0 t y)) ≤
                 coeff.slope *
                     metricCovDerivNorm (I := I) q
                       (srcMetric (I := I) Φ hsrc htgt k t)
-                      (refRes (I := I) Φ R hsrc k) y +
+                      (refRes (I := I) Φ R k) y +
                   coeff.offset := by
             simpa only [coeff] using
               ric_bound_field_on (I := I)
                 (U := (Set.univ : Set (SourceDomain (I := I) Φ k)))
                 (β := β) (ψ := ψ)
                 (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                (gRef := refRes (I := I) Φ R hsrc k)
+                (gRef := refRes (I := I) Φ R k)
                 isOpen_univ q hq_pos Bmax hBmax
                 (fun _ t' ht' ↦ hequiv k t' ht') Cg
                 (fun r _hr1 hrq _ t' ht' y' _hy' => by
@@ -1037,10 +1032,10 @@ theorem srcCovLip_of_soln
           have hbase :
               Real.sqrt
                   (Tensor0SBundle.normSq0S (I := I)
-                    (refRes (I := I) Φ R hsrc k) y (q + 2)
+                    (refRes (I := I) Φ R k) y (q + 2)
                     (nablaRicReal (I := I)
                       (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                      (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤
+                      (refRes (I := I) Φ R k) q 0 t y)) ≤
                 coeff.slope * Cq + coeff.offset :=
             hfield.trans <|
               by
@@ -1075,11 +1070,11 @@ theorem srcCovLip_of_soln
             ∀ y : SourceDomain (I := I) Φ k,
               Real.sqrt
                   (Tensor0SBundle.normSq0S (I := I)
-                    (refRes (I := I) Φ R hsrc k) y (q + 2)
+                    (refRes (I := I) Φ R k) y (q + 2)
                     ((-2 : ℝ) •
                       nablaRicReal (I := I)
                         (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-                        (refRes (I := I) Φ R hsrc k) q 0 t y)) ≤ Lq := by
+                        (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq := by
       intro q
       obtain ⟨_Cq, Lq, _hCq, hLq, _hcov, hric⟩ := hcore q
       exact ⟨Lq, hLq, hric⟩
@@ -1114,33 +1109,32 @@ theorem srcCovLip_of_soln
     have hDreg : ∀ {r : ℝ}, r ∈ X.D.regular → X.D.regular ∈ nhds r :=
       fun {r} hr => X.D.regular_isOpen.mem_nhds hr
     have hev := hevComp_of_solutions (I := I)
-      (K := (Set.univ : Set (SourceDomain (I := I) Φ k)))
       (β := β) (ψ := ψ)
       (gSeq := fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
-      (gRef := refRes (I := I) Φ R hsrc k) (N := q)
+      (gRef := refRes (I := I) Φ R k) (N := q)
       (fun _ ↦ X.D)
       (fun _ ↦ sourceFlow (I := I) Φ k (hsrc k) (htgt k))
       (fun _ ↦ isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k))
       (fun _ _ ↦ rfl)
       (fun _ ↦ hwin)
       (fun _ p' hp V x₀ ↦
-        solnTowerSwap_reg (I := I) (refRes (I := I) Φ R hsrc k)
+        solnTowerSwap_reg (I := I) (refRes (I := I) Φ R k)
           (sourceFlow (I := I) Φ k (hsrc k) (htgt k))
           (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k))
           q hDreg p' hp V x₀)
     have hqLip : metricDerivNorm (I := I) q
           (srcMetric (I := I) Φ hsrc htgt k s)
           (srcMetric (I := I) Φ hsrc htgt k t)
-          (refRes (I := I) Φ R hsrc k) y ≤ Lq q * |s - t| := by
+          (refRes (I := I) Φ R k) y ≤ Lq q * |s - t| := by
       exact timeLipschitz_of_hasDerivAt (I := I)
-        (refRes (I := I) Φ R hsrc k) q
+        (refRes (I := I) Φ R k) q
         (fun t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
         (fun t' y' ↦ (-2 : ℝ) •
           nablaRicReal (I := I)
             (fun _ r ↦ srcMetric (I := I) Φ hsrc htgt k r)
-            (refRes (I := I) Φ R hsrc k) q 0 t' y')
+            (refRes (I := I) Φ R k) q 0 t' y')
         Set.univ β ψ (Lq q)
-        (fun y' _hy' t' ht' v ↦ hev 0 y' (Set.mem_univ y') t' ht' v)
+        (fun y' _hy' t' ht' v ↦ hev 0 y' t' ht' v)
         (fun y' _hy' t' ht' ↦ hric q k t' ht' y')
         s hs t ht y (Set.mem_univ y)
     have hqmem : q ∈ Finset.range (p + 1) :=

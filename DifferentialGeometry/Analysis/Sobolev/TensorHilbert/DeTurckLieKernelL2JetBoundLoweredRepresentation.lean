@@ -325,6 +325,7 @@ private lemma inner_deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -398,6 +399,7 @@ lemma unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (g₀ 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T) =
@@ -500,6 +502,8 @@ lemma unitModel_add_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiema
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 lemma deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
@@ -663,6 +667,7 @@ private lemma g0_inner_inverseMetricSharp_mixed_deTurckLieConnectionDifferenceDe
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma sharpFlatEndoCc_eq_slotInsert_fullRaised_deTurckLieConnectionDifferenceDerivative (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -695,6 +700,7 @@ lemma sharpFlatEndoCc_eq_slotInsert_fullRaised_deTurckLieConnectionDifferenceDer
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_diff_split_deTurckLieConnectionDifferenceDerivative (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -743,6 +749,7 @@ private lemma slotInsertEndoCc_add_endo_deTurckLieConnectionDifferenceDerivative
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma endoCovariantDerivative_fullRaised_id_eq_zero_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :
     ((endoCovariantDerivative (I := I) (M := M) g₀)

@@ -608,7 +608,7 @@ private theorem monoExt_jet_c2
   rw [monoExtC2, rsperm_jet_c2]
   exact slot4_jet_c2 (I := I) (M := M) g S
 
-omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem raise_eq_rev
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -645,7 +645,7 @@ private theorem raised_cancel_lr
     (g0FlatCLM (I := I) b x v)]
   rw [inverseMetricSharpFib_g0FlatCLM (I := I) b x v]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem raised_sub_factor
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -754,6 +754,7 @@ private theorem endoSlotZero_sub_c2
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem invSlot_factor
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -809,6 +810,7 @@ private theorem invSlot_factor
   rw [ContinuousLinearMap.comp_assoc]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem invSlot_sub_factor
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -1075,7 +1077,7 @@ private theorem perturbSlot2_iteratedCovGrad_le
   exact hslot.trans
     (mul_le_mul_of_nonneg_left hbase (by norm_num))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem fullField_decomp_c2
     (g gm : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g gm =
@@ -1099,7 +1101,7 @@ private theorem fullField_decomp_c2
   rw [show metricComparisonEndomorphism (I := I) g g x v = v from by
     rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem fullSlot2_decomp
     (g gm : SmoothRiemannianMetric I M) :
     fullSlot2 (I := I) (M := M) g gm =
@@ -3395,7 +3397,7 @@ private theorem dagTop_bdd
         (mul_nonneg (by norm_num) hBc) hP hS
     _ = B ^ 2 := rfl
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem daTrans_smul
     (g gm : SmoothRiemannianMetric I M)
     (s : ℝ) (T : SmoothCcTensor g 0 2) :
@@ -3810,7 +3812,7 @@ private theorem reindex_sub_c2
     ContinuousLinearMap.sub_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem pure_eq_trace_c2
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g gm =
@@ -3820,7 +3822,7 @@ private theorem pure_eq_trace_c2
   intro x
   rw [cometricDoubleTraceCoefficient_toSection, pureTrace_toSection]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem pcc_pair_eq
     (g gT gU : SmoothRiemannianMetric I M) :
     deTurckPrincipalCometricCoeff (I := I) (M := M) g gT -
@@ -3834,7 +3836,7 @@ private theorem pcc_pair_eq
   abel
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma trace_base_eq
     (g gm : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g gm -
@@ -3916,11 +3918,11 @@ private theorem kernel_pair_alg
     _ = (LT - LU) + (PT - PU) + (RT - RU) := by abel
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem metricPrincipalDefect_diff_eq
-    (g g_bg gT gU : SmoothRiemannianMetric I M) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gT -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gU =
+    (g gT gU : SmoothRiemannianMetric I M) :
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gT -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gU =
       phiDiff (I := I) (M := M) g gT gU := by
   let PT := deTurckPrincipalCometricCoeff (I := I) (M := M) g gT
   let PU := deTurckPrincipalCometricCoeff (I := I) (M := M) g gU
@@ -3971,8 +3973,8 @@ private theorem metricPrincipalDefect_diff_eq
     rw [reindex_sub_c2, rsperm_sub_c2, reindex_sub_c2]
     exact tri_sub_alg _ _ _ _ _ _
   calc
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gT -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gU =
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gT -
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gU =
         (reindexCoeffGen (I := I) (M := M) g 4 2 HT
             (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA) -
           reindexCoeffGen (I := I) (M := M) g 4 2 HU
@@ -3982,8 +3984,8 @@ private theorem metricPrincipalDefect_diff_eq
           reindexCoeffGen (I := I) (M := M) g 4 2 HU
             (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)) -
         ((RT + RT) - (RU + RU)) := by
-      rw [metricPrincipalDefect_reindex (I := I) (M := M) g g_bg gT,
-        metricPrincipalDefect_reindex (I := I) (M := M) g g_bg gU]
+      rw [metricPrincipalDefect_reindex (I := I) (M := M) g gT,
+        metricPrincipalDefect_reindex (I := I) (M := M) g gU]
       dsimp only [HT, HU, RT, RU]
       exact tri_sub_alg _ _ _ _ _ _
     _ =
@@ -3999,7 +4001,7 @@ private theorem metricPrincipalDefect_diff_eq
 
 private theorem metricPrincipalDefect_pair_lip
     (hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
       ∀ (T U : SmoothCcTensor g 0 2)
         (gT gU : SmoothRiemannianMetric I M),
@@ -4012,8 +4014,8 @@ private theorem metricPrincipalDefect_pair_lip
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         secondOrderCoefficientJetNormSq (I := I) (M := M) g
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gT -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gU) ≤
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gT -
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gU) ≤
           (C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T - U)‖) ^ 2 := by
   obtain ⟨ρ, Ct, hρ, hCt, htrace⟩ :=
@@ -4098,7 +4100,7 @@ private theorem metricPrincipalDefect_pair_lip
         mul_le_mul_of_nonneg_left
           (add_le_add hR12 le_rfl) (by norm_num)
       _ = 10 * secondOrderCoefficientJetNormSq (I := I) (M := M) g D := by ring
-  rw [metricPrincipalDefect_diff_eq (I := I) (M := M) g g_bg gT gU]
+  rw [metricPrincipalDefect_diff_eq (I := I) (M := M) g gT gU]
   change secondOrderCoefficientJetNormSq (I := I) (M := M) g (A + B - R) ≤
     (C * N) ^ 2
   calc
@@ -4117,7 +4119,7 @@ private theorem metricPrincipalDefect_pair_lip
       nlinarith [mul_nonneg hCt hN]
 
 private noncomputable def secondOrderCoefficientPathKernel
-    (g g_bg : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {δ : ℝ}
     (hTδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
@@ -4126,11 +4128,11 @@ private noncomputable def secondOrderCoefficientPathKernel
         (0 : SmoothCcTensor g 0 2)) δ) :
     ℝ → SmoothCcTensor g 4 2 :=
   fun s =>
-    rhsDecompositionTop (I := I) (M := M) g g_bg T hTδ hZδ s +
+    rhsDecompositionTop (I := I) (M := M) g T hTδ hZδ s +
       RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hTδ hZδ s
 
 private theorem secondOrderCoefficientPathKernel_joint
-    (g g_bg : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {δ : ℝ}
     (hδlt : δ < 1)
     (hTδ : gFibreOpBound (I := I) (M := M) g
@@ -4139,17 +4141,18 @@ private theorem secondOrderCoefficientPathKernel_joint
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
-      (secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg T hTδ hZδ)
+      (secondOrderCoefficientPathKernel (I := I) (M := M) g T hTδ hZδ)
       (δ := δ) (δ' := δ) := by
   exact threeArmJoint_add (I := I) (M := M) g _ _
     (rhsDecompositionTop_joint (I := I) (M := M)
-      g g_bg T hδlt hTδ hZδ)
+      g T hδlt hTδ hZδ)
     (RicciDeTurckLowOrder.selfTop_joint (I := I) (M := M)
       g T hTδ hZδ)
 
-omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private theorem secondOrderCoefficientPathKernel_pair_eq
-    (g g_bg : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) {δ : ℝ}
     (hTδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
@@ -4161,26 +4164,26 @@ private theorem secondOrderCoefficientPathKernel_pair_eq
     (s : ℝ) :
     let gmT := metricPerturbationPath (I := I) g T 0 hTδ hZδ s
     let gmU := metricPerturbationPath (I := I) g U 0 hUδ hZδ s
-    secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg T hTδ hZδ s -
-        secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg U hUδ hZδ s =
+    secondOrderCoefficientPathKernel (I := I) (M := M) g T hTδ hZδ s -
+        secondOrderCoefficientPathKernel (I := I) (M := M) g U hUδ hZδ s =
       (lieDecomposition2 (I := I) (M := M) g T hTδ hZδ s -
           lieDecomposition2 (I := I) (M := M) g U hUδ hZδ s) +
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gmT -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gmU) +
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gmT -
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gmU) +
         ((-2 * s : ℝ) •
             RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gmT T -
           (-2 * s : ℝ) •
             RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gmU U) := by
   dsimp only
   apply kernel_pair_alg
-    (K := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g)
+    (K := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)
   · exact RicciDeTurckLowOrder.topKernel_eq
-      (I := I) (M := M) g g_bg T hTδ hZδ s
+      (I := I) (M := M) g T hTδ hZδ s
   · exact RicciDeTurckLowOrder.topKernel_eq
-      (I := I) (M := M) g g_bg U hUδ hZδ s
+      (I := I) (M := M) g U hUδ hZδ s
 
 noncomputable def secondOrderCoefficientDifference
-    (g g_bg : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) {δ : ℝ}
     (hδlt : δ < 1)
     (hTδ : gFibreOpBound (I := I) (M := M) g
@@ -4193,8 +4196,8 @@ noncomputable def secondOrderCoefficientDifference
     SmoothCcTensor g 4 2 :=
   pathIntegralCoeffField (I := I) (M := M) g 4 2
     (fun s =>
-      secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg T hTδ hZδ s -
-        secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg U hUδ hZδ s)
+      secondOrderCoefficientPathKernel (I := I) (M := M) g T hTδ hZδ s -
+        secondOrderCoefficientPathKernel (I := I) (M := M) g U hUδ hZδ s)
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen
     (by
@@ -4202,9 +4205,9 @@ noncomputable def secondOrderCoefficientDifference
       exact Icc_subset_metricPerturbationPathDomain hδlt hδlt)
     (threeArmJoint_sub (I := I) (M := M) g _ _
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
-        g g_bg T hδlt hTδ hZδ)
+        g T hδlt hTδ hZδ)
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
-        g g_bg U hδlt hUδ hZδ))
+        g U hδlt hUδ hZδ))
 
 theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
     (g g_bg : SmoothRiemannianMetric I M)
@@ -4222,7 +4225,7 @@ theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
         (lowerScaleActionCoefficients (I := I) (M := M)
           g g_bg U hδlt hUδ hZδ).secondOrderCoefficient =
       secondOrderCoefficientDifference (I := I) (M := M)
-        g g_bg T U hδlt hTδ hUδ hZδ := by
+        g T U hδlt hTδ hUδ hZδ := by
   classical
   letI : NormedAddCommGroup (TensorRSModel 4 2 ℝ E) :=
     Tensor0SBundle.tensorRSModel_normedAddCommGroup 4 2
@@ -4242,17 +4245,17 @@ theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
   have hRTcont :=
     jointContMDiff_toModel_continuous_slice
       (I := I) g 4 2
-      (rhsDecompositionTop (I := I) (M := M) g g_bg T hTδ hZδ)
+      (rhsDecompositionTop (I := I) (M := M) g T hTδ hZδ)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (rhsDecompositionTop_joint (I := I) (M := M)
-        g g_bg T hδlt hTδ hZδ) x
+        g T hδlt hTδ hZδ) x
   have hRUcont :=
     jointContMDiff_toModel_continuous_slice
       (I := I) g 4 2
-      (rhsDecompositionTop (I := I) (M := M) g g_bg U hUδ hZδ)
+      (rhsDecompositionTop (I := I) (M := M) g U hUδ hZδ)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (rhsDecompositionTop_joint (I := I) (M := M)
-        g g_bg U hδlt hUδ hZδ) x
+        g U hδlt hUδ hZδ) x
   have hSTcont :=
     jointContMDiff_toModel_continuous_slice
       (I := I) g 4 2
@@ -4270,13 +4273,13 @@ theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
   have hRTint : IntervalIntegrable
       (fun s : ℝ => TensorRSSpace.toModel
         ((rhsDecompositionTop (I := I) (M := M)
-          g g_bg T hTδ hZδ s).toSection x))
+          g T hTδ hZδ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (hRTcont.mono hSI).intervalIntegrable
   have hRUint : IntervalIntegrable
       (fun s : ℝ => TensorRSSpace.toModel
         ((rhsDecompositionTop (I := I) (M := M)
-          g g_bg U hUδ hZδ s).toSection x))
+          g U hUδ hZδ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (hRUcont.mono hSI).intervalIntegrable
   have hSTint : IntervalIntegrable
@@ -4309,7 +4312,7 @@ theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
     _ = ((∫ s : ℝ in 0..1,
             TensorRSSpace.toModel
               ((rhsDecompositionTop (I := I) (M := M)
-                g g_bg T hTδ hZδ s).toSection x)) +
+                g T hTδ hZδ s).toSection x)) +
           (∫ s : ℝ in 0..1,
             TensorRSSpace.toModel
               ((RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M)
@@ -4317,7 +4320,7 @@ theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
         ((∫ s : ℝ in 0..1,
             TensorRSSpace.toModel
               ((rhsDecompositionTop (I := I) (M := M)
-                g g_bg U hUδ hZδ s).toSection x)) +
+                g U hUδ hZδ s).toSection x)) +
           (∫ s : ℝ in 0..1,
             TensorRSSpace.toModel
               ((RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M)
@@ -4327,7 +4330,7 @@ theorem lowerScaleActionCoefficients_secondOrderCoefficient_sub
 
 private theorem kernel_h2_lip
     (hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
       ∀ (T U : SmoothCcTensor g 0 2) {δ : ℝ},
         δ < 1 →
@@ -4343,15 +4346,15 @@ private theorem kernel_h2_lip
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
           secondOrderCoefficientJetNormSq (I := I) (M := M) g
               (secondOrderCoefficientPathKernel (I := I) (M := M)
-                  g g_bg T hTδ hZδ s -
+                  g T hTδ hZδ s -
                 secondOrderCoefficientPathKernel (I := I) (M := M)
-                  g g_bg U hUδ hZδ s) ≤
+                  g U hUδ hZδ s) ≤
             (C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
               (T - U)‖) ^ 2 := by
   obtain ⟨ρl, Cl, hρl, hCl, hlie⟩ :=
     lieSecondOrderExpansion_pairing_lipschitz_bound (I := I) (M := M) hDim g
   obtain ⟨ρp, Cp, hρp, hCp, hphi⟩ :=
-    metricPrincipalDefect_pair_lip (I := I) (M := M) hDim g g_bg
+    metricPrincipalDefect_pair_lip (I := I) (M := M) hDim g
   obtain ⟨ρr, Cr, hρr, hCr, hricci⟩ :=
     ricciRad_pair (I := I) (M := M) hDim g
   let ρ : ℝ := min (min ρl ρp) ρr
@@ -4374,8 +4377,8 @@ private theorem kernel_h2_lip
     lieDecomposition2 (I := I) (M := M) g T hTδ hZδ s -
       lieDecomposition2 (I := I) (M := M) g U hUδ hZδ s
   let Φ : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gmT -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gmU
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gmT -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gmU
   let R : SmoothCcTensor g 4 2 :=
     (-2 * s : ℝ) •
         RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gmT T -
@@ -4466,7 +4469,7 @@ private theorem kernel_h2_lip
   have hR' : secondOrderCoefficientJetNormSq (I := I) (M := M) g R ≤ (K * N) ^ 2 :=
     hR.trans (pow_le_pow_left₀ (mul_nonneg hCr hN) hCrK 2)
   rw [secondOrderCoefficientPathKernel_pair_eq (I := I) (M := M)
-    g g_bg T U hTδ hUδ hZδ s]
+    g T U hTδ hUδ hZδ s]
   change secondOrderCoefficientJetNormSq (I := I) (M := M) g (L + Φ + R) ≤ (C * N) ^ 2
   calc
     secondOrderCoefficientJetNormSq (I := I) (M := M) g (L + Φ + R) ≤
@@ -4490,7 +4493,7 @@ private theorem kernel_h2_lip
 
 private theorem secondOrderCoefficientDifference_h2_bound
     (hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
       ∀ (T U : SmoothCcTensor g 0 2) {δ : ℝ},
         (hδlt : δ < 1) →
@@ -4505,16 +4508,16 @@ private theorem secondOrderCoefficientDifference_h2_bound
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         covariantJetNormSq (I := I) (M := M) g 2
             (secondOrderCoefficientDifference (I := I) (M := M)
-              g g_bg T U (δ := δ) hδlt hTδ hUδ hZδ) ≤
+              g T U (δ := δ) hδlt hTδ hUδ hZδ) ≤
           (C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T - U)‖) ^ 2 := by
   obtain ⟨ρ, C, hρ, hC, hkernel⟩ :=
-    kernel_h2_lip (I := I) (M := M) hDim g g_bg
+    kernel_h2_lip (I := I) (M := M) hDim g
   refine ⟨ρ, C, hρ, hC, ?_⟩
   intro T U δ hδlt hTδ hUδ hZδ hT hU
   let Φ : ℝ → SmoothCcTensor g 4 2 := fun s =>
-    secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg T hTδ hZδ s -
-      secondOrderCoefficientPathKernel (I := I) (M := M) g g_bg U hUδ hZδ s
+    secondOrderCoefficientPathKernel (I := I) (M := M) g T hTδ hZδ s -
+      secondOrderCoefficientPathKernel (I := I) (M := M) g U hUδ hZδ s
   let S : Set ℝ := metricPerturbationPathDomain (δ := δ) (δ' := δ)
   let N : ℝ :=
     ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
@@ -4530,12 +4533,12 @@ private theorem secondOrderCoefficientDifference_h2_bound
     dsimp only [Φ]
     exact threeArmJoint_sub (I := I) (M := M) g _ _
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
-        g g_bg T hδlt hTδ hZδ)
+        g T hδlt hTδ hZδ)
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
-        g g_bg U hδlt hUδ hZδ)
+        g U hδlt hUδ hZδ)
   have hpath := path_jetL2_le (I := I) (M := M)
     g 4 2 2 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := C * N) hCN
+    (B := C * N)
     (fun s hs => by
       simpa only [Φ, secondOrderCoefficientJetNormSq, N] using
         hkernel T U hδlt hTδ hUδ hZδ hT hU hs)
@@ -4569,7 +4572,7 @@ theorem secondOrderCoefficient_pairing_lipschitz_bound
           (C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T - U)‖) ^ 2 := by
   obtain ⟨ρ, C0, hρ, hC0, hdiff⟩ :=
-    secondOrderCoefficientDifference_h2_bound (I := I) (M := M) hDim g g_bg
+    secondOrderCoefficientDifference_h2_bound (I := I) (M := M) hDim g
   obtain ⟨Cpt, hCpt, hpoint⟩ :=
     jet3_fiber_c2 (I := I) (M := M) hDim g 4 2
   let C : ℝ := (Cpt + 1) * C0
@@ -4588,7 +4591,7 @@ theorem secondOrderCoefficient_pairing_lipschitz_bound
   have hN : 0 ≤ N := norm_nonneg _
   have hD_eq :
       D = secondOrderCoefficientDifference (I := I) (M := M)
-        g g_bg T U hδlt hTδ hUδ hZδ := by
+        g T U hδlt hTδ hUδ hZδ := by
     exact lowerScaleActionCoefficients_secondOrderCoefficient_sub (I := I) (M := M)
       g g_bg T U hδlt hTδ hUδ hZδ
   have hDjet0 :

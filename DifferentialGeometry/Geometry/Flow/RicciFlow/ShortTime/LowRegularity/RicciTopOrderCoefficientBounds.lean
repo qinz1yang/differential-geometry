@@ -77,6 +77,7 @@ private theorem riemannianFiberNormSq_permutation_left
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem connectionDifferenceLowOrderOperator_decomposition
     (g gm : SmoothRiemannianMetric I M) :
     connectionDifferenceLowOrderOperator (I := I) (M := M) g gm =
@@ -112,7 +113,7 @@ theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient
   intro g gm P δ hδ_le hδ0 hP htie x
   have hsharp := riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one
     (I := I) (M := M) g (δ₀ := (1 : ℝ) / 3)
-    (by norm_num) (by norm_num) gm P htie (δ := δ) hδ_le hδ0 hP x
+    (by norm_num) gm P htie (δ := δ) hδ_le hδ0 hP x
   have hslot := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
     (I := I) (M := M) g 2
     (metricComparisonEndomorphismField (I := I) (M := M) g gm) 0 x

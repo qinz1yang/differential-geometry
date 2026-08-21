@@ -49,6 +49,7 @@ private theorem traceHessianSlotPerm_inv_mul_apply (σ : Equiv.Perm (Fin 4)) (j 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem deTurckLieTraceCoeff_eq_reindex_traceHessianCoeff
     (g₀ g₁ : SmoothRiemannianMetric I M) (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
@@ -122,7 +123,7 @@ private theorem riemannianFiberNormSq_neg_local
   ring
 
 theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ P : ℕ → ℝ, (∀ i, 0 ≤ P i) ∧
@@ -136,7 +137,7 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballU
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤ P i := by
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤ P i := by
   obtain ⟨Q, hQ_nn, hQ⟩ :=
     traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ a
       ha_super hR hδ₀
@@ -162,7 +163,7 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballU
       normSq_iteratedCovGrad_reindexCoeffGen_eq]
     exact hH
   have hdecomp : iteratedCovGrad (I := I) g₀ 4 2 i
-      (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁ g_bg)
+      (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁)
       = iteratedCovGrad (I := I) g₀ 4 2 i
           (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieArm2DivSlotPermA)
         + iteratedCovGrad (I := I) g₀ 4 2 i
@@ -187,8 +188,8 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballU
 
 omit [BoundarylessManifold I M] in
 theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+    {R : ℝ}
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
@@ -201,10 +202,9 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_riemannianFiberNormS
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
               ((deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ := by
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ Λ := by
   obtain ⟨Λcom, hΛ_nn, hΛ⟩ :=
-    exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+    exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
   refine ⟨10 * Λcom, by linarith, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   set g₁ : SmoothRiemannianMetric I M := metricPerturbationPath (I := I) g₀ T T' hδ hδ' s with hg₁
@@ -228,7 +228,7 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_riemannianFiberNormS
         (traceHessianSlotPerm_inv_mul_apply deTurckLieArm2DivSlotPermAT),
       riemannianFiberNormSq_toSection_reindexCoeffGen_eq]
     exact hH
-  have hsec : (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁ g_bg).toSection x
+  have hsec : (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁).toSection x
       = (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁
             deTurckLieArm2DivSlotPermA).toSection x
         + (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁

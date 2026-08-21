@@ -156,7 +156,7 @@ theorem boundaryRestrict_memLp_of_continuous
     (boundaryRestrict_aestronglyMeasurable (n := n) (M := M) g hu) C h_ae
 
 theorem boundaryRestrict_eLpNorm_le_of_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -206,7 +206,7 @@ omit [IsManifold (𝓡∂ n) ∞ M] in
 
 omit [IsManifold (𝓡∂ n) ∞ M] in
 theorem boundaryTrace_eq_restrict_of_continuous
-    {u : M → ℝ} (_hu : Continuous u) :
+    {u : M → ℝ} :
     boundaryTrace (n := n) (M := M) u =
       fun x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M =>
         u (x : M) := rfl
@@ -251,7 +251,7 @@ theorem boundaryTrace_eLpNorm_le_of_continuous
   boundaryRestrict_eLpNorm_le_of_continuous (n := n) (M := M) g p hu
 
 theorem boundaryTrace_eLpNorm_le_of_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -264,14 +264,12 @@ theorem boundaryTrace_eLpNorm_le_of_bound
   boundaryRestrict_eLpNorm_le_of_bound (n := n) (M := M) g p hC
 
 omit [IsManifold (𝓡∂ n) ∞ M] in
-theorem boundaryTrace_eq_restrict_of_contMDiff
-    {u : M → ℝ}
-    (hu : ContMDiff (modelWithCornersEuclideanHalfSpace n)
-      (modelWithCornersSelf ℝ ℝ) ∞ u) :
+theorem boundaryTrace_eq_restrict
+    {u : M → ℝ} :
     boundaryTrace (n := n) (M := M) u =
       fun x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M =>
         u (x : M) :=
-  boundaryTrace_eq_restrict_of_continuous (n := n) (M := M) hu.continuous
+  boundaryTrace_eq_restrict_of_continuous (n := n) (M := M)
 
 theorem boundaryTrace_memLp_of_contMDiff
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]

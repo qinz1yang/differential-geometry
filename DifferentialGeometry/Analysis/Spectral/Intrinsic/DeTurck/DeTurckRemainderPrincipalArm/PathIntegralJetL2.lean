@@ -219,7 +219,7 @@ theorem armField_pathIntegral_jetL2_perOrder_le
     (hSopen : IsOpen (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPathDomain (δ := δ)
       (δ' := δ')))
     (hjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
-    (i : ℕ) {B : ℝ} (_hB : 0 ≤ B)
+    (i : ℕ) {B : ℝ}
     (hΦjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       ‖iteratedCovGrad (I := I) g₀ r 2 i (Φ s)‖ ^ 2 ≤ B ^ 2) :
     ‖iteratedCovGrad (I := I) g₀ r 2 i

@@ -88,6 +88,7 @@ private lemma edge_symm_eq (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem edge_full_split
     (g gm : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g gm =
@@ -141,6 +142,7 @@ private theorem edge_insert_add
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma edge_endo_id_zero (g : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (v : TangentSpace I x) :
@@ -236,6 +238,7 @@ theorem fullMetricComparisonCoefficient_covariantDerivative_bound (g : SmoothRie
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem fullMetricComparisonCoefficient_norm_bound
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

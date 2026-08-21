@@ -184,6 +184,7 @@ theorem exists_Csob_sub_pointwise_jet3_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciArmOrder1KoszulCoeff_operatorFieldApplication_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 3)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -571,7 +572,7 @@ theorem linearizedRicci_arm1Field_jointSmooth (g₀ : SmoothRiemannianMetric I M
   (exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.1
 
 theorem ricciArmBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
-    (g₀ _g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ ΛC : ℝ, 0 ≤ ΛC ∧
@@ -592,7 +593,8 @@ theorem ricciArmBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUnifor
   obtain ⟨Λcurv, hΛcurv_nn, hcurv⟩ :=
     exists_riemannArm0_curvCoeff_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
   obtain ⟨Λcom, hΛcom_nn, hcom⟩ :=
-    exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
+    exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+      (I := I) (M := M) (E := E) g₀ a (R := R) hδ₀
   set K : ℝ := max Λcurv Λcom with hK_def
   have hK_nn : 0 ≤ K := le_trans hΛcurv_nn (le_max_left _ _)
   refine ⟨Real.sqrt (4 * K), Real.sqrt_nonneg _, ?_⟩
@@ -716,7 +718,7 @@ theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
   classical
   obtain ⟨ΛCbase, hΛCbase_nn, hbase⟩ :=
     ricciArmBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
-      (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
+      (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λarm1, hΛarm1_nn, harm1⟩ :=
     exists_arm1Base_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
   have hCΓ_nn : 0 ≤ corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ :=
@@ -789,7 +791,7 @@ theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
     linarith [hbase1', hcorr1, hΛCbase_nn]
 
 theorem ricciArmFields_concrete_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ ΛC : ℝ, 0 ≤ ΛC ∧
@@ -810,7 +812,8 @@ theorem ricciArmFields_concrete_lichnerowicz_uniform_riemannianFiberNormSq_ballU
               ΛC := by
   classical
   obtain ⟨ΛCbase, hΛCbase_nn, hbase⟩ :=
-    ricciArmBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ g_bg a ha_super hR
+    ricciArmBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
+      (I := I) (M := M) g₀ a ha_super hR
       hδ₀
   obtain ⟨Λcorr, hΛcorr_nn, hcorr⟩ :=
     exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀

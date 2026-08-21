@@ -95,9 +95,9 @@ theorem lieCorrectionZeroMixedConnectionCap (g₀ g_bg : SmoothRiemannianMetric 
   obtain ⟨Ctr3, hCtr3_nn, htr3⟩ := trace_grid_rf (I := I) (M := M) 3 g₀ hδ₀
   obtain ⟨Ctr4, hCtr4_nn, htr4⟩ := trace_grid_rf (I := I) (M := M) 4 g₀ hδ₀
   obtain ⟨Km0, hKm0_nn, hm0⟩ :=
-    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀ (Real.sqrt_nonneg Λ)
+    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀
   obtain ⟨KmB, hKmB_nn, hmB⟩ :=
-    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g_bg hδ₀ (Real.sqrt_nonneg Λ)
+    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g_bg hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : (0 : ℝ) ≤ fr := Nat.cast_nonneg _
   set KT2 : ℕ → ℝ := fun i => Ctr2 i * antidiagonalTupleGridWindowShiftConstant Λ (i + 1) with hKT2_def

@@ -50,7 +50,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
             (if i + 1 < k + 1 then
                 homTensorRSCovGradSec (I := I) (M := M) g r (m + (i + 1)) (c + k) (D (i + 1))
               else 0) +
-              slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i), fun W => ?_⟩
+              slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i), fun W => ?_⟩
       rw [show iteratedCovGrad g r c (k + 1) (homTensorRSFieldApply (I := I) (M := M) g r m c Q W) =
           covGrad (I := I) (M := M) g r (c + k)
             (iteratedCovGrad g r c k (homTensorRSFieldApply (I := I) (M := M) g r m c Q W)) from
@@ -64,7 +64,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
                 (homTensorRSCovGradSec (I := I) (M := M) g r (m + i) (c + k) (D i))
                 (iteratedCovGrad g r m i W) +
               homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
-                (slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i))
+                (slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i))
                 (iteratedCovGrad g r m (i + 1) W)) from
         Finset.sum_congr rfl (fun i _ => by
           rw [covGrad_appFullSec_eq (I := I) (M := M) g r (m + i) (c + k) (D i)
@@ -79,14 +79,14 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
                 (if i + 1 < k + 1 then
                     homTensorRSCovGradSec (I := I) (M := M) g r (m + (i + 1)) (c + k) (D (i + 1))
                   else 0) +
-                  slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i)))
+                  slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i)))
           (iteratedCovGrad g r m j W)) (k + 1)]
       rw [show (∑ i ∈ Finset.range (k + 1),
             homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
               ((if i + 1 < k + 1 then
                   homTensorRSCovGradSec (I := I) (M := M) g r (m + (i + 1)) (c + k) (D (i + 1))
                 else 0) +
-                slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i))
+                slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i))
               (iteratedCovGrad g r m (i + 1) W)) =
           (∑ i ∈ Finset.range (k + 1),
             homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
@@ -96,7 +96,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
               (iteratedCovGrad g r m (i + 1) W)) +
           (∑ i ∈ Finset.range (k + 1),
             homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
-              (slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i))
+              (slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i))
               (iteratedCovGrad g r m (i + 1) W)) from by
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun i _ => ?_)

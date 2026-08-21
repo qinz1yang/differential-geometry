@@ -292,14 +292,14 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
           (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le⟩‖ ≤ D) :
     ∀ {T : ℝ} (hT : 0 < T)
-      (_hTτ : T ≤ lowRegularityTimeHorizon Ctop B0 B1 D ρ P) (hT1 : T ≤ 1),
+      (_hTτ : T ≤ lowRegularityTimeHorizon Ctop B0 B1 D ρ P),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
         (gforce : timeL2
           (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
         let field := maxRegDuhamelSolField (I := I) (M := M)
-          ((1 : ℕ) : ℝ) hT hT1
+          ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
-        u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+        u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             field t ∈ lowerState (I := I) (M := M) g₀ 1
@@ -312,7 +312,7 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
           timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ) field + gforce ∧
           ‖gforce‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4 := by
-  intro T hT hTτ hT1
+  intro T hT hTτ
   have hRpos : 0 < lowRegularityStateRadius Ctop B1 ρ P :=
     lowRegularityStateRadius_pos hCtop hB1 hρ hP
   have hQnn : 0 ≤ lowRegularityOuterRadius Ctop ρ P :=
@@ -370,7 +370,7 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
     rw [hT₀eq, hBcoe]
     rfl
   have hTT₀ : T ≤ T₀ := hTτ.trans hτ.le
-  simpa only [Nat.cast_one] using hsol hT hTT₀ hT1
+  simpa only [Nat.cast_one] using hsol hT hTT₀
 
 structure IsLowRegularitySolutionAt (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
@@ -423,13 +423,12 @@ structure IsLowRegularitySolutionAt (g₀ : SmoothRiemannianMetric I M)
     (fun t => boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
       (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
           (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-        (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+        (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo) t))
   hcap : lowRegularityStateRadius Ctop B1 ρ P ≤ Rcap
 
 def IsLowRegularitySolution (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
-    (hT1 : T ≤ 1)
     (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
   ∃ (δ Ctop B0 B1 D ρ P : ℝ) (hδ : δ < 1)
     (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
@@ -474,7 +473,7 @@ def IsLowRegularitySolution (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 
         (fun t => boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
           (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
               (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               fLo) t))
 
@@ -516,17 +515,16 @@ theorem isLowRegularitySolution_of_remainder_bounds (g₀ : SmoothRiemannianMetr
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
           (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le⟩‖ ≤ D)
     {T : ℝ} (hT : 0 < T) (hTτ : T ≤ lowRegularityTimeHorizon Ctop B0 B1 D ρ P)
-    (hT1 : T ≤ 1)
     (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ‖fLo‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4)
     (hforce : fLo =ᵐ[timeMeasure T]
       (fun t => boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t))) :
-    IsLowRegularitySolution (I := I) (M := M) g₀ hT hT1 fLo :=
+    IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo :=
   ⟨δ, Ctop, B0, B1, D, ρ, P, hδ, hCtop, hB1, hρ, hP, hreal, hδ0, hδ3, hcore,
     hB0, hcont, htame, hzero, hTτ, hball, hforce⟩
 
@@ -575,7 +573,7 @@ theorem isLowRegularitySolutionAt_of_remainder_bounds (g₀ : SmoothRiemannianMe
       (fun t => boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t)))
     {Rcap : ℝ} (hcap : lowRegularityStateRadius Ctop B1 ρ P ≤ Rcap) :
@@ -589,9 +587,9 @@ theorem IsLowRegularitySolutionAt.toIsLowRegularitySolution {g₀ : SmoothRieman
     {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop) (B0 := B0)
       (B1 := B1) (D := D) (ρ := ρ) (P := P) g₀ hT hT1 fLo Rcap) :
-    IsLowRegularitySolution (I := I) (M := M) g₀ hT hT1 fLo :=
+    IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo :=
   isLowRegularitySolution_of_remainder_bounds (I := I) (M := M) g₀ h.hδ h.hCtop h.hB0 h.hB1 h.hρ h.hP
-    h.hreal h.hδ0 h.hδ3 h.hcore h.hcont h.htame h.hzero hT h.hTτ hT1 fLo
+    h.hreal h.hδ0 h.hδ3 h.hcore h.hcont h.htame h.hzero hT h.hTτ fLo
     h.hball h.hforce
 
 theorem exists_lowRegularity_remainder_bounds (hDim : Module.finrank ℝ E = 3)
@@ -775,10 +773,10 @@ structure IsBackgroundLowRegularitySolution (g₀ g_bg : SmoothRiemannianMetric 
     (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop where
-  map_eq : u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+  map_eq : u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
   field_mem : ∀ᵐ t ∂(timeMeasure T),
-    maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+    maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
       lowerState (I := I) (M := M) g₀ 1
         (lowRegularityStateRadius K.top K.slope K.outer K.realize)
@@ -788,13 +786,13 @@ structure IsBackgroundLowRegularitySolution (g₀ g_bg : SmoothRiemannianMetric 
       (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
         (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos
           K.realize_pos).le)
-        (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+        (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
           gforce) t))
   trace_zero : timeH1.trace0 _ T u = 0
   pde : timeH1.timeDeriv _ T u =
     timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
-      (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
         gforce) + gforce
   force_bound : ‖gforce‖ ≤
@@ -813,7 +811,7 @@ theorem exists_background_lowRegularity_solution (g₀ g_bg : SmoothRiemannianMe
   obtain ⟨u, gforce, hmap, hmem, hforce, htrace, hpde, hbound⟩ :=
     exists_lowRegularity_solution_of_remainder_bounds (I := I) (M := M) g₀ g_bg K.threshold_lt
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
-      hK.hreal hK.hcont hK.htame hK.hzero hT hTτ hT1
+      hK.hreal hK.hcont hK.htame hK.hzero hT hTτ
   exact ⟨u, gforce, hmap, hmem, hforce, htrace, hpde, hbound⟩
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

@@ -336,7 +336,6 @@ theorem seqAtom_one_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqAtom_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
     (hq : q ∈ L.innerBall hd D P pb r k gamma) :
     seqAtom hd hD P L pb r k gamma q = 1 :=
@@ -371,7 +370,6 @@ theorem seqAtom_mem_hat_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqAtom_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
     (hq : seqAtom hd hD P L pb r k gamma q ≠ 0) :
     q ∈ L.hatBall hd D P pb r k gamma :=
@@ -406,7 +404,7 @@ theorem seqWeights_data_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqWeights_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) (i0 : Fin (pb.A r))
+    (i0 : Fin (pb.A r))
     {s : Set (X.obj (L.φ k)).M}
     (hcover : s ⊆ ⋃ gamma : Fin (pb.A r), L.innerBall hd D P pb r k gamma) :
     centerAverage.WeightDataOn s
@@ -419,16 +417,15 @@ theorem seqWeights_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqWeights_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
-    (r : Real) (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
-    (i0 : Fin (pb.A r)) :
+    (r : Real) (i0 : Fin (pb.A r)) :
     ∀ᶠ k in Filter.atTop,
       centerAverage.WeightDataOn (L.hatSourceBall hd P r k)
         (fun gamma : Fin (pb.A r) => L.hatBall hd D P pb r k gamma)
         (rawWeights
           (cutRaw (seqAtom hd hD P L pb r k i0)
             (seqAtom hd hD P L pb r k) i0)) := by
-  filter_upwards [L.innerBall_cover hd hD P hre pb r, hgp] with k hcover hgpAt
-  exact seqWeights_data hd hD P L pb r k hgpAt i0 hcover
+  filter_upwards [L.innerBall_cover hd hD P hre pb r] with k hcover
+  exact seqWeights_data hd hD P L pb r k i0 hcover
 
 
 private theorem packA_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
@@ -477,7 +474,7 @@ theorem seqAtom_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat)
-    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) :
+    :
     seqAtom hd hD P L pb r k (baseIndex hd hre pb hr)
         (X.obj (L.φ k)).basepoint = 1 :=
   seqAtom_base_raw hd hD P L hre pb hr k
@@ -505,7 +502,7 @@ theorem seqWeights_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat)
-    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) :
+    :
     let i0 := baseIndex hd hre pb hr
     let num := cutRaw (seqAtom hd hD P L pb r k i0)
       (seqAtom hd hD P L pb r k) i0
@@ -516,14 +513,14 @@ theorem seqWeights_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqWeights_zero_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
-    {r : Real} (hr : 0 ≤ r) (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r) :
+    {r : Real} (hr : 0 ≤ r) :
     ∀ᶠ k in Filter.atTop,
       centerAverage.WeightDataOn (L.hatSourceBall hd P r k)
         (fun gamma : Fin (pb.A r) => L.hatBall hd D P pb r k gamma)
         (rawWeights
           (cutRaw (seqAtom hd hD P L pb r k (baseIndex hd hre pb hr))
             (seqAtom hd hD P L pb r k) (baseIndex hd hre pb hr))) :=
-  seqWeights_ev hd hD P L hre pb r hgp (baseIndex hd hre pb hr)
+  seqWeights_ev hd hD P L hre pb r (baseIndex hd hre pb hr)
 
 end HCGCompactness
 end DifferentialGeometry

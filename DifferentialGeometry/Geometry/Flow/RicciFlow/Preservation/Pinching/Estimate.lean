@@ -35,7 +35,7 @@ def PinchEstimateOn
 
 def pinchQuotient
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (epsilon : Real) :
     Real -> M -> Real :=
   quotField (M := M)
@@ -163,11 +163,10 @@ omit [Module.Finite ℝ E] in
 theorem cubic_reaction_sub_pinching_term_nonneg
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {T delta epsilon t : Real} {x : M}
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
-    (hscalar : 0 < S.scalar t x)
     (hdelta0 : 0 < delta)
     (hepsilon : epsilon <= 2 * delta ^ 2)
     (ht : t ∈ Set.Icc 0 T)
@@ -185,14 +184,13 @@ theorem cubic_reaction_sub_pinching_term_nonneg
         - epsilon * ricciNorm (I := I) S t x *
           traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) t x := by
   exact cubic_reaction_sub_pinching_term_nonneg_at (I := I) S
-    (hdim x) hscalar (le_of_lt hdelta0) hepsilon
+    (hdim x) (le_of_lt hdelta0) hepsilon
     (hric t ht x) (hpinch t ht x)
 
 omit [Module.Finite ℝ E] in
 theorem scalar_gradient_norm_sq_nonneg
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
     0 <= scalarGradientNormSq (I := I) S t x := by
@@ -207,7 +205,7 @@ omit [Module.Finite ℝ E] in
 theorem ricci_gradient_coupling_norm_sq_nonneg
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
     0 <= ricciGradientCouplingNormSq (I := I) S t x := by
@@ -248,8 +246,7 @@ omit [Module.Finite ℝ E] in
 theorem pinch_evolution_rhs_le_drift_of_solution
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {T delta epsilon t : Real} {x : M}
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
@@ -282,7 +279,7 @@ theorem pinch_evolution_rhs_le_drift_of_solution
     (ricci_gradient_coupling_norm_sq_nonneg (I := I) S t x)
     (scalar_gradient_norm_sq_nonneg (I := I) S t x)
     (trace_free_ricci_norm_sq_nonneg (I := I) S (fun tt y => hdim y) t x)
-    (cubic_reaction_sub_pinching_term_nonneg (I := I) S hdim hR hdelta0
+    (cubic_reaction_sub_pinching_term_nonneg (I := I) S hdim hdelta0
       hepsilon ht hric hpinch)
 
 omit [Module.Finite ℝ E] in
@@ -291,13 +288,12 @@ theorem pinchQuotient_parabolic_nonpos
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {omega T delta epsilon : Real} (h0ω : 0 < omega)
     (hD : D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-    (_hT : 0 <= T) (hTω : T < omega)
+    (hTω : T < omega)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hscalar : ∀ t : Real, t ∈ D.carrier -> ∀ x : M, 0 < S.scalar t x)
     (hdelta0 : 0 < delta)
@@ -328,8 +324,8 @@ theorem pinchQuotient_parabolic_nonpos
     rw [hD]
     exact ⟨hs.1, lt_of_le_of_lt hs.2 hTω⟩
   have hderivD :=
-    pinch_quotient_evolution_of_solution (I := I) (M := M) S hS.isSolution
-      (fun _ x => hdim x) heps0 heps1
+    pinch_quotient_evolution_of_solution (I := I) (M := M) (epsilon := epsilon) S hS.isSolution
+      (fun _ x => hdim x)
       (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
   have hderivIcc := hderivD.mono hIcc_subset
   have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
@@ -372,14 +368,15 @@ omit [Module.Finite ℝ E] in
 theorem pinchQuotient_initial_continuous
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [CompleteSpace E] [T2Space M]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (epsilon : Real)
     (h0D : (0 : Real) ∈ D.carrier)
     (hscalar0 : ∀ x : M, 0 < S.scalar 0 x) :
     Continuous (fun x : M => pinchQuotient (I := I) S epsilon 0 x) := by
+  let _ := hVectorBundle
   rw [continuous_iff_continuousAt]
   intro x
   have hnorm : ContinuousAt (fun y : M => ricciNorm (I := I) S 0 y) x :=
@@ -416,8 +413,8 @@ omit [Module.Finite ℝ E] in
 theorem pinchQuotient_initial_bound
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (epsilon : Real)
@@ -598,8 +595,8 @@ omit [Module.Finite ℝ E] in
 theorem pinchQuotient_slab_continuous_of_ricciNorm
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [CompleteSpace E] [T2Space M]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {omega T epsilon C : Real} (h0ω : 0 < omega)
@@ -612,6 +609,7 @@ theorem pinchQuotient_slab_continuous_of_ricciNorm
     ContinuousOn
       (fun p : Real × M => C - pinchQuotient (I := I) S epsilon p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
+  let _ := hVectorBundle
   have hscalar_cont : ContinuousOn (fun p : Real × M => S.scalar p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
     simpa [DifferentialGeometry.Analysis.Parabolic.spacetimeSlab] using
@@ -654,7 +652,6 @@ theorem pinchQuotient_space_pos
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (epsilon : Real)
@@ -690,7 +687,6 @@ theorem pinchQuotient_grad_pos
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -765,13 +761,12 @@ theorem pinchQuot_slab_bound
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {omega T delta epsilon C : Real} (h0ω : 0 < omega)
     (hD : D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-    (hT : 0 <= T) (hTω : T < omega)
+    (hTω : T < omega)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hscalar : ∀ t : Real, t ∈ D.carrier -> ∀ x : M, 0 < S.scalar t x)
     (hdelta0 : 0 < delta)
@@ -800,7 +795,7 @@ theorem pinchQuot_slab_bound
           (pinchDriftVector (I := I) (flowG (I := I) S) S.scalar epsilon)
           (pinchQuotient (I := I) S epsilon) t x <= 0 :=
     pinchQuotient_parabolic_nonpos (I := I) (M := M) S hS h0ω hD
-      hT hTω hdim hscalar hdelta0 heps0 heps1 hepsilon hric hpinch
+      hTω hdim hscalar hdelta0 heps0 heps1 hepsilon hric hpinch
   have hw_time : ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
       ∀ x : M, DifferentiableWithinAt Real
         (fun s : Real => C - pinchQuotient (I := I) S epsilon s x)
@@ -816,8 +811,8 @@ theorem pinchQuot_slab_bound
       exact ⟨htpos, lt_of_le_of_lt ht.2 hTω⟩
     let τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D := ⟨t, htreg⟩
     have hderivD :=
-      pinch_quotient_evolution_of_solution (I := I) (M := M) S hS.isSolution
-        (fun _ x => hdim x) heps0 heps1
+      pinch_quotient_evolution_of_solution (I := I) (M := M) (epsilon := epsilon) S hS.isSolution
+        (fun _ x => hdim x)
         (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
     have hderivIcc := hderivD.mono hIcc_subset
     have hu :
@@ -917,8 +912,8 @@ theorem pinchQuot_slab_bound
       exact ⟨htpos, lt_of_le_of_lt ht.2 hTω⟩
     let τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D := ⟨t, htreg⟩
     have hderivD :=
-      pinch_quotient_evolution_of_solution (I := I) (M := M) S hS.isSolution
-        (fun _ x => hdim x) heps0 heps1
+      pinch_quotient_evolution_of_solution (I := I) (M := M) (epsilon := epsilon) S hS.isSolution
+        (fun _ x => hdim x)
         (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
     have hu_time :
         DifferentiableWithinAt Real
@@ -991,11 +986,10 @@ theorem exists_pinching_estimate_of_smooth_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E
+    [hContMDiffOne : ContMDiffVectorBundle (1 : WithTop ℕ∞) E
       (TangentSpace I : M -> Type _) I]
-    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E
+    [hContMDiffTop : ContMDiffVectorBundle (∞ : WithTop ℕ∞) E
       (TangentSpace I : M -> Type _) I]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -1022,6 +1016,8 @@ theorem exists_pinching_estimate_of_smooth_solution
         PinchEstimateOn (M := M)
           (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
           S.scalar (pinchWeight (M := M) S.scalar epsilon) C D.carrier := by
+  let _ := hContMDiffOne
+  let _ := hContMDiffTop
   classical
   rcases hpinch with ⟨delta, hdelta0, _hdelta13, hpinchAll⟩
   let epsilon : Real := min ((1 : Real) / 2) (delta ^ 2)
@@ -1067,7 +1063,7 @@ theorem exists_pinching_estimate_of_smooth_solution
       pinchQuotient_slab_continuous_of_ricciNorm (I := I) (M := M)
         S hS h0ω hD htω hscalar hricciNorm_cont
     have hbound :=
-      pinchQuot_slab_bound (I := I) (M := M) S hS h0ω hD ht0 htω
+      pinchQuot_slab_bound (I := I) (M := M) S hS h0ω hD htω
         hdim hscalar hdelta0 heps0 heps1 hepsilon hricT hpinchT
         hCinit hw_cont
     simpa [pinchQuotient] using hbound t ⟨ht0, le_rfl⟩ x
@@ -1082,7 +1078,7 @@ theorem exists_global_pinching_estimate_fields_of_smooth_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
+    [hManifoldTwo : IsManifold I 2 M] [hManifoldThree : IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E
       (TangentSpace I : M -> Type _) I]
@@ -1110,6 +1106,8 @@ theorem exists_global_pinching_estimate_fields_of_smooth_solution
           (Set.Icc 0 T)) :
     ∃ tracefreeRicciNormSq scalar weight : Real -> M -> Real, ∃ C : Real,
       PinchEstimateOn (M := M) tracefreeRicciNormSq scalar weight C Set.univ := by
+  let _ := hManifoldTwo
+  let _ := hManifoldThree
   classical
   rcases exists_pinching_estimate_of_smooth_solution (I := I) (M := M) S hS h0ω hD hdim hscalar
       hpinch hric with

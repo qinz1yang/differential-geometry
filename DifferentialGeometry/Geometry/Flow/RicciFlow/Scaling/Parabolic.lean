@@ -56,8 +56,7 @@ private theorem mul_paraTime_eq {τ R s : Real} (hR : R ≠ 0) :
   field_simp [hR]
 
 def paraInterval
-    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) (τ R : Real) (_hR : 0 < R)
-    (hτ : τ ∈ D.carrier) : DifferentialGeometry.Geometry.Curvature.RealTimeInterval where
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) (τ R : Real) (hτ : τ ∈ D.carrier) : DifferentialGeometry.Geometry.Curvature.RealTimeInterval where
   carrier := {s : Real | paraTime τ R s ∈ D.carrier}
   regular := {s : Real | paraTime τ R s ∈ D.regular}
   initial := 0
@@ -79,16 +78,16 @@ def paraInterval
     simpa [Set.preimage] using hcont.preimage_mem_nhds (D.regular_mem_nhds hs)
 
 @[simp] theorem paraInterval_carrier
-    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) (τ R : Real) (hR : 0 < R)
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) (τ R : Real)
     (hτ : τ ∈ D.carrier) :
-    (paraInterval D τ R hR hτ).carrier =
+    (paraInterval D τ R hτ).carrier =
       {s : Real | paraTime τ R s ∈ D.carrier} := by
   rfl
 
 @[simp] theorem paraInterval_regular
-    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) (τ R : Real) (hR : 0 < R)
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) (τ R : Real)
     (hτ : τ ∈ D.carrier) :
-    (paraInterval D τ R hR hτ).regular =
+    (paraInterval D τ R hτ).regular =
       {s : Real | paraTime τ R s ∈ D.regular} := by
   rfl
 
@@ -97,7 +96,7 @@ theorem paraInterval_closedOpen_carrier
     (hτ : τ ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T
       hT).carrier) :
     (paraInterval (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T hT)
-        τ R hR hτ).carrier =
+        τ R hτ).carrier =
       Set.Ico (-(R * τ)) (R * (T - τ)) := by
   ext s
   constructor
@@ -134,7 +133,7 @@ theorem paraInterval_closedOpen_regular
     (hτ : τ ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T
       hT).carrier) :
     (paraInterval (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T hT)
-        τ R hR hτ).regular =
+        τ R hτ).regular =
       Set.Ioo (-(R * τ)) (R * (T - τ)) := by
   ext s
   constructor
@@ -181,7 +180,7 @@ def paraSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :
-    SolutionOn (I := I) (M := M) (paraInterval D τ R hR hτ) where
+    SolutionOn (I := I) (M := M) (paraInterval D τ R hτ) where
   base := paraFamily (I := I) S.base τ R hR
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [SigmaCompactSpace M]
@@ -367,7 +366,7 @@ private theorem paraRicciNormGrad_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier)
-    {s : Real} (hs : s ∈ (paraInterval D τ R hR hτ).carrier) (x : M) :
+    {s : Real} (hs : s ∈ (paraInterval D τ R hτ).carrier) (x : M) :
     DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
         ((paraSolution (I := I) S τ R hR hτ).family.metric s)
         (ricciNorm (I := I) (paraSolution (I := I) S τ R hR hτ) s) x =
@@ -431,7 +430,7 @@ theorem metricFamilySmooth_para
     (hS : IsSolutionOn (I := I) S)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :
     DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn (I := I) (M := M)
-      (paraInterval D τ R hR hτ)
+      (paraInterval D τ R hτ)
       (paraSolution (I := I) S τ R hR hτ).family.metric := by
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro x X Y
@@ -441,13 +440,13 @@ theorem metricFamilySmooth_para
       exact contDiff_const.add (contDiff_id.div_const R)
     have hmaps :
         Set.MapsTo (fun s : Real => paraTime τ R s)
-          (paraInterval D τ R hR hτ).regular D.regular := by
+          (paraInterval D τ R hτ).regular D.regular := by
       intro s hs
       exact hs
     have hcomp :
         ContDiffOn Real ∞
           (fun s : Real => (S.base.metric (paraTime τ R s)).inner x X Y)
-          (paraInterval D τ R hR hτ).regular := by
+          (paraInterval D τ R hτ).regular := by
       simpa [Function.comp_def] using
         hOld.comp haff_global.contDiffOn hmaps
     simpa [SolutionOn.family, paraSolution, paraFamily, scaleMetric_inner, smul_eq_mul]
@@ -459,20 +458,20 @@ theorem metricFamilySmooth_para
       exact continuous_const.add (continuous_id.div_const R)
     have hmaps :
         Set.MapsTo (fun s : Real => paraTime τ R s)
-          (paraInterval D τ R hR hτ).carrier D.carrier := by
+          (paraInterval D τ R hτ).carrier D.carrier := by
       intro s hs
       exact hs
     have hcomp :
         ContinuousOn
           (fun s : Real => (S.base.metric (paraTime τ R s)).inner x X Y)
-          (paraInterval D τ R hR hτ).carrier := by
+          (paraInterval D τ R hτ).carrier := by
       simpa [Function.comp_def] using
         hOld.comp htime.continuousOn hmaps
     simpa [SolutionOn.family, paraSolution, paraFamily, scaleMetric_inner, smul_eq_mul]
       using hcomp.const_smul R
   · have hmaps :
         Set.MapsTo (fun s : Real => paraTime τ R s)
-          (paraInterval D τ R hR hτ).carrier D.carrier := by
+          (paraInterval D τ R hτ).carrier D.carrier := by
       intro s hs
       exact hs
     have htime : Continuous (fun s : Real => paraTime τ R s) := by
@@ -506,7 +505,7 @@ theorem metricFamilySmooth_para
       htime.prodMk contMDiff_snd
     have hmaps :
         Set.MapsTo (fun p : Real × M => (paraTime τ R p.1, p.2))
-          ((paraInterval D τ R hR hτ).regular ×ˢ u) (D.regular ×ˢ u) := by
+          ((paraInterval D τ R hτ).regular ×ˢ u) (D.regular ×ˢ u) := by
       intro p hp
       exact ⟨hp.1, hp.2⟩
     have hcomp :
@@ -514,7 +513,7 @@ theorem metricFamilySmooth_para
           (fun p : Real × M =>
             (S.base.metric (paraTime τ R p.1)).inner p.2
               (frame i p.2) (frame j p.2))
-          ((paraInterval D τ R hR hτ).regular ×ˢ u) := by
+          ((paraInterval D τ R hτ).regular ×ˢ u) := by
       simpa [SolutionOn.family, Function.comp_def] using
         hOld.comp hmapSmooth.contMDiffOn hmaps
     have hscale :
@@ -522,16 +521,16 @@ theorem metricFamilySmooth_para
           (fun p : Real × M =>
             R * (S.base.metric (paraTime τ R p.1)).inner p.2
               (frame i p.2) (frame j p.2))
-          ((paraInterval D τ R hR hτ).regular ×ˢ u) :=
+          ((paraInterval D τ R hτ).regular ×ˢ u) :=
       (contMDiffOn_const (c := R)).mul hcomp
     simpa [SolutionOn.family, paraSolution, paraFamily, scaleMetric_inner,
       smul_eq_mul] using hscale
 
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem connectionFamilySmooth_para
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :
     DifferentialGeometry.Geometry.Connection.ConnectionFamilySmoothOn (I := I) (M := M)
       (paraSolution (I := I) S τ R hR hτ).family := by
@@ -542,10 +541,10 @@ theorem connectionFamilySmooth_para
       ((paraSolution (I := I) S τ R hR hτ).base.metric (t : Real))
 
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem leviCivita_para
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :
     DifferentialGeometry.Geometry.Connection.IsLeviCivitaFamilyOn (I := I)
       (paraSolution (I := I) S τ R hR hτ).family := by
@@ -570,13 +569,13 @@ theorem metricVariation_para
   have hOld := hS.equation tOld x X Y
   have htime :
       HasDerivWithinAt (fun s : Real => paraTime τ R s) R⁻¹
-        (paraInterval D τ R hR hτ).carrier (t : Real) := by
+        (paraInterval D τ R hτ).carrier (t : Real) := by
     simpa [paraTime, one_div] using
       (((hasDerivWithinAt_id (t : Real)
-        (paraInterval D τ R hR hτ).carrier).div_const R).const_add τ)
+        (paraInterval D τ R hτ).carrier).div_const R).const_add τ)
   have hmaps :
       Set.MapsTo (fun s : Real => paraTime τ R s)
-        (paraInterval D τ R hR hτ).carrier D.carrier := by
+        (paraInterval D τ R hτ).carrier D.carrier := by
     intro s hs
     exact hs
   have hcomp := hOld.comp (x := (t : Real)) htime hmaps
@@ -603,7 +602,7 @@ theorem paraSol
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :
     IsSolutionOn (I := I) (paraSolution (I := I) S τ R hR hτ) where
   smoothMetric := metricFamilySmooth_para (I := I) S hS τ R hR hτ
-  smoothConnection := connectionFamilySmooth_para (I := I) S hS τ R hR hτ
+  smoothConnection := connectionFamilySmooth_para (I := I) S τ R hR hτ
   equation := metricVariation_para (I := I) S hS τ R hR hτ
   scalarCont := by
     have htime : Continuous (fun q : Real × M => paraTime τ R q.1) := by
@@ -612,23 +611,23 @@ theorem paraSol
     have hmap : Continuous (fun q : Real × M => (paraTime τ R q.1, q.2)) :=
       htime.prodMk continuous_snd
     have hmapOn : ContinuousOn (fun q : Real × M => (paraTime τ R q.1, q.2))
-        ((paraInterval D τ R hR hτ).carrier ×ˢ (Set.univ : Set M)) :=
+        ((paraInterval D τ R hτ).carrier ×ˢ (Set.univ : Set M)) :=
       hmap.continuousOn
     have hmaps : Set.MapsTo (fun q : Real × M => (paraTime τ R q.1, q.2))
-        ((paraInterval D τ R hR hτ).carrier ×ˢ (Set.univ : Set M))
+        ((paraInterval D τ R hτ).carrier ×ˢ (Set.univ : Set M))
         (D.carrier ×ˢ (Set.univ : Set M)) := by
       intro q hq
       exact ⟨hq.1, trivial⟩
     have hcomp :
         ContinuousOn
           (fun q : Real × M => S.scalar (paraTime τ R q.1) q.2)
-          ((paraInterval D τ R hR hτ).carrier ×ˢ (Set.univ : Set M)) := by
+          ((paraInterval D τ R hτ).carrier ×ˢ (Set.univ : Set M)) := by
       have h := hS.scalarCont.comp hmapOn hmaps
       simpa [Function.comp_def] using h
     have hscale :
         ContinuousOn
           (fun q : Real × M => R⁻¹ * S.scalar (paraTime τ R q.1) q.2)
-          ((paraInterval D τ R hR hτ).carrier ×ˢ (Set.univ : Set M)) :=
+          ((paraInterval D τ R hτ).carrier ×ˢ (Set.univ : Set M)) :=
       continuousOn_const.mul hcomp
     have hscalar_fun :
         (fun q : Real × M =>
@@ -665,7 +664,7 @@ theorem paraSol
   ricciCont := by
     have hmaps :
         Set.MapsTo (fun s : Real => paraTime τ R s)
-          (paraInterval D τ R hR hτ).carrier D.carrier := by
+          (paraInterval D τ R hτ).carrier D.carrier := by
       intro s hs
       exact hs
     have htime : Continuous (fun s : Real => paraTime τ R s) := by
@@ -679,7 +678,7 @@ theorem paraSol
   rm04Cont := by
     have hmaps :
         Set.MapsTo (fun s : Real => paraTime τ R s)
-          (paraInterval D τ R hR hτ).carrier D.carrier := by
+          (paraInterval D τ R hτ).carrier D.carrier := by
       intro s hs
       exact hs
     have htime : Continuous (fun s : Real => paraTime τ R s) := by

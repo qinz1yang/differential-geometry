@@ -453,8 +453,7 @@ private theorem diagonalProductTerm_integral_le
 
 theorem diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
-    {δ₀ : ℝ} (_hδ₀ : δ₀ < 1) :
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (P : SmoothCcTensor g₀ 0 2),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
@@ -659,7 +658,7 @@ theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform_generic
       g₀ hδ₀
   obtain ⟨Kgrid, hKgrid_nn, hKgrid⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
-      (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
+      (I := I) (M := M) (E := E) g₀ a ha_super hR
   refine ⟨fun i => Cgrid i * Kgrid i,
     fun i => mul_nonneg (hCgrid_nn i) (hKgrid_nn i), ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i hi
@@ -1692,6 +1691,7 @@ abbrev cometricCastG0 (g₀ g₁ : SmoothRiemannianMetric I M) :
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciArmOrder1KoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCastG0
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder1KoszulCoeff
@@ -1704,6 +1704,7 @@ theorem ricciArmOrder1KoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCa
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciArmOrder1KoszulCoeff_eq_ccOperatorFieldComp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder1KoszulCoeff
@@ -1973,6 +1974,7 @@ lemma cometricDoubleTraceFib_sub_toModel_eq
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma cometricCastG0_sub_doubleTrace_clm
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -1986,6 +1988,7 @@ private lemma cometricCastG0_sub_doubleTrace_clm
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem cometricCastG0_eq_doubleTrace_add_ccOperatorFieldComp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCastG0 (I := I) g₀ g₁ =
@@ -2046,7 +2049,7 @@ theorem cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_mos, hK_mos_nn, hK_mos⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
-      (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
+      (I := I) (M := M) (E := E) g₀ a ha_super hR
   have hSΦ_ex : ∀ i : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i) x
         ((iteratedCovGrad (I := I) g₀ 3 1 i Φ).toSection x) ≤ K :=

@@ -33,7 +33,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 private lemma
     chartWeight_mul_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointwiseInner
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -171,6 +171,7 @@ private lemma integral_tensorCovDerivPointwiseInner_le_h1NormSq
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (w : M → ℝ) (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
@@ -288,7 +289,7 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
     exact mul_le_mul_of_nonneg_left h_int_le hC_nn
   exact h_lint_le.trans h_RHS_le
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (w : M → ℝ) (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)

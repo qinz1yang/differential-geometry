@@ -272,29 +272,31 @@ structure LowRegularityTimeSolution
   u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T
   gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T
   solution_eq :
-    u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+    u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
   state_ae :
     ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
         lowerState (I := I) (M := M) g₀ 1 R
   forcing_ae :
     gforce =ᵐ[timeMeasure T] fun t =>
       deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hrealR
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t)
   trace_zero : timeH1.trace0 _ T u = 0
   evolution :
     timeH1.timeDeriv _ T u =
       timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) +
         gforce
   forcing_norm : ‖gforce‖ ≤ R / 4
+
+attribute [nolint simpNF] LowRegularityTimeSolution.mk.sizeOf_spec
 
 structure LowRegularityPartialSolution (g₀ g_bg : SmoothRiemannianMetric I M) where
   R : ℝ
@@ -464,7 +466,7 @@ theorem exists_lowRegularity_partial_solution
   }⟩
   intro T hT hTT₀ hT1
   obtain ⟨u, gforce, hu, hstate, hforce, htrace, hevolution, hforce_norm⟩ :=
-    hsol hT hTT₀ hT1
+    hsol hT hTT₀
   exact ⟨{
     u := u
     gforce := gforce

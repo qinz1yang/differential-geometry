@@ -68,9 +68,7 @@ noncomputable def covariantDerivativeStepAccumulationTwoComparisonConstant (r : 
         (r : ℝ) * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (r + 2)) *
           (3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) +
             (3 / 2 : ℝ) * (Real.sqrt (Λ ^ 3) * Λ')) + 1))
-
-
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covariant_derivative_step_accumulation_two_le_comparison_constant
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
@@ -214,7 +212,7 @@ theorem covariant_derivative_step_accumulation_two_le_comparison_constant
     _ ≤ (C₂ + CA1 * (cs0 + CA0 + 1)) * (p0 + p1 + p2) := hSle
     _ ≤ max 0 (C₂ + CA1 * (cs0 + CA0 + 1)) * (p0 + p1 + p2) := hfin
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem exists_covariant_derivative_step_accumulation_two_bound
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
@@ -243,9 +241,7 @@ noncomputable def thirdIteratedCovariantDerivativeComparisonConstant (r : ℕ) (
         (3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) +
           (3 / 2 : ℝ) * (Real.sqrt (Λ ^ 3) * Λ'))
     else if m = 2 then covariantDerivativeStepAccumulationTwoComparisonConstant (E := E) r Λ Λ' Λ'' Λ''' else 0) 3)
-
-
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem third_iterated_covariant_derivative_le_comparison_constant
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
@@ -314,6 +310,7 @@ theorem third_iterated_covariant_derivative_le_comparison_constant
       (Finset.sum_nonneg fun k _ => Real.sqrt_nonneg _)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem exists_third_iterated_covariant_derivative_comparison_bound
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}

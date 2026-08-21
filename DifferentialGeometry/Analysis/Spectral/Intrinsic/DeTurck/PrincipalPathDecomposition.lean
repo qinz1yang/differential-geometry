@@ -43,32 +43,33 @@ variable
 private local instance instCompleteSpaceE : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem phi_dev_joint
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound g₀
       (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound g₀
       (ccTensorBilinSymm (I := I) g₀ T') δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
-      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
       (δ := δ) (δ' := δ') := by
-  have hpath := rhs_top_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ'
+  have hpath := rhs_top_path_joint (I := I) (M := M) g₀ T T' hδ hδ'
   have hconst : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, TensorRSModel 4 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel 4 2 ℝ E)
         (E := fun z : M => TensorRSSpace 4 2 I z) p.1
-        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection p.1))
+        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
-    (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection.contMDiff.comp_contMDiffOn
+    (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection.contMDiff.comp_contMDiffOn
       contMDiffOn_fst
   have hsub := joint_rs_sub (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+    (fun p : M × ℝ => (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
-    (fun p : M × ℝ => (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection p.1)
+    (fun p : M × ℝ => (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection p.1)
     hpath hconst
   refine hsub.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (TensorRSModel 4 2 ℝ E)
@@ -132,6 +133,8 @@ theorem reindex_sub
   exact ContinuousLinearMap.sub_comp _ _ _
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieDecomposition2_cap
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1) (hδ0 : 0 ≤ δ)
@@ -242,7 +245,7 @@ theorem lieDecomposition2_cap
   nlinarith [hscaled, sq_nonneg B]
 
 theorem metricPrincipalDefect_cap
-    (g g_bg : SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
         {δ : ℝ}, δ < 1 → 0 ≤ δ →
@@ -253,8 +256,8 @@ theorem metricPrincipalDefect_cap
           (ccTensorBilinSymm (I := I) g P) δ →
         ∀ x : M,
         riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-            ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gm -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g).toSection x) ≤
+            ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) ≤
           (K * (δ / (1 - δ))) ^ 2 := by
   obtain ⟨CTH, hCTH0, hCTH⟩ :=
     traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
@@ -278,16 +281,16 @@ theorem metricPrincipalDefect_cap
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g gm -
       ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g
   let Dev : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gm -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let ρA := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
   let ρAT := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
   have hDev : Dev =
       reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA +
         reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT - (DR + DR) := by
     dsimp only [Dev, DTH, DR]
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g_bg gm,
-      metricPrincipalDefect_reindex (I := I) (M := M) g g_bg g,
+    rw [metricPrincipalDefect_reindex (I := I) (M := M) g gm,
+      metricPrincipalDefect_reindex (I := I) (M := M) g g,
       reindex_sub g _ _ _ _ ρA, reindex_sub g _ _ _ _ ρAT]
     abel
   let S : ℝ := riemannianFiberNormSq (I := I) (M := M) g 2 2 x
@@ -453,7 +456,7 @@ theorem convex_hs_bound
 
 theorem phi_dev_h2
     (hDim : Module.finrank ℝ E = 3)
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_lt : δ < 1)
@@ -468,15 +471,15 @@ theorem phi_dev_h2
         ∀ {s : ℝ}, 0 ≤ s → s ≤ 1 →
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-                ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+                ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x) ≤
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
               (C * R) ^ 2) ∧
             (∑ i ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+                (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2) ≤
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2) ≤
               (C * R) ^ 2 := by
   classical
   obtain ⟨ρ, Cinv, hρ, hCinv, hinv⟩ := exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound (I := I) (M := M) hDim g₀
@@ -542,8 +545,8 @@ theorem phi_dev_h2
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁ -
       ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀
   let Dev : SmoothCcTensor g₀ 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₁ -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀
   let ρA : Equiv.Perm (Fin 4) :=
     traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
   let ρAT : Equiv.Perm (Fin 4) :=
@@ -553,8 +556,8 @@ theorem phi_dev_h2
         reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT -
           (DRs + DRs) := by
     dsimp [Dev, DTHs, DRs]
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g₀ g_bg g₁,
-      metricPrincipalDefect_reindex (I := I) (M := M) g₀ g_bg g₀,
+    rw [metricPrincipalDefect_reindex (I := I) (M := M) g₀ g₁,
+      metricPrincipalDefect_reindex (I := I) (M := M) g₀ g₀,
       reindex_sub g₀ _ _ _ _ ρA,
       reindex_sub g₀ _ _ _ _ ρAT]
     abel
@@ -759,7 +762,7 @@ theorem phi_dev_h2
 
 theorem top_path_dev_h2
     (hDim : Module.finrank ℝ E = 3)
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (hδ_lt : δ < 1)
@@ -773,18 +776,18 @@ theorem top_path_dev_h2
         ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T'‖ ≤ R →
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-                ((rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+                ((rhsTopPathIntegral (I := I) (M := M) g₀ T T'
                     hδ_lt hδ hδ'_lt hδ' -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x) ≤
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
               (C * R) ^ 2) ∧
             (∑ i ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+                (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
                     hδ_lt hδ hδ'_lt hδ' -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2) ≤
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2) ≤
               (C * R) ^ 2 := by
   classical
-  obtain ⟨ρ, C, hρ, hC, hdev⟩ := phi_dev_h2 (I := I) (M := M) hDim g₀ g_bg
+  obtain ⟨ρ, C, hρ, hC, hdev⟩ := phi_dev_h2 (I := I) (M := M) hDim g₀
   refine ⟨ρ, C, hρ, hC, ?_⟩
   intro T T' δ hδ_lt hδ δ' hδ'_lt hδ' R hR hRρ hT hT'
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
@@ -793,26 +796,26 @@ theorem top_path_dev_h2
   have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     metricPerturbationPathDomain_isOpen
   let Φ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀
-  have hjpath := rhs_top_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ'
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀
+  have hjpath := rhs_top_path_joint (I := I) (M := M) g₀ T T' hδ hδ'
   have hjdev : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ
       (δ := δ) (δ' := δ') := by
-    simpa [Φ] using phi_dev_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ'
+    simpa [Φ] using phi_dev_joint (I := I) (M := M) g₀ T T' hδ hδ'
   let Pdev : SmoothCcTensor g₀ 4 2 :=
     pathIntegralCoeffField (I := I) (M := M) g₀ 4 2 Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev
   have hcpath : ∀ x : M, ContinuousOn (fun t : ℝ =>
       TensorRSSpace.toModel
-        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)).toSection x))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro x
     have h := hjpath
     rw [linearizedRicciThreeArmHjoint] at h
     exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 4 2
-      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) h x
   have hcdev : ∀ x : M, ContinuousOn (fun t : ℝ =>
@@ -820,13 +823,13 @@ theorem top_path_dev_h2
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun x =>
     jointContMDiff_toModel_continuous_slice (I := I) g₀ 4 2 Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hjdev x
-  have heq : rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+  have heq : rhsTopPathIntegral (I := I) (M := M) g₀ T T'
       hδ_lt hδ hδ'_lt hδ' -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ = Pdev := by
-    have hPeq : rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ = Pdev := by
+    have hPeq : rhsTopPathIntegral (I := I) (M := M) g₀ T T'
         hδ_lt hδ hδ'_lt hδ' =
         pathIntegralCoeffField (I := I) (M := M) g₀ 4 2
-          (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+          (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjpath := rfl
     apply SmoothCcTensor.ext
@@ -834,41 +837,41 @@ theorem top_path_dev_h2
     intro x
     apply TensorRSSpace.toModel_injective
     change TensorRSSpace.toModel
-        ((rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+        ((rhsTopPathIntegral (I := I) (M := M) g₀ T T'
           hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x) =
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) =
       TensorRSSpace.toModel (Pdev.toSection x)
-    rw [show (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+    rw [show (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
           hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x =
-        (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x =
+        (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
           hδ_lt hδ hδ'_lt hδ').toSection x -
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x from by
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x from by
       rw [SmoothCcTensor.toSection_sub]; rfl]
     rw [TensorRSSpace.toModel_sub, hPeq]
     dsimp [Pdev]
     rw [pathIntegralFib_toModel, pathIntegralFib_toModel]
     have hint : IntervalIntegrable (fun t : ℝ =>
         TensorRSSpace.toModel
-          ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+          ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)).toSection x))
         MeasureTheory.volume 0 1 :=
       ((hcpath x).mono hSI).intervalIntegrable
     rw [show (∫ t in (0 : ℝ)..1, TensorRSSpace.toModel ((Φ t).toSection x)) =
         ∫ t in (0 : ℝ)..1,
           (TensorRSSpace.toModel
-              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)).toSection x) -
             TensorRSSpace.toModel
-              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x)) from
+              ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x)) from
       intervalIntegral.integral_congr (fun t _ => by
         simp only [Φ]
-        rw [show (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+        rw [show (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x =
-              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x =
+              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)).toSection x -
-              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x from by
+              (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x from by
           rw [SmoothCcTensor.toSection_sub]; rfl]
         rw [TensorRSSpace.toModel_sub])]
     rw [intervalIntegral.integral_sub hint intervalIntegrable_const,
@@ -902,11 +905,11 @@ theorem top_path_dev_h2
   · rw [heq]
     dsimp [Pdev]
     exact path_jetL2_le (I := I) (M := M) g₀ 4 2 2 Φ
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev hCR
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev
       (fun t ht => by simpa using (hper t ht).2)
 
 theorem top_path_split
-    (g₀ g_bg : SmoothRiemannianMetric I M)
+    (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound g₀
@@ -916,17 +919,17 @@ theorem top_path_split
       (ccTensorBilinSymm (I := I) g₀ T') δ')
     (U : SmoothCcTensor g₀ 0 2) :
     operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+        (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
           hδ_lt hδ hδ'_lt hδ')
         (iteratedCovGrad (I := I) g₀ 0 2 2 U) -
       rawTensorConnLapSmooth (I := I) g₀ 0 2 U =
     operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+        (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
             hδ_lt hδ hδ'_lt hδ' -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
         (iteratedCovGrad (I := I) g₀ 0 2 2 U) +
       operatorFieldApply (I := I) (M := M) g₀ 2 2
-        (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g₀)
+        (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀)
         (iteratedCovGrad (I := I) g₀ 0 2 0 U) := by
   have hlap : rawTensorConnLapSmooth (I := I) g₀ 0 2 U =
       operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -939,33 +942,33 @@ theorem top_path_split
     exact rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
       (I := I) (M := M) g₀ U x v
   rw [hlap, ← operatorFieldApplication_sub_left]
-  rw [show rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+  rw [show rhsTopPathIntegral (I := I) (M := M) g₀ T T'
           hδ_lt hδ hδ'_lt hδ' -
         cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀ =
-      (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+      (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
           hδ_lt hδ hδ'_lt hδ' -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀) +
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀) +
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
         cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀) by abel]
   rw [operatorFieldApplication_add_left, operatorFieldApplication_sub_left,
-    metricPrincipalDefect_curv_fold (I := I) (M := M) g₀ g_bg g₀ U]
+    metricPrincipalDefect_curv_fold (I := I) (M := M) g₀ g₀ U]
 
 theorem fixed_curv_h1
     (hDim : Module.finrank ℝ E = 3)
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ U : SmoothCcTensor g₀ 0 2,
       ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
           (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g₀) U)‖ ≤
+            (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀) U)‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) U‖ := by
   obtain ⟨Capp, hCapp, happ⟩ :=
     operatorFieldApplication_c1_h2_h1 (I := I) (M := M) hDim g₀ 2 2
   obtain ⟨K, hK, hKbound⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor
-      (I := I) (M := M) g₀ 2 2 (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g₀)
+      (I := I) (M := M) g₀ 2 2 (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀)
   let B0 : ℝ := Real.sqrt K
   let B1 : ℝ := ‖covGrad (I := I) (M := M) g₀ 2 2
-    (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g₀)‖
+    (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀)‖
   let C : ℝ := Capp * (B0 + B1)
   have hB0 : 0 ≤ B0 := Real.sqrt_nonneg _
   have hB1 : 0 ≤ B1 := norm_nonneg _
@@ -973,16 +976,16 @@ theorem fixed_curv_h1
   intro U
   have hpoint : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          ((metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g₀).toSection x) ≤ B0 ^ 2 := by
+          ((metricPrincipalDefectCurvCoeff (I := I) g₀ g₀).toSection x) ≤ B0 ^ 2 := by
     intro x
     rw [show B0 ^ 2 = K by dsimp [B0]; exact Real.sq_sqrt hK]
     exact hKbound x
   simpa only [C, B1] using happ
-    (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g₀) U B0 B1 hB0 hB1 hpoint (le_refl B1)
+    (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀) U B0 B1 hB0 hB1 hpoint (le_refl B1)
 
 theorem top_path_h1
     (hDim : Module.finrank ℝ E = 3)
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ∃ Ctop Clow : ℝ, 0 ≤ Ctop ∧ 0 ≤ Clow ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (hδ_lt : δ < 1)
@@ -995,18 +998,18 @@ theorem top_path_h1
         0 ≤ A →
         (∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-              ((rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+              ((rhsTopPathIntegral (I := I) (M := M) g₀ T T'
                   hδ_lt hδ hδ'_lt hδ' -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀).toSection x) ≤
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
             A ^ 2) →
         (∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 4 2 j
-            (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+            (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
                 hδ_lt hδ hδ'_lt hδ' -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2) ≤ A ^ 2 →
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2) ≤ A ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
-              (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+              (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
                 hδ_lt hδ hδ'_lt hδ')
               (iteratedCovGrad (I := I) g₀ 0 2 2 U) -
             rawTensorConnLapSmooth (I := I) g₀ 0 2 U)‖ ≤
@@ -1014,22 +1017,22 @@ theorem top_path_h1
             Clow * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) U‖ := by
   obtain ⟨Ctop, hCtop, htop⟩ :=
     operatorFieldApplication_h2_h3_h1 (I := I) (M := M) hDim g₀ 2 2
-  obtain ⟨Clow, hClow, hlow⟩ := fixed_curv_h1 (I := I) (M := M) hDim g₀ g_bg
+  obtain ⟨Clow, hClow, hlow⟩ := fixed_curv_h1 (I := I) (M := M) hDim g₀
   refine ⟨Ctop, Clow, hCtop, hClow, ?_⟩
   intro T T' δ hδ_lt hδ δ' hδ'_lt hδ' U A hA hdevPt hdevJet
   have htop' := htop
-    (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+    (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
         hδ_lt hδ hδ'_lt hδ' -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
     U A hA hdevPt hdevJet
   have hlow' := hlow U
-  rw [top_path_split (I := I) (M := M) g₀ g_bg T T'
+  rw [top_path_split (I := I) (M := M) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' U, ccTensorToHs_add]
   exact (norm_add_le _ _).trans (add_le_add htop' hlow')
 
 theorem top_path_ball_h1
     (hDim : Module.finrank ℝ E = 3)
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ∃ ρ Ctop Clow : ℝ, 0 < ρ ∧ 0 ≤ Ctop ∧ 0 ≤ Clow ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (hδ_lt : δ < 1)
@@ -1044,16 +1047,16 @@ theorem top_path_ball_h1
         ∀ U : SmoothCcTensor g₀ 0 2,
           ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
             (operatorFieldApply (I := I) (M := M) g₀ 4 2
-                (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+                (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
                   hδ_lt hδ hδ'_lt hδ')
                 (iteratedCovGrad (I := I) g₀ 0 2 2 U) -
               rawTensorConnLapSmooth (I := I) g₀ 0 2 U)‖ ≤
             Ctop * R * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) U‖ +
               Clow * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) U‖ := by
   obtain ⟨ρ, Cdev, hρ, hCdev, hdev⟩ :=
-    top_path_dev_h2 (I := I) (M := M) hDim g₀ g_bg
+    top_path_dev_h2 (I := I) (M := M) hDim g₀
   obtain ⟨Capp, Clow, hCapp, hClow, happ⟩ :=
-    top_path_h1 (I := I) (M := M) hDim g₀ g_bg
+    top_path_h1 (I := I) (M := M) hDim g₀
   refine ⟨ρ, Capp * Cdev, Clow, hρ, mul_nonneg hCapp hCdev, hClow, ?_⟩
   intro T T' δ hδ_lt hδ δ' hδ'_lt hδ' R hR hRρ hT hT' U
   obtain ⟨hpt, hjet⟩ := hdev T T' hδ_lt hδ hδ'_lt hδ' hR hRρ hT hT'

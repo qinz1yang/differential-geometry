@@ -24,14 +24,14 @@ variable [IsManifold I ∞ M]
 
 noncomputable def ricciUpperBoundSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TwoTensorSecFamily (I := I) (M := M) :=
   fun t => (-1 : Real) • pinchSec (I := I) S (1 / 2) t
 
 theorem ricci_upper_bound_sec_at_point
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
     (ricciUpperBoundSec S) t x =
@@ -64,7 +64,7 @@ theorem ricci_upper_bound_sec_at_point
 @[simp]
 theorem ricci_upper_bound_sec_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v w : TangentSpace I x) :
     ((ricciUpperBoundSec S) t x) (vec2 (I := I) v w) =
@@ -99,7 +99,7 @@ theorem ricci_upper_bound_sec_apply
 
 theorem ricci_upper_bound_sec_symm
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (U : Set Real) :
     TwoTensorFamilySymmetricOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S)) U := by
@@ -113,14 +113,14 @@ theorem ricci_upper_bound_sec_symm
 
 noncomputable def ricciUpperBoundNablaModel
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorNabla1SecFamily (I := I) (M := M) :=
   fun t => -pinchNablaModel (I := I) S (1 / 2) t
 
 noncomputable def ricciUpperBoundNab2ModelSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorNabla2SecFamily (I := I) (M := M) :=
   fun t => -pinchNab2ModelSec (I := I) S (1 / 2) t
@@ -1104,7 +1104,7 @@ theorem ricci_upper_bound_preserved
 
 theorem ricci_upper_bound_of_metric_curvature_operator_nonnegative
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M}
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
@@ -1144,7 +1144,7 @@ theorem ricci_upper_bound_of_metric_curvature_operator_nonnegative
 
 theorem metric_curvature_operator_nonnegative_of_ricci_upper_bound_at
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M}
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
@@ -1182,8 +1182,7 @@ theorem metric_curvature_operator_nonnegative_of_ricci_upper_bound_at
     (hdim := hdim) (hsymm := hsymm) (htrace := htrace)).mpr hUpper
 
 theorem metric_curvature_operator_nonnegative_of_ricci_upper_bound
-    [T2Space M] [SigmaCompactSpace M]
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [T2Space M] {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
     (hUpper : ∀ (t : ℝ) (x : M) (v : TangentSpace I x),

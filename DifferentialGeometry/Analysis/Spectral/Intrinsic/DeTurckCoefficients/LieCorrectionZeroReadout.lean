@@ -105,6 +105,8 @@ private lemma lieArm_symmS_rawComponent
   rw [smul_eq_mul]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -173,6 +175,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
   simp only [arm1ReadoutCovDeriv, hJ0, hJtail]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieU3_readout (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -223,6 +226,8 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_raw_readout (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -242,6 +247,7 @@ private lemma lieCorrectionZero_raw_readout (hδ_lt : δ < 1)
 
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lieArm1_center (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -298,6 +304,8 @@ private lemma lieCorrectionZero_euclid_christoffel_bridge (g : SmoothRiemannianM
   rw [chartModelBasis_apply]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_euclid_f_bridge (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -377,6 +385,7 @@ private lemma lieCorrectionZero_euclid_f_bridge (hδ_lt : δ < 1)
 
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieR4_center (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)

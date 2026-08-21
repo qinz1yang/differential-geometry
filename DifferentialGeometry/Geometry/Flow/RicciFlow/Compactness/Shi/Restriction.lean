@@ -26,12 +26,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [IsManifold I 1 M] [IsManifold I 2 M]
 
 omit [I.Boundaryless] in
-omit [IsManifold I 2 M] in
+omit [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciSection_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
+    [IsManifold I 1 U] [hManifoldU : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (x : U) (slots : Fin 2 → TangentSpace I x) :
     CovariantDerivative.ricciSection (I := I)
         (leviCivitaConnectionOfMetric (I := I) (g.restrictOpen (I := I) U))
@@ -41,6 +41,7 @@ theorem ricciSection_restrictOpen
           (leviCivitaConnectionOfMetric (I := I) g)
           (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g)
           (x : M) slots := by
+  let _ := hManifoldU
   have hLHS :
       CovariantDerivative.ricciSection (I := I)
           (leviCivitaConnectionOfMetric (I := I) (g.restrictOpen (I := I) U))
@@ -77,7 +78,7 @@ private theorem covDerivOfField_apply_eq_iterCov'
   rw [covDerivOfField_eq_iterCov]
   rfl
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
@@ -101,7 +102,7 @@ theorem ricCovTower_restrictOpen
     · funext i
       simp only [Function.comp_apply, Equiv.symm_apply_apply]
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_normSq0S_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
@@ -124,6 +125,7 @@ theorem ricCovTower_normSq0S_restrictOpen
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem movingShiBoundOn_restrictOpen
     (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]

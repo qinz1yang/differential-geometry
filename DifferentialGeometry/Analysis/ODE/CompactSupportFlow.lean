@@ -167,7 +167,7 @@ theorem curveAt_eq_self_of_not_mem_tsupport [I.Boundaryless]
 
 theorem exists_uniform_localIntegralCurveOn_of_compactSupport [FiniteDimensional ℝ E]
     [CompleteSpace E] [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))

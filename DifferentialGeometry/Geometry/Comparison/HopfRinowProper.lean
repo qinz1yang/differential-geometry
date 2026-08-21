@@ -167,6 +167,7 @@ theorem riemMetric_dist_eq
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [ConnectedSpace M] in
+omit [T2Space (TangentBundle I M)] in
 theorem expImgClosedBall_compact
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
@@ -324,7 +325,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem riemMetric_dist_eq_of_complete_metric
+@[nolint unusedArguments] theorem riemMetric_dist_eq_of_complete_metric
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (x y : M) :

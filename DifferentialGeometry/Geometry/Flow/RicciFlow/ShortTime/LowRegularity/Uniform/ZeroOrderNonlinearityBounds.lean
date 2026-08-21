@@ -104,6 +104,8 @@ theorem zero_mem_smoothCore (g₀ : SmoothRiemannianMetric I M) {R : ℝ} (hR : 
   exact ⟨0, smoothCcToTensorHs_zero (I := I) (M := M) g₀ _⟩
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem realizeMetric_zero (g₀ : SmoothRiemannianMetric I M) {δ : ℝ} (hδ : δ < 1)
     (hb : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :

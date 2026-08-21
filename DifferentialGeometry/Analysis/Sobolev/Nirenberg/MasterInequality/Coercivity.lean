@@ -612,7 +612,7 @@ theorem principal_term_ge_lambda_norm_sq
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (k : Fin d) {h : ℝ} (_hh : h ≠ 0)
+    (k : Fin d) {h : ℝ}
     (hh_supp : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
     B.lam * ∫ x, (η x)^2 * (∑ i : Fin d,
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -932,7 +932,7 @@ theorem nirenberg_master_inequality
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2)
     ∂(volume : Measure E) with hL_def
   have h_coerc : L ≤ P :=
-    principal_term_ge_lambda_norm_sq (d := d) B hu hη hη_supp k hh hh_supp
+    principal_term_ge_lambda_norm_sq (d := d) B hu hη hη_supp k hh_supp
   have h_S_eq : S = Q - R := by
     have := h_sub_S
     linarith

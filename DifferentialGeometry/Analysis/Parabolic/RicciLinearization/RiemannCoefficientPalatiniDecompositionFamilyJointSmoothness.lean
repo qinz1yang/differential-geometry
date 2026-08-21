@@ -80,6 +80,8 @@ def riemannPalatiniDecompositionC2Family (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] lemma riemannPalatiniDecompositionC2Family_zero (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -110,6 +112,7 @@ def deTurckLieCovariantDerivativeArmField (g₀ g₁ g_bg : SmoothRiemannianMetr
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem deTurckLieCovariantDerivativeArmField_toSection
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
@@ -127,6 +130,7 @@ def deTurckLieEndoArmField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem deTurckLieEndoArmField_toSection
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
@@ -135,6 +139,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCoeffField_eq_covDerivArm_add_endoArm
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg =
@@ -655,6 +660,7 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -773,7 +779,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) W σp α hxbase]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -877,7 +883,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
     · exact (Bcmm.equivFun.symm_apply_apply _).symm
   exact hfinal
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem curvatureDecompositionMonomialCoeffField_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -910,7 +916,7 @@ theorem curvatureDecompositionMonomialCoeffField_metricPerturbationPath_jointCon
   rfl
 
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem riemannPalatiniDecompositionC2Family_threeArmHjoint
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}

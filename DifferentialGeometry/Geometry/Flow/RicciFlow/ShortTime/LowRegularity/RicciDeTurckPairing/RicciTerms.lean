@@ -1360,6 +1360,7 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_tame_di
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 private theorem cometricDoubleTraceCoefficient_eq_pureTrace
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g gm =
@@ -1503,6 +1504,7 @@ private theorem exists_ricciCometricFourTraceCastG0_covariantJetNormSq_differenc
       ring
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem kernelContractionMonomialField_sub
     (g : SmoothRiemannianMetric I M)
     (G H : SmoothCcTensor g 0 4) (σ : Equiv.Perm (Fin 4)) :

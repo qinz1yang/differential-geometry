@@ -231,8 +231,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem exists_chartBiflow
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
-    [T2Space (TangentBundle I M)]
+    [IsManifold I ∞ M] [T2Space M]
     (g : SmoothRiemannianMetric I M) {p : M}
     (c : NormalBallChart (I := I) p) (b : c.MetricBounds g) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆

@@ -103,7 +103,7 @@ theorem conjugating_diffeo_family_jointsmooth
     forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
       (I := I) X_DT T_DT hDT hsmooth0_X
   obtain ⟨Φ_fam, hfam0, hfameq, hfamode⟩ :=
-    time_dependent_vf_bare_flow_family (I := I) X_DT T_DT hDT Φ hΦ0
+    time_dependent_vf_bare_flow_family (I := I) X_DT T_DT Φ
       (fun t ht htT => hdiffeo t ⟨ht, htT⟩)
       (fun t ht htT x => hflow t ⟨ht, htT⟩ x)
   have hfun_eqOn : ∀ s ∈ Set.Ico (0 : ℝ) T_DT, (Φ_fam s : M → M) = fun y : M => Φ s y := by

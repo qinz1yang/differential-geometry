@@ -443,7 +443,7 @@ private def ricciDataOfFrame
 
 theorem coordReact
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (x0 : M) (t : Real) :
     ricciNormCurvatureReactionInFrame

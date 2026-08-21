@@ -457,7 +457,6 @@ omit [NeZero (Module.finrank ℝ E)]
 theorem grid_h1_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (P : SmoothCcTensor g 0 2)
     (K C : ℕ → ℝ)
-    (_hK : ∀ k, 0 ≤ K k)
     (hgrid : ∀ k : ℕ, k ≤ 3 →
       MeasureTheory.Integrable (lowJetGrid (I := I) (M := M) g P k)
         (riemannianVolumeMeasure (I := I) (M := M) g) ∧
@@ -541,7 +540,7 @@ theorem h1_of_grid
     intro k hk
     simpa only [lowJetGrid] using hgrid P A hA hP k hk
   have hle := grid_h1_le (I := I) (M := M) g P (K A) C
-    (hK A hA) hgr hC Φ hΦ
+    hgr hC Φ hΦ
   change _ ≤ (B A) ^ 2
   rw [show (B A) ^ 2 = Q A by
     simp only [B, Real.sq_sqrt (hQ A hA)]]
@@ -552,7 +551,6 @@ omit [NeZero (Module.finrank ℝ E)]
 theorem grid_h2_low
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (P : SmoothCcTensor g 0 2)
     (K C : ℕ → ℝ)
-    (_hK : ∀ k, 0 ≤ K k)
     (hgrid : ∀ k : ℕ, k ≤ 2 →
       MeasureTheory.Integrable (lowJetGrid (I := I) (M := M) g P k)
         (riemannianVolumeMeasure (I := I) (M := M) g) ∧
@@ -636,7 +634,7 @@ theorem h2_of_grid_low
     intro k hk
     simpa only [lowJetGrid] using hgrid P A hA hP k hk
   have hle := grid_h2_low (I := I) (M := M) g P (K A) C
-    (hK A hA) hgr hC Φ hΦ
+    hgr hC Φ hΦ
   change _ ≤ (B A) ^ 2
   rw [show (B A) ^ 2 = Q A by
     simp only [B, Real.sq_sqrt (hQ A hA)]]
@@ -647,7 +645,6 @@ omit [NeZero (Module.finrank ℝ E)]
 theorem grid_h2_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (P : SmoothCcTensor g 0 2)
     (K C : ℕ → ℝ)
-    (_hK : ∀ k, 0 ≤ K k)
     (hgrid : ∀ k : ℕ, k ≤ 3 →
       MeasureTheory.Integrable (lowJetGrid (I := I) (M := M) g P k)
         (riemannianVolumeMeasure (I := I) (M := M) g) ∧
@@ -731,7 +728,7 @@ theorem h2_of_grid
     intro k hk
     simpa only [lowJetGrid] using hgrid P A hA hP k hk
   have hle := grid_h2_le (I := I) (M := M) g P (K A) C
-    (hK A hA) hgr hC Φ hΦ
+    hgr hC Φ hΦ
   change _ ≤ (B A) ^ 2
   rw [show (B A) ^ 2 = Q A by
     simp only [B, Real.sq_sqrt (hQ A hA)]]
@@ -818,7 +815,7 @@ theorem h2_grid_tame
       simpa only [lowJetGrid, Km, if_neg hk3] using
         hgrid0 P R hR hP2 k hk2
   have hle := grid_h2_le (I := I) (M := M) g P Km C
-    hKm hgr hC Φ hΦ
+    hgr hC Φ hΦ
   have hsplit : ∀ i : ℕ,
       (∑ k ∈ Finset.range (i + 2), Km k) = L R i + T R i * A ^ 2 := by
     intro i
@@ -1134,7 +1131,7 @@ theorem kappaSelf_h1
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w +
         ccTensorBilinSymm (I := I) g₀ P y v w)
-    (R : ℝ) (_hR : 0 ≤ R)
+    (R : ℝ)
     (hP : (∑ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) ≤ R ^ 2) :
     (∑ i ∈ Finset.range 2,
@@ -1175,7 +1172,7 @@ theorem kappaSelf_h2
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w +
         ccTensorBilinSymm (I := I) g₀ P y v w)
-    (A : ℝ) (_hA : 0 ≤ A)
+    (A : ℝ)
     (hP : (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) ≤ A ^ 2) :
     (∑ i ∈ Finset.range 3,
@@ -1485,7 +1482,7 @@ theorem kappaBackground_h1
   let B : ℝ → ℝ := fun R => Real.sqrt (Q R)
   refine ⟨B, fun R hR => Real.sqrt_nonneg _, ?_⟩
   intro g₁ P htie R hR hP
-  have hself := kappaSelf_h1 (I := I) (M := M) g₀ g₁ P htie R hR hP
+  have hself := kappaSelf_h1 (I := I) (M := M) g₀ g₁ P htie R hP
   have hpb3 := hBP P R hR hP
   have hpb : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i
@@ -1579,7 +1576,7 @@ theorem kappaBackground_tame
   let B : ℝ → ℝ → ℝ := fun R A => Real.sqrt (Q R A)
   refine ⟨B, fun R hR A hA => Real.sqrt_nonneg _, ?_⟩
   intro g₁ P htie R A hR hA hP2 hP3
-  have hself := kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie A hA hP3
+  have hself := kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie A hP3
   have hpb := hBP P R hR hP2
   have hterm : ∀ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i
@@ -1702,7 +1699,7 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_bound
     intro k hk
     simpa only [lowJetGrid] using hgrid P A hA hP k hk
   have hle := grid_h1_le (I := I) (M := M) g₀ P (K A) C
-    (hK A hA) hgr hC
+    hgr hC
     (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁)
     (fun i _ x => hpt g₁ P htie hδ_le hδ_nonneg hbound i x)
   change _ ≤ (B A) ^ 2
@@ -1752,7 +1749,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_covariantJetN
     intro k hk
     simpa only [lowJetGrid] using hgrid P A hA hP k hk
   have hle := grid_h1_le (I := I) (M := M) g₀ P (K A) C
-    (hK A hA) hgr hC
+    hgr hC
     (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg)
     (fun i _ x => hpt g₁ P htie hδ_le hδ_nonneg hbound i x)
   change _ ≤ (B A) ^ 2
@@ -1825,7 +1822,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
     exact (hpt g₁ P htie hδ_le hδ_nonneg hbound i x).trans
       (mul_le_mul_of_nonneg_left hwin' (hC i))
   have hle := grid_h1_le (I := I) (M := M) g₀ P (K A) C
-    (hK A hA) hgr hC
+    hgr hC
     (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀)
     (fun i _ x => hpt' i x)
@@ -1999,11 +1996,11 @@ theorem lieCorrectionZeroVectorBundleField_h1_bound
   have hK2 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K‖ ^ 2) ≤ (4 * A) ^ 2 := by
     simpa only [K] using kappaSelf_h2
-      (I := I) (M := M) g₀ g₁ P htie A hA hP3
+      (I := I) (M := M) g₀ g₁ P htie A hP3
   have hK1 : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K‖ ^ 2) ≤ (4 * R) ^ 2 := by
     simpa only [K] using kappaSelf_h1
-      (I := I) (M := M) g₀ g₁ P htie R hR hP2
+      (I := I) (M := M) g₀ g₁ P htie R hP2
   have hVf : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 1 i Vf‖ ^ 2) ≤ (Vb R A) ^ 2 := by
     simpa only [Vf, Vb] using hvprod T1 K (Bt1 R) (4 * A)
@@ -2143,7 +2140,7 @@ theorem lieCorrectionZeroMixedConnectionField_h1_bound
   have hK0 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K0‖ ^ 2) ≤ (4 * A) ^ 2 := by
     simpa only [K0] using kappaSelf_h2
-      (I := I) (M := M) g₀ g₁ P htie A hA hP3
+      (I := I) (M := M) g₀ g₁ P htie A hP3
   have hKB : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i KB‖ ^ 2) ≤ (BK R) ^ 2 := by
     simpa only [KB] using hkbg g₁ P htie R hR hP2
@@ -2243,6 +2240,7 @@ theorem lieCorrectionZeroMixedConnection_h1_bound
   exact hform g₁ P htie hδ_le hδ_nonneg hbound R A hR hA hP2 hP3
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem deTurckLieLowerOrderTail_split
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg +
@@ -2255,6 +2253,7 @@ theorem deTurckLieLowerOrderTail_split
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem deTurckLieLowerOrderTail_decomposition
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg +
@@ -2485,6 +2484,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_bound_of_component_bounds
   simpa only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
     add_zero] using hsum
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_one_coefficient_sobolev_two_bound
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)

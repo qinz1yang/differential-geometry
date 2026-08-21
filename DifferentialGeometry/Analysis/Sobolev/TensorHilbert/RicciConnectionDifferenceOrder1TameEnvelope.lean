@@ -39,6 +39,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciCometricFourTraceCastG0Fib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
@@ -103,6 +104,7 @@ def linearizedRicciConnectionDifferenceOrder1KernelField (g₀ g₁ : SmoothRiem
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem ricciCometricFourTraceCastG0_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (ricciCometricFourTraceCastG0 (I := I) g₀ g₁).toSection x =
@@ -121,6 +123,7 @@ omit [SigmaCompactSpace M] in
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem linearizedRicciConnectionDifferenceOrder1CoeffField_eq_ccOperatorFieldComp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g₀ g₁ =
@@ -152,6 +155,7 @@ abbrev fourTraceArgPerm2301 : Equiv.Perm (Fin 4) :=
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciCometricFourTraceCastG0_eq_reindex_combination
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciCometricFourTraceCastG0 (I := I) g₀ g₁ =
@@ -174,6 +178,7 @@ theorem ricciCometricFourTraceCastG0_eq_reindex_combination
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma cometricDoubleTraceCoefficient_sub_doubleTrace_clm
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -186,6 +191,7 @@ private lemma cometricDoubleTraceCoefficient_sub_doubleTrace_clm
   rw [hcast, cometricDoubleTraceField_toSection, cometricDoubleTraceField_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem cometricDoubleTraceCoefficient_eq_doubleTrace_add_ccOperatorFieldComp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁ =
@@ -975,21 +981,21 @@ theorem connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_tw
           (slotExtend (I := I) (M := M) g₀ 2 3
             (slotExtend (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)))
           connectionDifferenceContrInsertionReindexPerm).toSection x) D) =
-        slotExtendPointwise (I := I) (M := M) g₀ 2 3 x
-          (slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+        slotExtendPointwise (I := I) (M := M) 2 3 x
+          (slotExtendPointwise (I := I) (M := M) 1 2 x
             (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
               (connectionDifferenceSection (I := I) g₁ g₀).toSection x)) D' := by
       rw [hD'_def]
       exact reindexCoeffFibGen_apply (I := I) 3 4 connectionDifferenceContrInsertionReindexPerm x _ D
     rw [h1]
     conv_lhs => rw [show u = Fin.cons (u 0) (Matrix.vecTail u) from (Fin.cons_self_tail u).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 2 3 x
-      (slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 2 3 x
+      (slotExtendPointwise (I := I) (M := M) 1 2 x
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (connectionDifferenceSection (I := I) g₁ g₀).toSection x)) D' (u 0) (Matrix.vecTail u)]
     conv_lhs => rw [show Matrix.vecTail u = Fin.cons (Matrix.vecTail u 0)
       (Matrix.vecTail (Matrix.vecTail u)) from (Fin.cons_self_tail (Matrix.vecTail u)).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 1 2 x
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 1 2 x
       (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
       ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (u 0))

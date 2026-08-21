@@ -72,6 +72,7 @@ private theorem domDomCongrSection_sub
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem cometricRaiseSlot0Field_sub
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 (s + 2)) :
@@ -138,6 +139,7 @@ private noncomputable def deTurckLieArmOneBackgroundRaisedConnectionDifference
       (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB))
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference
     (g gT gB : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2)
@@ -160,6 +162,7 @@ private noncomputable def deTurckLieArmOneBackgroundCoefficientDifference
     deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckLieArmOneBackgroundCoefficientDifference_eq_comp
     (g gT gB : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB =
@@ -171,6 +174,7 @@ private theorem deTurckLieArmOneBackgroundCoefficientDifference_eq_comp
   rw [operatorFieldComposition_sub_left]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
     (g gT gU gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -195,6 +199,7 @@ private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckLieArmOneBackgroundCoefficientDifference_difference_decomposition
     (g gT gU gB : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB -
@@ -746,6 +751,7 @@ private theorem reindexCoeffGen_sub
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem deTurckLieTraceCoeffPiece_add
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
@@ -758,6 +764,7 @@ private theorem deTurckLieTraceCoeffPiece_add
     operatorFieldComposition_add_right, reindexCoeffGen_add (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem deTurckLieTraceCoeffPiece_sub
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
@@ -780,6 +787,7 @@ private theorem deTurckLieArmOneBackgroundConnectionDifference_self
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckLieArmOneCoefficient_backgroundDifference_decomposition
     (g gm gB : SmoothRiemannianMetric I M) :
     deTurckLieArm1Coeff (I := I) (M := M) g gm gB -
@@ -827,6 +835,7 @@ private theorem covariantJetNormSq_two_reindexCoeffGen
     norm_reindexCoeffGen_eq (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem deTurckLieTraceCoeff_eq_reindexedPureTrace
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -1127,6 +1136,7 @@ private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathInte
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hBint hSint]
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem rhsLow1Coeff_backgroundDifference_eq_deTurckLieArmOneCoefficientDifference
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1246,7 +1256,7 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
     simpa only [B] using hraw
   have hpath := path_jetL2_le (I := I) (M := M) g 3 2 2
     Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := B R) (hB R hR) hpoint
+    (B := B R) hpoint
   simpa only [lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral, Φ, S, covariantJetNormSq, Nat.reduceAdd] using hpath
 
 private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_difference_covariantJetNormSq_two_bound

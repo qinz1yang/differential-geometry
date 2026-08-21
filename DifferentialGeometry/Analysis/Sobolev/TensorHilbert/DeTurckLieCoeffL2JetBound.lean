@@ -49,6 +49,7 @@ private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) 
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg =

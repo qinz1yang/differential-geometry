@@ -194,7 +194,7 @@ theorem chartGramEvolution_of_pde (g : ℝ → SmoothRiemannianMetric I M) (α :
   exact (jetRicciFlow_chartGram (g t) α hy hG hG1 hG2 i k).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartGramEntryPDE_of_metricPDE [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+theorem chartGramEntryPDE_of_metricPDE [I.Boundaryless] [T2Space M]
     (g : ℝ → SmoothRiemannianMetric I M) (α : M) {y : E} {sL : Set ℝ} {t : ℝ}
     (hgs : (extChartAt I α).symm y ∈ chartLeviCivitaGoodSet (I := I) α)
     (hyt : extChartAt I α ((extChartAt I α).symm y) = y) (i k : Fin (Module.finrank ℝ E))
@@ -252,7 +252,7 @@ private theorem bilin_deriv_basis
   simpa only [← hexp] using hstep
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem metricPDE_of_gram [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+theorem metricPDE_of_gram [I.Boundaryless] [T2Space M]
     (g : ℝ → SmoothRiemannianMetric I M) (x : M) {t : ℝ}
     (hpde : ∀ i j : Fin (Module.finrank ℝ E),
       HasDerivAt

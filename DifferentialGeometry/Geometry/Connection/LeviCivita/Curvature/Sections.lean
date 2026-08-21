@@ -917,7 +917,7 @@ theorem levi_civita_second_bianchi
   simpa [add_assoc] using hinner
 
 set_option backward.isDefEq.respectTransparency false in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem levi_civita_ricci_section_eq_riemann_trace
     (g : SmoothRiemannianMetric I M) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
@@ -1010,6 +1010,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
         (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) := by
         simp [metricTraceFirstTwo0STensor_apply, metricTraceFirstTwo0SAt]
 
+omit [SigmaCompactSpace M] in
 theorem levi_civita_covariant_ricci_eq_riemann_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1062,6 +1063,7 @@ theorem levi_civita_covariant_ricci_eq_riemann_trace
     finCons_vec4_eq_vec5] using htrace
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1351,6 +1353,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
     rw [hleft, hright]
     simpa [σ, vec5, Equiv.ofBijective] using h
 
+omit [SigmaCompactSpace M] in
 theorem levi_civita_bianchi_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1402,6 +1405,7 @@ theorem levi_civita_bianchi_trace_identities
       levi_civita_covariant_ricci_eq_riemann_trace (I := I) (M := M) g basis gInv hinv
   exact ⟨hSecond, hSymm, hTrace⟩
 
+omit [SigmaCompactSpace M] in
 theorem levi_civita_bianchi_scalar_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1461,6 +1465,7 @@ theorem levi_civita_bianchi_scalar_trace_identities
       scalar_curvature_differential_eq_ricci_trace (I := I) (M := M) g basis gInv hinv
   exact ⟨hcore.1, hcore.2.1, hcore.2.2, hscalar⟩
 
+omit [SigmaCompactSpace M] in
 theorem exists_levi_civita_bianchi_trace_data
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)

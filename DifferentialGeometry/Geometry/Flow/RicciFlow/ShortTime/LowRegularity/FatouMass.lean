@@ -114,7 +114,7 @@ theorem exists_weighted_energy_bound_up_to_three_of_adapted_solution
 theorem exists_weighted_energy_bound_up_to_three (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
-    (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT hT1 fLo) :
+    (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo) :
     ∃ Ctop B1 ρ P Ctop₂ Kr2 Kr1 Cδ : ℝ,
       0 ≤ Ctop₂ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Cδ ∧
       ∀ {ε : ℝ}, 0 < ε →

@@ -256,6 +256,7 @@ theorem jointlySmoothCcTensorFamily_slotExtendIter_two
     (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
   exact slotExtendIter_two_zero_four_apply (I := I) (M := M) g (K q.2) q.1 (Y q.1)
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -271,6 +272,7 @@ theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_j
   have h := connIns_joint (I := I) g T 0 hδ hδZ
   simpa only [connectionDifferenceContravariantInsertionField_toSection] using h
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciCometricFourTraceCastG0_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -304,6 +306,7 @@ theorem ricciCometricFourTraceCastG0_metricPerturbationPath_jointlySmooth
     (E := fun x : M => Tensor0SSpace 2 I x) p.1 z) ?_
   rw [ricciCometricFourTraceCastG0_toSection]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connectionDifferenceInsertionInnerActionCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -323,6 +326,7 @@ theorem connectionDifferenceInsertionInnerActionCoefficient_metricPerturbationPa
     (I := I) (M := M) g T hδ hδZ
   simpa only [connectionDifferenceInsertionInnerActionCoefficient] using jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hA hB
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -348,6 +352,7 @@ theorem ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlyS
   have h₃ := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hout h₂
   simpa only [ricciQuadraticKernelDerivativeNestedTerm] using h₃
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -370,6 +375,7 @@ theorem ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmo
   have h₂ := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hout h₁
   simpa only [ricciQuadraticKernelDerivativeBareTerm] using h₂
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -402,6 +408,7 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_metricPerturbati
   have hout := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g htrace hker
   simpa only [ricciConnectionDifferenceQuadraticDerivativeCoefficient, ricciQuadraticKernelDerivativeCoefficient] using hout
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem reindexedPureTrace_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -450,6 +457,7 @@ theorem reindexedPureTrace_metricPerturbationPath_jointlySmooth
     DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroTraceStep,
     ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem pureTrace_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -485,6 +493,7 @@ theorem pureTrace_metricPerturbationPath_jointlySmooth
     (E := fun x : M => Tensor0SSpace p I x) q.1 z) ?_
   rw [pureTrace_toSection]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem cometricDoublePairTraceCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -502,6 +511,7 @@ theorem cometricDoublePairTraceCoefficient_metricPerturbationPath_jointlySmooth
   have hout := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g h₂ h₄
   simpa only [RicciDeTurckLowOrder.pairTrace_eq] using hout
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem reindexedCometricDoubleTrace_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -538,6 +548,7 @@ theorem reindexedCometricDoubleTrace_metricPerturbationPath_jointlySmooth
     (reindexedCometricDoubleTrace_toSection (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) q.1)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -604,6 +615,7 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
             (Y q.1)) from rfl,
     domDomCongrFibRank_apply]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZeroVectorBundleDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -669,6 +681,7 @@ theorem metricConnectionDifferenceLoweredCoefficient_apply_unitTensor
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
     ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem slotExtendedMetricConnectionDifferenceLoweredCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -744,6 +757,7 @@ theorem slotExtendedMetricConnectionDifferenceLoweredCoefficient_metricPerturbat
     (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) g) q.1 (Y q.1)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -789,6 +803,7 @@ theorem lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_metricPerturba
   have hout := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g h₂ h₃
   simpa only [lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient] using hout
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -873,6 +888,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
   funext k
   fin_cases k <;> simp [ricciQuadraticPermutation_swapBlocks] <;> rfl
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -893,6 +909,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jo
   simpa only [S, deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField] using hout
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricComparisonSlotInsertion_metricPerturbationPath_eq
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -941,6 +958,7 @@ theorem metricComparisonSlotInsertion_metricPerturbationPath_eq
   rw [hfull, slotInsertEndoCc_add, slotInsertEndoCc_smul]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricComparisonSlotInsertion_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -981,6 +999,7 @@ noncomputable def connectionDifferenceMetricLoweringCoefficient
       (permCoeff (I := I) (M := M) g (finRotate 3))
       (RicciDeTurckLowOrder.connectionDifferenceLowOrderOperator (I := I) (M := M) g gm))
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem connectionDifferenceMetricLoweringCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1072,6 +1091,7 @@ noncomputable def connectionDifferenceQuadraticCurvatureDerivativeCoefficient
       (permCoeff (I := I) (M := M) g lrPermC)
       (connectionDifferenceQuadraticComposedDerivativeCoefficient (I := I) (M := M) g gm)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticPairedDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1088,6 +1108,7 @@ theorem connectionDifferenceQuadraticPairedDerivativeCoefficient_metricPerturbat
   have homega := connectionDifferenceMetricLoweringCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   simpa only [connectionDifferenceQuadraticPairedDerivativeCoefficient] using jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g harm homega
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticComposedDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1108,6 +1129,7 @@ theorem connectionDifferenceQuadraticComposedDerivativeCoefficient_metricPerturb
   have hswap := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hperm homega
   simpa only [S, connectionDifferenceQuadraticComposedDerivativeCoefficient] using jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g harm hswap
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticCurvatureDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1204,6 +1226,7 @@ theorem connectionDifferenceQuadraticCurvatureDerivativeCoefficient_apply
   rw [hqbPerm, hqaA, hqa02, hqaB, hqaC]
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticCurvatureTerm_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1300,6 +1323,7 @@ theorem deTurckLieCovariantDerivative_affineZero_decomposition
     slotExtend_sub, operatorFieldComposition_sub_right]
   module
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionQuadraticZeroCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1334,6 +1358,7 @@ noncomputable def lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient
     (tensorThreeTwoProductCoefficient (I := I) (M := M) g T)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_apply
     (g gm : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g 0 3) (W : SmoothCcTensor g 0 2) :
@@ -1381,6 +1406,7 @@ theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_apply
       operatorFieldApplication_assoc (I := I) (M := M) g 2 5 6 _ _ _
     _ = _ := by rw [hslot]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1554,6 +1580,7 @@ theorem tensorThreeTwoProductCoefficient_smul
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceInsertionInnerDerivativeCoefficient_smul
     (g : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1565,6 +1592,7 @@ theorem connectionDifferenceInsertionInnerDerivativeCoefficient_smul
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceInsertionInnerActionCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1574,6 +1602,7 @@ theorem connectionDifferenceInsertionInnerActionCoefficient_smul
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciQuadraticKernelDerivativeNestedTerm_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2)
@@ -1583,6 +1612,7 @@ theorem ricciQuadraticKernelDerivativeNestedTerm_smul
   simp only [ricciQuadraticKernelDerivativeNestedTerm, connectionDifferenceInsertionInnerActionCoefficient_smul, operatorFieldComposition_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciQuadraticKernelDerivativeBareTerm_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) (out : Equiv.Perm (Fin 4)) :
@@ -1591,6 +1621,7 @@ theorem ricciQuadraticKernelDerivativeBareTerm_smul
   simp only [ricciQuadraticKernelDerivativeBareTerm, connectionDifferenceInsertionInnerActionCoefficient_smul, operatorFieldComposition_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciQuadraticKernelDerivativeCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1600,6 +1631,7 @@ theorem ricciQuadraticKernelDerivativeCoefficient_smul
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1610,6 +1642,7 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_smul
   rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1639,6 +1672,7 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_smul
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometricRaiseSlot0Field_smul
     (g : SmoothRiemannianMetric I M) (s : ℕ) (a : ℝ)
     (W : SmoothCcTensor g 0 (s + 2)) :
@@ -1664,6 +1698,7 @@ theorem cometricRaiseSlot0Field_smul
   rw [map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1672,6 +1707,7 @@ theorem lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient_smul
   simp only [lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient, cometricRaiseSlot0Field_smul, operatorFieldComposition_smul_left, operatorFieldComposition_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVectorBundleDerivativeCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1681,6 +1717,7 @@ theorem lieCorrectionZeroVectorBundleDerivativeCoefficient_smul
   module
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_smul
     (g gm gB : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4)) :
@@ -1690,6 +1727,7 @@ theorem lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_smul
     operatorFieldComposition_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_smul
     (g gm gB : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1699,6 +1737,7 @@ theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_smul
   module
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1709,6 +1748,7 @@ theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_smul
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionQuadraticFirstDerivativeCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1716,6 +1756,7 @@ theorem lieCorrectionQuadraticFirstDerivativeCoefficient_smul
       a • lieCorrectionQuadraticFirstDerivativeCoefficient (I := I) (M := M) g gm W := by
   simp only [lieCorrectionQuadraticFirstDerivativeCoefficient, lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_smul, operatorFieldComposition_smul_right]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionQuadraticFirstDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -2039,7 +2080,7 @@ theorem exists_cometricCastG0_covariantJetNormSq_two_low_bound
     mul_nonneg (Nat.cast_nonneg _) hδ₀0
   obtain ⟨Λ, F, hΛ, hF, hcast⟩ :=
     cometricCastG0_order0sup_jetL2_radiusFree
-      (I := I) (M := M) g aStar le_rfl hδ₀ hΛ₀0
+      (I := I) (M := M) g aStar hδ₀ hΛ₀0
   refine ⟨F 2, hF 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -2813,6 +2854,7 @@ theorem lowOrderFirstDerivativeCoefficientPath_jointlySmooth
   congr 2
   ring_nf
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lieCorrectionZeroRiemann_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -3206,7 +3248,7 @@ theorem exists_affineLowOrderZeroCoefficientPathIntegral_pairing_secondOrder_bou
     mul_nonneg (mul_nonneg hB (add_nonneg (by norm_num) hR))
       (add_nonneg hD2 hN)
   have hpath := path_jetL2_le (I := I) (M := M) g 2 2 2
-    Φ S metricPerturbationPathDomain_isOpen hSI hjoint hBtot
+    Φ S metricPerturbationPathDomain_isOpen hSI hjoint
     (fun s hs => by
       simpa only [Φ, covariantJetNormSq, Nat.reduceAdd] using
         hpoint T U hT hU hδ_le hδT hδU hδZ R D2 N
@@ -3251,7 +3293,7 @@ theorem exists_affineLowOrderZeroCoefficientPathIntegral_covariantJetNormSq_two_
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
     (affineLowOrderZeroCoefficientPath_jointlySmooth (I := I) (M := M) g T hT hδT hδZ)
-    (B := B R) (hB R hR)
+    (B := B R)
     (fun s hs => by
       simpa only [covariantJetNormSq, Nat.reduceAdd] using
         hpoint T hT hδ_le hδ0 hδT hδZ R hR hT2 hTn hs)
@@ -3560,6 +3602,7 @@ theorem covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le
   exact hslot
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem sharpFlatEndoCc_eq_slotInsertEndoCc_zero
     (g gm : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g gm =
@@ -3627,7 +3670,7 @@ theorem exists_sharpFlatEndoCc_covariantJetNormSq_two_bound
   obtain ⟨Λ, Flow, hΛ, hFlow0, hFlow⟩ :=
     sharpFlatEndoCc_lowOrder_jetL2_radiusFree
       (I := I) (M := M) g
-        (2 * Module.finrank ℝ E + 10) le_rfl hδ₀ hΛ₀0
+        (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro gm P hP htie δ hδ_le hδ0 hδ
   have hsymm : symmS (I := I) (M := M) g P = P :=
@@ -4054,6 +4097,7 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_covariantJetNormSq_two_
     _ ≤ (B R * (1 + A)) ^ 2 := le_rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometricDoubleTraceCoefficient_eq_pureTrace
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g gm =
@@ -4282,6 +4326,7 @@ theorem covariantJetNormSq_cometricRaiseSlot0Field
     (I := I) (M := M) g s W q]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometricRaiseSlot0Field_zero_sub
     (g : SmoothRiemannianMetric I M)
     (W W' : SmoothCcTensor g 0 2) :
@@ -4889,6 +4934,7 @@ theorem exists_rotatedConnectionDifferenceLowOrderOperator_covariantJetNormSq_tw
       (mul_nonneg hC0 hJ)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem metricComparisonSlotInsertion_eq
     (g gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (htie : ∀ (x : M) (u v : TangentSpace I x),
@@ -5052,6 +5098,7 @@ theorem exists_operatorFieldComposition_difference_covariantJetNormSq_two_bound
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem connectionDifferenceMetricLoweringCoefficient_eq
     (g gm : SmoothRiemannianMetric I M) :
     connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm =

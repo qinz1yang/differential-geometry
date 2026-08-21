@@ -158,6 +158,7 @@ noncomputable def revJetTwoC (Λ : ℝ) : ℝ :=
     (D * Real.sqrt (Module.finrank ℝ E : ℝ)))
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] in
 theorem reverseJetOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)

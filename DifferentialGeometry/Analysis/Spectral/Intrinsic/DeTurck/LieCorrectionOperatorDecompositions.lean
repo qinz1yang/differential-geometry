@@ -26,6 +26,7 @@ variable
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroInsertion_eq_lieCorrectionZeroInsertionField
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg =
@@ -41,6 +42,7 @@ theorem lieCorrectionZeroInsertion_eq_lieCorrectionZeroInsertionField
   exact (lieCorrectionZerob_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m).symm
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVectorBundle_eq_field (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁ =
       lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁ := by
@@ -53,6 +55,7 @@ theorem lieCorrectionZeroVectorBundle_eq_field (g₀ g₁ : SmoothRiemannianMetr
   exact (lieCorrectionZerob_vb_fiber (I := I) (M := M) g₀ g₁ x D).symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnection_eq_lieCorrectionZeroMixedConnectionField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ g_bg =
       lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ g_bg := by
@@ -65,6 +68,7 @@ theorem lieCorrectionZeroMixedConnection_eq_lieCorrectionZeroMixedConnectionFiel
   exact (lieCorrectionZerob_amix_fiber (I := I) (M := M) g₀ g₁ g_bg x D).symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroRiemann_eq_field (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroRiemann (I := I) (M := M) g₀ g₁ =
       lieCorrectionZeroRiemannField (I := I) (M := M) g₀ g₁ := by

@@ -74,9 +74,9 @@ private theorem ha1_down
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 1 by linarith)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-          a hT hT1 0 f) =
+          a hT 0 f) =
       maxRegDuhamelSolField (I := I) (M := M)
-        (a - 1) hT hT1 0
+        (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f) := by
@@ -109,9 +109,9 @@ private theorem duhamel_down
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 f) =
+          a hT 0 f) =
       maxRegDuhamelSolField (I := I) (M := M)
-        (a - 1) hT hT1 0
+        (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f) := by
@@ -119,7 +119,7 @@ private theorem duhamel_down
   let heq : (a - 1) + 2 ≤ a + 1 := by linarith
   have htrans := timeIncl_trans (I := I) (M := M) heq hmid hcompact
     (maxRegDuhamelSolField (I := I) (M := M)
-      a hT hT1 (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)
+      a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)
   have hduh := duhamel_incl (I := I) (M := M)
     hT hT1 hcompact
       (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
@@ -127,19 +127,19 @@ private theorem duhamel_down
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 f) =
+          a hT 0 f) =
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         heq
         (timeL2Inclusion (I := I) (M := M)
           (g := g) (r := r) (s := s) hmid
           (maxRegDuhamelSolField (I := I) (M := M)
-            a hT hT1 0 f)) := by simpa only using htrans
+            a hT 0 f)) := by simpa only using htrans
     _ = timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s) heq
           (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-            a hT hT1 0 f) := congrArg _ hduh
+            a hT 0 f) := congrArg _ hduh
     _ = maxRegDuhamelSolField (I := I) (M := M)
-        (a - 1) hT hT1 0
+        (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f) :=
@@ -154,9 +154,9 @@ private theorem duhamel_mid_down
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 1 ≤ a + 1 by linarith)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-          a hT hT1 0 f) =
+          a hT 0 f) =
       maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-        (a - 1) hT hT1 0
+        (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f) := by
@@ -191,10 +191,10 @@ private theorem zeroRepr_down_ae
         (g := g) (r := r) (s := s)
         (show (a - 1) + 1 ≤ a + 1 by linarith)
         ((zeroDuhamelCross (I := I) (M := M)
-          hT hT1 hcompact f).repr t)) =ᵐ[timeMeasure T]
+          hT hcompact f).repr t)) =ᵐ[timeMeasure T]
       fun t =>
         (zeroDuhamelCross (I := I) (M := M)
-          (a := a - 1) hT hT1 hcompact
+          (a := a - 1) hT hcompact
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f)).repr t := by
@@ -205,9 +205,9 @@ private theorem zeroRepr_down_ae
     (g := g) (r := r) (s := s)
     (show a - 1 ≤ a by linarith) f
   let uHi := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-    a hT hT1 (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
   let uLo := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-    (a - 1) hT hT1
+    (a - 1) hT
       (0 : tensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
   have hcoe :
       timeL2Inclusion (I := I) (M := M)
@@ -228,9 +228,9 @@ private theorem zeroRepr_down_ae
     (a := a - 1) hT hT1 hcompact fLo
   filter_upwards [hhi, hpoint, hlo] with t hhit hpointt hlot
   change J ((zeroDuhamelCross (I := I) (M := M)
-    hT hT1 hcompact f).repr t) =
+    hT hcompact f).repr t) =
       (zeroDuhamelCross (I := I) (M := M)
-        (a := a - 1) hT hT1 hcompact fLo).repr t
+        (a := a - 1) hT hcompact fLo).repr t
   rw [hhit, hlot]
   exact hpointt
 
@@ -349,31 +349,31 @@ private theorem a1L2_down
           hT hT1 hcompact AHi hAHi f =ᵐ[timeMeasure T]
         fun t => AHi t
           ((zeroDuhamelCross (I := I) (M := M)
-            hT hT1 hcompact f).repr t) := by
+            hT hcompact f).repr t) := by
     simpa only [a1L2Term] using
       timeOpL2_apply_ae AHi hAHi
         (fun t => (zeroDuhamelCross (I := I) (M := M)
-          hT hT1 hcompact f).repr t)
+          hT hcompact f).repr t)
         (zeroRepr_meas (I := I) (M := M)
           hT hT1 hcompact f)
         (zeroReprNN (I := I) (M := M) hT f)
         (zeroRepr_ae_le (I := I) (M := M)
-          hT hT1 hcompact f)
+          hT hcompact f)
   have hlo :
       a1L2Term (I := I) (M := M)
           (a := a - 1) hT hT1 hcompact ALo hALo fLo =ᵐ[timeMeasure T]
         fun t => ALo t
           ((zeroDuhamelCross (I := I) (M := M)
-            (a := a - 1) hT hT1 hcompact fLo).repr t) := by
+            (a := a - 1) hT hcompact fLo).repr t) := by
     simpa only [a1L2Term] using
       timeOpL2_apply_ae ALo hALo
         (fun t => (zeroDuhamelCross (I := I) (M := M)
-          (a := a - 1) hT hT1 hcompact fLo).repr t)
+          (a := a - 1) hT hcompact fLo).repr t)
         (zeroRepr_meas (I := I) (M := M)
           (a := a - 1) hT hT1 hcompact fLo)
         (zeroReprNN (I := I) (M := M) (a := a - 1) hT fLo)
         (zeroRepr_ae_le (I := I) (M := M)
-          (a := a - 1) hT hT1 hcompact fLo)
+          (a := a - 1) hT hcompact fLo)
   have hrepr := zeroRepr_down_ae (I := I) (M := M)
     hT hT1 hcompact f
   apply Lp.ext
@@ -382,26 +382,26 @@ private theorem a1L2_down
   rw [houtt, hhit, hlot]
   have happ := congrArg
     (fun L => L ((zeroDuhamelCross (I := I) (M := M)
-      hT hT1 hcompact f).repr t)) hct
+      hT hcompact f).repr t)) hct
   have happ' :
       Jout (AHi t
         ((zeroDuhamelCross (I := I) (M := M)
-          hT hT1 hcompact f).repr t)) =
+          hT hcompact f).repr t)) =
         ALo t (Jin
           ((zeroDuhamelCross (I := I) (M := M)
-            hT hT1 hcompact f).repr t)) := by
+            hT hcompact f).repr t)) := by
     simpa only [Jout, Jin, ContinuousLinearMap.comp_apply] using happ
   have hrept' :
       Jin ((zeroDuhamelCross (I := I) (M := M)
-          hT hT1 hcompact f).repr t) =
+          hT hcompact f).repr t) =
         (zeroDuhamelCross (I := I) (M := M)
-          (a := a - 1) hT hT1 hcompact fLo).repr t := by
+          (a := a - 1) hT hcompact fLo).repr t := by
     simpa only [Jin, fLo] using hrept
   change Jout (AHi t
       ((zeroDuhamelCross (I := I) (M := M)
-        hT hT1 hcompact f).repr t)) =
+        hT hcompact f).repr t)) =
     ALo t ((zeroDuhamelCross (I := I) (M := M)
-      (a := a - 1) hT hT1 hcompact fLo).repr t)
+      (a := a - 1) hT hcompact fLo).repr t)
   rw [happ', hrept']
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -456,7 +456,7 @@ private theorem nonautL2_down
   have htop := timeOp_down (I := I) (M := M)
     A2Hi hA2Hi C2Hi hC2Hi A2Lo hA2Lo C2Lo hC2Lo hA2compat
     (maxRegDuhamelSolField (I := I) (M := M)
-      a hT hT1 (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)
+      a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)
   rw [htop, duhamel_down (I := I) (M := M) hT hT1 hcompact f,
     a1L2_down (I := I) (M := M)
       hT hT1 hcompact A1Hi hA1Hi A1Lo hA1Lo hA1compat f]
@@ -575,7 +575,7 @@ theorem nonautL2_lift
         (g := g) (r := r) (s := s) a T)
       (fHi : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
       uHi = maxRegDuhamelMap (I := I) (M := M)
-          a hT hT1 0 fHi ∧
+          a hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M)
               hT hT1 hcompact
@@ -586,10 +586,10 @@ theorem nonautL2_lift
         TimeSobolev.timeH1.timeDeriv _ T uHi =
           timeScaleLaplacian (I := I) (M := M) a
               (maxRegDuhamelSolField (I := I) (M := M)
-                a hT hT1 0 fHi) +
+                a hT 0 fHi) +
             (timeOp A2Hi hA2Hi C2Hi hC2Hi
                 (maxRegDuhamelSolField (I := I) (M := M)
-                  a hT hT1 0 fHi) +
+                  a hT 0 fHi) +
               a1L2Term (I := I) (M := M)
                 hT hT1 hcompact A1Hi hA1Hi fHi +
               f0Hi) ∧
@@ -600,9 +600,9 @@ theorem nonautL2_lift
             (g := g) (r := r) (s := s)
             (show (a - 1) + 2 ≤ a + 2 by linarith)
             (maxRegDuhamelSolField (I := I) (M := M)
-              a hT hT1 0 fHi) =
+              a hT 0 fHi) =
           maxRegDuhamelSolField (I := I) (M := M)
-            (a - 1) hT hT1 0 fLo := by
+            (a - 1) hT 0 fLo := by
   obtain ⟨uHi, fHi, huHi, hfHi, htrace, hderiv⟩ :=
     nonautL2_forced (I := I) (M := M)
       hT hT1 hcompact A2Hi hA2Hi C2Hi hC2Hi
@@ -666,9 +666,9 @@ theorem nonautL2_lift
           (g := g) (r := r) (s := s)
           (show (a - 1) + 2 ≤ a + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M)
-            a hT hT1 0 fHi) =
+            a hT 0 fHi) =
         maxRegDuhamelSolField (I := I) (M := M)
-          (a - 1) hT hT1 0 fLo := by
+          (a - 1) hT 0 fLo := by
     rw [hfield0, hforce]
   exact ⟨uHi, fHi, huHi, hfHi, htrace, hderiv, hforce, hfield⟩
 

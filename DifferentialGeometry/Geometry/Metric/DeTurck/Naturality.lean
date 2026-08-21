@@ -23,6 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private theorem pull_symm_cancel
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) :
     Diffeomorph.pullbackMetric
@@ -30,6 +31,7 @@ private theorem pull_symm_cancel
   rw [Diffeomorph.pullbackMetric_trans, Φ.self_trans_symm,
     Diffeomorph.pullbackMetric_refl]
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem connectionDifference_push
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (u v : TangentSpace I x) :
@@ -94,6 +96,7 @@ theorem connectionDifference_push
         (mfderiv I I (Φ : M → M) x u)
         (mfderiv I I (Φ : M → M) x v) := htgt.symm
 
+omit [SigmaCompactSpace M] in
 theorem deTurckVF_push
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) :
     mfderiv I I (Φ : M → M) x
@@ -136,6 +139,7 @@ theorem deTurckVF_push
     (smoothOrthoFrame (I := I) g x i x)
     (smoothOrthoFrame (I := I) g x i x)
 
+omit [SigmaCompactSpace M] in
 theorem push_deTurckVF
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) (y : M) :
     Diffeomorph.pushforward Φ

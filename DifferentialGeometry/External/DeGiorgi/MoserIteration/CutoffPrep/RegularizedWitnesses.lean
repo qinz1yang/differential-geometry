@@ -151,6 +151,7 @@ theorem moserRegTestCutoff_memH01
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) s) :
     MemH01 (moserRegTestCutoff η u ε N p) (Metric.ball (0 : E) s) := by
+  let _ := _hp
   let hwTest := moserRegTestCutoffWitness (d := d) (p := p) hs hs1 hε hN hu1 hη hη_bound
     hη_grad_bound
   have hv_support : tsupport (moserRegTestCutoff η u ε N p) ⊆ Metric.ball (0 : E) s :=

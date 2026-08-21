@@ -514,8 +514,9 @@ noncomputable def regularizedLogWitness
     (_hu_pos : ∀ x ∈ Ω, 0 < u x)
     (hw_u : MemW1pWitness 2 u Ω)
     {ε : ℝ} (hε : 0 < ε) :
-    MemW1pWitness 2 (regularizedLogFun (u := u) hε) Ω :=
-  comp_smooth_bounded_witness hΩ hw_u (smoothLogApprox hε)
+    MemW1pWitness 2 (regularizedLogFun (u := u) hε) Ω := by
+  let _ := _hu_pos
+  exact comp_smooth_bounded_witness hΩ hw_u (smoothLogApprox hε)
     (smoothLogApprox_smooth hε) (smoothLogApprox_zero hε) (smoothLogApprox_deriv_bdd hε)
 
 omit [NeZero d] in

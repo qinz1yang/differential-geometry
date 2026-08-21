@@ -178,6 +178,7 @@ private lemma unitModel_smul_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
     ContinuousLinearMap.smul_apply, Tensor0SBundle.Tensor0SSpace.toModel_smul]
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma koszulPair_eq_smul_dual_linearizedKoszul
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -239,6 +240,8 @@ private lemma unitEval_bilin_eq (g : SmoothRiemannianMetric I M)
 
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma velocity_unitEval_domDomCongr_swap
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -368,6 +371,7 @@ lemma toModel_apply_tangent {n : ℕ} (x : M)
 end NormedToModelApply
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem cotangentCov_linearizedKoszul_eval
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -474,6 +478,7 @@ private theorem cotangentCov_linearizedKoszul_eval
   field_simp
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma velocity_covGrad_swap12
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -521,6 +526,7 @@ private lemma velocity_covGrad_swap12
   exact happ
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma velocity_covGrad_unitEval_domDomCongr_swap12
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -561,6 +567,7 @@ private lemma velocity_covGrad_unitEval_domDomCongr_swap12
   exact velocity_covGrad_swap12 (I := I) g₀ T T' hδ hδ' s y (m 0) (m 1) (m 2)
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma velocity_secondCovGrad_swap23
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -620,6 +627,7 @@ private lemma velocity_secondCovGrad_swap23
   exact happ
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma lkc_eq_endpoint_flat
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -662,6 +670,7 @@ private lemma lkc_eq_endpoint_flat
   field_simp
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma lkc_basis_contMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -719,6 +728,7 @@ private lemma lkc_basis_contMDiffOn
   exact hcomb.congr heq
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma metricSharp_linearizedKoszulCovec_contMDiff
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -741,6 +751,7 @@ private lemma metricSharp_linearizedKoszulCovec_contMDiff
   exact lkc_basis_contMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs Y Z α j
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem covDerivLinearizedConn_inner_towers
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -1167,6 +1178,7 @@ private lemma finCons_cons_pair_eq {F : Type*} (a b : F) (v : Fin 2 → F) :
   funext i
   fin_cases i <;> rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

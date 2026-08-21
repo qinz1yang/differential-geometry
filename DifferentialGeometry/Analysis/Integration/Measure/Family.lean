@@ -520,7 +520,7 @@ lemma per_chart_hasDerivAt
     {g_fam : ℝ → SmoothRiemannianMetric I M} {f : ℝ → M → ℝ} {t : ℝ}
     (hreg : MetricFamilyRegularAt (I := I) g_fam t)
     (hf : FunctionRegularAt f t)
-    (α : M) (_hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)) :
+    (α : M) :
     HasDerivAt
       (fun s : ℝ => ∫ x, f s x
         ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
@@ -920,7 +920,7 @@ lemma per_chart_hasDerivAt
     filter_upwards [hH'_deriv] with y hy
     intro s' _
     exact hy s' (Set.mem_univ _)
-  have h_setInt := hasDerivAt_setIntegral_model (E := E) target htarget_meas
+  have h_setInt := hasDerivAt_setIntegral_model (E := E) target
     (F := Fmdl) (F' := Fprim) (b := b) t (s := ball_s) h_s_mem hH_meas_at_t hH_int_at_t
     hH'_meas_at_t h_bound_prop hb_integrable h_diff_ballsupersed
   obtain ⟨_, h_inner⟩ := h_setInt
@@ -1054,7 +1054,7 @@ theorem first_variation_of_volume
   refine volume_variation_formula_clean_of_chart_derivs
     (I := I) (M := M) g_fam f t₀ hf_cont hh_cont ?_
   intro α hα
-  exact per_chart_hasDerivAt (I := I) (M := M) hg hf α hα
+  exact per_chart_hasDerivAt (I := I) (M := M) hg hf α
 
 end CleanTheorem
 

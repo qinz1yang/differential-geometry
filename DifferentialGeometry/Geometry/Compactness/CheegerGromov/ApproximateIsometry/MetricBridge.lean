@@ -96,9 +96,6 @@ theorem HasStageJetData.coeff_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
@@ -106,7 +103,7 @@ theorem HasStageJetData.coeff_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (eps : Real) (heps : 0 < eps) :
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N,
@@ -129,7 +126,7 @@ theorem HasStageJetData.coeff_tail
         let chiK := NormalCoordinates.normalChartAt (I := I) Yk.metric ck
         let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric cl
         let Fkl := fun w ↦
-          chiL (stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm w))
+          chiL (stageComparisonMap inp P Lphi r hr k l (chiK.symm w))
         z ∈ interior (C0 alpha) →
         chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R k →
           ‖_root_.DifferentialGeometry.HCGCompactness.pullbackForm
@@ -172,7 +169,7 @@ theorem HasStageJetData.coeff_tail
     exact lt_min htau (lt_min (hrho alpha)
       (div_pos htau hmetricScale))
   have hjetAll : ∀ alpha : LiveSlot L inp.pack r,
-      HasStageJetTail (I := I) inp P L hr phi hphi hconn C0 R 1
+      HasStageJetTail (I := I) inp P L hr phi hphi C0 R 1
         (jetTol alpha) := fun alpha ↦
     hjets R hRr 1 (jetTol alpha) (hjetTol alpha)
   choose Njet hNjet using hjetAll
@@ -209,7 +206,7 @@ theorem HasStageJetData.coeff_tail
   let chiK := NormalCoordinates.normalChartAt (I := I) Yk.metric ck
   let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric cl
   let Fkl := fun w ↦
-    chiL (stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm w))
+    chiL (stageComparisonMap inp P Lphi r hr k l (chiK.symm w))
   intro hzInt hxR
   have hAlpha : Nalpha alpha ≤ Finset.univ.sup Nalpha :=
     Finset.le_sup (f := Nalpha) (Finset.mem_univ alpha)
@@ -386,9 +383,6 @@ theorem HasStageJetData.chart_conv
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
@@ -396,7 +390,7 @@ theorem HasStageJetData.chart_conv
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V : Set E) (hVint : V ⊆ interior (C0 alpha))
@@ -433,7 +427,7 @@ theorem HasStageJetData.chart_conv
           (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
         let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
           (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-        chiL (stageComparisonMap inp P Lphi r hr hconn (kn n) (ln n)
+        chiL (stageComparisonMap inp P Lphi r hr (kn n) (ln n)
           (chiK.symm z))) id := by
   rcases hstage with ⟨_hdata, _hmetric, hjets, _hbase⟩
   intro K hK hKV p eps heps
@@ -460,9 +454,6 @@ theorem HasStageJetData.pb_conv
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
@@ -470,7 +461,7 @@ theorem HasStageJetData.pb_conv
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V W : Set E) (hVopen : IsOpen V) (hVcompact : IsCompact (closure V))
@@ -507,7 +498,7 @@ theorem HasStageJetData.pb_conv
         (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
       let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
         (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-      chiL (stageComparisonMap inp P Lphi r hr hconn (kn n) (ln n)
+      chiL (stageComparisonMap inp P Lphi r hr (kn n) (ln n)
         (chiK.symm z))
     let B : Nat → E → (E →L[Real] E →L[Real] Real) := fun n ↦
       normalCoordMetric (I := I) (X.obj (Lphi.φ (ln n)))
@@ -544,7 +535,7 @@ theorem HasStageJetData.pb_conv
       (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
     let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
       (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-    chiL (stageComparisonMap inp P Lphi r hr hconn (kn n) (ln n)
+    chiL (stageComparisonMap inp P Lphi r hr (kn n) (ln n)
       (chiK.symm z))
   let B : Nat → E → (E →L[Real] E →L[Real] Real) := fun n ↦
     normalCoordMetric (I := I) (X.obj (Lphi.φ (ln n)))
@@ -570,7 +561,7 @@ theorem HasStageJetData.pb_conv
     hVcompact.exists_cthickening_subset_open Metric.isOpen_ball hclosureD
   have hAconvW : MapCInfConvOnCompacts W A id := by
     simpa only [A, Lphi] using
-      HasStageJetData.chart_conv (I := I) inp P L hr phi hphi hconn
+      HasStageJetData.chart_conv (I := I) inp P L hr phi hphi
         U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, _hbase⟩ R hRr alpha W hWint
         kn ln hkn hln hsource
@@ -688,9 +679,6 @@ theorem HasStageJetData.pb_jet_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
@@ -698,7 +686,7 @@ theorem HasStageJetData.pb_jet_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V W K : Set E) (hVopen : IsOpen V)
@@ -736,7 +724,7 @@ theorem HasStageJetData.pb_jet_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
       let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-      chiL (stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm z))
+      chiL (stageComparisonMap inp P Lphi r hr k l (chiK.symm z))
     let B : Nat → E → (E →L[Real] E →L[Real] Real) := fun l ↦
       normalCoordMetric (I := I) (X.obj (Lphi.φ l))
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
@@ -764,7 +752,7 @@ theorem HasStageJetData.pb_jet_tail
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
     let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-    chiL (stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm z))
+    chiL (stageComparisonMap inp P Lphi r hr k l (chiK.symm z))
   let B : Nat → E → (E →L[Real] E →L[Real] Real) := fun l ↦
     normalCoordMetric (I := I) (X.obj (Lphi.φ l))
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
@@ -791,7 +779,7 @@ theorem HasStageJetData.pb_jet_tail
     filter_upwards [hkn.eventually_ge_atTop Ns] with n hn
     simpa only [Lphi] using hNs (kn n) hn
   simpa only [Q, A, B, Lphi] using
-    HasStageJetData.pb_conv (I := I) inp P L hr phi hphi hconn
+    HasStageJetData.pb_conv (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf hstage R hRr alpha V W
       hVopen hVcompact hVW hWint kn ln hkn hln hsourceSeq
 

@@ -155,7 +155,7 @@ noncomputable def normalPair
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact c.pair z
 
-def IsNormalDiag
+@[nolint unusedArguments] def IsNormalDiag
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -288,7 +288,7 @@ theorem normal_launch_mfd
         (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (Z 0).1 (Z 0).2 := by
       rw [hgammaMfd]
 
-theorem normal_end_eq_intr
+@[nolint unusedArguments] theorem normal_end_eq_intr
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -861,7 +861,7 @@ theorem exists_uniform_diag
 
 end NormalRadiusProfile
 
-theorem normal_inv_eq
+@[nolint unusedArguments] theorem normal_inv_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1020,7 +1020,7 @@ theorem chart_launch_mfd
     _ = mfderiv 𝓘(Real, E) I c.hom (Z 0).1 (Z 0).2 := by
       rw [hgammaMfd]
 
-theorem chart_end_eq_intr
+@[nolint unusedArguments] theorem chart_end_eq_intr
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)

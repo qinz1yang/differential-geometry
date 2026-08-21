@@ -119,7 +119,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem directionalDeriv_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [BoundarylessManifold I N]
+    [T2Space M]
     [IsManifold I 1 M] [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (A P Q : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -240,10 +240,8 @@ private theorem koszulScalar_pullback_pushFwd
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCov_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
-    (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
+    [BoundarylessManifold I N]
+    [IsManifold I 1 M] [IsManifold I 1 N] (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)) (x : M) (v : TangentSpace I x) :
     mfderiv I I (Phi : M -> N) x

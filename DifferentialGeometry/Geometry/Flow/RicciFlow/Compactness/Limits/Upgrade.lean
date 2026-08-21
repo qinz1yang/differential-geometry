@@ -83,7 +83,7 @@ structure FlowLimitData
         exists k0 : Nat, forall k : Nat, k0 <= k ->
           forall t : Real, t ∈ Set.Icc a b ->
             ((SourceDomainMetricData.ofRestrictPullback (I := I)
-              (Φ := maps) (k := k) (hσsrc k) (hσtgt k)
+              (Φ := maps) (k := k) (hσsrc k)
               (refMetric k) (letI : TopologicalSpace L.M := L.topology; letI : ChartedSpace H L.M :=
                                                                           L.charted; letI : IsManifold I ∞ L.M := L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.M := (by change IsManifold I ∞ L.M; infer_instance); letI : SigmaCompactSpace L.M := L.sigmaCompact; letI : T2Space L.M := L.t2; L.S.family.metric)).derivNormSupOn (I := I) K p t) < ε
 
@@ -95,7 +95,7 @@ theorem flowLimit_upgrade
     CompactnessConclusion (I := I) X :=
   ⟨d.L, mc.subseq, mc.strictMono,
     ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-      d.maps d.scalar d.ricciNorm d.hσsrc d.hσtgt d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.conv⟩⟩
+      d.maps d.scalar d.ricciNorm d.hσsrc d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.conv⟩⟩
 
 structure FlowUpgradeData
     (X : PointedFlowSeq.{u, uE, uH} (I := I))

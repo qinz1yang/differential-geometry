@@ -345,7 +345,7 @@ private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (l + 2) := by
   classical
-  obtain ⟨CΩ, hCΩ_nn, hCΩ⟩ := bdOmRecover_gridWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CΩ, hCΩ_nn, hCΩ⟩ := bdOmRecover_gridWindow (I := I) (M := M) g₀
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid (I := I) (M := M) g₀ hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def

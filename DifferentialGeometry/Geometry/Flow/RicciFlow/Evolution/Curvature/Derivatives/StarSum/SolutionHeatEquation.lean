@@ -52,6 +52,7 @@ def towerSolConst (k : Nat) : Real :=
   2 * Real.sqrt (Fintype.card (Fin (4 + k) -> Fin 3) : Real) *
     (((4 + k : Nat) : Real) * (3 : Real) ^ 2 + resStarCost k)
 
+omit [CompactSpace M] in
 theorem towerHeatSol
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

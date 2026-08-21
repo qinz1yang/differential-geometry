@@ -462,7 +462,6 @@ private theorem metricDeriv_eq_covDeriv_norm (g₁ g₂ : SmoothRiemannianMetric
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem diffStep_jet_one_le
-    [I.Boundaryless] [CompactSpace M]
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -706,7 +705,6 @@ theorem covStepDiff_norm_le
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covStepDiff_jet_le
-    [I.Boundaryless] [CompactSpace M]
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -785,7 +783,6 @@ theorem covStepDiff_jet_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covStepDiff_of_jets
-    [I.Boundaryless] [CompactSpace M]
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -875,7 +872,6 @@ private theorem Dtower_nonneg (n : ℕ) {q : ℝ} (hq : 0 ≤ q) (r : ℕ) {Racc
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem iterCovG1_le
-    [I.Boundaryless] [CompactSpace M]
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     (T : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) r)
@@ -1032,6 +1028,8 @@ theorem iterCovG1_two
           else 0) 2 *
         ∑ k ∈ Finset.range 3,
           Real.sqrt (normSq0S (I := I) g₂ x (r + k) (iterCov (I := I) g₂ r T k x)) := by
+  let _ := (inferInstance : (I.Boundaryless))
+  let _ := (inferInstance : (CompactSpace M))
   have hLnn : (0 : ℝ) ≤ Λ := le_trans zero_le_one hEq.1
   have hL'nn : (0 : ℝ) ≤ Λ' := le_trans (Real.sqrt_nonneg _) (hjet x hx)
   have hL''nn : (0 : ℝ) ≤ Λ'' := le_trans (Real.sqrt_nonneg _) (hJet2 x hx)

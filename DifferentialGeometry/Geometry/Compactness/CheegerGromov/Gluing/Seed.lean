@@ -42,9 +42,6 @@ def HasStageRefine
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (r : Real) (hr : 0 ≤ r) : Prop :=
   ∃ (phi : Nat → Nat) (hphi : StrictMono phi)
       (U : LiveSlot L inp.pack r → Set E)
@@ -55,16 +52,13 @@ def HasStageRefine
         InterSlot L inp.pack r alpha → E → E)
       (gInf : LiveSlot L inp.pack r →
         E → (E →L[Real] E →L[Real] Real)),
-    HasStageJetData inp P L hr phi hphi hconn U C0 C1
+    HasStageJetData inp P L hr phi hphi U C0 C1
       aInf Jinf Jbarinf gInf
 
 def HasStageRefineOn
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (r : Real) (hr : 0 ≤ r) : Prop :=
   ∃ (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -75,86 +69,68 @@ def HasStageRefineOn
         InterSlot L inp.pack r alpha → E → E)
       (gInf : LiveSlot L inp.pack r →
         E → (E →L[Real] E →L[Real] Real)),
-    HasStageJetDataOn inp P L hr phi hphi hconn chart
+    HasStageJetDataOn inp P L hr phi hphi chart
       V U C0 C1 aInf Jinf Jbarinf gInf
 
 def HasStageSeed
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M) : Prop :=
+    (L0 : NetLimitData inp.decay inp.D P) : Prop :=
   IsStableNet inp P L0 ∧
     ∀ (L : NetLimitData inp.decay inp.D P), IsStableNet inp P L →
       ∀ (r : Real) (hr : 0 ≤ r),
-        HasStageRefine inp P L hconn r hr
+        HasStageRefine inp P L r hr
 
 def HasStageSeedOn
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X) : Prop :=
   IsStableNet inp P L0 ∧
     ∀ (L : NetLimitData inp.decay inp.D P), IsStableNet inp P L →
       ∀ (r : Real) (hr : 0 ≤ r),
-        HasStageRefineOn inp P L hconn chart r hr
+        HasStageRefineOn inp P L chart r hr
 
 theorem HasStageSeed.refine
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn)
+    (hseed : HasStageSeed inp P L0)
     (L : NetLimitData inp.decay inp.D P) (hstable : IsStableNet inp P L)
     (r : Real) (hr : 0 ≤ r) :
-    HasStageRefine inp P L hconn r hr :=
+    HasStageRefine inp P L r hr :=
   hseed.2 L hstable r hr
 
 theorem HasStageSeed.subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn)
+    (hseed : HasStageSeed inp P L0)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (r : Real) (hr : 0 ≤ r) :
-    HasStageRefine inp P (L0.subseq hψ) hconn r hr := by
-  apply hseed.refine inp P L0 hconn (L0.subseq hψ) _ r hr
+    HasStageRefine inp P (L0.subseq hψ) r hr := by
+  apply hseed.refine inp P L0 (L0.subseq hψ) _ r hr
   exact NetLimitData.stable_subseq inp.decay P L0 hψ hseed.1
 
 theorem HasStageSeedOn.refine
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart)
+    (hseed : HasStageSeedOn inp P L0 chart)
     (L : NetLimitData inp.decay inp.D P) (hstable : IsStableNet inp P L)
     (r : Real) (hr : 0 ≤ r) :
-    HasStageRefineOn inp P L hconn chart r hr :=
+    HasStageRefineOn inp P L chart r hr :=
   hseed.2 L hstable r hr
 
 theorem HasStageSeedOn.subseq
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart)
+    (hseed : HasStageSeedOn inp P L0 chart)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (r : Real) (hr : 0 ≤ r) :
-    HasStageRefineOn inp P (L0.subseq hψ) hconn chart r hr := by
-  apply hseed.refine inp P L0 hconn chart (L0.subseq hψ) _ r hr
+    HasStageRefineOn inp P (L0.subseq hψ) chart r hr := by
+  apply hseed.refine inp P L0 chart (L0.subseq hψ) _ r hr
   exact NetLimitData.stable_subseq inp.decay P L0 hψ hseed.1
 
 theorem MetricCompactBase.exists_stage_seed
@@ -165,8 +141,8 @@ theorem MetricCompactBase.exists_stage_seed
       ConnectedSpace (X.obj j).M) :
     ∃ (inp : MetricCompactnessInputs (I := I) X)
         (L0 : NetLimitData inp.decay inp.D
-          (inp.properMetrics hcomplete hconn)),
-      HasStageSeed inp (inp.properMetrics hcomplete hconn) L0 hconn := by
+          (properMetricsOfCompleteConnected (I := I) hcomplete hconn)),
+      HasStageSeed inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 := by
   classical
   obtain ⟨aMin, haMin, hread⟩ :=
     exists_hat_cm_min (I := I) b.normalRadius b.realizes
@@ -190,7 +166,7 @@ theorem MetricCompactBase.exists_stage_seed
     simpa only [inp, c0, MetricCompactnessInputs.ofBase] using hc0
   have hphys : 8 * Real.exp inp.decay.C < aMin * inp.D :=
     inp.physScale_of_extra haMin hc0'
-  let P := inp.properMetrics hcomplete hconn
+  let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
   obtain ⟨L0, hstable0⟩ := inp.exists_stable_net P
   refine ⟨inp, L0, ?_⟩
   dsimp only [HasStageSeed]
@@ -200,7 +176,7 @@ theorem MetricCompactBase.exists_stage_seed
   dsimp only [HasStageRefine]
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hconv,
       hptsTail⟩ :=
-    inp.exists_supp_pts_fin h8' hradD' hradRatio' P L hstable r hr hconn
+    inp.exists_supp_pts_fin h8' hradRatio' P L hstable r hr hconn
   let Lphi := L.subseq hphi
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr,
       hbranchTail, hscaleTail, hreadTail⟩ :=
@@ -298,10 +274,10 @@ theorem MetricCompactBase.exists_stage_seed
     choose radSeq hpos hactive hsmall hcapLocal using hlocal
     refine ⟨radSeq, hcover, hhat, hweight, hpos, hactive, ?_, ?_⟩
     · intro epsilon hepsilon
-      exact finite_cover_two_tail hcover
+      exact finite_cover_two_tail
         (fun alpha a b x => radSeq alpha a b x < epsilon)
         (fun alpha => hsmall alpha epsilon hepsilon)
-    · exact finite_cover_two_tail hcover _ hcapLocal
+    · exact finite_cover_two_tail _ hcapLocal
   have hq : ∀ alpha : LiveSlot L inp.pack r, 0 < q alpha := by
     intro alpha
     have h := hqdata0 alpha
@@ -414,21 +390,21 @@ theorem MetricCompactBase.exists_stage_seed
       PointedRiemannianSeq.subseq, NetLimitData.subseq,
       Function.comp_apply, seqCenterD_subseq] using hpair0 alpha
   obtain ⟨_W, _PhiInf, _rootRho, _Phi3, _hroot, _hreadRoot, hjet⟩ :=
-    hconvTheta.exists_stage_tail inp aMin haMin hphys h8' hradD'
+    hconvTheta.exists_stage_tail inp aMin haMin hphys h8'
       hradRatio' P L hstable hr theta htheta U C0 C1 aInf Jinf Jbarinf
       hcomplete hconn q δ hqdata0 hqAcc0 hC1q hbranchTheta hscaleAll
       deltaInf e eInf (fun alpha => (hpair alpha).1)
       (fun alpha n => (hpair alpha).2 n)
   obtain ⟨hgp, _hrad⟩ :=
-    inp.exponential_scale_tails h8' hradD' hradRatio' P L r
+    inp.exponential_scale_tails h8' hradRatio' P L r
   have hgpTheta : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       (L.subseq htheta) inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r htheta
-  have hbase : HasStageBaseTail (I := I) inp P L hr theta htheta hconn := by
+  have hbase : HasStageBaseTail (I := I) inp P L hr theta htheta := by
     dsimp only [HasStageBaseTail]
     filter_upwards [hgpTheta] with k hk
     intro l
-    exact stageCompare_base inp P (L.subseq htheta) r hr hconn k l hk
+    exact stageCompare_base inp P (L.subseq htheta) r hr k l
   have hmetric' : ∀ alpha : LiveSlot L inp.pack r,
       let Ralpha := L.rInf (alpha.1 : Nat) + 1
       let Ualpha := Metric.ball (0 : E)

@@ -123,6 +123,7 @@ private noncomputable def deTurckLieInsertionCorrectionEndomorphism
     endoDiffSection (I := I) (M := M) g gm g_bg
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieInsertionCorrectionEndomorphism_apply
     (g gm g_bg : SmoothRiemannianMetric I M) (x : M) :
     deTurckLieInsertionCorrectionEndomorphism (I := I) (M := M) g gm g_bg x =
@@ -142,6 +143,7 @@ private lemma deTurckLieInsertionCorrectionEndomorphism_apply
   simp only [deTurckVectorFieldCovariantDerivativeEndomorphismSection_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieInsertionCorrection_eq_pair
     (g gm g_bg : SmoothRiemannianMetric I M) :
     (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g gm g_bg -
@@ -270,6 +272,7 @@ private theorem deTurckLieInsertionCorrection_eq_pair
   ac_rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem cometricRaiseSlot0Field_sub
     (g : SmoothRiemannianMetric I M)
     (W W' : SmoothCcTensor g 0 2) :
@@ -284,6 +287,7 @@ private theorem cometricRaiseSlot0Field_sub
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem cometricRaiseSlot0Field_add
     (g : SmoothRiemannianMetric I M)
     (W W' : SmoothCcTensor g 0 2) :
@@ -318,6 +322,7 @@ private theorem slotInsert_deTurckLieInsertionCorrectionEndomorphism
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem deTurckVectorFieldCovector_backgroundDifference_sub
     (g g_bg gT gU : SmoothRiemannianMetric I M) :
     (deTurckVectorFieldCovector (I := I) (M := M) g gT g_bg -

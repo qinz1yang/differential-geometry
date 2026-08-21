@@ -56,9 +56,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 omit [SigmaCompactSpace M] in
 theorem covDerivOfField_restrictOpen
     (gRef : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I 2 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    (A0U : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
+    [T2Space U] [IsManifold I 1 U] [IsManifold I 2 U] (A0U : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := U) (n := (∞ : WithTop ℕ∞)) 2)
     (A0M : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)

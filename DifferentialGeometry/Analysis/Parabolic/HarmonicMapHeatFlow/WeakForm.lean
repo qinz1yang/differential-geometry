@@ -146,6 +146,7 @@ noncomputable def hmfUnknownSec
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 @[simp] theorem hmfUnknownSec_apply
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfUnknownSec (I := I) g₀ S x = hmfUnknown (I := I) g₀ S x := rfl
@@ -221,6 +222,7 @@ theorem hmfFlux_apply
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem hmfRaised_split
     (q h : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) q h =
@@ -275,6 +277,7 @@ private theorem hmfSlot_add
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem hmfSlot_self_app
     (q : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 2) :
     operatorFieldApply (I := I) (M := M) q 2 2

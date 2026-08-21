@@ -119,7 +119,7 @@ theorem l2_bdd_of_raw {ι : Type*}
   refine Finset.sum_le_sum fun Idx _ => ?_
   exact Finset.sum_le_sum fun Jdx _ => hcomponent α hα k Idx Jdx
 
-theorem l2_le_of_raw_sum [BoundarylessManifold I M]
+theorem l2_le_of_raw_sum
     (g : SmoothRiemannianMetric I M) (c N : ℕ) (v : ℕ → ℕ)
     (B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧

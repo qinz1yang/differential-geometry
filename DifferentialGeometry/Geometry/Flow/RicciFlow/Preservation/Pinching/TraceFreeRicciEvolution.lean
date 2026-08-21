@@ -96,7 +96,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_heat_equation_of_frame_evolution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     {Idx : Type*} [Fintype Idx]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))

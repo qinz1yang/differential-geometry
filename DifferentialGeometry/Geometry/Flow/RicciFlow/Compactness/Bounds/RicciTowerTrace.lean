@@ -117,6 +117,7 @@ theorem nablaKRm_eq_iterCov
       exact Tensor0SBundle.totalNabla0SRealizes_unique (I := I) hleft'
         (iterCov_realizes (I := I) (S.base.metric t) (S.base.rm04 t) k)
 
+omit [SigmaCompactSpace M] in
 theorem ricTower_normSq_le
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : Nat) (x : M) :

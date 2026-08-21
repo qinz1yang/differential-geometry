@@ -213,6 +213,8 @@ private theorem joint_perm
   simpa only [perm_app (I := I) (M := M)] using h
 
 omit [CompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem fullRaised_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -253,6 +255,8 @@ private theorem fullRaised_joint
   refine hout.congr (fun p _ => ?_)
   rfl
 
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem slotInsert_joint
     (g : SmoothRiemannianMetric I M) (d : ℕ)
     (T : SmoothCcTensor g 0 2) {delta : Real}
@@ -295,6 +299,7 @@ private theorem slotInsert_joint
     (E := fun x : M => Tensor0SSpace (d + 1) I x) p.1 z) ?_
   rw [slotInsertEndoCc_toSection]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem edgeSlot_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -318,6 +323,7 @@ private theorem edgeSlot_joint
   have hOut := joint_perm (I := I) (M := M) g rho _ hApp
   simpa only [secondSlotInsertionCoefficient, rho, operatorFieldComposition_zero_eq_operatorFieldApply] using hOut
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem edgeRaise_joint
     (g : SmoothRiemannianMetric I M) (T P : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -350,6 +356,7 @@ private theorem edgeProd_joint
     (a := 0) (b := 2) (c := 4) g _ A hC hA
   simpa only [fourTensorProductCoefficient, operatorFieldComposition_zero_eq_operatorFieldApply] using h
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem edgePartner_joint
     (g : SmoothRiemannianMetric I M) (T P V : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -368,6 +375,7 @@ private theorem edgePartner_joint
   have hPerm := joint_perm (I := I) (M := M) g sigma.symm _ hProd
   simpa only [topOrderBilinearPairingAdjointCoefficient] using hPerm
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem ricciDeTurckTopOrderPairingCoefficient_joint_contDiff
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -441,6 +449,7 @@ theorem ricciDeTurckTopOrderPairingCoefficient_joint_contDiff
             ((q i).trans (Equiv.swap (0 : Fin 4) 1)))))
   simpa only [Fin.sum_univ_three] using hall
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem edgeTopPartner_joint
     (g : SmoothRiemannianMetric I M) (T P V : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -635,6 +644,7 @@ private theorem path_app_zero
       (operatorFieldApply (I := I) (M := M) g b c (A t) W) x v
   simp only [Psi, operatorFieldComposition_zero_eq_operatorFieldApply]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem ricciDeTurckTopOrderPathIntegralCoefficient_apply
     (g : SmoothRiemannianMetric I M) (T U P : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)
@@ -743,6 +753,7 @@ private theorem path_inner_point
       ((Z t).toFun x) (G.toFun x)
   exact hpoint t x
 
+omit [BoundarylessManifold I M] in
 theorem ricciDeTurckTopOrderPathIntegral_inner
     (g : SmoothRiemannianMetric I M) (T P U V : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)

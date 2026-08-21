@@ -33,8 +33,7 @@ private theorem apply_eq_apply_add_of_eq
   rw [hxyz, hadd, hz]
 
 noncomputable def timeH1blockTransport
-    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y] {Tt : ℝ}
+    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] {Tt : ℝ}
     (Li : X →L[ℝ] Y) (Ld : timeL2 X Tt →L[ℝ] timeL2 Y Tt)
     (hInit : ∀ x, ‖Li x‖ ≤ ‖x‖) (hDeriv : ∀ v, ‖Ld v‖ ≤ ‖v‖) :
     timeH1 X Tt →L[ℝ] timeH1 Y Tt :=
@@ -60,18 +59,22 @@ noncomputable def timeH1blockTransport
       rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (by positivity)] at h)
 
 @[simp] theorem timeH1blockTransport_init
-    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y] {Tt : ℝ}
+    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [hComplete : CompleteSpace Y] {Tt : ℝ}
     (Li : X →L[ℝ] Y) (Ld : timeL2 X Tt →L[ℝ] timeL2 Y Tt)
     (hInit : ∀ x, ‖Li x‖ ≤ ‖x‖) (hDeriv : ∀ v, ‖Ld v‖ ≤ ‖v‖) (u : timeH1 X Tt) :
-    (timeH1blockTransport Li Ld hInit hDeriv u).init = Li u.init := rfl
+    (timeH1blockTransport Li Ld hInit hDeriv u).init = Li u.init := by
+  let _ := hComplete
+  rfl
 
 @[simp] theorem timeH1blockTransport_deriv
-    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y] {Tt : ℝ}
+    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [hComplete : CompleteSpace Y] {Tt : ℝ}
     (Li : X →L[ℝ] Y) (Ld : timeL2 X Tt →L[ℝ] timeL2 Y Tt)
     (hInit : ∀ x, ‖Li x‖ ≤ ‖x‖) (hDeriv : ∀ v, ‖Ld v‖ ≤ ‖v‖) (u : timeH1 X Tt) :
-    (timeH1blockTransport Li Ld hInit hDeriv u).deriv = Ld u.deriv := rfl
+    (timeH1blockTransport Li Ld hInit hDeriv u).deriv = Ld u.deriv := by
+  let _ := hComplete
+  rfl
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -81,7 +84,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 theorem connection_laplacian_l2_maximal_regularity
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {T : ℝ}
-    (_hT : 0 < T) (_hT1 : T ≤ 1) :
+    (_hT : 0 < T) :
     ∃ SolOp : timeL2 (TensorL2 r s g) T →L[ℝ]
         timeH1 (TensorL2 r s g) T,
       ‖SolOp‖ ≤ 2 ∧
@@ -145,16 +148,16 @@ theorem connection_laplacian_l2_maximal_regularity
   let Aop : timeL2 (tensorHs (I := I) (M := M) g r s 0) T →L[ℝ]
       timeH1 (tensorHs (I := I) (M := M) g r s 0) T :=
     LinearMap.mkContinuous
-      { toFun := fun w => maximalRegularityOp (I := I) (M := M) 0 _hT _hT1 w
+      { toFun := fun w => maximalRegularityOp (I := I) (M := M) 0 _hT w
         map_add' := fun w w' =>
           maximalRegularityOp_add (I := I) (M := M) (h_compact := h_compact)
-            (a := 0) _hT _hT1 w w'
+            (a := 0) _hT w w'
         map_smul' := fun c w => by
           simpa using maximalRegularityOp_smul (I := I) (M := M)
-            (h_compact := h_compact) (a := 0) _hT _hT1 c w }
+            (h_compact := h_compact) (a := 0) _hT c w }
       2 (fun w => maximalRegularityOp_norm_le (I := I) (M := M)
-        (h_compact := h_compact) (a := 0) _hT _hT1 w)
-  have hAop_apply : ∀ w, Aop w = maximalRegularityOp (I := I) (M := M) 0 _hT _hT1 w :=
+        (h_compact := h_compact) (a := 0) _hT w)
+  have hAop_apply : ∀ w, Aop w = maximalRegularityOp (I := I) (M := M) 0 _hT w :=
     fun w => rfl
   let H1t := timeH1blockTransport (Tt := T)
     (ψ.toLinearIsometry.toContinuousLinearMap) Φ
@@ -179,7 +182,7 @@ theorem connection_laplacian_l2_maximal_regularity
       _ ≤ 2 * ‖Φsymm f‖ := by
           rw [hAop_apply]
           exact maximalRegularityOp_norm_le (I := I) (M := M) (h_compact := h_compact)
-            (a := 0) _hT _hT1 _
+            (a := 0) _hT _
       _ ≤ 2 * ‖f‖ := mul_le_mul_of_nonneg_left (hΦsymm_apply f) (by norm_num)
   · intro f
     have e1 : (H1t ∘L Aop ∘L Φsymm) f = H1t (Aop (Φsymm f)) := rfl
@@ -196,7 +199,7 @@ theorem connection_laplacian_l2_maximal_regularity
     have hSolBound : ∀ f : timeL2 (TensorL2 r s g) T,
         ‖maximalRegularitySolField (I := I) (M := M) 0 _hT.le (Φsymm f)‖ ≤ (1 + T) * ‖f‖ :=
       fun f => le_trans (maximalRegularityOp_norm_Ha2_le (I := I) (M := M)
-        (h_compact := h_compact) _hT _hT1 (Φsymm f))
+        (h_compact := h_compact) _hT (Φsymm f))
         (mul_le_mul_of_nonneg_left (hΦsymm_apply f) (by linarith [_hT.le]))
     let SolField : timeL2 (TensorL2 r s g) T →L[ℝ]
         timeL2 (tensorHs (I := I) (M := M) g r s 2) T :=
@@ -247,8 +250,8 @@ theorem connection_laplacian_l2_maximal_regularity
         rw [hSolField_apply, c22.symm_apply_apply]
       rw [hLap]
       have hsolves := maximalRegularityOp_solves (I := I) (M := M)
-        (h_compact := h_compact) (a := 0) _hT _hT1 (Φsymm f)
-      rw [maximalRegularityOp_timeDeriv (I := I) (M := M) (a := 0) _hT _hT1 (Φsymm f)] at hsolves
+        (h_compact := h_compact) (a := 0) _hT (Φsymm f)
+      rw [maximalRegularityOp_timeDeriv (I := I) (M := M) (a := 0) _hT (Φsymm f)] at hsolves
       exact apply_eq_apply_add_of_eq Φ hsolves
         (ContinuousLinearMap.map_add Φ _ _) (hΦΦsymm f)
 

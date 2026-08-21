@@ -570,9 +570,10 @@ theorem exists_stable_net
           ¬ BInter inp.decay inp.D P L.lamInf α β (L.φ k)) :=
   exists_stableNetData inp.decay inp.hD P
 
-noncomputable def properMetrics
+end MetricCompactCore
+
+noncomputable def properMetricsOfCompleteConnected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (_inp : MetricCompactCore (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -580,8 +581,6 @@ noncomputable def properMetrics
     ∀ k : Nat, ProperMetricOn (I := I) (X.obj k) :=
   fun k => properMetricOn (I := I) (X.obj k)
     (hcomplete.complete k) (hconn k)
-
-end MetricCompactCore
 
 structure MetricCompactBase
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
@@ -880,7 +879,6 @@ theorem exponential_scale_tails
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (_hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1048,16 +1046,6 @@ theorem exists_stable_net_with_intersection_bound
   obtain ⟨L, hstable⟩ := inp.exists_stable_net P
   exact ⟨L, hstable, fun α => inp.inter_count P L α⟩
 
-noncomputable def properMetrics
-    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (_inp : MetricCompactnessInputs (I := I) X)
-    (hcomplete : SeqMetricComplete (I := I) X)
-    (hconn : forall k : Nat,
-      letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-      ConnectedSpace (X.obj k).M) :
-    ∀ k : Nat, ProperMetricOn (I := I) (X.obj k) :=
-  fun k => properMetricOn (I := I) (X.obj k) (hcomplete.complete k) (hconn k)
-
 theorem exists_stable_net_with_intersection_bound_of_complete_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1065,27 +1053,27 @@ theorem exists_stable_net_with_intersection_bound_of_complete_connected
     (hconn : forall k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    ∃ L : NetLimitData inp.decay inp.D (inp.properMetrics hcomplete hconn),
+    ∃ L : NetLimitData inp.decay inp.D (properMetricsOfCompleteConnected (I := I) hcomplete hconn),
       (∀ α β : Nat,
         (∀ᶠ k in atTop,
-          BInter inp.decay inp.D (inp.properMetrics hcomplete hconn)
+          BInter inp.decay inp.D (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
             L.lamInf α β (L.φ k)) ∨
         (∀ᶠ k in atTop,
-          ¬ BInter inp.decay inp.D (inp.properMetrics hcomplete hconn)
+          ¬ BInter inp.decay inp.D (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
             L.lamInf α β (L.φ k))) ∧
       (∀ α : Nat,
         ∀ᶠ k in atTop,
           ∀ xα : (X.obj (L.φ k)).M,
-            seqCenter inp.decay inp.D (inp.properMetrics hcomplete hconn)
+            seqCenter inp.decay inp.D (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
               (L.φ k) α = some xα →
           ∀ J : Finset Nat,
             (∀ β ∈ J,
-              BInter inp.decay inp.D (inp.properMetrics hcomplete hconn)
+              BInter inp.decay inp.D (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
                 L.lamInf α β (L.φ k)) →
             J.card <=
               inp.volume.Imult
                 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)))) :=
-  inp.exists_stable_net_with_intersection_bound (inp.properMetrics hcomplete hconn)
+  inp.exists_stable_net_with_intersection_bound (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
 
 theorem exists_stable_net_with_intersection_bound_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1096,19 +1084,19 @@ theorem exists_stable_net_with_intersection_bound_subsequence
       ConnectedSpace (X.obj k).M)
     (f : Nat -> Nat) :
     ∃ L : NetLimitData (inp.subseq f).decay (inp.subseq f).D
-        ((inp.subseq f).properMetrics (hcomplete.subseq f)
+        (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
           (fun k => by
             simpa [PointedRiemannianSeq.subseq] using hconn (f k))),
       (∀ α β : Nat,
         (∀ᶠ k in atTop,
           BInter (inp.subseq f).decay (inp.subseq f).D
-            ((inp.subseq f).properMetrics (hcomplete.subseq f)
+            (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
               (fun k => by
                 simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
             L.lamInf α β (L.φ k)) ∨
         (∀ᶠ k in atTop,
           ¬ BInter (inp.subseq f).decay (inp.subseq f).D
-            ((inp.subseq f).properMetrics (hcomplete.subseq f)
+            (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
               (fun k => by
                 simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
             L.lamInf α β (L.φ k))) ∧
@@ -1116,14 +1104,14 @@ theorem exists_stable_net_with_intersection_bound_subsequence
         ∀ᶠ k in atTop,
           ∀ xα : ((X.subseq f).obj (L.φ k)).M,
             seqCenter (inp.subseq f).decay (inp.subseq f).D
-              ((inp.subseq f).properMetrics (hcomplete.subseq f)
+              (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
                 (fun k => by
                   simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
               (L.φ k) α = some xα →
           ∀ J : Finset Nat,
             (∀ β ∈ J,
               BInter (inp.subseq f).decay (inp.subseq f).D
-                ((inp.subseq f).properMetrics (hcomplete.subseq f)
+                (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
                   (fun k => by
                     simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
                 L.lamInf α β (L.φ k)) →

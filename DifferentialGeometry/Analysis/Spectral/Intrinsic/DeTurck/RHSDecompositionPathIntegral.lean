@@ -160,6 +160,7 @@ private theorem threeArm_comp
   rw [operatorFieldComposition_toSection]
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem movingMetricPairTraceOperator_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -208,6 +209,7 @@ private theorem movingMetricPairTraceOperator_joint
     (E := fun z : M => TensorRSSpace 6 2 I z) p.1 t) ?_
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem edgePairMono_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -231,6 +233,7 @@ theorem edgePairMono_joint
     (movingMetricPairTraceOperator_joint (I := I) (M := M) g T hdelta hdeltaZ)
   simpa only [topOrderPairingCoefficient] using h
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem edgeLiePair_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -442,7 +445,7 @@ def rhsDecomposition0Int
     (rhsDecomposition0_joint (I := I) (M := M) g g_bg T hdelta hdeltaZ)
 
 def rhsDecompositionTopInt
-    (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
+    (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)
     (hdelta : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)
@@ -450,12 +453,12 @@ def rhsDecompositionTopInt
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
     SmoothCcTensor g 4 2 :=
   pathIntegralCoeffField (I := I) (M := M) g 4 2
-    (rhsDecompositionTop (I := I) (M := M) g g_bg T hdelta hdeltaZ)
+    (rhsDecompositionTop (I := I) (M := M) g T hdelta hdeltaZ)
     (metricPerturbationPathDomain (δ := delta) (δ' := delta)) metricPerturbationPathDomain_isOpen
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hdelta_lt hdelta_lt)
-    (rhsDecompositionTop_joint (I := I) (M := M) g g_bg T
+    (rhsDecompositionTop_joint (I := I) (M := M) g T
       hdelta_lt hdelta hdeltaZ)
 
 theorem rhs_sub_zero_decomposition
@@ -478,7 +481,7 @@ theorem rhs_sub_zero_decomposition
             hdelta_lt hdelta hdelta_lt hdeltaZ)
           (iteratedCovGrad (I := I) g 0 2 1 T) +
         operatorFieldApply (I := I) (M := M) g 4 2
-          (rhsDecompositionTopInt (I := I) (M := M) g g_bg T
+          (rhsDecompositionTopInt (I := I) (M := M) g T
             hdelta_lt hdelta hdeltaZ)
           (iteratedCovGrad (I := I) g 0 2 2 T) := by
   classical
@@ -493,7 +496,7 @@ theorem rhs_sub_zero_decomposition
   set Psi1 : Real → SmoothCcTensor g 3 2 := fun s =>
     ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g g_bg T 0 hdelta hdeltaZ s with hPsi1def
   set Psi2 : Real → SmoothCcTensor g 4 2 := fun s =>
-    rhsDecompositionTop (I := I) (M := M) g g_bg T hdelta hdeltaZ s with hPsi2def
+    rhsDecompositionTop (I := I) (M := M) g T hdelta hdeltaZ s with hPsi2def
   have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Psi0
       (δ := delta) (δ' := delta) := by
     rw [hPsi0def]
@@ -508,7 +511,7 @@ theorem rhs_sub_zero_decomposition
       (δ := delta) (δ' := delta) := by
     rw [hPsi2def]
     exact rhsDecompositionTop_joint (I := I) (M := M)
-      g g_bg T hdelta_lt hdelta hdeltaZ
+      g T hdelta_lt hdelta hdeltaZ
   have hc0 : ∀ x : M, ContinuousOn (fun t : Real =>
       TensorRSSpace.toModel ((Psi0 t).toSection x))
       (metricPerturbationPathDomain (δ := delta) (δ' := delta)) := fun x =>
@@ -534,7 +537,7 @@ theorem rhs_sub_zero_decomposition
       pathIntegralCoeffField (I := I) (M := M) g 3 2 Psi1
         (metricPerturbationPathDomain (δ := delta) (δ' := delta))
         hSopen hSI hj1 := rfl
-  have hPi2 : rhsDecompositionTopInt (I := I) (M := M) g g_bg T
+  have hPi2 : rhsDecompositionTopInt (I := I) (M := M) g T
       hdelta_lt hdelta hdeltaZ =
       pathIntegralCoeffField (I := I) (M := M) g 4 2 Psi2
         (metricPerturbationPathDomain (δ := delta) (δ' := delta))

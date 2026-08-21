@@ -399,7 +399,6 @@ omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem IsGeodesicAt.hasGeodesicEquationAt_of_chartCentered_lift_eventuallyEq
     {g : SmoothRiemannianMetric I M} {γ : ℝ → M} {t₀ : ℝ}
-    (_hγ : IsGeodesicAt (I := I) g γ t₀)
     {f₁ : ℝ → TangentBundle I M}
     (hf₁ : IsMIntegralCurveAt f₁ (geodesicVectorFieldChart (I := I) g (γ t₀)) t₀)
     (hf₁_proj_t₀ : (f₁ t₀).proj = γ t₀)

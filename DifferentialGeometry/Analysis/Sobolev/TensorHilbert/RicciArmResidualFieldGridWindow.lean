@@ -1837,6 +1837,7 @@ set_option backward.isDefEq.respectTransparency false
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem decompositionKernelContractionMonomialField_eq_movingMetricPairTraceOperator_comp
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ : Equiv.Perm (Fin 4)) :

@@ -36,7 +36,7 @@ theorem chartSideH2kBridge_heat_unconditional
     {t : ℝ} (ht : 0 < t)
     (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (k : ℕ) :
-    ChartSideH2kBridge (I := I) (M := M) g k
+    ChartSideH2kBridge (I := I) (M := M) k
       (((heatSemigroup (I := I) (M := M) g t u_0 :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) := by
   obtain ⟨u_h, hu_h_mem, hu_h_eq⟩ :=

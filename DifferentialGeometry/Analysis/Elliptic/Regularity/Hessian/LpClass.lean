@@ -82,7 +82,6 @@ private lemma chosenInner_memW1p
 noncomputable def laplacianDomainHessianChart
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (i j : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
     (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
@@ -94,9 +93,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma laplacianDomainHessianChart_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (i j : Fin (Module.finrank ℝ E)) :
-    laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j =
+    laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j =
       chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
         (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
           (chartPushedU (I := I) (M := M) g α u_h)
@@ -108,7 +106,7 @@ theorem laplacianDomainHessianChart_memLp_two
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (i j : Fin (Module.finrank ℝ E)) :
-    MemLp (laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j) 2
+    MemLp (laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   rw [laplacianDomainHessianChart_def]
@@ -367,7 +365,7 @@ lemma laplacianDomainHessianChart_ae_zero_off_support
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (i j : Fin (Module.finrank ℝ E)) :
-    laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j
+    laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           chartImagePOUTsupport (I := I) (M := M) α)]
@@ -430,37 +428,37 @@ lemma laplacianDomainHessianChart_ae_zero_off_support
 noncomputable def laplacianDomainHessFrobeniusSqChart
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) : EuclN → ℝ :=
+    : EuclN → ℝ :=
   fun y => ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
                   invGramOnEuclid (I := I) g α i k y *
                     invGramOnEuclid (I := I) g α j l y *
-                    laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-                    laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y
+                    laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+                    laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma laplacianDomainHessFrobeniusSqChart_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (y : EuclN) :
-    laplacianDomainHessFrobeniusSqChart (I := I) (M := M) g α hu_h y =
+    laplacianDomainHessFrobeniusSqChart (I := I) (M := M) g α (u_h := u_h) y =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
               invGramOnEuclid (I := I) g α i k y *
                 invGramOnEuclid (I := I) g α j l y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y := rfl
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y := rfl
 
 noncomputable def chartCutoffα (α : M) : EuclN → ℝ :=
   Classical.choose
     (DifferentialGeometry.Analysis.Sobolev.Chart.exists_chartCutoff
       (I := I) (M := M) α).choose_spec
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCutoffα_spec (α : M) :
     let cutoff := chartCutoffα (I := I) (M := M) α
     let δ := (DifferentialGeometry.Analysis.Sobolev.Chart.exists_chartCutoff
@@ -477,18 +475,22 @@ lemma chartCutoffα_spec (α : M) :
   (DifferentialGeometry.Analysis.Sobolev.Chart.exists_chartCutoff
     (I := I) (M := M) α).choose_spec.choose_spec
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCutoffα_smooth (α : M) :
     ContDiff ℝ (⊤ : ℕ∞) (chartCutoffα (I := I) (M := M) α) :=
   (chartCutoffα_spec (I := I) (M := M) α).2.2.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCutoffα_compactSupport (α : M) :
     HasCompactSupport (chartCutoffα (I := I) (M := M) α) :=
   (chartCutoffα_spec (I := I) (M := M) α).2.2.2.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCutoffα_range (α : M) :
     Set.range (chartCutoffα (I := I) (M := M) α) ⊆ Set.Icc (0 : ℝ) 1 :=
   (chartCutoffα_spec (I := I) (M := M) α).2.2.2.2.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCutoffα_eq_one_on_K (α : M) :
     ∀ y ∈ chartImagePOUTsupport (I := I) (M := M) α,
       chartCutoffα (I := I) (M := M) α y = 1 := by
@@ -497,11 +499,13 @@ lemma chartCutoffα_eq_one_on_K (α : M) :
   apply hone y
   exact Metric.self_subset_cthickening _ hy
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCutoffα_tsupport (α : M) :
     tsupport (chartCutoffα (I := I) (M := M) α) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   (chartCutoffα_spec (I := I) (M := M) α).2.2.2.2.2.2
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma abs_chartCutoffα_le (α : M) (y : EuclN) :
     |chartCutoffα (I := I) (M := M) α y| ≤ 1 := by
   have hrange := chartCutoffα_range (I := I) (M := M) α
@@ -516,6 +520,7 @@ noncomputable def cutoffInvGram
   chartCutoffα (I := I) (M := M) α y *
     invGramOnEuclid (I := I) g α i j y
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoffInvGram_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
@@ -523,6 +528,7 @@ lemma cutoffInvGram_def
       chartCutoffα (I := I) (M := M) α y *
         invGramOnEuclid (I := I) g α i j y := rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoffInvGram_bounded
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -580,6 +586,7 @@ lemma cutoffInvGram_bounded
     have hy_notK : y ∉ Kη := fun hyK => hKη_ne ⟨y, hyK⟩
     rw [h_zero_off y hy_notK, abs_zero]
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoffInvGram_continuous
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -626,6 +633,7 @@ lemma cutoffInvGram_continuous
       h_const_continuous.congr h_eventually_zero.symm
     exact this
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoffInvGram_aestronglyMeasurable
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
@@ -640,14 +648,14 @@ private lemma invGram_mul_H_H_ae_eq_cutoff_mul_H_H
     (i j k l : Fin (Module.finrank ℝ E)) :
     (fun y : EuclN => invGramOnEuclid (I := I) g α i k y *
         invGramOnEuclid (I := I) g α j l y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) =ᵐ[
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
       (fun y : EuclN => cutoffInvGram (I := I) (M := M) g α i k y *
         cutoffInvGram (I := I) (M := M) g α j l y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) := by
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   set K : Set EuclN := chartImagePOUTsupport (I := I) (M := M) α with hK_def
@@ -661,12 +669,12 @@ private lemma invGram_mul_H_H_ae_eq_cutoff_mul_H_H
   have h_pt_K : ∀ y ∈ K,
       invGramOnEuclid (I := I) g α i k y *
         invGramOnEuclid (I := I) g α j l y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y =
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y =
       cutoffInvGram (I := I) (M := M) g α i k y *
         cutoffInvGram (I := I) (M := M) g α j l y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y := by
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y := by
     intro y hy
     have hη_one : chartCutoffα (I := I) (M := M) α y = 1 :=
       chartCutoffα_eq_one_on_K (I := I) (M := M) α y hy
@@ -680,20 +688,20 @@ private lemma invGram_mul_H_H_ae_eq_cutoff_mul_H_H
   have hV_meas : MeasurableSet V := hΩ_meas.diff hK_meas
   refine (ae_restrict_iff' hΩ_meas).mpr ?_
   have hae_ij : (fun y : EuclN =>
-      laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y)
+      laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y)
       =ᵐ[(volume : Measure EuclN).restrict V] (fun _ => (0 : ℝ)) :=
     h_H_zero_ij
   have hae_kl : (fun y : EuclN =>
-      laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y)
+      laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y)
       =ᵐ[(volume : Measure EuclN).restrict V] (fun _ => (0 : ℝ)) :=
     h_H_zero_kl
   have hae_ij' : ∀ᵐ y ∂(volume : Measure EuclN), y ∈ V →
-      laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y = 0 := by
+      laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y = 0 := by
     have := (ae_restrict_iff' hV_meas).mp hae_ij
     filter_upwards [this] with y hy hyV
     exact hy hyV
   have hae_kl' : ∀ᵐ y ∂(volume : Measure EuclN), y ∈ V →
-      laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y = 0 := by
+      laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y = 0 := by
     have := (ae_restrict_iff' hV_meas).mp hae_kl
     filter_upwards [this] with y hy hyV
     exact hy hyV
@@ -701,9 +709,9 @@ private lemma invGram_mul_H_H_ae_eq_cutoff_mul_H_H
   by_cases hyK : y ∈ K
   · exact h_pt_K y hyK
   · have hyV : y ∈ V := ⟨hyΩ, hyK⟩
-    have hH_ij_zero : laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y = 0 :=
+    have hH_ij_zero : laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y = 0 :=
       hy_ij hyV
-    have hH_kl_zero : laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y = 0 :=
+    have hH_kl_zero : laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y = 0 :=
       hy_kl hyV
     rw [hH_ij_zero, hH_kl_zero]
     ring
@@ -714,7 +722,7 @@ private lemma laplacianDomainHessianChart_aestronglyMeasurable
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (i j : Fin (Module.finrank ℝ E)) :
     AEStronglyMeasurable
-      (laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j)
+      (laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j)
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
   (laplacianDomainHessianChart_memLp_two
@@ -727,8 +735,8 @@ private lemma H_ij_mul_H_kl_integrable
     (i j k l : Fin (Module.finrank ℝ E)) :
     Integrable
       (fun y : EuclN =>
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y)
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y)
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   have h_ij := laplacianDomainHessianChart_memLp_two
@@ -745,8 +753,8 @@ private lemma cutoffSummand_memLp_one
     MemLp (fun y : EuclN =>
         cutoffInvGram (I := I) (M := M) g α i k y *
           cutoffInvGram (I := I) (M := M) g α j l y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) 1
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
@@ -757,23 +765,23 @@ private lemma cutoffSummand_memLp_one
   have h_HH_int := H_ij_mul_H_kl_integrable
     (I := I) (M := M) g α hu_h i j k l
   have h_HH_memLp_one : MemLp (fun y : EuclN =>
-      laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) 1
+      laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
     memLp_one_iff_integrable.mpr h_HH_int
   set C := C_ik * C_jl with hC_def
   have hC_nn : 0 ≤ C := mul_nonneg hC_ik_nn hC_jl_nn
   set bdd_fn : EuclN → ℝ := fun y =>
-    C * |laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-      laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y|
+    C * |laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+      laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y|
     with hbdd_def
   have hbdd_memLp : MemLp bdd_fn 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
     have h_abs : MemLp (fun y => |laplacianDomainHessianChart
-        (I := I) (M := M) g α hu_h i j y *
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y|) 1
+        (I := I) (M := M) g α (u_h := u_h) i j y *
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y|) 1
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := h_HH_memLp_one.abs
     exact h_abs.const_mul C
@@ -800,8 +808,8 @@ private lemma cutoffSummand_memLp_one
   · refine Filter.Eventually.of_forall ?_
     intro y
     simp only [Real.norm_eq_abs, hbdd_def]
-    set H_ij := laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j with hH_ij_def
-    set H_kl := laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l with hH_kl_def
+    set H_ij := laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j with hH_ij_def
+    set H_kl := laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l with hH_kl_def
     set Gik := cutoffInvGram (I := I) (M := M) g α i k with hGik_def
     set Gjl := cutoffInvGram (I := I) (M := M) g α j l with hGjl_def
     have h_abs : |Gik y * Gjl y * H_ij y * H_kl y| =
@@ -837,8 +845,8 @@ private lemma summand_memLp_one
     MemLp (fun y : EuclN =>
         invGramOnEuclid (I := I) g α i k y *
           invGramOnEuclid (I := I) g α j l y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) 1
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   have h_cutoff_memLp := cutoffSummand_memLp_one
@@ -851,19 +859,19 @@ theorem laplacianDomainHessFrobeniusSqChart_memLp_one
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    MemLp (laplacianDomainHessFrobeniusSqChart (I := I) (M := M) g α hu_h) 1
+    MemLp (laplacianDomainHessFrobeniusSqChart (I := I) (M := M) g α (u_h := u_h)) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
-  have h_eq : laplacianDomainHessFrobeniusSqChart (I := I) (M := M) g α hu_h =
+  have h_eq : laplacianDomainHessFrobeniusSqChart (I := I) (M := M) g α (u_h := u_h) =
       fun y => ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
               invGramOnEuclid (I := I) g α i k y *
                 invGramOnEuclid (I := I) g α j l y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h i j y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y := by
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) i j y *
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y := by
     funext y
     rw [laplacianDomainHessFrobeniusSqChart_def]
   rw [h_eq]
@@ -888,7 +896,7 @@ theorem laplacianDomainHessianChart_smooth_case
           (chartTargetEuclid (I := I) (M := M) α)]
         chartPushed (I := I) (M := M) (chartAtlasPOU I M) α f.toFun) :
     laplacianDomainHessianChart (I := I) (M := M) g α
-        (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) f) i j
+        (u_h := smoothToH1Compl (I := I) (M := M) g f) i j
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       chosenWeakPartial' (d := Module.finrank ℝ E) 2 j

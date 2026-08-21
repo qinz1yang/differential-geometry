@@ -63,6 +63,7 @@ noncomputable def lieCorrectionZeroNEndo
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroNEndo_homSection_contMDiff
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -111,6 +112,7 @@ theorem lieCorrectionZeroInsertionFib_toModel
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroInsertionFib_contMDiff
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -343,6 +345,7 @@ theorem lieCorrectionZero_prod_section_contMDiff
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroTraceStep_section_contMDiff
     (g : SmoothRiemannianMetric I M) (p : ℕ) (σ : Equiv.Perm (Fin (p + 2)))
     (Z : ∀ x : M, Tensor0SSpace (p + 2) I x)
@@ -365,6 +368,7 @@ theorem lieCorrectionZeroTraceStep_section_contMDiff
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVBFib_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -411,6 +415,7 @@ theorem lieCorrectionZeroVBFib_contMDiff
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnectionHalfFib_section_contMDiff
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯) :
@@ -450,6 +455,7 @@ theorem lieCorrectionZeroMixedConnectionHalfFib_section_contMDiff
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroMixedConnectionFib_contMDiff
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -529,6 +535,7 @@ theorem lieCorrectionZeroRiemLoweredFib_section_contMDiff
   rw [hframe' 0, hframe' 1, hframe' 2, hframe' 3]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroRiemFib_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -571,6 +578,8 @@ noncomputable def lieCorrectionZeroTotalFib
     lieCorrectionZeroMixedConnectionFib (I := I) g₀ g₁ g_bg x + lieCorrectionZeroRiemFib (I := I) g₀ g₁ x
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroTotalFib_contMDiff
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -622,6 +631,8 @@ def lieCorrectionZeroField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroField_apply
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg).toSection x =

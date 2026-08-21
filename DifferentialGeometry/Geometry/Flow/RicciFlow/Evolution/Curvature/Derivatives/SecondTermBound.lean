@@ -230,7 +230,7 @@ section SolutionBound
 
 variable {n : ℕ}
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T2_orthoBasis_le
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M)
@@ -303,7 +303,7 @@ theorem compNormSqMulti_eq_compNormSq5
     exact absurd (Subsingleton.elim y default) hy
   · intro h; exact absurd (Finset.mem_univ _) h
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T2_orthoFrame_le
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M) :

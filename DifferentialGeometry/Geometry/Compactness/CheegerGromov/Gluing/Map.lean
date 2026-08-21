@@ -170,9 +170,6 @@ def HasUniqueStageCenter
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) : Prop :=
@@ -183,7 +180,6 @@ def HasUniqueStageCenter
   letI : T2Space Y.M := Y.t2
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : ConnectedSpace Y.M := hconn (L.φ l)
   let i0 := baseIndex inp.decay inp.realizes inp.pack hs
   ∃! y : Y.M, ∀ z : Y.M,
     CenterOfMass.centerEnergy (I := I) Y.metric
@@ -205,16 +201,13 @@ theorem uniqueCenter_subseq
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
     (x : (X.obj ((L.subseq hψ).φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) :
-    HasUniqueStageCenter inp P (L.subseq hψ) s hs hconn k l x
+    HasUniqueStageCenter inp P (L.subseq hψ) s hs k l x
         (chart := chart) ↔
-      HasUniqueStageCenter inp P L s hs hconn (ψ k) (ψ l) x
+      HasUniqueStageCenter inp P L s hs (ψ k) (ψ l) x
         (chart := chart) := by
   have hseq :
       seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k =
@@ -229,16 +222,13 @@ noncomputable def stageComparisonMap
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) : (X.obj (L.φ l)).M := by
   classical
   exact
     if hx : x ∈ L.hatSourceBall inp.decay P s k then
-      if huniq : HasUniqueStageCenter inp P L s hs hconn k l x
+      if huniq : HasUniqueStageCenter inp P L s hs k l x
           (chart := chart) then
         Classical.choose huniq.exists
       else
@@ -250,15 +240,12 @@ theorem stageCompare_choose
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
     {chart : NormalChartFamily (I := I) X}
     (hx : x ∈ L.hatSourceBall inp.decay P s k)
-    (huniq : HasUniqueStageCenter inp P L s hs hconn k l x
+    (huniq : HasUniqueStageCenter inp P L s hs k l x
       (chart := chart)) :
-    stageComparisonMap inp P L s hs hconn k l x (chart := chart) =
+    stageComparisonMap inp P L s hs k l x (chart := chart) =
       Classical.choose huniq.exists := by
   simp only [stageComparisonMap, hx, huniq, dite_true]
 
@@ -266,15 +253,12 @@ theorem stageCompare_default
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
     {chart : NormalChartFamily (I := I) X}
     (hdefault : x ∉ L.hatSourceBall inp.decay P s k ∨
-      ¬ HasUniqueStageCenter inp P L s hs hconn k l x
+      ¬ HasUniqueStageCenter inp P L s hs k l x
         (chart := chart)) :
-    stageComparisonMap inp P L s hs hconn k l x (chart := chart) =
+    stageComparisonMap inp P L s hs k l x (chart := chart) =
       (X.obj (L.φ l)).basepoint := by
   rcases hdefault with hx | huniq
   · simp only [stageComparisonMap, hx, dite_false]
@@ -286,19 +270,16 @@ theorem stageCompare_subseq
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) :
-    stageComparisonMap inp P (L.subseq hψ) s hs hconn k l
+    stageComparisonMap inp P (L.subseq hψ) s hs k l
         (chart := chart) =
-      stageComparisonMap inp P L s hs hconn (ψ k) (ψ l)
+      stageComparisonMap inp P L s hs (ψ k) (ψ l)
         (chart := chart) := by
   classical
   funext x
-  have hcenter := uniqueCenter_subseq (I := I) inp P L s hs hconn hψ k l x
+  have hcenter := uniqueCenter_subseq (I := I) inp P L s hs hψ k l x
     (chart := chart)
   have hseq :
       seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k =
@@ -308,30 +289,30 @@ theorem stageCompare_subseq
   by_cases hx : x ∈ L.hatSourceBall inp.decay P s (ψ k)
   · have hx' : x ∈ (L.subseq hψ).hatSourceBall inp.decay P s k := by
       simpa only [NetLimitData.hatSourceBall_subseq] using hx
-    by_cases hu : HasUniqueStageCenter inp P L s hs hconn (ψ k) (ψ l) x
+    by_cases hu : HasUniqueStageCenter inp P L s hs (ψ k) (ψ l) x
         (chart := chart)
-    · have hu' : HasUniqueStageCenter inp P (L.subseq hψ) s hs hconn k l x
+    · have hu' : HasUniqueStageCenter inp P (L.subseq hψ) s hs k l x
           (chart := chart) :=
         hcenter.mpr hu
-      rw [stageCompare_choose (I := I) inp P (L.subseq hψ) s hs hconn k l x hx' hu',
-        stageCompare_choose (I := I) inp P L s hs hconn (ψ k) (ψ l) x hx hu]
+      rw [stageCompare_choose (I := I) inp P (L.subseq hψ) s hs k l x hx' hu',
+        stageCompare_choose (I := I) inp P L s hs (ψ k) (ψ l) x hx hu]
       apply hu.unique
       · simpa only [stageTarget_subseq, hseq, NetLimitData.subseq_phi,
           Function.comp_apply] using Classical.choose_spec hu'.exists
       · exact Classical.choose_spec hu.exists
-    · have hu' : ¬ HasUniqueStageCenter inp P (L.subseq hψ) s hs hconn k l x
+    · have hu' : ¬ HasUniqueStageCenter inp P (L.subseq hψ) s hs k l x
           (chart := chart) :=
         fun h => hu (hcenter.mp h)
-      rw [stageCompare_default (I := I) inp P (L.subseq hψ) s hs hconn k l x
+      rw [stageCompare_default (I := I) inp P (L.subseq hψ) s hs k l x
           (Or.inr hu'),
-        stageCompare_default (I := I) inp P L s hs hconn (ψ k) (ψ l) x
+        stageCompare_default (I := I) inp P L s hs (ψ k) (ψ l) x
           (Or.inr hu)]
       simp only [NetLimitData.subseq_phi, Function.comp_apply]
   · have hx' : x ∉ (L.subseq hψ).hatSourceBall inp.decay P s k := by
       simpa only [NetLimitData.hatSourceBall_subseq] using hx
-    rw [stageCompare_default (I := I) inp P (L.subseq hψ) s hs hconn k l x
+    rw [stageCompare_default (I := I) inp P (L.subseq hψ) s hs k l x
         (Or.inl hx'),
-      stageCompare_default (I := I) inp P L s hs hconn (ψ k) (ψ l) x
+      stageCompare_default (I := I) inp P L s hs (ψ k) (ψ l) x
         (Or.inl hx)]
     simp only [NetLimitData.subseq_phi, Function.comp_apply]
 
@@ -339,13 +320,10 @@ theorem stageCmp_base_raw
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) :
-    stageComparisonMap inp P L s hs hconn k l
+    stageComparisonMap inp P L s hs k l
         (X.obj (L.φ k)).basepoint (chart := chart) =
       (X.obj (L.φ l)).basepoint := by
   classical
@@ -362,23 +340,18 @@ theorem stageCmp_base_raw
   letI : T2Space Yl.M := Yl.t2
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
-  letI : ConnectedSpace Yl.M := hconn (L.φ l)
-  letI : TopologicalSpace.MetrizableSpace Yl.M :=
-    Manifold.metrizableSpace I Yl.M
-  letI : T3Space Yl.M := inferInstance
   letI : MetricSpace Yk.M := (P (L.φ k)).ms
   letI : RiemannianBundle (fun x : Yl.M => TangentSpace I x) :=
     ⟨Yl.metric.toRiemannianMetric⟩
   letI : IsContinuousRiemannianBundle E (fun x : Yl.M => TangentSpace I x) :=
     ⟨Yl.metric.inner, Yl.metric.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace Yl.M := HopfRinow.riemMetricSpace (I := I) (M := Yl.M)
   have hx : (X.obj (L.φ k)).basepoint ∈
       L.hatSourceBall inp.decay P s k := by
     change Yk.basepoint ∈ Metric.closedBall Yk.basepoint s
     simpa only [Metric.mem_closedBall, dist_self] using hs
-  by_cases huniq : HasUniqueStageCenter inp P L s hs hconn k l
+  by_cases huniq : HasUniqueStageCenter inp P L s hs k l
       (X.obj (L.φ k)).basepoint (chart := chart)
-  · rw [stageCompare_choose (I := I) inp P L s hs hconn k l
+  · rw [stageCompare_choose (I := I) inp P L s hs k l
       Yk.basepoint hx huniq]
     let i0 := baseIndex inp.decay inp.realizes inp.pack hs
     let mu := fun gamma : Fin (inp.pack.A s) =>
@@ -457,17 +430,13 @@ theorem stageCompare_base
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (k l : Nat)
-    (_hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L inp.pack s k)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) :
-    stageComparisonMap inp P L s hs hconn k l
+    stageComparisonMap inp P L s hs k l
         (X.obj (L.φ k)).basepoint (chart := chart) =
       (X.obj (L.φ l)).basepoint :=
-  stageCmp_base_raw inp P L s hs hconn k l chart
+  stageCmp_base_raw inp P L s hs k l chart
 
 end HCGCompactness
 end DifferentialGeometry

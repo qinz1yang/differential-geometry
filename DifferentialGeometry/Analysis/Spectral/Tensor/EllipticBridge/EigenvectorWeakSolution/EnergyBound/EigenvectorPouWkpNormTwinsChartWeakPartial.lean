@@ -169,7 +169,7 @@ lemma eigenvectorChartWeakPartial_memWkp_and_wkpNorm_le
                     g r s) i) β P :
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
       wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := Module.finrank ℝ E) K
-        hΩ_open _ k
+        _ k
     _ ≤ ENNReal.ofReal ‖(i.fst.val)⁻¹‖ *
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -290,7 +290,7 @@ lemma eigenvectorChartWeakPartial_wkpNorm_le_uniform
                     g r s) i) β P :
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
       wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := Module.finrank ℝ E) K
-        hΩ_open _ k
+        _ k
     _ ≤ ENNReal.ofReal ‖(i.fst.val)⁻¹‖ *
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s

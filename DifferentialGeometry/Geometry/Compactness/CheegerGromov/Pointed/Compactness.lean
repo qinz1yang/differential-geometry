@@ -881,10 +881,6 @@ noncomputable def ofRestrictPullback
     {Φ : PointedRiemannianCGMaps (I := I) X L subseq}
     {k : Nat}
     (hσsrc : letI : TopologicalSpace L.M := L.topology; IsSigmaCompact (Φ.source k))
-    (hσtgt :
-      letI : TopologicalSpace (X.obj (subseq k)).M :=
-        (X.obj (subseq k)).topology
-      IsSigmaCompact (Φ.target k))
     (referenceMetric :
       letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
         metricSourceDomTop (I := I) Φ k
@@ -930,32 +926,21 @@ noncomputable def ofRestrictPullback
   letI : T2Space (MetricTargetDomain (I := I) Φ k) := metricTargetDomT2 (I := I) Φ k
   letI : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomSigmaOf (I := I) Φ k hσtgt
   refine MetricSourceData.ofCanonical (I := I)
     (Φ := Φ) (k := k)
     (metricSourceDomSigmaOf (I := I) Φ k hσsrc)
     (by
-      let sourceSigma : SigmaCompactSpace (metricSourceOpen (I := I) Φ k) := by
-        change SigmaCompactSpace (MetricSourceDomain (I := I) Φ k)
-        exact metricSourceDomSigmaOf (I := I) Φ k hσsrc
       let sourceT2 : T2Space (metricSourceOpen (I := I) Φ k) := by
         change T2Space (MetricSourceDomain (I := I) Φ k)
         exact metricSourceDomT2 (I := I) Φ k
       exact
         @SmoothRiemannianMetric.restrictOpen E inferInstance inferInstance H inferInstance I
           L.M L.topology L.charted L.smooth inferInstance
-          L.metric (metricSourceOpen (I := I) Φ k) sourceSigma sourceT2)
+          L.metric (metricSourceOpen (I := I) Φ k) sourceT2)
     (by
-      let sourceSigma : SigmaCompactSpace (metricSourceOpen (I := I) Φ k) := by
-        change SigmaCompactSpace (MetricSourceDomain (I := I) Φ k)
-        exact metricSourceDomSigmaOf (I := I) Φ k hσsrc
       let sourceT2 : T2Space (metricSourceOpen (I := I) Φ k) := by
         change T2Space (MetricSourceDomain (I := I) Φ k)
         exact metricSourceDomT2 (I := I) Φ k
-      let targetSigma : SigmaCompactSpace (metricTargetOpen (I := I) Φ k) := by
-        change SigmaCompactSpace (MetricTargetDomain (I := I) Φ k)
-        exact metricTargetDomSigmaOf (I := I) Φ k hσtgt
       let targetT2 : T2Space (metricTargetOpen (I := I) Φ k) := by
         change T2Space (MetricTargetDomain (I := I) Φ k)
         exact metricTargetDomT2 (I := I) Φ k
@@ -964,14 +949,14 @@ noncomputable def ofRestrictPullback
           (X.obj (subseq k)).M (X.obj (subseq k)).topology
           (X.obj (subseq k)).charted (X.obj (subseq k)).smooth inferInstance
           (X.obj (subseq k)).metric (metricTargetOpen (I := I) Φ k)
-          targetSigma targetT2
+          targetT2
       exact
         @Diffeomorph.pullbackMetric E inferInstance inferInstance inferInstance H inferInstance I
           (MetricSourceDomain (I := I) Φ k) (metricSourceDomTop (I := I) Φ k)
           (metricSourceDomCharted (I := I) Φ k) (metricSourceDomSmooth (I := I) Φ k)
           (MetricTargetDomain (I := I) Φ k) (metricTargetDomTop (I := I) Φ k)
           (metricTargetDomCharted (I := I) Φ k) (metricTargetDomSmooth (I := I) Φ k)
-          sourceSigma sourceT2 targetMetric (metricSourceTargetDiff (I := I) Φ k))
+          sourceT2 targetMetric (metricSourceTargetDiff (I := I) Φ k))
     referenceMetric
     ?_ ?_
   · intro x v w
@@ -1125,7 +1110,6 @@ def MetricSourceCPConvOn
     (Φ : PointedRiemannianCGMaps (I := I) X L subseq)
     (D : forall k : Nat, MetricSourceData (I := I) Φ k)
     (K : Set L.M)
-    (_hK : letI : TopologicalSpace L.M := L.topology; IsCompact K)
     (p : Nat) : Prop :=
   forall ε : Real, 0 < ε ->
     exists k0 : Nat, forall k : Nat, k0 <= k ->
@@ -1139,8 +1123,8 @@ structure MetricCGConvergenceData
   domain : forall k : Nat, MetricSourceData (I := I) Φ k
   converges :
     forall K : Set L.M,
-      forall hK : letI : TopologicalSpace L.M := L.topology; IsCompact K,
-      forall p : Nat, MetricSourceCPConvOn (I := I) Φ domain K hK p
+      (letI : TopologicalSpace L.M := L.topology; IsCompact K) →
+      forall p : Nat, MetricSourceCPConvOn (I := I) Φ domain K p
 
 namespace MetricCGConvergenceData
 
@@ -1196,10 +1180,6 @@ noncomputable def ofRestrictPullback
     (hσsrc : forall k : Nat,
       letI : TopologicalSpace L.M := L.topology
       IsSigmaCompact (Φ.source k))
-    (hσtgt : forall k : Nat,
-      letI : TopologicalSpace (X.obj (subseq k)).M :=
-        (X.obj (subseq k)).topology
-      IsSigmaCompact (Φ.target k))
     (referenceMetric : forall k : Nat,
       letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
         metricSourceDomTop (I := I) Φ k
@@ -1214,12 +1194,12 @@ noncomputable def ofRestrictPullback
         forall ε : Real, 0 < ε ->
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             ((MetricSourceData.ofRestrictPullback (I := I)
-              (Φ := Φ) (k := k) (hσsrc k) (hσtgt k)
+              (Φ := Φ) (k := k) (hσsrc k)
               (referenceMetric k)).derivNormSupOn (I := I) K p) < ε) :
     MetricCGConvergenceData (I := I) Φ :=
   MetricCGConvergenceData.of_derivNormSupOn (I := I)
     (D := fun k => MetricSourceData.ofRestrictPullback (I := I)
-      (Φ := Φ) (k := k) (hσsrc k) (hσtgt k) (referenceMetric k))
+      (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k))
     hconv
 
 end MetricCGConvergenceData
@@ -1274,10 +1254,6 @@ noncomputable def ofRestrictPullback
     (hσsrc : forall k : Nat,
       letI : TopologicalSpace L.M := L.topology
       IsSigmaCompact (Φ.source k))
-    (hσtgt : forall k : Nat,
-      letI : TopologicalSpace (X.obj (subseq k)).M :=
-        (X.obj (subseq k)).topology
-      IsSigmaCompact (Φ.target k))
     (referenceMetric : forall k : Nat,
       letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
         metricSourceDomTop (I := I) Φ k
@@ -1292,11 +1268,11 @@ noncomputable def ofRestrictPullback
         forall ε : Real, 0 < ε ->
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             ((MetricSourceData.ofRestrictPullback (I := I)
-              (Φ := Φ) (k := k) (hσsrc k) (hσtgt k)
+              (Φ := Φ) (k := k) (hσsrc k)
               (referenceMetric k)).derivNormSupOn (I := I) K p) < ε) :
     PointedRiemannianCGConverges (I := I) X L subseq Φ where
   metrics := MetricCGConvergenceData.ofRestrictPullback (I := I)
-    hσsrc hσtgt referenceMetric hconv
+    hσsrc referenceMetric hconv
 
 end PointedRiemannianCGConverges
 

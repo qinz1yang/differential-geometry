@@ -54,6 +54,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem covDerivArmField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀ g₁ g_bg =
@@ -65,6 +66,7 @@ theorem covDerivArmField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
@@ -281,6 +283,7 @@ def bdOmega (g₀ g₁ g_bg : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 
     (bdXiFix (I := I) (M := M) g₀ g_bg)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private lemma bdOmega_eq_sub (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     bdOmega (I := I) (M := M) g₀ g₁ g_bg =
       bdOmegaGen (I := I) (M := M) g₀ g₁ g_bg - bdOmegaGen (I := I) (M := M) g₀ g₁ g₀ := by
@@ -354,6 +357,7 @@ private lemma bdXiGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric I M
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdOmegaGen_toSection_unit (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
         (bdOmegaGen (I := I) (M := M) g₀ g₁ gc).toSection x)
@@ -366,6 +370,7 @@ private lemma bdOmegaGen_toSection_unit (g₀ g₁ gc : SmoothRiemannianMetric I
   rfl
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdOmegaGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M)
     (z : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 1 (bdOmegaGen (I := I) (M := M) g₀ g₁ gc) x
@@ -439,6 +444,7 @@ private lemma bdOmegaGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric 
     rw [map_sum, ContinuousLinearMap.sum_apply]]
   rw [← PDE.DeTurck.deTurckVF_eq_orthoFrame_trace (I := I) g₁ gc x]
 
+omit [I.Boundaryless] in
 private lemma bdOmega_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (z : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 1 (bdOmega (I := I) (M := M) g₀ g₁ g_bg) x
@@ -505,6 +511,7 @@ private lemma bdTensor0SCovDeriv01_consEval_leibnizDefect
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
   (g0FlatCLM cotangentToDual_g0FlatCLM inverseMetricSharpFib_g0FlatCLM) in
+omit [I.Boundaryless] in
 private lemma bdOmega_toSection_unit_eq_flat (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -535,6 +542,7 @@ private lemma bdOmega_toSection_unit_eq_flat (g₀ g₁ g_bg : SmoothRiemannianM
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
   (g0FlatCLM cotangentToDual_g0FlatCLM inverseMetricSharpFib_g0FlatCLM) in
+omit [I.Boundaryless] in
 private lemma bdUnitEvalSection_bdOmega_toModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (b : M) (z : TangentSpace I b) :
     Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 1
@@ -641,6 +649,7 @@ lemma bdInterior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
   (g0FlatCLM cotangentToDual_g0FlatCLM inverseMetricSharpFib_g0FlatCLM) in
+omit [I.Boundaryless] in
 private lemma bdAlphaB_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (u w : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (bdAlphaB (I := I) (M := M) g₀ g₁ g_bg) x ![u, w] =

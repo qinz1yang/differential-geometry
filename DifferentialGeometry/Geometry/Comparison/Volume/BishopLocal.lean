@@ -89,7 +89,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 def localBallVolume
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) (R : Real) : ENNReal :=

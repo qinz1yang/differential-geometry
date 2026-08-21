@@ -29,7 +29,6 @@ def Rm04LowersRm13At
         (vec3 X Y Z)
 
 theorem rm04RealizesLower
-    [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -45,7 +44,7 @@ theorem rm04RealizesLower
   simpa [tangentFlatLinear_apply_gen, cotangentToDual_apply_gen] using h
 
 theorem rm04LowersRm13At_of_realizes
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -123,7 +122,7 @@ theorem rm13MetricSkewAt_of_rm04_outputSkew
         (vec3 X Y W) := by rw [hLower X Y W Z]
 
 theorem rm13MetricSkewAt_of_realizes_outputSkew
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))

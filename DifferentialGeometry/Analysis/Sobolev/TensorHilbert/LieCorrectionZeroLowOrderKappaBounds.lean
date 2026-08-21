@@ -77,6 +77,7 @@ private def pbLowCompatField (g₀ : SmoothRiemannianMetric I M)
     ccBilinConnectionDifferenceLoweredFib_contMDiff (I := I) g₀ P gA gB⟩
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem pbLow_unit (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
@@ -96,6 +97,7 @@ theorem pbLow_unit (g₀ : SmoothRiemannianMetric I M)
   exact ccBilinConnectionDifferenceLoweredFib_toModel (I := I) g₀ P gA gB x m
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem pbLow_sub (g₀ : SmoothRiemannianMetric I M)
     (P Q : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroPbLow (I := I) (M := M) g₀ (P - Q) gA gB =
@@ -139,6 +141,7 @@ private theorem unit_add0 (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem kappa_bg (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -207,6 +210,8 @@ private theorem ip_toModel (s : ℕ) (x : M) (v : TangentSpace I x)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) :
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 1

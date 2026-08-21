@@ -441,6 +441,7 @@ theorem nablaRic_ein3
         DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
           (fun _ : Fin 1 => A) * g.inner x B C := hprodEval
 
+omit [SigmaCompactSpace M] in
 theorem dScalar_zero_ein3_at
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -489,7 +490,7 @@ theorem dScalar_zero_ein3_at
         nablaRm04
         nablaRic dScalar :=
     DifferentialGeometry.Geometry.Curvature.contractOfSecond (I := I) basis gInv nablaRm04
-      nablaRic dScalar hRmSymm hRicTrace hScalar hNablaSymm hInv
+      nablaRic dScalar hRmSymm hRicTrace hScalar hInv
   have hBianchi : DifferentialGeometry.Geometry.Curvature.ContractedBianchiAt (I := I) basis gInv
     nablaRic
       dScalar :=
@@ -501,6 +502,7 @@ theorem dScalar_zero_ein3_at
     nablaRic dScalar hBianchi hEinNabla X
 
 
+omit [SigmaCompactSpace M] in
 theorem metricRicciSymm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -575,6 +577,7 @@ theorem metricRicciSymm
       hTrace hPair hOutput hInput
       (invMetric_symm (I := I) (M := M) g x basis gInv hinv) i j
 
+omit [SigmaCompactSpace M] in
 theorem metricNablaSymm
     (g : SmoothRiemannianMetric I M) (x : M) :
     NablaRicSymmAt (I := I)
@@ -641,6 +644,7 @@ theorem metricNablaSymm
   rw [hleft, hright]
   exact hsymm
 
+omit [SigmaCompactSpace M] in
 theorem metricRicci_velocity_eq_sum_rm04_frame
     (g : SmoothRiemannianMetric I M) {m : Nat} {x : M}
     (basis : Module.Basis (Fin (m + 1)) Real (TangentSpace I x))
@@ -717,6 +721,7 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
     vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
       DifferentialGeometry.Geometry.Curvature.vec4] using hTail
 
+omit [SigmaCompactSpace M] in
 theorem metricRicci_velocity_eq_sum_inner_curv_frame
     (g : SmoothRiemannianMetric I M) {m : Nat} {x : M}
     (basis : Module.Basis (Fin (m + 1)) Real (TangentSpace I x))

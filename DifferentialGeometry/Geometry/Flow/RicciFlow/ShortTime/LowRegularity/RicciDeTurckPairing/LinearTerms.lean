@@ -220,7 +220,8 @@ private lemma metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
         (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) B) =
       Tensor0SSpace.toModel
-        (slotExtendFib (I := I) (M := M) 0 3 x
+        (DifferentialGeometry.Integral.Connection.slotExtendFib
+          (I := I) (M := M) 0 3 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
             (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
           B) := by
@@ -231,7 +232,8 @@ private lemma metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
     (Fin.cons_self_tail u).symm]
   rw [tensor0SProdKappaFib_apply, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
+  rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval
+    (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
     B (u 0) (Fin.tail u)]
@@ -1243,6 +1245,7 @@ theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism
         (Module.finrank ℝ E : ℝ) * B1 R * A * D2) ^ 2 := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem riemannCurvatureCoefficientField_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
     riemannCurvatureCoefficientField (I := I) (M := M) g T - riemannCurvatureCoefficientField (I := I) (M := M) g U =
@@ -1358,6 +1361,7 @@ theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_bou
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem connectionDifferenceQuadraticPairedTensor_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gT - connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gU =
@@ -1378,6 +1382,7 @@ theorem connectionDifferenceQuadraticPairedTensor_sub
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem connectionDifferenceQuadraticComposedTensor_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gT - connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gU =
@@ -2139,6 +2144,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderPairTrace_covariantJetNormS
     _ = fr ^ 2 * Cr R * ((1 + A) ^ 4 * D3 ^ 2) := by ring
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem deTurckLieEdgePairingFamily_eq_deTurckLieCovariantDerivativeExpansionPairTraceFamily
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -2541,6 +2547,7 @@ theorem ricciCovariantDerivativeConnectionDifference_self
   exact RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder_apply (I := I) (M := M) g gm T T
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem operatorFieldApplication_ipLowCc_eq_cometricRaiseSlot0Field
     (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1)
     (W : SmoothCcTensor g 0 2) :
@@ -3308,6 +3315,7 @@ noncomputable def connectionDifferenceInsertionInnerDerivativeCoefficient
     (permCoeff (I := I) (M := M) g (finRotate 3))
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2) :
     operatorFieldApply (I := I) (M := M) g 2 3

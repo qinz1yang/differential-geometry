@@ -5688,7 +5688,7 @@ theorem modelSharpUnionRound_negPart {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ) 
   rw [negPart_recombine]
 
 theorem morseNorm_lt_of_mem_attached_negPart_lt {n k : ℕ} (hk : k ≤ n) (ε r δ R : ℝ)
-    (hε : 0 ≤ ε) (hδ0 : 0 < δ) (_hδr : δ < r ^ 2) (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < R / 2)
+    (hε : 0 ≤ ε) (hδ0 : 0 < δ) (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < R / 2)
     (hRpos : 0 < R) {y : MorseModel n} (hy : y ∈ modelAttachedRegion hk ε r δ)
     (hneg : ‖negPart hk y‖ < R / 2) :
     morseNorm n y < R := by
@@ -5951,7 +5951,7 @@ theorem modelSharpUnionUnround_round {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     _ = y := recombine_decompose hk y
 
 theorem modelSharpUnionRound_eq_self_of_negPart_large {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
-    (hδ0 : 0 < δ) (_hδr : δ < r ^ 2)
+    (hδ0 : 0 < δ)
     {y : MorseModel n} (ht : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk y‖ ^ 2) :
     modelSharpUnionRound hk ε r δ y = y := by
   have hsc : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε := by
@@ -5972,7 +5972,7 @@ theorem modelSharpUnionRound_eq_self_of_negPart_large {n k : ℕ} (hk : k ≤ n)
     _ = y := recombine_decompose hk y
 
 theorem modelSharpUnionUnround_eq_self_of_negPart_large {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
-    (hδ0 : 0 < δ) (_hδr : δ < r ^ 2)
+    (hδ0 : 0 < δ)
     {y : MorseModel n} (ht : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk y‖ ^ 2) :
     modelSharpUnionUnround hk ε r δ y = y := by
   have hsc : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε := by
@@ -5993,7 +5993,7 @@ theorem modelSharpUnionUnround_eq_self_of_negPart_large {n k : ℕ} (hk : k ≤ 
     _ = y := recombine_decompose hk y
 
 theorem modelSharpUnionRound_eq_self_of_deep {n k : ℕ} (hk : k ≤ n) (c ε r δ η : ℝ)
-    (hδ0 : 0 < δ) (hδr : δ < r ^ 2)
+    (hδ0 : 0 < δ)
     {y : MorseModel n} (hη : r ^ 2 + δ ≤ 2 * η)
     (hy : morseNormalForm hk c y ≤ c - ε - η) :
     modelSharpUnionRound hk ε r δ y = y := by
@@ -6001,10 +6001,10 @@ theorem modelSharpUnionRound_eq_self_of_deep {n k : ℕ} (hk : k ≤ n) (c ε r 
     rw [morseNormalForm_split] at hy
     have h : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - 2 * ε - 2 * η := by nlinarith
     nlinarith only [h, hη]
-  exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hδr ht
+  exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 ht
 
 theorem modelSharpUnionUnround_eq_self_of_deep {n k : ℕ} (hk : k ≤ n) (c ε r δ η : ℝ)
-    (hδ0 : 0 < δ) (hδr : δ < r ^ 2)
+    (hδ0 : 0 < δ)
     {y : MorseModel n} (hη : r ^ 2 + δ ≤ 2 * η)
     (hy : morseNormalForm hk c y ≤ c - ε - η) :
     modelSharpUnionUnround hk ε r δ y = y := by
@@ -6012,7 +6012,7 @@ theorem modelSharpUnionUnround_eq_self_of_deep {n k : ℕ} (hk : k ≤ n) (c ε 
     rw [morseNormalForm_split] at hy
     have h : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - 2 * ε - 2 * η := by nlinarith
     nlinarith only [h, hη]
-  exact modelSharpUnionUnround_eq_self_of_negPart_large hk ε r δ hδ0 hδr ht
+  exact modelSharpUnionUnround_eq_self_of_negPart_large hk ε r δ hδ0 ht
 
 theorem modelSharpUnionRound_morseNorm_le {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     (hδ0 : 0 < δ) (hδr : δ < r ^ 2) (y : MorseModel n) :
@@ -7400,6 +7400,7 @@ theorem modelRoundCapInterp_le_one {ε r a b : ℝ} (hε : 0 < ε) (ha1 : a ≤ 
     rw [div_le_iff₀ hden]
     nlinarith only [ha', h2]
 
+@[nolint unusedArguments]
 theorem modelRoundCapInverse_params {ε r t φ a b : ℝ} (_hε : 0 < ε) (hr : 0 < r)
     (htpos : 0 < t) (htr : t < r ^ 2 + 2 * ε) (hφ0 : 0 ≤ φ) (hφ1 : φ ≤ 1)
     (hphiD : 2 * ε - t ≤ φ * (r ^ 2 + 2 * ε - t))
@@ -8910,7 +8911,7 @@ theorem modelRoundCapQ_eq_r2b_of_t_lt {ε r δ θ a b t : ℝ} (hε : 0 < ε) (h
   ring
 
 theorem modelRoundCapQ_eq_r2b_of_flat {ε r δ θ a b : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
-    (hθ : 0 < θ) (_hδr : δ < r ^ 2) (hr : 0 < r) (ha1 : a ≤ 1)
+    (hθ : 0 < θ) (hr : 0 < r) (ha1 : a ≤ 1)
     (hb0 : 0 ≤ b) (hb1 : b < 1 - δ / r ^ 2) (hb2 : b < 1 - θ / r ^ 2) :
     modelRoundCapQ ε r δ θ a b = r ^ 2 * b := by
   let t : ℝ := (2 * ε + r ^ 2 * b) * a
@@ -10317,7 +10318,7 @@ theorem contDiffOn_modelHandleRoundMap_ambient_closed {n k : ℕ} (hk : k ≤ n)
     intro p hp
     dsimp [modelHandleRoundMapAmbient]
     have hqflat : modelRoundCapQ ε r δ θ (‖p.1‖ ^ 2) (‖p.2‖ ^ 2) = r ^ 2 * ‖p.2‖ ^ 2 := by
-      refine modelRoundCapQ_eq_r2b_of_flat hε hδ hθ hδr hr ?_ ?_ hp.2.1 hp.2.2
+      refine modelRoundCapQ_eq_r2b_of_flat hε hδ hθ hr ?_ ?_ hp.2.1 hp.2.2
       · have hnon : 0 ≤ ‖p.1‖ := norm_nonneg _
         have hneg : (-1 : ℝ) ≤ ‖p.1‖ := by linarith [hnon]
         simpa using sq_le_sq' hneg hp.1.1

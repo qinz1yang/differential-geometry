@@ -242,6 +242,7 @@ private lemma dim1_smoothOrthoFrame_ne_zero (g₁ : SmoothRiemannianMetric I M) 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 lemma dim1_ricciArmOrder0RiemannCoeff_eq_zero (h1 : Module.finrank ℝ E = 1)
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff

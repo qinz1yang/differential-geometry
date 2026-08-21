@@ -45,6 +45,7 @@ section ChartPhaseUniqueness
 
 variable [I.Boundaryless]
 
+@[nolint unusedArguments]
 def chartPhaseVFAuto (g : SmoothRiemannianMetric I M) (α : M) :
     ℝ → (E × E) → E × E :=
   fun _ z => chartPhaseVF (I := I) g α z

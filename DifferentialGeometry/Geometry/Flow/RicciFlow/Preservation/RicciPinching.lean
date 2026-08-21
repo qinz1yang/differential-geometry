@@ -24,9 +24,8 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 theorem pinchParabolic_of_react
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -80,7 +79,6 @@ theorem pinchParabolic_of_react
             ring
 
 theorem pinchParabolic
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -104,7 +102,7 @@ theorem pinchParabolic
 
 theorem pinchSpatialModel
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TensorSpatialDerivs (I := I) (M := M)
       (fun t : Real => S.base.connection t) (pinchSec (I := I) S delta)
@@ -172,7 +170,7 @@ theorem pinchSpatialModel
 
 theorem pinchSecFamilyContinuousOnSet
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (delta : Real) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
@@ -232,7 +230,7 @@ theorem pinchSecFamilyContinuousOnSet
 
 theorem pinchLipFamilyContinuousOnSet
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
@@ -290,7 +288,7 @@ theorem pinchLipFamilyContinuousOnSet
 
 theorem pinchLip_tangentBundle_cont
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval} {K : Set Real}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (hK : K ⊆ D.carrier) :
@@ -304,7 +302,7 @@ theorem pinchLip_tangentBundle_cont
 
 theorem pinchLip_bound_Icc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     {t0 t1 : Real}
@@ -350,7 +348,7 @@ theorem pinchLip_bound_Icc
 
 theorem pinchSec_tangentBundle_cont
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval} {K : Set Real}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (delta : Real)
     (hK : K ⊆ D.carrier) :
@@ -364,7 +362,7 @@ theorem pinchSec_tangentBundle_cont
 
 theorem pinchSec_tensorQuadCont
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval} {K : Set Real}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (delta : Real)
     (hK : K ⊆ D.carrier) :
@@ -414,7 +412,7 @@ theorem tensorEval_contOn
 
 theorem pinchEval_contOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T delta : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -433,7 +431,7 @@ theorem pinchEval_contOn
 
 theorem pinchMetricGain
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -530,7 +528,7 @@ theorem pinchSmallLip
     (hdelta : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier) :
-    ∀ delta0 t0 : Real, 0 < delta0 ->
+    ∀ delta0 t0 : Real,
       Set.Icc t0 (t0 + delta0) ⊆ Set.Icc 0 T ->
       ∃ K : Real, 0 ≤ K ∧
         ∀ epsilon d : Real,
@@ -547,7 +545,7 @@ theorem pinchSmallLip
                   epsilon d t0 t)) x v v| ≤
                 K *
                   |epsilon * (d + t - t0) * (S.base.metric t).inner x v v| := by
-  intro delta0 t0 hdelta0 hsub0
+  intro delta0 t0 hsub0
   have hKcarrier : Set.Icc t0 (t0 + delta0) ⊆ D.carrier := by
     intro s hs
     exact hTsub (hsub0 hs)
@@ -662,12 +660,13 @@ theorem pinchBarrierReg
     simpa [tensorBarrierFamily] using hScont.add (hcoef.mul hGcont)
   metricGainControl :=
     pinchMetricGain (I := I) (M := M) S hS hTsub hTreg
-  smallBarrierLip :=
-    pinchSmallLip (I := I) (M := M) S hS hdelta hdim hTsub
+  smallBarrierLip := by
+    intro delta0 t0 _hdelta0
+    exact pinchSmallLip (I := I) (M := M) S hS hdelta hdim hTsub delta0 t0
 
 theorem pinchSecCore
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T delta : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -886,7 +885,7 @@ def ofShiftN
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn (I := I) S)
     {T delta : Real}
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (X : TimeDependentVectorField (I := I) (M := M))
@@ -908,7 +907,7 @@ def ofShiftN
       (fun t : Real => S.base.metric t) (Set.Icc 0 T) delta)
     (shiftNRaw_null_symm (I := I) (M := M)
       (G := fun t : Real => S.base.metric t) (U := Set.Icc 0 T)
-      hdelta0 hdelta13 hdim)
+      hdelta13 hdim)
 
 def ofShiftNLt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -940,13 +939,12 @@ def ofShiftNLt
       hdelta13 hdim)
 
 def ofShiftNReact
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular)
@@ -962,19 +960,18 @@ def ofShiftNReact
             (pinchSec (I := I) S delta) t)) x v v =
           pinchCoordReact (I := I) S delta t x v) :
     PinchFlowWMPData (I := I) (M := M) S T delta :=
-  ofShiftN (I := I) (M := M) hS.isSolution hdelta0 hdelta13 hdim hTsub
+  ofShiftN (I := I) (M := M) hS.isSolution hdelta13 hdim hTsub
     (fun _t x => (0 : TangentSpace I x)) hbar
     (pinchParabolic_of_react (I := I) (M := M) S hS
       hTsub hTreg hreact)
 
 def ofShiftNDirect
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular)
@@ -984,23 +981,22 @@ def ofShiftNDirect
       (fun _t x => (0 : TangentSpace I x))
       (shiftNRaw (I := I) (M := M) delta) T) :
     PinchFlowWMPData (I := I) (M := M) S T delta :=
-  ofShiftN (I := I) (M := M) hS.isSolution hdelta0 hdelta13 hdim hTsub
+  ofShiftN (I := I) (M := M) hS.isSolution hdelta13 hdim hTsub
     (fun _t x => (0 : TangentSpace I x)) hbar
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)
 
 def ofShiftNClosed
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular) :
     PinchFlowWMPData (I := I) (M := M) S T delta :=
-  ofShiftNDirect (I := I) (M := M) hS hdelta0 hdelta13 hdim hTsub hTreg
+  ofShiftNDirect (I := I) (M := M) hS hdelta13 hdim hTsub hTreg
     (pinchBarrierReg (I := I) (M := M) S hS.isSolution
       hdelta13 hdim hTsub hTreg)
 
@@ -1099,7 +1095,6 @@ theorem ricci_pinch_wmp_raw
     {nabla2S : TensorNabla2Family (I := I) (M := M)}
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (_hdelta0 : 0 <= delta) (_hdelta13 : delta <= (1 : Real) / 3)
     (hreg : TensorWMPRegularityOn (I := I) (M := M) G
       (pinchTensor (I := I) (M := M) G Ric scalar delta) X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
@@ -1132,7 +1127,6 @@ theorem ricci_pinch_wmp
     {nablaS : TensorNabla1SecFamily (I := I) (M := M)}
     {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
     {T : Real}
-    (_hdelta0 : 0 <= delta) (_hdelta13 : delta <= (1 : Real) / 3)
     (hS :
       twoTensorSecToFamily (I := I) (M := M) S =
         pinchTensor (I := I) (M := M) G Ric scalar delta)
@@ -1158,7 +1152,6 @@ theorem preserve
     {T delta : Real}
     (data : PinchWMPData (I := I) (M := M) G Ric scalar T delta)
     (hT : 0 <= T)
-    (hdelta0 : 0 <= delta) (hdelta13 : delta <= (1 : Real) / 3)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) G Ric scalar delta) 0) :
     PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1166,7 +1159,7 @@ theorem preserve
     (scalar := scalar) (delta := delta) (S := data.S) (X := data.X)
     (N := data.N) (cov := data.cov) (nablaS := data.nablaS)
     (nabla2S := data.nabla2S) (T := T)
-    hdelta0 hdelta13 data.section_eq (data.toInput hT hinit)
+    data.section_eq (data.toInput hT hinit)
 
 end PinchWMPData
 
@@ -1183,14 +1176,13 @@ theorem preserve
     {T delta : Real}
     (data : PinchFlowWMPData (I := I) (M := M) S T delta)
     (hT : 0 <= T)
-    (hdelta0 : 0 <= delta) (hdelta13 : delta <= (1 : Real) / 3)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) (fun t : Real => S.base.metric t)
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
   exact (data.toPinchWMPData (I := I) (M := M)).preserve
-    (I := I) (M := M) hT hdelta0 hdelta13 hinit
+    (I := I) (M := M) hT hinit
 
 end PinchFlowWMPData
 
@@ -1204,7 +1196,7 @@ theorem pinch_sol_closed
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
-    (hT : 0 ≤ T) (hdelta0 : 0 < delta)
+    (hT : 0 ≤ T)
     (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -1215,9 +1207,8 @@ theorem pinch_sol_closed
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
   exact (PinchFlowWMPData.ofShiftNClosed (I := I) (M := M) hS
-    hdelta0 hdelta13 hdim hTsub hTreg).preserve
-      (I := I) (M := M) hT (le_of_lt hdelta0)
-      (le_of_lt hdelta13) hinit
+    hdelta13 hdim hTsub hTreg).preserve
+      (I := I) (M := M) hT hinit
 
 theorem pinch_sol_closed_nonneg
     [I.Boundaryless] [T2Space M]
@@ -1229,7 +1220,7 @@ theorem pinch_sol_closed_nonneg
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
-    (hT : 0 ≤ T) (hdelta0 : 0 ≤ delta)
+    (hT : 0 ≤ T)
     (hdelta13 : delta < (1 : Real) / 3)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -1244,7 +1235,7 @@ theorem pinch_sol_closed_nonneg
     (pinchBarrierReg (I := I) (M := M) S hS.isSolution
       hdelta13 hdim hTsub hTreg)
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)).preserve
-      (I := I) (M := M) hT hdelta0 (le_of_lt hdelta13) hinit
+      (I := I) (M := M) hT hinit
 
 theorem ricci_nonnegative_of_closed_solution_wmp_data
     [I.Boundaryless] [T2Space M]
@@ -1272,7 +1263,7 @@ theorem ricci_nonnegative_of_closed_solution_wmp_data
   have hpinch : PinchPres (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T 0 :=
-    pinch_sol_closed_nonneg (I := I) (M := M) hS hT (le_refl 0)
+    pinch_sol_closed_nonneg (I := I) (M := M) hS hT
       (by norm_num) hdim hTsub hTreg hinit0
   intro t ht x v
   exact (by
@@ -1299,7 +1290,7 @@ theorem pinch_init_wmp
   let data := hdata delta hdelta0 hdelta13
   refine ⟨delta, hdelta0, hdelta13, ?_⟩
   exact data.preserve (I := I) (M := M) hT
-    (le_of_lt hdelta0) hdelta13 hpinch0
+    hpinch0
 
 theorem pinch_init_wmp_lt
     [I.Boundaryless] [T2Space M]
@@ -1322,7 +1313,7 @@ theorem pinch_init_wmp_lt
   let data := hdata delta hdelta0 hdelta13
   refine ⟨delta, hdelta0, hdelta13, ?_⟩
   exact data.preserve (I := I) (M := M) hT
-    (le_of_lt hdelta0) (le_of_lt hdelta13) hpinch0
+    hpinch0
 
 theorem pinch_init_sol_lt
     [I.Boundaryless] [T2Space M]
@@ -1351,7 +1342,7 @@ theorem pinch_init_sol_lt
     (scalar := S.scalar) (T := T) hT hinit ?_
   intro delta hdelta0 hdelta13
   exact (PinchFlowWMPData.ofShiftNClosed (I := I) (M := M) hS
-    hdelta0 hdelta13 hdim hTsub hTreg).toPinchWMPData (I := I) (M := M)
+    hdelta13 hdim hTsub hTreg).toPinchWMPData (I := I) (M := M)
 
 theorem strict_pinch_wmp
     [I.Boundaryless] [T2Space M]

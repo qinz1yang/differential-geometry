@@ -208,6 +208,7 @@ theorem restrictOpen_eq_of_eqOn
     (hUeq : ∀ x : M, x ∈ U -> ∀ v w : TangentSpace I x,
       h₁.inner x v w = h₂.inner x v w) :
     h₁.restrictOpen (I := I) U = h₂.restrictOpen (I := I) U := by
+  let _ := (inferInstance : (SigmaCompactSpace ↥U))
   apply smoothRiemannianMetric_eq_of_inner (I := I)
   funext x
   ext v w

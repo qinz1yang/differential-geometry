@@ -38,7 +38,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
 set_option backward.isDefEq.respectTransparency false in
 theorem cometricCastG0_order0sup_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ (Λ : ℝ) (Flow : ℕ → ℝ), 0 ≤ Λ ∧ (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -300,6 +300,7 @@ private lemma metricComparisonEndomorphism_self_rf (g₀ : SmoothRiemannianMetri
   rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM, ContinuousLinearMap.id_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_decomp_rf (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -342,6 +343,7 @@ private lemma slotInsertEndoCc_add_rf (g₀ : SmoothRiemannianMetric I M) (s : �
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma sharpFlatEndoCc_eq_insert_fullRaised_rf (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -385,7 +387,7 @@ private lemma sharpFlatEndoCc_eq_insert_fullRaised_rf (g₀ g₁ : SmoothRiemann
 set_option backward.isDefEq.respectTransparency false in
 theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ (Λ : ℝ) (Flow : ℕ → ℝ), 0 ≤ Λ ∧ (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -521,7 +523,7 @@ theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
 
 theorem connectionDifferenceSection_lowOrder_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -664,7 +666,7 @@ theorem connectionDifferenceSection_lowOrder_jetL2_radiusFree
 
 theorem metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_le
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -680,7 +682,7 @@ theorem metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_le
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Flow_cd, hFcd_nn, hcd⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_radiusFree (I := I) (M := M) g₀ a ha_super hδ₀ hΛ₀0
+    connectionDifferenceSection_lowOrder_jetL2_radiusFree (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   set FBackground : ℕ → ℝ := fun q =>
     ‖iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ ^ 2 with hFBackground_def
   have hFBackground_nn : ∀ q, 0 ≤ FBackground q := fun q => sq_nonneg _
@@ -1018,7 +1020,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le
 
 theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_le
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1300,7 +1302,7 @@ private lemma exists_riemannianFiberNormSq_connectionDifference_topsep_rf
 
 theorem connectionDifference_L2_topsep_rf
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Flow : ℕ → ℝ, (∀ n, 0 ≤ Flow n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1413,7 +1415,7 @@ theorem connectionDifference_L2_topsep_rf
 
 theorem metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSeparated
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Flow : ℕ → ℝ, (∀ n, 0 ≤ Flow n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1429,7 +1431,7 @@ theorem metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSepara
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Ktop_cd, hKtop_cd_nn, Flow_cd, hFcd_nn, hcd⟩ :=
-    connectionDifference_L2_topsep_rf (I := I) (M := M) g₀ a ha_super hδ₀ hΛ₀0
+    connectionDifference_L2_topsep_rf (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   refine ⟨2 * Ktop_cd, mul_nonneg (by norm_num) hKtop_cd_nn,
     fun n => 2 * Flow_cd n +
       2 * ‖iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ ^ 2,
@@ -1557,7 +1559,7 @@ private lemma cometricCastG0_wXi_twoArm_fold_rf
 
 private lemma exists_riemannianFiberNormSq_wOmega_topsep_rf
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Kc_top : ℝ, 0 ≤ Kc_top ∧ ∃ Kwin : ℕ → ℝ, (∀ n, 0 ≤ Kwin n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1576,7 +1578,7 @@ private lemma exists_riemannianFiberNormSq_wOmega_topsep_rf
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
   obtain ⟨ΛC, FlowC, hΛC_nn, hFlowC_nn, hCg⟩ :=
-    cometricCastG0_order0sup_jetL2_radiusFree (I := I) (M := M) g₀ a ha_super hδ₀ hΛ₀0
+    cometricCastG0_order0sup_jetL2_radiusFree (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   obtain ⟨Klower, hKlower_nn, hfold⟩ :=
     cometricCastG0_wXi_twoArm_fold_rf (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨2 * ΛC ^ 2, mul_nonneg (by norm_num) (sq_nonneg ΛC),
@@ -1696,7 +1698,7 @@ private lemma exists_riemannianFiberNormSq_wOmega_topsep_rf
 
 theorem deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Flow : ℕ → ℝ, (∀ n, 0 ≤ Flow n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1714,9 +1716,9 @@ theorem deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Ktop_xi, hKtop_xi_nn, Flow_xi, hFlow_xi_nn, hxi⟩ :=
-    metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
   obtain ⟨Kc_top, hKc_top_nn, Kwin, hKwin_nn, hpt_gen⟩ :=
-    exists_riemannianFiberNormSq_wOmega_topsep_rf (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    exists_riemannianFiberNormSq_wOmega_topsep_rf (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
   refine ⟨Kc_top * Ktop_xi, mul_nonneg hKc_top_nn hKtop_xi_nn,
@@ -1960,8 +1962,8 @@ private lemma wCA_wOmega_twoArm_fold_rf
         exact Finset.sum_congr rfl (fun n _ => by rw [Finset.sum_mul])
 
 lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    (g₀ g_bg : SmoothRiemannianMetric I M)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ FlowB : ℕ → ℝ, (∀ i, 0 ≤ FlowB i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -2059,7 +2061,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedC
 
 theorem deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_topOrderSeparated
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -2075,9 +2077,9 @@ theorem deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_top
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Ktop_om, hKtop_om_nn, Flow_om, hFlow_om_nn, hom⟩ :=
-    deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
   obtain ⟨FlowB, hFlowB_nn, hB⟩ :=
-    deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
   refine ⟨2 * Ktop_om, mul_nonneg (by norm_num) hKtop_om_nn,
     fun i => 2 * Flow_om (i + 1) + 2 * FlowB i,
     fun i => by have := hFlow_om_nn (i + 1); have := hFlowB_nn i; linarith, ?_⟩

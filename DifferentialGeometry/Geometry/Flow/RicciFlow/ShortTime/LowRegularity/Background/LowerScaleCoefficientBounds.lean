@@ -554,7 +554,7 @@ private theorem slotIter_sub
       rw [ih, slotExtend_sub]
       rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem amixHalf_bg
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -567,7 +567,7 @@ private theorem amixHalf_bg
     ← operatorFieldComposition_sub_right, ← operatorFieldComposition_sub_right,
     ← operatorFieldComposition_sub_left, ← slotIter_sub]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem bgAmix_eq
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -
@@ -692,7 +692,7 @@ private theorem amixHalf_tame
   have hK0 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K0‖ ^ 2) ≤ (4 * A) ^ 2 := by
     simpa only [K0] using kappaSelf_h2
-      (I := I) (M := M) g₀ g₁ P htie A hA hP
+      (I := I) (M := M) g₀ g₁ P htie A hP
   have hKDs : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 3 6 i KDs‖ ^ 2) ≤
         (sf 3 * BK R) ^ 2 := by
@@ -1138,8 +1138,8 @@ private theorem lowC0_bg_eq
     (lowerScaleActionCoefficients (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ).zeroOrderCoefficient =
       (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀ T hδ_lt hδ hδZ).zeroOrderCoefficient +
         bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ +
-        (metricPrincipalDefectCurvCoeff (I := I) g₀ gB g₀ -
-          metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ g₀) := by
+        (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
+          metricPrincipalDefectCurvCoeff (I := I) g₀ g₀) := by
   have hself := selfLow_bg_sub (I := I) (M := M)
     g₀ gB T hδ_lt hδ hδZ
   rw [RicciDeTurckLowOrder.zeroOrderCoefficient_eq, RicciDeTurckLowOrder.zeroOrderCoefficient_eq]
@@ -1155,7 +1155,7 @@ private theorem bgCorrInt_h2
     (hδZ : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀
         (0 : SmoothCcTensor g₀ 0 2)) δ)
-    (B : ℝ) (hB : 0 ≤ B)
+    (B : ℝ)
     (hcoeff : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       (∑ i ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
@@ -1178,7 +1178,7 @@ private theorem bgCorrInt_h2
         (I := I) (M := M) g₀ gB T hδ hδZ)
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g₀ g₀ T hδ hδZ))
-    hB hcoeff
+    hcoeff
   simpa only [bgCorrInt] using hpath
 
 
@@ -1208,22 +1208,22 @@ theorem exists_lowOrderPathIntegral_backgroundDifference_covariantJetNormSq_two_
   refine ⟨B, hB, ?_⟩
   intro T δ hδ_le hδ_nonneg hδ hδZ A hA hT
   apply bgCorrInt_h2 (I := I) (M := M) g₀ gB T
-    (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ (B A) (hB A hA)
+    (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ (B A)
   intro s hs
   exact hfam T hδ_le hδ_nonneg hδ hδZ A hA hT s hs
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem fixedBackground_h2
-    (g₀ gB : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ∃ B : ℝ, 0 ≤ B ∧
       (∑ i ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (metricPrincipalDefectCurvCoeff (I := I) g₀ gB g₀ -
-            metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ g₀)‖ ^ 2) ≤ B ^ 2 := by
+          (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
+            metricPrincipalDefectCurvCoeff (I := I) g₀ g₀)‖ ^ 2) ≤ B ^ 2 := by
   let Q : ℝ := ∑ i ∈ Finset.range 3,
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (metricPrincipalDefectCurvCoeff (I := I) g₀ gB g₀ -
-        metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ g₀)‖ ^ 2
+      (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
+        metricPrincipalDefectCurvCoeff (I := I) g₀ g₀)‖ ^ 2
   have hQ : 0 ≤ Q := Finset.sum_nonneg fun i _ => sq_nonneg _
   refine ⟨Real.sqrt Q, Real.sqrt_nonneg _, ?_⟩
   rw [Real.sq_sqrt hQ]
@@ -1259,7 +1259,6 @@ private theorem bgCorr_tame
   intro T δ hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3
   apply bgCorrInt_h2 (I := I) (M := M) g₀ gB T
     (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ (B0 R + B1 R * A)
-    (add_nonneg (hB0 R hR) (mul_nonneg (hB1 R hR) hA))
   intro s hs
   exact hfam T hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3 s hs
 
@@ -1289,7 +1288,7 @@ theorem exists_lowerScaleZeroCoefficient_backgroundDifference_covariantJetNormSq
   obtain ⟨C0, C1, hC0, hC1, hcorr⟩ :=
     bgCorr_tame (I := I) (M := M) hDim g₀ gB
       (δ₀ := (1 : ℝ) / 3) (by norm_num)
-  obtain ⟨Bf, hBf, hfixed⟩ := fixedBackground_h2 (I := I) (M := M) g₀ gB
+  obtain ⟨Bf, hBf, hfixed⟩ := fixedBackground_h2 (I := I) (M := M) g₀
   let B0 : ℝ → ℝ := fun R => 2 * (C0 R + Bf)
   let B1 : ℝ → ℝ := fun R => 2 * C1 R
   refine ⟨B0, B1,
@@ -1300,8 +1299,8 @@ theorem exists_lowerScaleZeroCoefficient_backgroundDifference_covariantJetNormSq
   let Cb : SmoothCcTensor g₀ 2 2 :=
     bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ
   let F : SmoothCcTensor g₀ 2 2 :=
-    metricPrincipalDefectCurvCoeff (I := I) g₀ gB g₀ -
-      metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ g₀
+    metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
+      metricPrincipalDefectCurvCoeff (I := I) g₀ g₀
   let V : ℝ := C0 R + C1 R * A
   have hV : 0 ≤ V :=
     add_nonneg (hC0 R hR) (mul_nonneg (hC1 R hR) hA)
@@ -1360,7 +1359,7 @@ theorem exists_lowerScaleZeroCoefficient_covariantJetNormSq_two_bound
   obtain ⟨Bc, hBc, hcorr⟩ :=
     exists_lowOrderPathIntegral_backgroundDifference_covariantJetNormSq_two_bound (I := I) (M := M) hDim g₀ gB
       (δ₀ := (1 : ℝ) / 3) (by norm_num)
-  obtain ⟨Bf, hBf, hfixed⟩ := fixedBackground_h2 (I := I) (M := M) g₀ gB
+  obtain ⟨Bf, hBf, hfixed⟩ := fixedBackground_h2 (I := I) (M := M) g₀
   let S : ℝ → ℝ := fun A => Real.sqrt (K * (1 + A ^ 2) ^ 6)
   let Q : ℝ → ℝ := fun A => (S A) ^ 2 + (Bc A) ^ 2 + Bf ^ 2
   let B : ℝ → ℝ := fun A => 2 * Real.sqrt (Q A)
@@ -1380,8 +1379,8 @@ theorem exists_lowerScaleZeroCoefficient_covariantJetNormSq_two_bound
   let Cb : SmoothCcTensor g₀ 2 2 :=
     bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ
   let F : SmoothCcTensor g₀ 2 2 :=
-    metricPrincipalDefectCurvCoeff (I := I) g₀ gB g₀ -
-      metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ g₀
+    metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
+      metricPrincipalDefectCurvCoeff (I := I) g₀ g₀
   have hsameAll := hsame T hT hδ_le hδ_nonneg hδ hδZ
   dsimp only at hsameAll
   have hsame0 : covariantJetNormSq (I := I) (M := M) g₀ 2 C0 ≤

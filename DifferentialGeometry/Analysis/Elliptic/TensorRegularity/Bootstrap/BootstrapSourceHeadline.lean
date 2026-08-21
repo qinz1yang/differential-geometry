@@ -686,7 +686,7 @@ theorem tensorComponentWeakRHS_wkpNorm_le
       ∀ {Ω'' : Set EuclN}, IsOpen Ω'' →
       Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α →
       iteratedWeakSobolevNorm (d := dimE) m 2
-          (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+          (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
           Ω'' ≤
         ENNReal.ofReal Kc *
           ((∑ Q : CompIdx E r s,
@@ -724,16 +724,16 @@ theorem tensorComponentWeakRHS_wkpNorm_le
   obtain ⟨hG3_mem, hG3_le⟩ := hKc3 hT_supp hT_K hΩ''_open hΩ''_target
   obtain ⟨hG4_mem, hG4_le⟩ := hKc4 hT_supp hT_K hΩ''_open hΩ''_target
   have h_eqOn : Set.EqOn
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
       (fun y => G1 y + (-G2 y) + (-G3 y) + G4 y)
       (chartTargetEuclid (I := I) (M := M) α) := by
     intro y hy
     rw [tensorComponentWeakRHS_apply_of_mem (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hy]
+      g r s T F α P₀ hy]
     simp only [hG1_def, hG2_def, hG3_def, hG4_def]
     ring
   have h_ae : tensorComponentWeakRHS (I := I) (M := M)
-        g r s T F α hK hK_target P₀
+        g r s T F α P₀
       =ᵐ[volume.restrict Ω'']
       (fun y => G1 y + (-G2 y) + (-G3 y) + G4 y) :=
     eqOn_open_imp_ae_restrict (E := E) hΩ''_open (h_eqOn.mono hΩ''_target)

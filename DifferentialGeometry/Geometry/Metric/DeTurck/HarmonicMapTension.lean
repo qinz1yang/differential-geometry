@@ -70,6 +70,7 @@ def diffeoTension (g h : SmoothRiemannianMetric I M)
   Diffeomorph.pushforward Φ
     (idTension (I := I) g (Diffeomorph.pullbackMetric h Φ))
 
+omit [SigmaCompactSpace M] in
 theorem tension_image (g h : SmoothRiemannianMetric I M)
     (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) :
     diffeoTension (I := I) g h Φ (Φ x) =
@@ -79,6 +80,7 @@ theorem tension_image (g h : SmoothRiemannianMetric I M)
   rw [diffeoTension, Diffeomorph.pushforward_image,
     idTension_eq, map_neg]
 
+omit [SigmaCompactSpace M] in
 theorem tension_eq_push (g h : SmoothRiemannianMetric I M)
     (Φ : M ≃ₘ⟮I, I⟯ M) (y : M) :
     diffeoTension (I := I) g h Φ y =
@@ -90,6 +92,7 @@ theorem tension_eq_push (g h : SmoothRiemannianMetric I M)
       (deTurckVF (I := I) g (Diffeomorph.pullbackMetric h Φ)) (Φ x)
   rw [Diffeomorph.pushforward_image]
   exact tension_image (I := I) g h Φ x
+omit [SigmaCompactSpace M] in
 theorem tension_eq_DT (g h : SmoothRiemannianMetric I M)
     (Φ : M ≃ₘ⟮I, I⟯ M) (y : M) :
     diffeoTension (I := I) g h Φ y =
@@ -97,6 +100,7 @@ theorem tension_eq_DT (g h : SmoothRiemannianMetric I M)
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y := by
   rw [tension_eq_push, push_deTurckVF]
 
+omit [SigmaCompactSpace M] in
 theorem hmf_neg_gauge
     (g : ℝ → SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric I M) (T : ℝ)
@@ -117,6 +121,7 @@ theorem hmf_neg_gauge
   intro x t ht
   simpa only [tension_eq_push] using hHMF x t ht
 
+omit [SigmaCompactSpace M] in
 theorem hmf_target_gauge
     (g : ℝ → SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric I M) (T : ℝ)
@@ -137,6 +142,7 @@ theorem hmf_target_gauge
   intro x t ht
   simpa only [tension_eq_DT] using hHMF x t ht
 
+omit [SigmaCompactSpace M] in
 @[simp] theorem tension_refl
     (g h : SmoothRiemannianMetric I M) (x : M) :
     diffeoTension (I := I) g h (Diffeomorph.refl I M ∞) x =

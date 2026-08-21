@@ -337,7 +337,7 @@ private lemma metricDiffCovDeriv_symm_right
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem endoCovariantDerivative_metricComparisonDifferenceEndomorphismField_resolvent
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (V W Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :

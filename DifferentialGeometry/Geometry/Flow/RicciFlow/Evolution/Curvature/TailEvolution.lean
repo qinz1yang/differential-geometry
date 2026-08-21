@@ -23,6 +23,7 @@ variable [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04EvolTail_at
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega} {hT0Omega : t0 < omega}
     {S : SolutionOn (I := I) (M := M)
@@ -58,6 +59,7 @@ theorem rm04EvolTail_at
     (tailCoordFrameReg (I := I) hS hAlphaT0 hT0Omega x₀) t m
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04EvolFamTail
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega} {hT0Omega : t0 < omega}
     {S : SolutionOn (I := I) (M := M)

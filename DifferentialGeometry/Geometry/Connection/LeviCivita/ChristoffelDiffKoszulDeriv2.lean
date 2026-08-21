@@ -24,8 +24,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricField_totalReg2
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SBundle.TotalNabla0SRegular (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
       (LeviCivita (I := I) g₂)
@@ -41,8 +39,6 @@ theorem metricField_totalReg2
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem nablaMetric_combo_extDeriv2
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))

@@ -80,7 +80,7 @@ theorem sourceCompactSet_image_eq
   · intro hy
     exact ⟨⟨y, hKsrc hy⟩, hy, rfl⟩
 
-noncomputable def resSrc (hsrc : SrcSigma Φ) (k : Nat)
+noncomputable def resSrc (k : Nat)
     (g : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M) :
@@ -93,20 +93,17 @@ noncomputable def resSrc (hsrc : SrcSigma Φ) (k : Nat)
   letI : T2Space P.M := P.t2
   letI : IsManifold I ∞ P.M := P.smooth
   letI : SigmaCompactSpace P.M := P.sigmaCompact
-  let sourceSigma : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) := by
-    change SigmaCompactSpace (SourceDomain (I := I) Φ k)
-    exact sourceDomSigmaOf (I := I) Φ k (hsrc k)
   let sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) := by
     change T2Space (SourceDomain (I := I) Φ k)
     exact sourceDomT2 (I := I) Φ k
   @SmoothRiemannianMetric.restrictOpen E inferInstance inferInstance H inferInstance I
     P.M P.topology P.charted P.smooth inferInstance
-    g (sourceOpen (I := I) Φ k) sourceSigma sourceT2
+    g (sourceOpen (I := I) Φ k) sourceT2
 
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 theorem resSrc_inner
-    (hsrc : SrcSigma Φ) (k : Nat)
+    (k : Nat)
     (g : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
@@ -120,7 +117,7 @@ theorem resSrc_inner
     letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
     letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
     letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-    (resSrc (I := I) Φ hsrc k g).inner y v w = g.inner (y : P.M) v w := rfl
+    (resSrc (I := I) Φ k g).inner y v w = g.inner (y : P.M) v w := rfl
 
 include finiteE in
 omit neZeroE [I.Boundaryless] in
@@ -128,8 +125,8 @@ theorem refRes_eq_resSrc
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
-    (hsrc : SrcSigma Φ) (k : Nat) :
-    refRes (I := I) Φ R hsrc k = resSrc (I := I) Φ hsrc k R := rfl
+    (k : Nat) :
+    refRes (I := I) Φ R k = resSrc (I := I) Φ k R := rfl
 
 include finiteE in
 omit neZeroE [I.Boundaryless] in
@@ -149,8 +146,8 @@ theorem supOn_resSrc_eq
     letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
     letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
     letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) := sourceDomSigmaOf (I := I) Φ k (hsrc k)
-    metricDerivNormSupOn (I := I) C p (resSrc (I := I) Φ hsrc k g₁)
-        (resSrc (I := I) Φ hsrc k g₂) (resSrc (I := I) Φ hsrc k g₃)
+    metricDerivNormSupOn (I := I) C p (resSrc (I := I) Φ k g₁)
+        (resSrc (I := I) Φ k g₂) (resSrc (I := I) Φ k g₃)
       = metricDerivNormSupOn (I := I) (Subtype.val '' C) p g₁ g₂ g₃ := by
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted
@@ -313,7 +310,7 @@ noncomputable def convOut
               forall b : Nat, b <= p -> forall y : SourceDomain (I := I) Φ k, y ∈ C ->
                 metricDerivNorm (I := I) b (srcMetric (I := I) Φ hsrc htgt k s)
                   (srcMetric (I := I) Φ hsrc htgt k t)
-                  (refRes (I := I) Φ R hsrc k) y <= Ls * |s - t|) :
+                  (refRes (I := I) Φ R k) y <= Ls * |s - t|) :
     ConvOut (I := I) Φ R bf hsrc htgt β ψ := by
   classical
   letI : TopologicalSpace P.M := P.topology
@@ -332,7 +329,8 @@ noncomputable def convOut
     hd.choose hd.choose_spec.1 hd.choose_spec.2
     (hgLip_gSeqExt (I := I) Φ R bf hsrc htgt β ψ hlipTail hlipSrc)
     (hbdd_gSeqExt (I := I) Φ R bf hsrc htgt β ψ hcovTail)
-    (hlow_gSeqExt (I := I) Φ R bf hsrc htgt cLow β ψ hcLow hbound)
+    (fun rho _hρ =>
+      hlow_gSeqExt (I := I) Φ R bf hsrc htgt cLow β ψ hcLow hbound rho)
   refine
     { φ := hAA.choose
       hφ := hAA.choose_spec.1
@@ -402,12 +400,12 @@ private theorem ofRP_supOn_def
     letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
     letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) := sourceDomSigmaOf (I := I) Φ k (hsrc k)
     (SourceDomainMetricData.ofRestrictPullback (I := I) (Φ := Φ) (k := k)
-        (hsrc k) (htgt k)
-        (fun _ => refRes (I := I) Φ R hsrc k) gInf).derivNormSupOn (I := I) K p t
+        (hsrc k)
+        (fun _ => refRes (I := I) Φ R k) gInf).derivNormSupOn (I := I) K p t
       = metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ k K) p
           (srcMetric (I := I) Φ hsrc htgt k t)
-          (resSrc (I := I) Φ hsrc k (gInf t))
-          (refRes (I := I) Φ R hsrc k) := rfl
+          (resSrc (I := I) Φ k (gInf t))
+          (refRes (I := I) Φ R k) := rfl
 
 open DifferentialGeometry.Tensor0SBundle in
 include finiteE in
@@ -435,8 +433,8 @@ theorem ofRP_supOn_eq
     letI : IsManifold I ∞ P.M := P.smooth
     letI : SigmaCompactSpace P.M := P.sigmaCompact
     (SourceDomainMetricData.ofRestrictPullback (I := I) (Φ := Φ) (k := k)
-        (hsrc k) (htgt k)
-        (fun _ => refRes (I := I) Φ R hsrc k) gInf).derivNormSupOn (I := I) K p t
+        (hsrc k)
+        (fun _ => refRes (I := I) Φ R k) gInf).derivNormSupOn (I := I) K p t
       = metricDerivNormSupOn (I := I) K p
           (gSeqExt (I := I) Φ R bf hsrc htgt k t) gIt R := by
   classical
@@ -472,7 +470,7 @@ theorem ofRP_supOn_eq
   have hmTF : metricTensorField (I := I)
         ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
       = metricTensorField (I := I)
-        ((resSrc (I := I) Φ hsrc k
+        ((resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O) := by
     refine DFunLike.ext _ _ (fun y => ?_)
     refine ContinuousMultilinearMap.ext (fun v => ?_)
@@ -481,63 +479,63 @@ theorem ofRP_supOn_eq
       (y : SourceDomain (I := I) Φ k).2
     change
       ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O).inner y (v 0) (v 1) =
-        ((resSrc (I := I) Φ hsrc k
+        ((resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O).inner
           y (v 0) (v 1)
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    rw [resSrc_inner (I := I) Φ hsrc k]
+    rw [resSrc_inner (I := I) Φ k]
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M) hysrc (v 0) (v 1)]
     rw [hW1 _ hyW]
     simp
   have hpt : forall z, z ∈ sourceCompactSet (I := I) Φ k K -> forall a : Nat, a <= p ->
       metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k t)
-        (resSrc (I := I) Φ hsrc k gIt) (refRes (I := I) Φ R hsrc k) z
+        (resSrc (I := I) Φ k gIt) (refRes (I := I) Φ R k) z
       = metricDerivNorm (I := I) a
-        (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
-        (resSrc (I := I) Φ hsrc k gIt) (refRes (I := I) Φ R hsrc k) z := by
+        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+        (resSrc (I := I) Φ k gIt) (refRes (I := I) Φ R k) z := by
     intro z hz a _ha
     have hzW : z ∈ O := hgrowW (hKgrow hz)
     calc metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k t)
-          (resSrc (I := I) Φ hsrc k gIt) (refRes (I := I) Φ R hsrc k) z
+          (resSrc (I := I) Φ k gIt) (refRes (I := I) Φ R k) z
         = metricDerivNorm (I := I) a
             ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
-            ((resSrc (I := I) Φ hsrc k gIt).restrictOpen (I := I) O)
-            ((refRes (I := I) Φ R hsrc k).restrictOpen (I := I) O)
+            ((resSrc (I := I) Φ k gIt).restrictOpen (I := I) O)
+            ((refRes (I := I) Φ R k).restrictOpen (I := I) O)
             (⟨z, hzW⟩ : ↥O) :=
           (metricDerivNorm_restrictOpen (I := I) _ _ _ O a (⟨z, hzW⟩ : ↥O)).symm
       _ = metricDerivNorm (I := I) a
-            ((resSrc (I := I) Φ hsrc k
+            ((resSrc (I := I) Φ k
               (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O)
-            ((resSrc (I := I) Φ hsrc k gIt).restrictOpen (I := I) O)
-            ((refRes (I := I) Φ R hsrc k).restrictOpen (I := I) O)
+            ((resSrc (I := I) Φ k gIt).restrictOpen (I := I) O)
+            ((refRes (I := I) Φ R k).restrictOpen (I := I) O)
             (⟨z, hzW⟩ : ↥O) :=
           derivNorm_congr_left (I := I) a _ _ _ _ (⟨z, hzW⟩ : ↥O) hmTF
       _ = metricDerivNorm (I := I) a
-            (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
-            (resSrc (I := I) Φ hsrc k gIt) (refRes (I := I) Φ R hsrc k) z :=
+            (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+            (resSrc (I := I) Φ k gIt) (refRes (I := I) Φ R k) z :=
           metricDerivNorm_restrictOpen (I := I) _ _ _ O a (⟨z, hzW⟩ : ↥O)
   calc (SourceDomainMetricData.ofRestrictPullback (I := I) (Φ := Φ) (k := k)
-        (hsrc k) (htgt k)
-        (fun _ => refRes (I := I) Φ R hsrc k) gInf).derivNormSupOn (I := I) K p t
+        (hsrc k)
+        (fun _ => refRes (I := I) Φ R k) gInf).derivNormSupOn (I := I) K p t
       = metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ k K) p
           (srcMetric (I := I) Φ hsrc htgt k t)
-          (resSrc (I := I) Φ hsrc k (gInf t))
-          (refRes (I := I) Φ R hsrc k) :=
+          (resSrc (I := I) Φ k (gInf t))
+          (refRes (I := I) Φ R k) :=
         ofRP_supOn_def (I := I) Φ R gInf hsrc htgt k K p t
     _ = metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ k K) p
           (srcMetric (I := I) Φ hsrc htgt k t)
-          (resSrc (I := I) Φ hsrc k gIt)
-          (refRes (I := I) Φ R hsrc k) := by rw [hmet]
+          (resSrc (I := I) Φ k gIt)
+          (refRes (I := I) Φ R k) := by rw [hmet]
     _ = metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ k K) p
-          (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
-          (resSrc (I := I) Φ hsrc k gIt)
-          (refRes (I := I) Φ R hsrc k) :=
+          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+          (resSrc (I := I) Φ k gIt)
+          (refRes (I := I) Φ R k) :=
         supOn_congr_left (I := I) (sourceCompactSet (I := I) Φ k K) p _ _ _ _ hpt
     _ = metricDerivNormSupOn (I := I) (Subtype.val '' sourceCompactSet (I := I) Φ k K) p
           (gSeqExt (I := I) Φ R bf hsrc htgt k t) gIt R := by
-        rw [refRes_eq_resSrc (I := I) Φ R hsrc k]
+        rw [refRes_eq_resSrc (I := I) Φ R k]
         exact supOn_resSrc_eq (I := I) Φ hsrc k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t) gIt R
           (sourceCompactSet (I := I) Φ k K) p
@@ -567,8 +565,8 @@ theorem ofRP_supOn_conv
         exists k0 : Nat, forall k : Nat, k0 <= k ->
           forall t : Real, t ∈ Set.Icc β ψ ->
             (SourceDomainMetricData.ofRestrictPullback (I := I) (Φ := Φ) (k := co.φ k)
-                (hsrc (co.φ k)) (htgt (co.φ k))
-                (fun _ => refRes (I := I) Φ R hsrc (co.φ k)) gInf).derivNormSupOn (I := I) K p t
+                (hsrc (co.φ k))
+                (fun _ => refRes (I := I) Φ R (co.φ k)) gInf).derivNormSupOn (I := I) K p t
               < ε := by
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted

@@ -57,14 +57,14 @@ theorem lie_correction_zero_matrix_normal_form {n : ℕ} (ig cg f : Fin n → Fi
     (hgbe : ∀ a b l, gb a b l = dg a l b + dg b l a - dg l a b)
     (hdgbe : ∀ m a b l, dgb m a b l = ddg m a l b + ddg m b l a - ddg m l a b)
     (i j : Fin n) :
-    zeroOrderVectorCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j
+    zeroOrderVectorCorrection ig cg f dig ga1 gbg dga1 dgbg i j
       + connectionDifferenceInsertion ig dig ga1 ga0 gbg dga1 dga0 f i j
       + connectionDifferenceQuadraticBlock ig cg ga1 ga0 f i j
       + (2 : ℝ) * (mixedConnectionHalfBlock ig cg ga1 ga0 gbg f i j + mixedConnectionHalfBlock ig cg ga1 ga0 gbg f j i)
       + curvatureContractionBlock ig ga0 dga0 f i j
-    = zeroOrderCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j
+    = zeroOrderCorrection ig cg f dg dig ga1 gbg gb dga1 dgbg dgb i j
       - (t2F ig ga0 dga0 f f3 i j - tpfF ig ga0 f3 i j)
-      - firstDerivativeRemainder ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j := by
+      - firstDerivativeRemainder ig cg f ga0 ga1 gbg i j := by
   exact DeTurckCoefficients.LieCorrectionZeroNormalForm.lie_correction_zero_normal_form ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0
     dga1 dgbg dgb higs hcgs hfs hdgs2 hga0s hga1s hgbgs hdga0s hdga1s hdgbgs hddgs hf3s
     hgbs hdgbs hdigs hcol hga1e hdga1e hdige hgbe hdgbe i j

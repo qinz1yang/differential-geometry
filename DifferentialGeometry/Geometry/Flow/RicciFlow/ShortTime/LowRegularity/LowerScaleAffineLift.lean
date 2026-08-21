@@ -52,17 +52,17 @@ private noncomputable abbrev incl32 (g : SmoothRiemannianMetric I M) :
 
 private def affState
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ) :
     loH3 (I := I) (M := M) g :=
   tensorHsCongr (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = 3 by norm_num)
     (maxRegDuhamelSolField (I := I) (M := M)
-      (1 : ℝ) hT hT1 0 f t)
+      (1 : ℝ) hT 0 f t)
 
 def stateField
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     timeL2
       (tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) T :=
@@ -70,50 +70,50 @@ def stateField
     (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).compLpL
       2 (timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M)
-        (1 : ℝ) hT hT1 0 f)
+        (1 : ℝ) hT 0 f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem stateField_ae
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    stateField (I := I) (M := M) g hT hT1 f =ᵐ[timeMeasure T]
+    stateField (I := I) (M := M) g hT f =ᵐ[timeMeasure T]
       fun t => tensorHsCongr (I := I) (M := M) g 0 2
         (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)
         (maxRegDuhamelSolField (I := I) (M := M)
-          (1 : ℝ) hT hT1 0 f t) := by
+          (1 : ℝ) hT 0 f t) := by
   exact (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M)
-        (1 : ℝ) hT hT1 0 f)
+        (1 : ℝ) hT 0 f)
 
 def duhH3
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     timeL2 (loH3 (I := I) (M := M) g) T :=
   (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = (3 : ℝ) by norm_num)).compLpL
       2 (timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M)
-        (1 : ℝ) hT hT1
+        (1 : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem duhH3_ae
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    duhH3 (I := I) (M := M) g hT hT1 f =ᵐ[timeMeasure T]
-      affState (I := I) (M := M) g hT hT1 f :=
+    duhH3 (I := I) (M := M) g hT f =ᵐ[timeMeasure T]
+      affState (I := I) (M := M) g hT f :=
   (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = (3 : ℝ) by norm_num)).coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M)
-        (1 : ℝ) hT hT1
+        (1 : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
 
 omit [BoundarylessManifold I M] in
@@ -132,24 +132,24 @@ theorem norm_congrLp (g : SmoothRiemannianMetric I M) {a b T : ℝ} (h : a = b)
 omit [BoundarylessManifold I M] in
 theorem norm_duhH3_le
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    ‖duhH3 (I := I) (M := M) g hT hT1 f‖ ≤ (1 + T) * ‖f‖ :=
+    ‖duhH3 (I := I) (M := M) g hT f‖ ≤ (1 + T) * ‖f‖ :=
   le_trans
     (le_of_eq (norm_congrLp (I := I) (M := M) g _ _))
-    (norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g) hT hT1 f)
+    (norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g) hT f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem affState_aemeas
     (g : SmoothRiemannianMetric I M) {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     AEStronglyMeasurable
-      (affState (I := I) (M := M) g hT hT1 f) (timeMeasure T) := by
+      (affState (I := I) (M := M) g hT f) (timeMeasure T) := by
   have hfield : AEStronglyMeasurable
       (fun t => maxRegDuhamelSolField (I := I) (M := M)
-        (1 : ℝ) hT hT1
+        (1 : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
     Lp.aestronglyMeasurable _
@@ -178,18 +178,18 @@ def lowAffineSecondOrderAction
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2) →L[ℝ]
       loH1 (I := I) (M := M) g :=
   fun t =>
     (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))).comp
+          (affState (I := I) (M := M) g hT f t))).comp
       ((radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 3 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))).comp
+            (affState (I := I) (M := M) g hT f t))).comp
         (tensorHsCongrL (I := I) (M := M) g 0 2
           (show (1 : ℝ) + 2 = 3 by norm_num)))
 
@@ -200,21 +200,21 @@ theorem lowAffineSecondOrderAction_norm_le
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ) :
-    ‖lowAffineSecondOrderAction (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f t‖ ≤
+    ‖lowAffineSecondOrderAction (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t‖ ≤
       ‖lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))‖ := by
+          (affState (I := I) (M := M) g hT f t))‖ := by
   let A2 :=
     lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   let R3 :=
     radialCLM (I := I) (M := M) g
       (show (0 : ℝ) ≤ 3 by norm_num) ρ
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   let Q :=
     tensorHsCongrL (I := I) (M := M) g 0 2
       (show (1 : ℝ) + 2 = 3 by norm_num)
@@ -243,20 +243,20 @@ theorem lowAffineSecondOrderAction_data
     {C : ℝ} (hC : 0 ≤ C)
     (hbd : ∀ v : loH2 (I := I) (M := M) g,
       ‖lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ C)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ∃ C2 : NNReal, (C2 : ℝ) = C ∧
       AEStronglyMeasurable
           (lowAffineSecondOrderAction (I := I) (M := M)
-            g hρ hδ0 hδ_le hreal hT hT1 f) (timeMeasure T) ∧
+            g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) ∧
         (∀ᵐ t ∂timeMeasure T,
           ‖lowAffineSecondOrderAction (I := I) (M := M)
-            g hρ hδ0 hδ_le hreal hT hT1 f t‖ ≤ (C2 : ℝ)) := by
+            g hρ hδ0 hδ_le hreal hT f t‖ ≤ (C2 : ℝ)) := by
   let u : ℝ → loH3 (I := I) (M := M) g :=
-    affState (I := I) (M := M) g hT hT1 f
+    affState (I := I) (M := M) g hT f
   have hfield : AEStronglyMeasurable
       (fun t => maxRegDuhamelSolField (I := I) (M := M)
-        (1 : ℝ) hT hT1
+        (1 : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
     Lp.aestronglyMeasurable _
@@ -295,7 +295,7 @@ theorem lowAffineSecondOrderAction_data
         |>.comp_aestronglyMeasurable₂ hR3 hQ
   have hmeas : AEStronglyMeasurable
       (lowAffineSecondOrderAction (I := I) (M := M)
-        g hρ hδ0 hδ_le hreal hT hT1 f) (timeMeasure T) := by
+        g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) := by
     simpa only [lowAffineSecondOrderAction, u] using
       (ContinuousLinearMap.compL ℝ
         (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
@@ -305,10 +305,10 @@ theorem lowAffineSecondOrderAction_data
   let C2 : NNReal := ⟨C, hC⟩
   have hbound : ∀ᵐ t ∂timeMeasure T,
       ‖lowAffineSecondOrderAction (I := I) (M := M)
-        g hρ hδ0 hδ_le hreal hT hT1 f t‖ ≤ (C2 : ℝ) := by
+        g hρ hδ0 hδ_le hreal hT f t‖ ≤ (C2 : ℝ) := by
     refine Filter.Eventually.of_forall fun t => ?_
     exact (lowAffineSecondOrderAction_norm_le (I := I) (M := M)
-      g hρ hδ0 hδ_le hreal hT hT1 f t).trans
+      g hρ hδ0 hδ_le hreal hT f t).trans
         (hbd (incl32 (I := I) (M := M) g (u t)))
   exact ⟨C2, rfl, hmeas, hbound⟩
 
@@ -319,18 +319,18 @@ def lowAffineSecondOrderActionHigh
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ℝ → tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
       loH2 (I := I) (M := M) g :=
   fun t =>
     (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))).comp
+          (affState (I := I) (M := M) g hT f t))).comp
       ((radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 4 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))).comp
+            (affState (I := I) (M := M) g hT f t))).comp
         (tensorHsCongrL (I := I) (M := M) g 0 2
           (show (2 : ℝ) + 2 = 4 by norm_num)))
 
@@ -341,21 +341,21 @@ theorem lowAffineSecondOrderActionHigh_norm_le
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ) :
-    ‖lowAffineSecondOrderActionHigh (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f t‖ ≤
+    ‖lowAffineSecondOrderActionHigh (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t‖ ≤
       ‖lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))‖ := by
+          (affState (I := I) (M := M) g hT f t))‖ := by
   let A2 :=
     lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   let R4 :=
     radialCLM (I := I) (M := M) g
       (show (0 : ℝ) ≤ 4 by norm_num) ρ
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   let Q :=
     tensorHsCongrL (I := I) (M := M) g 0 2
       (show (2 : ℝ) + 2 = 4 by norm_num)
@@ -384,30 +384,30 @@ theorem lowAffineSecondOrderActionHigh_data
     {C : ℝ} (hC : 0 ≤ C)
     (hbd : ∀ v : loH2 (I := I) (M := M) g,
       ‖lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ C)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ∃ C2 : NNReal, (C2 : ℝ) = C ∧
       AEStronglyMeasurable
           (lowAffineSecondOrderActionHigh (I := I) (M := M)
-            g hρ hδ0 hδ_le hreal hT hT1 f) (timeMeasure T) ∧
+            g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) ∧
         (∀ᵐ t ∂timeMeasure T,
           ‖lowAffineSecondOrderActionHigh (I := I) (M := M)
-            g hρ hδ0 hδ_le hreal hT hT1 f t‖ ≤ (C2 : ℝ)) := by
-  have hu := affState_aemeas (I := I) (M := M) g hT hT1 f
+            g hρ hδ0 hδ_le hreal hT f t‖ ≤ (C2 : ℝ)) := by
+  have hu := affState_aemeas (I := I) (M := M) g hT f
   have hju : AEStronglyMeasurable
       (fun t => incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t)) (timeMeasure T) :=
+        (affState (I := I) (M := M) g hT f t)) (timeMeasure T) :=
     (incl32 (I := I) (M := M) g).continuous.comp_aestronglyMeasurable hu
   have hA2 : AEStronglyMeasurable
       (fun t => lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))) (timeMeasure T) :=
+          (affState (I := I) (M := M) g hT f t))) (timeMeasure T) :=
     hcont.comp_aestronglyMeasurable hju
   have hR4 : AEStronglyMeasurable
       (fun t => radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 4 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))) (timeMeasure T) :=
+            (affState (I := I) (M := M) g hT f t))) (timeMeasure T) :=
     radialCLM_aemeas (I := I) (M := M) g (by norm_num) hju
   have hQ : AEStronglyMeasurable
       (fun _ : ℝ => tensorHsCongrL (I := I) (M := M) g 0 2
@@ -418,7 +418,7 @@ theorem lowAffineSecondOrderActionHigh_data
         (radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 4 by norm_num) ρ
             (incl32 (I := I) (M := M) g
-              (affState (I := I) (M := M) g hT hT1 f t))).comp
+              (affState (I := I) (M := M) g hT f t))).comp
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (2 : ℝ) + 2 = 4 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
@@ -428,7 +428,7 @@ theorem lowAffineSecondOrderActionHigh_data
         |>.comp_aestronglyMeasurable₂ hR4 hQ
   have hmeas : AEStronglyMeasurable
       (lowAffineSecondOrderActionHigh (I := I) (M := M)
-        g hρ hδ0 hδ_le hreal hT hT1 f) (timeMeasure T) := by
+        g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) := by
     simpa only [lowAffineSecondOrderActionHigh] using
       (ContinuousLinearMap.compL ℝ
         (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2))
@@ -437,7 +437,7 @@ theorem lowAffineSecondOrderActionHigh_data
           |>.comp_aestronglyMeasurable₂ hA2 hR4Q
   refine ⟨⟨C, hC⟩, rfl, hmeas, Filter.Eventually.of_forall fun t => ?_⟩
   exact (lowAffineSecondOrderActionHigh_norm_le (I := I) (M := M)
-    g hρ hδ0 hδ_le hreal hT hT1 f t).trans (hbd _)
+    g hρ hδ0 hδ_le hreal hT f t).trans (hbd _)
 
 theorem lowAffineSecondOrderAction_compatible
     (g : SmoothRiemannianMetric I M)
@@ -453,24 +453,24 @@ theorem lowAffineSecondOrderAction_compatible
         (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ 4 by norm_num)))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ) :
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
         (lowAffineSecondOrderActionHigh (I := I) (M := M)
-          g hρ hδ0 hδ_le hreal hT hT1 f t) =
+          g hρ hδ0 hδ_le hreal hT f t) =
       (lowAffineSecondOrderAction (I := I) (M := M)
-          g hρ hδ0 hδ_le hreal hT hT1 f t).comp
+          g hρ hδ0 hδ_le hreal hT f t).comp
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) + 2 ≤ (2 : ℝ) + 2 by norm_num)) := by
   refine ContinuousLinearMap.ext fun x => ?_
   have hpt := DFunLike.congr_fun
     (hsq (incl32 (I := I) (M := M) g
-      (affState (I := I) (M := M) g hT hT1 f t)))
+      (affState (I := I) (M := M) g hT f t)))
     ((radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 4 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t)))
+          (affState (I := I) (M := M) g hT f t)))
       (tensorHsCongr (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 2 = 4 by norm_num) x))
   have hrad := DFunLike.congr_fun
@@ -478,7 +478,7 @@ theorem lowAffineSecondOrderAction_compatible
       (show (0 : ℝ) ≤ 3 by norm_num) (show (0 : ℝ) ≤ 4 by norm_num)
       (show (3 : ℝ) ≤ 4 by norm_num) ρ
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t)))
+        (affState (I := I) (M := M) g hT f t)))
     (tensorHsCongr (I := I) (M := M) g 0 2
       (show (2 : ℝ) + 2 = 4 by norm_num) x)
   have hincl := tensorHsCongr_incl (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -496,16 +496,16 @@ def lowFirstOrderAffineOperator
     (g : SmoothRiemannianMetric I M) (ρ : ℝ)
     (FLo : loH3 (I := I) (M := M) g →
       (loH2 (I := I) (M := M) g →L[ℝ] loH1 (I := I) (M := M) g))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
       loH1 (I := I) (M := M) g :=
   fun t =>
-    (FLo (affState (I := I) (M := M) g hT hT1 f t)).comp
+    (FLo (affState (I := I) (M := M) g hT f t)).comp
       ((radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 2 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))).comp
+            (affState (I := I) (M := M) g hT f t))).comp
         (tensorHsCongrL (I := I) (M := M) g 0 2
           (show (1 : ℝ) + 1 = 2 by norm_num)))
 
@@ -513,16 +513,16 @@ theorem lowFirstOrderAffineOperator_norm_le
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)
     (FLo : loH3 (I := I) (M := M) g →
       (loH2 (I := I) (M := M) g →L[ℝ] loH1 (I := I) (M := M) g))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ) :
-    ‖lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f t‖ ≤
-      ‖FLo (affState (I := I) (M := M) g hT hT1 f t)‖ := by
-  let A1 := FLo (affState (I := I) (M := M) g hT hT1 f t)
+    ‖lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f t‖ ≤
+      ‖FLo (affState (I := I) (M := M) g hT f t)‖ := by
+  let A1 := FLo (affState (I := I) (M := M) g hT f t)
   let R2 :=
     radialCLM (I := I) (M := M) g
       (show (0 : ℝ) ≤ 2 by norm_num) ρ
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   let Q :=
     tensorHsCongrL (I := I) (M := M) g 0 2
       (show (1 : ℝ) + 1 = 2 by norm_num)
@@ -544,24 +544,24 @@ theorem lowFirstOrderAffineOperator_aestronglyMeasurable
     (FLo : loH3 (I := I) (M := M) g →
       (loH2 (I := I) (M := M) g →L[ℝ] loH1 (I := I) (M := M) g))
     (hFLo : Continuous FLo)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     AEStronglyMeasurable
-      (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f) (timeMeasure T) := by
-  have hu := affState_aemeas (I := I) (M := M) g hT hT1 f
+      (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) (timeMeasure T) := by
+  have hu := affState_aemeas (I := I) (M := M) g hT f
   have hju : AEStronglyMeasurable
       (fun t => incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t)) (timeMeasure T) :=
+        (affState (I := I) (M := M) g hT f t)) (timeMeasure T) :=
     (incl32 (I := I) (M := M) g).continuous.comp_aestronglyMeasurable hu
   have hA1 : AEStronglyMeasurable
-      (fun t => FLo (affState (I := I) (M := M) g hT hT1 f t))
+      (fun t => FLo (affState (I := I) (M := M) g hT f t))
       (timeMeasure T) :=
     hFLo.comp_aestronglyMeasurable hu
   have hR2 : AEStronglyMeasurable
       (fun t => radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 2 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))) (timeMeasure T) :=
+            (affState (I := I) (M := M) g hT f t))) (timeMeasure T) :=
     radialCLM_aemeas (I := I) (M := M) g (by norm_num) hju
   have hQ : AEStronglyMeasurable
       (fun _ : ℝ => tensorHsCongrL (I := I) (M := M) g 0 2
@@ -572,7 +572,7 @@ theorem lowFirstOrderAffineOperator_aestronglyMeasurable
         (radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 2 by norm_num) ρ
             (incl32 (I := I) (M := M) g
-              (affState (I := I) (M := M) g hT hT1 f t))).comp
+              (affState (I := I) (M := M) g hT f t))).comp
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (1 : ℝ) + 1 = 2 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
@@ -594,32 +594,32 @@ theorem lowFirstOrderAffineOperator_memLp
     (hFLo : Continuous FLo)
     {Z L : ℝ} (hZ : 0 ≤ Z) (hL : 0 ≤ L)
     (hFbd : ∀ x : loH3 (I := I) (M := M) g, ‖FLo x‖ ≤ Z + L * ‖x‖)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ∃ hmem : MemLp
-        (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f) 2 (timeMeasure T),
-      ‖hmem.toLp (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f)‖ ≤
-        L * ‖duhH3 (I := I) (M := M) g hT hT1 f‖ + Real.sqrt T * Z := by
-  refine memLp_clm_affine (duhH3 (I := I) (M := M) g hT hT1 f) _
-    (lowFirstOrderAffineOperator_aestronglyMeasurable (I := I) (M := M) g ρ FLo hFLo hT hT1 f) hL hZ ?_
-  filter_upwards [duhH3_ae (I := I) (M := M) g hT hT1 f] with t hd
+        (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) 2 (timeMeasure T),
+      ‖hmem.toLp (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f)‖ ≤
+        L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z := by
+  refine memLp_clm_affine (duhH3 (I := I) (M := M) g hT f) _
+    (lowFirstOrderAffineOperator_aestronglyMeasurable (I := I) (M := M) g ρ FLo hFLo hT f) hL hZ ?_
+  filter_upwards [duhH3_ae (I := I) (M := M) g hT f] with t hd
   rw [hd]
-  exact (lowFirstOrderAffineOperator_norm_le (I := I) (M := M) g hρ FLo hT hT1 f t).trans (hFbd _)
+  exact (lowFirstOrderAffineOperator_norm_le (I := I) (M := M) g hρ FLo hT f t).trans (hFbd _)
 
 def highFirstOrderAffineOperator
     (g : SmoothRiemannianMetric I M) (ρ : ℝ)
     (FHi : loH3 (I := I) (M := M) g →
       (loH3 (I := I) (M := M) g →L[ℝ] loH2 (I := I) (M := M) g))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ℝ → tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
       loH2 (I := I) (M := M) g :=
   fun t =>
-    (FHi (affState (I := I) (M := M) g hT hT1 f t)).comp
+    (FHi (affState (I := I) (M := M) g hT f t)).comp
       ((radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 3 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))).comp
+            (affState (I := I) (M := M) g hT f t))).comp
         (tensorHsCongrL (I := I) (M := M) g 0 2
           (show (2 : ℝ) + 1 = 3 by norm_num)))
 
@@ -627,16 +627,16 @@ theorem highFirstOrderAffineOperator_norm_le
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)
     (FHi : loH3 (I := I) (M := M) g →
       (loH3 (I := I) (M := M) g →L[ℝ] loH2 (I := I) (M := M) g))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ) :
-    ‖highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f t‖ ≤
-      ‖FHi (affState (I := I) (M := M) g hT hT1 f t)‖ := by
-  let A1 := FHi (affState (I := I) (M := M) g hT hT1 f t)
+    ‖highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f t‖ ≤
+      ‖FHi (affState (I := I) (M := M) g hT f t)‖ := by
+  let A1 := FHi (affState (I := I) (M := M) g hT f t)
   let R3 :=
     radialCLM (I := I) (M := M) g
       (show (0 : ℝ) ≤ 3 by norm_num) ρ
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   let Q :=
     tensorHsCongrL (I := I) (M := M) g 0 2
       (show (2 : ℝ) + 1 = 3 by norm_num)
@@ -658,24 +658,24 @@ theorem highFirstOrderAffineOperator_aestronglyMeasurable
     (FHi : loH3 (I := I) (M := M) g →
       (loH3 (I := I) (M := M) g →L[ℝ] loH2 (I := I) (M := M) g))
     (hFHi : Continuous FHi)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     AEStronglyMeasurable
-      (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f) (timeMeasure T) := by
-  have hu := affState_aemeas (I := I) (M := M) g hT hT1 f
+      (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f) (timeMeasure T) := by
+  have hu := affState_aemeas (I := I) (M := M) g hT f
   have hju : AEStronglyMeasurable
       (fun t => incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t)) (timeMeasure T) :=
+        (affState (I := I) (M := M) g hT f t)) (timeMeasure T) :=
     (incl32 (I := I) (M := M) g).continuous.comp_aestronglyMeasurable hu
   have hA1 : AEStronglyMeasurable
-      (fun t => FHi (affState (I := I) (M := M) g hT hT1 f t))
+      (fun t => FHi (affState (I := I) (M := M) g hT f t))
       (timeMeasure T) :=
     hFHi.comp_aestronglyMeasurable hu
   have hR3 : AEStronglyMeasurable
       (fun t => radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 3 by norm_num) ρ
           (incl32 (I := I) (M := M) g
-            (affState (I := I) (M := M) g hT hT1 f t))) (timeMeasure T) :=
+            (affState (I := I) (M := M) g hT f t))) (timeMeasure T) :=
     radialCLM_aemeas (I := I) (M := M) g (by norm_num) hju
   have hQ : AEStronglyMeasurable
       (fun _ : ℝ => tensorHsCongrL (I := I) (M := M) g 0 2
@@ -686,7 +686,7 @@ theorem highFirstOrderAffineOperator_aestronglyMeasurable
         (radialCLM (I := I) (M := M) g
           (show (0 : ℝ) ≤ 3 by norm_num) ρ
             (incl32 (I := I) (M := M) g
-              (affState (I := I) (M := M) g hT hT1 f t))).comp
+              (affState (I := I) (M := M) g hT f t))).comp
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (2 : ℝ) + 1 = 3 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
@@ -708,17 +708,17 @@ theorem highFirstOrderAffineOperator_memLp
     (hFHi : Continuous FHi)
     {Z L : ℝ} (hZ : 0 ≤ Z) (hL : 0 ≤ L)
     (hFbd : ∀ x : loH3 (I := I) (M := M) g, ‖FHi x‖ ≤ Z + L * ‖x‖)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ∃ hmem : MemLp
-        (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f) 2 (timeMeasure T),
-      ‖hmem.toLp (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f)‖ ≤
-        L * ‖duhH3 (I := I) (M := M) g hT hT1 f‖ + Real.sqrt T * Z := by
-  refine memLp_clm_affine (duhH3 (I := I) (M := M) g hT hT1 f) _
-    (highFirstOrderAffineOperator_aestronglyMeasurable (I := I) (M := M) g ρ FHi hFHi hT hT1 f) hL hZ ?_
-  filter_upwards [duhH3_ae (I := I) (M := M) g hT hT1 f] with t hd
+        (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f) 2 (timeMeasure T),
+      ‖hmem.toLp (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)‖ ≤
+        L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z := by
+  refine memLp_clm_affine (duhH3 (I := I) (M := M) g hT f) _
+    (highFirstOrderAffineOperator_aestronglyMeasurable (I := I) (M := M) g ρ FHi hFHi hT f) hL hZ ?_
+  filter_upwards [duhH3_ae (I := I) (M := M) g hT f] with t hd
   rw [hd]
-  exact (highFirstOrderAffineOperator_norm_le (I := I) (M := M) g hρ FHi hT hT1 f t).trans (hFbd _)
+  exact (highFirstOrderAffineOperator_norm_le (I := I) (M := M) g hρ FHi hT f t).trans (hFbd _)
 
 theorem firstOrderAffineOperators_compatible
     (g : SmoothRiemannianMetric I M) (ρ : ℝ)
@@ -730,46 +730,46 @@ theorem firstOrderAffineOperators_compatible
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
         (FLo x).comp (incl32 (I := I) (M := M) g))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     ∀ᵐ t ∂timeMeasure T,
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
-          (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f t) =
-        (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f t).comp
+          (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f t) =
+        (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f t).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) + 1 ≤ (2 : ℝ) + 1 by norm_num)) := by
   have hsq : ∀ t : ℝ,
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
-          ((FHi (duhH3 (I := I) (M := M) g hT hT1 f t)).comp
+          ((FHi (duhH3 (I := I) (M := M) g hT f t)).comp
             (radialCLM (I := I) (M := M) g
               (show (0 : ℝ) ≤ 3 by norm_num) ρ
               (incl32 (I := I) (M := M) g
-                (duhH3 (I := I) (M := M) g hT hT1 f t)))) =
-        ((FLo (duhH3 (I := I) (M := M) g hT hT1 f t)).comp
+                (duhH3 (I := I) (M := M) g hT f t)))) =
+        ((FLo (duhH3 (I := I) (M := M) g hT f t)).comp
             (radialCLM (I := I) (M := M) g
               (show (0 : ℝ) ≤ 2 by norm_num) ρ
               (incl32 (I := I) (M := M) g
-                (duhH3 (I := I) (M := M) g hT hT1 f t)))).comp
+                (duhH3 (I := I) (M := M) g hT f t)))).comp
           (incl32 (I := I) (M := M) g) := by
     intro t
     refine ContinuousLinearMap.ext fun x => ?_
     have hcoef := DFunLike.congr_fun
-      (hFComm (duhH3 (I := I) (M := M) g hT hT1 f t))
+      (hFComm (duhH3 (I := I) (M := M) g hT f t))
       (radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 3 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (duhH3 (I := I) (M := M) g hT hT1 f t)) x)
+          (duhH3 (I := I) (M := M) g hT f t)) x)
     have hrad := DFunLike.congr_fun
       (radialCLM_incl (I := I) (M := M) g
         (show (0 : ℝ) ≤ 2 by norm_num) (show (0 : ℝ) ≤ 3 by norm_num)
         (show (2 : ℝ) ≤ 3 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (duhH3 (I := I) (M := M) g hT hT1 f t))) x
+          (duhH3 (I := I) (M := M) g hT f t))) x
     simp only [ContinuousLinearMap.comp_apply] at hcoef hrad ⊢
     rw [hcoef, hrad]
-  filter_upwards [duhH3_ae (I := I) (M := M) g hT hT1 f] with t hd
+  filter_upwards [duhH3_ae (I := I) (M := M) g hT f] with t hd
   refine ContinuousLinearMap.ext fun x => ?_
   have hpt := DFunLike.congr_fun (hsq t)
     (tensorHsCongrL (I := I) (M := M) g 0 2
@@ -794,44 +794,44 @@ private theorem firstOrderAffineOperator_self
           (ccTensorBilinSymm (I := I) g S) δ)
     (FLo : loH3 (I := I) (M := M) g →
       (loH2 (I := I) (M := M) g →L[ℝ] loH1 (I := I) (M := M) g))
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ)
     (v : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
     (hv : tensorHsCongr (I := I) (M := M) g 0 2
         (show (1 : ℝ) + 1 = 2 by norm_num) v =
       incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t)) :
+        (affState (I := I) (M := M) g hT f t)) :
     lowerScaleForce (I := I) (M := M) g +
-        (lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal hT hT1 f t
+        (lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal hT f t
             (maxRegDuhamelSolField (I := I) (M := M)
-              (1 : ℝ) hT hT1 0 f t) +
-          lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f t v) =
+              (1 : ℝ) hT 0 f t) +
+          lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f t v) =
       lowerScaleNonlinearityWithFirstOrderOperator (I := I) (M := M) g hρ.le hδ0 hδ_le hreal FLo
-        (affState (I := I) (M := M) g hT hT1 f t) := by
+        (affState (I := I) (M := M) g hT f t) := by
   have h3 : radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 3 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))
+          (affState (I := I) (M := M) g hT f t))
         (tensorHsCongr (I := I) (M := M) g 0 2
           (show (1 : ℝ) + 2 = 3 by norm_num)
           (maxRegDuhamelSolField (I := I) (M := M)
-            (1 : ℝ) hT hT1 0 f t)) =
+            (1 : ℝ) hT 0 f t)) =
       lowRadialH3 (I := I) (M := M) g ρ
-        (affState (I := I) (M := M) g hT hT1 f t) :=
+        (affState (I := I) (M := M) g hT f t) :=
     radialCLM_h3 (I := I) (M := M) g hρ
-      (affState (I := I) (M := M) g hT hT1 f t)
+      (affState (I := I) (M := M) g hT f t)
   have h2 : radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 2 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t))
+          (affState (I := I) (M := M) g hT f t))
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t)) =
+          (affState (I := I) (M := M) g hT f t)) =
       lowRadialHs (I := I) (M := M) g ρ
         (incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t)) :=
+          (affState (I := I) (M := M) g hT f t)) :=
     radialCLM_h2 (I := I) (M := M) g hρ.le
       (incl32 (I := I) (M := M) g
-        (affState (I := I) (M := M) g hT hT1 f t))
+        (affState (I := I) (M := M) g hT f t))
   simp only [lowAffineSecondOrderAction, lowFirstOrderAffineOperator, lowerScaleNonlinearityWithFirstOrderOperator,
     ContinuousLinearMap.comp_apply, tensorHsCongrL_apply]
   rw [hv, h3, h2]
@@ -872,7 +872,7 @@ theorem low_order_forcing_eq_affine_fixed_point
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (loH1 (I := I) (M := M) g) T)
     (hball : ∀ᵐ t ∂timeMeasure T,
-      stateField (I := I) (M := M) g hT hT1 f t ∈
+      stateField (I := I) (M := M) g hT f t ∈
         lowerState (I := I) (M := M) g 1 R)
     (hforce : f =ᵐ[timeMeasure T] fun t =>
       tensorHsCongr (I := I) (M := M) g 0 2
@@ -880,45 +880,45 @@ theorem low_order_forcing_eq_affine_fixed_point
         (deTurckRemainderOnLowerState (I := I) (M := M) g g hR hδ hreal
           (aeSetLift
             (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
-            (stateField (I := I) (M := M) g hT hT1 f) t)))
+            (stateField (I := I) (M := M) g hT f) t)))
     (hA2 : AEStronglyMeasurable
       (lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal'
-        hT hT1 f) (timeMeasure T))
+        hT f) (timeMeasure T))
     (C2 : NNReal)
     (hC2 : ∀ᵐ t ∂timeMeasure T,
       ‖lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal'
-        hT hT1 f t‖ ≤ (C2 : ℝ))
+        hT f t‖ ≤ (C2 : ℝ))
     (hA1 : MemLp
-      (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f) 2 (timeMeasure T)) :
+      (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) 2 (timeMeasure T)) :
     f =
       nonautL2Map (I := I) (M := M) hT hT1
           (tensorResolventL2_isCompactOperator
             (I := I) (M := M) g 0 2)
           (lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal'
-            hT hT1 f) hA2 C2 hC2
-          (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f) hA1 f +
+            hT f) hA2 C2 hC2
+          (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) hA1 f +
         liftForceLo (I := I) (M := M) g g T := by
   let field :=
     maxRegDuhamelSolField (I := I) (M := M)
-      (1 : ℝ) hT hT1
+      (1 : ℝ) hT
       (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f
-  let state := stateField (I := I) (M := M) g hT hT1 f
+  let state := stateField (I := I) (M := M) g hT f
   let A2 :=
-    lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' hT hT1 f
-  let A1 := lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f
+    lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' hT f
+  let A1 := lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f
   have hlift := aeSetLift_coe_ae
     (zero_mem_lowerState (I := I) (M := M) g 1 hR.le) state hball
-  have hstateCoe := stateField_ae (I := I) (M := M) g hT hT1 f
+  have hstateCoe := stateField_ae (I := I) (M := M) g hT f
   have htop := timeOp_apply_ae A2 hA2 C2 hC2 field
   have hfirst := timeOpL2_apply_ae A1 hA1
     (fun t => (zeroDuhamelCross (I := I) (M := M)
-      hT hT1
+      hT
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
       f).repr t)
     (zeroRepr_meas (I := I) (M := M) hT hT1
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) f)
     (zeroReprNN (I := I) (M := M) hT f)
-    (zeroRepr_ae_le (I := I) (M := M) hT hT1
+    (zeroRepr_ae_le (I := I) (M := M) hT
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) f)
   have hduh := duhamel_incl (I := I) (M := M) hT hT1
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
@@ -932,7 +932,7 @@ theorem low_order_forcing_eq_affine_fixed_point
         (p := 2) (μ := timeMeasure T) field
   have hrepr :
       (fun t => (zeroDuhamelCross (I := I) (M := M)
-          hT hT1
+          hT
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           f).repr t) =ᵐ[timeMeasure T]
         fun t => tensorHsInclusion (I := I) (M := M)
@@ -969,7 +969,7 @@ theorem low_order_forcing_eq_affine_fixed_point
             (aeSetLift
               (zero_mem_lowerState (I := I) (M := M) g 1 hR.le) state t)) =
         lowerScaleNonlinearityWithFirstOrderOperator (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' FLo
-          (affState (I := I) (M := M) g hT hT1 f t) := by
+          (affState (I := I) (M := M) g hT f t) := by
     rw [hstate]
     congr 1
     rw [hlt, hst]
@@ -982,11 +982,11 @@ theorem low_order_forcing_eq_affine_fixed_point
       tensorHsCongr (I := I) (M := M) g 0 2
           (show (1 : ℝ) + 1 = 2 by norm_num)
           ((zeroDuhamelCross (I := I) (M := M)
-            hT hT1
+            hT
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
             f).repr t) =
         incl32 (I := I) (M := M) g
-          (affState (I := I) (M := M) g hT hT1 f t) := by
+          (affState (I := I) (M := M) g hT f t) := by
     rw [hr]
     simpa only [affState, field] using
       tensorHsCongr_incl (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -995,9 +995,9 @@ theorem low_order_forcing_eq_affine_fixed_point
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (show (2 : ℝ) ≤ 3 by norm_num) (field t)
   have hself := firstOrderAffineOperator_self (I := I) (M := M) g
-    hρ hδ0 hδ_le hreal' FLo hT hT1 f t
+    hρ hδ0 hδ_le hreal' FLo hT f t
     ((zeroDuhamelCross (I := I) (M := M)
-      hT hT1
+      hT
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
       f).repr t) hv
   change (timeOp A2 hA2 C2 hC2 field) t = A2 t (field t) at h2
@@ -1006,7 +1006,7 @@ theorem low_order_forcing_eq_affine_fixed_point
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
       A1 hA1 f) t =
         A1 t ((zeroDuhamelCross (I := I) (M := M)
-          hT hT1
+          hT
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           f).repr t) at h1
   change (f : timeL2 (loH1 (I := I) (M := M) g) T) t =
@@ -1073,7 +1073,7 @@ theorem exists_affine_forcing_operator_data
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (loH1 (I := I) (M := M) g) T)
     (hball : ∀ᵐ t ∂timeMeasure T,
-      stateField (I := I) (M := M) g hT hT1 f t ∈
+      stateField (I := I) (M := M) g hT f t ∈
         lowerState (I := I) (M := M) g 1 R)
     (hforce : f =ᵐ[timeMeasure T] fun t =>
       tensorHsCongr (I := I) (M := M) g 0 2
@@ -1081,32 +1081,32 @@ theorem exists_affine_forcing_operator_data
         (deTurckRemainderOnLowerState (I := I) (M := M) g g hR hδ hreal
           (aeSetLift
             (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
-            (stateField (I := I) (M := M) g hT hT1 f) t))) :
+            (stateField (I := I) (M := M) g hT f) t))) :
     ∃ (C2 : NNReal)
       (hA2 : AEStronglyMeasurable
         (lowAffineSecondOrderAction (I := I) (M := M) g
-          hρ.le hδ0 hδ_le hreal' hT hT1 f) (timeMeasure T))
+          hρ.le hδ0 hδ_le hreal' hT f) (timeMeasure T))
       (hC2 : ∀ᵐ t ∂timeMeasure T,
         ‖lowAffineSecondOrderAction (I := I) (M := M) g
-          hρ.le hδ0 hδ_le hreal' hT hT1 f t‖ ≤ (C2 : ℝ))
+          hρ.le hδ0 hδ_le hreal' hT f t‖ ≤ (C2 : ℝ))
       (hA1 : MemLp
-        (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f) 2
+        (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) 2
           (timeMeasure T))
       (hA1Hi : MemLp
-        (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f) 2
+        (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f) 2
           (timeMeasure T)),
       (C2 : ℝ) = B2 ∧
-      ‖hA1.toLp (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f)‖ ≤
-          L * ‖duhH3 (I := I) (M := M) g hT hT1 f‖ + Real.sqrt T * Z ∧
+      ‖hA1.toLp (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f)‖ ≤
+          L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z ∧
         ‖hA1Hi.toLp
-            (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f)‖ ≤
-          L * ‖duhH3 (I := I) (M := M) g hT hT1 f‖ + Real.sqrt T * Z ∧
+            (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)‖ ≤
+          L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z ∧
         (∀ᵐ t ∂timeMeasure T,
           (tensorHsInclusion (I := I) (M := M)
               (g := g) (r := 0) (s := 2)
               (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
-              (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT hT1 f t) =
-            (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f t).comp
+              (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f t) =
+            (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f t).comp
               (tensorHsInclusion (I := I) (M := M)
                 (g := g) (r := 0) (s := 2)
                 (show (1 : ℝ) + 1 ≤ (2 : ℝ) + 1 by norm_num))) ∧
@@ -1115,19 +1115,19 @@ theorem exists_affine_forcing_operator_data
               (tensorResolventL2_isCompactOperator
                 (I := I) (M := M) g 0 2)
               (lowAffineSecondOrderAction (I := I) (M := M) g
-                hρ.le hδ0 hδ_le hreal' hT hT1 f) hA2 C2 hC2
-              (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT hT1 f) hA1 f +
+                hρ.le hδ0 hδ_le hreal' hT f) hA2 C2 hC2
+              (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) hA1 f +
             liftForceLo (I := I) (M := M) g g T := by
   obtain ⟨C2, hC2eq, hA2, hC2⟩ :=
     lowAffineSecondOrderAction_data (I := I) (M := M) g
-      hρ.le hδ0 hδ_le hreal' hA2cont hB2 hA2bd hT hT1 f
+      hρ.le hδ0 hδ_le hreal' hA2cont hB2 hA2bd hT f
   obtain ⟨hA1, hA1norm⟩ :=
-    lowFirstOrderAffineOperator_memLp (I := I) (M := M) g hρ.le FLo hFLo hZ hL hFLoBd hT hT1 f
+    lowFirstOrderAffineOperator_memLp (I := I) (M := M) g hρ.le FLo hFLo hZ hL hFLoBd hT f
   obtain ⟨hA1Hi, hA1HiNorm⟩ :=
     highFirstOrderAffineOperator_memLp (I := I) (M := M) g hρ.le FHi hFHi hZ hL hFHiBd
-      hT hT1 f
+      hT f
   have hsq :=
-    firstOrderAffineOperators_compatible (I := I) (M := M) g ρ FHi FLo hFComm hT hT1 f
+    firstOrderAffineOperators_compatible (I := I) (M := M) g ρ FHi FLo hFComm hT f
   have heq := low_order_forcing_eq_affine_fixed_point (I := I) (M := M) hDim g
     hR hρ hRρ hδ0 hδ_le hδ hreal hreal'
     hNcont hcore hA2cont hA2core FLo hFLo hFLoCore

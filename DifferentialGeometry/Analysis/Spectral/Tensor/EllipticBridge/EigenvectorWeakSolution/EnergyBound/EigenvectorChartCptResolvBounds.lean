@@ -100,7 +100,7 @@ omit [CompleteSpace E] in
 theorem eigenvector_chartComponent_perK_from_uniform_β_unconditional
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (N : ℕ)
-    (CN : ℝ) (_hCN_nn : 0 ≤ CN) (eN : ℕ)
+    (CN : ℝ) (eN : ℕ)
     (hCN_bd : ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
@@ -342,7 +342,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ :=
     eigenvector_chartComponent_perK_from_uniform_β_unconditional
-      (I := I) (M := M) g r s N CN hCN_nn eN hCN_bd β Q (K' + 1) hK' i
+      (I := I) (M := M) g r s N CN eN hCN_bd β Q (K' + 1) hK' i
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
     rw [Real.enorm_eq_ofReal hμ_pos.le]
@@ -507,7 +507,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β_unconditional
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ :=
     eigenvector_chartComponent_perK_from_uniform_β_unconditional
-      (I := I) (M := M) g r s N CN hCN_nn eN hCN_bd β Q K' hK' i
+      (I := I) (M := M) g r s N CN eN hCN_bd β Q K' hK' i
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
     rw [Real.enorm_eq_ofReal hμ_pos.le]

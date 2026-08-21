@@ -158,6 +158,7 @@ theorem pullback_eval_form_chain_hasDerivAt
   rwa [hval] at hkey
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem pullback_metric_chain_rule_of_slots
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)
@@ -186,6 +187,7 @@ theorem pullback_metric_chain_rule_of_slots
       hB ha hb hG' hL')
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem pullback_metric_chain_rule_of_slots_total
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)

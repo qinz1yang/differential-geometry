@@ -638,7 +638,7 @@ lemma continuous_norm_fderiv_compReflect
 
 lemma hasCompactSupport_norm_fderiv_compReflect
     {n : ℕ} [NeZero n]
-    {f : EuclideanSpace ℝ (Fin n) → ℝ} (_hf : ContDiff ℝ (⊤ : ℕ∞) f)
+    {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf_supp : HasCompactSupport f) :
     HasCompactSupport (fun y : EuclideanSpace ℝ (Fin n) =>
       ‖fderiv ℝ f (evenReflectFun n y)‖) := by
@@ -711,7 +711,7 @@ theorem memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport
     fun y => ‖fderiv ℝ f (evenReflectFun n y)‖ with hg_def
   have h_g_cont : Continuous g := continuous_norm_fderiv_compReflect hf
   have h_g_supp : HasCompactSupport g :=
-    hasCompactSupport_norm_fderiv_compReflect hf hf_supp
+    hasCompactSupport_norm_fderiv_compReflect hf_supp
   have h_g_memLp : MemLp g p (volume : Measure (EuclideanSpace ℝ (Fin n))) :=
     h_g_cont.memLp_of_hasCompactSupport h_g_supp
   refine MemLp.of_le_mul (g := g) (c := 1) h_g_memLp h_aesm ?_
@@ -729,7 +729,7 @@ theorem memLp_evenReflectGrad_of_contDiff_hasCompactSupport
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_supp : HasCompactSupport f)
-    (p : ℝ≥0∞) [Fact (1 ≤ p)] :
+    (p : ℝ≥0∞) :
     MemLp (evenReflectGrad n f) p
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
   apply MemLp.of_eval_piLp
@@ -991,13 +991,13 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect
 noncomputable def evenReflect_memW1pWitness_of_smooth_strictInterior
     {n : ℕ} [NeZero n]
     {x₀ : EuclideanSpace ℝ (Fin n)}
-    {R : ℝ} (_hR : 0 < R)
+    {R : ℝ}
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
     (hf_supp : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace ∩
           Metric.ball x₀ R)
-    {p : ℝ≥0∞} [Fact (1 ≤ p)] :
+    {p : ℝ≥0∞} :
     DeGiorgi.MemW1pWitness p (evenReflect (n := n) f) (Metric.ball x₀ R)
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
   classical
@@ -1632,13 +1632,13 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
 noncomputable def evenReflect_memW1pWitness_of_smooth_closedHalfSpace
     {n : ℕ} [NeZero n]
     {x₀ : EuclideanSpace ℝ (Fin n)}
-    {R : ℝ} (_hR : 0 < R)
+    {R : ℝ}
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
     (hf_supp : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace ∩
           Metric.ball x₀ R)
-    {p : ℝ≥0∞} [Fact (1 ≤ p)] :
+    {p : ℝ≥0∞} :
     DeGiorgi.MemW1pWitness p (evenReflect (n := n) f) (Metric.ball x₀ R)
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
   classical

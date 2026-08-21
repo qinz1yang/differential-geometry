@@ -164,7 +164,7 @@ theorem loweredCovDeriv_bracketChannel_combined_eq_divergence_smoothSmul
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    [SigmaCompactSpace M] [T2Space M] in
 theorem divergence_g_finset_sum
     (g : SmoothRiemannianMetric I M) {ι : Type*} [Fintype ι]
     (V : ι → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :

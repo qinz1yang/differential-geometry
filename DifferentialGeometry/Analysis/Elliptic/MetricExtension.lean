@@ -718,8 +718,8 @@ lemma extendedMatrix_coercive_on_chart
     (g : SmoothRiemannianMetric I M) (α : M)
     {χ : EuclN → ℝ}
     (hχ_range : Set.range χ ⊆ Set.Icc (0 : ℝ) 1)
-    {y : EuclN} (_hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
-    {lamK : ℝ} (_hlamK_pos : 0 < lamK)
+    {y : EuclN}
+    {lamK : ℝ}
     (h_unif : ∀ ξ : EuclN,
         lamK * ‖ξ‖ ^ 2 ≤
           ⟪ξ, DeGiorgi.matMulE
@@ -801,7 +801,7 @@ lemma extendedMatrix_coercive
     {χ : EuclN → ℝ}
     (hχ_range : Set.range χ ⊆ Set.Icc (0 : ℝ) 1)
     (hχ_supp : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {lamK : ℝ} (hlamK_pos : 0 < lamK) (hlamK_le : lamK ≤ 1)
+    {lamK : ℝ} (hlamK_le : lamK ≤ 1)
     (h_unif : ∀ y ∈ tsupport χ, ∀ ξ : EuclN,
         lamK * ‖ξ‖ ^ 2 ≤
           ⟪ξ, DeGiorgi.matMulE
@@ -822,7 +822,7 @@ lemma extendedMatrix_coercive
       fun ξ => h_unif y hy ξ
     have h_min_eq : min (1 : ℝ) lamK = lamK := min_eq_right hlamK_le
     have h := extendedMatrix_coercive_on_chart (I := I) g α
-      (χ := χ) hχ_range (y := y) hy_target hlamK_pos h_unif_y ξ
+      (χ := χ) hχ_range (y := y) h_unif_y ξ
     rw [h_min_eq] at h
     exact h
   · have h_eq : ⟪ξ, DeGiorgi.matMulE
@@ -842,7 +842,7 @@ lemma extendedMatrix_coercive
     linarith
 
 theorem exists_smooth_metric_extension
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN}
     (hK : IsCompact K)
@@ -920,7 +920,7 @@ theorem exists_smooth_metric_extension
         (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
           extendedMatrix (I := I) g α χ i j y)) ξ⟫_ℝ
     exact extendedMatrix_coercive (I := I) g α
-      (χ := χ) hχ_range hχ_tsupp_chart hlamK_pos hlamK_le_one
+      (χ := χ) hχ_range hχ_tsupp_chart hlamK_le_one
       hlamK0_bound_for_lamK y ξ
   let B : SmoothEllipticBilinearForm (Module.finrank ℝ E) (Set.univ : Set EuclN) :=
     { a := aFun

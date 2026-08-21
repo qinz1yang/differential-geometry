@@ -686,7 +686,6 @@ private lemma rhsTerm2_eLpNorm_le_uniform_unconditional :
           g r (s + 1) α x.1 x.2).mul
         (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2))
       (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
-      (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
       (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
     refine ⟨C, hC_nn, fun i => ?_⟩
     have h_aezero :
@@ -780,7 +779,6 @@ private lemma rhsTerm3_eLpNorm_le_uniform_unconditional :
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r s α x.1 x.2).mul
         (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2))
       (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
-      (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
       (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
     refine ⟨C, hC_nn, fun i => ?_⟩
     have h_aezero :
@@ -1013,7 +1011,6 @@ private lemma rhsTerm6_eLpNorm_le_uniform_unconditional :
     (I := I) (M := M) g α
     (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     (chartPouKernel_isCompact (I := I) (M := M) α)
-    (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
   obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
     weightedGradCoeffDivLimit_sum_eLpNorm_le_uniform_unconditional
@@ -1063,7 +1060,6 @@ private lemma rhsTerm7_eLpNorm_le_uniform_unconditional :
     (I := I) (M := M) g α
     (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     (chartPouKernel_isCompact (I := I) (M := M) α)
-    (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
   obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
     eLpNorm_crossRightGradCoeffDivLimit_le_uniform

@@ -59,7 +59,7 @@ def realizedChristoffelNonPrincipal (g₀ : SmoothRiemannianMetric I M)
       gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j l y
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem linearizedChristoffel_eq_principal_add_nonPrincipal
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -83,6 +83,8 @@ theorem linearizedChristoffel_eq_principal_add_nonPrincipal
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem realizedLinearizedChristoffelPrincipal_eq_chartLinearizedPrincipal
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -116,6 +118,8 @@ theorem realizedLinearizedChristoffelPrincipal_eq_chartLinearizedPrincipal
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem realizedGramDeriv_self_eq_zero (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -126,6 +130,8 @@ theorem realizedGramDeriv_self_eq_zero (g₀ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem realizedLinearizedChristoffelPrincipal_self_eq_zero
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

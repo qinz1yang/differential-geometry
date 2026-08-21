@@ -151,12 +151,11 @@ theorem abstractHessian_eq_inner_cov_gradFun_smooth [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {X Y : Π b : M, TangentSpace I b} {x : M}
-    (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
     g.inner x ((LeviCivita (I := I) g).toFun
                   (fun b => gradFun (I := I) g f b) x (X x)) (Y x) =
       abstractHessian (I := I) g f x (X x) (Y x) :=
-  inner_cov_gradFun_eq_abstractHessian (I := I) g hf hX hY
+  inner_cov_gradFun_eq_abstractHessian (I := I) g hf hY
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in

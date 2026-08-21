@@ -834,7 +834,7 @@ private lemma chartTensor0SCovariantDerivative_eq_abstract_gen
       exact chartTensor0SCovariantDerivative_eq_abstract_succ_aux (I := I) (M := M) g x m Y X
         hx_good hY hX_at
   | zero =>
-      exact chartTensor0SCovariantDerivative_eq_abstract_zero (I := I) (M := M) g x Y X hx_good
+      exact chartTensor0SCovariantDerivative_eq_abstract_zero (I := I) (M := M) g x Y X
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in

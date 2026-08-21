@@ -141,7 +141,7 @@ theorem rem_h1_uniform
       ‖iteratedCovGrad (I := I) g 3 2 j Φ1‖ ^ 2) ≤ A1 ^ 2 := by
     simpa only [hΦ1eq] using hΦ1
   let Φ2 : SmoothCcTensor g 4 2 :=
-    rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+    rhsTopPathIntegral (I := I) (M := M) g T T'
       hδ₀_lt hδ hδ₀_lt hδ'
   have hpath :
       deTurckRHSAtMetricPerturbation (I := I) g gBase T hδ₀_lt hδ -

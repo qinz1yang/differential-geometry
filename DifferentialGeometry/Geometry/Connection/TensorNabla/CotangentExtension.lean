@@ -99,13 +99,9 @@ variable {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma cotangentScalar_tensorialAt_X
-    (_covOn : IsCovariantDerivativeOn (V := (TangentSpace I : M → Type _)) E
-      (cov : (Π x : M, TangentSpace I x) →
-        (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x))
-      Set.univ)
     (θ : Π x : M, TangentSpace I x →L[ℝ] ℝ)
     (x : M) (Y : Π x : M, TangentSpace I x)
-    (_hY : MDiffAt (T% Y) x) :
+    :
     TensorialAt I E (cotangentScalar cov θ x · Y) x where
   smul {f X} _hf _hX := by
     classical
@@ -131,7 +127,7 @@ lemma cotangentScalar_tensorialAt_Y
     {θ : Π x : M, TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hθ : MDiffAtCotangent θ x)
     (X : Π x : M, TangentSpace I x)
-    (_hX : MDiffAt (T% X) x) :
+    :
     TensorialAt I E (cotangentScalar cov θ x X ·) x where
   smul {g Y} hg hY := by
     classical
@@ -193,8 +189,8 @@ def cotangentCovAt
   · exact TensorialAt.mkHom₂
       (Φ := fun X Y => cotangentScalar (cov.toFun) θ x X Y)
       x
-      (fun Y hY => cotangentScalar_tensorialAt_X cov.isCovariantDerivativeOnUniv θ x Y hY)
-      (fun X hX => cotangentScalar_tensorialAt_Y cov.isCovariantDerivativeOnUniv hθ X hX)
+      (fun Y _hY => cotangentScalar_tensorialAt_X θ x Y)
+      (fun X _hX => cotangentScalar_tensorialAt_Y cov.isCovariantDerivativeOnUniv hθ X)
   · exact 0
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -444,9 +440,8 @@ theorem cotangentCov_clmSection_smooth_aux
     {V₂ : M → Type*} [∀ x, AddCommGroup (V₂ x)] [∀ x, Module ℝ (V₂ x)]
     [TopologicalSpace (TotalSpace F₂ V₂)] [∀ x, TopologicalSpace (V₂ x)]
     [FiberBundle F₂ V₂] [VectorBundle ℝ F₂ V₂]
-    [ContMDiffVectorBundle ∞ F₂ V₂ I]
     [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul ℝ (V₂ x)]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (φ : ∀ x : M, TangentSpace I x →L[ℝ] V₂ x)
     (h : ∀ (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       ContMDiff I (I.prod 𝓘(ℝ, F₂)) ∞

@@ -370,7 +370,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       hCeig_nn := fun _ => hC_IH_nn
       hCeig_bd := fun i K' hK' =>
         eigenvector_chartComponent_perK_from_uniform_β_unconditional
-          (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
+          (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH
           (m + 1) h_IH_bd_at α P₀ K' hK' i
       CresH := fun _ => C_IH
       eResH := fun _ => m + 1

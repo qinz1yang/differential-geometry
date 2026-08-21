@@ -421,7 +421,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 lemma variationField_chartRep_differentiableAt
-    (_g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
+    (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t₀ : ℝ) :
     DifferentiableAt ℝ
       (chartRepAt (I := I) (fun v : ℝ => f 0 v)
@@ -485,7 +485,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 lemma velocityField_chartRep_differentiableAt
-    (_g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
+    (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t₀ : ℝ) :
     DifferentiableAt ℝ
       (chartRepAt (I := I) (fun v : ℝ => f 0 v)
@@ -613,10 +613,10 @@ theorem first_variation_of_arcLength_fixed_endpoints
     exact (hf : ContMDiff _ _ _ _).comp hincl
   have hVdiff : ∀ t₀ : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) γ V t₀) t₀ := by
     intro t₀; rw [hγ_def, hV_def]
-    exact variationField_chartRep_differentiableAt (I := I) g f hf t₀
+    exact variationField_chartRep_differentiableAt (I := I) f hf t₀
   have hγ'diff : ∀ t₀ : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) γ γ' t₀) t₀ := by
     intro t₀; rw [hγ_def, hγ'_def]
-    exact velocityField_chartRep_differentiableAt (I := I) g f hf t₀
+    exact velocityField_chartRep_differentiableAt (I := I) f hf t₀
   have hbdry : ∀ t ∈ Set.uIcc (0 : ℝ) L,
       HasDerivAt (fun s : ℝ => g.inner (γ s) (V s) (γ' s))
         (g.inner (γ t) (covDerivAlong (I := I) g γ V t) (γ' t)
@@ -820,10 +820,10 @@ theorem first_variation_of_arcLength_free_endpoints
     exact (hf : ContMDiff _ _ _ _).comp hincl
   have hVdiff : ∀ t₀ : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) γ V t₀) t₀ := by
     intro t₀; rw [hγ_def, hV_def]
-    exact variationField_chartRep_differentiableAt (I := I) g f hf t₀
+    exact variationField_chartRep_differentiableAt (I := I) f hf t₀
   have hγ'diff : ∀ t₀ : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) γ γ' t₀) t₀ := by
     intro t₀; rw [hγ_def, hγ'_def]
-    exact velocityField_chartRep_differentiableAt (I := I) g f hf t₀
+    exact velocityField_chartRep_differentiableAt (I := I) f hf t₀
   have hbdry : ∀ t ∈ Set.uIcc (0 : ℝ) L,
       HasDerivAt (fun s : ℝ => g.inner (γ s) (V s) (γ' s))
         (g.inner (γ t) (covDerivAlong (I := I) g γ V t) (γ' t)

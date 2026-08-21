@@ -356,7 +356,7 @@ theorem flow_upgrade_data_converges
     Nonempty (SmoothCGHConverges (I := I) X d.data.L
       (mc.compSubseq d.φ d.hφ).subseq) :=
   ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc d.data.hσtgt
+    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc
     d.data.refMetric
     (letI : TopologicalSpace d.data.L.M := d.data.L.topology
      letI : ChartedSpace H d.data.L.M := d.data.L.charted

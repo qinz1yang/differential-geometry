@@ -270,7 +270,7 @@ theorem lieCorrectionZeroMixedConnection_h1_uniform_bound
         (4 * (R + A)) ^ 2 := by
     simpa only [K0] using
       kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie
-        (R + A) hRA hP3
+        (R + A) hP3
   have hKB :
       (∑ i ∈ Finset.range 2,
         ‖iteratedCovGrad (I := I) g₀ 0 3 i KB‖ ^ 2) ≤

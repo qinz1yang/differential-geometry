@@ -79,6 +79,7 @@ theorem deTurckSmoothN_eq (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ) :=
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem deTurckSmoothRem_congr (g₀ g_bg : SmoothRiemannianMetric I M)
     {S U : SmoothCcTensor g₀ 0 2} (h : S = U) {δ : ℝ} (hδ_lt : δ < 1)
     (hS : gFibreOpBound (I := I) (M := M) g₀

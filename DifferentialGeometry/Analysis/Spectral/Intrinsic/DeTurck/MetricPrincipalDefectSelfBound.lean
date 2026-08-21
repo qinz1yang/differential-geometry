@@ -81,6 +81,7 @@ private theorem doubleTrace_grid
       simp [selfTraceC]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem traceSelf_eq (g : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g g =
       reindexCoeffGen (I := I) (M := M) g 4 2
@@ -95,6 +96,7 @@ private theorem traceSelf_eq (g : SmoothRiemannianMetric I M) :
     traceHessianFib, ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem pureSelf_eq (g : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g g =
       cometricDoubleTraceField (I := I) g 2 := by
@@ -269,10 +271,10 @@ private theorem ricciSelf_grid
       linarith
 
 theorem phiSelf_grid
-    (g g_bg : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
+    (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
         ((iteratedCovGrad (I := I) g 4 2 i
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g -
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g -
             cometricDoubleTraceCoefficient (I := I) (M := M) g g)).toSection x) ≤
       phiSelfC (E := E) i := by
   classical
@@ -292,10 +294,10 @@ theorem phiSelf_grid
     (cometricDoubleTraceCoefficient (I := I) (M := M) g g)).toSection x with hP
   have hsec :
       (iteratedCovGrad (I := I) g 4 2 i
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g -
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g -
           cometricDoubleTraceCoefficient (I := I) (M := M) g g)).toSection x =
         A + B - (R + R) - P := by
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g_bg g,
+    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g,
       iteratedCovGrad_sub, iteratedCovGrad_sub,
       iteratedCovGrad_add, iteratedCovGrad_add,
       SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_sub,

@@ -255,9 +255,7 @@ noncomputable def flowUpgrade_of_maps
     letI : SigmaCompactSpace (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I (PointedCGHMaps.target_open (I := I) Φ' k)
   · intro k
-    exact fun _ => refRes (I := I) Φ' R
-      (fun j => Geometry.isSigmaCompact_of_isOpen I
-        (PointedCGHMaps.source_open (I := I) Φ' j)) k
+    exact fun _ => refRes (I := I) Φ' R k
   · intro K hK p a b hab ε hε
     have hbridge := ofRP_supOn_conv (I := I) (Φ) R bf hsrc htgt β ψ
       co (letI : TopologicalSpace L.M := L.topology; letI : ChartedSpace H L.M := L.charted; letI :
@@ -511,8 +509,8 @@ noncomputable def endgameCo
       letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Φ k))
-        (refRes (I := I) Φ R hsrc k)
-        (tgtRefSrc (I := I) Φ gRefT hsrc htgt k) Crel)
+        (refRes (I := I) Φ R k)
+        (tgtRefSrc (I := I) Φ gRefT k) Crel)
     (hShiT : forall N : Nat, exists KShi : Real, 0 <= KShi /\
       forall k : Nat,
         letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
@@ -535,7 +533,7 @@ noncomputable def endgameCo
             letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
               sourceDomSigmaOf (I := I) Φ k (hsrc k)
             metricCovDerivNorm (I := I) j (srcMetric (I := I) Φ hsrc htgt k t)
-              (refRes (I := I) Φ R hsrc k) y <= Cs)
+              (refRes (I := I) Φ R k) y <= Cs)
     (hlipG : letI : TopologicalSpace P.M := P.topology;
         letI : ChartedSpace H P.M := P.charted; letI : T2Space P.M := P.t2;
         letI : IsManifold I ∞ P.M := P.smooth; letI : SigmaCompactSpace P.M := P.sigmaCompact;
@@ -551,7 +549,7 @@ noncomputable def endgameCo
                 sourceDomSigmaOf (I := I) Φ k (hsrc k)
               metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k s)
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y <= Lt * |s - t|) :
+                (refRes (I := I) Φ R k) y <= Lt * |s - t|) :
     ConvOut (I := I) Φ R bf hsrc htgt β ψ :=
   convOut (I := I) (Φ := Φ) R bf hsrc htgt β ψ hβψ ((Crel * Bmax)⁻¹)
     (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1) (lt_of_lt_of_le one_pos hBmax1)))
@@ -593,8 +591,8 @@ theorem endgameCo_zero
       letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Φ k))
-        (refRes (I := I) Φ R hsrc k)
-        (tgtRefSrc (I := I) Φ gRefT hsrc htgt k) Crel)
+        (refRes (I := I) Φ R k)
+        (tgtRefSrc (I := I) Φ gRefT k) Crel)
     (hShiT : forall N : Nat, exists KShi : Real, 0 <= KShi /\
       forall k : Nat,
         letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
@@ -617,7 +615,7 @@ theorem endgameCo_zero
             letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
               sourceDomSigmaOf (I := I) Φ k (hsrc k)
             metricCovDerivNorm (I := I) j (srcMetric (I := I) Φ hsrc htgt k t)
-              (refRes (I := I) Φ R hsrc k) y <= Cs)
+              (refRes (I := I) Φ R k) y <= Cs)
     (hlipG : letI : TopologicalSpace P.M := P.topology;
         letI : ChartedSpace H P.M := P.charted; letI : T2Space P.M := P.t2;
         letI : IsManifold I ∞ P.M := P.smooth; letI : SigmaCompactSpace P.M := P.sigmaCompact;
@@ -633,7 +631,7 @@ theorem endgameCo_zero
                 sourceDomSigmaOf (I := I) Φ k (hsrc k)
               metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k s)
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y <= Lt * |s - t|)
+                (refRes (I := I) Φ R k) y <= Lt * |s - t|)
     (g0 : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
@@ -651,8 +649,8 @@ theorem endgameCo_zero
              sourceDomSigmaOf (I := I) Φ k (hsrc k)
            metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ k K) 0
              (srcMetric (I := I) Φ hsrc htgt k 0)
-             (resSrc (I := I) Φ hsrc k g0)
-             (refRes (I := I) Φ R hsrc k) < ε)) :
+             (resSrc (I := I) Φ k g0)
+             (refRes (I := I) Φ R k) < ε)) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
@@ -695,8 +693,8 @@ theorem flowLimit_endgame
       letI : IsManifold I ∞ (SourceDomain (I := I) Φ₀ k) := sourceDomSmooth (I := I) Φ₀ k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Φ₀ k))
-        (refRes (I := I) Φ₀ R hsrc k)
-        (tgtRefSrc (I := I) Φ₀ gRefT hsrc htgt k) Crel)
+        (refRes (I := I) Φ₀ R k)
+        (tgtRefSrc (I := I) Φ₀ gRefT k) Crel)
     (hShiT : forall N : Nat, exists KShi : Real, 0 <= KShi /\
       forall k : Nat,
         letI : TopologicalSpace (X.term (mc.subseq k)).M := (X.term (mc.subseq k)).topology
@@ -721,7 +719,7 @@ theorem flowLimit_endgame
             letI : SigmaCompactSpace (SourceDomain (I := I) Φ₀ k) :=
               sourceDomSigmaOf (I := I) Φ₀ k (hsrc k)
             metricCovDerivNorm (I := I) j (srcMetric (I := I) Φ₀ hsrc htgt k t)
-              (refRes (I := I) Φ₀ R hsrc k) y <= Cs)
+              (refRes (I := I) Φ₀ R k) y <= Cs)
     (hlipG : letI : TopologicalSpace mc.limit.M := mc.limit.topology;
         letI : ChartedSpace H mc.limit.M := mc.limit.charted; letI : T2Space mc.limit.M :=
           mc.limit.t2;
@@ -739,7 +737,7 @@ theorem flowLimit_endgame
                 sourceDomSigmaOf (I := I) Φ₀ k (hsrc k)
               metricDerivNorm (I := I) a (srcMetric (I := I) Φ₀ hsrc htgt k s)
                 (srcMetric (I := I) Φ₀ hsrc htgt k t)
-                (refRes (I := I) Φ₀ R hsrc k) y <= Lt * |s - t|)
+                (refRes (I := I) Φ₀ R k) y <= Lt * |s - t|)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
     (h0 : (0 : Real) ∈ Set.Icc β ψ)
     (hcp : letI : TopologicalSpace mc.limit.M := mc.limit.topology;
@@ -757,8 +755,8 @@ theorem flowLimit_endgame
              sourceDomSigmaOf (I := I) Φ₀ k (hsrc k)
            metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ₀ k K) 0
              (srcMetric (I := I) Φ₀ hsrc htgt k 0)
-             (resSrc (I := I) Φ₀ hsrc k mc.limit.metric)
-             (refRes (I := I) Φ₀ R hsrc k) < ε))
+             (resSrc (I := I) Φ₀ k mc.limit.metric)
+             (refRes (I := I) Φ₀ R k) < ε))
     (hsol :
       letI : TopologicalSpace mc.limit.M := mc.limit.topology
       letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -906,8 +904,8 @@ theorem flowLimit_of_reg
       letI : IsManifold I ∞ (SourceDomain (I := I) Φ₀ k) := sourceDomSmooth (I := I) Φ₀ k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Φ₀ k))
-        (refRes (I := I) Φ₀ R hsrc k)
-        (tgtRefSrc (I := I) Φ₀ gRefT hsrc htgt k) Crel)
+        (refRes (I := I) Φ₀ R k)
+        (tgtRefSrc (I := I) Φ₀ gRefT k) Crel)
     (hShiT : ∀ N : Nat, ∃ KShi : Real, 0 ≤ KShi ∧
       ∀ k : Nat,
         letI : TopologicalSpace (X.term (mc.subseq k)).M := (X.term (mc.subseq k)).topology
@@ -932,7 +930,7 @@ theorem flowLimit_of_reg
             letI : SigmaCompactSpace (SourceDomain (I := I) Φ₀ k) :=
               sourceDomSigmaOf (I := I) Φ₀ k (hsrc k)
             metricCovDerivNorm (I := I) j (srcMetric (I := I) Φ₀ hsrc htgt k t)
-              (refRes (I := I) Φ₀ R hsrc k) y ≤ Cs)
+              (refRes (I := I) Φ₀ R k) y ≤ Cs)
     (hlipG : letI : TopologicalSpace mc.limit.M := mc.limit.topology;
         letI : ChartedSpace H mc.limit.M := mc.limit.charted;
         letI : T2Space mc.limit.M := mc.limit.t2;
@@ -950,7 +948,7 @@ theorem flowLimit_of_reg
                 sourceDomSigmaOf (I := I) Φ₀ k (hsrc k)
               metricDerivNorm (I := I) a (srcMetric (I := I) Φ₀ hsrc htgt k s)
                 (srcMetric (I := I) Φ₀ hsrc htgt k t)
-                (refRes (I := I) Φ₀ R hsrc k) y ≤ Lt * |s - t|)
+                (refRes (I := I) Φ₀ R k) y ≤ Lt * |s - t|)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
     (h0 : (0 : Real) ∈ Set.Icc β ψ)
     (hcp : letI : TopologicalSpace mc.limit.M := mc.limit.topology;
@@ -968,8 +966,8 @@ theorem flowLimit_of_reg
              sourceDomSigmaOf (I := I) Φ₀ k (hsrc k)
            metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Φ₀ k K) 0
              (srcMetric (I := I) Φ₀ hsrc htgt k 0)
-             (resSrc (I := I) Φ₀ hsrc k mc.limit.metric)
-             (refRes (I := I) Φ₀ R hsrc k) < ε)) :
+             (resSrc (I := I) Φ₀ k mc.limit.metric)
+             (refRes (I := I) Φ₀ R k) < ε)) :
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
     letI : ChartedSpace H mc.limit.M := mc.limit.charted
     letI : T2Space mc.limit.M := mc.limit.t2

@@ -60,9 +60,9 @@ theorem top_pair_h2_uniform
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ R →
           ∀ W : SmoothCcTensor g 0 2,
-          let Φ := rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+          let Φ := rhsTopPathIntegral (I := I) (M := M) g T T'
               hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
           |tensorL2Inner (I := I) (M := M) g 0 2
               (oneMinusConnLapSmooth (I := I) g 0 2 W).toFun
               (operatorFieldApply (I := I) (M := M) g 4 2 Φ
@@ -77,9 +77,9 @@ theorem top_pair_h2_uniform
   refine ⟨ρ, C, hρ, mul_nonneg hCdev (h2CovsumC_nonneg K.rankTwo), ?_⟩
   intro g hEq hjet T T' δ hδ_lt hδ δ' hδ'_lt hδ' R hR hRρ hT hT' W
   let Φ : SmoothCcTensor g 4 2 :=
-    rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+    rhsTopPathIntegral (I := I) (M := M) g T T'
         hδ_lt hδ hδ'_lt hδ' -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   obtain ⟨hΦ, _⟩ := hdev g hEq hjet T T' hδ_lt hδ hδ'_lt hδ'
     hR hRρ hT hT'
   have hact : IsCurvAction0 (I := I) (M := M) g 2 K.rankTwo :=
@@ -120,9 +120,9 @@ theorem top_pair_h4_uniform
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ R →
           ∀ U : SmoothCcTensor g 0 2,
-          let Φ := rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+          let Φ := rhsTopPathIntegral (I := I) (M := M) g T T'
               hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
           |tensorL2Inner (I := I) (M := M) g 0 2
               (oneMinusConnLapSmooth (I := I) g 0 2
                 (oneMinusConnLapSmooth (I := I) g 0 2 U)).toFun
@@ -167,9 +167,9 @@ theorem top_pair_h5_uniform
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ R →
           ∀ U : SmoothCcTensor g 0 2,
-          let Φ := rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+          let Φ := rhsTopPathIntegral (I := I) (M := M) g T T'
               hδ_lt hδ hδ'_lt hδ' -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
           |tensorL2Inner (I := I) (M := M) g 0 2
               (oneMinusConnLapSmooth (I := I) g 0 2
                 (oneMinusConnLapSmooth (I := I) g 0 2
@@ -189,9 +189,9 @@ theorem top_pair_h5_uniform
   let W : SmoothCcTensor g 0 2 :=
     oneMinusConnLapSmooth (I := I) g 0 2 U
   let Φ : SmoothCcTensor g 4 2 :=
-    rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+    rhsTopPathIntegral (I := I) (M := M) g T T'
         hδ_lt hδ hδ'_lt hδ' -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let A : SmoothCcTensor g 0 2 :=
     operatorFieldApply (I := I) (M := M) g 4 2 Φ
       (iteratedCovGrad (I := I) g 0 2 2 W)
@@ -251,9 +251,9 @@ theorem top_pair_abs_uniform
             ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
             ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ R →
             ∀ U : SmoothCcTensor g 0 2,
-            let Φ := rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+            let Φ := rhsTopPathIntegral (I := I) (M := M) g T T'
                 hδ_lt hδ hδ'_lt hδ' -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
             2 * |tensorL2Inner (I := I) (M := M) g 0 2
                 (oneMinusConnLapSmooth (I := I) g 0 2
                   (oneMinusConnLapSmooth (I := I) g 0 2 U)).toFun
@@ -285,9 +285,9 @@ theorem top_pair_abs_uniform
           (oneMinusConnLapSmooth (I := I) g 0 2
             (oneMinusConnLapSmooth (I := I) g 0 2 U)).toFun
           (operatorFieldApply (I := I) (M := M) g 4 2
-            (rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+            (rhsTopPathIntegral (I := I) (M := M) g T T'
                 hδ_lt hδ hδ'_lt hδ' -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g)
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)
             (iteratedCovGrad (I := I) g 0 2 2
               (oneMinusConnLapSmooth (I := I) g 0 2 U))).toFun|
         ≤ 2 * (C * R *

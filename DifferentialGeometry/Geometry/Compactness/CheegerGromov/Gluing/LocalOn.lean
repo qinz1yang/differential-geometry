@@ -31,9 +31,6 @@ theorem HasStageJetDataOn.hloc_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (V U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
@@ -42,7 +39,7 @@ theorem HasStageJetDataOn.hloc_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
       chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) :
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N,
@@ -60,7 +57,7 @@ theorem HasStageJetDataOn.hloc_tail
       letI : T2Space Yl.M := Yl.t2
       letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
       IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞)
-        (stageComparisonMap inp P Lphi r hr hconn k l (chart := chart))
+        (stageComparisonMap inp P Lphi r hr k l (chart := chart))
         (Lphi.hatSourceBall inp.decay P R k) := by
   classical
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
@@ -93,7 +90,7 @@ theorem HasStageJetDataOn.hloc_tail
   letI : IsManifold I ∞ Yl.M := Yl.smooth
   letI : T2Space Yl.M := Yl.t2
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  let F := stageComparisonMap inp P Lphi r hr hconn k l (chart := chart)
+  let F := stageComparisonMap inp P Lphi r hr k l (chart := chart)
   rintro ⟨x, hx⟩
   have hxLarge : x ∈ Lphi.hatSourceBall inp.decay P r k := by
     letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
@@ -167,16 +164,16 @@ theorem HasStageJetDataOn.hloc_tail
     simpa only [NormalCoordinates.NormalBallChart.restrictBall_apply, hxEq]
       using hxBmid
   have hjetAt (w : E) (hw : w ∈ Vloc) :
-      stageComparisonMap inp P Lphi r hr hconn k l
+      stageComparisonMap inp P Lphi r hr k l
           (chiK.hom w) (chart := chart) ∈ chiL.restrictBall.target ∧
         ContDiffAt Real ∞
           (fun u => chiL.inv
-            (stageComparisonMap inp P Lphi r hr hconn k l
+            (stageComparisonMap inp P Lphi r hr k l
               (chiK.hom u) (chart := chart))) w ∧
         ∀ j ≤ 1,
           mapDerivNorm j
             (fun u => chiL.inv
-              (stageComparisonMap inp P Lphi r hr hconn k l
+              (stageComparisonMap inp P Lphi r hr k l
                 (chiK.hom u) (chart := chart)))
             id w ≤ (1 / 2 : Real) := by
     have hwMid : chiK.hom w ∈
@@ -207,7 +204,7 @@ theorem HasStageJetDataOn.hloc_tail
     have hcd := (hjetAt w hw).2.1
     have hdiff : DifferentiableAt Real
         (fun u => chiL.inv
-          (stageComparisonMap inp P Lphi r hr hconn k l
+          (stageComparisonMap inp P Lphi r hr k l
             (chiK.hom u) (chart := chart))) w :=
       hcd.differentiableAt (by simp)
     have hneu := neumannOfDerivNorm hdiff ((hjetAt w hw).2.2 1 le_rfl)
@@ -215,7 +212,7 @@ theorem HasStageJetDataOn.hloc_tail
         ‖ContinuousLinearMap.id Real E -
           fderiv Real
             (fun u => chiL.inv
-              (stageComparisonMap inp P Lphi r hr hconn k l
+              (stageComparisonMap inp P Lphi r hr k l
                 (chiK.hom u) (chart := chart))) w‖ < 1 :=
       hneu.trans_lt (by norm_num)
     have hout := Coordinates.isInvertible_of_norm_id_sub_lt hlt

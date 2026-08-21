@@ -187,7 +187,7 @@ theorem perturbedInner_isVonNBounded
   exact (gSublevel_isVonNBounded (I := I) (M := M) g x hr_pos).subset hsub
 
 theorem perturbedInner_contMDiff
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hsmooth : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -264,7 +264,7 @@ theorem perturbedInner_contMDiff
   rfl
 
 noncomputable def perturbedMetric
-    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hsymm : ∀ (x : M) (v w : TangentSpace I x), h x v w = h x w v)
@@ -282,8 +282,7 @@ noncomputable def perturbedMetric
   contMDiff := perturbedInner_contMDiff (I := I) (M := M) g h hsmooth
 
 @[simp] lemma perturbedMetric_inner
-    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    (g : SmoothRiemannianMetric I M)
+    [T2Space M] (g : SmoothRiemannianMetric I M)
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hsymm : ∀ (x : M) (v w : TangentSpace I x), h x v w = h x w v)
     (hsmooth : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -296,9 +295,7 @@ noncomputable def perturbedMetric
   rfl
 
 theorem exists_posDef_perturbation_radius
-    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
-    (g : SmoothRiemannianMetric I M) :
+    [T2Space M] (g : SmoothRiemannianMetric I M) :
     ∃ δ : ℝ, 0 < δ ∧
       ∀ (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ),
         (∀ (x : M) (v w : TangentSpace I x), h x v w = h x w v) →

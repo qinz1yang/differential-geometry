@@ -220,6 +220,7 @@ lemma smoothLaplacianBundle_toFun_eq_smoothLaplacianAsScalar
       (smoothLaplacianAsScalar (I := I) (M := M) g φ).toFun := rfl
 
 omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem oneSubLapClassical_gradInner_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (x : M) :

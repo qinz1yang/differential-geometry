@@ -434,6 +434,7 @@ theorem evolvingBombieriGiustiReciprocalGradientCost_nonneg
   positivity
 
 omit [SigmaCompactSpace M] [CompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 theorem spatialMoserCutoff_bombieriGiustiReciprocalLocalizer_gradient_le
     (g : SmoothRiemannianMetric I M) {q : SmoothRiemannianMetric I M}
     (rho : SmoothScalar q) {G lower upper : ℝ}

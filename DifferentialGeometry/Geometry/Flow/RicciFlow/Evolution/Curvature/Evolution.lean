@@ -38,6 +38,7 @@ def rmComp
         (coordinateFrameAt (I := I) x₀ k x) (coordinateFrameAt (I := I) x₀ l x))
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rm04SymmOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -351,6 +352,7 @@ private theorem coordNab2Eq
     coordNab2Ric_eq_nabla2RicField (I := I) S x₀ t d a i j
 
 omit [I.Boundaryless] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem n2RicTr
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -388,6 +390,7 @@ theorem n2RicTr
     DifferentialGeometry.Geometry.Curvature.metricRm04, gInvAt, hb] using h
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricTr
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M)
@@ -432,6 +435,7 @@ private theorem sumMulPair
   exact Finset.sum_congr rfl fun r _ => by ring
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rmRicciId
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -548,6 +552,7 @@ theorem rmRicciId
   ring
 
 omit [I.Boundaryless] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04LapInOfSol
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -630,6 +635,7 @@ private theorem rmCompBase
   fin_cases q <;> rfl
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rmRaise
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -755,6 +761,7 @@ theorem ricRicciIdAt
     (rm13OfSol (I := I) S (t : Real)) rfl rfl h20 htor
 
 omit [I.Boundaryless] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricCommOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -880,6 +887,7 @@ theorem ricCommOfSol
   linarith [hri]
 
 omit [I.Boundaryless] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04StaticOfSol
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -918,6 +926,7 @@ theorem rm04StaticOfSol
     (rm04LapInOfSol (I := I) S x₀ t) m
 
 omit [I.Boundaryless] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04Evol_at
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1012,6 +1021,7 @@ def ricUpFam
       (coordinateFrameAt (I := I) y) r y i k
 
 omit [I.Boundaryless] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rm04EvolFam
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

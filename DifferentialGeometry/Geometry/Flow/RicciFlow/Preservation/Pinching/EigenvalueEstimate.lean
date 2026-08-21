@@ -127,13 +127,13 @@ theorem pinchEigen3Unordered_of_pinchTensor_nonneg
       using hpinch v
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem cubic_reaction_sub_pinching_term_nonneg_at
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     {delta epsilon t : Real} {x : M}
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
-    (_hscalarPos : 0 < S.scalar t x)
     (hdelta0 : 0 <= delta)
     (hepsilon : epsilon <= 2 * delta ^ 2)
     (hric :

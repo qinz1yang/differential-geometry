@@ -389,6 +389,7 @@ theorem connTrace_small
       (D.regular_isOpen.mem_nhds T.2) hPzero hPjoint hε
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem scalarFlux_eq_slot (q h : SmoothRiemannianMetric I M) :
     scalarFluxCoeff (I := I) (M := M) q h =
       endoSlotZeroCcTensor (I := I) (M := M) q 0

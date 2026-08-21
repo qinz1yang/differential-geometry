@@ -329,6 +329,7 @@ theorem linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciCometricFourTraceCLM_field_contMDiff (g₁ : SmoothRiemannianMetric I M)
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace 4 I x)
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 4 ℝ E)) ∞
@@ -386,6 +387,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem linearizedRicciConnectionDifferenceOrder1CometricTracedCLM_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 2 ℝ E)) ∞
@@ -457,6 +459,7 @@ noncomputable def linearizedRicciConnectionDifferenceOrder0CoeffField
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder1CoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g₀ g₁).toSection x =
@@ -489,6 +492,7 @@ def linearizedRicciConnectionDifferenceOrder0Coeff (g₀ : SmoothRiemannianMetri
   linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0Coeff_toSection
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -515,6 +519,8 @@ theorem linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub
   abel
 
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem linearizedRicciConnectionDifferenceOrder1Coeff_eq_base_add_sub
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

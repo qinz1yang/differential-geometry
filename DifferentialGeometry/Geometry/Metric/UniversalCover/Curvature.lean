@@ -112,6 +112,7 @@ omit [PseudoEMetricSpace M]
   [ConnectedSpace M]
   [SecondCountableTopology M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannOp_lift_one
     (g : SmoothRiemannianMetric I M) (c : Real) (hc : 0 < c)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,

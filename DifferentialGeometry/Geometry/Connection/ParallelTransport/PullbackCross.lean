@@ -466,9 +466,7 @@ omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_mapCrossAt
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
-    (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
+    [IsManifold I 1 M] [IsManifold J 1 N] (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (t : ℝ)
@@ -529,9 +527,7 @@ omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_mapCross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
-    (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
+    [IsManifold I 1 M] [IsManifold J 1 N] (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (t : ℝ)

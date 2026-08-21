@@ -210,6 +210,7 @@ private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
     reindexCoeffFibGen_apply, ContinuousLinearMap.sub_apply]
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 private lemma lieCorrectionZerow_NEndoIns_diff_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -259,6 +260,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmFi
   deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_toModel deTurckVectorFieldCovariantDerivativeEndomorphism) in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
@@ -328,6 +330,7 @@ private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg :
 
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZerow_lieCorrectionZero_add_endoArmBase_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
@@ -582,7 +585,7 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
         (s + 2) ((s + 2) + l) 1 (1 + l)
         (iteratedCovGrad (I := I) g₀ (s + 2) (s + 2) l Wf)
         (iteratedCovGrad (I := I) g₀ 1 1 l (sharpFlatEndoCc (I := I) g₀ g₁))
-        (fr ^ (s + 1)) hfrpow_nn ?_
+        (fr ^ (s + 1)) ?_
       intro x
       have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ (s + 1)
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁) l x
@@ -1593,7 +1596,7 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
             lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)))
-      fr hfr_nn ?_
+      fr ?_
     intro x
     have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
       (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -2333,7 +2336,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
   have hR_nn : (0 : ℝ) ≤ Cbr * R₀ := mul_nonneg hCbr_nn hR₀
   have h13 : (1 : ℝ) / 3 < 1 := by norm_num
   obtain ⟨ΛC, hΛC_nn, hC0r⟩ :=
-    uniform_C0_bound_concrete_lichnerowicz_coeffFields (I := I) (M := M) g₀ g_bg a
+    uniform_C0_bound_concrete_lichnerowicz_coeffFields (I := I) (M := M) g₀ a
       ha_super hR_nn h13
   obtain ⟨Λrl, hΛrl_nn, Krl, hKrl_nn, hchild⟩ :=
     exists_riemannLieDerivativeCorrection_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a
@@ -2830,7 +2833,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
         (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2) ε
         htotal_nn hper hshift hX_nn
     have htower := pathIntegralCoeffField_jetL2_tower_le (I := I) (M := M) g₀ 2 i Φ₀
-      hSI hSopen hjΦ₀ (Real.sqrt_nonneg _) hjet
+      hSI hSopen hjΦ₀ hjet
     have hsingle : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (pathIntegralCoeffField (I := I) (M := M) g₀ 2 2 Φ₀
           (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjΦ₀)‖ ^ 2 ≤
@@ -2919,7 +2922,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
             refine mul_le_mul_of_nonneg_right ?_ hW_nn
             linarith
     have htower := pathIntegralCoeffField_jetL2_tower_le (I := I) (M := M) g₀ 4 i C2f
-      hSI hSopen hjC2 (Real.sqrt_nonneg _) hjet
+      hSI hSopen hjC2 hjet
     have hsingle : ‖iteratedCovGrad (I := I) g₀ 4 2 i
         (pathIntegralCoeffField (I := I) (M := M) g₀ 4 2 C2f
           (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjC2)‖ ^ 2 ≤
@@ -2975,7 +2978,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
   have hR_nn : (0 : ℝ) ≤ Cbr * R₀ := mul_nonneg hCbr_nn hR₀
   have h13 : (1 : ℝ) / 3 < 1 := by norm_num
   obtain ⟨ΛCr, hΛCr_nn, hC0r⟩ :=
-    uniform_C0_bound_concrete_lichnerowicz_coeffFields (I := I) (M := M) g₀ g_bg a
+    uniform_C0_bound_concrete_lichnerowicz_coeffFields (I := I) (M := M) g₀ a
       ha_super hR_nn h13
   obtain ⟨ΛL1, hΛL1_nn, hL1r⟩ :=
     deTurckLieArm1Coeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
@@ -3212,7 +3215,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2) := by
             rw [Finset.sum_mul]
     have htower := pathIntegralCoeffField_jetL2_tower_le (I := I) (M := M) g₀ 3 i Ψ₁
-      hSI hSopen hj1 (Real.sqrt_nonneg _) hjet
+      hSI hSopen hj1 hjet
     have hsingle : ‖iteratedCovGrad (I := I) g₀ 3 2 i
         (pathIntegralCoeffField (I := I) (M := M) g₀ 3 2 Ψ₁
           (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj1)‖ ^ 2 ≤
@@ -3261,7 +3264,7 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
               operatorFieldApply (I := I) (M := M) g₀ (2 + 1) 2 C₁
                 (iteratedCovGrad (I := I) g₀ 0 2 1 T₀) +
               operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2
-                (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+                (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))

@@ -305,7 +305,6 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIde
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.SuccessorSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.H2
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.H2FromSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.LeibnizCompensatedSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PerChart
@@ -1811,9 +1810,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.EigenBasis
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChartTwistIdentity
+import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChristoffelBilinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.CovNormBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.FDerivDecomp
-import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.FDerivDecompReal
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.TchrAtomBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartGramUniformContinuity
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartJUniformBoundLocallyConstant

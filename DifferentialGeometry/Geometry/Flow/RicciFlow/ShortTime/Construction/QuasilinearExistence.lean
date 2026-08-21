@@ -30,7 +30,7 @@ variable
 
 theorem quasilinear_metric_short_time_existence_of_nemytskii_data
     (F : SmoothRiemannianMetric I M → (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
-    (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_eq : a = 4 * Module.finrank ℝ E + 10)
     (Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a:ℝ)+2) → tensorHs (I := I) (M := M) g₀ 0 2 (a:ℝ))
     (Nsec : ∀ (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (_hδ_lt : δ < 1)
@@ -56,10 +56,10 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
         (hTT₀ : T ≤ (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose)
         (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
-        (hduh : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
+        (hduh : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce)
         (hforce : gforce =ᵐ[timeMeasure T]
-          (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+          (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
         (hgforce : ‖gforce‖ ≤ 1 / (16 * ((H2.choose : ℝ) + 1)))
         (htrace : timeH1.trace0 _ T u = 0),
@@ -162,8 +162,8 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
     hForceRepr_fam⟩ :=
     hForce2
   obtain ⟨T₁, hT₁pos, hT₁le, F_fam, δ, hδ_lt, hδ, hF_zero, hF_pin, hF_flow, hF_joint⟩ :=
-    maxreg_solution_jointly_smooth_representative_of_nemytskii g₀ a ha_super ha_eq Nfun F Nsec hRepr
-      hT_pos hT_le1 u htrace hd₂F_pos hd₂F_le f hf_smooth hf_mass hf_id hR₀pos hHorizon
+    maxreg_solution_jointly_smooth_representative_of_nemytskii g₀ a ha_eq F Nsec hRepr
+      hT_pos hT_le1 u htrace hd₂F_pos hd₂F_le f hf_smooth hf_mass hf_id hHorizon
         hForceRepr_fam
   refine ⟨T₁, fun t : ℝ => tensorSectionRealizeMetric (I := I) g₀ (F_fam t) hδ_lt (hδ t),
     ⟨hT₁pos, ?_, ?_⟩, hF_joint⟩

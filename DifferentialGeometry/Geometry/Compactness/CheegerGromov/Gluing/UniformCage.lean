@@ -240,10 +240,10 @@ theorem unifHatCageComp
                   (hactive_mem a b y hy)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.1)
+                    (rho := rho) (hrho := hrho) hy).1.1)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.2.1)
+                    (rho := rho) (hrho := hrho) hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
   let sourceK : Fin (pb.A r) -> Set (X.obj (L.φ n)).M :=
     fun gamma => NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma
@@ -667,10 +667,10 @@ theorem unifHatCageSelfComp
                   (hactive_mem a b y hy)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.1)
+                    (rho := rho) (hrho := hrho) hy).1.1)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.2.1)
+                    (rho := rho) (hrho := hrho) hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
   let sourceK : Fin (pb.A r) -> Set (X.obj (L.φ n)).M :=
     fun gamma => NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma

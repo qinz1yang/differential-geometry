@@ -74,9 +74,9 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gBase B)
     {p : ℝ≥0∞} (hp : 1 ≤ p) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ k : ι,
-      MemWkpTensor (I := I) (M := M) gBase 3 p
+      MemWkpTensor (I := I) (M := M) 3 p
           (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k)).toSection ∧
-        wkpTensorNorm (I := I) (M := M) gBase 3 p
+        wkpTensorNorm (I := I) (M := M) 3 p
           (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k)).toSection ≤
             ENNReal.ofReal C := by
   classical
@@ -110,7 +110,7 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
   have hR_ne : R ≠ ⊤ := hR_top.ne
   refine ⟨R.toReal, ENNReal.toReal_nonneg, ?_⟩
   intro k
-  have hmem : MemWkpTensor (I := I) (M := M) gBase 3 p
+  have hmem : MemWkpTensor (I := I) (M := M) 3 p
       (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k)).toSection := by
     intro α Idx Jdx
     have hIdx : Idx = (![] : Fin 0 → Fin (Module.finrank ℝ E)) :=

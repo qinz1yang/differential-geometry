@@ -258,7 +258,7 @@ theorem conj_strong_exists
     let A1 : Real → tensorHs (I := I) (M := M) q 0 0 (0 + 1) →L[Real]
         tensorHs (I := I) (M := M) q 0 0 0 :=
       fun t => conjA1MR (I := I) (M := M) S T t
-    ∃ (tau : Real) (htau : 0 < tau) (htau1 : tau ≤ 1)
+    ∃ (tau : Real) (htau : 0 < tau) (_htau1 : tau ≤ 1)
       (C2 C1 : NNReal)
       (hA2 : AEStronglyMeasurable A2 (timeMeasure tau))
       (hC2 : ∀ᵐ t ∂timeMeasure tau, ‖A2 t‖ ≤ (C2 : Real))
@@ -267,27 +267,27 @@ theorem conj_strong_exists
       (u : MaxRegSolutionSpace (I := I) (M := M)
         (g := q) (r := 0) (s := 0) 0 tau)
       (force : timeL2 (tensorHs (I := I) (M := M) q 0 0 0) tau),
-      u = maxRegDuhamelMap (I := I) (M := M) 0 htau htau1 u0 force ∧
+      u = maxRegDuhamelMap (I := I) (M := M) 0 htau u0 force ∧
       force =
         timeOp A2 hA2 C2 hC2
             (maxRegDuhamelSolField (I := I) (M := M)
-              0 htau htau1 u0 force) +
+              0 htau u0 force) +
           timeOp A1 hA1 C1 hC1
             (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-              0 htau htau1 u0 force) ∧
+              0 htau u0 force) ∧
       timeH1.trace0 _ tau u =
         tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
           (show (0 : Real) ≤ 0 + 2 by norm_num) u0 ∧
       timeH1.timeDeriv _ tau u =
         timeScaleLaplacian (I := I) (M := M) 0
             (maxRegDuhamelSolField (I := I) (M := M)
-              0 htau htau1 u0 force) +
+              0 htau u0 force) +
           (timeOp A2 hA2 C2 hC2
               (maxRegDuhamelSolField (I := I) (M := M)
-                0 htau htau1 u0 force) +
+                0 htau u0 force) +
             timeOp A1 hA1 C1 hC1
               (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-                0 htau htau1 u0 force)) ∧
+                0 htau u0 force)) ∧
       (∀ᵐ s ∂timeMeasure tau,
           ∀ w : tensorHs (I := I) (M := M) q 0 0 2,
             (w,
@@ -305,14 +305,14 @@ theorem conj_strong_exists
             (g := q) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 2 by norm_num)
             (maxRegDuhamelSolField (I := I) (M := M)
-              0 htau htau1 u0 force s))
+              0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun ∧
       (fun s =>
           tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 1 by norm_num)
             (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-              0 htau htau1 u0 force s))
+              0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun := by
   dsimp only
   obtain ⟨tau, C2, C1, htau, htau1, hA2, hC2, hA1, hC1, hsmall,
@@ -344,7 +344,7 @@ theorem conj_strong_exists
       htau htau1 u0 A2 hA2' C2 hC2' A1 hA1' C1 hC1' hsmall
   have hfield2 := solField_toFun_ae (I := I) (M := M)
     (g := S.family.metric (T : Real)) (r := 0) (s := 0) (a := 0)
-    htau htau1
+    htau
     (tensorResolventL2_isCompactOperator (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0)
     u0 force
@@ -354,7 +354,7 @@ theorem conj_strong_exists
             (g := S.family.metric (T : Real)) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 2 by norm_num)
             (maxRegDuhamelSolField (I := I) (M := M)
-              0 htau htau1 u0 force s))
+              0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun := by
     simpa only [hu] using hfield2
   have hfield1 := solFieldHa1_toFun_ae (I := I) (M := M)
@@ -369,7 +369,7 @@ theorem conj_strong_exists
             (g := S.family.metric (T : Real)) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 1 by norm_num)
             (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-              0 htau htau1 u0 force s))
+              0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun := by
     simpa only [hu] using hfield1
   exact ⟨tau, htau, htau1, C2, C1, hA2', hC2', hA1', hC1', u,
@@ -383,7 +383,7 @@ theorem conj_weak_ae
     let q := S.family.metric (T : Real)
     let J := tensorHsZeroEquivL2 (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) q 0 0)
-    ∃ (tau : Real) (htau : 0 < tau) (htau1 : tau ≤ 1)
+    ∃ (tau : Real) (htau : 0 < tau) (_htau1 : tau ≤ 1)
       (u : MaxRegSolutionSpace (I := I) (M := M)
         (g := q) (r := 0) (s := 0) 0 tau)
       (force : timeL2 (tensorHs (I := I) (M := M) q 0 0 0) tau),
@@ -392,9 +392,9 @@ theorem conj_weak_ae
             (show (0 : Real) ≤ 0 + 2 by norm_num) u0 ∧
       ∀ᵐ t ∂timeMeasure tau,
         let U2 := maxRegDuhamelSolField (I := I) (M := M)
-          0 htau htau1 u0 force t
+          0 htau u0 force t
         let U1 := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-          0 htau htau1 u0 force t
+          0 htau u0 force t
         let V2 := tensorHsInclusion (I := I) (M := M)
           (g := q) (r := 0) (s := 0)
           (show (2 : Real) ≤ 0 + 2 by norm_num) U2
@@ -452,11 +452,11 @@ theorem conj_weak_ae
   let U2 : timeL2 (tensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 2)) tau :=
     maxRegDuhamelSolField (I := I) (M := M)
-      0 htau htau1 u0 force
+      0 htau u0 force
   let U1 : timeL2 (tensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 1)) tau :=
     maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-      0 htau htau1 u0 force
+      0 htau u0 force
   let base : timeL2 (tensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 0) tau :=
     timeScaleLaplacian (I := I) (M := M) 0 U2

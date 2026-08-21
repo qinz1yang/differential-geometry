@@ -1418,8 +1418,8 @@ theorem centerOfMass_contDiffAt
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem centerOfMassChart_cont
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (p : M) {ι : Type} [Fintype ι] (params₀ : (ι → ℝ) × (ι → E))
     (join : M → M → ℝ → M) (r : ℝ)

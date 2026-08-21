@@ -41,7 +41,7 @@ theorem mdifferentiableAt_finset_sum_smul
 
 omit [CompleteSpace E] [T2Space M] in
 theorem gradientFun_sum
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     {ι : Type*} (s : Finset ι)
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (t : Real) (f : ι -> M -> Real) (c : ι -> Real) (x : M)
@@ -50,6 +50,7 @@ theorem gradientFun_sum
         (fun z : M => ∑ i ∈ s, c i * f i z) x =
       ∑ i ∈ s, c i •
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (f i) x := by
+  let _ := hVectorBundle
   classical
   induction s using Finset.induction_on with
   | empty =>
@@ -731,7 +732,7 @@ theorem Gfun_heatOp (B : BernsteinTower (I := I) G) (m : ℕ)
     (fun i _ => B.hw_grad i t hmem htpos x)
 omit [CompleteSpace E] [T2Space M] in
 theorem Gfun_hasDerivWithin (B : BernsteinTower (I := I) G) (m : ℕ)
-    {t : Real} (_htmem : t ∈ Set.Icc 0 B.T) (_htpos : 0 < t) (x : M)
+    {t : Real} (x : M)
     (dvec : ℕ -> Real)
     (hd : ∀ i ∈ Finset.range (m + 1),
       HasDerivWithinAt (fun s : Real => B.w i s x) (dvec i) (Set.Icc 0 B.T) t) :
@@ -776,7 +777,7 @@ theorem Gfun_parabolic_eq (B : BernsteinTower (I := I) G) (m : ℕ)
           Gcoef (I := I) B m i * ((i : Real) * t ^ (i - 1) * B.w i t x + t ^ i * dvec i) := by
     have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) t :=
       (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt htmem
-    exact (Gfun_hasDerivWithin (I := I) B m htmem htpos x dvec hd).derivWithin huniq
+    exact (Gfun_hasDerivWithin (I := I) B m x dvec hd).derivWithin huniq
   rw [DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift_eq, htime]
   rw [Gfun_heatOp (I := I) B m htmem htpos x]
   rw [← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
@@ -1137,7 +1138,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
           have := (Classical.choose_spec (B.hheat i τ y)).1
           exact (by simpa [hdvec, τ] using this : HasDerivWithinAt (fun r : Real => B.w i r y)
                       (dvec i) B.D.carrier s).mono B.hslab
-        exact (Gfun_hasDerivWithin (I := I) B m hsmem hspos y dvec hd).differentiableWithinAt
+        exact (Gfun_hasDerivWithin (I := I) B m y dvec hd).differentiableWithinAt
       have hGcont : ContinuousOn
           (fun p : Real × M =>
             (aBar + bBar * p.1) - Gfun (I := I) B m p.1 p.2)

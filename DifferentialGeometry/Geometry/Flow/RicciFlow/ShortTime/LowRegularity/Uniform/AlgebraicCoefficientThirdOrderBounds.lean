@@ -157,6 +157,7 @@ private theorem idSlotJet
   simpa only [iteratedCovGrad_zero] using h0
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem fullSlotSplit (g gm : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g 1
         (metricComparisonEndomorphismField (I := I) (M := M) g gm) =

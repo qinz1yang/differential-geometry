@@ -181,7 +181,6 @@ theorem atomWeightOn_of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (_hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -231,7 +230,6 @@ theorem atomWeight_of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -299,7 +297,7 @@ theorem atomWeight_of_atoms
     refine ⟨gamma, ?_⟩
     change seqAtom hd hD P L pb r k gamma
       (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z) = 1
-    exact seqAtom_one hd hD P L pb r k (hgp k) gamma hgamma
+    exact seqAtom_one hd hD P L pb r k gamma hgamma
   have hbase (k : Nat) (z : E) (_hz : z ∈ U) :
       atom k i0 z ∈ Set.Icc (0 : Real) 1 := by
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -653,7 +651,7 @@ private theorem existsAtomWeightCore
     exact Set.mem_iUnion.mpr ⟨gamma, by
       simpa only [Lpsi, NetLimitData.innerBall_subseq] using hgamma⟩
   refine ⟨psi, hpsi, aInf, ?_⟩
-  exact atomWeight_of_atoms (I := I) hD P Lpsi hre pb r hr hgpPsi betapsi U hU
+  exact atomWeight_of_atoms (I := I) hD P Lpsi hre pb r hr betapsi U hU
     hcoverPsi aInf hdead hatom hatomSmooth hatomInfSmooth
 
 theorem exists_smooth_atom_weight_limit_of_inner_cover

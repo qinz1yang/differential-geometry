@@ -741,8 +741,6 @@ theorem bochner_identity_smoothOrthoFrame_of_inner_form [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (x : M)
-    (hSmooth : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (smoothOrthoFrame (I := I) g x i)))
     (hInner : ∀ w : TangentSpace I x,
       g.inner x (localConnLap_vector (LeviCivita (I := I) g)
                   (smoothOrthoFrame (I := I) g x)
@@ -754,7 +752,7 @@ theorem bochner_identity_smoothOrthoFrame_of_inner_form [I.Boundaryless]
       gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   localConnLap_vector_eq_bochnerFormula_of_inner_form (I := I) g hf
-    (smoothOrthoFrame (I := I) g x) hSmooth x hInner
+    (smoothOrthoFrame (I := I) g x) x hInner
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem smoothOrthoFrame_orthonormal_at_center
@@ -1191,6 +1189,7 @@ theorem smoothOrtho_localOne
   contMDiffOn i := (smoothOrtho_local (I := I) g α).contMDiffOn i |>.of_le (by simp)
 
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem heart_of_bochner_smoothOrthoFrame [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
@@ -1206,7 +1205,7 @@ theorem heart_of_bochner_smoothOrthoFrame [I.Boundaryless]
       gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   bochner_identity_smoothOrthoFrame_of_inner_form (I := I) g hf x
-    (fun i => smoothOrthoFrame_smooth (I := I) g x i) hInner
+    hInner
 
 end Connection
 end Geometry

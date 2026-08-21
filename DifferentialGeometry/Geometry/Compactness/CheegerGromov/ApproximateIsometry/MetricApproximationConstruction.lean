@@ -389,8 +389,8 @@ theorem weightsSlot {ι : Type*} [DecidableEq ι] [Fintype ι] [ProperSpace E']
     (hJinfc : ∀ i, ContDiffOn ℝ (∞ : WithTop ℕ∞) (Jinf i) U)
     (hlow : ∀ k, ∀ z ∈ U, δ < ∑ j, bumpNum χ ψ (fun j' => J j' k) i0 j z)
     (hlowinf : ∀ z ∈ U, δ < ∑ j, bumpNum χ ψ Jinf i0 j z) (i : ι)
-    (kn ln : ℕ → ℕ) (hkn : Filter.Tendsto kn Filter.atTop Filter.atTop)
-    (_hln : Filter.Tendsto ln Filter.atTop Filter.atTop) :
+    (kn : ℕ → ℕ) (hkn : Filter.Tendsto kn Filter.atTop Filter.atTop)
+    :
     MapCInfConvOnCompacts U
       (fun n => normWeights (bumpNum χ ψ (fun j => J j (kn n)) i0) i)
       (normWeights (bumpNum χ ψ Jinf i0) i) := by
@@ -708,13 +708,13 @@ theorem hlocOn_of_chartNeumann_infty {F : M → N} {U : Set M} (hU : IsOpen U)
 
 theorem hlocHinj_of_chartNeumann
     {E₀ : Type uE} [NormedAddCommGroup E₀] [NormedSpace ℝ E₀]
-    [FiniteDimensional ℝ E₀] [NeZero (Module.finrank ℝ E₀)] [CompleteSpace E₀]
+    [CompleteSpace E₀]
     {H₀ : Type uH} [TopologicalSpace H₀]
     {I₀ : ModelWithCorners ℝ E₀ H₀} [I₀.Boundaryless]
     {M₀ : Type u} [TopologicalSpace M₀] [ChartedSpace H₀ M₀]
-    [IsManifold I₀ ∞ M₀] [MetricSpace M₀]
+    [IsManifold I₀ ∞ M₀]
     {N₀ : Type u} [TopologicalSpace N₀] [ChartedSpace H₀ N₀]
-    [IsManifold I₀ ∞ N₀] [PseudoMetricSpace N₀]
+    [IsManifold I₀ ∞ N₀]
     {F : M₀ → N₀} {U : Set M₀} (x₀ : M₀) {ε : ℝ} (hε : ε < 1)
     (hU : IsOpen U) (hUsub : U ⊆ (extChartAt I₀ x₀).source)
     (hconv : Convex ℝ ((extChartAt I₀ x₀) '' U))
@@ -957,8 +957,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem mfderivNormalCenter
     [Module.Finite ℝ E]
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
-    [T2Space N'] [T2Space (TangentBundle I N')] [SigmaCompactSpace N']
-    [ConnectedSpace N'] [T3Space N']
+    [T2Space (TangentBundle I N')]
     (gk : SmoothRiemannianMetric I M') (gn : SmoothRiemannianMetric I N')
     (F : M' → N') (y : M')
     (hG : DifferentiableAt ℝ
@@ -1059,9 +1058,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem pullbackErrComp
     [Module.Finite ℝ E]
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
-    [T2Space N'] [T2Space (TangentBundle I N')] [SigmaCompactSpace N']
-    [ConnectedSpace N'] [T3Space N']
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N']
+    [T2Space (TangentBundle I N')]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (gk : SmoothRiemannianMetric I M') (gn : SmoothRiemannianMetric I N')
     {F : M' → N'} {y : M'}
     (hpb : PullbackMetricTensorData (I := I) F gn)
@@ -1125,8 +1123,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRoundTrip_ev
     [Module.Finite ℝ E]
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
-    [T2Space N'] [T2Space (TangentBundle I N')] [SigmaCompactSpace N']
-    [ConnectedSpace N'] [T3Space N']
+    [T2Space (TangentBundle I N')]
     (gk : SmoothRiemannianMetric I M') (gn : SmoothRiemannianMetric I N')
     {F : M' → N'} {y : M'}
     (hsrc : ∀ᶠ q in nhds y, q ∈ (NormalCoordinates.normalChartAt (I := I) gk y).source)
@@ -1171,9 +1168,7 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M'] [SigmaCompactSpace M'] [Connec
 theorem pullbackErrNorm
     [Module.Finite ℝ E]
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
-    [T2Space N'] [T2Space (TangentBundle I N')] [SigmaCompactSpace N']
-    [ConnectedSpace N'] [T3Space N']
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N']
+    [T2Space (TangentBundle I N')] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (gk : SmoothRiemannianMetric I M') (gn : SmoothRiemannianMetric I N')
     {F : M' → N'} {y : M'}
     (hpb : PullbackMetricTensorData (I := I) F gn)
@@ -1249,9 +1244,7 @@ def mapMetricApproximationOnOfZeroOrderBounds
 
 def partialDiffeomorphMetricApproximationOfBounds
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
-    [T2Space N'] [SigmaCompactSpace N'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N']
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
-    (K : Set M') (eps : ℝ) (p : ℕ)
+    [T2Space N'] (K : Set M') (eps : ℝ) (p : ℕ)
     (Φ : PartialDiffeomorph I I M' N' (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M') (h : SmoothRiemannianMetric I N')
     (hsub : K ⊆ Φ.source)
@@ -1276,9 +1269,7 @@ def partialDiffeomorphMetricApproximationOfBounds
 
 def partialDiffeomorphMetricApproximationOfZeroOrderBounds
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
-    [T2Space N'] [SigmaCompactSpace N'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N']
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
-    (K : Set M') (eps : ℝ)
+    [T2Space N'] (K : Set M') (eps : ℝ)
     (Φ : PartialDiffeomorph I I M' N' (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M') (h : SmoothRiemannianMetric I N')
     (hsub : K ⊆ Φ.source)
@@ -1290,9 +1281,12 @@ def partialDiffeomorphMetricApproximationOfZeroOrderBounds
     (hsmoothR : ContMDiffOn I I (∞ : WithTop ℕ∞) (Φ.symm : N' → M') ((Φ : M' → N') '' K))
     (hc0R : ∀ y ∈ (Φ : M' → N') '' K,
       metricTensorErrorNorm (I := I) hpbR.pullback h y ≤ eps) :
-    PartialDiffeomorphMetricApproximation (I := I) K eps 0 Φ g h :=
-  partialDiffeomorphMetricApproximationOfBounds K eps 0 Φ g h hsub heps heps1 hpbF hsmoothF hc0F
-    (by intro a ha ha0 x hx; omega) hpbR hsmoothR hc0R (by intro a ha ha0 y hy; omega)
+    PartialDiffeomorphMetricApproximation (I := I) K eps 0 Φ g h where
+  source_sub := hsub
+  forward := mapMetricApproximationOnOfZeroOrderBounds K eps (Φ : M' → N') g h
+    hpbF heps heps1 hsmoothF hc0F
+  reverse := mapMetricApproximationOnOfZeroOrderBounds ((Φ : M' → N') '' K) eps
+    (Φ.symm : N' → M') h g hpbR heps heps1 hsmoothR hc0R
 
 end CmDiag
 

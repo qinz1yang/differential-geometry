@@ -1176,8 +1176,7 @@ theorem invGramD_pou_lip
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffel_pou_bnd
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
     (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
@@ -1335,6 +1334,7 @@ theorem christoffel_pou_lip
               chartChristoffel (I := I) (gSeq k₂) α i j k (extChartAt I α b)| ≤
                 C * chartMetricJet1DiffSup (I := I) (M := M)
                   (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
+  let _ := (inferInstance : (I.Boundaryless))
   classical
   obtain ⟨M_b, hM_b, hMb⟩ :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartInvGram_pou_bnd

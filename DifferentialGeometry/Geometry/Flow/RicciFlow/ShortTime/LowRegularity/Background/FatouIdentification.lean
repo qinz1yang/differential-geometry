@@ -32,7 +32,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
     (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 ρ P T Bd Ctop₂ Kr2 Kr1 Kcap ε : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hCtop : 0 ≤ Ctop) (hB0 : 0 ≤ B0) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -63,7 +63,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t ∈
         lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P))
     (hnem : ∀ N : ℕ, ⇑(fseq N) =ᵐ[timeMeasure T]
@@ -71,7 +71,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
         (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal)
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hL2H3 : ∀ N : ℕ, ∫ t, galerkinEnergy (I := I) (M := M)
@@ -109,7 +109,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
     · exact galerkinProjectedForce_mode_continuous (I := I) (M := M) g₀ g_bg hδ hCtop hB0 hB1 hρ hP hreal
         htame N (U N) (fun j _ => hUcont N j (by assumption)) i
     · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g₀
-        (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le hT hT1 N fseq (hball N) (hnem N) i
+        (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le hT N fseq (hball N) (hnem N) i
   set EE : ℕ → ℝ → ℝ := fun N => Set.IccExtend hT.le
     (fun p : Set.Icc (0 : ℝ) T => galerkinEnergy (I := I) (M := M)
       (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 p.1) with hEE

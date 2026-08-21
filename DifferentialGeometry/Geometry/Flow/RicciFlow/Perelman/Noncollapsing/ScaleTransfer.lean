@@ -26,15 +26,15 @@ variable [T2Space M] [SigmaCompactSpace M]
 
 def paraFlowTime
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime) : D.FlowTime :=
+    (tau R : Real) (htau : tau ∈ D.carrier)
+    (s : (paraInterval D tau R htau).FlowTime) : D.FlowTime :=
   ⟨paraTime tau R (s : Real), s.2⟩
 
 @[simp] theorem paraFlowTime_coe
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime) :
-    (paraFlowTime tau R hR htau s : Real) = paraTime tau R (s : Real) := by
+    (tau R : Real) (htau : tau ∈ D.carrier)
+    (s : (paraInterval D tau R htau).FlowTime) :
+    (paraFlowTime tau R htau s : Real) = paraTime tau R (s : Real) := by
   rfl
 
 namespace Perelman
@@ -44,8 +44,8 @@ variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 def paraBall
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s)) :
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
     FlowMetricBall (paraSolution (I := I) S tau R hR htau) s where
   center := B.center
   radius := Real.sqrt R * B.radius
@@ -56,8 +56,8 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
 theorem paraBall_setAt
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s))
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s))
     (q : Real) :
     (paraBall S tau R hR htau s B).setAt q =
       B.setAt (paraTime tau R q) := by
@@ -70,8 +70,8 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
 theorem paraBall_set
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s)) :
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
     (paraBall S tau R hR htau s B).set = B.set := by
   unfold FlowMetricBall.set
   simpa only [paraFlowTime_coe] using
@@ -81,8 +81,8 @@ omit [CompleteSpace E] in
 theorem paraBall_volume
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s)) :
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
     (paraBall S tau R hR htau s B).volume =
       ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E * B.volume := by
   change
@@ -104,8 +104,8 @@ omit [CompleteSpace E] in
 theorem paraBall_kappa
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s))
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s))
     (kappa : Real) (hB : B.IsKappaNoncollapsed kappa) :
     (paraBall S tau R hR htau s B).IsKappaNoncollapsed kappa := by
   refine ⟨hB.1, ?_⟩
@@ -149,8 +149,8 @@ omit [SigmaCompactSpace M] in
 theorem paraBall_rm
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s))
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s))
     (hB : B.IsRmControlled) :
     (paraBall S tau R hR htau s B).IsRmControlled := by
   rcases hB with ⟨hwindow, hcurv⟩
@@ -194,9 +194,9 @@ theorem paraBall_rm
 def backBall
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
+    (s : (paraInterval D tau R htau).FlowTime)
     (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s) :
-    FlowMetricBall S (paraFlowTime tau R hR htau s) where
+    FlowMetricBall S (paraFlowTime tau R htau s) where
   center := B.center
   radius := B.radius / Real.sqrt R
   radius_pos := div_pos B.radius_pos (Real.sqrt_pos.2 hR)
@@ -206,7 +206,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
 theorem paraBall_back
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
+    (s : (paraInterval D tau R htau).FlowTime)
     (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s) :
     paraBall S tau R hR htau s (backBall S tau R hR htau s B) = B := by
   cases B with
@@ -220,7 +220,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
 theorem backBall_setAt
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
+    (s : (paraInterval D tau R htau).FlowTime)
     (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s)
     (q : Real) :
     (backBall S tau R hR htau s B).setAt (paraTime tau R q) =
@@ -234,7 +234,7 @@ omit [CompleteSpace E] in
 theorem backBall_volume
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
+    (s : (paraInterval D tau R htau).FlowTime)
     (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s) :
     B.volume = ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E *
       (backBall S tau R hR htau s B).volume := by
@@ -247,7 +247,7 @@ omit [CompleteSpace E] in
 theorem backBall_kappa
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
+    (s : (paraInterval D tau R htau).FlowTime)
     (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s)
     (kappa : Real) (hB : B.IsKappaNoncollapsed kappa) :
     (backBall S tau R hR htau s B).IsKappaNoncollapsed kappa := by
@@ -300,7 +300,7 @@ omit [SigmaCompactSpace M] in
 theorem backBall_rm
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
+    (s : (paraInterval D tau R htau).FlowTime)
     (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s)
     (hB : B.IsRmControlled) :
     (backBall S tau R hR htau s B).IsRmControlled := by
@@ -344,8 +344,8 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
 theorem backBall_para
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s)) :
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
     backBall S tau R hR htau s (paraBall S tau R hR htau s B) = B := by
   cases B with
   | mk center radius radius_pos =>
@@ -357,8 +357,8 @@ omit [SigmaCompactSpace M] in
 theorem paraBall_rm_iff
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s)) :
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
     (paraBall S tau R hR htau s B).IsRmControlled ↔ B.IsRmControlled := by
   constructor
   · intro h
@@ -372,8 +372,8 @@ omit [CompleteSpace E] in
 theorem paraBall_kappa_iff
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R hR htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R hR htau s))
+    (s : (paraInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (paraFlowTime tau R htau s))
     (kappa : Real) :
     (paraBall S tau R hR htau s B).IsKappaNoncollapsed kappa ↔
       B.IsKappaNoncollapsed kappa := by
@@ -402,7 +402,7 @@ theorem para_noncollapse
     simpa only [mul_comm] using hscale
   have hRm₀ : B₀.IsRmControlled :=
     backBall_rm (I := I) S tau R hR htau s B hRm
-  have hk₀ := hS.2 (paraFlowTime tau R hR htau s) B₀ hradius hRm₀
+  have hk₀ := hS.2 (paraFlowTime tau R htau s) B₀ hradius hRm₀
   have hk := paraBall_kappa (I := I) S tau R hR htau s B₀ kappa hk₀
   rw [paraBall_back (I := I) S tau R hR htau s B] at hk
   exact hk

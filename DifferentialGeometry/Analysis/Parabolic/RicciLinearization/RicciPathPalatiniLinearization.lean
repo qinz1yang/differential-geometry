@@ -199,6 +199,8 @@ end NormedRealizedVelocity
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 lemma realizedVelocityCc_bilin
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -244,6 +246,8 @@ lemma one_mem_metricPerturbationPathDomain {δ δ' : ℝ} (hδ_lt : δ < 1) :
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 lemma metricPerturbationPath_inner_affine
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -265,6 +269,8 @@ lemma metricPerturbationPath_inner_affine
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma metricDiffCovDeriv_metricPerturbationPath_affine
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -326,6 +332,7 @@ private lemma metricDiffCovDeriv_metricPerturbationPath_affine
     hval (Y x) ((LeviCivita (I := I) gs0).toFun (fun b => Z b) x (X x))]
   ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma connectionDifference_metricPerturbationPath_inner_koszul
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -376,6 +383,7 @@ private lemma connectionDifference_metricPerturbationPath_inner_koszul
   rw [← hUM X Y Z, ← hUM Y X Z, ← hUM Z X Y]
   ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifference_metricPerturbationPath_eq_smul_sharp
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -423,6 +431,7 @@ theorem connectionDifference_metricPerturbationPath_eq_smul_sharp
   rw [hR]
   linarith [hkos]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma linearizedKoszulCovec_eq_endpoint_flat
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -463,6 +472,7 @@ private lemma linearizedKoszulCovec_eq_endpoint_flat
   rw [hinner, smul_eq_mul]
   field_simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma linearizedKoszulCovec_basis_contMDiffOn
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -529,6 +539,7 @@ private def linearizedKoszulSharpField
       (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b))
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sharpPsiField_contMDiff
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -548,6 +559,7 @@ private lemma sharpPsiField_contMDiff
   exact linearizedKoszulCovec_basis_contMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
     hs₀ Y Z α j
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sharpPsiField_jointContMDiffOn
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -722,6 +734,8 @@ private lemma continuousAt_leviCivita_toFun_slice
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma continuousOn_metricPerturbationPath_invGram_slice
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -740,6 +754,8 @@ private lemma continuousOn_metricPerturbationPath_invGram_slice
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma metricSharp_metricPerturbationPath_eq_invGram_sum
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -761,6 +777,7 @@ private lemma metricSharp_metricPerturbationPath_eq_invGram_sum
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma tendsto_metricSharp_metricPerturbationPath_fixed
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -796,6 +813,7 @@ private lemma tendsto_metricSharp_metricPerturbationPath_fixed
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma tendsto_metricSharp_metricPerturbationPath_varying
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -888,6 +906,8 @@ private def slopeCore
                 (smoothExtensionTangent (I := I) x v x))) i
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma realizedRicciPathValue_eq_ricciTensor_metricPerturbationPath
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -911,6 +931,7 @@ private lemma realizedRicciPathValue_eq_ricciTensor_metricPerturbationPath
       hclamp]
   rw [hmetric]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDerivSharp
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -976,6 +997,7 @@ private lemma covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDer
   rw [covDerivSharp]
   module
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma pathValue_sub_eq_mul_slopeCore
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1106,6 +1128,7 @@ private lemma pathValue_sub_eq_mul_slopeCore
     fun A B qa qb => by module]
   rw [map_smul, Finsupp.smul_apply, smul_eq_mul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma slopeCore_tendsto
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1211,6 +1234,7 @@ private lemma slopeCore_tendsto
   · exact hquad Bi Wf (smoothExtensionTangent (I := I) x v x)
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma slopeCore_at_base
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1232,6 +1256,7 @@ private lemma slopeCore_at_base
   simp only [slopeCore, sub_self, zero_smul, add_zero, sub_zero]
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciAt_eq_palatini_covDeriv
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

@@ -102,10 +102,10 @@ theorem exists_uniform_lower_scale_h4_pairing_bound_with_caps
     hdelta_lt hdeltaT hdelta_lt hdeltaZ
   let P1 := ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M) g gBase T 0
     hdelta_lt hdeltaT hdelta_lt hdeltaZ
-  let P2 := rhsTopPathIntegral (I := I) (M := M) g gBase T 0
+  let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
     hdelta_lt hdeltaT hdelta_lt hdeltaZ
-  let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
-  let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+  let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
+  let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
   let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
   let HT := iteratedCovGrad (I := I) g 0 2 2 T
   let HLT := iteratedCovGrad (I := I) g 0 2 2 LT

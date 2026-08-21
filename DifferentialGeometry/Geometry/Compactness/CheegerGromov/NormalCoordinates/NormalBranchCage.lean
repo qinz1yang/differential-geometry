@@ -413,7 +413,7 @@ theorem HasNormalBrFull.exists_cm_eqn
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
     have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (hb.chart_mem_norm_le k x (pts i)
+    exact (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x (pts i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
     NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
@@ -568,7 +568,7 @@ theorem HasNormalBrFull.exists_cm_deriv
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
     have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (hb.chart_mem_norm_le k x (pts i)
+    exact (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x (pts i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
     NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
@@ -619,7 +619,8 @@ theorem HasNormalBrFull.exists_cm_deriv
     (ENNReal.lt_ofReal_iff_toReal_lt hcFin).mp hcLt
   have hcSource : c ∈ (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).source :=
-    (hb.chart_mem_norm_le k x c ⟨hcFin, hcReal.trans_le hρexp⟩).1
+    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x c
+      ⟨hcFin, hcReal.trans_le hρexp⟩).1
   have htgt (i : ι) :
       (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x c,
         xi i) ∈ e.target := by
@@ -736,7 +737,7 @@ theorem HasNormalBrFull.exists_cmC
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
     have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (hb.chart_mem_norm_le k x (pts i)
+    exact (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x (pts i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
     NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
@@ -790,7 +791,8 @@ theorem HasNormalBrFull.exists_cmC
     (ENNReal.lt_ofReal_iff_toReal_lt hyFin).mp hyLt
   have hySource : y ∈ (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).source :=
-    (hb.chart_mem_norm_le k x y ⟨hyFin, hyReal.trans_le hρexp⟩).1
+    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x y
+      ⟨hyFin, hyReal.trans_le hρexp⟩).1
   have htgt (i : ι) :
       (NormalCoordinates.normalChartAt
           (I := I) (X.obj k).metric x y,

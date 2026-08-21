@@ -683,6 +683,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_ballPosPart
         (C_gns d 2) ^ 2 *
           (∫ x in Metric.ball x₀ s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
+  let _ := _hη_nonneg
   have hs : 0 < s := lt_trans hr hrs
   let v : E → ℝ := deGiorgiCutoffTestGeneral η u θ
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
@@ -746,6 +747,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
         (C_gns d 2) ^ 2 *
           (∫ x in Metric.ball x₀ s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
+  let _ := _hη_nonneg
   let v : E → ℝ := deGiorgiCutoffTestGeneral η u θ
   have hη_comp : HasCompactSupport η :=
     hasCompactSupport_of_tsupport_subset_ball hη_sub_ball

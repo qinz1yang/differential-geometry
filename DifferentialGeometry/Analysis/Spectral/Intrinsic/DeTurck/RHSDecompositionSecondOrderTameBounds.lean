@@ -34,6 +34,7 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem edgePair_eq_mono
     (g g1 : SmoothRiemannianMetric I M) (G : SmoothCcTensor g 0 4)
     (sigma : Equiv.Perm (Fin 4)) :
@@ -125,6 +126,7 @@ private theorem decompositionMono_smul
       ring
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem edgePair_smul
     (g g1 : SmoothRiemannianMetric I M) (a : Real)
     (G : SmoothCcTensor g 0 4) (sigma : Equiv.Perm (Fin 4)) :
@@ -1029,13 +1031,12 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_covariantJetNormSq_two_tam
                 (B A) ^ 2 := by
   classical
   let aStar : Nat := 2 * Module.finrank Real E + 10
-  have haStar : 2 * Module.finrank Real E + 10 <= aStar := le_rfl
   have hLambda :
       0 <= (Module.finrank Real E : Real) * delta0 :=
     mul_nonneg (Nat.cast_nonneg _) hdelta0_nonneg
   obtain ⟨Ktop, hKtop, Flow, hFlow, hper⟩ :=
     exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g g_bg
-      aStar haStar hdelta0_lt hLambda
+      aStar hdelta0_lt hLambda
   let Kt : Real := ∑ _i ∈ Finset.range 3, Ktop
   let Kl : Real := ∑ i ∈ Finset.range 3, Flow i
   have hKt : 0 <= Kt := by

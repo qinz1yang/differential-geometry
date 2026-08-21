@@ -113,7 +113,7 @@ private lemma wkpNorm_chartPushedRaw_etaTimesV_le_three
         (chartPushedRaw (I := I) (M := M) α
           (etaTimesV (I := I) (M := M) α v.toFun))
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 3 2
+      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 3 2
         (fun x : M => v.toFun x) := by
   classical
   obtain ⟨C, hC_pos, hC_bound⟩ :=
@@ -121,8 +121,8 @@ private lemma wkpNorm_chartPushedRaw_etaTimesV_le_three
       (I := I) (M := M) g α 3 (p := 2) (by norm_num) (by norm_num)
   refine ⟨C, hC_pos, ?_⟩
   intro v
-  have h_v_MemWkpChart : MemWkpChart (I := I) (M := M) g 3 2 v.toFun :=
-    memWkpChart_of_contMDiff_k (I := I) (M := M) g (by norm_num) 3 v.smooth
+  have h_v_MemWkpChart : MemWkpChart (I := I) (M := M) 3 2 v.toFun :=
+    memWkpChart_of_contMDiff_k (I := I) (M := M) (by norm_num) 3 v.smooth
   have h_funext : etaTimesV (I := I) (M := M) α v.toFun =
       fun x : M => chartStrictCutoff (I := I) (M := M) α x * v.toFun x := by
     funext x; rfl
@@ -137,7 +137,7 @@ private lemma wkpNorm_chartPushedRaw_etaTimesV_le_two
         (chartPushedRaw (I := I) (M := M) α
           (etaTimesV (I := I) (M := M) α v.toFun))
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 2 2
+      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 2 2
         (fun x : M => v.toFun x) := by
   classical
   obtain ⟨C, hC_pos, hC_bound⟩ :=
@@ -145,8 +145,8 @@ private lemma wkpNorm_chartPushedRaw_etaTimesV_le_two
       (I := I) (M := M) g α 2 (p := 2) (by norm_num) (by norm_num)
   refine ⟨C, hC_pos, ?_⟩
   intro v
-  have h_v_MemWkpChart : MemWkpChart (I := I) (M := M) g 2 2 v.toFun :=
-    memWkpChart_of_contMDiff_k (I := I) (M := M) g (by norm_num) 2 v.smooth
+  have h_v_MemWkpChart : MemWkpChart (I := I) (M := M) 2 2 v.toFun :=
+    memWkpChart_of_contMDiff_k (I := I) (M := M) (by norm_num) 2 v.smooth
   have h_funext : etaTimesV (I := I) (M := M) α v.toFun =
       fun x : M => chartStrictCutoff (I := I) (M := M) α x * v.toFun x := by
     funext x; rfl
@@ -162,7 +162,7 @@ private lemma wkpNorm_partialDerivOnEuclid_etaTimesV_le_two
           (partialDerivOnEuclid (I := I) (M := M) α i
             (etaTimesV (I := I) (M := M) α v.toFun))
           (chartTargetEuclid (I := I) (M := M) α) ≤
-        ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 3 2
+        ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 3 2
           (fun x : M => v.toFun x) := by
   classical
   have h_per_i_partial : ∀ i : Fin (Module.finrank ℝ E), ∃ C_p : ℝ, 0 < C_p ∧
@@ -177,7 +177,7 @@ private lemma wkpNorm_partialDerivOnEuclid_etaTimesV_le_two
             (chartPushedRaw (I := I) (M := M) α u)
             (chartTargetEuclid (I := I) (M := M) α) := fun i =>
     wkpNorm_partialDerivOnEuclid_le_wkpNorm_chartPushedRaw_succ
-      (I := I) (M := M) α i 2 (p := 2) (by norm_num) (by norm_num)
+      (I := I) (M := M) α i 2 (p := 2) (by norm_num)
   let Cp : Fin (Module.finrank ℝ E) → ℝ := fun i => (h_per_i_partial i).choose
   have hCp_pos : ∀ i, 0 < Cp i := fun i => (h_per_i_partial i).choose_spec.1
   have hCp_bound : ∀ i : Fin (Module.finrank ℝ E),
@@ -224,13 +224,13 @@ private lemma wkpNorm_partialDerivOnEuclid_etaTimesV_le_two
               (etaTimesV (I := I) (M := M) α v.toFun))
             (chartTargetEuclid (I := I) (M := M) α) := h_partial_bound
     _ ≤ ENNReal.ofReal (Cp i) *
-            (ENNReal.ofReal C_strict * wkpNormChart (I := I) (M := M) g 3 2 v.toFun) :=
+            (ENNReal.ofReal C_strict * wkpNormChart (I := I) (M := M) 3 2 v.toFun) :=
             mul_le_mul_of_nonneg_left h_strict_bound (zero_le _)
     _ = ENNReal.ofReal (Cp i * C_strict) *
-            wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+            wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
             rw [← mul_assoc, ENNReal.ofReal_mul (hCp_pos i).le]
     _ ≤ ENNReal.ofReal C_total *
-            wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+            wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
             refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
             refine ENNReal.ofReal_le_ofReal ?_
             rw [hC_total_def]
@@ -244,7 +244,7 @@ private lemma wkpNorm_chartPushedRaw_gradInnerPiece_le_two
         (chartPushedRaw (I := I) (M := M) α
           (gradInnerPiece (I := I) (M := M) g α v.toFun))
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 3 2
+      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 3 2
         (fun x : M => v.toFun x) := by
   classical
   have h_per_i_smul : ∀ i : Fin (Module.finrank ℝ E), ∃ K : ℝ, 0 < K ∧
@@ -513,7 +513,7 @@ private lemma wkpNorm_chartPushedRaw_gradInnerPiece_le_two
             (etaTimesV (I := I) (M := M) α v.toFun) y)
         (chartTargetEuclid (I := I) (M := M) α) ≤
       ENNReal.ofReal (K i * C_partial) *
-        wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+        wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
     intro i
     have h_step1 := hK_bound i (h_partial_mem i)
     have h_step2 := hC_partial_bound v i
@@ -530,10 +530,10 @@ private lemma wkpNorm_chartPushedRaw_gradInnerPiece_le_two
                 (etaTimesV (I := I) (M := M) α v.toFun))
               (chartTargetEuclid (I := I) (M := M) α) := h_step1
       _ ≤ ENNReal.ofReal (K i) *
-              (ENNReal.ofReal C_partial * wkpNormChart (I := I) (M := M) g 3 2 v.toFun) :=
+              (ENNReal.ofReal C_partial * wkpNormChart (I := I) (M := M) 3 2 v.toFun) :=
             mul_le_mul_of_nonneg_left h_step2 (zero_le _)
       _ = ENNReal.ofReal (K i * C_partial) *
-              wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+              wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
             rw [← mul_assoc, ENNReal.ofReal_mul (hK_pos i).le]
   have h_sum_bound : ∑ i : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -544,7 +544,7 @@ private lemma wkpNorm_chartPushedRaw_gradInnerPiece_le_two
         (chartTargetEuclid (I := I) (M := M) α) ≤
       ∑ i : Fin (Module.finrank ℝ E),
         ENNReal.ofReal (K i * C_partial) *
-          wkpNormChart (I := I) (M := M) g 3 2 v.toFun :=
+          wkpNormChart (I := I) (M := M) 3 2 v.toFun :=
     Finset.sum_le_sum (fun i _ => h_each_bound i)
   refine le_trans (mul_le_mul_of_nonneg_left h_sum_bound (zero_le _)) ?_
   rw [← Finset.sum_mul]
@@ -569,7 +569,7 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le_two
         (chartPushedRaw (I := I) (M := M) α
           (lapPiece (I := I) (M := M) g α v.toFun))
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 3 2
+      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 3 2
         (fun x : M => v.toFun x) := by
   classical
   obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_supp⟩ :=
@@ -658,8 +658,8 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le_two
       (d := Module.finrank ℝ E)
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
       hCP_smooth hCP_cpt hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
-  have h_mono : wkpNormChart (I := I) (M := M) g 2 2 v.toFun ≤
-      wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+  have h_mono : wkpNormChart (I := I) (M := M) 2 2 v.toFun ≤
+      wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
     unfold wkpNormChart
     refine ENNReal.tsum_le_tsum (fun β => ?_)
     exact DifferentialGeometry.Analysis.Sobolev.Chart.EuclideanIterated.wkpNorm_mono_order
@@ -676,17 +676,17 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le_two
               (etaTimesV (I := I) (M := M) α v.toFun))
             (chartTargetEuclid (I := I) (M := M) α) := hK_bound hH_W22
     _ ≤ ENNReal.ofReal K *
-            (ENNReal.ofReal C_strict * wkpNormChart (I := I) (M := M) g 2 2 v.toFun) :=
+            (ENNReal.ofReal C_strict * wkpNormChart (I := I) (M := M) 2 2 v.toFun) :=
           mul_le_mul_of_nonneg_left (hC_strict_bound v) (zero_le _)
     _ ≤ ENNReal.ofReal K *
-            (ENNReal.ofReal C_strict * wkpNormChart (I := I) (M := M) g 3 2 v.toFun) :=
+            (ENNReal.ofReal C_strict * wkpNormChart (I := I) (M := M) 3 2 v.toFun) :=
           mul_le_mul_of_nonneg_left
             (mul_le_mul_of_nonneg_left h_mono (zero_le _)) (zero_le _)
     _ = ENNReal.ofReal (K * C_strict) *
-            wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+            wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
           rw [← mul_assoc, ENNReal.ofReal_mul hK_pos.le]
     _ = ENNReal.ofReal Cfinal *
-            wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+            wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
           rw [hCfinal_def]
 
 theorem wkpNorm_smoothFChartResidual_le_wkpNormChart_w22
@@ -698,7 +698,7 @@ theorem wkpNorm_smoothFChartResidual_le_wkpNormChart_w22
         (smoothFChartResidual
           (I := I) (M := M) g α v)
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+      ≤ ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
   classical
   obtain ⟨C_grad, hC_grad_pos, hC_grad_bound⟩ :=
     wkpNorm_chartPushedRaw_gradInnerPiece_le_two (I := I) (M := M) g α
@@ -846,14 +846,14 @@ theorem wkpNorm_smoothFChartResidual_le_wkpNormChart_w22
         (chartPushedRaw (I := I) (M := M) α
           (lapPiece (I := I) (M := M) g α v.toFun))
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal C_grad * wkpNormChart (I := I) (M := M) g 3 2 v.toFun +
-        ENNReal.ofReal C_lap * wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+      ≤ ENNReal.ofReal C_grad * wkpNormChart (I := I) (M := M) 3 2 v.toFun +
+        ENNReal.ofReal C_lap * wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
             exact add_le_add (hC_grad_bound v) (hC_lap_bound v)
     _ = (ENNReal.ofReal C_grad + ENNReal.ofReal C_lap) *
-        wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+        wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
             rw [add_mul]
     _ = ENNReal.ofReal (C_grad + C_lap) *
-        wkpNormChart (I := I) (M := M) g 3 2 v.toFun := by
+        wkpNormChart (I := I) (M := M) 3 2 v.toFun := by
             rw [ENNReal.ofReal_add hC_grad_pos.le hC_lap_pos.le]
 
 end SmoothFChartResidualBilinearBoundW22

@@ -63,6 +63,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (G : SmoothCcTensor g₀ 0 4) (σ : Equiv.Perm (Fin 4)) :
     operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -152,7 +153,8 @@ theorem bdLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T)
       ((q 2).trans (Equiv.swap (0 : Fin 4) 1))]
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M]
+  [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma linearizedDecompositionMetricPerturbationPath_zero (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -209,6 +211,7 @@ private lemma lrSymmS_eq_self (g₀ : SmoothRiemannianMetric I M)
   rw [ccTensor02Symm, hswap, htwo, smul_smul,
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma lrConnectionDifference_linearization (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -250,6 +253,7 @@ private lemma lrConnectionDifference_linearization (g₀ : SmoothRiemannianMetri
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x
           (linearizedKoszulCovec (I := I) g₀ T x u ζ) := hkey
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma lrConnectionDifference_inner (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -391,6 +395,7 @@ private lemma lrCovDerivConnectionDifference_self_zero (g₀ : SmoothRiemannianM
     zero_smul]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -718,6 +723,7 @@ def connectionDifferenceMetricLoweredTensor (g₀ gm : SmoothRiemannianMetric I 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrOmegaHat_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm) x m =
@@ -817,6 +823,7 @@ private lemma lrArmSlotTuple (g₀ gm : SmoothRiemannianMetric I M) (x : M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ gm) x m =
@@ -849,6 +856,7 @@ private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ gm) x m =
@@ -924,6 +932,7 @@ def connectionDifferenceQuadraticCurvatureTerm (g₀ gm : SmoothRiemannianMetric
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrQuadF_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀ gm) x m =
@@ -1003,6 +1012,7 @@ def riemannLoweredContractionB (g₀ : SmoothRiemannianMetric I M) : SmoothCcTen
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -1087,6 +1097,7 @@ private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -1177,6 +1188,7 @@ def riemannCurvatureCoefficientField (g₀ : SmoothRiemannianMetric I M) (T : Sm
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lrCurvF_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T) x m =
@@ -1757,6 +1769,8 @@ def deTurckLieCovariantDerivativeRemainderTensor
   (-(s / 2) : ℝ) • riemannCurvatureCoefficientField (I := I) (M := M) g₀ T
     - connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeRemainderTensor_eq
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀

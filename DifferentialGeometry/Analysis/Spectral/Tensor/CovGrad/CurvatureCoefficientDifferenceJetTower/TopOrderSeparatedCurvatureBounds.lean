@@ -54,6 +54,7 @@ set_option backward.isDefEq.respectTransparency false
 namespace CurvatureCoefficientDifferenceJetTower
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma cometricRaiseSlot0Field_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (W W' : SmoothCcTensor g₀ 0 (s + 2)) :
     cometricRaiseSlot0Field (I := I) (M := M) g₀ s (W - W') =

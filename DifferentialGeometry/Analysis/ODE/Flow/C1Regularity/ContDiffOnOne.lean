@@ -495,9 +495,9 @@ omit [CompleteSpace E] in
 lemma uniformly_close_fderiv_in_x
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     (hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
-    {T T' : ℝ} (_hT : 0 < T) (hT'_lt : T' < T) (_hT'_pos : 0 < T')
+    {T T' : ℝ} (hT'_lt : T' < T)
     (hsub : Icc (t₀ - T) (t₀ + T) ⊆ Icc tmin tmax)
-    {ρ ρ' : ℝ} (hρ_le : ρ ≤ (r : ℝ)) (hρ'_lt : ρ' < ρ) (_hρ'_pos : 0 < ρ')
+    {ρ ρ' : ℝ} (hρ_le : ρ ≤ (r : ℝ)) (hρ'_lt : ρ' < ρ)
     {x : E} (hx : dist x x₀ < ρ')
     {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ xq : E, dist xq x < δ →
@@ -631,8 +631,8 @@ theorem continuousOn_fderiv_flow_of_isLocalFlow
   have hε_spatial_pos : 0 < ε_spatial := by positivity
   set δ_lip_t : ℝ := c / (4 * (ETM + 1)) with hδ_lip_t_def
   have hδ_lip_t_pos : 0 < δ_lip_t := by positivity
-  rcases uniformly_close_fderiv_in_x hΦ hf_C1 hT_out_pos hT_mid_lt_out hT_mid_pos hsub
-    hρ_out_le_r hρ_mid_lt_out hρ_mid_pos
+  rcases uniformly_close_fderiv_in_x hΦ hf_C1 hT_mid_lt_out hsub
+    hρ_out_le_r hρ_mid_lt_out
     (show dist x x₀ < (ρ_mid : ℝ) from lt_trans hp_x hρ_lt_mid) hε_spatial_pos
     with ⟨δ_fd, hδ_fd_pos, hδ_fd⟩
   have hp_Kc_mid : (x, t) ∈ closedBall x₀ (ρ_mid : ℝ) ×ˢ Icc (t₀ - T_mid) (t₀ + T_mid) :=

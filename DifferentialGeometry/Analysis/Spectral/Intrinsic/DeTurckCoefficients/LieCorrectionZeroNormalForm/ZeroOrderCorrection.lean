@@ -1672,7 +1672,7 @@ theorem zero_order_correction_normal_form {n : ℕ} (ig cg f : Fin n → Fin n �
     (hgbe : ∀ a b l, gb a b l = dg a l b + dg b l a - dg l a b)
     (hdgbe : ∀ m a b l, dgb m a b l = ddg m a l b + ddg m b l a - ddg m l a b)
     (i j : Fin n) :
-    zeroOrderCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+    zeroOrderCorrection ig cg f dg dig ga1 gbg gb dga1 dgbg dgb i j =
       (-(∑ a, ∑ b, ∑ c, ∑ d, ∑ e, cg i a * dga1 j b c a * f d e * ig b d * ig c e))
       + (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, cg i a * dgbg j b c a * f d e * ig b d * ig c e)
       + ((-1 / 2 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ r, cg i a * dig j a b * f b c * gb d e r * ig c
@@ -1703,7 +1703,7 @@ theorem zero_order_correction_normal_form {n : ℕ} (ig cg f : Fin n → Fin n �
       + (∑ a, ∑ b, ∑ c, dig j a b * f i c * ga1 a b c)
       + ((-1 / 2 : ℝ) * (∑ a, ∑ b, ∑ c, ∑ d, dig j a b * f i c * gb a b d * ig c d))
       + (-(∑ a, ∑ b, ∑ c, dig j a b * f i c * gbg a b c)) := by
-  have h1 : zeroOrderCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j =
+  have h1 : zeroOrderCorrection ig cg f dg dig ga1 gbg gb dga1 dgbg dgb i j =
       -(∑ b0, ∑ b1, ∑ b2, ∑ b3, ∑ b4, ig b1 b4 * f b4 b3 * ig b3 b2 * ga1 b1 b2 b0 * dg b0 i j) -
         (-(∑ b0, ∑ b1, ∑ b2, ∑ b3, ∑ b4, ig b1 b4 * f b4 b3 * ig b3 b2 * gbg b1 b2 b0 * dg b0 i j))
         + (-(∑ b0, ∑ b1, ∑ b2, ∑ b5, ∑ b6, ∑ b7, ig b1 b2 *

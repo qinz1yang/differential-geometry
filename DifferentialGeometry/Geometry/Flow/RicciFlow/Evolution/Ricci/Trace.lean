@@ -238,6 +238,7 @@ theorem lcAt_regular
     SolutionOn.leviCivita (I := I) S
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.regularToFlow t)
 
+omit [SigmaCompactSpace M] [T2Space M] in
 private theorem rm04Realizes_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -259,6 +260,7 @@ private theorem rm04Realizes_regular
     (S.family.connection (t : Real)) (Rm13 (t : Real)) (Rm04 (t : Real))
     (hRm13 t) (hLower t)
 
+omit [SigmaCompactSpace M] in
 theorem rm04OutputSkew_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -283,6 +285,7 @@ theorem rm04OutputSkew_regular
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
+omit [SigmaCompactSpace M] in
 theorem rm04FirstBianchi_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -307,6 +310,7 @@ theorem rm04FirstBianchi_regular
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
+omit [SigmaCompactSpace M] in
 theorem rm04PairSymm_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -331,6 +335,7 @@ theorem rm04PairSymm_regular
     (lcAt_regular (I := I) S t) (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
+omit [SigmaCompactSpace M] in
 theorem rm04InputSkew_regular_first_two
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -354,6 +359,7 @@ theorem rm04InputSkew_regular_first_two
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
+omit [SigmaCompactSpace M] in
 theorem rm04InputSkew_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

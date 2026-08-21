@@ -436,7 +436,8 @@ private noncomputable def invGramCoeffPull
   fun y => chartInvGramMatrix (I := I) g α
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) k l
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma invGramCoeffPull_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l : Fin (Module.finrank ℝ E)) :
@@ -659,6 +660,7 @@ private lemma invGram_reorder_zeroth
   rw [← Finset.sum_product' (f := fun k l => c k l * d k l i j),
     Finset.univ_product_univ]
 
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_on_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

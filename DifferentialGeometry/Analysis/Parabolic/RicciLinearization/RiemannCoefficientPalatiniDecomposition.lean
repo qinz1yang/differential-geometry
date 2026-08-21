@@ -163,7 +163,7 @@ theorem exists_riemannPalatini_decomposition_identity_data
   obtain ⟨ΛB, hΛB_nn, hcapB⟩ :=
     exists_ricciArmOrder0BackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
       (I := I) (M := M)
-      g₀ a ha_super hR hδ₀
+      g₀ a (R := R) hδ₀
   obtain ⟨ΛS, hΛS_nn, hcapS⟩ :=
     exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
       (I := I) (M := M)
@@ -507,9 +507,8 @@ theorem exists_riemannPalatini_decomposition_identity_data
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) :=
       le_mul_of_one_le_right (sq_nonneg _) hW1
     linarith [t1, t2, t3, t4, t5, t6, hjs_nn, hQ, hD, hS, hF, hcW]
-
-
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_half : δ ≤ 1 / 2)
@@ -1326,6 +1325,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_order0_data
     linarith [h1, h2]
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covDerivConnectionDifference_metricPerturbationPath_zero_endpoint_eq_smul_covDerivSharp
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

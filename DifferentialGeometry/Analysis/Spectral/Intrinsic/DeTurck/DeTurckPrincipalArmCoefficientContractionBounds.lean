@@ -111,7 +111,7 @@ private lemma jet_fibreNormSq_sup_le (g₀ : SmoothRiemannianMetric I M) (r s : 
   choose Cemb hCemb_nn hCemb using hstep
   exact ⟨Cemb, hCemb_nn, fun Ψ l x => hCemb l Ψ x⟩
 
-lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
+lemma coeffContract_iteratedCovGrad_jet_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (b₀ s₀ dc dd : ℕ) (hdc : dc ≤ 2) (hdd : dd ≤ 3)
@@ -402,7 +402,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
   rw [mul_pow, Real.sq_sqrt (mul_nonneg hG_nn (add_nonneg (hS1_nn q) (hS2_nn q)))]
   exact hfinalsq
 
-lemma coeffContract_Hs_bound [Nonempty M]
+lemma coeffContract_Hs_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (b₀ dc dd : ℕ) (hdc : dc ≤ 2) (hdd : dd ≤ 3)

@@ -235,6 +235,8 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 lemma realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -321,6 +323,8 @@ private lemma partialDeriv_scalarOnE_tensorChartComponentRaw_differentiableAt
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -471,6 +475,8 @@ lemma euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 lemma partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

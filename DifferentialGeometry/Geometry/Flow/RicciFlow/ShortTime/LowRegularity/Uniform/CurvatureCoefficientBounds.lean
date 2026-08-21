@@ -46,7 +46,7 @@ theorem phiCurv_jet_uniform
           MetricCovDerivOrderBoundOn (I := I) Set.univ a g gBase Λ) →
         (∑ j ∈ Finset.range 2,
           ‖iteratedCovGrad (I := I) g 2 2 j
-            (metricPrincipalDefectCurvCoeff (I := I) g gBase g)‖ ^ 2) ≤ C ^ 2 := by
+            (metricPrincipalDefectCurvCoeff (I := I) g g)‖ ^ 2) ≤ C ^ 2 := by
   classical
   obtain ⟨Cg, hCg, hgrad⟩ :=
     gradSlot_grid_uniform (I := I) (M := M) hDim gBase hΛ
@@ -79,7 +79,7 @@ theorem phiCurv_jet_uniform
       ((riemannianVolumeMeasure (I := I) (M := M) g) Set.univ).toReal ≤ V := by
     simpa only [V] using hvol
   let Φ : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g -
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g -
       cometricDoubleTraceCoefficient (I := I) (M := M) g g
   let G : SmoothCcTensor g 2 4 := gradSwapCurvCoeff (I := I) g
   let Y : SmoothCcTensor g 2 2 :=
@@ -93,7 +93,7 @@ theorem phiCurv_jet_uniform
       (iteratedCovGrad (I := I) g 4 2 i Φ)
       (phiSelfC (E := E) i) ?_).trans ?_
     · intro x
-      simpa only [Φ] using phiSelf_grid (I := I) (M := M) g gBase i x
+      simpa only [Φ] using phiSelf_grid (I := I) (M := M) g i x
     · exact mul_le_mul_of_nonneg_left hvolV (phiSelfC_nonneg (E := E) i)
   have hΦ :
       (∑ i ∈ Finset.range 3,
@@ -125,13 +125,13 @@ theorem phiCurv_jet_uniform
         dsimp only [Ag]
         exact (Real.sq_sqrt (mul_nonneg hKg hV)).symm
   have hY := happ g hEq hjet1 hjet2 Φ G As Ag hAs hAg hΦ hG
-  have hφ : metricPrincipalDefectCurvCoeff (I := I) g gBase g = (1 / 2 : ℝ) • Y := by
+  have hφ : metricPrincipalDefectCurvCoeff (I := I) g g = (1 / 2 : ℝ) • Y := by
     rfl
   have hYnorm :
       ‖(⟨Y⟩ : SmoothCcTensorH1 g 2 2)‖ ≤ Capp * As * Ag := by
     simpa only [Y] using hY
   have hφnorm :
-      ‖(⟨metricPrincipalDefectCurvCoeff (I := I) g gBase g⟩ :
+      ‖(⟨metricPrincipalDefectCurvCoeff (I := I) g g⟩ :
           SmoothCcTensorH1 g 2 2)‖ ≤ C := by
     rw [hφ]
     change ‖(1 / 2 : ℝ) • (⟨Y⟩ : SmoothCcTensorH1 g 2 2)‖ ≤ C
@@ -141,8 +141,8 @@ theorem phiCurv_jet_uniform
   have hjet_eq :
       (∑ j ∈ Finset.range 2,
         ‖iteratedCovGrad (I := I) g 2 2 j
-          (metricPrincipalDefectCurvCoeff (I := I) g gBase g)‖ ^ 2) =
-        ‖(⟨metricPrincipalDefectCurvCoeff (I := I) g gBase g⟩ :
+          (metricPrincipalDefectCurvCoeff (I := I) g g)‖ ^ 2) =
+        ‖(⟨metricPrincipalDefectCurvCoeff (I := I) g g⟩ :
           SmoothCcTensorH1 g 2 2)‖ ^ 2 := by
     rw [smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M)]
     simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
@@ -161,7 +161,7 @@ theorem fixed_curv_h1_uniform
         ∀ U : SmoothCcTensor g 0 2,
           ‖ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
               (operatorFieldApply (I := I) (M := M) g 2 2
-                (metricPrincipalDefectCurvCoeff (I := I) g gBase g) U)‖ ≤
+                (metricPrincipalDefectCurvCoeff (I := I) g g) U)‖ ≤
             C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ := by
   obtain ⟨Capp, hCapp, happ⟩ :=
     operatorFieldApplication_h1_uniform (I := I) (M := M) hDim gBase hΛ
@@ -169,7 +169,7 @@ theorem fixed_curv_h1_uniform
     phiCurv_jet_uniform (I := I) (M := M) hDim gBase hΛ
   refine ⟨Capp * Aφ, mul_nonneg hCapp hAφ, ?_⟩
   intro g hEq hjet U
-  exact happ g hEq hjet (metricPrincipalDefectCurvCoeff (I := I) g gBase g) U
+  exact happ g hEq hjet (metricPrincipalDefectCurvCoeff (I := I) g g) U
     Aφ hAφ (hφ g hEq hjet)
 
 theorem curv_pair_abs_uniform
@@ -182,7 +182,7 @@ theorem curv_pair_abs_uniform
           (∀ a : ℕ, a ≤ 3 →
             MetricCovDerivOrderBoundOn (I := I) Set.univ a g gBase Λ) →
           ∀ T : SmoothCcTensor g 0 2,
-            let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+            let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
             let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
             2 * |tensorL2Inner (I := I) (M := M) g 0 2
                 (oneMinusConnLapSmooth (I := I) g 0 2 LT).toFun
@@ -198,7 +198,7 @@ theorem curv_pair_abs_uniform
     exact mul_nonneg (inv_nonneg.mpr hη.le) (sq_nonneg C)
   refine ⟨G, hG, ?_⟩
   intro g hEq hjet T
-  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g
   let LT : SmoothCcTensor g 0 2 := oneMinusConnLapSmooth (I := I) g 0 2 T
   let Y : SmoothCcTensor g 0 2 := operatorFieldApply (I := I) (M := M) g 2 2 K0 LT
   let y : ℝ := ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖

@@ -418,6 +418,7 @@ lemma interiorProduct_toModel_apply (s : ℕ) (x : M) (vv : TangentSpace I x)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lowerContravariantSlot_cometricRaiseSlot0Field (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (W : SmoothCcTensor g₀ 0 (s + 2)) :
     lowerContravariantSlot (I := I) (M := M) g₀ s

@@ -1716,6 +1716,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
   rfl
 
 
+omit [SigmaCompactSpace M] in
 theorem ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

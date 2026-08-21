@@ -38,7 +38,7 @@ theorem fromZeroChartField_jointContDiffOn_Ioo
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    {ρ : ℝ} (_hρ : 0 < ρ)
+    {ρ : ℝ}
     (hρ_sub : Metric.ball (extChartAt I α α) ρ ⊆ (extChartAt I α).target) :
     ContDiffOn ℝ ∞ (Function.uncurry (fromZeroChartField (I := I) X α))
       (Set.Ioo (0 : ℝ) T ×ˢ Metric.ball (extChartAt I α α) ρ) := by

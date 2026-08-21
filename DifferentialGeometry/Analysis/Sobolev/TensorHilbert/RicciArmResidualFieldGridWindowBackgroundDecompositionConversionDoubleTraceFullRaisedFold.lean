@@ -48,6 +48,7 @@ variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma movingMetricDoubleTraceField_self_eq (s : ℕ) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₀ s = cometricDoubleTraceField
       (I := I) g₀ s := by
@@ -82,6 +83,7 @@ private lemma slotInsertEndoCc_add_local (s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_diff_split_local :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -105,6 +107,7 @@ private lemma metricComparisonEndomorphismField_diff_split_local :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma operatorFieldComposition_slotInsert_id_eq (s c : ℕ) (Φ : SmoothCcTensor g₀ (s + 1) c) :
     ccOperatorFieldComp (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ s
@@ -132,6 +135,7 @@ private lemma operatorFieldComposition_slotInsert_id_eq (s c : ℕ) (Φ : Smooth
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -240,7 +244,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
               (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
-        exact toModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
+        exact toModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
@@ -258,8 +262,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
             (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
               (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun c _ => ?_
-        have hsum := toModel_cons_cons_sum_smul (E := E) x
-          (Tensor0SSpace.toModel Z)
+        have hsum := toModel_cons_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
           (Module.finrank ℝ E)
           (fun a => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
@@ -281,6 +284,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma movingMetricDoubleTraceField_cross_split (s : ℕ) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -303,6 +307,7 @@ def secondMetricPairTraceOperator : SmoothCcTensor g₀ 6 2 :=
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -385,6 +390,7 @@ def riemannCometricDoubleTraceFold : SmoothCcTensor g₀ 2 4 :=
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
     (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel

@@ -46,7 +46,7 @@ theorem exists_galerkin_approximation_with_uniform_all_order_energy_bounds_backg
   have hrate : 0 ≤ K.threshold / (1 - K.threshold) ^ 2 :=
     div_nonneg hsol.hδ0 (sq_nonneg _)
   have hstate : 0 ≤ lowRegularityStateRadius K.top K.slope K.outer K.realize :=
-    (lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP).le
+    (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos).le
   have hκrate : κ * (K.threshold / (1 - K.threshold) ^ 2) ≤
       A * (K.threshold / (1 - K.threshold) ^ 2) :=
     mul_le_mul_of_nonneg_right hκA hrate

@@ -42,7 +42,7 @@ def heatEarlyNear (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
     heatKernel (t - z.1) (x - z.2) • f z ∂(stVolume : Measure (ℝ × V))
 
 def nearHeatC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ≥0∞ :=
+    : ℝ≥0∞ :=
   ENNReal.ofReal
     ((Real.sqrt 2) ^ Module.finrank ℝ V * (baseHeatMass V)⁻¹)
 
@@ -97,7 +97,7 @@ theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
     have hk0 : 0 ≤ heatKernel (t - z.1) (x - z.2) :=
       heatKernel_nonneg hdiff _
     have hk : heatKernel (t - z.1) (x - z.2) ≤ K := by
-      exact heatKernel_half ht hz.1.1.le hz.1.2 _
+      exact heatKernel_half ht hz.1.2 _
     calc
       ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ =
           ENNReal.ofReal

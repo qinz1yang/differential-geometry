@@ -57,7 +57,7 @@ theorem top_path_h1_uniform
           ∀ U : SmoothCcTensor g 0 2,
             ‖ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
               (operatorFieldApply (I := I) (M := M) g 4 2
-                  (rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+                  (rhsTopPathIntegral (I := I) (M := M) g T T'
                     hδ_lt hδ hδ'_lt hδ')
                   (iteratedCovGrad (I := I) g 0 2 2 U) -
                 DifferentialGeometry.Analysis.Elliptic.rawTensorConnLapSmooth
@@ -78,12 +78,12 @@ theorem top_path_h1_uniform
     hdev g hEq hjet T T' hδ_lt hδ hδ'_lt hδ' hR hRρ hT hT'
   have hA : 0 ≤ Cdev * R := mul_nonneg hCdev hR
   have htop := happ g hEq hjet
-    (rhsTopPathIntegral (I := I) (M := M) g gBase T T'
+    (rhsTopPathIntegral (I := I) (M := M) g T T'
         hδ_lt hδ hδ'_lt hδ' -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g)
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)
     U (Cdev * R) hA hdevJet
   have hlow' := hlow g hEq hjet U
-  rw [top_path_split (I := I) (M := M) g gBase T T'
+  rw [top_path_split (I := I) (M := M) g T T'
     hδ_lt hδ hδ'_lt hδ' U, ccTensorToHs_add]
   simpa only [mul_assoc] using
     (norm_add_le _ _).trans (add_le_add htop hlow')

@@ -310,6 +310,7 @@ theorem ricciCovariantDerivativeConnectionDifferenceKernel_fiber_apply (g gm : S
   simp only [DA]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
     (Z : SmoothCcTensor g 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
@@ -417,6 +418,7 @@ def ricciCovariantDerivativeConnectionDifferenceFlux (g gm : SmoothRiemannianMet
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciCovariantDerivativeConnectionDifferenceFlux_unitModel (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -672,6 +674,7 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
     rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul])
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem connRaise_eq (g gm : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) gm g =
       cometricRaiseSlot0Field (I := I) (M := M) g 1
@@ -821,6 +824,7 @@ theorem ricciConnectionDifferenceCovariantDerivativeTensor_pairing (g gm : Smoot
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma ricL_self (g gm : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     g.inner x (metricComparisonEndomorphismField (I := I) (M := M) g gm x v) w =
@@ -1209,6 +1213,7 @@ theorem ricSwap_l2 (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem ricciCovariantDerivativeConnectionDifferenceFluxReindex_unitModel (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -1229,6 +1234,7 @@ theorem ricciCovariantDerivativeConnectionDifferenceFluxReindex_unitModel (g gm 
   simp
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem ricFour_eval (g gm : SmoothRiemannianMetric I M)
     (Z : SmoothCcTensor g 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2

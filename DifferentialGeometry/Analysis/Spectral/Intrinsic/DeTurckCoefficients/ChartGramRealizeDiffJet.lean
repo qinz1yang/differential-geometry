@@ -30,6 +30,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramOnE_realize_delta_irrel
     (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -46,6 +48,8 @@ theorem chartGramOnE_realize_delta_irrel
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramOnE_realize_sub_eqOn_symm_rawComponent
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -118,6 +122,8 @@ lemma bareChartJetContentOnE_nonneg (g : SmoothRiemannianMetric I M) (S : Smooth
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

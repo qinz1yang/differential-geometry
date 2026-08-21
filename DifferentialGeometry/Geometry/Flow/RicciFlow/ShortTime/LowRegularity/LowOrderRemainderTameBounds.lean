@@ -113,7 +113,7 @@ theorem covariantJetGrid_h1_tame_bound
       simpa only [lowJetGrid, Km, if_neg hk3] using
         hgrid0 P R hR hP2 k hk2
   have hle := grid_h1_le (I := I) (M := M) g P Km C
-    hKm hgr hC Φ hΦ
+    hgr hC Φ hΦ
   have hsplit : ∀ i : ℕ,
       (∑ k ∈ Finset.range (i + 3), Km k) = L R i + T R i * A ^ 2 := by
     intro i
@@ -628,11 +628,11 @@ theorem lieCorrectionZeroVectorBundle_h1_tame_bound
   have hK2 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K‖ ^ 2) ≤ (4 * (R + A)) ^ 2 := by
     simpa only [K] using kappaSelf_h2
-      (I := I) (M := M) g₀ g₁ P htie (R + A) hRA hP3
+      (I := I) (M := M) g₀ g₁ P htie (R + A) hP3
   have hK1 : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K‖ ^ 2) ≤ (4 * R) ^ 2 := by
     simpa only [K] using kappaSelf_h1
-      (I := I) (M := M) g₀ g₁ P htie R hR hP2
+      (I := I) (M := M) g₀ g₁ P htie R hP2
   have hVf : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 1 i Vf‖ ^ 2) ≤ (Vb R (R + A)) ^ 2 := by
     simpa only [Vf, Vb] using hvprod T1 K (Bt1 R) (4 * (R + A))
@@ -795,7 +795,7 @@ theorem lieCorrectionZeroMixedConnection_h1_tame_bound
   have hK0 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i K0‖ ^ 2) ≤ (4 * (R + A)) ^ 2 := by
     simpa only [K0] using kappaSelf_h2
-      (I := I) (M := M) g₀ g₁ P htie (R + A) hRA hP3
+      (I := I) (M := M) g₀ g₁ P htie (R + A) hP3
   have hKB : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i KB‖ ^ 2) ≤ (BK R) ^ 2 := by
     simpa only [KB] using hkbg g₁ P htie R hR hP2

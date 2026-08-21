@@ -33,7 +33,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 def rhsDecompositionTop
-    (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
+    (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
@@ -41,7 +41,7 @@ def rhsDecompositionTop
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ)
     (s : ℝ) : SmoothCcTensor g 4 2 :=
   rhsDecomposition2 (I := I) (M := M) g T hδ hδZ s +
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ s)
 
 theorem lieDecomposition2_joint
@@ -82,14 +82,14 @@ theorem lieDecomposition2_joint
     (hmain T le_rfl hδ hδZ hball).1
 
 theorem rhsDecompositionTop_joint
-    (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
+    (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
-      (rhsDecompositionTop (I := I) (M := M) g g_bg T hδ hδZ)
+      (rhsDecompositionTop (I := I) (M := M) g T hδ hδZ)
       (δ := δ) (δ' := δ) := by
   have hRic0 :=
     riemannPalatiniDecompositionC2Family_threeArmHjoint
@@ -97,7 +97,7 @@ theorem rhsDecompositionTop_joint
   have hRic := threeArmJoint_smul (I := I) (M := M) g (2 : ℝ) _ hRic0
   have hLie := lieDecomposition2_joint (I := I) (M := M) g T hδ_lt hδ hδZ
   have hDecomposition := threeArmJoint_add (I := I) (M := M) g _ _ hRic hLie
-  have hTop := rhs_top_path_joint (I := I) (M := M) g g_bg T 0 hδ hδZ
+  have hTop := rhs_top_path_joint (I := I) (M := M) g T 0 hδ hδZ
   have hAll := threeArmJoint_add (I := I) (M := M) g _ _ hDecomposition hTop
   simpa only [rhsDecompositionTop, rhsDecomposition2, ricciDecomposition2, lieDecomposition2] using hAll
 
@@ -133,7 +133,7 @@ theorem rhsSlope_decomposition
             (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g g_bg T 0 hδ hδZ s)
             (iteratedCovGrad (I := I) g 0 2 1 T) +
           operatorFieldApply (I := I) (M := M) g 4 2
-            (rhsDecompositionTop (I := I) (M := M) g g_bg T hδ hδZ s)
+            (rhsDecompositionTop (I := I) (M := M) g T hδ hδZ s)
             (iteratedCovGrad (I := I) g 0 2 2 T)) x ![v, w] := by
   rw [ricciDeTurckRemainderSlope_eq_arms (I := I) (M := M) g g_bg T 0 hT
     (zero_symm (I := I) (M := M) g) hδ_lt hδ hδ_lt hδZ x v w hs]

@@ -78,17 +78,18 @@ def deTurckRHSAtMetricPerturbation
     (deTurckRHSSection (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).hasCompactSupport
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_top_path_joint
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
-      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') := by
   have hLie := deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth
-    (I := I) g₀ T T' hδ hδ' g_bg
+    (I := I) g₀ T T' hδ hδ'
   have hLich := linearizedRicci_arm2FieldLichnerowicz_jointSmooth
     (I := I) g₀ T T' hδ hδ'
   have hadd := joint_rs_add (I := I) (r := 4) (s := 2)
@@ -102,7 +103,7 @@ theorem rhs_top_path_joint
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
       (deTurckLieArm2PrincipalCoeff (I := I) g₀
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     (fun p : M × ℝ =>
       (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1 +
         (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
@@ -111,25 +112,25 @@ theorem rhs_top_path_joint
   beta_reduce
   refine congrArg (fun t => TotalSpace.mk' (TensorRSModel 4 2 ℝ E)
     (E := fun z : M => TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [phi_realized_eq (I := I) (M := M) g₀ g_bg T T' hδ hδ' p.2,
+  rw [phi_realized_eq (I := I) (M := M) g₀ T T' hδ hδ' p.2,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
 def rhsTopPathIntegral
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     SmoothCcTensor g₀ 4 2 :=
   pathIntegralCoeffField (I := I) (M := M) g₀ 4 2
-    (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+    (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
     (metricPerturbationPathDomain (δ := δ) (δ' := δ')) metricPerturbationPathDomain_isOpen
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
-    (rhs_top_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ')
+    (rhs_top_path_joint (I := I) (M := M) g₀ T T' hδ hδ')
 
 def ricciDeTurckRemainderZeroOrderPathIntegral
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -161,6 +162,7 @@ def ricciDeTurckRemainderFirstOrderPathIntegral
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
     (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ')
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_chart_sum_one
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -205,6 +207,7 @@ theorem rhs_chart_sum_one
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀
       (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x ![v, w]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_chart_sum_zero
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -270,7 +273,7 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
             hδ_lt hδ hδ'_lt hδ')
           (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) +
         operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+          (rhsTopPathIntegral (I := I) (M := M) g₀ T T'
             hδ_lt hδ hδ'_lt hδ')
           (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T')) := by
   classical
@@ -284,7 +287,7 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
   set Ψ₁ : ℝ → SmoothCcTensor g₀ 3 2 := fun s =>
     ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s with hΨ₁def
   set Ψ₂ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hΨ₂def
   have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Ψ₀
       (δ := δ) (δ' := δ') := by
@@ -297,7 +300,7 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
   have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Ψ₂
       (δ := δ) (δ' := δ') := by
     rw [hΨ₂def]
-    exact rhs_top_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ'
+    exact rhs_top_path_joint (I := I) (M := M) g₀ T T' hδ hδ'
   have hc0 : ∀ x : M, ContinuousOn (fun t : ℝ =>
       Tensor0SBundle.TensorRSSpace.toModel ((Ψ₀ t).toSection x))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun x =>
@@ -321,7 +324,7 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
       hδ_lt hδ hδ'_lt hδ' =
       pathIntegralCoeffField (I := I) (M := M) g₀ 3 2 Ψ₁
         (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 := rfl
-  have hPi2 : rhsTopPathIntegral (I := I) (M := M) g₀ g_bg T T'
+  have hPi2 : rhsTopPathIntegral (I := I) (M := M) g₀ T T'
       hδ_lt hδ hδ'_lt hδ' =
       pathIntegralCoeffField (I := I) (M := M) g₀ 4 2 Ψ₂
         (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 := rfl

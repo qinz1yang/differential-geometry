@@ -97,6 +97,7 @@ set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Tensor0SBundle in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma operatorFieldComposition_cometricDoubleTrace_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (K : SmoothCcTensor g r (s + 2)) (x : M) (D : Tensor0SSpace r I x)
     (m : Fin s → TangentSpace I x) :

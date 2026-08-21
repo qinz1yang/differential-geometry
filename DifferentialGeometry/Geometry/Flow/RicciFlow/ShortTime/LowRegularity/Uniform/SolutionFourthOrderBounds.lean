@@ -185,17 +185,17 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_fo
         (galerkinSolutionMode (I := I) (M := M) g fseq N) 3 t ∂(timeMeasure T) ≤
       ((1 + T) * (R / 4)) ^ 2 := by
     intro N
-    exact galerkin_energy_three_integral_bound (I := I) (M := M) g hT hT1 N fseq _
+    exact galerkin_energy_three_integral_bound (I := I) (M := M) g hT N fseq _
       ((hpack N).2.2.1) ((hpack N).2.2.2.2.2)
   obtain ⟨Φ3, ΦD4, hΦ3, hΦD4⟩ :=
-    exists_uniform_galerkin_energy_three_dissipation_four_bound_background_of_pairing_bounds (I := I) (M := M) g gBase hT hT1
+    exists_uniform_galerkin_energy_three_dissipation_four_bound_background_of_pairing_bounds (I := I) (M := M) g gBase hT
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
       hK.hreal hK.core_cont hK.htame hG3
       (by simpa only [R, hreal] using hpair3'') fseq
       (fun N => (hpack N).2.1) (fun N => (hpack N).2.2.1) hL2H3
   obtain ⟨Φ4, Φ5, hΦ4, hΦ5⟩ :=
-    exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background_of_pairing_bound (I := I) (M := M) g gBase hT hT1
+    exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background_of_pairing_bound (I := I) (M := M) g gBase hT
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
       hK.hreal hK.core_cont hK.htame hG4
@@ -220,7 +220,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_fo
     · exact galerkinProjectedForce_mode_continuous (I := I) (M := M) g gBase K.threshold_lt
         K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
         hK.hreal hK.htame N (U N) (fun j _ => hUcont N j (by assumption)) i
-    · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g hR hT hT1 N fseq
+    · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g hR hT N fseq
         ((hpack N).2.1) ((hpack N).2.2.1) i
   refine ⟨u, gforce, fseq, Φ3, Φ4, Φ5, hK, hsolveAt, ?_, ?_, hΦ3, hΦ4, hΦ5⟩
   · intro i t ht

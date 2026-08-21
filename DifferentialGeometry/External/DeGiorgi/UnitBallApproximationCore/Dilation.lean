@@ -205,6 +205,7 @@ noncomputable def MemW1pWitness.unitBallDilate_largeBall
     MemW1pWitness (ENNReal.ofReal p) (DeGiorgi.unitBallDilate (d := d) lam u)
       (Metric.ball (0 : E) lam) where
   memLp := by
+    let _ := _hp
     let S : E → E := fun x => lam⁻¹ • x
     have hS_emb : MeasurableEmbedding S :=
       (Homeomorph.smulOfNeZero lam⁻¹

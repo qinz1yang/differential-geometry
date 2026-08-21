@@ -50,7 +50,7 @@ noncomputable def convOut_of_src
         ∀ t : Real, t ∈ Set.Icc β ψ →
           MetricUniformEquivalentOn (I := I)
             (Set.univ : Set (SourceDomain (I := I) Φ k))
-            (refRes (I := I) Φ R hsrc k)
+            (refRes (I := I) Φ R k)
             (srcMetric (I := I) Φ hsrc htgt k t) Bmax)
     (src : SrcCovLipData (I := I) Φ R hsrc htgt β ψ) :
     ConvOut (I := I) Φ R bf hsrc htgt β ψ := by
@@ -99,7 +99,7 @@ noncomputable def convOut_of_src
               sourceDomSigmaOf (I := I) Φ k (hsrc k)
             metricCovDerivNorm (I := I) q
               (srcMetric (I := I) Φ hsrc htgt k t)
-              (refRes (I := I) Φ R hsrc k) y ≤ C := by
+              (refRes (I := I) Φ R k) y ≤ C := by
       intro q
       obtain ⟨C, hC, hcov⟩ := src.cov q
       exact ⟨C, hC, fun k t ht y _hy => hcov k t ht y⟩
@@ -128,7 +128,7 @@ noncomputable def convOut_of_src
               metricDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k s)
                 (srcMetric (I := I) Φ hsrc htgt k t)
-                (refRes (I := I) Φ R hsrc k) y ≤ Lt * |s - t| := by
+                (refRes (I := I) Φ R k) y ≤ Lt * |s - t| := by
       intro p
       obtain ⟨Lt, hLt, hlip⟩ := src.lip p
       exact ⟨Lt, hLt, fun k s t hs ht q hq y _hy =>
@@ -157,7 +157,7 @@ noncomputable def convOut_of_src
                 metricDerivNorm (I := I) q
                   (srcMetric (I := I) Φ hsrc htgt k s)
                   (srcMetric (I := I) Φ hsrc htgt k t)
-                  (refRes (I := I) Φ R hsrc k) y ≤ Ls * |s - t| := by
+                  (refRes (I := I) Φ R k) y ≤ Ls * |s - t| := by
     intro k C _hC p
     obtain ⟨Ls, hLs, hlip⟩ := src.lip p
     exact ⟨Ls, hLs, fun s t hs ht q hq y _hy =>

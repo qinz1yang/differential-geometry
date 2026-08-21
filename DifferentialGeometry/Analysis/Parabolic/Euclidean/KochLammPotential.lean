@@ -39,6 +39,7 @@ def heatSplitGrad (t : ℝ) (w : V) (f₀ f₁ : ℝ × V → F)
   heatGrad0 t f₀ x + heatGrad1 t w f₁ x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 theorem heatTerm0_fderiv {t s : ℝ} (f : ℝ × V → F) (x y : V) :
     HasFDerivAt (fun z : V ↦ heatKernel (t - s) (z - y) • f (s, y))
       ((heatD1Map (t - s) (x - y)).smulRight (f (s, y))) x := by
@@ -47,6 +48,7 @@ theorem heatTerm0_fderiv {t s : ℝ} (f : ℝ × V → F) (x y : V) :
       ((hasFDerivAt_id x).sub_const y)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 theorem heatTerm1_fderiv {t s : ℝ} (w : V) (f : ℝ × V → F) (x y : V) :
     HasFDerivAt (fun z : V ↦ heatD1 (t - s) w (z - y) • f (s, y))
       ((heatD2Map (t - s) w (x - y)).smulRight (f (s, y))) x := by

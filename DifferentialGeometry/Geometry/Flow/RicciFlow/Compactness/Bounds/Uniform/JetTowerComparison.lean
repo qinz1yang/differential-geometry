@@ -271,6 +271,7 @@ private theorem sqrtNormSq0SZero (g : SmoothRiemannianMetric I M) (x : M) (s : �
     rw [component0S_apply]; simp
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] in
 private theorem towerCrossOne_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Λ' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)

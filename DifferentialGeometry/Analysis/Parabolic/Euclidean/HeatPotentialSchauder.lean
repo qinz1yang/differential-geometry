@@ -17,6 +17,7 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2_space_sub_eq_integral_heatD3 {t : Real} (h v w z : V) :
     heatD2 t v w (z - h) - heatD2 t v w z =
       ∫ s : Real in 0..1, -heatD3 t h v w (z + s • (-h)) := by

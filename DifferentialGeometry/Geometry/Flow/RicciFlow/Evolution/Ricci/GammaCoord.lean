@@ -328,7 +328,6 @@ theorem christoffelRicciCoeffAt_hasDerivWithinAt_of_christoffelVariation
 
 omit [SigmaCompactSpace M] in
 theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (rhs :
@@ -674,7 +673,6 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
 
 omit [SigmaCompactSpace M] in
 theorem ricciVarCore
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (gInv :
@@ -813,7 +811,6 @@ theorem ricciVarCore
 
 omit [SigmaCompactSpace M] in
 theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

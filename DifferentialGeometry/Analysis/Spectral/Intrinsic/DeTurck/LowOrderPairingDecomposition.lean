@@ -71,7 +71,7 @@ def backgroundZeroOrderCoefficient (g g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   (deTurckLieCoeffField (I := I) (M := M) g g g_bg +
       lieCorrectionZeroField (I := I) (M := M) g g g_bg) +
-    metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+    metricPrincipalDefectCurvCoeff (I := I) g g
 
 def backgroundFirstOrderCoefficient (g g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 2 :=
@@ -83,7 +83,7 @@ def metricDependentZeroOrderCoefficient (g g1 g_bg : SmoothRiemannianMetric I M)
       linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g g1 +
     ((deTurckLieCoeffField (I := I) (M := M) g g1 g_bg +
         lieCorrectionZeroField (I := I) (M := M) g g1 g_bg) +
-      metricPrincipalDefectCurvCoeff (I := I) g g_bg g1) -
+      metricPrincipalDefectCurvCoeff (I := I) g g1) -
     backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg
 
 def metricDependentFirstOrderCoefficient (g g1 g_bg : SmoothRiemannianMetric I M) :
@@ -112,7 +112,7 @@ theorem lowOrderZeroCoefficient_eq_background_add_metricDependent
           linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g g1 +
         (deTurckLieCoeffField (I := I) (M := M) g g1 g_bg +
           lieCorrectionZeroField (I := I) (M := M) g g1 g_bg)
-    A0 + metricPrincipalDefectCurvCoeff (I := I) g g_bg g1 =
+    A0 + metricPrincipalDefectCurvCoeff (I := I) g g1 =
       backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg +
         metricDependentZeroOrderCoefficient (I := I) (M := M) g g1 g_bg := by
   dsimp only
@@ -120,15 +120,15 @@ theorem lowOrderZeroCoefficient_eq_background_add_metricDependent
   abel
 
 theorem principalCoefficientAction_decomposition
-    (g g_bg g1 : SmoothRiemannianMetric I M)
+    (g g1 : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) :
     operatorFieldApply (I := I) (M := M) g 4 2
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g1)
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g1)
         (iteratedCovGrad (I := I) g 0 2 2 W) =
       (rawTensorConnLapSmooth (I := I) g 0 2 W +
           deTurckPrincipalCometricArm (I := I) (M := M) g g1 W) +
         operatorFieldApply (I := I) (M := M) g 2 2
-          (metricPrincipalDefectCurvCoeff (I := I) g g_bg g1) W := by
+          (metricPrincipalDefectCurvCoeff (I := I) g g1) W := by
   have hlap : rawTensorConnLapSmooth (I := I) g 0 2 W =
       operatorFieldApply (I := I) (M := M) g 4 2
         (cometricDoubleTraceCoefficient (I := I) (M := M) g g)
@@ -139,12 +139,12 @@ theorem principalCoefficientAction_decomposition
     intro v
     exact rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
       (I := I) (M := M) g W x v
-  rw [show deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g1 =
+  rw [show deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g1 =
       cometricDoubleTraceCoefficient (I := I) (M := M) g g1 +
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g1 -
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g1 -
           cometricDoubleTraceCoefficient (I := I) (M := M) g g1) by abel]
   rw [operatorFieldApplication_add_left,
-    metricPrincipalDefect_curv_fold (I := I) (M := M) g g_bg g1 W,
+    metricPrincipalDefect_curv_fold (I := I) (M := M) g g1 W,
     iteratedCovGrad_zero, deTurckPrincipalCometricArm,
     deTurckPrincipalCometricCoeff, operatorFieldApplication_sub_left, hlap]
   abel
@@ -194,7 +194,7 @@ theorem ricciDeTurckRhsSlope_decomposition
   let R1 : SmoothCcTensor g 3 2 :=
     DeTurckCoefficients.ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
       g g_bg W 0 hδ (zero_metricPerturbation_bound (I := I) (M := M) g) s
-  have hlow0 : R0 + metricPrincipalDefectCurvCoeff (I := I) g g_bg gs =
+  have hlow0 : R0 + metricPrincipalDefectCurvCoeff (I := I) g gs =
       backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg +
         metricDependentZeroOrderCoefficient (I := I) (M := M) g gs g_bg := by
     simp only [R0, gs, metricPerturbationPathFromZero, DeTurckCoefficients.ricciDeTurckRemainderZeroOrderCoefficient,
@@ -206,13 +206,13 @@ theorem ricciDeTurckRhsSlope_decomposition
     simp only [R1, gs, metricPerturbationPathFromZero, DeTurckCoefficients.ricciDeTurckRemainderFirstOrderCoefficient,
       linearizedRicciConnectionDifferenceOrder1Coeff, backgroundFirstOrderCoefficient, metricDependentFirstOrderCoefficient]
     abel
-  have htop := principalCoefficientAction_decomposition (I := I) (M := M) g g_bg gs W
+  have htop := principalCoefficientAction_decomposition (I := I) (M := M) g gs W
   have hsmooth :
       operatorFieldApply (I := I) (M := M) g 2 2 R0 W +
           operatorFieldApply (I := I) (M := M) g 3 2 R1
             (iteratedCovGrad (I := I) g 0 2 1 W) +
           operatorFieldApply (I := I) (M := M) g 4 2
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs)
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs)
             (iteratedCovGrad (I := I) g 0 2 2 W) =
         (rawTensorConnLapSmooth (I := I) g 0 2 W +
             deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
@@ -226,11 +226,11 @@ theorem ricciDeTurckRhsSlope_decomposition
             ((rawTensorConnLapSmooth (I := I) g 0 2 W +
                 deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
               operatorFieldApply (I := I) (M := M) g 2 2
-                (metricPrincipalDefectCurvCoeff (I := I) g g_bg gs) W) =
+                (metricPrincipalDefectCurvCoeff (I := I) g gs) W) =
           (rawTensorConnLapSmooth (I := I) g 0 2 W +
               deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
             firstOrderCoefficientAction (I := I) (M := M) g
-              (R0 + metricPrincipalDefectCurvCoeff (I := I) g g_bg gs) R1 W := by
+              (R0 + metricPrincipalDefectCurvCoeff (I := I) g gs) R1 W := by
                 simp only [firstOrderCoefficientAction, operatorFieldApplication_add_left]
                 abel
       _ = (rawTensorConnLapSmooth (I := I) g 0 2 W +
@@ -258,7 +258,7 @@ theorem ricciDeTurckRhsSlope_decomposition
         operatorFieldApply (I := I) (M := M) g 3 2 R1
           (iteratedCovGrad (I := I) g 0 2 1 W) +
         operatorFieldApply (I := I) (M := M) g 4 2
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs)
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs)
           (iteratedCovGrad (I := I) g 0 2 2 W)) x ![v, w] = _
   rw [hsmooth]
 

@@ -12,8 +12,8 @@ open DifferentialGeometry.Analysis.ODE.Flow
 namespace DifferentialGeometry.Analysis.ODE
 
 theorem time_block_eq_comp_inr
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    [FiniteDimensional ℝ E] {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0}
     {tmin tmax : ℝ} {Φ : E × ℝ → E}
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ) {x : E} {t : ℝ}
     (hx : x ∈ Metric.closedBall x₀ (r : ℝ)) (ht : t ∈ Set.Ioo tmin tmax)
@@ -26,8 +26,7 @@ theorem time_block_eq_comp_inr
   exact flow_joint_fderiv_inr_eq hΦ hx ht hΦdiff
 
 theorem fderiv_flow_eq_spatialBlock_coprod_timePiece
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    [FiniteDimensional ℝ E] {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0}
     {tmin tmax : ℝ} {Φ : E × ℝ → E}
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ) {x : E} {t : ℝ}
     (hx : x ∈ Metric.closedBall x₀ (r : ℝ)) (ht : t ∈ Set.Ioo tmin tmax)
@@ -39,8 +38,8 @@ theorem fderiv_flow_eq_spatialBlock_coprod_timePiece
   exact (ContinuousLinearMap.coprod_comp_inl_inr (fderiv ℝ Φ (x, t))).symm
 
 theorem fderiv_spatialSlice_initial_eq_id
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    [FiniteDimensional ℝ E] {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0}
     {tmin tmax : ℝ} {Φ : E × ℝ → E}
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ) {x : E}
     (hx : x ∈ Metric.ball x₀ (r : ℝ)) :

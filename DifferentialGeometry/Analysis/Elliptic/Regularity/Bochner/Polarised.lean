@@ -107,6 +107,7 @@ lemma gradFun_sub
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma Δ_g_neg
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -128,6 +129,7 @@ lemma Δ_g_neg
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma Δ_g_sub
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
@@ -269,7 +271,7 @@ lemma g_inner_grad_lap_polar
   rw [hp1, hp2]
   ring
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem bochner_polarised_pointwise_of_smoothness
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))
@@ -456,6 +458,7 @@ theorem bochner_polarised_pointwise_of_smoothness
   exact mul_left_cancel₀ (by norm_num : (4 : ℝ) ≠ 0) h4
 
 omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem bochner_polarised_pointwise_oneSubLap_of_smoothness
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))

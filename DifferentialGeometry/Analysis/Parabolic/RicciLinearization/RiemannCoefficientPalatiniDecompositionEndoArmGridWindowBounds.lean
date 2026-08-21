@@ -231,6 +231,7 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -641,6 +642,7 @@ private theorem bdWEndoInsertDiff_gridWindow (g₀ g_bg : SmoothRiemannianMetric
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem bdDLb_eq_slotInsert_sum
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg =
@@ -969,6 +971,7 @@ private theorem bdDLbDiff_eq_slotInsert_sum
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdSlotInsertZero_bdWEndoSecDiff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀) =

@@ -171,14 +171,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 theorem deTurckChartGramOnE_iteratedFDeriv_jointContinuousOn_of_jointChartGram
     (T : ℝ) (g_DT : ℝ → SmoothRiemannianMetric I M)
     (hJ : JointChartGramSmooth (I := I) T g_DT) :
-    ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
+    ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ),
       ContinuousOn
         (fun q : ℝ × M => iteratedFDeriv ℝ k
           (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
           (extChartAt I α q.2))
         (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
   classical
-  intro α i j k _hk
+  intro α i j k
   set V : Set E := interior ((extChartAt I α).target : Set E) with hV_def
   have hVopen : IsOpen V := isOpen_interior
   set G : ℝ × E → ℝ :=
@@ -653,8 +653,9 @@ theorem deTurckRicci_chartRegularity_of_jointChartGramSmooth
           (extChartAt I α q.2)
         = Integral.Measure.chartGramMatrix (I := I) (g_DT q.1) α q.2 i j
     rw [chartGramOnE_def, (extChartAt I α).left_inv hsrc']
-  · exact deTurckChartGramOnE_iteratedFDeriv_jointContinuousOn_of_jointChartGram
-      (I := I) T g_DT hJ
+  · intro α i j k _hk
+    exact deTurckChartGramOnE_iteratedFDeriv_jointContinuousOn_of_jointChartGram
+      (I := I) T g_DT hJ α i j k
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma param_spatial_partialDeriv_contDiffOn

@@ -54,8 +54,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 def connLaplacianMixedSection (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
       (fun x : M => TensorRSSpace r s I x)⟯) :
-    M → (Π x : M, TensorRSSpace r s I x) :=
-  fun _ x => connLaplacianMixed (I := I) g r s T x
+    Π x : M, TensorRSSpace r s I x :=
+  fun x => connLaplacianMixed (I := I) g r s T x
 
 
 omit [CompactSpace M] in

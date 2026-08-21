@@ -44,7 +44,7 @@ theorem HasStageJetData.inj_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -53,7 +53,7 @@ theorem HasStageJetData.inj_tail
       let Lphi := L.subseq hphi
       let Yk := X.obj (Lphi.φ k)
       letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-      Set.InjOn (stageComparisonMap inp P Lphi s hs hconn k l)
+      Set.InjOn (stageComparisonMap inp P Lphi s hs k l)
         (Lphi.hatSourceBall inp.decay P R0 k) := by
   classical
   have hstage0 := hstage
@@ -74,7 +74,7 @@ theorem HasStageJetData.inj_tail
   have hrho_le : rho ≤ rho0 := min_le_left _ _
   have hrho_room : rho ≤ R1 - R0 := min_le_right _ _
   obtain ⟨Nret, hret⟩ := hstage0.return_tail inp P L hs phi hphi
-    hconn U C0 C1 aInf Jinf Jbarinf gInf R0 R1 hroom hR1s
+    U C0 C1 aInf Jinf Jbarinf gInf R0 R1 hroom hR1s
       (rho / 4) (div_pos hrho (by norm_num))
   obtain ⟨Njet, hjet⟩ := hjets R1 hR1s 1 (1 / 2 : Real) (by norm_num)
   refine ⟨max Nret Njet, ?_⟩
@@ -99,8 +99,8 @@ theorem HasStageJetData.inj_tail
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let F := stageComparisonMap inp P Lphi s hs hconn k l
-  let Hret := stageComparisonMap inp P Lphi s hs hconn l k
+  let F := stageComparisonMap inp P Lphi s hs k l
+  let Hret := stageComparisonMap inp P Lphi s hs l k
   intro x hx y hy hFxy
   have hFxy' : F x = F y := by
     simpa only [F] using hFxy

@@ -22,6 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricci_quadratic_form_bound_of_solution_curvature_bound
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

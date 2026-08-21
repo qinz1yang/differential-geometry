@@ -106,7 +106,7 @@ private structure ConvergentMetricChain
         ballOpen b (fun s => (2 : ℝ) ^ s) (start + (n + 1)) :=
       PartialDiffeomorph.opensMap
         (chainComp (I := I) (Mf := M) Ψ (start + n) 1)
-          (sourceCoverage n 1) (successorCoverage n)
+          (successorCoverage n)
     ∀ (x : ballOpen b (fun s => (2 : ℝ) ^ s) (start + n))
       (v w : TangentSpace I x),
       (limitMetric n).inner x v w =
@@ -547,13 +547,14 @@ noncomputable def canonicalSourceData
     MetricSourceData (I := I) Phi k :=
   MetricSourceData.ofRestrictPullback (I := I)
     (Φ := Phi) (k := k) (canonicalSourceSigmaCompact (I := I) Phi k)
-    (canonicalTargetSigmaCompact (I := I) Phi k) (canonicalReferenceMetric (I := I) Phi k)
+    (canonicalReferenceMetric (I := I) Phi k)
 
 end CanonicalMetricCompactness
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [CompleteSpace E] in
 private theorem chain_limit_metric_eq_pullback
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
@@ -664,7 +665,7 @@ private theorem covFlat_eq
         (gRef.restrictOpenOfSubset (I := I) hVU) x =
       metricCovDerivNorm (I := I) a h gRef
         (TopologicalSpace.Opens.inclusion hVU x) := by
-  let W := nestedOpen hVU
+  let W := nestedOpen (M := M) (U := U) (V := V)
   letI : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
   letI : IsManifold I 1 V := IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
@@ -677,7 +678,7 @@ private theorem covFlat_eq
   letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) W := by
     change IsManifold I ∞ W
     infer_instance
-  let F := flatNestedDiffeo (I := I) hVU
+  let F := flatNestedDiffeo (H := H) (I := I) (M := M) hVU
   rw [restrictSubset_pull (I := I) hVU h, restrictSubset_pull (I := I) hVU gRef]
   calc
     metricCovDerivNorm (I := I) a
@@ -1229,6 +1230,7 @@ noncomputable def canonicalMetricCompactness
     CanonicalMetricCompactness (I := I) X :=
   (connectedCanonicalMetricCompactness (I := I) P B).canonical
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem canonical_metric_compactness_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))

@@ -58,6 +58,8 @@ def metricPerturbationCoefficientH2
     (symmRaiseEndo (I := I) (M := M) g T)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma perturbCoeff4_add
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
       metricPerturbationCoefficientH2 (I := I) (M := M) g (T + U) =
@@ -66,6 +68,8 @@ private lemma perturbCoeff4_add
   simp only [metricPerturbationCoefficientH2, symmRaiseEndo_add, slotInsertEndoCc_add]
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma perturbCoeff4_smul
     (g : SmoothRiemannianMetric I M) (a : ℝ) (T : SmoothCcTensor g 0 2) :
     metricPerturbationCoefficientH2 (I := I) (M := M) g (a • T) =

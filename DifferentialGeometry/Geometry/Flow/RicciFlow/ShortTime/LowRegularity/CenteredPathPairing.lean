@@ -170,10 +170,10 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
     let P0 := ricciDeTurckRemainderZeroOrderPathIntegral (I := I) (M := M) g g_bg T 0
       hdelta_lt hdelta hdelta_lt hdeltaZ
-    let P2 := rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+    let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
       hdelta_lt hdelta hdelta_lt hdeltaZ
-    let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
-    let K0 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+    let Φ0 := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
+    let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
     let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
     let HT := iteratedCovGrad (I := I) g 0 2 2 T
     let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -192,7 +192,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
       let PairComms := oneMinusConnLapSmooth (I := I) g 0 2 Zs -
         operatorFieldApply (I := I) (M := M) g 2 2 (Qs LT) T -
         operatorFieldApply (I := I) (M := M) g 2 2 (Qs T) LT + Zs
-      let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs - Φ0
+      let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs - Φ0
       oneMinusConnLapSmooth (I := I) g 0 2
           (operatorFieldApply (I := I) (M := M) g 2 2 (R0s + K0) T) +
         PairComms +
@@ -217,12 +217,12 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
     exact Icc_subset_metricPerturbationPathDomain hdelta_lt hdelta_lt
   let R : ℝ → SmoothCcTensor g 2 2 :=
     rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ
-  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g
   let Φ : ℝ → SmoothCcTensor g 4 2 := fun s =>
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s)
   let Φ0 : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
   let HT := iteratedCovGrad (I := I) g 0 2 2 T
   let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -255,7 +255,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
   have hC : linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
       (fun s => Φ s - Φ0) (δ := delta) (δ' := delta) := by
     simpa only [Φ, Φ0] using phi_dev_joint (I := I) (M := M)
-      g g_bg T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
+      g T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
   have hCHT := operatorFieldApplication_fixed_jointContMDiffOn (I := I) (M := M)
     g (fun s => Φ s - Φ0) HT S hC
   have hCHLT := operatorFieldApplication_fixed_jointContMDiffOn (I := I) (M := M)
@@ -285,12 +285,12 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
     simpa only [Z0, Q, S, operatorFieldComposition_zero_eq_operatorFieldApply] using
       ricciDeTurckTopOrderPathIntegralCoefficient_apply (I := I) (M := M) g T T T hdelta_lt hdelta hdeltaZ
         ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps
-  have hCInt : rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+  have hCInt : rhsTopPathIntegral (I := I) (M := M) g T 0
         hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0 =
       pathIntegralCoeffField (I := I) (M := M) g 4 2
         (fun s => Φ s - Φ0) S metricPerturbationPathDomain_isOpen hSI hC := by
     have hΦ := rhs_top_path_joint (I := I) (M := M)
-      g g_bg T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
+      g T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
     have hΦneg := threeArmJoint_add (I := I) (M := M) g Φ (fun _ => -Φ0)
       (by simpa only [Φ] using hΦ)
       (threeArmJoint_const (I := I) (M := M) g (-Φ0))
@@ -299,7 +299,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
         g Φ (-Φ0) S metricPerturbationPathDomain_isOpen hSI
           (by simpa only [Φ] using hΦ) hΦneg
   have hCHTInt : operatorFieldApply (I := I) (M := M) g 4 2
-        (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+        (rhsTopPathIntegral (I := I) (M := M) g T 0
           hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HT =
       pathIntegralCoeffField (I := I) (M := M) g 0 2 CHT S
         metricPerturbationPathDomain_isOpen hSI (by
@@ -309,7 +309,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
       operatorFieldApplication_pathIntegralCoeffField (I := I) (M := M) g
         (fun s => Φ s - Φ0) HT S metricPerturbationPathDomain_isOpen hSI hC
   have hCHLTInt : operatorFieldApply (I := I) (M := M) g 4 2
-        (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+        (rhsTopPathIntegral (I := I) (M := M) g T 0
           hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HLT =
       pathIntegralCoeffField (I := I) (M := M) g 0 2 CHLT S
         metricPerturbationPathDomain_isOpen hSI (by
@@ -335,10 +335,10 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
                 hdelta_lt hdelta hdelta_lt hdeltaZ) T) +
           (oneMinusConnLapSmooth (I := I) g 0 2
               (operatorFieldApply (I := I) (M := M) g 4 2
-                (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+                (rhsTopPathIntegral (I := I) (M := M) g T 0
                   hdelta_lt hdelta hdelta_lt hdeltaZ) HT) -
             operatorFieldApply (I := I) (M := M) g 4 2
-              (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+              (rhsTopPathIntegral (I := I) (M := M) g T 0
                 hdelta_lt hdelta hdelta_lt hdeltaZ) HLT) +
           operatorFieldApply (I := I) (M := M) g 2 2 K0 LT =
         oneMinusConnLapSmooth (I := I) g 0 2
@@ -351,10 +351,10 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
                 ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps) T) +
           oneMinusConnLapSmooth (I := I) g 0 2
             (operatorFieldApply (I := I) (M := M) g 4 2
-              (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+              (rhsTopPathIntegral (I := I) (M := M) g T 0
                 hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HT) -
           operatorFieldApply (I := I) (M := M) g 4 2
-            (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+            (rhsTopPathIntegral (I := I) (M := M) g T 0
               hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HLT := by
     rw [hcenter]
     module
@@ -368,7 +368,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
        let PairComms := oneMinusConnLapSmooth (I := I) g 0 2 Zs -
          operatorFieldApply (I := I) (M := M) g 2 2 (Qs LT) T -
          operatorFieldApply (I := I) (M := M) g 2 2 (Qs T) LT + Zs
-       let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs - Φ0
+       let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs - Φ0
        oneMinusConnLapSmooth (I := I) g 0 2
            (operatorFieldApply (I := I) (M := M) g 2 2 (R0s + K0) T) +
          PairComms +
@@ -395,10 +395,10 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
                   hdelta_lt hdelta hdelta_lt hdeltaZ) T) +
             (oneMinusConnLapSmooth (I := I) g 0 2
                 (operatorFieldApply (I := I) (M := M) g 4 2
-                  (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+                  (rhsTopPathIntegral (I := I) (M := M) g T 0
                     hdelta_lt hdelta hdelta_lt hdeltaZ) HT) -
               operatorFieldApply (I := I) (M := M) g 4 2
-                (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+                (rhsTopPathIntegral (I := I) (M := M) g T 0
                   hdelta_lt hdelta hdelta_lt hdeltaZ) HLT) +
             operatorFieldApply (I := I) (M := M) g 2 2 K0 LT) =
         Inner.inner ℝ V
@@ -413,10 +413,10 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
                     lieDecompositionQ lieDecompositionEps) T) +
             oneMinusConnLapSmooth (I := I) g 0 2
               (operatorFieldApply (I := I) (M := M) g 4 2
-                (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+                (rhsTopPathIntegral (I := I) (M := M) g T 0
                   hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HT) -
             operatorFieldApply (I := I) (M := M) g 4 2
-              (rhsTopPathIntegral (I := I) (M := M) g g_bg T 0
+              (rhsTopPathIntegral (I := I) (M := M) g T 0
                 hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HLT) :=
       congrArg (Inner.inner ℝ V) hInt
       _ = ∫ s in (0 : ℝ)..1, Inner.inner ℝ V
@@ -437,7 +437,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
             let PairComms := oneMinusConnLapSmooth (I := I) g 0 2 Zs -
               operatorFieldApply (I := I) (M := M) g 2 2 (Qs LT) T -
               operatorFieldApply (I := I) (M := M) g 2 2 (Qs T) LT + Zs
-            let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs - Φ0
+            let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs - Φ0
             oneMinusConnLapSmooth (I := I) g 0 2
                 (operatorFieldApply (I := I) (M := M) g 2 2 (R0s + K0) T) +
               PairComms +

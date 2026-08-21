@@ -54,15 +54,15 @@ theorem phi_dev_h3_uniform
           ∀ {s : ℝ}, 0 ≤ s → s ≤ 1 →
             (∀ x : M,
               riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-                  ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+                  ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
                       (metricPerturbationPath (I := I) g T T' hδ hδ' s) -
-                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x) ≤
+                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) ≤
                 (C * R) ^ 2) ∧
               (∑ i ∈ Finset.range 4,
                 ‖iteratedCovGrad (I := I) g 4 2 i
-                  (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+                  (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
                       (metricPerturbationPath (I := I) g T T' hδ hδ' s) -
-                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g)‖ ^ 2) ≤
+                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g)‖ ^ 2) ≤
                 (C *
                   (‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ +
                     ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T'‖)) ^ 2 := by
@@ -105,9 +105,9 @@ theorem phi_dev_h3_uniform
     linarith
   have hpoint : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-          ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase
+          ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T T' hδ hδ' s) -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g).toSection x) ≤
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) ≤
         (C * R) ^ 2 := by
     intro x
     exact (hphi₂_pt x).trans
@@ -190,8 +190,8 @@ theorem phi_dev_h3_uniform
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g₁ -
       ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g
   let Dev : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g₁ -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g₁ -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let ρA : Equiv.Perm (Fin 4) :=
     traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
   let ρAT : Equiv.Perm (Fin 4) :=
@@ -201,8 +201,8 @@ theorem phi_dev_h3_uniform
         reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT -
           (DRs + DRs) := by
     dsimp [Dev, DTHs, DRs]
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g gBase g₁,
-      metricPrincipalDefect_reindex (I := I) (M := M) g gBase g,
+    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g₁,
+      metricPrincipalDefect_reindex (I := I) (M := M) g g,
       reindex_sub g _ _ _ _ ρA,
       reindex_sub g _ _ _ _ ρAT]
     abel

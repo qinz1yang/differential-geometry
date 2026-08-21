@@ -74,6 +74,8 @@ lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     slotInsertEndoFib_sub_left (I := I) (M := M) (s + 1) 0 x (Λ x) (Λ' x)]
   rw [ContinuousLinearMap.sub_apply]
 
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁ g_ref : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g₀ 0 (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref) =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 0 (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_ref) := by

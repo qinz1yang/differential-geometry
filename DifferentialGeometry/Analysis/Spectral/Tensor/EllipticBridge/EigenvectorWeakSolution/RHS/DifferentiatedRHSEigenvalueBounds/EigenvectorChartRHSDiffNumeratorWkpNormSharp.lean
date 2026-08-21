@@ -825,7 +825,7 @@ lemma sharp_densityDeriv_mul_iteratedPartial_wkpNorm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (CatomC : ℝ) (eAtomC : ℕ) (_hCatomC_nn : 0 ≤ CatomC)
+    (CatomC : ℝ) (eAtomC : ℕ)
     (hAtomC_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (eigenvectorChartIteratedPartial (I := I) (M := M)
@@ -875,7 +875,7 @@ lemma sharp_densityDeriv_mul_iteratedPartial_wkpNorm_le
 omit [CompleteSpace E] in
 lemma sharp_densityDeriv_mul_prevChartFun_wkpNorm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (α : M) (_P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
+    (α : M) (m K : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
     (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
     (h_prev_mem : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -885,7 +885,7 @@ lemma sharp_densityDeriv_mul_prevChartFun_wkpNorm_le
       fChartEffPrev i =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α)] (fun _ => (0 : ℝ)))
-    (CatomD : ℝ) (eAtomD : ℕ) (_hCatomD_nn : 0 ≤ CatomD)
+    (CatomD : ℝ) (eAtomD : ℕ)
     (hAtomD_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (fChartEffPrev i)
           (chartTargetEuclid (I := I) (M := M) α)
@@ -919,7 +919,7 @@ lemma sharp_densityDeriv_mul_prevChartFun_wkpNorm_le
 omit [CompleteSpace E] in
 lemma sharp_density_mul_prevChartFunWeakDeriv_wkpNorm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (α : M) (_P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
+    (α : M) (m K : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
     (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
     (h_prev_mem_succ : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -929,7 +929,7 @@ lemma sharp_density_mul_prevChartFunWeakDeriv_wkpNorm_le
       fChartEffPrev i =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α)] (fun _ => (0 : ℝ)))
-    (CatomE : ℝ) (eAtomE : ℕ) (_hCatomE_nn : 0 ≤ CatomE)
+    (CatomE : ℝ) (eAtomE : ℕ)
     (hAtomE_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
@@ -1077,13 +1077,13 @@ theorem eigenvectorChartRHSDiffNumerator_wkpNorm_le_chartcpt_sharp
       CatomB eAtomB hCatomB_nn hAtomB_bd
   obtain ⟨CC, hCC_nn, hCC⟩ :=
     sharp_densityDeriv_mul_iteratedPartial_wkpNorm_le (I := I) (M := M) g r s α P₀ m K l
-      CatomC eAtomC hCatomC_nn hAtomC_bd
+      CatomC eAtomC hAtomC_bd
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    sharp_densityDeriv_mul_prevChartFun_wkpNorm_le (I := I) (M := M) g r s α P₀ m K l
-      fChartEffPrev h_prev_mem_K h_prev_zero CatomD eAtomD hCatomD_nn hAtomD_bd
+    sharp_densityDeriv_mul_prevChartFun_wkpNorm_le (I := I) (M := M) g r s α m K l
+      fChartEffPrev h_prev_mem_K h_prev_zero CatomD eAtomD hAtomD_bd
   obtain ⟨CE, hCE_nn, hCE⟩ :=
-    sharp_density_mul_prevChartFunWeakDeriv_wkpNorm_le (I := I) (M := M) g r s α P₀ m K l
-      fChartEffPrev h_prev_mem_succ h_prev_zero CatomE eAtomE hCatomE_nn hAtomE_bd
+    sharp_density_mul_prevChartFunWeakDeriv_wkpNorm_le (I := I) (M := M) g r s α m K l
+      fChartEffPrev h_prev_mem_succ h_prev_zero CatomE eAtomE hAtomE_bd
   set e : ℕ := max (max eAtomA (max eAtomB eAtomC)) (max eAtomD eAtomE)
     with he_def
   have heA : eAtomA ≤ e := le_max_of_le_left (le_max_left _ _)

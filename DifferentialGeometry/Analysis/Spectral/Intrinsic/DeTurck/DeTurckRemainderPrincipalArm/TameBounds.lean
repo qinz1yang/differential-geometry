@@ -75,7 +75,7 @@ lemma DeTurckRemainderPrincipalArm.grid_core (g₀ : SmoothRiemannianMetric I M)
         (cCS i * (1 + ‖smoothCcToTensorHs (I := I) (M := M) g₀
           ((dc + i + (Module.finrank ℝ E / 2 + 2) + 2 * q + 1 : ℕ) : ℝ) T₀‖)) ^ 2)
     (sd : ℕ → ℕ) (Df : (l : ℕ) → SmoothCcTensor g₀ 0 (sd l))
-    (cD cDS : ℕ → ℝ) (hcD_nn : ∀ l, 0 ≤ cD l) (_hcDS_nn : ∀ l, 0 ≤ cDS l)
+    (cD cDS : ℕ → ℝ) (hcD_nn : ∀ l, 0 ≤ cD l)
     (hDL2 : ∀ l, ‖Df l‖ ≤ cD l *
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((l + d₂ : ℕ) : ℝ) T₀‖)
     (hDsup : ∀ (l : ℕ) (x : M),
@@ -219,8 +219,7 @@ lemma DeTurckRemainderPrincipalArm.grid_core (g₀ : SmoothRiemannianMetric I M)
       ring
   have hL2 := tensorL2NormSq_le_of_pointwise_fiberNormSq_le_two_sum (I := I) (M := M) g₀ Z (j + 1)
     (j + 1)
-    (fun _ => c1) c2 (fun _ => hc1_nn) hc2_nn
-    (fun _ => 0) sd Df (fun _ => 2) sc Cf hpt2
+    (fun _ => c1) c2 (fun _ => 0) sd Df (fun _ => 2) sc Cf hpt2
   have hSAfinal : ∑ l ∈ Finset.range (j + 1), c1 * ‖Df l‖ ^ 2 ≤
       (G * (∑ i ∈ Finset.range (j + 1), (cCS i * (1 + R₀)) ^ 2) *
         (∑ l ∈ Finset.range (j + 1), (cD l) ^ 2)) * fT γ' ^ 2 := by
@@ -434,7 +433,7 @@ lemma DeTurckRemainderPrincipalArm.principal_block (g₀ : SmoothRiemannianMetri
     g₀ Kc hKc_nn εa hεa_nn
   obtain ⟨CDL, hCDL_nn, hCDL⟩ := exists_iteratedCovGrad_rawTensorConnLapSmooth_le_mul_tensorHs
     (I := I) (M := M) g₀
-  obtain ⟨CDS, hCDS_nn, hCDS⟩ :=
+  obtain ⟨CDS, _, hCDS⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_rawTensorConnLapSmooth_le_sq_tensorHs (I := I) (M := M) g₀
   refine ⟨fun q j => Real.sqrt (diagonalGridGrowthFactor (E := E) j *
       ((∑ i ∈ Finset.range (j + 1), (CCS i q * (1 + R₀)) ^ 2) *
@@ -457,7 +456,7 @@ lemma DeTurckRemainderPrincipalArm.principal_block (g₀ : SmoothRiemannianMetri
     (fun l => 2 + l)
     (fun l => iteratedCovGrad (I := I) g₀ 0 2 l
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀))
-    CDL CDS hCDL_nn hCDS_nn
+    CDL CDS hCDL_nn
     (fun l => ?_) (fun l x => ?_)
     (diagonalGridGrowthFactor (E := E) j) (operatorFieldApplicationGdiag_nonneg (E := E) j)
     (fun x => ?_)
@@ -721,7 +720,7 @@ lemma DeTurckRemainderPrincipalArm.mixed_blocks (g₀ : SmoothRiemannianMetric I
       (fun l => 2 + (1 + l))
       (fun l => iteratedCovGrad (I := I) g₀ 0 2 (1 + l) T₀)
       (fun l => CJ (1 + l)) (fun l => CDS0 (1 + l))
-      (fun l => hCJ_nn (1 + l)) (fun l => hCDS0_nn (1 + l))
+      (fun l => hCJ_nn (1 + l))
       (fun l => ?_) (fun l x => ?_)
       (G j) (hG_nn j) hpt
     · rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
@@ -1049,6 +1048,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobol
           CDS0 0 * (1 + R₀) * KE1 p)) *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀
           ((2 * p + 1 : ℕ) : ℝ) T₀‖ := by
+  let _ := (inferInstance : (NeZero n))
   set Bh : ℝ := CDS0 0 * fT (0 + (n / 2 + 1)) with hBh_def
   have hBh_nn : 0 ≤ Bh := mul_nonneg (hCDS0_nn 0) (hfT_nn _)
   set Bm : ℝ := min B Bh with hBm_def
@@ -1298,7 +1298,7 @@ lemma DeTurckRemainderPrincipalArm.slotExtend_norm_bound (g₀ : SmoothRiemannia
     ‖slotExtend (I := I) (M := M) g₀ r s Φ‖ ≤
       Real.sqrt (Module.finrank ℝ E) * ‖Φ‖ := by
   have hsq := normSq_le_sum_normSq_of_pointwise_fiberNormSq_window (I := I) (M := M) g₀
-    (slotExtend (I := I) (M := M) g₀ r s Φ) (Module.finrank ℝ E : ℝ) (Nat.cast_nonneg _)
+    (slotExtend (I := I) (M := M) g₀ r s Φ) (Module.finrank ℝ E : ℝ)
     (fun _ => s) (fun _ => Φ) 1 (fun x => ?_)
   · rw [Finset.sum_range_one] at hsq
     refine le_of_sq_le_sq ?_ (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _))
@@ -1554,6 +1554,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
           Real.sqrt n * CDS0 1 * CC 0 p * (1 + R₀))) *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀
           ((2 * p + 2 : ℕ) : ℝ) T₀‖ := by
+  let _ := (inferInstance : (NeZero n))
   set fT : ℕ → ℝ := fun k => ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ) T₀‖
     with hfT_def
   have hfT_nn : ∀ k, 0 ≤ fT k := fun k => norm_nonneg _
@@ -1996,6 +1997,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
           Real.sqrt n * CDS0 1 * CC 0 p * (1 + R₀))) *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀
           ((2 * p + 2 : ℕ) : ℝ) T₀‖ := by
+  let _ := (inferInstance : (NeZero n))
   set fT : ℕ → ℝ := fun k => ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ) T₀‖
     with hfT_def
   have hfT_nn : ∀ k, 0 ≤ fT k := fun k => norm_nonneg _
@@ -3769,7 +3771,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.Measure in
 theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
-    (g₀ _g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
@@ -4039,7 +4041,7 @@ set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization in
 open DifferentialGeometry.Integral.Measure in
 theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
@@ -4053,7 +4055,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         ∀ (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ∀ i : ℕ,
           ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-              (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+              (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4063,7 +4065,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                           from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                         tensorHs_norm_smul]
                       simpa using hR₀)) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2 ≤
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2) := by
   classical
@@ -4094,13 +4096,13 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         add_nonneg (hKlo_nn j) (mul_nonneg (hCg_nn j) (hKg_nn j)))
   set cB : ℕ → ℝ := fun i =>
     ‖iteratedCovGrad (I := I) g₀ 4 2 i
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2 with hcB_def
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 with hcB_def
   have hcB_nn : ∀ i, 0 ≤ cB i := fun i => sq_nonneg _
   refine ⟨fun i => 4 * KdevF i + 6 * cB i,
     fun i => by have := hKdevF_nn i; have := hcB_nn i; linarith, ?_⟩
   intro T₀ hTsymm hball i
   change ‖iteratedCovGrad (I := I) g₀ 4 2 i
-      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4110,7 +4112,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2 ≤
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤
     (4 * KdevF i + 6 * cB i) * (1 + ∑ l ∈ Finset.range (i + 2),
       ‖iteratedCovGrad (I := I) g₀ 0 2 l T₀‖ ^ 2)
   have hS_nn : 0 ≤ ∑ l ∈ Finset.range (i + 2),
@@ -4122,7 +4124,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
       ‖iteratedCovGrad (I := I) g₀ 0 2 l T₀‖ ^ 2 := by linarith
   rcases isEmpty_or_nonempty M with hM | hM
   · have hzero : ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4132,7 +4134,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                     from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                   tensorHs_norm_smul]
                 simpa using hR₀)) -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ = 0 := by
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ = 0 := by
       rw [SmoothCcTensor.norm_def, DifferentialGeometry.Integral.L2.tensorL2Norm,
         DifferentialGeometry.Integral.L2.tensorL2Inner, MeasureTheory.integral_of_isEmpty,
         Real.sqrt_zero]
@@ -4153,7 +4155,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
     have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ)) := metricPerturbationPathDomain_isOpen
-    have hj2 := deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPath (I := I) (M := M) g₀ g_bg T₀
+    have hj2 := deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPath (I := I) (M := M) g₀ T₀
       (0 : SmoothCcTensor g₀ 0 2) (hδ_fibre T₀ hball) (hδ_fibre 0 hZn)
     have hTball : ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ≤ B := by
       intro j hj
@@ -4173,11 +4175,11 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
           (fun l _ => norm_nonneg _) (Finset.mem_range.mpr (by omega))
       exact le_trans hsingle hsumB
     let Φ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
           (hδ_fibre T₀ hball) (hδ_fibre 0 hZn) s)
     let Φbg : SmoothCcTensor g₀ 4 2 :=
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀
     have hdev : ∀ s ∈ Set.Icc (0 : ℝ) 1,
         ‖iteratedCovGrad (I := I) g₀ 4 2 i (Φ s - Φbg)‖ ^ 2 ≤
         KdevF i * (1 + ∑ l ∈ Finset.range (i + 2),
@@ -4390,8 +4392,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                   ‖iteratedCovGrad (I := I) g₀ 0 2 l T₀‖ ^ 2) := by
               rw [Finset.sum_mul]
       have hdev_eq :
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₁ -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ =
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ =
           reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
@@ -4404,8 +4406,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
               + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)) := by
-        rw [deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g_bg g₁,
-          deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g_bg g₀,
+        rw [deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₁,
+          deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₀,
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
             (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA),
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
@@ -4422,8 +4424,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
       have hth := hCth g₁ i
       have hr := hCr g₁ i
       have htri : ‖iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₁ -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ≤
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ≤
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
@@ -4475,8 +4477,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀))
         linarith
       have hsq : ‖iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₁ -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2 ≤
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤
           3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
@@ -4492,8 +4494,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)‖ ^ 2 := by
         exact sq_le_three_of_le_add_add_two
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₁ -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)))
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)))
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
@@ -4508,8 +4510,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀))) htri
       calc ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₁ -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2
           ≤ 3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
               (reindexCoeffGen (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
@@ -4603,9 +4605,9 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
       rw [hB₂_sq]
       exact hbare s hs
     have htower := armField_pathIntegral_jetL2_perOrder_le (I := I) (M := M) g₀ 4 Φ
-      hSI hSopen hj2' i (B := B₂) (Real.sqrt_nonneg _) hΦjet
+      hSI hSopen hj2' i (B := B₂) hΦjet
     rw [hB₂_sq] at htower
-    have hPeq : deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    have hPeq : deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4618,7 +4620,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         pathIntegralCoeffField (I := I) (M := M) g₀ 4 2 Φ
           (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj2 := rfl
     have htower' : ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4632,7 +4634,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
           ‖iteratedCovGrad (I := I) g₀ 0 2 l T₀‖ ^ 2) := by
       rw [hPeq]; exact htower
     have hsplit : ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4642,9 +4644,9 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                     from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                   tensorHs_norm_smul]
                 simpa using hR₀)) -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2 ≤
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤
         2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4657,7 +4659,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         2 * cB i := by
       have h := norm_sub_le
         (iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4668,13 +4670,13 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                   tensorHs_norm_smul]
                 simpa using hR₀))))
         (iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀))
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀))
       rw [← iteratedCovGrad_sub] at h
       have hcBi : cB i = ‖iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ ^ 2 := rfl
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 := rfl
       have hs := sq_le_two_bounds_of_le_add
         (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2)
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4684,9 +4686,9 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                       from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                     tensorHs_norm_smul]
                   simpa using hR₀)) -
-            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)))
+            deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)))
         (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+          (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4697,7 +4699,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                   tensorHs_norm_smul]
                 simpa using hR₀)))))
         (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀))) h (le_refl _) (le_refl _)
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀))) h (le_refl _) (le_refl _)
       rw [← hcBi] at hs
       exact hs
     have hcmul : cB i * 1 ≤ cB i * (1 + ∑ l ∈ Finset.range (i + 2),
@@ -4707,7 +4709,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
 
 theorem
     exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoeff_coeffJetEnvelope_le
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
@@ -4721,7 +4723,7 @@ theorem
         ∀ (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ∀ i : ℕ,
           ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-              (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+              (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4731,7 +4733,7 @@ theorem
                           from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                         tensorHs_norm_smul]
                       simpa using hR₀)) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
                 deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
                   (tensorSectionRealizeMetric (I := I) g₀ T₀
                     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4741,15 +4743,15 @@ theorem
   classical
   obtain ⟨K1, hK1_nn, h1⟩ :=
     exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
-      (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
+      (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨K2, hK2_nn, h2⟩ :=
     exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
-      (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
+      (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   refine ⟨fun i => 2 * K1 i + 2 * K2 i,
     fun i => by have := hK1_nn i; have := hK2_nn i; linarith,
     fun T₀ hTsymm hball i => ?_⟩
   have hsub := iteratedCovGrad_sub (I := I) g₀ (2 + 2) 2 i
-    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4759,12 +4761,12 @@ theorem
                 from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
               tensorHs_norm_smul]
             simpa using hR₀)) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
     (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
       (tensorSectionRealizeMetric (I := I) g₀ T₀
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
         (hδ_fibre T₀ hball)))
-  rw [show (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+  rw [show (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4774,12 +4776,12 @@ theorem
                 from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
               tensorHs_norm_smul]
             simpa using hR₀)) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
       deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
           (hδ_fibre T₀ hball))) =
-    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4789,7 +4791,7 @@ theorem
                 from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
               tensorHs_norm_smul]
             simpa using hR₀)) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀) -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀) -
       deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4797,7 +4799,7 @@ theorem
   have hA := h1 T₀ hTsymm hball i
   have hB := h2 T₀ hTsymm hball i
   set nA := ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4807,7 +4809,7 @@ theorem
                 from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
               tensorHs_norm_smul]
             simpa using hR₀)) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)‖ with hnA
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ with hnA
   set nB := ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
     (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
       (tensorSectionRealizeMetric (I := I) g₀ T₀
@@ -4816,7 +4818,7 @@ theorem
   have hnA_nn : 0 ≤ nA := by rw [hnA]; exact norm_nonneg _
   have hnB_nn : 0 ≤ nB := by rw [hnB]; exact norm_nonneg _
   have hn : ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4826,7 +4828,7 @@ theorem
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀) -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀) -
       iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
@@ -4834,7 +4836,7 @@ theorem
             (hδ_fibre T₀ hball)))‖ ≤ nA + nB :=
     norm_sub_le _ _
   have hsq : ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4844,14 +4846,14 @@ theorem
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀) -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀) -
       iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
             (hδ_fibre T₀ hball)))‖ ^ 2 ≤ 2 * nA ^ 2 + 2 * nB ^ 2 := by
     have hlhs_nn : (0 : ℝ) ≤ ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4861,7 +4863,7 @@ theorem
                     from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                   tensorHs_norm_smul]
                 simpa using hR₀)) -
-          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀) -
+          deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀) -
         iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
             (tensorSectionRealizeMetric (I := I) g₀ T₀
@@ -4878,7 +4880,7 @@ theorem
 
 theorem
     exists_deTurckPhiTotPathIntegral_sub_bg_sub_principalCometricCoeff_fibreSmall_coeffJetEnvelope
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
@@ -4894,7 +4896,7 @@ theorem
         ∀ (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         (∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x
-            ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+            ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4904,14 +4906,14 @@ theorem
                           from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                         tensorHs_norm_smul]
                       simpa using hR₀)) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
                 deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
                   (tensorSectionRealizeMetric (I := I) g₀ T₀
                     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                     (hδ_fibre T₀ hball))).toSection x) ≤ εCD ^ 2) ∧
         (∀ i : ℕ,
           ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
-              (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+              (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4921,7 +4923,7 @@ theorem
                           from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                         tensorHs_norm_smul]
                       simpa using hR₀)) -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
                 deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
                   (tensorSectionRealizeMetric (I := I) g₀ T₀
                     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4931,10 +4933,10 @@ theorem
   classical
   obtain ⟨εCD, hεCD_nn, hεCD_cap, hsup⟩ :=
     exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoeff_fibreSup_le
-      (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
+      (I := I) (M := M) g₀ a hR₀ hδ_le hδ_fibre
   obtain ⟨Kc, hKc_nn, henv⟩ :=
     exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoeff_coeffJetEnvelope_le
-      (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
+      (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   exact ⟨εCD, hεCD_nn, hεCD_cap, Kc, hKc_nn, fun T₀ hTsymm hball =>
     ⟨hsup T₀ hTsymm hball, henv T₀ hTsymm hball⟩⟩
 
@@ -4980,7 +4982,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
               operatorFieldApply (I := I) (M := M) g₀ (2 + 1) 2 C₁
                 (iteratedCovGrad (I := I) g₀ 0 2 1 T₀) +
               operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2
-                ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+                ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
                       (0 : SmoothCcTensor g₀ 0 2)
                       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -4991,7 +4993,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
                               from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                             tensorHs_norm_smul]
                           simpa using hR₀)) -
-                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+                    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
                     deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
                       (tensorSectionRealizeMetric (I := I) g₀ T₀
                         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5024,7 +5026,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
     exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨K₀, hK₀fold⟩ :=
-    exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_symm (I := I) (M := M) g₀ g_bg
+    exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_symm (I := I) (M := M) g₀
   obtain ⟨ΛK, hΛK_nn, hΛK⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 2 K₀
   have hεa_cap : 2 * Real.sqrt (Module.finrank ℝ E) * ((3 : ℝ) / 2 * εar) ≤
@@ -5073,7 +5075,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
           operatorFieldApply (I := I) (M := M) g₀ (2 + 1) 2 C₁k
             (iteratedCovGrad (I := I) g₀ 0 2 1 T₀) +
           operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2
-            (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+            (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2)
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5089,7 +5091,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
       hidArm
     have hfold := hK₀fold T₀ hTsymm
     have hfold' : operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2
-          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+          (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
           (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) -
         operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cometricDoubleTraceCoefficient
@@ -5137,7 +5139,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
       (iteratedCovGrad (I := I) g₀ 0 2 0 T₀)]
     rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ (2 + 2) 2 _ C₂r
       (iteratedCovGrad (I := I) g₀ 0 2 2 T₀)]
-    rw [show (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    rw [show (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5147,12 +5149,12 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
         deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
             (hδ_fibre T₀ hball))) =
-      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5162,7 +5164,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀) -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀) -
       deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5174,7 +5176,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
           (hδ_fibre T₀ hball)))
       (iteratedCovGrad (I := I) g₀ 0 2 2 T₀)]
     rw [operatorFieldApplication_sub_left (I := I) (M := M) g₀ (2 + 2) 2 _
-      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀)
+      (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
       (iteratedCovGrad (I := I) g₀ 0 2 2 T₀)]
     rw [hPCC]
     rw [operatorFieldApplication_sub_left (I := I) (M := M) g₀ (2 + 2) 2 _
@@ -5310,7 +5312,7 @@ theorem
   classical
   obtain ⟨εCD, hεCD_nn, hεCD_cap, KcD, hKcD_nn, hK2⟩ :=
     exists_deTurckPhiTotPathIntegral_sub_bg_sub_principalCometricCoeff_fibreSmall_coeffJetEnvelope
-      (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
+      (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨εCr, hεCr_nn, hεCr_cap, Kc1, hKc1_nn, εa, hεa_nn, hεa_cap, Λ1, hΛ1_nn, hK1⟩ :=
     exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResidual_coeffJetEnvelope
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
@@ -5365,7 +5367,7 @@ theorem
   have hεC_sq : Real.sqrt (2 * εCD ^ 2 + 2 * εCr ^ 2) ^ 2 =
       2 * εCD ^ 2 + 2 * εCr ^ 2 := Real.sq_sqrt (by positivity)
   refine ⟨C₀, C₁,
-    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5375,7 +5377,7 @@ theorem
                 from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
               tensorHs_norm_smul]
             simpa using hR₀)) -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
       deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5383,7 +5385,7 @@ theorem
     hid, ?_, hC₀sup, hC₁sup, ?_, ?_, ?_⟩
   · intro x
     rw [hεC_sq]
-    have hsec : ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+    have hsec : ((deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5393,12 +5395,12 @@ theorem
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
         deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
             (hδ_fibre T₀ hball))) + C₂r).toSection x =
-        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+        (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5408,7 +5410,7 @@ theorem
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
         deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5447,7 +5449,7 @@ theorem
     linarith
   · intro i
     have hdist := iteratedCovGrad_add (I := I) g₀ (2 + 2) 2 i
-      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ g_bg T₀
+      (deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
           (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5457,7 +5459,7 @@ theorem
                   from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                 tensorHs_norm_smul]
               simpa using hR₀)) -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g₀ -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
         deTurckPrincipalCometricCoeff (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -6256,8 +6258,8 @@ theorem
 
 theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (_hR₀ : 0 ≤ R₀)
-    (εC : ℝ) (hεC_nn : 0 ≤ εC) (Kc : ℕ → ℝ) (_hKc_nn : ∀ i, 0 ≤ Kc i) :
+    {R₀ : ℝ}
+    (εC : ℝ) (hεC_nn : 0 ≤ εC) (Kc : ℕ → ℝ) :
     ∃ Cop : ℝ, 0 ≤ Cop ∧
       ∀ (C₂ : SmoothCcTensor g₀ (2 + 2) 2) (T₀ : SmoothCcTensor g₀ 0 2),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
@@ -6533,7 +6535,7 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le
   classical
   obtain ⟨Cop0, hCop0_nn, h0⟩ :=
     exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
-      (I := I) (M := M) g₀ a ha_super hR₀ εC hεC_nn Kc hKc_nn
+      (I := I) (M := M) g₀ a εC hεC_nn Kc
   obtain ⟨Cops, hCops_nn, hs⟩ :=
     exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_succ
       (I := I) (M := M) g₀ a ha_super hR₀ εC hεC_nn Kc hKc_nn

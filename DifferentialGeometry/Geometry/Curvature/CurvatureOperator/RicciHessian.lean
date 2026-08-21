@@ -27,6 +27,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
+omit [SigmaCompactSpace M] in
 theorem ricHess_eq_inner
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov

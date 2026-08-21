@@ -288,7 +288,6 @@ noncomputable def metricCovDerivNormWith
       (metricCovDeriv (I := I) h cov a x))
 
 def ConnectionDifferenceFieldRealizes
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g h : SmoothRiemannianMetric I M)
     (D : Tensor0SBundle.TensorRSField
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -301,7 +300,6 @@ def ConnectionDifferenceFieldRealizes
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) h) x
 
 noncomputable def connectionDifferenceDerivNorm
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (Dk : Tensor0SBundle.TensorRSField
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -311,7 +309,6 @@ noncomputable def connectionDifferenceDerivNorm
     (Tensor0SBundle.normSqRS (I := I) (g := g) (x := x) 1 (k + 2) (Dk x))
 
 def ConnectionDifferenceDerivRealizes
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g h : SmoothRiemannianMetric I M) (k : Nat)
     (Dk : Tensor0SBundle.TensorRSField
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -325,7 +322,6 @@ def ConnectionDifferenceDerivRealizes
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) h) D k Dk
 
 def ConnectionDifferenceDerivBoundOn
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (K : Set M) (g h : SmoothRiemannianMetric I M) (k : Nat) (C : Real) :
     Prop :=
   forall Dk : Tensor0SBundle.TensorRSField
@@ -336,7 +332,6 @@ def ConnectionDifferenceDerivBoundOn
         connectionDifferenceDerivNorm (I := I) g k Dk x <= C
 
 def ConnectionDifferenceEpsBoundOn
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (K : Set M) (eps : Real)
     (g h : SmoothRiemannianMetric I M) (k : Nat) (C : Real) : Prop :=
   forall Dk : Tensor0SBundle.TensorRSField
@@ -347,7 +342,6 @@ def ConnectionDifferenceEpsBoundOn
         connectionDifferenceDerivNorm (I := I) g k Dk x <= C * eps
 
 def ConnectionDifferenceEpsBoundsBelow
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (K : Set M) (eps : Real)
     (g h : SmoothRiemannianMetric I M) (m : Nat)
     (C : Nat -> Real) : Prop :=
@@ -374,13 +368,13 @@ def connectionDifferenceTwoConst (Idx : Type*) [Fintype Idx] : Real :=
 
 def connectionDifferenceEpsConst_two
     (E : Type uE) [NormedAddCommGroup E] [NormedSpace Real E]
-    [Module.Finite Real E] : Nat -> Real
+    : Nat -> Real
   | 0 => 12
   | _ + 1 => connectionDifferenceOneConst (Fin (Module.finrank Real E))
 
 def connectionDifferenceEpsConst_three
     (E : Type uE) [NormedAddCommGroup E] [NormedSpace Real E]
-    [Module.Finite Real E] : Nat -> Real
+    : Nat -> Real
   | 0 => 12
   | 1 => connectionDifferenceOneConst (Fin (Module.finrank Real E))
   | _ => connectionDifferenceTwoConst (Fin (Module.finrank Real E))

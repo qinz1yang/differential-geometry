@@ -106,6 +106,7 @@ theorem nablaRm04NormSqInFrame_orthoBasis_eq_normSq0S
 end ProducerNorms
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_spatialCommNablaRm_intrinsic_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

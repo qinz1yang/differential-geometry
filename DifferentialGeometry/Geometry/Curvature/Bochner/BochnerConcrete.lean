@@ -370,6 +370,7 @@ theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
   intro m _
   ring
 
+omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -400,6 +401,7 @@ theorem bochner_pointwise_grad_normSq_of_boundaryless
     g.symm x _ _]
   ring
 
+omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_concrete_metric
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -421,6 +423,7 @@ theorem chartHessFrobeniusSq_nonneg
   exact frobeniusSq_grad_vector_nonneg (I := I) g
     (fun b : M => gradFun (I := I) g f b) x
 
+omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_half_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :

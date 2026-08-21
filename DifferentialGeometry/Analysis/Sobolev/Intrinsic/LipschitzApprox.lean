@@ -563,7 +563,7 @@ theorem grad_sub_l2_le
           (gradFun (I := I) g (fun y => u y - v y) x)
           (gradFun (I := I) g (fun y => u y - v y) x))) 2
         (riemannianMeasure (I := I) g (chartAtlasPOU I M)) ≤
-      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 1 2
+      ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 1 2
         (fun x => u x - v x) := by
   classical
   letI : MeasurableSpace E := borel E
@@ -660,9 +660,9 @@ theorem grad_sub_l2_le
     gcongr
     exact Finset.single_le_sum (fun b _ => hC b) (Finset.mem_univ a)
   have hWsum : (∑ a : S, W a) =
-      wkpNormChart (I := I) (M := M) g 1 2 (fun x => u x - v x) := by
+      wkpNormChart (I := I) (M := M) 1 2 (fun x => u x - v x) := by
     rw [DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_eq_finset_sum
-      (I := I) (M := M) g 1 (by norm_num) (fun x => u x - v x)]
+      (I := I) (M := M) 1 (by norm_num) (fun x => u x - v x)]
     change (∑ a : S, W a) = ∑ α ∈ S,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 1 2
@@ -709,12 +709,12 @@ theorem exists_smooth_grad
   have hC1 : 0 < C + 1 := by linarith
   let δ : ℝ := ε / (C + 1)
   have hδ : 0 < δ := div_pos hε hC1
-  have hu_chart : MemWkpChart (I := I) (M := M) g 1 2 u :=
+  have hu_chart : MemWkpChart (I := I) (M := M) 1 2 u :=
     DifferentialGeometry.Analysis.Sobolev.Chart.mem_chart_one_of_lip
       (I := I) (M := M) g (by norm_num) hu hB
   obtain ⟨v, hv, happ⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.contMDiff_dense_in_WkpChart
-      (I := I) (M := M) g (p := (2 : ENNReal)) (by norm_num) (by norm_num)
+      (I := I) (M := M) (p := (2 : ENNReal)) (by norm_num) (by norm_num)
         hu_chart hδ
   refine ⟨v, hv, hgrad hu hB hv |>.trans ?_⟩
   have hmul : C * δ ≤ ε := by
@@ -723,7 +723,7 @@ theorem exists_smooth_grad
       C * (ε / (C + 1)) = (C * ε) / (C + 1) := by ring
       _ ≤ ε := (div_le_iff₀ hC1).2 (by nlinarith)
   calc
-    ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 1 2
+    ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 1 2
           (fun x => u x - v x) ≤
         ENNReal.ofReal C * ENNReal.ofReal δ :=
       mul_le_mul_right happ _
@@ -762,18 +762,18 @@ theorem exists_smooth_supp
   let χs : C^∞⟮I, M; ℝ⟯ := ⟨χ, fun x => hχ.contMDiffAt⟩
   obtain ⟨Cm, hCm, hmul⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_smooth_mul_le
-      (I := I) (M := M) g 1 (p := (2 : ENNReal)) (by norm_num) (by norm_num) χs
+      (I := I) (M := M) 1 (p := (2 : ENNReal)) (by norm_num) (by norm_num) χs
   let D : ℝ := (Cl2 + Cg) * Cm
   have hD : 0 ≤ D := mul_nonneg (add_nonneg hCl2 hCg) hCm.le
   have hD1 : 0 < D + 1 := by linarith
   let δ : ℝ := ε / (D + 1)
   have hδ : 0 < δ := div_pos hε hD1
-  have hu_chart : MemWkpChart (I := I) (M := M) g 1 2 u :=
+  have hu_chart : MemWkpChart (I := I) (M := M) 1 2 u :=
     DifferentialGeometry.Analysis.Sobolev.Chart.mem_chart_one_of_lip
       (I := I) (M := M) g (by norm_num) hu hB
   obtain ⟨v, hv, happ⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.contMDiff_dense_in_WkpChart
-      (I := I) (M := M) g (p := (2 : ENNReal)) (by norm_num) (by norm_num)
+      (I := I) (M := M) (p := (2 : ENNReal)) (by norm_num) (by norm_num)
         hu_chart hδ
   let φ : M → ℝ := fun x => χ x * v x
   have hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ := hχ.mul hv
@@ -798,14 +798,14 @@ theorem exists_smooth_supp
     have hx := congrFun hχu x
     simp only [φ] at hx ⊢
     linarith
-  have hv_chart : MemWkpChart (I := I) (M := M) g 1 2 v :=
+  have hv_chart : MemWkpChart (I := I) (M := M) 1 2 v :=
     DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-      (I := I) (M := M) g (by norm_num) hv
-  have hdiff_chart : MemWkpChart (I := I) (M := M) g 1 2
+      (I := I) (M := M) (by norm_num) hv
+  have hdiff_chart : MemWkpChart (I := I) (M := M) 1 2
       (fun x => u x - v x) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_sub
-      (I := I) (M := M) g (by norm_num) hu_chart hv_chart
-  have hchart : wkpNormChart (I := I) (M := M) g 1 2
+      (I := I) (M := M) (by norm_num) hu_chart hv_chart
+  have hchart : wkpNormChart (I := I) (M := M) 1 2
       (fun x => u x - φ x) ≤
       ENNReal.ofReal Cm * ENNReal.ofReal δ := by
     rw [herr]

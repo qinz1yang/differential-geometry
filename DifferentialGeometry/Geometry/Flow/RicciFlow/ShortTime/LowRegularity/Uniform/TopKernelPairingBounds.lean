@@ -308,8 +308,8 @@ theorem top_ker_grad_h3_uniform
   let gm : SmoothRiemannianMetric I M :=
     metricPerturbationPath (I := I) g T 0 hδ hδZ s
   let P : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let B : SmoothCcTensor g 4 2 :=
     lieDecomposition2 (I := I) (M := M) g T hδ hδZ s + P +
       (-2 * s : ℝ) •

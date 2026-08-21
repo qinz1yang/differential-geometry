@@ -69,9 +69,6 @@ theorem BoundedGeometryNormalData.mapsTo_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (V U C0 C1 : LiveSlot L inp.pack s → Set E)
     (aInf : (alpha : LiveSlot L inp.pack s) →
       Fin (inp.pack.A s) → E → Real)
@@ -79,7 +76,7 @@ theorem BoundedGeometryNormalData.mapsTo_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
       d.chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -87,7 +84,7 @@ theorem BoundedGeometryNormalData.mapsTo_tail
     ∃ N : Nat, ∀ k l : Nat, N ≤ k → N ≤ l →
       let Lphi := L.subseq hphi
       Set.MapsTo
-        (stageComparisonMap inp P Lphi s hs hconn k l (chart := d.chart))
+        (stageComparisonMap inp P Lphi s hs k l (chart := d.chart))
         (Lphi.hatSourceBall inp.decay P R0 k)
         (Lphi.hatSourceBall inp.decay P R1 l) := by
   classical
@@ -121,7 +118,7 @@ theorem BoundedGeometryNormalData.mapsTo_tail
     exact lt_min (div_pos (heta alpha) (by norm_num))
       (div_pos hgap (by norm_num))
   have hjetA : ∀ alpha : LiveSlot L inp.pack s,
-      HasStageJetTail (I := I) inp P L hs phi hphi hconn C0 R0 0
+      HasStageJetTail (I := I) inp P L hs phi hphi C0 R0 0
         (epsA alpha) (chart := d.chart) := fun alpha =>
     hjets R0 hR0s 0 (epsA alpha) (hepsA alpha)
   choose Njet hNjet using hjetA
@@ -147,7 +144,7 @@ theorem BoundedGeometryNormalData.mapsTo_tail
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let F := stageComparisonMap inp P Lphi s hs hconn k l (chart := d.chart)
+  let F := stageComparisonMap inp P Lphi s hs k l (chart := d.chart)
   intro x hx
   have hxLarge : x ∈ Lphi.hatSourceBall inp.decay P s k :=
     cball_subset_of_le hR0s.le
@@ -215,9 +212,9 @@ theorem BoundedGeometryNormalData.mapsTo_tail
     have hright := chiL.restrictBall.right_inv hjet.1
     change chiL.hom
         (chiL.inv
-          (stageComparisonMap inp P Lphi s hs hconn k l
+          (stageComparisonMap inp P Lphi s hs k l
             (chiK.hom z) (chart := d.chart))) =
-      stageComparisonMap inp P Lphi s hs hconn k l
+      stageComparisonMap inp P Lphi s hs k l
         (chiK.hom z) (chart := d.chart) at hright
     simpa only [w, F, hxEq] using hright
   have hzeroL : chiL.hom (0 : E) = cl := chiL.map_zero
@@ -289,9 +286,6 @@ theorem BoundedGeometryNormalData.return_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (V U C0 C1 : LiveSlot L inp.pack s → Set E)
     (aInf : (alpha : LiveSlot L inp.pack s) →
       Fin (inp.pack.A s) → E → Real)
@@ -299,7 +293,7 @@ theorem BoundedGeometryNormalData.return_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
       d.chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -312,13 +306,13 @@ theorem BoundedGeometryNormalData.return_tail
       letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
       ∀ x ∈ Lphi.hatSourceBall inp.decay P R0 k,
         dist
-          (stageComparisonMap inp P Lphi s hs hconn l k
-            (stageComparisonMap inp P Lphi s hs hconn k l x
+          (stageComparisonMap inp P Lphi s hs l k
+            (stageComparisonMap inp P Lphi s hs k l x
               (chart := d.chart))
             (chart := d.chart))
           x < eps := by
   classical
-  obtain ⟨Nmap, hmap⟩ := d.mapsTo_tail inp P L hs phi hphi hconn
+  obtain ⟨Nmap, hmap⟩ := d.mapsTo_tail inp P L hs phi hphi
     V U C0 C1 aInf Jinf Jbarinf gInf hstage R0 R1 hroom hR1s
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
@@ -343,11 +337,11 @@ theorem BoundedGeometryNormalData.return_tail
     exact lt_min (div_pos (heta alpha) (by norm_num))
       (div_pos heps (by norm_num))
   have hfwd : ∀ alpha : LiveSlot L inp.pack s,
-      HasStageJetTail (I := I) inp P L hs phi hphi hconn C0 R0 0
+      HasStageJetTail (I := I) inp P L hs phi hphi C0 R0 0
         (delta alpha) (chart := d.chart) := fun alpha =>
     hjets R0 hR0s 0 (delta alpha) (hdelta alpha)
   have hrev : ∀ alpha : LiveSlot L inp.pack s,
-      HasStageJetTail (I := I) inp P L hs phi hphi hconn C0 R1 0
+      HasStageJetTail (I := I) inp P L hs phi hphi C0 R1 0
         (delta alpha) (chart := d.chart) := fun alpha =>
     hjets R1 hR1s 0 (delta alpha) (hdelta alpha)
   choose Nfwd hNfwd using hfwd
@@ -373,9 +367,9 @@ theorem BoundedGeometryNormalData.return_tail
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let Fkl := stageComparisonMap inp P Lphi s hs hconn k l
+  let Fkl := stageComparisonMap inp P Lphi s hs k l
     (chart := d.chart)
-  let Flk := stageComparisonMap inp P Lphi s hs hconn l k
+  let Flk := stageComparisonMap inp P Lphi s hs l k
     (chart := d.chart)
   intro x hx
   have hy := hmap k l hkMap hlMap hx
@@ -426,9 +420,9 @@ theorem BoundedGeometryNormalData.return_tail
     have hright := chiL.restrictBall.right_inv hforward.1
     change chiL.hom
         (chiL.inv
-          (stageComparisonMap inp P Lphi s hs hconn k l
+          (stageComparisonMap inp P Lphi s hs k l
             (chiK.hom z) (chart := d.chart))) =
-      stageComparisonMap inp P Lphi s hs hconn k l
+      stageComparisonMap inp P Lphi s hs k l
         (chiK.hom z) (chart := d.chart) at hright
     simpa only [w, Fkl, hxEq] using hright
   have hyCoord : chiL.hom w ∈
@@ -473,9 +467,9 @@ theorem BoundedGeometryNormalData.return_tail
     have hright := chiK.restrictBall.right_inv hreverse.1
     change chiK.hom
         (chiK.inv
-          (stageComparisonMap inp P Lphi s hs hconn l k
+          (stageComparisonMap inp P Lphi s hs l k
             (chiL.hom w) (chart := d.chart))) =
-      stageComparisonMap inp P Lphi s hs hconn l k
+      stageComparisonMap inp P Lphi s hs l k
         (chiL.hom w) (chart := d.chart) at hright
     simpa only [u, Flk, Fkl, hFw] using hright
   rw [hHu, hxEq] at hman

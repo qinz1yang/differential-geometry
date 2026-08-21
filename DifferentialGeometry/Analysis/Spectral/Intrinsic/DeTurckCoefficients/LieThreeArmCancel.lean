@@ -75,7 +75,7 @@ theorem lieSlope_eq_arms
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 4 2
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
           ![(chartModelBasis E) i, (chartModelBasis E) j] := by
@@ -89,7 +89,7 @@ theorem lieSlope_eq_arms
   have h1 := lieOne_cov_eq_raw (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' s x i j
   have h2 := lieTop_cov_eq_raw (I := I) g₀ T T'
-    hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j
+    hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j
   rw [lieTopTail] at h2
   refine hsplit.trans ?_
   rw [unitModel_add_local (I := I) g₀ 2, unitModel_add_local (I := I) g₀ 2,

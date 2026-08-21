@@ -50,7 +50,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -76,7 +76,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         let chiL := d.chart (Lphi.φ l)
           (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-        chiL.inv (stageComparisonMap inp P Lphi r hr hconn k l
+        chiL.inv (stageComparisonMap inp P Lphi r hr k l
           (chiK.hom z) (chart := d.chart))
     let G : LiveSlot L inp.pack r → Nat → Nat → E → E :=
       fun alpha k l w =>
@@ -98,7 +98,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         let chiL := d.chart (Lphi.φ l)
           (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-        let F := stageComparisonMap inp P Lphi r hr hconn k l
+        let F := stageComparisonMap inp P Lphi r hr k l
           (chart := d.chart)
         chiK.inv
           (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.hom w))
@@ -172,7 +172,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
       let chiL := d.chart (Lphi.φ l)
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-      chiL.inv (stageComparisonMap inp P Lphi r hr hconn k l
+      chiL.inv (stageComparisonMap inp P Lphi r hr k l
         (chiK.hom z) (chart := d.chart))
   let G : LiveSlot L inp.pack r → Nat → Nat → E → E :=
     fun alpha k l w =>
@@ -194,7 +194,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
       let chiL := d.chart (Lphi.φ l)
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-      let F := stageComparisonMap inp P Lphi r hr hconn k l
+      let F := stageComparisonMap inp P Lphi r hr k l
         (chart := d.chart)
       chiK.inv
         (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.hom w))
@@ -344,7 +344,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
     have hAconvW : MapCInfConvOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi hconn
+        HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi
           d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'

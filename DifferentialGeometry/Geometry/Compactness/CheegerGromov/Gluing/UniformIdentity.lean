@@ -235,10 +235,10 @@ theorem unifHatIdOn
                   (hactive_mem a b y hy)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.1)
+                    (rho := rho) (hrho := hrho) hy).1.1)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.2.1)
+                    (rho := rho) (hrho := hrho) hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
   letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -270,7 +270,7 @@ theorem unifHatIdOn
     (fun a b y hy =>
       NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd) (D := D)
         (P := P) (L := L) (pb := pb) (r := r) (n := n) (rho := rho)
-        (hrho := hrho) a b hy)
+        (hrho := hrho) hy)
     hstrict hpts
 
 omit [Module.Finite ℝ E] in
@@ -453,10 +453,10 @@ theorem unifHatIdSelfOn
                   (hactive_mem a b y hy)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.1)
+                    (rho := rho) (hrho := hrho) hy).1.1)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.2.1)
+                    (rho := rho) (hrho := hrho) hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
   letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -488,7 +488,7 @@ theorem unifHatIdSelfOn
     (fun a b y hy =>
       NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd) (D := D)
         (P := P) (L := L) (pb := pb) (r := r) (n := n) (rho := rho)
-        (hrho := hrho) a b hy)
+        (hrho := hrho) hy)
     hstrict hpts
 
 end NetLimitData

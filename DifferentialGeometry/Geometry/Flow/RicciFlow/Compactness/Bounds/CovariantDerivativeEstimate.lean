@@ -86,13 +86,13 @@ theorem covTailBoundSol
               HasDerivAt
                 (fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef q x v)
                 (((-2 : Real) • nablaRicReal (I := I) gSeq gRef q i s x) v) s := by
-    intro psi hPsi q _hq1 _hqOrder
-    exact hevComp_of_solutions (I := I) (K := Set.univ) (β := t2) (ψ := psi)
+    intro psi hPsi q _hq1 _hqOrder i x _hx
+    exact (hevComp_of_solutions (I := I) (β := t2) (ψ := psi)
       (N := q) (fun _ => D) (fun _ => S) (fun _ => hS) (fun _ _ => rfl)
       (fun _ t ht => by
         change t ∈ Set.Ioo alpha omega
         exact ⟨lt_of_lt_of_le hAlphaT2 ht.1, lt_of_le_of_lt ht.2 hPsi.2⟩)
-      (fun _ p hp V x0 => solnTowerSwap_reg (I := I) gRef S hS q hDreg p hp V x0)
+      (fun _ p hp V x0 => solnTowerSwap_reg (I := I) gRef S hS q hDreg p hp V x0)) i x
   obtain ⟨initC, hinitC0, hinit⟩ :=
     exists_initC (I := I) (S.base.metric t2) gRef
   have htime : forall t : Real, t ∈ Set.Ico t2 omega ->

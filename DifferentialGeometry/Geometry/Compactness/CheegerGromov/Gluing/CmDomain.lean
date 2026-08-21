@@ -232,7 +232,7 @@ end RootExtension
 
 section SmoothDomain
 
-variable [RiemannianBundle (fun x : M => TangentSpace I x)]
+variable [hRiemannianBundle : RiemannianBundle (fun x : M => TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -567,8 +567,8 @@ theorem existsCmExtension
 omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+set_option linter.unusedSectionVars false in
 theorem chartCenterOn_cont
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
     (join : M -> M -> Real -> M) (r : Real)
     (V : Set ((ι -> Real) × (ι -> E)))
@@ -584,6 +584,7 @@ theorem chartCenterOn_cont
         join p r (h params params.2) ∈
           (NormalCoordinates.normalChartAt (I := I) g p).source) :
     ContinuousOn (chartCenterOn (I := I) g p join r V h) V := by
+  let _ := hRiemannianBundle
   rw [continuousOn_iff_continuous_restrict]
   let H : ∀ params : V,
       CenterInput (I := I) g params.1.1
@@ -879,7 +880,8 @@ theorem centerReadoutB_min
   have hcReal : (riemannianEDist I x c).toReal < ρ / 2 :=
     (ENNReal.lt_ofReal_iff_toReal_lt hcFin).mp hcLt
   have hcSource :=
-    (hb.chart_mem_norm_le k x c ⟨hcFin, hcReal.trans_le hρexp⟩).1
+    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I)
+      k x c ⟨hcFin, hcReal.trans_le hρexp⟩).1
   have hbase : c ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]
     apply NormalCoordinates.exp_target_sub_chart (I := I) (X.obj k).metric x

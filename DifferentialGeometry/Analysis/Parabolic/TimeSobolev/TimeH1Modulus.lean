@@ -16,6 +16,7 @@ namespace TimeSobolev
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
 variable {T : ℝ}
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem integral_norm_Icc_le (f : timeL2 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ∫ s in Set.Icc (0 : ℝ) t, ‖f s‖ ≤ Real.sqrt t * ‖f‖ := by
   have hle_meas : timeMeasure t ≤ timeMeasure T := by
@@ -50,6 +51,7 @@ theorem integral_norm_Icc_le (f : timeL2 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 :
 
 namespace timeH1
 
+omit [CompleteSpace X] in
 theorem norm_toFun_sub_init_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ‖u.toFun t - u.init‖ ≤ Real.sqrt t * ‖u.deriv‖ := by
   have h0t : (0 : ℝ) ≤ t := ht.1
@@ -64,6 +66,7 @@ theorem norm_toFun_sub_init_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0
   · filter_upwards with s using norm_nonneg _
   · exact HasSubset.Subset.eventuallyLE Ioc_subset_Icc_self
 
+omit [CompleteSpace X] in
 theorem state_le_of_sqrt_floor (u : timeH1 X T) (hinit : u.init = 0) {B : ℝ}
     (hfloor : Real.sqrt T * ‖u.deriv‖ ≤ B) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ‖u.toFun t‖ ≤ B := by
@@ -75,6 +78,7 @@ theorem state_le_of_sqrt_floor (u : timeH1 X T) (hinit : u.init = 0) {B : ℝ}
         mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt ht.2) (norm_nonneg _)
     _ ≤ B := hfloor
 
+omit [CompleteSpace X] in
 theorem norm_le_of_ae_le (u : timeH1 X T) (hT : 0 < T) {R : ℝ}
     (hae : ∀ᵐ t ∂timeMeasure T, ‖u.toFun t‖ ≤ R) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ‖u.toFun t‖ ≤ R := by

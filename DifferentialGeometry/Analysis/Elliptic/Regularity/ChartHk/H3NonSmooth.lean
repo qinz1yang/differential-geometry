@@ -37,10 +37,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_loc_of_diff_data_and_uniform_bound
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
-    (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (D_deriv : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    (_h_u_chart_eq : D_deriv.u_chart = D.u_chart_deriv)
-    (_h_weak_partial_eq : ∀ i, D_deriv.weak_partial i = D.weak_partial_deriv i)
     {Ω'' : Set EuclN} (hΩ''_open : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω''))
     {h₀ : ℝ} (hh₀ : 0 < h₀)
@@ -75,7 +72,6 @@ theorem chart_loc_weak_partial_deriv_of_diff_data_and_uniform_bound
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (D_deriv : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    (h_u_chart_eq : D_deriv.u_chart = D.u_chart_deriv)
     (h_weak_partial_eq : ∀ i, D_deriv.weak_partial i = D.weak_partial_deriv i)
     {Ω'' : Set EuclN} (hΩ''_open : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω''))
@@ -114,8 +110,8 @@ theorem chart_loc_weak_partial_deriv_of_diff_data_and_uniform_bound
     exact h_uniform_bd i' k' h hh hh_le
   obtain ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩ :=
     chart_loc_of_diff_data_and_uniform_bound (I := I) (M := M)
-      (g := g) (α := α) D D_deriv h_u_chart_eq h_weak_partial_eq
-      hΩ''_open hΩ''_compact_closure hh₀ h_room hM_nn h_uniform_bd' i k
+      (g := g) (α := α) D_deriv hΩ''_open hΩ''_compact_closure hh₀ h_room
+      hM_nn h_uniform_bd' i k
   refine ⟨g_ik, hg_ik_memLp, ?_, hg_ik_norm⟩
   have h_eq := h_weak_partial_eq i
   intro φ hφ_smooth hφ_supp hφ_sub

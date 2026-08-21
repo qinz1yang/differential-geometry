@@ -62,6 +62,7 @@ lemma contMDiff_g_inner_grad_phi_grad_v
   simp only [grad_g_apply]
 
 omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem bochner_polarised_pointwise
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     Δ_g (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
@@ -81,6 +82,7 @@ theorem bochner_polarised_pointwise
     (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v) x
 
 omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem bochner_polarised_pointwise_oneSubLap
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     g.inner x

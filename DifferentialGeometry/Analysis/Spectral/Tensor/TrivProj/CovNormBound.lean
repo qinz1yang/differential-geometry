@@ -71,7 +71,7 @@ theorem chartRSTwistInv_sq_norm_le_const_mul_tensorInnerPointwise_on_compact
   rw [h_bridge, h_round] at h_T
   exact h_T
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointwiseInner_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     {K_M : Set M} (hK_M_compact : IsCompact K_M)

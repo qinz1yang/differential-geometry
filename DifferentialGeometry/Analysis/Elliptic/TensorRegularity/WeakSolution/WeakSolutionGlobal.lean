@@ -523,9 +523,8 @@ lemma covPrincipalRotationRemainder_eq_coeff_mul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    {χ : M → ℝ} (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source)
-    (hχt : tsupport χ ⊆ (chartAt H α).source) (y : EuclN) :
-    covPrincipalRotationRemainder (I := I) (M := M) g r s T α P₀ χ hχs hχt y =
+    {χ : M → ℝ} (y : EuclN) :
+    covPrincipalRotationRemainder (I := I) (M := M) g r s T α P₀ χ y =
       covPrincipalRotationCoeff (I := I) (M := M) g r s T α P₀ y *
         chartPushedRaw I α χ y := by
   classical
@@ -616,8 +615,6 @@ theorem weightedGradCoeff_contDiffOn
 noncomputable def tensorComponentWeakRHS
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
-    {K : Set EuclN} (_hK : IsCompact K)
-    (_hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s) : EuclN → ℝ := by
   classical
   exact fun y =>
@@ -638,11 +635,9 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 lemma tensorComponentWeakRHS_apply_of_mem
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
-    {K : Set EuclN} (hK : IsCompact K)
-    (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y =
+    tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y =
       densityOnEuclid (I := I) g α y *
           sourcePairingCoeff (I := I) (M := M) g r s F α P₀ y -
         densityOnEuclid (I := I) g α y *
@@ -660,11 +655,9 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 lemma tensorComponentWeakRHS_apply_of_notMem
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
-    {K : Set EuclN} (hK : IsCompact K)
-    (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
     {y : EuclN} (hy : y ∉ chartTargetEuclid (I := I) (M := M) α) :
-    tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y = 0 := by
+    tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y = 0 := by
   unfold tensorComponentWeakRHS
   rw [if_neg hy]
 
@@ -766,13 +759,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorComponentWeakRHS_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
-    {K : Set EuclN} (hK : IsCompact K)
-    (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
     (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
     (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source) :
     ContDiff ℝ ∞
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) := by
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) := by
   classical
   have hopen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
@@ -824,19 +815,19 @@ theorem tensorComponentWeakRHS_contDiff
         (I := I) (M := M) g r s T α P₀))).add ?_
     exact ContDiffOn.sum (fun l _ => hgrad l)
   have hcontDiffOn : ContDiffOn ℝ ∞
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
       (chartTargetEuclid (I := I) (M := M) α) := by
     refine hbody.congr (fun y hy => ?_)
     exact (tensorComponentWeakRHS_apply_of_mem (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hy)
+      g r s T F α P₀ hy)
   have hzero : ∀ y, y ∉ CT ∪ CF →
-      tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y = 0 := by
+      tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y = 0 := by
     intro y hy
     have hyCT : y ∉ CT := fun h => hy (Or.inl h)
     have hyCF : y ∉ CF := fun h => hy (Or.inr h)
     by_cases hyT : y ∈ chartTargetEuclid (I := I) (M := M) α
     · rw [tensorComponentWeakRHS_apply_of_mem (I := I) (M := M)
-        g r s T F α hK hK_target P₀ hyT]
+        g r s T F α P₀ hyT]
       have hS0 : sourcePairingCoeff (I := I) (M := M) g r s F α P₀ y = 0 := by
         rw [sourcePairingCoeff_def]
         refine Finset.sum_eq_zero (fun Q _ => ?_)
@@ -927,7 +918,7 @@ theorem tensorComponentWeakRHS_contDiff
       simp only [mul_zero, sub_zero, zero_add]
       exact Finset.sum_eq_zero (fun l _ => hGrad0 l)
     · exact tensorComponentWeakRHS_apply_of_notMem (I := I) (M := M)
-        g r s T F α hK hK_target P₀ hyT
+        g r s T F α P₀ hyT
   exact contDiff_of_contDiffOn_zero_off_closed_local (E := E) hopen
     hK'_compact.isClosed hK'_target hcontDiffOn hzero
 

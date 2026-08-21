@@ -55,25 +55,25 @@ variable {g₀ g_bg : SmoothRiemannianMetric I M} {K : LowRegularityBoundParamet
   {gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
   {Rcap : ℝ}
 
-theorem hδ (_h : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap) :
+theorem hδ :
     K.threshold < 1 :=
   K.threshold_lt
 
 theorem hCtop
-    (_h : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap) :
+    :
     0 ≤ K.top :=
   K.top_nonneg
 
 theorem hB1
-    (_h : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap) :
+    :
     0 ≤ K.slope :=
   K.slope_nonneg
 
-theorem hρ (_h : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap) :
+theorem hρ :
     0 < K.outer :=
   K.outer_pos
 
-theorem hP (_h : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap) :
+theorem hP :
     0 < K.realize :=
   K.realize_pos
 
@@ -105,7 +105,7 @@ theorem hcore
   h.bounds.core_cont
 
 theorem hB0
-    (_h : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap) :
+    :
     0 ≤ K.base :=
   K.base_nonneg
 
@@ -164,7 +164,7 @@ theorem hforce
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos
               K.realize_pos).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t)) :=
   h.solve.force_eq

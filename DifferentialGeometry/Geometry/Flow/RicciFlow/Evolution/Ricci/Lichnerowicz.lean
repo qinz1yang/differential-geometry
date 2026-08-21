@@ -497,8 +497,8 @@ theorem ricciLichnerowiczSpecializesInFrame_regular
       (I := I) S gInv frame (t : Real) x i j
       (fun a b => hInv (t : Real) x a b) (hRic t x)
 
+omit [SigmaCompactSpace M] in
 theorem ricciLichnerowiczSpecializesInFrame_lc
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
@@ -588,8 +588,8 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm
     (ricciLichnerowiczSpecializesInFrame_of_symm
       (I := I) S Rm04 gInv frame roughLapRic hRic hInv)
 
+omit [SigmaCompactSpace M] in
 theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
@@ -627,7 +627,7 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
 
 omit [SigmaCompactSpace M] in
 theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators
-    [IsManifold I (∞ + 1) M]
+    [hManifoldTop : IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -683,6 +683,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
         (t : Real) x₀ i j)
       D.carrier
       (t : Real) := by
+  let _ := hManifoldTop
   have hRicci :=
     evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
       (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg

@@ -194,18 +194,6 @@ theorem extends_of_rmBounded
       fun q hq => ⟨⟨by linarith [hq.1.1], by linarith [hq.1.2, hreach]⟩, hq.2⟩
     have h := (hrr_smooth x₀ i j).comp hshift.contMDiffOn hmaps
     exact h
-  have h2cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-      ContinuousOn
-        (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (rr (p.1 - t_star)) x₀ p.2 i j)
-        (Set.Ico t_star omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-    intro x₀ i j
-    have hmaps : Set.MapsTo (fun q : ℝ × M => ((q.1 - t_star, q.2) : ℝ × M))
-        (Set.Ico t_star omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
-        (Set.Ico (0 : ℝ) TT ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
-      fun q hq => ⟨⟨by linarith [hq.1.1], by linarith [hq.1.2, hreach]⟩, hq.2⟩
-    have h := (hrr_cont x₀ i j).comp hshift.continuous.continuousOn hmaps
-    exact h
   have h2pde : ∀ t ∈ Set.Ico t_star omega, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : ℝ => (rr (s - t_star)).inner x v w)
         ((-2 : ℝ) * ricciTensor (I := I) (rr (t - t_star)) x v w) (Set.Ici t_star) t := by
@@ -231,21 +219,14 @@ theorem extends_of_rmBounded
         (Set.Ico t_star omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
     fun x₀ i j => (hsmooth_left x₀ i j).mono
       (Set.prod_mono (fun s hs => ⟨lt_of_lt_of_le ht0 hs.1, hs.2⟩) (le_refl _))
-  have h1cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-      ContinuousOn
-        (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
-        (Set.Ico t_star omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
-    fun x₀ i j => (hcont_left x₀ i j).mono
-      (Set.prod_mono (Set.Ico_subset_Ico ht1 le_rfl) (le_refl _))
   have h0 : g_fam t_star = (fun t : ℝ => rr (t - t_star)) t_star := by
     simp only [sub_self]; exact hrr0.symm
   have hagree_overlap : ∀ s ∈ Set.Ico t_star omega, rr (s - t_star) = g_fam s :=
     fun s hs =>
       (ricci_flow_forward_unique (I := I) g_fam (fun t => rr (t - t_star)) ht2
-        h1smooth h1cont h2smooth h2cont h1pde h2pde h0 s hs).symm
+        h1smooth h2smooth h1pde h2pde h0 s hs).symm
   obtain ⟨ε, hε, g_ext, hagree, _hsmooth, _hcont, hpde⟩ :=
-    extend_construction_of_restart (I := I) g_fam hαω hleft hsmooth_left hcont_left
+    extend_construction_of_restart (I := I) g_fam hleft hsmooth_left hcont_left
       ht1 ht2 hreach rr
       (fun x₀ i j => (hrr_smooth x₀ i j).mono
         (Set.prod_mono Set.Ioo_subset_Ico_self (le_refl _)))

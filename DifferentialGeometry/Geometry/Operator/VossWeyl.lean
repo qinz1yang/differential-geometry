@@ -215,7 +215,7 @@ lemma localDivergence_grad_g_eq_chartVossWeylLaplacian [I.Boundaryless]
   rw [hev.fderiv_eq]
 
 theorem voss_weyl_laplacian_formula_of_closed
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source) :
@@ -225,7 +225,7 @@ theorem voss_weyl_laplacian_formula_of_closed
   exact localDivergence_grad_g_eq_chartVossWeylLaplacian (I := I) g α hf hx
 
 theorem laplacian_eq_chartVossWeyl_of_sigmaCompact
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source) :
@@ -235,8 +235,7 @@ theorem laplacian_eq_chartVossWeyl_of_sigmaCompact
   exact localDivergence_grad_g_eq_chartVossWeylLaplacian (I := I) g α hf hx
 
 theorem voss_weyl_laplacian_formula_pointwise
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source) :
     Δ_g (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x :=

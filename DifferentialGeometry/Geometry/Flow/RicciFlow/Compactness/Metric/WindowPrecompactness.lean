@@ -106,13 +106,13 @@ theorem hgLip_orderN_of_solutions
           metricDerivNorm (I := I) N (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t| := by
   obtain ⟨L, hL0, hLbound⟩ := evolNorm_bound_of_ricBound (I := I) hKc hU hKU hN
     B hequiv Bmax hBmax1 hBmax Cg hBprev KShi hKShi0 hShi CN hCN0 hboundN
-  have hev := hevComp_of_solutions (I := I) (K := K) (β := β) (ψ := ψ)
+  have hev := hevComp_of_solutions (I := I) (β := β) (ψ := ψ)
     (gSeq := gSeq) (gRef := gRef) (N := N) D S hS hmet hreg hswap
   refine ⟨L, hL0, fun i s hs t ht x hx => ?_⟩
   exact timeLipschitz_of_hasDerivAt (I := I) gRef N (gSeq i)
     (fun s' x' => (-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s' x')
     K β ψ L
-    (fun x' hx' s' hs' v => hev i x' hx' s' hs' v)
+    (fun x' _hx' s' hs' v => hev i x' s' hs' v)
     (fun x' hx' s' hs' => hLbound i x' hx' s' hs')
     s hs t ht x hx
 

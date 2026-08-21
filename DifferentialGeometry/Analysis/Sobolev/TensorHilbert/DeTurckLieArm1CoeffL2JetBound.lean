@@ -55,6 +55,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckLieArm1Coeff_eq_lieArm1Piece_sum (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
@@ -155,8 +156,7 @@ theorem lieArm1Piece_connectionDifference_metricPerturbationPath_jetL2_perOrder_
             P i := by
   by_cases hM : Nonempty M
   · obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-        ha_super hR hδ₀
+      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
     obtain ⟨Q, hQ_nn, hQ⟩ :=
       traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ a
         ha_super hR hδ₀
@@ -257,8 +257,7 @@ theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_jetL2
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤ P i := by
   by_cases hM : Nonempty M
   · obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-        ha_super hR hδ₀
+      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
     obtain ⟨Q, hQ_nn, hQ⟩ :=
       traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ a
         ha_super hR hδ₀
@@ -417,8 +416,7 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_jetL2_perOrder_ballUniform
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤ P i := by
   by_cases hM : Nonempty M
   · obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-        ha_super hR hδ₀
+      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
     obtain ⟨Q, hQ_nn, hQ⟩ :=
       traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ a
         ha_super hR hδ₀
@@ -521,8 +519,7 @@ theorem lieArm1Piece_connectionDifference_metricPerturbationPath_riemannianFiber
                   g₀)).toSection x) ≤ Λ := by
   by_cases hM : Nonempty M
   · obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-        ha_super hR hδ₀
+      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
     obtain ⟨Λcd, Fcd, hΛcd_nn, hFcd_nn, hcd⟩ :=
       lieArm1_connectionDifference_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
     refine ⟨Λcom * ((Module.finrank ℝ E : ℝ) ^ 2 * Λcd),
@@ -579,8 +576,7 @@ theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_riema
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)).toSection x) ≤ Λ := by
   by_cases hM : Nonempty M
   · obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-        ha_super hR hδ₀
+      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
     obtain ⟨Λcd, Fcd, hΛcd_nn, hFcd_nn, hcd⟩ :=
       lieArm1_connectionDifference_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
     obtain ⟨Λfx, hΛfx_nn, hΛfx⟩ :=
@@ -651,8 +647,7 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_riemannianFiberNormSq_order0_ba
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)).toSection x) ≤ Λ := by
   by_cases hM : Nonempty M
   · obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a
-        ha_super hR hδ₀
+      exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) g₀ a (R := R) hδ₀
     obtain ⟨Λpb, Fpb, hΛpb_nn, hFpb_nn, hpb⟩ :=
       lieArm1_psiB_feed (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
     refine ⟨Λcom * ((Module.finrank ℝ E : ℝ) ^ 2 * Λpb),

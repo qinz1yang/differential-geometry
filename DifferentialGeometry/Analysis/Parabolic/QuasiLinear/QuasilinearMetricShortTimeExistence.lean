@@ -63,8 +63,7 @@ def IsLinearTensorParabolicMildSolution
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem linear_tensor_parabolic_shortTime_exists
-    [CompactSpace M]
-    {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+    {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     (S : Analysis.Parabolic.QuasiLinear.BoundedC0Semigroup X) (u₀ : X)
     (F : ℝ → X) (hF : Continuous F) :
     ∃ T : ℝ, ∃ u : ℝ → X,

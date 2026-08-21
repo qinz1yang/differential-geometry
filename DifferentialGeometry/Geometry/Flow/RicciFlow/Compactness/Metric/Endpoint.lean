@@ -25,8 +25,6 @@ def canonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
-    (_hgeom : SeqBoundedGeometry (I := I) X)
-    (_hinj : BaseInjBound (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
@@ -49,13 +47,11 @@ def metricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
-    (hgeom : SeqBoundedGeometry (I := I) X)
-    (hinj : BaseInjBound (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
     MetricCompactnessConclusion (I := I) X :=
-  (canonicalMetricCompactness inp hcomplete hgeom hinj hconn).compactness
+  (canonicalMetricCompactness inp hcomplete hconn).compactness
 
 end MetricCompactnessInputs
 end HCGCompactness

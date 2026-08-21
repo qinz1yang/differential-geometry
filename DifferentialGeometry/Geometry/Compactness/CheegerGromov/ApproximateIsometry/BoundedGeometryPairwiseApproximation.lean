@@ -30,9 +30,6 @@ private theorem cast_preapprox
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (i j K L' : Nat) (hi : L.φ i = K) (hj : L.φ j = L')
     (r R ε : Real) (p : Nat)
     (chart : NormalChartFamily (I := I) X :=
@@ -55,7 +52,7 @@ private theorem cast_preapprox
       letI : MetricSpace Yi.M := (P (L.φ i)).ms
       letI : MetricSpace Yj.M := (P (L.φ j)).ms
       letI : Nonempty Yi.M := ⟨Yi.basepoint⟩
-      let F₀ := stageComparisonMap inp P L s hs hconn i j
+      let F₀ := stageComparisonMap inp P L s hs i j
         (chart := chart)
       Nonempty (MapMetricApproximationOn (I := I)
           (Metric.closedBall Yi.basepoint r) ε p F₀ Yi.metric Yj.metric) ∧
@@ -80,7 +77,7 @@ private theorem cast_preapprox
     letI : MetricSpace YK.M := (P K).ms
     letI : MetricSpace YL.M := (P L').ms
     letI : Nonempty YK.M := ⟨YK.basepoint⟩
-    let F := stageMapCast inp P L s hs hconn i j K L' hi hj
+    let F := stageMapCast inp P L s hs i j K L' hi hj
       (chart := chart)
     Nonempty (MapMetricApproximationOn (I := I)
         (Metric.closedBall YK.basepoint r) ε p F YK.metric YL.metric) ∧
@@ -141,13 +138,13 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
     push_cast
     linarith
   obtain ⟨rho, hrho, hindex, hstage, N, hNq, hgeom⟩ :=
-    HasRadiusTail.geom_tail inp (inp.properMetrics hcomplete hconn) L0
+    HasRadiusTail.geom_tail inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0
       hcomplete.complete hconn hseed psi q (htail q) R R1 hroom hR1q
-  let Sstate := stageStates inp (inp.properMetrics hcomplete hconn) L0 hconn hseed q
-  let d := radiusPayload inp (inp.properMetrics hcomplete hconn) L0 hconn hseed q
+  let Sstate := stageStates inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 hconn hseed q
+  let d := radiusPayload inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 hconn hseed q
   let Lbase := L0.subseq Sstate.sigma_strict
   obtain ⟨Nm, hmetric⟩ :=
-    hstage.preapprox_tail inp (inp.properMetrics hcomplete hconn) Lbase
+    hstage.preapprox_tail inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) Lbase
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
       hcomplete.complete hconn d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
       hrS hSR hroom hR1q p ε hε hε1
@@ -155,9 +152,9 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   refine ⟨Nall, ?_⟩
   intro k l hk hl
   letI : MetricSpace ((X.subseq psi).obj k).M :=
-    ((inp.properMetrics hcomplete hconn) (psi k)).ms
+    ((properMetricsOfCompleteConnected (I := I) hcomplete hconn) (psi k)).ms
   letI : MetricSpace ((X.subseq psi).obj l).M :=
-    ((inp.properMetrics hcomplete hconn) (psi l)).ms
+    ((properMetricsOfCompleteConnected (I := I) hcomplete hconn) (psi l)).ms
   let Lq := Lbase.subseq (d.phi_strict.comp hrho)
   have hkGeom : N ≤ k := (Nat.le_max_left _ _).trans hk
   have hlGeom : N ≤ l := (Nat.le_max_left _ _).trans hl
@@ -172,12 +169,12 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   let hli : Lq.φ (l - q) = psi l :=
     (hindex (l - q)).trans (congrArg psi (Nat.add_sub_of_le hlq))
   let F : (X.obj (psi k)).M → (X.obj (psi l)).M :=
-    stageMapCast inp (inp.properMetrics hcomplete hconn) Lq q
-      (Nat.cast_nonneg q) hconn (k - q) (l - q) (psi k) (psi l) hki hli
+    stageMapCast inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) Lq q
+      (Nat.cast_nonneg q) (k - q) (l - q) (psi k) (psi l) hki hli
   have hgeomKL := hgeom k hkGeom l hlGeom
   have hnative := hmetric (k - q) hkNative (l - q) hlNative
-  have hpair := cast_preapprox inp (inp.properMetrics hcomplete hconn) Lq q
-    (Nat.cast_nonneg q) hconn (k - q) (l - q) (psi k) (psi l)
+  have hpair := cast_preapprox inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) Lq q
+    (Nat.cast_nonneg q) (k - q) (l - q) (psi k) (psi l)
     hki hli r R ε p (chart := legacyChartFamily (I := I) X) hnative
   refine ⟨R, hrR, F, ?_, ?_, ?_, ?_, ?_⟩
   · intro x
@@ -199,7 +196,7 @@ theorem BoundedGeometryNormalData.pairwise_approximate_isometry_input_of_diagona
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeedOn inp P L0 hconn d.chart)
+    (hseed : HasStageSeedOn inp P L0 d.chart)
     (psi : Nat → Nat)
     (htail : ∀ q : Nat,
       HasRadiusTailOn inp P L0 hconn d.chart hseed psi q) :
@@ -266,11 +263,11 @@ theorem BoundedGeometryNormalData.pairwise_approximate_isometry_input_of_diagona
   let hli : Lq.φ (l - q) = psi l :=
     (hindex (l - q)).trans (congrArg psi (Nat.add_sub_of_le hlq))
   let F : (X.obj (psi k)).M → (X.obj (psi l)).M :=
-    stageMapCast inp P Lq q (Nat.cast_nonneg q) hconn
+    stageMapCast inp P Lq q (Nat.cast_nonneg q)
       (k - q) (l - q) (psi k) (psi l) hki hli (chart := d.chart)
   have hgeomKL := hgeom k hkGeom l hlGeom
   have hnative := hmetric (k - q) hkNative (l - q) hlNative
-  have hpair := cast_preapprox inp P Lq q (Nat.cast_nonneg q) hconn
+  have hpair := cast_preapprox inp P Lq q (Nat.cast_nonneg q)
     (k - q) (l - q) (psi k) (psi l) hki hli r R ε p
     (chart := d.chart) hnative
   refine ⟨R, hrR, F, ?_, ?_, ?_, ?_, ?_⟩
@@ -318,7 +315,7 @@ theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bo
       8 * Real.exp inp.decay.C <
         d.stageScale inp.realizes hcomplete hconn * inp.D := by
     simpa only [mul_comm] using (div_lt_iff₀ haMin').1 hc0'
-  let P := inp.properMetrics hcomplete hconn
+  let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
   obtain ⟨L0, hstable⟩ := inp.exists_stable_net P
   obtain ⟨hseed, psi, hpsi, htail⟩ :=
     d.stage_diag inp hcomplete hconn hphys P L0 hstable

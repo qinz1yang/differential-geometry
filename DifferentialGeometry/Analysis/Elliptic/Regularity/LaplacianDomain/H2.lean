@@ -1,4 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.H2FromSmooth
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ManifoldH2.NonSmooth
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
@@ -29,7 +30,6 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBoundCanonical
 open DifferentialGeometry.Analysis.Laplacian.ChartH2NonSmooth
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainH2FromSmooth
 open DifferentialGeometry.Analysis.Laplacian.ManifoldH2NonSmooth
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
@@ -42,7 +42,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 theorem chartH2_localBound_of_laplacianDomain
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -87,24 +87,6 @@ theorem chartH2_localBound_of_laplacianDomain
       hΩ''_open hΩ''_compact_closure hh₀ h_room
       hM_nn h_uniform_bd
   exact ⟨M_bound, hM_nn, h_h2⟩
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem laplacianDomain_memWkpChart_two_chartBilinearRoute
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
-    {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
-    (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) α) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) ∧
-    DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 2 2
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) < ⊤ :=
-  laplacianDomain_memWkpChart_two (I := I) (M := M) g hu_h h_witness
 
 end LaplacianDomainH2
 end Laplacian

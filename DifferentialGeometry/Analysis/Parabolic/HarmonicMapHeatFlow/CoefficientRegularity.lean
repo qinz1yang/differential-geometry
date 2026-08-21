@@ -142,6 +142,7 @@ private theorem hmfSpecPush_cd
 
 omit [CompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
 omit [CompactSpace M] [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
+omit [I.Boundaryless] in
 private theorem hmfRaisedFrame_cd
     (q h : SmoothRiemannianMetric I M)
     (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
@@ -294,7 +295,7 @@ theorem hmfSpecDens_cd
             (hmfAdd (I := I) (M := M) q
               (hmfSpecIncl (I := I) (M := M) q S p.1)) p.2)
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
-  obtain ⟨R, hR, hmap⟩ := hmfSpecMap_cd (I := I) (M := M) q S 3 (by norm_num)
+  obtain ⟨R, hR, hmap⟩ := hmfSpecMap_cd (I := I) (M := M) q S 3
   refine ⟨R, hR, ?_⟩
   intro p hp
   have hmap' : ContMDiffOn
@@ -335,7 +336,7 @@ theorem hmfSpecCoeff_cd
               p.1 v) : TangentBundle I M))
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hmap⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S 3 (by norm_num)
+    hmfSpecMap_cd (I := I) (M := M) q S 3
   refine ⟨R, hR, ?_⟩
   intro p hp
   let V := EuclideanSpace ℝ {i // i ∈ S}

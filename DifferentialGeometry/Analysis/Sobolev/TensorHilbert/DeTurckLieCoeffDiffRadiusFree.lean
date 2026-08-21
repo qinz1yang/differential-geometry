@@ -181,7 +181,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGr
 
 theorem exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -197,7 +197,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_per
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Kb_top, hKb_top_nn, Kb_flow, hKb_flow_nn, hwalpha⟩ :=
-    deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
   have h4fr_nn : (0 : ℝ) ≤ 4 * (Module.finrank ℝ E : ℝ) := by positivity
   refine ⟨4 * (Module.finrank ℝ E : ℝ) * Kb_top, mul_nonneg h4fr_nn hKb_top_nn,
     fun i => 4 * (Module.finrank ℝ E : ℝ) * Kb_flow i,
@@ -221,7 +221,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_per
 
 theorem deTurckLieCoeffField_perOrder_l2_radiusFree
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Atop : ℕ → ℝ, (∀ i, 0 ≤ Atop i) ∧ ∃ Alow : ℕ → ℝ, (∀ i, 0 ≤ Alow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -242,7 +242,7 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
   obtain ⟨Ka_top, hKa_top_nn, Ka_low, hKa_low_nn, hDLa⟩ :=
     exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
   obtain ⟨Kb_top, hKb_top_nn, Kb_low, hKb_low_nn, hDLb⟩ :=
-    exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
   refine ⟨fun i => 2 * Ka_top i + 2 * Kb_top + (2 * Ka_low i + 2 * Kb_low i),
     fun i => by
       have := hKa_top_nn i; have := hKb_top_nn; have := hKa_low_nn i; have := hKb_low_nn i
@@ -311,7 +311,7 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
 
 theorem deTurckLieCoeffField_summed_l2_radiusFree
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Klow : ℝ, 0 ≤ Klow ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ δ₀)
@@ -327,7 +327,7 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
               ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Atop, hAtop_nn, Alow, hAlow_nn, hper⟩ :=
-    deTurckLieCoeffField_perOrder_l2_radiusFree (I := I) (M := M) g₀ g_bg a ha_super hδ₀
+    deTurckLieCoeffField_perOrder_l2_radiusFree (I := I) (M := M) g₀ g_bg a hδ₀
       (Λ₀ := max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) (le_max_left _ _)
   refine ⟨∑ i ∈ Finset.range (a + 1), Atop i,
     Finset.sum_nonneg (fun i _ => hAtop_nn i), ?_⟩

@@ -201,43 +201,43 @@ theorem proj_homField_comm {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
       hT u₀ i]
 
 omit [BoundarylessManifold I M] in
-theorem proj_duhamel_comm {a T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1) (N : ℕ)
+theorem proj_duhamel_comm {a T : ℝ} (hT : 0 < T) (N : ℕ)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 2))
     (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
-    maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+    maxRegDuhamelSolField (I := I) (M := M) a hT
         (spatialEigenProj (I := I) (M := M) g (a + 2) N u₀)
         (timeL2EigenProj (I := I) (M := M) g a T N f) =
       timeL2EigenProj (I := I) (M := M) g (a + 2) T N
-        (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ f) := by
+        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f) := by
   rw [maxRegDuhamelSolField, maxRegDuhamelSolField, map_add,
     proj_homField_comm (I := I) (M := M) g hT.le N h_compact u₀,
     proj_solField_comm (I := I) (M := M) g hT.le N h_compact f]
 
 omit [BoundarylessManifold I M] in
-theorem projDuhamel_zero {a T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1) (N : ℕ)
+theorem projDuhamel_zero {a T : ℝ} (hT : 0 < T) (N : ℕ)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 2))
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
-    maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+    maxRegDuhamelSolField (I := I) (M := M) a hT
         (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2))
         (timeL2EigenProj (I := I) (M := M) g a T N f) =
       timeL2EigenProj (I := I) (M := M) g (a + 2) T N
-        (maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+        (maxRegDuhamelSolField (I := I) (M := M) a hT
           (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) f) := by
-  have h := proj_duhamel_comm (I := I) (M := M) g hT hT1 N h_compact
+  have h := proj_duhamel_comm (I := I) (M := M) g hT N h_compact
     (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) f
   rwa [map_zero] at h
 
 omit [BoundarylessManifold I M] in
-theorem proj_maxRegOp_deriv {a T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1) (N : ℕ)
+theorem proj_maxRegOp_deriv {a T : ℝ} (hT : 0 < T) (N : ℕ)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 2))
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
     timeH1.timeDeriv _ T
-        (maximalRegularityOp (I := I) (M := M) a hT hT1
+        (maximalRegularityOp (I := I) (M := M) a hT
           (timeL2EigenProj (I := I) (M := M) g a T N f)) =
       timeL2EigenProj (I := I) (M := M) g a T N
         (timeH1.timeDeriv _ T
-          (maximalRegularityOp (I := I) (M := M) a hT hT1 f)) := by
+          (maximalRegularityOp (I := I) (M := M) a hT f)) := by
   rw [maximalRegularityOp_timeDeriv, maximalRegularityOp_timeDeriv,
     proj_derivField_comm (I := I) (M := M) g hT.le N h_compact f]
 

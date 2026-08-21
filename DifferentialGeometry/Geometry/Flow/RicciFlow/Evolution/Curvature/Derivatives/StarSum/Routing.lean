@@ -105,7 +105,7 @@ theorem sigmaCurvPos_nat_val (k : ℕ) (q : Fin (4 + (k + 1))) (hq : q.val ≠ 0
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M]
     [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem wRoute_val {Idx : Type*} [Finite Idx] {x : M}
+theorem wRoute_val {Idx : Type*} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x)) (k : ℕ) (i j : Idx)
     (m : Fin (4 + (k + 1)) → Idx) (idx : Fin (((4 + (k + 1)) + 2) + 2)) :
     metricTraceInput (I := I) (basis i) (basis i)

@@ -866,6 +866,7 @@ private lemma foldDonorWeight_eq (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma foldSwapBackgroundR_eval (g₀ g₁ : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
@@ -1016,6 +1017,7 @@ private lemma foldQuadKernel_split (g₀ g₁ : SmoothRiemannianMetric I M)
   ring
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma foldQtrue_eval (g₀ g₁ : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
@@ -1072,6 +1074,7 @@ private lemma foldSGK_eval (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [sharpGradKoszulBiContrFib, sharpGradKoszulBiContrFibFixedFrame_toModel]
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma foldRF_eval (g₀ g₁ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :

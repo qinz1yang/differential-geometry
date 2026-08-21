@@ -18,6 +18,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
+omit [SigmaCompactSpace M] in
 theorem scalar_abs_le_rm (g : SmoothRiemannianMetric I M) (x : M) :
     |metricScalarAt (I := I) (M := M) g x| ≤
       (Module.finrank ℝ (TangentSpace I x) : ℝ) ^ 2 *

@@ -76,6 +76,7 @@ theorem deTurck_pushforward_slot_hasDerivWithinAt
     (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v w hv_raw hw_raw).hasDerivWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurck_pullback_eval_value_hasDerivWithinAt
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M)
@@ -126,6 +127,7 @@ theorem deTurck_pullback_eval_value_hasDerivWithinAt
   exact pullbackMetric_inner_hasDerivWithinAt_of_eval (I := I) g_DT Φ_fam x v w h_eval'
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem hamilton_deturck_pullback_solves_ricci_flow
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
@@ -164,7 +166,7 @@ theorem hamilton_deturck_pullback_solves_ricci_flow
   exact deTurck_pullback_eval_value_hasDerivWithinAt (I := I)
     g_bg g_DT Φ_fam t x v w (h_total_eval t ht x v w)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem hamiltonDeTurck_pullback_ricciFlow_family
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)

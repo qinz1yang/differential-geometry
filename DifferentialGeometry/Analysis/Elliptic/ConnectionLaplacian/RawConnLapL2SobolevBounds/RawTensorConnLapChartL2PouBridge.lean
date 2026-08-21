@@ -50,7 +50,7 @@ noncomputable def chartSobolevRawNormPou
           (((chartAtlasPOU I M α : M → ℝ)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
         ENNReal.ofReal
-          (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+          (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
             (fun b : M =>
               rawTensorConnLap (I := I) g r s
                 (fun z : M => T.toSection z) b)
@@ -68,7 +68,7 @@ omit [NeZero (Module.finrank ℝ E)] in
               (((chartAtlasPOU I M α : M → ℝ)
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                 (fun b : M =>
                   rawTensorConnLap (I := I) g r s
                     (fun z : M => T.toSection z) b)
@@ -294,11 +294,11 @@ private lemma normSq_apply_eq_pushedNormSq
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     (‖rawTensorConnLap (I := I) g r s T₀
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ ^ 2 : ℝ) =
-      tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+      tensorTrivProjPushedNormSq (I := I) (M := M) r s α
         (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y := by
   classical
   rw [tensorTrivProjPushedNormSq_apply_of_mem
-      (I := I) (M := M) g r s α
+      (I := I) (M := M) r s α
       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) hy]
   rfl
 
@@ -519,7 +519,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                   (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
             ∂(volume : Measure EuclN) := by
     intro α hα_mem
@@ -543,7 +543,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                     (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)) := by
       intro y hy
       have hdens_pou_sq_le := density_pou_sq_le
@@ -610,7 +610,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
             (‖rawTensorConnLap (I := I) g r s T₀
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ ^ 2) =
           ENNReal.ofReal
-            (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+            (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
               (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y) := by
         rw [h_pushed]
       calc ENNReal.ofReal
@@ -653,7 +653,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                     (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)) := by
             rw [h_pushed_eq]
     have hset_int_le :
@@ -673,7 +673,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   (((chartAtlasPOU I M α : M → ℝ)
                       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y))
               ∂(volume : Measure EuclN) :=
       MeasureTheory.setLIntegral_mono_ae'
@@ -686,7 +686,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
               (((chartAtlasPOU I M α : M → ℝ)
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                   (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y))
             ∂(volume : Measure EuclN)
           = ENNReal.ofReal (Mα α + 1) *
@@ -695,7 +695,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   (((chartAtlasPOU I M α : M → ℝ)
                       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
                 ∂(volume : Measure EuclN) := by
       rw [MeasureTheory.lintegral_const_mul']
@@ -718,7 +718,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   (((chartAtlasPOU I M α : M → ℝ)
                       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y))
               ∂(volume : Measure EuclN) :=
         mul_le_mul_right hset_int_le _
@@ -729,7 +729,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   (((chartAtlasPOU I M α : M → ℝ)
                       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
                 ∂(volume : Measure EuclN)) := by rw [hpull]
       _ = ((euclideanHaarFactor E : ℝ≥0∞) * ENNReal.ofReal (Mα α + 1)) *
@@ -738,7 +738,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                     (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
               ∂(volume : Measure EuclN) := by ring
       _ = ENNReal.ofReal (cE * (Mα α + 1)) *
@@ -747,7 +747,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                     (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
               ∂(volume : Measure EuclN) := by
             congr 1
@@ -782,7 +782,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                   (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
             ∂(volume : Measure EuclN) ≤
         ENNReal.ofReal C_inner *
@@ -791,7 +791,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                   (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
             ∂(volume : Measure EuclN) := by
     intro α hα_mem
@@ -810,7 +810,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                     (((chartAtlasPOU I M α : M → ℝ)
                         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
                 ∂(volume : Measure EuclN) := by
     refine Finset.sum_le_sum ?_
@@ -824,7 +824,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   (((chartAtlasPOU I M α : M → ℝ)
                       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                     (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
               ∂(volume : Measure EuclN)
         = ENNReal.ofReal C_inner *
@@ -834,7 +834,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                     (((chartAtlasPOU I M α : M → ℝ)
                         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
                 ∂(volume : Measure EuclN) := by
     rw [← Finset.mul_sum]
@@ -863,7 +863,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                     (((chartAtlasPOU I M α : M → ℝ)
                         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
                 ∂(volume : Measure EuclN) := hsum_per_alpha_le
       _ = ENNReal.ofReal C_inner *
@@ -873,7 +873,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                     (((chartAtlasPOU I M α : M → ℝ)
                         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
                       (fun b : M => rawTensorConnLap (I := I) g r s T₀ b) y)
                 ∂(volume : Measure EuclN) := hpull_sum
   have h_NC_eq : ENNReal.ofReal (N : ℝ) * ENNReal.ofReal C_inner =

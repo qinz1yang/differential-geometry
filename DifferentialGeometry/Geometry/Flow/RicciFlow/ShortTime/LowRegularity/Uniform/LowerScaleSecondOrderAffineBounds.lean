@@ -70,7 +70,7 @@ theorem secondOrderAction_ladder_affine_uniform
     secondOrderCoefficient_fibre_bound_uniform (I := I) (M := M) hDim gBase hΛ
   refine ⟨ρ, K, hρ, hK, ?_⟩
   intro δ hδ_le hδ0 R hR0 hRρ g hEq hjet
-  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_quadratic (I := I) (M := M) hDim g gBase
+  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_quadratic (I := I) (M := M) g gBase
   have hε : 0 ≤ K * (δ / (1 - δ) ^ 2 + R) :=
     mul_nonneg hK (add_nonneg (div_nonneg hδ0 (sq_nonneg _)) hR0)
   obtain ⟨Cop, hCop, hop⟩ :=

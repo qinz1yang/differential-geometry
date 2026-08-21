@@ -68,7 +68,7 @@ variable [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V]
   {F : Type*} [NormedAddCommGroup F]
 
 def heatBallVol (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ≥0∞ :=
+    : ℝ≥0∞ :=
   ENNReal.ofReal
     (Real.sqrt Real.pi ^ Module.finrank ℝ V /
       Real.Gamma (Module.finrank ℝ V / 2 + 1))
@@ -241,6 +241,7 @@ theorem fluxShellCyl_meas (t : ℝ) (x : V) (k : ℕ) :
       (isOpen_lt hnorm continuous_const).measurableSet)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD1_early_shell {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (hst : s ≤ t / 2) (w : V) {x y : V} (k : ℕ)
     (hy : y ∈ fluxShell t x k) :
@@ -254,13 +255,13 @@ theorem heatD1_early_shell {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
                 Real.exp (-(4 : ℝ)⁻¹ * (k : ℝ) ^ 2)))) := by
   have hlo : (k : ℝ) ≤
       ‖(heatScale (t - s))⁻¹ • (x - y)‖ :=
-    earlyScaled_lo ht hs hst (Nat.cast_nonneg k) hy.1
+    earlyScaled_lo ht hs hst hy.1
   have hhi : ‖(heatScale (t - s))⁻¹ • (x - y)‖ ≤
       Real.sqrt 2 * ((k + 1 : ℕ) : ℝ) :=
-    earlyScaled_hi ht hs hst (by positivity) hy.2.le
+    earlyScaled_hi ht hst hy.2.le
   have hmaj := heatD1Maj_early (V := V) (t := t) (s := s)
     (R := (k : ℝ)) (Q := Real.sqrt 2 * ((k + 1 : ℕ) : ℝ))
-    ht hs hst (Nat.cast_nonneg k) hlo hhi
+    ht hst (Nat.cast_nonneg k) hlo hhi
   have hdiff : 0 < t - s := by linarith
   calc
     ‖heatD1 (t - s) w (x - y)‖ ≤
@@ -302,11 +303,12 @@ theorem halfScale_cancel_succ {t : ℝ} (ht : 0 < t) :
   ring
 
 def earlyFluxD1C (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   (Real.sqrt 2) ^ (Module.finrank ℝ V + 1) *
     (((2 : ℝ)⁻¹ * Real.sqrt 2) * (baseHeatMass V)⁻¹)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem earlyFluxD1C_nonneg : 0 ≤ earlyFluxD1C V := by
   unfold earlyFluxD1C
   exact mul_nonneg (pow_nonneg (Real.sqrt_nonneg _) _)
@@ -315,7 +317,7 @@ theorem earlyFluxD1C_nonneg : 0 ≤ earlyFluxD1C V := by
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le))
 
 def earlyFluxC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ≥0∞ :=
+    : ℝ≥0∞ :=
   ENNReal.ofReal (earlyFluxD1C V) *
     (heatBallVol V) ^ ((1 : ℝ) / 2)
 
@@ -557,7 +559,8 @@ def heatEarly1Near (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
       ∂(stVolume : Measure (ℝ × V))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-theorem heatD1_early_near {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
+omit [FiniteDimensional ℝ V] in
+theorem heatD1_early_near {t s : ℝ} (ht : 0 < t)
     (hst : s ≤ t / 2) (w : V) {x y : V}
     (hy : y ∈ Metric.ball x (heatScale t)) :
     ‖heatD1 (t - s) w (x - y)‖ ≤
@@ -572,10 +575,10 @@ theorem heatD1_early_near {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
   have hhi :
       ‖(heatScale (t - s))⁻¹ • (x - y)‖ ≤ Real.sqrt 2 := by
     have h := earlyScaled_hi (V := V) (t := t) (s := s) (Q := 1)
-      ht hs hst (by norm_num) hx
+      ht hst hx
     simpa using h
   have hmaj := heatD1Maj_early (V := V) (t := t) (s := s)
-    (R := 0) (Q := Real.sqrt 2) ht hs hst (by norm_num)
+    (R := 0) (Q := Real.sqrt 2) ht hst (by norm_num)
       (norm_nonneg _) hhi
   calc
     ‖heatD1 (t - s) w (x - y)‖ ≤
@@ -612,7 +615,7 @@ theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
       ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ ≤
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
-    have hk := heatD1_early_near ht hz.1.1.le hz.1.2 w hz.2
+    have hk := heatD1_early_near ht hz.1.2 w hz.2
     rw [← ofReal_norm_eq_enorm, norm_smul,
       ENNReal.ofReal_mul (norm_nonneg _)]
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal hk) _

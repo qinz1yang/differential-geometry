@@ -173,7 +173,7 @@ theorem HasStageJetData.inv_chart_conv
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (S T Vrad : Real) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -220,7 +220,7 @@ theorem HasStageJetData.inv_chart_conv
       let F :
           (X.obj (Lphi.φ (kn n))).M → (X.obj (Lphi.φ (ln n))).M :=
         stageComparisonMap (I := I) (X := X) (inp := inp) (P := P)
-          (L := Lphi) (s := r) (hs := hr) (hconn := hconn) (kn n) (ln n)
+          (L := Lphi) (s := r) (hs := hr) (kn n) (ln n)
       chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
     ∃ Vout : Set E,
       IsOpen Vout ∧ IsCompact (closure Vout) ∧ K ⊆ Vout ∧
@@ -247,7 +247,7 @@ theorem HasStageJetData.inv_chart_conv
       (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))
     let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
       (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-    chiL (stageComparisonMap (I := I) (X := X) inp P Lphi r hr hconn
+    chiL (stageComparisonMap (I := I) (X := X) inp P Lphi r hr
       (kn n) (ln n)
       (chiK.symm z))
   let G : Nat → E → E := fun n w ↦
@@ -270,7 +270,7 @@ theorem HasStageJetData.inv_chart_conv
     let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
       (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
     let F : Yk.M → Yl.M :=
-      stageComparisonMap (I := I) (X := X) inp P Lphi r hr hconn
+      stageComparisonMap (I := I) (X := X) inp P Lphi r hr
         (kn n) (ln n)
     chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
   change ∃ Vout : Set E,
@@ -305,7 +305,7 @@ theorem HasStageJetData.inv_chart_conv
       HasStageJetData.chart_conv
         (E := E) (H := H) (I := I) (X := X)
         (inp := inp) (P := P) (L := L) (r := r) (hr := hr)
-        (phi := phi) (hphi := hphi) (hconn := hconn)
+        (phi := phi) (hphi := hphi)
         (U := U) (C0 := C0) (C1 := C1)
         (aInf := aInf) (Jinf := Jinf) (Jbarinf := Jbarinf)
         (gInf := gInf) (hstage := ⟨hdata, hmetric, hjets, hbase⟩)
@@ -353,7 +353,7 @@ theorem HasStageJetData.inv_chart_conv
     letI : MetricSpace Yl.M := (P (Lphi.φ (ln n))).ms
     letI : Nonempty Yk.M := ⟨Yk.basepoint⟩
     let F : Yk.M → Yl.M :=
-      stageComparisonMap (I := I) (X := X) inp P Lphi r hr hconn
+      stageComparisonMap (I := I) (X := X) inp P Lphi r hr
         (kn n) (ln n)
     let ck := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
     let cl := seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat)
@@ -472,7 +472,7 @@ theorem HasStageJetData.inv_chart_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (S T Vrad : Real) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -517,7 +517,7 @@ theorem HasStageJetData.inv_chart_tail
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
       let F : (X.obj (Lphi.φ k)).M → (X.obj (Lphi.φ l)).M :=
         stageComparisonMap (I := I) (X := X) (inp := inp) (P := P)
-          (L := Lphi) (s := r) (hs := hr) (hconn := hconn) k l
+          (L := Lphi) (s := r) (hs := hr) k l
       chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ j ≤ p, ∀ w ∈ K,
       mapDerivNorm j (G k l) id w ≤ eps := by
@@ -544,7 +544,7 @@ theorem HasStageJetData.inv_chart_tail
     let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
     let F : Yk.M → Yl.M :=
-      stageComparisonMap (I := I) (X := X) inp P Lphi r hr hconn k l
+      stageComparisonMap (I := I) (X := X) inp P Lphi r hr k l
     chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
   change ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ j ≤ p, ∀ w ∈ K,
     mapDerivNorm j (G k l) id w ≤ eps

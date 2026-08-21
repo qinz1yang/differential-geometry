@@ -37,7 +37,7 @@ variable [I.Boundaryless]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem intr_metric_eq
+@[nolint unusedArguments] theorem intr_metric_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -91,7 +91,8 @@ theorem intr_metric_eq
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
   letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
   letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-  letI : ConnectedSpace Y.M := hconn
+  letI : ConnectedSpace Y.M := by
+    exact hconn
   let hEnorm : ∀ (y : Y.M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (Y.metric.inner y w w)) := by
     intro y w
@@ -283,7 +284,7 @@ theorem framed_rm04_of_seq
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem intr_rm04_of_seq
+@[nolint unusedArguments] theorem intr_rm04_of_seq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -436,7 +437,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem framed_rm04_bounds
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
-    (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (x : Y.M) (z v : E) {a K R Vb A Blo Bhi : Real}
     (ha : 0 < a) (hK : 0 ≤ K) (hVb : 0 ≤ Vb)
     (hz : ‖z‖ < framedJacobiRadius (I := I) Y x)
@@ -468,7 +468,6 @@ theorem framed_rm04_bounds
     IsManifold.of_le (I := I) (M := Y.M) (n := ∞) (by decide)
   letI : SigmaCompactSpace Y.M := Y.sigmaCompact
   letI : T2Space Y.M := Y.t2
-  letI : ConnectedSpace Y.M := hconn
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   let xRaw : E := show E from normalFrame (I := I) Y.metric x z
   let vRaw : E := show E from normalFrame (I := I) Y.metric x v
@@ -1078,9 +1077,6 @@ theorem exists_intr_control
 theorem exists_rm04_radii
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
-    (hconn : ∀ k : Nat,
-      letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-      ConnectedSpace (X.obj k).M)
     (hgeom : SeqBoundedGeometry (I := I) X) :
     ∃ r₀ : Real, 0 < r₀ ∧ ∀ (k : Nat) (x : (X.obj k).M),
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1111,7 +1107,6 @@ theorem exists_rm04_radii
   letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
   letI : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : ConnectedSpace (X.obj k).M := hconn k
   let K : Real := S * r₀ ^ 2
   have hK : 0 ≤ K := mul_nonneg hS (sq_nonneg r₀)
   have hKle : K ≤ κ := by simpa only [K] using hcap
@@ -1156,7 +1151,7 @@ theorem exists_rm04_radii
     simp only [K, S]
     exact le_rfl
   have hbounds := framed_rm04_bounds (I := I) (X.obj k)
-    (hcomplete.complete k) (hconn k) x z v
+    (hcomplete.complete k) x z v
     (a := a) (K := K) (R := hgeom.C 0) (Vb := r₀)
     (A := ‖a • v‖) (Blo := (3 / 4 : Real) * ‖v‖)
     (Bhi := (5 / 4 : Real) * ‖v‖)

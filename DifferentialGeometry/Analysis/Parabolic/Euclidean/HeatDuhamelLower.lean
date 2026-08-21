@@ -19,16 +19,16 @@ variable {V F : Type*}
   [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def d0DuhMajor (K : ℝ≥0) (_t _s : ℝ) : ℝ := K
+def d0DuhMajor (K : ℝ≥0) : ℝ := K
 
 theorem d0DuhMajor_intble (t : ℝ) (K : ℝ≥0) :
-    IntervalIntegrable (d0DuhMajor K t) volume 0 t := by
+    IntervalIntegrable (fun _ : ℝ => d0DuhMajor K) volume 0 t := by
   simpa only [d0DuhMajor] using
     (intervalIntegrable_const :
       IntervalIntegrable (fun _ : ℝ => (K : ℝ)) volume 0 t)
 
 theorem d0DuhMajor_int (t : ℝ) (K : ℝ≥0) :
-    ∫ s : ℝ in 0..t, d0DuhMajor K t s = t * (K : ℝ) := by
+    ∫ _ : ℝ in 0..t, d0DuhMajor K = t * (K : ℝ) := by
   simp only [d0DuhMajor, intervalIntegral.integral_const, sub_zero,
     smul_eq_mul]
 
@@ -65,7 +65,7 @@ theorem heatDuh_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     ‖heatSup (t - s) (f s) x‖ ≤ ‖f s‖ :=
       heatSup_contract (sub_pos.mpr hstlt) (f s) x
     _ ≤ K := hf s ⟨hs.1.le, hs.2⟩
-    _ = d0DuhMajor K t s := by rfl
+    _ = d0DuhMajor K := by rfl
 
 omit [CompleteSpace F] in
 theorem heatDuh_norm {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
@@ -81,7 +81,7 @@ theorem heatDuh_norm {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     ‖∫ s : ℝ in 0..t, heatSup (t - s) (f s) x‖ ≤
         ∫ s : ℝ in 0..t, ‖heatSup (t - s) (f s) x‖ :=
       intervalIntegral.norm_integral_le_integral_norm ht.le
-    _ ≤ ∫ s : ℝ in 0..t, d0DuhMajor K t s := by
+    _ ≤ ∫ _ : ℝ in 0..t, d0DuhMajor K := by
       apply intervalIntegral.integral_mono_on_of_le_Ioo ht.le hint.norm
         (d0DuhMajor_intble t K)
       intro s hs
@@ -89,7 +89,7 @@ theorem heatDuh_norm {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
         ‖heatSup (t - s) (f s) x‖ ≤ ‖f s‖ :=
           heatSup_contract (sub_pos.mpr hs.2) (f s) x
         _ ≤ K := hf s ⟨hs.1.le, hs.2.le⟩
-        _ = d0DuhMajor K t s := by rfl
+        _ = d0DuhMajor K := by rfl
     _ = t * (K : ℝ) := d0DuhMajor_int t K
 
 omit [CompleteSpace F] in

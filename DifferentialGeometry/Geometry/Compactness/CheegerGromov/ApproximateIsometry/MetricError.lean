@@ -36,6 +36,8 @@ theorem metricError_eq_zero
       metricDerivNorm (I := I) 0 G g g x := by
   rfl
 
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem t02Norm_metricDiff
     (G g : SmoothRiemannianMetric I M) (a : Nat) (ha : 1 ≤ a) (x : M) :
     tensor02CovDerivNormWith (I := I) a

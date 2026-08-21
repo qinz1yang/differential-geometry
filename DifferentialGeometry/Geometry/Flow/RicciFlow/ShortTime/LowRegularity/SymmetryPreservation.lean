@@ -439,12 +439,12 @@ theorem symmHs_solField_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
     hT (hCompact (I := I) (M := M) g) f j]
 
 theorem symmHs_duhamel_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
-    (h2 : (0 : ℝ) ≤ a + 2) (hT : 0 < T) (hT1 : T ≤ 1)
+    (h2 : (0 : ℝ) ≤ a + 2) (hT : 0 < T)
     (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
     symmTimeL2 (I := I) (M := M) g h2 T
-        (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ f) =
-      maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f) =
+      maxRegDuhamelSolField (I := I) (M := M) a hT
         (symmHs (I := I) (M := M) g h2 u₀)
         (symmTimeL2 (I := I) (M := M) g ha T f) := by
   rw [maxRegDuhamelSolField, maxRegDuhamelSolField, map_add,
@@ -452,7 +452,7 @@ theorem symmHs_duhamel_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
     symmHs_solField_comm (I := I) (M := M) g ha h2 hT.le f]
 
 theorem duhamel_symm_ae {a T : ℝ} (ha : (0 : ℝ) ≤ a) (h2 : (0 : ℝ) ≤ a + 2)
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
     (hu₀ : symmHs (I := I) (M := M) g h2 u₀ = u₀)
@@ -460,25 +460,25 @@ theorem duhamel_symm_ae {a T : ℝ} (ha : (0 : ℝ) ≤ a) (h2 : (0 : ℝ) ≤ a
       symmHs (I := I) (M := M) g ha (f t) = f t) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g h2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ f t) =
-        maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ f t := by
+          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f t) =
+        maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f t := by
   have hfL : symmTimeL2 (I := I) (M := M) g ha T f = f :=
     (symmTimeL2_eq_self_iff (I := I) (M := M) g ha f).2 hf
   refine (symmTimeL2_eq_self_iff (I := I) (M := M) g h2 _).1 ?_
-  rw [symmHs_duhamel_comm (I := I) (M := M) g ha h2 hT hT1 u₀ f, hu₀, hfL]
+  rw [symmHs_duhamel_comm (I := I) (M := M) g ha h2 hT u₀ f, hu₀, hfL]
 
 theorem duhamel_solution_symmetric_ae {a T : ℝ} (ha : (0 : ℝ) ≤ a) (h2 : (0 : ℝ) ≤ a + 2)
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
     (hf : ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g ha (f t) = f t) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g h2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) a hT
             (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) f t) =
-        maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+        maxRegDuhamelSolField (I := I) (M := M) a hT
           (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) f t :=
-  duhamel_symm_ae (I := I) (M := M) g ha h2 hT hT1 0 f (map_zero _) hf
+  duhamel_symm_ae (I := I) (M := M) g ha h2 hT 0 f (map_zero _) hf
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

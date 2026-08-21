@@ -1146,7 +1146,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
       rw [smoothCcToTensorHs_coeff, hTs_def]
     have hstep2 := sum_tensorSobolevWeight_mul_sq_tensorL2Coeff_toL2_symmS_le
       (I := I) (M := M) (g := g₀) τ S
-      (eigenIdxFinset_mem_iff_of_eigenvalue_eq g₀ N) Tb hTb_L2_off
+      Tb hTb_L2_off
     have hstep3 : (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
         (tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)

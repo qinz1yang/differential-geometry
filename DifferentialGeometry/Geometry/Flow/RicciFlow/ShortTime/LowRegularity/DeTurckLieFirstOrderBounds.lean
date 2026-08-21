@@ -458,7 +458,7 @@ theorem kappaBackground_h1_uniform
   refine ⟨B, fun _ _ => Real.sqrt_nonneg _, ?_⟩
   intro g₀ hEq hjet1 hjet2 hjet3 g₁ P htie R hR hP
   have hself :=
-    kappaSelf_h1 (I := I) (M := M) g₀ g₁ P htie R hR hP
+    kappaSelf_h1 (I := I) (M := M) g₀ g₁ P htie R hP
   have hpb3 :=
     hBP g₀ hEq hjet1 hjet2 hjet3 P R hR hP
   have hpb :
@@ -690,6 +690,7 @@ private theorem inner_inv_mixed
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 private theorem sharp_eq_insert
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
@@ -726,6 +727,7 @@ private theorem sharp_eq_insert
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem fullRaised_split
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
@@ -778,6 +780,7 @@ private theorem insert_add
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem sharp_split
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
@@ -906,7 +909,7 @@ private theorem psi_h2_tame
   have hSelf : jet (I := I) (M := M) g₀ 0 3 3 Self ≤
       (4 * A) ^ 2 := by
     simpa only [Self] using
-      kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie A hA hP3
+      kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie A hP3
   have hPb : jet (I := I) (M := M) g₀ 0 3 3 Pb ≤
       (BP R) ^ 2 := by
     simpa only [Pb] using hpb P R hR hP2
@@ -1033,7 +1036,7 @@ private theorem psi_h2_unif
   have hSelf : jet (I := I) (M := M) g₀ 0 3 3 Self ≤
       (4 * A) ^ 2 := by
     simpa only [Self] using
-      kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie A hA hP3
+      kappaSelf_h2 (I := I) (M := M) g₀ g₁ P htie A hP3
   have hPb : jet (I := I) (M := M) g₀ 0 3 3 Pb ≤
       (BP R) ^ 2 := by
     simpa only [Pb] using
@@ -1099,6 +1102,7 @@ private theorem psi_h2_unif
   exact hOut
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem traceHessian_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ =

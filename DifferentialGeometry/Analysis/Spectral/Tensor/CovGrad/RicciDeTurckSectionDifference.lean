@@ -175,6 +175,7 @@ theorem connectionDifferenceBiContrFibFixedFrame_toModel (gj g₀ g₁ g₁' : S
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem connectionDifferenceBiKernelBilin_homSection_contMDiff (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     {p q : Π b : M, TangentSpace I b}
     (hp : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% p))
@@ -216,7 +217,7 @@ theorem connectionDifferenceBiKernelBilin_homSection_contMDiff (gj g₀ g₁ g�
   rw [connectionDifferenceBiKernelBilin_apply]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceBiContrFibFixedFrame_apply_section_contMDiff
     (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
@@ -304,7 +305,7 @@ theorem connectionDifferenceBiContrFibFixedFrame_apply_section_contMDiff
   rw [ContinuousLinearMap.sum_apply]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceBiContrFibFixedFrame_contMDiff (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -392,7 +393,7 @@ theorem connectionDifferenceBiContrFib_eq_fixedFrame_on_nbhd (gj g₀ g₁ g₁'
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₀ y i j)
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₀ x₀ hy i j)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceBiContrFib_contMDiff (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
@@ -423,7 +424,7 @@ def connectionDifferenceBiContrCoeffField (gj g₀ g₁ g₁' : SmoothRiemannian
       contMDiff_toFun := connectionDifferenceBiContrFib_contMDiff (I := I) gj g₀ g₁ g₁' }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem connectionDifferenceBiContrCoeffField_toSection (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (x : M) :
     (connectionDifferenceBiContrCoeffField (I := I) (M := M) gj g₀ g₁ g₁').toSection x =
@@ -435,7 +436,7 @@ noncomputable def connectionDifferenceBiContrCoeff (gj g₀ g₁ g₁' : SmoothR
     SmoothCcTensor g₀ 2 2 :=
   connectionDifferenceBiContrCoeffField (I := I) (M := M) gj g₀ g₁ g₁'
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem connectionDifferenceBiContrCoeff_toSection (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M) :
     (connectionDifferenceBiContrCoeff (I := I) (M := M) gj g₀ g₁ g₁').toSection x =
       (show TensorRSSpace 2 2 I x from
@@ -443,7 +444,7 @@ omit [I.Boundaryless] in
   rfl
 
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceBiContrCoeff_operatorFieldApplication_eq (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2

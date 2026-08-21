@@ -63,7 +63,7 @@ theorem conjugating_flow_jointContMDiffOn
   obtain ⟨a, ha0, hat₀⟩ := exists_between ht₀_lo
   obtain ⟨b, ht₀b, hbT⟩ := exists_between ht₀_hi
   obtain ⟨Xt, δ, hδ, hXt_eq, hXt_cont, hXt_auto⟩ :=
-    interior_field_global_cutoff_extension Y T hint_Y ha0 (lt_trans hat₀ ht₀b) hbT
+    interior_field_global_cutoff_extension Y T hint_Y ha0 hbT
   obtain ⟨T', hT', Φ, hΦ_init, hΦ_smooth, hΦ_bare⟩ :=
     global_flow_jointContMDiffOn_on_closed_manifold Xt hXt_cont q₀.1
   set c : ℝ := max (max (a - δ) (q₀.1 - T')) 0 with hc_def
@@ -667,7 +667,7 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
       (fun s : ℝ => (Φ_fam s : M → M) y) (fun s : ℝ => mfderiv I I (Φ_fam s : M → M) y u)
       ⟨hs₀.1, hs₀.2⟩ (horbit y |>.continuousWithinAt hs₀) hchartRepDiff
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem conjugating_flow_t0_continuity_data
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -1084,6 +1084,7 @@ private theorem flow_chartGramMatrix_alpha_continuousWithinAt
   exact hcompS''.mono_of_mem_nhdsWithin hS'_mem
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem conjugating_flow_pullback_jointGram_data
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -1317,6 +1318,7 @@ theorem conjugating_flow_pullback_jointGram_data
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem conjugating_flow_pullback_jointGram_onesided
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

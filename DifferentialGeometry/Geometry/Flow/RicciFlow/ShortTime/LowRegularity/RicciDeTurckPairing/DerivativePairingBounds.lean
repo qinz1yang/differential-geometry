@@ -48,6 +48,7 @@ private lemma two_mul_sq_add_sq_le_four_sum_sq
   nlinarith only [sq_nonneg x, sq_nonneg y, mul_nonneg hx hy]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem ricciQuadraticKernelDerivativeCoefficient_sub_eq_six_terms
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
@@ -499,6 +500,7 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
       ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_sub_eq_two_terms
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
@@ -1745,7 +1747,7 @@ theorem exists_lowOrderFirstDerivativePathIntegral_pairing_secondOrder_bound
   have hBtot : 0 ≤ B R * (1 + A) * D :=
     mul_nonneg (mul_nonneg (hB R hR) (add_nonneg (by norm_num) hA)) hD
   have hpath := path_jetL2_le (I := I) (M := M) g 3 2 2
-    Φ S metricPerturbationPathDomain_isOpen hSI hjoint hBtot
+    Φ S metricPerturbationPathDomain_isOpen hSI hjoint
     (fun s hs => by
       simpa only [Φ, D, covariantJetNormSq, Nat.reduceAdd] using
         hpoint T U hT hU hδ_le hδ0 hδT hδU hδZ hTn hUn
@@ -1833,7 +1835,6 @@ theorem exists_lowOrderFirstDerivativePathIntegral_secondOrder_bound
     metricPerturbationPathDomain_isOpen hSI
     (affineLowOrderFirstDerivativeCoefficientPath_jointlySmooth (I := I) (M := M) g T hδT hδZ)
     (B := B R * (1 + A))
-    (mul_nonneg (hB R hR) (add_nonneg (by norm_num) hA))
     (fun s hs => by
       simpa only [covariantJetNormSq, Nat.reduceAdd] using
         hpoint T hT hδ_le hδ0 hδT hδZ

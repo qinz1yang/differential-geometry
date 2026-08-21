@@ -57,9 +57,9 @@ theorem ricciDeTurck_remainder_path_pairing_h5_uniform_bound
               ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
               let P0 := ricciDeTurckRemainderZeroOrderPathIntegral (I := I) (M := M) g gBase T 0
                 hdelta_lt hdelta hdelta_lt hdeltaZ
-              let P2 := rhsTopPathIntegral (I := I) (M := M) g gBase T 0
+              let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
                 hdelta_lt hdelta hdelta_lt hdeltaZ
-              let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+              let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
               let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
               let HT := iteratedCovGrad (I := I) g 0 2 2 T
               let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -89,9 +89,9 @@ theorem ricciDeTurck_remainder_path_pairing_h5_uniform_bound
   intro T hTsymm delta hdelta_le hdelta0 hdelta_lt hdelta hdeltaZ R hR hRle hT2
   let P0 := ricciDeTurckRemainderZeroOrderPathIntegral (I := I) (M := M) g gBase T 0
     hdelta_lt hdelta hdelta_lt hdeltaZ
-  let P2 := rhsTopPathIntegral (I := I) (M := M) g gBase T 0
+  let P2 := rhsTopPathIntegral (I := I) (M := M) g T 0
     hdelta_lt hdelta hdelta_lt hdeltaZ
-  let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+  let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
   let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
   let HT := iteratedCovGrad (I := I) g 0 2 2 T
   let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -113,8 +113,8 @@ theorem ricciDeTurck_remainder_path_pairing_h5_uniform_bound
     let PairComms := oneMinusConnLapSmooth (I := I) g 0 2 Zs -
       operatorFieldApply (I := I) (M := M) g 2 2 (Qs LT) T -
       operatorFieldApply (I := I) (M := M) g 2 2 (Qs T) LT + Zs
-    let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gs -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    let Cs := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
     oneMinusConnLapSmooth (I := I) g 0 2
         (operatorFieldApply (I := I) (M := M) g 2 2 (R0s + K0) T) +
       PairComms +

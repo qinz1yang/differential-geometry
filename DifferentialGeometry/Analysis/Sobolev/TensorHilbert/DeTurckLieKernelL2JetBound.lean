@@ -492,6 +492,7 @@ lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul
     (I := I) (M := M) g r s x c v
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem pair_trace_def (g₀ g₁ : SmoothRiemannianMetric I M) :
     deTurckLieConnectionDifferenceDerivativePairTrace (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 6 4 2
@@ -499,6 +500,7 @@ theorem pair_trace_def (g₀ g₁ : SmoothRiemannianMetric I M) :
         (pureTrace (I := I) (M := M) g₀ g₁ 4) := by
   rfl
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivativeCoefficient_eq_pairTrace
     (g₀ g_bg g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

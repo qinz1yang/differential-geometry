@@ -150,6 +150,7 @@ theorem metricDiff02Cov_eq_sub
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem metricTensor02Cov_mdiffAtTensor03
     (g₀ g : SmoothRiemannianMetric I M) (x : M) :
     MDiffAtTensor03 (I := I)
@@ -180,6 +181,7 @@ def metricDiff02CovIterate (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M)
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem metricDiff02CovIterate_eq_sub
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :
     metricDiff02CovIterate (I := I) g₀ g₁ g₂ b =

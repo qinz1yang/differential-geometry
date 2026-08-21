@@ -27,12 +27,13 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ 
 section PartialTrans
 
 noncomputable def PartialDiffeomorph.trans {P : Type u} [TopologicalSpace P]
-    [ChartedSpace H P] [IsManifold I ∞ P]
+    [ChartedSpace H P] [hManifoldP : IsManifold I ∞ P]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     (Φ' : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞)) :
     PartialDiffeomorph I I M P (∞ : WithTop ℕ∞) where
   toPartialEquiv := Φ.toPartialEquiv.trans Φ'.toPartialEquiv
   open_source := by
+    let _ := hManifoldP
     have hsrc : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).source
         = Φ.source ∩ (Φ : M → N) ⁻¹' Φ'.source := rfl
     rw [hsrc]
@@ -70,7 +71,7 @@ section TowerZero
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
-    [SigmaCompactSpace M] :
+    :
     covStep (I := I) gRef s
         (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -83,6 +84,7 @@ theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
 
 set_option backward.isDefEq.respectTransparency false in
 
+omit [SigmaCompactSpace M] in
 theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
     iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1) = 0 := by
   induction a with
@@ -136,7 +138,7 @@ theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [SigmaCompactSpace M] in
-theorem t02Norm_eq_iterCov [I.Boundaryless] {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (gRef : SmoothRiemannianMetric I M) (a : ℕ) {x : M}

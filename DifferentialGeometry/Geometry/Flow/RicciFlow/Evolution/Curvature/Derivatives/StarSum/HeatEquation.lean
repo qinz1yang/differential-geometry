@@ -22,6 +22,7 @@ variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Dim3Reaction in
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem resStarBoundLF
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D)

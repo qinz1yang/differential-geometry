@@ -59,8 +59,8 @@ theorem curvature_commutator_pairing_h4_uniform_bound
               {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
             let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
             let Cφ :=
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
             let B :=
               lieDecomposition2 (I := I) (M := M) g T hδ hδZ s + Cφ +
                 (-2 * s : ℝ) •
@@ -81,7 +81,7 @@ theorem curvature_commutator_pairing_h4_uniform_bound
   obtain ⟨Kcurv, hKcurv⟩ :=
     exists_uniform_curvature_action_parameters (I := I) (M := M) gBase hΛ
   intro η hη g hEq hjet
-  obtain ⟨Kφ, hKφ0, hφ⟩ := metricPrincipalDefect_cap (I := I) (M := M) g gBase
+  obtain ⟨Kφ, hKφ0, hφ⟩ := metricPrincipalDefect_cap (I := I) (M := M) g
   obtain ⟨Kcomm, hKcomm0, hcomm⟩ :=
     exists_iteratedRoughLapGrad_commutator_l2Norm_le
       (I := I) (M := M) g 2 2
@@ -101,8 +101,8 @@ theorem curvature_commutator_pairing_h4_uniform_bound
   let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
   let P := convexPerturbation (I := I) g T 0 s
   let Cφ : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let Dtop : SmoothCcTensor g 4 2 :=
     lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
       (-2 * s : ℝ) •

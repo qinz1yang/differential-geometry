@@ -46,6 +46,7 @@ def rm04VarRHS
             t x₀ (m 3) p))
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem riemann_covariant_variation_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

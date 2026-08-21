@@ -201,7 +201,7 @@ private theorem chartLie_symm
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem lieSlope_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -245,7 +245,7 @@ theorem lieSum_eq_arms
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 4 2
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x ![v, w] := by
   classical
@@ -264,7 +264,7 @@ theorem lieSum_eq_arms
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
         operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
   unfold lieSumSlope
@@ -333,6 +333,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_path_joint
   have hR' := hjoint_smul (I := I) (M := M) g₀ 2 _ (-2 : ℝ) hR
   simpa only [ricciDeTurckRemainderZeroOrderCoefficient] using hjoint_add (I := I) (M := M) g₀ 2 _ _ hR' hLC
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciDeTurckRemainderFirstOrderCoefficient_path_joint
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -380,7 +381,7 @@ theorem ricciDeTurckRemainderLowOrder_eq_arms
     hδ_lt hδ hδ'_lt hδ' x v w hs
   have hLieSplit := lieSum_eq_split (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
-  have hTop := lieTop_add_swap (I := I) g₀ g_bg T T'
+  have hTop := lieTop_add_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
   rw [hsymmS] at hLie hTop
   have hLower :
@@ -438,7 +439,7 @@ theorem ricciDeTurckRemainderSlope_eq_arms
             (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x ![v, w] := by
   rw [rhsSlope_eq_split (I := I) g₀ g_bg T T' hTsymm hT'symm

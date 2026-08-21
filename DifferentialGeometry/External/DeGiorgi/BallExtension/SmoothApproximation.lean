@@ -1270,6 +1270,7 @@ theorem smooth_input_unitBallExtension_smoothing
                 (fun x => (fderiv ℝ (Φ n) x) (EuclideanSpace.single i 1) - Gψ x i)
                 (ENNReal.ofReal p) volume)
             atTop (nhds 0) := by
+  let _ := _hψ_cpt
   have hΦ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞)
       (smoothUnitBallExtensionApprox (d := d) (unitBallApproxEps n) ψ) :=
     fun n => smoothUnitBallExtensionApprox_contDiff (d := d) (unitBallApproxEps_pos n)

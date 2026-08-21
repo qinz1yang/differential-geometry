@@ -170,6 +170,10 @@ theorem john_nirenberg_iteration
     ∀ lam : ℝ, 0 < lam →
       volume (E_lam lam) ≤ ENNReal.ofReal (1 / θ) * volume B *
         ENNReal.ofReal (Real.exp (-lam * (-Real.log θ / A))) := by
+  let _ := _hB
+  let _ := _hB_fin
+  let _ := _hE_meas
+  let _ := _hE_anti
   intro lam hlam
   have hlamA_pos : 0 < lam / A := div_pos hlam hA
   have hceil_ge1 : 1 ≤ ⌈lam / A⌉₊ := Nat.ceil_pos.mpr hlamA_pos
@@ -223,6 +227,7 @@ theorem john_nirenberg
       ‖u x - ⨍ y in Metric.ball x₀ r, u y ∂volume‖ > t}) ≤
     ENNReal.ofReal (1 / θ) * volume (Metric.ball x₀ r) *
       ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
+  let _ := _hr
   set avg := ⨍ y in Metric.ball x₀ r, u y ∂volume
   set E_lam : ℝ → Set E := fun lam => {x ∈ Metric.ball x₀ r | ‖u x - avg‖ > lam}
   have hball_meas : MeasurableSet (Metric.ball x₀ r) := measurableSet_ball

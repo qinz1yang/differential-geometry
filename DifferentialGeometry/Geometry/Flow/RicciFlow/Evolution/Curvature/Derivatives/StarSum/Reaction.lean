@@ -130,6 +130,7 @@ def nablaKRmFrozenSlotSharpSection
 
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem nablaKRmFrozenSlotSharpSection_apply
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -145,6 +146,7 @@ omit [SigmaCompactSpace M] in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem nablaKRmFrozenSlotSharp_mdiffAt
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -210,6 +212,7 @@ def nablaKRmRaiseSlotSections
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem nablaKRmRaise_summand_covDeriv
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -480,6 +483,8 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
   rw [hfield]
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem nablaK_antisym_eq_rm04_raise_leibniz
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -580,6 +585,8 @@ section AllKBound
 variable {n : ℕ}
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem abs_nablaK_antisym_covConst_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -778,6 +785,8 @@ theorem abs_nablaK_antisym_covConst_le
   ring
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem abs_nablaK_antisym_basis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -822,6 +831,8 @@ theorem abs_nablaK_antisym_basis_le
     a b c m hXa hVb hVc hVm (hVbcov Xa) (hVccov Xa) (fun i => hVmcov i Xa)
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem abs_spatialBracket_nablaKRm_ortho_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -890,6 +901,7 @@ theorem abs_spatialBracket_nablaKRm_ortho_le
   exact hC
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem abs_spatialComm_nablaKRm_ortho_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

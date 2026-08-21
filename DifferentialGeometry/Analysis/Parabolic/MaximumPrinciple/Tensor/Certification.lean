@@ -49,7 +49,7 @@ private theorem reactionErr_lt_gain
   have hmul := mul_lt_mul_of_pos_right hkc_lt hepsg_pos
   nlinarith
 
-omit [IsManifold I 2 M] in
+omit [FiniteDimensional ℝ E] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem strictBarrierBounds
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
@@ -58,11 +58,7 @@ theorem strictBarrierBounds
     {T t0 : Real}
     (hreg : TensorWMPCore (I := I) (M := M) G S X N T)
     (ht0 : t0 ∈ Set.Icc 0 T)
-    (ht0T : t0 < T)
-    {nabla2S : TensorNabla2Family (I := I) (M := M)}
-    {nablaS : TensorNabla1Family (I := I) (M := M)}
-    (_hbase : TensorParabolicInequalityWithDriftOn (I := I) (M := M)
-      G S X N nabla2S nablaS T) :
+    (ht0T : t0 < T) :
     ∃ delta0 K : Real,
       0 < delta0 ∧ 0 ≤ K ∧ t0 + delta0 ≤ T ∧
         ∀ delta : Real,
@@ -225,7 +221,7 @@ theorem tensorBarrier_strict_supersolution
         delta t0 := by
   obtain ⟨delta0, K, hdelta0, hK, _hdelta0T, hstrict_bounds⟩ :=
     strictBarrierBounds (I := I) (M := M)
-      hreg.toCore ht0 ht0T hparabolic.evaluatedInequality
+      hreg.toCore ht0 ht0T
   obtain ⟨delta, hdelta, hdelta_le_delta0, hdeltaT, hsmall⟩ :=
     exists_small_delta (t0 := t0) (T := T) (delta0 := delta0) (K := K)
       ht0T hdelta0 hK
@@ -316,7 +312,7 @@ theorem strictCert_sec
         (twoTensorSecToFamily (I := I) (M := M) S) X N delta t0 := by
   obtain ⟨delta0, K, hdelta0, hK, _hdelta0T, hstrict_bounds⟩ :=
     strictBarrierBounds (I := I) (M := M)
-      hreg.toRaw ht0 ht0T hparabolic.evaluatedInequality
+      hreg.toRaw ht0 ht0T
   obtain ⟨delta, hdelta, hdelta_le_delta0, hdeltaT, hsmall⟩ :=
     exists_small_delta (t0 := t0) (T := T) (delta0 := delta0) (K := K)
       ht0T hdelta0 hK
@@ -355,13 +351,14 @@ theorem strictCert_sec
         (Set.Icc t0 (t0 + delta)) := by
     intro t ht x
     exact hreg.symmetric t (hsubClosed ht) x
+  have hlapMin : LaplacianNonnegativeAtSpatialMin (I := I) (cov d.t1) (G d.t1) :=
+    laplacianNonnegativeAtSpatialMin_of_metricCompatible
+      (I := I) (cov d.t1) (G d.t1) (hmc d.t1)
   exact scalarSigns_secHess (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nablaS := nablaS) (nabla2S := nabla2S) (cov := cov)
-    hstrict hnull hsym d (hcov1 d.t1) (hcovInf d.t1) hmc hS Xsec
-    (laplacianNonnegativeAtSpatialMin_of_metricCompatible
-      (I := I) (cov d.t1) (G d.t1) (hmc d.t1))
-    hXsec.symm
+    hstrict hnull hsym d (hcov1 d.t1) (hcovInf d.t1) hmc hS
+    (Xsec := Xsec) (hlapMin := hlapMin) (hX := hXsec.symm)
 
 omit [IsManifold I 2 M] in
 theorem certSlab_of_sectionReg

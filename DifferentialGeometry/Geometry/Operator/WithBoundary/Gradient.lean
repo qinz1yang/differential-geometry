@@ -546,7 +546,7 @@ private lemma gradFun_contMDiffOn_chart_inter_interior
   rw [h]
 
 omit [InnerProductSpace ℝ E] in
-theorem gradFun_contMDiffOn_interior [T2Space M]
+theorem gradFun_contMDiffOn_interior
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -576,8 +576,7 @@ omit [InnerProductSpace ℝ E] in
     grad_g_with_boundary (I := I) g f x = gradFun (I := I) g f x := rfl
 
 omit [InnerProductSpace ℝ E] in
-theorem grad_g_with_boundary_contMDiffOn_interior [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+theorem grad_g_with_boundary_contMDiffOn_interior (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x (grad_g_with_boundary (I := I) g f x))
@@ -633,7 +632,7 @@ lemma grad_g_with_boundary_eq_zero_of_eventuallyEq_zero
   gradFun_eq_zero_of_eventuallyEq_zero (I := I) g hf
 
 omit [InnerProductSpace ℝ E] in
-lemma hasCompactSupport_grad_g_with_boundary [T2Space M]
+lemma hasCompactSupport_grad_g_with_boundary
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf_cs : HasCompactSupport f) :
     IsCompact

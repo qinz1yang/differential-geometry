@@ -50,7 +50,7 @@ theorem fFunctionalFirstVariationFormula_of_connection_trace_field
       firstVariation =
         ∫ x,
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
           ∂(expNegPotentialWeightedMeasure
               (riemannianVolumeMeasure (I := I) (M := M) g) potential))
@@ -143,7 +143,7 @@ theorem fFunctionalFirstVariationFormula_of_connection_trace_components
       firstVariation =
         ∫ x,
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
           ∂(expNegPotentialWeightedMeasure
               (riemannianVolumeMeasure (I := I) (M := M) g) potential))
@@ -238,7 +238,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
       firstVariation =
         ∫ x,
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess
             (christoffelWeightedDivergenceTrace (I := I) g
               nablaChristoffelVariation christoffelVariation gradPotential)
@@ -608,7 +608,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
       firstVariation =
         ∫ x,
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess
             (christoffelWeightedDivergenceTrace (I := I) (G.metric s0)
               nablaChristoffelVariation christoffelVariation gradPotential)

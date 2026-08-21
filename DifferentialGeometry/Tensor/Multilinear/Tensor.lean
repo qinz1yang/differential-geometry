@@ -594,6 +594,7 @@ theorem triv_fwdEquiv_eq (s q : ℕ) (x₀ x : B)
   exact (triv_toTensor_eq_modelFromTensorEquiv_symm (Module.finBasis 𝕜 F) s q x₀ x hx t).symm
 
 omit [ContMDiffVectorBundle n F E IB] in
+@[nolint unusedArguments]
 theorem multilinearTensorFiberwiseEquiv_smooth
     (_hE : ContMDiffVectorBundle n F E IB) :
     ContMDiff
@@ -633,6 +634,7 @@ theorem multilinearTensorFiberwiseEquiv_smooth
     exact triv_fwdEquiv_eq s q p₀.proj p.proj hp p.snd
 
 omit [ContMDiffVectorBundle n F E IB] in
+@[nolint unusedArguments]
 theorem multilinearTensorFiberwiseEquiv_symm_smooth
     (_hE : ContMDiffVectorBundle n F E IB) :
     ContMDiff

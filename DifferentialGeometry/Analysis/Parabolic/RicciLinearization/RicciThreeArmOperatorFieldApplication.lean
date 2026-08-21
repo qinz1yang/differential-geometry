@@ -144,7 +144,7 @@ theorem linearizedRicci_lichnerowicz_arm1_identity (g₀ : SmoothRiemannianMetri
   exists_linearizedRicciOrder1DivCoeff (I := I) g₀ T T' hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
 
 theorem exists_linearizedRicci_threeArm_coeffFields
-    (g₀ _g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (hT'symm : ∀ (x : M) (v w : TangentSpace I x),
@@ -176,7 +176,7 @@ theorem exists_linearizedRicci_threeArm_coeffFields
 
 
 theorem exists_ricciArmOrder1Coeff
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (hT'symm : ∀ (x : M) (v w : TangentSpace I x),
@@ -199,7 +199,7 @@ theorem exists_ricciArmOrder1Coeff
                 (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
   classical
   obtain ⟨Φ₀, Φ₁, Φ₂, hj0, hj1, hj2, hc0, hc1, hc2, hid⟩ :=
-    exists_linearizedRicci_threeArm_coeffFields (I := I) (M := M) g₀ g_bg T T'
+    exists_linearizedRicci_threeArm_coeffFields (I := I) (M := M) g₀ T T'
       hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
     rw [Set.uIcc_of_le (zero_le_one)]
@@ -271,7 +271,7 @@ theorem exists_ricciArmOrder1Coeff
 
 
 theorem ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (hT'symm : ∀ (x : M) (v w : TangentSpace I x),
@@ -297,7 +297,7 @@ theorem ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
                 (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
   classical
   obtain ⟨R₀, R₁, R₂, hR⟩ :=
-    exists_ricciArmOrder1Coeff (I := I) (M := M) g₀ g_bg T T'
+    exists_ricciArmOrder1Coeff (I := I) (M := M) g₀ T T'
       hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
   refine ⟨(-2 : ℝ) • R₀, (-2 : ℝ) • R₁, (-2 : ℝ) • R₂, fun x v => ?_⟩
   set A₀ : SmoothCcTensor g₀ 0 2 :=

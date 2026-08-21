@@ -120,7 +120,7 @@ theorem wkpNorm_succ_eq_eLpNorm_add_sum_partial
   rw [h_inner_swap]
 
 lemma wkpNorm_chosenWeakPartial_le_wkpNorm_succ
-    (k : ℕ) {p : ℝ≥0∞} {Ω : Set E} (_hΩ : IsOpen Ω) (u : E → ℝ) (i : Fin d) :
+    (k : ℕ) {p : ℝ≥0∞} {Ω : Set E} (u : E → ℝ) (i : Fin d) :
     iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω ≤
       iteratedWeakSobolevNorm (d := d) (k + 1) p u Ω := by
   classical

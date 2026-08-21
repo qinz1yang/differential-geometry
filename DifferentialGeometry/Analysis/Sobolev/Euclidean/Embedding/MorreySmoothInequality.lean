@@ -139,7 +139,7 @@ theorem smooth_morrey_pair_bound
         (volume.restrict (Metric.ball m (dist x y)))).toReal with hN_small_def
       have hN_small_le : N_small ≤ N := by
         rw [hN_small_def, hN_def]
-        exact smooth_grad_eLpNorm_le_of_ball_subset hp_pos hR hu h_ball_sub
+        exact smooth_grad_eLpNorm_le_of_ball_subset hR hu h_ball_sub
       set Mavg : ℝ := ⨍ z in Metric.ball m (dist x y), u z ∂volume with hMavg_def
       have h_at_x' : ‖u x - Mavg‖ ≤
           smoothHolderConst d p * dist x y ^ (1 - (d : ℝ) / p) * N_small := h_at_x
@@ -423,7 +423,7 @@ theorem smooth_morrey_pair_bound_uniform
         (volume.restrict (Metric.ball m (dist x y)))).toReal with hN_small_def
       have hN_small_le : N_small ≤ N := by
         rw [hN_small_def, hN_def]
-        exact smooth_grad_eLpNorm_le_of_ball_subset hp_pos hR hu h_ball_sub
+        exact smooth_grad_eLpNorm_le_of_ball_subset hR hu h_ball_sub
       set Mavg : ℝ := ⨍ z in Metric.ball m (dist x y), u z ∂volume with hMavg_def
       have h_at_x' : ‖u x - Mavg‖ ≤
           smoothHolderConst d p * dist x y ^ (1 - (d : ℝ) / p) * N_small := h_at_x

@@ -33,16 +33,15 @@ open TopologicalSpace
 
 omit [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-theorem partialData_comp_reverse [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+theorem partialData_comp_reverse [I.Boundaryless]
     {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [SigmaCompactSpace N] [T2Space P] [SigmaCompactSpace P]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [IsManifold I 1 P] [IsManifold I 2 P] [IsManifold I ((∞ : WithTop ℕ∞) + 1) P]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     (Φ' : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞))
-    {U₁ : Opens M} [Nonempty U₁] (hU₁ : (U₁ : Set M) ⊆ Φ.source)
-    {K₂ : Opens N} [Nonempty K₂] (hK₂ : (K₂ : Set N) ⊆ Φ'.source)
+    {U₁ : Opens M} (hU₁ : (U₁ : Set M) ⊆ Φ.source)
+    {K₂ : Opens N} (hK₂ : (K₂ : Set N) ⊆ Φ'.source)
     (himg : (Φ : M → N) '' (U₁ : Set M) ⊆ (K₂ : Set N))
     {K : Set M} (hK : IsCompact K) (hKU : K ⊆ (U₁ : Set M))
     {ε ε' : ℝ} {p : ℕ} (hε'2 : ε' ≤ 1 / 2)

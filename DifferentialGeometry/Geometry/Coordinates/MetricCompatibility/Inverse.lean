@@ -234,7 +234,6 @@ theorem metricFlatModelInChart_center_isInvertible
 
 omit [FiniteDimensional ℝ E] in
 theorem metricFlatModelInChart_contDiffWithinAt
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
     ContDiffWithinAt Real ∞
       (metricFlatModelInChart (I := I) g x₀)

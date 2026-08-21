@@ -26,12 +26,11 @@ variable [NeZero (Module.finrank ℝ E)]
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem wkpNormChart_cauchy_of_seminormCauchySeq
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (hf : CauchySeq f) :
     ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε := by
   intro ε hε_pos
@@ -42,19 +41,19 @@ private theorem wkpNormChart_cauchy_of_seminormCauchySeq
   have hdist := hN m hm n hn
   rw [dist_eq_norm] at hdist
   have h_norm_eq : ‖f m - f n‖ =
-      (wkpNormChart (I := I) (M := M) g k p (wkpChartFun (f m - f n))).toReal := rfl
+      (wkpNormChart (I := I) (M := M) k p (wkpChartFun (f m - f n))).toReal := rfl
   rw [h_norm_eq] at hdist
   have h_sub_val :
       wkpChartFun (f m - f n) =
         fun x => wkpChartFun (f m) x - wkpChartFun (f n) x := by
     ext x; rfl
   rw [h_sub_val] at hdist
-  have h_lt_top : wkpNormChart (I := I) (M := M) g k p
+  have h_lt_top : wkpNormChart (I := I) (M := M) k p
       (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) < ⊤ :=
-    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp
-      (MemWkpChart_sub (I := I) (M := M) g hp
+    wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp
+      (MemWkpChart_sub (I := I) (M := M) hp
         (wkpChartFun_memWkpChart (f m)) (wkpChartFun_memWkpChart (f n)))
-  have h_ne_top : wkpNormChart (I := I) (M := M) g k p
+  have h_ne_top : wkpNormChart (I := I) (M := M) k p
       (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≠ ⊤ := h_lt_top.ne
   rw [← ENNReal.ofReal_toReal h_ne_top]
   exact ENNReal.ofReal_le_ofReal hdist.le
@@ -62,11 +61,10 @@ private theorem wkpNormChart_cauchy_of_seminormCauchySeq
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem chartPushed_cauchy_of_wkpNormChart_cauchy
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε)
     (α : M) :
@@ -118,12 +116,11 @@ private theorem chartPushed_cauchy_of_wkpNormChart_cauchy
 
 private theorem exists_chart_limit
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
+    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε)
     (α : M) :
@@ -141,7 +138,7 @@ private theorem exists_chart_limit
             (chartTargetEuclid (I := I) (M := M) α))
         atTop (𝓝 0) := by
   have h_chart_cauchy := chartPushed_cauchy_of_wkpNormChart_cauchy
-    (I := I) (M := M) (g := g) (hp := hp) h_cauchy α
+    (I := I) (M := M) (hp := hp) h_cauchy α
   have h_chart_mem : ∀ n,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p
@@ -152,15 +149,14 @@ private theorem exists_chart_limit
     (wkpChartFun_memWkpChart (f n)) α
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.exists_limit_of_wkpNorm_cauchy
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
-    k p hp_one hp_top h_chart_mem h_chart_cauchy
+    k p hp_one h_chart_mem h_chart_cauchy
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem chartPushed_tendstoInMeasure
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (α : M)
     {v_α : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
     (h_v_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -222,10 +218,9 @@ private theorem chartPushed_tendstoInMeasure
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_subseq_chartPushed_ae_tendsto
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (α : M)
     {v_α : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
     (h_v_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -247,7 +242,7 @@ private theorem exists_subseq_chartPushed_ae_tendsto
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
             (wkpChartFun (f (ns i))) y)
           atTop (𝓝 (v_α y)) := by
-  have h_meas := chartPushed_tendstoInMeasure (I := I) (M := M) (g := g)
+  have h_meas := chartPushed_tendstoInMeasure (I := I) (M := M)
     (hp := hp) hp_one hp_top α h_v_mem h_v
   exact h_meas.exists_seq_tendsto_ae
 

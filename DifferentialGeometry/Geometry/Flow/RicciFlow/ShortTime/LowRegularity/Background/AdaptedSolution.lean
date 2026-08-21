@@ -88,7 +88,8 @@ theorem absorb
           Kr1 * lowRegularityStateRadius K.top K.slope K.outer K.realize + ε < 1 := by
   obtain ⟨A, B, _hgate, hA, hB, ε, hε, hbudget⟩ := h.exists_absorption_constants_and_margin
   have hR : 0 ≤ lowRegularityStateRadius K.top K.slope K.outer K.realize :=
-    (lowRegularityStateRadius_pos h.1.hCtop h.1.hB1 h.1.hρ h.1.hP).le
+    (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
+      K.outer_pos K.realize_pos).le
   have hdom := energyLadder_absorption_coefficient_le hA hB h.1.hδ0 hR
   exact ⟨ε, hε, by linarith only [hdom, hbudget]⟩
 

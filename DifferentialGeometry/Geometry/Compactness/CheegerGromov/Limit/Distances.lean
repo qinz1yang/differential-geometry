@@ -60,12 +60,9 @@ theorem pathComp_tangent
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M N : Type*}
-    [TopologicalSpace M] [ChartedSpace H M] [PseudoEMetricSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M]
-    [TopologicalSpace N] [ChartedSpace H N] [PseudoEMetricSpace N]
+    [TopologicalSpace M] [ChartedSpace H M] [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [TopologicalSpace N] [ChartedSpace H N]
     [RiemannianBundle (fun x : N => TangentSpace I x)]
-    [IsRiemannianManifold I N]
     (F : M -> N) {A : ENNReal} (hA_ne_top : A ≠ ⊤)
     (hspeed :
       forall {x y : M}, forall γ : Path x y, CMDiff 1 γ ->
@@ -224,7 +221,7 @@ theorem image_ball_local
     [TopologicalSpace N] [ChartedSpace H N] [PseudoEMetricSpace N]
     [RiemannianBundle (fun x : N => TangentSpace I x)]
     [IsRiemannianManifold I N]
-    (F : M -> N) {eps r : Real} (_heps : 0 < 1 + eps) (_hr : 0 < r) (x0 : M)
+    (F : M -> N) {eps r : Real} (x0 : M)
     (hspeed : forall {y : M} (γ : ℝ → M), (CMDiff[Set.Icc (0:ℝ) 1] 1 γ) →
       γ 0 = x0 → γ 1 = y →
       Manifold.pathELength (I := I) γ 0 1 < ENNReal.ofReal r →
@@ -328,14 +325,14 @@ theorem data_image_ball
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (hhnorm : ∀ (y : N) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (h.inner y w w)))
-    (hr : 0 < r) (hrr₂ : r ≤ r₂) (hε0 : 0 ≤ ε)
+    (hrr₂ : r ≤ r₂) (hε0 : 0 ≤ ε)
     (hdata : MapMetricApproximationOn (I := I)
       (Metric.closedEBall O (ENNReal.ofReal r₂)) ε p (Φ : M → N) g h)
     (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source) :
     (Φ : M → N) '' Metric.eball O (ENNReal.ofReal r) ⊆
       Metric.closedEBall ((Φ : M → N) O)
         (ENNReal.ofReal (Real.sqrt (1 + ε) * r)) := by
-  refine image_ball_local (I := I) (Φ : M → N) (by linarith) hr O ?_
+  refine image_ball_local (I := I) (Φ : M → N) O ?_
   intro y γ hγC hγ0 hγ1 hγlen
   have hrange : ∀ t ∈ Set.Icc (0 : ℝ) 1,
       γ t ∈ Metric.closedEBall O (ENNReal.ofReal r₂) := by

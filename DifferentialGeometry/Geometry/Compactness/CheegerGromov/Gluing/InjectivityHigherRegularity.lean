@@ -45,7 +45,7 @@ theorem BoundedGeometryNormalData.inj_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi hconn
+    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
       d.chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -55,7 +55,7 @@ theorem BoundedGeometryNormalData.inj_tail
       let Yk := X.obj (Lphi.φ k)
       letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
       Set.InjOn
-        (stageComparisonMap inp P Lphi s hs hconn k l (chart := d.chart))
+        (stageComparisonMap inp P Lphi s hs k l (chart := d.chart))
         (Lphi.hatSourceBall inp.decay P R0 k) := by
   classical
   have hstage0 := hstage
@@ -81,7 +81,7 @@ theorem BoundedGeometryNormalData.inj_tail
     exact lt_min hrho0 (sub_pos.mpr hR0R1)
   have hrho_le : rho ≤ rho0 := min_le_left _ _
   have hrho_room : rho ≤ R1 - R0 := min_le_right _ _
-  obtain ⟨Nret, hret⟩ := d.return_tail inp P L hs phi hphi hconn
+  obtain ⟨Nret, hret⟩ := d.return_tail inp P L hs phi hphi
     V U C0 C1 aInf Jinf Jbarinf gInf hstage0 R0 R1 hroom hR1s
       (rho / 4) (div_pos hrho (by norm_num))
   obtain ⟨Njet, hjet⟩ :=
@@ -108,8 +108,8 @@ theorem BoundedGeometryNormalData.inj_tail
   letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
-  let F := stageComparisonMap inp P Lphi s hs hconn k l (chart := d.chart)
-  let Hret := stageComparisonMap inp P Lphi s hs hconn l k
+  let F := stageComparisonMap inp P Lphi s hs k l (chart := d.chart)
+  let Hret := stageComparisonMap inp P Lphi s hs l k
     (chart := d.chart)
   intro x hx y hy hFxy
   have hFxy' : F x = F y := by

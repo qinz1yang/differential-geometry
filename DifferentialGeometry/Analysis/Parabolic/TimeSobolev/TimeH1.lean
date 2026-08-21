@@ -66,8 +66,7 @@ end VectorLebesgueDifferentiation
 variable {X : Type*} [NormedAddCommGroup X] [CompleteSpace X]
 variable {T : ℝ}
 
-def timeH1 (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    (T : ℝ) : Type _ :=
+def timeH1 (X : Type*) [NormedAddCommGroup X] (T : ℝ) : Type _ :=
   WithLp 2 (X × timeL2 X T)
 
 namespace timeH1
@@ -104,81 +103,95 @@ def init (u : timeH1 X T) : X :=
 def deriv (u : timeH1 X T) : timeL2 X T :=
   (WithLp.ofLp u).2
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem init_mk (u₀ : X) (v : timeL2 X T) : (mk u₀ v).init = u₀ := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem deriv_mk (u₀ : X) (v : timeL2 X T) : (mk u₀ v).deriv = v := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem mk_init_deriv (u : timeH1 X T) : mk u.init u.deriv = u := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[ext]
 theorem ext {u w : timeH1 X T} (hinit : u.init = w.init) (hderiv : u.deriv = w.deriv) :
     u = w := by
   rw [← mk_init_deriv u, ← mk_init_deriv w, hinit, hderiv]
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem init_add (u w : timeH1 X T) : (u + w).init = u.init + w.init := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem deriv_add (u w : timeH1 X T) : (u + w).deriv = u.deriv + w.deriv := rfl
 
+omit [CompleteSpace X] in
 @[simp]
 theorem init_smul (c : ℝ) (u : timeH1 X T) : (c • u).init = c • u.init := rfl
 
+omit [CompleteSpace X] in
 @[simp]
 theorem deriv_smul (c : ℝ) (u : timeH1 X T) : (c • u).deriv = c • u.deriv := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem init_zero : (0 : timeH1 X T).init = 0 := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 @[simp]
 theorem deriv_zero : (0 : timeH1 X T).deriv = 0 := rfl
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 theorem norm_sq_eq (u : timeH1 X T) :
     ‖u‖ ^ 2 = ‖u.init‖ ^ 2 + ‖u.deriv‖ ^ 2 :=
   WithLp.prod_norm_sq_eq_of_L2 _
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 theorem norm_init_le (u : timeH1 X T) : ‖u.init‖ ≤ ‖u‖ := by
   have h := norm_sq_eq u
   nlinarith [norm_nonneg u.init, norm_nonneg u.deriv, norm_nonneg u, sq_nonneg ‖u.deriv‖]
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 theorem norm_deriv_le (u : timeH1 X T) : ‖u.deriv‖ ≤ ‖u‖ := by
   have h := norm_sq_eq u
   nlinarith [norm_nonneg u.init, norm_nonneg u.deriv, norm_nonneg u, sq_nonneg ‖u.init‖]
 
-def trace0 (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    (T : ℝ) : timeH1 X T →L[ℝ] X :=
+def trace0 (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] (T : ℝ) : timeH1 X T →L[ℝ] X :=
   WithLp.fstL 2 ℝ X (timeL2 X T)
 
-def timeDeriv (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    (T : ℝ) : timeH1 X T →L[ℝ] timeL2 X T :=
+def timeDeriv (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] (T : ℝ) : timeH1 X T →L[ℝ] timeL2 X T :=
   WithLp.sndL 2 ℝ X (timeL2 X T)
 
-@[simp]
-theorem trace0_apply (u : timeH1 X T) : trace0 X T u = u.init := rfl
+omit [CompleteSpace X] in
+@[simp] theorem trace0_apply (u : timeH1 X T) : trace0 X T u = u.init := rfl
 
-@[simp]
-theorem timeDeriv_apply (u : timeH1 X T) : timeDeriv X T u = u.deriv := rfl
+omit [CompleteSpace X] in
+@[simp] theorem timeDeriv_apply (u : timeH1 X T) : timeDeriv X T u = u.deriv := rfl
 
-@[simp]
-theorem trace0_mk (u₀ : X) (v : timeL2 X T) : trace0 X T (mk u₀ v) = u₀ := rfl
+omit [CompleteSpace X] in
+@[simp] theorem trace0_mk (u₀ : X) (v : timeL2 X T) : trace0 X T (mk u₀ v) = u₀ := rfl
 
-@[simp]
-theorem timeDeriv_mk (u₀ : X) (v : timeL2 X T) : timeDeriv X T (mk u₀ v) = v := rfl
+omit [CompleteSpace X] in
+@[simp] theorem timeDeriv_mk (u₀ : X) (v : timeL2 X T) : timeDeriv X T (mk u₀ v) = v := rfl
 
 def toFun (u : timeH1 X T) : ℝ → X :=
   fun t => u.init + ∫ s in (0 : ℝ)..t, u.deriv s
 
+omit [CompleteSpace X] in
 @[simp]
 theorem toFun_apply (u : timeH1 X T) (t : ℝ) :
     u.toFun t = u.init + ∫ s in (0 : ℝ)..t, u.deriv s :=
   rfl
 
+omit [CompleteSpace X] in
 theorem toFun_zero (u : timeH1 X T) : u.toFun 0 = u.init := by
   simp [toFun]
 
+omit [CompleteSpace X] [NormedSpace ℝ X] in
 theorem intervalIntegrable_deriv {a b : ℝ} (u : timeH1 X T)
     (ha : a ∈ Icc (0 : ℝ) T) (hb : b ∈ Icc (0 : ℝ) T) :
     IntervalIntegrable (fun s => u.deriv s) volume a b := by
@@ -187,6 +200,7 @@ theorem intervalIntegrable_deriv {a b : ℝ} (u : timeH1 X T)
   refine MeasureTheory.IntegrableOn.intervalIntegrable ?_
   exact (TimeSobolev.integrableOn u.deriv).mono_set hsub
 
+omit [CompleteSpace X] in
 theorem continuousOn_toFun (u : timeH1 X T) :
     ContinuousOn u.toFun (Icc (0 : ℝ) T) := by
   rcases le_or_gt 0 T with hT | hT
@@ -201,14 +215,17 @@ theorem continuousOn_toFun (u : timeH1 X T) :
   · rw [Icc_eq_empty (by linarith)]
     exact continuousOn_empty _
 
+omit [CompleteSpace X] in
 theorem continuousWithinAt_toFun (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ContinuousWithinAt u.toFun (Icc (0 : ℝ) T) t :=
   u.continuousOn_toFun t ht
 
+omit [CompleteSpace X] in
 theorem toFun_eq_trace0_add_integral (u : timeH1 X T) (t : ℝ) :
     u.toFun t = trace0 X T u + ∫ s in (0 : ℝ)..t, (timeDeriv X T u) s :=
   rfl
 
+omit [CompleteSpace X] in
 theorem toFun_sub_toFun (u : timeH1 X T) {t₀ t₁ : ℝ}
     (ht₀ : t₀ ∈ Icc (0 : ℝ) T) (ht₁ : t₁ ∈ Icc (0 : ℝ) T) :
     u.toFun t₁ - u.toFun t₀ = ∫ s in t₀..t₁, u.deriv s := by
@@ -317,6 +334,7 @@ theorem ae_hasDerivWithinAt_toFun (u : timeH1 X T) :
     rw [Filter.eventually_iff, hbot]
     exact Filter.mem_bot
 
+omit [CompleteSpace X] in
 theorem norm_toFun_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖u.toFun t‖ ≤ ‖trace0 X T u‖ + Real.sqrt T * ‖timeDeriv X T u‖ := by
   rcases ht with ⟨ht0, htT⟩
@@ -343,6 +361,7 @@ theorem norm_toFun_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     _ ≤ ‖u.init‖ + Real.sqrt T * ‖u.deriv‖ := by gcongr
     _ = ‖trace0 X T u‖ + Real.sqrt T * ‖timeDeriv X T u‖ := rfl
 
+omit [CompleteSpace X] in
 theorem norm_toFun_le_norm (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖u.toFun t‖ ≤ (1 + Real.sqrt T) * ‖u‖ := by
   have hbase := u.norm_toFun_le ht
@@ -360,6 +379,7 @@ theorem norm_toFun_le_norm (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 
 def toFunL2 (u : timeH1 X T) : timeL2 X T :=
   TimeSobolev.ofContinuousOn u.continuousOn_toFun
 
+omit [CompleteSpace X] in
 theorem norm_toFunL2_le (u : timeH1 X T) :
     ‖u.toFunL2‖ ≤ Real.sqrt T * ((1 + Real.sqrt T) * ‖u‖) := by
   rw [toFunL2]
@@ -367,6 +387,7 @@ theorem norm_toFunL2_le (u : timeH1 X T) :
   intro t ht
   exact u.norm_toFun_le_norm ht
 
+omit [CompleteSpace X] in
 theorem toFun_add (u w : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     (u + w).toFun t = u.toFun t + w.toFun t := by
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
@@ -393,6 +414,7 @@ theorem toFun_add (u w : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
   simp only [toFun_apply, init_add, hsplit]
   abel
 
+omit [CompleteSpace X] in
 theorem toFun_smul (c : ℝ) (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     (c • u).toFun t = c • u.toFun t := by
   have hsmul : ∫ s in (0 : ℝ)..t, ((c • u).deriv) s
@@ -415,8 +437,7 @@ theorem toFun_smul (c : ℝ) (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ
     rw [hcongr, intervalIntegral.integral_smul]
   simp only [toFun_apply, init_smul, hsmul, smul_add]
 
-def toTimeL2ₗ (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    (T : ℝ) : timeH1 X T →ₗ[ℝ] timeL2 X T where
+def toTimeL2ₗ (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] (T : ℝ) : timeH1 X T →ₗ[ℝ] timeL2 X T where
   toFun u := u.toFunL2
   map_add' u w := by
     refine Lp.ext ?_
@@ -443,9 +464,10 @@ def toTimeL2ₗ (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] [Complete
     filter_upwards [hcu, hu, hsmul, hmem] with t htcu htu htsmul htmem
     rw [htcu, RingHom.id_apply, htsmul, Pi.smul_apply, htu, toFun_smul c u htmem]
 
-def toTimeL2 (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    (T : ℝ) : timeH1 X T →L[ℝ] timeL2 X T :=
+def toTimeL2 (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [hComplete : CompleteSpace X] (T : ℝ) : timeH1 X T →L[ℝ] timeL2 X T :=
   LinearMap.mkContinuous (toTimeL2ₗ X T) (Real.sqrt T * (1 + Real.sqrt T)) (fun u => by
+    let _ := hComplete
     have h := u.norm_toFunL2_le
     rwa [← mul_assoc] at h)
 
@@ -460,6 +482,7 @@ theorem norm_toTimeL2_le (X : Type*) [NormedAddCommGroup X] [NormedSpace ℝ X]
 
 end Normed
 
+omit [CompleteSpace X] in
 theorem inner_def [InnerProductSpace ℝ X] (u w : timeH1 X T) :
     (inner ℝ u w : ℝ) = inner ℝ u.init w.init + inner ℝ u.deriv w.deriv :=
   rfl

@@ -179,7 +179,7 @@ def cometricDoubleTraceSmoothCcTensor (g₀ g₁ : SmoothRiemannianMetric I M) (
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma toModel_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (_x : M) {n : ℕ}
+lemma toModel_cons_sum_smul_deTurckLieConnectionDifferenceDerivative {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons (∑ c, t c • u c) rest) =
@@ -213,7 +213,7 @@ lemma toModel_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (_x : M) {n
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma toModel_cons_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (_x : M) {n : ℕ}
+lemma toModel_cons_cons_sum_smul_deTurckLieConnectionDifferenceDerivative {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons aa (Fin.cons (∑ c, t c • u c) rest)) =

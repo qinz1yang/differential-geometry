@@ -300,7 +300,7 @@ theorem ricciDeTurckRemainderFirstOrderPathIntegral_h2_tame_bound
   have hpath := path_jetL2_le (I := I) (M := M) g₀ 3 2 2
     (fun s => ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
     (metricPerturbationPathDomain (δ := δ₀) (δ' := δ₀)) metricPerturbationPathDomain_isOpen hSI
-    (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ') hBA
+    (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ')
     (hcoeff T T' hδ hδ' R A hR hA hT2 hT2' hT3 hT3')
   simpa only [ricciDeTurckRemainderFirstOrderPathIntegral] using hpath
 

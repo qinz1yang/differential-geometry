@@ -298,7 +298,7 @@ theorem ricciFun_eq_ricciTensor_swap_of_basis_identity
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ricciFun_eq_ricciTensor_of_basis_identity [I.Boundaryless]
+theorem ricciFun_eq_ricciTensor_of_basis_identity
     (g : SmoothRiemannianMetric I M) (x : M)
     (h : chartRiemannBasisIdentity (I := I) g x)
     (v w : TangentSpace I x) :

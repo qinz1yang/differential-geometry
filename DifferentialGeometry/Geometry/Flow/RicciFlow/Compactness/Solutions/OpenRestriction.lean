@@ -36,11 +36,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [IsManifold I 2 M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciTensor_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    (x : U) (v w : TangentSpace I x) :
+    [IsManifold I 1 U] (x : U) (v w : TangentSpace I x) :
     ricciTensor (I := I) (M := U) (g.restrictOpen (I := I) U) x v w
       = ricciTensor (I := I) (M := M) g (x : M) v w := by
   classical
@@ -61,13 +61,12 @@ theorem ricciTensor_restrictOpen
     metricRm04StdAt_eq_inner_riemannOp (I := I) (M := M) g (x : M) (B i) v w (B i),
     g.symm (x : M) (B i) (riemannOp (LeviCivita (I := I) g) (x : M) (B i) v w)]
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricRicci_restrictOpen_eval
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    (x : U) (slots : Fin 2 → TangentSpace I x) :
+    [IsManifold I 1 U] (x : U) (slots : Fin 2 → TangentSpace I x) :
     metricRicci (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
       = metricRicci (I := I) (M := M) g (x : M) slots := by
   have hLHS : metricRicci (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
@@ -89,13 +88,12 @@ theorem metricRicci_restrictOpen_eval
   rw [hLHS, hRHS]
   exact ricciTensor_restrictOpen (I := I) g U x (slots 0) (slots 1)
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricScalarAt_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    (x : U) :
+    [IsManifold I 1 U] (x : U) :
     metricScalarAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
       = metricScalarAt (I := I) (M := M) g (x : M) := by
   classical
@@ -139,9 +137,7 @@ omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
 omit [SigmaCompactSpace M] in
 theorem metricRm04_restrictOpen_eval
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    (x : U) (slots : Fin 4 → TangentSpace I x) :
+    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] (x : U) (slots : Fin 4 → TangentSpace I x) :
     metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
       = metricRm04 (I := I) (M := M) g (x : M) slots := by
   have hLHS : metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
@@ -172,9 +168,10 @@ variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 def solutionOn_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] :
-    SolutionOn (I := I) (M := U) D where
-  base := { metric := fun t => (S.base.metric t).restrictOpen (I := I) U }
+    [hSigma : SigmaCompactSpace U] [T2Space U] :
+    SolutionOn (I := I) (M := U) D := by
+  let _ := hSigma
+  exact { base := { metric := fun t => (S.base.metric t).restrictOpen (I := I) U } }
 
 open Classical in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
@@ -182,8 +179,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
     [IsManifold I 2 M] in
 theorem restrictOpenPush_contMDiffWithinAt
     {Idx : Type} (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    {frame : Idx → (x : U) → TangentSpace I x} {u : Set U}
+    [IsManifold I 1 U] {frame : Idx → (x : U) → TangentSpace I x} {u : Set U}
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) (i : Idx) (x : U) (hxu : x ∈ u) :
     ContMDiffWithinAt I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (fun y : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) y
@@ -235,8 +231,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
     [IsManifold I 2 M] in
 theorem isLocalFrameOn_restrictOpenPush
     {Idx : Type} (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
-    {frame : Idx → (x : U) → TangentSpace I x} {u : Set U}
+    [IsManifold I 1 U] {frame : Idx → (x : U) → TangentSpace I x} {u : Set U}
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) :
     IsLocalFrameOn (V := (TangentSpace I : M → Type _)) I E (∞ : WithTop ℕ∞)
       (fun i (y : M) => if h : y ∈ U then frame i ⟨y, h⟩ else 0) (Subtype.val '' u) where
@@ -265,8 +260,8 @@ omit [SigmaCompactSpace M] in
 theorem frameCompSmooth_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
+    [SigmaCompactSpace U] [T2Space U]
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     {Idx : Type} [Finite Idx] (frame : Idx → (x : U) → TangentSpace I x) {u : Set U}
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) (i j : Idx) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
@@ -274,6 +269,7 @@ theorem frameCompSmooth_restrictOpen
         ((solutionOn_restrictOpen (I := I) S U).family.metric p.1).inner p.2
           (frame i p.2) (frame j p.2))
       (D.regular ×ˢ u) := by
+  let _ := hManifoldTop
   classical
   letI := Fintype.ofFinite Idx
   set frameM : Idx → (y : M) → TangentSpace I y :=
@@ -304,12 +300,13 @@ omit [SigmaCompactSpace M] in
 theorem metricFamilySmoothOn_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [SigmaCompactSpace U] [T2Space U] [hBoundaryless : BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     MetricFamilySmoothOn (I := I) D (solutionOn_restrictOpen (I := I) S U).family.metric where
   coeff x X Y := hS.smoothMetric.coeff (x : M) X Y
   coeff_cont x X Y := hS.smoothMetric.coeff_cont (x : M) X Y
   metricTensor_cont := by
+    let _ := hBoundaryless
     apply tensor0SFamilyContinuousOnSet.congr
       (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
         (fun t x => Tensor0SBundle.metricTensorField (I := I) (S.family.metric t) x)
@@ -321,14 +318,15 @@ theorem metricFamilySmoothOn_restrictOpen
     intro Idx _ frame u hframe i j
     exact frameCompSmooth_restrictOpen (I := I) S hS U frame hframe i j
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricVariationEquation_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     MetricVariationEquationOn (I := I) (solutionOn_restrictOpen (I := I) S U) := by
+  let _ := hManifoldTop
   intro t x X Y
   have hric :
       RicciAtFamily.toTensorField (I := I)
@@ -343,24 +341,25 @@ theorem metricVariationEquation_restrictOpen
   rw [hric]
   exact hS.equation t (x : M) X Y
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (t : ℝ) (x : U) :
     (solutionOn_restrictOpen (I := I) S U).scalar t x = S.scalar t (x : M) := by
+  let _ := hManifoldTop
   simp only [SolutionOn.scalar, SolutionFamily.scalar, solutionOn_restrictOpen]
   exact metricScalarAt_restrictOpen (I := I) (S.base.metric t) U x
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarCont_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     ContinuousOn (fun q : ℝ × U => (solutionOn_restrictOpen (I := I) S U).scalar q.1 q.2)
       (D.carrier ×ˢ (Set.univ : Set U)) := by
   have heq : (fun q : ℝ × U => (solutionOn_restrictOpen (I := I) S U).scalar q.1 q.2)
@@ -372,7 +371,7 @@ theorem scalarCont_restrictOpen
     (continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)).continuousOn
     (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarTime_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -388,15 +387,16 @@ theorem scalarTime_restrictOpen
   rw [heq]
   exact hS.scalarTime htK hKsub (x : M)
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciCont_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     tensor0SFamilyContinuousOnSet (I := I) (M := U) 2 D.carrier
       (fun t x => (solutionOn_restrictOpen (I := I) S U).ricci t x) := by
+  let _ := hManifoldTop
   apply tensor0SFamilyContinuousOnSet.congr
     (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
       (fun t x => S.ricci t x) hS.ricciCont U)
@@ -410,10 +410,12 @@ omit [SigmaCompactSpace M] in
 theorem rm04Cont_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
+    [SigmaCompactSpace U] [T2Space U] [hBoundaryless : BoundarylessManifold I U]
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     tensor0SFamilyContinuousOnSet (I := I) (M := U) 4 D.carrier
       (fun t x => (solutionOn_restrictOpen (I := I) S U).base.rm04 t x) := by
+  let _ := hBoundaryless
+  let _ := hManifoldTop
   apply tensor0SFamilyContinuousOnSet.congr
     (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
       (fun t x => S.base.rm04 t x) hS.rm04Cont U)
@@ -421,15 +423,16 @@ theorem rm04Cont_restrictOpen
   ext slots
   exact (metricRm04_restrictOpen_eval (I := I) (S.base.metric t) U x slots).symm
 
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciNorm_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
+    [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (t : ℝ) (x : U) :
     ricciNorm (I := I) (solutionOn_restrictOpen (I := I) S U) t x
       = ricciNorm (I := I) S t (x : M) := by
+  let _ := hManifoldTop
   have hsec : metricRicci (I := I) (M := U) ((S.base.metric t).restrictOpen (I := I) U) x
       = metricRicci (I := I) (M := M) (S.base.metric t) (x : M) := by
     ext slots
@@ -444,8 +447,7 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [I.Bounda
     [BoundarylessManifold I M] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem ricciNormSpace_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
+    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U]
     (t : ℝ) (x : U) :
     MDifferentiableAt I 𝓘(ℝ, ℝ)
       (ricciNorm (I := I) (solutionOn_restrictOpen (I := I) S U) t) x := by
@@ -464,8 +466,7 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [I.Bounda
     [BoundarylessManifold I M] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem smoothConnection_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
+    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] :
     ConnectionFamilySmoothOn (I := I) (solutionOn_restrictOpen (I := I) S U).family := by
   intro t
   exact leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I)
@@ -473,6 +474,7 @@ theorem smoothConnection_restrictOpen
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem isSolutionOn_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (U : TopologicalSpace.Opens M)

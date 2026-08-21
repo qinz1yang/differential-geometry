@@ -213,7 +213,6 @@ theorem intrJacobi_bounds
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
-    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
@@ -311,7 +310,6 @@ theorem intrForce_pair
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
-    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
@@ -423,7 +421,6 @@ theorem intrJacobi_pair
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
-    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,

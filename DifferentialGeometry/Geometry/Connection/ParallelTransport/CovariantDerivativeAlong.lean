@@ -644,7 +644,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [Module.Finite ℝ E] in
 theorem chartRepAtBase_differentiableAt [I.Boundaryless]
     {n : WithTop ℕ∞} [ENat.LEInfty n] (hn : n ≠ 0)
-    (_g : SmoothRiemannianMetric I M) (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
+    (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
     (t : ℝ) (β : M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I n γ)
     (hβ : γ t ∈ (chartAt H β).source)

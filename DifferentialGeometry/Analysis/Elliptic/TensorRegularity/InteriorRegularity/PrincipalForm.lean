@@ -33,7 +33,7 @@ theorem weightedInvGramEuclid_eq_weightedInvGramOnEuclid
   rfl
 
 theorem exists_tensorPrincipalForm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -46,16 +46,14 @@ theorem exists_tensorPrincipalForm
   exact ⟨B, hB_agree, hB_c⟩
 
 def tensorPrincipalForm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     SmoothEllipticBilinearForm (Module.finrank ℝ E) (Set.univ : Set EuclN) :=
   Classical.choose (exists_tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
 
 theorem tensorPrincipalForm_spec
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
@@ -66,23 +64,27 @@ theorem tensorPrincipalForm_spec
   Classical.choose_spec (exists_tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
 
 theorem tensorPrincipalForm_a_eq_weightedInvGramEuclid
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [hT2 : T2Space M] [hSigma : SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     {y : EuclN} (hy : y ∈ K) (i j : Fin (Module.finrank ℝ E)) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).a y i j =
-      weightedInvGramEuclid (I := I) g α i j y :=
-  (tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target).1 y hy i j
+      weightedInvGramEuclid (I := I) g α i j y := by
+  let _ := hT2
+  let _ := hSigma
+  exact (tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target).1 y hy i j
 
 theorem tensorPrincipalForm_c
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [hT2 : T2Space M] [hSigma : SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).c =
-      (fun _ : EuclN => (0 : ℝ)) :=
-  (tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target).2
+      (fun _ : EuclN => (0 : ℝ)) := by
+  let _ := hT2
+  let _ := hSigma
+  exact (tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target).2
 
 theorem tensorPrincipalForm_c_apply
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
@@ -94,7 +96,7 @@ theorem tensorPrincipalForm_c_apply
   rw [tensorPrincipalForm_c (I := I) (M := M) g α hK hK_target]
 
 theorem tensorPrincipalForm_eq_scalar_metric_form
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [hT2 : T2Space M] [hSigma : SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -102,13 +104,14 @@ theorem tensorPrincipalForm_eq_scalar_metric_form
       B = tensorPrincipalForm (I := I) (M := M) g α hK hK_target ∧
       (∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
         B.a y i j = weightedInvGramEuclid (I := I) g α i j y) ∧
-      B.c = (fun _ : EuclN => (0 : ℝ)) :=
-  ⟨tensorPrincipalForm (I := I) (M := M) g α hK hK_target, rfl,
+      B.c = (fun _ : EuclN => (0 : ℝ)) := by
+  let _ := hT2
+  let _ := hSigma
+  exact ⟨tensorPrincipalForm (I := I) (M := M) g α hK hK_target, rfl,
     tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target⟩
 
 theorem tensorPrincipalForm_symm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (y : EuclN) (i j : Fin (Module.finrank ℝ E)) :
@@ -117,16 +120,14 @@ theorem tensorPrincipalForm_symm
   (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).symm y i j
 
 theorem tensorPrincipalForm_lam_pos
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     0 < (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).lam :=
   (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).hlam_pos
 
 theorem tensorPrincipalForm_coercive
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (α : M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (y : EuclN) (ξ : EuclN) :

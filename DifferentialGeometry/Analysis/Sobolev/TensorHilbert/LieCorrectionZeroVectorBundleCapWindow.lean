@@ -49,7 +49,7 @@ theorem exists_lieCorrectionZeroVectorBundle_antidiagonalTupleGridWindow_bound (
   classical
   have hΛ0 : (0 : ℝ) ≤ Λ := le_trans zero_le_one hΛ1
   obtain ⟨Kmcd, hKmcd_nn, hmcd⟩ :=
-    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀ (Real.sqrt_nonneg Λ)
+    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀
   obtain ⟨KΩ, hKΩ_nn, hΩ⟩ := deTurckVectorFieldCovector_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀
   obtain ⟨cip, hcip_nn, hip⟩ := riemannianFiberNormSq_iteratedCovGrad_ipLow_le (I := I) (M := M) g₀
   obtain ⟨Kcg, hKcg_nn, hcg⟩ := riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀

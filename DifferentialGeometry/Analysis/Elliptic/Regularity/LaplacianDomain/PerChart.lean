@@ -30,7 +30,6 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBoundCa
 open DifferentialGeometry.Analysis.Laplacian.ChartH2NonSmooth
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalIdentityIntegralForm
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainH2FromSmooth
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainH2
 open DifferentialGeometry.Analysis.Laplacian.ManifoldH2NonSmooth
 open DifferentialGeometry.Analysis.Sobolev
@@ -384,7 +383,7 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 2 2 v (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
-      (k := 2) (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+      (k := 2) (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       hΩ''_open h_chart_open hΩ''_in_chart hv_memWkp_two_Ω'' h_tsupp_v_sub_Ω''
       hv_compactSupport
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
@@ -396,16 +395,17 @@ theorem laplacianDomain_memWkpChart_two_unconditional
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ :=
-  laplacianDomain_memWkpChart_two (I := I) (M := M) g hu_h
-    (fun α => chartH2NonSmoothPOUWitness_of_laplacianDomain
-      (I := I) (M := M) g hu_h α)
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
+  let h_witness := fun α => chartH2NonSmoothPOUWitness_of_laplacianDomain
+    (I := I) (M := M) g hu_h α
+  exact ⟨memWkpChart_two_of_chartPOUWitnesses (I := I) (M := M) g h_witness,
+    wkpNormChart_two_lt_top_of_chartPOUWitnesses (I := I) (M := M) g h_witness⟩
 
 end LaplacianDomainPerChartWitness
 end Laplacian

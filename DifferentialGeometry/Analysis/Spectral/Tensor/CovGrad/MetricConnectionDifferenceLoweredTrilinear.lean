@@ -313,6 +313,7 @@ theorem metricConnectionDifferenceLoweredFib_contMDiff (gm gA gB : SmoothRiemann
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ccBilinConnectionDifferenceLoweredFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞

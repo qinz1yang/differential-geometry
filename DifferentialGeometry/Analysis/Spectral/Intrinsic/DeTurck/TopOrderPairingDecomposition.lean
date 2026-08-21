@@ -63,7 +63,7 @@ def ricciPalatiniZeroOrderFold (g g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ((deTurckLieEndoArmField (I := I) (M := M) g g₁ g_bg +
       lieCorrectionZeroField (I := I) (M := M) g g₁ g_bg) +
-    metricPrincipalDefectCurvCoeff (I := I) g g_bg g₁) -
+    metricPrincipalDefectCurvCoeff (I := I) g g₁) -
       backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg
 
 def ricciPalatiniTopOrderDecomposition (g g₁ g_bg : SmoothRiemannianMetric I M)
@@ -94,6 +94,8 @@ theorem metricPerturbation_zero_bound_at (g : SmoothRiemannianMetric I M) {delta
   exact mul_nonneg (mul_nonneg hdelta (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem metricComparisonEndomorphism_pairing_balance
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)
@@ -269,6 +271,7 @@ private lemma edge_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 theorem metricComparison_trace_contraction (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g gm s =
       ccOperatorFieldComp (I := I) (M := M) g (s + 2) (s + 2) s
@@ -428,6 +431,7 @@ def topOrderPairingCoefficient (g gm : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 theorem topOrderPairingCoefficient_decomposition (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -516,6 +520,7 @@ theorem secondSlotInsertionCoefficient_apply (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem secondSlotMetricComparisonCoefficient_apply (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
@@ -547,10 +552,10 @@ private lemma edge_extend_cons
   rw [show ((show Tensor0SSpace (r + 1) I x →L[Real]
       Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g r s Φ).toSection x) D) =
-      slotExtendPointwise (I := I) (M := M) g r s x
+      slotExtendPointwise (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[Real] Tensor0SSpace s I x from
           Φ.toSection x) D from rfl]
-  exact slotExtendFib_apply_eval (I := I) (M := M) g r s x
+  exact slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[Real] Tensor0SSpace s I x from
       Φ.toSection x) D (show E from v0) vs
 
@@ -624,6 +629,7 @@ theorem fourTensorProductCoefficient_apply (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem topOrderPairingAdjointCoefficient_apply (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4))
     (x : M) (v : Fin 4 → E) :
@@ -640,6 +646,7 @@ theorem topOrderPairingAdjointCoefficient_apply (g gm : SmoothRiemannianMetric I
   congr 2 ; funext k ; fin_cases k <;> rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem topOrderPairingCoefficient_apply (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (x : M) (v : Fin 2 → E) :
@@ -836,6 +843,7 @@ private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 private theorem edgePair_point (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
@@ -1036,6 +1044,7 @@ private theorem edgePair_point (g gm : SmoothRiemannianMetric I M)
         rfl
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem topOrderPairing_l2 (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -1051,6 +1060,7 @@ theorem topOrderPairing_l2 (g gm : SmoothRiemannianMetric I M)
   exact edgePair_point (I := I) (M := M) g gm S G σ x
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem topOrderPairing_inner (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -1152,6 +1162,7 @@ def riemannTopOrderPairingAdjoint (g gm : SmoothRiemannianMetric I M)
       topOrderPairingAdjointCoefficient (I := I) (M := M) g gm S (q 3))
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem riemannTopOrderPairing_apply (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (q : Fin 4 → Equiv.Perm (Fin 4)) :

@@ -218,11 +218,11 @@ theorem exists_uniform_metric_covariant_derivative_bound_for_solution_subsequenc
     (hmet : forall (i : Nat) (r : Real), (S i).family.metric r = gSeq i r)
     (hreg : forall i : Nat, Set.Icc β ψ ⊆ (D i).regular)
     (H : SolCovData (I := I) β ψ t0 gSeq gRef D S) :
-    forall rho : Nat -> Nat, StrictMono rho -> forall t, t ∈ Set.Icc β ψ ->
+    forall rho : Nat -> Nat, forall t, t ∈ Set.Icc β ψ ->
       forall q : Nat, forall K' : Set M, IsCompact K' -> exists C : Real,
         forall k : Nat, forall z, z ∈ K' ->
           metricCovDerivNorm (I := I) q (gSeq (rho k) t) gRef z <= C := by
-  intro rho _hrho t ht q K' hK'
+  intro rho t ht q K' hK'
   rcases q with _ | q
   · obtain ⟨U, hU, hK'U, B, Bmax, KShi, initC, timeRadius, hequiv,
       hBmax1, hBmax, _hKShi0, _hShi, _ht0, _hDreg, _hinitC0, _hinit, _htime⟩ :=
@@ -268,14 +268,14 @@ theorem hgLip0Sol
         forall x, x ∈ K ->
           metricDerivNorm (I := I) 0 (gSeq i s) (gSeq i t) gRef x <= L * |s - t| := by
   classical
-  have hev := hevComp_of_solutions (I := I) (K := K) (β := β) (ψ := ψ)
+  have hev := hevComp_of_solutions (I := I) (β := β) (ψ := ψ)
     (gSeq := gSeq) (gRef := gRef) (N := 0) D S hS hmet hreg
     (fun i p hp => False.elim (Nat.not_lt_zero p hp))
   refine ⟨2 * (Real.sqrt (Bmax ^ 2) * KShi), by positivity, fun i s hs t ht x hx => ?_⟩
   exact timeLipschitz_of_hasDerivAt (I := I) gRef 0 (gSeq i)
     (fun r x => (-2 : Real) • nablaRicReal (I := I) gSeq gRef 0 i r x)
     K β ψ (2 * (Real.sqrt (Bmax ^ 2) * KShi))
-    (fun x hx r hr v => hev i x hx r hr v)
+    (fun x _hx r hr v => hev i x r hr v)
     (fun x hx r hr => by
       rw [Tensor0SBundle.sqrt_normSq0S_smul]
       have habs : |(-2 : Real)| = 2 := by norm_num
@@ -427,7 +427,11 @@ theorem winGInfOfSol
     simpa [SolLowData] using hlow
   exact windowGInfOut (E := E) (H := H) (I := I) (M := M)
     hne K hK beta psiT p gSeq gRef e he hdense
-    L hL hgLip (exists_uniform_metric_covariant_derivative_bound_for_solution_subsequence (I := I) hS hmet hreg Hcov) hlow'
+    L hL hgLip
+    (fun rho _hrho =>
+      exists_uniform_metric_covariant_derivative_bound_for_solution_subsequence
+        (I := I) hS hmet hreg Hcov rho)
+    hlow'
 
 noncomputable def winGInfOfData (hne : Nonempty M)
     (W : SolWindowData (I := I) (M := M)) :

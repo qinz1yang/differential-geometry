@@ -49,7 +49,7 @@ theorem HasStageJetData.inv_cov_comp_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi hconn
+    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -75,7 +75,7 @@ theorem HasStageJetData.inv_cov_comp_tail
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
           (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-        chiL (stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm z))
+        chiL (stageComparisonMap inp P Lphi r hr k l (chiK.symm z))
     let G : LiveSlot L inp.pack r → Nat → Nat → E → E :=
       fun alpha k l w =>
         let Yk := X.obj (Lphi.φ k)
@@ -96,7 +96,7 @@ theorem HasStageJetData.inv_cov_comp_tail
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
           (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-        let F := stageComparisonMap inp P Lphi r hr hconn k l
+        let F := stageComparisonMap inp P Lphi r hr k l
         chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
     let B : LiveSlot L inp.pack r → Nat →
         E → (E →L[Real] E →L[Real] Real) := fun alpha k =>
@@ -167,7 +167,7 @@ theorem HasStageJetData.inv_cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
       let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-      chiL (stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm z))
+      chiL (stageComparisonMap inp P Lphi r hr k l (chiK.symm z))
   let G : LiveSlot L inp.pack r → Nat → Nat → E → E :=
     fun alpha k l w =>
       let Yk := X.obj (Lphi.φ k)
@@ -188,7 +188,7 @@ theorem HasStageJetData.inv_cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
       let chiL := NormalCoordinates.normalChartAt (I := I) Yl.metric
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-      let F := stageComparisonMap inp P Lphi r hr hconn k l
+      let F := stageComparisonMap inp P Lphi r hr k l
       chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
   let B : LiveSlot L inp.pack r → Nat →
       E → (E →L[Real] E →L[Real] Real) := fun alpha k =>
@@ -329,7 +329,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     have hAconvW : MapCInfConvOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetData.chart_conv (I := I) inp P L hr phi hphi hconn
+        HasStageJetData.chart_conv (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'

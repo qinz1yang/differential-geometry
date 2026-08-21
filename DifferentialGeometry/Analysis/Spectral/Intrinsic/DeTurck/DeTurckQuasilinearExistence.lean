@@ -205,13 +205,13 @@ def nemytskiiMixedForcingMap (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : 
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1) :
+    {T : ℝ} (hT : 0 < T) :
     timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
       timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
   fun F => nemytskii (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
     (a := (a : ℝ)) (T := T) hLip
     (maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
-      (T := T) (a : ℝ) hT hT1
+      (T := T) (a : ℝ) hT
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F)
 
 omit [BoundarylessManifold I M] in
@@ -220,13 +220,13 @@ omit [NeZero (Module.finrank ℝ E)] in
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (F : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T) :
-    nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1 F =
+    nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT F =
       nemytskii (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (a := (a : ℝ)) (T := T) hLip
         (maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
-          (T := T) (a : ℝ) hT hT1
+          (T := T) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F) :=
   rfl
 
@@ -248,16 +248,16 @@ theorem nemytskiiMixedForcingMap_dist_le (g₀ : SmoothRiemannianMetric I M) (a 
     {ρ : ℝ} (hρ : 0 ≤ ρ)
     (F F' : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hF : ‖F‖ ≤ ρ) (hF' : ‖F'‖ ≤ ρ) :
-    ‖nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1 F -
-        nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1 F'‖ ≤
+    ‖nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT F -
+        nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT F'‖ ≤
       ((C₁ : ℝ) * (Real.sqrt (1 + T)) * ρ * (1 + T) + (C₂ : ℝ) * (2 * Real.sqrt T)) * ‖F - F'‖ := by
   classical
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
   set z : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) := 0 with hz
   set fF := maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
-    (T := T) (a : ℝ) hT hT1 z F with hfF
+    (T := T) (a : ℝ) hT z F with hfF
   set fF' := maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
-    (T := T) (a : ℝ) hT hT1 z F' with hfF'
+    (T := T) (a : ℝ) hT z F' with hfF'
   set R := Real.sqrt (1 + T) * ρ with hR
   have hT_pos : (0 : ℝ) < 1 + T := by linarith
   have hsqrtnn : 0 ≤ Real.sqrt (1 + T) := Real.sqrt_nonneg _
@@ -266,7 +266,7 @@ theorem nemytskiiMixedForcingMap_dist_le (g₀ : SmoothRiemannianMetric I M) (a 
       ‖(timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) fF) t‖ ≤ R := by
     filter_upwards [maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
-      (I := I) (M := M) (g₀ := g₀) hT hT1 F] with t ht
+      (I := I) (M := M) (g₀ := g₀) hT F] with t ht
     refine le_trans ht ?_
     rw [hR]
     exact mul_le_mul_of_nonneg_left hF hsqrtnn
@@ -274,13 +274,13 @@ theorem nemytskiiMixedForcingMap_dist_le (g₀ : SmoothRiemannianMetric I M) (a 
       ‖(timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) fF') t‖ ≤ R := by
     filter_upwards [maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
-      (I := I) (M := M) (g₀ := g₀) hT hT1 F'] with t ht
+      (I := I) (M := M) (g₀ := g₀) hT F'] with t ht
     refine le_trans ht ?_
     rw [hR]
     exact mul_le_mul_of_nonneg_left hF' hsqrtnn
   have hfield_dist : ‖fF - fF'‖ ≤ (1 + T) * ‖F - F'‖ :=
     maxRegDuhamelSolField_dist_le (I := I) (M := M) (h_compact := h_compact) (a := (a : ℝ))
-      hT hT1 z F F'
+      hT z F F'
   have hincl_dist :
       ‖timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (fF - fF')‖ ≤
@@ -291,8 +291,8 @@ theorem nemytskiiMixedForcingMap_dist_le (g₀ : SmoothRiemannianMetric I M) (a 
       (a := (a : ℝ)) hT hT1 z F F'
   have hmain := nemytskii_time_mixed_bound (I := I) (M := M) g₀ a hLip hsingle R hRnn fF fF'
     hfR hf'R
-  calc ‖nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1 F -
-          nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1 F'‖
+  calc ‖nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT F -
+          nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT F'‖
       = ‖nemytskii (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (a := (a : ℝ)) (T := T) hLip fF -
           nemytskii (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
@@ -316,12 +316,12 @@ private theorem norm_nemytskiiMixedForcingMap_zero_le (g₀ : SmoothRiemannianMe
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1) :
-    ‖nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1
+    {T : ℝ} (hT : 0 < T) :
+    ‖nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT
         (0 : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)‖ ≤
       Real.sqrt T * ‖Nfun (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
   rw [nemytskiiMixedForcingMap_apply,
-    maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT hT1]
+    maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT]
   refine timeL2_norm_le_of_ae_bound _ (norm_nonneg _) ?_
   have hcoe := nemytskii_coeFn (I := I) (M := M) hLip
     (0 : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
@@ -355,21 +355,21 @@ theorem nemytskii_sol_const
     ∃ T₀ : ℝ,
       T₀ = min 1 (min (1 / (64 * ((C₂ : ℝ) + 1) ^ 2))
         ((1 / (16 * ((C₁ : ℝ) + 1)) / (2 * (D + 1))) ^ 2)) ∧
-      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
+      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (_hT1 : T ≤ 1),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
-        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
+        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
           gforce =ᵐ[timeMeasure T]
             (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M)
-                (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT hT1
+                (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT
                 (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)) ∧
           timeH1.trace0 _ T u = 0 ∧
           timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (T := T) (a : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M)
-                  (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT hT1
+                  (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT
                   (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce) + gforce ∧
           ‖gforce‖ ≤ 1 / (16 * ((C₁ : ℝ) + 1)) := by
   classical
@@ -441,7 +441,7 @@ theorem nemytskii_sol_const
           nlinarith [hfrac, div_nonneg hc2 (by positivity : (0:ℝ) ≤ (C₂:ℝ)+1)]
   have hΛ_le : Λ ≤ 1 / 2 := by rw [hΛdef]; linarith
   have hΛ_lt : Λ < 1 := by linarith
-  set Ψ := nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT hT1
+  set Ψ := nemytskiiMixedForcingMap (I := I) (M := M) g₀ a hLip hT
     with hΨdef
   set z₀ : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T := 0 with hz₀
   set ρt := recenteredBallRetraction (z₀) ρ with hρtdef
@@ -484,7 +484,7 @@ theorem nemytskii_sol_const
   have hFstar_fix : Ψ' Fstar = Fstar := ContractingWith.fixedPoint_isFixedPt hcontr
   have hΨ0 : ‖Ψ z₀‖ ≤ Real.sqrt T * M₀ := by
     rw [hΨdef, hz₀, hM₀def]
-    exact norm_nemytskiiMixedForcingMap_zero_le (I := I) (M := M) g₀ a hLip hT hT1
+    exact norm_nemytskiiMixedForcingMap_zero_le (I := I) (M := M) g₀ a hLip hT
   have hsqrtTM : Real.sqrt T * M₀ ≤ ρ / 2 := by
     have hsqrtT_le : Real.sqrt T ≤ ρ / (2 * (D + 1)) := by
       rw [show ρ / (2 * (D + 1)) = Real.sqrt ((ρ / (2 * (D + 1))) ^ 2) from
@@ -521,11 +521,11 @@ theorem nemytskii_sol_const
   have hΨFstar : Ψ Fstar = Fstar := by
     have hstep : Ψ' Fstar = Ψ Fstar := by simp only [hΨ'def, hρt_Fstar]
     rw [← hstep]; exact hFstar_fix
-  set field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+  set field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar with hfielddef
   have hforce_eq : Fstar = nemytskii (I := I) (M := M) hLip field := by
     rw [← hΨFstar, hΨdef, nemytskiiMixedForcingMap_apply]
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
+  refine ⟨maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar, Fstar, rfl, ?_, ?_, ?_, ?_⟩
   · have hcoe := nemytskii_coeFn (I := I) (M := M) hLip field
     have hforce_ae : ⇑Fstar =ᵐ[timeMeasure T]
@@ -533,10 +533,10 @@ theorem nemytskii_sol_const
       rw [hforce_eq]
     refine hforce_ae.trans ?_
     exact hcoe
-  · rw [maxRegDuhamelMap_trace0 (I := I) (M := M) (a := (a : ℝ)) (T := T) hT hT1
+  · rw [maxRegDuhamelMap_trace0 (I := I) (M := M) (a := (a : ℝ)) (T := T) hT
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar, map_zero]
   · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M) (h_compact := h_compact)
-      (a := (a : ℝ)) (T := T) hT hT1 (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
+      (a := (a : ℝ)) (T := T) hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
   · exact hFstar_mem
 
 omit [BoundarylessManifold I M] in
@@ -558,21 +558,21 @@ theorem quasilinear_maxreg_solution_of_nemytskii
       T₀ = min 1 (min (1 / (64 * ((hmix.choose_spec.choose : ℝ) + 1) ^ 2))
         ((1 / (16 * ((hmix.choose : ℝ) + 1)) /
             (2 * (‖Nfun (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ + 1))) ^ 2)) ∧
-      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
+      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (_hT1 : T ≤ 1),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
-        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
+        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
           gforce =ᵐ[timeMeasure T]
             (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M)
-                (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT hT1
+                (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT
                 (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)) ∧
           timeH1.trace0 _ T u = 0 ∧
           timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (T := T) (a : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M)
-                  (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT hT1
+                  (g := g₀) (r := 0) (s := 2) (T := T) (a : ℝ) hT
                   (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce) + gforce ∧
           ‖gforce‖ ≤ 1 / (16 * ((hmix.choose : ℝ) + 1)) := by
   exact nemytskii_sol_const (I := I) (M := M) g₀ a Nfun hLip

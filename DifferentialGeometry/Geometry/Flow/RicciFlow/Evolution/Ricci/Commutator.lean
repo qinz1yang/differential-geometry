@@ -968,6 +968,7 @@ theorem RicciContractedCommutatorsInFrame_of_differentiatedBianchi_and_tensor0S_
         nabla2RicTensor nabla2Ric
         hNabla2 hRicciId hRicTrace13 hLower hPair hOutput hFirst hRic))
 
+omit [SigmaCompactSpace M] in
 theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}

@@ -92,6 +92,7 @@ def ricciFoldWeightB (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 4 :=
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma ricciFoldWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
     (S : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
@@ -196,6 +197,7 @@ private lemma ricciFoldWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2) (x : M)
     (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
@@ -367,6 +369,8 @@ private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2)
   rw [hA, hB]
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
     ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁ S =
       (-(1 / 2) : ℝ) •
@@ -670,6 +674,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciFoldWeightGeneral_bounde
         ring
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
     ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
@@ -744,7 +749,7 @@ lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
     conv_lhs => rw [orthoFrame_expansion_at_center (I := I) (M := M) g₀ x
       (riemannOp (LeviCivita (I := I) g₀) x (smoothOrthoFrame (I := I) g x c x) (v 0) (v 1))]
   rw [hu_exp]
-  rw [toModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel D)
+  rw [toModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel D)
     (Module.finrank ℝ E)
     (fun e => g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x
         (smoothOrthoFrame (I := I) g x c x) (v 0) (v 1))
@@ -1216,7 +1221,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     rw [← koszulCovecCc_unitModel_eq_connectionDifference_g1_inner (I := I) (M := M) g₀ g₁ P htie x p
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0) v1]
     conv_lhs => rw [hexp q v0]
-    exact toModel_vec3_slot2_sum_smul (E := E) x
+    exact toModel_vec3_slot2_sum_smul (E := E)
       (unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x)
       (Module.finrank ℝ E)
       (fun e => g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1236,7 +1241,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     rw [← koszulCovecCc_unitModel_eq_connectionDifference_g1_inner (I := I) (M := M) g₀ g₁ P htie x p v1
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)]
     conv_lhs => rw [hexp q v0]
-    exact toModel_vec3_slot0_sum_smul (E := E) x
+    exact toModel_vec3_slot0_sum_smul (E := E)
       (unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x)
       (Module.finrank ℝ E)
       (fun e => g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1254,7 +1259,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     rw [← koszulCovecCc_unitModel_eq_connectionDifference_g1_inner (I := I) (M := M) g₀ g₁ P htie x v0
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p) v1]
     conv_lhs => rw [hexp q p]
-    exact toModel_vec3_slot2_sum_smul (E := E) x
+    exact toModel_vec3_slot2_sum_smul (E := E)
       (unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x)
       (Module.finrank ℝ E)
       (fun e => g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
@@ -1274,7 +1279,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     rw [← koszulCovecCc_unitModel_eq_connectionDifference_g1_inner (I := I) (M := M) g₀ g₁ P htie x v0 v1
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)]
     conv_lhs => rw [hexp q p]
-    exact toModel_vec3_slot0_sum_smul (E := E) x
+    exact toModel_vec3_slot0_sum_smul (E := E)
       (unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x)
       (Module.finrank ℝ E)
       (fun e => g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)

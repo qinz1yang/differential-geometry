@@ -219,6 +219,7 @@ private theorem riemannianFiberNormSq_neg_value
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma connectionDifferenceSection_eq_cometricRaiseSlot0Field (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -316,6 +317,7 @@ theorem metricLoweredConnectionDifferenceCoefficient_fiber_norm_sq_eq
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     flatArmCoeffCc (I := I) g₀ g₁ true =

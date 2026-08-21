@@ -140,6 +140,7 @@ theorem ricciEdgeMetric
 
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem ricciEdgeChartPDE
     (g : ℝ → SmoothRiemannianMetric I M) {a b t : ℝ}
     (hpde : ∀ r ∈ Set.Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,

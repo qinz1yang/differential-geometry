@@ -22,6 +22,7 @@ def TimeNemyMeas {S : Set X} (hzero : (0 : X) ∈ S)
       AEStronglyMeasurable (fun t => N t (aeSetLift hzero f t)) (timeMeasure T)
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem timeNemy_of_cont {S : Set X} (hzero : (0 : X) ∈ S)
     {N : ℝ → S → Y} {τ : ℝ}
     (hN : Continuous (fun p : ℝ × S => N p.1 p.2)) :
@@ -31,6 +32,7 @@ theorem timeNemy_of_cont {S : Set X} (hzero : (0 : X) ∈ S)
     (aestronglyMeasurable_id.prodMk (aeSetLift_aesm hzero f hf))
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [CompleteSpace X] in
 theorem memLp_time_tame
     {T R : ℝ} {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     {S : Set X} (hzero : (0 : X) ∈ S) (hR : 0 ≤ R)
@@ -117,6 +119,8 @@ def timeNemyTame
   (memLp_time_tame hzero hR J hstate N f hf hmeas A B C D hD hzeroN htame).toLp
     (fun t => N t (aeSetLift hzero f t))
 
+omit [NormedSpace ℝ Y] [CompleteSpace Y] in
+omit [CompleteSpace X] in
 theorem timeNemyTame_ae
     {T R : ℝ} {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     {S : Set X} (hzero : (0 : X) ∈ S) (hR : 0 ≤ R)

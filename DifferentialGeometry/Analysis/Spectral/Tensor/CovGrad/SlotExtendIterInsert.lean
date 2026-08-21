@@ -59,7 +59,7 @@ theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
   | zero =>
       rfl
   | succ w ih =>
-      change slotExtendPointwise (I := I) (M := M) g ((s + 1) + w) ((s + 1) + w) x
+      change slotExtendPointwise (I := I) (M := M) ((s + 1) + w) ((s + 1) + w) x
           (show Tensor0SSpace ((s + 1) + w) I x →L[ℝ]
               Tensor0SSpace ((s + 1) + w) I x from
             (slotExtendIter (I := I) (M := M) g (s + 1) (s + 1) w
@@ -67,13 +67,13 @@ theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
       change _ =
         (slotInsertEndoFib (I := I) (M := M) (((s + 1) + w) + 1)
           (⟨w, by omega⟩ : Fin ((s + 1) + w)).succ x (Λ x)) A
-      rw [slotInsertEndoFib_succ (I := I) (M := M) g ((s + 1) + w)
+      rw [slotInsertEndoFib_succ (I := I) (M := M) ((s + 1) + w)
         ⟨w, by omega⟩ x (Λ x)]
       apply Tensor0SSpace.toModel_injective
       refine ContinuousMultilinearMap.ext (fun m => ?_)
       rw [show m = Fin.cons (m 0) (Matrix.vecTail m) from (Fin.cons_self_tail m).symm]
-      rw [slotExtendFib_apply_eval (I := I) (M := M) g ((s + 1) + w) ((s + 1) + w),
-        slotExtendFib_apply_eval (I := I) (M := M) g ((s + 1) + w) ((s + 1) + w)]
+      rw [slotExtendFib_apply_eval (I := I) (M := M) ((s + 1) + w) ((s + 1) + w),
+        slotExtendFib_apply_eval (I := I) (M := M) ((s + 1) + w) ((s + 1) + w)]
       rw [ih]
 
 

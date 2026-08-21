@@ -49,7 +49,6 @@ def readDom
 omit [ConnectedSpace M] in
 omit [InnerProductSpace ℝ E] in
 theorem readoutDomInf
-    [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
@@ -113,7 +112,6 @@ def chartReadDom
 
 omit [ConnectedSpace M'] in
 theorem chartReadoutInf
-    [T2Space (TangentBundle I' M')]
     {g : SmoothRiemannianMetric I' M'}
     {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}

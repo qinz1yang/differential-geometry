@@ -114,14 +114,14 @@ private theorem coeffFun_u_eq
     {g_bg : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
     (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 (a + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g_bg 0 2 a) T)
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (i : TensorEigenIdx (I := I) (M := M) g_bg 0 2)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) T) :
-    (timeH1.toFun (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce) s).coeff i
+    (timeH1.toFun (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce) s).coeff i
       = Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * s) * u₀.coeff i
         + ∫ τ in (0:ℝ)..s, (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) τ := by
   have h0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T := ⟨le_rfl, hs.1.trans hs.2⟩
-  set u := maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce with hu_def
+  set u := maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce with hu_def
   have hcomm : (coeffCLM (I := I) (M := M) (g := g_bg) (r := 0) (s := 2) (σ := a) i)
         (∫ τ in (0:ℝ)..s, u.deriv τ)
       = ∫ τ in (0:ℝ)..s, (u.deriv τ).coeff i := by
@@ -142,7 +142,7 @@ private theorem coeffFun_u_eq
   rw [hinit]
   have hsplit_ae := maxRegDuhamelMap_deriv_coeff_ae (I := I) (M := M)
     (h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2)
-    (a := a) hT hT1 u₀ gforce i
+    (a := a) hT u₀ gforce i
   have hint_split : (∫ τ in (0:ℝ)..s, (u.deriv τ).coeff i)
       = (∫ τ in (0:ℝ)..s, (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) τ)
         + ∫ τ in (0:ℝ)..s, (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) τ := by
@@ -363,9 +363,9 @@ theorem interior_allscale_time_continuity
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
     (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)) T)
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-    (hu : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1 u₀ gforce)
+    (hu : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT u₀ gforce)
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT.le gforce (d + 1)) →
         Summable (forcingMass (I := I) (M := M) gforce d))
@@ -413,7 +413,7 @@ theorem interior_allscale_time_continuity
         = Real.exp (-lam * s) * u₀.coeff i
           + ∫ τ in (0:ℝ)..s, (derivModeCoeff (I := I) (M := M) (a := (a:ℝ)) hT.le gforce i) τ := by
       rw [hcfun_def, hu]
-      exact coeffFun_u_eq (I := I) (M := M) u₀ gforce hT hT1 i hsT
+      exact coeffFun_u_eq (I := I) (M := M) u₀ gforce hT i hsT
     rw [norm_singleModeCLM_eq]
     set wσsqrt := Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) with hwσsqrt
     have hwσsqrt_nn : 0 ≤ wσsqrt := Real.sqrt_nonneg _

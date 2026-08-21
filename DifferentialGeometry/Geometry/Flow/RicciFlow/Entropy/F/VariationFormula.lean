@@ -64,7 +64,7 @@ theorem first_variation_integral_eq_pre_integration_by_parts
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -82,7 +82,7 @@ theorem first_variation_integral_eq_pre_integration_by_parts
       ∫ x,
         expNegPotentialDensity potential x *
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) := by
       simp only [volumeMeasureFamily, metricFamilyForMeasure,
@@ -94,7 +94,7 @@ theorem first_variation_integral_eq_pre_integration_by_parts
     _ =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -104,7 +104,7 @@ theorem first_variation_integral_eq_pre_integration_by_parts
         (potential := potential)
         (integrand :=
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace)
         hmeas).symm
 
@@ -112,7 +112,7 @@ theorem closed_integral_eq_pre_integration_by_parts
     [T2Space M] [SigmaCompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {s0 : Real}
-    {scalarCurvature lapPotential gradPotentialNormSq potential
+    {scalarCurvature lapPotential potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace closedBracketVariation : M -> Real}
     (hmeas :
@@ -132,7 +132,7 @@ theorem closed_integral_eq_pre_integration_by_parts
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -148,7 +148,7 @@ theorem closed_integral_eq_pre_integration_by_parts
       ∫ x,
         expNegPotentialDensity potential x *
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) := by
       simp only [volumeMeasureFamily, metricFamilyForMeasure,
@@ -160,7 +160,7 @@ theorem closed_integral_eq_pre_integration_by_parts
     _ =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -170,7 +170,7 @@ theorem closed_integral_eq_pre_integration_by_parts
         (potential := potential)
         (integrand :=
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace)
         hmeas).symm
 
@@ -180,7 +180,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_closed_bracket
     {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
       Real -> M -> Real}
     {s0 : Real}
-    {scalarCurvature lapPotential gradPotentialNormSq potential
+    {scalarCurvature lapPotential potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
       gradPotentialNormSqVariation closedBracketVariation : M -> Real}
@@ -218,7 +218,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_closed_bracket
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -434,7 +434,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
       potentialPath : Real -> M -> Real}
     {s0 : Real}
-    {scalarCurvature lapPotential gradPotentialNormSq potential
+    {scalarCurvature lapPotential potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
       lapPotentialVariation gradPotentialNormSqVariation : M -> Real}
@@ -510,7 +510,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -527,7 +527,7 @@ theorem first_variation_eq_pre_integration_by_parts
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
       potentialPath : Real -> M -> Real}
     {s0 : Real}
-    {scalarCurvature lapPotential gradPotentialNormSq potential
+    {scalarCurvature lapPotential potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
       lapPotentialVariation gradPotentialNormSqVariation : M -> Real}
@@ -610,7 +610,7 @@ theorem first_variation_eq_pre_integration_by_parts
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-          gradPotentialNormSq potentialVariation metricVariationTrace
+          potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
@@ -656,7 +656,7 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
       firstVariation =
         ∫ x,
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
-            gradPotentialNormSq potentialVariation metricVariationTrace
+            potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
           ∂(expNegPotentialWeightedMeasure
               (riemannianVolumeMeasure (I := I) (M := M) g) potential))

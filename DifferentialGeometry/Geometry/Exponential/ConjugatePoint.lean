@@ -326,7 +326,7 @@ private theorem exp_pair_reverse
   have hJdiff (t : ℝ) :
       DifferentiableAt ℝ (chartRepAt (I := I) γ J t) t := by
     have h := variationField_chartRep_differentiableAt
-      (I := I) g F hF_smooth t
+      (I := I) F hF_smooth t
     have hF0 : (fun v => F 0 v) = γ := by
       funext v
       simp only [F, γ, zero_smul, add_zero]
@@ -346,7 +346,7 @@ private theorem exp_pair_reverse
   have hKdiff (t : ℝ) :
       DifferentiableAt ℝ (chartRepAt (I := I) δ K t) t := by
     have h := variationField_chartRep_differentiableAt
-      (I := I) g G hG_smooth t
+      (I := I) G hG_smooth t
     have hG0 : (fun v => G 0 v) = δ := by
       funext v
       simp only [G, δ, zero_smul, add_zero]
@@ -388,7 +388,7 @@ private theorem exp_pair_reverse
   have hJRdiff (t : ℝ) :
       DifferentiableAt ℝ (chartRepAt (I := I) δ JR t) t := by
     have h := variationField_chartRep_differentiableAt
-      (I := I) g Hrev hHrev_smooth t
+      (I := I) Hrev hHrev_smooth t
     have hH0 : (fun v => Hrev 0 v) = δ := by
       rw [← hrev_def]
       funext v

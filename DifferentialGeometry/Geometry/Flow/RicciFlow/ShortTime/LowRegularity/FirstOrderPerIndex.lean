@@ -379,7 +379,7 @@ private theorem a1Arm1Background (hDim : Module.finrank ℝ E = 3)
                 (∑ j ∈ Finset.range 4,
                   ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2)) := by
   classical
-  obtain ⟨Kc, hKc_nn, htow⟩ := firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, htow⟩ := firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) g g_bg
   choose Cs hCs_nn hCs using fun i : ℕ =>
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
       (I := I) (M := M) g 3 (2 + i)

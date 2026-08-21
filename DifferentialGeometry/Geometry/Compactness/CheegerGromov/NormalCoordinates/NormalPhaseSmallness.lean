@@ -407,8 +407,7 @@ omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 @[simp] theorem chartPhaseK_zero
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
-    [T2Space (TangentBundle I M)]
+    [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (b : c.MetricBounds g) :
     chartPhaseK g b 0 = 0 := by
@@ -420,8 +419,7 @@ omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem chartPhaseK_cont
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
-    [T2Space (TangentBundle I M)]
+    [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (b : c.MetricBounds g) :
     Continuous (chartPhaseK g b) := by
@@ -433,8 +431,7 @@ omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem chartPhaseK_lim
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
-    [T2Space (TangentBundle I M)]
+    [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (b : c.MetricBounds g) :
     Tendsto (chartPhaseK g b) (nhds 0) (nhds 0) := by
@@ -446,9 +443,7 @@ omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem chartPhaseErr_lim
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
-    [T2Space (TangentBundle I M)]
-    (g : SmoothRiemannianMetric I M) {p : M}
+    [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (b : c.MetricBounds g) :
     Tendsto (fun R ↦ PhaseFlow.phaseErr (chartPhaseK g b R))
       (nhds 0) (nhds 0) :=
@@ -458,13 +453,16 @@ omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem chartPhaseErr_lt_ev
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
-    [T2Space (TangentBundle I M)]
+    [IsManifold I ∞ M] [hSigma : SigmaCompactSpace M] [hT2 : T2Space M]
+    [hTangentT2 : T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (b : c.MetricBounds g)
     {eps : NNReal} (heps : 0 < eps) :
-    ∀ᶠ R in nhds 0, PhaseFlow.phaseErr (chartPhaseK g b R) < eps :=
-  chartPhaseErr_lim g b (Iio_mem_nhds heps)
+    ∀ᶠ R in nhds 0, PhaseFlow.phaseErr (chartPhaseK g b R) < eps := by
+  let _ := hSigma
+  let _ := hT2
+  let _ := hTangentT2
+  exact chartPhaseErr_lim g b (Iio_mem_nhds heps)
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] in

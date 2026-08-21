@@ -74,8 +74,8 @@ noncomputable def pureRFrozenDirCLM
     TangentSpace I x →L[ℝ] TensorRSSpace 0 m I x :=
   ∑ i : Fin (Module.finrank ℝ E), pureRFrozenDirCLMSummand (I := I) (M := M) g m B W x i
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [SigmaCompactSpace M] in
 lemma pureRFrozenDirCLM_apply
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -125,7 +125,7 @@ private theorem pureRFrozenSlot0Sec_contMDiff
     (v := fun x => B i x) hHom (hB i)
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem pureRFrozenDirCLM_homSection_contMDiff
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
@@ -163,6 +163,7 @@ private theorem pureRFrozenDirCLM_homSection_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem pureRFrozenEndoFib_contMDiff
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
@@ -198,7 +199,7 @@ private noncomputable def pureRFrozenEndoSucc
       contMDiff_toFun := pureRFrozenEndoFib_contMDiff (I := I) (M := M) g m hB W }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma pureRFrozenEndoSucc_toSection
     (g : SmoothRiemannianMetric I M) (m : ℕ)

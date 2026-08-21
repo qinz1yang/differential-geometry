@@ -209,7 +209,7 @@ noncomputable def flowUpgrade_of_open
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.target_open (I := I) Φ' k)
   · intro k
-    exact fun _ => refRes (I := I) Φ' R hσsrc' k
+    exact fun _ => refRes (I := I) Φ' R k
   · intro K hK p c d hcd ε hε
     have hcdOpen : Set.Icc c d ⊆ Set.Ioo a b := by
       intro t ht

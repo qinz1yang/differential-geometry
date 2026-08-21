@@ -78,6 +78,8 @@ lemma riemannianFiberNormSq_addsub4_le (g : SmoothRiemannianMetric I M)
 
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannPalatiniDecompositionC2Family_eq_symmS_kernel
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -185,6 +187,7 @@ private def backgroundRiemannCommWeightKernel (g₀ : SmoothRiemannianMetric I M
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdBackgroundRArmWeight_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -256,6 +259,7 @@ private lemma bdBackgroundRArmWeight_toModel (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMetric I M) :
     ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
@@ -334,7 +338,7 @@ private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMet
     rw [g₀.symm x (smoothOrthoFrame (I := I) g₀ x e x)
       (riemannOp (LeviCivita (I := I) g₀) x (smoothOrthoFrame (I := I) g x c x) (v 0) (v 1))]
   rw [hu_exp]
-  rw [bdToModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel D)
+  rw [bdToModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel D)
     (Module.finrank ℝ E)
     (fun e => g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x
         (smoothOrthoFrame (I := I) g x c x) (v 0) (v 1))
@@ -458,6 +462,7 @@ def palatiniRicciFoldWeightB (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdRicciFoldWeight_unitModel_gen (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 6)) (S : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
@@ -562,6 +567,7 @@ private lemma bdRicciFoldWeight_unitModel_gen (g₀ : SmoothRiemannianMetric I M
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdRicciFoldWeights_unitModel_eq_kernel (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
@@ -734,6 +740,8 @@ private lemma bdRicciFoldWeights_unitModel_eq_kernel (g₀ : SmoothRiemannianMet
   rw [hA, hB]
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma bdRicciFold_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁ S =
@@ -817,6 +825,7 @@ lemma bdRicciFold_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdRicciFoldWeights_pair_smul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
     palatiniRicciFoldWeightA (I := I) (M := M) g₀ (c • T) +
@@ -874,6 +883,7 @@ private lemma bdRicciFoldWeights_pair_smul (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma bdRicciFoldXi_smul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
     rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
@@ -1065,7 +1075,8 @@ private lemma bdChartChristoffel_g0_jointContMDiffOn
     exact hm
   exact (hentryM.comp_contMDiffWithinAt p hmoveAt).congr (fun q _ => rfl) rfl
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M]
+  [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma metricPerturbationPath_chartGramMatrix_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1106,6 +1117,8 @@ private lemma metricPerturbationPath_chartGramMatrix_jointContMDiffOn
   · rw [Function.comp_apply, chartGramOnE_def, (extChartAt I α).left_inv hxsrc]
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma connectionDifferenceQuadraticCommKernel_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1221,7 +1234,7 @@ private lemma bdAACommBiContrFib_toModel_chartα (g₀ g : SmoothRiemannianMetri
     bilinFormToModel_symm_apply (TangentSpace I x) (Tensor0SSpace.toModel D) _ _]
   rfl
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma connectionDifferenceQuadraticCommBiContraction_applyY_chartCoord_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1300,7 +1313,7 @@ private lemma connectionDifferenceQuadraticCommBiContraction_applyY_chartCoord_j
   rw [bdAACommBiContrFib_toModel_chartα (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxbase]
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1398,7 +1411,7 @@ private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
   exact hfinal
 
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connectionDifferenceAACommBiContrFib_metricPerturbationPath_apply_section_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1414,6 +1427,7 @@ theorem connectionDifferenceAACommBiContrFib_metricPerturbationPath_apply_sectio
   bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn (I := I) (M := M) g₀ T 0 hδ hδZ Y
 
 
+omit [SigmaCompactSpace M] in
 theorem ricciArmOrder0AACommCoeffField_metricPerturbationPath_threeArmHjoint
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1435,6 +1449,7 @@ theorem ricciArmOrder0AACommCoeffField_metricPerturbationPath_threeArmHjoint
   rfl
 
 
+omit [SigmaCompactSpace M] in
 theorem ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_threeArmHjoint
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

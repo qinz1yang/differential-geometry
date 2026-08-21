@@ -225,7 +225,7 @@ private theorem tensorInnerPointwise_diag_section_jointContMDiffOn
     hcoeff_S hcoeff_S
 
 theorem deTurckRHSReconSection_oneMinusConnLapIter_normSq_continuousOn
-    (g₀ _g_bg : SmoothRiemannianMetric I M) {T : ℝ} (_hT : 0 < T)
+    (g₀ : SmoothRiemannianMetric I M) {T : ℝ}
     (Rjt : ℝ → SmoothCcTensor g₀ 0 2) (k : ℕ)
     (hRjt : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 0 2 ℝ E)

@@ -70,7 +70,7 @@ theorem autonomizedLift_isMIntegralCurveOn_of_bareFlow
   exact autonomizedLift_hasMFDerivWithinAt X (fun u : ℝ => Φ u x) s t (hflow t ht)
 
 omit [FiniteDimensional ℝ E] in
-theorem bare_integral_flow_eqOn_of_jointC1 [CompleteSpace E]
+theorem bare_integral_flow_eqOn_of_jointC1
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : AutonomizedFieldJointC1 (I := I) X)
     (Φ Φ' : ℝ → M → M) (x x' : M) {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
@@ -134,8 +134,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [
     [CompactSpace M] [SigmaCompactSpace M] in
 theorem time_dependent_vf_bare_flow_family
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (T : ℝ) (hT : 0 < T) (Φ : ℝ → M → M)
-    (hΦ0 : ∀ x : M, Φ 0 x = x)
+    (T : ℝ) (Φ : ℝ → M → M)
     (hdiffeo : ∀ t, 0 < t → t < T → ∃ d : M ≃ₘ⟮I, I⟯ M, ∀ x : M, d x = Φ t x)
     (hflow : ∀ t, 0 < t → t < T → ∀ x : M,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x) (Ici 0) t
@@ -146,6 +145,6 @@ theorem time_dependent_vf_bare_flow_family
       (∀ s : ℝ, 0 < s → s < T → ∀ x : M,
         HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => Φ_fam u x) (Ici 0) s
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X s (Φ_fam s x)))) :=
-  time_dependent_vf_manifold_integral_flow_family X T hT Φ hΦ0 hdiffeo hflow
+  time_dependent_vf_manifold_integral_flow_family X T Φ hdiffeo hflow
 
 end DifferentialGeometry.Analysis.ODE

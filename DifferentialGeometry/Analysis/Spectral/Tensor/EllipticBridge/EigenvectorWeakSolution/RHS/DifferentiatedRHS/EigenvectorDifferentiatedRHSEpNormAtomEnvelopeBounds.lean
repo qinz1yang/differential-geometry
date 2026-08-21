@@ -153,7 +153,7 @@ lemma eLpNorm_chosenWeakPartial_iteratedPartial_succ_le
   rw [h_eq]
   refine le_trans (eLpNorm_mono_measure _ (Measure.restrict_le_self)) ?_
   refine le_trans (eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) 1 2 Ω _) ?_
-  exact wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) 1 hΩ_open _ b
+  exact wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) 1 _ b
 
 end AtomBoundsUnconditional
 

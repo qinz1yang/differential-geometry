@@ -65,7 +65,7 @@ noncomputable def hamiltonRescaledSolution
     (Q : HamiltonBlowup M) (hsel : hamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
     SolutionOn (I := I) (M := M)
       (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
-        (hsel.1 i) (hsel.2.2.1 i)) :=
+        (hsel.2.2.1 i)) :=
   paraSolution (I := I) P.S (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
     (hsel.1 i) (hsel.2.2.1 i)
 
@@ -100,7 +100,7 @@ structure HamiltonSourceRealization
   time_mem : forall (i : Nat) (t : Real), t ∈ L.D.carrier ->
     t ∈ (paraInterval P.D (Q.time (L.origIndex i))
       (hamiltonBlowupScale (I := I) P Q (L.origIndex i))
-      (hsel.1 (L.origIndex i)) (hsel.2.2.1 (L.origIndex i))).carrier
+      (hsel.2.2.1 (L.origIndex i))).carrier
   basepoint_map : forall i : Nat,
     letI : TopologicalSpace (L.sourceTerm i).M := (L.sourceTerm i).topology
     letI : ChartedSpace H (L.sourceTerm i).M := (L.sourceTerm i).charted
@@ -301,9 +301,9 @@ def hamiltonRescaledInitialTime
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M) (hsel : hamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
     (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
-      (hsel.1 i) (hsel.2.2.1 i)).FlowTime :=
+      (hsel.2.2.1 i)).FlowTime :=
   ⟨0, (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
-    (hsel.1 i) (hsel.2.2.1 i)).initial_mem⟩
+    (hsel.2.2.1 i)).initial_mem⟩
 
 def hamiltonRescaledBall
     {g0 : SmoothRiemannianMetric I M}
@@ -750,7 +750,7 @@ theorem hamilton_fixed_pinching
     rw [hD]
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩
   exact DifferentialGeometry.PDE.RicciFlow.pinch_sol_closed (I := I) (M := M) (S := P.S)
-    P.isSmooth hT hdelta0 hdelta13 hdimT hTsub hTreg hpinch0
+    P.isSmooth hT hdelta13 hdimT hTsub hTreg hpinch0
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_ricci_nonnegative
@@ -925,7 +925,7 @@ theorem hamilton_scalar_positive
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
           ∀ t : Real, t ∈ Set.Icc 0 T ->
             LipschitzOnWith (K T)
-              (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
+              (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a)
               (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
                 (hamiltonScalar (I := I) P)
                 (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) := by
@@ -966,7 +966,7 @@ theorem hamilton_scalar_positive
     have hden :
         0 < 1 - (2 / (3 : Real)) * c0 * t :=
       DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier_denominator_pos_of_lt_blowup
-        (n := 3) (c0 := c0) (by norm_num) hc0 (le_of_lt htpos) htblow
+        (n := 3) (c0 := c0) (by norm_num) hc0 htblow
     have hpos_t :
         0 < hamiltonScalar (I := I) P t x :=
       DifferentialGeometry.PDE.RicciFlow.scalar_curvature_positive_of_lower_barrier
@@ -1009,6 +1009,7 @@ theorem hamilton_pinching_implies_pinch_estimate
   exact ⟨epsilon, C, heps0, heps1, hC0, hest⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem hamilton_rescaled_curvature_bound
     (hM : isClosedThreeManifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)

@@ -83,6 +83,7 @@ def ricEndoBackgroundDifferenceField (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma ricEndoBackgroundDifferenceField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x =
       ricEndoRaisedFib (I := I) g₁ x - ricEndoRaisedFib (I := I) g₀ x := by
@@ -98,6 +99,7 @@ namespace CurvatureCoefficientDifferenceJetTower
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_zero_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
@@ -134,6 +136,7 @@ lemma curvCoeffSlot_zero_backgroundDifference_eq
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_one_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
@@ -196,6 +199,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem ricciArmOrder0CurvCoeff_backgroundDifference_decomp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
@@ -1006,6 +1010,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCom
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
@@ -1062,6 +1067,7 @@ def ricMixedSharpEndoField (g₀ g₁ : SmoothRiemannianMetric I M) :
   contMDiff_toFun := ricMixedSharpEndoFib_contMDiff (I := I) (M := M) g₀ g₁
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma ricMixedSharpEndoField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     ricMixedSharpEndoField (I := I) (M := M) g₀ g₁ x =
       ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x := rfl
@@ -1099,6 +1105,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g₀ 0

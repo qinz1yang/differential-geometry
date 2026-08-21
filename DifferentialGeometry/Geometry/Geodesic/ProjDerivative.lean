@@ -137,12 +137,11 @@ lemma fst_continuousLinearMapAt_secondaryTriv
     have hq_src : q ∈ (extChartAt I.tangent p).source := hqU.1
     have hsymm : (extChartAt I.tangent p).symm z = q := by
       rw [← hqEq]; exact (extChartAt I.tangent p).left_inv hq_src
-    have hq_proj : q.proj ∈ (chartAt H α).source := hqU.2
     change ((extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M))
         ((extChartAt I.tangent p).symm z)).1 = FM z.1
     rw [hsymm]
     rw [extChartAt_tangent_apply_fst (I := I)
-      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := q) hq_proj]
+      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := q)]
     have hz1 : z.1 = extChartAt I p.proj q.proj := by
       rw [← hqEq]
       have hq_proj_src_p : q.proj ∈ (chartAt H p.proj).source := by
@@ -150,7 +149,7 @@ lemma fst_continuousLinearMapAt_secondaryTriv
         rw [extChartAt_source] at this
         rw [TangentBundle.mem_chart_source_iff] at this
         exact this
-      exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := q) hq_proj_src_p
+      exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := q)
     rw [hz1]
     change extChartAt I α q.proj =
       (extChartAt I α) ((extChartAt I p.proj).symm
@@ -172,11 +171,10 @@ lemma fst_continuousLinearMapAt_secondaryTriv
         ((extChartAt I.tangent p).symm basepoint)).1 = FM basepoint.1
     rw [hsymmp]
     rw [extChartAt_tangent_apply_fst (I := I)
-      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := p) hp]
+      (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := p)]
     have hbase_fst : basepoint.1 = extChartAt I p.proj p.proj := by
       rw [hbase_def]
       exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := p)
-        (mem_chart_source H p.proj)
     rw [hbase_fst]
     change extChartAt I α p.proj =
       (extChartAt I α) ((extChartAt I p.proj).symm
@@ -217,7 +215,6 @@ lemma fst_continuousLinearMapAt_secondaryTriv
     have hbase_fst : basepoint.1 = extChartAt I p.proj p.proj := by
       rw [hbase_def]
       exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := p)
-        (mem_chart_source H p.proj)
     have hFM_at_basepoint :
         HasFDerivWithinAt FM (tangentCoordChange I p.proj α p.proj) (range I) basepoint.1 := by
       rw [hbase_fst]; exact hFM_hasD
@@ -360,7 +357,7 @@ lemma snd_continuousLinearMapAt_secondaryTriv
       extChartAt_tangent_apply_snd_tangentCoordChange (I := I)
         (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := q) hq_proj_src_α
     have hz1 : ((extChartAt I.tangent p) q).1 = extChartAt I p.proj q.proj :=
-      extChartAt_tangent_apply_fst (I := I) (q := p) (p := q) hq_proj_src_p
+      extChartAt_tangent_apply_fst (I := I) (q := p) (p := q)
     have hz2 : ((extChartAt I.tangent p) q).2 =
         tangentCoordChange I q.proj p.proj q.proj (q.snd : E) :=
       extChartAt_tangent_apply_snd_tangentCoordChange (I := I) (q := p) (p := q) hq_proj_src_p
@@ -421,7 +418,7 @@ lemma snd_continuousLinearMapAt_secondaryTriv
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem geodesicVectorFieldChart_fst [I.Boundaryless]
+theorem geodesicVectorFieldChart_fst
     (g : SmoothRiemannianMetric I M) (α : M)
     {p : TangentBundle I M}
     (hp : p.proj ∈ (chartAt H α).source) :
@@ -503,8 +500,7 @@ theorem geodesicVectorFieldChart_fst [I.Boundaryless]
   exact this
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem IsMIntegralCurveAt.mfderiv_proj_one [I.Boundaryless]
-    {g : SmoothRiemannianMetric I M} {f : ℝ → TangentBundle I M}
+theorem IsMIntegralCurveAt.mfderiv_proj_one {g : SmoothRiemannianMetric I M} {f : ℝ → TangentBundle I M}
     {α : M} {t₀ : ℝ}
     (hf : IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g α) t₀)
     (hsrc : (f t₀).proj ∈ (chartAt H α).source) :

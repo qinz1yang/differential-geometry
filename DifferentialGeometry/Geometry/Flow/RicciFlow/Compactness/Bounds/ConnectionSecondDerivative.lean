@@ -51,13 +51,14 @@ theorem covStepDiff2_opLeibniz
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem field1_eq_mcd1
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+    [hContMDiffBundle : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M) :
     (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
         (Tensor0SBundle.metricTensorField (I := I) g₁)
         (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 1 := by
+  let _ := hContMDiffBundle
   haveI : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
   haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
@@ -137,16 +138,16 @@ theorem nabla4_eq_mcd3
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem nabla2_eq_mcd1
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+    [hVectorBundle : VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) (slots : Fin 2 → TangentSpace I x) :
     Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) W
         (Tensor0SBundle.metricTensorField (I := I) g₁) x slots
-      = metricCovDeriv (I := I) g₁ g₂ 1 x (Fin.cons (W x) slots) :=
-  (metricCovDeriv_one_apply_section (I := I) g₁ g₂ W x slots).symm
+      = metricCovDeriv (I := I) g₁ g₂ 1 x (Fin.cons (W x) slots) := by
+  let _ := hVectorBundle
+  exact (metricCovDeriv_one_apply_section (I := I) g₁ g₂ W x slots).symm
 
 def covDerivConnectionDifference2 (g₂ g₁ : SmoothRiemannianMetric I M)
     (V W X Y : Π b : M, TangentSpace I b) (x : M) : TangentSpace I x :=
@@ -1222,7 +1223,7 @@ theorem covStep2_branch1_mdiff
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
-    (_U W V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (W V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (Vslots : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (a : Fin s) (x : M) :
@@ -1297,7 +1298,7 @@ theorem covStep2_branch2_mdiff
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
-    (_U W V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (W V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (Vslots : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (a : Fin s) (x : M) :
@@ -1414,7 +1415,7 @@ theorem covStep2_diffStep_split
       (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
         (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x :=
-    fun a => covStep2_branch1_mdiff (I := I) g₁ g₂ s S U W V Vslots a x
+    fun a => covStep2_branch1_mdiff (I := I) g₁ g₂ s S W V Vslots a x
   have hT2 : ∀ a : Fin s, MDifferentiableAt I 𝓘(ℝ, ℝ)
       (fun y : M => covStep (I := I) g₂ s S y
         (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
@@ -1422,7 +1423,7 @@ theorem covStep2_diffStep_split
               (leviCivitaConnectionOfMetric (I := I) g₁)
               (leviCivitaConnectionOfMetric (I := I) g₂) y
               (Vslots a y)) (V y))))) x :=
-    fun a => covStep2_branch2_mdiff (I := I) g₁ g₂ s S U W V Vslots a x
+    fun a => covStep2_branch2_mdiff (I := I) g₁ g₂ s S W V Vslots a x
   have hsum2 : (fun y : M => ∑ a : Fin s, covStep (I := I) g₂ s S y
         (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
           ((CovariantDerivative.difference
@@ -2699,6 +2700,7 @@ noncomputable def covStepDiff2C (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
     mixedCommC (E := E) s Λ Λ' Λ'' Λ''')
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem covStepDiff2_le
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
@@ -2781,7 +2783,7 @@ theorem covStepDiff2_le
     mul_nonneg (sub_nonneg.mpr (le_max_right 0 (K1 + Cbr)))
       (add_nonneg (add_nonneg ha hb) hc), ha, hb, hc, hK1nn, hCbr_nn]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covStepDiff2_exists_const
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}

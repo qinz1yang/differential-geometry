@@ -47,7 +47,7 @@ omit [SigmaCompactSpace M] in
       ricciTensor (I := I) g b (gradFun (I := I) g φ b)
         (chartBasisVecFiber (I := I) α j b) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciCovectorChartCoord_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (j : Fin (Module.finrank ℝ E)) :
@@ -102,7 +102,7 @@ omit [SigmaCompactSpace M] in
           ricciCovectorChartCoord (I := I) g α φ j b *
           chartInvGramMatrix (I := I) g α b i j := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem chartRicciDualNormSq_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
@@ -117,14 +117,14 @@ theorem chartRicciDualNormSq_contMDiffOn
   have h3 := chartInvGramMatrix_entry_contMDiffOn (I := I) g α i j
   exact (h1.mul h2).mul h3
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem chartRicciDualNormSq_continuousOn
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯) :
     ContinuousOn (chartRicciDualNormSq (I := I) g α φ)
       (trivializationAt E (TangentSpace I) α).baseSet :=
   (chartRicciDualNormSq_contMDiffOn (I := I) g α φ).continuousOn
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem chartRicciDualNormSq_bdd_on_compact
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {K : Set M} (hK_compact : IsCompact K)

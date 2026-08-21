@@ -365,6 +365,7 @@ noncomputable def curvOpNField
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
   [SigmaCompactSpace M] in
+omit boundarylessI in
 @[simp] theorem curvOpNField_apply
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (Y : Fin (k + 3) ->
@@ -380,6 +381,7 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
   [SigmaCompactSpace M] in
+omit boundarylessI in
 theorem curvOpN_smoothAlong
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)
@@ -826,6 +828,7 @@ private theorem curvOpNabla_eval
       X Yfull hYfull U)
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit boundarylessI in
 theorem curvOpN_cov_sum
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -1738,6 +1741,7 @@ theorem curvOpN_covAlong
       · exact hG i
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit boundarylessI in
 theorem curvOpN_cov
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)

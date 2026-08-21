@@ -146,7 +146,7 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           let A := RicciDeTurckLowOrder.pathIntegrand
               (I := I) (M := M) g gBase T hdelta hdeltaZ s +
-            metricPrincipalDefectCurvCoeff (I := I) g gBase g
+            metricPrincipalDefectCurvCoeff (I := I) g g
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
               (operatorFieldApply (I := I) (M := M) g 2 2 A T)‖ ≤
             D *
@@ -182,9 +182,9 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
   let A3 : ℝ := (K0 3 + K2 3 * C3 ^ 2) * (1 + C4 ^ 2)
   let A2 : ℝ := (K0 2 + K2 2 * C3 ^ 2) * (1 + C3 ^ 2)
   let Jc3 : ℝ := covariantJetNormSq (I := I) (M := M) g 3
-    (metricPrincipalDefectCurvCoeff (I := I) g gBase g)
+    (metricPrincipalDefectCurvCoeff (I := I) g g)
   let Jc2 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (metricPrincipalDefectCurvCoeff (I := I) g gBase g)
+    (metricPrincipalDefectCurvCoeff (I := I) g g)
   let B3 : ℝ := 2 * (A3 + Jc3)
   let B2 : ℝ := 2 * (A2 + Jc2)
   let K3 : ℝ := Ca * Ct ^ 2 * B3
@@ -221,7 +221,7 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
   let q : ℝ := ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖
   let S : SmoothCcTensor g 2 2 := RicciDeTurckLowOrder.pathIntegrand
     (I := I) (M := M) g gBase T hdelta hdeltaZ s
-  let C : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+  let C : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g
   let A : SmoothCcTensor g 2 2 := S + C
   let Y : SmoothCcTensor g 0 2 := operatorFieldApply (I := I) (M := M) g 2 2 A T
   have hx : 0 ≤ x := norm_nonneg _
@@ -695,7 +695,7 @@ theorem ricciDeTurck_remainder_pairing_h5_uniform_bound
               let gs := metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s
               let R0 := rhsDecomposition0 (I := I) (M := M) g gBase T
                 hdelta hdeltaZ s
-              let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+              let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
               let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
               let HT := iteratedCovGrad (I := I) g 0 2 2 T
               let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -711,8 +711,8 @@ theorem ricciDeTurck_remainder_pairing_h5_uniform_bound
                   operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T -
                   operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT + Z
               let C : SmoothCcTensor g 4 2 :=
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gs -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
               let J :=
                 oneMinusConnLapSmooth (I := I) g 0 2
                     (operatorFieldApply (I := I) (M := M) g 2 2 (R0 + K0) T) +
@@ -754,7 +754,7 @@ theorem ricciDeTurck_remainder_pairing_h5_uniform_bound
   let A : SmoothCcTensor g 2 2 :=
     RicciDeTurckLowOrder.pathIntegrand (I := I) (M := M)
         g gBase T hdelta hdeltaZ s +
-      metricPrincipalDefectCurvCoeff (I := I) g gBase g
+      metricPrincipalDefectCurvCoeff (I := I) g g
   let Y : SmoothCcTensor g 0 2 :=
     operatorFieldApply (I := I) (M := M) g 2 2 A T
   let y : ℝ := ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖

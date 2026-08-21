@@ -429,8 +429,7 @@ private theorem diagonalProductTerm_integral_le
 
 private theorem diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
-    {δ₀ : ℝ} (_hδ₀ : δ₀ < 1) :
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (P : SmoothCcTensor g₀ 0 2),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
@@ -639,7 +638,7 @@ theorem cometricCastG0_order0sup_jetL2_succ_generic
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_mos, hK_mos_nn, hK_mos⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ
-      (I := I) (M := M) g₀ a ha_super hR hδ₀
+      (I := I) (M := M) g₀ a ha_super hR
   have hSΦ_ex : ∀ i : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i) x
         ((iteratedCovGrad (I := I) g₀ 3 1 i Φ).toSection x) ≤ K :=
@@ -959,6 +958,7 @@ private lemma metricComparisonEndomorphism_self' (g₀ : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [CompactSpace M] in
+omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_decomp' (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -1001,6 +1001,7 @@ private lemma slotInsertEndoCc_add' (g₀ : SmoothRiemannianMetric I M) (s : ℕ
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma sharpFlatEndoCc_eq_insert_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -1126,7 +1127,7 @@ private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
     riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_mos, hK_mos_nn, hK_mos⟩ :=
-    diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
+    diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ (I := I) (M := M) g₀ a ha_super hR
   obtain ⟨Λw, hΛw_nn, hΛw⟩ :=
     exists_window_pointwise_jet_le (I := I) (M := M) g₀ a ha_super hR
   set IdIns : SmoothCcTensor g₀ 1 1 :=
@@ -1404,6 +1405,7 @@ theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
     exact Finset.sum_le_sum hterm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma connectionDifferenceSection_eq_cometricRaiseSlot0Field' (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1

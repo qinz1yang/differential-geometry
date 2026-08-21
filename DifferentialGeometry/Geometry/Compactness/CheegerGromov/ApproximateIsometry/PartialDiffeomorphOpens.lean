@@ -154,8 +154,7 @@ theorem PartialDiffeomorph.opensDiffeo_mfderiv
 
 noncomputable def PartialDiffeomorph.opensMap
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
-    {U : Opens M} {V : Opens N} (_hU : (U : Set M) ⊆ Φ.source)
-    (hUV : (Φ : M → N) '' (U : Set M) ⊆ (V : Set N)) : U → V :=
+    {U : Opens M} {V : Opens N} (hUV : (Φ : M → N) '' (U : Set M) ⊆ (V : Set N)) : U → V :=
   fun x => ⟨(Φ : M → N) x, hUV ⟨x, x.2, rfl⟩⟩
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
@@ -164,14 +163,14 @@ theorem PartialDiffeomorph.opensMap_isOpenEmb
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     {U : Opens M} {V : Opens N} (hU : (U : Set M) ⊆ Φ.source)
     (hUV : (Φ : M → N) '' (U : Set M) ⊆ (V : Set N)) :
-    IsOpenEmbedding (PartialDiffeomorph.opensMap Φ hU hUV) := by
+    IsOpenEmbedding (PartialDiffeomorph.opensMap Φ hUV) := by
   let W : Opens N := ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
   have hWV : W ≤ V := hUV
   let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
     PartialDiffeomorph.toOpensDiffeo Φ hU
   have hinc : IsOpenEmbedding (Opens.inclusion hWV : W → V) :=
     Opens.isOpenEmbedding_of_le hWV
-  have hfun : PartialDiffeomorph.opensMap Φ hU hUV =
+  have hfun : PartialDiffeomorph.opensMap Φ hUV =
       (Opens.inclusion hWV : W → V) ∘ F := rfl
   rw [hfun]
   exact hinc.comp F.toHomeomorph.isOpenEmbedding
@@ -182,12 +181,12 @@ theorem PartialDiffeomorph.opensMap_contMDiff
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     {U : Opens M} {V : Opens N} (hU : (U : Set M) ⊆ Φ.source)
     (hUV : (Φ : M → N) '' (U : Set M) ⊆ (V : Set N)) :
-    ContMDiff I I ∞ (PartialDiffeomorph.opensMap Φ hU hUV) := by
+    ContMDiff I I ∞ (PartialDiffeomorph.opensMap Φ hUV) := by
   let W : Opens N := ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
   have hWV : W ≤ V := hUV
   let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
     PartialDiffeomorph.toOpensDiffeo Φ hU
-  have hfun : PartialDiffeomorph.opensMap Φ hU hUV =
+  have hfun : PartialDiffeomorph.opensMap Φ hUV =
       (Opens.inclusion hWV : W → V) ∘ F := rfl
   rw [hfun]
   exact (contMDiff_inclusion hWV).comp F.contMDiff
@@ -199,9 +198,9 @@ theorem PartialDiffeomorph.opensMap_mfderiv
     {U : Opens M} {V : Opens N} (hU : (U : Set M) ⊆ Φ.source)
     (hUV : (Φ : M → N) '' (U : Set M) ⊆ (V : Set N))
     (p : U) (v : TangentSpace I p) :
-    mfderiv I I (PartialDiffeomorph.opensMap Φ hU hUV) p v =
+    mfderiv I I (PartialDiffeomorph.opensMap Φ hUV) p v =
       mfderiv I I (Φ : M → N) (p : M) v := by
-  let F : U → V := PartialDiffeomorph.opensMap Φ hU hUV
+  let F : U → V := PartialDiffeomorph.opensMap Φ hUV
   have hFd : MDifferentiableAt I I F p :=
     ((PartialDiffeomorph.opensMap_contMDiff Φ hU hUV).contMDiffAt).mdifferentiableAt
       (by decide : (∞ : WithTop ℕ∞) ≠ 0)
@@ -232,8 +231,8 @@ theorem PartialDiffeomorph.opensMap_inv_mdiff
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     {U : Opens M} {V : Opens N} [Nonempty U] (hU : (U : Set M) ⊆ Φ.source)
     (hUV : (Φ : M → N) '' (U : Set M) ⊆ (V : Set N)) :
-    ContMDiffOn I I ∞ (Function.invFun (PartialDiffeomorph.opensMap Φ hU hUV))
-      (Set.range (PartialDiffeomorph.opensMap Φ hU hUV)) := by
+    ContMDiffOn I I ∞ (Function.invFun (PartialDiffeomorph.opensMap Φ hUV))
+      (Set.range (PartialDiffeomorph.opensMap Φ hUV)) := by
   let W : Opens N := ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
   letI : Nonempty W := by
     obtain ⟨x⟩ := (inferInstance : Nonempty U)
@@ -254,7 +253,7 @@ theorem PartialDiffeomorph.opensMap_inv_mdiff
       obtain ⟨w, rfl⟩ := hz
       exact congrArg Subtype.val (Function.leftInverse_invFun hinc.injective w)
     exact (contMDiffAt_codRestr (fun z => (Function.invFun inc z).2) hamb).contMDiffWithinAt
-  have hfun : PartialDiffeomorph.opensMap Φ hU hUV = inc ∘ F := rfl
+  have hfun : PartialDiffeomorph.opensMap Φ hUV = inc ∘ F := rfl
   rw [hfun]
   have hsub : Set.range (inc ∘ F) ⊆ Set.range inc := by
     rintro y ⟨x, rfl⟩

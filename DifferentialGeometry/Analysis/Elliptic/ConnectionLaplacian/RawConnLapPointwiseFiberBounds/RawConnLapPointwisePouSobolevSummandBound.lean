@@ -199,10 +199,6 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
       have hbridge :=
         fderiv_chartPushedRaw_sq_le_compFderivSq (I := I) (M := M)
           (α := α) (u := u)
-          (by
-            have hc := hcontDiff_comp Idx Jdx
-            refine hc.of_le ?_
-            exact (WithTop.coe_le_coe.mpr (le_top : (1 : ℕ∞) ≤ ⊤)))
           (y := y) hy_in_target
       have h_norm_eq : ‖fderiv ℝ (u ∘ (extChartAt I α).symm)
               ((toEuclidean (E := E)).symm y)‖ ^ 2 = a1 := by
@@ -216,10 +212,6 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
       have hbridge :=
         iteratedFDeriv_two_chartPushedRaw_sq_le_compIterSq (I := I) (M := M)
           (α := α) (u := u)
-          (by
-            have hc := hcontDiff_comp Idx Jdx
-            refine hc.of_le ?_
-            exact (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤)))
           (y := y) hy_in_target
       have h_norm_eq : ‖iteratedFDeriv ℝ 2 (u ∘ (extChartAt I α).symm)
               ((toEuclidean (E := E)).symm y)‖ ^ 2 = a2 := by

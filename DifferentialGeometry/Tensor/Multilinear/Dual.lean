@@ -778,6 +778,7 @@ noncomputable def dualMultilinearFiberwiseEquiv (r : ℕ) (x : B) :
         (E := Bundle.dual 𝕜 E) r x).symm.toLinearEquiv)
 
 omit [ContMDiffVectorBundle n F E IB] in
+@[nolint unusedArguments]
 theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
     [ContMDiffVectorBundle n F E IB] :
     ContMDiff
@@ -817,6 +818,7 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
     exact dualUnliftFiber_triv_eq p₀.proj p.proj hp p.snd
 
 omit [ContMDiffVectorBundle n F E IB] in
+@[nolint unusedArguments]
 theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
     [ContMDiffVectorBundle n F E IB] :
     ContMDiff

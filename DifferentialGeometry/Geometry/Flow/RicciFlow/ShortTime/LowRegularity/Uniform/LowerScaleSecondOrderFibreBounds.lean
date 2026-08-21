@@ -72,14 +72,14 @@ theorem secondOrderCoefficient_fibre_bound_uniform
   refine ⟨ρ, K, hρ, hK, ?_⟩
   intro δ hδ_le hδ0 R hR0 hRρ g hEq hjet T hT hδ hδZ hT2 x
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
-  let Φ := rhsDecompositionTop (I := I) (M := M) g gBase T hδ hδZ
+  let Φ := rhsDecompositionTop (I := I) (M := M) g T hδ hδZ
   let Ψ := RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδ hδZ
-  let C := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+  let C := deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
-  have hΦ := rhsDecompositionTop_joint (I := I) (M := M) g gBase T hδ_lt hδ hδZ
+  have hΦ := rhsDecompositionTop_joint (I := I) (M := M) g T hδ_lt hδ hδZ
   have hΨ := RicciDeTurckLowOrder.selfTop_joint (I := I) (M := M) g T hδ hδZ
   have hC := threeArmJoint_const (I := I) (M := M) g (δ := δ) (δ' := δ) C
   have hKern := threeArmJoint_sub (I := I) (M := M) g _ _
@@ -94,8 +94,8 @@ theorem secondOrderCoefficient_fibre_bound_uniform
     lieDecomposition2 (I := I) (M := M) g T hδ hδZ s +
       (-2 * s : ℝ) • RicciDeTurckLowOrder.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T
   let Ddev : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gm -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let r : ℝ := δ / (1 - δ) ^ 2
   let A : ℝ := Ktop * r
   let B : ℝ := Cdev * R
@@ -122,7 +122,7 @@ theorem secondOrderCoefficient_fibre_bound_uniform
   have hadd := riemannianFiberNormSq_add_le (I := I) (M := M) g 4 2 x
     (Dtop.toSection x) (Ddev.toSection x)
   have hsplit : Φ s + Ψ s - C = Dtop + Ddev := by
-    rw [RicciDeTurckLowOrder.topKernel_eq (I := I) (M := M) g gBase T hδ hδZ s]
+    rw [RicciDeTurckLowOrder.topKernel_eq (I := I) (M := M) g T hδ hδZ s]
     dsimp only [Dtop, Ddev, gm]
     module
   rw [hsplit]

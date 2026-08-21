@@ -182,7 +182,7 @@ theorem lieCorrectionZeroVectorBundle_h1_uniform_bound
       ‖iteratedCovGrad (I := I) g₀ 0 3 i
         (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤ (4 * R) ^ 2 := by
     simpa only using kappaSelf_h1
-      (I := I) (M := M) g₀ g₁ P htie R hR hP2
+      (I := I) (M := M) g₀ g₁ P htie R hP2
   have hHterm : ∀ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 1 4 i Hf‖ ^ 2 ≤
         3 * ‖iteratedCovGrad (I := I) g₀ 0 3 i

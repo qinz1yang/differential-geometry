@@ -221,6 +221,7 @@ private lemma interiorProduct_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma connectionDifferenceSection_eq_raise_lowered :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -347,11 +348,11 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
         (slotExtend (I := I) (M := M) g₀ 0 3
           (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) om) (Fin.cons v0 vs) =
       Tensor0SSpace.toModel
-        (slotExtendPointwise (I := I) (M := M) g₀ 0 3 x
+        (slotExtendPointwise (I := I) (M := M) 0 3 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x) om) (Fin.cons v0 vs) := rfl
   rw [h0]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 3 x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x) om v0 vs]
   have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om v0 =
@@ -369,6 +370,7 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -399,6 +401,7 @@ private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x
 
 set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I x) (m : Fin 1 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -434,10 +437,10 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtend (I := I) (M := M) g₀ 1 2
         (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) =
-      slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+      slotExtendPointwise (I := I) (M := M) 1 2 x
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x) from rfl]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 1 2 x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) 1 2 x
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x)
     (Tensor0SSpace.ofModel
@@ -466,6 +469,8 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
     fin_cases i <;> rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem gInvDiffQuadResidualField_eq_decomposition :
     gInvDiffQuadResidualField (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2

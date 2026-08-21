@@ -17,8 +17,9 @@ namespace DeGiorgi
 variable {d : ℕ} [NeZero d]
 
 /-- The Sobolev gain factor `χ = d/(d-2)` in the elliptic Moser iteration. -/
-noncomputable def moserChi (d : ℕ) [NeZero d] : ℝ :=
-  (d : ℝ) / ((d : ℝ) - 2)
+noncomputable def moserChi (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+  let _ := hNeZero
+  exact (d : ℝ) / ((d : ℝ) - 2)
 
 /-- The standard nested radii `r_n = (1 + 2^{-n})/2`. -/
 noncomputable def moserRadius (n : ℕ) : ℝ :=
@@ -37,6 +38,7 @@ theorem moserDecayRatio_nonneg (hd : 2 < (d : ℝ)) :
 
 theorem moserDecayRatio_lt_one (_hd : 2 < (d : ℝ)) :
     moserDecayRatio d < 1 := by
+  let _ := _hd
   have hd_pos : 0 < (d : ℝ) := by
     exact_mod_cast (Nat.pos_of_ne_zero (NeZero.ne d))
   rw [moserDecayRatio]

@@ -727,7 +727,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (_hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
       (_h : ∀ y v w, g₁.inner y v w =
@@ -1009,7 +1009,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
       {δ : ℝ} (_hδ : δ ≤ δ₀) (_hδ0 : 0 ≤ δ)
@@ -1029,7 +1029,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ :=
-    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=

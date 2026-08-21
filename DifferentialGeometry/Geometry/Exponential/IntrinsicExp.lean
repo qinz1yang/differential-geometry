@@ -721,10 +721,10 @@ theorem expMapIntrinsic_eq_expMap_of_geodesicOn
   have hgoal : γI 1 = γM 1 := hγ1.symm
   simpa [expMapIntrinsic, expMap, hγI_def, hγM_def] using hgoal
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_maximalGeodesic_data_of_small
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (q : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q}, ‖(v : E)‖ < ρ →
@@ -1311,7 +1311,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [SigmaCompactSpace M] in
 theorem isGeodesic_eq_of_initial
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     (g : SmoothRiemannianMetric I M) {Γ₁ Γ₂ : ℝ → M}
     (h₁ : Geodesic.IsGeodesic (I := I) g Γ₁) (h₂ : Geodesic.IsGeodesic (I := I) g Γ₂)
     (hc₁ : Continuous Γ₁) (hc₂ : Continuous Γ₂)

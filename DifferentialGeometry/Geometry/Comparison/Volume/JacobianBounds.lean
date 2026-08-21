@@ -836,6 +836,7 @@ theorem exists_dens_ge_rm04_at
                 (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
                   (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x := by
+  let _ := (inferInstance : (ConnectedSpace M))
   obtain ⟨r, hr, hdir⟩ := exists_dir_ge_rm04_at (I := I) g hEnorm p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm

@@ -212,6 +212,7 @@ noncomputable def revJetThreeC (Λ : ℝ) : ℝ :=
   Real.sqrt (Λ ^ 5) * (D * Real.sqrt (Module.finrank ℝ E : ℝ))
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompactSpace M] in
 private theorem reverseJetThree
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
@@ -975,6 +976,7 @@ private theorem wXi_base_eq
   rw [connLow_self_zero (I := I) g₀, zero_sub]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem cometricCast_self
     (g : SmoothRiemannianMetric I M) :
     cometricCastG0 (I := I) g g =
@@ -983,6 +985,7 @@ private theorem cometricCast_self
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem wOmega_base_eq
     (gBase g₀ : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovector (I := I) (M := M) g₀ g₀ gBase =
@@ -992,6 +995,7 @@ private theorem wOmega_base_eq
   unfold deTurckVectorFieldCovector
   rw [wXi_base_eq (I := I) gBase g₀, cometricCast_self (I := I) g₀]
 
+omit [I.Boundaryless] in
 private theorem wOmega_trace
     (gBase g₀ : SmoothRiemannianMetric I M) :
     ccUnitField (I := I) g₀ 1

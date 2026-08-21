@@ -169,7 +169,7 @@ theorem hatSuppPtsOfComp
     (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
-    (_pb : hd.PackingBound D) (_r : Real) (n : Nat)
+    (n : Nat)
     {s : Set (X.obj (L.φ n)).M} {ι : Type*}
     (mu : (X.obj (L.φ n)).M -> ι -> Real)
     (center : ι -> (X.obj (L.φ n)).M)

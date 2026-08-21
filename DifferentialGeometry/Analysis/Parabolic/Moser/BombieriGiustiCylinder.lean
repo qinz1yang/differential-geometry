@@ -267,7 +267,6 @@ theorem bombieriGiustiReciprocalLocalizer_gap_pos
     (bombieriGiustiDescendingLevel_strictAnti hlowerUpper (by omega))
 
 theorem gradFun_bombieriGiustiReciprocalLocalizer
-    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {q : SmoothRiemannianMetric I M}
     (rho : SmoothScalar q)
     (lower upper : ℝ) (k : ℕ) (x : M) :
@@ -296,7 +295,6 @@ theorem gradFun_bombieriGiustiReciprocalLocalizer
     gradientFun] using hgradient
 
 theorem bombieriGiustiReciprocalLocalizer_inner_grad_self_le
-    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {q : SmoothRiemannianMetric I M}
     (rho : SmoothScalar q) {G lower upper : ℝ}
     (hrho : ∀ x : M,
@@ -316,7 +314,7 @@ theorem bombieriGiustiReciprocalLocalizer_inner_grad_self_le
   exact mul_le_mul_of_nonneg_left (hrho x) (sq_nonneg _)
 
 theorem bombieriGiustiReciprocalLocalizer_gradientSqSup_le
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g)
     (lower upper : ℝ) (k : ℕ) :
     (bombieriGiustiReciprocalLocalizer rho lower upper k).gradientSqSup ≤
@@ -332,7 +330,7 @@ theorem bombieriGiustiReciprocalLocalizer_gradientSqSup_le
     (rho.inner_grad_self_le_gradientSqSup x) (sq_nonneg _)
 
 theorem spatialMoserCutoffGradientConstant_reciprocalLocalizer_le
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g)
     (lower upper : ℝ) (k : ℕ) :
     spatialMoserCutoffGradientConstant (I := I) g

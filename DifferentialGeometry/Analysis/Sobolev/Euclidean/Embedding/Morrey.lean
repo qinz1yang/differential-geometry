@@ -231,7 +231,7 @@ private theorem smooth_pointwise_holder_bound_components
       (volume.restrict (Metric.ball z r)) ≠ ⊤ := by
     have h_memLp : MemLp (fun y : E => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r)) :=
-      smooth_grad_memLp_on_ball (d := d) hp_pos hr hu
+      smooth_grad_memLp_on_ball (d := d) hr hu
     exact h_memLp.eLpNorm_ne_top
   have h_sum_lt :
       (∑ i : Fin d, eLpNorm (fun y => (fderiv ℝ u y) (EuclideanSpace.single i 1))
@@ -995,7 +995,7 @@ theorem mean_value_inequality_W1p
       have h_phi_grad_memLp_R34_local :
           MemLp (fun z => ‖fderiv ℝ (φ n) z‖)
           (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ (3 * R / 4))) :=
-        smooth_grad_memLp_on_ball (d := d) hp_pos hR'_pos (hφ_smooth n)
+        smooth_grad_memLp_on_ball (d := d) hR'_pos (hφ_smooth n)
       have h_eLp_le :
           (eLpNorm (fun z => ‖fderiv ℝ (φ n) z‖) (ENNReal.ofReal p)
             (volume.restrict (Metric.ball m (dist x y)))).toReal ≤

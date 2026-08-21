@@ -182,6 +182,7 @@ lemma connectionDifferenceAACommBiContrFibFixedFrame_toModel (g₀ g₁ : Smooth
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem connectionDifferenceAACommKernelBilin_homSection_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     {p q : Π b : M, TangentSpace I b}
@@ -245,6 +246,7 @@ theorem connectionDifferenceAACommKernelBilin_homSection_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem connectionDifferenceAACommBiContrFibFixedFrame_apply_section_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -336,6 +338,7 @@ theorem connectionDifferenceAACommBiContrFibFixedFrame_apply_section_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem connectionDifferenceAACommBiContrFibFixedFrame_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
@@ -415,6 +418,7 @@ theorem connectionDifferenceAACommBiContrFib_eq_fixedFrame_on_nbhd
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem connectionDifferenceAACommBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
@@ -447,6 +451,7 @@ def ricciArmOrder0AACommCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem ricciArmOrder0AACommCoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁).toSection x =
@@ -484,6 +489,7 @@ theorem connectionDifferenceAACommBiContrFib_self (g₀ : SmoothRiemannianMetric
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciArmOrder0AACommCoeffField_self (g₀ : SmoothRiemannianMetric I M) :
     ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₀ = 0 := by
   classical

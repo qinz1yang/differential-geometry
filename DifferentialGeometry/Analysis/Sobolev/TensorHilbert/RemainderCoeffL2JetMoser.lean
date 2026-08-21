@@ -330,6 +330,7 @@ theorem ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jetL2_perOrder_b
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ - traceHessianCoeff (I := I) (M := M) g₀ g₀ =

@@ -101,7 +101,7 @@ omit [NeZero d] in
 private lemma cutoff_memWkp_two
     {x₀ : EuN} {R : ℝ} (hR : 0 < R)
     {χ : EuN → ℝ} (hχ : ContDiff ℝ (⊤ : ℕ∞) χ) (hχ_compact : HasCompactSupport χ)
-    {u : EuN → ℝ} {Ω : Set EuN} (hΩ : IsOpen Ω)
+    {u : EuN → ℝ} {Ω : Set EuN}
     (hball : Metric.ball x₀ (2 * R) ⊆ Ω)
     (hu : ∀ k : ℕ, MemWkp (d := d) k 2 u Ω) (k : ℕ) :
     MemWkp (d := d) k 2 (fun x => χ x * u x) (Metric.ball x₀ (2 * R)) := by
@@ -109,7 +109,7 @@ private lemma cutoff_memWkp_two
   have hball_open : IsOpen (Metric.ball x₀ (2 * R)) := Metric.isOpen_ball
   have hp_one : (1 : ℝ≥0∞) ≤ 2 := by norm_num
   have hu_ball : MemWkp (d := d) k 2 u (Metric.ball x₀ (2 * R)) :=
-    MemWkp.mono_set (d := d) hp_one hΩ hball_open hball (hu k)
+    MemWkp.mono_set (d := d) hp_one hball_open hball (hu k)
   obtain ⟨C, _hC_nn, hC_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound (d := d) hχ hχ_compact k
   have hχ_bound : ∀ j ≤ k, ∀ x ∈ Metric.ball x₀ (2 * R),
@@ -173,7 +173,7 @@ private theorem tower_to_supercritical
 
 private theorem exists_contDiff_m_rep_ball
     {x₀ : EuN} {R : ℝ} (hR : 0 < R)
-    {u : EuN → ℝ} {Ω : Set EuN} (hΩ : IsOpen Ω)
+    {u : EuN → ℝ} {Ω : Set EuN}
     (hball : Metric.ball x₀ (2 * R) ⊆ Ω)
     (hu : ∀ k : ℕ, MemWkp (d := d) k 2 u Ω) (m : ℕ) :
     ∃ f : EuN → ℝ,
@@ -189,7 +189,7 @@ private theorem exists_contDiff_m_rep_ball
   set v : EuN → ℝ := fun x => χ x * u x with hv_def
   have hv_memWkp : ∀ k : ℕ,
       MemWkp (d := d) k 2 v (Metric.ball x₀ (2 * R)) := fun k =>
-    cutoff_memWkp_two (d := d) hR hχ_smooth hχ_cpt hΩ hball hu k
+    cutoff_memWkp_two (d := d) hR hχ_smooth hχ_cpt hball hu k
   have h_supp_subset : Function.support v ⊆ Function.support χ := by
     intro x hx
     have hvx : v x ≠ 0 := hx
@@ -261,7 +261,7 @@ private theorem exists_contDiff_m_rep_ball
 
 private theorem exists_contDiffOn_top_rep_ball
     {x₀ : EuN} {R : ℝ} (hR : 0 < R)
-    {u : EuN → ℝ} {Ω : Set EuN} (hΩ : IsOpen Ω)
+    {u : EuN → ℝ} {Ω : Set EuN}
     (hball : Metric.ball x₀ (2 * R) ⊆ Ω)
     (hu : ∀ k : ℕ, MemWkp (d := d) k 2 u Ω) :
     ∃ f : EuN → ℝ,
@@ -271,12 +271,12 @@ private theorem exists_contDiffOn_top_rep_ball
   have hR2_pos : (0 : ℝ) < R / 2 := by linarith
   have h_ball_open : IsOpen (Metric.ball x₀ (R / 2)) := Metric.isOpen_ball
   obtain ⟨f₀, hf₀_cdiff, hf₀_ae⟩ :=
-    exists_contDiff_m_rep_ball (d := d) hR hΩ hball hu 0
+    exists_contDiff_m_rep_ball (d := d) hR hball hu 0
   refine ⟨f₀, ?_, hf₀_ae⟩
   rw [contDiffOn_infty]
   intro m
   obtain ⟨fₘ, hfₘ_cdiff, hfₘ_ae⟩ :=
-    exists_contDiff_m_rep_ball (d := d) hR hΩ hball hu m
+    exists_contDiff_m_rep_ball (d := d) hR hball hu m
   have h_ae_eq : f₀ =ᵐ[volume.restrict (Metric.ball x₀ (R / 2))] fₘ :=
     (hf₀_ae.symm).trans hfₘ_ae
   have h_eqOn : Set.EqOn f₀ fₘ (Metric.ball x₀ (R / 2)) :=
@@ -304,7 +304,7 @@ private theorem exists_contDiffOn_top_rep_nhd
     have h2R : 2 * R ≤ ρ := by rw [hR_def]; linarith
     exact lt_of_lt_of_le hy h2R
   obtain ⟨f, hf_cdiff, hf_ae⟩ :=
-    exists_contDiffOn_top_rep_ball (d := d) hR_pos hΩ hball_subset hu
+    exists_contDiffOn_top_rep_ball (d := d) hR_pos hball_subset hu
   exact ⟨R / 2, by linarith, fun y hy => hball_subset (by
     rw [Metric.mem_ball] at hy ⊢; linarith), f, hf_cdiff, hf_ae⟩
 

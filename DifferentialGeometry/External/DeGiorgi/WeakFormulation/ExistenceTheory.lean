@@ -1372,6 +1372,7 @@ theorem dirichletProblem_unique_of_divergenceData
     (hu : IsDirichletWeakSolutionOfDivergenceData A u₀ F u)
     (hv : IsDirichletWeakSolutionOfDivergenceData A u₀ F v) :
     u =ᵐ[volume.restrict Ω] v := by
+  let _ := _hF
   let P : WeakProblem (d := d) :=
     ⟨Ω, hΩ, hΩ_bdd, A,
       weakProblemRHSOfFieldAndDatum (A := A) (Ω := Ω) F

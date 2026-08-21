@@ -185,6 +185,7 @@ def gInvDiffQuadResidualField (g₀ g₁ : SmoothRiemannianMetric I M) :
   connectionDifferenceBiContrCoeffField (I := I) (M := M) g₁ g₀ g₁ g₀
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem gInvDiffQuadResidualField_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) :
     (gInvDiffQuadResidualField (I := I) (M := M) g₀ g₁).toSection x =
@@ -193,6 +194,7 @@ omit [I.Boundaryless] in
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem gInvDiffQuadResidualField_self (g₀ : SmoothRiemannianMetric I M) :
     gInvDiffQuadResidualField (I := I) (M := M) g₀ g₀ = 0 := by
   classical

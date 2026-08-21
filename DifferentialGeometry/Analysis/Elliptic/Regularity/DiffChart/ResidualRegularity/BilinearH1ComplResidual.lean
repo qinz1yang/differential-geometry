@@ -306,16 +306,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem memW1p_fChartResidual_of_wkpNorm_cauchy_and_lim_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (v : ℕ → SmoothScalar g)
-    (_h_conv_H1Compl : Tendsto (fun n => smoothToH1Compl (I := I) (M := M) g (v n))
-      atTop (𝓝 u_h))
-    (_h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-        (d := Module.finrank ℝ E) 1 2
-        (fun y => smoothFChartResidual (I := I) (M := M) g α (v m) y -
-          smoothFChartResidual (I := I) (M := M) g α (v n) y)
-        (chartTargetEuclid (I := I) (M := M) α) ≤ ENNReal.ofReal ε)
     (h_lim_eq : ∃ F_lim : EuclN → ℝ,
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 F_lim
         (chartTargetEuclid (I := I) (M := M) α) ∧
@@ -342,7 +333,6 @@ theorem memW1p_fChartResidual_of_wkpNorm_cauchy_and_lim_eq
 theorem memW1p_fChartResidual_of_wkpNorm_cauchy_identification
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (v : ℕ → SmoothScalar g)
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -379,7 +369,7 @@ theorem memW1p_fChartResidual_of_wkpNorm_cauchy_identification
   obtain ⟨F_lim, hF_lim_memWkp, hF_lim_tendsto⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.exists_limit_of_wkpNorm_cauchy
       (hΩ_open := chartTargetEuclid_isOpen (I := I) (M := M) α)
-      (k := 1) (p := 2) (hp_one := by norm_num) (hp_top := by norm_num)
+      (k := 1) (p := 2) (hp_one := by norm_num)
       (u := fun n => smoothFChartResidual (I := I) (M := M) g α (v n))
       h_smooth_W1p h_cauchy
   have hF_lim_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 F_lim
@@ -460,7 +450,7 @@ noncomputable def diffChartBilinearH1ComplData_of_laplacianDomainPow_two_via_den
   diffChartBilinearH1ComplData_of_laplacianDomainPow_two_via_residual
     (I := I) (M := M) g α hu_h direction
     (memW1p_fChartResidual_of_wkpNorm_cauchy_identification
-      (I := I) (M := M) g α hu_h v h_cauchy h_identification)
+      (I := I) (M := M) g α v h_cauchy h_identification)
     h_identity
 
 end DiffChartBilinearH1ComplResidual

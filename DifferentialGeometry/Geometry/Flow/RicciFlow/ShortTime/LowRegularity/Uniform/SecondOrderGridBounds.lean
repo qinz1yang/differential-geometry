@@ -130,7 +130,7 @@ theorem h2_tame_uniform
     · have hk2 : k ≤ 2 := by omega
       simpa only [lowJetGrid, Km, if_neg hk3, K0] using hgrid0 k hk2
   have hle := grid_h2_le (I := I) (M := M) g P Km C
-    hKm hgr hC Φ hΦ
+    hgr hC Φ hΦ
   have hsplit : ∀ i : ℕ,
       (∑ k ∈ Finset.range (i + 2), Km k) = L R i + T R i * A ^ 2 := by
     intro i
@@ -227,7 +227,7 @@ theorem h2_low_uniform
     intro k hk
     simpa only [lowJetGrid, K] using hgrid k hk
   have hle := grid_h2_low (I := I) (M := M) g P (K R) C
-    (hK R hR) hgr hC Φ hΦ
+    hgr hC Φ hΦ
   change _ ≤ (B R) ^ 2
   rw [show (B R) ^ 2 = Q R by
     simp only [B, Real.sq_sqrt (hQ R hR)]]

@@ -799,7 +799,6 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
-    (g : SmoothRiemannianMetric I M)
     (Λ : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
     (hΛ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] E)
@@ -854,8 +853,8 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
   refine huncurry.congr (fun p _ => ?_)
   congr 1
   rw [show (1 : Fin (d + 2)) = (0 : Fin (d + 1)).succ from rfl,
-    slotInsertEndoFib_succ (I := I) (M := M) g (d + 1) 0 p.1 (Λ p),
-    slotExtendFib_apply (I := I) (M := M) g (d + 1) (d + 1) p.1]
+    slotInsertEndoFib_succ (I := I) (M := M) (d + 1) 0 p.1 (Λ p),
+    slotExtendFib_apply (I := I) (M := M) (d + 1) (d + 1) p.1]
 
 end RicciLinearization
 end DeTurck

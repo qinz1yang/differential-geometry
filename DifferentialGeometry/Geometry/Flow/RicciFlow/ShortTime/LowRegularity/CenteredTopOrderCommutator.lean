@@ -64,7 +64,7 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
       metricPerturbationPathFromZero (I := I) (M := M) g T hdelta s
     let R0 : SmoothCcTensor g 2 2 :=
       rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ s
-    let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+    let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g
     let LT : SmoothCcTensor g 0 2 := oneMinusConnLapSmooth (I := I) g 0 2 T
     let HT : SmoothCcTensor g 0 4 := iteratedCovGrad (I := I) g 0 2 2 T
     let HLT : SmoothCcTensor g 0 4 := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -81,8 +81,8 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
         operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T -
         operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT + Z
     let C : SmoothCcTensor g 4 2 :=
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs -
-        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
     let J : SmoothCcTensor g 0 2 :=
       oneMinusConnLapSmooth (I := I) g 0 2
           (operatorFieldApply (I := I) (M := M) g 2 2 (R0 + K0) T) +
@@ -132,7 +132,7 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
     metricPerturbationPathFromZero (I := I) (M := M) g T hdelta s
   let R0 : SmoothCcTensor g 2 2 :=
     rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ s
-  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g_bg g
+  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g
   let LT : SmoothCcTensor g 0 2 := oneMinusConnLapSmooth (I := I) g 0 2 T
   let HT : SmoothCcTensor g 0 4 := iteratedCovGrad (I := I) g 0 2 2 T
   let HLT : SmoothCcTensor g 0 4 := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -149,8 +149,8 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
       operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T -
       operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT + Z
   let C : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg gs -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let J : SmoothCcTensor g 0 2 :=
     oneMinusConnLapSmooth (I := I) g 0 2
         (operatorFieldApply (I := I) (M := M) g 2 2 (R0 + K0) T) +
@@ -217,7 +217,7 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
     have hmetric := metricComparisonEndomorphism_pairing_balance (I := I) (M := M) g T
       hdelta_lt hdelta hdeltaZ hs
     have hkernel := RicciDeTurckLowOrder.topKernel_eq
-      (I := I) (M := M) g g_bg T hdelta hdeltaZ s
+      (I := I) (M := M) g T hdelta hdeltaZ s
     dsimp only [B, C, gs]
     rw [hmetric]
     dsimp only at hkernel

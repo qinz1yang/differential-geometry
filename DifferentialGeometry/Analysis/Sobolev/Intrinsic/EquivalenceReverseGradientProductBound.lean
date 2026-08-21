@@ -253,7 +253,7 @@ lemma continuous_sqrt_g_inner_gradFun_self
   exact Real.continuous_sqrt.comp hcont
 
 lemma exists_continuous_sup_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [CompactSpace M]
     {f : M → ℝ} (hf : Continuous f) (hf_nn : ∀ x, 0 ≤ f x) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x, f x ≤ C := by
   by_cases hM : Nonempty M

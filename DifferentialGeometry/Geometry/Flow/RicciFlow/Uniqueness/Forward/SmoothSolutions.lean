@@ -357,6 +357,7 @@ theorem fuIsSol (g : Real → SmoothRiemannianMetric I M) {a b : Real} (hab : a 
   solutionOn_of_joint (I := I) hab g hjoint hpde
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem fuEvolTail (g : Real → SmoothRiemannianMetric I M) {a b t₀ : Real} {hab : a < b}
     {hb : t₀ < b} (hS : IsSolutionOn (I := I)
       (solOfMetric (I := I) (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab) g))
@@ -384,6 +385,7 @@ private theorem cwaSum {ι : Type*} {N : Type*} [AddCommMonoid N] [TopologicalSp
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem fuRmContAt (g : Real → SmoothRiemannianMetric I M) {a b t₀ : Real} {hab : a < b}
     {hb : t₀ < b}
     (hS : IsSolutionOn (I := I)
@@ -503,6 +505,7 @@ theorem fuGamma (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real} (
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem fuRm (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real} {hab : a < b}
     (hS₁ : IsSolutionOn (I := I)
       (solOfMetric (I := I) (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab) g₁))
@@ -539,6 +542,7 @@ theorem fuRm (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real} {hab
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem fuSdec (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real} {hab : a < b}
     (hS₁ : IsSolutionOn (I := I)
       (solOfMetric (I := I) (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab) g₁))
@@ -785,6 +789,7 @@ private theorem fuConnSqD (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b
 
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private theorem fuRmSqD (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real} {hab : a < b}
     (hS₁ : IsSolutionOn (I := I)
       (solOfMetric (I := I) (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab) g₁))
@@ -2247,16 +2252,8 @@ theorem forward_unique_of_gram (g₁ g₂ : Real → SmoothRiemannianMetric I M)
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
-    (h1cont : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
-      ContinuousOn
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
-        (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
-        (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
-    (h2cont : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
-      ContinuousOn
         (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1pde : ∀ t ∈ Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
@@ -2272,9 +2269,9 @@ theorem forward_unique_of_gram (g₁ g₂ : Real → SmoothRiemannianMetric I M)
         a c C_A C_R C_Ric C_V C_U C_rem)
     (hedge : ContinuousWithinAt (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (Ico a b) a) :
     ∀ t ∈ Ico a b, g₁ t = g₂ t :=
-  forward_unique_of_inputs (I := I) g₁ g₂ hab (fuAvec (I := I) g₁ g₂) (fuSvec (I := I) g₁ g₂)
+  forward_unique_of_inputs (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂) (fuSvec (I := I) g₁ g₂)
     (fuSfield (I := I) g₁ g₂) (fuUflux (I := I) g₁ g₂) (fuRem (I := I) g₁ g₂)
-    h1smooth h1cont h2smooth h2cont h1pde h2pde h0
+    h1smooth h1pde h2pde h0
     (fuInputs_of_gram (I := I) g₁ g₂ hab h1smooth h2smooth h1pde h2pde hbounds hedge)
 
 end DifferentialGeometry.PDE.RicciFlow

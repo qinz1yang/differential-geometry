@@ -25,6 +25,7 @@ def baseD2One (x : V) : ℝ :=
   ‖x‖ * baseD2Maj x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD2One_nonneg (x : V) : 0 ≤ baseD2One x :=
   mul_nonneg (norm_nonneg x) (baseD2Maj_nonneg x)
 
@@ -59,6 +60,7 @@ def heatD2One (t : ℝ) (x : V) : ℝ :=
     baseD2One ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2One_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     0 ≤ heatD2One t x := by
   unfold heatD2One
@@ -69,6 +71,7 @@ theorem heatD2One_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD2One_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2One_eq {t : ℝ} (ht : 0 < t) (x : V) :
     heatD2One t x = ‖x‖ * heatD2Maj t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -100,6 +103,7 @@ theorem integral_heatD2One {t : ℝ} (ht : 0 < t) :
   field_simp [hr.ne']
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2_one_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
     ‖heatD2 t v w x‖ * ‖x‖ ≤ ‖v‖ * ‖w‖ * heatD2One t x := by
   rw [heatD2One_eq ht]
@@ -281,6 +285,7 @@ theorem heatD3_norm_int {t : ℝ} (ht : 0 < t) (u v w : V) :
     simpa [mul_assoc] using heatD3_bound ht u v w x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 private theorem d2Space_point {t : ℝ} (h v w x : V) :
     ‖heatD2 t v w (x - h) - heatD2 t v w x‖ ≤
       ∫ s : ℝ in Set.Ioc 0 1,

@@ -131,6 +131,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
               D.rhsD1Lip * metricJet3DiffSup (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_low_reg_coeff {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)

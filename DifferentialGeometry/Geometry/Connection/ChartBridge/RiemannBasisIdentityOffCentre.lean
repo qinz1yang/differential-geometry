@@ -25,7 +25,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma extDerivFun_comp_extChartAt_apply_basis_alpha [I.Boundaryless]
+lemma extDerivFun_comp_extChartAt_apply_basis_alpha
     (α : M) {gE : E → ℝ} {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (hgE : ContDiffAt ℝ ∞ gE (extChartAt I α x))
@@ -118,7 +118,6 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
     (a b i : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     {Xa Xb Xi : Π b : M, TangentSpace I b} {U : Set M}
-    (_hXa : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xa))
     (hXb : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xb))
     (hXi : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xi))
     (hU_open : IsOpen U) (hxU : x ∈ U)
@@ -396,9 +395,9 @@ lemma riemannOp_chartBasisVec_alpha_eq [I.Boundaryless]
     hU_open hxU hXj_eqU hXk_eqU]
   rw [ContinuousLinearMap.map_zero, sub_zero]
   rw [LeviCivita_chartBasisVec_secondCovDeriv_alpha (I := I) g α j k i hx
-    hXj_sm hXk_sm hXi_sm hU_open hxU hU_good hXj_eqU hXk_eqU hXi_eqU]
+    hXk_sm hXi_sm hU_open hxU hU_good hXj_eqU hXk_eqU hXi_eqU]
   rw [LeviCivita_chartBasisVec_secondCovDeriv_alpha (I := I) g α k j i hx
-    hXk_sm hXj_sm hXi_sm hU_open hxU hU_good hXk_eqU hXj_eqU hXi_eqU]
+    hXj_sm hXi_sm hU_open hxU hU_good hXk_eqU hXj_eqU hXi_eqU]
   have hcoeff : ∀ l : Fin (Module.finrank ℝ E),
       (partialDeriv (E := E) j (chartChristoffel (I := I) g α k i l) (extChartAt I α x) +
           ∑ m : Fin (Module.finrank ℝ E),

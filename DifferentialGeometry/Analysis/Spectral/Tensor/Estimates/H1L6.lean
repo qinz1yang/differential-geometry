@@ -63,10 +63,10 @@ private theorem component_eLpNorm_six
   have hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u :=
     tensorChartComponentScalar_contMDiff (I := I) (M := M)
       g r s S.toCcTensor α Idx Jdx
-  have hu_mem : MemWkpChart (I := I) (M := M) g 1 2 u :=
+  have hu_mem : MemWkpChart (I := I) (M := M) 1 2 u :=
     tensorChartComponent_memWkpChart_one_two
       (I := I) (M := M) g r s S α Idx Jdx
-  have hu_mem' : MemWkpChart (I := I) (M := M) g 1
+  have hu_mem' : MemWkpChart (I := I) (M := M) 1
       (ENNReal.ofReal (2 : ℝ)) u := by
     simpa using hu_mem
   have hsix := hs hu_smooth.continuous.measurable hu_mem'
@@ -78,7 +78,7 @@ private theorem component_eLpNorm_six
   rw [hexp] at hsix
   calc
     eLpNorm u 6 (riemannianVolumeMeasure (I := I) (M := M) g)
-        ≤ ENNReal.ofReal Cs * wkpNormChart (I := I) (M := M) g 1 2 u := by
+        ≤ ENNReal.ofReal Cs * wkpNormChart (I := I) (M := M) 1 2 u := by
       simpa [riemannianVolumeMeasure_def] using hsix
     _ ≤ ENNReal.ofReal Cs *
           (ENNReal.ofReal Cw * (‖S‖₊ : ℝ≥0∞)) :=

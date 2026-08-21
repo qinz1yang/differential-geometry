@@ -22,8 +22,6 @@ variable {M : Type*} [TopologicalSpace M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
 
 def wkpNormChartL2Sq [T2Space M] [SigmaCompactSpace M]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u : M → ℝ) : ℝ≥0∞ :=
   ∑' α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
@@ -35,25 +33,19 @@ def wkpNormChartL2Sq [T2Space M] [SigmaCompactSpace M]
       (chartTargetEuclid (n := n) (M := M) α)
 
 def wkpNormChartL2 [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u : M → ℝ) : ℝ≥0∞ :=
-  wkpNormChartL2Sq (n := n) (M := M) g k u ^ ((1 : ℝ) / 2)
+  wkpNormChartL2Sq (n := n) (M := M) k u ^ ((1 : ℝ) / 2)
 
 theorem wkpNormChartL2_eq_rpow
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u : M → ℝ) :
-    wkpNormChartL2 (n := n) (M := M) g k u =
-      wkpNormChartL2Sq (n := n) (M := M) g k u ^ ((1 : ℝ) / 2) := rfl
+    wkpNormChartL2 (n := n) (M := M) k u =
+      wkpNormChartL2Sq (n := n) (M := M) k u ^ ((1 : ℝ) / 2) := rfl
 
 theorem wkpNormChartL2Sq_eq_tsum
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u : M → ℝ) :
-    wkpNormChartL2Sq (n := n) (M := M) g k u =
+    wkpNormChartL2Sq (n := n) (M := M) k u =
       ∑' α : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
           (d := n) k
@@ -64,33 +56,29 @@ theorem wkpNormChartL2Sq_eq_tsum
 
 private theorem wkpNormChartL2_eq_ofReal_sqrt_toReal
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {u : M → ℝ}
-    (hSq : wkpNormChartL2Sq (n := n) (M := M) g k u ≠ (⊤ : ℝ≥0∞)) :
-    wkpNormChartL2 (n := n) (M := M) g k u =
+    (hSq : wkpNormChartL2Sq (n := n) (M := M) k u ≠ (⊤ : ℝ≥0∞)) :
+    wkpNormChartL2 (n := n) (M := M) k u =
       ENNReal.ofReal (Real.sqrt
-        (wkpNormChartL2Sq (n := n) (M := M) g k u).toReal) := by
+        (wkpNormChartL2Sq (n := n) (M := M) k u).toReal) := by
   unfold wkpNormChartL2
   have h_toReal_pow :
-      (wkpNormChartL2Sq (n := n) (M := M) g k u) ^ ((1 : ℝ) / 2) =
+      (wkpNormChartL2Sq (n := n) (M := M) k u) ^ ((1 : ℝ) / 2) =
         ENNReal.ofReal
-          ((wkpNormChartL2Sq (n := n) (M := M) g k u).toReal ^ ((1 : ℝ) / 2)) := by
+          ((wkpNormChartL2Sq (n := n) (M := M) k u).toReal ^ ((1 : ℝ) / 2)) := by
     rw [← ENNReal.ofReal_toReal hSq]
     rw [ENNReal.toReal_ofReal ENNReal.toReal_nonneg]
     rw [ENNReal.ofReal_rpow_of_nonneg ENNReal.toReal_nonneg
         (by norm_num : (0 : ℝ) ≤ 1 / 2)]
   rw [h_toReal_pow]
-  rw [show (wkpNormChartL2Sq (n := n) (M := M) g k u).toReal ^ ((1 : ℝ) / 2) =
-      Real.sqrt (wkpNormChartL2Sq (n := n) (M := M) g k u).toReal by
+  rw [show (wkpNormChartL2Sq (n := n) (M := M) k u).toReal ^ ((1 : ℝ) / 2) =
+      Real.sqrt (wkpNormChartL2Sq (n := n) (M := M) k u).toReal by
     rw [Real.sqrt_eq_rpow]]
 
 theorem wkpNormChartL2Sq_zero_fun
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} :
-    wkpNormChartL2Sq (n := n) (M := M) g k (fun _ : M => (0 : ℝ)) = 0 := by
+    wkpNormChartL2Sq (n := n) (M := M) k (fun _ : M => (0 : ℝ)) = 0 := by
   unfold wkpNormChartL2Sq
   have hpt : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
@@ -109,21 +97,17 @@ theorem wkpNormChartL2Sq_zero_fun
 
 theorem wkpNormChartL2_zero_fun
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} :
-    wkpNormChartL2 (n := n) (M := M) g k (fun _ : M => (0 : ℝ)) = 0 := by
+    wkpNormChartL2 (n := n) (M := M) k (fun _ : M => (0 : ℝ)) = 0 := by
   unfold wkpNormChartL2
-  rw [wkpNormChartL2Sq_zero_fun (n := n) (M := M) g]
+  rw [wkpNormChartL2Sq_zero_fun (n := n) (M := M)]
   exact ENNReal.zero_rpow_of_pos (by norm_num : (0 : ℝ) < 1 / 2)
 
 theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {u : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g k 2 u) :
-    wkpNormChartL2Sq (n := n) (M := M) g k u < ⊤ := by
+    (hu : MemWkpChart (n := n) (M := M) k 2 u) :
+    wkpNormChartL2Sq (n := n) (M := M) k u < ⊤ := by
   classical
   unfold wkpNormChartL2Sq
   set f : M → ℝ≥0∞ := fun α =>
@@ -216,23 +200,19 @@ theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
 
 theorem wkpNormChartL2_lt_top_of_memWkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {u : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g k 2 u) :
-    wkpNormChartL2 (n := n) (M := M) g k u < ⊤ := by
+    (hu : MemWkpChart (n := n) (M := M) k 2 u) :
+    wkpNormChartL2 (n := n) (M := M) k u < ⊤ := by
   unfold wkpNormChartL2
   exact ENNReal.rpow_lt_top_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)
-    (wkpNormChartL2Sq_lt_top_of_memWkpChart (n := n) (M := M) g hu).ne
+    (wkpNormChartL2Sq_lt_top_of_memWkpChart (n := n) (M := M) hu).ne
 
 theorem wkpNormChartL2Sq_congr_chartPushed_ae
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {u v : M → ℝ}
-    (huv : ChartPushedAEEq (n := n) (M := M) g u v) :
-    wkpNormChartL2Sq (n := n) (M := M) g k u =
-      wkpNormChartL2Sq (n := n) (M := M) g k v := by
+    (huv : ChartPushedAEEq (n := n) (M := M) u v) :
+    wkpNormChartL2Sq (n := n) (M := M) k u =
+      wkpNormChartL2Sq (n := n) (M := M) k v := by
   unfold wkpNormChartL2Sq
   refine tsum_congr ?_
   intro α
@@ -242,23 +222,19 @@ theorem wkpNormChartL2Sq_congr_chartPushed_ae
 
 theorem wkpNormChartL2_congr_chartPushed_ae
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {u v : M → ℝ}
-    (huv : ChartPushedAEEq (n := n) (M := M) g u v) :
-    wkpNormChartL2 (n := n) (M := M) g k u =
-      wkpNormChartL2 (n := n) (M := M) g k v := by
+    (huv : ChartPushedAEEq (n := n) (M := M) u v) :
+    wkpNormChartL2 (n := n) (M := M) k u =
+      wkpNormChartL2 (n := n) (M := M) k v := by
   unfold wkpNormChartL2
-  rw [wkpNormChartL2Sq_congr_chartPushed_ae (n := n) (M := M) g huv]
+  rw [wkpNormChartL2Sq_congr_chartPushed_ae (n := n) (M := M) huv]
 
 theorem wkpNormChartL2Sq_const_smul
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} (c : ℝ) {u : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g k 2 u) :
-    wkpNormChartL2Sq (n := n) (M := M) g k (fun x => c * u x) =
-      ‖c‖ₑ ^ (2 : ℕ) * wkpNormChartL2Sq (n := n) (M := M) g k u := by
+    (hu : MemWkpChart (n := n) (M := M) k 2 u) :
+    wkpNormChartL2Sq (n := n) (M := M) k (fun x => c * u x) =
+      ‖c‖ₑ ^ (2 : ℕ) * wkpNormChartL2Sq (n := n) (M := M) k u := by
   unfold wkpNormChartL2Sq
   rw [← ENNReal.tsum_mul_left]
   refine tsum_congr ?_
@@ -270,14 +246,12 @@ theorem wkpNormChartL2Sq_const_smul
 
 theorem wkpNormChartL2_const_smul
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} (c : ℝ) {u : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g k 2 u) :
-    wkpNormChartL2 (n := n) (M := M) g k (fun x => c * u x) =
-      ‖c‖ₑ * wkpNormChartL2 (n := n) (M := M) g k u := by
+    (hu : MemWkpChart (n := n) (M := M) k 2 u) :
+    wkpNormChartL2 (n := n) (M := M) k (fun x => c * u x) =
+      ‖c‖ₑ * wkpNormChartL2 (n := n) (M := M) k u := by
   unfold wkpNormChartL2
-  rw [wkpNormChartL2Sq_const_smul (n := n) (M := M) g c hu]
+  rw [wkpNormChartL2Sq_const_smul (n := n) (M := M) c hu]
   rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0 : ℝ) ≤ 1 / 2)]
   congr 1
   rw [show ((‖c‖ₑ : ℝ≥0∞) ^ (2 : ℕ)) = ‖c‖ₑ ^ ((2 : ℕ) : ℝ) by
@@ -287,15 +261,13 @@ theorem wkpNormChartL2_const_smul
 
 private theorem wkpNormChartL2_add_le_aux
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ}
     {u v : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g k 2 u)
-    (hv : MemWkpChart (n := n) (M := M) g k 2 v) :
-    wkpNormChartL2 (n := n) (M := M) g k (fun x => u x + v x) ≤
-      wkpNormChartL2 (n := n) (M := M) g k u +
-        wkpNormChartL2 (n := n) (M := M) g k v := by
+    (hu : MemWkpChart (n := n) (M := M) k 2 u)
+    (hv : MemWkpChart (n := n) (M := M) k 2 v) :
+    wkpNormChartL2 (n := n) (M := M) k (fun x => u x + v x) ≤
+      wkpNormChartL2 (n := n) (M := M) k u +
+        wkpNormChartL2 (n := n) (M := M) k v := by
   classical
   have h_per_α : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2HalfSpace
@@ -502,7 +474,7 @@ private theorem wkpNormChartL2_add_le_aux
     have hαS : α ∉ S := fun hαS => hα ((Set.Finite.mem_toFinset _).mpr hαS)
     rw [h_zero_outside_UV α hαS]
     simp
-  have h_chartL2Sq_U : wkpNormChartL2Sq (n := n) (M := M) g k u =
+  have h_chartL2Sq_U : wkpNormChartL2Sq (n := n) (M := M) k u =
       ∑ α ∈ hS_finite.toFinset, (fU α) ^ (2 : ℕ) := by
     unfold wkpNormChartL2Sq
     rw [show (∑' α : M,
@@ -517,7 +489,7 @@ private theorem wkpNormChartL2_add_le_aux
         rw [hfU_def,
           Analysis.Sobolev.Euclidean.wkpNormL2HalfSpace_sq_eq_wkpNormL2SqHalfSpace])]
     exact htsum_eq_USq
-  have h_chartL2Sq_V : wkpNormChartL2Sq (n := n) (M := M) g k v =
+  have h_chartL2Sq_V : wkpNormChartL2Sq (n := n) (M := M) k v =
       ∑ α ∈ hS_finite.toFinset, (fV α) ^ (2 : ℕ) := by
     unfold wkpNormChartL2Sq
     rw [show (∑' α : M,
@@ -532,7 +504,7 @@ private theorem wkpNormChartL2_add_le_aux
         rw [hfV_def,
           Analysis.Sobolev.Euclidean.wkpNormL2HalfSpace_sq_eq_wkpNormL2SqHalfSpace])]
     exact htsum_eq_VSq
-  have h_chartL2Sq_UV : wkpNormChartL2Sq (n := n) (M := M) g k (fun x => u x + v x) =
+  have h_chartL2Sq_UV : wkpNormChartL2Sq (n := n) (M := M) k (fun x => u x + v x) =
       ∑ α ∈ hS_finite.toFinset, (fUV α) ^ (2 : ℕ) := by
     unfold wkpNormChartL2Sq
     rw [show (∑' α : M,
@@ -549,22 +521,22 @@ private theorem wkpNormChartL2_add_le_aux
           Analysis.Sobolev.Euclidean.wkpNormL2HalfSpace_sq_eq_wkpNormL2SqHalfSpace])]
     exact htsum_eq_UVSq
   have h_chartL2Sq_U_finite :
-      wkpNormChartL2Sq (n := n) (M := M) g k u ≠ (⊤ : ℝ≥0∞) := by
+      wkpNormChartL2Sq (n := n) (M := M) k u ≠ (⊤ : ℝ≥0∞) := by
     rw [h_chartL2Sq_U]
     exact (ENNReal.sum_lt_top.mpr fun α _ =>
       ENNReal.pow_lt_top (h_finiteness_fU α)).ne
   have h_chartL2Sq_V_finite :
-      wkpNormChartL2Sq (n := n) (M := M) g k v ≠ (⊤ : ℝ≥0∞) := by
+      wkpNormChartL2Sq (n := n) (M := M) k v ≠ (⊤ : ℝ≥0∞) := by
     rw [h_chartL2Sq_V]
     exact (ENNReal.sum_lt_top.mpr fun α _ =>
       ENNReal.pow_lt_top (h_finiteness_fV α)).ne
   have h_chartL2Sq_UV_finite :
-      wkpNormChartL2Sq (n := n) (M := M) g k (fun x => u x + v x) ≠ (⊤ : ℝ≥0∞) := by
+      wkpNormChartL2Sq (n := n) (M := M) k (fun x => u x + v x) ≠ (⊤ : ℝ≥0∞) := by
     rw [h_chartL2Sq_UV]
     exact (ENNReal.sum_lt_top.mpr fun α _ =>
       ENNReal.pow_lt_top (h_finiteness_fUV α)).ne
   have h_chartL2Sq_U_toReal :
-      (wkpNormChartL2Sq (n := n) (M := M) g k u).toReal =
+      (wkpNormChartL2Sq (n := n) (M := M) k u).toReal =
         ∑ α ∈ hS_finite.toFinset, fUR α ^ 2 := by
     rw [h_chartL2Sq_U]
     rw [ENNReal.toReal_sum (fun α _ => (ENNReal.pow_lt_top (h_finiteness_fU α)).ne)]
@@ -572,7 +544,7 @@ private theorem wkpNormChartL2_add_le_aux
     intro α _
     rw [ENNReal.toReal_pow]
   have h_chartL2Sq_V_toReal :
-      (wkpNormChartL2Sq (n := n) (M := M) g k v).toReal =
+      (wkpNormChartL2Sq (n := n) (M := M) k v).toReal =
         ∑ α ∈ hS_finite.toFinset, fVR α ^ 2 := by
     rw [h_chartL2Sq_V]
     rw [ENNReal.toReal_sum (fun α _ => (ENNReal.pow_lt_top (h_finiteness_fV α)).ne)]
@@ -580,7 +552,7 @@ private theorem wkpNormChartL2_add_le_aux
     intro α _
     rw [ENNReal.toReal_pow]
   have h_chartL2Sq_UV_toReal :
-      (wkpNormChartL2Sq (n := n) (M := M) g k (fun x => u x + v x)).toReal =
+      (wkpNormChartL2Sq (n := n) (M := M) k (fun x => u x + v x)).toReal =
         ∑ α ∈ hS_finite.toFinset, fUVR α ^ 2 := by
     rw [h_chartL2Sq_UV]
     rw [ENNReal.toReal_sum (fun α _ => (ENNReal.pow_lt_top (h_finiteness_fUV α)).ne)]
@@ -671,21 +643,17 @@ private theorem wkpNormChartL2_add_le_aux
 
 theorem wkpNormChartL2_add_le
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ}
     {u v : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g k 2 u)
-    (hv : MemWkpChart (n := n) (M := M) g k 2 v) :
-    wkpNormChartL2 (n := n) (M := M) g k (fun x => u x + v x) ≤
-      wkpNormChartL2 (n := n) (M := M) g k u +
-        wkpNormChartL2 (n := n) (M := M) g k v :=
-  wkpNormChartL2_add_le_aux (n := n) (M := M) g hu hv
+    (hu : MemWkpChart (n := n) (M := M) k 2 u)
+    (hv : MemWkpChart (n := n) (M := M) k 2 v) :
+    wkpNormChartL2 (n := n) (M := M) k (fun x => u x + v x) ≤
+      wkpNormChartL2 (n := n) (M := M) k u +
+        wkpNormChartL2 (n := n) (M := M) k v :=
+  wkpNormChartL2_add_le_aux (n := n) (M := M) hu hv
 
 def wkpInnerChartL2
     [T2Space M] [SigmaCompactSpace M]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u v : M → ℝ) : ℝ :=
   ∑' α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
@@ -701,10 +669,8 @@ def wkpInnerChartL2
 
 theorem wkpInnerChartL2_eq_tsum
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u v : M → ℝ) :
-    wkpInnerChartL2 (n := n) (M := M) g k u v =
+    wkpInnerChartL2 (n := n) (M := M) k u v =
       ∑' α : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
           (d := n)
@@ -719,11 +685,9 @@ theorem wkpInnerChartL2_eq_tsum
 
 theorem wkpInnerChartL2_comm
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u v : M → ℝ) :
-    wkpInnerChartL2 (n := n) (M := M) g k u v =
-      wkpInnerChartL2 (n := n) (M := M) g k v u := by
+    wkpInnerChartL2 (n := n) (M := M) k u v =
+      wkpInnerChartL2 (n := n) (M := M) k v u := by
   unfold wkpInnerChartL2
   refine tsum_congr ?_
   intro α
@@ -732,10 +696,8 @@ theorem wkpInnerChartL2_comm
 
 theorem wkpInnerChartL2_self_nonneg
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u : M → ℝ) :
-    0 ≤ wkpInnerChartL2 (n := n) (M := M) g k u u := by
+    0 ≤ wkpInnerChartL2 (n := n) (M := M) k u u := by
   unfold wkpInnerChartL2
   exact tsum_nonneg fun α =>
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace_self_nonneg
@@ -743,126 +705,104 @@ theorem wkpInnerChartL2_self_nonneg
 
 def WkpChartL2
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) : Type _ :=
-  ↥(wkpChartSubmodule (n := n) (M := M) g k 2 (by norm_num : (1 : ℝ≥0∞) ≤ 2))
+  ↥(wkpChartSubmodule (n := n) (M := M) k 2 (by norm_num : (1 : ℝ≥0∞) ≤ 2))
 
 instance instAddCommGroupWkpChartL2
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    AddCommGroup (WkpChartL2 (n := n) (M := M) g k) :=
-  inferInstanceAs (AddCommGroup ↥(wkpChartSubmodule (n := n) (M := M) g k 2
+    AddCommGroup (WkpChartL2 (n := n) (M := M) k) :=
+  inferInstanceAs (AddCommGroup ↥(wkpChartSubmodule (n := n) (M := M) k 2
     (by norm_num : (1 : ℝ≥0∞) ≤ 2)))
 
 instance instModuleRealWkpChartL2
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    Module ℝ (WkpChartL2 (n := n) (M := M) g k) :=
-  inferInstanceAs (Module ℝ ↥(wkpChartSubmodule (n := n) (M := M) g k 2
+    Module ℝ (WkpChartL2 (n := n) (M := M) k) :=
+  inferInstanceAs (Module ℝ ↥(wkpChartSubmodule (n := n) (M := M) k 2
     (by norm_num : (1 : ℝ≥0∞) ≤ 2)))
 
 def wkpChartL2Fun
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ}
-    (u : WkpChartL2 (n := n) (M := M) g k) : M → ℝ :=
+    (u : WkpChartL2 (n := n) (M := M) k) : M → ℝ :=
   Subtype.val (α := (M → ℝ))
-    (p := fun u => u ∈ wkpChartSubmodule (n := n) (M := M) g k 2
+    (p := fun u => u ∈ wkpChartSubmodule (n := n) (M := M) k 2
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)) u
 
 lemma wkpChartL2Fun_memWkpChart
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ}
-    (u : WkpChartL2 (n := n) (M := M) g k) :
-    MemWkpChart (n := n) (M := M) g k 2 (wkpChartL2Fun u) :=
+    (u : WkpChartL2 (n := n) (M := M) k) :
+    MemWkpChart (n := n) (M := M) k 2 (wkpChartL2Fun u) :=
   Subtype.property
     (α := (M → ℝ))
-    (p := fun u => u ∈ wkpChartSubmodule (n := n) (M := M) g k 2
+    (p := fun u => u ∈ wkpChartSubmodule (n := n) (M := M) k 2
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)) u
 
 @[simp]
 lemma wkpChartL2Fun_add
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ}
-    (u v : WkpChartL2 (n := n) (M := M) g k) :
+    (u v : WkpChartL2 (n := n) (M := M) k) :
     wkpChartL2Fun (u + v) = fun x => wkpChartL2Fun u x + wkpChartL2Fun v x := by
   ext x; rfl
 
 @[simp]
 lemma wkpChartL2Fun_smul
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ}
-    (c : ℝ) (u : WkpChartL2 (n := n) (M := M) g k) :
+    (c : ℝ) (u : WkpChartL2 (n := n) (M := M) k) :
     wkpChartL2Fun (c • u) = fun x => c * wkpChartL2Fun u x := by
   ext x; rfl
 
 @[simp]
 lemma wkpChartL2Fun_zero
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} :
-    wkpChartL2Fun (0 : WkpChartL2 (n := n) (M := M) g k) = (fun _ => 0) := rfl
+    wkpChartL2Fun (0 : WkpChartL2 (n := n) (M := M) k) = (fun _ => 0) := rfl
 
 instance instNormWkpChartL2
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    Norm (WkpChartL2 (n := n) (M := M) g k) where
-  norm u := (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal
+    Norm (WkpChartL2 (n := n) (M := M) k) where
+  norm u := (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal
 
 @[simp]
 lemma norm_wkpChartL2_def
     [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ}
-    (u : WkpChartL2 (n := n) (M := M) g k) :
-    ‖u‖ = (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal := rfl
+    (u : WkpChartL2 (n := n) (M := M) k) :
+    ‖u‖ = (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal := rfl
 
 lemma wkpChartL2_seminormedSpace_core
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    SeminormedSpace.Core ℝ (WkpChartL2 (n := n) (M := M) g k) where
+    SeminormedSpace.Core ℝ (WkpChartL2 (n := n) (M := M) k) where
   norm_nonneg u := ENNReal.toReal_nonneg
   norm_smul c u := by
     have hu_mem := wkpChartL2Fun_memWkpChart u
-    change (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun (c • u))).toReal =
-      ‖c‖ * (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal
+    change (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun (c • u))).toReal =
+      ‖c‖ * (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal
     rw [wkpChartL2Fun_smul]
-    rw [wkpNormChartL2_const_smul (n := n) (M := M) g c hu_mem]
+    rw [wkpNormChartL2_const_smul (n := n) (M := M) c hu_mem]
     rw [ENNReal.toReal_mul, toReal_enorm]
   norm_triangle u v := by
     have hu_mem := wkpChartL2Fun_memWkpChart u
     have hv_mem := wkpChartL2Fun_memWkpChart v
-    change (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun (u + v))).toReal ≤
-      (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal +
-        (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun v)).toReal
+    change (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun (u + v))).toReal ≤
+      (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal +
+        (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun v)).toReal
     rw [wkpChartL2Fun_add]
-    have h_add_le := wkpNormChartL2_add_le (n := n) (M := M) g hu_mem hv_mem
-    have hu_lt : wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) < ⊤ :=
-      wkpNormChartL2_lt_top_of_memWkpChart (n := n) (M := M) g hu_mem
-    have hv_lt : wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun v) < ⊤ :=
-      wkpNormChartL2_lt_top_of_memWkpChart (n := n) (M := M) g hv_mem
-    have hu_ne : wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) ≠ ⊤ := hu_lt.ne
-    have hv_ne : wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun v) ≠ ⊤ := hv_lt.ne
-    have hRHS_ne : wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) +
-        wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun v) ≠ ⊤ :=
+    have h_add_le := wkpNormChartL2_add_le (n := n) (M := M) hu_mem hv_mem
+    have hu_lt : wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u) < ⊤ :=
+      wkpNormChartL2_lt_top_of_memWkpChart (n := n) (M := M) hu_mem
+    have hv_lt : wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun v) < ⊤ :=
+      wkpNormChartL2_lt_top_of_memWkpChart (n := n) (M := M) hv_mem
+    have hu_ne : wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u) ≠ ⊤ := hu_lt.ne
+    have hv_ne : wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun v) ≠ ⊤ := hv_lt.ne
+    have hRHS_ne : wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u) +
+        wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun v) ≠ ⊤ :=
       ENNReal.add_ne_top.mpr ⟨hu_ne, hv_ne⟩
     have hToReal := ENNReal.toReal_mono hRHS_ne h_add_le
     rw [ENNReal.toReal_add hu_ne hv_ne] at hToReal
@@ -870,87 +810,69 @@ lemma wkpChartL2_seminormedSpace_core
 
 instance instSeminormedAddCommGroupWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    SeminormedAddCommGroup (WkpChartL2 (n := n) (M := M) g k) :=
-  SeminormedAddCommGroup.ofCore (wkpChartL2_seminormedSpace_core (n := n) (M := M) g k)
+    SeminormedAddCommGroup (WkpChartL2 (n := n) (M := M) k) :=
+  SeminormedAddCommGroup.ofCore (wkpChartL2_seminormedSpace_core (n := n) (M := M) k)
 
 instance instNormedSpaceRealWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    NormedSpace ℝ (WkpChartL2 (n := n) (M := M) g k) where
+    NormedSpace ℝ (WkpChartL2 (n := n) (M := M) k) where
   norm_smul_le c u := by
     have hu_mem := wkpChartL2Fun_memWkpChart u
-    change (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun (c • u))).toReal ≤
-      ‖c‖ * (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal
+    change (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun (c • u))).toReal ≤
+      ‖c‖ * (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal
     rw [wkpChartL2Fun_smul]
-    rw [wkpNormChartL2_const_smul (n := n) (M := M) g c hu_mem]
+    rw [wkpNormChartL2_const_smul (n := n) (M := M) c hu_mem]
     rw [ENNReal.toReal_mul, toReal_enorm]
 
 def WkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) : Type _ :=
-  SeparationQuotient (WkpChartL2 (n := n) (M := M) g k)
+  SeparationQuotient (WkpChartL2 (n := n) (M := M) k)
 
 instance instAddCommGroupWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    AddCommGroup (WkpChartL2Quot (n := n) (M := M) g k) :=
+    AddCommGroup (WkpChartL2Quot (n := n) (M := M) k) :=
   inferInstanceAs (AddCommGroup
-    (SeparationQuotient (WkpChartL2 (n := n) (M := M) g k)))
+    (SeparationQuotient (WkpChartL2 (n := n) (M := M) k)))
 
 instance instNormedAddCommGroupWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    NormedAddCommGroup (WkpChartL2Quot (n := n) (M := M) g k) :=
+    NormedAddCommGroup (WkpChartL2Quot (n := n) (M := M) k) :=
   inferInstanceAs (NormedAddCommGroup
-    (SeparationQuotient (WkpChartL2 (n := n) (M := M) g k)))
+    (SeparationQuotient (WkpChartL2 (n := n) (M := M) k)))
 
 instance instModuleWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    Module ℝ (WkpChartL2Quot (n := n) (M := M) g k) :=
+    Module ℝ (WkpChartL2Quot (n := n) (M := M) k) :=
   inferInstanceAs (Module ℝ
-    (SeparationQuotient (WkpChartL2 (n := n) (M := M) g k)))
+    (SeparationQuotient (WkpChartL2 (n := n) (M := M) k)))
 
 instance instNormedSpaceRealWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    NormedSpace ℝ (WkpChartL2Quot (n := n) (M := M) g k) :=
+    NormedSpace ℝ (WkpChartL2Quot (n := n) (M := M) k) :=
   inferInstanceAs (NormedSpace ℝ
-    (SeparationQuotient (WkpChartL2 (n := n) (M := M) g k)))
+    (SeparationQuotient (WkpChartL2 (n := n) (M := M) k)))
 
 instance instInnerWkpChartL2
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
+    [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) :
-    Inner ℝ (WkpChartL2 (n := n) (M := M) g k) where
+    Inner ℝ (WkpChartL2 (n := n) (M := M) k) where
   inner u v :=
-    wkpInnerChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun v)
+    wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun v)
 
 @[simp]
 lemma inner_wkpChartL2_def
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M}
+    [T2Space M] [SigmaCompactSpace M]
     {k : ℕ}
-    (u v : WkpChartL2 (n := n) (M := M) g k) :
+    (u v : WkpChartL2 (n := n) (M := M) k) :
     @inner ℝ _ _ u v =
-      wkpInnerChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun v) := rfl
+      wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun v) := rfl
 
 private def activeChartSupp
     [T2Space M] [SigmaCompactSpace M] : Set M :=
@@ -994,10 +916,8 @@ private theorem chartPushed_eq_zero_off_activeChartSupp
 
 private theorem wkpInnerChartL2_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u v : M → ℝ) :
-    wkpInnerChartL2 (n := n) (M := M) g k u v =
+    wkpInnerChartL2 (n := n) (M := M) k u v =
       ∑ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
           (d := n) k
@@ -1054,10 +974,8 @@ private theorem wkpInnerChartL2_eq_finsum
 
 private theorem wkpNormChartL2Sq_toReal_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
-    {k : ℕ} {u : M → ℝ} (hu : MemWkpChart (n := n) (M := M) g k 2 u) :
-    (wkpNormChartL2Sq (n := n) (M := M) g k u).toReal =
+    {k : ℕ} {u : M → ℝ} (hu : MemWkpChart (n := n) (M := M) k 2 u) :
+    (wkpNormChartL2Sq (n := n) (M := M) k u).toReal =
       ∑ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
           (d := n) k
@@ -1097,10 +1015,8 @@ private theorem wkpNormChartL2Sq_toReal_eq_finsum
 
 private theorem wkpInnerChartL2_self_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (u : M → ℝ) :
-    wkpInnerChartL2 (n := n) (M := M) g k u u =
+    wkpInnerChartL2 (n := n) (M := M) k u u =
       ∑ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
           (d := n) k
@@ -1111,38 +1027,36 @@ private theorem wkpInnerChartL2_self_eq_finsum
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU
               (modelWithCornersEuclideanHalfSpace n) M) α u)
           (chartTargetEuclid (n := n) (M := M) α) :=
-  wkpInnerChartL2_eq_finsum (n := n) (M := M) g k u u
+  wkpInnerChartL2_eq_finsum (n := n) (M := M) k u u
 
 private theorem wkpChartL2_norm_sq_eq_inner
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
-    (k : ℕ) (u : WkpChartL2 (n := n) (M := M) g k) :
-    ‖u‖ ^ 2 = wkpInnerChartL2 (n := n) (M := M) g k
+    (k : ℕ) (u : WkpChartL2 (n := n) (M := M) k) :
+    ‖u‖ ^ 2 = wkpInnerChartL2 (n := n) (M := M) k
       (wkpChartL2Fun u) (wkpChartL2Fun u) := by
   classical
   have hu_mem := wkpChartL2Fun_memWkpChart u
   have h_chartL2_sq :
-      (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)) ^ (2 : ℕ) =
-        wkpNormChartL2Sq (n := n) (M := M) g k (wkpChartL2Fun u) := by
+      (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)) ^ (2 : ℕ) =
+        wkpNormChartL2Sq (n := n) (M := M) k (wkpChartL2Fun u) := by
     unfold wkpNormChartL2
-    rw [show ((wkpNormChartL2Sq (n := n) (M := M) g k (wkpChartL2Fun u)) ^
+    rw [show ((wkpNormChartL2Sq (n := n) (M := M) k (wkpChartL2Fun u)) ^
         ((1 : ℝ) / 2)) ^ (2 : ℕ) =
-        (wkpNormChartL2Sq (n := n) (M := M) g k (wkpChartL2Fun u)) ^
+        (wkpNormChartL2Sq (n := n) (M := M) k (wkpChartL2Fun u)) ^
         (((1 : ℝ) / 2) * ((2 : ℕ) : ℝ)) by
       rw [← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]]
     rw [show ((1 : ℝ) / 2) * ((2 : ℕ) : ℝ) = 1 by norm_num]
     rw [ENNReal.rpow_one]
   have h_norm_sq :
-      ‖u‖ ^ 2 = (wkpNormChartL2Sq (n := n) (M := M) g k (wkpChartL2Fun u)).toReal := by
-    change (wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal ^ 2 = _
-    rw [show ((wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)).toReal ^ 2 : ℝ) =
-        ((wkpNormChartL2 (n := n) (M := M) g k (wkpChartL2Fun u)) ^ (2 : ℕ)).toReal from by
+      ‖u‖ ^ 2 = (wkpNormChartL2Sq (n := n) (M := M) k (wkpChartL2Fun u)).toReal := by
+    change (wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal ^ 2 = _
+    rw [show ((wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)).toReal ^ 2 : ℝ) =
+        ((wkpNormChartL2 (n := n) (M := M) k (wkpChartL2Fun u)) ^ (2 : ℕ)).toReal from by
       rw [ENNReal.toReal_pow]]
     rw [h_chartL2_sq]
   rw [h_norm_sq]
-  rw [wkpNormChartL2Sq_toReal_eq_finsum (n := n) (M := M) g hu_mem]
-  rw [wkpInnerChartL2_self_eq_finsum (n := n) (M := M) g k (wkpChartL2Fun u)]
+  rw [wkpNormChartL2Sq_toReal_eq_finsum (n := n) (M := M) hu_mem]
+  rw [wkpInnerChartL2_self_eq_finsum (n := n) (M := M) k (wkpChartL2Fun u)]
   refine Finset.sum_congr rfl ?_
   intro α _
   exact
@@ -1151,32 +1065,28 @@ private theorem wkpChartL2_norm_sq_eq_inner
 
 private theorem wkpInnerChartL2_apply_comm
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
-    (k : ℕ) (u v : WkpChartL2 (n := n) (M := M) g k) :
+    (k : ℕ) (u v : WkpChartL2 (n := n) (M := M) k) :
     @inner ℝ _ _ v u = @inner ℝ _ _ u v := by
-  change wkpInnerChartL2 (n := n) (M := M) g k _ _ = _
-  rw [wkpInnerChartL2_comm (n := n) (M := M) g k (wkpChartL2Fun v) (wkpChartL2Fun u)]
+  change wkpInnerChartL2 (n := n) (M := M) k _ _ = _
+  rw [wkpInnerChartL2_comm (n := n) (M := M) k (wkpChartL2Fun v) (wkpChartL2Fun u)]
   rfl
 
 private theorem wkpInnerChartL2_apply_add_left
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
-    (k : ℕ) (u v w : WkpChartL2 (n := n) (M := M) g k) :
+    (k : ℕ) (u v w : WkpChartL2 (n := n) (M := M) k) :
     @inner ℝ _ _ (u + v) w = @inner ℝ _ _ u w + @inner ℝ _ _ v w := by
   classical
   have hu_mem := wkpChartL2Fun_memWkpChart u
   have hv_mem := wkpChartL2Fun_memWkpChart v
   have hw_mem := wkpChartL2Fun_memWkpChart w
-  change wkpInnerChartL2 (n := n) (M := M) g k _ _ = _
+  change wkpInnerChartL2 (n := n) (M := M) k _ _ = _
   rw [wkpChartL2Fun_add]
-  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) g k _ (wkpChartL2Fun w)]
+  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) k _ (wkpChartL2Fun w)]
   rw [show (@inner ℝ _ _ u w + @inner ℝ _ _ v w) =
-      wkpInnerChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun w) +
-      wkpInnerChartL2 (n := n) (M := M) g k (wkpChartL2Fun v) (wkpChartL2Fun w) from rfl]
-  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun w)]
-  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) g k (wkpChartL2Fun v) (wkpChartL2Fun w)]
+      wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun w) +
+      wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun v) (wkpChartL2Fun w) from rfl]
+  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun w)]
+  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) k (wkpChartL2Fun v) (wkpChartL2Fun w)]
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl ?_
   intro α _
@@ -1187,18 +1097,16 @@ private theorem wkpInnerChartL2_apply_add_left
 
 private theorem wkpInnerChartL2_apply_smul_left
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
-    (k : ℕ) (u v : WkpChartL2 (n := n) (M := M) g k) (r : ℝ) :
+    (k : ℕ) (u v : WkpChartL2 (n := n) (M := M) k) (r : ℝ) :
     @inner ℝ _ _ (r • u) v = r * @inner ℝ _ _ u v := by
   classical
   have hu_mem := wkpChartL2Fun_memWkpChart u
-  change wkpInnerChartL2 (n := n) (M := M) g k _ _ = _
+  change wkpInnerChartL2 (n := n) (M := M) k _ _ = _
   rw [wkpChartL2Fun_smul]
   rw [show (r * @inner ℝ _ _ u v) =
-      r * wkpInnerChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun v) from rfl]
-  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) g k _ (wkpChartL2Fun v)]
-  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun v)]
+      r * wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun v) from rfl]
+  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) k _ (wkpChartL2Fun v)]
+  rw [wkpInnerChartL2_eq_finsum (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun v)]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro α _
@@ -1209,30 +1117,26 @@ private theorem wkpInnerChartL2_apply_smul_left
 
 instance instInnerProductSpaceRealWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    InnerProductSpace ℝ (WkpChartL2 (n := n) (M := M) g k) where
+    InnerProductSpace ℝ (WkpChartL2 (n := n) (M := M) k) where
   norm_sq_eq_re_inner u := by
     change ‖u‖ ^ 2 =
-      wkpInnerChartL2 (n := n) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun u)
-    exact wkpChartL2_norm_sq_eq_inner (n := n) (M := M) g k u
+      wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun u)
+    exact wkpChartL2_norm_sq_eq_inner (n := n) (M := M) k u
   conj_inner_symm u v := by
     change (@inner ℝ _ _ v u) = (@inner ℝ _ _ u v)
-    exact wkpInnerChartL2_apply_comm (n := n) (M := M) g k u v
-  add_left u v w := wkpInnerChartL2_apply_add_left (n := n) (M := M) g k u v w
+    exact wkpInnerChartL2_apply_comm (n := n) (M := M) k u v
+  add_left u v w := wkpInnerChartL2_apply_add_left (n := n) (M := M) k u v w
   smul_left u v r := by
     change @inner ℝ _ _ (r • u) v = r * @inner ℝ _ _ u v
-    exact wkpInnerChartL2_apply_smul_left (n := n) (M := M) g k u v r
+    exact wkpInnerChartL2_apply_smul_left (n := n) (M := M) k u v r
 
 instance instInnerProductSpaceRealWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) :
-    InnerProductSpace ℝ (WkpChartL2Quot (n := n) (M := M) g k) :=
+    InnerProductSpace ℝ (WkpChartL2Quot (n := n) (M := M) k) :=
   inferInstanceAs (InnerProductSpace ℝ
-    (SeparationQuotient (WkpChartL2 (n := n) (M := M) g k)))
+    (SeparationQuotient (WkpChartL2 (n := n) (M := M) k)))
 
 end WithBoundary
 end Sobolev

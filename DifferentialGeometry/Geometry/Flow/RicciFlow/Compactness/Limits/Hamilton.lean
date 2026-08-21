@@ -29,17 +29,15 @@ theorem compactnessSol_cond
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (inp : MetricCompactnessInputs (I := I) (X.atZero (I := I)))
     (hcomplete0 : SeqMetricComplete (I := I) (X.atZero (I := I)))
-    (hflowInj : FlowerScaleInjBound (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
         ((X.atZero (I := I)).obj k).topology
       ConnectedSpace ((X.atZero (I := I)).obj k).M)
-    (hderiv : FlowDerivativeInput (I := I) X)
     (hflow : FlowUpgrade (I := I) X
       (MetricCompactnessInputs.metricCompactness (I := I)
-        inp hcomplete0 hderiv.at_zero_geom hflowInj hconn)) :
+        inp hcomplete0 hconn)) :
     CompactnessConclusion (I := I) X :=
-  solutionComp_cond (I := I) X inp hcomplete0 hflowInj hconn hderiv hflow
+  solutionComp_cond (I := I) X inp hcomplete0 hconn hflow
 
 theorem compactnessSol
     {α b : Real} (h0 : (0 : Real) ∈ Set.Ioo α b)
@@ -86,7 +84,7 @@ theorem compactnessSol
     canon.compactness.compSubseq d.φ d.hφ
   refine ⟨d.data.L, mc'.subseq, mc'.strictMono, ?_, hcompleteL⟩
   exact ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc d.data.hσtgt
+    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc
     d.data.refMetric
     (letI : TopologicalSpace d.data.L.M := d.data.L.topology
      letI : ChartedSpace H d.data.L.M := d.data.L.charted

@@ -57,7 +57,7 @@ private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) 
 
 private lemma lieCorrectionZeroBase_perOrder_rf
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -73,7 +73,7 @@ private lemma lieCorrectionZeroBase_perOrder_rf
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Kb_top, hKb_top_nn, Kb_flow, hKb_flow_nn, hwalpha⟩ :=
-    deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g₀ a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g₀ a hδ₀ hΛ₀0
   have h4fr_nn : (0 : ℝ) ≤ 4 * (Module.finrank ℝ E : ℝ) := by positivity
   refine ⟨4 * (Module.finrank ℝ E : ℝ) * Kb_top, mul_nonneg h4fr_nn hKb_top_nn,
     fun i => 4 * (Module.finrank ℝ E : ℝ) * Kb_flow i,
@@ -101,8 +101,8 @@ private lemma lieCorrectionZeroBase_perOrder_rf
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by ring
 
 private lemma lieCorrectionZeroDiff_perOrder_rf
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    (g₀ g_bg : SmoothRiemannianMetric I M)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -119,9 +119,9 @@ private lemma lieCorrectionZeroDiff_perOrder_rf
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨FB0, hFB0_nn, hB0⟩ :=
-    deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le (I := I) (M := M) g₀ g₀ a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le (I := I) (M := M) g₀ g₀ hδ₀ hΛ₀0
   obtain ⟨FBb, hFBb_nn, hBb⟩ :=
-    deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedCovGrad_norm_sq_le (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
   have h4fr_nn : (0 : ℝ) ≤ 4 * (Module.finrank ℝ E : ℝ) := by positivity
   refine ⟨fun i => 4 * (Module.finrank ℝ E : ℝ) * (2 * FB0 i + 2 * FBb i),
     fun i => mul_nonneg h4fr_nn (by have := hFB0_nn i; have := hFBb_nn i; linarith), ?_⟩
@@ -187,7 +187,7 @@ private lemma lieCorrectionZeroDiff_perOrder_rf
 
 private lemma lieCorrectionZeroRiem_perOrder_rf
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -202,7 +202,7 @@ private lemma lieCorrectionZeroRiem_perOrder_rf
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Λ, Fcg, hΛ_nn, hFcg_nn, hcom⟩ :=
-    cometricCastG0_order0sup_jetL2_radiusFree (I := I) (M := M) g₀ a ha_super hδ₀ hΛ₀0
+    cometricCastG0_order0sup_jetL2_radiusFree (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   obtain ⟨KP, hKP_nn, hKP⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 2 4 (lieCorrectionZeroRiemannLift (I := I) g₀)
   choose Cint hCint_nn hCint using
@@ -1071,6 +1071,7 @@ private lemma b4_unit_read (g₀ : SmoothRiemannianMetric I M)
   rw [unitModel]
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem metricConnectionDifferenceLoweredCoefficient_expansion (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1302,6 +1303,7 @@ noncomputable def metricLoweredConnectionDifferenceCorrection
       (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem metricLoweredConnectionDifferenceCorrection_sub
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (P Q : SmoothCcTensor g₀ 0 2) :
@@ -1313,6 +1315,7 @@ theorem metricLoweredConnectionDifferenceCorrection_sub
   module
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem metricConnectionDifferenceLoweredCoefficient_eq_lowered_add_correction
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
@@ -1652,7 +1655,7 @@ private lemma b4_pk3_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M
             ((iteratedCovGrad (I := I) g₀ 0 2 q P).toSection x) := by ring
 
 lemma metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (g₀ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 5))
-    {Λ₀ : ℝ} (_hΛ₀0 : 0 ≤ Λ₀) :
+    {Λ₀ : ℝ} :
     ∃ Kphi : ℕ → ℝ, (∀ l, 0 ≤ Kphi l) ∧
       ∀ (P : SmoothCcTensor g₀ 0 2)
         (_hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (P.toSection x) ≤ Λ₀ ^ 2)
@@ -1766,7 +1769,7 @@ lemma metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (g
           (fr ^ 3 * (((l : ℝ) + 1) * (1 + Λ₀ ^ 2)) * antidiagonalTupleGridWindow) := by rw [Finset.sum_mul]
 
 private lemma b4_app_antidiagonalTupleGridWindow (g₀ gb : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 5))
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ Kap : ℕ → ℝ, (∀ n, 0 ≤ Kap n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1783,7 +1786,7 @@ private lemma b4_app_antidiagonalTupleGridWindow (g₀ gb : SmoothRiemannianMetr
             (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
-  obtain ⟨Kphi, hKphi_nn, hphi⟩ := metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ hΛ₀0
+  obtain ⟨Kphi, hKphi_nn, hphi⟩ := metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ
   obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb hδ₀
   refine ⟨fun n => operatorFieldApplicationGdiag (E := E) n *
       ∑ i' ∈ Finset.range (n + 1), ∑ l ∈ Finset.range (n + 1),
@@ -1878,7 +1881,7 @@ private lemma b4_app_antidiagonalTupleGridWindow (g₀ gb : SmoothRiemannianMetr
         exact Finset.sum_congr rfl (fun i' _ => by rw [Finset.sum_mul])
 
 theorem metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (g₀ gb : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ Kmcd : ℕ → ℝ, (∀ n, 0 ≤ Kmcd n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1895,8 +1898,8 @@ theorem metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
   obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb hδ₀
-  obtain ⟨KapA, hKapA_nn, hapA⟩ := b4_app_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb b4PermA hδ₀ hΛ₀0
-  obtain ⟨KapB, hKapB_nn, hapB⟩ := b4_app_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb b4PermB hδ₀ hΛ₀0
+  obtain ⟨KapA, hKapA_nn, hapA⟩ := b4_app_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb b4PermA hδ₀
+  obtain ⟨KapB, hKapB_nn, hapB⟩ := b4_app_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb b4PermB hδ₀
   refine ⟨fun n => 2 * Kwx n + (KapA n + KapB n),
     fun n => by have := hKwx_nn n; have := hKapA_nn n; have := hKapB_nn n; linarith, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup n x
@@ -1985,7 +1988,7 @@ theorem metricConnectionDifferenceLoweredCoefficient_l2_radius_free
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kmcd, hKmcd, hmcd⟩ :=
-    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ gb hδ₀ hΛ₀0
+    metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ gb hδ₀
   obtain ⟨Krf, hKrf, hgrid⟩ :=
     antidiagonalTupleGrid_integral_radiusFree
       (I := I) (M := M) g₀ hΛ₀0
@@ -2180,7 +2183,7 @@ theorem deTurckVectorFieldCovector_antidiagonalTupleGridWindow_bound (g₀ gb : 
         exact Finset.sum_congr rfl (fun i' _ => by rw [Finset.sum_mul])
 
 private lemma b4_vbPass_antidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ Kvp : ℕ → ℝ, (∀ n, 0 ≤ Kvp n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -2196,7 +2199,7 @@ private lemma b4_vbPass_antidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetr
             (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 3) := by
   classical
-  obtain ⟨Kmcd, hKmcd_nn, hmcd⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀ hΛ₀0
+  obtain ⟨Kmcd, hKmcd_nn, hmcd⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀
   obtain ⟨KΩ, hKΩ_nn, hΩ⟩ := deTurckVectorFieldCovector_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀
   obtain ⟨cip, hcip_nn, hip⟩ := riemannianFiberNormSq_iteratedCovGrad_ipLow_le (I := I) (M := M) g₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
@@ -2336,7 +2339,7 @@ private lemma b4_vbPass_antidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetr
         exact Finset.sum_congr rfl (fun i' _ => by rw [Finset.sum_mul])
 
 private lemma b4_vb_antidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ Kvb : ℕ → ℝ, (∀ i, 0 ≤ Kvb i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -2352,7 +2355,7 @@ private lemma b4_vb_antidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (i + 3) := by
   classical
   obtain ⟨Kcg, hKcg_nn, hcg⟩ := riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀
-  obtain ⟨Kvp, hKvp_nn, hvp⟩ := b4_vbPass_antidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀ hΛ₀0
+  obtain ⟨Kvp, hKvp_nn, hvp⟩ := b4_vbPass_antidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : (0 : ℝ) ≤ fr := Nat.cast_nonneg _
   refine ⟨fun i => 4 * (operatorFieldApplicationGdiag (E := E) i *
@@ -2503,7 +2506,7 @@ private lemma lieCorrectionZeroVB_perOrder_rf (g₀ : SmoothRiemannianMetric I M
   classical
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
-  obtain ⟨Kvb, hKvb_nn, hvb⟩ := b4_vb_antidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀ hΛ₀0
+  obtain ⟨Kvb, hKvb_nn, hvb⟩ := b4_vb_antidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
   refine ⟨fun i => Kvb i * ∑ k ∈ Finset.range (i + 3), K_rf k,
@@ -2581,7 +2584,7 @@ private lemma lieCorrectionZeroVB_perOrder_rf (g₀ : SmoothRiemannianMetric I M
     _ = (Kvb i * ∑ k ∈ Finset.range (i + 3), K_rf k) * (1 + S') := by ring
 
 private lemma b4_amix_antidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ₀ : ℝ} :
     ∃ Kam : ℕ → ℝ, (∀ n, 0 ≤ Kam n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -2601,8 +2604,8 @@ private lemma b4_amix_antidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianM
   obtain ⟨Ctr2, hCtr2_nn, htr2⟩ := trace_grid_rf (I := I) (M := M) 2 g₀ hδ₀
   obtain ⟨Ctr3, hCtr3_nn, htr3⟩ := trace_grid_rf (I := I) (M := M) 3 g₀ hδ₀
   obtain ⟨Ctr4, hCtr4_nn, htr4⟩ := trace_grid_rf (I := I) (M := M) 4 g₀ hδ₀
-  obtain ⟨Km0, hKm0_nn, hm0⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀ hΛ₀0
-  obtain ⟨KmB, hKmB_nn, hmB⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+  obtain ⟨Km0, hKm0_nn, hm0⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g₀ hδ₀
+  obtain ⟨KmB, hKmB_nn, hmB⟩ := metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ g_bg hδ₀
   let K0 : ℕ → ℝ := fun n => (Module.finrank ℝ E : ℝ) ^ 2 * Km0 n
   let KB : ℕ → ℝ := fun n => (Module.finrank ℝ E : ℝ) ^ 3 * KmB n
   let Ktail : ℕ → ℝ := fun n => b4JoinK (E := E) 0 1 Ctr3 K0 n
@@ -2801,7 +2804,7 @@ private lemma lieCorrectionZeroMixedConnection_perOrder_rf
   classical
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
-  obtain ⟨Kam, hKam_nn, ham⟩ := b4_amix_antidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+  obtain ⟨Kam, hKam_nn, ham⟩ := b4_amix_antidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
   refine ⟨fun i => Kam i * ∑ k ∈ Finset.range (i + 3), K_rf k,
@@ -2937,13 +2940,13 @@ theorem lieCorrectionZeroField_per_order_l2_radius_free
             ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Kb_top, hKb_top_nn, Fb, hFb_nn, hbase⟩ :=
-    lieCorrectionZeroBase_perOrder_rf (I := I) (M := M) g₀ a ha_super hδ₀ hΛ₀0
+    lieCorrectionZeroBase_perOrder_rf (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   obtain ⟨Fd, hFd_nn, hdiff⟩ :=
-    lieCorrectionZeroDiff_perOrder_rf (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    lieCorrectionZeroDiff_perOrder_rf (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
   obtain ⟨Fvm, hFvm_nn, hvbamix⟩ :=
     lieCorrectionZeroVBAMix_perOrder_rf (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
   obtain ⟨Fr, hFr_nn, hriem⟩ :=
-    lieCorrectionZeroRiem_perOrder_rf (I := I) (M := M) g₀ a ha_super hδ₀ hΛ₀0
+    lieCorrectionZeroRiem_perOrder_rf (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   refine ⟨fun i => 5 * Kb_top + 5 * (Fb i + Fd i + Fvm i + Fr i),
     fun i => by
       have := hKb_top_nn; have := hFb_nn i; have := hFd_nn i

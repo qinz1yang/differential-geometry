@@ -34,11 +34,13 @@ def ofContinuousOnIoo (hf : ContinuousOn f (Set.Ioo (0 : ℝ) T)) {M : ℝ}
     (hM : ∀ᵐ t ∂(timeMeasure T), ‖f t‖ ≤ M) : timeL2 X T :=
   (memLp_of_continuousOn_Ioo hf hM).toLp f
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem coeFn_ofContinuousOnIoo (hf : ContinuousOn f (Set.Ioo (0 : ℝ) T)) {M : ℝ}
     (hM : ∀ᵐ t ∂(timeMeasure T), ‖f t‖ ≤ M) :
     ofContinuousOnIoo hf hM =ᵐ[timeMeasure T] f :=
   (memLp_of_continuousOn_Ioo hf hM).coeFn_toLp
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem exists_timeL2_of_continuousOn_Ioo
     (hf : ContinuousOn f (Set.Ioo (0 : ℝ) T)) {M : ℝ}
     (hM : ∀ᵐ t ∂(timeMeasure T), ‖f t‖ ≤ M) :

@@ -125,6 +125,7 @@ private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
   rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
     reindexCoeffFibGen_apply, ContinuousLinearMap.sub_apply]
 
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroNEndoSec_sub_insert_eq_lieCorrectionZeroCdVField_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -159,6 +160,7 @@ theorem lieCorrectionZeroInsertionField_sub_eq_nEndoInsert
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroVFlat_sub_eq_trace_comp_kappa_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀ -
@@ -171,6 +173,7 @@ theorem lieCorrectionZeroVFlat_sub_eq_trace_comp_kappa_sub
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroIVField_sub_eq_trace_comp_slotExtend_vflat_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀ -
@@ -184,6 +187,7 @@ theorem lieCorrectionZeroIVField_sub_eq_trace_comp_slotExtend_vflat_sub
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZeroCdVField_sub_eq_comp_connectionDifference
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀ -

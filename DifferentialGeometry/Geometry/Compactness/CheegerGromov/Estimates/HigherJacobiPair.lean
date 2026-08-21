@@ -161,7 +161,7 @@ private theorem jac_force_cap
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem intrJacobi_pair_le
+@[nolint unusedArguments] theorem intrJacobi_pair_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -767,7 +767,7 @@ theorem intrMix_pair_le
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] in
-theorem intrJet_pair_of
+@[nolint unusedArguments] theorem intrJet_pair_of
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)

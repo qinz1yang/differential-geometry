@@ -187,8 +187,8 @@ lemma patchedFunction_ae_eq_on_each
 
 omit [NeZero d] in
 lemma exists_global_of_ae_coherent_monotone
-    {p : ℝ≥0∞} (_hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
-    {Ω : Set E} (_hΩ_open : IsOpen Ω)
+    {p : ℝ≥0∞}
+    {Ω : Set E}
     {Ω_seq : ℕ → Set E}
     (hΩ_seq_open : ∀ n, IsOpen (Ω_seq n))
     (hΩ_seq_mono : Monotone Ω_seq)
@@ -278,12 +278,10 @@ lemma exists_global_of_ae_coherent_monotone
 
 omit [NeZero d] in
 theorem MemWkp_of_sigma_compact_cover_and_globalLp_zero
-    {p : ℝ≥0∞} (_hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
-    {Ω : Set E} (_hΩ_open : IsOpen Ω) {u : E → ℝ}
+    {p : ℝ≥0∞}
+    {Ω : Set E} {u : E → ℝ}
     (h_globalLp : MemLp u p ((volume : Measure E).restrict Ω))
-    (_h_local : ∀ Ω' : Set E,
-       IsOpen Ω' → IsCompact (closure Ω') → closure Ω' ⊆ Ω →
-       MemWkp (d := d) 0 p u Ω') :
+    :
     MemWkp (d := d) 0 p u Ω := by
   rw [MemWkp_zero]
   exact h_globalLp

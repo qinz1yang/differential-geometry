@@ -786,6 +786,7 @@ private theorem chartLaplacianTimeDerivOn
     simpa [chartVossWeylLaplacian_def, chartVossWeylIntegrand_def] using hdiv
   exact hgoal
 
+omit [SigmaCompactSpace M] in
 theorem liYauQuantity_evolution_identity
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}

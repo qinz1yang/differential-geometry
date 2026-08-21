@@ -203,6 +203,7 @@ theorem total_cov_const (g : SmoothRiemannianMetric I M) {p : M}
     (c.totalMetric g) (c.metric g) hEq hdiff hco v w
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem total_cov_fderiv (g : SmoothRiemannianMetric I M) {p : M}
     (c : NormalBallChart (I := I) p) (z : E)
     (hz : z ∈ Metric.ball (0 : E) (c.radius / 4))

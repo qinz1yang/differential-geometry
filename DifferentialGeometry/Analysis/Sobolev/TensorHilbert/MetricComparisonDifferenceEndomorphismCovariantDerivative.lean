@@ -68,6 +68,7 @@ def metricComparisonDifferenceEndomorphismField (g₀ g₁ : SmoothRiemannianMet
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem inverseMetricSharpFib_g0FlatY_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -105,7 +106,7 @@ private theorem cotangent_g0FlatY_mdiffAtCotangent
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem endoCov_gInvDiffRaisedField_apply
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :

@@ -35,11 +35,11 @@ private theorem codRestr_mdiffAt
     (by simpa [Function.comp_def] using hcont), ?_⟩
   convert hdiff using 2
 
-def nestedOpen {U V : Opens M} (_hVU : V ≤ U) : Opens U :=
+def nestedOpen {U V : Opens M} : Opens U :=
   ⟨Subtype.val ⁻¹' (V : Set M), V.isOpen.preimage continuous_subtype_val⟩
 
 private def flatNestedEquiv {U V : Opens M} (hVU : V ≤ U) :
-    V ≃ nestedOpen hVU where
+    V ≃ nestedOpen (M := M) (U := U) (V := V) where
   toFun x := ⟨⟨x.1, hVU x.2⟩, x.2⟩
   invFun y := ⟨y.1.1, y.2⟩
   left_inv _ := rfl
@@ -49,8 +49,8 @@ private def flatNestedEquiv {U V : Opens M} (hVU : V ≤ U) :
     rfl
 
 noncomputable def flatNestedDiffeo {U V : Opens M} (hVU : V ≤ U) :
-    V ≃ₘ⟮I, I⟯ nestedOpen hVU where
-  toEquiv := flatNestedEquiv hVU
+    V ≃ₘ⟮I, I⟯ nestedOpen (M := M) (U := U) (V := V) where
+  toEquiv := flatNestedEquiv (M := M) hVU
   contMDiff_toFun := by
     intro x
     exact codRestr_mdiffAt (fun y => y.2) (contMDiff_inclusion hVU).contMDiffAt
@@ -58,26 +58,31 @@ noncomputable def flatNestedDiffeo {U V : Opens M} (hVU : V ≤ U) :
     intro x
     apply codRestr_mdiffAt (fun y => y.2)
     exact ((contMDiff_subtype_val (I := I) (U := U)).comp
-      (contMDiff_subtype_val (I := I) (U := nestedOpen hVU))).contMDiffAt
+      (contMDiff_subtype_val (I := I)
+        (U := nestedOpen (M := M) (U := U) (V := V)))).contMDiffAt
 
 omit [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private theorem flatNested_mfderiv {U V : Opens M} (hVU : V ≤ U) (x : V) :
-    mfderiv I I (flatNestedDiffeo (I := I) hVU : V → nestedOpen hVU) x =
+    mfderiv I I (flatNestedDiffeo (H := H) (I := I) (M := M) hVU :
+      V → nestedOpen (M := M) (U := U) (V := V)) x =
       ContinuousLinearMap.id Real E := by
-  let F := flatNestedDiffeo (I := I) hVU
-  have hF : MDifferentiableAt I I (F : V → nestedOpen hVU) x :=
+  let F := flatNestedDiffeo (H := H) (I := I) (M := M) hVU
+  have hF : MDifferentiableAt I I
+      (F : V → nestedOpen (M := M) (U := U) (V := V)) x :=
     F.contMDiff.contMDiffAt.mdifferentiableAt
       (by decide : (∞ : WithTop ℕ∞) ≠ 0)
-  have hval : MDifferentiableAt I I (Subtype.val : nestedOpen hVU → U) (F x) :=
-    (contMDiff_subtype_val (I := I) (U := nestedOpen hVU)).contMDiffAt.mdifferentiableAt
+  have hval : MDifferentiableAt I I
+      (Subtype.val : nestedOpen (M := M) (U := U) (V := V) → U) (F x) :=
+    (contMDiff_subtype_val (I := I)
+      (U := nestedOpen (M := M) (U := U) (V := V))).contMDiffAt.mdifferentiableAt
       (by decide : (∞ : WithTop ℕ∞) ≠ 0)
   have hcomp := mfderiv_comp x hval hF
   change mfderiv I I (Opens.inclusion hVU : V → U) x =
-    (mfderiv I I (Subtype.val : nestedOpen hVU → U) (F x)).comp
-      (mfderiv I I (F : V → nestedOpen hVU) x) at hcomp
+    (mfderiv I I (Subtype.val : nestedOpen (M := M) (U := U) (V := V) → U) (F x)).comp
+      (mfderiv I I (F : V → nestedOpen (M := M) (U := U) (V := V)) x) at hcomp
   rw [mfderiv_opens_incl (I := I) hVU x,
-    mfderiv_subtype_val (I := I) (nestedOpen hVU) (F x)] at hcomp
+    mfderiv_subtype_val (I := I) (nestedOpen (M := M) (U := U) (V := V)) (F x)] at hcomp
   simpa [F] using hcomp.symm
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
@@ -97,14 +102,15 @@ omit [T2Space M] [SigmaCompactSpace M] [CompleteSpace E]
     [NeZero (Module.finrank ℝ E)] in
 theorem restrictSubset_pull
     {U V : Opens M} (hVU : V ≤ U)
-    [SigmaCompactSpace U] [T2Space U]
-    [SigmaCompactSpace V] [T2Space V]
-    [SigmaCompactSpace (nestedOpen hVU)]
+    [T2Space U]
+    [T2Space V]
+    [hSigmaNested : SigmaCompactSpace (nestedOpen (M := M) (U := U) (V := V))]
     (g : SmoothRiemannianMetric I U) :
     g.restrictOpenOfSubset (I := I) hVU =
       Diffeomorph.pullbackMetric (I := I)
-        (g.restrictOpen (I := I) (nestedOpen hVU))
-        (flatNestedDiffeo (I := I) hVU) := by
+        (g.restrictOpen (I := I) (nestedOpen (M := M) (U := U) (V := V)))
+        (flatNestedDiffeo (H := H) (I := I) (M := M) hVU) := by
+  let _ := hSigmaNested
   apply metric_ext
   intro x v w
   rw [SmoothRiemannianMetric.restrictSubset_inner,
@@ -151,7 +157,7 @@ theorem metricDerivNorm_flat
         (gInf.restrictOpenOfSubset (I := I) hVU)
         (gRef.restrictOpenOfSubset (I := I) hVU) x =
       metricDerivNorm (I := I) a gk gInf gRef (Opens.inclusion hVU x) := by
-  let W := nestedOpen hVU
+  let W := nestedOpen (M := M) (U := U) (V := V)
   letI : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
   letI : IsManifold I 1 V :=
@@ -168,7 +174,7 @@ theorem metricDerivNorm_flat
   letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) W := by
     change IsManifold I ∞ W
     infer_instance
-  let F := flatNestedDiffeo (I := I) hVU
+  let F := flatNestedDiffeo (H := H) (I := I) (M := M) hVU
   calc
     metricDerivNorm (I := I) a
         (gk.restrictOpenOfSubset (I := I) hVU)

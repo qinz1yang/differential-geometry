@@ -343,7 +343,6 @@ theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g
   obtain ⟨Ca, hCa0, hconn⟩ :=
     connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
       (I := I) (M := M) g (δ₀ := 1 / 2)
-        (show (0 : Real) ≤ 1 / 2 by norm_num)
         (show (1 / 2 : Real) < 1 by norm_num)
   let d : Real := Module.finrank Real E
   let K : Real := Ct 0 * (46 * d ^ 2 * Ca ^ 2)

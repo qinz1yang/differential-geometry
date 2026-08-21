@@ -32,9 +32,9 @@ theorem timeL2Inclusion_maxRegDuhamelSolField {a : ℝ} {T : ℝ}
     timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := r) (s := s)
-          (T := T) a hT hT1 u₀ gforce) =
+          (T := T) a hT u₀ gforce) =
       maxRegDuhamelSolFieldHa1 (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (T := T) a hT hT1 u₀ gforce := by
+        (T := T) a hT u₀ gforce := by
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ r s
   refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)]
@@ -49,10 +49,10 @@ theorem timeL2Inclusion_maxRegDuhamelSolField {a : ℝ} {T : ℝ}
 
 omit [BoundarylessManifold I M] in
 theorem norm_maxRegDuhamelSolField_zero_le {a : ℝ} {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1) {r s : ℕ}
+    (hT : 0 < T) {r s : ℕ}
     (F : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) :
     ‖maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (T := T) a hT hT1
+        (T := T) a hT
         (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F‖ ≤ (1 + T) * ‖F‖ := by
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ r s
   rw [maxRegDuhamelSolField]
@@ -75,13 +75,13 @@ theorem norm_maxRegDuhamelSolField_zero_le {a : ℝ} {T : ℝ}
 
 omit [BoundarylessManifold I M] in
 theorem maxRegDuhamelSolField_zero_zero {a : ℝ} {T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1) {r s : ℕ} :
+    (hT : 0 < T) {r s : ℕ} :
     maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (T := T) a hT hT1
+        (T := T) a hT
         (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2))
         (0 : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) = 0 := by
   have h := norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g₀)
-    hT hT1 (0 : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T)
+    hT (0 : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T)
   rw [norm_zero, mul_zero] at h
   exact norm_le_zero_iff.mp h
 

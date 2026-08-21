@@ -94,6 +94,7 @@ theorem segInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -372,7 +373,7 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem segInt_no_conj [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segInt_no_conj [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -404,7 +405,7 @@ theorem segInt_no_conj [ConnectedSpace M] [PseudoEMetricSpace M]
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem segEnd_ray_sub [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segEnd_ray_sub [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)

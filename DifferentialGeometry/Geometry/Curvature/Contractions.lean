@@ -292,10 +292,6 @@ theorem rm04_trace_first_third_eq_neg_ricci
     (A : Tensor02At (I := I) (M := M) x)
     (hTrace : RicciRealizesRm04FirstTraceAt (I := I) A Rm04 gInv basis)
     (hOutput : Rm04OutputSkewAt (I := I) Rm04)
-    (_hFirst : FirstBianchiAt (I := I) Rm04)
-    (_hA : forall i j : Idx, A (vec2 (basis i) (basis j)) =
-      A (vec2 (basis j) (basis i)))
-    (_hInv : forall i j : Idx, gInv i j = gInv j i)
     (k l : Idx) :
     (∑ a : Idx, ∑ b : Idx,
         gInv a b * Rm04 (vec4 (basis a) (basis k) (basis b) (basis l))) =
@@ -327,7 +323,6 @@ private theorem contracted_slot1_eq_quadratic
     (_hPair : forall W X Y Z : TangentSpace I x,
       Rm04 (vec4 W X Y Z) = Rm04 (vec4 Y Z W X))
     (hOutput : Rm04OutputSkewAt (I := I) Rm04)
-    (hFirst : FirstBianchiAt (I := I) Rm04)
     (hA : forall i j : Idx, A (vec2 (basis i) (basis j)) =
       A (vec2 (basis j) (basis i)))
     (hInv : forall i j : Idx, gInv i j = gInv j i)
@@ -400,7 +395,7 @@ private theorem contracted_slot1_eq_quadratic
           refine congrArg Neg.neg ?_
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [rm04_trace_first_third_eq_neg_ricci
-            (I := I) basis Rm04 gInv A hTrace hOutput hFirst hA hInv a p]
+            (I := I) basis Rm04 gInv A hTrace hOutput a p]
     _ =
       ∑ p : Idx,
         (∑ q : Idx, gInv p q * A (vec2 (basis b) (basis q))) *
@@ -541,10 +536,7 @@ theorem metricTrace_rm04RicciContractionAt_eq_neg_inner
     (A : Tensor02At (I := I) (M := M) x)
     (hTrace : RicciRealizesRm04FirstTraceAt (I := I) A Rm04 gInv basis)
     (hOutput : Rm04OutputSkewAt (I := I) Rm04)
-    (hFirst : FirstBianchiAt (I := I) Rm04)
-    (hA : forall i j : Idx, A (vec2 (basis i) (basis j)) =
-      A (vec2 (basis j) (basis i)))
-    (hInv : forall i j : Idx, gInv i j = gInv j i) :
+    :
     (∑ a : Idx, ∑ b : Idx,
       gInv a b * rm04RicciContractionAt (I := I) basis Rm04 gInv A a b) =
       -(∑ k : Idx, ∑ l : Idx,
@@ -640,7 +632,7 @@ theorem metricTrace_rm04RicciContractionAt_eq_neg_inner
         refine Finset.sum_congr rfl fun k _ => ?_
         refine Finset.sum_congr rfl fun l _ => ?_
         rw [rm04_trace_first_third_eq_neg_ricci
-          (I := I) basis Rm04 gInv A hTrace hOutput hFirst hA hInv k l]
+          (I := I) basis Rm04 gInv A hTrace hOutput k l]
     _ =
       -(∑ k : Idx, ∑ l : Idx,
         A (vec2 (basis k) (basis l)) *
@@ -776,7 +768,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
         ricciQuadraticAt (I := I) basis gInv A a b := by
     simp_rw [hslot1]
     exact contracted_slot1_eq_quadratic
-      (I := I) basis Rm04 gInv A hTrace hPair hOutput hFirst hA hInv a b
+      (I := I) basis Rm04 gInv A hTrace hPair hOutput hA hInv a b
   calc
     (∑ k : Idx, ∑ l : Idx,
         gInv k l *

@@ -25,7 +25,7 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ 
 
 section DataMono
 
-def MapMetricApproximationOn.mono [T2Space N] [SigmaCompactSpace N]
+def MapMetricApproximationOn.mono
     {K K' : Set M} {ε ε' : ℝ} {p : ℕ}
     {Phi : M → N} {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : MapMetricApproximationOn (I := I) K ε p Phi g h)
@@ -40,7 +40,8 @@ def MapMetricApproximationOn.mono [T2Space N] [SigmaCompactSpace N]
   cov_deriv_small := fun a h1 h2 x hx =>
     le_trans (D.cov_deriv_small a h1 h2 x (hK hx)) hε
 
-def PartialDiffeomorphMetricApproximation.mono [T2Space N] [SigmaCompactSpace N]
+def PartialDiffeomorphMetricApproximation.mono [T2Space N]
+    [hSigma : SigmaCompactSpace N]
     {K K' : Set M} {ε ε' : ℝ} {p : ℕ}
     {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
@@ -49,9 +50,9 @@ def PartialDiffeomorphMetricApproximation.mono [T2Space N] [SigmaCompactSpace N]
     PartialDiffeomorphMetricApproximation (I := I) K' ε' p Phi g h where
   source_sub := fun _ hx => D.source_sub (hK hx)
   forward := D.forward.mono hK hε hε1
-  reverse := (D.reverse.mono (Set.image_mono hK) hε hε1 :)
+  reverse := let _ := hSigma; (D.reverse.mono (Set.image_mono hK) hε hε1 :)
 
-def MapMetricApproximationOn.monoP [T2Space N] [SigmaCompactSpace N]
+def MapMetricApproximationOn.monoP
     {K : Set M} {ε : ℝ} {p p' : ℕ}
     {Phi : M → N} {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : MapMetricApproximationOn (I := I) K ε p Phi g h) (hp : p' ≤ p) :
@@ -65,7 +66,8 @@ def MapMetricApproximationOn.monoP [T2Space N] [SigmaCompactSpace N]
   cov_deriv_small := fun a h1 h2 x hx =>
     D.cov_deriv_small a h1 (le_trans h2 hp) x hx
 
-def PartialDiffeomorphMetricApproximation.monoP [T2Space N] [SigmaCompactSpace N]
+def PartialDiffeomorphMetricApproximation.monoP [T2Space N]
+    [hSigma : SigmaCompactSpace N]
     {K : Set M} {ε : ℝ} {p p' : ℕ}
     {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
@@ -73,7 +75,7 @@ def PartialDiffeomorphMetricApproximation.monoP [T2Space N] [SigmaCompactSpace N
     PartialDiffeomorphMetricApproximation (I := I) K ε p' Phi g h where
   source_sub := D.source_sub
   forward := D.forward.monoP hp
-  reverse := D.reverse.monoP hp
+  reverse := let _ := hSigma; D.reverse.monoP hp
 
 end DataMono
 

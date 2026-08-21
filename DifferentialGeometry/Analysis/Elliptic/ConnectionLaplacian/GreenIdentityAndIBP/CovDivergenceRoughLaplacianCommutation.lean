@@ -85,6 +85,7 @@ private lemma unitModel_eq_toModel_unitEval_gen
           (unitZeroSec (I := I) (M := M) x)) v := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma unitModel_operatorFieldApplication_cometricDoubleTrace_eq_dualTrace
     (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (W : SmoothCcTensor g₀ 0 (p + 2))
     (x : M) (v : Fin p → TangentSpace I x) :
@@ -401,6 +402,7 @@ theorem pointwiseTensorCurv_l2Inner_eq_covDivergence_commutator
   linarith [h1, h2]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma unitModel_operatorFieldApplication_slotExtend_slotExtend_cometric
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (U : SmoothCcTensor g₀ 0 (t + 4))
     (x : M) (a b : E) (v : Fin t → TangentSpace I x) :

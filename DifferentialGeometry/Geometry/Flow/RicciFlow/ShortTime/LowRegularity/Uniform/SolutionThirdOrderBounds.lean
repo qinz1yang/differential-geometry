@@ -129,10 +129,10 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
         (galerkinSolutionMode (I := I) (M := M) g fseq N) 3 t ∂(timeMeasure T) ≤
       ((1 + T) * (R / 4)) ^ 2 := by
     intro N
-    exact galerkin_energy_three_integral_bound (I := I) (M := M) g hT hT1 N fseq _
+    exact galerkin_energy_three_integral_bound (I := I) (M := M) g hT N fseq _
       ((hpack N).2.2.1) ((hpack N).2.2.2.2.2)
   obtain ⟨Φ, hΦ⟩ :=
-    exists_uniform_galerkin_energy_three_bound_background_of_pairing_bounds (I := I) (M := M) g gBase hT hT1
+    exists_uniform_galerkin_energy_three_bound_background_of_pairing_bounds (I := I) (M := M) g gBase hT
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
       hK.hreal hK.core_cont hK.htame hG

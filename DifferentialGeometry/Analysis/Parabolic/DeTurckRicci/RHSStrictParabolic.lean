@@ -44,12 +44,12 @@ theorem deTurckRicciRHS_isPointwiseSymm
         (smoothRiemannianMetricToInfty (I := I) g_bg)) x v w]
 
 noncomputable def deTurckRicciRHSChartSecondOrderPart
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
+    (g₀ : SmoothRiemannianMetric I M) :
     ChartMetricPerturbation E → M → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → E → ℝ :=
   fun h α i j y =>
     (-2 : ℝ) * chartRicciSecondOrderPart (I := I) g₀ α h i j y +
-      chartDeTurckCorrSecondOrderPart (I := I) g₀ g_bg α h i j y
+      chartDeTurckCorrSecondOrderPart (I := I) g₀ α h i j y
 
 section ReadOff
 
@@ -210,12 +210,12 @@ private lemma chartRicciSecondOrderPrincipalSymbol_symbolTestPerturbation
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [I.Boundaryless] in
 private lemma chartDeTurckCorrPrincipalSymbolExpr_symbolTestPerturbation
-    (g₀ g_bg : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+    (g₀ : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
     (i j : Fin (Module.finrank ℝ E)) :
-    chartDeTurckCorrPrincipalSymbolExpr (I := I) g₀ g_bg x
+    chartDeTurckCorrPrincipalSymbolExpr (I := I) g₀ x
         (symbolTestPerturbation (I := I) x x ξ t ht) i j (extChartAt I x x) =
-      deTurckCorrSymbolComp (I := I) g₀ g_bg x ξ t i j := by
+      deTurckCorrSymbolComp (I := I) g₀ x ξ t i j := by
   classical
   rw [chartDeTurckCorrPrincipalSymbolExpr_eq_explicit, deTurckCorrSymbolComp_def]
   refine congrArg₂ (· + ·) ?_ ?_ <;>
@@ -232,10 +232,10 @@ private lemma chartDeTurckCorrPrincipalSymbolExpr_symbolTestPerturbation
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem deTurckRicciRHS_test_perturbation_readoff
-    (g₀ g_bg : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+    (g₀ : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
     (i j : Fin (Module.finrank ℝ E)) :
-    deTurckRicciRHSChartSecondOrderPart (I := I) g₀ g_bg
+    deTurckRicciRHSChartSecondOrderPart (I := I) g₀
         (symbolTestPerturbation (I := I) x x ξ t ht) x i j (extChartAt I x x) =
       - (DifferentialGeometry.PDE.DeTurck.isotropicSymbol
             (E := E)
@@ -280,11 +280,11 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
       ring
     rw [hrem, add_zero]
   have hCorr :
-      chartDeTurckCorrSecondOrderPart (I := I) g₀ g_bg x hh i j (extChartAt I x x) =
-        deTurckCorrSymbolComp (I := I) g₀ g_bg x ξ t i j := by
+      chartDeTurckCorrSecondOrderPart (I := I) g₀ x hh i j (extChartAt I x x) =
+        deTurckCorrSymbolComp (I := I) g₀ x ξ t i j := by
     rw [chartDeTurckCorrSecondOrderPart_eq_principalSymbol_add_remainder_of_mem_source
-        (I := I) g₀ g_bg x hh i j hx_src]
-    rw [chartDeTurckCorrPrincipalSymbolExpr_symbolTestPerturbation g₀ g_bg x ξ t ht i j]
+        (I := I) g₀ x hh i j hx_src]
+    rw [chartDeTurckCorrPrincipalSymbolExpr_symbolTestPerturbation g₀ x ξ t ht i j]
     have hLCP : ∀ a b k : Fin (Module.finrank ℝ E),
         chartLinearizedChristoffelPrincipal (I := I) g₀ x hh a b k (extChartAt I x x) = 0 := by
       intro a b k
@@ -292,7 +292,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
       refine mul_eq_zero_of_right _ (Finset.sum_eq_zero (fun l _ => ?_))
       rw [hjet a l b, hjet b l a, hjet l a b]; ring
     have hGDB : ∀ d a b k : Fin (Module.finrank ℝ E),
-        chartDeTurckCorrGramDerivBlock (I := I) g₀ g_bg x hh d a b k (extChartAt I x x) = 0 := by
+        chartDeTurckCorrGramDerivBlock (I := I) g₀ x hh d a b k (extChartAt I x x) = 0 := by
       intro d a b k
       rw [chartDeTurckCorrGramDerivBlock_def]
       refine mul_eq_zero_of_right _ (Finset.sum_eq_zero (fun l _ => ?_))
@@ -306,7 +306,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
                     (extChartAt I x x)) +
               (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ x a b (extChartAt I x x) *
-                  chartDeTurckCorrGramDerivBlock (I := I) g₀ g_bg x hh d a b k
+                  chartDeTurckCorrGramDerivBlock (I := I) g₀ x hh d a b k
                     (extChartAt I x x)))) = 0 := by
       intro gf d
       refine Finset.sum_eq_zero (fun k _ => mul_eq_zero_of_right _ ?_)
@@ -318,12 +318,12 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
           rw [hLCP a b k]; ring))]
       rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ x a b (extChartAt I x x) *
-              chartDeTurckCorrGramDerivBlock (I := I) g₀ g_bg x hh d a b k
+              chartDeTurckCorrGramDerivBlock (I := I) g₀ x hh d a b k
                 (extChartAt I x x)) = 0 from
         Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by
           rw [hGDB d a b k]; ring))]
       ring
-    have hrem : chartDeTurckCorrFirstOrderRemainder (I := I) g₀ g_bg x hh i j
+    have hrem : chartDeTurckCorrFirstOrderRemainder (I := I) g₀ x hh i j
         (extChartAt I x x) = 0 := by
       rw [chartDeTurckCorrFirstOrderRemainder_def,
         hblock_zero (fun k => chartGramOnE (I := I) g₀ x k j (extChartAt I x x)) i,
@@ -331,14 +331,14 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
     rw [hrem, add_zero]
   rw [deTurckRicciRHSChartSecondOrderPart, hRicci, hCorr]
   have hLHS : (-2 : ℝ) * ricciSymbolComp (I := I) g₀ x ξ t i j +
-        deTurckCorrSymbolComp (I := I) g₀ g_bg x ξ t i j =
+        deTurckCorrSymbolComp (I := I) g₀ x ξ t i j =
       DifferentialGeometry.PDE.DeTurck.metricCovectorNormSq (I := I) g₀ x ξ *
         formComp (I := I) x t i j := by
     rw [← ricciSymbol_apply_apply (I := I) g₀ x ξ t i j,
-      ← deTurckCorrectionSymbol_apply_apply (I := I) g₀ g_bg x ξ t i j,
-      ← DifferentialGeometry.PDE.DeTurck.deTurckSymbol_apply_apply (I := I) g₀ g_bg x ξ t]
+      ← deTurckCorrectionSymbol_apply_apply (I := I) g₀ x ξ t i j,
+      ← DifferentialGeometry.PDE.DeTurck.deTurckSymbol_apply_apply (I := I) g₀ x ξ t]
     exact DifferentialGeometry.PDE.DeTurck.deTurckSymbol_apply_apply_eq_isotropic_of_symm
-      (I := I) g₀ g_bg x ξ t ht i j
+      (I := I) g₀ x ξ t ht i j
   rw [hLHS, DifferentialGeometry.PDE.DeTurck.isotropicSymbol_apply_apply,
     DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff_apply, formComp_def]
   simp only [LinearMap.smul_apply, smul_eq_mul]
@@ -350,11 +350,11 @@ theorem deTurckRicciRHS_chartLinearization_and_readoff
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     IsChartLinearizationSecondOrderPart (I := I)
         (deTurckRicciRHS (I := I) g_bg) g₀
-        (deTurckRicciRHSChartSecondOrderPart (I := I) g₀ g_bg) ∧
+        (deTurckRicciRHSChartSecondOrderPart (I := I) g₀) ∧
       ∀ (x : M) (ξ : E), ξ ≠ 0 →
         ∀ t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ,
           (∀ ht : ∀ v w, t v w = t w v, ∀ i j : Fin (Module.finrank ℝ E),
-            deTurckRicciRHSChartSecondOrderPart (I := I) g₀ g_bg
+            deTurckRicciRHSChartSecondOrderPart (I := I) g₀
                 (symbolTestPerturbation (I := I) x x ξ t ht) x i j (extChartAt I x x) =
               - (DifferentialGeometry.PDE.DeTurck.isotropicSymbol
                     (E := E)
@@ -371,7 +371,7 @@ theorem deTurckRicciRHS_chartLinearization_and_readoff
       rw [hderiv.deriv]
       rw [deTurckRicciRHSChartSecondOrderPart]
   · intro x ξ hξ t ht i j
-    exact deTurckRicciRHS_test_perturbation_readoff (I := I) g₀ g_bg x ξ t ht i j
+    exact deTurckRicciRHS_test_perturbation_readoff (I := I) g₀ x ξ t ht i j
 
 end ReadOff
 
@@ -381,9 +381,9 @@ theorem deTurckRicciRHS_chartSecondOrderPart_spec [I.Boundaryless]
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     IsChartLinearizationSecondOrderPart (I := I)
         (deTurckRicciRHS (I := I) g_bg) g₀
-        (deTurckRicciRHSChartSecondOrderPart (I := I) g₀ g_bg) ∧
+        (deTurckRicciRHSChartSecondOrderPart (I := I) g₀) ∧
       IsPrincipalSymbolOfSecondOrderPart (I := I) g₀
-        (deTurckRicciRHSChartSecondOrderPart (I := I) g₀ g_bg)
+        (deTurckRicciRHSChartSecondOrderPart (I := I) g₀)
         (DifferentialGeometry.PDE.DeTurck.isotropicSymbol
           (E := E)
           (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
@@ -397,19 +397,19 @@ theorem deTurckRicciRHS_chartSecondOrderPart_spec [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem deTurckRicciRHS_principal_symbol_equals_deTurckSymbol
-    (g₀ g_bg : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+    (g₀ : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (ht : ∀ v w, t v w = t w v) :
     DifferentialGeometry.PDE.DeTurck.isotropicSymbol
         (E := E)
         (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
         (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀) x ξ t
-      = - DifferentialGeometry.PDE.DeTurck.deTurckSymbol (I := I) g₀ g_bg x ξ t := by
+      = - DifferentialGeometry.PDE.DeTurck.deTurckSymbol (I := I) g₀ x ξ t := by
   classical
   rw [DifferentialGeometry.PDE.DeTurck.isotropicSymbol_apply_apply,
     DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff_apply]
   rw [DifferentialGeometry.PDE.DeTurck.deTurckSymbol_apply_eq_smul_of_symm
-    (I := I) g₀ g_bg x ξ t ht]
+    (I := I) g₀ x ξ t ht]
   rw [neg_smul]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -422,7 +422,7 @@ theorem deTurckRicciRHS_hasPrincipalSymbol_at_self [I.Boundaryless]
         (E := E)
         (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
         (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀)) :=
-  ⟨deTurckRicciRHSChartSecondOrderPart (I := I) g₀ g_bg,
+  ⟨deTurckRicciRHSChartSecondOrderPart (I := I) g₀,
     (deTurckRicciRHS_chartSecondOrderPart_spec (I := I) g₀ g_bg).1,
     (deTurckRicciRHS_chartSecondOrderPart_spec (I := I) g₀ g_bg).2⟩
 

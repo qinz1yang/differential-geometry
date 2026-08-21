@@ -970,7 +970,7 @@ theorem regularizedLog_smallBallAverage_step_le
           rw [hpow]
           exact hsum_le
 
-noncomputable def regularizedLogAEMeasurable
+theorem regularizedLogAEMeasurable
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ}
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)

@@ -64,6 +64,7 @@ private theorem lieCorrectionZeroKappa_eq_metricConnectionDifferenceLowered
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem backgroundConnectionDifferenceLowering_sub
     (g gT gU gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -113,6 +114,7 @@ private theorem slotExtendIter_sub
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem backgroundMixedConnectionHalf_sub
     (g gm gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -126,6 +128,7 @@ private theorem backgroundMixedConnectionHalf_sub
     ← operatorFieldComposition_sub_left, ← slotExtendIter_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
     (g gm gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g gm gB -
@@ -482,7 +485,7 @@ private theorem exists_backgroundMixedConnectionHalf_pairing_secondOrder_bound
     simpa only [N] using hp4 T U gT gU hTtie hUtie hTHs4p hUHs4p
   have hK0T : covariantJetNormSq (I := I) (M := M) g 2 K0T ≤ (4 * A) ^ 2 := by
     simpa only [K0T, covariantJetNormSq, Nat.reduceAdd] using
-      kappaSelf_h2 (I := I) (M := M) g gT T hTtie A hA
+      kappaSelf_h2 (I := I) (M := M) g gT T hTtie A
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hT3)
   have hK0D : covariantJetNormSq (I := I) (M := M) g 2 (K0T - K0U) ≤
       (4 * D3) ^ 2 := by
@@ -1705,6 +1708,8 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDif
     rw [hFjet]
     exact hpairY.trans (pow_le_pow_left₀ hroot0 hrootLe 2)
 
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieCoefficient_backgroundDifference_split_secondOrder_bound
     (g gT gU gB : SmoothRiemannianMetric I M) :
     ((deTurckLieCoeffField (I := I) (M := M) g gT gB +

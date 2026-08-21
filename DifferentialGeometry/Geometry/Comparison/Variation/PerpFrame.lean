@@ -357,7 +357,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem perp_to_velocity_preserved_of_parallel
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (hgeo : IsGeodesic (I := I) g γ)
-    {L : ℝ} (_hL : 0 < L) (V : ∀ t, TangentSpace I (γ t))
+    {L : ℝ} (V : ∀ t, TangentSpace I (γ t))
     (hVdiff : ∀ t ∈ Set.Icc (0 : ℝ) L,
       DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t)
     (hVpar : ∀ t ∈ Set.Icc (0 : ℝ) L, covDerivAlong (I := I) g γ V t = 0)
@@ -571,7 +571,7 @@ theorem exists_parallel_orthonormal_perp_frame_along_geodesic
     exact hseed_ON i j
   · intro t ht i
     have hperp :=
-      perp_to_velocity_preserved_of_parallel (I := I) g γ hγ hgeo hL (Vfun i)
+      perp_to_velocity_preserved_of_parallel (I := I) g γ hγ hgeo (Vfun i)
         (hVdiff i) (hVpar i)
         (by
           rw [hV0 i]
@@ -800,7 +800,7 @@ theorem exists_time_clip {L lam : ℝ} (hL : 0 ≤ L) (hlam : L < lam) :
 omit [NeZero (Module.finrank ℝ E)] in
 theorem perp_to_velocity_preserved_on
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ} (_hL : 0 < L)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ}
     (hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
     (V : ∀ t, TangentSpace I (γ t))
     (hVdiff : ∀ t ∈ Set.Icc (0 : ℝ) L,
@@ -1010,7 +1010,6 @@ theorem velocity_chartRepAt_differentiableAt
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L)
     (hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
@@ -1123,7 +1122,7 @@ theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
     have hχi : χ i t = 1 := by have := hχ_one i ht; simpa using this
     rw [hχi, one_smul]
     have hperp :=
-      perp_to_velocity_preserved_on (I := I) g γ hγ hL hgeo (Vfun i)
+      perp_to_velocity_preserved_on (I := I) g γ hγ hgeo (Vfun i)
         (hVdiff i) (hVpar i)
         (by rw [hV0 i]; exact hseed_perp i)
         t ht
@@ -1192,7 +1191,6 @@ theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_parallel_perp_frame [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L)
     (hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))

@@ -1036,8 +1036,6 @@ abbrev BundleIsomorphismODEInSolutionFrameOn
     (solutionRicciOneUpInFrame (I := I) S gInv frame)
 
 abbrev UhlenbeckPullbackRmComponentsOfSolution
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (_S : SolutionOn (I := I) (M := M) D)
     (iota : MatrixComp M Idx)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -1068,7 +1066,7 @@ theorem uhlenbeckCurvatureEvolution_of_solution_components
     (pulledRm roughLapRm04 roughLapD Borig Bpull : FourComp M Idx)
     (hiota : BundleIsomorphismODEInSolutionFrameOn (I := I) S gInv frame iota)
     (hpull : UhlenbeckPullbackRmComponentsOfSolution
-      (I := I) S iota Rm04 frame pulledRm)
+      (I := I) iota Rm04 frame pulledRm)
     (hlap : UhlenbeckLaplacianPullbackComponents iota roughLapRm04 roughLapD)
     (hB : UhlenbeckPullbackBComponents iota Borig Bpull)
     (hrm : Riemann04BTensorWithRicciDriftEvolutionInSolutionFrameOn

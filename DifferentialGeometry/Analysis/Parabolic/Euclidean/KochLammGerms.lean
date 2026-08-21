@@ -66,22 +66,22 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-omit [MeasurableSpace V] [BorelSpace V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] in
 theorem klL2ScaleR_pos {R : ℝ} (hR : 0 < R) :
     0 < klL2ScaleR (V := V) R :=
   Real.rpow_pos_of_pos hR _
 
-omit [MeasurableSpace V] [BorelSpace V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] in
 theorem klLpScaleR_pos {R : ℝ} (hR : 0 < R) :
     0 < klLpScaleR (V := V) R :=
   Real.rpow_pos_of_pos hR _
 
-omit [MeasurableSpace V] [BorelSpace V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] in
 theorem klL1ScaleR_pos {R : ℝ} (hR : 0 < R) :
     0 < klL1ScaleR (V := V) R :=
   Real.rpow_pos_of_pos hR _
 
-omit [MeasurableSpace V] [BorelSpace V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] in
 theorem klLqScaleR_pos {R : ℝ} (hR : 0 < R) :
     0 < klLqScaleR (V := V) R :=
   Real.rpow_pos_of_pos hR _
@@ -133,11 +133,12 @@ def src0Data (h : KLSource0 T A₁ A_q f) :
     KLSrc0Data (V := V) (F := F) T :=
   ⟨src0L1Germ h, src0LqGerm h⟩
 
-omit [Fact (1 ≤ klQ V)] in
+omit [CompleteSpace F] [Fact (1 ≤ klQ V)] in
 theorem src0L1_norm_le (h : KLSource0 T A₁ A_q f) :
     ‖src0L1Germ h‖ ≤ (A₁ : ℝ) := by
   apply klMkGermNormLe
 
+omit [CompleteSpace F] in
 theorem src0Lq_norm_le (h : KLSource0 T A₁ A_q f) :
     ‖src0LqGerm h‖ ≤ (A_q : ℝ) := by
   apply klMkGermNormLe
@@ -187,11 +188,12 @@ def src1Data (h : KLSource1 T A₂ Aₚ f) :
     KLSrc1Data (V := V) (F := F) T :=
   ⟨src1L2Germ h, src1LpGerm h⟩
 
-omit [Fact (1 ≤ klP V)] in
+omit [CompleteSpace F] [Fact (1 ≤ klP V)] in
 theorem src1L2_norm_le (h : KLSource1 T A₂ Aₚ f) :
     ‖src1L2Germ h‖ ≤ (A₂ : ℝ) := by
   apply klMkGermNormLe
 
+omit [CompleteSpace F] in
 theorem src1Lp_norm_le (h : KLSource1 T A₂ Aₚ f) :
     ‖src1LpGerm h‖ ≤ (Aₚ : ℝ) := by
   apply klMkGermNormLe
@@ -244,12 +246,12 @@ def pathGradData (h : KLPath T A₀ A₂ Aₚ u d) :
     KLL2Data (V := V) T G × KLLpData (V := V) T G :=
   ⟨pathL2Germ h, pathLpGerm h⟩
 
-omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ klP V)] in
+omit [NormedSpace ℝ F] [CompleteSpace F] [CompleteSpace G] [Fact (1 ≤ klP V)] in
 theorem pathL2_norm_le (h : KLPath T A₀ A₂ Aₚ u d) :
     ‖pathL2Germ h‖ ≤ (A₂ : ℝ) := by
   apply klMkGermNormLe
 
-omit [NormedSpace ℝ F] [CompleteSpace F] in
+omit [NormedSpace ℝ F] [CompleteSpace F] [CompleteSpace G] in
 theorem pathLp_norm_le (h : KLPath T A₀ A₂ Aₚ u d) :
     ‖pathLpGerm h‖ ≤ (Aₚ : ℝ) := by
   apply klMkGermNormLe

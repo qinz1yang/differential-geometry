@@ -1052,7 +1052,7 @@ private lemma hasDerivAt_chartDeTurckVFComp
     (g_bg : SmoothRiemannianMetric I M) (k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
     HasDerivAt (fun s : ℝ => chartDeTurckVFComp (I := I) (gfam s) g_bg α k y)
-      (chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+      (chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
         deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) 0 := by
   classical
   have hg0 : gfam 0 = g₀ := hfam.1
@@ -1131,13 +1131,13 @@ private lemma hasDerivAt_partial_chartDeTurckVFComp
       (fun s : ℝ =>
         partialDeriv (E := E) m (fun y => chartDeTurckVFComp (I := I) (gfam s) g_bg α k y) y₀)
       (partialDeriv (E := E) m
-          (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y) y₀ +
+          (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y) y₀ +
         partialDeriv (E := E) m
           (fun y => deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) y₀) 0 := by
   classical
   have hderiv_eq : (fun y => deriv (fun s : ℝ =>
         chartDeTurckVFComp (I := I) (gfam s) g_bg α k y) 0) =ᶠ[nhds y₀]
-      (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+      (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
         deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) := by
     filter_upwards [isOpen_interior.mem_nhds hy] with y hy'
     exact (hasDerivAt_chartDeTurckVFComp (I := I) hfam g_bg k hy').deriv
@@ -1147,18 +1147,18 @@ private lemma hasDerivAt_partial_chartDeTurckVFComp
   have hrhs : partialDeriv (E := E) m
         (fun y => deriv (fun s : ℝ => chartDeTurckVFComp (I := I) (gfam s) g_bg α k y) 0) y₀ =
       partialDeriv (E := E) m
-          (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y) y₀ +
+          (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y) y₀ +
         partialDeriv (E := E) m
           (fun y => deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) y₀ := by
     unfold partialDeriv
     rw [Filter.EventuallyEq.fderiv_eq hderiv_eq]
-    rw [show (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+    rw [show (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
           deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) =
-        (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y) +
+        (fun y => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y) +
           (fun y => deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) from rfl]
     rw [fderiv_add]
     · rfl
-    · exact chartLinearizedDeTurckVFPrincipal_differentiableAt (I := I) g₀ g_bg α h k hy
+    · exact chartLinearizedDeTurckVFPrincipal_differentiableAt (I := I) g₀ α h k hy
     · exact deTurckVFFirstOrderCorr_differentiableAt (I := I) (g₀ := g₀) (g_bg := g_bg) hy
   rw [hrhs] at hcomm
   exact hcomm
@@ -1166,7 +1166,7 @@ private lemma hasDerivAt_partial_chartDeTurckVFComp
 def lieDerivFirstOrderRemainder (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
-      ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+      ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
             deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) *
           partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y +
         chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (h i j) y)) +
@@ -1192,7 +1192,7 @@ lemma hasDerivAt_chartLieDeTurckComp
     (g_bg : SmoothRiemannianMetric I M) (i j : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
     HasDerivAt (fun s : ℝ => chartLieDeTurckComp (I := I) (gfam s) g_bg α i j y)
-      (chartDeTurckCorrSecondOrderPart (I := I) g₀ g_bg α h i j y +
+      (chartDeTurckCorrSecondOrderPart (I := I) g₀ α h i j y +
         lieDerivFirstOrderRemainder (I := I) g₀ g_bg α h i j y) 0 := by
   classical
   have hg0 : gfam 0 = g₀ := hfam.1
@@ -1216,7 +1216,7 @@ lemma hasDerivAt_chartLieDeTurckComp
         chartDeTurckVFComp (I := I) (gfam s) g_bg α k y *
           partialDeriv (E := E) k (chartGramOnE (I := I) (gfam s) α i j) y)
       (∑ k : Fin (Module.finrank ℝ E),
-        ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+        ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
               deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) *
             partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y +
           chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (h i j) y)) 0 := by
@@ -1233,7 +1233,7 @@ lemma hasDerivAt_chartLieDeTurckComp
       ((∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g₀ α k j y *
             partialDeriv (E := E) i
-              (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y') y) +
+              (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y') y) +
         ∑ k : Fin (Module.finrank ℝ E),
           (h k j y *
               partialDeriv (E := E) i (fun y' => chartDeTurckVFComp (I := I) g₀ g_bg α k y') y +
@@ -1255,7 +1255,7 @@ lemma hasDerivAt_chartLieDeTurckComp
       ((∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g₀ α i k y *
             partialDeriv (E := E) j
-              (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y') y) +
+              (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y') y) +
         ∑ k : Fin (Module.finrank ℝ E),
           (h i k y *
               partialDeriv (E := E) j (fun y' => chartDeTurckVFComp (I := I) g₀ g_bg α k y') y +
@@ -1323,7 +1323,7 @@ theorem hasDerivAt_chartFComponentOnE_deTurckRicciRHS
       (fun s : ℝ => DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
         (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg) (gfam s) α i j y)
       (((-2 : ℝ) * chartRicciSecondOrderPart (I := I) g₀ α h i j y +
-          chartDeTurckCorrSecondOrderPart (I := I) g₀ g_bg α h i j y) +
+          chartDeTurckCorrSecondOrderPart (I := I) g₀ α h i j y) +
         metricFamilyDeTurckRicciFirstOrderRemainder (I := I) g₀ g_bg α h i j y) 0 := by
   have hcongr : (fun s : ℝ => DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
         (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg) (gfam s) α i j y) =
@@ -1378,7 +1378,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     [I.Boundaryless] hval in
 private lemma chartLinearizedDeTurckVFPrincipal_vanish
     (k : Fin (Module.finrank ℝ E)) :
-    chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y = 0 := by
+    chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y = 0 := by
   classical
   rw [chartLinearizedDeTurckVFPrincipal_def]
   refine Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => ?_))
@@ -1630,7 +1630,7 @@ private lemma lieDerivFirstOrderRemainder_vanish
   classical
   rw [lieDerivFirstOrderRemainder]
   have h1 : (∑ k : Fin (Module.finrank ℝ E),
-      ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+      ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
             deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) *
           partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y +
         chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (h i j) y)) = 0 := by

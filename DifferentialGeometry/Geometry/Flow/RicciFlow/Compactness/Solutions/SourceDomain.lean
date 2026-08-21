@@ -406,7 +406,7 @@ theorem sourceFlow_metric_eq
       change IsManifold I ∞ (SourceDomain (I := I) Φ k)
       infer_instance
     (sourceFlow (I := I) Φ k hσsrc hσtgt).family.metric t
-      = (SourceDomainMetricData.ofRestrictPullback (I := I) hσsrc hσtgt referenceMetric
+      = (SourceDomainMetricData.ofRestrictPullback (I := I) hσsrc referenceMetric
         gInf).pullbackMetric t := by
   rfl
 
@@ -424,6 +424,7 @@ theorem metricUniformEquivalentOn_restrictOpen
     {V : Set U} (hV : ∀ x ∈ V, (x : M) ∈ K) :
     MetricUniformEquivalentOn (I := I) V
       (gRef.restrictOpen (I := I) U) (h.restrictOpen (I := I) U) C := by
+  let _ := (inferInstance : (SigmaCompactSpace ↥U))
   refine ⟨hEq.1, fun x hx v => ?_⟩
   simp only [SmoothRiemannianMetric.restrictOpen_inner]
   exact hEq.2 (x : M) (hV x hx) v

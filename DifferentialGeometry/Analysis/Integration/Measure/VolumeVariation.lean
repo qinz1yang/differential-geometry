@@ -142,7 +142,7 @@ theorem volume_variation_formula_clean
   refine volume_variation_formula_clean_of_chart_derivs
     (I := I) (M := M) g_fam f t₀ hf_cont hh_cont ?_
   intro α hα
-  exact per_chart_hasDerivAt (I := I) (M := M) hg hf α hα
+  exact per_chart_hasDerivAt (I := I) (M := M) hg hf α
 
 
 theorem volume_variation_formula_clean_at

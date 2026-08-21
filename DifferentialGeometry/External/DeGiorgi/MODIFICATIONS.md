@@ -262,3 +262,50 @@ are unchanged.
 with direct nonnegativity products, monotonicity lemmas for squares and exponents, explicit factor
 rearrangements, and an explicit inner-product congruence. The theorem statements and mathematical
 arguments are unchanged.
+
+### 2026-08-21 — declaration-linter cleanup
+
+**Files**:
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `EllipticCoefficients.lean`
+- `FiniteCover.lean`
+- `Harnack.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/Representative.lean`
+- `Localization.lean`
+- `LpFunctionToolkit.lean`
+- `MoserIteration/Constants.lean`
+- `MoserIteration/CutoffPrep/Basics.lean`
+- `MoserIteration/CutoffPrep/ExactRegularization.lean`
+- `MoserIteration/CutoffPrep/Profiles.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/Sequences.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `Supersolutions/ForwardIteration/Energy.lean`
+- `Supersolutions/InverseEnergy.lean`
+- `Supersolutions/RegularizationSupport.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/MeasureBounds.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/ExistenceTheory.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: resolved Mathlib declaration-linter findings by classifying a proposition-valued
+definition as a theorem, removing redundant hypotheses and typeclass assumptions, simplifying a
+cast expression to its normal form, retaining a useful ellipticity-ratio theorem without a
+redundant simp attribute, and making compatibility-preserving hypotheses explicit dependencies of
+their proof terms. The affected mathematical conclusions are unchanged or generalized.

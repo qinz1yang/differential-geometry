@@ -118,6 +118,8 @@ so the formula reduces to `t · σ₀(t/ε)` which is `≤ t`. -/
 theorem moserSmoothClip_le_of_nonneg_le_N
     {ε N t : ℝ} (_hε : 0 < ε) (_hN : 0 ≤ N) (ht0 : 0 ≤ t) (htN : t ≤ N) :
     moserSmoothClip ε N t ≤ t := by
+  let _ := _hε
+  let _ := _hN
   have hσ₁ : Real.smoothTransition (N + 1 - t) = 1 := by
     apply Real.smoothTransition.one_of_one_le
     linarith
@@ -128,6 +130,8 @@ theorem moserSmoothClip_le_of_nonneg_le_N
 theorem moserSmoothClip_nonneg_of_nonneg_le_N
     {ε N t : ℝ} (_hε : 0 < ε) (_hN : 0 ≤ N) (ht0 : 0 ≤ t) (htN : t ≤ N) :
     0 ≤ moserSmoothClip ε N t := by
+  let _ := _hε
+  let _ := _hN
   have hσ₁ : Real.smoothTransition (N + 1 - t) = 1 := by
     apply Real.smoothTransition.one_of_one_le; linarith
   simp only [moserSmoothClip, hσ₁, mul_one, sub_self, mul_zero, add_zero]

@@ -54,12 +54,9 @@ private theorem srm_ext {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem covNormWith_pd_zone [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [T2Space N] [SigmaCompactSpace N]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
-    (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {V : Opens M} [Nonempty V]
-    [SigmaCompactSpace V]
+theorem covNormWith_pd_zone [I.Boundaryless]
+    [T2Space N]
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 1 N] [IsManifold I 2 N] (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {V : Opens M} [SigmaCompactSpace V]
     (hV : (V : Set M) ⊆ Φ.source)
     [SigmaCompactSpace
       (⟨(Φ : M → N) '' (V : Set M), image_opens_isOpen Φ hV⟩ : Opens N)]

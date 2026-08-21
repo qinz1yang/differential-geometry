@@ -130,6 +130,7 @@ private lemma lieArm1_LowFix_unitModel_apply (g₀ g_bg : SmoothRiemannianMetric
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lieArm1_PbLow_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
@@ -337,6 +338,7 @@ private lemma lieArm1_interior_product_toModel_eval (s : ℕ) (x : M) (v : Tange
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieArm1_connectionDifferenceSection_eq_raise_lowered (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -426,6 +428,8 @@ private lemma lieArm1_riemannianFiberNormSq_iteratedCovGrad_lowered_eq_connectio
         rw [lieArm1_connectionDifferenceSection_eq_raise_lowered (I := I) (M := M) g₀ g₁]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem lieArm1_pbLow_raise_eq (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M)
     (Ψc : SmoothCcTensor g₀ 1 2)

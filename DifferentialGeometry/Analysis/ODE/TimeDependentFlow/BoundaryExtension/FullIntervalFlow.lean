@@ -12,6 +12,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [FiniteDimensional ℝ E] in
+omit [CompleteSpace E] in
 theorem flowValid_chain_step
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hXC1 : AutonomizedFieldJointC1 (I := I) X)

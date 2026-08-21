@@ -719,6 +719,7 @@ def lieCorrectionZeroPbLow (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTens
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZeroPbLow_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
@@ -772,6 +773,7 @@ private lemma lieCorrectionZerob_unitModel_add (g₀ : SmoothRiemannianMetric I 
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZerob_kappa_decomp (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -859,6 +861,7 @@ private lemma lieCorrectionZerob_unitModel_sub (g₀ : SmoothRiemannianMetric I 
   rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroKappa_eq_self_sub_connectionDifferenceLowered_add_pbLow
     (g₀ g₁ gB : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -908,6 +911,7 @@ def lieCorrectionZeroFixCd (g₀ gB : SmoothRiemannianMetric I M) : SmoothCcTens
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieCorrectionZerob_connectionDifferenceSection_eq_raise_lowered (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -1005,6 +1009,8 @@ lemma lieCorrectionZerob_normSq_iteratedCovGrad_lowered_eq (g₀ g₁ : SmoothRi
   exact lieCorrectionZerob_riemannianFiberNormSq_iteratedCovGrad_lowered_eq_connectionDifference (I := I) (M := M) g₀ g₁ n x
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZerob_pbLow_raise_eq (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M)
     (Ψc : SmoothCcTensor g₀ 1 2)
@@ -1301,6 +1307,7 @@ private lemma lieCorrectionZerob_g0_inner_sharp_mixed (g₀ g₁ : SmoothRiemann
   exact g₀.symm x (inverseMetricSharpFib (I := I) g₁ x om) v
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -1333,6 +1340,7 @@ lemma lieCorrectionZerob_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothR
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_fullRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -1398,7 +1406,7 @@ theorem lieCorrectionZerob_sharpFlat_feed (g₀ : SmoothRiemannianMetric I M) (a
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Km, hKm_nn, hKm⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
-      (I := I) (M := M) g₀ a ha_super hR hδ₀
+      (I := I) (M := M) g₀ a ha_super hR
   set IdIns : SmoothCcTensor g₀ 1 1 :=
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) with hIdIns_def
@@ -1854,7 +1862,7 @@ theorem lieCorrectionZerob_fixedField_riemannianFiberNormSq_jet (g₀ : SmoothRi
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem lieCorrectionZerob_normSq_le_scaled_of_pointwise (g₀ : SmoothRiemannianMetric I M)
     (r₁ s₁ r₂ s₂ : ℕ) (X : SmoothCcTensor g₀ r₁ s₁) (Y : SmoothCcTensor g₀ r₂ s₂)
-    (c : ℝ) (_hc : 0 ≤ c)
+    (c : ℝ)
     (hpt : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ r₁ s₁ x (X.toSection x) ≤
       c * riemannianFiberNormSq (I := I) (M := M) g₀ r₂ s₂ x (Y.toSection x)) :
     ‖X‖ ^ 2 ≤ c * ‖Y‖ ^ 2 := by
@@ -1876,7 +1884,7 @@ private lemma lieCorrectionZerob_iteratedCovGrad_succ_cometricDT_zero (g₀ : Sm
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma lieCorrectionZerob_toModel_cons_sum_smul (_x : M) {n : ℕ}
+lemma lieCorrectionZerob_toModel_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons (∑ c, t c • u c) rest) =
@@ -2018,6 +2026,7 @@ def lieCorrectionZeroPureDT (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZeroPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ s =
@@ -2114,7 +2123,7 @@ lemma lieCorrectionZeroPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianM
               (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
-        exact lieCorrectionZerob_toModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
+        exact lieCorrectionZerob_toModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
@@ -2216,7 +2225,7 @@ theorem lieCorrectionZerob_pureDT_feed (g₀ : SmoothRiemannianMetric I M) (s : 
       lieCorrectionZerob_normSq_le_scaled_of_pointwise (I := I) (M := M) g₀ (s + 2) ((s + 2) + l) 1 (1 + l)
         (iteratedCovGrad (I := I) g₀ (s + 2) (s + 2) l W)
         (iteratedCovGrad (I := I) g₀ 1 1 l (sharpFlatEndoCc (I := I) g₀ g₁))
-        (fr ^ (s + 1)) hfrpow_nn (fun x => hWpt l x)
+        (fr ^ (s + 1)) (fun x => hWpt l x)
     refine le_trans h1 (mul_le_mul_of_nonneg_left ?_ hfrpow_nn)
     have hsingle : ‖iteratedCovGrad (I := I) g₀ 1 1 l (sharpFlatEndoCc (I := I) g₀ g₁)‖ ^ 2 ≤
         ∑ q ∈ Finset.range (i + 1),
@@ -2495,10 +2504,10 @@ lemma lieCorrectionZerob_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
         Tensor0SSpace.toModel κ (Fin.tail m) := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D) =
-        slotExtendPointwise (I := I) (M := M) g₀ 0 3 x
+        slotExtendPointwise (I := I) (M := M) 0 3 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x) D from rfl]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 3 x _ D (m 0) (Fin.tail m)]
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x _ D (m 0) (Fin.tail m)]
     rw [lieCorrectionZerob_curry_zero (I := I) (M := M) x D (m 0)]
     rw [lieCorrectionZerob_clm_unit_smul (I := I) (M := M) x 3 _ _]
     rw [← hκ, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
@@ -2532,7 +2541,7 @@ lemma lieCorrectionZerob_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
       (unitTensor (I := I) (M := M) x) with hκ
   have hstep1 : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 1 2 K).toSection x) D) =
-      slotExtendPointwise (I := I) (M := M) g₀ 1 2 x
+      slotExtendPointwise (I := I) (M := M) 1 2 x
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (slotExtendIter (I := I) (M := M) g₀ 0 1 1 K).toSection x) D := rfl
   have hLHS : Tensor0SSpace.toModel
@@ -2541,18 +2550,18 @@ lemma lieCorrectionZerob_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
       Tensor0SSpace.toModel D ![m 0, m 1] * Tensor0SSpace.toModel κ (fun _ : Fin 1 => m 2) := by
     rw [hstep1]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 1 2 x _ D (m 0) (Fin.tail m)]
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 1 2 x _ D (m 0) (Fin.tail m)]
     set D1 : Tensor0SSpace 1 I x :=
       tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD1
     have hinner : ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 1 1 K).toSection x) D1) =
-        slotExtendPointwise (I := I) (M := M) g₀ 0 1 x
+        slotExtendPointwise (I := I) (M := M) 0 1 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from K.toSection x) D1 := rfl
     rw [hinner]
     rw [show (Fin.tail m : Fin 2 → E) = Fin.cons (m 1) (fun _ : Fin 1 => m 2) from by
       funext k
       fin_cases k <;> rfl]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 1 x _ D1 (m 1)
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 0 1 x _ D1 (m 1)
       (fun _ : Fin 1 => m 2)]
     rw [lieCorrectionZerob_curry_zero (I := I) (M := M) x D1 (m 1)]
     rw [lieCorrectionZerob_clm_unit_smul (I := I) (M := M) x 1 _ _]
@@ -2601,22 +2610,22 @@ lemma lieCorrectionZerob_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
         Tensor0SSpace.toModel κ (fun j : Fin 3 => m (Fin.natAdd 2 j)) := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 3 2 K).toSection x) D) =
-        slotExtendPointwise (I := I) (M := M) g₀ 1 4 x
+        slotExtendPointwise (I := I) (M := M) 1 4 x
           (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
             (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D from rfl]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 1 4 x _ D (m 0) (Fin.tail m)]
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 1 4 x _ D (m 0) (Fin.tail m)]
     set D1 : Tensor0SSpace 1 I x :=
       tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD1
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D1) =
-        slotExtendPointwise (I := I) (M := M) g₀ 0 3 x
+        slotExtendPointwise (I := I) (M := M) 0 3 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x) D1 from rfl]
     rw [show (Fin.tail m : Fin 4 → E) =
         Fin.cons (m 1) (fun j : Fin 3 => m (Fin.natAdd 2 j)) from by
       funext k
       fin_cases k <;> rfl]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 3 x _ D1 (m 1)
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x _ D1 (m 1)
       (fun j : Fin 3 => m (Fin.natAdd 2 j))]
     rw [lieCorrectionZerob_curry_zero (I := I) (M := M) x D1 (m 1)]
     rw [lieCorrectionZerob_clm_unit_smul (I := I) (M := M) x 3 _ _]
@@ -2672,11 +2681,11 @@ lemma lieCorrectionZerob_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
         Tensor0SSpace.toModel κ (fun j : Fin 3 => m (Fin.natAdd 3 j)) := by
     rw [show ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 3 3 K).toSection x) D) =
-        slotExtendPointwise (I := I) (M := M) g₀ 2 5 x
+        slotExtendPointwise (I := I) (M := M) 2 5 x
           (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
             (slotExtendIter (I := I) (M := M) g₀ 0 3 2 K).toSection x) D from rfl]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 2 5 x _ D (m 0) (Fin.tail m)]
+    rw [slotExtendFib_apply_eval (I := I) (M := M) 2 5 x _ D (m 0) (Fin.tail m)]
     set D2 : Tensor0SSpace 2 I x :=
       tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (m 0) with hD2
     rw [lieCorrectionZerob_KLift_fiber_23 (I := I) (M := M) g₀ K x D2]
@@ -2730,6 +2739,7 @@ lemma lieCorrectionZerob_kappa_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_traceStep_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
@@ -2844,6 +2854,7 @@ noncomputable def lieCorrectionZeroVFlat (g₀ g₁ gB : SmoothRiemannianMetric 
     (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB)
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_vflat_value (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M)
     (u : E) :
     Tensor0SSpace.toModel
@@ -2972,6 +2983,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel cometric_dualTrace_eq_orthoFrame_diag)
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_iV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M)
     (B : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -3079,7 +3091,7 @@ lemma lieCorrectionZerob_iV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x
           Tensor0SSpace.toModel B
             (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
               (fun k => (show E from w k))) := by
-    have hsum := lieCorrectionZerob_toModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel B)
+    have hsum := lieCorrectionZerob_toModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel B)
       (Module.finrank ℝ E)
       (fun c => g₁.inner x (smoothOrthoFrame (I := I) g₁ x c x) V)
       (fun c => ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E))
@@ -3194,6 +3206,7 @@ noncomputable def lieCorrectionZeroCdVField (g₀ g₁ gB : SmoothRiemannianMetr
     (connectionDifferenceSection (I := I) g₁ g₀)
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_cdV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -3339,6 +3352,7 @@ noncomputable def lieCorrectionZeroTr (g₀ g₁ : SmoothRiemannianMetric I M) (
   reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZeroTr_fiber_apply (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) (D : Tensor0SSpace (p + 2) I x) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
@@ -3397,6 +3411,7 @@ lemma lieCorrectionZerob_swapOut_traceStep (g₁ : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma lieCorrectionZeroRiemRest_contMDiff (g₀ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 4 ℝ E)
@@ -3567,6 +3582,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_vb_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -3703,6 +3719,7 @@ private lemma lieCorrectionZerob_amix_slot_fiber (g₀ g₁ : SmoothRiemannianMe
   rw [lieCorrectionZerob_kappa_fiber (I := I) (M := M) g₀ g₁ g₀ x]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_amix_inner_fiber (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -3799,6 +3816,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_amix_middle_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
@@ -3855,6 +3873,7 @@ private local instance instCompleteSpaceE_tame_13 : CompleteSpace E :=
 set_option backward.isDefEq.respectTransparency false
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZeroMixedConnectionOuterField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) :
     (lieCorrectionZeroMixedConnectionOuterField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
@@ -3867,6 +3886,7 @@ lemma lieCorrectionZeroMixedConnectionOuterField_toSection (g₀ g₁ g_bg : Smo
     (lieCorrectionZeroMixedConnectionLiftedField (I := I) (M := M) g₀ g₁ g_bg) x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_amix_outer_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
@@ -3959,6 +3979,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZeroMixedConnectionHalfField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (σlast : Equiv.Perm (Fin 4)) (x : M) :
     (lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ g_bg σlast).toSection x =
@@ -4052,6 +4073,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_amixhalf_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (σlast : Equiv.Perm (Fin 4)) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -4149,6 +4171,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_amix_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -4255,6 +4278,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_riem_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -4373,6 +4397,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 lemma lieCorrectionZerob_insert_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -4565,6 +4590,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem lieCorrectionZerob_total_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg =
       lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg + lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁
@@ -4800,9 +4827,11 @@ lemma lieCorrectionZerob_normSq_iteratedCovGrad_slotExtendIter_le (g₀ : Smooth
     (iteratedCovGrad (I := I) g₀ (b₀ + w) (s₀ + w) q
       (slotExtendIter (I := I) (M := M) g₀ b₀ s₀ w K))
     (iteratedCovGrad (I := I) g₀ b₀ s₀ q K)
-    ((Module.finrank ℝ E : ℝ) ^ w) (by positivity)
+    ((Module.finrank ℝ E : ℝ) ^ w)
     (fun x => lieCorrectionZerob_riemannianFiberNormSq_iteratedCovGrad_slotExtendIter_le (I := I) (M := M) g₀ b₀ s₀ w K q x)
 
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma lieCorrectionZerob_NEndoIns_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg) =
       lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀ - lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g_bg
@@ -5883,7 +5912,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_jetL2_perOrder_ballUniform
         (iteratedCovGrad (I := I) g₀ 1 1 i
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
             (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
-        fr hfr_nn ?_
+        fr ?_
       intro x
       have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
         (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg) i x

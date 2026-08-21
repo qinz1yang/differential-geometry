@@ -199,7 +199,7 @@ def cometricDoubleTraceCc (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma bdToModel_cons_sum_smul (_x : M) {n : ℕ}
+lemma bdToModel_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons (∑ c, t c • u c) rest) =
@@ -340,6 +340,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   inverseMetricSharpFib_g0FlatCLM g0FlatCLM) in
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ s =
@@ -436,7 +437,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
               (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
-        exact bdToModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
+        exact bdToModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
@@ -482,6 +483,7 @@ def cometricDoublePairTraceCoefficient
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma bdPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -582,6 +584,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   metricComparisonEndomorphism_eq_diff_add_id inverseMetricSharpFib_g0FlatCLM g0FlatCLM) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdFullRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -609,6 +612,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdEndoCovDeriv_fullRaised_id_zero (g₀ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :
     ((endoCovariantDerivative (I := I) (M := M) g₀)
@@ -762,6 +766,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   inverseMetricSharpFib_g0FlatCLM cotangentToDual_g0FlatCLM g0FlatCLM) in
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma bdSlotInsertZero_fullRaisedRev_eq_omRecover
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀) =
@@ -808,6 +813,7 @@ lemma bdSlotInsertZero_fullRaisedRev_eq_omRecover
   rw [g₁.symm x w (inverseMetricSharpFib (I := I) g₀ x om)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem fullRev0_eq (g₀ g₁ : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g₀ 0
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀) =
@@ -819,6 +825,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma bdOmRecover_eq_idEndo_add_raise
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -942,6 +949,7 @@ private lemma bdOmRecover_eq_idEndo_add_raise
     ring]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem omRecover_add
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1071,7 +1079,7 @@ lemma riemannianFiberNormSq_symmS_le_of_gFibreOpBound (g₀ : SmoothRiemannianMe
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (_hδ₀ : δ₀ < 1) :
+    {δ₀ : ℝ} :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1166,7 +1174,7 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
   linarith [hA, hB, hstep]
 
 private theorem bdLambdaSlotInsert3_gridWindow (g₀ : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    {δ₀ : ℝ} :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1183,7 +1191,7 @@ private theorem bdLambdaSlotInsert3_gridWindow (g₀ : SmoothRiemannianMetric I 
             (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) (l + 1) := by
   classical
-  obtain ⟨C, hC_nn, hC⟩ := bdOmRecover_gridWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨C, hC_nn, hC⟩ := bdOmRecover_gridWindow (I := I) (M := M) g₀
   refine ⟨fun l => (Module.finrank ℝ E : ℝ) ^ 3 * C l,
     fun l => mul_nonneg (by positivity) (hC_nn l), ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound l x
@@ -1740,6 +1748,7 @@ private noncomputable def bdKernelCLM (gA gB : SmoothRiemannianMetric I M) (x : 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdKernelCLM_apply (gA gB : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
     bdKernelCLM (I := I) (M := M) gA gB x v0 p q =
@@ -1806,6 +1815,7 @@ private noncomputable def bdFixLoweredCovec (g₀ gA gB : SmoothRiemannianMetric
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdFixLoweredCovec_apply (g₀ gA gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
     bdFixLoweredCovec (I := I) g₀ gA gB x m =
@@ -1815,6 +1825,7 @@ private lemma bdFixLoweredCovec_apply (g₀ gA gB : SmoothRiemannianMetric I M) 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdFixLoweredScalar_global (g₀ gA gB : SmoothRiemannianMetric I M)
     {V0 W p q : Π b : M, TangentSpace I b}
     (hV0 : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V0))
@@ -1831,7 +1842,6 @@ private lemma bdFixLoweredScalar_global (g₀ gA gB : SmoothRiemannianMetric I M
       (fun x : M => g₀.inner x (deTurckConnectionDifferenceCovDeriv (I := I) gA gB V0 p q x) (W x)) := by
     funext x
     rw [deTurckLieConnectionDifferenceDerivativeCovKernel_apply_field3 (I := I) gA gB x V0 p q
-      (hV0.contMDiffAt.mdifferentiableAt (by simp))
       (hp.contMDiffAt.mdifferentiableAt (by simp))
       (hq.contMDiffAt.mdifferentiableAt (by simp))]
   rw [hcongr]
@@ -1840,6 +1850,7 @@ private lemma bdFixLoweredScalar_global (g₀ gA gB : SmoothRiemannianMetric I M
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdFixLoweredScalar_contMDiffAt (g₀ gA gB : SmoothRiemannianMetric I M)
     (V0 V1 V2 V3 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x₀ : M) :
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
@@ -1853,6 +1864,7 @@ private lemma bdFixLoweredScalar_contMDiffAt (g₀ gA gB : SmoothRiemannianMetri
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem bdFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
@@ -1904,6 +1916,7 @@ private def bdFixLoweredCc (g₀ gA gB : SmoothRiemannianMetric I M) :
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdFixLoweredCc_unitModel (g₀ gA gB : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 4 (bdFixLoweredCc (I := I) (M := M) g₀ gA gB) x =
       Tensor0SSpace.toModel (bdFixLoweredCovec (I := I) g₀ gA gB x) := by
@@ -1920,6 +1933,7 @@ private lemma bdFixLoweredCc_unitModel (g₀ gA gB : SmoothRiemannianMetric I M)
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdFixLoweredCc_unitModel_apply (g₀ gA gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (bdFixLoweredCc (I := I) (M := M) g₀ gA gB) x m =
@@ -2007,6 +2021,7 @@ lemma bdConnectionDifference_self_apply (g₀ : SmoothRiemannianMetric I M) (x :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma deTurckLieConnectionDifferenceDerivativeCovKernel_diff_eq_deTurckLieConnectionDifferenceDerivativeCovKernel_connectionDifference_expansion
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
@@ -2126,6 +2141,7 @@ lemma bdUnitModel_smul (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma bdLow0_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x m =
@@ -2216,6 +2232,8 @@ lemma bdG0_inner_lambda (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma bdXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckArmCoeffDiffHalfCc (I := I) (M := M) g₀ g₁ g_bg) x m =
@@ -2271,6 +2289,8 @@ private lemma bdXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma bdXd_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckArmCoeffDiffCc (I := I) (M := M) g₀ g₁ g_bg) x m =
@@ -2290,6 +2310,7 @@ private lemma bdXd_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     show (Equiv.swap (0 : Fin 4) 1) 2 = 2 from by decide,
     show (Equiv.swap (0 : Fin 4) 1) 3 = 3 from by decide]
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem bdCovDerivArmDiff_eq_pairTrace
     (g₀ g_bg g₁ : SmoothRiemannianMetric I M) :
@@ -3070,7 +3091,7 @@ private theorem bdXd_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (l + 2) := by
   classical
-  obtain ⟨CΛ, hCΛ_nn, hCΛ⟩ := bdLambdaSlotInsert3_gridWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CΛ, hCΛ_nn, hCΛ⟩ := bdLambdaSlotInsert3_gridWindow (I := I) (M := M) g₀
   obtain ⟨CL, hCL_nn, hCL⟩ := bdLow0_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun l => 4 * (diagonalGridGrowthFactor (E := E) l *
       ∑ i' ∈ Finset.range (l + 1), CΛ i' * ∑ l' ∈ Finset.range (l + 1 - i'),
@@ -3651,12 +3672,15 @@ def deTurckLieBackgroundDifferenceCoefficient (g₀ g₁ g_bg : SmoothRiemannian
   domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1) half + half
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieBackgroundDifferenceCoefficient_eq_canonical
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieBackgroundDifferenceCoefficient (I := I) (M := M) g₀ g₁ g_bg =
       deTurckArmCoeffDiffCc (I := I) (M := M) g₀ g₁ g_bg := by
   rfl
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivative_backgroundDifference_eq
     (g₀ g_bg g₁ : SmoothRiemannianMetric I M) :
     deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg -

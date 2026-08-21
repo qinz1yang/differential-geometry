@@ -62,7 +62,7 @@ theorem galerkinSolutionMode_continuous (g₀ : SmoothRiemannianMetric I M) {T :
 
 omit [BoundarylessManifold I M] in
 theorem galerkinSolutionMode_finiteEigenCombo (g₀ : SmoothRiemannianMetric I M) {R T : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1) (N : ℕ)
+    (hT : 0 < T) (N : ℕ)
     {Nfun : lowerState (I := I) (M := M) g₀ 1 R →
       tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)}
     (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
@@ -70,17 +70,17 @@ theorem galerkinSolutionMode_finiteEigenCombo (g₀ : SmoothRiemannianMetric I M
     (hnem : ⇑(fseq N) =ᵐ[timeMeasure T]
       fun t => projNfun (I := I) (M := M) g₀ 1 N Nfun (u t)) :
     ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t =
         finiteEigenComboHs (I := I) (M := M) g₀
           (eigenIdxFinset (I := I) (M := M) g₀ N)
           (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) (((1 : ℕ) : ℝ) + 2) := by
   classical
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
-  set fld := maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+  set fld := maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) with hfld
   have hfix : timeL2EigenProj (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) T N fld
-      = fld := projField_fixed (I := I) (M := M) g₀ 1 hT hT1 N (fseq N) u hnem
+      = fld := projField_fixed (I := I) (M := M) g₀ 1 hT N (fseq N) u hnem
   have hproj : ⇑(timeL2EigenProj (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) T N fld)
       =ᵐ[timeMeasure T] fun t =>
         spatialEigenProj (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) N (fld t) :=
@@ -94,7 +94,7 @@ theorem galerkinSolutionMode_finiteEigenCombo (g₀ : SmoothRiemannianMetric I M
         (fld t).coeff i = galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i := by
     refine Filter.eventually_all_finset _ |>.2 (fun i _ => ?_)
     exact timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M)
-      (h_compact := h_compact) hT hT1 (fseq N) i
+      (h_compact := h_compact) hT (fseq N) i
   filter_upwards [hpt, hmodes] with t h1 h2
   rw [h1, spatialEigenProj_apply]
   refine tensorHs.ext (funext fun j => ?_)
@@ -105,18 +105,18 @@ theorem galerkinSolutionMode_finiteEigenCombo (g₀ : SmoothRiemannianMetric I M
 
 omit [BoundarylessManifold I M] in
 theorem galerkinProjectedForce_mode_eq (g₀ : SmoothRiemannianMetric I M) {R T : ℝ}
-    (hR : 0 ≤ R) (hT : 0 < T) (hT1 : T ≤ 1) (N : ℕ)
+    (hR : 0 ≤ R) (hT : 0 < T) (N : ℕ)
     {Nfun : lowerState (I := I) (M := M) g₀ 1 R →
       tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)}
     (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t ∈
         lowerState (I := I) (M := M) g₀ 1 R)
     (hnem : ⇑(fseq N) =ᵐ[timeMeasure T]
       fun t => projNfun (I := I) (M := M) g₀ 1 N Nfun
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1 hR)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N)) t))
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
     ⇑(timeModeCoeff (I := I) (M := M) (fseq N) i) =ᵐ[timeMeasure T]
@@ -124,11 +124,11 @@ theorem galerkinProjectedForce_mode_eq (g₀ : SmoothRiemannianMetric I M) {R T 
         (eigenIdxFinset (I := I) (M := M) g₀ N)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i := by
   classical
-  set fld := maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+  set fld := maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) with hfld
   set lift := aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1 hR) fld
     with hlift
-  have hcombo := galerkinSolutionMode_finiteEigenCombo (I := I) (M := M) g₀ hT hT1 N (Nfun := Nfun)
+  have hcombo := galerkinSolutionMode_finiteEigenCombo (I := I) (M := M) g₀ hT N (Nfun := Nfun)
     fseq lift hnem
   have hcoe := aeSetLift_coe_ae (zero_mem_lowerState (I := I) (M := M) g₀ 1 hR)
     fld hball
@@ -267,7 +267,7 @@ theorem galerkinSolutionMode_hasDerivWithinAt (g₀ : SmoothRiemannianMetric I M
 theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 ρ P T Bd Ctop₂ Kr2 Kr1 Kcap ε : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hCtop : 0 ≤ Ctop) (hB0 : 0 ≤ B0) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -298,7 +298,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t ∈
         lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P))
     (hnem : ∀ N : ℕ, ⇑(fseq N) =ᵐ[timeMeasure T]
@@ -306,7 +306,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound
         (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hL2H3 : ∀ N : ℕ, ∫ t, galerkinEnergy (I := I) (M := M)
@@ -344,7 +344,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound
     · exact galerkinProjectedForce_mode_continuous (I := I) (M := M) g₀ g₀ hδ hCtop hB0 hB1 hρ hP hreal
         htame N (U N) (fun j _ => hUcont N j (by assumption)) i
     · exact galerkinProjectedForce_mode_eq (I := I) (M := M) g₀
-        (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le hT hT1 N fseq (hball N) (hnem N) i
+        (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le hT N fseq (hball N) (hnem N) i
   set EE : ℕ → ℝ → ℝ := fun N => Set.IccExtend hT.le
     (fun p : Set.Icc (0 : ℝ) T => galerkinEnergy (I := I) (M := M)
       (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 p.1) with hEE
@@ -405,7 +405,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound
 
 theorem exists_uniform_galerkin_energy_three_bound_for_projected_forcing_sequence (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ Ctop B0 B1 ρ P T Bd : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hCtop : 0 ≤ Ctop) (hB0 : 0 ≤ B0) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -436,7 +436,7 @@ theorem exists_uniform_galerkin_energy_three_bound_for_projected_forcing_sequenc
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t ∈
         lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P))
     (hnem : ∀ N : ℕ, ⇑(fseq N) =ᵐ[timeMeasure T]
@@ -444,7 +444,7 @@ theorem exists_uniform_galerkin_energy_three_bound_for_projected_forcing_sequenc
         (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hL2H3 : ∀ N : ℕ, ∫ t, galerkinEnergy (I := I) (M := M)
@@ -464,13 +464,13 @@ theorem exists_uniform_galerkin_energy_three_bound_for_projected_forcing_sequenc
   refine ⟨Ctop₂, Kr2, Kr1, Cδ, hrung.1, hrung.2.1, hrung.2.2.1,
     mul_nonneg hrung.2.2.2.1 (div_nonneg hδ0 (sq_nonneg _)), ?_⟩
   intro ε hε habs
-  exact exists_uniform_galerkin_energy_three_bound_of_integral_bound (I := I) (M := M) g₀ hT hT1 hδ hδ0 hδ3 hCtop hB0
+  exact exists_uniform_galerkin_energy_three_bound_of_integral_bound (I := I) (M := M) g₀ hT hδ hδ0 hδ3 hCtop hB0
     hB1 hρ hP hreal hcore htame fseq hball hnem hL2H3 hrung hε
     (by simpa only [Cδ] using habs)
 
 omit [BoundarylessManifold I M] in
 theorem galerkin_energy_three_integral_bound (g₀ : SmoothRiemannianMetric I M) {R T b : ℝ}
-    (hT : 0 < T) (hT1 : T ≤ 1) (N : ℕ)
+    (hT : 0 < T) (N : ℕ)
     {Nfun : lowerState (I := I) (M := M) g₀ 1 R →
       tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)}
     (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
@@ -483,14 +483,14 @@ theorem galerkin_energy_three_integral_bound (g₀ : SmoothRiemannianMetric I M)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N) 3 t ∂(timeMeasure T) ≤
       ((1 + T) * b) ^ 2 := by
   classical
-  set fld := maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
+  set fld := maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) with hfld
   have hexp : ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) := by norm_num
   have hae : (fun t => galerkinEnergy (I := I) (M := M)
       (eigenIdxFinset (I := I) (M := M) g₀ N)
       (galerkinSolutionMode (I := I) (M := M) g₀ fseq N) 3 t)
       =ᵐ[timeMeasure T] fun t => ‖fld t‖ ^ 2 := by
-    filter_upwards [galerkinSolutionMode_finiteEigenCombo (I := I) (M := M) g₀ hT hT1 N
+    filter_upwards [galerkinSolutionMode_finiteEigenCombo (I := I) (M := M) g₀ hT N
       (Nfun := Nfun) fseq u hnem] with t ht
     rw [ht, finiteEigenCombo_spectral_normSq, hexp]
     simp only [galerkinEnergy, tensorSobolevWeight]
@@ -500,7 +500,7 @@ theorem galerkin_energy_three_integral_bound (g₀ : SmoothRiemannianMetric I M)
   rw [hint]
   have hle : ‖fld‖ ≤ (1 + T) * b :=
     le_trans (norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g₀)
-      hT hT1 (fseq N))
+      hT (fseq N))
       (mul_le_mul_of_nonneg_left hnorm (by linarith))
   nlinarith [norm_nonneg fld, hle]
 
@@ -526,19 +526,19 @@ theorem exists_fatou_galerkin_approximation_energy_three_bound
     exists_galerkin_projected_forcing_sequence_with_mode_convergence (I := I) (M := M) g₀ hT hT1 fLo hsol
   obtain ⟨ε, hε, habs⟩ := hlo.absorb
   refine ⟨fseq, hmode, ?_⟩
-  refine exists_uniform_galerkin_energy_three_bound_of_integral_bound (I := I) (M := M) g₀ hT hT1 hsol.hδ hsol.hδ0
+  refine exists_uniform_galerkin_energy_three_bound_of_integral_bound (I := I) (M := M) g₀ hT hsol.hδ hsol.hδ0
     hsol.hδ3 hsol.hCtop hsol.hB0 hsol.hB1 hsol.hρ hsol.hP hsol.hreal
     hsol.hcore hsol.htame fseq (fun N => (hpack N).2.1)
     (fun N => (hpack N).2.2.1) (Bd := ((1 + T) *
       (lowRegularityStateRadius Ctop B1 ρ P / 4)) ^ 2) (fun N => ?_)
     hlo.toHasGalerkinEnergyThreeBound hε habs
-  exact galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT hT1 N fseq _ ((hpack N).2.2.1)
+  exact galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT N fseq _ ((hpack N).2.2.1)
     ((hpack N).2.2.2.2.2)
 
 theorem exists_fatou_galerkin_approximation_energy_three_bound_from_dimension (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
-    (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT hT1 fLo) :
+    (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo) :
     ∃ (Ctop B1 ρ P : ℝ)
       (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -557,11 +557,11 @@ theorem exists_fatou_galerkin_approximation_energy_three_bound_from_dimension (h
     B0, hB0, hcont, htame, fseq, _hconv, hmode, hpack⟩ :=
     galerkin_projected_forcing_sequence_mode_tendsto (I := I) (M := M) g₀ hT hT1 fLo hlo
   refine ⟨Ctop, B1, ρ, P, fseq, hmode, ?_⟩
-  refine exists_uniform_galerkin_energy_three_bound_for_projected_forcing_sequence (I := I) (M := M) hDim g₀ hT hT1 hδ hδ0 hδ3 hCtop hB0 hB1
+  refine exists_uniform_galerkin_energy_three_bound_for_projected_forcing_sequence (I := I) (M := M) hDim g₀ hT hδ hδ0 hδ3 hCtop hB0 hB1
     hρ hP hreal hcore htame fseq (fun N => (hpack N).2.1)
     (fun N => (hpack N).2.2.1) (Bd := ((1 + T) *
       (lowRegularityStateRadius Ctop B1 ρ P / 4)) ^ 2) (fun N => ?_)
-  exact galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT hT1 N fseq _ ((hpack N).2.2.1)
+  exact galerkin_energy_three_integral_bound (I := I) (M := M) g₀ hT N fseq _ ((hpack N).2.2.1)
     ((hpack N).2.2.2.2.2)
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

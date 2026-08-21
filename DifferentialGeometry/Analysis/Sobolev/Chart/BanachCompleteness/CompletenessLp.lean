@@ -110,7 +110,7 @@ lemma eLpNorm_chartPushed_eq_eLpNorm_chartPushedRaw_pou_mul
       (I := I) (M := M) ρ α u).symm
 
 lemma fun_eq_finset_sum_pou_mul
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (u : M → ℝ) :
     u = fun x =>
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
@@ -171,7 +171,7 @@ lemma exists_sup_chartDensity_on_pou_tsupport_image
     g α hK_compact hK_ne hK_sub_target
 
 lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))

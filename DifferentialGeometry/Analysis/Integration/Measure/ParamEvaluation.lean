@@ -1044,7 +1044,6 @@ lemma tsum_param_pou_piece_eq_subtype
   exact hα (param_pou_piece_zero (I := I) g ρ α hne Ψ)
 
 lemma tsum_param_pou_piece_indicator_eq
-    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source))

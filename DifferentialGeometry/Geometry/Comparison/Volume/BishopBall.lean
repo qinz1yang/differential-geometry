@@ -780,7 +780,6 @@ theorem normalBall_ratio
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem normalBall_cross_of_complete_metric
-    [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
@@ -814,7 +813,6 @@ theorem normalBall_cross_of_complete_metric
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem normalBall_ratio_of_complete_metric
-    [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) (q : Real) (hq : 0 ≤ q)

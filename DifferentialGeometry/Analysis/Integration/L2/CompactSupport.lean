@@ -30,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def compactlySupportedSmoothFunctions
     (I : ModelWithCorners ℝ E H) (M : Type*)
-    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] :
+    [TopologicalSpace M] [ChartedSpace H M] :
     Submodule ℝ C^∞⟮I, M; ℝ⟯ where
   carrier := { f : C^∞⟮I, M; ℝ⟯ | HasCompactSupport (f : M → ℝ) }
   zero_mem' := by
@@ -51,6 +51,7 @@ def compactlySupportedSmoothFunctions
     exact hf.smul_left
 
 omit [Module.Finite ℝ E] in
+omit [IsManifold I ∞ M] in
 @[simp]
 lemma mem_compactlySupportedSmoothFunctions
     {f : C^∞⟮I, M; ℝ⟯} :
@@ -110,6 +111,7 @@ lemma mem_compactlySupportedSmoothTangentSections
       HasCompactSupport (fun x : M => (X x : E)) := Iff.rfl
 
 omit [Module.Finite ℝ E] in
+omit [IsManifold I ∞ M] in
 theorem compactlySupportedSmoothFunctions_mul_mem_left
     {f : C^∞⟮I, M; ℝ⟯} (hf : f ∈ compactlySupportedSmoothFunctions I M)
     (f' : C^∞⟮I, M; ℝ⟯) :
@@ -122,6 +124,7 @@ theorem compactlySupportedSmoothFunctions_mul_mem_left
   exact hf.mul_right
 
 omit [Module.Finite ℝ E] in
+omit [IsManifold I ∞ M] in
 theorem compactlySupportedSmoothFunctions_mul_mem_right
     (f : C^∞⟮I, M; ℝ⟯) {f' : C^∞⟮I, M; ℝ⟯}
     (hf' : f' ∈ compactlySupportedSmoothFunctions I M) :
@@ -134,10 +137,11 @@ theorem compactlySupportedSmoothFunctions_mul_mem_right
   exact hf'.mul_left
 
 omit [Module.Finite ℝ E] in
+omit [IsManifold I ∞ M] in
 theorem compactlySupportedSmoothFunctions_mul_mem
     {f f' : C^∞⟮I, M; ℝ⟯}
     (hf : f ∈ compactlySupportedSmoothFunctions I M)
-    (_hf' : f' ∈ compactlySupportedSmoothFunctions I M) :
+    :
     f * f' ∈ compactlySupportedSmoothFunctions I M :=
   compactlySupportedSmoothFunctions_mul_mem_left hf f'
 

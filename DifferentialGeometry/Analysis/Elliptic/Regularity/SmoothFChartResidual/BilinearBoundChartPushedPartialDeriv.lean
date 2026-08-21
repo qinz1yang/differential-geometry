@@ -301,7 +301,7 @@ lemma partialDerivOnEuclid_ae_eq_chosenWeakPartial
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem wkpNorm_partialDerivOnEuclid_le_wkpNorm_chartPushedRaw_succ
     (α : M) (i : Fin (Module.finrank ℝ E))
-    (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤) :
+    (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
     ∃ C : ℝ, 0 < C ∧ ∀ {u : M → ℝ},
       ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       tsupport u ⊆ (chartAt H α).source →
@@ -326,7 +326,7 @@ theorem wkpNorm_partialDerivOnEuclid_le_wkpNorm_chartPushedRaw_succ
         (d := Module.finrank ℝ E) hp_one hΩ_open h_ae]
   have h_bound :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_chosenWeakPartial_le_wkpNorm_succ
-      (d := Module.finrank ℝ E) k (p := p) (Ω := Ω) hΩ_open
+      (d := Module.finrank ℝ E) k (p := p) (Ω := Ω)
       (chartPushedRaw (I := I) (M := M) α u) i
   have h_one : ENNReal.ofReal (1 : ℝ) = (1 : ℝ≥0∞) := by
     simp

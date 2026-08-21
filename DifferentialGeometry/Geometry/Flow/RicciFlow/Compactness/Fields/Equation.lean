@@ -132,14 +132,14 @@ theorem gSeqExt_ricci
   have hxO : xsrc ∈ O := hgrowW hx
   have hres :
       (srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
-        (resSrc (I := I) Φ hsrc k
+        (resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O := by
     apply smoothRiemannianMetric_eq_of_inner (I := I)
     funext y
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    rw [resSrc_inner (I := I) Φ hsrc k]
+    rw [resSrc_inner (I := I) Φ k]
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M)
       (y : SourceDomain (I := I) Φ k).2 a b]
@@ -148,12 +148,12 @@ theorem gSeqExt_ricci
   have hricSource :
       ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc v w =
         ricciTensor (I := I)
-          (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
           xsrc v w := by
     rw [← ricciTensor_restrictOpen (I := I)
         (srcMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩ v w,
       ← ricciTensor_restrictOpen (I := I)
-        (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
         O ⟨xsrc, hxO⟩ v w,
       hres]
   letI sourceTopInst : TopologicalSpace ↥(sourceOpen (I := I) Φ k) :=
@@ -172,11 +172,10 @@ theorem gSeqExt_ricci
   haveI sourceT2Inst : T2Space ↥(sourceOpen (I := I) Φ k) := sourceT2
   have hricAmbient :=
     @ricciTensor_restrictOpen E _ _ _ _ H _ I P.M
-      P.topology P.charted P.smooth P.t2 P.sigmaCompact
+      P.topology P.charted P.smooth P.t2
       (by infer_instance) (by infer_instance)
       (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-      sourceSigma sourceT2 (by infer_instance) (by infer_instance) (by infer_instance)
-      xsrc v w
+      sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc v w
   exact hricAmbient.symm.trans hricSource.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -280,14 +279,14 @@ theorem gSeqExt_scalar
   have hxO : xsrc ∈ O := hgrowW hx
   have hres :
       (srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
-        (resSrc (I := I) Φ hsrc k
+        (resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O := by
     apply smoothRiemannianMetric_eq_of_inner (I := I)
     funext y
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    rw [resSrc_inner (I := I) Φ hsrc k]
+    rw [resSrc_inner (I := I) Φ k]
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M)
       (y : SourceDomain (I := I) Φ k).2 a b]
@@ -296,11 +295,11 @@ theorem gSeqExt_scalar
   have hscalarSource :
       metricScalarAt (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc =
         metricScalarAt (I := I)
-          (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc := by
+          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc := by
     rw [← metricScalarAt_restrictOpen (I := I)
         (srcMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩,
       ← metricScalarAt_restrictOpen (I := I)
-        (resSrc (I := I) Φ hsrc k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
         O ⟨xsrc, hxO⟩,
       hres]
   letI sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
@@ -319,11 +318,10 @@ theorem gSeqExt_scalar
   haveI sourceT2Inst : T2Space ↑(sourceOpen (I := I) Φ k) := sourceT2
   have hscalarAmbient :=
     @metricScalarAt_restrictOpen E _ _ _ _ H _ I P.M
-      P.topology P.charted P.smooth P.t2 P.sigmaCompact
+      P.topology P.charted P.smooth P.t2
       (by infer_instance) (by infer_instance)
       (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-      sourceSigma sourceT2 (by infer_instance) (by infer_instance) (by infer_instance)
-      xsrc
+      sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc
   calc
     metricScalarAt (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x =
         metricScalarAt (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc :=
@@ -458,14 +456,14 @@ theorem gSeqExt_ricNorm
   have hxO : xsrc ∈ O := hgrowW hx
   have hres :
       (srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
-        (resSrc (I := I) Φ hsrc k
+        (resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O := by
     apply smoothRiemannianMetric_eq_of_inner (I := I)
     funext y
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    rw [resSrc_inner (I := I) Φ hsrc k]
+    rw [resSrc_inner (I := I) Φ k]
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M)
       (y : SourceDomain (I := I) Φ k).2 a b]
@@ -475,15 +473,15 @@ theorem gSeqExt_ricNorm
       normSq0S (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc 2
           (metricRicci (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc) =
         normSq0S (I := I)
-          (resSrc (I := I) Φ hsrc k
+          (resSrc (I := I) Φ k
             (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc 2
           (metricRicci (I := I)
-            (resSrc (I := I) Φ hsrc k
+            (resSrc (I := I) Φ k
               (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc) := by
     rw [← ricNorm_restrict (I := I)
         (srcMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩,
       ← ricNorm_restrict (I := I)
-        (resSrc (I := I) Φ hsrc k
+        (resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)) O ⟨xsrc, hxO⟩,
       hres]
   letI sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=

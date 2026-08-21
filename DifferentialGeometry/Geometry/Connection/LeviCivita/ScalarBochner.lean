@@ -26,7 +26,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 omit [IsManifold I ∞ M] in
 theorem nabla2OneFormRealizesAt_of_totalNabla_leviCivita
     [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M))
@@ -50,7 +49,7 @@ theorem nabla2OneFormRealizesAt_of_totalNabla_leviCivita
 omit [IsManifold I ∞ M] in
 theorem traceNablaHessianRealizesDLapAt_of_leviCivita
     [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
     (nabla2DuSec :
@@ -73,7 +72,7 @@ theorem traceNablaHessianRealizesDLapAt_of_leviCivita
 omit [IsManifold I ∞ M] in
 theorem lc_lapTrace
     [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (duSec : OneFormSection (I := I) (M := M))
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
@@ -103,14 +102,11 @@ theorem fundamental_bochner_of_leviCivita_terms
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (gInvFrame : InverseMetricComponents M Idx)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (Hess nablaDu : (x : M) ->
@@ -159,10 +155,9 @@ theorem fundamental_bochner_of_leviCivita_terms
           (gradientFun (I := I) g u x) +
         hessianNormSq (I := I) g Hess x +
           ricciGradGrad (I := I) Ric g u x := by
-  refine fundamental_bochner_of_lc_terms (I := I) g Ric Rm13 Rm04
-    gInvFrame frame hRm13 hRic13 hRic04 u Hess nablaDu roughDu
-    basis gInvAt hinv X duSec nablaDuSec nabla2Du normSecond
-    hfields hHess hdu hnabla hnabla2 hlapTrace hsecond hrough hdlap ?_ ?_ ?_
+  refine fundamental_bochner_of_lc_terms (I := I) g Ric Rm13 hRic13
+    u Hess nablaDu roughDu basis gInvAt hinv X duSec nabla2Du normSecond
+    hfields hHess hnabla hlapTrace hsecond hrough hdlap ?_ ?_ ?_
   · exact oneFormLastTwoSymmAt_of_leviCivita_du (I := I)
       g u hu duSec nablaDuSec nabla2Du hdu hnabla2
   · exact oneFormThirdCovDerivCommAt_of_leviCivita (I := I)
@@ -180,14 +175,11 @@ theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (gInvFrame : InverseMetricComponents M Idx)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (Hess nablaDu : (x : M) ->
@@ -245,10 +237,9 @@ theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
         hessianNormSq (I := I) g Hess x +
           ricciGradGrad (I := I) Ric g u x := by
   refine fundamental_bochner_of_lc_terms_of_normSecond_realizes (I := I)
-    g Ric Rm13 Rm04 gInvFrame frame hRm13 hRic13 hRic04
-    u Hess nablaDu roughDu basis gInvAt hinv X duSec normDuSec
-    nablaDuSec nabla2Du normSecond normSecondSec hfields hHess hdu
-    hnabla hnabla2 hnormSecond hnormDu hnormHess hnormGrad hsecond hrough
+    g Ric Rm13 hRic13 u Hess nablaDu roughDu basis gInvAt hinv X duSec normDuSec
+    nabla2Du normSecond normSecondSec hfields hHess hnabla
+    hnormSecond hnormDu hnormHess hnormGrad hsecond hrough
     hdlap ?_ ?_ ?_
   · exact oneFormLastTwoSymmAt_of_leviCivita_du (I := I)
       g u hu duSec nablaDuSec nabla2Du hdu hnabla2
@@ -267,14 +258,11 @@ theorem lc_bochner_dlap
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (gInvFrame : InverseMetricComponents M Idx)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (roughDu : (x : M) ->
@@ -344,7 +332,7 @@ theorem lc_bochner_dlap
     traceNablaHessianRealizesDLapAt_of_leviCivita (I := I) g u
       nablaDuSec nabla2DuSec hnablaTrace hlapU x
   exact fundamental_bochner_of_leviCivita_terms (I := I) g Ric Rm13
-    Rm04 gInvFrame frame hRm13 hRm04 hRic13 hRic04 u hu
+    Rm04 hRm13 hRm04 hRic13 u hu
     (fun y : M => nablaDuSec y) (fun y : M => nablaDuSec y)
     roughDu basis gInvAt hinv X duSec nablaDuSec (nabla2DuSec x) normSecond
     hfields hHessLocal hdu hnablaLocal hnabla2 hdlap hlapTrace hsecond hrough
@@ -358,14 +346,11 @@ theorem lc_bochner_norm
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (gInvFrame : InverseMetricComponents M Idx)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (roughDu : (x : M) ->
@@ -443,8 +428,8 @@ theorem lc_bochner_norm
     traceNablaHessianRealizesDLapAt_of_leviCivita (I := I) g u
       nablaDuSec nabla2DuSec hnablaTrace hlapU x
   exact fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
-    (I := I) g Ric Rm13 Rm04 gInvFrame frame hRm13 hRm04 hRic13
-    hRic04 u hu (fun y : M => nablaDuSec y) (fun y : M => nablaDuSec y)
+    (I := I) g Ric Rm13 Rm04 hRm13 hRm04 hRic13
+    u hu (fun y : M => nablaDuSec y) (fun y : M => nablaDuSec y)
     roughDu basis gInvAt hinv X duSec normDuSec
     nablaDuSec (nabla2DuSec x) normSecond normSecondSec hfields hHessLocal hdu
     hnablaLocal hnabla2 hdlap hnormSecond hnormDu hnormHess hnormGrad hsecond hrough
@@ -458,14 +443,11 @@ theorem lc_bochner_rm04
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (gInvFrame : InverseMetricComponents M Idx)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (roughDu : (x : M) ->
@@ -545,10 +527,10 @@ theorem lc_bochner_rm04
       (nabla2DuSec x) hRm13 (by simpa [duField] using hdu x) hnabla2
   exact DifferentialGeometry.Geometry.Curvature.fundamental_bochner_of_lc_terms_of_rm04_skew
     (I := I)
-    g Ric Rm13 Rm04 gInvFrame frame hRm13 hRm04 hRic13 hRic04 u
+    g Ric Rm13 Rm04 hRm13 hRm04 hRic13 u
     (fun y : M => nablaDuSec y) (fun y : M => nablaDuSec y)
-    roughDu basis gInvAt hinv X duSec nablaDuSec (nabla2DuSec x)
-    normSecond hfields hHessLocal hdu hnablaLocal hnabla2 hlapTrace hsecond hrough
+    roughDu basis gInvAt hinv X duSec (nabla2DuSec x)
+    normSecond hfields hHessLocal hnablaLocal hlapTrace hsecond hrough
     hdlap hsymm hthird hRm04Skew
 
 end DifferentialGeometry.Geometry.Connection

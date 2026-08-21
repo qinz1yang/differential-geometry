@@ -137,7 +137,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
   have hδm_lt : δm < 1 := max_lt hδ₀ one_pos
   have hqpos : (0 : ℝ) < 1 - δm := by linarith
   obtain ⟨C₀, hC₀0, hpw⟩ :=
-    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδm_nn hδm_lt
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδm_lt
   obtain ⟨Ccd, hCcd0, hcd⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
       (I := I) (M := M) g₀ hδ₀ B hB

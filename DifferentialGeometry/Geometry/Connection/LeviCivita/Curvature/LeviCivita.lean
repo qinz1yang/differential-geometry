@@ -1302,6 +1302,7 @@ theorem rm04PairSymmAt_of_leviCivita_realizes
     (firstBianchiAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
 
 omit [IsManifold I 1 M] in
+omit [SigmaCompactSpace M] in
 theorem rm13MetricSkewAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm13 : Tensor13Section (I := I) (M := M))

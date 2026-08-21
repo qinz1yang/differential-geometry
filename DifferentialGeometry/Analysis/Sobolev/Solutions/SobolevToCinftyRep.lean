@@ -29,7 +29,7 @@ theorem exists_continuous_representative_of_memWkpChart_isRegular
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)
     (hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) 2 k)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
+    (hu : MemWkpChart (I := I) (M := M) k 2 u) :
     ∃ ũ : M → ℝ, Continuous ũ ∧
       ũ =ᵐ[riemannianVolumeMeasure I M g] u := by
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
@@ -49,7 +49,7 @@ theorem exists_continuous_representative_of_memWkpChart
     (g : SmoothRiemannianMetric I M)
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
+    (hu : MemWkpChart (I := I) (M := M) k 2 u) :
     ∃ ũ : M → ℝ, Continuous ũ ∧
       ũ =ᵐ[riemannianVolumeMeasure I M g] u := by
   have hd_pos : 0 < Module.finrank ℝ E := NeZero.pos _
@@ -69,7 +69,7 @@ theorem exists_continuous_representative_of_memWkpChart
     rw [show (2 : ℝ) = (2 : ℕ) from by norm_num]
     rw [ENNReal.ofReal_natCast]
     rfl
-  have hu' : MemWkpChart (I := I) (M := M) g k (ENNReal.ofReal 2) u := by
+  have hu' : MemWkpChart (I := I) (M := M) k (ENNReal.ofReal 2) u := by
     rw [← h_two_eq]; exact hu
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
     iterated_sobolev_embedding_chart_C0_unconditional (I := I) (M := M) g hk_pos

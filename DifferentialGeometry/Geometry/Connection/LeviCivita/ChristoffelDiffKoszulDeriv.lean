@@ -61,8 +61,6 @@ theorem connectionDifference_koszul_nabla
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricField_totalReg
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SBundle.TotalNabla0SRegular (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
       (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁) :=
@@ -73,8 +71,6 @@ theorem metricField_totalReg
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
 theorem nablaMetric_combo_extDeriv
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V : Fin 3 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -117,8 +113,6 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M]
   [T2Space M] in
 theorem metric_leibniz_extDeriv
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V : Fin 2 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))

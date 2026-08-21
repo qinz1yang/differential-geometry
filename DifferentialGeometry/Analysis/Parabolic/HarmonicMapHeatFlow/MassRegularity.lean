@@ -530,7 +530,7 @@ theorem hmfSpecMass_zero
         (hmfSpecIncl (I := I) (M := M) q S) := by
   obtain ⟨Rm, hRm, hmass⟩ := hmfSpecMassPt_cd (I := I) (M := M) q S
   obtain ⟨Ra, hRa, hmap⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S 1 (by norm_num)
+    hmfSpecMap_cd (I := I) (M := M) q S 1
   let μ := riemannianVolumeMeasure (I := I) (M := M) h
   haveI : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
@@ -609,7 +609,7 @@ theorem hmfStateTime_cont
             (hmfSpecIncl (I := I) (M := M) q S w)) K := by
   obtain ⟨Rm, hRm, hmass⟩ := hmfSpecMassPt_cd (I := I) (M := M) q S
   obtain ⟨Ra, hRa, hmap⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S 1 (by norm_num)
+    hmfSpecMap_cd (I := I) (M := M) q S 1
   let R := min Rm Ra
   have hR : 0 < R := lt_min hRm hRa
   refine ⟨R, hR, ?_⟩

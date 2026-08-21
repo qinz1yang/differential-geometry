@@ -170,7 +170,6 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [IsManifold I 1 M] [IsManifold I 2 
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 theorem metric_limit_pde_of_metric_sequence
-    [NeZero (Module.finrank Real E)]
     (gSeq : Nat → Real → SmoothRiemannianMetric I M)
     (β ψ : Real)
     (gInf : Real → SmoothRiemannianMetric I M)
@@ -210,7 +209,6 @@ omit [Module.Finite ℝ E] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace 
 omit [SigmaCompactSpace M] in
 theorem metric_limit_pde
     [Module.Finite ℝ E]
-    [NeZero (Module.finrank Real E)]
     {D : Nat → RealTimeInterval}
     (S : (k : Nat) → SolutionOn (I := I) (M := M) (D k))
     (hS : ∀ k, IsSolutionOn (I := I) (S k))
@@ -272,6 +270,7 @@ theorem metric_limit_pde_on
     {t : Real} (ht : t ∈ Set.Icc β ψ) :
     HasDerivWithinAt (fun s : Real => (gInf s).inner x v w)
       (-2 * ricciTensor (I := I) (gInf t) x v w) (Set.Icc β ψ) t := by
+  let _ := (inferInstance : (NeZero (Module.finrank ℝ E)))
   refine metric_limit_pde S hS β ψ hreg gInf x v w ?_ hRicConv ht
   intro u hu
   refine metricInner_tendsto (fun k => (S k).family.metric u) (gInf u) gRef x

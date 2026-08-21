@@ -149,7 +149,7 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
             (sharpFlatEndoCc (I := I) g₀ g₁)).toSection x) ≤ Sf l := by
     intro l hl
     interval_cases l
-    · have h := riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀
+    · have h := riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀
         g₁ P htie hδ_le hδ0 hδ x
       simp only [hSf_def, reduceIte]
       rw [hs0_def]

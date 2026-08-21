@@ -96,7 +96,7 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
     (K' : Fin (r + 1) → Fin n) (J' : Fin (s + 1) → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
           A)
         n e K' J' =
       (if J' 0 = K' 0 then (1 : ℝ) else 0) *
@@ -105,19 +105,19 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
           (fun k => K' (Fin.succ k)) (fun k => J' (Fin.succ k)) := by
   classical
   have hcomp : fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
           A)
         n e K' J' =
       Tensor0SSpace.toModel
-        (slotExtendPointwise (I := I) (M := M) g r s x A
+        (slotExtendPointwise (I := I) (M := M) r s x A
           (coframeS (I := I) (M := M) g x (r + 1) e K'))
         (Fin.cons (show E from e (J' 0)) (fun k : Fin s => (show E from e (J' (Fin.succ k))))) := by
     rw [show fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-          (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+          (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
             A)
           n e K' J' =
         Tensor0SSpace.toModel
-          (slotExtendPointwise (I := I) (M := M) g r s x A
+          (slotExtendPointwise (I := I) (M := M) r s x A
             (coframeS (I := I) (M := M) g x (r + 1) e K'))
           (fun k => (show E from e (J' k))) from rfl]
     congr 1
@@ -126,7 +126,7 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
     · rw [Fin.cons_zero]
     · rw [Fin.cons_succ]
   rw [hcomp]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x A
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r s x A
     (coframeS (I := I) (M := M) g x (r + 1) e K') (show E from e (J' 0))
     (fun k : Fin s => (show E from e (J' (Fin.succ k))))]
   have hcurry : (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x)
@@ -166,19 +166,19 @@ private lemma riemannianFiberNormSq_slotExtendFib_eq_frame
     (hn : n = Module.finrank ℝ E) (hbse : ∀ i : Fin n, bse i = e i)
     (horth : ∀ a b : Fin n, g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
     riemannianFiberNormSq (I := I) (M := M) g (r + 1) (s + 1) x
-        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
           A) =
       (n : ℝ) *
         riemannianFiberNormSq (I := I) (M := M) g r s x (show TensorRSSpace r s I x from A) := by
   classical
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g (r + 1) (s + 1) x
-    (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x A)
+    (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x A)
     e bse hn hbse horth]
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g r s x
     (show TensorRSSpace r s I x from A) e bse hn hbse horth]
   have hcompsq : ∀ (K' : Fin (r + 1) → Fin n) (J' : Fin (s + 1) → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-          (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+          (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
             A)
           n e K' J') ^ 2 =
         (if J' 0 = K' 0 then (1 : ℝ) else 0) *
@@ -228,7 +228,7 @@ theorem riemannianFiberNormSq_slotExtendFib_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) :
     riemannianFiberNormSq (I := I) (M := M) g (r + 1) (s + 1) x
-        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
           A) =
       (Module.finrank ℝ E : ℝ) *
         riemannianFiberNormSq (I := I) (M := M) g r s x (show TensorRSSpace r s I x from A) := by
@@ -293,7 +293,7 @@ private lemma fiberNormSqComponent_covGrad_slotExtend_eq_swap
         rw [Fin.cons_zero]; rfl
       · change (show E from e (J' (Fin.succ (Fin.succ i)))) = _
         rw [Fin.cons_succ]]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x
+    rw [slotExtendFib_apply_eval (I := I) (M := M) r s x
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
         tensorCovDerivAt (I := I) (M := M) g r s Φ x ((fun k => (show E from e (J' k))) 0))
       (coframeS (I := I) (M := M) g x (r + 1) e K') (show E from e (J' 1))
@@ -328,7 +328,7 @@ private lemma fiberNormSqComponent_covGrad_slotExtend_eq_swap
       · simp only [Fin.cons_zero, Function.comp_apply]
         rw [Equiv.swap_apply_left]
       · rw [Fin.cons_succ]]
-    rw [slotExtendFib_apply_eval (I := I) (M := M) g r (s + 1) x
+    rw [slotExtendFib_apply_eval (I := I) (M := M) r (s + 1) x
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (covGrad (I := I) (M := M) g r s Φ).toSection x)
       (coframeS (I := I) (M := M) g x (r + 1) e K') (show E from e (J' 1))
@@ -585,7 +585,7 @@ private lemma covGrad_slotExtend_toSection_rsDomDomCongr
       rw [Fin.cons_zero]; rfl
     · change m (Fin.succ (Fin.succ i)) = _
       rw [Fin.cons_succ]]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       tensorCovDerivAt (I := I) (M := M) g r s Φ x (m 0))
     d (m 1) (fun k : Fin s => m (Fin.succ (Fin.succ k)))]
@@ -598,7 +598,7 @@ private lemma covGrad_slotExtend_toSection_rsDomDomCongr
     · simp only [Fin.cons_zero]
       rw [Equiv.swap_apply_left]
     · rw [Fin.cons_succ]]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r (s + 1) x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r (s + 1) x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (covGrad (I := I) (M := M) g r s Φ).toSection x)
     d (m 1) (fun k : Fin (s + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ k)))]
@@ -1075,7 +1075,7 @@ theorem riemannianFiberNormSq_comp_slotExtend_le (g : SmoothRiemannianMetric I M
         rcases Fin.eq_zero_or_eq_succ k with rfl | ⟨i, rfl⟩
         · simp only [Fin.cons_zero]
         · simp only [Fin.cons_succ]]
-      rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x
+      rw [slotExtendFib_apply_eval (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (r + 1) I x from W.toSection x)
           (coframeS (I := I) (M := M) g x 0 e (fun k : Fin 0 => k.elim0)))
@@ -1507,7 +1507,7 @@ private def slotExtendIterFib (g : SmoothRiemannianMetric I M) (b c : ℕ) (x : 
     (A : Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x) :
     ∀ w : ℕ, Tensor0SSpace (b + w) I x →L[ℝ] Tensor0SSpace (c + w) I x
   | 0 => A
-  | (w + 1) => slotExtendPointwise (I := I) (M := M) g (b + w) (c + w) x
+  | (w + 1) => slotExtendPointwise (I := I) (M := M) (b + w) (c + w) x
       (slotExtendIterFib g b c x A w)
 
 
@@ -1766,7 +1766,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diag_toSection (g : SmoothRiema
       rw [hdiag]
       rw [show (slotExtendIterFib (I := I) (M := M) g b c x
             (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) (i + 1)) =
-          slotExtendPointwise (I := I) (M := M) g (b + i) (c + i) x
+          slotExtendPointwise (I := I) (M := M) (b + i) (c + i) x
             (slotExtendIterFib (I := I) (M := M) g b c x
               (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) i)
           from rfl]

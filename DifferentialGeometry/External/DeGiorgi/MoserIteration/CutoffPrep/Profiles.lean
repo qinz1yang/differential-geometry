@@ -32,6 +32,7 @@ noncomputable def moserSmoothClip (ε N : ℝ) : ℝ → ℝ :=
 
 theorem moserSmoothClip_contDiff {ε N : ℝ} (_hε : 0 < ε) :
     ContDiff ℝ (⊤ : ℕ∞) (moserSmoothClip ε N) := by
+  let _ := _hε
   have hσ₀ :
       ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => Real.smoothTransition (t / ε)) := by
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t / ε) := by
@@ -413,6 +414,7 @@ theorem moserExactRegTestPow_eq_shifted_of_nonneg_le_N
 theorem moserExactLeftTransition_contDiff
     {ε : ℝ} (_hε : 0 < ε) :
     ContDiff ℝ (⊤ : ℕ∞) (moserExactLeftTransition ε) := by
+  let _ := _hε
   have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => (2 / ε) * t + 1) := by
     simpa [mul_comm, mul_left_comm, mul_assoc] using
       ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => 2 / ε).mul contDiff_id).add

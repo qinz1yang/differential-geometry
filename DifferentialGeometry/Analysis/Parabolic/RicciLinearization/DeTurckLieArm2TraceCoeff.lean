@@ -118,6 +118,7 @@ theorem domDomCongr_section_contMDiff_local {d : ℕ} (ρ : Equiv.Perm (Fin d))
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckLieTraceFib_contMDiff (g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4)) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
@@ -151,11 +152,13 @@ noncomputable def deTurckLieTraceCoeff (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem deTurckLieTraceCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
     (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ).toSection x =
       (show Tensor0SBundle.TensorRSSpace 4 2 I x from deTurckLieTraceFib (I := I) g₁ σ x) := rfl
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem deTurckLieTraceCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -268,23 +271,24 @@ private theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 
-def deTurckLieArm2PrincipalCoeff (g₀ g₁ _g_bg : SmoothRiemannianMetric I M) :
+def deTurckLieArm2PrincipalCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
   deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieArm2DivSlotPermA
     + deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieArm2DivSlotPermAT
     - traceHessianCoeff (I := I) (M := M) g₀ g₁
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
-    (g_bg : SmoothRiemannianMetric I M) :
+    :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1
         ((deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hA := deTurckLieTraceCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
     deTurckLieArm2DivSlotPermA
@@ -313,16 +317,17 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (g₀
   rw [deTurckLieArm2PrincipalCoeff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply, SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
-    (g_bg : SmoothRiemannianMetric I M) :
+    :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
       (fun s => deTurckLieArm2PrincipalCoeff (I := I) g₀
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
-  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') :=
+  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma operatorFieldApplication_sub_left_local (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -383,6 +388,7 @@ private lemma unitModel_sub2_apply_local (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckLieTraceCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (D : SmoothCcTensor g₀ 0 4) (x : M)
     (v : Fin 2 → TangentSpace I x) :
@@ -418,6 +424,7 @@ theorem deTurckLieTraceCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiem
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem traceHessianCoeff_operatorFieldApplication_eq_local
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -438,11 +445,12 @@ private theorem traceHessianCoeff_operatorFieldApplication_eq_local
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem deTurckLieArm2PrincipalCoeff_operatorFieldApplication_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+omit [I.Boundaryless] in
+theorem deTurckLieArm2PrincipalCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁ g_bg) D) x v =
+          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x v =
       ((∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0,

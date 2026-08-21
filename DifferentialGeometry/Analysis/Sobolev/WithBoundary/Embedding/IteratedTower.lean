@@ -85,9 +85,7 @@ variable {M : Type*} [TopologicalSpace M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
 
 theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
+    [T2Space M] [SigmaCompactSpace M]
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ},
@@ -103,13 +101,13 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
                 (modelWithCornersEuclideanHalfSpace n) M) α u) ⊆
           DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) α)) →
-        MemWkpChart (n := n) (M := M) g (k + 1) (ENNReal.ofReal p) u →
-          MemWkpChart (n := n) (M := M) g k
+        MemWkpChart (n := n) (M := M) (k + 1) (ENNReal.ofReal p) u →
+          MemWkpChart (n := n) (M := M) k
               (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p))) u ∧
-            wkpNormChart (n := n) (M := M) g k
+            wkpNormChart (n := n) (M := M) k
                 (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p))) u ≤
               ENNReal.ofReal C *
-                wkpNormChart (n := n) (M := M) g (k + 1) (ENNReal.ofReal p) u := by
+                wkpNormChart (n := n) (M := M) (k + 1) (ENNReal.ofReal p) u := by
   classical
   set C : ℝ := EuclideanTowerStep.subcriticalConstant k n p with hC_def
   have hC_nn : 0 ≤ C :=
@@ -172,9 +170,7 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
   exact ENNReal.tsum_le_tsum (fun α => (h_per_chart α).2)
 
 theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
+    [T2Space M] [SigmaCompactSpace M]
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ},
@@ -195,16 +191,16 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart_smooth
                 (modelWithCornersEuclideanHalfSpace n) M) α u) ⊆
           DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) α)) →
-        MemWkpChart (n := n) (M := M) g (k + 1) (ENNReal.ofReal p) u →
-          MemWkpChart (n := n) (M := M) g k
+        MemWkpChart (n := n) (M := M) (k + 1) (ENNReal.ofReal p) u →
+          MemWkpChart (n := n) (M := M) k
               (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p))) u ∧
-            wkpNormChart (n := n) (M := M) g k
+            wkpNormChart (n := n) (M := M) k
                 (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p))) u ≤
               ENNReal.ofReal C *
-                wkpNormChart (n := n) (M := M) g (k + 1) (ENNReal.ofReal p) u := by
+                wkpNormChart (n := n) (M := M) (k + 1) (ENNReal.ofReal p) u := by
   obtain ⟨C, hC_nn, h⟩ :=
     wkpNormChart_succ_subcritical_step_withBoundary_perChart (n := n) (M := M)
-      g (k := k) hp_one hp_dim
+      (k := k) hp_one hp_dim
   refine ⟨C, hC_nn, ?_⟩
   intro u _hu_smooth h_compact h_supp hu
   exact h h_compact h_supp hu

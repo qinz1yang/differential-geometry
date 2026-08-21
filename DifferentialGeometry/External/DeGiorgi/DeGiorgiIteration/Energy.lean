@@ -663,6 +663,7 @@ theorem caccioppoli_weighted_on_ball_of_ballPosPart
     ∫ x in Metric.ball x₀ s, η x ^ 2 * ‖hw_trunc.weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A *
         ∫ x in Metric.ball x₀ s, ‖fderiv ℝ η x‖ ^ 2 * |positivePartSub u k x| ^ 2 ∂volume := by
+  let _ := _hs
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne

@@ -23,6 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem hamiltonDeTurck_pullback_isRicciFlow_flat
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
@@ -80,7 +81,7 @@ theorem hamiltonDeTurck_pullback_isRicciFlow_flat
   exact deTurck_pullback_eval_value_hasDerivWithinAt (I := I)
     g_bg g_DT Φ_fam t x v w (h_total_eval t ht x v w)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem hamiltonDeTurck_pullback_ricciFlow_family_flat
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)

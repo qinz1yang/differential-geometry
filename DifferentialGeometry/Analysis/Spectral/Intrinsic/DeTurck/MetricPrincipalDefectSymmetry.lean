@@ -79,13 +79,14 @@ variable [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 theorem metricPrincipalDefect_symm_zero
-    (g₀ g_bg g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
+    (g₀ g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (hWsymm : ∀ (x : M) (u₀ u₁ u₂ u₃ : TangentSpace I x),
       unitModel (I := I) (M := M) g₀ 4 W x ![u₀, u₁, u₂, u₃] =
         unitModel (I := I) (M := M) g₀ 4 W x ![u₁, u₀, u₂, u₃]) :
     operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g
           - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cometricDoubleTraceCoefficient
               (I := I) (M := M) g₀ g) W = 0 := by
   classical
@@ -100,7 +101,7 @@ theorem metricPrincipalDefect_symm_zero
     ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply]
   have hLie :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff_apply_eq
-      (I := I) g₀ g g_bg W x v
+      (I := I) g₀ g W x v
   have hTHraw :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.traceHessianCoeff_apply_eq
       (I := I) (M := M) g₀ g W x v
@@ -223,9 +224,9 @@ theorem gradSwapCurv_spec (g₀ : SmoothRiemannianMetric I M)
     (I := I) (M := M) g₀ S
 
 noncomputable def metricPrincipalDefectCurvCoeff
-    (g₀ g_bg g : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 2 :=
+    (g₀ g : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 2 :=
   (1 / 2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
-    (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g
+    (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g
       - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cometricDoubleTraceCoefficient
           (I := I) (M := M) g₀ g)
     (gradSwapCurvCoeff (I := I) g₀)
@@ -233,17 +234,17 @@ noncomputable def metricPrincipalDefectCurvCoeff
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricPrincipalDefect_curv_fold
-    (g₀ g_bg g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
+    (g₀ g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
     operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g
           - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cometricDoubleTraceCoefficient
               (I := I) (M := M) g₀ g)
         (iteratedCovGrad (I := I) g₀ 0 2 2 S) =
-      operatorFieldApply (I := I) (M := M) g₀ 2 2 (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g)
+      operatorFieldApply (I := I) (M := M) g₀ 2 2 (metricPrincipalDefectCurvCoeff (I := I) g₀ g)
         (iteratedCovGrad (I := I) g₀ 0 2 0 S) := by
   classical
   set Φd : SmoothCcTensor g₀ 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g
       - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cometricDoubleTraceCoefficient
           (I := I) (M := M) g₀ g with hΦd_def
   set W : SmoothCcTensor g₀ 0 4 := iteratedCovGrad (I := I) g₀ 0 2 2 S with hW_def
@@ -278,7 +279,7 @@ theorem metricPrincipalDefect_curv_fold
     exact add_comm _ _
   have hkill : operatorFieldApply (I := I) (M := M) g₀ 4 2 Φd
       ((1 / 2 : ℝ) • (W + Wsw)) = 0 := by
-    rw [operatorFieldApplication_smul_right, hΦd_def, metricPrincipalDefect_symm_zero (I := I) (M := M) g₀ g_bg g
+    rw [operatorFieldApplication_smul_right, hΦd_def, metricPrincipalDefect_symm_zero (I := I) (M := M) g₀ g
       (W + Wsw) hsym, smul_zero]
   calc
     operatorFieldApply (I := I) (M := M) g₀ 4 2 Φd W =
@@ -302,7 +303,7 @@ theorem metricPrincipalDefect_curv_fold
         ((1 / 2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 Φd
           (gradSwapCurvCoeff (I := I) g₀)) S := by
       rw [operatorFieldApplication_smul_left]
-    _ = operatorFieldApply (I := I) (M := M) g₀ 2 2 (metricPrincipalDefectCurvCoeff (I := I) g₀ g_bg g)
+    _ = operatorFieldApply (I := I) (M := M) g₀ 2 2 (metricPrincipalDefectCurvCoeff (I := I) g₀ g)
         (iteratedCovGrad (I := I) g₀ 0 2 0 S) := by
       rw [iteratedCovGrad_zero, metricPrincipalDefectCurvCoeff, hΦd_def]
 

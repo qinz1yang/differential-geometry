@@ -29,6 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hasChartJetLip_chartDeTurckRicciRHS
     (g₁ g₂ g_bg : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -49,6 +50,8 @@ theorem hasChartJetLip_chartDeTurckRicciRHS
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartDeTurckRicciRHS_realize_seminorm_le_bareChartJetContentOnE
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

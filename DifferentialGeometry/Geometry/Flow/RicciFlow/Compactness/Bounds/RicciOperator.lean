@@ -24,7 +24,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M]
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricci_quadratic_form_on_unit_vector_le_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -58,7 +58,7 @@ theorem ricci_quadratic_form_on_unit_vector_le_of_solution
   exact ricci_unitQuad_le_of_trace (I := I) (S.base.metric t) basis hON hinv
     (S.ricciAt t x) (S.base.rm04 t x) htrace u hu
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem twoTensorQuadBound_of_solutions
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)

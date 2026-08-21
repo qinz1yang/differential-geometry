@@ -79,7 +79,7 @@ theorem nonautL2_realize
       (g := g) (r := r) (s := s) a T)
     (fHi : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (hduh : uHi = maxRegDuhamelMap (I := I) (M := M)
-      a hT hT1 0 fHi)
+      a hT 0 fHi)
     (hfixed : fHi =
       nonautL2Map (I := I) (M := M)
           hT hT1 hcompact A2 hA2 C2 hC2 A1 hA1 fHi + f0)
@@ -88,10 +88,10 @@ theorem nonautL2_realize
     (hpde : timeH1.timeDeriv _ T uHi =
       timeScaleLaplacian (I := I) (M := M) a
           (maxRegDuhamelSolField (I := I) (M := M)
-            a hT hT1 0 fHi) +
+            a hT 0 fHi) +
         (timeOp A2 hA2 C2 hC2
             (maxRegDuhamelSolField (I := I) (M := M)
-              a hT hT1 0 fHi) +
+              a hT 0 fHi) +
           a1L2Term (I := I) (M := M)
             hT hT1 hcompact A1 hA1 fHi +
           f0))
@@ -102,13 +102,13 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 fHi) =
+          a hT 0 fHi) =
       maxRegDuhamelSolField (I := I) (M := M)
-        (a - 1) hT hT1 0 fLo) :
+        (a - 1) hT 0 fLo) :
     ∃ u : CrossScaleField (I := I) (M := M) g r s a T,
       u.lo = uHi ∧
       u.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
-        a hT hT1 0 fHi ∧
+        a hT 0 fHi ∧
       timeH1.trace0 _ T u.lo =
         (0 : tensorHs (I := I) (M := M) g r s a) ∧
       timeH1.timeDeriv _ T u.lo =
@@ -121,7 +121,7 @@ theorem nonautL2_realize
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) (u.lo.toFun t) =
           (maxRegDuhamelMap (I := I) (M := M)
-            (a - 1) hT hT1 0 fLo).toFun t) ∧
+            (a - 1) hT 0 fLo).toFun t) ∧
       u.repr 0 = (0 : tensorHs (I := I) (M := M) g r s (a + 1)) ∧
       ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
       (∀ t ∈ Icc (0 : ℝ) T,
@@ -133,24 +133,24 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 1 by linarith) (u.repr t)) =ᵐ[timeMeasure T]
           fun t => maxRegDuhamelSolField (I := I) (M := M)
-            (a - 1) hT hT1 0 fLo t := by
+            (a - 1) hT 0 fLo t := by
   have hlink :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M)
-            a hT hT1 0 fHi) =
+            a hT 0 fHi) =
         timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T uHi := by
     have h := duhField_pin (I := I) (M := M)
-      hT hT1 hcompact
+      hT hcompact
         (0 : tensorHs (I := I) (M := M) g r s (a + 2)) fHi
     rwa [← hduh] at h
   let u : CrossScaleField (I := I) (M := M) g r s a T :=
     strongCross (I := I) (M := M)
       (maxRegDuhamelSolField (I := I) (M := M)
-        a hT hT1 0 fHi) uHi hlink
+        a hT 0 fHi) uHi hlink
   have hlo : u.lo = uHi := rfl
   have hhi : u.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
-      a hT hT1 0 fHi := rfl
+      a hT 0 fHi := rfl
   have htrace' : timeH1.trace0 _ T u.lo =
       (0 : tensorHs (I := I) (M := M) g r s a) := by
     simpa only [hlo] using htrace
@@ -161,20 +161,20 @@ theorem nonautL2_realize
           timeH1.timeDeriv _ T uHi := by rw [hlo]
       _ = timeScaleLaplacian (I := I) (M := M) a
             (maxRegDuhamelSolField (I := I) (M := M)
-              a hT hT1 0 fHi) +
+              a hT 0 fHi) +
           (timeOp A2 hA2 C2 hC2
               (maxRegDuhamelSolField (I := I) (M := M)
-                a hT hT1 0 fHi) +
+                a hT 0 fHi) +
             a1L2Term (I := I) (M := M)
               hT hT1 hcompact A1 hA1 fHi +
             f0) := hpde
       _ = timeScaleLaplacian (I := I) (M := M) a
             (maxRegDuhamelSolField (I := I) (M := M)
-              a hT hT1 0 fHi) + fHi :=
+              a hT 0 fHi) + fHi :=
         congrArg
           (fun z => timeScaleLaplacian (I := I) (M := M) a
             (maxRegDuhamelSolField (I := I) (M := M)
-              a hT hT1 0 fHi) + z)
+              a hT 0 fHi) + z)
           hfixed.symm
       _ = timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi := by
         rw [hhi]
@@ -194,37 +194,37 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 fHi)) =ᵐ[timeMeasure T]
+          a hT 0 fHi)) =ᵐ[timeMeasure T]
       fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 fHi t) :=
+          a hT 0 fHi t) :=
     (tensorHsInclusion (I := I) (M := M)
       (g := g) (r := r) (s := s)
       (show (a - 1) + 2 ≤ a + 2 by linarith)).coeFn_compLpL
         (p := 2) (μ := timeMeasure T)
           (maxRegDuhamelSolField (I := I) (M := M)
-            a hT hT1 0 fHi)
+            a hT 0 fHi)
   have hfield_coe :
       (fun t => tensorHsInclusion (I := I) (M := M)
           (g := g) (r := r) (s := s)
           (show (a - 1) + 2 ≤ a + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M)
-            a hT hT1 0 fHi t)) =ᵐ[timeMeasure T]
+            a hT 0 fHi t)) =ᵐ[timeMeasure T]
       fun t => maxRegDuhamelSolField (I := I) (M := M)
-        (a - 1) hT hT1 0 fLo t := by
+        (a - 1) hT 0 fLo t := by
     refine hincl.symm.trans ?_
     rw [hfield]
   have hlow_link := solField_toFun_ae (I := I) (M := M)
-    (a := a - 1) hT hT1 hcompact
+    (a := a - 1) hT hcompact
       (0 : tensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
   have hcarrier_ae :
       (fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ a by linarith) (u.lo.toFun t)) =ᵐ[timeMeasure T]
           fun t => (maxRegDuhamelMap (I := I) (M := M)
-            (a - 1) hT hT1 0 fLo).toFun t := by
+            (a - 1) hT 0 fLo).toFun t := by
     filter_upwards [u.link, hfield_coe, hlow_link] with t hu hf hl
     refine tensorHs.ext ?_
     funext i
@@ -242,9 +242,9 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 fHi t)).coeff i) =
+          a hT 0 fHi t)).coeff i) =
         (maxRegDuhamelSolField (I := I) (M := M)
-          (a - 1) hT hT1 0 fLo t).coeff i at hfc
+          (a - 1) hT 0 fLo t).coeff i at hfc
     rw [tensorHsInclusion_coeff_apply] at hfc
     have hlc := congrArg (fun z => z.coeff i) hl
     change
@@ -252,9 +252,9 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ (a - 1) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          (a - 1) hT hT1 0 fLo t)).coeff i) =
+          (a - 1) hT 0 fLo t)).coeff i) =
         ((maxRegDuhamelMap (I := I) (M := M)
-          (a - 1) hT hT1 0 fLo).toFun t).coeff i at hlc
+          (a - 1) hT 0 fLo).toFun t).coeff i at hlc
     rw [tensorHsInclusion_coeff_apply] at hlc
     exact huc.symm.trans (hfc.trans hlc)
   have hleft_cont : ContinuousOn
@@ -268,9 +268,9 @@ theorem nonautL2_realize
         u.lo.continuousOn_toFun
   have hright_cont : ContinuousOn
       (fun t => (maxRegDuhamelMap (I := I) (M := M)
-        (a - 1) hT hT1 0 fLo).toFun t) (Icc (0 : ℝ) T) :=
+        (a - 1) hT 0 fLo).toFun t) (Icc (0 : ℝ) T) :=
     (maxRegDuhamelMap (I := I) (M := M)
-      (a - 1) hT hT1 0 fLo).continuousOn_toFun
+      (a - 1) hT 0 fLo).continuousOn_toFun
   have hregular : Icc (0 : ℝ) T ⊆ closure (interior (Icc (0 : ℝ) T)) := by
     rw [interior_Icc, closure_Ioo (ne_of_lt hT)]
   have hcarrier_on :
@@ -279,7 +279,7 @@ theorem nonautL2_realize
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) (u.lo.toFun t) =
           (maxRegDuhamelMap (I := I) (M := M)
-            (a - 1) hT hT1 0 fLo).toFun t :=
+            (a - 1) hT 0 fLo).toFun t :=
     MeasureTheory.Measure.eqOn_of_ae_eq
       hcarrier_ae hleft_cont hright_cont hregular
   have hrepr_lo :
@@ -287,7 +287,7 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 1 by linarith) (u.repr t)) =ᵐ[timeMeasure T]
           fun t => maxRegDuhamelSolField (I := I) (M := M)
-            (a - 1) hT hT1 0 fLo t := by
+            (a - 1) hT 0 fLo t := by
     filter_upwards [hrepr_hi, hfield_coe] with t hrepr hlow
     refine tensorHs.ext ?_
     funext i
@@ -299,9 +299,9 @@ theorem nonautL2_realize
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
-          a hT hT1 0 fHi t)).coeff i) =
+          a hT 0 fHi t)).coeff i) =
         (maxRegDuhamelSolField (I := I) (M := M)
-          (a - 1) hT hT1 0 fLo t).coeff i at hc
+          (a - 1) hT 0 fLo t).coeff i at hc
     rw [tensorHsInclusion_coeff_apply] at hc
     rw [hhi]
     exact hc

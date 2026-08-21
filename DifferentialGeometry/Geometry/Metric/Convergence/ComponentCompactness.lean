@@ -182,7 +182,6 @@ theorem bumpTower_slotExpand_conv
     {χ : E → Real} (hχ : ContDiff Real (∞ : WithTop ℕ∞) χ)
     (htsupp : tsupport χ ⊆ (extChartAt I x₀).target)
     {U : Set E} (hU : IsOpen U) (hχU : Set.EqOn χ 1 U)
-    (_hUtarget : U ⊆ (extChartAt I x₀).target)
     {ι : Type*} (s : Finset ι)
     (frame : ι → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
@@ -483,7 +482,7 @@ theorem bumpTowerCarrier_step
   classical
   obtain ⟨c, hc, hexpand⟩ := hspan (W 0)
   refine bumpTower_slotExpand_conv (I := I) gRef A0Seq A0inf (p + 1) x₀ hχ htsupp
-    hU hχU hUtarget s frame c hc W 0 hUKc hexpand ?_
+    hU hχU s frame c hc W 0 hUKc hexpand ?_
   intro i
   have hslot : ∀ (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2),
@@ -620,7 +619,6 @@ theorem hbase_of_framePairs
     {χ : E → Real} (hχ : ContDiff Real (∞ : WithTop ℕ∞) χ)
     (htsupp : tsupport χ ⊆ (extChartAt I x₀).target)
     {U : Set E} (hU : IsOpen U) (hχU : Set.EqOn χ 1 U)
-    (hUtarget : U ⊆ (extChartAt I x₀).target)
     {Kc : Set M} (hUKc : ∀ z ∈ U, (extChartAt I x₀).symm z ∈ Kc)
     {ι : Type*} (s : Finset ι)
     (frame : ι → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -648,7 +646,7 @@ theorem hbase_of_framePairs
   classical
   obtain ⟨c0, hc0, hexp0⟩ := hspan (V 0)
   refine bumpTower_slotExpand_conv (I := I) gRef A0Seq A0inf 0 x₀ hχ htsupp
-    hU hχU hUtarget s frame c0 hc0 V 0 hUKc hexp0 ?_
+    hU hχU s frame c0 hc0 V 0 hUKc hexp0 ?_
   intro i
   obtain ⟨c1, hc1, hexp1⟩ := hspan (V 1)
   have hexp1' : ∀ w ∈ Kc, (Function.update V 0 (frame i)) 1 w = ∑ j ∈ s, c1 j w • frame j w := by
@@ -656,7 +654,7 @@ theorem hbase_of_framePairs
     rw [Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
     exact hexp1 w hw
   refine bumpTower_slotExpand_conv (I := I) gRef A0Seq A0inf 0 x₀ hχ htsupp
-    hU hχU hUtarget s frame c1 hc1 (Function.update V 0 (frame i)) 1 hUKc hexp1' ?_
+    hU hχU s frame c1 hc1 (Function.update V 0 (frame i)) 1 hUKc hexp1' ?_
   intro j
   have hbridge : ∀ (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2),

@@ -91,6 +91,7 @@ private theorem smoothN_eq
         (deTurckSmoothRemainder (I := I) g gB T hδ_lt hδ) :=
   rfl
 
+omit [SigmaCompactSpace M] in
 private theorem smoothRem_congr
     (g gB : SmoothRiemannianMetric I M)
     {S U : SmoothCcTensor g 0 2} (h : S = U) {δ : ℝ} (hδ_lt : δ < 1)

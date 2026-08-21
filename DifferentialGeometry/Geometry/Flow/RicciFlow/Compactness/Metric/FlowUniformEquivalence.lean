@@ -89,7 +89,6 @@ variable [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
 theorem metricLogDerivativeInput_of_solutions
-    [SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
     (hS : forall i : Nat, DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) (S i))
@@ -120,7 +119,6 @@ theorem metricLogDerivativeInput_of_solutions
 
 omit [SigmaCompactSpace M] in
 theorem metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable
-    [SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
     (hS : forall i : Nat, DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) (S i))
@@ -157,7 +155,7 @@ theorem metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable
 
 omit [SigmaCompactSpace M] in
 theorem metric_uniform_equivalent_on_window_of_solutions
-    [SigmaCompactSpace M]
+    [hSigma : SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
     (hS : forall i : Nat, DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) (S i))
@@ -177,8 +175,9 @@ theorem metric_uniform_equivalent_on_window_of_solutions
             A * ((S i).family.metric t).inner x v v) :
     MetricUniformEquivalentOnWindow (I := I) K β ψ gRef
       (fun i s => (S i).family.metric s)
-      (fun t : Real => metricEquivalenceFactor C A t t0) :=
-  metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable S hS K β ψ t0 C A gRef hwin ht0 hC hA hequiv0 hquad
+      (fun t : Real => metricEquivalenceFactor C A t t0) := by
+  let _ := hSigma
+  exact metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable S hS K β ψ t0 C A gRef hwin ht0 hC hA hequiv0 hquad
     (fun i _x _hx v hv t ht =>
       ricci_directional_quotient_interval_integrable_of_solution
         (S i) (hS i) _x v hv t0 t

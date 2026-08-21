@@ -419,7 +419,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β_unconditional
               g r s) i‖ := by
     intro β Q
     exact eigenvector_chartComponent_perK_from_uniform_β_unconditional
-      (I := I) (M := M) g r s N CN hCN_nn eN hCN_bd β Q K' hK' i
+      (I := I) (M := M) g r s N CN eN hCN_bd β Q K' hK' i
   set RHS_each : ℝ≥0∞ := ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
     ENNReal.ofReal
       ‖tensorResolventEigenbasisVec (I := I) (M := M)

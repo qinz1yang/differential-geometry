@@ -49,7 +49,7 @@ theorem klLateKern_fac {R : ℝ} (hR : 0 < R) (x : V) :
       (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ klQDual V)
       (klTermMeasure (V := V) (R ^ 2)) := by
     have hm :=
-      (klTermKernel_memLp (V := V) (sq_pos_of_pos hR) x).integrable_norm_rpow
+      (klTermKernel_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
         (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     simpa only [ENNReal.toReal_ofReal hp.le] using hm
   have hmono :

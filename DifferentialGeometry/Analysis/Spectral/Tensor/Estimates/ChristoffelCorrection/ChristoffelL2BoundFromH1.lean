@@ -37,7 +37,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma chartPou_mul_chart_christoffel_correction_sum_sq_le_const_mul_tensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b')
-    {M_F : ℝ} (hM_F_nn : 0 ≤ M_F)
+    {M_F : ℝ}
     (hM_F_input : ∀ (S : SmoothCcTensor g r s) {b : M},
         b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
@@ -73,7 +73,7 @@ private lemma chartPou_mul_chart_christoffel_correction_sum_sq_le_const_mul_tens
   classical
   obtain ⟨C, hC_nn, h_sum⟩ :=
     exists_sum_chart_christoffel_correction_norm_sq_le_const_mul_tensorInnerPointwise_on_pouTsupport
-      (I := I) (M := M) g r s α X M_F hM_F_nn hM_F_input hM_F_output K_S hK_S_nn
+      (I := I) (M := M) g r s α X M_F hM_F_input hM_F_output K_S hK_S_nn
       hK_S_bound
   refine ⟨C, hC_nn, ?_⟩
   intro S b
@@ -203,7 +203,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b')
-    {M_F : ℝ} (hM_F_nn : 0 ≤ M_F)
+    {M_F : ℝ}
     (hM_F_input : ∀ (S : SmoothCcTensor g r s) {b : M},
         b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
@@ -242,7 +242,7 @@ theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_m
   classical
   obtain ⟨C, hC_nn, h_pt⟩ :=
     chartPou_mul_chart_christoffel_correction_sum_sq_le_const_mul_tensorInnerPointwise
-      (I := I) (M := M) g r s α X hM_F_nn hM_F_input hM_F_output hK_S_nn hK_S_bound
+      (I := I) (M := M) g r s α X hM_F_input hM_F_output hK_S_nn hK_S_bound
   refine ⟨Real.sqrt C, Real.sqrt_nonneg _, ?_⟩
   intro S
   set ρ : M → ℝ := fun x : M =>

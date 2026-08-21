@@ -100,7 +100,7 @@ theorem pouRawTrans
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem repCoeffEq
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) {v : EuclN → ℝ}
     (hv : tsupport v ⊆ chartImagePOUTsupport (I := I) (M := M) β)
     {x : M} (hxβ : x ∈ (chartAt H β).source) :
@@ -108,7 +108,7 @@ theorem repCoeffEq
         (transitionCoeff (E := E) (I := I) (M := M) r s β α P Q x *
           v (toEuclidean (E := E) (extChartAt I β x))) =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
-        (transportCoeffManifold (I := I) (M := M) g r s β α P Q x *
+        (transportCoeffManifold (I := I) (M := M) r s β α P Q x *
           v (toEuclidean (E := E) (extChartAt I β x))) := by
   classical
   by_cases hρα : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
@@ -148,23 +148,22 @@ theorem repCoeffEq
   ring
 
 theorem secPullLimitEq
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (β α : M) (P : TensorCompIdx (E := E) r s) :
     secChartComp (I := I) (M := M) r s
         (secModelPull (I := I) (M := M) r s β
-          (secModelLimit (I := I) (M := M) g r s k hp hp_top u h_cauchy β))
+          (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β))
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       (fun y => ∑ Q : TensorCompIdx (E := E) r s,
-        secTransTerm (I := I) (M := M) g r s β α P Q
-          (secCompRep (I := I) (M := M) g r s k hp hp_top u
+        secTransTerm (I := I) (M := M) r s β α P Q
+          (secCompRep (I := I) (M := M) r s k hp u
             h_cauchy β Q.1 Q.2) y) := by
   classical
   have hmem : ∀ᵐ y ∂((volume : Measure EuclN).restrict
@@ -179,26 +178,26 @@ theorem secPullLimitEq
   unfold secCompPou
   by_cases hxβ : x ∈ (chartAt H β).source
   · rw [secPull_raw_trans (E := E) (I := I) (M := M) r s β α
-      (secModelLimit (I := I) (M := M) g r s k hp hp_top u h_cauchy β)
+      (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β)
       P ⟨hxβ, hxα⟩, Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro Q _
-    rw [secModelLimit_proj (I := I) (M := M) g r s k hp hp_top u
+    rw [secModelLimit_proj (I := I) (M := M) r s k hp u
       h_cauchy β (toEuclidean (E := E) (extChartAt I β x)) Q.1 Q.2]
     unfold secTransTerm chartPushed
     rw [chartPullback_apply_of_mem (I := I) (M := M) β _ hxβ,
-      transCoeffE_apply (I := I) (M := M) g r s β α P Q hxβ]
-    exact repCoeffEq (I := I) (M := M) g r s β α P Q
-      (secCompRep_support (I := I) (M := M) g r s k hp hp_top u
+      transCoeffE_apply (I := I) (M := M) r s β α P Q hxβ]
+    exact repCoeffEq (I := I) (M := M) r s β α P Q
+      (secCompRep_support (I := I) (M := M) r s k hp u
         h_cauchy β Q.1 Q.2) hxβ
   · have hpull : secModelPull (I := I) (M := M) r s β
-        (secModelLimit (I := I) (M := M) g r s k hp hp_top u h_cauchy β) x = 0 := by
+        (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β) x = 0 := by
       unfold secModelPull
       rw [dif_neg hxβ]
     have htriv :
         secTriv (I := I) (M := M) r s
             (secModelPull (I := I) (M := M) r s β
-              (secModelLimit (I := I) (M := M) g r s k hp hp_top u h_cauchy β))
+              (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β))
             α x = 0 := by
       unfold secTriv
       let L : TensorRSSpace r s I x →L[ℝ] TensorRSModel r s ℝ E :=
@@ -206,7 +205,7 @@ theorem secPullLimitEq
           (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ x
       change L
         (secModelPull (I := I) (M := M) r s β
-          (secModelLimit (I := I) (M := M) g r s k hp hp_top u h_cauchy β) x) = 0
+          (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β) x) = 0
       rw [hpull]
       exact L.map_zero
     have hproj :
@@ -221,7 +220,7 @@ theorem secPullLimitEq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem secCompDecomp
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (r s : ℕ)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
     secChartComp (I := I) (M := M) r s S α P.1 P.2 =ᵐ[
@@ -229,7 +228,7 @@ theorem secCompDecomp
         (chartTargetEuclid (I := I) (M := M) α)]
       (fun y => ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
-          secTransTerm (I := I) (M := M) g r s β α P Q
+          secTransTerm (I := I) (M := M) r s β α P Q
             (secChartComp (I := I) (M := M) r s S β Q.1 Q.2) y) := by
   classical
   have hmem : ∀ᵐ y ∂((volume : Measure EuclN).restrict
@@ -259,7 +258,7 @@ theorem secCompDecomp
       refine Finset.sum_congr rfl (fun β _ => by ring)
     _ = ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
-          secTransTerm (I := I) (M := M) g r s β α P Q
+          secTransTerm (I := I) (M := M) r s β α P Q
             (secChartComp (I := I) (M := M) r s S β Q.1 Q.2) y := by
       refine Finset.sum_congr rfl ?_
       intro β _
@@ -270,7 +269,7 @@ theorem secCompDecomp
         intro Q _
         unfold secTransTerm chartPushed
         rw [chartPullback_apply_of_mem (I := I) (M := M) β _ hxβ,
-          transCoeffE_apply (I := I) (M := M) g r s β α P Q hxβ,
+          transCoeffE_apply (I := I) (M := M) r s β α P Q hxβ,
           secComp_coord (I := I) (M := M) r s S β Q hxβ,
           transportCoeffManifold_apply]
         have hcut := pouCutoffMul (I := I) (M := M) α x

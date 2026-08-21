@@ -184,6 +184,7 @@ lemma ricciFoldBiContrFibFixedFrame_toModel (g₀ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciFoldKernelBilin_homSection_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     {p q : Π b : M, TangentSpace I b}
@@ -236,6 +237,7 @@ theorem ricciFoldKernelBilin_homSection_contMDiff (g₀ : SmoothRiemannianMetric
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciFoldBiContrFibFixedFrame_apply_section_contMDiff
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -326,6 +328,7 @@ theorem ricciFoldBiContrFibFixedFrame_apply_section_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciFoldBiContrFibFixedFrame_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -386,6 +389,7 @@ theorem ricciFoldBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianM
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciFoldBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -419,6 +423,7 @@ def ricciArmRicciFoldRemainderField (g₀ g₁ : SmoothRiemannianMetric I M)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem ricciArmRicciFoldRemainderField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M) :
     (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁ S).toSection x =
@@ -427,6 +432,7 @@ omit [I.Boundaryless] in
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciArmRicciFoldRemainderField_zero_weight (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
       (0 : SmoothCcTensor g₀ 0 2) = 0 := by

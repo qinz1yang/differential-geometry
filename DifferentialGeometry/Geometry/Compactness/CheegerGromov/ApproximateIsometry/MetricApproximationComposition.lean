@@ -29,7 +29,6 @@ variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricInner_nonneg
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     0 ≤ g.inner x v v := by
   by_cases hv : v = 0
@@ -38,7 +37,6 @@ theorem metricInner_nonneg
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricEquiv_mono
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {K : Set M} {g h : SmoothRiemannianMetric I M} {C C' : Real}
     (hCC' : C ≤ C')
     (hgh : MetricUniformEquivalentOn (I := I) K g h C) :
@@ -59,7 +57,6 @@ theorem metricEquiv_mono
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricEquiv_trans
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {K : Set M} {g h k : SmoothRiemannianMetric I M} {C₁ C₂ : Real}
     (hgh : MetricUniformEquivalentOn (I := I) K g h C₁)
     (hhk : MetricUniformEquivalentOn (I := I) K h k C₂) :
@@ -87,7 +84,6 @@ theorem metricEquiv_trans
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricEquiv_comp_eps
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {K : Set M} {g h k : SmoothRiemannianMetric I M} {eps₀ eps₁ : Real}
     (heps₀ : 0 ≤ eps₀) (heps₀1 : eps₀ ≤ 1)
     (heps₁ : 0 ≤ eps₁)

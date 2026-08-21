@@ -84,7 +84,7 @@ private theorem full_gauge
     forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
       (I := I) X_DT T hT hsmoothX
   obtain ⟨Φ_fam, hfam0, hfameq, hfamode⟩ :=
-    time_dependent_vf_bare_flow_family (I := I) X_DT T hT Φ hΦ0
+    time_dependent_vf_bare_flow_family (I := I) X_DT T Φ
       (fun t ht htT => hdiffeo t ⟨ht, htT⟩)
       (fun t ht htT x => hflow t ⟨ht, htT⟩ x)
   have hfun_eqOn : ∀ s ∈ Set.Ico (0 : ℝ) T,

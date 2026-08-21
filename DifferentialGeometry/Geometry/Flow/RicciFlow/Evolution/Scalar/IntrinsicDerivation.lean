@@ -437,6 +437,7 @@ theorem scalarLaplacianTraceInFrame_coord_eq_laplacianAt
   ring
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem coordScalarRmTrace_center
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -510,7 +511,7 @@ private theorem coordScalarRmTrace_center
   have hmain :=
     DifferentialGeometry.Geometry.Curvature.metricTrace_rm04RicciContractionAt_eq_neg_inner
       (I := I) basis (S.base.rm04 (t : Real) x₀) gInv (S.ricci (t : Real) x₀)
-      hTrace hOutput hFirst hRicAt hInvSym
+      hTrace hOutput
   simpa [basis, hbasis_def, hgInv_def, coordinateFrameAt_toBasis_apply,
     DifferentialGeometry.Geometry.Curvature.rm04RicciContractionAt,
     DifferentialGeometry.Geometry.Curvature.raised02CompAt,
@@ -520,7 +521,7 @@ private theorem coordScalarRmTrace_center
     ricciCompInFrame, ricciTwoTensorField,
     SolutionOn.ricciAt, SolutionFamily.ricciAt] using hmain
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem coordScalarTraceDerivRHS_center
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

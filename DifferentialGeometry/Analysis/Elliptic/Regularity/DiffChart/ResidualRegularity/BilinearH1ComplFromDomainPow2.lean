@@ -46,20 +46,20 @@ theorem memWkpChart_two_two_smooth_mul_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       (fun x : M => (φ : M → ℝ) x *
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x) := by
   have h_uh := (laplacianDomain_memWkpChart_two_unconditional
     (I := I) (M := M) g hu_h).1
   exact DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_smooth_mul
-    (I := I) (M := M) g (by norm_num : (1 : ℝ≥0∞) ≤ 2) φ h_uh
+    (I := I) (M := M) (by norm_num : (1 : ℝ≥0∞) ≤ 2) φ h_uh
 
 theorem memWkpChart_two_two_smoothMulLp_laplacianDomain_coeFn
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((smoothMulLp (I := I) (M := M) g φ
         (H1ComplToLp (I := I) (M := M) g u_h) :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
@@ -76,7 +76,7 @@ theorem memWkpChart_two_two_smoothMulLp_preimage_coeFn
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((smoothMulLp (I := I) (M := M) g φ
         (laplacianDomain.preimage (I := I) (M := M) g
           ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain

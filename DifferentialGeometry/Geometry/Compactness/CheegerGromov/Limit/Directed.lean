@@ -28,10 +28,10 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 section Chain
 
 noncomputable def PartialDiffeomorph.refl (M : Type u) [TopologicalSpace M]
-    [ChartedSpace H M] [IsManifold I ∞ M] :
+    [ChartedSpace H M] [hManifold : IsManifold I ∞ M] :
     PartialDiffeomorph I I M M (∞ : WithTop ℕ∞) where
   toPartialEquiv := PartialEquiv.refl M
-  open_source := isOpen_univ
+  open_source := let _ := hManifold; isOpen_univ
   open_target := isOpen_univ
   contMDiffOn_toFun := contMDiff_id.contMDiffOn
   contMDiffOn_invFun := contMDiff_id.contMDiffOn
@@ -314,13 +314,13 @@ theorem closedEBall_ofReal_subset_ball {α : Type*} [PseudoMetricSpace α]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem data_image_metric_ball
-    {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+@[nolint unusedArguments] theorem data_image_metric_ball
+    {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
+    [IsManifold I ∞ M]
     [PseudoMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M]
-    {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
-    [SigmaCompactSpace N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
+    [IsManifold I ∞ N]
     [PseudoMetricSpace N] [RiemannianBundle (fun y : N => TangentSpace I y)]
     [IsRiemannianManifold I N]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {O : M} {r r₂ R ε : ℝ} {p : ℕ}
@@ -341,7 +341,7 @@ theorem data_image_metric_ball
   have hyClosed :
       y ∈ Metric.closedEBall ((Φ : M → N) O)
         (ENNReal.ofReal (Real.sqrt (1 + ε) * r)) :=
-    data_image_ball (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hdata hsub hyE
+    data_image_ball (I := I) Φ hgnorm hhnorm hrr₂ hε0 hdata hsub hyE
   exact closedEBall_ofReal_subset_ball ((Φ : M → N) O)
     (mul_nonneg (Real.sqrt_nonneg _) hr.le) hR hyClosed
 
@@ -350,11 +350,13 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem data_image_metric_ball_of_superset
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [PseudoMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M]
-    {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
-    [SigmaCompactSpace N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
+    [hT2N : T2Space N] [IsManifold I ∞ N]
+    [hSigmaN : SigmaCompactSpace N]
+    [hManifoldN : IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [PseudoMetricSpace N] [RiemannianBundle (fun y : N => TangentSpace I y)]
     [IsRiemannianManifold I N]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {O : M} {r r₂ R ε : ℝ} {p : ℕ}
@@ -368,8 +370,12 @@ theorem data_image_metric_ball_of_superset
     (hK : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ K)
     (hdata : MapMetricApproximationOn (I := I) K ε p (Φ : M → N) g h)
     (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source) :
-    (Φ : M → N) '' Metric.ball O r ⊆ Metric.ball ((Φ : M → N) O) R :=
-  data_image_metric_ball (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR
+    (Φ : M → N) '' Metric.ball O r ⊆ Metric.ball ((Φ : M → N) O) R := by
+  let _ := hManifoldM
+  let _ := hT2N
+  let _ := hSigmaN
+  let _ := hManifoldN
+  exact data_image_metric_ball (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR
     (hdata.mono hK le_rfl hdata.eps_lt_one) hsub
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
@@ -501,8 +507,8 @@ set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem tensor02CovDeriv_metric_zero {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
-    [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
-    [IsManifold I 1 M'] [IsManifold I 2 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
+    [IsManifold I ∞ M'] [T2Space M']
+    [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (g : SmoothRiemannianMetric I M') (a : ℕ) :
     tensor02CovDeriv (I := I) (Tensor0SBundle.metricTensorField (I := I) g) g (a + 1) = 0 := by
   rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov, iterCov_metric_zero,
@@ -512,10 +518,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem partial_diffeomorph_metric_approximation_refl {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
     [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
-    [IsManifold I 1 M'] [IsManifold I 2 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
+    [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (K : Set M') (g : SmoothRiemannianMetric I M') (ε : ℝ) (hε : 0 < ε) (hε1 : ε < 1) (p : ℕ) :
     Nonempty (PartialDiffeomorphMetricApproximation (I := I) K ε p
       (PartialDiffeomorph.refl (I := I) M') g g) := by
+  let _ := (inferInstance : (SigmaCompactSpace M'))
   classical
   have hcoe : ∀ x : M', (PartialDiffeomorph.refl (I := I) M' : M' → M') x = x := fun _ => rfl
   have hmfd : ∀ x : M', mfderiv I I (PartialDiffeomorph.refl (I := I) M' : M' → M') x
@@ -586,10 +593,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem reflSepData {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
     [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
-    [IsManifold I 1 M'] [IsManifold I 2 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
+    [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (K : Set M') (g : SmoothRiemannianMetric I M') (p : ℕ) :
     Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I) K 0 0 p
       (PartialDiffeomorph.refl (I := I) M') g g) := by
+  let _ := (inferInstance : (SigmaCompactSpace M'))
   classical
   have hcoe : ∀ x : M', (PartialDiffeomorph.refl (I := I) M' : M' → M') x = x := fun _ => rfl
   have hmfd : ∀ x : M', mfderiv I I (PartialDiffeomorph.refl (I := I) M' : M' → M') x
@@ -1100,6 +1108,7 @@ theorem exists_strictMono_ge (T : ℕ → ℕ) :
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
     (B : PairwiseApproximateIsometryInput (X := X) P) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧

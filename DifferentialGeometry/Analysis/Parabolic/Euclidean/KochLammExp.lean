@@ -15,17 +15,18 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
 def klQReal (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   (Module.finrank ℝ V + 4 : ℝ) / 2
 
 def klQDual (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   (Module.finrank ℝ V + 4 : ℝ) / (Module.finrank ℝ V + 2 : ℝ)
 
 def klHeatExp (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   (Module.finrank ℝ V : ℝ) * (1 - klQDual V) / 2
 
+omit [FiniteDimensional ℝ V] in
 theorem klQReal_ofReal : ENNReal.ofReal (klQReal V) = klQ V := by
   unfold klQReal klQ klP
   rw [ENNReal.ofReal_div_of_pos (by norm_num : (0 : ℝ) < 2)]
@@ -34,6 +35,7 @@ theorem klQReal_ofReal : ENNReal.ofReal (klQReal V) = klQ V := by
   rw [ENNReal.ofReal_natCast]
   norm_num
 
+omit [FiniteDimensional ℝ V] in
 theorem klQ_holder : (klQDual V).HolderConjugate (klQReal V) := by
   let n : ℝ := Module.finrank ℝ V
   have hn2 : 0 < n + 2 := by
@@ -52,6 +54,7 @@ theorem klQ_holder : (klQDual V).HolderConjugate (klQReal V) := by
   · unfold klQReal
     positivity
 
+omit [FiniteDimensional ℝ V] in
 theorem klHeatExp_eq :
     klHeatExp V =
       -(Module.finrank ℝ V : ℝ) / (Module.finrank ℝ V + 2 : ℝ) := by
@@ -60,6 +63,7 @@ theorem klHeatExp_eq :
   field_simp [hn2]
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klHeatExp_gt : -1 < klHeatExp V := by
   rw [klHeatExp_eq]
   have hn2 : 0 < (Module.finrank ℝ V : ℝ) + 2 := by positivity
@@ -70,7 +74,8 @@ theorem klHeatExp_gt : -1 < klHeatExp V := by
   rw [neg_lt_neg_iff]
   exact (div_lt_one hn2).2 (by linarith)
 
-theorem klTimePow_intble {t : ℝ} (_ht : 0 < t) :
+omit [FiniteDimensional ℝ V] in
+theorem klTimePow_intble {t : ℝ} :
     IntervalIntegrable (fun s : ℝ ↦ (t - s) ^ klHeatExp V)
       volume (t / 2) t := by
   have hbase : IntervalIntegrable (fun u : ℝ ↦ u ^ klHeatExp V)

@@ -139,7 +139,7 @@ private theorem mfderiv_apply_section_smooth_along_diffeo
   exact h
 
 noncomputable def Diffeomorph.pullbackMetric
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
     SmoothRiemannianMetric I M where
   inner x := Diffeomorph.pullbackInner g Φ x
@@ -205,13 +205,13 @@ noncomputable def Diffeomorph.pullbackMetric
 
 
 theorem diffeomorph_pullback_metric_exists
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
     ∃ g' : SmoothRiemannianMetric I M, g' = Diffeomorph.pullbackMetric g Φ :=
   ⟨Diffeomorph.pullbackMetric g Φ, rfl⟩
 
 theorem Diffeomorph.pullbackMetric_inner
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M) (v w : TangentSpace I x) :
     (Diffeomorph.pullbackMetric g Φ).inner x v w
       = g.inner (Φ x) (mfderiv I I Φ x v) (mfderiv I I Φ x w) :=
@@ -219,7 +219,7 @@ theorem Diffeomorph.pullbackMetric_inner
 
 
 theorem Diffeomorph.pullbackMetric_refl
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     Diffeomorph.pullbackMetric g (_root_.Diffeomorph.refl I M ∞) = g := by
   rcases g with ⟨inner_g, symm_g, pos_g, isVonN_g, contMDiff_g⟩
@@ -250,7 +250,7 @@ theorem Diffeomorph.pullbackMetric_refl
 
 theorem Diffeomorph.pullbackMetric_trans
     {P : Type*} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
-    [SigmaCompactSpace M] [T2Space M] [SigmaCompactSpace N] [T2Space N]
+    [T2Space M] [T2Space N]
     (g : SmoothRiemannianMetric I P) (Φ : M ≃ₘ⟮I, I⟯ N) (Ψ : N ≃ₘ⟮I, I⟯ P) :
     Diffeomorph.pullbackMetric (Diffeomorph.pullbackMetric g Ψ) Φ =
       Diffeomorph.pullbackMetric g (Φ.trans Ψ) := by
@@ -276,7 +276,7 @@ theorem Diffeomorph.pullbackMetric_trans
   rfl
 
 theorem Diffeomorph.pullbackInner_contMDiff
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) x

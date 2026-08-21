@@ -147,7 +147,6 @@ private theorem hamilton_car_subset
         (Q.time (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hamiltonBlowupScale (I := I) P Q
           (hamiltonStart (I := I) P Q hsel hwindow + i))
-        (hsel.1 (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hsel.2.2.1 (hamiltonStart (I := I) P Q hsel hwindow + i))).carrier := by
   intro s hs
   change s ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 at hs
@@ -196,7 +195,6 @@ private theorem hamilton_reg_subset
         (Q.time (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hamiltonBlowupScale (I := I) P Q
           (hamiltonStart (I := I) P Q hsel hwindow + i))
-        (hsel.1 (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hsel.2.2.1 (hamiltonStart (I := I) P Q hsel hwindow + i))).regular := by
   intro s hs
   change s ∈ Set.Ioo (-(hamilton_reference_radius ^ 2)) 0 at hs
@@ -313,7 +311,6 @@ private theorem hamilton_shi_car
         (Q.time (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hamiltonBlowupScale (I := I) P Q
           (hamiltonStart (I := I) P Q hsel hwindow + i))
-        (hsel.1 (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hsel.2.2.1 (hamiltonStart (I := I) P Q hsel hwindow + i))).carrier := by
   intro s hs
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
@@ -363,7 +360,6 @@ private theorem hamilton_shi_reg
         (Q.time (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hamiltonBlowupScale (I := I) P Q
           (hamiltonStart (I := I) P Q hsel hwindow + i))
-        (hsel.1 (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hsel.2.2.1 (hamiltonStart (I := I) P Q hsel hwindow + i))).regular := by
   intro s hs
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
@@ -572,7 +568,7 @@ private theorem hamilton_win_equiv
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
   let Draw := DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
     (Q.time j) (hamiltonBlowupScale (I := I) P Q j)
-    (hsel.1 j) (hsel.2.2.1 j)
+    (hsel.2.2.1 j)
   let Sraw : DifferentialGeometry.PDE.RicciFlow.SolutionOn
       (I := I) (M := M) Draw :=
     hamiltonRescaledSolution (I := I) P Q hsel j
@@ -657,7 +653,7 @@ private theorem hamilton_win_shi
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
   let Draw := DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
     (Q.time j) (hamiltonBlowupScale (I := I) P Q j)
-    (hsel.1 j) (hsel.2.2.1 j)
+    (hsel.2.2.1 j)
   let Sraw : DifferentialGeometry.PDE.RicciFlow.SolutionOn
       (I := I) (M := M) Draw :=
     hamiltonRescaledSolution (I := I) P Q hsel j
@@ -907,7 +903,7 @@ theorem hamilton_source_chart_jet_bound
   let j₀ := hamiltonStart (I := I) P Q hsel hwindow + subseq k
   let Draw := DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
     (Q.time j₀) (hamiltonBlowupScale (I := I) P Q j₀)
-    (hsel.1 j₀) (hsel.2.2.1 j₀)
+    (hsel.2.2.1 j₀)
   let Sraw : DifferentialGeometry.PDE.RicciFlow.SolutionOn
       (I := I) (M := (X.term (subseq k)).M) Draw := by
     change DifferentialGeometry.PDE.RicciFlow.SolutionOn
@@ -1198,7 +1194,7 @@ noncomputable def hamiltonSourceDerivativeInput
     let j := hamiltonStart (I := I) P Q hsel hwindow + i
     let Draw := DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
       (Q.time j) (hamiltonBlowupScale (I := I) P Q j)
-      (hsel.1 j) (hsel.2.2.1 j)
+      (hsel.2.2.1 j)
     let Sraw : DifferentialGeometry.PDE.RicciFlow.SolutionOn
         (I := I) (M := M) Draw :=
       hamiltonRescaledSolution (I := I) P Q hsel j
@@ -1306,7 +1302,7 @@ theorem hamilton_source_covariant_lipschitz_bound
         ∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
           MetricUniformEquivalentOn (I := I)
             (Set.univ : Set (SourceDomain (I := I) Φ k))
-            (refRes (I := I) Φ R hsrc k)
+            (refRes (I := I) Φ R k)
             (srcMetric (I := I) Φ hsrc htgt k t) Bmax)
     (hShi :
       letI : TopologicalSpace P₀.M := P₀.topology
@@ -1351,7 +1347,7 @@ theorem hamilton_source_covariant_lipschitz_bound
           ∀ y : SourceDomain (I := I) Φ k,
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k 0)
-                (refRes (I := I) Φ R hsrc k) y ≤ Cq) :
+                (refRes (I := I) Φ R k) y ≤ Cq) :
     SrcCovLipData (I := I) Φ R hsrc htgt (-(hamilton_reference_radius ^ 2)) 0 := by
   refine srcCovLip_of_flow (I := I)
     (β := -(hamilton_reference_radius ^ 2)) (ψ := 0) (t₀ := 0)
@@ -1361,7 +1357,6 @@ theorem hamilton_source_covariant_lipschitz_bound
         (Q.time (hamiltonStart (I := I) P Q hsel hwindow + subseq k))
         (hamiltonBlowupScale (I := I) P Q
           (hamiltonStart (I := I) P Q hsel hwindow + subseq k))
-        (hsel.1 (hamiltonStart (I := I) P Q hsel hwindow + subseq k))
         (hsel.2.2.1
           (hamiltonStart (I := I) P Q hsel hwindow + subseq k)))
     (fun k ↦ sourceFlowOf (I := I) Φ k (hsrc k) (htgt k)
@@ -1378,10 +1373,9 @@ theorem hamilton_source_covariant_lipschitz_bound
         (hsel.1 (hamiltonStart (I := I) P Q hsel hwindow + subseq k))
         (hsel.2.2.1
           (hamiltonStart (I := I) P Q hsel hwindow + subseq k))))
-    ?_ ?_ ?_ ?_ Bmax hBmax hequiv hShi hinit
+    ?_ ?_ ?_ Bmax hBmax hequiv hShi hinit
   · intro k r
     rfl
-  · exact neg_nonpos.mpr (sq_nonneg hamilton_reference_radius)
   · exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
   · intro k s hs
     apply hamilton_shi_reg (I := I) h0omega P hD Q hsel hwindow (subseq k)
@@ -1459,7 +1453,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   dsimp only at hcanonRel
   obtain ⟨Crel, hCrel, hrelZero⟩ := hcanonRel
   have hsrcZero (k : Nat) :
-      tgtRefSrc (I := I) Phi gRefT hsrc htgt k =
+      tgtRefSrc (I := I) Phi gRefT k =
         srcMetric (I := I) Phi hsrc htgt k 0 := by
     letI : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
@@ -1483,8 +1477,8 @@ theorem hamilton_flow_upgrade_of_metric_compactness
         sourceDomSmooth (I := I) Phi k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Phi k))
-        (refRes (I := I) Phi mc.limit.metric hsrc k)
-        (tgtRefSrc (I := I) Phi gRefT hsrc htgt k) Crel := by
+        (refRes (I := I) Phi mc.limit.metric k)
+        (tgtRefSrc (I := I) Phi gRefT k) Crel := by
     intro k
     rw [hsrcZero k]
     exact hrelZero k
@@ -1602,7 +1596,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       ∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
         MetricUniformEquivalentOn (I := I)
           (Set.univ : Set (SourceDomain (I := I) Phi k))
-          (refRes (I := I) Phi mc.limit.metric hsrc k)
+          (refRes (I := I) Phi mc.limit.metric k)
           (srcMetric (I := I) Phi hsrc htgt k t) (Crel * Bmax) := by
     intro k t ht
     letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
@@ -1678,7 +1672,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
                 sourceDomSigmaOf (I := I) Phi k (hsrc k)
               metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Phi hsrc htgt k t)
-                (refRes (I := I) Phi mc.limit.metric hsrc k) y ≤ C := by
+                (refRes (I := I) Phi mc.limit.metric k) y ≤ C := by
       intro q
       obtain ⟨C, hC, hcov⟩ := srcData.cov q
       exact ⟨C, hC, fun k t ht y _hy => hcov k t ht y⟩
@@ -1949,7 +1943,7 @@ structure HamiltonSourceLink
   time_mem : forall (i : Nat) (t : Real), t ∈ X.D.carrier ->
     t ∈ (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D (Q.time (origIndex i))
       (hamiltonBlowupScale (I := I) P Q (origIndex i))
-      (hsel.1 (origIndex i)) (hsel.2.2.1 (origIndex i))).carrier
+      (hsel.2.2.1 (origIndex i))).carrier
   basepoint_map : forall i : Nat,
     letI : TopologicalSpace (X.term i).M := (X.term i).topology
     letI : ChartedSpace H (X.term i).M := (X.term i).charted

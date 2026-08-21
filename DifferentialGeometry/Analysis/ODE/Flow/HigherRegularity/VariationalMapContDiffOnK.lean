@@ -491,7 +491,6 @@ theorem fderiv_flow_eq_coprod_spatialPiece
     {ρ_out ρ_mid ρ : ℝ≥0} {r' : ℝ≥0} (hr' : 0 < r')
     (hρ_lt_mid : (ρ : ℝ) < (ρ_mid : ℝ)) (hρ_mid_lt_out : (ρ_mid : ℝ) < (ρ_out : ℝ))
     (hρρ' : (ρ_mid : ℝ) + (r' : ℝ) ≤ (r : ℝ))
-    (_hρ_out_le_r : (ρ_out : ℝ) ≤ (r : ℝ))
     (hA_bd : ∀ x ∈ closedBall x₀ (ρ_out : ℝ), ∀ τ ∈ Icc (t₀ - T_out) (t₀ + T_out),
       ‖fderiv ℝ (f τ) (Φ ⟨x, τ⟩)‖ ≤ M) :
     ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
@@ -1224,7 +1223,7 @@ theorem contDiffOn_flow_succ_via_augFlow
   have hLsp_eq : ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
       fderiv ℝ Φ q = (spatialPieceFn Φ q).coprod (timePieceFn f Φ q) :=
     fderiv_flow_eq_coprod_spatialPiece hΦ hf_C1 hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
-      hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
+      hρ_lt_mid hρ_mid_lt_out hρρ' hA_bd
   exact contDiffOn_flow_succ_of_spatial_smooth hΦ hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
     hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd hf_succ hΦ_Ck hLsp_Ck hLsp_eq
 
@@ -1609,7 +1608,7 @@ theorem contDiffOn_flow_infty_of_spatial_smooth_all
   have hLsp_eq : ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
       fderiv ℝ Φ q = (spatialPieceFn Φ q).coprod (timePieceFn f Φ q) :=
     fderiv_flow_eq_coprod_spatialPiece hΦ hf_C1 hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
-      hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
+      hρ_lt_mid hρ_mid_lt_out hρρ' hA_bd
   rw [contDiffOn_infty]
   intro k
   have hf_Ck : ContDiffOn ℝ (k : ℕ∞) (uncurry f) (Set.univ : Set (ℝ × E)) := by

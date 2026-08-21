@@ -73,6 +73,7 @@ noncomputable def lowerScaleDiff
   (lowerScaleActionCoefficients (I := I) (M := M) g g T hδ_lt hδT hδZ).firstOrderCoefficientDifference
     (lowerScaleActionCoefficients (I := I) (M := M) g g U hδ_lt hδU hδZ)
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem rhsLow1_sub
     (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -340,10 +341,10 @@ theorem lowerScaleActionCoefficients_zeroOrderCoefficient_sub
   calc
     (RicciDeTurckLowOrder.selfLowInt (I := I) (M := M)
           g g T hδ_lt hδT hδZ +
-        metricPrincipalDefectCurvCoeff (I := I) g g g) -
+        metricPrincipalDefectCurvCoeff (I := I) g g) -
         (RicciDeTurckLowOrder.selfLowInt (I := I) (M := M)
           g g U hδ_lt hδU hδZ +
-        metricPrincipalDefectCurvCoeff (I := I) g g g) =
+        metricPrincipalDefectCurvCoeff (I := I) g g) =
       RicciDeTurckLowOrder.selfLowInt (I := I) (M := M)
           g g T hδ_lt hδT hδZ -
         RicciDeTurckLowOrder.selfLowInt (I := I) (M := M)
@@ -408,6 +409,7 @@ theorem metricCorr_sub_h2
   simpa only [covariantJetNormSq, Nat.reduceAdd] using hmul g₁ g_bg (P - Q)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem metricCorr_tel
     (g gT gU g_bg : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
@@ -713,7 +715,7 @@ theorem firstOrderCoefficientDifference_tame
     exact hraw.trans (pow_le_pow_left₀ hbase0 hbase 2)
   have hpath := path_jetL2_le (I := I) (M := M)
     g 3 2 2 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := B) hB hpoint
+    (B := B) hpoint
   simpa only [covariantJetNormSq, firstOrderCoefficientDifference, Φ, S, N, B, Nat.reduceAdd,
     hδ_lt] using hpath
 
@@ -1788,6 +1790,7 @@ private noncomputable def lipOmega
       (metricLoweredConnectionDifferenceCoefficient (I := I) g gm))
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lipOmega_tel
     (g gT gU : SmoothRiemannianMetric I M) :
     lipOmega (I := I) (M := M) g gT -
@@ -2318,6 +2321,7 @@ theorem lieOmega_pair_h1
     _ = (B0 R * D2 + B1 R * A * D2) ^ 2 := by rw [hLeq]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem hat_eq_lip
     (g gm : SmoothRiemannianMetric I M) :
     connectionDifferenceMetricLoweredTensor (I := I) (M := M) g gm =
@@ -2396,6 +2400,7 @@ private theorem curvF_pair_h1
         covariantJetNormSq (I := I) (M := M) g 2 (T - U) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem quadB_tel
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gT -
@@ -2416,6 +2421,7 @@ private theorem quadB_tel
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem quadA_tel
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gT -
@@ -2924,6 +2930,7 @@ private theorem r4_pair_h1
     _ ≤ (2 * Cc + 2 * Cq) * (a + b) := by nlinarith only [hCc, hCq, ha0, hb0]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem lcvPair_eq_lip
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoublePairTraceCoefficient (I := I) (M := M) g gm =
@@ -3753,6 +3760,7 @@ private theorem hat_bdd_h2
   exact hbdd gT T hT hTtie hδ_le hδ0 hδT hδZ R A hR hA hT2 hT3
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem curvF_zero_lip
     (g : SmoothRiemannianMetric I M) :
     riemannCurvatureCoefficientField (I := I) (M := M) g (0 : SmoothCcTensor g 0 2) = 0 := by
@@ -4165,6 +4173,7 @@ private theorem r4_bdd_h1
           ring
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem edgePair_eq_lip
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -5178,7 +5187,8 @@ private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
         (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) B) =
       Tensor0SSpace.toModel
-        (slotExtendFib (I := I) (M := M) 0 3 x
+        (DifferentialGeometry.Integral.Connection.slotExtendFib
+          (I := I) (M := M) 0 3 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
             (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
           B) := by
@@ -5189,7 +5199,8 @@ private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (Fin.cons_self_tail u).symm]
   rw [tensor0SProdKappaFib_apply, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
+  rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval
+    (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
     B (u 0) (Fin.tail u)]
@@ -7352,6 +7363,7 @@ private theorem connInn_pair_h1
     (mul_le_mul_of_nonneg_left hp hfr)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem pureCoeff_eq_lip
     (g gm : SmoothRiemannianMetric I M) :
     cometricDoubleTraceCoefficient (I := I) (M := M) g gm =
@@ -7483,6 +7495,7 @@ private theorem fourtrace_pair_h2
   linarith [hF]
 
 omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] in
 private theorem decomposition_sub_lipschitz_bound
     (g : SmoothRiemannianMetric I M)
     (G H : SmoothCcTensor g 0 4) (σ : Equiv.Perm (Fin 4)) :
@@ -9808,7 +9821,7 @@ theorem zeroOrderCoefficientDifference_tame
     exact this
   have hpath := path_jetL2_le (I := I) (M := M)
     g 2 2 1 Φ S metricPerturbationPathDomain_isOpen hSI hjoint
-    (B := Btot) hB0
+    (B := Btot)
     (by
       intro t ht
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint t ht)

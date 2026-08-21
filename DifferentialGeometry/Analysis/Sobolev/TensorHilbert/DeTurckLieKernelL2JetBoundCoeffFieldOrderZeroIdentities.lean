@@ -51,6 +51,7 @@ def deTurckLieConnectionDifferenceDerivCoeffField (g₀ g₁ g_bg : SmoothRieman
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem deTurckLieConnectionDifferenceDerivCoeffField_toSection
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
@@ -68,6 +69,7 @@ def deTurckLieCovariantDerivativeInsertionField (g₀ g₁ g_bg : SmoothRiemanni
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem deTurckLieCovariantDerivativeInsertionField_toSection
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
@@ -75,6 +77,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         TensorRSSpace.ofCLM (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x)) := rfl
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg +
@@ -106,6 +109,7 @@ theorem connectionDifference_cocycle (gA gB gC : SmoothRiemannianMetric I M) (x 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeA_backgroundSplit
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (X P Q : Π b : M, TangentSpace I b) (x : M)
@@ -249,6 +253,7 @@ theorem deTurckLieCovariantDerivativeA_backgroundSplit
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivativeCovKernel_backgroundSplit (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
     connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 p q =

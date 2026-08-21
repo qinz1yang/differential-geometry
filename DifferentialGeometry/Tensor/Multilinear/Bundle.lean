@@ -15,7 +15,7 @@ section defs
 variable (𝕜 : Type*) [NontriviallyNormedField 𝕜] (s : ℕ)
 variable {B : Type*}
 
-@[reducible]
+@[reducible, nolint unusedArguments]
 protected def Bundle.continuousMultilinearMap (_F : Type*) (E : B → Type*)
     [Π x, AddCommMonoid (E x)] [Π x, Module 𝕜 (E x)] [Π x, TopologicalSpace (E x)]
     (x : B) : Type _ :=

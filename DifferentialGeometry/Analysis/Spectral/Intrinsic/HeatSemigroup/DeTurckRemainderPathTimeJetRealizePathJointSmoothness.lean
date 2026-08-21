@@ -222,6 +222,8 @@ private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
       · intro k; simp [Fin.cons_succ]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckRHSField_realizePath_jointContMDiffOn
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ}
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)

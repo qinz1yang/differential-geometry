@@ -273,6 +273,7 @@ theorem ccTensorBilin_scalar_contMDiff (g : SmoothRiemannianMetric I M)
   fin_cases i <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ccTensorBilin_contMDiff (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -324,6 +325,7 @@ theorem ccTensorBilinSymm_symm (g : SmoothRiemannianMetric I M)
   rw [ccTensorBilinSymm_apply, ccTensorBilinSymm_apply, add_comm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ccTensorBilinSymm_contMDiff (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -369,6 +371,8 @@ def tensorSectionRealizeMetric (g : SmoothRiemannianMetric I M)
     (ccTensorBilinSymm_contMDiff (I := I) g T) hδ_lt hδ
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem tensorSectionRealizeMetric_inner (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -380,6 +384,8 @@ omit [CompactSpace M] in
   rw [perturbedMetric_inner, perturbedInner_apply]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem exists_smooth_metric_of_smooth_tensor_small
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ' : ℝ} (hδ'_lt : δ' < 1)

@@ -92,7 +92,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartTensor0SCovariantDerivative_eq_abstract_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (T : Π b : M, Tensor0SSpace 0 I b) (X : Π b : M, TangentSpace I b)
-    {b : M} (_hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
+    {b : M} :
     chartTensor0SCovariantDerivative (I := I) 0 g α T X b =
       Tensor0SNabla.tensor0SCovariantDerivative I M 0
           (LeviCivita (I := I) g) T b (X b) := by
@@ -114,12 +114,12 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_zero
 example
     (g : SmoothRiemannianMetric I M) (α : M)
     (T : Π b : M, Tensor0SSpace 0 I b) (X : Π b : M, TangentSpace I b)
-    {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
+    {b : M} :
     chartTensor0SCovariantDerivative (I := I) 0 g α T X b =
       Tensor0SNabla.tensor0SCovariantDerivative I M 0
           (LeviCivita (I := I) g) T b (X b) :=
   chartTensor0SCovariantDerivative_eq_abstract_zero
-    (I := I) (M := M) g α T X hb
+    (I := I) (M := M) g α T X
 
 end Connection
 end Geometry

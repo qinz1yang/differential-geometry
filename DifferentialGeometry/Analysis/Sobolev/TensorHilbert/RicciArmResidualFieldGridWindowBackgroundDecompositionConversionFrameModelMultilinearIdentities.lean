@@ -90,7 +90,7 @@ lemma unitModel_sub_pt (s : ℕ) (A B : SmoothCcTensor g₀ 0 s) (x : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma toModel_cons_sum_smul (_x : M) {n : ℕ}
+lemma toModel_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons (∑ c, t c • u c) rest) =
@@ -124,7 +124,7 @@ lemma toModel_cons_sum_smul (_x : M) {n : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma toModel_cons_cons_sum_smul (_x : M) {n : ℕ}
+lemma toModel_cons_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons aa (Fin.cons (∑ c, t c • u c) rest)) =
@@ -293,9 +293,9 @@ lemma slotExtend_toModel_cons (r s : ℕ) (Φ : SmoothCcTensor g₀ r s) (x : M)
           (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D v0)) vs := by
   rw [show ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g₀ r s Φ).toSection x) D) =
-      slotExtendPointwise (I := I) (M := M) g₀ r s x
+      slotExtendPointwise (I := I) (M := M) r s x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x) D from rfl]
-  exact slotExtendFib_apply_eval (I := I) (M := M) g₀ r s x
+  exact slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x) D
     (show E from v0) vs
 
@@ -595,7 +595,7 @@ lemma tensorBilinearPairing_expand_right (S : SmoothCcTensor g₀ 0 2) (x : M)
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma toModel_vec3_slot0_sum_smul (_x : M)
+lemma toModel_vec3_slot0_sum_smul
     (Zm : Tensor0SModel 3 ℝ E) (d : ℕ) (t : Fin d → ℝ) (u : Fin d → E) (a b : E) :
     Zm ![∑ c, t c • u c, a, b] = ∑ c, t c * Zm ![u c, a, b] := by
   classical
@@ -627,7 +627,7 @@ lemma toModel_vec3_slot0_sum_smul (_x : M)
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma toModel_vec3_slot2_sum_smul (_x : M)
+lemma toModel_vec3_slot2_sum_smul
     (Zm : Tensor0SModel 3 ℝ E) (d : ℕ) (t : Fin d → ℝ) (u : Fin d → E) (a b : E) :
     Zm ![a, b, ∑ c, t c • u c] = ∑ c, t c * Zm ![a, b, u c] := by
   classical

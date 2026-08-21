@@ -433,7 +433,7 @@ theorem metricDerivNorm_le_metricDerivNormSupOn [CompactSpace M]
 omit [SigmaCompactSpace M] in
 theorem exists_uniform_equiv_of_metricCPConv [CompactSpace M]
     (gSeq : Nat -> SmoothRiemannianMetric I M) (gInf : SmoothRiemannianMetric I M)
-    (hconv : MetricCPConvOn (I := I) Set.univ isCompact_univ 0 gSeq gInf gInf) :
+    (hconv : MetricCPConvOn (I := I) Set.univ 0 gSeq gInf gInf) :
     ∃ C : Real, forall k : Nat,
       MetricUniformEquivalentOn (I := I) Set.univ gInf (gSeq k) C := by
   classical

@@ -61,9 +61,8 @@ theorem interior_local_flow_existence
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem chartcover_orbit_is_bare_integral_curve
-    (X : ℝ → ∀ x : M, TangentSpace I x) (_hX : AutonomizedFieldJointC1 (I := I) X)
-    (T : ℝ) (_hT : 0 < T) (Φcc : ℝ → M → M)
-    (_hΦcc0 : ∀ x : M, Φcc 0 x = x)
+    (X : ℝ → ∀ x : M, TangentSpace I x)
+    (T : ℝ) (Φcc : ℝ → M → M)
     (hper : ∀ α : M, ChartLocalPicardData (I := I) X α)
     (hTle : ∀ α : M, T ≤ (hper α).T)
     (hrepr : ∀ x : M, ∃ α : M, x ∈ (hper α).U ∧ ∀ s : ℝ, Φcc s x =
@@ -180,9 +179,6 @@ private noncomputable def flowBijectiveHorizon
     (hinputs : ChartFlowEngineInputs (I := I) X hper hperNeg) : ℝ :=
   chart_cover_flow_bijective_two_sided_uniform_horizon (I := I) X hper hperNeg
     (glueFlow (I := I) X hper) (glueFlow (I := I) (fun t x => -(X t x)) hperNeg)
-    (glueFlow_spec (I := I) X hper).1 (glueFlow_spec (I := I) (fun t x => -(X t x)) hperNeg).1
-    (fun x => let ⟨α, _, h⟩ := (glueFlow_spec (I := I) X hper).2 x; ⟨α, h⟩)
-    (fun x => let ⟨α, _, h⟩ := (glueFlow_spec (I := I) (fun t x => -(X t x)) hperNeg).2 x; ⟨α, h⟩)
     (hinputs.bijPerChart (glueFlow (I := I) X hper)
       (glueFlow (I := I) (fun t x => -(X t x)) hperNeg)
       (glueFlow_spec (I := I) X hper).1 (glueFlow_spec (I := I) (fun t x => -(X t x)) hperNeg).1
@@ -190,18 +186,14 @@ private noncomputable def flowBijectiveHorizon
       (fun x => let ⟨α, _, h⟩ := (glueFlow_spec (I := I) (fun t x => -(X t x)) hperNeg).2 x;
         ⟨α, h⟩)) |>.choose
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 theorem interior_flow_uniqueness_glue
-    (X : ℝ → ∀ x : M, TangentSpace I x) (hX : AutonomizedFieldJointC1 (I := I) X)
+    (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (hT : 0 < T)
     (hper : ∀ α : M, ChartLocalPicardData (I := I) X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (I := I) (fun t x => -(X t x)) α)
     (hTle : ∀ α : M, T ≤ (hper α).T)
-    (_hTleNeg : ∀ α : M, T ≤ (hperNeg α).T)
-    (_hSmoothX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      (X t ((chartAt H α).symm (I.symm y)) : E)))
-    (_hSmoothNegX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      ((-X t ((chartAt H α).symm (I.symm y))) : E)))
     (hinputs : ChartFlowEngineInputs (I := I) X hper hperNeg)
     (hThoriz : T ≤ flowBijectiveHorizon (I := I) X hper hperNeg hinputs)
     (hconf : ∀ x : M, ∀ α : M, x ∈ (hper α).U →
@@ -238,19 +230,19 @@ theorem interior_flow_uniqueness_glue
       (chartAt H α).symm (I.symm ((hper α).flow (I ((chartAt H α) x)) s)) := hΦreprU
   refine ⟨Φ, hΦ0, hΦrepr, ?_, ?_⟩
   · have hΦsmooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Φ t) :=
-      time_dependent_vf_flow_smooth_in_space X T hT Φ
+      time_dependent_vf_flow_smooth_in_space T hT Φ
         (hinputs.localFwd Φ T hT hΦreprU)
     have hΨreprU' : ∀ x : M, ∃ α : M, x ∈ (hperNeg α).U ∧ ∀ s : ℝ, Ψ s x =
         (chartAt H α).symm (I.symm ((hperNeg α).flow (I ((chartAt H α) x)) s)) := hΨreprU
     have hΨsmooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Ψ t) :=
-      time_dependent_vf_flow_smooth_in_space (fun t x => -(X t x)) T hT Ψ
+      time_dependent_vf_flow_smooth_in_space T hT Ψ
         (hinputs.localRev Ψ T hT hΨreprU)
     have hbij := (chart_cover_flow_bijective_two_sided_uniform_horizon (I := I) X hper hperNeg
-      Φ Ψ hΦ0 hΨ0 hΦrepr hΨrepr
+      Φ Ψ
       (hinputs.bijPerChart Φ Ψ hΦ0 hΨ0 hΦrepr hΨrepr)).choose_spec
     have hTbij_def : flowBijectiveHorizon (I := I) X hper hperNeg hinputs =
         (chart_cover_flow_bijective_two_sided_uniform_horizon (I := I) X hper hperNeg
-          Φ Ψ hΦ0 hΨ0 hΦrepr hΨrepr
+          Φ Ψ
           (hinputs.bijPerChart Φ Ψ hΦ0 hΨ0 hΦrepr hΨrepr)).choose := rfl
     obtain ⟨_hTbij_pos, hΨΦ, hΦΨ⟩ := hbij
     have hΨΦ_T : ∀ s ∈ Set.Ico (0 : ℝ) T, ∀ x : M, Ψ s (Φ s x) = x := by
@@ -263,7 +255,7 @@ theorem interior_flow_uniqueness_glue
     exact time_dependent_vf_hdiffeo_of_smooth_bijective Φ Ψ T
       hΦsmooth hΨsmooth hΨΦ_T hΦΨ_T t ht.1 ht.2
   · intro t ht x
-    exact chartcover_orbit_is_bare_integral_curve X hX T hT Φ hΦ0 hper hTle
+    exact chartcover_orbit_is_bare_integral_curve X T Φ hper hTle
       hΦreprU' hconf htgt t ht.1 ht.2 x
 
 end DifferentialGeometry.PDE.RicciFlow

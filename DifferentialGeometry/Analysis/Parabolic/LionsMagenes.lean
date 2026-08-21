@@ -10,11 +10,12 @@ open Set MeasureTheory
 theorem lions_magenes_intermediate_trace
     {X Y : Type*}
     [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y]
+    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
     (ι : X →L[ℝ] Y) {T : ℝ} (u : timeH1 X T) :
     ContinuousOn (fun t => ι (u.toFun t)) (Set.Icc (0 : ℝ) T) ∧
     ∀ t ∈ Set.Icc (0 : ℝ) T,
       ‖ι (u.toFun t)‖ ≤ ‖ι‖ * ((1 + Real.sqrt T) * ‖u‖) := by
+  let _ := (inferInstance : (CompleteSpace X))
   refine ⟨?_, ?_⟩
   · exact ι.continuous.comp_continuousOn u.continuousOn_toFun
   · intro t ht

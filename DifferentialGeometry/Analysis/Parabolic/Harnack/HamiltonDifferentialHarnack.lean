@@ -117,6 +117,7 @@ theorem gradientFun_add
     gradientFun (I := I) g (f + h) x = gradientFun (I := I) g f x + gradientFun (I := I) g h x := by
   simpa using (DifferentialGeometry.Geometry.Operator.gradFun_add g hf hh)
 
+omit [SigmaCompactSpace M] in
 theorem normGradSq_log_heat_evolution_identity
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}

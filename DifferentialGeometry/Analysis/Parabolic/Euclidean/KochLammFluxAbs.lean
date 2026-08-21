@@ -29,7 +29,7 @@ theorem klFluxPiece_abs {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
   let μ := klTailMeasure (V := V) R S
   have hkMem : MemLp (klFluxKernel (R ^ 2) w x)
       (ENNReal.ofReal (klPDual V)) μ :=
-    (klFluxKernel_memLp (V := V) (sq_pos_of_pos hR) w x).mono_measure
+    (klFluxKernel_memLp (V := V) (t := R ^ 2) w x).mono_measure
       (klTailTerm_le (V := V) R S)
   have hfMem : MemLp f (ENNReal.ofReal (klPReal V)) μ := by
     simpa only [klPReal_ofReal] using

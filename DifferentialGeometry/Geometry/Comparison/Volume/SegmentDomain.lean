@@ -189,6 +189,7 @@ theorem measurableSet_gBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem isClosed_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -213,6 +214,7 @@ theorem isClosed_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianM
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem measurableSet_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)

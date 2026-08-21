@@ -334,7 +334,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
     ∃ (aMin : Real) (_haMin : 0 < aMin)
         (inp : MetricCompactnessInputs (I := I) X)
         (L : NetLimitData inp.decay inp.D
-          (inp.properMetrics hcomplete hconn))
+          (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (phi : Nat → Nat) (hphi : StrictMono phi)
         (U : LiveSlot L inp.pack r → Set E)
         (C0 C1 : LiveSlot L inp.pack r → Set E)
@@ -346,7 +346,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
           InterSlot L inp.pack r alpha → E → E)
         (q : LiveSlot L inp.pack r → NNReal)
         (δ : LiveSlot L inp.pack r → Real),
-      let P := inp.properMetrics hcomplete hconn
+      let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
       let Lphi := L.subseq hphi
       let beta := fun (n : Nat) (alpha : LiveSlot L inp.pack r) =>
         seqCenterD inp.decay P Lphi n (alpha.1 : Nat)
@@ -479,10 +479,10 @@ theorem MetricCompactBase.exists_supp_cm_fin
     simpa only [inp, c0, MetricCompactnessInputs.ofBase] using hc0
   have hphys : 8 * Real.exp inp.decay.C < aMin * inp.D :=
     inp.physScale_of_extra haMin hc0'
-  let P := inp.properMetrics hcomplete hconn
+  let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
   obtain ⟨L, hstable⟩ := inp.exists_stable_net P
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hconv, hptsTail⟩ :=
-    inp.exists_supp_pts_fin h8' hradD' hradRatio' P L hstable r hr hconn
+    inp.exists_supp_pts_fin h8' hradRatio' P L hstable r hr hconn
   let Lphi := L.subseq hphi
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr,
       hbranchTail, hscaleTail, hreadTail⟩ :=
@@ -583,10 +583,10 @@ theorem MetricCompactBase.exists_supp_cm_fin
       choose radSeq hpos hactive hsmall hcap using hlocal
       refine ⟨radSeq, hcover, hhat, hweight, hpos, hactive, ?_, ?_⟩
       · intro epsilon hepsilon
-        exact finite_cover_two_tail hcover
+        exact finite_cover_two_tail
           (fun alpha a b x => radSeq alpha a b x < epsilon)
           (fun alpha => hsmall alpha epsilon hepsilon)
-      · exact finite_cover_two_tail hcover _ hcap
+      · exact finite_cover_two_tail _ hcap
 
 theorem MetricCompactBase.exists_supp_diag_fin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -603,7 +603,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
     ∃ (aMin : Real) (_haMin : 0 < aMin)
         (inp : MetricCompactnessInputs (I := I) X)
         (L : NetLimitData inp.decay inp.D
-          (inp.properMetrics hcomplete hconn))
+          (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (theta : Nat → Nat) (htheta : StrictMono theta)
         (U : LiveSlot L inp.pack r → Set E)
         (C0 C1 : LiveSlot L inp.pack r → Set E)
@@ -622,7 +622,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
           Nat → OpenPartialHomeomorph (E × E) (E × E))
         (eInf : LiveSlot L inp.pack r →
           OpenPartialHomeomorph (E × E) (E × E)),
-      let P := inp.properMetrics hcomplete hconn
+      let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
       let Ltheta := L.subseq htheta
       let index : Nat → Nat := fun n ↦ Ltheta.φ n
       let Xtheta : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
@@ -711,7 +711,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
       hqAcc, herr, hinvErr,
       hcore, hbranch, hscaleTail, hcapTail⟩ :=
     b.exists_supp_cm_fin hcomplete hconn r hr
-  let P := inp.properMetrics hcomplete hconn
+  let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
   let Lphi := L.subseq hphi
   have hq : ∀ alpha : LiveSlot L inp.pack r, 0 < q alpha := by
     intro alpha
@@ -858,14 +858,14 @@ theorem MetricCompactBase.exists_cm_on_source
     ∃ (aMin : Real) (_haMin : 0 < aMin)
         (inp : MetricCompactnessInputs (I := I) X)
         (L : NetLimitData inp.decay inp.D
-          (inp.properMetrics hcomplete hconn))
+          (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (phi : Nat → Nat) (hphi : StrictMono phi)
         (U : LiveSlot L inp.pack r → Set E)
         (aInf : (alpha : LiveSlot L inp.pack r) →
           Fin (inp.pack.A r) → E → Real)
         (q : LiveSlot L inp.pack r → NNReal)
         (δ : LiveSlot L inp.pack r → Real),
-      let P := inp.properMetrics hcomplete hconn
+      let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
       let Lphi := L.subseq hphi
       let beta := fun (n : Nat) (alpha : LiveSlot L inp.pack r) =>
         seqCenterD inp.decay P Lphi n (alpha.1 : Nat)

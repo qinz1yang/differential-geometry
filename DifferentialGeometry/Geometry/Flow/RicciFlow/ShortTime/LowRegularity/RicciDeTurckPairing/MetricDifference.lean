@@ -123,6 +123,7 @@ private theorem exists_covariantJetNormSq_three_operatorFieldComposition_fixed_r
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem metricComparisonEndomorphismField_sub_eq_differenceEndomorphismField_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g gT -

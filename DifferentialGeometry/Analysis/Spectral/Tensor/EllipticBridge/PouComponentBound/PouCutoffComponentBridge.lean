@@ -376,6 +376,7 @@ theorem tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
     (tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀)
 
 omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorL2ChartComponent_ae_eq_pou_transport_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -386,7 +387,7 @@ theorem tensorL2ChartComponent_ae_eq_pou_transport_sum
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ∑ β ∈ transportChartCenters (I := I) (M := M) α,
           ∑ Q : TensorCompIdx (E := E) r s,
-            ((chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+            ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
                 (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
               EuclN → ℝ) y) := by

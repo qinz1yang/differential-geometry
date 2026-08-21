@@ -285,8 +285,7 @@ def connTraceVec
     (expNegPotentialDensity_contMDiff (I := I) hpotential) traceVec
 
 theorem connTraceDivEq
-    [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {potential weightedDivergenceTrace rawTrace actionTrace : M -> Real}
     (hpotential : ContMDiff I 𝓘(Real, Real) ∞ potential)
     (traceVec : Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯)

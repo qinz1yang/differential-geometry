@@ -338,6 +338,7 @@ private theorem connContrField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + 1 + k) I z) p.1 t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem connectionDifferenceSection_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -400,6 +401,7 @@ private theorem connectionDifferenceSection_metricPerturbationPath_jointContMDif
   rw [operatorFieldComposition_toSection, raisedKoszul_toSection, sharpFlatEndoCc_toSection]
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connIns_joint
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -436,6 +438,7 @@ theorem connIns_joint
   exact congrArg (fun z => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 4 ℝ E)
     (E := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x) p.1 z) rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem covGradConnectionDifference_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -454,6 +457,7 @@ private theorem covGradConnectionDifference_metricPerturbationPath_jointContMDif
   exact h
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem order1CLM_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -506,6 +510,7 @@ private theorem order1CLM_metricPerturbationPath_jointContMDiffOn
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) p.1 t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem order0CLM_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -595,6 +600,7 @@ private theorem order0CLM_metricPerturbationPath_jointContMDiffOn
 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem fourTrace_joint
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -631,6 +637,7 @@ theorem fourTrace_joint
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder1Fib_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -668,6 +675,7 @@ theorem linearizedRicciConnectionDifferenceOrder1Fib_metricPerturbationPath_join
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnectionDifferenceOrder0Fib_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -708,6 +716,7 @@ theorem linearizedRicciConnectionDifferenceOrder0Fib_metricPerturbationPath_join
   rw [linearizedRicciConnectionDifferenceOrder0CometricTracedCLM]
   rw [ContinuousLinearMap.comp_apply]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPerturbationSet
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -720,6 +729,7 @@ theorem linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPer
   refine h.congr (fun p _ => ?_)
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder1Coeff_jointContMDiffOn_smallPerturbationSet
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

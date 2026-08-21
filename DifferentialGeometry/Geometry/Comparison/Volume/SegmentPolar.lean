@@ -301,7 +301,7 @@ theorem segDom_not_conj
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem expJacDensity_eq_ncd0_mul_transverse
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -563,7 +563,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem intrinsicJacobi_chartRep_differentiableAt
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -580,7 +580,7 @@ theorem intrinsicJacobi_chartRep_differentiableAt
     funext s
     congr 1
     simp
-  have h := variationField_chartRep_differentiableAt (I := I) g
+  have h := variationField_chartRep_differentiableAt (I := I)
     (fun s t : ℝ => intrinsicGeodesic (I := I) g hEnorm x (v + s • w) t) hf t₀
   have h' : DifferentiableAt ℝ
       (chartRepAt (I := I) (fun s : ℝ => intrinsicGeodesic (I := I) g hEnorm x (v + (0 : ℝ) • w) s)
@@ -629,7 +629,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem curveDensity_jacobiFrame_continuousAt
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)

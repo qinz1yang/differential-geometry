@@ -94,7 +94,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem hmfDiagExp_cd_zero
-    (q : SmoothRiemannianMetric I M) (x : M) (n : ℕ) (hn : 1 ≤ n) :
+    (q : SmoothRiemannianMetric I M) (x : M) (n : ℕ) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
       (hmfDiagExp (I := I) (M := M) q)
       (⟨x, (0 : E)⟩ : TangentBundle I M) := by
@@ -107,7 +107,7 @@ theorem hmfDiagExp_cd_zero
     (diagExp (I := I) q (hmfEnorm (I := I) q))
     (⟨x, (0 : E)⟩ : TangentBundle I M)
   exact diagExp_contMDiffAt_zero (I := I)
-    q (hmfEnorm (I := I) q) x n hn
+    q (hmfEnorm (I := I) q) x n
 
 noncomputable def hmfAdd
     (q : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) : M → M :=
@@ -227,7 +227,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
 theorem hmfSpecChart
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
-    (n : ℕ) (hn : 1 ≤ n) :
+    (n : ℕ) :
     ∃ R : ℝ, 0 < R ∧
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ∀ x : M,
@@ -255,7 +255,7 @@ theorem hmfSpecChart
     subst u
     change hmfSpecLaunch (I := I) (M := M) q S (0, x) ∈ U
     rw [hmfSpecLaunch_zero]
-    exact hmfDiagExp_cd_zero (I := I) (M := M) q x n hn
+    exact hmfDiagExp_cd_zero (I := I) (M := M) q x n
   obtain ⟨A, B, hA_open, _hB_open, hzeroA, hunivB, hAB⟩ :=
     generalized_tube_lemma
       (isCompact_singleton (x := (0 : EuclideanSpace ℝ {i // i ∈ S})))
@@ -272,7 +272,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
 theorem hmfSpecAdd_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
-    (n : ℕ) (hn : 1 ≤ n) :
+    (n : ℕ) :
     ∃ R : ℝ, 0 < R ∧
       ContMDiffOn (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) (I.prod I)
         (n : ℕ∞)
@@ -281,7 +281,7 @@ theorem hmfSpecAdd_cd
             (hmfSpecLaunch (I := I) (M := M) q S p))
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hchart⟩ :=
-    hmfSpecChart (I := I) (M := M) q S n hn
+    hmfSpecChart (I := I) (M := M) q S n
   refine ⟨R, hR, ?_⟩
   intro p hp
   have hlaunch :

@@ -51,8 +51,6 @@ theorem geoEq_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}
@@ -180,8 +178,6 @@ theorem geoEq_of_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}
@@ -308,8 +304,6 @@ theorem geoOn_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}

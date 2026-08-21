@@ -117,7 +117,7 @@ structure StagePayload
     InterSlot L inp.pack r alpha → E → E
   gInf : LiveSlot L inp.pack r →
     E → (E →L[Real] E →L[Real] Real)
-  data : HasStageJetData inp P L hr phi phi_strict hconn U C0 C1
+  data : HasStageJetData inp P L hr phi phi_strict U C0 C1
     aInf Jinf Jbarinf gInf
 
 theorem HasStageRefine.payload_nonempty
@@ -128,7 +128,7 @@ theorem HasStageRefine.payload_nonempty
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (r : Real) (hr : 0 ≤ r)
-    (h : HasStageRefine inp P L hconn r hr) :
+    (h : HasStageRefine inp P L r hr) :
     Nonempty (StagePayload inp P L hconn r hr) := by
   rcases h with ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩
   exact ⟨⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩⟩
@@ -156,7 +156,7 @@ structure StagePayloadOn
     InterSlot L inp.pack r alpha → E → E
   gInf : LiveSlot L inp.pack r →
     E → (E →L[Real] E →L[Real] Real)
-  data : HasStageJetDataOn inp P L hr phi phi_strict hconn chart
+  data : HasStageJetDataOn inp P L hr phi phi_strict chart
     V U C0 C1 aInf Jinf Jbarinf gInf
 
 theorem HasStageRefineOn.payload_nonempty
@@ -168,7 +168,7 @@ theorem HasStageRefineOn.payload_nonempty
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (r : Real) (hr : 0 ≤ r)
-    (h : HasStageRefineOn inp P L hconn chart r hr) :
+    (h : HasStageRefineOn inp P L chart r hr) :
     Nonempty (StagePayloadOn inp P L hconn chart r hr) := by
   rcases h with
     ⟨phi, hphi, V, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩
@@ -186,13 +186,13 @@ noncomputable def choosePayload
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn)
+    (hseed : HasStageSeed inp P L0)
     (S : StageState) (m : Nat) :
     StagePayload inp P (L0.subseq S.sigma_strict) hconn (m : Real)
       (Nat.cast_nonneg m) :=
   Classical.choice <| HasStageRefine.payload_nonempty inp P
     (L0.subseq S.sigma_strict) hconn (m : Real) (Nat.cast_nonneg m) <|
-      hseed.refine inp P L0 hconn (L0.subseq S.sigma_strict)
+      hseed.refine inp P L0 (L0.subseq S.sigma_strict)
         (NetLimitData.stable_subseq inp.decay P L0 S.sigma_strict hseed.1)
         (m : Real) (Nat.cast_nonneg m)
 
@@ -203,7 +203,7 @@ noncomputable def nextState
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn)
+    (hseed : HasStageSeed inp P L0)
     (S : StageState) (m : Nat) : StageState :=
   let d := choosePayload inp P L0 hconn hseed S m
   ⟨S.sigma ∘ d.phi, S.sigma_strict.comp d.phi_strict⟩
@@ -215,7 +215,7 @@ noncomputable def stageStates
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn) : Nat → StageState
+    (hseed : HasStageSeed inp P L0) : Nat → StageState
   | 0 => ⟨id, strictMono_id⟩
   | m + 1 => nextState inp P L0 hconn hseed
       (stageStates inp P L0 hconn hseed m) m
@@ -227,7 +227,7 @@ noncomputable def radiusPayload
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn) (m : Nat) :=
+    (hseed : HasStageSeed inp P L0) (m : Nat) :=
   choosePayload inp P L0 hconn hseed
     (stageStates inp P L0 hconn hseed m) m
 
@@ -238,7 +238,7 @@ noncomputable def stageNested
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn) : NestedSubseq where
+    (hseed : HasStageSeed inp P L0) : NestedSubseq where
   sigma m := (stageStates inp P L0 hconn hseed m).sigma
   tau m := (radiusPayload inp P L0 hconn hseed m).phi
   sigma_strict m := (stageStates inp P L0 hconn hseed m).sigma_strict
@@ -255,7 +255,7 @@ def HasRadiusTail
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn)
+    (hseed : HasStageSeed inp P L0)
     (psi : Nat → Nat) (q : Nat) : Prop :=
   let S := stageStates inp P L0 hconn hseed q
   let d := radiusPayload inp P L0 hconn hseed q
@@ -265,7 +265,7 @@ def HasRadiusTail
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
     HasStageJetData inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-      hconn d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
+      d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
 
 theorem HasStageSeed.exists_radius_diag
     (inp : MetricCompactnessInputs (I := I) X)
@@ -274,7 +274,7 @@ theorem HasStageSeed.exists_radius_diag
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0 hconn) :
+    (hseed : HasStageSeed inp P L0) :
     ∃ (psi : Nat → Nat) (_hpsi : StrictMono psi),
       ∀ q : Nat, HasRadiusTail inp P L0 hconn hseed psi q := by
   let T := stageNested inp P L0 hconn hseed
@@ -292,14 +292,14 @@ theorem HasStageSeed.exists_radius_diag
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
     HasStageJetData inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-      hconn d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
+      d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
   refine ⟨rho, hrho, ?_, ?_⟩
   · intro n
     have hfactor := congrArg L0.φ (T.diag_step_factor q n)
     simpa only [NetLimitData.subseq_phi, Function.comp_apply, psi, T, S, d,
       rho, stageNested] using hfactor.symm
   · exact d.data.subseq inp P (L0.subseq S.sigma_strict)
-      (Nat.cast_nonneg q) d.phi_strict hconn d.U d.C0 d.C1 d.aInf
+      (Nat.cast_nonneg q) d.phi_strict d.U d.C0 d.C1 d.aInf
       d.Jinf d.Jbarinf d.gInf hrho
 
 noncomputable def choosePayloadOn
@@ -310,14 +310,14 @@ noncomputable def choosePayloadOn
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart)
+    (hseed : HasStageSeedOn inp P L0 chart)
     (S : StageState) (m : Nat) :
     StagePayloadOn inp P (L0.subseq S.sigma_strict) hconn chart
       (m : Real) (Nat.cast_nonneg m) :=
   Classical.choice <| HasStageRefineOn.payload_nonempty inp P
     (L0.subseq S.sigma_strict) hconn chart (m : Real)
     (Nat.cast_nonneg m) <|
-      hseed.refine inp P L0 hconn chart (L0.subseq S.sigma_strict)
+      hseed.refine inp P L0 chart (L0.subseq S.sigma_strict)
         (NetLimitData.stable_subseq inp.decay P L0 S.sigma_strict hseed.1)
         (m : Real) (Nat.cast_nonneg m)
 
@@ -329,7 +329,7 @@ noncomputable def nextStateOn
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart)
+    (hseed : HasStageSeedOn inp P L0 chart)
     (S : StageState) (m : Nat) : StageState :=
   let d := choosePayloadOn inp P L0 hconn chart hseed S m
   ⟨S.sigma ∘ d.phi, S.sigma_strict.comp d.phi_strict⟩
@@ -342,7 +342,7 @@ noncomputable def stageStatesOn
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart) : Nat → StageState
+    (hseed : HasStageSeedOn inp P L0 chart) : Nat → StageState
   | 0 => ⟨id, strictMono_id⟩
   | m + 1 => nextStateOn inp P L0 hconn chart hseed
       (stageStatesOn inp P L0 hconn chart hseed m) m
@@ -355,7 +355,7 @@ noncomputable def radiusPayloadOn
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart) (m : Nat) :=
+    (hseed : HasStageSeedOn inp P L0 chart) (m : Nat) :=
   choosePayloadOn inp P L0 hconn chart hseed
     (stageStatesOn inp P L0 hconn chart hseed m) m
 
@@ -367,7 +367,7 @@ noncomputable def stageNestedOn
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart) : NestedSubseq where
+    (hseed : HasStageSeedOn inp P L0 chart) : NestedSubseq where
   sigma m := (stageStatesOn inp P L0 hconn chart hseed m).sigma
   tau m := (radiusPayloadOn inp P L0 hconn chart hseed m).phi
   sigma_strict m :=
@@ -387,7 +387,7 @@ def HasRadiusTailOn
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart)
+    (hseed : HasStageSeedOn inp P L0 chart)
     (psi : Nat → Nat) (q : Nat) : Prop :=
   let S := stageStatesOn inp P L0 hconn chart hseed q
   let d := radiusPayloadOn inp P L0 hconn chart hseed q
@@ -397,7 +397,7 @@ def HasRadiusTailOn
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
     HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-      hconn chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
+      chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
 
 theorem HasStageSeedOn.exists_radius_diag
     (inp : MetricCompactCore (I := I) X)
@@ -407,7 +407,7 @@ theorem HasStageSeedOn.exists_radius_diag
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 hconn chart) :
+    (hseed : HasStageSeedOn inp P L0 chart) :
     ∃ (psi : Nat → Nat) (_hpsi : StrictMono psi),
       ∀ q : Nat, HasRadiusTailOn inp P L0 hconn chart hseed psi q := by
   let T := stageNestedOn inp P L0 hconn chart hseed
@@ -425,14 +425,14 @@ theorem HasStageSeedOn.exists_radius_diag
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
     HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
-      hconn chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
+      chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
   refine ⟨rho, hrho, ?_, ?_⟩
   · intro n
     have hfactor := congrArg L0.φ (T.diag_step_factor q n)
     simpa only [NetLimitData.subseq_phi, Function.comp_apply, psi, T, S, d,
       rho, stageNestedOn] using hfactor.symm
   · exact d.data.subseq inp P (L0.subseq S.sigma_strict)
-      (Nat.cast_nonneg q) d.phi_strict hconn chart d.V d.U d.C0 d.C1
+      (Nat.cast_nonneg q) d.phi_strict chart d.V d.U d.C0 d.C1
       d.aInf d.Jinf d.Jbarinf d.gInf hrho
 
 theorem MetricCompactBase.exists_stage_diag
@@ -443,15 +443,14 @@ theorem MetricCompactBase.exists_stage_diag
       ConnectedSpace (X.obj j).M) :
     ∃ (inp : MetricCompactnessInputs (I := I) X)
         (L0 : NetLimitData inp.decay inp.D
-          (inp.properMetrics hcomplete hconn))
-        (hseed : HasStageSeed inp (inp.properMetrics hcomplete hconn)
-          L0 hconn)
+          (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
+        (hseed : HasStageSeed inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0)
         (psi : Nat → Nat) (_hpsi : StrictMono psi),
-      ∀ q : Nat, HasRadiusTail inp (inp.properMetrics hcomplete hconn)
+      ∀ q : Nat, HasRadiusTail inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
         L0 hconn hseed psi q := by
   obtain ⟨inp, L0, hseed⟩ := b.exists_stage_seed hcomplete hconn
   obtain ⟨psi, hpsi, htail⟩ :=
-    hseed.exists_radius_diag inp (inp.properMetrics hcomplete hconn)
+    hseed.exists_radius_diag inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
       L0 hconn
   exact ⟨inp, L0, hseed, psi, hpsi, htail⟩
 

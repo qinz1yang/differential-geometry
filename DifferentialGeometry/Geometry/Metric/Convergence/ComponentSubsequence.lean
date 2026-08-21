@@ -370,7 +370,7 @@ theorem exists_tower_conv
     hK₀chart hUKc Finset.univ frame vbasis hframeσ hspan
     (fun V => hbase_of_framePairs (I := I) gRef
       (fun k => Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k))))
-      (Tensor0SBundle.metricTensorField (I := I) gInf) x₀ hχcd htsupp hUopen hχU hUtarget
+      (Tensor0SBundle.metricTensorField (I := I) gInf) x₀ hχcd htsupp hUopen hχU
       hUKc Finset.univ frame hspan hpairsU V) a V
 
 theorem exists_tower_refs
@@ -441,7 +441,7 @@ theorem exists_tower_refs
     hK₀chart hUKc Finset.univ frame vbasis hframeσ hspan
     (fun V => hbase_of_framePairs (I := I) gBase
       (fun k => Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k))))
-      (Tensor0SBundle.metricTensorField (I := I) gInf) x₀ hχcd htsupp hUopen hχU hUtarget
+      (Tensor0SBundle.metricTensorField (I := I) gInf) x₀ hχcd htsupp hUopen hχU
       hUKc Finset.univ frame hspan hpairsU V) a V
 
 theorem componentConv_covDeriv_of_chartCInf

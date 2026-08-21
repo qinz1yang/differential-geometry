@@ -8,18 +8,14 @@ open scoped ENNReal
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 theorem timeL2_coeFn_ae_eq_of_eq
-    {T : ℝ} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    {f g : timeL2 X T} (h : f = g) :
+    {T : ℝ} {X : Type*} [NormedAddCommGroup X] {f g : timeL2 X T} (h : f = g) :
     ⇑f =ᵐ[timeMeasure T] ⇑g := by
   cases h
   exact Filter.EventuallyEq.rfl
 
 theorem timeL2_norm_le_of_ae_mixed_bound
     {T : ℝ} {X Y Z : Type*}
-    [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y]
-    [NormedAddCommGroup Z] [InnerProductSpace ℝ Z] [CompleteSpace Z]
-    (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T) {A B : ℝ}
+    [NormedAddCommGroup X] [NormedAddCommGroup Y] [NormedAddCommGroup Z] (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T) {A B : ℝ}
     (hA : 0 ≤ A) (hB : 0 ≤ B)
     (hbound : ∀ᵐ t ∂(timeMeasure T), ‖h t‖ ≤ A * ‖p t‖ + B * ‖q t‖) :
     ‖h‖ ≤ A * ‖p‖ + B * ‖q‖ := by

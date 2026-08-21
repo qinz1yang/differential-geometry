@@ -43,68 +43,64 @@ lemma inverse_metric_contraction_rev {n : ℕ} (ig cg : Fin n → Fin n → ℝ)
     exact absurd (Finset.mem_univ e) h
 
 
-def r3B {n : ℕ} (_ig _cg f : Fin n → Fin n → ℝ)
-    (_dg _dig ga0 _ga1 _gbg _gb _f3 : Fin n → Fin n → Fin n → ℝ)
-    (_ddg _dga0 _dga1 _dgbg _dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def r3B {n : ℕ} (f : Fin n → Fin n → ℝ)
+    (ga0 : Fin n → Fin n → Fin n → ℝ)
     (a b c : Fin n) : ℝ :=
   -(∑ r, ga0 a b r * f r c) + (-(∑ r, ga0 a c r * f b r))
 
 
-def christoffelCorrection {n : ℕ} (ig _cg f : Fin n → Fin n → ℝ)
-    (_dg _dig _ga0 _ga1 _gbg gb _f3 : Fin n → Fin n → Fin n → ℝ)
-    (_ddg _dga0 _dga1 _dgbg _dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def christoffelCorrection {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (gb : Fin n → Fin n → Fin n → ℝ)
     (a b k : Fin n) : ℝ :=
   (1 / 2 : ℝ) * (∑ l, (-(∑ q, ∑ p, ig k p * f p q * ig q l)) * gb a b l)
 
 
-def deTurckVectorCorrection {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def deTurckVectorCorrection {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (ga1 gbg gb : Fin n → Fin n → Fin n → ℝ)
     (k : Fin n) : ℝ :=
   ∑ a, ∑ b, ((-(∑ q, ∑ p, ig a p * f p q * ig q b)) * (ga1 a b k - gbg a b k) +
-    ig a b * christoffelCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb a b k)
+    ig a b * christoffelCorrection ig f gb a b k)
 
 
-def deTurckVectorFieldDerivative {n : ℕ} (ig _cg _f : Fin n → Fin n → ℝ)
-    (_dg dig _ga0 ga1 gbg _gb _f3 : Fin n → Fin n → Fin n → ℝ)
-    (_ddg _dga0 dga1 dgbg _dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def deTurckVectorFieldDerivative {n : ℕ} (ig : Fin n → Fin n → ℝ)
+    (dig ga1 gbg : Fin n → Fin n → Fin n → ℝ)
+    (dga1 dgbg : Fin n → Fin n → Fin n → Fin n → ℝ)
     (m k : Fin n) : ℝ :=
   ∑ a, ∑ b, (dig m a b * (ga1 a b k - gbg a b k) +
     ig a b * (dga1 m a b k - dgbg m a b k))
 
 
-def zeroOrderDerivativeCorrection {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def zeroOrderDerivativeCorrection {n : ℕ} (ig f : Fin n → Fin n → ℝ)
+    (dig ga1 gbg gb : Fin n → Fin n → Fin n → ℝ)
+    (dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
     (m k : Fin n) : ℝ :=
   ∑ a, ∑ b, ((-(∑ q, ∑ p, (dig m a p * f p q * ig q b + ig a p * f p q * dig m q b))) *
     (ga1 a b k - gbg a b k) + (-(∑ q, ∑ p, ig a p * f p q * ig q b)) * (dga1 m a b k - dgbg m a b k)
-    + dig m a b * christoffelCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb a b k + ig a b *
+    + dig m a b * christoffelCorrection ig f gb a b k + ig a b *
     ((1 / 2 : ℝ) * (∑ l, ((-(∑ q, ∑ p, (dig m k p * f p q * ig q l + ig k p * f p q * dig m q l))) *
     gb a b l + (-(∑ q, ∑ p, ig k p * f p q * ig q l)) * dgb m a b l))))
 
 
 def zeroOrderCorrection {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (dg dig ga1 gbg gb : Fin n → Fin n → Fin n → ℝ)
+    (dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
-  (∑ k, deTurckVectorCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb k * dg k i j) +
-    (∑ k, f k j * deTurckVectorFieldDerivative ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i k) +
-    (∑ k, f i k * deTurckVectorFieldDerivative ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j k) +
-    (∑ k, cg k j * zeroOrderDerivativeCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i k) +
-    (∑ k, cg i k * zeroOrderDerivativeCorrection ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j k)
+  (∑ k, deTurckVectorCorrection ig f ga1 gbg gb k * dg k i j) +
+    (∑ k, f k j * deTurckVectorFieldDerivative ig dig ga1 gbg dga1 dgbg i k) +
+    (∑ k, f i k * deTurckVectorFieldDerivative ig dig ga1 gbg dga1 dgbg j k) +
+    (∑ k, cg k j * zeroOrderDerivativeCorrection ig f dig ga1 gbg gb dga1 dgbg dgb i k) +
+    (∑ k, cg i k * zeroOrderDerivativeCorrection ig f dig ga1 gbg gb dga1 dgbg dgb j k)
 
 
-def deTurckVectorFieldDifference {n : ℕ} (ig _cg _f : Fin n → Fin n → ℝ)
-    (_dg _dig _ga0 ga1 gbg _gb _f3 : Fin n → Fin n → Fin n → ℝ)
-    (_ddg _dga0 _dga1 _dgbg _dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def deTurckVectorFieldDifference {n : ℕ} (ig : Fin n → Fin n → ℝ)
+    (ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (k : Fin n) : ℝ :=
   ∑ a, ∑ b, ig a b * (ga1 a b k - gbg a b k)
 
 
-def covariantDerivativeConnectionDifference {n : ℕ} (_ig _cg _f : Fin n → Fin n → ℝ)
-    (_dg _dig _ga0 ga1 gbg _gb _f3 : Fin n → Fin n → Fin n → ℝ)
-    (_ddg _dga0 dga1 dgbg _dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def covariantDerivativeConnectionDifference {n : ℕ}
+    (ga1 gbg : Fin n → Fin n → Fin n → ℝ)
+    (dga1 dgbg : Fin n → Fin n → Fin n → Fin n → ℝ)
     (a m k p : Fin n) : ℝ :=
   dga1 a k m p - dgbg a k m p +
     (∑ c, ga1 a c p * (ga1 k m c - gbg k m c)) -
@@ -112,65 +108,64 @@ def covariantDerivativeConnectionDifference {n : ℕ} (_ig _cg _f : Fin n → Fi
     (∑ c, ga1 a k c * (ga1 c m p - gbg c m p))
 
 
-def covariantDerivativeDeTurckVectorDifference {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+def covariantDerivativeDeTurckVectorDifference {n : ℕ} (ig : Fin n → Fin n → ℝ)
+    (dig ga1 gbg : Fin n → Fin n → Fin n → ℝ)
+    (dga1 dgbg : Fin n → Fin n → Fin n → Fin n → ℝ)
     (a p : Fin n) : ℝ :=
-  deTurckVectorFieldDerivative ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb a p +
-    ∑ c, ga1 a c p * deTurckVectorFieldDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb c
+  deTurckVectorFieldDerivative ig dig ga1 gbg dga1 dgbg a p +
+    ∑ c, ga1 a c p * deTurckVectorFieldDifference ig ga1 gbg c
 
 
 def zeroOrderVectorCorrection {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (dig ga1 gbg : Fin n → Fin n → Fin n → ℝ)
+    (dga1 dgbg : Fin n → Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
   -(∑ m, ∑ ml, ig m ml * (∑ k, ∑ kl, ig k kl *
-      (((∑ p, covariantDerivativeConnectionDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i m k p * cg p j) +
-        (∑ p, covariantDerivativeConnectionDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j m k p * cg p i)) *
+      (((∑ p, covariantDerivativeConnectionDifference ga1 gbg dga1 dgbg i m k p * cg p j) +
+        (∑ p, covariantDerivativeConnectionDifference ga1 gbg dga1 dgbg j m k p * cg p i)) *
         f ml kl))) +
-    ((∑ p, covariantDerivativeDeTurckVectorDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i p * f p j) +
-      (∑ p, covariantDerivativeDeTurckVectorDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j p * f i p))
+    ((∑ p, covariantDerivativeDeTurckVectorDifference ig dig ga1 gbg dga1 dgbg i p * f p j) +
+      (∑ p, covariantDerivativeDeTurckVectorDifference ig dig ga1 gbg dga1 dgbg j p * f i p))
 
 
 def firstDerivativeRemainder {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
-    (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
-    (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
+    (ga0 ga1 gbg : Fin n → Fin n → Fin n → ℝ)
     (i j : Fin n) : ℝ :=
-  (∑ w, deTurckVectorFieldDifference ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb w *
-      r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb w i j) +
+  (∑ w, deTurckVectorFieldDifference ig ga1 gbg w *
+      r3B f ga0 w i j) +
   ((∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i m p *
+      (r3B f ga0 i m p *
         (∑ q, (ga1 l1 j q - ga0 l1 j q) * cg q k1)))) -
     (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i m p *
+      (r3B f ga0 i m p *
         (∑ q, (ga1 k1 l1 q - gbg k1 l1 q) * cg q j)))) -
     (∑ w, (∑ a, ∑ b, ig a b * (ga1 a b w - ga0 a b w)) *
-      r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j w) -
+      r3B f ga0 i j w) -
     (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m j p *
+      (r3B f ga0 m j p *
         (∑ q, (ga1 k1 i q - ga0 k1 i q) * cg q l1)))) -
     (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 j i q - ga0 j i q) *
-      r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb p q k1)) -
+      r3B f ga0 p q k1)) -
     (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m j p *
+      (r3B f ga0 m j p *
         (∑ q, (ga1 l1 i q - ga0 l1 i q) * cg q k1))))) +
   ((∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j m p *
+      (r3B f ga0 j m p *
         (∑ q, (ga1 l1 i q - ga0 l1 i q) * cg q k1)))) -
     (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j m p *
+      (r3B f ga0 j m p *
         (∑ q, (ga1 k1 l1 q - gbg k1 l1 q) * cg q i)))) -
     (∑ w, (∑ a, ∑ b, ig a b * (ga1 a b w - ga0 a b w)) *
-      r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb j i w) -
+      r3B f ga0 j i w) -
     (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m i p *
+      (r3B f ga0 m i p *
         (∑ q, (ga1 k1 j q - ga0 k1 j q) * cg q l1)))) -
     (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 i j q - ga0 i j q) *
-      r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb p q k1)) -
+      r3B f ga0 p q k1)) -
     (∑ k1, ∑ p, ∑ l1, ∑ m, ig k1 p * (ig l1 m *
-      (r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb m i p *
+      (r3B f ga0 m i p *
         (∑ q, (ga1 l1 j q - ga0 l1 j q) * cg q k1))))) +
   (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 j i q - ga0 j i q) *
-    r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb q p k1))
+    r3B f ga0 q p k1))
 
 end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorrectionZeroNormalForm

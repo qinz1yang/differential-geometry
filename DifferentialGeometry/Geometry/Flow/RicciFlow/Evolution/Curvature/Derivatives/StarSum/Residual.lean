@@ -24,6 +24,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem e0Residual
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -80,6 +81,7 @@ theorem e0Residual
       rm04Base_of_solution_any (I := I) S hS t x basis _horth m
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem rmResidual_zero
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

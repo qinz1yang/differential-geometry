@@ -157,7 +157,6 @@ theorem liveMetric0_symm
 theorem MetricCompactnessInputs.exists_live_cores
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -237,7 +236,7 @@ theorem MetricCompactnessInputs.exists_live_cores
       (seqCenter inp.decay inp.D P (L.φ (psi k)) gamma).isSome = L.alive gamma :=
     hpsi.tendsto_atTop.eventually <|
       (Filter.eventually_all_finset _).mpr fun gamma _ => L.alive_eventually gamma
-  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgpPsi := hpsi.tendsto_atTop.eventually hgp
   have hradPsi := hpsi.tendsto_atTop.eventually hrad
   have hmetric := inp.normalRadius.metricScaleTail inp.hD
@@ -582,7 +581,6 @@ theorem MetricCompactnessInputs.exists_live_cores
 theorem MetricCompactnessInputs.exists_live_source_cover
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -628,7 +626,7 @@ theorem MetricCompactnessInputs.exists_live_source_cover
   obtain ⟨psi, hpsi, gInf, U, C0, C1, hginf, hconv, hopen, hU8,
       _hC0, _hC1, hC01, hC1U, _hconvex, _hzero,
       _eta, _heta, hcover⟩ :=
-    inp.exists_live_cores h8 hradD hradRatio P L r
+    inp.exists_live_cores h8 hradRatio P L r
   refine ⟨psi, hpsi, gInf, U, hginf, hconv, hopen, hU8, ?_⟩
   filter_upwards [hcover] with k hk
   refine ⟨hk.1, ?_⟩

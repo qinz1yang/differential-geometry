@@ -65,7 +65,7 @@ theorem klFluxNear_holder {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   let μ := (klVolume : Measure (ℝ × V)).restrict (klLateCyl x R)
   have hk : MemLp (klFluxKernel (R ^ 2) w x)
       (ENNReal.ofReal (klPDual V)) μ :=
-    (klFluxKernel_memLp (V := V) (sq_pos_of_pos hR) w x).mono_measure
+    (klFluxKernel_memLp (V := V) (t := R ^ 2) w x).mono_measure
       (klLateMeasure_le (V := V) x R)
   have hf : MemLp f (ENNReal.ofReal (klPReal V)) μ := by
     simpa only [klPReal_ofReal] using

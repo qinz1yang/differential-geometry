@@ -206,7 +206,7 @@ private lemma fiberNormSqComponent_zero_toModel
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma fiberNormSqComponent_cometricRaiseSlot0Field_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : SmoothCcTensor g₀ 0 (s + 2))
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -254,7 +254,7 @@ private lemma fiberNormSqComponent_cometricRaiseSlot0Field_eq
   rw [hLHS, hRHS]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_cometricRaiseSlot0Field_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : SmoothCcTensor g₀ 0 (s + 2)) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 1 (s + 1) x
@@ -533,7 +533,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_perComponent_le
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
     {R : ℝ} (hR : 0 ≤ R) {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1)
-    (_hδ : metricCauchySchwarzBound (I := I) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hTjet : ∀ j : ℕ, j ≤ a + 1 → ∀ y : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) y
         ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection y) ≤ R ^ 2)
@@ -562,7 +561,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_le
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
     {R : ℝ} (hR : 0 ≤ R) {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1)
-    (hδ : metricCauchySchwarzBound (I := I) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hTjet : ∀ j : ℕ, j ≤ a + 1 → ∀ y : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) y
         ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection y) ≤ R ^ 2) :
@@ -586,7 +584,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_le
           raisedKoszulComponentBound (E := E) R δ i :=
         Finset.sum_le_sum (fun K _ => Finset.sum_le_sum (fun J _ =>
           riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_perComponent_le (I := I) g₀ g₁ a T htie
-            hR hδ0 hδ1 hδ
+            hR hδ0 hδ1
             hTjet i hi x e hnE horth K J))
     _ = (Fintype.card (Fin 1 → Fin n) : ℝ) * (Fintype.card (Fin (2 + i) → Fin n) : ℝ) *
           raisedKoszulComponentBound (E := E) R δ i := by

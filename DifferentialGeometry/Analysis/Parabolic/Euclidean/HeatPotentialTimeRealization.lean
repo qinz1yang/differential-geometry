@@ -49,6 +49,7 @@ private theorem heatD2TimeLocalMajor_int {t : Real} (ht : 0 < t) :
         (baseHeatMass V)⁻¹)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem heatD2Maj_le_timeLocalMajor {t q : Real} (ht : 0 < t)
     (hq0 : t / 2 < q) (hq1 : q < 2 * t) (y : V) :
     heatD2Maj q y ≤ heatD2TimeLocalMajor (V := V) t y := by
@@ -166,6 +167,7 @@ private theorem heatD2Maj_le_timeLocalMajor {t q : Real} (ht : 0 < t)
       ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem heatD2TimeLocalMajor_nonneg {t : Real} (ht : 0 < t) (y : V) :
     0 ≤ heatD2TimeLocalMajor (V := V) t y := by
   have ht2 : 0 < t / 2 := by linarith

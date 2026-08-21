@@ -223,6 +223,8 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem metricPerturbationPath_chartDeTurckVFComp_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -261,6 +263,8 @@ private theorem metricPerturbationPath_chartDeTurckVFComp_jointContMDiffOn
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckVFChartLocal_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -320,6 +324,7 @@ private theorem deTurckVFChartLocal_metricPerturbationPath_jointContMDiffOn
     exact hqx
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deTurckVF_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -492,10 +497,10 @@ private theorem metricConnectionDifferenceLoweredFib_split (gm gA gC gB : Smooth
   rw [ContinuousMultilinearMap.add_apply, metricConnectionDifferenceLoweredFib_toModel,
     metricConnectionDifferenceLoweredFib_toModel, metricConnectionDifferenceLoweredFib_toModel,
     connectionDifference_split_middle (I := I) gA gC gB, map_add, ContinuousLinearMap.add_apply]
-
-
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem metricConnectionDifferenceLowered_fixedPair_affine (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -522,6 +527,7 @@ private theorem metricConnectionDifferenceLowered_fixedPair_affine (g₀ : Smoot
   simp only [smul_eq_mul]
   ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -613,6 +619,7 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
   rw [hv012]
   simp only [smul_eq_mul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricConnectionDifferenceLowered_bgFam_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

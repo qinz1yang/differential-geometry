@@ -427,7 +427,7 @@ theorem corrFieldTameJetBound_nonneg (g₀ : SmoothRiemannianMetric I M)
 omit [BoundarylessManifold I M] in
 theorem exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (_hR : 0 ≤ R)
+    {R : ℝ}
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Λcom : ℝ, 0 ≤ Λcom ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)

@@ -45,10 +45,12 @@ private theorem compBase_mem
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+set_option linter.unusedSectionVars false in
 theorem compRestrict_init
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (p : M) (a : ℝ)
     (h₀ : g₁ a = g₂ a) :
     compRestrict (I := I) g₁ p a = compRestrict (I := I) g₂ p a := by
+  let _ := (inferInstance : (CompactSpace M))
   letI : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
   simpa only [compRestrict] using congrArg
     (fun g : SmoothRiemannianMetric I M =>
@@ -120,6 +122,7 @@ theorem compRestrict_cont
       hsource i j)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem compRestrict_pde
     (g : ℝ → SmoothRiemannianMetric I M) (p : M) {a b : ℝ}
     (hpde : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
@@ -152,6 +155,7 @@ private theorem metric_ext
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompactSpace M] in
 theorem eq_of_compRestrict
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (t : ℝ)
     (hcomp : ∀ p : M,
@@ -167,6 +171,7 @@ theorem eq_of_compRestrict
     connCompPt] using hx
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem forward_of_comp
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),

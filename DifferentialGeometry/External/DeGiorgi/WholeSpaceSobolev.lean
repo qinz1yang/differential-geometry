@@ -25,9 +25,10 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 /-- The Sobolev constant for the general `W^{1,p} -> L^{p*}` embedding,
 extracted from Mathlib. -/
-noncomputable def C_gns (d : ℕ) [NeZero d] (p : ℝ) : ℝ :=
-  (MeasureTheory.SNormLESNormFDerivOfEqConst (F := ℝ)
-    (μ := (volume : Measure (EuclideanSpace ℝ (Fin d)))) p : ℝ≥0)
+noncomputable def C_gns (d : ℕ) [hNeZero : NeZero d] (p : ℝ) : ℝ :=
+  let _ := hNeZero
+  ↑(MeasureTheory.SNormLESNormFDerivOfEqConst (F := ℝ)
+    (μ := (volume : Measure (EuclideanSpace ℝ (Fin d)))) p)
 
 theorem C_gns_nonneg (d : ℕ) [NeZero d] (p : ℝ) : 0 ≤ C_gns d p :=
   NNReal.coe_nonneg _

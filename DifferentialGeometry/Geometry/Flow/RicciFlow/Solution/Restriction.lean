@@ -121,8 +121,7 @@ theorem isSoln_tailRestrict
 
 omit [SigmaCompactSpace M] in
 theorem tailFrameTimeReg
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    [IsManifold I 1 M] {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {n : WithTop ℕ∞} {u : Set M}
     {alpha t₀ omega : Real} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

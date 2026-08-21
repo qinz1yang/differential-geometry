@@ -351,8 +351,7 @@ theorem eqn_local_on {s : Set X} {qstar : X → M}
 end centerAverage
 
 theorem finite_cover_two_tail {J Y : Type*} [Finite J]
-    {G : Set Y} {S : J → Set Y}
-    (_hcover : G ⊆ ⋃ j, S j)
+    {S : J → Set Y}
     (Q : J → Nat → Nat → Y → Prop)
     (hlocal : ∀ j, ∃ Nj : Nat, ∀ a ≥ Nj, ∀ b ≥ Nj,
       ∀ y ∈ S j, Q j a b y) :

@@ -76,6 +76,7 @@ private theorem dom_h1_eq
       (I := I) (M := M) g σ S q x
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem raise_sub
     (g : SmoothRiemannianMetric I M) (W W' : SmoothCcTensor g 0 2) :
     cometricRaiseSlot0Field (I := I) (M := M) g 0 (W - W') =
@@ -94,6 +95,7 @@ private theorem raise_sub
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem wAlphaB_sub_eq_ccOperatorFieldComp
     (g₀ g₁ gA gB : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gA -

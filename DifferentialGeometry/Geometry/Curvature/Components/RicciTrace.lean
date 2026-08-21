@@ -237,6 +237,7 @@ def ScalarRealizesRicciTraceAt
   scalar =
     ∑ i : Idx, ∑ j : Idx, gInv i j * Ric (vec2 (basis i) (basis j))
 
+open scoped Classical in
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 theorem ricciComp_eq_trace_rm04
     (basis : Module.Basis Idx Real (TangentSpace I x))

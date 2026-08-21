@@ -178,8 +178,6 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem ricciTensor_apply_smooth (g : SmoothRiemannianMetric I M)
     {Y Z : Π b : M, TangentSpace I b}
-    (_hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
-    (_hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z))
     (x : M) :
     ricciTensor (I := I) g x (Y x) (Z x) =
       LinearMap.trace ℝ (TangentSpace I x)
@@ -951,6 +949,7 @@ theorem riemannSec_section_smooth
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem riemannOp_section_contMDiff (g : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E →L[ℝ] E)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E →L[ℝ] E)
@@ -984,7 +983,7 @@ theorem riemannOp_section_contMDiff (g : SmoothRiemannianMetric I M) :
   rw [riemannOp_apply_smooth (cov := LeviCivita (I := I) g)
     X.contMDiff Y.contMDiff Z.contMDiff]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem riemannOp_section_continuous (g : SmoothRiemannianMetric I M) :
     Continuous
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E →L[ℝ] E)
@@ -1194,6 +1193,7 @@ local instance ricciTensor02ContMDiffVectorBundle :
   inferInstance
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciTensor_contMDiff (g : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)

@@ -1053,6 +1053,7 @@ private lemma coframeS_one_eq_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma fiberNormSqComponent_sharpFlatEndoCc
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
@@ -1190,6 +1191,7 @@ private lemma sum_fin_one_function {α : Type*} [AddCommMonoid α] {n : ℕ} (f 
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem riemannianFiberNormSq_operatorFieldComposition_sharpFlatEndoCc_contravariantSlot_op_le (g₀ g₁ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1360,7 +1362,7 @@ private def slotExtendIterFib (g : SmoothRiemannianMetric I M) (b c : ℕ) (x : 
     (A : Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x) :
     ∀ w : ℕ, Tensor0SSpace (b + w) I x →L[ℝ] Tensor0SSpace (c + w) I x
   | 0 => A
-  | (w + 1) => slotExtendPointwise (I := I) (M := M) g (b + w) (c + w) x
+  | (w + 1) => slotExtendPointwise (I := I) (M := M) (b + w) (c + w) x
       (slotExtendIterFib g b c x A w)
 
 omit [BoundarylessManifold I M] in
@@ -1404,7 +1406,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diagonal_toSection (g : SmoothR
       rw [hdiag]
       rw [show (slotExtendIterFib (I := I) (M := M) g b c x
             (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) (i + 1)) =
-          slotExtendPointwise (I := I) (M := M) g (b + i) (c + i) x
+          slotExtendPointwise (I := I) (M := M) (b + i) (c + i) x
             (slotExtendIterFib (I := I) (M := M) g b c x
               (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) i)
           from rfl]
@@ -1420,7 +1422,7 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
     (K' : Fin (r + 1) → Fin n) (J' : Fin (s + 1) → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
           A)
         n e K' J' =
       (if J' 0 = K' 0 then (1 : ℝ) else 0) *
@@ -1429,19 +1431,19 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
           (fun k => K' (Fin.succ k)) (fun k => J' (Fin.succ k)) := by
   classical
   have hcomp : fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+        (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
           A)
         n e K' J' =
       Tensor0SSpace.toModel
-        (slotExtendPointwise (I := I) (M := M) g r s x A
+        (slotExtendPointwise (I := I) (M := M) r s x A
           (coframeS (I := I) (M := M) g x (r + 1) e K'))
         (Fin.cons (show E from e (J' 0)) (fun k : Fin s => (show E from e (J' (Fin.succ k))))) := by
     rw [show fiberNormSqComponent (I := I) (M := M) g x (r + 1) (s + 1)
-          (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) g r s x
+          (show TensorRSSpace (r + 1) (s + 1) I x from slotExtendPointwise (I := I) (M := M) r s x
             A)
           n e K' J' =
         Tensor0SSpace.toModel
-          (slotExtendPointwise (I := I) (M := M) g r s x A
+          (slotExtendPointwise (I := I) (M := M) r s x A
             (coframeS (I := I) (M := M) g x (r + 1) e K'))
           (fun k => (show E from e (J' k))) from rfl]
     congr 1
@@ -1450,7 +1452,7 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
     · rw [Fin.cons_zero]
     · rw [Fin.cons_succ]
   rw [hcomp]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x A
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r s x A
     (coframeS (I := I) (M := M) g x (r + 1) e K') (show E from e (J' 0))
     (fun k : Fin s => (show E from e (J' (Fin.succ k))))]
   have hcurry : (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x)

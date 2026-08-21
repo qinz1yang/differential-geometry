@@ -193,10 +193,10 @@ theorem uniform_center_average_convergence (hd : InjRadiusDecayInput (I := I) X)
                   y hcomplete (hrad a b y hy) (hactive_mem a b y hy)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.1)
+                    (rho := rho) (hrho := hrho) hy).1.1)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                    (rho := rho) (hrho := hrho) a b hy).1.2.1)
+                    (rho := rho) (hrho := hrho) hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
   exact NetLimitData.unifHatCageSelfComp hd P L pb r n rho hrho join radSeq center U V
     B Binf A Ainf hconn hX hcenter
@@ -589,10 +589,10 @@ theorem exists_center_average_identity_convergence_subsequence (hd : InjRadiusDe
                      yy hcomplete (hrad (phi a) (phi b) yy hy) (hactive0 (phi a) (phi b) yy hy)
                      ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                        (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                       (rho := rho) (hrho := hrho) a b hy).1.1)
+                       (rho := rho) (hrho := hrho) hy).1.1)
                      ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
                        (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
-                       (rho := rho) (hrho := hrho) a b hy).1.2.1)
+                       (rho := rho) (hrho := hrho) hy).1.2.1)
                      (hstrict0 (phi a) (phi b) yy hy)) xx) < eps) := by
   classical
   have htail (gamma : Fin (pb.A r)) : ∀ᶠ k in atTop,

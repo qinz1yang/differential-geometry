@@ -187,7 +187,7 @@ omit [Module.Finite ℝ E] in
 theorem ricci_is_symmetric
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
     DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
@@ -265,7 +265,7 @@ omit [Module.Finite ℝ E] in
 theorem riemann_from_ricci_trace_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
@@ -335,7 +335,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_reaction_relation_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
@@ -585,7 +585,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_nonneg
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hdim : forall (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
@@ -841,11 +841,6 @@ theorem pinch_quotient_evolution_of_solution_data
     intro t x
     exact hSmooth.scalarRegular.scalar_space (t : Real)
       (D.regular_subset t.2) x
-  have htfNonneg :
-      forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) y,
-        0 <= traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real) y := by
-    intro t y
-    exact trace_free_ricci_norm_sq_nonneg (I := I) S hdim (t : Real) y
   have hgradTf := gradient_trace_free_ricci_norm_sq (I := I) S hS
   have hgradScalar :
       forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
@@ -867,7 +862,7 @@ theorem pinch_quotient_evolution_of_solution_data
       (ricciGradSq (I := I) S) (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
       epsilon (trace_free_ricci_norm_sq_heat_equation_of_solution (I := I) S hS hdim) hscalarHeat ?_ ?_
-      htfDiff hscalarDiff htfNonneg hscalar hgradTf hgradScalar
+      htfDiff hscalarDiff hscalar hgradTf hgradScalar
       hgradScalarPow
     · intro t x
       rfl

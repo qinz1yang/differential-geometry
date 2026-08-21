@@ -1057,6 +1057,7 @@ end MovingPushforwardAux
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem gfam_inner_continuous_on
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x : M) (v w : TangentSpace I x)
@@ -1172,6 +1173,7 @@ theorem gfam_inner_continuous_on
   · exact hsum s₀ hbase0 hsrc0
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem ricci_gfam_continuous_on
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x : M) (v w : TangentSpace I x)

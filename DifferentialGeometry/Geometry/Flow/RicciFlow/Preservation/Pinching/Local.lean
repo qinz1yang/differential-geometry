@@ -48,7 +48,7 @@ def RicciLowerBoundFromPinchingOn
   ∀ (t : Real) (x : M), 2 * beta ^ 2 * scalar t x ≤ ricciLower t x
 
 def PinchingDecayWeightOn
-    (_lambda _mu _nu weight : Real -> M -> Real) (delta : Real) : Prop :=
+    (weight : Real -> M -> Real) (delta : Real) : Prop :=
   ∀ (t : Real) (x : M), 0 < delta ∧ 0 ≤ weight t x
 
 def RicciPinchingImprovesOn
@@ -90,7 +90,7 @@ abbrev PAlphaOverQBetaFormulaOn
     {I : ModelWithCorners Real E H}
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [IsManifold I (∞ + 1) M]
+    [IsManifold I ∞ M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (phi psi phiHeat psiHeat : Real -> M -> Real)
     (alpha beta : Real) : Prop :=
@@ -140,11 +140,11 @@ theorem ricci_pinching_improves
       hpositiveRicciInitial →
         ∃ C delta : Real, ∃ weight : Real -> M -> Real,
           0 < C ∧ 0 < delta ∧ delta < 1 ∧
-          PinchingDecayWeightOn lambda mu nu weight delta ∧
+          PinchingDecayWeightOn weight delta ∧
           RicciPinchingImprovesOn lambda mu nu weight C) :
     ∃ C delta : Real, ∃ weight : Real -> M -> Real,
       0 < C ∧ 0 < delta ∧ delta < 1 ∧
-      PinchingDecayWeightOn lambda mu nu weight delta ∧
+      PinchingDecayWeightOn weight delta ∧
       RicciPinchingImprovesOn lambda mu nu weight C :=
   himprove hinit
 
@@ -165,7 +165,7 @@ theorem palpha_over_qbeta_formula
     {I : ModelWithCorners Real E H}
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [IsManifold I (∞ + 1) M] [IsManifold I 1 M]
+    [IsManifold I ∞ M] [IsManifold I 1 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (phi psi phiLap psiLap phiHeat psiHeat : Real -> M -> Real)

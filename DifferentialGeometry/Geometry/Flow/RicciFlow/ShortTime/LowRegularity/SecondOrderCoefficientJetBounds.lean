@@ -170,13 +170,12 @@ theorem path_add_sub_jet
     exact hcap t ht
   have hmain := path_jetL2_le (I := I) (M := M) g r 2 n
     (fun t => Φ t + Ψ t - C) (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    metricPerturbationPathDomain_isOpen hSI hK (Real.sqrt_nonneg Λ) hcap'
+    metricPerturbationPathDomain_isOpen hSI hK hcap'
   rw [heq]
   exact le_of_le_of_eq hmain hsq
 
 theorem topKerJetSharp
-    (_hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ∃ Kk : ℕ → ℝ, (∀ i, 0 ≤ Kk i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
         (_hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -190,9 +189,9 @@ theorem topKerJetSharp
             (0 : SmoothCcTensor g 0 2)) δ)
         (i : ℕ) (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
         covariantJetNormSq (I := I) (M := M) g i
-            (rhsDecompositionTop (I := I) (M := M) g g_bg T hδg hδZ s +
+            (rhsDecompositionTop (I := I) (M := M) g T hδg hδZ s +
               RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδg hδZ s -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g) ≤
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) ≤
           Kk i * (1 + ∑ j ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
@@ -200,7 +199,7 @@ theorem topKerJetSharp
   have h31 : (1 / 3 : ℝ) < 1 := by norm_num
   obtain ⟨AL, SL, hL⟩ := HasMoserTameBounds.lieDecomposition2 (I := I) (M := M) g (δ₀ := 1 / 3) h30 h31
   obtain ⟨AP, SP, hP⟩ :=
-    HasMoserTameBounds.deTurckMetricPrincipalDefectDifference (I := I) (M := M) g g_bg (δ₀ := 1 / 3) h30 h31
+    HasMoserTameBounds.deTurckMetricPrincipalDefectDifference (I := I) (M := M) g (δ₀ := 1 / 3) h30 h31
   obtain ⟨AR, SR, hR⟩ :=
     HasMoserTameBounds.ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g (δ₀ := 1 / 3) h30 h31
   refine ⟨fun i => |2 * (2 * (AL i + AP i) + 4 * AR i)|,
@@ -237,7 +236,7 @@ theorem topKerJetSharp
       nlinarith [hSR]
   have hfin := HasMoserTameBounds.add (I := I) (M := M)
     (HasMoserTameBounds.add (I := I) (M := M) hLw hPw) hRs
-  rw [RicciDeTurckLowOrder.topKernel_eq (I := I) (M := M) g g_bg T hδg hδZ s]
+  rw [RicciDeTurckLowOrder.topKernel_eq (I := I) (M := M) g T hδg hδZ s]
   refine (hfin.2.2 i).trans ?_
   have hjetT : (0 : ℝ) ≤ covariantJetNormSq (I := I) (M := M) g i T :=
     covariantJetNormSq_nonneg (I := I) (M := M) (m := i) g T
@@ -247,7 +246,6 @@ theorem topKerJetSharp
   exact mul_le_mul_of_nonneg_right (le_abs_self _) (by linarith only [hjetT])
 
 theorem topKer_jet
-    (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ Kk : ℕ → ℝ, (∀ i, 0 ≤ Kk i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -262,12 +260,12 @@ theorem topKer_jet
             (0 : SmoothCcTensor g 0 2)) δ)
         (i : ℕ) (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
         covariantJetNormSq (I := I) (M := M) g i
-            (rhsDecompositionTop (I := I) (M := M) g g T hδg hδZ s +
+            (rhsDecompositionTop (I := I) (M := M) g T hδg hδZ s +
               RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδg hδZ s -
-              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g g) ≤
+              deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) ≤
           Kk i * (1 + ∑ j ∈ Finset.range (i + 2),
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
-  obtain ⟨Kk, hKk_nn, hker⟩ := topKerJetSharp (I := I) (M := M) hDim g g
+  obtain ⟨Kk, hKk_nn, hker⟩ := topKerJetSharp (I := I) (M := M) g
   refine ⟨Kk, hKk_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ i s hs
   refine (hker T hT hδ0 hδ_le hδg hδZ i s hs).trans ?_

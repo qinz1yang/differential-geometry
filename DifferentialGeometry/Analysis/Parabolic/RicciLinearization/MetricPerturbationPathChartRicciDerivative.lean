@@ -62,6 +62,8 @@ def realizedGramDeriv (g₀ : SmoothRiemannianMetric I M)
       chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') α i j y
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -93,6 +95,8 @@ theorem hasDerivAt_metricPerturbationPath_chartGramOnE (g₀ : SmoothRiemannianM
   rw [realizedGramDeriv, hF, hG]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma realizedGramDeriv_eq_deriv (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -108,6 +112,8 @@ private lemma realizedGramDeriv_eq_deriv (g₀ : SmoothRiemannianMetric I M)
   exact (hasDerivAt_metricPerturbationPath_chartGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' α i j y hs₀).deriv
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma s_differentiableAt_metricPerturbationPath_chartInvGramOnE (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -132,6 +138,7 @@ private lemma s_differentiableAt_metricPerturbationPath_chartInvGramOnE (g₀ : 
   exact (hjoint.comp s₀ ((contDiffAt_id).prodMk contDiffAt_const)).differentiableAt (by simp)
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartInvGramOnE (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -221,6 +228,7 @@ theorem hasDerivAt_metricPerturbationPath_chartInvGramOnE (g₀ : SmoothRiemanni
   exact hfinal
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_partial_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -247,6 +255,7 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartGramOnE (g₀ : SmoothRie
   exact realizedGramDeriv_eq_deriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j hs₀
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_gramBracket (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -282,7 +291,7 @@ theorem hasDerivAt_metricPerturbationPath_gramBracket (g₀ : SmoothRiemannianMe
     funext s; rw [gramBracket]
   rw [heq]; exact hsum
 
-omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartChristoffel (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -323,6 +332,8 @@ theorem hasDerivAt_metricPerturbationPath_chartChristoffel (g₀ : SmoothRiemann
   exact hG.mul hbr
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_partial_chartChristoffel (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -349,6 +360,8 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartChristoffel (g₀ : Smoot
       chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) x i j k r.2) m s₀ y hjoint
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartRiemannTensor (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -379,6 +392,7 @@ theorem hasDerivAt_metricPerturbationPath_chartRiemannTensor (g₀ : SmoothRiema
     (by simp)).hasDerivAt
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartRicciTensor (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -405,6 +419,7 @@ theorem hasDerivAt_metricPerturbationPath_chartRicciTensor (g₀ : SmoothRiemann
     hs₀
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

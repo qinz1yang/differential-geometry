@@ -209,7 +209,7 @@ theorem low1_path_h3
   intro g hEq hjet
   obtain ⟨hact2, hact3⟩ := hKcurv.bounds g hEq hjet
   obtain ⟨Kc, hKc, htow⟩ :=
-    firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) hDim g gBase
+    firstOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) g gBase
   obtain ⟨Cgap, hCgap, hgap⟩ :=
     exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
       (I := I) (M := M) g 3

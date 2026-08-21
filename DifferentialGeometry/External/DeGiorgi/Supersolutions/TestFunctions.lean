@@ -48,6 +48,7 @@ local notation "μhalf" => (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ)))
 `L^p` to `L^{p₀}` upgrade on the unit ball. -/
 noncomputable def C_weakHarnack0Forward
     (d : ℕ) [NeZero d] (_hd : 2 < (d : ℝ)) : ℝ :=
+  let _ := _hd
   (C_weakHarnack0 d * (volume.real (Metric.ball (0 : AmbientSpace d) 1) + 1)) ^
     (moserChi d)
 
@@ -489,6 +490,7 @@ theorem superExactInput_lower_bound
 theorem superExactLeftTransition_contDiff
     {ε : ℝ} (_hε : 0 < ε) :
     ContDiff ℝ (⊤ : ℕ∞) (superExactLeftTransition ε) := by
+  let _ := _hε
   have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => (2 / ε) * t + 1) := by
     simpa [mul_comm, mul_left_comm, mul_assoc] using
       ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => 2 / ε).mul contDiff_id).add
@@ -900,6 +902,7 @@ theorem superExactPowerCutoff_memW01_on_ball
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) s) :
     MemW01p 2 (superExactPowerCutoff η u ε a) (Metric.ball (0 : E) s) := by
+  let _ := _hs
   let Ω : Set E := Metric.ball (0 : E) s
   let hwBig : MemW1pWitness 2 (superExactPowerCutoff η u ε a) (Metric.ball (0 : E) 1) :=
     superExactPowerCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
@@ -933,6 +936,7 @@ theorem superExactTestCutoff_memH01_on_ball
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) s) :
     MemH01 (superExactTestCutoff η u ε a) (Metric.ball (0 : E) s) := by
+  let _ := _hs
   let Ω : Set E := Metric.ball (0 : E) s
   let hwBig : MemW1pWitness 2 (superExactTestCutoff η u ε a) (Metric.ball (0 : E) 1) :=
     superExactTestCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
@@ -1249,6 +1253,7 @@ lemma superExactFwd_test_ratio
     |superExactShiftPow ε (p - 1) t| ^ 2 /
         (-(deriv (superExactShiftReg ε (p - 1)) t)) =
       superExactShiftPow ε p t / (1 - p) := by
+  let _ := _hp
   have hbase_pos : 0 < ε + t := by positivity
   have hpow_eq :
       superExactShiftPow ε (p - 1) t = (ε + t) ^ (p - 1) := by
@@ -1309,6 +1314,7 @@ lemma superExactFwd_test_ratio_of_pos
 lemma superExactFwd_test_deriv_neg_pos
     {ε p t : ℝ} (hε : 0 < ε) (_hp : 0 < p) (hp1 : p < 1) (ht : 0 < t) :
     0 < -(deriv (superExactShiftReg ε (p - 1)) t) := by
+  let _ := _hp
   have hgap : 0 < 1 - p := by linarith
   have hbase_pos : 0 < ε + t := by positivity
   have hpos : 0 < (1 - p) * (ε + t) ^ (p - 2) := by
@@ -1407,6 +1413,7 @@ theorem superExactInv_shiftPow_integrableOn_ball
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s)) :
     IntegrableOn (fun x => superExactShiftPow ε (-p) (u x))
       (Metric.ball (0 : E) s) volume := by
+  let _ := _hs
   have h_int :
       IntegrableOn (fun x => superExactShiftPow ε (-p) (u x))
         Set.univ (volume.restrict (Metric.ball (0 : E) s)) := by
@@ -1434,6 +1441,7 @@ theorem superExactFwd_shiftPow_integrableOn_ball
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume) :
     IntegrableOn (fun x => superExactShiftPow ε p (u x))
       (Metric.ball (0 : E) s) volume := by
+  let _ := _hs
   let Ω : Set E := Metric.ball (0 : E) s
   have hconst_int : IntegrableOn (fun _ : E => ε ^ p) Ω volume := by
     exact integrableOn_const (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := s)).ne

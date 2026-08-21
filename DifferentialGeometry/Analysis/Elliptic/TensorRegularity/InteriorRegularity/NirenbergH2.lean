@@ -80,38 +80,36 @@ theorem tensor_h2_loc_chartComp
                 ∂(volume : Measure EuclN) +
               ∫ x in Ω',
                   (tensorComponentWeakRHS (I := I) (M := M)
-                    g r s T F α hK hK_target P₀ x) ^ 2
+                    g r s T F α P₀ x) ^ 2
                 ∂(volume : Measure EuclN)) := by
   classical
   have h_weak :
       (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).IsSmoothWeakSolution
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponent_isSmoothWeakSolution (I := I) (M := M)
       g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
   have hRHS_cd : ContDiff ℝ ∞
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_supp hF_supp
   have hRHS_cs : HasCompactSupport
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_hasCompactSupport (I := I) (M := M)
       g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
   have hf_l2_loc : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
-      MemLp (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+      MemLp (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
         2 ((volume : Measure EuclN).restrict Ω') := by
     intro Ω' _
     exact memLp_two_contDiff_hasCompactSupport_restrict (E := E)
       hRHS_cd hRHS_cs Ω'
-  have h_closure_in :
-      closure Ω'' ⊆ (Set.univ : Set EuclN) := fun y _ => Set.mem_univ y
   have h_room :
       Metric.cthickening 2 (closure Ω'') ⊆ (Set.univ : Set EuclN) :=
     fun y _ => Set.mem_univ y
   obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution
     (d := Module.finrank ℝ E)
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
-    hΩ'' hΩ''_compact_closure h_closure_in h_room
+    hΩ'' hΩ''_compact_closure h_room
   intro i k
   obtain ⟨g_ik, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
     hΩ'_compact, hbound⟩ := h_eng h_weak hf_l2_loc i k
@@ -157,7 +155,7 @@ theorem tensor_h2_loc_chartComp_all
                 ∂(volume : Measure EuclN) +
               ∫ x in Ω',
                   (tensorComponentWeakRHS (I := I) (M := M)
-                    g r s T F α hK hK_target P₀ x) ^ 2
+                    g r s T F α P₀ x) ^ 2
                 ∂(volume : Measure EuclN)) :=
   fun P₀ => tensor_h2_loc_chartComp (I := I) (M := M)
     g r s T F α hK hK_target P₀ hT_supp hF_supp (hT_K P₀) hweak hΩ'' hΩ''_compact_closure

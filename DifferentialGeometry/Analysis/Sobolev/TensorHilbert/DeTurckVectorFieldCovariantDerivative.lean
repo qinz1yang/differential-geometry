@@ -83,6 +83,7 @@ private theorem operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I
   rw [ContinuousLinearMap.comp_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem deTurckVectorFieldCovector_base_sub (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g₀ - deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg =
       operatorFieldApply (I := I) (M := M) g₀ 3 1 (cometricCastG0 (I := I) g₀ g₁)
@@ -133,6 +134,7 @@ lemma metricLoweredConnectionDifference_unitModel_apply (g₀ g₁ g_bg : Smooth
   rw [connectionDifference_endpoint_cocycle (I := I) g₀ g₁ g_bg x (m 0) (m 1)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma wOmega_toSection_unit (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -145,6 +147,7 @@ private lemma wOmega_toSection_unit (g₀ g₁ g_bg : SmoothRiemannianMetric I M
   rfl
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma deTurckVectorFieldCovector_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (z : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 1 (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg) x
@@ -217,6 +220,7 @@ lemma deTurckVectorFieldCovector_unitModel_apply (g₀ g₁ g_bg : SmoothRiemann
   rw [deTurckVectorFieldSection, ← PDE.DeTurck.deTurckVF_eq_orthoFrame_trace (I := I) g₁ g_bg x]
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma wOmega_toSection_unit_eq_flat (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -292,6 +296,7 @@ private lemma tensor0SCovariantDerivative01_consEval_leibnizDefect
   rw [hpeel, hbase]
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma wOmega_toSection_unitZero (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (b : M) :
     (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 1 I b from
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg).toSection b)
@@ -300,6 +305,7 @@ private lemma wOmega_toSection_unitZero (g₀ g₁ g_bg : SmoothRiemannianMetric
   wOmega_toSection_unit_eq_flat (I := I) (M := M) g₀ g₁ g_bg b
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma unitEvalSection_wOmega_toModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (b : M) (z : TangentSpace I b) :
     Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 1
@@ -395,6 +401,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredBase_unitModel_apply (g₀ g�
   ring
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (u w : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg) x ![u, w] =
@@ -451,6 +458,7 @@ private lemma wEndo_eq_covDeriv_add_connectionDifference (g₀ g₁ g_bg : Smoot
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma cotangentToDual_cometricRaiseSlot0_gen
     (g₀ : SmoothRiemannianMetric I M) (A : SmoothCcTensor g₀ 0 2) (x : M)
     (om : Tensor0SSpace 1 I x) (w : TangentSpace I x) :

@@ -133,7 +133,7 @@ theorem stage_root_tail
     (Phi3 : Nat → Nat → Nat → E → E)
     (hroot : HasStageRootCube inp P L hr phi hphi C1 alpha e
       W PhiInf rootRho Phi3 (chart := d.chart)) :
-    HasStageRootReadout inp P L hr phi hphi hconn C0 alpha Phi3
+    HasStageRootReadout inp P L hr phi hphi C0 alpha Phi3
       (chart := d.chart) := by
   dsimp only [HasStageRootReadout]
   rcases hroot with
@@ -372,12 +372,12 @@ theorem stage_root_tail
     rw [hmu, hptsEq]
     simpa only [c] using centerOfMass.min hcm y
   have hmapC :
-      stageComparisonMap inp P Lphi r hr hconn k l x
+      stageComparisonMap inp P Lphi r hr k l x
           (chart := d.chart) = c :=
     hmap.trans hcGlobal.symm
   have hchartReadout :
       chiL.inv
-          (stageComparisonMap inp P Lphi r hr hconn k l x
+          (stageComparisonMap inp P Lphi r hr k l x
             (chart := d.chart)) =
         Phi3 l k l z := by
     rw [hmapC]
@@ -391,17 +391,17 @@ theorem stage_root_tail
       Geometry.Riemannian.NormalCoordinates.NormalBallChart.restrictBall_apply,
       zc, c, chiL] using hright
   have hmapDecode :
-      stageComparisonMap inp P Lphi r hr hconn k l x
+      stageComparisonMap inp P Lphi r hr k l x
           (chart := d.chart) =
         chiL.hom (Phi3 l k l z) := by
     calc
-      stageComparisonMap inp P Lphi r hr hconn k l x
+      stageComparisonMap inp P Lphi r hr k l x
           (chart := d.chart) = c := hmapC
       _ = chiL.hom zc := hdecode.symm
       _ = chiL.hom (Phi3 l k l z) :=
         congrArg chiL.hom hcenterRoot
   have htarget :
-      stageComparisonMap inp P Lphi r hr hconn k l x
+      stageComparisonMap inp P Lphi r hr k l x
           (chart := d.chart) ∈ chiL.hom.target := by
     rw [hmapDecode]
     exact chiL.hom.map_source (chiL.ball_subset hrootBall)
@@ -422,16 +422,13 @@ theorem HasSuppConvDataOn.stage_jet_of_root
       InterSlot L inp.pack r alpha → E → E)
     (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (alpha : LiveSlot L inp.pack r)
     (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
     (W : Set E) (PhiInf : E → E) (rootRho : Real)
     (Phi3 : Nat → Nat → Nat → E → E)
     (hroot : HasStageRootCube inp P L hr phi hphi C1 alpha e
       W PhiInf rootRho Phi3 (chart := chart))
-    (hread : HasStageRootReadout inp P L hr phi hphi hconn C0 alpha Phi3
+    (hread : HasStageRootReadout inp P L hr phi hphi C0 alpha Phi3
       (chart := chart))
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
@@ -455,11 +452,11 @@ theorem HasSuppConvDataOn.stage_jet_of_root
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
       let Fkl := fun w =>
         chiL.inv
-          (stageComparisonMap inp P Lphi r hr hconn k l
+          (stageComparisonMap inp P Lphi r hr k l
             (chiK.hom w) (chart := chart))
       z ∈ interior (C0 alpha) →
       chiK.hom z ∈ Lphi.hatSourceBall inp.decay P R k →
-        stageComparisonMap inp P Lphi r hr hconn k l
+        stageComparisonMap inp P Lphi r hr k l
             (chiK.hom z) (chart := chart) ∈ chiL.restrictBall.target ∧
           ContDiffAt Real ∞ Fkl z ∧
           ∀ j ≤ p, mapDerivNorm j Fkl id z ≤ eps := by
@@ -484,7 +481,7 @@ theorem HasSuppConvDataOn.stage_jet_of_root
     let chiL := chart (Lphi.φ l)
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
     fun w => chiL.inv
-      (stageComparisonMap inp P Lphi r hr hconn k l
+      (stageComparisonMap inp P Lphi r hr k l
         (chiK.hom w) (chart := chart))
   let S : Nat → E → Prop := fun k z =>
     let Yk := X.obj (Lphi.φ k)
@@ -539,7 +536,7 @@ theorem HasSuppConvDataOn.stage_jet_of_root
       hchi.eventually hbigNhd
     have hreadKL := hreadTail k hk l hl
     change (fun w => chiL.inv
-      (stageComparisonMap inp P Lphi r hr hconn k l
+      (stageComparisonMap inp P Lphi r hr k l
         (chiK.hom w) (chart := chart))) =ᶠ[nhds z] Phi3 l k l
     filter_upwards [isOpen_interior.mem_nhds hSz.1, hsource] with y hy hySource
     exact (hreadKL y (interior_subset hy) hySource).1
@@ -579,7 +576,7 @@ theorem HasSuppConvDataOn.stage_jet_of_root
       (n := k) (R := R) (s := r) hRr hxR)
   have hreadAt := hreadTail k hkRead l hlRead z hz hxBig
   have htarget :
-      stageComparisonMap inp P Lphi r hr hconn k l
+      stageComparisonMap inp P Lphi r hr k l
           (chiK.hom z) (chart := chart) ∈ chiL.restrictBall.target := by
     rw [hreadAt.2.2.1]
     exact chiL.restrictBall.map_source hreadAt.2.1
@@ -599,9 +596,6 @@ theorem HasSuppConvDataOn.stage_jet_tail
       InterSlot L inp.pack r alpha → E → E)
     (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (e : (alpha : LiveSlot L inp.pack r) →
       Nat → OpenPartialHomeomorph (E × E) (E × E))
     (W : LiveSlot L inp.pack r → Set E)
@@ -612,17 +606,17 @@ theorem HasSuppConvDataOn.stage_jet_tail
       (e alpha) (W alpha) (PhiInf alpha) (rootRho alpha) (Phi3 alpha)
       (chart := chart))
     (hread : ∀ alpha,
-      HasStageRootReadout inp P L hr phi hphi hconn C0 alpha
+      HasStageRootReadout inp P L hr phi hphi C0 alpha
         (Phi3 alpha) (chart := chart))
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
-    HasStageJetTail inp P L hr phi hphi hconn C0 R p eps
+    HasStageJetTail inp P L hr phi hphi C0 R p eps
       (chart := chart) := by
   classical
   dsimp only [HasStageJetTail]
   have hlocal := fun alpha : LiveSlot L inp.pack r =>
     hdata.stage_jet_of_root inp P L hr phi hphi chart U C0 C1
-      aInf Jinf Jbarinf hconn alpha (e alpha) (W alpha)
+      aInf Jinf Jbarinf alpha (e alpha) (W alpha)
       (PhiInf alpha) (rootRho alpha) (Phi3 alpha) (hroot alpha)
       (hread alpha) R hRr p eps heps
   letI := Fintype.ofFinite (LiveSlot L inp.pack r)
@@ -741,10 +735,10 @@ theorem stage_jet_tail
       (chart := d.chart))
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
-    HasStageJetTail inp P L hr phi hphi hconn C0 R p eps
+    HasStageJetTail inp P L hr phi hphi C0 R p eps
       (chart := d.chart) := by
   apply hdata.stage_jet_tail inp P L hr phi hphi d.chart U C0 C1
-    aInf Jinf Jbarinf hconn e W PhiInf rootRho Phi3 hroot
+    aInf Jinf Jbarinf e W PhiInf rootRho Phi3 hroot
   · intro alpha
     exact d.stage_root_tail inp aMin haMin hphys P L hstable hr
       phi hphi U C0 C1 aInf Jinf Jbarinf hdata hcomplete hconn
@@ -760,14 +754,11 @@ theorem stage_base_tail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
     {r : Real} (hr : 0 ≤ r)
-    (phi : Nat → Nat) (hphi : StrictMono phi)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M) :
-    HasStageBaseTail inp P L hr phi hphi hconn (chart := d.chart) := by
+    (phi : Nat → Nat) (hphi : StrictMono phi) :
+    HasStageBaseTail inp P L hr phi hphi (chart := d.chart) := by
   dsimp only [HasStageBaseTail]
   exact Filter.Eventually.of_forall fun k l =>
-    stageCmp_base_raw inp P (L.subseq hphi) r hr hconn k l
+    stageCmp_base_raw inp P (L.subseq hphi) r hr k l
       (chart := d.chart)
 
 theorem exists_supp_base
@@ -798,13 +789,13 @@ theorem exists_supp_base
           InterSlot L inp.pack r alpha → E → E),
       HasSuppConvDataOn (I := I) inp P L r hr phi hphi d.chart
           U C0 C1 aInf Jinf Jbarinf ∧
-        HasStageBaseTail inp P L hr phi hphi hconn
+        HasStageBaseTail inp P L hr phi hphi
           (chart := d.chart) := by
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hdata⟩ :=
     d.exists_supp_data inp aMin hphys P L hstable hcomplete hconn
       r hr hratio
   exact ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hdata,
-    d.stage_base_tail inp P L hr phi hphi hconn⟩
+    d.stage_base_tail inp P L hr phi hphi⟩
 
 theorem exists_supp_metric
     (inp : MetricCompactCore (I := I) X)
@@ -845,7 +836,7 @@ theorem exists_supp_metric
         HasSuppConvDataOn (I := I) inp P L r hr phi hphi d.chart
           U C0 C1 aInf Jinf Jbarinf ∧
         HasStageMetricOn inp P L phi hphi d.chart V C1 gInf ∧
-        HasStageBaseTail inp P L hr phi hphi hconn
+        HasStageBaseTail inp P L hr phi hphi
           (chart := d.chart) := by
   classical
   obtain ⟨phi0, hphi0, U, C0, C1, aInf, Jinf, Jbarinf,
@@ -863,9 +854,9 @@ theorem exists_supp_metric
       U C0 C1 aInf Jinf Jbarinf :=
     hdata0.subseq inp P L r hr hphi0 d.chart
       U C0 C1 aInf Jinf Jbarinf hpsi
-  have hbase : HasStageBaseTail inp P L hr phi hphi hconn
+  have hbase : HasStageBaseTail inp P L hr phi hphi
       (chart := d.chart) :=
-    hbase0.subseq inp P L hr hphi0 hconn
+    hbase0.subseq inp P L hr hphi0
       (chart := d.chart) (hψ := hpsi)
   have hcenter' : ∀ n (alpha : LiveSlot L inp.pack r),
       inp.decay.dist ((L.subseq hphi).φ n)
@@ -954,7 +945,7 @@ theorem stage_data_of
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
-    (hbase : HasStageBaseTail inp P L hr phi hphi hconn
+    (hbase : HasStageBaseTail inp P L hr phi hphi
       (chart := d.chart))
     (hcenter : ∀ n (alpha : LiveSlot L inp.pack r),
       inp.decay.dist ((L.subseq hphi).φ n)
@@ -979,7 +970,7 @@ theorem stage_data_of
                 (E × E) →L[Real] (E × E))‖₊⁻¹ -
               PhaseFlow.phaseErr (d.phaseK (2 * q gamma)))⁻¹ *
             PhaseFlow.phaseErr (d.phaseK (2 * q gamma)) < 1 / 24) :
-    HasStageJetDataOn (I := I) inp P L hr phi hphi hconn d.chart
+    HasStageJetDataOn (I := I) inp P L hr phi hphi d.chart
       V U C0 C1 aInf Jinf Jbarinf gInf := by
   classical
   obtain ⟨deltaStage, _deltaInf, e, _eInf, hpair, hstage⟩ :=
@@ -1177,7 +1168,7 @@ theorem stage_data_of
       U C0 C1 aInf Jinf Jbarinf alpha (hpair alpha) (hC1q alpha)
   choose W PhiInf rootRho Phi3 hroot using hcube
   have hjets : ∀ R, R < r → ∀ p eps, 0 < eps →
-      HasStageJetTail inp P L hr phi hphi hconn C0 R p eps
+      HasStageJetTail inp P L hr phi hphi C0 R p eps
         (chart := d.chart) := by
     intro R hR p eps heps
     exact d.stage_jet_tail inp aMin haMin hphys P L hstable hr
@@ -1265,7 +1256,7 @@ theorem stage_data
           InterSlot L inp.pack r alpha → E → E)
         (gInf : LiveSlot L inp.pack r →
           E → (E →L[Real] E →L[Real] Real)),
-      HasStageJetDataOn (I := I) inp P L hr phi hphi hconn d.chart
+      HasStageJetDataOn (I := I) inp P L hr phi hphi d.chart
         V U C0 C1 aInf Jinf Jbarinf gInf := by
   classical
   let aBase := baseScale d inp.realizes hcomplete hconn
@@ -1349,7 +1340,7 @@ theorem exists_stage_data
               InterSlot L inp.pack r alpha → E → E)
             (gInf : LiveSlot L inp.pack r →
               E → (E →L[Real] E →L[Real] Real)),
-          HasStageJetDataOn (I := I) inp P L hr phi hphi hconn d.chart
+          HasStageJetDataOn (I := I) inp P L hr phi hphi d.chart
             V U C0 C1 aInf Jinf Jbarinf gInf := by
   refine ⟨d.stageScale inp.realizes hcomplete hconn,
     d.stageScale_pos inp.realizes hcomplete hconn,
@@ -1369,11 +1360,11 @@ theorem stage_diag
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (hstable : IsStableNet inp P L0) :
-    ∃ (hseed : HasStageSeedOn inp P L0 hconn d.chart)
+    ∃ (hseed : HasStageSeedOn inp P L0 d.chart)
         (psi : Nat → Nat) (_hpsi : StrictMono psi),
       ∀ q : Nat,
         HasRadiusTailOn inp P L0 hconn d.chart hseed psi q := by
-  have hseed : HasStageSeedOn inp P L0 hconn d.chart := by
+  have hseed : HasStageSeedOn inp P L0 d.chart := by
     refine ⟨hstable, ?_⟩
     intro L hstableL r hr
     exact d.stage_data inp hcomplete hconn hphys P L hstableL r hr
@@ -1393,7 +1384,7 @@ theorem exists_stage_diag
         (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
         (L0 : NetLimitData inp.decay inp.D P)
         (_hstable : IsStableNet inp P L0),
-        ∃ (hseed : HasStageSeedOn inp P L0 hconn d.chart)
+        ∃ (hseed : HasStageSeedOn inp P L0 d.chart)
             (psi : Nat → Nat) (_hpsi : StrictMono psi),
           ∀ q : Nat,
             HasRadiusTailOn inp P L0 hconn d.chart hseed psi q := by

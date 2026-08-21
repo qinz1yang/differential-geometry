@@ -34,7 +34,7 @@ variable
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 theorem duhamel_integral_time_deriv
-    (lam : ℝ) (_hlam : 0 ≤ lam) (f : ℝ → ℝ) {T : ℝ}
+    (lam : ℝ) (f : ℝ → ℝ) {T : ℝ}
     (hf : ContinuousOn f (Set.Icc 0 T)) {t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) T) :
     HasDerivAt (fun s : ℝ => perModeConv lam f s)
       (-lam * perModeConv lam f t + f t) t := by

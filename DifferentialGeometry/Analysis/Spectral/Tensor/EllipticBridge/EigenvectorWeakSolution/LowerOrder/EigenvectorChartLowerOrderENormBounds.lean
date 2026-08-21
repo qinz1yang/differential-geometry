@@ -77,9 +77,8 @@ private lemma eLpNorm_indicatorFactor_mul_atom_le
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_weighted_contDiffOn_mul_le
     (I := I) (M := M) g α hc
     (chartPouKernel_isCompact (I := I) (M := M) α)
-    (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
-    hG hG_zero
+    hG_zero
   refine ⟨h_mul_memLp.ae_eq h_prod_eq.symm, C, hC_nn, ?_⟩
   rw [eLpNorm_congr_ae h_prod_eq]
   exact hC_bd
@@ -211,7 +210,6 @@ private lemma eLpNorm_indicatorFactor_mul_atom_le_uniform
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_weighted_contDiffOn_mul_le_uniform
     (I := I) (M := M) g α hc
     (chartPouKernel_isCompact (I := I) (M := M) α)
-    (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
   refine ⟨C, hC_nn, fun G hG hG_zero => ?_⟩
   have h_prod_eq : (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α)

@@ -170,8 +170,7 @@ private theorem lieArm_threeArm_coeffFields_perOrder_data
       deTurckLieArm1Coeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ g_bg a
         ha_super hR hδ₀
     obtain ⟨P2jet, hP2jet_nn, hP2jet⟩ :=
-      deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀
-        g_bg a ha_super hR hδ₀
+      deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ a ha_super hR hδ₀
     obtain ⟨Λ0, hΛ0_nn, hΛ0⟩ :=
       deTurckLieCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
         ha_super hR hδ₀
@@ -182,8 +181,8 @@ private theorem lieArm_threeArm_coeffFields_perOrder_data
       deTurckLieArm1Coeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
         ha_super hR hδ₀
     obtain ⟨Λ2, hΛ2_nn, hΛ2⟩ :=
-      deTurckLieArm2PrincipalCoeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀
-        g_bg a ha_super hR hδ₀
+      deTurckLieArm2PrincipalCoeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+        (I := I) (M := M) g₀ a (R := R) hδ₀
     set C : ℝ := (2 * Λ0 + 2 * ΛL + Λ1 + Λ2) +
       ∑ k ∈ Finset.range (a + 1), (2 * (P0jet k + PLjet k) + P1jet k + P2jet k) with hC_def
     have hsum_nn : 0 ≤ ∑ k ∈ Finset.range (a + 1),
@@ -323,7 +322,7 @@ private theorem lieArm_threeArm_coeffFields_perOrder_data
       · set R2 : SmoothCcTensor g₀ 4 2 :=
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
             (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg with hR2_def
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hR2_def
         have hsingle : ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (symmAbsorbedCoeff (I := I) (M := M) g₀ 2 R2 σ'₂)‖ ^ 2 ≤
             ∑ k ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 k
@@ -776,7 +775,7 @@ private theorem deTurckRHSArmDiff_threeArm_unitModel_ballUniform
             2) := by
   classical
   obtain ⟨ΛR, hΛR_nn, hRicci⟩ :=
-    deTurckRicciArm_operatorFieldApplication_graded_ballUniform (I := I) g₀ g_bg a ha_super hR hδ₀
+    deTurckRicciArm_operatorFieldApplication_graded_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨ΛL, hΛL_nn, hLie⟩ :=
     deTurckLieArm_operatorFieldApplication_graded_ballUniform (I := I) g₀ g_bg a ha_super hR hδ₀
   refine ⟨Real.sqrt (2 * ΛR ^ 2 + 2 * ΛL ^ 2), Real.sqrt_nonneg _, ?_⟩
@@ -1019,7 +1018,7 @@ private theorem deTurckRHSArmDiff_order0_riemannianFiberNormSq_intrinsic_ballUni
           _ = (4 * 3 * (ΛC ^ 2 * Cemb ^ 2)) * S := by ring
 
 private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUniform
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ ΛR ΓR : ℝ, 0 ≤ ΛR ∧ 0 ≤ ΓR ∧
@@ -1059,7 +1058,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
           (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i R₂‖ ^ 2) ≤ ΓR ^ 2 := by
   classical
   obtain ⟨ΛR, B, hΛR_nn, hB_nn, hbrick⟩ :=
-    exists_ricciArm_threeArm_coeffFields_ballUniform (I := I) g₀ g_bg a ha_super hR hδ₀
+    exists_ricciArm_threeArm_coeffFields_ballUniform (I := I) g₀ a ha_super hR hδ₀
   refine ⟨2 * ΛR, 2 * B, by positivity, by positivity, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball
   obtain ⟨Φ₀, Φ₁, Φ₂, hj0, hj1, hj2, hc0, hc1, hc2, hid, hb0, hb1, hb2, hjet0, hjet1, hjet2⟩ :=
@@ -1185,7 +1184,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
   · have htower : (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i P₀‖ ^ 2) ≤ B ^ 2 := by
       rw [hP₀]
-      exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 2 a Φ₀ hSI hSopen hj0 hB_nn hjet0
+      exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 2 a Φ₀ hSI hSopen hj0 hjet0
     have hscale : (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i ((-2 : ℝ) • P₀)‖ ^ 2) =
         4 * ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 2 2 i P₀‖ ^ 2 := by
@@ -1199,7 +1198,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
   · have htower : (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 3 2 i P₁‖ ^ 2) ≤ B ^ 2 := by
       rw [hP₁]
-      exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 3 a Φ₁ hSI hSopen hj1 hB_nn hjet1
+      exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 3 a Φ₁ hSI hSopen hj1 hjet1
     have hscale : (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 3 2 i ((-2 : ℝ) • P₁)‖ ^ 2) =
         4 * ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 3 2 i P₁‖ ^ 2 := by
@@ -1213,7 +1212,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
   · have htower : (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 4 2 i P₂‖ ^ 2) ≤ B ^ 2 := by
       rw [hP₂]
-      exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 4 a Φ₂ hSI hSopen hj2 hB_nn hjet2
+      exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 4 a Φ₂ hSI hSopen hj2 hjet2
     have hscale : (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 4 2 i ((-2 : ℝ) • P₂)‖ ^ 2) =
         4 * ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i P₂‖ ^ 2 := by
@@ -1361,11 +1360,11 @@ private theorem deTurckLieArm_operatorFieldApplication_graded_jetL2_ballUniform
       ((hc2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb2 t ht x)
   · rw [hP₀]
-    exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 2 a Φ₀ hSI hSopen hj0 hB_nn hjet0
+    exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 2 a Φ₀ hSI hSopen hj0 hjet0
   · rw [hP₁]
-    exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 3 a Φ₁ hSI hSopen hj1 hB_nn hjet1
+    exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 3 a Φ₁ hSI hSopen hj1 hjet1
   · rw [hP₂]
-    exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 4 a Φ₂ hSI hSopen hj2 hB_nn hjet2
+    exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 4 a Φ₂ hSI hSopen hj2 hjet2
 
 private theorem deTurckRHSArmDiff_threeArm_coeffC0_jetL2_ballUniform
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1401,7 +1400,7 @@ private theorem deTurckRHSArmDiff_threeArm_coeffC0_jetL2_ballUniform
           (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i C₂‖ ^ 2) ≤ Γ ^ 2 := by
   classical
   obtain ⟨ΛR, ΓR, hΛR_nn, hΓR_nn, hRicci⟩ :=
-    deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUniform (I := I) g₀ g_bg a ha_super hR hδ₀
+    deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨ΛL, ΓL, hΛL_nn, hΓL_nn, hLie⟩ :=
     deTurckLieArm_operatorFieldApplication_graded_jetL2_ballUniform (I := I) g₀ g_bg a ha_super hR hδ₀
   refine ⟨Real.sqrt (2 * ΛR ^ 2 + 2 * ΛL ^ 2), Real.sqrt (2 * ΓR ^ 2 + 2 * ΓL ^ 2),

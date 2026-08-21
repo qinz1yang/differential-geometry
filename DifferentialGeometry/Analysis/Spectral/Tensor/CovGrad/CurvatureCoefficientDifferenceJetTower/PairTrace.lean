@@ -124,7 +124,7 @@ lemma covGrad_slotExtend_toSection_rsDomDomCongr_b
       rw [Fin.cons_zero]; rfl
     · change m (Fin.succ (Fin.succ i)) = _
       rw [Fin.cons_succ]]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r s x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       tensorCovDerivAt (I := I) (M := M) g r s Φ x (m 0))
     d (m 1) (fun k : Fin s => m (Fin.succ (Fin.succ k)))]
@@ -137,7 +137,7 @@ lemma covGrad_slotExtend_toSection_rsDomDomCongr_b
     · simp only [Fin.cons_zero]
       rw [Equiv.swap_apply_left]
     · rw [Fin.cons_succ]]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g r (s + 1) x
+  rw [slotExtendFib_apply_eval (I := I) (M := M) r (s + 1) x
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (covGrad (I := I) (M := M) g r s Φ).toSection x)
     d (m 1) (fun k : Fin (s + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ k)))]
@@ -400,6 +400,8 @@ lemma slotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem mixedCoeff_backgroundDifference_eq_pairTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
@@ -1201,6 +1203,7 @@ lemma slotInsertEndoCc_add_endo_c (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma metricComparisonEndomorphismField_diff_split_c (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
@@ -1324,6 +1327,7 @@ def pureDoubleTraceField (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma operatorFieldComposition_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I M) (s c : ℕ)
     (Φ : SmoothCcTensor g₀ (s + 1) c) :
     ccOperatorFieldComp (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
@@ -1351,7 +1355,7 @@ lemma operatorFieldComposition_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I
   rw [Function.update_eq_self]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma toModel_cons_sum_smul (_x : M) {n : ℕ}
+lemma toModel_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons (∑ c, t c • u c) rest) =
@@ -1384,7 +1388,7 @@ lemma toModel_cons_sum_smul (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma toModel_cons_cons_sum_smul (_x : M) {n : ℕ}
+lemma toModel_cons_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons aa (Fin.cons (∑ c, t c • u c) rest)) =
@@ -1474,6 +1478,7 @@ lemma orthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₁ s =
@@ -1570,7 +1575,7 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
               (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
-        exact toModel_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
+        exact toModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
@@ -1588,7 +1593,7 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
             (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
               (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E) mm)) := by
         refine Finset.sum_congr rfl fun c _ => ?_
-        have hsum := toModel_cons_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
+        have hsum := toModel_cons_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
           (Module.finrank ℝ E)
           (fun a => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
@@ -1726,6 +1731,7 @@ def pairTraceOp (g₀ gm : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 6 2
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -1799,6 +1805,8 @@ lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
@@ -1866,6 +1874,8 @@ theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
   ring
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem riemannMixedCoeff_eq_pairTrace_L01 (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
@@ -1948,6 +1958,7 @@ lemma iteratedCovGrad_zero_of_covGrad_zero (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma pureDoubleTraceField_self_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₀ s = cometricDoubleTraceField (I := I) g₀ s := by
   apply SmoothCcTensor.ext
@@ -1957,12 +1968,14 @@ lemma pureDoubleTraceField_self_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma pairTraceOp_self_eq (g₀ : SmoothRiemannianMetric I M) :
     pairTraceOp (I := I) (M := M) g₀ g₀ = phiDtPair (I := I) (M := M) g₀ := by
   rw [pairTraceOp, phiDtPair, pureDoubleTraceField_self_eq (I := I) (M := M) g₀ 2,
     pureDoubleTraceField_self_eq (I := I) (M := M) g₀ 4]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 lemma pureDoubleTraceField_cross_split (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -1985,6 +1998,7 @@ noncomputable def pureTrace (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
   pureDoubleTraceField (I := I) (M := M) g₀ g₁ s
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem pureTrace_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     (pureTrace (I := I) (M := M) g₀ g₁ s).toSection x =
@@ -1992,6 +2006,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
         cometricDoubleTraceFib (I := I) g₁ s x) := rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem pureTrace_split (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureTrace (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s

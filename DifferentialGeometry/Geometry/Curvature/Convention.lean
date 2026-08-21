@@ -64,7 +64,6 @@ theorem ricciFromRm13At_rm04_first_trace_convention
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hLower : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x Rm13 Rm04)
-    (_hInvSym : forall a b : Idx, gInv a b = gInv b a)
     (i j : Idx) :
     DifferentialGeometry.Geometry.Curvature.ricciCompAt (I := I) basis
         (ricciFromRm13At (I := I) (M := M) Rm13) i j =

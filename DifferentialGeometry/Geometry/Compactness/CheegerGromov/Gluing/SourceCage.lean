@@ -115,14 +115,13 @@ theorem hatSourceCompact
 
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
-theorem sourceComplete
+@[nolint unusedArguments] theorem sourceComplete
     [FiniteDimensional Real E]
     (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (n : Nat) (hX : SeqMetricComplete (I := I) X)
-    (hconn :
-      letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+    (hconn : letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology;
       ConnectedSpace (X.obj (L.φ n)).M) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -433,7 +432,7 @@ theorem hatSuppCageData
     (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
-    (_pb : hd.PackingBound D) (_r : Real) (n : Nat)
+    (n : Nat)
     {s : Set (X.obj (L.φ n)).M} {ι : Type*}
     (mu : (X.obj (L.φ n)).M -> ι -> Real)
     (center : ι -> (X.obj (L.φ n)).M)

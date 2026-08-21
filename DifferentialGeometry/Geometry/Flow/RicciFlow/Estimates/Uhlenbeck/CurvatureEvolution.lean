@@ -58,7 +58,7 @@ theorem metricCompInFrame_timeDeriv
   simpa [metricCompInFrame, ricciCompInFrame, RicciAtFamily.toTensorField_apply] using h
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -102,6 +102,7 @@ theorem solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
   congr 1
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem solutionCurvatureComponents_hasDerivWithinAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -200,6 +201,7 @@ theorem solutionCurvatureComponents_hasDerivWithinAt
     (by rw [Finset.sum_apply]; exact hbase (t : Real) (D.regular_subset t.2))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem solution_rm04_kn_firstTrace_gform_at
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -227,6 +229,7 @@ theorem solution_rm04_kn_firstTrace_gform_at
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem solution_rm04_kn_field
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (s : Real) (x : M)
@@ -250,6 +253,7 @@ theorem solution_rm04_kn_field
   exact solution_rm04_kn_firstTrace_gform_at (I := I) S s x horth X Y Z W
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem solution_rm04_timeDeriv_kn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -406,6 +410,7 @@ theorem scalarDot_ortho
 
 open DifferentialGeometry.Dim3Reaction in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rm04CompknOrtho
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -564,6 +569,7 @@ theorem ricDot_of_solution
 
 open DifferentialGeometry.Dim3Reaction in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rm04BaseEvolution_at
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -618,6 +624,7 @@ theorem rm04BaseEvolution_at
   linear_combination hmatch
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricci_symmetric_in_frame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -626,6 +633,7 @@ theorem ricci_symmetric_in_frame
   fun t x i j => ricci_is_symmetric (I := I) S t x (frame i x) (frame j x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem solution_rm04_kn_all
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (s : Real) (x : M)
@@ -1163,6 +1171,7 @@ private theorem knScal2Realizes
           (zero_realizes_nabla (I := I) (2 + 1) (S.family.connection t)))))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem knField_eq_rm04
     [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
@@ -1269,6 +1278,7 @@ private theorem knField_eq_rm04
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem nablaRm04Kn
     [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
@@ -1300,6 +1310,7 @@ private noncomputable def rm04DerivsKn
 
 omit [IsManifold I 1 M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem rm04Nab2Kn_eq
     [IsManifold I 1 M] [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
@@ -1644,6 +1655,7 @@ private theorem lapRm04Kn_apply
 
 omit [IsManifold I 1 M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem traceRm04Kn
     [IsManifold I 1 M] [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
@@ -1659,6 +1671,7 @@ theorem traceRm04Kn
 open DifferentialGeometry.Dim3Reaction in
 omit [IsManifold I 1 M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem roughRm04_comp
     [IsManifold I 1 M] [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
@@ -1808,6 +1821,7 @@ theorem riemann_component_evolution_in_orthonormal_frame_of_solution
 
 open DifferentialGeometry.Dim3Reaction in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem rm04HrmProducer
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

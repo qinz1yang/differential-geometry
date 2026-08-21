@@ -68,7 +68,7 @@ theorem shiftNullSymm_of_block
     {G : Real -> SmoothRiemannianMetric I M}
     {N : TwoTensorReaction (I := I) (M := M)}
     {U : Set Real} {delta : Real}
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hreal :
       ∀ t, t ∈ U -> ∀ A : RawTwoTensorField (I := I) (M := M), ∀ x,
         TwoTensorSymmetricAt (I := I) (M := M) A x ->
@@ -82,7 +82,7 @@ theorem shiftNullSymm_of_block
   intro t ht A x hsym hbilin hA v hv
   rcases hreal t ht A x hsym hbilin hA v hv with ⟨a, b, c, hreact⟩
   rw [hreact]
-  exact shiftReactBlock3_nonneg delta a b c hdelta0 hdelta13
+  exact shiftReactBlock3_nonneg delta a b c hdelta13
 
 def ShiftBlockReactRealizesScaled
     (G : Real -> SmoothRiemannianMetric I M)
@@ -97,7 +97,7 @@ theorem shiftNullSymm_of_block_scaled
     {G : Real -> SmoothRiemannianMetric I M}
     {N : TwoTensorReaction (I := I) (M := M)}
     {U : Set Real} {delta : Real}
-    (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
+    (hdelta13 : delta < (1 : Real) / 3)
     (hreal :
       ∀ t, t ∈ U -> ∀ A : RawTwoTensorField (I := I) (M := M), ∀ x,
         TwoTensorSymmetricAt (I := I) (M := M) A x ->
@@ -113,7 +113,7 @@ theorem shiftNullSymm_of_block_scaled
   rcases hreal t ht A x hsym hbilin hA v hv with ⟨r, a, b, c, hreact⟩
   rw [hreact]
   exact mul_nonneg (sq_nonneg r)
-    (shiftReactBlock3_nonneg delta a b c hdelta0 hdelta13)
+    (shiftReactBlock3_nonneg delta a b c hdelta13)
 
 def pinchTensor
     (G : Real -> SmoothRiemannianMetric I M)
@@ -953,7 +953,7 @@ theorem pinchSec_at_trace
 
 theorem ricciAt_symm
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
     DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
@@ -980,7 +980,7 @@ theorem ricciAt_symm
 
 theorem ricciSec_symm
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (U : Set Real) :
     TwoTensorFamilySymmetricOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) U := by
@@ -991,7 +991,7 @@ theorem ricciSec_symm
 
 theorem pinchSec_symm
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) (U : Set Real) :
     TwoTensorFamilySymmetricOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) (pinchSec (I := I) S delta)) U := by
@@ -1007,7 +1007,7 @@ theorem pinchSec_symm
 
 theorem shiftNRaw_pinch
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real)
     (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
@@ -1059,7 +1059,7 @@ theorem shiftNRaw_pinch
 
 theorem shiftNRaw_barrier
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (G : Real -> SmoothRiemannianMetric I M)
     (delta epsilon d t0 t : Real) (x : M)
@@ -1166,6 +1166,7 @@ theorem shiftNRaw_barrier_diff
         ((epsilon * (d + t - t0)) / (1 - 3 * delta)) *
           (2 * delta - 1) *
           (pinchLipSec (I := I) S t x) (vec2 (I := I) v v) := by
+  let _ := (inferInstance : (SigmaCompactSpace M))
   let c : Real := epsilon * (d + t - t0)
   have hden : (1 : Real) - 3 * delta ≠ 0 := by nlinarith
   rw [shiftNRaw_barrier (I := I) (M := M) S
@@ -1521,7 +1522,7 @@ private theorem actualRm04Contr_eq_canonical
 
 theorem traceData_metricTrace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}

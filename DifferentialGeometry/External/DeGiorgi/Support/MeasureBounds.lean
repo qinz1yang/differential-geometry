@@ -187,6 +187,7 @@ omit [NeZero d] in
 theorem essInf_measurable_ennreal_smul_measure
     {μ : Measure E} {c : ENNReal} (hc : c ≠ 0) {f : E → ℝ} (_hf : Measurable f) :
     essInf f (c • μ) = essInf f μ := by
+  let _ := _hf
   rw [essInf_eq_sSup, essInf_eq_sSup]
   congr 1
   ext a
@@ -198,6 +199,7 @@ theorem essInf_comp_measurableEmbedding_eq
     {μ : Measure E} {f : E → E} (hf : MeasurableEmbedding f)
     {g : E → ℝ} (_hg : Measurable g) :
     essInf (g ∘ f) μ = essInf g (Measure.map f μ) := by
+  let _ := _hg
   rw [essInf_eq_sSup, essInf_eq_sSup]
   congr 1
   ext a

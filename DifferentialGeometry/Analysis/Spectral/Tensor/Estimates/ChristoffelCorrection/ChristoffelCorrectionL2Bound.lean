@@ -100,7 +100,7 @@ theorem
     exists_sum_chart_christoffel_correction_norm_sq_le_const_mul_tensorInnerPointwise_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b')
-    (M_F : ℝ) (_hM_F_nn : 0 ≤ M_F)
+    (M_F : ℝ)
     (hM_F_input : ∀ (S : SmoothCcTensor g r s) {b : M},
         b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →

@@ -130,7 +130,7 @@ theorem h1_grid_uniform
     · have hk2 : k ≤ 2 := by omega
       simpa only [lowJetGrid, Km, if_neg hk3, K0] using hgrid0 k hk2
   have hle := grid_h1_le (I := I) (M := M) g P Km C
-    hKm hgr hC Φ hΦ
+    hgr hC Φ hΦ
   have hsplit : ∀ i : ℕ,
       (∑ k ∈ Finset.range (i + 3), Km k) = L R i + T R i * A ^ 2 := by
     intro i

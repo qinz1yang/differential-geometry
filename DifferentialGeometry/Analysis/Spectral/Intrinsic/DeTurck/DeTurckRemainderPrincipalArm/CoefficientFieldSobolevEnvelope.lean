@@ -114,12 +114,12 @@ private lemma logConvex_extreme_product_le {f : ℕ → ℝ} (hf_nn : ∀ k, 0 �
     by_cases hge : γ ≤ σ₁ + σ₂
     · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := σ₁ + σ₂ - γ) (τ₂ := γ)
-        (by omega) hle (by omega) (by omega)
+        (by omega) hle (by omega)
       have hlowB : f (σ₁ + σ₂ - γ) ≤ B := hB _ (by omega)
       exact le_trans hex (mul_le_mul_of_nonneg_right hlowB (hf_nn γ))
     · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := 0) (τ₂ := σ₁ + σ₂)
-        (Nat.zero_le _) hle (by omega) (by omega)
+        (Nat.zero_le _) hle (by omega)
       have hf0B : f 0 ≤ B := hB 0 (Nat.zero_le _)
       have hαβγ : f (σ₁ + σ₂) ≤ f γ := hmono (by omega)
       exact le_trans hex (mul_le_mul hf0B hαβγ (hf_nn _) (le_trans (hf_nn 0) hf0B))
@@ -249,9 +249,10 @@ lemma exists_iteratedCovGrad_le_const_mul_tensorHs (g₀ : SmoothRiemannianMetri
     (fun b _ => norm_nonneg _) (Finset.mem_range.mpr (by omega))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [CompactSpace M] in
 lemma tensorL2NormSq_le_of_pointwise_fiberNormSq_le_two_sum (g : SmoothRiemannianMetric I M)
     {rz sz : ℕ} (Z : SmoothCcTensor g rz sz)
-    (n1 n2 : ℕ) (c1 c2 : ℕ → ℝ) (_hc1 : ∀ i, 0 ≤ c1 i) (_hc2 : ∀ i, 0 ≤ c2 i)
+    (n1 n2 : ℕ) (c1 c2 : ℕ → ℝ)
     (rw1 sw1 : ℕ → ℕ) (F1 : (i : ℕ) → SmoothCcTensor g (rw1 i) (sw1 i))
     (rw2 sw2 : ℕ → ℕ) (F2 : (i : ℕ) → SmoothCcTensor g (rw2 i) (sw2 i))
     (hpt : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g rz sz x (Z.toSection x) ≤

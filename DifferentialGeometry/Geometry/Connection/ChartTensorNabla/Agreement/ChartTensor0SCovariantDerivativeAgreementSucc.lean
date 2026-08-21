@@ -256,7 +256,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
     have hRank0 :=
       chartTensor0SCovariantDerivative_eq_abstract_zero (I := I) g α
         (tensor0SPartialEval I M T (chartParallelExtend (I := I) α b v))
-        X hb
+        X (b := b)
     rw [← hRank0]
     rw [chartTensor0SCovariantDerivative_zero_apply (I := I) g α
         (tensor0SPartialEval I M T (chartParallelExtend (I := I) α b v))

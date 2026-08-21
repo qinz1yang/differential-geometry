@@ -94,6 +94,7 @@ private lemma lieArm_symmS_rawComponent (g : SmoothRiemannianMetric I M) (S : Sm
   rw [tensorChartComponentRaw_smul, tensorChartComponentRaw_add, hswap]
   rw [smul_eq_mul]
 omit [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -198,6 +199,8 @@ private lemma lieArm_chartGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : 
   exact g.symm _ _ _
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma lieArm_realizedGramDeriv_symm (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -1288,6 +1291,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv metr
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 variable {δ δ' : ℝ}
 omit [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_f_readout (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -1330,6 +1334,7 @@ private noncomputable def lieCorrectionZeroCovASc (g₁ g_bg : SmoothRiemannianM
           chartChristoffel (I := I) g_bg x c m p (extChartAt I x x))
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_deTurckLieConnectionDifferenceDerivative_inner_basis (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (a b m k : Fin (Module.finrank ℝ E)) :
     g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
@@ -2075,9 +2080,8 @@ private lemma lieCorrectionZero_O0_center (g₁ g_bg : SmoothRiemannianMetric I 
         (extChartAt I x x) =
       DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderCorrection (lieCorrectionZeroIg (I := I) g₁ x) (lieCorrectionZeroCg (I := I) g₁ x)
         (lieCorrectionZeroEv (I := I) x F)
-        (lieCorrectionZeroDg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g₀ x)
+        (lieCorrectionZeroDg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x)
         (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g_bg x) (lieCorrectionZeroGb (I := I) g₁ x)
-        (lieCorrectionZeroPd (I := I) x F) (lieCorrectionZeroDDg (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g₀ x)
         (lieCorrectionZeroDGa (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g_bg x) (lieCorrectionZeroDGb (I := I) g₁ x) i j := by
   simp only [DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderCorrection, DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorCorrection,
     DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderDerivativeCorrection, DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorFieldDerivative,
@@ -2101,7 +2105,7 @@ private lemma lieCorrectionZero_O0_center (g₁ g_bg : SmoothRiemannianMetric I 
   · refine Finset.sum_congr rfl (fun k _ => congrArg₂ (fun t₁ t₂ : ℝ => t₁ * t₂) ?_ ?_)
     · exact lieArm_chartGramOnE_center (I := I) g₁ x i k
     · exact lieCorrectionZero_d0_center (I := I) g₁ g_bg x F j k
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma lieCorrectionZero_tail2 (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -2129,6 +2133,8 @@ private lemma lieCorrectionZero_tail2 (hδ_lt : δ < 1)
     lieR4_center (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j l k₁]
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_tailpf (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -2212,10 +2218,9 @@ private lemma lieCorrectionZero_master_inst (g₁ g_bg : SmoothRiemannianMetric 
     (i j : Fin (Module.finrank ℝ E)) :
     DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderVectorCorrection (lieCorrectionZeroIg (I := I) g₁ x) (lieCorrectionZeroCg (I := I) g₁ x)
       (lieCorrectionZeroEv (I := I) x F)
-        (lieCorrectionZeroDg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g₀ x)
-        (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g_bg x) (lieCorrectionZeroGb (I := I) g₁ x)
-        (lieCorrectionZeroPd (I := I) x F) (lieCorrectionZeroDDg (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g₀ x)
-        (lieCorrectionZeroDGa (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g_bg x) (lieCorrectionZeroDGb (I := I) g₁ x) i j
+        (lieCorrectionZeroDig (I := I) g₁ x)
+        (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g_bg x)
+        (lieCorrectionZeroDGa (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g_bg x) i j
       + DeTurckCoefficients.LieCorrectionZeroNormalForm.connectionDifferenceInsertion (lieCorrectionZeroIg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x)
         (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g₀ x) (lieCorrectionZeroGa (I := I) g_bg x)
         (lieCorrectionZeroDGa (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g₀ x) (lieCorrectionZeroEv (I := I) x F) i j
@@ -2232,9 +2237,8 @@ private lemma lieCorrectionZero_master_inst (g₁ g_bg : SmoothRiemannianMetric 
         (lieCorrectionZeroDGa (I := I) g₀ x) (lieCorrectionZeroEv (I := I) x F) i j
     = DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderCorrection (lieCorrectionZeroIg (I := I) g₁ x) (lieCorrectionZeroCg (I := I) g₁ x)
       (lieCorrectionZeroEv (I := I) x F)
-        (lieCorrectionZeroDg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g₀ x)
+        (lieCorrectionZeroDg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x)
         (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g_bg x) (lieCorrectionZeroGb (I := I) g₁ x)
-        (lieCorrectionZeroPd (I := I) x F) (lieCorrectionZeroDDg (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g₀ x)
         (lieCorrectionZeroDGa (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g_bg x) (lieCorrectionZeroDGb (I := I) g₁ x) i j
       - (DeTurckCoefficients.LieCorrectionZeroNormalForm.t2F (lieCorrectionZeroIg (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g₀ x)
           (lieCorrectionZeroDGa (I := I) g₀ x) (lieCorrectionZeroEv (I := I) x F) (lieCorrectionZeroPd (I := I) x F) i j
@@ -2242,10 +2246,9 @@ private lemma lieCorrectionZero_master_inst (g₁ g_bg : SmoothRiemannianMetric 
           (lieCorrectionZeroPd (I := I) x F) i j)
       - DeTurckCoefficients.LieCorrectionZeroNormalForm.firstDerivativeRemainder (lieCorrectionZeroIg (I := I) g₁ x) (lieCorrectionZeroCg (I := I) g₁ x)
         (lieCorrectionZeroEv (I := I) x F)
-        (lieCorrectionZeroDg (I := I) g₁ x) (lieCorrectionZeroDig (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g₀ x)
-        (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g_bg x) (lieCorrectionZeroGb (I := I) g₁ x)
-        (lieCorrectionZeroPd (I := I) x F) (lieCorrectionZeroDDg (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g₀ x)
-        (lieCorrectionZeroDGa (I := I) g₁ x) (lieCorrectionZeroDGa (I := I) g_bg x) (lieCorrectionZeroDGb (I := I) g₁ x) i j :=
+        (lieCorrectionZeroGa (I := I) g₀ x)
+        (lieCorrectionZeroGa (I := I) g₁ x) (lieCorrectionZeroGa (I := I) g_bg x)
+        i j :=
   DeTurckCoefficients.LieCorrectionZeroNormalForm.lie_correction_zero_normal_form _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     (fun a b => lieArm_chartInvGramMatrix_symm (I := I) g₁ x a b)
     (fun a b => lieArm_chartGramMatrix_symm (I := I) g₁ x a b)
@@ -2400,18 +2403,12 @@ private lemma lieCorrectionZero_committed (hδ_lt : δ < 1)
       DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderVectorCorrection (lieCorrectionZeroIg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroCg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroEv (I := I) x (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x))
-        (lieCorrectionZeroDg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroDig (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
-        (lieCorrectionZeroGa (I := I) g₀ x)
         (lieCorrectionZeroGa (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroGa (I := I) g_bg x)
-        (lieCorrectionZeroGb (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
-        (lieCorrectionZeroPd (I := I) x (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x))
-        (lieCorrectionZeroDDg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
-        (lieCorrectionZeroDGa (I := I) g₀ x)
         (lieCorrectionZeroDGa (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroDGa (I := I) g_bg x)
-        (lieCorrectionZeroDGb (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) i j := by
+        i j := by
   refine (lieCorrectionZero_committed_value (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg s x i j).trans ?_
   simp only [DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderVectorCorrection, DeTurckCoefficients.LieCorrectionZeroNormalForm.covariantDerivativeConnectionDifference,
     DeTurckCoefficients.LieCorrectionZeroNormalForm.covariantDerivativeDeTurckVectorDifference, DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorFieldDerivative,
@@ -2439,7 +2436,7 @@ private lemma lieCorrectionZero_committed (hδ_lt : δ < 1)
       (lieCorrectionZero_covWSc_raw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i p) rfl
   · exact congrArg₂ (fun t₁ t₂ : ℝ => t₁ * t₂)
       (lieCorrectionZero_covWSc_raw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x j p) rfl
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_d1r (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ'_lt : δ' < 1)
@@ -2588,15 +2585,9 @@ private lemma lieCorrectionZero_d1r (hδ_lt : δ < 1)
       DeTurckCoefficients.LieCorrectionZeroNormalForm.firstDerivativeRemainder (lieCorrectionZeroIg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroCg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroEv (I := I) x (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x))
-        (lieCorrectionZeroDg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
-          (lieCorrectionZeroDig (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
         (lieCorrectionZeroGa (I := I) g₀ x) (lieCorrectionZeroGa (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
           (lieCorrectionZeroGa (I := I) g_bg x)
-        (lieCorrectionZeroGb (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)
-        (lieCorrectionZeroPd (I := I) x (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x))
-        (lieCorrectionZeroDDg (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) (lieCorrectionZeroDGa (I := I) g₀ x)
-        (lieCorrectionZeroDGa (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) (lieCorrectionZeroDGa (I := I) g_bg x)
-        (lieCorrectionZeroDGb (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) i j := by
+        i j := by
   simp only [DeTurckCoefficients.LieCorrectionZeroNormalForm.firstDerivativeRemainder, DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorFieldDifference,
     DeTurckCoefficients.LieCorrectionZeroNormalForm.r3B, lieCorrectionZeroIg, lieCorrectionZeroCg, lieCorrectionZeroEv,
     lieCorrectionZeroGa]
@@ -2973,7 +2964,7 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
     g_bg x i j]
   rw [lieCorrectionZero_riem_piece (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
     i j]
-  rw [lieCorrectionZero_O0_center (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
+  rw [lieCorrectionZero_O0_center (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j]
   rw [lieCorrectionZero_tail2 (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j]
   rw [lieCorrectionZero_d1r (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg s x i j]

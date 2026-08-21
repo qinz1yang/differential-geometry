@@ -22,6 +22,7 @@ variable
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem reindexedPureTrace_sub
     (g gT gU : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) :

@@ -81,7 +81,7 @@ theorem edge_center_pairing_abs_of_carrier_bound
               let gs := metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s
               let R0 := rhsDecomposition0 (I := I) (M := M) g gBase T
                 hdelta hdeltaZ s
-              let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+              let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
               let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
               let HT := iteratedCovGrad (I := I) g 0 2 2 T
               let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -97,8 +97,8 @@ theorem edge_center_pairing_abs_of_carrier_bound
                   operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T -
                   operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT + Z
               let C : SmoothCcTensor g 4 2 :=
-                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gs -
-                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+                deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
+                  deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
               let J :=
                 oneMinusConnLapSmooth (I := I) g 0 2
                     (operatorFieldApply (I := I) (M := M) g 2 2 (R0 + K0) T) +
@@ -145,7 +145,7 @@ theorem edge_center_pairing_abs_of_carrier_bound
   dsimp only
   let gs := metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s
   let R0 := rhsDecomposition0 (I := I) (M := M) g gBase T hdelta hdeltaZ s
-  let K0 := metricPrincipalDefectCurvCoeff (I := I) g gBase g
+  let K0 := metricPrincipalDefectCurvCoeff (I := I) g g
   let LT := oneMinusConnLapSmooth (I := I) g 0 2 T
   let HT := iteratedCovGrad (I := I) g 0 2 2 T
   let HLT := iteratedCovGrad (I := I) g 0 2 2 LT
@@ -159,8 +159,8 @@ theorem edge_center_pairing_abs_of_carrier_bound
     operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T -
     operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT + Z
   let C : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase gs -
-      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gBase g
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
+      deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let J := oneMinusConnLapSmooth (I := I) g 0 2
       (operatorFieldApply (I := I) (M := M) g 2 2 (R0 + K0) T) +
     PairComm +

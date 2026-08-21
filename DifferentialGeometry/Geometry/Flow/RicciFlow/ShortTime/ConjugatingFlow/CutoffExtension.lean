@@ -157,7 +157,7 @@ theorem interior_field_global_cutoff_extension
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X_DT q.1 q.2) : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    {a b : ℝ} (hab : 0 < a) (_hab' : a < b) (hbT : b < T) :
+    {a b : ℝ} (hab : 0 < a) (hbT : b < T) :
     ∃ (Xt : ℝ → ∀ x : M, TangentSpace I x) (δ : ℝ), 0 < δ ∧
       (∀ s ∈ Set.Ioo (a - δ) (b + δ), ∀ x : M, Xt s x = X_DT s x) ∧
       ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞

@@ -18,7 +18,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+  [SigmaCompactSpace M] in
 theorem Diffeomorph.pbMetric_symm
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) :
     Diffeomorph.pullbackMetric
@@ -26,7 +27,8 @@ theorem Diffeomorph.pbMetric_symm
   rw [Diffeomorph.pullbackMetric_trans, Φ.symm_trans_self,
     Diffeomorph.pullbackMetric_refl]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+  [SigmaCompactSpace M] in
 theorem Diffeomorph.pbMetric_self
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) :
     Diffeomorph.pullbackMetric
@@ -274,7 +276,7 @@ open DifferentialGeometry.PDE.DeTurck
 
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
-  [I.Boundaryless] in
+  [I.Boundaryless] [SigmaCompactSpace M] in
 theorem gauge_vel_refl
     (g g_bg : SmoothRiemannianMetric I M) (x : M) :
     Diffeomorph.pushforward (Diffeomorph.refl I M ∞)

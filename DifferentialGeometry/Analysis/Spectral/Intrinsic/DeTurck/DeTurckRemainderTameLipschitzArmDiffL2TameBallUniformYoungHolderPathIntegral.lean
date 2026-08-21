@@ -958,7 +958,7 @@ theorem pathIntegralCoeffField_jetL2_tower_le
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')))
     (hjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
-    {B : ℝ} (hB : 0 ≤ B)
+    {B : ℝ}
     (hΦjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ r 2 i (Φ s)‖ ^ 2) ≤ B ^ 2) :
@@ -1008,7 +1008,7 @@ theorem pathIntegralCoeffField_jetL2_tower_le
           (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI (hji i hi) :=
     fun i hi => armField_iteratedCovGrad_pathIntegral_comm (I := I) g₀ r 2 i Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjointC (hji i hi)
-  exact iteratedCovGrad_pathIntegralCoeffField_jetL2_le (I := I) (M := M) g₀ r 2 a Φ B hB
+  exact iteratedCovGrad_pathIntegralCoeffField_jetL2_le (I := I) (M := M) g₀ r 2 a Φ B
     (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjoint hΦjet hji hci hri hii hcomm
 
 end DifferentialGeometry.Analysis.Spectral

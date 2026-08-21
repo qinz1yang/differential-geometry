@@ -24,8 +24,8 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem covDerivOfField_apply_eq_iterCov
-    [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M]
+    [IsManifold I 1 M]
     (gRef : SmoothRiemannianMetric I M)
     (A0 : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)

@@ -38,6 +38,7 @@ theorem nablaRicReal_frame
     (d a b : Idx) :
     nablaRicComp (I := I) S frame t x d a b = ricciCovDerivCompInFrame (I := I) S frame t x d a
       b := by
+  let _ := (inferInstance : (Finite Idx))
   classical
   letI := Fintype.ofFinite Idx
   have hcov :
@@ -144,6 +145,7 @@ theorem nablaRicReal_frame
     using heval
 
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem ricciCovDeriv_trace_nablaRm
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) {x : M} {u : Set M}
@@ -191,14 +193,14 @@ theorem ricciCovDeriv_trace_nablaRm
       (vec5 (I := I) (basis d) (basis i) (basis a) (basis b) (basis j)))
 
 def lfBase
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (y : M) → TangentSpace I y) :
     Real → M → (Fin 4 → Idx) → Real :=
   fun s => frameComp0S (I := I) (S.base.rm04 s) frame
 
 def lfChr
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (y : M) → TangentSpace I y) {u : Set M}
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u) :
@@ -286,6 +288,7 @@ theorem gammaStarField_cost
   ring
 
 omit [FiniteDimensional Real E] in
+omit [SigmaCompactSpace M] in
 private theorem gammaStarU
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ)
@@ -463,6 +466,7 @@ def resStarNext
     (-1 : Real) • commStarField (I := I) S t k +
     (-1 : Real) • gammaStarField (I := I) S (t : Real) k
 
+omit [SigmaCompactSpace M] in
 theorem resStarNext_cost
     (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
@@ -483,6 +487,7 @@ theorem resStarNext_cost
 
 set_option backward.isDefEq.respectTransparency false in
 
+omit [SigmaCompactSpace M] in
 theorem resStarNext_spec
     (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
@@ -752,6 +757,7 @@ theorem resStarNext_spec
     unfold resStarNext
     exact hderiv.congr_deriv hval.symm
 
+omit [SigmaCompactSpace M] in
 theorem resStarSucc
     (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
@@ -843,6 +849,7 @@ private theorem resCost_eq (k : ℕ) :
 
 open DifferentialGeometry.Dim3Reaction in
 omit [Module.Finite ℝ E] in
+omit [SigmaCompactSpace M] in
 theorem resStarLFU
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D)

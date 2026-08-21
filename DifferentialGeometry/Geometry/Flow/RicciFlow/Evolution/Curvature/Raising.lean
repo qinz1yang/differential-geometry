@@ -22,6 +22,7 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [SigmaCompactSpace M] in
 theorem solution_rm04LowersRm13At
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
@@ -86,7 +87,7 @@ theorem curvatureAction0SAt_eq_rm04_raise
   exact rm13_apply_eq_rm04_raise (I := I) g (Rm13 x) Rm04 hLower
     (oneFormAtSlot0S (I := I) alpha slots q) X Y (slots q)
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem nablaLapComm_secondTerm_eq_rm04_raise
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M)

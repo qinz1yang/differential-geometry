@@ -54,6 +54,7 @@ private lemma trace42_apply
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem ricci2_pcc_eq (g₀ g₁ : SmoothRiemannianMetric I M) :
     (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
