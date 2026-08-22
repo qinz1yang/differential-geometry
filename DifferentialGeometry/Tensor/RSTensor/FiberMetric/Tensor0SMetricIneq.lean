@@ -20,30 +20,6 @@ theorem inner0S_comm
     inner0S (I := I) g x s A B = inner0S (I := I) g x s B A :=
   (tensor0SMetricData (I := I) g x s).inner_comm A B
 
-theorem inner0S_add_left
-    (g : SmoothMetric I M) (x : M) (s : Nat)
-    (A B C : Tensor0SSpace s I x) :
-    inner0S (I := I) g x s (A + B) C =
-      inner0S (I := I) g x s A C + inner0S (I := I) g x s B C := by
-  unfold inner0S MetricFiberData.inner
-  rw [map_add, LinearMap.add_apply]
-
-theorem inner0S_add_right
-    (g : SmoothMetric I M) (x : M) (s : Nat)
-    (A B C : Tensor0SSpace s I x) :
-    inner0S (I := I) g x s A (B + C) =
-      inner0S (I := I) g x s A B + inner0S (I := I) g x s A C := by
-  rw [inner0S_comm (I := I) g x s A (B + C), inner0S_add_left,
-    inner0S_comm (I := I) g x s B A, inner0S_comm (I := I) g x s C A]
-
-theorem inner0S_sub_left
-    (g : SmoothMetric I M) (x : M) (s : Nat)
-    (A B C : Tensor0SSpace s I x) :
-    inner0S (I := I) g x s (A - B) C =
-      inner0S (I := I) g x s A C - inner0S (I := I) g x s B C := by
-  unfold inner0S MetricFiberData.inner
-  rw [map_sub, LinearMap.sub_apply]
-
 theorem inner0S_sub_right
     (g : SmoothMetric I M) (x : M) (s : Nat)
     (A B C : Tensor0SSpace s I x) :

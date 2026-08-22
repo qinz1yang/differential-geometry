@@ -45,30 +45,4 @@ theorem chartInvGram_inverse
       chartGramMatrix_mul_chartInvGramMatrix (I := I) g alpha hx,
       Matrix.one_apply]
 
-omit [FiniteDimensional ℝ E] in
-theorem metricInverseInBasis_identity_of_orthonormal
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) {x : M}
-    (basis : Module.Basis Idx Real (TangentSpace I x))
-    (horth : ∀ i j : Idx,
-      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
-  classical
-  intro i j
-  refine ⟨?_, ?_⟩
-  · rw [Finset.sum_eq_single i]
-    · rw [identityInvMetric_apply_self, one_mul]
-      exact horth i j
-    · intro k _ hk
-      rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne (fun h => hk h.symm), zero_mul]
-    · intro h
-      exact absurd (Finset.mem_univ i) h
-  · rw [Finset.sum_eq_single j]
-    · rw [identityInvMetric_apply_self, mul_one]
-      exact horth i j
-    · intro k _ hk
-      rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hk, mul_zero]
-    · intro h
-      exact absurd (Finset.mem_univ j) h
-
 end DifferentialGeometry.Geometry.Connection

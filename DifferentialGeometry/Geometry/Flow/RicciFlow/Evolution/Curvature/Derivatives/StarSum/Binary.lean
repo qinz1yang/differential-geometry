@@ -518,7 +518,8 @@ private theorem mtfOrthoBd
     |metricTraceFirstTwoField (I := I) (M := M) g X x (fun q => basis (mm q))| ≤
       (Fintype.card Idx : Real) * c := by
   classical
-  have hinv := metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
+  have hinv := Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
+    (I := I) g basis horth
   rw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis
       (identityInvMetric (Idx := Idx)) hinv (X x) (fun q => basis (mm q))]
@@ -785,7 +786,8 @@ private theorem mtfDiag
       = ∑ i : Idx, X x
           (metricTraceInput (I := I) (basis i) (basis i) (fun q => basis (mm q))) := by
   classical
-  have hinv := metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
+  have hinv := Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
+    (I := I) g basis horth
   rw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis
       (identityInvMetric (Idx := Idx)) hinv (X x) (fun q => basis (mm q))]

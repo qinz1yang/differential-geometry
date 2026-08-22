@@ -89,7 +89,7 @@ private theorem sum_fin_four_fun {α : Type*} [AddCommMonoid α]
     rw [hslot]
 
 omit [FiniteDimensional ℝ E] in
-private theorem inner_eq_sum_repr3
+theorem inner_eq_sum_repr3
     {g : SmoothRiemannianMetric I M}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
     (horth : OrthonormalBasisAt (I := I) g x basis)

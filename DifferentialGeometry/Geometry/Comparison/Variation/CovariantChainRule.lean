@@ -123,6 +123,120 @@ private lemma deriv_chartE_repr_comp_curve_eq
   exact hcomp_hd.deriv
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem covDerivAlong_eq_leviCivita_of_eventuallyEq [T2Space M] [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (t : ℝ)
+    (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 1 γ t)
+    {X : Π x : M, TangentSpace I x} {V : ∀ s, TangentSpace I (γ s)}
+    (hX : MDiffAt (T% X) (γ t))
+    (hV : V =ᶠ[𝓝 t] (fun s => X (γ s))) :
+    covDerivAlong (I := I) g γ V t =
+      (LeviCivita (I := I) g).toFun X (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
+  classical
+  set α : M := γ t with hα
+  set U : ℝ → E := chartRepAt (I := I) γ V t with hU
+  set XE : E → E := chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm with hXE
+  have hgood : γ t ∈ chartLeviCivitaGoodSet (I := I) α := by
+    rw [hα]
+    exact self_mem_chartLeviCivitaGoodSet (I := I) α
+  have hLC : (LeviCivita (I := I) g).toFun X (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) =
+      chartLeviCivita (I := I) g α X (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
+    exact LeviCivita_chart_apply (I := I) g α hgood hX
+      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+  have hLC' : chartLeviCivita (I := I) g α X (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) =
+      trivFromE (I := I) α (γ t)
+        (fderiv ℝ XE (extChartAt I α (γ t))
+            (trivToE (I := I) α (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) +
+          christoffelCorrection (I := I) g α (γ t)
+            (chartE_section_repr (I := I) α X (γ t))
+            (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) := by
+    exact chartLeviCivita_apply (I := I) g α X hgood
+      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+  have hsrcγ : γ t ∈ (chartAt H α).source := by
+    rw [hα]
+    exact mem_chart_source H (γ t)
+  have hvel : trivToE (I := I) α (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) =
+      deriv (chartCurve (I := I) α γ) t := by
+    have hmd : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t :=
+      hγ.mdifferentiableAt (by norm_num)
+    have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
+      (I := I) (M := M) hmd α hsrcγ
+    have hderiv : deriv (chartCurve (I := I) α γ) t =
+        (fderiv ℝ ((extChartAt I α) ∘ γ) t : ℝ →L[ℝ] E) (1 : ℝ) := by
+      have hφ : ContMDiffAt I 𝓘(ℝ, E) 1 (extChartAt I α) (γ t) :=
+        contMDiffAt_extChartAt' (n := 1) (x := α) (x' := γ t) hsrcγ
+      have hmdiff : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1 ((extChartAt I α) ∘ γ) t :=
+        hφ.comp t hγ
+      have hd : DifferentiableAt ℝ ((extChartAt I α) ∘ γ) t :=
+        (contMDiffAt_iff_contDiffAt.mp hmdiff).differentiableAt (by norm_num)
+      exact hd.hasDerivAt.deriv
+    rw [hderiv]
+    exact hbridge
+  have hbaseγ : γ t ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet]
+    exact hsrcγ
+  have hx_int : extChartAt I α (γ t) ∈ interior ((extChartAt I α).target : Set E) := by
+    rw [hα]
+    exact extChartAt_target_subset_interior_of_boundaryless (I := I) α
+      ((extChartAt I α).map_source (mem_extChartAt_source (I := I) α))
+  have hXE_diff : DifferentiableAt ℝ XE (extChartAt I α (γ t)) :=
+    (mdifferentiableAt_section_iff_chartE_fderiv (I := I) α X hsrcγ hbaseγ hx_int).mp hX
+  have hchartCurve_diff : DifferentiableAt ℝ (chartCurve (I := I) α γ) t := by
+    have hφ : ContMDiffAt I 𝓘(ℝ, E) 1 (extChartAt I α) (γ t) :=
+      contMDiffAt_extChartAt' (n := 1) (x := α) (x' := γ t) hsrcγ
+    have hmdiff : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1 ((extChartAt I α) ∘ γ) t :=
+      hφ.comp t hγ
+    exact (contMDiffAt_iff_contDiffAt.mp hmdiff).differentiableAt (by norm_num)
+  have hU_eq : chartRepAt (I := I) γ V t =ᶠ[𝓝 t]
+      (fun s => XE (chartCurve (I := I) α γ s)) := by
+    have hγcont : ContinuousAt γ t := hγ.continuousAt
+    have hsrc : γ ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
+      hγcont.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hsrcγ)
+    filter_upwards [hV, hsrc] with s hs hs0
+    rw [chartRepAt_apply, hXE, hs]
+    change (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ s) (X (γ s)) =
+      chartE_section_repr (I := I) α X ((extChartAt I α).symm (extChartAt I α (γ s)))
+    have hsrc_s : γ s ∈ (extChartAt I α).source := by
+      rw [extChartAt_source]
+      exact hs0
+    rw [chartE_section_repr_apply, (extChartAt I α).left_inv hsrc_s]
+  have hU_t : U t = chartE_section_repr (I := I) α X (γ t) := by
+    rw [hU, chartRepAt_apply, hV.eq_of_nhds]
+    rfl
+  have hchain : deriv (chartRepAt (I := I) γ V t) t =
+      (fderiv ℝ XE (extChartAt I α (γ t)))
+        (deriv (chartCurve (I := I) α γ) t) := by
+    rw [hU_eq.deriv_eq]
+    have hcomp : HasDerivAt (fun s : ℝ => XE (chartCurve (I := I) α γ s))
+        ((fderiv ℝ XE (chartCurve (I := I) α γ t))
+          (deriv (chartCurve (I := I) α γ) t)) t :=
+      hXE_diff.hasFDerivAt.comp_hasDerivAt t hchartCurve_diff.hasDerivAt
+    rw [hcomp.deriv]
+    rfl
+  have hcorr : christoffelCorrection (I := I) g α (γ t)
+        (chartE_section_repr (I := I) α X (γ t))
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) =
+      chartChristoffelContraction (I := I) g α
+        (deriv (chartCurve (I := I) α γ) t) (U t)
+        (chartCurve (I := I) α γ t) := by
+    rw [christoffelCorrection_eq_chartChristoffelContraction (I := I) g α (γ t)
+      (chartE_section_repr (I := I) α X (γ t))
+      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))]
+    rw [hvel, hU_t]
+    rfl
+  have hchartEq : fderiv ℝ XE (extChartAt I α (γ t))
+          (trivToE (I := I) α (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) +
+        christoffelCorrection (I := I) g α (γ t)
+          (chartE_section_repr (I := I) α X (γ t))
+          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) =
+      chartCovDerivAlong (I := I) g α γ U t := by
+    rw [hvel, hcorr, ← hchain, chartCovDerivAlong_def]
+  rw [covDerivAlong_def, hLC, hLC', hchartEq]
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covDerivAlong_restrict_eq_leviCivita
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (X : ∀ y : M, TangentSpace I y) (r₀ : ℝ)

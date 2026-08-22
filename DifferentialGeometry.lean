@@ -50,7 +50,10 @@ import DifferentialGeometry.Analysis.Calculus.TimeJetEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJetMatch
 import DifferentialGeometry.Analysis.Calculus.TimeSliceBootstrap
 import DifferentialGeometry.Analysis.Calculus.TimeSliceSwap
+import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
+import DifferentialGeometry.Analysis.Convex.MovingSetDistance
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
+import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
 import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.ChartFrameNormGlobalSmooth
@@ -400,6 +403,7 @@ import DifferentialGeometry.Analysis.Heat.Smoothing.SmoothingSpectralLift
 import DifferentialGeometry.Analysis.Heat.Smoothing.SpectralBridge
 import DifferentialGeometry.Analysis.HoleFilling
 import DifferentialGeometry.Analysis.InnerProductSpace.IsometryTransitive
+import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeFace
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
@@ -791,7 +795,9 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Synthesis
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BoundaryHopf
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BundleConvex
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Comparison
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ComponentwiseHeatReaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualProperCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConeStrong
@@ -2138,6 +2144,8 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransp
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransportSmooth
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.PositiveSemidefiniteCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.PullbackCross
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.RadialTensorExtension
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Connection.Realization.Basic
@@ -2291,10 +2299,16 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatu
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorCurvatureUnitEvalBridge
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrderWeitzenbock
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionPreservation
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionTensor
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.FiberRegion
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Reaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Region
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.RegionDistance
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
@@ -2405,6 +2419,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.VectorFieldFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.NonnegativeCurvatureOperator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Continuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.CurvatureEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.FixedFrameEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.MaximumPrinciple
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Pinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RegionTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Transport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
@@ -2456,6 +2477,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.HigherDerivati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.TimeTruncation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RegularityHypotheses
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RicciJet
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.SmoothLimit
@@ -2593,6 +2615,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.SwapRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorHeatReaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FrameExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionLeibniz
@@ -3067,6 +3093,7 @@ import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.TensorHeat
+import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Topology.Covering.SimplyConnected
 import DifferentialGeometry.Topology.DirectLimit
