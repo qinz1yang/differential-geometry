@@ -1612,7 +1612,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciMixedSharpBackgroundDifferenc
 
 namespace CurvatureCoefficientDifferenceJetTower
 
-lemma diagonalGrid_assembly_arith (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
+lemma diagonalGrid_arith (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
     (i : ℕ) (G : ℝ) (hG : 0 ≤ G)
     (CL CD cbg : ℕ → ℝ) (hCL_nn : ∀ k, 0 ≤ CL k) (hCD_nn : ∀ k, 0 ≤ CD k)
     (hcbg_nn : ∀ k, 0 ≤ cbg k)
@@ -1849,7 +1849,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackg
       intro l _
       rw [antidiagonalTupleGrid_eq_doubleSum (I := I) (M := M) g₀ T x l]
       exact hCD g₁ T htie hδ_le hδ0 hbound l x
-    exact diagonalGrid_assembly_arith
+    exact diagonalGrid_arith
       (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) hb i
       (operatorFieldApplicationGdiag (E := E) i) (operatorFieldApplicationGdiag_nonneg (E := E) i)

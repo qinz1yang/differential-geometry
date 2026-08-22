@@ -296,7 +296,7 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆ (chartAt H α).source :=
     fun x hx => chartAtlasPOU_isSubordinate (I := I) (M := M) α hx
   obtain ⟨Cto, hCto_pos, hCto_bound⟩ :=
-    tensorRSChartFiberToModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   have hCto_nn : 0 ≤ Cto := le_of_lt hCto_pos
   refine ⟨Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * (n : ℝ) *

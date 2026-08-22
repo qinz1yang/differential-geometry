@@ -309,7 +309,7 @@ theorem tensorL2ChartComponentCutoff_memLp_weighted
     h_plain
 
 omit [CompleteSpace E] in
-theorem crossLeftLimitComponent_memLp_weighted_unconditional
+theorem crossLeftLimitComponent_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r (s + 1)) :
@@ -325,7 +325,7 @@ theorem crossLeftLimitComponent_memLp_weighted_unconditional
     α P
 
 omit [CompleteSpace E] in
-theorem crossRightLimitComponent_memLp_weighted_unconditional
+theorem crossRightLimitComponent_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s) :
@@ -340,7 +340,7 @@ theorem crossRightLimitComponent_memLp_weighted_unconditional
     α P
 
 omit [CompleteSpace E] in
-lemma covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel_unconditional
+lemma covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -354,7 +354,7 @@ lemma covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel_unconditional
   rw [Set.indicator_of_notMem hy, zero_mul]
 
 omit [CompleteSpace E] in
-lemma covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel_unconditional
+lemma covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -373,7 +373,7 @@ lemma covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel_unconditio
     add_zero]
 
 omit [CompleteSpace E] in
-lemma weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+lemma weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -392,7 +392,7 @@ lemma weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
     add_zero]
 
 omit [CompleteSpace E] in
-theorem covPrincipalRotationCoeffLimit_memLp_weighted_unconditional
+theorem covPrincipalRotationCoeffLimit_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -413,12 +413,12 @@ theorem covPrincipalRotationCoeffLimit_memLp_weighted_unconditional
     (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
     (Filter.Eventually.of_forall (fun y hy =>
-      covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel_unconditional
+      covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ hy))
     h_plain
 
 omit [CompleteSpace E] in
-theorem covLowerOrderRotationValueCoeffLimit_memLp_weighted_unconditional
+theorem covLowerOrderRotationValueCoeffLimit_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -439,12 +439,12 @@ theorem covLowerOrderRotationValueCoeffLimit_memLp_weighted_unconditional
     (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
     (Filter.Eventually.of_forall (fun y hy =>
-      covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel_unconditional
+      covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ hy))
     h_plain
 
 omit [CompleteSpace E] in
-theorem weightedGradCoeffDivLimit_memLp_weighted_unconditional
+theorem weightedGradCoeffDivLimit_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -466,7 +466,7 @@ theorem weightedGradCoeffDivLimit_memLp_weighted_unconditional
     (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
     (Filter.Eventually.of_forall (fun y hy =>
-      weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+      weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ l hy))
     h_plain
 
@@ -574,7 +574,7 @@ lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid_weighted
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
-lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted_unconditional
+lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s) :
@@ -606,7 +606,7 @@ lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted_unconditional
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
-lemma componentLpLimit_memLp_weighted_unconditional
+lemma componentLpLimit_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s) :
@@ -655,7 +655,7 @@ example (i : TensorEigenIdx (I := I) (M := M) g r s)
         g r s i α P₀) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-  covPrincipalRotationCoeffLimit_memLp_weighted_unconditional (I := I) (M := M)
+  covPrincipalRotationCoeffLimit_memLp_weighted (I := I) (M := M)
     g r s i α P₀
 
 end ElaborationTests

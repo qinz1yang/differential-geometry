@@ -658,7 +658,7 @@ private lemma chosenFChartDeriv_ae_zero_off_K_α
   have hU_sub := chartTarget_diff_K_α_subset_target (I := I) (M := M) α
   have h_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
-      (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
+      (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
   have h_isWeak := chosenFChartDeriv_isWeakPartial (I := I) (M := M)
     g α hu_h l h_memW1p
   have h_global : MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l) 2
@@ -949,7 +949,7 @@ theorem derived_variational_identity_holds
       exact h_full.restrict
     have h_memW1p :=
       base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
-        (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
+        (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
     have h_chosenFC_memLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
         MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l) 2
           ((volume : Measure EuclN).restrict K') := by

@@ -186,7 +186,7 @@ theorem heatSemigroup_contMDiff_in_time
   have h_eval_smooth : ContDiff ℝ ∞ evalAt := evalAt.contDiff
   exact h_eval_smooth.contDiffOn.comp h_op (Set.mapsTo_univ _ _)
 
-theorem heatSemigroup_smooth_in_space_and_time
+theorem heatSemigroup_smooth_in_space_and_time_of_iterated_regularity
     (g : SmoothRiemannianMetric I M)
     (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (h_iterated_regularity_uniform :

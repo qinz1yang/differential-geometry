@@ -89,7 +89,7 @@ private lemma rhsZeroAggregate_le_energy_uniform
     (Ceig : ℝ) (hCeig_nn : 0 ≤ Ceig)
     (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal Ceig *
@@ -258,7 +258,7 @@ private lemma rhsZeroAggregate_le_energy_uniform
           g r s) i‖ with hRhs_def
   have hS1 :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal Ceig * Rhs := hCeig_bd i K'
@@ -787,7 +787,7 @@ theorem diffRHSAggregate_le_energy_uniform
     (h_eig : ∃ Ceig : ℝ, 0 ≤ Ceig ∧
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal Ceig *

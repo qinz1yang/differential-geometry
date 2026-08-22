@@ -37,7 +37,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_via_density
+theorem gradInnerCLM_eq_H1ComplToLp_resolvent_via_density
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
@@ -135,7 +135,7 @@ theorem gradInnerCLM_mem_image_laplacianDomain_via_density
     ?_, ?_⟩
   · exact (laplacianDomain_mem_iff (I := I) (M := M) g).mpr
       ⟨gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ hu_h, rfl⟩
-  · exact (gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_via_density
+  · exact (gradInnerCLM_eq_H1ComplToLp_resolvent_via_density
       (I := I) (M := M) g φ hu_h h_smooth_seq h_conv_H1Compl
       h_conv_candidate h_smooth_identity).symm
 

@@ -176,7 +176,7 @@ private lemma wkpNorm_eigenvectorChartComponentFun_eq_zero_of_notMem
     {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
     (P₀ : TensorCompIdx (E := E) r s) (K' : ℕ) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α) = 0 := by
   classical
@@ -209,7 +209,7 @@ private lemma wkpNorm_eigenvectorChartComponentFun_eq_zero_of_notMem
   rw [h_target_eq] at h_ae_off
   have h_swap :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α) =
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
@@ -301,7 +301,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
     (hC_IH_bd : ∀ (α' : M) (P₀' : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (m + 2) 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α' P₀')
             (chartTargetEuclid (I := I) (M := M) α')
           ≤ ENNReal.ofReal (C_IH * (i.fst.val)⁻¹ ^ (m + 1)) *
@@ -314,7 +314,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) ((m + 1) + 2) 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (m + 2)) *
@@ -340,7 +340,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
   have h_IH_bd_at : ∀ (α' : M) (P₀' : TensorCompIdx (E := E) r s)
       (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (0 + (m + 1) + 1) 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α' P₀')
           (chartTargetEuclid (I := I) (M := M) α')
         ≤ ENNReal.ofReal (C_IH * (i.fst.val)⁻¹ ^ (m + 1)) *
@@ -353,11 +353,11 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
     rw [h_arith]
     exact hC_IH_bd α' P₀' i
   set C_cR_data :=
-    eigenvector_crossRightLimit_perK_from_uniform_β_unconditional
+    eigenvector_crossRightLimit_perK_from_uniform_β
       (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
       (m + 1) h_IH_bd_at h_pou_resolv α with hC_cR_data_def
   set C_cut_per : TensorCompIdx (E := E) r s → ℕ → ℝ := fun P K' =>
-    (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β_unconditional
+    (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
       (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
       (m + 1) h_IH_bd_at h_pou_resolv α P).choose K' with hC_cut_per_def
   set C_cut : ℕ → ℝ := fun K' =>
@@ -369,14 +369,14 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       eEig := fun _ => m + 1
       hCeig_nn := fun _ => hC_IH_nn
       hCeig_bd := fun i K' hK' =>
-        eigenvector_chartComponent_perK_from_uniform_β_unconditional
+        eigenvector_chartComponent_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH
           (m + 1) h_IH_bd_at α P₀ K' hK' i
       CresH := fun _ => C_IH
       eResH := fun _ => m + 1
       hCresH_nn := fun _ => hC_IH_nn
       hCresH_bd := fun i β Q K' hK' =>
-        eigenvector_resolventHigh_perK_from_uniform_β_unconditional
+        eigenvector_resolventHigh_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
           (m + 1) h_IH_bd_at
           (fun i' K'' β' Q' _ =>
@@ -387,21 +387,21 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       eResL := fun _ => m + 1
       hCresL_nn := fun _ => hC_IH_nn
       hCresL_bd := fun i β Q K' hK' =>
-        eigenvector_resolventLow_perK_from_uniform_β_unconditional
+        eigenvector_resolventLow_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
           (m + 1) h_IH_bd_at h_pou_resolv K' hK' i β Q
       Cpar := fun _ => C_IH
       ePar := fun _ => m + 1
       hCpar_nn := fun _ => hC_IH_nn
       hCpar_bd := fun i P k K' hK' =>
-        eigenvector_partialLpLimit_perK_from_uniform_β_unconditional
+        eigenvector_partialLpLimit_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
           (m + 1) h_IH_bd_at h_pou_resolv α K' hK' i P k
       Ccom := fun _ => C_IH
       eCom := fun _ => m + 1
       hCcom_nn := fun _ => hC_IH_nn
       hCcom_bd := fun i P K' hK' =>
-        eigenvector_componentLpLimit_perK_from_uniform_β_unconditional
+        eigenvector_componentLpLimit_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
           (m + 1) h_IH_bd_at h_pou_resolv α K' hK' i P
       CcR := C_cR_data.choose
@@ -411,16 +411,16 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       Ccut := C_cut
       eCcut := fun _ => m + 1
       hCcut_nn := fun K' => Finset.sum_nonneg fun P _ =>
-        (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β_unconditional
+        (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
           (m + 1) h_IH_bd_at h_pou_resolv α P).choose_spec.1 K'
       hCcut_bd := fun i P l K' hK' => by
         have h_per :=
-          (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β_unconditional
+          (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
             (m + 1) h_IH_bd_at h_pou_resolv α P).choose_spec.2 K' hK' i l
         have h_per_nn : ∀ P, 0 ≤ C_cut_per P K' := fun P =>
-          (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β_unconditional
+          (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
             (m + 1) h_IH_bd_at h_pou_resolv α P).choose_spec.1 K'
         have h_dom_real : C_cut_per P K' ≤ C_cut K' :=
@@ -567,7 +567,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α)
           ≤ iteratedWeakSobolevNorm (d := n) (m + 2) 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α) :=
       wkpNorm_mono_order (d := n) (by omega : j + 1 ≤ m + 2) _ _
@@ -985,7 +985,7 @@ private theorem eigenvector_chartComponent_wkpNorm_pm_uniform_β_unconditional
       ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (m + 2) 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (m + 1)) *
@@ -998,7 +998,7 @@ private theorem eigenvector_chartComponent_wkpNorm_pm_uniform_β_unconditional
   induction m with
   | zero =>
       simpa only [Nat.zero_add, zero_add, pow_one] using
-        eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β_unconditional
+        eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β
           (I := I) (M := M) g r s
   | succ m ih =>
       obtain ⟨C_IH, hC_IH_nn, hC_IH_bd⟩ := ih
@@ -1012,7 +1012,7 @@ private theorem eigenvector_chartComponent_wkpNorm_pm_uniform_β_unconditional
             α P₀).choose_spec.1
       have hC_step_bd : ∀ α P₀ i,
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) ((m + 1) + 2) 2
-              (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+              (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
               (chartTargetEuclid (I := I) (M := M) α)
             ≤ ENNReal.ofReal (C_step α P₀ * (i.fst.val)⁻¹ ^ (m + 2)) *
@@ -1073,7 +1073,7 @@ theorem eigenvector_chartComponent_wkpNorm_arbitrary
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (k + 1)) *
@@ -1088,11 +1088,11 @@ theorem eigenvector_chartComponent_wkpNorm_arbitrary
       (I := I) (M := M) g r s k
   refine ⟨C, hC_nn, fun i => ?_⟩
   have h_mono : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α)
         ≤ iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (k + 2) 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α) :=
     wkpNorm_mono_order (d := Module.finrank ℝ E) (by omega : k ≤ k + 2) _ _

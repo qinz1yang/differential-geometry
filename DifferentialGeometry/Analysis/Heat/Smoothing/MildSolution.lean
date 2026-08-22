@@ -174,7 +174,7 @@ theorem mildSolution_zero_initial_smooth_representative
         obtain ⟨u_h, hu_h, hu_eq⟩ :=
           mildSolution_zero_initial_mem_laplacianDomainPow_all
             (I := I) (M := M) g hf ht hmass k
-        have hreg := memWkpChart_two_k_of_laplacianDomainPow_unconditional
+        have hreg := memWkpChart_two_k_of_laplacianDomainPow
           (I := I) (M := M) g k hu_h
         have hcoe : ((H1ComplToLp (I := I) (M := M) g u_h :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =

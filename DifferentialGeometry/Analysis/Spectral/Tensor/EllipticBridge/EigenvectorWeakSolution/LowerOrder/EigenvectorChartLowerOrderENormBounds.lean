@@ -353,7 +353,7 @@ lemma partialLpLimit_memLp_weighted
     h_atom_zero h_plain
 
 omit [CompleteSpace E] in
-theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
+theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -452,9 +452,9 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
         eLpNorm (Fcomp x) 2 μw
           ≤ ENNReal.ofReal (CcompF x) * eLpNorm (compAtom x.2.2.2.2) 2 μw :=
     fun x => hCcompF x _
-      (componentLpLimit_memLp_weighted_unconditional (I := I) (M := M)
+      (componentLpLimit_memLp_weighted (I := I) (M := M)
         g r s i α x.2.2.2.2)
-      (componentLpLimit_ae_zero_off_chartPouKernel_weighted_unconditional
+      (componentLpLimit_ae_zero_off_chartPouKernel_weighted
         (I := I) (M := M) g r s i α x.2.2.2.2)
   have hCpart_bd : ∀ x : TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -683,7 +683,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
       rw [mul_add]
 
 omit [CompleteSpace E] in
-theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
+theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (l : Fin (Module.finrank ℝ E)) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -772,9 +772,9 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
         eLpNorm (Fcomp x) 2 μw
           ≤ ENNReal.ofReal (CcompF x) * eLpNorm (compAtom x.2.2.2) 2 μw :=
     fun x => hCcompF x _
-      (componentLpLimit_memLp_weighted_unconditional (I := I) (M := M)
+      (componentLpLimit_memLp_weighted (I := I) (M := M)
         g r s i α x.2.2.2)
-      (componentLpLimit_ae_zero_off_chartPouKernel_weighted_unconditional
+      (componentLpLimit_ae_zero_off_chartPouKernel_weighted
         (I := I) (M := M) g r s i α x.2.2.2)
   have h_part_data : ∀ x : TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,

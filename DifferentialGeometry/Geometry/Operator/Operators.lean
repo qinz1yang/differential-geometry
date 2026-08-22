@@ -635,7 +635,6 @@ theorem divergence_zero
 
 omit [FiniteDimensional ℝ E]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
-@[nolint unusedArguments]
 theorem divergence_add
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (_hVB : VectorBundle ℝ E (TangentSpace I : M → Type _))
@@ -643,6 +642,7 @@ theorem divergence_add
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
     divergence (I := I) cov (X + Y) x =
       divergence (I := I) cov X x + divergence (I := I) cov Y x := by
+  let _ := _hVB
   letI := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.add hX hY]
@@ -650,7 +650,6 @@ theorem divergence_add
 
 omit [FiniteDimensional ℝ E]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
-@[nolint unusedArguments]
 theorem divergence_const_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (_hVB : VectorBundle ℝ E (TangentSpace I : M → Type _))
@@ -658,13 +657,13 @@ theorem divergence_const_smul
     (hX : MDiffAt (T% X) x) :
     divergence (I := I) cov (a • X) x =
       a * divergence (I := I) cov X x := by
+  let _ := _hVB
   letI := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hX]
   simp
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
-@[nolint unusedArguments]
 theorem divergence_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (_hVB : VectorBundle ℝ E (TangentSpace I : M → Type _))
@@ -674,6 +673,7 @@ theorem divergence_smul
     divergence (I := I) cov (f • X) x =
       f x * divergence (I := I) cov X x +
         extDerivFun (I := I) f x (X x) := by
+  let _ := _hVB
   letI := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.leibniz hX hf]

@@ -28,7 +28,7 @@ private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 4)) = 3 + 1
 structure SphericalSpaceFormQuotientModel
     (I : ModelWithCorners ℝ E H) (N : Type u)
     [TopologicalSpace N] [ChartedSpace H N] : Type _ where
-  data : RoundQuotientData.{0, u, u} (EuclideanSpace ℝ (Fin 4)) 3
+  data : RoundQuotientData.{0, u} (EuclideanSpace ℝ (Fin 4)) 3
   equiv : N ≃ₘ⟮I, 𝓡 3⟯ data.Q
 
 def isSphericalSpaceFormQuotient

@@ -340,7 +340,7 @@ private lemma rhsTerm4_wkpNorm_le
         ≤ ENNReal.ofReal C *
           wkpRhsAggregate (I := I) (M := M) g r s i α P₀ K := by
   obtain ⟨C, hC_nn, hC_bd⟩ :=
-    wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
+    wkpNorm_covPrincipalRotationCoeffLimit_le
       (I := I) (M := M) g r s i K α P₀ (fun β Q => h_pou β Q)
   refine ⟨C, hC_nn, ?_⟩
   rw [rhsTerm4]
@@ -358,7 +358,7 @@ private lemma rhsTerm5_wkpNorm_le
         ≤ ENNReal.ofReal C *
           wkpRhsAggregate (I := I) (M := M) g r s i α P₀ K := by
   obtain ⟨C, hC_nn, hC_bd⟩ :=
-    wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
+    wkpNorm_covLowerOrderRotationValueCoeffLimit_le
       (I := I) (M := M) g r s i K α P₀ (fun β Q => h_pou β Q)
   refine ⟨2 * C, by positivity, ?_⟩
   rw [rhsTerm5]
@@ -415,7 +415,7 @@ private lemma weightedGradCoeffDivLimit_sum_wkpNorm_le
     · rw [hΩ_def]
       exact weightedGradCoeffDivLimit_memWkp (I := I) (M := M)
         g r s i α P₀ l K (fun β Q => h_pou β Q)
-    obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_weightedGradCoeffDivLimit_le_unconditional
+    obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_weightedGradCoeffDivLimit_le
       (I := I) (M := M) g r s i K α P₀ l (fun β Q => h_pou β Q)
     refine ⟨2 * C, by positivity, ?_⟩
     rw [hΩ_def]
@@ -477,7 +477,7 @@ private lemma rhsTerm6_wkpNorm_le
             g r s i α P₀ l y) = 0 :=
     Filter.Eventually.of_forall (fun _y hy =>
       Finset.sum_eq_zero (fun l _ =>
-        weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+        weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
           (I := I) (M := M) g r s i α P₀ l hy))
   obtain ⟨_, C₁, hC₁_nn, hC₁_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le
     (I := I) (M := M) α K

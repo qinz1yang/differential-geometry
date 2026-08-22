@@ -99,18 +99,6 @@ lemma memLp_volume_compact_contDiffOn_mul
     (hw.const_smul (C : ℝ)).2
 
 open DifferentialGeometry.Analysis.Spectral in
-def eigenvectorChartComponentFun
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (i : TensorEigenIdx (I := I) (M := M) g r s)
-    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
-  fun y =>
-    ((tensorL2ChartComponent (I := I) (M := M) g r s
-        (tensorResolventEigenbasisVec (I := I) (M := M)
-          (tensorResolventL2_isCompactOperator (I := I) (M := M)
-            g r s) i) α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
-
-open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 lemma eigenvectorChartComponentFun_memLp_volume
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

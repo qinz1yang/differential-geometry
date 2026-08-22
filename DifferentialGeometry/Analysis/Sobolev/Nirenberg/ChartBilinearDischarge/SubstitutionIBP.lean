@@ -1073,7 +1073,7 @@ theorem chartBilinear_diffQuot_ibp_per_ij
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem variational_identity_after_ibp_unconditional
+theorem variational_identity_after_ibp_of_compact_support
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)

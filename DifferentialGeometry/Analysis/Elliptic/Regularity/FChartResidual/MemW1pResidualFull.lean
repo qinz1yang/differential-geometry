@@ -153,7 +153,7 @@ theorem smoothApproxSeq_wkpNormChart_diff_le
     rw [add_comm]
   exact le_trans h_add (le_of_le_of_eq h_bound1 h_comm)
 
-theorem fChartResidual_memW1p_unconditional
+theorem fChartResidual_memW1p_of_cauchy_identification
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)

@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem chartSideH2kBridge_heat_unconditional
+theorem chartSideH2kBridge_heat
     (g : SmoothRiemannianMetric I M)
     {t : ℝ} (ht : 0 < t)
     (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
@@ -43,7 +43,7 @@ theorem chartSideH2kBridge_heat_unconditional
     heatSemigroup_mem_laplacianDomainPow_all
       (I := I) (M := M) g ht u_0 k
   have h_bridge_lift :=
-    chartSideH2kBridge_of_laplacianDomainPow_unconditional
+    chartSideH2kBridge_of_laplacianDomainPow
       (I := I) (M := M) g k hu_h_mem
   have h_coe : ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =
@@ -65,7 +65,7 @@ theorem heatSemigroup_smooth_representative_of_closed
   apply heatSemigroup_smooth_representative_of_chartSideBridges
     (I := I) (M := M) g u_0
   intro k
-  exact chartSideH2kBridge_heat_unconditional
+  exact chartSideH2kBridge_heat
     (I := I) (M := M) g ht u_0 k
 
 theorem heatPower_smooth_representative_of_closed
@@ -167,7 +167,7 @@ theorem heatSemigroup_has_smooth_generator_representative_of_closed
     (I := I) (M := M) g ht u_0, ← hdu_lp] at hderiv
   exact ⟨u_smooth, du_smooth, hu_lp, hdu_lp, hderiv, hlaplacian⟩
 
-theorem heatSemigroup_smooth_in_space_and_time_unconditional
+theorem heatSemigroup_smooth_in_space_and_time
     (g : SmoothRiemannianMetric I M)
     (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
     (∀ t : ℝ, 0 < t →
@@ -184,7 +184,7 @@ theorem heatSemigroup_smooth_in_space_and_time_unconditional
   apply heatSemigroup_smooth_in_space_and_time_of_chartSideBridges
     (I := I) (M := M) g u_0
   intro t ht k
-  exact chartSideH2kBridge_heat_unconditional
+  exact chartSideH2kBridge_heat
     (I := I) (M := M) g ht u_0 k
 
 end HeatEquation

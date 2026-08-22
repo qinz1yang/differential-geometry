@@ -778,9 +778,8 @@ noncomputable def dualMultilinearFiberwiseEquiv (r : ℕ) (x : B) :
         (E := Bundle.dual 𝕜 E) r x).symm.toLinearEquiv)
 
 omit [ContMDiffVectorBundle n F E IB] in
-@[nolint unusedArguments]
 theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
-    [ContMDiffVectorBundle n F E IB] :
+    [hE : ContMDiffVectorBundle n F E IB] :
     ContMDiff
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜))
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜))
@@ -793,6 +792,7 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r
               (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x))) := by
+  let _ := hE
   letI := dualBundleSmoothVectorBundle (𝕜 := 𝕜) (B := B) (F := F) (E := E) IB n r
   intro p₀
   rw [contMDiffAt_totalSpace]
@@ -818,9 +818,8 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
     exact dualUnliftFiber_triv_eq p₀.proj p.proj hp p.snd
 
 omit [ContMDiffVectorBundle n F E IB] in
-@[nolint unusedArguments]
 theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
-    [ContMDiffVectorBundle n F E IB] :
+    [hE : ContMDiffVectorBundle n F E IB] :
     ContMDiff
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜))
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜))
@@ -833,6 +832,7 @@ theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
           TotalSpace
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜] 𝕜))) := by
+  let _ := hE
   haveI : ContMDiffVectorBundle n (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) IB :=
     ContMDiffVectorBundle.continuousLinearMap
   haveI : ContMDiffVectorBundle n

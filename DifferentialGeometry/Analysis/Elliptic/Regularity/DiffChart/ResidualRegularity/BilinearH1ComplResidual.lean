@@ -42,7 +42,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-noncomputable def diffChartBilinearH1ComplData_of_smoothToH1Compl_unconditional
+noncomputable def diffChartBilinearH1ComplData_of_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     (direction : Fin (Module.finrank ℝ E))
     (h_identity :

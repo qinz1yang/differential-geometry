@@ -37,7 +37,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_smooth_of_hessHypothesis
+theorem gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_hessHypothesis
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (h_hess :
       hessPairingLpOnLapDom (I := I) (M := M) g φ
@@ -57,7 +57,7 @@ theorem gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_smooth_of_hessHypoth
     (smoothCandidate_identification_target_of_hessHypothesis
       (I := I) (M := M) g φ v h_hess)
 
-theorem smoothCase_full_unconditional_of_hessHypothesis
+theorem smoothCase_full_of_hessHypothesis
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (h_hess :
       hessPairingLpOnLapDom (I := I) (M := M) g φ
@@ -90,7 +90,7 @@ theorem smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_via_candidat
   smoothMulH1Compl_mem_pow_two_of_variational_identity
     (I := I) (M := M) g φ
     (smoothToH1Compl_mem_laplacianDomainPow_two (I := I) (M := M) g v)
-    (gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_smooth_of_hessHypothesis
+    (gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_hessHypothesis
       (I := I) (M := M) g φ v h_hess)
 
 theorem smoothCase_variational_identity_of_hessHypothesis
@@ -109,7 +109,7 @@ theorem smoothCase_variational_identity_of_hessHypothesis
           (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
-  gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_smooth_of_hessHypothesis
+  gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_hessHypothesis
     (I := I) (M := M) g φ v h_hess
 
 end GradInnerLaplacianSmoothFull

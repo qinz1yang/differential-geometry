@@ -390,7 +390,7 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
     (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_chart_open
     h_v_eq_f_ae).mp hv_memWkp_two_chart
 
-theorem laplacianDomain_memWkpChart_two_unconditional
+theorem laplacianDomain_memWkpChart_two
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :

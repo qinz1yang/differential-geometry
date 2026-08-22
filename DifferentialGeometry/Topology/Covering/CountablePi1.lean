@@ -535,11 +535,12 @@ lemma uc_pi1_countable_telescope
       (⟦_root_.Path.concat (p ∘ Fin.castSucc) (fun i => F i.castSucc)⟧)
       (⟦F (Fin.last n)⟧) (⟦c (Fin.last n).succ⟧)).symm
 
-@[nolint unusedArguments]
 theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     (X : Type*) [TopologicalSpace X]
-    [SecondCountableTopology X] [ConnectedSpace X] [LocPathConnectedSpace X]
-    [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
+    [hsecond : SecondCountableTopology X] [hconnected : ConnectedSpace X]
+    [hlocPath : LocPathConnectedSpace X]
+    [hsemilocally :
+      DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     (x : X)
     (B : ℕ → Set X)
     (hBopen : ∀ n, IsOpen (B n))
@@ -551,6 +552,10 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     ∃ (S : Type) (_ : Countable S) (f : S → FundamentalGroup X x),
       Function.Surjective f := by
   classical
+  let _ := hsecond
+  let _ := hconnected
+  let _ := hlocPath
+  let _ := hsemilocally
   haveI : Nonempty X := ⟨x⟩
   haveI : PathConnectedSpace X := PathConnectedSpace.of_locPathConnectedSpace
   have hBcov : (⋃ n, B n) = (Set.univ : Set X) := by

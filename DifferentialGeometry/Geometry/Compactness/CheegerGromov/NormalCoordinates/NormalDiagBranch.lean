@@ -1893,8 +1893,7 @@ theorem exists_pair_readout
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    0 < ρ →
-      ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
       ∃ B : DiagInvBranch (I := I) (X.obj k).metric
@@ -1923,8 +1922,7 @@ theorem exists_pair_readout
   letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
   letI : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  intro hρ hρExp hpairs
-  let _ := hρ
+  intro hρExp hpairs
   obtain ⟨B, hB⟩ := exists_pair_branch (I := I) hb k hcomplete hconn x hdom
     a b hρExp hpairs
   refine ⟨B, fun i => ⟨hB i, ?_⟩⟩
@@ -1981,8 +1979,7 @@ theorem exists_pair_readout
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    0 < ρ →
-      ρ / 2 < (d.chart k x).radius →
+    ρ / 2 < (d.chart k x).radius →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
       ∃ B : DiagInvBranch (I := I) (X.obj k).metric
@@ -2011,7 +2008,7 @@ theorem exists_pair_readout
   letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
   letI : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  intro hρ hρChart hpairs
+  intro hρChart hpairs
   change ∃ hq : 0 < q,
     ∃ e : OpenPartialHomeomorph (E × E) (E × E),
       ∃ he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn
@@ -2039,6 +2036,9 @@ theorem exists_pair_readout
     (ENNReal.lt_ofReal_iff_toReal_lt haFin).mp haLt
   have hbReal : (riemannianEDist I x (b i)).toReal < ρ / 2 :=
     (ENNReal.lt_ofReal_iff_toReal_lt hbFin).mp hbLt
+  have hρ : 0 < ρ := by
+    have hnonneg : 0 ≤ (riemannianEDist I x (a i)).toReal := ENNReal.toReal_nonneg
+    linarith
   have haControl :=
     d.readout_mem k hcomplete hconn x (a i) (haLt.trans hhalfChart)
   have hbControl :=

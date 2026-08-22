@@ -320,7 +320,7 @@ structure eigenvectorChartRHSDiffSharpWkpBounds
   hCeig_nn : ∀ K', 0 ≤ Ceig K'
   hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *

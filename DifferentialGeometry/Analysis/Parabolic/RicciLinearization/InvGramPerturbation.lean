@@ -115,12 +115,6 @@ instance : CoeFun (ChartMetricPerturbation E)
   ⟨ChartMetricPerturbation.toFun⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma coe_mk
-    (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → (E → ℝ))
-    (hsymm : ∀ i j y, f i j y = f j i y) (hsmooth : ∀ i j, ContDiff ℝ ∞ (f i j)) :
-    ⇑(ChartMetricPerturbation.mk f hsymm hsmooth) = f := rfl
-
-omit [NeZero (Module.finrank ℝ E)] in
 lemma symm (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) :
     h i j y = h j i y := h.symm' i j y
 

@@ -242,7 +242,7 @@ theorem covDerivConnectionDifference_contMDiff
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem koszul2_clean
+theorem koszul2
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -509,7 +509,7 @@ theorem covDConnectionDifference2_g1_le
   have hAbr2 : covDerivConnectionDifference2 (I := I) g₂ g₁
       (fun b => Vsec b) (fun b => Wsec b) (fun b => Xsec b) (fun b => Ysec b) x = B2 := by
     rw [hB2def]; rfl
-  have hkos := koszul2_clean (I := I) g₁ g₂ Vsec Wsec Xsec Ysec Zsec x
+  have hkos := koszul2 (I := I) g₁ g₂ Vsec Wsec Xsec Ysec Zsec x
   rw [hAbr2, hVx, hWx, hXx, hYx, hZx] at hkos
   set D5 : TangentSpace I x :=
     DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁

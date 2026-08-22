@@ -351,14 +351,14 @@ lemma eigenvectorChartRHS_ae_zero_off_chartPouKernel
       Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0
     from h_comp_zero,
     h_crossLeft, h_crossRight,
-    covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel_unconditional
+    covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel
       (I := I) (M := M) g r s i α P₀ hy,
-    covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel_unconditional
+    covLowerOrderRotationValueCoeffLimit_eq_zero_off_chartPouKernel
       (I := I) (M := M) g r s i α P₀ hy,
     crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel
       (I := I) (M := M) g r s i α P₀ hy]
   rw [Finset.sum_eq_zero (fun l _ =>
-    weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+    weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
       (I := I) (M := M) g r s i α P₀ l hy)]
   ring
 

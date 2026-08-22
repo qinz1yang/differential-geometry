@@ -907,7 +907,6 @@ omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-set_option linter.unusedSectionVars false in
 theorem chainLimit_base_le
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))

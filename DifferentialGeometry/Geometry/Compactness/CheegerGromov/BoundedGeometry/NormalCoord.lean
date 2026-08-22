@@ -37,7 +37,7 @@ variable [I.Boundaryless]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-@[nolint unusedArguments] theorem intr_metric_eq
+theorem intr_metric_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -72,6 +72,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
         (intrFrameDiffeo (I := I) Y.metric hEnorm x).source →
       intrFrameMetric (I := I) Y.metric hEnorm x z =
         NormalCoordinates.framedMetric (I := I) Y.metric x z := by
+  let _ := hconn
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -284,7 +285,7 @@ theorem framed_rm04_of_seq
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-@[nolint unusedArguments] theorem intr_rm04_of_seq
+theorem intr_rm04_of_seq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -327,6 +328,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
           (I := I) (X.obj k).metric y w)
     IntrinsicRm04Bound (I := I) (X.obj k).metric hEnorm x
       (normalFrame (I := I) (X.obj k).metric x z) (hX.C 0) := by
+  let _ := hconn
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
   letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth

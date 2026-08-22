@@ -421,7 +421,7 @@ theorem hmfMass_hasDerivAt
     SmoothCcTensor.continuous_inner_cross (I := I) (M := M) S T
   have hreg : FunctionRegularAt (fun _ : ℝ => f) t₀ :=
     functionRegularAt_const_time f hf t₀
-  have hvar := volume_variation_formula_clean (I := I) (M := M) hg hreg
+  have hvar := volume_variation_formula (I := I) (M := M) hg hreg
   have hderiv : ∀ x : M, deriv (fun _ : ℝ => f x) t₀ = 0 := fun x =>
     (hasDerivAt_const (x := t₀) (c := f x)).deriv
   simpa only [hmfMass, f, riemannianMeasureFamily_def, hderiv, zero_add] using hvar

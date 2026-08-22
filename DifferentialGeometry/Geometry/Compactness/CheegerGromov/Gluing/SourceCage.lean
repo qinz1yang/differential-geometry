@@ -115,7 +115,7 @@ theorem hatSourceCompact
 
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
-@[nolint unusedArguments] theorem sourceComplete
+theorem sourceComplete
     [FiniteDimensional Real E]
     (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -144,6 +144,7 @@ omit [CompleteSpace E] in
     letI : EMetricSpace (X.obj (L.φ n)).M :=
       EMetricSpace.ofRiemannianMetric I (X.obj (L.φ n)).M
     CompleteSpace (X.obj (L.φ n)).M := by
+  let _ := hconn
   have h := MetricComplete.complete (I := I) (X.obj (L.φ n)) (hX.complete (L.φ n))
   simpa using h
 

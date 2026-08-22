@@ -133,7 +133,7 @@ private lemma exists_W_and_constant_tangent_symmL
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [FiniteDimensional ℝ E] in
-theorem chartTrivInv_opNorm_isBounded_on_compact_unconditional
+theorem chartTrivInv_opNorm_isBounded_on_compact
     (g : SmoothRiemannianMetric I M) (α : M) {K : Set M} (hK : IsCompact K)
     (hK_base : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
@@ -423,7 +423,7 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport_unconditional
+theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
@@ -445,7 +445,7 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport_unconditional
   have hK_base : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet :=
     pouTsupport_subset_baseSet (I := I) (M := M) α
   obtain ⟨C_J, hCJ_nn, hCJ_bound⟩ :=
-    chartTriv_opNorm_isBounded_on_compact_unconditional
+    chartTriv_opNorm_isBounded_on_compact
       (I := I) (M := M) g α hK_compact hK_base
   obtain ⟨C_Γ, hCΓ_nn, hCΓ_bound⟩ :=
     chartChristoffel_bdd_on_pou_tsupport (I := I) (M := M) g α
@@ -552,7 +552,7 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport_unconditional
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport_unconditional
+theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
@@ -575,13 +575,13 @@ theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport_unc
   have hK_base : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet :=
     pouTsupport_subset_baseSet (I := I) (M := M) α
   obtain ⟨C_J, hCJ_nn, hCJ_bound⟩ :=
-    chartTriv_opNorm_isBounded_on_compact_unconditional
+    chartTriv_opNorm_isBounded_on_compact
       (I := I) (M := M) g α hK_compact hK_base
   obtain ⟨C_Jinv, hCJinv_nn, hCJinv_bound⟩ :=
-    chartTrivInv_opNorm_isBounded_on_compact_unconditional
+    chartTrivInv_opNorm_isBounded_on_compact
       (I := I) (M := M) g α hK_compact hK_base
   obtain ⟨C_χ, hCχ_nn, hCχ_bound⟩ :=
-    christoffelCorrection_opNorm_isBounded_on_pouTsupport_unconditional
+    christoffelCorrection_opNorm_isBounded_on_pouTsupport
       (I := I) (M := M) g α
   set C : ℝ := C_Jinv * C_χ * C_J with hC_def
   have hC_nn : 0 ≤ C := by positivity

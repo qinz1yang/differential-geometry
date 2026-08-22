@@ -180,10 +180,11 @@ theorem chartPhaseVFCutoff_contDiff
       b.zero_of_le_dist (le_of_lt hw')
     simp [chartPhaseVFCutoff_apply, hb0]
 
-@[nolint unusedArguments]
 def chartPhaseVFTime (g : SmoothRiemannianMetric I M) (α : M)
     (z₀ : E × E) (b : ContDiffBump z₀) : ℝ → (E × E) → E × E :=
-  fun _ z => chartPhaseVFCutoff (I := I) g α z₀ b z
+  fun t z =>
+    let _ := t
+    chartPhaseVFCutoff (I := I) g α z₀ b z
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] lemma chartPhaseVFTime_apply

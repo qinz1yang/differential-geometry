@@ -621,7 +621,7 @@ theorem integral_riemannianMeasureFamily_eq_finset_sum
   exact integral_riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M)
     (g_fam t) (f t) hf_cont
 
-theorem volume_variation_formula
+theorem volume_variation_formula_of_chart_integrals
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)

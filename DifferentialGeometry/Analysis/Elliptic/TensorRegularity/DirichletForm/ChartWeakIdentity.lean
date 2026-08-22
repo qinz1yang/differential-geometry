@@ -551,7 +551,7 @@ private lemma weightedInvGramEuclid_eq_density_mul_invGram
         chartInvGramEuclid (I := I) g α k l y :=
   rfl
 
-omit [CompleteSpace E] [CompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 theorem weightedInvGram_principalIntegrand_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))}

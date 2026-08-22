@@ -82,7 +82,7 @@ theorem modelNorm_le_gNorm_pointwise
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₀, hC₀_pos, hC₀_bound⟩ :=
-    tensorRSChartFiberToModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s x₀ isCompact_singleton
       (Set.singleton_subset_iff.mpr (mem_chart_source H x₀))
   refine ⟨C₀, hC₀_pos, fun T => ?_⟩
@@ -106,7 +106,7 @@ theorem gNorm_le_modelNorm_pointwise
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨D₀, hD₀_pos, hD₀_bound⟩ :=
-    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s x₀ isCompact_singleton
       (Set.singleton_subset_iff.mpr (mem_chart_source H x₀))
   refine ⟨D₀, hD₀_pos, fun T => ?_⟩

@@ -360,7 +360,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
     _ = C₀ * Ncard * R := by rw [hNcard_def]; ring
 
 omit [BoundarylessManifold I M] in
-theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
+theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)

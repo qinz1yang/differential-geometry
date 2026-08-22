@@ -129,7 +129,7 @@ private lemma exists_W_and_constant_tangent
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [FiniteDimensional ℝ E] in
-theorem chartTriv_opNorm_isBounded_on_compact_unconditional
+theorem chartTriv_opNorm_isBounded_on_compact
     (g : SmoothRiemannianMetric I M) (α : M) {K : Set M} (hK : IsCompact K)
     (hK_base : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=

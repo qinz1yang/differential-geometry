@@ -19,16 +19,18 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
+universe uE uH
+
 class HasSmoothBoundary
-    (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-    (H : Type*) [TopologicalSpace H]
+    (E : Type uE) [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (H : Type uH) [TopologicalSpace H]
     (I : ModelWithCorners ℝ E H) where
-  boundaryE : Type*
+  boundaryE : Type uE
   [boundaryENormedGroup : NormedAddCommGroup boundaryE]
   [boundaryENormedSpace : NormedSpace ℝ boundaryE]
   [boundaryEInnerProductSpace : InnerProductSpace ℝ boundaryE]
   [boundaryEFiniteDimensional : FiniteDimensional ℝ boundaryE]
-  boundaryH : Type*
+  boundaryH : Type uH
   [boundaryHTopologicalSpace : TopologicalSpace boundaryH]
   boundaryI : ModelWithCorners ℝ boundaryE boundaryH
   [boundaryIBoundaryless : boundaryI.Boundaryless]

@@ -250,7 +250,7 @@ private lemma eigenvectorChartComponentFun_eLpNorm_le_energy
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
-        eLpNorm (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eLpNorm (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
@@ -542,7 +542,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
                   g r s) i‖ := by
   classical
   obtain ⟨Crhs, hCrhs_nn, hCrhs_bd⟩ :=
-    eigenvectorChartRHS_eLpNorm_le_uniform_unconditional (I := I) (M := M)
+    eigenvectorChartRHS_eLpNorm_le_uniform (I := I) (M := M)
       g r s α P₀
   obtain ⟨C1, hC1_nn, hC1_bd⟩ :=
     eigenvectorChartComponentFun_eLpNorm_le_energy
@@ -601,7 +601,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
   have hφnorm_nn : 0 ≤ φnorm := norm_nonneg _
   set Rhs : ℝ≥0∞ := ENNReal.ofReal φnorm with hRhs_def
   have hA1 :
-      eLpNorm (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      eLpNorm (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀) 2 μw
         ≤ ENNReal.ofReal C1 * Rhs := hC1_bd i
   have hfold := fun {C : ℝ} (hC : 0 ≤ C) =>
@@ -689,7 +689,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
     rw [ENNReal.ofReal_sum_of_nonneg (fun l _ => hC6_nn P l), Finset.sum_mul]
     exact Finset.sum_le_sum (fun l _ => hA6 P l)
   have h_aggr :
-      eLpNorm (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      eLpNorm (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀) 2 μw
           + (∑ P : TensorCompIdx (E := E) r (s + 1),
               eLpNorm ((crossLeftLimitComponent (I := I) (M := M)

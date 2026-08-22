@@ -76,7 +76,7 @@ private lemma eigenvectorChartComponentFun_ae_zero_of_notMem_activeFinset
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
     (P₀ : TensorCompIdx (E := E) r s) :
-    eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀
+    eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)] (fun _ : EuclN => (0 : ℝ)) := by
   classical
@@ -103,7 +103,7 @@ private lemma wkpNorm_two_eigenvectorChartComponentFun_eq_zero_of_notMem_activeF
     (P₀ : TensorCompIdx (E := E) r s) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 2 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀)
+        (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α) = 0 := by
   classical
   have h_chart_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
@@ -115,7 +115,7 @@ private lemma wkpNorm_two_eigenvectorChartComponentFun_eq_zero_of_notMem_activeF
   have h_swap :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 2 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀)
+          (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α) =
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 2 2
@@ -154,7 +154,7 @@ private lemma perAlphaPCConstant_bound
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 2 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀)
+        (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal
           (perAlphaPCConstant (I := I) (M := M) g r s α P₀ *
@@ -219,14 +219,14 @@ private lemma perAlphaPCConstant_le_totalActivePCConstant
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
-theorem eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β_unconditional
+theorem eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 2 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal

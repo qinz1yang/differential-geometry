@@ -73,7 +73,7 @@ private lemma twice_diff_identities_at
     base_f_chart_memWkp_two_two
       (I := I) (M := M) g α hu_h
   have h_chosenFChartDeriv_memW1p :=
-    chosenFChartDeriv_memW1p_truly_unconditional
+    chosenFChartDeriv_memW1p
       (I := I) (M := M) g α hu_h l₁ h_base_f_chart_memWkp22
   exact twice_differentiated_variational_identity_holds
     (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p

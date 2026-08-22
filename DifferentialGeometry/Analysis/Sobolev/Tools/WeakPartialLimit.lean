@@ -25,7 +25,7 @@ private lemma conj_inv_add_inv_eq_one {p : ℝ≥0∞} (hp : 1 ≤ p) :
   rw [inv_inv]
   exact (add_tsub_cancel_of_le h_inv_le_one)
 
-private instance holderConjugate_conj (p : ℝ≥0∞) (hp : 1 ≤ p) :
+private theorem holderConjugate_conj (p : ℝ≥0∞) (hp : 1 ≤ p) :
     ENNReal.HolderConjugate p (conj p) where
   inv_add_inv_eq_inv := by
     simp only [inv_one]

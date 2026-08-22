@@ -97,14 +97,14 @@ private lemma eigenval_le_one_local
       exact one_ne_zero h_norm.symm)).2
 
 omit [CompleteSpace E] in
-theorem eigenvector_chartComponent_perK_from_uniform_β_unconditional
+theorem eigenvector_chartComponent_perK_from_uniform_β
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (N : ℕ)
     (CN : ℝ) (eN : ℕ)
     (hCN_bd : ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -116,7 +116,7 @@ theorem eigenvector_chartComponent_perK_from_uniform_β_unconditional
     ∀ (K' : ℕ), K' ≤ N →
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-            (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -126,15 +126,15 @@ theorem eigenvector_chartComponent_perK_from_uniform_β_unconditional
                   g r s) i‖ := by
   intro K' hK' i
   have h_mono : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α) :=
     wkpNorm_mono_order (d := Module.finrank ℝ E) hK'
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α)
   exact h_mono.trans (hCN_bd α P₀ i)
@@ -184,7 +184,7 @@ private lemma resolvent_chartComponent_coe_ae_eq
       =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) β)]
       (fun y => i.fst.val *
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i β Q y) := by
   have h_smul := Lp.coeFn_smul i.fst.val
     (tensorL2ChartComponent (I := I) (M := M) g r s
@@ -197,7 +197,7 @@ private lemma resolvent_chartComponent_coe_ae_eq
           β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
       =ᵐ[chartL2Measure (I := I) (M := M) β]
       (fun y => i.fst.val •
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i β Q y) := by
     rw [resolvent_chartComponent_eq_smul
       (I := I) (M := M) g r s i β Q]
@@ -217,7 +217,7 @@ private lemma eigenvectorChartComponentFun_memWkp_of_resolv
             β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     MemWkp (d := Module.finrank ℝ E) K' 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q)
       (chartTargetEuclid (I := I) (M := M) β) := by
   classical
@@ -239,7 +239,7 @@ private lemma eigenvectorChartComponentFun_memWkp_of_resolv
             β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
-      (fun y => eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (fun y => eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q y) := by
     have h_resc := resolvent_chartComponent_coe_ae_eq
       (I := I) (M := M) g r s i β Q
@@ -251,14 +251,14 @@ private lemma eigenvectorChartComponentFun_memWkp_of_resolv
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae).mp h_scaled
 
 omit [CompleteSpace E] in
-theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
+theorem eigenvector_resolventHigh_perK_from_uniform_β
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (N : ℕ)
     (CN : ℝ) (hCN_nn : 0 ≤ CN) (eN : ℕ)
     (hCN_bd : ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -306,7 +306,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
       Ω :=
     h_pou_resolv i K' β Q hK'
   have h_eig_mem : MemWkp (d := Module.finrank ℝ E) (K' + 1) 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q) Ω :=
     eigenvectorChartComponentFun_memWkp_of_resolv
       (I := I) (M := M) g r s i β Q (K' + 1) h_resolv_mem
@@ -319,29 +319,29 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
           β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
       = iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
         (fun y => i.fst.val *
-          eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q y) Ω :=
     wkpNorm_congr_ae (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae
   have h_smul_eq : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
       (fun y => i.fst.val *
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i β Q y) Ω
       = ‖i.fst.val‖ₑ *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q) Ω :=
     wkpNorm_const_smul (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_eig_mem i.fst.val
   have h_eig_bd : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q) Ω
       ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ :=
-    eigenvector_chartComponent_perK_from_uniform_β_unconditional
+    eigenvector_chartComponent_perK_from_uniform_β
       (I := I) (M := M) g r s N CN eN hCN_bd β Q (K' + 1) hK' i
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
@@ -350,7 +350,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
   have h_step1 :
       ENNReal.ofReal i.fst.val *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q) Ω
       ≤ ENNReal.ofReal i.fst.val *
           (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -393,7 +393,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
   calc
     ENNReal.ofReal i.fst.val *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q) Ω
         ≤ ENNReal.ofReal i.fst.val *
             (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -416,14 +416,14 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β_unconditional
       h_step2
 
 omit [CompleteSpace E] in
-theorem eigenvector_resolventLow_perK_from_uniform_β_unconditional
+theorem eigenvector_resolventLow_perK_from_uniform_β
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (N : ℕ)
     (CN : ℝ) (hCN_nn : 0 ≤ CN) (eN : ℕ)
     (hCN_bd : ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -471,7 +471,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β_unconditional
       Ω :=
     h_pou_resolv i K' β Q hK'
   have h_eig_mem : MemWkp (d := Module.finrank ℝ E) K' 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q) Ω :=
     eigenvectorChartComponentFun_memWkp_of_resolv
       (I := I) (M := M) g r s i β Q K' h_resolv_mem
@@ -484,29 +484,29 @@ theorem eigenvector_resolventLow_perK_from_uniform_β_unconditional
           β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
       = iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => i.fst.val *
-          eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q y) Ω :=
     wkpNorm_congr_ae (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae
   have h_smul_eq : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
       (fun y => i.fst.val *
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i β Q y) Ω
       = ‖i.fst.val‖ₑ *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q) Ω :=
     wkpNorm_const_smul (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_eig_mem i.fst.val
   have h_eig_bd : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+      (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q) Ω
       ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ :=
-    eigenvector_chartComponent_perK_from_uniform_β_unconditional
+    eigenvector_chartComponent_perK_from_uniform_β
       (I := I) (M := M) g r s N CN eN hCN_bd β Q K' hK' i
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
@@ -515,7 +515,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β_unconditional
   have h_step1 :
       ENNReal.ofReal i.fst.val *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q) Ω
       ≤ ENNReal.ofReal i.fst.val *
           (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -558,7 +558,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β_unconditional
   calc
     ENNReal.ofReal i.fst.val *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i β Q) Ω
         ≤ ENNReal.ofReal i.fst.val *
             (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *

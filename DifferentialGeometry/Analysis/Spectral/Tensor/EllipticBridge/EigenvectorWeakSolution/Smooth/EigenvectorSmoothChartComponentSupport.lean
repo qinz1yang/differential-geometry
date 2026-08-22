@@ -35,7 +35,7 @@ private lemma eigenvectorChartComponentFun_ae_eq_chartPushedPouWeight_mul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
-    eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q
+    eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
       =ᵐ[chartL2Measure (I := I) (M := M) α]
       (fun y => chartPushedPouWeight (I := I) (M := M) α y *
         ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
@@ -56,7 +56,7 @@ theorem eigenvectorChartComponentFun_ae_zero_where_chartPushedPouWeight_zero
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
       chartPushedPouWeight (I := I) (M := M) α y = 0 →
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α Q y = 0 := by
   filter_upwards
     [eigenvectorChartComponentFun_ae_eq_chartPushedPouWeight_mul_cutoff
@@ -68,7 +68,7 @@ theorem eigenvectorChartComponentFun_ae_eq_zero_on_chartPushedPouWeight_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
-    eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q
+    eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
       =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict
         {y : EuclN | chartPushedPouWeight (I := I) (M := M) α y = 0}]
       (fun _ : EuclN => (0 : ℝ)) := by
@@ -91,13 +91,13 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 example (α : M) (Q : TensorCompIdx (E := E) r s) :
     ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
       chartPushedPouWeight (I := I) (M := M) α y = 0 →
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α Q y = 0 :=
   eigenvectorChartComponentFun_ae_zero_where_chartPushedPouWeight_zero
     (I := I) (M := M) g r s i α Q
 
 example (α : M) (Q : TensorCompIdx (E := E) r s) :
-    eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q
+    eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
       =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict
         {y : EuclN | chartPushedPouWeight (I := I) (M := M) α y = 0}]
       (fun _ : EuclN => (0 : ℝ)) :=

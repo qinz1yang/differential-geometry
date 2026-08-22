@@ -594,7 +594,6 @@ theorem triv_fwdEquiv_eq (s q : ℕ) (x₀ x : B)
   exact (triv_toTensor_eq_modelFromTensorEquiv_symm (Module.finBasis 𝕜 F) s q x₀ x hx t).symm
 
 omit [ContMDiffVectorBundle n F E IB] in
-@[nolint unusedArguments]
 theorem multilinearTensorFiberwiseEquiv_smooth
     (_hE : ContMDiffVectorBundle n F E IB) :
     ContMDiff
@@ -607,6 +606,7 @@ theorem multilinearTensorFiberwiseEquiv_smooth
           TotalSpace ((MLF s) ⊗[𝕜] (MLF q))
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                        Bundle.continuousMultilinearMap 𝕜 q F E x))) := by
+  let _ := _hE
   letI := _hE
   haveI : ContMDiffVectorBundle n
       ((MLF s) ⊗[𝕜] (MLF q))
@@ -634,7 +634,6 @@ theorem multilinearTensorFiberwiseEquiv_smooth
     exact triv_fwdEquiv_eq s q p₀.proj p.proj hp p.snd
 
 omit [ContMDiffVectorBundle n F E IB] in
-@[nolint unusedArguments]
 theorem multilinearTensorFiberwiseEquiv_symm_smooth
     (_hE : ContMDiffVectorBundle n F E IB) :
     ContMDiff
@@ -647,6 +646,7 @@ theorem multilinearTensorFiberwiseEquiv_symm_smooth
         (⟨p.1, (multilinearTensorFiberwiseEquiv s q p.1).symm p.2⟩ :
           TotalSpace (MLF (s + q))
             (fun x => Bundle.continuousMultilinearMap 𝕜 (s + q) F E x))) := by
+  let _ := _hE
   letI := _hE
   letI : NormedAddCommGroup ((MLF s) ⊗[𝕜] (MLF q)) :=
     Bundle.TensorProduct.instNormedAddCommGroup_tensor

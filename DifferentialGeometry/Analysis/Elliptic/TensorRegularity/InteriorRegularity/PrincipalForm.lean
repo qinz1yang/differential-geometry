@@ -64,30 +64,26 @@ theorem tensorPrincipalForm_spec
   Classical.choose_spec (exists_tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
 
 theorem tensorPrincipalForm_a_eq_weightedInvGramEuclid
-    [I.Boundaryless] [hT2 : T2Space M] [hSigma : SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     {y : EuclN} (hy : y ∈ K) (i j : Fin (Module.finrank ℝ E)) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).a y i j =
       weightedInvGramEuclid (I := I) g α i j y := by
-  let _ := hT2
-  let _ := hSigma
   exact (tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target).1 y hy i j
 
 theorem tensorPrincipalForm_c
-    [I.Boundaryless] [hT2 : T2Space M] [hSigma : SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).c =
       (fun _ : EuclN => (0 : ℝ)) := by
-  let _ := hT2
-  let _ := hSigma
   exact (tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target).2
 
 theorem tensorPrincipalForm_c_apply
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
@@ -96,7 +92,7 @@ theorem tensorPrincipalForm_c_apply
   rw [tensorPrincipalForm_c (I := I) (M := M) g α hK hK_target]
 
 theorem tensorPrincipalForm_eq_scalar_metric_form
-    [I.Boundaryless] [hT2 : T2Space M] [hSigma : SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -105,8 +101,6 @@ theorem tensorPrincipalForm_eq_scalar_metric_form
       (∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
         B.a y i j = weightedInvGramEuclid (I := I) g α i j y) ∧
       B.c = (fun _ : EuclN => (0 : ℝ)) := by
-  let _ := hT2
-  let _ := hSigma
   exact ⟨tensorPrincipalForm (I := I) (M := M) g α hK hK_target, rfl,
     tensorPrincipalForm_spec (I := I) (M := M) g α hK hK_target⟩
 

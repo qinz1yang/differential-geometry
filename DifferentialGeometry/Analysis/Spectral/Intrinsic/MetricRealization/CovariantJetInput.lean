@@ -63,7 +63,7 @@ theorem tensorChartComponentRaw_abs_le_riemannianFibreNorm
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 s
   obtain ⟨Cop, hCop_pos, hCop_bound⟩ :=
-    tensorRSChartFiberToModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g_bg 0 s α hK hKsub
   set Cproj : ℝ := chartComponentProjectionUniformBound (E := E) 0 s with hCproj_def
   have hCproj_nn : 0 ≤ Cproj := chartComponentProjectionUniformBound_nonneg (E := E) 0 s
@@ -1348,7 +1348,7 @@ theorem hcovgrad_jet_bound_holds
           mul_le_mul_of_nonneg_right ((le_max_right _ _).trans (le_max_right _ _)) hR_nn
 
 omit [BoundarylessManifold I M] in
-theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_unconditional
+theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
@@ -1363,7 +1363,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_unconditional
           (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)‖ := by
   obtain ⟨C₀, hC₀_nn, hcovgrad_jet_bound⟩ :=
     hcovgrad_jet_bound_holds (I := I) g_bg hu₁ hu₂ α hK hKsub
-  exact chartMetricJet2DiffSup_realizeMetricAt_le_toHs (I := I) g_bg hu₁ hu₂ α hKsub k h_super
+  exact chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound (I := I) g_bg hu₁ hu₂ α hKsub k h_super
     hC₀_nn hcovgrad_jet_bound
 
 end MetricRealization

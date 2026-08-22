@@ -227,14 +227,14 @@ private lemma crossRightLimitComponent_coe_ae_eq
   rw [hy, smul_eq_mul]
 
 omit [CompleteSpace E] in
-theorem eigenvector_crossRightLimit_perK_from_uniform_β_unconditional
+theorem eigenvector_crossRightLimit_perK_from_uniform_β
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (N : ℕ)
     (CN : ℝ) (hCN_nn : 0 ≤ CN) (eN : ℕ)
     (hCN_bd : ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -418,7 +418,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β_unconditional
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
     intro β Q
-    exact eigenvector_chartComponent_perK_from_uniform_β_unconditional
+    exact eigenvector_chartComponent_perK_from_uniform_β
       (I := I) (M := M) g r s N CN eN hCN_bd β Q K' hK' i
   set RHS_each : ℝ≥0∞ := ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
     ENNReal.ofReal

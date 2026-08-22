@@ -164,14 +164,16 @@ private lemma g_norm_triangle
       from Real.sqrt_sq h_nn] at h_sqrt_le
   exact h_sqrt_le
 
-@[nolint unusedArguments]
 theorem hasWeakRiemannianGradLp_congr_ae
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [hcompact : CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [hboundaryless : I.Boundaryless]
     {g : SmoothRiemannianMetric I M} {u u' : M → ℝ} {G G' : M → E}
     (hu : u =ᵐ[riemannianVolumeMeasure I M g] u')
     (hG : G =ᵐ[riemannianVolumeMeasure I M g] G')
     (h : HasWeakRiemannianGradLp (I := I) (M := M) g u G) :
     HasWeakRiemannianGradLp (I := I) (M := M) g u' G' := by
+  let _ := hcompact
+  let _ := hboundaryless
   haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g

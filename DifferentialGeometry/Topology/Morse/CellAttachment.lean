@@ -7400,8 +7400,7 @@ theorem modelRoundCapInterp_le_one {ε r a b : ℝ} (hε : 0 < ε) (ha1 : a ≤ 
     rw [div_le_iff₀ hden]
     nlinarith only [ha', h2]
 
-@[nolint unusedArguments]
-theorem modelRoundCapInverse_params {ε r t φ a b : ℝ} (_hε : 0 < ε) (hr : 0 < r)
+theorem modelRoundCapInverse_params {ε r t φ a b : ℝ} (hε : 0 < ε) (hr : 0 < r)
     (htpos : 0 < t) (htr : t < r ^ 2 + 2 * ε) (hφ0 : 0 ≤ φ) (hφ1 : φ ≤ 1)
     (hphiD : 2 * ε - t ≤ φ * (r ^ 2 + 2 * ε - t))
     (ha : a = t / (t + φ * (r ^ 2 + 2 * ε - t)))
@@ -7409,6 +7408,7 @@ theorem modelRoundCapInverse_params {ε r t φ a b : ℝ} (_hε : 0 < ε) (hr : 
     (2 * ε + r ^ 2 * b) * a = t ∧
       t * (1 - a) / (a * (r ^ 2 + 2 * ε - t)) = φ ∧
       0 < a ∧ a ≤ 1 ∧ 0 ≤ b ∧ b ≤ 1 := by
+  let _ := hε
   let D : ℝ := r ^ 2 + 2 * ε - t
   have hDpos : 0 < D := by
     dsimp [D]
@@ -7459,7 +7459,7 @@ theorem modelRoundCapInverse_params {ε r t φ a b : ℝ} (_hε : 0 < ε) (hr : 
     have hrec' : t / a - 2 * ε = φ * D + t - 2 * ε := by nlinarith only [hrec]
     rw [hrec']
     dsimp [D]
-    nlinarith only [hφ1, htr, _hε, hr]
+    nlinarith only [hφ1, htr, hε, hr]
   exact ⟨hmain, hphi, hane_aux, ha1, hbnonneg, hb1⟩
 
 theorem modelRoundCapQ_le_smoothCap {ε r δ θ a b t : ℝ} (hδ : 0 < δ) (hθ : 0 < θ)
@@ -9261,7 +9261,7 @@ theorem modelAttachedRegion_mem_handleRound_of_negPart_gt {n k : ℕ} (hk : k �
   have htpos : 0 < t := by nlinarith only [ht2, hε]
   let a : ℝ := t / (t + φ * D)
   let b : ℝ := (t / a - 2 * ε) / r ^ 2
-  have hparams := modelRoundCapInverse_params (_hε := hε) (hr := hr) (htpos := htpos) (htr := ht_lt)
+  have hparams := modelRoundCapInverse_params (hε := hε) (hr := hr) (htpos := htpos) (htr := ht_lt)
     (hφ0 := hφ0) (hφ1 := hφ1) (hphiD := by nlinarith only [ht2, hφ0, hDpos]) (ha := by
       rfl) (hb := by
       rfl)

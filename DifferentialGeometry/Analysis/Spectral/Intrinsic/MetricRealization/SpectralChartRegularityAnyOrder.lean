@@ -85,7 +85,7 @@ private lemma eigenvectorComp_eq_unconditional (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     eigenvectorComp (I := I) (M := M) g r s i α P₀ =
-      eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀ := rfl
+      eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀ := rfl
 
 private lemma eigenvectorComp_memWkp (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)

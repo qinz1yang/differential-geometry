@@ -1535,7 +1535,6 @@ theorem exists_cm_branch
           HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M);
         dist p x ≤ R) →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
-      0 < ρ →
       ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
       ∃ B : DiagInvBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
@@ -1564,7 +1563,7 @@ theorem exists_cm_branch
   letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
   letI : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  intro h hpq hscale hρ hρExp
+  intro h hpq hscale hρExp
   have hpairs : ∀ i,
       max
         (riemannianEDist I
@@ -1573,7 +1572,7 @@ theorem exists_cm_branch
     centerPairs_lt_le (I := I) (X.obj k).metric μ pts join p r h x R hpq hscale
   exact HasNormalBranchDom.exists_pair_readout (I := I) hb k hcomplete hconn x hdom
     (fun _ ↦ centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h) pts
-    hρ hρExp (by simpa [riemannianEDist_comm] using hpairs)
+    hρExp (by simpa [riemannianEDist_comm] using hpairs)
 
 end HCGCompactness
 end DifferentialGeometry

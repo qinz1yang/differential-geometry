@@ -52,7 +52,7 @@ private lemma chartPushedU_memWkp_two
     MemWkp (d := Module.finrank ℝ E) 2 2
       (chartPushedU (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) := by
-  have h := laplacianDomain_memWkpChart_two_unconditional (I := I) (M := M) g hu_h
+  have h := laplacianDomain_memWkpChart_two (I := I) (M := M) g hu_h
   exact h.1 α
 
 private lemma chartPushedU_memW1p

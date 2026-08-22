@@ -330,7 +330,7 @@ theorem volume_variation_ricciFlow_at
           ∂(volumeMeasureFamily (I := I) (M := M) G t₀))
       t₀ := by
   have hclean :=
-    volume_variation_formula_clean_at (I := I) (M := M) G (f := f) (t₀ := t₀) hg hf
+    volume_variation_formula_at (I := I) (M := M) G (f := f) (t₀ := t₀) hg hf
   refine hclean.congr_deriv ?_
   apply integral_congr_ae
   filter_upwards with x

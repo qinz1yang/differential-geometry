@@ -161,7 +161,7 @@ private theorem jac_force_cap
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-@[nolint unusedArguments] theorem intrJacobi_pair_le
+theorem intrJacobi_pair_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -210,6 +210,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
             (covDerivAlong (I := I) P.metric γ J t)) <=
         gronwallBound (Real.sqrt (P.metric.inner p w w))
           (max K 1) 0 t) := by
+  let _ := hconn
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted
   letI : IsManifold I ∞ P.M := P.smooth
@@ -767,7 +768,7 @@ theorem intrMix_pair_le
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] in
-@[nolint unusedArguments] theorem intrJet_pair_of
+theorem intrJet_pair_of
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -823,6 +824,7 @@ omit [CompleteSpace E] in
     (forall t, t ∈ Icc (0 : Real) 1 ->
       Real.sqrt (P.metric.inner (f r t) (DW t) (DW t)) <=
         gronwallBound delta (max (C0 * U ^ 2) 1) eps t) := by
+  let _ := hconn
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted
   letI : IsManifold I ∞ P.M := P.smooth

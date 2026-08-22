@@ -427,7 +427,7 @@ lemma per_pair_ibp_base_f_chart
       (I := I) (M := M) g 1 hu_h) with hD_def
   have h_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
-      (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
+      (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
   set v : EuclN → ℝ := D.f_chart with hv_def
   set w : Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun l₂' => chosenFChartDeriv (I := I) (M := M) g α hu_h l₂' with hw_def
@@ -567,7 +567,7 @@ lemma per_pair_ibp_chosenFChartDeriv
     exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
   have h_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
-      (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
+      (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
   have h_v_global :
       MemLp v 2 ((volume : Measure EuclN).restrict Ω) := by
     change MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁) 2

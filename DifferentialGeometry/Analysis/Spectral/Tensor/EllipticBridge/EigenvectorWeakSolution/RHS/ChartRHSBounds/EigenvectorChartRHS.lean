@@ -42,6 +42,18 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 open DifferentialGeometry.Analysis.Spectral in
+def eigenvectorChartComponentFun
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  fun y =>
+    ((tensorL2ChartComponent (I := I) (M := M) g r s
+        (tensorResolventEigenbasisVec (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator (I := I) (M := M)
+            g r s) i) α P₀ :
+      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+open DifferentialGeometry.Analysis.Spectral in
 noncomputable def eigenvectorChartRHS
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -185,7 +197,7 @@ theorem eigenvectorChartRHS_memLp_weighted
       (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
       (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
       (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
-      (crossLeftLimitComponent_memLp_weighted_unconditional (I := I) (M := M)
+      (crossLeftLimitComponent_memLp_weighted (I := I) (M := M)
         g r s i α P)
       h_aezero
   have h_crossRight : ∀ (P Q : TensorCompIdx (E := E) r s),
@@ -215,18 +227,18 @@ theorem eigenvectorChartRHS_memLp_weighted
       (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
       (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
       (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
-      (crossRightLimitComponent_memLp_weighted_unconditional (I := I) (M := M)
+      (crossRightLimitComponent_memLp_weighted (I := I) (M := M)
         g r s i α P)
       h_aezero
   have h_prc : MemLp (covPrincipalRotationCoeffLimit (I := I) (M := M)
       g r s i α P₀) 2 μw := by
     rw [hμw_def]
-    exact covPrincipalRotationCoeffLimit_memLp_weighted_unconditional
+    exact covPrincipalRotationCoeffLimit_memLp_weighted
       (I := I) (M := M) g r s i α P₀
   have h_lov : MemLp (covLowerOrderRotationValueCoeffLimit
       (I := I) (M := M) g r s i α P₀) 2 μw := by
     rw [hμw_def]
-    exact covLowerOrderRotationValueCoeffLimit_memLp_weighted_unconditional
+    exact covLowerOrderRotationValueCoeffLimit_memLp_weighted
       (I := I) (M := M) g r s i α P₀
   have h_gradDiv : MemLp
       (fun y => (1 / densityOnEuclid (I := I) g α y) *
@@ -243,7 +255,7 @@ theorem eigenvectorChartRHS_memLp_weighted
       memLp_finset_sum (μ := (chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-        (fun l _ => weightedGradCoeffDivLimit_memLp_weighted_unconditional
+        (fun l _ => weightedGradCoeffDivLimit_memLp_weighted
           (I := I) (M := M) g r s i α P₀ l)
     have h_aezero :
         ∀ᵐ y ∂((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -254,7 +266,7 @@ theorem eigenvectorChartRHS_memLp_weighted
                 g r s i α P₀ l y) = 0 :=
       Filter.Eventually.of_forall (fun y hy =>
         Finset.sum_eq_zero (fun l _ =>
-          weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+          weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
             (I := I) (M := M) g r s i α P₀ l hy))
     exact memLp_weighted_contDiffOn_mul (I := I) (M := M) g α
       (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)

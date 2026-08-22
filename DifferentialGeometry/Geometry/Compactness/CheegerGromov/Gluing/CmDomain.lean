@@ -567,7 +567,6 @@ theorem existsCmExtension
 omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-set_option linter.unusedSectionVars false in
 theorem chartCenterOn_cont
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
     (join : M -> M -> Real -> M) (r : Real)

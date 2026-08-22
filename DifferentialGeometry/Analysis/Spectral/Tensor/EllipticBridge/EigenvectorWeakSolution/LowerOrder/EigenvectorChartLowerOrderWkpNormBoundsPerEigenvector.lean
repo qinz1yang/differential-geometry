@@ -45,7 +45,7 @@ section LowerOrderWkpNormBoundsUnconditional
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
+theorem wkpNorm_covPrincipalRotationCoeffLimit_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -166,7 +166,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
   exact h_bound
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
+theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -505,7 +505,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
       rw [mul_add]
 
 omit [CompleteSpace E] in
-theorem wkpNorm_weightedGradCoeffDivLimit_le_unconditional
+theorem wkpNorm_weightedGradCoeffDivLimit_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (l : Fin (Module.finrank ℝ E))

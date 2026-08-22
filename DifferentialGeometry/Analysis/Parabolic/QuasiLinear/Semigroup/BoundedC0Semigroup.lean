@@ -26,11 +26,6 @@ variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 instance : CoeFun (BoundedC0Semigroup X) (fun _ => ℝ → (X →L[ℝ] X)) :=
   ⟨BoundedC0Semigroup.toFun⟩
 
-@[simp]
-theorem coe_mk (toFun : ℝ → (X →L[ℝ] X)) (h₀ h₁ h₂ h₃) :
-    ⇑(BoundedC0Semigroup.mk toFun h₀ h₁ h₂ h₃) = toFun :=
-  rfl
-
 theorem norm_apply_le (S : BoundedC0Semigroup X) {t : ℝ} (ht : 0 ≤ t)
     (v : X) : ‖S t v‖ ≤ ‖v‖ := by
   have h_op : ‖S t‖ ≤ 1 := S.opNorm_le_one t ht

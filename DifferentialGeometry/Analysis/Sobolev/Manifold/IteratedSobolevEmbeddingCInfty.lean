@@ -76,7 +76,7 @@ theorem memWkpChart_forall_implies_continuous_representative
     push_cast at h_2k₀_gt_n ⊢
     linarith
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
-    iterated_sobolev_embedding_chart_C0_unconditional
+    iterated_sobolev_embedding_chart_C0
       (I := I) (M := M) g h_2k₀_pos h_p_one hkp_real h_side hu_meas hu_2k₀'
   refine ⟨ũ, hũ_cont, ?_⟩
   rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def]
@@ -530,7 +530,7 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
     linarith
   have h_side : 2 ≤ Module.finrank ℝ E ∨ 1 < p := Or.inr hp_one_strict
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
-    iterated_sobolev_embedding_chart_C0_unconditional
+    iterated_sobolev_embedding_chart_C0
       (I := I) (M := M) g h_m1_pos hp_one h_kp_gt_n h_side hu_meas hu
   have hũ_meas : Measurable ũ := hũ_cont.measurable
   refine ⟨ũ, ?_, ?_⟩

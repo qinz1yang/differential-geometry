@@ -37,7 +37,6 @@ open TopologicalSpace
 
 set_option backward.isDefEq.respectTransparency false in
 
-@[nolint unusedArguments]
 noncomputable def compSepFwd [I.Boundaryless]
     {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [SigmaCompactSpace N] [T2Space P]

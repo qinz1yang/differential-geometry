@@ -194,10 +194,11 @@ end OrthonormalFrame
 
 section
 
-@[nolint unusedArguments]
 def deltaInvMetric {Idx : Type*} [DecidableEq Idx] :
     Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx :=
-  fun _ _ i j => if i = j then 1 else 0
+  fun t _ i j =>
+    let _ := t
+    if i = j then 1 else 0
 
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem deltaInvMetric_apply {Idx : Type*} [DecidableEq Idx]

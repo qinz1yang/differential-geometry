@@ -45,10 +45,11 @@ section ChartPhaseUniqueness
 
 variable [I.Boundaryless]
 
-@[nolint unusedArguments]
 def chartPhaseVFAuto (g : SmoothRiemannianMetric I M) (α : M) :
     ℝ → (E × E) → E × E :=
-  fun _ z => chartPhaseVF (I := I) g α z
+  fun t z =>
+    let _ := t
+    chartPhaseVF (I := I) g α z
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] lemma chartPhaseVFAuto_apply

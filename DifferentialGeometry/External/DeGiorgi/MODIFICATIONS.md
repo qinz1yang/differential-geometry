@@ -309,3 +309,12 @@ definition as a theorem, removing redundant hypotheses and typeclass assumptions
 cast expression to its normal form, retaining a useful ellipticity-ratio theorem without a
 redundant simp attribute, and making compatibility-preserving hypotheses explicit dependencies of
 their proof terms. The affected mathematical conclusions are unchanged or generalized.
+
+### 2026-08-21 — divergence-data uniqueness generality
+
+**Files**:
+- `WeakFormulation/ExistenceTheory.lean`
+
+**Change**: removed a redundant `MemLp` hypothesis from the uniqueness theorem for the
+inhomogeneous Dirichlet problem and updated its callers. Existence still requires the integrability
+hypothesis; uniqueness now states only the assumptions used by its mathematical argument.

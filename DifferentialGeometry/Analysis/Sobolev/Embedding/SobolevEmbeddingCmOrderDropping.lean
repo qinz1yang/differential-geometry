@@ -1488,21 +1488,6 @@ theorem iteratedCovGrad_toSobolev_embedding_C2_singleNorm
   exact iteratedCovGrad_toSobolev_embedding_Cm_singleNorm (I := I) (M := M)
     g 0 2 k 2 h_super'
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [BoundarylessManifold I M] in
-theorem iteratedCovGrad_toSobolev_embedding_C2_unconditional
-    (g : SmoothRiemannianMetric I M) (k : ℕ)
-    (h_super : 2 * k > Module.finrank ℝ E + 4) :
-    ∃ C : ℝ, 0 < C ∧
-      ∀ (T : SmoothCcTensor g 0 2) (x : M),
-        (∑ j ∈ Finset.range 3,
-            (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + j)
-            ‖(iteratedCovGrad g 0 2 j T).toSection x‖)) ≤
-          C * ‖SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (2 * k) T‖ :=
-  iteratedCovGrad_toSobolev_embedding_C2_singleNorm (I := I) (M := M) g k h_super
-
 end AnalyticCore
 
 end DifferentialGeometry.Analysis.Sobolev

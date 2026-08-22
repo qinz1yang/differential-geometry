@@ -15,7 +15,10 @@ open scoped Manifold Topology ContDiff RealInnerProductSpace
 namespace DifferentialGeometry
 namespace Geometry
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+universe uE uQ
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)] [NeZero n]
 
 structure SectionWitness (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -39,9 +42,9 @@ structure SectionWitness (E : Type*) [NormedAddCommGroup E] [InnerProductSpace �
   mem : x ∈ W
   isSec : ∀ r : W, proj ((s r : V) : sphere (0 : E) 1) = (r : Q)
 
-structure RoundQuotientData (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+structure RoundQuotientData (E : Type uE) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (n : ℕ) [Fact (finrank ℝ E = n + 1)] [NeZero n] where
-  Q : Type*
+  Q : Type uQ
   [topos : TopologicalSpace Q]
   [charted : ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]
   [mfld : IsManifold (𝓡 n) ∞ Q]
@@ -50,7 +53,7 @@ structure RoundQuotientData (E : Type*) [NormedAddCommGroup E] [InnerProductSpac
   [t2 : T2Space Q]
   [sigmaCompact : SigmaCompactSpace Q]
   [boundaryless : BoundarylessManifold (𝓡 n) Q]
-  Γ : Type*
+  Γ : Type uQ
   [grp : Group Γ]
   [fin : Fintype Γ]
   ρ : Γ →* (E ≃ₗᵢ[ℝ] E)

@@ -248,7 +248,7 @@ private lemma exists_uniform_const_of_finite_wkpNorm_bounds_uniform
     (f := fun j' => Cf j') (fun j' _ => hCf_nn j') (Finset.mem_univ j)
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
+theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -399,7 +399,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
   exact h_bound
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
+theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -785,7 +785,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
       rw [mul_add]
 
 omit [CompleteSpace E] in
-theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
+theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (l : Fin (Module.finrank ℝ E))
     (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)

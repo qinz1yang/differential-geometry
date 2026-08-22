@@ -225,7 +225,7 @@ theorem chartPushedFlow_eq_lift_proj_eventually
   exact ((extChartAt I p).left_inv ht_src').symm
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushedFlow_eq_witness_curve_eventually
+theorem chartPushedFlow_eq_witness_curve_eventually_of_chart_phase
     (g : SmoothRiemannianMetric I M) (p : M) (v_chart : E)
     {γ : ℝ → M}
     {f : ℝ → TangentBundle I M}
@@ -304,7 +304,7 @@ theorem chartPushedFlow_eq_witness_curve_eventually
   exact ht
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually
+theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually_of_chart_phase
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     {t₁ : ℝ} (ht₁ : t₁ ∈ maximalGeodesicInterval (I := I) g p v)
     {f : ℝ → TangentBundle I M}
@@ -324,7 +324,7 @@ theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually
       (∀ᶠ t in 𝓝 (0 : ℝ),
         maximalGeodesicChosenCurve (I := I) g p v ht₁ t =
           chartFlowGeodesicCurve (I := I) Φ p (v : E) t) :=
-  chartPushedFlow_eq_witness_curve_eventually
+  chartPushedFlow_eq_witness_curve_eventually_of_chart_phase
     (I := I) (g := g) (p := p) (v_chart := (v : E))
     (γ := maximalGeodesicChosenCurve (I := I) g p v ht₁)
     (f := f) hproj_chosen hf0 hf_int_at0 hd

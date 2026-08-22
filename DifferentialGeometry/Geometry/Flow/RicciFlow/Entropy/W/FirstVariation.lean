@@ -198,7 +198,7 @@ theorem weightedMeasureIntegral_hasDerivAt_at
         ∂(volumeMeasureFamily (I := I) (M := M) G s0))
       s0 := by
   have hvol :=
-    volume_variation_formula_clean_at
+    volume_variation_formula_at
       (I := I) (M := M) G
       (f := fun s : Real => fun x : M =>
         perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)

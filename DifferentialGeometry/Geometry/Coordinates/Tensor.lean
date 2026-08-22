@@ -185,9 +185,10 @@ def slots4 (i j k l : Idx) : Fin 4 -> Idx :=
   simp [slots4]
 
 
-@[nolint unusedArguments]
 def upperIdx1 (k : Idx) : Fin 1 -> Idx :=
-  fun _ => k
+  fun a =>
+    let _ := a
+    k
 
 
 def lowerIdx2 (i j : Idx) : Fin 2 -> Idx :=

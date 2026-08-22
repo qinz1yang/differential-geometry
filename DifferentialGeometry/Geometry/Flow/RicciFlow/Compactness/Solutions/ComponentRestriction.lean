@@ -45,7 +45,6 @@ private theorem compBase_mem
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-set_option linter.unusedSectionVars false in
 theorem compRestrict_init
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (p : M) (a : ℝ)
     (h₀ : g₁ a = g₂ a) :

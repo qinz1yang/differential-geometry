@@ -118,7 +118,11 @@ theorem toMultilinearSection_add {s : ℕ}
     (T₁ T₂ : MixedSection 𝕜 F IB E n 0 s) :
     (T₁ + T₂).toMultilinearSection n =
       T₁.toMultilinearSection n + T₂.toMultilinearSection n := by
-  ext x m; rfl
+  apply ContMDiffSection.ext
+  intro x
+  apply Bundle.continuousMultilinearMap.ext
+  intro m
+  rfl
 
 @[simp]
 theorem toMultilinearSection_smulByFun {s : ℕ}
@@ -126,7 +130,11 @@ theorem toMultilinearSection_smulByFun {s : ℕ}
     (T : MixedSection 𝕜 F IB E n 0 s) :
     (smulByFun n φ hφ T).toMultilinearSection n =
       MultilinearSection.smulByFun n φ hφ (T.toMultilinearSection n) := by
-  ext x m; rfl
+  apply ContMDiffSection.ext
+  intro x
+  apply Bundle.continuousMultilinearMap.ext
+  intro m
+  rfl
 
 omit [NormedAddCommGroup F] [NormedSpace 𝕜 F] [TopologicalSpace B]
   [TopologicalSpace (TotalSpace F E)] [FiberBundle F E] [VectorBundle 𝕜 F E]

@@ -314,7 +314,7 @@ theorem closedEBall_ofReal_subset_ball {α : Type*} [PseudoMetricSpace α]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-@[nolint unusedArguments] theorem data_image_metric_ball
+theorem data_image_metric_ball
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     [IsManifold I ∞ M]
     [PseudoMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]

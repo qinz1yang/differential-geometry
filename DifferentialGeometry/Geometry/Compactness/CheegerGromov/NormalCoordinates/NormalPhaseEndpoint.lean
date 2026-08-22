@@ -155,7 +155,7 @@ noncomputable def normalPair
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact c.pair z
 
-@[nolint unusedArguments] def IsNormalDiag
+def IsNormalDiag
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -183,6 +183,7 @@ noncomputable def normalPair
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
     Prop := by
+  let _ := hconn
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -288,7 +289,7 @@ theorem normal_launch_mfd
         (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (Z 0).1 (Z 0).2 := by
       rw [hgammaMfd]
 
-@[nolint unusedArguments] theorem normal_end_eq_intr
+theorem normal_end_eq_intr
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -331,6 +332,7 @@ theorem normal_launch_mfd
         (expMapDiffeo (I := I) Y.metric x (Z 0).1)
         (mfderiv 𝓘(Real, Real) I
           (fun t : Real ↦ expMapDiffeo (I := I) Y.metric x (Z t).1) 0 1) := by
+  let _ := hconn
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -861,7 +863,7 @@ theorem exists_uniform_diag
 
 end NormalRadiusProfile
 
-@[nolint unusedArguments] theorem normal_inv_eq
+theorem normal_inv_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -912,6 +914,7 @@ end NormalRadiusProfile
     diagExpInv (I := I) Y.metric (normal_enorm (I := I) Y) x
         (normalPair (I := I) Y x y) =
       normalTangent (I := I) Y x z := by
+  let _ := hconn
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -1020,7 +1023,7 @@ theorem chart_launch_mfd
     _ = mfderiv 𝓘(Real, E) I c.hom (Z 0).1 (Z 0).2 := by
       rw [hgammaMfd]
 
-@[nolint unusedArguments] theorem chart_end_eq_intr
+theorem chart_end_eq_intr
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1069,6 +1072,7 @@ theorem chart_launch_mfd
         (c.hom (Z 0).1)
         (mfderiv 𝓘(Real, Real) I
           (fun t : Real ↦ c.hom (Z t).1) 0 1) := by
+  let _ := hconn
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth

@@ -1669,19 +1669,6 @@ theorem norm_sub_le_sum_pou_diff_withBoundary
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α : M → ℝ) x * u x -
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α : M → ℝ) y * u y)
 
-omit [T2Space M] [CompactSpace M] in
-theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary_unconditional
-    [CompactSpace M] [T2Space M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
-    {p : ℝ} (hp : (n : ℝ) < p) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      ∀ {u : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u →
-        AllChartsInteriorSupport (n := n) (M := M) u →
-        ∀ x : M, ‖u x‖ ≤ C *
-          (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal :=
-  smooth_manifold_morrey_sup_bound_uniform_withBoundary
-    (n := n) (M := M) g hp
-
 end WithBoundary
 end Sobolev
 end Analysis

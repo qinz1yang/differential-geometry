@@ -647,7 +647,7 @@ private lemma standardNirenbergTest_uChart_memLp_cthickening
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem variational_identity_at_v_h_unconditional
+theorem variational_identity_at_v_h_of_compact_support
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -761,7 +761,7 @@ theorem variational_identity_at_v_h_unconditional
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem variational_identity_v_h_expanded_unconditional
+theorem variational_identity_v_h_expanded_of_compact_support
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -794,7 +794,7 @@ theorem variational_identity_v_h_expanded_unconditional
         densityOnEuclid (I := I) g α y * D.f_chart y *
           standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
         ∂(volume : Measure EuclN) :=
-  variational_identity_at_v_h_unconditional (I := I) (M := M) D
+  variational_identity_at_v_h_of_compact_support (I := I) (M := M) D
     hK_0_compact hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1745,7 +1745,7 @@ private lemma principal_post_ibp_integral_eq_symbolic
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem variational_identity_after_product_rule_unconditional
+theorem variational_identity_after_product_rule_of_compact_support
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -1765,9 +1765,9 @@ theorem variational_identity_after_product_rule_unconditional
       = c_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
   classical
   have h_after_ibp_eq :=
-    variational_identity_after_ibp_unconditional (I := I) (M := M) D
+    variational_identity_after_ibp_of_compact_support (I := I) (M := M) D
       hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick
-      (variational_identity_v_h_expanded_unconditional (I := I) (M := M) D
+      (variational_identity_v_h_expanded_of_compact_support (I := I) (M := M) D
         hK_0_compact hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick)
   have h_principal_in_K_0_eq :
       ∫ y in Metric.cthickening |h| K_0,
@@ -1821,11 +1821,11 @@ theorem chartBilinear_substitution_identity_holds
     chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
     chartBilinear_RHS (I := I) (M := M) D K_0 η k h := by
   unfold chartBilinear_LHS chartBilinear_RHS
-  exact variational_identity_after_product_rule_unconditional (I := I) (M := M) D
+  exact variational_identity_after_product_rule_of_compact_support (I := I) (M := M) D
     hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem nirenberg_substitution_identity_chartBilinear_unconditional
+theorem nirenberg_substitution_identity_chartBilinear
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)

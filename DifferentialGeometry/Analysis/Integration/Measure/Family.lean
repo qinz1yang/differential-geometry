@@ -156,7 +156,7 @@ theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
     funext x; exact hsmul x
   rw [hswap, hintegrand_eq]
 
-theorem volume_variation_formula_clean_of_chart_derivs
+theorem volume_variation_formula_of_chart_derivs
     [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)
@@ -192,7 +192,7 @@ theorem volume_variation_formula_clean_of_chart_derivs
   have hSum : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Iα α = Iglobal := by
     exact chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
       (I := I) (M := M) g_fam t h hh_cont
-  refine volume_variation_formula (I := I) (M := M)
+  refine volume_variation_formula_of_chart_integrals (I := I) (M := M)
     g_fam f t Iα Iglobal hf_cont ?_ hSum
   intro α hα
   exact hα_deriv_explicit α hα
@@ -1051,7 +1051,7 @@ theorem first_variation_of_volume
     refine Continuous.mul ?_ hft₀_cont
     refine Continuous.mul continuous_const ?_
     exact traceTimeDerivMetric_continuous (I := I) (M := M) hg
-  refine volume_variation_formula_clean_of_chart_derivs
+  refine volume_variation_formula_of_chart_derivs
     (I := I) (M := M) g_fam f t₀ hf_cont hh_cont ?_
   intro α hα
   exact per_chart_hasDerivAt (I := I) (M := M) hg hf α

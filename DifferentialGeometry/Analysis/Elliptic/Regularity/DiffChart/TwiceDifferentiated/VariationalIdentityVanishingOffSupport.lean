@@ -713,7 +713,7 @@ private lemma chosenFChartDeriv_ae_zero_off_K_α
   have hU_sub := chartTarget_diff_K_α_subset_target (I := I) (M := M) α
   have h_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
-      (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
+      (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
   have h_base_fc_ae := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
   exact chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero

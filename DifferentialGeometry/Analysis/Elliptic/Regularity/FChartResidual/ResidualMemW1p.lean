@@ -34,14 +34,14 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem fChartResidual_memW1p_truly_unconditional
+theorem fChartResidual_memW1p
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (fChartResidual (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) :=
-  fChartResidual_memW1p_unconditional (I := I) (M := M) g α hu_h
+  fChartResidual_memW1p_of_cauchy_identification (I := I) (M := M) g α hu_h
     (smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy
       (I := I) (M := M) g α hu_h)
     (smoothApproxSeq_smoothFChartResidual_limit_eq_fChartResidual

@@ -19,11 +19,12 @@ section defs
 variable (𝕜 : Type*) [CommSemiring 𝕜] [TopologicalSpace 𝕜] (ι : Type*) [Fintype ι]
 variable {B : Type*}
 
-@[nolint unusedArguments]
 protected def Bundle.continuousAlternatingMap (_F₁ : Type*) (E₁ : B → Type*)
     [Π x, AddCommMonoid (E₁ x)] [Π x, Module 𝕜 (E₁ x)] [Π x, TopologicalSpace (E₁ x)]
     (_F₂ : Type*) (E₂ : B → Type*) [Π x, AddCommMonoid (E₂ x)] [Π x, Module 𝕜 (E₂ x)]
     [Π x, TopologicalSpace (E₂ x)] (x : B) : Type _ :=
+  let _ := _F₁
+  let _ := _F₂
   (E₁ x) [⋀^ι]→L[𝕜] (E₂ x)
 
 notation3 "⋀^" ι "⟮" 𝕜 "; " F₁ ", " E₁ "; " F₂ ", " E₂ "⟯" =>

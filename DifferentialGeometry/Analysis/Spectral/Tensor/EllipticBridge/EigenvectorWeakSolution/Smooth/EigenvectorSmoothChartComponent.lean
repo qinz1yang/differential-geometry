@@ -222,7 +222,7 @@ private lemma eigenvectorChartComponentFun_ite_chartPushedPouWeight_zero_ae_zero
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α Q y
       else 0)
       =ᵐ[chartL2Measure (I := I) (M := M) α]
@@ -271,7 +271,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
   have h_on_overlap :
       (fun y => chartPushedRaw (I := I) (M := M) β
           (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y *
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q)
+        (eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q)
           (chartTransitionEuclid (I := I) (M := M) β α y))
         =ᵐ[(chartL2Measure (I := I) (M := M) β).restrict
             (chartOverlapEuclid (I := I) (M := M) β α)]
@@ -282,7 +282,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
         (I := I) (M := M) g r s i α Q
     have h_gate_overlap :
         (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
-            eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α Q y
           else 0)
           =ᵐ[(volume : Measure EuclN).restrict
@@ -340,7 +340,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
           (I := I) (M := M) α hz_srcα, hρα]
       have hy_gate' : (if chartPushedPouWeight (I := I) (M := M) α
             (chartTransitionEuclid (I := I) (M := M) β α y) = 0 then
-          eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q
+          eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
             (chartTransitionEuclid (I := I) (M := M) β α y)
         else 0) = 0 := hy_gate
       rw [if_pos hw_zero] at hy_gate'
@@ -348,7 +348,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
   have h_off_overlap : ∀ y, y ∉ chartOverlapEuclid (I := I) (M := M) β α →
       chartPushedRaw (I := I) (M := M) β
           (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y *
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q)
+        (eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q)
           (chartTransitionEuclid (I := I) (M := M) β α y) = 0 := by
     intro y hy_notin
     by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) β

@@ -72,7 +72,7 @@ theorem exists_continuous_representative_of_memWkpChart
   have hu' : MemWkpChart (I := I) (M := M) k (ENNReal.ofReal 2) u := by
     rw [← h_two_eq]; exact hu
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
-    iterated_sobolev_embedding_chart_C0_unconditional (I := I) (M := M) g hk_pos
+    iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk_pos
       hp_one hkp_real h_side hu_meas hu'
   refine ⟨ũ, hũ_cont, ?_⟩
   have hμ_eq :

@@ -1425,7 +1425,7 @@ theorem eigenvectorChartRHS_summand6_memWkp
           weightedGradCoeffDivLimit (I := I) (M := M)
             g r s i α P₀ l y) = 0 :=
     Filter.Eventually.of_forall (fun y hy_imp => Finset.sum_eq_zero
-      (fun l _ => weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+      (fun l _ => weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ l hy_imp))
   exact memWkp_smoothCoef_mul_aeZeroFactor (I := I) (M := M) α K
     (chartPouKernel_isCompact (I := I) (M := M) α)

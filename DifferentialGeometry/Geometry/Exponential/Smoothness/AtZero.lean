@@ -28,7 +28,7 @@ section UnconditionalDischarge
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem hasChartFlowGeodesicMatchData_unconditional
+theorem hasChartFlowGeodesicMatchData
     (g : SmoothRiemannianMetric I M) (p : M) :
     HasChartFlowGeodesicMatchData (I := I) g p := by
   classical
@@ -115,7 +115,7 @@ theorem expMap_contMDiffAt_zero
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (0 : E) :=
   expMap_contMDiffAt_zero_of_chartFlowGeodesicMatchData (I := I) g p
-    (hasChartFlowGeodesicMatchData_unconditional (I := I) g p)
+    (hasChartFlowGeodesicMatchData (I := I) g p)
 
 end TrulyUnconditional
 

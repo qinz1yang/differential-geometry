@@ -1175,7 +1175,7 @@ private theorem statement_holds_aux :
 
 end IteratedC0
 
-theorem iterated_sobolev_embedding_chart_C0
+theorem iterated_sobolev_embedding_chart_C0_of_regular_exponent
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -1239,7 +1239,7 @@ theorem sobolev_embedding_chart_C0_Hk
     rfl
   rw [h_two_eq] at hu
   obtain ⟨ũ, C, hũ_cont, hC_nn, hũ_ae, hũ_bound⟩ :=
-    iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk_pos hp_one hreg
+    iterated_sobolev_embedding_chart_C0_of_regular_exponent (I := I) (M := M) g hk_pos hp_one hreg
       hkp_real hu_meas hu
   refine ⟨ũ, C, hũ_cont, hC_nn, hũ_ae, ?_⟩
   intro x
@@ -1602,7 +1602,7 @@ theorem memWkpChart_mono_exponent [CompactSpace M]
 
 end ChartLevelMonoExp
 
-theorem iterated_sobolev_embedding_chart_C0_unconditional
+theorem iterated_sobolev_embedding_chart_C0
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -1623,7 +1623,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
         (wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u).toReal) := by
   classical
   by_cases hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) p k
-  · exact iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk hp_one hreg
+  · exact iterated_sobolev_embedding_chart_C0_of_regular_exponent (I := I) (M := M) g hk hp_one hreg
       hkp hu_meas hu
   · by_cases hp_strict_one : 1 < p
     · obtain ⟨p', hp'_one, hp'_lt, hkp', hp'_reg⟩ :=
@@ -1641,7 +1641,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
         ChartLevelMonoExp.memWkpChart_mono_exponent (I := I) (M := M)
           hp'_one_enn hp'_le_p_enn hu
       obtain ⟨ũ, C₁, hũ_cont, hC₁_nn, hũ_ae, hũ_bound₁⟩ :=
-        iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk hp'_one
+        iterated_sobolev_embedding_chart_C0_of_regular_exponent (I := I) (M := M) g hk hp'_one
           hp'_reg hkp' hu_meas hu_p'
       have h_norm_p_lt :
           wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u < ⊤ :=
@@ -1817,7 +1817,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
         ChartLevelMonoExp.memWkpChart_mono_exponent (I := I) (M := M)
           hp'_one_enn hp'_le_p_1_enn h_mem_p1'
       obtain ⟨ũ, C₁, hũ_cont, hC₁_nn, hũ_ae, hũ_bound₁⟩ :=
-        iterated_sobolev_embedding_chart_C0 (I := I) (M := M) g hk'_pos hp'_one
+        iterated_sobolev_embedding_chart_C0_of_regular_exponent (I := I) (M := M) g hk'_pos hp'_one
           hp'_reg hkp' hu_meas hu_p'
       have hp_enn_one : (1 : ℝ≥0∞) ≤ (ENNReal.ofReal 1) := by
         rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]

@@ -832,7 +832,7 @@ private lemma density_f_chart_ibp
       (I := I) (M := M) g 1 hu_h) with hD_def
   have h_base_f_chart_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
-      (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
+      (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
   refine density_coef_ibp (I := I) (M := M) g α l (v := D_base.f_chart)
     (w := fun l' => chosenFChartDeriv (I := I) (M := M) g α hu_h l')
     (fun l' => chosenFChartDeriv_isWeakPartial (I := I) (M := M) g α hu_h l'

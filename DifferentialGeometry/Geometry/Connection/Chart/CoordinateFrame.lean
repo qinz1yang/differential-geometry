@@ -19,9 +19,9 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-@[nolint unusedArguments]
 abbrev CoordinateIdx (E : Type*) [NormedAddCommGroup E] [NormedSpace Real E]
-    [FiniteDimensional Real E] :=
+    [hfinite : FiniteDimensional Real E] :=
+  let _ := hfinite
   Fin (Module.finrank Real E)
 
 abbrev coordinateTrivializationAt

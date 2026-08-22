@@ -325,7 +325,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
-@[nolint unusedArguments] theorem riemMetric_dist_eq_of_complete_metric
+theorem riemMetric_dist_eq_of_complete_metric
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (x y : M) :
@@ -345,6 +345,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I 
     letI : CompleteSpace M := hcomplete.complete
     letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
     dist x y = (riemannianEDist I x y).toReal := by
+  let _ := hcomplete
   letI : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
