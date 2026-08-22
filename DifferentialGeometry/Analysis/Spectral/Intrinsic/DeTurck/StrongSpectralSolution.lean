@@ -112,7 +112,7 @@ structure StrongSpectralSolution
   path_rep : ∀ t ∈ Icc (0 : ℝ) T,
     lo.toFun t = smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (Phi t)
 
-attribute [nolint simpNF] StrongSpectralSolution.mk.sizeOf_spec
+attribute [-simp] StrongSpectralSolution.mk.sizeOf_spec
 
 noncomputable def strongSpectralSolutionOfSmoothPath
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}

@@ -92,7 +92,7 @@ structure BackgroundSmoothRicciDeTurckSolution (g g_bg : SmoothRiemannianMetric 
         (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
           (deTurckRemainderSectionBackground (I := I) (M := M) g g_bg (F t) hδ_lt (hδ t))) i
 
-attribute [nolint simpNF] BackgroundSmoothRicciDeTurckSolution.mk.sizeOf_spec
+attribute [-simp] BackgroundSmoothRicciDeTurckSolution.mk.sizeOf_spec
 
 theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
     (g g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)

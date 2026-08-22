@@ -296,7 +296,7 @@ structure LowRegularityTimeSolution
         gforce
   forcing_norm : ‖gforce‖ ≤ R / 4
 
-attribute [nolint simpNF] LowRegularityTimeSolution.mk.sizeOf_spec
+attribute [-simp] LowRegularityTimeSolution.mk.sizeOf_spec
 
 structure LowRegularityPartialSolution (g₀ g_bg : SmoothRiemannianMetric I M) where
   R : ℝ

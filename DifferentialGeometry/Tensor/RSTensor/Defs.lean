@@ -29,10 +29,17 @@ variable [IsManifold I 1 M]
 variable {x' : M}
 variable {r s : ℕ}
 
-@[reducible, nolint unusedArguments]
+@[reducible]
 def Tensor0SModel (s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedField 𝕜]
-  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :=
+  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [_hfd : FiniteDimensional 𝕜 E] :=
+  let _ := _hfd
   ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜
+
+@[ext]
+theorem Tensor0SModel.ext {f g : Tensor0SModel s 𝕜 E}
+    (h : ∀ v, f v = g v) : f = g := by
+  dsimp [Tensor0SModel] at f g
+  exact ContinuousMultilinearMap.ext h
 
 @[reducible]
 def TensorRSModel (r s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedField 𝕜]
