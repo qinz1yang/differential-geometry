@@ -2,6 +2,31 @@
 
 An ongoing Lean 4 library for differential geometry and geometric analysis, currently focused on Ricci flow.
 
+## How to use
+
+Use DifferentialGeometry as an upstream dependency and build on its geometric-analysis infrastructure:
+
+```toml
+[[require]]
+name = "DifferentialGeometry"
+git = "https://github.com/qinz1yang/differential-geometry.git"
+rev = "v0.1.1"
+```
+
+Import the full library with
+
+```lean
+import DifferentialGeometry
+```
+
+or a specific module, for example the scalar strong maximum principle:
+
+```lean
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
+```
+
+We aim to keep pace with Mathlib releases and update the pinned Mathlib version accordingly.
+
 ## Formalized theorems
 
 Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
