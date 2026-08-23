@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.LocalIsometryRigidity
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoOpen
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Metric.Sphere.PuncturedCartan
 import DifferentialGeometry.Geometry.Metric.Sphere.PuncturedOverlap
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricFiberData
@@ -258,8 +258,8 @@ theorem punctCartan_match
       ((roundMetric (E := A) (n := n)).restrictOpen
         (I := 𝓡 n) U)
       g
-      (hloc_restrict_open U hFpU)
-      (hloc_restrict_open U hFqU)
+      (isLocalDiffeomorph_restrict_open U hFpU)
+      (isLocalDiffeomorph_restrict_open U hFqU)
       hpres1 hpres2 x₀ hxval hxder
   refine ⟨j, ?_, ?_⟩
   · simpa only [q', Fp] using hj

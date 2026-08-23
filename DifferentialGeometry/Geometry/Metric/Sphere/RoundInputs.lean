@@ -26,7 +26,7 @@ private instance sphereModel_neZero [NeZero n] :
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem round_enorm [NeZero n] :
+theorem round_enorm :
     letI : RiemannianBundle
         (fun x : sphere (0 : A) 1 => TangentSpace (𝓡 n) x) :=
       roundBundle (A := A) (n := n)

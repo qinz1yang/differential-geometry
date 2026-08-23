@@ -3,6 +3,7 @@ Copyright (c) 2024 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Auxiliary.Perm
 import DifferentialGeometry.Tensor.Auxiliary.MultiKroneckerDelta
@@ -474,8 +475,9 @@ private lemma derivShuffleRank_of_coset
   rw [QuotientGroup.leftRel_apply] at hσrel
   obtain ⟨⟨τl, τr⟩, hblock⟩ := hσrel
   have hσ₂ : σ₂ = σ₁ * Equiv.Perm.sumCongr τl τr := by
-    simpa [Equiv.Perm.sumCongrHom_apply, mul_assoc, mul_left_cancel] using
-      (inv_mul_eq_iff_eq_mul.mp hblock.symm)
+    have hmul := inv_mul_eq_iff_eq_mul.mp hblock.symm
+    rw [Equiv.Perm.sumCongrHom_apply] at hmul
+    exact hmul
   apply Fin.ext
   simp only [derivShuffleRank, permFinOfSum, Equiv.permCongr_apply,
     finSumFinEquiv_symm_apply_castAdd]
@@ -513,19 +515,15 @@ private lemma preimage_k_injective (τ' : Equiv.Perm.ModSumCongr (Fin (m + 1)) (
   have hσ₂ : (derivShuffleEquivLeft.symm (τ', j₂)).2 = Quotient.mk'' σ₂ := by
     exact (Quot.out_eq (q := (derivShuffleEquivLeft.symm (τ', j₂)).2)).symm
   have hpre₁ : derivShuffleEquivLeft (k, Quotient.mk'' σ₁) = (τ', j₁) := by
-    have h₁ := derivShuffleEquivLeft.apply_symm_apply (τ', j₁)
-    convert h₁ using 1
-    congr 1
-    apply Prod.ext
-    · rfl
-    · exact hσ₁.symm
+    have hin : (k, Quotient.mk'' σ₁) = derivShuffleEquivLeft.symm (τ', j₁) :=
+      Prod.ext rfl hσ₁.symm
+    exact (congrArg derivShuffleEquivLeft hin).trans
+      (derivShuffleEquivLeft.apply_symm_apply (τ', j₁))
   have hpre₂ : derivShuffleEquivLeft (k, Quotient.mk'' σ₂) = (τ', j₂) := by
-    have h₂ := derivShuffleEquivLeft.apply_symm_apply (τ', j₂)
-    convert h₂ using 1
-    congr 1
-    apply Prod.ext
-    · simp [k, hk₂]
-    · exact hσ₂.symm
+    have hin : (k, Quotient.mk'' σ₂) = derivShuffleEquivLeft.symm (τ', j₂) :=
+      Prod.ext hk₂.symm hσ₂.symm
+    exact (congrArg derivShuffleEquivLeft hin).trans
+      (derivShuffleEquivLeft.apply_symm_apply (τ', j₂))
   have hrank₁ : derivShuffleRank k σ₁ = j₁ := by
     have h₁ := congrArg Prod.snd hpre₁
     simpa using h₁

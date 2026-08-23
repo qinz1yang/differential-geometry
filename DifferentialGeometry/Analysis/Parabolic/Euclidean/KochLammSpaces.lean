@@ -23,26 +23,30 @@ def klLateCyl (x : V) (R : ℝ) : Set (ℝ × V) :=
   Set.Ioc (R ^ 2 / 2) (R ^ 2) ×ˢ Metric.ball x R
 
 def klDim (V : Type*) [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   Module.finrank ℝ V
 
 def klP (V : Type*) [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ≥0∞ :=
+    : ℝ≥0∞ :=
   ((Module.finrank ℝ V + 4 : ℕ) : ℝ≥0∞)
 
 def klQ (V : Type*) [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ≥0∞ :=
+    : ℝ≥0∞ :=
   klP V / 2
 
+omit [FiniteDimensional ℝ V] in
 theorem klP_ne_zero : klP V ≠ 0 := by
   simp [klP]
 
+omit [FiniteDimensional ℝ V] in
 theorem klP_ne_top : klP V ≠ ∞ := by
   simp [klP]
 
+omit [FiniteDimensional ℝ V] in
 theorem klQ_ne_zero : klQ V ≠ 0 := by
   simp [klQ, klP]
 
+omit [FiniteDimensional ℝ V] in
 theorem klQ_ne_top : klQ V ≠ ∞ := by
   unfold klQ
   exact ENNReal.div_ne_top (klP_ne_top (V := V)) (by norm_num)

@@ -188,8 +188,7 @@ noncomputable def covPrincipalRotationRemainder
     (S : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
     (χ : M → ℝ)
-    (_hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source)
-    (_hχt : tsupport χ ⊆ (chartAt H α).source) :
+    :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   fun y =>
     ∑ P : CompIdx E r s,
@@ -212,10 +211,9 @@ lemma covPrincipalRotationRemainder_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    {χ : M → ℝ} (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source)
-    (hχt : tsupport χ ⊆ (chartAt H α).source)
+    {χ : M → ℝ}
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
-    covPrincipalRotationRemainder (I := I) (M := M) g r s S α P₀ χ hχs hχt y =
+    covPrincipalRotationRemainder (I := I) (M := M) g r s S α P₀ χ y =
       ∑ P : CompIdx E r s,
         ∑ Q : CompIdx E r s,
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
@@ -236,10 +234,9 @@ theorem covPrincipalRotationRemainder_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    {χ : M → ℝ} (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source)
-    (hχt : tsupport χ ⊆ (chartAt H α).source) :
+    {χ : M → ℝ} (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source) :
     ContDiffOn ℝ ∞
-      (covPrincipalRotationRemainder (I := I) (M := M) g r s S α P₀ χ hχs hχt)
+      (covPrincipalRotationRemainder (I := I) (M := M) g r s S α P₀ χ)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   have hbump : ContDiffOn ℝ ∞ (chartPushedRaw I α χ)
@@ -409,7 +406,7 @@ theorem covPrincipalIntegrand_rotated_collapse
                   (tensorChartComponentRaw (I := I) (M := M)
                     g r s S α P₀.1 P₀.2)) y *
             euclidPartial (E := E) l (chartPushedRaw I α χ) y) +
-        covPrincipalRotationRemainder (I := I) (M := M) g r s S α P₀ χ hχs hχt y := by
+        covPrincipalRotationRemainder (I := I) (M := M) g r s S α P₀ χ y := by
   classical
   rw [covPrincipalIntegrand_def, covPrincipalRotationRemainder_def]
   have hleibniz : ∀ Q : CompIdx E r s, ∀ l : Fin (Module.finrank ℝ E),
@@ -554,7 +551,7 @@ private lemma weightedInvGramEuclid_eq_density_mul_invGram
         chartInvGramEuclid (I := I) g α k l y :=
   rfl
 
-omit [CompleteSpace E] [CompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 theorem weightedInvGram_principalIntegrand_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))}

@@ -43,8 +43,7 @@ theorem cotangentToDual_gen_chartBasis_eval
   cotangentToDual_apply_gen (I := I) (β b) (chartBasisVecFiber (I := I) α j b)
 
 omit [InnerProductSpace ℝ E] in
-theorem cotangentSharp_gen_contMDiff_total [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
+theorem cotangentSharp_gen_contMDiff_total (g : SmoothRiemannianMetric I M)
     {β : Π b : M, Tensor0SSpace 1 I b}
     (hβ : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
@@ -82,8 +81,7 @@ theorem cotangentSharp_gen_contMDiff_total [I.Boundaryless]
   exact hmetric
 
 omit [InnerProductSpace ℝ E] in
-theorem cotangentSharp_gen_mdiffAt [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
+theorem cotangentSharp_gen_mdiffAt (g : SmoothRiemannianMetric I M)
     {β : Π b : M, Tensor0SSpace 1 I b}
     (hβ : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞

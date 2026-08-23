@@ -3,7 +3,6 @@ import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 namespace DifferentialGeometry.Topology.Morse
 
 open Manifold
-open DifferentialGeometry.Topology
 open DifferentialGeometry.Topology.Handle
 open DifferentialGeometry.Topology.Homotopy
 open DifferentialGeometry.Analysis.ODE
@@ -765,7 +764,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       (fromBase := sublevelUnionInclusion (c - ε₀) (χ '' (Set.range (fun z : ClosedCell k =>
         cellMap (Real.sqrt (2 * ε₀)) (z : EuclideanSpace ℝ (Fin k)))))) :=
     morseModifiedLowerSublevelHomotopyEquivUnder (M := M) hk c ε₀ δ₀ R hε₀ hδ₀ hR'
-      hRpos hεR χ f hg hnorm hχsrc
+      hεR χ f hg hnorm hχsrc
   have hcell : cellImage hk c data = χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε₀)) (z : EuclideanSpace ℝ (Fin k)))) := by
     change Set.range (fun z : ClosedCell k =>

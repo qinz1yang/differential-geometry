@@ -70,8 +70,7 @@ theorem hasDerivAt_df_comp_integralCurve
   rwa [← hDlsmul]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem hasDerivAt_f_comp_integralCurve [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem hasDerivAt_f_comp_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hdf : ∀ x, (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)
     {γ : ℝ → M} (hγ : IsMIntegralCurve γ v) (t : ℝ) :
@@ -82,8 +81,7 @@ theorem hasDerivAt_f_comp_integralCurve [IsManifold I (⊤ : WithTop ℕ∞) M]
   simpa [hval] using h
 
 set_option backward.isDefEq.respectTransparency false in
-theorem f_rate_bounds_of_integralCurve [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_rate_bounds_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hrate : ∀ x, -1 ≤ (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ∧
       (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
@@ -129,8 +127,7 @@ theorem f_rate_bounds_of_integralCurve [IsManifold I (⊤ : WithTop ℕ∞) M]
     linarith
   exact ⟨hle', hle⟩
 
-theorem f_rate_bounds_of_integralCurve_back [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_rate_bounds_of_integralCurve_back (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hrate : ∀ x, -1 ≤ (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ∧
       (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
@@ -187,8 +184,7 @@ theorem f_rate_bounds_of_integralCurve_back [IsManifold I (⊤ : WithTop ℕ∞)
   exact ⟨hle, hle'⟩
 
 set_option backward.isDefEq.respectTransparency false in
-theorem f_eq_sub_of_integralCurve_on_strip [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_eq_sub_of_integralCurve_on_strip (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     {a b : ℝ}
     (hdf : ∀ x ∈ f ⁻¹' Set.Icc a b, (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)
@@ -230,8 +226,7 @@ theorem f_eq_sub_of_integralCurve_on_strip [IsManifold I (⊤ : WithTop ℕ∞) 
   linarith
 
 set_option backward.isDefEq.respectTransparency false in
-theorem f_eq_sub_of_integralCurve_on_set [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_eq_sub_of_integralCurve_on_set (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (s : Set M)
     (hdf : ∀ x ∈ s, (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)
@@ -287,8 +282,7 @@ theorem curveAt_integralCurve (v : (x : M) → TangentSpace I x)
   (Classical.choose_spec (hcomplete x)).2
 
 set_option backward.isDefEq.respectTransparency false in
-theorem f_eq_sub_of_integralCurve [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_eq_sub_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hdf : ∀ x, (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)
     {γ : ℝ → M} (hγ : IsMIntegralCurve γ v) (t : ℝ) :
@@ -309,8 +303,7 @@ theorem f_eq_sub_of_integralCurve [IsManifold I (⊤ : WithTop ℕ∞) M]
       rw [h2]
       ring
 
-theorem f_add_of_integralCurve_back [IsManifold I (⊤ : WithTop ℕ∞) M]
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_add_of_integralCurve_back (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     {a b : ℝ}
     (hdf : ∀ x ∈ f ⁻¹' Set.Icc a b, (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)

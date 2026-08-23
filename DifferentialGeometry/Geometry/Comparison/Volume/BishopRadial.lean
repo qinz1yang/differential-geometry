@@ -320,8 +320,7 @@ lemma radialJacobi_perp
       g.inner p (t • x) w = (t • g.inner p x) w := hmap
       _ = t * g.inner p x w := rfl
       _ = 0 := by rw [hxw, mul_zero]
-  have hgauss := (gauss_lemma_pullback (I := I) g p
-    (mem_expDomain_of_norm_lt_radius (I := I) g p htx) htx).2 horth
+  have hgauss := (gauss_lemma_pullback (I := I) g p htx).2 horth
   rw [hvel, hJ]
   calc
     g.inner (radialCurve (I := I) g p x t) (L x) (L (t • w)) =

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensor
 import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
@@ -8,7 +9,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection
 open scoped Manifold ContDiff
 
@@ -19,6 +20,70 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
 variable [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] in
+noncomputable def algebraicCurvatureTensorProjection
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    Tensor04At (I := I) (M := M) x →ₗ[Real]
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+  MetricFiberData.submoduleProjection
+    (tensor0SMetricData (I := I) g x 4)
+    (algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureTensorProjection_inner
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A : Tensor04At (I := I) (M := M) x)
+    (B : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    inner0S (I := I) g x 4
+        (algebraicCurvatureTensorProjection (I := I) g x A :
+          Tensor04At (I := I) (M := M) x) B =
+      inner0S (I := I) g x 4 A B :=
+  MetricFiberData.submoduleProjection_inner
+    (tensor0SMetricData (I := I) g x 4)
+    (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) A B
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] in
+@[simp]
+theorem algebraicCurvatureTensorProjection_coe
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    algebraicCurvatureTensorProjection (I := I) g x
+        (A : Tensor04At (I := I) (M := M) x) = A :=
+  MetricFiberData.submoduleProjection_eq_self
+    (tensor0SMetricData (I := I) g x 4)
+    (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) A A.2
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureTensorProjection_eq_self
+    (g : SmoothRiemannianMetric I M) (x : M)
+    {A : Tensor04At (I := I) (M := M) x}
+    (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (algebraicCurvatureTensorProjection (I := I) g x A :
+      Tensor04At (I := I) (M := M) x) = A :=
+  congrArg Subtype.val
+    (MetricFiberData.submoduleProjection_eq_self
+      (tensor0SMetricData (I := I) g x 4)
+      (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) A hA)
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureTensorProjection_norm_le
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A : Tensor04At (I := I) (M := M) x) :
+    tensor04FiberNorm (I := I) g x
+        (algebraicCurvatureTensorProjection (I := I) g x A :
+          Tensor04At (I := I) (M := M) x) ≤
+      tensor04FiberNorm (I := I) g x A := by
+  unfold tensor04FiberNorm tensor0SFiberNorm normSq0S
+  exact Real.sqrt_le_sqrt
+    (MetricFiberData.submoduleProjection_inner_self_le
+      (tensor0SMetricData (I := I) g x 4)
+      (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) A)
 
 omit [SigmaCompactSpace M] in
 theorem metricRm04At_mem_algebraicCurvatureTensorSubmodule
@@ -31,15 +96,15 @@ theorem metricRm04At_mem_algebraicCurvatureTensorSubmodule
   · intro X Y Z W
     simpa [metricRm04StdAt_apply, metricRm04_apply] using
       (rm04InputSkewAt_of_leviCivita_realizes
-        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04 Y X Z W)
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes Y X Z W)
   · intro X Y Z W
     simpa [metricRm04StdAt_apply, metricRm04_apply] using
       (rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04 X Y Z W)
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   · intro X Y Z W
     simpa [metricRm04StdAt_apply, metricRm04_apply] using
       (firstBianchiAt_of_leviCivita_realizes
-        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04 X Y Z W)
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
 
 omit [SigmaCompactSpace M] in
 noncomputable def metricAlgebraicCurvatureTensorAt

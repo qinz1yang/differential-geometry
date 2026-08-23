@@ -10,7 +10,7 @@ estimates used in the Caccioppoli and Moser arguments.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 open scoped InnerProductSpace
 
 namespace DeGiorgi

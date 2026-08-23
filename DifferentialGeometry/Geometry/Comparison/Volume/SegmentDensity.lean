@@ -177,7 +177,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem exp_density_curve
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)

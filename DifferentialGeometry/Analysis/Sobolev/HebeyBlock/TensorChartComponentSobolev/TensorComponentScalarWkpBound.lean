@@ -104,7 +104,7 @@ theorem tensorChartComponentScalar_memWkpChart
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    MemWkpChart (I := I) (M := M) g k 2
+    MemWkpChart (I := I) (M := M) k 2
       (tensorChartComponentScalar (I := I) (M := M) g r s T α Idx Jdx) := by
   classical
   intro β

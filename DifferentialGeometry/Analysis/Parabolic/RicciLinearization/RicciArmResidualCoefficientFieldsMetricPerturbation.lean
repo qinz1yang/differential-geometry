@@ -1,14 +1,14 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientDecomposition
+import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureRefoldMonomialFibreNormBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficients
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureDecompositionMonomialFibreNormBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnectionDifferenceCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldInputSlotSymmetrization
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
@@ -31,7 +31,6 @@ namespace TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -183,35 +182,37 @@ end NormedMetricPerturbation
 
 def gInvDiffQuadResidualField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
-  connDiffBiContrCoeffField (I := I) (M := M) g₁ g₀ g₁ g₀
+  connectionDifferenceBiContrCoeffField (I := I) (M := M) g₁ g₀ g₁ g₀
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem gInvDiffQuadResidualField_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) :
     (gInvDiffQuadResidualField (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) := rfl
+        TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) := rfl
 
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem gInvDiffQuadResidualField_self (g₀ : SmoothRiemannianMetric I M) :
     gInvDiffQuadResidualField (I := I) (M := M) g₀ g₀ = 0 := by
   classical
   refine SmoothCcTensor.ext ?_
   refine ContMDiffSection.ext (fun x => ?_)
   rw [gInvDiffQuadResidualField_toSection]
-  have hzero : connDiffBiContrFib (I := I) g₀ g₀ g₀ g₀ x = 0 := by
+  have hzero : connectionDifferenceBiContrFib (I := I) g₀ g₀ g₀ g₀ x = 0 := by
     apply ContinuousLinearMap.ext
     intro D
     apply Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
     intro v
-    rw [show connDiffBiContrFib (I := I) g₀ g₀ g₀ g₀ x =
-        connDiffBiContrFibFixedFrame (I := I) g₀ g₀ g₀ g₀
+    rw [show connectionDifferenceBiContrFib (I := I) g₀ g₀ g₀ g₀ x =
+        connectionDifferenceBiContrFibFixedFrame (I := I) g₀ g₀ g₀ g₀
           (smoothOrthoFrame (I := I) g₀ x) x from rfl]
-    rw [connDiffBiContrFibFixedFrame_toModel]
-    have hconn : PDE.DeTurck.connDiff (I := I) g₀ g₀ = 0 :=
-      PDE.DeTurck.connDiff_self (I := I) g₀
+    rw [connectionDifferenceBiContrFibFixedFrame_toModel]
+    have hconn : PDE.DeTurck.connectionDifference (I := I) g₀ g₀ = 0 :=
+      PDE.DeTurck.connectionDifference_self (I := I) g₀
     simp only [hconn, Pi.zero_apply, ContinuousLinearMap.zero_apply, map_zero,
       zero_mul, Finset.sum_const_zero,
       Tensor0SSpace.toModel_zero, ContinuousMultilinearMap.zero_apply]

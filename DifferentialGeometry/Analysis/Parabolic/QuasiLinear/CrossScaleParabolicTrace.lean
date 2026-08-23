@@ -640,7 +640,7 @@ private lemma logConvex_extreme_pair_add {f : ℕ → ℝ} (hnn : ∀ k, 0 ≤ f
 
 theorem logConvex_extreme_pair {f : ℕ → ℝ} (hnn : ∀ k, 0 ≤ f k)
     (hlc : ∀ k, f (k + 1) ^ 2 ≤ f (k + 2) * f k)
-    {σ₁ σ₂ τ₁ τ₂ : ℕ} (h1 : τ₁ ≤ σ₁) (h2 : σ₁ ≤ σ₂) (_h3 : σ₂ ≤ τ₂)
+    {σ₁ σ₂ τ₁ τ₂ : ℕ} (h1 : τ₁ ≤ σ₁) (h2 : σ₁ ≤ σ₂)
     (hsum : τ₁ + τ₂ = σ₁ + σ₂) :
     f σ₁ * f σ₂ ≤ f τ₁ * f τ₂ := by
   have key := logConvex_extreme_pair_add hnn hlc (σ₁ - τ₁) τ₁ (σ₂ - σ₁)

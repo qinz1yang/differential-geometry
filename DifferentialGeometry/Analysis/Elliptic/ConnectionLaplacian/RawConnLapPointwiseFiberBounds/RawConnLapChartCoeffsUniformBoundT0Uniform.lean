@@ -557,8 +557,14 @@ theorem rawTensorConnLap_chartα_coeffs_uniform_bound_on_pouTsupport_T0_uniform
   have h_lhs_sq_le : lhs ^ 2 ≤
       3 * (Block2 ^ 2 + Block1 ^ 2 + Block0 ^ 2) := by
     rw [h_lhs_eq]
-    nlinarith [sq_nonneg (Block2 - Block1), sq_nonneg (Block2 - Block0),
-      sq_nonneg (Block1 - Block0)]
+    calc
+      (Block2 + Block1 + Block0) ^ 2 =
+          3 * (Block2 ^ 2 + Block1 ^ 2 + Block0 ^ 2) -
+            ((Block2 - Block1) ^ 2 + (Block2 - Block0) ^ 2 +
+              (Block1 - Block0) ^ 2) := by ring
+      _ ≤ 3 * (Block2 ^ 2 + Block1 ^ 2 + Block0 ^ 2) :=
+        sub_le_self _ (add_nonneg
+          (add_nonneg (sq_nonneg _) (sq_nonneg _)) (sq_nonneg _))
   set S_iter : ℝ := ∑ I' : Fin r → Fin (Module.finrank ℝ E), ∑ J' : Fin s → Fin
     (Module.finrank ℝ E),
       (N_iter I' J') ^ 2 with hS_iter_def

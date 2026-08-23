@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

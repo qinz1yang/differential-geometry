@@ -9,7 +9,7 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-theorem scale12_int {a : ℝ} (_ha : 0 < a) :
+theorem scale12_int {a : ℝ} :
     ∫ s : ℝ in 0..a, heatScale12 s = 2 * a ^ (1 / 2 : ℝ) := by
   unfold heatScale12
   rw [integral_rpow (Or.inl (by norm_num))]
@@ -105,7 +105,7 @@ theorem leftCrit_int_le {t : ℝ} (ht : 0 < t) :
         exact Real.rpow_le_rpow_of_nonpos hhalf (by linarith [hs.2]) (by norm_num)
       exact mul_le_mul_of_nonneg_right hdec (heatScale12_nonneg s)
     _ = heatScale12 (t / 2) * (2 * (t / 2) ^ (1 / 2 : ℝ)) := by
-      rw [intervalIntegral.integral_const_mul, scale12_int hhalf]
+      rw [intervalIntegral.integral_const_mul, scale12_int]
     _ = 2 := by
       unfold heatScale12
       calc

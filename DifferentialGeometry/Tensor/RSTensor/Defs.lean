@@ -1,5 +1,6 @@
 /-
 Authors: Yuan Liao, Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Curry
@@ -28,19 +29,26 @@ variable [IsManifold I 1 M]
 variable {x' : M}
 variable {r s : ℕ}
 
-abbrev TrivialBundle : M → Type _ := fun _ ↦  𝕜
-
 @[reducible]
 def Tensor0SModel (s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedField 𝕜]
-  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :=
+  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [_hfd : FiniteDimensional 𝕜 E] :=
+  let _ := _hfd
   ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜
+
+@[ext]
+theorem Tensor0SModel.ext {f g : Tensor0SModel s 𝕜 E}
+    (h : ∀ v, f v = g v) : f = g := by
+  dsimp [Tensor0SModel] at f g
+  exact ContinuousMultilinearMap.ext h
 
 @[reducible]
 def TensorRSModel (r s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedField 𝕜]
   [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :=
   (Tensor0SModel r 𝕜 E) →L[𝕜] (Tensor0SModel s 𝕜 E)
 
-def Tensor0SSpace (s : ℕ) (I : ModelWithCorners 𝕜 E H) [IsManifold I 1 M] (x : M) : Type _ :=
+def Tensor0SSpace (s : ℕ) (I : ModelWithCorners 𝕜 E H)
+    [hMfd : IsManifold I 1 M] (x : M) : Type _ :=
+  let _ := hMfd
   Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I) x
 
 instance tensor0SSpace_topologicalSpace (s : ℕ) (x : M) :
@@ -217,7 +225,7 @@ instance tensorRSSpace_continuousAdd (r s : ℕ) (x : M) :
     ContinuousAdd (TensorRSSpace r s I x) :=
   inferInstanceAs (ContinuousAdd (Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x))
 
-instance tensorRSSpace_moduleFree [CompleteSpace 𝕜] (r s : ℕ) (x : M) :
+instance tensorRSSpace_moduleFree (r s : ℕ) (x : M) :
     Module.Free 𝕜 (TensorRSSpace r s I x) :=
   inferInstanceAs (Module.Free 𝕜 (Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x))
 
@@ -307,7 +315,7 @@ private theorem tensor0SSpace_topology_eq (s : ℕ) (x : M) :
     (inferInstanceAs (TopologicalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜))) :=
   Bundle.continuousMultilinearMap.topology_eq s x
 
-noncomputable instance tensor0SSpace_finiteDimensional [CompleteSpace 𝕜] (s : ℕ) (x : M) :
+noncomputable instance tensor0SSpace_finiteDimensional (s : ℕ) (x : M) :
     FiniteDimensional 𝕜 (Tensor0SSpace s I x) :=
   inferInstanceAs
     (FiniteDimensional 𝕜 (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I) x))
@@ -318,7 +326,7 @@ theorem finrank_tensor0SSpace [CompleteSpace 𝕜] (s : ℕ) (x : M) :
   (Bundle.continuousMultilinearMap.finrank_eq (𝕜 := 𝕜) (F := E)
     (E := (TangentSpace I : M → Type _)) s x :)
 
-noncomputable instance tensorRSModel_finiteDimensional [CompleteSpace 𝕜] (r s : ℕ) :
+noncomputable instance tensorRSModel_finiteDimensional (r s : ℕ) :
     FiniteDimensional 𝕜 (TensorRSModel r s 𝕜 E) := by
   unfold TensorRSModel
   haveI : FiniteDimensional 𝕜 (Tensor0SModel r 𝕜 E) :=
@@ -343,7 +351,7 @@ theorem finrank_tensorRSModel [CompleteSpace 𝕜] (r s : ℕ) :
   rw [e.finrank_eq, Module.finrank_linearMap 𝕜 𝕜,
     finrank_continuousMultilinearMap r, finrank_continuousMultilinearMap s, ← pow_add]
 
-noncomputable instance tensorRSSpace_finiteDimensional [CompleteSpace 𝕜] (r s : ℕ) (x : M) :
+noncomputable instance tensorRSSpace_finiteDimensional (r s : ℕ) (x : M) :
     FiniteDimensional 𝕜 (TensorRSSpace r s I x) := by
   unfold TensorRSSpace
   exact ContinuousLinearMap.finiteDimensional
@@ -623,7 +631,7 @@ instance isManifold_infty_succ [IsManifold I ∞ M] :
 variable (n : WithTop ℕ∞) [IsManifold I (n + 1) M]
 
 @[simp]
-noncomputable instance tensor0SBundle_smooth [CompleteSpace 𝕜] (s : ℕ) :
+noncomputable instance tensor0SBundle_smooth (s : ℕ) :
     ContMDiffVectorBundle n
       (Tensor0SModel s 𝕜 E)
       (fun x : M => Tensor0SSpace s I x) I := by
@@ -667,7 +675,7 @@ noncomputable instance tensorRSBundle_vector (r s : ℕ) :
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜)
     (fun (x : M) => Tensor0SSpace s I x)
 
-noncomputable instance tensorRSBundle_smooth [CompleteSpace 𝕜] (r s : ℕ) :
+noncomputable instance tensorRSBundle_smooth (r s : ℕ) :
     @ContMDiffVectorBundle n 𝕜 M (TensorRSModel r s 𝕜 E) (fun x : M => TensorRSSpace r s I x)
       _ E _ _ H _ I _ _ _ _ _ _
       (tensorRSBundle_topology r s) _

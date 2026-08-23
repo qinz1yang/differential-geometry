@@ -405,8 +405,8 @@ private theorem exists_unified_chartFlow_data_two
       ((Metric.ball ((x₀, (0 : E)) : E × E) ρ_V4) ×ˢ Set.Ioo (-T_V4) T_V4) :=
     hΦ_cd_V4_two.of_le (by norm_num)
   obtain ⟨ρ₀, T₀, hρ₀_pos, hT₀_pos, hρ₀_le_V4, hT₀_lt_V4, h_orbit_in⟩ :=
-    exists_uniform_orbit_in_inner_ball (I := I) (p := p)
-      (x₀ := x₀) hx₀_def
+    exists_uniform_orbit_in_inner_ball
+      (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
       (Φ := Φ) hΦ_cd_V4 hΦ_init0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
@@ -484,10 +484,10 @@ private theorem exists_unified_chartFlow_data_two
         (chartPhaseVF (I := I) g p (Φ (((x₀, v) : E × E), s))) s := by
     intro v hv s hs
     exact orbit_hasDerivAt_chartPhaseVF_uniform
-      (I := I) (g := g) (p := p) (x₀ := x₀) hx₀_def
-      (b := b) (r := r) (ε := ε) hr hε
-      (Φ := Φ) hΦ_ILF hb_sub
-      (ρ := ρ) (T := T) hρ_pos hT_pos hT_lt_ε hρ_le_r h_inner_T v hv s hs
+      (I := I) (g := g) (p := p) (x₀ := x₀)
+      (b := b) (r := r) (ε := ε)
+      (Φ := Φ) hΦ_ILF
+      (ρ := ρ) (T := T) hT_lt_ε hρ_le_r h_inner_T v hv s hs
   have hconst_ev : ∀ᶠ s in 𝓝 (0 : ℝ),
       Φ (((x₀, (0 : E)) : E × E), s) = ((x₀, (0 : E)) : E × E) := by
     change ∀ᶠ s in 𝓝 (0 : ℝ),
@@ -708,8 +708,8 @@ private theorem exists_unified_chartFlow_data_inf
       ((Metric.ball ((x₀, (0 : E)) : E × E) ρ_V4) ×ˢ Set.Ioo (-T_V4) T_V4) :=
     hΦ_cd_V4_inf.of_le (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
   obtain ⟨ρ₀, T₀, hρ₀_pos, hT₀_pos, hρ₀_le_V4, hT₀_lt_V4, h_orbit_in⟩ :=
-    exists_uniform_orbit_in_inner_ball (I := I) (p := p)
-      (x₀ := x₀) hx₀_def
+    exists_uniform_orbit_in_inner_ball
+      (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
       (Φ := Φ) hΦ_cd_V4 hΦ_init0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
@@ -787,10 +787,10 @@ private theorem exists_unified_chartFlow_data_inf
         (chartPhaseVF (I := I) g p (Φ (((x₀, v) : E × E), s))) s := by
     intro v hv s hs
     exact orbit_hasDerivAt_chartPhaseVF_uniform
-      (I := I) (g := g) (p := p) (x₀ := x₀) hx₀_def
-      (b := b) (r := r) (ε := ε) hr hε
-      (Φ := Φ) hΦ_ILF hb_sub
-      (ρ := ρ) (T := T) hρ_pos hT_pos hT_lt_ε hρ_le_r h_inner_T v hv s hs
+      (I := I) (g := g) (p := p) (x₀ := x₀)
+      (b := b) (r := r) (ε := ε)
+      (Φ := Φ) hΦ_ILF
+      (ρ := ρ) (T := T) hT_lt_ε hρ_le_r h_inner_T v hv s hs
   have hconst_ev : ∀ᶠ s in 𝓝 (0 : ℝ),
       Φ (((x₀, (0 : E)) : E × E), s) = ((x₀, (0 : E)) : E × E) := by
     change ∀ᶠ s in 𝓝 (0 : ℝ),
@@ -1320,7 +1320,7 @@ omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_chartExp_jointContDiffOn_nat
     [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) (α : M) (n : ℕ) (_hn : 1 ≤ n) :
+    (g : SmoothRiemannianMetric I M) (α : M) (n : ℕ) :
     ∃ (Φ : (E × E) × ℝ → E × E) (ρ T t' : ℝ),
       0 < ρ ∧ 0 < T ∧ t' ∈ Set.Ioo (-T) T ∧ 0 < t' ∧
       ContDiffOn ℝ (n : ℕ∞)

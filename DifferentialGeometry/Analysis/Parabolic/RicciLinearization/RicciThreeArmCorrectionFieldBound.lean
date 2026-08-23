@@ -1,14 +1,14 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamCurvatureJetBound
+import DifferentialGeometry.Geometry.Curvature.MetricPerturbationPathCurvatureJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PerturbedRiemannOpDifferenceBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnDiffQuadraticBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.InverseMetricPerturbationFibreBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqSmoothCcUniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConvexPerturbationPointwiseC2
+import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
@@ -54,30 +54,30 @@ private local instance tensorRSRiemannianNormedAddCommGroup
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-def gInvDiffQuadResidualFieldRealizedFam (g₀ : SmoothRiemannianMetric I M)
+def gInvDiffQuadResidualFieldMetricPerturbationPath (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) : SmoothCcTensor g₀ 2 2 :=
-  connDiffBiContrCoeffField (I := I) (M := M)
-    (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀
-    (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀
+  connectionDifferenceBiContrCoeffField (I := I) (M := M)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-private lemma fiberNormSqComponent_connDiffBiContrFib_self
+private lemma fiberNormSqComponent_connectionDifferenceBiContrFib_self
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
     (K J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J =
+          TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J =
       ∑ aa : Fin (Module.finrank ℝ E), ∑ bb : Fin (Module.finrank ℝ E),
         g₀.inner x
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-              (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x aa x)
                 (smoothOrthoFrame (I := I) g₀ x bb x))
               (e (J 0)))
@@ -87,16 +87,16 @@ private lemma fiberNormSqComponent_connDiffBiContrFib_self
   classical
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J =
+        TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J =
       Tensor0SSpace.toModel
-        ((connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)
+        ((connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)
           (coframeS (I := I) (M := M) g₀ x 2 e K))
         (fun i => (e (J i) : E)) := by
     unfold fiberNormSqComponent coframeS; rfl
   rw [hcomp]
-  rw [show (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x) =
-      connDiffBiContrFibFixedFrame (I := I) g₁ g₀ g₁ g₀ (smoothOrthoFrame (I := I) g₀ x) x from rfl]
-  rw [connDiffBiContrFibFixedFrame_toModel]
+  rw [show (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x) =
+      connectionDifferenceBiContrFibFixedFrame (I := I) g₁ g₀ g₁ g₀ (smoothOrthoFrame (I := I) g₀ x) x from rfl]
+  rw [connectionDifferenceBiContrFibFixedFrame_toModel]
   refine Finset.sum_congr rfl (fun aa _ => Finset.sum_congr rfl (fun bb _ => ?_))
   have hcf : (coframeS (I := I) (M := M) g₀ x 2 e K).toModel
         ![(smoothOrthoFrame (I := I) g₀ x aa x : E), (smoothOrthoFrame (I := I) g₀ x bb x : E)]
@@ -113,7 +113,7 @@ private lemma fiberNormSqComponent_connDiffBiContrFib_self
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (P : SmoothCcTensor g₀ 0 2)
       (_h : ∀ y v w, g₁.inner y v w =
@@ -127,7 +127,7 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
         fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) y
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           (show TensorRSSpace 2 2 I x from
-            TensorRSSpace.ofCLM (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) ≤
+            TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) ≤
         C * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ^ 4 := by
   classical
@@ -136,10 +136,10 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
   letI : ∀ y : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) y
   obtain ⟨C₀, hC₀0, hpw⟩ :=
-    connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   refine ⟨((Module.finrank ℝ E : ℝ) ^ 4 * C₀ ^ 2) ^ 2, by positivity, ?_⟩
   intro g₁ P h δ hδ hδ0 hbound x
-  obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum_rfns⟩ :=
+  obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum_riemannianFiberNormSq⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x :
@@ -151,23 +151,23 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
     intro aa; rw [smoothOrthoFrame_orthonormal_at_center]; simp
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 2 2 x
     (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM
-      (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x))
+      (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x))
     e bse hnE hbse horth]
   have heach : ∀ (K J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J) ^ 2 ≤
+          TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J) ^ 2 ≤
         ((Module.finrank ℝ E : ℝ) ^ 2 * C₀ ^ 2 * G ^ 2) ^ 2 := by
     intro K J
-    rw [fiberNormSqComponent_connDiffBiContrFib_self (I := I) g₀ g₁ x e K J]
+    rw [fiberNormSqComponent_connectionDifferenceBiContrFib_self (I := I) g₀ g₁ x e K J]
     have hJ0 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by rw [horth (J 0) (J 0)]; simp
     have hJ1 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by rw [horth (J 1) (J 1)]; simp
     have hK0 : g₀.inner x (e (K 0)) (e (K 0)) = 1 := by rw [horth (K 0) (K 0)]; simp
     have hK1 : g₀.inner x (e (K 1)) (e (K 1)) = 1 := by rw [horth (K 1) (K 1)]; simp
     have hterm : ∀ aa bb : Fin (Module.finrank ℝ E),
         |g₀.inner x
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-              (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x aa x)
                 (smoothOrthoFrame (I := I) g₀ x bb x))
               (e (J 0)))
@@ -175,9 +175,9 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
           (g₀.inner x (e (K 0)) (smoothOrthoFrame (I := I) g₀ x aa x) *
             g₀.inner x (e (K 1)) (smoothOrthoFrame (I := I) g₀ x bb x))| ≤ C₀ ^ 2 * G ^ 2 := by
       intro aa bb
-      set Wab : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+      set Wab : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
         (smoothOrthoFrame (I := I) g₀ x aa x) (smoothOrthoFrame (I := I) g₀ x bb x) with hWab
-      set Uab : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x Wab (e (J 0)) with hUab
+      set Uab : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Wab (e (J 0)) with hUab
       have hWab_le : Real.sqrt (g₀.inner x Wab Wab) ≤ C₀ * G := by
         have hh := hpw g₁ P h hδ hδ0 hbound x
           (smoothOrthoFrame (I := I) g₀ x aa x) (smoothOrthoFrame (I := I) g₀ x bb x)
@@ -213,8 +213,8 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
         _ = C₀ ^ 2 * G ^ 2 := by ring
     have habs : |∑ aa : Fin (Module.finrank ℝ E), ∑ bb : Fin (Module.finrank ℝ E),
           g₀.inner x
-              (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-                (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                   (smoothOrthoFrame (I := I) g₀ x aa x)
                   (smoothOrthoFrame (I := I) g₀ x bb x))
                 (e (J 0)))
@@ -233,8 +233,8 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
       rw [hconst]
     calc (∑ aa : Fin (Module.finrank ℝ E), ∑ bb : Fin (Module.finrank ℝ E),
             g₀.inner x
-                (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-                  (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                     (smoothOrthoFrame (I := I) g₀ x aa x)
                     (smoothOrthoFrame (I := I) g₀ x bb x))
                   (e (J 0)))
@@ -243,8 +243,8 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
                 g₀.inner x (e (K 1)) (smoothOrthoFrame (I := I) g₀ x bb x))) ^ 2
         = |∑ aa : Fin (Module.finrank ℝ E), ∑ bb : Fin (Module.finrank ℝ E),
               g₀.inner x
-                  (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-                    (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                       (smoothOrthoFrame (I := I) g₀ x aa x)
                       (smoothOrthoFrame (I := I) g₀ x bb x))
                     (e (J 0)))
@@ -256,7 +256,7 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
   calc ∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
           (show TensorRSSpace 2 2 I x from
-            TensorRSSpace.ofCLM (connDiffBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J) ^ 2
+            TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) n e K J) ^ 2
       ≤ ∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
           ((Module.finrank ℝ E : ℝ) ^ 2 * C₀ ^ 2 * G ^ 2) ^ 2 :=
         Finset.sum_le_sum (fun K _ => Finset.sum_le_sum (fun J _ => heach K J))
@@ -274,7 +274,7 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-theorem exists_gInvDiffQuadResidualField_realizedFam_riemannianFiberNormSq_ballUniform
+theorem exists_gInvDiffQuadResidualField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -288,14 +288,14 @@ theorem exists_gInvDiffQuadResidualField_realizedFam_riemannianFiberNormSq_ballU
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-              ((gInvDiffQuadResidualFieldRealizedFam (I := I) g₀ T T' hδ hδ' s).toSection x) ≤
+              ((gInvDiffQuadResidualFieldMetricPerturbationPath (I := I) g₀ T T' hδ hδ' s).toSection x) ≤
                 Λ := by
   classical
   obtain ⟨C, hC0, hbnd⟩ :=
     riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one (I := I) (M := M) g₀
-      (le_max_right δ₀ 0) (max_lt hδ₀ (by norm_num))
+      (δ₀ := max δ₀ 0) (max_lt hδ₀ (by norm_num))
   obtain ⟨Csob, hCsob_nn, hCsob⟩ :=
-    exists_Csob_convexPerturbation_pointwise_C2_le (I := I) (M := M) g₀ a ha_super
+    exists_Csob_convexPerturbation_pointwise_C2_le (I := I) (M := M) (E := E) g₀ a ha_super
   refine ⟨C * (Csob * R) ^ 4, by positivity, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   letI instTens : Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
@@ -306,13 +306,13 @@ theorem exists_gInvDiffQuadResidualField_realizedFam_riemannianFiberNormSq_ballU
   have hm0 : 0 ≤ m := le_max_right _ _
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
   have hδ'_lt : δ' < 1 := lt_of_le_of_lt hδ'_le hδ₀
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
     abs_convex_smallConstant_lt_one hδ_lt hδ'_lt hs
   have htie : ∀ (y : M) (v w : TangentSpace I y),
-      (realizedFam (I := I) g₀ T T' hδ hδ' s).inner y v w =
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner y v w =
         g₀.inner y v w +
           ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) y v w :=
-    fun y v w => realizedFam_inner_of_mem (I := I) g₀ T T' hδ hδ' hs_mem y v w
+    fun y v w => metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hs_mem y v w
   have hδs_raw := convexPerturbation_gFibreOpBound_abs (I := I) g₀ T T' hδ hδ' s
   obtain ⟨hs0, hs1⟩ := hs
   have habs_eq : |1 - s| * δ' + |s| * δ = (1 - s) * δ' + s * δ := by
@@ -330,13 +330,13 @@ theorem exists_gInvDiffQuadResidualField_realizedFam_riemannianFiberNormSq_ballU
       mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     have hle' : |1 - s| * δ' + |s| * δ ≤ m := by rw [habs_eq]; exact hsmall_le
     nlinarith [hle', hprod]
-  have hmain := hbnd (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  have hmain := hbnd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (convexPerturbation (I := I) g₀ T T' s) htie (le_of_eq hm_def.symm) hm0 hδs x
-  rw [show (gInvDiffQuadResidualFieldRealizedFam (I := I) g₀ T T' hδ hδ' s).toSection x =
+  rw [show (gInvDiffQuadResidualFieldMetricPerturbationPath (I := I) g₀ T T' hδ hδ' s).toSection x =
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (connDiffBiContrFib (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀ x)) from rfl]
+        TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x)) from rfl]
   refine le_trans hmain ?_
   have hG_le : ‖((iteratedCovGrad (I := I) g₀ 0 2 1
         (convexPerturbation (I := I) g₀ T T' s)).toSection x :
@@ -486,6 +486,7 @@ theorem backgroundRiemannBiContrFibFixedFrame_toModel (g₀ : SmoothRiemannianMe
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem backgroundRiemannKernelBilin_homSection_contMDiff (g₀ : SmoothRiemannianMetric I M)
     {p : Π b : M, TangentSpace I b}
     (hp : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% p))
@@ -532,7 +533,7 @@ theorem backgroundRiemannKernelBilin_homSection_contMDiff (g₀ : SmoothRiemanni
     riemannOp_apply_smooth (cov := LeviCivita (I := I) g₀) hp V0.contMDiff W.contMDiff]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem backgroundRiemannBiContrFibFixedFrame_apply_section_contMDiff
     (g₀ : SmoothRiemannianMetric I M)
@@ -583,7 +584,7 @@ theorem backgroundRiemannBiContrFibFixedFrame_apply_section_contMDiff
   rw [hsum, ContinuousLinearMap.sum_apply]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem backgroundRiemannBiContrFibFixedFrame_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -674,7 +675,7 @@ theorem backgroundRiemannBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRie
       (fun c => smoothOrthoFrame (I := I) g₁ x₀ c y)
       (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem backgroundRiemannBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
@@ -705,7 +706,7 @@ def ricciArmOrder0BackgroundCurvatureCoeffField (g₀ g₁ : SmoothRiemannianMet
       contMDiff_toFun := backgroundRiemannBiContrFib_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem ricciArmOrder0BackgroundCurvatureCoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) :
@@ -768,7 +769,7 @@ private lemma fiberNormSqComponent_bgRBiContrFib
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (_hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (P : SmoothCcTensor g₀ 0 2)
       (_h : ∀ y v w, g₁.inner y v w =
@@ -787,7 +788,7 @@ theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
   refine ⟨((Module.finrank ℝ E : ℝ) ^ 4) * ((Module.finrank ℝ E : ℝ) * Bt) ^ 2,
     by positivity, ?_⟩
   intro g₁ P h δ hδ hδ0 hbound x
-  obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum_rfns⟩ :=
+  obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum_riemannianFiberNormSq⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have h1mδ : 0 < 1 - δ := by linarith
@@ -893,9 +894,9 @@ theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem
-    exists_ricciArmOrder0BackgroundCurvatureCoeffField_realizedFam_riemannianFiberNormSq_ballUniform
+    exists_ricciArmOrder0BackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (_hR : 0 ≤ R)
+    {R : ℝ}
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
@@ -908,24 +909,24 @@ theorem
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ Λ := by
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ Λ := by
   classical
   obtain ⟨C, hC0, hbnd⟩ :=
     riemannianFiberNormSq_backgroundRiemannBiContrFib_le (I := I) (M := M) g₀
-      (le_max_right δ₀ 0) (max_lt hδ₀ (by norm_num))
+      (δ₀ := max δ₀ 0) (max_lt hδ₀ (by norm_num))
   refine ⟨C, hC0, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   set m : ℝ := max δ₀ 0 with hm_def
   have hm0 : 0 ≤ m := le_max_right _ _
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
   have hδ'_lt : δ' < 1 := lt_of_le_of_lt hδ'_le hδ₀
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
     abs_convex_smallConstant_lt_one hδ_lt hδ'_lt hs
   have htie : ∀ (y : M) (v w : TangentSpace I y),
-      (realizedFam (I := I) g₀ T T' hδ hδ' s).inner y v w =
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner y v w =
         g₀.inner y v w +
           ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) y v w :=
-    fun y v w => realizedFam_inner_of_mem (I := I) g₀ T T' hδ hδ' hs_mem y v w
+    fun y v w => metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hs_mem y v w
   have hδs_raw := convexPerturbation_gFibreOpBound_abs (I := I) g₀ T T' hδ hδ' s
   obtain ⟨hs0, hs1⟩ := hs
   have habs_eq : |1 - s| * δ' + |s| * δ = (1 - s) * δ' + s * δ := by
@@ -943,7 +944,7 @@ theorem
       mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     have hle' : |1 - s| * δ' + |s| * δ ≤ m := by rw [habs_eq]; exact hsmall_le
     nlinarith [hle', hprod]
-  have hmain := hbnd (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  have hmain := hbnd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (convexPerturbation (I := I) g₀ T T' s) htie (le_of_eq hm_def.symm) hm0 hδs x
   rw [ricciArmOrder0BackgroundCurvatureCoeffField_toSection]
   exact hmain

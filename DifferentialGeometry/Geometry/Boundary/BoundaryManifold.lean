@@ -36,10 +36,6 @@ instance : CoeOut (BoundaryManifold I M) M :=
 
 namespace BoundaryManifold
 
-@[simp]
-theorem coe_mk (x : M) (hx : x ∈ I.boundary M) :
-    ((⟨x, hx⟩ : BoundaryManifold I M) : M) = x := rfl
-
 theorem coe_injective :
     Function.Injective ((↑) : BoundaryManifold I M → M) :=
   Subtype.val_injective

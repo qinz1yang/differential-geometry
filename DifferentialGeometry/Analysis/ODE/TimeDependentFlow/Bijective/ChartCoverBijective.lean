@@ -49,7 +49,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [Boundaryle
 theorem chart_cover_flow_bijective_on_short_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
-    (Φ Ψ : ℝ → M → M) (T : ℝ) (_hT_pos : 0 < T)
+    (Φ Ψ : ℝ → M → M) (T : ℝ)
     (hPick : ∀ x : M, ∃ S : ℝ, 0 < S ∧ S ≤ T ∧
       ∃ α_x : M,
         x ∈ (chartAt H α_x).source ∧
@@ -80,7 +80,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [Boundaryle
 theorem chart_cover_flow_bijective_on_short_time_symm
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
-    (Φ Ψ : ℝ → M → M) (T : ℝ) (_hT_pos : 0 < T)
+    (Φ Ψ : ℝ → M → M) (T : ℝ)
     (hPick : ∀ x : M, ∃ S : ℝ, 0 < S ∧ S ≤ T ∧
       ∃ α_x : M,
         x ∈ (chartAt H α_x).source ∧
@@ -112,7 +112,7 @@ theorem chart_cover_flow_bijective_two_sided_on_short_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
-    (Φ Ψ : ℝ → M → M) (T : ℝ) (hT_pos : 0 < T)
+    (Φ Ψ : ℝ → M → M) (T : ℝ)
     (hPickFwd : ∀ x : M, ∃ S : ℝ, 0 < S ∧ S ≤ T ∧
       ∃ α_x : M,
         x ∈ (chartAt H α_x).source ∧
@@ -143,11 +143,11 @@ theorem chart_cover_flow_bijective_two_sided_on_short_time
   obtain ⟨S₁, hS₁_pos, hS₁_le, hBij_fwd⟩ :=
     chart_cover_flow_bijective_on_short_time
       (M := M) (I := I) (E := E)
-      X hperNeg Φ Ψ T hT_pos hPickFwd x
+      X hperNeg Φ Ψ T hPickFwd x
   obtain ⟨S₂, hS₂_pos, hS₂_le, hBij_rev⟩ :=
     chart_cover_flow_bijective_on_short_time_symm
       (M := M) (I := I) (E := E)
-      X hper Φ Ψ T hT_pos hPickRev x
+      X hper Φ Ψ T hPickRev x
   refine ⟨min S₁ S₂, lt_min hS₁_pos hS₂_pos,
     (min_le_left _ _).trans hS₁_le, ?_⟩
   intro s hs

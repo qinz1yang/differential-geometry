@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import Mathlib.Topology.Connected.Clopen
 
 set_option autoImplicit false
@@ -2419,7 +2419,8 @@ private theorem time_dependent_potential_exp_rescale_super
     (uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht
   have hscale : DifferentiableWithinAt Real
       (fun s => Real.exp (-L * s)) (Set.Icc 0 T) t := by
-    fun_prop
+    exact ((Real.hasDerivAt_exp (-L * t)).comp t
+      ((hasDerivAt_id t).const_mul (-L))).differentiableAt.differentiableWithinAt
   have hident := parabolic_exp_rescale_identity (I := I)
     G T L X u t huniq (hu_mdiff t ht htpos) x
     (hu_grad t ht htpos x) (hu_time t ht htpos x) hscale
@@ -2483,8 +2484,8 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential
   let z : Real → M → Real := fun t x => Real.exp (-L * t) * u t x
   have hz_cont : ContinuousOn (fun p : Real × M => z p.1 p.2)
       (spacetimeSlab (M := M) T) := by
-    exact (by fun_prop : Continuous
-      (fun p : Real × M => Real.exp (-L * p.1))).continuousOn.mul hu_cont
+    exact (Real.continuous_exp.comp
+      (continuous_const.mul continuous_fst)).continuousOn.mul hu_cont
   have hz_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ z t x := by
     intro t ht x
     exact mul_nonneg (Real.exp_pos _).le (hu_nonneg t ht x)
@@ -2492,7 +2493,8 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential
       DifferentiableWithinAt Real (fun s => Real.exp (-L * s))
         (Set.Icc 0 T) t := by
     intro t
-    fun_prop
+    exact ((Real.hasDerivAt_exp (-L * t)).comp t
+      ((hasDerivAt_id t).const_mul (-L))).differentiableAt.differentiableWithinAt
   have hz_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       DifferentiableWithinAt Real (fun s => z s x) (Set.Icc 0 T) t := by
     intro t ht htpos x
@@ -2618,8 +2620,8 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
   let z : Real → M → Real := fun t x => Real.exp (-L * t) * u t x
   have hz_cont : ContinuousOn (fun p : Real × M => z p.1 p.2)
       (spacetimeSlab (M := M) T) := by
-    exact (by fun_prop : Continuous
-      (fun p : Real × M => Real.exp (-L * p.1))).continuousOn.mul hu_cont
+    exact (Real.continuous_exp.comp
+      (continuous_const.mul continuous_fst)).continuousOn.mul hu_cont
   have hz_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ z t x := by
     intro t ht x
     exact mul_nonneg (Real.exp_pos _).le (hu_nonneg t ht x)
@@ -2628,7 +2630,8 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
     intro t ht htpos x
     have hscale : DifferentiableWithinAt Real
         (fun s => Real.exp (-L * s)) (Set.Icc 0 T) t := by
-      fun_prop
+      exact ((Real.hasDerivAt_exp (-L * t)).comp t
+        ((hasDerivAt_id t).const_mul (-L))).differentiableAt.differentiableWithinAt
     exact hscale.mul (hu_time t ht htpos x)
   have hz_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDifferentiableAt I 𝓘(Real, Real) (z t) x := by
@@ -2833,7 +2836,8 @@ private theorem potential_exp_rescale_super
   intro t ht htpos x
   have hscale_time : DifferentiableWithinAt Real
       (fun s => Real.exp (-L * s)) (Set.Icc 0 T) t := by
-    fun_prop
+    exact ((Real.hasDerivAt_exp (-L * t)).comp t
+      ((hasDerivAt_id t).const_mul (-L))).differentiableAt.differentiableWithinAt
   have hu_mdiff : ∀ y : M,
       MDifferentiableAt I 𝓘(Real, Real) (u t) y := fun y =>
     (hu_space t ht htpos).mdifferentiable (by simp) y
@@ -2913,8 +2917,8 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential
   let z : Real → M → Real := fun t x => Real.exp (-L * t) * u t x
   have hz_cont : ContinuousOn (fun p : Real × M => z p.1 p.2)
       (spacetimeSlab (M := M) T) := by
-    exact (by fun_prop : Continuous (fun p : Real × M => Real.exp
-      (-L * p.1))).continuousOn.mul hu_cont
+    exact (Real.continuous_exp.comp
+      (continuous_const.mul continuous_fst)).continuousOn.mul hu_cont
   have hz_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ z t x := by
     intro t ht x
     exact mul_nonneg (Real.exp_pos _).le (hu_nonneg t ht x)
@@ -2923,7 +2927,8 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential
     intro t ht htpos x
     have hscale : DifferentiableWithinAt Real
         (fun s => Real.exp (-L * s)) (Set.Icc 0 T) t := by
-      fun_prop
+      exact ((Real.hasDerivAt_exp (-L * t)).comp t
+        ((hasDerivAt_id t).const_mul (-L))).differentiableAt.differentiableWithinAt
     exact hscale.mul (hu_time t ht htpos x)
   have hz_space : ∀ t ∈ Set.Icc 0 T, 0 < t →
       ContMDiff I 𝓘(Real, Real) ∞ (z t) := by

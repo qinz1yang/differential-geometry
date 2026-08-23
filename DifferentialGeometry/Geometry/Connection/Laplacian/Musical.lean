@@ -17,7 +17,6 @@ namespace Geometry
 namespace Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
 open DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -199,6 +198,7 @@ private lemma second01_eq
   rw [cotCLM_sub, houter, hcorr, cotCLM_dual, cotCLM_dual, hwB]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma sharp_covDeriv
     (g : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
@@ -220,6 +220,7 @@ private lemma sharp_covDeriv
   rw [covDeriv01_eq (I := I) g w x v]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma sharp_second_eq
     (g : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞

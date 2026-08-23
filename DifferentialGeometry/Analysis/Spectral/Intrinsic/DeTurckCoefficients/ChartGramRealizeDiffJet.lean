@@ -17,7 +17,6 @@ namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -31,6 +30,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramOnE_realize_delta_irrel
     (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -47,6 +48,8 @@ theorem chartGramOnE_realize_delta_irrel
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramOnE_realize_sub_eqOn_symm_rawComponent
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -119,6 +122,8 @@ lemma bareChartJetContentOnE_nonneg (g : SmoothRiemannianMetric I M) (S : Smooth
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -181,7 +186,12 @@ theorem chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE
       iteratedFDerivWithin_const_smul_apply
         (((hcd_ab.add hcd_ba).contDiffWithinAt hy).of_le (by exact_mod_cast le_top))
         hs_open.uniqueDiffOn hy]
-    refine (norm_smul_le _ _).trans ?_
+    refine (norm_smul_le (1 / 2 : ℝ)
+      (iteratedFDerivWithin ℝ m
+        (fun x : E =>
+          tensorChartComponentOnModel (I := I) (M := M) g_bg (T - T') α ![a, b] x +
+          tensorChartComponentOnModel (I := I) (M := M) g_bg (T - T') α ![b, a] x)
+        s y : ContinuousMultilinearMap ℝ (fun _ : Fin m => E) ℝ)).trans ?_
     rw [Real.norm_eq_abs, show |(1 / 2 : ℝ)| = 1 / 2 from by norm_num]
     refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
     have hadd_reshape :

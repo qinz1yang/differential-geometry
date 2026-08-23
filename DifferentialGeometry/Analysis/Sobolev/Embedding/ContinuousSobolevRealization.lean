@@ -43,6 +43,15 @@ lemma smoothCcTensor_toSection_add_apply
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+lemma smoothCcTensor_toSection_sub_apply
+    (g : SmoothRiemannianMetric I M) {r s : ℕ}
+    (S T : SmoothCcTensor g r s) (x : M) :
+    (S - T).toSection x = S.toSection x - T.toSection x := by
+  rw [SmoothCcTensor.toSection_sub]; rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 lemma smoothCcTensor_toSection_smul_apply
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (c : ℝ) (T : SmoothCcTensor g r s) (x : M) :

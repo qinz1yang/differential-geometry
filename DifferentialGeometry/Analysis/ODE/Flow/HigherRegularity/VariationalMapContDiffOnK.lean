@@ -252,10 +252,10 @@ theorem exists_norm_fderiv_le_along_flow_joint
   have hne : ((closedBall x₀ ρ) ×ˢ (Icc tmin tmax)).Nonempty :=
     ⟨(x₀, t₀), ⟨mem_closedBall_self hρ_nonneg, hΦ.t₀_mem_Icc⟩⟩
   obtain ⟨p, hp, hp_max⟩ := hcompact.exists_isMaxOn hne hcontN
-  refine ⟨‖fderiv ℝ (f p.2) (Φ p)‖, norm_nonneg _, ?_⟩
+  use ‖fderiv ℝ (f p.2) (Φ p)‖, norm_nonneg _
   intro x hx τ hτ
   have hmem : ((x, τ) : E × ℝ) ∈ (closedBall x₀ ρ) ×ˢ (Icc tmin tmax) := ⟨hx, hτ⟩
-  exact hp_max hmem
+  simpa only using hp_max hmem
 
 omit [CompleteSpace E] in
 theorem exists_lipschitzOnWith_closedBall_of_C1
@@ -285,21 +285,24 @@ theorem exists_lipschitzOnWith_closedBall_of_C1
     have hne : ((Icc a b) ×ˢ (closedBall x₀ ρ)).Nonempty := ⟨(a, x₁), ⟨⟨le_rfl, hab⟩, hx₁⟩⟩
     obtain ⟨p, hp, hp_max⟩ := hcompact.exists_isMaxOn hne hcontN
     set C : ℝ := ‖fderiv ℝ (f p.1) p.2‖ with hC_def
-    refine ⟨⟨C, norm_nonneg _⟩, ?_⟩
-    intro t ht
-    apply Convex.lipschitzOnWith_of_nnnorm_fderiv_le (𝕜 := ℝ)
-      (fun x _ => hdiff t x) ?_ (convex_closedBall x₀ ρ)
-    intro x hx
-    have hmem : ((t, x) : ℝ × E) ∈ (Icc a b) ×ˢ (closedBall x₀ ρ) :=
-      Set.mem_prod.mpr ⟨ht, hx⟩
-    have : ‖fderiv ℝ (f t) x‖ ≤ C := hp_max hmem
-    rw [← NNReal.coe_le_coe]
-    simpa [coe_nnnorm] using this
-  · refine ⟨0, ?_⟩
-    intro t _
-    rw [not_nonempty_iff_eq_empty] at hball
-    rw [hball]
-    exact lipschitzOnWith_empty 0 (f t)
+    let K : ℝ≥0 := ⟨C, norm_nonneg _⟩
+    have hK : ∀ t ∈ Icc a b, LipschitzOnWith K (f t) (closedBall x₀ ρ) := by
+      intro t ht
+      apply Convex.lipschitzOnWith_of_nnnorm_fderiv_le (𝕜 := ℝ)
+        (fun x _ => hdiff t x) ?_ (convex_closedBall x₀ ρ)
+      intro x hx
+      have hmem : ((t, x) : ℝ × E) ∈ (Icc a b) ×ˢ (closedBall x₀ ρ) :=
+        Set.mem_prod.mpr ⟨ht, hx⟩
+      have : ‖fderiv ℝ (f t) x‖ ≤ C := hp_max hmem
+      rw [← NNReal.coe_le_coe]
+      simpa [K, coe_nnnorm] using this
+    exact Exists.intro K hK
+  · have hK : ∀ t ∈ Icc a b, LipschitzOnWith 0 (f t) (closedBall x₀ ρ) := by
+      intro t _
+      rw [not_nonempty_iff_eq_empty] at hball
+      rw [hball]
+      exact lipschitzOnWith_empty 0 (f t)
+    exact Exists.intro 0 hK
 
 omit [CompleteSpace E] in
 theorem exists_flow_nesting_data
@@ -488,7 +491,6 @@ theorem fderiv_flow_eq_coprod_spatialPiece
     {ρ_out ρ_mid ρ : ℝ≥0} {r' : ℝ≥0} (hr' : 0 < r')
     (hρ_lt_mid : (ρ : ℝ) < (ρ_mid : ℝ)) (hρ_mid_lt_out : (ρ_mid : ℝ) < (ρ_out : ℝ))
     (hρρ' : (ρ_mid : ℝ) + (r' : ℝ) ≤ (r : ℝ))
-    (_hρ_out_le_r : (ρ_out : ℝ) ≤ (r : ℝ))
     (hA_bd : ∀ x ∈ closedBall x₀ (ρ_out : ℝ), ∀ τ ∈ Icc (t₀ - T_out) (t₀ + T_out),
       ‖fderiv ℝ (f τ) (Φ ⟨x, τ⟩)‖ ≤ M) :
     ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
@@ -1221,7 +1223,7 @@ theorem contDiffOn_flow_succ_via_augFlow
   have hLsp_eq : ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
       fderiv ℝ Φ q = (spatialPieceFn Φ q).coprod (timePieceFn f Φ q) :=
     fderiv_flow_eq_coprod_spatialPiece hΦ hf_C1 hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
-      hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
+      hρ_lt_mid hρ_mid_lt_out hρρ' hA_bd
   exact contDiffOn_flow_succ_of_spatial_smooth hΦ hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
     hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd hf_succ hΦ_Ck hLsp_Ck hLsp_eq
 
@@ -1606,7 +1608,7 @@ theorem contDiffOn_flow_infty_of_spatial_smooth_all
   have hLsp_eq : ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
       fderiv ℝ Φ q = (spatialPieceFn Φ q).coprod (timePieceFn f Φ q) :=
     fderiv_flow_eq_coprod_spatialPiece hΦ hf_C1 hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
-      hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
+      hρ_lt_mid hρ_mid_lt_out hρρ' hA_bd
   rw [contDiffOn_infty]
   intro k
   have hf_Ck : ContDiffOn ℝ (k : ℕ∞) (uncurry f) (Set.univ : Set (ℝ × E)) := by

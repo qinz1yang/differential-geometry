@@ -91,7 +91,7 @@ private lemma F_ij_memLp_restrict
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (i : Fin (Module.finrank ℝ E)) (j : Fin (Module.finrank ℝ E)) :
@@ -100,7 +100,7 @@ private lemma F_ij_memLp_restrict
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   have h_thick_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
     h_thick_compact.measurableSet
   obtain ⟨C, hC_nn, hC_bd⟩ :=
@@ -152,7 +152,7 @@ private lemma F_ij_extended_memLp
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -161,11 +161,11 @@ private lemma F_ij_extended_memLp
   classical
   unfold F_ij_extended
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   have h_thick_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
     h_thick_compact.measurableSet
   exact (MeasureTheory.memLp_indicator_iff_restrict h_thick_meas).mpr
-    (F_ij_memLp_restrict (I := I) (M := M) D hK_0_compact hh_le h_thick i j)
+    (F_ij_memLp_restrict (I := I) (M := M) D hK_0_compact h_thick i j)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma u_chart_indicator_memLp
@@ -173,14 +173,14 @@ private lemma u_chart_indicator_memLp
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
     MemLp ((Metric.cthickening |h| K_0).indicator D.u_chart) 2
       (volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   have h_thick_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
     h_thick_compact.measurableSet
   refine (MeasureTheory.memLp_indicator_iff_restrict h_thick_meas).mpr ?_
@@ -193,7 +193,7 @@ private lemma weak_partial_indicator_memLp
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (j : Fin (Module.finrank ℝ E)) :
@@ -201,7 +201,7 @@ private lemma weak_partial_indicator_memLp
       (volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   have h_thick_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
     h_thick_compact.measurableSet
   refine (MeasureTheory.memLp_indicator_iff_restrict h_thick_meas).mpr ?_
@@ -282,7 +282,7 @@ private lemma testFactorExtended_memLp_two
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (j : Fin (Module.finrank ℝ E)) :
@@ -299,9 +299,9 @@ private lemma testFactorExtended_memLp_two
       (fun z : EuclN => (fderiv ℝ η z) (EuclideanSpace.single j 1)) :=
     (hη.continuous_fderiv h_top_ne_zero).clm_apply continuous_const
   have hu_ext_lp := u_chart_indicator_memLp (I := I) (M := M) D
-    hK_0_compact hh_le h_thick
+    hK_0_compact h_thick
   have hwp_ext_lp := weak_partial_indicator_memLp (I := I) (M := M) D
-    hK_0_compact hh_le h_thick j
+    hK_0_compact h_thick j
   have hdq_u_ext_lp : MemLp
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
@@ -527,7 +527,7 @@ private lemma testFactor_memLp_two
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (j : Fin (Module.finrank ℝ E)) :
@@ -536,7 +536,7 @@ private lemma testFactor_memLp_two
   rw [testFactor_eq_testFactorExtended (I := I) (M := M) D
     hη_supp_in_K_0 k (h := h) j]
   exact testFactorExtended_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-    k hh hh_le h_thick j
+    k hh h_thick j
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_factor_integrable
@@ -544,11 +544,10 @@ theorem chartBilinear_factor_integrable
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -568,12 +567,12 @@ theorem chartBilinear_factor_integrable
   have hF_lp : MemLp (fun y =>
       weightedInvGramOnEuclid (I := I) g α i j y * D.weak_partial i y) 2
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) :=
-    F_ij_memLp_restrict (I := I) (M := M) D hK_0_compact hh_le h_thick i j
+    F_ij_memLp_restrict (I := I) (M := M) D hK_0_compact h_thick i j
   have h_test_lp_global :
       MemLp (testFactor (I := I) (M := M) D η k h j) 2
         (volume : Measure EuclN) :=
     testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-      hη_supp_in_K_0 k hh hh_le h_thick j
+      hη_supp_in_K_0 k hh h_thick j
   have hnh : (-h) ≠ 0 := neg_ne_zero.mpr hh
   have h_dq_test_lp_global :
       MemLp (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -629,11 +628,10 @@ theorem chartBilinear_factor_integrable_after
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -652,7 +650,7 @@ theorem chartBilinear_factor_integrable_after
   classical
   have hF_ext_lp : MemLp (F_ij_extended (I := I) (M := M) D (h := h) K_0 i j) 2
       (volume : Measure EuclN) :=
-    F_ij_extended_memLp (I := I) (M := M) D hK_0_compact hh_le h_thick i j
+    F_ij_extended_memLp (I := I) (M := M) D hK_0_compact h_thick i j
   have h_dq_F_ext_lp : MemLp
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
@@ -662,7 +660,7 @@ theorem chartBilinear_factor_integrable_after
   have h_test_lp : MemLp (testFactor (I := I) (M := M) D η k h j) 2
       (volume : Measure EuclN) :=
     testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-      hη_supp_in_K_0 k hh hh_le h_thick j
+      hη_supp_in_K_0 k hh h_thick j
   have h_int_prod_global : Integrable (fun y =>
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
@@ -837,11 +835,10 @@ theorem chartBilinear_diffQuot_ibp_per_ij
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -871,16 +868,16 @@ theorem chartBilinear_diffQuot_ibp_per_ij
       ∂(volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   have h_thick_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
     h_thick_compact.measurableSet
   have hF_ext_lp : MemLp (F_ij_extended (I := I) (M := M) D (h := h) K_0 i j) 2
       (volume : Measure EuclN) :=
-    F_ij_extended_memLp (I := I) (M := M) D hK_0_compact hh_le h_thick i j
+    F_ij_extended_memLp (I := I) (M := M) D hK_0_compact h_thick i j
   have h_test_lp : MemLp (testFactor (I := I) (M := M) D η k h j) 2
       (volume : Measure EuclN) :=
     testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-      hη_supp_in_K_0 k hh hh_le h_thick j
+      hη_supp_in_K_0 k hh h_thick j
   have h_global_ibp :
       ∫ y, DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
@@ -1076,16 +1073,15 @@ theorem chartBilinear_diffQuot_ibp_per_ij
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem variational_identity_after_ibp_unconditional
+theorem variational_identity_after_ibp_of_compact_support
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (h_expanded :
@@ -1162,7 +1158,7 @@ theorem variational_identity_after_ibp_unconditional
         ∂(volume : Measure EuclN) := by
     intro i j
     exact chartBilinear_diffQuot_ibp_per_ij (I := I) (M := M) D
-      hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick i j
+      hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick i j
   have h_principal_integrable : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         weightedInvGramOnEuclid (I := I) g α i j y *
@@ -1178,7 +1174,7 @@ theorem variational_identity_after_ibp_unconditional
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
     intro i j
     exact chartBilinear_factor_integrable (I := I) (M := M) D
-      hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick i j
+      hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick i j
   have h_principal_integrable_after : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -1194,10 +1190,9 @@ theorem variational_identity_after_ibp_unconditional
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
     intro i j
     exact chartBilinear_factor_integrable_after (I := I) (M := M) D
-      hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick i j
+      hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick i j
   exact variational_identity_after_ibp (I := I) (M := M) D
-    hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
-    h_expanded h_ibp_per_ij h_principal_integrable h_principal_integrable_after
+    k h_expanded h_ibp_per_ij h_principal_integrable h_principal_integrable_after
 
 end SubstitutionDischargeIBP
 end Sobolev

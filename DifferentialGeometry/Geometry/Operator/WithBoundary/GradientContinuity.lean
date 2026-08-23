@@ -21,7 +21,6 @@ namespace WithBoundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E]
@@ -253,7 +252,6 @@ variable {M : Type*} [TopologicalSpace M]
 open DifferentialGeometry.Integral.Measure
 
 theorem continuous_g_inner_gradFun_gradFun
-    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
@@ -265,7 +263,7 @@ theorem continuous_g_inner_gradFun_gradFun
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf hh
 
 theorem bddAbove_g_inner_gradFun_gradFun_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)

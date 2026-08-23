@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
-import DifferentialGeometry.Geometry.Curvature.Realized.Stationary
+import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Stationary
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
 
 open DifferentialGeometry.Geometry.Curvature

@@ -688,14 +688,14 @@ theorem ScalarLaplacianRealizesTraceAt.toInBasis
   rw [h, metricTrace0S2InBasis_eq_metricTrace (I := I) g basis gInv hinv hessF Fin.elim0]
 
 def SmoothBasisFieldsAt
-    {Idx : Type*} [Fintype Idx]
+    {Idx : Type*}
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)) : Prop :=
   ∀ i : Idx, X i x = basis i
 
 private theorem hessian_component_eq_inner_cov_gradient
-    {Idx : Type*} [Fintype Idx]
+    {Idx : Type*}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)

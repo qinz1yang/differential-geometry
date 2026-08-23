@@ -81,6 +81,53 @@ theorem riemannianFiberNormSq_add_le
   exact real_add_two_mul_le_of_sq_le hA_nn hB_nn hCS
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem riemannianFiberNormSq_add_le_sq_sqrt
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+    (a b : TensorRSSpace r s I x) :
+    riemannianFiberNormSq (I := I) (M := M) g r s x (a + b) ≤
+      (Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x a) +
+        Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x b)) ^ 2 := by
+  rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (a + b),
+    riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x a,
+    riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x b]
+  rw [TensorRSSpace.toModel_add]
+  rw [tensorInnerPointwise_add_left, tensorInnerPointwise_add_right,
+    tensorInnerPointwise_add_right]
+  set A := tensorInnerPointwise (I := I) (M := M) g r s x
+    (TensorRSSpace.toModel (𝕜 := ℝ) a) (TensorRSSpace.toModel (𝕜 := ℝ) a) with hA
+  set B := tensorInnerPointwise (I := I) (M := M) g r s x
+    (TensorRSSpace.toModel (𝕜 := ℝ) b) (TensorRSSpace.toModel (𝕜 := ℝ) b) with hB
+  set C := tensorInnerPointwise (I := I) (M := M) g r s x
+    (TensorRSSpace.toModel (𝕜 := ℝ) a) (TensorRSSpace.toModel (𝕜 := ℝ) b) with hC
+  have hsymm : tensorInnerPointwise (I := I) (M := M) g r s x
+      (TensorRSSpace.toModel (𝕜 := ℝ) b) (TensorRSSpace.toModel (𝕜 := ℝ) a) = C := by
+    rw [hC, tensorInnerPointwise_symm]
+  rw [hsymm]
+  have hA0 : 0 ≤ A := tensorInnerPointwise_nonneg (I := I) (M := M) g r s x _
+  have hB0 : 0 ≤ B := tensorInnerPointwise_nonneg (I := I) (M := M) g r s x _
+  have hC2 : C ^ 2 ≤ A * B :=
+    tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r s x _ _
+  have hCle : C ≤ Real.sqrt A * Real.sqrt B := by
+    calc C ≤ |C| := le_abs_self C
+      _ = Real.sqrt (C ^ 2) := (Real.sqrt_sq_eq_abs C).symm
+      _ ≤ Real.sqrt (A * B) := Real.sqrt_le_sqrt hC2
+      _ = Real.sqrt A * Real.sqrt B := Real.sqrt_mul hA0 B
+  have hsA : Real.sqrt A ^ 2 = A := Real.sq_sqrt hA0
+  have hsB : Real.sqrt B ^ 2 = B := Real.sq_sqrt hB0
+  nlinarith [hCle, hsA, hsB]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sqrt_riemannianFiberNormSq_add_le
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+    (a b : TensorRSSpace r s I x) :
+    Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x (a + b)) ≤
+      Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x a) +
+        Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x b) := by
+  refine (Real.sqrt_le_sqrt
+    (riemannianFiberNormSq_add_le_sq_sqrt (I := I) (M := M) g r s x a b)).trans ?_
+  rw [Real.sqrt_sq (add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))]
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_sub_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (a b : TensorRSSpace r s I x) :
@@ -162,7 +209,7 @@ theorem riemannianFiberNormSq_sum_le_card_mul
   set fm : ι → TensorRSModel r s' ℝ E := fun i =>
     TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M) (r := r) (s := s') (x := x) (F i)
     with hfm
-  have hrfns_eq : ∀ i,
+  have hriemannianFiberNormSq_eq : ∀ i,
       riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) =
         tensorInnerPointwise (I := I) (M := M) g r s' x (fm i) (fm i) := by
     intro i; rw [hfm]
@@ -176,14 +223,30 @@ theorem riemannianFiberNormSq_sum_le_card_mul
     have hsq : bij ^ 2 ≤
         riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
           riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) := by
-      rw [hbij, hrfns_eq i, hrfns_eq j]
+      rw [hbij, hriemannianFiberNormSq_eq i, hriemannianFiberNormSq_eq j]
       exact tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r s' x (fm i) (fm j)
     have hi_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r s' x (F i)
     have hj_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r s' x (F j)
-    nlinarith [hsq, hi_nn, hj_nn, sq_nonneg (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i)
-      - riemannianFiberNormSq (I := I) (M := M) g r s' x (F j)), sq_nonneg bij]
+    have hprod : riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
+        riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) ≤
+          ((1 / 2 : ℝ) *
+            (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) +
+              riemannianFiberNormSq (I := I) (M := M) g r s' x (F j))) ^ 2 := by
+      calc
+        riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
+            riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) ≤
+            riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
+              riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) +
+              ((riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) -
+                riemannianFiberNormSq (I := I) (M := M) g r s' x (F j)) / 2) ^ 2 :=
+          le_add_of_nonneg_right (sq_nonneg _)
+        _ = ((1 / 2 : ℝ) *
+            (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) +
+              riemannianFiberNormSq (I := I) (M := M) g r s' x (F j))) ^ 2 := by ring
+    exact le_of_sq_le_sq (hsq.trans hprod)
+      (mul_nonneg (by norm_num) (add_nonneg hi_nn hj_nn))
   calc (∑ i ∈ s, ∑ j ∈ s, tensorInnerPointwise (I := I) (M := M) g r s' x (fm i) (fm j))
       ≤ ∑ i ∈ s, ∑ j ∈ s, (1 / 2 : ℝ) *
           (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) +

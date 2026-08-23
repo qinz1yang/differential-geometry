@@ -60,7 +60,7 @@ theorem one_add_lambda_mul_perModeConv_endpoint_sq_le (lam : ℝ)
 
 end Scalar
 
-section Assembly
+section
 
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
@@ -261,7 +261,7 @@ theorem exists_smooth_tensor_representative_of_duhamel_smoothing
   rw [hT]
   exact hu_coeff i
 
-end Assembly
+end
 
 end Spectral
 end Analysis

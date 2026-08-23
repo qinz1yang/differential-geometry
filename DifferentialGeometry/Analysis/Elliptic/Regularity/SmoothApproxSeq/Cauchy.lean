@@ -118,7 +118,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy
   rw [h_wkp_eq]
   have h_bilinear := hC_bound vdiff
   have h_chartW22_cauchy :
-      wkpNormChart (I := I) (M := M) g 2 2 vdiff.toFun ≤
+      wkpNormChart (I := I) (M := M) 2 2 vdiff.toFun ≤
         ENNReal.ofReal ((1 : ℝ) / ((m : ℝ) + 1)) +
           ENNReal.ofReal ((1 : ℝ) / ((n : ℝ) + 1)) := by
     rw [hvdiff_toFun]

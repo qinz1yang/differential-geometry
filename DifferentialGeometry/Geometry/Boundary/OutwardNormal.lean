@@ -30,7 +30,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 
 abbrev inwardCoordE : E := hI.inwardCoordE
@@ -489,7 +488,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
     inwardTangentialPartAt (M := M) g α₀ x =
       boundaryInclusionMfderiv (M := M) x (boundaryComponentOfInwardAt (M := M) g α₀ x) := rfl
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-@[simp] lemma inwardTangentialPartAt_self
+lemma inwardTangentialPartAt_self
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     inwardTangentialPartAt (M := M) g x x = inwardTangentialPart (M := M) g x := by
   unfold inwardTangentialPartAt inwardTangentialPart
@@ -505,7 +504,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
     outwardDirAt (M := M) g α₀ x =
       inwardTangentialPartAt (M := M) g α₀ x - inwardCoordAt (M := M) α₀ x := rfl
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-@[simp] lemma outwardDirAt_self
+lemma outwardDirAt_self
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     outwardDirAt (M := M) g x x = outwardDir (M := M) g x := by
   unfold outwardDirAt outwardDir
@@ -593,8 +592,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
 
 private lemma infty_le_top_add' : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by
   have h_eq : (∞ : WithTop ℕ∞) + 1 = (∞ : WithTop ℕ∞) := by

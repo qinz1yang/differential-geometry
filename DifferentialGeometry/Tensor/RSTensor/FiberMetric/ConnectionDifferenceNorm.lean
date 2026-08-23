@@ -35,7 +35,7 @@ theorem connOut_norm_le
   exact sqrt_normSqRS_apply (I := I) g
     (connectionDifferenceTensorAt (I := I) cov cov' x) alpha
 
-theorem connDiffVec_norm_le
+theorem connectionDifferenceVec_norm_le
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (g : SmoothMetric_gen I M)

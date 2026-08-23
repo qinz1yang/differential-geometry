@@ -159,7 +159,7 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) :
-    ∃ C : ℝ, 0 < C ∧ ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) g k p v →
+    ∃ C : ℝ, 0 < C ∧ ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) k p v →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p
         (chartPushedRaw (I := I) (M := M) α
@@ -465,7 +465,7 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p ψ_total Ωα_target :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
-      (d := Module.finrank ℝ E) hp_one hp_top hΩα_open hΩα_target_open
+      (d := Module.finrank ℝ E) hp_one hΩα_open hΩα_target_open
       hΩα_subset_target hψ_total_mem_Ωα hψ_total_supp_Ωα hψ_total_cpt
   have h_pointwise_eq : ∀ y ∈ Ωα_target,
       chartPushedRaw (I := I) (M := M) α
@@ -736,7 +736,6 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
 
 omit [FiniteDimensional ℝ E] [TopologicalSpace M] in
 theorem memWkp_finset_sum
-    [NeZero (Module.finrank ℝ E)]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set EuclN} (hΩ : IsOpen Ω)
     {S : Finset M} {f : M → EuclN → ℝ}
@@ -771,9 +770,7 @@ theorem memWkp_finset_sum
 
 omit [IsManifold I ∞ M] in
 theorem wkpNorm_finset_sum_le_chartTarget
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (α : M) (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
+    [I.Boundaryless] (α : M) (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {S : Finset M} {f : M → EuclN → ℝ}
     (hf_mem : ∀ γ ∈ S,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -838,20 +835,20 @@ theorem wkpNorm_chartPushedRaw_strictCutoff_mul_le
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
-    ∃ C : ℝ, 0 < C ∧ ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) g k p v →
+    ∃ C : ℝ, 0 < C ∧ ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) k p v →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) k p
         (chartPushedRaw (I := I) (M := M) α
           (fun x => chartStrictCutoff (I := I) (M := M) α x * v x))
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal C *
-        wkpNormChart (I := I) (M := M) g k p v := by
+        wkpNormChart (I := I) (M := M) k p v := by
   classical
   set S : Finset M :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
     with hS_def
   have h_per_γ : ∀ γ : M, ∃ Cγ : ℝ, 0 < Cγ ∧
-      ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) g k p v →
+      ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) k p v →
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) k p
           (chartPushedRaw (I := I) (M := M) α
@@ -882,7 +879,7 @@ theorem wkpNorm_chartPushedRaw_strictCutoff_mul_le
     cross_chart_strictCutoff_pushedRaw_joint (I := I) (M := M) g k hp_one hp_top γ α
   let Cγ : M → ℝ := fun γ => (h_per_γ γ).choose
   have hCγ_pos : ∀ γ : M, 0 < Cγ γ := fun γ => (h_per_γ γ).choose_spec.1
-  have hCγ_bound : ∀ γ : M, ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) g k p v →
+  have hCγ_bound : ∀ γ : M, ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) k p v →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p
         (chartPushedRaw (I := I) (M := M) α

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinPa
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothRepresentativeRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderRealizeBallUniformSplit
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArm.TameBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.CrossScaleCauchySchwarz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
@@ -443,7 +443,7 @@ theorem deTurckGalerkinForcing_seed_mass
       (radialScaleSmooth (I := I) (M := M) g₀ a (Classical.choose h).1
         (0 : SmoothCcTensor g₀ 0 2))
       (lt_of_le_of_lt (Classical.choose_spec h).2.1
-        (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+        (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
       ((Classical.choose_spec h).2.2 _
         (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M) g₀ a
           (Classical.choose_spec h).1.le (0 : SmoothCcTensor g₀ 0 2)))
@@ -510,11 +510,11 @@ private lemma mass_le_of_sqrt_split {A B C c d : ℝ}
   have hAle : A ≤ (c * sB + d * sC) ^ 2 := by
     have := mul_le_mul hsplit hsplit (Real.sqrt_nonneg _) hrhs_nn
     rwa [← sq, ← sq, hsqA] at this
-  have hc2_lt : c ^ 2 < 1 := by nlinarith [hc, hc1]
+  have hc2_lt : c ^ 2 < 1 := by nlinarith only [hc, hc1]
   have hden_pos : 0 < 1 - c ^ 2 := by linarith [hc2_lt]
   have hyoung_mul : 2 * c * d * (1 - c ^ 2) * (sB * sC) ≤
       (1 - c ^ 2) ^ 2 / 2 * sB ^ 2 + 2 * c ^ 2 * d ^ 2 * sC ^ 2 := by
-    nlinarith [sq_nonneg ((1 - c ^ 2) * sB - 2 * c * d * sC), hden_pos,
+    nlinarith only [sq_nonneg ((1 - c ^ 2) * sB - 2 * c * d * sC), hden_pos,
       mul_nonneg hc hd]
   have hkey : (c * sB + d * sC) ^ 2 ≤
       ((1 + c ^ 2) / 2) * B + (d ^ 2 * (1 + c ^ 2) / (1 - c ^ 2)) * C := by
@@ -823,10 +823,10 @@ private lemma gscr_finiteEigenComboHs_eq_smoothCcToTensorHs
     ← SmoothCcTensor.toL2_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem deTurckSmoothRemainder_spectralCoercive_split'
+theorem de_turck_smooth_remainder_spectral_coercive_split_of_finite_support
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
-    {δ : ℝ} (hδ_le : δ ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E))
+    {δ : ℝ} (hδ_le : δ ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E))
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       DifferentialGeometry.Analysis.Spectral.MetricRealization.metricCauchySchwarzBound
@@ -846,13 +846,13 @@ theorem deTurckSmoothRemainder_spectralCoercive_split'
             tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + (k : ℝ) - 1) *
               ((smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                   (deTurckSmoothRemainder (I := I) g₀ g_bg T₀
-                    (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one'
+                    (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero
                       (Module.finrank ℝ E)))
                     (hδ_fibre T₀ hball))).coeff i -
                 (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                   (deTurckSmoothRemainder (I := I) g₀ g_bg
                     (0 : SmoothCcTensor g₀ 0 2)
-                    (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one'
+                    (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero
                       (Module.finrank ℝ E)))
                     (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                       (by
@@ -877,10 +877,10 @@ theorem deTurckSmoothRemainder_spectralCoercive_split'
   intro S k T₀ hTsymm hball hsupp
   set Rdiff : SmoothCcTensor g₀ 0 2 :=
     deTurckSmoothRemainder (I := I) g₀ g_bg T₀
-        (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+        (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
           (hδ_fibre T₀ hball) -
       deTurckSmoothRemainder (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
-        (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+        (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
         (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
           (by
             rw [show (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2)
@@ -889,11 +889,11 @@ theorem deTurckSmoothRemainder_spectralCoercive_split'
   have hLHS_coeff : ∀ i,
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
             (deTurckSmoothRemainder (I := I) g₀ g_bg T₀
-              (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+              (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
                 (hδ_fibre T₀ hball))).coeff i -
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
             (deTurckSmoothRemainder (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
-              (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+              (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
               (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                 (by
                   rw [show (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2)
@@ -947,11 +947,11 @@ theorem deTurckSmoothRemainder_spectralCoercive_split'
           tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + (k : ℝ) - 1) *
             ((smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                 (deTurckSmoothRemainder (I := I) g₀ g_bg T₀
-                  (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one'
+                  (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero
                     (Module.finrank ℝ E))) (hδ_fibre T₀ hball))).coeff i -
               (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                 (deTurckSmoothRemainder (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
-                  (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one'
+                  (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero
                     (Module.finrank ℝ E)))
                   (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                     (by
@@ -965,11 +965,11 @@ theorem deTurckSmoothRemainder_spectralCoercive_split'
   exact le_trans hLHS_le (hker k T₀ hTsymm hball)
 
 set_option backward.isDefEq.respectTransparency false in
-theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
+theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a)
     {R₀ : ℝ} (hR₀ : 0 < R₀)
-    {δ : ℝ} (hδ_le : δ ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E))
+    {δ : ℝ} (hδ_le : δ ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E))
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       DifferentialGeometry.Analysis.Spectral.MetricRealization.metricCauchySchwarzBound
@@ -981,7 +981,7 @@ theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
         deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
           (radialScaleSmooth (I := I) (M := M) g₀ a R₀ T)
-          (lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+          (lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
           (hδ_fibre _ (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M) g₀ a
             hR₀.le T)))
     (U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
@@ -1002,9 +1002,9 @@ theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) ((a : ℝ) + (k : ℝ)) t) := by
   classical
   have hδ_lt : δ < 1 :=
-    lt_of_le_of_lt hδ_le (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+    lt_of_le_of_lt hδ_le (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨Cδ₀, Crem, hCδ₀_nn, hCδ₀_lt, hCrem_nn, hsplit⟩ :=
-    deTurckSmoothRemainder_spectralCoercive_split' (I := I) (M := M) g₀ g_bg a ha_super
+    de_turck_smooth_remainder_spectral_coercive_split_of_finite_support (I := I) (M := M) g₀ g_bg a ha_super
       hR₀.le hδ_le hδ_fibre
   refine ⟨Cδ₀, Crem, hCδ₀_nn, hCδ₀_lt, hCrem_nn, ?_⟩
   intro N k t
@@ -1146,7 +1146,7 @@ theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
       rw [smoothCcToTensorHs_coeff, hTs_def]
     have hstep2 := sum_tensorSobolevWeight_mul_sq_tensorL2Coeff_toL2_symmS_le
       (I := I) (M := M) (g := g₀) τ S
-      (eigenIdxFinset_mem_iff_of_eigenvalue_eq g₀ N) Tb hTb_L2_off
+      Tb hTb_L2_off
     have hstep3 : (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
         (tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
@@ -1173,7 +1173,7 @@ theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
     intro τ
     rw [galerkinEnergy]
     refine Real.sqrt_le_sqrt ?_
-    have hc2 : c ^ 2 ≤ 1 := by nlinarith [hc_nn, hc_le_one]
+    have hc2 : c ^ 2 ≤ 1 := by nlinarith only [hc_nn, hc_le_one]
     have hstep : (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ τ T₀).coeff i) ^ 2) ≤
         ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
@@ -1294,16 +1294,16 @@ private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
   classical
   have ha2 : 2 * Module.finrank ℝ E + 10 ≤ a := by omega
   obtain ⟨Cδ₀, Crem, hCδ₀_nn, hCδ₀_lt, hCrem_nn, hsplit⟩ :=
-    deTurckSobolevNHa2_diff_sobolevSplit_perScale' (I := I) (M := M) g₀ g_bg a ha_super
+    de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale (I := I) (M := M) g₀ g_bg a ha_super
       (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).1
       (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).2.1
       (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).2.2
       (fun T' => deTurckSobolevNHa2_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha2 T') U
-  have hden_pos : 0 < 1 - Cδ₀ ^ 2 := by nlinarith [hCδ₀_nn, hCδ₀_lt]
+  have hden_pos : 0 < 1 - Cδ₀ ^ 2 := by nlinarith only [hCδ₀_nn, hCδ₀_lt]
   refine ⟨Real.sqrt ((1 + Cδ₀ ^ 2) / 2),
     fun k => Real.sqrt (Crem k ^ 2 * (1 + Cδ₀ ^ 2) / (1 - Cδ₀ ^ 2)),
     Real.sqrt_nonneg _,
-    (Real.sqrt_lt' one_pos).mpr (by rw [one_pow]; nlinarith [hCδ₀_nn, hCδ₀_lt]),
+    (Real.sqrt_lt' one_pos).mpr (by rw [one_pow]; nlinarith only [hCδ₀_nn, hCδ₀_lt]),
     fun k => Real.sqrt_nonneg _, ?_⟩
   intro N k t _
   have hEq :
@@ -1417,7 +1417,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
   obtain ⟨Cseed, hCseed_nn, hseed⟩ :=
     deTurckGalerkinForcingSymm_seed_mass (I := I) (M := M) g₀ g_bg a ha2
   refine ⟨1 + Cδ₀ ^ 2, fun k => Ctame k ^ 2, fun k => 2 * Cseed k,
-    by nlinarith [hCδ₀_lt, hCδ₀_nn], fun k => by positivity, ?_⟩
+    by nlinarith only [hCδ₀_lt, hCδ₀_nn], fun k => by positivity, ?_⟩
   intro N k t ht
   set S := eigenIdxFinset (I := I) (M := M) g₀ N with hS
   set σ : ℝ := (a : ℝ) + (k : ℝ) with hσ
@@ -1490,7 +1490,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
             (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (v.coeff i) ^ 2) +
             Ctame k ^ 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ *
               (v.coeff i) ^ 2 := by
-          rw [one_mul, inv_one, one_mul]; nlinarith [hmass']
+          rw [one_mul, inv_one, one_mul]; nlinarith only [hmass']
   have hSeed :
       2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (v.coeff i * w0.coeff i) ≤
         2 * Cseed k *
@@ -1508,7 +1508,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
           2 * Cseed k * Real.sqrt (galerkinEnergy (I := I) (M := M) S (U N) σ t) := by
     rw [hLHS_eq, hsplit, mul_add]
     have hEσ1nn := galerkinEnergy_nonneg (I := I) (M := M) S (U N) (σ + 1) t
-    nlinarith [hTame, hSeed, hEσ1nn]
+    nlinarith only [hTame, hSeed, hEσ1nn]
   exact hfinal
 
 set_option backward.isDefEq.respectTransparency false in

@@ -737,13 +737,6 @@ theorem inner0S_nabla {s : Nat}
     exact hbasis (A x) (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x)
   linarith [hgroupA, hgroupB]
 
-theorem inner0S_symm {s : Nat}
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M) (x : M)
-    (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
-    inner0S (I := I) g x s A B = inner0S (I := I) g x s B A := by
-  unfold inner0S MetricFiberData.inner
-  exact (tensor0SMetricData (I := I) g x s).symm A B
-
 theorem normSq0S_nabla {s : Nat}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)

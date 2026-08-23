@@ -160,7 +160,7 @@ theorem exists_nonnegative_gardingBootstrapCoeff
 private lemma sqrt_mul_le_add_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Real.sqrt (a * b) ≤ b + a := by
   rw [← Real.sqrt_sq (add_nonneg hb ha)]
-  exact Real.sqrt_le_sqrt (by nlinarith [sq_nonneg (a - b)])
+  exact Real.sqrt_le_sqrt (by nlinarith only [sq_nonneg (a - b)])
 
 private lemma gradOrder_zero_l2Norm_le
     (g : SmoothRiemannianMetric I M) (U : SmoothCcTensor g 0 2) :
@@ -257,7 +257,7 @@ private lemma gradOrder_l2Norm_le_lapIter_sum
                   apply mul_le_mul_of_nonneg_left _ (Real.sqrt_nonneg _)
                   rw [← Real.sqrt_sq (by positivity : (0:ℝ) ≤ nLapS + nS)]
                   apply Real.sqrt_le_sqrt
-                  nlinarith [mul_nonneg hnLapS_nn hnS_nn]
+                  nlinarith only [mul_nonneg hnLapS_nn hnS_nn]
         have hΔS_eq : rawTensorConnLapSmooth (I := I) g 0 (2 + m) S =
             rawTensorConnLapSmooth (I := I) g 0 (2 + m) (iteratedCovGrad g 0 2 m U) := by
           rw [hS_def]

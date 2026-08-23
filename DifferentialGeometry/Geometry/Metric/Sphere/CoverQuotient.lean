@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoOpen
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
 import DifferentialGeometry.Geometry.Metric.Sphere.QuotientDescent
-import DifferentialGeometry.Topology.Covering.DeckIsometry
+import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Topology.Covering.FibreEquiv
 import DifferentialGeometry.Topology.Covering.LocalDiffeomorph
 open DifferentialGeometry.Geometry.Curvature
@@ -146,7 +146,7 @@ noncomputable def roundQuotientUC
     hprojSurj.comp d.surjective
   have hloc :
       IsLocalDiffeomorph (𝓡 n) (𝓡 n) ∞ proj := by
-    exact hloc_comp (UniversalCover.proj_localDiffeo (I := 𝓡 n) (M := Q))
+    exact isLocalDiffeomorph_comp (UniversalCover.proj_localDiffeo (I := 𝓡 n) (M := Q))
       d.isLocalDiffeomorph
   letI : CompactSpace (UniversalCover Q) := d.toHomeomorph.compactSpace
   letI : Finite (FundamentalGroup Q (default : Q)) :=

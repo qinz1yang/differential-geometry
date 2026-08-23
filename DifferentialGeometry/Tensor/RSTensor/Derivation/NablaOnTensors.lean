@@ -518,7 +518,7 @@ noncomputable def connectionEndomorphismInChart
     · rw [if_neg hy, if_neg hy]
       simp
 
-@[simp] lemma connectionEndomorphismInChart_apply_of_mem
+lemma connectionEndomorphismInChart_apply_of_mem
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X : (x : M) → TangentSpace I x) (x₀ : M) {y : E}
     (hy : y ∈ (extChartAt I x₀).target) (v : E) :
@@ -541,7 +541,7 @@ noncomputable def connectionEndomorphismInChart
           (X ((extChartAt I x₀).symm y)))
   rw [if_pos hy]
 
-@[simp] lemma connectionEndomorphismInChart_apply_of_notMem
+lemma connectionEndomorphismInChart_apply_of_notMem
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X : (x : M) → TangentSpace I x) (x₀ : M) {y : E}
     (hy : y ∉ (extChartAt I x₀).target) (v : E) :

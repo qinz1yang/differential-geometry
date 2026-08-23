@@ -25,7 +25,6 @@ section Components
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
 
-
 def roughLapRicInFrame
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
@@ -94,14 +93,12 @@ def RicciVariationExpandedRHS_eq_evolutionRHS
         (roughLapRicInFrame (M := M) gInv nabla2Ric)
         (t : Real) x i j
 
-
 def contractedNabla2RicLeftInFrame
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
   ∑ k : Idx, ∑ l : Idx,
     gInv t x k l * nabla2Ric t x k i j l
-
 
 def contractedNabla2RicRightInFrame
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -117,14 +114,12 @@ def scalarHessianFromNabla2RicInFrame
   ∑ k : Idx, ∑ l : Idx,
     gInv t x k l * nabla2Ric t x i j k l
 
-
 def contractedNabla2RicTraceAInFrame
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
   ∑ k : Idx, ∑ l : Idx,
     gInv t x k l * nabla2Ric t x i k j l
-
 
 def contractedNabla2RicTraceBInFrame
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -218,7 +213,6 @@ theorem contractedNabla2RicTraceRightNatural_eq_traceB
     _ = contractedNabla2RicTraceBInFrame (M := M) gInv nabla2Ric
           (t : Real) x i j := hB.symm
 
-
 def DifferentiatedContractedBianchiInFrameOnLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -237,7 +231,6 @@ def DifferentiatedContractedBianchiInFrameOnLocal
         (1 / 2 : Real) *
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
             (t : Real) x i j
-
 
 def HessSymmLoc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

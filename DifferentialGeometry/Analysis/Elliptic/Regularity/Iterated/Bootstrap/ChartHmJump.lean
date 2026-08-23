@@ -124,12 +124,12 @@ private def buildLevelZero
     {n : ℕ} (dirs : Fin n → Fin (Module.finrank ℝ E))
     (h_chart_H_m_plus_1_u :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g (m + 1) 2
+        (I := I) (M := M) (m + 1) 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
     (h_chart_H_m_RHS :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g m 2
+        (I := I) (M := M) m 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
@@ -281,12 +281,12 @@ private def buildLevel
     {n : ℕ} (dirs : Fin n → Fin (Module.finrank ℝ E))
     (h_chart_H_m_plus_1_u :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g (m + 1) 2
+        (I := I) (M := M) (m + 1) 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
     (h_chart_H_m_RHS :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g m 2
+        (I := I) (M := M) m 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
@@ -311,12 +311,12 @@ private theorem chosenMthMixed_memWkp_two_two
     (m : ℕ)
     (h_chart_H_m_plus_1_u :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g (m + 1) 2
+        (I := I) (M := M) (m + 1) 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
     (h_chart_H_m_RHS :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g m 2
+        (I := I) (M := M) m 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
@@ -370,12 +370,12 @@ theorem chartPushed_memWkp_succ_jump
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_chart_H_m_plus_1_u :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g (m + 1) 2
+        (I := I) (M := M) (m + 1) 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
     (h_chart_H_m_RHS :
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g m 2
+        (I := I) (M := M) m 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :

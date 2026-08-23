@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)] [NeZero n]
 
 omit [NeZero n] in
-theorem metricRm04_round_invariant [NeZero n]
+theorem metricRm04_round_invariant
     (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1)
     (X Y Z W : TangentSpace (𝓡 n) x) :
     metricRm04StdAt (roundMetric (E := E) (n := n)) x X Y Z W
@@ -29,15 +29,49 @@ theorem metricRm04_round_invariant [NeZero n]
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x Y)
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x Z)
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x W) := by
-  haveI : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
-    rw [finrank_euclideanSpace_fin]; infer_instance
-  haveI : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
-    EuclideanSpace.instIsManifoldSphere.of_le le_top
-  haveI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
-    EuclideanSpace.instIsManifoldSphere.of_le le_top
-  have h := metricRm04Std_pullback (roundMetric (E := E) (n := n)) (sphereDiffeo (n := n) e)
-    x X Y Z W
-  rwa [pullbackMetric_round_eq] at h
+  by_cases hn : n = 0
+  · subst n
+    letI : Subsingleton (TangentSpace (𝓡 0) x) := by
+      change Subsingleton (EuclideanSpace ℝ (Fin 0))
+      infer_instance
+    letI : Subsingleton (TangentSpace (𝓡 0) (sphereDiffeo (n := 0) e x)) := by
+      change Subsingleton (EuclideanSpace ℝ (Fin 0))
+      infer_instance
+    have hX : X = 0 := Subsingleton.elim _ _
+    have hY : Y = 0 := Subsingleton.elim _ _
+    have hZ : Z = 0 := Subsingleton.elim _ _
+    have hW : W = 0 := Subsingleton.elim _ _
+    subst X
+    subst Y
+    subst Z
+    subst W
+    have hvx : vec4 (I := 𝓡 0) (0 : TangentSpace (𝓡 0) x) 0 0 0 = 0 := by
+      funext i
+      exact Subsingleton.elim _ _
+    have hvy : vec4 (I := 𝓡 0)
+        (0 : TangentSpace (𝓡 0) (sphereDiffeo (n := 0) e x)) 0 0 0 = 0 := by
+      funext i
+      exact Subsingleton.elim _ _
+    have hmf : mfderiv (𝓡 0) (𝓡 0) (sphereDiffeo (n := 0) e) x
+        (0 : TangentSpace (𝓡 0) x) = 0 :=
+      (mfderiv (𝓡 0) (𝓡 0) (sphereDiffeo (n := 0) e) x).map_zero
+    unfold metricRm04StdAt tensor04StdAt
+    rw [hmf, hvx, hvy]
+    exact ((metricRm04At (I := 𝓡 0) (M := sphere (0 : E) 1)
+      (roundMetric (E := E) (n := 0)) x).map_coord_zero 0 rfl).trans
+        ((metricRm04At (I := 𝓡 0) (M := sphere (0 : E) 1)
+          (roundMetric (E := E) (n := 0)) (sphereDiffeo (n := 0) e x)).map_coord_zero 0 rfl).symm
+  · letI : NeZero n := ⟨hn⟩
+    haveI : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
+      rw [finrank_euclideanSpace_fin]
+      infer_instance
+    haveI : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
+      EuclideanSpace.instIsManifoldSphere.of_le le_top
+    haveI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
+      EuclideanSpace.instIsManifoldSphere.of_le le_top
+    have h := metricRm04Std_pullback (roundMetric (E := E) (n := n))
+      (sphereDiffeo (n := n) e) x X Y Z W
+    rwa [pullbackMetric_round_eq] at h
 
 omit [NeZero n] in
 omit [FiniteDimensional ℝ E] in
@@ -91,34 +125,47 @@ private instance sphereModel_neZero :
   rw [finrank_euclideanSpace_fin]
   infer_instance
 
-omit [FiniteDimensional ℝ E] in
+omit [NeZero n] [FiniteDimensional ℝ E] in
 theorem round_riemann_one (x : sphere (0 : E) 1)
     (X Y Z : TangentSpace (𝓡 n) x) :
     riemannOp (LeviCivita (I := 𝓡 n) (roundMetric (E := E) (n := n))) x X Y Z =
       (roundMetric (E := E) (n := n)).inner x Y Z • X -
         (roundMetric (E := E) (n := n)).inner x X Z • Y := by
-  haveI : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
-    EuclideanSpace.instIsManifoldSphere.of_le le_top
-  haveI : IsManifold (𝓡 n) 2 (sphere (0 : E) 1) :=
-    EuclideanSpace.instIsManifoldSphere.of_le le_top
-  haveI : IsManifold (𝓡 n) 3 (sphere (0 : E) 1) :=
-    EuclideanSpace.instIsManifoldSphere.of_le le_top
-  haveI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
-    EuclideanSpace.instIsManifoldSphere.of_le le_top
-  have hRm :
-      ∀ A B C D : TangentSpace (𝓡 n) x,
-        metricRm04StdAt (roundMetric (E := E) (n := n)) x A B C D =
-          1 * ((roundMetric (E := E) (n := n)).inner x B C *
-              (roundMetric (E := E) (n := n)).inner x A D -
-            (roundMetric (E := E) (n := n)).inner x A C *
-              (roundMetric (E := E) (n := n)).inner x B D) := by
-    exact metricRm_of_sec (I := 𝓡 n)
-      (M := sphere (0 : E) 1) (roundMetric (E := E) (n := n)) x 1
-        (fun A B => by
-          simpa only [one_mul] using roundMetric_sec_value (E := E) (n := n) x A B)
-  simpa only [one_smul] using
-    riemannOp_of_rm (I := 𝓡 n)
-      (M := sphere (0 : E) 1) (roundMetric (E := E) (n := n)) x 1 hRm X Y Z
+  by_cases hn : n = 0
+  · subst n
+    letI : Subsingleton (TangentSpace (𝓡 0) x) := by
+      change Subsingleton (EuclideanSpace ℝ (Fin 0))
+      infer_instance
+    have hX : X = 0 := Subsingleton.elim _ _
+    have hY : Y = 0 := Subsingleton.elim _ _
+    have hZ : Z = 0 := Subsingleton.elim _ _
+    subst X
+    subst Y
+    subst Z
+    simp
+  · letI : NeZero n := ⟨hn⟩
+    haveI : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
+      EuclideanSpace.instIsManifoldSphere.of_le le_top
+    haveI : IsManifold (𝓡 n) 2 (sphere (0 : E) 1) :=
+      EuclideanSpace.instIsManifoldSphere.of_le le_top
+    haveI : IsManifold (𝓡 n) 3 (sphere (0 : E) 1) :=
+      EuclideanSpace.instIsManifoldSphere.of_le le_top
+    haveI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
+      EuclideanSpace.instIsManifoldSphere.of_le le_top
+    have hRm :
+        ∀ A B C D : TangentSpace (𝓡 n) x,
+          metricRm04StdAt (roundMetric (E := E) (n := n)) x A B C D =
+            1 * ((roundMetric (E := E) (n := n)).inner x B C *
+                (roundMetric (E := E) (n := n)).inner x A D -
+              (roundMetric (E := E) (n := n)).inner x A C *
+                (roundMetric (E := E) (n := n)).inner x B D) := by
+      exact metricRm_of_sec (I := 𝓡 n)
+        (M := sphere (0 : E) 1) (roundMetric (E := E) (n := n)) x 1
+          (fun A B => by
+            simpa only [one_mul] using roundMetric_sec_value (E := E) (n := n) x A B)
+    simpa only [one_smul] using
+      riemannOp_of_rm (I := 𝓡 n)
+        (M := sphere (0 : E) 1) (roundMetric (E := E) (n := n)) x 1 hRm X Y Z
 
 end Geometry
 end DifferentialGeometry

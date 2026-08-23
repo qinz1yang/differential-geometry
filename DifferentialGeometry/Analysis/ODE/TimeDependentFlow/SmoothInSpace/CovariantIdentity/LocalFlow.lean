@@ -44,7 +44,7 @@ theorem flatLinearization_eq_rawFderiv_add_movingTriv
 
 end Reconciliation
 
-section Assembly
+section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -108,7 +108,7 @@ theorem hcov_of_flatTrivPart_and_movingTrivResidual
   rw [hsplit, hAdecomp, map_add]
   abel
 
-end Assembly
+end
 
 section Producer
 

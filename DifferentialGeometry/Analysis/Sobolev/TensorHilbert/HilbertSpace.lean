@@ -321,6 +321,7 @@ private lemma hkIntegrand_continuousOn
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] in
 private lemma hkIntegrand_zero_off_compact
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)

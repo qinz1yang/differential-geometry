@@ -35,9 +35,9 @@ theorem morseFunction_no_critical_at_upper_level_of_morseChart {m k : ℕ} (hk :
     (hunique : ∀ x : M, f x ∈ Set.Icc (c - a) (c + a) →
       x = data.p ∨ ¬ IsCriticalPointAt I f x)
     {x : M} (hx : f x = c + ε) : ¬ IsCriticalPointAt I f x := by
-  have ha : ε ≤ a := by nlinarith [haε, hε₀.le]
+  have ha : ε ≤ a := by nlinarith only [haε, hε₀.le]
   have hmem : f x ∈ Set.Icc (c - a) (c + a) := by
-    constructor <;> nlinarith [hx, ha, hε.le]
+    constructor <;> nlinarith only [hx, ha, hε.le]
   rcases hunique x hmem with hxp | hnc
   · exfalso
     have hpval : f data.p = c := morseFunction_value_at_morseChartPoint hk c data
@@ -45,7 +45,7 @@ theorem morseFunction_no_critical_at_upper_level_of_morseChart {m k : ℕ} (hk :
       rw [hxp] at hx
       rw [hpval] at hx
       exact hx
-    nlinarith [hε, this]
+    nlinarith only [hε, this]
   · exact hnc
 
 theorem exists_morseRoundedSublevel_diffeomorph_upperSublevel_of_morseChart
@@ -145,12 +145,14 @@ theorem exists_morseRoundedSublevel_diffeomorph_upperSublevel_of_morseChart
   have hF0_le : ∀ x : M, morseRoundedFunction hk c ε r δ R₀ R₁ data x ≤ c → F x 0 ≤ 0 := by
     intro x hx
     dsimp [F, morseSublevelIsotopyFamily]
-    nlinarith
+    simpa only [sub_zero, one_mul, zero_mul, add_zero] using sub_nonpos.mpr hx
   have hmap : ∀ x : M, morseRoundedFunction hk c ε r δ R₀ R₁ data x ≤ c → f (Φ x) ≤ c + ε := by
     intro x hx
     have hF1 : F (Φ x) 1 ≤ 0 := hsub_fwd x (hF0_le x hx)
     dsimp [F, morseSublevelIsotopyFamily] at hF1
-    nlinarith
+    simp only [sub_self, zero_mul, one_mul, zero_add] at hF1
+    simpa only [add_comm] using
+      (sub_le_iff_le_add.mp (sub_nonpos.mp hF1))
   have hbnd : ∀ x : M, morseRoundedFunction hk c ε r δ R₀ R₁ data x = c → f (Φ x) = c + ε := by
     intro x hx
     have hF0 : F x 0 = 0 := by
@@ -159,24 +161,32 @@ theorem exists_morseRoundedSublevel_diffeomorph_upperSublevel_of_morseChart
       ring
     have hF1 : F (Φ x) 1 = 0 := hbnd_fwd x hF0
     dsimp [F, morseSublevelIsotopyFamily] at hF1
-    nlinarith
+    simp only [sub_self, zero_mul, one_mul, zero_add] at hF1
+    simpa only [add_comm] using
+      (sub_eq_iff_eq_add.mp (sub_eq_zero.mp hF1))
   have hstrict : ∀ x : M, morseRoundedFunction hk c ε r δ R₀ R₁ data x < c → f (Φ x) < c + ε := by
     intro x hx
     have hF0 : F x 0 < 0 := by
       dsimp [F, morseSublevelIsotopyFamily]
-      nlinarith
+      simpa only [sub_zero, one_mul, zero_mul, add_zero] using sub_neg.mpr hx
     have hF1 : F (Φ x) 1 < 0 := hstrict_fwd x hF0
     dsimp [F, morseSublevelIsotopyFamily] at hF1
-    nlinarith
+    simp only [sub_self, zero_mul, one_mul, zero_add] at hF1
+    simpa only [add_comm] using
+      (sub_lt_iff_lt_add.mp (sub_neg.mp hF1))
   have hF1_le : ∀ x : M, f x ≤ c + ε → F x 1 ≤ 0 := by
     intro x hx
     dsimp [F, morseSublevelIsotopyFamily]
-    nlinarith
+    simp only [sub_self, zero_mul, one_mul, zero_add]
+    apply sub_nonpos.mpr
+    apply sub_le_iff_le_add.mpr
+    simpa only [add_comm] using hx
   have hmap_back : ∀ x : M, f x ≤ c + ε → morseRoundedFunction hk c ε r δ R₀ R₁ data (Ψ x) ≤ c := by
     intro x hx
     have hF0 : F (Ψ x) 0 ≤ 0 := hsub_back x (hF1_le x hx)
     dsimp [F, morseSublevelIsotopyFamily] at hF0
-    nlinarith
+    simp only [sub_zero, one_mul, zero_mul, add_zero] at hF0
+    exact sub_nonpos.mp hF0
   have hbnd_back : ∀ x : M, f x = c + ε → morseRoundedFunction hk c ε r δ R₀ R₁ data (Ψ x) = c := by
     intro x hx
     have hF1 : F x 1 = 0 := by
@@ -185,15 +195,20 @@ theorem exists_morseRoundedSublevel_diffeomorph_upperSublevel_of_morseChart
       ring
     have hF0 : F (Ψ x) 0 = 0 := hbnd_back x hF1
     dsimp [F, morseSublevelIsotopyFamily] at hF0
-    nlinarith
+    simp only [sub_zero, one_mul, zero_mul, add_zero] at hF0
+    exact sub_eq_zero.mp hF0
   have hstrict_back : ∀ x : M, f x < c + ε → morseRoundedFunction hk c ε r δ R₀ R₁ data (Ψ x) < c := by
     intro x hx
     have hF1 : F x 1 < 0 := by
       dsimp [F, morseSublevelIsotopyFamily]
-      nlinarith
+      simp only [sub_self, zero_mul, one_mul, zero_add]
+      apply sub_neg.mpr
+      apply sub_lt_iff_lt_add.mpr
+      simpa only [add_comm] using hx
     have hF0 : F (Ψ x) 0 < 0 := hstrict_back x hF1
     dsimp [F, morseSublevelIsotopyFamily] at hF0
-    nlinarith
+    simp only [sub_zero, one_mul, zero_mul, add_zero] at hF0
+    exact sub_neg.mp hF0
   let toFun : SublevelSpace (morseRoundedFunction hk c ε r δ R₀ R₁ data) c →
       SublevelSpace f (c + ε) :=
     fun x => ⟨Φ x.1, hmap x.1 x.2⟩
@@ -243,14 +258,14 @@ private theorem no_criticalPointAt_above_c_of_uniqueCritical {m : ℕ} {H : Type
     {x : M} (hx : f x = c + hlevel) :
     ¬ IsCriticalPointAt I f x := by
   have hmem : f x ∈ Set.Icc (c - a) (c + a) := by
-    constructor <;> nlinarith [hx, hlevela]
+    constructor <;> nlinarith only [hx, hlevelpos, hlevela]
   rcases hunique x hmem with hxp | hnc
   · exfalso
     have : c = c + hlevel := by
       rw [hxp] at hx
       rw [hfp] at hx
       exact hx
-    nlinarith [this, hlevelpos]
+    nlinarith only [this, hlevelpos]
   · exact hnc
 
 private theorem regularFamily_f_sublevel_of_uniqueCritical
@@ -305,7 +320,7 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
     simpa [D] using hpre
   have hε₀ε : 2 * ε₀ < ε := (lt_min_iff.mp hε₀le).1
   have hε₀r : 2 * ε₀ < r ^ 2 / 2 := (lt_min_iff.mp hε₀le).2
-  have ha : 0 < a := by nlinarith [hr2a, hε₀]
+  have ha : 0 < a := by nlinarith only [hr2a, hε₀]
   have hlevel_mem : ∀ q : M × ℝ, |F q.1 q.2| ≤ 2 * ε₀ → q.2 ∈ Set.Icc 0 1 →
       f q.1 ∈ Set.Icc (c - a) (c + a) := by
     intro q hq hs
@@ -313,10 +328,27 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
     have hFlo : -(2 * ε₀) ≤ F q.1 q.2 := (abs_le.mp hq).1
     have hlevlo : 2 * ε₀ < r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) := by
       rcases le_total ε (r ^ 2 / 2) with h | h
-      · nlinarith [hε₀ε, hs.2, h]
-      · nlinarith [hε₀r, hs.1, h]
+      · calc
+          2 * ε₀ < ε := hε₀ε
+          _ = (1 - q.2) * ε + q.2 * ε := by ring
+          _ ≤ (1 - q.2) * (r ^ 2 / 2) + q.2 * ε :=
+            add_le_add (mul_le_mul_of_nonneg_left h (sub_nonneg.mpr hs.2)) le_rfl
+          _ = r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) := by ring
+      · calc
+          2 * ε₀ < r ^ 2 / 2 := hε₀r
+          _ = (1 - q.2) * (r ^ 2 / 2) + q.2 * (r ^ 2 / 2) := by ring
+          _ ≤ (1 - q.2) * (r ^ 2 / 2) + q.2 * ε :=
+            add_le_add le_rfl (mul_le_mul_of_nonneg_left h hs.1)
+          _ = r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) := by ring
     have hlevhi : r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) ≤ max (r ^ 2 / 2) ε := by
-      nlinarith [le_max_left (r ^ 2 / 2) ε, le_max_right (r ^ 2 / 2) ε, hs.1, hs.2]
+      calc
+        r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) =
+            (1 - q.2) * (r ^ 2 / 2) + q.2 * ε := by ring
+        _ ≤ (1 - q.2) * max (r ^ 2 / 2) ε + q.2 * max (r ^ 2 / 2) ε :=
+          add_le_add
+            (mul_le_mul_of_nonneg_left (le_max_left _ _) (sub_nonneg.mpr hs.2))
+            (mul_le_mul_of_nonneg_left (le_max_right _ _) hs.1)
+        _ = max (r ^ 2 / 2) ε := by ring
     have hmaxa : max (r ^ 2 / 2) ε + 2 * ε₀ ≤ a := by
       rcases le_total (r ^ 2 / 2) ε with h | h
       · rw [max_eq_right h]
@@ -325,19 +357,29 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
         exact hr2a
     constructor
     · dsimp [F] at hFlo
-      nlinarith [hFlo, hlevlo, ha]
+      nlinarith only [hFlo, hlevlo, ha]
     · dsimp [F] at hFhi
-      nlinarith [hFhi, hlevhi, hmaxa]
+      nlinarith only [hFhi, hlevhi, hmaxa]
   have hlevel_ne_c : ∀ q : M × ℝ, |F q.1 q.2| ≤ 2 * ε₀ → q.2 ∈ Set.Icc 0 1 →
       f q.1 ≠ c := by
     intro q hq hs
     have hFlo : -(2 * ε₀) ≤ F q.1 q.2 := (abs_le.mp hq).1
     have hlevlo : 2 * ε₀ < r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) := by
       rcases le_total ε (r ^ 2 / 2) with h | h
-      · nlinarith [hε₀ε, hs.2, h]
-      · nlinarith [hε₀r, hs.1, h]
+      · calc
+          2 * ε₀ < ε := hε₀ε
+          _ = (1 - q.2) * ε + q.2 * ε := by ring
+          _ ≤ (1 - q.2) * (r ^ 2 / 2) + q.2 * ε :=
+            add_le_add (mul_le_mul_of_nonneg_left h (sub_nonneg.mpr hs.2)) le_rfl
+          _ = r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) := by ring
+      · calc
+          2 * ε₀ < r ^ 2 / 2 := hε₀r
+          _ = (1 - q.2) * (r ^ 2 / 2) + q.2 * (r ^ 2 / 2) := by ring
+          _ ≤ (1 - q.2) * (r ^ 2 / 2) + q.2 * ε :=
+            add_le_add le_rfl (mul_le_mul_of_nonneg_left h hs.1)
+          _ = r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2) := by ring
     dsimp [F] at hFlo
-    nlinarith [hFlo, hlevlo]
+    nlinarith only [hFlo, hlevlo]
   have hstrip : IsCompact {q : M × ℝ | |F q.1 q.2| ≤ 2 * ε₀ ∧ q.2 ∈ Set.Icc 0 1} := by
     have hK : IsCompact ((f ⁻¹' Set.Icc (c - a) (c + a)) ×ˢ (Set.Icc (0 : ℝ) 1)) :=
       hcompact.prod isCompact_Icc
@@ -383,22 +425,24 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
       change f x - (c + r ^ 2 / 2 + s * (ε - r ^ 2 / 2)) ≤ -ε - η
       have hle : f x - c ≤ -ε - η := by linarith
       have hsum : 0 ≤ (1 - s) * (r ^ 2 / 2) + s * ε := by
-        nlinarith [sq_nonneg r, hε.le, hs.1, hs.2]
+        exact add_nonneg
+          (mul_nonneg (sub_nonneg.mpr hs.2) (div_nonneg (sq_nonneg r) (by norm_num)))
+          (mul_nonneg hs.1 hε.le)
       linarith [hle, hsum]
-    have hFneg' : F x s < 0 := by nlinarith [hFneg, hε, hηε₀]
+    have hFneg' : F x s < 0 := by nlinarith only [hFneg, hε, hε₀, hηε₀]
     have hFabs : ε + η ≤ |F x s| := by
       rw [abs_of_neg hFneg']
       linarith
-    nlinarith [hFabs, hηε₀]
+    nlinarith only [hFabs, hε, hηε₀]
   have hDsign : ∀ x : M, x ∈ D → (F x 0 ≤ 0 ↔ F x 1 ≤ 0) := by
     intro x hx
     change f x ≤ c - ε - η at hx
     have h0 : F x 0 < 0 := by
       dsimp [F]
-      nlinarith [hx]
+      nlinarith only [hx, sq_nonneg r, hε, hε₀, hηε₀]
     have h1 : F x 1 < 0 := by
       dsimp [F]
-      nlinarith [hx, hε]
+      nlinarith only [hx, hε, hε₀, hηε₀]
     constructor
     · intro _
       exact le_of_lt h1
@@ -408,21 +452,26 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
     D hDcl hDsep hDsign with
     ⟨Φ, Ψ, hΦsm, hΨsm, hDfix, hsub_fwd, hsub_back, hbnd_fwd, hbnd_back,
       hstrict_fwd, hstrict_back, hinv_fwd, hinv_back⟩
+  have hlevel_one : c + r ^ 2 / 2 + 1 * (ε - r ^ 2 / 2) = c + ε := by ring
   refine ⟨Φ, Ψ, hΦsm, hΨsm, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro x hx
     exact hDfix x hx
   · intro x hx
     have hF1 : F (Φ x) 1 ≤ 0 := hsub_fwd x (by
       dsimp [F]
-      nlinarith)
+      simp only [zero_mul, add_zero]
+      exact sub_nonpos.mpr hx)
     dsimp [F] at hF1
-    nlinarith
+    simp only [hlevel_one] at hF1
+    exact sub_nonpos.mp hF1
   · intro y hy
     have hF0 : F (Ψ y) 0 ≤ 0 := hsub_back y (by
       dsimp [F]
-      nlinarith)
+      simp only [hlevel_one]
+      exact sub_nonpos.mpr hy)
     dsimp [F] at hF0
-    nlinarith
+    simp only [zero_mul, add_zero] at hF0
+    exact sub_nonpos.mp hF0
   · intro x hx
     have hF0 : F x 0 = 0 := by
       dsimp [F]
@@ -430,7 +479,8 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
       ring
     have hF1 : F (Φ x) 1 = 0 := hbnd_fwd x hF0
     dsimp [F] at hF1
-    nlinarith
+    simp only [hlevel_one] at hF1
+    exact sub_eq_zero.mp hF1
   · intro y hy
     have hF1 : F y 1 = 0 := by
       dsimp [F]
@@ -438,27 +488,34 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
       ring
     have hF0 : F (Ψ y) 0 = 0 := hbnd_back y hF1
     dsimp [F] at hF0
-    nlinarith
+    simp only [zero_mul, add_zero] at hF0
+    exact sub_eq_zero.mp hF0
   · intro x hx
     have hF1 : F (Φ x) 1 < 0 := hstrict_fwd x (by
       dsimp [F]
-      nlinarith)
+      simp only [zero_mul, add_zero]
+      exact sub_neg.mpr hx)
     dsimp [F] at hF1
-    nlinarith
+    simp only [hlevel_one] at hF1
+    exact sub_neg.mp hF1
   · intro y hy
     have hF0 : F (Ψ y) 0 < 0 := hstrict_back y (by
       dsimp [F]
-      nlinarith)
+      simp only [hlevel_one]
+      exact sub_neg.mpr hy)
     dsimp [F] at hF0
-    nlinarith
+    simp only [zero_mul, add_zero] at hF0
+    exact sub_neg.mp hF0
   · intro x hx
     exact hinv_fwd x (by
       dsimp [F]
-      nlinarith)
+      simp only [zero_mul, add_zero]
+      exact sub_nonpos.mpr hx)
   · intro y hy
     exact hinv_back y (by
       dsimp [F]
-      nlinarith)
+      simp only [hlevel_one]
+      exact sub_nonpos.mpr hy)
 
 
 theorem exists_sublevel_diffeomorph_regularLevels_of_uniqueCriticalPoint
@@ -480,16 +537,16 @@ theorem exists_sublevel_diffeomorph_regularLevels_of_uniqueCriticalPoint
     (hcs₁ : ChartedSpace (MorseHalfSpace m) (SublevelSpace f (c + r ^ 2 / 2)) :=
       manifoldSublevelChartedSpace I f (c + r ^ 2 / 2) hf (fun x hx =>
         no_criticalPointAt_above_c_of_uniqueCritical f p c hfp a (r ^ 2 / 2)
-          (by positivity) (by nlinarith [hr2a]) hunique hx))
+          (by positivity) (by nlinarith only [hr2a, hε₀.le]) hunique hx))
     (hcs₂ : ChartedSpace (MorseHalfSpace m) (SublevelSpace f (c + ε)) :=
       manifoldSublevelChartedSpace I f (c + ε) hf (fun x hx =>
         no_criticalPointAt_above_c_of_uniqueCritical f p c hfp a ε hε
-          (by nlinarith [haε]) hunique hx))
+          (by nlinarith only [haε, hε₀.le]) hunique hx))
     (hchart₁ : ∀ y : SublevelSpace f (c + r ^ 2 / 2), hcs₁.chartAt y =
       (if h : f y.1 = c + r ^ 2 / 2 then
         manifoldSublevelBoundaryChart I f (c + r ^ 2 / 2) y h hf
           (fun x hx => no_criticalPointAt_above_c_of_uniqueCritical f p c hfp a (r ^ 2 / 2)
-            (by positivity) (by nlinarith [hr2a]) hunique hx)
+            (by positivity) (by nlinarith only [hr2a, hε₀.le]) hunique hx)
         else manifoldSublevelInteriorChart I f (c + r ^ 2 / 2) y
           (lt_of_le_of_ne (show f y.1 ≤ c + r ^ 2 / 2 from y.2) h) hf) := by
       intro y
@@ -498,7 +555,7 @@ theorem exists_sublevel_diffeomorph_regularLevels_of_uniqueCriticalPoint
       (if h : f y.1 = c + ε then
         manifoldSublevelBoundaryChart I f (c + ε) y h hf
           (fun x hx => no_criticalPointAt_above_c_of_uniqueCritical f p c hfp a ε hε
-            (by nlinarith [haε]) hunique hx)
+            (by nlinarith only [haε, hε₀.le]) hunique hx)
         else manifoldSublevelInteriorChart I f (c + ε) y
           (lt_of_le_of_ne (show f y.1 ≤ c + ε from y.2) h) hf) := by
       intro y
@@ -519,10 +576,10 @@ theorem exists_sublevel_diffeomorph_regularLevels_of_uniqueCriticalPoint
       hinv_fwd, hinv_back⟩
   have hreg₁ : ∀ x : M, f x = c + r ^ 2 / 2 → ¬ IsCriticalPointAt I f x := fun x hx =>
     no_criticalPointAt_above_c_of_uniqueCritical f p c hfp a (r ^ 2 / 2)
-      (by positivity) (by nlinarith [hr2a]) hunique hx
+      (by positivity) (by nlinarith only [hr2a, hε₀.le]) hunique hx
   have hreg₂ : ∀ x : M, f x = c + ε → ¬ IsCriticalPointAt I f x := fun x hx =>
     no_criticalPointAt_above_c_of_uniqueCritical f p c hfp a ε hε
-      (by nlinarith [haε]) hunique hx
+      (by nlinarith only [haε, hε₀.le]) hunique hx
   let toFun : SublevelSpace f (c + r ^ 2 / 2) → SublevelSpace f (c + ε) :=
     fun x => ⟨Φ x.1, hmap x.1 x.2⟩
   let invFun : SublevelSpace f (c + ε) → SublevelSpace f (c + r ^ 2 / 2) :=
@@ -628,9 +685,9 @@ private theorem morseHandleAdjunction_diffeomorph_upperSublevel_engine
               hεr)
               ⟨y, by
                 have hsum : 0 ≤ r ^ 2 + δ := by positivity
-                have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+                have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
                 change f y ≤ c - ε
-                nlinarith [hydeep, hη0]⟩) := by
+                nlinarith only [hydeep, hη0]⟩) := by
   classical
   let φ : Handle.AttachingRegion k (m + 1 - k) → SublevelSpace f (c - ε) :=
     morseAttachingEmbedding hk c ε r data hε

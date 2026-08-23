@@ -1,5 +1,6 @@
 /-
 Authors: Yuan Liao, Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber
@@ -66,7 +67,7 @@ import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
-import DifferentialGeometry.Bundle.SectionRealized
+import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
 namespace DifferentialGeometry
@@ -123,7 +124,7 @@ theorem tensor0SModelAt_applyInput_eq
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ext v
   rw [Tensor0SSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
-    (x₀ := x₀) (x := x) s hx]
+    (x₀ := x₀) (x := x) s]
   rw [TensorRSSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
     (x₀ := x₀) (x := x) r s hx]
   have hθ :

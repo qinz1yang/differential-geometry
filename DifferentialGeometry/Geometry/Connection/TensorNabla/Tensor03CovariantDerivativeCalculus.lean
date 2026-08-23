@@ -216,11 +216,10 @@ theorem tensor03Cov_pairing
         + T x (Y x) (Z x) (cov.toFun W x v) := by
   classical
   set X : Π x : M, TangentSpace I x := FiberBundle.extend E v
-  have hX : MDiffAt (T% X) x := mdifferentiableAt_extend ..
   have hXx : X x = v := by simp [X]
   rw [show v = X x from hXx.symm]
   rw [tensor03Cov_toFun, tensor03CovFun_apply,
-      tensor03CovAt_apply_of_diff_extend cov hT hX hY hZ hW]
+      tensor03CovAt_apply_of_diff_extend cov hT hY hZ hW]
   unfold tensor03Scalar
   ring
 

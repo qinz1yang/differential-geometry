@@ -167,7 +167,7 @@ theorem mc_scaleMetric
   ring
 
 theorem lc_scaleMetric
-    [FiniteDimensional Real E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [FiniteDimensional Real E] [CompleteSpace E]
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
     {c : Real} (hc : 0 < c)

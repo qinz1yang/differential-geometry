@@ -102,25 +102,25 @@ theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
     TimeSobolev.timeH1.deriv_mk, zero_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun s => ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i)
+    (fun s => ((maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv s).coeff i)
         =ᵐ[timeMeasure T]
       fun s => (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s +
         (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) s := by
   have hderiv := maxRegDuhamelMap_deriv (I := I) (M := M) (a := a) (T := T)
-    hT hT1 u₀ gforce
+    hT u₀ gforce
   have hcoe := timeModeCoeff_coeFn (I := I) (M := M)
-    (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv i
+    (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv i
   have hhom := timeModeCoeff_coeFn (I := I) (M := M)
     (maxRegHomogeneousDerivField (I := I) (M := M) a T u₀) i
   have hduh := timeModeCoeff_coeFn (I := I) (M := M)
     (maximalRegularityDerivField (I := I) (M := M) a hT.le gforce) i
   have hsum : timeModeCoeff (I := I) (M := M)
-      (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv i =
+      (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv i =
         homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i +
           derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i := by
     rw [hderiv, timeModeCoeff_add (I := I) (M := M),
@@ -135,19 +135,19 @@ theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
   rw [← hs1, hsum, hs2, Pi.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun t => (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce t).coeff i)
+    (fun t => (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce t).coeff i)
         =ᵐ[timeMeasure T]
       fun t => u₀.coeff i + ∫ s in (0 : ℝ)..t,
-        ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i := by
+        ((maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv s).coeff i := by
   have hfield_coe := timeModeCoeff_coeFn (I := I) (M := M)
-    (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) i
+    (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) i
   have hsplit : timeModeCoeff (I := I) (M := M)
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) i =
+      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) i =
         homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i +
           solModeCoeff (I := I) (M := M) (a := a) hT.le gforce i := by
     rw [maxRegDuhamelSolField, timeModeCoeff_add (I := I) (M := M),
@@ -161,7 +161,7 @@ theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
   have hA := homModeCoeff_eq_init_add_integral (I := I) (M := M) (a := a) (T := T) u₀ i
   have hB := solModeCoeff_eq_integral (I := I) (M := M) (a := a) hT.le gforce i
   have hderiv_coe := maxRegDuhamelMap_deriv_coeff_ae (I := I) (M := M)
-    (h_compact := h_compact) (a := a) hT hT1 u₀ gforce i
+    (h_compact := h_compact) (a := a) hT u₀ gforce i
   filter_upwards [hfield_coe, haddcoe, hA, hB,
     ae_restrict_mem (μ := volume) measurableSet_Icc] with t ht1 ht2 htA htB htmem
   rw [← ht1, hsplit, ht2, Pi.add_apply, htA, htB]
@@ -186,7 +186,7 @@ theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
         ((homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s +
           (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) s)) =
       ∫ s in (0 : ℝ)..t,
-        ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i := by
+        ((maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv s).coeff i := by
     refine intervalIntegral.integral_congr_ae ?_
     have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
       (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc hh0 htmem')
@@ -202,14 +202,14 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun t => (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce t).coeff i)
+    (fun t => (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t).coeff i)
         =ᵐ[timeMeasure T]
       fun t => u₀.coeff i + ∫ s in (0 : ℝ)..t,
-        ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i := by
+        ((maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv s).coeff i := by
   have hHa1 := timeModeCoeff_coeFn (I := I) (M := M)
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) i
+    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) i
   have hHa1mode : timeModeCoeff (I := I) (M := M)
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) i =
+      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) i =
         homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i +
           solModeCoeff (I := I) (M := M) (a := a) hT.le gforce i := by
     rw [maxRegDuhamelSolFieldHa1, timeModeCoeff_add (I := I) (M := M),
@@ -223,7 +223,7 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
   have hA := homModeCoeff_eq_init_add_integral (I := I) (M := M) (a := a) (T := T) u₀ i
   have hB := solModeCoeff_eq_integral (I := I) (M := M) (a := a) hT.le gforce i
   have hderiv_coe := maxRegDuhamelMap_deriv_coeff_ae (I := I) (M := M)
-    (h_compact := h_compact) (a := a) hT hT1 u₀ gforce i
+    (h_compact := h_compact) (a := a) hT u₀ gforce i
   filter_upwards [hHa1, haddcoe, hA, hB,
     ae_restrict_mem (μ := volume) measurableSet_Icc] with t htHa1 htadd htA htB htmem
   have htmem' : t ∈ Set.Icc (0 : ℝ) T := htmem
@@ -242,7 +242,7 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
         ((homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s +
           (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) s)) =
       ∫ s in (0 : ℝ)..t,
-        ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i := by
+        ((maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv s).coeff i := by
     refine intervalIntegral.integral_congr_ae ?_
     have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
       (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc hh0 htmem')
@@ -253,27 +253,27 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
   rw [hcongr]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem solField_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
+theorem solField_toFun_ae (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     (fun t =>
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce t))
+        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce t))
       =ᵐ[timeMeasure T]
-        (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).toFun := by
+        (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).toFun := by
   haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g) (r := r) (s := s) h_compact
-  set u := maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce with hu_def
+  set u := maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce with hu_def
   have hper : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ∀ᵐ t ∂(timeMeasure T),
-        (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce t).coeff i =
+        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce t).coeff i =
           (u.toFun t).coeff i := by
     intro i
     have hfield := maxRegDuhamelSolField_coeff_ae (I := I) (M := M)
-      (h_compact := h_compact) (a := a) hT hT1 u₀ gforce i
+      (h_compact := h_compact) (a := a) hT u₀ gforce i
     filter_upwards [hfield, ae_restrict_mem (μ := volume) measurableSet_Icc] with t htfield htmem
     have h0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T := ⟨le_rfl, htmem.1.trans htmem.2⟩
     have hcomm :
@@ -310,16 +310,16 @@ theorem solFieldHa1_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (fun t =>
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 1 by linarith)
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce t))
+        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t))
       =ᵐ[timeMeasure T]
-        (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).toFun := by
+        (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).toFun := by
   haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g) (r := r) (s := s) h_compact
-  set u := maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce with hu_def
+  set u := maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce with hu_def
   have hper : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ∀ᵐ t ∂(timeMeasure T),
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce t).coeff i =
+        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t).coeff i =
           (u.toFun t).coeff i := by
     intro i
     have hfield := maxRegDuhamelSolFieldHa1_coeff_ae (I := I) (M := M)

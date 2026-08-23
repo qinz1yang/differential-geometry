@@ -1,7 +1,5 @@
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.Analysis.Calculus.ContDiff.Comp
+import DifferentialGeometry.Analysis.Calculus.DirectionalJet
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.TangentCone.Prod
 
 noncomputable section
@@ -10,58 +8,6 @@ open scoped ContDiff
 
 namespace DifferentialGeometry
 namespace Analysis
-
-section DirectionalCommutation
-
-theorem fderivWithin_iteratedFDerivWithin_apply_eq {G W : Type*}
-    [NormedAddCommGroup G] [NormedSpace ℝ G] [NormedAddCommGroup W] [NormedSpace ℝ W]
-    {s : Set G} (hs : UniqueDiffOn ℝ s) (hs' : s ⊆ closure (interior s))
-    (n : ℕ) {f : G → W} (hf : ContDiffOn ℝ ∞ f s) (u : G) :
-    ∀ x ∈ s, fderivWithin ℝ (iteratedFDerivWithin ℝ n f s) s x u
-      = iteratedFDerivWithin ℝ n (fun y => fderivWithin ℝ f s y u) s x := by
-  induction n with
-  | zero =>
-    intro x hx
-    rw [iteratedFDerivWithin_zero_eq_comp,
-      LinearIsometryEquiv.comp_fderivWithin _ (hs x hx)]
-    ext m
-    rw [ContinuousLinearMap.comp_apply, iteratedFDerivWithin_zero_apply]
-    rfl
-  | succ n IH =>
-    intro x hx
-    set H := iteratedFDerivWithin ℝ n f s with hH_def
-    set e := (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => G) W).symm with he_def
-    have hLHS : fderivWithin ℝ (iteratedFDerivWithin ℝ (n + 1) f s) s x u
-        = e (fderivWithin ℝ (fderivWithin ℝ H s) s x u) := by
-      rw [iteratedFDerivWithin_succ_eq_comp_left]
-      rw [e.comp_fderivWithin (f := fderivWithin ℝ H s) (hs x hx)]
-      rfl
-    have hIHeq : Set.EqOn (iteratedFDerivWithin ℝ n (fun y => fderivWithin ℝ f s y u) s)
-        (fun y => fderivWithin ℝ H s y u) s := fun y hy => (IH y hy).symm
-    have hRHS : iteratedFDerivWithin ℝ (n + 1) (fun y => fderivWithin ℝ f s y u) s x
-        = e (fderivWithin ℝ (fun y => fderivWithin ℝ H s y u) s x) := by
-      rw [iteratedFDerivWithin_succ_eq_comp_left, Function.comp_apply,
-        fderivWithin_congr hIHeq (hIHeq hx)]
-    rw [hLHS, hRHS]
-    congr 1
-    have hHC2 : ContDiffWithinAt ℝ 2 H s x := by
-      refine (hf x hx).iteratedFDerivWithin_right hs ?_ hx
-      have h2n : (2 : WithTop ℕ∞) + (n : WithTop ℕ∞) = ((2 + n : ℕ∞) : WithTop ℕ∞) := by norm_cast
-      rw [h2n]; exact_mod_cast le_top
-    have hn2 : minSmoothness ℝ 2 ≤ (2 : WithTop ℕ∞) := le_of_eq minSmoothness_of_isRCLikeNormedField
-    have hsymH : IsSymmSndFDerivWithinAt ℝ H s x :=
-      hHC2.isSymmSndFDerivWithinAt hn2 hs (hs' hx) hx
-    have hHdiff : DifferentiableWithinAt ℝ (fderivWithin ℝ H s) s x :=
-      (hHC2.fderivWithin_right hs (m := 1) le_rfl hx).differentiableWithinAt (by simp)
-    have hflip : fderivWithin ℝ (fun y => fderivWithin ℝ H s y u) s x
-        = (fderivWithin ℝ (fderivWithin ℝ H s) s x).flip u := by
-      rw [fderivWithin_clm_apply (hs x hx) hHdiff (differentiableWithinAt_const u),
-        fderivWithin_const_apply, ContinuousLinearMap.comp_zero, zero_add]
-    refine ContinuousLinearMap.ext (fun v => ?_)
-    rw [hflip, ContinuousLinearMap.flip_apply]
-    exact hsymH.eq u v
-
-end DirectionalCommutation
 
 section ProdMatch
 
@@ -104,7 +50,11 @@ theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish
       rw [show (0 : (ℝ × E) →L[ℝ] ((ℝ × E) [×n]→L[ℝ] F)) (t, e) = 0 from rfl, hsplit, map_add,
         map_smul]
       have htrans : fderivWithin ℝ (iteratedFDerivWithin ℝ n D S) S (0, z) ((1:ℝ), (0:E)) = 0 := by
-        rw [fderivWithin_iteratedFDerivWithin_apply_eq hUD hSclo n hD ((1:ℝ), (0:E)) (0, z) hmem]
+        rw [fderivWithin_iteratedFDerivWithin_apply_eq hUD hSclo n
+          (hD.of_le
+            (WithTop.coe_le_coe.mpr le_top :
+              ((n : WithTop ℕ∞) + 2) ≤ ∞))
+          ((1:ℝ), (0:E)) (0, z) hmem]
         have hDt : ContDiffOn ℝ ∞ (fun y => fderivWithin ℝ D S y ((1:ℝ), (0:E))) S := by
           have hfd : ContDiffOn ℝ ∞ (fderivWithin ℝ D S) S :=
             hD.fderivWithin hUD (by exact_mod_cast le_top)

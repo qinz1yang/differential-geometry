@@ -246,6 +246,7 @@ theorem memH01_indicator_ball_of_closedBall_subset
     (hsub : Metric.closedBall c r ⊆ Ω)
     {φ : E → ℝ} (hφ0 : MemH01 φ (Metric.ball c r)) :
     MemH01 ((Metric.ball c r).indicator φ) Ω := by
+  let _ := _hr
   let hφ0_real : MemW01p (ENNReal.ofReal (2 : ℝ)) φ (Metric.ball c r) := by
     simpa using hφ0
   have hball0 : MemW01p 2 ((Metric.ball c r).indicator φ) Set.univ := by
@@ -297,10 +298,10 @@ noncomputable def ballIndicatorWitnessOn
   simpa [htwo] using hφExtUniv.restrict hΩ (by intro x hx; simp)
 
 omit [NeZero d] in
-@[simp] private lemma cast_MemW1pWitness_weakGrad
+private lemma cast_MemW1pWitness_weakGrad
     {p q : ENNReal} {Ω : Set E} {f : E → ℝ}
     (hpq : p = q) (h : MemW1pWitness p f Ω) :
-    (Eq.mp (by cases hpq; rfl : MemW1pWitness p f Ω = MemW1pWitness q f Ω) h).weakGrad =
+    (cast (by cases hpq; rfl : MemW1pWitness p f Ω = MemW1pWitness q f Ω) h).weakGrad =
       h.weakGrad := by
   cases hpq
   rfl
@@ -354,6 +355,7 @@ theorem bilinForm_ball_restrict_eq_zeroExtend
     bilinFormOfCoeff (A.restrict (Metric.ball_subset_closedBall.trans hsub))
         (hu.restrict Metric.isOpen_ball (Metric.ball_subset_closedBall.trans hsub)) hφ =
       bilinFormOfCoeff A hu (ballIndicatorWitnessOn (d := d) hΩ hφ0 hφ) := by
+  let _ := _hr
   let hφExt : MemW1pWitness 2 ((Metric.ball c r).indicator φ) Ω :=
     ballIndicatorWitnessOn (d := d) hΩ hφ0 hφ
   let A' : EllipticCoeff d (Metric.ball c r) :=
@@ -531,6 +533,7 @@ theorem IsSubsolution.sub_const_ball
     {A : EllipticCoeff d (Metric.ball c r)} {u : E → ℝ}
     (hsub : IsSubsolution A u) (k : ℝ) :
     IsSubsolution A (fun x => u x - k) := by
+  let _ := _hr
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball c r)) := by
     rw [MeasureTheory.isFiniteMeasure_iff]
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := r))
@@ -553,6 +556,7 @@ theorem IsSupersolution.sub_const_ball
     {A : EllipticCoeff d (Metric.ball c r)} {u : E → ℝ}
     (hsuper : IsSupersolution A u) (k : ℝ) :
     IsSupersolution A (fun x => u x - k) := by
+  let _ := _hr
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball c r)) := by
     rw [MeasureTheory.isFiniteMeasure_iff]
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := r))
@@ -582,6 +586,7 @@ theorem IsSubsolution.neg_ball
     {A : EllipticCoeff d (Metric.ball c r)} {u : E → ℝ}
     (hsub : IsSubsolution A u) :
     IsSupersolution A (fun x => -u x) := by
+  let _ := _hr
   let hu : MemW1pWitness 2 u (Metric.ball c r) := MemW1p.someWitness hsub.1
   let hneg : MemW1pWitness 2 (fun x => -u x) (Metric.ball c r) := by
     simpa using hu.smul (-1)
@@ -603,6 +608,7 @@ theorem IsSupersolution.neg_ball
     {A : EllipticCoeff d (Metric.ball c r)} {u : E → ℝ}
     (hsuper : IsSupersolution A u) :
     IsSubsolution A (fun x => -u x) := by
+  let _ := _hr
   let hu : MemW1pWitness 2 u (Metric.ball c r) := MemW1p.someWitness hsuper.1
   let hneg : MemW1pWitness 2 (fun x => -u x) (Metric.ball c r) := by
     simpa using hu.smul (-1)

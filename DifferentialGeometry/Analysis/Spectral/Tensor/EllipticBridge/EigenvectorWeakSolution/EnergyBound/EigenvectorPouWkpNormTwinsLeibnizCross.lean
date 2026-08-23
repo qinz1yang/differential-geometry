@@ -50,7 +50,6 @@ private lemma eigenIdx_val_pos
   exact (tensorResolvent_eigenvalue_mem_unit_interval
     (I := I) (M := M) g r s hu_in hu_ne).1
 
-open DifferentialGeometry.Analysis.Spectral
 open Analysis.Laplacian.SmoothFChartResidualBilinearBound
 
 omit [CompleteSpace E] in

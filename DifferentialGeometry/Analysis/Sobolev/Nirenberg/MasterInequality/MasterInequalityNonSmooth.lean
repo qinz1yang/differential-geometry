@@ -91,13 +91,11 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -163,17 +161,17 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
   classical
   have hε_eff_pos₀ : (0 : ℝ) < B.lam / 8 := div_pos B.hlam_pos (by norm_num)
   have hC1 := cross_1_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    h_weakPartial hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
+    hη hη_supp hη_range h_fderiv_eta hΩ'_compact
     hh_supp_in_Ω' k h_FK_diffQuot_u_bound (B.lam / 8) hε_eff_pos₀
-  have hC2 := cross_2_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    h_weakPartial hη hη_supp hη_range hΩ' hΩ'_closure hΩ'_compact
+  have hC2 := cross_2_bound_nonsmooth_quantitative (d := d) B hg_l2
+    hη hη_supp hη_range hΩ' hΩ'_compact
     hh_supp_in_Ω' k (B.lam / 8) hε_eff_pos₀
   have hC3 := diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    h_weakPartial hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
+    hη hη_supp hη_range hN h_fderiv_eta hΩ'_compact
     hh_supp_in_Ω' k h_FK_diffQuot_u_bound
   have hCc := c_term_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    h_weakPartial hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
-    hη_in_Ω' hh_supp_in_Ω' k (B.lam / 8) hε_eff_pos₀ h_v_test_sq_bound
+    hη hη_supp hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    (B.lam / 8) hε_eff_pos₀ h_v_test_sq_bound
     h_FK_diffQuot_u_bound
   have h_v_test_sq_bound_sum : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
@@ -258,9 +256,9 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
             ∂(volume : Measure E) :=
       mul_le_mul_of_nonneg_left h_int_le (by linarith)
     linarith
-  have hCf := f_term_bound_nonsmooth_quantitative (d := d) hf_l2_loc hu_l2 hg_l2
-    h_weakPartial hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
-    hη_in_Ω' hh_supp_in_Ω' k h_FK_diffQuot_u_bound h_v_test_sq_bound_sum
+  have hCf := f_term_bound_nonsmooth_quantitative (d := d) hf_l2_loc hu_l2
+    hη hη_supp hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    h_FK_diffQuot_u_bound h_v_test_sq_bound_sum
     (B.lam / 8) hε_eff_pos₀
   set ε_eff : ℝ := B.lam / 8 with hε_eff_def
   set Λ : ℝ := Classical.choose
@@ -454,13 +452,11 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth_quantitative
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -521,8 +517,8 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth_quantitative
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
   have hC := nirenberg_master_inequality_after_young_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 h_weakPartial hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
   intro h hh hh_le
@@ -542,13 +538,11 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -611,8 +605,8 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
   have hC := nirenberg_master_inequality_absorbed_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 h_weakPartial hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
   intro h hh hh_le
@@ -708,13 +702,11 @@ theorem nirenberg_master_inequality_after_young_nonsmooth
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -780,8 +772,8 @@ theorem nirenberg_master_inequality_after_young_nonsmooth
     nirenbergMasterYoungConstant_nonneg (d := d) B hN hΩ'_compact k, ?_⟩
   intro h hh hh_le
   exact nirenberg_master_inequality_after_young_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 h_weakPartial hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound h_master_nonsmooth hh hh_le
 
 
@@ -793,13 +785,11 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -861,8 +851,8 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth
     nirenbergMasterYoungConstant_nonneg (d := d) B hN hΩ'_compact k, ?_⟩
   intro h hh hh_le
   exact nirenberg_master_inequality_absorbed_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 h_weakPartial hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound h_master_nonsmooth hh hh_le
 
 
@@ -874,13 +864,11 @@ theorem nirenberg_diffQuot_g_localL2_bound
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -944,8 +932,8 @@ theorem nirenberg_diffQuot_g_localL2_bound
     nirenbergMasterYoungConstant_nonneg (d := d) B hN hΩ'_compact k, ?_⟩
   intro h hh hh_le
   exact nirenberg_diffQuot_g_localL2_bound_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 h_weakPartial hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω'
+    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω'
     hη_one_on_Ω'' hΩ''_meas k
     h_FK_diffQuot_u_bound h_v_test_sq_bound h_master_nonsmooth hh hh_le
 

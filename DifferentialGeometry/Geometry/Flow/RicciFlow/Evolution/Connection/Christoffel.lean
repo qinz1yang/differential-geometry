@@ -24,7 +24,6 @@ section Components
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
 
-
 def ChristoffelVariationEquationInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -85,7 +84,6 @@ theorem ChristoffelVariationMixedDerivativeInFrameOn.toRegular
   intro i j k
   exact (h i j k).toRegular (I := I) (regularSet := D.regular)
 
-
 def ChristoffelMetricVariationEquationInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -95,7 +93,6 @@ def ChristoffelMetricVariationEquationInFrameOn
     (metricCovDerivDt : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
   ChristoffelVariationEquationInFrameOn (I := I) S frame hframe
     (christoffelVariationRHSFromMetricVariationInFrame (M := M) gInv metricCovDerivDt)
-
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -121,7 +118,6 @@ theorem christoffelMetricVariation_hasDerivWithinAt
       D.carrier
       (t : Real) :=
   h t x hx i j k
-
 
 def ChristoffelEvolutionEquationInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -318,7 +314,6 @@ theorem christoffelSymbol_sub_eq_sum_inv_connectionDiff
               ((S.family.connection var (frame j) x) (frame i x) -
                 (S.family.connection base (frame j) x) (frame i x))]
 
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem gammaSubLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -377,7 +372,6 @@ theorem gammaSubLocal
             rw [(S.family.metric var).symm x (frame l x)
               ((S.family.connection var (frame j) x) (frame i x) -
                 (S.family.connection base (frame j) x) (frame i x))]
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelEvolutionEquationInFrameOn_of_pairing

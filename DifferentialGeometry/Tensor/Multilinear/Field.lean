@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Multilinear.Fiber
@@ -34,7 +35,8 @@ abbrev MultilinearSection
     (E : B → Type*) [∀ x, NormedAddCommGroup (E x)] [∀ x, NormedSpace 𝕜 (E x)]
     [TopologicalSpace (TotalSpace F E)]
     [FiberBundle F E] [VectorBundle 𝕜 F E]
-    (n : WithTop ℕ∞) [ContMDiffVectorBundle n F E IB] (s : ℕ) :=
+    (n : WithTop ℕ∞) [hSmooth : ContMDiffVectorBundle n F E IB] (s : ℕ) :=
+  let _ := hSmooth
   ContMDiffSection IB
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
     n

@@ -23,7 +23,6 @@ namespace Geodesic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -545,7 +544,6 @@ theorem scaledTangentLift_transport
 
 section AffinePathELengthReparam
 
-open Manifold
 
 variable [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 

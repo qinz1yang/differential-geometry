@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
 open DifferentialGeometry.Geometry.Curvature
 
@@ -17,7 +17,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+variable [IsManifold I 1 M]
 variable [SigmaCompactSpace M] [T2Space M]
 
 private def rmBianchiCyc : Fin 5 ≃ Fin 5 :=
@@ -86,7 +86,7 @@ theorem canRmSecond_nabla
     change nablaRm04 y slots +
         nablaRm04 y (slots ∘ rmBianchiCyc) +
       nablaRm04 y (slots ∘ rmBianchiCyc2) = 0
-    have hB := canRmSecond (I := I) (M := M) g (x := y)
+    have hB := levi_civita_second_bianchi (I := I) (M := M) g (x := y)
     dsimp at hB
     have hB' := hB (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
     have h0 :

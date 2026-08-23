@@ -134,7 +134,7 @@ theorem interior_field_global_cutoff_extension_loc
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X_DT q.1 q.2) : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    {a b : ℝ} (hab : 0 < a) (_hab' : a < b) (hbT : b < T) :
+    {a b : ℝ} (hab : 0 < a) (hbT : b < T) :
     ∃ (Xt : ℝ → ∀ x : M, TangentSpace I x) (δ : ℝ), 0 < δ ∧
       (∀ s ∈ Set.Ioo (a - δ) (b + δ), ∀ x : M, Xt s x = X_DT s x) ∧
       ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -309,7 +309,7 @@ theorem exists_local_flow_anchored_at_interior_time
   obtain ⟨lo, hlo0, hlot₀⟩ := exists_between ht₀.1
   obtain ⟨hi, ht₀hi, hhiT⟩ := exists_between ht₀.2
   obtain ⟨Xt, δ, hδ, hXt_eq, hXt_cont, hXt_auto⟩ :=
-    interior_field_global_cutoff_extension_loc X T hint hlo0 (lt_trans hlot₀ ht₀hi) hhiT
+    interior_field_global_cutoff_extension_loc X T hint hlo0 hhiT
   obtain ⟨Tg, hTg, Φ, hΦ_init, hΦ_smooth, hΦ_bare⟩ :=
     global_flow_jointContMDiffOn_on_closed_manifold Xt hXt_cont t₀
   set T' : ℝ := min (min Tg (t₀ - (lo - δ))) (min ((hi + δ) - t₀) (min t₀ (T - t₀))) with hT'_def
@@ -349,7 +349,7 @@ theorem exists_local_flow_anchored_at_interior_time
         = ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t (Φ p t))) by rw [heq]]
     exact hbare
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-omit [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem integralCurves_eqOn_Icc_of_agree_at_left
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -371,7 +371,7 @@ theorem integralCurves_eqOn_Icc_of_agree_at_left
   have hlohi : lo < hi := by rw [hlo, hhi]; linarith
   have hhiT : hi < T := by rw [hhi]; linarith
   obtain ⟨Xt, δ, hδ, hXt_eq, hXt_cont, hXt_auto⟩ :=
-    interior_field_global_cutoff_extension_loc X T hint hlo0 hlohi hhiT
+    interior_field_global_cutoff_extension_loc X T hint hlo0 hhiT
   have hlo_a : lo < a := by rw [hlo]; linarith
   have hb_hi : b < hi := by rw [hhi]; linarith
   have hsub : Set.Icc a b ⊆ Set.Ioo (lo - δ) (hi + δ) := by
@@ -393,6 +393,7 @@ omit [CompactSpace M]
   [I.Boundaryless]
   [SigmaCompactSpace M]
   [FiniteDimensional ℝ E] in
+omit [CompleteSpace E] in
 theorem bare_fromZero_full
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -445,7 +446,7 @@ theorem bare_fromZero_full
     exact integralCurves_eqOn_Icc_of_agree_at_left X T hint Φ Φ' x x' he0 het ht.2
           hflowIcc hflowIcc' heq t ⟨het.le, le_rfl⟩
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [CompleteSpace E] in
 theorem bare_Ico_unique
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
     (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -496,7 +497,7 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hbT : b < T) :
+    {a b : ℝ} (ha : 0 < a) (hbT : b < T) :
     ∃ r : ℝ, 0 < r ∧
       ∀ e ∈ Set.Icc a b, ∃ W : M → ℝ → M,
         Set.Ioo (e - r) (e + r) ⊆ Set.Ioo (0 : ℝ) T ∧
@@ -507,7 +508,7 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
   classical
   obtain ⟨Xt, δc, hδc, hXt_eq, hXt_cont, _hXt_auto⟩ :=
     interior_field_global_cutoff_extension_loc X T hint (a := a / 2) (b := (b + T) / 2)
-      (by linarith) (by linarith) (by linarith)
+      (by linarith) (by linarith)
   set lo : ℝ := a / 2 with hlo_def
   set hi : ℝ := (b + T) / 2 with hhi_def
   have hlo_a : lo < a := by rw [hlo_def]; linarith

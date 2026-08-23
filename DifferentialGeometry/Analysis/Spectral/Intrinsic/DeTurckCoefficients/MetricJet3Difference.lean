@@ -6,9 +6,7 @@ noncomputable section
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

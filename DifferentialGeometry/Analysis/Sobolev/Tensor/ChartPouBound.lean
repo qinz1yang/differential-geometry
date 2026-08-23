@@ -497,6 +497,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
         ((extChartAt I γ).symm ((toEuclidean (E := E)).symm y)) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma transitionCoeffOnEuclid_contDiffOn_overlap
     (r s : ℕ) (γ α : M) (P₀ Q : TensorCompIdx (E := E) r s) :
     ContDiffOn ℝ (⊤ : ℕ∞)
@@ -1446,7 +1447,7 @@ lemma chartPushedRaw_raw_eq_sum_transCoeffE_raw_on_pou_tsupport
         (tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
         ((toEuclidean (E := E)) (extChartAt I α x)) =
       ∑ Q : TensorCompIdx (E := E) r s,
-        transCoeffE (I := I) (M := M) g r s γ α P₀ Q
+        transCoeffE (I := I) (M := M) r s γ α P₀ Q
             ((toEuclidean (E := E)) (extChartAt I γ x)) *
           chartPushedRaw (I := I) (M := M) γ
             (tensorChartComponentRaw (I := I) (M := M) g r s T γ Q.1 Q.2)
@@ -1473,7 +1474,7 @@ lemma chartPushedRaw_raw_eq_sum_transCoeffE_raw_on_pou_tsupport
   have hsum := tensorChartComponentRaw_eq_transitionCoeff_sum
     (I := I) (M := M) g r s T γ α P₀ ⟨hxγ, hxα⟩
   have hQ : ∀ Q : TensorCompIdx (E := E) r s,
-      transCoeffE (I := I) (M := M) g r s γ α P₀ Q
+      transCoeffE (I := I) (M := M) r s γ α P₀ Q
           ((toEuclidean (E := E)) (extChartAt I γ x)) *
         chartPushedRaw (I := I) (M := M) γ
           (tensorChartComponentRaw (I := I) (M := M) g r s T γ Q.1 Q.2)
@@ -1491,12 +1492,12 @@ lemma chartPushedRaw_raw_eq_sum_transCoeffE_raw_on_pou_tsupport
         (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) γ hxγ)]
       congr 1
       rw [(toEuclidean (E := E)).symm_apply_apply, (extChartAt I γ).left_inv hx_ext_γ]
-    have htrans := transCoeffE_apply (I := I) (M := M) g r s γ α P₀ Q hxγ
+    have htrans := transCoeffE_apply (I := I) (M := M) r s γ α P₀ Q hxγ
     have hcutα : ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 :=
       chartKernelCutoff_eqOn_one (I := I) (M := M) α hx.2
     have hcutγ : ((chartKernelCutoff (I := I) (M := M) γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 :=
       chartKernelCutoff_eqOn_one (I := I) (M := M) γ hx.1
-    have htrans_eq : transCoeffE (I := I) (M := M) g r s γ α P₀ Q
+    have htrans_eq : transCoeffE (I := I) (M := M) r s γ α P₀ Q
           ((toEuclidean (E := E)) (extChartAt I γ x)) =
         transitionCoeff (E := E) (I := I) (M := M) r s γ α P₀ Q x := by
       rw [htrans]
@@ -1513,7 +1514,7 @@ lemma chartPushedRaw_raw_eq_sum_transCoeffE_raw_on_pou_tsupport
           transitionCoeff (E := E) (I := I) (M := M) r s γ α P₀ Q x *
             tensorChartComponentRaw (I := I) (M := M) g r s T γ Q.1 Q.2 x := hsum
     _ = ∑ Q : TensorCompIdx (E := E) r s,
-          transCoeffE (I := I) (M := M) g r s γ α P₀ Q
+          transCoeffE (I := I) (M := M) r s γ α P₀ Q
               ((toEuclidean (E := E)) (extChartAt I γ x)) *
             chartPushedRaw (I := I) (M := M) γ
               (tensorChartComponentRaw (I := I) (M := M) g r s T γ Q.1 Q.2)

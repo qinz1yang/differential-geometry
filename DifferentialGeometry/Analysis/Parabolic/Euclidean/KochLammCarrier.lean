@@ -52,6 +52,7 @@ def KLPathCore.toSpace {T : ℝ} :
     KLPathCore (V := V) (F := F) T → KLPathSpace (V := V) (F := F) T :=
   Set.inclusion subset_closure
 
+omit [CompleteSpace F] in
 theorem klPathCore_dense (T : ℝ) :
     DenseRange (KLPathCore.toSpace (V := V) (F := F) (T := T)) := by
   unfold KLPathCore.toSpace

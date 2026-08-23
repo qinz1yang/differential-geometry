@@ -23,8 +23,8 @@ Apply the 1D result on each line, recombine by Fubini.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function intervalIntegral
-open scoped ENNReal NNReal
+open MeasureTheory Metric Set Function intervalIntegral
+open scoped NNReal
 
 namespace DeGiorgi
 

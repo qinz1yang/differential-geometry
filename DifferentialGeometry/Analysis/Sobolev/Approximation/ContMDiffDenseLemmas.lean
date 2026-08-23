@@ -29,8 +29,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 theorem contMDiff_finset_sum_chartPullback
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
+    [T2Space M] [I.Boundaryless]
     {ι : Type*} (S : Finset ι) (α : ι → M)
     (ψ : ι → EuclN → ℝ)
     (hψ_smooth : ∀ i ∈ S, ContDiff ℝ (⊤ : ℕ∞) (ψ i))
@@ -93,20 +92,19 @@ lemma chartPushed_sub
 
 theorem MemWkpChart_finset_sum
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {ι : Type*} (S : Finset ι) (f : ι → M → ℝ)
-    (hf : ∀ i ∈ S, MemWkpChart (I := I) (M := M) g k p (f i)) :
-    MemWkpChart (I := I) (M := M) g k p (fun x => ∑ i ∈ S, f i x) := by
+    (hf : ∀ i ∈ S, MemWkpChart (I := I) (M := M) k p (f i)) :
+    MemWkpChart (I := I) (M := M) k p (fun x => ∑ i ∈ S, f i x) := by
   classical
   induction S using Finset.induction_on with
   | empty =>
       simp only [Finset.sum_empty]
-      exact MemWkpChart_zero_fun (I := I) (M := M) g hp
+      exact MemWkpChart_zero_fun (I := I) (M := M) hp
   | insert i S hiS ih =>
-      have hi : MemWkpChart (I := I) (M := M) g k p (f i) :=
+      have hi : MemWkpChart (I := I) (M := M) k p (f i) :=
         hf i (Finset.mem_insert_self i S)
-      have ih' : MemWkpChart (I := I) (M := M) g k p
+      have ih' : MemWkpChart (I := I) (M := M) k p
           (fun x : M => ∑ j ∈ S, f j x) :=
         ih (fun j hj => hf j (Finset.mem_insert.mpr (Or.inr hj)))
       have h_eq : (fun x : M => ∑ j ∈ insert i S, f j x) =
@@ -114,42 +112,40 @@ theorem MemWkpChart_finset_sum
         funext x
         rw [Finset.sum_insert hiS]
       rw [h_eq]
-      exact MemWkpChart_add (I := I) (M := M) g hp hi ih'
+      exact MemWkpChart_add (I := I) (M := M) hp hi ih'
 
 theorem wkpNormChart_finset_sum_le
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {ι : Type*} (S : Finset ι) (f : ι → M → ℝ)
-    (hf : ∀ i ∈ S, MemWkpChart (I := I) (M := M) g k p (f i)) :
-    wkpNormChart (I := I) (M := M) g k p (fun x => ∑ i ∈ S, f i x) ≤
-      ∑ i ∈ S, wkpNormChart (I := I) (M := M) g k p (f i) := by
+    (hf : ∀ i ∈ S, MemWkpChart (I := I) (M := M) k p (f i)) :
+    wkpNormChart (I := I) (M := M) k p (fun x => ∑ i ∈ S, f i x) ≤
+      ∑ i ∈ S, wkpNormChart (I := I) (M := M) k p (f i) := by
   classical
   induction S using Finset.induction_on with
   | empty =>
       simp only [Finset.sum_empty]
-      rw [wkpNormChart_zero_fun (I := I) (M := M) g hp]
+      rw [wkpNormChart_zero_fun (I := I) (M := M) hp]
   | insert i S hiS ih =>
-      have hi : MemWkpChart (I := I) (M := M) g k p (f i) :=
+      have hi : MemWkpChart (I := I) (M := M) k p (f i) :=
         hf i (Finset.mem_insert_self i S)
-      have hS_mem : ∀ j ∈ S, MemWkpChart (I := I) (M := M) g k p (f j) :=
+      have hS_mem : ∀ j ∈ S, MemWkpChart (I := I) (M := M) k p (f j) :=
         fun j hj => hf j (Finset.mem_insert.mpr (Or.inr hj))
-      have hS_sum_mem : MemWkpChart (I := I) (M := M) g k p
+      have hS_sum_mem : MemWkpChart (I := I) (M := M) k p
           (fun x : M => ∑ j ∈ S, f j x) :=
-        MemWkpChart_finset_sum (I := I) (M := M) g hp S f hS_mem
+        MemWkpChart_finset_sum (I := I) (M := M) hp S f hS_mem
       have h_eq : (fun x : M => ∑ j ∈ insert i S, f j x) =
           (fun x : M => f i x + ∑ j ∈ S, f j x) := by
         funext x
         rw [Finset.sum_insert hiS]
       rw [h_eq, Finset.sum_insert hiS]
-      have h_tri := wkpNormChart_add_le (I := I) (M := M) g hp hi hS_sum_mem
+      have h_tri := wkpNormChart_add_le (I := I) (M := M) hp hi hS_sum_mem
       refine h_tri.trans ?_
       gcongr
       exact ih hS_mem
 
 theorem chartPushed_eq_zero_off_compact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) (u : M → ℝ) {y : EuclN}
+    [T2Space M] [SigmaCompactSpace M] (α : M) (u : M → ℝ) {y : EuclN}
     (hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hy_off : y ∉ toEuclidean '' ((extChartAt I α) ''
       (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α) :
@@ -161,9 +157,8 @@ theorem chartPushed_eq_zero_off_compact
 
 theorem wkpNormChart_eq_finset_sum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
-    wkpNormChart (I := I) (M := M) g k p u =
+    wkpNormChart (I := I) (M := M) k p u =
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
               (I := I) (M := M),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm

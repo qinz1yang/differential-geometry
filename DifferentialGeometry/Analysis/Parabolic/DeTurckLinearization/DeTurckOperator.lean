@@ -1,4 +1,6 @@
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
+import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
+import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -12,7 +14,6 @@ namespace PDE
 namespace DeTurck
 
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
@@ -54,7 +55,7 @@ theorem deTurckOp_self [I.Boundaryless] (g : SmoothRiemannianMetric I M) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem deTurckOp_self_apply [I.Boundaryless]
+theorem deTurckOp_self_apply [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     deTurckOp (I := I) g g x v w = -2 * ricciFun (I := I) g x v w := by

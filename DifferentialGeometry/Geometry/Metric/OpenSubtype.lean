@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Bundle.ClmSectionSmooth
-import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+import DifferentialGeometry.Topology.Manifold.OpenSubtype
 
 set_option autoImplicit false
 
@@ -46,51 +46,12 @@ theorem SmoothRiemannianMetric.restrictOpenInner_isVonNBounded
   intro x
   simpa [SmoothRiemannianMetric.restrictOpenInner] using g.isVonNBounded (x : M)
 
-omit [IsManifold I ∞ M] in
-theorem hasMFDerivAt_subtype_val (U : TopologicalSpace.Opens M) (x : U) :
-    HasMFDerivAt I I (Subtype.val : U → M) x (ContinuousLinearMap.id Real E) := by
-  constructor
-  · exact continuous_subtype_val.continuousAt
-  · let e : OpenPartialHomeomorph U H :=
-      (chartAt H (x : M)).subtypeRestr (s := U) (⟨x⟩ : Nonempty U)
-    apply HasFDerivWithinAt.congr_of_eventuallyEq (hasFDerivWithinAt_id _ _)
-    · apply Filter.eventuallyEq_of_mem (extChartAt_target_mem_nhdsWithin (I := I) x)
-      intro y hy
-      have hyTarget : I.symm y ∈ e.target := by
-        have hy' :
-            (∃ z, I z = y) ∧ I.symm y ∈ e.target := by
-          simpa [e, extChartAt, TopologicalSpace.Opens.chartAt_eq] using hy
-        exact hy'.2
-      have hyRange : y ∈ Set.range I := extChartAt_target_subset_range (I := I) x hy
-      have hright := e.right_inv hyTarget
-      simp only [writtenInExtChartAt, Function.comp_apply, id_eq]
-      change I ((chartAt H (x : M)) ((e.symm (I.symm y) : U) : M)) = y
-      change (chartAt H (x : M)) ((e.symm (I.symm y) : U) : M) = I.symm y at hright
-      rw [hright]
-      exact I.right_inv hyRange
-    · simp only [writtenInExtChartAt, Function.comp_apply, id_eq]
-      have hleft := (extChartAt I x).left_inv (mem_extChartAt_source x)
-      rw [hleft]
-      rfl
-
-omit [IsManifold I ∞ M] in
-theorem mfderiv_subtype_val
-    (U : TopologicalSpace.Opens M) (x : U) :
-    mfderiv I I (Subtype.val : U → M) x = ContinuousLinearMap.id Real E :=
-  (hasMFDerivAt_subtype_val (I := I) U x).mfderiv
-
-omit [IsManifold I ∞ M] in
-theorem mfderiv_subtype_val_apply
-    (U : TopologicalSpace.Opens M) (x : U) (v : TangentSpace I x) :
-    mfderiv I I (Subtype.val : U → M) x v = v := by
-  rw [mfderiv_subtype_val (I := I) U x]
-  rfl
 
 variable [FiniteDimensional Real E]
 
 theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] :
+    [T2Space U] :
     letI : TopologicalSpace U := inferInstance
     letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := M) (s := U)
@@ -165,7 +126,7 @@ theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
 
 noncomputable def SmoothRiemannianMetric.restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] :
+    [T2Space U] :
     letI : TopologicalSpace U := inferInstance
     letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := M) (s := U)
@@ -181,7 +142,7 @@ noncomputable def SmoothRiemannianMetric.restrictOpen
 @[simp]
 theorem SmoothRiemannianMetric.restrictOpen_inner
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U]
+    [T2Space U]
     (x : U) (v w : TangentSpace I x) :
     letI : TopologicalSpace U := inferInstance
     letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
@@ -190,28 +151,10 @@ theorem SmoothRiemannianMetric.restrictOpen_inner
       { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
     (g.restrictOpen (I := I) U).inner x v w = g.inner (x : M) v w := rfl
 
-omit [IsManifold I ∞ M] [FiniteDimensional Real E] in
-@[simp] theorem mfderiv_opens_incl {U V : TopologicalSpace.Opens M} (hVU : V ≤ U) (x : V) :
-    mfderiv I I (TopologicalSpace.Opens.inclusion hVU : V → U) x =
-      ContinuousLinearMap.id Real E := by
-  have hinc : MDifferentiableAt I I (TopologicalSpace.Opens.inclusion hVU : V → U) x :=
-    ((contMDiff_inclusion hVU).contMDiffAt).mdifferentiableAt
-      (by decide : (∞ : WithTop ℕ∞) ≠ 0)
-  have hval : MDifferentiableAt I I (Subtype.val : U → M)
-      (TopologicalSpace.Opens.inclusion hVU x) :=
-    ((contMDiff_subtype_val (I := I) (U := U)).contMDiffAt).mdifferentiableAt
-      (by decide : (∞ : WithTop ℕ∞) ≠ 0)
-  have hcomp := mfderiv_comp x hval hinc
-  change mfderiv I I (Subtype.val : V → M) x =
-    (mfderiv I I (Subtype.val : U → M) (TopologicalSpace.Opens.inclusion hVU x)).comp
-      (mfderiv I I (TopologicalSpace.Opens.inclusion hVU : V → U) x) at hcomp
-  rw [mfderiv_subtype_val (I := I) V x,
-    mfderiv_subtype_val (I := I) U (TopologicalSpace.Opens.inclusion hVU x)] at hcomp
-  simpa using hcomp.symm
 
 noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
     {U V : TopologicalSpace.Opens M} (g : SmoothRiemannianMetric I U) (hVU : V ≤ U)
-    [SigmaCompactSpace V] [T2Space V] : SmoothRiemannianMetric I V where
+    [T2Space V] : SmoothRiemannianMetric I V where
   inner x := g.inner (TopologicalSpace.Opens.inclusion hVU x)
   symm x v w := g.symm (TopologicalSpace.Opens.inclusion hVU x) v w
   pos x v hv := g.pos (TopologicalSpace.Opens.inclusion hVU x) v hv
@@ -275,7 +218,7 @@ noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
 
 @[simp] theorem SmoothRiemannianMetric.restrictSubset_inner
     {U V : TopologicalSpace.Opens M} (g : SmoothRiemannianMetric I U) (hVU : V ≤ U)
-    [SigmaCompactSpace V] [T2Space V] (x : V) (v w : TangentSpace I x) :
+    [T2Space V] (x : V) (v w : TangentSpace I x) :
     (g.restrictOpenOfSubset (I := I) hVU).inner x v w =
       g.inner (TopologicalSpace.Opens.inclusion hVU x) v w := rfl
 
@@ -293,7 +236,7 @@ private theorem metric_eq_inner
 
 @[simp] theorem SmoothRiemannianMetric.restrictOpen_flat
     (g : SmoothRiemannianMetric I M) {U V : TopologicalSpace.Opens M} (hVU : V ≤ U)
-    [SigmaCompactSpace U] [T2Space U] [SigmaCompactSpace V] [T2Space V] :
+    [T2Space U] [T2Space V] :
     (g.restrictOpen (I := I) U).restrictOpenOfSubset (I := I) hVU =
       g.restrictOpen (I := I) V := by
   apply metric_eq_inner

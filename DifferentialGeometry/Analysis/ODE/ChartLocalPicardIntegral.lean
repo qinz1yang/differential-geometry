@@ -99,7 +99,7 @@ theorem variational_jacobian_gronwall_bound
       _ ≤ ‖J 0‖ + ∫ r in (0:ℝ)..t, ‖A r (J r)‖ := by gcongr
       _ ≤ ‖J 0‖ + ∫ r in (0:ℝ)..t, CA * f r := by gcongr
       _ = ‖J 0‖ + CA * ∫ r in (0:ℝ)..t, f r := by rw [hconstmul]
-  exact gronwall_integral_le hT (norm_nonneg _) hCA hf_cont hf_nn hf_int
+  exact gronwall_integral_le hT hCA hf_cont hf_int
 theorem ode_right_ftc
     {γ : ℝ → E} {v : ℝ → E} {T : ℝ}
     (hγcont : ContinuousOn γ (Set.Icc 0 T))

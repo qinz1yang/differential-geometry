@@ -157,7 +157,7 @@ theorem mild_solution_norm_le
       _ = ‖u₀‖ + ‖N 0‖ * t + (L : ℝ) * ∫ τ in (0:ℝ)..t, f τ := by ring
   intro t ht
   exact integral_gronwall_le_affine (T := T) (A := ‖u₀‖) (B := ‖N 0‖) (K := (L : ℝ))
-    hT hu₀_nn hN0_nn hL_nn (f := f) hf_cont hf_nn hf_int t ht
+    hT hN0_nn hL_nn (f := f) hf_cont hf_int t ht
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

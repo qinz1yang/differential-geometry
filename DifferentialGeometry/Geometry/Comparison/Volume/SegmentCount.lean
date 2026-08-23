@@ -141,6 +141,7 @@ theorem one_le_segImult (n : ℕ) (q r0 m : ℝ) : 1 ≤ segImult n q r0 m := by
   unfold segImult; omega
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -237,7 +238,7 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    {q r0 : ℝ} (hq : 0 ≤ q) (_hr0 : 0 < r0)
+    {q r0 : ℝ} (hq : 0 ≤ q)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2)))
     {m r : ℝ} (hr : 0 < r) (hcap : m * r ≤ r0)

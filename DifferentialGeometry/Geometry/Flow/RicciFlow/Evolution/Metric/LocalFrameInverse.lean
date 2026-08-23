@@ -136,7 +136,6 @@ theorem localFrameInv_time
       (contDiffOn_const (c := (0 : Real)) :
         ContDiffOn Real ∞ (fun _ : Real => (0 : Real)) K)
 
-
 noncomputable def localFrameInvDt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -163,7 +162,7 @@ theorem localFrameTimeReg
   metricSmooth := hmetric
   nondegenerateGram := localFrameInv_real (I := I) S frame hframe
   inverseMetricDerivative := by
-    intro t x i j
+    intro t x _hx i j
     have hdiff :=
       (localFrameInv_time (I := I) S frame hframe hmetric x i j).differentiableOn
         (by simp) (t : Real) (D.regular_subset t.2)

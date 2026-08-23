@@ -38,7 +38,7 @@ open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 def IsSmoothVariation
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (f : ℝ → ℝ → M) : Prop :=
   ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I (8 : ℕ) (fun p : ℝ × ℝ => f p.1 p.2)
 
@@ -180,7 +180,7 @@ private lemma mixed_partialFderiv_comm (F : ℝ → ℝ → E) (s t : ℝ)
   exact hsymm (1, 0) (0, 1)
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartPulled_contDiffAt
     (f : ℝ → ℝ → M) (hf : IsSmoothVariation (I := I) f) (s t : ℝ) :
     ContDiffAt ℝ 2
@@ -258,7 +258,6 @@ theorem commute_ds_dt_fixed_chart
 
 section FixedChartCurvatureHelpers
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 def chartCoordCLM (i : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
   (chartModelBasis E).coord i |>.toContinuousLinearMap
@@ -337,7 +336,6 @@ lemma hasDerivAt_chartChristoffelContraction
 end FixedChartCurvatureHelpers
 
 namespace Aux2
-open DifferentialGeometry.Geometry.Riemannian.Variation
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 lemma partial_snd_apply_one (G : ℝ × ℝ → E) (u t : ℝ)
@@ -467,12 +465,7 @@ lemma hasDerivAt_partial_fst (F : ℝ → ℝ → E) (s t : ℝ)
 end Aux2
 
 namespace Aux3
-open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Geometry.Riemannian.AlongCurve
-open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -498,13 +491,8 @@ lemma chartChristoffel_differentiableAt_self
 end Aux3
 
 namespace Aux4
-open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Geometry.Riemannian.AlongCurve
-open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Measure
 open Aux2
-open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -657,11 +645,7 @@ lemma nabla_t_nabla_s_eq
 end Aux4
 
 namespace Aux5
-open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff Topology
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 
@@ -701,13 +685,9 @@ lemma chartCoord_sum_smul_basis (c : Fin (Module.finrank ℝ E) → ℝ)
 end Aux5
 
 namespace Aux6
-open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Measure
 
 open Aux5
-open scoped Manifold ContDiff Topology
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -987,14 +967,9 @@ lemma curvPart_eq_chartRiemannCLM
 end Aux6
 
 namespace Aux7
-open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Geometry.Riemannian.AlongCurve
-open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Measure
 
 open Aux4 Aux6
-open scoped Manifold ContDiff Topology
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]

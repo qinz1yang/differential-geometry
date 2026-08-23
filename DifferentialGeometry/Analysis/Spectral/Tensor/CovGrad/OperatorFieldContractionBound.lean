@@ -36,7 +36,7 @@ variable [CompleteSpace E]
 omit [CompactSpace M] [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma rfns_repr_of_orthoFrame_cb
+lemma riemannianFiberNormSq_repr_of_orthoFrame_cb
     (g : SmoothRiemannianMetric I M) (t : ℕ) (x : M) (S : TensorRSSpace 0 t I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (hn : n = Module.finrank ℝ (TangentSpace I x))
@@ -233,12 +233,12 @@ theorem riemannianFiberNormSq_comp_le_mul
       riemannianFiberNormSq (I := I) (M := M) g 0 s x S =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin s → Fin n,
           fiberNormSqSummand (I := I) (M := M) g x 0 s S n e K J :=
-    fun S => rfns_repr_of_orthoFrame_cb (I := I) (M := M) g s x S e hn horth
+    fun S => riemannianFiberNormSq_repr_of_orthoFrame_cb (I := I) (M := M) g s x S e hn horth
   have hreprR : ∀ S : TensorRSSpace 0 r I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 r x S =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin r → Fin n,
           fiberNormSqSummand (I := I) (M := M) g x 0 r S n e K J :=
-    fun S => rfns_repr_of_orthoFrame_cb (I := I) (M := M) g r x S e hn horth
+    fun S => riemannianFiberNormSq_repr_of_orthoFrame_cb (I := I) (M := M) g r x S e hn horth
   rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS _ K₀]
   have hWrepr : (∑ P : Fin r → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g x 0 r Wx n e K₀ P) ^ 2) =
@@ -272,7 +272,7 @@ theorem riemannianFiberNormSq_comp_le_mul
 
 omit [CompleteSpace E] in
 omit [BoundarylessManifold I M] in
-theorem exists_uniform_riemannianFiberNormSq_appCc_le
+theorem exists_uniform_riemannianFiberNormSq_operatorFieldApplication_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (Φ : SmoothCcTensor g r s) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (W : SmoothCcTensor g 0 r) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g 0 s x
@@ -280,7 +280,7 @@ theorem exists_uniform_riemannianFiberNormSq_appCc_le
         C * riemannianFiberNormSq (I := I) (M := M) g 0 r x (W.toSection x) := by
   obtain ⟨K, hK_nn, hK⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor g r s Φ
   refine ⟨K, hK_nn, fun W x => ?_⟩
-  rw [appCc_toSection (I := I) (M := M) g r s Φ W x]
+  rw [operatorFieldApplication_toSection (I := I) (M := M) g r s Φ W x]
   refine le_trans (riemannianFiberNormSq_comp_le_mul (I := I) (M := M) g r s x
     (Φ.toSection x) (W.toSection x)) ?_
   exact mul_le_mul_of_nonneg_right (hK x)

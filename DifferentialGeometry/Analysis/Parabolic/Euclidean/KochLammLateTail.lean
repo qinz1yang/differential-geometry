@@ -82,7 +82,7 @@ theorem klTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
       (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ p)
       (klTailMeasure (V := V) R S) := by
     have hg :=
-      (klTermKernel_memLp (V := V) (sq_pos_of_pos hR) x).integrable_norm_rpow
+      (klTermKernel_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
         (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     have hg' : Integrable
         (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ p)
@@ -147,7 +147,7 @@ theorem klTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
       (fun s : ℝ ↦ D *
         ((R ^ 2 - s) ^ klHeatExp V * klTailMass V p))
       (volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))) :=
-    (((klTimePow_intble (V := V) (sq_pos_of_pos hR)).1.mul_const _).const_mul _)
+    (((klTimePow_intble (V := V)).1.mul_const _).const_mul _)
   have hi' : Integrable
       (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ p)
       ((volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod

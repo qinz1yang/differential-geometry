@@ -56,12 +56,12 @@ theorem ricciTraceAt_of_frame
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
-    (hRic : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInv frame)
+    (hRic : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInv frame)
     {x : M} (hx : x ∈ u) :
     RicciRealizesRm04TraceAt (I := I) (Ric x) (Rm04 x) (gInv x)
       (hframe.toBasisAt hx) := by
   intro X Y
-  simpa [RicciTensorRealizesRm04TraceInFrame, tensor02ToField, tensor04ToField,
+  simpa [ricciTensorRealizesRm04TraceInFrame, tensor02ToField, tensor04ToField,
     IsLocalFrameOn.toBasisAt_coe] using hRic x X Y
 
 def RicciTensorRealizesRm04FirstTraceInFrame
@@ -116,11 +116,11 @@ theorem scalarTraceAt_of_frame
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
-    (hScalar : ScalarSectionRealizesRicciTraceInFrame (I := I) scalar Ric gInv frame)
+    (hScalar : scalarSectionRealizesRicciTraceInFrame (I := I) scalar Ric gInv frame)
     {x : M} (hx : x ∈ u) :
     ScalarRealizesRicciTraceAt (I := I) (scalar x) (Ric x) (gInv x)
       (hframe.toBasisAt hx) := by
-  simpa [ScalarRealizesRicciTraceAt, ScalarSectionRealizesRicciTraceInFrame,
+  simpa [ScalarRealizesRicciTraceAt, scalarSectionRealizesRicciTraceInFrame,
     tensor02ToField, IsLocalFrameOn.toBasisAt_coe] using hScalar x
 
 omit [DecidableEq Idx] in
@@ -130,7 +130,7 @@ theorem ricciComp_eq_trace_rm04_frame
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
-    (hRic : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInv frame)
+    (hRic : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInv frame)
     {x : M} (hx : x ∈ u) (i j : Idx) :
     ricciCompAt (I := I) (hframe.toBasisAt hx) (Ric x) i j =
       ∑ k : Idx, ∑ l : Idx,
@@ -146,7 +146,7 @@ theorem scalar_eq_trace_ricci_frame
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
-    (hScalar : ScalarSectionRealizesRicciTraceInFrame (I := I) scalar Ric gInv frame)
+    (hScalar : scalarSectionRealizesRicciTraceInFrame (I := I) scalar Ric gInv frame)
     {x : M} (hx : x ∈ u) :
     scalar x =
       ∑ i : Idx, ∑ j : Idx,

@@ -16,6 +16,7 @@ def baseD2DtHolder (alpha : NNReal) (x : V) : Real :=
   ‖x‖ ^ (alpha : Real) * baseD2DtMaj x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD2DtHolder_nonneg (alpha : NNReal) (x : V) :
     0 ≤ baseD2DtHolder alpha x :=
   mul_nonneg (Real.rpow_nonneg (norm_nonneg x) _) (baseD2DtMaj_nonneg x)
@@ -88,6 +89,7 @@ def heatD2DtHolder (alpha : NNReal) (t : Real) (x : V) : Real :=
       baseD2DtHolder alpha ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2DtHolder_nonneg (alpha : NNReal) {t : Real}
     (ht : 0 < t) (x : V) :
     0 ≤ heatD2DtHolder alpha t x := by
@@ -101,6 +103,7 @@ theorem heatD2DtHolder_nonneg (alpha : NNReal) {t : Real}
     (baseD2DtHolder_nonneg alpha _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2DtHolder_eq (alpha : NNReal) {t : Real}
     (ht : 0 < t) (x : V) :
     heatD2DtHolder alpha t x =
@@ -161,6 +164,7 @@ theorem holderSecondTimeHeatScale_eq (alpha : NNReal) {t : Real}
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2Dt_holder_bound (alpha : NNReal) {t : Real}
     (ht : 0 < t) (v w x : V) :
     ‖heatD2Dt t v w x‖ * ‖x‖ ^ (alpha : Real) ≤

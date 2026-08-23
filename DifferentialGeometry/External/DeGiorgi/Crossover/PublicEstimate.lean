@@ -10,8 +10,8 @@ infrastructure.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Set
-open scoped ENNReal NNReal Topology RealInnerProductSpace
+open MeasureTheory Metric
+open scoped NNReal
 
 namespace DeGiorgi
 

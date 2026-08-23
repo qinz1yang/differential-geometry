@@ -17,7 +17,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 namespace DifferentialGeometry.Topology.Morse
 
 open Manifold
-open DifferentialGeometry.Topology
 open DifferentialGeometry.Topology.Handle
 open DifferentialGeometry.Topology.Homotopy
 open DifferentialGeometry.Analysis.ODE
@@ -188,7 +187,7 @@ noncomputable def morseChart {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type
     have hsq : (Real.sqrt (2 * (R ^ 2 / 4))) ^ 2 ≤ R ^ 2 := by
       rw [Real.sq_sqrt (by positivity : 0 ≤ 2 * (R ^ 2 / 4))]
       ring_nf
-      nlinarith [sq_nonneg R]
+      nlinarith only [sq_nonneg R]
     have habs := sq_le_sq.mp hsq
     calc
       Real.sqrt (2 * (R ^ 2 / 4)) = |Real.sqrt (2 * (R ^ 2 / 4))| :=
@@ -206,7 +205,7 @@ def cellEmbedding {n k : ℕ} (hk : k ≤ n) (c : ℝ)
 noncomputable def cocoreAttachingMap {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel n) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    {f : M → ℝ}
     (data : MorseChart n k hk c I f)
     (hε : 0 ≤ ε) (hδ : r ^ 2 / 2 < δ) (hεr : Real.sqrt (2 * ε + r ^ 2) ≤ data.R)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
@@ -248,7 +247,7 @@ noncomputable def cocoreAttachingMap {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ
         exact (sq_le_sq' hneg p.2.2).trans_eq (by norm_num : (1 : ℝ) ^ 2 = 1)
       have hTle : T < δ := by
         dsimp [T]
-        nlinarith [hδ, hw, sq_nonneg r]
+        nlinarith only [hδ, hw, sq_nonneg r]
       have hstart : x ∈ f ⁻¹' Set.Icc (c - ε) (c + δ) := by
         change c - ε ≤ f x ∧ f x ≤ c + δ
         rw [hval]
@@ -275,7 +274,7 @@ noncomputable def cocoreAttachingMap {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ
 theorem cocoreAttachingMap_value {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel n) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    {f : M → ℝ}
     (data : MorseChart n k hk c I f)
     (hε : 0 ≤ ε) (hδ : r ^ 2 / 2 < δ) (hεr : Real.sqrt (2 * ε + r ^ 2) ≤ data.R)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
@@ -319,7 +318,7 @@ theorem cocoreAttachingMap_value {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ)
     exact (sq_le_sq' hneg p.2.2).trans_eq (by norm_num : (1 : ℝ) ^ 2 = 1)
   have hTle : T < δ := by
     dsimp [T]
-    nlinarith [hδ, hw, sq_nonneg r]
+    nlinarith only [hδ, hw, sq_nonneg r]
   have hstayFwd : ∀ s ∈ Set.Icc (0 : ℝ) T, curveAt v hcomplete x s ∈ f ⁻¹' Set.Icc (c - ε) (c + δ) := by
     intro s hs
     have hrb := f_rate_bounds_of_integralCurve f hf v hrate
@@ -682,7 +681,7 @@ theorem cocoreModelPoint_norm_le {n k : ℕ} (hk : k ≤ n) (ε r : ℝ) (hε : 
       exact (sq_le_sq' hneg p.2.2).trans_eq (by norm_num : (1 : ℝ) ^ 2 = 1)
     have hR2 : 2 * ε + 2 * r ^ 2 ≤ (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 := by
       rw [Real.sq_sqrt (by positivity : 0 ≤ 2 * ε + 2 * r ^ 2)]
-    nlinarith [hw, sq_nonneg r, hR2]
+    nlinarith only [hw, sq_nonneg r, hR2]
   · exact Real.sqrt_nonneg _
 
 theorem modelLowerRoundMap_cocore_norm_le {n k : ℕ} (hk : k ≤ n) (ε r δ θ : ℝ)
@@ -694,7 +693,7 @@ theorem modelLowerRoundMap_cocore_norm_le {n k : ℕ} (hk : k ≤ n) (ε r δ θ
   · rw [morseNorm_sq_eq_negPart_add_posPart hk]
     rw [modelLowerRoundMap_negPart, modelLowerRoundMap_posPart]
     have hsqrt : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 = 2 * ε + 2 * r ^ 2 :=
-      Real.sq_sqrt (by nlinarith [hε, sq_nonneg r])
+      Real.sq_sqrt (by nlinarith only [hε, sq_nonneg r])
     have hneg : ‖negPart hk (cocoreModelPoint hk ε r p)‖ ^ 2 =
         2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2 := by
       dsimp [cocoreModelPoint]
@@ -702,7 +701,7 @@ theorem modelLowerRoundMap_cocore_norm_le {n k : ℕ} (hk : k ≤ n) (ε r δ θ
       rw [negPart_cellMap_norm_sq hk
         (Real.sqrt (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2))
         (p.1 : EuclideanSpace ℝ (Fin k))]
-      rw [Real.sq_sqrt (by nlinarith [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ : ℝ)])]
+      rw [Real.sq_sqrt (by nlinarith only [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ : ℝ)])]
       rw [p.1.2]
       ring
     have hpos : ‖posPart hk (cocoreModelPoint hk ε r p)‖ ^ 2 =
@@ -728,7 +727,8 @@ theorem modelLowerRoundMap_cocore_norm_le {n k : ℕ} (hk : k ≤ n) (ε r δ θ
       · have hbpos : 0 < ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2 :=
           lt_of_le_of_ne (sq_nonneg _) (Ne.symm hb0)
         have ht : 2 * ε < 2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2 := by
-          nlinarith [hbpos]
+          have hr2 : 0 < r ^ 2 := lt_trans hδ hδr
+          nlinarith only [mul_pos hr2 hbpos]
         have hbound := modelLowerRoundBound_le_smoothCap hδ hθ hδr ht
         have hbound' : modelRoundScale ε r δ θ
             (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2) ^ 2 *
@@ -740,14 +740,14 @@ theorem modelLowerRoundMap_cocore_norm_le {n k : ℕ} (hk : k ≤ n) (ε r δ θ
           have hsmooth : smoothCap ε r δ (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2) ≤ r ^ 2 := by
             dsimp [smoothCap]
             have hcoef : (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2) - 2 * ε - r ^ 2 ≤ 0 := by
-              nlinarith [hb1]
+              nlinarith only [hb1]
             have hτ : 0 ≤ Real.smoothTransition
                 (((2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2) - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) :=
               Real.smoothTransition.nonneg _
-            nlinarith [hcoef, hτ]
+            nlinarith only [hcoef, hτ]
           exact le_trans hbound hsmooth
         exact hbound'
-    nlinarith [hneg, hpos', hsqrt, hb1]
+    nlinarith only [hneg, hpos', hsqrt, hb1]
   · exact Real.sqrt_nonneg _
 
 theorem cocoreModelPoint_surjective_levelSet {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ)
@@ -786,22 +786,22 @@ theorem cocoreModelPoint_surjective_levelSet {n k : ℕ} (hk : k ≤ n) (c ε R 
     simpa [a, b] using hle'
   have hrel : ‖a‖ ^ 2 = ‖b‖ ^ 2 + 2 * ε := by
     rw [hnormForm] at hy
-    nlinarith
+    nlinarith only [hy]
   have hb : ‖b‖ ^ 2 ≤ r ^ 2 := by
     dsimp [r]
     have h1 : 0 ≤ (R ^ 2 - 2 * ε) / 2 := by
-      nlinarith [hRε, sq_nonneg R]
+      nlinarith only [hRε, sq_nonneg R]
     rw [Real.sq_sqrt h1]
-    nlinarith [hnormSq, hrel]
+    nlinarith only [hnormSq, hrel]
   have ha0 : ‖a‖ ≠ 0 := by
     have hpos : 0 < ‖a‖ := by
-      have hsq : 0 < ‖a‖ ^ 2 := by nlinarith [hrel, hε, sq_nonneg ‖b‖]
+      have hsq : 0 < ‖a‖ ^ 2 := by nlinarith only [hrel, hε, sq_nonneg ‖b‖]
       exact lt_of_le_of_ne (norm_nonneg a) (Ne.symm (sq_pos_iff.mp hsq))
     exact ne_of_gt hpos
   have hpos_a : 0 < ‖a‖ := lt_of_le_of_ne (norm_nonneg a) (Ne.symm ha0)
   have hr : 0 < r := by
     dsimp [r]
-    exact Real.sqrt_pos.mpr (by nlinarith [hRε])
+    exact Real.sqrt_pos.mpr (by nlinarith only [hRε])
   let u : CellBoundary k := ⟨(‖a‖)⁻¹ • a, by
     simpa [norm_smul, Real.norm_eq_abs, abs_of_nonneg (inv_nonneg.mpr hpos_a.le)] using
       (inv_mul_cancel₀ ha0)⟩
@@ -835,7 +835,7 @@ theorem cocoreModelPoint_surjective_levelSet {n k : ℕ} (hk : k ≤ n) (c ε R 
     have hsq : 2 * ε + r ^ 2 * ‖(w : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2 = ‖a‖ ^ 2 := by
       rw [hw]
       rw [hsqb]
-      nlinarith [hrel]
+      nlinarith only [hrel]
     rw [hsq]
     exact Real.sqrt_sq (norm_nonneg a)
   have hna : negPart hk (cellMap (Real.sqrt (2 * ε + r ^ 2 * ‖(w : EuclideanSpace ℝ (Fin (n - k)))‖ ^ 2))
@@ -863,7 +863,7 @@ theorem modelFlow_levelSet_cover {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ)
     linarith
   have hτ' : τ ≤ ‖posPart hk z‖ ^ 2 / 2 := by
     dsimp [τ]
-    nlinarith [hτ]
+    nlinarith only [hτ]
   have hwf : morseNormalForm hk c w = c - ε := by
     dsimp [w]
     rw [modelFlow_f_sub hk c τ z hτ0 hτ']
@@ -925,7 +925,7 @@ theorem modelFlow_levelSet_collar_cover {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ
     dsimp [τ]
     linarith
   have hτle : 2 * (morseNormalForm hk c z - (c - ε)) ≤ ‖posPart hk z‖ ^ 2 := by
-    nlinarith [hτ]
+    nlinarith only [hτ]
   rcases modelFlow_levelSet_cover hk c ε R hε hR hRε z hz hτle hnorm with ⟨p, hp⟩
   refine ⟨p, ?_⟩
   have hrev : modelFlow hk (-τ) (modelFlow hk τ z) = z := modelFlow_rev hk τ z hτ0 hτ
@@ -990,7 +990,7 @@ theorem modelHandleCollarMap_mem_sublevel {n k : ℕ} (hk : k ≤ n) (c ε r s b
     modelHandleCollarMap hk ε r p s ∈ sublevel (morseNormalForm hk c) b := by
   change morseNormalForm hk c (modelHandleCollarMap hk ε r p s) ≤ b
   rw [modelHandleCollarMap_f_value hk c ε r s p hε hs0 hr hw]
-  nlinarith [hs1, hb]
+  nlinarith only [hs1, hb]
 
 theorem modelHandleCollarMap_mem_lower_iff {n k : ℕ} (hk : k ≤ n) (c ε r s : ℝ)
     (p : CellBoundary k × ClosedCell (n - k)) (hε : 0 ≤ ε) (hs0 : 0 ≤ s)
@@ -1001,7 +1001,7 @@ theorem modelHandleCollarMap_mem_lower_iff {n k : ℕ} (hk : k ≤ n) (c ε r s 
     have hval := modelHandleCollarMap_f_value hk c ε r s p hε hs0 hr hw
     change morseNormalForm hk c (modelHandleCollarMap hk ε r p s) ≤ c - ε at hq
     rw [hval] at hq
-    nlinarith [hs0, hq]
+    nlinarith only [hs0, hq]
   · intro hs
     change morseNormalForm hk c (modelHandleCollarMap hk ε r p s) ≤ c - ε
     rw [modelHandleCollarMap_f_value hk c ε r s p hε hs0 hr hw, hs]
@@ -1212,7 +1212,7 @@ noncomputable def handleCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
 theorem handleCollarMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hδ : r ^ 2 / 2 < δ)
@@ -1251,9 +1251,9 @@ theorem handleCollarMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
           dsimp [s]
           have h1 : 0 ≤ 1 - (q.2 : ℝ) := sub_nonneg.mpr q.2.property.2
           have h1' : 0 ≤ (q.2 : ℝ) := q.2.property.1
-          nlinarith [sq_nonneg r, h1, h1']
-        nlinarith [hδ, hs, hε]
-      nlinarith [hx, hb', htle, hsle]
+          nlinarith only [sq_nonneg r, h1, h1']
+        nlinarith only [hδ, hs, hε]
+      nlinarith only [hx, hb', htle, hsle]
     change c - ε ≤ f (curveAt v hcomplete x (-t)) ∧ f (curveAt v hcomplete x (-t)) ≤ c + δ
     exact ⟨hlo, hhi⟩
   have hEq := f_add_of_integralCurve_back f hf v hdfOn
@@ -1420,7 +1420,7 @@ theorem handleCollarMap_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : �
     have hcancel : r ^ 2 / 2 ≠ 0 := div_ne_zero (pow_ne_zero 2 hr) (by norm_num)
     have hmul : (r ^ 2 / 2) * (1 - (q.2 : ℝ)) = (r ^ 2 / 2) * (1 - (q'.2 : ℝ)) := by
       dsimp [s, s'] at hcong'
-      nlinarith
+      nlinarith only [hcong']
     have hsub : 1 - (q.2 : ℝ) = 1 - (q'.2 : ℝ) := mul_left_cancel₀ hcancel hmul
     linarith
   have hfs : s = s' := by
@@ -1476,7 +1476,7 @@ theorem handleCollarMap_attachingRegion {m k : ℕ} (hk : k ≤ m + 1) (c ε r :
 theorem handleCollarMap_mem_lower {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hδ : r ^ 2 / 2 < δ)
@@ -1503,7 +1503,7 @@ theorem handleCollarMap_mem_lower {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : �
 theorem handleCollarMap_mem_sublevel {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hδ : r ^ 2 / 2 < δ)
@@ -1523,13 +1523,13 @@ theorem handleCollarMap_mem_sublevel {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
   have hs : r ^ 2 * (1 - (q.2 : ℝ)) / 2 ≤ r ^ 2 / 2 := by
     have h1 : 0 ≤ 1 - (q.2 : ℝ) := sub_nonneg.mpr q.2.property.2
     have h1' : 0 ≤ (q.2 : ℝ) := q.2.property.1
-    nlinarith [sq_nonneg r, h1, h1']
-  nlinarith [hb, hs]
+    nlinarith only [sq_nonneg r, h1, h1']
+  nlinarith only [hb, hs]
 
 theorem handleCollarMap_mem_lower_iff {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hδ : r ^ 2 / 2 < δ)
@@ -2655,7 +2655,7 @@ theorem topHandleEmbedding_mem_lower_iff {m : ℕ} (c ε : ℝ)
   · intro hle
     have hx : ‖(x : EuclideanSpace ℝ (Fin (m + 1)))‖ ≤ 1 := x.2
     have hsq : 1 ≤ ‖(x : EuclideanSpace ℝ (Fin (m + 1)))‖ ^ 2 := by
-      nlinarith [hε, hle]
+      nlinarith only [hε, hle]
     have hsq' : ‖(x : EuclideanSpace ℝ (Fin (m + 1)))‖ ^ 2 ≤ 1 := by
       have hneg : -1 ≤ ‖(x : EuclideanSpace ℝ (Fin (m + 1)))‖ := by
         linarith [norm_nonneg (x : EuclideanSpace ℝ (Fin (m + 1)))]
@@ -2681,7 +2681,7 @@ theorem topHandleEmbedding_mem_sublevel {m : ℕ} (c ε b : ℝ)
   change f (topHandleEmbedding c ε data x) ≤ b
   rw [topHandleEmbedding_f_value c ε data hε hεr x]
   have hx : 0 ≤ ‖(x : EuclideanSpace ℝ (Fin (m + 1)))‖ ^ 2 := sq_nonneg _
-  nlinarith [hx, hε, hb]
+  nlinarith only [hx, hε, hb]
 
 theorem topHandleEmbedding_attachingRegion {m : ℕ} (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -2958,7 +2958,7 @@ theorem morse_smooth_handle_attachment_top {m : ℕ} (c ε r : ℝ)
       (∀ x : ClosedCell (m + 1),
         φ x ∈ sublevel f (c - ε) ↔ ‖(x : EuclideanSpace ℝ (Fin (m + 1)))‖ = 1) := by
   have hεr' : Real.sqrt (2 * ε) ≤ data.R := by
-    exact le_trans (Real.sqrt_le_sqrt (by nlinarith [sq_nonneg r])) hεr
+    exact le_trans (Real.sqrt_le_sqrt (by nlinarith only [sq_nonneg r])) hεr
   refine ⟨topHandleEmbedding c ε data, rfl, ?_, ?_⟩
   · exact contMDiff_topHandleEmbedding c ε data hεr' hRltR'
   constructor
@@ -2972,7 +2972,7 @@ theorem morse_smooth_handle_attachment_top {m : ℕ} (c ε r : ℝ)
   constructor
   · intro x
     exact topHandleEmbedding_mem_sublevel c ε (c + r ^ 2 / 2) data (le_of_lt hε) hεr'
-      (by nlinarith [sq_nonneg r]) x
+      (by nlinarith only [sq_nonneg r]) x
   · intro x
     exact topHandleEmbedding_mem_lower_iff c ε data hε hεr' x
 
@@ -3328,7 +3328,7 @@ theorem morseLowerSublevel_mem_upper {m k : ℕ} (hk : k ≤ m + 1) (c ε r : �
     change a.1 ∈ sublevel (CellAttachment.morseNormalForm hk c) (c - ε)
     exact a.2
   have hr2 : 0 ≤ r ^ 2 := sq_nonneg r
-  nlinarith [hε, hr2]
+  nlinarith only [hle, hε, hr2]
 
 theorem morseUpperSublevel_mem_stretch_handle {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     (hδ0 : 0 < δ) (hδr : δ < r ^ 2) (hr : r ≠ 0) (u : morseUpperSublevel hk c r) :
@@ -3931,7 +3931,7 @@ theorem contMDiff_morseHandleGlueMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
       (c - ε) (c + r ^ 2 / 2)
       (by
         have hr2 : 0 ≤ r ^ 2 := sq_nonneg r
-        nlinarith [hε, hr2])
+        nlinarith only [hε, hr2])
       (CellAttachment.contDiff_morseNormalForm hk c)
       (fun y hy => CellAttachment.fderiv_morseNormalForm_ne_zero_lower hk c ε hε y hy)
       (fun y hy => CellAttachment.fderiv_morseNormalForm_ne_zero hk c (r ^ 2 / 2) (by positivity) y hy)
@@ -4023,7 +4023,7 @@ theorem contMDiff_morseLowerInclusion {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ 
       (c - ε) (c + r ^ 2 / 2)
       (by
         have hr2 : 0 ≤ r ^ 2 := sq_nonneg r
-        nlinarith [hε, hr2])
+        nlinarith only [hε, hr2])
       (CellAttachment.contDiff_morseNormalForm hk c)
       (fun y hy => CellAttachment.fderiv_morseNormalForm_ne_zero_lower hk c ε hε y hy)
       (fun y hy => CellAttachment.fderiv_morseNormalForm_ne_zero hk c (r ^ 2 / 2) (by positivity) y hy)
@@ -5886,7 +5886,7 @@ theorem modelHandleMapRawSymm_map {n k : ℕ} (hk : k ≤ n) (ε r : ℝ)
     have h : |‖negPart hk y‖| ≤ |Real.sqrt (2 * ε + ‖posPart hk y‖ ^ 2)| := by
       exact sq_le_sq.mp (by
         rw [Real.sq_sqrt (by positivity : 0 ≤ 2 * ε + ‖posPart hk y‖ ^ 2)]
-        nlinarith [hy.2])
+        nlinarith only [hy.2])
     simpa [abs_of_nonneg (norm_nonneg (negPart hk y)), abs_of_nonneg (Real.sqrt_nonneg _)] using h
   have hbnd₂' : ‖(Real.sqrt (2 * ε + ‖posPart hk y‖ ^ 2))⁻¹ • negPart hk y‖ ≤ 1 := by
     rw [norm_smul, Real.norm_eq_abs,
@@ -7575,7 +7575,7 @@ theorem morseTopCapPushdown_mem_modelHandle {n k : ℕ} (hk : k ≤ n) (c ε r :
         rw [Real.sq_sqrt hsqrt_nonneg]
         exact hle
     rw [hv, sq]
-    nlinarith [hε]
+    nlinarith only [hu, hε]
 
 noncomputable def morseCollarTopLevel {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -7637,7 +7637,7 @@ theorem morseCollarTopLevel_le {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
   · rw [morseCollarTopLevel_eq_on_chart hk c ε r data x hx]
     exact max_le (div_nonneg (sq_nonneg r) (by norm_num)) (by
       have hpos : 0 ≤ ‖posPart hk (data.χ.symm x.1)‖ ^ 2 := sq_nonneg _
-      nlinarith [hpos])
+      nlinarith only [hpos])
   · rw [morseCollarTopLevel_eq_zero hk c ε r data x hx]
     exact div_nonneg (sq_nonneg r) (by norm_num)
 
@@ -7667,7 +7667,7 @@ theorem morseCollarTopLevel_eq_zero_of_posPart_norm {m k : ℕ} (hk : k ≤ m + 
     morseCollarTopLevel hk c ε r data x = 0 := by
   rw [morseCollarTopLevel_eq_on_chart hk c ε r data x hx]
   have hle : (r ^ 2 - ‖posPart hk (data.χ.symm x.1)‖ ^ 2) / 2 ≤ 0 := by
-    nlinarith [hpos]
+    nlinarith only [hpos]
   exact max_eq_left hle
 
 theorem isCompact_morseCollarClosedBall (m : ℕ) (R : ℝ) :
@@ -7816,17 +7816,17 @@ theorem eventually_morseCollarTopLevel_eq_zero_of_chartBoundary {m k : ℕ} (hk 
             simpa [add_comm] using (morseNorm_sq_eq_negPart_add_posPart hk w)
           have hle : ‖posPart hk w‖ ^ 2 - ‖negPart hk w‖ ^ 2 = -2 * ε := by
             rw [hsplit] at hlevel
-            nlinarith [hlevel]
+            nlinarith only [hlevel]
           have hR2 : 2 * ε + 2 * r ^ 2 < morseNorm (m + 1) w ^ 2 := by
             have habs : |Real.sqrt (2 * ε + 2 * r ^ 2)| < |morseNorm (m + 1) w| := by
               rw [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg (norm_nonneg _)]
               simpa [hsymm] using hwbig
             have hsq : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 < morseNorm (m + 1) w ^ 2 :=
               (sq_lt_sq).mpr habs
-            rwa [Real.sq_sqrt (by nlinarith [hε, sq_nonneg r])] at hsq
-          nlinarith [hle, hnorm2, hR2]
+            rwa [Real.sq_sqrt (by nlinarith only [hε, sq_nonneg r])] at hsq
+          nlinarith only [hle, hnorm2, hR2]
         have hle0 : (r ^ 2 - ‖posPart hk (data.χ.symm y.1)‖ ^ 2) / 2 ≤ 0 := by
-          nlinarith [hpos]
+          nlinarith only [hpos]
         exact max_eq_left hle0
       · change morseCollarTopLevel hk c ε r data y = 0
         exact morseCollarTopLevel_eq_zero hk c ε r data y hychart)
@@ -7986,7 +7986,7 @@ theorem morseCollarFlow_levelValue {n : ℕ} {H : Type} [TopologicalSpace H] {M 
         have hle : c - ε - η ≤ f y - s := by
           have hsle : s ≤ σ := hs.2
           have hσeq : σ = f y - c + ε := rfl
-          nlinarith [hy.1, hsle, hσeq, hη]
+          nlinarith only [hy.1, hsle, hσeq, hη]
         exact le_trans hle (by simpa [curveAt_zero v hcomplete y] using hrb.1)
       have hhi : f (curveAt v hcomplete y s) ≤ c + r ^ 2 / 2 := by
         exact le_trans (by simpa [curveAt_zero v hcomplete y] using hrb.2) hy.2
@@ -8018,7 +8018,7 @@ theorem morseCollarFlow_levelValue {n : ℕ} {H : Type} [TopologicalSpace H] {M 
               exact htle
             linarith [htle']
           exact le_trans (le_trans (by simpa [curveAt_zero v hcomplete y] using hrb.2) hle)
-            (by nlinarith [hε, sq_nonneg r])
+            (by nlinarith only [hε, sq_nonneg r])
         change c - ε - η ≤ f (curveAt v hcomplete y (-t)) ∧ f (curveAt v hcomplete y (-t)) ≤ c + r ^ 2 / 2
         exact ⟨hlo, hhi⟩
       have heq := f_add_of_integralCurve_back (I := I) f hf v hdfOn
@@ -8029,9 +8029,9 @@ theorem morseCollarFlow_levelValue {n : ℕ} {H : Type} [TopologicalSpace H] {M 
       have hmain' : f (curveAt v hcomplete y σ) = f y - σ := by
         simpa [hneg] using hmain
       have hσeq : σ = f y - c + ε := rfl
-      nlinarith [hmain', hσeq]
+      nlinarith only [hmain', hσeq]
     have hσeq : σ = f y - c + ε := rfl
-    nlinarith [hback, hσeq]
+    nlinarith only [hback, hσeq]
 
 theorem morseCollarFlow_valueOnStrip {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -8112,14 +8112,14 @@ theorem morseCollarLevelMap_mem {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     morseCollarTopLevel_le hk c ε r data x
   have hden : 0 < r ^ 2 / 2 + ε + η := by
     have h1 : 0 ≤ r ^ 2 / 2 := div_nonneg (sq_nonneg r) (by norm_num)
-    have h2 : 0 < ε + η := by nlinarith [hε, hη]
-    nlinarith [h1, h2]
+    have h2 : 0 < ε + η := by nlinarith only [hε, hη]
+    nlinarith only [h1, h2]
   have hσlo : -η ≤ σ := hσ.1
   have hσhi : σ ≤ r ^ 2 / 2 + ε := hσ.2
   constructor
   · have hnum : 0 ≤ (morseCollarTopLevel hk c ε r data x + η) * (σ + η) := by
-      have h1 : 0 ≤ morseCollarTopLevel hk c ε r data x + η := by nlinarith [hT, hη]
-      have h2 : 0 ≤ σ + η := by nlinarith [hσlo, hη]
+      have h1 : 0 ≤ morseCollarTopLevel hk c ε r data x + η := by nlinarith only [hT, hη]
+      have h2 : 0 ≤ σ + η := by nlinarith only [hσlo, hη]
       exact mul_nonneg h1 h2
     have hdiv : 0 ≤ (morseCollarTopLevel hk c ε r data x + η) * (σ + η) / (r ^ 2 / 2 + ε + η) :=
       div_nonneg hnum (le_of_lt hden)
@@ -8127,11 +8127,11 @@ theorem morseCollarLevelMap_mem {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
   · have hnumle : (morseCollarTopLevel hk c ε r data x + η) * (σ + η) ≤
       (r ^ 2 / 2 + η) * (r ^ 2 / 2 + ε + η) := by
       have h1 : morseCollarTopLevel hk c ε r data x + η ≤ r ^ 2 / 2 + η := by
-        nlinarith [hTle, hη]
-      have h2 : 0 ≤ σ + η := by nlinarith [hσlo, hη]
-      have h3 : σ + η ≤ r ^ 2 / 2 + ε + η := by nlinarith [hσhi]
+        nlinarith only [hTle, hη]
+      have h2 : 0 ≤ σ + η := by nlinarith only [hσlo, hη]
+      have h3 : σ + η ≤ r ^ 2 / 2 + ε + η := by nlinarith only [hσhi]
       have h4 : 0 ≤ r ^ 2 / 2 + ε + η := le_of_lt hden
-      nlinarith [h1, h2, h3, h4, hTle, hT, hη]
+      nlinarith only [h1, h2, h3, h4, hTle, hT, hη]
     have hmain : -η + (morseCollarTopLevel hk c ε r data x + η) * (σ + η) / (r ^ 2 / 2 + ε + η) ≤
         r ^ 2 / 2 := by
       have hsub : (morseCollarTopLevel hk c ε r data x + η) * (σ + η) / (r ^ 2 / 2 + ε + η) ≤
@@ -8151,16 +8151,16 @@ theorem morseCollarLevelMap_le_top {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : �
   dsimp [morseCollarLevelMap]
   have hden : 0 < r ^ 2 / 2 + ε + η := by
     have h1 : 0 ≤ r ^ 2 / 2 := div_nonneg (sq_nonneg r) (by norm_num)
-    nlinarith [h1, hε, hη]
-  have hσ' : σ + η ≤ r ^ 2 / 2 + ε + η := by nlinarith [hσ.2]
+    nlinarith only [h1, hε, hη]
+  have hσ' : σ + η ≤ r ^ 2 / 2 + ε + η := by nlinarith only [hσ.2]
   have hT : 0 ≤ morseCollarTopLevel hk c ε r data x := morseCollarTopLevel_nonneg hk c ε r data x
   have hnumle : (morseCollarTopLevel hk c ε r data x + η) * (σ + η) ≤
       (morseCollarTopLevel hk c ε r data x + η) * (r ^ 2 / 2 + ε + η) := by
-    exact mul_le_mul_of_nonneg_left hσ' (by nlinarith [hT, hη])
+    exact mul_le_mul_of_nonneg_left hσ' (by nlinarith only [hT, hη])
   have hdivle : (morseCollarTopLevel hk c ε r data x + η) * (σ + η) / (r ^ 2 / 2 + ε + η) ≤
       morseCollarTopLevel hk c ε r data x + η := by
-    exact (div_le_iff₀ hden).mpr (by nlinarith [hnumle])
-  nlinarith [hdivle]
+    exact (div_le_iff₀ hden).mpr (by nlinarith only [hnumle])
+  nlinarith only [hdivle]
 
 theorem morseCollarLevelMap_nonpos_of_top_zero {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -8175,12 +8175,12 @@ theorem morseCollarLevelMap_nonpos_of_top_zero {m k : ℕ} (hk : k ≤ m + 1) (c
   rw [hTop]
   have hden : 0 < r ^ 2 / 2 + ε + η := by
     have h1 : 0 ≤ r ^ 2 / 2 := div_nonneg (sq_nonneg r) (by norm_num)
-    nlinarith [h1, hε, hη]
-  have hσ' : σ + η ≤ r ^ 2 / 2 + ε + η := by nlinarith [hσ.2]
+    nlinarith only [h1, hε, hη]
+  have hσ' : σ + η ≤ r ^ 2 / 2 + ε + η := by nlinarith only [hσ.2]
   have hnumle : (0 + η) * (σ + η) ≤ (0 + η) * (r ^ 2 / 2 + ε + η) := by
     exact mul_le_mul_of_nonneg_left hσ' (by simpa using hη)
   have hdivle : (0 + η) * (σ + η) / (r ^ 2 / 2 + ε + η) ≤ 0 + η := by
-    exact (div_le_iff₀ hden).mpr (by nlinarith [hnumle])
+    exact (div_le_iff₀ hden).mpr (by nlinarith only [hnumle])
   linarith
 
 noncomputable def morseCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
@@ -8348,11 +8348,11 @@ theorem morseCollarMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
   have ht : f y.1 - (c + r ^ 2 / 2) ≤ σ - L := by
     have hLle : L ≤ r ^ 2 / 2 := hLmem.2
     dsimp [σ]
-    nlinarith [hε, hLle]
+    nlinarith only [hε, hLle]
   have ht' : σ - L ≤ f y.1 - (c - ε - η) := by
     have hLge : -η ≤ L := hLmem.1
     dsimp [σ]
-    nlinarith [hLge]
+    nlinarith only [hLge]
   have hval : f (curveAt v hcomplete y.1 (σ - L)) = f y.1 - (σ - L) :=
     morseCollarFlow_valueOnStrip (I := I) f c ε r η hf v hv hsupp hdfOn hrate
       (by
@@ -8398,7 +8398,7 @@ theorem morseCollarMap_mem_lower_of_top_zero {m k : ℕ} (hk : k ≤ m + 1) (c �
       have hy2 : f y.1 ≤ c + r ^ 2 / 2 := by
         change f y.1 ≤ c + r ^ 2 / 2
         exact y.2
-      nlinarith [hy2]
+      nlinarith only [hy2]
   have hL := morseCollarLevelMap_nonpos_of_top_zero hk c ε r η data hε (le_of_lt hη)
     (⟨curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) y.1 (f y.1 - c + ε), by
       exact (morseCollarFlow_levelValue (I := I) f c ε r η hε (le_of_lt hη) hf v hv hsupp hdfOn hrate (by
@@ -8516,7 +8516,7 @@ theorem morseCollarMap_mem_handle_of_chart {m k : ℕ} (hk : k ≤ m + 1) (c ε 
       · have hy2 : f y.1 ≤ c + r ^ 2 / 2 := by
           change f y.1 ≤ c + r ^ 2 / 2
           exact y.2
-        nlinarith
+        nlinarith only [hy2]
     have hLtop := morseCollarLevelMap_le_top hk c ε r η data hε (le_of_lt hη) x σ hσ
     have hTop : morseCollarTopLevel hk c ε r data x = (r ^ 2 - ‖posPart hk z‖ ^ 2) / 2 := by
       have hchart : x ∈ morseCollarChartSet hk c ε data := by
@@ -8526,7 +8526,7 @@ theorem morseCollarMap_mem_handle_of_chart {m k : ℕ} (hk : k ≤ m + 1) (c ε 
       have hnonneg : 0 ≤ (r ^ 2 - ‖posPart hk z‖ ^ 2) / 2 := by
         have hr2' : ‖posPart hk z‖ ^ 2 ≤ r ^ 2 := by
           simpa [z, x, σ] using hr2
-        nlinarith
+        exact div_nonneg (sub_nonneg.mpr hr2') (by norm_num)
       rw [htop]
       have hmax : max 0 ((r ^ 2 - ‖posPart hk z‖ ^ 2) / 2) = (r ^ 2 - ‖posPart hk z‖ ^ 2) / 2 :=
         max_eq_right hnonneg
@@ -8561,7 +8561,7 @@ theorem morseCollarMap_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c ε r η 
   by_cases hlow : f y.1 ≤ c - ε - η
   · have hm := morseCollarMap_of_low hk c ε r η data hf hε (le_of_lt hη) v hv hsupp hdfOn hrate y hlow
     rw [hm]
-    exact Or.inl (by change f y.1 ≤ c - ε; nlinarith [hlow, hε, hη])
+    exact Or.inl (by change f y.1 ≤ c - ε; nlinarith only [hlow, hε, hη])
   · have hnotlow : c - ε - η < f y.1 := lt_of_not_ge hlow
     have hy : c - ε - η ≤ f y.1 := le_of_lt hnotlow
     let hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v :=
@@ -8598,7 +8598,7 @@ theorem morseCollarMap_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c ε r η 
           by_contra hA
           have hmax : max 0 ((r ^ 2 - ‖posPart hk z‖ ^ 2) / 2) = 0 := by
             exact max_eq_left (le_of_not_gt hA)
-          nlinarith [htop', hmax]
+          nlinarith only [htop', hmax]
         nlinarith
       by_cases hpos : 0 < ‖posPart hk z‖
       · by_cases hL0 : 0 ≤ L
@@ -8646,12 +8646,12 @@ theorem morseCollarMap_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c ε r η 
         have hzhandle : z ∈ modelHandle hk ε r := by
           dsimp [modelHandle]
           constructor
-          · have hzpos0' : ‖posPart hk z‖ ^ 2 = 0 := by nlinarith [hzpos0]
-            nlinarith [hzpos0', sq_nonneg r]
+          · have hzpos0' : ‖posPart hk z‖ ^ 2 = 0 := by nlinarith only [hzpos0]
+            nlinarith only [hzpos0', sq_nonneg r]
           · have hzsplit := morseNormalForm_split hk c z
             have hnegeq : ‖negPart hk z‖ ^ 2 = ‖posPart hk z‖ ^ 2 + 2 * ε := by
-              nlinarith [hzsplit, hzlevel]
-            nlinarith [hzpos0, hnegeq]
+              nlinarith only [hzsplit, hzlevel]
+            nlinarith only [hzpos0, hnegeq]
         have hxhandle : x.1 ∈ data.χ '' (modelHandle hk ε r : Set (MorseModel (m + 1))) := by
           refine ⟨z, hzhandle, ?_⟩
           exact hχz
@@ -8809,7 +8809,7 @@ theorem morseCompressLevel_strictMono {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < 
   rw [if_neg (not_le_of_gt ht₁)]
   have ht₂' : c - ε - δ < t₂ := lt_of_le_of_lt (le_of_lt ht₁) hlt
   rw [if_neg (not_le_of_gt ht₂')]
-  have hden : 0 < 2 * ε + δ := by nlinarith [hε, hδ]
+  have hden : 0 < 2 * ε + δ := by nlinarith only [hε, hδ]
   have hmain : (t₁ - c + ε + δ) * δ / (2 * ε + δ) < (t₂ - c + ε + δ) * δ / (2 * ε + δ) := by
     have hmul : (t₁ - c + ε + δ) * δ * (2 * ε + δ) < (t₂ - c + ε + δ) * δ * (2 * ε + δ) := by
       exact mul_lt_mul_of_pos_right
@@ -8827,9 +8827,9 @@ theorem morseUncompressLevel_compressLevel {c ε δ t : ℝ} (hδ : 0 < δ) (hε
     dsimp [morseCompressLevel, morseUncompressLevel]
     rw [if_neg (not_le_of_gt htgt)]
     have htop : c - ε - δ < c - ε - δ + (t - c + ε + δ) * δ / (2 * ε + δ) := by
-      have hden : 0 < 2 * ε + δ := by nlinarith [hε, hδ]
+      have hden : 0 < 2 * ε + δ := by nlinarith only [hε, hδ]
       have hpos : 0 < (t - c + ε + δ) * δ / (2 * ε + δ) := by
-        have hnum : 0 < (t - c + ε + δ) * δ := by nlinarith [hδ, htgt]
+        have hnum : 0 < (t - c + ε + δ) * δ := by nlinarith only [hδ, htgt]
         exact div_pos hnum hden
       nlinarith
     rw [if_neg (not_le_of_gt htop)]
@@ -8846,7 +8846,7 @@ theorem morseCompressLevel_uncompressLevel {c ε δ s : ℝ} (hδ : 0 < δ) (hε
     dsimp [morseCompressLevel, morseUncompressLevel]
     rw [if_neg (not_le_of_gt hsgt)]
     have htop : c - ε - δ < c - ε - δ + (s - c + ε + δ) * (2 * ε + δ) / δ := by
-      have hnum : 0 < (s - c + ε + δ) * (2 * ε + δ) := by nlinarith [hsgt, hε, hδ]
+      have hnum : 0 < (s - c + ε + δ) * (2 * ε + δ) := by nlinarith only [hsgt, hε, hδ]
       have hpos : 0 < (s - c + ε + δ) * (2 * ε + δ) / δ := div_pos hnum hδ
       nlinarith
     rw [if_neg (not_le_of_gt htop)]
@@ -8878,7 +8878,7 @@ theorem morseUncompressLevel_strictMono {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 
   have hmain : (s₁ - c + ε + δ) * (2 * ε + δ) / δ < (s₂ - c + ε + δ) * (2 * ε + δ) / δ := by
     have hmul : (s₁ - c + ε + δ) * (2 * ε + δ) * δ < (s₂ - c + ε + δ) * (2 * ε + δ) * δ := by
       exact mul_lt_mul_of_pos_right
-        (mul_lt_mul_of_pos_right (by nlinarith) (by nlinarith [hε, hδ])) hden
+        (mul_lt_mul_of_pos_right (by nlinarith) (by nlinarith only [hε, hδ])) hden
     exact (div_lt_div_iff₀ hden hden).mpr hmul
   nlinarith
 
@@ -9012,7 +9012,7 @@ theorem morseFarExpandTime_le_zero {c ε δ t : ℝ} (hδ : 0 < δ) (hε : 0 < �
     rw [morseFarExpandTime_eq hδ htgt]
     have hnum : -(t - c + ε + δ) * (2 * ε) ≤ 0 := by
       have hneg : -(t - c + ε + δ) ≤ 0 := by linarith
-      have htwo : 0 ≤ 2 * ε := by nlinarith [hε]
+      have htwo : 0 ≤ 2 * ε := by nlinarith only [hε]
       exact mul_nonpos_of_nonpos_of_nonneg hneg htwo
     exact div_nonpos_of_nonpos_of_nonneg hnum (le_of_lt hδ)
 
@@ -9026,12 +9026,12 @@ theorem morseFarExpandTime_ge {c ε δ t : ℝ} (hδ : 0 < δ) (hε : 0 < ε)
     rw [morseFarExpandTime_eq hδ htgt]
     have hmain : (t - c + ε + δ) * (2 * ε) / δ ≤ 2 * ε := by
       have hmul : (t - c + ε + δ) * (2 * ε) ≤ δ * (2 * ε) :=
-        mul_le_mul_of_nonneg_right (by nlinarith [ht']) (by nlinarith [hε])
+        mul_le_mul_of_nonneg_right (by nlinarith only [ht']) (by nlinarith only [hε])
       exact (div_le_iff₀ hδ).mpr (by
         simpa [mul_comm, mul_left_comm, mul_assoc] using hmul)
     have hgoal : -(2 * ε) ≤ -(t - c + ε + δ) * (2 * ε) / δ := by
       field_simp [hδ.ne']
-      nlinarith [ht']
+      nlinarith only [ht']
     exact hgoal
 
 theorem morseFarExpandTime_top {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < ε) :
@@ -9058,7 +9058,7 @@ theorem morseFarExpandTimeSmooth_top {c ε δ ρ ρ' : ℝ} (hρ : 0 < ρ)
   dsimp [morseFarExpandTimeSmooth]
   have harg : 1 ≤ (c - ε - (c - ε - δ + ρ')) / ρ := by
     rw [one_le_div hρ]
-    nlinarith [hρρ']
+    nlinarith only [hρρ']
   rw [Real.smoothTransition.one_of_one_le harg]
   rw [morseFarExpandTime_top (c := c) (ε := ε) (δ := δ) hδ hε]
   ring
@@ -9145,14 +9145,14 @@ theorem morseFarExpandTimeSmooth_levelMap_strictMono {c ε δ ρ ρ' : ℝ} (hρ
     have ht₂gt' : c - ε - δ < t₂ := by linarith
     have hu₂ : 0 ≤ u t₂ := by
       dsimp [u]
-      nlinarith [ht₂gt]
+      nlinarith only [ht₂gt, hρ']
     have hβ₂ : 0 ≤ β t₂ := (hβmem t₂).1
     have hL₂ : t₂ - morseFarExpandTimeSmooth c ε δ ρ ρ' t₂ = t₂ + β t₂ * u t₂ * (2 * ε) / δ :=
       hLcollar ht₂gt'
     by_cases ht₁ : t₁ ≤ c - ε - δ + ρ'
     · rw [hLdeep ht₁, hL₂]
       have hnonneg : 0 ≤ β t₂ * u t₂ * (2 * ε) / δ := by
-        exact div_nonneg (mul_nonneg (mul_nonneg hβ₂ hu₂) (by nlinarith [hε])) (le_of_lt hδ)
+        exact div_nonneg (mul_nonneg (mul_nonneg hβ₂ hu₂) (by nlinarith only [hε])) (le_of_lt hδ)
       nlinarith
     · have ht₁gt : c - ε - δ + ρ' < t₁ := lt_of_not_ge ht₁
       have ht₁gt' : c - ε - δ < t₁ := by linarith
@@ -9161,12 +9161,12 @@ theorem morseFarExpandTimeSmooth_levelMap_strictMono {c ε δ ρ ρ' : ℝ} (hρ
       rw [hL₁, hL₂]
       have hu₁ : 0 ≤ u t₁ := by
         dsimp [u]
-        nlinarith [ht₁gt]
+        nlinarith only [ht₁gt, hρ']
       have hβ₁ : 0 ≤ β t₁ := (hβmem t₁).1
       have hβle : β t₁ ≤ β t₂ := hβmono (le_of_lt hlt)
       have hule : u t₁ ≤ u t₂ := by
         dsimp [u]
-        nlinarith
+        nlinarith only [hlt]
       have hmain : β t₁ * u t₁ ≤ β t₂ * u t₂ := by
         have h1 : β t₁ * u t₁ ≤ β t₂ * u t₁ :=
           mul_le_mul_of_nonneg_right hβle hu₁
@@ -9174,9 +9174,9 @@ theorem morseFarExpandTimeSmooth_levelMap_strictMono {c ε δ ρ ρ' : ℝ} (hρ
           mul_le_mul_of_nonneg_left hule hβ₂
         exact le_trans h1 h2
       have hdiff : β t₁ * u t₁ * (2 * ε) / δ ≤ β t₂ * u t₂ * (2 * ε) / δ := by
-        exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hmain (by nlinarith [hε]))
+        exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hmain (by nlinarith only [hε]))
           (le_of_lt hδ)
-      nlinarith
+      nlinarith only [hlt, hdiff]
 
 theorem morseFarExpandTimeSmooth_levelMap_le_top {c ε δ ρ ρ' t : ℝ} (hρ : 0 < ρ)
     (hρ' : 0 < ρ') (hε : 0 < ε) (hδ : 0 < δ) (ht : t ≤ c - ε) :
@@ -9186,7 +9186,7 @@ theorem morseFarExpandTimeSmooth_levelMap_le_top {c ε δ ρ ρ' t : ℝ} (hρ :
       rw [morseFarExpandTimeSmooth_zero hρ ht']
       ring
     rw [hL]
-    nlinarith [ht]
+    nlinarith only [ht, hε]
   · have htgt : c - ε - δ + ρ' < t := lt_of_not_ge ht'
     have htgt' : c - ε - δ < t := by linarith
     have hL : t - morseFarExpandTimeSmooth c ε δ ρ ρ' t =
@@ -9203,10 +9203,11 @@ theorem morseFarExpandTimeSmooth_levelMap_le_top {c ε δ ρ ρ' t : ℝ} (hρ :
         have hnonneg : 0 ≤ t - c + ε + δ := by linarith
         have hβ0 : 0 ≤ Real.smoothTransition ((t - (c - ε - δ + ρ')) / ρ) :=
           Real.smoothTransition.nonneg _
-        exact le_trans (mul_le_mul_of_nonneg_left hu hβ0) (by nlinarith [hβ])
+        exact le_trans (mul_le_mul_of_nonneg_left hu hβ0) (by nlinarith only [hβ, hδ])
       exact (div_le_iff₀ hδ).mpr (by
-        have hnonneg : 0 ≤ (2 * ε) := by nlinarith [hε]
-        nlinarith [h1])
+        have hnonneg : 0 ≤ (2 * ε) := by nlinarith only [hε]
+        have hmul := mul_le_mul_of_nonneg_right h1 hnonneg
+        nlinarith only [hmul])
     nlinarith
 
 theorem morseFarExpandTimeSmooth_levelMap_ge_deep {c ε δ ρ ρ' t : ℝ} (hρ : 0 < ρ)
@@ -9229,7 +9230,7 @@ theorem morseFarExpandTimeSmooth_levelMap_ge_deep {c ε δ ρ ρ' t : ℝ} (hρ 
     have hnonneg : 0 ≤ Real.smoothTransition ((t - (c - ε - δ + ρ')) / ρ) * (t - c + ε + δ) * (2 * ε) / δ := by
       have hβ : 0 ≤ Real.smoothTransition ((t - (c - ε - δ + ρ')) / ρ) := Real.smoothTransition.nonneg _
       have hu : 0 ≤ t - c + ε + δ := by linarith
-      exact div_nonneg (mul_nonneg (mul_nonneg hβ hu) (by nlinarith [hε])) (le_of_lt hδ)
+      exact div_nonneg (mul_nonneg (mul_nonneg hβ hu) (by nlinarith only [hε])) (le_of_lt hδ)
     nlinarith
 
 theorem morseFarExpandTimeSmooth_deriv_nonpos {c ε δ ρ ρ' : ℝ} (hρ : 0 < ρ)
@@ -9370,7 +9371,7 @@ theorem morseFarExpandTimeSmooth_levelMap_surj {c ε δ ρ ρ' : ℝ} (hρ : 0 <
       · rw [hleft]
         exact hu
     have hlt : t₁ ≤ c - ε := by
-      have h₂ : c - ε - δ + ρ' ≤ c - ε := by nlinarith [hρ', hδ]
+      have h₂ : c - ε - δ + ρ' ≤ c - ε := by nlinarith only [hρρ', hρ]
       exact le_trans ht₁deep h₂
     have hivt := intermediate_value_Icc (a := t₁) (b := c - ε) hlt
       (f := L) (hLcont.continuousOn)
@@ -9681,7 +9682,7 @@ theorem morseRoundedCollarMap_value {n : ℕ} (c ε r δ : ℝ)
     have hy : f z.1 ∈ Set.Icc (c - ε - δ) (c + r ^ 2 / 2) := by
       constructor
       · exact le_of_lt hnotdeep
-      · nlinarith [hz, hr2]
+      · nlinarith only [hz, hr2]
     have htime : morseFarExpandTime c ε δ (f z.1) =
         -(f z.1 - c + ε + δ) * (2 * ε) / δ :=
       morseFarExpandTime_eq hδ hnotdeep
@@ -9689,11 +9690,11 @@ theorem morseRoundedCollarMap_value {n : ℕ} (c ε r δ : ℝ)
     have ht : f z.1 - (c + r ^ 2 / 2) ≤ -(f z.1 - c + ε + δ) * (2 * ε) / δ := by
       rw [hr2]
       rw [le_div_iff₀ hδ]
-      nlinarith [hz]
+      nlinarith only [hz, hδ, hε]
     have ht' : -(f z.1 - c + ε + δ) * (2 * ε) / δ ≤ f z.1 - (c - ε - δ) := by
       rw [div_le_iff₀ hδ]
       have hpos : 0 ≤ f z.1 - c + ε + δ := by linarith
-      nlinarith [hpos, hε]
+      nlinarith only [hpos, hε, hδ]
     exact morseCollarFlow_valueOnStrip (I := I) f c ε r δ hf v hv hsupp hdfOn hrate
       (hy := hy) (t := -(f z.1 - c + ε + δ) * (2 * ε) / δ) ht ht'
 
@@ -9702,19 +9703,19 @@ theorem morseFarExpandLevel_le {c ε δ t ρ : ℝ} (hδ : 0 < δ) (hε : 0 < ε
     c - ε - δ ≤ t - ρ * morseFarExpandTime c ε δ t := by
   have he : morseFarExpandTime c ε δ t ≤ 0 := morseFarExpandTime_le_zero hδ hε
   have hpe : ρ * morseFarExpandTime c ε δ t ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hρ.1 he
-  nlinarith [hpe, ht]
+  nlinarith only [hpe, ht]
 
 theorem morseFarExpandLevel_le_top {c ε δ t ρ : ℝ} (hδ : 0 < δ) (hε : 0 < ε)
     (ht' : t ≤ c - ε) (hρ : ρ ∈ Set.Icc (0 : ℝ) 1) :
     t - ρ * morseFarExpandTime c ε δ t ≤ c + ε := by
   have hg : -(2 * ε) ≤ morseFarExpandTime c ε δ t := morseFarExpandTime_ge hδ hε ht'
-  have hne : -morseFarExpandTime c ε δ t ≤ 2 * ε := by nlinarith [hg]
+  have hne : -morseFarExpandTime c ε δ t ≤ 2 * ε := by nlinarith only [hg]
   have hρne : ρ * (-morseFarExpandTime c ε δ t) ≤ 2 * ε := by
     exact le_trans (mul_le_mul_of_nonneg_left hne hρ.1)
       (by
-        have hρ2 : (2 * ε) * ρ ≤ 2 * ε := mul_le_of_le_one_right (by nlinarith [hε]) hρ.2
-        nlinarith [hρ2])
-  nlinarith [hρne, ht']
+        have hρ2 : (2 * ε) * ρ ≤ 2 * ε := mul_le_of_le_one_right (by nlinarith only [hε]) hρ.2
+        nlinarith only [hρ2])
+  nlinarith only [hρne, ht']
 
 theorem morseRoundedCollarMap_mem_upper {n : ℕ} (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -9771,16 +9772,16 @@ theorem morseRoundedCollarMapSmooth_value {n : ℕ} (c ε r δ ρ ρ' : ℝ)
     have hy : f z.1 ∈ Set.Icc (c - ε - δ) (c + r ^ 2 / 2) := by
       constructor
       · exact le_of_lt (by linarith)
-      · nlinarith [hz, hr2]
+      · nlinarith only [hz, hr2]
     let τ : ℝ := morseFarExpandTimeSmooth c ε δ ρ ρ' (f z.1)
     have hτmem₁ : f z.1 - (c + r ^ 2 / 2) ≤ τ := by
       have hle := morseFarExpandTimeSmooth_levelMap_le_top (t := f z.1) hρ hρ' hε hδ hz
       have hr2' : c + ε = c + r ^ 2 / 2 := by rw [hr2]; ring
-      nlinarith [hle, hr2']
+      nlinarith only [hle, hr2']
     have hτmem₂ : τ ≤ f z.1 - (c - ε - δ) := by
       have hge := morseFarExpandTimeSmooth_levelMap_ge_deep (t := f z.1) hρ hρ' hε hδ
         (le_of_lt hnotdeep)
-      nlinarith [hge, hρ']
+      nlinarith only [hge, hρ']
     exact morseCollarFlow_valueOnStrip (I := I) f c ε r δ hf v hv hsupp hdfOn hrate
       (hy := hy) (t := τ) hτmem₁ hτmem₂
 
@@ -9808,7 +9809,7 @@ theorem morseRoundedCollarMapSmooth_mem_upper {n : ℕ} (c ε r δ ρ ρ' : ℝ)
   have hle := morseFarExpandTimeSmooth_levelMap_le_top (t := f z.1) hρ hρ' hε hδ z.2
   rw [hval]
   have hr2' : c + ε = c + r ^ 2 / 2 := by rw [hr2]; ring
-  nlinarith [hle, hr2']
+  nlinarith only [hle, hr2']
 
 noncomputable def morseFarExpandMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -9865,29 +9866,29 @@ theorem morseFarExpandMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R�
     have hge : -(2 * ε) ≤ morseFarExpandTime c ε δ (f z.1) := morseFarExpandTime_ge hδ hε hz
     have hpe : morseFarCutoff hk c r ε' R₀ R₁ data z.1 * morseFarExpandTime c ε δ (f z.1) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hcut.1 he0
-    have hne : -morseFarExpandTime c ε δ (f z.1) ≤ 2 * ε := by nlinarith [hge]
+    have hne : -morseFarExpandTime c ε δ (f z.1) ≤ 2 * ε := by nlinarith only [hge]
     have hρne : morseFarCutoff hk c r ε' R₀ R₁ data z.1 * (-morseFarExpandTime c ε δ (f z.1)) ≤ 2 * ε := by
       exact le_trans (mul_le_mul_of_nonneg_left hne hcut.1)
         (by
           have hρ2 : (2 * ε) * morseFarCutoff hk c r ε' R₀ R₁ data z.1 ≤ 2 * ε :=
-            mul_le_of_le_one_right (by nlinarith [hε]) hcut.2
-          nlinarith [hρ2])
+            mul_le_of_le_one_right (by nlinarith only [hε]) hcut.2
+          nlinarith only [hρ2])
     have hτmem : τ ∈ Set.Icc (f z.1 - (c + r ^ 2 / 2)) (f z.1 - (c - ε - δ)) := by
       constructor
       · have hmain : f z.1 - τ ≤ c + r ^ 2 / 2 := by
           dsimp [τ]
           have hr2' : r ^ 2 / 2 = ε := by rw [hr2]; ring
-          nlinarith [hρne, hz, hr2']
-        nlinarith [hmain]
+          nlinarith only [hρne, hz, hr2']
+        nlinarith only [hmain]
       · have hmain : f z.1 - τ ≥ c - ε - δ := by
           dsimp [τ]
-          nlinarith [hpe, hz, hδ]
-        nlinarith [hmain]
+          nlinarith only [hle, hpe]
+        nlinarith only [hmain]
     have hval := morseCollarFlow_valueOnStrip (I := I) f c ε r δ hf v hv hsupp hdfOn hrate
       (by
         constructor
         · exact hnotdeep.le
-        · nlinarith [hz, hr2])
+        · nlinarith only [hz, hr2])
       (by exact hτmem.1) (by exact hτmem.2)
     dsimp [morseFarExpandMap]
     change f (curveAt v hcomplete z.1 τ) = f z.1 - τ
@@ -9923,11 +9924,11 @@ theorem morseFarExpandMap_mem_upper {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε
       ring
     rw [hτ]
     have hr2' : c + ε = c + r ^ 2 / 2 := by rw [hr2]; ring
-    nlinarith [hz, hr2']
+    nlinarith only [hz, hr2']
   · have hnotdeep : c - ε - δ < f z.1 := lt_of_not_ge hdeep
     have htop := morseFarExpandLevel_le_top hδ hε hz hcut
     have hr2' : c + ε = c + r ^ 2 / 2 := by rw [hr2]; ring
-    nlinarith [htop, hr2']
+    nlinarith only [htop, hr2']
 
 theorem morseFarExpandMap_deep {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -10486,8 +10487,8 @@ theorem morseFarExpandTime_antiMonotone {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 
     rw [morseFarExpandTime_eq hδ ht₁']
     have hnum : -(t₂ - c + ε + δ) * (2 * ε) ≤ -(t₁ - c + ε + δ) * (2 * ε) := by
       have hmul : (t₁ - c + ε + δ) * (2 * ε) ≤ (t₂ - c + ε + δ) * (2 * ε) :=
-        mul_le_mul_of_nonneg_right (by nlinarith) (by nlinarith [hε])
-      nlinarith [hmul]
+        mul_le_mul_of_nonneg_right (by nlinarith) (by nlinarith only [hε])
+      nlinarith only [hmul]
     exact div_le_div_of_nonneg_right hnum (le_of_lt hδ)
 
 theorem morseFarExpandLevel_mono {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < ε)
@@ -10502,8 +10503,8 @@ theorem morseFarExpandLevel_mono {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < ε)
   have h2 : (ρ₁ - ρ₂) * morseFarExpandTime c ε δ t₂ ≥ 0 := by
     exact mul_nonneg_of_nonpos_of_nonpos (sub_nonpos.mpr hρle) he2
   have hdiff : ρ₁ * morseFarExpandTime c ε δ t₁ - ρ₂ * morseFarExpandTime c ε δ t₂ ≥ 0 := by
-    nlinarith [h1, h2]
-  nlinarith [hdiff, ht]
+    nlinarith only [h1, h2]
+  nlinarith only [hdiff, ht]
 
 
 theorem morseFarCutoffModel_mono {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ) (r ε' R₀ R₁ : ℝ)
@@ -10516,7 +10517,7 @@ theorem morseFarCutoffModel_mono {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ) (r ε'
   have hpos2 : ‖posPart hk y₂‖ ^ 2 ≥ ‖posPart hk y₁‖ ^ 2 := by
     have h1 := morseNormalForm_split hk c y₁
     have h2 := morseNormalForm_split hk c y₂
-    nlinarith [hlev, h1, h2, hneg2]
+    nlinarith only [hlev, h1, h2, hneg2]
   have hpos : ‖posPart hk y₁‖ ≤ ‖posPart hk y₂‖ := by
     exact le_of_sq_le_sq hpos2 (norm_nonneg _)
   have hnorm2 : morseNorm (m + 1) y₂ ^ 2 ≥ morseNorm (m + 1) y₁ ^ 2 := by
@@ -10524,16 +10525,17 @@ theorem morseFarCutoffModel_mono {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ) (r ε'
       morseNorm_sq_eq_negPart_add_posPart hk y₁
     have h2 : morseNorm (m + 1) y₂ ^ 2 = ‖negPart hk y₂‖ ^ 2 + ‖posPart hk y₂‖ ^ 2 :=
       morseNorm_sq_eq_negPart_add_posPart hk y₂
-    nlinarith [h1, h2, hpos2, hneg2]
+    nlinarith only [h1, h2, hpos2, hneg2]
   have hnorm : morseNorm (m + 1) y₁ ≤ morseNorm (m + 1) y₂ := by
     exact le_of_sq_le_sq hnorm2 (norm_nonneg _)
   have hp : morseFarCutoffPos r ε' (‖posPart hk y₁‖) ≤ morseFarCutoffPos r ε' (‖posPart hk y₂‖) := by
     dsimp [morseFarCutoffPos]
-    exact Real.smoothTransition.monotone ((div_le_div_iff₀ hε' hε').mpr (by nlinarith [hpos]))
+    exact Real.smoothTransition.monotone
+      (div_le_div_of_nonneg_right (sub_le_sub_right hpos r) (le_of_lt hε'))
   have hn : morseFarCutoffNorm R₀ R₁ (morseNorm (m + 1) y₁) ≤ morseFarCutoffNorm R₀ R₁ (morseNorm (m + 1) y₂) := by
     dsimp [morseFarCutoffNorm]
     exact Real.smoothTransition.monotone
-      ((div_le_div_iff₀ (by nlinarith : 0 < R₁ - R₀) (by nlinarith : 0 < R₁ - R₀)).mpr (by nlinarith [hnorm]))
+      (div_le_div_of_nonneg_right (sub_le_sub_right hnorm R₀) (le_of_lt (sub_pos.mpr hR)))
   exact max_le
     (le_trans hp (le_max_left _ _))
     (le_trans hn (le_max_right _ _))
@@ -10573,14 +10575,14 @@ theorem morseFarExpandTime_cut_bounds {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < 
     ρ * morseFarExpandTime c ε δ t ∈ Set.Icc (-(2 * ε)) 0 := by
   have he0 : morseFarExpandTime c ε δ t ≤ 0 := morseFarExpandTime_le_zero hδ hε
   have hge : -(2 * ε) ≤ morseFarExpandTime c ε δ t := morseFarExpandTime_ge hδ hε ht
-  have hne : -morseFarExpandTime c ε δ t ≤ 2 * ε := by nlinarith [hge]
+  have hne : -morseFarExpandTime c ε δ t ≤ 2 * ε := by nlinarith only [hge]
   have hρne : ρ * (-morseFarExpandTime c ε δ t) ≤ 2 * ε := by
     exact le_trans (mul_le_mul_of_nonneg_left hne hρ.1)
       (by
-        have hρ2 : (2 * ε) * ρ ≤ 2 * ε := mul_le_of_le_one_right (by nlinarith [hε]) hρ.2
-        nlinarith [hρ2])
+        have hρ2 : (2 * ε) * ρ ≤ 2 * ε := mul_le_of_le_one_right (by nlinarith only [hε]) hρ.2
+        nlinarith only [hρ2])
   constructor
-  · nlinarith [hρne]
+  · nlinarith only [hρne]
   · exact mul_nonpos_of_nonneg_of_nonpos hρ.1 he0
 
 theorem morseFarCutoff_mono_on_orbit_expand {m k : ℕ} (hk : k ≤ m + 1) (c ε r ε' R₀ R₁ : ℝ)
@@ -10621,7 +10623,7 @@ theorem morseFarCutoff_mono_on_orbit_expand {m k : ℕ} (hk : k ≤ m + 1) (c ε
   have hnormFlow : morseNorm (m + 1) (modelFlow hk (τ₁ - τ₂) y₁) ≤ data.R := by
     have habs : |τ₁ - τ₂| ≤ 2 * ε := by
       rw [abs_le]
-      constructor <;> nlinarith [hτ1.1, hτ1.2, hτ2.1, hτ2.2]
+      constructor <;> nlinarith only [hτ1.1, hτ1.2, hτ2.1, hτ2.2]
     have hsq := modelFlow_norm_sq_le_add hk ε (by nlinarith) habs y₁
     have hR' : morseNorm (m + 1) y₁ ^ 2 ≤ data.R' ^ 2 := by
       have hnorm : morseNorm (m + 1) y₁ ≤ data.R' := le_of_lt hy₁
@@ -10629,7 +10631,7 @@ theorem morseFarCutoff_mono_on_orbit_expand {m k : ℕ} (hk : k ≤ m + 1) (c ε
         rw [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (le_of_lt data.hR'pos)]
         exact hnorm)
     have hmain : morseNorm (m + 1) (modelFlow hk (τ₁ - τ₂) y₁) ^ 2 ≤ data.R ^ 2 := by
-      nlinarith [hsq, hR', hRbig]
+      nlinarith only [hsq, hR', hRbig]
     exact le_of_sq_le_sq hmain (le_of_lt data.hRpos)
   have hsrcFlow : modelFlow hk (τ₁ - τ₂) y₁ ∈ data.χ.source :=
     data.hχsrc (modelFlow hk (τ₁ - τ₂) y₁) hnormFlow
@@ -10737,7 +10739,7 @@ theorem morseFarExpandMap_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε
         have hmain : (f z₂.1 - τ₂) - (f z₁.1 - τ₁) ≥ f z₂.1 - f z₁.1 := by
           dsimp [τ₁, τ₂]
           exact hmono
-        nlinarith [hmain, hsum, hle]
+        nlinarith only [hmain, hsum, hle]
       · have hle' : f z₂.1 ≤ f z₁.1 := le_of_lt (lt_of_not_ge hle)
         have horbit' : z₁.1 = curveAt v hcomplete z₂.1 (τ₂ - τ₁) := by
           have hrev := curveAt_add v hv1 hcomplete z₂.1 τ₂ (τ₁ - τ₂)
@@ -10767,8 +10769,8 @@ theorem morseFarExpandMap_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε
         have hmain : (f z₁.1 - τ₁) - (f z₂.1 - τ₂) ≥ f z₁.1 - f z₂.1 := by
           dsimp [τ₁, τ₂]
           exact hmono
-        nlinarith [hmain, hsum, hle']
-    nlinarith [hsum, hb]
+        nlinarith only [hmain, hsum, hle']
+    nlinarith only [hsum, hb]
   apply Subtype.ext
   rw [horbit]
   rw [hτeq]
@@ -10787,7 +10789,7 @@ theorem morseCollarLevelMap_injective_of_level {m k : ℕ} (hk : k ≤ m + 1) (c
     morseCollarTopLevel_nonneg hk c ε r data x
   have hden : r ^ 2 / 2 + ε + η ≠ 0 := by positivity
   have hTη : morseCollarTopLevel hk c ε r data x + η ≠ 0 := by
-    have : 0 < morseCollarTopLevel hk c ε r data x + η := by nlinarith [hT, hη]
+    have : 0 < morseCollarTopLevel hk c ε r data x + η := by nlinarith only [hT, hη]
     exact ne_of_gt this
   dsimp [morseCollarLevelMap] at h
   have hstep : (morseCollarTopLevel hk c ε r data x + η) * (σ₁ + η) / (r ^ 2 / 2 + ε + η) =
@@ -10809,14 +10811,14 @@ theorem morseCollarLevelMap_surjective {m k : ℕ} (hk : k ≤ m + 1) (c ε r η
     ∃ σ ∈ Set.Icc (-η) (r ^ 2 / 2 + ε), morseCollarLevelMap hk c ε r η data x σ = t := by
   have hT : 0 ≤ morseCollarTopLevel hk c ε r data x :=
     morseCollarTopLevel_nonneg hk c ε r data x
-  have hTη : 0 < morseCollarTopLevel hk c ε r data x + η := by nlinarith [hT, hη]
+  have hTη : 0 < morseCollarTopLevel hk c ε r data x + η := by nlinarith only [hT, hη]
   have hden : r ^ 2 / 2 + ε + η ≠ 0 := by positivity
   let σ : ℝ := -η + (t + η) * (r ^ 2 / 2 + ε + η) / (morseCollarTopLevel hk c ε r data x + η)
   refine ⟨σ, ?_, ?_⟩
   · constructor
     · dsimp [σ]
       have h1 : 0 ≤ (t + η) * (r ^ 2 / 2 + ε + η) / (morseCollarTopLevel hk c ε r data x + η) := by
-        have h1' : 0 ≤ t + η := by nlinarith [ht.1, hη]
+        have h1' : 0 ≤ t + η := by nlinarith only [ht.1, hη]
         have h2' : 0 < r ^ 2 / 2 + ε + η := by positivity
         exact div_nonneg (mul_nonneg h1' (le_of_lt h2')) (le_of_lt hTη)
       nlinarith
@@ -10826,16 +10828,16 @@ theorem morseCollarLevelMap_surjective {m k : ℕ} (hk : k ≤ m + 1) (c ε r η
         morseCollarTopLevel_le hk c ε r data x
       have hnum : (t + η) * (r ^ 2 / 2 + ε + η) ≤
           (morseCollarTopLevel hk c ε r data x + η) * (r ^ 2 / 2 + ε + η) := by
-        have h1' : t + η ≤ morseCollarTopLevel hk c ε r data x + η := by nlinarith [h1, hη]
+        have h1' : t + η ≤ morseCollarTopLevel hk c ε r data x + η := by nlinarith only [h1, hη]
         have h2' : 0 ≤ r ^ 2 / 2 + ε + η := by positivity
         exact mul_le_mul_of_nonneg_right h1' h2'
       have hdiv : (t + η) * (r ^ 2 / 2 + ε + η) / (morseCollarTopLevel hk c ε r data x + η) ≤
           r ^ 2 / 2 + ε + η := by
         exact (div_le_iff₀ hTη).mpr (by
-          nlinarith [hnum])
+          nlinarith only [hnum])
       have hmain : -η + (t + η) * (r ^ 2 / 2 + ε + η) / (morseCollarTopLevel hk c ε r data x + η) ≤
           r ^ 2 / 2 + ε := by
-        nlinarith [hdiv]
+        nlinarith only [hdiv]
       exact hmain
   · dsimp [morseCollarLevelMap, σ]
     have hmain : -η + (morseCollarTopLevel hk c ε r data x + η) *
@@ -10871,7 +10873,7 @@ theorem morseHandlePoint_f_mem {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     exact hmem
   · exact modelHandleMap_f_le hk c ε r (le_of_lt hε) d
 
-noncomputable def morseCollarFlowBase {m : ℕ} (c ε r η : ℝ)
+noncomputable def morseCollarFlowerScale {m : ℕ} (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
@@ -10914,11 +10916,11 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
     (w : MorseModel (m + 1)) (hw : w ∈ modelHandle hk ε r)
     (hwneg : 2 * ε ≤ ‖negPart hk w‖ ^ 2) :
     morseCollarTopLevel hk c ε r data
-      (morseCollarFlowBase c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
+      (morseCollarFlowerScale c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
         (by
           have hmem := morseHandlePoint_f_mem hk c ε r data hε hr hεr' w hw
           constructor
-          · nlinarith [hmem.1, hη]
+          · nlinarith only [hmem.1, hη]
           · exact hmem.2)) ≥
       f (data.χ w) - c + ε := by
   let hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v :=
@@ -10928,7 +10930,7 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
     morseHandlePoint_f_mem hk c ε r data hε hr hεr' w hw
   have hσ0 : 0 ≤ σ' := by
     dsimp [σ']
-    nlinarith [hmem.1]
+    nlinarith only [hmem.1]
   have hrange : w ∈ Set.range (modelHandleMap hk ε r) := by
     rw [← modelHandleMap_range hk ε r hε hr] at hw
     exact hw
@@ -10945,16 +10947,16 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
     ring
   have hσposle : σ' ≤ ‖posPart hk w‖ ^ 2 / 2 := by
     rw [hσ'eq]
-    nlinarith [hwneg]
+    nlinarith only [hwneg]
   let x : LevelSetSpace f (c - ε) :=
-    morseCollarFlowBase c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
+    morseCollarFlowerScale c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
       (by
         have hmem := morseHandlePoint_f_mem hk c ε r data hε hr hεr' w hw
         constructor
-        · nlinarith [hmem.1, hη]
+        · nlinarith only [hmem.1, hη]
         · exact hmem.2)
   have hxeq : x.1 = data.χ (modelFlow hk σ' w) := by
-    dsimp [x, morseCollarFlowBase, σ']
+    dsimp [x, morseCollarFlowerScale, σ']
     exact hflowChart w hsrcw (f (data.χ w) - c + ε)
   have hflowle : morseNorm (m + 1) (modelFlow hk σ' w) ≤ morseNorm (m + 1) w :=
     modelFlow_norm_le hk σ' w hσ0 hσposle
@@ -10982,8 +10984,8 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
     have harg : 0 ≤ (2 * ε - (‖negPart hk w‖ ^ 2 - 2 * ε)) / 2 := by
       have hnegle : ‖negPart hk w‖ ^ 2 ≤ r ^ 2 + 2 * ε := by
         have hposle : ‖posPart hk w‖ ^ 2 ≤ r ^ 2 := hw.1
-        nlinarith [hw.2, hposle]
-      nlinarith [hnegle, hr2]
+        nlinarith only [hw.2, hposle]
+      nlinarith only [hnegle, hr2]
     rw [max_eq_right harg]
     ring
   rw [htopval]
@@ -10991,7 +10993,7 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
   rw [hσ'eq]
   have hposle : ‖posPart hk w‖ ^ 2 ≤ r ^ 2 := hw.1
   rw [hr2] at hposle
-  nlinarith
+  nlinarith only [hposle]
 
 def cellImage {n k : ℕ} (hk : k ≤ n) (c : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -11233,7 +11235,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
       have hx' : ‖x‖ ≤ R := le_trans (supNorm_le_morseNorm x) hx
       have hy' : ‖y‖ ≤ R := le_trans (supNorm_le_morseNorm y) hy
       rw [dist_eq_norm]
-      exact le_trans (norm_sub_le x y) (by nlinarith [hx', hy'])
+      exact le_trans (norm_sub_le x y) (by nlinarith only [hx', hy'])
     exact Metric.isCompact_iff_isClosed_bounded.2 ⟨hclosed, hbounded⟩
   have hχballClosed : IsClosed (χ '' ball) := by
     have hmap : Set.MapsTo χ ball χ.target := by intro y hy; exact χ.map_source (hχsrc y hy)
@@ -11303,9 +11305,9 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
               exact le_of_lt hlt)), min_eq_right (le_of_lt hlt)]
         exact le_trans hmin_sq hsq
       have hthr : 4 * ε + 9 * δ ^ 2 / 4 < min (R ^ 2) (rΦ ^ 2) := by
-        exact lt_min (by nlinarith [hR]) (by nlinarith [hΦr])
+        exact lt_min (by nlinarith only [hR]) (by nlinarith only [hΦr])
       have hgt : 4 * ε + 9 * δ ^ 2 / 4 < morseNorm n (χ.symm x) ^ 2 := by
-        nlinarith [hthr, hge']
+        nlinarith only [hthr, hge']
       have hS₂mem : {x : M | x ∈ χ.target ∧ 4 * ε + 9 * δ ^ 2 / 4 < morseNorm n (χ.symm x) ^ 2} ∈ nhds x :=
         (isOpen_morseModifiedRegion_gt χ (4 * ε + 9 * δ ^ 2 / 4)).mem_nhds ⟨hx, hgt⟩
       have hagree : g =ᶠ[nhds x] f := by
@@ -11407,7 +11409,7 @@ private lemma isClosed_chartBallImage {n : ℕ} {M : Type}
     have hx' : ‖x‖ ≤ R := le_trans (supNorm_le_morseNorm x) hx
     have hy' : ‖y‖ ≤ R := le_trans (supNorm_le_morseNorm y) hy
     rw [dist_eq_norm]
-    exact le_trans (norm_sub_le x y) (by nlinarith [hx', hy'])
+    exact le_trans (norm_sub_le x y) (by nlinarith only [hx', hy'])
   have hballComp : IsCompact ball := Metric.isCompact_iff_isClosed_bounded.2 ⟨hclosed, hbounded⟩
   have hmap : Set.MapsTo χ ball χ.target := by intro y hy; exact χ.map_source (hχsrc y hy)
   have hcont : ContinuousOn χ ball := χ.continuousOn_toFun.mono hχsrc
@@ -11562,12 +11564,12 @@ theorem no_critical_point_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε
         have hnorm_le : morseNorm n (χ.symm x) ^ 2 ≤ 4 * ε + 9 * δ ^ 2 / 4 := le_of_not_gt hbig
         have hRlt : morseNorm n (χ.symm x) < R := by
           have hsq : morseNorm n (χ.symm x) ^ 2 < R ^ 2 :=
-            lt_of_le_of_lt hnorm_le (by nlinarith [hR])
+            lt_of_le_of_lt hnorm_le (by nlinarith only [hR])
           have habs := sq_lt_sq.mp hsq
           rwa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (le_of_lt hRpos)] at habs
         have hΦlt : morseNorm n (χ.symm x) < rΦ := by
           have hsq : morseNorm n (χ.symm x) ^ 2 < rΦ ^ 2 :=
-            lt_of_le_of_lt hnorm_le (by nlinarith [hΦr])
+            lt_of_le_of_lt hnorm_le (by nlinarith only [hΦr])
           have habs := sq_lt_sq.mp hsq
           rwa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (le_of_lt hΦpos)] at habs
         have hO₃mem : {x : M | x ∈ χ.target ∧ morseNorm n (χ.symm x) < R} ∩
@@ -11673,7 +11675,7 @@ noncomputable def morseModifiedRetractionHomotopy {n k : ℕ} (hk : k ≤ n) (c 
   else x
 
 theorem continuousOn_morseModifiedRetraction {n k : ℕ} (hk : k ≤ n) (c ε δ R : ℝ)
-    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2) (hRpos : 0 < R)
+    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2)
     {M : Type} [TopologicalSpace M] [T2Space M]
     (χ : OpenPartialHomeomorph (MorseModel n) M) (f : M → ℝ)
     (hg : Continuous (morseModifiedFunction (M := M) hk c ε δ R χ f))
@@ -11743,7 +11745,7 @@ theorem continuousOn_morseModifiedRetraction {n k : ℕ} (hk : k ≤ n) (c ε δ
       have hgt : 4 * ε + 9 * δ ^ 2 / 4 < morseNorm n y ^ 2 := lt_of_not_ge hnot
       exact hmu (modMu_mul_modGamma_eq_zero_of_norm_gt hk ε δ hε hδ hgt)
     have hcontra : morseNorm n y ^ 2 < R ^ 2 := lt_of_le_of_lt hnorm_le hR
-    have hsqR : morseNorm n y ^ 2 = R ^ 2 := by nlinarith [hyR]
+    have hsqR : morseNorm n y ^ 2 = R ^ 2 := by rw [hyR]
     exact (not_lt_of_ge (le_of_eq hsqR.symm)) hcontra
   have hfix_boundary : ∀ x : M, x ∈ {x : M | g x ≤ c - ε} → x ∈ C₁ →
       x ∉ χ '' {y : MorseModel n | morseNorm n y < R} →
@@ -11833,7 +11835,7 @@ theorem continuousOn_morseModifiedRetraction {n k : ℕ} (hk : k ≤ n) (c ε δ
   rwa [← hcover]
 
 theorem continuousOn_morseModifiedRetractionHomotopy {n k : ℕ} (hk : k ≤ n) (c ε δ R : ℝ)
-    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2) (hRpos : 0 < R)
+    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2)
     {M : Type} [TopologicalSpace M] [T2Space M]
     (χ : OpenPartialHomeomorph (MorseModel n) M) (f : M → ℝ)
     (hg : Continuous (morseModifiedFunction (M := M) hk c ε δ R χ f))
@@ -11909,7 +11911,7 @@ theorem continuousOn_morseModifiedRetractionHomotopy {n k : ℕ} (hk : k ≤ n) 
       have hgt : 4 * ε + 9 * δ ^ 2 / 4 < morseNorm n y ^ 2 := lt_of_not_ge hnot
       exact hmu (modMu_mul_modGamma_eq_zero_of_norm_gt hk ε δ hε hδ hgt)
     have hcontra : morseNorm n y ^ 2 < R ^ 2 := lt_of_le_of_lt hnorm_le hR
-    have hsqR : morseNorm n y ^ 2 = R ^ 2 := by nlinarith [hyR]
+    have hsqR : morseNorm n y ^ 2 = R ^ 2 := by rw [hyR]
     exact (not_lt_of_ge (le_of_eq hsqR.symm)) hcontra
   have hfix_homotopy : ∀ x : M, x ∈ {x : M | g x ≤ c - ε} → x ∈ C₁ →
       x ∉ χ '' {y : MorseModel n | morseNorm n y < R} → ∀ t : ℝ,
@@ -12200,15 +12202,15 @@ theorem modifiedSublevel_subset_lower_union_modelHandle {n k : ℕ} (hk : k ≤ 
   · have hgt : c - ε < morseNormalForm hk c y := lt_of_not_ge hf
     have hsplit := morseNormalForm_split hk c y
     have hneg_le : ‖negPart hk y‖ ^ 2 ≤ ‖posPart hk y‖ ^ 2 + 2 * ε := by
-      nlinarith [hsplit, hgt]
+      nlinarith only [hsplit, hgt]
     have hdip : 0 < modMu ε (‖negPart hk y‖ ^ 2) * modGamma δ ‖posPart hk y‖ := by
       have hsplitM := modifiedNormalForm_split hk c ε δ y
       have hnonneg : 0 ≤ modMu ε (‖negPart hk y‖ ^ 2) * modGamma δ ‖posPart hk y‖ := by
         exact mul_nonneg (modMu_nonneg (le_of_lt hε)) (modGamma_nonneg δ ‖posPart hk y‖)
       have hdip' : modMu ε (‖negPart hk y‖ ^ 2) * modGamma δ ‖posPart hk y‖ ≥
           morseNormalForm hk c y - (c - ε) := by
-        nlinarith [hy, hsplitM, hsplit]
-      nlinarith [hnonneg, hdip', hgt]
+        nlinarith only [hy, hsplitM, hsplit]
+      nlinarith only [hnonneg, hdip', hgt]
     have hmu_pos : 0 < modMu ε (‖negPart hk y‖ ^ 2) := by
       have hg_nonneg : 0 ≤ modGamma δ ‖posPart hk y‖ := modGamma_nonneg δ ‖posPart hk y‖
       have hg_pos : 0 < modGamma δ ‖posPart hk y‖ := by
@@ -12241,7 +12243,7 @@ theorem modifiedSublevel_subset_lower_union_modelHandle {n k : ℕ} (hk : k ≤ 
       linarith
     have hpos_norm : 0 ≤ ‖posPart hk y‖ := norm_nonneg _
     have hpos_le : ‖posPart hk y‖ ^ 2 ≤ r ^ 2 := by
-      nlinarith [hpos_lt, hr, hpos_norm]
+      nlinarith only [hpos_lt, hr, hpos_norm]
     exact Or.inr (by
       dsimp [modelHandle]
       constructor
@@ -12295,12 +12297,12 @@ theorem modifiedNormalForm_eq_of_norm_large {n k : ℕ} (hk : k ≤ n) (c ε δ 
       exact hy
     have hneg : 4 * ε ≤ ‖negPart hk y‖ ^ 2 := by
       have h1 : 2 * ε + 2 * r ^ 2 - 9 * δ ^ 2 / 4 ≤ ‖negPart hk y‖ ^ 2 := by
-        nlinarith [hle, hpos_lt_sq']
+        nlinarith only [hle, hpos_lt_sq']
       have h2 : 4 * ε ≤ 2 * ε + 2 * r ^ 2 - 9 * δ ^ 2 / 4 := by
         have h4 : 2 * r ^ 2 ≥ 2 * ε + 9 * δ ^ 2 / 4 := by
-          nlinarith [hr]
-        nlinarith
-      nlinarith [h1, h2]
+          nlinarith only [hr]
+        nlinarith only [h4]
+      nlinarith only [h1, h2]
     have hmu : modMu ε (‖negPart hk y‖ ^ 2) = 0 := modMu_zero hε hneg
     simp [hmu]
 
@@ -12428,9 +12430,9 @@ theorem handleRoundEmbedding_mem_rounded {m k : ℕ} (hk : k ≤ m + 1) (c ε r 
         simpa using (mul_le_mul_of_nonneg_left hb1 (sq_nonneg r) :
           r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 ≤ r ^ 2 * 1)
       have hB : 2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 ≤ 2 * ε + r ^ 2 := by
-        nlinarith [hb]
+        nlinarith only [hb]
       have hB0 : 0 ≤ 2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 := by
-        nlinarith [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ : ℝ)]
+        nlinarith only [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ : ℝ)]
       calc
         (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2) *
             ‖(p.1 : EuclideanSpace ℝ (Fin k))‖ ^ 2
@@ -12441,14 +12443,14 @@ theorem handleRoundEmbedding_mem_rounded {m k : ℕ} (hk : k ≤ m + 1) (c ε r 
     have hlt : 2 * ε + r ^ 2 < (data.R / 2) ^ 2 := by
       have hsq : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 < (data.R / 2) ^ 2 := by
         have hs : 0 ≤ Real.sqrt (2 * ε + 2 * r ^ 2) := Real.sqrt_nonneg _
-        have hRpos : 0 < data.R / 2 := by nlinarith [data.hRpos]
+        have hRpos : 0 < data.R / 2 := by nlinarith only [data.hRpos]
         exact sq_lt_sq' (by linarith [hs, hRpos]) hεr'
       have hsq' : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 = 2 * ε + 2 * r ^ 2 :=
-        Real.sq_sqrt (by nlinarith [hε, sq_nonneg r])
+        Real.sq_sqrt (by nlinarith only [hε, sq_nonneg r])
       rw [hsq'] at hsq
-      nlinarith [hsq]
+      nlinarith only [hsq]
     have hlt' : ‖negPart hk (modelHandleRoundMap hk ε r δ θ p)‖ < data.R / 2 := by
-      have hR : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+      have hR : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
       exact (abs_lt_of_sq_lt_sq' (lt_of_le_of_lt hneg hlt) hR).2
     exact hlt'
 
@@ -12463,7 +12465,7 @@ theorem handleRoundEmbedding_mem_ballImage {m k : ℕ} (hk : k ≤ m + 1) (c ε 
   dsimp [handleRoundEmbedding, morseChartBallImage]
   refine ⟨modelHandleRoundMap hk ε r δ θ p, ?_, rfl⟩
   exact lt_of_le_of_lt (modelHandleRoundMap_norm_le hk ε r δ θ hε hδ hθ hδr hθr hr p)
-    (lt_of_lt_of_le hεr' (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))
+    (lt_of_lt_of_le hεr' (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))
 
 theorem handleRoundEmbedding_mem_coreBallImage {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ θ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -12495,9 +12497,9 @@ theorem handleRoundEmbedding_mem_coreBallImage {m k : ℕ} (hk : k ≤ m + 1) (c
         simpa using (mul_le_mul_of_nonneg_left hb1 (sq_nonneg r) :
           r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 ≤ r ^ 2 * 1)
       have hB : 2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 ≤ 2 * ε + r ^ 2 := by
-        nlinarith [hb]
+        nlinarith only [hb]
       have hB0 : 0 ≤ 2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 := by
-        nlinarith [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ : ℝ)]
+        nlinarith only [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ : ℝ)]
       calc
         (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2) *
             ‖(p.1 : EuclideanSpace ℝ (Fin k))‖ ^ 2
@@ -12508,14 +12510,14 @@ theorem handleRoundEmbedding_mem_coreBallImage {m k : ℕ} (hk : k ≤ m + 1) (c
     have hlt : 2 * ε + r ^ 2 < (data.R / 2) ^ 2 := by
       have hsq : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 < (data.R / 2) ^ 2 := by
         have hs : 0 ≤ Real.sqrt (2 * ε + 2 * r ^ 2) := Real.sqrt_nonneg _
-        have hRpos : 0 < data.R / 2 := by nlinarith [data.hRpos]
+        have hRpos : 0 < data.R / 2 := by nlinarith only [data.hRpos]
         exact sq_lt_sq' (by linarith [hs, hRpos]) hεr'
       have hsq' : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 = 2 * ε + 2 * r ^ 2 :=
-        Real.sq_sqrt (by nlinarith [hε, sq_nonneg r])
+        Real.sq_sqrt (by nlinarith only [hε, sq_nonneg r])
       rw [hsq'] at hsq
-      nlinarith [hsq]
+      nlinarith only [hsq]
     have hlt' : ‖negPart hk (modelHandleRoundMap hk ε r δ θ p)‖ < data.R / 2 := by
-      have hR : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+      have hR : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
       exact (abs_lt_of_sq_lt_sq' (lt_of_le_of_lt hneg hlt) hR).2
     exact hlt'
 
@@ -12613,12 +12615,12 @@ theorem negPart_ge_of_mem_closedBall_not_core_ball_lower {m k : ℕ} (hk : k ≤
       exact le_of_not_gt hnotlt
     have hsq : (data.R / 2) ^ 2 ≤ ‖negPart hk y‖ ^ 2 := by
       have hnon : 0 ≤ ‖negPart hk y‖ := norm_nonneg _
-      have hR2 : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+      have hR2 : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
       exact sq_le_sq.mpr (by
         rw [abs_of_nonneg hR2, abs_of_nonneg hnon]
         exact hnegge)
     rw [hsymm]
-    nlinarith [hbig, hsq]
+    exact hRbig.trans hsq
   · have hnotball := hball
     rw [hsymm]
     have hnormR : morseNorm (m + 1) y = data.R := by
@@ -12629,8 +12631,9 @@ theorem negPart_ge_of_mem_closedBall_not_core_ball_lower {m k : ℕ} (hk : k ≤
     have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
     have hnormle : morseNorm (m + 1) y ^ 2 < R₀ ^ 2 := by
       have h1 := CellAttachment.modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hlow hlt
-      have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by nlinarith [hbig]
-      nlinarith [h1, h2]
+      have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by
+        nlinarith only [hbig, hε]
+      nlinarith only [h1, h2]
     have hle : morseNorm (m + 1) y ≤ R₀ := by
       have habs := sq_lt_sq.mp hnormle
       have hnon : 0 ≤ morseNorm (m + 1) y := by
@@ -12662,23 +12665,23 @@ theorem handleRoundAttachingEmbedding_mem_rounded {m k : ℕ} (hk : k ≤ m + 1)
       rw [negPart_cellMap_norm_sq hk
         (Real.sqrt (2 * ε + r ^ 2 * ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2))
         (p.1 : EuclideanSpace ℝ (Fin k))]
-      rw [Real.sq_sqrt (by nlinarith [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ : ℝ)])]
+      rw [Real.sq_sqrt (by nlinarith only [hε, sq_nonneg (‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ : ℝ)])]
       rw [p.1.2]
       have hb1 : ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ ^ 2 ≤ 1 := by
         have hnon : 0 ≤ ‖(p.2 : EuclideanSpace ℝ (Fin (m + 1 - k)))‖ := norm_nonneg _
         simpa using sq_le_sq' (by linarith [hnon]) p.2.2
-      nlinarith [hb1, sq_nonneg r]
+      nlinarith only [hb1, sq_nonneg r]
     have hlt : 2 * ε + r ^ 2 < (data.R / 2) ^ 2 := by
       have hsq : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 < (data.R / 2) ^ 2 := by
         have hs : 0 ≤ Real.sqrt (2 * ε + 2 * r ^ 2) := Real.sqrt_nonneg _
-        have hRpos : 0 < data.R / 2 := by nlinarith [data.hRpos]
+        have hRpos : 0 < data.R / 2 := by nlinarith only [data.hRpos]
         exact sq_lt_sq' (by linarith [hs, hRpos]) hεr'
       have hsq' : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 = 2 * ε + 2 * r ^ 2 :=
-        Real.sq_sqrt (by nlinarith [hε, sq_nonneg r])
+        Real.sq_sqrt (by nlinarith only [hε, sq_nonneg r])
       rw [hsq'] at hsq
-      nlinarith [hsq]
+      nlinarith only [hsq]
     have hlt' : ‖negPart hk (cocoreModelPoint hk ε r p)‖ < data.R / 2 := by
-      have hR : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+      have hR : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
       exact (abs_lt_of_sq_lt_sq' (lt_of_le_of_lt hneg hlt) hR).2
     simpa [modelLowerRoundMap_negPart] using hlt'
 
@@ -12739,7 +12742,7 @@ theorem morseCapRoundedLowerSublevel_subset_roundedAttachment {m k : ℕ} (hk : 
         have ht : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk z‖ ^ 2 := by
           have hsq : (data.R / 2) ^ 2 ≤ ‖negPart hk z‖ ^ 2 := by
             have hnon : 0 ≤ ‖negPart hk z‖ := norm_nonneg _
-            have hRpos : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+            have hRpos : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
             exact sq_le_sq.mpr (by
               rw [abs_of_nonneg hRpos, abs_of_nonneg hnon]
               exact hneg_z)
@@ -12789,7 +12792,7 @@ theorem morseRoundedAttachment_subset_capRoundedLowerUnion {m k : ℕ} (hk : k �
       refine ⟨y, ?_, rfl⟩
       constructor
       · exact (modelCapRoundedLowerFunctionInner_le_c_iff hk c ε r δ θ hθ hδ hδr hθr y).mpr hyimg
-      · have hnorm := morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ hδr
+      · have hnorm := morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ
           hεr' data.hRpos hy_mem hy.2
         exact le_of_lt hnorm
     · right
@@ -12863,7 +12866,7 @@ theorem handleRoundAttachingEmbedding_mem_capRoundedLowerSublevel {m k : ℕ}
     exact (modelCapRoundedLowerFunctionInner_le_c_iff hk c ε r δ θ hθ hδ hδr hθr
       (modelLowerRoundMap hk ε r δ θ (cocoreModelPoint hk ε r p))).mpr himage
   · exact le_trans (modelLowerRoundMap_cocore_norm_le hk ε r δ θ hε hδ hθ hδr p)
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))
 
 noncomputable def handleRoundAttachingEmbeddingCapSubtype {m k : ℕ}
     (hk : k ≤ m + 1) (c ε r δ θ : ℝ)
@@ -13252,7 +13255,7 @@ theorem range_handleEmbedding_subset_ballImage {m k : ℕ} (hk : k ≤ m + 1) (c
   dsimp [morseChartCoreBallImage]
   have hsrc : modelHandleMap hk ε r d ∈ data.χ.source := data.hχsrc (modelHandleMap hk ε r d)
     (le_trans (modelHandleMap_norm_le hk ε r (le_of_lt hε) d)
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
   constructor
   · change data.χ (modelHandleMap hk ε r d) ∈ data.χ.target
     exact data.χ.map_source hsrc
@@ -13269,12 +13272,12 @@ theorem range_handleEmbedding_subset_ballImage {m k : ℕ} (hk : k ≤ m + 1) (c
             exact hεr'
           exact sq_lt_sq.mpr habs
         simpa [Real.sq_sqrt (by positivity : 0 ≤ 2 * ε + 2 * r ^ 2)] using hsc
-      nlinarith [h1, sq_nonneg r]
+      nlinarith only [h1, sq_nonneg r]
     have hsq : ‖negPart hk (modelHandleMap hk ε r d)‖ ^ 2 < (data.R / 2) ^ 2 :=
       lt_of_le_of_lt hle hlt
     have habs := sq_lt_sq.mp hsq
     rwa [abs_of_nonneg (norm_nonneg (negPart hk (modelHandleMap hk ε r d))),
-      abs_of_nonneg (by nlinarith [data.hRpos] : 0 ≤ data.R / 2)] at habs
+      abs_of_nonneg (by nlinarith only [data.hRpos] : 0 ≤ data.R / 2)] at habs
 
 theorem chartSymm_norm_lt_of_mem_ballImage {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -13353,7 +13356,7 @@ theorem chartSymm_mem_sharpUnion_model {m k : ℕ} (hk : k ≤ m + 1) (c ε r : 
       have hsrc' : modelHandleMap hk ε r d ∈ data.χ.source :=
         data.hχsrc (modelHandleMap hk ε r d)
           (le_trans (modelHandleMap_norm_le hk ε r (le_of_lt hε) d)
-            (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+            (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
       exact data.χ.left_inv hsrc'
     rw [hd']
     exact modelHandleMap_mem hk ε r (le_of_lt hε) d
@@ -13377,12 +13380,12 @@ theorem negPart_norm_sq_ge_of_lower_bound {m k : ℕ} (hk : k ≤ m + 1) (c ε r
     nlinarith
   have hnorm_sq : ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 ≥ (data.R / 2) ^ 2 := by
     have hsqn : (data.R / 2) ^ 2 ≤ ‖negPart hk y‖ ^ 2 := by
-      have hR2nonneg : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+      have hR2nonneg : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
       exact sq_le_sq.mpr (by
         rw [abs_of_nonneg hR2nonneg, abs_of_nonneg (norm_nonneg (negPart hk y))]
         exact hyfar)
-    nlinarith [hsqn, sq_nonneg (‖posPart hk y‖)]
-  nlinarith [hbig, hlower, hnorm_sq]
+    nlinarith only [hsqn, sq_nonneg (‖posPart hk y‖)]
+  nlinarith only [hbig, hlower, hnorm_sq]
 
 theorem chartSymm_mem_lowerSublevel_model {m k : ℕ} (hk : k ≤ m + 1) (c ε : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -13431,7 +13434,7 @@ theorem morseCapRoundedLowerRound_mem_ballImage {m k : ℕ} (hk : k ≤ m + 1) (
         exact hR0lt)
     have hsq : morseNorm (m + 1) (modelLowerRoundMap hk ε r δ θ (data.χ.symm x)) ^ 2 <
         data.R ^ 2 := by
-      nlinarith [hnormle, hbig, hR0sq]
+      nlinarith only [hnormle, hbig, hR0sq]
     have habs := sq_lt_sq.mp hsq
     rwa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (le_of_lt data.hRpos)] at habs
   · have hgt : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk (data.χ.symm x)‖ ^ 2 := le_of_not_ge hle
@@ -13635,7 +13638,7 @@ theorem morseCapRoundedLowerUnround_mem_lowerSublevel {m k : ℕ} (hk : k ≤ m 
             rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt data.hRpos)]
             exact hR0lt)
         have hsq : morseNorm (m + 1) z ^ 2 = data.R ^ 2 := by rw [hnorm_eq]
-        nlinarith [hnorm_le, hbig, hsq, hR0sq]
+        nlinarith only [hnorm_le, hbig, hsq, hR0sq]
       have hinner_eq : modelCapRoundedLowerFunctionInner hk c ε r δ θ z =
           morseNormalForm hk c z + ε :=
         modelCapRoundedLowerFunctionInner_eq_morse_add_eps_of_negPart_large hk c ε r δ θ hθ hδ ht_ge
@@ -13977,7 +13980,7 @@ theorem contMDiffOn_morseCapRoundedLowerRound {m k : ℕ} (hk : k ≤ m + 1) (c 
               rw [hxy]
               exact hflow
             rw [morseNormalForm_split] at hf'
-            nlinarith
+            nlinarith only [hf']
           have hnorm_sq : ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 ≥ R₁ ^ 2 := by
             have hsq : R₁ ^ 2 ≤ morseNorm (m + 1) y ^ 2 := by
               have hnon : 0 ≤ morseNorm (m + 1) y := norm_nonneg _
@@ -13987,12 +13990,12 @@ theorem contMDiffOn_morseCapRoundedLowerRound {m k : ℕ} (hk : k ≤ m + 1) (c 
                 exact hnorm_ge)
             have hsq' : morseNorm (m + 1) y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
               exact morseNorm_sq_eq_negPart_add_posPart hk y
-            nlinarith [hsq, hsq']
+            nlinarith only [hsq, hsq']
           have hR0sq : R₀ ^ 2 < R₁ ^ 2 := by
             exact sq_lt_sq.mpr (by
               rw [abs_of_nonneg hR0, abs_of_nonneg (le_trans hR0 hR0lt1.le)]
               exact hR0lt1)
-          nlinarith [hlow, hnorm_sq, hbig, hR0sq, hε]
+          nlinarith only [hlow, hnorm_sq, hbig, hR0sq, hε]
         constructor
         · rw [← hxy]
           exact data.χ.map_source hsrc0
@@ -14241,7 +14244,7 @@ theorem contMDiff_morseCapRoundedLowerRoundGlobal {m k : ℕ} (hk : k ≤ m + 1)
                 exact hnorm_ge)
             have hsq' : morseNorm (m + 1) y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
               exact morseNorm_sq_eq_negPart_add_posPart hk y
-            nlinarith [hsq, hsq']
+            nlinarith only [hsq, hsq']
           have hR0sq : R₀ ^ 2 < R₁ ^ 2 := by
             exact sq_lt_sq.mpr (by
               rw [abs_of_nonneg hR0, abs_of_nonneg (le_trans hR0 hR0lt1.le)]
@@ -14250,7 +14253,7 @@ theorem contMDiff_morseCapRoundedLowerRoundGlobal {m k : ℕ} (hk : k ≤ m + 1)
             rw [← hxy]
             rw [data.hnorm y hy]
             rw [morseNormalForm_split hk c y]
-            nlinarith [hnorm_sq, hneg_le, hbig, hR0sq, hηε, hε]
+            nlinarith only [hnorm_sq, hneg_le, hbig, hR0sq, hηε, hε]
           constructor
           · exact hf_ge
           · rw [← hxy]
@@ -14448,7 +14451,7 @@ theorem contMDiffOn_morseCapRoundedLowerUnround {m k : ℕ} (hk : k ≤ m + 1) (
             exact sq_le_sq.mpr (by
               rw [abs_of_nonneg hR1', abs_of_nonneg hnon]
               exact hnorm_ge)
-          nlinarith [hnorm_le, hbig, hR0sq, hnorm_ge_sq]
+          nlinarith only [hnorm_le, hbig, hR0sq, hnorm_ge_sq]
         constructor
         · rw [← hxy]
           exact data.χ.map_source hsrc0
@@ -14557,7 +14560,7 @@ theorem continuousOn_morseCapRoundedLowerUnround {m k : ℕ} (hk : k ≤ m + 1) 
               exact sq_lt_sq.mpr (by
                 rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt data.hRpos)]
                 exact hR0lt)
-            nlinarith [hnorm_le, hbig, hsq, hR0sq]
+            nlinarith only [hnorm_le, hbig, hsq, hR0sq]
           have hself : modelLowerRoundMapUnround hk ε r δ θ y = y :=
             modelLowerRoundMapUnround_eq_self_of_ge hk ε r δ θ hθ hδ ht_ge
           rw [hsymm, hself]
@@ -14636,7 +14639,7 @@ theorem morseCapRoundedLowerRound_attaching_eq {m k : ℕ} (hk : k ≤ m + 1) (c
   have hball : data.χ (cocoreModelPoint hk ε r a) ∈ morseChartBallImage hk c data := by
     dsimp [morseChartBallImage]
     refine ⟨cocoreModelPoint hk ε r a, ?_, rfl⟩
-    exact lt_of_le_of_lt hnorm (lt_trans hεr' (by nlinarith [data.hRpos] : data.R / 2 < data.R))
+    exact lt_of_le_of_lt hnorm (lt_trans hεr' (by nlinarith only [data.hRpos] : data.R / 2 < data.R))
   dsimp [morseAttachingEmbedding, cocoreAttachingEmbedding]
   dsimp [morseCapRoundedLowerRound, handleRoundAttachingEmbedding]
   rw [if_pos hball]
@@ -14747,7 +14750,7 @@ theorem morseSharpUnionRound_eq_self_of_not_mem_halfBall {m k : ℕ} (hk : k ≤
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
-    (hε : 0 < ε) (hδ0 : 0 < δ) (hδr : δ < r ^ 2)
+    (hε : 0 < ε) (hδ0 : 0 < δ)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R / 2)
     (hbig : r ^ 2 + ε + δ ≤ data.R ^ 2 / 8)
     {x : M} (hx : x ∈ sublevel f (c - ε) ∪ Set.range (handleEmbedding hk c ε r data))
@@ -14771,12 +14774,12 @@ theorem morseSharpUnionRound_eq_self_of_not_mem_halfBall {m k : ℕ} (hk : k ≤
             intro hlt
             exact hxball ⟨chartSymm_mem_target_of_mem_ballImage hk c data (by
               exact ⟨y, hy, hxy⟩), hlt⟩
-          have hge : data.R / 2 ≤ ‖negPart hk (data.χ.symm x)‖ := by nlinarith [hnot]
+          have hge : data.R / 2 ≤ ‖negPart hk (data.χ.symm x)‖ := by nlinarith only [hnot]
           rw [hsymm] at hge
           exact hge)
     have hmap : modelSharpUnionRound hk ε r δ (data.χ.symm x) = data.χ.symm x := by
       rw [hsymm]
-      exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hδr hneg
+      exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hneg
     calc
       morseSharpUnionRound hk c ε r δ data x = data.χ (modelSharpUnionRound hk ε r δ (data.χ.symm x)) := by
         dsimp [morseSharpUnionRound]
@@ -14816,7 +14819,7 @@ theorem morseSharpUnionRound_mem_rounded {m k : ℕ} (hk : k ≤ m + 1) (c ε r 
         · exact hf
         · exact False.elim (hb2 (range_handleEmbedding_subset_ballImage hk c ε r data hε hεr' hh))
       have hfix : morseSharpUnionRound hk c ε r δ data x = x :=
-        morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hδr hεr' hbig hx hb2
+        morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hεr' hbig hx hb2
       constructor
       · change morseSharpUnionRound hk c ε r δ data x ∈ sublevel f (c - ε)
         rw [hfix]
@@ -14840,7 +14843,7 @@ theorem morseSharpUnionRound_mem_rounded {m k : ℕ} (hk : k ≤ m + 1) (c ε r 
           refine ⟨modelHandleMap hk ε r d, ?_, rfl⟩
           have hle : morseNorm (m + 1) (modelHandleMap hk ε r d) ≤ Real.sqrt (2 * ε + 2 * r ^ 2) :=
             modelHandleMap_norm_le hk ε r (le_of_lt hε) d
-          exact lt_of_le_of_lt hle (lt_trans hεr' (by nlinarith [data.hRpos] : data.R / 2 < data.R)))
+          exact lt_of_le_of_lt hle (lt_trans hεr' (by nlinarith only [data.hRpos] : data.R / 2 < data.R)))
       rcases hx with hf | hh
       · exact hf
       · exact False.elim (hnot hh)
@@ -14893,7 +14896,7 @@ theorem morseSharpUnionUnround_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c 
         have ht : ‖negPart hk y‖ ^ 2 < (data.R / 2) ^ 2 := by
           have habs : |‖negPart hk y‖| < |data.R / 2| := by
             rw [abs_of_nonneg (norm_nonneg (negPart hk y)),
-              abs_of_nonneg (by nlinarith [data.hRpos] : 0 ≤ data.R / 2)]
+              abs_of_nonneg (by nlinarith only [data.hRpos] : 0 ≤ data.R / 2)]
             exact hy.2
           exact sq_lt_sq.mpr habs
         have hB : modelSharpUnionBound ε r (‖negPart hk y‖ ^ 2) ≤ (data.R / 2) ^ 2 := by
@@ -14907,13 +14910,14 @@ theorem morseSharpUnionUnround_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c 
                   exact hεr'
                 exact sq_lt_sq.mpr habs
               simpa [Real.sq_sqrt (by positivity : 0 ≤ 2 * ε + 2 * r ^ 2)] using hsc
-            nlinarith [hε, h1]
-          have hle2 : ‖negPart hk y‖ ^ 2 - 2 * ε ≤ (data.R / 2) ^ 2 := by nlinarith [ht]
+            nlinarith only [hε, h1]
+          have hle2 : ‖negPart hk y‖ ^ 2 - 2 * ε ≤ (data.R / 2) ^ 2 := by
+            nlinarith only [ht, hε]
           exact max_le hle1 hle2
         have hsum : ‖negPart hk y‖ ^ 2 + modelSharpUnionBound ε r (‖negPart hk y‖ ^ 2) ≤ data.R ^ 2 := by
-          nlinarith [ht, hB]
+          nlinarith only [ht, hB]
         have hsq' : morseNorm (m + 1) (modelSharpUnionUnround hk ε r δ y) ^ 2 ≤ data.R ^ 2 := by
-          nlinarith [hsq, hsum]
+          nlinarith only [hsq, hsum]
         have habs := sq_le_sq.mp hsq'
         rwa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (le_of_lt data.hRpos)] at habs
       have hχ : data.χ (modelSharpUnionUnround hk ε r δ y) ∈
@@ -14925,7 +14929,7 @@ theorem morseSharpUnionUnround_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c 
         congr 1
         rw [← hxy]
         have hsrc0 : y ∈ data.χ.source := data.hχsrc y (le_of_lt
-          (morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hδr hεr'
+          (morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hεr'
             data.hRpos hy.1 hy.2))
         exact congrArg (modelSharpUnionUnround hk ε r δ) (data.χ.left_inv hsrc0)
       rw [hval]
@@ -14936,7 +14940,7 @@ theorem morseSharpUnionUnround_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c 
       · exact False.elim (hb (by
           rcases hx' with ⟨y, hy, hxy⟩
           have hyb : morseNorm (m + 1) y < data.R :=
-            morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hδr hεr'
+            morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hεr'
               data.hRpos hy.1 hy.2
           have hsrc0 : y ∈ data.χ.source := data.hχsrc y (le_of_lt hyb)
           constructor
@@ -15004,7 +15008,7 @@ theorem morseSharpUnionUnround_round {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
     exact chartSymm_right_inv_of_mem_ballImage hk c data hbFull
   · by_cases hbF : x ∈ morseChartBallImage hk c data
     · have hfix : morseSharpUnionRound hk c ε r δ data x = x :=
-        morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hδr hεr' hbig hx (by
+        morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hεr' hbig hx (by
           intro hc
           exact hb ⟨hc, hbF⟩)
       rw [hfix]
@@ -15032,7 +15036,7 @@ theorem morseSharpUnionRound_unround {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
       rcases hx with hx' | hx'
       · rcases hx' with ⟨z, hz, hzy⟩
         have hsrcz : z ∈ data.χ.source := data.hχsrc z
-          (le_of_lt (morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hδr hεr'
+          (le_of_lt (morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hεr'
             data.hRpos hz.1 hz.2))
         have hz' : z = data.χ.symm x := by
           rw [← hzy]
@@ -15046,7 +15050,7 @@ theorem morseSharpUnionRound_unround {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
       have ht : ‖negPart hk (data.χ.symm x)‖ ^ 2 < (data.R / 2) ^ 2 := by
         have habs : |‖negPart hk (data.χ.symm x)‖| < |data.R / 2| := by
           rw [abs_of_nonneg (norm_nonneg (negPart hk (data.χ.symm x))),
-            abs_of_nonneg (by nlinarith [data.hRpos] : 0 ≤ data.R / 2)]
+            abs_of_nonneg (by nlinarith only [data.hRpos] : 0 ≤ data.R / 2)]
           exact hnegx
         exact sq_lt_sq.mpr habs
       have hB : modelSharpUnionBound ε r (‖negPart hk (data.χ.symm x)‖ ^ 2) ≤ (data.R / 2) ^ 2 := by
@@ -15060,15 +15064,16 @@ theorem morseSharpUnionRound_unround {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
                 exact hεr'
               exact sq_lt_sq.mpr habs
             simpa [Real.sq_sqrt (by positivity : 0 ≤ 2 * ε + 2 * r ^ 2)] using hsc
-          nlinarith [hε, h1]
-        have hle2 : ‖negPart hk (data.χ.symm x)‖ ^ 2 - 2 * ε ≤ (data.R / 2) ^ 2 := by nlinarith [ht]
+          nlinarith only [hε, h1]
+        have hle2 : ‖negPart hk (data.χ.symm x)‖ ^ 2 - 2 * ε ≤ (data.R / 2) ^ 2 := by
+          nlinarith only [ht, hε]
         exact max_le hle1 hle2
       have hsum : ‖negPart hk (data.χ.symm x)‖ ^ 2 + modelSharpUnionBound ε r
           (‖negPart hk (data.χ.symm x)‖ ^ 2) < data.R ^ 2 := by
-        nlinarith [ht, hB, data.hRpos]
+        nlinarith only [ht, hB, data.hRpos]
       have hsq' : morseNorm (m + 1) (modelSharpUnionUnround hk ε r δ (data.χ.symm x)) ^ 2 <
           data.R ^ 2 := by
-        nlinarith [hsq, hsum]
+        nlinarith only [hsq, hsum]
       have habs := sq_lt_sq.mp hsq'
       rwa [abs_of_nonneg (norm_nonneg (WithLp.toLp 2 (modelSharpUnionUnround hk ε r δ (data.χ.symm x))
         : EuclideanSpace ℝ (Fin (m + 1)))),
@@ -15103,7 +15108,7 @@ theorem morseSharpUnionRound_unround {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
       · exact False.elim (hb (by
           rcases hx' with ⟨y, hy, hxy⟩
           have hyb : morseNorm (m + 1) y < data.R :=
-            morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hδr hεr'
+            morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hεr'
               data.hRpos hy.1 hy.2
           have hsrc0 : y ∈ data.χ.source := data.hχsrc y (le_of_lt hyb)
           constructor
@@ -15117,7 +15122,7 @@ theorem morseSharpUnionRound_unround {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ :
             refine ⟨y, hyb, hxy⟩))
       · exact hx'.1
     by_cases hbF : x ∈ morseChartBallImage hk c data
-    · exact morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hδr hεr' hbig
+    · exact morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hεr' hbig
         (Or.inl hxlow) (by intro hc; exact hb ⟨hc, hbF⟩)
     · dsimp [morseSharpUnionRound]
       rw [if_neg hbF]
@@ -15214,7 +15219,7 @@ theorem continuousOn_morseSharpUnionRound {m k : ℕ} (hk : k ≤ m + 1) (c ε r
     refine continuousOn_id.congr (s := C) (g := morseSharpUnionRound hk c ε r δ data) ?_
     intro x hx
     by_cases hbF : x ∈ morseChartBallImage hk c data
-    · exact morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hδr hεr' hbig
+    · exact morseSharpUnionRound_eq_self_of_not_mem_halfBall hk c ε r δ data hε hδ0 hεr' hbig
         (Or.inl hx.1) (by intro hc; exact hx.2 ⟨hc, hbF⟩)
     · dsimp [morseSharpUnionRound]
       rw [if_neg hbF]
@@ -15242,10 +15247,10 @@ theorem continuousOn_morseSharpUnionRound {m k : ℕ} (hk : k ≤ m + 1) (c ε r
                 intro hlt
                 exact hnotCore ⟨chartSymm_mem_target_of_mem_ballImage hk c data (by
                   exact ⟨y, hy, hxy⟩), hlt⟩
-              have hge : data.R / 2 ≤ ‖negPart hk (data.χ.symm x)‖ := by nlinarith [hnot]
+              have hge : data.R / 2 ≤ ‖negPart hk (data.χ.symm x)‖ := by nlinarith only [hnot]
               rw [hsymm] at hge
               exact hge)
-        exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hδr hneg
+        exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hneg
       have hsrcModel : modelSharpUnionRound hk ε r δ (data.χ.symm x) ∈ data.χ.source := by
         rw [hdeep]
         rw [← hxy]
@@ -15291,7 +15296,7 @@ theorem continuousOn_morseSharpUnionRound {m k : ℕ} (hk : k ≤ m + 1) (c ε r
                 have hnot : ¬ morseNorm (m + 1) y < data.R := by
                   intro hylt
                   exact hbF (by dsimp [morseChartBallImage]; refine ⟨y, hylt, hxy⟩)
-                nlinarith [hnot]
+                nlinarith only [hnot]
               exact negPart_norm_sq_ge_of_lower_bound hk c ε r δ data hbig hx.1 hxy hy
                 (by
                   have hpos : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - 2 * ε := by
@@ -15314,13 +15319,13 @@ theorem continuousOn_morseSharpUnionRound {m k : ℕ} (hk : k ≤ m + 1) (c ε r
                           rw [recombine_decompose hk y]
                         _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
                           morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-                    nlinarith [hsqy, hnorm_sq']
+                    nlinarith only [hsqy, hnorm_sq']
                   have hsqneg : (data.R / 2) ^ 2 ≤ ‖negPart hk y‖ ^ 2 := by
-                    nlinarith [hpos, hnorm_sq, hε, sq_nonneg (‖posPart hk y‖)]
+                    nlinarith only [hpos, hnorm_sq, hε, sq_nonneg (‖posPart hk y‖)]
                   have habs := sq_le_sq.mp hsqneg
-                  rwa [abs_of_nonneg (by nlinarith [data.hRpos] : 0 ≤ data.R / 2),
+                  rwa [abs_of_nonneg (by nlinarith only [data.hRpos] : 0 ≤ data.R / 2),
                     abs_of_nonneg (norm_nonneg (negPart hk y))] at habs)
-            exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hδr hneg
+            exact modelSharpUnionRound_eq_self_of_negPart_large hk ε r δ hδ0 hneg
           have hsrcModel : modelSharpUnionRound hk ε r δ (data.χ.symm x) ∈ data.χ.source := by
             rw [hdeep]
             rw [← hxy]
@@ -15367,7 +15372,7 @@ theorem continuousOn_morseSharpUnionRound {m k : ℕ} (hk : k ≤ m + 1) (c ε r
           refine ⟨modelHandleMap hk ε r d, ?_, rfl⟩
           have hle : morseNorm (m + 1) (modelHandleMap hk ε r d) ≤ Real.sqrt (2 * ε + 2 * r ^ 2) :=
             modelHandleMap_norm_le hk ε r (le_of_lt hε) d
-          exact lt_of_le_of_lt hle (lt_trans hεr' (by nlinarith [data.hRpos] : data.R / 2 < data.R)))))
+          exact lt_of_le_of_lt hle (lt_trans hεr' (by nlinarith only [data.hRpos] : data.R / 2 < data.R)))))
 
 theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [T2Space M] [ChartedSpace H M]
@@ -15420,7 +15425,7 @@ theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε
         rcases hx.2 with hx' | hx'
         · rcases hx' with ⟨z, hz, hzy⟩
           have hsrcz : z ∈ data.χ.source := data.hχsrc z
-            (le_of_lt (morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hδr hεr'
+            (le_of_lt (morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hεr'
               data.hRpos hz.1 hz.2))
           have hz' : z = data.χ.symm x := by
             rw [← hzy]
@@ -15435,7 +15440,7 @@ theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε
         have ht : ‖negPart hk (data.χ.symm x)‖ ^ 2 < (data.R / 2) ^ 2 := by
           have habs : |‖negPart hk (data.χ.symm x)‖| < |data.R / 2| := by
             rw [abs_of_nonneg (norm_nonneg (negPart hk (data.χ.symm x))),
-              abs_of_nonneg (by nlinarith [data.hRpos] : 0 ≤ data.R / 2)]
+              abs_of_nonneg (by nlinarith only [data.hRpos] : 0 ≤ data.R / 2)]
             exact hnegx
           exact sq_lt_sq.mpr habs
         have hB : modelSharpUnionBound ε r (‖negPart hk (data.χ.symm x)‖ ^ 2) ≤ (data.R / 2) ^ 2 := by
@@ -15449,15 +15454,16 @@ theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε
                   exact hεr'
                 exact sq_lt_sq.mpr habs
               simpa [Real.sq_sqrt (by positivity : 0 ≤ 2 * ε + 2 * r ^ 2)] using hsc
-            nlinarith [hε, h1]
-          have hle2 : ‖negPart hk (data.χ.symm x)‖ ^ 2 - 2 * ε ≤ (data.R / 2) ^ 2 := by nlinarith [ht]
+            nlinarith only [hε, h1]
+          have hle2 : ‖negPart hk (data.χ.symm x)‖ ^ 2 - 2 * ε ≤ (data.R / 2) ^ 2 := by
+            nlinarith only [ht, hε]
           exact max_le hle1 hle2
         have hsum : ‖negPart hk (data.χ.symm x)‖ ^ 2 + modelSharpUnionBound ε r
             (‖negPart hk (data.χ.symm x)‖ ^ 2) ≤ data.R ^ 2 := by
-          nlinarith [ht, hB, data.hRpos]
+          nlinarith only [ht, hB, data.hRpos]
         have hsq' : morseNorm (m + 1) (modelSharpUnionUnround hk ε r δ (data.χ.symm x)) ^ 2 ≤
             data.R ^ 2 := by
-          nlinarith [hsq, hsum]
+          nlinarith only [hsq, hsum]
         have habs := sq_le_sq.mp hsq'
         rwa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (le_of_lt data.hRpos)] at habs
       exact data.hχsrc (modelSharpUnionUnround hk ε r δ (data.χ.symm x)) hbounded
@@ -15500,14 +15506,14 @@ theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε
               have hnot : ¬ ‖negPart hk (data.χ.symm x)‖ < data.R / 2 := by
                 intro hlt
                 exact hnotCore ⟨chartSymm_mem_target_of_mem_ballImage hk c data hbW, hlt⟩
-              have hge : data.R / 2 ≤ ‖negPart hk (data.χ.symm x)‖ := by nlinarith [hnot]
+              have hge : data.R / 2 ≤ ‖negPart hk (data.χ.symm x)‖ := by nlinarith only [hnot]
               rw [hsymm] at hge
               exact negPart_norm_sq_ge_of_lower_bound hk c ε r δ data hbig hx.1 hxy hy hge
             · have hnormy : data.R ≤ morseNorm (m + 1) y := by
                 have hnot : ¬ morseNorm (m + 1) y < data.R := by
                   intro hylt
                   exact hbW (by dsimp [morseChartBallImage]; refine ⟨y, hylt, hxy⟩)
-                nlinarith [hnot]
+                nlinarith only [hnot]
               have hpos : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - 2 * ε := by
                 have hf' : morseNormalForm hk c y ≤ c - ε := by
                   rw [← data.hnorm y hy]
@@ -15528,14 +15534,14 @@ theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε
                       rw [recombine_decompose hk y]
                     _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
                       morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-                nlinarith [hsqy, hnorm_sq']
+                nlinarith only [hsqy, hnorm_sq']
               have hsqneg : (data.R / 2) ^ 2 ≤ ‖negPart hk y‖ ^ 2 := by
-                nlinarith [hpos, hnorm_sq, hε, sq_nonneg (‖posPart hk y‖)]
+                nlinarith only [hpos, hnorm_sq, hε, sq_nonneg (‖posPart hk y‖)]
               have habs := sq_le_sq.mp hsqneg
-              rw [abs_of_nonneg (by nlinarith [data.hRpos] : 0 ≤ data.R / 2),
+              rw [abs_of_nonneg (by nlinarith only [data.hRpos] : 0 ≤ data.R / 2),
                 abs_of_nonneg (norm_nonneg (negPart hk y))] at habs
               exact negPart_norm_sq_ge_of_lower_bound hk c ε r δ data hbig hx.1 hxy hy habs
-          exact modelSharpUnionUnround_eq_self_of_negPart_large hk ε r δ hδ0 hδr hneg
+          exact modelSharpUnionUnround_eq_self_of_negPart_large hk ε r δ hδ0 hneg
         have hsrcModel : modelSharpUnionUnround hk ε r δ (data.χ.symm x) ∈ data.χ.source := by
           rw [hdeep]
           rw [← hxy]
@@ -15593,7 +15599,7 @@ theorem continuousOn_morseSharpUnionUnround {m k : ℕ} (hk : k ≤ m + 1) (c ε
       · exact False.elim (hxU (by
           rcases hx' with ⟨y, hy, hxy⟩
           have hyb : morseNorm (m + 1) y < data.R :=
-            morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hδr hεr'
+            morseNorm_lt_of_mem_attached_negPart_lt hk ε r δ data.R (le_of_lt hε) hδ0 hεr'
               data.hRpos hy.1 hy.2
           have hsrc0 : y ∈ data.χ.source := data.hχsrc y (le_of_lt hyb)
           constructor
@@ -15650,7 +15656,7 @@ theorem morseSharpUnionRound_eq_self_of_deep {m k : ℕ} (hk : k ≤ m + 1) (c �
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
-    (hδ0 : 0 < δ) (hδr : δ < r ^ 2)
+    (hδ0 : 0 < δ)
     (hη : r ^ 2 + δ ≤ 2 * η)
     {x : M} (hx : f x ≤ c - ε - η) :
     morseSharpUnionRound hk c ε r δ data x = x := by
@@ -15663,7 +15669,7 @@ theorem morseSharpUnionRound_eq_self_of_deep {m k : ℕ} (hk : k ≤ m + 1) (c �
       exact data.χ.left_inv hsrc0
     have hdeep : modelSharpUnionRound hk ε r δ (data.χ.symm x) = data.χ.symm x := by
       rw [hsymm]
-      exact modelSharpUnionRound_eq_self_of_deep hk c ε r δ η hδ0 hδr hη (by
+      exact modelSharpUnionRound_eq_self_of_deep hk c ε r δ η hδ0 hη (by
         rw [← data.hnorm y (le_of_lt hy)]
         rw [hxy]
         exact hx)
@@ -15682,7 +15688,7 @@ theorem morseSharpUnionUnround_eq_self_of_deep {m k : ℕ} (hk : k ≤ m + 1) (c
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
-    (hδ0 : 0 < δ) (hδr : δ < r ^ 2)
+    (hδ0 : 0 < δ)
     (hη : r ^ 2 + δ ≤ 2 * η)
     {x : M} (hx : f x ≤ c - ε - η) :
     morseSharpUnionUnround hk c ε r δ data x = x := by
@@ -15694,7 +15700,7 @@ theorem morseSharpUnionUnround_eq_self_of_deep {m k : ℕ} (hk : k ≤ m + 1) (c
       exact data.χ.left_inv hsrc0
     have hdeep : modelSharpUnionUnround hk ε r δ (data.χ.symm x) = data.χ.symm x := by
       rw [hsymm]
-      exact modelSharpUnionUnround_eq_self_of_deep hk c ε r δ η hδ0 hδr hη (by
+      exact modelSharpUnionUnround_eq_self_of_deep hk c ε r δ η hδ0 hη (by
         rw [← data.hnorm y (le_of_lt hy)]
         rw [hxy]
         exact hx)
@@ -15722,7 +15728,7 @@ theorem morseSharpUnionRoundingHomeo_rel_deep {m k : ℕ} (hk : k ≤ m + 1) (c 
     (hx : f x.1 ≤ c - ε - η) :
     (morseSharpUnionRoundingHomeo hk c ε r δ data hε hδ0 hδr hr hεr' hbig hcont x).1 = x.1 := by
   change morseSharpUnionRound hk c ε r δ data x.1 = x.1
-  exact morseSharpUnionRound_eq_self_of_deep hk c ε r δ η data hδ0 hδr hη hx
+  exact morseSharpUnionRound_eq_self_of_deep hk c ε r δ η data hδ0 hη hx
 
 theorem morseSharpUnionRoundingHomeo_symm_rel_deep {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [T2Space M] [ChartedSpace H M]
@@ -15737,10 +15743,10 @@ theorem morseSharpUnionRoundingHomeo_symm_rel_deep {m k : ℕ} (hk : k ≤ m + 1
     (morseSharpUnionRoundingHomeo hk c ε r δ data hε hδ0 hδr hr hεr' hbig hcont).symm x =
       ⟨x.1, Or.inl (by
         change f x.1 ≤ c - ε
-        exact le_trans hx (by nlinarith [hδ0, hη]))⟩ := by
+        exact le_trans hx (by nlinarith only [hδ0, hη]))⟩ := by
   apply Subtype.ext
   change morseSharpUnionUnround hk c ε r δ data x.1 = x.1
-  exact morseSharpUnionUnround_eq_self_of_deep hk c ε r δ η data hδ0 hδr hη hx
+  exact morseSharpUnionUnround_eq_self_of_deep hk c ε r δ η data hδ0 hη hx
 
 noncomputable def morseHandleAdjunctionEquivRounded {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [T2Space M] [ChartedSpace H M]
@@ -15752,10 +15758,10 @@ noncomputable def morseHandleAdjunctionEquivRounded {m k : ℕ} (hk : k ≤ m + 
     (hcont : Continuous f) :
     Handle.AdjunctionSpace k (m + 1 - k)
       (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
       {x : M // x ∈ morseRoundedAttachment hk c ε r δ data} :=
   (morseHandleAdjunctionHomeoUnion hk c ε r data hε (ne_of_gt hr)
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)) hcont).trans
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)) hcont).trans
     (morseSharpUnionRoundingHomeo hk c ε r δ data hε hδ0 hδr hr hεr' hbig hcont)
 
 theorem morseHandleAdjunctionEquivRounded_rel_deep {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ η : ℝ)
@@ -15769,33 +15775,33 @@ theorem morseHandleAdjunctionEquivRounded_rel_deep {m k : ℕ} (hk : k ≤ m + 1
     (x : SublevelSpace f (c - ε - η)) :
     (morseHandleAdjunctionEquivRounded hk c ε r δ data hε hδ0 hδr hr hεr' hbig hcont
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨x.1, by
           have hx : f x.1 ≤ c - ε - η := by
             change f x.1 ≤ c - ε - η
             exact x.2
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
-          exact le_trans hx (by nlinarith [hη0])⟩)).1 = x.1 := by
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
+          exact le_trans hx (by nlinarith only [hη0])⟩)).1 = x.1 := by
   have hx : f x.1 ≤ c - ε - η := by
     change f x.1 ≤ c - ε - η
     exact x.2
   change morseSharpUnionRound hk c ε r δ data
     (morseHandleAdjunctionHomeoUnion hk c ε r data hε (ne_of_gt hr)
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)) hcont
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)) hcont
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨x.1, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
-          exact le_trans hx (by nlinarith [hη0])⟩)).1 = x.1
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
+          exact le_trans hx (by nlinarith only [hη0])⟩)).1 = x.1
   rw [morseHandleAdjunctionHomeoUnion_lower hk c ε r data hε (ne_of_gt hr)
-    (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)) hcont
+    (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)) hcont
     ⟨x.1, by
       have hsum : 0 ≤ r ^ 2 + δ := by positivity
-      have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
-      exact le_trans hx (by nlinarith [hη0])⟩]
-  exact morseSharpUnionRound_eq_self_of_deep hk c ε r δ η data hδ0 hδr hη hx
+      have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
+      exact le_trans hx (by nlinarith only [hη0])⟩]
+  exact morseSharpUnionRound_eq_self_of_deep hk c ε r δ η data hδ0 hη hx
 
 theorem morseModifiedRetraction_eq_self_of_mem_lowerUnion {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ)
     (hε : 0 < ε) (hεR : Real.sqrt (2 * ε) ≤ R)
@@ -16035,7 +16041,7 @@ theorem morseModifiedRetractionHomotopy_eq_self_of_mem_lowerHandleUnion {n k : �
     exact hxy
 
 noncomputable def morseModifiedLowerSublevelHomotopyEquiv {n k : ℕ} (hk : k ≤ n) (c ε δ R : ℝ)
-    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2) (hRpos : 0 < R)
+    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2)
     (hεR : Real.sqrt (2 * ε) ≤ R)
     {M : Type} [TopologicalSpace M] [T2Space M]
     (χ : OpenPartialHomeomorph (MorseModel n) M) (f : M → ℝ)
@@ -16053,7 +16059,7 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquiv {n k : ℕ} (hk : k �
   have hretrCont : Continuous (fun x : SublevelSpace (morseModifiedFunction (M := M)
       hk c ε δ R χ f) (c - ε) =>
       morseModifiedRetraction (M := M) hk c ε R χ x.1) := by
-    have hcont := continuousOn_morseModifiedRetraction (M := M) hk c ε δ R hε hδ hR hRpos
+    have hcont := continuousOn_morseModifiedRetraction (M := M) hk c ε δ R hε hδ hR
       χ f hg hχsrc
     exact (continuousOn_iff_continuous_restrict).1 (by
       simpa [SublevelSpace, sublevel] using hcont)
@@ -16097,7 +16103,7 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquiv {n k : ℕ} (hk : k �
               SublevelSpace (morseModifiedFunction (M := M) hk c ε δ R χ f) (c - ε) =>
               morseModifiedRetractionHomotopy (M := M) hk c ε R χ (1 - (p.1 : ℝ)) p.2.1) := by
             have hcont := continuousOn_morseModifiedRetractionHomotopy (M := M)
-              hk c ε δ R hε hδ hR hRpos χ f hg hχsrc
+              hk c ε δ R hε hδ hR χ f hg hχsrc
             have hembed : Continuous (fun p : Set.Icc (0 : ℝ) 1 ×
                 SublevelSpace (morseModifiedFunction (M := M) hk c ε δ R χ f) (c - ε) =>
                 (p.1, p.2.1)) := by
@@ -16149,7 +16155,7 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquiv {n k : ℕ} (hk : k �
   exact { toFun := toFun, invFun := invFun, left_inv := ⟨leftHomo⟩, right_inv := ⟨rightHomo⟩ }
 
 theorem morseModifiedLowerSublevelHomotopyEquiv_lower {n k : ℕ} (hk : k ≤ n) (c ε δ R : ℝ)
-    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2) (hRpos : 0 < R)
+    (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2)
     (hεR : Real.sqrt (2 * ε) ≤ R)
     {M : Type} [TopologicalSpace M] [T2Space M]
     (χ : OpenPartialHomeomorph (MorseModel n) M) (f : M → ℝ)
@@ -16157,11 +16163,11 @@ theorem morseModifiedLowerSublevelHomotopyEquiv_lower {n k : ℕ} (hk : k ≤ n)
     (hnorm : ∀ y : MorseModel n, morseNorm n y ≤ R → f (χ y) = morseNormalForm hk c y)
     (hχsrc : ∀ y : MorseModel n, morseNorm n y ≤ R → y ∈ χ.source) :
     (∀ x : SublevelSpace f (c - ε),
-      ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).toFun
+      ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).toFun
         ⟨x.1, le_trans (morseModifiedFunction_le_f (M := M) hk c ε δ R hε χ f hnorm x.1)
           (by change f x.1 ≤ c - ε; exact x.2)⟩).1 = x.1) ∧
     (∀ x : SublevelSpace f (c - ε),
-      ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).invFun
+      ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).invFun
         ⟨x.1, Or.inl x.2⟩).1 = x.1) := by
   constructor
   · intro x
@@ -16206,7 +16212,7 @@ noncomputable def modifiedLowerSublevelUnionInclusion {n k : ℕ} (c ε : ℝ)
 
 noncomputable def morseModifiedLowerSublevelHomotopyEquivUnder {n k : ℕ} (hk : k ≤ n)
     (c ε δ R : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hR : 4 * ε + 9 * δ ^ 2 / 4 < R ^ 2)
-    (hRpos : 0 < R) (hεR : Real.sqrt (2 * ε) ≤ R)
+    (hεR : Real.sqrt (2 * ε) ≤ R)
     {M : Type} [TopologicalSpace M] [T2Space M]
     (χ : OpenPartialHomeomorph (MorseModel n) M) (f : M → ℝ)
     (hg : Continuous (morseModifiedFunction (M := M) hk c ε δ R χ f))
@@ -16220,8 +16226,8 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquivUnder {n k : ℕ} (hk :
       (toBase := modifiedLowerSublevelInclusion hk c ε δ R χ f
         (morseModifiedFunction_le_f (M := M) hk c ε δ R hε χ f hnorm))
       (fromBase := modifiedLowerSublevelUnionInclusion (M := M) c ε χ f) where
-  toFun := (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).toFun
-  invFun := (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).invFun
+  toFun := (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).toFun
+  invFun := (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).invFun
   map_toBase := by
     ext x
     change morseModifiedRetraction (M := M) hk c ε R χ x.1 = x.1
@@ -16234,10 +16240,10 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquivUnder {n k : ℕ} (hk :
     let Y : Type := SublevelSpace (morseModifiedFunction (M := M) hk c ε δ R χ f) (c - ε)
     let toFun : C(Y, {x : M // x ∈ sublevel f (c - ε) ∪ χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε)) (z : EuclideanSpace ℝ (Fin k))))}) :=
-      (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).toFun
+      (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).toFun
     let invFun : C({x : M // x ∈ sublevel f (c - ε) ∪ χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε)) (z : EuclideanSpace ℝ (Fin k))))}, Y) :=
-      (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).invFun
+      (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).invFun
     let F : (Set.Icc (0 : ℝ) 1) × Y → Y := fun p =>
       Subtype.mk (morseModifiedRetractionHomotopy (M := M) hk c ε R χ (1 - (p.1 : ℝ)) p.2.1)
         (by
@@ -16250,7 +16256,7 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquivUnder {n k : ℕ} (hk :
       have hcont : Continuous (fun p : (Set.Icc (0 : ℝ) 1) × Y =>
           morseModifiedRetractionHomotopy (M := M) hk c ε R χ (1 - (p.1 : ℝ)) p.2.1) := by
         have hcont' := continuousOn_morseModifiedRetractionHomotopy (M := M)
-          hk c ε δ R hε hδ hR hRpos χ f hg hχsrc
+          hk c ε δ R hε hδ hR χ f hg hχsrc
         have hembed : Continuous (fun p : (Set.Icc (0 : ℝ) 1) × Y => (p.1, p.2.1)) := by
           exact continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
         have hmem : ∀ p : (Set.Icc (0 : ℝ) 1) × Y,
@@ -16297,21 +16303,21 @@ noncomputable def morseModifiedLowerSublevelHomotopyEquivUnder {n k : ℕ} (hk :
             ((invFun.comp toFun)
                 (modifiedLowerSublevelInclusion hk c ε δ R χ f
                   (morseModifiedFunction_le_f (M := M) hk c ε δ R hε χ f hnorm) y)).1 =
-                ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).toFun
+                ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).toFun
                   (modifiedLowerSublevelInclusion hk c ε δ R χ f
                     (morseModifiedFunction_le_f (M := M) hk c ε δ R hε χ f hnorm) y)).1 := by
               rfl
-            _ = y.1 := (morseModifiedLowerSublevelHomotopyEquiv_lower hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).1 y
+            _ = y.1 := (morseModifiedLowerSublevelHomotopyEquiv_lower hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).1 y
   right_inv := by
     let Z : Type := {x : M // x ∈ sublevel f (c - ε) ∪ χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε)) (z : EuclideanSpace ℝ (Fin k))))}
-    have h : (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).toFun.comp
-        (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).invFun =
+    have h : (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).toFun.comp
+        (morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).invFun =
         ContinuousMap.id Z := by
       ext x
       calc
-        ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).toFun
-          ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hRpos hεR χ f hg hnorm hχsrc).invFun x)).1
+        ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).toFun
+          ((morseModifiedLowerSublevelHomotopyEquiv hk c ε δ R hε hδ hR hεR χ f hg hnorm hχsrc).invFun x)).1
             = morseModifiedRetraction (M := M) hk c ε R χ x.1 := rfl
         _ = x.1 := (morseModifiedRetraction_eq_self_of_mem_lowerUnion (M := M) hk c ε R hε hεR
           χ f hnorm hχsrc x.2)
@@ -16361,7 +16367,7 @@ theorem morseRoundedFunction_handleRoundEmbedding_eq_modelAttachedFunction {m k 
   have hnorm : morseNorm (m + 1) (modelHandleRoundMap hk ε r δ θ d) ≤ R₀' := by
     have hle := modelHandleRoundMap_norm_le hk ε r δ θ hε hδ hθ hδr hθr hr d
     have hsqrt : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ R₀' := by
-      have h1 : 2 * ε + 2 * r ^ 2 ≤ 2 * (r ^ 2 + 2 * ε + δ) := by nlinarith [hε, hδ]
+      have h1 : 2 * ε + 2 * r ^ 2 ≤ 2 * (r ^ 2 + 2 * ε + δ) := by nlinarith only [hε, hδ]
       have h2 := Real.sqrt_le_sqrt h1
       have h3 : Real.sqrt (2 * (r ^ 2 + 2 * ε + δ)) ≤ R₀' := by
         exact le_trans (Real.sqrt_le_sqrt hbig') (by
@@ -16570,7 +16576,7 @@ theorem contMDiff_morseCapRoundedLowerFunction {m k : ℕ} (hk : k ≤ m + 1)
         have hle : ‖x - y‖ ≤ ‖x‖ + ‖y‖ := norm_sub_le _ _
         have hxle : ‖x‖ ≤ R₁ := le_trans (morseNorm_piNorm_le x) hx'
         have hyle : ‖y‖ ≤ R₁ := le_trans (morseNorm_piNorm_le y) hy'
-        nlinarith [hxle, hyle, hle]
+        nlinarith only [hxle, hyle, hle]
       have hclosed' : IsClosed closedBall := by
         have hpre : IsClosed ((fun y : MorseModel (m + 1) => morseNorm (m + 1) y) ⁻¹' Set.Iic R₁) :=
           by simpa using (hcontNorm.continuousOn.preimage_isClosed_of_isClosed isClosed_univ isClosed_Iic)
@@ -16775,7 +16781,7 @@ theorem contMDiff_morseRoundedFunction {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ
         have hle : ‖x - y‖ ≤ ‖x‖ + ‖y‖ := norm_sub_le _ _
         have hxle : ‖x‖ ≤ R₁ := le_trans (morseNorm_piNorm_le x) hx'
         have hyle : ‖y‖ ≤ R₁ := le_trans (morseNorm_piNorm_le y) hy'
-        nlinarith [hxle, hyle, hle]
+        nlinarith only [hxle, hyle, hle]
       have hclosed' : IsClosed closedBall := by
         have hpre : IsClosed ((fun y : MorseModel (m + 1) => morseNorm (m + 1) y) ⁻¹' Set.Iic R₁) :=
           by simpa using (hcontNorm.continuousOn.preimage_isClosed_of_isClosed isClosed_univ isClosed_Iic)
@@ -16856,7 +16862,7 @@ theorem modelSharpUnion_negPart_ge_of_norm_gt {m k : ℕ} (hk : k ≤ m + 1) (c 
   rcases hy with hy | hy
   · have hnormle : morseNorm (m + 1) y ^ 2 < R₀ ^ 2 := by
       have h1 := modelAttached_norm_sq_lt_of_negPart_lt hk ε r δ hε hδ hy hlt
-      nlinarith [hbig, h1]
+      nlinarith only [hbig, h1]
     have hle : morseNorm (m + 1) y ≤ R₀ := by
       have habs := sq_lt_sq.mp hnormle
       have hnon : 0 ≤ morseNorm (m + 1) y := by
@@ -16867,8 +16873,7 @@ theorem modelSharpUnion_negPart_ge_of_norm_gt {m k : ℕ} (hk : k ≤ m + 1) (c 
     exact (not_lt_of_ge (le_trans hle (le_of_lt hR))) hnorm
   · have hnormle : morseNorm (m + 1) y ^ 2 < R₀ ^ 2 := by
       have h1 := modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hy hlt
-      have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by nlinarith [hbig]
-      nlinarith [h1, h2]
+      nlinarith only [h1, hbig, hε]
     have hle : morseNorm (m + 1) y ≤ R₀ := by
       have habs := sq_lt_sq.mp hnormle
       have hnon : 0 ≤ morseNorm (m + 1) y := by
@@ -16886,7 +16891,7 @@ theorem modelAttached_lower_of_negPart_ge {m k : ℕ} (hk : k ≤ m + 1) (c ε r
   have hcap : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε :=
     smoothCap_upper hδ hneg
   rw [morseNormalForm_split]
-  nlinarith [hy, hcap]
+  nlinarith only [hy, hcap]
 
 theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -16937,11 +16942,11 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
           have hnegl : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk (data.χ.symm x)‖ ^ 2 := by
             have hsq : (data.R / 2) ^ 2 ≤ ‖negPart hk (data.χ.symm x)‖ ^ 2 := by
               have hnon : 0 ≤ ‖negPart hk (data.χ.symm x)‖ := norm_nonneg _
-              have hR2 : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+              have hR2 : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
               exact sq_le_sq.mpr (by
                 rw [abs_of_nonneg hR2, abs_of_nonneg hnon]
                 exact hneg')
-            nlinarith [hRbig, hsq]
+            nlinarith only [hRbig, hsq]
           have hlow' : morseNormalForm hk c (data.χ.symm x) ≤ c - ε :=
             modelAttached_lower_of_negPart_ge hk c ε r δ hδ hatt hnegl
           constructor
@@ -16960,7 +16965,7 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
                 ‖negPart hk (data.χ.symm x)‖ ^ 2 - 2 * ε :=
               smoothCap_upper hδ hnegl
             rw [morseNormalForm_split] at hlow'
-            nlinarith [hlow', hcap]
+            nlinarith only [hlow', hcap]
           · simpa [hsymm] using hneg
           · have htgt : x ∈ data.χ.target := by
               rw [← hxy]
@@ -16995,7 +17000,7 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
         have hnormle : morseNorm (m + 1) y ≤ R₁ := by
           have hpos : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - 2 * ε := by
             rw [morseNormalForm_split] at hlowy
-            nlinarith
+            nlinarith only [hlowy]
           have hnorm2 : morseNorm (m + 1) y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
             calc
               morseNorm (m + 1) y ^ 2 =
@@ -17006,16 +17011,16 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
           have hneg2 : ‖negPart hk y‖ ^ 2 < (data.R / 2) ^ 2 := by
             rw [hsymm] at hnegp
             have hnon : 0 ≤ ‖negPart hk y‖ := norm_nonneg _
-            have hR2 : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+            have hR2 : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
             exact sq_lt_sq.mpr (by
               simpa [abs_of_nonneg hnon, abs_of_nonneg hR2] using hnegp)
           have hnormle2 : morseNorm (m + 1) y ^ 2 ≤ R₁ ^ 2 := by
-            nlinarith [hnorm2, hpos, hneg2, hR₁big, data.hRpos]
+            nlinarith only [hnorm2, hpos, hneg2, hR₁big, data.hRpos]
           have habs := sq_le_sq.mp hnormle2
           have hnon : 0 ≤ morseNorm (m + 1) y := by
             dsimp [morseNorm]
             exact norm_nonneg _
-          have hR₁0 : 0 ≤ R₁ := by nlinarith [hR₁big, data.hRpos]
+          have hR₁0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
           rw [abs_of_nonneg hnon, abs_of_nonneg hR₁0] at habs
           exact habs
         exact hc ⟨y, hnormle, hxy⟩
@@ -17056,10 +17061,10 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
                   morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
             have hneglt : ‖negPart hk y‖ ^ 2 < (data.R / 2) ^ 2 := by
               have hnon : 0 ≤ ‖negPart hk y‖ := norm_nonneg _
-              have hR2 : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+              have hR2 : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
               exact sq_lt_sq.mpr (by
                 simpa [abs_of_nonneg hnon, abs_of_nonneg hR2] using hy.2)
-            nlinarith [hnorm2, hpos, hneglt, data.hRpos]
+            nlinarith only [hnorm2, hpos, hneglt, hε, data.hRpos]
           have habs := sq_lt_sq.mp hnormle
           have hnon : 0 ≤ morseNorm (m + 1) y := by
             dsimp [morseNorm]
@@ -17098,7 +17103,7 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
           have hnegp : ‖negPart hk y‖ < data.R / 2 := by
             have hlt2 : ‖negPart hk y‖ ^ 2 < (data.R / 2) ^ 2 := lt_of_lt_of_le hlt hRbig
             have hnon : 0 ≤ ‖negPart hk y‖ := norm_nonneg _
-            have hR2 : 0 ≤ data.R / 2 := by nlinarith [data.hRpos]
+            have hR2 : 0 ≤ data.R / 2 := by nlinarith only [data.hRpos]
             simpa [abs_of_nonneg hnon, abs_of_nonneg hR2] using (sq_lt_sq.mp hlt2)
           have hcore : x ∈ morseChartCoreBallImage hk c data := by
             dsimp [morseChartCoreBallImage]
@@ -17112,7 +17117,7 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
             refine ⟨y, ?_, hxy⟩
             have hb := modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hlow' hlt
             have hnormle : morseNorm (m + 1) y ^ 2 < data.R ^ 2 := by
-              nlinarith [hb, hRbig, data.hRpos]
+              nlinarith only [hb, hRbig, hε, data.hRpos]
             have habs := sq_lt_sq.mp hnormle
             have hnon : 0 ≤ morseNorm (m + 1) y := by
               dsimp [morseNorm]
@@ -17133,7 +17138,7 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
         change morseRoundedFunction hk c ε r δ R₀ R₁ data x ≤ c
         rw [heq]
         have hlow' : f x ≤ c - ε := hlow
-        nlinarith [hlow']
+        nlinarith only [hlow']
 
 
 lemma morseRoundedFunction_notCritical_of_chartComp {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ R₀ R₁ : ℝ)
@@ -17358,7 +17363,7 @@ theorem morseCapRoundedLowerRoundGlobal_lt_roundedSublevel {m k : ℕ} (hk : k �
       have hχ_eq : data.χ (modelLowerRoundMap hk ε r δ θ (data.χ.symm x)) = x := by
         rw [← hround, hself]
       rw [hχ_eq]
-      nlinarith [hxlt, hε]
+      nlinarith only [hxlt, hε]
   · have hround : morseCapRoundedLowerRound hk c ε r δ θ data x = x := by
       dsimp [morseCapRoundedLowerRound]
       rw [if_neg hb]
@@ -17369,7 +17374,7 @@ theorem morseCapRoundedLowerRoundGlobal_lt_roundedSublevel {m k : ℕ} (hk : k �
       exact hb ⟨y, lt_of_le_of_lt hy hR₁₂R', hxy⟩
     have heq := morseRoundedFunction_eq_f_add_eps_of_not_mem_closedBall hk c ε r δ R₀' R₁' data hnotR₁'
     rw [heq]
-    nlinarith [hxlt, hε]
+    nlinarith only [hxlt, hε]
 
 theorem morseRoundedFunction_no_critical_at_level {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ R₀ R₁ R₁' : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -17443,13 +17448,13 @@ theorem morseRoundedFunction_no_critical_at_level {m k : ℕ} (hk : k ≤ m + 1)
           have hmod := CellAttachment.modelRoundedFunction_eq_morse_add_eps_of_negPart_large
             hk c ε r δ R₀ R₁ hδ hnegl
           rw [hmod] at hval
-          nlinarith
+          nlinarith only [hval]
         have hneglStrict : r ^ 2 + 2 * ε + δ < ‖negPart hk y‖ ^ 2 := by
           by_contra hnot
           have hle : ‖negPart hk y‖ ^ 2 ≤ r ^ 2 + 2 * ε + δ := le_of_not_gt hnot
           have hpos : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - ε := by
             rw [morseNormalForm_split] at hlow
-            nlinarith
+            nlinarith only [hlow, hε]
           have hnormSq : morseNorm (m + 1) y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
             calc
               morseNorm (m + 1) y ^ 2 = morseNorm (m + 1) (recombine hk (negPart hk y) (posPart hk y)) ^ 2 := by
@@ -17457,7 +17462,7 @@ theorem morseRoundedFunction_no_critical_at_level {m k : ℕ} (hk : k ≤ m + 1)
               _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
                 morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
           have hsmall : morseNorm (m + 1) y ^ 2 < R₀ ^ 2 := by
-            nlinarith [hle, hpos, hnormSq, hε, hbig]
+            nlinarith only [hle, hpos, hnormSq, hε, hbig]
           have hltR : morseNorm (m + 1) y < R₀ := by
             have hnon : 0 ≤ morseNorm (m + 1) y := by
               dsimp [morseNorm]
@@ -17519,7 +17524,10 @@ theorem morseRoundedFunction_no_critical_at_level {m k : ℕ} (hk : k ≤ m + 1)
           have ha' : ‖a‖ ≤ R₁ := le_trans (morseNorm_piNorm_le a) ha
           have hb' : ‖b‖ ≤ R₁ := le_trans (morseNorm_piNorm_le b) hb
           rw [dist_eq_norm]
-          exact le_trans (norm_sub_le a b) (by nlinarith)
+          calc
+            ‖a - b‖ ≤ ‖a‖ + ‖b‖ := norm_sub_le a b
+            _ ≤ R₁ + R₁ := add_le_add ha' hb'
+            _ = 2 * R₁ := (two_mul R₁).symm
         have hclosed' : IsClosed {w : MorseModel (m + 1) | morseNorm (m + 1) w ≤ R₁} := by
           have hpre : IsClosed ((fun w : MorseModel (m + 1) => morseNorm (m + 1) w) ⁻¹' Set.Iic R₁) :=
             by simpa using (hcontNorm.continuousOn.preimage_isClosed_of_isClosed isClosed_univ isClosed_Iic)
@@ -17886,8 +17894,8 @@ private theorem no_critical_morseSublevelIsotopyFamily {m k : ℕ} (hk : k ≤ m
           f x - c + (1 - 2 * s) * ε := by ring
       rw [hrew] at h1'
       constructor
-      · nlinarith [h1', hs0, hε]
-      · nlinarith [h1', hsl, hε]
+      · nlinarith only [h1', hs0, hε]
+      · nlinarith only [h1', hsl, hε]
     have hreg : ¬ IsCriticalPointAt I f x := hreg_f x hval
     have hconst : f x - c + (1 - 2 * s) * ε = -c + (1 - 2 * s) * ε + f x := by ring
     have heqF : (fun z : M => morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data s z) =ᶠ[nhds x]
@@ -17903,7 +17911,10 @@ private theorem no_critical_morseSublevelIsotopyFamily {m k : ℕ} (hk : k ≤ m
           have ha' : ‖a‖ ≤ R₁ := le_trans (morseNorm_piNorm_le a) ha
           have hb' : ‖b‖ ≤ R₁ := le_trans (morseNorm_piNorm_le b) hb
           rw [dist_eq_norm]
-          exact le_trans (norm_sub_le a b) (by nlinarith)
+          calc
+            ‖a - b‖ ≤ ‖a‖ + ‖b‖ := norm_sub_le a b
+            _ ≤ R₁ + R₁ := add_le_add ha' hb'
+            _ = 2 * R₁ := (two_mul R₁).symm
         have hclosed' : IsClosed {w : MorseModel (m + 1) | morseNorm (m + 1) w ≤ R₁} := by
           have hpre : IsClosed ((fun w : MorseModel (m + 1) => morseNorm (m + 1) w) ⁻¹' Set.Iic R₁) :=
             by simpa using (hcontNorm.continuousOn.preimage_isClosed_of_isClosed isClosed_univ isClosed_Iic)
@@ -17990,7 +18001,7 @@ theorem isCompact_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m + 1
         ring
       have hb1 : |1 - 2 * q.2| ≤ 1 := by
         rw [abs_le]
-        constructor <;> nlinarith [hq.2.1, hq.2.2]
+        constructor <;> nlinarith only [hq.2.1, hq.2.2]
       have hb : |f q.1 - c| ≤ a := by
         have hle : |f q.1 - c| ≤ |F q| + |ε * (1 - 2 * q.2)| := by
           have hsub' : f q.1 - c = F q - ε * (1 - 2 * q.2) := by
@@ -18006,9 +18017,9 @@ theorem isCompact_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m + 1
           rw [abs_mul, abs_of_pos hε]
           simpa using (mul_le_mul_of_nonneg_left hb1 (le_of_lt hε))
         have hFb : |F q| ≤ 2 * ε₀ := hq.1
-        exact le_trans hle (by nlinarith [hεb, hFb, haε])
+        exact le_trans hle (by nlinarith only [hεb, hFb, haε])
       have habs := abs_le.mp hb
-      exact ⟨⟨by nlinarith [habs.1], by nlinarith [habs.2]⟩, hq.2⟩
+      exact ⟨⟨by nlinarith only [habs.1], by nlinarith only [habs.2]⟩, hq.2⟩
   have hball : IsCompact {y : MorseModel (m + 1) | CellAttachment.morseNorm (m + 1) y ≤ R₁} := by
     have hcl : IsClosed {y : MorseModel (m + 1) | CellAttachment.morseNorm (m + 1) y ≤ R₁} := by
       have hcont : Continuous (fun y : MorseModel (m + 1) => CellAttachment.morseNorm (m + 1) y) := by
@@ -18079,10 +18090,10 @@ theorem morseSublevelIsotopyFamily_criticalPoint_not_in_strip {m k : ℕ} (hk : 
           rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt (lt_of_le_of_lt hR0 hR))]
           exact hR
         have hsq : R₀ ^ 2 < R₁ ^ 2 := sq_lt_sq.mpr hlt
-        nlinarith
+        exact sub_pos.mpr hsq
       have hnum : 0 ≤ R₀ ^ 2 := by positivity
       simp [CellAttachment.morseNorm]
-      have hnum' : -R₀ ^ 2 ≤ 0 := by nlinarith [hnum]
+      have hnum' : -R₀ ^ 2 ≤ 0 := by nlinarith only [hnum]
       simpa using (div_nonpos_of_nonpos_of_nonneg hnum' (le_of_lt hden))
     have hneg0 : ‖CellAttachment.negPart hk (0 : MorseModel (m + 1))‖ ^ 2 = 0 := by
       have hz : CellAttachment.negPart hk (0 : MorseModel (m + 1)) = 0 := by
@@ -18091,7 +18102,7 @@ theorem morseSublevelIsotopyFamily_criticalPoint_not_in_strip {m k : ℕ} (hk : 
       rw [hz]
       simp
     have hcap : CellAttachment.smoothCap ε r δ 0 = r ^ 2 := by
-      exact CellAttachment.smoothCap_lower hδ (by nlinarith [hδr, hε])
+      exact CellAttachment.smoothCap_lower hδ (by nlinarith only [hδr, hε])
     rw [hsplit]
     rw [hτ0]
     rw [hneg0]
@@ -18103,7 +18114,7 @@ theorem morseSublevelIsotopyFamily_criticalPoint_not_in_strip {m k : ℕ} (hk : 
     rw [abs_of_neg (neg_neg_of_pos hε)]
     ring
   rw [habs]
-  nlinarith [hε₀]
+  nlinarith only [hε₀]
 
 theorem no_critical_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ R₁' a ε₀ : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -18327,7 +18338,7 @@ theorem no_critical_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m +
       have hFval : (1 - s) * (f x + ε - c) + s * (f x - c - ε) = f x - c + (1 - 2 * s) * ε := by ring
       have hb1 : |1 - 2 * s| ≤ 1 := by
         rw [abs_le]
-        constructor <;> nlinarith [hs.1, hs.2]
+        constructor <;> nlinarith only [hs.1, hs.2]
       have hbnd : |f x - c| ≤ 2 * ε₀ + ε := by
         have hmain : |f x - c + (1 - 2 * s) * ε| ≤ 2 * ε₀ := by
           rw [← hFval]
@@ -18345,9 +18356,9 @@ theorem no_critical_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m +
         have hεb : |(1 - 2 * s) * ε| ≤ ε := by
           rw [abs_mul, abs_of_pos hε]
           simpa using (mul_le_mul_of_nonneg_right hb1 (le_of_lt hε))
-        nlinarith [htri, hmain, hεb]
+        nlinarith only [htri, hmain, hεb]
       have habs := abs_le.mp hbnd
-      constructor <;> nlinarith [habs.1, habs.2, haε]
+      constructor <;> nlinarith only [habs.1, habs.2, haε]
     rcases hunique x hval with hxp | hnc
     · have hpimg : data.p ∈ data.χ '' {y : MorseModel (m + 1) | CellAttachment.morseNorm (m + 1) y ≤ R₁} := by
         refine ⟨0, ?_, data.hχ0⟩
@@ -18367,7 +18378,10 @@ theorem no_critical_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m +
             have ha' : ‖a‖ ≤ R₁ := le_trans (CellAttachment.morseNorm_piNorm_le a) ha
             have hb' : ‖b‖ ≤ R₁ := le_trans (CellAttachment.morseNorm_piNorm_le b) hb
             rw [dist_eq_norm]
-            exact le_trans (norm_sub_le a b) (by nlinarith)
+            calc
+              ‖a - b‖ ≤ ‖a‖ + ‖b‖ := norm_sub_le a b
+              _ ≤ R₁ + R₁ := add_le_add ha' hb'
+              _ = 2 * R₁ := (two_mul R₁).symm
           have hclosed' : IsClosed {w : MorseModel (m + 1) | CellAttachment.morseNorm (m + 1) w ≤ R₁} := by
             have hpre : IsClosed ((fun w : MorseModel (m + 1) => CellAttachment.morseNorm (m + 1) w) ⁻¹' Set.Iic R₁) :=
               by simpa using (hcontNorm.continuousOn.preimage_isClosed_of_isClosed isClosed_univ isClosed_Iic)
@@ -18670,7 +18684,7 @@ private noncomputable def morseHandleAdjunctionEquivRoundedSublevelSharp {m k : 
     (hcont : Continuous f) :
     Handle.AdjunctionSpace k (m + 1 - k)
       (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀ R₁ data) c :=
   (morseHandleAdjunctionEquivRounded hk c ε r δ data hε hδ hδr hr hεr' hbigR hcont).trans
     (homeomorphOfSetEq (by
@@ -18692,7 +18706,7 @@ noncomputable def morseHandleAdjunctionEquivRoundedSublevel {m k : ℕ} (hk : k 
     (hcont : Continuous f) :
     Handle.AdjunctionSpace k (m + 1 - k)
       (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c :=
   ((morseHandleRoundAdjunctionHomeoCapRounded hk c ε r δ θ R₀ data hε hδ hθ hδr hθr hr hεr hεr'
       hR0 hR0lt hbig hRbig hcont).trans
@@ -18724,7 +18738,7 @@ noncomputable def morseHandleAdjunctionChartedSpace {m k : ℕ} (hk : k ≤ m + 
     ChartedSpace (MorseHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) := by
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) := by
   letI : ChartedSpace (MorseHalfSpace m)
       (SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c) :=
     morseRoundedSublevelChartedSpace hk c ε r δ R₀' R₁' R₁'' data hε hδ hδr hR hR0' hbig' hR₁₂
@@ -18796,7 +18810,7 @@ private theorem morseCapRoundedLowerRound_eq_self_of_deep {m k : ℕ} (hk : k �
       have hfx : f (data.χ y) ≤ c - ε - η := by
         simpa [← hxy] using hx
       have hnonneg : 0 ≤ ‖posPart hk y‖ ^ 2 := sq_nonneg _
-      nlinarith [hη, hnorm, hsplit, hfx, hnonneg]
+      nlinarith only [hη, hnorm, hsplit, hfx, hnonneg]
     dsimp [morseCapRoundedLowerRound]
     rw [if_pos ⟨y, hy, hxy⟩]
     have hself : modelLowerRoundMap hk ε r δ θ (data.χ.symm x) = data.χ.symm x := by
@@ -18847,28 +18861,28 @@ theorem morseHandleAdjunctionEquivRoundedSublevel_symm_rel_deep {m k : ℕ} (hk 
     (morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr
       hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hcont).symm ⟨y, hy_round⟩ =
       Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨y, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
           change f y ≤ c - ε
-          nlinarith [hy, hη0]⟩ := by
+          nlinarith only [hy, hη0]⟩ := by
   have hto : (morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr
       hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hcont)
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨y, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
           change f y ≤ c - ε
-          nlinarith [hy, hη0]⟩) = ⟨y, hy_round⟩ := by
+          nlinarith only [hy, hη0]⟩) = ⟨y, hy_round⟩ := by
     apply Subtype.ext
     rw [morseHandleAdjunctionEquivRoundedSublevel_lower hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr
       hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hcont ⟨y, by
         have hsum : 0 ≤ r ^ 2 + δ := by positivity
-        have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+        have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
         change f y ≤ c - ε
-        nlinarith [hy, hη0]⟩]
+        nlinarith only [hy, hη0]⟩]
     exact morseCapRoundedLowerRound_eq_self_of_deep hk c ε r δ θ η data hδ hθ hη hy
   exact (congrArg (fun z => (morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data
       hε hδ hθ hδr hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hcont).symm z)
@@ -18876,12 +18890,12 @@ theorem morseHandleAdjunctionEquivRoundedSublevel_symm_rel_deep {m k : ℕ} (hk 
     ((morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr hθr hr
       hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hcont).left_inv
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨y, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
           change f y ≤ c - ε
-          nlinarith [hy, hη0]⟩))
+          nlinarith only [hy, hη0]⟩))
 
 theorem contMDiff_morseHandleAdjunctionCell {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -18911,16 +18925,16 @@ theorem contMDiff_morseHandleAdjunctionCell {m k : ℕ} (hk : k ≤ m + 1)
       (morseModelWithCornersHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpace hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
         hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f)
       (⊤ : ℕ∞)
       (Handle.cell (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) := by
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) := by
   classical
   let φ : AttachingRegion k (m + 1 - k) → SublevelSpace f (c - ε) :=
     morseAttachingEmbedding hk c ε r data hε
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))
   let H : Handle.AdjunctionSpace k (m + 1 - k) φ ≃ₜ
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c :=
     morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr
@@ -18985,17 +18999,17 @@ theorem contMDiff_morseHandleAdjunctionCell_zero {m : ℕ}
       (morseModelWithCornersHalfSpace m)
       (Handle.AdjunctionSpace 0 (m + 1)
         (morseAttachingEmbedding (zero_le (m + 1)) c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpace (zero_le (m + 1)) c ε r δ θ R₀ R₀' R₁' R₁'' data
         hε hδ hθ hδr hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R''
         hR₁₂R''' hcont hf hreg_f)
       (⊤ : ℕ∞)
       (Handle.cell (morseAttachingEmbedding (zero_le (m + 1)) c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) := by
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) := by
   classical
   let φ : AttachingRegion 0 (m + 1) → SublevelSpace f (c - ε) :=
     morseAttachingEmbedding (zero_le (m + 1)) c ε r data hε
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))
   let H : Handle.AdjunctionSpace 0 (m + 1) φ ≃ₜ
       SublevelSpace (morseRoundedFunction (zero_le (m + 1)) c ε r δ R₀' R₁' data) c :=
     morseHandleAdjunctionEquivRoundedSublevel (zero_le (m + 1)) c ε r δ θ R₀ R₀' R₁' data
@@ -19072,17 +19086,17 @@ theorem contMDiff_morseHandleAdjunctionCell_top {m : ℕ}
       (morseModelWithCornersHalfSpace m)
       (Handle.AdjunctionSpace (m + 1) (m + 1 - (m + 1))
         (morseAttachingEmbedding (le_rfl : m + 1 ≤ m + 1) c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpace (le_rfl : m + 1 ≤ m + 1) c ε r δ θ R₀ R₀' R₁' R₁''
         data hε hδ hθ hδr hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂
         hR₁₂R'' hR₁₂R''' hcont hf hreg_f)
       (⊤ : ℕ∞)
       (Handle.cell (morseAttachingEmbedding (le_rfl : m + 1 ≤ m + 1) c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) := by
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) := by
   classical
   let φ : AttachingRegion (m + 1) (m + 1 - (m + 1)) → SublevelSpace f (c - ε) :=
     morseAttachingEmbedding (le_rfl : m + 1 ≤ m + 1) c ε r data hε
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))
   let H : Handle.AdjunctionSpace (m + 1) (m + 1 - (m + 1)) φ ≃ₜ
       SublevelSpace (morseRoundedFunction (le_rfl : m + 1 ≤ m + 1) c ε r δ R₀' R₁' data) c :=
     morseHandleAdjunctionEquivRoundedSublevel (le_rfl : m + 1 ≤ m + 1) c ε r δ θ R₀ R₀' R₁'
@@ -19163,17 +19177,17 @@ theorem contMDiff_morseHandleAdjunctionLower {m k : ℕ} (hk : k ≤ m + 1)
       (morseModelWithCornersHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpace hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr
         hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont
         hf hreg_f)
       (⊤ : ℕ∞)
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) := by
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) := by
   classical
   let φ : AttachingRegion k (m + 1 - k) → SublevelSpace f (c - ε) :=
     morseAttachingEmbedding hk c ε r data hε
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))
   let H : Handle.AdjunctionSpace k (m + 1 - k) φ ≃ₜ
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c :=
     morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr
@@ -19262,27 +19276,27 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_lower {m k : ℕ}
     (morseHandleAdjunctionEquivRoundedSublevelSharp hk c ε r δ R₀ R₁ data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hcont
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨x, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
-          exact le_trans hx (by nlinarith [hη0])⟩)).1 = x := by
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
+          exact le_trans hx (by nlinarith only [hη0])⟩)).1 = x := by
   change morseSharpUnionRound hk c ε r δ data
     (morseHandleAdjunctionHomeoUnion hk c ε r data hε (ne_of_gt hr)
-      (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)) hcont
+      (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)) hcont
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨x, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
-          exact le_trans hx (by nlinarith [hη0])⟩)).1 = x
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
+          exact le_trans hx (by nlinarith only [hη0])⟩)).1 = x
   rw [morseHandleAdjunctionHomeoUnion_lower hk c ε r data hε (ne_of_gt hr)
-    (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)) hcont
+    (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)) hcont
     ⟨x, by
       have hsum : 0 ≤ r ^ 2 + δ := by positivity
-      have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
-      exact le_trans hx (by nlinarith [hη0])⟩]
-  exact morseSharpUnionRound_eq_self_of_deep hk c ε r δ η data hδ hδr hη hx
+      have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
+      exact le_trans hx (by nlinarith only [hη0])⟩]
+  exact morseSharpUnionRound_eq_self_of_deep hk c ε r δ η data hδ hη hx
 
 theorem morseHandleAdjunctionHomeoUnion_symm_lower {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -19890,7 +19904,7 @@ theorem morseLowerAttachingChartPoint_model_norm_sq_le {m k : ℕ} (hk : k ≤ m
         simp [norm_zero, inv_zero]
       rw [hmap, posPart_recombine, smul_zero, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0)]
       have hlo' : 2 * ε ≤ ‖negPart hk y‖ ^ 2 := by simpa [hsymm] using hlo
-      nlinarith [hlo']
+      nlinarith only [hlo']
     · have hposn := CellAttachment.modelLowerAttachingChartPoint_posPart_norm_sq hk ε hpos (by
         simpa [hsymm] using hlo)
       rw [hposn]
@@ -19905,7 +19919,7 @@ theorem morseLowerAttachingChartPoint_model_norm_sq_le {m k : ℕ} (hk : k ≤ m
       exact (sq_le_sq.mpr (by
         rw [abs_of_nonneg hnonneg, abs_of_nonneg (by linarith [hnonneg, hneg_r] : 0 ≤ r)]
         exact hneg_r))
-    nlinarith [hneg', hpos', hneg_r_sq, hε]
+    nlinarith only [hneg', hpos', hneg_r_sq, hε]
   have hsymm' : data.χ.symm (data.χ (CellAttachment.modelLowerAttachingChartPoint hk ε y)) =
       CellAttachment.modelLowerAttachingChartPoint hk ε y := by
     exact data.χ.left_inv (data.hχsrc (CellAttachment.modelLowerAttachingChartPoint hk ε y)
@@ -19937,21 +19951,21 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m 
     (morseHandleAdjunctionEquivRoundedSublevelSharp hk c ε r δ R₀ R₁ data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hcont).symm ⟨y, hy_round⟩ =
       Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨y, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
           change f y ≤ c - ε
-          nlinarith [hy, hη0]⟩ := by
+          nlinarith only [hy, hη0]⟩ := by
   have hto : (morseHandleAdjunctionEquivRoundedSublevelSharp hk c ε r δ R₀ R₁ data hε hδ hδr hr hεr'
       hbigR hR hR0 hbig hRbig hR₁big hR₁₂R hcont)
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨y, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
           change f y ≤ c - ε
-          nlinarith [hy, hη0]⟩) = ⟨y, hy_round⟩ := by
+          nlinarith only [hy, hη0]⟩) = ⟨y, hy_round⟩ := by
     apply Subtype.ext
     exact morseHandleAdjunctionEquivRoundedSublevelSharp_lower hk c ε r δ R₀ R₁ η data hε hδ hδr hr
       hεr' hbigR hR hR0 hbig hRbig hR₁big hR₁₂R hcont hη (x := y) hy
@@ -19960,12 +19974,12 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m 
     ((morseHandleAdjunctionEquivRoundedSublevelSharp hk c ε r δ R₀ R₁ data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hcont).left_inv
       (Handle.lower (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))
         ⟨y, by
           have hsum : 0 ≤ r ^ 2 + δ := by positivity
-          have hη0 : 0 ≤ η := by nlinarith [hη, hsum]
+          have hη0 : 0 ≤ η := by nlinarith only [hη, hsum]
           change f y ≤ c - ε
-          nlinarith [hy, hη0]⟩))
+          nlinarith only [hy, hη0]⟩))
 
 @[reducible] private noncomputable def morseHandleAdjunctionChartedSpaceSharp {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -19987,7 +20001,7 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m 
     ChartedSpace (MorseHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) := by
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) := by
   letI : ChartedSpace (MorseHalfSpace m)
       (SublevelSpace (morseRoundedFunction hk c ε r δ R₀ R₁ data) c) :=
     morseRoundedSublevelChartedSpace hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hR hR0 hbig
@@ -20020,12 +20034,12 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m 
   letI : ChartedSpace (MorseHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) :=
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) :=
     morseHandleAdjunctionChartedSpaceSharp hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hR₁₂ hR₁₂R' hR₁₂R'' hcont hf hreg_f
   exact chartedSpaceOfHomeomorph
     (morseHandleRoundAdjunctionHomeoCapRounded hk c ε r δ θ R₀ data hε hδ hθ hδr hθr hr
-      (le_of_lt (lt_trans hεr' (by nlinarith [data.hRpos] : data.R / 2 < data.R)))
+      (le_of_lt (lt_trans hεr' (by nlinarith only [data.hRpos] : data.R / 2 < data.R)))
       hεr' hR0 (lt_of_lt_of_le hR hR₁₂R) hbig hRbig hcont).symm
 
 private theorem morseHandleAdjunctionIsManifoldSharp {m k : ℕ} (hk : k ≤ m + 1)
@@ -20049,7 +20063,7 @@ private theorem morseHandleAdjunctionIsManifoldSharp {m k : ℕ} (hk : k ≤ m +
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpaceSharp hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hr hεr' hbigR
         hR hR0 hbig hRbig hR₁big hR₁₂R hR₁₂ hR₁₂R' hR₁₂R'' hcont hf hreg_f) := by
   classical
@@ -20095,20 +20109,20 @@ private theorem morseCapRoundedLowerUnionIsManifold {m k : ℕ} (hk : k ≤ m + 
   letI : ChartedSpace (MorseHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) :=
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) :=
     morseHandleAdjunctionChartedSpaceSharp hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hR₁₂ hR₁₂R' hR₁₂R'' hcont hf hreg_f
   have hmani : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _ _ :=
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _ _ :=
     morseHandleAdjunctionIsManifoldSharp hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hR₁₂ hR₁₂R' hR₁₂R'' hcont hf hreg_f
   letI := hmani
   exact isManifoldOfHomeomorph (morseModelWithCornersHalfSpace m)
     (morseHandleRoundAdjunctionHomeoCapRounded hk c ε r δ θ R₀ data hε hδ hθ hδr hθr hr
-      (le_of_lt (lt_trans hεr' (by nlinarith [data.hRpos] : data.R / 2 < data.R)))
+      (le_of_lt (lt_trans hεr' (by nlinarith only [data.hRpos] : data.R / 2 < data.R)))
       hεr' hR0 (lt_of_lt_of_le hR hR₁₂R) hbig hRbig hcont).symm
 
 private noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevelSharp {m k : ℕ} (hk : k ≤ m + 1)
@@ -20133,7 +20147,7 @@ private noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevelSharp {
       (morseModelWithCornersHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpaceSharp hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hr hεr' hbigR
         hR hR0 hbig hRbig hR₁big hR₁₂R hR₁₂ hR₁₂R' hR₁₂R'' hcont hf hreg_f)
       (SublevelSpace (morseRoundedFunction hk c ε r δ R₀ R₁ data) c) _
@@ -20143,7 +20157,7 @@ private noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevelSharp {
   classical
   let e : Handle.AdjunctionSpace k (m + 1 - k)
       (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀ R₁ data) c :=
     morseHandleAdjunctionEquivRoundedSublevelSharp hk c ε r δ R₀ R₁ data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hcont
@@ -20154,7 +20168,7 @@ private noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevelSharp {
   letI : ChartedSpace (MorseHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) :=
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) :=
     morseHandleAdjunctionChartedSpaceSharp hk c ε r δ R₀ R₁ R₁' data hε hδ hδr hr hεr' hbigR
       hR hR0 hbig hRbig hR₁big hR₁₂R hR₁₂ hR₁₂R' hR₁₂R'' hcont hf hreg_f
   letI : IsManifold (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
@@ -20186,7 +20200,7 @@ theorem morseHandleAdjunctionIsManifold {m k : ℕ} (hk : k ≤ m + 1)
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpace hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
         hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f) := by
   classical
@@ -20227,7 +20241,7 @@ noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevel {m k : ℕ} (h
       (morseModelWithCornersHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) _
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) _
       (morseHandleAdjunctionChartedSpace hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
         hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f)
       (SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c) _
@@ -20237,7 +20251,7 @@ noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevel {m k : ℕ} (h
   classical
   let e : Handle.AdjunctionSpace k (m + 1 - k)
       (morseAttachingEmbedding hk c ε r data hε
-        (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
+        (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R))) ≃ₜ
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c :=
     morseHandleAdjunctionEquivRoundedSublevel hk c ε r δ θ R₀ R₀' R₁' data hε hδ hθ hδr
       hθr hr hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hcont
@@ -20248,7 +20262,7 @@ noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevel {m k : ℕ} (h
   letI : ChartedSpace (MorseHalfSpace m)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε
-          (le_trans (le_of_lt hεr') (by nlinarith [data.hRpos] : data.R / 2 ≤ data.R)))) :=
+          (le_trans (le_of_lt hεr') (by nlinarith only [data.hRpos] : data.R / 2 ≤ data.R)))) :=
     morseHandleAdjunctionChartedSpace hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
       hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f
   letI : IsManifold (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
@@ -20298,9 +20312,9 @@ private lemma affine_interp_le_of_endpoints_le {a b s η : ℝ} (hs0 : 0 ≤ s) 
 
 private lemma abs_gt_of_le_neg {a η ε₀ : ℝ} (hε₀ : 0 ≤ ε₀) (hηε₀ : 2 * ε₀ < η) (ha : a ≤ -η) :
     2 * ε₀ < |a| := by
-  have hneg : a < 0 := by nlinarith [hηε₀, ha, hε₀]
+  have hneg : a < 0 := by nlinarith only [hηε₀, ha, hε₀]
   rw [abs_of_neg hneg]
-  nlinarith [hηε₀, ha]
+  nlinarith only [hηε₀, ha]
 
 theorem morseSublevelIsotopyFamily_le_neg_eta_of_deep {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ R₁' η : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -20330,7 +20344,7 @@ theorem morseSublevelIsotopyFamily_le_neg_eta_of_deep {m k : ℕ} (hk : k ≤ m 
     have hneg : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk y‖ ^ 2 := by
       rw [morseNormalForm_split] at hNle
       have h : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 - 2 * ε - 2 * η := by nlinarith
-      nlinarith [h, hη]
+      nlinarith only [h, hη]
     have hround : morseRoundedFunction hk c ε r δ R₀ R₁ data x = morseNormalForm hk c y + ε := by
       have hmod := morseRoundedFunction_eq_model_of_mem_closedBall hk c ε r δ R₀ R₁ data ⟨y, hy, hxy⟩
       have hmod' : CellAttachment.modelRoundedFunction hk c ε r δ R₀ R₁ (data.χ.symm x) =
@@ -20343,10 +20357,10 @@ theorem morseSublevelIsotopyFamily_le_neg_eta_of_deep {m k : ℕ} (hk : k ≤ m 
     have hF0le : morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 0 x ≤ -η := by
       dsimp [morseSublevelIsotopyFamily]
       rw [hround]
-      nlinarith [hNle]
+      nlinarith only [hNle]
     have hF1le : morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 1 x ≤ -η := by
       dsimp [morseSublevelIsotopyFamily]
-      nlinarith [hx, hε]
+      nlinarith only [hx, hε]
     have hFs : morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data s x =
         (1 - s) * morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 0 x +
           s * morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 1 x := by
@@ -20361,10 +20375,10 @@ theorem morseSublevelIsotopyFamily_le_neg_eta_of_deep {m k : ℕ} (hk : k ≤ m 
     have hF0le : morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 0 x ≤ -η := by
       dsimp [morseSublevelIsotopyFamily]
       rw [hround]
-      nlinarith [hx]
+      nlinarith only [hx]
     have hF1le : morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 1 x ≤ -η := by
       dsimp [morseSublevelIsotopyFamily]
-      nlinarith [hx, hε]
+      nlinarith only [hx, hε]
     have hFs : morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data s x =
         (1 - s) * morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 0 x +
           s * morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 1 x := by
@@ -20404,12 +20418,16 @@ theorem morseSublevelIsotopyFamily_sign_deep {m k : ℕ} (hk : k ≤ m + 1)
       morseSublevelIsotopyFamily hk c ε r δ R₀ R₁ data 1 x ≤ 0) := by
   have hη0 : 0 ≤ η := by
     have hpos : 0 < r ^ 2 + δ := by positivity
-    nlinarith [hη, hpos]
+    nlinarith only [hη, hpos]
   have h0 := morseSublevelIsotopyFamily_le_neg_eta_of_deep hk c ε r δ R₀ R₁ R₁' η data
     hε hδ hR₁₂ hR₁₂R hη hx 0 (by norm_num)
   have h1 := morseSublevelIsotopyFamily_le_neg_eta_of_deep hk c ε r δ R₀ R₁ R₁' η data
     hε hδ hR₁₂ hR₁₂R hη hx 1 (by norm_num)
-  constructor <;> intro _ <;> nlinarith [hη0]
+  constructor
+  · intro _
+    exact h1.trans (neg_nonpos.mpr hη0)
+  · intro _
+    exact h0.trans (neg_nonpos.mpr hη0)
 
 end ManifoldCellAttachment
 

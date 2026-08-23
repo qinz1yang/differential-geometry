@@ -17,14 +17,11 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -305,7 +302,7 @@ theorem tensorInnerPointwise_slotΛ_le
 def gInvDiffSlotApplied (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (W : TensorRSSpace 0 (s + 1) I x) : TensorRSSpace 0 (s+1) I x :=
   TensorRSSpace.ofCLM ((slotInsertEndoFib (s+1) 0 x
-    (metricComparisonDiffEndo (I := I) g₀ g₁ x)).comp
+    (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from W))
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
@@ -323,9 +320,9 @@ theorem tensorInnerPointwise_gInvDiffSlot_le
       ≤ (δ / (1 - δ)) * tensorInnerPointwise g₀ 0 (s+1) x
           (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) := by
   obtain ⟨e, bse, hbse, horth⟩ := exists_orthoFrame_basis_E (I := I) (M := M) g₀ x
-  exact tensorInnerPointwise_slotΛ_le g₀ s x (metricComparisonDiffEndo (I := I) g₀ g₁ x)
-    (gInvDiffRaisedEndo_g0_self_adjoint (I := I) g₀ g₁ x)
-    (fun v => gInvDiffRaisedEndo_inner_self_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v)
+  exact tensorInnerPointwise_slotΛ_le g₀ s x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
+    (metricComparisonDifferenceEndomorphism_g0_self_adjoint (I := I) g₀ g₁ x)
+    (fun v => metricComparisonDifferenceEndomorphism_inner_self_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v)
     W e bse hbse horth
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
@@ -587,7 +584,7 @@ private theorem inner_slotAt_le
 def gInvDiffSlotAt (g₀ g₁ : SmoothRiemannianMetric I M) (r : ℕ) (j : Fin r) (x : M)
     (W : TensorRSSpace 0 r I x) : TensorRSSpace 0 r I x :=
   TensorRSSpace.ofCLM
-    ((slotInsertEndoFib r j x (metricComparisonDiffEndo (I := I) g₀ g₁ x)).comp
+    ((slotInsertEndoFib r j x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W))
 
 private noncomputable def negDiffSlotApplied
@@ -595,7 +592,7 @@ private noncomputable def negDiffSlotApplied
     (W : TensorRSSpace 0 (s + 1) I x) : TensorRSSpace 0 (s + 1) I x :=
   TensorRSSpace.ofCLM
     ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
-        (-metricComparisonDiffEndo (I := I) g₀ g₁ x)).comp
+        (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -606,8 +603,8 @@ private theorem negDiffSlot_eq_neg
     negDiffSlotApplied (I := I) g₀ g₁ s x W =
       -gInvDiffSlotApplied (I := I) g₀ g₁ s x W := by
   rw [negDiffSlotApplied, gInvDiffSlotApplied,
-    show (-metricComparisonDiffEndo (I := I) g₀ g₁ x) =
-        (-1 : ℝ) • metricComparisonDiffEndo (I := I) g₀ g₁ x from
+    show (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) =
+        (-1 : ℝ) • metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x from
       (neg_one_smul ℝ _).symm,
     slotInsertEndoFib_smul_left (I := I) (M := M) (s + 1) 0 x,
     neg_one_smul, ContinuousLinearMap.neg_comp]
@@ -629,10 +626,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 private theorem negDiffEndo_adjoint
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (a b : TangentSpace I x) :
-    g₀.inner x ((-metricComparisonDiffEndo (I := I) g₀ g₁ x) a) b =
-      g₀.inner x a ((-metricComparisonDiffEndo (I := I) g₀ g₁ x) b) := by
+    g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) a) b =
+      g₀.inner x a ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) b) := by
   simp only [ContinuousLinearMap.neg_apply, map_neg]
-  rw [gInvDiffRaisedEndo_g0_self_adjoint (I := I) g₀ g₁ x a b]
+  rw [metricComparisonDifferenceEndomorphism_g0_self_adjoint (I := I) g₀ g₁ x a b]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -643,10 +640,10 @@ private theorem negDiffEndo_le
       g₁.inner y v w = g₀.inner y v w + h y v w)
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ) (hδ : metricCauchySchwarzBound (I := I) g₀ h δ)
     (x : M) (v : TangentSpace I x) :
-    g₀.inner x ((-metricComparisonDiffEndo (I := I) g₀ g₁ x) v) v ≤
+    g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) v) v ≤
       (δ / (1 - δ)) * g₀.inner x v v := by
   rw [ContinuousLinearMap.neg_apply, map_neg]
-  have hbnd := abs_inner_gInvDiffRaisedEndo_le
+  have hbnd := abs_inner_metricComparisonDifferenceEndomorphism_le
     (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v v
   have hv_nn : 0 ≤ g₀.inner x v v :=
     metric_inner_self_nonneg (I := I) (M := M) g₀ x v
@@ -654,8 +651,8 @@ private theorem negDiffEndo_le
       g₀.inner x v v := by
     rw [← Real.sqrt_mul hv_nn, Real.sqrt_mul_self hv_nn]
   calc
-    -g₀.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x v) v
-        ≤ |g₀.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x v) v| := neg_le_abs _
+    -g₀.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v) v
+        ≤ |g₀.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v) v| := neg_le_abs _
     _ ≤ (δ / (1 - δ)) *
         (Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x v v)) := hbnd
     _ = (δ / (1 - δ)) * g₀.inner x v v := by rw [hsq]
@@ -676,7 +673,7 @@ theorem negDiffSlot_point_le
         (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) := by
   obtain ⟨e, bse, hbse, horth⟩ := exists_orthoFrame_basis_E (I := I) (M := M) g₀ x
   have hslot := tensorInnerPointwise_slotΛ_le g₀ s x
-    (-metricComparisonDiffEndo (I := I) g₀ g₁ x)
+    (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
     (negDiffEndo_adjoint (I := I) g₀ g₁ x)
     (fun v => negDiffEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v)
     W e bse hbse horth
@@ -716,7 +713,7 @@ private noncomputable def negDiffSlotAt
     (W : TensorRSSpace 0 r I x) : TensorRSSpace 0 r I x :=
   TensorRSSpace.ofCLM
     ((slotInsertEndoFib (I := I) (M := M) r j x
-        (-metricComparisonDiffEndo (I := I) g₀ g₁ x)).comp
+        (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -727,8 +724,8 @@ private theorem negSlotAt_model
     TensorRSSpace.toModel (negDiffSlotAt (I := I) g₀ g₁ r j x W) =
       -TensorRSSpace.toModel (gInvDiffSlotAt (I := I) g₀ g₁ r j x W) := by
   rw [negDiffSlotAt, gInvDiffSlotAt,
-    show (-metricComparisonDiffEndo (I := I) g₀ g₁ x) =
-        (-1 : ℝ) • metricComparisonDiffEndo (I := I) g₀ g₁ x from
+    show (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) =
+        (-1 : ℝ) • metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x from
       (neg_one_smul ℝ _).symm,
     slotInsertEndoFib_smul_left (I := I) (M := M) r j x,
     neg_one_smul, ContinuousLinearMap.neg_comp]
@@ -750,7 +747,7 @@ theorem negDiffSlotAt_le
         (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) := by
   obtain ⟨e, bse, hbse, horth⟩ := exists_orthoFrame_basis_E (I := I) (M := M) g₀ x
   have hslot := inner_slotAt_le (I := I) (M := M) g₀ r j x
-    (-metricComparisonDiffEndo (I := I) g₀ g₁ x)
+    (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
     (negDiffEndo_adjoint (I := I) g₀ g₁ x)
     (fun v ↦ negDiffEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v)
     W e bse hbse horth

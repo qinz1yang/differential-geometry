@@ -42,16 +42,14 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     {u_seq : ℕ → EuclN → ℝ}
-    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (hu_seq_cs : ∀ n, HasCompactSupport (u_seq n)) :
+    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n)) :
     ∀ n,
       (∫ y in Metric.cthickening |h| K_0,
           (∑ i : Fin (Module.finrank ℝ E),
@@ -74,14 +72,13 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
         ∂(volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   intro n
   obtain ⟨h_v_smooth, h_v_cs⟩ :=
-    standardNirenbergTest_smooth_seq hη hη_supp k hh hh_le
-      hu_seq_smooth hu_seq_cs n
+    standardNirenbergTest_smooth_seq hη hη_supp k hh hu_seq_smooth n
   have h_v_supp : tsupport (standardNirenbergTest (d := Module.finrank ℝ E)
       k h η (u_seq n)) ⊆ Metric.cthickening |h| K_0 :=
-    standardNirenbergTest_tsupport_in_thickening (E := E) k h hη_supp
+    standardNirenbergTest_tsupport_in_thickening (E := E) k h
       hη_supp_in_K_0 (u_seq n)
   set ψ : EuclN → ℝ := standardNirenbergTest (d := Module.finrank ℝ E)
     k h η (u_seq n) with hψ_def
@@ -158,11 +155,9 @@ theorem variational_identity_at_v_h
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (_hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (weak_partial_v_h : Fin (Module.finrank ℝ E) → EuclN → ℝ)
@@ -174,7 +169,6 @@ theorem variational_identity_at_v_h
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
     (u_seq : ℕ → EuclN → ℝ)
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (hu_seq_cs : ∀ n, HasCompactSupport (u_seq n))
     (h_v_seq_supp : ∀ n,
       tsupport (standardNirenbergTest (d := Module.finrank ℝ E)
         k h η (u_seq n)) ⊆ Metric.cthickening |h| K_0)
@@ -209,18 +203,16 @@ theorem variational_identity_at_v_h
         ∂(volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
-    cthickening_K_0_isCompact (E := E) hK_0_compact hh_le
+    cthickening_K_0_isCompact (E := E) hK_0_compact
   set v_h : EuclN → ℝ := standardNirenbergTest (d := Module.finrank ℝ E)
     k h η D.u_chart with hvh_def
   set v_h_seq : ℕ → EuclN → ℝ := fun n =>
     standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n)
     with hvhseq_def
   have h_v_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (v_h_seq n) := fun n =>
-    (standardNirenbergTest_smooth_seq hη hη_supp k hh hh_le
-      hu_seq_smooth hu_seq_cs n).1
+    (standardNirenbergTest_smooth_seq hη hη_supp k hh hu_seq_smooth n).1
   have h_v_seq_cs : ∀ n, HasCompactSupport (v_h_seq n) := fun n =>
-    (standardNirenbergTest_smooth_seq hη hη_supp k hh hh_le
-      hu_seq_smooth hu_seq_cs n).2
+    (standardNirenbergTest_smooth_seq hη hη_supp k hh hu_seq_smooth n).2
   exact chart_bilinear_identity_h1_0 (I := I) (M := M) D
     h_thick_compact h_thick v_h weak_partial_v_h hv_h_lp hv_h_grad_lp
     v_h_seq h_v_seq_smooth h_v_seq_cs h_v_seq_supp h_v_seq_l2
@@ -235,7 +227,7 @@ theorem variational_identity_v_h_expanded
     {K_0 : Set EuclN}
     {η : EuclN → ℝ}
     (k : Fin (Module.finrank ℝ E))
-    {_R₀ : ℝ} {h : ℝ}
+    {h : ℝ}
     (weak_partial_v_h : Fin (Module.finrank ℝ E) → EuclN → ℝ)
     (h_var_id_at_v_h :
       (∫ y in Metric.cthickening |h| K_0,
@@ -350,14 +342,10 @@ theorem variational_identity_after_ibp
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (_hη : ContDiff ℝ (⊤ : ℕ∞) η) (_hη_supp : HasCompactSupport η)
-    (_hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {K_0 : Set EuclN}
+    {η : EuclN → ℝ}
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (_hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    (_h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
+    {h : ℝ}
     (h_expanded :
       (∫ y in Metric.cthickening |h| K_0,
           (∑ i : Fin (Module.finrank ℝ E),
@@ -572,14 +560,10 @@ theorem variational_identity_after_product_rule
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (_hη : ContDiff ℝ (⊤ : ℕ∞) η) (_hη_supp : HasCompactSupport η)
-    (_hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {K_0 : Set EuclN}
+    {η : EuclN → ℝ}
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (_hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    (_h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
+    {h : ℝ}
     (h_after_ibp :
       -(∫ y in Metric.cthickening |h| K_0,
           (∑ i : Fin (Module.finrank ℝ E),

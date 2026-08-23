@@ -64,6 +64,7 @@ def componentRS
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) : Real :=
   component0S (I := I) basis (T (basisTensor0S (I := I) basis upper)) lower
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem componentRS_apply
     (T : TensorRSSpace r s I x)
@@ -73,6 +74,7 @@ theorem componentRS_apply
         (fun a => basis (lower a)) :=
   rfl
 
+omit [DecidableEq Idx] in
 theorem componentRS_congr_slots
     (T : TensorRSSpace r s I x)
     {upper upper' : Fin r -> Idx} {lower lower' : Fin s -> Idx}
@@ -81,6 +83,7 @@ theorem componentRS_congr_slots
       componentRS (I := I) basis T upper' lower' := by
   rw [hu, hl]
 
+omit [DecidableEq Idx] in
 private theorem componentRS_expand_input
     (T : TensorRSSpace r s I x) (input : Tensor0SSpace r I x)
     (lower : Fin s -> Idx) :
@@ -116,12 +119,14 @@ private theorem componentRS_expand_input
           rw [map_sum]
           simp [map_smul]
 
+omit [DecidableEq Idx] in
 theorem extRS_basis
     {A B : TensorRSSpace r s I x}
     (h : ∀ upper : Fin r -> Idx, ∀ lower : Fin s -> Idx,
       componentRS (I := I) basis A upper lower =
         componentRS (I := I) basis B upper lower) :
     A = B := by
+  classical
   have key : ∀ input : Tensor0SSpace r I x, A input = B input := by
     intro input
     apply ext0S_basis (I := I) basis

@@ -1250,7 +1250,10 @@ theorem eContDiffHolderGaugeOn_slice_le
   · intro j hj x hx
     have hp : parabolicPoint t x ∈ parabolicCylinder J (Set.univ : Set V) :=
       ⟨ht, Set.mem_univ x⟩
-    exact parabolicSpatialJet_norm_le h hj hp
+    exact parabolicSpatialJet_norm_le
+      (alpha := alpha) (C := C)
+      (Q := parabolicCylinder J (Set.univ : Set V)) (u := u)
+      h (j := j) hj (p := parabolicPoint t x) hp
   · have hpar := parabolicSpatialJet_holderWith_restrict h
     have hslice := holderWith_slice_of_parabolicCylinder
       (f := fun q x => parabolicSpatialJet 2 u (parabolicPoint q x)) hpar ht

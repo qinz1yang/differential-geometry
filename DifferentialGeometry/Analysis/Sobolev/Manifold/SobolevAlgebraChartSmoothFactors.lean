@@ -299,7 +299,7 @@ lemma smoothPushed_hasCompactSupport
   exact hasCompactSupport_smoothExtension (I := I) (M := M) α hpou_u_supp
 
 lemma leftSmoothFactor_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [I.Boundaryless]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hb_supp : tsupport b ⊆ (chartAt H α).source) :
@@ -357,7 +357,6 @@ lemma tsupport_smoothPushed_subset_chartTarget
 
 lemma leftSmoothFactor_memW1p
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hb_supp : tsupport b ⊆ (chartAt H α).source)
@@ -380,7 +379,6 @@ lemma leftSmoothFactor_memW1p
 
 lemma smoothPushed_memW1p
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) p
@@ -519,7 +517,7 @@ lemma leftSmoothFactor_norm_le_of_bound
     exact huMax_nn
 
 lemma liftedPou_mul_leftSmoothFactor_eq_smoothPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) {b v : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1) :
@@ -544,8 +542,7 @@ lemma liftedPou_mul_leftSmoothFactor_eq_smoothPushed
     rw [hb_x]; ring
 
 lemma smoothPushed_mul_leftSmoothFactor_eq_smoothExtension_uv
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) {b u v : M → ℝ}
+    [T2Space M] [SigmaCompactSpace M] (α : M) {b u v : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1) :
     (fun y : EuclN => smoothPushed (I := I) (M := M) α u y *

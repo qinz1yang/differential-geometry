@@ -38,7 +38,6 @@ open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -208,7 +207,6 @@ theorem chartVelocity_converges_at_finite_endpoint
     {u u' : ℝ → E} {b K₁ : ℝ} {S : Set E}
     (hS_compact : IsCompact S)
     (hS_sub : S ⊆ interior (extChartAt I α).target)
-    (_hu_deriv : ∀ s : ℝ, s < b → HasDerivAt u (u' s) s)
     (hu'_deriv : ∀ s : ℝ, s < b →
       HasDerivAt u'
         (- chartChristoffelContraction (I := I) g α (u' s) (u' s) (u s)) s)
@@ -252,7 +250,6 @@ theorem chartVelocity_converges_at_finite_endpoint_Ioo
     {u u' : ℝ → E} {a b K₁ : ℝ} {S : Set E} (hab : a < b)
     (hS_compact : IsCompact S)
     (hS_sub : S ⊆ interior (extChartAt I α).target)
-    (_hu_deriv : ∀ s : ℝ, s ∈ Set.Ioo a b → HasDerivAt u (u' s) s)
     (hu'_deriv : ∀ s : ℝ, s ∈ Set.Ioo a b →
       HasDerivAt u'
         (- chartChristoffelContraction (I := I) g α (u' s) (u' s) (u s)) s)

@@ -181,7 +181,7 @@ theorem inverseMetric_derivative_row_eq
     (gInvDt : Real -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {u : Set M}
-    (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
+    (hdt : InvMetricDerivLocal (D := D) gInv gInvDt u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (hunique : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real))
@@ -219,7 +219,7 @@ theorem inverseMetric_derivative_row_eq
         (s := D.carrier) (x := (t : Real))
         (fun a _ha =>
           by
-            exact (hdt t x i a).mul
+            exact (hdt t x hx i a).mul
               (metricCompInFrame_hasDerivWithinAt (I := I) S hS frame t x a j)))
   have hconst :
       HasDerivWithinAt lhs 0 D.carrier (t : Real) := by
@@ -944,7 +944,6 @@ theorem invCovZeroLocal
       (∑ a : Idx, Γ a l * U k a) = 0
   rw [hDU]
   ring
-
 
 end Components
 

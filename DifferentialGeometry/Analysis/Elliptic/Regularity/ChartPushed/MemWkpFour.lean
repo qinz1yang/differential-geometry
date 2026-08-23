@@ -73,7 +73,7 @@ private lemma twice_diff_identities_at
     base_f_chart_memWkp_two_two
       (I := I) (M := M) g α hu_h
   have h_chosenFChartDeriv_memW1p :=
-    chosenFChartDeriv_memW1p_truly_unconditional
+    chosenFChartDeriv_memW1p
       (I := I) (M := M) g α hu_h l₁ h_base_f_chart_memWkp22
   exact twice_differentiated_variational_identity_holds
     (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p
@@ -99,7 +99,7 @@ theorem chartSideH2kBridge_two_of_laplacianDomainPow_two
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
-    ChartSideH2kBridge (I := I) (M := M) g 2
+    ChartSideH2kBridge (I := I) (M := M) 2
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :=
   chartSideH2kBridge_two_of_twice_diff_identities
@@ -111,11 +111,11 @@ theorem laplacianDomainPow_memWkpChart_four_two_of_laplacianDomainPow_two
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ :=
   laplacianDomainPow_memWkpChart_four_two_of_twice_diff_identities
@@ -127,10 +127,10 @@ theorem chartSideH4Bridge_of_laplacianDomainPow_two
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge
-      (I := I) (M := M) g
+      (I := I) (M := M)
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :=
-  chartSideH4Bridge_of_chartSideH2kBridge_two (I := I) (M := M) g
+  chartSideH4Bridge_of_chartSideH2kBridge_two (I := I) (M := M)
     (chartSideH2kBridge_two_of_laplacianDomainPow_two
       (I := I) (M := M) g hu_h)
 

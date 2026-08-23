@@ -36,7 +36,6 @@ open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev.Chart
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
-open DifferentialGeometry.Analysis.Spectral
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -410,7 +409,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le
   refine le_trans (eLpNorm_mono_measure _ (Measure.restrict_le_self)) ?_
   refine le_trans (eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) 0 2 Ω _) ?_
   exact le_trans (wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) 0
-    hΩ_open _ (l (Fin.last m))) h_atom_le
+    _ (l (Fin.last m))) h_atom_le
 
 end LayerBoundsUnconditional
 
@@ -431,9 +430,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le
         (chartTargetEuclid (I := I) (M := M) α))
     (h_prev : MemWkp (d := Module.finrank ℝ E) 1 2 fChartEffPrev
       (chartTargetEuclid (I := I) (M := M) α))
-    (_h_prev_zero : ∀ᵐ y ∂((volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)),
-      y ∉ chartPouKernel (I := I) (M := M) α → fChartEffPrev y = 0) :
+    :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm (fun y => eigenvectorChartRHSDiffNumerator (I := I) (M := M)
           g r s i α P₀ m l fChartEffPrev y) 2

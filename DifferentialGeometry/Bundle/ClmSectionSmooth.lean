@@ -29,9 +29,8 @@ theorem cotangentCov_clmSection_smooth_aux
     {V₂ : M → Type*} [∀ x, AddCommGroup (V₂ x)] [∀ x, Module ℝ (V₂ x)]
     [TopologicalSpace (TotalSpace F₂ V₂)] [∀ x, TopologicalSpace (V₂ x)]
     [FiberBundle F₂ V₂] [VectorBundle ℝ F₂ V₂]
-    [ContMDiffVectorBundle ∞ F₂ V₂ I]
     [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul ℝ (V₂ x)]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (φ : ∀ x : M, TangentSpace I x →L[ℝ] V₂ x)
     (h : ∀ (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       ContMDiff I (I.prod 𝓘(ℝ, F₂)) ∞

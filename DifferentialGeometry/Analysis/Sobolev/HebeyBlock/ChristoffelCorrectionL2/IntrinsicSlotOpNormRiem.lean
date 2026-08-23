@@ -283,10 +283,10 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆ (chartAt H α).source := by
     intro x hx; exact chartAtlasPOU_isSubordinate (I := I) (M := M) α hx
   obtain ⟨Cto, hCto_pos, hCto_bound⟩ :=
-    tensorRSChartFiberToModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   obtain ⟨Cfrom, hCfrom_pos, hCfrom_bound⟩ :=
-    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   obtain ⟨Cprod, hCprod_nn, hCprod_bound⟩ :=
     slotInputConjCLM_prod_norm_le_on_pouTsupport (I := I) (M := M) g r α
@@ -377,10 +377,10 @@ theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆ (chartAt H α).source := by
     intro x hx; exact chartAtlasPOU_isSubordinate (I := I) (M := M) α hx
   obtain ⟨Cto, hCto_pos, hCto_bound⟩ :=
-    tensorRSChartFiberToModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   obtain ⟨Cfrom, hCfrom_pos, hCfrom_bound⟩ :=
-    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   obtain ⟨Cprod, hCprod_nn, hCprod_bound⟩ :=
     slotOutputConjCLM_prod_norm_le_on_pouTsupport (I := I) (M := M) g s α

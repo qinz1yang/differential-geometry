@@ -207,17 +207,8 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
   (α : M) (P₀ : TensorCompIdx (E := E) r s)
 
-open DifferentialGeometry.Analysis.Spectral in
-def eigenvectorChartComponentFun_unconditional : EuclN → ℝ :=
-  fun y =>
-    ((tensorL2ChartComponent (I := I) (M := M) g r s
-        (tensorResolventEigenbasisVec (I := I) (M := M)
-          (tensorResolventL2_isCompactOperator (I := I) (M := M)
-            g r s) i) α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
-
 private def rhsTerm1 : EuclN → ℝ :=
-  eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀
+  eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀
 
 private def rhsTerm2 : EuclN → ℝ :=
   fun y => ∑ P : TensorCompIdx (E := E) r (s + 1),
@@ -269,7 +260,7 @@ private lemma eigenvectorChartRHS_eq_smul_bracket :
   simp only [eigenvectorChartRHS, rhsBracket,
     rhsTerm1, rhsTerm2, rhsTerm3,
     rhsTerm4, rhsTerm5, rhsTerm6,
-    rhsTerm7, eigenvectorChartComponentFun_unconditional,
+    rhsTerm7, eigenvectorChartComponentFun,
     Pi.smul_apply, Pi.sub_apply, Pi.add_apply, smul_eq_mul]
 
 end BracketTermsUnconditional
@@ -285,7 +276,7 @@ private lemma rhsTerm1_memLp_unconditional :
     MemLp (rhsTerm1 (I := I) (M := M) g r s i α P₀) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
-  unfold rhsTerm1 eigenvectorChartComponentFun_unconditional
+  unfold rhsTerm1 eigenvectorChartComponentFun
   exact tensorL2ChartComponent_memLp_weighted (I := I) (M := M) g r s
     (tensorResolventEigenbasisVec (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
@@ -320,7 +311,7 @@ private lemma rhsTerm2_summand_memLp_unconditional
     (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
     (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
     (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
-    (crossLeftLimitComponent_memLp_weighted_unconditional (I := I) (M := M)
+    (crossLeftLimitComponent_memLp_weighted (I := I) (M := M)
       g r s i α P)
     h_aezero
 
@@ -365,7 +356,7 @@ private lemma rhsTerm3_summand_memLp_unconditional
     (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
     (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
     (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
-    (crossRightLimitComponent_memLp_weighted_unconditional (I := I) (M := M)
+    (crossRightLimitComponent_memLp_weighted (I := I) (M := M)
       g r s i α P)
     h_aezero
 
@@ -387,7 +378,7 @@ private lemma rhsTerm4_memLp_unconditional :
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   rw [rhsTerm4]
-  exact covPrincipalRotationCoeffLimit_memLp_weighted_unconditional
+  exact covPrincipalRotationCoeffLimit_memLp_weighted
     (I := I) (M := M) g r s i α P₀
 
 omit [CompleteSpace E] in
@@ -396,7 +387,7 @@ private lemma rhsTerm5_memLp_unconditional :
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   rw [rhsTerm5]
-  exact covLowerOrderRotationValueCoeffLimit_memLp_weighted_unconditional
+  exact covLowerOrderRotationValueCoeffLimit_memLp_weighted
     (I := I) (M := M) g r s i α P₀
 
 omit [CompleteSpace E] in
@@ -409,7 +400,7 @@ private lemma weightedGradCoeffDivLimit_sum_memLp_unconditional :
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   exact memLp_finset_sum _
-    (fun l _ => weightedGradCoeffDivLimit_memLp_weighted_unconditional
+    (fun l _ => weightedGradCoeffDivLimit_memLp_weighted
       (I := I) (M := M) g r s i α P₀ l)
 
 omit [CompleteSpace E] in
@@ -422,7 +413,7 @@ private lemma weightedGradCoeffDivLimit_sum_ae_zero_off_chartPouKernel_unconditi
             g r s i α P₀ l y) = 0 :=
   Filter.Eventually.of_forall (fun _y hy =>
     Finset.sum_eq_zero (fun l _ =>
-      weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+      weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ l hy))
 
 omit [CompleteSpace E] in
@@ -490,7 +481,7 @@ private def aggrUchart
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) : ℝ≥0∞ :=
-  eLpNorm (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+  eLpNorm (eigenvectorChartComponentFun (I := I) (M := M)
       g r s i α P₀) 2
     ((chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α))
@@ -686,7 +677,6 @@ private lemma rhsTerm2_eLpNorm_le_uniform_unconditional :
           g r (s + 1) α x.1 x.2).mul
         (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2))
       (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
-      (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
       (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
     refine ⟨C, hC_nn, fun i => ?_⟩
     have h_aezero :
@@ -721,7 +711,7 @@ private lemma rhsTerm2_eLpNorm_le_uniform_unconditional :
         (fun P _ => zero_le _) (Finset.mem_univ x.1)
     rw [hμw_def, hF_def]
     refine le_trans (hC_bd _
-      (crossLeftLimitComponent_memLp_weighted_unconditional (I := I) (M := M)
+      (crossLeftLimitComponent_memLp_weighted (I := I) (M := M)
         g r s i α x.1) h_aezero) ?_
     gcongr
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_sum_le_const_mul_aggregate_uniform
@@ -780,7 +770,6 @@ private lemma rhsTerm3_eLpNorm_le_uniform_unconditional :
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r s α x.1 x.2).mul
         (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2))
       (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
-      (cutoffChartKernelEuclid_measurableSet (I := I) (M := M) α)
       (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
     refine ⟨C, hC_nn, fun i => ?_⟩
     have h_aezero :
@@ -815,7 +804,7 @@ private lemma rhsTerm3_eLpNorm_le_uniform_unconditional :
         (fun P _ => zero_le _) (Finset.mem_univ x.1)
     rw [hμw_def, hF_def]
     refine le_trans (hC_bd _
-      (crossRightLimitComponent_memLp_weighted_unconditional (I := I) (M := M)
+      (crossRightLimitComponent_memLp_weighted (I := I) (M := M)
         g r s i α x.1) h_aezero) ?_
     gcongr
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_sum_le_const_mul_aggregate_uniform
@@ -859,7 +848,7 @@ private lemma rhsTerm5_eLpNorm_le_uniform_unconditional :
           ≤ ENNReal.ofReal C *
             rhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ := by
   obtain ⟨C, hC_nn, hC_bd⟩ :=
-    eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
+    eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
       (I := I) (M := M) g r s α P₀
   refine ⟨2 * C, by positivity, fun i => ?_⟩
   rw [rhsTerm5]
@@ -932,7 +921,7 @@ private lemma weightedGradCoeffDivLimit_sum_eLpNorm_le_uniform_unconditional :
       MemLp (F l i) 2 μw := by
     intro l i
     rw [hμw_def, hF_def]
-    exact weightedGradCoeffDivLimit_memLp_weighted_unconditional
+    exact weightedGradCoeffDivLimit_memLp_weighted
       (I := I) (M := M) g r s i α P₀ l
   have hF_bd : ∀ l : Fin (Module.finrank ℝ E), ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -941,7 +930,7 @@ private lemma weightedGradCoeffDivLimit_sum_eLpNorm_le_uniform_unconditional :
             rhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ := by
     intro l
     obtain ⟨C, hC_nn, hC_bd⟩ :=
-      eLpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
+      eLpNorm_weightedGradCoeffDivLimit_le_uniform
         (I := I) (M := M) g r s α P₀ l
     refine ⟨2 * C, by positivity, fun i => ?_⟩
     rw [hμw_def, hF_def]
@@ -1013,7 +1002,6 @@ private lemma rhsTerm6_eLpNorm_le_uniform_unconditional :
     (I := I) (M := M) g α
     (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     (chartPouKernel_isCompact (I := I) (M := M) α)
-    (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
   obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
     weightedGradCoeffDivLimit_sum_eLpNorm_le_uniform_unconditional
@@ -1063,7 +1051,6 @@ private lemma rhsTerm7_eLpNorm_le_uniform_unconditional :
     (I := I) (M := M) g α
     (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     (chartPouKernel_isCompact (I := I) (M := M) α)
-    (chartPouKernel_measurableSet (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
   obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
     eLpNorm_crossRightGradCoeffDivLimit_le_uniform
@@ -1237,7 +1224,7 @@ section MainBoundUnconditional
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
-theorem eigenvectorChartRHS_eLpNorm_le_uniform_unconditional
+theorem eigenvectorChartRHS_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -1247,7 +1234,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_uniform_unconditional
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
-            (eLpNorm (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            (eLpNorm (eigenvectorChartComponentFun (I := I) (M := M)
                   g r s i α P₀) 2
                 ((chartPulledWeightedMeasure (I := I) g α).restrict
                   (chartTargetEuclid (I := I) (M := M) α))

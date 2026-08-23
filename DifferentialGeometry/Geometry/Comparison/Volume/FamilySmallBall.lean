@@ -39,7 +39,7 @@ theorem family_vol_low
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (_hG : MetricFamilySmoothOn (I := I) (M := M)
       (RealTimeInterval.closedOpen 0 omega h0omega) g_fam)
-    {rho : Real} (_hrho : 0 < rho) :
+    {rho : Real} :
     ∃ tau kappa : Real, 0 < tau ∧ tau < omega ∧ 0 < kappa ∧
       ∀ (t : RealTimeInterval.FlowTime (RealTimeInterval.closedOpen 0 omega h0omega)),
         (t : Real) ≤ tau →

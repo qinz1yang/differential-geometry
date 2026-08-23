@@ -71,7 +71,6 @@ def pouCoeffPushed
 
 omit [IsManifold I ∞ M] in
 theorem crossChart_pushed_eq_pou_mul_comp_on_overlap
-    [I.Boundaryless]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (u : M → ℝ)
     {y : EuclN} (hy : y ∈ chartOverlapEuclid (I := I) (M := M) β α) :
     chartPushed (I := I) (M := M) ρ β u y =
@@ -117,7 +116,6 @@ theorem crossChart_pushed_eq_pou_mul_comp_on_overlap
   rw [h_lhs, h_pou, h_comp]
 
 lemma pouCoeffPushed_contDiffOn
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (β : M) :
     ContDiffOn ℝ ∞ (pouCoeffPushed (I := I) (M := M) ρ β)
       (chartTargetEuclid (I := I) (M := M) β) := by
@@ -147,9 +145,7 @@ lemma pouCoeffPushed_contDiffOn
 
 
 theorem crossChart_transfer_bound
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (k : ℕ)
+    [I.Boundaryless] (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (k : ℕ)
     {K_M : Set M} (hK_compact : IsCompact K_M)
     (hK_β : K_M ⊆ (chartAt H β).source)
     (hK_α : K_M ⊆ (chartAt H α).source) :
@@ -462,9 +458,7 @@ theorem crossChart_transfer_bound
     _ ≤ C * S := h_RHS_le
 
 theorem crossChart_transfer_bound_const
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (k : ℕ)
+    [I.Boundaryless] (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (k : ℕ)
     {K_M : Set M} (hK_compact : IsCompact K_M)
     (hK_β : K_M ⊆ (chartAt H β).source)
     (hK_α : K_M ⊆ (chartAt H α).source) :

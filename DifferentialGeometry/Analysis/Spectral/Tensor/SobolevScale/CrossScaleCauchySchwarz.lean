@@ -21,6 +21,73 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem abs_sum_sameScale_le
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s)) (σ : ℝ)
+    (f h : TensorEigenIdx (I := I) (M := M) g r s → ℝ) :
+    |∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (f i * h i)| ≤
+      Real.sqrt (∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i σ * (f i) ^ 2) *
+      Real.sqrt (∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i σ * (h i) ^ 2) := by
+  let p : TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
+    fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) * f i
+  let q : TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
+    fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) * h i
+  have hp : ∀ i, p i ^ 2 =
+      tensorSobolevWeight (I := I) (M := M) i σ * (f i) ^ 2 := by
+    intro i
+    dsimp only [p]
+    rw [mul_pow,
+      Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i σ)]
+  have hq : ∀ i, q i ^ 2 =
+      tensorSobolevWeight (I := I) (M := M) i σ * (h i) ^ 2 := by
+    intro i
+    dsimp only [q]
+    rw [mul_pow,
+      Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i σ)]
+  have hpq : ∀ i,
+      tensorSobolevWeight (I := I) (M := M) i σ * (f i * h i) = p i * q i := by
+    intro i
+    dsimp only [p, q]
+    have hsqrt := Real.mul_self_sqrt
+      (tensorSobolevWeight_nonneg (I := I) (M := M) i σ)
+    calc
+      _ = (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) *
+          Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ)) *
+            (f i * h i) := by rw [hsqrt]
+      _ = _ := by ring
+  have hpqsum : ∑ i ∈ S, p i * q i =
+      ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (f i * h i) :=
+    Finset.sum_congr rfl fun i _ => (hpq i).symm
+  have hpsum : ∑ i ∈ S, p i ^ 2 =
+      ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (f i) ^ 2 :=
+    Finset.sum_congr rfl fun i _ => hp i
+  have hqsum : ∑ i ∈ S, q i ^ 2 =
+      ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (h i) ^ 2 :=
+    Finset.sum_congr rfl fun i _ => hq i
+  have hpos := Real.sum_mul_le_sqrt_mul_sqrt S p q
+  have hneg := Real.sum_mul_le_sqrt_mul_sqrt S p (fun i => -q i)
+  have hpos' : ∑ i ∈ S,
+      tensorSobolevWeight (I := I) (M := M) i σ * (f i * h i) ≤
+        Real.sqrt (∑ i ∈ S,
+          tensorSobolevWeight (I := I) (M := M) i σ * (f i) ^ 2) *
+        Real.sqrt (∑ i ∈ S,
+          tensorSobolevWeight (I := I) (M := M) i σ * (h i) ^ 2) := by
+    simpa only [hpqsum, hpsum, hqsum] using hpos
+  have hneg' : -(Real.sqrt (∑ i ∈ S,
+      tensorSobolevWeight (I := I) (M := M) i σ * (f i) ^ 2) *
+        Real.sqrt (∑ i ∈ S,
+          tensorSobolevWeight (I := I) (M := M) i σ * (h i) ^ 2)) ≤
+      ∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i σ * (f i * h i) := by
+    have hneg'' : -(∑ i ∈ S, p i * q i) ≤
+        Real.sqrt (∑ i ∈ S, p i ^ 2) * Real.sqrt (∑ i ∈ S, q i ^ 2) := by
+      simpa only [mul_neg, Finset.sum_neg_distrib, neg_sq] using hneg
+    rw [hpqsum, hpsum, hqsum] at hneg''
+    linarith
+  exact (abs_le).2 ⟨hneg', hpos'⟩
+
+omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorSobolevWeight_eq_sqrt_succ_mul_sqrt_pred
     (i : TensorEigenIdx (I := I) (M := M) g r s) (σ : ℝ) :
     tensorSobolevWeight (I := I) (M := M) i σ =
@@ -135,8 +202,46 @@ theorem two_mul_sum_crossScale_le_eps
     have hcross : (sε * sA) * (sεinv * sB) = sA * sB := by
       calc (sε * sA) * (sεinv * sB) = (sε * sεinv) * (sA * sB) := by ring
         _ = sA * sB := by rw [hmix, one_mul]
-    nlinarith [hkey, hsqA, hsqB, hsqε, hsqεinv, hcross]
-  nlinarith [hle, hyoung]
+    nlinarith only [hkey, hsqA, hsqB, hsqε, hsqεinv, hcross]
+  nlinarith only [hle, hyoung]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem two_abs_cross_le_eps
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s)) (sigma : ℝ)
+    (f h : TensorEigenIdx (I := I) (M := M) g r s → ℝ) {epsilon : ℝ}
+    (hepsilon : 0 < epsilon) :
+    2 * |∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i sigma * (f i * h i)| ≤
+      epsilon * (∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i (sigma + 1) * (f i) ^ 2) +
+        epsilon⁻¹ * ∑ i ∈ S,
+          tensorSobolevWeight (I := I) (M := M) i (sigma - 1) * (h i) ^ 2 := by
+  let X : ℝ :=
+    ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i sigma * (f i * h i)
+  let Q : ℝ :=
+    epsilon * (∑ i ∈ S,
+      tensorSobolevWeight (I := I) (M := M) i (sigma + 1) * (f i) ^ 2) +
+      epsilon⁻¹ * ∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i (sigma - 1) * (h i) ^ 2
+  have hpos : 2 * X ≤ Q := by
+    simpa only [X, Q] using
+      two_mul_sum_crossScale_le_eps (I := I) (M := M) S sigma f h hepsilon
+  have hnegRaw :=
+    two_mul_sum_crossScale_le_eps (I := I) (M := M) S sigma f
+      (fun i => -h i) hepsilon
+  have hneg : -(2 * X) ≤ Q := by
+    simpa only [X, Q, mul_neg, Finset.sum_neg_distrib, neg_sq] using hnegRaw
+  have hneg' : -Q ≤ 2 * X := by linarith
+  have habs : |2 * X| ≤ Q := (abs_le).2 ⟨hneg', hpos⟩
+  calc
+    2 * |∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i sigma * (f i * h i)| =
+        |2 * X| := by
+          rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
+    _ ≤ Q := habs
+    _ = epsilon * (∑ i ∈ S,
+        tensorSobolevWeight (I := I) (M := M) i (sigma + 1) * (f i) ^ 2) +
+        epsilon⁻¹ * ∑ i ∈ S,
+          tensorSobolevWeight (I := I) (M := M) i (sigma - 1) * (h i) ^ 2 := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma sq_sum_sameScale_le
@@ -215,6 +320,147 @@ theorem two_mul_sum_sameScale_le_sqrt
   calc 2 * P ≤ 2 * (Real.sqrt A * Real.sqrt B) := by linarith [hP_le]
     _ ≤ 2 * (Real.sqrt A * c) := by linarith [hmono]
     _ = 2 * c * Real.sqrt A := by ring
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem two_mul_sum_ladder_le
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s)) (σ : ℝ)
+    (u fd fs f : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
+    {α β D ε : ℝ} (hD : 0 ≤ D) (hε : 0 < ε)
+    (hsplit : ∀ i ∈ S, f i = fd i + fs i)
+    (hladder :
+      Real.sqrt (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ - 1) * (fd i) ^ 2) ≤
+        α * Real.sqrt
+            (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (u i) ^ 2) +
+          β * Real.sqrt (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2))
+    (hstat : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (fs i) ^ 2 ≤ D ^ 2) :
+    2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * f i) ≤
+      (2 * α + ε) *
+          (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (u i) ^ 2) +
+        (β ^ 2 / ε) * (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2) +
+        2 * D * Real.sqrt (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2) := by
+  set A := ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (u i) ^ 2 with hAdef
+  set Eσ := ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2 with hEdef
+  set B := ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ - 1) * (fd i) ^ 2 with hBdef
+  have hA0 : 0 ≤ A :=
+    Finset.sum_nonneg (fun i _ =>
+      mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (σ + 1)) (sq_nonneg _))
+  have hE0 : 0 ≤ Eσ :=
+    Finset.sum_nonneg (fun i _ =>
+      mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i σ) (sq_nonneg _))
+  set sA := Real.sqrt A with hsAdef
+  set sE := Real.sqrt Eσ with hsEdef
+  have hsA0 : 0 ≤ sA := Real.sqrt_nonneg _
+  have hsE0 : 0 ≤ sE := Real.sqrt_nonneg _
+  have hsA2 : sA ^ 2 = A := Real.sq_sqrt hA0
+  have hsE2 : sE ^ 2 = Eσ := Real.sq_sqrt hE0
+  have hsum : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * f i) =
+      (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i)) +
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fs i) := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl (fun i hi => ?_)
+    rw [hsplit i hi]; ring
+  have hcross : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
+      sA * Real.sqrt B :=
+    le_trans (le_abs_self _) (abs_sum_crossScale_le (I := I) (M := M) S σ u fd)
+  have hstep : sA * Real.sqrt B ≤ sA * (α * sA + β * sE) :=
+    mul_le_mul_of_nonneg_left hladder hsA0
+  have hyoung : 2 * β * (sA * sE) ≤ ε * A + (β ^ 2 / ε) * Eσ := by
+    set sε := Real.sqrt ε with hsεdef
+    have hsεpos : 0 < sε := Real.sqrt_pos.mpr hε
+    have hsε2 : sε ^ 2 = ε := Real.sq_sqrt hε.le
+    have hexpand : (sε * sA - (β / sε) * sE) ^ 2 =
+        sε ^ 2 * sA ^ 2 - 2 * (sε * (β / sε)) * (sA * sE) + (β ^ 2 / sε ^ 2) * sE ^ 2 := by
+      field_simp
+      ring
+    have hcancel : sε * (β / sε) = β := by field_simp
+    rw [hcancel, hsε2, hsA2, hsE2] at hexpand
+    nlinarith only [sq_nonneg (sε * sA - (β / sε) * sE), hexpand]
+  have hdiff : 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
+      (2 * α + ε) * A + (β ^ 2 / ε) * Eσ := by
+    have hchain : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
+        α * A + β * (sA * sE) := by
+      refine le_trans (le_trans hcross hstep) ?_
+      have : sA * (α * sA + β * sE) = α * (sA ^ 2) + β * (sA * sE) := by ring
+      rw [this, hsA2]
+    nlinarith only [hchain, hyoung]
+  have hstatle := two_mul_sum_sameScale_le_sqrt (I := I) (M := M) S σ u fs hD hstat
+  rw [← hEdef, ← hsEdef] at hstatle
+  rw [hsum]
+  linarith [hdiff, hstatle]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem two_sum_ladder_add_le
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s)) (σ : ℝ)
+    (u fd fs f : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
+    {α β γ D ε : ℝ} (hD : 0 ≤ D) (hε : 0 < ε)
+    (hsplit : ∀ i ∈ S, f i = fd i + fs i)
+    (hladder :
+      Real.sqrt (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ - 1) * (fd i) ^ 2) ≤
+        α * Real.sqrt
+            (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (u i) ^ 2) +
+          β * Real.sqrt (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2) +
+          γ)
+    (hstat : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (fs i) ^ 2 ≤ D ^ 2) :
+    2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * f i) ≤
+      (2 * α + 2 * ε) *
+          (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (u i) ^ 2) +
+        (β ^ 2 / ε) * (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2) +
+        2 * D * Real.sqrt (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2) +
+        γ ^ 2 / ε := by
+  set A := ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (u i) ^ 2 with hAdef
+  set Eσ := ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i) ^ 2 with hEdef
+  set B := ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ - 1) * (fd i) ^ 2 with hBdef
+  have hA0 : 0 ≤ A :=
+    Finset.sum_nonneg (fun i _ =>
+      mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (σ + 1)) (sq_nonneg _))
+  have hE0 : 0 ≤ Eσ :=
+    Finset.sum_nonneg (fun i _ =>
+      mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i σ) (sq_nonneg _))
+  set sA := Real.sqrt A with hsAdef
+  set sE := Real.sqrt Eσ with hsEdef
+  have hsA0 : 0 ≤ sA := Real.sqrt_nonneg _
+  have hsE0 : 0 ≤ sE := Real.sqrt_nonneg _
+  have hsA2 : sA ^ 2 = A := Real.sq_sqrt hA0
+  have hsE2 : sE ^ 2 = Eσ := Real.sq_sqrt hE0
+  have hsum : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * f i) =
+      (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i)) +
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fs i) := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl (fun i hi => ?_)
+    rw [hsplit i hi]; ring
+  have hcross : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
+      sA * Real.sqrt B :=
+    le_trans (le_abs_self _) (abs_sum_crossScale_le (I := I) (M := M) S σ u fd)
+  have hstep : sA * Real.sqrt B ≤ sA * (α * sA + β * sE + γ) :=
+    mul_le_mul_of_nonneg_left hladder hsA0
+  have hyoung : 2 * β * (sA * sE) ≤ ε * A + (β ^ 2 / ε) * Eσ := by
+    set sε := Real.sqrt ε with hsεdef
+    have hsεpos : 0 < sε := Real.sqrt_pos.mpr hε
+    have hsε2 : sε ^ 2 = ε := Real.sq_sqrt hε.le
+    have hexpand : (sε * sA - (β / sε) * sE) ^ 2 =
+        sε ^ 2 * sA ^ 2 - 2 * (sε * (β / sε)) * (sA * sE) + (β ^ 2 / sε ^ 2) * sE ^ 2 := by
+      field_simp
+      ring
+    have hcancel : sε * (β / sε) = β := by field_simp
+    rw [hcancel, hsε2, hsA2, hsE2] at hexpand
+    nlinarith only [sq_nonneg (sε * sA - (β / sε) * sE), hexpand]
+  have hyoung' : 2 * γ * sA ≤ ε * A + γ ^ 2 / ε := by
+    have hkey : ε * (ε * A + γ ^ 2 / ε - 2 * γ * sA) = (ε * sA - γ) ^ 2 := by
+      rw [← hsA2]; field_simp; ring
+    nlinarith only [sq_nonneg (ε * sA - γ), hkey, hε]
+  have hdiff : 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
+      (2 * α + 2 * ε) * A + (β ^ 2 / ε) * Eσ + γ ^ 2 / ε := by
+    have hchain : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
+        α * A + β * (sA * sE) + γ * sA := by
+      refine le_trans (le_trans hcross hstep) ?_
+      have hexp : sA * (α * sA + β * sE + γ) =
+          α * (sA ^ 2) + β * (sA * sE) + γ * sA := by ring
+      rw [hexp, hsA2]
+    nlinarith only [hchain, hyoung, hyoung']
+  have hstatle := two_mul_sum_sameScale_le_sqrt (I := I) (M := M) S σ u fs hD hstat
+  rw [← hEdef, ← hsEdef] at hstatle
+  rw [hsum]
+  linarith [hdiff, hstatle]
 
 end TensorHeatEquation
 end Parabolic

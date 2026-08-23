@@ -29,15 +29,14 @@ def Rm04LowersRm13At
         (vec3 X Y Z)
 
 theorem rm04RealizesLower
-    [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
     (hLower : forall x : M,
       Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x)) :
-    Rm04RealizesConnection (I := I) g cov Rm04 := by
+    rm04RealizesConnection (I := I) g cov Rm04 := by
   intro X Y Z W x
   rw [hLower x (X x) (Y x) (Z x) (W x)]
   have h := hRm13 X Y Z x
@@ -45,13 +44,13 @@ theorem rm04RealizesLower
   simpa [tangentFlatLinear_apply_gen, cotangentToDual_apply_gen] using h
 
 theorem rm04LowersRm13At_of_realizes
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     (x : M) :
     Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) := by
   intro X Y Z W
@@ -123,13 +122,13 @@ theorem rm13MetricSkewAt_of_rm04_outputSkew
         (vec3 X Y W) := by rw [hLower X Y W Z]
 
 theorem rm13MetricSkewAt_of_realizes_outputSkew
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M}
     (hSkew : Rm04OutputSkewAt (I := I) (Rm04 x)) :
     Rm13MetricSkewAt (I := I) g x (Rm13 x) :=

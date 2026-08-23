@@ -26,7 +26,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [T2Space M] in
 theorem manifoldFlow_contMDiffOn_of_jointContDiffOn
     (p₀ : M) (Φ_E : E × ℝ → E) {ρ T t₀ : ℝ}
-    (U : Set M) (_hUopen : IsOpen U) (hUsub : U ⊆ (chartAt H p₀).source)
+    (U : Set M) (hUsub : U ⊆ (chartAt H p₀).source)
     (hUball : ∀ p ∈ U, I ((chartAt H p₀) p) ∈ Metric.ball (I ((chartAt H p₀) p₀)) ρ)
     (hΦE_smooth : ContDiffOn ℝ ∞ Φ_E
       (Metric.ball (I ((chartAt H p₀) p₀)) ρ ×ˢ Set.Ioo (t₀ - T) (t₀ + T)))
@@ -74,7 +74,7 @@ theorem chart_pushforward_field_jointContDiff
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
-    (p₀ : M) {ρ : ℝ} (_hρ : 0 < ρ)
+    (p₀ : M) {ρ : ℝ}
     (hρ_sub : Metric.ball (extChartAt I p₀ p₀) ρ ⊆ (extChartAt I p₀).target) :
     ContDiffOn ℝ ∞
       (Function.uncurry (fun (s : ℝ) (c : E) =>
@@ -129,7 +129,7 @@ theorem chart_pushforward_field_jointContDiff
   exact hcomp
 
 omit [BoundarylessManifold I M] [T2Space M] in
-theorem chart_pushforward_field_cutoff_globalContDiff [I.Boundaryless]
+theorem chart_pushforward_field_cutoff_globalContDiff
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
@@ -146,7 +146,7 @@ theorem chart_pushforward_field_cutoff_globalContDiff [I.Boundaryless]
       (TotalSpace.mk' E ((extChartAt I p₀).symm c) (X s ((extChartAt I p₀).symm c)))).2 with hF
   have hFsmooth : ContDiffOn ℝ ∞ (Function.uncurry F)
       ((Set.univ : Set ℝ) ×ˢ Metric.ball x₀ ρ) :=
-    chart_pushforward_field_jointContDiff X hX p₀ hρ hρ_sub
+    chart_pushforward_field_jointContDiff X hX p₀ hρ_sub
   set b : ContDiffBump x₀ :=
     { rIn := ρ / 4, rOut := ρ / 2, rIn_pos := by positivity, rIn_lt_rOut := by linarith } with hb
   have hb_rIn : b.rIn = ρ / 4 := rfl
@@ -373,7 +373,7 @@ theorem chartflow_eq_bareflow_on_U
           ((extChartAt I p₀).symm c) (X s ((extChartAt I p₀).symm c)))
     (hconf : ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo a b,
       ΦE (extChartAt I p₀ p, t) ∈ (extChartAt I p₀).target)
-    (_hUsrc : U ⊆ (extChartAt I p₀).source) :
+    :
     ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo a b,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
         (fun s => (extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, s)))
@@ -515,7 +515,7 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
         (fun q : ℝ × M => (extChartAt I p₀).symm (ΦE (I ((chartAt H p₀) q.2), q.1)))
         (Set.Ioo (t₀ - T') (t₀ + T') ×ˢ U) := by
     refine manifoldFlow_contMDiffOn_of_jointContDiffOn (I := I) p₀ ΦE
-      (ρ := ρ'ₒₚ) (T := T') (t₀ := t₀) U hU_open ?_ ?_ ?_ ?_
+      (ρ := ρ'ₒₚ) (T := T') (t₀ := t₀) U ?_ ?_ ?_ ?_
     · rw [← extChartAt_source (I := I)]; exact hU_src
     · intro p hp
       rw [hcoe p, hcoe₀]
@@ -540,7 +540,7 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
           (Set.Ioo (t₀ - T') (t₀ + T')) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight
             (X t ((extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t))))) :=
-    chartflow_eq_bareflow_on_U (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt hU_src
+    chartflow_eq_bareflow_on_U (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
   have hbare :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
@@ -667,7 +667,7 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
         (fun q : ℝ × M => (extChartAt I p₀).symm (ΦE (I ((chartAt H p₀) q.2), q.1)))
         (Set.Ioo (t₀ - T') (t₀ + T') ×ˢ U) := by
     refine manifoldFlow_contMDiffOn_of_jointContDiffOn (I := I) p₀ ΦE
-      (ρ := ρ'ₒₚ) (T := T') (t₀ := t₀) U hU_open ?_ ?_ ?_ ?_
+      (ρ := ρ'ₒₚ) (T := T') (t₀ := t₀) U ?_ ?_ ?_ ?_
     · rw [← extChartAt_source (I := I)]; exact hU_src
     · intro p hp
       rw [hcoe p, hcoe₀]
@@ -692,7 +692,7 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
           (Set.Ioo (t₀ - T') (t₀ + T')) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight
             (X t ((extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t))))) :=
-    chartflow_eq_bareflow_on_U (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt hU_src
+    chartflow_eq_bareflow_on_U (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
   have hbare :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t

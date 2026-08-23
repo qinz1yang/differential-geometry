@@ -664,7 +664,7 @@ omit [FiniteDimensional ℝ E] in
     (inducedMetric g).inner b = inducedMetricInner g b := rfl
 
 omit [FiniteDimensional ℝ E] in
-@[simp] lemma inducedMetric_inner_apply
+lemma inducedMetric_inner_apply
     (g : SmoothRiemannianMetric I M) (b : BoundaryManifold I M)
     (v w : hI.boundaryE) :
     (inducedMetric g).inner b v w = g.inner (b : M) (boundaryInclusionMfderiv b v)

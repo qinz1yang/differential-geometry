@@ -9,7 +9,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
@@ -82,12 +81,12 @@ theorem norm_inverseMetricSharpFib_g0Flat_le
   have hcoeff : 0 < 1 - δ := by linarith
   have hsplit :
       inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x v)
-        = metricComparisonDiffEndo (I := I) g₀ g₁ x v + v := by
-    rw [gInvDiffRaisedEndo_apply, sub_add_cancel]
+        = metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v + v := by
+    rw [metricComparisonDifferenceEndomorphism_apply, sub_add_cancel]
   rw [hsplit]
-  set Dv : TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ g₁ x v with hDv
+  set Dv : TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v with hDv
   have htri := sqrt_g0_inner_add_le (I := I) (M := M) g₀ x Dv v
-  have hdiff := sqrt_inner_gInvDiffRaisedEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v
+  have hdiff := sqrt_inner_metricComparisonDifferenceEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v
   rw [← hDv] at hdiff
   set Nv : ℝ := Real.sqrt (g₀.inner x v v) with hNv
   have hNv_nn : 0 ≤ Nv := Real.sqrt_nonneg _

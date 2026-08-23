@@ -1244,8 +1244,6 @@ end DifferentialGeometry
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Function
-open scoped Manifold ContDiff ENNReal NNReal
 
 namespace DifferentialGeometry
 namespace Analysis

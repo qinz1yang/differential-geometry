@@ -95,7 +95,7 @@ private theorem iteratedCovGrad_covGrad_comm_heq_tw (g : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-private theorem rfns_toSection_heq_congr_tw (g : SmoothRiemannianMetric I M)
+private theorem riemannianFiberNormSq_toSection_heq_congr_tw (g : SmoothRiemannianMetric I M)
     {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g 0 a} {Z : SmoothCcTensor g 0 b}
     (hYZ : HEq Y Z) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 a x (Y.toSection x) =
@@ -112,7 +112,7 @@ private theorem riemannianFiberNormSq_toSection_iteratedCovGrad_covGrad_comm
         ((iteratedCovGrad g 0 (s + 1) q (covGrad (I := I) (M := M) g 0 s S)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + (q + 1)) x
         ((iteratedCovGrad g 0 s (q + 1) S).toSection x) :=
-  rfns_toSection_heq_congr_tw g (by omega : (s + 1) + q = s + (q + 1))
+  riemannianFiberNormSq_toSection_heq_congr_tw g (by omega : (s + 1) + q = s + (q + 1))
     (iteratedCovGrad_covGrad_comm_heq_tw (I := I) (M := M) g s q S) x
 
 lemma pureRGenuineDiffOp0_eq_GcurvSection
@@ -158,7 +158,7 @@ theorem exists_GcurvSection_iteratedCovGrad_grid_bound (g : SmoothRiemannianMetr
     exact mul_nonneg (by positivity) (gridWindowSum_nonneg hkappa_nn 0 (s + 1) k)
   rw [hcsq]
   have hgrid :=
-    DifferentialGeometry.Analysis.Spectral.DiffBilinOp.exists_rfns_iteratedCovGrad_singleSum_le_at
+    DifferentialGeometry.Analysis.Spectral.DiffBilinOp.exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le_at
     (g := g)
     (op := fun p r W => pureRGenuineDiffOp (I := I) (M := M) g p r W)
     (fun p r W => covGrad_pureRGenuineDiffOp_eq (I := I) (M := M) g p r W)

@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-20: made the small-ball average triangle estimate explicit
 import DifferentialGeometry.External.DeGiorgi.Crossover.LogGradient
 
 /-!
@@ -9,8 +10,8 @@ John--Nirenberg and exponential-integrability machinery for the crossover produc
 
 noncomputable section
 
-open MeasureTheory Metric Filter Set
-open scoped ENNReal NNReal Topology RealInnerProductSpace
+open MeasureTheory Metric Filter
+open scoped ENNReal
 
 namespace DeGiorgi
 
@@ -924,13 +925,16 @@ theorem regularizedLog_smallBallAverage_step_le
             ⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume| +
           |⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume -
             ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume| := by
-            have habs :=
-              abs_add_le
-                (⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
-                  ⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume)
-                (⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume -
-                  ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume)
-            simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using habs
+            calc
+              |⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
+                  ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume| =
+                  |(⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
+                      ⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume) +
+                    (⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume -
+                      ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume)| := by
+                    congr 1
+                    ring
+              _ ≤ _ := abs_add_le _ _
     _ ≤ (2 : ℝ) ^ d *
           (⨍ z in Metric.ball x (1 / 48 : ℝ),
             |v z - ⨍ w in Metric.ball x (1 / 48 : ℝ), v w ∂volume| ∂volume) +
@@ -966,7 +970,7 @@ theorem regularizedLog_smallBallAverage_step_le
           rw [hpow]
           exact hsum_le
 
-noncomputable def regularizedLogAEMeasurable
+theorem regularizedLogAEMeasurable
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ}
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
@@ -1579,7 +1583,10 @@ theorem regularizedLog_smallBall_exp_average_le
                           ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) by
                     funext t
                     ring]
-              rw [lintegral_const_mul'' _ (by measurability)]
+              have hreal : Measurable (fun t : ℝ => p * Real.exp (-(β / 2) * t)) :=
+                measurable_const.mul
+                  (Real.continuous_exp.measurable.comp (measurable_const.mul measurable_id))
+              rw [lintegral_const_mul'' _ hreal.ennreal_ofReal.aemeasurable]
   have hmajor_int :
       IntegrableOn (fun t : ℝ => p * Real.exp (-(β / 2) * t)) (Set.Ioi 0) volume := by
     have hneg : -(β / 2) < 0 := by linarith

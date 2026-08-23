@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathOrderSplit
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0Field
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroField
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieOneReanchor
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -13,7 +13,6 @@ open scoped Topology Manifold BigOperators ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 
@@ -64,19 +63,19 @@ theorem lieSlope_eq_arms
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
               (deTurckLieCoeffField (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg +
-                lieCorr0Field (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+                lieCorrectionZeroField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 0
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 3 2
               (deTurckLieArm1Coeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 4 2
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
           ![(chartModelBasis E) i, (chartModelBasis E) j] := by
@@ -90,7 +89,7 @@ theorem lieSlope_eq_arms
   have h1 := lieOne_cov_eq_raw (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' s x i j
   have h2 := lieTop_cov_eq_raw (I := I) g₀ T T'
-    hδ_lt hδ hδ'_lt hδ' (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i j
+    hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j
   rw [lieTopTail] at h2
   refine hsplit.trans ?_
   rw [unitModel_add_local (I := I) g₀ 2, unitModel_add_local (I := I) g₀ 2,

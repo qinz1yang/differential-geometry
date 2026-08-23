@@ -55,7 +55,6 @@ private lemma finsetSum_eNNReal_ofReal_mul_le
 
 section Unconditional
 
-open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 private lemma vec_norm_eq_one

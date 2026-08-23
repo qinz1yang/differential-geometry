@@ -24,7 +24,6 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor0SBundle
@@ -65,7 +64,6 @@ private lemma sphere_isCompact :
   exact (isCompact_iff_isClosed_bounded.mpr ⟨hclosed, hbdd⟩)
 
 theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
     (hKα_sub_baseSet :
@@ -243,7 +241,6 @@ theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
     · exact absurd ⟨b, hb⟩ hKα_ne
 
 theorem chartInvGram_quad_ub
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
     (hKα_sub_baseSet :
@@ -519,7 +516,6 @@ theorem chartInvGram_ent_le
     nlinarith [hdiag_nonneg i, hdiag_nonneg j]
 
 theorem chartInvGram_unif_ub
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
@@ -556,7 +552,6 @@ theorem chartInvGram_unif_ub
     _ = (Λ * CBase) * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) := by ring
 
 theorem chartInvGram_unif_lb
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
@@ -650,8 +645,7 @@ theorem chartInvGram_unif_lb
     _ = _ := hseq_coord
 
 theorem chartInvGram_pou_lb
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
     (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
@@ -719,8 +713,7 @@ theorem chartInvGram_pou_lb
     exact (hM ⟨α⟩).elim
 
 theorem chartInvGram_pou_ub
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
     (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
@@ -769,8 +762,7 @@ theorem chartInvGram_pou_ub
       (Finset.sum_nonneg fun i _ => sq_nonneg (ξ i)))
 
 theorem chartInvGram_pou_bnd
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
     (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
@@ -791,8 +783,7 @@ theorem chartInvGram_pou_bnd
     (hupper α hα k b hb) i j
 
 theorem chartInvGram_pou_eqv
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
     (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
@@ -820,8 +811,7 @@ theorem chartInvGram_pou_eqv
   exact ⟨hlower α hα k b hb ξ, hupper α hα k b hb ξ⟩
 
 theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_pouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) (α : M) :
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ c : ℝ, 0 < c ∧
       ∀ b : M, b ∈ tsupport
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α

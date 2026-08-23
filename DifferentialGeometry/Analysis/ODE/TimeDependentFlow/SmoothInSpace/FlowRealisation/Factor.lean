@@ -134,7 +134,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem leviCivita_flowBasepoint_eq_chartFderiv_add_corrections
+theorem leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) (u : TangentSpace I x)
@@ -207,9 +207,9 @@ theorem variational_flow_flat_paired_residual_of_chart_realisation
         + metricTransportResidual (I := I) g X Φ_fam t x v w) t :=
   variational_flow_flat_paired_residual_hasDerivAt (I := I) g X Φ_fam t x v w
     T'v P'v T'w P'w hv_flat hw_flat hflatval_v hflatval_w
-    (leviCivita_flowBasepoint_eq_chartFderiv_add_corrections (I := I) g X Φ_fam t x v hα hRdiff
+    (leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections (I := I) g X Φ_fam t x v hα hRdiff
       hCdiff)
-    (leviCivita_flowBasepoint_eq_chartFderiv_add_corrections (I := I) g X Φ_fam t x w hα hRdiff
+    (leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections (I := I) g X Φ_fam t x w hα hRdiff
       hCdiff)
 
 end PairedResidualDischarge

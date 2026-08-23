@@ -108,7 +108,7 @@ theorem parabolicNondivergenceOperator_coefficientExtension_eq
   simp_rw [hb, hc]
 
 theorem parabolicNondivergenceOperator_coefficientExtension_eq_intrinsic_in_euclideanChart
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     (center : EuclN E) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     (g : Real → SmoothRiemannianMetric I M) (V : Real → M → Real)
     (chartCenter : M) (p0 : ParabolicPoint (EuclN E))

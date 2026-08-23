@@ -72,7 +72,7 @@ private lemma finrank_tensorRSSpace_zero_eq (t : ℕ) (x : M) :
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma orthonormal_rfns_exists_basis
+private lemma orthonormal_riemannianFiberNormSq_exists_basis
     (g : SmoothRiemannianMetric I M) (t : ℕ) (x : M) (ht : 1 ≤ t)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
@@ -120,14 +120,14 @@ private lemma orthonormal_rfns_exists_basis
     have hcomp0 : ∀ J : Fin t → Fin n,
         fiberNormSqComponent (I := I) (M := M) g x 0 t T n e (fun k => k.elim0) J = 0 := by
       intro J; exact congrFun hT J
-    have hrfns0 : riemannianFiberNormSq (I := I) (M := M) g 0 t x T = 0 := by
+    have hriemannianFiberNormSq0 : riemannianFiberNormSq (I := I) (M := M) g 0 t x T = 0 := by
       rw [hrepr T]
       refine Finset.sum_eq_zero (fun K _ => Finset.sum_eq_zero (fun J _ => ?_))
       rw [fiberNormSqSummand_eq_component_sq]
       rw [show K = (fun k : Fin 0 => k.elim0) from funext (fun k => k.elim0)]
       rw [hcomp0 J]; ring
     have hpd := riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g 0 t x T
-    rw [hrfns0] at hpd
+    rw [hriemannianFiberNormSq0] at hpd
     have hTm0 : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) T = 0 :=
       (DifferentialGeometry.Integral.L2.tensorInnerPointwise_eq_zero_iff (I := I)
@@ -260,14 +260,14 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
             (riemannOp (tensorCov (I := I) g 0 t) x (e i) (e j)
               (dualTensorFrameS (I := I) (M := M) g x t e J))) ≤ C :=
     hC_bound x e horth
-  have hrfns_nonneg : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g 0 t x T :=
+  have hriemannianFiberNormSq_nonneg : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g 0 t x T :=
     riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 t x T
   rcases Nat.eq_zero_or_pos t with ht0 | htpos
   · subst ht0
     set J₀ : Fin 0 → Fin n := fun k => k.elim0 with hJ₀
     set φ : TensorRSSpace 0 0 I x → ℝ :=
       fun S => fiberNormSqComponent (I := I) (M := M) g x 0 0 S n e J₀ J₀ with hφ_def
-    have hrfns_sq : ∀ S : TensorRSSpace 0 0 I x,
+    have hriemannianFiberNormSq_sq : ∀ S : TensorRSSpace 0 0 I x,
         riemannianFiberNormSq (I := I) (M := M) g 0 0 x S = φ S ^ 2 := by
       intro S
       rw [hrepr S]
@@ -285,10 +285,10 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
       intro a S; simp only [hφ_def]; rw [fiberNormSqComponent_smul]
     have hφ_inj : ∀ S : TensorRSSpace 0 0 I x, φ S = 0 → S = 0 := by
       intro S hS
-      have hrfns0 : riemannianFiberNormSq (I := I) (M := M) g 0 0 x S = 0 := by
-        rw [hrfns_sq S, hS]; ring
+      have hriemannianFiberNormSq0 : riemannianFiberNormSq (I := I) (M := M) g 0 0 x S = 0 := by
+        rw [hriemannianFiberNormSq_sq S, hS]; ring
       have hpd := riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g 0 0 x S
-      rw [hrfns0] at hpd
+      rw [hriemannianFiberNormSq0] at hpd
       have hSm0 : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
           (r := 0) (s := 0) (x := x) S = 0 :=
         (DifferentialGeometry.Integral.L2.tensorInnerPointwise_eq_zero_iff (I := I)
@@ -323,11 +323,11 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl (fun j _ => ?_)
       conv_lhs => rw [hT_eq, (riemannOp (tensorCov (I := I) g 0 0) x (e i) (e j)).map_smul (φ T) D]
-      rw [hrfns_sq, hrfns_sq]
+      rw [hriemannianFiberNormSq_sq, hriemannianFiberNormSq_sq]
       have : φ (φ T • riemannOp (tensorCov (I := I) g 0 0) x (e i) (e j) D) =
           φ T * φ (riemannOp (tensorCov (I := I) g 0 0) x (e i) (e j) D) := hφ_smul _ _
       rw [this]; ring
-    rw [hLHS_eq, hrfns_sq T]
+    rw [hLHS_eq, hriemannianFiberNormSq_sq T]
     rw [show (fun _ : M => C) x = C from rfl]
     have hsq_nonneg : (0 : ℝ) ≤ φ T ^ 2 := sq_nonneg _
     have henergy0_le_C :
@@ -341,7 +341,7 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
     rw [mul_comm C (φ T ^ 2)]
     exact mul_le_mul_of_nonneg_left henergy0_le_C hsq_nonneg
   · obtain ⟨bse, hbse⟩ :=
-      orthonormal_rfns_exists_basis (I := I) (M := M) g t x htpos e horth hrepr
+      orthonormal_riemannianFiberNormSq_exists_basis (I := I) (M := M) g t x htpos e horth hrepr
     calc
       (∑ i : Fin n, ∑ j : Fin n,
           riemannianFiberNormSq (I := I) (M := M) g 0 t x
@@ -354,7 +354,7 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
             sum_riemannianFiberNormSq_riemannOpS_le_Cx
               (I := I) (M := M) g x t e bse hbse horth hrepr T
       _ ≤ C * riemannianFiberNormSq (I := I) (M := M) g 0 t x T :=
-            mul_le_mul_of_nonneg_right hCx_le_C hrfns_nonneg
+            mul_le_mul_of_nonneg_right hCx_le_C hriemannianFiberNormSq_nonneg
 
 end Elliptic
 end Analysis

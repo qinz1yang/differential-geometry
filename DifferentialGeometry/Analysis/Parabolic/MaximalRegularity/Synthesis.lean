@@ -70,7 +70,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 open scoped Classical in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem singleModeCLM_coeff {σ : ℝ}
+theorem singleModeCLM_coeff {σ : ℝ}
     (i j : TensorEigenIdx (I := I) (M := M) g r s) (c : ℝ) :
     (singleModeCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) i c).coeff j =
       (if j = i then c else 0) := by

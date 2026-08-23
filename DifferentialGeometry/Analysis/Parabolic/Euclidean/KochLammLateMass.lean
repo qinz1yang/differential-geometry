@@ -17,6 +17,7 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem klBasePow_pos {p : ℝ} (hp : 0 < p) :
     0 < basePowMass V p := by
   unfold basePowMass
@@ -37,7 +38,7 @@ theorem klTermPowMass_eq {t : ℝ} (ht : 0 < t) (x : V) :
   have hi : Integrable
       (fun z : ℝ × V ↦ ‖klTermKernel t x z‖ ^ klQDual V)
       (klTermMeasure (V := V) t) := by
-    have hm := (klTermKernel_memLp (V := V) ht x).integrable_norm_rpow
+    have hm := (klTermKernel_memLp (V := V) (t := t) x).integrable_norm_rpow
       (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     simpa only [ENNReal.toReal_ofReal hp.le] using hm
   have hi' : Integrable

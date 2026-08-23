@@ -19,7 +19,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 section SmoothLocalFlow
 
-open Set Metric Function DifferentialGeometry.Analysis.ODE DifferentialGeometry.Analysis.ODE.Flow
+open Set Metric Function DifferentialGeometry.Analysis.ODE.Flow
 open scoped NNReal
 
 theorem exists_isLocalFlow_contDiffOn_top
@@ -133,7 +133,7 @@ end SmoothLocalFlow
 
 section TransferSmoothness
 
-open Set Metric Function DifferentialGeometry.Analysis.ODE DifferentialGeometry.Analysis.ODE.Flow
+open Set Metric Function DifferentialGeometry.Analysis.ODE.Flow
 open scoped NNReal Topology
 
 variable [CompleteSpace E]

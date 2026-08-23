@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Product.Bundle
 import Mathlib.LinearAlgebra.TensorProduct.Basis
@@ -78,7 +79,9 @@ variable [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)]
 variable (n : WithTop ℕ∞)
 variable [ContMDiffVectorBundle n F₁ E₁ IB] [ContMDiffVectorBundle n F₂ E₂ IB]
 
-omit [ContMDiffVectorBundle n F₁ E₁ IB] [ContMDiffVectorBundle n F₂ E₂ IB] in
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)]
+  [ContMDiffVectorBundle n F₁ E₁ IB] [ContMDiffVectorBundle n F₂ E₂ IB] in
 theorem contMDiff_tensorProductSection_iff_coord
     {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁)

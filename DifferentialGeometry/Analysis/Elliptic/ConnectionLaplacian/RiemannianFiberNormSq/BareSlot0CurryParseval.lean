@@ -91,7 +91,7 @@ theorem sq_unit_eval_le
       g.inner x X X *
         riemannianFiberNormSq (I := I) (M := M) g 0 1 x W := by
   classical
-  obtain ⟨n, e, _bse, _hn, _hbse, _horth, hpars, hexpand, hrfns⟩ :=
+  obtain ⟨n, e, _bse, _hn, _hbse, _horth, hpars, hexpand, hriemannianFiberNormSq⟩ :=
     tangent_orthonormalBasisS_witness (I := I) (M := M) g 1 x
   let vec : Fin 1 → TangentSpace I x := fun _ ↦ X
   let B : ContinuousMultilinearMap ℝ (fun _ : Fin 1 ↦ E) ℝ :=
@@ -136,7 +136,7 @@ theorem sq_unit_eval_le
     rw [Fin.prod_univ_one, hpars (vec 0)]
   have hcomp : (∑ J : Fin 1 → Fin n, comp J ^ 2) =
       riemannianFiberNormSq (I := I) (M := M) g 0 1 x W := by
-    rw [hrfns W]
+    rw [hriemannianFiberNormSq W]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n ↦
       ∑ J : Fin 1 → Fin n,
         fiberNormSqSummand (I := I) (M := M) g x 0 1 W n e K J)]

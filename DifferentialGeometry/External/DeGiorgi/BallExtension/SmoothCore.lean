@@ -11,8 +11,8 @@ extension and their local geometric identities.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal RealInnerProductSpace
+open MeasureTheory Metric Topology
+open scoped NNReal
 
 namespace DeGiorgi
 

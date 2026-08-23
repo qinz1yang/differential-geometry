@@ -28,8 +28,8 @@ mean value of `u` over the unit ball.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal
+open MeasureTheory Metric Filter
+open scoped ENNReal
 
 namespace DeGiorgi
 

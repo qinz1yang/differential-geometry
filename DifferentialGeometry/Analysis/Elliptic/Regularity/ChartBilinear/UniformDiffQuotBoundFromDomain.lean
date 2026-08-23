@@ -164,7 +164,7 @@ private theorem exists_smooth_metric_extension_with_density
         (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
           extendedMatrix (I := I) g α χ i j y)) ξ⟫_ℝ
     exact extendedMatrix_coercive (I := I) g α
-      (χ := χ) hχ_range hχ_tsupp_chart hlamK_pos hlamK_le_one
+      (χ := χ) hχ_range hχ_tsupp_chart hlamK_le_one
       hlamK0_bound_for_lamK y ξ
   let cFun : EuclN → ℝ := extendedDensity (I := I) g α χ
   have h_c_smooth : ContDiff ℝ (⊤ : ℕ∞) cFun :=
@@ -358,13 +358,13 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
   intro D i k h hh_pos hh_le
   have h_FK_diffQuot_u_bound :=
     chartBilinearFK_diffQuot_u_discharge (I := I) (M := M) D hη_supp
-      hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' hR₀_pos hh_supp_in_Ω'
+      hΩ'_chart hΩ'_compact hR₀_pos hh_supp_in_Ω'
   have h_v_test_sq_bound :=
     chartBilinear_v_test_sq_discharge (I := I) (M := M) D hη hη_supp hη_range
-      hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' hR₀_pos hh_supp_in_Ω'
+      hN h_fderiv_eta hΩ'_chart hR₀_pos hh_supp_in_Ω'
   have h_master_nonsmooth :=
     chartBilinear_master_nonsmooth_discharge (I := I) (M := M) D B hη hη_supp
-      hη_range hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' hR₀_pos hh_supp_in_Ω'
+      hΩ'_chart hη_in_Ω' hR₀_pos hh_supp_in_Ω'
       hB_a_match hB_c_match
   set u_g : EuclN → ℝ := fun x => χ x * D.u_chart x with hu_g_def
   set g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i x =>
@@ -1195,10 +1195,10 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
             ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)))) :=
     chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
-      (I := I) (M := M) (E := E) (H := H) (g := g) (α := α)
-      D B hu_g_l2 hf_g_l2_loc hg_g_l2 hg_g_isWP hη hη_supp hη_range hN
+      (E := E)
+      B hu_g_l2 hf_g_l2_loc hg_g_l2 hη hη_supp hη_range hN
       h_fderiv_eta hΩ' (by intro x _; exact Set.mem_univ _) hΩ'_compact
-      hη_in_Ω' hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
+      hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
       h_FK h_v_test_sq h_master hh_pos hh_le
   have hΩ'_closure_meas : MeasurableSet (closure Ω') :=
     isClosed_closure.measurableSet

@@ -38,7 +38,7 @@ theorem tensorL2Inner_GcurvSection_covGrad_eq_pureRGenuineDiffOp
         (covGrad (I := I) (M := M) g 0 s S).toFun := by
   rw [pureRGenuineDiffOp0_eq_GcurvSection (I := I) (M := M) g s S]
 
-theorem exists_GcurvSection_eq_appCc_curvatureOpField
+theorem exists_GcurvSection_eq_operatorFieldApplication_curvatureOpField
     (g : SmoothRiemannianMetric I M) :
     ∃ Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0),
       ∀ (s : ℕ) (S : SmoothCcTensor g 0 s),

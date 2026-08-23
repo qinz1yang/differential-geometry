@@ -1,6 +1,7 @@
-import DifferentialGeometry.Analysis.Integration.Measure.RealizedMetricForMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.MetricFamily
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyDefs
 import DifferentialGeometry.Analysis.Integration.Measure.Family
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -10,7 +11,6 @@ namespace DifferentialGeometry.Integral.Measure
 noncomputable section
 
 open MeasureTheory
-open DifferentialGeometry.Integral.Measure
 open scoped Manifold Topology ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -103,7 +103,7 @@ theorem traceTimeDerivMetricOn_eq
     traceTimeDerivMetricOn (I := I) G t x =
       traceTimeDerivMetric (I := I) (metricFamilyForMeasureOn (I := I) (M := M) G) t x := rfl
 
-theorem volume_variation_formula_clean
+theorem volume_variation_formula
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M}
     {f : ℝ → M → ℝ} {t₀ : ℝ}
@@ -139,13 +139,13 @@ theorem volume_variation_formula_clean
     refine Continuous.mul ?_ hft₀_cont
     refine Continuous.mul continuous_const ?_
     exact traceTimeDerivMetric_continuous (I := I) (M := M) hg
-  refine volume_variation_formula_clean_of_chart_derivs
+  refine volume_variation_formula_of_chart_derivs
     (I := I) (M := M) g_fam f t₀ hf_cont hh_cont ?_
   intro α hα
-  exact per_chart_hasDerivAt (I := I) (M := M) hg hf α hα
+  exact per_chart_hasDerivAt (I := I) (M := M) hg hf α
 
 
-theorem volume_variation_formula_clean_at
+theorem volume_variation_formula_at
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {f : Real → M → Real} {t₀ : Real}
@@ -158,11 +158,11 @@ theorem volume_variation_formula_clean_at
           ∂(volumeMeasureFamily (I := I) (M := M) G t₀))
       t₀ := by
   simpa [volumeMeasureFamily, traceTimeDerivMetricAt] using
-    (volume_variation_formula_clean (I := I) (M := M)
+    (volume_variation_formula (I := I) (M := M)
       (g_fam := metricFamilyForMeasure (I := I) (M := M) G)
       (f := f) (t₀ := t₀) hg hf)
 
-theorem volume_variation_formula_clean_on
+theorem volume_variation_formula_on
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn (I := I) (M := M) D)
@@ -176,7 +176,7 @@ theorem volume_variation_formula_clean_on
           ∂(volumeMeasureFamilyOn (I := I) (M := M) G t₀))
       t₀ := by
   simpa [volumeMeasureFamilyOn, traceTimeDerivMetricOn] using
-    (volume_variation_formula_clean (I := I) (M := M)
+    (volume_variation_formula (I := I) (M := M)
       (g_fam := metricFamilyForMeasureOn (I := I) (M := M) G)
       (f := f) (t₀ := t₀) hg hf)
 

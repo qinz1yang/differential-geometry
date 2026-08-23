@@ -127,7 +127,6 @@ private theorem exists_quad_neg {κ Q : ℝ} (hκ : 0 < κ) :
 namespace IsJacobiSolOn
 
 theorem mono
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {a b a' b' : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R a b y v)
     (ha : a ≤ a') (hb : b' ≤ b) :
@@ -138,7 +137,6 @@ theorem mono
       deriv_snd := fun t ht => (hsol.deriv_snd t (hsub ht)).mono hsub }
 
 theorem snd_ne_zero
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {a b c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R a b y v)
     (hc : c ∈ Ioo a b)
@@ -159,7 +157,6 @@ theorem snd_ne_zero
   exact hyt (hzero t ht).1
 
 theorem indexForm_test_to
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R 0 c y v)
     (hc : 0 ≤ c)
@@ -175,7 +172,6 @@ theorem indexForm_test_to
   simp [indexTestFieldTo, real_inner_smul_right]
 
 theorem indexForm_test
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R 0 c y v)
     (hc : 0 ≤ c)
@@ -186,7 +182,6 @@ theorem indexForm_test
     hsol.indexForm_test_to (L := 1) hc hR
 
 theorem indexForm_pos_to
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R 0 c y v)
     (hc : c ∈ Ioo (0 : ℝ) L)
@@ -199,7 +194,6 @@ theorem indexForm_pos_to
   exact mul_pos (mul_pos hc.1 (sub_pos.mpr hc.2)) (sq_pos_of_pos hnorm)
 
 theorem indexForm_test_pos
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R 0 c y v)
     (hc : c ∈ Ioo (0 : ℝ) 1)
@@ -211,7 +205,6 @@ theorem indexForm_test_pos
     hsol.indexForm_pos_to (L := 1) hc hR hvc
 
 theorem exists_split_neg_on
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R 0 L y v)
     (hc : c ∈ Ioo (0 : ℝ) L)
@@ -387,7 +380,6 @@ theorem exists_split_neg_on
     _ < 0 := hs
 
 theorem exists_split_neg
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R 0 1 y v)
     (hc : c ∈ Ioo (0 : ℝ) 1)
@@ -410,7 +402,6 @@ theorem exists_split_neg
     hsol.exists_split_neg_on hc hR hSym hy0 hyc hne
 
 theorem exists_smooth_split
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {A B c : ℝ} {y v : ℝ → F}
     (hA : A < 0) (hB : 1 < B)
     (hc : c ∈ Ioo (0 : ℝ) 1)

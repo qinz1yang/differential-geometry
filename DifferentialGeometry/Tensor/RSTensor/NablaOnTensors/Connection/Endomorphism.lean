@@ -78,7 +78,7 @@ lemma covariantDerivative_tangentConst_apply_contMDiffOn_baseSet
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov n)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
-    (x₀ : M) (v : E) [IsManifold I (n + 1) M] [IsManifold I (n + 1 + 1) M] :
+    (x₀ : M) (v : E) [IsManifold I (n + 1 + 1) M] :
     CMDiff[(trivializationAt E (TangentSpace I) x₀).baseSet] n
       (T% (fun p : M =>
         (cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ v) p) (X p))) := by
@@ -210,7 +210,7 @@ noncomputable def connectionEndomorphismInChartL
     · rw [if_neg hy, if_neg hy]
       simp
 
-@[simp] lemma connectionEndomorphismInChartL_apply_of_mem
+lemma connectionEndomorphismInChartL_apply_of_mem
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (x₀ : M) {y : E}
     (hy : y ∈ (extChartAt I x₀).target) (X v : E) :
@@ -236,7 +236,7 @@ noncomputable def connectionEndomorphismInChartL
             ((extChartAt I x₀).symm y) X))
   rw [if_pos hy]
 
-@[simp] lemma connectionEndomorphismInChartL_apply_of_notMem
+lemma connectionEndomorphismInChartL_apply_of_notMem
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (x₀ : M) {y : E}
     (hy : y ∉ (extChartAt I x₀).target) (X v : E) :

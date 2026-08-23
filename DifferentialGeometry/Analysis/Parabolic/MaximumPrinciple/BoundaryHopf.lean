@@ -9,7 +9,6 @@ namespace DifferentialGeometry.Analysis.Parabolic
 noncomputable section
 
 open Bundle Set
-open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -90,7 +89,7 @@ private theorem boundaryHopf_derivWithin_add_eps_mul_time
 
 omit hI in
 theorem strict_barrier_on_compact_manifold_with_boundary
-    [CompleteSpace E] [CompactSpace M] [T2Space M]
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
@@ -244,8 +243,7 @@ private theorem boundaryHopf_deriv_nonneg_at_right_endpoint
   exact nonneg_of_mul_nonneg_left (by simpa [mul_comm] using hnonneg) ha
 
 theorem scalar_hopf_boundary_point_of_barrier_with_boundary
-    [CompleteSpace E] [CompactSpace M] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [CompactSpace M] [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 ≤ T)
     (X : Real → (x : M) → TangentSpace I x)

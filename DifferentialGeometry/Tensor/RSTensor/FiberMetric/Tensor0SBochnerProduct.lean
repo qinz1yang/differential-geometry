@@ -18,7 +18,6 @@ noncomputable section
 
 open scoped Manifold ContDiff BigOperators Topology
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

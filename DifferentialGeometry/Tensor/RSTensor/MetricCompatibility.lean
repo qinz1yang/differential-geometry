@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility
 import DifferentialGeometry.Tensor.RSTensor.Metric
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
-import DifferentialGeometry.Bundle.SectionRealized
+import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
@@ -134,7 +134,6 @@ theorem nabla_metric_zero
 
 theorem nabla_zero
     [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -181,7 +180,6 @@ theorem nabla_zero
 
 theorem zero_realizes_nabla
     [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _)) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

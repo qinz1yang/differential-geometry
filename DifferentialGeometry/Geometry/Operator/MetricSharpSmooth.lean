@@ -245,7 +245,7 @@ lemma metricSharpChartLocal_contMDiffOn_total
     ContMDiffOn.sum_section (fun i _ => hsmul i)
   exact hsum
 
-lemma metricSharp_contMDiff_total [I.Boundaryless]
+lemma metricSharp_contMDiff_total
     (g : SmoothRiemannianMetric I M)
     {cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ}
     (hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),

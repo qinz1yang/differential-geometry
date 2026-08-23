@@ -36,7 +36,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private theorem appCc_time_deriv
+private theorem operatorFieldApplication_time_deriv
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ dΦ : ℝ → SmoothCcTensor g b c) {S : Set ℝ}
     (hderiv : ∀ t ∈ S, ∀ x : M, ∀ A : Tensor0SSpace b I x,
@@ -58,7 +58,7 @@ private theorem appCc_time_deriv
       unitModel (I := I) (M := M) g c
           (operatorFieldApply (I := I) (M := M) g b c Ψ W) x slots =
         Tensor0SSpace.toModel ((Ψ.toSection x) A) slots := by
-    simp only [unitModel, appCc_toSection, ContinuousLinearMap.comp_apply, A]
+    simp only [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply, A]
   rw [show (fun τ => unitModel (I := I) (M := M) g c
       (operatorFieldApply (I := I) (M := M) g b c (Φ τ) W) x slots) =
       (fun τ => Tensor0SSpace.toModel (((Φ τ).toSection x) A) slots) by
@@ -420,8 +420,8 @@ private theorem coeffRem_jet
       (I := I) (M := M) g b (c + i)
       (fun θ => iteratedCovGrad (I := I) g b c i (Ψ θ))
       (affineSet S a h) (affineSet_open hS a h) (affine_uIcc hseg)
-      hji x (Real.sqrt η) (Real.sqrt_nonneg η) hcont hsup
-  have hcomm := icg_path_comm (I := I) (M := M)
+      hji x (Real.sqrt η) hcont hsup
+  have hcomm := iteratedCovGrad_path_comm (I := I) (M := M)
     g b c i Ψ (affineSet S a h) (affineSet_open hS a h)
     (affine_uIcc hseg) hΨjoint hji
   have hcoeff :

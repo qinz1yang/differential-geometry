@@ -20,6 +20,7 @@ variable {V F : Type*}
 omit [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem klL1Scale_inv {R : ℝ} (hR : 0 < R) :
     (klL1Scale (V := V) R)⁻¹ =
       ENNReal.ofReal (R ^ Module.finrank ℝ V) := by

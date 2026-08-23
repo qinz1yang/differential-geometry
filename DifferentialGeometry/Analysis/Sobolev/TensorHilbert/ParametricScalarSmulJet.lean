@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Tensor.RSTensor.RankZero
@@ -9,9 +9,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
-open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Spectral
-open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -26,7 +23,7 @@ namespace Sobolev
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -135,7 +132,7 @@ theorem app_scalarCc (g : SmoothRiemannianMetric I M)
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [appCc_toSection, scalarSmul_toSection_apply]
+  rw [operatorFieldApplication_toSection, scalarSmul_toSection_apply]
   apply ContinuousLinearMap.ext
   intro c
   rw [ContinuousLinearMap.comp_apply]

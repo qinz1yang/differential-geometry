@@ -415,7 +415,7 @@ lemma gradArmFib_covGrad_slice_eq
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
 lemma slot0SliceFib_section_contMDiff
-    (_g : SmoothRiemannianMetric I M) (s : ℕ)
+    (s : ℕ)
     {Y : Π b : M, TensorRSSpace 0 (s + 1) I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
@@ -483,7 +483,7 @@ lemma gradArmDirCLM_homSection_contMDiff
         (E := fun z : M => TensorRSSpace 0 s I z) x
         ((2 : ℝ) • riemannOp (tensorCov (I := I) g 0 s) x (B i x) (Z x)
           (tensorSlotZeroEvalFib (I := I) (M := M) x s (B i x) (Y x)))) := by
-    have hslice := slot0SliceFib_section_contMDiff (I := I) (M := M) g s hY (hB i)
+    have hslice := slot0SliceFib_section_contMDiff (I := I) (M := M) s hY (hB i)
     have hRsec : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
         (fun x : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
           (E := fun z : M => TensorRSSpace 0 s I z) x
@@ -516,7 +516,7 @@ lemma gradArmDirCLM_homSection_contMDiff
       intro x
       exact congrArg (TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x)
         (riemannOp_apply_smooth (cov := LeviCivita (I := I) g) (hB i) Z.contMDiff (hB i))
-    exact slot0SliceFib_section_contMDiff (I := I) (M := M) g s hY hdir
+    exact slot0SliceFib_section_contMDiff (I := I) (M := M) s hY hdir
   exact hRarm.sub_section hC5arm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in

@@ -25,7 +25,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 local notation "EuclN_E" =>
@@ -254,7 +253,7 @@ lemma continuous_sqrt_g_inner_gradFun_self
   exact Real.continuous_sqrt.comp hcont
 
 lemma exists_continuous_sup_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [CompactSpace M]
     {f : M → ℝ} (hf : Continuous f) (hf_nn : ∀ x, 0 ≤ f x) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x, f x ≤ C := by
   by_cases hM : Nonempty M
@@ -383,7 +382,7 @@ lemma sqrt_g_inner_gradFun_pou_mul_le
         2 * (Real.sqrt (g.inner x a a) * Real.sqrt (g.inner x b b)) := by
       have h_le_abs : g.inner x a b ≤ |g.inner x a b| := le_abs_self _
       linarith
-    nlinarith [h_2ab_le, h_sqrt_a_sq, h_sqrt_b_sq,
+    nlinarith only [h_2ab_le, h_sqrt_a_sq, h_sqrt_b_sq,
       Real.sqrt_nonneg (g.inner x a a), Real.sqrt_nonneg (g.inner x b b)]
   have h_sum_nn : 0 ≤ Real.sqrt (g.inner x a a) + Real.sqrt (g.inner x b b) :=
     add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)

@@ -305,7 +305,7 @@ end Bundle.continuousMultilinearMap
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set ContinuousLinearMap
+open Set ContinuousLinearMap
 
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -451,9 +451,7 @@ end Bundle.continuousMultilinearMap
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set ContinuousLinearMap
 
-open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace Bundle.continuousMultilinearMap
 
@@ -781,7 +779,7 @@ noncomputable def dualMultilinearFiberwiseEquiv (r : ℕ) (x : B) :
 
 omit [ContMDiffVectorBundle n F E IB] in
 theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
-    [ContMDiffVectorBundle n F E IB] :
+    [hE : ContMDiffVectorBundle n F E IB] :
     ContMDiff
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜))
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜))
@@ -794,6 +792,7 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r
               (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x))) := by
+  let _ := hE
   letI := dualBundleSmoothVectorBundle (𝕜 := 𝕜) (B := B) (F := F) (E := E) IB n r
   intro p₀
   rw [contMDiffAt_totalSpace]
@@ -820,7 +819,7 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
 
 omit [ContMDiffVectorBundle n F E IB] in
 theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
-    [ContMDiffVectorBundle n F E IB] :
+    [hE : ContMDiffVectorBundle n F E IB] :
     ContMDiff
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜))
       (IB.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜))
@@ -833,6 +832,7 @@ theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
           TotalSpace
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜] 𝕜))) := by
+  let _ := hE
   haveI : ContMDiffVectorBundle n (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) IB :=
     ContMDiffVectorBundle.continuousLinearMap
   haveI : ContMDiffVectorBundle n

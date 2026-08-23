@@ -846,7 +846,7 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
       contDiffHolderSpaceFDeriv_apply,
       contDiffHolderSpaceLowerOrderTerm_apply]
   have hLBound : ‖nondivergenceOperator a0 b0 c0 u0 du d2u‖ ≤ ‖Lu‖₊ := by
-    rw [hLsource, BoundedContinuousFunction.norm_le (by positivity)]
+    rw [hLsource, BoundedContinuousFunction.norm_le (NNReal.coe_nonneg _)]
     intro x
     change ‖Lu x‖ ≤ (‖Lu‖₊ : Real)
     simpa using norm_boundedHolderSpace_apply_le Lu x
@@ -856,7 +856,7 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
     simpa only [boundedHolderSpaceToBoundedContinuousFunction_apply]
       using boundedHolderSpace_holderWith Lu
   have hloBound : ‖lowerOrderTerm b0 c0 u0 du‖ ≤ ‖lo‖₊ := by
-    rw [hlosource, BoundedContinuousFunction.norm_le (by positivity)]
+    rw [hlosource, BoundedContinuousFunction.norm_le (NNReal.coe_nonneg _)]
     intro x
     change ‖lo x‖ ≤ (‖lo‖₊ : Real)
     simpa using norm_boundedHolderSpace_apply_le lo x

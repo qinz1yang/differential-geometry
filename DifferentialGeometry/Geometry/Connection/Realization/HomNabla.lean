@@ -329,6 +329,7 @@ private theorem contMDiff_hom_apply_section
   exact ContMDiff.clm_bundle_apply (b := id) τ.contMDiff Y.contMDiff
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace F] in
+omit [ContMDiffVectorBundle ∞ F V I] in
 private theorem homBundleCov_section_smooth
     (cov_TM : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov_TM ∞]

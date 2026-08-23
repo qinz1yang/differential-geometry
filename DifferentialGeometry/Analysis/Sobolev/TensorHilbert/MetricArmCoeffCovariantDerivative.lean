@@ -61,7 +61,7 @@ private theorem armSlotEndoCc_curry_apply (g : SmoothRiemannianMetric I M)
     (x : M) (A : Tensor0SSpace (s + 1) I x) (u : TangentSpace I x) :
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
-          (armSlotEndoCc (I := I) (M := M) g s Arm).toSection x) A)) u =
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm).toSection x) A)) u =
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Arm x) u) A := by
   rw [armSlotEndoCc_toSection]
   change (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
@@ -204,7 +204,7 @@ private theorem armSlotEndoCc_curriedSection_eq
     (fun y : M => Tensor0SNabla.curriedSection I M
         (fun z : M => (show Tensor0SSpace (s + 1) I z →L[ℝ]
           Tensor0SSpace (s + 1 + 1) I z from
-          (armSlotEndoCc (I := I) (M := M) g s Arm).toSection z) (W z)) y (Y y)) =
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm).toSection z) (W z)) y (Y y)) =
       (fun y : M => (show Tensor0SSpace (s + 1) I y →L[ℝ]
         Tensor0SSpace (s + 1) I y from
         (endoSlotZeroCcTensor (I := I) (M := M) g s
@@ -227,7 +227,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_curve
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
-            (armSlotEndoCc (I := I) (M := M) g s Arm) x v) (W x))) (Y x) =
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) (W x))) (Y x) =
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
           ((endoCovariantDerivative (I := I) (M := M) g)
             (bilinEndoAppliedSection (I := I) (M := M) Arm Y) x v) (W x)
@@ -242,7 +242,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_curve
   set NY : TangentSpace I x :=
     (LeviCivita (I := I) g) (fun y => Y y) x v with hNY
   have hT := tensorCovDerivAt_curried_apply_section (I := I) (M := M)
-    g (s + 1) (s + 1) (armSlotEndoCc (I := I) (M := M) g s Arm) W hW Y x v
+    g (s + 1) (s + 1) (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) W hW Y x v
   rw [hT, hbridge, ← hNY, ← hLw]
   have hSI := tensorCovDerivAt_section_apply_add (I := I) (M := M)
     g (s + 1) (s + 1)
@@ -273,7 +273,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_apply_sections
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
-            (armSlotEndoCc (I := I) (M := M) g s Arm) x v) (W x))) (Y x) =
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) (W x))) (Y x) =
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (((bilinEndoCovariantDerivative (I := I) (M := M) g) Arm x v) (Y x)) (W x) := by
   rw [tensorCovDerivAt_armSlotEndoCc_curry_curve (I := I) (M := M)
@@ -302,7 +302,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_eq_slotInsertEndoFib
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
-            (armSlotEndoCc (I := I) (M := M) g s Arm) x v) D)) v0 =
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) D)) v0 =
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (((bilinEndoCovariantDerivative (I := I) (M := M) g) Arm x v) v0) D := by
   obtain ⟨w, hw⟩ := ContMDiffSection.exists_eq_at (I := I)
@@ -321,7 +321,7 @@ theorem tensorCovDerivAt_armSlotEndoCc_eq (g : SmoothRiemannianMetric I M) (s : 
     (x : M) (v : E) :
     (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
         tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
-          (armSlotEndoCc (I := I) (M := M) g s Arm) x v) =
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) =
       bilinearSlotInsertCLM (I := I) (M := M) s x
         ((bilinEndoCovariantDerivative (I := I) (M := M) g) Arm x v) := by
   apply ContinuousLinearMap.ext
@@ -333,7 +333,7 @@ theorem tensorCovDerivAt_armSlotEndoCc_eq (g : SmoothRiemannianMetric I M) (s : 
   rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s + 1)
     (T := (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
       tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
-        (armSlotEndoCc (I := I) (M := M) g s Arm) x v) D) (v0 := m 0) (vs := Matrix.vecTail m)]
+        (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) D) (v0 := m 0) (vs := Matrix.vecTail m)]
   rw [tensorCovDerivAt_armSlotEndoCc_curry_eq_slotInsertEndoFib (I := I) (M := M) g s Arm x v D
     (m 0)]
   simp only [Fin.cons_zero]
@@ -348,20 +348,20 @@ theorem covGrad_armSlotEndoCc_toSection_eq (g : SmoothRiemannianMetric I M) (s :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1 + 1) I x from
           (covGrad (I := I) (M := M) g (s + 1) (s + 1 + 1)
-            (armSlotEndoCc (I := I) (M := M) g s Arm)).toSection x) D) v =
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm)).toSection x) D) v =
       Tensor0SSpace.toModel
         ((bilinearSlotInsertCLM (I := I) (M := M) s x
             ((bilinEndoCovariantDerivative (I := I) (M := M) g) Arm x (v 0))) D)
         (Matrix.vecTail v) := by
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g (s + 1) (s + 1 + 1)
-    (armSlotEndoCc (I := I) (M := M) g s Arm) x D v]
+    (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x D v]
   rw [tensorCovDerivAt_armSlotEndoCc_eq (I := I) (M := M) g s Arm x (v 0)]
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covGrad_gInvDiffSlotCoeff_eq_slotInsert_section
+theorem covGrad_inverseMetricDifferenceSlotCoefficient_eq_slotInsert_section
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    covGrad (I := I) (M := M) g₀ 2 2 (gInvDiffSlotCoeff (I := I) g₀ g₁) =
+    covGrad (I := I) (M := M) g₀ 2 2 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) =
       connArmCc (I := I) g₀ g₁ + sharpArmCc (I := I) g₀ g₁ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -382,7 +382,7 @@ theorem covGrad_gInvDiffSlotCoeff_eq_slotInsert_section
         (sharpArmCc (I := I) g₀ g₁).toSection x) D from rfl]
   change Tensor0SSpace.toModel _ v = Tensor0SSpace.toModel (_ + _) v
   rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
-  rw [covGrad_gInvDiffSlotCoeff_toSection_eval (I := I) (M := M) g₀ g₁ x D v]
+  rw [covGrad_inverseMetricDifferenceSlotCoefficient_toSection_eval (I := I) (M := M) g₀ g₁ x D v]
   rw [connArmCc_toSection, sharpArmCc_toSection]
   change _ = Tensor0SSpace.toModel
       (bilinearSlotInsertCLM (I := I) (M := M) 1 x (connArmEndo (I := I) g₀ g₁ x) D) v +
@@ -394,17 +394,17 @@ theorem covGrad_gInvDiffSlotCoeff_eq_slotInsert_section
     Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rfns_iteratedCovGrad_gInvDiffSlotCoeff_succ_le_arms
+theorem riemannianFiberNormSq_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_succ_le_arms
     (g₀ g₁ : SmoothRiemannianMetric I M) (m : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + (m + 1)) x
-        ((iteratedCovGrad (I := I) g₀ 2 2 (m + 1) (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) ≤
+        ((iteratedCovGrad (I := I) g₀ 2 2 (m + 1) (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) ≤
       2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 ((2 + 1) + m) x
             ((iteratedCovGrad (I := I) g₀ 2 3 m (connArmCc (I := I) g₀ g₁)).toSection x) +
         2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 ((2 + 1) + m) x
             ((iteratedCovGrad (I := I) g₀ 2 3 m (sharpArmCc (I := I) g₀ g₁)).toSection x) := by
-  rw [← rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 2 2 m
-    (gInvDiffSlotCoeff (I := I) g₀ g₁) x]
-  rw [covGrad_gInvDiffSlotCoeff_eq_slotInsert_section (I := I) g₀ g₁]
+  rw [← riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 2 2 m
+    (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x]
+  rw [covGrad_inverseMetricDifferenceSlotCoefficient_eq_slotInsert_section (I := I) g₀ g₁]
   rw [iteratedCovGrad_add]
   exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 ((2 + 1) + m) x _ _
 

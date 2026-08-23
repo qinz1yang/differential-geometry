@@ -1,4 +1,7 @@
-import DifferentialGeometry.Geometry.Connection.Chart.Basic
+import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
+import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+import Mathlib.Geometry.Manifold.MFDeriv.Tangent
+import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
 namespace DifferentialGeometry
@@ -41,7 +44,6 @@ omit [FiniteDimensional ℝ E] in
 def tensor0SComponentInFrame {s : Nat}
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (_hframe : IsLocalFrameOn I E 1 frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) : Real :=
   T x (fun a => frame (vectorSlots a) x)
@@ -50,10 +52,9 @@ omit [FiniteDimensional ℝ E] in
 @[simp] theorem tensor0SComponentInFrame_eval {s : Nat}
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) :
-    tensor0SComponentInFrame T frame hframe x vectorSlots =
+    tensor0SComponentInFrame T frame x vectorSlots =
       T x (fun a => frame (vectorSlots a) x) := by
   rfl
 
@@ -61,7 +62,6 @@ def tensorRSComponentFromCovariantInputInFrame {r s : Nat}
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (input : (x : M) -> Tensor0SBundle.Tensor0SSpace (𝕜 := Real) r I x)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (_hframe : IsLocalFrameOn I E 1 frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) : Real :=
   (T x (input x)) (fun a => frame (vectorSlots a) x)
@@ -71,10 +71,9 @@ omit [FiniteDimensional ℝ E] in
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (input : (x : M) -> Tensor0SBundle.Tensor0SSpace (𝕜 := Real) r I x)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) :
-    tensorRSComponentFromCovariantInputInFrame T input frame hframe x vectorSlots =
+    tensorRSComponentFromCovariantInputInFrame T input frame x vectorSlots =
       (T x (input x)) (fun a => frame (vectorSlots a) x) := by
   rfl
 

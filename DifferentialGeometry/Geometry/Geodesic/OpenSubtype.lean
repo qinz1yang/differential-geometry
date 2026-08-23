@@ -17,7 +17,6 @@ open Bundle Manifold Set TopologicalSpace
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]

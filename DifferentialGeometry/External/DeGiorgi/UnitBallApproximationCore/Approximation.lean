@@ -9,8 +9,8 @@ This module proves the quantitative approximation results on the unit ball.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal
+open MeasureTheory Metric Filter Topology
+open scoped ENNReal
 
 namespace DeGiorgi
 

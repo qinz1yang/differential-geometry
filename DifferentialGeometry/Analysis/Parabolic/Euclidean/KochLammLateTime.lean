@@ -14,6 +14,7 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
+omit [FiniteDimensional ℝ V] in
 theorem klHeatExp_add :
     klHeatExp V + 1 =
       2 / (Module.finrank ℝ V + 2 : ℝ) := by
@@ -22,6 +23,7 @@ theorem klHeatExp_add :
   field_simp [hn2]
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klTermScale_exp :
     (klHeatExp V + 1) / klQDual V =
       2 / (Module.finrank ℝ V + 4 : ℝ) := by
@@ -31,6 +33,7 @@ theorem klTermScale_exp :
   have hn4 : (Module.finrank ℝ V : ℝ) + 4 ≠ 0 := by positivity
   field_simp [hn2, hn4]
 
+omit [FiniteDimensional ℝ V] in
 theorem klTermTime_int (t : ℝ) :
     ∫ s : ℝ in t / 2..t, (t - s) ^ klHeatExp V =
       (t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1) := by
@@ -44,6 +47,7 @@ theorem klTermTime_int (t : ℝ) :
   rw [Real.zero_rpow hexp.ne']
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klTermTime_set {t : ℝ} (ht : 0 < t) :
     ∫ s : ℝ in Set.Ioc (t / 2) t, (t - s) ^ klHeatExp V =
       (t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1) := by

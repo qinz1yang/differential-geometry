@@ -109,12 +109,12 @@ theorem MemWtwokTwo_of_forall_finset_memWkp
   (MemWtwokTwo_iff_forall_finset (I := I) (M := M) g k T).mpr hT
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompactSpace M] in
 theorem MemWtwokTwo.memWkp_chartComp_finset
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {k : ℕ}
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T)
-    {α : M} (_hα : α ∈ chartAtlasPOU_finset (I := I) (M := M))
-    (Idx : Fin r → Fin (Module.finrank ℝ E))
+    {α : M} (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) (2 * k) 2
       (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)

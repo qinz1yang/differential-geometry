@@ -101,7 +101,7 @@ noncomputable def H1ComplPartialCLM
     (smoothToH1Compl (I := I) (M := M) g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma H1ComplPartialCLM_smoothToH1Compl
+lemma H1ComplPartialCLM_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E))
     (hLip : ChartPushedPartialLipschitz (I := I) (M := M) g α j)
@@ -126,7 +126,7 @@ noncomputable def chartPushedWeakPartialLp
   H1ComplPartialCLM (I := I) (M := M) g α j hLip u_h
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem chartPushedWeakPartialLp_smoothToH1Compl
+theorem chartPushedWeakPartialLp_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E))
     (hLip : ChartPushedPartialLipschitz (I := I) (M := M) g α j)

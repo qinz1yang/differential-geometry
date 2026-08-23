@@ -150,7 +150,7 @@ private lemma eigenvectorSmoothChart_tensorL2ChartComponent_eq_transport_sum
       (fun y => chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ∑ Q : TensorCompIdx (E := E) r s,
-          ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+          ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -198,7 +198,7 @@ private lemma eigenvectorSmoothChart_tensorL2ChartComponent_eq_transport_sum
         =ᵐ[chartL2Measure (I := I) (M := M) β]
       (fun y => chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
-        ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+        ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -222,7 +222,7 @@ private lemma eigenvectorChartComponentFun_ite_chartPushedPouWeight_zero_ae_zero
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
-        eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α Q y
       else 0)
       =ᵐ[chartL2Measure (I := I) (M := M) α]
@@ -242,7 +242,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α β : M) (P₀ Q : TensorCompIdx (E := E) r s)
     (hα : α ∉ transportChartCenters (I := I) (M := M) β) :
-    ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+    ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -251,8 +251,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
       =ᵐ[chartL2Measure (I := I) (M := M) β]
       (fun _ : EuclN => (0 : ℝ)) := by
   classical
-  have h_coeFn := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M)
-    g r s α β P₀ Q (tensorL2ChartComponent (I := I) (M := M) g r s
+  have h_coeFn := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M) r s α β P₀ Q (tensorL2ChartComponent (I := I) (M := M) g r s
       (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M)
           g r s) i) α Q)
@@ -271,8 +270,8 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
         (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) β α)]
   have h_on_overlap :
       (fun y => chartPushedRaw (I := I) (M := M) β
-          (transportCoeffManifold (I := I) (M := M) g r s α β P₀ Q) y *
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q)
+          (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y *
+        (eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q)
           (chartTransitionEuclid (I := I) (M := M) β α y))
         =ᵐ[(chartL2Measure (I := I) (M := M) β).restrict
             (chartOverlapEuclid (I := I) (M := M) β α)]
@@ -283,7 +282,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
         (I := I) (M := M) g r s i α Q
     have h_gate_overlap :
         (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
-            eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+            eigenvectorChartComponentFun (I := I) (M := M)
               g r s i α Q y
           else 0)
           =ᵐ[(volume : Measure EuclN).restrict
@@ -321,8 +320,8 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
       rw [← hy_eq]
       exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) β α hz_srcβ
     have h_coeff : chartPushedRaw (I := I) (M := M) β
-        (transportCoeffManifold (I := I) (M := M) g r s α β P₀ Q) y =
-        transportCoeffManifold (I := I) (M := M) g r s α β P₀ Q z := by
+        (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y =
+        transportCoeffManifold (I := I) (M := M) r s α β P₀ Q z := by
       rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target, ← hz_def]
     by_cases hχβ : ((chartKernelCutoff (I := I) (M := M) β :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) z = 0
@@ -341,15 +340,15 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
           (I := I) (M := M) α hz_srcα, hρα]
       have hy_gate' : (if chartPushedPouWeight (I := I) (M := M) α
             (chartTransitionEuclid (I := I) (M := M) β α y) = 0 then
-          eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q
+          eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
             (chartTransitionEuclid (I := I) (M := M) β α y)
         else 0) = 0 := hy_gate
       rw [if_pos hw_zero] at hy_gate'
       rw [hy_gate', mul_zero]
   have h_off_overlap : ∀ y, y ∉ chartOverlapEuclid (I := I) (M := M) β α →
       chartPushedRaw (I := I) (M := M) β
-          (transportCoeffManifold (I := I) (M := M) g r s α β P₀ Q) y *
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α Q)
+          (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y *
+        (eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q)
           (chartTransitionEuclid (I := I) (M := M) β α y) = 0 := by
     intro y hy_notin
     by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) β
@@ -366,7 +365,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
           hz_notin_srcα
             (chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α h))
       have h_coeff_zero : chartPushedRaw (I := I) (M := M) β
-          (transportCoeffManifold (I := I) (M := M) g r s α β P₀ Q) y = 0 := by
+          (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y = 0 := by
         rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
           ← hz_def, transportCoeffManifold_apply, hχα_zero]
         ring
@@ -383,7 +382,7 @@ private lemma transportSum_eigenvector_ae_zero_of_notMem
     (α β : M) (P₀ : TensorCompIdx (E := E) r s)
     (hα : α ∉ transportChartCenters (I := I) (M := M) β) :
     (fun y => ∑ Q : TensorCompIdx (E := E) r s,
-        ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+        ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -394,7 +393,7 @@ private lemma transportSum_eigenvector_ae_zero_of_notMem
       (fun _ : EuclN => (0 : ℝ)) := by
   classical
   have h_each : ∀ Q : TensorCompIdx (E := E) r s,
-      ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+      ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -464,7 +463,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
         (chartPushedRaw I β
             (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
           ∑ Q : TensorCompIdx (E := E) r s,
-            ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+            ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
                 (tensorL2ChartComponent (I := I) (M := M) g r s
                   (tensorResolventEigenbasisVec (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -489,7 +488,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
     chartPushedRaw I β
         (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
       ∑ Q : TensorCompIdx (E := E) r s,
-        ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+        ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -502,7 +501,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ∑ γ ∈ transportChartCenters (I := I) (M := M) β,
           ∑ Q : TensorCompIdx (E := E) r s,
-            ((chartTransitionTransportCLM (I := I) (M := M) g r s γ β P₀ Q
+            ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
                 (tensorL2ChartComponent (I := I) (M := M) g r s
                   (tensorResolventEigenbasisVec (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -548,7 +547,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
       change chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ∑ Q : TensorCompIdx (E := E) r s,
-          ((chartTransitionTransportCLM (I := I) (M := M) g r s α β P₀ Q
+          ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)

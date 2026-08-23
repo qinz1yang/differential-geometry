@@ -190,7 +190,6 @@ theorem crossover_of_centered_level_set_decay
 open Bundle Manifold Set
 open scoped ContDiff Manifold Topology
 
-open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Integral.DivergenceTheorem
 

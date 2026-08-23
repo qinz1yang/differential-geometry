@@ -96,7 +96,6 @@ theorem tensorHs_eq_finset_sum_of_finite_support
       · simp [h]
     rw [hzero, h_rhs_zero]
 
-open DifferentialGeometry.Analysis.Spectral
 
 namespace TensorHsSmoothReprAux
 

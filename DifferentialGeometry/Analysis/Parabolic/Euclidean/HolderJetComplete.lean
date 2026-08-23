@@ -116,7 +116,7 @@ theorem holderBall_time
   J.2.2.2 i x
 
 def FinJetRealizes
-    {ι : Type*} [Fintype ι] {τ : ℝ}
+    {ι : Type*} {τ : ℝ}
   (J : FinHolderJet (V := V) (F := F) ι τ)
     (u : ι → ℝ → V → F) : Prop :=
   (∀ i t, ContDiff ℝ 2 (u i t)) ∧
@@ -128,7 +128,7 @@ def FinJetRealizes
       iteratedFDeriv ℝ 2 (u i t) x
 
 theorem fixed_jet_realizes
-    {ι : Type*} [Fintype ι] {τ : ℝ}
+    {ι : Type*} {τ : ℝ}
     (Φ : FinHolderJet (V := V) (F := F) ι τ →
       FinHolderJet (V := V) (F := F) ι τ)
     (real : FinHolderJet (V := V) (F := F) ι τ →

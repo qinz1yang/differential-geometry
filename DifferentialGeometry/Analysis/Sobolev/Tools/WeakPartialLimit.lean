@@ -25,7 +25,7 @@ private lemma conj_inv_add_inv_eq_one {p : ℝ≥0∞} (hp : 1 ≤ p) :
   rw [inv_inv]
   exact (add_tsub_cancel_of_le h_inv_le_one)
 
-private instance holderConjugate_conj (p : ℝ≥0∞) (hp : 1 ≤ p) :
+private theorem holderConjugate_conj (p : ℝ≥0∞) (hp : 1 ≤ p) :
     ENNReal.HolderConjugate p (conj p) where
   inv_add_inv_eq_inv := by
     simp only [inv_one]
@@ -134,8 +134,8 @@ private lemma tendsto_integral_mul_of_eLpNorm_tendsto_zero
 
 omit [NeZero d] in
 theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ ∞)
-    {Ω : Set E} (_hΩ_open : IsOpen Ω)
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p)
+    {Ω : Set E}
     (i : Fin d)
     {u_n g_n : ℕ → E → ℝ}
     {u g : E → ℝ}
@@ -244,7 +244,7 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
 
 omit [NeZero d] in
 private theorem memW1p_and_chosenWeakPartial_ae_of_tendsto
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u_n : ℕ → E → ℝ} {u : E → ℝ}
     {g : Fin d → E → ℝ}
@@ -269,7 +269,7 @@ private theorem memW1p_and_chosenWeakPartial_ae_of_tendsto
     fun n => (hu_n_w1p n).1
   have h_weak_g : ∀ i, DeGiorgi.HasWeakPartialDeriv i (g i) u Ω := by
     intro i
-    refine hasWeakPartialDeriv_of_tendsto_eLpNorm hp_one hp_top hΩ i
+    refine hasWeakPartialDeriv_of_tendsto_eLpNorm hp_one i
       hu_n_lp (fun n => h_chosen_lp n i) hu_lp (hg_lp i) ?_ h_u_tendsto (h_partial_tendsto i)
     intro n
     exact chosenWeakPartial'_isWeakPartial_of_mem (hu_n_w1p n) i
@@ -291,7 +291,7 @@ private theorem memW1p_and_chosenWeakPartial_ae_of_tendsto
 
 omit [NeZero d] in
 theorem MemWkp_of_iter_tendsto_eLpNorm
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
+    {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set E} (hΩ : IsOpen Ω)
     (k : ℕ)
     {u_n : ℕ → E → ℝ}
@@ -364,7 +364,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
         rw [← h_simp]
         exact h
       obtain ⟨hu_w1p, h_chosen_ae⟩ :=
-        memW1p_and_chosenWeakPartial_ae_of_tendsto hp_one hp_top hΩ
+        memW1p_and_chosenWeakPartial_ae_of_tendsto hp_one hΩ
           hu_n_w1p hu_lp hg_lp h_u_tendsto h_partial_tendsto
       have h_chosen_mem_k :
           ∀ i, MemWkp (d := d) k p (g i) Ω := by

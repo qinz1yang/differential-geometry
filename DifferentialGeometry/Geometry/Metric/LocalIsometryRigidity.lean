@@ -245,8 +245,6 @@ theorem localIso_eventually
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
     [T2Space (TangentBundle I M)]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f₁ f₂ : M → N}
@@ -364,8 +362,8 @@ theorem localIso_rigid
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
     [T2Space (TangentBundle I M)] [T2Space (TangentBundle J N)]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [hManifoldN : IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f₁ f₂ : M → N}
@@ -380,6 +378,8 @@ theorem localIso_rigid
     (p : M) (hp : f₁ p = f₂ p)
     (hdp : mfderiv I J f₁ p = mfderiv I J f₂ p) :
     f₁ = f₂ := by
+  let _ := hManifoldM
+  let _ := hManifoldN
   apply eq_of_point_data
     (hld₁.contMDiff.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞))
     (hld₂.contMDiff.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞))

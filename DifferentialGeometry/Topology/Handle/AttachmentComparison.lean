@@ -86,7 +86,7 @@ private theorem thickenMap_rel (k l : ℕ) {X : Type u} (psi : CellBoundary k �
     exact (DifferentialGeometry.Topology.adjunction_coherence (attachingInclusion k l)
       (coreProjectionAttachingMap k l psi) (x, closedCellCenter l)).symm
 
-noncomputable def collapse (k l : ℕ) {X : Type u} [TopologicalSpace X]
+noncomputable def inverse_metric_contraction (k l : ℕ) {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) : C(AdjunctionSpace k l (coreProjectionAttachingMap k l psi), CellAdjunctionSpace k psi) :=
   ⟨Quot.lift (collapseMap k l psi) (collapseMap_rel k l psi),
     continuous_adjunction_lift (attachingInclusion k l) (coreProjectionAttachingMap k l psi) (collapseMap_rel k l psi)
@@ -109,13 +109,13 @@ noncomputable def thicken (k l : ℕ) {X : Type u} [TopologicalSpace X]
 
 theorem collapse_lower {k l : ℕ} {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) (x : X) :
-    collapse k l psi (lower (coreProjectionAttachingMap k l psi) x) =
+    inverse_metric_contraction k l psi (lower (coreProjectionAttachingMap k l psi) x) =
       DifferentialGeometry.Topology.adjunctionLower (i := cellBoundaryInclusion k) psi x := by
   rfl
 
 theorem collapse_cell {k l : ℕ} {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) (p : StandardHandle k l) :
-    collapse k l psi (cell (coreProjectionAttachingMap k l psi) p) =
+    inverse_metric_contraction k l psi (cell (coreProjectionAttachingMap k l psi) p) =
       DifferentialGeometry.Topology.adjunctionCell (cellBoundaryInclusion k) psi p.1 := by
   rfl
 
@@ -133,15 +133,15 @@ theorem thicken_cell {k l : ℕ} {X : Type u} [TopologicalSpace X]
 
 theorem collapse_comp_thicken {k l : ℕ} {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) :
-    (collapse k l psi).comp (thicken k l psi) = ContinuousMap.id (CellAdjunctionSpace k psi) := by
+    (inverse_metric_contraction k l psi).comp (thicken k l psi) = ContinuousMap.id (CellAdjunctionSpace k psi) := by
   apply ContinuousMap.ext
   refine Quot.ind ?_
   intro z
   cases z with
   | inl x =>
-    simp [collapse, thicken, collapseMap, thickenMap, adjunctionCell, adjunctionMk]
+    simp [inverse_metric_contraction, thicken, collapseMap, thickenMap, adjunctionCell, adjunctionMk]
   | inr x =>
-    simp [collapse, thicken, collapseMap, thickenMap, adjunctionCell, adjunctionLower,
+    simp [inverse_metric_contraction, thicken, collapseMap, thickenMap, adjunctionCell, adjunctionLower,
       adjunctionMk]
 
 private def homotopyCellMap (k l : ℕ) {X : Type u} (psi : CellBoundary k → X) :
@@ -183,7 +183,7 @@ private theorem homotopyRep_rel (k l : ℕ) {X : Type u} (psi : CellBoundary k �
 noncomputable def thickenCollapseHomotopy (k l : ℕ) {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) :
     ContinuousMap.HomotopyRel (ContinuousMap.id (AdjunctionSpace k l (coreProjectionAttachingMap k l psi)))
-      ((thicken k l psi).comp (collapse k l psi))
+      ((thicken k l psi).comp (inverse_metric_contraction k l psi))
       (Set.range (lower (coreProjectionAttachingMap k l psi))) where
   toHomotopy := {
     toContinuousMap := ⟨fun p : I × AdjunctionSpace k l (coreProjectionAttachingMap k l psi) =>
@@ -235,10 +235,10 @@ noncomputable def thickenCollapseHomotopy (k l : ℕ) {X : Type u} [TopologicalS
       intro z
       cases z with
       | inl p =>
-        simp [homotopyRep, homotopyCellMap, radialStep_one, collapse, thicken, collapseMap,
+        simp [homotopyRep, homotopyCellMap, radialStep_one, inverse_metric_contraction, thicken, collapseMap,
           thickenMap, adjunctionCell, adjunctionMk]
       | inr x =>
-        simp [homotopyRep, homotopyLowerMap, collapse, thicken, collapseMap, thickenMap,
+        simp [homotopyRep, homotopyLowerMap, inverse_metric_contraction, thicken, collapseMap, thickenMap,
           adjunctionLower, adjunctionMk]
   }
   prop' := by
@@ -263,7 +263,7 @@ theorem thickenCollapseHomotopy_apply_lower {k l : ℕ} {X : Type u} [Topologica
 
 theorem collapse_comp_lower {k l : ℕ} {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) :
-    (collapse k l psi).comp ⟨lower (coreProjectionAttachingMap k l psi),
+    (inverse_metric_contraction k l psi).comp ⟨lower (coreProjectionAttachingMap k l psi),
         continuous_adjunctionLower (i := attachingInclusion k l) (coreProjectionAttachingMap k l psi)⟩ =
       ⟨DifferentialGeometry.Topology.adjunctionLower (i := cellBoundaryInclusion k) psi,
         continuous_adjunctionLower (i := cellBoundaryInclusion k) psi⟩ := by
@@ -289,7 +289,7 @@ noncomputable def handleCellAdjunctionHomotopyEquivUnder (k l : ℕ) {X : Type u
         continuous_adjunctionLower (i := attachingInclusion k l) (coreProjectionAttachingMap k l psi)⟩
       ⟨DifferentialGeometry.Topology.adjunctionLower (i := cellBoundaryInclusion k) psi,
         continuous_adjunctionLower (i := cellBoundaryInclusion k) psi⟩ where
-  toFun := collapse k l psi
+  toFun := inverse_metric_contraction k l psi
   invFun := thicken k l psi
   map_toBase := collapse_comp_lower psi
   map_fromBase := thicken_comp_lower psi
@@ -303,7 +303,7 @@ noncomputable def handleCellAdjunctionHomotopyEquivUnder (k l : ℕ) {X : Type u
 @[simp]
 theorem handleCellAdjunctionHomotopyEquivUnder_toFun (k l : ℕ) {X : Type u}
     [TopologicalSpace X] (psi : CellBoundary k → X) :
-    (handleCellAdjunctionHomotopyEquivUnder k l psi).toFun = collapse k l psi := rfl
+    (handleCellAdjunctionHomotopyEquivUnder k l psi).toFun = inverse_metric_contraction k l psi := rfl
 
 @[simp]
 theorem handleCellAdjunctionHomotopyEquivUnder_invFun (k l : ℕ) {X : Type u}

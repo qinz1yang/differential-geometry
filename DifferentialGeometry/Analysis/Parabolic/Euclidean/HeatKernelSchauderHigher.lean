@@ -16,6 +16,7 @@ def baseD3Holder (alpha : NNReal) (x : V) : Real :=
   ‖x‖ ^ (alpha : Real) * baseD3Maj x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD3Holder_nonneg (alpha : NNReal) (x : V) :
     0 ≤ baseD3Holder alpha x :=
   mul_nonneg (Real.rpow_nonneg (norm_nonneg x) _) (baseD3Maj_nonneg x)
@@ -79,6 +80,7 @@ def heatD3Holder (alpha : NNReal) (t : Real) (x : V) : Real :=
         baseD3Holder alpha ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3Holder_nonneg (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     0 ≤ heatD3Holder alpha t x := by
   unfold heatD3Holder
@@ -95,6 +97,7 @@ theorem heatD3Holder_nonneg (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     (baseD3Holder_nonneg alpha _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3Holder_eq (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     heatD3Holder alpha t x = ‖x‖ ^ (alpha : Real) * heatD3Maj t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -167,6 +170,7 @@ theorem holderThirdHeatScale_eq (alpha : NNReal) {t : Real} (ht : 0 < t) :
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3_holder_bound (alpha : NNReal) {t : Real} (ht : 0 < t)
     (u v w x : V) :
     ‖heatD3 t u v w x‖ * ‖x‖ ^ (alpha : Real) ≤
@@ -218,6 +222,7 @@ theorem integral_holderD3 {alpha : NNReal} (halpha : alpha ≤ 1)
       ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3_neg (t : Real) (u v w x : V) :
     heatD3 t u v w (-x) = -heatD3 t u v w x := by
   unfold heatD3 baseD3 baseHeat
@@ -269,6 +274,7 @@ private theorem holder_shift_bound_d3 {alpha K : NNReal} {f : V → F}
   exact h
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem d3_cancel_bound_of_holder {alpha K : NNReal}
     {t : Real} (ht : 0 < t) {f : V → F} (hf : HolderWith K alpha f)
     (u v w x y : V) :

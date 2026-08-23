@@ -22,10 +22,8 @@ theorem chart_glue_smooth_of_chart_local_smooth
 
 theorem chart_cover_stitch_contMDiff
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-      [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-      [IsManifold I ∞ M]
     (f : M → M)
     (h : ∀ x : M, ∃ U : Set M, IsOpen U ∧ x ∈ U ∧
       ∀ y ∈ U, ContMDiffAt I I ∞ f y) :
@@ -36,7 +34,6 @@ theorem chart_cover_stitch_contMDiff
 
 theorem manifold_contMDiffAt_of_chart_smooth_flow
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-      [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [I.Boundaryless]

@@ -22,7 +22,6 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -163,7 +162,6 @@ section LeibnizChartPartial
 
 variable [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
-open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
@@ -347,7 +345,6 @@ section PointwiseGradientBound
 
 variable [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
-open DifferentialGeometry.Integral.DivergenceTheorem
 
 open DifferentialGeometry.Tensor0SBundle
 

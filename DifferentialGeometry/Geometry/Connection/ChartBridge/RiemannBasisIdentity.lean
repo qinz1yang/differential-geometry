@@ -27,7 +27,6 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma extDerivFun_comp_extChartAt_apply_basis [I.Boundaryless]
@@ -153,7 +152,6 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (x : M)
     (a b i : Fin (Module.finrank ℝ E))
     {Xa Xb Xi : Π b : M, TangentSpace I b} {U : Set M}
-    (_hXa : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xa))
     (hXb : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xb))
     (hXi : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xi))
     (hU_open : IsOpen U) (hxU : x ∈ U)
@@ -388,7 +386,7 @@ lemma mlieBracket_chartBasisVec_ext_self_eq_zero [I.Boundaryless]
     extChartAt_target_subset_interior_of_boundaryless (I := I) x hxtgt
   have hXj_at : MDiffAt (T% Xj) x := (hXj x).mdifferentiableAt (by simp)
   have hXk_at : MDiffAt (T% Xk) x := (hXk x).mdifferentiableAt (by simp)
-  rw [mlieBracket_eq_chart_fderiv_diff (I := I) x Xj Xk hxint hXj_at hXk_at]
+  rw [mlieBracket_eq_chart_fderiv_diff (I := I) x Xj Xk hxint]
   rw [fderiv_chartE_section_repr_eq_zero_of_eventuallyEq (I := I) x k hU_open hxU hXk_eq]
   rw [fderiv_chartE_section_repr_eq_zero_of_eventuallyEq (I := I) x j hU_open hxU hXj_eq]
   rw [ContinuousLinearMap.zero_apply, ContinuousLinearMap.zero_apply]
@@ -437,9 +435,9 @@ lemma riemannOp_chartBasis_eq_chartRiemannCLM_basis [I.Boundaryless]
     hU_open hxU hXj_eqU hXk_eqU]
   rw [ContinuousLinearMap.map_zero, sub_zero]
   rw [LeviCivita_chartBasisVec_secondCovDeriv (I := I) g x j k i
-    hXj_sm hXk_sm hXi_sm hU_open hxU hU_good hXj_eqU hXk_eqU hXi_eqU]
+    hXk_sm hXi_sm hU_open hxU hU_good hXj_eqU hXk_eqU hXi_eqU]
   rw [LeviCivita_chartBasisVec_secondCovDeriv (I := I) g x k j i
-    hXk_sm hXj_sm hXi_sm hU_open hxU hU_good hXk_eqU hXj_eqU hXi_eqU]
+    hXj_sm hXi_sm hU_open hxU hU_good hXk_eqU hXj_eqU hXi_eqU]
   rw [hXj_x, hXk_x, hXi_x, chartRiemannCLM_basis_apply]
   have hcoeff : ∀ l : Fin (Module.finrank ℝ E),
       (partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l) (extChartAt I x x) +

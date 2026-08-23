@@ -37,7 +37,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
   set T_outer : ℝ := min (t₀ - tmin) (tmax - t₀) / 2 with hT_outer_def
   have hT_outer_pos : 0 < T_outer := by
     rw [hT_outer_def]
-    refine div_pos (lt_min ht₀_minus_tmin htmax_minus_t₀) (by norm_num)
+    exact div_pos (lt_min ht₀_minus_tmin htmax_minus_t₀) (by norm_num)
   have hT_outer_le_tmin_half : T_outer ≤ (t₀ - tmin) / 2 := by
     rw [hT_outer_def]
     have h1 : min (t₀ - tmin) (tmax - t₀) ≤ t₀ - tmin := min_le_left _ _
@@ -61,9 +61,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
     ⟨(x₀, t₀), Metric.mem_closedBall_self (le_of_lt hρ_outer_pos),
       ⟨by linarith, by linarith⟩⟩
   have hSlab_Φ_outer_sub_orig : Slab_Φ_outer ⊆ closedBall x₀ (r : ℝ) ×ˢ Icc tmin tmax := by
-    refine Set.prod_mono ?_ ?_
-    · exact closedBall_subset_closedBall hρ_outer_le_r
-    · exact hsub_outer_orig
+    exact Set.prod_mono (closedBall_subset_closedBall hρ_outer_le_r) hsub_outer_orig
   have hΦ_cont_slab : ContinuousOn Φ Slab_Φ_outer :=
     hΦ.continuousOn.mono hSlab_Φ_outer_sub_orig
   have h_Φ_norm_cont : ContinuousOn (fun p : E × ℝ => ‖Φ p - x₀‖) Slab_Φ_outer := by
@@ -103,10 +101,9 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
   have hK_orig_nn : 0 ≤ K_orig := le_of_lt hK_orig_pos
   set T_mid : ℝ := min (T_outer * 3 / 4) (1 / (2 * K_orig)) with hT_mid_def
   have hT_mid_pos : 0 < T_mid := by
-    refine lt_min ?_ ?_
-    · positivity
-    · have : 0 < 2 * K_orig := by linarith
-      positivity
+    have hleft : 0 < T_outer * 3 / 4 := by positivity
+    have hright : 0 < 1 / (2 * K_orig) := by positivity
+    exact lt_min hleft hright
   have hT_mid_lt_outer : T_mid < T_outer := by
     have h1 : T_mid ≤ T_outer * 3 / 4 := min_le_left _ _
     linarith
@@ -165,7 +162,8 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
       rw [mem_closedBall, dist_eq_norm]
       exact le_trans h_pre hr₀_lip_ge_Φ
     have h_pair_in_f : ((τ, Φ ⟨x, τ⟩) : ℝ × E) ∈ Slab_f := ⟨hτ, h_orbit_in_r₀⟩
-    have h_pre : ‖fderiv ℝ (f τ) (Φ ⟨x, τ⟩)‖ ≤ K_pre := hK_pre_bd _ h_pair_in_f
+    have h_pre : ‖fderiv ℝ (f τ) (Φ ⟨x, τ⟩)‖ ≤ K_pre :=
+      hK_pre_bd ((τ, Φ ⟨x, τ⟩) : ℝ × E) h_pair_in_f
     linarith
   have h_fderiv_cont : ContinuousOn (fderiv ℝ Φ)
       ((ball x₀ (ρ_innerN : ℝ)) ×ˢ Ioo (t₀ - T_final) (t₀ + T_final)) :=
@@ -194,9 +192,8 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
     have hx_cb_outer : x ∈ closedBall x₀ (ρ_outerN : ℝ) :=
       closedBall_subset_closedBall (le_of_lt hρ_midN_lt_outerN) hx_cb_mid
     have ht_Ioo_mid : t ∈ Ioo (t₀ - T_mid) (t₀ + T_mid) := by
-      refine ⟨?_, ?_⟩
-      · linarith [hq_t.1, hT_final_lt_mid]
-      · linarith [hq_t.2, hT_final_lt_mid]
+      exact ⟨by linarith [hq_t.1, hT_final_lt_mid],
+        by linarith [hq_t.2, hT_final_lt_mid]⟩
     have hsub_mid_orig : Icc (t₀ - T_mid) (t₀ + T_mid) ⊆ Icc tmin tmax := by
       have hsub_mid_outer : Icc (t₀ - T_mid) (t₀ + T_mid) ⊆ Icc (t₀ - T_outer) (t₀ + T_outer) :=
         Icc_subset_Icc (by linarith) (by linarith)
@@ -206,9 +203,8 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
           ‖fderiv ℝ (f τ) (Φ ⟨y, τ⟩)‖ ≤ K_orig := by
       intro y hy τ hτ
       have hτ_outer : τ ∈ Icc (t₀ - T_outer) (t₀ + T_outer) := by
-        refine ⟨?_, ?_⟩
-        · linarith [hτ.1, hT_mid_lt_outer]
-        · linarith [hτ.2, hT_mid_lt_outer]
+        exact ⟨by linarith [hτ.1, hT_mid_lt_outer],
+          by linarith [hτ.2, hT_mid_lt_outer]⟩
       exact hA_bd_outer y hy τ hτ_outer
     have h_fd := hasFDerivAt_flow_jointly_at (ρ := ρ_outerN) hΦ hf_C1
       hT_mid_pos hK_orig_nn hKT_mid hsub_mid_orig hr'_φ_pos hρρ'_φ_outer hA_bd_mid
@@ -251,8 +247,8 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
       change (CE.symm (fderiv ℝ Φ (x, t))).1 = Lmap
       rw [hfd_eq', hCE_inv]
     rw [hfd_eq', hY_eq, ← h_timePiece_eq]
-  refine ⟨T_final, ρ_innerN, hT_final_pos, hρ_inner_pos, Y, ?_⟩
-  refine { contDiffOn := hY_C0, fderiv_eq := h_fderiv_eq }
+  exact ⟨T_final, ρ_innerN, hT_final_pos, hρ_inner_pos, Y,
+    { contDiffOn := hY_C0, fderiv_eq := h_fderiv_eq }⟩
 
 end LevelZeroFullWitness
 

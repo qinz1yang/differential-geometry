@@ -11,8 +11,8 @@ John-Nirenberg inequality.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Set
-open scoped ENNReal NNReal Topology
+open MeasureTheory Metric Filter Topology Set
+open scoped ENNReal
 
 namespace DeGiorgi
 
@@ -34,6 +34,7 @@ theorem john_nirenberg_level_set_decay
     (hmain : ∀ i,
       volume (E_lam_A ∩ (B i).carrier) ≤ ENNReal.ofReal (1 / 2) * volume ((B i).carrier)) :
     volume.real E_lam_A ≤ (1 - 1 / (2 * 5 ^ d)) * volume.real E_lam := by
+  let _ := _hE_lam_meas
   -- Finiteness of derived sets
   have hE_lam_A_fin : volume E_lam_A ≠ ⊤ := measure_ne_top_of_subset hE_lam_A_sub hE_lam_fin
   -- Set up U = ⋃ i, (B i).carrier
@@ -836,6 +837,8 @@ theorem john_nirenberg_from_base
       ‖u x - ⨍ y in Metric.ball x₀ r, u y ∂volume‖ > t}) ≤
     ENNReal.ofReal (1 / θ ^ 2) * volume (Metric.ball x₀ r) *
       ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
+  let _ := _hr
+  let _ := _ht
   -- This is a purely mathematical iteration argument (no CZ covering involved).
   -- The proof decomposes t into base + iterated steps, applies h_decay iteratively,
   -- and bounds the resulting geometric series by the exponential.
@@ -976,6 +979,7 @@ theorem level_set_family_from_base
     volume (E_lam t) ≤
       ENNReal.ofReal (1 / θ ^ 2) * volume B *
         ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
+  let _ := _ht
   have h_decayF : ∀ s : ℝ, 0 < s →
       volume (E_lam (s + A + A)) ≤ ENNReal.ofReal θ * volume (E_lam (s + A)) := by
     intro s hs
@@ -1585,6 +1589,7 @@ theorem john_nirenberg_local
       ‖u x - ⨍ y in Metric.ball x₀ R, u y ∂volume‖ > t}) ≤
     ENNReal.ofReal (C_JN d) * volume (Metric.ball x₀ R) *
       ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+  let _ := _hu_meas
   classical
   set B := Metric.ball x₀ R with hB_def
   set sixB := Metric.ball x₀ (6 * R) with hsixB_def

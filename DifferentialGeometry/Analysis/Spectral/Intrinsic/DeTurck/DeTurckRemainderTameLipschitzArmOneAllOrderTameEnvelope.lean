@@ -1,6 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPathIntegralDeviation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmOneAllOrderJetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzBackgroundOneDimensional
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
@@ -15,37 +13,29 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RawC
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRicciRHSRealizeJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSSectionChartComponentIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckCurvatureArmCoeffField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckLinearization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSSectionRealizeUnitModel
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmOperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PathIntegralFibreNormTransfer
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTower
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffL2JetMoser
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciArmPrincipalCoeffBackgroundJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckPrincipalCoefficientBackgroundJetBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ContinuousSobolevRealization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieHigherOrderCoeffField
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamChartLieDeriv
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartLieDerivative
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffAppCcValue
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.RealizedGramDerivChartEvaluation
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffOperatorFieldApplicationValue
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.GramDerivativeChartEvaluation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieCoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm2CoeffL2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmConnLapJetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzRicciArmCoeffBallUniform
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLiePathValueDerivative
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionL2JetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniform
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzDegenerateOneDimensionalVanishing
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniDecomposition
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -60,7 +50,6 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -71,26 +60,26 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_appCc_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
   linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_appCc
+  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
   linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
   linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciArmPrincipalCoeff traceHessianCoeff
+  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
   linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_realizedFam_rfns_ballUniform continuousBilinearMap_basis_expand
-  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local appCc_zero_left_local ccTensor02Symm
+  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (realizedSmallSet realizedSmallSet_isOpen Icc_subset_realizedSmallSet linearizedRicciAt
+  (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum jointContMDiff_toModel_continuous_slice
-  hasDerivAt_realizedRicciChartSum_general realizedFam)
+  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (symmAbsorbedCoeff symmAbsorbedCoeff_appCc_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
+  (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -104,11 +93,11 @@ private local instance instCompleteSpaceE_tame : CompleteSpace E :=
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
+  (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckLieArm2PrincipalCoeff deTurckLieArm1Coeff deTurckLieCoeffField
-  deTurckLieArm2PrincipalCoeff_realizedFam_jointSmooth deTurckLieArm1Coeff_realizedFam_jointSmooth
-  deTurckLieCoeffField_realizedFam_jointSmooth)
+  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+  deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
@@ -116,10 +105,10 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   deTurckLieArm2DivSlotPermAT traceHessianCoeff_toSection)
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (convexPerturbation convexPerturbation_gFibreOpBound realizedFam_inner_of_mem)
+  (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
 set_option backward.isDefEq.respectTransparency false in
-private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
+private theorem lieArm1Piece_connectionDifference_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -136,23 +125,22 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
               (DifferentialGeometry.Analysis.Sobolev.deTurckLieTraceCoeffPiece (I := I) (M := M)
                 g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-                (DifferentialGeometry.Geometry.Curvature.connDiffSection (I := I)
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀))‖ ^ 2 ≤
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' ρ
+                (DifferentialGeometry.Geometry.Curvature.connectionDifferenceSection (I := I)
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀))‖ ^ 2 ≤
             P i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-    Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_realizedFam_rfns_ballUniform
-      (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+    Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+      (I := I) (M := M) g₀ a (R := R) hδ₀
   obtain ⟨Qth, hQth_nn, hQth⟩ :=
     pAO_traceHessian_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fcd, hFcd_nn, hFcd⟩ :=
-    pAO_connDiffSection_jetL2_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
+    pAO_connectionDifferenceSection_jetL2_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λcd, Fcd0, hΛcd_nn, hFcd0_nn, hcd⟩ :=
-    lieArm1_connDiff_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
+    lieArm1_connectionDifference_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
   have h2A : ∀ k : ℕ, ∃ c : ℝ, 0 ≤ c ∧
       ∀ (S : SmoothCcTensor g₀ 4 2) (T : SmoothCcTensor g₀ 3 4)
         (ΛS ΛT : ℝ), 0 ≤ ΛS → 0 ≤ ΛT →
@@ -193,7 +181,7 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
       Finset.sum_nonneg fun l _ => hFcd_nn l
     have h2 := hQth_nn i
     have h3 := hC2_nn i
-    have h4 := appCcGdiag_nonneg (E := E) i
+    have h4 := operatorFieldApplicationGdiag_nonneg (E := E) i
     positivity
   · intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i s hs
     set W : ℝ := 1 + ∑ j ∈ Finset.range (i + 2),
@@ -210,7 +198,7 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
     by_cases hM : Nonempty M
     · haveI := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
-        lieArm1_realizedFam_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
+        lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
         lieArm1_gFibreOpBound_nonneg (I := I) (M := M) g₀ _ hδP
       have hPball := lieArm1_convexPerturbation_ball (I := I) (M := M) g₀ T T' a
@@ -275,42 +263,42 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
         rw [hW_def]
         rw [hexp] at hmono
         linarith [hsum, hmono]
-      obtain ⟨hcd0, _⟩ := hcd (realizedFam (I := I) g₀ T T' hδ hδ' s)
+      obtain ⟨hcd0, _⟩ := hcd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
         (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball
       have hS0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
           ((deTurckLieTraceCoeff (I := I) (M := M) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) σ').toSection x) ≤
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ').toSection x) ≤
           (Real.sqrt Λcom) ^ 2 := by
         intro x
-        rw [Real.sq_sqrt hΛcom_nn, lieArm1_rfns_dLTC_toSection_eq]
+        rw [Real.sq_sqrt hΛcom_nn, lieArm1_riemannianFiberNormSq_dLTC_toSection_eq]
         exact (hLich T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x).2
       have hT0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-            (connDiffSection (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
+            (connectionDifferenceSection (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
               g₀))).toSection x) ≤
           (Real.sqrt (fr ^ 2 * Λcd)) ^ 2 := by
         intro x
         rw [Real.sq_sqrt (mul_nonneg (by positivity) hΛcd_nn)]
-        refine le_trans (lieArm1_rfns_sE2_zero_le (I := I) (M := M) g₀ _ x) ?_
+        refine le_trans (lieArm1_riemannianFiberNormSq_sE2_zero_le (I := I) (M := M) g₀ _ x) ?_
         rw [hfr_def]
         exact mul_le_mul_of_nonneg_left (hcd0 x) (by positivity)
       have hFS : ∑ n ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 4 2 n
             (deTurckLieTraceCoeff (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 ≤
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 ≤
           (2 * Qth i) * W := by
         have heq : ∑ n ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 4 2 n
               (deTurckLieTraceCoeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 =
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 =
             ∑ n ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g₀ 4 2 n
                 (traceHessianCoeff (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 :=
-          Finset.sum_congr rfl fun n _ => lieArm1_normSq_icg_dLTC_eq (I := I) (M := M)
-            g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' n
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 :=
+          Finset.sum_congr rfl fun n _ => lieArm1_normSq_iteratedCovGrad_dLTC_eq (I := I) (M := M)
+            g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' n
         rw [heq]
-        refine le_trans (hQth (realizedFam (I := I) g₀ T T' hδ hδ' s)
+        refine le_trans (hQth (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball i) ?_
         have hwin := hPwin (i + 1) (by omega)
         have := hQth_nn i
@@ -318,19 +306,19 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
       have hFT : ∑ l ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 3 4 l
             (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-              (connDiffSection (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀)))‖ ^ 2 ≤
+              (connectionDifferenceSection (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀)))‖ ^ 2 ≤
           fr ^ 2 * ((2 * ∑ l ∈ Finset.range (i + 1), Fcd l) * W) := by
         have hstep : ∀ l ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 3 4 l
               (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-                (connDiffSection (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
+                (connectionDifferenceSection (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
                   g₀)))‖ ^ 2 ≤
             fr ^ 2 * (Fcd l * (2 * W)) := by
           intro l hl
-          refine le_trans (lieArm1_normSq_icg_sE2_le (I := I) (M := M) g₀ _ l) ?_
+          refine le_trans (lieArm1_normSq_iteratedCovGrad_sE2_le (I := I) (M := M) g₀ _ l) ?_
           rw [hfr_def]
           refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-          refine le_trans (hFcd (realizedFam (I := I) g₀ T T' hδ hδ' s)
+          refine le_trans (hFcd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
             (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball l) ?_
           have hl2 : l + 2 ≤ i + 2 := by
             have := Finset.mem_range.mp hl; omega
@@ -343,8 +331,8 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
             (2 * ∑ l ∈ Finset.range (i + 1), Fcd l) * W := by ring
         rw [this]
       have hmaster := lieArm1_piece_normSq_le (I := I) (M := M) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-        (connDiffSection (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀) i
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' ρ
+        (connectionDifferenceSection (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀) i
         (C2 i) (Real.sqrt Λcom) (Real.sqrt (fr ^ 2 * Λcd))
         ((2 * Qth i) * W) (fr ^ 2 * ((2 * ∑ l ∈ Finset.range (i + 1), Fcd l) * W))
         (hC2_nn i) hFS hFT
@@ -357,9 +345,9 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
     · haveI hIsE := not_nonempty_iff.mp hM
       have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
         (iteratedCovGrad (I := I) g₀ 3 2 i
-          (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) σ'
+          (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ'
             ρ
-            (connDiffSection (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀)))
+            (connectionDifferenceSection (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀)))
       rw [h0]
       have hP_nn : (0 : ℝ) ≤ diagonalGridGrowthFactor (E := E) i *
           (C2 i * ((fr ^ 2 * Λcd) * (2 * Qth i)
@@ -368,13 +356,13 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
           Finset.sum_nonneg fun l _ => hFcd_nn l
         have h2 := hQth_nn i
         have h3 := hC2_nn i
-        have h4 := appCcGdiag_nonneg (E := E) i
+        have h4 := operatorFieldApplicationGdiag_nonneg (E := E) i
         positivity
       dsimp only
       nlinarith
 
 set_option backward.isDefEq.respectTransparency false in
-private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
+private theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -391,23 +379,22 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
               (DifferentialGeometry.Analysis.Sobolev.deTurckLieTraceCoeffPiece (I := I) (M := M)
                 g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-                (DifferentialGeometry.Analysis.Sobolev.lieArm1ConnDiffBgCc (I := I) (M := M)
-                  g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' ρ
+                (DifferentialGeometry.Analysis.Sobolev.deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M)
+                  g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
             P i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-    Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_realizedFam_rfns_ballUniform
-      (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+    Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+      (I := I) (M := M) g₀ a (R := R) hδ₀
   obtain ⟨Qth, hQth_nn, hQth⟩ :=
     pAO_traceHessian_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fcd, hFcd_nn, hFcd⟩ :=
-    pAO_connDiffSection_jetL2_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
+    pAO_connectionDifferenceSection_jetL2_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λcd, Fcd0, hΛcd_nn, hFcd0_nn, hcd⟩ :=
-    lieArm1_connDiff_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
+    lieArm1_connectionDifference_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λfx, hΛfx_nn, hΛfx⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 1 2
       (lieArm1FixCd (I := I) (M := M) g₀ g_bg)
@@ -457,7 +444,7 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
         positivity
     have h2 := hQth_nn i
     have h3 := hC2_nn i
-    have h4 := appCcGdiag_nonneg (E := E) i
+    have h4 := operatorFieldApplicationGdiag_nonneg (E := E) i
     have h5 : (0 : ℝ) ≤ 2 * Λcd + 2 * Λfx := by linarith
     positivity
   · intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i s hs
@@ -475,7 +462,7 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
     by_cases hM : Nonempty M
     · haveI := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
-        lieArm1_realizedFam_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
+        lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
         lieArm1_gFibreOpBound_nonneg (I := I) (M := M) g₀ _ hδP
       have hPball := lieArm1_convexPerturbation_ball (I := I) (M := M) g₀ T T' a
@@ -540,54 +527,54 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
         rw [hW_def]
         rw [hexp] at hmono
         linarith [hsum, hmono]
-      obtain ⟨hcd0, _⟩ := hcd (realizedFam (I := I) g₀ T T' hδ hδ' s)
+      obtain ⟨hcd0, _⟩ := hcd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
         (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball
       have hΨ0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
-          ((lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤
+          ((deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤
           2 * Λcd + 2 * Λfx := by
         intro x
-        rw [lieArm1_connDiffBg_decomp (I := I) (M := M) g₀
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg]
-        refine le_trans (lieArm1_rfns_toSection_add_le (I := I) (M := M) g₀ 1 2 _ _ x) ?_
+        rw [lieArm1_connectionDifferenceBackground_decomp (I := I) (M := M) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg]
+        refine le_trans (lieArm1_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 1 2 _ _ x) ?_
         have h1 := hcd0 x
         have h2 := hΛfx x
         linarith
       have hΨ0_nn : (0 : ℝ) ≤ 2 * Λcd + 2 * Λfx := by linarith
       have hS0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
           ((deTurckLieTraceCoeff (I := I) (M := M) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) σ').toSection x) ≤
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ').toSection x) ≤
           (Real.sqrt Λcom) ^ 2 := by
         intro x
-        rw [Real.sq_sqrt hΛcom_nn, lieArm1_rfns_dLTC_toSection_eq]
+        rw [Real.sq_sqrt hΛcom_nn, lieArm1_riemannianFiberNormSq_dLTC_toSection_eq]
         exact (hLich T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x).2
       have hT0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-            (lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))).toSection x) ≤
+            (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))).toSection x) ≤
           (Real.sqrt (fr ^ 2 * (2 * Λcd + 2 * Λfx))) ^ 2 := by
         intro x
         rw [Real.sq_sqrt (mul_nonneg (by positivity) hΨ0_nn)]
-        refine le_trans (lieArm1_rfns_sE2_zero_le (I := I) (M := M) g₀ _ x) ?_
+        refine le_trans (lieArm1_riemannianFiberNormSq_sE2_zero_le (I := I) (M := M) g₀ _ x) ?_
         rw [hfr_def]
         exact mul_le_mul_of_nonneg_left (hΨ0 x) (by positivity)
       have hFS : ∑ n ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 4 2 n
             (deTurckLieTraceCoeff (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 ≤
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 ≤
           (2 * Qth i) * W := by
         have heq : ∑ n ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 4 2 n
               (deTurckLieTraceCoeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 =
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 =
             ∑ n ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g₀ 4 2 n
                 (traceHessianCoeff (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 :=
-          Finset.sum_congr rfl fun n _ => lieArm1_normSq_icg_dLTC_eq (I := I) (M := M)
-            g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' n
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 :=
+          Finset.sum_congr rfl fun n _ => lieArm1_normSq_iteratedCovGrad_dLTC_eq (I := I) (M := M)
+            g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' n
         rw [heq]
-        refine le_trans (hQth (realizedFam (I := I) g₀ T T' hδ hδ' s)
+        refine le_trans (hQth (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball i) ?_
         have hwin := hPwin (i + 1) (by omega)
         have := hQth_nn i
@@ -595,39 +582,39 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
       have hFT : ∑ l ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 3 4 l
             (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-              (lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
+              (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
           fr ^ 2 * ((∑ l ∈ Finset.range (i + 1), (4 * Fcd l
             + 2 * ‖iteratedCovGrad (I := I) g₀ 1 2 l
                 (lieArm1FixCd (I := I) (M := M) g₀ g_bg)‖ ^ 2)) * W) := by
         have hstep : ∀ l ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 3 4 l
               (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-                (lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
+                (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
             fr ^ 2 * ((4 * Fcd l
               + 2 * ‖iteratedCovGrad (I := I) g₀ 1 2 l
                   (lieArm1FixCd (I := I) (M := M) g₀ g_bg)‖ ^ 2) * W) := by
           intro l hl
-          refine le_trans (lieArm1_normSq_icg_sE2_le (I := I) (M := M) g₀ _ l) ?_
+          refine le_trans (lieArm1_normSq_iteratedCovGrad_sE2_le (I := I) (M := M) g₀ _ l) ?_
           rw [hfr_def]
           refine mul_le_mul_of_nonneg_left ?_ (by positivity)
           have hdecomp : ‖iteratedCovGrad (I := I) g₀ 1 2 l
-              (lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+              (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
               2 * ‖iteratedCovGrad (I := I) g₀ 1 2 l
-                  (connDiffSection (I := I)
-                    (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀)‖ ^ 2
+                  (connectionDifferenceSection (I := I)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀)‖ ^ 2
                 + 2 * ‖iteratedCovGrad (I := I) g₀ 1 2 l
                   (lieArm1FixCd (I := I) (M := M) g₀ g_bg)‖ ^ 2 := by
-            rw [lieArm1_connDiffBg_decomp (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg]
-            exact lieArm1_normSq_icg_add_le (I := I) (M := M) g₀ 1 2 l _ _
+            rw [lieArm1_connectionDifferenceBackground_decomp (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg]
+            exact lieArm1_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 1 2 l _ _
           have hcdl : ‖iteratedCovGrad (I := I) g₀ 1 2 l
-              (connDiffSection (I := I)
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀)‖ ^ 2 ≤
+              (connectionDifferenceSection (I := I)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀)‖ ^ 2 ≤
               Fcd l * (2 * W) := by
-            refine le_trans (hFcd (realizedFam (I := I) g₀ T T' hδ hδ' s)
+            refine le_trans (hFcd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
               (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball l) ?_
             have hl2 : l + 2 ≤ i + 2 := by
               have := Finset.mem_range.mp hl; omega
@@ -640,9 +627,9 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
         refine le_trans (Finset.sum_le_sum hstep) ?_
         rw [← Finset.mul_sum, ← Finset.sum_mul]
       have hmaster := lieArm1_piece_normSq_le (I := I) (M := M) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-        (lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg) i
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' ρ
+        (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) i
         (C2 i) (Real.sqrt Λcom) (Real.sqrt (fr ^ 2 * (2 * Λcd + 2 * Λfx)))
         ((2 * Qth i) * W)
         (fr ^ 2 * ((∑ l ∈ Finset.range (i + 1), (4 * Fcd l
@@ -658,10 +645,10 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
     · haveI hIsE := not_nonempty_iff.mp hM
       have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
         (iteratedCovGrad (I := I) g₀ 3 2 i
-          (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) σ'
+          (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ'
             ρ
-            (lieArm1ConnDiffBgCc (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)))
+            (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
       rw [h0]
       have hP_nn : (0 : ℝ) ≤ diagonalGridGrowthFactor (E := E) i *
           (C2 i * ((fr ^ 2 * (2 * Λcd + 2 * Λfx)) * (2 * Qth i)
@@ -676,14 +663,14 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
             positivity
         have h2 := hQth_nn i
         have h3 := hC2_nn i
-        have h4 := appCcGdiag_nonneg (E := E) i
+        have h4 := operatorFieldApplicationGdiag_nonneg (E := E) i
         have h5 : (0 : ℝ) ≤ 2 * Λcd + 2 * Λfx := by linarith
         positivity
       dsimp only
       nlinarith
 
 set_option backward.isDefEq.respectTransparency false in
-private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
+private theorem lieArm1Piece_psiB_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -700,21 +687,20 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
               (DifferentialGeometry.Analysis.Sobolev.deTurckLieTraceCoeffPiece (I := I) (M := M)
                 g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-                (DifferentialGeometry.Analysis.Sobolev.lieArm1PsiB (I := I) (M := M)
-                  g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' ρ
+                (DifferentialGeometry.Analysis.Sobolev.deTurckLieArmOneBackgroundCoefficient (I := I) (M := M)
+                  g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
             P i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Λcom, hΛcom_nn, hLich⟩ :=
-    Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_realizedFam_rfns_ballUniform
-      (I := I) (M := M) g₀ a
-      ha_super hR hδ₀
+    Analysis.Parabolic.TensorSpectral.exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+      (I := I) (M := M) g₀ a (R := R) hδ₀
   obtain ⟨Qth, hQth_nn, hQth⟩ :=
     pAO_traceHessian_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fpb, hFpb_nn, hFpbJ⟩ :=
-    pAO_lieArm1PsiB_jetL2_tame (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    pAO_deTurckLieArmOneBackgroundCoefficient_jetL2_tame (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨Λpb, Fpb0, hΛpb_nn, hFpb0_nn, hpb⟩ :=
     lieArm1_psiB_feed (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   have h2A : ∀ k : ℕ, ∃ c : ℝ, 0 ≤ c ∧
@@ -757,7 +743,7 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
       Finset.sum_nonneg fun l _ => hFpb_nn l
     have h2 := hQth_nn i
     have h3 := hC2_nn i
-    have h4 := appCcGdiag_nonneg (E := E) i
+    have h4 := operatorFieldApplicationGdiag_nonneg (E := E) i
     positivity
   · intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i s hs
     set W : ℝ := 1 + ∑ j ∈ Finset.range (i + 2),
@@ -774,7 +760,7 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
     by_cases hM : Nonempty M
     · haveI := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
-        lieArm1_realizedFam_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
+        lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
         lieArm1_gFibreOpBound_nonneg (I := I) (M := M) g₀ _ hδP
       have hPball := lieArm1_convexPerturbation_ball (I := I) (M := M) g₀ T T' a
@@ -839,42 +825,42 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
         rw [hW_def]
         rw [hexp] at hmono
         linarith [hsum, hmono]
-      obtain ⟨hpb0, _⟩ := hpb (realizedFam (I := I) g₀ T T' hδ hδ' s)
+      obtain ⟨hpb0, _⟩ := hpb (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
         (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball
       have hS0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
           ((deTurckLieTraceCoeff (I := I) (M := M) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) σ').toSection x) ≤
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ').toSection x) ≤
           (Real.sqrt Λcom) ^ 2 := by
         intro x
-        rw [Real.sq_sqrt hΛcom_nn, lieArm1_rfns_dLTC_toSection_eq]
+        rw [Real.sq_sqrt hΛcom_nn, lieArm1_riemannianFiberNormSq_dLTC_toSection_eq]
         exact (hLich T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x).2
       have hT0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-            (lieArm1PsiB (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))).toSection x) ≤
+            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))).toSection x) ≤
           (Real.sqrt (fr ^ 2 * Λpb)) ^ 2 := by
         intro x
         rw [Real.sq_sqrt (mul_nonneg (by positivity) hΛpb_nn)]
-        refine le_trans (lieArm1_rfns_sE2_zero_le (I := I) (M := M) g₀ _ x) ?_
+        refine le_trans (lieArm1_riemannianFiberNormSq_sE2_zero_le (I := I) (M := M) g₀ _ x) ?_
         rw [hfr_def]
         exact mul_le_mul_of_nonneg_left (hpb0 x) (by positivity)
       have hFS : ∑ n ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 4 2 n
             (deTurckLieTraceCoeff (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 ≤
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 ≤
           (2 * Qth i) * W := by
         have heq : ∑ n ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 4 2 n
               (deTurckLieTraceCoeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 =
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ')‖ ^ 2 =
             ∑ n ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g₀ 4 2 n
                 (traceHessianCoeff (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 :=
-          Finset.sum_congr rfl fun n _ => lieArm1_normSq_icg_dLTC_eq (I := I) (M := M)
-            g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' n
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 :=
+          Finset.sum_congr rfl fun n _ => lieArm1_normSq_iteratedCovGrad_dLTC_eq (I := I) (M := M)
+            g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' n
         rw [heq]
-        refine le_trans (hQth (realizedFam (I := I) g₀ T T' hδ hδ' s)
+        refine le_trans (hQth (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball i) ?_
         have hwin := hPwin (i + 1) (by omega)
         have := hQth_nn i
@@ -882,20 +868,20 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
       have hFT : ∑ l ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 3 4 l
             (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-              (lieArm1PsiB (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
+              (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
           fr ^ 2 * ((2 * ∑ l ∈ Finset.range (i + 1), Fpb l) * W) := by
         have hstep : ∀ l ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 3 4 l
               (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2
-                (lieArm1PsiB (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
+                (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))‖ ^ 2 ≤
             fr ^ 2 * (Fpb l * (2 * W)) := by
           intro l hl
-          refine le_trans (lieArm1_normSq_icg_sE2_le (I := I) (M := M) g₀ _ l) ?_
+          refine le_trans (lieArm1_normSq_iteratedCovGrad_sE2_le (I := I) (M := M) g₀ _ l) ?_
           rw [hfr_def]
           refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-          refine le_trans (hFpbJ (realizedFam (I := I) g₀ T T' hδ hδ' s)
+          refine le_trans (hFpbJ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
             (convexPerturbation (I := I) g₀ T T' s) htie hδP_le hδP0 hδP hPball l) ?_
           have hl2 : l + 2 ≤ i + 2 := by
             have := Finset.mem_range.mp hl; omega
@@ -908,9 +894,9 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
             (2 * ∑ l ∈ Finset.range (i + 1), Fpb l) * W := by ring
         rw [this]
       have hmaster := lieArm1_piece_normSq_le (I := I) (M := M) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-        (lieArm1PsiB (I := I) (M := M) g₀
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg) i
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ' ρ
+        (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) i
         (C2 i) (Real.sqrt Λcom) (Real.sqrt (fr ^ 2 * Λpb))
         ((2 * Qth i) * W) (fr ^ 2 * ((2 * ∑ l ∈ Finset.range (i + 1), Fpb l) * W))
         (hC2_nn i) hFS hFT
@@ -923,10 +909,10 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
     · haveI hIsE := not_nonempty_iff.mp hM
       have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
         (iteratedCovGrad (I := I) g₀ 3 2 i
-          (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) σ'
+          (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ'
             ρ
-            (lieArm1PsiB (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)))
+            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
       rw [h0]
       have hP_nn : (0 : ℝ) ≤ diagonalGridGrowthFactor (E := E) i *
           (C2 i * ((fr ^ 2 * Λpb) * (2 * Qth i)
@@ -935,7 +921,7 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
           Finset.sum_nonneg fun l _ => hFpb_nn l
         have h2 := hQth_nn i
         have h3 := hC2_nn i
-        have h4 := appCcGdiag_nonneg (E := E) i
+        have h4 := operatorFieldApplicationGdiag_nonneg (E := E) i
         positivity
       dsimp only
       nlinarith
@@ -947,7 +933,7 @@ private theorem norm_sq_le_of_norm_le_mul_sqrt {V : Type*} [SeminormedAddCommGro
   rwa [mul_pow, hSw_sq] at h2
 
 set_option backward.isDefEq.respectTransparency false in
-theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
+theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -962,24 +948,24 @@ theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
         ∀ (i : ℕ), ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
               (deTurckLieArm1Coeff (I := I) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Pc, hPc_nn, hPc⟩ :=
-    lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope (I := I) (M := M) g₀ a
+    lieArm1Piece_connectionDifference_metricPerturbationPath_allOrder_tameEnvelope (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   obtain ⟨Pbg, hPbg_nn, hPbg⟩ :=
-    lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
+    lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Pb, hPb_nn, hPb⟩ :=
-    lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
+    lieArm1Piece_psiB_metricPerturbationPath_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   refine ⟨fun i => (11 * Real.sqrt (Pc i) + 2 * Real.sqrt (Pb i) + Real.sqrt (Pbg i)) ^ 2,
     fun i => sq_nonneg _, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
-  set g₁ : SmoothRiemannianMetric I M := realizedFam (I := I) g₀ T T' hδ hδ' s with hg₁
+  set g₁ : SmoothRiemannianMetric I M := metricPerturbationPath (I := I) g₀ T T' hδ hδ' s with hg₁
   set W : ℝ := 1 + ∑ j ∈ Finset.range (i + 2),
     (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2) with hW_def
@@ -991,7 +977,7 @@ theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
   have hSw_sq : Sw ^ 2 = W := Real.sq_sqrt hW_nn
   have hcd : ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
-        (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ (connDiffSection (I := I) g₁ g₀))‖ ≤
+        (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ (connectionDifferenceSection (I := I) g₁ g₀))‖ ≤
         Real.sqrt (Pc i) * Sw := by
     intro σ' ρ
     have h := lieArm1_norm_le_sqrt_fw
@@ -1001,7 +987,7 @@ theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
   have hbg : ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ
-          (lieArm1ConnDiffBgCc (I := I) (M := M) g₀ g₁ g_bg))‖ ≤
+          (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg))‖ ≤
         Real.sqrt (Pbg i) * Sw := by
     intro σ' ρ
     have h := lieArm1_norm_le_sqrt_fw
@@ -1011,7 +997,7 @@ theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
   have hpb : ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ
-          (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg))‖ ≤
+          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))‖ ≤
         Real.sqrt (Pb i) * Sw := by
     intro σ' ρ
     have h := lieArm1_norm_le_sqrt_fw
@@ -1026,146 +1012,146 @@ theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
   have hblock1 := lieArm1_norm_block6_le'_fw
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-        (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg)))
+        (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC (Equiv.refl (Fin 3))
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot1
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
   have hblock2 := lieArm1_norm_block6_le'_fw
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-        (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg)))
+        (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaCSwap (Equiv.refl (Fin 3))
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaDSwap lieArm1RhoSlot0
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaESwap lieArm1RhoSlot1
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaFSwap (Equiv.refl (Fin 3))
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
   have htri1 := norm_add_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
-          (lieArm1ConnDiffBgCc (I := I) (M := M) g₀ g₁ g_bg))
+          (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg))
       + (iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         + iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-            (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg))
+            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot1
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀)))
+            (connectionDifferenceSection (I := I) g₁ g₀)))
       + (iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         + iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-            (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg))
+            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaCSwap (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaDSwap lieArm1RhoSlot0
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaESwap lieArm1RhoSlot1
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaFSwap (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))))
+            (connectionDifferenceSection (I := I) g₁ g₀))))
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot0
-        (connDiffSection (I := I) g₁ g₀)))
+        (connectionDifferenceSection (I := I) g₁ g₀)))
   have htri2 := norm_add_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
-          (lieArm1ConnDiffBgCc (I := I) (M := M) g₀ g₁ g_bg))
+          (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg))
       + (iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         + iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-            (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg))
+            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot1
-            (connDiffSection (I := I) g₁ g₀))
+            (connectionDifferenceSection (I := I) g₁ g₀))
         - iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
-            (connDiffSection (I := I) g₁ g₀))))
+            (connectionDifferenceSection (I := I) g₁ g₀))))
     (iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       + iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-          (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg))
+          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaCSwap (Equiv.refl (Fin 3))
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaDSwap lieArm1RhoSlot0
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaESwap lieArm1RhoSlot1
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaFSwap (Equiv.refl (Fin 3))
-          (connDiffSection (I := I) g₁ g₀)))
+          (connectionDifferenceSection (I := I) g₁ g₀)))
   have htri3 := norm_add_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
-        (lieArm1ConnDiffBgCc (I := I) (M := M) g₀ g₁ g_bg)))
+        (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))
     (iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       + iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-          (lieArm1PsiB (I := I) (M := M) g₀ g₁ g_bg))
+          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC (Equiv.refl (Fin 3))
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot1
-          (connDiffSection (I := I) g₁ g₀))
+          (connectionDifferenceSection (I := I) g₁ g₀))
       - iteratedCovGrad (I := I) g₀ 3 2 i
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
-          (connDiffSection (I := I) g₁ g₀)))
+          (connectionDifferenceSection (I := I) g₁ g₀)))
   have h1 := hcd lieArm1SigmaA (Equiv.refl (Fin 3))
   have h2 := hpb lieArm1SigmaA (Equiv.refl (Fin 3))
   have h3 := hcd lieArm1SigmaC (Equiv.refl (Fin 3))
@@ -1203,7 +1189,7 @@ theorem linearizedRicciArm1CorrField_allOrder_tameEnvelope_interface
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨K, hK_nn, hK⟩ :=
-    Analysis.Parabolic.TensorSpectral.exists_corrArm1Field_realizedFam_jetL2_tameEnvelope
+    Analysis.Parabolic.TensorSpectral.exists_corrArm1Field_metricPerturbationPath_jetL2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
@@ -1211,7 +1197,7 @@ theorem linearizedRicciArm1CorrField_allOrder_tameEnvelope_interface
     (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.2.2.2.2
   rw [show linearizedRicciArm1CorrField (I := I) g₀ T T' hδ hδ' s =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnDiffOrder1Coeff
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder1Coeff
           (I := I) g₀ T T' hδ hδ' s
         - linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s from hid s]
   exact hK T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i s hs

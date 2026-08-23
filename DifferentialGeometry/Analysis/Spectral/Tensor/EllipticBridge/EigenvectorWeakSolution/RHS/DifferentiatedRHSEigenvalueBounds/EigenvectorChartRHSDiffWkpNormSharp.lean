@@ -320,7 +320,7 @@ structure eigenvectorChartRHSDiffSharpWkpBounds
   hCeig_nn : ∀ K', 0 ≤ Ceig K'
   hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
@@ -614,8 +614,7 @@ private lemma sharpDiff_recursion
                     (I := I) (M := M) g r s) i‖ := by
         intro i a b
         have h_chosen := wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-          (p := 2) K
-          (chartTargetEuclid_isOpen (I := I) (M := M) α)
+          (p := 2) (Ω := chartTargetEuclid (I := I) (M := M) α) K
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) b
         refine le_trans h_chosen ?_
@@ -690,8 +689,7 @@ private lemma sharpDiff_recursion
                     (I := I) (M := M) g r s) i‖ := by
         intro i
         have h_chosen := wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-          (p := 2) K
-          (chartTargetEuclid_isOpen (I := I) (M := M) α)
+          (p := 2) (Ω := chartTargetEuclid (I := I) (M := M) α) K
           (eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ m (Fin.init l)) (l (Fin.last m))
         exact le_trans h_chosen (hC_K1_bd i)

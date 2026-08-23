@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
 import DifferentialGeometry.Geometry.Exponential.Defs
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -720,10 +721,10 @@ theorem expMapIntrinsic_eq_expMap_of_geodesicOn
   have hgoal : γI 1 = γM 1 := hγ1.symm
   simpa [expMapIntrinsic, expMap, hγI_def, hγM_def] using hgoal
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_maximalGeodesic_data_of_small
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (q : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q}, ‖(v : E)‖ < ρ →
@@ -1310,7 +1311,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [SigmaCompactSpace M] in
 theorem isGeodesic_eq_of_initial
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     (g : SmoothRiemannianMetric I M) {Γ₁ Γ₂ : ℝ → M}
     (h₁ : Geodesic.IsGeodesic (I := I) g Γ₁) (h₂ : Geodesic.IsGeodesic (I := I) g Γ₂)
     (hc₁ : Continuous Γ₁) (hc₂ : Continuous Γ₂)
@@ -1719,6 +1719,26 @@ theorem intrinsicGeodesic_smul
   rw [hΓrep_def] at h1
   simp only [mul_one, hφ_def] at h1
   exact h1.symm
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+theorem intrGeo_smul_apply
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) (u : TangentSpace I p) (c s : ℝ) :
+    intrinsicGeodesic (I := I) g hEnorm p (c • u) s =
+      intrinsicGeodesic (I := I) g hEnorm p u (c * s) := by
+  calc
+    intrinsicGeodesic (I := I) g hEnorm p (c • u) s =
+        intrinsicGeodesic (I := I) g hEnorm p (s • (c • u)) 1 :=
+      (intrinsicGeodesic_smul (I := I) g hEnorm p (c • u) s).symm
+    _ = intrinsicGeodesic (I := I) g hEnorm p ((c * s) • u) 1 := by
+      rw [smul_smul, mul_comm]
+    _ = intrinsicGeodesic (I := I) g hEnorm p u (c * s) :=
+      intrinsicGeodesic_smul (I := I) g hEnorm p u (c * s)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

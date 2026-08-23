@@ -168,7 +168,7 @@ theorem tensorChartComponent_isSmoothWeakSolution
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).IsSmoothWeakSolution
       (tensorChartComponent (I := I) (M := M) g r s S α P₀.1 P₀.2)
       (tensorComponentWeakRHS (I := I) (M := M) g r s
-        (pouSmul (I := I) (M := M) g r s α S) F α hK hK_target P₀) := by
+        (pouSmul (I := I) (M := M) g r s α S) F α P₀) := by
   classical
   have hcomp_eq :
       tensorChartComponent (I := I) (M := M) g r s S α P₀.1 P₀.2 =

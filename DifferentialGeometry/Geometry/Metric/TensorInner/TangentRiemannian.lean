@@ -48,7 +48,6 @@ end DifferentialGeometry
 
 namespace TangentBundle
 
-open scoped Manifold Topology Bundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]

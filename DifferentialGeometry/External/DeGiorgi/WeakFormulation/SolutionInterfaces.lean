@@ -10,7 +10,7 @@ subsolution, and supersolution interfaces built from the bilinear form.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 open scoped InnerProductSpace
 
 namespace DeGiorgi

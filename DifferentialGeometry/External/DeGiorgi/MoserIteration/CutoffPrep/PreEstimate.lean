@@ -10,7 +10,7 @@ concentric-ball pre-estimate `moser_preMoser`.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 

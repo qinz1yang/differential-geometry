@@ -57,10 +57,10 @@ theorem eLpNorm_le_wkpNorm
 
 omit [NeZero d] in
 theorem wkpNorm_chosenWeakPartial_le
-    (k : ℕ) {p : ℝ≥0∞} {Ω : Set E} (hΩ : IsOpen Ω) (u : E → ℝ) (i : Fin d) :
+    (k : ℕ) {p : ℝ≥0∞} {Ω : Set E} (u : E → ℝ) (i : Fin d) :
     iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω ≤
       iteratedWeakSobolevNorm (d := d) (k + 1) p u Ω :=
-  wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := d) k hΩ u i
+  wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := d) k u i
 
 omit [NeZero d] in
 private theorem memWkp_finset_sum
@@ -111,7 +111,7 @@ theorem wkpNorm_sum_le
 
 omit [NeZero d] in
 private theorem chosenWeakPartial'_extend_zero_ae
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤) {Ω V : Set E}
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set E}
     (hΩ : IsOpen Ω) (hV : IsOpen V) (hΩV : Ω ⊆ V)
     {u : E → ℝ} (hu : DeGiorgi.MemW1p (d := d) p u Ω)
     (hu_supp : tsupport u ⊆ Ω) (hu_compact : HasCompactSupport u) (i : Fin d) :
@@ -121,7 +121,7 @@ private theorem chosenWeakPartial'_extend_zero_ae
   classical
   have hu_W1_Ω : MemWkp (d := d) 1 p u Ω := MemWkp.one_iff_memW1p.mpr hu
   have hu_W1_V : MemWkp (d := d) 1 p u V :=
-    MemWkp.extend_zero (d := d) hp hp_top hΩ hV hΩV hu_W1_Ω hu_supp hu_compact
+    MemWkp.extend_zero (d := d) hp hΩ hV hΩV hu_W1_Ω hu_supp hu_compact
   have hu_V : DeGiorgi.MemW1p (d := d) p u V := MemWkp.one_iff_memW1p.mp hu_W1_V
   set g_Ω : E → ℝ := chosenWeakPartial' (d := d) p i u Ω with hg_Ω_def
   set g_V : E → ℝ := chosenWeakPartial' (d := d) p i u V with hg_V_def
@@ -261,7 +261,7 @@ private theorem indicator_ae_congr_of_ae_restrict
 
 omit [NeZero d] in
 private theorem iterWeakPartial_extend_zero_ae
-    {j : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤) {Ω V : Set E}
+    {j : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set E}
     (hΩ : IsOpen Ω) (hV : IsOpen V) (hΩV : Ω ⊆ V)
     (α : Fin j → Fin d) {u : E → ℝ} (hu : MemWkp (d := d) j p u Ω)
     (hu_supp : tsupport u ⊆ Ω) (hu_compact : HasCompactSupport u) :
@@ -307,7 +307,7 @@ private theorem iterWeakPartial_extend_zero_ae
       have hw_mem : MemWkp (d := d) j p w Ω :=
         (MemWkp_congr_ae (d := d) hp hΩ hw_ae).mpr hg_Ω_mem
       have h_chosen_ext : g_V =ᵐ[volume.restrict V] Ω.indicator g_Ω :=
-        chosenWeakPartial'_extend_zero_ae (d := d) hp hp_top hΩ hV hΩV
+        chosenWeakPartial'_extend_zero_ae (d := d) hp hΩ hV hΩV
           hu_W1_Ω hu_supp hu_compact (α 0)
       have h_w_ind_ae : Ω.indicator w =ᵐ[volume.restrict V] Ω.indicator g_Ω :=
         indicator_ae_congr_of_ae_restrict hΩ hV hΩV hw_ae
@@ -346,7 +346,7 @@ private theorem iterWeakPartial_extend_zero_ae
 
 omit [NeZero d] in
 theorem wkpNorm_extend_zero
-    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤) {Ω V : Set E}
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set E}
     (hΩ : IsOpen Ω) (hV : IsOpen V) (hΩV : Ω ⊆ V)
     {u : E → ℝ} (hu : MemWkp (d := d) k p u Ω)
     (hu_supp : tsupport u ⊆ Ω) (hu_compact : HasCompactSupport u) :
@@ -361,7 +361,7 @@ theorem wkpNorm_extend_zero
     rw [Finset.mem_range] at hj; omega
   have h_uWj : MemWkp (d := d) j p u Ω := MemWkp.le_of_le hj_le hu
   have h_iter_ae :=
-    iterWeakPartial_extend_zero_ae (d := d) hp hp_top hΩ hV hΩV α
+    iterWeakPartial_extend_zero_ae (d := d) hp hΩ hV hΩV α
       h_uWj hu_supp hu_compact
   rw [eLpNorm_congr_ae h_iter_ae]
   have h_meas_Ω : MeasurableSet Ω := hΩ.measurableSet
@@ -427,7 +427,7 @@ theorem wkpNorm_le_of_memWkp_precompact_of_ae_zero_off_compact
         = iteratedWeakSobolevNorm (d := d) k p v Ω :=
           (wkpNorm_congr_ae (d := d) hp hΩ_open hv_ae_eq_u).symm
     _ = iteratedWeakSobolevNorm (d := d) k p v Ω' :=
-          wkpNorm_extend_zero (d := d) hp hp_top hΩ'_open hΩ_open hΩ'Ω
+          wkpNorm_extend_zero (d := d) hp hΩ'_open hΩ_open hΩ'Ω
             hv_memWkp_Ω' hv_tsupp hv_compact
     _ ≤ ENNReal.ofReal K_prom * iteratedWeakSobolevNorm (d := d) k p u Ω' :=
           hK_prom_bound hu_precompact
@@ -490,7 +490,7 @@ theorem wkpNorm_le_of_memWkp_precompact_of_ae_zero_off_compact_uniform
         = iteratedWeakSobolevNorm (d := d) k p v Ω :=
           (wkpNorm_congr_ae (d := d) hp hΩ_open hv_ae_eq_u).symm
     _ = iteratedWeakSobolevNorm (d := d) k p v Ω' :=
-          wkpNorm_extend_zero (d := d) hp hp_top hΩ'_open hΩ_open hΩ'Ω
+          wkpNorm_extend_zero (d := d) hp hΩ'_open hΩ_open hΩ'Ω
             hv_memWkp_Ω' hv_tsupp hv_compact
     _ ≤ ENNReal.ofReal K_prom * iteratedWeakSobolevNorm (d := d) k p u Ω' :=
           hK_prom_bound hu_precompact

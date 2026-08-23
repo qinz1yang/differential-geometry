@@ -1,5 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.ChartVectorField
-open DifferentialGeometry.Geometry.Curvature
+import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -14,7 +13,6 @@ namespace DeTurck
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

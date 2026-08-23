@@ -46,15 +46,11 @@ theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
     (f := (extChartAt I α).symm ∘ u) (s := s)
     (t := u ⁻¹' Set.range I) hconf).mp hcomp
 
-omit [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem manifoldFlowFamily_exists
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
-    (hSmoothX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      (X t ((chartAt H α).symm (I.symm y)) : E)))
-    (hSmoothNegX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      ((-X t ((chartAt H α).symm (I.symm y))) : E)))
     (hLocalFwd : ∀ (Φ : ℝ → M → M) (T : ℝ), 0 < T →
       (∀ x : M, ∃ α : M, x ∈ (hper α).U ∧
         ∀ s : ℝ, Φ s x = (chartAt H α).symm
@@ -99,7 +95,7 @@ theorem manifoldFlowFamily_exists
   classical
   obtain ⟨T, hT, Φ, hΦ_init, _hΦ_repr_simple, hdiffeo⟩ :=
     time_dependent_vf_flow_diffeomorph_on_closed_manifold X hper hperNeg
-      hSmoothX_chart hSmoothNegX_chart hLocalFwd hLocalRev hBijPerChart
+      hLocalFwd hLocalRev hBijPerChart
   refine ⟨T, hT, fun t =>
     if h : 0 < t ∧ t < T then (hdiffeo t h.1 h.2).choose else Diffeomorph.refl I M ∞,
     Φ, ?_, hΦ_init, ?_⟩
@@ -111,15 +107,11 @@ theorem manifoldFlowFamily_exists
     simp only [hguard, dif_pos, and_self]
     exact (hdiffeo t ht htT).choose_spec x
 
-omit [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem manifoldFlowFamily_exists_chartRepr
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
-    (hSmoothX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      (X t ((chartAt H α).symm (I.symm y)) : E)))
-    (hSmoothNegX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      ((-X t ((chartAt H α).symm (I.symm y))) : E)))
     (hLocalFwd : ∀ (Φ : ℝ → M → M) (T : ℝ), 0 < T →
       (∀ x : M, ∃ α : M, x ∈ (hper α).U ∧
         ∀ s : ℝ, Φ s x = (chartAt H α).symm
@@ -170,7 +162,7 @@ theorem manifoldFlowFamily_exists_chartRepr
   classical
   obtain ⟨T, hT, Φ, hΦ_init, hΦ_repr_simple, hdiffeo⟩ :=
     time_dependent_vf_flow_diffeomorph_on_closed_manifold X hper hperNeg
-      hSmoothX_chart hSmoothNegX_chart hLocalFwd hLocalRev hBijPerChart
+      hLocalFwd hLocalRev hBijPerChart
   refine ⟨T, hT, fun t =>
     if h : 0 < t ∧ t < T then (hdiffeo t h.1 h.2).choose else Diffeomorph.refl I M ∞,
     Φ, ?_, hΦ_init, ?_, hΦ_repr_simple, ?_⟩

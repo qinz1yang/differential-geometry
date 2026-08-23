@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma sum_tensorChartComponentRaw_sq_continuousOn_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ContinuousOn
@@ -59,7 +59,7 @@ lemma sum_tensorChartComponentRaw_sq_continuousOn_pouTsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_uniform_bound_sum_tensorChartComponentRaw_sq_on_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ∃ B : ℝ, 0 ≤ B ∧

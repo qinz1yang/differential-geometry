@@ -20,7 +20,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.TensorRSNabla
 open DifferentialGeometry.TensorMultilinear
@@ -119,6 +119,63 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     (rsDomDomCongrSection (I := I) (M := M) g r s σ R).toSection x =
       tensorRS_domDomCongr σ (R.toSection x) := rfl
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+lemma rsDomDomCongr_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (σ : Equiv.Perm (Fin s)) (X Y : SmoothCcTensor g r s) :
+    rsDomDomCongrSection (I := I) (M := M) g r s σ (X - Y) =
+      rsDomDomCongrSection (I := I) (M := M) g r s σ X -
+        rsDomDomCongrSection (I := I) (M := M) g r s σ Y := by
+  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundle_fiber (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundle_vector (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundle_smooth (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+    (n := (∞ : WithTop ℕ∞)) r s
+  apply SmoothCcTensor.ext
+  apply DFunLike.ext _ _
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  apply Tensor0SSpace.toModel_injective
+  refine ContinuousMultilinearMap.ext (fun m => ?_)
+  have hsub : (X - Y).toSection x = X.toSection x - Y.toSection x := by
+    rw [SmoothCcTensor.toSection_sub]
+    rfl
+  have hsub2 :
+      (rsDomDomCongrSection (I := I) (M := M) g r s σ X -
+          rsDomDomCongrSection (I := I) (M := M) g r s σ Y).toSection x =
+        (rsDomDomCongrSection (I := I) (M := M) g r s σ X).toSection x -
+          (rsDomDomCongrSection (I := I) (M := M) g r s σ Y).toSection x := by
+    rw [SmoothCcTensor.toSection_sub]
+    rfl
+  rw [rsDomDomCongrSection_toSection, hsub, hsub2,
+    rsDomDomCongrSection_toSection, rsDomDomCongrSection_toSection]
+  have hfib : ∀ (y : Tensor0SSpace s I x) (w : Fin s → TangentSpace I x),
+      Tensor0SSpace.toModel y w = (y : Tensor0SSpace s I x) w := fun _ _ => rfl
+  rw [hfib, hfib]
+  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ
+    (X.toSection x - Y.toSection x) D m]
+  rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+      rsDomDomCongr σ (X.toSection x) - rsDomDomCongr σ (Y.toSection x)) D) =
+      (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        rsDomDomCongr σ (X.toSection x)) D -
+      (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        rsDomDomCongr σ (Y.toSection x)) D from rfl]
+  rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+      (X.toSection x - Y.toSection x : TensorRSSpace r s I x)) D) =
+      (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from X.toSection x) D -
+      (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Y.toSection x) D from rfl]
+  rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        rsDomDomCongr σ (X.toSection x)) D -
+      (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        rsDomDomCongr σ (Y.toSection x)) D : Tensor0SSpace s I x) m =
+      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        rsDomDomCongr σ (X.toSection x)) D : Tensor0SSpace s I x) m -
+      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        rsDomDomCongr σ (Y.toSection x)) D : Tensor0SSpace s I x) m from rfl]
+  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (X.toSection x) D m]
+  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (Y.toSection x) D m]
+  rfl
+
 end NormedDomReindexing
 
 def armSlotEndoPassZeroCc (g : SmoothRiemannianMetric I M)
@@ -126,7 +183,7 @@ def armSlotEndoPassZeroCc (g : SmoothRiemannianMetric I M)
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     SmoothCcTensor g 2 3 :=
   rsDomDomCongrSection (I := I) (M := M) g 2 3 (finRotate 3)
-    (armSlotEndoCc (I := I) (M := M) g 1 Arm)
+    (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -136,11 +193,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     (x : M) :
     (armSlotEndoPassZeroCc (I := I) (M := M) g Arm).toSection x =
       tensorRS_domDomCongr (finRotate 3)
-        ((armSlotEndoCc (I := I) (M := M) g 1 Arm).toSection x) := rfl
+        ((bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm).toSection x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem toModel_appCcRS_armSlotEndoPassZeroCc_eval (g : SmoothRiemannianMetric I M)
+theorem toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (g : SmoothRiemannianMetric I M)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (W : SmoothCcTensor g 1 2) (x : M) (om : Tensor0SSpace 1 I x)
@@ -159,7 +216,7 @@ theorem toModel_appCcRS_armSlotEndoPassZeroCc_eval (g : SmoothRiemannianMetric I
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (armSlotEndoPassZeroCc (I := I) (M := M) g Arm).toSection x)
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om) := by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl
   rw [hcomp, armSlotEndoPassZeroCc_toSection]
   rw [toModel_rsDomDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply]
@@ -201,7 +258,7 @@ private lemma exists_iteratedCovGrad_armSlotEndoPassZeroCc_toSection_eq
           (Tensor0SSpace.toModel
             ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (3 + j) I x from
               (iteratedCovGrad (I := I) g 2 3 j
-                (armSlotEndoCc (I := I) (M := M) g 1 Arm)).toSection x) d)) := by
+                (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x) d)) := by
   induction j with
   | zero =>
     refine ⟨finRotate 3, fun x d => ?_⟩
@@ -214,7 +271,7 @@ private lemma exists_iteratedCovGrad_armSlotEndoPassZeroCc_toSection_eq
     apply ContinuousMultilinearMap.ext
     intro v
     exact covGrad_rs_toModel_domDomCongr (I := I) (M := M) g 2 (3 + j) τ
-      (iteratedCovGrad (I := I) g 2 3 j (armSlotEndoCc (I := I) (M := M) g 1 Arm))
+      (iteratedCovGrad (I := I) g 2 3 j (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm))
       (iteratedCovGrad (I := I) g 2 3 j (armSlotEndoPassZeroCc (I := I) (M := M) g Arm))
       hτ x d v
 
@@ -228,7 +285,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq
           (armSlotEndoPassZeroCc (I := I) (M := M) g Arm)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g 2 (3 + j) x
         ((iteratedCovGrad (I := I) g 2 3 j
-          (armSlotEndoCc (I := I) (M := M) g 1 Arm)).toSection x) := by
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x) := by
   classical
   obtain ⟨τ, hτ⟩ := exists_iteratedCovGrad_armSlotEndoPassZeroCc_toSection_eq
     (I := I) (M := M) g Arm j
@@ -236,7 +293,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq
         (armSlotEndoPassZeroCc (I := I) (M := M) g Arm)).toSection x =
       tensorRS_domDomCongr τ
         ((iteratedCovGrad (I := I) g 2 3 j
-          (armSlotEndoCc (I := I) (M := M) g 1 Arm)).toSection x) := by
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x) := by
     apply ContinuousLinearMap.ext
     intro d
     apply Tensor0SSpace.toModel_injective
@@ -248,7 +305,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (3 + j) I x from
           tensorRS_domDomCongr τ
             ((iteratedCovGrad (I := I) g 2 3 j
-              (armSlotEndoCc (I := I) (M := M) g 1 Arm)).toSection x)) d)
+              (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x)) d)
     rw [toModel_rsDomDomCongr_apply]
     exact hτ x d
   rw [hsec]
@@ -280,59 +337,59 @@ private lemma metricDiffCovDeriv_symm_right
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem endoCovariantDerivative_gInvDiffRaisedEndoField_resolvent
+omit [I.Boundaryless] [SigmaCompactSpace M] in
+theorem endoCovariantDerivative_metricComparisonDifferenceEndomorphismField_resolvent
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (V W Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     g₁.inner x
         (((endoCovariantDerivative (I := I) (M := M) g₀)
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁) x (V x)) (W x)) (Z x) =
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) x (V x)) (W x)) (Z x) =
       - metricDiffCovDeriv (I := I) g₁ g₀
           (fun y : M => V y)
-          (fun y : M => metricComparisonEndo (I := I) g₀ g₁ y (W y))
+          (fun y : M => metricComparisonEndomorphism (I := I) g₀ g₁ y (W y))
           (fun y : M => Z y) x := by
   classical
   have hg1gir : ∀ u : TangentSpace I x,
-      g₁.inner x (metricComparisonEndo (I := I) g₀ g₁ x (W x)) u = g₀.inner x (W x) u := by
+      g₁.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x (W x)) u = g₀.inner x (W x) u := by
     intro u
-    rw [gInvRaisedEndo_apply, inverseMetricSharpFib_inner, cotangentToDualLinear_apply,
+    rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_inner, cotangentToDualLinear_apply,
       cotangentToDual_g0FlatCLM]
   have hpair : g₁.inner x
         (((endoCovariantDerivative (I := I) (M := M) g₀)
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁) x (V x)) (W x)) (Z x) =
-      - g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-          (metricComparisonEndo (I := I) g₀ g₁ x (W x)) (V x)) (Z x)
-        - g₀.inner x (W x) (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x)) := by
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) x (V x)) (W x)) (Z x) =
+      - g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+          (metricComparisonEndomorphism (I := I) g₀ g₁ x (W x)) (V x)) (Z x)
+        - g₀.inner x (W x) (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x)) := by
     rw [endoCov_gInvDiffRaisedField_fibrewise (I := I) g₀ g₁ x (V x) (W x)]
     rw [map_add, ContinuousLinearMap.add_apply, map_neg, ContinuousLinearMap.neg_apply,
       inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_dualToCotangent]
     simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.neg_apply,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply]
     rw [show (cotangentToCLM (I := I) (g0FlatCLM (I := I) g₀ x (W x)))
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x)) =
-          g₀.inner x (W x) (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x)) from
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x)) =
+          g₀.inner x (W x) (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x)) from
       cotangentToDual_g0FlatCLM (I := I) g₀ x (W x)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x))]
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x))]
     ring
-  have hk1 := connDiff_koszul_metricDiff (I := I) g₁ g₀
-    (X := fun y : M => V y) (Y := fun y : M => metricComparisonEndo (I := I) g₀ g₁ y (W y))
+  have hk1 := connectionDifference_koszul_metricDiff (I := I) g₁ g₀
+    (X := fun y : M => V y) (Y := fun y : M => metricComparisonEndomorphism (I := I) g₀ g₁ y (W y))
     (Z := fun y : M => Z y) V.mdifferentiableAt
-    ((gInvRaisedEndo_section_contMDiff (I := I) g₀ g₁ W x).mdifferentiableAt (by norm_num))
+    ((metricComparisonEndomorphism_section_contMDiff (I := I) g₀ g₁ W x).mdifferentiableAt (by norm_num))
     Z.mdifferentiableAt
-  have hk2 := connDiff_koszul_metricDiff (I := I) g₁ g₀
+  have hk2 := connectionDifference_koszul_metricDiff (I := I) g₁ g₀
     (X := fun y : M => V y) (Y := fun y : M => Z y)
-    (Z := fun y : M => metricComparisonEndo (I := I) g₀ g₁ y (W y)) V.mdifferentiableAt
+    (Z := fun y : M => metricComparisonEndomorphism (I := I) g₀ g₁ y (W y)) V.mdifferentiableAt
     Z.mdifferentiableAt
-    ((gInvRaisedEndo_section_contMDiff (I := I) g₀ g₁ W x).mdifferentiableAt (by norm_num))
+    ((metricComparisonEndomorphism_section_contMDiff (I := I) g₀ g₁ W x).mdifferentiableAt (by norm_num))
   have hsym := metricDiffCovDeriv_symm_right (I := I) g₁ g₀
     (fun y : M => V y) (fun y : M => Z y)
-    (fun y : M => metricComparisonEndo (I := I) g₀ g₁ y (W y)) x
-  have hconv : g₀.inner x (W x) (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x)) =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x))
-        (metricComparisonEndo (I := I) g₀ g₁ x (W x)) := by
-    rw [← hg1gir (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x)),
-      g₁.symm x (metricComparisonEndo (I := I) g₀ g₁ x (W x))
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Z x) (V x))]
+    (fun y : M => metricComparisonEndomorphism (I := I) g₀ g₁ y (W y)) x
+  have hconv : g₀.inner x (W x) (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x)) =
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x))
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x (W x)) := by
+    rw [← hg1gir (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x)),
+      g₁.symm x (metricComparisonEndomorphism (I := I) g₀ g₁ x (W x))
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Z x) (V x))]
   rw [hpair, hconv]
   simp only [] at hk1 hk2
   linarith [hk1, hk2, hsym]

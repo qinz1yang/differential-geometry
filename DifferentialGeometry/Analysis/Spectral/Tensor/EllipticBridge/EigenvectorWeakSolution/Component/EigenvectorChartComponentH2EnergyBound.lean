@@ -101,7 +101,7 @@ private theorem wkpNorm_le_of_memWkp_precompact_uniform
         = iteratedWeakSobolevNorm (d := d) k p v Ω :=
           (wkpNorm_congr_ae (d := d) hp hΩ_open hv_ae_eq_u).symm
     _ = iteratedWeakSobolevNorm (d := d) k p v Ω' :=
-          wkpNorm_extend_zero (d := d) hp hp_top hΩ'_open hΩ_open hΩ'Ω
+          wkpNorm_extend_zero (d := d) hp hΩ'_open hΩ_open hΩ'Ω
             hv_memWkp_Ω' hv_tsupp hv_compact
     _ ≤ ENNReal.ofReal K_prom * iteratedWeakSobolevNorm (d := d) k p u Ω' :=
           hK_prom_bound hu_precompact

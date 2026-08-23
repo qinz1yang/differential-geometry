@@ -207,7 +207,6 @@ private lemma tensor03CovFun_add_apply
     set Y : Π x : M, TangentSpace I x := FiberBundle.extend E y
     set Z : Π x : M, TangentSpace I x := FiberBundle.extend E z
     set W : Π x : M, TangentSpace I x := FiberBundle.extend E w
-    have hX : MDiffAt (T% X) x := mdifferentiableAt_extend ..
     have hY : MDiffAt (T% Y) x := mdifferentiableAt_extend ..
     have hZ : MDiffAt (T% Z) x := mdifferentiableAt_extend ..
     have hW : MDiffAt (T% W) x := mdifferentiableAt_extend ..
@@ -218,9 +217,9 @@ private lemma tensor03CovFun_add_apply
     rw [show v = X x from hXx.symm, show y = Y x from hYx.symm,
         show z = Z x from hZx.symm, show w = W x from hWx.symm]
     rw [tensor03CovFun_apply, tensor03CovFun_apply, tensor03CovFun_apply]
-    rw [tensor03CovAt_apply_of_diff_extend cov hsum_T hX hY hZ hW,
-        tensor03CovAt_apply_of_diff_extend cov hT_t hX hY hZ hW,
-        tensor03CovAt_apply_of_diff_extend cov hT'_t hX hY hZ hW]
+    rw [tensor03CovAt_apply_of_diff_extend cov hsum_T hY hZ hW,
+        tensor03CovAt_apply_of_diff_extend cov hT_t hY hZ hW,
+        tensor03CovAt_apply_of_diff_extend cov hT'_t hY hZ hW]
     change extDerivFun (I := I) (fun b => (T + T') b (Y b) (Z b) (W b)) x (X x)
         - (T + T') x (cov.toFun Y x (X x)) (Z x) (W x)
         - (T + T') x (Y x) (cov.toFun Z x (X x)) (W x)
@@ -275,7 +274,6 @@ private lemma tensor03CovFun_leibniz_apply
     set Y : Π x : M, TangentSpace I x := FiberBundle.extend E y
     set Z : Π x : M, TangentSpace I x := FiberBundle.extend E z
     set W : Π x : M, TangentSpace I x := FiberBundle.extend E w
-    have hX : MDiffAt (T% X) x := mdifferentiableAt_extend ..
     have hY : MDiffAt (T% Y) x := mdifferentiableAt_extend ..
     have hZ : MDiffAt (T% Z) x := mdifferentiableAt_extend ..
     have hW : MDiffAt (T% W) x := mdifferentiableAt_extend ..
@@ -286,8 +284,8 @@ private lemma tensor03CovFun_leibniz_apply
     rw [show v = X x from hXx.symm, show y = Y x from hYx.symm,
         show z = Z x from hZx.symm, show w = W x from hWx.symm]
     rw [tensor03CovFun_apply, tensor03CovFun_apply]
-    rw [tensor03CovAt_apply_of_diff_extend cov hsum_T hX hY hZ hW]
-    rw [tensor03CovAt_apply_of_diff_extend cov hT_t hX hY hZ hW]
+    rw [tensor03CovAt_apply_of_diff_extend cov hsum_T hY hZ hW]
+    rw [tensor03CovAt_apply_of_diff_extend cov hT_t hY hZ hW]
     change extDerivFun (I := I) (fun b => (g • T) b (Y b) (Z b) (W b)) x (X x)
         - (g • T) x (cov.toFun Y x (X x)) (Z x) (W x)
         - (g • T) x (Y x) (cov.toFun Z x (X x)) (W x)
@@ -348,4 +346,3 @@ end Geometry
 end DifferentialGeometry
 
 end
-

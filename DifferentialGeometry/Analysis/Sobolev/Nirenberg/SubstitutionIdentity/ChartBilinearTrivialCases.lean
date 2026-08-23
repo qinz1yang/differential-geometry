@@ -259,15 +259,14 @@ private lemma chartBilinear_substitution_identity_K_0_empty
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartBilinear_substitution_identity_holds_composite
+theorem chart_bilinear_substitution_identity_of_nonzero_nonempty
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
     {η : EuclN → ℝ}
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E))
-    {_R₀ : ℝ} {h : ℝ}
+    (k : Fin (Module.finrank ℝ E)) {h : ℝ}
     (h_substitution_identity_holds :
       h ≠ 0 → K_0 ≠ ∅ →
       chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
@@ -284,51 +283,6 @@ theorem chartBilinear_substitution_identity_holds_composite
         D hK_0_empty η hη_supp_in_K_0 k h
     · exact h_substitution_identity_holds hh hK_0_empty
 
-omit [NeZero (Module.finrank ℝ E)] in
-theorem chartBilinear_substitution_identity_zero_h_unconditional
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    (K_0 : Set EuclN) (η : EuclN → ℝ)
-    (k : Fin (Module.finrank ℝ E)) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k 0 =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k 0 :=
-  chartBilinear_substitution_identity_zero_h (I := I) (M := M) D K_0 η k
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem chartBilinear_substitution_identity_K_0_empty_unconditional
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (hK_0_empty : K_0 = ∅)
-    (η : EuclN → ℝ)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E)) (h : ℝ) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h :=
-  chartBilinear_substitution_identity_K_0_empty (I := I) (M := M)
-    D hK_0_empty η hη_supp_in_K_0 k h
-omit [NeZero (Module.finrank ℝ E)] in
-theorem chartBilinear_substitution_identity_with_hypothesis
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
-    (h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
-    (h_substitution_identity_holds :
-      chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-      chartBilinear_RHS (I := I) (M := M) D K_0 η k h) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h :=
-  nirenberg_substitution_identity_chartBilinear_compact (I := I) (M := M)
-    D hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
-    h_substitution_identity_holds
 
 
 end SubstitutionDischargeFinal

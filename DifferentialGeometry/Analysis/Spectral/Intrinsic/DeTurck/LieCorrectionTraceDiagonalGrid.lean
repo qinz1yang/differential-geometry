@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionTraceFibreIdentities
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionTameBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTowerAppCcRSProductGridRankLeftBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTowerOperatorFieldCompositionProductGridRankLeftBound
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -18,7 +18,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 
@@ -36,7 +35,7 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem lc0Tr_pointwise_antidiagonalGrid_le
+theorem lieCorrectionZeroTr_pointwise_antidiagonalGrid_le
     (p : ℕ) (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -48,14 +47,14 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
         (σ : Equiv.Perm (Fin (p + 2))) (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ (p + 2) (p + i) x
             ((iteratedCovGrad (I := I) g₀ (p + 2) p i
-              (lc0Tr (I := I) (M := M) g₀ g₁ p σ)).toSection x) ≤
+              (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ p σ)).toSection x) ≤
           C i * ∑ k ∈ Finset.range (i + 1),
             Combinatorics.antidiagonalTupleGrid
               (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) k := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_gInvDiffRaisedEndo_diagGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
       (I := I) (M := M) g₀ hδ₀
   let Φ : SmoothCcTensor g₀ (p + 2) p := cometricDoubleTraceField (I := I) g₀ p
   have hS_ex : ∀ m : ℕ, ∃ S : ℝ, 0 ≤ S ∧ ∀ x : M,
@@ -73,7 +72,7 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
   have hCQ : ∀ i, 0 ≤ CQ i := by
     intro i
-    exact mul_nonneg (appCcGdiag_nonneg (E := E) i)
+    exact mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) i)
       (Finset.sum_nonneg fun m _ => mul_nonneg (hS_nn m)
         (Finset.sum_nonneg fun l _ => mul_nonneg (pow_nonneg hfr (p + 1)) (hCD_nn l)))
   refine ⟨C, fun i => by
@@ -99,16 +98,16 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
         (Finset.mem_range.mpr (by omega))
   let W : SmoothCcTensor g₀ (p + 2) (p + 2) :=
     endoSlotZeroCcTensor (I := I) (M := M) g₀ (p + 1)
-      (gInvDiffRaisedEndoField (I := I) g₀ g₁)
+      (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)
   have hW : ∀ l : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g₀ (p + 2) ((p + 2) + l) x
           ((iteratedCovGrad (I := I) g₀ (p + 2) (p + 2) l W).toSection x) ≤
         fr ^ (p + 1) * (CD l * Combinatorics.antidiagonalTupleGrid b l) := by
     intro l
     refine le_trans
-      (rfns_iteratedCovGrad_slotInsertEndoCc_le_endo
+      (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
         (I := I) (M := M) g₀ (p + 1)
-        (gInvDiffRaisedEndoField (I := I) g₀ g₁) l x) ?_
+        (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) l x) ?_
     refine mul_le_mul_of_nonneg_left ?_ (pow_nonneg hfr (p + 1))
     simpa only [b, Combinatorics.antidiagonalTupleGrid] using
       hCD g₁ P htie hδ_le hδ_nonneg hbound l x
@@ -179,7 +178,7 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
           ≤ diagonalGridGrowthFactor (E := E) i * ∑ m ∈ Finset.range (i + 1),
               (S m * ∑ l ∈ Finset.range (i + 1 - m), fr ^ (p + 1) * CD l) * G :=
         mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell)
-          (appCcGdiag_nonneg (E := E) i)
+          (operatorFieldApplicationGdiag_nonneg (E := E) i)
       _ = CQ i * G := by
         dsimp only [CQ]
         rw [← Finset.sum_mul]
@@ -189,10 +188,10 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
           ((iteratedCovGrad (I := I) g₀ (p + 2) p i Φ).toSection x) ≤
         S i * G :=
     (hS i x).trans (by nlinarith [hS_nn i, hG_one])
-  rw [lc0Tr, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  rw [lieCorrectionZeroTr, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
     (I := I) (M := M) g₀ (p + 2) p
-      (lc0PureDT (I := I) (M := M) g₀ g₁ p) σ i x]
-  rw [show lc0PureDT (I := I) (M := M) g₀ g₁ p =
+      (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ i x]
+  rw [show lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p =
       pureTrace (I := I) (M := M) g₀ g₁ p from rfl]
   rw [pureTrace_split (I := I) (M := M) g₀ g₁ p,
     iteratedCovGrad_add, SmoothCcTensor.toSection_add]
@@ -206,7 +205,7 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
     _ ≤ 2 * (CQ i * G) + 2 * (S i * G) := add_le_add hQ' hfixed'
     _ = (2 * CQ i + 2 * S i) * G := by ring
 
-theorem lc0Tr_two_pointwise_antidiagonalGrid_le
+theorem lieCorrectionZeroTr_two_pointwise_antidiagonalGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -218,13 +217,13 @@ theorem lc0Tr_two_pointwise_antidiagonalGrid_le
         (σ : Equiv.Perm (Fin 4)) (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 4 2 i
-              (lc0Tr (I := I) (M := M) g₀ g₁ 2 σ)).toSection x) ≤
+              (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 σ)).toSection x) ≤
           C i * ∑ k ∈ Finset.range (i + 1),
             Combinatorics.antidiagonalTupleGrid
               (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) k := by
   simpa only [Nat.reduceAdd] using
-    lc0Tr_pointwise_antidiagonalGrid_le (I := I) (M := M) 2 g₀ hδ₀
+    lieCorrectionZeroTr_pointwise_antidiagonalGrid_le (I := I) (M := M) 2 g₀ hδ₀
 
 end DifferentialGeometry.Analysis.Spectral
 

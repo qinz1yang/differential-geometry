@@ -172,8 +172,16 @@ theorem iteratedFDerivWithin_seam_match {V : Set E} (hV : IsOpen V) :
       simp [Prod.smul_mk, Prod.mk_add_mk]
     have htrans : fderivWithin ℝ (iteratedFDerivWithin ℝ n fL sL) sL (0, z) ((1:ℝ), (0:E))
         = fderivWithin ℝ (iteratedFDerivWithin ℝ n fR sR) sR (0, z) ((1:ℝ), (0:E)) := by
-      rw [fderivWithin_iteratedFDerivWithin_apply_eq hUDL hSLclo n hL ((1:ℝ), (0:E)) (0, z) hmemL,
-        fderivWithin_iteratedFDerivWithin_apply_eq hUDR hSRclo n hR ((1:ℝ), (0:E)) (0, z) hmemR]
+      rw [fderivWithin_iteratedFDerivWithin_apply_eq hUDL hSLclo n
+          (hL.of_le
+            (WithTop.coe_le_coe.mpr le_top :
+              ((n : WithTop ℕ∞) + 2) ≤ ∞))
+          ((1:ℝ), (0:E)) (0, z) hmemL,
+        fderivWithin_iteratedFDerivWithin_apply_eq hUDR hSRclo n
+          (hR.of_le
+            (WithTop.coe_le_coe.mpr le_top :
+              ((n : WithTop ℕ∞) + 2) ≤ ∞))
+          ((1:ℝ), (0:E)) (0, z) hmemR]
       have hDtL : ContDiffOn ℝ ∞ (fun y => fderivWithin ℝ fL sL y ((1:ℝ), (0:E))) sL :=
         (hL.fderivWithin hUDL (by exact_mod_cast le_top)).clm_apply contDiffOn_const
       have hDtR : ContDiffOn ℝ ∞ (fun y => fderivWithin ℝ fR sR y ((1:ℝ), (0:E))) sR :=

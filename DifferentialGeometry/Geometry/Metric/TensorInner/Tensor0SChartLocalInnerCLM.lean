@@ -129,17 +129,17 @@ private noncomputable def composeCurryAtIJ (s : ℕ)
     (i j : Fin (Module.finrank ℝ E))
     (B : Tensor0SModel s ℝ E →L[ℝ]
       Tensor0SModel s ℝ E →L[ℝ] ℝ) :
-    ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ]
-      ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ :=
+    Tensor0SModel (s + 1) ℝ E →L[ℝ] Tensor0SModel (s + 1) ℝ E →L[ℝ] ℝ := by
+  dsimp only [Tensor0SModel] at B ⊢
   let CLi := curryLeftAtCLM (E := E) s ((chartModelBasis E) i)
   let CLj := curryLeftAtCLM (E := E) s ((chartModelBasis E) j)
   let postCompCLj :
-      (Tensor0SModel s ℝ E →L[ℝ] ℝ) →L[ℝ]
+      (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ →L[ℝ] ℝ) →L[ℝ]
         (ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ) :=
     (ContinuousLinearMap.compL ℝ
       (ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
-      (Tensor0SModel s ℝ E) ℝ).flip CLj
-  postCompCLj.comp (B.comp CLi)
+      (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) ℝ).flip CLj
+  exact postCompCLj.comp (B.comp CLi)
 
 @[simp] private lemma composeCurryAtIJ_apply (s : ℕ)
     (i j : Fin (Module.finrank ℝ E))
@@ -149,7 +149,9 @@ private noncomputable def composeCurryAtIJ (s : ℕ)
     composeCurryAtIJ (E := E) s i j B S T =
       B (S.curryLeft ((chartModelBasis E) i))
         (T.curryLeft ((chartModelBasis E) j)) := by
-  rfl
+  change B (S.curryLeft ((chartModelBasis E) i))
+      (curryLeftAtCLM (E := E) s ((chartModelBasis E) j) T) = _
+  rw [curryLeftAtCLM_apply]
 
 private lemma chartTensorInnerPointwise_0sCLM_succ_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
@@ -159,6 +161,7 @@ private lemma chartTensorInnerPointwise_0sCLM_succ_eq
             (chartGramMatrix g α b)⁻¹ i j •
               composeCurryAtIJ (E := E) s i j
                 (chartTensorInnerPointwise_0sCLM (I := I) (M := M) g s α b) := by
+  dsimp only [Tensor0SModel]
   refine ContinuousLinearMap.ext ?_
   intro S
   refine ContinuousLinearMap.ext ?_

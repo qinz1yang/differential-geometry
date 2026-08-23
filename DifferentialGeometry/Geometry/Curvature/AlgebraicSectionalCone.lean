@@ -8,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Analysis.InnerProductSpace
 open scoped Manifold ContDiff
@@ -95,7 +95,6 @@ theorem mem_algebraicSectionalNonnegative_dualZeroFace {x : M}
           (A : Tensor04At (I := I) (M := M) x) v w = 0 := by
   simp [ProperCone.mem_dualZeroFace]
 
-@[simp]
 theorem algebraicSectionalEval_pullback {x y : M}
     (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) y)

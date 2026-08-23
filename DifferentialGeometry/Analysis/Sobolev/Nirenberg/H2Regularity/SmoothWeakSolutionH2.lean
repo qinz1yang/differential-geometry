@@ -23,7 +23,6 @@ theorem uniform_nirenberg_estimate
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -47,7 +46,7 @@ theorem uniform_nirenberg_estimate
   obtain ⟨C₀, hC₀_nn, hC₀⟩ :=
     nirenberg_master_inequality_after_young (d := d) B
       hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
-      hη_in_Ω' hh_supp_in_Ω' k
+      hh_supp_in_Ω' k
   set C : ℝ := (2 / B.lam) * C₀ with hC_def
   have hlam_pos : 0 < B.lam := B.hlam_pos
   have hC_nn : 0 ≤ C := by
@@ -158,7 +157,6 @@ theorem loc_smooth_solution
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {Ω'' : Set E} (hΩ'' : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω''))
-    (_hΩ''_in_Ω : closure Ω'' ⊆ Ω)
     (h_room : Metric.cthickening 2 (closure Ω'') ⊆ Ω) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u f : E → ℝ}, B.IsSmoothWeakSolution u f →
@@ -203,9 +201,6 @@ theorem loc_smooth_solution
       hΩ'_closure_in_cthickening
   have hη_tsupport_in_thick34 : tsupport η ⊆ Metric.cthickening (3/4) K :=
     hη_tsupport_in.trans (Metric.thickening_subset_cthickening _ _)
-  have hη_tsupport_in_Ω' : tsupport η ⊆ Ω' := by
-    rw [hΩ'_def]
-    exact hη_tsupport_in.trans (Metric.thickening_mono (by norm_num : (3/4 : ℝ) ≤ 2) K)
   have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ (1 : ℝ) →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh_le
@@ -231,7 +226,7 @@ theorem loc_smooth_solution
             ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) :=
     fun k' => uniform_nirenberg_estimate (d := d) B hη_smooth hη_compact
       hη_range hN_nn h_fderiv_eta hΩ'_open hΩ'_closure_in_Ω hΩ'_closure_compact
-      hη_tsupport_in_Ω' (R₀ := 1) hh_supp_in_Ω' k'
+      (R₀ := 1) hh_supp_in_Ω' k'
   choose Cfun hCfun_nn hCfun using h_unif
   set C : ℝ := ∑ k' : Fin d, Cfun k' with hC_def
   have hC_nn : 0 ≤ C := by

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.Intrinsic
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 
 
 noncomputable section

@@ -17,7 +17,6 @@ namespace IntrinsicLp
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -60,7 +59,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [IsManifold I ∞ M] in
 theorem intrinsic_lip_cont
-    [IsManifold I ∞ M] [T2Space M] [I.Boundaryless]
+    [IsManifold I ∞ M] [T2Space M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : NNReal}
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
       riemannianEDistOf (I := I) g x y) :

@@ -42,7 +42,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem chartPushed_memWkp_unconditional_of_laplacianDomainPow_le_two
+theorem chartPushed_memWkp_of_laplacianDomainPow_le_two
     (g : SmoothRiemannianMetric I M) (α : M) {k : ℕ} (hk : k ≤ 2)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
@@ -68,35 +68,34 @@ theorem chartPushed_memWkp_unconditional_of_laplacianDomainPow_le_two
     rw [h_eq]
     exact h_two
 
-theorem chartSideH2kBridge_unconditional_of_laplacianDomainPow_le_two
+theorem chartSideH2kBridge_of_laplacianDomainPow_le_two
     (g : SmoothRiemannianMetric I M) {k : ℕ} (hk : k ≤ 2)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
-    ChartSideH2kBridge (I := I) (M := M) g k
+    ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) := by
   intro α
-  exact chartPushed_memWkp_unconditional_of_laplacianDomainPow_le_two
+  exact chartPushed_memWkp_of_laplacianDomainPow_le_two
     (I := I) (M := M) g α hk hu_h
 
-theorem memWkpChart_unconditional_of_laplacianDomainPow_le_two
+theorem memWkpChart_of_laplacianDomainPow_le_two
     (g : SmoothRiemannianMetric I M) {k : ℕ} (hk : k ≤ 2)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * k) 2
+      (I := I) (M := M) (2 * k) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   intro α
-  exact chartPushed_memWkp_unconditional_of_laplacianDomainPow_le_two
+  exact chartPushed_memWkp_of_laplacianDomainPow_le_two
     (I := I) (M := M) g α hk hu_h
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushed_memWkp_unconditional_of_laplacianDomainPow
+theorem chartPushed_memWkp_of_laplacianDomainPow
     (g : SmoothRiemannianMetric I M) (α : M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k)
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -111,7 +110,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_memWkp_j_of_chartSideH2kBridge
     (g : SmoothRiemannianMetric I M) (α : M) {k j : ℕ} (hjk : j ≤ 2 * k)
     {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -154,11 +153,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkpChart_2k_of_chartSideH2kBridge_polymorphic
     (g : SmoothRiemannianMetric I M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * k) 2
+      (I := I) (M := M) (2 * k) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) :=
   fun α => h_bridge α
@@ -183,7 +182,7 @@ theorem chartPushed_memWkp_two_sided_succ_le_two
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   refine ⟨?_, ?_⟩
-  · exact chartPushed_memWkp_unconditional_of_laplacianDomainPow_le_two
+  · exact chartPushed_memWkp_of_laplacianDomainPow_le_two
       (I := I) (M := M) g α hk hu_h
   · have hk_le_one : k ≤ 1 := by omega
     interval_cases k
@@ -203,8 +202,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_memWkp_of_laplacianDomainPow_via_bridge
     (g : SmoothRiemannianMetric I M) (α : M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k)
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -213,8 +211,8 @@ theorem chartPushed_memWkp_of_laplacianDomainPow_via_bridge
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α) :=
-  chartPushed_memWkp_unconditional_of_laplacianDomainPow
-    (I := I) (M := M) g α k hu_h h_bridge
+  chartPushed_memWkp_of_laplacianDomainPow
+    (I := I) (M := M) g α k h_bridge
 
 end IteratedChartHmBootstrapFinal
 end Laplacian

@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.BumpFunction
@@ -25,8 +26,7 @@ variable {𝕜 : Type*} [RCLike 𝕜]
 variable {ι : Type*} {s : ι → (x : M) → V x} {u : Set M} {p : M}
 
 theorem exists_contMDiffSection_eqOn_nhd
-    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
-    [ContMDiffVectorBundle n F V I] [IsManifold I ∞ M] [T2Space M]
+    [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
     (hs : ∀ i, CMDiff[u] n (T% (s i))) (hu : IsOpen u) (hp : p ∈ u) :
     ∃ (s' : ι → Cₛ^n⟮I; F, V⟯), ∀ᶠ x in 𝓝 p, ∀ i, s' i x = s i x := by
   obtain ⟨χ, -, hχ⟩ :=
@@ -38,8 +38,7 @@ theorem exists_contMDiffSection_eqOn_nhd
     simp [hx]
 
 theorem IsLocalFrameOn.exists_contMDiffSection_eqOn_nhd
-    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
-    [ContMDiffVectorBundle n F V I] [IsManifold I ∞ M] [T2Space M]
+    [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
     (hs : IsLocalFrameOn I F n s u) (hu : IsOpen u) (hp : p ∈ u) :
     ∃ (s' : ι → Cₛ^n⟮I; F, V⟯), ∀ᶠ x in 𝓝 p, ∀ i, s' i x = s i x := by
   obtain ⟨χ, -, hχ⟩ :=

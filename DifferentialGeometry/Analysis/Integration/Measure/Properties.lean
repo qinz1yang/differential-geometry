@@ -223,7 +223,7 @@ theorem vol_le_tsum_chart
     (ENNReal.tsum_le_tsum (fun _ => measure_mono Set.inter_subset_left))
 
 theorem riemannianMeasure_compact_lt_top
-    [T2Space M] [SigmaCompactSpace M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source))
@@ -271,8 +271,7 @@ theorem riemannianMeasure_compact_lt_top
     (chartLocalMeasure_compact_lt_top (I := I) (M := M) g α hKts_compact hKts_sub)
 
 theorem riemannianMeasure_isFiniteMeasureOnCompacts
-    [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [T2Space M] (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
     IsFiniteMeasureOnCompacts (riemannianMeasure (I := I) g ρ) :=
@@ -290,15 +289,14 @@ theorem locallyCompactSpace_of_chartedSpace
     (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     [Module.Finite ℝ E]
     (H : Type*) [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
-    (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] :
+    (M : Type*) [TopologicalSpace M] [ChartedSpace H M] :
     LocallyCompactSpace M := by
   have _hE : ProperSpace E := FiniteDimensional.proper ℝ E
   have _hH : LocallyCompactSpace H := I.locallyCompactSpace
   exact ChartedSpace.locallyCompactSpace H M
 
 theorem riemannianMeasure_isLocallyFiniteMeasure
-    [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [T2Space M] (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
     IsLocallyFiniteMeasure (riemannianMeasure (I := I) g ρ) :=
@@ -335,7 +333,7 @@ theorem riemannianVolumeMeasure_sigmaFinite
     (chartAtlasPOU I M) (chartAtlasPOU_isSubordinate I M)
 
 theorem riemannianMeasure_isFiniteMeasure_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
@@ -552,7 +550,6 @@ private lemma exists_open_nbhd_pou_pos
   · intro y hy; exact le_of_lt hy.2
 
 theorem riemannianMeasure_isOpenPosMeasure
-    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :

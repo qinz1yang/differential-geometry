@@ -132,7 +132,7 @@ private theorem linearODE_apriori_bound
 omit [CompleteSpace G] in
 theorem linearODE_gronwall_forward
     {A₁ A₂ : ℝ → (G →L[ℝ] G)} {Z₁ Z₂ : ℝ → G} {h₀ β K η : ℝ}
-    (_hh₀β : h₀ ≤ β) (hK_nn : 0 ≤ K)
+    (hK_nn : 0 ≤ K)
     (hZ₁_cont : ContinuousOn Z₁ (Icc h₀ β))
     (hZ₂_cont : ContinuousOn Z₂ (Icc h₀ β))
     (hZ₁_deriv : ∀ t ∈ Icc h₀ β, HasDerivAt Z₁ (A₁ t (Z₁ t)) t)
@@ -254,7 +254,7 @@ theorem linearODE_gronwall_backward
     rw [hW₂s, ContinuousLinearMap.neg_apply, norm_neg]
     exact hdiff_bd _ h_in
   have hres := linearODE_gronwall_forward (A₁ := B₁) (A₂ := B₂) (Z₁ := W₁) (Z₂ := W₂)
-    (h₀ := h₀) (β := 2 * h₀ - α) (K := K) (η := η) h_h₀_le_2h₀mα hK_nn
+    (h₀ := h₀) (β := 2 * h₀ - α) (K := K) (η := η) hK_nn
     hW₁_cont hW₂_cont hW₁_deriv hW₂_deriv hB₁_bd hdiff_bd' (2 * h₀ - t)
     ⟨by linarith [ht.2], by linarith [ht.1]⟩
   have h_W_init : ‖W₁ h₀ - W₂ h₀‖ = ‖Z₁ h₀ - Z₂ h₀‖ := by
@@ -279,10 +279,9 @@ theorem linearODE_gronwall_backward
   exact hres
 
 theorem linearODESolution_continuousOn
-    {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
+    {F G : Type*} [NormedAddCommGroup F] [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
     {A : F → ℝ → (G →L[ℝ] G)} {h₀ : ℝ} {Z₀ : F → G}
-    {a b : ℝ} (hab_lt : a < b) (h₀_mem : h₀ ∈ Set.Ioo a b)
+    {a b : ℝ} (h₀_mem : h₀ ∈ Set.Ioo a b)
     {U : Set F} (hU : IsOpen U)
     (hA_cont : ContinuousOn (Function.uncurry A) (U ×ˢ Set.Ioo a b))
     (hZ₀_cont : ContinuousOn Z₀ U) :
@@ -291,7 +290,7 @@ theorem linearODESolution_continuousOn
       (U ×ˢ Set.Ioo a b) := by
   set Z : F → ℝ → G := linearODESolution A a b h₀ Z₀ with hZ_def
   have hZ_exists : ∀ x ∈ U, HasLinearODESolution A a b h₀ Z₀ x := fun x hx =>
-    hasLinearODESolution_of_continuousOn hab_lt h₀_mem hU hA_cont hx
+    hasLinearODESolution_of_continuousOn h₀_mem hA_cont hx
   have hZ_deriv : ∀ x ∈ U, ∀ t ∈ Ioo a b, HasDerivAt (Z x) (A x t (Z x t)) t := by
     intro x hx t ht
     exact linearODESolution_hasDerivAt_of_hasSolution A a b h₀ Z₀ (hZ_exists x hx) ht
@@ -577,7 +576,7 @@ theorem linearODESolution_continuousOn
       have hdiff_bd_ht : ∀ s ∈ Icc h₀ β, ‖(A x s - A x₀ s) (Z x s)‖ ≤ η_target :=
         fun s hs => hdiff_bd_full s ⟨le_trans hα_le_h₀ hs.1, hs.2⟩
       have hres := linearODE_gronwall_forward (A₁ := A x₀) (A₂ := A x) (Z₁ := Z x₀) (Z₂ := Z x)
-        hh₀_le_β hK_nn hZ₁_cont_ht hZ₂_cont_ht hZ₁_deriv_ht hZ₂_deriv_ht
+        hK_nn hZ₁_cont_ht hZ₂_cont_ht hZ₁_deriv_ht hZ₂_deriv_ht
         hAx₀_bd_ht hdiff_bd_ht t ⟨hh₀_le_t, ht.2⟩
       have h_init_eq : ‖Z x₀ h₀ - Z x h₀‖ = ‖Z₀ x - Z₀ x₀‖ := by
         rw [hZ_init x, hZ_init x₀]

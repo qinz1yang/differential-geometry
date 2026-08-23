@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.PreH1
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 
 set_option autoImplicit false
 
@@ -357,7 +357,6 @@ theorem spatialCutoffBetween_sq_le_rpow
     simpa using (sq_le_sq₀ hmem.1 (by norm_num : (0 : ℝ) ≤ 1)).2 hmem.2
 
 theorem gradientFun_spatialCutoffBetween
-    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g)
     (inner outer : ℝ) (x : M) :
     gradientFun (I := I) g (spatialCutoffBetween rho inner outer).toFun x =
@@ -386,7 +385,6 @@ theorem gradientFun_spatialCutoffBetween
     spatialCutoffBetweenArgument, hprofile.deriv] using hgradient
 
 theorem spatialCutoffBetween_gradient_le
-    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g)
     {outerLevel middleLevel innerLevel B : ℝ}
     (houterMiddle : outerLevel < middleLevel)
@@ -564,7 +562,6 @@ theorem spatialMoserCutoff_add_two_sq_le_rpow
     simpa using (sq_le_sq₀ hmem.1 (by norm_num : (0 : ℝ) ≤ 1)).2 hmem.2
 
 theorem gradientFun_spatialMoserCutoff
-    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {q : SmoothRiemannianMetric I M}
     (rho : SmoothScalar q) (k : ℕ) (x : M) :
     gradientFun (I := I) g (spatialMoserCutoff rho k).toFun x =
@@ -593,7 +590,6 @@ theorem gradientFun_spatialMoserCutoff
     spatialMoserCutoffArgument, hprofile.deriv] using hgradient
 
 theorem spatialMoserCutoff_succ_gradient_le
-    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {q : SmoothRiemannianMetric I M}
     (rho : SmoothScalar q)
     {B : ℝ} (hB : 0 ≤ B)
@@ -670,6 +666,7 @@ theorem spatialMoserCutoff_succ_gradient_le
 variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
 
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem exists_spatialMoserCutoff_gradient_bound
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ (k : ℕ) (x : M),
@@ -716,6 +713,7 @@ theorem spatialMoserCutoffGradientConstant_nonneg
     rho.gradientSqSup_nonneg
 
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem spatialMoserCutoff_gradient_le
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g)
     (k : ℕ) (x : M) :

@@ -1,1 +1,0 @@
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian

@@ -10,7 +10,6 @@ namespace ODE
 
 open Bundle Set
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 
 open DifferentialGeometry.PDE.DeTurck

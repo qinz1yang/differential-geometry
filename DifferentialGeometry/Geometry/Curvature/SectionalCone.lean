@@ -9,7 +9,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 open scoped Manifold ContDiff
 

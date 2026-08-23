@@ -60,7 +60,7 @@ def baseD1PowMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (p : ℝ) : ℝ :=
   ∫ x : V, (baseD1Maj x) ^ p
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD1Maj_pow {t p : ℝ} (ht : 0 < t) (x : V) :
     (heatD1Maj t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹ *

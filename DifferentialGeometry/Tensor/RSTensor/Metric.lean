@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.RSTensor.Derivation.Contract
@@ -67,7 +68,7 @@ import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
-import DifferentialGeometry.Bundle.SectionRealized
+import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import Mathlib.LinearAlgebra.Dual.Basis
 import Mathlib.LinearAlgebra.Trace
@@ -136,7 +137,7 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
   simp [to02Tensor_eCLM, hom_trivializationAt, Trivialization.continuousLinearMap_apply]
   rfl
 
-theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
+theorem joint_to02 {S : Set ℝ}
     (A : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1 →L[ℝ] ℝ)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -193,7 +194,7 @@ theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
 
 def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I 1 M] [IsManifold I (n + 1) M]
+    [IsManifold I 1 M] [hM : IsManifold I (n + 1) M]
     (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _)) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (I := I) (M := M) (n := n) 2 := by
   unfold Tensor0SBundle.Tensor0SField
@@ -203,6 +204,8 @@ def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : With
   let uCLM := to02Tensor_uCLM (E := E)
   let gI := _root_.Bundle.ContMDiffRiemannianMetric.inner g
   exact ⟨fun x => (eCLM.comp (gI x)).uncurryLeft, by
+    rcases hM with ⟨⟩
+    letI : IsManifold I (n + 1) M := IsManifold.mk
     haveI := Tensor0SBundle.tensor0SBundle_smooth
       (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := n) 2
     intro x₀; rw [contMDiffAt_section]

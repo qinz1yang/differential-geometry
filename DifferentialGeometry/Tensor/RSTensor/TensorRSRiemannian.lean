@@ -23,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {Time : Type*}
 
 def componentL2SqRS
-    {x : M} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} {Idx : Type*} [Fintype Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     {r s : Nat} (A : TensorRSSpace r s I x) : Real :=
   ∑ upper : Fin r -> Idx, ∑ lower : Fin s -> Idx,
@@ -90,7 +90,7 @@ theorem normSqRS_one_two_identity_eq_sum
   rw [sum_fin_two_fun]
 
 theorem componentRS_sq_le_componentL2SqRS
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     {x : M} {r s : Nat}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (A : TensorRSSpace r s I x)

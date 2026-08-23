@@ -27,7 +27,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 theorem crossChartJointK
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source) :
@@ -55,7 +54,6 @@ theorem crossChartJointK
               (d := Module.finrank ℝ E) k p v
               (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  let _ := g
   set K_M : Set M := K_α ∩ tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hKM_def
@@ -507,7 +505,7 @@ theorem crossChartJointK
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p ψ_total Ωγ_target :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
-      (d := Module.finrank ℝ E) hp_one hp_top hΩγα_open hΩγ_target_open
+      (d := Module.finrank ℝ E) hp_one hΩγα_open hΩγ_target_open
       hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_supp_Ωγα hψ_total_cpt
   have h_pushed_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -587,7 +585,6 @@ theorem crossChartJointK
 theorem cross_chart_bound_strict_strong_memWkp_k
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source) :
@@ -609,7 +606,7 @@ theorem cross_chart_bound_strict_strong_memWkp_k
             (d := Module.finrank ℝ E) k p v
             (chartTargetEuclid (I := I) (M := M) α) := by
   obtain ⟨K, hK, hjoint⟩ := crossChartJointK (I := I) (M := M)
-    g k hp_one hp_top γ α hK_compact hK_α_in_α
+    k hp_one hp_top γ α hK_compact hK_α_in_α
   refine ⟨K, hK, ?_⟩
   intro v hv hv_supp
   exact (hjoint hv hv_supp).2

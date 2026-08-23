@@ -57,10 +57,10 @@ variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartSideH2kBridge_mono_of_le
-    (g : SmoothRiemannianMetric I M) {k j : ℕ} (hjk : j ≤ k)
+    {k j : ℕ} (hjk : j ≤ k)
     {u : M → ℝ}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k u) :
-    ChartSideH2kBridge (I := I) (M := M) g j u := by
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k u) :
+    ChartSideH2kBridge (I := I) (M := M) j u := by
   intro α
   have h := h_bridge α
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.le_of_le
@@ -70,7 +70,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_memWkp_j_of_chartSideH2kBridge_at
     (g : SmoothRiemannianMetric I M) (α : M) {k j : ℕ} (hjk : j ≤ 2 * k)
     {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -88,7 +88,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chosenMthMixed_memWkp_two_two_of_chartSideH2kBridge
     (g : SmoothRiemannianMetric I M) (α : M) {k m : ℕ} (hm : m + 2 ≤ 2 * k)
     {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)))
     (idx : Fin m → Fin (Module.finrank ℝ E)) :
@@ -127,7 +127,7 @@ theorem chartPushed_memWkp_two_k_of_laplacianDomainPow_bridge
     (g : SmoothRiemannianMetric I M) (α : M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k)
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -146,7 +146,7 @@ theorem chartPushed_memWkp_two_k_of_laplacianDomainPow
     (g : SmoothRiemannianMetric I M) (α : M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k)
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -165,18 +165,18 @@ theorem memWkpChart_two_k_of_laplacianDomainPow_bridge
     (g : SmoothRiemannianMetric I M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k)
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * k) 2
+      (I := I) (M := M) (2 * k) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   intro α
   exact chartPushed_memWkp_two_k_of_laplacianDomainPow_bridge
     (I := I) (M := M) g α k hu_h h_bridge
 
-theorem chartPushed_memWkp_two_k_unconditional_of_le_two
+theorem chartPushed_memWkp_two_k_of_le_two
     (g : SmoothRiemannianMetric I M) (α : M) {k : ℕ} (hk : k ≤ 2)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
@@ -189,21 +189,21 @@ theorem chartPushed_memWkp_two_k_unconditional_of_le_two
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) := by
   have h_bridge :=
-    chartSideH2kBridge_unconditional_of_laplacianDomainPow_le_two
+    IteratedChartHmBootstrapFinal.chartSideH2kBridge_of_laplacianDomainPow_le_two
       (I := I) (M := M) g hk hu_h
   exact chartPushed_memWkp_two_k_of_laplacianDomainPow_bridge
     (I := I) (M := M) g α k hu_h h_bridge
 
-theorem memWkpChart_two_k_unconditional_of_le_two
+theorem memWkpChart_two_k_of_le_two
     (g : SmoothRiemannianMetric I M) {k : ℕ} (hk : k ≤ 2)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * k) 2
+      (I := I) (M := M) (2 * k) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   intro α
-  exact chartPushed_memWkp_two_k_unconditional_of_le_two
+  exact chartPushed_memWkp_two_k_of_le_two
     (I := I) (M := M) g α hk hu_h
 
 theorem chartPushed_memWkp_two_min_k_two
@@ -222,7 +222,7 @@ theorem chartPushed_memWkp_two_min_k_two
   have h_min_le_2 : min k 2 ≤ 2 := min_le_right _ _
   have hu_h_min : u_h ∈ laplacianDomainPow (I := I) (M := M) g (min k 2) :=
     laplacianDomainPow_le_of_le (I := I) (M := M) g (min_le_left _ _) hu_h
-  exact chartPushed_memWkp_two_k_unconditional_of_le_two
+  exact chartPushed_memWkp_two_k_of_le_two
     (I := I) (M := M) g α h_min_le_2 hu_h_min
 
 theorem memWkpChart_two_min_k_two
@@ -230,7 +230,7 @@ theorem memWkpChart_two_min_k_two
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * min k 2) 2
+      (I := I) (M := M) (2 * min k 2) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   intro α
@@ -241,7 +241,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_memWkp_succ_step_of_chartSideH2kBridge
     (g : SmoothRiemannianMetric I M) (α : M) {k m : ℕ} (hm : m + 2 ≤ 2 * k)
     {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -278,10 +278,10 @@ theorem chartPushed_memWkp_two_k_plus_two_two_sided_of_chartSideBridges
     (g : SmoothRiemannianMetric I M) (α : M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g (k + 1))
-    (h_bridge_u : ChartSideH2kBridge (I := I) (M := M) g (k + 1)
+    (h_bridge_u : ChartSideH2kBridge (I := I) (M := M) (k + 1)
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)))
-    (h_bridge_rhs : ChartSideH2kBridge (I := I) (M := M) g (k + 1)
+    (h_bridge_rhs : ChartSideH2kBridge (I := I) (M := M) (k + 1)
       (((laplacianDomain.preimage (I := I) (M := M) g
           ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
             (I := I) (M := M) g k hu_h⟩ :
@@ -314,13 +314,13 @@ theorem memWkpChart_two_k_of_preimage_chartSideBridge
     (g : SmoothRiemannianMetric I M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g (k + 1))
-    (h_bridge_rhs : ChartSideH2kBridge (I := I) (M := M) g k
+    (h_bridge_rhs : ChartSideH2kBridge (I := I) (M := M) k
       (((laplacianDomain.preimage (I := I) (M := M) g
           ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
             (I := I) (M := M) g k hu_h⟩ :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (2 * k) 2
+      (I := I) (M := M) (2 * k) 2
       ((laplacianDomain.preimage (I := I) (M := M) g
           ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
             (I := I) (M := M) g k hu_h⟩ :

@@ -30,7 +30,7 @@ Stampacchia argument while keeping the proof independent of
 noncomputable section
 
 open MeasureTheory Metric Filter Topology Set Function
-open scoped ENNReal NNReal Manifold
+open scoped ENNReal Manifold
 
 namespace DeGiorgi
 

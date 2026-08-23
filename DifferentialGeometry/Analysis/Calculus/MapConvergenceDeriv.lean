@@ -236,8 +236,8 @@ theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φli
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φlim) :
     MapCInfConvOnCompacts U (fun k z => g z * Φ k z) (fun z => g z * Φlim z) := by
   intro K hK hKU p ε hε
-  obtain ⟨Bg, hBg0, hBg⟩ : ∃ Bg : ℝ, 0 ≤ Bg ∧ ∀ i ≤ p, ∀ x ∈ K,
-      ‖iteratedFDeriv ℝ i g x‖ ≤ Bg := by
+  obtain ⟨Background, hBackground0, hBackground⟩ : ∃ Background : ℝ, 0 ≤ Background ∧ ∀ i ≤ p, ∀ x ∈ K,
+      ‖iteratedFDeriv ℝ i g x‖ ≤ Background := by
     have hbd : ∀ i : ℕ, ∃ B : ℝ, ∀ x ∈ K, ‖iteratedFDeriv ℝ i g x‖ ≤ B := by
       intro i
       obtain ⟨B, hB⟩ := hK.bddAbove_image
@@ -251,7 +251,7 @@ theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φli
       _ ≤ ∑ j ∈ Finset.range (p + 1), |B j| :=
           Finset.single_le_sum (f := fun j => |B j|) (fun j _ => abs_nonneg (B j))
             (Finset.mem_range.mpr (Nat.lt_succ_of_le hi))
-  obtain ⟨k0, hk0⟩ := h K hK hKU p (ε / (2 ^ p * Bg + 1)) (by positivity)
+  obtain ⟨k0, hk0⟩ := h K hK hKU p (ε / (2 ^ p * Background + 1)) (by positivity)
   refine ⟨k0, fun k hk r hr x hx => ?_⟩
   have hle : mapDerivNorm r (fun z => g z * Φ k z) (fun z => g z * Φlim z) x
       ≤ ∑ i ∈ Finset.range (r + 1),
@@ -268,22 +268,22 @@ theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φli
   refine hle.trans ?_
   have hstep : ∀ i ∈ Finset.range (r + 1),
       (r.choose i : ℝ) * ‖iteratedFDeriv ℝ i g x‖ * mapDerivNorm (r - i) (Φ k) Φlim x
-        ≤ (r.choose i : ℝ) * (Bg * (ε / (2 ^ p * Bg + 1))) := by
+        ≤ (r.choose i : ℝ) * (Background * (ε / (2 ^ p * Background + 1))) := by
     intro i hi
     have hi' : i ≤ p := le_trans (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)) hr
     rw [mul_assoc]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    exact mul_le_mul (hBg i hi' x hx) (hk0 k hk (r - i) (by omega) x hx)
-      (mapDerivNorm_nonneg _ _ _ _) hBg0
+    exact mul_le_mul (hBackground i hi' x hx) (hk0 k hk (r - i) (by omega) x hx)
+      (mapDerivNorm_nonneg _ _ _ _) hBackground0
   refine (Finset.sum_le_sum hstep).trans ?_
   rw [← Finset.sum_mul,
     (by exact_mod_cast Nat.sum_range_choose r :
       (∑ i ∈ Finset.range (r + 1), (r.choose i : ℝ)) = 2 ^ r)]
-  have hD : (0:ℝ) < 2 ^ p * Bg + 1 := by positivity
+  have hD : (0:ℝ) < 2 ^ p * Background + 1 := by positivity
   have h2r : (2:ℝ) ^ r ≤ 2 ^ p := pow_le_pow_right₀ (by norm_num) hr
-  rw [show (2:ℝ) ^ r * (Bg * (ε / (2 ^ p * Bg + 1)))
-      = 2 ^ r * Bg * ε / (2 ^ p * Bg + 1) from by ring, div_le_iff₀ hD]
-  nlinarith [mul_nonneg (mul_nonneg hε.le (sub_nonneg.mpr h2r)) hBg0, hε.le]
+  rw [show (2:ℝ) ^ r * (Background * (ε / (2 ^ p * Background + 1)))
+      = 2 ^ r * Background * ε / (2 ^ p * Background + 1) from by ring, div_le_iff₀ hD]
+  nlinarith [mul_nonneg (mul_nonneg hε.le (sub_nonneg.mpr h2r)) hBackground0, hε.le]
 
 theorem MapCInfConvOnCompacts.sum {ι : Type*} {U : Set E} (s : Finset ι)
     {Φ : ι → ℕ → E → F} {Φinf : ι → E → F}

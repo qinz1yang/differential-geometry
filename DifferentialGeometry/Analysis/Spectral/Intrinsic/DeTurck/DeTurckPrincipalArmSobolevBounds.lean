@@ -3,14 +3,14 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralNormLIterateLadder
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AppCcJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceSlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.OperatorFieldPairingIBP
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorDirichletCurrentGreenIdentityRS
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianAppCcCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianOperatorFieldApplicationCommutation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -28,7 +28,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
@@ -252,12 +251,14 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
   have hδ_nn : 0 ≤ δ := delta_nonneg_of_ball_gFibreOpBound (I := I) (M := M) g₀ a hR₀ hδ_fibre
   have hκ_nn : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn h1δ.le
   have hCE_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-    deTurckArmFibreConst_nonneg _
+    de_turck_arm_fibre_const_nonneg _
   obtain ⟨Cgap, hCgap_nn, hgap⟩ :=
     exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
       (I := I) (M := M) g₀ 1
   refine ⟨deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
-      (Real.sqrt 2 + Real.sqrt Cgap), by positivity, fun T₀ hball => ?_⟩
+      (Real.sqrt 2 + Real.sqrt Cgap),
+    mul_nonneg (mul_nonneg hCE_nn hκ_nn)
+      (add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)), fun T₀ hball => ?_⟩
   set g₁ := tensorSectionRealizeMetric (I := I) g₀ T₀
     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball) with hg₁_def
   set armT := deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ T₀ with harm_def
@@ -292,13 +293,14 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
   have harm_le : ‖armT‖ ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
       ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ := by
     have hrhs_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
-        ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ := by positivity
+        ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ :=
+      mul_nonneg (mul_nonneg hCE_nn hκ_nn) (norm_nonneg _)
     refine le_of_sq_le_sq ?_ hrhs_nn
     have hexp : (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
         ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖) ^ 2 =
         deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) ^ 2 *
           ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ ^ 2 := by ring
-    rw [hexp, sq_deTurckArmFibreConst]
+    rw [hexp, sq_de_turck_arm_fibre_const]
     exact hsq1
   have hgap1 := hgap T₀
   rw [SmoothCcTensor.norm_toL2] at hgap1
@@ -310,9 +312,9 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
     have hc_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) T₀‖ :=
       norm_nonneg _
     have hsqrt_nn : 0 ≤ Real.sqrt Cgap := Real.sqrt_nonneg _
-    refine le_of_sq_le_sq ?_ (by positivity)
+    refine le_of_sq_le_sq ?_ (add_nonneg hb_nn (mul_nonneg hsqrt_nn hc_nn))
     have hsC : Real.sqrt Cgap ^ 2 = Cgap := Real.sq_sqrt hCgap_nn
-    nlinarith [hgap1, mul_nonneg (mul_nonneg hsqrt_nn hb_nn) hc_nn]
+    nlinarith only [hgap1, hsC, mul_nonneg (mul_nonneg hsqrt_nn hb_nn) hc_nn]
   have htwo1 : ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ =
       ‖iteratedCovGrad (I := I) g₀ 0 2 (1 + 1) T₀‖ := rfl
   have hcast2 : ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) T₀‖ =
@@ -562,13 +564,13 @@ lemma arm_l2_le (g₀ g₁ : SmoothRiemannianMetric I M)
     exact h1
   have hrhs_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
       ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ :=
-    mul_nonneg (mul_nonneg (deTurckArmFibreConst_nonneg _) hκ_nn) (norm_nonneg _)
+    mul_nonneg (mul_nonneg (de_turck_arm_fibre_const_nonneg _) hκ_nn) (norm_nonneg _)
   refine le_of_sq_le_sq ?_ hrhs_nn
   have hexp : (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
       ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖) ^ 2 =
       deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) ^ 2 *
         ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ ^ 2 := by ring
-  rw [hexp, sq_deTurckArmFibreConst]
+  rw [hexp, sq_de_turck_arm_fibre_const]
   exact hsq1
 
 omit [BoundarylessManifold I M] in
@@ -615,11 +617,11 @@ lemma arm_covGrad_slotExtend_l2_le (g₀ g₁ : SmoothRiemannianMetric I M)
     rw [← hbridge, ← SmoothCcTensor.norm_def (I := I) (M := M)] at h1
     exact h1
   have hrhs_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * κ * ‖W‖ :=
-    mul_nonneg (mul_nonneg (deTurckArmFibreConst_nonneg _) hκ_nn) (norm_nonneg _)
+    mul_nonneg (mul_nonneg (de_turck_arm_fibre_const_nonneg _) hκ_nn) (norm_nonneg _)
   refine le_of_sq_le_sq ?_ hrhs_nn
   have hexp : (deTurckArmFibreConst (Module.finrank ℝ E) * κ * ‖W‖) ^ 2 =
       deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * κ ^ 2 * ‖W‖ ^ 2 := by ring
-  rw [hexp, sq_deTurckArmFibreConst]
+  rw [hexp, sq_de_turck_arm_fibre_const]
   exact hsq
 
 lemma hs_norm_family_shift (g₀ : SmoothRiemannianMetric I M)
@@ -663,12 +665,12 @@ lemma hs_extreme_interp {f : ℕ → ℝ} (hf_nn : ∀ k, 0 ≤ f k)
     by_cases hge : γ ≤ σ₁ + σ₂
     · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := σ₁ + σ₂ - γ) (τ₂ := γ)
-        (by omega) hle (by omega) (by omega)
+        (by omega) hle (by omega)
       have hlowB : f (σ₁ + σ₂ - γ) ≤ B := hB _ (by omega)
       exact le_trans hex (mul_le_mul_of_nonneg_right hlowB (hf_nn γ))
     · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := 0) (τ₂ := σ₁ + σ₂)
-        (Nat.zero_le _) hle (by omega) (by omega)
+        (Nat.zero_le _) hle (by omega)
       have hf0B : f 0 ≤ B := hB 0 (Nat.zero_le _)
       have hαβγ : f (σ₁ + σ₂) ≤ f γ := hmono (by omega)
       exact le_trans hex (mul_le_mul hf0B hαβγ (hf_nn _) (le_trans (hf_nn 0) hf0B))

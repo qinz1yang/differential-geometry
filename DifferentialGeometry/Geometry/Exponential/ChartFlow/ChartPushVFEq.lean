@@ -325,7 +325,7 @@ section UnconditionalBridge
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushedFlow_eq_witness_curve_eventually_unconditional
+theorem chartPushedFlow_eq_witness_curve_eventually
     (g : SmoothRiemannianMetric I M) (p : M) (v_chart : E)
     {γ : ℝ → M}
     {f : ℝ → TangentBundle I M}
@@ -341,12 +341,12 @@ theorem chartPushedFlow_eq_witness_curve_eventually_unconditional
   have hf0_proj : (f 0).proj = p := by rw [hf0]
   have hd := chartPushLift_eventually_hasDerivAt_chartPhaseVF_and_target_interior
     (I := I) (g := g) (α := p) (f := f) hf0_proj hf_int_at0
-  exact chartPushedFlow_eq_witness_curve_eventually
+  exact chartPushedFlow_eq_witness_curve_eventually_of_chart_phase
     (I := I) (g := g) (p := p) (v_chart := v_chart)
     (γ := γ) (f := f) hproj hf0 hf_int_at0 hd
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually_unconditional
+theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     {t₁ : ℝ} (ht₁ : t₁ ∈ maximalGeodesicInterval (I := I) g p v)
     {f : ℝ → TangentBundle I M}
@@ -361,7 +361,7 @@ theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually_unconditional
       (∀ᶠ t in 𝓝 (0 : ℝ),
         maximalGeodesicChosenCurve (I := I) g p v ht₁ t =
           chartFlowGeodesicCurve (I := I) Φ p (v : E) t) :=
-  chartPushedFlow_eq_witness_curve_eventually_unconditional
+  chartPushedFlow_eq_witness_curve_eventually
     (I := I) (g := g) (p := p) (v_chart := (v : E))
     (γ := maximalGeodesicChosenCurve (I := I) g p v ht₁)
     (f := f) hproj_chosen hf0 hf_int_at0

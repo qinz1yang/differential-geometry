@@ -23,8 +23,9 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
+omit [CompleteSpace E] in
 theorem heat_pot_hopf_boundary_point_on_compact_annulus
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {S : Real} (hS : 0 ≤ S) (V u : Real → M → Real)
@@ -114,8 +115,9 @@ theorem heat_pot_hopf_boundary_point_on_compact_annulus
     hu_cont hu_nonneg hu_inner hu_time hu_mdiff hu_grad hu_super hV_lower
     hp hp_outer hgrad_boundary hu_zero
 
+omit [CompleteSpace E] in
 theorem heat_hopf_boundary_point_on_compact_annulus
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {S : Real} (hS : 0 ≤ S) (u : Real → M → Real)
@@ -158,8 +160,9 @@ theorem heat_hopf_boundary_point_on_compact_annulus
     (fun _ _ _ _ => le_rfl) hu_nonneg hu_inner hp hp_outer
     hgrad_boundary hu_zero
 
+omit [CompleteSpace E] in
 theorem heat_pot_hopf_boundary_point_on_compact_annulus_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {S : Real} (hS : 0 ≤ S) (V u : Real → M → Real)
@@ -280,8 +283,9 @@ theorem heat_pot_hopf_boundary_point_on_compact_annulus_of_metricFamilySmoothOn
       (by simpa only [K] using hheat_upper) hV_lower hu_nonneg hu_inner
       hp hp_outer hgrad_boundary hu_zero
 
+omit [CompleteSpace E] in
 theorem heat_hopf_boundary_point_on_compact_annulus_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {S : Real} (hS : 0 ≤ S) (u : Real → M → Real)

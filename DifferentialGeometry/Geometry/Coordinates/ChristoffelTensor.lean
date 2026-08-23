@@ -21,6 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
 
+omit [DecidableEq Idx] in
 theorem tensor12Comp_connectionDifferenceTensorAt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
@@ -32,6 +33,7 @@ theorem tensor12Comp_connectionDifferenceTensorAt
         (fun y : M => connectionDifferenceTensorAt (I := I) cov cov' y)
         frame hframe x hx k i j =
       christoffelSymbolDifferenceInFrame cov cov' frame hframe x i j k := by
+  classical
   unfold tensor12CompInFrame tensorRSComponentInFrame
     christoffelSymbolDifferenceInFrame
   change

@@ -22,6 +22,7 @@ def baseHeatHalf (x : V) : ℝ :=
   Real.sqrt ‖x‖ * baseHeat x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseHeatHalf_nonneg (x : V) : 0 ≤ baseHeatHalf x := by
   unfold baseHeatHalf
   exact mul_nonneg (Real.sqrt_nonneg _) (baseHeat_nonneg x)
@@ -72,6 +73,7 @@ def heatHalf (t : ℝ) (x : V) : ℝ :=
     baseHeatHalf ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatHalf_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     0 ≤ heatHalf t x := by
   unfold heatHalf
@@ -81,6 +83,7 @@ theorem heatHalf_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseHeatHalf_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatHalf_eq {t : ℝ} (ht : 0 < t) (x : V) :
     heatHalf t x = Real.sqrt ‖x‖ * heatKernel t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -139,6 +142,7 @@ private theorem holder_half {K : ℝ≥0} {u : V → F}
   simpa [Real.sqrt_eq_rpow] using h
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem approx_integrand {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     {u : V → F} (hu : HolderWith K (1 / 2 : ℝ≥0) u) (x y : V) :
     ‖heatKernel t y • (u (x - y) - u x)‖ ≤
@@ -195,6 +199,7 @@ def baseHeatHolder (alpha : NNReal) (x : V) : Real :=
   ‖x‖ ^ (alpha : Real) * baseHeat x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseHeatHolder_nonneg (alpha : NNReal) (x : V) :
     0 ≤ baseHeatHolder alpha x :=
   mul_nonneg (Real.rpow_nonneg (norm_nonneg x) _) (baseHeat_nonneg x)
@@ -241,6 +246,7 @@ def heatHolder (alpha : NNReal) (t : Real) (x : V) : Real :=
       baseHeatHolder alpha ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatHolder_nonneg (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     0 ≤ heatHolder alpha t x := by
   unfold heatHolder
@@ -251,6 +257,7 @@ theorem heatHolder_nonneg (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     (baseHeatHolder_nonneg alpha _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatHolder_eq (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     heatHolder alpha t x = ‖x‖ ^ (alpha : Real) * heatKernel t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -305,6 +312,7 @@ private theorem holder_shift {alpha K : NNReal} {u : V → F}
   exact h
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] in
 private theorem holder_approx_integrand {alpha K : NNReal}
     {t : Real} (ht : 0 < t) {u : V → F} (hu : HolderWith K alpha u)
     (x y : V) :

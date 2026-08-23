@@ -1,1 +1,0 @@
-import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner

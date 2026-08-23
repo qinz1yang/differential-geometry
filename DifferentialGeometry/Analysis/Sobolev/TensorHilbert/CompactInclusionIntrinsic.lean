@@ -21,7 +21,6 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
@@ -141,7 +140,7 @@ theorem tensorH1ComplToTensorL2_isCompactOperator_intrinsic
   have h_wkp_bound : ∀ (α : M)
       (Idx : Fin r → Fin (Module.finrank ℝ E))
       (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s (S n).toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal (2 * C) := by

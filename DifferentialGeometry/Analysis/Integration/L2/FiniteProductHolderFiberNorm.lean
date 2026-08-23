@@ -6,16 +6,121 @@ import Mathlib.MeasureTheory.Integral.MeanInequalities
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
-
 
 open Manifold MeasureTheory Set Filter Bundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
 namespace Integral
-namespace L2
+section ScalarHolder
+
+variable {α ι : Type*} [MeasurableSpace α] {μ : MeasureTheory.Measure α}
+
+private theorem holder_integral_prod_rpow_le_prod_integral_rpow_local
+    (t : Finset ι) (f : ι → α → ℝ) (θ : ι → ℝ)
+    (hf_int : ∀ i ∈ t, MeasureTheory.Integrable (f i) μ)
+    (hf_nn : ∀ i ∈ t, 0 ≤ᵐ[μ] f i)
+    (hθ : ∀ i ∈ t, 0 ≤ θ i) (hθ1 : ∑ i ∈ t, θ i = 1) :
+    ∫ x, ∏ i ∈ t, f i x ^ θ i ∂μ ≤ ∏ i ∈ t, (∫ x, f i x ∂μ) ^ θ i := by
+  classical
+  have hae : ∀ᵐ x ∂μ, ∀ i ∈ t, 0 ≤ f i x :=
+    (Filter.eventually_all_finset t).mpr fun i hi => hf_nn i hi
+  have hmeas : ∀ i ∈ t, AEMeasurable (f i) μ := fun i hi => (hf_int i hi).aemeasurable
+  have hF_meas : AEMeasurable (fun x => ∏ i ∈ t, f i x ^ θ i) μ :=
+    Finset.aemeasurable_fun_prod t fun i hi => (hmeas i hi).pow_const (θ i)
+  have hF_nn : 0 ≤ᵐ[μ] fun x => ∏ i ∈ t, f i x ^ θ i := by
+    filter_upwards [hae] with x hx
+    exact Finset.prod_nonneg fun i hi => Real.rpow_nonneg (hx i hi) (θ i)
+  rw [MeasureTheory.integral_eq_lintegral_of_nonneg_ae hF_nn hF_meas.aestronglyMeasurable]
+  have hoR : ∀ i ∈ t, AEMeasurable (fun x => ENNReal.ofReal (f i x)) μ :=
+    fun i hi => ENNReal.measurable_ofReal.comp_aemeasurable (hmeas i hi)
+  have hlin := ENNReal.lintegral_prod_norm_pow_le t hoR hθ1 hθ
+  have hcongr : (∫⁻ x, ENNReal.ofReal (∏ i ∈ t, f i x ^ θ i) ∂μ) =
+      ∫⁻ x, ∏ i ∈ t, ENNReal.ofReal (f i x) ^ θ i ∂μ := by
+    refine MeasureTheory.lintegral_congr_ae ?_
+    filter_upwards [hae] with x hx
+    rw [ENNReal.ofReal_prod_of_nonneg fun i hi => Real.rpow_nonneg (hx i hi) (θ i)]
+    exact Finset.prod_congr rfl fun i hi =>
+      (ENNReal.ofReal_rpow_of_nonneg (hx i hi) (hθ i hi)).symm
+  have hfin : ∀ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ≠ ⊤ :=
+    fun i hi => (hf_int i hi).lintegral_lt_top.ne
+  have hRfin : (∏ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ^ θ i) ≠ ⊤ :=
+    (ENNReal.prod_lt_top fun i hi =>
+      ENNReal.rpow_lt_top_of_nonneg (hθ i hi) (hfin i hi)).ne
+  calc (∫⁻ x, ENNReal.ofReal (∏ i ∈ t, f i x ^ θ i) ∂μ).toReal
+      ≤ (∏ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ^ θ i).toReal := by
+        refine ENNReal.toReal_mono hRfin ?_
+        rw [hcongr]
+        exact hlin
+    _ = ∏ i ∈ t, (∫ x, f i x ∂μ) ^ θ i := by
+        rw [ENNReal.toReal_prod]
+        refine Finset.prod_congr rfl fun i hi => ?_
+        rw [← ENNReal.toReal_rpow,
+          MeasureTheory.integral_eq_lintegral_of_nonneg_ae (hf_nn i hi)
+            (hf_int i hi).aestronglyMeasurable]
+
+theorem lyapunov_pow_le (F : α → ℝ) (hF_nn : ∀ᵐ x ∂μ, 0 ≤ F x)
+    {a b c lam : ℝ} (ha : 0 < a) (hb : 0 < b)
+    (hlam0 : 0 ≤ lam) (hlam1 : lam ≤ 1)
+    (hc : c = lam * a + (1 - lam) * b)
+    (hFa : MeasureTheory.Integrable (fun x => F x ^ a) μ)
+    (hFb : MeasureTheory.Integrable (fun x => F x ^ b) μ) :
+    ∫ x, F x ^ c ∂μ ≤
+      (∫ x, F x ^ a ∂μ) ^ lam * (∫ x, F x ^ b ∂μ) ^ (1 - lam) := by
+  classical
+  have hc_pos : 0 < c := by
+    rcases eq_or_lt_of_le hlam0 with h | h
+    · rw [hc, ← h]; simpa using hb
+    · rcases eq_or_lt_of_le hlam1 with h' | h'
+      · rw [hc, h']; simpa using ha
+      · have h1 : 0 < lam * a := mul_pos h ha
+        have h2 : 0 < (1 - lam) * b := mul_pos (by linarith) hb
+        rw [hc]; linarith
+  set f : Fin 2 → α → ℝ := ![fun x => F x ^ a, fun x => F x ^ b] with hf
+  set θ : Fin 2 → ℝ := ![lam, 1 - lam] with hθ
+  have hθ1 : ∑ i ∈ (Finset.univ : Finset (Fin 2)), θ i = 1 := by
+    rw [Fin.sum_univ_two, hθ]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    ring
+  have hθ_nn : ∀ i ∈ (Finset.univ : Finset (Fin 2)), 0 ≤ θ i := by
+    intro i _
+    fin_cases i
+    · simpa [hθ] using hlam0
+    · simpa [hθ] using (by linarith : (0 : ℝ) ≤ 1 - lam)
+  have hf_int : ∀ i ∈ (Finset.univ : Finset (Fin 2)),
+      MeasureTheory.Integrable (f i) μ := by
+    intro i _
+    fin_cases i
+    · simpa [hf] using hFa
+    · simpa [hf] using hFb
+  have hf_nn : ∀ i ∈ (Finset.univ : Finset (Fin 2)), (0 : α → ℝ) ≤ᵐ[μ] f i := by
+    intro i _
+    fin_cases i
+    · filter_upwards [hF_nn] with x hx
+      simpa [hf] using Real.rpow_nonneg hx a
+    · filter_upwards [hF_nn] with x hx
+      simpa [hf] using Real.rpow_nonneg hx b
+  have key := holder_integral_prod_rpow_le_prod_integral_rpow
+    (Finset.univ : Finset (Fin 2)) f θ hf_int hf_nn hθ_nn hθ1
+  have hpt : ∀ᵐ x ∂μ,
+      F x ^ c = ∏ i ∈ (Finset.univ : Finset (Fin 2)), f i x ^ θ i := by
+    filter_upwards [hF_nn] with x hx
+    rw [Fin.prod_univ_two, hf, hθ]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    rw [← Real.rpow_mul hx, ← Real.rpow_mul hx,
+      ← Real.rpow_add' hx (by
+        rw [show a * lam + b * (1 - lam) = c by rw [hc]; ring]
+        exact ne_of_gt hc_pos), hc]
+    ring_nf
+  rw [MeasureTheory.integral_congr_ae hpt]
+  refine key.trans (le_of_eq ?_)
+  rw [Fin.prod_univ_two, hf, hθ]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+
+end ScalarHolder
+
+namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -34,7 +139,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem holder_integral_prod_riemannianFiberNormSq_le
@@ -99,7 +203,6 @@ theorem holder_integral_prod_riemannianFiberNormSq_le
               ^ (1 / θ m))
           θ hF_int hF_nn (fun m hm => (hθ m hm).le) hθ1
 
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound
     (g : SmoothRiemannianMetric I M) {ι : Type*} [DecidableEq ι]
@@ -162,7 +265,6 @@ theorem holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound
     (holder_integral_prod_riemannianFiberNormSq_le (I := I) (M := M) g (t \ t₀) r s S θ hθ hθ1)
     (Finset.prod_nonneg hΛ_nn)
 
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem holder_integral_prod_riemannianFiberNormSq_natWeight_le_of_sup_bound
     (g : SmoothRiemannianMetric I M) {ι : Type*} (t : Finset ι)
@@ -215,6 +317,17 @@ theorem holder_integral_prod_riemannianFiberNormSq_natWeight_le_of_sup_bound
   rw [hsdiff]
   refine congrArg _ (Finset.prod_congr rfl fun m hm => ?_)
   rw [one_div_div]
+
+end Connection
+
+namespace L2
+
+alias holder_integral_prod_riemannianFiberNormSq_le :=
+  Connection.holder_integral_prod_riemannianFiberNormSq_le
+alias holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound :=
+  Connection.holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound
+alias holder_integral_prod_riemannianFiberNormSq_natWeight_le_of_sup_bound :=
+  Connection.holder_integral_prod_riemannianFiberNormSq_natWeight_le_of_sup_bound
 
 end L2
 end Integral

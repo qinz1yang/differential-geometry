@@ -20,7 +20,6 @@ namespace DeTurckCoefficients
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -89,6 +88,7 @@ lemma chartGramOnE_contDiffOn_int
       (interior (extChartAt I α).target) :=
   (chartGramOnE_contDiffOn (I := I) g α a b).mono interior_subset
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_chartInvGramOnE_iteratedFDeriv_lipschitz_on_compact
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -114,17 +114,12 @@ theorem exists_chartInvGramOnE_iteratedFDeriv_lipschitz_on_compact
       (ContDiffOn.mul (chartInvGramOnE_contDiffOn_int (I := I) g₁' α k p)
         (chartInvGramOnE_contDiffOn_int (I := I) g₂' α q l)) hK hKsub N
   choose Bprod hBprod_nn hBprod using hbound_prod
-  set Bmax : ℝ := (Finset.univ : Finset
+  set Bmax : ℝ := ∑ w :
       (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
-        Fin (Module.finrank ℝ E))).sup'
-    (by exact Finset.univ_nonempty) (fun w => Bprod g₁ g₂ w.1 w.2.1 w.2.2.1 w.2.2.2) with hBmax_def
+        Fin (Module.finrank ℝ E)), Bprod g₁ g₂ w.1 w.2.1 w.2.2.1 w.2.2.2 with hBmax_def
   have hBmax_nn : 0 ≤ Bmax := by
-    obtain ⟨w₀⟩ := (inferInstance :
-      Nonempty (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
-        Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)))
-    refine le_trans (hBprod_nn g₁ g₂ w₀.1 w₀.2.1 w₀.2.2.1 w₀.2.2.2) ?_
-    exact Finset.le_sup' (fun w => Bprod g₁ g₂ w.1 w.2.1 w.2.2.1 w.2.2.2)
-      (Finset.mem_univ w₀)
+    exact Finset.sum_nonneg fun w _ =>
+      hBprod_nn g₁ g₂ w.1 w.2.1 w.2.2.1 w.2.2.2
   refine ⟨(Module.finrank ℝ E : ℝ) ^ 2 * (2 ^ N * Bmax) + 1, ?_, ?_⟩
   · have h_nn : 0 ≤ (Module.finrank ℝ E : ℝ) ^ 2 * (2 ^ N * Bmax) := by positivity
     linarith
@@ -176,17 +171,20 @@ theorem exists_chartInvGramOnE_iteratedFDeriv_lipschitz_on_compact
           (chartInvGramOnE (I := I) g₁ α k p z * chartInvGramOnE (I := I) g₂ α q l z)) := by
       funext z; ring
     rw [hassoc]
-    have hbnd := norm_iteratedFDerivWithin_mul_le_uniformBound (s := s) hs_open
+    have hbnd := norm_iteratedFDerivWithin_mul_le_uniformBound (s := s) (B := Bmax) hs_open
       ((chartGramOnE_contDiffOn_int (I := I) g₂ α p q).sub
         (chartGramOnE_contDiffOn_int (I := I) g₁ α p q))
       ((chartInvGramOnE_contDiffOn_int (I := I) g₁ α k p).mul
         (chartInvGramOnE_contDiffOn_int (I := I) g₂ α q l))
-      hKsub (hBmax_nn) N
-      (fun y' hy' m hm => le_trans (hBprod g₁ g₂ k p q l y' hy' m hm)
-        (Finset.le_sup' (fun w => Bprod g₁ g₂ w.1 w.2.1 w.2.2.1 w.2.2.2)
+      hKsub N
+      (fun y' hy' m hm => by
+        refine le_trans (hBprod g₁ g₂ k p q l y' hy' m hm) ?_
+        rw [hBmax_def]
+        exact Finset.single_le_sum
+          (fun w _ => hBprod_nn g₁ g₂ w.1 w.2.1 w.2.2.1 w.2.2.2)
           (Finset.mem_univ ((k, p, q, l) :
             Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
-              Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)))))
+              Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E))))
       hy
     refine hbnd.trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)

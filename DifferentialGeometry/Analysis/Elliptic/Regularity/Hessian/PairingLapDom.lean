@@ -28,7 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
@@ -66,6 +65,7 @@ private noncomputable def cutoffHessianPhi
   chartCutoffα (I := I) (M := M) α y *
     chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma cutoffHessianPhi_def
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
@@ -76,7 +76,6 @@ private lemma cutoffHessianPhi_def
 noncomputable def hessPairingChartLocal
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (y : EuclN) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
@@ -85,15 +84,14 @@ noncomputable def hessPairingChartLocal
           invGramOnEuclid (I := I) g α i k y *
             invGramOnEuclid (I := I) g α j l y *
             chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y *
-            laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y
+            laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma hessPairingChartLocal_def
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (y : EuclN) :
-    hessPairingChartLocal (I := I) (M := M) g α φ hu_h y =
+    hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h) y =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
@@ -101,7 +99,7 @@ omit [NeZero (Module.finrank ℝ E)] in
               invGramOnEuclid (I := I) g α i k y *
                 invGramOnEuclid (I := I) g α j l y *
                 chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y := rfl
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y := rfl
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -202,6 +200,7 @@ lemma chartHessianPhiOnEuclid_continuousOn
       h_pd_cont.comp h_toE_cont.continuousOn h_maps
     exact h_chris_comp.mul h_pd_comp
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma cutoffHessianPhi_continuous
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -242,6 +241,7 @@ private lemma cutoffHessianPhi_continuous
       exact h_zero_off z hz
     exact (continuousAt_const (y := (0 : ℝ))).congr h_eventually_zero.symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma cutoffHessianPhi_bounded
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -282,6 +282,7 @@ private lemma cutoffHessianPhi_bounded
     have hy_notK : y ∉ Kη := fun hyK => hKη_ne ⟨y, hyK⟩
     rw [h_zero_off y hy_notK, abs_zero]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma cutoffHessianPhi_aestronglyMeasurable
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E))
@@ -293,7 +294,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    hessPairingChartLocal (I := I) (M := M) g α φ hu_h =ᵐ[
+    hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h) =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
       (fun y : EuclN => ∑ i : Fin (Module.finrank ℝ E),
@@ -303,7 +304,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
               cutoffInvGram (I := I) (M := M) g α i k y *
                 cutoffInvGram (I := I) (M := M) g α j l y *
                 cutoffHessianPhi (I := I) (M := M) g α φ i j y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) := by
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   set K : Set EuclN := chartImagePOUTsupport (I := I) (M := M) α with hK_def
@@ -318,11 +319,11 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
       invGramOnEuclid (I := I) g α i k y *
           invGramOnEuclid (I := I) g α j l y *
           chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y =
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y =
         cutoffInvGram (I := I) (M := M) g α i k y *
           cutoffInvGram (I := I) (M := M) g α j l y *
           cutoffHessianPhi (I := I) (M := M) g α φ i j y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y := by
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y := by
     intro y hy i j k l
     have hη_one : chartCutoffα (I := I) (M := M) α y = 1 :=
       chartCutoffα_eq_one_on_K (I := I) (M := M) α y hy
@@ -330,11 +331,11 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
     rw [hη_one]; ring
   have hae_zero_all : ∀ᵐ y ∂(volume : Measure EuclN),
       ∀ (k l : Fin (Module.finrank ℝ E)), y ∈ V →
-        laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y = 0 := by
+        laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y = 0 := by
     have h_pair_ae : ∀ (p : Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E)),
         ∀ᵐ y ∂(volume : Measure EuclN), y ∈ V →
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h p.1 p.2 y = 0 := by
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) p.1 p.2 y = 0 := by
       intro p
       have h := laplacianDomainHessianChart_ae_zero_off_support
         (I := I) (M := M) g α hu_h p.1 p.2
@@ -344,7 +345,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
     have h_all : ∀ᵐ y ∂(volume : Measure EuclN),
         ∀ (p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)),
           y ∈ V →
-            laplacianDomainHessianChart (I := I) (M := M) g α hu_h p.1 p.2 y = 0 :=
+            laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) p.1 p.2 y = 0 :=
       ae_all_iff.mpr h_pair_ae
     filter_upwards [h_all] with y hy k l hyV
     exact hy ⟨k, l⟩ hyV
@@ -370,7 +371,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
               invGramOnEuclid (I := I) g α i k y *
                 invGramOnEuclid (I := I) g α j l y *
                 chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) = 0 := by
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) = 0 := by
       refine Finset.sum_eq_zero ?_
       intro i _
       refine Finset.sum_eq_zero ?_
@@ -379,7 +380,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
       intro k _
       refine Finset.sum_eq_zero ?_
       intro l _
-      have hH_zero : laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y = 0 :=
+      have hH_zero : laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y = 0 :=
         hy_zeros k l hyV
       rw [hH_zero, mul_zero]
     have h_RHS_zero : (∑ i : Fin (Module.finrank ℝ E),
@@ -389,7 +390,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
               cutoffInvGram (I := I) (M := M) g α i k y *
                 cutoffInvGram (I := I) (M := M) g α j l y *
                 cutoffHessianPhi (I := I) (M := M) g α φ i j y *
-                laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) = 0 := by
+                laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) = 0 := by
       refine Finset.sum_eq_zero ?_
       intro i _
       refine Finset.sum_eq_zero ?_
@@ -398,7 +399,7 @@ private lemma hessPairingChartLocal_ae_eq_cutoff
       intro k _
       refine Finset.sum_eq_zero ?_
       intro l _
-      have hH_zero : laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y = 0 :=
+      have hH_zero : laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y = 0 :=
         hy_zeros k l hyV
       rw [hH_zero, mul_zero]
     rw [h_LHS_zero, h_RHS_zero]
@@ -412,7 +413,7 @@ private lemma cutoffSummand_memLp_two
         cutoffInvGram (I := I) (M := M) g α i k y *
           cutoffInvGram (I := I) (M := M) g α j l y *
           cutoffHessianPhi (I := I) (M := M) g α φ i j y *
-          laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) 2
+          laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
@@ -426,15 +427,15 @@ private lemma cutoffSummand_memLp_two
   have hCtot_nn : 0 ≤ Ctot := by
     rw [hCtot_def]
     exact mul_nonneg (mul_nonneg hC_ik_nn hC_jl_nn) hC_φ_nn
-  have h_H_lp : MemLp (laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l) 2
+  have h_H_lp : MemLp (laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
     laplacianDomainHessianChart_memLp_two (I := I) (M := M) g α hu_h k l
   set bdd_fn : EuclN → ℝ := fun y =>
-    Ctot * |laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y|
+    Ctot * |laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y|
     with hbdd_def
   have h_abs_H : MemLp (fun y => |laplacianDomainHessianChart
-      (I := I) (M := M) g α hu_h k l y|) 2
+      (I := I) (M := M) g α (u_h := u_h) k l y|) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := h_H_lp.abs
   have hbdd_memLp : MemLp bdd_fn 2
@@ -457,7 +458,7 @@ private lemma cutoffSummand_memLp_two
           (chartTargetEuclid (I := I) (M := M) α)) :=
       cutoffHessianPhi_aestronglyMeasurable (I := I) (M := M) g α φ i j _
     have h_aesm_H : AEStronglyMeasurable
-        (laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l)
+        (laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l)
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) :=
       h_H_lp.aestronglyMeasurable
@@ -465,7 +466,7 @@ private lemma cutoffSummand_memLp_two
   · refine Filter.Eventually.of_forall ?_
     intro y
     simp only [Real.norm_eq_abs, hbdd_def]
-    set H := laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y with hH_def
+    set H := laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y with hH_def
     set Gik := cutoffInvGram (I := I) (M := M) g α i k y with hGik_def
     set Gjl := cutoffInvGram (I := I) (M := M) g α j l y with hGjl_def
     set Hφ := cutoffHessianPhi (I := I) (M := M) g α φ i j y with hHφ_def
@@ -497,7 +498,7 @@ theorem hessPairingChartLocal_memLp_two
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    MemLp (hessPairingChartLocal (I := I) (M := M) g α φ hu_h) 2
+    MemLp (hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h)) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
@@ -511,7 +512,7 @@ theorem hessPairingChartLocal_memLp_two
                 cutoffInvGram (I := I) (M := M) g α i k y *
                   cutoffInvGram (I := I) (M := M) g α j l y *
                   cutoffHessianPhi (I := I) (M := M) g α φ i j y *
-                  laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y) 2
+                  laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
     refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
@@ -542,48 +543,47 @@ noncomputable def hessPairingChartLocalLp
           (chartTargetEuclid (I := I) (M := M) α))) =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
-      hessPairingChartLocal (I := I) (M := M) g α φ hu_h :=
+      hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h) :=
   MemLp.coeFn_toLp _
 
 private noncomputable def hessPairingChartLocalMExt
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) : ℝ :=
-  hessPairingChartLocal (I := I) (M := M) g α φ hu_h
+    (x : M) : ℝ :=
+  hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h)
     ((toEuclidean (E := E)) (extChartAt I α x))
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma hessPairingChartLocalMExt_def
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) :
-    hessPairingChartLocalMExt (I := I) (M := M) g φ α hu_h x =
-      hessPairingChartLocal (I := I) (M := M) g α φ hu_h
+    (x : M) :
+    hessPairingChartLocalMExt (I := I) (M := M) g φ α (u_h := u_h) x =
+      hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h)
         ((toEuclidean (E := E)) (extChartAt I α x)) := rfl
 
 noncomputable def hessPairingMChartContribution
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) : ℝ :=
+    (x : M) : ℝ :=
   (chartAtlasPOU I M α : M → ℝ) x *
-    hessPairingChartLocalMExt (I := I) (M := M) g φ α hu_h x
+    hessPairingChartLocalMExt (I := I) (M := M) g φ α (u_h := u_h) x
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma hessPairingMChartContribution_def
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) :
-    hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x =
+    (x : M) :
+    hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x =
       (chartAtlasPOU I M α : M → ℝ) x *
-        hessPairingChartLocalMExt (I := I) (M := M) g φ α hu_h x := rfl
+        hessPairingChartLocalMExt (I := I) (M := M) g φ α (u_h := u_h) x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma hessPairingMChartContribution_zero_off_tsupport
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {x : M} (hx : x ∉ tsupport ((chartAtlasPOU I M α : M → ℝ))) :
-    hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x = 0 := by
+    hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x = 0 := by
   unfold hessPairingMChartContribution
   have hρ_zero : (chartAtlasPOU I M α : M → ℝ) x = 0 :=
     image_eq_zero_of_notMem_tsupport hx
@@ -592,18 +592,18 @@ lemma hessPairingMChartContribution_zero_off_tsupport
 noncomputable def hessPairingMOnLapDom
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) : ℝ :=
+    (x : M) : ℝ :=
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
-    hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x
+    hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma hessPairingMOnLapDom_def
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) :
-    hessPairingMOnLapDom (I := I) (M := M) g φ hu_h x =
+    (x : M) :
+    hessPairingMOnLapDom (I := I) (M := M) g φ (u_h := u_h) x =
       ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
-        hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x := rfl
+        hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x := rfl
 
 private noncomputable def hessPairingChartLocalRep
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -635,7 +635,7 @@ private lemma hessPairingChartLocalRep_ae_eq
     hessPairingChartLocalRep (I := I) (M := M) g α φ hu_h =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
-      hessPairingChartLocal (I := I) (M := M) g α φ hu_h :=
+      hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h) :=
   hessPairingChartLocalLp_coeFn (I := I) (M := M) g α φ hu_h
 
 private lemma hessPairingChartLocalRep_memLp_two
@@ -746,11 +746,10 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem hessPairingMChartContribution_eq_on_source
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
-    {x : M} (_hx : x ∈ (chartAt H α).source) :
-    hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x =
+    {x : M} :
+    hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x =
       (chartAtlasPOU I M α : M → ℝ) x *
-        hessPairingChartLocal (I := I) (M := M) g α φ hu_h
+        hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h)
           ((toEuclidean (E := E)) ((extChartAt I α) x)) := by
   unfold hessPairingMChartContribution hessPairingChartLocalMExt
   rfl
@@ -759,9 +758,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem hessPairingMChartContribution_zero_off_source
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {x : M} (hx : x ∉ (chartAt H α).source) :
-    hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x = 0 := by
+    hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x = 0 := by
   classical
   unfold hessPairingMChartContribution
   have hsub :
@@ -783,12 +781,12 @@ private lemma hessPairingChartLocalRep_exists_null_superset
       (volume : Measure EuclN) (N ∩ chartTargetEuclid (I := I) (M := M) α) = 0 ∧
       ∀ y ∈ chartTargetEuclid (I := I) (M := M) α, y ∉ N →
         hessPairingChartLocalRep (I := I) (M := M) g α φ hu_h y =
-        hessPairingChartLocal (I := I) (M := M) g α φ hu_h y := by
+        hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h) y := by
   classical
   have h_ae := hessPairingChartLocalRep_ae_eq (I := I) (M := M) g α φ hu_h
   set badSet : Set EuclN := { y : EuclN |
       hessPairingChartLocalRep (I := I) (M := M) g α φ hu_h y ≠
-      hessPairingChartLocal (I := I) (M := M) g α φ hu_h y } with hbadSet_def
+      hessPairingChartLocal (I := I) (M := M) g α φ (u_h := u_h) y } with hbadSet_def
   have h_bad_null : ((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α)) badSet = 0 := h_ae
   obtain ⟨N, h_bad_sub_N, hN_meas, hN_null⟩ :=
@@ -976,7 +974,7 @@ private lemma chartContribSurrogate_ae_eq
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     chartContribSurrogate (I := I) (M := M) g φ α hu_h =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
-      hessPairingMChartContribution (I := I) (M := M) g φ α hu_h := by
+      hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) := by
   classical
   obtain ⟨N, hN_meas, hN_null, hN_agree⟩ :=
     hessPairingChartLocalRep_exists_null_superset
@@ -1002,12 +1000,14 @@ private lemma chartContribSurrogate_ae_eq
       hN_agree _ h_y_in_target h_not_in_N
     apply hx
     rw [chartContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_src,
-        hessPairingMChartContribution_eq_on_source (I := I) (M := M) g φ α hu_h hx_src,
+        hessPairingMChartContribution_eq_on_source (I := I) (M := M) g φ α
+          (u_h := u_h),
         h_agree_at_y]
   · exfalso
     apply hx
     rw [chartContribSurrogate_zero_off_source (I := I) (M := M) g φ α hu_h hx_src,
-        hessPairingMChartContribution_zero_off_source (I := I) (M := M) g φ α hu_h hx_src]
+        hessPairingMChartContribution_zero_off_source (I := I) (M := M) g φ α
+          (u_h := u_h) hx_src]
 
 private lemma chartPushedRaw_chartContribSurrogate_le_rep
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -1116,7 +1116,7 @@ theorem hessPairingMChartContribution_memLp_two
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    MemLp (hessPairingMChartContribution (I := I) (M := M) g φ α hu_h) 2
+    MemLp (hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h)) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have h_surr_memLp := chartContribSurrogate_memLp_two
@@ -1128,7 +1128,7 @@ theorem hessPairingMOnLapDom_memLp_two
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    MemLp (hessPairingMOnLapDom (I := I) (M := M) g φ hu_h) 2
+    MemLp (hessPairingMOnLapDom (I := I) (M := M) g φ (u_h := u_h)) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   unfold hessPairingMOnLapDom
@@ -1151,7 +1151,7 @@ lemma hessPairingLpOnLapDom_coeFn
     (hessPairingLpOnLapDom (I := I) (M := M) g φ hu_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
-      hessPairingMOnLapDom (I := I) (M := M) g φ hu_h :=
+      hessPairingMOnLapDom (I := I) (M := M) g φ (u_h := u_h) :=
   MemLp.coeFn_toLp _
 
 end HessianPairingLapDom

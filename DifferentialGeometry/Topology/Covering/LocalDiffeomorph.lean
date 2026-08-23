@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Topology.Covering.Manifold
 
 open Set Function Filter

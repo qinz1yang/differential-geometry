@@ -1,9 +1,20 @@
 import DifferentialGeometry.Geometry.Curvature.Contractions
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci
+import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Covariant
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Evolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Trace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.GammaAlgebra
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.GammaCoord
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Bianchi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Commutator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
 import Mathlib.Algebra.Order.Chebyshev
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -76,31 +87,8 @@ theorem scalarEvolutionEquationOn_of_contractedBianchi
   exact (hpre t x).congr_deriv (by
     rw [hbianchi t x])
 
-omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
-theorem scalar_curvature_evolution
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (scalar scalarLap contractedRicciHessian ricciNormSq : Real -> M -> Real)
-    (hpre : ScalarPreBianchiEvolutionEquationOn (D := D)
-      scalar scalarLap contractedRicciHessian ricciNormSq)
-    (hbianchi : ScalarContractedBianchiReductionOn (D := D)
-      scalarLap contractedRicciHessian) :
-    ScalarEvolutionEquationOn (D := D) scalar scalarLap ricciNormSq :=
-  scalarEvolutionEquationOn_of_contractedBianchi
-    (M := M) scalar scalarLap contractedRicciHessian ricciNormSq hpre hbianchi
-
-omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
-theorem msm110_ch6_1_scalar_curvature_evolution
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (scalar scalarLap contractedRicciHessian ricciNormSq : Real -> M -> Real)
-    (hpre : ScalarPreBianchiEvolutionEquationOn (D := D)
-      scalar scalarLap contractedRicciHessian ricciNormSq)
-    (hbianchi : ScalarContractedBianchiReductionOn (D := D)
-      scalarLap contractedRicciHessian) :
-    ScalarEvolutionEquationOn (D := D) scalar scalarLap ricciNormSq :=
-  scalar_curvature_evolution
-    (M := M) scalar scalarLap contractedRicciHessian ricciNormSq hpre hbianchi
-
-theorem scalarEvolOfSmooth
+omit [SigmaCompactSpace M] in
+theorem scalar_evolution_of_smooth_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)

@@ -36,12 +36,10 @@ theorem phaseUnscale_apply (P V : NNReal) (z : E × E) :
     phaseUnscale P V z = ((P : Real) • z.1, (V : Real) • z.2) := by
   rfl
 
-@[simp]
 theorem unscale_scale {P V : NNReal} (hP : P ≠ 0) (hV : V ≠ 0)
     (z : E × E) : phaseUnscale P V (phaseScale P V z) = z := by
   ext <;> simp [phaseUnscale, phaseScale, hP, hV, smul_smul]
 
-@[simp]
 theorem scale_unscale {P V : NNReal} (hP : P ≠ 0) (hV : V ≠ 0)
     (z : E × E) : phaseScale P V (phaseUnscale P V z) = z := by
   ext <;> simp [phaseUnscale, phaseScale, hP, hV, smul_smul]
@@ -152,7 +150,6 @@ theorem scaledPhase_norm {P V A L : NNReal} {a : E × E → E}
         exact div_le_div_of_nonneg_right (ha _ hw) hVr.le
       _ ≤ (L : Real) := hratio
 
-@[simp]
 theorem unscale_scaled {P V : NNReal} (hP : P ≠ 0) (hV : V ≠ 0)
     (a : E × E → E) (z : E × E) :
     phaseUnscale P V (scaledPhase P V a z) =

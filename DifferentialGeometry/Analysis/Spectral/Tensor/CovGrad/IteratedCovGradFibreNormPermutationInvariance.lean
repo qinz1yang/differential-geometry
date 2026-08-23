@@ -3,7 +3,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
@@ -116,5 +115,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
 end Spectral
 end Analysis
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Integral.Connection
+
+alias exists_iteratedCovGrad_rs_toModel_domDomCongr :=
+  DifferentialGeometry.Analysis.Spectral.exists_iteratedCovGrad_rs_toModel_domDomCongr
+alias riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr :=
+  DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr
+alias riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq :=
+  DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+
+end DifferentialGeometry.Integral.Connection
 
 end

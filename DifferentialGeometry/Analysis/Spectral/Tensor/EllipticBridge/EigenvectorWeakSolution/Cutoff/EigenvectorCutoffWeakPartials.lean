@@ -366,8 +366,6 @@ theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   letI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
-    chartTargetEuclid_isOpen (I := I) (M := M) α
   set uApprox : ℕ → EuclN → ℝ := fun n =>
     ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
         ((i.fst.val)⁻¹ •
@@ -448,8 +446,8 @@ theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k gLim uLim
         (chartTargetEuclid (I := I) (M := M) α) :=
     hasWeakPartialDeriv_of_tendsto_eLpNorm
-      (d := Module.finrank ℝ E) (p := 2) (by norm_num) (by norm_num)
-      hΩ_open k hu_n_memLp hg_n_memLp hu_memLp hg_memLp h_weak
+      (d := Module.finrank ℝ E) (p := 2) (by norm_num)
+      k hu_n_memLp hg_n_memLp hu_memLp hg_memLp h_weak
       h_u_tendsto h_g_tendsto
   rw [hgLim_def, huLim_def] at h_closure
   exact h_closure

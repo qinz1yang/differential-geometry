@@ -27,6 +27,172 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+theorem covGronwall_pair_at
+    (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
+    {K eps delta b : ℝ}
+    (hgamma : ∀ t ∈ Icc (0 : ℝ) b, ContMDiffAt 𝓘(ℝ, ℝ) I 1 gamma t)
+    {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+    (hcard : ∀ t : ℝ, Fintype.card ι =
+      Module.finrank ℝ (TangentSpace I (gamma t)))
+    (F : ι → ∀ t : ℝ, TangentSpace I (gamma t))
+    (J : ∀ t : ℝ, TangentSpace I (gamma t))
+    (hK : 0 ≤ K) (heps : 0 ≤ eps) (hb : 0 ≤ b)
+    (hpar : ∀ i, ∀ t ∈ Icc (0 : ℝ) b,
+      covDerivAlong (I := I) g gamma (F i) t = 0)
+    (hON : ∀ t ∈ Icc (0 : ℝ) b, ∀ i j,
+      g.inner (gamma t) (F i t) (F j t) = if i = j then (1 : ℝ) else 0)
+    (hFdiff : ∀ i, ∀ t ∈ Icc (0 : ℝ) b,
+      DifferentiableAt ℝ (chartRepAt (I := I) gamma (F i) t) t)
+    (hJdiff : ∀ t ∈ Icc (0 : ℝ) b,
+      DifferentiableAt ℝ (chartRepAt (I := I) gamma J t) t)
+    (hDJdiff : ∀ t ∈ Icc (0 : ℝ) b, DifferentiableAt ℝ
+      (chartRepAt (I := I) gamma
+        (fun s => covDerivAlong (I := I) g gamma J s) t) t)
+    (hODE : ∀ t ∈ Ico (0 : ℝ) b,
+      Real.sqrt (g.inner (gamma t)
+        (covDerivAlong (I := I) g gamma
+          (fun s => covDerivAlong (I := I) g gamma J s) t)
+        (covDerivAlong (I := I) g gamma
+          (fun s => covDerivAlong (I := I) g gamma J s) t)) ≤
+        K * Real.sqrt (g.inner (gamma t) (J t) (J t)) + eps)
+    (hJ0 : Real.sqrt (g.inner (gamma 0) (J 0) (J 0)) ≤ delta)
+    (hDJ0 : Real.sqrt (g.inner (gamma 0)
+      (covDerivAlong (I := I) g gamma J 0)
+      (covDerivAlong (I := I) g gamma J 0)) ≤ delta) :
+    (∀ t ∈ Icc (0 : ℝ) b,
+      Real.sqrt (g.inner (gamma t) (J t) (J t)) ≤
+        gronwallBound delta (max K 1) eps t) ∧
+    (∀ t ∈ Icc (0 : ℝ) b,
+      Real.sqrt (g.inner (gamma t)
+        (covDerivAlong (I := I) g gamma J t)
+        (covDerivAlong (I := I) g gamma J t)) ≤
+          gronwallBound delta (max K 1) eps t) := by
+  classical
+  have h0Icc : (0 : ℝ) ∈ Icc (0 : ℝ) b := ⟨le_rfl, hb⟩
+  set L : (ι → ℝ) ≃L[ℝ] EuclideanSpace ℝ ι :=
+    (EuclideanSpace.equiv ι ℝ).symm with hL
+  set Y : ℝ → EuclideanSpace ℝ ι :=
+    fun t => L fun i => g.inner (gamma t) (F i t) (J t) with hYdef
+  set Y' : ℝ → EuclideanSpace ℝ ι :=
+    fun t => L fun i =>
+      g.inner (gamma t) (F i t) (covDerivAlong (I := I) g gamma J t) with hY'def
+  set Y'' : ℝ → EuclideanSpace ℝ ι :=
+    fun t => L fun i =>
+      g.inner (gamma t) (F i t)
+        (covDerivAlong (I := I) g gamma
+          (fun s => covDerivAlong (I := I) g gamma J s) t) with hY''def
+  have hder1 : ∀ t ∈ Icc (0 : ℝ) b, HasDerivAt Y (Y' t) t := by
+    intro t ht
+    have hpi : ∀ i, HasDerivAt
+        (fun s => g.inner (gamma s) (F i s) (J s))
+        (g.inner (gamma t) (F i t) (covDerivAlong (I := I) g gamma J t)) t := by
+      intro i
+      have h := inner_deriv_at (I := I) (n := 1) le_rfl g gamma
+        (F i) J t (hgamma t ht) (hFdiff i t ht) (hJdiff t ht)
+      rw [hpar i t ht] at h
+      have hz : g.inner (gamma t) (0 : TangentSpace I (gamma t)) (J t) = 0 := by
+        rw [map_zero]
+        rfl
+      rwa [hz, zero_add] at h
+    have hpi' : HasDerivAt
+        (fun s => (fun i => g.inner (gamma s) (F i s) (J s) : ι → ℝ))
+        (fun i => g.inner (gamma t) (F i t)
+          (covDerivAlong (I := I) g gamma J t)) t :=
+      hasDerivAt_pi.mpr hpi
+    exact (L.toContinuousLinearMap.hasFDerivAt).comp_hasDerivAt t hpi'
+  have hder2 : ∀ t ∈ Icc (0 : ℝ) b, HasDerivAt Y' (Y'' t) t := by
+    intro t ht
+    have hpi : ∀ i, HasDerivAt
+        (fun s => g.inner (gamma s) (F i s)
+          (covDerivAlong (I := I) g gamma J s))
+        (g.inner (gamma t) (F i t)
+          (covDerivAlong (I := I) g gamma
+            (fun s => covDerivAlong (I := I) g gamma J s) t)) t := by
+      intro i
+      have h := inner_deriv_at (I := I) (n := 1) le_rfl g gamma
+        (F i) (fun s => covDerivAlong (I := I) g gamma J s) t
+        (hgamma t ht) (hFdiff i t ht) (hDJdiff t ht)
+      rw [hpar i t ht] at h
+      have hz : g.inner (gamma t) (0 : TangentSpace I (gamma t))
+          (covDerivAlong (I := I) g gamma J t) = 0 := by
+        rw [map_zero]
+        rfl
+      rwa [hz, zero_add] at h
+    have hpi' : HasDerivAt
+        (fun s => (fun i =>
+          g.inner (gamma s) (F i s)
+            (covDerivAlong (I := I) g gamma J s) : ι → ℝ))
+        (fun i => g.inner (gamma t) (F i t)
+          (covDerivAlong (I := I) g gamma
+            (fun s => covDerivAlong (I := I) g gamma J s) t)) t :=
+      hasDerivAt_pi.mpr hpi
+    exact (L.toContinuousLinearMap.hasFDerivAt).comp_hasDerivAt t hpi'
+  have hnorm : ∀ t ∈ Icc (0 : ℝ) b, ∀ u : TangentSpace I (gamma t),
+      ‖(L fun i => g.inner (gamma t) (F i t) u : EuclideanSpace ℝ ι)‖ =
+        Real.sqrt (g.inner (gamma t) u u) := by
+    intro t ht u
+    have hsq :
+        ‖(L fun i => g.inner (gamma t) (F i t) u : EuclideanSpace ℝ ι)‖ ^ 2 =
+          g.inner (gamma t) u u := by
+      rw [EuclideanSpace.norm_sq_eq]
+      have happ : ∀ i,
+          ‖(L fun i => g.inner (gamma t) (F i t) u : EuclideanSpace ℝ ι) i‖ ^ 2 =
+            (g.inner (gamma t) (F i t) u) ^ 2 := by
+        intro i
+        rw [show
+          (L fun i => g.inner (gamma t) (F i t) u : EuclideanSpace ℝ ι) i =
+            g.inner (gamma t) (F i t) u from rfl,
+          Real.norm_eq_abs, sq_abs]
+      rw [Finset.sum_congr rfl fun i _ => happ i]
+      exact (inner_self_eq_sum_sq g (gamma t) (hcard t) (fun i => F i t)
+        (hON t ht) u).symm
+    rw [← hsq, Real.sqrt_sq (norm_nonneg _)]
+  have hcY : ContinuousOn Y (Icc (0 : ℝ) b) :=
+    fun t ht => (hder1 t ht).continuousAt.continuousWithinAt
+  have hcY' : ContinuousOn Y' (Icc (0 : ℝ) b) :=
+    fun t ht => (hder2 t ht).continuousAt.continuousWithinAt
+  have hdY : ∀ t ∈ Ico (0 : ℝ) b,
+      HasDerivWithinAt Y (Y' t) (Ici t) t :=
+    fun t ht => (hder1 t (Ico_subset_Icc_self ht)).hasDerivWithinAt
+  have hdY' : ∀ t ∈ Ico (0 : ℝ) b,
+      HasDerivWithinAt Y' (Y'' t) (Ici t) t :=
+    fun t ht => (hder2 t (Ico_subset_Icc_self ht)).hasDerivWithinAt
+  have hbound : ∀ t ∈ Ico (0 : ℝ) b, ‖Y'' t‖ ≤ K * ‖Y t‖ + eps := by
+    intro t ht
+    have htI : t ∈ Icc (0 : ℝ) b := Ico_subset_Icc_self ht
+    change
+      ‖(L fun i => g.inner (gamma t) (F i t)
+          (covDerivAlong (I := I) g gamma
+            (fun s => covDerivAlong (I := I) g gamma J s) t) :
+        EuclideanSpace ℝ ι)‖ ≤
+        K * ‖(L fun i => g.inner (gamma t) (F i t) (J t) :
+          EuclideanSpace ℝ ι)‖ + eps
+    rw [hnorm t htI, hnorm t htI]
+    exact hODE t ht
+  have hY0 : ‖Y 0‖ ≤ delta := by
+    change
+      ‖(L fun i => g.inner (gamma 0) (F i 0) (J 0) :
+        EuclideanSpace ℝ ι)‖ ≤ delta
+    rw [hnorm 0 h0Icc]
+    exact hJ0
+  have hY'0 : ‖Y' 0‖ ≤ delta := by
+    change
+      ‖(L fun i => g.inner (gamma 0) (F i 0)
+          (covDerivAlong (I := I) g gamma J 0) :
+        EuclideanSpace ℝ ι)‖ ≤ delta
+    rw [hnorm 0 h0Icc]
+    exact hDJ0
+  have hmain := pair_le_gronwall2 hK heps hcY hcY' hdY hdY'
+    hbound hY0 hY'0
+  constructor
+  · intro t ht
+    rw [← hnorm t ht (J t)]
+    exact (norm_fst_le (Y t, Y' t)).trans (hmain t ht)
+  · intro t ht
+    rw [← hnorm t ht (covDerivAlong (I := I) g gamma J t)]
+    exact (norm_snd_le (Y t, Y' t)).trans (hmain t ht)
+
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in

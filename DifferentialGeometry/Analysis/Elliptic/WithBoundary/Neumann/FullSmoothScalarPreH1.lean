@@ -29,7 +29,6 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
@@ -167,6 +166,7 @@ end FullSmoothScalar
 variable [T2Space M] [CompactSpace M]
 
 
+omit [T2Space M] [CompactSpace M] in
 lemma FullSmoothScalar.continuous_inner_grad
     {g : SmoothRiemannianMetric (I_half n) M} (f h : FullSmoothScalar g) :
     Continuous (fun x : M =>

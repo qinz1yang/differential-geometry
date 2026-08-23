@@ -505,6 +505,15 @@ private def barrierPhase [T2Space M]
     (R kappa tau : Real) (t : Real) (x : M) : Real :=
   barrierRadius (I := I) b R x + kappa * (t - tau) ^ 2
 
+omit [IsManifold I ∞ M] in
+private theorem barrierPhase_time_differentiable [T2Space M]
+    {c : M} (b : SmoothBumpFunction I c)
+    (R kappa tau : Real) (x : M) :
+    Differentiable Real (fun t => barrierPhase (I := I) b R kappa tau t x) := by
+  unfold barrierPhase
+  exact (differentiable_const (barrierRadius (I := I) b R x)).add
+    ((differentiable_const kappa).mul ((differentiable_id.sub_const tau).pow 2))
+
 private theorem gradient_barrierPhase_eq_compactCoordRadiusSq
     [T2Space M]
     (g : SmoothRiemannianMetric I M) {c x : M}
@@ -642,12 +651,12 @@ private theorem exp_barrierPhase_parabolicOperator
       funext s
       exact expNegMul_deriv alpha s
     rw [hd]
-    fun_prop
+    exact (((Real.hasDerivAt_exp (-alpha * _)).comp _
+      ((hasDerivAt_id _).const_mul (-alpha))).const_mul (-alpha)).differentiableAt
   have htime : DifferentiableWithinAt Real
       (fun s => barrierPhase (I := I) b R kappa tau s x)
       (Set.Icc 0 T) t := by
-    unfold barrierPhase
-    fun_prop
+    exact (barrierPhase_time_differentiable (I := I) b R kappa tau x t).differentiableWithinAt
   have hslice : ContMDiff I 𝓘(Real, Real) ∞
       (barrierPhase (I := I) b R kappa tau t) :=
     (barrierRadius_contMDiff (I := I) b R).add contMDiff_const
@@ -708,8 +717,13 @@ private theorem chartParabolicBarrier_parabolicOperator
       |>.mdifferentiable (by simp) y)
   have he_time : DifferentiableWithinAt Real (fun s => e s x)
       (Set.Icc 0 T) t := by
-    dsimp [e, barrierPhase]
-    fun_prop
+    change DifferentiableWithinAt Real
+      (fun s => Real.exp (-alpha * barrierPhase (I := I) b R kappa tau s x))
+      (Set.Icc 0 T) t
+    exact (Real.differentiable_exp.comp
+      ((differentiable_const (-alpha)).mul
+        (barrierPhase_time_differentiable (I := I) b R kappa tau x))
+      t).differentiableWithinAt
   have hc_time : DifferentiableWithinAt Real
       (fun _ : Real => Real.exp (-alpha * R)) (Set.Icc 0 T) t :=
     differentiableWithinAt_const _
@@ -851,7 +865,9 @@ private theorem fixed_metric_local_positivity
         (fun h => (not_lt_of_ge hepsilon.le h.1).elim)).2
       linarith
     have harg := Real.exp_lt_exp.mp hexp_lt
-    nlinarith
+    have hscaled : alpha * barrierPhase (I := I) b R kappa T t x < alpha * R := by
+      simpa [neg_mul] using neg_lt_neg harg
+    exact lt_of_mul_lt_mul_left hscaled halpha.le
   have hv_cont : ContinuousOn (fun p : Real × M => v p.1 p.2)
       (spacetimeSlab (M := M) T) :=
     (chartParabolicBarrier_joint_continuous (I := I)
@@ -864,11 +880,16 @@ private theorem fixed_metric_local_positivity
     have hphase0 : R ≤ barrierPhase (I := I) b R kappa T 0 x := by
       have hbr := barrierRadius_nonneg (I := I) b hR_nonneg x
       unfold barrierPhase
-      nlinarith
+      exact hinit.trans (by
+        simpa using
+          (le_add_of_nonneg_left hbr :
+            kappa * T ^ 2 ≤ barrierRadius (I := I) b R x + kappa * T ^ 2))
     have hexp_le : Real.exp
         (-alpha * barrierPhase (I := I) b R kappa T 0 x) ≤
         Real.exp (-alpha * R) := by
-      exact Real.exp_le_exp.mpr (by nlinarith)
+      apply Real.exp_le_exp.mpr
+      have hscaled := mul_le_mul_of_nonneg_left hphase0 halpha.le
+      simpa [neg_mul] using neg_le_neg hscaled
     have hv0 : v 0 x ≤ 0 := by
       dsimp [v, chartParabolicBarrier]
       exact mul_nonpos_of_nonneg_of_nonpos hepsilon.le (sub_nonpos.mpr hexp_le)
@@ -939,9 +960,10 @@ private theorem fixed_metric_local_positivity
       linarith
     have htime_close : T - delta < t := by
       have hsq : (t - T) ^ 2 < delta ^ 2 := by
-        nlinarith
-      have ht_le : t ≤ T := ht.2
-      nlinarith [sq_nonneg (t - T + delta)]
+        exact lt_of_mul_lt_mul_left (htime_sq.trans_le htime) hkappa.le
+      have habs : |t - T| < delta := by
+        simpa [abs_of_pos hdelta] using (sq_lt_sq.mp hsq)
+      linarith [(abs_lt.mp habs).1]
     have hdist_lower : r ≤
         dist (extChartAt I c x) (extChartAt I c c) := by
       by_contra hnot
@@ -982,7 +1004,15 @@ private theorem fixed_metric_local_positivity
             Δ_g (I := I) g
               ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) ≤
             2 * kappa * T + B := by
-        nlinarith
+        calc
+          -(2 * kappa * (t - T) -
+              Δ_g (I := I) g
+                ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) =
+              2 * kappa * T +
+                Δ_g (I := I) g
+                  ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x -
+                2 * (kappa * t) := by ring
+          _ ≤ 2 * kappa * T + B := by linarith
       have hqmul : alpha * m ≤ alpha * g.inner x
           (gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x)
           (gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x) :=
@@ -1048,7 +1078,9 @@ private theorem fixed_metric_local_positivity
   have hvT_pos : 0 < v T y := by
     have hexp_lt : Real.exp (-alpha * R) <
         Real.exp (-alpha * coordRadiusSq (I := I) c y) := by
-      exact Real.exp_lt_exp.mpr (by nlinarith)
+      apply Real.exp_lt_exp.mpr
+      have hscaled := mul_lt_mul_of_pos_left hy halpha
+      simpa [neg_mul] using neg_lt_neg hscaled
     have hphaseT : barrierPhase (I := I) b R kappa T T y =
         coordRadiusSq (I := I) c y := by
       simp [barrierPhase, hy_radius]

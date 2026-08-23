@@ -15,10 +15,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -330,7 +328,7 @@ theorem tensorInnerPointwise_slotΛ_self_adjoint
   rw [hkey']
 
 omit [BoundarylessManifold I M] [I.Boundaryless] in
-theorem tensorL2Inner_appCc_slotInsertEndoCc_self_adjoint
+theorem tensorL2Inner_operatorFieldApplication_slotInsertEndoCc_self_adjoint
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))

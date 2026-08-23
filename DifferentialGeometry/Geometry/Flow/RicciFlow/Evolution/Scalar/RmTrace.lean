@@ -55,9 +55,6 @@ theorem scalarRmRicciTraceInFrame_of_rm04_first_trace
     (hOutput : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
       DifferentialGeometry.Geometry.Curvature.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
-    (hFirst : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
-      (x : M),
-      DifferentialGeometry.Geometry.Curvature.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (hRicSym : forall t x i j,
       ricciCompInFrame (I := I) S frame t x i j =
@@ -84,10 +81,7 @@ theorem scalarRmRicciTraceInFrame_of_rm04_first_trace
   have hmain :=
     DifferentialGeometry.Geometry.Curvature.metricTrace_rm04RicciContractionAt_eq_neg_inner
       (I := I) basis (Rm04 (t : Real) x) (gInv (t : Real) x)
-      (S.ricci (t : Real) x) (hTrace t x) (hOutput t x) (hFirst t x)
-      hRicAt (invMetric_symm (I := I) (M := M)
-        (S.family.metric (t : Real)) x basis
-        (fun i j : Idx => gInv (t : Real) x i j) hinvAt)
+      (S.ricci (t : Real) x) (hTrace t x) (hOutput t x)
   simpa [basis, DifferentialGeometry.Geometry.Curvature.rm04RicciContractionAt,
     DifferentialGeometry.Geometry.Curvature.raised02CompAt,
     rmRicciContractionCompInFrame, raisedRicciCompInFrame,
@@ -117,9 +111,6 @@ theorem scalarRmRicciTraceInFrame_of_rm04_first_trace_regular
     (hOutput : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
       DifferentialGeometry.Geometry.Curvature.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
-    (hFirst : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
-      (x : M),
-      DifferentialGeometry.Geometry.Curvature.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (hRicSym : RicciSymmetricInFrameOnRegular (I := I) S frame) :
     ScalarRmRicciTraceInFrame (I := I) S Rm04 gInv frame := by
@@ -144,10 +135,7 @@ theorem scalarRmRicciTraceInFrame_of_rm04_first_trace_regular
   have hmain :=
     DifferentialGeometry.Geometry.Curvature.metricTrace_rm04RicciContractionAt_eq_neg_inner
       (I := I) basis (Rm04 (t : Real) x) (gInv (t : Real) x)
-      (S.ricci (t : Real) x) (hTrace t x) (hOutput t x) (hFirst t x)
-      hRicAt (invMetric_symm (I := I) (M := M)
-        (S.family.metric (t : Real)) x basis
-        (fun i j : Idx => gInv (t : Real) x i j) hinvAt)
+      (S.ricci (t : Real) x) (hTrace t x) (hOutput t x)
   simpa [basis, DifferentialGeometry.Geometry.Curvature.rm04RicciContractionAt,
     DifferentialGeometry.Geometry.Curvature.raised02CompAt,
     rmRicciContractionCompInFrame, raisedRicciCompInFrame,

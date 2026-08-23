@@ -231,7 +231,7 @@ private lemma integrable_cross_3_summand_nonsmooth
     memLp_diffQuot_two k h hu_l2
   have hf₃_gi_l2 : MemLp (fun x => f₃ x * (g i) x) 2
       (volume : Measure E) :=
-    memLp_bounded_mul hf₃_cont.aestronglyMeasurable hM_nn hM (hg_l2 i)
+    memLp_bounded_mul hf₃_cont.aestronglyMeasurable hM (hg_l2 i)
   have h_target_eq :
       (fun x : E =>
         2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -347,11 +347,10 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (_h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' : Set E} (_hΩ' : IsOpen Ω') (_hΩ'_closure : closure Ω' ⊆ Ω)
+    {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -727,11 +726,10 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
+    {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -768,7 +766,7 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth
     exact mul_nonneg (by linarith) hM_nn
   · intro h hh hh_le
     exact diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-      h_weakPartial hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure
-      hΩ'_compact hh_supp_in_Ω' k h_FK_diffQuot_u_bound hh hh_le
+      hη hη_supp hη_range hN h_fderiv_eta hΩ'_compact hh_supp_in_Ω' k
+      h_FK_diffQuot_u_bound hh hh_le
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth

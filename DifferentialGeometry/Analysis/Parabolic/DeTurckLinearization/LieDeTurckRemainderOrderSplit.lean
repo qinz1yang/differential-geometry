@@ -13,7 +13,6 @@ namespace DeTurck
 namespace DeTurckLinearization
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
@@ -496,7 +495,7 @@ def order0Part (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
 def order1Part (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
-      chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y *
+      chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y *
         partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y) +
   (∑ k : Fin (Module.finrank ℝ E),
       chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (h i j) y) +
@@ -518,12 +517,12 @@ theorem lieDerivFirstOrderRemainder_eq_order0_add_order1
   classical
   rw [lieDerivFirstOrderRemainder]
   have hA : (∑ k : Fin (Module.finrank ℝ E),
-        ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y +
+        ((chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y +
               deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y) *
             partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y +
           chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (h i j) y))
       = (∑ k : Fin (Module.finrank ℝ E),
-          chartLinearizedDeTurckVFPrincipal (I := I) g₀ g_bg α h k y *
+          chartLinearizedDeTurckVFPrincipal (I := I) g₀ α h k y *
             partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y)
         + (∑ k : Fin (Module.finrank ℝ E),
           deTurckVFFirstOrderCorr (I := I) g₀ g_bg α h k y *
@@ -592,7 +591,7 @@ def chartLinearizedChristoffelPrincipalRaw (g : SmoothRiemannianMetric I M) (α 
        partialDeriv (E := E) j (f l i) y -
        partialDeriv (E := E) l (f i j) y)
 
-def chartLinearizedDeTurckVFPrincipalRaw (g _g' : SmoothRiemannianMetric I M) (α : M)
+def chartLinearizedDeTurckVFPrincipalRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -614,7 +613,7 @@ def deTurckVFFirstOrderCorrRaw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
 def deTurckVFDerivRaw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ g_bg α f k y +
+  chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ α f k y +
     deTurckVFFirstOrderCorrRaw (I := I) g₀ g_bg α f k y
 
 def deTurckVFFirstOrderCorrDeriv1Raw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
@@ -662,7 +661,7 @@ def deTurckVFFirstOrderCorrDeriv0Raw (g₀ g_bg : SmoothRiemannianMetric I M) (�
                   chartInvGramOnE (I := I) g₀ α q l y)) *
               partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)))
 
-def chartDeTurckCorrHessBlockRaw (g _g' : SmoothRiemannianMetric I M) (α : M)
+def chartDeTurckCorrHessBlockRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (d a b k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
@@ -671,7 +670,7 @@ def chartDeTurckCorrHessBlockRaw (g _g' : SmoothRiemannianMetric I M) (α : M)
        partialDeriv (E := E) d (partialDeriv (E := E) b (f l a)) y -
        partialDeriv (E := E) d (partialDeriv (E := E) l (f a b)) y)
 
-def chartDeTurckCorrGramDerivBlockRaw (g _g' : SmoothRiemannianMetric I M) (α : M)
+def chartDeTurckCorrGramDerivBlockRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (d a b k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
@@ -680,21 +679,21 @@ def chartDeTurckCorrGramDerivBlockRaw (g _g' : SmoothRiemannianMetric I M) (α :
        partialDeriv (E := E) b (f l a) y -
        partialDeriv (E := E) l (f a b) y)
 
-def chartDeTurckCorrPrincipalSymbolExprRaw (g g' : SmoothRiemannianMetric I M) (α : M)
+def chartDeTurckCorrPrincipalSymbolExprRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α k j y *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g g' α f i a b k y) +
+            chartDeTurckCorrHessBlockRaw (I := I) g α f i a b k y) +
   (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i k y *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g g' α f j a b k y)
+            chartDeTurckCorrHessBlockRaw (I := I) g α f j a b k y)
 
-def chartDeTurckCorrFirstOrderRemainderRaw (g g' : SmoothRiemannianMetric I M) (α : M)
+def chartDeTurckCorrFirstOrderRemainderRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
@@ -704,7 +703,7 @@ def chartDeTurckCorrFirstOrderRemainderRaw (g g' : SmoothRiemannianMetric I M) (
               chartLinearizedChristoffelPrincipalRaw (I := I) g α f a b k y) +
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α a b y *
-              chartDeTurckCorrGramDerivBlockRaw (I := I) g g' α f i a b k y))) +
+              chartDeTurckCorrGramDerivBlockRaw (I := I) g α f i a b k y))) +
   (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i k y *
         ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -712,7 +711,7 @@ def chartDeTurckCorrFirstOrderRemainderRaw (g g' : SmoothRiemannianMetric I M) (
               chartLinearizedChristoffelPrincipalRaw (I := I) g α f a b k y) +
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α a b y *
-              chartDeTurckCorrGramDerivBlockRaw (I := I) g g' α f j a b k y)))
+              chartDeTurckCorrGramDerivBlockRaw (I := I) g α f j a b k y)))
 
 def order0PartRaw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
@@ -735,7 +734,7 @@ def order1PartRaw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
-      chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ g_bg α f k y *
+      chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ α f k y *
         partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y) +
   (∑ k : Fin (Module.finrank ℝ E),
       chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (f i j) y) +
@@ -749,7 +748,7 @@ def order1PartRaw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
 def lieDeTurckOrder1Raw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  chartDeTurckCorrFirstOrderRemainderRaw (I := I) g₀ g_bg α f i j y +
+  chartDeTurckCorrFirstOrderRemainderRaw (I := I) g₀ α f i j y +
     order1PartRaw (I := I) g₀ g_bg α f i j y
 
 def lieDeTurckSlopeExprRaw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
@@ -1233,14 +1232,14 @@ lemma partialDeriv_chartLinearizedChristoffelPrincipalRaw
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartLinearizedDeTurckVFPrincipalRaw_differentiableAt'
-    (g g' : SmoothRiemannianMetric I M) (α : M)
+    (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (k : Fin (Module.finrank ℝ E)) {y₀ : E}
     (hy : y₀ ∈ interior (extChartAt I α).target)
     (hf1 : ∀ m p q : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (partialDeriv (E := E) m (f p q)) y₀) :
     DifferentiableAt ℝ
-      (fun y => chartLinearizedDeTurckVFPrincipalRaw (I := I) g g' α f k y) y₀ := by
+      (fun y => chartLinearizedDeTurckVFPrincipalRaw (I := I) g α f k y) y₀ := by
   classical
   unfold chartLinearizedDeTurckVFPrincipalRaw
   refine DifferentiableAt.fun_sum (fun a _ => ?_)
@@ -1251,14 +1250,14 @@ private lemma chartLinearizedDeTurckVFPrincipalRaw_differentiableAt'
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_chartLinearizedDeTurckVFPrincipalRaw
-    (g g' : SmoothRiemannianMetric I M) (α : M)
+    (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (k d : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target)
     (hf1 : ∀ m p q : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (partialDeriv (E := E) m (f p q)) y) :
     partialDeriv (E := E) d
-        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g g' α f k y') y =
+        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g α f k y') y =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) d (chartInvGramOnE (I := I) g α a b) y *
             chartLinearizedChristoffelPrincipalRaw (I := I) g α f a b k y +
@@ -1280,7 +1279,7 @@ lemma partialDeriv_chartLinearizedDeTurckVFPrincipalRaw
         (fun y' => chartInvGramOnE (I := I) g α a b y' * Γ a b y') y :=
     fun a b => (hG_diff a b).mul (hΓ_diff a b)
   have hrewrite :
-      (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g g' α f k y') =
+      (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g α f k y') =
         fun y' => ∑ a : Fin (Module.finrank ℝ E),
           ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α a b y' * Γ a b y' := by
@@ -1302,25 +1301,25 @@ lemma partialDeriv_chartLinearizedDeTurckVFPrincipalRaw
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_chartLinearizedDeTurckVFPrincipalRaw_expanded
-    (g g' : SmoothRiemannianMetric I M) (α : M)
+    (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (k d : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target)
     (hf1 : ∀ m p q : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (partialDeriv (E := E) m (f p q)) y) :
     partialDeriv (E := E) d
-        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g g' α f k y') y =
+        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g α f k y') y =
       (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           partialDeriv (E := E) d (chartInvGramOnE (I := I) g α a b) y *
             chartLinearizedChristoffelPrincipalRaw (I := I) g α f a b k y) +
       ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α a b y *
-            chartDeTurckCorrGramDerivBlockRaw (I := I) g g' α f d a b k y) +
+            chartDeTurckCorrGramDerivBlockRaw (I := I) g α f d a b k y) +
        (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g g' α f d a b k y)) := by
+            chartDeTurckCorrHessBlockRaw (I := I) g α f d a b k y)) := by
   classical
-  rw [partialDeriv_chartLinearizedDeTurckVFPrincipalRaw (I := I) g g' α f k d hy hf1]
+  rw [partialDeriv_chartLinearizedDeTurckVFPrincipalRaw (I := I) g α f k d hy hf1]
   rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) d (chartInvGramOnE (I := I) g α a b) y *
             chartLinearizedChristoffelPrincipalRaw (I := I) g α f a b k y +
@@ -1379,15 +1378,15 @@ theorem lieDeTurckSlopeExprRaw_eq_orderSplit
     (hf1 : ∀ m p q : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (partialDeriv (E := E) m (f p q)) y) :
     lieDeTurckSlopeExprRaw (I := I) g₀ g_bg α f i j y =
-      chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g₀ g_bg α f i j y +
+      chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g₀ α f i j y +
         lieDeTurckOrder1Raw (I := I) g₀ g_bg α f i j y +
         order0PartRaw (I := I) g₀ g_bg α f i j y := by
   classical
   have hPdiff : ∀ k : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ
-        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ g_bg α f k y') y :=
+        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ α f k y') y :=
     fun k =>
-      chartLinearizedDeTurckVFPrincipalRaw_differentiableAt' (I := I) g₀ g_bg α f k hy hf1
+      chartLinearizedDeTurckVFPrincipalRaw_differentiableAt' (I := I) g₀ α f k hy hf1
   have hCdiff : ∀ k : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ
         (fun y' => deTurckVFFirstOrderCorrRaw (I := I) g₀ g_bg α f k y') y := by
@@ -1412,31 +1411,31 @@ theorem lieDeTurckSlopeExprRaw_eq_orderSplit
               chartLinearizedChristoffelPrincipalRaw (I := I) g₀ α f a b k y) +
           ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α a b y *
-                chartDeTurckCorrGramDerivBlockRaw (I := I) g₀ g_bg α f d a b k y) +
+                chartDeTurckCorrGramDerivBlockRaw (I := I) g₀ α f d a b k y) +
             (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α a b y *
-                chartDeTurckCorrHessBlockRaw (I := I) g₀ g_bg α f d a b k y)))
+                chartDeTurckCorrHessBlockRaw (I := I) g₀ α f d a b k y)))
         + (deTurckVFFirstOrderCorrDeriv0Raw (I := I) g₀ g_bg α f d k y +
             deTurckVFFirstOrderCorrDeriv1Raw (I := I) g₀ g_bg α f d k y) := by
     intro d k
     have hfun : (deTurckVFDerivRaw (I := I) g₀ g_bg α f k) =
-        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ g_bg α f k y' +
+        (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ α f k y' +
           deTurckVFFirstOrderCorrRaw (I := I) g₀ g_bg α f k y') := by
       funext y'; rw [deTurckVFDerivRaw]
     rw [hfun]
     rw [partialDeriv_add (E := E)
-          (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ g_bg α f k y')
+          (fun y' => chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ α f k y')
           (fun y' => deTurckVFFirstOrderCorrRaw (I := I) g₀ g_bg α f k y')
           (hPdiff k) (hCdiff k)]
     rw [partialDeriv_chartLinearizedDeTurckVFPrincipalRaw_expanded
-          (I := I) g₀ g_bg α f k d hy hf1]
+          (I := I) g₀ α f k d hy hf1]
     rw [partialDeriv_deTurckVFFirstOrderCorrRaw (I := I) g₀ g_bg α f d k hy hf]
   have hA : (∑ k : Fin (Module.finrank ℝ E),
         (deTurckVFDerivRaw (I := I) g₀ g_bg α f k y *
             partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y +
           chartDeTurckVFComp (I := I) g₀ g_bg α k y * partialDeriv (E := E) k (f i j) y))
       = (∑ k : Fin (Module.finrank ℝ E),
-          chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ g_bg α f k y *
+          chartLinearizedDeTurckVFPrincipalRaw (I := I) g₀ α f k y *
             partialDeriv (E := E) k (chartGramOnE (I := I) g₀ α i j) y)
         + (∑ k : Fin (Module.finrank ℝ E),
           deTurckVFFirstOrderCorrRaw (I := I) g₀ g_bg α f k y *
@@ -1456,7 +1455,7 @@ theorem lieDeTurckSlopeExprRaw_eq_orderSplit
           chartGramOnE (I := I) g₀ α k j y *
             ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α a b y *
-                chartDeTurckCorrHessBlockRaw (I := I) g₀ g_bg α f i a b k y)
+                chartDeTurckCorrHessBlockRaw (I := I) g₀ α f i a b k y)
         + (∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g₀ α k j y *
             ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -1464,7 +1463,7 @@ theorem lieDeTurckSlopeExprRaw_eq_orderSplit
                   chartLinearizedChristoffelPrincipalRaw (I := I) g₀ α f a b k y) +
               (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α a b y *
-                  chartDeTurckCorrGramDerivBlockRaw (I := I) g₀ g_bg α f i a b k y)))
+                  chartDeTurckCorrGramDerivBlockRaw (I := I) g₀ α f i a b k y)))
         + (∑ k : Fin (Module.finrank ℝ E),
           f k j y *
             partialDeriv (E := E) i (fun y' => chartDeTurckVFComp (I := I) g₀ g_bg α k y') y)
@@ -1488,7 +1487,7 @@ theorem lieDeTurckSlopeExprRaw_eq_orderSplit
           chartGramOnE (I := I) g₀ α i k y *
             ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α a b y *
-                chartDeTurckCorrHessBlockRaw (I := I) g₀ g_bg α f j a b k y)
+                chartDeTurckCorrHessBlockRaw (I := I) g₀ α f j a b k y)
         + (∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g₀ α i k y *
             ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -1496,7 +1495,7 @@ theorem lieDeTurckSlopeExprRaw_eq_orderSplit
                   chartLinearizedChristoffelPrincipalRaw (I := I) g₀ α f a b k y) +
               (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α a b y *
-                  chartDeTurckCorrGramDerivBlockRaw (I := I) g₀ g_bg α f j a b k y)))
+                  chartDeTurckCorrGramDerivBlockRaw (I := I) g₀ α f j a b k y)))
         + (∑ k : Fin (Module.finrank ℝ E),
           f i k y *
             partialDeriv (E := E) j (fun y' => chartDeTurckVFComp (I := I) g₀ g_bg α k y') y)

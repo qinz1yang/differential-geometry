@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureTensor
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
@@ -9,7 +9,7 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
@@ -157,7 +157,6 @@ private theorem norm02_event
 
 
 theorem norm02_smooth
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2) :
@@ -885,7 +884,6 @@ private theorem eval_pt0S
 
 theorem du_norm02
     [T2Space M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
@@ -963,7 +961,6 @@ omit [FiniteDimensional ℝ E] in
 
 theorem freeze02_deriv
     [T2Space M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
@@ -1246,7 +1243,6 @@ def Tensor02NormHessianProductInBasis
 
 theorem hess_norm02
     [T2Space M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1497,7 +1493,6 @@ theorem Tensor02NormSecondProductInBasis.of_hessian_product
 
 theorem second_norm02_mc
     [T2Space M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1663,7 +1658,6 @@ theorem ricciNormScalarLaplacianExpansionInFrame_of_tensor02_product_rule
 
 theorem ricci_lap_mc
     [T2Space M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (ricciNormLap : Time -> M -> Real)

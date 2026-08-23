@@ -469,8 +469,6 @@ theorem tensorL2Coeff_toL2_symmS_eq_zero_of_notMem
 theorem sum_tensorSobolevWeight_mul_sq_tensorL2Coeff_toL2_symmS_le
     (σ : ℝ)
     (S : Finset (Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2))
-    (_hS : ∀ i j : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2,
-      i.1 = j.1 → (i ∈ S ↔ j ∈ S))
     (X : SmoothCcTensor g 0 2)
     (hX : ∀ k ∉ S, tensorL2Coeff (I := I) (M := M) (hCompact (I := I) (M := M) g)
       (SmoothCcTensor.toL2 X) k = 0) :

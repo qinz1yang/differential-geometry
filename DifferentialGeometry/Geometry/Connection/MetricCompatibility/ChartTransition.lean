@@ -391,7 +391,6 @@ lemma chartTransitionMap_mem_interior_target [I.Boundaryless]
 
 omit [InnerProductSpace ℝ E] in
 lemma partialDeriv_chartGramOnE_comp_chartTransitionMap [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (a b k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ chartTransitionSource (I := I) α β) :
@@ -458,7 +457,6 @@ lemma partialDeriv_mul (k : Fin (Module.finrank ℝ E)) (u v : E → ℝ) {y : E
 
 omit [InnerProductSpace ℝ E] in
 lemma partialDeriv_chartTransition_pullback_summand [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (a b i j k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ chartTransitionSource (I := I) α β) :
@@ -533,7 +531,6 @@ lemma partialDeriv_double_finset_sum {ι κ : Type*} (s : Finset ι) (t : Finset
 
 omit [InnerProductSpace ℝ E] in
 theorem partialDeriv_chartGramOnE_eq_sum_chartTransition [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (i j k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ chartTransitionSource (I := I) α β) :
@@ -728,7 +725,6 @@ lemma chartTransitionMap_extChartAt_symm
 
 omit [InnerProductSpace ℝ E] in
 lemma chartInvGramBeta_mul_chartGramOnE_diag
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α β : M) {p : M}
     (hp_α : p ∈ (chartAt H α).source) (hp_β : p ∈ (chartAt H β).source)
     (c b : Fin (Module.finrank ℝ E)) :
@@ -758,7 +754,6 @@ lemma chartInvGramBeta_mul_chartGramOnE_diag
 
 omit [InnerProductSpace ℝ E] in
 lemma chartChristoffelNumerator_transitionIdentity [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α β : M) {p : M}
     (hp_α : p ∈ (chartAt H α).source) (hp_β : p ∈ (chartAt H β).source)
     (i j d : Fin (Module.finrank ℝ E)) :
@@ -1256,7 +1251,6 @@ theorem chartChristoffel_transform [I.Boundaryless]
 
 omit [InnerProductSpace ℝ E] in
 lemma chartCoord_chartChristoffelContraction
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α : M) (v w y : E)
     (l : Fin (Module.finrank ℝ E)) :
     chartCoord (E := E) l

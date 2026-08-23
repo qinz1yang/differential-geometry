@@ -63,7 +63,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
       (ζ : M → ℝ) x • w.toSection x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-@[simp] lemma scalarSmul_toFun_apply
+lemma scalarSmul_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w : SmoothCcTensor g r s) (x : M) :
     (scalarSmul (I := I) (M := M) g r s ζ w).toFun x =

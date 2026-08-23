@@ -1,17 +1,16 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautTame
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffTime
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnDiff
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedGramDiff
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyPair
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Tensor.RSTensor.Metric
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -227,11 +226,11 @@ theorem connTrace_joint
       ((Set.univ : Set M) ×ˢ D.regular) := by
     exact W.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hconn := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-    (connDiff_joint (I := I) g_fam hG q) hW
+    (connectionDifference_joint (I := I) g_fam hG q) hW
   have htrace := comTrace_of_family (I := I) 0 g_fam hG
     (fun p : M × ℝ =>
       (show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-        connDiffFib (I := I) (g_fam p.2) q p.1) (W p.1)) hconn
+        connectionDifferenceFib (I := I) (g_fam p.2) q p.1) (W p.1)) hconn
   refine htrace.congr (fun p _ => ?_)
   congr 1
 
@@ -345,12 +344,12 @@ theorem scalarTrace_small
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem connFib_self (q : SmoothRiemannianMetric I M) (x : M) :
-    connDiffFib (I := I) q q x = 0 := by
+    connectionDifferenceFib (I := I) q q x = 0 := by
   apply ContinuousLinearMap.ext
   intro om
   apply ContinuousMultilinearMap.ext
   intro YZ
-  rw [connDiffFib_apply_eval, PDE.DeTurck.connDiff_self]
+  rw [connectionDifferenceFib_apply_eval, PDE.DeTurck.connectionDifference_self]
   change om (0 : Fin 1 → TangentSpace I x) = 0
   exact ContinuousMultilinearMap.map_zero om
 
@@ -373,9 +372,9 @@ theorem connTrace_small
     apply ContMDiffSection.ext
     intro x
     dsimp only [P, q]
-    rw [connTraceCoeff, appCcRS_toSection, traceCast,
+    rw [connTraceCoeff, operatorFieldComposition_toSection, traceCast,
       SmoothCcTensor.retag_toSection, cometricDoubleTraceField_toSection,
-      connDiffSection_toSection, connFib_self (I := I) (M := M),
+      connectionDifferenceSection_toSection, connFib_self (I := I) (M := M),
       ContinuousLinearMap.comp_zero, SmoothCcTensor.toSection_zero]
     rfl
   have hPjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -390,10 +389,11 @@ theorem connTrace_small
       (D.regular_isOpen.mem_nhds T.2) hPzero hPjoint hε
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem scalarFlux_eq_slot (q h : SmoothRiemannianMetric I M) :
     scalarFluxCoeff (I := I) (M := M) q h =
       endoSlotZeroCcTensor (I := I) (M := M) q 0
-      (gInvDiffRaisedEndoField (I := I) (M := M) q h) := by
+      (metricComparisonDifferenceEndomorphismField (I := I) (M := M) q h) := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -424,7 +424,7 @@ theorem scalarFlux_jet_grid
             (fun j => riemannianFiberNormSq (I := I) (M := M) q 0 (2 + j) x
               ((iteratedCovGrad (I := I) q 0 2 j T).toSection x)) i := by
   obtain ⟨C, hC, hjet⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_gInvDiffRaisedEndo_diagGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
       (I := I) (M := M) q hδ₀
   refine ⟨C, hC, ?_⟩
   intro h T htie δ hδ_le hδ0 hbound i x

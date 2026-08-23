@@ -508,11 +508,11 @@ private def subIntervalSeq (a h₀ b : ℝ) (n : ℕ) : ℝ × ℝ :=
   (a + (h₀ - a) / ((n : ℝ) + 2), b - (b - h₀) / ((n : ℝ) + 2))
 
 theorem hasLinearODESolution_of_continuousOn
-    {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {F G : Type*} [NormedAddCommGroup F]
     [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
     {A : F → ℝ → (G →L[ℝ] G)} {h₀ : ℝ} {Z₀ : F → G}
-    {a b : ℝ} (_hab_lt : a < b) (h₀_mem : h₀ ∈ Set.Ioo a b)
-    {U : Set F} (_hU : IsOpen U)
+    {a b : ℝ} (h₀_mem : h₀ ∈ Set.Ioo a b)
+    {U : Set F}
     (hA_cont : ContinuousOn (Function.uncurry A) (U ×ˢ Set.Ioo a b))
     {x : F} (hx : x ∈ U) :
     HasLinearODESolution A a b h₀ Z₀ x := by
@@ -703,17 +703,16 @@ theorem hasLinearODESolution_of_continuousOn
     exact hd.congr_of_eventuallyEq h_Z_eq_eventually
 
 theorem linearODESolution_hasDerivAt
-    {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
+    {F G : Type*} [NormedAddCommGroup F] [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
     {A : F → ℝ → (G →L[ℝ] G)} {h₀ : ℝ} {Z₀ : F → G}
-    {a b : ℝ} (hab_lt : a < b) (h₀_mem : h₀ ∈ Set.Ioo a b)
-    {U : Set F} (hU : IsOpen U)
+    {a b : ℝ} (h₀_mem : h₀ ∈ Set.Ioo a b)
+    {U : Set F}
     (hA_cont : ContinuousOn (Function.uncurry A) (U ×ˢ Set.Ioo a b))
     {x : F} (hx : x ∈ U) {t : ℝ} (ht : t ∈ Set.Ioo a b) :
     HasDerivAt (linearODESolution A a b h₀ Z₀ x ·)
       (A x t (linearODESolution A a b h₀ Z₀ x t)) t :=
   linearODESolution_hasDerivAt_of_hasSolution A a b h₀ Z₀
-    (hasLinearODESolution_of_continuousOn hab_lt h₀_mem hU hA_cont hx) ht
+    (hasLinearODESolution_of_continuousOn h₀_mem hA_cont hx) ht
 
 end GlobalExistence
 

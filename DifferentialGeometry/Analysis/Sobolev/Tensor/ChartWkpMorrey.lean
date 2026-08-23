@@ -70,14 +70,14 @@ private theorem weak2_mem
 
 omit [NeZero d] in
 private theorem weak2_norm_le
-    {p : ℝ≥0∞} {Ω : Set EuclN} (hΩ : IsOpen Ω)
+    {p : ℝ≥0∞} {Ω : Set EuclN}
     (u : EuclN → ℝ) (β : Fin 2 → Fin d) :
     iteratedWeakSobolevNorm (d := d) 1 p (iterWeakPartial (d := d) p 2 β u Ω) Ω ≤
       iteratedWeakSobolevNorm (d := d) 3 p u Ω := by
   rw [iterWeakPartial_succ, iterWeakPartial_succ, iterWeakPartial_zero]
-  exact (wkpNorm_chosenWeakPartial_le (d := d) 1 hΩ
+  exact (wkpNorm_chosenWeakPartial_le (d := d) 1
     (chosenWeakPartial' p (β 0) u Ω) (β (Fin.succ 0))).trans
-      (wkpNorm_chosenWeakPartial_le (d := d) 2 hΩ u (β 0))
+      (wkpNorm_chosenWeakPartial_le (d := d) 2 u (β 0))
 
 omit [NeZero d] in
 private theorem weakGrad_real_le
@@ -212,7 +212,7 @@ theorem w3p_morrey_c2
     change dist z x₀ < R / 4
     linarith
   have hu₄ : MemWkp (d := d) 3 (ENNReal.ofReal p) u Ω₄ :=
-    hu.mono_set hp_one Metric.isOpen_ball Metric.isOpen_ball hΩ₄Ω
+    hu.mono_set hp_one Metric.isOpen_ball hΩ₄Ω
   have hv₄ : MemWkp (d := d) 3 (ENNReal.ofReal p) v Ω₄ :=
     (MemWkp_congr_ae (d := d) hp_one Metric.isOpen_ball huv).mp hu₄
   intro β
@@ -255,8 +255,8 @@ theorem w3p_morrey_c2
     weakGrad_real_le (d := d) hp_one hw₂W
   have hweak_norm : iteratedWeakSobolevNorm (d := d) 1 (ENNReal.ofReal p) w₂ Ω₄ ≤
       iteratedWeakSobolevNorm (d := d) 3 (ENNReal.ofReal p) u Ω := by
-    exact (weak2_norm_le (d := d) Metric.isOpen_ball u β).trans
-      (wkpNorm_mono_set (d := d) hp_one Metric.isOpen_ball Metric.isOpen_ball
+    exact (weak2_norm_le (d := d) u β).trans
+      (wkpNorm_mono_set (d := d) hp_one Metric.isOpen_ball
         hΩ₄Ω hu)
   have htotal_finite : iteratedWeakSobolevNorm (d := d) 3 (ENNReal.ofReal p) u Ω ≠ ⊤ :=
     (wkpNorm_lt_top_of_memWkp hu).ne

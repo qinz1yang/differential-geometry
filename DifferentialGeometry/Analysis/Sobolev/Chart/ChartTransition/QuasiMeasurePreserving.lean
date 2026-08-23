@@ -65,7 +65,7 @@ lemma chartTransitionEuclidRestr_measurable
 
 omit [IsManifold I ∞ M] in
 lemma chartTransitionEuclid_preimage_inter_overlap
-    [I.Boundaryless] (γ α : M) (s : Set EuclN) :
+    (γ α : M) (s : Set EuclN) :
     chartTransitionEuclid (I := I) (M := M) γ α ⁻¹' s ∩
         chartOverlapEuclid (I := I) (M := M) γ α =
       chartTransitionEuclid (I := I) (M := M) α γ ''
@@ -87,7 +87,7 @@ lemma chartTransitionEuclid_preimage_inter_overlap
       exact chartTransitionEuclid_mapsTo_overlap (I := I) (M := M) α γ hyΩ
 
 lemma chartTransitionEuclid_preimage_overlap_null
-    [I.Boundaryless] (γ α : M)
+    (γ α : M)
     {s : Set EuclN} (hs : (volume : Measure EuclN) s = 0) :
     (volume : Measure EuclN)
         (chartTransitionEuclid (I := I) (M := M) γ α ⁻¹' s ∩

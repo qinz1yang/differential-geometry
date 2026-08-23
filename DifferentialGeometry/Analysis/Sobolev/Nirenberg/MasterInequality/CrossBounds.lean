@@ -49,8 +49,8 @@ theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (_hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (_hΩ'_closure : closure Ω' ⊆ Ω)
+    {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
+    {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -327,7 +327,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (_hΩ'_closure : closure Ω' ⊆ Ω)
+    {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -368,7 +368,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
   intro u hu h hh hh_le
   have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
   have h_each_pointwise := fun (i j : Fin d) (x : E) =>
-    diffQuot_coeff_cutoff_squared_pointwise_bound (d := d) B hu hη hη_range i j k hM_nn h_M
+    diffQuot_coeff_cutoff_squared_pointwise_bound (d := d) (u := u) B hη_range i j k hM_nn h_M
       h_thick_in_Ω' hε'_pos x
   set S : ℝ := ∑ i : Fin d, ∑ j : Fin d, ∫ x,
         diffQuot k h (fun y : E => B.a y i j) x * (η x)^2 *
@@ -840,7 +840,7 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (_hΩ'_closure : closure Ω' ⊆ Ω)
+    {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -1380,10 +1380,9 @@ theorem c_term_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (_hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
+    {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (_hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -1673,10 +1672,9 @@ theorem f_term_bound
     {Ω : Set E}
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (_hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
+    {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (_hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -1934,7 +1932,6 @@ theorem nirenberg_master_inequality_after_young
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -1962,18 +1959,17 @@ theorem nirenberg_master_inequality_after_young
   have hε_eff_pos : 0 < ε_eff := by
     rw [hε_eff_def]; exact div_pos B.hlam_pos (by norm_num)
   obtain ⟨C1, hC1_nn, hC1⟩ := translated_coeff_cutoff_deriv_diffQuot_cross_bound (d := d) B hη
-    hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
+    hη_supp hη_range h_fderiv_eta hΩ' hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
   obtain ⟨C2, hC2_nn, hC2⟩ := coeff_diffQuot_cutoff_sq_gradient_cross_bound (d := d) B hη hη_supp
     hη_range
-    hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
+    hΩ' hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
   obtain ⟨C3, hC3_nn, hC3⟩ := coeff_diffQuot_cutoff_deriv_cross_bound (d := d) B hη hη_supp hη_range
     hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
-  obtain ⟨Cc, hCc_nn, hCc⟩ := c_term_bound (d := d) B hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k ε_eff hε_eff_pos
-  obtain ⟨Cf, hCf_nn, hCf⟩ := f_term_bound (d := d) hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k ε_eff hε_eff_pos
+    h_fderiv_eta hΩ' hΩ'_compact hh_supp_in_Ω' k
+  obtain ⟨Cc, hCc_nn, hCc⟩ := c_term_bound (d := d) B hη hη_supp hη_range
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
+  obtain ⟨Cf, hCf_nn, hCf⟩ := f_term_bound (d := d) hη hη_supp hη_range
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
   set C : ℝ := max (C1 + C2 + C3 + Cc + Cf) (max Cc Cf) with hC_def
   have hC_nn : 0 ≤ C := by
     rw [hC_def]

@@ -25,7 +25,6 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 def abstractHessianLin (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
     TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ :=
@@ -152,16 +151,15 @@ theorem abstractHessian_eq_inner_cov_gradFun_smooth [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {X Y : Π b : M, TangentSpace I b} {x : M}
-    (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
     g.inner x ((LeviCivita (I := I) g).toFun
                   (fun b => gradFun (I := I) g f b) x (X x)) (Y x) =
       abstractHessian (I := I) g f x (X x) (Y x) :=
-  inner_cov_gradFun_eq_abstractHessian (I := I) g hf hX hY
+  inner_cov_gradFun_eq_abstractHessian (I := I) g hf hY
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] lemma traceFun_abstractHessianBilin_def
+lemma traceFun_abstractHessianBilin_def
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
     traceFun (I := I) (M := M) (abstractHessianBilin (I := I) g f) x =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -172,7 +170,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] lemma frobeniusSqFun_abstractHessianBilin_def
+lemma frobeniusSqFun_abstractHessianBilin_def
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
     frobeniusSqFun (I := I) (M := M) (abstractHessianBilin (I := I) g f) x =
       ∑ i : Fin (Module.finrank ℝ E),

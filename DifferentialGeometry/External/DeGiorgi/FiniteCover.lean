@@ -112,6 +112,8 @@ theorem exists_finite_inner_ball_cover
       (∀ c ∈ t, c ∈ Metric.closedBall x₀ r) ∧
       Metric.closedBall x₀ r ⊆ ⋃ c ∈ t, Metric.ball c ρ ∧
       (∀ c ∈ t, Metric.closedBall c (2 * ρ) ⊆ Metric.ball x₀ R) := by
+  let _ := (inferInstance : (NeZero d))
+  let _ := _hr
   obtain ⟨t, ht_mem, hcover⟩ :=
     (isCompact_closedBall x₀ r).elim_nhds_subcover
       (fun x => Metric.ball x ρ)

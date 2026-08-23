@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureProducers
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Curvature.Bianchi
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
@@ -737,7 +737,7 @@ private theorem rm04_tconst_eval
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} (X Y Z W : TangentSpace I x) :
     Rm04 x (vec4 X Y Z W) =
       g.inner x W
@@ -777,7 +777,7 @@ private theorem rm04_tconst_eval
           (tangentConstAt (I := I) x Z)) x) := by
           rw [hWx, ← hcurv]
 
-omit [SigmaCompactSpace M] [T2Space M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem directionalDeriv_directionalDeriv_sub_commutator
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
@@ -1050,7 +1050,7 @@ omit [SigmaCompactSpace M] in
 theorem rm04InputSkewAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     forall X Y Z W : TangentSpace I x,
@@ -1099,7 +1099,7 @@ theorem rm04InputSkew_ofRealizes
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
     forall X Y Z W : TangentSpace I x,
       Rm04 x (vec4 Y X Z W) = -Rm04 x (vec4 X Y Z W) := by
@@ -1147,7 +1147,7 @@ theorem firstBianchi_ofTF
       (1 : WithTop ℕ∞))
     (htf : IsTorsionFree (I := I) cov)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
     FirstBianchiAt (I := I) (Rm04 x) := by
   intro X Y Z W
@@ -1167,7 +1167,7 @@ omit [SigmaCompactSpace M] in
 theorem firstBianchiAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     FirstBianchiAt (I := I) (Rm04 x) := by
@@ -1228,7 +1228,7 @@ omit [SigmaCompactSpace M] in
 theorem rm04OutputSkewAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     Rm04OutputSkewAt (I := I) (Rm04 x) := by
@@ -1256,7 +1256,7 @@ theorem rm04OutputSkew_ofMC
       (1 : WithTop ℕ∞))
     (hmc : IsMetricCompatible_gen (I := I) cov g)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
     Rm04OutputSkewAt (I := I) (Rm04 x) := by
   intro X Y Z W
@@ -1275,7 +1275,7 @@ theorem rm04PairSymm_ofLC
       (1 : WithTop ℕ∞))
     (hLC : IsLeviCivita (I := I) cov g)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
     forall X Y Z W : TangentSpace I x,
       Rm04 x (vec4 X Y Z W) = Rm04 x (vec4 Z W X Y) :=
@@ -1291,7 +1291,7 @@ omit [SigmaCompactSpace M] in
 theorem rm04PairSymmAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     forall X Y Z W : TangentSpace I x,
@@ -1302,13 +1302,14 @@ theorem rm04PairSymmAt_of_leviCivita_realizes
     (firstBianchiAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
 
 omit [IsManifold I 1 M] in
+omit [SigmaCompactSpace M] in
 theorem rm13MetricSkewAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     Rm13MetricSkewAt (I := I) g x (Rm13 x) :=
@@ -1316,7 +1317,7 @@ theorem rm13MetricSkewAt_of_leviCivita_realizes
     (leviCivitaConnectionOfMetric (I := I) g) Rm13 Rm04 hRm13 hRm04
     (rm04OutputSkewAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
 
-omit [SigmaCompactSpace M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
     (g : SmoothRiemannianMetric I M)
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -1327,7 +1328,7 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (halpha : alphaSec x = alpha)
     (hnabla2 : Nabla2OneFormRealizesAt (I := I)
@@ -1612,7 +1613,7 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
     linarith
   linarith
 
-omit [SigmaCompactSpace M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 theorem oneFormThirdCovDerivCommAt_of_leviCivita
     (g : SmoothRiemannianMetric I M)
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -1623,7 +1624,7 @@ theorem oneFormThirdCovDerivCommAt_of_leviCivita
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (halpha : alphaSec x = alpha)
     (hnabla2 : Nabla2OneFormRealizesAt (I := I)
@@ -1649,7 +1650,7 @@ theorem tensor0S_ricciIdentity_of_leviCivita
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 1) x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
     (halpha : alphaSec x = alpha)
     (hnablaAlpha : nablaAlphaSec x = nablaAlpha)

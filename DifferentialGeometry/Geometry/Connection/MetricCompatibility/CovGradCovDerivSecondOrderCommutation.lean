@@ -42,7 +42,7 @@ def nablaTensorCurvSec
     {𝒱 : M → Type*} [∀ x, AddCommGroup (𝒱 x)] [∀ x, Module ℝ (𝒱 x)]
     [∀ x, TopologicalSpace (𝒱 x)] [TopologicalSpace (TotalSpace F 𝒱)]
     [∀ x, IsTopologicalAddGroup (𝒱 x)] [∀ x, ContinuousSMul ℝ (𝒱 x)]
-    [FiberBundle F 𝒱] [VectorBundle ℝ F 𝒱]
+    [FiberBundle F 𝒱]
     (cov : CovariantDerivative I F 𝒱)
     (X Y Z : Π b : M, TangentSpace I b) (V : Π b : M, 𝒱 b) (x : M) : 𝒱 x :=
   cov.toFun (fun b => riemannSec cov Y Z V b) x (X x)
@@ -55,7 +55,7 @@ def secondOrderChristoffelResidual
     {𝒱 : M → Type*} [∀ x, AddCommGroup (𝒱 x)] [∀ x, Module ℝ (𝒱 x)]
     [∀ x, TopologicalSpace (𝒱 x)] [TopologicalSpace (TotalSpace F 𝒱)]
     [∀ x, IsTopologicalAddGroup (𝒱 x)] [∀ x, ContinuousSMul ℝ (𝒱 x)]
-    [FiberBundle F 𝒱] [VectorBundle ℝ F 𝒱]
+    [FiberBundle F 𝒱]
     (cov : CovariantDerivative I F 𝒱)
     (B w : Π b : M, TangentSpace I b) (V : Π b : M, 𝒱 b) (x : M) : 𝒱 x :=
   cov.toFun (covApply cov B V) x (VectorField.mlieBracket I B w x)
@@ -76,7 +76,7 @@ lemma secondOrderChristoffelResidual_def
     {𝒱 : M → Type*} [∀ x, AddCommGroup (𝒱 x)] [∀ x, Module ℝ (𝒱 x)]
     [∀ x, TopologicalSpace (𝒱 x)] [TopologicalSpace (TotalSpace F 𝒱)]
     [∀ x, IsTopologicalAddGroup (𝒱 x)] [∀ x, ContinuousSMul ℝ (𝒱 x)]
-    [FiberBundle F 𝒱] [VectorBundle ℝ F 𝒱]
+    [FiberBundle F 𝒱]
     (cov : CovariantDerivative I F 𝒱)
     (B w : Π b : M, TangentSpace I b) (V : Π b : M, 𝒱 b) (x : M) :
     secondOrderChristoffelResidual (I := I) g cov B w V x =
@@ -98,7 +98,7 @@ lemma nablaTensorCurvSec_def
     {𝒱 : M → Type*} [∀ x, AddCommGroup (𝒱 x)] [∀ x, Module ℝ (𝒱 x)]
     [∀ x, TopologicalSpace (𝒱 x)] [TopologicalSpace (TotalSpace F 𝒱)]
     [∀ x, IsTopologicalAddGroup (𝒱 x)] [∀ x, ContinuousSMul ℝ (𝒱 x)]
-    [FiberBundle F 𝒱] [VectorBundle ℝ F 𝒱]
+    [FiberBundle F 𝒱]
     (cov : CovariantDerivative I F 𝒱)
     (X Y Z : Π b : M, TangentSpace I b) (V : Π b : M, 𝒱 b) (x : M) :
     nablaTensorCurvSec (I := I) g cov X Y Z V x =

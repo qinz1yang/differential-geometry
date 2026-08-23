@@ -11,7 +11,7 @@ convergence lemmas used by both the forward and inverse supersolution arguments.
 
 noncomputable section
 
-open MeasureTheory Metric
+open MeasureTheory
 
 namespace DeGiorgi
 
@@ -334,6 +334,7 @@ theorem one_add_power_half_memLp_on_ball
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume) :
     MemLp (fun x => 1 + |u x| ^ (p / 2)) 2 (volume.restrict (Metric.ball (0 : E) s)) := by
+  let _ := _hs
   let μ : Measure E := volume.restrict (Metric.ball (0 : E) s)
   haveI : IsFiniteMeasure μ := by
     dsimp [μ]
@@ -353,6 +354,7 @@ theorem one_add_rpow_integrableOn_ball
     (_hs : 0 < s)
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume) :
     IntegrableOn (fun x => 1 + |u x| ^ p) (Metric.ball (0 : E) s) volume := by
+  let _ := _hs
   have hone :
       IntegrableOn (fun _ : E => (1 : ℝ)) (Metric.ball (0 : E) s) volume := by
     exact integrableOn_const (C := (1 : ℝ))
@@ -367,6 +369,7 @@ theorem superExactFwd_rhs_dom_on_ball
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) s, 0 < u x) :
     ∀ n, ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) s)),
       |superExactShiftPow (superEpsSeq n) p (u x)| ≤ 1 + |u x| ^ p := by
+  let _ := _hs
   intro n
   filter_upwards [ae_restrict_mem Metric.isOpen_ball.measurableSet] with x hx
   have hux : 0 < u x := hu_pos x hx

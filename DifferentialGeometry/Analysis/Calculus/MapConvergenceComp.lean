@@ -41,7 +41,6 @@ theorem MapCPConvOn.tendstoUniformlyOn_iteratedFDeriv
   rw [dist_eq_norm, norm_sub_rev]
   exact lt_of_le_of_lt hb (by linarith)
 
-
 theorem MapCPConvOn.comp_tendsto_atTop {K : Set E} {p : ℕ}
     {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvOn K p Φ Φinf)
     {τ : ℕ → ℕ} (hτ : Tendsto τ atTop atTop) :
@@ -50,7 +49,6 @@ theorem MapCPConvOn.comp_tendsto_atTop {K : Set E} {p : ℕ}
   obtain ⟨k0, hk0⟩ := h ε hε
   obtain ⟨N, hN⟩ := eventually_atTop.mp (hτ.eventually_ge_atTop k0)
   exact ⟨N, fun k hk r hr x hx => hk0 (τ k) (hN k hk) r hr x hx⟩
-
 
 theorem MapCInfConvOnCompacts.comp_tendsto_atTop {U : Set E}
     {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCInfConvOnCompacts U Φ Φinf)
@@ -191,7 +189,6 @@ theorem exists_cInf_finite
   obtain ⟨ψ, hψ, hconv⟩ := aux Finset.univ
   exact ⟨ψ, hψ, fun i => hconv i (Finset.mem_univ i)⟩
 
-
 theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv
     {U K : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
     (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
@@ -204,7 +201,6 @@ theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv
   exact (h K hK hKU r).tendstoUniformlyOn_iteratedFDeriv hU hKU
     (fun k => (hΦ k).of_le (by exact_mod_cast le_top))
     (hΦinf.of_le (by exact_mod_cast le_top)) le_rfl
-
 
 theorem mapCPConvOn_of_tendstoUniformlyOn {U K : Set E} {p : ℕ}
     {Φ : ℕ → E → F} {Φinf : E → F} (hU : IsOpen U) (hKU : K ⊆ U)
@@ -595,6 +591,31 @@ theorem mapCInfConv_pi {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
   rw [hkey, pi_norm_le_iff_of_nonneg hε.le]
   intro i
   exact hk0 i k (le_trans (Finset.le_sup (Finset.mem_univ i)) hk) r hr x hx
+
+theorem mapCInf_apply {ι : Type*} [Fintype ι]
+    {U : Set E'} (hU : IsOpen U)
+    {u : ℕ → E' → (ι → Q)} {uinf : E' → (ι → Q)}
+    (hu : MapCInfConvOnCompacts U u uinf)
+    (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
+    (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U) (i : ι) :
+    MapCInfConvOnCompacts U (fun k x ↦ u k x i) (fun x ↦ uinf x i) := by
+  intro K hK hKU p epsilon hepsilon
+  obtain ⟨k0, hk0⟩ := hu K hK hKU p epsilon hepsilon
+  refine ⟨k0, fun k hk r hr x hx ↦ ?_⟩
+  have hxU : x ∈ U := hKU hx
+  have hle : ((r : ℕ∞) : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
+    exact_mod_cast le_top
+  have hcd : ∀ j : ι, ContDiffAt ℝ (r : ℕ∞)
+      (fun y ↦ u k y j - uinf y j) x := by
+    intro j
+    exact (((contDiffOn_pi.mp (huc k) j).sub
+      (contDiffOn_pi.mp huinfc j)).contDiffAt (hU.mem_nhds hxU)).of_le hle
+  have hbase := hk0 k hk r hr x hx
+  simp only [mapDerivNorm] at hbase ⊢
+  change ‖iteratedFDeriv ℝ r (fun y j ↦ u k y j - uinf y j) x‖ ≤ epsilon at hbase
+  rw [iteratedFDeriv_pi hcd le_rfl, ContinuousMultilinearMap.opNorm_pi] at hbase
+  exact (norm_le_pi_norm (fun j ↦
+    iteratedFDeriv ℝ r (fun y ↦ u k y j - uinf y j) x) i).trans hbase
 
 theorem mapCInfConv_clm {F' G' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']
     [NormedAddCommGroup G'] [NormedSpace ℝ G']

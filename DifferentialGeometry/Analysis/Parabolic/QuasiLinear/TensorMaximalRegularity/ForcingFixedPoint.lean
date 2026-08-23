@@ -163,13 +163,13 @@ theorem maximalRegularitySolField_sub (hT : 0 ≤ T)
   rw [hadd, add_sub_cancel_right]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelSolField_sub (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maxRegDuhamelSolField_sub (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce gforce' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce -
-        maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce' =
+    maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce -
+        maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce' =
       maximalRegularitySolField (I := I) (M := M) a hT.le
         (gforce - gforce') := by
   rw [maximalRegularitySolField_sub (I := I) (M := M)
@@ -178,22 +178,22 @@ theorem maxRegDuhamelSolField_sub (hT : 0 < T) (hT1 : T ≤ 1)
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelSolField_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maxRegDuhamelSolField_dist_le (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (gforce gforce' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    ‖maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce -
-        maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce'‖ ≤
+    ‖maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce -
+        maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce'‖ ≤
       (1 + T) * ‖gforce - gforce'‖ := by
   rw [maxRegDuhamelSolField_sub (I := I) (M := M)
-    (h_compact := h_compact) (a := a) hT hT1 u₀ gforce gforce']
+    (h_compact := h_compact) (a := a) hT u₀ gforce gforce']
   exact maximalRegularityOp_norm_Ha2_le (I := I) (M := M)
-    (h_compact := h_compact) (a := a) hT hT1 (gforce - gforce')
+    (h_compact := h_compact) (a := a) hT (gforce - gforce')
 
 section FixedPoint
 
-def quasilinearDuhamelMap (a : ℝ) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+def quasilinearDuhamelMap (a : ℝ) {T : ℝ} (hT : 0 < T)
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     {L : ℝ≥0}
     {N : tensorHs (I := I) (M := M) g r s (a + 2) →
@@ -202,23 +202,23 @@ def quasilinearDuhamelMap (a : ℝ) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     timeL2 (tensorHs (I := I) (M := M) g r s a) T →
       timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
   fun gforce => nemytskii (I := I) (M := M) hN
-    (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce)
+    (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem quasilinearDuhamelMap_apply (hT : 0 < T) (hT1 : T ≤ 1)
+@[simp] theorem quasilinearDuhamelMap_apply (hT : 0 < T)
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     {L : ℝ≥0}
     {N : tensorHs (I := I) (M := M) g r s (a + 2) →
       tensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN gforce =
+    quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN gforce =
       nemytskii (I := I) (M := M) hN
-        (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) :=
+        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem quasilinearDuhamelMap_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
+theorem quasilinearDuhamelMap_dist_le (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -227,27 +227,27 @@ theorem quasilinearDuhamelMap_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
       tensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N)
     (gforce gforce' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    dist (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN gforce)
-        (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN
+    dist (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN gforce)
+        (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN
           gforce') ≤
       (L : ℝ) * (1 + T) * dist gforce gforce' := by
   have hnem := (nemytskii_lipschitzWith (I := I) (M := M) hN).dist_le_mul
-    (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce)
-    (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce')
+    (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce)
+    (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce')
   have hfield : dist
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce)
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce') ≤
+      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce)
+      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce') ≤
         (1 + T) * dist gforce gforce' := by
     rw [dist_eq_norm, dist_eq_norm]
     exact maxRegDuhamelSolField_dist_le (I := I) (M := M)
-      (h_compact := h_compact) (a := a) hT hT1 u₀ gforce gforce'
+      (h_compact := h_compact) (a := a) hT u₀ gforce gforce'
   calc dist
-        (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN gforce)
-        (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN
+        (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN gforce)
+        (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN
           gforce')
       ≤ (L : ℝ) * dist
-          (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce)
-          (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀
+          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce)
+          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀
             gforce') := hnem
     _ ≤ (L : ℝ) * ((1 + T) * dist gforce gforce') :=
         mul_le_mul_of_nonneg_left hfield L.coe_nonneg
@@ -275,14 +275,14 @@ theorem quasilinearDuhamelMap_contracting (hT : 0 < T) (hT1 : T ≤ 1)
     ContractingWith
       ⟨(L : ℝ) * (1 + T),
         mul_nonneg L.coe_nonneg (by linarith [hT.le])⟩
-      (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN) := by
+      (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN) := by
   refine ⟨?_, ?_⟩
   · rw [← NNReal.coe_lt_coe]
     simpa using quasilinear_contraction_const_lt_one
       (L := L) (T := T) hT1 hL
   · refine LipschitzWith.of_dist_le_mul (fun gforce gforce' => ?_)
     have h := quasilinearDuhamelMap_dist_le (I := I) (M := M)
-      (h_compact := h_compact) (a := a) hT hT1 u₀ hN gforce gforce'
+      (h_compact := h_compact) (a := a) hT u₀ hN gforce gforce'
     simpa only [NNReal.coe_mk] using h
 
 end FixedPoint
@@ -298,39 +298,39 @@ theorem quasilinear_strong_existence {L : ℝ≥0}
     (hN : LipschitzWith L N) (hL : 2 * (L : ℝ) < 1) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
       (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
-      u = maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce ∧
+      u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
         gforce = nemytskii (I := I) (M := M) hN
-            (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀
+            (maxRegDuhamelSolField (I := I) (M := M) a hT u₀
               gforce) ∧
         TimeSobolev.timeH1.trace0 _ T u =
             tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
               (show a ≤ a + 2 by linarith) u₀ ∧
         TimeSobolev.timeH1.timeDeriv _ T u =
           timeScaleLaplacian (I := I) (M := M) a
-              (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀
+              (maxRegDuhamelSolField (I := I) (M := M) a hT u₀
                 gforce) +
             nemytskii (I := I) (M := M) hN
-              (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀
+              (maxRegDuhamelSolField (I := I) (M := M) a hT u₀
                 gforce) := by
   have hcontr := quasilinearDuhamelMap_contracting (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u₀ hN hL
   set gStar := ContractingWith.fixedPoint
-    (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN) hcontr
+    (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN) hcontr
     with hgStar_def
   have hgStar_fix :
-      quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN gStar =
+      quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN gStar =
         gStar :=
     ContractingWith.fixedPoint_isFixedPt hcontr
   have hgStar_eq : gStar = nemytskii (I := I) (M := M) hN
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gStar) := by
-    rw [← quasilinearDuhamelMap_apply (I := I) (M := M) (a := a) hT hT1 u₀ hN
+      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gStar) := by
+    rw [← quasilinearDuhamelMap_apply (I := I) (M := M) (a := a) hT u₀ hN
       gStar, hgStar_fix]
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gStar,
+  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT u₀ gStar,
     gStar, rfl, hgStar_eq, ?_, ?_⟩
   · exact maxRegDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
-      hT hT1 u₀ gStar
+      hT u₀ gStar
   · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
-      (h_compact := h_compact) (a := a) (T := T) hT hT1 u₀ gStar]
+      (h_compact := h_compact) (a := a) (T := T) hT u₀ gStar]
     exact congrArg₂ (· + ·) rfl hgStar_eq
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -344,30 +344,30 @@ theorem quasilinear_strong_unique {L : ℝ≥0}
     (hN : LipschitzWith L N) (hL : 2 * (L : ℝ) < 1)
     {gforce₁ gforce₂ : timeL2 (tensorHs (I := I) (M := M) g r s a) T}
     (hg₁ : gforce₁ = nemytskii (I := I) (M := M) hN
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce₁))
+      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce₁))
     (hg₂ : gforce₂ = nemytskii (I := I) (M := M) hN
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce₂)) :
+      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce₂)) :
     gforce₁ = gforce₂ ∧
-      maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce₁ =
-        maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce₂ := by
+      maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce₁ =
+        maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce₂ := by
   have hcontr := quasilinearDuhamelMap_contracting (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u₀ hN hL
   have hfix₁ :
       Function.IsFixedPt
-        (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN)
+        (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN)
         gforce₁ := by
-    change quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN
+    change quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN
         gforce₁ = gforce₁
-    rw [quasilinearDuhamelMap_apply (I := I) (M := M) (a := a) hT hT1 u₀ hN
+    rw [quasilinearDuhamelMap_apply (I := I) (M := M) (a := a) hT u₀ hN
       gforce₁]
     exact hg₁.symm
   have hfix₂ :
       Function.IsFixedPt
-        (quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN)
+        (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN)
         gforce₂ := by
-    change quasilinearDuhamelMap (I := I) (M := M) a hT hT1 u₀ hN
+    change quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN
         gforce₂ = gforce₂
-    rw [quasilinearDuhamelMap_apply (I := I) (M := M) (a := a) hT hT1 u₀ hN
+    rw [quasilinearDuhamelMap_apply (I := I) (M := M) (a := a) hT u₀ hN
       gforce₂]
     exact hg₂.symm
   have hgeq : gforce₁ = gforce₂ := by

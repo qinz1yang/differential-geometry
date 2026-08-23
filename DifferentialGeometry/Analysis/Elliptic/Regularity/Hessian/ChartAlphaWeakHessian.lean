@@ -28,7 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
@@ -80,7 +79,6 @@ private lemma chartPushedPouFun_memW1p
 noncomputable def chosenChartFirstWeakPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (j : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
     (d := Module.finrank ℝ E) 2 j
@@ -91,9 +89,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chosenChartFirstWeakPartial_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (j : Fin (Module.finrank ℝ E)) :
-    chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h j =
+    chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α j =
       DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
         (d := Module.finrank ℝ E) 2 j
         (chartPushedPouFun (I := I) (M := M) g α u_h)
@@ -105,7 +102,7 @@ theorem chosenChartFirstWeakPartial_isWeakPartial
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (j : Fin (Module.finrank ℝ E)) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
-      (chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h j)
+      (chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α j)
       (chartPushedPouFun (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenChartFirstWeakPartial
@@ -117,7 +114,7 @@ theorem chosenChartFirstWeakPartial_memLp_chartTarget
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (j : Fin (Module.finrank ℝ E)) :
-    MemLp (chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h j) 2
+    MemLp (chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α j) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   unfold chosenChartFirstWeakPartial
@@ -131,7 +128,7 @@ theorem chosenChartFirstWeakPartial_locally_memLp
     (j : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h j) 2
+    MemLp (chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α j) 2
       ((volume : Measure EuclN).restrict K) := by
   have h_global := chosenChartFirstWeakPartial_memLp_chartTarget
     (I := I) (M := M) g α hu_h j
@@ -148,7 +145,6 @@ theorem chosenChartFirstWeakPartial_locally_memLp
 noncomputable def chosenChartSecondWeakPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
     (d := Module.finrank ℝ E) 2 l
@@ -162,9 +158,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chosenChartSecondWeakPartial_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) :
-    chosenChartSecondWeakPartial (I := I) (M := M) g α hu_h k l =
+    chosenChartSecondWeakPartial (I := I) (M := M) (u_h := u_h) g α k l =
       DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
         (d := Module.finrank ℝ E) 2 l
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
@@ -178,7 +173,7 @@ theorem chosenChartSecondWeakPartial_memLp_chartTarget
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) :
-    MemLp (chosenChartSecondWeakPartial (I := I) (M := M) g α hu_h k l) 2
+    MemLp (chosenChartSecondWeakPartial (I := I) (M := M) (u_h := u_h) g α k l) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
@@ -203,7 +198,7 @@ theorem chosenChartSecondWeakPartial_locally_memLp
     (k l : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (chosenChartSecondWeakPartial (I := I) (M := M) g α hu_h k l) 2
+    MemLp (chosenChartSecondWeakPartial (I := I) (M := M) (u_h := u_h) g α k l) 2
       ((volume : Measure EuclN).restrict K) := by
   have h_global := chosenChartSecondWeakPartial_memLp_chartTarget
     (I := I) (M := M) g α hu_h k l
@@ -220,22 +215,20 @@ theorem chosenChartSecondWeakPartial_locally_memLp
 noncomputable def chartChristoffelCorrectionWeak
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) (y : EuclN) : ℝ :=
   ∑ m : Fin (Module.finrank ℝ E),
     chartChristoffel (I := I) g α k l m ((toEuclidean (E := E)).symm y) *
-      chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h m y
+      chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α m y
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartChristoffelCorrectionWeak_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) (y : EuclN) :
-    chartChristoffelCorrectionWeak (I := I) (M := M) g α hu_h k l y =
+    chartChristoffelCorrectionWeak (I := I) (M := M) (u_h := u_h) g α k l y =
       ∑ m : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α k l m ((toEuclidean (E := E)).symm y) *
-          chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h m y := rfl
+          chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α m y := rfl
 
 omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -298,11 +291,11 @@ private lemma chartChristoffelCorrectionWeak_summand_memLp
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp (fun y : EuclN =>
         chartChristoffel (I := I) g α k l m ((toEuclidean (E := E)).symm y) *
-          chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h m y) 2
+          chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α m y) 2
       ((volume : Measure EuclN).restrict K) := by
   classical
   have h_partial_memLp : MemLp
-      (chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h m) 2
+      (chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α m) 2
       ((volume : Measure EuclN).restrict K) :=
     chosenChartFirstWeakPartial_locally_memLp (I := I) (M := M) g α hu_h m
       hK_compact hK_in
@@ -333,7 +326,7 @@ theorem chartChristoffelCorrectionWeak_memLp_chartTarget_compact
     (k l : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (chartChristoffelCorrectionWeak (I := I) (M := M) g α hu_h k l) 2
+    MemLp (chartChristoffelCorrectionWeak (I := I) (M := M) (u_h := u_h) g α k l) 2
       ((volume : Measure EuclN).restrict K) := by
   classical
   unfold chartChristoffelCorrectionWeak
@@ -344,20 +337,18 @@ theorem chartChristoffelCorrectionWeak_memLp_chartTarget_compact
 noncomputable def chartTensorWeakHessianRaw
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) (y : EuclN) : ℝ :=
-  chosenChartSecondWeakPartial (I := I) (M := M) g α hu_h k l y -
-    chartChristoffelCorrectionWeak (I := I) (M := M) g α hu_h k l y
+  chosenChartSecondWeakPartial (I := I) (M := M) (u_h := u_h) g α k l y -
+    chartChristoffelCorrectionWeak (I := I) (M := M) (u_h := u_h) g α k l y
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartTensorWeakHessianRaw_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (k l : Fin (Module.finrank ℝ E)) (y : EuclN) :
-    chartTensorWeakHessianRaw (I := I) (M := M) g α hu_h k l y =
-      chosenChartSecondWeakPartial (I := I) (M := M) g α hu_h k l y -
-        chartChristoffelCorrectionWeak (I := I) (M := M) g α hu_h k l y := rfl
+    chartTensorWeakHessianRaw (I := I) (M := M) (u_h := u_h) g α k l y =
+      chosenChartSecondWeakPartial (I := I) (M := M) (u_h := u_h) g α k l y -
+        chartChristoffelCorrectionWeak (I := I) (M := M) (u_h := u_h) g α k l y := rfl
 
 theorem chartTensorWeakHessianRaw_memLp_chartTarget_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -366,7 +357,7 @@ theorem chartTensorWeakHessianRaw_memLp_chartTarget_compact
     (k l : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (chartTensorWeakHessianRaw (I := I) (M := M) g α hu_h k l) 2
+    MemLp (chartTensorWeakHessianRaw (I := I) (M := M) (u_h := u_h) g α k l) 2
       ((volume : Measure EuclN).restrict K) := by
   unfold chartTensorWeakHessianRaw
   exact (chosenChartSecondWeakPartial_locally_memLp

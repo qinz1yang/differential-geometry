@@ -10,8 +10,8 @@ This module packages the rescaling of Sobolev witnesses to the unit ball.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal
+open MeasureTheory Set
+open scoped ENNReal
 
 namespace DeGiorgi
 
@@ -193,6 +193,7 @@ theorem eLpNorm_rescale_to_unitBall
     eLpNorm (fun z => f (x₀ + R • z)) p (volume.restrict (Metric.ball (0 : E) 1)) =
       ENNReal.ofReal (R⁻¹ ^ (d / p.toReal)) *
         eLpNorm f p (volume.restrict (Metric.ball x₀ R)) := by
+  let _ := _hp
   set T := fun z : E => x₀ + R • z with hT_def
   have hR' : R ≠ 0 := hR.ne'
   have hT_emb : MeasurableEmbedding T :=

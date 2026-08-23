@@ -74,7 +74,7 @@ def extendL2 (T : SmoothCcTensor g r s →L[ℝ] F) :
 
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem extendL2_apply_toL2 (T : SmoothCcTensor g r s →L[ℝ] F)
+theorem extendL2_apply_toL2 (T : SmoothCcTensor g r s →L[ℝ] F)
     (S : SmoothCcTensor g r s) :
     extendL2 T ((toL2 (g := g) (r := r) (s := s)) S) = T S :=
   ContinuousLinearMap.extend_eq T denseRange_toL2 isUniformInducing_toL2 S
@@ -102,7 +102,7 @@ def mapL2
 
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem mapL2_apply_toL2
+theorem mapL2_apply_toL2
     (T : SmoothCcTensor g r₁ s₁ →L[ℝ] SmoothCcTensor g r₂ s₂)
     (S : SmoothCcTensor g r₁ s₁) :
     mapL2 T ((toL2 (g := g) (r := r₁) (s := s₁)) S) =

@@ -117,7 +117,7 @@ private lemma rhoAlpha_mul_preimage_coeFn_memWkpChart_two_two
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x *
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
@@ -127,7 +127,7 @@ private lemma rhoAlpha_mul_preimage_coeFn_memWkpChart_two_two
   have h_preimage_h2 := (laplacianDomainPow_two_h2_plus_rhs_h2
     (I := I) (M := M) g hu_h).2.1
   exact DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_smooth_mul
-    (I := I) (M := M) g (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    (I := I) (M := M) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) h_preimage_h2
 
 theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_of_mem
@@ -138,7 +138,7 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_of_mem
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h ∈
       laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       (fun x : M =>
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨smoothMulH1Compl (I := I) (M := M) g
@@ -173,7 +173,7 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_of_mem
             (I := I) (M := M) g 1 h_mem⟩ := rfl
   rw [h_preimage_eq]
   exact DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_sub
-    (I := I) (M := M) g (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    (I := I) (M := M) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     h_smHC_h2 h_smoothMul_h2
 
 theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_density
@@ -196,7 +196,7 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_density
       smoothCandidate_identification_target (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (h_smooth_seq n)) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       (fun x : M =>
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨smoothMulH1Compl (I := I) (M := M) g
@@ -221,21 +221,6 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_density
 noncomputable def diffChartBilinearH1ComplData_of_laplacianDomainPow_two_density
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
-    (_h_smooth_seq : ℕ → SmoothScalar g)
-    (_h_conv_H1Compl : Tendsto
-      (fun n => smoothToH1Compl (I := I) (M := M) g (_h_smooth_seq n))
-      atTop (𝓝 u_h))
-    (_h_conv_candidate : Tendsto
-      (fun n => gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g
-        (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
-        (smoothToH1Compl_mem_laplacianDomainPow_two
-          (I := I) (M := M) g (_h_smooth_seq n)))
-      atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
-        (I := I) (M := M) g
-        (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) hu_h)))
-    (_h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g
-        (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (_h_smooth_seq n))
     (direction : Fin (Module.finrank ℝ E))
     (h_residual_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (fChartResidual (I := I) (M := M) g α u_h)

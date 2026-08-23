@@ -6,9 +6,9 @@ import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.VectorField
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFChartCoord
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.ChartVectorField
+import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
+import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
+import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieMatrixChartBridge
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
@@ -25,13 +25,9 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators Pointwise
-open DifferentialGeometry
-open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.DeTurck
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
@@ -175,14 +171,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 theorem deTurckChartGramOnE_iteratedFDeriv_jointContinuousOn_of_jointChartGram
     (T : ℝ) (g_DT : ℝ → SmoothRiemannianMetric I M)
     (hJ : JointChartGramSmooth (I := I) T g_DT) :
-    ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
+    ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ),
       ContinuousOn
         (fun q : ℝ × M => iteratedFDeriv ℝ k
           (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
           (extChartAt I α q.2))
         (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
   classical
-  intro α i j k _hk
+  intro α i j k
   set V : Set E := interior ((extChartAt I α).target : Set E) with hV_def
   have hVopen : IsOpen V := isOpen_interior
   set G : ℝ × E → ℝ :=
@@ -657,8 +653,9 @@ theorem deTurckRicci_chartRegularity_of_jointChartGramSmooth
           (extChartAt I α q.2)
         = Integral.Measure.chartGramMatrix (I := I) (g_DT q.1) α q.2 i j
     rw [chartGramOnE_def, (extChartAt I α).left_inv hsrc']
-  · exact deTurckChartGramOnE_iteratedFDeriv_jointContinuousOn_of_jointChartGram
-      (I := I) T g_DT hJ
+  · intro α i j k _hk
+    exact deTurckChartGramOnE_iteratedFDeriv_jointContinuousOn_of_jointChartGram
+      (I := I) T g_DT hJ α i j k
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma param_spatial_partialDeriv_contDiffOn

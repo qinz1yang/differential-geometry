@@ -110,7 +110,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
         (chartAt H α).source :=
     covAtom_pouTsupport_subset_chartSource (I := I) (M := M) α
   obtain ⟨Cop, hCop_pos, hCop_bound⟩ :=
-    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   have hCop_nn : 0 ≤ Cop := le_of_lt hCop_pos
   refine ⟨Cop * Cg2, mul_nonneg hCop_nn hCg2_nn, ?_⟩

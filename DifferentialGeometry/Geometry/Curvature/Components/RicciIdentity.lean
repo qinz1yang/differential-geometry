@@ -44,7 +44,7 @@ theorem curvatureAction0SAt_coordFrame_of_christoffelCurv
     (x0 : M) {s : ℕ}
     (alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x0)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x0)
     (i j : CoordinateIdx (𝕜 := Real) E)
     (ks : Fin s -> CoordinateIdx (𝕜 := Real) E) :
@@ -102,7 +102,7 @@ theorem tensor0S_ricciIdentity_coordFrame_of_christoffelCurv
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (s + 2) x0)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x0)
     (hRicci : Tensor0SRicciIdentityAt (I := I) Rm13 alpha nabla2Alpha)
     (i j : CoordinateIdx (𝕜 := Real) E)
@@ -207,7 +207,7 @@ theorem one_form_third_comm_coord_of_christoffelCurv
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x₀)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x₀)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x₀)
     (hcoord : OneFormThirdCommChristoffelCoordAt (I := I) cov x₀ alpha nabla2Alpha) :
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha := by

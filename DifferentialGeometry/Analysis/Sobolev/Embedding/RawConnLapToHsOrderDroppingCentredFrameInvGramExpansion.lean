@@ -28,9 +28,7 @@ namespace DifferentialGeometry.Analysis.Sobolev
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
-open DifferentialGeometry
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
@@ -47,7 +45,6 @@ section RawConnLapOrderDrop
 
 open MeasureTheory
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -65,7 +62,6 @@ section CentredFrameCoordExpansion
 set_option backward.isDefEq.respectTransparency false
 
 
-open DifferentialGeometry.Integral.DivergenceTheorem
 
 private noncomputable def centredOrthoFrameCoordMatrix
     (g : SmoothRiemannianMetric I M) (α c : M)
@@ -894,7 +890,6 @@ section B4Bridge
 set_option backward.isDefEq.respectTransparency false
 
 
-open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma centredFrame_proj_summand_expand

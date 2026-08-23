@@ -40,7 +40,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem eLpNorm_diffQuot_restrict_le_of_cthickening
     {Ω'' K : Set EuclN} (hΩ''_open : IsOpen Ω'')
-    (_hΩ''_compact_closure : IsCompact (closure Ω''))
     (hK_meas : MeasurableSet K)
     {w : EuclN → ℝ} (hw_l2 : MemLp w 2 ((volume : Measure EuclN).restrict K))
     (k : Fin (Module.finrank ℝ E)) {h : ℝ} (hh : h ≠ 0)

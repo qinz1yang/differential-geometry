@@ -237,7 +237,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [BoundarylessManifold I M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] in
-theorem bare_forward_flow_eqOn_of_jointC1 [CompleteSpace E]
+theorem bare_forward_flow_eqOn_of_jointC1
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : AutonomizedFieldJointC1 (I := I) X)
     (Φ Φ' : ℝ → M → M) (x x' : M) {a b : ℝ}

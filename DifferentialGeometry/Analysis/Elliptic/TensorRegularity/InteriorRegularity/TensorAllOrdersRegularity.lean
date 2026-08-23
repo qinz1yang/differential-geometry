@@ -128,7 +128,7 @@ theorem iterClassicalPartial_memWkp_two_of_weakSolution
   set u : EuclN → ℝ := tensorComponentEuclid (I := I) (M := M) g r s T α P₀
     with hu_def
   set RHS : EuclN → ℝ :=
-    tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀
+    tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀
     with hRHS_def
   have h_weak_sol :
       B.IsSmoothWeakSolution
@@ -141,7 +141,7 @@ theorem iterClassicalPartial_memWkp_two_of_weakSolution
   have hu_cpt : HasCompactSupport u :=
     tensorComponentEuclid_hasCompactSupport (I := I) (M := M) g r s T α P₀ hT_supp
   have hRHS_cd : ContDiff ℝ (⊤ : ℕ∞) RHS :=
-    tensorComponentWeakRHS_contDiff (I := I) (M := M) g r s T F α hK hK_target P₀
+    tensorComponentWeakRHS_contDiff (I := I) (M := M) g r s T F α P₀
       hT_supp hF_supp
   have hRHS_cpt : HasCompactSupport RHS :=
     tensorComponentWeakRHS_hasCompactSupport (I := I) (M := M) g r s T F α hK

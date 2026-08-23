@@ -341,7 +341,7 @@ private theorem exists_iter_limits_subseq
 
 private theorem subseq_limit_memWkp_and_wkpNorm_tendsto
     [NeZero d]
-    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
+    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u : ℕ → E → ℝ}
     (hu_mem : ∀ n, MemWkp (d := d) k p (u n) Ω)
@@ -357,7 +357,7 @@ private theorem subseq_limit_memWkp_and_wkpNorm_tendsto
   obtain ⟨v, hv_lp, h_v_tendsto⟩ :=
     exists_iter_limits_subseq (d := d) hp_one hΩ hu_mem hφ_strict h_geom
   obtain ⟨h_lim_mem, h_lim_iter_ae⟩ :=
-    MemWkp_of_iter_tendsto_eLpNorm (d := d) hp_one hp_top hΩ k
+    MemWkp_of_iter_tendsto_eLpNorm (d := d) hp_one hΩ k
       (u_n := fun i => u (φ i)) (fun i => hu_mem (φ i)) v hv_lp h_v_tendsto
   refine ⟨v 0 ![], h_lim_mem, ?_⟩
   unfold iteratedWeakSobolevNorm
@@ -516,7 +516,7 @@ private theorem wkpNorm_tendsto_of_cauchy_of_subseq
 theorem MemWkp.exists_limit_of_wkpNorm_cauchy
     [NeZero d]
     {Ω : Set E} (hΩ_open : IsOpen Ω)
-    (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
+    (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p)
     {u : ℕ → E → ℝ}
     (hu_mem : ∀ n, MemWkp (d := d) k p (u n) Ω)
     (hu_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
@@ -530,7 +530,7 @@ theorem MemWkp.exists_limit_of_wkpNorm_cauchy
   obtain ⟨φ, hφ_strict, h_geom⟩ :=
     exists_subseq_geom_bound (d := d) (k := k) (p := p) (Ω := Ω) (u := u) hu_cauchy
   obtain ⟨u_lim, hu_lim_mem, h_subseq_tendsto⟩ :=
-    subseq_limit_memWkp_and_wkpNorm_tendsto (d := d) hp_one hp_top hΩ_open
+    subseq_limit_memWkp_and_wkpNorm_tendsto (d := d) hp_one hΩ_open
       hu_mem hφ_strict h_geom
   refine ⟨u_lim, hu_lim_mem, ?_⟩
   exact wkpNorm_tendsto_of_cauchy_of_subseq (d := d) hp_one hΩ_open

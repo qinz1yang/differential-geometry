@@ -81,7 +81,7 @@ theorem integral_tangentSectionAction_mul_add_eq_neg_with_boundary_family
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ) ∞ h)
-    (hf_int : tsupport f ⊆ I.interior M) (hh_int : tsupport h ⊆ I.interior M)
+    (hf_int : tsupport f ⊆ I.interior M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport X)
     (hX_int : tsupport X ⊆ I.interior M) (t : ℝ) :
@@ -92,7 +92,7 @@ theorem integral_tangentSectionAction_mul_add_eq_neg_with_boundary_family
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact integral_tangentSectionAction_mul_add_eq_neg_with_boundary
-    (I := I) (g_fam t) hf hh hf_int hh_int X hX hX_int
+    (I := I) (g_fam t) hf hh hf_int X hX hX_int
 
 omit [InnerProductSpace ℝ E] in
 theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary_family

@@ -10,7 +10,7 @@ in the second stage of weak Harnack.
 
 noncomputable section
 
-open MeasureTheory Metric
+open MeasureTheory
 
 namespace DeGiorgi
 

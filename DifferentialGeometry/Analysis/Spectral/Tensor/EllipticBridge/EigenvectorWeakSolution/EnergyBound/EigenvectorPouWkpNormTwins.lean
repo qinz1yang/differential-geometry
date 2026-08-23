@@ -76,7 +76,6 @@ private lemma eigenIdx_val_pos
 
 section Unconditional
 
-open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 theorem eigenvectorVec_pou_wkpNorm_le

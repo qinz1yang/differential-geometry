@@ -15,8 +15,8 @@ Policy:
 
 noncomputable section
 
-open MeasureTheory Metric Set Filter
-open scoped ENNReal NNReal Topology InnerProductSpace
+open MeasureTheory
+open scoped NNReal
 
 namespace DeGiorgi
 

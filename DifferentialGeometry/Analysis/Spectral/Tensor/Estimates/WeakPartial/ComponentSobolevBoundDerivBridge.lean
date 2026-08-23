@@ -54,20 +54,20 @@ private lemma chartPushed_eq_mul
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_memW1p_two_of_contMDiff
-    (g : SmoothRiemannianMetric I M) (α : M)
+    (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DeGiorgi.MemW1p (p := (2 : ℝ≥0∞))
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u)
       (chartTargetEuclid (I := I) (M := M) α) := by
   have hp : (1 : ℝ≥0∞) ≤ 2 := by norm_num
   have h := DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-    (I := I) (M := M) g hp hu α
+    (I := I) (M := M) hp hu α
   rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p] at h
   exact h
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chosenWeakPartial'_chartPushed_memLp_two_of_contMDiff
-    (g : SmoothRiemannianMetric I M) (α : M)
+    (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (k : Fin (Module.finrank ℝ E)) :
     MemLp
@@ -78,13 +78,13 @@ theorem chosenWeakPartial'_chartPushed_memLp_two_of_contMDiff
       (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   have hW :=
-    chartPushed_memW1p_two_of_contMDiff (I := I) (M := M) g α (u := u) hu
+    chartPushed_memW1p_two_of_contMDiff (I := I) (M := M) α (u := u) hu
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
     (d := Module.finrank ℝ E) hW k
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem eLpNorm_chosenWeakPartial'_chartPushed_lt_top_of_contMDiff
-    (g : SmoothRiemannianMetric I M) (α : M)
+    (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (k : Fin (Module.finrank ℝ E)) :
     eLpNorm
@@ -95,7 +95,7 @@ theorem eLpNorm_chosenWeakPartial'_chartPushed_lt_top_of_contMDiff
         (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) <
       (⊤ : ℝ≥0∞) :=
   (chosenWeakPartial'_chartPushed_memLp_two_of_contMDiff
-    (I := I) (M := M) g α hu k).eLpNorm_lt_top
+    (I := I) (M := M) α hu k).eLpNorm_lt_top
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_tensorChartComponentScalar_memW1p_two
@@ -111,7 +111,7 @@ theorem chartPushed_tensorChartComponentScalar_memW1p_two
     tensorChartComponentScalar_contMDiff
       (I := I) (M := M) g r s S α Idx Jdx
   exact chartPushed_memW1p_two_of_contMDiff
-    (I := I) (M := M) g β hsmooth
+    (I := I) (M := M) β hsmooth
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar_lt_top
@@ -130,7 +130,7 @@ theorem eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar_lt_top
         (volume.restrict (chartTargetEuclid (I := I) (M := M) β)) <
       (⊤ : ℝ≥0∞) :=
   eLpNorm_chosenWeakPartial'_chartPushed_lt_top_of_contMDiff
-    (I := I) (M := M) g β
+    (I := I) (M := M) β
     (tensorChartComponentScalar_contMDiff
       (I := I) (M := M) g r s S α Idx Jdx) k
 

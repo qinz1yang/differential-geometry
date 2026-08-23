@@ -374,8 +374,8 @@ theorem translated_coeff_cutoff_gradient_pointwise_bound
 
 theorem diffQuot_coeff_cutoff_squared_pointwise_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {u : E → ℝ} (_hu : ContDiff ℝ (⊤ : ℕ∞) u)
-    {η : E → ℝ} (_hη : ContDiff ℝ (⊤ : ℕ∞) η)
+    {u : E → ℝ}
+    {η : E → ℝ}
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     (i j k : Fin d)
     {Ω' : Set E} {M : ℝ} (hM_nn : 0 ≤ M)

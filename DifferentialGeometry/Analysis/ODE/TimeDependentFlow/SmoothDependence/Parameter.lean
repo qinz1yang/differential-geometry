@@ -23,8 +23,8 @@ theorem augmented_field_contDiff
   exact hfst.prodMk contDiff_const
 
 theorem orbit_param_invariant
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     {f : ℝ → P → E → E} {t₀ : ℝ} {z₀ : E × P} {r : ℝ≥0} {ε : ℝ}
     {Ψ : (E × P) × ℝ → E × P}
     (hΨ : IsLocalFlow (fun (t : ℝ) (z : E × P) => ((f t z.2 z.1, (0 : P)) : E × P))
@@ -57,8 +57,8 @@ theorem orbit_param_invariant
   rw [ht', ← ht₀', hinit]
 
 theorem projected_ode_initial
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     {f : ℝ → P → E → E} {t₀ : ℝ} {z₀ : E × P} {r : ℝ≥0} {ε : ℝ}
     {Ψ : (E × P) × ℝ → E × P}
     (hΨ : IsLocalFlow (fun (t : ℝ) (z : E × P) => ((f t z.2 z.1, (0 : P)) : E × P))

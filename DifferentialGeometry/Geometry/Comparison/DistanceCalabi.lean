@@ -23,7 +23,6 @@ namespace DifferentialGeometry
 open Geometry.Riemannian
 open Geometry.Riemannian.Exponential
 open Geometry.Riemannian.HopfRinow
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]

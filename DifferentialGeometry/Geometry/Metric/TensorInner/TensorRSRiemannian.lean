@@ -262,8 +262,7 @@ end DifferentialGeometry
 
 namespace TensorRSBundle
 
-open scoped Manifold Topology Bundle BigOperators
-open DifferentialGeometry.Tensor0SBundle Bundle Set
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2

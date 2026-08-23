@@ -36,7 +36,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 section Unconditional
 
-open DifferentialGeometry.Analysis.Spectral
 
 namespace EigenvectorManifoldAggregateUnconditional
 
@@ -67,7 +66,7 @@ private lemma perChartCompConstant_bound
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
-        (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+        (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α (Idx, Jdx))
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal
@@ -129,7 +128,7 @@ private lemma tensorChartComp_eigenvectorSmooth_wkpNorm_le
           (eigenvectorSmooth (I := I) (M := M) g r s i) α Idx Jdx
         =ᵐ[(volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)]
-      eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α
+      eigenvectorChartComponentFun (I := I) (M := M) g r s i α
         (Idx, Jdx) :=
     eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun
       (I := I) (M := M) g r s i α Idx Jdx
@@ -140,7 +139,7 @@ private lemma tensorChartComp_eigenvectorSmooth_wkpNorm_le
             α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α) =
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α (Idx, Jdx))
           (chartTargetEuclid (I := I) (M := M) α) :=
     wkpNorm_congr_ae (d := Module.finrank ℝ E)

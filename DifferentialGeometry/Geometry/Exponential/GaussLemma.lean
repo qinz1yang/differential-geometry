@@ -60,7 +60,7 @@ theorem subArc_of_minimizer_is_minimizer
     (hγ : CMDiff[Icc a b] 1 γ)
     (hmin : riemannianEDist I (γ a) (γ b) = pathELength I γ a b)
     (hfin : pathELength I γ a b ≠ ⊤)
-    (_hab : a ≤ b) (has : a ≤ s) (hst : s ≤ t) (htb : t ≤ b) :
+    (has : a ≤ s) (hst : s ≤ t) (htb : t ≤ b) :
     riemannianEDist I (γ s) (γ t) = pathELength I γ s t := by
   set L_left := pathELength I γ a s with hL_left_def
   set L_mid := pathELength I γ s t with hL_mid_def
@@ -324,7 +324,7 @@ private theorem radialDist_endpoint_le_pathELength
       have hball : ‖ψ (γ x)‖ < expMapC2Radius (I := I) g p := hbball x hxIcc
       have hune : ψ (γ x) ≠ 0 := hcx
       have hgauss := gauss_pointwise_speed_lower_bound (I := I) g p hγdiff
-        (hsrc x hxIcc) (hdom x hxIcc) hball hune hev
+        (hsrc x hxIcc) hball hune hev
       have hcv₂_eq : cv₂ = mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
           (fun s => ψ (γ s)) x (1 : ℝ) := rfl
       have hρ'sq_le : ρ' ^ 2 ≤
@@ -420,7 +420,6 @@ private theorem mfderiv_expMap_injective_of_norm_lt_radius
 theorem normalBall_radial_length_le_riemannianEDist
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (_hv : (show TangentSpace I p from v) ∈ expDomain (I := I) g p)
     (hball : v ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
     (hsmall_g : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p) :
     ENNReal.ofReal (Real.sqrt (g.inner p v v)) ≤
@@ -1007,7 +1006,7 @@ private theorem radial_minimizer_radiality
       have hball : ‖ψ (γ x)‖ < expMapC2Radius (I := I) g p := hbball x hxIcc
       have hune : ψ (γ x) ≠ 0 := hcx
       have hgauss := gauss_pointwise_speed_lower_bound (I := I) g p hγdiff
-        (hsrc x hxIcc) (hdom x hxIcc) hball hune hev
+        (hsrc x hxIcc) hball hune hev
       have hcv₂_eq : cv₂ = mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
           (fun s => ψ (γ s)) x (1 : ℝ) := rfl
       have hρ'sq_le : ρ' ^ 2 ≤
@@ -1156,7 +1155,7 @@ private theorem radial_minimizer_radiality
       filter_upwards [hopen] with s hs using hsrc s (Ioo_subset_Icc_self hs)
     have hball : ‖ψ (γ t)‖ < expMapC2Radius (I := I) g p := hbball t htIcc
     have hgauss := gauss_pointwise_speed_lower_bound (I := I) g p hγdiff
-      (hsrc t htIcc) (hdom t htIcc) hball hne hev
+      (hsrc t htIcc) hball hne hev
     have hcv₂_eq : cv₂ = mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s => ψ (γ s)) t (1 : ℝ) := rfl
     have hφt_sq : φ t ^ 2 =
         g.inner (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t 1) (mfderiv 𝓘(ℝ, ℝ) I γ t 1) := by
@@ -1198,7 +1197,7 @@ private theorem radial_minimizer_radiality
               (fun y : E => (expMap (I := I) g p (show TangentSpace I p from y) : M)) (ψ (γ t))
               (show TangentSpace I p from cv₂)) := by
       rw [hRHS]; exact htight
-    have hiff := gauss_radial_lower_bound_eq_iff (I := I) g p (hdom t htIcc) hball hne cv₂
+    have hiff := gauss_radial_lower_bound_eq_iff (I := I) g p hball hne cv₂
     have horth_dexp := hiff.mp hgauss_eq
     have hinj := mfderiv_expMap_injective_of_norm_lt_radius (I := I) g p hball
     have horth_zero :
@@ -1213,7 +1212,6 @@ private theorem radial_minimizer_radiality
 theorem normalBall_radial_minimizer_equality
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (_hv : (show TangentSpace I p from v) ∈ expDomain (I := I) g p)
     (hball : v ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
     (hsmall_g : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p)
     {γ : ℝ → M} {a b : ℝ} (hab : a < b)
@@ -1511,7 +1509,6 @@ theorem edist_exp_le_radius_of_metric
 private theorem radial_riemannianEDist_eq_radius
     (g : SmoothRiemannianMetric I M) (p : M) {a : E}
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (ha_dom : (show TangentSpace I p from a) ∈ expDomain (I := I) g p)
     (ha_ball : a ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
     (ha_small : Real.sqrt (g.inner p a a) < expRadiusGp (I := I) g p) :
     riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from a))
@@ -1521,7 +1518,7 @@ private theorem radial_riemannianEDist_eq_radius
     norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p ha_small
   have hge : ENNReal.ofReal (Real.sqrt (g.inner p a a)) ≤
       riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from a)) :=
-    normalBall_radial_length_le_riemannianEDist (I := I) g p hEnorm ha_dom ha_ball ha_small
+    normalBall_radial_length_le_riemannianEDist (I := I) g p hEnorm ha_ball ha_small
   have hle : riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from a))
       ≤ ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
     set γr : ℝ → M :=
@@ -1550,7 +1547,6 @@ theorem edist_exp_eq_radius
   have ha_eucl : ‖a‖ < expMapC2Radius (I := I) g p :=
     norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p ha_small
   exact radial_riemannianEDist_eq_radius (I := I) g p hEnorm
-    (mem_expDomain_of_norm_lt_radius (I := I) g p ha_eucl)
     (ball_subset_normalChartAt_target (I := I) g p ha_eucl) ha_small
 
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
@@ -1661,7 +1657,7 @@ theorem local_radial_identification_of_minimizer
     (hγ : CMDiff[Icc a b] 1 γ)
     (hmin : riemannianEDist I (γ a) (γ b) = pathELength I γ a b)
     (hfin : pathELength I γ a b ≠ ⊤)
-    (hab : a ≤ b) {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b) :
+    {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b) :
     ∃ δ : ℝ, 0 < δ ∧ Icc t₀ (t₀ + δ) ⊆ Icc a b ∧
       ∃ (v : TangentSpace I (γ t₀)) (σ : ℝ → ℝ),
         MonotoneOn σ (Icc 0 δ) ∧ σ 0 = 0 ∧
@@ -1679,7 +1675,7 @@ theorem local_radial_identification_of_minimizer
   have hδ_endIcc : t₀ + δ ∈ Set.Icc t₀ (t₀ + δ) := ⟨by linarith, le_rfl⟩
   have hγ_sub : CMDiff[Set.Icc t₀ (t₀ + δ)] 1 γ := hγ.mono h_subset
   have hsub_min : riemannianEDist I (γ t₀) (γ (t₀ + δ)) = pathELength I γ t₀ (t₀ + δ) :=
-    subArc_of_minimizer_is_minimizer (I := I) hγ hmin hfin hab ht₀_ge_a
+    subArc_of_minimizer_is_minimizer (I := I) hγ hmin hfin ht₀_ge_a
       (by linarith) hδ_le_b
   have hv_small : Real.sqrt (g.inner q v v) < expRadiusGp (I := I) g q := by
     have h := hradial_small (t₀ + δ) hδ_endIcc
@@ -1702,7 +1698,7 @@ theorem local_radial_identification_of_minimizer
     rw [← hround, ← hv_def, hsymm]
   have hdist_eq : riemannianEDist I q (expMap (I := I) g q (show TangentSpace I q from v))
       = ENNReal.ofReal (Real.sqrt (g.inner q v v)) :=
-    radial_riemannianEDist_eq_radius (I := I) g q hEnorm hv_dom hv_ball hv_small
+    radial_riemannianEDist_eq_radius (I := I) g q hEnorm hv_ball hv_small
   have hlen : pathELength I γ t₀ (t₀ + δ)
       = ENNReal.ofReal (Real.sqrt (g.inner q v v)) := by
     rw [← hsub_min]
@@ -1714,7 +1710,7 @@ theorem local_radial_identification_of_minimizer
   have hγ_inBall : ∀ t ∈ Set.Icc t₀ (t₀ + δ), γ t ∈ ψ.source := by
     intro t ht; rw [hψ_def]; exact hsrc t ht
   obtain ⟨φ, hφ_mono, hφ0, hφ1, hφ_eq⟩ :=
-    normalBall_radial_minimizer_equality (I := I) g q hEnorm hv_dom hv_ball hv_small
+    normalBall_radial_minimizer_equality (I := I) g q hEnorm hv_ball hv_small
       hab_sub hγ_sub hγa_sub hγb_sub hγ_inBall hlen
   refine ⟨δ, hδ_pos, h_subset, (show TangentSpace I q from v), fun s => φ (t₀ + s), ?_, ?_, ?_⟩
   · intro s hs t ht hst
@@ -2040,7 +2036,7 @@ theorem metricBall_subset_normalBall
     rw [← hround, ← hv_def, hsymm]
   have hdist_eq : riemannianEDist I c (expMap (I := I) g c (show TangentSpace I c from v))
       = ENNReal.ofReal (Real.sqrt (g.inner c v v)) :=
-    radial_riemannianEDist_eq_radius (I := I) g c hEnorm hv_dom hv_ball hv_small
+    radial_riemannianEDist_eq_radius (I := I) g c hEnorm hv_ball hv_small
   refine ⟨v, hv_ball, hv_dom, ?_, hy_eq⟩
   have hdy : riemannianEDist I c y = ENNReal.ofReal (Real.sqrt (g.inner c v v)) := by
     rw [hy_eq]; exact hdist_eq

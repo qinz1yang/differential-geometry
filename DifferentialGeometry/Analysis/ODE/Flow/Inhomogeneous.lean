@@ -96,11 +96,12 @@ theorem inhomogLinearODESolution_init
   unfold inhomogLinearODESolution
   rw [linearODESolution_init]
 
+omit [NormedSpace ℝ F] in
 private theorem inhomogLinearODESolution_second_eq_one
     {A : F → ℝ → (G →L[ℝ] G)} {b : F → ℝ → G}
     {a b' h₀ : ℝ} {Z₀ : F → G}
-    (hab_lt : a < b') (h₀_mem : h₀ ∈ Set.Ioo a b')
-    {U : Set F} (hU : IsOpen U)
+    (h₀_mem : h₀ ∈ Set.Ioo a b')
+    {U : Set F}
     (hA_cont : ContinuousOn (Function.uncurry A) (U ×ˢ Set.Ioo a b'))
     (hb_cont : ContinuousOn (Function.uncurry b) (U ×ˢ Set.Ioo a b'))
     {x : F} (hx : x ∈ U) {t : ℝ} (ht : t ∈ Set.Ioo a b') :
@@ -113,7 +114,7 @@ private theorem inhomogLinearODESolution_second_eq_one
     inhomogAugmentedCoeff_continuousOn hA_cont hb_cont
   have hZHat_deriv : ∀ s ∈ Set.Ioo a b',
       HasDerivAt ZHat (AHat x s (ZHat s)) s :=
-    fun s hs => linearODESolution_hasDerivAt hab_lt h₀_mem hU hAHat_cont hx hs
+    fun s hs => linearODESolution_hasDerivAt h₀_mem hAHat_cont hx hs
   have hZHat_init : ZHat h₀ = (Z₀ x, (1 : ℝ)) := linearODESolution_init _ _ _ _ _ _
   set w : ℝ → ℝ := fun s => (ZHat s).2 with hw_def
   have hw_init : w h₀ = 1 := by
@@ -146,11 +147,12 @@ private theorem inhomogLinearODESolution_second_eq_one
   change w t = 1
   rw [h_const, hw_init]
 
+omit [NormedSpace ℝ F] in
 theorem inhomogLinearODESolution_hasDerivAt
     {A : F → ℝ → (G →L[ℝ] G)} {b : F → ℝ → G}
     {a b' h₀ : ℝ} {Z₀ : F → G}
-    (hab_lt : a < b') (h₀_mem : h₀ ∈ Set.Ioo a b')
-    {U : Set F} (hU : IsOpen U)
+    (h₀_mem : h₀ ∈ Set.Ioo a b')
+    {U : Set F}
     (hA_cont : ContinuousOn (Function.uncurry A) (U ×ˢ Set.Ioo a b'))
     (hb_cont : ContinuousOn (Function.uncurry b) (U ×ˢ Set.Ioo a b'))
     {x : F} (hx : x ∈ U) {t : ℝ} (ht : t ∈ Set.Ioo a b') :
@@ -162,10 +164,10 @@ theorem inhomogLinearODESolution_hasDerivAt
   have hAHat_cont : ContinuousOn (Function.uncurry AHat) (U ×ˢ Set.Ioo a b') :=
     inhomogAugmentedCoeff_continuousOn hA_cont hb_cont
   have hZHat_deriv : HasDerivAt ZHat (AHat x t (ZHat t)) t :=
-    linearODESolution_hasDerivAt hab_lt h₀_mem hU hAHat_cont hx ht
+    linearODESolution_hasDerivAt h₀_mem hAHat_cont hx ht
   have h_snd_one : (ZHat t).2 = 1 :=
     inhomogLinearODESolution_second_eq_one
-      hab_lt h₀_mem hU hA_cont hb_cont hx ht
+      h₀_mem hA_cont hb_cont hx ht
   have h_fst_eq : (AHat x t (ZHat t)).1 = A x t (ZHat t).1 + (ZHat t).2 • b x t := by
     simp [hAHat_def, inhomogAugmentedCoeff_apply]
   have h_fderiv_fst : HasFDerivAt (Prod.fst : G × ℝ → G)
@@ -183,10 +185,11 @@ theorem inhomogLinearODESolution_hasDerivAt
   rw [h_ZHat_fst] at h_comp
   exact h_comp
 
+omit [NormedSpace ℝ F] in
 theorem inhomogLinearODESolution_continuousOn
     {A : F → ℝ → (G →L[ℝ] G)} {b : F → ℝ → G}
     {a b' h₀ : ℝ} {Z₀ : F → G}
-    (hab_lt : a < b') (h₀_mem : h₀ ∈ Set.Ioo a b')
+    (h₀_mem : h₀ ∈ Set.Ioo a b')
     {U : Set F} (hU : IsOpen U)
     (hA_cont : ContinuousOn (Function.uncurry A) (U ×ˢ Set.Ioo a b'))
     (hb_cont : ContinuousOn (Function.uncurry b) (U ×ˢ Set.Ioo a b'))
@@ -203,7 +206,7 @@ theorem inhomogLinearODESolution_continuousOn
       (Function.uncurry
         (linearODESolution AHat a b' h₀ (fun y => (Z₀ y, (1 : ℝ)))))
       (U ×ˢ Set.Ioo a b') :=
-    linearODESolution_continuousOn hab_lt h₀_mem hU hAHat_cont hZHat₀_cont
+    linearODESolution_continuousOn h₀_mem hU hAHat_cont hZHat₀_cont
   have h_eq : Function.uncurry (inhomogLinearODESolution A b a b' h₀ Z₀) =
       Prod.fst ∘
         Function.uncurry

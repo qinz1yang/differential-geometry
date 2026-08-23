@@ -173,7 +173,7 @@ theorem solFieldMass_summable_all (hT : 0 ≤ T)
 
 def solFieldAtOrder (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
-    (_hσ : Summable (solFieldMass (I := I) (M := M) hT f σ)) :
+    :
     timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
   timeL2OfModes (I := I) (M := M) (σ := σ)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i)
@@ -184,7 +184,7 @@ theorem solFieldAtOrder_timeModeCoeff (hT : 0 ≤ T)
     (hσ : Summable (solFieldMass (I := I) (M := M) hT f σ))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (solFieldAtOrder (I := I) (M := M) hT f σ hσ) i =
+        (solFieldAtOrder (I := I) (M := M) hT f σ) i =
       solModeCoeff (I := I) (M := M) (a := a) hT f i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := σ)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i) hσ i
@@ -202,7 +202,7 @@ theorem solField_into_all_tensorHs_interior (hT : 0 ≤ T)
           solModeCoeff (I := I) (M := M) (a := a) hT f i :=
   fun σ =>
     let hσ := solFieldMass_summable_all (I := I) (M := M) hT f hcouple hbase σ
-    ⟨solFieldAtOrder (I := I) (M := M) hT f σ hσ,
+    ⟨solFieldAtOrder (I := I) (M := M) hT f σ,
       solFieldAtOrder_timeModeCoeff (I := I) (M := M) hT f σ hσ⟩
 
 end Spectral

@@ -64,7 +64,7 @@ private theorem memWkp_sum
 
 theorem fineBlock_comp_mem
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
@@ -85,7 +85,7 @@ theorem fineBlock_comp_mem
       (Chart.chartTargetEuclid (I := I) (M := M)
         (canonFlatBase (I := I) (M := M) rFine hr z)) := by
     intro Q
-    exact MemWkp.mono_set (d := Module.finrank ℝ E) hp isOpen_univ
+    exact MemWkp.mono_set (d := Module.finrank ℝ E) hp
       (Chart.chartTargetEuclid_isOpen (I := I) (M := M)
         (canonFlatBase (I := I) (M := M) rFine hr z))
       (Set.subset_univ _) (hv Q)
@@ -93,7 +93,7 @@ theorem fineBlock_comp_mem
       (fineSecTerm (I := I) (M := M) rFine hr r s z α P Q (v Q))
       (Chart.chartTargetEuclid (I := I) (M := M) α) := by
     intro Q
-    exact ((fineTerm_joint (I := I) (M := M) rFine hr g r s k hp hp_top
+    exact ((fineTerm_joint (I := I) (M := M) rFine hr r s k hp hp_top
       z α P Q).choose_spec.2 (hv_src Q)
         (canonCutMul_supp (I := I) (M := M) rFine hr z (u Q))).1
   have hsum : MemWkp (d := Module.finrank ℝ E) k p
@@ -113,20 +113,20 @@ theorem fineBlock_comp_mem
 
 theorem fineBlock_mem
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (hu : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (u Q) Set.univ) :
-    MemWkpTensor (I := I) (M := M) g k p
+    MemWkpTensor (I := I) (M := M) k p
       (fineBlock (I := I) (M := M) rFine hr r s z u) := by
   intro α Idx Jdx
-  exact fineBlock_comp_mem (I := I) (M := M) rFine hr g r s k hp hp_top
+  exact fineBlock_comp_mem (I := I) (M := M) rFine hr r s k hp hp_top
     z u hu α ⟨Idx, Jdx⟩
 
 theorem fineBlock_bound
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
     (α : M) (P : TensorCompIdx (E := E) r s) :
@@ -145,7 +145,7 @@ theorem fineBlock_bound
   obtain ⟨Kc, hKc, hcut⟩ :=
     canonCut_joint (I := I) (M := M) rFine hr z k hp hp_top
   choose Kt hKt hterm using fun Q : TensorCompIdx (E := E) r s =>
-    fineTerm_joint (I := I) (M := M) rFine hr g r s k hp hp_top z α P Q
+    fineTerm_joint (I := I) (M := M) rFine hr r s k hp hp_top z α P Q
   refine ⟨fun Q => Kt Q * Kc, fun Q => mul_pos (hKt Q) hKc, ?_⟩
   intro u hu
   let v : TensorCompIdx (E := E) r s → EuclN → ℝ :=
@@ -157,7 +157,7 @@ theorem fineBlock_bound
       (Chart.chartTargetEuclid (I := I) (M := M)
         (canonFlatBase (I := I) (M := M) rFine hr z)) := by
     intro Q
-    exact MemWkp.mono_set (d := Module.finrank ℝ E) hp isOpen_univ
+    exact MemWkp.mono_set (d := Module.finrank ℝ E) hp
       (Chart.chartTargetEuclid_isOpen (I := I) (M := M)
         (canonFlatBase (I := I) (M := M) rFine hr z))
       (Set.subset_univ _) (hv Q)
@@ -194,7 +194,7 @@ theorem fineBlock_bound
   intro Q _
   have hQ := (hterm Q) (hv_src Q)
     (canonCutMul_supp (I := I) (M := M) rFine hr z (u Q))
-  have hmono := wkpNorm_mono_set (d := Module.finrank ℝ E) hp isOpen_univ
+  have hmono := wkpNorm_mono_set (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M)
       (canonFlatBase (I := I) (M := M) rFine hr z))
     (Set.subset_univ _) (hv Q)

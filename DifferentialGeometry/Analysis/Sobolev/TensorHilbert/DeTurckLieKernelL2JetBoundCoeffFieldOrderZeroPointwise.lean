@@ -15,16 +15,15 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Sobolev
 
-open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Laplacian (metric_inner_self_nonneg)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (connDiffCovDerivBiContrFib dLaBiContrFib_contMDiff deTurckLieDLbFib deTurckLieDLbFib_contMDiff
+  (connectionDifferenceCovDerivBiContrFib deTurckLieConnectionDifferenceDerivativeBiContrFib_contMDiff deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_contMDiff
     deTurckLieFib deTurckLieCoeffField deTurckLieCoeffField_toSection
-    deTurckConnDiffCovDeriv connDiff_pairing_mdiffAt connDiffCovDerivOp dLaCovKernel_apply_extend
-    dLaBiContrFibFixedFrame_toModel)
+    deTurckConnectionDifferenceCovDeriv connectionDifference_pairing_mdiffAt connectionDifferenceCovDerivOp deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend
+    deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -34,37 +33,38 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-noncomputable def covDerivConnDiffSqrt
+noncomputable def covDerivConnectionDifferenceSqrt
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w u : TangentSpace I x) : ℝ :=
-  let A := covDerivConnDiff (I := I) g₀ g₁
+  let A := covDerivConnectionDifference (I := I) g₀ g₁
     (smoothExtensionTangent (I := I) x v)
     (smoothExtensionTangent (I := I) x w)
     (smoothExtensionTangent (I := I) x u) x
   Real.sqrt (g₀.inner x A A)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private theorem connDiffCovDerivOp_sqrt_le_of_bounds
+omit [SigmaCompactSpace M] in
+private theorem connectionDifferenceCovDerivOp_sqrt_le_of_bounds
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (Cq Cbg CaB Cc κ CK : ℝ)
     (hCq_nn : 0 ≤ Cq) (hCbg_nn : 0 ≤ Cbg) (hCaB_nn : 0 ≤ CaB)
     (hCc_nn : 0 ≤ Cc) (hκ_nn : 0 ≤ κ)
     (hCK_def : CK = (Cq + Cbg + 3 * (CaB * (CaB + Cc))) * (κ * κ))
     (hquad : ∀ v w u : TangentSpace I x,
-      covDerivConnDiffSqrt (I := I) g₀ g₁ x v w u ≤
+      covDerivConnectionDifferenceSqrt (I := I) g₀ g₁ x v w u ≤
         Cq * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) *
           Real.sqrt (g₀.inner x u u))
     (hbg : ∀ v w u : TangentSpace I x,
-      covDerivConnDiffSqrt (I := I) g₀ g_bg x v w u ≤
+      covDerivConnectionDifferenceSqrt (I := I) g₀ g_bg x v w u ≤
         Cbg * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) *
           Real.sqrt (g₀.inner x u u))
     (hconn_g1 : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)) ≤
       CaB * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)))
     (hconn_gbg : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g_bg x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x u v)) ≤
       (CaB + Cc) * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)))
     (hpinch : ∀ a' : Fin (Module.finrank ℝ E),
       Real.sqrt (g₀.inner x (smoothOrthoFrame (I := I) g₁ x a' x)
@@ -72,9 +72,9 @@ private theorem connDiffCovDerivOp_sqrt_le_of_bounds
     (v0 : TangentSpace I x) (hv0 : g₀.inner x v0 v0 = 1)
     (a' b' : Fin (Module.finrank ℝ E)) :
     Real.sqrt (g₀.inner x
-      (connDiffCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
+      (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
         (smoothOrthoFrame (I := I) g₁ x b' x))
-      (connDiffCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
+      (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
         (smoothOrthoFrame (I := I) g₁ x b' x))) ≤ CK := by
   set Ba : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x a' x with hBa
   set Bb : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x b' x with hBb
@@ -83,21 +83,21 @@ private theorem connDiffCovDerivOp_sqrt_le_of_bounds
   have hBa_nn : 0 ≤ Real.sqrt (g₀.inner x Ba Ba) := Real.sqrt_nonneg _
   have hBb_nn : 0 ≤ Real.sqrt (g₀.inner x Bb Bb) := Real.sqrt_nonneg _
   have hv0_sqrt : Real.sqrt (g₀.inner x v0 v0) = 1 := by rw [hv0, Real.sqrt_one]
-  rw [dLaCovKernel_backgroundSplit (I := I) g₀ g₁ g_bg x v0 Ba Bb]
-  set A1 : TangentSpace I x := covDerivConnDiff (I := I) g₀ g₁
+  rw [deTurckLieConnectionDifferenceDerivativeCovKernel_backgroundSplit (I := I) g₀ g₁ g_bg x v0 Ba Bb]
+  set A1 : TangentSpace I x := covDerivConnectionDifference (I := I) g₀ g₁
     (smoothExtensionTangent (I := I) x v0)
     (smoothExtensionTangent (I := I) x Bb)
     (smoothExtensionTangent (I := I) x Ba) x with hA1
-  set A2 : TangentSpace I x := covDerivConnDiff (I := I) g₀ g_bg
+  set A2 : TangentSpace I x := covDerivConnectionDifference (I := I) g₀ g_bg
     (smoothExtensionTangent (I := I) x v0)
     (smoothExtensionTangent (I := I) x Bb)
     (smoothExtensionTangent (I := I) x Ba) x with hA2
-  set Q1 : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-    (PDE.DeTurck.connDiff (I := I) g₁ g_bg x Ba Bb) v0 with hQ1
-  set Q2 : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g_bg x
-    (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Ba v0) Bb with hQ2
-  set Q3 : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g_bg x Ba
-    (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0) with hQ3
+  set Q1 : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+    (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x Ba Bb) v0 with hQ1
+  set Q2 : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Ba v0) Bb with hQ2
+  set Q3 : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x Ba
+    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0) with hQ3
   have t1 := sqrt_metric_inner_sub_le (I := I) (M := M) g₀ x (A1 - A2 + Q1 - Q2) Q3
   have t2 := sqrt_metric_inner_sub_le (I := I) (M := M) g₀ x (A1 - A2 + Q1) Q2
   have t3 := sqrt_metric_inner_add_le (I := I) (M := M) g₀ x (A1 - A2) Q1
@@ -130,8 +130,8 @@ private theorem connDiffCovDerivOp_sqrt_le_of_bounds
           refine le_trans h2 ?_
           exact mul_le_mul_of_nonneg_left hBa_le (by positivity)
       _ = Cbg * (κ * κ) := by ring
-  have hin_bg : Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x Ba Bb)
-      (PDE.DeTurck.connDiff (I := I) g₁ g_bg x Ba Bb)) ≤ (CaB + Cc) * (κ * κ) := by
+  have hin_bg : Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x Ba Bb)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x Ba Bb)) ≤ (CaB + Cc) * (κ * κ) := by
     refine le_trans (hconn_gbg Ba Bb) ?_
     have hmul : Real.sqrt (g₀.inner x Ba Ba) * Real.sqrt (g₀.inner x Bb Bb) ≤ κ * κ := by
       have h1 : Real.sqrt (g₀.inner x Ba Ba) * Real.sqrt (g₀.inner x Bb Bb) ≤
@@ -140,41 +140,41 @@ private theorem connDiffCovDerivOp_sqrt_le_of_bounds
       exact mul_le_mul_of_nonneg_left hBb_le hκ_nn
     exact mul_le_mul_of_nonneg_left hmul (add_nonneg hCaB_nn hCc_nn)
   have hQ1_le : Real.sqrt (g₀.inner x Q1 Q1) ≤ CaB * ((CaB + Cc) * (κ * κ)) := by
-    have h := hconn_g1 (PDE.DeTurck.connDiff (I := I) g₁ g_bg x Ba Bb) v0
+    have h := hconn_g1 (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x Ba Bb) v0
     rw [hv0_sqrt, mul_one] at h
     exact le_trans h (mul_le_mul_of_nonneg_left hin_bg hCaB_nn)
-  have hin2 : Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Ba v0)
-      (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Ba v0)) ≤ CaB * κ := by
+  have hin2 : Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Ba v0)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Ba v0)) ≤ CaB * κ := by
     have h := hconn_g1 Ba v0
     rw [hv0_sqrt, mul_one] at h
     exact le_trans h (mul_le_mul_of_nonneg_left hBa_le hCaB_nn)
   have hQ2_le : Real.sqrt (g₀.inner x Q2 Q2) ≤ (CaB + Cc) * (CaB * (κ * κ)) := by
-    have h := hconn_gbg (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Ba v0) Bb
+    have h := hconn_gbg (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Ba v0) Bb
     refine le_trans h ?_
-    have hmul : Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Ba v0)
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Ba v0)) * Real.sqrt (g₀.inner x Bb Bb) ≤
+    have hmul : Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Ba v0)
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Ba v0)) * Real.sqrt (g₀.inner x Bb Bb) ≤
         (CaB * κ) * κ := by
       have h1 := mul_le_mul_of_nonneg_right hin2 hBb_nn
       exact le_trans h1 (mul_le_mul_of_nonneg_left hBb_le (by positivity))
     refine le_trans (mul_le_mul_of_nonneg_left hmul (add_nonneg hCaB_nn hCc_nn)) ?_
     apply le_of_eq
     ring
-  have hin3 : Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)
-      (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)) ≤ CaB * κ := by
+  have hin3 : Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)) ≤ CaB * κ := by
     have h := hconn_g1 Bb v0
     rw [hv0_sqrt, mul_one] at h
     exact le_trans h (mul_le_mul_of_nonneg_left hBb_le hCaB_nn)
   have hQ3_le : Real.sqrt (g₀.inner x Q3 Q3) ≤ (CaB + Cc) * (CaB * (κ * κ)) := by
-    have h := hconn_gbg Ba (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)
+    have h := hconn_gbg Ba (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)
     refine le_trans h ?_
     have hmul : Real.sqrt (g₀.inner x Ba Ba) *
-        Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)) ≤ κ * (CaB * κ) := by
+        Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)) ≤ κ * (CaB * κ) := by
       have h1 : Real.sqrt (g₀.inner x Ba Ba) *
-          Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)) ≤
-          κ * Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x Bb v0)) :=
+          Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)) ≤
+          κ * Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x Bb v0)) :=
         mul_le_mul_of_nonneg_right hBa_le (Real.sqrt_nonneg _)
       exact le_trans h1 (mul_le_mul_of_nonneg_left hin3 hκ_nn)
     refine le_trans (mul_le_mul_of_nonneg_left hmul (add_nonneg hCaB_nn hCc_nn)) ?_
@@ -193,10 +193,11 @@ private theorem connDiffCovDerivOp_sqrt_le_of_bounds
     linarith [s2]
   refine le_trans hchain ?_
   rw [hCK_def]
-  nlinarith [hA1_le, hA2_le, hQ1_le, hQ2_le, hQ3_le]
+  nlinarith only [hA1_le, hA2_le, hQ1_le, hQ2_le, hQ3_le]
 
 omit [I.Boundaryless] in
-private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
+omit [SigmaCompactSpace M] in
+private theorem deTurckLieConnectionDifferenceDerivCoeffField_component_sq_le
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {δP : ℝ}
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -211,45 +212,45 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
     (hkernel : ∀ (v0 : TangentSpace I x), g₀.inner x v0 v0 = 1 →
       ∀ a' b' : Fin (Module.finrank ℝ E),
       Real.sqrt (g₀.inner x
-        (connDiffCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
+        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
           (smoothOrthoFrame (I := I) g₁ x b' x))
-        (connDiffCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
+        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
           (smoothOrthoFrame (I := I) g₁ x b' x))) ≤ CK)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (hunit : ∀ i : Fin n, g₀.inner x (e i) (e i) = 1)
     (K J : Fin 2 → Fin n) :
     (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
-      ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J) ^ 2 ≤
+      ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J) ^ 2 ≤
       ((Module.finrank ℝ E : ℝ) *
         ((Module.finrank ℝ E : ℝ) * (4 * CK * (κ * κ)))) ^ 2 := by
   have hunit_sqrt : ∀ i : Fin n, Real.sqrt (g₀.inner x (e i) (e i)) = 1 := by
     intro i
     rw [hunit i, Real.sqrt_one]
   have hcomp_eq : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
-      ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J =
+      ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J =
     Tensor0SSpace.toModel
-      ((connDiffCovDerivBiContrFib (I := I) g₁ g_bg x) (coframeS (I := I) (M := M) g₀ x 2 e K))
+      ((connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x) (coframeS (I := I) (M := M) g₀ x 2 e K))
       (fun i : Fin 2 => (e (J i) : E)) := rfl
   have hmodel : Tensor0SSpace.toModel
-      ((connDiffCovDerivBiContrFib (I := I) g₁ g_bg x) (coframeS (I := I) (M := M) g₀ x 2 e K))
+      ((connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x) (coframeS (I := I) (M := M) g₀ x 2 e K))
       (fun i : Fin 2 => (e (J i) : E)) =
     (-1 : ℝ) * ∑ a' : Fin (Module.finrank ℝ E), ∑ b' : Fin (Module.finrank ℝ E),
-      (g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+      (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
           (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
           (e (J 1))
-        + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+        + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
           (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
           (e (J 0))) *
         Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 2 e K)
           ![(smoothOrthoFrame (I := I) g₁ x a' x : E),
             (smoothOrthoFrame (I := I) g₁ x b' x : E)] :=
-    dLaBiContrFibFixedFrame_toModel (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x) x
+    deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x) x
       (coframeS (I := I) (M := M) g₀ x 2 e K) (fun i : Fin 2 => (e (J i) : E))
   have hsingle : ∀ a' b' : Fin (Module.finrank ℝ E),
-      |(g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+      |(g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
           (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
           (e (J 1))
-        + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+        + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
           (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
           (e (J 0))) *
         Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 2 e K)
@@ -257,7 +258,7 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
             (smoothOrthoFrame (I := I) g₁ x b' x : E)]| ≤ 4 * CK * (κ * κ) := by
     intro a' b'
     rw [abs_mul]
-    have hK01 : |g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+    have hK01 : |g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
         (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
         (e (J 1))| ≤ 2 * CK := by
       refine le_trans (abs_g1_inner_le_two_sqrt (I := I) (M := M) g₀ g₁ P htie
@@ -265,7 +266,7 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
       rw [hunit_sqrt (J 1), mul_one]
       have h := hkernel (e (J 0)) (hunit (J 0)) a' b'
       linarith
-    have hK10 : |g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+    have hK10 : |g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
         (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
         (e (J 0))| ≤ 2 * CK := by
       refine le_trans (abs_g1_inner_le_two_sqrt (I := I) (M := M) g₀ g₁ P htie
@@ -273,10 +274,10 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
       rw [hunit_sqrt (J 0), mul_one]
       have h := hkernel (e (J 1)) (hunit (J 1)) a' b'
       linarith
-    have hfac1 : |g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+    have hfac1 : |g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
         (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
         (e (J 1))
-        + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+        + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
           (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
           (e (J 0))| ≤ 4 * CK := by
       refine le_trans (abs_add_le _ _) ?_
@@ -295,10 +296,10 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
         rw [hunit_sqrt (K 1), one_mul]
         exact hpinch b'
       exact mul_le_mul hcs1 hcs2 (abs_nonneg _) hκ_nn
-    calc |g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+    calc |g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
           (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
           (e (J 1))
-          + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+          + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
             (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
             (e (J 0))| *
         |Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 2 e K)
@@ -309,25 +310,25 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
           linarith [hCK_nn]
       _ = 4 * CK * (κ * κ) := by ring
   have habs_comp : |fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
-      ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J| ≤
+      ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J| ≤
       (Module.finrank ℝ E : ℝ) *
         ((Module.finrank ℝ E : ℝ) * (4 * CK * (κ * κ))) := by
     rw [hcomp_eq, hmodel, neg_one_mul, abs_neg]
     calc |∑ a' : Fin (Module.finrank ℝ E), ∑ b' : Fin (Module.finrank ℝ E),
-          (g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+          (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
               (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
               (e (J 1))
-            + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+            + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
               (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
               (e (J 0))) *
             Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 2 e K)
               ![(smoothOrthoFrame (I := I) g₁ x a' x : E),
                 (smoothOrthoFrame (I := I) g₁ x b' x : E)]|
         ≤ ∑ a' : Fin (Module.finrank ℝ E), |∑ b' : Fin (Module.finrank ℝ E),
-          (g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+          (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
               (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
               (e (J 1))
-            + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+            + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
               (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
               (e (J 0))) *
             Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 2 e K)
@@ -335,10 +336,10 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
                 (smoothOrthoFrame (I := I) g₁ x b' x : E)]| :=
           Finset.abs_sum_le_sum_abs _ _
       _ ≤ ∑ a' : Fin (Module.finrank ℝ E), ∑ b' : Fin (Module.finrank ℝ E),
-          |(g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 0))
+          |(g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 0))
               (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
               (e (J 1))
-            + g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x (e (J 1))
+            + g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (e (J 1))
               (smoothOrthoFrame (I := I) g₁ x a' x) (smoothOrthoFrame (I := I) g₁ x b' x))
               (e (J 0))) *
             Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 2 e K)
@@ -355,7 +356,8 @@ private theorem deTurckLieConnDiffDerivCoeffField_component_sq_le
   exact pow_le_pow_left₀ (abs_nonneg _) habs_comp 2
 
 omit [I.Boundaryless] in
-private theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_kernel_bound
+omit [SigmaCompactSpace M] in
+private theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_kernel_bound
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {δP : ℝ}
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -370,12 +372,12 @@ private theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_kernel_bound
     (hkernel : ∀ (v0 : TangentSpace I x), g₀.inner x v0 v0 = 1 →
       ∀ a' b' : Fin (Module.finrank ℝ E),
       Real.sqrt (g₀.inner x
-        (connDiffCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
+        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
           (smoothOrthoFrame (I := I) g₁ x b' x))
-        (connDiffCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
+        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 (smoothOrthoFrame (I := I) g₁ x a' x)
           (smoothOrthoFrame (I := I) g₁ x b' x))) ≤ CK) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) ≤
+        ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) ≤
       ((Module.finrank ℝ E : ℝ) ^ 2) ^ 2 *
         ((Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) *
           (4 * CK * (κ * κ)))) ^ 2 := by
@@ -388,19 +390,19 @@ private theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_kernel_bound
     rw [if_pos rfl] at h
     exact h
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 2 2 x
-    ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) e bse hnE hbse horth]
+    ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) e bse hnE hbse horth]
   have heach : ∀ (K : Fin 2 → Fin n) (J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
-        ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J) ^ 2 ≤
+        ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J) ^ 2 ≤
       ((Module.finrank ℝ E : ℝ) *
         ((Module.finrank ℝ E : ℝ) * (4 * CK * (κ * κ)))) ^ 2 := by
     intro K J
-    exact deTurckLieConnDiffDerivCoeffField_component_sq_le (I := I) (M := M)
+    exact deTurckLieConnectionDifferenceDerivCoeffField_component_sq_le (I := I) (M := M)
       g₀ g₁ g_bg P htie hδP_lt1 hδP_bound x κ CK hκ_nn hCK_nn hpinch hkernel
       e hunit K J
   calc ∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
-          ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J) ^ 2
+          ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) n e K J) ^ 2
       ≤ ∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
           ((Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) * (4 * CK * (κ * κ)))) ^ 2 :=
         Finset.sum_le_sum (fun K _ => Finset.sum_le_sum (fun J _ => heach K J))
@@ -448,28 +450,28 @@ private theorem smoothOrthoFrame_g0Norm_le_of_perturbation
     linarith [htie'.symm]
   have hBB_le : g₀.inner x Ba Ba ≤ 1 / (1 - δ₁) := by
     have hδP1 : 1 - δ₁ ≤ 1 - δP := by linarith [hδP_le]
-    have h2 : (1 - δP) * g₀.inner x Ba Ba ≤ 1 := by nlinarith [hlow]
+    have h2 : (1 - δP) * g₀.inner x Ba Ba ≤ 1 := by nlinarith only [hlow]
     have h3 : (1 - δ₁) * g₀.inner x Ba Ba ≤ (1 - δP) * g₀.inner x Ba Ba :=
       mul_le_mul_of_nonneg_right hδP1 hBB_nn
     rw [le_div_iff₀ hcoeff]
-    nlinarith [h2, h3]
+    nlinarith only [h2, h3]
   calc Real.sqrt (g₀.inner x Ba Ba) ≤ Real.sqrt (1 / (1 - δ₁)) :=
       Real.sqrt_le_sqrt hBB_le
     _ = κ := hκ_def.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem connDiff_sqrt_le_of_firstCovGrad_norm_le
+private theorem connectionDifference_sqrt_le_of_firstCovGrad_norm_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (Ca0 N1 B CaB : ℝ) (hCa0_nn : 0 ≤ Ca0) (hN1_le : N1 ≤ B)
     (hCaB_def : CaB = Ca0 * B)
     (hbase : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)) ≤
       Ca0 * N1 * Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)) :
     ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)) ≤
       CaB * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)) := by
   intro u v
   refine le_trans (hbase u v) ?_
@@ -485,31 +487,31 @@ private theorem connDiff_sqrt_le_of_firstCovGrad_norm_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem connDiff_background_sqrt_le
+private theorem connectionDifference_background_sqrt_le
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) (CaB Cc : ℝ)
     (hconn_g1 : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)) ≤
       CaB * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)))
     (hfixed : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v)) ≤
       Cc * Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)) :
     ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g_bg x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x u v)) ≤
       (CaB + Cc) * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)) := by
   intro u v
-  have hcocy : PDE.DeTurck.connDiff (I := I) g₁ g_bg x u v =
-      PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v -
-        PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v :=
-    eq_sub_of_add_eq (connDiff_cocycle (I := I) g₁ g_bg g₀ x u v)
+  have hcocy : PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x u v =
+      PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v -
+        PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v :=
+    eq_sub_of_add_eq (connectionDifference_cocycle (I := I) g₁ g_bg g₀ x u v)
   rw [hcocy]
   refine le_trans (sqrt_metric_inner_sub_le (I := I) (M := M) g₀ x _ _) ?_
-  calc Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v))
-        + Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v)
-          (PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v))
+  calc Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v))
+        + Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v)
+          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v))
       ≤ CaB * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v))
         + Cc * Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v) :=
           add_le_add (hconn_g1 u v) (hfixed u v)
@@ -563,7 +565,7 @@ private theorem firstCovGrad_fiberNorm_le_pointwiseC2Sum
     exact tensorRSRiemannianNorm_nonneg (I := I) (M := M) g₀ 0 (2 + k) x _
   exact (Finset.single_le_sum hterms (by norm_num : (1 : ℕ) ∈ Finset.range 3)).trans henv
 
-theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_scalar_bounds
+theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_scalar_bounds
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) {δP δ₁ κ B Cq Cbg Cc Ca0 CaB CK : ℝ}
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -577,22 +579,22 @@ theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_scalar_bounds
       tensorRSRiemannianNorm (I := I) (M := M) g₀ 0 (2 + k) x
         ((iteratedCovGrad (I := I) g₀ 0 2 k P).toSection x)) ≤ B)
     (hquad : ∀ v w u : TangentSpace I x,
-      covDerivConnDiffSqrt (I := I) g₀ g₁ x v w u ≤
+      covDerivConnectionDifferenceSqrt (I := I) g₀ g₁ x v w u ≤
         Cq * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) *
           Real.sqrt (g₀.inner x u u))
     (hbg : ∀ v w u : TangentSpace I x,
-      covDerivConnDiffSqrt (I := I) g₀ g_bg x v w u ≤
+      covDerivConnectionDifferenceSqrt (I := I) g₀ g_bg x v w u ≤
         Cbg * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) *
           Real.sqrt (g₀.inner x u u))
     (hbase : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)) ≤
       Ca0 * tensorRSRiemannianNorm (I := I) (M := M) g₀ 0 3 x
           ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) *
         Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v))
     (hfixed : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g_bg g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v)) ≤
       Cc * Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v))
     (hCq_nn : 0 ≤ Cq) (hCbg_nn : 0 ≤ Cbg) (hCc_nn : 0 ≤ Cc)
     (hCa0_nn : 0 ≤ Ca0) (hCaB_nn : 0 ≤ CaB)
@@ -600,7 +602,7 @@ theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_scalar_bounds
     (hCK_def : CK = (Cq + Cbg + 3 * (CaB * (CaB + Cc))) * (κ * κ))
     (hCK_nn : 0 ≤ CK) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieConnDiffDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) ≤
+        ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) ≤
       ((Module.finrank ℝ E : ℝ) ^ 2) ^ 2 *
         ((Module.finrank ℝ E : ℝ) *
           ((Module.finrank ℝ E : ℝ) * (4 * CK * (κ * κ)))) ^ 2 := by
@@ -612,15 +614,15 @@ theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_scalar_bounds
     rw [← hN1_def] at h
     exact h
   have hbase' : ∀ u v : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v)) ≤
       Ca0 * N1 * Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v) := by
     intro u v
     rw [hN1_def]
     exact hbase u v
-  have hconn_g1 := connDiff_sqrt_le_of_firstCovGrad_norm_le (I := I) (M := M)
+  have hconn_g1 := connectionDifference_sqrt_le_of_firstCovGrad_norm_le (I := I) (M := M)
     g₀ g₁ x Ca0 N1 B CaB hCa0_nn hN1_le hCaB_def hbase'
-  have hconn_gbg := connDiff_background_sqrt_le (I := I) (M := M)
+  have hconn_gbg := connectionDifference_background_sqrt_le (I := I) (M := M)
     g₀ g₁ g_bg x CaB Cc hconn_g1 hfixed
   have hpinch : ∀ a' : Fin (Module.finrank ℝ E),
       Real.sqrt (g₀.inner x (smoothOrthoFrame (I := I) g₁ x a' x)
@@ -628,10 +630,10 @@ theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_scalar_bounds
     intro a'
     exact smoothOrthoFrame_g0Norm_le_of_perturbation (I := I) (M := M)
       g₀ g₁ P htie hδP_bound hδP_le hcoeff hκ_def x a'
-  have hkernel := connDiffCovDerivOp_sqrt_le_of_bounds (I := I) (M := M)
+  have hkernel := connectionDifferenceCovDerivOp_sqrt_le_of_bounds (I := I) (M := M)
     g₀ g₁ g_bg x Cq Cbg CaB Cc κ CK hCq_nn hCbg_nn hCaB_nn hCc_nn hκ_nn hCK_def
     hquad hbg hconn_g1 hconn_gbg hpinch
-  exact deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_kernel_bound
+  exact deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_kernel_bound
     g₀ g₁ g_bg P htie hδP_lt1 hδP_bound x κ CK hκ_nn hCK_nn hpinch hkernel
 
 

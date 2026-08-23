@@ -87,7 +87,7 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
       (min (t₀ - tmin_a) (tmax_a - t₀)) / 2 with hT_outer_def
   have hT_outer_pos : 0 < T_outer := by
     rw [hT_outer_def]
-    refine div_pos
+    exact div_pos
       (lt_min (lt_min ht₀_minus_tmin htmax_minus_t₀)
         (lt_min ht₀_minus_tmin_a htmax_a_minus_t₀)) (by norm_num)
   have hT_outer_le_tmin_half : T_outer ≤ (t₀ - tmin) / 2 := by
@@ -133,9 +133,8 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
       ⟨by linarith, by linarith⟩⟩
   have hslab_aug_sub : closedBall p₀ R_aug_out ×ˢ Icc (t₀ - T_outer) (t₀ + T_outer)
       ⊆ closedBall p₀ (R_aug : ℝ) ×ˢ Icc tmin_a tmax_a := by
-    refine Set.prod_mono ?_ ?_
-    · exact closedBall_subset_closedBall (le_of_lt hR_aug_out_lt)
-    · exact hsub_outer_aug
+    exact Set.prod_mono (closedBall_subset_closedBall (le_of_lt hR_aug_out_lt))
+      hsub_outer_aug
   have haΦ_cont_full : ContinuousOn aΦ
       (closedBall p₀ (R_aug : ℝ) ×ˢ Icc tmin_a tmax_a) := haΦ.continuousOn
   have haΦ_cont : ContinuousOn aΦ Slab_a_outer :=
@@ -161,9 +160,7 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
     ⟨(x₀, t₀), Metric.mem_closedBall_self (le_of_lt hρ_outer_pos),
       ⟨by linarith, by linarith⟩⟩
   have hSlab_Φ_outer_sub_orig : Slab_Φ_outer ⊆ closedBall x₀ (r : ℝ) ×ˢ Icc tmin tmax := by
-    refine Set.prod_mono ?_ ?_
-    · exact closedBall_subset_closedBall hρ_outer_le_r
-    · exact hsub_outer_orig
+    exact Set.prod_mono (closedBall_subset_closedBall hρ_outer_le_r) hsub_outer_orig
   have hΦ_cont_slab : ContinuousOn Φ Slab_Φ_outer := hΦ.continuousOn.mono hSlab_Φ_outer_sub_orig
   have h_Φ_norm_cont : ContinuousOn (fun p : E × ℝ => ‖Φ p - x₀‖) Slab_Φ_outer := by
     have h_sub_cont : ContinuousOn (fun p : E × ℝ => Φ p - x₀) Slab_Φ_outer :=
@@ -215,10 +212,9 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
   have hK_origN_eq : (K_origN : ℝ) = K_orig := rfl
   set T_mid : ℝ := min (T_outer * 3 / 4) (1 / (2 * K_orig)) with hT_mid_def
   have hT_mid_pos : 0 < T_mid := by
-    refine lt_min ?_ ?_
-    · positivity
-    · have : 0 < 2 * K_orig := by linarith
-      positivity
+    have hleft : 0 < T_outer * 3 / 4 := by positivity
+    have hright : 0 < 1 / (2 * K_orig) := by positivity
+    exact lt_min hleft hright
   have hT_mid_lt_outer : T_mid < T_outer := by
     have h1 : T_mid ≤ T_outer * 3 / 4 := min_le_left _ _
     linarith
@@ -234,7 +230,7 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
   set ρ_final : ℝ := min ρ_outer R_aug_out / 8 with hρ_final_def
   have hρ_final_pos : 0 < ρ_final := by
     rw [hρ_final_def]
-    refine div_pos (lt_min hρ_outer_pos hR_aug_out_pos) (by norm_num)
+    exact div_pos (lt_min hρ_outer_pos hR_aug_out_pos) (by norm_num)
   have hρ_final_le_outer_8 : ρ_final ≤ ρ_outer / 8 := by
     rw [hρ_final_def]
     have : min ρ_outer R_aug_out ≤ ρ_outer := min_le_left _ _
@@ -247,7 +243,10 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
   have hρ_final_le_R_aug_out : ρ_final ≤ R_aug_out := by linarith
   set ρ_finalN : ℝ≥0 := ⟨ρ_final, le_of_lt hρ_final_pos⟩ with hρ_finalN_def
   have hρ_finalN_eq : (ρ_finalN : ℝ) = ρ_final := rfl
-  refine ⟨T_final, ρ_finalN, hT_final_pos, hρ_final_pos, ?_⟩
+  suffices hfinal : ∀ q ∈
+      (Metric.ball x₀ (ρ_finalN : ℝ)) ×ˢ Set.Ioo (t₀ - T_final) (t₀ + T_final),
+      fderiv ℝ Φ q = (fromAugFlow aΦ q).coprod (timePieceFn f Φ q) by
+    exact ⟨T_final, ρ_finalN, hT_final_pos, hρ_final_pos, hfinal⟩
   intro q hq
   rcases hq with ⟨hq_x, hq_t⟩
   obtain ⟨x, t⟩ := q
@@ -309,7 +308,8 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
     have hbound : ∀ z ∈ closedBall x₀ r₀_lip, ‖fderiv ℝ (f τ) z‖₊ ≤ K_origN := by
       intro z hz
       have hp_in : ((τ, z) : ℝ × E) ∈ Slab_f := ⟨hτ_Icc, hz⟩
-      have h_pre : ‖fderiv ℝ (f τ) z‖ ≤ K_pre := hK_pre_bd _ hp_in
+      have h_pre : ‖fderiv ℝ (f τ) z‖ ≤ K_pre :=
+        hK_pre_bd ((τ, z) : ℝ × E) hp_in
       have h_le_K_orig : ‖fderiv ℝ (f τ) z‖ ≤ K_orig := by rw [hK_orig_def]; linarith
       rw [← NNReal.coe_le_coe, coe_nnnorm, hK_origN_eq]
       exact h_le_K_orig
@@ -425,7 +425,7 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
     have hy_closed_r : y ∈ closedBall x₀ (r : ℝ) :=
       closedBall_subset_closedBall hρ_outer_le_r hy_closed_ρ_outer
     have hτ_outer : τ ∈ Icc (t₀ - T_outer) (t₀ + T_outer) := by
-      refine ⟨?_, ?_⟩ <;> [linarith [hτ.1]; linarith [hτ.2]]
+      exact ⟨by linarith [hτ.1], by linarith [hτ.2]⟩
     have h_pair_in_outer : ((y, τ) : E × ℝ) ∈ Slab_Φ_outer := ⟨hy_closed_ρ_outer, hτ_outer⟩
     have h_orbit_in_r₀ : Φ ⟨y, τ⟩ ∈ closedBall x₀ r₀_lip := by
       have h_pre : ‖Φ (y, τ) - x₀‖ ≤ R_Φ_image_pre := hR_Φ_image_pre_bd _ h_pair_in_outer
@@ -437,10 +437,11 @@ theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
     rw [hK_orig_def]
     exact h_pre.trans (le_add_of_nonneg_right zero_le_one)
   have hsub_mid_orig : Icc (t₀ - T_mid) (t₀ + T_mid) ⊆ Icc tmin tmax := by
-    refine Icc_subset_Icc ?_ ?_ <;> [linarith [hT_mid_lt_outer]; linarith [hT_mid_lt_outer]]
+    exact Icc_subset_Icc (by linarith [hT_mid_lt_outer])
+      (by linarith [hT_mid_lt_outer])
   have ht_Ioo_mid : t ∈ Ioo (t₀ - T_mid) (t₀ + T_mid) := by
-    refine ⟨?_, ?_⟩ <;> [linarith [ht_Ioo_final.1, hT_final_lt_mid]; linarith
-      [ht_Ioo_final.2, hT_final_lt_mid]]
+    exact ⟨by linarith [ht_Ioo_final.1, hT_final_lt_mid],
+      by linarith [ht_Ioo_final.2, hT_final_lt_mid]⟩
   have hx_closed_ρ_outerN : x ∈ closedBall x₀ (ρ_outerN : ℝ) := by
     change dist x x₀ ≤ ρ_outer
     rw [mem_closedBall] at hx_closed_ρ_outer

@@ -12,7 +12,6 @@ namespace Laplacian
 namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Laplacian
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

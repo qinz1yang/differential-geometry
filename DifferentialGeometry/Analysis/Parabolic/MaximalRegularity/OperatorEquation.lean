@@ -212,15 +212,15 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_solves {a : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.timeDeriv _ T
-        (maximalRegularityOp (I := I) (M := M) a hT hT1 f) =
+        (maximalRegularityOp (I := I) (M := M) a hT f) =
       timeScaleLaplacian (I := I) (M := M) a
           (maximalRegularitySolField (I := I) (M := M) a hT.le f) +
         f := by
   rw [maximalRegularityOp_timeDeriv (I := I) (M := M)
-    (a := a) hT hT1 f]
+    (a := a) hT f]
   refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
   rw [timeModeCoeff_add (I := I) (M := M),
     timeModeCoeff_timeScaleLaplacian (I := I) (M := M) (τ := a)

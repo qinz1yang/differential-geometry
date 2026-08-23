@@ -1,4 +1,7 @@
-import DifferentialGeometry.Geometry.Connection.Chart.Basic
+import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
+import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+import Mathlib.Geometry.Manifold.MFDeriv.Tangent
+import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 
@@ -17,7 +20,8 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 abbrev CoordinateIdx (E : Type*) [NormedAddCommGroup E] [NormedSpace Real E]
-    [FiniteDimensional Real E] :=
+    [hfinite : FiniteDimensional Real E] :=
+  let _ := hfinite
   Fin (Module.finrank Real E)
 
 abbrev coordinateTrivializationAt

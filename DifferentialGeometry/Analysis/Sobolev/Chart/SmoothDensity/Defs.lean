@@ -138,7 +138,6 @@ lemma hasCompactSupport_chartAtlasPOU_mul
 
 omit [IsManifold I ∞ M] in
 lemma chartPushed_chartPullback_apply_of_mem
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (α : M)
     (ψ : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}

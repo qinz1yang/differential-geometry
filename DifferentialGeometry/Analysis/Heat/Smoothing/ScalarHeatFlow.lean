@@ -41,7 +41,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.TensorRSRiemannianBundle
 
 private local instance : MeasurableSpace M := borel M
@@ -408,7 +408,7 @@ theorem heatSemigroup_apply_scalarEigenFunctionLp
           simp [inner_smul_right, w]
         have hsub : (EigenIdx.lambda (I := I) (M := M) j -
             TensorEigenIdx.lambda (I := I) (M := M) i) * ⟪b j, w⟫_ℝ = 0 := by
-          nlinarith [h1, h2]
+          nlinarith only [h1, h2]
         exact (mul_eq_zero.mp hsub).resolve_left (sub_ne_zero.mpr hj)
       simp [hzero]
   calc
@@ -453,8 +453,13 @@ theorem heatSemigroup_apply_scalarEigenFunctionLp
                   congr 1
                   exact HilbertBasis.repr_apply_apply b w j
     _ = Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) • w := by
-          rw [show (∑' j, ⟪b j, w⟫_ℝ • b j) = w from
-            by simpa [HilbertBasis.repr_apply_apply] using (b.hasSum_repr w).tsum_eq]
+          congr 1
+          calc
+            (∑' j, ⟪b j, w⟫_ℝ • b j) = ∑' j, b.repr w j • b j := by
+              apply tsum_congr
+              intro j
+              rw [HilbertBasis.repr_apply_apply]
+            _ = w := (b.hasSum_repr w).tsum_eq
 
 theorem hasSum_scalarEigenFunctionLp_repr
     (g : SmoothRiemannianMetric I M)
@@ -1225,7 +1230,7 @@ private lemma summable_abs_scalarHeatCoeff_mul_hsWeight
         (w i) ^ 2) / 2) :=
     (hd2.add hw2).div_const 2
   have hAMGM (a b : ℝ) : a * b ≤ (a ^ 2 + b ^ 2) / 2 := by
-    nlinarith [sq_nonneg (a - b)]
+    nlinarith only [sq_nonneg (a - b)]
   have hc_abs (i : TensorEigenIdx00 g) :
       |scalarHeatCoeff (I := I) (M := M) g u₀ i t| =
         Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) * |d i| := by
@@ -1662,7 +1667,7 @@ private lemma summable_abs_scalarHeatCoeff_lambda_mul_hsWeight
             exact mul_le_mul (hlami2 i) (le_rfl)
               (sq_nonneg _) hMd0
   have hAMGM (a b : ℝ) : a * b ≤ (a ^ 2 + b ^ 2) / 2 := by
-    nlinarith [sq_nonneg (a - b)]
+    nlinarith only [sq_nonneg (a - b)]
   have hc_abs_lambda (i : TensorEigenIdx00 g) :
       |TensorEigenIdx.lambda (I := I) (M := M) i *
           scalarHeatCoeff (I := I) (M := M) g u₀ i t| =
@@ -2177,7 +2182,7 @@ theorem heatPower_one_inner_eq_lambda_coeff
       simp [inner_smul_right]
     have hsub : (lam k - TensorEigenIdx.lambda (I := I) (M := M) j) *
         ⟪b k, scalarEigenFunctionLp g j⟫_ℝ = 0 := by
-      nlinarith [h1, h2]
+      nlinarith only [h1, h2]
     exact (mul_eq_zero.mp hsub).resolve_left (sub_ne_zero.mpr hlam)
   have hmatch (k : EigenIdx (I := I) (M := M) g) :
       lam k * Real.exp (-(lam k * t)) * ⟪b k, v⟫_ℝ * ⟪scalarEigenFunctionLp g j, b k⟫_ℝ =
@@ -2531,7 +2536,7 @@ private lemma summable_abs_tensorL2Coeff_mul_hsWeight_of_smooth
     exact Summable.congr V.weighted_summable (fun i => by
       rw [hcoeff i])
   have hAMGM (a b : ℝ) : a * b ≤ (a ^ 2 + b ^ 2) / 2 := by
-    nlinarith [sq_nonneg (a - b)]
+    nlinarith only [sq_nonneg (a - b)]
   have hmain (i : TensorEigenIdx00 g) :
       |d i| * (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (σ / 2) ≤
         (tensorSobolevWeight (I := I) (M := M) i (σ + p) * (d i) ^ 2 +
@@ -4217,7 +4222,7 @@ private lemma deriv_integral_timeDerivField
         (U ×ˢ Set.univ) :=
       (ContinuousLinearMap.smulRightL ℝ ℝ ℝ (1 : ℝ →L[ℝ] ℝ)).continuous.comp_continuousOn
         ((hφcont.continuousOn.mono (by intro p hp; exact Set.mem_univ p)).mul hjointr1.continuousOn)
-    simpa [F'] using hts
+    exact hts
   have hdiff : ∀ u : ℝ, u ∈ U → ∀ x : M,
       HasFDerivAt (fun v : ℝ => Fv v x) (F' u x) u := by
     intro u hu x
@@ -4226,7 +4231,7 @@ private lemma deriv_integral_timeDerivField
         (φ.toFun x * iteratedDeriv (r + 1) (fun s : ℝ => (F s).toFun x) u) u :=
       hder.const_mul (φ.toFun x)
     have hfd := hderφ.hasFDerivAt
-    simpa [Fv, F', ContinuousLinearMap.smulRightL] using hfd
+    exact hfd
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   haveI : SecondCountableTopology H := I.secondCountableTopology
@@ -4249,7 +4254,7 @@ private lemma deriv_integral_timeDerivField
       hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
     have hc := ContinuousLinearMap.integral_comp_comm
       (E := ℝ →L[ℝ] ℝ) (Fₗ := ℝ) (ContinuousLinearMap.apply ℝ ℝ (1 : ℝ)) hint
-    simpa using hc.symm
+    exact hc.symm
   have hderiv : HasDerivAt (fun s : ℝ => ∫ x : M, Fv s x ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       (∫ x : M, F' t x 1 ∂(riemannianVolumeMeasure (I := I) (M := M) g)) t := by
     rw [hasDerivAt_iff_hasFDerivAt]
@@ -5074,7 +5079,8 @@ private lemma smoothToLp_timeDerivField_continuousOn
         (𝓝[U] t₀) (𝓝 (‖smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t₀) -
           smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t₀)‖ ^ 2)) :=
       hnorm_sq_cont t₀ ht₀
-    simpa [hsq0] using hcw
+    rw [hsq0] at hcw
+    exact hcw
   have hnorm_tendsto : Tendsto (fun t : ℝ =>
       ‖smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t) -
         smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t₀)‖)
@@ -5084,19 +5090,19 @@ private lemma smoothToLp_timeDerivField_continuousOn
           smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t₀)‖ ^ 2))
         (𝓝[U] t₀) (𝓝 (Real.sqrt 0)) :=
       Real.continuous_sqrt.continuousAt.tendsto.comp hsq_tendsto
-    convert hsqrt using 1 <;> simp
+    simpa only [Real.sqrt_sq_eq_abs, abs_norm, Real.sqrt_zero] using hsqrt
   have hvec : Tendsto (fun t : ℝ =>
       smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t) -
         smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t₀))
       (𝓝[U] t₀) (𝓝 0) := by
     refine (tendsto_iff_norm_sub_tendsto_zero.mpr ?_)
-    simpa using hnorm_tendsto
+    simpa only [sub_zero] using hnorm_tendsto
   have hmain : Tendsto (fun t : ℝ =>
       smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t))
       (𝓝[U] t₀) (𝓝 (smoothToLp (I := I) (M := M) g (scalarTimeDerivField g F hU hF r t₀))) := by
     have := hvec.add (tendsto_const_nhds (x := smoothToLp (I := I) (M := M) g
       (scalarTimeDerivField g F hU hF r t₀)))
-    simpa [sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using this
+    simpa only [sub_add_cancel, zero_add] using this
   exact hmain
 
 private lemma scalarForcedCoeff_weighted_sq_le_of_hspace_on
@@ -5354,7 +5360,7 @@ private lemma scalarForcedCoeff_weighted_sq_le_of_hspace_on
         ∫ s in (0 : ℝ)..t, Real.exp (-lam_i * (t - s)) * cf s) ^ 2 ≤
       2 * ((Real.exp (-lam_i * t) * c0) ^ 2 +
         (∫ s in (0 : ℝ)..t, Real.exp (-lam_i * (t - s)) * cf s) ^ 2) := by
-    nlinarith [sq_nonneg (Real.exp (-lam_i * t) * c0 -
+    nlinarith only [sq_nonneg (Real.exp (-lam_i * t) * c0 -
       ∫ s in (0 : ℝ)..t, Real.exp (-lam_i * (t - s)) * cf s)]
   have hw1 : 0 ≤ tensorSobolevWeight (I := I) (M := M) i (m : ℝ) :=
     tensorSobolevWeight_nonneg (I := I) (M := M) i (m : ℝ)
@@ -5426,7 +5432,7 @@ private lemma scalarForcedCoeff_weighted_deriv_sq_le_of_hspace_on
   have hsq : (-lam_i * iteratedDeriv (j - 1) c t + iteratedDeriv (j - 1) cf t) ^ 2 ≤
       2 * (lam_i ^ 2 * (iteratedDeriv (j - 1) c t) ^ 2) +
         2 * (iteratedDeriv (j - 1) cf t) ^ 2 := by
-    nlinarith [sq_nonneg (lam_i * iteratedDeriv (j - 1) c t +
+    nlinarith only [sq_nonneg (lam_i * iteratedDeriv (j - 1) c t +
       iteratedDeriv (j - 1) cf t)]
   have hw : tensorSobolevWeight (I := I) (M := M) i (m : ℝ) * lam_i ^ 2 ≤
       tensorSobolevWeight (I := I) (M := M) i (m + 2 : ℕ) := by
@@ -5451,13 +5457,13 @@ private lemma scalarForcedCoeff_weighted_deriv_sq_le_of_hspace_on
         tensorSobolevWeight (I := I) (M := M) i (m + 2 : ℕ) *
           (iteratedDeriv (j - 1) c t) ^ 2 := by
       simpa [mul_assoc] using (mul_le_mul_of_nonneg_right hw (sq_nonneg _))
-    nlinarith [hle]
+    nlinarith only [hle]
   have h2 : tensorSobolevWeight (I := I) (M := M) i (m : ℝ) *
         (2 * (iteratedDeriv (j - 1) cf t) ^ 2) ≤ 2 * Cm2 i := by
     have ht0T : t ∈ Set.Icc (0 : ℝ) T :=
       Set.mem_Icc.mpr ⟨le_trans (le_of_lt hε) (Set.mem_Icc.mp ht).1, (Set.mem_Icc.mp ht).2⟩
     have hb := hbm2 i t ht0T
-    nlinarith [hb]
+    nlinarith only [hb]
   calc
     tensorSobolevWeight (I := I) (M := M) i (m : ℝ) *
         (iteratedDeriv j (fun s : ℝ => scalarForcedCoeff (I := I) (M := M) g u₀ f i s) t) ^ 2
@@ -5473,13 +5479,13 @@ private lemma scalarForcedCoeff_weighted_deriv_sq_le_of_hspace_on
             (tensorSobolevWeight_nonneg (I := I) (M := M) i (m : ℝ))
     _ ≤ 2 * (tensorSobolevWeight (I := I) (M := M) i (m + 2 : ℕ) *
             (iteratedDeriv (j - 1) c t) ^ 2) + 2 * Cm2 i := by
-          nlinarith [h1, h2]
+          nlinarith only [h1, h2]
     _ ≤ 2 * Cm1 i + 2 * Cm2 i := by
           have hb := hbm1 i t ht
           have hb' : tensorSobolevWeight (I := I) (M := M) i (m + 2 : ℕ) *
               (iteratedDeriv (j - 1) c t) ^ 2 ≤ Cm1 i := by
             simpa [c] using hb
-          nlinarith [hb']
+          nlinarith only [hb']
     _ = Cm i := by
           rfl
 
@@ -5731,7 +5737,7 @@ private lemma summable_abs_mul_hsWeight_of_weighted
     dsimp [Mc, σ, N₀]
     exact hd
   have hAMGM (a b : ℝ) : a * b ≤ (a ^ 2 + b ^ 2) / 2 := by
-    nlinarith [sq_nonneg (a - b)]
+    nlinarith only [sq_nonneg (a - b)]
   have hmain (i : TensorEigenIdx00 g) :
       |d i| * (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (σ / 2) ≤
         (tensorSobolevWeight (I := I) (M := M) i (Mc : ℝ) * (d i) ^ 2 +
@@ -6231,7 +6237,7 @@ private lemma scalarForcedSlice_laplacian_coeff_eq
       simp [inner_smul_right, φ]
     have hsub : (EigenIdx.lambda (I := I) (M := M) k -
         TensorEigenIdx.lambda (I := I) (M := M) i) * ⟪b k, φ⟫_ℝ = 0 := by
-      nlinarith [h1, h2]
+      nlinarith only [h1, h2]
     exact (mul_eq_zero.mp hsub).resolve_left (sub_ne_zero.mpr hlam)
   have hφ_repr : HasSum (fun k : EigenIdx (I := I) (M := M) g =>
       ⟪b k, φ⟫_ℝ • b k) φ :=
@@ -6382,7 +6388,7 @@ private lemma scalarForcedLaplacianCoeff_weighted_deriv_sq_le
                   scalarForcedCoeff (I := I) (M := M) g u₀ f i s) t) ^ 2 := by
             exact mul_le_mul_of_nonneg_right hlam (sq_nonneg _)
           rw [hw]
-          nlinarith [mul_le_mul_of_nonneg_left hle2
+          nlinarith only [mul_le_mul_of_nonneg_left hle2
             (tensorSobolevWeight_nonneg (I := I) (M := M) i (m : ℝ))]
     _ ≤ Cm i := hb
 
@@ -6744,7 +6750,7 @@ private lemma scalarForcedLaplacianCoeff_weighted_deriv_sq_le_on
                   scalarForcedCoeff (I := I) (M := M) g u₀ f i s) t) ^ 2 := by
             exact mul_le_mul_of_nonneg_right hlam (sq_nonneg _)
           rw [hw]
-          nlinarith [mul_le_mul_of_nonneg_left hle2
+          nlinarith only [mul_le_mul_of_nonneg_left hle2
             (tensorSobolevWeight_nonneg (I := I) (M := M) i (m : ℝ))]
     _ ≤ Cm i := hb
 
@@ -7057,7 +7063,7 @@ private lemma scalarForcedSlice_laplacian_coeff_eq_on
       simp [inner_smul_right, φ]
     have hsub : (EigenIdx.lambda (I := I) (M := M) k -
         TensorEigenIdx.lambda (I := I) (M := M) i) * ⟪b k, φ⟫_ℝ = 0 := by
-      nlinarith [h1, h2]
+      nlinarith only [h1, h2]
     exact (mul_eq_zero.mp hsub).resolve_left (sub_ne_zero.mpr hlam)
   have hφ_repr : HasSum (fun k : EigenIdx (I := I) (M := M) g =>
       ⟪b k, φ⟫_ℝ • b k) φ :=
@@ -8509,7 +8515,7 @@ private lemma le_of_forall_pos_lt_add
       exact div_pos hpos (mul_pos (by norm_num) hc1')
     have hle := h δ hδ0
     have hd : u - C * v ≤ (C - 1) * δ := by
-      nlinarith [hle]
+      nlinarith only [hle]
     have hδeq : (C - 1) * δ = (u - C * v) / 2 := by
       dsimp [δ]
       field_simp [hc1'.ne']

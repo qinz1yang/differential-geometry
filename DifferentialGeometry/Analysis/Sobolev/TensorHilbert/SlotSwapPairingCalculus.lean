@@ -21,7 +21,7 @@ namespace Sobolev
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -323,7 +323,7 @@ theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : �
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem unitModel_appCc_slotInsertEndoCc_cons
+theorem unitModel_operatorFieldApplication_slotInsertEndoCc_cons
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -335,7 +335,7 @@ theorem unitModel_appCc_slotInsertEndoCc_cons
         (Fin.cons ((a : TangentSpace I x) : E) (fun j => (rest j : E))) =
       unitModel (I := I) (M := M) g (s' + 1) U x
         (Fin.cons ((Λ x a : TangentSpace I x) : E) (fun j => (rest j : E))) := by
-  rw [unitModel, appCc_toSection]
+  rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace (s' + 1) I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ).toSection x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
@@ -358,7 +358,7 @@ theorem unitModel_appCc_slotInsertEndoCc_cons
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem unitModel_appCc_slotExtend_slotInsertEndoCc_cons
+theorem unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -373,7 +373,7 @@ theorem unitModel_appCc_slotExtend_slotInsertEndoCc_cons
       unitModel (I := I) (M := M) g (s' + 2) U x
         (Fin.cons ((a : TangentSpace I x) : E)
           (Fin.cons ((Λ x b : TangentSpace I x) : E) (fun j => (m j : E)))) := by
-  rw [unitModel, appCc_toSection]
+  rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace (s' + 2) I x →L[ℝ] Tensor0SSpace (s' + 2) I x from
         (slotExtend (I := I) (M := M) g (s' + 1) (s' + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ)).toSection x).comp
@@ -385,7 +385,7 @@ theorem unitModel_appCc_slotExtend_slotInsertEndoCc_cons
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s' + 2) I x from
           U.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [slotExtend_toSection]
-  rw [slotExtendFib_apply_eval (I := I) (M := M) g (s' + 1) (s' + 1) x _ _
+  rw [slotExtendFib_apply_eval (I := I) (M := M) (s' + 1) (s' + 1) x _ _
     ((a : TangentSpace I x) : E)
     (Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E)))]
   rw [show (show Tensor0SSpace (s' + 1) I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
@@ -406,7 +406,7 @@ theorem unitModel_appCc_slotExtend_slotInsertEndoCc_cons
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem appCc_slotExtend_slotInsert_appFullSec_swap_conj
+theorem operatorFieldApplication_slotExtend_slotInsert_appFullSec_swap_conj
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -433,7 +433,7 @@ theorem appCc_slotExtend_slotInsert_appFullSec_swap_conj
   rw [show w = Fin.cons (w 0) (Matrix.vecTail w) from (Fin.cons_self_tail w).symm]
   rw [show (Matrix.vecTail w) = Fin.cons (Matrix.vecTail w 0) (Matrix.vecTail (Matrix.vecTail w))
     from (Fin.cons_self_tail (Matrix.vecTail w)).symm]
-  rw [unitModel_appCc_slotExtend_slotInsertEndoCc_cons (I := I) (M := M) g s' Λ
+  rw [unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons (I := I) (M := M) g s' Λ
     (homTensorRSFieldApply (I := I) (M := M) g 0 (s' + 2) (s' + 2) F U) x
     (w 0) (Matrix.vecTail w 0) (Matrix.vecTail (Matrix.vecTail w))]
   rw [show unitModel (I := I) (M := M) g (s' + 2)
@@ -465,7 +465,7 @@ theorem appCc_slotExtend_slotInsert_appFullSec_swap_conj
         (fun j => ((Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w))
           : Fin (s' + 1) → TangentSpace I x) j : E)) from by
     congr 1]
-  rw [unitModel_appCc_slotInsertEndoCc_cons (I := I) (M := M) g (s' + 1) Λ U x
+  rw [unitModel_operatorFieldApplication_slotInsertEndoCc_cons (I := I) (M := M) g (s' + 1) Λ U x
     (Matrix.vecTail w 0)
     (Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w)))]
 

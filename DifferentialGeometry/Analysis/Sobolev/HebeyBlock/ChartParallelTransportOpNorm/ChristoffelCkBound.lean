@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
-import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.FDerivDecomp
+import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChristoffelBilinear
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartComponents
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -14,7 +14,6 @@ open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

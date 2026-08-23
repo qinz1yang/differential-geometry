@@ -322,7 +322,7 @@ theorem ricciLower_dim1
 omit [SigmaCompactSpace M] in
 theorem sum_index_form_integrand_eval
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    {L : ℝ} (_hL : 0 < L) (uPrime : ℝ → E)
+    {L : ℝ} (uPrime : ℝ → E)
     (_huPrimeEq : ∀ t ∈ Set.Icc (0 : ℝ) L,
       (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ) : E) = uPrime t)
     (_hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L, g.inner (γ t) (uPrime t) (uPrime t) = 1)
@@ -597,8 +597,6 @@ theorem sum_index_form_integrand_eval
 omit [SigmaCompactSpace M] in
 theorem sum_index_form_frame_evaluation
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (hL : 0 < L)
-    (_hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 L))
-    (_hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
     (uPrime : ℝ → E)
     (huPrimeEq : ∀ t ∈ Set.Icc (0 : ℝ) L,
       (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ) : E) = uPrime t)
@@ -695,7 +693,7 @@ theorem sum_index_form_frame_evaluation
                 * ricciTensor (I := I) g (γ t) (uPrime t) (uPrime t))
         (Set.Icc (0 : ℝ) L) := by
     intro t ht
-    exact sum_index_form_integrand_eval (I := I) g γ hL uPrime huPrimeEq
+    exact sum_index_form_integrand_eval (I := I) g γ uPrime huPrimeEq
       hUnit e heDiff hParallel hON hPerp t ht
   rw [hSumEq]
   exact intervalIntegral.integral_congr
@@ -708,8 +706,7 @@ theorem sum_index_form_frame_evaluation
 omit [SigmaCompactSpace M] in
 theorem sum_index_form_bound_by_curvature_hypothesis
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (hL : 0 < L)
-    (_hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 L))
-    (_hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) {K : ℝ}
+    {K : ℝ}
     (hRic : RicciBoundedBelow (I := I) g ((Module.finrank ℝ E - 1 : ℝ) * K))
     (uPrime : ℝ → E)
     (huPrimeEq : ∀ t ∈ Set.Icc (0 : ℝ) L,
@@ -751,7 +748,7 @@ theorem sum_index_form_bound_by_curvature_hypothesis
               * Real.cos (Real.pi * t / L) ^ 2
             - Real.sin (Real.pi * t / L) ^ 2
                 * ricciTensor (I := I) g (γ t) (uPrime t) (uPrime t)) :=
-    sum_index_form_frame_evaluation (I := I) g γ hL _hγ _hgeo uPrime huPrimeEq
+    sum_index_form_frame_evaluation (I := I) g γ hL uPrime huPrimeEq
       hUnit e heDiff hParallel hON hPerp hIntegrandSum
   rw [hEval]
   have hL_nonneg : (0 : ℝ) ≤ L := le_of_lt hL
@@ -897,14 +894,13 @@ theorem sum_index_form_bound_by_curvature_hypothesis
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem bonnet_myers_length_le_of_ricci_bound
-    [T2Space (TangentBundle I M)] [ConnectedSpace M]
+    [T2Space (TangentBundle I M)]
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [CompleteSpace E]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (_hL : 0 < L)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (_hγ_smooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
-    (_hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 L))
     (_hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) {K : ℝ}
     (_hK : 0 < K)
     (_hdim : 2 ≤ Module.finrank ℝ E)
@@ -973,7 +969,7 @@ theorem bonnet_myers_length_le_of_ricci_bound
               (fun t => Real.sin (Real.pi * t / L)) (e i)).toFun))
         ≤ (Module.finrank ℝ E - 1 : ℝ) * (L / 2)
             * ((Real.pi / L) ^ 2 - K) :=
-    sum_index_form_bound_by_curvature_hypothesis (I := I) g γ _hL _hγ _hgeo
+    sum_index_form_bound_by_curvature_hypothesis (I := I) g γ _hL
       _hRic uPrime _huPrimeEq _hUnit e _heDiff _hParallel _hON _hPerp
       _hIntegrandSum _hRicIntegrable
   have h_each_nonneg : ∀ i : Fin (Module.finrank ℝ E - 1),

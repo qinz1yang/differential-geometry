@@ -34,267 +34,267 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qone_smul
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
-    (a : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    qsmul (I := I) (M := M) g r s k p hp 1 a = a := by
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsmul (I := I) (M := M) r s k p hp 1 a = a := by
   refine Quotient.inductionOn a ?_
   intro S
   change Quotient.mk
-      (tensorChartSetoid (I := I) (M := M) g r s k p hp) (1 • S) =
-    Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (1 • S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S
   rw [one_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qmul_smul
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (a b : ℝ)
-    (u : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    qsmul (I := I) (M := M) g r s k p hp (a * b) u =
-      qsmul (I := I) (M := M) g r s k p hp a
-        (qsmul (I := I) (M := M) g r s k p hp b u) := by
+    (u : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsmul (I := I) (M := M) r s k p hp (a * b) u =
+      qsmul (I := I) (M := M) r s k p hp a
+        (qsmul (I := I) (M := M) r s k p hp b u) := by
   refine Quotient.inductionOn u ?_
   intro S
   change Quotient.mk
-      (tensorChartSetoid (I := I) (M := M) g r s k p hp) ((a * b) • S) =
-    Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp)
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) ((a * b) • S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
       (a • b • S)
   rw [mul_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qsmul_zero
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ) :
-    qsmul (I := I) (M := M) g r s k p hp c
-        (qzero (I := I) (M := M) g r s k p hp) =
-      qzero (I := I) (M := M) g r s k p hp := by
+    qsmul (I := I) (M := M) r s k p hp c
+        (qzero (I := I) (M := M) r s k p hp) =
+      qzero (I := I) (M := M) r s k p hp := by
   apply Quotient.sound
-  change TensorAEEq (I := I) (M := M) g
+  change TensorAEEq (I := I) (M := M)
     (c • (0 : RSTensorSection I M r s)) 0
   rw [smul_zero]
-  exact TensorAEEq.rfl (I := I) (M := M) g 0
+  exact TensorAEEq.rfl (I := I) (M := M) 0
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qsmul_add
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ)
-    (a b : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    qsmul (I := I) (M := M) g r s k p hp c
-        (qadd (I := I) (M := M) g r s k p hp a b) =
-      qadd (I := I) (M := M) g r s k p hp
-        (qsmul (I := I) (M := M) g r s k p hp c a)
-        (qsmul (I := I) (M := M) g r s k p hp c b) := by
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsmul (I := I) (M := M) r s k p hp c
+        (qadd (I := I) (M := M) r s k p hp a b) =
+      qadd (I := I) (M := M) r s k p hp
+        (qsmul (I := I) (M := M) r s k p hp c a)
+        (qsmul (I := I) (M := M) r s k p hp c b) := by
   refine Quotient.inductionOn₂ a b ?_
   intro S T
   change Quotient.mk
-      (tensorChartSetoid (I := I) (M := M) g r s k p hp) (c • (S + T)) =
-    Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp)
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (c • (S + T)) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
       (c • S + c • T)
   rw [smul_add]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qadd_smul
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (a b : ℝ)
-    (u : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    qsmul (I := I) (M := M) g r s k p hp (a + b) u =
-      qadd (I := I) (M := M) g r s k p hp
-        (qsmul (I := I) (M := M) g r s k p hp a u)
-        (qsmul (I := I) (M := M) g r s k p hp b u) := by
+    (u : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsmul (I := I) (M := M) r s k p hp (a + b) u =
+      qadd (I := I) (M := M) r s k p hp
+        (qsmul (I := I) (M := M) r s k p hp a u)
+        (qsmul (I := I) (M := M) r s k p hp b u) := by
   refine Quotient.inductionOn u ?_
   intro S
   change Quotient.mk
-      (tensorChartSetoid (I := I) (M := M) g r s k p hp) ((a + b) • S) =
-    Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp)
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) ((a + b) • S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
       (a • S + b • S)
   rw [add_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qzero_smul
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
-    (u : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    qsmul (I := I) (M := M) g r s k p hp 0 u =
-      qzero (I := I) (M := M) g r s k p hp := by
+    (u : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsmul (I := I) (M := M) r s k p hp 0 u =
+      qzero (I := I) (M := M) r s k p hp := by
   refine Quotient.inductionOn u ?_
   intro S
   change Quotient.mk
-      (tensorChartSetoid (I := I) (M := M) g r s k p hp) (0 • S) =
-    Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) 0
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (0 • S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) 0
   rw [zero_smul]
 
 @[reducible] private noncomputable instance tensorQZero
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Zero (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  ⟨qzero (I := I) (M := M) g r s k p hp⟩
+    Zero (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  ⟨qzero (I := I) (M := M) r s k p hp⟩
 
 @[reducible] private noncomputable instance tensorQAdd
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Add (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  ⟨qadd (I := I) (M := M) g r s k p hp⟩
+    Add (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  ⟨qadd (I := I) (M := M) r s k p hp⟩
 
 @[reducible] private noncomputable instance tensorQNeg
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Neg (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  ⟨qneg (I := I) (M := M) g r s k p hp⟩
+    Neg (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  ⟨qneg (I := I) (M := M) r s k p hp⟩
 
 @[reducible] private noncomputable instance tensorQSub
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Sub (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  ⟨qsub (I := I) (M := M) g r s k p hp⟩
+    Sub (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  ⟨qsub (I := I) (M := M) r s k p hp⟩
 
 @[reducible] noncomputable def tensorQAddGroup
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    AddCommGroup (WkpTensorQuot (I := I) (M := M) g r s k p hp) where
-  zero := qzero (I := I) (M := M) g r s k p hp
-  add := qadd (I := I) (M := M) g r s k p hp
-  neg := qneg (I := I) (M := M) g r s k p hp
-  sub := qsub (I := I) (M := M) g r s k p hp
-  add_assoc := qadd_assoc (I := I) (M := M) g r s k hp
-  zero_add := qzero_add (I := I) (M := M) g r s k hp
-  add_zero := qadd_zero (I := I) (M := M) g r s k hp
-  add_comm := qadd_comm (I := I) (M := M) g r s k hp
-  neg_add_cancel := qneg_add_self (I := I) (M := M) g r s k hp
-  sub_eq_add_neg := qsub_eq_add_neg (I := I) (M := M) g r s k hp
+    AddCommGroup (WkpTensorQuot (I := I) (M := M) r s k p hp) where
+  zero := qzero (I := I) (M := M) r s k p hp
+  add := qadd (I := I) (M := M) r s k p hp
+  neg := qneg (I := I) (M := M) r s k p hp
+  sub := qsub (I := I) (M := M) r s k p hp
+  add_assoc := qadd_assoc (I := I) (M := M) r s k hp
+  zero_add := qzero_add (I := I) (M := M) r s k hp
+  add_zero := qadd_zero (I := I) (M := M) r s k hp
+  add_comm := qadd_comm (I := I) (M := M) r s k hp
+  neg_add_cancel := qneg_add_self (I := I) (M := M) r s k hp
+  sub_eq_add_neg := qsub_eq_add_neg (I := I) (M := M) r s k hp
   nsmul := nsmulRec
   zsmul := zsmulRec
 
 @[reducible] private noncomputable instance tensorQAddGroupInst
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    AddCommGroup (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  tensorQAddGroup (I := I) (M := M) g r s k p hp
+    AddCommGroup (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  tensorQAddGroup (I := I) (M := M) r s k p hp
 
 @[reducible] private noncomputable def tensorQModule
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
     @Module ℝ
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp)
-      _ (tensorQAddGroup (I := I) (M := M) g r s k p hp).toAddCommMonoid where
-  smul := fun c => qsmul (I := I) (M := M) g r s k p hp c
-  one_smul := qone_smul (I := I) (M := M) g r s k hp
-  mul_smul := qmul_smul (I := I) (M := M) g r s k hp
-  smul_zero := qsmul_zero (I := I) (M := M) g r s k hp
-  smul_add := qsmul_add (I := I) (M := M) g r s k hp
-  add_smul := qadd_smul (I := I) (M := M) g r s k hp
-  zero_smul := qzero_smul (I := I) (M := M) g r s k hp
+      (WkpTensorQuot (I := I) (M := M) r s k p hp)
+      _ (tensorQAddGroup (I := I) (M := M) r s k p hp).toAddCommMonoid where
+  smul := fun c => qsmul (I := I) (M := M) r s k p hp c
+  one_smul := qone_smul (I := I) (M := M) r s k hp
+  mul_smul := qmul_smul (I := I) (M := M) r s k hp
+  smul_zero := qsmul_zero (I := I) (M := M) r s k hp
+  smul_add := qsmul_add (I := I) (M := M) r s k hp
+  add_smul := qadd_smul (I := I) (M := M) r s k hp
+  zero_smul := qzero_smul (I := I) (M := M) r s k hp
 
 @[reducible] private noncomputable instance tensorQModuleInst
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Module ℝ (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  tensorQModule (I := I) (M := M) g r s k p hp
+    Module ℝ (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  tensorQModule (I := I) (M := M) r s k p hp
 
 @[reducible] private noncomputable def tensorQNorm
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Norm (WkpTensorQuot (I := I) (M := M) g r s k p hp) where
+    Norm (WkpTensorQuot (I := I) (M := M) r s k p hp) where
   norm a :=
-    (wkpTensorQNorm (I := I) (M := M) g r s k p hp a).toReal
+    (wkpTensorQNorm (I := I) (M := M) r s k p hp a).toReal
 
 @[reducible] private noncomputable instance tensorQNormInst
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
-    Norm (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-  tensorQNorm (I := I) (M := M) g r s k p hp
+    Norm (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+  tensorQNorm (I := I) (M := M) r s k p hp
 
 @[reducible] private noncomputable def tensorQCore
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
     @NormedSpace.Core ℝ
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp)
-      _ (tensorQAddGroup (I := I) (M := M) g r s k p hp)
-      (tensorQModule (I := I) (M := M) g r s k p hp)
-      (tensorQNorm (I := I) (M := M) g r s k p hp) where
+      (WkpTensorQuot (I := I) (M := M) r s k p hp)
+      _ (tensorQAddGroup (I := I) (M := M) r s k p hp)
+      (tensorQModule (I := I) (M := M) r s k p hp)
+      (tensorQNorm (I := I) (M := M) r s k p hp) where
   norm_nonneg _ := ENNReal.toReal_nonneg
   norm_smul c a := by
-    change (wkpTensorQNorm (I := I) (M := M) g r s k p hp
-        (qsmul (I := I) (M := M) g r s k p hp c a)).toReal =
+    change (wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsmul (I := I) (M := M) r s k p hp c a)).toReal =
       ‖c‖ *
-        (wkpTensorQNorm (I := I) (M := M) g r s k p hp a).toReal
-    rw [qnorm_smul (I := I) (M := M) g r s k hp,
+        (wkpTensorQNorm (I := I) (M := M) r s k p hp a).toReal
+    rw [qnorm_smul (I := I) (M := M) r s k hp,
       ENNReal.toReal_mul]
     norm_cast
   norm_triangle a b := by
-    change (wkpTensorQNorm (I := I) (M := M) g r s k p hp
-        (qadd (I := I) (M := M) g r s k p hp a b)).toReal ≤
-      (wkpTensorQNorm (I := I) (M := M) g r s k p hp a).toReal +
-        (wkpTensorQNorm (I := I) (M := M) g r s k p hp b).toReal
-    have ha_ne : wkpTensorQNorm (I := I) (M := M) g r s k p hp a ≠ ⊤ :=
-      (qnorm_lt_top (I := I) (M := M) g r s k hp a).ne
-    have hb_ne : wkpTensorQNorm (I := I) (M := M) g r s k p hp b ≠ ⊤ :=
-      (qnorm_lt_top (I := I) (M := M) g r s k hp b).ne
-    have hadd := qnorm_add_le (I := I) (M := M) g r s k hp a b
+    change (wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qadd (I := I) (M := M) r s k p hp a b)).toReal ≤
+      (wkpTensorQNorm (I := I) (M := M) r s k p hp a).toReal +
+        (wkpTensorQNorm (I := I) (M := M) r s k p hp b).toReal
+    have ha_ne : wkpTensorQNorm (I := I) (M := M) r s k p hp a ≠ ⊤ :=
+      (qnorm_lt_top (I := I) (M := M) r s k hp a).ne
+    have hb_ne : wkpTensorQNorm (I := I) (M := M) r s k p hp b ≠ ⊤ :=
+      (qnorm_lt_top (I := I) (M := M) r s k hp b).ne
+    have hadd := qnorm_add_le (I := I) (M := M) r s k hp a b
     have hreal := ENNReal.toReal_mono
       (ENNReal.add_ne_top.mpr ⟨ha_ne, hb_ne⟩) hadd
     rwa [ENNReal.toReal_add ha_ne hb_ne] at hreal
   norm_eq_zero_iff a := by
-    change (wkpTensorQNorm (I := I) (M := M) g r s k p hp a).toReal = 0 ↔
-      a = qzero (I := I) (M := M) g r s k p hp
+    change (wkpTensorQNorm (I := I) (M := M) r s k p hp a).toReal = 0 ↔
+      a = qzero (I := I) (M := M) r s k p hp
     constructor
     · intro hzero
       rcases (ENNReal.toReal_eq_zero_iff _).mp hzero with hqzero | hqtop
-      · exact (qnorm_eq_zero (I := I) (M := M) g r s k hp a).mp hqzero
-      · exact ((qnorm_lt_top (I := I) (M := M) g r s k hp a).ne hqtop).elim
+      · exact (qnorm_eq_zero (I := I) (M := M) r s k hp a).mp hqzero
+      · exact ((qnorm_lt_top (I := I) (M := M) r s k hp a).ne hqtop).elim
     · intro ha
-      rw [ha, qnorm_zero (I := I) (M := M) g r s k hp]
+      rw [ha, qnorm_zero (I := I) (M := M) r s k hp]
       exact ENNReal.toReal_zero
 
 @[reducible] noncomputable def tensorQNormedGroup
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
     NormedAddCommGroup
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
+      (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
   @NormedAddCommGroup.ofCore ℝ
-    (WkpTensorQuot (I := I) (M := M) g r s k p hp)
-    _ (tensorQAddGroup (I := I) (M := M) g r s k p hp)
-    (tensorQModule (I := I) (M := M) g r s k p hp)
-    (tensorQNorm (I := I) (M := M) g r s k p hp)
-    (tensorQCore (I := I) (M := M) g r s k p hp)
+    (WkpTensorQuot (I := I) (M := M) r s k p hp)
+    _ (tensorQAddGroup (I := I) (M := M) r s k p hp)
+    (tensorQModule (I := I) (M := M) r s k p hp)
+    (tensorQNorm (I := I) (M := M) r s k p hp)
+    (tensorQCore (I := I) (M := M) r s k p hp)
 
 @[reducible] noncomputable def tensorQNormedSpace
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
     @NormedSpace ℝ
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp)
+      (WkpTensorQuot (I := I) (M := M) r s k p hp)
       _ (@NormedAddCommGroup.toSeminormedAddCommGroup
-        (WkpTensorQuot (I := I) (M := M) g r s k p hp)
-        (tensorQNormedGroup (I := I) (M := M) g r s k p hp)) :=
+        (WkpTensorQuot (I := I) (M := M) r s k p hp)
+        (tensorQNormedGroup (I := I) (M := M) r s k p hp)) :=
   @NormedSpace.ofCore ℝ
-    (WkpTensorQuot (I := I) (M := M) g r s k p hp)
+    (WkpTensorQuot (I := I) (M := M) r s k p hp)
     _ (@NormedAddCommGroup.toSeminormedAddCommGroup
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp)
-      (tensorQNormedGroup (I := I) (M := M) g r s k p hp))
-    (tensorQModule (I := I) (M := M) g r s k p hp)
-    (tensorQCore (I := I) (M := M) g r s k p hp)
+      (WkpTensorQuot (I := I) (M := M) r s k p hp)
+      (tensorQNormedGroup (I := I) (M := M) r s k p hp))
+    (tensorQModule (I := I) (M := M) r s k p hp)
+    (tensorQCore (I := I) (M := M) r s k p hp)
 
 theorem tensorQComplete
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤) :
     @CompleteSpace
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp)
-      (tensorQNormedGroup (I := I) (M := M) g r s k p hp).toUniformSpace := by
+      (WkpTensorQuot (I := I) (M := M) r s k p hp)
+      (tensorQNormedGroup (I := I) (M := M) r s k p hp).toUniformSpace := by
   letI : NormedAddCommGroup
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-    tensorQNormedGroup (I := I) (M := M) g r s k p hp
+      (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+    tensorQNormedGroup (I := I) (M := M) r s k p hp
   letI : NormedSpace ℝ
-      (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
-    tensorQNormedSpace (I := I) (M := M) g r s k p hp
-  have hnorm (a : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
+      (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
+    tensorQNormedSpace (I := I) (M := M) r s k p hp
+  have hnorm (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
       ‖a‖ =
-        (wkpTensorQNorm (I := I) (M := M) g r s k p hp a).toReal := rfl
-  have hsub (a b : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-      a - b = qsub (I := I) (M := M) g r s k p hp a b := rfl
+        (wkpTensorQNorm (I := I) (M := M) r s k p hp a).toReal := rfl
+  have hsub (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+      a - b = qsub (I := I) (M := M) r s k p hp a b := rfl
   apply Metric.complete_of_cauchySeq_tendsto
   intro u hu
   have hq_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      qdist (I := I) (M := M) g r s k p hp (u m) (u n) < ε := by
+      qdist (I := I) (M := M) r s k p hp (u m) (u n) < ε := by
     rw [Metric.cauchySeq_iff] at hu
     intro ε hε
     obtain ⟨N, hN⟩ := hu ε hε
@@ -304,7 +304,7 @@ theorem tensorQComplete
     rw [dist_eq_norm] at hmn
     simpa only [qdist, hnorm, hsub] using hmn
   obtain ⟨v, hv⟩ :=
-    qdist_limit (I := I) (M := M) g r s k hp hp_top u hq_cauchy
+    qdist_limit (I := I) (M := M) r s k hp hp_top u hq_cauchy
   refine ⟨v, ?_⟩
   apply tendsto_iff_dist_tendsto_zero.mpr
   have hv' := hv
@@ -344,7 +344,7 @@ abbrev FineWkpArray (ι : Type*) (r s k : ℕ) (p : ℝ≥0∞)
 omit [FiniteDimensional ℝ E] in
 theorem fineWkpComplete
     (ι : Type*) [Fintype ι] (r s k : ℕ) {p : ℝ≥0∞}
-    (hp : 1 ≤ p) (hp_top : p ≠ ⊤) :
+    (hp : 1 ≤ p) :
     @CompleteSpace (FineWkpArray (E := E) ι r s k p hp)
       (fineWkpGroup (E := E) ι r s k p hp).toUniformSpace := by
   letI : NormedAddCommGroup
@@ -355,7 +355,7 @@ theorem fineWkpComplete
     @ewkpNormedSpace (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   letI : CompleteSpace
       (FullWkpQ (Module.finrank ℝ E) k p hp) :=
-    @ewkpComplete (Module.finrank ℝ E) _ k p hp hp_top Set.univ ⟨isOpen_univ⟩
+    @ewkpComplete (Module.finrank ℝ E) _ k p hp Set.univ ⟨isOpen_univ⟩
   letI : NormedAddCommGroup (FineWkpArray (E := E) ι r s k p hp) :=
     fineWkpGroup (E := E) ι r s k p hp
   letI : NormedSpace ℝ (FineWkpArray (E := E) ι r s k p hp) :=
@@ -576,12 +576,12 @@ private theorem secComp_target_ae
       (secCompRaw (I := I) (M := M) r s S α P.1 P.2))
 
 theorem fineLoc_joint
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s) :
     ∃ K : ℝ, 0 < K ∧
-      ∀ S : WkpTensor (I := I) (M := M) g r s k p hp,
+      ∀ S : WkpTensor (I := I) (M := M) r s k p hp,
         MemWkp (d := Module.finrank ℝ E) k p
             (fineLocComp (I := I) (M := M) r s φ S.1 α P)
             (Chart.chartTargetEuclid (I := I) (M := M) α) ∧
@@ -589,7 +589,7 @@ theorem fineLoc_joint
               (fineLocComp (I := I) (M := M) r s φ S.1 α P)
               (Chart.chartTargetEuclid (I := I) (M := M) α) ≤
             ENNReal.ofReal K *
-              wkpTensorNorm (I := I) (M := M) g k p S.1 := by
+              wkpTensorNorm (I := I) (M := M) k p S.1 := by
   obtain ⟨K, hK, hKbound⟩ :=
     Chart.MemWkpChart_smooth_mul_per_chart_quant
       (I := I) (M := M) k hp hp_top φ α
@@ -639,63 +639,63 @@ theorem fineLoc_joint
         (wkpNorm_congr_ae (d := Module.finrank ℝ E) hp hΩ
           (secComp_target_ae (I := I) (M := M) r s S.1 α P).symm)
     _ ≤ ENNReal.ofReal K *
-        wkpTensorNorm (I := I) (M := M) g k p S.1 :=
+        wkpTensorNorm (I := I) (M := M) k p S.1 :=
       mul_le_mul_right
-        (wkpNorm_secComp_le (I := I) (M := M) g k p
+        (wkpNorm_secComp_le (I := I) (M := M) k p
           S.1 α P.1 P.2) _
 
 theorem fineLoc_mem_univ
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
-    (S : WkpTensor (I := I) (M := M) g r s k p hp) :
+    (S : WkpTensor (I := I) (M := M) r s k p hp) :
     MemWkp (d := Module.finrank ℝ E) k p
       (fineLocComp (I := I) (M := M) r s φ S.1 α P) Set.univ := by
-  apply MemWkp.extend_zero (d := Module.finrank ℝ E) hp hp_top
+  apply MemWkp.extend_zero (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α)
     isOpen_univ (subset_univ _)
-  · exact ((fineLoc_joint (I := I) (M := M) g r s k hp hp_top
+  · exact ((fineLoc_joint (I := I) (M := M) r s k hp hp_top
       φ α P).choose_spec.2 S).1
   · exact fineLoc_support (I := I) (M := M) r s φ S.1 α P
   · exact fineLoc_compact (I := I) (M := M) r s φ S.1 α P
 
 theorem fineLoc_norm_univ
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
-    (S : WkpTensor (I := I) (M := M) g r s k p hp) :
+    (S : WkpTensor (I := I) (M := M) r s k p hp) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
         (fineLocComp (I := I) (M := M) r s φ S.1 α P) Set.univ =
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
         (fineLocComp (I := I) (M := M) r s φ S.1 α P)
         (Chart.chartTargetEuclid (I := I) (M := M) α) := by
-  exact wkpNorm_extend_zero (d := Module.finrank ℝ E) hp hp_top
+  exact wkpNorm_extend_zero (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α)
     isOpen_univ (subset_univ _)
-    ((fineLoc_joint (I := I) (M := M) g r s k hp hp_top
+    ((fineLoc_joint (I := I) (M := M) r s k hp hp_top
       φ α P).choose_spec.2 S).1
     (fineLoc_support (I := I) (M := M) r s φ S.1 α P)
     (fineLoc_compact (I := I) (M := M) r s φ S.1 α P)
 
 noncomputable def fineLocWkp
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
-    (S : WkpTensor (I := I) (M := M) g r s k p hp) :
+    (S : WkpTensor (I := I) (M := M) r s k p hp) :
     @EuclidWkp (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩ :=
   ⟨fineLocComp (I := I) (M := M) r s φ S.1 α P,
-    fineLoc_mem_univ (I := I) (M := M) g r s k hp hp_top φ α P S⟩
+    fineLoc_mem_univ (I := I) (M := M) r s k hp hp_top φ α P S⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem fineLoc_ae
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (r s : ℕ)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
     {S T : RSTensorSection I M r s}
-    (hST : TensorAEEq (I := I) (M := M) g S T) :
+    (hST : TensorAEEq (I := I) (M := M) S T) :
     fineLocComp (I := I) (M := M) r s φ S α P =ᵐ[volume]
       fineLocComp (I := I) (M := M) r s φ T α P := by
   let Ω : Set EuclN :=
@@ -716,35 +716,35 @@ theorem fineLoc_ae
       fineLoc_apply_off (I := I) (M := M) r s φ T α P hy]
 
 noncomputable def fineLocMap
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s) :
-    WkpTensorQuot (I := I) (M := M) g r s k p hp →
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
       FullWkpQ (Module.finrank ℝ E) k p hp :=
   Quotient.lift
     (fun S => Quotient.mk
       (@euclidWkpSetoid (Module.finrank ℝ E) k p hp Set.univ
         ⟨isOpen_univ⟩)
-      (fineLocWkp (I := I) (M := M) g r s k hp hp_top φ α P S))
+      (fineLocWkp (I := I) (M := M) r s k hp hp_top φ α P S))
     (fun S T hST => Quotient.sound (by
       change fineLocComp (I := I) (M := M) r s φ S.1 α P =ᵐ[
         volume.restrict Set.univ]
           fineLocComp (I := I) (M := M) r s φ T.1 α P
       simpa only [Measure.restrict_univ] using
-        fineLoc_ae (I := I) (M := M) g r s φ α P hST))
+        fineLoc_ae (I := I) (M := M) r s φ α P hST))
 
 theorem fineLocMap_add
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
-    (a b : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    fineLocMap (I := I) (M := M) g r s k hp hp_top φ α P
-        (qadd (I := I) (M := M) g r s k p hp a b) =
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    fineLocMap (I := I) (M := M) r s k hp hp_top φ α P
+        (qadd (I := I) (M := M) r s k p hp a b) =
       eadd k p hp Set.univ
-        (fineLocMap (I := I) (M := M) g r s k hp hp_top φ α P a)
-        (fineLocMap (I := I) (M := M) g r s k hp hp_top φ α P b) := by
+        (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P a)
+        (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P b) := by
   refine Quotient.inductionOn₂ a b ?_
   intro S T
   apply Quotient.sound
@@ -756,15 +756,15 @@ theorem fineLocMap_add
     congrFun (fineLoc_add (I := I) (M := M) r s φ S.1 T.1 α P) y)
 
 theorem fineLocMap_smul
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s) (c : ℝ)
-    (a : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    fineLocMap (I := I) (M := M) g r s k hp hp_top φ α P
-        (qsmul (I := I) (M := M) g r s k p hp c a) =
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    fineLocMap (I := I) (M := M) r s k hp hp_top φ α P
+        (qsmul (I := I) (M := M) r s k p hp c a) =
       esmul k p hp Set.univ c
-        (fineLocMap (I := I) (M := M) g r s k hp hp_top φ α P a) := by
+        (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P a) := by
   refine Quotient.inductionOn a ?_
   intro S
   apply Quotient.sound
@@ -775,18 +775,18 @@ theorem fineLocMap_smul
     congrFun (fineLoc_smul (I := I) (M := M) r s φ c S.1 α P) y)
 
 theorem fineLocMap_bound
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s) :
     ∃ K : ℝ, 0 < K ∧
-      ∀ a : WkpTensorQuot (I := I) (M := M) g r s k p hp,
+      ∀ a : WkpTensorQuot (I := I) (M := M) r s k p hp,
         ewkpNorm (d := Module.finrank ℝ E) k p hp Set.univ
-            (fineLocMap (I := I) (M := M) g r s k hp hp_top φ α P a) ≤
+            (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P a) ≤
           ENNReal.ofReal K *
-            wkpTensorQNorm (I := I) (M := M) g r s k p hp a := by
+            wkpTensorQNorm (I := I) (M := M) r s k p hp a := by
   obtain ⟨K, hK, hjoint⟩ :=
-    fineLoc_joint (I := I) (M := M) g r s k hp hp_top φ α P
+    fineLoc_joint (I := I) (M := M) r s k hp hp_top φ α P
   refine ⟨K, hK, ?_⟩
   intro a
   refine Quotient.inductionOn a ?_
@@ -794,44 +794,44 @@ theorem fineLocMap_bound
   change iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
       (fineLocComp (I := I) (M := M) r s φ S.1 α P) Set.univ ≤
     ENNReal.ofReal K *
-      wkpTensorNorm (I := I) (M := M) g k p S.1
-  rw [fineLoc_norm_univ (I := I) (M := M) g r s k hp hp_top φ α P S]
+      wkpTensorNorm (I := I) (M := M) k p S.1
+  rw [fineLoc_norm_univ (I := I) (M := M) r s k hp hp_top φ α P S]
   exact (hjoint S).2
 
 noncomputable def fineExtractMap
-    {ι : Type*} (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    {ι : Type*} (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : ι → C^∞⟮I, M; ℝ⟯) (α : ι → M) :
-    WkpTensorQuot (I := I) (M := M) g r s k p hp →
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
       FineWkpArray (E := E) ι r s k p hp :=
   fun a z P =>
-    fineLocMap (I := I) (M := M) g r s k hp hp_top (φ z) (α z) P a
+    fineLocMap (I := I) (M := M) r s k hp hp_top (φ z) (α z) P a
 
 theorem fineExtract_add
-    {ι : Type*} (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    {ι : Type*} (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : ι → C^∞⟮I, M; ℝ⟯) (α : ι → M)
-    (a b : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    fineExtractMap (I := I) (M := M) g r s k hp hp_top φ α
-        (qadd (I := I) (M := M) g r s k p hp a b) =
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    fineExtractMap (I := I) (M := M) r s k hp hp_top φ α
+        (qadd (I := I) (M := M) r s k p hp a b) =
       fun z P => eadd k p hp Set.univ
-        (fineExtractMap (I := I) (M := M) g r s k hp hp_top φ α a z P)
-        (fineExtractMap (I := I) (M := M) g r s k hp hp_top φ α b z P) := by
+        (fineExtractMap (I := I) (M := M) r s k hp hp_top φ α a z P)
+        (fineExtractMap (I := I) (M := M) r s k hp hp_top φ α b z P) := by
   funext z P
-  exact fineLocMap_add (I := I) (M := M) g r s k hp hp_top
+  exact fineLocMap_add (I := I) (M := M) r s k hp hp_top
     (φ z) (α z) P a b
 
 theorem fineExtract_smul
-    {ι : Type*} (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    {ι : Type*} (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : ι → C^∞⟮I, M; ℝ⟯) (α : ι → M) (c : ℝ)
-    (a : WkpTensorQuot (I := I) (M := M) g r s k p hp) :
-    fineExtractMap (I := I) (M := M) g r s k hp hp_top φ α
-        (qsmul (I := I) (M := M) g r s k p hp c a) =
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    fineExtractMap (I := I) (M := M) r s k hp hp_top φ α
+        (qsmul (I := I) (M := M) r s k p hp c a) =
       fun z P => esmul k p hp Set.univ c
-        (fineExtractMap (I := I) (M := M) g r s k hp hp_top φ α a z P) := by
+        (fineExtractMap (I := I) (M := M) r s k hp hp_top φ α a z P) := by
   funext z P
-  exact fineLocMap_smul (I := I) (M := M) g r s k hp hp_top
+  exact fineLocMap_smul (I := I) (M := M) r s k hp hp_top
     (φ z) (α z) P c a
 
 end Tensor

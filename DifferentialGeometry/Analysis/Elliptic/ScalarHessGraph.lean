@@ -14,7 +14,6 @@ namespace Laplacian
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -78,7 +77,7 @@ theorem scalar_hess_graph
         (Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x -
           2 * Hess x - 2 * Cross x) / 2 := by
       funext x
-      have hB := bochner_pointwise_concrete_metric_unconditional (I := I) g hf x
+      have hB := bochner_pointwise_concrete_metric (I := I) g hf x
       dsimp only [Ric, Hess, Cross]
       linarith
     rw [heq]
@@ -101,7 +100,7 @@ theorem scalar_hess_graph
         ∫ x, (2 * Hess x + 2 * Ric x + 2 * Cross x) ∂μ := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
     simpa only [Hess, Ric, Cross] using
-      (bochner_pointwise_concrete_metric_unconditional (I := I) g hf x)
+      (bochner_pointwise_concrete_metric (I := I) g hf x)
   have hmain :
       0 = 2 * (∫ x, Hess x ∂μ) + 2 * (∫ x, Ric x ∂μ) +
         2 * (∫ x, Cross x ∂μ) := by

@@ -6,7 +6,6 @@ import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricCompatible
 import DifferentialGeometry.Bundle.Section
 
-
 noncomputable section
 
 open Bundle Manifold Set
@@ -44,9 +43,16 @@ variable
 @[reducible] def directionalDeriv (f : M → ℝ) (x : M) (v : TangentSpace I x) : ℝ :=
   (mfderiv I 𝓘(ℝ) f x) v
 
+@[reducible] def directionalDerivAt (f : M → ℝ) (x : M) (v : TangentSpace I x) : ℝ :=
+  directionalDeriv (I := I) f x v
+
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 @[simp] lemma directionalDeriv_eq (f : M → ℝ) (x : M) (v : TangentSpace I x) :
     directionalDeriv (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
+@[simp] lemma directionalDerivAt_eq (f : M → ℝ) (x : M) (v : TangentSpace I x) :
+    directionalDerivAt (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 theorem koszul_identity_on

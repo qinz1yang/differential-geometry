@@ -15,7 +15,7 @@ the Holder endpoint.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 

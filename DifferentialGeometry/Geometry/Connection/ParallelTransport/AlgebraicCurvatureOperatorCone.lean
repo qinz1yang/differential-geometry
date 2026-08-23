@@ -14,7 +14,7 @@ namespace Geometry
 namespace Riemannian
 namespace Variation
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 
@@ -50,7 +50,6 @@ private local instance parallelCurvatureOperatorTensor04TopologicalSpace (x : M)
         (@NormedAddCommGroup.toMetricSpace _
           (parallelCurvatureOperatorTensor04NormedAddCommGroup (I := I) x))))
 
-@[simp]
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_curvatureOperatorQuadraticEval
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)

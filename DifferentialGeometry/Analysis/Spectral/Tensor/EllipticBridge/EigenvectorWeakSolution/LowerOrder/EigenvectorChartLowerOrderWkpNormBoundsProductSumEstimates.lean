@@ -248,7 +248,7 @@ lemma wkpNorm_finsetSum_le_const_mul_atomSum
     {α : M} {K : ℕ} {ι κ : Type*}
     (S : Finset ι) (T : Finset κ) (F : ι → EuclN → ℝ) (atom : κ → EuclN → ℝ)
     (proj : ι → κ) (hproj : ∀ j ∈ S, proj j ∈ T)
-    (C : ℝ) (_hC_nn : 0 ≤ C)
+    (C : ℝ)
     (hF : ∀ j ∈ S, MemWkp (d := Module.finrank ℝ E) K 2 (F j)
       (chartTargetEuclid (I := I) (M := M) α))
     (h_bd : ∀ j ∈ S,

@@ -385,7 +385,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
       (fderiv ℝ χ x) (EuclideanSpace.single i 1) = 0)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
-    (hh : h ≠ 0) {R₀ : ℝ} (_hh_le : |h| ≤ R₀)
+    (hh : h ≠ 0)
     {u_seq : ℕ → EuclN → ℝ}
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
     (hu_seq_cs : ∀ n, HasCompactSupport (u_seq n))

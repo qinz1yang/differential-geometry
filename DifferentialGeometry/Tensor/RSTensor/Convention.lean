@@ -64,7 +64,7 @@ import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
-import DifferentialGeometry.Bundle.SectionRealized
+import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import Mathlib.LinearAlgebra.Dual.Basis
@@ -97,6 +97,7 @@ section Components
 
 variable (basis : Module.Basis Idx K (TangentSpace I x))
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem componentRS_basisTensor_apply {r s : Nat}
     (T : TensorRSSpace r s I x)
@@ -106,6 +107,7 @@ theorem componentRS_basisTensor_apply {r s : Nat}
         (fun a => basis (lower a)) := by
   rfl
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem component11_apply
     (T : TensorRSSpace 1 1 I x) (i j : Idx) :
@@ -114,7 +116,7 @@ theorem component11_apply
         (fun _ : Fin 1 => basis j) := by
   rfl
 
-@[simp]
+omit [DecidableEq Idx] in
 theorem component13_apply
     (T : TensorRSSpace 1 3 I x) (a i j k : Idx) :
     componentRS_gen (I := I) basis T
@@ -132,7 +134,6 @@ theorem component13_apply
     · simp [h0, h1]
 
 omit [CompleteSpace K] [FiniteDimensional K E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component02_apply
     (A : Tensor0SSpace 2 I x) (i j : Idx) :
     component0S (I := I) basis A
@@ -144,7 +145,6 @@ theorem component02_apply
   by_cases h0 : q = 0 <;> simp [h0]
 
 omit [CompleteSpace K] [FiniteDimensional K E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component04_apply
     (A : Tensor0SSpace 4 I x) (i j k l : Idx) :
     component0S (I := I) basis A

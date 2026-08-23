@@ -54,7 +54,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_per_section_improved
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * (‖S‖₊ + 1) := by
@@ -62,7 +62,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_per_section_improved
   have hper : ∀ (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
                       (Fin s → Fin (Module.finrank ℝ E))),
       ∃ C : ℝ, 0 ≤ C ∧
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α IJ.1 IJ.2) ≤
           ENNReal.ofReal C * (‖S‖₊ + 1) := fun IJ =>
@@ -96,7 +96,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_per_section_improved_forall
       ∃ C : ℝ, 0 ≤ C ∧
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-          wkpNormChart (I := I) (M := M) g 1 2
+          wkpNormChart (I := I) (M := M) 1 2
               (tensorChartComponentScalar (I := I) (M := M)
                 g r s S.toCcTensor α Idx Jdx) ≤
             ENNReal.ofReal C * (‖S‖₊ + 1) := fun S =>
@@ -110,7 +110,7 @@ theorem sum_tensorChartComponentScalar_wkpNormChart_le_per_section
     ∃ C : ℝ, 0 ≤ C ∧
       ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α IJ.1 IJ.2) ≤
         ENNReal.ofReal C * (‖S‖₊ + 1) := by
@@ -124,7 +124,7 @@ theorem sum_tensorChartComponentScalar_wkpNormChart_le_per_section
   have h_sum_le :
       ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α IJ.1 IJ.2) ≤
       ∑ _IJ : (Fin r → Fin (Module.finrank ℝ E)) ×

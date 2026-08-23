@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -205,7 +205,7 @@ private theorem branch_of_inj
     exact written_fderiv_inv (I := I)
       (hf.contMDiffAt.mdifferentiableAt (by simp)) hDzinv
   obtain ⟨Φ, huΦ, -, hEqΦ⟩ :=
-    Coordinates.hlocAt_infty' (I := 𝓘(Real, E)) (J := I)
+    Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty (I := 𝓘(Real, E)) (J := I)
       Ψ.open_source huΨ hf.contMDiffOn hinv_source
   exact ⟨⟨Φ, hEqΦ⟩, huΦ⟩
 

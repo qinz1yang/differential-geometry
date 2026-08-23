@@ -1,6 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorTensorHsToWtwokTwo
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
+
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
@@ -106,6 +110,230 @@ theorem cc_pair_tsum
     rw [Real.rpow_natCast]
   rw [hweight]
   ring
+
+theorem cc_pair_tsum_split
+    (g : SmoothRiemannianMetric I M) (s a b : ℕ)
+    (U A : SmoothCcTensor g 0 s) :
+    ∑' i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+        (I := I) (M := M) g 0 s,
+        tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+          (tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 s)
+              (SmoothCcTensor.toL2 U) i *
+            tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 s)
+              (SmoothCcTensor.toL2 A) i) =
+      tensorL2Inner (I := I) (M := M) g 0 s
+        (oneMinusConnLapSmoothIter (I := I) g 0 s b U).toFun
+        (oneMinusConnLapSmoothIter (I := I) g 0 s a A).toFun := by
+  classical
+  rw [cc_l2_pair_tsum (I := I) (M := M) g s
+    (oneMinusConnLapSmoothIter (I := I) g 0 s b U)
+    (oneMinusConnLapSmoothIter (I := I) g 0 s a A)]
+  refine tsum_congr (fun i => ?_)
+  rw [cc_iter_coeff (I := I) (M := M) g s b U i,
+    cc_iter_coeff (I := I) (M := M) g s a A i]
+  have hweight :
+      tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) =
+        (1 + DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx.lambda
+          (I := I) (M := M) i) ^ (a + b) := by
+    unfold tensorSobolevWeight
+    rw [Real.rpow_natCast]
+  rw [hweight, pow_add]
+  ring
+
+theorem finite_pair_split
+    (g : SmoothRiemannianMetric I M)
+    (F : Finset
+      (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+        (I := I) (M := M) g 0 2))
+    (c : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+      (I := I) (M := M) g 0 2 → ℝ)
+    (A : SmoothCcTensor g 0 2) (a b : ℕ) :
+    ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+        (c i * tensorL2Coeff (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+          (SmoothCcTensor.toL2 A) i) =
+      tensorL2Inner (I := I) (M := M) g 0 2
+        (oneMinusConnLapSmoothIter (I := I) g 0 2 b
+          (finiteEigenCombo (I := I) (M := M) g F c)).toFun
+        (oneMinusConnLapSmoothIter (I := I) g 0 2 a A).toFun := by
+  classical
+  have hcoeff
+      (i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+        (I := I) (M := M) g 0 2) :
+      tensorL2Coeff (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+          (SmoothCcTensor.toL2
+            (finiteEigenCombo (I := I) (M := M) g F c)) i =
+        (if i ∈ F then c i else 0) := by
+    rw [SmoothCcTensor.toL2_apply]
+    exact finiteEigenCombo_tensorL2Coeff (I := I) (M := M) g F c i
+  have hzero : ∀ i ∉ F,
+      tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+          (tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+              (SmoothCcTensor.toL2
+                (finiteEigenCombo (I := I) (M := M) g F c)) i *
+            tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+              (SmoothCcTensor.toL2 A) i) = 0 := by
+    intro i hi
+    rw [hcoeff i, if_neg hi, zero_mul, mul_zero]
+  calc
+    ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+          (c i * tensorL2Coeff (I := I) (M := M)
+            (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+            (SmoothCcTensor.toL2 A) i) =
+        ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+          (tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+              (SmoothCcTensor.toL2
+                (finiteEigenCombo (I := I) (M := M) g F c)) i *
+            tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+              (SmoothCcTensor.toL2 A) i) := by
+        refine Finset.sum_congr rfl (fun i hi => ?_)
+        rw [hcoeff i, if_pos hi]
+    _ = ∑' i,
+          tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+            (tensorL2Coeff (I := I) (M := M)
+                (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+                (SmoothCcTensor.toL2
+                  (finiteEigenCombo (I := I) (M := M) g F c)) i *
+              tensorL2Coeff (I := I) (M := M)
+                (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+                (SmoothCcTensor.toL2 A) i) := (tsum_eq_sum hzero).symm
+    _ = _ := cc_pair_tsum_split (I := I) (M := M) g 2 a b
+      (finiteEigenCombo (I := I) (M := M) g F c) A
+
+omit [CompactSpace M] [I.Boundaryless] in
+private theorem connIter_smul
+    (g : SmoothRiemannianMetric I M) (r s k : ℕ) (theta : ℝ)
+    (T : SmoothCcTensor g r s) :
+    oneMinusConnLapSmoothIter (I := I) g r s k (theta • T) =
+      theta • oneMinusConnLapSmoothIter (I := I) g r s k T := by
+  induction k with
+  | zero => simp only [oneMinusConnLapSmoothIter_zero]
+  | succ k ih =>
+      rw [oneMinusConnLapSmoothIter_succ, ih, oneMinusConnLapSmoothIter_succ]
+      unfold oneMinusConnLapSmooth
+      have hraw :
+          rawTensorConnLapSmooth (I := I) g r s
+              (theta • oneMinusConnLapSmoothIter (I := I) g r s k T) =
+            theta • rawTensorConnLapSmooth (I := I) g r s
+              (oneMinusConnLapSmoothIter (I := I) g r s k T) := by
+        change rawConnLapLin (I := I) g r s
+              (theta • oneMinusConnLapSmoothIter (I := I) g r s k T) =
+            theta • rawConnLapLin (I := I) g r s
+              (oneMinusConnLapSmoothIter (I := I) g r s k T)
+        exact map_smul (rawConnLapLin (I := I) g r s) theta
+          (oneMinusConnLapSmoothIter (I := I) g r s k T)
+      rw [hraw, smul_sub]
+
+private theorem connIter_symmS
+    (g : SmoothRiemannianMetric I M) (k : ℕ) (T : SmoothCcTensor g 0 2) :
+    oneMinusConnLapSmoothIter (I := I) g 0 2 k
+        (symmS (I := I) (M := M) g T) =
+      symmS (I := I) (M := M) g
+        (oneMinusConnLapSmoothIter (I := I) g 0 2 k T) := by
+  induction k with
+  | zero => simp only [oneMinusConnLapSmoothIter_zero]
+  | succ k ih =>
+      have hraw :
+          rawTensorConnLapSmooth (I := I) g 0 2
+              (symmS (I := I) (M := M) g
+                (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) =
+            symmS (I := I) (M := M) g
+              (rawTensorConnLapSmooth (I := I) g 0 2
+                (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) := by
+        unfold symmS ccTensor02Symm
+        have hsmul :
+            rawTensorConnLapSmooth (I := I) g 0 2
+                ((1 / 2 : ℝ) •
+                  (oneMinusConnLapSmoothIter (I := I) g 0 2 k T +
+                    domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                      (oneMinusConnLapSmoothIter (I := I) g 0 2 k T))) =
+              (1 / 2 : ℝ) • rawTensorConnLapSmooth (I := I) g 0 2
+                (oneMinusConnLapSmoothIter (I := I) g 0 2 k T +
+                  domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                    (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) := by
+          change rawConnLapLin (I := I) g 0 2
+                ((1 / 2 : ℝ) •
+                  (oneMinusConnLapSmoothIter (I := I) g 0 2 k T +
+                    domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                      (oneMinusConnLapSmoothIter (I := I) g 0 2 k T))) =
+              (1 / 2 : ℝ) • rawConnLapLin (I := I) g 0 2
+                (oneMinusConnLapSmoothIter (I := I) g 0 2 k T +
+                  domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                    (oneMinusConnLapSmoothIter (I := I) g 0 2 k T))
+          exact map_smul (rawConnLapLin (I := I) g 0 2) (1 / 2 : ℝ) _
+        have hadd :
+            rawTensorConnLapSmooth (I := I) g 0 2
+                (oneMinusConnLapSmoothIter (I := I) g 0 2 k T +
+                  domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                    (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) =
+              rawTensorConnLapSmooth (I := I) g 0 2
+                  (oneMinusConnLapSmoothIter (I := I) g 0 2 k T) +
+                rawTensorConnLapSmooth (I := I) g 0 2
+                  (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                    (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) := by
+          change rawConnLapLin (I := I) g 0 2
+                (oneMinusConnLapSmoothIter (I := I) g 0 2 k T +
+                  domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                    (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) =
+              rawConnLapLin (I := I) g 0 2
+                  (oneMinusConnLapSmoothIter (I := I) g 0 2 k T) +
+                rawConnLapLin (I := I) g 0 2
+                  (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
+                    (oneMinusConnLapSmoothIter (I := I) g 0 2 k T))
+          exact map_add (rawConnLapLin (I := I) g 0 2) _ _
+        rw [hsmul, hadd,
+          rawTensorConnLapSmooth_domDomCongrSection (I := I) (M := M) g
+            (Equiv.swap (0 : Fin 2) 1)]
+      rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_succ, ih]
+      unfold oneMinusConnLapSmooth
+      rw [hraw]
+      exact (symmS_sub (I := I) (M := M) g _ _).symm
+
+theorem finite_symm_scale
+    (g : SmoothRiemannianMetric I M)
+    (F : Finset
+      (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+        (I := I) (M := M) g 0 2))
+    (c : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+      (I := I) (M := M) g 0 2 → ℝ)
+    (A : SmoothCcTensor g 0 2) (a b : ℕ) (theta : ℝ)
+    (hA : symmS (I := I) (M := M) g A = A) :
+    theta * (∑ i ∈ F,
+        tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
+          (c i * tensorL2Coeff (I := I) (M := M)
+            (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+            (SmoothCcTensor.toL2 A) i)) =
+      tensorL2Inner (I := I) (M := M) g 0 2
+        (oneMinusConnLapSmoothIter (I := I) g 0 2 b
+          (theta • symmS (I := I) (M := M) g
+            (finiteEigenCombo (I := I) (M := M) g F c))).toFun
+        (oneMinusConnLapSmoothIter (I := I) g 0 2 a A).toFun := by
+  rw [finite_pair_split (I := I) (M := M) g F c A a b]
+  have hsymmA :
+      symmS (I := I) (M := M) g
+          (oneMinusConnLapSmoothIter (I := I) g 0 2 a A) =
+        oneMinusConnLapSmoothIter (I := I) g 0 2 a A := by
+    rw [← connIter_symmS (I := I) (M := M) g a A, hA]
+  have hsymm_pair (S T : SmoothCcTensor g 0 2) :
+      tensorL2Inner (I := I) (M := M) g 0 2
+          (symmS (I := I) (M := M) g S).toFun T.toFun =
+        tensorL2Inner (I := I) (M := M) g 0 2
+          S.toFun (symmS (I := I) (M := M) g T).toFun := by
+    rw [← SmoothCcTensor.inner_def (I := I) (M := M),
+      ← SmoothCcTensor.inner_def (I := I) (M := M)]
+    unfold symmS ccTensor02Symm
+    rw [real_inner_smul_left, real_inner_smul_right, inner_add_left, inner_add_right,
+      inner_domDomCongrSection_swap (I := I) (M := M) g]
+  rw [connIter_smul (I := I) (M := M),
+    connIter_symmS (I := I) (M := M), SmoothCcTensor.toFun_smul,
+    tensorL2Inner_smul_left, hsymm_pair, hsymmA]
 
 theorem finite_repr_norm
     (g : SmoothRiemannianMetric I M) (s m : ℕ)

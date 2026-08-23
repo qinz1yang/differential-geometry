@@ -766,7 +766,7 @@ private theorem tensorComponent_aPriori_succ
         ENNReal.ofReal C *
           (iteratedWeakSobolevNorm (d := dimE) m 2
               (tensorComponentWeakRHS (I := I) (M := M)
-                g r s T F α hK hK_target P₀) Ω'' +
+                g r s T F α P₀) Ω'' +
             iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
               (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) Ω'') := by
   classical
@@ -784,7 +784,7 @@ private theorem tensorComponent_aPriori_succ
   intro T F hT_supp hF_supp hT_K hF_K hweak
   set u := tensorComponentEuclid (I := I) (M := M) g r s T α P₀ with hu_def
   set RHS := tensorComponentWeakRHS (I := I) (M := M)
-    g r s T F α hK hK_target P₀ with hRHS_def
+    g r s T F α P₀ with hRHS_def
   have hu_cd : ContDiff ℝ (⊤ : ℕ∞) u :=
     tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_supp
   have hu_cpt : HasCompactSupport u :=
@@ -794,7 +794,7 @@ private theorem tensorComponent_aPriori_succ
   have hu_Ω'' : tsupport u ⊆ Ω'' := hu_K.trans hK_Ω''
   have hRHS_cd : ContDiff ℝ (⊤ : ℕ∞) RHS :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_supp hF_supp
   have hRHS_u : tsupport RHS ⊆ tsupport u :=
     tensorComponentWeakRHS_tsupport_subset (I := I) (M := M) g r s T F α hK
       hK_target P₀ hT_supp hF_supp hu_K hweak
@@ -967,7 +967,7 @@ theorem tensorComponent_aPriori_succ_sum
           ENNReal.ofReal C *
             (iteratedWeakSobolevNorm (d := dimE) m 2
                 (tensorComponentWeakRHS (I := I) (M := M)
-                  g r s T F α hK hK_target P₀) Ω'' +
+                  g r s T F α P₀) Ω'' +
               iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
                 (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) Ω'') :=
     fun P₀ => tensorComponent_aPriori_succ (I := I) (M := M) g r s α hK
@@ -983,7 +983,7 @@ theorem tensorComponent_aPriori_succ_sum
           tsupport (tensorComponentEuclid (I := I) (M := M) g r s F α Q) ⊆ K) →
         iteratedWeakSobolevNorm (d := dimE) m 2
             (tensorComponentWeakRHS (I := I) (M := M)
-              g r s T F α hK hK_target P₀) Ω'' ≤
+              g r s T F α P₀) Ω'' ≤
           ENNReal.ofReal Kc *
             ((∑ Q : CompIdx E r s,
                 iteratedWeakSobolevNorm (d := dimE) m 2
@@ -1029,7 +1029,7 @@ theorem tensorComponent_aPriori_succ_sum
         ENNReal.ofReal_one]]
     calc iteratedWeakSobolevNorm (d := dimE) m 2
             (tensorComponentWeakRHS (I := I) (M := M)
-              g r s T F α hK hK_target P₀) Ω'' +
+              g r s T F α P₀) Ω'' +
           iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
             (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) Ω''
         ≤ ENNReal.ofReal (Ksrc P₀) * (SF + ST) + (SF + ST) :=

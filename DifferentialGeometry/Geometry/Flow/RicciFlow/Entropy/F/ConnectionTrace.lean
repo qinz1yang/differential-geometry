@@ -3,7 +3,6 @@ open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 
-
 set_option autoImplicit false
 
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
@@ -19,7 +18,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -325,7 +324,6 @@ private theorem compFun_center
   rw [componentRS]
   simp [hconst, component0S, coordinateFrameAt_basis_apply]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem gInvFun_center
@@ -359,7 +357,6 @@ private theorem symmetric_trace_sum_mul
   rw [mul_comm]
   congr 1
   exact Finset.sum_congr rfl fun p _ => hΓ p l p
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -699,7 +696,7 @@ theorem connTraceRaw_of_components
   exact connTraceRaw_eq_gamma (I := I) (cov := cov) g hcov A
     nablaChristoffelVariation x (hzero x) (hNabla x) (hGamma x)
 
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

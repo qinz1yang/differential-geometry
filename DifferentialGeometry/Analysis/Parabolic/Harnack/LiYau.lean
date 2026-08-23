@@ -9,8 +9,8 @@ import DifferentialGeometry.Geometry.Operator.HessianTraceInequality
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
 import DifferentialGeometry.Analysis.Calculus.Extrema
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
@@ -786,6 +786,7 @@ private theorem chartLaplacianTimeDerivOn
     simpa [chartVossWeylLaplacian_def, chartVossWeylIntegrand_def] using hdiv
   exact hgoal
 
+omit [SigmaCompactSpace M] in
 theorem liYauQuantity_evolution_identity
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}
@@ -973,7 +974,7 @@ theorem liYauQuantity_evolution_identity
           (hlogslice t (D.regular_subset ht))) x :=
       hΔsub.symm.trans hΔnorm
     linarith
-  have hbochner := bochner_pointwise_concrete_metric_unconditional (I := I) g
+  have hbochner := bochner_pointwise_concrete_metric (I := I) g
     (hlogslice t (D.regular_subset ht)) x
   have hvecg : ∀ h : M → ℝ, gradientFun (I := I) g h x = gradFun (I := I) g h x := by
     intro h

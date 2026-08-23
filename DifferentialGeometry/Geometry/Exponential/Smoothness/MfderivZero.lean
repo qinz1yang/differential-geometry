@@ -24,7 +24,6 @@ open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.Analysis.ODE.Flow
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 section ChartPhaseVFLinearization
 
@@ -279,8 +278,8 @@ private theorem exists_combined_chartFlow_data
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   obtain ⟨ρ₁, T₁, hρ₁_pos, hT₁_pos, hρ₁_le_ρ_V4, hT₁_lt_T_V4, h_orbit_in⟩ :=
-    exists_uniform_orbit_in_inner_ball (I := I) (p := p)
-      (x₀ := x₀) hx₀_def
+    exists_uniform_orbit_in_inner_ball
+      (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
       (Φ := Φ) hΦ_cd_V4 hΦ_init0
   obtain ⟨Mglob, hMglob_nn, hMglob_bd⟩ :=
@@ -403,10 +402,10 @@ private theorem exists_combined_chartFlow_data
       HasDerivAt (fun s' : ℝ => Φ (((x₀, v) : E × E), s'))
         (chartPhaseVF (I := I) g p (Φ (((x₀, v) : E × E), s))) s :=
     orbit_hasDerivAt_chartPhaseVF_uniform
-      (I := I) (g := g) (p := p) (x₀ := x₀) hx₀_def
-      (b := b) (r := rN) (ε := εN) hr hε
-      (Φ := Φ) hΦ_ILF hb_sub
-      (ρ := ρ) (T := T_match) hρ_pos hT_match_pos hT_match_lt_εN hρ_le_rN
+      (I := I) (g := g) (p := p) (x₀ := x₀)
+      (b := b) (r := rN) (ε := εN)
+      (Φ := Φ) hΦ_ILF
+      (ρ := ρ) (T := T_match) hT_match_lt_εN hρ_le_rN
       (fun v hv s hs => h_inner_v v hv s hs)
   refine ⟨Φ, b, rN, εN, ρ, T, T_match, t', Mglob, hr, hε, hρ_pos, hT_pos, hT_match_pos,
     hT_match_lt_T, hT_match_le_ε, ht'_pos, ht'_lt_T_match, hMglob_nn, hMt'_lt,

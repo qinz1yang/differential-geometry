@@ -23,7 +23,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
 private theorem sum_g_inner_T_self_eq_invGram_sum
@@ -371,6 +370,7 @@ theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
   intro m _
   ring
 
+omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -401,7 +401,8 @@ theorem bochner_pointwise_grad_normSq_of_boundaryless
     g.symm x _ _]
   ring
 
-theorem bochner_pointwise_concrete_metric_unconditional
+omit [SigmaCompactSpace M] in
+theorem bochner_pointwise_concrete_metric
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
@@ -422,6 +423,7 @@ theorem chartHessFrobeniusSq_nonneg
   exact frobeniusSq_grad_vector_nonneg (I := I) g
     (fun b : M => gradFun (I := I) g f b) x
 
+omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_half_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -431,7 +433,7 @@ theorem bochner_pointwise_half_grad_normSq_of_boundaryless
           (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         g.inner x (gradFun (I := I) g f x)
           (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
-  rw [bochner_pointwise_concrete_metric_unconditional (I := I) g hf x]
+  rw [bochner_pointwise_concrete_metric (I := I) g hf x]
   ring
 
 end Curvature

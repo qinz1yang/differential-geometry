@@ -8,7 +8,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
 
 
@@ -17,11 +16,9 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.TensorMultilinear (contMDiffAt_section_apply contMDiff_section_apply)
@@ -92,7 +89,7 @@ lemma inverseMetricSharpFib_g0FlatCLM_eq_metricSharp (g₀ g' : SmoothRiemannian
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma cotangentToDual_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x : M)
+lemma cotangentToDual_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     cotangentToDual (I := I) (x := x) (g0FlatCLM (I := I) g₀ x v) w = g₀.inner x v w := by
   rw [g0FlatCLM_apply, cotangentToDual_dualToCotangent]; rfl
@@ -142,44 +139,44 @@ lemma g0FlatCLM_inverseMetricSharpFib
   rw [inverseMetricSharpFib_inner (I := I) g₀ x θ w]
   rw [cotangentToDualLinear_apply]
 
-def metricComparisonDiffEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+def metricComparisonDifferenceEndomorphism (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=
   (inverseMetricSharpFib (I := I) g₁ x).comp (g0FlatCLM (I := I) g₀ x)
     - ContinuousLinearMap.id ℝ (TangentSpace I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma gInvDiffRaisedEndo_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+@[simp] lemma metricComparisonDifferenceEndomorphism_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    metricComparisonDiffEndo (I := I) g₀ g₁ x v =
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v =
       inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x v) - v := by
-  rw [metricComparisonDiffEndo]
+  rw [metricComparisonDifferenceEndomorphism]
   rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.id_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma gInvDiffRaisedEndo_self (g₀ : SmoothRiemannianMetric I M) (x : M)
+lemma metricComparisonDifferenceEndomorphism_self (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    metricComparisonDiffEndo (I := I) g₀ g₀ x v = 0 := by
-  rw [gInvDiffRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM, sub_self]
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₀ x v = 0 := by
+  rw [metricComparisonDifferenceEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM, sub_self]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-lemma gInvDiffRaisedEndo_eq_sharp_sub (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma metricComparisonDifferenceEndomorphism_eq_sharp_sub (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    metricComparisonDiffEndo (I := I) g₀ g₁ x v =
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v =
       inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x v)
         - inverseMetricSharpFib (I := I) g₀ x (g0FlatCLM (I := I) g₀ x v) := by
-  rw [gInvDiffRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]
+  rw [metricComparisonDifferenceEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-lemma inner_g1_gInvDiffRaisedEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma inner_g1_metricComparisonDifferenceEndomorphism (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
-    g₁.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x v) w =
+    g₁.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v) w =
       g₀.inner x v w - g₁.inner x v w := by
-  rw [gInvDiffRaisedEndo_apply, map_sub, ContinuousLinearMap.sub_apply]
+  rw [metricComparisonDifferenceEndomorphism_apply, map_sub, ContinuousLinearMap.sub_apply]
   rw [inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -200,17 +197,17 @@ private lemma g1_self_lower_bound
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-lemma sqrt_inner_gInvDiffRaisedEndo_le
+lemma sqrt_inner_metricComparisonDifferenceEndomorphism_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ) (hδ : metricCauchySchwarzBound (I := I) g₀ h δ)
     (x : M) (v : TangentSpace I x) :
-    Real.sqrt (g₀.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x v)
-        (metricComparisonDiffEndo (I := I) g₀ g₁ x v))
+    Real.sqrt (g₀.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v)
+        (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v))
       ≤ (δ / (1 - δ)) * Real.sqrt (g₀.inner x v v) := by
-  set Dv : TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ g₁ x v with hDv
+  set Dv : TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v with hDv
   set N : ℝ := Real.sqrt (g₀.inner x Dv Dv) with hN
   set Nv : ℝ := Real.sqrt (g₀.inner x v v) with hNv
   have hcoeff : 0 < 1 - δ := by linarith
@@ -221,7 +218,7 @@ lemma sqrt_inner_gInvDiffRaisedEndo_le
   have hN_sq : N * N = g₀.inner x Dv Dv := by
     rw [hN, ← Real.sqrt_mul hg0Dv_nn, Real.sqrt_mul_self hg0Dv_nn]
   have hg1Dv : g₁.inner x Dv Dv = -(h x v Dv) := by
-    have hp := inner_g1_gInvDiffRaisedEndo (I := I) g₀ g₁ x v Dv
+    have hp := inner_g1_metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v Dv
     rw [hDv] at hp ⊢
     rw [hp, htie x v Dv]; ring
   have hgate := hδ x v Dv
@@ -257,11 +254,11 @@ private lemma g0_cross_inverseMetricSharp_eq_g1
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-theorem gInvDiffRaisedEndo_g0_self_adjoint (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+theorem metricComparisonDifferenceEndomorphism_g0_self_adjoint (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
-    g₀.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x v) w
-      = g₀.inner x v (metricComparisonDiffEndo (I := I) g₀ g₁ x w) := by
-  rw [gInvDiffRaisedEndo_apply, gInvDiffRaisedEndo_apply, map_sub, map_sub,
+    g₀.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v) w
+      = g₀.inner x v (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x w) := by
+  rw [metricComparisonDifferenceEndomorphism_apply, metricComparisonDifferenceEndomorphism_apply, map_sub, map_sub,
     ContinuousLinearMap.sub_apply]
   have hcross :
       g₀.inner x (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x v)) w
@@ -273,25 +270,25 @@ theorem gInvDiffRaisedEndo_g0_self_adjoint (g₀ g₁ : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-theorem abs_sum_g0_inner_gInvDiffRaisedEndo_le
+theorem abs_sum_g0_inner_metricComparisonDifferenceEndomorphism_le
     {n : ℕ} (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ) (hδ : metricCauchySchwarzBound (I := I) g₀ h δ)
     (x : M) (u v : Fin n → TangentSpace I x) :
-    |∑ a, g₀.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x (u a)) (v a)|
+    |∑ a, g₀.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x (u a)) (v a)|
       ≤ (δ / (1 - δ)) * Real.sqrt (∑ a, g₀.inner x (u a) (u a))
           * Real.sqrt (∑ a, g₀.inner x (v a) (v a)) := by
   classical
-  set Λ : TangentSpace I x →L[ℝ] TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ g₁ x with
+  set Λ : TangentSpace I x →L[ℝ] TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x with
     hΛ
   set κ : ℝ := δ / (1 - δ) with hκ_def
   have hκ : 0 ≤ κ := div_nonneg hδ_nn (by linarith)
   have hper : ∀ a, Real.sqrt (g₀.inner x (Λ (u a)) (Λ (u a)))
       ≤ κ * Real.sqrt (g₀.inner x (u a) (u a)) := by
     intro a
-    have hsqrt := sqrt_inner_gInvDiffRaisedEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (u a)
+    have hsqrt := sqrt_inner_metricComparisonDifferenceEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (u a)
     rw [← hΛ, ← hκ_def] at hsqrt
     exact hsqrt
   set αu : Fin n → ℝ := fun a => Real.sqrt (g₀.inner x (u a) (u a)) with hαu
@@ -362,12 +359,12 @@ theorem metricFlat_chartComponent_contMDiffOn (g₀ : SmoothRiemannianMetric I M
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-lemma gInvDiffRaisedEndo_eq_metricSharp_flatDiff (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma metricComparisonDifferenceEndomorphism_eq_metricSharp_flatDiff (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    metricComparisonDiffEndo (I := I) g₀ g₁ x v =
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v =
       DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
         ((g₀.inner x v).toLinearMap - (g₁.inner x v).toLinearMap) := by
-  rw [gInvDiffRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM_eq_metricSharp]
+  rw [metricComparisonDifferenceEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM_eq_metricSharp]
   have hv : DifferentialGeometry.Geometry.Operator.metricSharp
       (I := I) g₁ x (g₁.inner x v).toLinearMap = v := by
     rw [← inverseMetricSharpFib_g0FlatCLM_eq_metricSharp (I := I) g₁ g₁ x v]
@@ -401,16 +398,16 @@ theorem metricFlatDiff_chartComponent_contMDiffOn (g₀ g₁ : SmoothRiemannianM
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-theorem gInvDiffRaisedEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
+    [I.Boundaryless] [SigmaCompactSpace M] in
+theorem metricComparisonDifferenceEndomorphism_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z) x
-        (metricComparisonDiffEndo (I := I) g₀ g₁ x)) := by
+        (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)) := by
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := E) (V₁ := fun z : M => TangentSpace I z)
     (F₂ := E) (V₂ := fun z : M => TangentSpace I z)
-    (φ := fun x => metricComparisonDiffEndo (I := I) g₀ g₁ x)
+    (φ := fun x => metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
   intro Y
   have hsharpY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E
@@ -421,33 +418,34 @@ theorem gInvDiffRaisedEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     intro γ j
     exact metricFlatDiff_chartComponent_contMDiffOn (I := I) g₀ g₁ Y γ j
   refine hsharpY.congr (fun x => ?_)
-  rw [gInvDiffRaisedEndo_eq_metricSharp_flatDiff (I := I) g₀ g₁ x (Y x)]
+  rw [metricComparisonDifferenceEndomorphism_eq_metricSharp_flatDiff (I := I) g₀ g₁ x (Y x)]
 
 set_option backward.isDefEq.respectTransparency false in
-def metricComparisonDiffSlotEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+def metricComparisonDifferenceSlotEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  slotInsertEndoFib (I := I) (M := M) 2 0 x (metricComparisonDiffEndo (I := I) g₀ g₁ x)
+  slotInsertEndoFib (I := I) (M := M) 2 0 x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 theorem gInvDiffSlotEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
         (E := fun z : M => TensorRSSpace 2 2 I z) x
-        (TensorRSSpace.ofCLM (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x))) :=
+        (TensorRSSpace.ofCLM (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x))) :=
   slotInsertEndoFib_contMDiff (I := I) (M := M) g₀ 2 0
-    (fun x : M => metricComparisonDiffEndo (I := I) g₀ g₁ x)
-    (gInvDiffRaisedEndo_contMDiff (I := I) g₀ g₁)
+    (fun x : M => metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
+    (metricComparisonDifferenceEndomorphism_contMDiff (I := I) g₀ g₁)
 
 set_option backward.isDefEq.respectTransparency false in
-def metricComparisonDiffFibreEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+def metricComparisonDifferenceFibreEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     TensorRSSpace 0 2 I x →L[ℝ] TensorRSSpace 0 2 I x :=
   haveI : FiniteDimensional ℝ (TensorRSSpace 0 2 I x) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x))
   haveI : T2Space (TensorRSSpace 0 2 I x) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x))
   LinearMap.toContinuousLinearMap
-    { toFun := fun v => (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x).comp
+    { toFun := fun v => (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from v)
       map_add' := fun v v' => by
         rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from v + v') =
@@ -463,35 +461,36 @@ def metricComparisonDiffFibreEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma gInvDiffFibreEndo_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+@[simp] lemma metricComparisonDifferenceFibreEndo_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v : TensorRSSpace 0 2 I x) :
-    metricComparisonDiffFibreEndo (I := I) g₀ g₁ x v =
-      (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x).comp
+    metricComparisonDifferenceFibreEndo (I := I) g₀ g₁ x v =
+      (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from v) := by
   haveI : FiniteDimensional ℝ (TensorRSSpace 0 2 I x) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x))
   haveI : T2Space (TensorRSSpace 0 2 I x) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x))
-  rw [metricComparisonDiffFibreEndo, LinearMap.coe_toContinuousLinearMap']
+  rw [metricComparisonDifferenceFibreEndo, LinearMap.coe_toContinuousLinearMap']
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem gInvDiffFibreEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
+omit [I.Boundaryless] in
+theorem metricComparisonDifferenceFibreEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 2 ℝ E →L[ℝ] TensorRSModel 0 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 0 2 ℝ E →L[ℝ] TensorRSModel 0 2 ℝ E)
         (E := fun z : M => TensorRSSpace 0 2 I z →L[ℝ] TensorRSSpace 0 2 I z) x
-        (metricComparisonDiffFibreEndo (I := I) g₀ g₁ x)) := by
+        (metricComparisonDifferenceFibreEndo (I := I) g₀ g₁ x)) := by
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := TensorRSModel 0 2 ℝ E) (V₁ := fun z : M => TensorRSSpace 0 2 I z)
     (F₂ := TensorRSModel 0 2 ℝ E) (V₂ := fun z : M => TensorRSSpace 0 2 I z)
-    (φ := fun x => metricComparisonDiffFibreEndo (I := I) g₀ g₁ x)
+    (φ := fun x => metricComparisonDifferenceFibreEndo (I := I) g₀ g₁ x)
   intro Z
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := Tensor0SModel 0 ℝ E) (V₁ := fun z : M => Tensor0SSpace 0 I z)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun z : M => Tensor0SSpace 2 I z)
     (φ := fun x => (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-      metricComparisonDiffFibreEndo (I := I) g₀ g₁ x (Z x)))
+      metricComparisonDifferenceFibreEndo (I := I) g₀ g₁ x (Z x)))
   intro ζ
   have hZinner : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
@@ -501,22 +500,21 @@ theorem gInvDiffFibreEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
   have happ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
-        (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x
+        (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from Z x) (ζ x)))) := by
     have hslot : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E →L[ℝ] Tensor0SModel 2 ℝ E)) ∞
         (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E →L[ℝ] Tensor0SModel 2 ℝ E)
           (E := fun z : M => Tensor0SSpace 2 I z →L[ℝ] Tensor0SSpace 2 I z) x
-          (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x)) :=
+          (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x)) :=
       gInvDiffSlotEndo_contMDiff (I := I) g₀ g₁
     exact ContMDiff.clm_bundle_apply (b := id) hslot hZinner
   refine happ.congr ?_
   intro x
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-        metricComparisonDiffFibreEndo (I := I) g₀ g₁ x (Z x)) (ζ x) =
-      metricComparisonDiffSlotEndo (I := I) g₀ g₁ x
+        metricComparisonDifferenceFibreEndo (I := I) g₀ g₁ x (Z x)) (ζ x) =
+      metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from Z x) (ζ x)) from by
-    rw [gInvDiffFibreEndo_apply, ContinuousLinearMap.comp_apply]]
-
+    rw [metricComparisonDifferenceFibreEndo_apply, ContinuousLinearMap.comp_apply]]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -557,7 +555,6 @@ private lemma exists_orthonormalFrame_fiberNormSq_rank22_repr (g₀ : SmoothRiem
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [← hinner_eq u (eob b), sq, real_inner_comm (eob b) u]
   · intro S; rfl
-
 
 private lemma slotInsert_sqsum_kroneckerDelta_eq_dim_mul_sqsum (n : ℕ) (f : Fin n → Fin n → ℝ) :
     (∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
@@ -601,7 +598,6 @@ private lemma slotInsert_sqsum_kroneckerDelta_eq_dim_mul_sqsum (n : ℕ) (f : Fi
   refine Finset.sum_congr rfl (fun j0 _ => ?_)
   rw [Finset.mul_sum]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma slotEndo_fiberComponent_endo_eq (g₀ : SmoothRiemannianMetric I M) (x : M)
@@ -628,7 +624,6 @@ private lemma slotEndo_fiberComponent_endo_eq (g₀ : SmoothRiemannianMetric I M
   rw [coframeS_apply, Fin.prod_univ_two, Function.update_self,
     Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
   rw [g₀.symm x (e (K 0)) (Λ (e (J 0))), horth (K 1) (J 1)]
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -669,7 +664,6 @@ private lemma riemannianFiberNormSq_slotInsert_eq_dim_mul (g₀ : SmoothRiemanni
   rw [h22',
     slotInsert_sqsum_kroneckerDelta_eq_dim_mul_sqsum n (fun a b => g₀.inner x (Λ (e a)) (e b))]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_gInvDiffSlotEndo_le
@@ -681,21 +675,21 @@ theorem riemannianFiberNormSq_gInvDiffSlotEndo_le
     (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x))
+          TensorRSSpace.ofCLM (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x))
       ≤ ((Module.finrank ℝ E : ℝ) * (δ / (1 - δ))) ^ 2 := by
   classical
-  set Λ : TangentSpace I x →L[ℝ] TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ g₁ x with
+  set Λ : TangentSpace I x →L[ℝ] TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x with
     hΛ
   obtain ⟨n, e, hn, horth, hpar, heq⟩ :=
     riemannianFiberNormSq_slotInsert_eq_dim_mul (I := I) g₀ x Λ
   have hnE : (n : ℝ) = (Module.finrank ℝ E : ℝ) := by rw [hn]
-  rw [show metricComparisonDiffSlotEndo (I := I) g₀ g₁ x = slotInsertEndoFib (I := I) (M := M) 2 0 x
+  rw [show metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x = slotInsertEndoFib (I := I) (M := M) 2 0 x
     Λ from rfl, heq]
   set r : ℝ := δ / (1 - δ) with hr
   have hr_nn : 0 ≤ r := div_nonneg hδ_nn (by linarith)
   have hper : ∀ i : Fin n, g₀.inner x (Λ (e i)) (Λ (e i)) ≤ r ^ 2 := by
     intro i
-    have hsqrt := sqrt_inner_gInvDiffRaisedEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (e i)
+    have hsqrt := sqrt_inner_metricComparisonDifferenceEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (e i)
     rw [← hΛ] at hsqrt
     have he1 : g₀.inner x (e i) (e i) = 1 := by rw [horth i i]; simp
     rw [he1, Real.sqrt_one, mul_one] at hsqrt
@@ -721,10 +715,9 @@ theorem riemannianFiberNormSq_gInvDiffSlotEndo_le
       ≤ (n : ℝ) * ((n : ℝ) * r ^ 2) := mul_le_mul_of_nonneg_left hsum_le hn_nn
     _ = ((Module.finrank ℝ E : ℝ) * r) ^ 2 := by rw [← hnE]; ring
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-theorem exists_gInvDiffFibreEndo_neumannFibreBound
+theorem exists_metricComparisonDifferenceFibreEndo_neumannFibreBound
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ Cnorm : ℝ, 0 ≤ Cnorm ∧
       ∀ (g₁ : SmoothRiemannianMetric I M)
@@ -734,24 +727,24 @@ theorem exists_gInvDiffFibreEndo_neumannFibreBound
         ∀ {δ : ℝ}, δ < 1 / 2 → 0 ≤ δ → metricCauchySchwarzBound (I := I) g₀ h δ →
         ∀ (x : M) (v : TensorRSSpace 0 2 I x),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-              (metricComparisonDiffFibreEndo (I := I) g₀ g₁ x v) ≤
+              (metricComparisonDifferenceFibreEndo (I := I) g₀ g₁ x v) ≤
             (Cnorm * δ) ^ 2 *
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x v := by
   refine ⟨2 * (Module.finrank ℝ E : ℝ), by positivity, ?_⟩
   intro g₁ h htie δ hδ_half hδ_nn hδ x v
   have hδ_lt1 : δ < 1 := by linarith
-  rw [gInvDiffFibreEndo_apply]
+  rw [metricComparisonDifferenceFibreEndo_apply]
   have hcomp := riemannianFiberNormSq_compRS_le_mul (I := I) (M := M) g₀ 0 2 2 x
     (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM
-      (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x))
+      (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x))
     (show TensorRSSpace 0 2 I x from v)
   have hslotcomp :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (show TensorRSSpace 2 2 I x from
-            TensorRSSpace.ofCLM (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x))).comp
+            TensorRSSpace.ofCLM (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x))).comp
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
             (show TensorRSSpace 0 2 I x from v)) =
-        (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x).comp
+        (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x).comp
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from v) := by
     rfl
   rw [hslotcomp] at hcomp
@@ -761,7 +754,7 @@ theorem exists_gInvDiffFibreEndo_neumannFibreBound
   have hcoeff : 0 < 1 - δ := by linarith
   have hslot_le' : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x))
+          TensorRSSpace.ofCLM (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x))
       ≤ ((2 * (Module.finrank ℝ E : ℝ)) * δ) ^ 2 := by
     refine hslot_le.trans ?_
     have hdimnn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
@@ -778,50 +771,50 @@ theorem exists_gInvDiffFibreEndo_neumannFibreBound
         _ = (2 * (Module.finrank ℝ E : ℝ)) * δ := by ring
     exact pow_le_pow_left₀ hbase_nn hbase_le 2
   calc riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-          ((metricComparisonDiffSlotEndo (I := I) g₀ g₁ x).comp
+          ((metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x).comp
             (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from v))
       ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             (show TensorRSSpace 2 2 I x from
-              TensorRSSpace.ofCLM (metricComparisonDiffSlotEndo (I := I) g₀ g₁ x)) *
+              TensorRSSpace.ofCLM (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x)) *
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x v := hcomp
     _ ≤ ((2 * (Module.finrank ℝ E : ℝ)) * δ) ^ 2 *
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x v :=
         mul_le_mul_of_nonneg_right hslot_le' hv_nn
 
-def metricComparisonEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+def metricComparisonEndomorphism (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=
   (inverseMetricSharpFib (I := I) g₁ x).comp (g0FlatCLM (I := I) g₀ x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma gInvRaisedEndo_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+@[simp] lemma metricComparisonEndomorphism_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    metricComparisonEndo (I := I) g₀ g₁ x v =
+    metricComparisonEndomorphism (I := I) g₀ g₁ x v =
       inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x v) := by
-  rw [metricComparisonEndo, ContinuousLinearMap.comp_apply]
+  rw [metricComparisonEndomorphism, ContinuousLinearMap.comp_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-lemma gInvRaisedEndo_eq_diff_add_id (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma metricComparisonEndomorphism_eq_diff_add_id (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    metricComparisonEndo (I := I) g₀ g₁ x v = metricComparisonDiffEndo (I := I) g₀ g₁ x v + v := by
-  rw [gInvRaisedEndo_apply, gInvDiffRaisedEndo_apply, sub_add_cancel]
+    metricComparisonEndomorphism (I := I) g₀ g₁ x v = metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v + v := by
+  rw [metricComparisonEndomorphism_apply, metricComparisonDifferenceEndomorphism_apply, sub_add_cancel]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-theorem sqrt_inner_gInvRaisedEndo_le
+theorem sqrt_inner_metricComparisonEndomorphism_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ) (hδ : metricCauchySchwarzBound (I := I) g₀ h δ)
     (x : M) (v : TangentSpace I x) :
-    Real.sqrt (g₀.inner x (metricComparisonEndo (I := I) g₀ g₁ x v)
-        (metricComparisonEndo (I := I) g₀ g₁ x v))
+    Real.sqrt (g₀.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x v)
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x v))
       ≤ (1 / (1 - δ)) * Real.sqrt (g₀.inner x v v) := by
   have hcoeff : 0 < 1 - δ := by linarith
-  rw [gInvRaisedEndo_eq_diff_add_id]
-  set Dv : TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ g₁ x v with hDv
+  rw [metricComparisonEndomorphism_eq_diff_add_id]
+  set Dv : TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v with hDv
   set Nv : ℝ := Real.sqrt (g₀.inner x v v) with hNv
   have hNv_nn : 0 ≤ Nv := Real.sqrt_nonneg _
   have haa_nn : 0 ≤ g₀.inner x Dv Dv := metric_inner_self_nonneg (I := I) (M := M) g₀ x Dv
@@ -861,7 +854,7 @@ theorem sqrt_inner_gInvRaisedEndo_le
     calc Real.sqrt (g₀.inner x (Dv + v) (Dv + v))
         ≤ Real.sqrt ((Real.sqrt (g₀.inner x Dv Dv) + Nv) ^ 2) := Real.sqrt_le_sqrt hle_sq
       _ = Real.sqrt (g₀.inner x Dv Dv) + Nv := by rw [Real.sqrt_sq hsum_pos_nn]
-  have hdiff := sqrt_inner_gInvDiffRaisedEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v
+  have hdiff := sqrt_inner_metricComparisonDifferenceEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v
   rw [← hDv, ← hNv] at hdiff
   calc Real.sqrt (g₀.inner x (Dv + v) (Dv + v))
       ≤ Real.sqrt (g₀.inner x Dv Dv) + Nv := htri
@@ -874,21 +867,22 @@ theorem sqrt_inner_gInvRaisedEndo_le
 set_option backward.isDefEq.respectTransparency false in
 def gInvSlotEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  slotInsertEndoFib (I := I) (M := M) 2 0 x (metricComparisonEndo (I := I) g₀ g₁ x)
+  slotInsertEndoFib (I := I) (M := M) 2 0 x (metricComparisonEndomorphism (I := I) g₀ g₁ x)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem gInvSlotEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
         (E := fun z : M => TensorRSSpace 2 2 I z) x
         (TensorRSSpace.ofCLM (gInvSlotEndo (I := I) g₀ g₁ x))) := by
   apply slotInsertEndoFib_contMDiff (I := I) (M := M) g₀ 2 0
-    (fun x : M => metricComparisonEndo (I := I) g₀ g₁ x)
+    (fun x : M => metricComparisonEndomorphism (I := I) g₀ g₁ x)
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := E) (V₁ := fun z : M => TangentSpace I z)
     (F₂ := E) (V₂ := fun z : M => TangentSpace I z)
-    (φ := fun x => metricComparisonEndo (I := I) g₀ g₁ x)
+    (φ := fun x => metricComparisonEndomorphism (I := I) g₀ g₁ x)
   intro Y
   have hsharpY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E
@@ -899,8 +893,7 @@ theorem gInvSlotEndo_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     intro γ j
     exact metricFlat_chartComponent_contMDiffOn (I := I) g₀ Y γ j
   refine hsharpY.congr (fun x => ?_)
-  rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM_eq_metricSharp]
-
+  rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM_eq_metricSharp]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -916,7 +909,7 @@ theorem riemannianFiberNormSq_gInvSlotEndo_le
           TensorRSSpace.ofCLM (gInvSlotEndo (I := I) g₀ g₁ x))
       ≤ ((Module.finrank ℝ E : ℝ) * (1 / (1 - δ))) ^ 2 := by
   classical
-  set Λ : TangentSpace I x →L[ℝ] TangentSpace I x := metricComparisonEndo (I := I) g₀ g₁ x with hΛ
+  set Λ : TangentSpace I x →L[ℝ] TangentSpace I x := metricComparisonEndomorphism (I := I) g₀ g₁ x with hΛ
   obtain ⟨n, e, hn, horth, hpar, heq⟩ :=
     riemannianFiberNormSq_slotInsert_eq_dim_mul (I := I) g₀ x Λ
   have hnE : (n : ℝ) = (Module.finrank ℝ E : ℝ) := by rw [hn]
@@ -927,7 +920,7 @@ theorem riemannianFiberNormSq_gInvSlotEndo_le
   have hr_nn : 0 ≤ r := by rw [hr]; positivity
   have hper : ∀ i : Fin n, g₀.inner x (Λ (e i)) (Λ (e i)) ≤ r ^ 2 := by
     intro i
-    have hsqrt := sqrt_inner_gInvRaisedEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (e i)
+    have hsqrt := sqrt_inner_metricComparisonEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (e i)
     rw [← hΛ] at hsqrt
     have he1 : g₀.inner x (e i) (e i) = 1 := by rw [horth i i]; simp
     rw [he1, Real.sqrt_one, mul_one] at hsqrt
@@ -957,20 +950,19 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 lemma inner_sharp_mixed (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (v : TangentSpace I x) :
     g₀.inner x (inverseMetricSharpFib (I := I) g₁ x om) v =
-      cotangentToDual (I := I) (x := x) om (metricComparisonEndo (I := I) g₀ g₁ x v) := by
-  rw [show cotangentToDual (I := I) (x := x) om (metricComparisonEndo (I := I) g₀ g₁ x v) =
+      cotangentToDual (I := I) (x := x) om (metricComparisonEndomorphism (I := I) g₀ g₁ x v) := by
+  rw [show cotangentToDual (I := I) (x := x) om (metricComparisonEndomorphism (I := I) g₀ g₁ x v) =
       cotangentToDualLinear (I := I) (x := x) om
-        (metricComparisonEndo (I := I) g₀ g₁ x v) from rfl]
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x v) from rfl]
   rw [← inverseMetricSharpFib_inner (I := I) g₁ x om
-    (metricComparisonEndo (I := I) g₀ g₁ x v)]
+    (metricComparisonEndomorphism (I := I) g₀ g₁ x v)]
   rw [g₁.symm x (inverseMetricSharpFib (I := I) g₁ x om)
-    (metricComparisonEndo (I := I) g₀ g₁ x v)]
-  rw [gInvRaisedEndo_apply]
+    (metricComparisonEndomorphism (I := I) g₀ g₁ x v)]
+  rw [metricComparisonEndomorphism_apply]
   rw [inverseMetricSharpFib_inner (I := I) g₁ x
     (g0FlatCLM (I := I) g₀ x v) (inverseMetricSharpFib (I := I) g₁ x om)]
   rw [cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
   rw [g₀.symm x v (inverseMetricSharpFib (I := I) g₁ x om)]
-
 
 end DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 

@@ -4,7 +4,6 @@ import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
@@ -56,6 +55,14 @@ noncomputable def coframePair
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
+abbrev coframe2
+    (g : SmoothRiemannianMetric I M) (x : M)
+    {n : ℕ} (e : Fin n → TangentSpace I x) (a b : Fin n) :
+    Tensor0SSpace 2 I x :=
+  coframePair g x e a b
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+    [T2Space M] [BoundarylessManifold I M] in
 lemma coframe2_apply
     (g : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (a b : Fin n)

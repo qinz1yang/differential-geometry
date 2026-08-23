@@ -249,7 +249,7 @@ omit [NeZero d] in
 lemma memLp_bounded_mul
     {f g : E → ℝ}
     (hf_aesm : AEStronglyMeasurable f (volume : Measure E))
-    {M : ℝ} (_hM_nn : 0 ≤ M) (hM : ∀ x, |f x| ≤ M)
+    {M : ℝ} (hM : ∀ x, |f x| ≤ M)
     (hg : MemLp g 2 (volume : Measure E)) :
     MemLp (fun x => f x * g x) 2 (volume : Measure E) := by
   have h_aesm : AEStronglyMeasurable (fun x => f x * g x) (volume : Measure E) :=
@@ -300,7 +300,7 @@ private lemma integrable_cross_1_summand_nonsmooth
     memLp_diffQuot_two k h hu_l2
   have hf₁_dqg_l2 : MemLp (fun x => f₁ x * diffQuot k h (g i) x) 2
       (volume : Measure E) :=
-    memLp_bounded_mul hf₁_cont.aestronglyMeasurable hM_nn hM h_dq_g_l2
+    memLp_bounded_mul hf₁_cont.aestronglyMeasurable hM h_dq_g_l2
   have h_target_eq :
       (fun x : E =>
         2 * translate k h (fun y => B.a y i j) x * (η x) *
@@ -540,11 +540,10 @@ theorem cross_1_bound_nonsmooth_quantitative
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (_h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (_hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' : Set E} (_hΩ' : IsOpen Ω') (_hΩ'_closure : closure Ω' ⊆ Ω)
+    {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
+    {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -819,11 +818,10 @@ theorem cross_1_bound_nonsmooth
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
+    {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
+    {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -863,7 +861,7 @@ theorem cross_1_bound_nonsmooth
     exact (one_div_pos.mpr hε'_pos).le
   · intro h hh hh_le
     exact cross_1_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-      h_weakPartial hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure
-      hΩ'_compact hh_supp_in_Ω' k h_FK_diffQuot_u_bound ε hε hh hh_le
+      hη hη_supp hη_range h_fderiv_eta hΩ'_compact hh_supp_in_Ω' k
+      h_FK_diffQuot_u_bound ε hε hh hh_le
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth

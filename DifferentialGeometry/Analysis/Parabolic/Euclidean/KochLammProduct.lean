@@ -16,6 +16,7 @@ section Scaling
 variable {V : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
 
+omit [FiniteDimensional ℝ V] in
 theorem klL1_eq_L2_sq {R : ℝ} (hR : 0 < R) :
     klL1Scale (V := V) R = klL2Scale (V := V) R ^ 2 := by
   unfold klL1Scale klL1ScaleR klL2Scale klL2ScaleR
@@ -34,6 +35,7 @@ theorem klL1_eq_L2_sq {R : ℝ} (hR : 0 < R) :
   rw [hre]
   exact ENNReal.ofReal_pow (Real.rpow_nonneg hR.le _) 2
 
+omit [FiniteDimensional ℝ V] in
 theorem klLq_eq_Lp_sq {R : ℝ} (hR : 0 < R) :
     klLqScale (V := V) R = klLpScale (V := V) R ^ 2 := by
   unfold klLqScale klLqScaleR klLpScale klLpScaleR
@@ -52,6 +54,7 @@ theorem klLq_eq_Lp_sq {R : ℝ} (hR : 0 < R) :
   rw [hre]
   exact ENNReal.ofReal_pow (Real.rpow_nonneg hR.le _) 2
 
+omit [FiniteDimensional ℝ V] in
 theorem klP_holderTriple :
     ENNReal.HolderTriple (klP V) (klP V) (klQ V) := by
   let n4 : ℕ := Module.finrank ℝ V + 4

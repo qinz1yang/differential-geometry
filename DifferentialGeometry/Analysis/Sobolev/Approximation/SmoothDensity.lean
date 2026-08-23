@@ -65,8 +65,7 @@ lemma chartImagePOUTsupport_subset_target
   exact ⟨z, hz_target, hzy⟩
 
 lemma chartPushed_eq_zero_off_chartImagePOUTsupport
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) (u : M → ℝ) {y : EuclN}
+    [T2Space M] [SigmaCompactSpace M] (α : M) (u : M → ℝ) {y : EuclN}
     (hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hy_off : y ∉ chartImagePOUTsupport (I := I) (M := M) α) :
     chartPushed (I := I) (M := M)
@@ -76,7 +75,6 @@ lemma chartPushed_eq_zero_off_chartImagePOUTsupport
 
 theorem exists_chartCutoff
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (α : M) :
     ∃ (δ : ℝ) (η : EuclN → ℝ),
       0 < δ ∧
@@ -147,9 +145,8 @@ lemma exists_grad_bound_of_compactSupport_smooth
     exact le_trans zero_le_one (le_max_right _ _)
 
 lemma chartCutoff_smul_chartPushed_eq_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) (u : M → ℝ)
-    {δ : ℝ} (_hδ_pos : 0 < δ)
+    [T2Space M] [SigmaCompactSpace M] (α : M) (u : M → ℝ)
+    {δ : ℝ}
     {η : EuclN → ℝ}
     (hη_one : ∀ y ∈ Metric.cthickening δ
       (chartImagePOUTsupport (I := I) (M := M) α), η y = 1) :
@@ -172,10 +169,9 @@ lemma chartCutoff_smul_chartPushed_eq_chartPushed
     rw [hf_zero]; ring
 
 lemma chartCutoff_smul_chartPushed_memWkp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M)
     {η : EuclN → ℝ}
     (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
     {C : ℝ}
@@ -201,10 +197,8 @@ lemma chartCutoff_smul_chartPushed_memWkp
 
 theorem exists_smooth_strong_support_approx
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u)
     (α : M) (ε_per : ℝ) (hε_per : 0 < ε_per) :
     ∃ (χ : EuclN → ℝ),
       ContDiff ℝ (⊤ : ℕ∞) χ ∧
@@ -239,7 +233,7 @@ theorem exists_smooth_strong_support_approx
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 1 p f
         (chartTargetEuclid (I := I) (M := M) α) :=
-    chartCutoff_smul_chartPushed_memWkp (I := I) (M := M) g hp_one hu α
+    chartCutoff_smul_chartPushed_memWkp (I := I) (M := M) hp_one hu α
       hη_smooth hη_norm_C hη_grad_C
   have hf_supp_subset : tsupport f ⊆ tsupport η :=
     tsupport_smul_subset_left η f_orig
@@ -254,7 +248,7 @@ theorem exists_smooth_strong_support_approx
   have hf_eq_forig_on_target : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       f y = f_orig y :=
     chartCutoff_smul_chartPushed_eq_chartPushed (I := I) (M := M) α u
-      hδ_pos hη_one
+      hη_one
   obtain ⟨χ, hχ_smooth, hχ_compact, hχ_supp, hχ_close⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.exists_smooth_compactSupport_approx
       (d := Module.finrank ℝ E)

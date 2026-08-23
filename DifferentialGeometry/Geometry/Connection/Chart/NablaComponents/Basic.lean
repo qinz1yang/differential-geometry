@@ -17,7 +17,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
-def coordinateFrameAt_isLocalFrame_one (x₀ : M) :
+lemma coordinateFrameAt_isLocalFrame_one (x₀ : M) :
     IsLocalFrameOn I E (1 : WithTop ℕ∞)
       (coordinateFrameAt (I := I) x₀) (coordinateFrameSet (I := I) x₀) :=
   (coordinateTrivializationAt (I := I) x₀).isLocalFrameOn_localFrame_baseSet

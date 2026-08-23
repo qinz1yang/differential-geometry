@@ -17,7 +17,7 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 theorem MemWkpHalfSpace.exists_limit_of_wkpNormHalfSpace_cauchy
     {Ω : Set E} (hΩ : IsHalfSpaceRelOpen (d := d) Ω)
-    (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
+    (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p)
     {u : ℕ → E → ℝ}
     (hu_mem : ∀ n, MemWkpHalfSpace (d := d) k p (u n) Ω)
     (hu_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
@@ -35,7 +35,7 @@ theorem MemWkpHalfSpace.exists_limit_of_wkpNormHalfSpace_cauchy
       iteratedWeakSobolevNorm (d := d) k p (fun x => u m x - u n x)
         (interiorHalfSpace Ω) ≤ ENNReal.ofReal ε := hu_cauchy
   obtain ⟨u_lim, hu_lim_mem, h_tendsto⟩ :=
-    MemWkp.exists_limit_of_wkpNorm_cauchy hΩ_open k p hp_one hp_top
+    MemWkp.exists_limit_of_wkpNorm_cauchy hΩ_open k p hp_one
       hu_mem' hu_cauchy'
   refine ⟨u_lim, hu_lim_mem, ?_⟩
   exact h_tendsto

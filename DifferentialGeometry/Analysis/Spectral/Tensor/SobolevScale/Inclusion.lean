@@ -189,7 +189,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   rw [tensorHsInclusion_coeff_apply, ContinuousLinearMap.id_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem tensorHsInclusion_refl_apply
+theorem tensorHsInclusion_refl_apply
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
     (T : tensorHs (I := I) (M := M) g r s σ) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) (le_refl σ) T = T := by

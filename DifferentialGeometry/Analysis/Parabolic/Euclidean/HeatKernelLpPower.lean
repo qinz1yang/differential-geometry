@@ -15,12 +15,12 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
 def basePowMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] (p : ℝ) : ℝ :=
+    (p : ℝ) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ p *
     (Real.pi / ((4 : ℝ)⁻¹ * p)) ^ (Module.finrank ℝ V / 2 : ℝ)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-theorem baseHeat_pow {p : ℝ} (_hp : 0 < p) (x : V) :
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+theorem baseHeat_pow {p : ℝ} (x : V) :
     (baseHeat x) ^ p =
       ((baseHeatMass V)⁻¹) ^ p *
         Real.exp (-((4 : ℝ)⁻¹ * p) * ‖x‖ ^ 2) := by
@@ -33,21 +33,21 @@ theorem baseHeat_pow {p : ℝ} (_hp : 0 < p) (x : V) :
 
 theorem baseHeatPow_mem {p : ℝ} (hp : 0 < p) :
     Integrable (fun x : V => (baseHeat x) ^ p) := by
-  simp_rw [baseHeat_pow (V := V) hp]
+  simp_rw [baseHeat_pow (V := V)]
   exact (gauss_integrable (V := V)
     (mul_pos (by positivity : (0 : ℝ) < (4 : ℝ)⁻¹) hp)).const_mul _
 
 omit [Nontrivial V] in
 theorem baseHeatPow_int {p : ℝ} (hp : 0 < p) :
     ∫ x : V, (baseHeat x) ^ p = basePowMass V p := by
-  simp_rw [baseHeat_pow (V := V) hp]
+  simp_rw [baseHeat_pow (V := V)]
   rw [integral_const_mul,
     GaussianFourier.integral_rexp_neg_mul_sq_norm
       (mul_pos (by positivity : (0 : ℝ) < (4 : ℝ)⁻¹) hp)]
   rfl
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-theorem heatKernel_pow {t p : ℝ} (ht : 0 < t) (_hp : 0 < p) (x : V) :
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+theorem heatKernel_pow {t p : ℝ} (ht : 0 < t) (x : V) :
     (heatKernel t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹) ^ p) *
         (baseHeat ((heatScale t)⁻¹ • x)) ^ p := by
@@ -58,7 +58,7 @@ theorem heatKernel_pow {t p : ℝ} (ht : 0 < t) (_hp : 0 < p) (x : V) :
 
 theorem heatKernelPow_mem {t p : ℝ} (ht : 0 < t) (hp : 0 < p) :
     Integrable (fun x : V => (heatKernel t x) ^ p) := by
-  simp_rw [heatKernel_pow (V := V) ht hp]
+  simp_rw [heatKernel_pow (V := V) ht]
   exact ((baseHeatPow_mem (V := V) hp).comp_smul
     (inv_ne_zero (heatScale_pos ht).ne')).const_mul _
 
@@ -67,7 +67,7 @@ theorem heatKernelPow_int {t p : ℝ} (ht : 0 < t) (hp : 0 < p) :
     ∫ x : V, (heatKernel t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹) ^ p) *
         (heatScale t) ^ Module.finrank ℝ V * basePowMass V p := by
-  simp_rw [heatKernel_pow (V := V) ht hp]
+  simp_rw [heatKernel_pow (V := V) ht]
   rw [integral_const_mul,
     Measure.integral_comp_inv_smul_of_nonneg (volume : Measure V)
       (fun x : V => (baseHeat x) ^ p) (heatScale_pos ht).le,

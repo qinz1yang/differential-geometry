@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 open DifferentialGeometry.Analysis.Sobolev
@@ -187,7 +187,7 @@ theorem app_hs_const
       refine hsq.trans ?_
       simpa only [mul_assoc] using
         (mul_le_mul_of_nonneg_left hgrid
-          (appCcGdiag_nonneg (E := E) j))
+          (operatorFieldApplicationGdiag_nonneg (E := E) j))
     have htarget :
         ‖iteratedCovGrad (I := I) g 0 c j
             (operatorFieldApply (I := I) (M := M) g b c Φ W)‖ ^ 2 ≤
@@ -196,10 +196,10 @@ theorem app_hs_const
         _ ≤ (diagonalGridGrowthFactor (E := E) j * Bsum) * Jin ^ 2 := hsquare
         _ = (Real.sqrt (diagonalGridGrowthFactor (E := E) j * Bsum) * Jin) ^ 2 := by
           rw [mul_pow, Real.sq_sqrt]
-          exact mul_nonneg (appCcGdiag_nonneg (E := E) j) hBsum_nn
+          exact mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) j) hBsum_nn
     have hroot := le_of_sq_le_sq htarget
       (mul_nonneg (Real.sqrt_nonneg _) hJin_nn)
-    rw [Real.sqrt_mul (appCcGdiag_nonneg (E := E) j)] at hroot
+    rw [Real.sqrt_mul (operatorFieldApplicationGdiag_nonneg (E := E) j)] at hroot
     exact hroot
   have hsum :
       (∑ j ∈ Finset.range (n + 1),
@@ -248,15 +248,15 @@ theorem app_hs_small
   obtain ⟨C, hC, happ⟩ := app_hs_const (I := I) (M := M) g b c n
   exact ⟨C, hC, happ Φ B hB_nn hB⟩
 
-private noncomputable def appCcLin
+private noncomputable def operatorFieldApplicationLin
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) :
     SmoothCcTensor g 0 b →ₗ[ℝ] SmoothCcTensor g 0 c where
   toFun := operatorFieldApply (I := I) (M := M) g b c Φ
-  map_add' := appCc_add_right (I := I) (M := M) g b c Φ
+  map_add' := operatorFieldApplication_add_right (I := I) (M := M) g b c Φ
   map_smul' := fun m W => by
     simpa only [RingHom.id_apply] using
-      appCc_smul_right (I := I) (M := M) g b c m Φ W
+      operatorFieldApplication_smul_right (I := I) (M := M) g b c m Φ W
 
 noncomputable def appHs
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
@@ -264,7 +264,7 @@ noncomputable def appHs
     tensorHs (I := I) (M := M) g 0 b (n : ℝ) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 c (n : ℝ) :=
   ((ccToHsLin (I := I) (M := M) g c (n : ℝ)).comp
-      (appCcLin g b c Φ)).extendOfNorm
+      (operatorFieldApplicationLin g b c Φ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g b (n : ℝ))
 
 theorem appHs_unif
@@ -337,11 +337,11 @@ theorem appHs_core
     ccToHsLin_dense (I := I) (M := M) g b (by positivity)
   change
     (((ccToHsLin (I := I) (M := M) g c (n : ℝ)).comp
-        (appCcLin g b c Φ)).extendOfNorm
+        (operatorFieldApplicationLin g b c Φ)).extendOfNorm
       (ccToHsLin (I := I) (M := M) g b (n : ℝ)))
         ((ccToHsLin (I := I) (M := M) g b (n : ℝ)) W) =
       ((ccToHsLin (I := I) (M := M) g c (n : ℝ)).comp
-        (appCcLin g b c Φ)) W
+        (operatorFieldApplicationLin g b c Φ)) W
   apply LinearMap.extendOfNorm_eq hdense
   exact ⟨C * Real.sqrt (∑ i ∈ Finset.range (n + 1), B i), happ⟩
 
@@ -360,7 +360,7 @@ theorem appHs_add
     funext W
     simp only [Function.comp_apply, L, R, ι, ContinuousLinearMap.add_apply,
       ccToHsLin_apply]
-    rw [appHs_core, appHs_core, appHs_core, appCc_add_left,
+    rw [appHs_core, appHs_core, appHs_core, operatorFieldApplication_add_left,
       ccTensorToHs_add])
   exact congrFun hLR U
 
@@ -378,7 +378,7 @@ theorem appHs_smul
     funext W
     simp only [Function.comp_apply, L, R, ι, ContinuousLinearMap.smul_apply,
       ccToHsLin_apply]
-    rw [appHs_core, appHs_core, appCc_smul_left, ccTensorToHs_smul])
+    rw [appHs_core, appHs_core, operatorFieldApplication_smul_left, ccTensorToHs_smul])
   exact congrFun hLR U
 
 theorem appHs_sub

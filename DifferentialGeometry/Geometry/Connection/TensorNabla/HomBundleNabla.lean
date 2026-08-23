@@ -404,6 +404,7 @@ private theorem contMDiff_cov_U_apply_section
 
 omit [CompleteSpace F] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] in
+omit [ContMDiffVectorBundle ∞ F V I] in
 private theorem homBundleCovGen_section_smooth
     (cov_U : CovariantDerivative I E_U U)
     [ContMDiffCovariantDerivative cov_U ∞]

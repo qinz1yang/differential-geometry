@@ -1,7 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.GeometryFormulaCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.VariationFormula
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
-
 
 set_option autoImplicit false
 
@@ -18,7 +17,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -67,7 +66,6 @@ theorem connTraceAction_coord
     DifferentialGeometry.Tensor.RSTensor.connTraceField_coord (I := I) g A x₀ hx p
   rw [hcoeff]
   exact smul_eq_mul ..
-
 
 def connTraceRawDiv
     (g : SmoothRiemannianMetric I M)
@@ -607,8 +605,7 @@ theorem weightedTrace_of_raw
           connTraceAction (I := I) g A potential x := by
         rw [← hraw x, ← haction]
 
-
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

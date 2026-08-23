@@ -302,13 +302,6 @@ theorem eigenvectorChartIteratedPartial_memWkp_two_two
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
       hΩ''_open h_ae.symm).mp (h_wp_memW1p j)
   rw [hD_u_chart] at h_uChart_memWkp_two_Ω''
-  have h_global_Lp : MemLp (eigenvectorChartIteratedPartial
-      (I := I) (M := M)
-      g r s i α P₀ m D_m.directions) 2
-      ((volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) :=
-    eigenvectorChartIteratedPartial_memLp_volume
-      (I := I) (M := M) g r s i α P₀ m D_m.directions
   have h_ae_zero : eigenvectorChartIteratedPartial (I := I) (M := M)
       g r s i α P₀ m D_m.directions
       =ᵐ[(volume : Measure EuclN).restrict
@@ -323,9 +316,8 @@ theorem eigenvectorChartIteratedPartial_memWkp_two_two
         (chartTargetEuclid (I := I) (M := M) α) :=
     MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
       (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-      (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
       h_chart_open hΩ''_open hK_compact hK_in_Ω'' h_closureΩ''_in_chart
-      h_global_Lp h_ae_zero h_uChart_memWkp_two_Ω''
+      h_ae_zero h_uChart_memWkp_two_Ω''
   rw [h_dir] at h_global
   exact h_global
 

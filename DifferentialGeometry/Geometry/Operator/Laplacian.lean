@@ -77,8 +77,7 @@ lemma grad_g_add_apply [I.Boundaryless]
   exact gradFun_add (I := I) g (f.contMDiff.mdifferentiable (by simp) x)
     (h.contMDiff.mdifferentiable (by simp) x)
 
-theorem Δ_g_add [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+theorem Δ_g_add [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (f h : C^∞⟮I, M; ℝ⟯)
     (x : M) :
     Δ_g (I := I) g (f + h) x = Δ_g (I := I) g f x + Δ_g (I := I) g h x := by
@@ -98,14 +97,13 @@ theorem Δ_g_add [I.Boundaryless] [T2Space M]
   rw [hsection_eq]
   exact divergence_g_add (I := I) g _ _ x
 
-@[simp] lemma gradFun_const
+lemma gradFun_const
     (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     gradFun (I := I) g (fun _ : M => c) x = (0 : TangentSpace I x) := by
   apply gradFun_eq_zero_of_mfderiv_eq_zero
   exact mfderiv_const
 
-@[simp] theorem Δ_g_const [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
+theorem Δ_g_const [I.Boundaryless] (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     Δ_g (I := I) g (⟨fun _ : M => c, contMDiff_const⟩ : C^∞⟮I, M; ℝ⟯) x = 0 := by
   classical
   have hsection_eq : (grad_g (I := I) g

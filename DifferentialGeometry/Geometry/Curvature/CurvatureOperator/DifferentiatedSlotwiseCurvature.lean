@@ -93,7 +93,7 @@ variable {V : M → Type*} [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
   [ContMDiffVectorBundle ∞ F V I]
 
 omit [BoundarylessManifold I M] in
-omit [CompleteSpace E_U] [CompleteSpace F] in
+omit [CompleteSpace E_U] [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
 lemma nablaRiemannSec_homBundleGen_apply_eq
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov_V ∞]

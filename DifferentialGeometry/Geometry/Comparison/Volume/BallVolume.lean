@@ -364,7 +364,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem coordBall_subset_smallNormalBall_of_agree
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -398,7 +397,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem exists_coordBall_subset_smallNormalBall
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -458,7 +456,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem exists_smallNormalBall_vol_ge_sc
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -489,7 +486,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem smallNormalBall_subset_metricBall
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     {p : M} {s : ℝ} :
@@ -509,7 +505,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem metricBall_subset_smallNormalBall
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     {p : M} {s : ℝ} :
@@ -529,7 +524,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem metricBall_meas
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (p : M) (s : ℝ) :

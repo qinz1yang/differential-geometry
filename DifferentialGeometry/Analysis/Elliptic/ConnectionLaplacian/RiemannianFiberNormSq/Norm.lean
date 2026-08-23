@@ -93,6 +93,13 @@ theorem riemannianFiberNorm_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (b
       (h.g.continuousAt b) (h.g.isVonNBounded b)
   exact norm_smul c T
 
+theorem riemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
+    (c : ℝ) (T : TensorRSSpace r s I b) :
+    riemannianFiberNormSq (I := I) (M := M) g r s b (c • T) =
+      c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s b T := by
+  rw [← riemannianFiberNorm_sq, ← riemannianFiberNorm_sq, riemannianFiberNorm_smul,
+    mul_pow, sq_abs]
+
 end Elliptic
 end Analysis
 end DifferentialGeometry

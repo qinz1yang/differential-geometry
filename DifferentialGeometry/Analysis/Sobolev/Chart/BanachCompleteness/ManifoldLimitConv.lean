@@ -25,58 +25,56 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 noncomputable def chartErr
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    [hCompact : CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε)
-    (n : ℕ) (β : M) : EuclN → ℝ :=
-  fun y =>
+    (n : ℕ) (β : M) : EuclN → ℝ := by
+  let _ := hCompact
+  exact fun y =>
     chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) β
         (wkpChartFun (f n)) y -
-      chartLimit (I := I) (M := M) hp_one hp_top h_cauchy β y
+      chartLimit (I := I) (M := M) hp_one h_cauchy β y
 
 lemma chartErr_mem
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε)
     (n : ℕ) (β : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) k p
-      (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+      (chartErr (I := I) (M := M) hp_one h_cauchy n β)
       (chartTargetEuclid (I := I) (M := M) β) := by
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.sub
     (d := Module.finrank ℝ E) hp_one
     (chartTargetEuclid_isOpen (I := I) (M := M) β)
     ((wkpChartFun_memWkpChart (f n)) β)
-    (chartLimit_memWkp (I := I) (M := M) (g := g)
-      hp_one hp_top h_cauchy β)
+    (chartLimit_memWkp (I := I) (M := M)
+      hp_one h_cauchy β)
 
 lemma chartErr_ae_zero
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε)
     (n : ℕ) (β : M) :
-    chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β =ᵐ[
+    chartErr (I := I) (M := M) hp_one h_cauchy n β =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) β \
           toEuclidean ''
@@ -99,17 +97,17 @@ lemma chartErr_ae_zero
     (chartTargetEuclid_measurableSet (I := I) (M := M) β).diff
       hKβE_compact.measurableSet
   have h_lim_zero :
-      chartLimit (I := I) (M := M) hp_one hp_top h_cauchy β =ᵐ[
+      chartLimit (I := I) (M := M) hp_one h_cauchy β =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) β \ KβE)] 0 := by
     simpa only [KβE, Kβ] using
-      (chartLimit_ae_zero (I := I) (M := M) (g := g)
+      (chartLimit_ae_zero (I := I) (M := M)
         hp_one hp_top h_cauchy β)
   have h_mem : ∀ᵐ y ∂(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) β \ KβE),
       y ∈ chartTargetEuclid (I := I) (M := M) β \ KβE :=
     ae_restrict_mem h_off_meas
-  have h_err : chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β =ᵐ[
+  have h_err : chartErr (I := I) (M := M) hp_one h_cauchy n β =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) β \ KβE)] 0 := by
     filter_upwards [h_lim_zero, h_mem] with y hy_lim hy
@@ -122,7 +120,7 @@ lemma chartErr_ae_zero
     change chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) β
         (wkpChartFun (f n)) y -
-      chartLimit (I := I) (M := M) hp_one hp_top h_cauchy β y = 0
+      chartLimit (I := I) (M := M) hp_one h_cauchy β y = 0
     simp only [hy_push, hy_lim, Pi.zero_apply, sub_zero]
   simpa only [KβE, Kβ] using h_err
 
@@ -141,22 +139,21 @@ lemma pullback_sub (β : M) (v w : EuclN → ℝ) :
 lemma limitFun_decomp
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε)
     (n : ℕ) :
     (fun x => wkpChartFun (f n) x -
-        manifoldLimitFun (I := I) (M := M) hp_one hp_top h_cauchy x) =
+        manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x) =
       fun x =>
         ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
             (I := I) (M := M),
           chartPullback I β
-            (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β) x := by
+            (chartErr (I := I) (M := M) hp_one h_cauchy n β) x := by
   classical
   let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
     (I := I) (M := M)
@@ -171,9 +168,9 @@ lemma limitFun_decomp
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) β
           (wkpChartFun (f n))) x) -
       (∑ β ∈ S, pullbackToManifold (I := I) β
-        (chartLimit (I := I) (M := M) hp_one hp_top h_cauchy β) x) =
+        (chartLimit (I := I) (M := M) hp_one h_cauchy β) x) =
     ∑ β ∈ S, chartPullback I β
-      (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β) x
+      (chartErr (I := I) (M := M) hp_one h_cauchy n β) x
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl ?_
   intro β _
@@ -184,18 +181,17 @@ lemma limitFun_decomp
 theorem limitFun_tendsto
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε) :
     Tendsto
-      (fun n => wkpNormChart (I := I) (M := M) g k p
+      (fun n => wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f n) x -
-          manifoldLimitFun (I := I) (M := M) hp_one hp_top h_cauchy x))
+          manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x))
       atTop (𝓝 0) := by
   classical
   let ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M
@@ -207,7 +203,7 @@ theorem limitFun_tendsto
   have hK_sub : ∀ β : M, K β ⊆ (chartAt H β).source := fun β =>
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M β
   let C : M → M → ℝ := fun γ β =>
-    (crossChartAeJoint (I := I) (M := M) g k hp_one hp_top γ β
+    (crossChartAeJoint (I := I) (M := M) k hp_one hp_top γ β
       (hK_compact β) (hK_sub β)).choose
   have hcross : ∀ γ β : M, ∀ {v : EuclN → ℝ},
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -229,83 +225,83 @@ theorem limitFun_tendsto
             (d := Module.finrank ℝ E) k p v
             (chartTargetEuclid (I := I) (M := M) β) := by
     intro γ β v
-    exact (crossChartAeJoint (I := I) (M := M) g k hp_one hp_top γ β
+    exact (crossChartAeJoint (I := I) (M := M) k hp_one hp_top γ β
       (hK_compact β) (hK_sub β)).choose_spec.2
   have h_err_zero : ∀ n β,
-      chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β =ᵐ[
+      chartErr (I := I) (M := M) hp_one h_cauchy n β =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) β \
             (fun x : M => (toEuclidean (E := E)) (extChartAt I β x)) '' K β)] 0 := by
     intro n β
     simpa only [K, ρ, Set.image_image, Function.comp_apply] using
-      (chartErr_ae_zero (I := I) (M := M) (g := g)
+      (chartErr_ae_zero (I := I) (M := M)
         hp_one hp_top h_cauchy n β)
   have hq : ∀ n γ β,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) k p
           (chartPushed (I := I) (M := M) ρ γ
             (chartPullback I β
-              (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)))
+              (chartErr (I := I) (M := M) hp_one h_cauchy n β)))
           (chartTargetEuclid (I := I) (M := M) γ) ∧
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) k p
           (chartPushed (I := I) (M := M) ρ γ
             (chartPullback I β
-              (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)))
+              (chartErr (I := I) (M := M) hp_one h_cauchy n β)))
           (chartTargetEuclid (I := I) (M := M) γ) ≤
         ENNReal.ofReal (C γ β) *
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) k p
-            (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+            (chartErr (I := I) (M := M) hp_one h_cauchy n β)
             (chartTargetEuclid (I := I) (M := M) β) := by
     intro n γ β
     exact hcross γ β
-      (chartErr_mem (I := I) (M := M) (g := g)
-        hp_one hp_top h_cauchy n β)
+      (chartErr_mem (I := I) (M := M)
+        hp_one h_cauchy n β)
       (h_err_zero n β)
   let term : ℕ → M → M → ℝ := fun n β =>
     chartPullback I β
-      (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+      (chartErr (I := I) (M := M) hp_one h_cauchy n β)
   have hterm_mem : ∀ n β,
-      MemWkpChart (I := I) (M := M) g k p (term n β) := by
+      MemWkpChart (I := I) (M := M) k p (term n β) := by
     intro n β γ
     exact (hq n γ β).1
   have h_bound : ∀ n,
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
           (fun x => wkpChartFun (f n) x -
-            manifoldLimitFun (I := I) (M := M) hp_one hp_top h_cauchy x) ≤
+            manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x) ≤
         ∑ β ∈ S, ∑ γ ∈ S,
           ENNReal.ofReal (C γ β) *
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) k p
-              (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+              (chartErr (I := I) (M := M) hp_one h_cauchy n β)
               (chartTargetEuclid (I := I) (M := M) β) := by
     intro n
-    rw [limitFun_decomp (I := I) (M := M) hp_one hp_top h_cauchy n]
-    refine (wkpNormChart_finset_sum_le (I := I) (M := M) g hp_one S
+    rw [limitFun_decomp (I := I) (M := M) hp_one h_cauchy n]
+    refine (wkpNormChart_finset_sum_le (I := I) (M := M) hp_one S
       (term n) (fun β _ => hterm_mem n β)).trans ?_
     refine Finset.sum_le_sum ?_
     intro β _
-    rw [wkpNormChart_eq_finset_sum (I := I) (M := M) g k hp_one]
+    rw [wkpNormChart_eq_finset_sum (I := I) (M := M) k hp_one]
     exact Finset.sum_le_sum (fun γ _ => (hq n γ β).2)
   have h_pair : ∀ β ∈ S, ∀ γ ∈ S,
       Tendsto
         (fun n => ENNReal.ofReal (C γ β) *
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) k p
-            (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+            (chartErr (I := I) (M := M) hp_one h_cauchy n β)
             (chartTargetEuclid (I := I) (M := M) β))
         atTop (𝓝 0) := by
     intro β _ γ _
     have h_err_tendsto : Tendsto
         (fun n => DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) k p
-          (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+          (chartErr (I := I) (M := M) hp_one h_cauchy n β)
           (chartTargetEuclid (I := I) (M := M) β))
         atTop (𝓝 0) := by
       simpa only [chartErr] using
-        (chartLimit_tendsto (I := I) (M := M) (g := g)
-          hp_one hp_top h_cauchy β)
+        (chartLimit_tendsto (I := I) (M := M)
+          hp_one h_cauchy β)
     have hC_ne_top : ENNReal.ofReal (C γ β) ≠ (⊤ : ℝ≥0∞) :=
       ENNReal.ofReal_ne_top
     have hmul := ENNReal.Tendsto.const_mul
@@ -318,7 +314,7 @@ theorem limitFun_tendsto
           ENNReal.ofReal (C γ β) *
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) k p
-              (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+              (chartErr (I := I) (M := M) hp_one h_cauchy n β)
               (chartTargetEuclid (I := I) (M := M) β))
         atTop (𝓝 0) := by
     intro β hβ
@@ -328,7 +324,7 @@ theorem limitFun_tendsto
         ENNReal.ofReal (C γ β) *
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) k p
-            (chartErr (I := I) (M := M) hp_one hp_top h_cauchy n β)
+            (chartErr (I := I) (M := M) hp_one h_cauchy n β)
             (chartTargetEuclid (I := I) (M := M) β))
       atTop (𝓝 0) := by
     simpa using tendsto_finset_sum S h_inner
@@ -340,27 +336,26 @@ theorem limitFun_tendsto
 theorem wkpChart_complete
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
-    CompleteSpace (WkpChart (I := I) (M := M) g k p hp_one) := by
+    CompleteSpace (WkpChart (I := I) (M := M) k p hp_one) := by
   apply Metric.complete_of_cauchySeq_tendsto
   intro f hf
   let h_cauchy := wkpNormChart_cauchy_of_seminormCauchySeq
-    (I := I) (M := M) (g := g) (k := k) (p := p) hf
+    (I := I) (M := M) (k := k) (p := p) hf
   let uFun := manifoldLimitFun (I := I) (M := M)
-    hp_one hp_top h_cauchy
-  have hu_mem : MemWkpChart (I := I) (M := M) g k p uFun := by
-    exact limitFun_memWkp (I := I) (M := M) (g := g)
+    hp_one h_cauchy
+  have hu_mem : MemWkpChart (I := I) (M := M) k p uFun := by
+    exact limitFun_memWkp (I := I) (M := M)
       hp_one hp_top h_cauchy
-  let u : WkpChart (I := I) (M := M) g k p hp_one := ⟨uFun, hu_mem⟩
+  let u : WkpChart (I := I) (M := M) k p hp_one := ⟨uFun, hu_mem⟩
   refine ⟨u, ?_⟩
   rw [tendsto_iff_norm_sub_tendsto_zero]
-  have h_enn := limitFun_tendsto (I := I) (M := M) g
+  have h_enn := limitFun_tendsto (I := I) (M := M)
     hp_one hp_top h_cauchy
   have h_real : Tendsto
-      (fun n => (wkpNormChart (I := I) (M := M) g k p
+      (fun n => (wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f n) x -
-          manifoldLimitFun (I := I) (M := M) hp_one hp_top h_cauchy x)).toReal)
+          manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x)).toReal)
       atTop (𝓝 (0 : ℝ)) := by
     simpa using ((ENNReal.tendsto_toReal
       (by simp : (0 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))).comp h_enn)
@@ -370,7 +365,7 @@ theorem wkpChart_complete
     intro n
     rfl
   have hnorm_eq : (fun n => ‖f n - u‖) =
-      fun n => (wkpNormChart (I := I) (M := M) g k p
+      fun n => (wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f n) x - uFun x)).toReal := by
     funext n
     rw [norm_wkpChart_def, hfun n]
@@ -380,11 +375,10 @@ theorem wkpChart_complete
 theorem wkpQuot_complete
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
-    CompleteSpace (WkpChartQuot (I := I) (M := M) g k p hp_one) :=
+    CompleteSpace (WkpChartQuot (I := I) (M := M) k p hp_one) :=
   SeparationQuotient.completeSpace_iff.mpr
-    (wkpChart_complete (I := I) (M := M) g k hp_one hp_top)
+    (wkpChart_complete (I := I) (M := M) k hp_one hp_top)
 
 end Chart
 end Sobolev

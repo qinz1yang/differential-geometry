@@ -20,7 +20,6 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
@@ -168,7 +167,7 @@ theorem interiorSmoothScalarH1Inner_eq_lpInner_oneSubLap
       from RCLike.inner_apply _ _]
   ring
 
-@[simp] lemma inner_smoothToH1ComplInterior_smoothToH1ComplInterior
+lemma inner_smoothToH1ComplInterior_smoothToH1ComplInterior
     {g : SmoothRiemannianMetric (I_half n) M} (u v : InteriorSmoothScalar g) :
     ⟪smoothToH1ComplInterior g u, smoothToH1ComplInterior g v⟫_ℝ =
       interiorSmoothScalarH1Inner u v := by
@@ -179,7 +178,7 @@ theorem interiorSmoothScalarH1Inner_eq_lpInner_oneSubLap
   rw [UniformSpace.Completion.inner_coe (𝕜 := ℝ) u v]
   rfl
 
-@[simp] lemma H1ComplInteriorBilin_smoothToH1ComplInterior_smoothToH1ComplInterior
+lemma H1ComplInteriorBilin_smoothToH1ComplInterior_smoothToH1ComplInterior
     {g : SmoothRiemannianMetric (I_half n) M} (u v : InteriorSmoothScalar g) :
     H1ComplInteriorBilin g (smoothToH1ComplInterior g u) (smoothToH1ComplInterior g v) =
       interiorSmoothScalarH1Inner u v := by

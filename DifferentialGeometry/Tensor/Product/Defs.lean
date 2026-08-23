@@ -105,7 +105,7 @@ namespace Tensor0SBundle
 
 open Bundle Set IsManifold ContinuousLinearMap
 
-open scoped Manifold Topology Bundle ContDiff BigOperators
+open scoped Manifold Bundle ContDiff BigOperators
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]

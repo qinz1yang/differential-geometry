@@ -45,8 +45,8 @@ Every step operates on bare functions. No `toLp`, no `coeFn_toLp`.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function
-open scoped ENNReal NNReal
+open MeasureTheory Filter
+open scoped ENNReal
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
@@ -127,6 +127,7 @@ theorem scalar_cauchy_to_limit
     ∃ g : α → E,
       MemLp g p μ ∧
       Tendsto (fun n => eLpNorm (f n - g) p μ) atTop (nhds 0) := by
+  let _ := (inferInstance : (SecondCountableTopology E))
   let _ := hp_top
   -- Same approach as exists_pi_limit_of_cauchy_eLpNorm:
   -- extract controlled Cauchy subsequence → cauchy_complete_eLpNorm → upgrade convergence

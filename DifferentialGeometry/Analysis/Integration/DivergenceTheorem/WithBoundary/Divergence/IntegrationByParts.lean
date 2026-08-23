@@ -53,7 +53,6 @@ lemma Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
 
 omit [InnerProductSpace ℝ E] in
 lemma tangentSectionAction_continuous_of_interior_support
-    [T2Space M]
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) :
@@ -164,8 +163,8 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
   have hf_cont : Continuous f := hf.continuous
   have hX_div_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
     have hdiv_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ tsupport X :=
-      tsupport_divergence_g_with_boundary_subset_of_interior_support
-        (I := I) g X hX_int
+      tsupport_divergence_g_with_boundary_subset
+        (I := I) g X
     have hdiv_supp_int :
         tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
       hdiv_supp.trans hX_int
@@ -188,7 +187,7 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
   have hAct_cont : Continuous (tangentSectionAction (I := I) X f) :=
     tangentSectionAction_continuous_of_interior_support (I := I) X hf hf_int
   have hX_div_cs : HasCompactSupport (divergence_g_with_boundary (I := I) g X) :=
-    hasCompactSupport_divergence_g_with_boundary (I := I) g hX hX_int
+    hasCompactSupport_divergence_g_with_boundary (I := I) g hX
   have hAct_cs : HasCompactSupport (tangentSectionAction (I := I) X f) :=
     hasCompactSupport_tangentSectionAction (I := I) hX f
   have hMul_cont : Continuous (fun x : M => f x * divergence_g_with_boundary (I := I) g X x) :=
@@ -254,7 +253,7 @@ theorem integral_tangentSectionAction_mul_add_eq_neg_with_boundary
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ) ∞ h)
-    (hf_int : tsupport f ⊆ I.interior M) (_hh_int : tsupport h ⊆ I.interior M)
+    (hf_int : tsupport f ⊆ I.interior M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport X)
     (hX_int : tsupport X ⊆ I.interior M) :

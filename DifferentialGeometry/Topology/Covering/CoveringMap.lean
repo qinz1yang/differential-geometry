@@ -24,7 +24,7 @@ variable {X : Type*} [TopologicalSpace X] [Inhabited X]
 omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_sheet_bijection_on_good_U
     (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
-    (U : Set X) (hU : IsOpen U) (hp : p.1 ∈ U)
+    (U : Set X) (hp : p.1 ∈ U)
     (hUpc : IsPathConnected U)
     (hUloops : ∀ γ : _root_.Path p.1 p.1,
       (∀ t, γ t ∈ U) →
@@ -32,7 +32,7 @@ theorem uc_sheet_bijection_on_good_U
           ⟦_root_.Path.refl p.1⟧) :
     Set.BijOn (proj :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X → X)
-      (basicOpen p U hU hp) U := by
+      (basicOpen p U) U := by
   refine ⟨?_, ?_, ?_⟩
   · intro q hq
     obtain ⟨η, hηU, _⟩ := hq
@@ -118,7 +118,7 @@ private theorem uc_good_nhd_exists (x : X) :
 
 omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 private theorem uc_sheet_disjoint
-    {U : Set X} (hU : IsOpen U)
+    {U : Set X}
     {p₁ p₂ :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X}
     (hp₁U : p₁.1 ∈ U) (hp₂U : p₂.1 ∈ U)
@@ -127,7 +127,7 @@ private theorem uc_sheet_disjoint
         (⟦γ⟧ : _root_.Path.Homotopic.Quotient p₁.1 p₁.1) =
           ⟦_root_.Path.refl p₁.1⟧)
     (hne : p₁ ≠ p₂) :
-    Disjoint (basicOpen p₁ U hU hp₁U) (basicOpen p₂ U hU hp₂U) := by
+    Disjoint (basicOpen p₁ U) (basicOpen p₂ U) := by
   rw [Set.disjoint_iff_inter_eq_empty]
   refine Set.eq_empty_iff_forall_notMem.mpr ?_
   intro q ⟨⟨η₁, hη₁U, hq₁⟩, ⟨η₂, hη₂U, hq₂⟩⟩
@@ -184,12 +184,12 @@ private theorem uc_sheet_disjoint
 
 omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 private theorem uc_sheet_exhaust
-    (x : X) {U : Set X} (hU : IsOpen U) (hxU : x ∈ U) (hUpc : IsPathConnected U)
+    (x : X) {U : Set X} (hxU : x ∈ U) (hUpc : IsPathConnected U)
     (q : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
     (hq : q.1 ∈ U) :
     ∃ (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
-      (hp_eq : p.1 = x),
-      q ∈ basicOpen p U hU (hp_eq.symm ▸ hxU) := by
+      (_hp_eq : p.1 = x),
+      q ∈ basicOpen p U := by
   have hjoined : JoinedIn U x q.1 := hUpc.joinedIn _ hxU _ hq
   set ζ : _root_.Path x q.1 := hjoined.somePath
   have hζU : ∀ t, ζ t ∈ U := fun t => hjoined.somePath_mem t
@@ -206,16 +206,16 @@ private theorem uc_sheet_exhaust
 omit [ConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 private theorem uc_sheet_proj_isOpenMap
     {p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X}
-    {U : Set X} (hU : IsOpen U) (hp : p.1 ∈ U)
+    {U : Set X} (hU : IsOpen U)
     {O : Set
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)}
-    (hOopen : IsOpen O) (hOsub : O ⊆ basicOpen p U hU hp) :
+    (hOopen : IsOpen O) (hOsub : O ⊆ basicOpen p U) :
     IsOpen ((proj :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X → X)
         '' O) := by
   rw [isOpen_iff_mem_nhds]
   rintro y ⟨q, hqO, rfl⟩
-  have hqUp : q ∈ basicOpen p U hU hp := hOsub hqO
+  have hqUp : q ∈ basicOpen p U := hOsub hqO
   have hqU : q.1 ∈ U := by
     obtain ⟨η, hη, _⟩ := hqUp
     simpa [proj] using hη 1
@@ -224,8 +224,8 @@ private theorem uc_sheet_proj_isOpenMap
   obtain ⟨S, ⟨⟨r, V, hVopen, hrV, rfl⟩, hqV⟩, hVsub⟩ := hbasis.mem_iff.mp hO_nhd
   obtain ⟨W, hWopen, hqW, _hWsub, hWpc, hWshrink⟩ :=
     basis_intersection (p₁ := r) (p₂ := p) (r := q)
-      hVopen hrV hU hp ⟨hqV, hqUp⟩
-  have hsub : basicOpen q W hWopen hqW ⊆ O :=
+      hVopen hU ⟨hqV, hqUp⟩
+  have hsub : basicOpen q W ⊆ O :=
     (hWshrink).trans (fun s hs => hVsub hs.1)
   refine Filter.mem_of_superset (hWopen.mem_nhds hqW) ?_
   intro z hzW
@@ -249,7 +249,7 @@ theorem proj_isCoveringMap :
   have hp1_mem (p : Fx) : (p.1 : _).1 ∈ U := by rw [hp1_eq p]; exact hxU
   let sheet : Fx → Set
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) :=
-    fun p => basicOpen p.1 U hUopen (hp1_mem p)
+    fun p => basicOpen p.1 U
   have hsheet_open : ∀ p : Fx, IsOpen (sheet p) := fun p =>
     TopologicalSpace.GenerateOpen.basic _ ⟨p.1, U, hUopen, hp1_mem p, rfl⟩
   have hsheet_sub_preU : ∀ p : Fx, sheet p ⊆
@@ -282,18 +282,18 @@ theorem proj_isCoveringMap :
       revert γ
       rw [hbase]
       exact hUloops
-    exact uc_sheet_disjoint hUopen (hp1_mem p₁) (hp1_mem p₂) heq hloops₁ hne
+    exact uc_sheet_disjoint (hp1_mem p₁) (hp1_mem p₂) heq hloops₁ hne
   have hsheet_exhaust : ∀ q ∈ (proj :
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X → X)
       ⁻¹' U, ∃ p : Fx, q ∈ sheet p := by
     intro q hq
-    obtain ⟨p, hp_eq, hqsheet⟩ := uc_sheet_exhaust (X := X) x hUopen hxU hUpc q hq
+    obtain ⟨p, hp_eq, hqsheet⟩ := uc_sheet_exhaust (X := X) x hxU hUpc q hq
     have hp_mem : p ∈ Fx := by simpa [proj] using hp_eq
     refine ⟨⟨p, hp_mem⟩, ?_⟩
     exact hqsheet
   have hsheet_bij : ∀ p : Fx, Set.BijOn proj (sheet p) U := by
     intro p
-    refine uc_sheet_bijection_on_good_U p.1 U hUopen (hp1_mem p) hUpc ?_
+    refine uc_sheet_bijection_on_good_U p.1 U (hp1_mem p) hUpc ?_
     intro γ hγ
     have hbase : p.1.1 = x := hp1_eq p
     revert γ
@@ -412,7 +412,7 @@ theorem proj_isCoveringMap :
       have hW''open : IsOpen W'' := hW'open.inter (hsheet_open p)
       have hq₀W'' : q₀ ∈ W'' := ⟨hq₀W', hq₀_in_sheet⟩
       have hprojW''_open : IsOpen (proj '' W'') :=
-        uc_sheet_proj_isOpenMap hUopen (hp1_mem p) hW''open
+        uc_sheet_proj_isOpenMap hUopen hW''open
           (Set.inter_subset_right)
       have hy₀_inW'' : y₀.1 ∈ proj '' W'' := ⟨q₀, hq₀W'', hproj_q₀⟩
       refine Filter.mem_of_superset

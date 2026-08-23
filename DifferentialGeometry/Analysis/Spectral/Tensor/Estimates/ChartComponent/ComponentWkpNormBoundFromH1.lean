@@ -58,7 +58,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
       ∀ (S : SmoothCcTensorH1 g r s)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
@@ -244,7 +244,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
   set u : M → ℝ :=
     tensorChartComponentScalar (I := I) (M := M)
       g r s S.toCcTensor α Idx Jdx with hu_def
-  have h_def : wkpNormChart (I := I) (M := M) g 1 2 u =
+  have h_def : wkpNormChart (I := I) (M := M) 1 2 u =
       ∑' β : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 2

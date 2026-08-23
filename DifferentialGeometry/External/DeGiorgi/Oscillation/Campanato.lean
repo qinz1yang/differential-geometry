@@ -11,8 +11,8 @@ Holder regularity.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Set
-open scoped ENNReal NNReal Topology
+open MeasureTheory Metric Filter Topology
+open scoped ENNReal NNReal
 
 namespace DeGiorgi
 
@@ -108,6 +108,7 @@ lemma HasCampanatoBound.nonneg
     {u : E → ℝ} {x₀ : E} {R α C : ℝ}
     (_hα : 0 < α) (hR : 0 < R) (hcamp : HasCampanatoBound u x₀ R α C) :
     0 ≤ C := by
+  let _ := _hα
   let b : CampanatoBall x₀ R := ⟨(x₀, R), ⟨hR, le_rfl, Set.Subset.rfl⟩⟩
   exact (campanatoBallValue_nonneg b).trans (hcamp.ballValue_le b)
 
@@ -157,6 +158,7 @@ lemma ball_subset_ball_of_mem_ball_half
     {x₀ x : E} {R r : ℝ}
     (hx : x ∈ Metric.ball x₀ (R / 2)) (_hr : 0 ≤ r) (hrR : r ≤ R / 2) :
     Metric.ball x r ⊆ Metric.ball x₀ R := by
+  let _ := _hr
   intro z hz
   have hx' : dist x x₀ < R / 2 := by simpa using hx
   have hz' : dist z x < r := by simpa using hz
@@ -170,6 +172,7 @@ lemma closedBall_subset_ball_of_mem_ball_half
     {x₀ x : E} {R r : ℝ}
     (hx : x ∈ Metric.ball x₀ (R / 2)) (_hr : 0 ≤ r) (hrR : r ≤ R / 2) :
     Metric.closedBall x r ⊆ Metric.ball x₀ R := by
+  let _ := _hr
   intro z hz
   have hx' : dist x x₀ < R / 2 := by simpa using hx
   have hz' : dist z x ≤ r := by simpa using hz
@@ -477,6 +480,7 @@ lemma dyadicBallAverage_step_le_geometric
     (n : ℕ) :
     dist (dyadicBallAverage u x ρ n) (dyadicBallAverage u x ρ (n + 1))
       ≤ ((2 : ℝ) ^ d * C * ρ ^ α) * ((2 : ℝ) ^ (-α)) ^ n := by
+  let _ := _hα
   have hstep := dyadicBallAverage_step_le_campanato hcamp hρ hρR hsub n
   have hrpow :
       (ρ / (2 : ℝ) ^ n) ^ α = ρ ^ α * ((2 : ℝ) ^ (-α)) ^ n := by

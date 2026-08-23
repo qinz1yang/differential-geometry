@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Operator.DirichletForm
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Analysis.Elliptic.Operator.Variational
 open DifferentialGeometry.Geometry.Operator
@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicH1Lp
 
 private local instance : MeasurableSpace E := borel E
@@ -153,7 +152,7 @@ theorem smoothScalarH1Inner_eq_lpInner_oneSubLap
       RCLike.inner_apply _ _]
   ring
 
-@[simp] lemma inner_smoothToH1Compl_smoothToH1Compl
+lemma inner_smoothToH1Compl_smoothToH1Compl
     {g : SmoothRiemannianMetric I M} (u v : SmoothScalar g) :
     ⟪smoothToH1Compl (I := I) (M := M) g u,
         smoothToH1Compl (I := I) (M := M) g v⟫_ℝ =
@@ -165,7 +164,7 @@ theorem smoothScalarH1Inner_eq_lpInner_oneSubLap
   rw [UniformSpace.Completion.inner_coe (𝕜 := ℝ) u v]
   rfl
 
-@[simp] lemma H1ComplBilin_smoothToH1Compl_smoothToH1Compl
+lemma H1ComplBilin_smoothToH1Compl_smoothToH1Compl
     {g : SmoothRiemannianMetric I M} (u v : SmoothScalar g) :
     H1ComplBilin (I := I) (M := M) g
         (smoothToH1Compl (I := I) (M := M) g u)
