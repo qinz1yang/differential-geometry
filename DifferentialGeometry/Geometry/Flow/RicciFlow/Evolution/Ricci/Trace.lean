@@ -1,11 +1,14 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Pairing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christoffel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Evolution
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Curvature.Contractions
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import Mathlib.Tactic.Ring
 open DifferentialGeometry.PDE.RicciFlow
@@ -41,7 +44,7 @@ def RicciTensorRealizesRm04TraceInFrameOn
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
   forall t : Real,
-    DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm04TraceInFrame
+    DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm04TraceInFrame
       (I := I) (S.ricci t) (Rm04 t) (gInv t) frame
 
 def RicciTensorRealizesRm04FirstTraceInFrameOn
@@ -102,7 +105,6 @@ private theorem metricInverseInBasis_of_solution_frame
   · simpa [metricCompInFrame, IsLocalFrameOn.toBasisAt_coe] using
       (hinv t x hx i j).2
 
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricInverseInBasis_of_local
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -136,7 +138,7 @@ theorem ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (hRicTrace13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D,
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
         (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -161,9 +163,6 @@ theorem ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
       (fun a b : Idx => gInv (t : Real) x a b) hinvAt
       (S.ricci (t : Real)) (Rm13 (t : Real)) (Rm04 (t : Real))
       (hRicTrace13 t) (hLower t x)
-      (Tensor0SBundle.invMetric_symm
-        (I := I) (M := M) (S.family.metric (t : Real)) x
-        (hframe.toBasisAt hx) (fun a b : Idx => gInv (t : Real) x a b) hinvAt)
   simpa [DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm04FirstTraceInFrame,
     IsLocalFrameOn.toBasisAt_coe] using hAt i j
 
@@ -174,29 +173,24 @@ def ConnectionLocallySmoothOn
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (S.family.connection (t : Real)) (1 : WithTop ℕ∞)
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem connSmoothOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S) :
-    ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞) := by
-  intro s _hs
+    (s : Real) :
+    CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (S.family.connection s) (1 : WithTop ℕ∞) := by
   simpa [SolutionFamily.connection, metricCov] using
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
       (I := I) (M := M) (S.base.metric s)
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem connCurvOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSolutionOn (I := I) S)
-    (x₀ : M) :
-    ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
-        (S.family.connection s) x₀ := by
-  intro s hs
+    (x₀ : M) (s : Real) :
+    DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
+      (S.family.connection s) x₀ := by
   have htop :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (I := I) (E := E) (M := M) (S.family.connection s) ∞ := by
@@ -205,31 +199,24 @@ theorem connCurvOfSol
   exact DifferentialGeometry.Geometry.Curvature.connection_curvature_coord_of_christoffel
     (I := I) (S.family.connection s) htop x₀
 
-
 omit [SigmaCompactSpace M] in
 theorem rm13OfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D) :
-    ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
-        (S.family.connection s) (S.base.rm13 s) := by
-  intro s _hs
+    (S : SolutionOn (I := I) (M := M) D) (s : Real) :
+    DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
+      (S.family.connection s) (S.base.rm13 s) := by
   simpa [SolutionFamily.connection,
     SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric s)).h_rm13
-
+      (metricCurvData (I := I) (M := M) (S.base.metric s)).rm13Realizes
 
 omit [SigmaCompactSpace M] in
 theorem ricciTraceOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D) :
-    ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
-        (S.ricci s) (S.base.rm13 s) := by
-  intro s _hs
+    (S : SolutionOn (I := I) (M := M) D) (s : Real) :
+    DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
+      (S.ricci s) (S.base.rm13 s) := by
   simpa [SolutionOn.ricci_eq, SolutionFamily.ricci, SolutionFamily.rm13] using
-    (metricCurvData (I := I) (M := M) (S.base.metric s)).h_ricci13
-
+    (metricCurvData (I := I) (M := M) (S.base.metric s)).ricciRealizes
 
 def RicciSymmetricInFrameOnRegular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -239,28 +226,26 @@ def RicciSymmetricInFrameOnRegular
     ricciCompInFrame (I := I) S frame (t : Real) x i j =
       ricciCompInFrame (I := I) S frame (t : Real) x j i
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem lcAt_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) :
     DifferentialGeometry.Geometry.Connection.IsLeviCivita (I := I)
       (S.family.connection (t : Real)) (S.family.metric (t : Real)) := by
-  constructor
-  · simpa [DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt,
-      DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricAt] using
-      hS.leviCivita.1 (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.regularToFlow t)
-  · simpa [DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt] using
-      hS.leviCivita.2 (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.regularToFlow t)
+  simpa [DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt,
+    DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricAt] using
+    SolutionOn.leviCivita (I := I) S
+      (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.regularToFlow t)
 
+omit [SigmaCompactSpace M] [T2Space M] in
 private theorem rm04Realizes_regular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -268,23 +253,21 @@ private theorem rm04Realizes_regular
         (S.family.metric (t : Real)) x
         (Rm13 (t : Real) x) (Rm04 (t : Real) x))
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) :
-    DifferentialGeometry.Geometry.Curvature.Rm04RealizesConnection (I := I)
+    DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I)
       (S.family.metric (t : Real))
       (S.family.connection (t : Real)) (Rm04 (t : Real)) :=
   DifferentialGeometry.Geometry.Curvature.rm04RealizesLower (I := I) (S.family.metric (t : Real))
     (S.family.connection (t : Real)) (Rm13 (t : Real)) (Rm04 (t : Real))
     (hRm13 t) (hLower t)
 
-
+omit [SigmaCompactSpace M] in
 theorem rm04OutputSkew_regular
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -296,22 +279,20 @@ theorem rm04OutputSkew_regular
   intro t x
   exact DifferentialGeometry.Geometry.Connection.rm04OutputSkew_ofMC
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2))
+    (connSmoothOfSol (I := I) S (t : Real))
     (DifferentialGeometry.Geometry.Connection.metricCompatible_of_isLeviCivita
-      (I := I) (lcAt_regular (I := I) S hS t))
+      (I := I) (lcAt_regular (I := I) S t))
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
-
+omit [SigmaCompactSpace M] in
 theorem rm04FirstBianchi_regular
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -323,22 +304,20 @@ theorem rm04FirstBianchi_regular
   intro t x
   exact DifferentialGeometry.Geometry.Connection.firstBianchi_ofTF
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2))
+    (connSmoothOfSol (I := I) S (t : Real))
     (DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
-      (I := I) (lcAt_regular (I := I) S hS t))
+      (I := I) (lcAt_regular (I := I) S t))
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
-
+omit [SigmaCompactSpace M] in
 theorem rm04PairSymm_regular
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -352,19 +331,18 @@ theorem rm04PairSymm_regular
   intro t x
   exact DifferentialGeometry.Geometry.Connection.rm04PairSymm_ofLC
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2))
-    (lcAt_regular (I := I) S hS t) (Rm04 (t : Real))
+    (connSmoothOfSol (I := I) S (t : Real))
+    (lcAt_regular (I := I) S t) (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
-
+omit [SigmaCompactSpace M] in
 theorem rm04InputSkew_regular_first_two
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -381,14 +359,14 @@ theorem rm04InputSkew_regular_first_two
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
+omit [SigmaCompactSpace M] in
 theorem rm04InputSkew_regular
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),

@@ -389,7 +389,7 @@ theorem maximalRegularitySolField_timeModeCoeff (hT : 0 ≤ T)
   timeL2OfModes_timeModeCoeff (I := I) (M := M) _
     (summable_solModeCoeff (I := I) (M := M) (a := a) hT h_compact f) i
 
-def maximalRegularitySolFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T) (_hT1 : T ≤ 1)
+def maximalRegularitySolFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T :=
   timeL2OfModes (I := I) (M := M) (σ := a + 1)
@@ -403,7 +403,7 @@ theorem maximalRegularitySolFieldHa1_timeModeCoeff (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 f) i =
+        (maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f) i =
       solModeCoeff (I := I) (M := M) (a := a) hT.le f i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := a + 1) _
     (summable_solModeCoeff_Ha1 (I := I) (M := M) (a := a) hT hT1
@@ -415,7 +415,7 @@ theorem maximalRegularitySolFieldHa1_norm_le
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    ‖maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 f‖ ≤
+    ‖maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f‖ ≤
       2 * Real.sqrt T * ‖f‖ := by
   refine norm_le_of_weighted_perMode_le (I := I) (M := M) (b := a + 1)
     h_compact (C := 2 * Real.sqrt T)
@@ -429,9 +429,9 @@ theorem maximalRegularitySolFieldHa1_add (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 (f + f') =
-      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 f +
-        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 f' := by
+    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT (f + f') =
+      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f +
+        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f' := by
   refine timeModeCoeff_injective (I := I) (M := M) h_compact
     (fun i => ?_)
   rw [maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
@@ -449,50 +449,50 @@ theorem maximalRegularitySolFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 (f - f') =
-      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 f -
-        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT hT1 f' := by
+    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT (f - f') =
+      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f -
+        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f' := by
   have hadd := maximalRegularitySolFieldHa1_add (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 (f - f') f'
   rw [sub_add_cancel] at hadd
   rw [hadd, add_sub_cancel_right]
 
-def maximalRegularityOp (a : ℝ) {T : ℝ} (hT : 0 < T) (_hT1 : T ≤ 1)
+def maximalRegularityOp (a : ℝ) {T : ℝ} (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     timeH1 (tensorHs (I := I) (M := M) g r s a) T :=
   TimeSobolev.timeH1.mk (0 : tensorHs (I := I) (M := M) g r s a)
     (maximalRegularityDerivField (I := I) (M := M) a hT.le f)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maximalRegularityOp_trace0_eq
-    (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularityOp_trace0_eq
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.trace0 _ T
-        (maximalRegularityOp (I := I) (M := M) a hT hT1 f) =
+        (maximalRegularityOp (I := I) (M := M) a hT f) =
       0 :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maximalRegularityOp_timeDeriv
-    (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularityOp_timeDeriv
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.timeDeriv _ T
-        (maximalRegularityOp (I := I) (M := M) a hT hT1 f) =
+        (maximalRegularityOp (I := I) (M := M) a hT f) =
       maximalRegularityDerivField (I := I) (M := M) a hT.le f :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalRegularityOp_trace0 (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularityOp_trace0 (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.trace0 _ T
-        (maximalRegularityOp (I := I) (M := M) a hT hT1 f) = 0 :=
+        (maximalRegularityOp (I := I) (M := M) a hT f) = 0 :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_norm_Ha2_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (_hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     ‖maximalRegularitySolField (I := I) (M := M) a hT.le f‖ ≤
       (1 + T) * ‖f‖ := by
@@ -506,7 +506,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_norm_deriv_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (_hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     ‖maximalRegularityDerivField (I := I) (M := M) a hT.le f‖ ≤
       2 * ‖f‖ := by
@@ -520,18 +520,18 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    ‖maximalRegularityOp (I := I) (M := M) a hT hT1 f‖ ≤ 2 * ‖f‖ := by
+    ‖maximalRegularityOp (I := I) (M := M) a hT f‖ ≤ 2 * ‖f‖ := by
   have hnormsq := TimeSobolev.timeH1.norm_sq_eq
-    (maximalRegularityOp (I := I) (M := M) a hT hT1 f)
-  have hinit : (maximalRegularityOp (I := I) (M := M) a hT hT1 f).init = 0 :=
+    (maximalRegularityOp (I := I) (M := M) a hT f)
+  have hinit : (maximalRegularityOp (I := I) (M := M) a hT f).init = 0 :=
     rfl
-  have hderiv : (maximalRegularityOp (I := I) (M := M) a hT hT1 f).deriv =
+  have hderiv : (maximalRegularityOp (I := I) (M := M) a hT f).deriv =
       maximalRegularityDerivField (I := I) (M := M) a hT.le f := rfl
   have hderiv_le := maximalRegularityOp_norm_deriv_le (I := I) (M := M)
-    (h_compact := h_compact) (a := a) hT hT1 f
-  have hsq : ‖maximalRegularityOp (I := I) (M := M) a hT hT1 f‖ ^ 2 ≤
+    (h_compact := h_compact) (a := a) hT f
+  have hsq : ‖maximalRegularityOp (I := I) (M := M) a hT f‖ ^ 2 ≤
       (2 * ‖f‖) ^ 2 := by
     rw [hnormsq, hinit, hderiv, norm_zero]
     have h2f_nonneg : 0 ≤ 2 * ‖f‖ := mul_nonneg (by norm_num) (norm_nonneg _)

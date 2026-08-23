@@ -28,7 +28,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Analysis.Spectral
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -189,12 +188,12 @@ private theorem weighted_perModeConv_forcing_sq_le
           ‖timeModeCoeff (I := I) (M := M) F i‖ ^ 2) := by ring
 
 theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
-    {a : ℝ} {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {a : ℝ} {T : ℝ} (hT : 0 < T)
     (F : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) :
     ∀ᵐ t ∂(timeMeasure T),
       ‖(timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
           (show a + 1 ≤ a + 2 by linarith)
-          (maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) a hT
             (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F)) t‖ ≤
         Real.sqrt (1 + T) * ‖F‖ := by
   classical
@@ -203,7 +202,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
       (I := I) (M := M) g₀ r s
   haveI := countable_tensorEigenIdx (I := I) (M := M)
     (g := g₀) (r := r) (s := s) h_compact
-  set field := maxRegDuhamelSolField (I := I) (M := M) a hT hT1
+  set field := maxRegDuhamelSolField (I := I) (M := M) a hT
     (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F with hfield_def
   set inclField := timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
     (show a + 1 ≤ a + 2 by linarith) field with hinclField_def
@@ -219,7 +218,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
         fun t => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t :=
     fun i => timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M)
-      (h_compact := h_compact) (a := a) hT hT1 F i
+      (h_compact := h_compact) (a := a) hT F i
   have hcoeff_all : ∀ᵐ t ∂(timeMeasure T),
       ∀ i : TensorEigenIdx (I := I) (M := M) g₀ r s,
         (field t).coeff i =

@@ -15,7 +15,6 @@ namespace Analysis
 namespace Spectral
 namespace DeTurck
 
-open DifferentialGeometry
 
 open DifferentialGeometry.Integral.L2
 
@@ -147,7 +146,7 @@ theorem tensorCovDerivAt_slotExtend_eq (g₀ : SmoothRiemannianMetric I M) (r s 
         (DifferentialGeometry.Analysis.Spectral.slotExtend (I := I) (M := M) g₀ r s Φ) x v =
       (show Tensor0SBundle.Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SBundle.Tensor0SSpace (s + 1) I
         x from
-        DifferentialGeometry.Analysis.Spectral.slotExtendPointwise (I := I) (M := M) g₀ r s x
+        DifferentialGeometry.Analysis.Spectral.slotExtendPointwise (I := I) (M := M) r s x
           (show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
             Analysis.Parabolic.TensorSpectral.tensorCovDerivAt (I := I) (M := M) g₀ r s Φ x
               v)) := by
@@ -156,7 +155,7 @@ theorem tensorCovDerivAt_slotExtend_eq (g₀ : SmoothRiemannianMetric I M) (r s 
   apply Tensor0SBundle.Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   rw [show m = Fin.cons (m 0) (Matrix.vecTail m) from (Fin.cons_self_tail m).symm]
-  rw [DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply_eval (I := I) (M := M) g₀ r s x
+  rw [DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply_eval (I := I) (M := M) r s x
     (show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
       Analysis.Parabolic.TensorSpectral.tensorCovDerivAt (I := I) (M := M) g₀ r s Φ x v)
     D (m 0) (Matrix.vecTail m)]
@@ -180,7 +179,7 @@ theorem covGrad_slotExtend_eq_zero_of_covGrad_eq_zero (g₀ : SmoothRiemannianMe
         (DifferentialGeometry.Analysis.Spectral.slotExtend (I := I) (M := M) g₀ r s Φ) = 0 := by
   classical
   have hslotZero : ∀ (y : M),
-      DifferentialGeometry.Analysis.Spectral.slotExtendPointwise (I := I) (M := M) g₀ r s y
+      DifferentialGeometry.Analysis.Spectral.slotExtendPointwise (I := I) (M := M) r s y
           (0 : Tensor0SBundle.Tensor0SSpace r I y →L[ℝ] Tensor0SBundle.Tensor0SSpace s I y) =
         (0 : Tensor0SBundle.Tensor0SSpace (r + 1) I y →L[ℝ] Tensor0SBundle.Tensor0SSpace (s + 1) I
           y) := by

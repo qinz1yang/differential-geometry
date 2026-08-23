@@ -15,7 +15,7 @@ namespace Geometry
 namespace Riemannian
 namespace Variation
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

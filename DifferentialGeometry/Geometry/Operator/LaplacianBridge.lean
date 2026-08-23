@@ -121,6 +121,7 @@ theorem Δ_g_congr_of_eventuallyEq
 omit [NeZero (Module.finrank Real E)] in
 omit [CompactSpace M] in
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem Δ_g_neg
     (g : SmoothRiemannianMetric I M) {f : M → Real} {x : M}
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f) :

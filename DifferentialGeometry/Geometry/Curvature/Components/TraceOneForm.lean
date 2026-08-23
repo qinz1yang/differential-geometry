@@ -143,7 +143,7 @@ theorem curvatureTraceOneFormEqRicVectorAt_of_metric_dual
     (gInv : Idx -> Idx -> Real)
     (curvatureVector : TangentSpace I x)
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hSkew : Rm13MetricSkewAt (I := I) g x (Rm13 x))
     (hAlpha :
       alpha =

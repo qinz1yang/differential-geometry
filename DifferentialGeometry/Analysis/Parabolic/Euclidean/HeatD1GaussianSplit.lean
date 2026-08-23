@@ -18,14 +18,15 @@ def baseD1Half (x : V) : ℝ :=
   ((2 : ℝ)⁻¹ * ‖x‖) *
     ((baseHeatMass V)⁻¹ * Real.exp (-(8 : ℝ)⁻¹ * ‖x‖ ^ 2))
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD1Half_nonneg (x : V) : 0 ≤ baseD1Half x := by
   unfold baseD1Half
   exact mul_nonneg (mul_nonneg (by positivity) (norm_nonneg x))
     (mul_nonneg (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
       (Real.exp_pos _).le)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD1_split (x : V) :
     baseD1Maj x =
       baseD1Half x * Real.exp (-(8 : ℝ)⁻¹ * ‖x‖ ^ 2) := by
@@ -40,6 +41,7 @@ theorem baseD1_split (x : V) :
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD1Half_scale (x : V) :
     baseD1Half x = Real.sqrt 2 *
       baseD1Maj ((Real.sqrt 2)⁻¹ • x) := by
@@ -84,7 +86,7 @@ theorem baseD1Half_rpow {p : ℝ} (hp1 : 1 ≤ p) (hp2 : p ≤ 2) :
   rw [baseD1Half_scale (V := V) x,
     Real.mul_rpow hs.le (baseD1Maj_nonneg _)]
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD1Half_le (x : V) :
     baseD1Half x ≤ 2 * (baseHeatMass V)⁻¹ := by
   let r : ℝ := ‖x‖
@@ -121,7 +123,7 @@ theorem baseD1Half_le (x : V) :
         (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
     _ = 2 * (baseHeatMass V)⁻¹ := by ring
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD1Maj_gauss (x : V) :
     baseD1Maj x ≤
       2 * (baseHeatMass V)⁻¹ *
@@ -130,7 +132,7 @@ theorem baseD1Maj_gauss (x : V) :
   exact mul_le_mul_of_nonneg_right (baseD1Half_le (V := V) x)
     (Real.exp_pos _).le
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD1Tail_le {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
     baseD1Maj x ≤
       Real.exp (-(8 : ℝ)⁻¹ * R ^ 2) * baseD1Half x := by
@@ -146,7 +148,7 @@ theorem baseD1Tail_le {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
       mul_le_mul_of_nonneg_left hexp (baseD1Half_nonneg (V := V) x)
     _ = Real.exp (-(8 : ℝ)⁻¹ * R ^ 2) * baseD1Half x := mul_comm _ _
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD1Tail_pow {R p : ℝ} (hR : 0 ≤ R) (hp : 0 ≤ p)
     {x : V} (hx : R ≤ ‖x‖) :
     (baseD1Maj x) ^ p ≤

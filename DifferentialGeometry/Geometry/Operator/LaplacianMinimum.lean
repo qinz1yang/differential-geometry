@@ -314,11 +314,11 @@ theorem gradientFun_eq_zero_at_spatial_min
     (mfderiv_eq_zero_at_spatial_min (I := I) hmin hf)
 
 def LaplacianNonnegativeAtSpatialMin
-    [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (g : SmoothRiemannianMetric I M) : Prop :=
-  forall {f : M -> Real} {x : M},
+    (g : SmoothRiemannianMetric I M) : Prop := by
+  let _ := hVectorBundle
+  exact forall {f : M -> Real} {x : M},
     IsLocalMin f x ->
       MDifferentiableAt I 𝓘(Real, Real) f x ->
         (∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y) ->

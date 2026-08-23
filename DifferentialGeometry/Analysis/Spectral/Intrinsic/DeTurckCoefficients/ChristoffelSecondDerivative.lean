@@ -10,10 +10,8 @@ open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 

@@ -158,7 +158,7 @@ theorem ricciComp_le_rmNorm
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
 theorem metricRicciComp_le
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) {x : M}
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (basis : Module.Basis ι Real (TangentSpace I x))
@@ -179,7 +179,7 @@ theorem metricRicciComp_le
       (I := I) g (metricCov (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g)
-      D.h_rm13 D.h_rm04 x
+      D.rm13Realizes D.rm04Realizes x
   have htrace : ∀ a b,
       metricRicciAt (I := I) (M := M) g x
           (vec2 (I := I) (basis a) (basis b)) =
@@ -192,7 +192,7 @@ theorem metricRicciComp_le
         (metricRicci (I := I) (M := M) g)
         (metricRm13 (I := I) (M := M) g)
         (metricRm04 (I := I) (M := M) g)
-        D.h_ricci13 hLower hON a b)
+        D.ricciRealizes hLower hON a b)
   exact ricciComp_le_rmNorm (I := I) g basis hinv
     (metricRicciAt (I := I) (M := M) g x)
     (metricRm04At (I := I) (M := M) g x) htrace i j
@@ -263,7 +263,7 @@ theorem tensor02_quadForm_abs_le_normSq0S
     _ = (Module.finrank Real (TangentSpace I x) : Real)
           * Real.sqrt (normSq0S (I := I) g x 2 T) * g.inner x v v := by ring
 
-theorem exists_rm04_bound [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+theorem exists_rm04_bound [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     ∃ K : Real, 0 ≤ K ∧ ∀ x : M,
       normSq0S (I := I) g x 4 (metricRm04 (I := I) (M := M) g x) ≤ K := by
@@ -279,8 +279,7 @@ theorem exists_rm04_bound [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
   exact (hK (Set.mem_range_self x)).trans (le_max_left _ _)
 
 theorem exists_ricci_bound
-    [NeZero (Module.finrank Real E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧ ∀ (x : M) (v : TangentSpace I x),
@@ -306,7 +305,7 @@ theorem exists_ricci_bound
       (I := I) g (metricCov (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g)
-      D.h_rm13 D.h_rm04 x
+      D.rm13Realizes D.rm04Realizes x
   have htrace : ∀ i j,
       metricRicciAt (I := I) (M := M) g x
           (vec2 (I := I) (basis i) (basis j)) =
@@ -319,7 +318,7 @@ theorem exists_ricci_bound
         (metricRicci (I := I) (M := M) g)
         (metricRm13 (I := I) (M := M) g)
         (metricRm04 (I := I) (M := M) g)
-        D.h_ricci13 hLower hON i j)
+        D.ricciRealizes hLower hON i j)
   have hunit : ∀ u : TangentSpace I x, g.inner x u u = 1 →
       |metricRicciAt (I := I) (M := M) g x (vec2 (I := I) u u)| ≤ C := by
     intro u hu

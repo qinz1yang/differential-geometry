@@ -220,8 +220,7 @@ theorem expNegWeightedGreen
   simpa [expNeg] using h_eq
 
 theorem expNegLap
-    [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     Δ_g (I := I) g
         ⟨fun x : M => Real.exp (-(f x)),

@@ -335,7 +335,6 @@ theorem inv_eq_normal_lt
   exact heq_of_eq hcoord.symm
 
 theorem center_mem
-    [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
@@ -354,7 +353,6 @@ theorem center_mem
   exact hmap
 
 theorem center_inv
-    [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}

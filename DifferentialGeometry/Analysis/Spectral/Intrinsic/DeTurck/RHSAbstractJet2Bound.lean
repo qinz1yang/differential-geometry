@@ -126,7 +126,7 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap_of_basisIdentity
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem riemannOp_eq_chartRiemannCLM_apply'
+theorem riemann_op_eq_chart_riemann_clm_apply_of_smooth_metric
     (g : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     riemannOp (cov := LeviCivita (I := I) (smoothRiemannianMetricToInfty (I := I) g)) x v w u =
       chartRiemannCLM (I := I) (smoothRiemannianMetricToInfty (I := I) g) x v w u :=

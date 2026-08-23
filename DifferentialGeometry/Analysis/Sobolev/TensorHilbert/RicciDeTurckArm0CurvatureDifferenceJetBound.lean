@@ -1,7 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Envelope
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 
@@ -13,7 +14,6 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Sobolev
 
-open DifferentialGeometry
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization

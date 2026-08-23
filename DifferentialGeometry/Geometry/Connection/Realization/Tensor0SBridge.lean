@@ -60,7 +60,7 @@ theorem scalarFn_zero :
   exact map_zero (tensor0Iso I M x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem tensor0Iso_symm_scalarFn (T : Π x : M, Tensor0SSpace 0 I x) (x : M) :
+theorem tensor0Iso_symm_scalarFn (T : Π x : M, Tensor0SSpace 0 I x) (x : M) :
     (tensor0Iso I M x).symm ((scalarFn I M T) x) = T x := by
   change (tensor0Iso I M x).symm (tensor0Iso I M x (T x)) = T x
   exact (tensor0Iso I M x).symm_apply_apply (T x)

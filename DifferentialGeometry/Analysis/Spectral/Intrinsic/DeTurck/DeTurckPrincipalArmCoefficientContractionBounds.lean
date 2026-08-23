@@ -4,14 +4,14 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralNormLIterateLadder
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AppCcJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceSlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.OperatorFieldPairingIBP
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorDirichletCurrentGreenIdentityRS
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianAppCcCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianOperatorFieldApplicationCommutation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -29,7 +29,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
@@ -112,7 +111,7 @@ private lemma jet_fibreNormSq_sup_le (g₀ : SmoothRiemannianMetric I M) (r s : 
   choose Cemb hCemb_nn hCemb using hstep
   exact ⟨Cemb, hCemb_nn, fun Ψ l x => hCemb l Ψ x⟩
 
-lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
+lemma coeffContract_iteratedCovGrad_jet_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (b₀ s₀ dc dd : ℕ) (hdc : dc ≤ 2) (hdd : dd ≤ 3)
@@ -186,13 +185,13 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
     rw [hfam (l + dd)] at h
     have : ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2 ≤ (Kw l * f (l + dd + 2 * p)) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) h 2
-    nlinarith [this]
+    nlinarith only [this]
   have hΦl2 : ∀ i, ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2 ≤ (Kc i) ^ 2 * (1 + f (i + dc)) ^
     2 := by
     intro i
     have : ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2 ≤ (Kc i * (1 + f (i + dc))) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) (hΦ i) 2
-    nlinarith [this]
+    nlinarith only [this]
   have hsupΦ_region1 : ∀ i, i ≤ t → supΦsq i ≤ KballΦ i := by
     intro i hi
     rw [hsupΦsq, hKballΦ]
@@ -261,7 +260,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
   rw [hfam (q + 3)]
   set μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀ with
     hμ
-  have hG_nn : 0 ≤ diagonalGridGrowthFactor (E := E) q := appCcGdiag_nonneg (E := E) q
+  have hG_nn : 0 ≤ diagonalGridGrowthFactor (E := E) q := operatorFieldApplicationGdiag_nonneg (E := E) q
   set flt1 := (Finset.range (q + 1)).filter (· ≤ t) with hflt1
   set flt2 := (Finset.range (q + 1)).filter (fun i => ¬ i ≤ t) with hflt2
   set FW : M → ℝ := fun x => diagonalGridGrowthFactor (E := E) q *
@@ -380,7 +379,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
         pow_le_pow_left₀ (mul_nonneg (hf_nn _) (hf_nn _)) hinterp 2
       have hBB : f (q - i + 4 * K + dd + 2 * p) ^ 2 ≤ f (q + 3 + 2 * p) ^ 2 :=
         pow_le_pow_left₀ (hf_nn _) hfβγ 2
-      nlinarith [hABB, hABAB, hBB]
+      nlinarith only [hABB, hABAB, hBB]
     calc (∑ l ∈ Finset.range (q + 1 - i), supWsq l) * ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2
         ≤ (DW (q - i) * f (q - i + 4 * K + dd + 2 * p) ^ 2) *
           ((Kc i) ^ 2 * (1 + f (i + dc)) ^ 2) := by
@@ -403,7 +402,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
   rw [mul_pow, Real.sq_sqrt (mul_nonneg hG_nn (add_nonneg (hS1_nn q) (hS2_nn q)))]
   exact hfinalsq
 
-lemma coeffContract_Hs_bound [Nonempty M]
+lemma coeffContract_Hs_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (b₀ dc dd : ℕ) (hdc : dc ≤ 2) (hdd : dd ≤ 3)
@@ -484,7 +483,7 @@ lemma iteratedCovGrad_slotExtend_norm_le (g₀ : SmoothRiemannianMetric I M) (r 
   have hpt : ∀ x, riemannianFiberNormSq (I := I) (M := M) g₀ (r + 1) ((s + 1) + i) x
       ((iteratedCovGrad (I := I) g₀ (r + 1) (s + 1) i
         (slotExtend (I := I) (M := M) g₀ r s Φ)).toSection x) ≤ F x :=
-    fun x => rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ r s Φ i x
+    fun x => riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ r s Φ i x
   have hsq := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ (r + 1)
     ((s + 1) + i) (iteratedCovGrad (I := I) g₀ (r + 1) (s + 1) i
       (slotExtend (I := I) (M := M) g₀ r s Φ)) F hFint hpt

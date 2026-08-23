@@ -258,16 +258,15 @@ theorem continuous_bilin_integrand {Ω : Set E}
   (B.continuous_principalIntegrand hu hv).add
     ((B.continuous_c.mul hu.continuous).mul hv.continuous)
 
-def gradientVec {Ω : Set E} (_B : SmoothEllipticBilinearForm d Ω)
-    (u : E → ℝ) (x : E) : E :=
+def gradientVec (u : E → ℝ) (x : E) : E :=
   WithLp.toLp 2 (fun i : Fin d => (fderiv ℝ u x) (EuclideanSpace.single i 1))
 
 theorem principalIntegrand_self_eq_inner {Ω : Set E}
     (B : SmoothEllipticBilinearForm d Ω) (u : E → ℝ) (x : E) :
     B.principalIntegrand u u x =
-      ⟪B.gradientVec u x, DeGiorgi.matMulE (B.a x) (B.gradientVec u x)⟫_ℝ := by
+      ⟪gradientVec u x, DeGiorgi.matMulE (B.a x) (gradientVec u x)⟫_ℝ := by
   classical
-  set ξ : E := B.gradientVec u x with hξ
+  set ξ : E := gradientVec u x with hξ
   set V : Fin d → ℝ := fun i => (fderiv ℝ u x) (EuclideanSpace.single i 1) with hV
   have h_inner :
       ⟪ξ, DeGiorgi.matMulE (B.a x) ξ⟫_ℝ =
@@ -295,14 +294,14 @@ theorem principalIntegrand_self_eq_inner {Ω : Set E}
 theorem principalIntegrand_self_ge {Ω : Set E}
     (B : SmoothEllipticBilinearForm d Ω) (u : E → ℝ)
     {x : E} (hx : x ∈ Ω) :
-    B.lam * ‖B.gradientVec u x‖ ^ 2 ≤
+    B.lam * ‖gradientVec u x‖ ^ 2 ≤
       B.principalIntegrand u u x := by
   rw [principalIntegrand_self_eq_inner]
-  exact B.coercive x hx (B.gradientVec u x)
+  exact B.coercive x hx (gradientVec u x)
 
-theorem gradientVec_norm_sq_eq_sum {Ω : Set E}
-    (B : SmoothEllipticBilinearForm d Ω) (u : E → ℝ) (x : E) :
-    ‖B.gradientVec u x‖ ^ 2 =
+omit [NeZero d] in
+theorem gradientVec_norm_sq_eq_sum (u : E → ℝ) (x : E) :
+    ‖gradientVec u x‖ ^ 2 =
       ∑ i : Fin d, ((fderiv ℝ u x) (EuclideanSpace.single i 1)) ^ 2 := by
   unfold gradientVec
   rw [EuclideanSpace.norm_sq_eq]
@@ -314,7 +313,7 @@ theorem gradientVec_norm_sq_eq_sum {Ω : Set E}
 theorem bilin_integrand_self_ge {Ω : Set E}
     (B : SmoothEllipticBilinearForm d Ω) (u : E → ℝ)
     {x : E} (hx : x ∈ Ω) :
-    B.lam * ‖B.gradientVec u x‖ ^ 2 + B.c x * u x * u x ≤
+    B.lam * ‖gradientVec u x‖ ^ 2 + B.c x * u x * u x ≤
       B.principalIntegrand u u x + B.c x * u x * u x := by
   have h := B.principalIntegrand_self_ge u hx
   linarith

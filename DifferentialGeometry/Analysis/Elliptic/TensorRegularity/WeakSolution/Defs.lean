@@ -275,6 +275,7 @@ theorem tensorComponentEuclid_hasCompactSupport
   exact HasCompactSupport.of_support_subset_isCompact hK_compact hsupp
 
 omit [CompleteSpace E] in
+omit [T2Space M] [SigmaCompactSpace M] in
 theorem tensorComponent_isSmoothWeakSolution_of_chartIdentity
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)

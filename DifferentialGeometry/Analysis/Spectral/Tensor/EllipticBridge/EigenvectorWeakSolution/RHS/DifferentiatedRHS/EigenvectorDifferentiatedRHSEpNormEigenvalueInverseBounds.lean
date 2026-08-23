@@ -30,7 +30,6 @@ open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev.Chart
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
-open DifferentialGeometry.Analysis.Spectral
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

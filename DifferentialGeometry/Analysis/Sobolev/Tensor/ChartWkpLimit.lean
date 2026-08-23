@@ -28,14 +28,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem wkpNorm_secComp_le
-    (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ) (p : ℝ≥0∞)
+    {r s : ℕ} (k : ℕ) (p : ℝ≥0∞)
     (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
         (secChartComp (I := I) (M := M) r s S α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α) ≤
-      wkpTensorNorm (I := I) (M := M) g k p S := by
+      wkpTensorNorm (I := I) (M := M) k p S := by
   unfold wkpTensorNorm
   have hJ :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
@@ -73,12 +73,12 @@ theorem wkpNorm_secComp_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem secComp_cauchy
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
+    (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -94,7 +94,7 @@ theorem secComp_cauchy
   obtain ⟨N, hN⟩ := h_cauchy ε hε
   refine ⟨N, ?_⟩
   intro m n hm hn
-  have hcomp := wkpNorm_secComp_le (I := I) (M := M) g k p
+  have hcomp := wkpNorm_secComp_le (I := I) (M := M) k p
     ((u m).1 - (u n).1) α Idx Jdx
   have hle := hcomp.trans (hN m n hm hn)
   rw [secChartComp_sub (I := I) (M := M)] at hle
@@ -102,12 +102,12 @@ theorem secComp_cauchy
 
 omit [CompactSpace M] in
 theorem exists_secComp_lim
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -124,51 +124,51 @@ theorem exists_secComp_lim
           atTop (𝓝 0) := by
   exact MemWkp.exists_limit_of_wkpNorm_cauchy
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
-    k p hp hp_top (fun n => (u n).2 α Idx Jdx)
-    (secComp_cauchy (I := I) (M := M) g r s k hp u h_cauchy α Idx Jdx)
+    k p hp (fun n => (u n).2 α Idx Jdx)
+    (secComp_cauchy (I := I) (M := M) r s k hp u h_cauchy α Idx Jdx)
 
 noncomputable def secCompLimit
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
-  (exists_secComp_lim (I := I) (M := M) g r s k hp hp_top u
+  (exists_secComp_lim (I := I) (M := M) r s k hp u
     h_cauchy α Idx Jdx).choose
 
 omit [CompactSpace M] in
 theorem secCompLimit_mem
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) k p
-      (secCompLimit (I := I) (M := M) g r s k hp hp_top u
+      (secCompLimit (I := I) (M := M) r s k hp u
         h_cauchy α Idx Jdx)
       (chartTargetEuclid (I := I) (M := M) α) :=
-  (exists_secComp_lim (I := I) (M := M) g r s k hp hp_top u
+  (exists_secComp_lim (I := I) (M := M) r s k hp u
     h_cauchy α Idx Jdx).choose_spec.1
 
 omit [CompactSpace M] in
 theorem secCompLimit_tendsto
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -177,61 +177,61 @@ theorem secCompLimit_tendsto
       (fun n => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
         (fun y =>
           secChartComp (I := I) (M := M) r s (u n).1 α Idx Jdx y -
-            secCompLimit (I := I) (M := M) g r s k hp hp_top u
+            secCompLimit (I := I) (M := M) r s k hp u
               h_cauchy α Idx Jdx y)
         (chartTargetEuclid (I := I) (M := M) α))
       atTop (𝓝 0) :=
-  (exists_secComp_lim (I := I) (M := M) g r s k hp hp_top u
+  (exists_secComp_lim (I := I) (M := M) r s k hp u
     h_cauchy α Idx Jdx).choose_spec.2
 
 noncomputable def secCompRep
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   compactRep (chartImagePOUTsupport (I := I) (M := M) α)
-    (secCompLimit (I := I) (M := M) g r s k hp hp_top u
+    (secCompLimit (I := I) (M := M) r s k hp u
       h_cauchy α Idx Jdx)
 
 noncomputable def secModelLimit
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M) (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
     TensorRSModel r s ℝ E :=
   ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
     ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-      secCompRep (I := I) (M := M) g r s k hp hp_top u
+      secCompRep (I := I) (M := M) r s k hp u
           h_cauchy α Idx Jdx y •
         tensorChartBasisElement (E := E) r s Idx Jdx
 
 omit [CompactSpace M] in
 theorem secModelLimit_proj
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε)
     (α : M) (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     tensorChartComponentProjection (E := E) r s Idx Jdx
-        (secModelLimit (I := I) (M := M) g r s k hp hp_top u
+        (secModelLimit (I := I) (M := M) r s k hp u
           h_cauchy α y) =
-      secCompRep (I := I) (M := M) g r s k hp hp_top u
+      secCompRep (I := I) (M := M) r s k hp u
         h_cauchy α Idx Jdx y := by
   classical
   rw [secModelLimit, map_sum, Finset.sum_eq_single Idx]
@@ -269,18 +269,18 @@ noncomputable def secModelPull (r s : ℕ) (α : M)
     else 0
 
 noncomputable def tensorLimitSec
-    (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
       N ≤ m → N ≤ n →
-      wkpTensorNorm (I := I) (M := M) g k p
+      wkpTensorNorm (I := I) (M := M) k p
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε) :
     RSTensorSection I M r s :=
   fun x =>
     ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
       secModelPull (I := I) (M := M) r s α
-        (secModelLimit (I := I) (M := M) g r s k hp hp_top u
+        (secModelLimit (I := I) (M := M) r s k hp u
           h_cauchy α) x
 
 end Tensor

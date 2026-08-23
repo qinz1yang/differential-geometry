@@ -38,14 +38,13 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma standardNirenbergTest_tsupport_in_thickening
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) {η : EuclN → ℝ}
-    (hη_cs : HasCompactSupport η)
     {K_0 : Set EuclN} (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (u : EuclN → ℝ) :
     tsupport (standardNirenbergTest k h η u) ⊆
       Metric.cthickening |h| K_0 := by
   classical
   have h_supp := standardNirenbergTest_tsupport_subset
-    (d := Module.finrank ℝ E) k h hη_cs u
+    (d := Module.finrank ℝ E) (η := η) k h u
   refine h_supp.trans ?_
   intro x hx
   rcases hx with hx_in | hx_trans
@@ -68,22 +67,19 @@ lemma standardNirenbergTest_tsupport_in_thickening
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma standardNirenbergTest_tsupport_in_chartTarget
-    [I.Boundaryless]
     {α : M}
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) {η : EuclN → ℝ}
-    (hη_cs : HasCompactSupport η)
     {K_0 : Set EuclN} (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     (u : EuclN → ℝ) :
     tsupport (standardNirenbergTest k h η u) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  (standardNirenbergTest_tsupport_in_thickening (E := E) k h hη_cs hη_supp_in_K_0
+  (standardNirenbergTest_tsupport_in_thickening (E := E) k h hη_supp_in_K_0
       u).trans h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weightedInvGramOnEuclid_bounded_on_compact
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK : IsCompact K)
@@ -111,7 +107,6 @@ lemma weightedInvGramOnEuclid_bounded_on_compact
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma densityOnEuclid_bounded_above_on_compact
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -138,8 +133,7 @@ lemma densityOnEuclid_bounded_above_on_compact
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma cthickening_compact_of_compact
-    {h : ℝ} {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} (_hh_le : |h| ≤ R₀) :
+    {h : ℝ} {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0) :
     IsCompact (Metric.cthickening |h| K_0) := by
   classical
   have h_bdd : Bornology.IsBounded (Metric.cthickening |h| K_0) :=
@@ -190,49 +184,46 @@ lemma weakPartial_memLp_volume_restrict_cthickening
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (i : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp (D.weak_partial i) 2
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) :=
   D.weak_partial_locally_memLp i (Metric.cthickening |h| K_0)
-    (cthickening_compact_of_compact (E := E) hK_0_compact hh_le) h_thick
+    (cthickening_compact_of_compact (E := E) hK_0_compact) h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weightedInvGramOnEuclid_bounded_on_cthickening
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ y ∈ Metric.cthickening |h| K_0,
         |weightedInvGramOnEuclid (I := I) g α i j y| ≤ C :=
   weightedInvGramOnEuclid_bounded_on_compact (I := I) (M := M) g α i j
-    (cthickening_compact_of_compact (E := E) hK_0_compact hh_le) h_thick
+    (cthickening_compact_of_compact (E := E) hK_0_compact) h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma densityOnEuclid_bounded_above_on_cthickening
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} (α : M)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ y ∈ Metric.cthickening |h| K_0, densityOnEuclid (I := I) g α y ≤ C :=
   densityOnEuclid_bounded_above_on_compact (I := I) (M := M) g α
-    (cthickening_compact_of_compact (E := E) hK_0_compact hh_le) h_thick
+    (cthickening_compact_of_compact (E := E) hK_0_compact) h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma translate_weightedInvGramOnEuclid_bounded_on_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} (α : M)
     (i j k : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {R₀ : ℝ} {h : ℝ} (hh_le : |h| ≤ R₀)
+    {h : ℝ}
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x ∈ K_0,
@@ -242,7 +233,7 @@ lemma translate_weightedInvGramOnEuclid_bounded_on_K_0
   classical
   obtain ⟨C, hC_nn, hC_bd⟩ :=
     weightedInvGramOnEuclid_bounded_on_cthickening (I := I) (M := M) α i j
-      hK_0_compact hh_le h_thick
+      hK_0_compact h_thick
   refine ⟨C, hC_nn, ?_⟩
   intro x hx_K_0
   have h_shifted_in : x + h • EuclideanSpace.single k 1 ∈
@@ -511,7 +502,6 @@ lemma weightedInvGramOnEuclid_continuousOn_chartTarget
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma densityOnEuclid_continuousOn_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K_0 : Set EuclN} (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ContinuousOn (densityOnEuclid (I := I) g α) K_0 :=
@@ -519,7 +509,6 @@ lemma densityOnEuclid_continuousOn_K_0
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weightedInvGramOnEuclid_continuousOn_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -528,7 +517,6 @@ lemma weightedInvGramOnEuclid_continuousOn_K_0
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma densityOnEuclid_aestronglyMeasurable_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
     (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -539,7 +527,6 @@ lemma densityOnEuclid_aestronglyMeasurable_K_0
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weightedInvGramOnEuclid_aestronglyMeasurable_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
@@ -563,8 +550,7 @@ lemma standardNirenbergTest_hasCompactSupport_uChart
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma cthickening_K_0_isCompact
-    {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0) {h : ℝ}
-    {R₀ : ℝ} (_hh_le : |h| ≤ R₀) :
+    {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0) {h : ℝ} :
     IsCompact (Metric.cthickening |h| K_0) := by
   classical
   have h_bdd : Bornology.IsBounded (Metric.cthickening |h| K_0) :=
@@ -573,49 +559,6 @@ lemma cthickening_K_0_isCompact
     Metric.isClosed_cthickening
   exact (Metric.isCompact_iff_isClosed_bounded).mpr ⟨h_closed, h_bdd⟩
 
-omit [NeZero (Module.finrank ℝ E)] in
-lemma substitution_identity_compact_form_symbolic
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    (K_0 : Set EuclN) (η : EuclN → ℝ)
-    (k : Fin (Module.finrank ℝ E)) (h : ℝ) :
-    (principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      = c_term_chartBilinear (I := I) (M := M) D K_0 η k h) ↔
-    (principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      = c_term_chartBilinear (I := I) (M := M) D K_0 η k h) :=
-  Iff.rfl
-
-omit [NeZero (Module.finrank ℝ E)] in
-lemma five_terms_sum_eq_c_term_iff_substitution_identity
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    (K_0 : Set EuclN) (η : EuclN → ℝ)
-    (k : Fin (Module.finrank ℝ E)) (h : ℝ) :
-    principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      = c_term_chartBilinear (I := I) (M := M) D K_0 η k h ↔
-    c_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      = principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + f_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
-  constructor
-  · exact fun h => h.symm
-  · exact fun h => h.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma standardNirenbergTest_zero_h_uChart
@@ -663,7 +606,7 @@ lemma standardNirenbergTest_smooth_admissible
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (hu_chart_smooth : ContDiff ℝ (⊤ : ℕ∞) D.u_chart)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
+    {K_0 : Set EuclN}
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
@@ -744,7 +687,7 @@ lemma standardNirenbergTest_smooth_admissible
   · exact standardNirenbergTest_hasCompactSupport
       (d := Module.finrank ℝ E) k h hη_supp D.u_chart
   · exact standardNirenbergTest_tsupport_in_chartTarget (E := E) (I := I) (M := M)
-      (α := α) k h hη_supp hη_supp_in_K_0 h_thick D.u_chart
+      (α := α) k h hη_supp_in_K_0 h_thick D.u_chart
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma variational_identity_at_standardNirenbergTest_smooth_uChart
@@ -752,7 +695,7 @@ lemma variational_identity_at_standardNirenbergTest_smooth_uChart
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (hu_chart_smooth : ContDiff ℝ (⊤ : ℕ∞) D.u_chart)
-    {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
+    {K_0 : Set EuclN}
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) (h : ℝ)
@@ -779,7 +722,7 @@ lemma variational_identity_at_standardNirenbergTest_smooth_uChart
         ∂(volume : Measure EuclN) := by
   obtain ⟨h_v_smooth, h_v_supp, h_v_tsupp⟩ :=
     standardNirenbergTest_smooth_admissible (I := I) (M := M) (α := α)
-      D hu_chart_smooth hK_0_compact hη hη_supp hη_supp_in_K_0 k h h_thick
+      D hu_chart_smooth hη hη_supp hη_supp_in_K_0 k h h_thick
   exact D.variational_identity (standardNirenbergTest
     (d := Module.finrank ℝ E) k h η D.u_chart) h_v_smooth h_v_supp h_v_tsupp
 
@@ -789,7 +732,7 @@ lemma smooth_uChart_variational_lhs_identity
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (hu_chart_smooth : ContDiff ℝ (⊤ : ℕ∞) D.u_chart)
-    {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
+    {K_0 : Set EuclN}
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) (h : ℝ)
@@ -815,7 +758,7 @@ lemma smooth_uChart_variational_lhs_identity
             (d := Module.finrank ℝ E) k h η D.u_chart y
         ∂(volume : Measure EuclN) := by
   have h_var := variational_identity_at_standardNirenbergTest_smooth_uChart
-    (I := I) (M := M) (α := α) D hu_chart_smooth hK_0_compact hη hη_supp
+    (I := I) (M := M) (α := α) D hu_chart_smooth hη hη_supp
     hη_supp_in_K_0 k h h_thick
   linarith
 
@@ -831,212 +774,6 @@ lemma standardNirenbergTest_eq_diffQuot_neg_h
       (fun y => (η y)^2 * DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h D.u_chart y) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
-theorem nirenberg_substitution_identity_chartBilinear
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (_hη : ContDiff ℝ (⊤ : ℕ∞) η) (_hη_supp : HasCompactSupport η)
-    (_hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (_hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    (_h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
-    (h_substitution_identity_holds :
-      (∫ x in K_0,
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Analysis.Sobolev.translate
-                (d := Module.finrank ℝ E) k h
-                (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-              (η x) ^ 2 *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial i) x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial j) x
-          ∂(volume : Measure EuclN))
-      + (∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
-            ∫ x in K_0,
-              2 *
-                DifferentialGeometry.Analysis.Sobolev.translate
-                  (d := Module.finrank ℝ E) k h
-                  (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-                (η x) *
-                ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-                DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h (D.weak_partial i) x *
-                DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h D.u_chart x
-              ∂(volume : Measure EuclN))
-      + (∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
-            ∫ x in K_0,
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h
-                (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-              (η x) ^ 2 *
-              D.weak_partial i x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial j) x
-            ∂(volume : Measure EuclN))
-      + (∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
-            ∫ x in K_0,
-              2 *
-                DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h
-                  (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-                (η x) *
-                ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-                D.weak_partial i x *
-                DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h D.u_chart x
-              ∂(volume : Measure EuclN))
-      + (∫ x in Metric.cthickening |h| K_0,
-            densityOnEuclid (I := I) g α x * D.f_chart x *
-              standardNirenbergTest
-                (d := Module.finrank ℝ E) k h η D.u_chart x
-          ∂(volume : Measure EuclN))
-      = ∫ x in Metric.cthickening |h| K_0,
-            densityOnEuclid (I := I) g α x * D.u_chart x *
-              standardNirenbergTest
-                (d := Module.finrank ℝ E) k h η D.u_chart x
-          ∂(volume : Measure EuclN)) :
-    (∫ x in K_0,
-        ∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Analysis.Sobolev.translate
-              (d := Module.finrank ℝ E) k h
-              (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-            (η x) ^ 2 *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial i) x *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial j) x
-        ∂(volume : Measure EuclN))
-    + (∑ i : Fin (Module.finrank ℝ E),
-        ∑ j : Fin (Module.finrank ℝ E),
-          ∫ x in K_0,
-            2 *
-              DifferentialGeometry.Analysis.Sobolev.translate
-                (d := Module.finrank ℝ E) k h
-                (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-              (η x) *
-              ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial i) x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart x
-            ∂(volume : Measure EuclN))
-    + (∑ i : Fin (Module.finrank ℝ E),
-        ∑ j : Fin (Module.finrank ℝ E),
-          ∫ x in K_0,
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h
-              (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-            (η x) ^ 2 *
-            D.weak_partial i x *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial j) x
-          ∂(volume : Measure EuclN))
-    + (∑ i : Fin (Module.finrank ℝ E),
-        ∑ j : Fin (Module.finrank ℝ E),
-          ∫ x in K_0,
-            2 *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h
-                (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
-              (η x) *
-              ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              D.weak_partial i x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart x
-            ∂(volume : Measure EuclN))
-    + (∫ x in Metric.cthickening |h| K_0,
-          densityOnEuclid (I := I) g α x * D.f_chart x *
-            standardNirenbergTest
-              (d := Module.finrank ℝ E) k h η D.u_chart x
-        ∂(volume : Measure EuclN))
-    = ∫ x in Metric.cthickening |h| K_0,
-          densityOnEuclid (I := I) g α x * D.u_chart x *
-            standardNirenbergTest
-              (d := Module.finrank ℝ E) k h η D.u_chart x
-        ∂(volume : Measure EuclN) :=
-  h_substitution_identity_holds
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem nirenberg_substitution_identity_chartBilinear_symbolic
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (_hη : ContDiff ℝ (⊤ : ℕ∞) η) (_hη_supp : HasCompactSupport η)
-    (_hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (_hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    (_h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
-    (h_substitution_identity_holds :
-      principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      = c_term_chartBilinear (I := I) (M := M) D K_0 η k h) :
-    principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-    + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-    + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-    + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-    + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
-    = c_term_chartBilinear (I := I) (M := M) D K_0 η k h :=
-  h_substitution_identity_holds
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem nirenberg_substitution_identity_chartBilinear_compact
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
-    (_hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (_hη : ContDiff ℝ (⊤ : ℕ∞) η) (_hη_supp : HasCompactSupport η)
-    (_hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (_hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    (_h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
-    (h_substitution_identity_holds :
-      chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-      chartBilinear_RHS (I := I) (M := M) D K_0 η k h) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h :=
-  h_substitution_identity_holds
-
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem nirenberg_substitution_identity_chartBilinear_final
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
-    (h_thick : Metric.cthickening |h| K_0 ⊆
-      chartTargetEuclid (I := I) (M := M) α)
-    (h_substitution_identity_holds :
-      chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-      chartBilinear_RHS (I := I) (M := M) D K_0 η k h) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h :=
-  nirenberg_substitution_identity_chartBilinear_compact (I := I) (M := M)
-    D hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
-    h_substitution_identity_holds
 
 
 end SubstitutionNonSmoothChartBilinear

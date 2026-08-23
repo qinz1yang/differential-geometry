@@ -12,7 +12,7 @@ right-hand-side functionals used throughout the variational theory.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 open scoped InnerProductSpace
 
 namespace DeGiorgi

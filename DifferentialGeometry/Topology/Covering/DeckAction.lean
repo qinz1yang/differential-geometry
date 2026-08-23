@@ -23,9 +23,9 @@ def loopShift
 theorem loopShift_preim
     (g : Path.Homotopic.Quotient (default : X) default)
     (p : UniversalCover X)
-    (U : Set X) (hU : IsOpen U) (hp : p.1 ∈ U) :
-    loopShift g ⁻¹' basicOpen p U hU hp =
-      basicOpen (loopShift g.symm p) U hU hp := by
+    (U : Set X) :
+    loopShift g ⁻¹' basicOpen p U =
+      basicOpen (loopShift g.symm p) U := by
   ext q
   constructor
   · rintro ⟨η, hη, hq⟩

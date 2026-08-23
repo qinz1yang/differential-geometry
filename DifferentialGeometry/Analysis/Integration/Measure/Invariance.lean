@@ -107,7 +107,7 @@ theorem euclideanChangeOfVariablesMap
 omit [Module.Finite ℝ E] in
 lemma tangentCoordChange_eq_fderivWithin
     (x₀ x₁ : M) {x : M}
-    (_h : x ∈ (extChartAt I x₀).source ∩ (extChartAt I x₁).source) :
+    :
     tangentCoordChange I x₀ x₁ x =
       fderivWithin ℝ (extChartAt I x₁ ∘ (extChartAt I x₀).symm) (range I)
         (extChartAt I x₀ x) :=
@@ -531,7 +531,7 @@ lemma extChartAt_image_measurableSet_of_overlap (x₀ x₁ : M) :
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma extChartAt_transition_image
     (x₀ x₁ : M) {U : Set M}
-    (hUsub0 : U ⊆ (chartAt H x₀).source) (_hUsub1 : U ⊆ (chartAt H x₁).source) :
+    (hUsub0 : U ⊆ (chartAt H x₀).source) :
     (extChartAt I x₁ ∘ (extChartAt I x₀).symm) '' ((extChartAt I x₀) '' U) =
       (extChartAt I x₁) '' U := by
   rw [← Set.image_comp]
@@ -679,7 +679,7 @@ theorem chartLocalMeasure_lintegral_U_eq_of_overlap
   have hT_image :
       (extChartAt I x₁ ∘ (extChartAt I x₀).symm) '' ((extChartAt I x₀) '' U) =
         (extChartAt I x₁) '' U :=
-    extChartAt_transition_image (I := I) x₀ x₁ hUsub0 hUsub1
+    extChartAt_transition_image (I := I) x₀ x₁ hUsub0
   have hT_injOn :
       Set.InjOn (extChartAt I x₁ ∘ (extChartAt I x₀).symm)
         ((extChartAt I x₀) '' U) :=
@@ -807,7 +807,7 @@ lemma pou_product_support_subset_overlap
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma countable_nonempty_support_of_pou
-    [T2Space M] [SigmaCompactSpace M]
+    [SigmaCompactSpace M]
     (ρ : SmoothPartitionOfUnity M I M univ) :
     Set.Countable {α : M | (Function.support (ρ α)).Nonempty} := by
   have hloc : LocallyFinite (fun α : M => Function.support (ρ α)) :=
@@ -870,7 +870,6 @@ lemma lintegral_ofReal_pou_zero_of_support_empty
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma tsum_integral_pou_eq_subtype
-    [T2Space M] [SigmaCompactSpace M]
     (ρ : SmoothPartitionOfUnity M I M univ)
     (cLM : M → MeasureTheory.Measure M) (F : M → ℝ≥0∞) :
     (∑' α : M, ∫⁻ x, ENNReal.ofReal (ρ α x) * F x ∂(cLM α)) =
@@ -887,7 +886,6 @@ lemma tsum_integral_pou_eq_subtype
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma ofReal_pou_mul_expand_on_subtype
-    [T2Space M] [SigmaCompactSpace M]
     (ρ ρ' : SmoothPartitionOfUnity M I M univ) (α : M)
     (F : M → ℝ≥0∞) (x : M) :
     ENNReal.ofReal (ρ α x) * F x =
@@ -923,7 +921,7 @@ lemma ofReal_pou_mul_expand_on_subtype
   rw [h_inner, h_full, tsum_ofReal_pou_eq_one (I := I) ρ' x, mul_one]
 
 theorem riemannianMeasure_eq_of_pou_independent
-    [T2Space M] [SigmaCompactSpace M]
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (ρ ρ' : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source))
@@ -1013,7 +1011,7 @@ theorem riemannianMeasure_eq_of_pou_independent
   · exact pou_product_support_subset_overlap (I := I) ρ ρ' hρ hρ' α.val β.val F
 
 theorem riemannianMeasure_independent_of_atlas
-    [T2Space M] [SigmaCompactSpace M]
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (ρ ρ' : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source))

@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
@@ -43,7 +42,7 @@ private abbrev I_half (n : ℕ) [NeZero n] :
 
 variable [T2Space M] [CompactSpace M]
 
-theorem reilly_identity
+theorem reilly_identity_of_bochner_green_boundary_decomposition
     (g : SmoothRiemannianMetric (I_half n) M)
     {f : M → ℝ} (hf : ContMDiff (I_half n) 𝓘(ℝ, ℝ) ∞ f)
     (h_normGradSq_smooth :

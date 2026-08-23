@@ -15,7 +15,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
@@ -28,7 +27,6 @@ namespace Analysis
 namespace Spectral
 namespace MetricRealization
 
-open DifferentialGeometry
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -74,6 +72,11 @@ def smoothCcTensorBilinForm (g : SmoothRiemannianMetric I M)
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   (bilinFormToModel E).symm (ccTensorModel (I := I) g T x)
 
+abbrev ccTensorBilin (g : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g 0 2) (x : M) :
+    TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
+  smoothCcTensorBilinForm (I := I) g T x
+
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem ccTensorBilin_apply (g : SmoothRiemannianMetric I M)
@@ -99,7 +102,7 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
   letI instTens : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
-  obtain ⟨n, e, _hn, horth, hpars, hexpand, hrfns⟩ :=
+  obtain ⟨n, e, _hn, horth, hpars, hexpand, hriemannianFiberNormSq⟩ :=
     tangent_frame_expansion (I := I) (M := M) g₀ x
   set B : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
     smoothCcTensorBilinForm (I := I) g₀ T x with hB_def
@@ -196,7 +199,7 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 := by
     rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 2 x
       (T.toSection x)]
-    rw [hrfns (T.toSection x)]
+    rw [hriemannianFiberNormSq (T.toSection x)]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
       ∑ J : Fin 2 → Fin n,
         fiberNormSqSummand (I := I) (M := M) g₀ x 0 2 (T.toSection x) n e K J)]
@@ -270,6 +273,7 @@ theorem ccTensorBilin_scalar_contMDiff (g : SmoothRiemannianMetric I M)
   fin_cases i <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ccTensorBilin_contMDiff (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -321,6 +325,7 @@ theorem ccTensorBilinSymm_symm (g : SmoothRiemannianMetric I M)
   rw [ccTensorBilinSymm_apply, ccTensorBilinSymm_apply, add_comm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ccTensorBilinSymm_contMDiff (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -366,6 +371,8 @@ def tensorSectionRealizeMetric (g : SmoothRiemannianMetric I M)
     (ccTensorBilinSymm_contMDiff (I := I) g T) hδ_lt hδ
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem tensorSectionRealizeMetric_inner (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -377,6 +384,8 @@ omit [CompactSpace M] in
   rw [perturbedMetric_inner, perturbedInner_apply]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem exists_smooth_metric_of_smooth_tensor_small
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ' : ℝ} (hδ'_lt : δ' < 1)

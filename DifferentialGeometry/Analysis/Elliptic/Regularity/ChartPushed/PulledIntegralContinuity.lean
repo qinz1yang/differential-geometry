@@ -728,9 +728,6 @@ theorem laplacianDomain_variational_identity_general_partial
     (hψ_cs : HasCompactSupport ψ)
     (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : ℕ → SmoothScalar g}
-    (_h_v_tendsto :
-      Tendsto (fun n => smoothToH1Compl (I := I) (M := M) g (v n))
-        atTop (𝓝 u_h))
     (h_fHLeibniz_tendsto :
       Tendsto (fun n => leibnizCompensatedSource (I := I) (M := M) g α
           (smoothToH1Compl (I := I) (M := M) g (v n))

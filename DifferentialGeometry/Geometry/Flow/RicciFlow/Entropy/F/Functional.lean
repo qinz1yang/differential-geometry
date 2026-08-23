@@ -34,14 +34,11 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
 
 variable {M : Type*}
 
 def expNegPotentialDensity (potential : M -> Real) : M -> Real :=
   fun x => Real.exp (-(potential x))
-
 
 def expNegPotentialWeightedMeasure [MeasurableSpace M] (mu : Measure M)
     (potential : M -> Real) : Measure M :=
@@ -88,7 +85,6 @@ theorem expWeightedIBP_of_baseIntegral_zero [MeasurableSpace M]
     hmeas]
   exact hbase
 
-
 def fFunctionalBracket (scalarCurvature gradPotentialNormSq : M -> Real) :
     M -> Real :=
   fun x => scalarCurvature x + gradPotentialNormSq x
@@ -97,18 +93,15 @@ def fFunctionalClosedBracket (scalarCurvature lapPotential : M -> Real) :
     M -> Real :=
   fun x => scalarCurvature x + lapPotential x
 
-
 def fFunctionalClosedBracketVariation
     (scalarCurvatureVariation lapPotentialVariation : M -> Real) :
     M -> Real :=
   fun x => scalarCurvatureVariation x + lapPotentialVariation x
 
-
 def fFunctional [MeasurableSpace M] (mu : Measure M)
     (scalarCurvature gradPotentialNormSq potential : M -> Real) : Real :=
   ∫ x, fFunctionalBracket scalarCurvature gradPotentialNormSq x
     ∂(expNegPotentialWeightedMeasure mu potential)
-
 
 theorem fFunctional_eq_integral [MeasurableSpace M] (mu : Measure M)
     (scalarCurvature gradPotentialNormSq potential : M -> Real) :
@@ -116,13 +109,11 @@ theorem fFunctional_eq_integral [MeasurableSpace M] (mu : Measure M)
       ∫ x, fFunctionalBracket scalarCurvature gradPotentialNormSq x
         ∂(expNegPotentialWeightedMeasure mu potential) := rfl
 
-
 def fFunctionalAlong [MeasurableSpace M] (mu : Real -> Measure M)
     (scalarCurvature gradPotentialNormSq potential : Real -> M -> Real) :
     Real -> Real :=
   fun s => fFunctional (mu s) (scalarCurvature s) (gradPotentialNormSq s)
     (potential s)
-
 
 def FFunctionalHasFirstVariationAt [MeasurableSpace M]
     (mu : Real -> Measure M)
@@ -130,7 +121,6 @@ def FFunctionalHasFirstVariationAt [MeasurableSpace M]
     (s0 firstVariation : Real) : Prop :=
   HasDerivAt (fFunctionalAlong mu scalarCurvature gradPotentialNormSq potential)
     firstVariation s0
-
 
 def fFunctionalFirstVariation [MeasurableSpace M]
     (mu : Real -> Measure M)
@@ -180,7 +170,6 @@ def expWeightedIntegralVariationIntegrand
         phi x *
           expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x)
-
 
 end
 

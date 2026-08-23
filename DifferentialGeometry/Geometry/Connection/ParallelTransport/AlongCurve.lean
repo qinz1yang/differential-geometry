@@ -581,7 +581,6 @@ theorem HasParallelTransportChart.linear_combination
 section MetricCompatibilityAlongCurve
 
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {g : SmoothRiemannianMetric I M} {α : M} {γ : ℝ → M}
 

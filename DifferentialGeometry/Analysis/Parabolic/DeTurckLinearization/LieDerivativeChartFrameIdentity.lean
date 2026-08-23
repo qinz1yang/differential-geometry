@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.Cartan.Formula
+import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -14,7 +14,6 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow.Pullback

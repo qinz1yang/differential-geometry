@@ -1,5 +1,5 @@
 import Mathlib.Analysis.Calculus.ContDiff.Operations
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 open DifferentialGeometry.PDE.RicciFlow
@@ -28,7 +28,6 @@ section Components
 variable {Idx : Type*} [Fintype Idx]
 variable {u : Set M}
 
-
 def metricCompInFrame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -46,7 +45,6 @@ omit [SigmaCompactSpace M] [T2Space M] in
     metricCompInFrame (I := I) S frame t x i j =
       (S.family.metric t).inner x (frame i x) (frame j x) := by
   rfl
-
 
 omit [Fintype Idx] in
 omit [SigmaCompactSpace M] in
@@ -178,17 +176,16 @@ theorem gInv_symm [DecidableEq Idx]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame) :
-    SymmetricInverseMetricComponentsInFrameOn gInv := by
+    (hinv : InvMetricLocal (I := I) S gInv frame Set.univ) :
+    ∀ t x i j, gInv t x i j = gInv t x j i := by
   intro t x i j
   exact DifferentialGeometry.Geometry.Curvature.invComp_symm
     (I := I) (g := S.family.metric t)
     (gInv := fun x i j => gInv t x i j) frame
     (by
       intro y a b
-      simpa [metricCompInFrame] using hinv t y a b)
+      simpa [metricCompInFrame] using hinv t y (Set.mem_univ y) a b)
     x i j
-
 
 def InverseMetricDerivativeComponentsOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -201,6 +198,29 @@ def InverseMetricDerivativeComponentsOn
       (gInvDt (t : Real) x i j)
       D.carrier
       (t : Real)
+
+def InvMetricDerivLocal
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInvDt : Real -> M -> Idx -> Idx -> Real)
+    (u : Set M) : Prop :=
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
+    x ∈ u -> forall i j : Idx,
+      HasDerivWithinAt
+        (fun s : Real => gInv s x i j)
+        (gInvDt (t : Real) x i j)
+        D.carrier
+        (t : Real)
+
+omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
+theorem InverseMetricDerivativeComponentsOn.toLocal
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx}
+    {gInvDt : Real -> M -> Idx -> Idx -> Real}
+    (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
+    (u : Set M) :
+    InvMetricDerivLocal (D := D) gInv gInvDt u :=
+  fun t x _hx i j => hdt t x i j
 
 structure MetricFrameTimeRegularityInFrameOnLocal
     [DecidableEq Idx]
@@ -215,10 +235,11 @@ structure MetricFrameTimeRegularityInFrameOnLocal
       ContDiffOn Real ∞
         (fun t : Real => metricCompInFrame (I := I) S frame t x i j)
         D.carrier
+
   nondegenerateGram :
     InvMetricLocal (I := I) S gInv frame u
   inverseMetricDerivative :
-    InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt
+    InvMetricDerivLocal (D := D) gInv gInvDt u
   uniqueTimeDerivatives :
     forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)
@@ -254,6 +275,27 @@ structure MetricFrameSpacetimeRegularityInFrameOnLocal
           D.carrier
           (t : Real)
 
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem MetricFrameSpacetimeRegularityInFrameOnLocal.congrInv
+    [DecidableEq Idx]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {S : SolutionOn (I := I) (M := M) D}
+    {gInv gInv' : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx}
+    {gInvDt gInvDt' : Real -> M -> Idx -> Idx -> Real}
+    {frame : Idx -> (x : M) -> TangentSpace I x}
+    {u : Set M}
+    (h : MetricFrameSpacetimeRegularityInFrameOnLocal
+      (I := I) S gInv gInvDt frame u)
+    (hinv : InvMetricLocal (I := I) S gInv' frame u)
+    (hdt : InvMetricDerivLocal (D := D) gInv' gInvDt' u) :
+    MetricFrameSpacetimeRegularityInFrameOnLocal
+      (I := I) S gInv' gInvDt' frame u where
+  metricSmooth := h.metricSmooth
+  nondegenerateGram := hinv
+  inverseMetricDerivative := hdt
+  uniqueTimeDerivatives := h.uniqueTimeDerivatives
+  frameMetricSpacetimeSmooth := h.frameMetricSpacetimeSmooth
+  frameMetricExtDerivTimeDerivative := h.frameMetricExtDerivTimeDerivative
 
 end Components
 

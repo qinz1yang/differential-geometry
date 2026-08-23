@@ -60,45 +60,46 @@ private lemma smoothScalarSub_toFun
     (smoothScalarSub v₁ v₂).toFun = fun x => v₁.toFun x - v₂.toFun x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] in
 private lemma wkpNormChart_one_le_succ
-    (g : SmoothRiemannianMetric I M) (m : ℕ) (u : M → ℝ) :
-    wkpNormChart (I := I) (M := M) g 1 2 u ≤
-      wkpNormChart (I := I) (M := M) g (m + 1) 2 u := by
+    (m : ℕ) (u : M → ℝ) :
+    wkpNormChart (I := I) (M := M) 1 2 u ≤
+      wkpNormChart (I := I) (M := M) (m + 1) 2 u := by
   classical
   induction m with
   | zero => exact le_refl _
   | succ k ih =>
-      have h_step : wkpNormChart (I := I) (M := M) g (k + 1) 2 u ≤
-          wkpNormChart (I := I) (M := M) g (k + 1 + 1) 2 u :=
-        wkpNormChart_le_succ (I := I) (M := M) g (k + 1) 2 u
+      have h_step : wkpNormChart (I := I) (M := M) (k + 1) 2 u ≤
+          wkpNormChart (I := I) (M := M) (k + 1 + 1) 2 u :=
+        wkpNormChart_le_succ (I := I) (M := M) (k + 1) 2 u
       exact ih.trans h_step
 
 theorem exists_smoothApprox_chartWmSucc
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u)
     {ε : ℝ} (hε : 0 < ε) :
-    ∃ v : SmoothScalar g, wkpNormChart (I := I) (M := M) g (m + 1) 2
+    ∃ v : SmoothScalar g, wkpNormChart (I := I) (M := M) (m + 1) 2
       (fun x => u x - v.toFun x) ≤ ENNReal.ofReal ε := by
   classical
   obtain ⟨w, hw_smooth, hw_le⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.contMDiff_dense_in_WkpChart_k
-      (I := I) (M := M) g (m + 1) (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+      (I := I) (M := M) (m + 1) (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) hu hε
   refine ⟨⟨w, hw_smooth⟩, ?_⟩
   exact hw_le
 
 noncomputable def smoothApproxSeqWkpM
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u)
     (n : ℕ) : SmoothScalar g :=
   (exists_smoothApprox_chartWmSucc (I := I) (M := M) g m hu
     (by positivity : (0 : ℝ) < 1 / ((n : ℝ) + 1))).choose
 
 theorem smoothApproxSeqWkpM_wkpNormChart_le
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u)
     (n : ℕ) :
-    wkpNormChart (I := I) (M := M) g (m + 1) 2
+    wkpNormChart (I := I) (M := M) (m + 1) 2
       (fun x => u x - (smoothApproxSeqWkpM (I := I) (M := M) g m hu n).toFun x) ≤
       ENNReal.ofReal (1 / ((n : ℝ) + 1)) :=
   (exists_smoothApprox_chartWmSucc (I := I) (M := M) g m hu
@@ -106,9 +107,9 @@ theorem smoothApproxSeqWkpM_wkpNormChart_le
 
 theorem smoothApproxSeqWkpM_wkpNormChart_diff_le
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u)
     (a b : ℕ) :
-    wkpNormChart (I := I) (M := M) g (m + 1) 2
+    wkpNormChart (I := I) (M := M) (m + 1) 2
       (fun x => (smoothApproxSeqWkpM (I := I) (M := M) g m hu a).toFun x -
         (smoothApproxSeqWkpM (I := I) (M := M) g m hu b).toFun x) ≤
       ENNReal.ofReal (1 / ((a : ℝ) + 1)) + ENNReal.ofReal (1 / ((b : ℝ) + 1)) := by
@@ -120,48 +121,48 @@ theorem smoothApproxSeqWkpM_wkpNormChart_diff_le
     funext x; ring
   rw [h_decomp]
   have hp_one : (1 : ℝ≥0∞) ≤ 2 := by norm_num
-  have h_smooth_va : MemWkpChart (I := I) (M := M) g (m + 1) 2 va.toFun :=
+  have h_smooth_va : MemWkpChart (I := I) (M := M) (m + 1) 2 va.toFun :=
     DifferentialGeometry.Analysis.Sobolev.Chart.memWkpChart_of_contMDiff_k
-      (I := I) (M := M) g hp_one (m + 1) va.smooth
-  have h_smooth_vb : MemWkpChart (I := I) (M := M) g (m + 1) 2 vb.toFun :=
+      (I := I) (M := M) hp_one (m + 1) va.smooth
+  have h_smooth_vb : MemWkpChart (I := I) (M := M) (m + 1) 2 vb.toFun :=
     DifferentialGeometry.Analysis.Sobolev.Chart.memWkpChart_of_contMDiff_k
-      (I := I) (M := M) g hp_one (m + 1) vb.smooth
-  have h_u_diff_va : MemWkpChart (I := I) (M := M) g (m + 1) 2
+      (I := I) (M := M) hp_one (m + 1) vb.smooth
+  have h_u_diff_va : MemWkpChart (I := I) (M := M) (m + 1) 2
       (fun x => u x - va.toFun x) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_sub
-      (I := I) (M := M) g hp_one hu h_smooth_va
-  have h_u_diff_vb : MemWkpChart (I := I) (M := M) g (m + 1) 2
+      (I := I) (M := M) hp_one hu h_smooth_va
+  have h_u_diff_vb : MemWkpChart (I := I) (M := M) (m + 1) 2
       (fun x => u x - vb.toFun x) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_sub
-      (I := I) (M := M) g hp_one hu h_smooth_vb
+      (I := I) (M := M) hp_one hu h_smooth_vb
   have h_split : (fun x : M => (u x - vb.toFun x) - (u x - va.toFun x)) =
       (fun x : M => (u x - vb.toFun x) + (-1 : ℝ) * (u x - va.toFun x)) := by
     funext x; ring
   rw [h_split]
   have h_neg_smul :
-      wkpNormChart (I := I) (M := M) g (m + 1) 2
+      wkpNormChart (I := I) (M := M) (m + 1) 2
         (fun x => (-1 : ℝ) * (u x - va.toFun x)) =
       ‖(-1 : ℝ)‖ₑ *
-        wkpNormChart (I := I) (M := M) g (m + 1) 2 (fun x => u x - va.toFun x) :=
+        wkpNormChart (I := I) (M := M) (m + 1) 2 (fun x => u x - va.toFun x) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_const_smul
-      (I := I) (M := M) g hp_one (-1 : ℝ) h_u_diff_va
+      (I := I) (M := M) hp_one (-1 : ℝ) h_u_diff_va
   have h_neg_one_norm : ‖(-1 : ℝ)‖ₑ = 1 := by
     simp [enorm]
   rw [h_neg_one_norm, one_mul] at h_neg_smul
-  have h_u_diff_va_neg : MemWkpChart (I := I) (M := M) g (m + 1) 2
+  have h_u_diff_va_neg : MemWkpChart (I := I) (M := M) (m + 1) 2
       (fun x => (-1 : ℝ) * (u x - va.toFun x)) := by
     have h_eq : (fun x : M => (-1 : ℝ) * (u x - va.toFun x)) =
         (fun x => -(u x - va.toFun x)) := by funext x; ring
     rw [h_eq]
     exact DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_neg
-      (I := I) (M := M) g hp_one h_u_diff_va
+      (I := I) (M := M) hp_one h_u_diff_va
   have h_add :=
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_add_le (I := I) (M := M)
-      g (k := m + 1) (p := 2) hp_one h_u_diff_vb h_u_diff_va_neg
+      (k := m + 1) (p := 2) hp_one h_u_diff_vb h_u_diff_va_neg
   rw [h_neg_smul] at h_add
   have h_bound1 :
-      wkpNormChart (I := I) (M := M) g (m + 1) 2 (fun x => u x - vb.toFun x) +
-        wkpNormChart (I := I) (M := M) g (m + 1) 2 (fun x => u x - va.toFun x) ≤
+      wkpNormChart (I := I) (M := M) (m + 1) 2 (fun x => u x - vb.toFun x) +
+        wkpNormChart (I := I) (M := M) (m + 1) 2 (fun x => u x - va.toFun x) ≤
       ENNReal.ofReal (1 / ((b : ℝ) + 1)) + ENNReal.ofReal (1 / ((a : ℝ) + 1)) :=
     add_le_add
       (smoothApproxSeqWkpM_wkpNormChart_le (I := I) (M := M) g m hu b)
@@ -174,7 +175,7 @@ theorem smoothApproxSeqWkpM_wkpNormChart_diff_le
 
 theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_wkpM
     (g : SmoothRiemannianMetric I M) (α : M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u) :
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u) :
     ∀ ε > 0, ∃ N, ∀ a b, N ≤ a → N ≤ b →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) m 2
@@ -233,7 +234,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_wkpM
   rw [h_wkp_eq]
   have h_bilinear := hC_bound vdiff
   have h_chartWm1_cauchy :
-      wkpNormChart (I := I) (M := M) g (m + 1) 2 vdiff.toFun ≤
+      wkpNormChart (I := I) (M := M) (m + 1) 2 vdiff.toFun ≤
         ENNReal.ofReal ((1 : ℝ) / ((a : ℝ) + 1)) +
           ENNReal.ofReal ((1 : ℝ) / ((b : ℝ) + 1)) := by
     rw [hvdiff_toFun]
@@ -310,7 +311,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_wkpM
 
 private theorem smoothApproxSeqWkpM_cauchy_smoothScalar
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u) :
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u) :
     CauchySeq (fun n =>
       smoothApproxSeqWkpM (I := I) (M := M) g m hu n) := by
   classical
@@ -344,23 +345,23 @@ private theorem smoothApproxSeqWkpM_cauchy_smoothScalar
   have hvdiff_toFun : vdiff.toFun = fun x => va.toFun x - vb.toFun x := by
     rw [hvdiff_def]; rfl
   have h_wkpNormChart_finite :
-      wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun ≠ ⊤ := by
+      wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun ≠ ⊤ := by
     rw [hvdiff_toFun]
     exact wkpNormChart_one_two_smoothScalar_diff_ne_top (I := I) (M := M) g va vb
   have h_norm_bd : ‖vdiff‖ ≤ C *
-      (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal :=
+      (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal :=
     hC_bnd vdiff h_wkpNormChart_finite
   have h_wkp_chart_succ :
-      wkpNormChart (I := I) (M := M) g (m + 1) 2 vdiff.toFun ≤
+      wkpNormChart (I := I) (M := M) (m + 1) 2 vdiff.toFun ≤
         ENNReal.ofReal (1 / ((a : ℝ) + 1)) +
           ENNReal.ofReal (1 / ((b : ℝ) + 1)) := by
     rw [hvdiff_toFun]
     exact smoothApproxSeqWkpM_wkpNormChart_diff_le (I := I) (M := M) g m hu a b
   have h_wkp_chart_1_2 :
-      wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun ≤
+      wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun ≤
         ENNReal.ofReal (1 / ((a : ℝ) + 1)) +
           ENNReal.ofReal (1 / ((b : ℝ) + 1)) :=
-    (wkpNormChart_one_le_succ (I := I) (M := M) g m vdiff.toFun).trans h_wkp_chart_succ
+    (wkpNormChart_one_le_succ (I := I) (M := M) m vdiff.toFun).trans h_wkp_chart_succ
   have h_sum_finite :
       ENNReal.ofReal (1 / ((a : ℝ) + 1)) +
         ENNReal.ofReal (1 / ((b : ℝ) + 1)) ≠ ⊤ := by
@@ -375,7 +376,7 @@ private theorem smoothApproxSeqWkpM_cauchy_smoothScalar
     rw [ENNReal.toReal_add ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top]
     rw [ENNReal.toReal_ofReal h_inv_a_nn, ENNReal.toReal_ofReal h_inv_b_nn]
   have h_wkp_toReal_le :
-      (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+      (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
         1 / ((a : ℝ) + 1) + 1 / ((b : ℝ) + 1) := by
     have h_mono := ENNReal.toReal_mono h_sum_finite h_wkp_chart_1_2
     rwa [h_sum_toReal] at h_mono
@@ -392,15 +393,15 @@ private theorem smoothApproxSeqWkpM_cauchy_smoothScalar
   have h_sum_le : 1 / ((a : ℝ) + 1) + 1 / ((b : ℝ) + 1) ≤
       2 * (1 / ((N0 : ℝ) + 1)) := by
     linarith
-  have h_wkp_toReal_le_2N : (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+  have h_wkp_toReal_le_2N : (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
         2 * (1 / ((N0 : ℝ) + 1)) :=
     h_wkp_toReal_le.trans h_sum_le
-  have h_final : C * (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+  have h_final : C * (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
       C * (2 * (1 / ((N0 : ℝ) + 1))) := by
     apply mul_le_mul_of_nonneg_left h_wkp_toReal_le_2N hC_nn
   have h_2N_le : 2 * (1 / ((N0 : ℝ) + 1)) ≤ 2 * ε' := by
     apply mul_le_mul_of_nonneg_left hN0_inv_le (by norm_num : (0 : ℝ) ≤ 2)
-  have h_step1 : C * (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+  have h_step1 : C * (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
       C * (2 * ε') := by
     refine h_final.trans ?_
     exact mul_le_mul_of_nonneg_left h_2N_le hC_nn
@@ -411,11 +412,11 @@ private theorem smoothApproxSeqWkpM_cauchy_smoothScalar
   rw [h1]
   rw [div_lt_iff₀ hCp1_pos]
   have hC_lt_Cp1 : C < Cp1 := by rw [hCp1_def]; linarith
-  nlinarith [hε_pos]
+  simpa only [mul_comm] using mul_lt_mul_of_pos_right hC_lt_Cp1 hε_pos
 
 private theorem smoothToH1Compl_smoothApproxSeqWkpM_cauchy
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u) :
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u) :
     CauchySeq (fun n =>
       smoothToH1Compl (I := I) (M := M) g
         (smoothApproxSeqWkpM (I := I) (M := M) g m hu n)) := by
@@ -426,7 +427,7 @@ private theorem smoothToH1Compl_smoothApproxSeqWkpM_cauchy
 
 private theorem smoothToH1Compl_smoothApproxSeqWkpM_has_limit
     (g : SmoothRiemannianMetric I M) (m : ℕ)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g (m + 1) 2 u) :
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) (m + 1) 2 u) :
     ∃ u_star : H1Compl g,
       Tendsto (fun n => smoothToH1Compl (I := I) (M := M) g
         (smoothApproxSeqWkpM (I := I) (M := M) g m hu n)) atTop (𝓝 u_star) :=
@@ -436,7 +437,7 @@ private theorem smoothToH1Compl_smoothApproxSeqWkpM_has_limit
 private theorem eLpNorm_diff_smoothApproxSeqWkpM_tendsto_zero
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_chart : MemWkpChart (I := I) (M := M) g (m + 1) 2
+    (hu_chart : MemWkpChart (I := I) (M := M) (m + 1) 2
       ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
         (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     Tendsto (fun n => eLpNorm (fun x =>
@@ -495,17 +496,17 @@ private theorem eLpNorm_diff_smoothApproxSeqWkpM_tendsto_zero
       (smoothApproxSeqWkpM (I := I) (M := M) g m hu_chart n).smooth.continuous.measurable
   have h_bnd := hC_bnd h_meas
   have h_chart_succ :
-      wkpNormChart (I := I) (M := M) g (m + 1) 2
+      wkpNormChart (I := I) (M := M) (m + 1) 2
           (fun x : M => u x -
             (smoothApproxSeqWkpM (I := I) (M := M) g m hu_chart n).toFun x) ≤
         ENNReal.ofReal (1 / ((n : ℝ) + 1)) :=
     smoothApproxSeqWkpM_wkpNormChart_le (I := I) (M := M) g m hu_chart n
   have h_chart_1_2 :
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (fun x : M => u x -
             (smoothApproxSeqWkpM (I := I) (M := M) g m hu_chart n).toFun x) ≤
         ENNReal.ofReal (1 / ((n : ℝ) + 1)) :=
-    (wkpNormChart_one_le_succ (I := I) (M := M) g m _).trans h_chart_succ
+    (wkpNormChart_one_le_succ (I := I) (M := M) m _).trans h_chart_succ
   have h_chain : eLpNorm
         (fun x => u x -
           (smoothApproxSeqWkpM (I := I) (M := M) g m hu_chart n).toFun x) 2
@@ -542,7 +543,7 @@ private theorem eLpNorm_diff_smoothApproxSeqWkpM_tendsto_zero
 private theorem smoothToLp_smoothApproxSeqWkpM_tendsto
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_chart : MemWkpChart (I := I) (M := M) g (m + 1) 2
+    (hu_chart : MemWkpChart (I := I) (M := M) (m + 1) 2
       ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
         (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     Tendsto (fun n => smoothToLp (I := I) (M := M) g
@@ -620,7 +621,7 @@ private theorem smoothToLp_smoothApproxSeqWkpM_tendsto
 private lemma inner_smoothToH1Compl_limit_eq_u_h_wkpM
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_chart : MemWkpChart (I := I) (M := M) g (m + 1) 2
+    (hu_chart : MemWkpChart (I := I) (M := M) (m + 1) 2
       ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
         (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
     {u_star : H1Compl g}
@@ -682,7 +683,7 @@ private lemma inner_smoothToH1Compl_limit_eq_u_h_wkpM
 theorem smoothApproxSeqWkpM_tendsto_h1Compl
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_chart : MemWkpChart (I := I) (M := M) g (m + 1) 2
+    (hu_chart : MemWkpChart (I := I) (M := M) (m + 1) 2
       ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
         (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     Tendsto (fun n =>
@@ -897,7 +898,7 @@ private lemma exists_subseq_ae_weighted_restrict
 theorem smoothApproxSeqWkpM_smoothFChartResidual_limit_eq_fChartResidual_wkpM
     (g : SmoothRiemannianMetric I M) (α : M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_chart : MemWkpChart (I := I) (M := M) g (m + 1) 2
+    (hu_chart : MemWkpChart (I := I) (M := M) (m + 1) 2
       ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
         (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     ∀ F_lim : EuclN → ℝ,
@@ -1019,7 +1020,7 @@ theorem smoothApproxSeqWkpM_smoothFChartResidual_limit_eq_fChartResidual_wkpM
 theorem fChartResidual_memWkp_m
     (g : SmoothRiemannianMetric I M) (α : M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
-    (hu_chart : MemWkpChart (I := I) (M := M) g (m + 1) 2
+    (hu_chart : MemWkpChart (I := I) (M := M) (m + 1) 2
       ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
         (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -1257,7 +1258,7 @@ lemma fChartPiecePreimageGeneral_memWkp_of_memWkpChart
     (g : SmoothRiemannianMetric I M) (α : M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g)
-    (h_rhs : MemWkpChart (I := I) (M := M) g m 2
+    (h_rhs : MemWkpChart (I := I) (M := M) m 2
       ((laplacianDomain.preimage (I := I) (M := M) g ⟨u_h, hu_h_lapdom⟩ :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -1273,11 +1274,11 @@ theorem base_f_chart_memWkp_m
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (h_chart_H_m_plus_1_u :
-      MemWkpChart (I := I) (M := M) g (m + 1) 2
+      MemWkpChart (I := I) (M := M) (m + 1) 2
         ((H1ComplToLp (I := I) (M := M) g u_h : Lp ℝ 2
           (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
     (h_chart_H_m_RHS :
-      MemWkpChart (I := I) (M := M) g m 2
+      MemWkpChart (I := I) (M := M) m 2
         ((laplacianDomain.preimage (I := I) (M := M) g ⟨u_h, hu_h_lapdom⟩ :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

@@ -15,12 +15,11 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistenceSpectralCovGradNormEquiv
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistenceRemainderDiffBallUniform
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistenceSymmetrizationNormBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.TensorSymmetrizationNorm
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-
 
 noncomputable section
 
@@ -30,7 +29,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -60,6 +58,8 @@ def deTurckSmoothRemainderTensorHs (g₀ g_bg : SmoothRiemannianMetric I M) (a :
     smoothCcTensor_tensorL2Coeff_weighted_summable (I := I) (M := M) g₀
       (a : ℝ) (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
+
+abbrev deTurckSmoothN := @deTurckSmoothRemainderTensorHs
 
 @[simp] theorem deTurckSmoothN_coeff (g₀ g_bg : SmoothRiemannianMetric I M)
     (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
@@ -417,7 +417,6 @@ theorem deTurckRemainderDiff_iteratedCovGrad_ballLipschitz_dataWeighted_of_symm
       ≤ Ccov * (max Cb2 Cb1 * (Dm * H2 + H1)) :=
         mul_le_mul_of_nonneg_left hstep hCcov_nn
     _ = Ccov * max Cb2 Cb1 * (Dm * H2 + H1) := by ring
-
 
 theorem smoothRemainderDiff_ballLipschitz_sobolev_dataWeighted_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -790,7 +789,7 @@ def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ
     tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun v =>
-    if h : ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E) ∧
+    if h : ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
         ∀ (T : SmoothCcTensor g₀ 0 2),
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤ p.1 →
           metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) p.2 then
@@ -800,7 +799,7 @@ def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ
             (radialScaleSmooth (I := I) (M := M) g₀ a (Classical.choose h).1
               (Classical.choose x.2))
             (lt_of_le_of_lt (Classical.choose_spec h).2.1
-              (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+              (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
             ((Classical.choose_spec h).2.2 _
               (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M)
                 g₀ a (Classical.choose_spec h).1.le (Classical.choose x.2))))
@@ -810,13 +809,13 @@ def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ
 
 theorem deTurckSobolevNHa2_exists_of_super (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
-    ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E) ∧
+    ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
       ∀ (T : SmoothCcTensor g₀ 0 2),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤ p.1 →
         metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) p.2 := by
   obtain ⟨R₀, hR₀, δ₀, hδ₀_le, hball⟩ :=
     sobolevBall_smooth_fibreSmall_of_threshold (I := I) (M := M) g₀ a ha_super
-      (deTurckArmContractionThreshold''_pos (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_pos (Module.finrank ℝ E))
   exact ⟨(R₀, δ₀), hR₀, hδ₀_le, hball⟩
 
 theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -828,7 +827,7 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
     lt_of_le_of_lt (Classical.choose_spec h).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨K, hK⟩ :=
     deTurckSmoothRemainderTensorHs_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super hR₀
       hδ₀_lt
@@ -949,7 +948,7 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
     lt_of_le_of_lt (Classical.choose_spec h).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   set hdense := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2) with hdense_def
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
@@ -957,7 +956,7 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose x.2))
         (lt_of_le_of_lt (Classical.choose_spec h).2.1
-          (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+          (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
         ((Classical.choose_spec h).2.2 _
           (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M)
             g₀ a hR₀.le (Classical.choose x.2))) with hF_def
@@ -1034,7 +1033,7 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
             (I := I) (M := M) g₀ a ha_super)).1 T)
         (lt_of_le_of_lt (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
           (I := I) (M := M) g₀ a ha_super)).2.1
-            (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+            (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
         ((Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
           (I := I) (M := M) g₀ a ha_super)).2.2 _
           (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M) g₀ a
@@ -1052,11 +1051,11 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S) =
         deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a S
           (lt_of_le_of_lt (Classical.choose_spec h).2.1
-            (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+            (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
           hSfibre :=
     deTurckSobolevNHa2_eq_smoothN (I := I) (M := M) g₀ g_bg a ha_super S
       (lt_of_le_of_lt (Classical.choose_spec h).2.1
-        (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+        (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
       hSfibre hSball
   have hbr : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S =
       recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
@@ -1077,7 +1076,6 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S) := by
     rw [deTurckSobolevNonlinearity, deTurckSobolevNonlinearity, dif_pos h, dif_pos h, hrecS]
   rw [hNeq, hSeq]
-
 
 theorem exists_norm_smoothCcToTensorHs_symmS_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ T : SmoothCcTensor g₀ 0 2,
@@ -1141,7 +1139,7 @@ def deTurckSobolevNonlinearitySymm (g₀ g_bg : SmoothRiemannianMetric I M) (a :
     tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun v =>
-    if h : ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E) ∧
+    if h : ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
         ∀ (T : SmoothCcTensor g₀ 0 2),
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤ p.1 →
           metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) p.2 then
@@ -1151,7 +1149,7 @@ def deTurckSobolevNonlinearitySymm (g₀ g_bg : SmoothRiemannianMetric I M) (a :
             (radialScaleSmooth (I := I) (M := M) g₀ a (Classical.choose h).1
               (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)))
             (lt_of_le_of_lt (Classical.choose_spec h).2.1
-              (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+              (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
             ((Classical.choose_spec h).2.2 _
               (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M)
                 g₀ a (Classical.choose_spec h).1.le
@@ -1214,7 +1212,7 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
     lt_of_le_of_lt (Classical.choose_spec h).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨K, hK⟩ :=
     deTurckSmoothRemainderTensorHs_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ₀_lt
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
@@ -1357,7 +1355,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
     lt_of_le_of_lt (Classical.choose_spec h).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨K, hK⟩ :=
     deTurckSmoothRemainderTensorHs_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ₀_lt
   set hdense := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2)
@@ -1508,7 +1506,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
           (ccTensor02Symm (I := I) (M := M) g₀ T))
         (lt_of_le_of_lt (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
           (I := I) (M := M) g₀ a ha_super)).2.1
-          (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+          (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
         ((Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
           (I := I) (M := M) g₀ a ha_super)).2.2 _
           (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M) g₀ a
@@ -1521,7 +1519,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
     lt_of_le_of_lt (Classical.choose_spec h).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨K, hK⟩ :=
     deTurckSmoothRemainderTensorHs_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ₀_lt
   set hdense := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2)
@@ -1699,7 +1697,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
   have hR₀ : 0 < R₀ := (Classical.choose_spec hex).1
   have hδ₀_lt : (Classical.choose hex).2 < 1 :=
     lt_of_le_of_lt (Classical.choose_spec hex).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   set hτσ : (a : ℝ) + 1 ≤ (a : ℝ) + 2 := by linarith with hτσ_def
   set J := tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hτσ with hJ_def
   obtain ⟨Csym1, hCsym1_nn, hCsym1⟩ :=
@@ -1810,11 +1808,11 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
     have hSballBig : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ ≤
         (Csym2 + 1) * R₀ := by
       calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ ≤ R₀ := hSball
-        _ ≤ (Csym2 + 1) * R₀ := by nlinarith [hCsym2_nn, hR₀.le]
+        _ ≤ (Csym2 + 1) * R₀ := by nlinarith only [hCsym2_nn, hR₀.le]
     have hS'ballBig : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S'‖ ≤
         (Csym2 + 1) * R₀ := by
       calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S'‖ ≤ R₀ := hS'ball
-        _ ≤ (Csym2 + 1) * R₀ := by nlinarith [hCsym2_nn, hR₀.le]
+        _ ≤ (Csym2 + 1) * R₀ := by nlinarith only [hCsym2_nn, hR₀.le]
     have hNT := deTurckSobolevNHa2Symm_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha_super T
     have hNT' := deTurckSobolevNHa2Symm_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha_super T'
     have hbase := hK S S' (le_refl _) hSfibre (le_refl _) hS'fibre
@@ -2029,6 +2027,25 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
   have := hmem
   rw [Set.mem_setOf_eq, hlhs_def, hrhs_def] at this
   simpa only [hJ_def] using this
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+theorem ccTensorBilinSymm_symmS_apply (g₀ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
+    ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x v w =
+      ccTensorBilinSymm (I := I) g₀ T x v w := by
+  rw [ccTensorBilinSymm_apply, ccTensorBilin_symmS, ccTensorBilin_symmS,
+    ccTensorBilinSymm_symm (I := I) g₀ T x w v, ccTensorBilinSymm_apply]
+  ring
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+theorem gFibreOpBound_symmS (g₀ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
+    (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
+    gFibreOpBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T)) δ := by
+  intro x v w
+  rw [ccTensorBilinSymm_symmS_apply (I := I) (M := M) g₀ T x v w]
+  exact hδ x v w
 
 end DifferentialGeometry.Analysis.Spectral
 

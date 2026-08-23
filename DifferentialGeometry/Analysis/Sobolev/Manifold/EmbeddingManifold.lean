@@ -98,7 +98,7 @@ private theorem perChart_eLpNorm_le
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p)
     (α : M) :
     ∃ K_α : ℝ≥0∞, K_α ≠ ⊤ ∧
-      ∀ {u : M → ℝ}, Measurable u → MemWkpChart (I := I) (M := M) g 1 p u →
+      ∀ {u : M → ℝ}, Measurable u → MemWkpChart (I := I) (M := M) 1 p u →
         eLpNorm
             (fun x : M =>
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -106,7 +106,7 @@ private theorem perChart_eLpNorm_le
             q
             (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) ≤
-          K_α * wkpNormChart (I := I) (M := M) g 1 p u := by
+          K_α * wkpNormChart (I := I) (M := M) 1 p u := by
   classical
   set ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M with hρ_def
   set Kα : Set M := tsupport (ρ α : M → ℝ) with hKα_def
@@ -187,8 +187,8 @@ private theorem perChart_eLpNorm_le
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u) q
           ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
             (chartTargetEuclid (I := I) (M := M) α)) ≤
-        wkpNormChart (I := I) (M := M) g 1 p u * V_α ^ exp_diff :=
-    eLpNorm_chartPushed_q_le_wkpNorm_one_subexp (I := I) (M := M) g
+        wkpNormChart (I := I) (M := M) 1 p u * V_α ^ exp_diff :=
+    eLpNorm_chartPushed_q_le_wkpNorm_one_subexp (I := I) (M := M)
       hq_ne_zero hp_top hqp hu α
   calc eLpNorm (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) q
           (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -199,9 +199,9 @@ private theorem perChart_eLpNorm_le
             ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
               (chartTargetEuclid (I := I) (M := M) α)) := h_bridge
     _ ≤ ENNReal.ofReal C_α *
-          (wkpNormChart (I := I) (M := M) g 1 p u * V_α ^ exp_diff) := by
+          (wkpNormChart (I := I) (M := M) 1 p u * V_α ^ exp_diff) := by
         gcongr
-    _ = K_α * wkpNormChart (I := I) (M := M) g 1 p u := by
+    _ = K_α * wkpNormChart (I := I) (M := M) 1 p u := by
         rw [hK_α_def, hH_α_def]
         ring
 
@@ -229,7 +229,7 @@ private lemma perChartConst_bound
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) (α : M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) :
     eLpNorm
         (fun x : M =>
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -238,7 +238,7 @@ private lemma perChartConst_bound
         (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) ≤
       perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α *
-        wkpNormChart (I := I) (M := M) g 1 p u :=
+        wkpNormChart (I := I) (M := M) 1 p u :=
   (Classical.choose_spec (perChart_eLpNorm_le (I := I) (M := M) g
     hp_one hp_top hq_one hq_top hqp α)).2 hu_meas hu
 
@@ -248,7 +248,7 @@ private theorem perChart_memLp_riemannianMeasure
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M) :
     MemLp
       (fun x : M =>
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -269,11 +269,11 @@ private theorem perChart_memLp_riemannianMeasure
         hu_meas hu
     have hK : perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α ≠ ⊤ :=
       perChartConst_ne_top (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α
-    have hN : wkpNormChart (I := I) (M := M) g 1 p u ≠ ⊤ :=
-      ne_of_lt (wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp_one hu)
+    have hN : wkpNormChart (I := I) (M := M) 1 p u ≠ ⊤ :=
+      ne_of_lt (wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_one hu)
     have hRHS_lt_top :
         perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α *
-          wkpNormChart (I := I) (M := M) g 1 p u < ⊤ := by
+          wkpNormChart (I := I) (M := M) 1 p u < ⊤ := by
       apply ENNReal.mul_lt_top
       · exact lt_top_iff_ne_top.mpr hK
       · exact lt_top_iff_ne_top.mpr hN
@@ -286,7 +286,7 @@ theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
     (hq_one : 1 ≤ q) (hq_top : q ≠ ⊤)
     (hqp : q ≤ p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) :
     MemLp u q
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
@@ -319,11 +319,11 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart_of_le_exponent
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞))
     (hqp : q ≤ p) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ {u : M → ℝ}, Measurable u → MemWkpChart (I := I) (M := M) g 1 p u →
+      ∀ {u : M → ℝ}, Measurable u → MemWkpChart (I := I) (M := M) 1 p u →
         eLpNorm u q
             (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) ≤
-          ENNReal.ofReal C * wkpNormChart (I := I) (M := M) g 1 p u := by
+          ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 1 p u := by
   classical
   set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
     (I := I) (M := M) with hS_def
@@ -392,7 +392,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart_of_le_exponent
           (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) ≤
         perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α *
-          wkpNormChart (I := I) (M := M) g 1 p u := by
+          wkpNormChart (I := I) (M := M) 1 p u := by
     intro α _
     exact perChartConst_bound (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α
       hu_meas hu
@@ -405,12 +405,12 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart_of_le_exponent
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M))) ≤
         ∑ α ∈ S,
           perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α *
-            wkpNormChart (I := I) (M := M) g 1 p u :=
+            wkpNormChart (I := I) (M := M) 1 p u :=
     Finset.sum_le_sum h_each
   refine h_sum_le.trans ?_
   rw [← Finset.sum_mul]
-  change D * wkpNormChart (I := I) (M := M) g 1 p u ≤
-    ENNReal.ofReal (max 1 D.toReal) * wkpNormChart (I := I) (M := M) g 1 p u
+  change D * wkpNormChart (I := I) (M := M) 1 p u ≤
+    ENNReal.ofReal (max 1 D.toReal) * wkpNormChart (I := I) (M := M) 1 p u
   gcongr
   have hD_eq : ENNReal.ofReal D.toReal = D := ENNReal.ofReal_toReal hD_ne_top
   have h_max_le :

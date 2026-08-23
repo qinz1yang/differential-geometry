@@ -312,7 +312,7 @@ theorem tensorFractionalPower_inner {g : SmoothRiemannianMetric I M}
           (S.coeff i * T.coeff i) := by rw [hsum]
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem tensorFractionalPower_zero_coeff
+theorem tensorFractionalPower_zero_coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {σ : ℝ}
     (T : tensorHs (I := I) (M := M) g r s σ)
@@ -564,7 +564,7 @@ theorem tensorLambdaPower_eq_fractionalPower
     tensorFractionalPower_coeff]
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem tensorLambdaPower_zero_coeff
+theorem tensorLambdaPower_zero_coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {σ : ℝ}
     (T : tensorHs (I := I) (M := M) g r s σ)

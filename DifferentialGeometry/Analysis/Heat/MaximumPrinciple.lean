@@ -28,7 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 private lemma isHermitian_real_entry
     {n : Type*} [Fintype n] [DecidableEq n]
@@ -463,6 +462,7 @@ theorem laplacian_nonpos_at_max
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x_max : M} (h_max : ∀ x : M, f x ≤ f x_max) :
     Δ_g (I := I) g ⟨_, hf⟩ x_max ≤ 0 := by
+  let _ := (inferInstance : (SigmaCompactSpace M))
   classical
   have h_trace_eq :=
     chartHessTrace_eq_laplacian_pointwise_of_boundaryless (I := I) g hf x_max

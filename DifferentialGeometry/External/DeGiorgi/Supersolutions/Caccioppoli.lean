@@ -11,7 +11,7 @@ supersolution iteration arguments.
 
 noncomputable section
 
-open MeasureTheory Metric
+open MeasureTheory
 
 namespace DeGiorgi
 

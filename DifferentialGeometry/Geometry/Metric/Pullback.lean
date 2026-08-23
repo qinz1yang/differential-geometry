@@ -139,7 +139,7 @@ private theorem mfderiv_apply_section_smooth_along_diffeo
   exact h
 
 noncomputable def Diffeomorph.pullbackMetric
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
     SmoothRiemannianMetric I M where
   inner x := Diffeomorph.pullbackInner g Φ x
@@ -205,13 +205,13 @@ noncomputable def Diffeomorph.pullbackMetric
 
 
 theorem diffeomorph_pullback_metric_exists
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
     ∃ g' : SmoothRiemannianMetric I M, g' = Diffeomorph.pullbackMetric g Φ :=
   ⟨Diffeomorph.pullbackMetric g Φ, rfl⟩
 
 theorem Diffeomorph.pullbackMetric_inner
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M) (v w : TangentSpace I x) :
     (Diffeomorph.pullbackMetric g Φ).inner x v w
       = g.inner (Φ x) (mfderiv I I Φ x v) (mfderiv I I Φ x w) :=
@@ -219,7 +219,7 @@ theorem Diffeomorph.pullbackMetric_inner
 
 
 theorem Diffeomorph.pullbackMetric_refl
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     Diffeomorph.pullbackMetric g (_root_.Diffeomorph.refl I M ∞) = g := by
   rcases g with ⟨inner_g, symm_g, pos_g, isVonN_g, contMDiff_g⟩
@@ -250,7 +250,7 @@ theorem Diffeomorph.pullbackMetric_refl
 
 theorem Diffeomorph.pullbackMetric_trans
     {P : Type*} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
-    [SigmaCompactSpace M] [T2Space M] [SigmaCompactSpace N] [T2Space N]
+    [T2Space M] [T2Space N]
     (g : SmoothRiemannianMetric I P) (Φ : M ≃ₘ⟮I, I⟯ N) (Ψ : N ≃ₘ⟮I, I⟯ P) :
     Diffeomorph.pullbackMetric (Diffeomorph.pullbackMetric g Ψ) Φ =
       Diffeomorph.pullbackMetric g (Φ.trans Ψ) := by
@@ -276,7 +276,7 @@ theorem Diffeomorph.pullbackMetric_trans
   rfl
 
 theorem Diffeomorph.pullbackInner_contMDiff
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) x
@@ -288,5 +288,51 @@ theorem Diffeomorph.mfderiv_contMDiff
     (Φ : M ≃ₘ⟮I, I⟯ N) :
     ContMDiff I I ∞ (Φ : M → N) :=
   Φ.contMDiff
+
+omit [FiniteDimensional ℝ E] in
+theorem bilinear_comp_self_contMDiff :
+    ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) =>
+        ContinuousLinearMap.bilinearComp p.1 p.2 p.2) := by
+  have hfst : ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) => p.1) :=
+    contMDiff_fst
+  have hsnd : ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) => p.2) :=
+    contMDiff_snd
+  have hflipDiff : ContDiff ℝ ∞
+      ((ContinuousLinearMap.flipₗᵢ ℝ E E ℝ) :
+        (E →L[ℝ] E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ)) :=
+    (ContinuousLinearMap.flipₗᵢ ℝ E E ℝ).contDiff
+  have h1 : ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) => p.1.comp p.2) :=
+    hfst.clm_comp hsnd
+  have h2 : ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) => (p.1.comp p.2).flip) := by
+    have hcomp := hflipDiff.comp_contMDiff h1
+    simpa [ContinuousLinearMap.coe_flipₗᵢ, Function.comp_def] using hcomp
+  have h3 : ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) =>
+        (p.1.comp p.2).flip.comp p.2) := h2.clm_comp hsnd
+  have h4 : ContMDiff
+      (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
+      𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) =>
+        ((p.1.comp p.2).flip.comp p.2).flip) := by
+    have hcomp := hflipDiff.comp_contMDiff h3
+    simpa [ContinuousLinearMap.coe_flipₗᵢ, Function.comp_def] using hcomp
+  exact h4
 
 end DifferentialGeometry

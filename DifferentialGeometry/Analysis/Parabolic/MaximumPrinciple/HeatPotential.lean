@@ -45,7 +45,7 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
   have hJ_cont : ContinuousOn (fun p : Real × M => J p.1 p.2)
       (spacetimeSlab (M := M) T') := by
     have hscale : Continuous (fun p : Real × M => Real.exp (-C * p.1)) := by
-      fun_prop
+      exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
     simpa only [J] using hscale.continuousOn.mul hu_cont
   have hJ0 : forall x : M, 0 <= J 0 x := by
     intro x
@@ -58,7 +58,8 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
       change t ∈ Set.Ioo 0 T
       exact ⟨htpos, lt_of_le_of_lt ht.2 hT'lt⟩
     have hscale : DifferentiableAt Real (fun s : Real => Real.exp (-C * s)) t := by
-      fun_prop
+      exact ((Real.hasDerivAt_exp (-C * t)).comp t
+        ((hasDerivAt_id t).const_mul (-C))).differentiableAt
     exact (hscale.mul (hsol.timeDiff t htreg x)).differentiableWithinAt
   have hJ_mdiff : forall t : Real, t ∈ Set.Icc 0 T' -> 0 < t ->
       forall x : M, MDifferentiableAt I 𝓘(Real, Real) (J t) x := by
@@ -103,7 +104,8 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
       (hsol.timeDiff t htreg x).differentiableWithinAt
     have hscale : DifferentiableWithinAt Real
         (fun s : Real => Real.exp (-C * s)) (Set.Icc 0 T') t := by
-      fun_prop
+      exact ((Real.hasDerivAt_exp (-C * t)).comp t
+        ((hasDerivAt_id t).const_mul (-C))).differentiableAt.differentiableWithinAt
     have hreaction :
         V t x * u t x ≤
           parabolicOperatorWithDrift (I := I) G T' X u t x := by
@@ -261,7 +263,8 @@ private theorem heat_pot_exp_rescale_barrier_operator_nonneg
     (hsol.equation t htreg x).differentiableAt.differentiableWithinAt
   have hscale : DifferentiableWithinAt Real
       (fun s : Real => Real.exp (-(-C) * s)) (Set.Icc 0 T') t := by
-    fun_prop
+    exact ((Real.hasDerivAt_exp (-(-C) * t)).comp t
+      ((hasDerivAt_id t).const_mul (-(-C)))).differentiableAt.differentiableWithinAt
   have hz_space : forall y : M,
       MDifferentiableAt I 𝓘(Real, Real) (z t) y := by
     intro y
@@ -342,7 +345,7 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
   have hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2)
       (spacetimeSlab (M := M) T') := by
     have hscale : Continuous (fun p : Real × M => Real.exp (C * p.1)) := by
-      fun_prop
+      exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
     simpa only [w, z] using
       (hscale.continuousOn.mul hu_cont).sub continuousOn_const
   have hw0 : forall x : M, 0 <= w 0 x := by
@@ -356,7 +359,8 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
       change t ∈ Set.Ioo 0 T
       exact ⟨htpos, lt_of_le_of_lt ht.2 hT'lt⟩
     have hscale : DifferentiableAt Real (fun s : Real => Real.exp (C * s)) t := by
-      fun_prop
+      exact ((Real.hasDerivAt_exp (C * t)).comp t
+        ((hasDerivAt_id t).const_mul C)).differentiableAt
     have hdiff : DifferentiableAt Real
         (fun s : Real => Real.exp (C * s) * u s x - c) t :=
       (hscale.mul (hsol.equation t htreg x).differentiableAt).sub_const c
@@ -464,7 +468,7 @@ theorem heat_pot_pos
   have hz_cont : ContinuousOn (fun p : Real × M => z p.1 p.2)
       (Set.Icc (0 : Real) T ×ˢ Set.univ) := by
     have hscale : Continuous (fun p : Real × M => Real.exp (C * p.1)) := by
-      fun_prop
+      exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
     simpa only [z, RealTimeInterval.closed] using
       hscale.continuousOn.mul hsol.jointCont
   intro t ht x

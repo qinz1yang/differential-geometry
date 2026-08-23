@@ -19,7 +19,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.TensorRSNabla
 open DifferentialGeometry.TensorMultilinear
@@ -36,7 +36,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem rfns_iteratedCovGrad_rsDomDomCongr_both_eq
+theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ' : Equiv.Perm (Fin r)) (σ : Equiv.Perm (Fin s))
     (R : SmoothCcTensor g r s) (i : ℕ) (x : M) :
@@ -126,7 +126,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
         m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (Fin.succ k₂)))
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]
 
-theorem rfns_iteratedCovGrad_slotInsertEndoCc_le_endo
+theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -151,12 +151,12 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_le_endo
             (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ))).toSection x) := by
       rw [slotInsertEndoCc_succ_eq_reindex_slotExtend (I := I) (M := M) g₀ s Λ]
-      exact rfns_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+      exact riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
         (Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
         (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ)) i x
     rw [hA]
-    refine le_trans (rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ (s + 1) (s + 1)
+    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ (s + 1) (s + 1)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ) i x) ?_
     calc (Module.finrank ℝ E : ℝ) *
             riemannianFiberNormSq (I := I) (M := M) g₀ (s + 1) ((s + 1) + i) x

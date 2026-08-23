@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLpIdentity
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
@@ -208,7 +207,6 @@ noncomputable def smoothLaplacianAsScalar
   toFun := Δ_g (I := I) g φ
   smooth := Δ_g_contMDiff (I := I) g φ
 
-set_option linter.unusedSectionVars false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma smoothLaplacianAsScalar_toFun
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) :
@@ -222,6 +220,7 @@ lemma smoothLaplacianBundle_toFun_eq_smoothLaplacianAsScalar
       (smoothLaplacianAsScalar (I := I) (M := M) g φ).toFun := rfl
 
 omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem oneSubLapClassical_gradInner_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (x : M) :
@@ -247,10 +246,7 @@ theorem oneSubLapClassical_gradInner_apply
     (I := I) (M := M) g φ v x
   rw [h_Δ_eq]
   have h_polar := bochner_polarised_pointwise_oneSubLap (I := I) (M := M) g
-    φ ⟨v.toFun, v.smooth⟩
-    (contMDiff_phi_add_v (I := I) (M := M) φ ⟨v.toFun, v.smooth⟩)
-    (contMDiff_phi_sub_v (I := I) (M := M) φ ⟨v.toFun, v.smooth⟩)
-    (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ ⟨v.toFun, v.smooth⟩) x
+    φ ⟨v.toFun, v.smooth⟩ x
   exact h_polar
 
 theorem gradInnerLaplacianCandidateUnconditional_smoothCase_of_hessHypothesis

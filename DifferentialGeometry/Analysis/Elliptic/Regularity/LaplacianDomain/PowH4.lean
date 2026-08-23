@@ -120,29 +120,31 @@ theorem toH2 {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
 
 end ChartH4NonSmoothPOUWitness
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem memWkpChart_four_of_chartPOUWitnesses
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (h_witness : ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 4 2 u := by
+      (I := I) (M := M) 4 2 u := by
   intro α
   exact (h_witness α).memWkp_four
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem memWkpChart_three_of_chartPOUWitnesses
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (h_witness : ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 3 2 u :=
+      (I := I) (M := M) 3 2 u :=
   (memWkpChart_four_of_chartPOUWitnesses (I := I) (M := M) g h_witness).le_succ
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem memWkpChart_two_of_chartH4POUWitnesses
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (h_witness : ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2 u :=
+      (I := I) (M := M) 2 2 u :=
   DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart.le_of_le
     (by norm_num : (2 : ℕ) ≤ 4)
     (memWkpChart_four_of_chartPOUWitnesses (I := I) (M := M) g h_witness)
@@ -152,9 +154,9 @@ theorem wkpNormChart_four_lt_top_of_chartPOUWitnesses
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (h_witness : ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 4 2 u < ⊤ :=
+      (I := I) (M := M) 4 2 u < ⊤ :=
   DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_lt_top_of_memWkpChart
-    (I := I) (M := M) g (k := 4) (p := 2) (by norm_num)
+    (I := I) (M := M) (k := 4) (p := 2) (by norm_num)
     (memWkpChart_four_of_chartPOUWitnesses (I := I) (M := M) g h_witness)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -166,11 +168,11 @@ theorem laplacianDomainPow_memWkpChart_four
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
   let _ := hu_h
@@ -191,9 +193,9 @@ theorem exists_laplacianDomainPow_memWkpChart_four
       u = ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 4 2 u ∧
+        (I := I) (M := M) 4 2 u ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 4 2 u < ⊤ := by
+        (I := I) (M := M) 4 2 u < ⊤ := by
   refine ⟨((H1ComplToLp (I := I) (M := M) g u_h :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ), rfl, ?_, ?_⟩
   · exact (laplacianDomainPow_memWkpChart_four (I := I) (M := M) g hu_h h_witness).1
@@ -213,21 +215,21 @@ theorem laplacianDomainPow_memWkpChart_four_two_sided
             (I := I) (M := M) g 1 hu_h⟩ :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) α) :
     (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤) ∧
     (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
@@ -245,7 +247,7 @@ theorem memWkpChart_two_of_h4_witnesses_laplacianDomainPow_two
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   let _ := hu_h
@@ -256,11 +258,9 @@ theorem laplacianDomainPow_two_h2_via_h4_witnesses
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
-    (_h_witness : ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) α) :
+    :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 2 2
+      (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   exact (laplacianDomainPow_two_h2_plus_rhs_h2

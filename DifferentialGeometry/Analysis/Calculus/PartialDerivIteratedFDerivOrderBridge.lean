@@ -46,8 +46,6 @@ theorem partialDeriv_partialDeriv_eq_iteratedFDeriv_two
 
 namespace DeTurckCoefficients
 
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

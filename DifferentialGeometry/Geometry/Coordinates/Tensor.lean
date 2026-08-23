@@ -51,7 +51,6 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 def tensor0SComponentInFrame {s : Nat}
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (_hframe : IsLocalFrameOn I E n frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) : 𝕜 :=
   T x (fun a => frame (vectorSlots a) x)
@@ -60,14 +59,13 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 @[simp] theorem tensor0SComponentInFrame_eval {s : Nat}
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E n frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) :
-    tensor0SComponentInFrame T frame hframe x vectorSlots =
+    tensor0SComponentInFrame T frame x vectorSlots =
       T x (fun a => frame (vectorSlots a) x) := by
   rfl
 
-def tensor0SComponentInFrameAt {s : Nat} [Fintype Idx] [DecidableEq Idx]
+def tensor0SComponentInFrameAt {s : Nat}
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -77,7 +75,6 @@ def tensor0SComponentInFrameAt {s : Nat} [Fintype Idx] [DecidableEq Idx]
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 @[simp] theorem tensor0SComponentInFrameAt_eval {s : Nat}
-    [Fintype Idx] [DecidableEq Idx]
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -92,7 +89,6 @@ def tensorRSComponentFromCovariantInputInFrame {r s : Nat}
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (input : (x : M) -> Tensor0SBundle.Tensor0SSpace (𝕜 := 𝕜) r I x)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (_hframe : IsLocalFrameOn I E n frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) : 𝕜 :=
   (T x (input x)) (fun a => frame (vectorSlots a) x)
@@ -102,23 +98,23 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (input : (x : M) -> Tensor0SBundle.Tensor0SSpace (𝕜 := 𝕜) r I x)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E n frame u)
     (x : M)
     (vectorSlots : Fin s -> Idx) :
-    tensorRSComponentFromCovariantInputInFrame T input frame hframe x vectorSlots =
+    tensorRSComponentFromCovariantInputInFrame T input frame x vectorSlots =
       (T x (input x)) (fun a => frame (vectorSlots a) x) := by
   rfl
 
-def tensorRSComponentInFrame {r s : Nat} [Fintype Idx] [DecidableEq Idx]
+noncomputable def tensorRSComponentInFrame {r s : Nat} [Finite Idx]
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
     (x : M) (hx : x ∈ u)
-    (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 :=
-  Tensor0SBundle.componentRS_gen (I := I) (hframe.toBasisAt hx) (T x) upper lower
+    (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 := by
+  letI := Fintype.ofFinite Idx
+  classical
+  exact Tensor0SBundle.componentRS_gen (I := I) (hframe.toBasisAt hx) (T x) upper lower
 
-@[simp] theorem tensorRSComponentInFrame_eval {r s : Nat}
-    [Fintype Idx] [DecidableEq Idx]
+@[simp] theorem tensorRSComponentInFrame_eval {r s : Nat} [Fintype Idx]
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -128,8 +124,7 @@ def tensorRSComponentInFrame {r s : Nat} [Fintype Idx] [DecidableEq Idx]
       Tensor0SBundle.componentRS_gen (I := I) (hframe.toBasisAt hx) (T x) upper lower := by
   rfl
 
-@[simp] theorem tensorRSComponentInFrame_apply {r s : Nat}
-    [Fintype Idx] [DecidableEq Idx]
+theorem tensorRSComponentInFrame_apply {r s : Nat} [Fintype Idx]
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -191,7 +186,9 @@ def slots4 (i j k l : Idx) : Fin 4 -> Idx :=
 
 
 def upperIdx1 (k : Idx) : Fin 1 -> Idx :=
-  fun _ => k
+  fun a =>
+    let _ := a
+    k
 
 
 def lowerIdx2 (i j : Idx) : Fin 2 -> Idx :=
@@ -230,15 +227,14 @@ def lowerIdx2 (i j : Idx) : Fin 2 -> Idx :=
   fin_cases q <;> simp [lowerIdx2]
 
 
-def tensor02CompInFrame [Fintype Idx] [DecidableEq Idx]
-    (T : FrameTensor0SField (I := I) (M := M) 2)
+def tensor02CompInFrame (T : FrameTensor0SField (I := I) (M := M) 2)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
     (x : M) (hx : x ∈ u) (i j : Idx) : 𝕜 :=
   tensor0SComponentInFrameAt T frame hframe x hx (slots2 i j)
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
-@[simp] theorem tensor02CompInFrame_eval [Fintype Idx] [DecidableEq Idx]
+@[simp] theorem tensor02CompInFrame_eval
     (T : FrameTensor0SField (I := I) (M := M) 2)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -248,15 +244,14 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
   rfl
 
 
-def tensor04CompInFrame [Fintype Idx] [DecidableEq Idx]
-    (T : FrameTensor0SField (I := I) (M := M) 4)
+def tensor04CompInFrame (T : FrameTensor0SField (I := I) (M := M) 4)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
     (x : M) (hx : x ∈ u) (i j k l : Idx) : 𝕜 :=
   tensor0SComponentInFrameAt T frame hframe x hx (slots4 i j k l)
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
-@[simp] theorem tensor04CompInFrame_eval [Fintype Idx] [DecidableEq Idx]
+@[simp] theorem tensor04CompInFrame_eval
     (T : FrameTensor0SField (I := I) (M := M) 4)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -266,14 +261,13 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
   rfl
 
 
-def tensor12CompInFrame [Fintype Idx] [DecidableEq Idx]
-    (T : FrameTensorRSField (I := I) (M := M) 1 2)
+def tensor12CompInFrame [Fintype Idx] (T : FrameTensorRSField (I := I) (M := M) 1 2)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
     (x : M) (hx : x ∈ u) (k i j : Idx) : 𝕜 :=
   tensorRSComponentInFrame T frame hframe x hx (upperIdx1 k) (lowerIdx2 i j)
 
-@[simp] theorem tensor12CompInFrame_eval [Fintype Idx] [DecidableEq Idx]
+@[simp] theorem tensor12CompInFrame_eval [Fintype Idx]
     (T : FrameTensorRSField (I := I) (M := M) 1 2)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -285,14 +279,13 @@ def tensor12CompInFrame [Fintype Idx] [DecidableEq Idx]
   rfl
 
 
-def tensor13CompInFrame [Fintype Idx] [DecidableEq Idx]
-    (T : FrameTensorRSField (I := I) (M := M) 1 3)
+def tensor13CompInFrame [Fintype Idx] (T : FrameTensorRSField (I := I) (M := M) 1 3)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
     (x : M) (hx : x ∈ u) (a i j k : Idx) : 𝕜 :=
   tensorRSComponentInFrame T frame hframe x hx (upperIdx1 a) (slots3 i j k)
 
-@[simp] theorem tensor13CompInFrame_eval [Fintype Idx] [DecidableEq Idx]
+@[simp] theorem tensor13CompInFrame_eval [Fintype Idx]
     (T : FrameTensorRSField (I := I) (M := M) 1 3)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)

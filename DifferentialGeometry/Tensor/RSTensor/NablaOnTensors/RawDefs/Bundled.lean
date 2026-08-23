@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs.MCovariant
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 
 namespace DifferentialGeometry

@@ -18,7 +18,6 @@ namespace DivergenceTheorem
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -114,6 +113,26 @@ theorem loweredCovDeriv_leibniz_combined_integral_eq_zero
   integral_tensorInner_covDeriv_combined_eq_zero (I := I) (M := M) g r s
     W'.toSection Z.toSection V
 
+theorem loweredCovDeriv_bracketChannel_combined_isDivergence
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (W' Z : SmoothCcTensor g r s)
+    (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    ∫ x, (covariantTensorInnerPointwise (I := I) (M := M) (r + s) g x
+            (Tensor0SSpace.toModel
+              (loweredCovDerivAlongVF (I := I) (M := M) g r s W'.toSection V x))
+            (Tensor0SSpace.toModel
+              (liftedTensorSection (I := I) (M := M) g r s Z.toSection x))
+          + covariantTensorInnerPointwise (I := I) (M := M) (r + s) g x
+            (Tensor0SSpace.toModel
+              (liftedTensorSection (I := I) (M := M) g r s W'.toSection x))
+            (Tensor0SSpace.toModel
+              (loweredCovDerivAlongVF (I := I) (M := M) g r s Z.toSection V x))
+          + tensorInnerScalar (I := I) (M := M) g r s W'.toSection Z.toSection x
+            * divergence_g (I := I) g V x)
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
+  loweredCovDeriv_leibniz_combined_integral_eq_zero
+    (I := I) (M := M) g r s W' Z V
+
 omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem loweredCovDeriv_bracketChannel_combined_eq_divergence_smoothSmul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -145,7 +164,7 @@ theorem loweredCovDeriv_bracketChannel_combined_eq_divergence_smoothSmul
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    [SigmaCompactSpace M] [T2Space M] in
 theorem divergence_g_finset_sum
     (g : SmoothRiemannianMetric I M) {ι : Type*} [Fintype ι]
     (V : ι → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
@@ -187,6 +206,31 @@ theorem frameSummed_covDerivAlongVF_leibniz_combined_eq_divergence
   refine Finset.sum_congr rfl (fun i _ => ?_)
   exact loweredCovDeriv_bracketChannel_combined_eq_divergence_smoothSmul
     (I := I) (M := M) g r s (W i) Z (V i) x
+
+omit [CompactSpace M] [SigmaCompactSpace M] in
+theorem frameSummed_bracketCovDeriv_combined_eq_divergence
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) {ι : Type*} [Fintype ι]
+    (V : ι → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (W : ι → SmoothCcTensor g r s) (Z : SmoothCcTensor g r s) (x : M) :
+    divergence_g (I := I) g
+        (∑ i, smoothSmul (I := I)
+          (tensorInnerScalar (I := I) (M := M) g r s (W i).toSection Z.toSection)
+          (tensorInnerScalar_contMDiff (I := I) (M := M) g r s (W i).toSection Z.toSection)
+          (V i)) x =
+      ∑ i, (covariantTensorInnerPointwise (I := I) (M := M) (r + s) g x
+              (Tensor0SSpace.toModel
+                (loweredCovDerivAlongVF (I := I) (M := M) g r s (W i).toSection (V i) x))
+              (Tensor0SSpace.toModel
+                (liftedTensorSection (I := I) (M := M) g r s Z.toSection x))
+            + covariantTensorInnerPointwise (I := I) (M := M) (r + s) g x
+              (Tensor0SSpace.toModel
+                (liftedTensorSection (I := I) (M := M) g r s (W i).toSection x))
+              (Tensor0SSpace.toModel
+                (loweredCovDerivAlongVF (I := I) (M := M) g r s Z.toSection (V i) x))
+            + tensorInnerScalar (I := I) (M := M) g r s (W i).toSection Z.toSection x
+              * divergence_g (I := I) g (V i) x) :=
+  frameSummed_covDerivAlongVF_leibniz_combined_eq_divergence
+    (I := I) (M := M) g r s V W Z x
 
 theorem integral_frameSummed_bracketCovDeriv_combined_eq_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {ι : Type*} [Fintype ι]

@@ -77,7 +77,7 @@ theorem chart_local_stokes_within
       chartBoundaryFaceIntegral (I := I) g α X f := rfl
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem chartBoundaryFaceIntegral_zero_weight
+theorem chartBoundaryFaceIntegral_zero_weight
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     chartBoundaryFaceIntegral (I := I) g α X (fun _ => (0 : ℝ)) = 0 := by

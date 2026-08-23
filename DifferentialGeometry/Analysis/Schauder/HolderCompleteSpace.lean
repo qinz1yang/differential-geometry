@@ -124,7 +124,7 @@ instance (alpha : NNReal) :
         (((2 : NNReal) * ∑' m, ‖f (m + N)‖₊ : NNReal) : Real) := by
     intro N
     have htailSummable : Summable fun m ↦ ‖f (m + N)‖ :=
-      (summable_nat_add_iff N).mpr hf
+      (summable_nat_add_iff (f := fun n ↦ ‖f n‖) N).mpr hf
     obtain ⟨tail, htail, htailNorm⟩ :=
       exists_boundedHolderSpace_pointwise_tsum
         (fun m ↦ f (m + N)) htailSummable
@@ -289,7 +289,7 @@ instance (k : Nat) (alpha : NNReal) :
           ∑' m, ‖f (m + N)‖₊ : NNReal) : Real) := by
     intro N
     have htailSummable : Summable fun m ↦ ‖f (m + N)‖ :=
-      (summable_nat_add_iff N).mpr hf
+      (summable_nat_add_iff (f := fun n ↦ ‖f n‖) N).mpr hf
     obtain ⟨tail, htail, htailNorm⟩ :=
       exists_contDiffHolderSpace_pointwise_tsum
         (fun m ↦ f (m + N)) htailSummable
@@ -549,7 +549,7 @@ instance (alpha : NNReal) :
         (((6 : NNReal) * ∑' m, ‖u (m + N)‖₊ : NNReal) : Real) := by
     intro N
     have htailSummable : Summable fun m ↦ ‖u (m + N)‖ :=
-      (summable_nat_add_iff N).mpr hu
+      (summable_nat_add_iff (f := fun n ↦ ‖u n‖) N).mpr hu
     obtain ⟨tail, htail, htailNorm⟩ :=
       exists_parabolicC2HolderSpace_pointwise_tsum
         (fun m ↦ u (m + N)) htailSummable

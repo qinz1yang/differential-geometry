@@ -38,19 +38,19 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem tensorChartComponentRaw_deTurckRHSSectionBg_eq_deTurckRicciRHS
+private theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRicciRHS
     (g_bg g₁ : SmoothRiemannianMetric I M) (α : M)
     {b : M} (hb : b ∈ (chartAt H α).source)
     (Idx : Fin 0 → Fin (Module.finrank ℝ E))
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     tensorChartComponentRaw (I := I) (M := M) g_bg 0 2
-        (deTurckRHSSectionBg (I := I) g_bg g₁) α Idx Jdx b =
+        (deTurckRHSSectionBackground (I := I) g_bg g₁) α Idx Jdx b =
       deTurckRicciRHS (I := I) g_bg g₁ b
         (chartBasisVecFiber (I := I) α (Jdx 0) b)
         (chartBasisVecFiber (I := I) α (Jdx 1) b) := by
   classical
   rw [tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g_bg 0 2
-    (deTurckRHSSectionBg (I := I) g_bg g₁) α hb Idx Jdx]
+    (deTurckRHSSectionBackground (I := I) g_bg g₁) α hb Idx Jdx]
   have hframe : chartFrameBasisModel (I := I) (M := M) α b 0 Idx =
       (ContinuousMultilinearMap.constOfIsEmpty ℝ
         (fun _ : Fin 0 => TangentSpace I b) (1 : ℝ)) := by
@@ -63,7 +63,7 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBg_eq_deTurckRicciRHS
   rw [hframe]
   have hmodel := deTurckRHSSection_toModel_apply (I := I) g_bg g₁ b
     (fun k : Fin 2 => chartBasisVecFiber (I := I) α (Jdx k) b)
-  rw [show (deTurckRHSSectionBg (I := I) g_bg g₁).toSection b =
+  rw [show (deTurckRHSSectionBackground (I := I) g_bg g₁).toSection b =
       (deTurckRHSSection (I := I) g_bg g₁).toSection b from rfl]
   have hdirect :
       ((deTurckRHSSection (I := I) g_bg g₁).toSection b
@@ -80,13 +80,13 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBg_eq_deTurckRicciRHS
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_deTurckRHSSectionBg_eq_chartRicciLie
+theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_chartRicciLie
     (g_bg g₁ : SmoothRiemannianMetric I M) (α : M)
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (Idx : Fin 0 → Fin (Module.finrank ℝ E))
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     tensorChartComponentRaw (I := I) (M := M) g_bg 0 2
-        (deTurckRHSSectionBg (I := I) g_bg g₁) α Idx Jdx b =
+        (deTurckRHSSectionBackground (I := I) g_bg g₁) α Idx Jdx b =
       (-2 : ℝ) * chartRicciTensor (I := I) g₁ α (Jdx 0) (Jdx 1) (extChartAt I α b) +
         chartLieDeTurckComp (I := I) g₁ g_bg α (Jdx 0) (Jdx 1) (extChartAt I α b) := by
   classical
@@ -94,7 +94,7 @@ theorem tensorChartComponentRaw_deTurckRHSSectionBg_eq_chartRicciLie
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
   set v₀ : TangentSpace I b := chartBasisVecFiber (I := I) α (Jdx 0) b with hv₀_def
   set v₁ : TangentSpace I b := chartBasisVecFiber (I := I) α (Jdx 1) b with hv₁_def
-  rw [tensorChartComponentRaw_deTurckRHSSectionBg_eq_deTurckRicciRHS (I := I) (M := M) g_bg g₁ α
+  rw [tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRicciRHS (I := I) (M := M) g_bg g₁ α
       hb_src Idx Jdx]
   rw [show chartBasisVecFiber (I := I) α (Jdx 0) b = v₀ from rfl,
     show chartBasisVecFiber (I := I) α (Jdx 1) b = v₁ from rfl]

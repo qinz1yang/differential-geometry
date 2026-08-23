@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Mixed.DualFiber
 open DifferentialGeometry.Tensor.Multilinear
@@ -60,7 +61,7 @@ theorem dualMultilinearEquivMultilinearOfDual_compCCLM_ext (r : ℕ) (L : F →L
 
 theorem homEquivCDualTensor_symm_tmul
     {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [FiniteDimensional 𝕜 V]
-    {W : Type*} [NormedAddCommGroup W] [NormedSpace 𝕜 W] [FiniteDimensional 𝕜 W]
+    {W : Type*} [NormedAddCommGroup W] [NormedSpace 𝕜 W]
     (η : V →L[𝕜] 𝕜) (w : W) (v : V) :
     (homEquivCDualTensor 𝕜 V W).symm (η ⊗ₜ[𝕜] w) v = η v • w := by
   simp only [homEquivCDualTensor, LinearEquiv.symm_trans_apply,
@@ -129,9 +130,10 @@ private lemma multilinearHomEquivDualMultilinearTensor_naturality_tmul
         (dualMultilinearEquivMultilinearOfDual 𝕜 F r) (LinearEquiv.refl 𝕜 _))) _ = _
     simp only [LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply,
       TensorProduct.congr_tmul, LinearEquiv.refl_apply]
-  rw [hMHE_apply_h_symm,
-    dualMultilinearEquivMultilinearOfDual_compCCLM_ext r Φ.toContinuousLinearMap η,
-    hη_def, LinearEquiv.apply_symm_apply]
+  rw [hMHE_apply_h_symm]
+  rw [dualMultilinearEquivMultilinearOfDual_compCCLM_ext r Φ.toContinuousLinearMap η]
+  rw [hη_def]
+  rw [LinearEquiv.apply_symm_apply]
   rfl
 
 theorem multilinearHomEquivDualMultilinearTensor_naturality
@@ -172,13 +174,18 @@ theorem multilinearHomEquivDualMultilinearTensor_naturality
   intro u
   induction u using TensorProduct.induction_on with
   | zero =>
-    rw [LinearEquiv.map_zero MHE.symm, ContinuousLinearMap.zero_comp,
-      ContinuousLinearMap.comp_zero, LinearEquiv.map_zero MHE,
-      (TensorProduct.map _ _).map_zero]
+    rw [LinearEquiv.map_zero MHE.symm]
+    rw [ContinuousLinearMap.zero_comp]
+    rw [ContinuousLinearMap.comp_zero]
+    rw [LinearEquiv.map_zero MHE]
+    rw [(TensorProduct.map _ _).map_zero]
   | add t₁ t₂ ih₁ ih₂ =>
-    rw [LinearEquiv.map_add MHE.symm, ContinuousLinearMap.add_comp,
-      ContinuousLinearMap.comp_add, LinearEquiv.map_add MHE, ih₁, ih₂,
-      (TensorProduct.map _ _).map_add]
+    rw [LinearEquiv.map_add MHE.symm]
+    rw [ContinuousLinearMap.add_comp]
+    rw [ContinuousLinearMap.comp_add]
+    rw [LinearEquiv.map_add MHE]
+    rw [ih₁, ih₂]
+    rw [(TensorProduct.map _ _).map_add]
   | tmul α β =>
     exact multilinearHomEquivDualMultilinearTensor_naturality_tmul r s Φ α β
 

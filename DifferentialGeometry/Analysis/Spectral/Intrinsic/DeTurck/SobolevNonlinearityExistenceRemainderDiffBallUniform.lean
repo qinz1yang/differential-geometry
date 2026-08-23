@@ -12,6 +12,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGra
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -26,7 +27,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -231,7 +231,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_dataWeighted_ballUnifo
   have hDm_nn : 0 ≤ Dm := le_trans (norm_nonneg _) (le_max_left _ _)
   have hΛle : ΛC ^ 2 ≤ (ΛC * (Ksob + 1)) ^ 2 := by
     refine pow_le_pow_left₀ hΛC_nn ?_ 2
-    nlinarith [hΛC_nn, hKsob_pos.le]
+    nlinarith only [hΛC_nn, hKsob_pos.le]
   have hβmax_eq : max βT βT' = Ksob * Dm := by
     rw [hβT_def, hβT'_def, hDm_def, hcastord, mul_max_of_nonneg _ _ hKsob_pos.le]
   refine ⟨C₀, C₁, C₂, hid, fun x => le_trans (hC₀sup x) hΛle,
@@ -240,7 +240,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_dataWeighted_ballUnifo
   refine le_trans (hC₂sup x) ?_
   rw [hβmax_eq]
   refine pow_le_pow_left₀ (mul_nonneg hΛC_nn (mul_nonneg hKsob_pos.le hDm_nn)) ?_ 2
-  nlinarith [hΛC_nn, hKsob_pos.le, hDm_nn, mul_nonneg hKsob_pos.le hDm_nn]
+  nlinarith only [hΛC_nn, hKsob_pos.le, hDm_nn, mul_nonneg hKsob_pos.le hDm_nn]
 
 private lemma sq_mul_sq_add_sq_le_augmented (x y z : ℝ) :
     x ^ 2 * y ^ 2 + z ^ 2 ≤ (x ^ 2 + 1) * (y ^ 2 + z ^ 2 + 1) := by
@@ -319,7 +319,11 @@ private theorem deTurckRemainderDiff_lowArm_bound
           ‖iteratedCovGrad (I := I) g₀ (2 + m) 2 i Cm‖ ^ 2
         + ΛC ^ 2 * ∑ l ∈ Finset.range (q + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 (2 + m) l
-            (iteratedCovGrad (I := I) g₀ 0 2 m (T - T'))‖ ^ 2 := by positivity
+            (iteratedCovGrad (I := I) g₀ 0 2 m (T - T'))‖ ^ 2 :=
+      add_nonneg
+        (mul_nonneg (mul_nonneg (sq_nonneg Cemb1) hS₁_nn)
+          (Finset.sum_nonneg fun i _ => sq_nonneg _))
+        (mul_nonneg (sq_nonneg ΛC) (Finset.sum_nonneg fun l _ => sq_nonneg _))
     calc Km * ((Cemb1 ^ 2 * S₁) * ∑ i ∈ Finset.range (q + 1),
               ‖iteratedCovGrad (I := I) g₀ (2 + m) 2 i Cm‖ ^ 2
             + ΛC ^ 2 * ∑ l ∈ Finset.range (q + 1),
@@ -380,8 +384,11 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
     have hK₁_le : K₁ ≤ Kmax := le_trans (le_max_left _ _) (le_max_right _ _)
     have hK₂_le : K₂ ≤ Kmax := le_trans (le_max_right _ _) (le_max_right _ _)
     set base : ℝ := Kmax * ((Cemb1 ^ 2 + 1) * (Γ ^ 2 + ΛC ^ 2 + 1)) with hbase_def
-    have hbase_nn : 0 ≤ base := by rw [hbase_def]; positivity
-    refine ⟨3 * Real.sqrt base, by positivity, ?_⟩
+    have hbase_nn : 0 ≤ base := by
+      rw [hbase_def]
+      exact mul_nonneg hKmax_nn (mul_nonneg (add_nonneg (sq_nonneg _) zero_le_one)
+        (add_nonneg (add_nonneg (sq_nonneg _) (sq_nonneg _)) zero_le_one))
+    refine ⟨3 * Real.sqrt base, mul_nonneg (by norm_num) (Real.sqrt_nonneg _), ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball q hq
     set Dm : ℝ := max ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 1) T‖
                       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 1) T'‖ with hDm_def
@@ -409,7 +416,7 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
             ((iteratedCovGrad (I := I) g₀ 0 2 m (T - T')).toSection x) ≤
           (Real.sqrt (Cemb1 ^ 2 * S₁)) ^ 2 := by
       intro m hm x
-      rw [Real.sq_sqrt (by positivity)]
+      rw [Real.sq_sqrt (mul_nonneg (sq_nonneg Cemb1) hS₁_nn)]
       have hembx := hemb1 (T - T') x
       rw [hS₁_def]
       have hmem : m ∈ Finset.range 3 := Finset.mem_range.mpr (by omega)
@@ -487,7 +494,8 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
       have htame := hK₂ q hq C₂ (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))
         (ΛC * Dm) (Real.sqrt (Cemb1 ^ 2 * S₁)) (mul_nonneg hΛC_nn hDm_nn) (Real.sqrt_nonneg _)
         hC₂sup (hWsup1 2 (by norm_num))
-      have hΛWsq : (Real.sqrt (Cemb1 ^ 2 * S₁)) ^ 2 = Cemb1 ^ 2 * S₁ := Real.sq_sqrt (by positivity)
+      have hΛWsq : (Real.sqrt (Cemb1 ^ 2 * S₁)) ^ 2 = Cemb1 ^ 2 * S₁ :=
+        Real.sq_sqrt (mul_nonneg (sq_nonneg Cemb1) hS₁_nn)
       have hcjet : (∑ i ∈ Finset.range (q + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i C₂‖ ^ 2) ≤
           Γ ^ 2 :=
         hcoeffjet_le 2 C₂ (Γ ^ 2) (sq_nonneg _) hC₂jet
@@ -503,7 +511,7 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
         rw [hΛWsq]
         have ha1 : (Cemb1 ^ 2 * S₁) * ∑ i ∈ Finset.range (q + 1),
               ‖iteratedCovGrad (I := I) g₀ 4 2 i C₂‖ ^ 2 ≤ (Cemb1 ^ 2 * S₁) * Γ ^ 2 :=
-          mul_le_mul_of_nonneg_left hcjet (by positivity)
+          mul_le_mul_of_nonneg_left hcjet (mul_nonneg (sq_nonneg Cemb1) hS₁_nn)
         have ha2 : (ΛC * Dm) ^ 2 * ∑ l ∈ Finset.range (q + 1),
               ‖iteratedCovGrad (I := I) g₀ 0 4 l
                 (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))‖ ^ 2 ≤ (ΛC * Dm) ^ 2 * S₂ :=
@@ -516,7 +524,10 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
                   (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))‖ ^ 2
             ≤ (Cemb1 ^ 2 + 1) * (Γ ^ 2 + ΛC ^ 2 + 1) * (S₁ + Dm ^ 2 * S₂) := by
           set B : ℝ := (Cemb1 ^ 2 + 1) * (Γ ^ 2 + ΛC ^ 2 + 1) with hB_def
-          have hB_nn : 0 ≤ B := by rw [hB_def]; positivity
+          have hB_nn : 0 ≤ B := by
+            rw [hB_def]
+            exact mul_nonneg (add_nonneg (sq_nonneg _) zero_le_one)
+              (add_nonneg (add_nonneg (sq_nonneg _) (sq_nonneg _)) zero_le_one)
           have hcoeff_le : Cemb1 ^ 2 * Γ ^ 2 ≤ B := by
             rw [hB_def]
             exact (le_add_of_nonneg_right (sq_nonneg ΛC)).trans
@@ -542,7 +553,12 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
                 ‖iteratedCovGrad (I := I) g₀ 4 2 i C₂‖ ^ 2
               + (ΛC * Dm) ^ 2 * ∑ l ∈ Finset.range (q + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 4 l
-                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))‖ ^ 2 := by positivity
+                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))‖ ^ 2 :=
+          add_nonneg
+            (mul_nonneg (mul_nonneg (sq_nonneg Cemb1) hS₁_nn)
+              (Finset.sum_nonneg fun i _ => sq_nonneg _))
+            (mul_nonneg (sq_nonneg (ΛC * Dm))
+              (Finset.sum_nonneg fun l _ => sq_nonneg _))
         calc K₂ * ((Cemb1 ^ 2 * S₁) * ∑ i ∈ Finset.range (q + 1),
                   ‖iteratedCovGrad (I := I) g₀ 4 2 i C₂‖ ^ 2
                 + (ΛC * Dm) ^ 2 * ∑ l ∈ Finset.range (q + 1),

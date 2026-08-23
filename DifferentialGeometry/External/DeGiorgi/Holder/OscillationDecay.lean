@@ -9,7 +9,7 @@ Oscillation-decay machinery along dyadic balls for the Holder endpoint.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 
@@ -95,6 +95,7 @@ theorem moserLowerBound_le_decayAlpha
     (_hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) :
     Real.exp (-(C_holder_Moser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ moserDecayAlpha A := by
+  let _ := _hd
   unfold moserDecayAlpha
   refine Real.exp_le_exp.mpr ?_
   have hs_nonneg : 0 ≤ A.1.Λ ^ ((1 : ℝ) / 2) := by
@@ -151,6 +152,7 @@ theorem closedBall_subset_unitBall_of_mem_closedBall_half
     {c : E} (hc : c ∈ Metric.closedBall (0 : E) (1 / 2 : ℝ))
     {r : ℝ} (_hr_nonneg : 0 ≤ r) (hr_quarter : r ≤ (1 / 4 : ℝ)) :
     Metric.closedBall c r ⊆ Metric.ball (0 : E) 1 := by
+  let _ := _hr_nonneg
   intro x hx
   have hc' : dist c (0 : E) ≤ 1 / 2 := by
     simpa using hc
@@ -173,6 +175,7 @@ theorem ae_abs_le_moserHolderNorm_on_smallBall
     {r : ℝ} (_hr : 0 < r) (hrq : r ≤ (1 / 4 : ℝ)) :
     ∀ᵐ z ∂ ballMeasure c r,
       |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+  let _ := _hr
   have hquarter :
       ∀ᵐ z ∂ ballMeasure c (1 / 4 : ℝ),
         |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
@@ -487,6 +490,7 @@ theorem oscillation_decay_from_shifted_harnack
     (hlo : α * (S - m + δ) ≤ i - m + δ)
     (hhi : α * (M - i + δ) ≤ M - S + δ) :
     S - i ≤ (1 - α) * (M - m) + 2 * δ := by
+  let _ := _hα_le_one
   have hmain : (1 + α) * (S - i) ≤ (1 - α) * (M - m + 2 * δ) := by
     nlinarith
   have hmul : S - i ≤ (1 + α) * (S - i) := by

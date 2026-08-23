@@ -207,10 +207,9 @@ private lemma chartPushedRaw_pou_mul_hasCompactSupport_aux
     isClosed_closure h_tsupp_sub
 
 private lemma memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞}
     {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u)
+    (hu : MemWkpChart (I := I) (M := M) 1 p u)
     (α : M) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) p
       (chartPushedRaw (I := I) (M := M) α
@@ -218,7 +217,7 @@ private lemma memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
           : C^∞⟮I, M; ℝ⟯) x * u x))
       (chartNbhdM (I := I) (M := M) α) := by
   have h_target := memW1p_chartPushedRaw_pou_mul_of_memWkpChart
-    (I := I) (M := M) g hu α
+    (I := I) (M := M) hu α
   have hwT : DeGiorgi.MemW1pWitness (d := Module.finrank ℝ E) p
       (chartPushedRaw (I := I) (M := M) α
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -236,10 +235,9 @@ private lemma memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
 
 private lemma memW01p_chartPushedRaw_pou_mul_chartNbhdM_aux
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
+    (hu : MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) u)
     (α : M) :
     DeGiorgi.MemW01p (d := Module.finrank ℝ E) (ENNReal.ofReal p)
       (chartPushedRaw (I := I) (M := M) α
@@ -247,7 +245,7 @@ private lemma memW01p_chartPushedRaw_pou_mul_chartNbhdM_aux
           : C^∞⟮I, M; ℝ⟯) x * u x))
       (chartNbhdM (I := I) (M := M) α) := by
   have h_w1p := memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
-    (I := I) (M := M) g hu α
+    (I := I) (M := M) hu α
   have h_supp := chartPushedRaw_pou_mul_tsupport_subset_chartNbhdM
     (I := I) (M := M) α u
   have h_compact := chartPushedRaw_pou_mul_hasCompactSupport_aux
@@ -276,9 +274,9 @@ private lemma exists_chart_rellich_subseq_aux_M
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
-    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
+    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
     {R : ℝ}
-    (hu_bdd : ∀ n, wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n) ≤
+    (hu_bdd : ∀ n, wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n) ≤
       ENNReal.ofReal R)
     (α : M) (ψ : ℕ → ℕ) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧
@@ -304,7 +302,7 @@ private lemma exists_chart_rellich_subseq_aux_M
       (v n) (chartNbhdM (I := I) (M := M) α) := by
     intro n
     exact memW01p_chartPushedRaw_pou_mul_chartNbhdM_aux
-      (I := I) (M := M) g hp_one (hu_mem (ψ n)) α
+      (I := I) (M := M) hp_one (hu_mem (ψ n)) α
   have hv_bdd_fun : ∀ n, eLpNorm (v n) (ENNReal.ofReal p)
       ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
         (chartNbhdM (I := I) (M := M) α)) ≤ ENNReal.ofReal R := by
@@ -331,7 +329,8 @@ private lemma exists_chart_rellich_subseq_aux_M
         (I := I) (M := M) g (u (ψ n)) α
     rw [h_step2] at h_step1
     refine h_step1.trans ?_
-    exact (eLpNorm_chartPushed_le_wkpNormChart (I := I) (M := M) g (u (ψ n)) α).trans
+    exact (eLpNorm_chartPushed_le_wkpNormChart
+      (I := I) (M := M) (u (ψ n)) α).trans
       (hu_bdd (ψ n))
   have hv_bdd_grad : ∀ n,
       ∑ i : Fin (Module.finrank ℝ E),
@@ -551,9 +550,9 @@ private lemma exists_diagonal_chart_extraction_M
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
-    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
+    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
     {R : ℝ}
-    (hu_bdd : ∀ n, wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n) ≤
+    (hu_bdd : ∀ n, wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n) ≤
       ENNReal.ofReal R)
     (S : Finset M) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
@@ -597,8 +596,6 @@ end DifferentialGeometry
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Function
-open scoped Manifold ContDiff ENNReal NNReal
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -718,7 +715,7 @@ private lemma memLp_pou_mul_riemannianMeasure_aux
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
+    (hu : MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) u)
     (α : M) :
     MemLp (fun x : M =>
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -737,7 +734,7 @@ private lemma memLp_pou_mul_riemannianMeasure_aux
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) x * u x))
         (chartTargetEuclid (I := I) (M := M) α) :=
-    memW1p_chartPushedRaw_pou_mul_of_memWkpChart (I := I) (M := M) g hu α
+    memW1p_chartPushedRaw_pou_mul_of_memWkpChart (I := I) (M := M) hu α
   have h_raw_memLp :
       MemLp (chartPushedRaw (I := I) (M := M) α
           (fun x : M =>
@@ -893,10 +890,9 @@ private lemma eLpNorm_chartPushedRaw_diff_chartTarget_eq_chartNbhdM
 
 private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
-    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
+    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
     (α : M) {φ : ℕ → ℕ}
     {w_α : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
     (hw_α_aestrong : AEStronglyMeasurable w_α
@@ -933,14 +929,14 @@ private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
       ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
         (chartNbhdM (I := I) (M := M) α)) :=
     (memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
-      (I := I) (M := M) g (hu_mem (φ j)) α).1.1
+      (I := I) (M := M) (hu_mem (φ j)) α).1.1
   have h_chart_kraw_aestrong : AEStronglyMeasurable (chartPushedRaw (I := I) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u (φ k) x))
       ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
         (chartNbhdM (I := I) (M := M) α)) :=
     (memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
-      (I := I) (M := M) g (hu_mem (φ k)) α).1.1
+      (I := I) (M := M) (hu_mem (φ k)) α).1.1
   have h_triangle :
       eLpNorm
         (fun y => chartPushedRaw (I := I) (M := M) α
@@ -1035,7 +1031,7 @@ private lemma exists_riemannianMeasure_limit_pou_mul
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
     (hu_meas : ∀ n, Measurable (u n))
-    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
+    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
     (α : M) {φ : ℕ → ℕ}
     {w_α : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
     (hw_α_memLp : MemLp w_α (ENNReal.ofReal p)
@@ -1090,7 +1086,7 @@ private lemma exists_riemannianMeasure_limit_pou_mul
       set ε₀ : ℝ := ε / C
       have hε₀_pos : 0 < ε₀ := div_pos hε hC_pos
       rcases eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
-        (I := I) (M := M) g hp_one hu_mem α hw_α_memLp.1 h_tendsto ε₀ hε₀_pos with ⟨N, hN⟩
+        (I := I) (M := M) hp_one hu_mem α hw_α_memLp.1 h_tendsto ε₀ hε₀_pos with ⟨N, hN⟩
       refine ⟨N, fun j hj k hk => ?_⟩
       have h_chart_jk_NbhdM := hN j hj k hk
       have h_diff_eq_swap :
@@ -1193,9 +1189,9 @@ theorem rellich_kondrachov_chart_seq
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
     (hu_meas : ∀ n, Measurable (u n))
-    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
+    (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
     {R : ℝ}
-    (hu_bdd : ∀ n, wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n) ≤
+    (hu_bdd : ∀ n, wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n) ≤
       ENNReal.ofReal R) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
       ∃ u_lim : M → ℝ,

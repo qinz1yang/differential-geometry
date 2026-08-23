@@ -86,6 +86,7 @@ private lemma ofReal_sq_eq_enorm_sq (r : ℝ) :
   rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _), sq_abs]
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_α_pou_α_pou_β_raw_β_sq_le_chart_β_wkpNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α β : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

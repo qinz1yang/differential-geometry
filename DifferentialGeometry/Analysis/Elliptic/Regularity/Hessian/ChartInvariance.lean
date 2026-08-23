@@ -23,7 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
@@ -447,7 +446,7 @@ theorem chartHessFrobeniusPairOnChartAlpha_eq_polarization_of_smooth
         G i k * G j l * (Hf i j + Hf' i j) * (Hf k l + Hf' k l)) -
       (∑ i, ∑ j, ∑ k, ∑ l,
         G i k * G j l * (Hf i j - Hf' i j) * (Hf k l - Hf' k l)) := by
-    congr 1
+    refine congrArg₂ (fun a b : ℝ => a - b) ?_ ?_
     · refine Finset.sum_congr rfl ?_
       intro i _
       refine Finset.sum_congr rfl ?_

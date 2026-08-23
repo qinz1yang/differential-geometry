@@ -45,7 +45,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 section Unconditional
 
-open DifferentialGeometry.Analysis.Spectral
 
 def eigenvectorResolventChartWkpRegularity
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

@@ -883,7 +883,7 @@ theorem jacobi_diff_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     have hclamped : DifferentiableAt ℝ
         (chartRepAt (I := I) (fun v : ℝ => F 0 v) Vc t) t := by
       rw [hVcdef]
-      exact variationField_chartRep_differentiableAt (I := I) g F hFsmooth t
+      exact variationField_chartRep_differentiableAt (I := I) F hFsmooth t
     have hrep : chartRepAt (I := I) (fun v : ℝ => F 0 v) Vc t
         =ᶠ[𝓝 t] chartRepAt (I := I) γ J t :=
       chartRep_congr_curve (I := I) Vc J (hcentral_ev t htwin) (hJ_ev t htwin)

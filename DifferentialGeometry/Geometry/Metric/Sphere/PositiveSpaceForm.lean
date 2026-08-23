@@ -38,7 +38,7 @@ noncomputable def constPosQuotient
           (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
-    Σ data : RoundQuotientData.{0, u, u}
+    Σ data : RoundQuotientData.{0, u}
         (EuclideanSpace ℝ (Fin 4)) 3,
       M ≃ₘ⟮I, 𝓡 3⟯ data.Q := by
   classical
@@ -101,7 +101,7 @@ noncomputable def constPosQuotient
   have hd := Classical.choose_spec hcover
   let g₁ : SmoothRiemannianMetric (𝓡 3) S.Q :=
     DifferentialGeometry.scaleMetric (I := 𝓡 3) c hc gQ
-  let data : RoundQuotientData.{0, u, u}
+  let data : RoundQuotientData.{0, u}
       (EuclideanSpace ℝ (Fin 4)) 3 :=
     roundQuotientUC g₁ d (by simpa only [g₁] using hd)
   refine ⟨data, ?_⟩

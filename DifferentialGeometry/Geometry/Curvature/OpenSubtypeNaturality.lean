@@ -40,8 +40,7 @@ theorem SmoothRiemannianMetric.eq_of_inner_eq_gen
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [IsManifold I ∞ M]
     [SigmaCompactSpace M] in
 theorem extDerivFun_restrictOpen
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (f : M -> Real) (x : U) (v : TangentSpace I x)
+    (U : TopologicalSpace.Opens M) (f : M -> Real) (x : U) (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f (x : M)) :
     extDerivFun (I := I) (fun y : U => f (y : M)) x v =
       extDerivFun (I := I) f (x : M) v := by
@@ -63,8 +62,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [IsManifold I ∞ M
     [SigmaCompactSpace M] in
 @[simp]
 theorem restrictOpenTangentField_apply
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (Y : (p : M) -> TangentSpace I p) (x : U) :
+    (U : TopologicalSpace.Opens M) (Y : (p : M) -> TangentSpace I p) (x : U) :
     restrictOpenTangentField (I := I) U Y x = Y (x : M) := by
   unfold restrictOpenTangentField VectorField.mpullback
   have hval_inv : (mfderiv% (Subtype.val : U -> M) x).IsInvertible := by
@@ -78,8 +76,7 @@ theorem restrictOpenTangentField_apply
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem mdiffAt_restrictOpen_section
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (U : TopologicalSpace.Opens M) (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     MDiffAt (T% (restrictOpenTangentField (I := I) U (fun y : M => Y y))) x := by
   have hY : MDiffAt (T% (fun y : M => Y y)) (x : M) :=
@@ -102,8 +99,7 @@ theorem mdiffAt_restrictOpen_section
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem contMDiff_restrictOpen_section
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
+    (U : TopologicalSpace.Opens M) (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
     ContMDiff I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞)
       (T% (restrictOpenTangentField (I := I) U (fun y : M => Y y))) := by
   refine ContMDiff.mpullback_vectorField
@@ -118,8 +114,7 @@ theorem contMDiff_restrictOpen_section
   · simp
 
 noncomputable def restrictOpenTangentSection
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
+    (U : TopologicalSpace.Opens M) (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : U -> Type _) where
   toFun := restrictOpenTangentField (I := I) U (fun y : M => Y y)
   contMDiff_toFun := contMDiff_restrictOpen_section (I := I) U Y
@@ -127,16 +122,14 @@ noncomputable def restrictOpenTangentSection
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 @[simp]
 theorem restrictOpenTangentSection_apply
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (U : TopologicalSpace.Opens M) (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     restrictOpenTangentSection (I := I) U Y x = Y (x : M) := by
   simp [restrictOpenTangentSection]
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem mlieBracket_restrictOpen
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
-    (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (U : TopologicalSpace.Opens M) (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     restrictOpenTangentField (I := I) U
         (fun y : M => VectorField.mlieBracket I (fun z : M => X z) (fun z : M => Y z) y) x =
@@ -174,7 +167,7 @@ theorem mlieBracket_restrictOpen
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem directionalDeriv_restrictOpen_inner
     (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens M) [T2Space U]
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     directionalDerivAlong (I := I)
@@ -199,7 +192,7 @@ theorem directionalDeriv_restrictOpen_inner
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem koszulScalar_restrictOpen
     (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens M) [T2Space U]
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     koszulScalar (I := I) (g.restrictOpen (I := I) U)
@@ -220,7 +213,7 @@ theorem koszulScalar_restrictOpen
 omit [SigmaCompactSpace M] in
 theorem metricCov_restrictOpen_apply_section
     (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens M) [T2Space U]
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     (metricCov (I := I) (M := U) (g.restrictOpen (I := I) U)
@@ -273,7 +266,7 @@ theorem metricCov_restrictOpen_apply_section
 omit [SigmaCompactSpace M] in
 theorem metricCov_restrictOpen_globalSection
     (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens M) [T2Space U]
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) (v : TangentSpace I x) :
     (metricCov (I := I) (M := U) (g.restrictOpen (I := I) U)

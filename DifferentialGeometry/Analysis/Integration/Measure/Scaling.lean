@@ -69,7 +69,7 @@ theorem chartLocal_scale (c : Real) (hc : 0 < c)
   unfold chartLocalMeasure
   rw [hdensity, withDensity_smul' a _ ha, Measure.map_smul]
 
-theorem riemMeasure_scale [T2Space M] [SigmaCompactSpace M]
+theorem riemMeasure_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
     (rho : SmoothPartitionOfUnity M I M Set.univ) :
     riemannianMeasure (I := I) (scaleMetric (I := I) c hc g) rho =

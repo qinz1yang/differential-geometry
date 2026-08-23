@@ -51,7 +51,7 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
     cometricDoubleTraceFib (I := I) h 0 x D =
       cometricDoubleTraceFib (I := I) q 0 x
-        (slotExtendPointwise (I := I) (M := M) q 1 1 x
+        (slotExtendPointwise (I := I) (M := M) 1 1 x
           ((g0FlatCLM (I := I) q x).comp (inverseMetricSharpFib (I := I) h x)) D) := by
   classical
   apply Tensor0SSpace.toModel_injective
@@ -68,11 +68,11 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) q x
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel
-      (slotExtendPointwise (I := I) (M := M) q 1 1 x
+      (slotExtendPointwise (I := I) (M := M) 1 1 x
         ((g0FlatCLM (I := I) q x).comp (inverseMetricSharpFib (I := I) h x)) D)) mm]
   have hslot : ∀ a : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel
-          (slotExtendPointwise (I := I) (M := M) q 1 1 x
+          (slotExtendPointwise (I := I) (M := M) 1 1 x
             ((g0FlatCLM (I := I) q x).comp (inverseMetricSharpFib (I := I) h x)) D)
           (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E) mm)) =

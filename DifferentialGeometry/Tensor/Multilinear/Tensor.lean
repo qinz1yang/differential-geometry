@@ -606,6 +606,7 @@ theorem multilinearTensorFiberwiseEquiv_smooth
           TotalSpace ((MLF s) ⊗[𝕜] (MLF q))
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                        Bundle.continuousMultilinearMap 𝕜 q F E x))) := by
+  let _ := _hE
   letI := _hE
   haveI : ContMDiffVectorBundle n
       ((MLF s) ⊗[𝕜] (MLF q))
@@ -645,6 +646,7 @@ theorem multilinearTensorFiberwiseEquiv_symm_smooth
         (⟨p.1, (multilinearTensorFiberwiseEquiv s q p.1).symm p.2⟩ :
           TotalSpace (MLF (s + q))
             (fun x => Bundle.continuousMultilinearMap 𝕜 (s + q) F E x))) := by
+  let _ := _hE
   letI := _hE
   letI : NormedAddCommGroup ((MLF s) ⊗[𝕜] (MLF q)) :=
     Bundle.TensorProduct.instNormedAddCommGroup_tensor

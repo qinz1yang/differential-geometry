@@ -60,7 +60,7 @@ theorem chosenFChartDeriv_memW1p_of_base_memWkp22
   exact h_step
 
 omit [SigmaCompactSpace M] in
-theorem chosenFChartDeriv_memW1p_truly_unconditional
+theorem chosenFChartDeriv_memW1p
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
@@ -94,7 +94,7 @@ theorem chosenFChartDeriv_memW1p_of_base_f_chart_memWkp22
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁)
       (chartTargetEuclid (I := I) (M := M) α) :=
-  chosenFChartDeriv_memW1p_truly_unconditional (I := I) (M := M) g α hu_h l₁
+  chosenFChartDeriv_memW1p (I := I) (M := M) g α hu_h l₁
     h_base_f_chart_memWkp22
 
 end ChosenFChartDerivMemW1p

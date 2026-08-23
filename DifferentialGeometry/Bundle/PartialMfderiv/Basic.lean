@@ -81,7 +81,7 @@ theorem vderiv_mlieBracket
     [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [IsManifold I 1 M] [IsManifold I 2 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
@@ -285,13 +285,12 @@ theorem vderiv_mlieBracket
   rw [hYf_fd, hXf_fd]
   exact hmain
 
-
 theorem extDerivFun_apply_mlieBracket
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [IsManifold I 1 M] [IsManifold I 2 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
@@ -583,7 +582,7 @@ theorem extDerivFun_finset_sum_sum_mul_at
     (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)]
 
 theorem extDerivFun_apply_contMDiff
-    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -659,7 +658,7 @@ theorem extDerivFun_apply_contMDiff
     rw [hcancel]
 
 theorem extDerivFun_apply_contMDiffAt
-    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -960,5 +959,118 @@ theorem prodExtDerivAt_inf
   exact prodExtDerivAt_gen (m := (n : WithTop ℕ∞))
     (by exact_mod_cast le_top : ((n : WithTop ℕ∞)) ≤ ∞)
     (hF.of_le (by exact_mod_cast le_top : ((n : WithTop ℕ∞) + 1) ≤ ∞)) hX
+
+theorem prodExtDeriv_joint
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {J : Set Real} {u : Set M} (hu : IsOpen u)
+    {F : Real × M -> Real} {X : (x : M) -> TangentSpace I x}
+    {t : Real} {x : M} (ht : t ∈ J) (hx : x ∈ u)
+    (hF : ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
+      (∞ : WithTop ℕ∞) F (J ×ˢ u) (t, x))
+    (hX : ContMDiffAt I (I.prod 𝓘(Real, E))
+      (∞ : WithTop ℕ∞) (T% X) x) :
+    ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
+      (∞ : WithTop ℕ∞)
+      (fun p : Real × M =>
+        extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
+      (J ×ˢ u) (t, x) := by
+  let e := trivializationAt E (TangentSpace I : M -> Type _) x
+  let XcoordM : M -> E := fun y => e.continuousLinearMapAt Real y (X y)
+  let Xcoord : Real × M -> E := fun p => XcoordM p.2
+  have hXcoordM :
+      ContMDiffAt I 𝓘(Real, E) (∞ : WithTop ℕ∞) XcoordM x := by
+    have hXTop :
+        ContMDiffAt I 𝓘(Real, E) (∞ : WithTop ℕ∞)
+          (fun y : M => (e ⟨y, X y⟩).2) x := by
+      simpa [e] using
+        (e.contMDiffAt_section_iff
+          (s := fun y : M => X y)
+          (x₀ := x)
+          (by
+            simp [e])).mp hX
+    refine hXTop.congr_of_eventuallyEq ?_
+    filter_upwards [e.open_baseSet.mem_nhds (by
+        simp [e])] with y hy
+    have hcoe : ⇑(e.linearMapAt Real y) = fun z => (e ⟨y, z⟩).2 :=
+      e.coe_linearMapAt_of_mem (R := Real) hy
+    simp [XcoordM, Bundle.Trivialization.continuousLinearMapAt_apply, hcoe]
+  have hXcoord :
+      ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, E)
+        (∞ : WithTop ℕ∞) Xcoord (J ×ˢ u) (t, x) := by
+    exact (hXcoordM.comp (t, x)
+      (contMDiffAt_snd (I := 𝓘(Real, Real)) (J := I)
+        (p := (t, x)))).contMDiffWithinAt
+  have harg :
+      ContMDiffWithinAt ((𝓘(Real, Real).prod I).prod I)
+        (𝓘(Real, Real).prod I) (∞ : WithTop ℕ∞)
+        (fun q : (Real × M) × M => (q.1.1, q.2))
+        ((J ×ˢ u) ×ˢ u) ((t, x), x) := by
+    exact (contMDiffWithinAt_fst.fst).prodMk contMDiffWithinAt_snd
+  have hmaps :
+      Set.MapsTo (fun q : (Real × M) × M => (q.1.1, q.2))
+        ((J ×ˢ u) ×ˢ u) (J ×ˢ u) := by
+    intro q hq
+    exact ⟨hq.1.1, hq.2⟩
+  have hFprod :
+      ContMDiffWithinAt ((𝓘(Real, Real).prod I).prod I) 𝓘(Real, Real)
+        (∞ : WithTop ℕ∞)
+        (fun q : (Real × M) × M => F (q.1.1, q.2))
+        ((J ×ˢ u) ×ˢ u) ((t, x), x) :=
+    hF.comp ((t, x), x) harg hmaps
+  have hApply :=
+    ContMDiffWithinAt.mfderivWithin_apply
+      (I := I) (I' := 𝓘(Real, Real))
+      (f := fun (p : Real × M) (y : M) => F (p.1, y))
+      (g := fun p : Real × M => p.2)
+      (g₁ := fun p : Real × M => p)
+      (g₂ := Xcoord)
+      (t := J ×ˢ u) (u := u) (v := J ×ˢ u)
+      (x₀ := (t, x))
+      (n := (∞ : WithTop ℕ∞)) (m := (∞ : WithTop ℕ∞))
+      hFprod contMDiffWithinAt_snd contMDiffWithinAt_id hXcoord
+      (by simp) (Set.mapsTo_id _) ⟨ht, hx⟩
+      (fun q hq => hq.2) hu.uniqueMDiffOn
+  apply hApply.congr_of_eventuallyEq_of_mem
+  · have hbase :
+        {p : Real × M | p.2 ∈ e.baseSet} ∈ 𝓝 (t, x) := by
+      exact (continuous_snd.tendsto (t, x)).eventually
+        (e.open_baseSet.mem_nhds (by simp [e]))
+    filter_upwards [Filter.mem_inf_of_left hbase, self_mem_nhdsWithin] with p hp hpJu
+    have hp_src : p.2 ∈ (chartAt H x).source := by
+      simpa [e, TangentBundle.trivializationAt_baseSet] using hp
+    have hf_src : F (p.1, p.2) ∈
+        (chartAt Real (F (t, x))).source := by
+      simp
+    rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
+      (f := fun p : Real × M => p.2)
+      (g := fun p : Real × M => F (p.1, p.2))
+      (ϕ := fun p : Real × M =>
+        mfderivWithin I 𝓘(Real, Real) (fun y : M => F (p.1, y)) u p.2)
+      hp_src hf_src]
+    rw [mfderivWithin_of_isOpen hu hpJu.2]
+    have htarget :
+        (tangentBundleCore 𝓘(Real, Real) Real).coordChange
+          (achart Real (F (p.1, p.2))) (achart Real (F (t, x)))
+            (F (p.1, p.2)) = (1 : Real →L[Real] Real) := by
+      simp
+    have hsource :
+        (tangentBundleCore I M).coordChange
+            (achart H x) (achart H p.2) p.2 =
+          e.symmL Real p.2 := by
+      simpa [e] using
+        (TangentBundle.symmL_trivializationAt_eq_core
+          (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+    have hcancel :
+        e.symmL Real p.2 (Xcoord p) = X p.2 := by
+      exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)
+    rw [htarget, hsource]
+    change
+      (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2) (X p.2) =
+        (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)
+          (e.symmL Real p.2 (Xcoord p))
+    rw [hcancel]
+  · exact ⟨ht, hx⟩
 
 end DifferentialGeometry

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureTensor
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Tensor.RicciIdentity.OneForm
 import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Realization
 import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Formula
@@ -89,10 +89,12 @@ theorem tensor0SSpace_sum_apply {ι : Type*} [Fintype ι] {s : ℕ}
           ∑ i ∈ S, (T i : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v
       rw [Tensor0SSpace.add_apply, ih]
 
+omit [DecidableEq Idx] in
 private theorem basisTensor0S_empty_eq_scalarOne
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (slots : Fin 0 -> Idx) :
     basisTensor0S (I := I) basis slots = scalarOne0S (I := I) x := by
+  classical
   ext v
   have hv : v = Fin.elim0 := Subsingleton.elim _ _
   rw [hv]
@@ -103,6 +105,7 @@ private theorem basisTensor0S_empty_eq_scalarOne
   rw [harg] at hcomp
   simpa [scalarOne0S] using hcomp
 
+omit [DecidableEq Idx] in
 theorem ricciCompAt_eq_contractTrace
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm13 : Tensor13At (I := I) (M := M) x) (i j : Idx) :

@@ -25,7 +25,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 
 abbrev CoordinateIdx (E : Type*) [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-    [FiniteDimensional 𝕜 E] :=
+    [hfinite : FiniteDimensional 𝕜 E] :=
+  let _ := hfinite
   Fin (Module.finrank 𝕜 E)
 
 structure LocalChartAt (x₀ : M) where
@@ -274,7 +275,8 @@ theorem defaultFrame_frame (x₀ : M) :
 end LocalChartAt
 
 
-def coordinateFrameAt_isLocalFrame_one (x₀ : M) :
+omit [CompleteSpace 𝕜] in
+lemma coordinateFrameAt_isLocalFrame_one (x₀ : M) :
     IsLocalFrameOn I E (1 : WithTop ℕ∞)
       (coordinateFrameAt (I := I) x₀) (coordinateFrameSet (I := I) x₀) :=
   (coordinateTrivializationAt (I := I) x₀).isLocalFrameOn_localFrame_baseSet

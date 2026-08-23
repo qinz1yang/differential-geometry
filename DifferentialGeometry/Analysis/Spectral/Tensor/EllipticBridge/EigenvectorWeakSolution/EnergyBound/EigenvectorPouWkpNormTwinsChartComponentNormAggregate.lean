@@ -37,7 +37,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 lemma eigenvectorVec_pou_memWkp_and_wkpNorm_le

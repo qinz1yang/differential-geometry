@@ -162,13 +162,12 @@ private lemma g_norm_const_smul
   rw [show c * (c * g.inner x v v) = c ^ 2 * g.inner x v v from by ring]
   rw [Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq_eq_abs]
 
-abbrev H1Bundle [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+abbrev H1Bundle [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) : Type _ :=
   WithLp 2 ((Lp ℝ 2 (riemannianVolumeMeasure I M g)) ×
     (Lp E 2 (riemannianVolumeMeasure I M g)))
 
-def IsH1Pair [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
+def IsH1Pair [T2Space M] [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (u : Lp ℝ 2 (riemannianVolumeMeasure I M g))
     (G : Lp E 2 (riemannianVolumeMeasure I M g)) : Prop :=
   HasWeakRiemannianGradLp (I := I) (M := M) g

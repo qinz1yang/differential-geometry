@@ -64,7 +64,7 @@ theorem covGrad_normalFormFull_sum (g : SmoothRiemannianMetric I M) (r d p rr : 
             (homTensorRSCovGradSec (I := I) (M := M) g r (rr + k) (rr + d + p) (Q k))
             (iteratedCovGrad g r rr k W) +
           homTensorRSFieldApply (I := I) (M := M) g r (rr + (k + 1)) (rr + d + (p + 1))
-            (slotExtendFullSec (I := I) (M := M) g r (rr + k) (rr + d + p) (Q k))
+            (slotExtendFullSec (I := I) (M := M) r (rr + k) (rr + d + p) (Q k))
             (iteratedCovGrad g r rr (k + 1) W)) := by
   rw [covGrad_finset_sum]
   refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -90,13 +90,13 @@ theorem castRankCc_appFullSec_iteratedCovGrad_covGrad (g : SmoothRiemannianMetri
           (castHomTensorRSFieldTgt (E := E) (M := M) r ((rr + 1) + k)
             (by omega : (rr + 1) + d + p = rr + d + (p + 1)) Q))
         (iteratedCovGrad g r rr (k + 1) W) := by
-  rw [appFullSec_castRankCc_db (E := E) g r (by omega : (rr + 1) + k = rr + (k + 1))
+  rw [homTensorRSFieldApply_castCcTensorRank (E := E) g r (by omega : (rr + 1) + k = rr + (k + 1))
     (by omega : (rr + 1) + d + p = rr + d + (p + 1)) Q
     (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))]
   congr 1
   apply eq_of_heq
   refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq' g r rr k W)
-  exact castRankCc_db_heq g r (by omega : (rr + 1) + k = rr + (k + 1))
+  exact castCcTensorRank_heq g r (by omega : (rr + 1) + k = rr + (k + 1))
     (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))
 
 
@@ -115,7 +115,7 @@ theorem normalFormFull_succ (g : SmoothRiemannianMetric I M) (r d : ℕ)
   obtain ⟨Qr1, hQr1⟩ := hp (rr + 1)
   set Tk : (k : ℕ) → HomTensorRSField (E := E) (M := M) r (rr + (k + 1)) (rr + d + (p + 1)) I := fun
     k =>
-    slotExtendFullSec (I := I) (M := M) g r (rr + k) (rr + d + p) (Qr k) -
+    slotExtendFullSec (I := I) (M := M) r (rr + k) (rr + d + p) (Qr k) -
       castHomTensorRSFieldSrc (E := E) (M := M) r (rr + d + (p + 1))
         (by omega : (rr + 1) + k = rr + (k + 1))
         (castHomTensorRSFieldTgt (E := E) (M := M) r ((rr + 1) + k)
@@ -135,7 +135,7 @@ theorem normalFormFull_succ (g : SmoothRiemannianMetric I M) (r d : ℕ)
     rw [covGrad_op p rr W]; abel
   rw [hrec, hQr W]
   rw [covGrad_normalFormFull_sum (I := I) (M := M) g r d p rr Qr W]
-  rw [hQr1 (covGrad g r rr W), castRankCc_db_finset_sum]
+  rw [hQr1 (covGrad g r rr W), castCcTensorRank_finset_sum]
   rw [show (∑ k ∈ Finset.range (p + 1),
         castCcTensorRank g r (by omega : (rr + 1) + d + p = rr + d + (p + 1))
           (homTensorRSFieldApply (I := I) (M := M) g r ((rr + 1) + k) ((rr + 1) + d + p) (Qr1 k)
@@ -183,7 +183,7 @@ theorem normalFormFull_succ (g : SmoothRiemannianMetric I M) (r d : ℕ)
           (iteratedCovGrad g r rr (k + 1) W)) =
       (∑ k ∈ Finset.range (p + 1),
         homTensorRSFieldApply (I := I) (M := M) g r (rr + (k + 1)) (rr + d + (p + 1))
-          (slotExtendFullSec (I := I) (M := M) g r (rr + k) (rr + d + p) (Qr k))
+          (slotExtendFullSec (I := I) (M := M) r (rr + k) (rr + d + p) (Qr k))
           (iteratedCovGrad g r rr (k + 1) W)) -
       (∑ k ∈ Finset.range (p + 1),
         homTensorRSFieldApply (I := I) (M := M) g r (rr + (k + 1)) (rr + d + (p + 1))

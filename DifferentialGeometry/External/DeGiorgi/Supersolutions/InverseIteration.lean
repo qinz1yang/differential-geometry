@@ -10,7 +10,7 @@ stage-one closeout for positive supersolutions.
 
 noncomputable section
 
-open MeasureTheory Metric
+open MeasureTheory
 
 namespace DeGiorgi
 

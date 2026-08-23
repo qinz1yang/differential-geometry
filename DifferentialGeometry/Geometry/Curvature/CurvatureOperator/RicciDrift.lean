@@ -21,7 +21,6 @@ namespace DifferentialGeometry.Geometry.Curvature
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff BigOperators
 
 universe u uE uH
@@ -187,6 +186,9 @@ private theorem div_ricGrad [I.Boundaryless] [SigmaCompactSpace M]
   let nRic0 := totalNabla0SFun (I := I) 2 cov Ric x
   let dR := differential1FormFun (I := I)
     (fun y : M => metricScalarAt (I := I) (M := M) g y) x
+  have hNablaSymm : NablaRicSymmAt (I := I) nRic0 := by
+    simpa [nRic0, cov, Ric, metricCov, metricRicci] using
+      (metricNablaSymm (I := I) (M := M) g x)
   have hpack :
       ∃ nablaRm04 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 5 x,
@@ -195,17 +197,15 @@ private theorem div_ricGrad [I.Boundaryless] [SigmaCompactSpace M]
             NablaRicTraceAt (I := I) basis delta nablaRm04 nRic0 ∧
               DScalarTraceAt (I := I) basis delta nRic0 dR := by
     simpa [cov, Ric, nRic0, dR, metricCov, metricRicci, metricScalarAt] using
-      (metricBianchiAt (I := I) (M := M) g basis delta hinv)
+      (exists_levi_civita_bianchi_trace_data (I := I) (M := M) g basis delta hinv)
   obtain ⟨nablaRm04, hsecond, hRmSymm, hRicTrace, hScalar⟩ := hpack
-  have hNablaSymm : NablaRicSymmAt (I := I) nRic0 := by
-    simpa [nRic0, cov, Ric] using metricNablaSymm (I := I) (M := M) g x
   have hInv : ∀ i j, delta i j = delta j i := by
     intro i j
     simp [delta, eq_comm]
   have hcontract :
       ContractedBianchiOfSecondAt (I := I) basis delta nablaRm04 nRic0 dR :=
     contractOfSecond (I := I) basis delta nablaRm04 nRic0 dR
-      hRmSymm hRicTrace hScalar hNablaSymm hInv
+      hRmSymm hRicTrace hScalar hInv
   have hBianchi : ContractedBianchiAt (I := I) basis delta nRic0 dR :=
     contracted_bianchi_of_second (I := I) basis delta nablaRm04 nRic0 dR
       hcontract hsecond

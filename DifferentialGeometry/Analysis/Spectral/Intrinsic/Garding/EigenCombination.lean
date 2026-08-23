@@ -68,7 +68,8 @@ theorem finiteEigenCombo_contMDiff
           ((finiteEigenCombo (I := I) (M := M) g F c).toSection x)) :=
   (finiteEigenCombo (I := I) (M := M) g F c).toSection.contMDiff
 
-abbrev hCompact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 2) :=
+omit [BoundarylessManifold I M] in
+lemma hCompact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 2) :=
   tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2
 
 omit [BoundarylessManifold I M] in

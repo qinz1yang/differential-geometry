@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueClmSectionJointSmoothness
@@ -24,7 +24,6 @@ namespace PDE
 namespace DeTurck
 namespace RicciLinearization
 
-open DifferentialGeometry
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -217,9 +216,6 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
   have hL : L.comp Linv = ContinuousLinearMap.id ℝ E := by
     ext y
     exact (trivializationAt E (TangentSpace I) x₀).symmL_continuousLinearMapAt (R := ℝ) hx y
-  have hR : Linv.comp L = ContinuousLinearMap.id ℝ E := by
-    ext y
-    exact (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt_symmL (R := ℝ) hx y
   have h_cLMAt : ∀ (k : ℕ) (U : Tensor0SBundle.Tensor0SSpace k I z) (v : Fin k → E),
       (trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
         (fun y : M => Tensor0SBundle.Tensor0SSpace k I y) x₀).continuousLinearMapAt ℝ z U v =
@@ -316,7 +312,7 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
     rw [hβ2]
   rw [h_input, h_output]
   exact (Tensor0SBundle.model_contract_trace_naturality (𝕜 := ℝ) (E := E)
-    r s L Linv hL hR Tx).symm
+    r s L Linv hL Tx).symm
 
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
@@ -803,7 +799,6 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
-    (g : SmoothRiemannianMetric I M)
     (Λ : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
     (hΛ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] E)
@@ -858,8 +853,8 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
   refine huncurry.congr (fun p _ => ?_)
   congr 1
   rw [show (1 : Fin (d + 2)) = (0 : Fin (d + 1)).succ from rfl,
-    slotInsertEndoFib_succ (I := I) (M := M) g (d + 1) 0 p.1 (Λ p),
-    slotExtendFib_apply (I := I) (M := M) g (d + 1) (d + 1) p.1]
+    slotInsertEndoFib_succ (I := I) (M := M) (d + 1) 0 p.1 (Λ p),
+    slotExtendFib_apply (I := I) (M := M) (d + 1) (d + 1) p.1]
 
 end RicciLinearization
 end DeTurck

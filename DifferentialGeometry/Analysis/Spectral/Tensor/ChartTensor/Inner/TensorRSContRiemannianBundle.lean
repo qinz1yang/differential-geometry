@@ -359,8 +359,6 @@ namespace DifferentialGeometry.Tensor.TensorRSRiemannianBundleContinuous
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set IsManifold ContinuousLinearMap
-open scoped Manifold Topology Bundle ContDiff BigOperators
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -383,7 +381,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 @[reducible] def tensorRSSpace_fiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (TensorRSSpace r s I (M := M)) :=
   Tensor0SBundle.tensorRSBundle_fiber r s
-@[reducible] def tensorRSSpace_vectorBundle (r s : ℕ) :
+lemma tensorRSSpace_vectorBundle (r s : ℕ) :
     VectorBundle ℝ (TensorRSModel r s ℝ E) (TensorRSSpace r s I (M := M)) :=
   Tensor0SBundle.tensorRSBundle_vector r s
 

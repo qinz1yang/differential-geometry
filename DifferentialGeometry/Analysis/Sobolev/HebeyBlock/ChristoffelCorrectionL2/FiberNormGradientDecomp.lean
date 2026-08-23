@@ -20,7 +20,6 @@ namespace HebeyBlock
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -106,7 +105,7 @@ theorem g_inner_gradFun_le_pou_weighted_fiber_norm_atoms_on_pouTsupport_h1
         (chartAt H α).source :=
     chartAtlasPOU_tsupport_subset_chartSource (I := I) (M := M) α
   obtain ⟨Cop, hCop_pos, hCop_bound⟩ :=
-    tensorRSChartFiberToModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK_cpt hK_sub
   set A : ℝ := A₀ with hA_def
   set B : ℝ := B₀ * Cop ^ 2 with hB_def

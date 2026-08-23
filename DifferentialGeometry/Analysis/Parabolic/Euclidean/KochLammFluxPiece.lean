@@ -32,14 +32,14 @@ theorem klFluxTailKern {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
   have hkint : Integrable
       (fun z : ℝ × V ↦ ‖klFluxKernel (R ^ 2) w x z‖ ^ p) μ := by
     have hmLp :=
-      (klFluxKernel_memLp (V := V) (sq_pos_of_pos hR) w x).mono_measure hμ
+      (klFluxKernel_memLp (V := V) (t := R ^ 2) w x).mono_measure hμ
     have hm := hmLp.integrable_norm_rpow
       (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     simpa only [p, ENNReal.toReal_ofReal hp.le] using hm
   have hmint : Integrable
       (fun z : ℝ × V ↦ (‖w‖ * klFluxMajor (R ^ 2) x z) ^ p) μ := by
     have hmLp0 :=
-      (klFluxMajor_memLp (V := V) (sq_pos_of_pos hR) x).mono_measure hμ
+      (klFluxMajor_memLp (V := V) (t := R ^ 2) x).mono_measure hμ
     have hmLp := hmLp0.const_mul ‖w‖
     have hm := hmLp.integrable_norm_rpow
         (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
@@ -53,7 +53,7 @@ theorem klFluxTailKern {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     have hae : ∀ᵐ z ∂μ,
         ‖klFluxKernel (R ^ 2) w x z‖ ≤
           ‖w‖ * klFluxMajor (R ^ 2) x z :=
-      ae_mono hμ (klFluxKernel_ae (V := V) (sq_pos_of_pos hR) w x)
+      ae_mono hμ (klFluxKernel_ae (V := V) w x)
     filter_upwards [hae] with z hz
     exact Real.rpow_le_rpow (norm_nonneg _) hz hp.le
   have hmass :
@@ -152,7 +152,7 @@ theorem klFluxPiece_hold {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   let μ := klTailMeasure (V := V) R S
   have hk : MemLp (klFluxKernel (R ^ 2) w x)
       (ENNReal.ofReal (klPDual V)) μ :=
-    (klFluxKernel_memLp (V := V) (sq_pos_of_pos hR) w x).mono_measure
+    (klFluxKernel_memLp (V := V) (t := R ^ 2) w x).mono_measure
       (klTailTerm_le (V := V) R S)
   have hf : MemLp f (ENNReal.ofReal (klPReal V)) μ := by
     simpa only [klPReal_ofReal] using

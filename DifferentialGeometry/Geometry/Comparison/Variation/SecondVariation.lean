@@ -124,7 +124,7 @@ lemma continuousOn_g_inner_along_curve
   intro t _ht
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannOp_along_curve_continuousOn
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ}
     {v w z : ∀ t : ℝ, TangentSpace I (γ t)}
@@ -145,6 +145,7 @@ theorem riemannOp_along_curve_continuousOn
     (I := I) g).comp_continuousOn hγ).clm_bundle_apply hv).clm_bundle_apply
       hw).clm_bundle_apply hz
 
+omit [SigmaCompactSpace M] in
 theorem second_variation_of_arcLength_eq_indexForm
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (f : ℝ → ℝ → M) (L : ℝ)
     (V : ℝ → E)
@@ -404,13 +405,13 @@ theorem second_variation_of_arcLength_eq_indexForm
     have hVsec_eq : ∀ t : ℝ, Vsec t = V t := fun t => (hVeq t).symm
     have hVdiff : ∀ t₀ : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) γ Vsec t₀) t₀ := by
       intro t₀
-      have h := variationField_chartRep_differentiableAt (I := I) g f hf t₀
+      have h := variationField_chartRep_differentiableAt (I := I) f hf t₀
       have hfun : (fun v : ℝ => f 0 v) = γ := hfγ
       rw [show (fun v : ℝ => f 0 v) = γ from hfγ] at h
       exact h
     have hγ'diff : ∀ t₀ : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) γ γ' t₀) t₀ := by
       intro t₀
-      have h := velocityField_chartRep_differentiableAt (I := I) g f hf t₀
+      have h := velocityField_chartRep_differentiableAt (I := I) f hf t₀
       rw [show (fun v : ℝ => f 0 v) = γ from hfγ] at h
       exact h
     have hgeo0 : ∀ t ∈ Set.Icc (0 : ℝ) L, covDerivAlong (I := I) g γ γ' t = 0 := by
@@ -576,7 +577,7 @@ theorem second_variation_of_arcLength_eq_indexForm
         exact (hf : ContMDiff _ _ _ _).comp hincl
       have hc0 : c 0 = γ t := by rw [hc]; exact hfc t
       have hvelTdiff : DifferentiableAt ℝ (chartRepAt (I := I) c velTsec 0) 0 := by
-        have := slice_longitudinalField_transverse_chartRep_differentiableAt (I := I) g f hf t
+        have := slice_longitudinalField_transverse_chartRep_differentiableAt (I := I) f hf t
         exact this
       have hWdiff : DifferentiableAt ℝ (chartRepAt (I := I) c Wsec 0) 0 :=
         slice_secondCovDeriv_chartRep_differentiableAt (I := I) g f hf t
@@ -936,15 +937,10 @@ theorem second_variation_of_arcLength_eq_indexForm
   exact hg₁_deriv.congr_of_eventuallyEq
     (Filter.eventuallyEq_of_mem hmem (fun s hs => hderiv_eq s hs))
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem indexFormIntegrand_intervalIntegrable
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (L : ℝ) (_hL : 0 < L)
     (_hγ_C1 : ContMDiffOn (𝓘(ℝ, ℝ)) I 1 γ (Set.Icc 0 L))
-    (_hγ_geoOn : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
-    (_hγ_unit : ∀ t ∈ Set.Icc (0 : ℝ) L,
-      g.inner (γ t)
-          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
-          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1)
     (e : Fin (Module.finrank ℝ E - 1) → SectionAlongCurve I M γ)
     (_heDiff : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
       DifferentiableAt ℝ
@@ -953,10 +949,7 @@ theorem indexFormIntegrand_intervalIntegrable
     (_hParallel : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
       DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
         (I := I) g γ (e i).toFun t = 0)
-    (_hON : ∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i j,
-      g.inner (γ t) ((e i).toFun t) ((e j).toFun t) = if i = j then 1 else 0)
-    (_hPerp : ∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i,
-      g.inner (γ t) ((e i).toFun t) (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 0) :
+    :
     ∀ i : Fin (Module.finrank ℝ E - 1),
       IntervalIntegrable
         (fun t : ℝ => indexFormIntegrand (I := I) g γ

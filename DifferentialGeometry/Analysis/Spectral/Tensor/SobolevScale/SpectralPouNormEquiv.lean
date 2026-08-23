@@ -188,7 +188,7 @@ theorem rawConnLapIter_l2_le_ccSpectralEmbed_even
           (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (2 * j) :=
         pow_le_pow_left₀ hbase_nn hbase_le (2 * j)
       exact mul_le_mul_of_nonneg_right hpow_le (sq_nonneg c)
-    · exact tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) h_compact
+    · exact tensorL2Coeff_summable_sq (I := I) (M := M) h_compact
         (SmoothCcTensor.toL2 (rawTensorConnLapIter (I := I) g 0 2 j T))
     · exact (ccSpectralEmbed (I := I) (M := M) g ((2 * j : ℕ) : ℝ) T).weighted_summable
   exact le_of_sq_le_sq hsq hnn

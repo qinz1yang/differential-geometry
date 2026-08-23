@@ -155,7 +155,7 @@ theorem perpCurvOp_apply
 set_option backward.isDefEq.respectTransparency false in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem perpCurv_smooth
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)

@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalLimit
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalLimitGeneral
 
@@ -656,7 +655,7 @@ noncomputable def smoothMulH1Compl
       SmoothScalar g →L[ℝ] H1Compl g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem smoothMulH1Compl_smoothToH1Compl
+theorem smoothMulH1Compl_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     smoothMulH1Compl (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) =
@@ -745,7 +744,6 @@ noncomputable def smoothLaplacianBundle
   ⟨Δ_g (I := I) g φ,
     Δ_g_contMDiff (I := I) g φ⟩
 
-set_option linter.unusedSectionVars false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 @[simp] lemma smoothLaplacianBundle_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (x : M) :

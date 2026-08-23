@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
@@ -287,6 +286,7 @@ noncomputable def cutoffHessianV
   chartCutoffα (I := I) (M := M) α y *
     chartHessianVOnEuclid (I := I) (M := M) g α v k l y
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma cutoffHessianV_def
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     (k l : Fin (Module.finrank ℝ E)) (y : EuclN) :
@@ -300,6 +300,7 @@ noncomputable def cutoffHessianPhiPub
   chartCutoffα (I := I) (M := M) α y *
     chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma cutoffHessianPhiPub_def
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
@@ -307,6 +308,7 @@ noncomputable def cutoffHessianPhiPub
       chartCutoffα (I := I) (M := M) α y *
         chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y := rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianV_continuous
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     (k l : Fin (Module.finrank ℝ E)) :
@@ -347,6 +349,7 @@ theorem cutoffHessianV_continuous
       exact h_zero_off z hz
     exact (continuousAt_const (y := (0 : ℝ))).congr h_eventually_zero.symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianPhiPub_continuous
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -387,6 +390,7 @@ theorem cutoffHessianPhiPub_continuous
       exact h_zero_off z hz
     exact (continuousAt_const (y := (0 : ℝ))).congr h_eventually_zero.symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianV_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     (k l : Fin (Module.finrank ℝ E)) :
@@ -404,6 +408,7 @@ theorem cutoffHessianV_hasCompactSupport
   unfold cutoffHessianV
   rw [hη_zero, zero_mul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianPhiPub_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -421,6 +426,7 @@ theorem cutoffHessianPhiPub_hasCompactSupport
   unfold cutoffHessianPhiPub
   rw [hη_zero, zero_mul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianV_bounded
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     (k l : Fin (Module.finrank ℝ E)) :
@@ -473,6 +479,7 @@ noncomputable def cutoffSmoothTensorPairingChart
             cutoffHessianPhiPub (I := I) (M := M) g α φ i j y *
             cutoffHessianV (I := I) (M := M) g α v k l y
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma cutoffSmoothTensorPairingChart_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (y : EuclN) :
@@ -486,6 +493,7 @@ noncomputable def cutoffSmoothTensorPairingChart
                 cutoffHessianPhiPub (I := I) (M := M) g α φ i j y *
                 cutoffHessianV (I := I) (M := M) g α v k l y := rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffSmoothTensorPairingChart_continuous
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -510,6 +518,7 @@ theorem cutoffSmoothTensorPairingChart_continuous
     cutoffHessianV_continuous (I := I) (M := M) g α v k l
   exact (((h_G_ik.mul h_G_jl).mul h_Hphi).mul h_Hv)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffSmoothTensorPairingChart_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -538,6 +547,7 @@ theorem cutoffSmoothTensorPairingChart_hasCompactSupport
     rw [hη_zero, zero_mul]
   rw [h_Hv_zero, mul_zero]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffSmoothTensorPairingChart_memLp_two
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -550,6 +560,7 @@ theorem cutoffSmoothTensorPairingChart_memLp_two
     cutoffSmoothTensorPairingChart_hasCompactSupport (I := I) (M := M) g α φ v
   exact h_cont.memLp_of_hasCompactSupport h_supp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianV_eq_chartHessianVOnEuclid_on_kernel
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     (k l : Fin (Module.finrank ℝ E))
@@ -562,6 +573,7 @@ theorem cutoffHessianV_eq_chartHessianVOnEuclid_on_kernel
   unfold cutoffHessianV
   rw [hη_one, one_mul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianPhiPub_eq_chartHessianPhiOnEuclid_on_kernel
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E))
@@ -574,6 +586,7 @@ theorem cutoffHessianPhiPub_eq_chartHessianPhiOnEuclid_on_kernel
   unfold cutoffHessianPhiPub
   rw [hη_one, one_mul]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffSmoothTensorPairingChart_eq_on_kernel
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)

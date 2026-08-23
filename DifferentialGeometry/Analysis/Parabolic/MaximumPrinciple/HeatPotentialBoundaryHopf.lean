@@ -24,8 +24,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 theorem heat_pot_hopf_boundary_point_of_subsolution_barrier
-    [CompleteSpace E] [CompactSpace M] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [CompactSpace M] [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {D : RealTimeInterval} {V u v : Real → M → Real}
     (hu : IsHeatPotSupersolutionOn D G V u)
@@ -98,8 +97,7 @@ theorem heat_pot_hopf_boundary_point_of_subsolution_barrier
     hv_inward hmin
 
 theorem heat_hopf_boundary_point_of_subsolution_barrier
-    [CompleteSpace E] [CompactSpace M] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [CompactSpace M] [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {D : RealTimeInterval} {u v : Real → M → Real}
     (hu : IsHeatSupersolutionOn D G u)

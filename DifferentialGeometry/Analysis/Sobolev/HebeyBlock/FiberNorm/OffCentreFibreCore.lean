@@ -56,7 +56,7 @@ theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₀, hC₀_pos, hC₀_bound⟩ :=
-    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact_unconditional
+    tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK hKsub
   set B : ℝ :=
     midxPairCard (E := E) r s *

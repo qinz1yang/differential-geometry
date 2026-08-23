@@ -500,6 +500,41 @@ theorem grad_branchEnergy
     simpa only [q] using hgauss
   exact hgauss'.symm.trans hpair
 
+theorem branchRadius_diff
+    {g : SmoothRiemannianMetric I M}
+    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {p : M}
+    (B : ExpInvBranch (I := I) g hEnorm p)
+    {u : TangentSpace I p}
+    (hu : (u : E) ∈ B.hom.source)
+    (hu_pos : 0 < g.inner p u u) :
+    MDifferentiableAt I 𝓘(Real, Real)
+      (branchRadius (I := I) g B)
+      (expMapIntrinsic (I := I) g hEnorm p u) := by
+  let q : M := expMapIntrinsic (I := I) g hEnorm p u
+  let e : M → Real := branchEnergy (I := I) g B
+  let e2 : M → Real := (2 : Real) • e
+  have hq : q ∈ B.dom := by
+    rw [show q = B.hom (u : E) from B.hom_eq hu]
+    exact B.hom.map_source hu
+  have he_diff : MDifferentiableAt I 𝓘(Real, Real) e q :=
+    (branchEnergy_deriv (I := I) B hq).mdifferentiableAt
+  have he2_diff : MDifferentiableAt I 𝓘(Real, Real) e2 q :=
+    he_diff.const_smul 2
+  have he2_val : e2 q = g.inner p u u := by
+    simp only [e2, e, Pi.smul_apply, smul_eq_mul, q,
+      branchEnergy_exp (I := I) B hu]
+    ring
+  have hsqrt : DifferentiableAt Real Real.sqrt (e2 q) := by
+    rw [he2_val]
+    exact (Real.hasDerivAt_sqrt hu_pos.ne').differentiableAt
+  rw [branchRadius_eq (I := I) g B]
+  change MDifferentiableAt I 𝓘(Real, Real) (fun z : M => Real.sqrt (e2 z)) q
+  exact
+    (hsqrt.hasFDerivAt.hasMFDerivAt.comp q
+      he2_diff.hasMFDerivAt).mdifferentiableAt
+
 theorem grad_branchRadius
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),

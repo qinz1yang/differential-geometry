@@ -170,7 +170,6 @@ def tensorOneUpCompInFrame
     (t : Real) (x : M) (i k : Idx) : Real :=
   ∑ a : Idx, gInv t x k a * h t x i a
 
-
 def ricciLeftActionCompInFrame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -181,7 +180,6 @@ def ricciLeftActionCompInFrame
   ∑ k : Idx,
     ricciOneUpCompInFrame (I := I) S gInv frame t x i k *
       h t x k j
-
 
 def ricciRightActionCompInFrame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -208,7 +206,6 @@ def lichnerowiczRHSInFrame
         hRaised t x k l) -
     ricciLeftActionCompInFrame (I := I) S gInv frame h t x i j -
     ricciRightActionCompInFrame (I := I) S gInv frame h t x i j
-
 
 def RicciLichnerowiczEquationInFrame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -244,7 +241,6 @@ def RicciLichnerowiczSpecializesInFrame
       ricciEvolutionRHSInFrame (I := I) S Rm04 gInv frame roughLapRic
         (t : Real) x i j
 
-
 def RicciSymmetricInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -274,7 +270,7 @@ theorem ricciRightActionCompInFrame_eq_quadratic_of_symm
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRic : RicciSymmetricInFrameOn (I := I) S frame)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
+    (hInv : ∀ t x i j, gInv t x i j = gInv t x j i)
     (t : Real) (x : M) (i j : Idx) :
     ricciRightActionCompInFrame (I := I) S gInv frame
         (ricciCompInFrame (I := I) S frame) t x i j =
@@ -466,7 +462,7 @@ theorem ricciLichnerowiczSpecializesInFrame_of_symm
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hRic : RicciSymmetricInFrameOn (I := I) S frame)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv) :
+    (hInv : ∀ t x i j, gInv t x i j = gInv t x j i) :
     RicciLichnerowiczSpecializesInFrame
       (I := I) S Rm04 gInv frame roughLapRic :=
   ricciLichnerowiczSpecializesInFrame_of_actions
@@ -488,7 +484,7 @@ theorem ricciLichnerowiczSpecializesInFrame_regular
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hRic : RicciSymmetricInFrameOnRegular (I := I) S frame)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv) :
+    (hInv : ∀ t x i j, gInv t x i j = gInv t x j i) :
     RicciLichnerowiczSpecializesInFrame
       (I := I) S Rm04 gInv frame roughLapRic := by
   refine ricciLichnerowiczSpecializesInFrame_of_actions
@@ -501,12 +497,11 @@ theorem ricciLichnerowiczSpecializesInFrame_regular
       (I := I) S gInv frame (t : Real) x i j
       (fun a b => hInv (t : Real) x a b) (hRic t x)
 
+omit [SigmaCompactSpace M] in
 theorem ricciLichnerowiczSpecializesInFrame_lc
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -521,7 +516,7 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -532,9 +527,9 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
     RicciLichnerowiczSpecializesInFrame
       (I := I) S Rm04 gInv frame roughLapRic := by
   have hOutput :=
-    rm04OutputSkew_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04OutputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hPair :=
-    rm04PairSymm_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04PairSymm_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hInput :=
     rm04InputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hRic : RicciSymmetricInFrameOnRegular (I := I) S frame :=
@@ -585,7 +580,7 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm
     (h_ricci : RicciEvolutionEquationInFrame
       (I := I) S Rm04 gInv frame roughLapRic)
     (hRic : RicciSymmetricInFrameOn (I := I) S frame)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv) :
+    (hInv : ∀ t x i j, gInv t x i j = gInv t x j i) :
     RicciLichnerowiczEquationInFrame
       (I := I) S Rm04 gInv frame roughLapRic :=
   ricciLichnerowiczEquationInFrame_of_ricciEvolution
@@ -593,12 +588,11 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm
     (ricciLichnerowiczSpecializesInFrame_of_symm
       (I := I) S Rm04 gInv frame roughLapRic hRic hInv)
 
+omit [SigmaCompactSpace M] in
 theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -613,7 +607,7 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -628,12 +622,12 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
   ricciLichnerowiczEquationInFrame_of_ricciEvolution
     (I := I) S Rm04 gInv frame roughLapRic h_ricci
     (ricciLichnerowiczSpecializesInFrame_lc
-      (I := I) S hS Rm13 Rm04 gInv frame roughLapRic hframe hcover
+      (I := I) S Rm13 Rm04 gInv frame roughLapRic hframe hcover
       hTrace hRm13 hLower hinv)
 
 omit [SigmaCompactSpace M] in
 theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators
-    [IsManifold I (∞ + 1) M]
+    [hManifoldTop : IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -661,10 +655,10 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
         (coordinateFrameSet (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
@@ -689,6 +683,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
         (t : Real) x₀ i j)
       D.carrier
       (t : Real) := by
+  let _ := hManifoldTop
   have hRicci :=
     evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
       (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg

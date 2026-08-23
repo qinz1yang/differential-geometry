@@ -11,7 +11,7 @@ for the forward low-power supersolution iteration.
 
 noncomputable section
 
-open MeasureTheory Metric
+open MeasureTheory
 
 namespace DeGiorgi
 

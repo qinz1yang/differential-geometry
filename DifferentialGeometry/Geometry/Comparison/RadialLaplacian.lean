@@ -28,7 +28,6 @@ open Variation
 open VolumeComparison
 open CovariantDerivativeAlong
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

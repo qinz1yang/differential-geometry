@@ -59,12 +59,9 @@ theorem loc_chart_pulled
   have h_room :
       Metric.cthickening 2 (closure Ω'') ⊆ (Set.univ : Set EuclN) := by
     intro y _; exact Set.mem_univ _
-  have h_closure_in :
-      closure Ω'' ⊆ (Set.univ : Set EuclN) := by
-    intro y _; exact Set.mem_univ _
   obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution
     (d := Module.finrank ℝ E)
-    B hΩ'' hΩ''_compact_closure h_closure_in h_room
+    B hΩ'' hΩ''_compact_closure h_room
   intro i k
   obtain ⟨g, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
     hΩ'_compact, hbound⟩ := h_eng h_weak hF_l2_loc i k
@@ -82,7 +79,6 @@ theorem memLp_two_continuous_compactSupport_restrict
   exact h_global.restrict _
 
 theorem loc_chart_pulled_manifold
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hu_cs : HasCompactSupport u)

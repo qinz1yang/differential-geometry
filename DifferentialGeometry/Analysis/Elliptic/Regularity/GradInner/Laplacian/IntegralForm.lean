@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLpIdentity
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
@@ -365,7 +364,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_candidate_density
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have hvar_id :=
-    gradInnerCLM_eq_H1ComplToLp_resolvent_unconditional_via_density
+    gradInnerCLM_eq_H1ComplToLp_resolvent_via_density
       (I := I) (M := M) g φ hu_h h_smooth_seq h_conv_H1Compl
       h_conv_candidate h_smooth_identity
   exact integral_gradInner_oneSubLap_smooth_eq_integral_candidate_of_variational

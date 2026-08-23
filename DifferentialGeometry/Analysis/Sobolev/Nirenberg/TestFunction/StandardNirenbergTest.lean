@@ -37,7 +37,7 @@ omit [NeZero d] in
 
 omit [NeZero d] in
 theorem standardNirenbergTest_support_subset
-    (k : Fin d) (h : ℝ) {η : EuclN → ℝ} (_hη_cs : HasCompactSupport η)
+    (k : Fin d) (h : ℝ) {η : EuclN → ℝ}
     (u : EuclN → ℝ) :
     Function.support (standardNirenbergTest k h η u) ⊆
       tsupport η ∪
@@ -74,7 +74,7 @@ theorem standardNirenbergTest_support_subset
 
 omit [NeZero d] in
 theorem standardNirenbergTest_tsupport_subset
-    (k : Fin d) (h : ℝ) {η : EuclN → ℝ} (hη_cs : HasCompactSupport η)
+    (k : Fin d) (h : ℝ) {η : EuclN → ℝ}
     (u : EuclN → ℝ) :
     tsupport (standardNirenbergTest k h η u) ⊆
       tsupport η ∪
@@ -90,7 +90,7 @@ theorem standardNirenbergTest_tsupport_subset
         {x : EuclN | x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η}) :=
     (isClosed_tsupport η).union h_pre_closed
   refine closure_minimal ?_ h_rhs_closed
-  exact standardNirenbergTest_support_subset (d := d) k h hη_cs u
+  exact standardNirenbergTest_support_subset (d := d) k h u
 
 omit [NeZero d] in
 theorem standardNirenbergTest_hasCompactSupport
@@ -125,7 +125,7 @@ theorem standardNirenbergTest_hasCompactSupport
     exact hη_cs.union h_translated_compact
   have h_sub : tsupport (standardNirenbergTest k h η u) ⊆
       tsupport η ∪ {x : EuclN | x + v ∈ tsupport η} :=
-    standardNirenbergTest_tsupport_subset (d := d) k h hη_cs u
+    standardNirenbergTest_tsupport_subset (d := d) k h u
   exact h_union_compact.of_isClosed_subset (isClosed_tsupport _) h_sub
 
 omit [NeZero d] in

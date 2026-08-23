@@ -125,6 +125,43 @@ lemma gUnitSphere_isCompact (g : SmoothRiemannianMetric I M) (p : M) :
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [I.Boundaryless] [T2Space M]
+    [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+lemma gLenBall_isCompact (g : SmoothRiemannianMetric I M) (p : M) (C : ℝ) :
+    IsCompact {v : E | Real.sqrt (g.inner p v v) ≤ C} := by
+  haveI : ProperSpace E := FiniteDimensional.proper_real E
+  refine Metric.isCompact_of_isClosed_isBounded
+    (isClosed_Iic.preimage (continuous_sqrt_gInner_self (I := I) g p)) ?_
+  rw [isBounded_iff_forall_norm_le]
+  refine ⟨max 0
+    (C / Real.sqrt (gpCoerciveConst (I := I) g p)), fun v hv => ?_⟩
+  have hc_pos : 0 < gpCoerciveConst (I := I) g p :=
+    gpCoerciveConst_pos (I := I) g p
+  have hsc_pos : 0 < Real.sqrt (gpCoerciveConst (I := I) g p) :=
+    Real.sqrt_pos.mpr hc_pos
+  have hcoerc :
+      gpCoerciveConst (I := I) g p * ‖v‖ ^ 2 ≤ g.inner p v v :=
+    gpCoerciveConst_le (I := I) g p v
+  have hkey :
+      Real.sqrt (gpCoerciveConst (I := I) g p) * ‖v‖ ≤
+        Real.sqrt (g.inner p v v) := by
+    have hlhs :
+        Real.sqrt (gpCoerciveConst (I := I) g p) * ‖v‖ =
+          Real.sqrt (gpCoerciveConst (I := I) g p * ‖v‖ ^ 2) := by
+      rw [Real.sqrt_mul hc_pos.le, Real.sqrt_sq (norm_nonneg v)]
+    rw [hlhs]
+    exact Real.sqrt_le_sqrt hcoerc
+  have hnorm :
+      ‖v‖ ≤ Real.sqrt (g.inner p v v) /
+        Real.sqrt (gpCoerciveConst (I := I) g p) := by
+    rw [le_div_iff₀ hsc_pos, mul_comm]
+    exact hkey
+  exact hnorm.trans
+    ((div_le_div_iff_of_pos_right hsc_pos).2 hv |>.trans (le_max_right _ _))
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem intrinsicSphere_isCompact
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -159,6 +196,7 @@ lemma continuous_riemannianEDist_to
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem exists_min_riemannianEDist_on_intrinsicSphere
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -339,7 +377,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
 theorem riemannianEDist_eq_zero_imp_eq
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (a b : M) (h : riemannianEDist I a b = 0) : a = b := by
   haveI : LocallyCompactSpace M :=
@@ -376,6 +413,30 @@ theorem intrinsicGeodesic_speedSq_eq
     intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p v
   refine (congrArg₂ (fun (x : M) (w : E) => g.inner x w w) h0 ?_)
   exact hvelE
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [T2Space (TangentBundle I M)] in
+theorem intrGeo_vel_ne
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) (v : TangentSpace I p) (hv : v ≠ 0) (t : Real) :
+    mfderiv 𝓘(Real, Real) I
+        (intrinsicGeodesic (I := I) g hEnorm p v) t (1 : Real) ≠ 0 := by
+  intro hzero
+  have hspeed := intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p v t
+  have hinner0 :
+      g.inner (intrinsicGeodesic (I := I) g hEnorm p v t)
+          (mfderiv 𝓘(Real, Real) I
+            (intrinsicGeodesic (I := I) g hEnorm p v) t (1 : Real))
+          (mfderiv 𝓘(Real, Real) I
+            (intrinsicGeodesic (I := I) g hEnorm p v) t (1 : Real)) = 0 := by
+    rw [hzero]
+    simp
+  exact (g.pos p v hv).ne' (hspeed.symm.trans hinner0)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -716,7 +777,7 @@ theorem radial_riemannianEDist_eq_of_small
   have hlower :
       ENNReal.ofReal (Real.sqrt (g.inner p vE vE)) ≤
         riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from vE)) :=
-    normalBall_radial_length_le_riemannianEDist (I := I) g p hEnorm hvδ_dom hvδ_ball hvE_lt_gp
+    normalBall_radial_length_le_riemannianEDist (I := I) g p hEnorm hvδ_ball hvE_lt_gp
   have hupper :
       riemannianEDist I (intrinsicGeodesic (I := I) g hEnorm p vδ 0)
           (intrinsicGeodesic (I := I) g hEnorm p vδ 1)
@@ -994,9 +1055,9 @@ theorem isGeodesicOn_contMDiffOn_top
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem isGeodesic_contMDiff
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (hγ : DifferentialGeometry.Geometry.Riemannian.Geodesic.IsGeodesic (I := I) g γ)
     (hcont : Continuous γ) :
@@ -1562,8 +1623,8 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [T2Space (TangentBundle I M)]
     [SigmaCompactSpace M] in
 theorem broken_minimizer_velocity_match
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+    [hContinuous : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {γ σ : ℝ → M} {ℓ₁ ℓ₂ : ℝ} (hℓ₁ : 0 < ℓ₁) (hℓ₂ : 0 < ℓ₂)
@@ -1580,6 +1641,7 @@ theorem broken_minimizer_velocity_match
     (hjunc : γ ℓ₁ = σ 0)
     (hmin : riemannianEDist I (γ 0) (σ ℓ₂) = ENNReal.ofReal (ℓ₁ + ℓ₂)) :
     mfderiv (𝓘(ℝ, ℝ)) I γ ℓ₁ (1 : ℝ) = mfderiv (𝓘(ℝ, ℝ)) I σ 0 (1 : ℝ) := by
+  let _ := hContinuous
   classical
   set c : M := γ ℓ₁ with hc_def
   set Tminus : E := (mfderiv (𝓘(ℝ, ℝ)) I γ ℓ₁ (1 : ℝ) : E) with hTminus_def

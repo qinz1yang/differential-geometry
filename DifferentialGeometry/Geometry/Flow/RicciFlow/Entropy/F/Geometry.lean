@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Functional
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
-
 set_option autoImplicit false
 
 open DifferentialGeometry.Geometry.Connection
@@ -243,7 +242,6 @@ theorem weightedDivZero
         DifferentialGeometry.Integral.DivergenceTheorem.integral_divergence_eq_zero_of_compact
           (I := I) g X
 
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem expNegPotentialDensity_contMDiff
     {potential : M -> Real}
@@ -251,7 +249,6 @@ theorem expNegPotentialDensity_contMDiff
     ContMDiff I 𝓘(Real, Real) ∞ (expNegPotentialDensity potential) := by
   simpa [expNegPotentialDensity] using
     Real.contDiff_exp.contMDiff.comp hpotential.neg
-
 
 omit [FiniteDimensional ℝ E] in
 theorem tangentSectionAction_expNeg
@@ -288,8 +285,7 @@ def connTraceVec
     (expNegPotentialDensity_contMDiff (I := I) hpotential) traceVec
 
 theorem connTraceDivEq
-    [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {potential weightedDivergenceTrace rawTrace actionTrace : M -> Real}
     (hpotential : ContMDiff I 𝓘(Real, Real) ∞ potential)
     (traceVec : Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯)
@@ -468,7 +464,6 @@ theorem shiftIntEq
       unfold expWeightedMeasureVariationFactor
       ring
 
-
 theorem expWeightedMeasureIntegral_hasDerivAt_at
     [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
@@ -506,7 +501,7 @@ theorem expWeightedMeasureIntegral_hasDerivAt_at
         ∂(volumeMeasureFamily (I := I) (M := M) G s0))
       s0 := by
   have hvol :=
-    volume_variation_formula_clean_at
+    volume_variation_formula_at
       (I := I) (M := M) G
       (f := fun s : Real => fun x : M =>
         expNegPotentialDensity (potentialPath s) x * phiPath s x)
@@ -545,7 +540,6 @@ theorem expWeightedMeasureIntegral_hasDerivAt_at
     expWeightedMeasureVariationFactor
   ring
 
-
 def fFunctionalBracketVariation
     (scalarCurvatureVariation gradPotentialNormSqVariation : M -> Real) :
     M -> Real :=
@@ -574,7 +568,6 @@ theorem fFunctionalBracket_hasDerivAt
       s0 := by
   have h := (hscalar_deriv x).add (hgrad_deriv x)
   simpa [fFunctionalBracket, fFunctionalBracketVariation] using h
-
 
 omit [TopologicalSpace M] in
 theorem closedBracket_deriv
@@ -772,7 +765,6 @@ theorem FFunctionalHasFirstVariationAt_of_baseIntegral_hasDerivAt
       gradPotentialNormSqPath potentialPath s0 firstVariation := by
   unfold FFunctionalHasFirstVariationAt fFunctionalAlong
   exact hbase.congr_of_eventuallyEq hbase_eq
-
 
 theorem FFunctionalHasFirstVariationAt_of_volumeVariation
     [T2Space M] [CompactSpace M]

@@ -58,11 +58,11 @@ private lemma chartedDiagExp_contDiffAt
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (n : ℕ) (hn : 1 ≤ n) :
+    (p : M) (n : ℕ) :
     ContDiffAt ℝ (n : ℕ∞) (chartedDiagExp (I := I) g hEnorm p)
       (diagExpZeroPt (I := I) p) := by
   classical
-  have hmd := diagExp_contMDiffAt_zero (I := I) g hEnorm p n hn
+  have hmd := diagExp_contMDiffAt_zero (I := I) g hEnorm p n
   rw [contMDiffAt_iff] at hmd
   obtain ⟨_, hcd⟩ := hmd
   have hrange : range (I.tangent) = (univ : Set (E × E)) :=
@@ -176,7 +176,7 @@ private lemma exists_chartDiagInf
   have hG_cd_one : ContDiffOn ℝ (1 : ℕ∞) G (Metric.ball ctr ρ) :=
     hG_cd.of_le (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
   have hbridge := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hEnorm p
-    1 le_rfl Φ ρ T t'
+    1 Φ ρ T t'
     ⟨hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd_one, hΦ_init, hΦ_ode, hΦ_target⟩
     u.proj hu_proj_src u.snd (hphase.symm ▸ hRz_ball)
   rw [hphase] at hbridge
@@ -361,7 +361,7 @@ theorem diagExp_hasFDerivAt_zero
     exact
       Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) p ((extChartAt I p).map_source (mem_extChartAt_source (I := I) p))
-  have hcd := chartedDiagExp_contDiffAt (I := I) g hEnorm p n hn
+  have hcd := chartedDiagExp_contDiffAt (I := I) g hEnorm p n
   rw [diagExpZeroPt_eq (I := I) p] at hcd
   have hD : HasFDerivAt (chartedDiagExp (I := I) g hEnorm p)
       (fderiv ℝ (chartedDiagExp (I := I) g hEnorm p) ((c, (0 : E)) : E × E))
@@ -457,7 +457,7 @@ private lemma chartedDiagExp_cdaOne
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ContDiffAt ℝ 1 (chartedDiagExp (I := I) g hEnorm p) (diagExpZeroPt (I := I) p) := by
-  simpa using chartedDiagExp_contDiffAt (I := I) g hEnorm p 1 le_rfl
+  simpa using chartedDiagExp_contDiffAt (I := I) g hEnorm p 1
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -718,12 +718,12 @@ theorem diagExpInv_contMDiffAt_order
     ContMDiffAt (I.prod I) I.tangent (n : ℕ∞) (diagExpInv (I := I) g hEnorm p) (p, p) := by
   have hn0 : ((n : ℕ∞) : WithTop ℕ∞) ≠ 0 := by exact_mod_cast (show n ≠ 0 by omega)
   have hsymm_eq : (diagExpIFT (I := I) g hEnorm p).symm =
-      (chartedDiagExp_contDiffAt (I := I) g hEnorm p n hn).localInverse
+      (chartedDiagExp_contDiffAt (I := I) g hEnorm p n).localInverse
         (diagExp_hasFDerivAt_zero_unipotent (I := I) g hEnorm p 1 le_rfl) hn0 := rfl
   have hsymm_cd : ContDiffAt ℝ (n : ℕ∞) (diagExpIFT (I := I) g hEnorm p).symm
       (chartedDiagExp (I := I) g hEnorm p (diagExpZeroPt (I := I) p)) := by
     rw [hsymm_eq]
-    exact (chartedDiagExp_contDiffAt (I := I) g hEnorm p n hn).to_localInverse
+    exact (chartedDiagExp_contDiffAt (I := I) g hEnorm p n).to_localInverse
       (diagExp_hasFDerivAt_zero_unipotent (I := I) g hEnorm p 1 le_rfl) hn0
   have h_outer : ContMDiffAt (I.prod I) 𝓘(ℝ, E × E) (n : ℕ∞)
       (extChartAt (I.prod I) (p, p)) (p, p) :=
@@ -786,7 +786,7 @@ theorem diagExp_diagExpInv
     have h2 : ContinuousAt (diagExp (I := I) g hEnorm)
         (diagExpInv (I := I) g hEnorm p (p, p)) := by
       rw [diagExpInv_center (I := I) g hEnorm p]
-      exact (diagExp_contMDiffAt_zero (I := I) g hEnorm p 1 le_rfl).continuousAt
+      exact (diagExp_contMDiffAt_zero (I := I) g hEnorm p 1).continuousAt
     exact h2.comp h1
   have hfx : diagExp (I := I) g hEnorm (diagExpInv (I := I) g hEnorm p (p, p)) = (p, p) := by
     rw [diagExpInv_center (I := I) g hEnorm p, diagExp_zero_eq (I := I) g hEnorm p]

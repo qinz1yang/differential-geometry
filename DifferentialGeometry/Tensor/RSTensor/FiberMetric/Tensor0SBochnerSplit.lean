@@ -130,7 +130,6 @@ section Intrinsic
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 
-open DifferentialGeometry.Geometry.Operator
 
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [FiniteDimensional ℝ E] in

@@ -37,7 +37,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 private lemma iteratedPartial_wkpNorm_le_of_chart_perK
@@ -46,7 +45,7 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ)
     (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
@@ -71,7 +70,7 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
   intro i j hj idx K'
   have h_chart_cpt :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + m + 3) 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig (K' + m + 3) *
@@ -121,7 +120,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
     (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
@@ -319,7 +318,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
     (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *

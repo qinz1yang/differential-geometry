@@ -22,7 +22,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 
@@ -87,7 +86,6 @@ theorem chartImage_pouTsupport_subset_interior_target
   exact chartImage_pouTsupport_subset_target (I := I) (M := M) α
 
 theorem chartChristoffel_bdd_on_compact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK_compact : IsCompact K)
     (hK_sub_interior : K ⊆ interior ((extChartAt I α).target : Set E)) :

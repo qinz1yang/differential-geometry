@@ -57,7 +57,6 @@ theorem corrected_chartflow_eq_bareflow
     (fun p _ t ht => hode' t ht)
     hF
     (fun p _ t ht => hconf t ht)
-    (le_refl _)
     α (mem_extChartAt_source (I := I) α)
 
 end DifferentialGeometry.Analysis.ODE

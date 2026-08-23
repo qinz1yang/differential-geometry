@@ -52,7 +52,6 @@ private theorem freezeHead03Slots_vec3
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeHead03Field
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -145,7 +144,6 @@ noncomputable def freezeHead03Field
   rw [freezeHead03Slots_vec3]
 
 @[simp] theorem freezeHead03Field_apply
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -179,7 +177,6 @@ private theorem freezeTail04Slots_vec4
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeTail04Field
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -274,7 +271,6 @@ noncomputable def freezeTail04Field
   rw [freezeTail04Slots_vec4]
 
 @[simp] theorem freezeTail04Field_apply
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -308,7 +304,6 @@ private theorem freezeMiddle04Slots_vec4
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeMiddle04Field
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -408,7 +403,6 @@ noncomputable def freezeMiddle04Field
   fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Geometry.Curvature.vec4]
 
 @[simp] theorem freezeMiddle04Field_apply
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -421,7 +415,7 @@ noncomputable def freezeMiddle04Field
   rfl
 
 theorem nablaTrace02
-    [T2Space M] [CompleteSpace E] [IsManifold I 1 M]
+    [T2Space M] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -536,7 +530,7 @@ theorem nablaTrace02
             rw [hnabla i j]
 
 theorem dTrace02_eq
-    [T2Space M] [CompleteSpace E] [IsManifold I 1 M]
+    [T2Space M] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)

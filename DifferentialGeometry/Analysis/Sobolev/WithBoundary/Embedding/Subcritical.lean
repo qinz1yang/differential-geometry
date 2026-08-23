@@ -107,12 +107,14 @@ theorem interiorHalfSpace_chartTargetEuclid_eq (α : M) :
   unfold chartTargetEuclid
   rfl
 
+omit [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M] in
 theorem interiorHalfSpace_chartTargetEuclid_isOpen (α : M) :
     IsOpen (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
       (chartTargetEuclid (n := n) (M := M) α)) :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace_isOpen
     (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)
 
+omit [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M] in
 theorem chartTargetEuclid_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) (α : M)
     {f : EuN → ℝ} (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
@@ -134,6 +136,7 @@ theorem chartTargetEuclid_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
     (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)
     hf_smooth hf_compact hf_supp
 
+omit [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M] in
 theorem chartTargetEuclid_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpHalfSpace
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) (α : M)
     {f : EuN → ℝ}
@@ -160,8 +163,6 @@ theorem chartTargetEuclid_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkp
 
 theorem chartPushed_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) (α : M)
     {u : M → ℝ}
     (hf_smooth : ContDiff ℝ (⊤ : ℕ∞)
@@ -193,17 +194,14 @@ theorem chartPushed_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU
               (modelWithCornersEuclideanHalfSpace n) M) α u)
           (chartTargetEuclid (n := n) (M := M) α) := by
-  let _ := g
   exact chartTargetEuclid_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
     (n := n) (M := M) hp_one hp_dim α hf_smooth hf_compact hf_supp
 
 theorem chartPushed_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpChart
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) (α : M)
     {u : M → ℝ}
-    (hu : MemWkpChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u)
+    (hu : MemWkpChart (n := n) (M := M) 1 (ENNReal.ofReal p) u)
     (hf_compact : HasCompactSupport
       (chartPushed (n := n) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU
@@ -233,9 +231,7 @@ theorem chartPushed_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpChart
     (n := n) (M := M) hp_one hp_dim α (hu α) hf_compact hf_supp
 
 theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric
-      (modelWithCornersEuclideanHalfSpace n) M)
+    [T2Space M] [SigmaCompactSpace M]
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ))
     {u : M → ℝ}
     (h_smooth : ∀ α : M,
@@ -265,7 +261,7 @@ theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
             (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
               (chartTargetEuclid (n := n) (M := M) α))) ≤
       ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
-        wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u := by
+        wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u := by
   classical
   set C : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) with hC_def
   have h_per : ∀ α : M,
@@ -285,7 +281,7 @@ theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
                 (modelWithCornersEuclideanHalfSpace n) M) α u)
             (chartTargetEuclid (n := n) (M := M) α) := fun α =>
     chartPushed_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
-      (n := n) (M := M) g hp_one hp_dim α (h_smooth α) (h_compact α) (h_supp α)
+      (n := n) (M := M) hp_one hp_dim α (h_smooth α) (h_compact α) (h_supp α)
   have h_sum := ENNReal.tsum_le_tsum h_per
   have h_factor : ∑' α : M, C *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
@@ -294,7 +290,7 @@ theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU
               (modelWithCornersEuclideanHalfSpace n) M) α u)
           (chartTargetEuclid (n := n) (M := M) α) =
-      C * wkpNormChart (n := n) (M := M) g 1 (ENNReal.ofReal p) u := by
+      C * wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u := by
     rw [ENNReal.tsum_mul_left]
     rfl
   rw [h_factor] at h_sum

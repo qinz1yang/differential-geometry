@@ -331,7 +331,6 @@ theorem scalarTraceInFrame_eq_trace_of_orthonormal_inv
   unfold scalarTraceInFrame
   simp [hInvDelta]
 
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqInFrame_eq_sum_sq_of_orthonormal_inv
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -357,7 +356,6 @@ theorem ricciNormSqInFrame_eq_sum_sq_of_orthonormal_inv
     (I := I) S gInv frame hInvDelta t x i j]
   simp [ricciTwoTensorField, ricciCompInFrame]
   ring
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqInFrame_ge_scalarTrace_sq_div_rank_of_orthonormal_inv

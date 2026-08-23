@@ -60,7 +60,7 @@ theorem negCovariant_value_of_innerCLM_value
 
 end OrbitValue
 
-section Assembly
+section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -91,6 +91,6 @@ theorem rawVariationalIdentity_of_chartFlow_innerCLM
   exact rawVariationalIdentity_of_chartFlow_value (I := I) g X Φ_fam t x v Q d
     hDchart hagree hQval
 
-end Assembly
+end
 
 end DifferentialGeometry.Analysis.ODE

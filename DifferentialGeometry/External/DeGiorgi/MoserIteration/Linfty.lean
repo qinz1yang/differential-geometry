@@ -10,7 +10,7 @@ final Chapter 06 `L^p -> L^\infty` theorem.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 

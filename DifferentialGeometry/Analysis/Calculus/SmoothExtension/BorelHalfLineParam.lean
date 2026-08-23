@@ -940,7 +940,7 @@ private theorem prodMatch_intervalCutoff (T : ℝ) (hT : 0 < T) (Φ : ℝ × E �
 
 
 theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
-    (g : ℝ → E → F) (T : ℝ) (hT : 0 < T) (K : Set E) (_hK : IsCompact K)
+    (g : ℝ → E → F) (T : ℝ) (hT : 0 < T) (K : Set E)
     (z₀ : E) (hz₀ : z₀ ∈ interior K)
     (hg : ContDiffOn ℝ ∞ (Function.uncurry g) (Set.Icc (0 : ℝ) T ×ˢ K)) :
     ∃ gext : ℝ → E → F, ∃ V ∈ nhds z₀,

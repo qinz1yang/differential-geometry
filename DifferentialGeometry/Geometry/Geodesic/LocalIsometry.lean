@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.PullbackCross
@@ -51,8 +51,6 @@ theorem geoEq_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}
@@ -125,8 +123,8 @@ theorem geoEq_map_localIso
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       Diffeomorph.pullbackMetricCross_inner,
       SmoothRiemannianMetric.restrictOpen_inner,
-      PartialDiffeomorph.opensDiffeo_mfd,
-      PartialDiffeomorph.opensDiffeo_mfd,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
       hΦmfd x]
     change g.inner (x : M) v w =
       g'.inner ((Ψ x : V) : N)
@@ -174,13 +172,138 @@ theorem geoEq_map_localIso
   exact HasGeodesicEquationAt.congr_of_eventuallyEq_at
     (I := J) (g := g') hmap_eq.eq_of_nhds hmap_eq hgeo_target
 
+omit [NeZero (Module.finrank ℝ E)]
+  [NeZero (Module.finrank ℝ F)] in
+theorem geoEq_of_map_localIso
+    [I.Boundaryless] [J.Boundaryless]
+    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    (g : SmoothRiemannianMetric I M)
+    (g' : SmoothRiemannianMetric J N)
+    {f : M → N}
+    (hld : IsLocalDiffeomorph I J ∞ f)
+    (hpres : ∀ (x : M) (v w : TangentSpace I x),
+      g.inner x v w =
+        g'.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    (γ : ℝ → M) (t : ℝ)
+    (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γ t)
+    (hgeo : HasGeodesicEquationAt (I := J) g' (fun s => f (γ s)) t) :
+    HasGeodesicEquationAt (I := I) g γ t := by
+  classical
+  obtain ⟨Φ, htΦ, hfΦ⟩ := hld (γ t)
+  let U : Opens M := ⟨Φ.source, Φ.open_source⟩
+  have hUΦ : (U : Set M) ⊆ Φ.source := fun _ hx => hx
+  let V : Opens N :=
+    ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hUΦ⟩
+  letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
+  letI : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
+  let Ψ : Diffeomorph I J U V ∞ :=
+    PartialDiffeomorph.toOpensDiffeoCross Φ hUΦ
+  let γtU : U := ⟨γ t, htΦ⟩
+  let γU : ℝ → U := fun s =>
+    if hs : γ s ∈ (U : Set M) then ⟨γ s, hs⟩ else γtU
+  have hmem : ∀ᶠ s in 𝓝 t, γ s ∈ (U : Set M) :=
+    hγ.continuousAt.preimage_mem_nhds (Φ.open_source.mem_nhds htΦ)
+  have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
+    filter_upwards [hmem] with s hs
+    simp only [γU, dif_pos hs]
+  have hγU_smooth : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γU t := by
+    have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞
+        (fun s => ((γU s : U) : M)) t :=
+      hγ.congr_of_eventuallyEq hγU_val
+    have hcod := codRestr_contMDiffAt
+      (I := 𝓘(ℝ, ℝ)) (J := I) (V := U)
+      (f := fun s => ((γU s : U) : M))
+      (fun s => (γU s).property) hamb
+    simpa only [Subtype.coe_eta] using hcod
+  have hΦmfd :
+      ∀ (x : U),
+        mfderiv I J (Φ : M → N) (x : M) =
+          mfderiv I J f (x : M) := by
+    intro x
+    have heq : f =ᶠ[𝓝 (x : M)] (Φ : M → N) :=
+      Filter.eventuallyEq_of_mem
+        (Φ.open_source.mem_nhds x.property) hfΦ
+    exact heq.mfderiv_eq.symm
+  have hmetric :
+      g.restrictOpen (I := I) U =
+        Diffeomorph.pullbackMetricCross
+          (g'.restrictOpen (I := J) V) Ψ := by
+    apply metric_ext
+    intro x v w
+    dsimp only [Ψ]
+    rw [SmoothRiemannianMetric.restrictOpen_inner,
+      Diffeomorph.pullbackMetricCross_inner,
+      SmoothRiemannianMetric.restrictOpen_inner,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      hΦmfd x]
+    change g.inner (x : M) v w =
+      g'.inner ((Ψ x : V) : N)
+        (mfderiv I J f (x : M) v)
+        (mfderiv I J f (x : M) w)
+    have hval : ((Ψ x : V) : N) = f (x : M) := by
+      change (Φ : M → N) (x : M) = f (x : M)
+      exact (hfΦ x.property).symm
+    rw [hval]
+    exact hpres (x : M) v w
+  have hmap_eq :
+      (fun s => f (γ s)) =ᶠ[𝓝 t]
+        (fun s => ((Ψ (γU s) : V) : N)) := by
+    filter_upwards [hmem] with s hs
+    dsimp only [Ψ]
+    have hγUs : ((γU s : U) : M) = γ s := by
+      simp only [γU, dif_pos hs]
+    change f (γ s) = (Φ : M → N) ((γU s : U) : M)
+    rw [hγUs]
+    exact hfΦ hs
+  have hgeo_target :
+      HasGeodesicEquationAt (I := J) g'
+        (fun s => ((Ψ (γU s) : V) : N)) t :=
+    HasGeodesicEquationAt.congr_of_eventuallyEq_at
+      (I := J) (g := g') hmap_eq.eq_of_nhds.symm hmap_eq.symm hgeo
+  have hgeo_V :
+      HasGeodesicEquationAt (I := J)
+        (g'.restrictOpen (I := J) V) (fun s => Ψ (γU s)) t := by
+    have hOn : IsGeodesicOn (I := J) g'
+        (fun s => ((Ψ (γU s) : V) : N)) ({t} : Set ℝ) := by
+      intro s hs
+      simpa only [Set.mem_singleton_iff] using hs ▸ hgeo_target
+    have hOnV :=
+      (geodesicOn_open_iff (I := J) g' V
+        (fun s => Ψ (γU s)) ({t} : Set ℝ)).mpr hOn
+    exact hOnV t (Set.mem_singleton t)
+  have hgeo_pull :
+      HasGeodesicEquationAt (I := I)
+        (Diffeomorph.pullbackMetricCross
+          (g'.restrictOpen (I := J) V) Ψ) γU t :=
+    geoEq_of_mapCrossAt (I := I) (J := J)
+      (g'.restrictOpen (I := J) V) Ψ γU t hγU_smooth hgeo_V
+  have hgeo_U :
+      HasGeodesicEquationAt (I := I)
+        (g.restrictOpen (I := I) U) γU t := by
+    rw [hmetric]
+    exact hgeo_pull
+  have hgeo_ambient :
+      HasGeodesicEquationAt (I := I) g
+        (fun s => ((γU s : U) : M)) t := by
+    have hOnU : IsGeodesicOn (I := I)
+        (g.restrictOpen (I := I) U) γU ({t} : Set ℝ) := by
+      intro s hs
+      simpa only [Set.mem_singleton_iff] using hs ▸ hgeo_U
+    have hOn :=
+      (geodesicOn_open_iff (I := I) g U γU ({t} : Set ℝ)).mp hOnU
+    exact hOn t (Set.mem_singleton t)
+  exact HasGeodesicEquationAt.congr_of_eventuallyEq_at
+    (I := I) (g := g) hγU_val.eq_of_nhds.symm hγU_val.symm hgeo_ambient
+
 omit [NeZero (Module.finrank ℝ F)] in
 theorem geoOn_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}

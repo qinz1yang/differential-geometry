@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Setup
+import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 
 
 noncomputable section

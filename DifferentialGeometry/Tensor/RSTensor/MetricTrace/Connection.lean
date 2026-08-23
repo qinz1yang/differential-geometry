@@ -3,12 +3,12 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Basic
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyInput
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
-import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Special12
+import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Tensor.RSTensor.Components
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.OneJet
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor
@@ -73,7 +73,7 @@ def connTraceOneFormAt
     ((connTraceEvalLin (I := I) g A).comp
       ((dualToCotangentLinear (I := I)).comp (tangentFlatLinear_gen (I := I) g x)))
 
-@[simp] theorem connTraceOneFormAt_apply
+theorem connTraceOneFormAt_apply
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
@@ -170,7 +170,7 @@ private theorem sumFinOne {Idx : Type*} [Fintype Idx]
   simpa [Equiv.funUnique] using congrArg r (Subsingleton.elim a (0 : Fin 1))
 
 private theorem traceFlat_apply_sum
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
@@ -184,6 +184,7 @@ private theorem traceFlat_apply_sum
           componentRS_gen (I := I) basis A
             (fun _ : Fin 1 => r)
             (fun a : Fin 2 => if a = 0 then i else j) := by
+  classical
   have h := componentRS_apply_input_eq_sum (I := I) basis A
     (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis q)))
     (fun a : Fin 2 => if a = 0 then i else j)

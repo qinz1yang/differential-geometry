@@ -31,7 +31,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 theorem integral_localDivergence_eq_of_overlap_support [I.Boundaryless]
-    [T2Space M]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)

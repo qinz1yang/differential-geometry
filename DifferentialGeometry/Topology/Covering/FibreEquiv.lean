@@ -116,7 +116,6 @@ noncomputable def fibreEquivLoopQuotient
 
 noncomputable def fibreEquivFundamentalGroup
     {X E : Type*} [TopologicalSpace X] [TopologicalSpace E]
-    [ConnectedSpace X] [LocPathConnectedSpace X]
     [PathConnectedSpace E] [SimplyConnectedSpace E]
     {p : E → X} (hp : IsCoveringMap p) (x : X) (e' : p ⁻¹' {x}) :
     (p ⁻¹' {x}) ≃ FundamentalGroup X x :=
@@ -128,7 +127,7 @@ noncomputable def fibreEquivFundamentalGroup
 
 theorem finite_pi1_of_uc
     {X : Type*} [TopologicalSpace X] [T1Space X] [Inhabited X]
-    [ConnectedSpace X] [LocPathConnectedSpace X]
+    [LocPathConnectedSpace X]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     [CompactSpace (UniversalCover X)] :
     Finite (FundamentalGroup X (default : X)) := by

@@ -16,7 +16,6 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Integral.L2
 
-open DifferentialGeometry
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry.Integral.Measure
@@ -108,7 +107,7 @@ theorem joint_rs_add {r s : ℕ} {S : Set ℝ}
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem rfns_joint_cont
+private theorem riemannianFiberNormSq_joint_cont
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ)
     (hSI : Set.Icc (0 : ℝ) 1 ⊆ S)
@@ -190,7 +189,7 @@ private theorem path_field_congr
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem icg_joint_smooth
+private theorem iteratedCovGrad_joint_smooth
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -209,7 +208,7 @@ private theorem icg_joint_smooth
       (fun t => iteratedCovGrad (I := I) g₀ r s j (Φ t)) S ih
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem icg_rfns_cont
+private theorem iteratedCovGrad_riemannianFiberNormSq_cont
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -221,13 +220,13 @@ private theorem icg_rfns_cont
       riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) p.2
         ((iteratedCovGrad (I := I) g₀ r s i (Φ p.1)).toSection p.2))
       (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
-  rfns_joint_cont (I := I) g₀ r (s + i)
+  riemannianFiberNormSq_joint_cont (I := I) g₀ r (s + i)
     (fun t => iteratedCovGrad (I := I) g₀ r s i (Φ t)) S
     (by rw [Set.uIcc_of_le (zero_le_one (α := ℝ))] at hSI; exact hSI)
-    (icg_joint_smooth (I := I) g₀ r s i Φ S hjoint)
+    (iteratedCovGrad_joint_smooth (I := I) g₀ r s i Φ S hjoint)
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem icg_norm_sq_int
+private theorem iteratedCovGrad_norm_sq_int
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -249,7 +248,7 @@ private theorem icg_norm_sq_int
     riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) p.2
       ((iteratedCovGrad (I := I) g₀ r s i (Φ p.1)).toSection p.2) with hF
   have hFcont : ContinuousOn F (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
-    icg_rfns_cont (I := I) g₀ r s i Φ S hSI hjoint
+    iteratedCovGrad_riemannianFiberNormSq_cont (I := I) g₀ r s i Φ S hSI hjoint
   have hnormsq : ∀ t : ℝ,
       ‖iteratedCovGrad (I := I) g₀ r s i (Φ t)‖ ^ 2 = ∫ x, F (t, x) ∂μ := by
     intro t
@@ -272,7 +271,7 @@ private theorem icg_norm_sq_int
   exact hcontInt.intervalIntegrable_of_Icc (by norm_num)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem icg_path_comm
+theorem iteratedCovGrad_path_comm
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -296,7 +295,7 @@ theorem icg_path_comm
       (fun t => iteratedCovGrad (I := I) g₀ r s 0 (Φ t)) S hS hSI hjoint hji
       (by funext t; rw [iteratedCovGrad_zero])
   | succ j ih =>
-    have hjg_j := icg_joint_smooth (I := I) g₀ r s j Φ S hjoint
+    have hjg_j := iteratedCovGrad_joint_smooth (I := I) g₀ r s j Φ S hjoint
     have hjgsucc := covGrad_step_jointContMDiffOn (I := I) (M := M) g₀ r (s + j)
       (fun t => iteratedCovGrad (I := I) g₀ r s j (Φ t)) S hjg_j
     rw [iteratedCovGrad_succ, ih hjg_j]
@@ -317,7 +316,7 @@ theorem path_jetL2_le
       (fun q : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) q.1 ((Φ q.2).toSection q.1))
       ((Set.univ : Set M) ×ˢ S))
-    {B : ℝ} (hB : 0 ≤ B)
+    {B : ℝ}
     (hΦjet : ∀ t ∈ Set.Icc (0 : ℝ) 1,
       (∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ r s i (Φ t)‖ ^ 2) ≤ B ^ 2) :
@@ -330,7 +329,7 @@ theorem path_jetL2_le
           (E := fun z : M => TensorRSSpace r (s + i) I z) q.1
           ((iteratedCovGrad (I := I) g₀ r s i (Φ q.2)).toSection q.1))
         ((Set.univ : Set M) ×ˢ S) :=
-    fun i _ => icg_joint_smooth (I := I) g₀ r s i Φ S hjoint
+    fun i _ => iteratedCovGrad_joint_smooth (I := I) g₀ r s i Φ S hjoint
   have hci : ∀ i ∈ Finset.range (a + 1), ∀ x : M,
       ContinuousOn (fun t : ℝ =>
         TensorRSSpace.toModel ((iteratedCovGrad (I := I) g₀ r s i (Φ t)).toSection x))
@@ -344,18 +343,18 @@ theorem path_jetL2_le
         riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) p.2
           ((iteratedCovGrad (I := I) g₀ r s i (Φ p.1)).toSection p.2))
         (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
-    fun i _ => icg_rfns_cont (I := I) g₀ r s i Φ S hSI hjoint
+    fun i _ => iteratedCovGrad_riemannianFiberNormSq_cont (I := I) g₀ r s i Φ S hSI hjoint
   have hii : ∀ i ∈ Finset.range (a + 1),
       IntervalIntegrable
         (fun t : ℝ => ‖iteratedCovGrad (I := I) g₀ r s i (Φ t)‖ ^ 2) volume 0 1 :=
-    fun i _ => icg_norm_sq_int (I := I) g₀ r s i Φ S hSI hjoint
+    fun i _ => iteratedCovGrad_norm_sq_int (I := I) g₀ r s i Φ S hSI hjoint
   have hcomm : ∀ (i : ℕ) (hi : i ∈ Finset.range (a + 1)),
       iteratedCovGrad (I := I) g₀ r s i
           (pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint) =
         pathIntegralCoeffField (I := I) (M := M) g₀ r (s + i)
           (fun t => iteratedCovGrad (I := I) g₀ r s i (Φ t)) S hS hSI (hji i hi) :=
-    fun i hi => icg_path_comm (I := I) g₀ r s i Φ S hS hSI hjoint (hji i hi)
+    fun i hi => iteratedCovGrad_path_comm (I := I) g₀ r s i Φ S hS hSI hjoint (hji i hi)
   exact iteratedCovGrad_pathIntegralCoeffField_jetL2_le (I := I) (M := M)
-    g₀ r s a Φ B hB S hS hSI hjoint hΦjet hji hci hri hii hcomm
+    g₀ r s a Φ B S hS hSI hjoint hΦjet hji hci hri hii hcomm
 
 end DifferentialGeometry.Integral.L2

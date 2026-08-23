@@ -146,7 +146,7 @@ lemma natCast_one_add_d_mul_ofReal (d : ℕ) (C : ℝ) :
       ← ENNReal.ofReal_mul hnn]
 
 theorem wkpNorm_smul_smooth_bounded_le_one
-    (k : ℕ) (hk : k ≤ 1) {d : ℕ} [NeZero d]
+    (k : ℕ) (hk : k ≤ 1) {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {η : EuclideanSpace ℝ (Fin d) → ℝ}

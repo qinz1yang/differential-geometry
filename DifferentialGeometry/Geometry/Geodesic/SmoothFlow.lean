@@ -28,7 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 def chartPhaseVF (g : SmoothRiemannianMetric I M) (α : M) : E × E → E × E :=
   fun z => (z.2, - chartChristoffelContraction (I := I) g α z.2 z.2 z.1)
@@ -183,7 +182,9 @@ theorem chartPhaseVFCutoff_contDiff
 
 def chartPhaseVFTime (g : SmoothRiemannianMetric I M) (α : M)
     (z₀ : E × E) (b : ContDiffBump z₀) : ℝ → (E × E) → E × E :=
-  fun _ z => chartPhaseVFCutoff (I := I) g α z₀ b z
+  fun t z =>
+    let _ := t
+    chartPhaseVFCutoff (I := I) g α z₀ b z
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] lemma chartPhaseVFTime_apply

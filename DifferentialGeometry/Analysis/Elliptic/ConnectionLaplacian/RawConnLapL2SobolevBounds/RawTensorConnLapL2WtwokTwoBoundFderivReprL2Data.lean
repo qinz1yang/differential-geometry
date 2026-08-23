@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartReprDerivativeBounds.ChartPulledCovDerivChartCompBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartReprDerivativeBounds.IteratedFDerivTensorReprChartCompBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapPointwiseFiberBounds.RawTensorConnLapChartTargetSqBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartReprDerivativeBounds.RawTensorConnLapNormSqChartPulledReprBound
+import DifferentialGeometry.Analysis.Integration.Measure.TensorChartPulled
+import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapChartL2PouBridge
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.FderivToWkpNormBridge
@@ -526,7 +528,11 @@ lemma pou_sq_fderiv_repr_sq_pointwise
       exact pow_le_pow_left₀ hρFR_nn hnorm 2
     have hexp : (‖L‖ + |raw_val| * ‖FP‖) ^ 2 ≤ 2 * ‖L‖ ^ 2 + 2 * (|raw_val| * ‖FP‖) ^ 2 := by
       have h := sq_nonneg (‖L‖ - |raw_val| * ‖FP‖)
-      nlinarith [h]
+      calc
+        (‖L‖ + |raw_val| * ‖FP‖) ^ 2 =
+            2 * ‖L‖ ^ 2 + 2 * (|raw_val| * ‖FP‖) ^ 2 -
+              (‖L‖ - |raw_val| * ‖FP‖) ^ 2 := by ring
+        _ ≤ 2 * ‖L‖ ^ 2 + 2 * (|raw_val| * ‖FP‖) ^ 2 := sub_le_self _ h
     have hρ_sq_FR_sq : ρ ^ 2 * ‖FR‖ ^ 2 = (ρ * ‖FR‖) ^ 2 := by ring
     rw [hρ_sq_FR_sq]
     refine le_trans hsq (le_trans hexp ?_)

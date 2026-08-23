@@ -30,7 +30,6 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 private local instance : MeasurableSpace (EuclideanSpace ℝ (Fin n)) :=
@@ -184,7 +183,7 @@ noncomputable def H1ComplFullNeumannToLp
     (UniformSpace.Completion.toComplL :
       FullSmoothScalar g →L[ℝ] H1ComplFullNeumann g)
 
-@[simp] lemma H1ComplFullNeumannToLp_smoothToH1ComplFullNeumann
+lemma H1ComplFullNeumannToLp_smoothToH1ComplFullNeumann
     (g : SmoothRiemannianMetric (I_half n) M)
     (f : FullSmoothScalar g) :
     H1ComplFullNeumannToLp g (smoothToH1ComplFullNeumann g f) =

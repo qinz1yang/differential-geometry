@@ -183,7 +183,7 @@ noncomputable def H1ComplInteriorToLp
     (UniformSpace.Completion.toComplL :
       InteriorSmoothScalar g →L[ℝ] H1ComplInterior g)
 
-@[simp] lemma H1ComplInteriorToLp_smoothToH1ComplInterior
+lemma H1ComplInteriorToLp_smoothToH1ComplInterior
     (g : SmoothRiemannianMetric (I_half n) M)
     (f : InteriorSmoothScalar g) :
     H1ComplInteriorToLp g (smoothToH1ComplInterior g f) =

@@ -31,7 +31,7 @@ private lemma continuous_norm_fderiv {u : E → ℝ} (hu : ContDiff ℝ (⊤ : �
 
 omit [NeZero d] in
 theorem smooth_grad_memLp_on_ball
-    {p : ℝ} (_hp : 0 < p) {x₀ : E} {R : ℝ} (hR : 0 < R)
+    {p : ℝ} {x₀ : E} {R : ℝ} (hR : 0 < R)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) :
     MemLp (fun y : E => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
       (volume.restrict (Metric.ball x₀ R)) := by
@@ -90,7 +90,7 @@ private theorem smooth_pointwise_holder_bound
     Real.rpow_nonneg (norm_nonneg _) _
   have hf_memLp : MemLp (fun y : E => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
       (volume.restrict (Metric.ball x₀ R)) :=
-    smooth_grad_memLp_on_ball (d := d) hp_pos hR hu
+    smooth_grad_memLp_on_ball (d := d) hR hu
   have hK_memLp : MemLp (fun y : E => ‖x - y‖ ^ (1 - (d : ℝ))) (ENNReal.ofReal q)
       (volume.restrict (Metric.ball x₀ R)) :=
     riesz_kernel_memLp (d := d) hp hR x
@@ -425,7 +425,7 @@ theorem smooth_pointwise_holder_bound_explicit
     (fun y _ => Real.rpow_nonneg (norm_nonneg _) _)
   have hf_memLp : MemLp (fun y : E => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
       (volume.restrict (Metric.ball z r)) :=
-    smooth_grad_memLp_on_ball (d := d) hp_pos hr hu
+    smooth_grad_memLp_on_ball (d := d) hr hu
   have hK_memLp : MemLp (fun y : E => ‖x - y‖ ^ (1 - (d : ℝ))) (ENNReal.ofReal q)
       (volume.restrict (Metric.ball z r)) :=
     riesz_kernel_memLp (d := d) hp hr x
@@ -807,7 +807,7 @@ private theorem smooth_holder_bound_unit_ball_components
       (volume.restrict (Metric.ball (0 : E) 1)) ≠ ⊤ := by
     have h_memLp : MemLp (fun y : E => ‖fderiv ℝ ψ y‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) :=
-      smooth_grad_memLp_on_ball (d := d) hp_pos one_pos hψ
+      smooth_grad_memLp_on_ball (d := d) one_pos hψ
     exact h_memLp.eLpNorm_ne_top
   have h_sum_lt :
       (∑ i : Fin d, eLpNorm (fun y => (fderiv ℝ ψ y) (EuclideanSpace.single i 1))
@@ -943,7 +943,7 @@ private theorem smooth_pair_holder_bound_unit_ball
 
 omit [NeZero d] in
 lemma smooth_grad_eLpNorm_le_of_ball_subset
-    {p : ℝ} (hp_pos : 0 < p) {x₀ z : E} {R r : ℝ} (hR : 0 < R)
+    {p : ℝ} {x₀ z : E} {R r : ℝ} (hR : 0 < R)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     (hsub : Metric.ball z r ⊆ Metric.ball x₀ R) :
     (eLpNorm (fun y => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
@@ -963,7 +963,7 @@ lemma smooth_grad_eLpNorm_le_of_ball_subset
   have h_eLp_ne_top :
       eLpNorm (fun y => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball x₀ R)) ≠ ⊤ :=
-    (smooth_grad_memLp_on_ball (d := d) hp_pos hR hu).eLpNorm_ne_top
+    (smooth_grad_memLp_on_ball (d := d) hR hu).eLpNorm_ne_top
   exact ENNReal.toReal_mono h_eLp_ne_top h_eLp_le
 
 omit [NeZero d] in

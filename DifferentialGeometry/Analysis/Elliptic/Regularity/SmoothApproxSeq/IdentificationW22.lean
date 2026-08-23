@@ -44,15 +44,16 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [I.Boundaryless] in
 private lemma wkpNormChart_one_le_three
-    (g : SmoothRiemannianMetric I M) (u : M → ℝ) :
-    wkpNormChart (I := I) (M := M) g 1 2 u ≤
-      wkpNormChart (I := I) (M := M) g 3 2 u := by
-  calc wkpNormChart (I := I) (M := M) g 1 2 u
-      ≤ wkpNormChart (I := I) (M := M) g 2 2 u :=
-        wkpNormChart_le_succ (I := I) (M := M) g 1 2 u
-    _ ≤ wkpNormChart (I := I) (M := M) g 3 2 u :=
-        wkpNormChart_le_succ (I := I) (M := M) g 2 2 u
+    (u : M → ℝ) :
+    wkpNormChart (I := I) (M := M) 1 2 u ≤
+      wkpNormChart (I := I) (M := M) 3 2 u := by
+  calc wkpNormChart (I := I) (M := M) 1 2 u
+      ≤ wkpNormChart (I := I) (M := M) 2 2 u :=
+        wkpNormChart_le_succ (I := I) (M := M) 1 2 u
+    _ ≤ wkpNormChart (I := I) (M := M) 3 2 u :=
+        wkpNormChart_le_succ (I := I) (M := M) 2 2 u
 
 private theorem smoothApproxSeqWkpThree_cauchy_smoothScalar
     (g : SmoothRiemannianMetric I M)
@@ -91,23 +92,23 @@ private theorem smoothApproxSeqWkpThree_cauchy_smoothScalar
   have hvdiff_toFun : vdiff.toFun = fun x => vm.toFun x - vn.toFun x := by
     rw [hvdiff_def]; rfl
   have h_wkpNormChart_finite :
-      wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun ≠ ⊤ := by
+      wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun ≠ ⊤ := by
     rw [hvdiff_toFun]
     exact wkpNormChart_one_two_smoothScalar_diff_ne_top (I := I) (M := M) g vm vn
   have h_norm_bd : ‖vdiff‖ ≤ C *
-      (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal :=
+      (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal :=
     hC_bnd vdiff h_wkpNormChart_finite
   have h_wkp_chart_3_2 :
-      wkpNormChart (I := I) (M := M) g 3 2 vdiff.toFun ≤
+      wkpNormChart (I := I) (M := M) 3 2 vdiff.toFun ≤
         ENNReal.ofReal (1 / ((m : ℝ) + 1)) +
           ENNReal.ofReal (1 / ((n : ℝ) + 1)) := by
     rw [hvdiff_toFun]
     exact smoothApproxSeqWkpThree_wkpNormChart_diff_le (I := I) (M := M) g hu_h m n
   have h_wkp_chart_1_2 :
-      wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun ≤
+      wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun ≤
         ENNReal.ofReal (1 / ((m : ℝ) + 1)) +
           ENNReal.ofReal (1 / ((n : ℝ) + 1)) :=
-    (wkpNormChart_one_le_three (I := I) (M := M) g vdiff.toFun).trans h_wkp_chart_3_2
+    (wkpNormChart_one_le_three (I := I) (M := M) vdiff.toFun).trans h_wkp_chart_3_2
   have h_sum_finite :
       ENNReal.ofReal (1 / ((m : ℝ) + 1)) +
         ENNReal.ofReal (1 / ((n : ℝ) + 1)) ≠ ⊤ := by
@@ -122,7 +123,7 @@ private theorem smoothApproxSeqWkpThree_cauchy_smoothScalar
     rw [ENNReal.toReal_add ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top]
     rw [ENNReal.toReal_ofReal h_inv_m_nn, ENNReal.toReal_ofReal h_inv_n_nn]
   have h_wkp_toReal_le :
-      (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+      (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
         1 / ((m : ℝ) + 1) + 1 / ((n : ℝ) + 1) := by
     have h_mono := ENNReal.toReal_mono h_sum_finite h_wkp_chart_1_2
     rwa [h_sum_toReal] at h_mono
@@ -138,15 +139,15 @@ private theorem smoothApproxSeqWkpThree_cauchy_smoothScalar
     linarith
   have h_sum_le : 1 / ((m : ℝ) + 1) + 1 / ((n : ℝ) + 1) ≤ 2 * (1 / ((N0 : ℝ) + 1)) := by
     linarith
-  have h_wkp_toReal_le_2N : (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+  have h_wkp_toReal_le_2N : (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
         2 * (1 / ((N0 : ℝ) + 1)) :=
     h_wkp_toReal_le.trans h_sum_le
-  have h_final : C * (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+  have h_final : C * (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
       C * (2 * (1 / ((N0 : ℝ) + 1))) := by
     apply mul_le_mul_of_nonneg_left h_wkp_toReal_le_2N hC_nn
   have h_2N_le : 2 * (1 / ((N0 : ℝ) + 1)) ≤ 2 * ε' := by
     apply mul_le_mul_of_nonneg_left hN0_inv_le (by norm_num : (0 : ℝ) ≤ 2)
-  have h_step1 : C * (wkpNormChart (I := I) (M := M) g 1 2 vdiff.toFun).toReal ≤
+  have h_step1 : C * (wkpNormChart (I := I) (M := M) 1 2 vdiff.toFun).toReal ≤
       C * (2 * ε') := by
     refine h_final.trans ?_
     exact mul_le_mul_of_nonneg_left h_2N_le hC_nn
@@ -157,7 +158,7 @@ private theorem smoothApproxSeqWkpThree_cauchy_smoothScalar
   rw [h1]
   rw [div_lt_iff₀ hCp1_pos]
   have hC_lt_Cp1 : C < Cp1 := by rw [hCp1_def]; linarith
-  nlinarith [hε_pos]
+  simpa only [mul_comm] using mul_lt_mul_of_pos_right hC_lt_Cp1 hε_pos
 
 private theorem smoothToH1Compl_smoothApproxSeqWkpThree_cauchy
     (g : SmoothRiemannianMetric I M)
@@ -241,17 +242,17 @@ private theorem eLpNorm_diff_smoothApproxSeqWkpThree_tendsto_zero
       (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h n).smooth.continuous.measurable
   have h_bnd := hC_bnd h_meas
   have h_chart_3_2 :
-      wkpNormChart (I := I) (M := M) g 3 2
+      wkpNormChart (I := I) (M := M) 3 2
           (fun x : M => u x -
             (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h n).toFun x) ≤
         ENNReal.ofReal (1 / ((n : ℝ) + 1)) :=
     smoothApproxSeqWkpThree_wkpNormChart_le (I := I) (M := M) g hu_h n
   have h_chart_1_2 :
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (fun x : M => u x -
             (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h n).toFun x) ≤
         ENNReal.ofReal (1 / ((n : ℝ) + 1)) :=
-    (wkpNormChart_one_le_three (I := I) (M := M) g _).trans h_chart_3_2
+    (wkpNormChart_one_le_three (I := I) (M := M) _).trans h_chart_3_2
   have h_chain : eLpNorm
         (fun x => u x -
           (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h n).toFun x) 2

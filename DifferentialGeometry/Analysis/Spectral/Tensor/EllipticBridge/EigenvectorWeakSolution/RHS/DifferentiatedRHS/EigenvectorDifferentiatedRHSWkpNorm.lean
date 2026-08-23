@@ -563,7 +563,7 @@ private lemma wkpNorm_chosenWeakPartial_iteratedPartial_succ_le
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   refine le_trans (wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-    K hΩ_open _ b) ?_
+    K _ b) ?_
   exact wkpNorm_mono_order (d := Module.finrank ℝ E) (by omega) _ _
 
 end AtomBoundsUnconditional
@@ -960,7 +960,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_wkpNorm_le
   refine ⟨h_mem, C₀, hC₀_nn, le_trans hC₀ ?_⟩
   gcongr
   refine le_trans (wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-    K hΩ_open _ (l (Fin.last m))) ?_
+    K _ (l (Fin.last m))) ?_
   rw [hA_def, diffNumeratorAggregateK]
   exact le_trans le_add_self le_self_add
 
@@ -1593,7 +1593,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_wkpNorm_le_uniform
   refine le_trans ((hC₀ _ (h_factor i).1 (h_factor i).2).2) ?_
   gcongr
   refine le_trans (wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-    K hΩ_open _ (l (Fin.last m))) ?_
+    K _ (l (Fin.last m))) ?_
   rw [diffNumeratorAggregateK]
   exact le_trans le_add_self le_self_add
 

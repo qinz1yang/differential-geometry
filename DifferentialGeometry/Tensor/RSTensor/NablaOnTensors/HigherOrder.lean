@@ -566,7 +566,6 @@ inductive HigherCovDerivRSRealizes
 
 omit [IsManifold I ∞ M] in
 theorem higherCovDeriv0SRealizes_two_apply {s : ℕ}
-    [IsManifold I ∞ M]
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     {nablaAlpha : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 1)}

@@ -273,7 +273,7 @@ lemma smoothExtensionScalar_iteratedFDeriv_bound
   exact iteratedFDeriv_uniformBound_of_compactSupport hψ_smooth hψ_compact k
 
 lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) {b φ u : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1)
@@ -312,12 +312,10 @@ lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
 
 theorem MemWkpChart_smooth_mul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (φ : C^∞⟮I, M; ℝ⟯) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g k p u) :
-    MemWkpChart (I := I) (M := M) g k p (fun x => (φ : M → ℝ) x * u x) := by
+    (hu : MemWkpChart (I := I) (M := M) k p u) :
+    MemWkpChart (I := I) (M := M) k p (fun x => (φ : M → ℝ) x * u x) := by
   classical
   intro α
   obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_supp⟩ :=

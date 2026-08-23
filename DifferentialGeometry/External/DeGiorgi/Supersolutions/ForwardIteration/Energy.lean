@@ -11,7 +11,7 @@ supersolutions.
 
 noncomputable section
 
-open MeasureTheory Metric
+open MeasureTheory
 
 namespace DeGiorgi
 
@@ -125,6 +125,7 @@ theorem superPowerCutoffFwd_energy_bound_reg
         2 * Cη ^ 2 * (A.1.Λ * (p / (1 - p)) ^ 2 + 1) *
           ∫ x in Metric.ball (0 : E) s,
             superExactShiftPow ε p (u x) ∂volume := by
+  let _ := _hd
   let Ω : Set E := Metric.ball (0 : E) s
   let Ω1 : Set E := Metric.ball (0 : E) 1
   let μ : Measure E := volume.restrict Ω

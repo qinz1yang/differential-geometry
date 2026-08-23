@@ -134,6 +134,7 @@ private lemma volume_restrict_absolutelyContinuous_chartPulledWeighted_restrict
     densityOnEuclid_pos (I := I) g α hy_chart
   exact (ENNReal.ofReal_pos.mpr h_pos).ne'
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothFChartResidual_ae_sub
     (g : SmoothRiemannianMetric I M) (α : M)
     (v₁ v₂ v_diff : SmoothScalar g)
@@ -176,7 +177,7 @@ theorem smoothFChartResidual_ae_sub
               (smoothToH1Compl (I := I) (M := M) g v₂)) := by
     rw [h_residual_sub_at]
   have h_coeFn_sub :=
-    chartPushedRawLpFromLp_coeFn_sub (I := I) (M := M) g inferInstance α
+    chartPushedRawLpFromLp_coeFn_sub (I := I) (M := M) g α
       (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fHLeibnizResidualLp
         (I := I) (M := M) g α
         (smoothToH1Compl (I := I) (M := M) g v₁))

@@ -26,7 +26,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Equivalence
@@ -271,7 +270,7 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
     wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform (E := E) (H := H)
       (I := I) (M := M) g (p := 2) h_one_le_two h_two_ne_top
   have h_wkp_bound : ∀ n : ℕ,
-      wkpNormChart (I := I) (M := M) g 1 2 (s n).toFun ≤
+      wkpNormChart (I := I) (M := M) 1 2 (s n).toFun ≤
         ENNReal.ofReal (4 * C₀) := by
     intro n
     have h := hC₀_bound (s n).smooth
@@ -311,7 +310,7 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
       exact ENNReal.ofReal_le_ofReal (by linarith)
     have h_chain := h_sum_le.trans h_two_two
     have h_step :
-        wkpNormChart (I := I) (M := M) g 1 2 (s n).toFun ≤
+        wkpNormChart (I := I) (M := M) 1 2 (s n).toFun ≤
           ENNReal.ofReal C₀ * ENNReal.ofReal (2 + 2) := by
       refine h.trans ?_
       gcongr
@@ -328,15 +327,15 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 by simp]
     exact ENNReal.ofReal_le_ofReal (by norm_num)
   have h_sn_memWkp : ∀ n : ℕ, MemWkpChart
-      (I := I) (M := M) g 1 (ENNReal.ofReal 2) (s n).toFun := fun n =>
+      (I := I) (M := M) 1 (ENNReal.ofReal 2) (s n).toFun := fun n =>
     MemWkpChart_of_contMDiff
-      (I := I) (M := M) g h_one_le_ofReal_two (s n).smooth
+      (I := I) (M := M) h_one_le_ofReal_two (s n).smooth
   have h_two_eq : ENNReal.ofReal (2 : ℝ) = (2 : ℝ≥0∞) := by
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num,
         ENNReal.ofReal_natCast]
     norm_num
   have h_wkp_bound' : ∀ n : ℕ,
-      wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal 2) (s n).toFun ≤
+      wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal 2) (s n).toFun ≤
         ENNReal.ofReal (4 * C₀) := by
     intro n
     rw [h_two_eq]

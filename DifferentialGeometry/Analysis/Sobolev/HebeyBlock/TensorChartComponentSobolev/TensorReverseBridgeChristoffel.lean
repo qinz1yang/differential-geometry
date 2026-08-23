@@ -25,7 +25,6 @@ namespace HebeyBlock
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -91,7 +90,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
       ∀ (T : SmoothCcTensorH1 g r s) (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s T.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * ENNReal.ofReal ‖T‖ := by
@@ -118,7 +117,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
       ∀ (T : SmoothCcTensorH1 g r s)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s T.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * (‖T‖₊ : ℝ≥0∞) := by
@@ -135,7 +134,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
   have hCα_le : ∀ (α : M) (T : SmoothCcTensorH1 g r s)
       (Idx : Fin r → Fin (Module.finrank ℝ E))
       (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s T.toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal (Cα α) * (‖T‖₊ : ℝ≥0∞) :=
@@ -174,9 +173,9 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
         (I := I) (M := M) g r s α h_zero T.toCcTensor Idx Jdx
     rw [h_scalar_zero]
     have h_wkp_zero :
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (fun _ : M => (0 : ℝ)) = 0 :=
-      wkpNormChart_zero_fun (I := I) (M := M) g (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+      wkpNormChart_zero_fun (I := I) (M := M) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have h_zero_fun_eq :
         (0 : M → ℝ) = (fun _ : M => (0 : ℝ)) := by rfl
     rw [h_zero_fun_eq, h_wkp_zero]

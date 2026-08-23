@@ -57,7 +57,7 @@ theorem chartH4NonSmoothPOUWitness_iff_memWkp_four
   ⟨fun h => h.memWkp_four,
    fun h => chartH4NonSmoothPOUWitness_of_memWkp_four g (u := u) (α := α) h⟩
 
-def ChartSideH4Bridge (_g : SmoothRiemannianMetric I M) (u : M → ℝ) : Prop :=
+def ChartSideH4Bridge (u : M → ℝ) : Prop :=
   ∀ α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 4 2
@@ -69,7 +69,7 @@ def ChartSideH4Bridge (_g : SmoothRiemannianMetric I M) (u : M → ℝ) : Prop :
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartH4NonSmoothPOUWitness_of_chartSideH4Bridge
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
-    (h_bridge : ChartSideH4Bridge (I := I) (M := M) g u) :
+    (h_bridge : ChartSideH4Bridge (I := I) (M := M) u) :
     ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α :=
   fun α => chartH4NonSmoothPOUWitness_of_memWkp_four g (u := u) (α := α)
     (h_bridge α)
@@ -79,15 +79,15 @@ theorem laplacianDomainPow_memWkpChart_four_of_chartSideH4Bridge
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
-    (h_bridge : ChartSideH4Bridge (I := I) (M := M) g
+    (h_bridge : ChartSideH4Bridge (I := I) (M := M)
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ :=
   laplacianDomainPow_memWkpChart_four (I := I) (M := M) g hu_h
@@ -98,30 +98,30 @@ theorem laplacianDomainPow_memWkpChart_four_two_sided_of_chartSideBridges
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
-    (h_bridge_u : ChartSideH4Bridge (I := I) (M := M) g
+    (h_bridge_u : ChartSideH4Bridge (I := I) (M := M)
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)))
-    (h_bridge_rhs : ChartSideH4Bridge (I := I) (M := M) g
+    (h_bridge_rhs : ChartSideH4Bridge (I := I) (M := M)
       (((laplacianDomain.preimage (I := I) (M := M) g
           ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
             (I := I) (M := M) g 1 hu_h⟩ :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
     (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((H1ComplToLp (I := I) (M := M) g u_h :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤) ∧
     (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
       DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-        (I := I) (M := M) g 4 2
+        (I := I) (M := M) 4 2
         ((laplacianDomain.preimage (I := I) (M := M) g
             ⟨u_h, laplacianDomainPow_succ_subset_laplacianDomain
               (I := I) (M := M) g 1 hu_h⟩ :

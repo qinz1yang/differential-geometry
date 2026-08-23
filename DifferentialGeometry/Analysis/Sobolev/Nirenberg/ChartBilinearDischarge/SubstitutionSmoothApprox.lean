@@ -41,10 +41,10 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 theorem exists_chart_target_cutoff
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless]
     {α : M}
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {_R₀ : ℝ} {h : ℝ}
+    {h : ℝ}
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ χ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧
@@ -815,10 +815,10 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem standardNirenbergTest_smooth_seq
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
+    {h : ℝ} (hh : h ≠ 0)
     {u_seq : ℕ → EuclN → ℝ}
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (_hu_seq_cs : ∀ n, HasCompactSupport (u_seq n)) :
+    :
     ∀ n, ContDiff ℝ (⊤ : ℕ∞)
       (standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n)) ∧
         HasCompactSupport
@@ -954,13 +954,13 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
     {η : EuclN → ℝ} (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_cs : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
-    {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
+    {h : ℝ} (hh : h ≠ 0)
+    {K_0 : Set EuclN}
     (hχ_one : ∀ x ∈ Metric.cthickening |h| K_0, χ x = 1)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     {u_seq : ℕ → EuclN → ℝ}
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (_hu_seq_cs : ∀ n, HasCompactSupport (u_seq n))
+    (hu_seq_cs : ∀ n, HasCompactSupport (u_seq n))
     (hu_seq_l2_tendsto : Tendsto (fun n => eLpNorm
       (fun x => u_seq n x - χ x * D.u_chart x) 2
       (volume : Measure EuclN)) atTop (𝓝 0)) :
@@ -1102,7 +1102,7 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
           (volume : Measure EuclN) := by
       intro n
       have h_uSeq_lp : MemLp (u_seq n) 2 (volume : Measure EuclN) :=
-        (hu_seq_smooth n).continuous.memLp_of_hasCompactSupport (_hu_seq_cs n)
+        (hu_seq_smooth n).continuous.memLp_of_hasCompactSupport (hu_seq_cs n)
       exact h_uSeq_lp.sub h_χu_lp
     have h_bound : ∀ n,
         eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η

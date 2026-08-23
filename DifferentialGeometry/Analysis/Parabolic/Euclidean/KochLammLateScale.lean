@@ -21,9 +21,10 @@ def klTermRoot (t : ℝ) : ℝ :=
   (klTermMassCore (V := V) t) ^ (1 / klQDual V)
 
 def klLate0C (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   klTermRoot (V := V) 1
 
+omit [FiniteDimensional ℝ V] in
 theorem klTermCore_pos {t : ℝ} (ht : 0 < t) :
     0 < klTermMassCore (V := V) t := by
   have ha : 0 < klHeatExp V + 1 := by
@@ -33,6 +34,7 @@ theorem klTermCore_pos {t : ℝ} (ht : 0 < t) :
     (div_pos (Real.rpow_pos_of_pos (half_pos ht) _) ha)
     (klBasePow_pos (V := V) (klQ_holder (V := V)).pos)
 
+omit [FiniteDimensional ℝ V] in
 theorem klTermCore_scale {R : ℝ} (hR : 0 < R) :
     klTermMassCore (V := V) (R ^ 2) =
       (klLqScaleR (V := V) R) ^ klQDual V *
@@ -68,6 +70,7 @@ theorem klTermCore_scale {R : ℝ} (hR : 0 < R) :
   norm_num only [one_div, one_pow]
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klTermRoot_scale {R : ℝ} (hR : 0 < R) :
     klTermRoot (V := V) (R ^ 2) =
       klLate0C V * klLqScaleR (V := V) R := by

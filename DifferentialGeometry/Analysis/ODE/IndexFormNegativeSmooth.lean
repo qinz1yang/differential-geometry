@@ -956,6 +956,7 @@ theorem IsJacobiSolOn.exists_smooth_neg_on
       W 0 = 0 ∧
       W L = 0 ∧
       indexForm R 0 L W (deriv W) W (deriv W) < 0 := by
+  let _ := (inferInstance : (CompleteSpace F))
   obtain ⟨s, hs⟩ :=
     hsol.exists_split_neg_on hc hR hSym hy0 hyc hne
   let Z : ℝ → F := indexTestFieldTo L (v c)

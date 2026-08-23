@@ -128,7 +128,7 @@ theorem tensorChartComponent_memWkpChart_one_two
     (S : SmoothCcTensorH1 g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    MemWkpChart (I := I) (M := M) g 1 2
+    MemWkpChart (I := I) (M := M) 1 2
       (tensorChartComponentScalar (I := I) (M := M)
         g r s S.toCcTensor α Idx Jdx) := by
   have hsmooth :=
@@ -136,7 +136,7 @@ theorem tensorChartComponent_memWkpChart_one_two
       g r s S.toCcTensor α Idx Jdx
   have hp : (1 : ℝ≥0∞) ≤ 2 := by norm_num
   exact DifferentialGeometry.Analysis.Sobolev.Equivalence.MemWkpChart_of_contMDiff
-    (I := I) (M := M) g hp hsmooth
+    (I := I) (M := M) hp hsmooth
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorChartComponentScalar_wkpNormChart_lt_top
@@ -144,11 +144,11 @@ theorem tensorChartComponentScalar_wkpNormChart_lt_top
     (S : SmoothCcTensorH1 g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    wkpNormChart (I := I) (M := M) g 1 2
+    wkpNormChart (I := I) (M := M) 1 2
       (tensorChartComponentScalar (I := I) (M := M)
         g r s S.toCcTensor α Idx Jdx) < ⊤ := by
   have hp : (1 : ℝ≥0∞) ≤ 2 := by norm_num
-  exact wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) g hp
+  exact wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp
     (tensorChartComponent_memWkpChart_one_two
       (I := I) (M := M) g r s S α Idx Jdx)
 
@@ -159,22 +159,22 @@ theorem tensorChartComponent_wkpNormChart_le_per_section
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     ∃ C : ℝ, 0 ≤ C ∧
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
         (tensorChartComponentScalar (I := I) (M := M)
           g r s S.toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal C * (‖S‖₊ + 1) := by
   classical
   have h_lhs_lt_top := tensorChartComponentScalar_wkpNormChart_lt_top
     (I := I) (M := M) g r s S α Idx Jdx
-  have h_lhs_ne_top : wkpNormChart (I := I) (M := M) g 1 2
+  have h_lhs_ne_top : wkpNormChart (I := I) (M := M) 1 2
       (tensorChartComponentScalar (I := I) (M := M)
         g r s S.toCcTensor α Idx Jdx) ≠ ⊤ := h_lhs_lt_top.ne
-  set a : ℝ := (wkpNormChart (I := I) (M := M) g 1 2
+  set a : ℝ := (wkpNormChart (I := I) (M := M) 1 2
       (tensorChartComponentScalar (I := I) (M := M)
         g r s S.toCcTensor α Idx Jdx)).toReal with ha_def
   have ha_nn : 0 ≤ a := ENNReal.toReal_nonneg
   refine ⟨a + 1, by linarith, ?_⟩
-  have h_lhs_eq : wkpNormChart (I := I) (M := M) g 1 2
+  have h_lhs_eq : wkpNormChart (I := I) (M := M) 1 2
       (tensorChartComponentScalar (I := I) (M := M)
         g r s S.toCcTensor α Idx Jdx) = ENNReal.ofReal a := by
     rw [ha_def]
@@ -199,7 +199,7 @@ theorem tensorChartComponent_wkpNormChart_le_per_section_forall
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     ∀ S : SmoothCcTensorH1 g r s,
       ∃ C : ℝ, 0 ≤ C ∧
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s S.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * (‖S‖₊ + 1) := fun S =>

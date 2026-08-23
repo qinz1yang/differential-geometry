@@ -32,7 +32,6 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 
 private local instance : MeasurableSpace E := borel E
@@ -141,12 +140,11 @@ private lemma eigenProjector_frame_component_sq_le (g : SmoothRiemannianMetric I
   have hN_le : N ≤ D * ‖v‖ := by
     rcases eq_or_lt_of_le hN_nn with hN0 | hN0
     · rw [← hN0]; exact mul_nonneg hD_nn (norm_nonneg _)
-    · have h2 : N * N ≤ (D * ‖v‖) * N := by nlinarith [hNsq]
-      exact le_of_mul_le_mul_right (by linarith [h2]) hN0
+    · have h2 : N * N ≤ (D * ‖v‖) * N := by
+        simpa only [pow_two, mul_assoc, mul_left_comm, mul_comm] using hNsq
+      exact le_of_mul_le_mul_right h2 hN0
   calc ∑ i ∈ S, (c i) ^ 2 = N ^ 2 := by rw [hN, hL2]
-    _ ≤ (D * ‖v‖) ^ 2 := by
-        have hub : 0 ≤ D * ‖v‖ := mul_nonneg hD_nn (norm_nonneg _)
-        nlinarith [hN_le, hN_nn]
+    _ ≤ (D * ‖v‖) ^ 2 := pow_le_pow_left₀ hN_nn hN_le 2
     _ = D ^ 2 * ‖v‖ ^ 2 := by rw [mul_pow]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup

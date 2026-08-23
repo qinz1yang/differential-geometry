@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option maxSynthPendingDepth 3
 
 open MeasureTheory Set Filter
 open scoped ENNReal NNReal
@@ -13,11 +12,7 @@ open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 theorem timeL2_norm_le_of_ae_three_bound
     {T : ℝ} {X Y Z W : Type*}
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
-    [NormedAddCommGroup Z] [NormedSpace ℝ Z] [CompleteSpace Z]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
-    (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T) (r : timeL2 W T)
+    [NormedAddCommGroup X] [NormedAddCommGroup Y] [NormedAddCommGroup Z] [NormedAddCommGroup W] (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T) (r : timeL2 W T)
     {A B C : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C)
     (hbound : ∀ᵐ t ∂(timeMeasure T), ‖h t‖ ≤ A * ‖p t‖ + B * ‖q t‖ + C * ‖r t‖) :
     ‖h‖ ≤ A * ‖p‖ + B * ‖q‖ + C * ‖r‖ := by
@@ -102,6 +97,7 @@ variable {T : ℝ}
   {H : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
   {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
 
+omit [CompleteSpace X] [NormedSpace ℝ Y] [CompleteSpace Y] in
 theorem nemytskiiTame_time_bound
     (ι : X →L[ℝ] H) {N : X → Y} {K : ℝ≥0} {Minf Dinf : ℝ}
     (hMinf : 0 ≤ Minf) (hDinf : 0 ≤ Dinf)
@@ -141,6 +137,7 @@ theorem nemytskiiTame_time_bound
   have hBC : 0 ≤ (K : ℝ) * Dinf := mul_nonneg K.coe_nonneg hDinf
   exact timeL2_norm_le_of_ae_three_bound (w - w') (u - v) u v hA hBC hBC hbound
 
+omit [CompleteSpace X] [NormedSpace ℝ Y] [CompleteSpace Y] in
 theorem nemytskiiTame_time_bound_L2
     (ι : X →L[ℝ] H) {N : X → Y} {K : ℝ≥0} {Minf Dinf M₂ : ℝ}
     (hMinf : 0 ≤ Minf) (hDinf : 0 ≤ Dinf)

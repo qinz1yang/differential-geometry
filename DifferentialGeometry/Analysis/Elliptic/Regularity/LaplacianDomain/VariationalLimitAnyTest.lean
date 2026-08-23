@@ -24,7 +24,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalLimit
@@ -147,6 +146,7 @@ private lemma tangentSectionAction_grad_g_eq_inner_grad
   exact (inner_gradFun (I := I) g φ x _).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [T2Space M] in
 theorem Δ_g_smul_eq
     (g : SmoothRiemannianMetric I M)
     {φ v : M → ℝ}

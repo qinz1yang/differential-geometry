@@ -96,7 +96,6 @@ noncomputable def minimizingVec
     (hopf_rinow_expMapIntrinsic_surjective_minimizing
       (I := I) g hEnorm a b)
 
-
 theorem minimizingVec_exp
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -105,7 +104,6 @@ theorem minimizingVec_exp
   (Classical.choose_spec
     (hopf_rinow_expMapIntrinsic_surjective_minimizing
       (I := I) g hEnorm a b)).1
-
 
 theorem minimizingVec_len
     (g : SmoothRiemannianMetric I M)
@@ -118,7 +116,6 @@ theorem minimizingVec_len
     (hopf_rinow_expMapIntrinsic_surjective_minimizing
       (I := I) g hEnorm a b)).2
 
-
 noncomputable def minJoin
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -126,14 +123,12 @@ noncomputable def minJoin
   intrinsicGeodesic (I := I) g hEnorm a
     (minimizingVec (I := I) g hEnorm a b) t
 
-
 @[simp] theorem minJoin_zero
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (a b : M) : minJoin (I := I) g hEnorm a b 0 = a := by
   exact intrinsicGeodesic_zero (I := I) g hEnorm a
     (minimizingVec (I := I) g hEnorm a b)
-
 
 @[simp] theorem minJoin_one
     (g : SmoothRiemannianMetric I M)
@@ -143,14 +138,12 @@ noncomputable def minJoin
     (minimizingVec (I := I) g hEnorm a b) 1 = b
   rw [← expMapIntrinsic_def, minimizingVec_exp]
 
-
 theorem minJoin_cont
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (a b : M) : Continuous (minJoin (I := I) g hEnorm a b) :=
   intrinsicGeodesic_continuous (I := I) g hEnorm a
     (minimizingVec (I := I) g hEnorm a b)
-
 
 theorem minJoin_edist_le
     (g : SmoothRiemannianMetric I M)
@@ -162,6 +155,67 @@ theorem minJoin_edist_le
     intrinsicGeodesic_riemannianEDist_le
       (I := I) g hEnorm a (minimizingVec (I := I) g hEnorm a b)
         (s := 0) (t := t) ht
+
+theorem minJoin_arcLength
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) :
+    Variation.arcLength (I := I) g (minJoin (I := I) g hEnorm a b) 0 1 =
+      (riemannianEDist I a b).toReal := by
+  have harc :
+      Variation.arcLength (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm a
+            (minimizingVec (I := I) g hEnorm a b)) 0 1 =
+        Real.sqrt
+          (g.inner a (minimizingVec (I := I) g hEnorm a b)
+            (minimizingVec (I := I) g hEnorm a b)) := by
+    have hI :
+        Variation.arcLength (I := I) g
+            (intrinsicGeodesic (I := I) g hEnorm a
+              (minimizingVec (I := I) g hEnorm a b)) 0 1 =
+          ∫ _t in (0 : ℝ)..1,
+            Real.sqrt
+              (g.inner a (minimizingVec (I := I) g hEnorm a b)
+                (minimizingVec (I := I) g hEnorm a b)) := by
+      unfold Variation.arcLength
+      apply intervalIntegral.integral_congr
+      intro t _
+      dsimp only
+      congr 1
+      exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm a
+        (minimizingVec (I := I) g hEnorm a b) t
+    rw [hI, intervalIntegral.integral_const, smul_eq_mul]
+    norm_num
+  change Variation.arcLength (I := I) g
+      (intrinsicGeodesic (I := I) g hEnorm a
+        (minimizingVec (I := I) g hEnorm a b)) 0 1 =
+    (riemannianEDist I a b).toReal
+  rw [harc, minimizingVec_len]
+
+theorem minJoin_pathLen
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) :
+    Manifold.pathELength I (minJoin (I := I) g hEnorm a b) 0 1 =
+      ENNReal.ofReal ((riemannianEDist I a b).toReal) := by
+  let γ : ℝ → M := minJoin (I := I) g hEnorm a b
+  have hγC1 : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 1) := by
+    exact
+      (intrinsicGeodesic_contMDiffOn (I := I) g hEnorm a
+        (minimizingVec (I := I) g hEnorm a b)).mono
+        (Set.subset_univ _)
+  rw [Geodesic.pathELength_eq_arcLength_riemannianBundle (I := I) g zero_le_one
+      (Geodesic.speedSqrt_integrableOn_Icc_of_C1
+        (I := I) g zero_le_one hγC1)
+      (fun t _ => hEnorm (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))]
+  change ENNReal.ofReal
+      (Variation.arcLength (I := I) g
+        (minJoin (I := I) g hEnorm a b) 0 1) =
+    ENNReal.ofReal ((riemannianEDist I a b).toReal)
+  rw [minJoin_arcLength (I := I) g hEnorm a b]
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in

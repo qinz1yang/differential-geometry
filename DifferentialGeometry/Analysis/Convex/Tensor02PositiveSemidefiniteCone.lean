@@ -9,7 +9,7 @@ noncomputable section
 
 namespace DifferentialGeometry
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Analysis.InnerProductSpace
 open scoped Manifold ContDiff

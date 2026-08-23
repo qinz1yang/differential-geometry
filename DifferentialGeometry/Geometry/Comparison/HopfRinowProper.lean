@@ -167,6 +167,7 @@ theorem riemMetric_dist_eq
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [ConnectedSpace M] in
+omit [T2Space (TangentBundle I M)] in
 theorem expImgClosedBall_compact
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
@@ -344,6 +345,7 @@ theorem riemMetric_dist_eq_of_complete_metric
     letI : CompleteSpace M := hcomplete.complete
     letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
     dist x y = (riemannianEDist I x y).toReal := by
+  let _ := hcomplete
   letI : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))

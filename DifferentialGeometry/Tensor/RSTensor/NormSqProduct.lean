@@ -73,6 +73,56 @@ theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rfl
 
 omit [IsManifold I 2 M] [T2Space M] in
+theorem normSq0S_prod {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric_gen I M) (x : M) {s q : ℕ}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x) :
+    normSq0S (I := I) g x (s + q)
+        (Bundle.continuousMultilinearMap.product_fun
+          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) A B)
+      = normSq0S (I := I) g x s A * normSq0S (I := I) g x q B := by
+  classical
+  rw [normSq0S_identity_eq_sum_sq (I := I) g x (s + q) basis hinv,
+    normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv,
+    normSq0S_identity_eq_sum_sq (I := I) g x q basis hinv,
+    Finset.sum_mul_sum,
+    ← Fintype.sum_prod_type
+      (f := fun p : (Fin s -> Idx) × (Fin q -> Idx) =>
+        component0S (I := I) basis A p.1 ^ 2 *
+          component0S (I := I) basis B p.2 ^ 2)]
+  refine Fintype.sum_equiv
+    { toFun := fun slots : Fin (s + q) -> Idx =>
+        (slots ∘ Fin.castAdd q, slots ∘ Fin.natAdd s)
+      invFun := fun p => Fin.addCases p.1 p.2
+      left_inv := fun slots => by
+        funext i
+        refine Fin.addCases (fun a => ?_) (fun b => ?_) i
+        · simp only [Fin.addCases_left, Function.comp_apply]
+        · simp only [Fin.addCases_right, Function.comp_apply]
+      right_inv := fun p => by
+        obtain ⟨f, h⟩ := p
+        refine Prod.ext ?_ ?_
+        · funext a
+          simp only [Function.comp_apply, Fin.addCases_left]
+        · funext b
+          simp only [Function.comp_apply, Fin.addCases_right] }
+    _ _ ?_
+  intro slots
+  have hprod :
+      component0S (I := I) basis
+          (Bundle.continuousMultilinearMap.product_fun
+            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) A B) slots
+        = component0S (I := I) basis A (slots ∘ Fin.castAdd q) *
+          component0S (I := I) basis B (slots ∘ Fin.natAdd s) := by
+    rw [component0S_apply, component0S_apply, component0S_apply,
+      Bundle.continuousMultilinearMap.product_fun_apply]
+    rfl
+  rw [hprod, mul_pow]
+  rfl
+
+omit [IsManifold I 2 M] [T2Space M] in
 theorem normSq0S_domDomCongr {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothMetric_gen I M) (x : M) {s s' : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))

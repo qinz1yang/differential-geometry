@@ -106,13 +106,9 @@ variable {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma tensor02Scalar_tensorialAt_X
-    (_covOn : IsCovariantDerivativeOn (V := (TangentSpace I : M → Type _)) E
-      (cov : (Π x : M, TangentSpace I x) →
-        (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x))
-      Set.univ)
     (T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (x : M) (Y Z : Π x : M, TangentSpace I x)
-    (_hY : MDiffAt (T% Y) x) (_hZ : MDiffAt (T% Z) x) :
+    :
     TensorialAt I E (tensor02Scalar cov T x · Y Z) x where
   smul {f X} _hf _hX := by
     classical
@@ -142,7 +138,7 @@ lemma tensor02Scalar_tensorialAt_Y
       Set.univ)
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hT : MDiffAtTensor02 T x)
-    (X : Π x : M, TangentSpace I x) (_hX : MDiffAt (T% X) x)
+    (X : Π x : M, TangentSpace I x)
     (Z : Π x : M, TangentSpace I x) (hZ : MDiffAt (T% Z) x) :
     TensorialAt I E (tensor02Scalar cov T x X · Z) x where
   smul {g Y} hg hY := by
@@ -214,7 +210,7 @@ lemma tensor02Scalar_tensorialAt_Z
       Set.univ)
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hT : MDiffAtTensor02 T x)
-    (X : Π x : M, TangentSpace I x) (_hX : MDiffAt (T% X) x)
+    (X : Π x : M, TangentSpace I x)
     (Y : Π x : M, TangentSpace I x) (hY : MDiffAt (T% Y) x) :
     TensorialAt I E (tensor02Scalar cov T x X Y ·) x where
   smul {g Z} hg hZ := by
@@ -288,10 +284,10 @@ private noncomputable def tensor02BilinAt
     x
     (fun Z hZ =>
       tensor02Scalar_tensorialAt_Y cov.isCovariantDerivativeOnUniv hT
-        X (mdifferentiableAt_extend ..) Z hZ)
+        X Z hZ)
     (fun Y hY =>
       tensor02Scalar_tensorialAt_Z cov.isCovariantDerivativeOnUniv hT
-        X (mdifferentiableAt_extend ..) Y hY)
+        X Y hY)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensor02BilinAt_apply_extend
@@ -391,7 +387,7 @@ lemma tensor02CovAt_apply_of_diff_extend
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hT : MDiffAtTensor02 T x) {X Y Z : Π x : M, TangentSpace I x}
-    (_hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
     tensor02CovAt cov T x (X x) (Y x) (Z x) =
       tensor02Scalar (cov.toFun) T x X Y Z := by
   classical
@@ -461,9 +457,9 @@ private lemma tensor02CovFun_add_of_mdiff
   rw [show v = X x from hXx.symm, show y = Y x from hYx.symm,
       show z = Z x from hZx.symm]
   rw [tensor02CovFun_apply, tensor02CovFun_apply, tensor02CovFun_apply]
-  rw [tensor02CovAt_apply_of_diff_extend cov hsum_T hX hY hZ,
-      tensor02CovAt_apply_of_diff_extend cov hT_t hX hY hZ,
-      tensor02CovAt_apply_of_diff_extend cov hT'_t hX hY hZ]
+  rw [tensor02CovAt_apply_of_diff_extend cov hsum_T hY hZ,
+      tensor02CovAt_apply_of_diff_extend cov hT_t hY hZ,
+      tensor02CovAt_apply_of_diff_extend cov hT'_t hY hZ]
   change extDerivFun (I := I) (fun b => (T + T') b (Y b) (Z b)) x (X x)
       - (T + T') x (cov.toFun Y x (X x)) (Z x)
       - (T + T') x (Y x) (cov.toFun Z x (X x)) =
@@ -529,13 +525,13 @@ private lemma tensor02CovFun_leibniz_of_mdiff
   rw [show v = X x from hXx.symm, show y = Y x from hYx.symm,
       show z = Z x from hZx.symm]
   rw [tensor02CovFun_apply, tensor02CovFun_apply]
-  rw [tensor02CovAt_apply_of_diff_extend cov hsum_T hX hY hZ]
+  rw [tensor02CovAt_apply_of_diff_extend cov hsum_T hY hZ]
   rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
       ContinuousLinearMap.smulRight_apply,
       ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
       ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
       ContinuousLinearMap.smul_apply]
-  rw [tensor02CovAt_apply_of_diff_extend cov hT_t hX hY hZ]
+  rw [tensor02CovAt_apply_of_diff_extend cov hT_t hY hZ]
   change extDerivFun (I := I) (fun b => (g • T) b (Y b) (Z b)) x (X x)
       - (g • T) x (cov.toFun Y x (X x)) (Z x)
       - (g • T) x (Y x) (cov.toFun Z x (X x)) =
@@ -607,7 +603,7 @@ theorem tensor02Cov_pairing
   have hXx : X x = v := by simp [X]
   rw [show v = X x from hXx.symm]
   rw [tensor02Cov_toFun, tensor02CovFun_apply,
-      tensor02CovAt_apply_of_diff_extend cov hT hX hY hZ]
+      tensor02CovAt_apply_of_diff_extend cov hT hY hZ]
   unfold tensor02Scalar
   ring
 
@@ -741,7 +737,7 @@ private theorem tensor02Cov_triple_apply_smooth
       (Z.contMDiff x).mdifferentiableAt (by simp)
     have hWx : MDiffAt (T% (fun y : M => W y)) x :=
       (W.contMDiff x).mdifferentiableAt (by simp)
-    have h := tensor02CovAt_apply_of_diff_extend cov hTx hYx hZx hWx
+    have h := tensor02CovAt_apply_of_diff_extend cov hTx (X := fun y => Y y) hZx hWx
     rw [tensor02Cov_toFun, tensor02CovFun_apply]
     rw [h]
     rfl
@@ -806,6 +802,7 @@ private theorem tensor02Cov_triple_apply_smooth
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma tensor02Cov_toFun_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]

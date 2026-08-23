@@ -318,7 +318,6 @@ private lemma wkpNorm_coef_mul_factor_le_uniform
   rw [h_norm_eq]
   exact hKc_bd hfactor_memWkp
 
-open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 lemma covGradChristoffelLimit_memWkp_and_wkpNorm_le

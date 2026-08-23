@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnDiff
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedGramDiff
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyPair
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Tensor.RSTensor.Metric
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
@@ -16,7 +16,6 @@ open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -109,6 +108,8 @@ theorem metric_ext_inner
       rfl
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem realize_metricDiff (q h : SmoothRiemannianMetric I M)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q

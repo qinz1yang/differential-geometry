@@ -1,1 +1,0 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm

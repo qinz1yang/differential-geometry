@@ -1223,7 +1223,7 @@ private theorem deTurckRHSReconCoeff_pathCoeff_timeJet_evenMass_uniformConst
     deTurckRHSReconSection_timeJet_jointSmooth_section (I := I) (M := M)
       g₀ g_bg hT F hδ_lt hδ φ hφ_smooth hcoeff hmodemass j
   have hcont := deTurckRHSReconSection_oneMinusConnLapIter_normSq_continuousOn (I := I) (M := M)
-    g₀ g_bg hT Rjt k hRjt_smooth
+    g₀ Rjt k hRjt_smooth
   obtain ⟨t₀, ht₀_mem, ht₀_max⟩ :=
     isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr hT.le) hcont
   refine ⟨‖SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
@@ -1242,7 +1242,7 @@ private theorem deTurckRHSReconCoeff_pathCoeff_timeJet_evenMass_uniformConst
     unfold tensorSobolevWeight
     rw [Real.rpow_natCast, mul_comm 2 k, pow_mul, sq]
   rw [hweq]
-  have hsummable := tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) hc
+  have hsummable := tensorL2Coeff_summable_sq (I := I) (M := M) hc
     (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
       (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k (Rjt t)))
   have hle_tsum : (tensorL2Coeff (I := I) (M := M) hc

@@ -198,6 +198,7 @@ theorem sobolev_prepare_on_ball
         ENNReal.ofReal (C_gns d 2) *
           eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2
             (volume.restrict (Metric.ball x₀ s)) := by
+  let _ := _hs
   classical
   let Ω : Set E := Metric.ball x₀ s
   let μ : Measure E := volume.restrict Ω
@@ -455,6 +456,7 @@ theorem qualitative_bound_on_tsupport_of_subsolution
     ∃ N0 : ℝ, 0 < N0 ∧
       ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) s)),
         x ∈ tsupport η → max (u x) 0 ≤ N0 := by
+  let _ := _hs
   classical
   let K : Set E := tsupport η
   have hη_comp : HasCompactSupport η :=
@@ -546,6 +548,7 @@ theorem exists_lt_one_ball_of_tsupport_subset_ball
     (_hs1 : s ≤ 1)
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) s) :
     ∃ ρ : ℝ, 0 < ρ ∧ ρ < s ∧ tsupport η ⊆ Metric.ball (0 : E) ρ := by
+  let _ := _hs1
   classical
   let K : Set E := tsupport η
   by_cases hK_empty : K = ∅
@@ -677,6 +680,7 @@ theorem moser_shiftApprox_on_ball_of_unitBall
                   (hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)).weakGrad x i)
               2 (volume.restrict (Metric.ball (0 : E) s)))
           Filter.atTop (nhds 0)) := by
+  let _ := _hs
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne

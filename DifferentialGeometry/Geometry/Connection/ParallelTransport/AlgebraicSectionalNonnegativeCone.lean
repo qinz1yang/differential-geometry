@@ -14,7 +14,7 @@ namespace Geometry
 namespace Riemannian
 namespace Variation
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 
@@ -60,7 +60,6 @@ noncomputable def parallelTransportAlgebraicCurvatureTensorCLEOnIcc
   algebraicCurvatureTensorPullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
-@[simp]
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_sectionalEval
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)

@@ -154,7 +154,6 @@ lemma smoothFChartResidual_memWkp_two_two
 theorem memWkp_fChartResidual_of_wkpNorm_cauchy_identification_w22
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
-    (_hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (v : ℕ → SmoothScalar g)
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -192,7 +191,7 @@ theorem memWkp_fChartResidual_of_wkpNorm_cauchy_identification_w22
   obtain ⟨F_lim, hF_lim_memWkp, hF_lim_tendsto⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.exists_limit_of_wkpNorm_cauchy
       (hΩ_open := chartTargetEuclid_isOpen (I := I) (M := M) α)
-      (k := 2) (p := 2) (hp_one := by norm_num) (hp_top := by norm_num)
+      (k := 2) (p := 2) (hp_one := by norm_num)
       (u := fun n => smoothFChartResidual (I := I) (M := M) g α (v n))
       h_smooth_W2p h_cauchy
   have hF_lim_aeEq := h_identification F_lim hF_lim_memWkp hF_lim_tendsto
@@ -210,7 +209,7 @@ theorem fChartResidual_memWkp_two_two
       (fChartResidual (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) :=
   memWkp_fChartResidual_of_wkpNorm_cauchy_identification_w22
-    (I := I) (M := M) g α hu_h
+    (I := I) (M := M) g α
     (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h)
     (smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_w22
       (I := I) (M := M) g α hu_h)

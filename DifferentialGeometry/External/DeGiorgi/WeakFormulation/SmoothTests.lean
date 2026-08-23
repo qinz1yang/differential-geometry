@@ -10,7 +10,7 @@ bridge between classical gradients and the Sobolev weak-formulation layer.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 open scoped InnerProductSpace
 
 namespace DeGiorgi

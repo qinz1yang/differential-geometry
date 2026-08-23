@@ -87,7 +87,6 @@ theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_three
   have hnA_nn : 0 ≤ nA := tensorL2Norm_nonneg (I := I) (M := M) g 0 a _
   have hnB_nn : 0 ≤ nB := tensorL2Norm_nonneg (I := I) (M := M) g 0 b _
   have hnD_nn : 0 ≤ nD := tensorL2Norm_nonneg (I := I) (M := M) g 0 d _
-  have hnCurv_nn : 0 ≤ nCurv := tensorL2Norm_nonneg (I := I) (M := M) g 0 c _
   have hbridgeA : nA ^ 2 =
       ∫ x, riemannianFiberNormSq (I := I) (M := M) g 0 a x (A.toSection x) ∂μ := by
     rw [hnA_def, hμ_def]
@@ -163,10 +162,23 @@ theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_three
   have hfinal_sq : nCurv ^ 2 ≤ (C * (nA + nB + nD)) ^ 2 := by
     refine le_trans hsq_bound ?_
     have hcross : nA ^ 2 + nB ^ 2 + nD ^ 2 ≤ (nA + nB + nD) ^ 2 := by
-      nlinarith [mul_nonneg hnA_nn hnB_nn, mul_nonneg hnA_nn hnD_nn,
-        mul_nonneg hnB_nn hnD_nn]
-    nlinarith [mul_le_mul_of_nonneg_left hcross (sq_nonneg C), sq_nonneg C]
-  nlinarith [hfinal_sq, hnCurv_nn, hy_nn, sq_nonneg (nCurv - C * (nA + nB + nD))]
+      have hAB : nA ^ 2 + nB ^ 2 ≤ (nA + nB) ^ 2 := by
+        calc
+          nA ^ 2 + nB ^ 2 ≤ nA ^ 2 + nB ^ 2 + 2 * (nA * nB) :=
+            le_add_of_nonneg_right (mul_nonneg (by norm_num) (mul_nonneg hnA_nn hnB_nn))
+          _ = (nA + nB) ^ 2 := by ring
+      calc
+        nA ^ 2 + nB ^ 2 + nD ^ 2 ≤ (nA + nB) ^ 2 + nD ^ 2 :=
+          add_le_add hAB le_rfl
+        _ ≤ (nA + nB) ^ 2 + nD ^ 2 + 2 * ((nA + nB) * nD) :=
+          le_add_of_nonneg_right
+            (mul_nonneg (by norm_num) (mul_nonneg (add_nonneg hnA_nn hnB_nn) hnD_nn))
+        _ = (nA + nB + nD) ^ 2 := by ring
+    calc
+      C ^ 2 * (nA ^ 2 + nB ^ 2 + nD ^ 2) ≤ C ^ 2 * (nA + nB + nD) ^ 2 :=
+        mul_le_mul_of_nonneg_left hcross (sq_nonneg C)
+      _ = (C * (nA + nB + nD)) ^ 2 := by ring
+  exact le_of_sq_le_sq hfinal_sq hy_nn
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in

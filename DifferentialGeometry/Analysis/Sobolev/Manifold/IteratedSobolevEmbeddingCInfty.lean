@@ -49,7 +49,7 @@ theorem memWkpChart_forall_implies_continuous_representative
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
+    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) (2 * k) 2 u) :
     ∃ ũ : M → ℝ,
       Continuous ũ ∧
       ũ =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -62,12 +62,12 @@ theorem memWkpChart_forall_implies_continuous_representative
     have h' : (k₀ : ℝ) * 2 ≤ ((2 * k₀ : ℕ) : ℝ) * 2 := by
       push_cast; linarith
     linarith
-  have hu_2k₀ : MemWkpChart (I := I) (M := M) g (2 * k₀) 2 u := h_all k₀
+  have hu_2k₀ : MemWkpChart (I := I) (M := M) (2 * k₀) 2 u := h_all k₀
   have h_two_eq : (2 : ℝ≥0∞) = ENNReal.ofReal 2 := by
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num]
     rw [ENNReal.ofReal_natCast]
     rfl
-  have hu_2k₀' : MemWkpChart (I := I) (M := M) g (2 * k₀) (ENNReal.ofReal 2) u := by
+  have hu_2k₀' : MemWkpChart (I := I) (M := M) (2 * k₀) (ENNReal.ofReal 2) u := by
     rw [← h_two_eq]; exact hu_2k₀
   have h_2k₀_pos : 1 ≤ 2 * k₀ := by omega
   have h_p_one : (1 : ℝ) ≤ 2 := by norm_num
@@ -76,7 +76,7 @@ theorem memWkpChart_forall_implies_continuous_representative
     push_cast at h_2k₀_gt_n ⊢
     linarith
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
-    iterated_sobolev_embedding_chart_C0_unconditional
+    iterated_sobolev_embedding_chart_C0
       (I := I) (M := M) g h_2k₀_pos h_p_one hkp_real h_side hu_meas hu_2k₀'
   refine ⟨ũ, hũ_cont, ?_⟩
   rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def]
@@ -90,7 +90,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
+    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) (2 * k) 2 u) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) 0 u_smooth ∧
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -106,27 +106,22 @@ def ChartSobolevSuperCriticalWitness
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (m : ℕ) (u : M → ℝ) : Prop :=
+    [T2Space M] [SigmaCompactSpace M] (m : ℕ) (u : M → ℝ) : Prop :=
   ∃ p : ℝ, 1 ≤ p ∧ (Module.finrank ℝ E : ℝ) < p ∧
-    MemWkpChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u
+    MemWkpChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u
 
 theorem memWkpChart_forall_implies_contMDiff_m_representative
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [T2Space M] [SigmaCompactSpace M] (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) g m u)
+    (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) m u)
     (h_bridge :
       ∀ {p : ℝ}, (Module.finrank ℝ E : ℝ) < p →
         ∀ {v : M → ℝ}, Measurable v →
-          MemWkpChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) v →
+          MemWkpChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) v →
             ∃ v_smooth : M → ℝ,
               ContMDiff I 𝓘(ℝ, ℝ) m v_smooth ∧
               v_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -146,7 +141,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative_via_bridge
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) g 0 u) :
+    (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) 0 u) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) 0 u_smooth ∧
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -154,7 +149,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative_via_bridge
   refine memWkpChart_forall_implies_contMDiff_m_representative
     (I := I) (M := M) g 0 hu_meas h_witness ?_
   intro p hp_dim v hv_meas hv
-  have hv1 : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) v := by
+  have hv1 : MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) v := by
     have : (0 : ℕ) + 1 = 1 := rfl
     rw [this] at hv
     exact hv
@@ -328,9 +323,9 @@ private theorem chain_to_supercritical
         (Module.finrank ℝ E : ℝ) p (s + 1) →
       (Module.finrank ℝ E : ℝ) < ((s + 1 : ℕ) : ℝ) * p →
       ∀ {u : M → ℝ},
-        MemWkpChart (I := I) (M := M) g (m + 1 + s) (ENNReal.ofReal p) u →
+        MemWkpChart (I := I) (M := M) (m + 1 + s) (ENNReal.ofReal p) u →
           ∃ q : ℝ, 1 ≤ q ∧ (Module.finrank ℝ E : ℝ) < q ∧
-            MemWkpChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal q) u := by
+            MemWkpChart (I := I) (M := M) (m + 1) (ENNReal.ofReal q) u := by
   intro s
   induction s with
   | zero =>
@@ -350,7 +345,7 @@ private theorem chain_to_supercritical
         obtain ⟨_C, _hC_nn, h_step⟩ :=
           wkpNormChart_succ_subcritical_step (I := I) (M := M) g (k := m + 1 + s)
             hp_one hp_lt
-        have hu' : MemWkpChart (I := I) (M := M) g ((m + 1 + s) + 1)
+        have hu' : MemWkpChart (I := I) (M := M) ((m + 1 + s) + 1)
             (ENNReal.ofReal p) u := by
           have : m + 1 + (s + 1) = (m + 1 + s) + 1 := by ring
           rw [this] at hu
@@ -382,11 +377,11 @@ private theorem chain_to_supercritical
               (Module.finrank ℝ E : ℝ) p_1 (s + 1) := by
           rw [hp_1_def]
           exact hreg.tower_step hp_one hp_lt
-        have h_mem_p1' : MemWkpChart (I := I) (M := M) g (m + 1 + s)
+        have h_mem_p1' : MemWkpChart (I := I) (M := M) (m + 1 + s)
             (ENNReal.ofReal p_1) u := by
           rw [hp_1_def]; exact h_mem_p1
         exact ih hp_1_one hreg_p_1 hkp_next h_mem_p1'
-      · have hu_order : MemWkpChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u :=
+      · have hu_order : MemWkpChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u :=
           MemWkpChart.le_of_le (by omega) hu
         exact ⟨p, hp_one, hp_gt, hu_order⟩
 
@@ -401,8 +396,8 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ}
-    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
-    ChartSobolevSuperCriticalWitness (I := I) (M := M) g m u := by
+    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) (2 * k) 2 u) :
+    ChartSobolevSuperCriticalWitness (I := I) (M := M) m u := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
   have hn_pos : 0 < n := NeZero.pos _
@@ -421,24 +416,24 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
   set k₀ : ℕ := m + n + 1 with hk₀_def
   have h2k₀_ge : m + 1 + s_max ≤ 2 * k₀ := by
     rw [hs_max_def, hk₀_def]; omega
-  have hu_at_2k₀ : MemWkpChart (I := I) (M := M) g (2 * k₀) 2 u := h_all k₀
-  have hu_order : MemWkpChart (I := I) (M := M) g (m + 1 + s_max) 2 u :=
+  have hu_at_2k₀ : MemWkpChart (I := I) (M := M) (2 * k₀) 2 u := h_all k₀
+  have hu_order : MemWkpChart (I := I) (M := M) (m + 1 + s_max) 2 u :=
     MemWkpChart.le_of_le h2k₀_ge hu_at_2k₀
   have h_two_eq : (2 : ℝ≥0∞) = ENNReal.ofReal 2 := by
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num]
     rw [ENNReal.ofReal_natCast]
     rfl
-  have hu_order' : MemWkpChart (I := I) (M := M) g (m + 1 + s_max)
+  have hu_order' : MemWkpChart (I := I) (M := M) (m + 1 + s_max)
       (ENNReal.ofReal 2) u := by rw [← h_two_eq]; exact hu_order
   have hp₀_one_enn : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p₀ := by
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal hp₀_one
   have hp₀_le_two_enn : ENNReal.ofReal p₀ ≤ ENNReal.ofReal 2 :=
     ENNReal.ofReal_le_ofReal hp₀_lt.le
-  have hu_p₀ : MemWkpChart (I := I) (M := M) g (m + 1 + s_max)
+  have hu_p₀ : MemWkpChart (I := I) (M := M) (m + 1 + s_max)
       (ENNReal.ofReal p₀) u :=
     DifferentialGeometry.Analysis.Sobolev.Chart.ChartLevelMonoExp.memWkpChart_mono_exponent
-      (I := I) (M := M) g hp₀_one_enn hp₀_le_two_enn hu_order'
+      (I := I) (M := M) hp₀_one_enn hp₀_le_two_enn hu_order'
   exact SuperCriticalWitness.chain_to_supercritical (I := I) (M := M) g m s_max
     hp₀_one hp₀_reg h_n_lt_kp₀ hu_p₀
 
@@ -505,7 +500,7 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
     (m : ℕ)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu : MemWkpChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u) :
+    (hu : MemWkpChart (I := I) (M := M) (m + 1) (ENNReal.ofReal p) u) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) m u_smooth ∧
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -535,7 +530,7 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
     linarith
   have h_side : 2 ≤ Module.finrank ℝ E ∨ 1 < p := Or.inr hp_one_strict
   obtain ⟨ũ, _C, hũ_cont, _hC_nn, hũ_ae, _hũ_bound⟩ :=
-    iterated_sobolev_embedding_chart_C0_unconditional
+    iterated_sobolev_embedding_chart_C0
       (I := I) (M := M) g h_m1_pos hp_one h_kp_gt_n h_side hu_meas hu
   have hũ_meas : Measurable ũ := hũ_cont.measurable
   refine ⟨ũ, ?_, ?_⟩
@@ -608,7 +603,7 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
           (Metric.ball y₀ R) :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.mono_set
-        (d := Module.finrank ℝ E) hp_enn_one h_chart_target_open h_ball_open
+        (d := Module.finrank ℝ E) hp_enn_one h_ball_open
         hR_subset h_chart_mem
     obtain ⟨u_α, hu_α_cdiff, hu_α_ae⟩ :=
       DifferentialGeometry.Analysis.Sobolev.EuclideanMorrey.morrey_iteratedFDeriv_representative
@@ -804,7 +799,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative_uncond
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
+    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) (2 * k) 2 u) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) m u_smooth ∧
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -824,7 +819,7 @@ theorem sobolev_smooth_representative_of_memWkpChart_forall
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
+    (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) (2 * k) 2 u) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) ∞ u_smooth ∧
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure

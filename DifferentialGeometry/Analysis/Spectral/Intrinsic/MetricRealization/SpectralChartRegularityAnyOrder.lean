@@ -85,7 +85,7 @@ private lemma eigenvectorComp_eq_unconditional (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     eigenvectorComp (I := I) (M := M) g r s i α P₀ =
-      eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀ := rfl
+      eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀ := rfl
 
 private lemma eigenvectorComp_memWkp (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)
@@ -507,7 +507,7 @@ private lemma gateElement_chartComponent_memWkp_of_tail
   obtain ⟨F_lim, hF_lim_mem, hF_lim_tendsto⟩ :=
     MemWkp.exists_limit_of_wkpNorm_cauchy
       (d := Module.finrank ℝ E) hΩ_open (2 * k) 2
-      (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))
+      (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       h_useq_mem h_cauchy
   have hF_lim_memLp : MemLp F_lim 2 ((volume : Measure EuclN).restrict Ω) :=
     hF_lim_mem.memLp

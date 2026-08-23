@@ -101,13 +101,10 @@ theorem tensor0SCovariantDerivative_zero_fun_leibniz_section
   congr 1
   rw [map_smul]
   rw [tensor0Iso_symm_scalarFn]
-
 noncomputable def tensor0SCovariantDerivative_succ_fun {s : ℕ}
     (cov_TM : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov_TM ∞]
     (cov_s : CovariantDerivative I (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x))
-    [ContMDiffCovariantDerivative cov_s ∞]
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) :
     TangentSpace I x →L[ℝ] Tensor0SSpace (s+1) I x :=
   ((tensor0S_curry (I := I) (M := M) s x).symm.toContinuousLinearMap).comp
@@ -118,20 +115,16 @@ noncomputable def tensor0SCovariantDerivative_succ_fun {s : ℕ}
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem tensor0SCovariantDerivative_succ_fun_apply {s : ℕ}
     (cov_TM : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov_TM ∞]
     (cov_s : CovariantDerivative I (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x))
-    [ContMDiffCovariantDerivative cov_s ∞]
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivative_succ_fun I M cov_TM cov_s T x v =
       (tensor0S_curry (I := I) (M := M) s x).symm
         (HomConnection.homBundleCovariantDerivativeFun I M
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
           cov_TM cov_s (curriedSection I M T) x v) := rfl
-
 noncomputable def tensor0SCovariantDerivative_zero
-    (_cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative _cov ∞] :
+    :
     CovariantDerivative I (Tensor0SModel 0 ℝ E) (fun x : M => Tensor0SSpace 0 I x) where
   toFun := tensor0SCovariantDerivative_zero_fun I M
   isCovariantDerivativeOnUniv := {
@@ -173,9 +166,8 @@ private theorem tensor0SCov_zero_scalar_at_Y
   simpa [d_fscalar] using this
 
 noncomputable instance tensor0SCovariantDerivative_zero_contMDiff
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    ContMDiffCovariantDerivative (tensor0SCovariantDerivative_zero I M cov) ∞ where
+    :
+    ContMDiffCovariantDerivative (tensor0SCovariantDerivative_zero I M) ∞ where
   contMDiff := {
     contMDiff := by
       intro T hT
@@ -214,10 +206,9 @@ noncomputable instance tensor0SCovariantDerivative_zero_contMDiff
 
 noncomputable def tensor0SCovariantDerivative_succ {s : ℕ}
     (cov_TM : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov_TM ∞]
     (cov_s : CovariantDerivative I (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x))
-    [ContMDiffCovariantDerivative cov_s ∞] :
+    :
     letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
         (fun x : M => Tensor0SSpace (s + 1) I x)) :=
       tensor0SBundle_topology (s + 1)
@@ -417,7 +408,7 @@ private noncomputable def tensor0SCovariantDerivative_aux
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
     (s : ℕ) → SmoothCov (E := E) s I M
-  | 0 => ⟨tensor0SCovariantDerivative_zero I M cov, inferInstance⟩
+  | 0 => ⟨tensor0SCovariantDerivative_zero I M, inferInstance⟩
   | n + 1 =>
     let prev := tensor0SCovariantDerivative_aux cov n
     haveI : ContMDiffCovariantDerivative prev.toCov ∞ := prev.smooth
@@ -443,7 +434,7 @@ theorem tensor0SCovariantDerivative_zero_eq
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
     tensor0SCovariantDerivative I M 0 cov =
-      tensor0SCovariantDerivative_zero I M cov := rfl
+      tensor0SCovariantDerivative_zero I M := rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_succ_eq {s : ℕ}
@@ -455,19 +446,15 @@ theorem tensor0SCovariantDerivative_succ_eq {s : ℕ}
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem tensor0SCovariantDerivative_zero_apply
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞]
     (T : Π x : M, Tensor0SSpace 0 I x) (x : M) (v : TangentSpace I x) :
-    tensor0SCovariantDerivative_zero I M cov T x v =
+    tensor0SCovariantDerivative_zero I M T x v =
       (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v) := rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_succ_apply {s : ℕ}
     (cov_TM : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov_TM ∞]
     (cov_s : CovariantDerivative I (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x))
-    [ContMDiffCovariantDerivative cov_s ∞]
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivative_succ I M cov_TM cov_s T x v =
       (tensor0S_curry (I := I) (M := M) s x).symm

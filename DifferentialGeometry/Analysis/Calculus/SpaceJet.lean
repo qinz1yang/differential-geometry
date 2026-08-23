@@ -185,6 +185,85 @@ theorem spaceJet_comp
   simpa only [FormalMultilinearSeries.taylorComp, Function.comp_def] using
     iteratedFDeriv_comp hΦp hup le_rfl
 
+theorem spaceJet_comp_Icc
+    {A B : Type*}
+    [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [NormedAddCommGroup B] [NormedSpace ℝ B]
+    {Φ : A → B} {u : ℝ → E → A}
+    {J : Set ℝ} {V : Set E} {Ω : Set A} {q : ℕ}
+    (hV : IsOpen V) (hΩ : IsOpen Ω)
+    (huΩ : Set.MapsTo (Function.uncurry u) (J ×ˢ V) Ω)
+    (hΦ : ContDiffOn ℝ ∞ Φ Ω)
+    (hus : ∀ t ∈ J, ContDiffOn ℝ ∞ (u t) V)
+    (hu : SpaceJetDiff q u J V) :
+    SpaceJetDiff q (fun t x => Φ (u t x)) J V := by
+  classical
+  let S : Set (ℝ × E) := J ×ˢ V
+  have huJointRaw :=
+    (continuousMultilinearCurryFin0 ℝ E A).contDiff.comp_contDiffOn (hu 0)
+  have huJoint : ContDiffOn ℝ q (Function.uncurry u) S :=
+    huJointRaw.congr fun p _ => by
+      rcases p with ⟨t, y⟩
+      rfl
+  have hΦjet : ∀ m : ℕ,
+      ContDiffOn ℝ q (fun a => iteratedFDeriv ℝ m Φ a) Ω := by
+    intro m a ha
+    have hΦa : ContDiffAt ℝ ∞ Φ a :=
+      (hΦ a ha).contDiffAt (hΩ.mem_nhds ha)
+    exact (hΦa.iteratedFDeriv_right (m := q) (i := m)
+      (by exact_mod_cast le_top)).contDiffWithinAt
+  intro r
+  have hterm : ∀ c : OrderedFinpartition r,
+      ContDiffOn ℝ q
+        (fun p : ℝ × E =>
+          c.compAlongOrderedFinpartition
+            (iteratedFDeriv ℝ c.length Φ (u p.1 p.2))
+            (fun i => iteratedFDeriv ℝ (c.partSize i) (u p.1) p.2)) S := by
+    intro c
+    have houter : ContDiffOn ℝ q
+        (fun p : ℝ × E => iteratedFDeriv ℝ c.length Φ (u p.1 p.2)) S :=
+      (hΦjet c.length).comp huJoint huΩ
+    have hinner : ContDiffOn ℝ q
+        (fun p : ℝ × E =>
+          fun i : Fin c.length => iteratedFDeriv ℝ (c.partSize i) (u p.1) p.2) S :=
+      contDiffOn_pi' fun i => hu (c.partSize i)
+    let Lflip : ContinuousMultilinearMap ℝ
+        (fun i : Fin c.length => E [×c.partSize i]→L[ℝ] A)
+        ((A [×c.length]→L[ℝ] B) →L[ℝ] E [×r]→L[ℝ] B) :=
+      (c.compAlongOrderedFinpartitionL ℝ E A B).flipMultilinear
+    have hflip : ContDiffOn ℝ q
+        (fun p : ℝ × E =>
+          Lflip
+            (fun i : Fin c.length =>
+              iteratedFDeriv ℝ (c.partSize i) (u p.1) p.2)) S :=
+      have hL : ContDiff ℝ q Lflip :=
+        ContinuousMultilinearMap.contDiff
+          (𝕜 := ℝ)
+          (F := (A [×c.length]→L[ℝ] B) →L[ℝ] E [×r]→L[ℝ] B)
+          (E := fun i : Fin c.length => E [×c.partSize i]→L[ℝ] A)
+          (n := q) Lflip
+      hL.comp_contDiffOn hinner
+    simpa only [Lflip, ContinuousLinearMap.flipMultilinear_apply_apply,
+      OrderedFinpartition.compAlongOrderedFinpartitionL_apply] using
+      hflip.clm_apply houter
+  have hsum : ContDiffOn ℝ q
+      (fun p : ℝ × E =>
+        ∑ c : OrderedFinpartition r,
+          c.compAlongOrderedFinpartition
+            (iteratedFDeriv ℝ c.length Φ (u p.1 p.2))
+            (fun i => iteratedFDeriv ℝ (c.partSize i) (u p.1) p.2)) S := by
+    simpa using
+      (ContDiffOn.sum (s := Finset.univ) fun c _ => hterm c)
+  refine hsum.congr fun p hp => ?_
+  have hΦp : ContDiffAt ℝ r Φ (u p.1 p.2) :=
+    ((hΦ _ (huΩ hp)).contDiffAt (hΩ.mem_nhds (huΩ hp))).of_le
+      (by exact_mod_cast le_top)
+  have hup : ContDiffAt ℝ r (u p.1) p.2 :=
+    ((hus p.1 hp.1 p.2 hp.2).contDiffAt (hV.mem_nhds hp.2)).of_le
+      (by exact_mod_cast le_top)
+  simpa only [FormalMultilinearSeries.taylorComp, Function.comp_def] using
+    iteratedFDeriv_comp hΦp hup le_rfl
+
 theorem SpaceJetDiff.fderiv
     {G : ℝ → E → F} {J : Set ℝ} {V : Set E} {q : ℕ}
     (hG : SpaceJetDiff q G J V) :

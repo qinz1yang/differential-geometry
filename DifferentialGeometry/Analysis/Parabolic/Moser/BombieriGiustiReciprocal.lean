@@ -49,6 +49,7 @@ def canonicalLateBombieriGiustiStepPolynomialCoefficient
     (8 * timeCutoffDerivConstant / (c - τ) + 4 * K) + K)
 
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem canonicalLateBombieriGiustiStepConstant_le_polynomial
     (g : SmoothRiemannianMetric I M) (rho : SmoothScalar g)
     {τ c d D lower upper : ℝ}

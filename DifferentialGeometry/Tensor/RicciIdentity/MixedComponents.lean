@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Basic
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyInput
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
-import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Special12
+import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Tensor.Auxiliary.DerivationAlgebra
 import DifferentialGeometry.Tensor.RSTensor.Components
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
@@ -38,7 +38,7 @@ def covariantCurvAction {Idx : Type*} [Fintype Idx] {n : ℕ}
     R i j m (K q) * A (Function.update K q m)
 
 theorem contractUpper_components_eq_component_applyInput
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ} {x : M}
+    {Idx : Type*} [Fintype Idx] {r s : ℕ} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (T : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) r s x)
     (theta :
@@ -49,6 +49,7 @@ theorem contractUpper_components_eq_component_applyInput
         (fun L : Fin r -> Idx => fun K : Fin s -> Idx =>
           componentRS_gen (I := I) basis T L K) K =
       component0S (I := I) basis (T theta) K := by
+  classical
   rw [Tensor0SBundle.componentRS_apply_input_eq_sum (I := I) basis T theta K]
   rfl
 
@@ -384,9 +385,8 @@ theorem mixedRicciIdentityCoord_of_second_product_identities
 
 omit [IsManifold I ∞ M] in
 theorem coordDeriv_applyInput_eq_contractUpper
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 M]
     [IsManifold I (∞ : WithTop ℕ∞) M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {r s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (T : TensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

@@ -1,34 +1,37 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0NormalForm.RzMaster
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroNormalForm.ZeroOrderRemainderNormalForm
 
 noncomputable section
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.Analysis.Spectral.M0Abstract
+namespace DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroMatrixNormalForm
 
-abbrev rchB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.rchB n
-abbrev p5B {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.p5B n
-abbrev nscB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.nscB n
-abbrev insertB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.insertB n
-abbrev vbB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.vbB n
-abbrev amixHalfB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.amixHalfB n
-abbrev r4F {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.r4F n
-abbrev r4pfB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.r4pfB n
-abbrev t2F {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.t2F n
-abbrev tpfF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.tpfF n
-abbrev r3B {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.r3B n
-abbrev chrCorrF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.chrCorrF n
-abbrev wcF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.wcF n
-abbrev dvfbF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.dvfbF n
-abbrev d0F {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.d0F n
-abbrev O0F {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.o0F n
-abbrev vfbF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.vfbF n
-abbrev covAF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.covAF n
-abbrev covWF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.covWF n
-abbrev V0F {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.v0F n
-abbrev D1RF {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.d1RF n
+abbrev curvatureConnectionActionBlock {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.curvatureConnectionActionBlock n
+abbrev curvatureContractionBlock {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.curvatureContractionBlock n
+abbrev connectionDifferenceDerivativeDefect {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.connectionDifferenceDerivativeDefect n
+abbrev connectionDifferenceInsertion {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.connectionDifferenceInsertion n
+abbrev connectionDifferenceQuadraticBlock {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.connectionDifferenceQuadraticBlock n
+abbrev mixedConnectionHalfBlock {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.mixedConnectionHalfBlock n
+abbrev r4F {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.r4F n
+abbrev r4pfB {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.r4pfB n
+abbrev t2F {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.t2F n
+abbrev tpfF {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.tpfF n
+abbrev r3B {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.r3B n
+abbrev christoffelCorrection {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.christoffelCorrection n
+abbrev deTurckVectorCorrection {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorCorrection n
+abbrev deTurckVectorFieldDerivative {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorFieldDerivative n
+abbrev zeroOrderDerivativeCorrection {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderDerivativeCorrection n
+abbrev zeroOrderCorrection {n : ℕ} :=
+  @DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderCorrection n
+abbrev deTurckVectorFieldDifference {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.deTurckVectorFieldDifference n
+abbrev covariantDerivativeConnectionDifference {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.covariantDerivativeConnectionDifference n
+abbrev covariantDerivativeDeTurckVectorDifference {n : ℕ} := @DeTurckCoefficients.LieCorrectionZeroNormalForm.covariantDerivativeDeTurckVectorDifference n
+abbrev zeroOrderVectorCorrection {n : ℕ} :=
+  @DeTurckCoefficients.LieCorrectionZeroNormalForm.zeroOrderVectorCorrection n
+abbrev firstDerivativeRemainder {n : ℕ} :=
+  @DeTurckCoefficients.LieCorrectionZeroNormalForm.firstDerivativeRemainder n
 
-theorem m0_master {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
+theorem lie_correction_zero_matrix_normal_form {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
     (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
     (ddg dga0 dga1 dgbg dgb : Fin n → Fin n → Fin n → Fin n → ℝ)
     (higs : ∀ a b, ig a b = ig b a)
@@ -54,16 +57,16 @@ theorem m0_master {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
     (hgbe : ∀ a b l, gb a b l = dg a l b + dg b l a - dg l a b)
     (hdgbe : ∀ m a b l, dgb m a b l = ddg m a l b + ddg m b l a - ddg m l a b)
     (i j : Fin n) :
-    V0F ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j
-      + insertB ig dig ga1 ga0 gbg dga1 dga0 f i j
-      + vbB ig cg ga1 ga0 f i j
-      + (2 : ℝ) * (amixHalfB ig cg ga1 ga0 gbg f i j + amixHalfB ig cg ga1 ga0 gbg f j i)
-      + p5B ig ga0 dga0 f i j
-    = O0F ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j
+    zeroOrderVectorCorrection ig cg f dig ga1 gbg dga1 dgbg i j
+      + connectionDifferenceInsertion ig dig ga1 ga0 gbg dga1 dga0 f i j
+      + connectionDifferenceQuadraticBlock ig cg ga1 ga0 f i j
+      + (2 : ℝ) * (mixedConnectionHalfBlock ig cg ga1 ga0 gbg f i j + mixedConnectionHalfBlock ig cg ga1 ga0 gbg f j i)
+      + curvatureContractionBlock ig ga0 dga0 f i j
+    = zeroOrderCorrection ig cg f dg dig ga1 gbg gb dga1 dgbg dgb i j
       - (t2F ig ga0 dga0 f f3 i j - tpfF ig ga0 f3 i j)
-      - D1RF ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb i j := by
-  exact DeTurckCoefficients.LieCorr0NF.master_nf ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0
+      - firstDerivativeRemainder ig cg f ga0 ga1 gbg i j := by
+  exact DeTurckCoefficients.LieCorrectionZeroNormalForm.lie_correction_zero_normal_form ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0
     dga1 dgbg dgb higs hcgs hfs hdgs2 hga0s hga1s hgbgs hdga0s hdga1s hdgbgs hddgs hf3s
     hgbs hdgbs hdigs hcol hga1e hdga1e hdige hgbe hdgbe i j
 
-end DifferentialGeometry.Analysis.Spectral.M0Abstract
+end DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroMatrixNormalForm

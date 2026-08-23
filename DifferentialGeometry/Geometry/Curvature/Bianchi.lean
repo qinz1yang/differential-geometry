@@ -1576,7 +1576,6 @@ theorem contractOfSecond
     (hRmSymm : NablaRmSymmAt (I := I) nablaRm04)
     (hRicTrace : NablaRicTraceAt (I := I) basis gInv nablaRm04 nablaRic)
     (hScalar : DScalarTraceAt (I := I) basis gInv nablaRic dScalar)
-    (_hNablaSymm : NablaRicSymmAt (I := I) nablaRic)
     (hInv : ∀ i j : Idx, gInv i j = gInv j i) :
     ContractedBianchiOfSecondAt (I := I) basis gInv nablaRm04
       nablaRic dScalar := by

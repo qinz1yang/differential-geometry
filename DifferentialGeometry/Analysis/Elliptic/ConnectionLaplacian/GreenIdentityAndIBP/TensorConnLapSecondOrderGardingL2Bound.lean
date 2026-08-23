@@ -136,9 +136,14 @@ theorem secondCovGrad_l2NormSq_le_rawConnLap_add_self
           (covGrad (I := I) (M := M) g 0 3 S).toFun ^ 2 ≤
         nLap ^ 2 + C₀ * nGrad ^ 2 := by
     rw [hcombined]
-    have : nCurv * nGrad ≤ C₀ * nGrad * nGrad :=
+    have hcurvGrad : nCurv * nGrad ≤ C₀ * nGrad * nGrad :=
       mul_le_mul_of_nonneg_right hcurv' hnGrad_nn
-    nlinarith [hcross_le, this]
+    calc
+      nLap ^ 2 - tensorL2Inner (I := I) (M := M) g 0 3 Curv.toFun S.toFun ≤
+          nLap ^ 2 + nCurv * nGrad := by
+        simpa only [sub_eq_add_neg] using add_le_add le_rfl hcross_le
+      _ ≤ nLap ^ 2 + C₀ * nGrad * nGrad := add_le_add le_rfl hcurvGrad
+      _ = nLap ^ 2 + C₀ * nGrad ^ 2 := by ring
   have horder1 : nGrad ^ 2 ≤ nLap * nT := by
     rw [hnGrad_def, hS_def, hnLap_def, hnT_def]
     exact covGrad_l2NormSq_le_rawConnLap_mul_self (I := I) (M := M) g T

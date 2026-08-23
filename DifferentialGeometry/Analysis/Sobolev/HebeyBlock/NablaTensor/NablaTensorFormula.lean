@@ -9,7 +9,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
-open Bundle DifferentialGeometry
+open Bundle
 open MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle

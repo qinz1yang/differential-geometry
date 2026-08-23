@@ -11,8 +11,8 @@ whole-space approximation results used downstream.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal Convolution Pointwise
+open MeasureTheory Metric Filter Topology Set Function
+open scoped ENNReal Convolution Pointwise
 
 namespace DeGiorgi
 

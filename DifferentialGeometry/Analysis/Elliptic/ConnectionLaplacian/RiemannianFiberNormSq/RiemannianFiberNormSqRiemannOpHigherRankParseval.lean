@@ -77,6 +77,19 @@ lemma coframeS_apply
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiAlgebra_apply]
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+    [T2Space M] [BoundarylessManifold I M] in
+theorem fiberNormSqComponent_eq_toModel_coframe
+    (g : SmoothRiemannianMetric I M) (x : M) (r s : ℕ)
+    (S : TensorRSSpace r s I x)
+    {n : ℕ} (e : Fin n → TangentSpace I x)
+    (K : Fin r → Fin n) (J : Fin s → Fin n) :
+    fiberNormSqComponent (I := I) (M := M) g x r s S n e K J =
+      Tensor0SSpace.toModel
+        ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from S)
+          (coframeS (I := I) (M := M) g x r e K))
+        (fun k => (show E from e (J k))) := rfl
+
 noncomputable def dualTensorFrameS
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x) (J : Fin s → Fin n) :

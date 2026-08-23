@@ -132,6 +132,45 @@ lemma exists_gron_smallK
   rw [hgb]
   linarith
 
+theorem pair_le_gronwall2
+    {Y Y' Y'' : ℝ → E} {K eps δ b : ℝ}
+    (hK : 0 ≤ K) (heps : 0 ≤ eps)
+    (hcY : ContinuousOn Y (Icc 0 b))
+    (hcY' : ContinuousOn Y' (Icc 0 b))
+    (hdY : ∀ t ∈ Ico 0 b, HasDerivWithinAt Y (Y' t) (Ici t) t)
+    (hdY' : ∀ t ∈ Ico 0 b, HasDerivWithinAt Y' (Y'' t) (Ici t) t)
+    (hbound : ∀ t ∈ Ico 0 b, ‖Y'' t‖ ≤ K * ‖Y t‖ + eps)
+    (h0 : ‖Y 0‖ ≤ δ) (h0' : ‖Y' 0‖ ≤ δ) :
+    ∀ t ∈ Icc 0 b, ‖(Y t, Y' t)‖ ≤ gronwallBound δ (max K 1) eps t := by
+  set Z : ℝ → E × E := fun t => (Y t, Y' t) with hZdef
+  have hcZ : ContinuousOn Z (Icc 0 b) := hcY.prodMk hcY'
+  have hdZ : ∀ t ∈ Ico 0 b,
+      HasDerivWithinAt Z (Y' t, Y'' t) (Ici t) t :=
+    fun t ht => (hdY t ht).prodMk (hdY' t ht)
+  have h0Z : ‖Z 0‖ ≤ δ := by
+    rw [Prod.norm_def]
+    exact max_le h0 h0'
+  have hboundZ : ∀ t ∈ Ico 0 b,
+      ‖(Y' t, Y'' t)‖ ≤ max K 1 * ‖Z t‖ + eps := by
+    intro t ht
+    rw [Prod.norm_def]
+    have h1 : ‖Y' t‖ ≤ ‖Z t‖ := norm_snd_le (Z t)
+    have h2 : ‖Y t‖ ≤ ‖Z t‖ := norm_fst_le (Z t)
+    have hZ0 : 0 ≤ ‖Z t‖ := norm_nonneg _
+    apply max_le
+    · calc ‖Y' t‖ ≤ ‖Z t‖ := h1
+        _ ≤ max K 1 * ‖Z t‖ := le_mul_of_one_le_left hZ0 (le_max_right K 1)
+        _ ≤ max K 1 * ‖Z t‖ + eps := le_add_of_nonneg_right heps
+    · calc ‖Y'' t‖ ≤ K * ‖Y t‖ + eps := hbound t ht
+        _ ≤ max K 1 * ‖Z t‖ + eps := by
+            have hmul : K * ‖Y t‖ ≤ max K 1 * ‖Z t‖ :=
+              mul_le_mul (le_max_left K 1) h2 (norm_nonneg _)
+                (hK.trans (le_max_left K 1))
+            linarith
+  have hmain := norm_le_gronwallBound_of_norm_deriv_right_le hcZ hdZ h0Z hboundZ
+  intro t ht
+  simpa [Z, sub_zero] using hmain t ht
+
 theorem norm_le_gronwall_secondOrder
     {Y Y' Y'' : ℝ → E} {K eps δ b : ℝ}
     (hK : 0 ≤ K) (heps : 0 ≤ eps)

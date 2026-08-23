@@ -35,6 +35,7 @@ theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V)) :
   norm_num
 
 omit [MeasurableSpace V] [BorelSpace V] in
+omit [FiniteDimensional ℝ V] in
 theorem klL2_inv_sq {R : ℝ} (hR : 0 < R) :
     (klL2Scale (V := V) R)⁻¹ ^ 2 =
       ENNReal.ofReal (R ^ Module.finrank ℝ V) := by

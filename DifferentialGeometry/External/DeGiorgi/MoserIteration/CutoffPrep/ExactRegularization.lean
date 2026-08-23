@@ -200,6 +200,7 @@ noncomputable def moserExactRegTestCutoffWitness
 theorem moserExactRegTestPow_nonneg_of_nonneg_le_N
     {ε N p t : ℝ} (hε : 0 < ε) (_hN : 0 ≤ N) (ht0 : 0 ≤ t) (htN : t ≤ N) (hp : 1 < p) :
     0 ≤ moserExactRegTestPow ε N p t := by
+  let _ := _hN
   rw [moserExactRegTestPow_eq_shifted_of_nonneg_le_N (ε := ε) (N := N) (p := p) hε ht0 htN]
   refine sub_nonneg.mpr ?_
   exact Real.rpow_le_rpow (by linarith) (by linarith) (by linarith)
@@ -240,6 +241,7 @@ theorem moserExactRegTestCutoff_nonneg_global
     (hε : 0 < ε) (hN : 0 ≤ N) (hp : 1 < p)
     (_hη_nonneg : ∀ x, 0 ≤ η x) :
     ∀ x, 0 ≤ moserExactRegTestCutoff η u ε N p x := by
+  let _ := _hη_nonneg
   intro x
   dsimp [moserExactRegTestCutoff]
   have hψ_nonneg :
@@ -319,6 +321,7 @@ theorem moserExactRegTestCutoff_memH01_on_ball
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) ρ) :
     MemH01 (moserExactRegTestCutoff η u ε N p) (Metric.ball (0 : E) ρ) := by
+  let _ := _hρ
   let Ω : Set E := Metric.ball (0 : E) ρ
   let hwTestBig :
       MemW1pWitness 2 (moserExactRegTestCutoff η u ε N p) (Metric.ball (0 : E) 1) :=
@@ -617,6 +620,7 @@ theorem moserExactRegPow_nonneg_of_nonneg_le_N
 theorem moserExactRegPow_le_rpow_of_nonneg_le_N
     {ε N p t : ℝ} (hε : 0 < ε) (ht0 : 0 ≤ t) (htN : t ≤ N) (_hp : 0 < p) :
     moserExactRegPow ε N p t ≤ (ε + t) ^ (p / 2) := by
+  let _ := _hp
   rw [moserExactRegPow_eq_shifted_of_nonneg_le_N (ε := ε) (N := N) (p := p) hε ht0 htN]
   have : 0 ≤ ε ^ (p / 2) := Real.rpow_nonneg hε.le (p / 2)
   linarith

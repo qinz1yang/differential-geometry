@@ -4,7 +4,6 @@ open DifferentialGeometry.Analysis.Calculus
 namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option maxSynthPendingDepth 3
 
 open scoped InnerProductSpace
 
@@ -199,6 +198,27 @@ theorem lowScaleCutoff_sub_le
               · exact mul_nonneg hjn hD0
           _ = (1 / ρ) * max ‖U‖ ‖V‖ * ‖ι U - ι V‖ := by ring
       linarith
+
+theorem lowScaleCutoff_cont (hι : Function.Injective ι) {ρ : ℝ} (hρ : 0 < ρ) :
+    Continuous (lowScaleCutoff ι ρ) := by
+  rw [continuous_iff_continuousAt]
+  intro U
+  rcases eq_or_ne U 0 with rfl | hU
+  · have hnear : ∀ᶠ V in nhds (0 : X), ‖ι V‖ < ρ := by
+      exact ι.continuous.continuousAt.norm.eventually_lt_const
+        (by simpa using hρ)
+    have heq :
+        (fun V : X => lowScaleCutoff ι ρ V) =ᶠ[nhds (0 : X)] fun V => V := by
+      filter_upwards [hnear] with V hV
+      exact lowScaleCutoff_eq_self ι hι (le_of_lt hV)
+    exact continuousAt_id.congr_of_eventuallyEq heq
+  · unfold lowScaleCutoff
+    have hiU : ι U ≠ 0 := by simpa using hι.ne hU
+    have hden : ‖ι U‖ ≠ 0 := norm_ne_zero_iff.mpr hiU
+    exact
+      (continuousAt_const.min
+        (continuousAt_const.div ι.continuous.continuousAt.norm hden)).smul
+          continuousAt_id
 
 end NormedDifference
 

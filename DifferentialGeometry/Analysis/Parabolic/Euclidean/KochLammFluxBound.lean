@@ -29,14 +29,14 @@ theorem klFluxKern_fac {R : ℝ} (hR : 0 < R) (w x : V) :
         ‖klFluxKernel (R ^ 2) w x z‖ ^ klPDual V)
       (klTermMeasure (V := V) (R ^ 2)) := by
     have hm :=
-      (klFluxKernel_memLp (V := V) (sq_pos_of_pos hR) w x).integrable_norm_rpow
+      (klFluxKernel_memLp (V := V) (t := R ^ 2) w x).integrable_norm_rpow
         (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     simpa only [ENNReal.toReal_ofReal hp.le] using hm
   have hmi : Integrable
       (fun z : ℝ × V ↦
         (‖w‖ * klFluxMajor (R ^ 2) x z) ^ klPDual V)
       (klTermMeasure (V := V) (R ^ 2)) := by
-    have hm := ((klFluxMajor_memLp (V := V) (sq_pos_of_pos hR) x).const_mul
+    have hm := ((klFluxMajor_memLp (V := V) (t := R ^ 2) x).const_mul
       ‖w‖).integrable_norm_rpow
         (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     simpa only [ENNReal.toReal_ofReal hp.le,
@@ -62,7 +62,7 @@ theorem klFluxKern_fac {R : ℝ} (hR : 0 < R) (w x : V) :
           (‖w‖ * klFluxMajor (R ^ 2) x z) ^ klPDual V
             ∂(klTermMeasure (V := V) (R ^ 2)) := by
     apply integral_mono_ae hki hmi
-    filter_upwards [klFluxKernel_ae (V := V) (sq_pos_of_pos hR) w x]
+    filter_upwards [klFluxKernel_ae (V := V) w x]
       with z hz
     exact Real.rpow_le_rpow (norm_nonneg _) hz hp.le
   have hmass :

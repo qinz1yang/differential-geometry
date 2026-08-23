@@ -37,13 +37,14 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 abbrev MIdxC (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] (r : ℕ) :=
+    (r : ℕ) :=
   Fin r → Fin (Module.finrank ℝ E)
 
 noncomputable def midxPairCard (r s : ℕ) : ℝ :=
   ((Finset.univ : Finset (MIdxC E r × MIdxC E s)).card : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [FiniteDimensional ℝ E] in
 lemma midxPairCard_nonneg (r s : ℕ) :
     0 ≤ midxPairCard (E := E) r s := Nat.cast_nonneg _
 
@@ -105,7 +106,7 @@ lemma tensorRSModel_norm_sq_le_sum_projection_sq (r s : ℕ)
       have := mul_le_mul h_norm_le h_norm_le (norm_nonneg _)
         (mul_nonneg (Finset.sum_nonneg (fun _ _ => abs_nonneg _)) hBnorm_nn)
       simpa [sq] using this
-    nlinarith [h_norm_sq, mul_le_mul_of_nonneg_right hCS (sq_nonneg Bnorm),
+    nlinarith only [h_norm_sq, mul_le_mul_of_nonneg_right hCS (sq_nonneg Bnorm),
       sq_nonneg Bnorm, sq_nonneg (∑ p ∈ V, |P p|),
       Finset.sum_nonneg (s := V) (f := fun p => (P p) ^ 2)
         (fun _ _ => sq_nonneg _)]
@@ -164,7 +165,7 @@ private lemma pou_sq_tensorInner_le_sum_scalar_sq
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
   · have h_scaled : ρ ^ 2 * Q ≤ ρ ^ 2 * (K * ‖T‖ ^ 2) :=
       mul_le_mul_of_nonneg_left (h_C2b S b hb) (sq_nonneg _)
-    nlinarith [h_scaled, h_pou_norm, hK_nn, hC₁_nn, h_sum_nn,
+    nlinarith only [h_scaled, h_pou_norm, hK_nn, hC₁_nn, h_sum_nn,
       sq_nonneg ‖T‖, sq_nonneg ρ]
   · have : ρ = 0 := by by_contra hne; exact hb (subset_tsupport _ hne)
     rw [show ρ ^ 2 * Q = 0 from by rw [this]; ring]

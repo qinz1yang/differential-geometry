@@ -7,7 +7,7 @@ namespace DifferentialGeometry.Analysis.Parabolic
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature

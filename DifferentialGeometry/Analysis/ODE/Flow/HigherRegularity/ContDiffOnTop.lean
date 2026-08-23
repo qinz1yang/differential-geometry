@@ -96,7 +96,7 @@ theorem IsLocalFlow.contDiffOn_top
     have hlinear_Cn : ∀ δ : E, ContDiffOn ℝ (n : ℕ∞)
         (uncurry (linearODESolution A (t₀ - T) (t₀ + T) t₀ (fun _ => δ)))
         (ball x₀ (ρ : ℝ) ×ˢ Ioo (t₀ - T) (t₀ + T)) :=
-      fun δ => linearODESolution_contDiffOn hab ht₀_mem isOpen_ball n
+      fun δ => linearODESolution_contDiffOn ht₀_mem isOpen_ball n
         (hcoeff_Cn : ContDiffOn ℝ (n : ℕ∞) (uncurry A) _)
         (contDiffOn_const : ContDiffOn ℝ (n : ℕ∞) (fun (_ : E) => δ) (ball x₀ (ρ : ℝ)))
     set Lsp : E × ℝ → E →L[ℝ] E :=
@@ -150,7 +150,7 @@ theorem IsLocalFlow.contDiffOn_top
       have hA_joint_cont : ContinuousOn (uncurry A)
           (ball x₀ (ρ : ℝ) ×ˢ Ioo (t₀ - T) (t₀ + T)) := hcoeff_Cn.continuousOn
       have h_exists : HasLinearODESolution A (t₀ - T) (t₀ + T) t₀ (fun _ => δ) q.1 :=
-        hasLinearODESolution_of_continuousOn hab ht₀_mem isOpen_ball hA_joint_cont
+        hasLinearODESolution_of_continuousOn ht₀_mem hA_joint_cont
           (mem_ball.mpr hx')
       have h_uniq := linearODE_unique_on_Ioo (G := E) ht₀_mem hA_cont_Ioo
         (fun s hs => by

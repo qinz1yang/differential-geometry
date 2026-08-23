@@ -87,20 +87,25 @@ private lemma sq_cutoffPartial_le
   set a : ℝ := (fderiv ℝ χ x) (EuclideanSpace.single l 1) * u x with ha_def
   set b : ℝ := χ x * w x with hb_def
   have h_ab : (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := by
-    nlinarith [sq_nonneg (a - b)]
+    calc
+      (a + b) ^ 2 ≤ (a + b) ^ 2 + (a - b) ^ 2 :=
+        le_add_of_nonneg_right (sq_nonneg _)
+      _ = 2 * a ^ 2 + 2 * b ^ 2 := by ring
   have h_a_sq : a ^ 2 ≤ M_dχ ^ 2 * (u x) ^ 2 := by
     rw [ha_def, mul_pow]
     have h_dχ_sq :
         ((fderiv ℝ χ x) (EuclideanSpace.single l 1)) ^ 2 ≤ M_dχ ^ 2 := by
-      have := hM_dχ_bd x
-      nlinarith [abs_nonneg ((fderiv ℝ χ x) (EuclideanSpace.single l 1)),
-        sq_abs ((fderiv ℝ χ x) (EuclideanSpace.single l 1))]
+      calc
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1)) ^ 2 =
+            |(fderiv ℝ χ x) (EuclideanSpace.single l 1)| ^ 2 := (sq_abs _).symm
+        _ ≤ M_dχ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) (hM_dχ_bd x) 2
     exact mul_le_mul_of_nonneg_right h_dχ_sq (sq_nonneg _)
   have h_b_sq : b ^ 2 ≤ M_χ ^ 2 * (w x) ^ 2 := by
     rw [hb_def, mul_pow]
     have h_χ_sq : (χ x) ^ 2 ≤ M_χ ^ 2 := by
-      have := hM_χ_bd x
-      nlinarith [abs_nonneg (χ x), sq_abs (χ x)]
+      calc
+        (χ x) ^ 2 = |χ x| ^ 2 := (sq_abs _).symm
+        _ ≤ M_χ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) (hM_χ_bd x) 2
     exact mul_le_mul_of_nonneg_right h_χ_sq (sq_nonneg _)
   calc (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := h_ab
     _ ≤ 2 * (M_dχ ^ 2 * (u x) ^ 2) + 2 * (M_χ ^ 2 * (w x) ^ 2) := by gcongr
@@ -385,8 +390,9 @@ theorem gTotal_le_data_eLpNorm
     intro v x
     rw [mul_pow]
     have h_χ_sq : (χ x) ^ 2 ≤ M_χ ^ 2 := by
-      have := hM_χ_bd x
-      nlinarith [abs_nonneg (χ x), sq_abs (χ x)]
+      calc
+        (χ x) ^ 2 = |χ x| ^ 2 := (sq_abs _).symm
+        _ ≤ M_χ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) (hM_χ_bd x) 2
     exact mul_le_mul_of_nonneg_right h_χ_sq (sq_nonneg _)
   have h_ug_closure_le :
       (∫ x in closure Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) ≤
@@ -434,17 +440,61 @@ theorem gTotal_le_data_eLpNorm
   have hn_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   have h_coeff_w : 2 * M_χ ^ 2 ≤ Cχ := by
     rw [hCχ_def]
-    nlinarith [sq_nonneg M_χ, sq_nonneg M_dχ, hn_nn,
-      mul_nonneg hn_nn (sq_nonneg M_χ)]
+    have hrest : 0 ≤
+        2 * (Module.finrank ℝ E : ℝ) * M_χ ^ 2 +
+          2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_dχ ^ 2 + 1) :=
+      add_nonneg
+        (mul_nonneg (mul_nonneg (by norm_num) hn_nn) (sq_nonneg _))
+        (mul_nonneg
+          (mul_nonneg (by norm_num) (add_nonneg hn_nn zero_le_one))
+          (add_nonneg (sq_nonneg _) zero_le_one))
+    calc
+      2 * M_χ ^ 2 ≤ 2 * M_χ ^ 2 +
+          (2 * (Module.finrank ℝ E : ℝ) * M_χ ^ 2 +
+            2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_dχ ^ 2 + 1)) :=
+        le_add_of_nonneg_right hrest
+      _ = 2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_χ ^ 2 + M_dχ ^ 2 + 1) := by
+        ring
   have h_coeff_u :
       2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 + M_χ ^ 2 ≤ Cχ := by
     rw [hCχ_def]
-    nlinarith [sq_nonneg M_χ, sq_nonneg M_dχ, hn_nn,
-      mul_nonneg hn_nn (sq_nonneg M_dχ), mul_nonneg hn_nn (sq_nonneg M_χ)]
+    have hrest : 0 ≤
+        (2 * (Module.finrank ℝ E : ℝ) + 1) * M_χ ^ 2 +
+          2 * M_dχ ^ 2 + 2 * (Module.finrank ℝ E : ℝ) + 2 :=
+      add_nonneg
+        (add_nonneg
+          (add_nonneg
+            (mul_nonneg (add_nonneg (mul_nonneg (by norm_num) hn_nn) zero_le_one)
+              (sq_nonneg _))
+            (mul_nonneg (by norm_num) (sq_nonneg _)))
+          (mul_nonneg (by norm_num) hn_nn))
+        (by norm_num)
+    calc
+      2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 + M_χ ^ 2 ≤
+          2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 + M_χ ^ 2 +
+            ((2 * (Module.finrank ℝ E : ℝ) + 1) * M_χ ^ 2 +
+              2 * M_dχ ^ 2 + 2 * (Module.finrank ℝ E : ℝ) + 2) :=
+        le_add_of_nonneg_right hrest
+      _ = 2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_χ ^ 2 + M_dχ ^ 2 + 1) := by
+        ring
   have h_coeff_f : M_χ ^ 2 ≤ Cχ := by
     rw [hCχ_def]
-    nlinarith [sq_nonneg M_χ, sq_nonneg M_dχ, hn_nn,
-      mul_nonneg hn_nn (sq_nonneg M_χ)]
+    have hrest : 0 ≤
+        (2 * (Module.finrank ℝ E : ℝ) + 1) * M_χ ^ 2 +
+          2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_dχ ^ 2 + 1) :=
+      add_nonneg
+        (mul_nonneg (add_nonneg (mul_nonneg (by norm_num) hn_nn) zero_le_one)
+          (sq_nonneg _))
+        (mul_nonneg
+          (mul_nonneg (by norm_num) (add_nonneg hn_nn zero_le_one))
+          (add_nonneg (sq_nonneg _) zero_le_one))
+    calc
+      M_χ ^ 2 ≤ M_χ ^ 2 +
+          ((2 * (Module.finrank ℝ E : ℝ) + 1) * M_χ ^ 2 +
+            2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_dχ ^ 2 + 1)) :=
+        le_add_of_nonneg_right hrest
+      _ = 2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_χ ^ 2 + M_dχ ^ 2 + 1) := by
+        ring
   have h_final :
       (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * Su + 2 * M_χ ^ 2 * Sw) +
         M_χ ^ 2 * Su + M_χ ^ 2 * Sf ≤ Cχ * (Sw + Su + Sf) := by

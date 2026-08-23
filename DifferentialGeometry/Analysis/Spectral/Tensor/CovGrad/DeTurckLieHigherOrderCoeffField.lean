@@ -1,12 +1,12 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmOperatorFieldApplication
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CorrFieldChristoffelCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradParametricJointSmooth
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ContractedBianchi
 import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.SlotSubstitutionFiberNormBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.DeTurckLieArm2TraceCoeff
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricConnDiffLoweredTrilinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricConnectionDifferenceLoweredTrilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.DeTurckLieArm1CoeffField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieRealizedFamilyJointSmooth
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieMetricPerturbationPathJointSmoothness
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -46,19 +46,19 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-private theorem connDiffFib_comp_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+private theorem connectionDifferenceFib_comp_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SBundle.Tensor0SSpace 1 I x) :
     (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-      connDiffFib (I := I) g₁ g₀ x) om =
+      connectionDifferenceFib (I := I) g₁ g₀ x) om =
       (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         raisedKoszulFib (I := I) g₀ g₁ x)
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ x
           (inverseMetricSharpFib (I := I) g₁ x om)) := by
-  rw [connDiffFib_apply, raisedKoszulFib_apply]
+  rw [connectionDifferenceFib_apply, raisedKoszulFib_apply]
   apply ContinuousMultilinearMap.ext
   intro YZ
-  rw [connDiffPairing_apply, raisedKoszulPairing_apply]
-  set D : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x (YZ 0) (YZ 1) with hD
+  rw [connectionDifferencePairing_apply, raisedKoszulPairing_apply]
+  set D : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1) with hD
   set u : TangentSpace I x := inverseMetricSharpFib (I := I) g₁ x om with hu
   have hLHS : om (fun _ : Fin 1 => D) = g₁.inner x u D := by
     rw [← cotangentToDual_apply (I := I) (x := x) om D]
@@ -93,7 +93,8 @@ private theorem connDiffFib_comp_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x 
   rw [g₁.symm x D u, hu]
 
 omit [CompactSpace M] in
-private theorem deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private theorem deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -104,42 +105,43 @@ private theorem deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieKoszulTraceFib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) σ p.1
+        (deTurckLieKoszulTraceFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) σ p.1
           (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (Y p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Y.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hperm := domDomCongrField_jointContMDiffOn (I := I) σ
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) (fun p : M × ℝ => Y p.1) hYjoint
-  have htr1 := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) (fun p : M × ℝ => Y p.1) hYjoint
+  have htr1 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 1)
     g₀ T T' hδ hδ'
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
       (ContinuousMultilinearMap.domDomCongr σ (Tensor0SBundle.Tensor0SSpace.toModel (Y p.1))))
     hperm
   have hsharp := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-    (inverseMetricSharpField_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ') htr1
+    (inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') htr1
   have hflatfield : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ]
       Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace 1 I z) p.1
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     (g0FlatField_contMDiff (I := I) g₀).comp_contMDiffOn contMDiffOn_fst
   have hflat := ContMDiffOn.clm_bundle_apply (b := Prod.fst) hflatfield hsharp
   have hkos := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-    (corrField_raisedKoszulFib_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflat
+    (corrField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflat
   refine hkos.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    domDomCongrFibRank_apply, connDiffFib_comp_eq]
+    domDomCongrFibRank_apply, connectionDifferenceFib_comp_eq]
 
 omit [CompactSpace M] in
-private theorem deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private theorem deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -149,31 +151,31 @@ private theorem deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn
     (hκ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (κfam p))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')))
     (Y : ContMDiffSection I (Tensor0SBundle.Tensor0SModel 3 ℝ E) ∞
       (fun x : M => Tensor0SBundle.Tensor0SSpace 3 I x)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLiePairTraceFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) σ p.1
+        (deTurckLiePairTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) σ p.1
           (κfam p) (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (Y p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Y.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hprod := jointTensor0SProd_local (I := I) (p := 3) (q := 3)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => Y p.1) κfam hYjoint hκ
   have hperm := domDomCongrField_jointContMDiffOn (I := I) σ
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
       (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
         (Tensor0SBundle.Tensor0SSpace.toModel (Y p.1))
         (Tensor0SBundle.Tensor0SSpace.toModel (κfam p)))) hprod
-  have htr4 := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 4)
+  have htr4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
     g₀ T T' hδ hδ'
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
       (ContinuousMultilinearMap.domDomCongr σ
@@ -183,10 +185,10 @@ private theorem deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn
               (Tensor0SBundle.Tensor0SSpace.toModel (Y p.1))
               (Tensor0SBundle.Tensor0SSpace.toModel (κfam p)))))))
     hperm
-  have htr2 := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 2)
+  have htr2 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 2)
     g₀ T T' hδ hδ'
     (fun p : M × ℝ => cometricDoubleTraceFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) 4 p.1
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 4 p.1
       (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
         (ContinuousMultilinearMap.domDomCongr σ
           (Tensor0SBundle.Tensor0SSpace.toModel
@@ -201,7 +203,8 @@ private theorem deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn
   rw [deTurckLiePairTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, tensor0SProdKappaFib_apply, domDomCongrFibRank_apply]
 
-private theorem deTurckLieArm1CoreFib_realizedFam_apply_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -212,59 +215,59 @@ private theorem deTurckLieArm1CoreFib_realizedFam_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieArm1CoreFib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (deTurckLieArm1CoreFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (Y p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Y.contMDiff.comp_contMDiffOn contMDiffOn_fst
-  have hκA := metricConnDiffLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-  have hκB := metricConnDiffLowered_bgFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
-  have hS2 := deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hκA := metricConnectionDifferenceLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hκB := metricConnectionDifferenceLowered_bgFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
+  have hS2 := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
     deTurckLieArm1PairPermInnerTwo
-    (fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
+    (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hκA Y
-  have hB := deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hB := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
     deTurckLieArm1PairPermCorrection
-    (fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+    (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
     hκB Y
   have hpermY := domDomCongrField_jointContMDiffOn (I := I) deTurckLieArm1VecSlotPerm
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) (fun p : M × ℝ => Y p.1) hYjoint
-  have hW0 := deTurckVF_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g₀
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) (fun p : M × ℝ => Y p.1) hYjoint
+  have hW0 := deTurckVF_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g₀
   have hT2 := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ : Π b : M, TangentSpace I b) p.1) hW0
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ : Π b : M, TangentSpace I b) p.1) hW0
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
       (ContinuousMultilinearMap.domDomCongr deTurckLieArm1VecSlotPerm
         (Tensor0SBundle.Tensor0SSpace.toModel (Y p.1)))) hpermY
-  have hT3 := deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hT3 := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
     deTurckLieArm1PairPermOuterZero
-    (fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
+    (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hκA Y
-  have hT4 := deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hT4 := deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
     deTurckLieArm1KoszulMidPerm Y
-  have hT5 := deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hT5 := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
     deTurckLieArm1PairPermOuterTwo
-    (fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
+    (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hκA Y
   have hs1 := jointTotalSpace0S_sub_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hS2 hB
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hS2 hB
   have hs2 := jointTotalSpace0S_sub_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hs1 hT2
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hs1 hT2
   have hs3 := jointTotalSpace0S_sub_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hs2 hT3
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hs2 hT3
   have hs4 := jointTotalSpace0S_sub_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hs3 hT4
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hs3 hT4
   have hs5 := jointTotalSpace0S_sub_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hs4 hT5
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hs4 hT5
   refine hs5.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
@@ -272,7 +275,8 @@ private theorem deTurckLieArm1CoreFib_realizedFam_apply_jointContMDiffOn
   simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply]
   rw [domDomCongrFibRank_apply]
 
-private theorem deTurckLieArm1Fib_realizedFam_apply_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -283,36 +287,36 @@ private theorem deTurckLieArm1Fib_realizedFam_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieArm1Fib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (deTurckLieArm1Fib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (Y p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Y.contMDiff.comp_contMDiffOn contMDiffOn_fst
-  have hWbg := deTurckVF_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
+  have hWbg := deTurckVF_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
   have hW := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1) hWbg
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1) hWbg
     (fun p : M × ℝ => Y p.1) hYjoint
-  have hcore := deTurckLieArm1CoreFib_realizedFam_apply_jointContMDiffOn (I := I)
+  have hcore := deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
     g₀ T T' hδ hδ' g_bg Y
   have hcoreswap := domDomCongrField_jointContMDiffOn (I := I) (Equiv.swap (0 : Fin 2) 1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => deTurckLieArm1CoreFib (I := I) g₀
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1 (Y p.1)) hcore
-  have hS3 := deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1 (Y p.1)) hcore
+  have hS3 := deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I)
     g₀ T T' hδ hδ' deTurckLieArm1KoszulZeroPerm Y
   have ha1 := jointTotalSpace0S_add_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hW hcore
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hW hcore
   have ha2 := jointTotalSpace0S_add_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ ha1 hcoreswap
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ ha1 hcoreswap
   have ha3 := jointTotalSpace0S_add_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ ha2 hS3
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ ha2 hS3
   refine ha3.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
@@ -320,7 +324,8 @@ private theorem deTurckLieArm1Fib_realizedFam_apply_jointContMDiffOn
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
   rw [domDomCongrFibRank_apply]
 
-theorem deTurckLieArm1Coeff_realizedFam_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] in
+theorem deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -330,8 +335,8 @@ theorem deTurckLieArm1Coeff_realizedFam_jointContMDiff (g₀ : SmoothRiemannianM
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1
         ((deTurckLieArm1Coeff (I := I) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
@@ -339,16 +344,17 @@ theorem deTurckLieArm1Coeff_realizedFam_jointContMDiff (g₀ : SmoothRiemannianM
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
-      deTurckLieArm1Fib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
-    (fun Y => deTurckLieArm1Fib_realizedFam_apply_jointContMDiffOn (I := I)
+      deTurckLieArm1Fib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (fun Y => deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
       g₀ T T' hδ hδ' g_bg Y)
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1 t) ?_
   rw [deTurckLieArm1Coeff_toSection]
 
-theorem deTurckLieArm1Coeff_realizedFam_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] in
+theorem deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -356,8 +362,8 @@ theorem deTurckLieArm1Coeff_realizedFam_jointSmooth (g₀ : SmoothRiemannianMetr
     (g_bg : SmoothRiemannianMetric I M) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
       (fun s => deTurckLieArm1Coeff (I := I) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
-  deTurckLieArm1Coeff_realizedFam_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
+  deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -853,8 +859,8 @@ private theorem dLieFlatCovGradVal_eval (g₀ : SmoothRiemannianMetric I M)
 private noncomputable def dLieLoweredPack (g₀ gm gA gB : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 0 3 :=
   dLiePack0S (I := I) g₀
-    (fun x : M => metricConnDiffLoweredFib (I := I) gm gA gB x)
-    (metricConnDiffLoweredFib_contMDiff (I := I) gm gA gB)
+    (fun x : M => metricConnectionDifferenceLoweredFib (I := I) gm gA gB x)
+    (metricConnectionDifferenceLoweredFib_contMDiff (I := I) gm gA gB)
 
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -980,11 +986,11 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))))) w =
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-        ![PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3] := by
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))))) w =
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+        ![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3] := by
   classical
   rw [dLieDiagTrace_toModel (I := I) g₁ 4 x _ w]
   have hterm : ∀ e : Fin (Module.finrank ℝ E),
@@ -995,14 +1001,14 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))))
           (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w)) =
-        Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+        Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
             ![smoothOrthoFrame (I := I) g₁ x e x, w 2, w 3] *
-          g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0))
+          g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0))
             (smoothOrthoFrame (I := I) g₁ x e x) := by
     intro e
     rw [Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
@@ -1024,31 +1030,31 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
       funext j
       fin_cases j <;> rfl
     rw [hargL, hargM]
-    rw [metricConnDiffLoweredFib_toModel (I := I) g₁ g₁ g₀ x]
+    rw [metricConnectionDifferenceLoweredFib_toModel (I := I) g₁ g₁ g₀ x]
     rfl
   rw [Finset.sum_congr rfl (fun e _ => hterm e)]
   have hupd : ∀ u : TangentSpace I x,
       (![u, w 2, w 3] : Fin 3 → TangentSpace I x) =
         Function.update
-          (![PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3] :
+          (![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3] :
             Fin 3 → TangentSpace I x) 0 u :=
     fun u => (dLieUpdateZero (I := I) x _ (w 2) (w 3) u).symm
   rw [show (∑ e : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
           ![smoothOrthoFrame (I := I) g₁ x e x, w 2, w 3] *
-        g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0))
+        g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0))
           (smoothOrthoFrame (I := I) g₁ x e x)) =
     ∑ e : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
           (Function.update
-            (![PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3] :
+            (![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3] :
               Fin 3 → TangentSpace I x) 0 (smoothOrthoFrame (I := I) g₁ x e x)) *
-        g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0))
+        g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0))
           (smoothOrthoFrame (I := I) g₁ x e x) from
     Finset.sum_congr rfl (fun e _ => by rw [← hupd])]
-  rw [dLieFrameExpand_update (I := I) g₁ x (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-    (![PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3]) 0
-    (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 0))]
+  rw [dLieFrameExpand_update (I := I) g₁ x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+    (![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0), w 2, w 3]) 0
+    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0))]
   exact congrArg _ (hupd _).symm
 
 
@@ -1064,11 +1070,11 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))))) w =
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-        ![w 1, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0), w 3] := by
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))))) w =
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+        ![w 1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0), w 3] := by
   classical
   rw [dLieDiagTrace_toModel (I := I) g₁ 4 x _ w]
   have hterm : ∀ e : Fin (Module.finrank ℝ E),
@@ -1079,14 +1085,14 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))))
           (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w)) =
-        Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+        Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
             ![w 1, smoothOrthoFrame (I := I) g₁ x e x, w 3] *
-          g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0))
+          g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0))
             (smoothOrthoFrame (I := I) g₁ x e x) := by
     intro e
     rw [Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
@@ -1108,31 +1114,31 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
       funext j
       fin_cases j <;> rfl
     rw [hargL, hargM]
-    rw [metricConnDiffLoweredFib_toModel (I := I) g₁ g₁ g₀ x]
+    rw [metricConnectionDifferenceLoweredFib_toModel (I := I) g₁ g₁ g₀ x]
     rfl
   rw [Finset.sum_congr rfl (fun e _ => hterm e)]
   have hupd : ∀ u : TangentSpace I x,
       (![w 1, u, w 3] : Fin 3 → TangentSpace I x) =
         Function.update
-          (![w 1, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0), w 3] :
+          (![w 1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0), w 3] :
             Fin 3 → TangentSpace I x) 1 u :=
     fun u => (dLieUpdateOne (I := I) x (w 1) _ (w 3) u).symm
   rw [show (∑ e : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
           ![w 1, smoothOrthoFrame (I := I) g₁ x e x, w 3] *
-        g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0))
+        g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0))
           (smoothOrthoFrame (I := I) g₁ x e x)) =
     ∑ e : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
           (Function.update
-            (![w 1, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0), w 3] :
+            (![w 1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0), w 3] :
               Fin 3 → TangentSpace I x) 1 (smoothOrthoFrame (I := I) g₁ x e x)) *
-        g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0))
+        g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0))
           (smoothOrthoFrame (I := I) g₁ x e x) from
     Finset.sum_congr rfl (fun e _ => by rw [← hupd])]
-  rw [dLieFrameExpand_update (I := I) g₁ x (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-    (![w 1, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0), w 3]) 1
-    (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 2) (w 0))]
+  rw [dLieFrameExpand_update (I := I) g₁ x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+    (![w 1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0), w 3]) 1
+    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0))]
   exact congrArg _ (hupd _).symm
 
 
@@ -1148,11 +1154,11 @@ private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))))) w =
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-        ![w 1, w 2, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0)] := by
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))))) w =
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+        ![w 1, w 2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0)] := by
   classical
   rw [dLieDiagTrace_toModel (I := I) g₁ 4 x _ w]
   have hterm : ∀ e : Fin (Module.finrank ℝ E),
@@ -1163,14 +1169,14 @@ private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                     (Tensor0SBundle.Tensor0SSpace.toModel
-                      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))))
+                      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))))
           (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w)) =
-        Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+        Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
             ![w 1, w 2, smoothOrthoFrame (I := I) g₁ x e x] *
-          g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0))
+          g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0))
             (smoothOrthoFrame (I := I) g₁ x e x) := by
     intro e
     rw [Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
@@ -1192,31 +1198,31 @@ private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
       funext j
       fin_cases j <;> rfl
     rw [hargL, hargM]
-    rw [metricConnDiffLoweredFib_toModel (I := I) g₁ g₁ g₀ x]
+    rw [metricConnectionDifferenceLoweredFib_toModel (I := I) g₁ g₁ g₀ x]
     rfl
   rw [Finset.sum_congr rfl (fun e _ => hterm e)]
   have hupd : ∀ u : TangentSpace I x,
       (![w 1, w 2, u] : Fin 3 → TangentSpace I x) =
         Function.update
-          (![w 1, w 2, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0)] :
+          (![w 1, w 2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0)] :
             Fin 3 → TangentSpace I x) 2 u :=
     fun u => (dLieUpdateTwo (I := I) x (w 1) (w 2) _ u).symm
   rw [show (∑ e : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
           ![w 1, w 2, smoothOrthoFrame (I := I) g₁ x e x] *
-        g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0))
+        g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0))
           (smoothOrthoFrame (I := I) g₁ x e x)) =
     ∑ e : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
           (Function.update
-            (![w 1, w 2, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0)] :
+            (![w 1, w 2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0)] :
               Fin 3 → TangentSpace I x) 2 (smoothOrthoFrame (I := I) g₁ x e x)) *
-        g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0))
+        g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0))
           (smoothOrthoFrame (I := I) g₁ x e x) from
     Finset.sum_congr rfl (fun e _ => by rw [← hupd])]
-  rw [dLieFrameExpand_update (I := I) g₁ x (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-    (![w 1, w 2, PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0)]) 2
-    (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 3) (w 0))]
+  rw [dLieFrameExpand_update (I := I) g₁ x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+    (![w 1, w 2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0)]) 2
+    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 3) (w 0))]
   exact congrArg _ (hupd _).symm
 
 
@@ -1233,27 +1239,27 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
               (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
-                        (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                       (Tensor0SBundle.Tensor0SSpace.toModel
-                        (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))
+                        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
               (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
-                        (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                       (Tensor0SBundle.Tensor0SSpace.toModel
-                        (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))
+                        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
               (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
-                        (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                       (Tensor0SBundle.Tensor0SSpace.toModel
-                        (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x))))))
+                        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x))))))
         ![w0, w1, w2, w3] =
-      g₁.inner x (connDiffCovDerivOp (I := I) g₁ g_bg x w0 w1 w2) w3 := by
+      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x w0 w1 w2) w3 := by
   classical
   set Af : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) x w1, smoothExtensionTangent_contMDiff (I := I) x w1⟩
@@ -1277,11 +1283,11 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
           (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
             (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                   (Tensor0SBundle.Tensor0SSpace.toModel
-                    (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                    (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                   (Tensor0SBundle.Tensor0SSpace.toModel
-                    (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-        ![PDE.DeTurck.connDiff (I := I) g₁ g₀ x w1 w0, w2, w3] :=
+                    (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+        ![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w1 w0, w2, w3] :=
     dLieCorrA_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
   have hCb : Tensor0SBundle.Tensor0SSpace.toModel
       (cometricDoubleTraceFib (I := I) g₁ 4 x
@@ -1289,11 +1295,11 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
           (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
             (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                   (Tensor0SBundle.Tensor0SSpace.toModel
-                    (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                    (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                   (Tensor0SBundle.Tensor0SSpace.toModel
-                    (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-        ![w1, PDE.DeTurck.connDiff (I := I) g₁ g₀ x w2 w0, w3] :=
+                    (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+        ![w1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w2 w0, w3] :=
     dLieCorrB_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
   have hCu : Tensor0SBundle.Tensor0SSpace.toModel
       (cometricDoubleTraceFib (I := I) g₁ 4 x
@@ -1301,11 +1307,11 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
           (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
             (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                   (Tensor0SBundle.Tensor0SSpace.toModel
-                    (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
+                    (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
                   (Tensor0SBundle.Tensor0SSpace.toModel
-                    (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
-      Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-        ![w1, w2, PDE.DeTurck.connDiff (I := I) g₁ g₀ x w3 w0] :=
+                    (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
+      Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+        ![w1, w2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w3 w0] :=
     dLieCorrC_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
   rw [Tensor0SBundle.Tensor0SSpace.toModel_sub, Tensor0SBundle.Tensor0SSpace.toModel_sub,
     Tensor0SBundle.Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply,
@@ -1319,25 +1325,25 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   rw [show (![w1, w2, w3] : Fin 3 → TangentSpace I x) =
       Fin.cons (Af x) (Fin.cons (Bf x) ![Uf x]) from by rw [hAfx, hBfx, hUfx]; rfl]
   have hVsec : TensorSectionMDiffAt (I := I) 3
-      (fun b : M => metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg b) x :=
-    (metricConnDiffLoweredFib_contMDiff (I := I) g₁ g₁ g_bg x).mdifferentiableAt (by simp)
+      (fun b : M => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg b) x :=
+    (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g_bg x).mdifferentiableAt (by simp)
   rw [dLieNabla3_consEval_leibnizDefect (I := I) g₀
-    (fun b : M => metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg b) hVsec Af Bf Uf w0]
+    (fun b : M => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg b) hVsec Af Bf Uf w0]
   have htri : dLieTriEvalFn (I := I) (M := M)
-      (fun b : M => metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg b) Af Bf Uf =
+      (fun b : M => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg b) Af Bf Uf =
       (fun b : M => g₁.inner b
-        (PDE.DeTurck.connDiff (I := I) g₁ g_bg b (Af b) (Bf b)) (Uf b)) := by
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (Af b) (Bf b)) (Uf b)) := by
     funext b
-    change Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg b)
+    change Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg b)
       (Fin.cons (Af b) (Fin.cons (Bf b) ![Uf b])) = _
-    rw [metricConnDiffLoweredFib_toModel]
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   rw [htri, directionalDeriv_eq]
-  have hDsec := PDE.DeTurck.connDiff_contMDiff (I := I) g₁ g_bg
+  have hDsec := PDE.DeTurck.connectionDifference_contMDiff (I := I) g₁ g_bg
     (σ := fun b => Af b) (τ := fun b => Bf b) Af.contMDiff Bf.contMDiff
   have hYm : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b => TotalSpace.mk' E (E := TangentSpace I) b
-        (PDE.DeTurck.connDiff (I := I) g₁ g_bg b (Af b) (Bf b))) x :=
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (Af b) (Bf b))) x :=
     (hDsec x).mdifferentiableAt (by simp)
   have hUm : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Uf b)) x :=
@@ -1345,83 +1351,80 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   have hmc : IsMetricCompatibleOn (I := I) (LeviCivita (I := I) g₁).toFun g₁ Set.univ :=
     LeviCivita_isMetricCompatible (I := I) g₁
   have hcompat := hmc.apply
-    (Y := fun b => PDE.DeTurck.connDiff (I := I) g₁ g_bg b (Af b) (Bf b))
+    (Y := fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (Af b) (Bf b))
     (Z := fun b => Uf b) hYm hUm (Set.mem_univ x) w0
   rw [hcompat]
   have hc1 : Tensor0SBundle.Tensor0SSpace.toModel
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
       (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Af b) x w0)
         (Fin.cons (Bf x) ![Uf x])) =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
         ((LeviCivita (I := I) g₀).toFun (fun b => Af b) x w0) (Bf x)) (Uf x) := by
-    rw [metricConnDiffLoweredFib_toModel]
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   have hc2 : Tensor0SBundle.Tensor0SSpace.toModel
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
       (Fin.cons (Af x)
         (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Bf b) x w0) ![Uf x])) =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x (Af x)
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (Af x)
         ((LeviCivita (I := I) g₀).toFun (fun b => Bf b) x w0)) (Uf x) := by
-    rw [metricConnDiffLoweredFib_toModel]
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   have hc3 : Tensor0SBundle.Tensor0SSpace.toModel
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
       (Fin.cons (Af x)
         (Fin.cons (Bf x) ![(LeviCivita (I := I) g₀).toFun (fun b => Uf b) x w0])) =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x (Af x) (Bf x))
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (Af x) (Bf x))
         ((LeviCivita (I := I) g₀).toFun (fun b => Uf b) x w0) := by
-    rw [metricConnDiffLoweredFib_toModel]
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   have hk1 : Tensor0SBundle.Tensor0SSpace.toModel
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-      ![PDE.DeTurck.connDiff (I := I) g₁ g₀ x w1 w0, w2, w3] =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w1 w0) w2) w3 := by
-    rw [metricConnDiffLoweredFib_toModel]
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+      ![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w1 w0, w2, w3] =
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w1 w0) w2) w3 := by
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   have hk2 : Tensor0SBundle.Tensor0SSpace.toModel
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-      ![w1, PDE.DeTurck.connDiff (I := I) g₁ g₀ x w2 w0, w3] =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x w1
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w2 w0)) w3 := by
-    rw [metricConnDiffLoweredFib_toModel]
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+      ![w1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w2 w0, w3] =
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x w1
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w2 w0)) w3 := by
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   have hk3 : Tensor0SBundle.Tensor0SSpace.toModel
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-      ![w1, w2, PDE.DeTurck.connDiff (I := I) g₁ g₀ x w3 w0] =
-      g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g_bg x w1 w2)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w3 w0) := by
-    rw [metricConnDiffLoweredFib_toModel]
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+      ![w1, w2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w3 w0] =
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x w1 w2)
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w3 w0) := by
+    rw [metricConnectionDifferenceLoweredFib_toModel]
     rfl
   rw [hc1, hc2, hc3, hk1, hk2, hk3]
-  have hker : connDiffCovDerivOp (I := I) g₁ g_bg x w0 w1 w2 =
-      deTurckConnDiffCovDeriv (I := I) g₁ g_bg (fun b => V0f b) (fun b => Af b)
+  have hker : connectionDifferenceCovDerivOp (I := I) g₁ g_bg x w0 w1 w2 =
+      deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg (fun b => V0f b) (fun b => Af b)
         (fun b => Bf b) x := by
-    have hV0m : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
-        (fun b => TotalSpace.mk' E (E := TangentSpace I) b (V0f b)) x :=
-      (V0f.contMDiff x).mdifferentiableAt (by simp)
     have hAm : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
         (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Af b)) x :=
       (Af.contMDiff x).mdifferentiableAt (by simp)
     have hBm : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
         (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Bf b)) x :=
       (Bf.contMDiff x).mdifferentiableAt (by simp)
-    have h3 := dLaCovKernel_apply_field3 (I := I) g₁ g_bg x (fun b => V0f b)
-      (fun b => Af b) (fun b => Bf b) hV0m hAm hBm
+    have h3 := deTurckLieConnectionDifferenceDerivativeCovKernel_apply_field3 (I := I) g₁ g_bg x (fun b => V0f b)
+      (fun b => Af b) (fun b => Bf b) hAm hBm
     beta_reduce at h3
     rw [hV0fx, hAfx, hBfx] at h3
     exact h3
-  rw [hker, deTurckConnDiffCovDeriv]
+  rw [hker, deTurckConnectionDifferenceCovDeriv]
   rw [hV0fx]
   have hsplit : ∀ (Yf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       (LeviCivita (I := I) g₀).toFun (fun b => Yf b) x w0 =
         (LeviCivita (I := I) g₁).toFun (fun b => Yf b) x w0
-          - PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Yf x) w0 := by
+          - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Yf x) w0 := by
     intro Yf
     have hmd : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
         (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Yf b)) x :=
       (Yf.contMDiff x).mdifferentiableAt (by simp)
-    have h := PDE.DeTurck.connDiff_apply (I := I) g₁ g₀ (σ := fun b => Yf b) hmd w0
+    have h := PDE.DeTurck.connectionDifference_apply (I := I) g₁ g₀ (σ := fun b => Yf b) hmd w0
     rw [h]
     abel
   rw [hsplit Af, hsplit Bf, hsplit Uf, hAfx, hBfx, hUfx]
@@ -1429,7 +1432,8 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   ring
 
 omit [CompactSpace M] in
-theorem deTurckVectorFieldFlat_realizedFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem deTurckVectorFieldFlat_metricPerturbationPath_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1440,19 +1444,20 @@ theorem deTurckVectorFieldFlat_realizedFam_jointContMDiffOn (g₀ : SmoothRieman
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z) p.1
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1
           ((PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hflatfield : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace 1 I z) p.1
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     (g0FlatField_contMDiff (I := I) g₀).comp_contMDiffOn contMDiffOn_fst
   exact ContMDiffOn.clm_bundle_apply (b := Prod.fst) hflatfield
-    (deTurckVF_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg)
+    (deTurckVF_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg)
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1464,35 +1469,35 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
         ((LeviCivita (I := I) g₀).toFun
           (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) b) p.1 (Z p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   set F : ℝ → SmoothCcTensor g₀ 0 1 := fun s : ℝ =>
     dLieFlatPack (I := I) g₀
-      (PDE.DeTurck.deTurckVF (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+      (PDE.DeTurck.deTurckVF (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
     with hFdef
   have hF : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 1 ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 0 1 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 0 1 I z) q.1 ((F q.2).toSection q.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     have hpack := dLiePack0S_family_jointContMDiffOn (I := I) g₀
       (A := fun p : M × ℝ =>
         DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1
           ((PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) p.1))
       (hslice := fun s : ℝ => dLieFlatSection_contMDiff (I := I) g₀
-        (PDE.DeTurck.deTurckVF (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))
-      (deTurckVectorFieldFlat_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg)
+        (PDE.DeTurck.deTurckVF (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))
+      (deTurckVectorFieldFlat_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg)
     exact hpack.congr (fun p _ => rfl)
   have hCovVal := dLieCovGradVal_jointContMDiffOn (I := I) (d := 1) g₀ F hF
   have hZjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 (Z p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Z.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hι := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X := fun p : M × ℝ => Z p.1) hZjoint
     (α := fun p : M × ℝ =>
       (show Tensor0SBundle.Tensor0SSpace 0 I p.1 →L[ℝ]
@@ -1504,7 +1509,7 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 1 ℝ E →L[ℝ] E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z →L[ℝ] TangentSpace I z) p.1
         (inverseMetricSharpFib (I := I) g₀ p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     (inverseMetricSharpField_contMDiff (I := I) g₀).comp_contMDiffOn contMDiffOn_fst
   have happ := ContMDiffOn.clm_bundle_apply (b := Prod.fst) hsharpField hι
   refine happ.congr (fun p hp => ?_)
@@ -1517,7 +1522,7 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
       DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1
         ((LeviCivita (I := I) g₀).toFun
           (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) b) p.1 (Z p.1)) := by
     apply Tensor0SBundle.Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
@@ -1533,7 +1538,7 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
             (unitZeroSec (I := I) (M := M) p.1))) m =
         g₀.inner p.1 ((LeviCivita (I := I) g₀).toFun
           (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) b) p.1 (Z p.1)) (m 0) := by
       change Tensor0SBundle.Tensor0SSpace.toModel
         ((show Tensor0SBundle.Tensor0SSpace 0 I p.1 →L[ℝ]
@@ -1549,28 +1554,29 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
             (unitZeroSec (I := I) (M := M) p.1))
           (Fin.cons (Z p.1) args)) hm) ?_
       exact dLieFlatCovGradVal_eval (I := I) g₀
-        (PDE.DeTurck.deTurckVF (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg)
+        (PDE.DeTurck.deTurckVF (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg)
         p.1 (Z p.1) (m 0)
     have e2 : Tensor0SBundle.Tensor0SSpace.toModel
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1
           ((LeviCivita (I := I) g₀).toFun
             (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) b) p.1 (Z p.1))) m =
         g₀.inner p.1 ((LeviCivita (I := I) g₀).toFun
           (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) b) p.1 (Z p.1)) (m 0) := by
       refine Eq.trans (congrArg (Tensor0SBundle.Tensor0SSpace.toModel
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ p.1
           ((LeviCivita (I := I) g₀).toFun
             (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) b) p.1 (Z p.1)))) hm) ?_
       exact dLie_toModel_g0Flat (I := I) g₀ p.1 _ (m 0)
     exact e1.trans e2.symm
   rw [hform, DifferentialGeometry.Analysis.Sobolev.TensorHilbert.inverseMetricSharpFib_g0FlatCLM]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem dLieWEndoB_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1580,50 +1586,50 @@ private theorem dLieWEndoB_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
+        (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
           ((PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) p.1) (Z p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  have hM := metricConnDiffLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-  have hW := deTurckVF_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
+  have hM := metricConnectionDifferenceLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hW := deTurckVF_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
   have hι1 := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X := fun p : M × ℝ => (PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1) hW
-    (α := fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1) hM
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1) hW
+    (α := fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1) hM
   have hZjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 (Z p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Z.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hι2 := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X := fun p : M × ℝ => Z p.1) hZjoint
     (α := fun p : M × ℝ => Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
       ((PDE.DeTurck.deTurckVF (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1)
-      (metricConnDiffLoweredFib (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)) hι1
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1)
+      (metricConnectionDifferenceLoweredFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)) hι1
   have hsharp := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-    (inverseMetricSharpField_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hι2
+    (inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hι2
   refine hsharp.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 t) ?_
   have hform : Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
       (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
         ((PDE.DeTurck.deTurckVF (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1)
-        (metricConnDiffLoweredFib (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)) =
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1)
+        (metricConnectionDifferenceLoweredFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)) =
       DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1
-        (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1
+        (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
           ((PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) p.1) (Z p.1)) := by
     apply Tensor0SBundle.Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
@@ -1635,50 +1641,51 @@ private theorem dLieWEndoB_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
         (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
           (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
             ((PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) p.1)
-            (metricConnDiffLoweredFib (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1))) m =
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2).inner p.1
-          (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
+            (metricConnectionDifferenceLoweredFib (I := I)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1))) m =
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
+          (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
             ((PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) p.1) (Z p.1)) (m 0) := by
       change Tensor0SBundle.Tensor0SSpace.toModel
-        (metricConnDiffLoweredFib (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
+        (metricConnectionDifferenceLoweredFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
         (Fin.cons ((PDE.DeTurck.deTurckVF (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
               Π b : M, TangentSpace I b) p.1)
           (Fin.cons (Z p.1) m)) = _
-      rw [metricConnDiffLoweredFib_toModel]
+      rw [metricConnectionDifferenceLoweredFib_toModel]
       rfl
     have e2 : Tensor0SBundle.Tensor0SSpace.toModel
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1
-          (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1
+          (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
             ((PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) p.1) (Z p.1))) m =
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2).inner p.1
-          (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
+          (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
             ((PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) p.1) (Z p.1)) (m 0) := by
       refine Eq.trans (congrArg (Tensor0SBundle.Tensor0SSpace.toModel
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1
-          (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1
+          (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1
             ((PDE.DeTurck.deTurckVF (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) p.1) (Z p.1)))) hm) ?_
-      exact dLie_toModel_g0Flat (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1 _ (m 0)
+      exact dLie_toModel_g0Flat (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 _ (m 0)
     exact e1.trans e2.symm
   rw [hform, DifferentialGeometry.Analysis.Sobolev.TensorHilbert.inverseMetricSharpFib_g0FlatCLM]
 
-theorem deTurckLieWEndo_realizedFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] in
+theorem deTurckVectorFieldCovariantDerivativeEndomorphism_metricPerturbationPath_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1687,53 +1694,54 @@ theorem deTurckLieWEndo_realizedFam_jointContMDiffOn (g₀ : SmoothRiemannianMet
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z) p.1
-        (deTurckLieWEndo (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+        (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ =>
-      deTurckLieWEndo (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+      deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
   intro Z
   have hA := dLieWEndoA_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Z
   have hB := dLieWEndoB_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Z
   have hsum := jointTangent_add_local (I := I)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hA hB
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hA hB
   refine hsum.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 t) ?_
   have hmd : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b => TotalSpace.mk' E (E := TangentSpace I) b
         ((PDE.DeTurck.deTurckVF (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
             Π b : M, TangentSpace I b) b)) p.1 :=
     ((PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg).contMDiff
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).contMDiff
         p.1).mdifferentiableAt (by simp)
-  have hcd := PDE.DeTurck.connDiff_apply (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀
+  have hcd := PDE.DeTurck.connectionDifference_apply (I := I)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀
     (σ := fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
         Π b : M, TangentSpace I b) b) hmd (Z p.1)
-  change deTurckLieWEndo (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+  change deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
       (Z p.1) = _
-  rw [show deTurckLieWEndo (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+  rw [show deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
       (Z p.1) =
-    (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2)).toFun
+    (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toFun
       (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
           Π b : M, TangentSpace I b) b) p.1 (Z p.1) from rfl]
   rw [show (PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
         Π b : M, TangentSpace I b) p.1 =
     (fun b : M => (PDE.DeTurck.deTurckVF (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg :
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
         Π b : M, TangentSpace I b) b) p.1 from rfl]
   rw [hcd]
   abel
 
-private theorem deTurckLieEndoDerivation_realizedFam_apply_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem deTurckLieEndoDerivation_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1744,32 +1752,32 @@ private theorem deTurckLieEndoDerivation_realizedFam_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieDLbFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (deTurckLieCovariantDerivativeInsertionFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  have hΛ := deTurckLieWEndo_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
+  have hΛ := deTurckVectorFieldCovariantDerivativeEndomorphism_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
   have hY : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 (Y p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Y.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have h0 := slotInsertEndo0Field_apply_jointContMDiffOn (I := I) (M := M) (d := 1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (Λ := fun p : M × ℝ =>
-      deTurckLieWEndo (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1) hΛ
+      deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1) hΛ
     (A := fun p : M × ℝ => Y p.1) hY
   have h1 := slotInsertEndo1Field_apply_jointContMDiffOn (I := I) (M := M) (d := 0)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) g₀
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (Λ := fun p : M × ℝ =>
-      deTurckLieWEndo (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1) hΛ
+      deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1) hΛ
     (A := fun p : M × ℝ => Y p.1) hY
   have hsum := jointTotalSpace0S_add_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ h0 h1
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ h0 h1
   refine hsum.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
-  rw [deTurckLieDLbFib, ContinuousLinearMap.add_apply]
+  rw [deTurckLieCovariantDerivativeInsertionFib, ContinuousLinearMap.add_apply]
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
@@ -1811,7 +1819,7 @@ private theorem dLieXiArgB (x : M) (a0 a1 a2 a3 : TangentSpace I x) :
   funext j
   fin_cases j <;> rfl
 
-private theorem dLaBiContrFib_realizedFam_apply_jointContMDiffOn
+private theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1822,79 +1830,79 @@ private theorem dLaBiContrFib_realizedFam_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (connDiffCovDerivBiContrFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (connectionDifferenceCovDerivBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  have hLraw := metricConnDiffLowered_bgFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
-  have hMraw := metricConnDiffLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hLraw := metricConnectionDifferenceLowered_bgFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
+  have hMraw := metricConnectionDifferenceLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
   have hprodLM := jointTensor0SProd_local (I := I) (p := 3) (q := 3)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
-    (fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-      (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+    (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hLraw hMraw
   have hpermA := domDomCongrField_jointContMDiffOn (I := I) dLieCorrPermA
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ hprodLM
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodLM
   have hpermB := domDomCongrField_jointContMDiffOn (I := I) dLieCorrPermB
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ hprodLM
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodLM
   have hpermC := domDomCongrField_jointContMDiffOn (I := I) dLieCorrPermC
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ hprodLM
-  have hCa := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 4)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodLM
+  have hCa := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
     g₀ T T' hδ hδ' _ hpermA
-  have hCb := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 4)
+  have hCb := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
     g₀ T T' hδ hδ' _ hpermB
-  have hCu := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 4)
+  have hCu := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
     g₀ T T' hδ hδ' _ hpermC
   have hF : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 3 ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 0 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 0 3 I z) q.1
-        (((fun s : ℝ => dLieLoweredPack (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg) q.2).toSection q.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+        (((fun s : ℝ => dLieLoweredPack (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) q.2).toSection q.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     have hpack := dLiePack0S_family_jointContMDiffOn (I := I) g₀
-      (A := fun p : M × ℝ => metricConnDiffLoweredFib (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
-      (hslice := fun s : ℝ => metricConnDiffLoweredFib_contMDiff (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+      (A := fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+      (hslice := fun s : ℝ => metricConnectionDifferenceLoweredFib_contMDiff (I := I)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
       hLraw
     exact hpack.congr (fun p _ => rfl)
   have hGrad := dLieCovGradVal_jointContMDiffOn (I := I) (d := 3) g₀
-    (fun s : ℝ => dLieLoweredPack (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg) hF
+    (fun s : ℝ => dLieLoweredPack (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) hF
   have hs1 := jointTotalSpace0S_sub_local (I := I) (d := 4)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hGrad hCa
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hGrad hCa
   have hs2 := jointTotalSpace0S_sub_local (I := I) (d := 4)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hs1 hCb
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hs1 hCb
   have hs3 := jointTotalSpace0S_sub_local (I := I) (d := 4)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hs2 hCu
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hs2 hCu
   have hXi1 := domDomCongrField_jointContMDiffOn (I := I) dLieXiPermA
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ hs3
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hs3
   have hXi2 := domDomCongrField_jointContMDiffOn (I := I) dLieXiPermB
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ hs3
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hs3
   have hXi := jointTotalSpace0S_add_local (I := I) (d := 4)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hXi1 hXi2
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hXi1 hXi2
   have hYjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 (Y p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     Y.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hprodYXi := jointTensor0SProd_local (I := I) (p := 2) (q := 4)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => Y p.1) _ hYjoint hXi
   have hperm := domDomCongrField_jointContMDiffOn (I := I) dLieBiPairPerm
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ hprodYXi
-  have htr4 := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 4)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodYXi
+  have htr4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
     g₀ T T' hδ hδ' _ hperm
-  have htr2 := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 2)
+  have htr2 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 2)
     g₀ T T' hδ hδ' _ htr4
   have hneg := jointTotalSpace0S_smulFun_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (f := fun _ : ℝ => (-1 : ℝ)) contDiff_const _ htr2
   refine hneg.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1903,7 +1911,7 @@ private theorem dLaBiContrFib_realizedFam_apply_jointContMDiffOn
   apply ContinuousMultilinearMap.ext
   intro v
   beta_reduce
-  rw [connDiffCovDerivBiContrFib, dLaBiContrFibFixedFrame_toModel,
+  rw [connectionDifferenceCovDerivBiContrFib, deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel,
     Tensor0SBundle.Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
     smul_eq_mul]
   simp only [dLieDiagTrace_toModel, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
@@ -1917,7 +1925,7 @@ private theorem dLaBiContrFib_realizedFam_apply_jointContMDiffOn
     dLieXiArgA, dLieXiArgB, dLieTheta_eval, dLieTheta_eval]
   exact mul_comm _ _
 
-theorem dLaBiContrFib_realizedFam_jointContMDiffOn
+theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1927,20 +1935,20 @@ theorem dLaBiContrFib_realizedFam_jointContMDiffOn
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
         (Tensor0SBundle.TensorRSSpace.ofCLM
-          (connDiffCovDerivBiContrFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+          (connectionDifferenceCovDerivBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
-      connDiffCovDerivBiContrFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+      connectionDifferenceCovDerivBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
   intro Y
-  exact dLaBiContrFib_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Y
+  exact deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Y
 
-private theorem deTurckLieFib_realizedFam_apply_jointContMDiffOn
+private theorem deTurckLieFib_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1951,20 +1959,20 @@ private theorem deTurckLieFib_realizedFam_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (deTurckLieFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
-  have hA := dLaBiContrFib_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Y
-  have hB := deTurckLieEndoDerivation_realizedFam_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  have hA := deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Y
+  have hB := deTurckLieEndoDerivation_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
     g_bg Y
   have hsum := jointTotalSpace0S_add_local (I := I) (d := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ')) _ _ hA hB
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hA hB
   refine hsum.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
   rw [deTurckLieFib, ContinuousLinearMap.add_apply]
 
-theorem deTurckLieCoeffField_realizedFam_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieCoeffField_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1974,17 +1982,17 @@ theorem deTurckLieCoeffField_realizedFam_jointContMDiff (g₀ : SmoothRiemannian
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
         ((deTurckLieCoeffField (I := I) (M := M) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
-      deTurckLieFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
-    (fun Y => deTurckLieFib_realizedFam_apply_jointContMDiffOn (I := I)
+      deTurckLieFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (fun Y => deTurckLieFib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
       g₀ T T' hδ hδ' g_bg Y)
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
@@ -1992,7 +2000,7 @@ theorem deTurckLieCoeffField_realizedFam_jointContMDiff (g₀ : SmoothRiemannian
   rw [deTurckLieCoeffField_toSection]
   rfl
 
-theorem deTurckLieCoeffField_realizedFam_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieCoeffField_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -2000,8 +2008,8 @@ theorem deTurckLieCoeffField_realizedFam_jointSmooth (g₀ : SmoothRiemannianMet
     (g_bg : SmoothRiemannianMetric I M) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
       (fun s => deTurckLieCoeffField (I := I) (M := M) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
-  deTurckLieCoeffField_realizedFam_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
+  deTurckLieCoeffField_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
 
 end TensorSpectral
 end Parabolic

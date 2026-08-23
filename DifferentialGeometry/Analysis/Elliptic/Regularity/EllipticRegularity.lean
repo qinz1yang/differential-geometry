@@ -131,7 +131,7 @@ theorem chartLocalEuclideanForm_principalIntegrand_self_eq_gradient_sq
     Analysis.Sobolev.NirenbergEuclidean.SmoothEllipticBilinearForm.principalIntegrand
       (chartLocalEuclideanForm (E := E) Ω) u u x =
       ‖Analysis.Sobolev.NirenbergEuclidean.SmoothEllipticBilinearForm.gradientVec
-        (chartLocalEuclideanForm (E := E) Ω) u x‖ ^ 2 := by
+        u x‖ ^ 2 := by
   rw [chartLocalEuclideanForm_principalIntegrand_self]
   rw
     [Analysis.Sobolev.NirenbergEuclidean.SmoothEllipticBilinearForm.gradientVec_norm_sq_eq_sum]

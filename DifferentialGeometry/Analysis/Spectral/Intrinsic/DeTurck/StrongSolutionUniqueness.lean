@@ -9,7 +9,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -53,10 +52,10 @@ theorem mixForce_unique
     {force₁ force₂ : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T}
     (hball₁ : ‖force₁‖ ≤ ρ) (hball₂ : ‖force₂‖ ≤ ρ)
     (hfix₁ : force₁ = nemytskii (I := I) (M := M) hLip
-      (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+      (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₁))
     (hfix₂ : force₂ = nemytskii (I := I) (M := M) hLip
-      (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+      (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₂)) :
     force₁ = force₂ := by
   have hdist := nemytskiiMixedForcingMap_dist_le (I := I) (M := M)
@@ -124,29 +123,29 @@ theorem deTurckStrong_unique
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) u₀ := by
     simpa only [u₀, map_zero] using htrace₂
-  have hfix₁ := strongNemy_fixed (I := I) (M := M) hT hT1 hcompact
+  have hfix₁ := strongNemy_fixed (I := I) (M := M) hT hcompact
     u₀ force₁ u₁ field₁ hLip htrace₁' hlink₁ heq₁ hforce₁
-  have hfix₂ := strongNemy_fixed (I := I) (M := M) hT hT1 hcompact
+  have hfix₂ := strongNemy_fixed (I := I) (M := M) hT hcompact
     u₀ force₂ u₂ field₂ hLip htrace₂' hlink₂ heq₂ hforce₂
   have hforces : force₁ = force₂ :=
     mixForce_unique (I := I) (M := M) g₀ a hLip hsingle hT hT1 hρ hsmall
       hball₁ hball₂ hfix₁ hfix₂
-  rcases strongPair_eq_duh (I := I) (M := M) hT hT1 hcompact
+  rcases strongPair_eq_duh (I := I) (M := M) hT hcompact
       u₀ force₁ u₁ field₁ htrace₁' hlink₁ heq₁ with ⟨hfield₁, hu₁⟩
-  rcases strongPair_eq_duh (I := I) (M := M) hT hT1 hcompact
+  rcases strongPair_eq_duh (I := I) (M := M) hT hcompact
       u₀ force₂ u₂ field₂ htrace₂' hlink₂ heq₂ with ⟨hfield₂, hu₂⟩
   refine ⟨hforces, ?_, ?_⟩
   · calc
       field₁ = maxRegDuhamelSolField (I := I) (M := M)
-          (a : ℝ) hT hT1 u₀ force₁ := hfield₁
+          (a : ℝ) hT u₀ force₁ := hfield₁
       _ = maxRegDuhamelSolField (I := I) (M := M)
-          (a : ℝ) hT hT1 u₀ force₂ := by rw [hforces]
+          (a : ℝ) hT u₀ force₂ := by rw [hforces]
       _ = field₂ := hfield₂.symm
   · calc
       u₁ = maxRegDuhamelMap (I := I) (M := M)
-          (a : ℝ) hT hT1 u₀ force₁ := hu₁
+          (a : ℝ) hT u₀ force₁ := hu₁
       _ = maxRegDuhamelMap (I := I) (M := M)
-          (a : ℝ) hT hT1 u₀ force₂ := by rw [hforces]
+          (a : ℝ) hT u₀ force₂ := by rw [hforces]
       _ = u₂ := hu₂.symm
 
 end DifferentialGeometry.Analysis.Spectral

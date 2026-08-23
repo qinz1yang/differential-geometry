@@ -26,6 +26,7 @@ def RicciBoundedBelow (g : SmoothRiemannianMetric I M) (κ : ℝ) : Prop :=
   ∀ (x : M) (v : TangentSpace I x), κ * (g.inner x v v : ℝ) ≤ ricciTensor (I := I) g x v v
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciLower_of_rm
     (g : SmoothRiemannianMetric I M) {Rm : ℝ}
     (hRm : ∀ x : M,

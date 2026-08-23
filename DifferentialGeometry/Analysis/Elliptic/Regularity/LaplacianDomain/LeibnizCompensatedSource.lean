@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
 import DifferentialGeometry.Geometry.Operator.Laplacian
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -22,7 +21,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -53,6 +51,8 @@ noncomputable def leibnizCompensatedSource (g : SmoothRiemannianMetric I M) (α 
     - smoothMulLp (I := I) (M := M) g
         (laplacianOfChartPOU (I := I) (M := M) g α)
         (H1ComplToLp (I := I) (M := M) g u_h)
+
+abbrev fHLeibniz := leibnizCompensatedSource (I := I) (M := M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fHLeibniz_def (g : SmoothRiemannianMetric I M) (α : M)

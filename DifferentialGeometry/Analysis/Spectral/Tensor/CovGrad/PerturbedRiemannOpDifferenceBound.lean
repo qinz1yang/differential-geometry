@@ -1,9 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.UniformRiemannOperatorNormBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnDiffQuadraticBound
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -120,9 +121,9 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
   have hm0 : 0 ≤ m := le_max_right _ _
   have hm1 : m < 1 := max_lt hδ₀ (by norm_num)
   obtain ⟨CA, hCA_nn, hCA⟩ :=
-    exists_covDerivConnDiff_gQuadratic_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀ B hB
+    exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀ B hB
   obtain ⟨C0, hC0_nn, hC0⟩ :=
-    connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hm0 hm1
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hm1
   refine ⟨2 * CA + 2 * (C0 ^ 2 * B ^ 2), by positivity, ?_⟩
   intro g₁ P δ hδ_le hδ htie x henv v w u
   set X : Π b : M, TangentSpace I b := smoothExtensionTangent (I := I) x v with hX_def
@@ -146,9 +147,9 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
   have hdiff := riemannSec_difference (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
     hX_sm hY_sm hZ_sm htor x
   set A1 : TangentSpace I x :=
-    covDerivConnDiff (I := I) g₀ g₁ X Y Z x with hA1_def
+    covDerivConnectionDifference (I := I) g₀ g₁ X Y Z x with hA1_def
   set A2 : TangentSpace I x :=
-    covDerivConnDiff (I := I) g₀ g₁ Y X Z x with hA2_def
+    covDerivConnectionDifference (I := I) g₀ g₁ Y X Z x with hA2_def
   set S1 : TangentSpace I x :=
     diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁) Y Z x with hS1_def
   set S2 : TangentSpace I x :=
@@ -197,8 +198,8 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
   have hδ'_le : max δ 0 ≤ m := max_le hδ_le hm0
   have hδ'_nn : 0 ≤ max δ 0 := le_max_right _ _
   have hconn0 : ∀ a b : TangentSpace I x,
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x a b)
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x a b)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b)
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b)) ≤
         C0 * Np * Real.sqrt (g₀.inner x a a) * Real.sqrt (g₀.inner x b b) := by
     intro a b
     have h := hC0 g₁ P htie hδ'_le hδ'_nn hδ' x a b
@@ -223,20 +224,20 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
     rw [← hX_def, ← hY_def, ← hZ_def, ← hSv_def, ← hSw_def, ← hSu_def] at h
     rw [hA2_def]
     exact h
-  have hS1_eq : S1 = PDE.DeTurck.connDiff (I := I) g₁ g₀ x u w := by
+  have hS1_eq : S1 = PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u w := by
     rw [hS1_def]
     change CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₀) x
         (Z x) (Y x) = _
-    rw [hZx, hYx, ← connDiff_eq_difference (I := I) g₀ g₁]
-  have hS2_eq : S2 = PDE.DeTurck.connDiff (I := I) g₁ g₀ x u v := by
+    rw [hZx, hYx, ← connectionDifference_eq_difference (I := I) g₀ g₁]
+  have hS2_eq : S2 = PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v := by
     rw [hS2_def]
     change CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₀) x
         (Z x) (X x) = _
-    rw [hZx, hXx, ← connDiff_eq_difference (I := I) g₀ g₁]
-  have hQ1_eq : Q1 = PDE.DeTurck.connDiff (I := I) g₁ g₀ x S1 v := by
-    rw [hQ1_def, ← connDiff_eq_difference (I := I) g₀ g₁, hXx]
-  have hQ2_eq : Q2 = PDE.DeTurck.connDiff (I := I) g₁ g₀ x S2 w := by
-    rw [hQ2_def, ← connDiff_eq_difference (I := I) g₀ g₁, hYx]
+    rw [hZx, hXx, ← connectionDifference_eq_difference (I := I) g₀ g₁]
+  have hQ1_eq : Q1 = PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x S1 v := by
+    rw [hQ1_def, ← connectionDifference_eq_difference (I := I) g₀ g₁, hXx]
+  have hQ2_eq : Q2 = PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x S2 w := by
+    rw [hQ2_def, ← connectionDifference_eq_difference (I := I) g₀ g₁, hYx]
   have hQ1_bd : Real.sqrt (g₀.inner x Q1 Q1) ≤ (C0 ^ 2 * B ^ 2) * Sv * Sw * Su := by
     rw [hQ1_eq]
     have hS1_bd : Real.sqrt (g₀.inner x S1 S1) ≤ C0 * Np * Su * Sw := by
@@ -248,8 +249,8 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
     rw [← hSv_def] at hQ1'
     have hS1_norm_nn : 0 ≤ Real.sqrt (g₀.inner x S1 S1) := Real.sqrt_nonneg _
     have hC0Np_nn : 0 ≤ C0 * Np := mul_nonneg hC0_nn hNp_nn
-    calc Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x S1 v)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x S1 v))
+    calc Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x S1 v)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x S1 v))
         ≤ C0 * Np * Real.sqrt (g₀.inner x S1 S1) * Sv := hQ1'
       _ ≤ C0 * Np * (C0 * Np * Su * Sw) * Sv := by
           have hmono : C0 * Np * Real.sqrt (g₀.inner x S1 S1) ≤ C0 * Np * (C0 * Np * Su * Sw) :=
@@ -280,8 +281,8 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
     have hQ2' := hconn0 S2 w
     rw [← hSw_def] at hQ2'
     have hC0Np_nn : 0 ≤ C0 * Np := mul_nonneg hC0_nn hNp_nn
-    calc Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x S2 w)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x S2 w))
+    calc Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x S2 w)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x S2 w))
         ≤ C0 * Np * Real.sqrt (g₀.inner x S2 S2) * Sw := hQ2'
       _ ≤ C0 * Np * (C0 * Np * Su * Sv) * Sw := by
           have hmono : C0 * Np * Real.sqrt (g₀.inner x S2 S2) ≤ C0 * Np * (C0 * Np * Su * Sv) :=

@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
 open DifferentialGeometry.Geometry.Curvature
 
@@ -89,7 +89,7 @@ private theorem sum_fin_four_fun {α : Type*} [AddCommMonoid α]
     rw [hslot]
 
 omit [FiniteDimensional ℝ E] in
-private theorem inner_eq_sum_repr3
+theorem inner_eq_sum_repr3
     {g : SmoothRiemannianMetric I M}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
     (horth : OrthonormalBasisAt (I := I) g x basis)
@@ -466,10 +466,10 @@ theorem rm04Comp_displayedRiemannFromRicci3D_frame_of_curvature_symmetries
 
 theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) :
     AlgebraicCurvatureSymmetries3 (standardRmCompAt (I := I) basis (Rm04 x)) := by
@@ -494,10 +494,10 @@ theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
 
 theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) :
     forall i j k l : Fin 3,

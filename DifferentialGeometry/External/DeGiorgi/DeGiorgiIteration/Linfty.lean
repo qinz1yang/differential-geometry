@@ -1,5 +1,6 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
+-- Modified 2026-08-20: made the pre-iteration energy coefficient nonnegative explicitly
 import DifferentialGeometry.External.DeGiorgi.DeGiorgiIteration.Recurrence
 
 /-!
@@ -11,8 +12,8 @@ canonical energy sequence to the Linfty endpoint theorems.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal
+open MeasureTheory Metric Filter
+open scoped NNReal
 
 namespace DeGiorgi
 
@@ -749,7 +750,9 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     have hd_pos : 0 < (d : ℝ) := by
       linarith
     have hCenergy_nonneg : 0 ≤ 8 * (ellipticityRatio A + 1) * Cη ^ 2 := by
-      nlinarith [A.ellipticityRatio_nonneg, sq_nonneg Cη]
+      exact mul_nonneg
+        (mul_nonneg (by norm_num) (add_nonneg A.ellipticityRatio_nonneg zero_le_one))
+        (sq_nonneg Cη)
     haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) s)) := by
       rw [isFiniteMeasure_restrict]
       exact measure_ball_lt_top.ne

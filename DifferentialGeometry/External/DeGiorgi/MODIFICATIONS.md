@@ -165,4 +165,156 @@ The original `LICENSE`, `README.md` and `CITATION.cff` remain unmodified.
 **Change**: merged two isolated tactic bullets with their following tactic lines. This is a
 semantic-preserving source-style change; no statement, proof term or declaration was changed.
 
+### 2026-08-17 — namespace-opening cleanup
+
+**Files**:
+- `BallExtension.lean`
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/Core.lean`
+- `BallExtension/Geometry.lean`
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `BallExtension/SmoothCore.lean`
+- `BallExtensionEstimates.lean`
+- `Common.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `Crossover/ProductBound.lean`
+- `Crossover/PublicEstimate.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `DeGiorgiIteration/Recurrence.lean`
+- `Holder/LocalBounds.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/PublicEstimate.lean`
+- `LpFunctionToolkit.lean`
+- `MoserIteration/Constants.lean`
+- `MoserIteration/CutoffPrep/PreEstimate.lean`
+- `MoserIteration/CutoffPrep/Profiles.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/Iteration.lean`
+- `MoserIteration/Linfty.lean`
+- `MoserIteration/Sequences.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `SobolevChainRule.lean`
+- `SobolevPoincare.lean`
+- `SobolevSpace/Approximation.lean`
+- `SobolevSpace/PositivePartPrelude.lean`
+- `SobolevSpace/WeakDerivatives.lean`
+- `SobolevSpace/Witnesses.lean`
+- `StampacchiaTruncation.lean`
+- `Supersolutions/Caccioppoli.lean`
+- `Supersolutions/ForwardIteration/Basics.lean`
+- `Supersolutions/ForwardIteration/Energy.lean`
+- `Supersolutions/ForwardIteration/Iteration.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseEnergy.lean`
+- `Supersolutions/InverseIteration.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/RegularizationSupport.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/MeasureBounds.lean`
+- `UnitBallApproximationCore/Approximation.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Profiles.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/BilinearForm.lean`
+- `WeakFormulation/SmoothTests.lean`
+- `WeakFormulation/SolutionInterfaces.lean`
+- `WeakFormulation/WeightedEstimates.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: removed namespace and notation-scope tokens that were not used by their files,
+retaining each opening whose removal prevented elaboration. This is a semantic-preserving lexical
+scope cleanup; no declaration, statement, or proof was changed.
+
 <!-- Add entries below as modifications occur. -->
+
+### 2026-08-20 — explicit small-ball average estimate
+
+**Files**:
+- `Crossover/ExponentialIntegrability.lean`
+
+**Change**: replaced a broad additive `simpa` in the small-ball average triangle estimate with
+an explicit equality followed by `abs_add_le`. The theorem statement and mathematical argument
+are unchanged.
+
+### 2026-08-20 — explicit iteration inequalities
+
+**Files**:
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/StageOne.lean`
+- `WeakFormulation/ExistenceTheory.lean`
+
+**Change**: replaced slow nonlinear arithmetic, broad simplification, and multi-rewrite steps
+with direct nonnegativity products, monotonicity lemmas for squares and exponents, explicit factor
+rearrangements, and an explicit inner-product congruence. The theorem statements and mathematical
+arguments are unchanged.
+
+### 2026-08-21 — declaration-linter cleanup
+
+**Files**:
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `EllipticCoefficients.lean`
+- `FiniteCover.lean`
+- `Harnack.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/Representative.lean`
+- `Localization.lean`
+- `LpFunctionToolkit.lean`
+- `MoserIteration/Constants.lean`
+- `MoserIteration/CutoffPrep/Basics.lean`
+- `MoserIteration/CutoffPrep/ExactRegularization.lean`
+- `MoserIteration/CutoffPrep/Profiles.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/Sequences.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `Supersolutions/ForwardIteration/Energy.lean`
+- `Supersolutions/InverseEnergy.lean`
+- `Supersolutions/RegularizationSupport.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/MeasureBounds.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/ExistenceTheory.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: resolved Mathlib declaration-linter findings by classifying a proposition-valued
+definition as a theorem, removing redundant hypotheses and typeclass assumptions, simplifying a
+cast expression to its normal form, retaining a useful ellipticity-ratio theorem without a
+redundant simp attribute, and making compatibility-preserving hypotheses explicit dependencies of
+their proof terms. The affected mathematical conclusions are unchanged or generalized.
+
+### 2026-08-21 — divergence-data uniqueness generality
+
+**Files**:
+- `WeakFormulation/ExistenceTheory.lean`
+
+**Change**: removed a redundant `MemLp` hypothesis from the uniqueness theorem for the
+inhomogeneous Dirichlet problem and updated its callers. Existence still requires the integrability
+hypothesis; uniqueness now states only the assumptions used by its mathematical argument.

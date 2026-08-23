@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
+import DifferentialGeometry.Geometry.Exponential.JacobiVariation
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -32,12 +33,25 @@ noncomputable def intrFrameCLM
   LinearMap.toContinuousLinearMap
     (normalFrame (I := I) g p).toLinearEquiv.toLinearMap
 
+noncomputable def intrFrameCLE
+    (g : SmoothRiemannianMetric I M) (p : M) : E ≃L[Real] E := by
+  let L : E ≃ₗ[Real] E := (normalFrame (I := I) g p).toLinearEquiv
+  exact L.toContinuousLinearEquiv
+
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] in
 @[simp] theorem intrFrameCLM_apply
     (g : SmoothRiemannianMetric I M) (p : M) (z : E) :
     intrFrameCLM (I := I) g p z = normalFrame (I := I) g p z := by
+  rfl
+
+omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
+  [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+  [ConnectedSpace M] in
+@[simp] theorem intrFrameCLE_apply
+    (g : SmoothRiemannianMetric I M) (p : M) (z : E) :
+    intrFrameCLE (I := I) g p z = normalFrame (I := I) g p z := by
   rfl
 
 section
@@ -91,7 +105,7 @@ theorem intrFrame_smooth
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
-@[simp] theorem intrFrame_zero
+theorem intrFrame_zero
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -151,6 +165,49 @@ theorem intrFrame_deriv_zero
       (F ∘ fun z : E => L z) 0 = L :=
     hchain.trans (ContinuousLinearMap.id_comp L)
   simpa only [intrinsicFramedExp, F, L, Function.comp_apply] using hchain'
+
+omit [CompleteSpace E]
+  [ConnectedSpace M] [T2Space (TangentBundle I M)] in
+theorem intrFrame_mfderiv
+    [PseudoEMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) (z v : E) :
+    mfderiv (modelWithCornersSelf Real E) I
+        (intrinsicFramedExp (I := I) g hEnorm p) z v =
+      mfderiv (modelWithCornersSelf Real Real) I
+        (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
+          (normalFrame (I := I) g p z +
+            s • normalFrame (I := I) g p v) 1) 0 1 := by
+  let F : E → M := fun w =>
+    expMapIntrinsic (I := I) g hEnorm p
+      (show TangentSpace I p from w)
+  let L : E →L[Real] E := intrFrameCLM (I := I) g p
+  have hF : MDifferentiableAt (modelWithCornersSelf Real E) I F (L z) :=
+    (intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffAt.mdifferentiableAt
+      (by decide)
+  have hL : MDifferentiableAt (modelWithCornersSelf Real E)
+      (modelWithCornersSelf Real E) (fun w : E => L w) z := by
+    have hL_smooth : ContMDiff (modelWithCornersSelf Real E)
+        (modelWithCornersSelf Real E) ∞ (fun w : E => L w) := L.contMDiff
+    exact hL_smooth.contMDiffAt.mdifferentiableAt (by simp)
+  have hchain := mfderiv_comp
+    (I := modelWithCornersSelf Real E)
+    (I' := modelWithCornersSelf Real E) (I'' := I) z hF hL
+  have hLderiv : mfderiv (modelWithCornersSelf Real E)
+      (modelWithCornersSelf Real E) (fun w : E => L w) z = L := by
+    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+  rw [hLderiv] at hchain
+  have happ := congrArg (fun D => D v) hchain
+  have hjac :=
+    intrinsic_jacobi_one (I := I) g hEnorm p (L z) (L v)
+  simpa only [intrinsicFramedExp, F, L, Function.comp_apply,
+    ContinuousLinearMap.comp_apply, intrFrameCLM_apply] using
+      happ.trans hjac.symm
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in

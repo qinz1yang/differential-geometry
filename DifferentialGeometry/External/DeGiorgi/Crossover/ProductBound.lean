@@ -9,8 +9,8 @@ Public product-bound consequences of the exponential-integrability machinery.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Set
-open scoped ENNReal NNReal Topology RealInnerProductSpace
+open MeasureTheory Metric Filter
+open scoped NNReal
 
 namespace DeGiorgi
 

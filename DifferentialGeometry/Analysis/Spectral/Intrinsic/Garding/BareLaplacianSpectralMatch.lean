@@ -1,6 +1,4 @@
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonDeTurckPullbackFlat
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.EvaluationFormChainRule
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
@@ -16,9 +14,8 @@ namespace DifferentialGeometry.Analysis.Spectral
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
-open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.DeTurck
 open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback

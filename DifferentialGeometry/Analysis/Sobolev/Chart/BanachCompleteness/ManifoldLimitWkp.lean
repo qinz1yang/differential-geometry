@@ -36,23 +36,22 @@ lemma pullback_eq_chart (α : M) (v : EuclN → ℝ) :
 theorem limitFun_memWkp
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
-    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      wkpNormChart (I := I) (M := M) g k p
+      wkpNormChart (I := I) (M := M) k p
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε) :
-    MemWkpChart (I := I) (M := M) g k p
-      (manifoldLimitFun (I := I) (M := M) hp_one hp_top h_cauchy) := by
+    MemWkpChart (I := I) (M := M) k p
+      (manifoldLimitFun (I := I) (M := M) hp_one h_cauchy) := by
   classical
   intro γ
   let ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M
   let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
     (I := I) (M := M)
   let L : M → EuclN → ℝ := fun β =>
-    chartLimit (I := I) (M := M) hp_one hp_top h_cauchy β
+    chartLimit (I := I) (M := M) hp_one h_cauchy β
   let q : M → EuclN → ℝ := fun β =>
     chartPushed (I := I) (M := M) ρ γ (chartPullback I β (L β))
   have hq_mem : ∀ β : M,
@@ -65,17 +64,17 @@ theorem limitFun_memWkp
     have hKβ_sub : Kβ ⊆ (chartAt H β).source :=
       DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M β
     obtain ⟨_C, _hC, hcross⟩ := crossChartAeJoint (I := I) (M := M)
-      g k hp_one hp_top γ β hKβ_compact hKβ_sub
+      k hp_one hp_top γ β hKβ_compact hKβ_sub
     have hL_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p (L β)
         (chartTargetEuclid (I := I) (M := M) β) :=
-      chartLimit_memWkp (I := I) (M := M) (g := g)
-        hp_one hp_top h_cauchy β
+      chartLimit_memWkp (I := I) (M := M)
+        hp_one h_cauchy β
     have hL_zero : L β =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) β \
           (fun x : M => (toEuclidean (E := E)) (extChartAt I β x)) '' Kβ)] 0 := by
       simpa only [L, Kβ, ρ, Set.image_image, Function.comp_apply] using
-        (chartLimit_ae_zero (I := I) (M := M) (g := g)
+        (chartLimit_ae_zero (I := I) (M := M)
           hp_one hp_top h_cauchy β)
     exact (hcross hL_mem hL_zero).1
   have hsum_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -100,7 +99,7 @@ theorem limitFun_memWkp
           (hq_mem β) ih
   have hpushed_eq :
       chartPushed (I := I) (M := M) ρ γ
-          (manifoldLimitFun (I := I) (M := M) hp_one hp_top h_cauchy) =
+          (manifoldLimitFun (I := I) (M := M) hp_one h_cauchy) =
         fun y => ∑ β ∈ S, q β y := by
     funext y
     unfold manifoldLimitFun chartPushed

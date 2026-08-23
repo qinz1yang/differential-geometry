@@ -265,13 +265,13 @@ private lemma euclidPartial_eq_zero_of_notMem_tsupport
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
     fderiv_const_apply, ContinuousLinearMap.zero_apply]
 
-omit [CompleteSpace E] [CompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 lemma density_scalarPrincipal_eq_principalIntegrand
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     {u : EuclN → ℝ} (hu_K : tsupport u ⊆ K) (φ : EuclN → ℝ)
-    {y : EuclN} (_hyK : y ∈ chartTargetEuclid (I := I) (M := M) α) :
+    {y : EuclN} :
     densityOnEuclid (I := I) g α y *
         (∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
@@ -318,7 +318,7 @@ theorem tensorComponent_chartBilinIdentity
     (hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).bilin
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) φ =
-      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y
+      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y
         * φ y := by
   classical
   have hcTE_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
@@ -544,7 +544,7 @@ theorem tensorComponent_chartBilinIdentity
                     (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) y *
                 euclidPartial (E := E) l φ y) :=
       (density_scalarPrincipal_eq_principalIntegrand (I := I) (M := M) g α hK
-        hK_target hT_K φ hy).symm
+        hK_target hT_K φ).symm
     have hscalar : ∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramEuclid (I := I) g α k l y *
@@ -579,7 +579,7 @@ theorem tensorComponent_chartBilinIdentity
     rw [covPrincipalIntegrand_rotated_collapse (I := I) (M := M) g r s T α P₀
         hχs hχt hy,
       covPrincipalRotationRemainder_eq_coeff_mul (I := I) (M := M) g r s T α P₀
-        hχs hχt y,
+        y,
       covLowerOrderIntegrand_rotated_collapse (I := I) (M := M) g r s T α P₀
         hχs hχt hy,
       hscalar, hgrad, hbump_eqOn hy, hPI]
@@ -831,7 +831,7 @@ theorem tensorComponent_chartBilinIdentity
         hφ' hφ_supp
     exact integrable_of_contDiff_hasCompactSupport (E := E) hcd (hcs_mul _)
   have hWeakRHS_volume :
-      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y
+      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y
         * φ y ∂(volume : Measure EuclN) =
       (∫ y, densityOnEuclid (I := I) g α y *
           sourcePairingCoeff (I := I) (M := M) g r s F α P₀ y * φ y
@@ -847,7 +847,7 @@ theorem tensorComponent_chartBilinIdentity
             (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y
             ∂(volume : Measure EuclN) := by
     have hsetEq :
-        ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀
+        ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀
             y * φ y ∂(volume : Measure EuclN) =
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           (densityOnEuclid (I := I) g α y *
@@ -864,14 +864,13 @@ theorem tensorComponent_chartBilinIdentity
       rw [← MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero
         (s := chartTargetEuclid (I := I) (M := M) α)
         (f := fun y => tensorComponentWeakRHS (I := I) (M := M)
-          g r s T F α hK hK_target P₀ y * φ y)
+          g r s T F α P₀ y * φ y)
         (fun y hy => by
           simp only []
           rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hφ_supp h)),
             mul_zero])]
       refine MeasureTheory.setIntegral_congr_fun hcTE_meas (fun y hy => ?_)
-      rw [tensorComponentWeakRHS_apply_of_mem (I := I) (M := M) g r s T F α hK
-        hK_target P₀ hy]
+      rw [tensorComponentWeakRHS_apply_of_mem (I := I) (M := M) g r s T F α P₀ hy]
       simp only [add_mul, sub_mul, Finset.sum_mul]
     rw [hsetEq,
       MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero
@@ -941,12 +940,12 @@ theorem tensorComponentWeakRHS_tsupport_subset
       ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s T v x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         tensorL2Inner (I := I) (M := M) g r s F.toFun v.toFun) :
-    tsupport (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+    tsupport (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
       ⊆ tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) := by
   classical
   have hRHS_cont : Continuous
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
-    (tensorComponentWeakRHS_contDiff (I := I) (M := M) g r s T F α hK hK_target P₀
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
+    (tensorComponentWeakRHS_contDiff (I := I) (M := M) g r s T F α P₀
       hT_supp hF_supp).continuous
   set V : Set EuclN := chartTargetEuclid (I := I) (M := M) α \
     tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) with hV_def
@@ -962,7 +961,7 @@ theorem tensorComponentWeakRHS_tsupport_subset
   have hzero_int : ∀ φ : EuclN → ℝ, ContDiff ℝ ∞ φ → HasCompactSupport φ →
       tsupport φ ⊆ V →
       ∫ y, φ y • tensorComponentWeakRHS (I := I) (M := M)
-        g r s T F α hK hK_target P₀ y ∂(volume : Measure EuclN) = 0 := by
+        g r s T F α P₀ y ∂(volume : Measure EuclN) = 0 := by
     intro φ hφ hφ_cs hφ_supp_V
     have hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α :=
       hφ_supp_V.trans (Set.diff_subset)
@@ -991,20 +990,20 @@ theorem tensorComponentWeakRHS_tsupport_subset
           rw [this]; ring
       rw [hprinc0]; ring
     have hint0 : ∫ y, tensorComponentWeakRHS (I := I) (M := M)
-        g r s T F α hK hK_target P₀ y * φ y ∂(volume : Measure EuclN) = 0 := by
+        g r s T F α P₀ y * φ y ∂(volume : Measure EuclN) = 0 := by
       rw [← hbilin, hbilin_zero]
     rw [show (fun y => φ y • tensorComponentWeakRHS (I := I) (M := M)
-          g r s T F α hK hK_target P₀ y) =
+          g r s T F α P₀ y) =
         (fun y => tensorComponentWeakRHS (I := I) (M := M)
-          g r s T F α hK hK_target P₀ y * φ y) from by
+          g r s T F α P₀ y * φ y) from by
       funext y; rw [smul_eq_mul, mul_comm]]
     exact hint0
   have hae : ∀ᵐ y ∂(volume : Measure EuclN), y ∈ V →
-      tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y = 0 :=
+      tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y = 0 :=
     hV_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero
       (hRHS_cont.locallyIntegrable.locallyIntegrableOn V) hzero_int
   have hEqOn : Set.EqOn
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
       (fun _ => (0 : ℝ)) V :=
     MeasureTheory.Measure.eqOn_open_of_ae_eq
       ((MeasureTheory.ae_restrict_iff' hV_meas).mpr hae) hV_open
@@ -1015,7 +1014,7 @@ theorem tensorComponentWeakRHS_tsupport_subset
   by_cases hyT : y ∈ chartTargetEuclid (I := I) (M := M) α
   · exact hy (hEqOn ⟨hyT, hyu⟩)
   · exact hy (tensorComponentWeakRHS_apply_of_notMem (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hyT)
+      g r s T F α P₀ hyT)
 
 omit [CompleteSpace E] in
 theorem tensorComponentWeakRHS_hasCompactSupport
@@ -1032,14 +1031,14 @@ theorem tensorComponentWeakRHS_hasCompactSupport
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         tensorL2Inner (I := I) (M := M) g r s F.toFun v.toFun) :
     HasCompactSupport
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) := by
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) := by
   classical
   have hcomp_cs : HasCompactSupport
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
     tensorComponentEuclid_hasCompactSupport (I := I) (M := M)
       g r s T α P₀ hT_supp
   have hRHS_supp : tsupport (tensorComponentWeakRHS (I := I) (M := M)
-      g r s T F α hK hK_target P₀) ⊆
+      g r s T F α P₀) ⊆
       tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
     tensorComponentWeakRHS_tsupport_subset (I := I) (M := M) g r s T F α hK
       hK_target P₀ hT_supp hF_supp hT_K hweak
@@ -1062,7 +1061,7 @@ theorem tensorComponent_isSmoothWeakSolution
         tensorL2Inner (I := I) (M := M) g r s F.toFun v.toFun) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).IsSmoothWeakSolution
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) := by
+      (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) := by
   classical
   have hcTE_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
@@ -1073,7 +1072,7 @@ theorem tensorComponent_isSmoothWeakSolution
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) y = 0 :=
     fun k y hy => euclidPartial_eq_zero_of_notMem_tsupport (E := E) k hy
   have hRHS_supp : tsupport (tensorComponentWeakRHS (I := I) (M := M)
-      g r s T F α hK hK_target P₀) ⊆
+      g r s T F α P₀) ⊆
       tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
     tensorComponentWeakRHS_tsupport_subset (I := I) (M := M) g r s T F α hK
       hK_target P₀ hT_supp hF_supp hT_K hweak
@@ -1150,17 +1149,17 @@ theorem tensorComponent_isSmoothWeakSolution
         rw [this]; ring
     rw [hprinc]; ring
   have hRHS_eq :
-      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y
+      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y
         * ψ y ∂(volume : Measure EuclN) =
-      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y
+      ∫ y, tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y
         * φ y ∂(volume : Measure EuclN) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall
       (fun y => ?_))
-    change tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y *
+    change tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y *
         (ζ y * φ y) =
-      tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀ y * φ y
+      tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y * φ y
     by_cases hyR : y ∈ tsupport (tensorComponentWeakRHS (I := I) (M := M)
-        g r s T F α hK hK_target P₀)
+        g r s T F α P₀)
     · rw [hζ_one_on y (hRHS_supp hyR)]; ring
     · rw [image_eq_zero_of_notMem_tsupport hyR]; ring
   rw [MeasureTheory.setIntegral_univ, hbilin_eq,

@@ -133,10 +133,10 @@ def innerBundleCLM
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
     Tensor0SSpace s I b →L[ℝ]
       Tensor0SSpace s I b →L[ℝ] ℝ :=
-  let stepA : Tensor0SModel s ℝ E →L[ℝ] (Tensor0SSpace s I b →L[ℝ] ℝ) :=
+  let modelPairing : Tensor0SModel s ℝ E →L[ℝ] (Tensor0SSpace s I b →L[ℝ] ℝ) :=
     (precompBundleCLM (I := I) (M := M) (E := E) s b).comp
       (innerModelCLM (I := I) (M := M) g s b)
-  stepA.comp (bundleToModelCLM (I := I) (M := M) (E := E) s b)
+  modelPairing.comp (bundleToModelCLM (I := I) (M := M) (E := E) s b)
 
 @[simp] lemma innerBundleCLM_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)

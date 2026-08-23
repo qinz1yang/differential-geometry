@@ -21,7 +21,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
@@ -34,7 +33,7 @@ def parallelTransportVF (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → 
 
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
-theorem parallelTransportVF_contDiffOn [I.Boundaryless]
+theorem parallelTransportVF_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) {W : Set ℝ}
     (hW : IsOpen W)
     (hu_cd : ContDiffOn ℝ ∞ (chartCurve (I := I) α γ) W)
@@ -188,7 +187,7 @@ theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
     have hVdiff_s : DifferentiableAt ℝ (chartRepAt (I := I) γ V s) s := hVdiff s hs0L
     have hY_diff_s : DifferentiableAt ℝ Y s := by
       rw [hY_def]
-      exact chartRepAtBase_differentiableAt (I := I) (n := ∞) (by simp) g γ V s α hγ
+      exact chartRepAtBase_differentiableAt (I := I) (n := ∞) (by simp) γ V s α hγ
         hs_src hVdiff_s
     have hY_hd : HasDerivAt Y (deriv Y s) s := hY_diff_s.hasDerivAt
     have hfoot :
@@ -340,7 +339,7 @@ theorem parallelTransport_section_contMDiffOn_Ioo [I.Boundaryless]
       have hVdiff_s : DifferentiableAt ℝ (chartRepAt (I := I) γ V s) s := hVdiff s hsΩ
       have hY_diff_s : DifferentiableAt ℝ Y s := by
         rw [hY_def]
-        exact chartRepAtBase_differentiableAt (I := I) (n := ∞) (by simp) g γ V s α hγ
+        exact chartRepAtBase_differentiableAt (I := I) (n := ∞) (by simp) γ V s α hγ
           hs_src hVdiff_s
       have hY_hd : HasDerivAt Y (deriv Y s) s := hY_diff_s.hasDerivAt
       have hfoot :

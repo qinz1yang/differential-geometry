@@ -11,8 +11,8 @@ rough-input, and smooth-approximation layers.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal RealInnerProductSpace
+open MeasureTheory
+open scoped ENNReal
 
 namespace DeGiorgi
 

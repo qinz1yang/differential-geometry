@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Alternating.Comp
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
@@ -19,6 +20,7 @@ variable {B : Type*}
 protected def Bundle.continuousMultilinearMap (_F : Type*) (E : B → Type*)
     [Π x, AddCommMonoid (E x)] [Π x, Module 𝕜 (E x)] [Π x, TopologicalSpace (E x)]
     (x : B) : Type _ :=
+  let _ := _F
   ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜
 
 variable (F : Type*) (E : B → Type*) [Π x, AddCommMonoid (E x)] [Π x, Module 𝕜 (E x)]

@@ -12,7 +12,7 @@ approximation tool used in the unit-ball argument.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
+open MeasureTheory Topology Set Function
 open scoped ENNReal NNReal
 
 namespace DeGiorgi

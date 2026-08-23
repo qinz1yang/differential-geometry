@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.MetricJet3Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RawComponentEuclideanBridge
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedCovGradJetInput
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.CovariantJetInput
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
 open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Elliptic
@@ -16,10 +16,8 @@ open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral

@@ -316,7 +316,7 @@ private theorem borel_jet_realize [CompleteSpace F] (c : ℕ → F) :
     rw [if_pos rfl, one_smul]
 
 theorem borel_halfLine_extend {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [CompleteSpace F] (g : ℝ → F) (_hg : ContDiffOn ℝ ∞ g (Set.Ici (0 : ℝ))) :
+    [CompleteSpace F] (g : ℝ → F) :
     ∃ h : ℝ → F, ContDiff ℝ ∞ h ∧
       (∀ n : ℕ, iteratedDeriv n h 0 = iteratedDerivWithin n g (Set.Ici (0:ℝ)) 0) :=
   borel_jet_realize (fun n => iteratedDerivWithin n g (Set.Ici (0:ℝ)) 0)

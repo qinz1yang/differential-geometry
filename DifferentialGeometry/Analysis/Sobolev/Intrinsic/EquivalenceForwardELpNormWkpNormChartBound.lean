@@ -41,15 +41,14 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, Measurable u →
         eLpNorm u p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) ≤
           ENNReal.ofReal C *
-            wkpNormChart (I := I) (M := M) g 1 p u := by
+            wkpNormChart (I := I) (M := M) 1 p u := by
   classical
   letI : MeasurableSpace E := borel E
   haveI : BorelSpace E := ⟨rfl⟩
@@ -123,7 +122,7 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       eLpNorm (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) p
         (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g ρ) ≤
       ENNReal.ofReal (Cα α) *
-        wkpNormChart (I := I) (M := M) g 1 p u := by
+        wkpNormChart (I := I) (M := M) 1 p u := by
     intro α _
     have h_supp : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆
         tsupport (ρ α : M → ℝ) := by
@@ -158,7 +157,7 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
     rw [h_eLpNorm_eq]
     have h1 :=
       DifferentialGeometry.Analysis.Sobolev.Chart.eLpNorm_chartPushed_p_le_wkpNorm_one
-        (I := I) (M := M) g (p := p) u α
+        (I := I) (M := M) (p := p) u α
     gcongr
   refine (Finset.sum_le_sum h_per_α).trans ?_
   rw [← Finset.sum_mul]
@@ -170,16 +169,14 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
         eLpNorm u p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) ≤
           ENNReal.ofReal C *
-            wkpNormChart (I := I) (M := M) g 1 p u := by
+            wkpNormChart (I := I) (M := M) 1 p u := by
   obtain ⟨C, hC_nn, hbound⟩ :=
     eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       (I := I) (M := M) g hp_one hp_top

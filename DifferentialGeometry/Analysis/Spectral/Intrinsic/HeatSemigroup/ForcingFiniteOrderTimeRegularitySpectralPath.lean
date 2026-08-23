@@ -207,7 +207,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
   have hB2_nn : ∀ i, 0 ≤ B2 i := fun i => by
     have h := hB2 i
     have hw := tensorSobolevWeight_pos (I := I) (M := M) i (2 * ((pK : ℝ) + (sW : ℝ)))
-    nlinarith [sq_nonneg (d i), hw.le]
+    exact (mul_nonneg hw.le (sq_nonneg (d i))).trans h
   have hsummable : Summable (fun i => d i * tensorChartComponentRaw (I := I) (M := M) g 0 2
       (eigenvectorSmooth (I := I) (M := M) g 0 2 i) α ![] Jdx x) := by
     refine Summable.of_norm_bounded

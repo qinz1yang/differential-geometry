@@ -48,7 +48,6 @@ lemma liftedTensorSection_apply
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
-@[simp]
 lemma toModel_liftedTensorSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)

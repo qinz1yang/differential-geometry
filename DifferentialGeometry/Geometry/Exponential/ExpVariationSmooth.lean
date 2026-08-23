@@ -245,7 +245,7 @@ theorem expMapIntrinsic_eq_chartFlow_proj_residual
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (α : M) (n : ℕ) (_hn : 1 ≤ n)
+    (α : M) (n : ℕ)
     (Φ : (E × E) × ℝ → E × E) (ρ T t' : ℝ)
     (hΦ : 0 < ρ ∧ 0 < T ∧ t' ∈ Set.Ioo (-T) T ∧ 0 < t' ∧
       ContDiffOn ℝ (n : ℕ∞)
@@ -741,7 +741,7 @@ theorem expMapIntrinsic_variation_contMDiff
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hV₀ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ V₀)
     (hproj : ∀ t, (V₀ t).proj = γ t)
-    (n : ℕ) (hn : 1 ≤ n) (s₀ t₀ : ℝ)
+    (n : ℕ) (s₀ t₀ : ℝ)
     (Φ : (E × E) × ℝ → E × E) (ρ T t' : ℝ)
     (hΦ : 0 < ρ ∧ 0 < T ∧ t' ∈ Set.Ioo (-T) T ∧ 0 < t' ∧
       ContDiffOn ℝ (n : ℕ∞)
@@ -811,7 +811,7 @@ theorem expMapIntrinsic_variation_contMDiff
       ∈ Metric.ball ((extChartAt I α α, (0 : E)) : E × E) ρ := by
     rw [hsmul_eq, hα_def]
     exact hball
-  have hbridge := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hEnorm α n hn
+  have hbridge := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hEnorm α n
     Φ ρ T t' ⟨hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd, hΦ_init, hΦ_ode, hΦ_target⟩
     (γ p.2) hq_src ((p.1 • (V₀ p.2).snd : E) : TangentSpace I (γ p.2))
     hphase_mem
@@ -837,7 +837,7 @@ theorem expMapIntrinsic_variation_contMDiffAt
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hV₀ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ V₀)
     (hproj : ∀ t, (V₀ t).proj = γ t)
-    (n : ℕ) (hn : 1 ≤ n) (s₀ t₀ : ℝ) :
+    (n : ℕ) (s₀ t₀ : ℝ) :
     ∃ (ρ t' : ℝ), 0 < ρ ∧ 0 < t' ∧
       ((∀ᶠ p in 𝓝 (s₀, t₀),
         γ p.2 ∈ (chartAt H (γ t₀)).source ∧
@@ -850,9 +850,9 @@ theorem expMapIntrinsic_variation_contMDiffAt
   classical
   obtain ⟨Φ, ρ, T, t', hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd, hΦ_init, hΦ_ode,
     hΦ_target, _hΦ_cd⟩ :=
-    exists_chartExp_jointContDiffOn_nat (I := I) g (γ t₀) n hn
+    exists_chartExp_jointContDiffOn_nat (I := I) g (γ t₀) n
   refine ⟨ρ, t', hρ_pos, ht'_pos, fun hsmall => ?_⟩
-  exact expMapIntrinsic_variation_contMDiff (I := I) g hEnorm γ V₀ hγ hV₀ hproj n hn
+  exact expMapIntrinsic_variation_contMDiff (I := I) g hEnorm γ V₀ hγ hV₀ hproj n
     s₀ t₀ Φ ρ T t'
     ⟨hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd, hΦ_init, hΦ_ode, hΦ_target⟩ hsmall
 
@@ -932,7 +932,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [ConnectedSpace M] in
 theorem expMapIntrinsic_variation_contMDiffAt_of_smallField
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1014,7 +1013,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [ConnectedSpace M] in
 theorem diagExp_variation_contMDiffAt_of_smallField
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1059,13 +1057,13 @@ theorem diagExp_contMDiffAt_zero
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (n : ℕ) (hn : 1 ≤ n) :
+    (p : M) (n : ℕ) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞) (diagExp (I := I) g hEnorm)
       (⟨p, (0 : E)⟩ : TangentBundle I M) := by
   classical
   obtain ⟨Φ, ρ, T, t', hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd, hΦ_init, hΦ_ode,
     hΦ_target, _hΦ_cd⟩ :=
-    exists_chartExp_jointContDiffOn_nat (I := I) g p n hn
+    exists_chartExp_jointContDiffOn_nat (I := I) g p n
   set u₀ : TangentBundle I M := (⟨p, (0 : E)⟩ : TangentBundle I M) with hu₀_def
   set ctr : E × E := ((extChartAt I p p, (0 : E)) : E × E) with hctr_def
   set Ξ : TangentBundle I M → E × E := fun u => extChartAt I.tangent u₀ u with hΞ_def
@@ -1139,7 +1137,7 @@ theorem diagExp_contMDiffAt_zero
           chartFiberCoord (I := I) p (⟨u.proj, t'⁻¹ • u.snd⟩ : TangentBundle I M)) : E × E)
         ∈ Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ := by
       rw [harg]; exact hu_ball
-    have hbridge := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hEnorm p n hn
+    have hbridge := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hEnorm p n
       Φ ρ T t' ⟨hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd, hΦ_init, hΦ_ode, hΦ_target⟩
       u.proj hu_src u.snd hphase
     rw [hbridge, harg, hG_def]

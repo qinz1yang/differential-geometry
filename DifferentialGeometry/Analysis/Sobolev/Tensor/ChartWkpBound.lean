@@ -39,44 +39,44 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 def transCoeffE
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   chartCutoffEuclidean (I := I) (M := M) β
-    (transportCoeffManifold (I := I) (M := M) g r s β α P Q)
+    (transportCoeffManifold (I := I) (M := M) r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem transCoeffE_smooth
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) :
-    ContDiff ℝ (⊤ : ℕ∞) (transCoeffE (I := I) (M := M) g r s β α P Q) := by
+    ContDiff ℝ (⊤ : ℕ∞) (transCoeffE (I := I) (M := M) r s β α P Q) := by
   exact contDiff_etaEuclid (I := I) (M := M) β
-    (transportCoeffManifold (I := I) (M := M) g r s β α P Q)
-    (contMDiff_transportCoeffManifold (I := I) (M := M) g r s β α P Q)
+    (transportCoeffManifold (I := I) (M := M) r s β α P Q)
+    (contMDiff_transportCoeffManifold (I := I) (M := M) r s β α P Q)
     (hasCompactSupport_transportCoeffManifold
-      (I := I) (M := M) g r s β α P Q)
+      (I := I) (M := M) r s β α P Q)
     (tsupport_transportCoeffManifold_subset_sourceβ
-      (I := I) (M := M) g r s β α P Q)
+      (I := I) (M := M) r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem transCoeffE_cpt
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) :
-    HasCompactSupport (transCoeffE (I := I) (M := M) g r s β α P Q) := by
+    HasCompactSupport (transCoeffE (I := I) (M := M) r s β α P Q) := by
   exact hasCompactSupport_etaEuclid (I := I) (M := M) β
-    (transportCoeffManifold (I := I) (M := M) g r s β α P Q)
+    (transportCoeffManifold (I := I) (M := M) r s β α P Q)
     (hasCompactSupport_transportCoeffManifold
-      (I := I) (M := M) g r s β α P Q)
+      (I := I) (M := M) r s β α P Q)
     (tsupport_transportCoeffManifold_subset_sourceβ
-      (I := I) (M := M) g r s β α P Q)
+      (I := I) (M := M) r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem transCoeffE_apply
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) {x : M}
     (hx : x ∈ (chartAt H β).source) :
-    transCoeffE (I := I) (M := M) g r s β α P Q
+    transCoeffE (I := I) (M := M) r s β α P Q
         (toEuclidean (E := E) (extChartAt I β x)) =
-      transportCoeffManifold (I := I) (M := M) g r s β α P Q x := by
+      transportCoeffManifold (I := I) (M := M) r s β α P Q x := by
   rw [transCoeffE, etaEuclid_apply_of_mem (I := I) (M := M) β _
     (toEuclidean_extChartAt_mem_chartTargetEuclid
       (I := I) (M := M) β hx)]
@@ -84,24 +84,24 @@ theorem transCoeffE_apply
     (I := I) (M := M) β hx]
 
 theorem coeffMulJoint
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (r s : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (β α : M) (P Q : TensorCompIdx (E := E) r s) :
     ∃ K : ℝ, 0 < K ∧ ∀ {v : EuclN → ℝ},
       MemWkp (d := Module.finrank ℝ E) 2 p v
           (chartTargetEuclid (I := I) (M := M) β) →
       MemWkp (d := Module.finrank ℝ E) 2 p
-          (fun y => transCoeffE (I := I) (M := M) g r s β α P Q y * v y)
+          (fun y => transCoeffE (I := I) (M := M) r s β α P Q y * v y)
           (chartTargetEuclid (I := I) (M := M) β) ∧
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 p
-            (fun y => transCoeffE (I := I) (M := M) g r s β α P Q y * v y)
+            (fun y => transCoeffE (I := I) (M := M) r s β α P Q y * v y)
             (chartTargetEuclid (I := I) (M := M) β) ≤
           ENNReal.ofReal K *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 p v
               (chartTargetEuclid (I := I) (M := M) β) := by
   classical
-  have h_smooth := transCoeffE_smooth (I := I) (M := M) g r s β α P Q
-  have h_cpt := transCoeffE_cpt (I := I) (M := M) g r s β α P Q
+  have h_smooth := transCoeffE_smooth (I := I) (M := M) r s β α P Q
+  have h_cpt := transCoeffE_cpt (I := I) (M := M) r s β α P Q
   obtain ⟨C, hC_nonneg, hC_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
       (d := Module.finrank ℝ E) h_smooth h_cpt 2
@@ -115,14 +115,14 @@ theorem coeffMulJoint
     h_smooth (fun j hj y _ => hC_bound y j hj) hv
 
 def secTransTerm
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) (v : EuclN → ℝ) : EuclN → ℝ :=
   chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
     (chartPullback I β
-      (fun y => transCoeffE (I := I) (M := M) g r s β α P Q y * v y))
+      (fun y => transCoeffE (I := I) (M := M) r s β α P Q y * v y))
 
 theorem secTermJoint
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (r s : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (β α : M) (P Q : TensorCompIdx (E := E) r s) :
     ∃ K : ℝ, 0 < K ∧ ∀ {v : EuclN → ℝ},
@@ -130,19 +130,19 @@ theorem secTermJoint
           (chartTargetEuclid (I := I) (M := M) β) →
       tsupport v ⊆ chartImagePOUTsupport (I := I) (M := M) β →
       MemWkp (d := Module.finrank ℝ E) 2 p
-          (secTransTerm (I := I) (M := M) g r s β α P Q v)
+          (secTransTerm (I := I) (M := M) r s β α P Q v)
           (chartTargetEuclid (I := I) (M := M) α) ∧
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 p
-            (secTransTerm (I := I) (M := M) g r s β α P Q v)
+            (secTransTerm (I := I) (M := M) r s β α P Q v)
             (chartTargetEuclid (I := I) (M := M) α) ≤
           ENNReal.ofReal K *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 p v
               (chartTargetEuclid (I := I) (M := M) β) := by
   classical
   obtain ⟨K_mul, hK_mul_pos, hK_mul⟩ :=
-    coeffMulJoint (I := I) (M := M) g r s hp hp_top β α P Q
+    coeffMulJoint (I := I) (M := M) r s hp hp_top β α P Q
   obtain ⟨K_cross, hK_cross_pos, hK_cross⟩ :=
-    crossChartJointK (I := I) (M := M) g 2 hp hp_top α β
+    crossChartJointK (I := I) (M := M) 2 hp hp_top α β
       (K_α := tsupport
         (((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)))
       (isClosed_tsupport _).isCompact
@@ -152,22 +152,22 @@ theorem secTermJoint
   have hmul := hK_mul hv
   have hprod_support :
       tsupport
-          (fun y => transCoeffE (I := I) (M := M) g r s β α P Q y * v y) ⊆
+          (fun y => transCoeffE (I := I) (M := M) r s β α P Q y * v y) ⊆
         (fun x : M => toEuclidean (E := E) (extChartAt I β x)) ''
           tsupport (((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) := by
     have hs := (tsupport_mul_subset_right
-      (f := transCoeffE (I := I) (M := M) g r s β α P Q)
+      (f := transCoeffE (I := I) (M := M) r s β α P Q)
       (g := v)).trans hv_support
     simpa only [chartImagePOUTsupport, Set.image_image, Function.comp_apply] using hs
   have hcross := hK_cross hmul.1 hprod_support
   refine ⟨hcross.1, ?_⟩
   calc
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 p
-        (secTransTerm (I := I) (M := M) g r s β α P Q v)
+        (secTransTerm (I := I) (M := M) r s β α P Q v)
         (chartTargetEuclid (I := I) (M := M) α) ≤
       ENNReal.ofReal K_cross *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 p
-          (fun y => transCoeffE (I := I) (M := M) g r s β α P Q y * v y)
+          (fun y => transCoeffE (I := I) (M := M) r s β α P Q y * v y)
           (chartTargetEuclid (I := I) (M := M) β) := hcross.2
     _ ≤ ENNReal.ofReal K_cross *
         (ENNReal.ofReal K_mul *

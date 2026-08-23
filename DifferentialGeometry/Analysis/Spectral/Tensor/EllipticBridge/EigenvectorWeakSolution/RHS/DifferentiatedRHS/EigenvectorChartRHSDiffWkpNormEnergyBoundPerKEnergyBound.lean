@@ -38,7 +38,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 private lemma vec_norm_eq_one
@@ -89,7 +88,7 @@ lemma rhsZeroAggregate_le_energy_perK
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
     (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
@@ -321,7 +320,7 @@ lemma rhsZeroAggregate_le_energy_perK
     exact h_step.trans_eq h_rw
   have hS1 :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig K) * Rhs_eff :=
@@ -768,7 +767,7 @@ lemma rhsZeroAggregate_le_energy_perK
       ENNReal.ofReal_add (hCeig_nn K) hCmid_α_nn]
   have h_sum_bound :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -848,7 +847,7 @@ theorem diffRHSAggregate_le_energy_perK
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
     (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *

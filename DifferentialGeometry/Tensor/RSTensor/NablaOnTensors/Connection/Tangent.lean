@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Smooth
-import DifferentialGeometry.Bundle.SectionRealized
+import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
@@ -196,7 +196,7 @@ theorem smoothSections_cov_contMDiffAt_one
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 M] [hM2 : IsManifold I 2 M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : ContMDiffCovariantDerivativeLocally cov (1 : WithTop ℕ∞))
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -206,6 +206,8 @@ theorem smoothSections_cov_contMDiffAt_one
       (fun p : M =>
         (⟨p, (cov (fun q : M => Y q) p) (X p)⟩ :
           TotalSpace E (TangentSpace I : M → Type _))) x := by
+  rcases hM2 with ⟨⟩
+  letI : IsManifold I 2 M := IsManifold.mk
   haveI : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
     have h : ((1 : WithTop ℕ∞) + 1) = (2 : WithTop ℕ∞) := by
       norm_num
@@ -239,7 +241,6 @@ theorem smoothSections_cov_contMDiffAt_one
 theorem tangentConst_cov_mdiffAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-    [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]

@@ -208,7 +208,7 @@ lemma chartAtlasPOU_withDensity_zero_of_notMem
   rw [hzero, MeasureTheory.withDensity_zero]
 
 theorem hasDerivAt_setIntegral_model
-    (target : Set E) (_htarget_meas : MeasurableSet target)
+    (target : Set E)
     {F : ℝ → E → ℝ} (F' : ℝ → E → ℝ) {b : E → ℝ}
     (t₀ : ℝ) {s : Set ℝ} (hs : s ∈ 𝓝 t₀)
     (hF_meas : ∀ᶠ t in 𝓝 t₀,
@@ -621,7 +621,7 @@ theorem integral_riemannianMeasureFamily_eq_finset_sum
   exact integral_riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M)
     (g_fam t) (f t) hf_cont
 
-theorem volume_variation_formula
+theorem volume_variation_formula_of_chart_integrals
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)

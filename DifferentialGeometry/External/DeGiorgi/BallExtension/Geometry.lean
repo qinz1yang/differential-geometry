@@ -10,8 +10,8 @@ unit-ball extension operator.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal RealInnerProductSpace
+open MeasureTheory Topology Set
+open scoped ENNReal
 
 namespace DeGiorgi
 

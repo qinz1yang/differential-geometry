@@ -495,6 +495,74 @@ theorem inner0S_two_metricCompatible_coord_corrB2
             _ = U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l := by
                   ring
 
+private theorem sum_four_sub {Idx : Type*} [Fintype Idx]
+    (f h : Idx → Idx → Idx → Idx → Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, (f i j k l - h i j k l)) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, f i j k l) -
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, h i j k l := by
+  calc
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx,
+          ((∑ l : Idx, f i j k l) - ∑ l : Idx, h i j k l) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        apply Finset.sum_congr rfl
+        intro j _
+        apply Finset.sum_congr rfl
+        intro k _
+        simpa only using (Finset.sum_sub_distrib (s := Finset.univ)
+          (fun l : Idx => f i j k l) (fun l : Idx => h i j k l))
+    _ = ∑ i : Idx, ∑ j : Idx,
+          ((∑ k : Idx, ∑ l : Idx, f i j k l) - ∑ k : Idx, ∑ l : Idx, h i j k l) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        apply Finset.sum_congr rfl
+        intro j _
+        simpa only using (Finset.sum_sub_distrib (s := Finset.univ)
+          (fun k : Idx => ∑ l : Idx, f i j k l)
+          (fun k : Idx => ∑ l : Idx, h i j k l))
+    _ = ∑ i : Idx,
+          ((∑ j : Idx, ∑ k : Idx, ∑ l : Idx, f i j k l) -
+            ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, h i j k l) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        simpa only using (Finset.sum_sub_distrib (s := Finset.univ)
+          (fun j : Idx => ∑ k : Idx, ∑ l : Idx, f i j k l)
+          (fun j : Idx => ∑ k : Idx, ∑ l : Idx, h i j k l))
+    _ = _ := by
+      simpa only using (Finset.sum_sub_distrib (s := Finset.univ)
+        (fun i : Idx => ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, f i j k l)
+        (fun i : Idx => ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, h i j k l))
+
+private theorem sum_four_neg {Idx : Type*} [Fintype Idx]
+    (f : Idx → Idx → Idx → Idx → Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, -f i j k l) =
+      -(∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, f i j k l) := by
+  calc
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, -(∑ l : Idx, f i j k l) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        apply Finset.sum_congr rfl
+        intro j _
+        apply Finset.sum_congr rfl
+        intro k _
+        simpa only using (Finset.sum_neg_distrib (s := Finset.univ)
+          (fun l : Idx => f i j k l))
+    _ = ∑ i : Idx, ∑ j : Idx, -(∑ k : Idx, ∑ l : Idx, f i j k l) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        apply Finset.sum_congr rfl
+        intro j _
+        simpa only using (Finset.sum_neg_distrib (s := Finset.univ)
+          (fun k : Idx => ∑ l : Idx, f i j k l))
+    _ = ∑ i : Idx, -(∑ j : Idx, ∑ k : Idx, ∑ l : Idx, f i j k l) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        simpa only using (Finset.sum_neg_distrib (s := Finset.univ)
+          (fun j : Idx => ∑ k : Idx, ∑ l : Idx, f i j k l))
+    _ = _ := by
+      simpa only using (Finset.sum_neg_distrib (s := Finset.univ)
+        (fun i : Idx => ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, f i j k l))
+
 theorem inner0S_two_metricCompatible_coord_DU_first
     {Idx : Type*} [Fintype Idx]
     (U Γ A B DU : Idx -> Idx -> Real)
@@ -516,7 +584,7 @@ theorem inner0S_two_metricCompatible_coord_DU_first
       DU i k * U j l * A i j * B k l)
         =
       ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-        (-(∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l -
+        (-((∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) -
           (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
           refine Finset.sum_congr rfl fun i _ => ?_
           refine Finset.sum_congr rfl fun j _ => ?_
@@ -529,7 +597,8 @@ theorem inner0S_two_metricCompatible_coord_DU_first
           (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) -
         (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
           (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
-          simp [Finset.sum_sub_distrib, Finset.sum_neg_distrib]
+          rw [sum_four_sub]
+          rw [sum_four_neg]
 
 theorem inner0S_two_metricCompatible_coord_DU_second
     {Idx : Type*} [Fintype Idx]
@@ -565,7 +634,8 @@ theorem inner0S_two_metricCompatible_coord_DU_second
           U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) -
         (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
           U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
-          simp [Finset.sum_sub_distrib, Finset.sum_neg_distrib]
+          rw [sum_four_sub]
+          rw [sum_four_neg]
 
 theorem inner0S_two_metricCompatible_coord_NA_sum
     {Idx : Type*} [Fintype Idx]
@@ -604,7 +674,8 @@ theorem inner0S_two_metricCompatible_coord_NA_sum
         U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
       (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
         U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
-          simp [Finset.sum_sub_distrib]
+          rw [sum_four_sub]
+          rw [sum_four_sub]
 
 theorem inner0S_two_metricCompatible_coord_NB_sum
     {Idx : Type*} [Fintype Idx]
@@ -643,7 +714,8 @@ theorem inner0S_two_metricCompatible_coord_NB_sum
         U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) -
       (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
         U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
-          simp [Finset.sum_sub_distrib]
+          rw [sum_four_sub]
+          rw [sum_four_sub]
 
 theorem inner0S_two_metricCompatible_scalar_sum_algebra
     (P Q A1 A2 B1 B2 : Real) :

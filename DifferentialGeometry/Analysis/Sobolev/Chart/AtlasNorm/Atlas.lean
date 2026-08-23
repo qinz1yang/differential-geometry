@@ -17,8 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-def MemWkpChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
+def MemWkpChartGen
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) : Prop :=
@@ -29,8 +28,7 @@ def MemWkpChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
       (chartPushed (I := I) (M := M) ρ α u)
       (chartTargetEuclid (I := I) (M := M) α)
 
-def wkpNormChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
+def wkpNormChartGen
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) : ℝ≥0∞ :=
@@ -42,20 +40,16 @@ def wkpNormChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
       (chartTargetEuclid (I := I) (M := M) α)
 
 theorem MemWkpChartGen_chartAtlasPOU
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
-    MemWkpChartGen (I := I) (M := M) g k p
+    [T2Space M] [SigmaCompactSpace M] (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
+    MemWkpChartGen (I := I) (M := M) k p
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) u ↔
-      MemWkpChart (I := I) (M := M) g k p u := Iff.rfl
+      MemWkpChart (I := I) (M := M) k p u := Iff.rfl
 
 theorem wkpNormChartGen_chartAtlasPOU
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
-    wkpNormChartGen (I := I) (M := M) g k p
+    [T2Space M] [SigmaCompactSpace M] (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
+    wkpNormChartGen (I := I) (M := M) k p
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) u =
-      wkpNormChart (I := I) (M := M) g k p u := rfl
+      wkpNormChart (I := I) (M := M) k p u := rfl
 
 omit [IsManifold I ∞ M] in
 theorem chartPushed_congr_of_pointwise_eq
@@ -68,28 +62,26 @@ theorem chartPushed_congr_of_pointwise_eq
   unfold chartPushed
   rw [h α]
 
+omit [IsManifold I ∞ M] in
 theorem wkpNormChartGen_congr_of_pointwise_eq
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞)
     (ρ ρ' : SmoothPartitionOfUnity M I M Set.univ)
     (h : ∀ α : M, ∀ x : M, (ρ α : C^∞⟮I, M; ℝ⟯) x = (ρ' α : C^∞⟮I, M; ℝ⟯) x)
     (u : M → ℝ) :
-    wkpNormChartGen (I := I) (M := M) g k p ρ u =
-      wkpNormChartGen (I := I) (M := M) g k p ρ' u := by
+    wkpNormChartGen (I := I) (M := M) k p ρ u =
+      wkpNormChartGen (I := I) (M := M) k p ρ' u := by
   unfold wkpNormChartGen
   refine tsum_congr (fun α => ?_)
   rw [chartPushed_congr_of_pointwise_eq (I := I) (M := M) ρ ρ' h α u]
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen_congr_of_pointwise_eq
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞}
     (ρ ρ' : SmoothPartitionOfUnity M I M Set.univ)
     (h : ∀ α : M, ∀ x : M, (ρ α : C^∞⟮I, M; ℝ⟯) x = (ρ' α : C^∞⟮I, M; ℝ⟯) x)
     (u : M → ℝ) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ u ↔
-      MemWkpChartGen (I := I) (M := M) g k p ρ' u := by
+    MemWkpChartGen (I := I) (M := M) k p ρ u ↔
+      MemWkpChartGen (I := I) (M := M) k p ρ' u := by
   refine ⟨fun H α => ?_, fun H α => ?_⟩
   · have hcp := chartPushed_congr_of_pointwise_eq (I := I) (M := M) ρ ρ' h α u
     rw [← hcp]
@@ -106,23 +98,23 @@ theorem chartPushed_zero_gen
       (fun _ => (0 : ℝ)) :=
   chartPushed_zero (I := I) (M := M) ρ α
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen_zero_fun
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ (fun _ : M => (0 : ℝ)) := by
+    MemWkpChartGen (I := I) (M := M) k p ρ (fun _ : M => (0 : ℝ)) := by
   intro α
   rw [chartPushed_zero_gen]
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_zero_fun
     (d := Module.finrank ℝ E) hp (chartTargetEuclid_isOpen (I := I) (M := M) α)
 
+omit [IsManifold I ∞ M] in
 theorem wkpNormChartGen_zero_fun
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ) :
-    wkpNormChartGen (I := I) (M := M) g k p ρ (fun _ : M => (0 : ℝ)) = 0 := by
+    wkpNormChartGen (I := I) (M := M) k p ρ (fun _ : M => (0 : ℝ)) = 0 := by
   unfold wkpNormChartGen
   have hpt : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -153,15 +145,15 @@ theorem chartPushed_const_smul_gen
       (fun y => c * chartPushed (I := I) (M := M) ρ α u y) :=
   chartPushed_const_smul (I := I) (M := M) ρ α c u
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen_add
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u v : M → ℝ}
-    (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u)
-    (hv : MemWkpChartGen (I := I) (M := M) g k p ρ v) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ (fun x => u x + v x) := by
+    (hu : MemWkpChartGen (I := I) (M := M) k p ρ u)
+    (hv : MemWkpChartGen (I := I) (M := M) k p ρ v) :
+    MemWkpChartGen (I := I) (M := M) k p ρ (fun x => u x + v x) := by
   intro α
   rw [chartPushed_add_gen]
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.add
@@ -169,14 +161,14 @@ theorem MemWkpChartGen_add
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (hu α) (hv α)
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen_const_smul
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (c : ℝ) {u : M → ℝ}
-    (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ (fun x => c * u x) := by
+    (hu : MemWkpChartGen (I := I) (M := M) k p ρ u) :
+    MemWkpChartGen (I := I) (M := M) k p ρ (fun x => c * u x) := by
   intro α
   rw [chartPushed_const_smul_gen]
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.const_smul
@@ -184,47 +176,47 @@ theorem MemWkpChartGen_const_smul
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (hu α) c
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen_neg
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u : M → ℝ}
-    (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ (fun x => -u x) := by
-  have h := MemWkpChartGen_const_smul (I := I) (M := M) g hp ρ (-1) hu
+    (hu : MemWkpChartGen (I := I) (M := M) k p ρ u) :
+    MemWkpChartGen (I := I) (M := M) k p ρ (fun x => -u x) := by
+  have h := MemWkpChartGen_const_smul (I := I) (M := M) hp ρ (-1) hu
   have hEq : (fun x : M => (-1 : ℝ) * u x) = (fun x : M => -u x) := by
     funext x; ring
   rw [hEq] at h
   exact h
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen_sub
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u v : M → ℝ}
-    (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u)
-    (hv : MemWkpChartGen (I := I) (M := M) g k p ρ v) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ (fun x => u x - v x) := by
-  have hneg := MemWkpChartGen_neg (I := I) (M := M) g hp ρ hv
-  have h := MemWkpChartGen_add (I := I) (M := M) g hp ρ hu hneg
+    (hu : MemWkpChartGen (I := I) (M := M) k p ρ u)
+    (hv : MemWkpChartGen (I := I) (M := M) k p ρ v) :
+    MemWkpChartGen (I := I) (M := M) k p ρ (fun x => u x - v x) := by
+  have hneg := MemWkpChartGen_neg (I := I) (M := M) hp ρ hv
+  have h := MemWkpChartGen_add (I := I) (M := M) hp ρ hu hneg
   have hEq : (fun x : M => u x + -v x) = (fun x : M => u x - v x) := by
     funext x; ring
   rw [hEq] at h
   exact h
 
+omit [IsManifold I ∞ M] in
 theorem wkpNormChartGen_add_le
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u v : M → ℝ}
-    (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u)
-    (hv : MemWkpChartGen (I := I) (M := M) g k p ρ v) :
-    wkpNormChartGen (I := I) (M := M) g k p ρ (fun x => u x + v x) ≤
-      wkpNormChartGen (I := I) (M := M) g k p ρ u +
-        wkpNormChartGen (I := I) (M := M) g k p ρ v := by
+    (hu : MemWkpChartGen (I := I) (M := M) k p ρ u)
+    (hv : MemWkpChartGen (I := I) (M := M) k p ρ v) :
+    wkpNormChartGen (I := I) (M := M) k p ρ (fun x => u x + v x) ≤
+      wkpNormChartGen (I := I) (M := M) k p ρ u +
+        wkpNormChartGen (I := I) (M := M) k p ρ v := by
   unfold wkpNormChartGen
   rw [← ENNReal.tsum_add]
   refine ENNReal.tsum_le_tsum ?_
@@ -235,15 +227,15 @@ theorem wkpNormChartGen_add_le
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (hu α) (hv α)
 
+omit [IsManifold I ∞ M] in
 theorem wkpNormChartGen_const_smul
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (c : ℝ) {u : M → ℝ}
-    (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u) :
-    wkpNormChartGen (I := I) (M := M) g k p ρ (fun x => c * u x) =
-      ‖c‖ₑ * wkpNormChartGen (I := I) (M := M) g k p ρ u := by
+    (hu : MemWkpChartGen (I := I) (M := M) k p ρ u) :
+    wkpNormChartGen (I := I) (M := M) k p ρ (fun x => c * u x) =
+      ‖c‖ₑ * wkpNormChartGen (I := I) (M := M) k p ρ u := by
   unfold wkpNormChartGen
   rw [← ENNReal.tsum_mul_left]
   refine tsum_congr ?_
@@ -254,35 +246,33 @@ theorem wkpNormChartGen_const_smul
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (hu α) c
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen.le_succ
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞}
     {ρ : SmoothPartitionOfUnity M I M Set.univ}
     {u : M → ℝ}
-    (h : MemWkpChartGen (I := I) (M := M) g (k + 1) p ρ u) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ u := by
+    (h : MemWkpChartGen (I := I) (M := M) (k + 1) p ρ u) :
+    MemWkpChartGen (I := I) (M := M) k p ρ u := by
   intro α
   exact (h α).le_succ
 
+omit [IsManifold I ∞ M] in
 theorem MemWkpChartGen.le_of_le
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k k' : ℕ} {p : ℝ≥0∞}
     {ρ : SmoothPartitionOfUnity M I M Set.univ}
     {u : M → ℝ}
-    (hk : k ≤ k') (h : MemWkpChartGen (I := I) (M := M) g k' p ρ u) :
-    MemWkpChartGen (I := I) (M := M) g k p ρ u := by
+    (hk : k ≤ k') (h : MemWkpChartGen (I := I) (M := M) k' p ρ u) :
+    MemWkpChartGen (I := I) (M := M) k p ρ u := by
   intro α
   exact (h α).le_of_le hk
 
+omit [IsManifold I ∞ M] in
 theorem wkpNormChartGen_lt_top_of_memWkpChartGen
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [CompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
-    {u : M → ℝ} (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u) :
-    wkpNormChartGen (I := I) (M := M) g k p ρ u < ⊤ := by
+    {u : M → ℝ} (hu : MemWkpChartGen (I := I) (M := M) k p ρ u) :
+    wkpNormChartGen (I := I) (M := M) k p ρ u < ⊤ := by
   classical
   unfold wkpNormChartGen
   set f : M → ℝ≥0∞ := fun α =>
@@ -418,8 +408,7 @@ theorem chartPushed_pointwise_bound
     _ = |u ((extChartAt I α).symm (toEuclidean.symm y))| := one_mul _
 
 def wkpNormChartFin
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [CompactSpace M]
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) : ℝ≥0∞ :=
@@ -430,22 +419,22 @@ def wkpNormChartFin
       (chartPushed (I := I) (M := M) ρ α u)
       (chartTargetEuclid (I := I) (M := M) α)
 
+omit [IsManifold I ∞ M] in
 theorem wkpNormChartGen_eq_wkpNormChartFin
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    [CompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) :
-    wkpNormChartGen (I := I) (M := M) g k p ρ u =
-      wkpNormChartFin (I := I) (M := M) g k p ρ u := by
+    wkpNormChartGen (I := I) (M := M) k p ρ u =
+      wkpNormChartFin (I := I) (M := M) k p ρ u := by
   classical
   let f : M → ℝ≥0∞ := fun α =>
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
       (d := Module.finrank ℝ E) k p
       (chartPushed (I := I) (M := M) ρ α u)
       (chartTargetEuclid (I := I) (M := M) α)
-  have hLHS : wkpNormChartGen (I := I) (M := M) g k p ρ u = ∑' α : M, f α := rfl
-  have hRHS : wkpNormChartFin (I := I) (M := M) g k p ρ u =
+  have hLHS : wkpNormChartGen (I := I) (M := M) k p ρ u = ∑' α : M, f α := rfl
+  have hRHS : wkpNormChartFin (I := I) (M := M) k p ρ u =
       ∑ α ∈ (support_set_finite_of_compactSpace (I := I) (M := M) ρ).toFinset,
         f α := rfl
   rw [hLHS, hRHS]
@@ -486,14 +475,13 @@ theorem wkpNormChartGen_eq_wkpNormChartFin
   exact hf_zero_off α hempty
 
 def chartTransitionFinset
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) : Finset M :=
   (support_set_finite_of_compactSpace (I := I) (M := M) ρ).toFinset
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mem_chartTransitionFinset_iff
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (ρ : SmoothPartitionOfUnity M I M Set.univ) (α : M) :
+    [CompactSpace M] (ρ : SmoothPartitionOfUnity M I M Set.univ) (α : M) :
     α ∈ chartTransitionFinset (I := I) (M := M) ρ ↔
       (Function.support (ρ α : M → ℝ)).Nonempty := by
   unfold chartTransitionFinset
@@ -502,7 +490,7 @@ theorem mem_chartTransitionFinset_iff
 
 omit [FiniteDimensional ℝ E] in
 theorem chartAt_transition_hasFDerivWithinAt_overlap
-    [I.Boundaryless] (α β : M) :
+    (α β : M) :
     ∀ y ∈ (extChartAt I α) ''
       ((chartAt H α).source ∩ (chartAt H β).source),
         HasFDerivWithinAt (extChartAt I β ∘ (extChartAt I α).symm)

@@ -90,7 +90,6 @@ theorem MemWkp_extend_via_cutoff_poly
       (d := Module.finrank ℝ E) k 2 (fun x => η x * u x) Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
       (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-      (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
       hΩ'_open hΩ_open hΩ'_in_Ω h_eta_u_in_Ω' h_tsupp_prod_in_Ω'
       h_compactSupport_prod
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
@@ -324,7 +323,7 @@ theorem memWkpChart_m_plus_two_of_chartPushed_memWkp_m_plus_two
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g (m + 2) 2
+      (I := I) (M := M) (m + 2) 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
   intro α

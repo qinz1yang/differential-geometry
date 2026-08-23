@@ -40,7 +40,7 @@ theorem hasDerivAt_clm_apply_from_h1_time
     {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     (L : ℝ → X →L[ℝ] Y) (L' : ℝ → X →L[ℝ] Y) (u : ℝ → X) (u' : ℝ → X)
-    (t : ℝ) (_x : X)
+    (t : ℝ)
     (hL : HasDerivAt L (L' t) t) (hu : HasDerivAt u (u' t) t) :
     HasDerivAt (fun s : ℝ => L s (u s)) (L' t (u t) + L t (u' t)) t :=
   hL.clm_apply hu

@@ -63,7 +63,7 @@ import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
-import DifferentialGeometry.Bundle.SectionRealized
+import DifferentialGeometry.Bundle.SectionOperations
 
 set_option autoImplicit false
 
@@ -97,7 +97,6 @@ theorem component0S_add_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_neg_gen
     (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (-A) slots =
@@ -105,7 +104,6 @@ theorem component0S_neg_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_sub_gen
     (A B : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (A - B) slots =
@@ -121,7 +119,6 @@ theorem component0S_smul_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_nsmul
     (n : ℕ) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (n • A) slots =
@@ -155,6 +152,7 @@ def componentRS_gen
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 :=
   component0S (I := I) basis (T (basisTensor0S (I := I) basis upper)) lower
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem componentRS_apply_gen
     (T : TensorRSSpace r s I x)
@@ -164,6 +162,7 @@ theorem componentRS_apply_gen
         (fun a => basis (lower a)) :=
   rfl
 
+omit [DecidableEq Idx] in
 theorem componentRS_gen_congr_slots
     (T : TensorRSSpace r s I x)
     {upper upper' : Fin r -> Idx} {lower lower' : Fin s -> Idx}
@@ -172,6 +171,7 @@ theorem componentRS_gen_congr_slots
       componentRS_gen (I := I) basis T upper' lower' := by
   rw [hu, hl]
 
+omit [DecidableEq Idx] in
 theorem componentRS_apply_input_eq_sum
     (T : TensorRSSpace r s I x) (input : Tensor0SSpace r I x)
     (lower : Fin s -> Idx) :
@@ -207,12 +207,14 @@ theorem componentRS_apply_input_eq_sum
           rw [map_sum]
           simp [map_smul]
 
+omit [DecidableEq Idx] in
 theorem extRS_basis_gen
     {A B : TensorRSSpace r s I x}
     (h : ∀ upper : Fin r -> Idx, ∀ lower : Fin s -> Idx,
       componentRS_gen (I := I) basis A upper lower =
         componentRS_gen (I := I) basis B upper lower) :
     A = B := by
+  classical
   apply ContinuousLinearMap.ext
   intro input
   apply ext0S_basis (I := I) basis

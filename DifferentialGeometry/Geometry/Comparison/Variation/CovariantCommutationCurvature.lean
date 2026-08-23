@@ -66,7 +66,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma slice_velocityField_chartRep_differentiableAt
-    (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
+    (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (u t₀ : ℝ) :
     DifferentiableAt ℝ
       (chartRepAt (I := I) (fun v : ℝ => f u v)
@@ -76,7 +76,7 @@ private lemma slice_velocityField_chartRep_differentiableAt
         (fun p : ℝ × ℝ => (u + p.1, p.2)) :=
       (contMDiff_const.add contMDiff_fst).prodMk contMDiff_snd
     exact (hf : ContMDiff _ _ _ _).comp hcomp
-  have h := velocityField_chartRep_differentiableAt (I := I) g (fun a b : ℝ => f (u + a) b) hf' t₀
+  have h := velocityField_chartRep_differentiableAt (I := I) (fun a b : ℝ => f (u + a) b) hf' t₀
   have hrw : (fun a b : ℝ => f (u + a) b) = (fun a b : ℝ => f (u + a) b) := rfl
   have hval : (u + 0 : ℝ) = u := add_zero u
   rw [hval] at h
@@ -86,7 +86,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 lemma slice_longitudinalField_transverse_chartRep_differentiableAt
-    (_g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
+    (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (v : ℝ) :
     DifferentiableAt ℝ
       (chartRepAt (I := I) (fun u : ℝ => f u v)
@@ -261,7 +261,7 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
         (contMDiff_const.add contMDiff_fst).prodMk contMDiff_snd
       exact (hf : ContMDiff _ _ _ _).comp hcomp
     have hd := slice_longitudinalField_transverse_chartRep_differentiableAt
-      (I := I) g (fun a b : ℝ => f (s + a) b) hf' t
+      (I := I) (fun a b : ℝ => f (s + a) b) hf' t
     set RF : ℝ → E := chartRepAt (I := I)
         (fun a' : ℝ => f (s + a') t)
         (fun a' : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f (s + a') w) t (1 : ℝ)) 0 with hRF
@@ -744,10 +744,10 @@ theorem commute_ds_dt_curvature
     rw [hY_chartRepAtBase_u s]
     exact (chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I) (by norm_num) g
       (fun w : ℝ => f s w) (fun w : ℝ => velT s w) t β (hslice_u s) hs
-      (slice_velocityField_chartRep_differentiableAt (I := I) g f hf s t)).symm
+      (slice_velocityField_chartRep_differentiableAt (I := I) f hf s t)).symm
   have hinnerR_diff : ∀ v : ℝ, DifferentiableAt ℝ
       (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velT u v) 0) 0 := fun v =>
-    slice_longitudinalField_transverse_chartRep_differentiableAt (I := I) g f hf v
+    slice_longitudinalField_transverse_chartRep_differentiableAt (I := I) f hf v
   have hinnerR : ∀ v : ℝ, f 0 v ∈ (chartAt H β).source →
       chartCovDerivAlong (I := I) g β (fun u : ℝ => f u v) (fun u : ℝ => Y u v) 0
         = (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 v)
@@ -1127,7 +1127,7 @@ lemma variationField_covDeriv_chartRep_differentiableAt
   have hVdiff : ∀ v : ℝ, DifferentiableAt ℝ (chartRepAt (I := I) (fun w : ℝ => f 0 w) Vsec v)
     v := by
     intro v
-    have h := variationField_chartRep_differentiableAt (I := I) g f hf v
+    have h := variationField_chartRep_differentiableAt (I := I) f hf v
     exact h
   have hbridge : (chartRepAt (I := I) (fun v : ℝ => f 0 v)
         (fun v : ℝ => covDerivAlong (I := I) g (fun w : ℝ => f 0 w) Vsec v) t)

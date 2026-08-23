@@ -15,7 +15,7 @@ variable {V : Type*}
 def baseD2Holder (alpha : NNReal) (x : V) : Real :=
   ‖x‖ ^ (alpha : Real) * baseD2Maj x
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD2Holder_nonneg (alpha : NNReal) (x : V) :
     0 ≤ baseD2Holder alpha x :=
   mul_nonneg (Real.rpow_nonneg (norm_nonneg x) _) (baseD2Maj_nonneg x)
@@ -77,7 +77,7 @@ def heatD2Holder (alpha : NNReal) (t : Real) (x : V) : Real :=
     (heatScale t) ^ (alpha : Real) *
       baseD2Holder alpha ((heatScale t)⁻¹ • x)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD2Holder_nonneg (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     0 ≤ heatD2Holder alpha t x := by
   unfold heatD2Holder
@@ -90,6 +90,7 @@ theorem heatD2Holder_nonneg (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     (baseD2Holder_nonneg alpha _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2Holder_eq (alpha : NNReal) {t : Real} (ht : 0 < t) (x : V) :
     heatD2Holder alpha t x = ‖x‖ ^ (alpha : Real) * heatD2Maj t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -147,7 +148,7 @@ theorem holderHeatScale_eq (alpha : NNReal) {t : Real} (ht : 0 < t) :
   congr 1
   ring
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD2_holder_bound (alpha : NNReal) {t : Real} (ht : 0 < t)
     (v w x : V) :
     ‖heatD2 t v w x‖ * ‖x‖ ^ (alpha : Real) ≤
@@ -212,7 +213,7 @@ private theorem holder_bound {alpha K : NNReal} {f : V → F}
   rw [dist_eq_norm, hxy] at h
   exact h
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
 private theorem cancel_bound_of_holder {alpha K : NNReal} {t : Real} (ht : 0 < t)
     {f : V → F} (hf : HolderWith K alpha f) (v w x y : V) :
     ‖heatD2 t v w y • (f (x - y) - f x)‖ ≤
@@ -416,6 +417,7 @@ theorem heatD2Duh_norm_of_holder {alpha K : NNReal}
 end Duhamel
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD2Holder_one_half (x : V) :
     baseD2Holder (1 / 2 : NNReal) x = baseD2Half x := by
   simp [baseD2Holder, baseD2Half, Real.sqrt_eq_rpow]
@@ -428,7 +430,7 @@ theorem heatC2Holder_one_half :
   filter_upwards with x
   exact baseD2Holder_one_half x
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD2Holder_one_half (t : Real) (x : V) :
     heatD2Holder (1 / 2 : NNReal) t x = heatD2Half t x := by
   unfold heatD2Holder heatD2Half

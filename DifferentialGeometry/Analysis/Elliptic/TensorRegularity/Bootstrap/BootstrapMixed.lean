@@ -190,7 +190,7 @@ theorem wkpNorm_classicalPartial_le
   have h_ae := chosenWeakPartial_smooth_ae_eq (d := d)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ hψ_smooth hψ_W1 l
   rw [← wkpNorm_congr_ae (d := d) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ h_ae]
-  exact wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := d) k hΩ ψ l
+  exact wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := d) k ψ l
 
 private theorem exists_wkpNorm_smul_smooth_le_on_precompact
     (k : ℕ) {Ω : Set EE} (hΩ_open : IsOpen Ω)
@@ -481,14 +481,14 @@ theorem contDiff_perturbedSource'
   intro i _
   refine ContDiff.sum ?_
   intro j _
-  have h_dla : ContDiff ℝ (⊤ : ℕ∞)
+  have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞)
       (fun y : EE =>
         (fderiv ℝ (fun z : EE => B.a z i j) y) (EuclideanSpace.single l 1)) :=
     contDiff_partial_eta (d := d) (B.contDiff_a i j) l
   have h_diu : ContDiff ℝ (⊤ : ℕ∞)
       (fun y : EE => (fderiv ℝ u y) (EuclideanSpace.single i 1)) :=
     contDiff_partial_eta (d := d) hu i
-  exact contDiff_partial_eta (d := d) (h_dla.mul h_diu) j
+  exact contDiff_partial_eta (d := d) (h_deTurckLieConnectionDifferenceDerivative.mul h_diu) j
 
 theorem iterated_partial_isSmoothWeakSolution
     (B : SmoothEllipticBilinearForm d (Set.univ : Set EE))
@@ -543,20 +543,20 @@ theorem tensorComponent_iterated_partial_isSmoothWeakSolution
       (iteratedPerturbedSource (d := Module.finrank ℝ E)
         (tensorPrincipalForm (I := I) (M := M) g α hK hK_target) m
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀)
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
         idx) := by
   classical
   have h_base :
       (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).IsSmoothWeakSolution
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponent_isSmoothWeakSolution (I := I) (M := M)
       g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
   have h_base_src_smooth :
       ContDiff ℝ (⊤ : ℕ∞)
-        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α hK hK_target P₀) :=
+        (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_supp hF_supp
   exact iterated_partial_isSmoothWeakSolution (d := Module.finrank ℝ E)
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target) m h_base
     h_base_src_smooth idx

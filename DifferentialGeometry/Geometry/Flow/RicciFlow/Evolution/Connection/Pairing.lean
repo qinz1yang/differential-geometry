@@ -45,7 +45,6 @@ def ConnectionVariationPairingEquationInFrameOn
       D.carrier
       (t : Real)
 
-
 def ConnectionVariationPairingEquationInFrameOnLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -64,11 +63,10 @@ def ConnectionVariationPairingEquationInFrameOnLocal
         (t : Real)
 
 omit [Fintype Idx] [DecidableEq Idx] in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem connectionPairDt_eq_metricVariationRHS
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u)
@@ -107,10 +105,10 @@ theorem connectionPairDt_eq_metricVariationRHS
     refine hL.congr ?_ ?_
     · intro s hs
       exact (finiteDifferenceKoszulInFrame
-        (I := I) S hS frame hframe hu hx htcarrier hs i j l
+        (I := I) S frame hframe hu hx htcarrier hs i j l
         ).symm
     · exact (finiteDifferenceKoszulInFrame
-        (I := I) S hS frame hframe hu hx htcarrier htcarrier i j l).symm
+        (I := I) S frame hframe hu hx htcarrier htcarrier i j l).symm
   have hR :
       HasDerivWithinAt
         (fun s : Real =>
@@ -134,11 +132,10 @@ theorem connectionPairDt_eq_metricVariationRHS
   linarith
 
 omit [Fintype Idx] [DecidableEq Idx] in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem connectionVariationPairing_of_metricVariation
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u)
@@ -168,15 +165,14 @@ theorem connectionVariationPairing_of_metricVariation
   intro t x hx i j l
   exact (hpair t x hx i j l).congr_deriv
     (connectionPairDt_eq_metricVariationRHS
-      (I := I) S hS frame hframe hu pairDt metricCovDerivDt
+      (I := I) S frame hframe hu pairDt metricCovDerivDt
       hvarDiff hmetric hunique t x hx i j l)
 
 omit [Fintype Idx] [DecidableEq Idx] in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem connectionVariationPairing_of_ricciFlow
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u)
@@ -200,7 +196,7 @@ theorem connectionVariationPairing_of_ricciFlow
   intro t x hx i j l
   have hmetricVar :=
     connectionVariationPairing_of_metricVariation
-      (I := I) S hS frame hframe hu pairDt metricCovDerivDt
+      (I := I) S frame hframe hu pairDt metricCovDerivDt
       hpair hvarDiff hmetric hunique t x hx i j l
   refine hmetricVar.congr_deriv ?_
   unfold connectionVariationLoweredRHSFromMetricVariationInFrame

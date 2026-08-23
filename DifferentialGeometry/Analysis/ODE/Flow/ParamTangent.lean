@@ -23,7 +23,6 @@ def paramTangentVF
     ℝ → (X × (P →L[ℝ] X)) → X × (P →L[ℝ] X) :=
   fun t z => (v t z.1, (fderiv ℝ (v t) z.1).comp z.2)
 
-
 def paramTangentInit
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -40,8 +39,8 @@ def paramTangentCurve
 
 theorem paramTangentInit_contDiffOn
     {P X : Type*}
-    [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
     {A : Set P} (hA : IsOpen A) {a : P → X}
     (ha : ContDiffOn ℝ ∞ a A) :
     ContDiffOn ℝ ∞ (paramTangentInit a) A := by
@@ -58,8 +57,8 @@ theorem paramTangentVF_apply
 
 theorem paramTangentVF_contDiffOn
     {P X : Type*}
-    [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
     {J : Set ℝ} (hJ : IsOpen J) {V : Set X} (hV : IsOpen V)
     {v : ℝ → X → X}
     (hv : ContDiffOn ℝ ∞ (uncurry v) (J ×ˢ V)) :
@@ -111,7 +110,7 @@ theorem paramTangentCurve_initial
 
 theorem paramTangentCurve_initial_isIntegralCurveOn
     {P X : Type*}
-    [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
     {A : Set P} (hA : IsOpen A)
     {J : Set ℝ} (hJ : IsOpen J)
@@ -209,13 +208,11 @@ end Analysis
 
 namespace HCGCompactness
 
-open Set
-open scoped ContDiff
 
 theorem MapCInfConvOnCompacts.paramTangentInit
     {P X : Type*}
-    [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
     {A : Set P} (hA : IsOpen A)
     {a : ℕ → P → X} {aInf : P → X}
     (ha_cd : ∀ n, ContDiffOn ℝ ∞ (a n) A)

@@ -18,8 +18,8 @@ uniqueness properties.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal Convolution Pointwise
+open MeasureTheory Filter Topology Function
+open scoped Pointwise
 
 namespace DeGiorgi
 

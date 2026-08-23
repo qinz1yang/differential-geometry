@@ -22,7 +22,6 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Sobolev.Tensor
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -174,12 +173,13 @@ private theorem covDerivCrossLeft_weight_bound_rs
       rw [hchain (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)]
       ring
     rw [hrw]
-    have hcoeff_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 := by positivity
+    have hcoeff_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 :=
+      mul_nonneg (sq_nonneg _) (sq_nonneg _)
     exact mul_le_mul_of_nonneg_left hkato hcoeff_nn
   have hrP_bound : rP ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by
     rw [hrP_eq]
-    have hrfnsw_le : riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) ≤ A ^ 2 := hAsq
-    have hrfnsw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
+    have hriemannianFiberNormSqw_le : riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) ≤ A ^ 2 := hAsq
+    have hriemannianFiberNormSqw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r m x (w.toSection x)
     have hsum_nn : (0 : ℝ) ≤ ∑ a : Fin n,
         (extDerivFun (I := I) (ζ : M → ℝ) x
@@ -194,9 +194,9 @@ private theorem covDerivCrossLeft_weight_bound_rs
             riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x)
         ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) *
             riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
-          mul_le_mul_of_nonneg_right hdζsum hrfnsw_nn
+          mul_le_mul_of_nonneg_right hdζsum hriemannianFiberNormSqw_nn
       _ ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) * A ^ 2 :=
-          mul_le_mul_of_nonneg_left hrfnsw_le hbound_nn
+          mul_le_mul_of_nonneg_left hriemannianFiberNormSqw_le hbound_nn
       _ = ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by ring
   have hk1 : (0 : ℝ) ≤ (k : ℝ) - 1 := by
     have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast _hk
@@ -802,7 +802,10 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
           mul_le_mul_of_nonneg_left hrP_bound hbv_nn
       _ = pm1 ^ 2 * (4 * av * cv) * (bv * (bv + ε) ^ (pm1 - 1)) ^ 2 := by ring
       _ ≤ pm1 ^ 2 * (4 * av * cv) * ((bv + ε) ^ pm1) ^ 2 := by
-          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          have hcoef_nn : (0 : ℝ) ≤ pm1 ^ 2 * (4 * av * cv) :=
+            mul_nonneg (sq_nonneg _)
+              (mul_nonneg (mul_nonneg (by norm_num) hav_nn) hcv_nn)
+          apply mul_le_mul_of_nonneg_left _ hcoef_nn
           exact pow_le_pow_left₀ hfac0_nn hfac1 2
   have hA_bound : ∀ x, (ζ : M → ℝ) x * |dw x| ≤
       Real.sqrt (Module.finrank ℝ E : ℝ) * F x := by

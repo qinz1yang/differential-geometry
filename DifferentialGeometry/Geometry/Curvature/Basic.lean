@@ -142,3 +142,10 @@ theorem scalarFromRicciTraceInFrame_apply
 end MetricTrace
 
 end DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Integral.Connection
+
+abbrev InverseMetricComponents :=
+  DifferentialGeometry.Geometry.Curvature.InverseMetricComponents
+
+end DifferentialGeometry.Integral.Connection

@@ -130,7 +130,6 @@ private lemma chartBasisVecFiber_self_aux (x : M) (i : Fin (Module.finrank ℝ E
 variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-open DifferentialGeometry.Integral.Measure
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
     [BoundarylessManifold I M] in
@@ -199,7 +198,6 @@ theorem LeviCivita_chartBasisVec_neighborhood_formula
   rw [ContinuousLinearMap.map_zero, sub_zero]
 
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in

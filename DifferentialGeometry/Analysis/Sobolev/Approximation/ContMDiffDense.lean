@@ -58,7 +58,7 @@ lemma chartPullback_finset_sum (α : M)
       rw [Finset.sum_insert hiS]
 
 lemma fun_eq_finset_sum_chartPullback_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (u : M → ℝ) :
     (fun x : M => u x) =
       fun x =>
@@ -114,9 +114,8 @@ lemma fun_eq_finset_sum_chartPullback_chartPushed
 private lemma exists_strict_strong_support_approx_with_compact_neighborhood
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u)
     (α : M) :
     ∃ K_α : Set M, IsCompact K_α ∧ K_α ⊆ (chartAt H α).source ∧
       tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -133,13 +132,13 @@ private lemma exists_strict_strong_support_approx_with_compact_neighborhood
             (chartTargetEuclid (I := I) (M := M) α) ≤
             ENNReal.ofReal ε_per := by
   obtain ⟨K_α, hK_compact, hK_chart, h_tsupp_in_int_K, hχ⟩ :=
-    exists_strict_strong_support_approx (I := I) (M := M) g hp_one hp_top α
+    exists_strict_strong_support_approx (I := I) (M := M) hp_one hp_top α
   refine ⟨K_α, hK_compact, hK_chart, h_tsupp_in_int_K, ?_⟩
   intro ε_per hε_per
   exact hχ hu ε_per hε_per
 
 def tightenedChartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) (η_M : M → ℝ) (u : M → ℝ) : EuclN → ℝ :=
   fun y =>
     chartCutoffEuclidean (I := I) (M := M) α η_M y *
@@ -147,8 +146,7 @@ def tightenedChartPushed
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u y
 
 lemma chartPullback_tightenedChartPushed_eq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) {η_M : M → ℝ}
+    [T2Space M] [SigmaCompactSpace M] (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
       ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ), η_M x = 1)
@@ -217,8 +215,7 @@ lemma chartPullback_tightenedChartPushed_eq
     rw [chartPullback_apply_of_notMem (I := I) (M := M) α _ hxα]
 
 lemma tsupport_tightenedChartPushed_subset
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) {η_M : M → ℝ}
+    [T2Space M] [SigmaCompactSpace M] (α : M) {η_M : M → ℝ}
     (hη_cpt : HasCompactSupport η_M)
     (hη_tsupp_chart : tsupport η_M ⊆ (chartAt H α).source)
     {K_α : Set M} (hη_tsupp_K : tsupport η_M ⊆ K_α)
@@ -251,8 +248,7 @@ lemma tsupport_tightenedChartPushed_subset
   exact h_supp_in_etaEuclid.trans (h_etaEuclid_supp.trans h_image_mono)
 
 lemma tightenedChartPushed_eq_chartPushed_on_target
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (α : M) {η_M : M → ℝ}
+    [T2Space M] [SigmaCompactSpace M] (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
       ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ), η_M x = 1)
@@ -287,9 +283,8 @@ lemma tightenedChartPushed_eq_chartPushed_on_target
 
 private lemma tightenedChartPushed_memWkp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M)
     {η_M : M → ℝ}
     (hη_M_smooth : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ η_M)
     (hη_M_cpt : HasCompactSupport η_M)
@@ -341,7 +336,7 @@ private lemma tightenedChartPushed_memWkp
     fun y _ => hC_norm_le y
   have hC_grad_target : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       ‖fderiv ℝ ηE y‖ ≤ C := fun y _ => hC_grad_le y
-  exact chartCutoff_smul_chartPushed_memWkp (I := I) (M := M) g hp_one hu α
+  exact chartCutoff_smul_chartPushed_memWkp (I := I) (M := M) hp_one hu α
     hηE_smooth hC_norm_target hC_grad_target
 
 private lemma wkpNorm_tightenedChartPushed_sub_eq
@@ -636,7 +631,7 @@ private theorem MemWkp_of_cross_chart_pushforward
   have hψ_mem_target : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 p ψ (chartTargetEuclid (I := I) (M := M) γ) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
-      (d := Module.finrank ℝ E) hp_one hp_top hΩγα_open
+      (d := Module.finrank ℝ E) hp_one hΩγα_open
       (chartTargetEuclid_isOpen (I := I) (M := M) γ) hΩγα_subset_target
       hψ_mem_Ωγα hψ_supp_Ωγα hψ_cpt
   have h_ae_eq : (chartPushed (I := I) (M := M)
@@ -793,12 +788,11 @@ private theorem MemWkp_of_cross_chart_pushforward
 theorem contMDiff_dense_in_WkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u)
+    {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ v : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ v ∧
-      wkpNormChart (I := I) (M := M) g 1 p (fun x => u x - v x) ≤
+      wkpNormChart (I := I) (M := M) 1 p (fun x => u x - v x) ≤
         ENNReal.ofReal ε := by
   classical
   set S : Finset M :=
@@ -863,7 +857,7 @@ theorem contMDiff_dense_in_WkpChart
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) 1 p v
               (chartTargetEuclid (I := I) (M := M) (α : M)) := fun γ α =>
-    cross_chart_bound_strict_strong_memWkp (I := I) (M := M) g hp_one hp_top
+    cross_chart_bound_strict_strong_memWkp (I := I) (M := M) hp_one hp_top
       (γ : M) (α : M) (hK_compact α) (hK_chart α)
   let K_pair : S → S → ℝ := fun γ α => (h_per_pair γ α).choose
   have hK_pair_pos : ∀ γ α : S, 0 < K_pair γ α := fun γ α =>
@@ -913,7 +907,7 @@ theorem contMDiff_dense_in_WkpChart
         ENNReal.ofReal ε_per := by
     intro α
     obtain ⟨K_α', hK_compact', hK_chart', h_tsupp_in_int_K', hχ⟩ :=
-      exists_strict_strong_support_approx (I := I) (M := M) g hp_one hp_top (α : M)
+      exists_strict_strong_support_approx (I := I) (M := M) hp_one hp_top (α : M)
     set ηE : EuclN → ℝ := chartCutoffEuclidean (I := I) (M := M) (α : M) (η_M α) with hηE_def
     have hηE_smooth : ContDiff ℝ (⊤ : ℕ∞) ηE :=
       contDiff_etaEuclid (I := I) (M := M) (α : M) (η_M α) (hη_smooth α)
@@ -968,7 +962,7 @@ theorem contMDiff_dense_in_WkpChart
       apply div_pos hε_per_pos
       linarith
     obtain ⟨ψ, hψ_smooth, hψ_cpt, hψ_supp, hψ_close⟩ :=
-      exists_smooth_strong_support_approx (I := I) (M := M) g hp_one hp_top hu (α : M)
+      exists_smooth_strong_support_approx (I := I) (M := M) hp_one hp_top hu (α : M)
         ε_inner hε_inner_pos
     set χ : EuclN → ℝ := fun y => ηE y * ψ y with hχ_def
     have hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ := hηE_smooth.mul hψ_smooth
@@ -1104,7 +1098,7 @@ theorem contMDiff_dense_in_WkpChart
     · intro α _; exact hχ_cpt α
     · intro α _; exact hχ_supp_target α
   refine ⟨v, hv_smooth, ?_⟩
-  rw [wkpNormChart_eq_finset_sum (I := I) (M := M) g 1 hp_one (fun x => u x - v x)]
+  rw [wkpNormChart_eq_finset_sum (I := I) (M := M) 1 hp_one (fun x => u x - v x)]
   have h_per_gamma : ∀ (γ : M), (hγS : γ ∈ S) →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 1 p
@@ -1203,7 +1197,7 @@ theorem contMDiff_dense_in_WkpChart
       have hf_α_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) 1 p f_α
           (chartTargetEuclid (I := I) (M := M) (α : M)) :=
-        tightenedChartPushed_memWkp (I := I) (M := M) g hp_one hu (α : M)
+        tightenedChartPushed_memWkp (I := I) (M := M) hp_one hu (α : M)
           (hη_smooth α) (hη_M_cpt α) (hη_M_supp_chart α)
       have hχ_α_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) 1 p (χ α)
@@ -1272,7 +1266,7 @@ theorem contMDiff_dense_in_WkpChart
       have hf_α_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) 1 p f_α
           (chartTargetEuclid (I := I) (M := M) (α : M)) :=
-        tightenedChartPushed_memWkp (I := I) (M := M) g hp_one hu (α : M)
+        tightenedChartPushed_memWkp (I := I) (M := M) hp_one hu (α : M)
           (hη_smooth α) (hη_M_cpt α) (hη_M_supp_chart α)
       have hχ_α_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) 1 p (χ α)

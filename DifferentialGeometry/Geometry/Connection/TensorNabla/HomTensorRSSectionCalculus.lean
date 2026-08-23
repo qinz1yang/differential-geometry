@@ -86,6 +86,11 @@ noncomputable def homTensorRSFieldApply (g : SmoothRiemannianMetric I M) (r a c 
       c :=
   homTensorRSApply (I := I) (M := M) g r a c (fun x : M => Q x) Q.contMDiff W
 
+noncomputable abbrev appFullSec (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+    (Q : HomTensorRSField (E := E) (M := M) r a c I) (W : SmoothCcTensor g r a) :
+    SmoothCcTensor g r c :=
+  homTensorRSFieldApply (I := I) (M := M) g r a c Q W
+
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     in
@@ -175,21 +180,21 @@ omit [NeZero (Module.finrank ℝ E)] in
       homTensorRSCovGradFib (I := I) (M := M) g r a c (fun y : M => Q y) x := rfl
 
 set_option backward.isDefEq.respectTransparency false in
-noncomputable def slotExtendFullSec (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+noncomputable def slotExtendFullSec (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) :
     HomTensorRSField (E := E) (M := M) r (a + 1) (c + 1) I where
-  toFun := fun x : M => slotInsertHomTensorRSFib (I := I) (M := M) g r a c x (Q x)
+  toFun := fun x : M => slotInsertHomTensorRSFib (I := I) (M := M) r a c x (Q x)
   contMDiff_toFun :=
-    slotExtendFullFib_contMDiff (I := I) (M := M) g r a c (fun y : M => Q y) Q.contMDiff
+    slotExtendFullFib_contMDiff (I := I) (M := M) r a c (fun y : M => Q y) Q.contMDiff
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     in
-@[simp] lemma slotExtendFullSec_apply (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+@[simp] lemma slotExtendFullSec_apply (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (x : M) :
     (show TensorRSSpace r (a + 1) I x →L[ℝ] TensorRSSpace r (c + 1) I x from
-        slotExtendFullSec (I := I) (M := M) g r a c Q x) =
-      slotInsertHomTensorRSFib (I := I) (M := M) g r a c x (Q x) := rfl
+        slotExtendFullSec (I := I) (M := M) r a c Q x) =
+      slotInsertHomTensorRSFib (I := I) (M := M) r a c x (Q x) := rfl
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -199,16 +204,14 @@ theorem covGrad_appFullSec_eq (g : SmoothRiemannianMetric I M) (r a c : ℕ)
       homTensorRSFieldApply (I := I) (M := M) g r a (c + 1)
         (homTensorRSCovGradSec (I := I) (M := M) g r a c Q) W +
         homTensorRSFieldApply (I := I) (M := M) g r (a + 1) (c + 1)
-          (slotExtendFullSec (I := I) (M := M) g r a c Q)
+          (slotExtendFullSec (I := I) (M := M) r a c Q)
           (covGrad (I := I) (M := M) g r a W) :=
   covGrad_appFullRS_eq (I := I) (M := M) g r a c (fun x : M => Q x) Q.contMDiff W
-
 
 def castHomTensorRSFieldTgt {c c' : ℕ} (r a : ℕ) (h : c = c')
     (Q : HomTensorRSField (E := E) (M := M) r a c I) :
     HomTensorRSField (E := E) (M := M) r a c' I :=
   h ▸ Q
-
 
 def castHomTensorRSFieldSrc {a a' : ℕ} (r c : ℕ) (h : a = a')
     (Q : HomTensorRSField (E := E) (M := M) r a c I) :
@@ -218,7 +221,7 @@ def castHomTensorRSFieldSrc {a a' : ℕ} (r c : ℕ) (h : a = a')
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     in
-theorem appFullSec_castRankCc_db {a a' c c' : ℕ} (g : SmoothRiemannianMetric I M) (r : ℕ)
+theorem homTensorRSFieldApply_castCcTensorRank {a a' c c' : ℕ} (g : SmoothRiemannianMetric I M) (r : ℕ)
     (ha : a = a') (hc : c = c')
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (V : SmoothCcTensor g r a) :
     castCcTensorRank g r hc (homTensorRSFieldApply (I := I) (M := M) g r a c Q V) =

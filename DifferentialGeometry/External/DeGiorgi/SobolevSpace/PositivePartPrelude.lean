@@ -10,8 +10,8 @@ remain attached to the Sobolev layer.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal Convolution Pointwise
+open MeasureTheory
+open scoped Pointwise
 
 namespace DeGiorgi
 

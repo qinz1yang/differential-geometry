@@ -64,8 +64,7 @@ lemma crossChartCompact_isCompact
   (crossChartCompact_isClosed (I := I) (M := M) γ α).isCompact
 
 theorem cross_chart_diffeo_exists
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (γ α : M) :
     ∃ (Ω_γα Ω_αγ : Set EuclN)
       (_hΩ_γα : IsOpen Ω_γα) (_hΩ_αγ : IsOpen Ω_αγ),
@@ -86,8 +85,8 @@ theorem cross_chart_diffeo_exists
     γ α hK_compact hK_γ hK_α 1
 
 theorem cross_chart_bound_empty
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (γ α : M)
     (hempty : crossChartCompact (I := I) (M := M) γ α = ∅)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) :

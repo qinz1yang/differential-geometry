@@ -28,8 +28,8 @@ variable {u : Set M}
 
 section CoordinateFrameRicciEvolution
 
-open DifferentialGeometry.Tensor.Coordinates
 
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordInvMdiff
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -40,6 +40,7 @@ theorem coordInvMdiff
   simpa [coordInv] using
     DifferentialGeometry.Tensor.Coordinates.gInvComp_mdiffAt (I := I) (S.family.metric t) x₀ a b
 
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordInvMdiffOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -88,6 +89,7 @@ theorem coordMetricMdiffOn
       (coordinateFrameSet_open (I := I) x₀)
       hx a b
 
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordInvCovZero
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -110,6 +112,7 @@ theorem coordInvCovZero
     (fun a b => coordMetricMdiff (I := I) S x₀ (t : Real) a b)
     d k l
 
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordInvCovZeroOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -590,6 +593,7 @@ theorem coordNablaRealOn
   simpa [ricciCovDerivCompInFrame, frame, sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
     using heval
 
+omit [SigmaCompactSpace M] in
 theorem coordNab2Can
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -956,6 +960,7 @@ theorem coordMetricMix
     (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
     (coordNablaRealOn (I := I) S x₀)
 
+omit [SigmaCompactSpace M] in
 theorem coordGammaEvol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -975,7 +980,7 @@ theorem coordGammaEvol
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
       (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)) := by
   exact gammaEvolLocal
-    (I := I) S hS (coordInv (I := I) S x₀)
+    (I := I) S (coordInv (I := I) S x₀)
     (coordinateFrameAt (I := I) x₀)
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
     (coordinateFrameSet_open (I := I) x₀)
@@ -1075,6 +1080,7 @@ theorem coordGammaMdiff
     rw [hbasis]
   exact hmdiff.congr_of_eventuallyEq heq.symm
 
+omit [SigmaCompactSpace M] in
 theorem coordGammaRhsMd
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -1191,6 +1197,7 @@ private theorem coordDgSmAt
       DifferentialGeometry.Geometry.Connection.directionalDeriv] using hflat
   exact hD.congr_of_eventuallyEq heq
 
+omit [SigmaCompactSpace M] in
 private theorem gammaRhsSm
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1229,6 +1236,7 @@ private theorem gammaRhsSm
   have h₃ := coordDgSmAt (I := I) S hS x₀ t x hx l i j
   exact hInv'.mul ((h₁.add h₂).sub h₃)
 
+omit [SigmaCompactSpace M] in
 theorem coordGammaSmoothInf
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1260,7 +1268,7 @@ theorem coordGammaSmoothInf
     exact coordGammaForm (I := I) S x₀ p.1 hp i j k
   exact hmodel.congr_of_eventuallyEq heq
 
-
+omit [SigmaCompactSpace M] in
 theorem coordGammaSmoothAt
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1278,6 +1286,7 @@ theorem coordGammaSmoothAt
   exact (coordGammaSmoothInf (I := I) S hS x₀ t x hx i j k).of_le
     (WithTop.coe_le_coe.mpr le_top)
 
+omit [SigmaCompactSpace M] in
 theorem coordGammaMix
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1320,6 +1329,7 @@ theorem coordGammaMix
   · intro t ht x hx
     exact hGamma ⟨t, ht⟩ x hx i j k
 
+omit [SigmaCompactSpace M] in
 theorem coordNab2At
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -1333,6 +1343,7 @@ theorem coordNab2At
         t x₀ d a i j := by
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem coordNab2On
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

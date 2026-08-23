@@ -20,7 +20,6 @@ namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -96,14 +95,14 @@ private theorem dualToCotangent_add' {x : M}
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem cotangentCov_leviCivita_connDiff
+theorem cotangentCov_leviCivita_connectionDifference
     (g₀ g₁ : SmoothRiemannianMetric I M)
     {θ : Π b : M, TangentSpace I b →L[ℝ] ℝ} {x : M}
     (hθ : MDiffAtCotangent (I := I) θ x)
     (v w : TangentSpace I x) :
     ((cotangentCov (LeviCivita (I := I) g₁)).toFun θ x v) w -
         ((cotangentCov (LeviCivita (I := I) g₀)).toFun θ x v) w =
-      -θ x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v) := by
+      -θ x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v) := by
   classical
   set Y : Π b : M, TangentSpace I b := FiberBundle.extend E w with hYdef
   have hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
@@ -118,9 +117,9 @@ theorem cotangentCov_leviCivita_connDiff
         θ x ((LeviCivita (I := I) g₁).toFun Y x v) := by
     have h := hpair₁.symm.trans hpair₀
     linarith [h]
-  have hconn : PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) v =
+  have hconn : PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) v =
       (LeviCivita (I := I) g₁).toFun Y x v - (LeviCivita (I := I) g₀).toFun Y x v :=
-    PDE.DeTurck.connDiff_apply (I := I) g₁ g₀ (σ := Y) hY v
+    PDE.DeTurck.connectionDifference_apply (I := I) g₁ g₀ (σ := Y) hY v
   rw [hYx] at hsub hconn
   rw [hsub, hconn, map_sub]
   ring
@@ -142,22 +141,22 @@ theorem covGrad_inverseMetricSharpFib_cross
           (dualToCotangent (I := I)
             ((cotangentCov (LeviCivita (I := I) g₀)).toFun
               (fun b : M => cotangentToCLM (I := I) (β b)) x v))
-        - PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+        - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             ((inverseMetricSharpFib (I := I) g₁ x) (β x)) v
         + inverseMetricSharpFib (I := I) g₁ x
             (dualToCotangent (I := I)
               (-(cotangentToCLM (I := I) (β x)).comp
-                  ((PDE.DeTurck.connDiff (I := I) g₁ g₀ x).flip v)).toLinearMap) := by
+                  ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v)).toLinearMap) := by
   classical
   set X : Π b : M, TangentSpace I b :=
     fun b : M => (inverseMetricSharpFib (I := I) g₁ b) (β b) with hX
   set D : TangentSpace I x →L[ℝ] ℝ :=
     -(cotangentToCLM (I := I) (β x)).comp
-        ((PDE.DeTurck.connDiff (I := I) g₁ g₀ x).flip v) with hD
+        ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v) with hD
   have hg₀ : (LeviCivita (I := I) g₀).toFun X x v =
       (LeviCivita (I := I) g₁).toFun X x v -
-        PDE.DeTurck.connDiff (I := I) g₁ g₀ x (X x) v := by
-    have h := PDE.DeTurck.connDiff_apply (I := I) g₁ g₀ (σ := X) hβ v
+        PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (X x) v := by
+    have h := PDE.DeTurck.connectionDifference_apply (I := I) g₁ g₀ (σ := X) hβ v
     rw [h]; abel
   have hpar := inverseMetricSharpField_covGrad_eq_zero (I := I) g₁ β hβ v
   have hbridge :
@@ -167,7 +166,7 @@ theorem covGrad_inverseMetricSharpFib_cross
             (fun b : M => cotangentToCLM (I := I) (β b)) x v).toLinearMap
           + D.toLinearMap := by
     refine LinearMap.ext (fun w => ?_)
-    have hb := cotangentCov_leviCivita_connDiff (I := I) g₀ g₁ hβcot v w
+    have hb := cotangentCov_leviCivita_connectionDifference (I := I) g₀ g₁ hβcot v w
     simp only [hD, LinearMap.add_apply, ContinuousLinearMap.coe_coe,
       ContinuousLinearMap.neg_apply, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.flip_apply]

@@ -8,7 +8,6 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-open DifferentialGeometry
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -61,6 +60,18 @@ theorem normSq0S_smul
     _ = c * D.flat A (c • A) := by rfl
     _ = c * (c * D.flat A A) := by rw [(D.flat A).map_smul]; rfl
     _ = c ^ 2 * D.flat A A := by ring
+
+theorem sqrt_normSq0S_smul
+    (gRef : SmoothRiemannianMetric I M) (x : M) (s : Nat)
+    (c : Real)
+    (A :
+      Tensor0SSpace
+        (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
+    Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x s (c • A)) =
+      |c| * Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x s A) := by
+  rw [Tensor0SBundle.normSq0S_smul]
+  rw [Real.sqrt_mul (sq_nonneg c)]
+  rw [Real.sqrt_sq_eq_abs]
 
 theorem normSq0S_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)

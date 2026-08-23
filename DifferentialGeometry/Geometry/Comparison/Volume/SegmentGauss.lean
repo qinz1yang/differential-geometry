@@ -211,6 +211,133 @@ theorem curveDensity_recomb
         = C.det ^ 2 * (curveGram (I := I) g γ V t).det from by ring,
     Real.sqrt_mul (sq_nonneg C.det), Real.sqrt_sq_eq_abs]
 
+theorem jacDens_basis
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (x : M) (u : TangentSpace I x)
+    (B B' : Module.Basis ι ℝ (TangentSpace I x)) :
+    curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
+        (fun i t => intrinsicJacobi (I := I) g hEnorm x u (B' i) t) 1 =
+      |B.det B'| *
+        curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
+          (fun i t => intrinsicJacobi (I := I) g hEnorm x u (B i) t) 1 := by
+  classical
+  let C : Matrix ι ι ℝ := B.toMatrix B'
+  let L :=
+    mfderiv 𝓘(ℝ, E) I
+      (fun b : E => expMapIntrinsic (I := I) g hEnorm x
+        (show TangentSpace I x from b))
+      (show E from u)
+  have hcoord (i : ι) : B' i = ∑ k, C k i • B k := by
+    simpa only [C, Module.Basis.toMatrix_apply] using (B.sum_repr (B' i)).symm
+  have hcol (w : TangentSpace I x) :
+      intrinsicJacobi (I := I) g hEnorm x u w 1 =
+        L (show E from w) := by
+    exact intrinsic_jacobi_one (I := I) g hEnorm x u w
+  have hjac (i : ι) :
+      intrinsicJacobi (I := I) g hEnorm x u (B' i) 1 =
+        ∑ k, C k i • intrinsicJacobi (I := I) g hEnorm x u (B k) 1 := by
+    rw [hcol, hcoord i]
+    change
+      L (∑ k, C k i • (show E from B k)) =
+        ∑ k, C k i • intrinsicJacobi (I := I) g hEnorm x u (B k) 1
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro k _hk
+    calc
+      L (C k i • (show E from B k)) =
+          C k i • L (show E from B k) := L.map_smul _ _
+      _ = C k i • intrinsicJacobi (I := I) g hEnorm x u (B k) 1 := by
+        rw [hcol]
+        rfl
+  simpa only [C, Module.Basis.det_apply] using
+    curveDensity_recomb (I := I) g
+      (intrinsicGeodesic (I := I) g hEnorm x u)
+      (fun i t => intrinsicJacobi (I := I) g hEnorm x u (B i) t)
+      (fun i t => intrinsicJacobi (I := I) g hEnorm x u (B' i) t)
+      1 C hjac
+
+theorem transDens_scale
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (x : M) (u : TangentSpace I x) {d : ℕ}
+    (w : Fin d → TangentSpace I x) (t : ℝ) :
+    curveDensity (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm x u)
+        (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) t =
+      |t| ^ d *
+        curveDensity (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm x (t • u))
+          (fun i => intrinsicJacobi (I := I) g hEnorm x (t • u) (w i)) 1 := by
+  let L :=
+    mfderiv 𝓘(ℝ, E) I
+      (fun b : E => expMapIntrinsic (I := I) g hEnorm x
+        (show TangentSpace I x from b))
+      (t • (show E from u))
+  have hcol (v : TangentSpace I x) :
+      (intrinsicJacobi (I := I) g hEnorm x u v t : E) =
+        t • (intrinsicJacobi (I := I) g hEnorm x (t • u) v 1 : E) := by
+    have hat :
+        (intrinsicJacobi (I := I) g hEnorm x u v t : E) =
+          (L (t • (show E from v)) : E) := by
+      exact intrinsic_jacobi_at (I := I) g hEnorm x
+        (show E from u) (show E from v) t
+    have hmap :
+        (L (t • (show E from v)) : E) =
+          t • (L (show E from v) : E) := by
+      exact L.map_smul _ _
+    have hone :
+        (intrinsicJacobi (I := I) g hEnorm x (t • u) v 1 : E) =
+          (L (show E from v) : E) := by
+      exact intrinsic_jacobi_one (I := I) g hEnorm x
+        (t • (show E from u)) (show E from v)
+    exact hat.trans (hmap.trans (congrArg (fun z : E => t • z) hone.symm))
+  have hgram :
+      curveGram (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm x u)
+          (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) t =
+        (t ^ 2) •
+          curveGram (I := I) g
+            (intrinsicGeodesic (I := I) g hEnorm x (t • u))
+            (fun i => intrinsicJacobi (I := I) g hEnorm x (t • u) (w i)) 1 := by
+    ext i j
+    simp only [curveGram, Matrix.of_apply, Matrix.smul_apply]
+    rw [intrinsicGeodesic_smul (I := I) g hEnorm x u t]
+    change
+      g.inner
+          (intrinsicGeodesic (I := I) g hEnorm x u t)
+          (intrinsicJacobi (I := I) g hEnorm x u (w i) t)
+          (intrinsicJacobi (I := I) g hEnorm x u (w j) t) =
+        t ^ 2 *
+          g.inner
+            (intrinsicGeodesic (I := I) g hEnorm x u t)
+            (intrinsicJacobi (I := I) g hEnorm x (t • u) (w i) 1)
+            (intrinsicJacobi (I := I) g hEnorm x (t • u) (w j) 1)
+    rw [hcol, hcol]
+    let β : E →L[ℝ] E →L[ℝ] ℝ :=
+      g.inner (intrinsicGeodesic (I := I) g hEnorm x u t)
+    let X : E :=
+      (intrinsicJacobi (I := I) g hEnorm x (t • u) (w i) 1 : E)
+    let Y : E :=
+      (intrinsicJacobi (I := I) g hEnorm x (t • u) (w j) 1 : E)
+    change β (t • X) (t • Y) = t ^ 2 * β X Y
+    have hleft : β (t • X) (t • Y) = t * β X (t • Y) := by
+      have h := congrArg (fun A : E →L[ℝ] ℝ => A (t • Y)) (β.map_smul t X)
+      simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+    have hright : β X (t • Y) = t * β X Y := by
+      simpa only [smul_eq_mul] using (β X).map_smul t Y
+    rw [hleft, hright, pow_two]
+    ring
+  rw [curveDensity, curveDensity, hgram, Matrix.det_smul, Fintype.card_fin]
+  have hpow : (t ^ 2) ^ d = (t ^ d) ^ 2 := by
+    rw [← pow_mul, ← pow_mul]
+    congr 1
+    omega
+  rw [hpow, Real.sqrt_mul (sq_nonneg (t ^ d)), Real.sqrt_sq_eq_abs, abs_pow]
+
 theorem radialJac_eq_vel
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)

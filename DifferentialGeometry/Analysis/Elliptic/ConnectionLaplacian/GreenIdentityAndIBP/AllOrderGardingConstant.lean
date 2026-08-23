@@ -27,7 +27,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -101,10 +101,10 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
   have hKp_nn : 0 ≤ Kp := Real.sqrt_nonneg _
   have hKp_sq : Kp ^ 2 = 2 * ccR p + 2 * ccdR p := by
     rw [hKp_def, Real.sq_sqrt (by have := hccR_nn p; have := hccdR_nn p; linarith)]
-  set rfnsS : ℕ → M → ℝ := fun a x =>
+  set riemannianFiberNormSqS : ℕ → M → ℝ := fun a x =>
     riemannianFiberNormSq (I := I) (M := M) g 0 (s + a) x ((iteratedCovGrad g 0 s a S).toSection x)
-    with hrfnsS_def
-  have hrfnsS_nn : ∀ a x, 0 ≤ rfnsS a x := fun a x =>
+    with hriemannianFiberNormSqS_def
+  have hriemannianFiberNormSqS_nn : ∀ a x, 0 ≤ riemannianFiberNormSqS a x := fun a x =>
     riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 (s + a) x _
   set AR : SmoothCcTensor g 0 (s + 1) :=
     homTensorRSFieldApply (I := I) (M := M) g 0 (s + 1) (s + 1) H_R
@@ -120,7 +120,7 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
       riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + p) x
           ((iteratedCovGrad g 0 (s + 1) p (pointwiseTensorCurv (I := I) (M := M) g s S)).toSection
             x) ≤
-        Kp ^ 2 * ∑ a ∈ Finset.range (p + 2), rfnsS a x := by
+        Kp ^ 2 * ∑ a ∈ Finset.range (p + 2), riemannianFiberNormSqS a x := by
     intro x
     have happ :
         (iteratedCovGrad g 0 (s + 1) p (pointwiseTensorCurv (I := I) (M := M) g s S)).toSection x =
@@ -133,43 +133,43 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
       ((iteratedCovGrad g 0 (s + 1) p AdR).toSection x)) ?_
     have hAR_w : riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + p) x
           ((iteratedCovGrad g 0 (s + 1) p AR).toSection x) ≤
-        ccR p * ∑ i ∈ Finset.range (1 + p), rfnsS (i + 1) x := by
+        ccR p * ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x := by
       have h := hccR S p x
-      rw [hrfnsS_def]
+      rw [hriemannianFiberNormSqS_def]
       simpa only [hAR_def] using h
     have hAdR_w : riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + p) x
           ((iteratedCovGrad g 0 (s + 1) p AdR).toSection x) ≤
-        ccdR p * ∑ i ∈ Finset.range (1 + p), rfnsS i x := by
+        ccdR p * ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS i x := by
       have h := hccdR S p x
       have hreidx : ∀ i, riemannianFiberNormSq (I := I) (M := M) g 0 (s + (i + 0)) x
-            ((iteratedCovGrad g 0 s (i + 0) S).toSection x) = rfnsS i x := by
-        intro i; rw [hrfnsS_def]; simp only [Nat.add_zero]
+            ((iteratedCovGrad g 0 s (i + 0) S).toSection x) = riemannianFiberNormSqS i x := by
+        intro i; rw [hriemannianFiberNormSqS_def]; simp only [Nat.add_zero]
       rw [Finset.sum_congr rfl (fun i _ => hreidx i)] at h
       simpa only [hAdR_def] using h
-    have hsubR : ∑ i ∈ Finset.range (1 + p), rfnsS (i + 1) x ≤
-        ∑ a ∈ Finset.range (p + 2), rfnsS a x := by
-      have hIco : ∑ i ∈ Finset.range (1 + p), rfnsS (i + 1) x =
-          ∑ a ∈ Finset.Ico 1 (1 + (1 + p)), rfnsS a x := by
+    have hsubR : ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x ≤
+        ∑ a ∈ Finset.range (p + 2), riemannianFiberNormSqS a x := by
+      have hIco : ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x =
+          ∑ a ∈ Finset.Ico 1 (1 + (1 + p)), riemannianFiberNormSqS a x := by
         rw [Finset.sum_Ico_eq_sum_range]
         refine Finset.sum_congr (by congr 1; omega) (fun i _ => by rw [Nat.add_comm 1 i])
       rw [hIco]
-      refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun a _ _ => hrfnsS_nn a x)
+      refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun a _ _ => hriemannianFiberNormSqS_nn a x)
       intro a ha
       rw [Finset.mem_Ico] at ha; rw [Finset.mem_range]; omega
-    have hsubdR : ∑ i ∈ Finset.range (1 + p), rfnsS i x ≤
-        ∑ a ∈ Finset.range (p + 2), rfnsS a x := by
-      refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun a _ _ => hrfnsS_nn a x)
+    have hsubdR : ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS i x ≤
+        ∑ a ∈ Finset.range (p + 2), riemannianFiberNormSqS a x := by
+      refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun a _ _ => hriemannianFiberNormSqS_nn a x)
       intro a ha
       rw [Finset.mem_range] at ha ⊢; omega
-    set FULL : ℝ := ∑ a ∈ Finset.range (p + 2), rfnsS a x with hFULL_def
-    have hFULL_nn : 0 ≤ FULL := Finset.sum_nonneg (fun a _ => hrfnsS_nn a x)
+    set FULL : ℝ := ∑ a ∈ Finset.range (p + 2), riemannianFiberNormSqS a x with hFULL_def
+    have hFULL_nn : 0 ≤ FULL := Finset.sum_nonneg (fun a _ => hriemannianFiberNormSqS_nn a x)
     rw [hKp_sq]
     calc 2 * riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + p) x
               ((iteratedCovGrad g 0 (s + 1) p AR).toSection x) +
             2 * riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + p) x
               ((iteratedCovGrad g 0 (s + 1) p AdR).toSection x)
-        ≤ 2 * (ccR p * ∑ i ∈ Finset.range (1 + p), rfnsS (i + 1) x) +
-            2 * (ccdR p * ∑ i ∈ Finset.range (1 + p), rfnsS i x) :=
+        ≤ 2 * (ccR p * ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x) +
+            2 * (ccdR p * ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS i x) :=
           add_le_add (by linarith [hAR_w]) (by linarith [hAdR_w])
       _ ≤ 2 * (ccR p * FULL) + 2 * (ccdR p * FULL) := by
           refine add_le_add ?_ ?_
@@ -181,7 +181,7 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
   have hL2 := tensorL2Norm_le_of_pointwise_fiberNormSq_bound_sum (I := I) (M := M) g
     (c := (s + 1) + p) (p + 2) (fun a => s + a) (fun a => iteratedCovGrad g 0 s a S)
     (iteratedCovGrad g 0 (s + 1) p (pointwiseTensorCurv (I := I) (M := M) g s S)) Kp hKp_nn
-    (fun x => by simpa only [hrfnsS_def] using hpt x)
+    (fun x => by simpa only [hriemannianFiberNormSqS_def] using hpt x)
   simpa only using hL2
 
 
@@ -790,8 +790,7 @@ theorem exists_iteratedCovGrad_l2Norm_le_sum_rawConnLapIter
         _ ≤ Ccomm * ((2 * n + 1 : ℕ) : ℝ) * Cn * lapSum (n + 1) S := by
             have hmono := mul_le_mul_of_nonneg_left hlapSum_mono
               (by positivity : (0 : ℝ) ≤ Ccomm * ((2 * n + 1 : ℕ) : ℝ) * Cn)
-            nlinarith [hmono, mul_nonneg (mul_nonneg hCcomm_nn
-              (by positivity : (0 : ℝ) ≤ ((2 * n + 1 : ℕ) : ℝ))) hCn_nn]
+            simpa only [mul_assoc] using hmono
     have hrawlap_grad_le :
         ‖rawTensorConnLapSmooth (I := I) g 0 (s + 2 * n) (iteratedCovGrad g 0 s (2 * n) S)‖ ≤
           P * lapSum (n + 1) S := by
@@ -834,11 +833,13 @@ theorem exists_iteratedCovGrad_l2Norm_le_sum_rawConnLapIter
           have h1 := hrawlap_grad_le
           have h2 := hgrad2n_le
           have hL := hlapSum_nn (n + 1)
-          nlinarith [mul_nonneg (norm_nonneg
-            (rawTensorConnLapSmooth (I := I) g 0 (s + 2 * n) (iteratedCovGrad g 0 s (2 * n) S)))
-            (norm_nonneg (iteratedCovGrad g 0 s (2 * n) S)),
-            mul_le_mul h1 h2 (norm_nonneg _) (mul_nonneg hP_nn hL),
-            mul_nonneg hP_nn hL, mul_nonneg hCn_nn hL]
+          calc
+            ‖rawTensorConnLapSmooth (I := I) g 0 (s + 2 * n)
+                (iteratedCovGrad g 0 s (2 * n) S)‖ *
+                ‖iteratedCovGrad g 0 s (2 * n) S‖ ≤
+                (P * lapSum (n + 1) S) * (Cn * lapSum (n + 1) S) :=
+              mul_le_mul h1 h2 (norm_nonneg _) (mul_nonneg hP_nn hL)
+            _ = (P * Cn) * lapSum (n + 1) S ^ 2 := by ring
         have hle : ‖iteratedCovGrad g 0 s (2 * n + 1) S‖ ≤ C1 * lapSum (n + 1) S := by
           rw [hC1_def]
           have hfinal : ‖iteratedCovGrad g 0 s (2 * n + 1) S‖ ^ 2 ≤
@@ -872,12 +873,25 @@ theorem exists_iteratedCovGrad_l2Norm_le_sum_rawConnLapIter
               (iteratedCovGrad g 0 s (2 * n) S)‖ ^ 2 ≤ P ^ 2 * lapSum (n + 1) S ^ 2 := by
             have hnn := norm_nonneg (rawTensorConnLapSmooth (I := I) g 0 (s + 2 * n)
               (iteratedCovGrad g 0 s (2 * n) S))
-            nlinarith [h1, mul_nonneg hP_nn hL]
+            calc
+              ‖rawTensorConnLapSmooth (I := I) g 0 (s + 2 * n)
+                  (iteratedCovGrad g 0 s (2 * n) S)‖ ^ 2 ≤
+                  (P * lapSum (n + 1) S) ^ 2 := pow_le_pow_left₀ hnn h1 2
+              _ = P ^ 2 * lapSum (n + 1) S ^ 2 := by ring
           have hb2 : ‖iteratedCovGrad g 0 s (2 * n) S‖ ^ 2 ≤ Cn ^ 2 * lapSum (n + 1) S ^ 2 := by
             have hnn := norm_nonneg (iteratedCovGrad g 0 s (2 * n) S)
-            nlinarith [h2, mul_nonneg hCn_nn hL]
-          nlinarith [hb1, hb2, hCg_nn, mul_nonneg hCg_nn
-            (add_nonneg (sq_nonneg P) (sq_nonneg Cn))]
+            calc
+              ‖iteratedCovGrad g 0 s (2 * n) S‖ ^ 2 ≤
+                  (Cn * lapSum (n + 1) S) ^ 2 := pow_le_pow_left₀ hnn h2 2
+              _ = Cn ^ 2 * lapSum (n + 1) S ^ 2 := by ring
+          calc
+            Cg * (‖rawTensorConnLapSmooth (I := I) g 0 (s + 2 * n)
+                (iteratedCovGrad g 0 s (2 * n) S)‖ ^ 2 +
+                ‖iteratedCovGrad g 0 s (2 * n) S‖ ^ 2) ≤
+                Cg * (P ^ 2 * lapSum (n + 1) S ^ 2 +
+                  Cn ^ 2 * lapSum (n + 1) S ^ 2) :=
+              mul_le_mul_of_nonneg_left (add_le_add hb1 hb2) hCg_nn
+            _ = (Cg * (P ^ 2 + Cn ^ 2)) * lapSum (n + 1) S ^ 2 := by ring
         have hle : ‖iteratedCovGrad g 0 s (2 * n + 2) S‖ ≤ C2 * lapSum (n + 1) S := by
           rw [hC2_def]
           have hfinal : ‖iteratedCovGrad g 0 s (2 * n + 2) S‖ ^ 2 ≤

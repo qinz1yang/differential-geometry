@@ -590,7 +590,7 @@ namespace Analysis
 namespace Spectral
 
 open Bundle Manifold MeasureTheory
-open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
+open scoped Manifold Topology ContDiff
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic

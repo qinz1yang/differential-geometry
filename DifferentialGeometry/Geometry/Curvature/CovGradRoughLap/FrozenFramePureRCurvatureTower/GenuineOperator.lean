@@ -53,7 +53,6 @@ private noncomputable def pureRDirCLMTensor
         map_smul' := fun c v => by
           rw [map_smul (riemannOp (tensorCov (I := I) g 0 m) x (B i x)) c v]; rfl })
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRDirCLMTensor_apply
@@ -69,7 +68,6 @@ private lemma pureRDirCLMTensor_apply
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRFrozenDirCLM_eq_pureRDirCLMTensor
@@ -80,7 +78,6 @@ private lemma pureRFrozenDirCLM_eq_pureRDirCLMTensor
       pureRDirCLMTensor (I := I) (M := M) g m B x (W.toSection x) := by
   refine ContinuousLinearMap.ext (fun v => ?_)
   rw [pureRFrozenDirCLM_apply, pureRDirCLMTensor_apply]
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -156,7 +153,6 @@ private theorem riemannOp_tensorCov_homNatural
       (cov := Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) hX hW
       hΞd_smooth]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
 private lemma covGradBundleEquiv_symm_apply_eq_curry
@@ -181,7 +177,6 @@ private lemma covGradBundleEquiv_symm_apply_eq_curry
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w) v' from rfl]
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w v']
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -218,7 +213,6 @@ private lemma pureRDirCLMTensor_covGradEquiv_eval
     ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ (B i x)) d]
   rw [covGradBundleEquiv_symm_apply_eq_curry (I := I) (M := M) m x τ (B i x) d]
 
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureREndoOpFibVal_eval
@@ -240,7 +234,6 @@ private lemma pureREndoOpFibVal_eval
   rw [pureRDirCLMTensor_covGradEquiv_eval (I := I) (M := M) g m B x
     (unitScalarRSLift (I := I) (M := M) x S) (unitZeroSec (I := I) (M := M) x) v]
   rw [unitScalarRSLift_apply_unit (I := I) (M := M) x S]
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -327,7 +320,6 @@ private noncomputable def pureREndoOpFib
       map_add' := pureREndoOpFibFun_add (I := I) (M := M) g m x
       map_smul' := pureREndoOpFibFun_smul (I := I) (M := M) g m x }
 
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureREndoOpFib_apply
@@ -340,7 +332,6 @@ private lemma pureREndoOpFib_apply
         (unitZeroSec (I := I) (M := M) x) := by
   rw [pureREndoOpFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     pureREndoOpFibFun]
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -384,7 +375,6 @@ private lemma pureRGenuineEndoFib_eq_comp
   rw [unitScalarRSLift_apply_unit (I := I) (M := M) x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x) d)]
 
-
 theorem pureRGenuineDiffOp_zero_succ_toSection_unit_eval
     (g : SmoothRiemannianMetric I M) (m : ℕ) (W : SmoothCcTensor g 0 (m + 1)) (x : M)
     (v : Fin (m + 1) → TangentSpace I x) :
@@ -414,7 +404,6 @@ theorem pureRGenuineDiffOp_zero_succ_toSection_unit_eval
         (smoothOrthoFrame (I := I) g x) W x]]
   rw [pureRDirCLMTensor_covGradEquiv_eval (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x) x
     (W.toSection x) (unitZeroSec (I := I) (M := M) x) v]
-
 
 private theorem pureREndoOp_contMDiff (g : SmoothRiemannianMetric I M) (m : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel (m + 1) (m + 1) ℝ E)) ∞
@@ -478,7 +467,7 @@ theorem exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (g : SmoothRiemanni
             (pureRGenuineEndo0 (I := I) (M := M) g 0 W).toSection x from rfl,
         show pureRGenuineEndo0 (I := I) (M := M) g 0 W = 0 from rfl,
         SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]
-      rw [appCc_toSection (I := I) (M := M) g 0 0 0 W]
+      rw [operatorFieldApplication_toSection (I := I) (M := M) g 0 0 0 W]
       rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 0 I x from
             (0 : SmoothCcTensor g 0 0).toSection x) = 0 from by
         rw [SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]; rfl]
@@ -490,9 +479,16 @@ theorem exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (g : SmoothRiemanni
       intro x
       rw [show (pureRGenuineDiffOp (I := I) (M := M) g 0 (m + 1) W).toSection x =
             pureRGenuineEndoFib (I := I) (M := M) g m W x from rfl]
-      rw [appCc_toSection (I := I) (M := M) g (m + 1) (m + 1) _ W]
+      rw [operatorFieldApplication_toSection (I := I) (M := M) g (m + 1) (m + 1) _ W]
       rw [pureRGenuineEndoFib_eq_comp (I := I) (M := M) g m W x]
       rfl
+
+theorem exists_pureRGenuineDiffOp_base_operatorFieldApply (g : SmoothRiemannianMetric I M) :
+    ∃ Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0),
+      ∀ (r : ℕ) (W : SmoothCcTensor g 0 r),
+        pureRGenuineDiffOp (I := I) (M := M) g 0 r W =
+          operatorFieldApply (I := I) (M := M) g (r + 0) (r + 0) (Φ₀ r) W :=
+  exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (I := I) (M := M) g
 
 theorem exists_proportional_pureRGenuineDiffOp_highOrder (g : SmoothRiemannianMetric I M) :
     ∃ kappaHigh : ℕ → ℕ → ℝ, (∀ p r, 0 ≤ kappaHigh p r) ∧

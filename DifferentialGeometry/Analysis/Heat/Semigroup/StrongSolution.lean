@@ -60,7 +60,6 @@ theorem mildSolution_hasDerivAt_laplacianOp_add_of_lift
     set b := resolventHilbertEigenbasisSigma (I := I) (M := M) g
     apply b.repr.injective
     ext i
-    rw [b.repr_apply_apply, b.repr_apply_apply]
     have hinner : HasDerivAt
         (fun s : ℝ => ⟪b i, mildSolution (I := I) (M := M) g u_0 f s⟫_ℝ)
         ⟪b i, v⟫_ℝ t := by
@@ -71,10 +70,17 @@ theorem mildSolution_hasDerivAt_laplacianOp_add_of_lift
     have hmodal := hasDerivAt_mildSolution_inner_basis
       (I := I) (M := M) g u_0 hf ht i
     have hcoeff := hinner.unique hmodal
-    rw [inner_add_right,
-      laplacianOp_inner_eigenbasis (I := I) (M := M) g u_h i,
-      hu_h]
-    exact hcoeff
+    calc
+      (b.repr v) i = ⟪b i, v⟫_ℝ := HilbertBasis.repr_apply_apply b v i
+      _ = -(EigenIdx.lambda (I := I) (M := M) i) *
+          ⟪b i, mildSolution (I := I) (M := M) g u_0 f t⟫_ℝ + ⟪b i, f t⟫_ℝ :=
+        hcoeff
+      _ = ⟪b i, laplacianOp (I := I) (M := M) g u_h + f t⟫_ℝ := by
+        rw [inner_add_right]
+        rw [laplacianOp_inner_eigenbasis (I := I) (M := M) g u_h i]
+        rw [hu_h]
+      _ = (b.repr (laplacianOp (I := I) (M := M) g u_h + f t)) i :=
+        (HilbertBasis.repr_apply_apply b _ i).symm
   simpa [hv] using hderiv
 
 theorem mildSolution_isStrongSolutionAt_of_differentiable

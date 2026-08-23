@@ -184,7 +184,7 @@ private lemma rhsZeroAggregate_le_at_target
     exact h_step.trans_eq h_rw
   have hS1 :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-          (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+          (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (H.Ceig K) * Rhs_eff :=
@@ -790,7 +790,7 @@ private lemma sharpDiffExplicit_iter_memWkp
         g r s i α P₀ j idx)
       (chartTargetEuclid (I := I) (M := M) α) := by
   have h_chart_cpt : MemWkp (d := Module.finrank ℝ E) (K + j) 2
-      (eigenvectorChartComponentFun_unconditional (I := I) (M := M) g r s i α P₀)
+      (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α) :=
     eigenvector_chartComponent_memWkp_arbitrary (I := I) (M := M)
       g r s i (K + j) α P₀
@@ -891,17 +891,17 @@ private lemma eigenvectorChartRHSDiffNumerator_wkpNorm_le_chartcpt_at_target
       CatomB target hCatomB_nn hAtomB_bd
   obtain ⟨CC, hCC_nn, hCC⟩ :=
     sharp_densityDeriv_mul_iteratedPartial_wkpNorm_le (I := I) (M := M) g r s α P₀ m K l
-      CatomC target hCatomC_nn hAtomC_bd
+      CatomC target hAtomC_bd
   have h_prev_mem_K : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       MemWkp (d := Module.finrank ℝ E) K 2 (fChartEffPrev i)
         (chartTargetEuclid (I := I) (M := M) α) := fun i =>
     (h_prev_mem_succ i).le_of_le (by omega)
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    sharp_densityDeriv_mul_prevChartFun_wkpNorm_le (I := I) (M := M) g r s α P₀ m K l
-      fChartEffPrev h_prev_mem_K h_prev_zero CatomD target hCatomD_nn hAtomD_bd
+    sharp_densityDeriv_mul_prevChartFun_wkpNorm_le (I := I) (M := M) g r s α m K l
+      fChartEffPrev h_prev_mem_K h_prev_zero CatomD target hAtomD_bd
   obtain ⟨CE, hCE_nn, hCE⟩ :=
-    sharp_density_mul_prevChartFunWeakDeriv_wkpNorm_le (I := I) (M := M) g r s α P₀ m K l
-      fChartEffPrev h_prev_mem_succ h_prev_zero CatomE target hCatomE_nn hAtomE_bd
+    sharp_density_mul_prevChartFunWeakDeriv_wkpNorm_le (I := I) (M := M) g r s α m K l
+      fChartEffPrev h_prev_mem_succ h_prev_zero CatomE target hAtomE_bd
   have hCA_prod_nn : 0 ≤ CA * CatomA := mul_nonneg hCA_nn hCatomA_nn
   have hCB_prod_nn : 0 ≤ CB * CatomB := mul_nonneg hCB_nn hCatomB_nn
   have hCC_prod_nn : 0 ≤ CC * CatomC := mul_nonneg hCC_nn hCatomC_nn
@@ -1289,7 +1289,7 @@ private lemma sharpDiffBdd_recursion_at_target
         intro i a
         have h_chart_cpt_mem :
             MemWkp (d := Module.finrank ℝ E) (K + (m + 1)) 2
-              (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+              (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
               (chartTargetEuclid (I := I) (M := M) α) :=
           eigenvector_chartComponent_memWkp_arbitrary (I := I) (M := M)
@@ -1326,14 +1326,13 @@ private lemma sharpDiffBdd_recursion_at_target
                     (I := I) (M := M) g r s) i‖ := by
         intro i a b
         have h_chosen := wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-          (p := 2) K
-          (chartTargetEuclid_isOpen (I := I) (M := M) α)
+          (p := 2) (Ω := chartTargetEuclid (I := I) (M := M) α) K
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) b
         refine le_trans h_chosen ?_
         have h_chart_cpt_mem :
             MemWkp (d := Module.finrank ℝ E) ((K + 1) + (m + 1)) 2
-              (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+              (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
               (chartTargetEuclid (I := I) (M := M) α) :=
           eigenvector_chartComponent_memWkp_arbitrary (I := I) (M := M)
@@ -1367,7 +1366,7 @@ private lemma sharpDiffBdd_recursion_at_target
         intro i
         have h_chart_cpt_mem :
             MemWkp (d := Module.finrank ℝ E) (K + m) 2
-              (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+              (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
               (chartTargetEuclid (I := I) (M := M) α) :=
           eigenvector_chartComponent_memWkp_arbitrary (I := I) (M := M)
@@ -1410,8 +1409,7 @@ private lemma sharpDiffBdd_recursion_at_target
                     (I := I) (M := M) g r s) i‖ := by
         intro i
         have h_chosen := wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-          (p := 2) K
-          (chartTargetEuclid_isOpen (I := I) (M := M) α)
+          (p := 2) (Ω := chartTargetEuclid (I := I) (M := M) α) K
           (eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ m (Fin.init l)) (l (Fin.last m))
         exact le_trans h_chosen (hC_K1_bd i)
@@ -1446,7 +1444,7 @@ private lemma sharpDiffBdd_recursion_at_target
         · intro j idx
           have h_chart_cpt_mem :
               MemWkp (d := Module.finrank ℝ E) ((2 + K) + j) 2
-                (eigenvectorChartComponentFun_unconditional (I := I) (M := M)
+                (eigenvectorChartComponentFun (I := I) (M := M)
                   g r s i α P₀)
                 (chartTargetEuclid (I := I) (M := M) α) :=
             eigenvector_chartComponent_memWkp_arbitrary (I := I) (M := M)

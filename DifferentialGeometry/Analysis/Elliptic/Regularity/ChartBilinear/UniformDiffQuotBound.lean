@@ -133,10 +133,8 @@ private lemma eLpNorm_two_le_ofReal_sqrt
   rw [sqrt_ofReal_eq_ofReal_sqrt hS] at h_pow
   exact h_pow
 
+omit [FiniteDimensional ℝ E] in
 theorem chartBilinearH1Compl_uniform_diffQuot_bound
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (_D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (B : SmoothEllipticBilinearForm
       (Module.finrank ℝ E) (Set.univ : Set EuclN))
     {u_g f_g : EuclN → ℝ}
@@ -145,9 +143,6 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
       MemLp f_g 2 ((volume : Measure EuclN).restrict Ω'))
     {g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ}
     (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure EuclN))
-    (h_weakPartial_g_g :
-      ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (g_g i) u_g Set.univ)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
@@ -155,7 +150,6 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
     (hΩ'_closure : closure Ω' ⊆ (Set.univ : Set EuclN))
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -240,9 +234,9 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
               ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)) := by
     intro k
     exact nirenberg_diffQuot_g_localL2_bound (d := Module.finrank ℝ E)
-      B hu_g_l2 hf_g_l2_loc hg_g_l2 h_weakPartial_g_g
+      B hu_g_l2 hf_g_l2_loc hg_g_l2
       hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
-      hη_in_Ω' hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
+      hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
       (h_FK_diffQuot_u_bound k)
       (h_v_test_sq_bound k)
       (h_master_nonsmooth k)
@@ -362,10 +356,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
     rw [hM_eq]
     exact h_concl
 
+omit [FiniteDimensional ℝ E] in
 theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (_D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (B : SmoothEllipticBilinearForm
       (Module.finrank ℝ E) (Set.univ : Set EuclN))
     {u_g f_g : EuclN → ℝ}
@@ -374,9 +366,6 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
       MemLp f_g 2 ((volume : Measure EuclN).restrict Ω'))
     {g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ}
     (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure EuclN))
-    (h_weakPartial_g_g :
-      ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (g_g i) u_g Set.univ)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
@@ -384,7 +373,6 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
     (hΩ'_closure : closure Ω' ⊆ (Set.univ : Set EuclN))
     (hΩ'_compact : IsCompact (closure Ω'))
-    (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -473,9 +461,9 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
               ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
               ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)) :=
     nirenberg_diffQuot_g_localL2_bound_quantitative (d := Module.finrank ℝ E)
-      B hu_g_l2 hf_g_l2_loc hg_g_l2 h_weakPartial_g_g
+      B hu_g_l2 hf_g_l2_loc hg_g_l2
       hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
-      hη_in_Ω' hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
+      hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
       (h_FK_diffQuot_u_bound k)
       (h_v_test_sq_bound k)
       (h_master_nonsmooth k) hh_ne hh_le

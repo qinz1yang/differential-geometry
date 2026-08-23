@@ -23,7 +23,6 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 def connLaplacian_function [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
@@ -88,6 +87,7 @@ theorem connLaplacian_function_eq_laplaceBeltrami [I.Boundaryless]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem connLaplacian_function_eq_chartHessTrace [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -104,6 +104,7 @@ theorem connLaplacian_function_contMDiff [I.Boundaryless]
   Δ_g_contMDiff (I := I) g ⟨_, hf⟩
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [T2Space M] in
 theorem connLaplacian_function_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
@@ -116,7 +117,8 @@ theorem connLaplacian_function_add [I.Boundaryless]
   exact Δ_g_add (I := I) g ⟨_, hf⟩ ⟨_, hh⟩ x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-@[simp] theorem connLaplacian_function_const [I.Boundaryless]
+omit [T2Space M] in
+theorem connLaplacian_function_const [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     connLaplacian_function (I := I) g
       (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => c)) x = 0 := by
@@ -125,11 +127,9 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold
 
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-theorem connLaplacian_grad_inner [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
-    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    {w : Π b : M, TangentSpace I b}
-    (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w)) (x : M) :
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem connLaplacian_grad_inner (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} {w : Π b : M, TangentSpace I b} (x : M) :
     g.inner x (connLaplacian_vector (I := I) g
                   (fun b => gradFun (I := I) g f b) x) (w x) =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -144,11 +144,10 @@ theorem connLaplacian_grad_inner [I.Boundaryless]
                         (smoothOrthoFrame (I := I) g x i) x
                         (smoothOrthoFrame (I := I) g x i x))) (w x)) := by
   rw [connLaplacian_vector_def]
-  exact localConnLap_vector_grad_inner_eq_hessian_diff (I := I) g hf hw
-    (smoothOrthoFrame (I := I) g x)
-    (fun i => smoothOrthoFrame_smooth (I := I) g x i) x
+  exact localConnLap_vector_grad_inner_eq_hessian_diff (I := I) g
+    (smoothOrthoFrame (I := I) g x) x
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -165,7 +164,7 @@ theorem connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner
   unfold connLaplacian_vector
   exact heart_of_bochner_smoothOrthoFrame (I := I) g hf x hInner
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner_form
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -182,7 +181,7 @@ theorem connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner_form
   connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner
     (I := I) g hf x hInner
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connLaplacian_grad_iff_inner_form [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -207,12 +206,9 @@ theorem connLaplacian_grad_iff_inner_form [I.Boundaryless]
       (I := I) g hf x h
 
 omit [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
-theorem connLaplacian_grad_inner_hessian [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
-    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    {w : Π b : M, TangentSpace I b}
-    (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w)) (x : M) :
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+theorem connLaplacian_grad_inner_hessian (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} {w : Π b : M, TangentSpace I b} (x : M) :
     g.inner x (connLaplacian_vector (I := I) g
                   (fun b => gradFun (I := I) g f b) x) (w x) =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -226,7 +222,7 @@ theorem connLaplacian_grad_inner_hessian [I.Boundaryless]
                       ((LeviCivita (I := I) g).toFun
                         (smoothOrthoFrame (I := I) g x i) x
                         (smoothOrthoFrame (I := I) g x i x))) (w x)) :=
-  connLaplacian_grad_inner (I := I) g hf hw x
+  connLaplacian_grad_inner (I := I) g x
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -318,7 +314,6 @@ omit [T2Space M] [SigmaCompactSpace M] in
 theorem connLaplacian_inner_self_of_trace [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
-    (_hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
     (hgVV : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b : M => g.inner b (V b) (V b)))
     (x : M)
     (hLeibniz :
@@ -333,7 +328,7 @@ theorem connLaplacian_inner_self_of_trace [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma extDerivFun_inner_self [I.Boundaryless]
+lemma extDerivFun_inner_self
     (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V)) (x : M)
@@ -352,8 +347,7 @@ lemma extDerivFun_inner_self [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma extDerivFun_inner_self_eq_globally [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
+lemma extDerivFun_inner_self_eq_globally (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
     (X : Π b : M, TangentSpace I b) :

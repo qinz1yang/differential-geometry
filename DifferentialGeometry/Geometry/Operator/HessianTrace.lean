@@ -189,8 +189,7 @@ lemma chartVossWeylLaplacian_expand_hypBearing
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartHessTrace_eq_laplacian
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j) :
@@ -652,8 +651,7 @@ theorem traceFun_hessFun_eq_chartHessTrace_of_orthonormal
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem trace_hessFun_eq_laplacian
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j) :
@@ -667,8 +665,7 @@ theorem trace_hessFun_eq_laplacian
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacian_sq_le_dim_mul_frobenius_sq_via_chartContracted
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j)
@@ -1109,8 +1106,7 @@ theorem chartContractedChristoffel_holds_of_boundaryless [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartHessTrace_eq_laplacian_of_boundaryless
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x := by
   classical
@@ -1127,8 +1123,7 @@ theorem chartHessTrace_eq_laplacian_of_boundaryless
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartInvGram_trace_hessianTensor_eq_laplacian_of_boundaryless
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x i j *
@@ -1148,8 +1143,7 @@ theorem chartInvGram_trace_hessianTensor_eq_laplacian_of_boundaryless
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacian_sq_le_dim_mul_frobenius_sq_of_orthonormal
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (h_orth : ∀ i j : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x i j = if i = j then (1 : ℝ) else 0) :
@@ -1173,8 +1167,7 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_of_orthonormal
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartHessTrace_eq_laplacian_pointwise
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j) :
@@ -1617,8 +1610,7 @@ theorem chartHessTrace_eq_laplacian_pointwise
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartHessTrace_eq_laplacian_pointwise_of_boundaryless
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x := by
   classical

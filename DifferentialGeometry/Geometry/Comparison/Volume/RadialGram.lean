@@ -290,8 +290,7 @@ private lemma endpoint_det_split
     intro o
     simpa only [L, q, radialCurve] using
       radialJacobi_one (I := I) g p (r • u) (B o) hrad
-  have hgauss := gauss_lemma_pullback (I := I) g p
-    (mem_expDomain_of_norm_lt_radius (I := I) g p hrad) hrad
+  have hgauss := gauss_lemma_pullback (I := I) g p hrad
   have hLru : L (r • u) = r • L u := L.map_smul r u
   have hdiagRaw : g.inner q (L (r • u)) (L (r • u)) =
       g.inner p (r • u) (r • u) := by

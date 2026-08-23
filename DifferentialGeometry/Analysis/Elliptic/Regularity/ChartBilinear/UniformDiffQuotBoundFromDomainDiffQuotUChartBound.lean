@@ -50,10 +50,9 @@ theorem chartBilinearFK_diffQuot_u_discharge
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {η : EuclN → ℝ} (hη_supp : HasCompactSupport η)
-    {Ω' : Set EuclN} (_hΩ'_open : IsOpen Ω')
+    {Ω' : Set EuclN}
     (hΩ'_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
     (hΩ'_compact_closure : IsCompact (closure Ω'))
-    (_hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω') :

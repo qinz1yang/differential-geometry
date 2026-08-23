@@ -248,7 +248,7 @@ private lemma exists_uniform_const_of_finite_wkpNorm_bounds_uniform
     (f := fun j' => Cf j') (fun j' _ => hCf_nn j') (Finset.mem_univ j)
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
+theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -355,7 +355,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ (F i) (partAtom i)
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
-      Csum hCsum_nn
+      Csum
       (fun x _ => h_memWkp x)
       (fun x _ => hCsum_bd i x)
   have h_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s
@@ -399,7 +399,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
   exact h_bound
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
+theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -589,7 +589,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ (Fpart i) (partAtom i)
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
-      Cpart hCpart_nn
+      Cpart
       (fun x _ => h_part_memWkp x)
       (fun x _ => hCpart_bd i x)
   have h_comp_bound :
@@ -605,7 +605,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ (Fcomp i) (compAtom i)
       (fun x => x.2.2.2.2) (fun x _ => Finset.mem_univ _)
-      Ccomp hCcomp_nn
+      Ccomp
       (fun x _ => h_comp_memWkp x)
       (fun x _ => hCcomp_bd i x)
   have h_part_eq : (fun y => ∑ x :
@@ -785,7 +785,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
       rw [mul_add]
 
 omit [CompleteSpace E] in
-theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
+theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (l : Fin (Module.finrank ℝ E))
     (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -979,7 +979,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ (Fcomp i) (compAtom i)
       (fun x => x.2.2.2) (fun x _ => Finset.mem_univ _)
-      Ccomp hCcomp_nn
+      Ccomp
       (fun x _ => h_comp_memWkp x)
       (fun x _ => hCcomp_bd i x)
   have h_part_bound :
@@ -994,7 +994,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ (Fpart i) (partAtom i)
       (fun x => (x.2.2.2, l)) (fun x _ => Finset.mem_univ _)
-      Cpart hCpart_nn
+      Cpart
       (fun x _ => h_part_memWkp x)
       (fun x _ => hCpart_bd i x)
   have h_comp_eq : (fun y => ∑ x :

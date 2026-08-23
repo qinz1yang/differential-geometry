@@ -92,19 +92,19 @@ private lemma tsupport_chartPushedRaw_subset_chartImage
 
 omit [CompleteSpace E] in
 private lemma chartTransitionTransportCLM_memWkp
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
+    (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s) (k : ℕ)
     (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β))
     (hf : MemWkp (d := Module.finrank ℝ E) k 2
       (fun y => (f : EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β)) :
     MemWkp (d := Module.finrank ℝ E) k 2
-      (fun y => ((chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q f :
+      (fun y => ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set d : ℕ := Module.finrank ℝ E with hd_def
-  set cM : M → ℝ := transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q
+  set cM : M → ℝ := transportCoeffManifold (I := I) (M := M) r s β α P₀ Q
     with hcM_def
   set cE : EuclN → ℝ := chartPushedRaw (I := I) (M := M) α cM with hcE_def
   set T : EuclN → ℝ := fun y => (f : EuclN → ℝ) y with hT_def
@@ -113,11 +113,11 @@ private lemma chartTransitionTransportCLM_memWkp
   have hTα_open : IsOpen Tα := chartTargetEuclid_isOpen (I := I) (M := M) α
   have hTβ_open : IsOpen Tβ := chartTargetEuclid_isOpen (I := I) (M := M) β
   have hcM_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ cM :=
-    contMDiff_transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q
+    contMDiff_transportCoeffManifold (I := I) (M := M) r s β α P₀ Q
   have hcM_supp_α : tsupport cM ⊆ (chartAt H α).source :=
-    tsupport_transportCoeffManifold_subset_sourceα (I := I) (M := M) g r s β α P₀ Q
+    tsupport_transportCoeffManifold_subset_sourceα (I := I) (M := M) r s β α P₀ Q
   have hcM_supp_β : tsupport cM ⊆ (chartAt H β).source :=
-    tsupport_transportCoeffManifold_subset_sourceβ (I := I) (M := M) g r s β α P₀ Q
+    tsupport_transportCoeffManifold_subset_sourceβ (I := I) (M := M) r s β α P₀ Q
   set Kc : Set M := tsupport cM with hKc_def
   have hKc_compact : IsCompact Kc := (isClosed_tsupport cM).isCompact
   have hKc_in_α : Kc ⊆ (chartAt H α).source := hcM_supp_α
@@ -177,7 +177,7 @@ private lemma chartTransitionTransportCLM_memWkp
       (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
       (fun j hj y _ => hCχ_bound y j hj) hf
   have hv_memWkp_Ωβα : MemWkp (d := d) k 2 v Ωβα :=
-    MemWkp.mono_set (d := d) (by norm_num) hTβ_open hΩβα_open
+    MemWkp.mono_set (d := d) (by norm_num) hΩβα_open
       hΩβα_subset_target hv_memWkp_Tβ
   have hv_comp_memWkp_Ωαβ : MemWkp (d := d) k 2 (fun y => v (Φ.toFun y)) Ωαβ :=
     MemWkp.comp_smoothDiffeoBoundedAtOrder (d := d) k (le_refl k)
@@ -200,16 +200,16 @@ private lemma chartTransitionTransportCLM_memWkp
   have hw_cpt : HasCompactSupport w :=
     hcE_cpt.of_isClosed_subset (isClosed_tsupport w) hw_supp_cE
   have hw_memWkp_Tα : MemWkp (d := d) k 2 w Tα :=
-    MemWkp.extend_zero (d := d) (by norm_num) (by norm_num)
+    MemWkp.extend_zero (d := d) (by norm_num)
       hΩαβ_open hTα_open hΩαβ_subset_target hw_memWkp_Ωαβ hw_supp_Ωαβ hw_cpt
   have h_coeFn : (fun y => ((chartTransitionTransportCLM
-        (I := I) (M := M) g r s β α P₀ Q f :
+        (I := I) (M := M) r s β α P₀ Q f :
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Tα]
       (fun y => cE y *
         (f : EuclN → ℝ) (chartTransitionEuclid (I := I) (M := M) α β y)) :=
     chartTransitionTransportCLM_coeFn_aeEq
-      (I := I) (M := M) g r s β α P₀ Q f
+      (I := I) (M := M) r s β α P₀ Q f
   have h_pointwise : (fun y => cE y *
         (f : EuclN → ℝ) (chartTransitionEuclid (I := I) (M := M) α β y)) = w := by
     funext y
@@ -229,7 +229,7 @@ private lemma chartTransitionTransportCLM_memWkp
         simp only [hv_def, hT_def, hχ_Φy, one_mul]
       simp only [hw_def, hT_eq, hv_Φy]
   have h_ae : (fun y => ((chartTransitionTransportCLM
-        (I := I) (M := M) g r s β α P₀ Q f :
+        (I := I) (M := M) r s β α P₀ Q f :
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Tα] w := by
     refine h_coeFn.trans ?_
@@ -260,7 +260,7 @@ theorem tensorL2ChartComponentCutoff_memWkp_of_pou
       =ᵐ[(volume : Measure EuclN).restrict Tα]
       (fun y => ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
-          ((chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+          ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
     tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
@@ -269,18 +269,18 @@ theorem tensorL2ChartComponentCutoff_memWkp_of_pou
   refine memWkp_finsetSum (d := d) (by norm_num) hTα_open
     (transportChartCenters (I := I) (M := M) α)
     (fun β y => ∑ Q : TensorCompIdx (E := E) r s,
-      ((chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+      ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
     (fun β _ => ?_)
   refine memWkp_finsetSum (d := d) (by norm_num) hTα_open
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun Q y =>
-      ((chartTransitionTransportCLM (I := I) (M := M) g r s β α P₀ Q
+      ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
     (fun Q _ => ?_)
-  exact chartTransitionTransportCLM_memWkp (I := I) (M := M) g r s β α P₀ Q k
+  exact chartTransitionTransportCLM_memWkp (I := I) (M := M) r s β α P₀ Q k
     (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) (h_pou β Q)
 
 end TensorSpectral

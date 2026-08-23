@@ -25,7 +25,6 @@ namespace DifferentialGeometry.Analysis.Sobolev
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
-open DifferentialGeometry
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Tensor
@@ -43,7 +42,6 @@ section ReverseOrderZeroBridge
 
 open MeasureTheory
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 

@@ -198,7 +198,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem scalarHsInclusion_refl_apply {σ : ℝ}
+theorem scalarHsInclusion_refl_apply {σ : ℝ}
     (T : scalarHs (I := I) (M := M) g σ) :
     scalarHsInclusion (I := I) (M := M) (g := g) (le_refl σ) T = T := by
   ext i
@@ -439,7 +439,7 @@ theorem scalarHsToL2_opNorm_le_one {σ : ℝ} (hσ : 0 ≤ σ) :
     ‖scalarHsToL2 (I := I) (M := M) (g := g) hσ‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
-@[simp] theorem scalarL2Coeff_scalarHsToL2 {σ : ℝ} (hσ : 0 ≤ σ)
+theorem scalarL2Coeff_scalarHsToL2 {σ : ℝ} (hσ : 0 ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     scalarL2Coeff (I := I) (M := M)

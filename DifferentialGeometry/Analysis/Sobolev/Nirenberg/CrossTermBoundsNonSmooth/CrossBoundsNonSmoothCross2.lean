@@ -215,7 +215,7 @@ private lemma integrable_cross_2_summand_nonsmooth
     memLp_diffQuot_two k h (hg_l2 j)
   have hf₂_gi_l2 : MemLp (fun x => f₂ x * (g i) x) 2
       (volume : Measure E) :=
-    memLp_bounded_mul hf₂_cont.aestronglyMeasurable hM_nn hM (hg_l2 i)
+    memLp_bounded_mul hf₂_cont.aestronglyMeasurable hM (hg_l2 i)
   have h_target_eq :
       (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -423,14 +423,11 @@ private lemma integrable_eta_sq_diffQuot_g_sq_cross2
 
 theorem cross_2_bound_nonsmooth_quantitative
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {u : E → ℝ}
-    (_hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (_h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (_hΩ'_closure : closure Ω' ⊆ Ω)
+    {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -925,14 +922,11 @@ theorem cross_2_bound_nonsmooth_quantitative
 
 theorem cross_2_bound_nonsmooth
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {u : E → ℝ}
-    (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
+    {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -966,8 +960,8 @@ theorem cross_2_bound_nonsmooth
     refine mul_nonneg (sq_nonneg _) ?_
     refine inv_nonneg.mpr (by linarith [hε'_pos])
   · intro h hh hh_le
-    exact cross_2_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-      h_weakPartial hη hη_supp hη_range hΩ' hΩ'_closure hΩ'_compact
+    exact cross_2_bound_nonsmooth_quantitative (d := d) B hg_l2
+      hη hη_supp hη_range hΩ' hΩ'_compact
       hh_supp_in_Ω' k ε hε hh hh_le
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth

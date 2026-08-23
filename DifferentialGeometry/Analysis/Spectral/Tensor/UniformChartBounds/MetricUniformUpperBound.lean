@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.JinvContinuity
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
@@ -203,7 +203,7 @@ theorem g_inner_sqrt_uniform_upper_bound_on_compact
   linarith
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
-theorem g_inner_chartJinv_sqrt_uniform_upper_bound_on_compact_unconditional
+theorem g_inner_chartJinv_sqrt_uniform_upper_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
     {K_base : Set M} (hK_base : IsCompact K_base)
     (hK_sub : K_base ⊆ (chartAt H α).source) :

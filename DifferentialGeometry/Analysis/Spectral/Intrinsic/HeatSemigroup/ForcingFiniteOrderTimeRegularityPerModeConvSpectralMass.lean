@@ -94,7 +94,7 @@ private theorem perModeConv_sq_le_T_mul_int (lam : ℝ) (hlam : 0 ≤ lam) {T : 
     (perModeConv lam c t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
   have hbase : (perModeConv lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 :=
-    perModeConv_sq_le_time_mul_integral' lam hlam hc ht0
+    per_mode_convolution_sq_le_time_mul_integral lam hlam hc ht0
   have hint_t_nn : 0 ≤ ∫ s in (0 : ℝ)..t, (c s) ^ 2 :=
     intervalIntegral.integral_nonneg ht0 (fun s _ => sq_nonneg _)
   have hint_le : (∫ s in (0 : ℝ)..t, (c s) ^ 2) ≤ ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by

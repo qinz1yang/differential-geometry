@@ -34,7 +34,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [InnerProductSpace ℝ E] in
-theorem integral_localDivergenceWithin_eq_of_interior_overlap_support [T2Space M]
+theorem integral_localDivergenceWithin_eq_of_interior_overlap_support
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)

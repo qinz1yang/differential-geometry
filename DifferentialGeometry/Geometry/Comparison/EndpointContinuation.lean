@@ -51,7 +51,7 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M] [CompleteSpace M] in
+    [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_extends_past_finite_endpoint
     (g : SmoothRiemannianMetric I M) {γ η : ℝ → M} {T δ : ℝ} (hδ : 0 < δ)
@@ -193,7 +193,6 @@ theorem hasEndpointContinuation_of_complete
     chartVelocity_converges_at_finite_endpoint_Ioo (I := I) g y
       (u := u) (u' := deriv u) (a := a) (b := b) (K₁ := K₁) (S := S)
       ha_lt_b hS_compact hS_sub
-      (fun s hs => by simpa [hu_def] using hDeriv_γ s hs)
       (fun s hs => by simpa [hu_def] using hODE_γ s hs)
       (fun s hs => (hbound_on s hs).1)
       (fun s hs => (hbound_on s hs).2)

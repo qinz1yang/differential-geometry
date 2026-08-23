@@ -3,6 +3,7 @@ import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
@@ -125,6 +126,70 @@ theorem toCore_inner (D : MetricFiberData V) (v w : V) :
     Inner.inner Real v w = D.inner v w := by
   change D.toCore.inner v w = D.inner v w
   rfl
+
+noncomputable def submoduleProjection
+    (D : MetricFiberData V) (W : Submodule Real V) : V →ₗ[Real] W := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  letI : InnerProductSpace.Core Real V := D.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  letI : AddCommGroup V := addV
+  letI : Module Real V := modV
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  exact W.orthogonalProjection.toLinearMap
+
+theorem submoduleProjection_inner
+    (D : MetricFiberData V) (W : Submodule Real V) (v : V) (w : W) :
+    D.inner (submoduleProjection D W v : V) w = D.inner v w := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  letI : InnerProductSpace.Core Real V := D.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  letI : AddCommGroup V := addV
+  letI : Module Real V := modV
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  change Inner.inner Real (W.orthogonalProjection v : V) w = Inner.inner Real v w
+  exact W.inner_orthogonalProjection_eq_of_mem_right w v
+
+@[simp]
+theorem submoduleProjection_eq_self
+    (D : MetricFiberData V) (W : Submodule Real V) (v : V) (hv : v ∈ W) :
+    submoduleProjection D W v = ⟨v, hv⟩ := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  letI : InnerProductSpace.Core Real V := D.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  letI : AddCommGroup V := addV
+  letI : Module Real V := modV
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  let w : W := ⟨v, hv⟩
+  simpa [submoduleProjection, w] using W.orthogonalProjection_mem_subspace_eq_self w
+
+theorem submoduleProjection_inner_self_le
+    (D : MetricFiberData V) (W : Submodule Real V) (v : V) :
+    D.inner (submoduleProjection D W v : V) (submoduleProjection D W v : V) ≤
+      D.inner v v := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  letI : InnerProductSpace.Core Real V := D.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  letI : AddCommGroup V := addV
+  letI : Module Real V := modV
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  change Inner.inner Real (W.orthogonalProjection v : V) (W.orthogonalProjection v : V) ≤
+    Inner.inner Real v v
+  rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+  have hnorm : ‖(W.orthogonalProjection v : V)‖ ≤ ‖v‖ := by
+    simpa using W.norm_orthogonalProjection_apply_le v
+  exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hnorm
 
 section MetricEquiv
 
@@ -280,7 +345,7 @@ def tangentMetricData (g : SmoothMetric I M) (x : M) :
 
 namespace TangentMetricData
 
-@[simp] theorem inner_eq
+theorem inner_eq
     {g : SmoothMetric I M} {x : M} (D : TangentMetricData (I := I) g x)
     (X Y : TangentSpace I x) :
     D.metric.inner X Y = g.inner x X Y :=

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffCore
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.AllTimesBoundsFlow
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricC1Continuity
+import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
+import DifferentialGeometry.Geometry.Metric.Convergence.C1Continuity
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

@@ -65,7 +65,7 @@ theorem denseRange_toL2 :
   exact UniformSpace.Completion.denseRange_coe
 
 
-@[simp] theorem norm_toL2 (S : SmoothCcTensor g r s) :
+theorem norm_toL2 (S : SmoothCcTensor g r s) :
     ‖toL2 (g := g) (r := r) (s := s) S‖ = ‖S‖ := by
   have h := toL2_apply (g := g) (r := r) (s := s) S
   rw [show ‖toL2 (g := g) (r := r) (s := s) S‖ =
@@ -74,7 +74,7 @@ theorem denseRange_toL2 :
   exact UniformSpace.Completion.norm_coe S
 
 
-@[simp] theorem inner_toL2 (S T : SmoothCcTensor g r s) :
+theorem inner_toL2 (S T : SmoothCcTensor g r s) :
     ⟪toL2 (g := g) (r := r) (s := s) S,
         toL2 (g := g) (r := r) (s := s) T⟫_ℝ = ⟪S, T⟫_ℝ := by
   have hS := toL2_apply (g := g) (r := r) (s := s) S

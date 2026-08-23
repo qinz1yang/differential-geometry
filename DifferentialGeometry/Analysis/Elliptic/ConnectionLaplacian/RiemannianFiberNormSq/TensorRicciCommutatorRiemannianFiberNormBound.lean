@@ -92,7 +92,6 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_le_curvatureFiberNormBoundSq
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_bound_riemannianFiberNormSq_riemannOp_tensorCov
-    [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X Y : Π b : M, TangentSpace I b) (T : Π b : M, TensorRSSpace 0 2 I b)
     (hbdd : BddAbove (Set.range

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Schauder.CompactEllipticity
 import DifferentialGeometry.Analysis.Schauder.CompactRegularity
 import DifferentialGeometry.Analysis.Schauder.ParabolicChartOperator
+import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
 
 noncomputable section

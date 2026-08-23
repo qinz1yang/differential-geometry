@@ -11,8 +11,8 @@ quantitative error bounds for the smooth approximants.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal RealInnerProductSpace
+open MeasureTheory Filter Topology Set
+open scoped ENNReal
 
 namespace DeGiorgi
 
@@ -887,7 +887,7 @@ lemma mem_sphereTwoRadial_of_mem_badAnnulusTwo {ε : ℝ} (hε : ε < 2) {x : E}
 
 omit [NeZero d] in
 lemma dist_sphereOneRadial_le_of_mem_badAnnulusOne {ε : ℝ} {x : E}
-    (_hε : 0 ≤ ε) (hε' : ε < 1) (hx : x ∈ unitBallBadAnnulusOne (d := d) ε) :
+    (hε' : ε < 1) (hx : x ∈ unitBallBadAnnulusOne (d := d) ε) :
     dist x (sphereOneRadial x) ≤ ε := by
   have hxnorm : 0 < ‖x‖ := by linarith [hx.1, hε']
   have hx0 : ‖x‖ ≠ 0 := ne_of_gt hxnorm
@@ -909,7 +909,7 @@ lemma dist_sphereOneRadial_le_of_mem_badAnnulusOne {ε : ℝ} {x : E}
 
 omit [NeZero d] in
 lemma dist_sphereTwoRadial_le_of_mem_badAnnulusTwo {ε : ℝ} {x : E}
-    (_hε : 0 ≤ ε) (hε' : ε < 2) (hx : x ∈ unitBallBadAnnulusTwo (d := d) ε) :
+    (hε' : ε < 2) (hx : x ∈ unitBallBadAnnulusTwo (d := d) ε) :
     dist x (sphereTwoRadial x) ≤ ε := by
   have hxnorm : 0 < ‖x‖ := by linarith [hx.1, hε']
   have hx0 : ‖x‖ ≠ 0 := ne_of_gt hxnorm
@@ -1017,7 +1017,7 @@ lemma shellSubPsi_error_bound_at
         (hψ.differentiable (by simp) |>.differentiableAt)
   have hdist : dist x (sphereOneRadial x) ≤ unitBallApproxEps n :=
     dist_sphereOneRadial_le_of_mem_badAnnulusOne (d := d)
-      (le_of_lt (unitBallApproxEps_pos n)) (unitBallApproxEps_lt_one n) hx
+      (unitBallApproxEps_lt_one n) hx
   have hxmem : x ∈ Metric.closedBall (sphereOneRadial x) (unitBallApproxEps n) :=
     Metric.mem_closedBall.mpr hdist
   have hmvt := norm_sub_le_of_fderiv_bound_closedBall (d := d)
@@ -1058,7 +1058,7 @@ lemma shellFormula_error_bound_at
       exact (contDiffAt_unitBallShellFormula (d := d) hψ hznz).differentiableAt (by simp)
   have hdist : dist x (sphereTwoRadial x) ≤ unitBallApproxEps n :=
     dist_sphereTwoRadial_le_of_mem_badAnnulusTwo (d := d)
-      (le_of_lt (unitBallApproxEps_pos n)) (by linarith [unitBallApproxEps_lt_one n]) hx
+      (by linarith [unitBallApproxEps_lt_one n]) hx
   have hxmem : x ∈ Metric.closedBall (sphereTwoRadial x) (unitBallApproxEps n) :=
     Metric.mem_closedBall.mpr hdist
   have hmvt := norm_sub_le_of_fderiv_bound_closedBall (d := d)

@@ -88,7 +88,7 @@ private lemma eLpNorm_restrict_eq_of_ae_zero_off
   exact eLpNorm_congr_ae h_ae
 
 lemma wkpNorm_eq_of_tsupport_subset
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -278,7 +278,7 @@ lemma wkpNorm_eq_of_tsupport_subset
   exact h_partial_eLp_eq (α 0)
 
 lemma wkpNorm_le_of_tsupport_subset_mem_small
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -952,7 +952,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 theorem cross_chart_bound_strict_strong_memWkp
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source) :
@@ -974,7 +973,6 @@ theorem cross_chart_bound_strict_strong_memWkp
             (d := Module.finrank ℝ E) 1 p v
             (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  let _ := g
   set K_M : Set M := K_α ∩ tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hKM_def

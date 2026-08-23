@@ -421,7 +421,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le_uniform
   refine le_trans (eLpNorm_mono_measure _ (Measure.restrict_le_self)) ?_
   refine le_trans (eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) 0 2 Ω _) ?_
   exact le_trans (wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) 0
-    hΩ_open _ (l (Fin.last m))) (h_atom_le i)
+    _ (l (Fin.last m))) (h_atom_le i)
 
 
 omit [CompleteSpace E] in
@@ -439,10 +439,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
     (h_prev : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       MemWkp (d := Module.finrank ℝ E) 1 2 (fChartEffPrev i)
         (chartTargetEuclid (I := I) (M := M) α))
-    (_h_prev_zero : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
-      ∀ᵐ y ∂((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)),
-        y ∉ chartPouKernel (I := I) (M := M) α → fChartEffPrev i y = 0) :
+    :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm (fun y => eigenvectorChartRHSDiffNumerator (I := I) (M := M)

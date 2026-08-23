@@ -10,7 +10,6 @@ open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -53,7 +52,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactS
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
-@[simp] lemma radialCurve_one
+lemma radialCurve_one
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     radialCurve (I := I) g p x 1 =
       expMap (I := I) g p (show TangentSpace I p from x) := by
@@ -61,7 +60,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactS
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma radialCurve_zero
+lemma radialCurve_zero
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     radialCurve (I := I) g p x 0 = p := by
   unfold radialCurve
@@ -1614,7 +1613,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_ode_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1660,7 +1659,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_rm04_data
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1711,8 +1710,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_rm04_basis
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
@@ -1766,8 +1764,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_rm04_pack
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
@@ -1844,7 +1841,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem exists_ode_rm04_on
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) :
     (∀ (x : M) (w : TangentSpace I x),
@@ -1912,23 +1909,6 @@ theorem exists_ode_expBall
     (rm04_Ioo_of_region (I := I) g p x
       (radial_mem_expBall (I := I) g p x hxρ hb) hRm) hJac0
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem rm04Exp_of_global
-    (g : SmoothRiemannianMetric I M) (p : M) {R ρ : Real}
-    (hRm : ∀ q : M,
-      Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-        (DifferentialGeometry.Geometry.Curvature.metricRm04At
-          (I := I) (M := M) g q)) ≤ R) :
-    ∀ q : M, q ∈
-      (fun v : TangentSpace I p => expMap (I := I) g p v) ''
-        {v : TangentSpace I p | ‖v‖ < ρ} →
-      Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-        (DifferentialGeometry.Geometry.Curvature.metricRm04At
-          (I := I) (M := M) g q)) ≤ R := by
-  intro q _hq
-  exact hRm q
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_global
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -1958,7 +1938,7 @@ theorem exists_ode_global
   refine ⟨r, hr, ?_⟩
   intro x w hx hw K R Vb b ρ hK hVb hb hxρ hlaunch hKbound hRm hJac0
   exact hODE x w hx hw hK hVb hb hxρ hlaunch hKbound
-    (rm04Exp_of_global (I := I) g p hRm) hJac0
+    (fun q _hq => hRm q) hJac0
 
 
 end Radial

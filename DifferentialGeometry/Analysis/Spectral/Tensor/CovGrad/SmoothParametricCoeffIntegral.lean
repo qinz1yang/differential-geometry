@@ -307,7 +307,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [Sig
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma pathIntegralCoeffField_toModel (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma pathIntegralCoeffField_toModel (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S) (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
@@ -320,7 +320,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [Sig
   rw [pathIntegralCoeffField_toSection, pathIntegralFib_toModel]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem pathIntegralCoeffField_appCc_eq (g₀ : SmoothRiemannianMetric I M) (r s' : ℕ)
+theorem pathIntegralCoeffField_operatorFieldApplication_eq (g₀ : SmoothRiemannianMetric I M) (r s' : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s') (W : SmoothCcTensor g₀ 0 r)
     (S : Set ℝ) (hS : IsOpen S) (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r s' ℝ E)) ∞
@@ -345,7 +345,7 @@ theorem pathIntegralCoeffField_appCc_eq (g₀ : SmoothRiemannianMetric I M) (r s
       unitModel (I := I) (M := M) g₀ s' (operatorFieldApply (I := I) (M := M) g₀ r s' Ψ W) x v =
         ((TensorRSSpace.toModel (Ψ.toSection x)) (Tensor0SSpace.toModel u)) v := by
     intro Ψ
-    rw [unitModel, appCc_toSection, ContinuousLinearMap.comp_apply,
+    rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
       toModel_tensorRS_apply (I := I) r s' x (Ψ.toSection x) u]
   rw [show unitModel (I := I) (M := M) g₀ s'
         (operatorFieldApply (I := I) (M := M) g₀ r s'
@@ -391,7 +391,7 @@ theorem coeffApp_integrable
         ((TensorRSSpace.toModel ((Φ t).toSection x))
           (Tensor0SSpace.toModel u)) v := by
     intro t
-    rw [unitModel, appCc_toSection, ContinuousLinearMap.comp_apply,
+    rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
       toModel_tensorRS_apply (I := I) r s x ((Φ t).toSection x) u]
   have hcontApp : ContinuousOn (fun t : ℝ =>
       ((TensorRSSpace.toModel ((Φ t).toSection x))

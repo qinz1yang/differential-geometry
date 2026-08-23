@@ -180,7 +180,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
         exact h_inner_mem.chosenWeakPartial_mem (dirs (Fin.last m))
       · rw [h_unfold]
         have h_peel := wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E)
-          k (p := 2) hΩ_open
+          k (p := 2) (Ω := Ω)
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ m (Fin.init dirs)) (dirs (Fin.last m))
         refine h_peel.trans ?_

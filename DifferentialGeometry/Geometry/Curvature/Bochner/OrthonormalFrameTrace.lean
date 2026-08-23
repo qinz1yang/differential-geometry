@@ -25,7 +25,6 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 section OrthonormalFrameTrace
 
@@ -561,7 +560,7 @@ theorem ricciTensor_eq_orthonormal_trace
 omit [SigmaCompactSpace M] in
 theorem heart_curvature_orthonormal_sum_eq_ricci
     (g : SmoothRiemannianMetric I M)
-    {f : M → ℝ} (_hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
+    {f : M → ℝ} (x : M)
     (w : TangentSpace I x) :
     ∑ i : Fin (Module.finrank ℝ E),
       g.inner x (riemannOp (LeviCivita (I := I) g) x

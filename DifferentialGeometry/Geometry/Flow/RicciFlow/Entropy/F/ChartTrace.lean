@@ -4,7 +4,6 @@ open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 
-
 set_option autoImplicit false
 
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
@@ -20,7 +19,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -45,7 +44,6 @@ private theorem coordinateFrameAt_coeff_one_eq
     congr 1
   unfold IsLocalFrameOn.coeff
   rw [dif_pos hx, dif_pos hx, hbasis]
-
 
 def gInvFun
     (g : SmoothRiemannianMetric I M)
@@ -93,7 +91,7 @@ theorem connTraceCoeff_one_eventually
         DifferentialGeometry.Tensor.RSTensor.connTraceAt (I := I) g (A y) from rfl]
   exact hcoeff_y
 
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

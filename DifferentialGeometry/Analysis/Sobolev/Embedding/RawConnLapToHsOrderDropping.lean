@@ -30,9 +30,7 @@ namespace DifferentialGeometry.Analysis.Sobolev
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
-open DifferentialGeometry
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
@@ -51,7 +49,6 @@ section RawConnLapOrderDrop
 
 open MeasureTheory
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -439,7 +436,8 @@ private noncomputable def invGramCoeffPull
   fun y => chartInvGramMatrix (I := I) g α
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) k l
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma invGramCoeffPull_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l : Fin (Module.finrank ℝ E)) :
@@ -662,6 +660,7 @@ private lemma invGram_reorder_zeroth
   rw [← Finset.sum_product' (f := fun k l => c k l * d k l i j),
     Finset.univ_product_univ]
 
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_on_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -2091,7 +2090,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-open Bundle DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 set_option backward.isDefEq.respectTransparency false
 

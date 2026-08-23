@@ -35,7 +35,7 @@ theorem norm_iteratedFDerivWithin_two_prod_sub_le
     {f₁ f₂ g₁ g₂ : E → ℝ} {s : Set E} (hs : IsOpen s)
     (hf₁ : ContDiffOn ℝ ∞ f₁ s) (hf₂ : ContDiffOn ℝ ∞ f₂ s)
     (hg₁ : ContDiffOn ℝ ∞ g₁ s) (hg₂ : ContDiffOn ℝ ∞ g₂ s)
-    {K : Set E} (hKsub : K ⊆ s) {B : ℝ} (hB_nn : 0 ≤ B) (N : ℕ)
+    {K : Set E} (hKsub : K ⊆ s) {B : ℝ} (N : ℕ)
     (hf₂bound : ∀ y ∈ K, ∀ m : ℕ, m ≤ N → ‖iteratedFDerivWithin ℝ m f₂ s y‖ ≤ B)
     (hg₁bound : ∀ y ∈ K, ∀ m : ℕ, m ≤ N → ‖iteratedFDerivWithin ℝ m g₁ s y‖ ≤ B)
     {y : E} (hy : y ∈ K) :
@@ -67,7 +67,7 @@ theorem norm_iteratedFDerivWithin_two_prod_sub_le
   have hbound1 :
       ‖iteratedFDerivWithin ℝ N (fun z => (f₁ z - g₁ z) * f₂ z) s y‖ ≤
         2 ^ N * B * iteratedFDerivSeminorm N (fun z => f₁ z - g₁ z) s y :=
-    norm_iteratedFDerivWithin_mul_le_uniformBound hs (hf₁.sub hg₁) hf₂ hKsub hB_nn N
+    norm_iteratedFDerivWithin_mul_le_uniformBound hs (hf₁.sub hg₁) hf₂ hKsub N
       hf₂bound hy
   have hbound2 :
       ‖iteratedFDerivWithin ℝ N (fun z => g₁ z * (f₂ z - g₂ z)) s y‖ ≤
@@ -75,7 +75,7 @@ theorem norm_iteratedFDerivWithin_two_prod_sub_le
     have hcomm : (fun z => g₁ z * (f₂ z - g₂ z)) =
         (fun z => (f₂ z - g₂ z) * g₁ z) := by funext z; ring
     rw [hcomm]
-    exact norm_iteratedFDerivWithin_mul_le_uniformBound hs (hf₂.sub hg₂) hg₁ hKsub hB_nn N
+    exact norm_iteratedFDerivWithin_mul_le_uniformBound hs (hf₂.sub hg₂) hg₁ hKsub N
       hg₁bound hy
   refine (add_le_add hbound1 hbound2).trans ?_
   rw [mul_add]

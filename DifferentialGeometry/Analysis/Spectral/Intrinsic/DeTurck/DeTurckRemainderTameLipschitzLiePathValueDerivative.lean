@@ -12,31 +12,29 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RawC
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRicciRHSRealizeJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSSectionChartComponentIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckCurvatureArmCoeffField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckLinearization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSSectionRealizeUnitModel
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmOperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PathIntegralFibreNormTransfer
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTower
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffL2JetMoser
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciArmPrincipalCoeffBackgroundJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckPrincipalCoefficientBackgroundJetBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ContinuousSobolevRealization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieHigherOrderCoeffField
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamChartLieDeriv
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartLieDerivative
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffAppCcValue
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.RealizedGramDerivChartEvaluation
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffOperatorFieldApplicationValue
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.GramDerivativeChartEvaluation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieCoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm2CoeffL2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmConnLapJetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzRicciArmCoeffBallUniform
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniDecomposition
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -49,8 +47,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
@@ -59,26 +56,26 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_appCc_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
   linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_appCc
+  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
   linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
   linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciArmPrincipalCoeff traceHessianCoeff
+  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
   linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_realizedFam_rfns_ballUniform continuousBilinearMap_basis_expand
-  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local appCc_zero_left_local ccTensor02Symm
+  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (realizedSmallSet realizedSmallSet_isOpen Icc_subset_realizedSmallSet linearizedRicciAt
+  (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum jointContMDiff_toModel_continuous_slice
-  hasDerivAt_realizedRicciChartSum_general realizedFam)
+  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (symmAbsorbedCoeff symmAbsorbedCoeff_appCc_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
+  (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -112,6 +109,8 @@ private noncomputable def realizedDeTurckLiePathValue
       (smoothRiemannianMetricToInfty (I := I) g_bg)) x v w
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_one
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -143,6 +142,8 @@ private theorem realizedDeTurckLiePathValue_one
   rw [realizedDeTurckLiePathValue, hmetric]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_zero
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -193,11 +194,13 @@ noncomputable def realizedDeTurckLieChartSum
   ∑ i, ∑ j,
     ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
       DeTurckCoefficients.chartLieDeTurckComp (I := I)
-        (DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam
+        (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
           (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLieChartSum_contDiffAt
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -206,9 +209,9 @@ private theorem realizedDeTurckLieChartSum_contDiffAt
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ}
-    (hs : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ')) :
+    (hs : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     ContDiffAt ℝ ∞ (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) s₀ := by
-  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam_genJointGram
+  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_genJointGram
     (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
@@ -216,21 +219,23 @@ private theorem realizedDeTurckLieChartSum_contDiffAt
   refine ContDiffAt.sum (fun i _ => ContDiffAt.sum (fun j _ => ?_))
   refine contDiffAt_const.mul ?_
   have hjoint := DifferentialGeometry.PDE.DeTurck.RicciLinearization.gen_joint_chartLieDeTurckComp
-    (I := I) (DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam
+    (I := I) (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
       (I := I) g₀ T T' hδ hδ') x hG g_bg i j hs hy
   have hcomp : (fun s : ℝ =>
         DeTurckCoefficients.chartLieDeTurckComp (I := I)
-          (DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam
+          (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
             (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) =
       (fun p : ℝ × E =>
         DeTurckCoefficients.chartLieDeTurckComp (I := I)
-          (DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam
+          (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
             (I := I) g₀ T T' hδ hδ' p.1) g_bg x i j p.2) ∘
         (fun s : ℝ => (s, extChartAt I x x)) := by funext s; rfl
   rw [hcomp]
   exact hjoint.comp s₀ ((contDiffAt_id).prodMk contDiffAt_const)
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -242,8 +247,8 @@ private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
     realizedDeTurckLiePathValue (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
       realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w s := by
   obtain ⟨h0, h1⟩ := hs
-  have hmem : s ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨h0, h1⟩
+  have hmem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨h0, h1⟩
   have hclamp : max 0 (min s 1) = s := by rw [min_eq_left h1, max_eq_right h0]
   have hxgood : x ∈ DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet (I := I) x :=
     DifferentialGeometry.Geometry.Connection.self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
@@ -252,12 +257,12 @@ private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
           (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
           (le_max_left 0 (min s 1))
           (max_le zero_le_one (min_le_right s 1)) =
-        DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam
+        DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
           (I := I) g₀ T T' hδ hδ' s := by
     refine DifferentialGeometry.PDE.DeTurck.RicciLinearization.riemannianMetric_eq_of_inner
       _ _ (fun b u z => ?_)
     rw [DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedMetricPath_inner,
-      DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam_inner_of_mem
+      DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_inner_of_mem
         (I := I) g₀ T T' hδ hδ' hmem, hclamp]
   rw [realizedDeTurckLiePathValue, hmetric, lieDerivMetricClm_apply,
     realizedDeTurckLieChartSum]
@@ -267,10 +272,11 @@ private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
   rw [DifferentialGeometry.PDE.DeTurck.lieDerivMetricMatrix_def_chart,
     DeTurckCoefficients.chartLieDerivMetricMatrix_deTurckVF_eq_chartLieDeTurckComp
       (I := I)
-      (DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam
+      (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
         (I := I) g₀ T T' hδ hδ' s) g_bg x i j hxgood]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_differentiableAt_Ioo
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -286,12 +292,14 @@ private theorem realizedDeTurckLiePathValue_differentiableAt_Ioo
     filter_upwards [isOpen_Ioo.mem_nhds hs₀] with s hs
     exact realizedDeTurckLiePathValue_eq_chartSum_on_Icc (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
       x v w (Set.mem_Icc_of_Ioo hs)
-  have hmem : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
+  have hmem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
   exact ((realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
     hmem).differentiableAt (by simp)).congr_of_eventuallyEq heq
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem linearizedDeTurckLieAt_eq_deriv_chartSum_on_Ioo
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -312,6 +320,7 @@ theorem linearizedDeTurckLieAt_eq_deriv_chartSum_on_Ioo
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem deriv_realizedDeTurckLieChartSum_continuousOn
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -321,14 +330,15 @@ private theorem deriv_realizedDeTurckLieChartSum_continuousOn
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (deriv (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w))
-      (realizedSmallSet (δ := δ) (δ' := δ')) := by
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hcd : ContDiffOn ℝ ∞ (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w)
-      (realizedSmallSet (δ := δ) (δ' := δ')) := fun s hs =>
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun s hs =>
     (realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
       hs).contDiffWithinAt
-  exact hcd.continuousOn_deriv_of_isOpen realizedSmallSet_isOpen (by exact_mod_cast le_top)
+  exact hcd.continuousOn_deriv_of_isOpen metricPerturbationPathDomain_isOpen (by exact_mod_cast le_top)
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedDeTurckLieAt_intervalIntegrable
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -344,7 +354,7 @@ theorem linearizedDeTurckLieAt_intervalIntegrable
       (Set.Icc (0:ℝ) 1) :=
     (deriv_realizedDeTurckLieChartSum_continuousOn (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v
       w).mono
-      (Icc_subset_realizedSmallSet hδ_lt hδ'_lt)
+      (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
   have hii : IntervalIntegrable
       (deriv (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w))
       MeasureTheory.volume 0 1 :=
@@ -371,6 +381,7 @@ theorem linearizedDeTurckLieAt_intervalIntegrable
   exact fun hs' => hs (hsub hs')
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem realizedDeTurckLiePathValue_continuousOn_Icc
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -385,12 +396,12 @@ private theorem realizedDeTurckLiePathValue_continuousOn_Icc
     (f := realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) ?_ ?_
   · exact fun s hs =>
       (realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
-        (Icc_subset_realizedSmallSet hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
+        (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
   · intro s hs
     exact realizedDeTurckLiePathValue_eq_chartSum_on_Icc (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
       x v w hs
 
-omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem hasDerivAt_lieDeTurck_realizedMetricPath
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -414,6 +425,7 @@ private theorem hasDerivAt_lieDeTurck_realizedMetricPath
   · exact linearizedDeTurckLieAt_intervalIntegrable (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lieDerivMetricClm_realized_sub_eq_integral_linearizedDeTurckLie
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -450,6 +462,8 @@ theorem lieDerivMetricClm_realized_sub_eq_integral_linearizedDeTurckLie
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem hasDerivAt_realizedDeTurckLieChartSum_general
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -463,10 +477,10 @@ theorem hasDerivAt_realizedDeTurckLieChartSum_general
         ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
           deriv (fun s : ℝ =>
             DeTurckCoefficients.chartLieDeTurckComp (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀) s₀ := by
-  have hmem : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
-  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedFam_genJointGram
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀) s₀ := by
+  have hmem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
+  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_genJointGram
     (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
@@ -474,22 +488,22 @@ theorem hasDerivAt_realizedDeTurckLieChartSum_general
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) := by
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) := by
     funext s; rw [realizedDeTurckLieChartSum]
   rw [hbody]
   refine HasDerivAt.fun_sum (fun i _ => ?_)
   refine HasDerivAt.fun_sum (fun j _ => ?_)
   have hcontdiff : ContDiffAt ℝ ∞
       (fun s : ℝ => DeTurckCoefficients.chartLieDeTurckComp (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀ := by
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀ := by
     have hjoint := DifferentialGeometry.PDE.DeTurck.RicciLinearization.gen_joint_chartLieDeTurckComp
-      (I := I) (realizedFam (I := I) g₀ T T' hδ hδ') x hG g_bg i j hmem hy
+      (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG g_bg i j hmem hy
     have hcomp : (fun s : ℝ =>
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) =
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) =
         (fun p : ℝ × E =>
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.1) g_bg x i j p.2) ∘
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.1) g_bg x i j p.2) ∘
           (fun s : ℝ => (s, extChartAt I x x)) := by funext s; rfl
     rw [hcomp]
     exact hjoint.comp s₀ ((contDiffAt_id).prodMk contDiffAt_const)
@@ -502,8 +516,10 @@ private noncomputable def deTurckLieArm0Field
       δ')
     (s : ℝ) : SmoothCcTensor g₀ 2 2 :=
   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCoeffField (I := I) (M := M)
-    g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg
+    g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
 
+omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem deTurckLieArm0Field_eq_coeffField
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -512,7 +528,7 @@ private theorem deTurckLieArm0Field_eq_coeffField
     (s : ℝ) :
     deTurckLieArm0Field (I := I) g₀ g_bg T T' hδ hδ' s =
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCoeffField (I := I) (M := M)
-        g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg :=
+        g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg :=
   rfl
 
 end DifferentialGeometry.Analysis.Spectral

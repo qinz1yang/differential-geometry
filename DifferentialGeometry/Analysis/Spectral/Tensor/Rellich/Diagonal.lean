@@ -60,7 +60,7 @@ private lemma single_triple_extraction
     {S : ℕ → SmoothCcTensorH1 g r s}
     {R : ℝ}
     (hu_bdd : ∀ n,
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
@@ -75,7 +75,7 @@ private lemma single_triple_extraction
           Filter.atTop (𝓝 0) := by
   classical
   have hp_one : (1 : ℝ) < 2 := by norm_num
-  have h_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal 2)
+  have h_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal 2)
       (tensorChartComponentScalar (I := I) (M := M)
         g r s (S n).toCcTensor α Idx Jdx) := by
     intro n
@@ -90,7 +90,7 @@ private lemma single_triple_extraction
     intro n
     exact tensorChartComponentScalar_measurable
       (I := I) (M := M) g r s (S n).toCcTensor α Idx Jdx
-  have h_bdd : ∀ n, wkpNormChart (I := I) (M := M) g 1 (ENNReal.ofReal 2)
+  have h_bdd : ∀ n, wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal 2)
       (tensorChartComponentScalar (I := I) (M := M)
         g r s (S n).toCcTensor α Idx Jdx) ≤ ENNReal.ofReal R := by
     intro n
@@ -151,7 +151,7 @@ private lemma diagonal_extraction
     (hu_bdd : ∀ (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R)
@@ -173,7 +173,7 @@ private lemma diagonal_extraction
   | insert t T' ht_notin ih =>
       rcases ih with ⟨φ_T', hφ_T'_mono, hP_T'⟩
       have hu_bdd_comp : ∀ n,
-          wkpNormChart (I := I) (M := M) g 1 2
+          wkpNormChart (I := I) (M := M) 1 2
               (tensorChartComponentScalar (I := I) (M := M)
                 g r s (S (φ_T' n)).toCcTensor t.1.1 t.2.1 t.2.2) ≤
             ENNReal.ofReal R := fun n => hu_bdd t.1.1 t.2.1 t.2.2 (φ_T' n)
@@ -198,7 +198,7 @@ theorem tensorChartComponent_rellich_extraction_of_uniform_bound
     (hu_bdd : ∀ (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
@@ -233,7 +233,7 @@ theorem tensorChartComponent_rellich_extraction
     (hu_bdd : ∀ (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
@@ -259,7 +259,7 @@ theorem tensorChartComponent_rellich_extraction_restricted
     (hu_bdd : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
@@ -303,7 +303,7 @@ theorem tensorChartComponent_rellich_extraction_restricted
   | insert t T' ht_notin ih =>
       rcases ih with ⟨φ_T', hφ_T'_mono, hP_T'⟩
       have hu_bdd_comp : ∀ n,
-          wkpNormChart (I := I) (M := M) g 1 2
+          wkpNormChart (I := I) (M := M) 1 2
               (tensorChartComponentScalar (I := I) (M := M)
                 g r s (S (φ_T' n)).toCcTensor t.1.1 t.2.1 t.2.2) ≤
             ENNReal.ofReal R := fun n =>

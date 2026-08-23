@@ -13,8 +13,8 @@ Cauchy and convergence machinery. It builds on the extension results in
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal RealInnerProductSpace
+open MeasureTheory Filter
+open scoped ENNReal
 
 namespace DeGiorgi
 

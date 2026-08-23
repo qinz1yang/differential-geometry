@@ -20,7 +20,7 @@ def heatD1Half (t : ℝ) (x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
     baseD1Half ((heatScale t)⁻¹ • x)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD1Half_nonneg (t : ℝ) (x : V) : 0 ≤ heatD1Half t x := by
   unfold heatD1Half
   exact mul_nonneg
@@ -29,7 +29,7 @@ theorem heatD1Half_nonneg (t : ℝ) (x : V) : 0 ≤ heatD1Half t x := by
       (inv_nonneg.mpr (Real.sqrt_nonneg _)))
     (baseD1Half_nonneg (V := V) _)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD1Half_pow {t p : ℝ} (ht : 0 < t) (x : V) :
     (heatD1Half t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹ *
@@ -72,6 +72,7 @@ theorem heatD1Half_shift {t p : ℝ} (ht : 0 < t) (x : V) :
         baseD1HalfMass V p := by rw [heatD1Pow_scale (V := V) ht]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD1Tail_pow {t k p : ℝ} (ht : 0 < t) (hk : 0 ≤ k)
     (hp : 0 ≤ p) {x : V}
     (hx : k ≤ ‖(heatScale t)⁻¹ • x‖) :
@@ -189,7 +190,7 @@ theorem klFluxTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
   have hi : Integrable
       (fun z : ℝ × V ↦ ‖klFluxMajor (R ^ 2) x z‖ ^ p)
       (klTailMeasure (V := V) R S) := by
-    have hg := (klFluxMajor_memLp (V := V) (sq_pos_of_pos hR) x).integrable_norm_rpow
+    have hg := (klFluxMajor_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
       (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     have hg' : Integrable
         (fun z : ℝ × V ↦ ‖klFluxMajor (R ^ 2) x z‖ ^ p)
@@ -229,7 +230,7 @@ theorem klFluxTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
       (fun s : ℝ ↦ D *
         ((R ^ 2 - s) ^ klD1Exp V * baseD1HalfMass V p))
       (volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))) :=
-    (((klD1Time_intble (V := V) (sq_pos_of_pos hR)).1.mul_const _).const_mul _)
+    (((klD1Time_intble (V := V)).1.mul_const _).const_mul _)
   have hi' : Integrable
       (fun z : ℝ × V ↦ ‖klFluxMajor (R ^ 2) x z‖ ^ p)
       ((volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod

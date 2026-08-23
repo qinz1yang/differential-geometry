@@ -367,13 +367,10 @@ theorem HasWeakRiemannianGradLp_withBoundary.zero
 
 omit [InnerProductSpace ℝ E] in
 theorem MemW1pIntrinsicLp_withBoundary.zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
     MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
       (fun _ : M => (0 : ℝ)) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
-    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
-      (I := I) (M := M) g
   refine ⟨MemLp.zero, (fun _ : M => (0 : E)),
     HasWeakRiemannianGradLp_withBoundary.zero (I := I) (M := M) g, ?_⟩
   have hcongr : (fun x : M => Real.sqrt
@@ -537,8 +534,8 @@ theorem HasWeakRiemannianGradLp_withBoundary.add
     have hX' : HasCompactSupport (X : ∀ x, TangentSpace I x) := hX
     have h_div_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆
         tsupport (X : ∀ x, TangentSpace I x) :=
-      tsupport_divergence_g_with_boundary_subset_of_interior_support
-        (I := I) g X hX_int
+      tsupport_divergence_g_with_boundary_subset
+        (I := I) g X
     have h_div_supp_int :
         tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
       h_div_supp.trans hX_int
@@ -632,8 +629,8 @@ theorem HasWeakRiemannianGradLp_withBoundary.const_smul
     rw [h.pairing_eq X hX hX_int]
     have h_div_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆
         tsupport (X : ∀ x, TangentSpace I x) :=
-      tsupport_divergence_g_with_boundary_subset_of_interior_support
-        (I := I) g X hX_int
+      tsupport_divergence_g_with_boundary_subset
+        (I := I) g X
     have h_div_supp_int :
         tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
       h_div_supp.trans hX_int

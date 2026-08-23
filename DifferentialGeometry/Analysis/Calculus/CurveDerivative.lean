@@ -1,6 +1,6 @@
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Geometry.Curvature.Realized.TimeInterval
+import DifferentialGeometry.Analysis.TimeInterval
 
 noncomputable section
 

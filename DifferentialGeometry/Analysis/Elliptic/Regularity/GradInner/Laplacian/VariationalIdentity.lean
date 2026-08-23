@@ -132,16 +132,6 @@ theorem gradInnerCLM_smoothCase_mem_image_laplacianDomain
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_unconditional
-    (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
-    smoothMulH1Compl (I := I) (M := M) g φ
-        (smoothToH1Compl (I := I) (M := M) g v) ∈
-      laplacianDomainPow (I := I) (M := M) g 2 :=
-  smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two
-    (I := I) (M := M) g φ v
-
-omit [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
 theorem mem_image_laplacianDomain_iff_smoothMulH1Compl_mem_pow_two
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}

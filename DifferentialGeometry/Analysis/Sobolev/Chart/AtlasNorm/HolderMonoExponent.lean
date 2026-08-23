@@ -419,13 +419,12 @@ private lemma exponent_nonneg
 
 theorem wkpNorm_chartPushed_mono_exponent_holder
     [CompactSpace M] [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (α : M)
     {p p' : ℝ≥0∞} (hp_one : 1 ≤ p) (hp'_one : 1 ≤ p')
     (hp'_le_p : p' ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ u : M → ℝ,
-        MemWkpChart (I := I) (M := M) g k p u →
+        MemWkpChart (I := I) (M := M) k p u →
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p'
             (chartPushed (I := I) (M := M)
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -479,7 +478,7 @@ theorem wkpNorm_chartPushed_mono_exponent_holder
   have h_fR_memWkp_p : MemWkp (d := Module.finrank ℝ E) k p fR Ω := by
     rw [hfR_def]
     exact ChartTower.memWkp_chartPushedRaw_pou_mul_of_memWkpChart
-      (I := I) (M := M) g hp_one hu_mem α
+      (I := I) (M := M) hp_one hu_mem α
   have h_fR_memWkp_p' : MemWkp (d := Module.finrank ℝ E) k p' fR Ω := by
     have hp'_top_or_eq : p' ≠ ⊤ := by
       intro h

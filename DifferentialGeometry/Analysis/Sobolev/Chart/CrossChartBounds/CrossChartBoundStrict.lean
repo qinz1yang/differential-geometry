@@ -45,7 +45,7 @@ private lemma eLpNorm_restrict_eq_of_tsupport_subset
   rw [indicator_eq_indicator_of_tsupport_subset hΩΩ' hf_supp]
 
 lemma wkpNorm_eq_of_compactSupport_smooth_subset
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -217,9 +217,7 @@ private lemma crossChartK_subset_chartγ_source
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M γ hx.2
 
 theorem chartTransition_smoothDiffeoBoundedAtOrder_strict
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (γ α : M)
+    [I.Boundaryless] (γ α : M)
     {K : Set M} (hK_compact : IsCompact K)
     (hK_γ : K ⊆ (chartAt H γ).source)
     (hK_α : K ⊆ (chartAt H α).source)
@@ -721,7 +719,7 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder_strict
       exact hT_αγ_eq_on_Ωαγ z hz
 
 lemma chartPushed_chartPullback_zero_of_K_M_empty
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (γ α : M) {K_α : Set M}
     (hK_α_in_α : K_α ⊆ (chartAt H α).source)
     (hKM_empty : K_α ∩ tsupport
@@ -792,7 +790,6 @@ lemma chartPushed_chartPullback_zero_of_K_M_empty
 theorem cross_chart_bound_strict_strong
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source) :
@@ -813,7 +810,6 @@ theorem cross_chart_bound_strict_strong
             (d := Module.finrank ℝ E) 1 p χ
             (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  let _ := g
   set K_M : Set M := K_α ∩ tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hKM_def

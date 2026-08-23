@@ -574,12 +574,6 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
         (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx' Jdx') hy
       simp only [Function.comp] at this ⊢
       exact this
-    have hcontDiff1 :
-        ContDiffOn ℝ 1
-          ((tensorChartComponentRaw (I := I) (M := M) g r s
-              T α Idx' Jdx') ∘ (extChartAt I α).symm)
-          (extChartAt I α).target :=
-      hcontDiff.of_le (WithTop.coe_le_coe.mpr (le_top : (1 : ℕ∞) ≤ ⊤))
     have h1 :
         ‖fderiv ℝ
             (chartPushedRaw I α
@@ -593,13 +587,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
             ((toEuclidean (E := E)).symm y)‖ ^ 2 :=
       fderiv_chartPushedRaw_sq_le_compFderivSq (I := I) (M := M) (E := E) α
         (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx' Jdx')
-        hcontDiff1 hy
-    have hcontDiff2 :
-        ContDiffOn ℝ 2
-          ((tensorChartComponentRaw (I := I) (M := M) g r s
-              T α Idx' Jdx') ∘ (extChartAt I α).symm)
-          (extChartAt I α).target :=
-      hcontDiff.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))
+        hy
     have h2 :
         ‖iteratedFDeriv ℝ 2
             (chartPushedRaw I α
@@ -613,7 +601,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
             ((toEuclidean (E := E)).symm y)‖ ^ 2 :=
       iteratedFDeriv_two_chartPushedRaw_sq_le_compIterSq (I := I) (M := M) (E := E) α
         (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx' Jdx')
-        hcontDiff2 hy
+        hy
     have hLop2_le_Lmax := chain_Lop_two_le_Lmax (E := E)
     have hLop4_le_Lmax := chain_Lop_four_le_Lmax (E := E)
     have h_iterFD0 :
@@ -981,7 +969,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
     _ ≤ K_max * Lmax * 3 * (ρ * RHS_pouSobolev) := h_step3
     _ = K_max * Lmax * 3 * (ρ * RHS_pouSobolev) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M] in
 private lemma pouWeightedSummand_aemeasurable_on_chartTarget
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (α : M)

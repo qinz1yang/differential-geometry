@@ -15,23 +15,25 @@ variable {V : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
 
 def klPReal (V : Type*) [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   Module.finrank ℝ V + 4
 
 def klPDual (V : Type*) [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   (Module.finrank ℝ V + 4 : ℝ) / (Module.finrank ℝ V + 3 : ℝ)
 
 def klD1Exp (V : Type*) [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ :=
+    : ℝ :=
   ((Module.finrank ℝ V : ℝ) * (1 - klPDual V) - klPDual V) / 2
 
+omit [FiniteDimensional ℝ V] in
 theorem klPReal_ofReal : ENNReal.ofReal (klPReal V) = klP V := by
   unfold klPReal klP
   rw [show (Module.finrank ℝ V : ℝ) + 4 =
       ((Module.finrank ℝ V + 4 : ℕ) : ℝ) by norm_num]
   rw [ENNReal.ofReal_natCast]
 
+omit [FiniteDimensional ℝ V] in
 theorem klPDual_holder : (klPDual V).HolderConjugate (klPReal V) := by
   let n : ℝ := Module.finrank ℝ V
   have hn3 : 0 < n + 3 := by
@@ -50,9 +52,11 @@ theorem klPDual_holder : (klPDual V).HolderConjugate (klPReal V) := by
   · unfold klPReal
     positivity
 
+omit [FiniteDimensional ℝ V] in
 theorem klPDual_one : 1 ≤ klPDual V :=
   (klPDual_holder (V := V)).lt.le
 
+omit [FiniteDimensional ℝ V] in
 theorem klPDual_two : klPDual V ≤ 2 := by
   unfold klPDual
   have hn : 0 ≤ (Module.finrank ℝ V : ℝ) := by positivity
@@ -60,6 +64,7 @@ theorem klPDual_two : klPDual V ≤ 2 := by
   apply (div_le_iff₀ hn3).2
   linarith
 
+omit [FiniteDimensional ℝ V] in
 theorem klD1Exp_eq :
     klD1Exp V =
       -(Module.finrank ℝ V + 2 : ℝ) /
@@ -69,6 +74,7 @@ theorem klD1Exp_eq :
   field_simp [hn3]
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klD1Exp_gt : -1 < klD1Exp V := by
   rw [klD1Exp_eq]
   have hn3 : 0 < (Module.finrank ℝ V : ℝ) + 3 := by positivity
@@ -79,6 +85,7 @@ theorem klD1Exp_gt : -1 < klD1Exp V := by
   rw [neg_lt_neg_iff]
   exact (div_lt_one hn3).2 (by linarith)
 
+omit [FiniteDimensional ℝ V] in
 theorem klD1Exp_add :
     klD1Exp V + 1 =
       1 / (Module.finrank ℝ V + 3 : ℝ) := by
@@ -87,6 +94,7 @@ theorem klD1Exp_add :
   field_simp [hn3]
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klD1Scale_exp :
     (klD1Exp V + 1) / klPDual V =
       1 / (Module.finrank ℝ V + 4 : ℝ) := by
@@ -96,6 +104,7 @@ theorem klD1Scale_exp :
   have hn4 : (Module.finrank ℝ V : ℝ) + 4 ≠ 0 := by positivity
   field_simp [hn3, hn4]
 
+omit [FiniteDimensional ℝ V] in
 theorem klD1Time_int (t : ℝ) :
     ∫ s : ℝ in t / 2..t, (t - s) ^ klD1Exp V =
       (t / 2) ^ (klD1Exp V + 1) / (klD1Exp V + 1) := by
@@ -109,13 +118,15 @@ theorem klD1Time_int (t : ℝ) :
   rw [Real.zero_rpow hexp.ne']
   ring
 
+omit [FiniteDimensional ℝ V] in
 theorem klD1Time_set {t : ℝ} (ht : 0 < t) :
     ∫ s : ℝ in Set.Ioc (t / 2) t, (t - s) ^ klD1Exp V =
       (t / 2) ^ (klD1Exp V + 1) / (klD1Exp V + 1) := by
   rw [← intervalIntegral.integral_of_le (by linarith : t / 2 ≤ t)]
   exact klD1Time_int (V := V) t
 
-theorem klD1Time_intble {t : ℝ} (_ht : 0 < t) :
+omit [FiniteDimensional ℝ V] in
+theorem klD1Time_intble {t : ℝ} :
     IntervalIntegrable (fun s : ℝ ↦ (t - s) ^ klD1Exp V)
       volume (t / 2) t := by
   have hbase : IntervalIntegrable (fun u : ℝ ↦ u ^ klD1Exp V)

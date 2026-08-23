@@ -6,7 +6,6 @@ namespace DifferentialGeometry.Analysis.Spectral
 
 open Bundle
 open scoped Manifold ContDiff
-open DifferentialGeometry
 open DifferentialGeometry.PDE
 open DifferentialGeometry.PDE.DeTurck
 
@@ -52,15 +51,15 @@ theorem deTurckRicciRHS_principalSymbol_apply_eq_smul
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem deturck_ricci_principal_symbol_matches_rough_laplacian_of_symm
-    (g₀ g_bg : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+    (g₀ : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (ht : ∀ v w, t v w = t w v) :
     DifferentialGeometry.PDE.DeTurck.isotropicSymbol
         (E := E)
         (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
         (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀) x ξ t
-      = - DifferentialGeometry.PDE.DeTurck.deTurckSymbol (I := I) g₀ g_bg x ξ t :=
+      = - DifferentialGeometry.PDE.DeTurck.deTurckSymbol (I := I) g₀ x ξ t :=
   DifferentialGeometry.Analysis.Parabolic.deTurckRicciRHS_principal_symbol_equals_deTurckSymbol
-    (I := I) g₀ g_bg x ξ t ht
+    (I := I) g₀ x ξ t ht
 
 end DifferentialGeometry.Analysis.Spectral

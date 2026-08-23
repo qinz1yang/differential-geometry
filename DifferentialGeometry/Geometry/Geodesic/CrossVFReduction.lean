@@ -53,7 +53,7 @@ private lemma secondaryTrivSndForm_eventuallyEq_applyJac [I.Boundaryless]
       applyJac (I := I) α p := by
   classical
   have hbp1 : ((extChartAt I.tangent p) p).1 = extChartAt I p.proj p.proj :=
-    extChartAt_tangent_apply_fst (I := I) (q := p) (p := p) (mem_chart_source H p.proj)
+    extChartAt_tangent_apply_fst (I := I) (q := p) (p := p)
   set U : Set (E × E) :=
     {z : E × E | z.1 ∈ (extChartAt I p.proj).target ∧
       (extChartAt I p.proj).symm z.1 ∈ (chartAt H α).source} with hU_def
@@ -112,7 +112,7 @@ private lemma fderiv_applyJac_apply [I.Boundaryless]
   set bp := (extChartAt I.tangent p) p with hbp
   have hbp1 : bp.1 = extChartAt I p.proj p.proj := by
     rw [hbp]
-    exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := p) (mem_chart_source H p.proj)
+    exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := p)
   have hx_src : bp.1 ∈ chartTransitionSource (I := I) p.proj α := by
     rw [hbp1]
     exact extChartAt_mem_chartTransitionSource (I := I) p.proj α
@@ -233,7 +233,7 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
   set bp := (extChartAt I.tangent p) p with hbp
   have hbp1 : bp.1 = x₀ := by
     rw [hbp, hx₀]
-    exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := p) (mem_chart_source H p.proj)
+    exact extChartAt_tangent_apply_fst (I := I) (q := p) (p := p)
   have hbp2 : bp.2 = (p.snd : E) := by
     rw [hbp]
     rw [extChartAt_tangent_apply_snd_tangentCoordChange (I := I) (q := p) (p := p)
@@ -488,7 +488,7 @@ theorem IsGeodesicAt.hasGeodesicEquationAt
   obtain ⟨f₁, hf₁_proj_t₀, hf₁, hcross⟩ :=
     gc_cross_vf_projection_uniqueness (I := I) (g := g) (γ := γ) (t₀ := t₀) hγ
   exact IsGeodesicAt.hasGeodesicEquationAt_of_chartCentered_lift_eventuallyEq
-    (I := I) (g := g) (γ := γ) (t₀ := t₀) hγ (f₁ := f₁) hf₁ hf₁_proj_t₀ hcross
+    (I := I) (g := g) (γ := γ) (t₀ := t₀) (f₁ := f₁) hf₁ hf₁_proj_t₀ hcross
 
 section MovingFootToFixedChart
 
@@ -706,7 +706,7 @@ private lemma hasGeodesicEquationAt_comp_sub_const
   · exact hgeo
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem isGeodesicOn_glue_at_limit [I.Boundaryless] [CompleteSpace E]
+theorem isGeodesicOn_glue_at_limit
     (g : SmoothRiemannianMetric I M)
     {γ η : ℝ → M} {T δ : ℝ} (hδ : 0 < δ)
     (hγ : IsGeodesicOn (I := I) g γ (Set.Iio T))
@@ -754,7 +754,7 @@ theorem isGeodesicOn_glue_at_limit [I.Boundaryless] [CompleteSpace E]
     simp only [hG, hηT]; rw [if_neg (not_lt.mpr (le_of_lt hgt))]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem isGeodesicOn_glue_at_limit_Ioo [I.Boundaryless] [CompleteSpace E]
+theorem isGeodesicOn_glue_at_limit_Ioo
     (g : SmoothRiemannianMetric I M)
     {γ η : ℝ → M} {a T δ : ℝ} (hδ : 0 < δ) (haT : a < T)
     (hγ : IsGeodesicOn (I := I) g γ (Set.Ioo a T))

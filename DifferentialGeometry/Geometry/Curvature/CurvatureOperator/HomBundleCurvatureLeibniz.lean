@@ -113,7 +113,8 @@ lemma cov_V_toFun_pairedSection_apply
   abel
 
 omit [BoundarylessManifold I M] in
-omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F] in
+omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F]
+    [ContMDiffVectorBundle ∞ F V I] in
 lemma cov_V_toFun_covApply_pairedSection_apply
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov_V ∞]
@@ -169,7 +170,8 @@ lemma cov_V_toFun_covApply_pairedSection_apply
   abel
 
 omit [BoundarylessManifold I M] in
-omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F] in
+omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F]
+    [ContMDiffVectorBundle ∞ F V I] in
 lemma riemannSec_cov_V_pairedSection_eq
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov_V ∞]
@@ -200,6 +202,7 @@ lemma riemannSec_cov_V_pairedSection_eq
 
 omit [BoundarylessManifold I M] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F] in
+omit [ContMDiffVectorBundle ∞ F V I] in
 theorem riemannSec_homBundleGen_apply_eq
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov_V ∞]

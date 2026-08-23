@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 open DifferentialGeometry.PDE.RicciFlow
@@ -14,7 +14,6 @@ open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -164,7 +163,7 @@ theorem gOpBound_unitQuad
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem metricDiff_smallC0
     (g : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}
@@ -182,7 +181,7 @@ theorem metricDiff_smallC0
           (ccTensorBilinSymm (I := I) q
             (metricDifferenceCcTensor (I := I) (M := M) q (g t))) δ := by
   let K : Set Real := Set.Ico a b
-  have hG : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+  have hG : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
       (fun t x => metricTensorField (I := I) (g t) x) := by
     apply metricTensorCont_of_chartGram (K := K) g
     intro x₀ i j
@@ -358,7 +357,7 @@ theorem pairOpBound
       mul_le_mul_of_nonneg_left hqone (mul_nonneg (by norm_num) hε₀)
     _ = 2 * ε / (1 - ε) := by ring
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem metricPair_smallC0
     (g₀ g₁ : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}

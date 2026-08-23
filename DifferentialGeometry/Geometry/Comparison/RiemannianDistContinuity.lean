@@ -182,7 +182,6 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M]
   [T2Space M] in
 theorem param_edist_le
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsManifold I 1 M]
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
     {U : Set E} {L : ℝ}
     (hU : U ⊆ Ψ.source)

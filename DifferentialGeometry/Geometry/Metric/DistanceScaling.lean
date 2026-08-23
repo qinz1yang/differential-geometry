@@ -59,12 +59,12 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem riemannianEDistOf_eq_riemannianEDist
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    [hContinuous : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := I) (M := M) g)
     (x y : M) :
     riemannianEDistOf (I := I) g x y = riemannianEDist I x y := by
+  let _ := hContinuous
   rw [edistOf_iInf (I := I) g x y]
   rw [Manifold.riemannianEDist]
   refine iInf_congr fun γ => ?_

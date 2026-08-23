@@ -14,6 +14,7 @@ variable [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
 variable [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 variable {T : ℝ}
 
+omit [CompleteSpace X] in
 theorem memLp_timeOp
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -44,6 +45,7 @@ private noncomputable def timeOpFun
     (f : timeL2 X T) : timeL2 Y T :=
   (memLp_timeOp A hA C hC f).toLp (fun t => A t (f t))
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_apply_ae
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -53,6 +55,7 @@ private theorem timeOpFun_apply_ae
     timeOpFun A hA C hC f =ᵐ[timeMeasure T] fun t => A t (f t) :=
   (memLp_timeOp A hA C hC f).coeFn_toLp
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_add
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -71,6 +74,7 @@ private theorem timeOpFun_add
   simp only [Pi.add_apply]
   rw [hf, hg, map_add]
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_smul
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -87,6 +91,7 @@ private theorem timeOpFun_smul
   simp only [Pi.smul_apply]
   rw [hf, map_smul]
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_norm_le
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -121,6 +126,7 @@ noncomputable def timeOp
   (timeOpLin A hA C hC).mkContinuous (C : ℝ)
     (timeOpFun_norm_le A hA C hC)
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 theorem timeOp_apply_ae
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -130,6 +136,7 @@ theorem timeOp_apply_ae
     timeOp A hA C hC f =ᵐ[timeMeasure T] fun t => A t (f t) :=
   timeOpFun_apply_ae A hA C hC f
 
+omit [CompleteSpace X] [CompleteSpace Y] in
 theorem timeOp_norm_le
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))

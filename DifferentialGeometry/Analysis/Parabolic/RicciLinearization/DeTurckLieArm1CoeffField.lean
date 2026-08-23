@@ -1,10 +1,10 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmOperatorFieldApplication
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CorrFieldChristoffelCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradParametricJointSmooth
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ContractedBianchi
 import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.SlotSubstitutionFiberNormBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.DeTurckLieArm2TraceCoeff
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricConnDiffLoweredTrilinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricConnectionDifferenceLoweredTrilinear
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -73,24 +73,24 @@ noncomputable def deTurckLieKoszulTraceFib (g₀ g₁ : SmoothRiemannianMetric I
     (σ : Equiv.Perm (Fin 3)) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-      connDiffFib (I := I) g₁ g₀ x).comp
+      connectionDifferenceFib (I := I) g₁ g₀ x).comp
     ((cometricDoubleTraceFib (I := I) g₁ 1 x).comp
       (domDomCongrFibRank (I := I) 3 σ x))
 
 noncomputable def deTurckLieArm1CoreFib (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermInnerTwo x
-      (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     - deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermCorrection x
-        (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
+        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
     - (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 x
           ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x)).comp
         (domDomCongrFibRank (I := I) 3 deTurckLieArm1VecSlotPerm x)
     - deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermOuterZero x
-        (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)
+        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     - deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieArm1KoszulMidPerm x
     - deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermOuterTwo x
-        (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)
+        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
 
 noncomputable def deTurckLieArm1Fib (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
@@ -152,6 +152,7 @@ private theorem tensor0SProd_section_contMDiff {p q : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem deTurckLiePairTraceFib_apply_section_contMDiff
     (g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 6))
     (κ : ∀ x : M, Tensor0SBundle.Tensor0SSpace 3 I x)
@@ -187,6 +188,7 @@ private theorem deTurckLiePairTraceFib_apply_section_contMDiff
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem deTurckLieKoszulTraceFib_apply_section_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 3))
     (Y : ContMDiffSection I (Tensor0SBundle.Tensor0SModel 3 ℝ E) ∞
@@ -201,7 +203,7 @@ private theorem deTurckLieKoszulTraceFib_apply_section_contMDiff
   have htr1 := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 1) hperm
   have hkos := ContMDiff.clm_bundle_apply (b := id)
-    (connDiffFib_contMDiff (I := I) g₁ g₀) htr1
+    (connectionDifferenceFib_contMDiff (I := I) g₁ g₀) htr1
   refine hkos.congr (fun x => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
@@ -213,6 +215,7 @@ private theorem deTurckLieKoszulTraceFib_apply_section_contMDiff
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private theorem deTurckLieArm1CoreFib_apply_section_contMDiff
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (Y : ContMDiffSection I (Tensor0SBundle.Tensor0SModel 3 ℝ E) ∞
@@ -224,12 +227,12 @@ private theorem deTurckLieArm1CoreFib_apply_section_contMDiff
   classical
   have hS2 := deTurckLiePairTraceFib_apply_section_contMDiff (I := I) g₁
     deTurckLieArm1PairPermInnerTwo
-    (fun x => metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)
-    (metricConnDiffLoweredFib_contMDiff (I := I) g₁ g₁ g₀) Y
+    (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+    (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀) Y
   have hB := deTurckLiePairTraceFib_apply_section_contMDiff (I := I) g₁
     deTurckLieArm1PairPermCorrection
-    (fun x => metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x)
-    (metricConnDiffLoweredFib_contMDiff (I := I) g₁ g₁ g_bg) Y
+    (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
+    (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g_bg) Y
   have hpermY := domDomCongr_section_contMDiff_local (I := I) (d := 3)
     deTurckLieArm1VecSlotPerm (fun x => Y x) Y.contMDiff
   have hT2 := interiorProductField_contMDiff (I := I) 2
@@ -239,14 +242,14 @@ private theorem deTurckLieArm1CoreFib_apply_section_contMDiff
     (PDE.DeTurck.deTurckVF (I := I) g₁ g₀)
   have hT3 := deTurckLiePairTraceFib_apply_section_contMDiff (I := I) g₁
     deTurckLieArm1PairPermOuterZero
-    (fun x => metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)
-    (metricConnDiffLoweredFib_contMDiff (I := I) g₁ g₁ g₀) Y
+    (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+    (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀) Y
   have hT4 := deTurckLieKoszulTraceFib_apply_section_contMDiff (I := I) g₀ g₁
     deTurckLieArm1KoszulMidPerm Y
   have hT5 := deTurckLiePairTraceFib_apply_section_contMDiff (I := I) g₁
     deTurckLieArm1PairPermOuterTwo
-    (fun x => metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)
-    (metricConnDiffLoweredFib_contMDiff (I := I) g₁ g₁ g₀) Y
+    (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+    (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀) Y
   have hsum := ((((hS2.sub_section hB).sub_section hT2).sub_section hT3).sub_section
     hT4).sub_section hT5
   refine hsum.congr (fun x => ?_)
@@ -260,6 +263,7 @@ private theorem deTurckLieArm1CoreFib_apply_section_contMDiff
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckLieArm1Fib_contMDiff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
@@ -301,6 +305,7 @@ noncomputable def deTurckLieArm1Coeff (g₀ g₁ g_bg : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem deTurckLieArm1Coeff_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg).toSection x =
       (show Tensor0SBundle.TensorRSSpace 3 2 I x from

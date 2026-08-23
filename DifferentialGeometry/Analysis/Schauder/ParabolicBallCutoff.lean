@@ -347,6 +347,10 @@ theorem parabolicBallCutoffSpatialFDeriv_holderWith_restrict
     hr hrR (zero_le alpha) halpha1
   have hbound := ballCutoffFDerivBound_nonneg hr hrR
   have h := separableBcfPath_holderWith_restrict
+    (V := V) (F := V →L[Real] Real)
+    (alpha := alpha)
+    (Keta := intervalCutoffHolderConst a t₀ t₁ b)
+    (Kv := ballCutoffFDerivHolderConst r R)
     (Meta := 1) (Mv := parabolicBallCutoffSpatialFDerivSupConst r R)
     (J := J)
     (intervalCutoffBcf a t₀ t₁ b ha ht hb)
@@ -377,6 +381,10 @@ theorem parabolicBallCutoffSpatialFDeriv2_holderWith_restrict
     hr hrR (zero_le alpha) halpha1
   have hbound := ballCutoffFDeriv2Bound_nonneg hr hrR
   have h := separableBcfPath_holderWith_restrict
+    (V := V) (F := V →L[Real] V →L[Real] Real)
+    (alpha := alpha)
+    (Keta := intervalCutoffHolderConst a t₀ t₁ b)
+    (Kv := ballCutoffFDeriv2HolderConst center hr hrR)
     (Meta := 1) (Mv := parabolicBallCutoffSpatialFDeriv2SupConst r R)
     (J := J)
     (intervalCutoffBcf a t₀ t₁ b ha ht hb)

@@ -321,7 +321,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem pathELength_eq_arcLength_riemannianBundle
+theorem pathELength_eq_arcLength_riemannianBundle
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ}
     (hab : a ≤ b)
     (hγ_int : MeasureTheory.IntegrableOn
@@ -403,7 +403,6 @@ private theorem pathELength_eq_arcLength_riemannianBundle
     unfold DifferentialGeometry.Geometry.Riemannian.Variation.arcLength
     rfl
   rw [h_arcLength, h_intInterval, ← h_Icc_Ioc]
-
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

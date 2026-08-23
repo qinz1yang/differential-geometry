@@ -30,7 +30,7 @@ def baseD3Map (v w x : V) : V →L[ℝ] ℝ :=
       ((4 : ℝ)⁻¹ * ⟪x, v⟫ * baseHeat x) • innerSL ℝ w +
         ((4 : ℝ)⁻¹ * ⟪v, w⟫ * baseHeat x) • innerSL ℝ x
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 @[simp] theorem baseD3Map_apply (v w x u : V) :
     baseD3Map v w x u = baseD3 u v w x := by
   simp only [baseD3Map, ContinuousLinearMap.add_apply,
@@ -39,7 +39,7 @@ omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
   rw [real_inner_comm v u, real_inner_comm w u]
   ring
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD2_hasFDeriv (v w x : V) :
     HasFDerivAt (baseD2 v w) (baseD3Map v w x) x := by
   have hv : HasFDerivAt (fun y : V => ⟪y, v⟫) (innerSL ℝ v) x := by
@@ -62,7 +62,7 @@ theorem baseD2_hasFDeriv (v w x : V) :
 def baseD3Maj (x : V) : ℝ :=
   ((8 : ℝ)⁻¹ * ‖x‖ ^ 3 + (3 / 4 : ℝ) * ‖x‖) * baseHeat x
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD3Maj_nonneg (x : V) : 0 ≤ baseD3Maj x := by
   unfold baseD3Maj
   exact mul_nonneg
@@ -71,7 +71,7 @@ theorem baseD3Maj_nonneg (x : V) : 0 ≤ baseD3Maj x := by
       (mul_nonneg (by positivity) (norm_nonneg x)))
     (baseHeat_nonneg x)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD3_bound (u v w x : V) :
     ‖baseD3 u v w x‖ ≤ ‖u‖ * ‖v‖ * ‖w‖ * baseD3Maj x := by
   let A : ℝ := -(8 : ℝ)⁻¹ * ⟪x, u⟫ * ⟪x, v⟫ * ⟪x, w⟫
@@ -179,12 +179,12 @@ def heatD3Map (t : ℝ) (v w x : V) : V →L[ℝ] ℝ :=
       (heatScale t)⁻¹ * (heatScale t)⁻¹) •
     baseD3Map v w ((heatScale t)⁻¹ • x)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 @[simp] theorem heatD3Map_apply (t : ℝ) (v w x u : V) :
     heatD3Map t v w x u = heatD3 t u v w x := by
   simp [heatD3Map, heatD3]
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem heatD2_hasFDeriv {t : ℝ} (v w x : V) :
     HasFDerivAt (heatD2 t v w) (heatD3Map t v w x) x := by
   let S : V →L[ℝ] V := (heatScale t)⁻¹ • ContinuousLinearMap.id ℝ V
@@ -199,6 +199,7 @@ theorem heatD2_hasFDeriv {t : ℝ} (v w x : V) :
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3Maj_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     0 ≤ heatD3Maj t x := by
   unfold heatD3Maj
@@ -213,6 +214,7 @@ theorem heatD3Maj_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD3Maj_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3_bound {t : ℝ} (ht : 0 < t) (u v w x : V) :
     ‖heatD3 t u v w x‖ ≤ ‖u‖ * ‖v‖ * ‖w‖ * heatD3Maj t x := by
   unfold heatD3 heatD3Maj
@@ -242,6 +244,7 @@ theorem heatD3_bound {t : ℝ} (ht : 0 < t) (u v w x : V) :
             baseD3Maj ((heatScale t)⁻¹ • x)) := by ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD3Map_norm_le {t : Real} (ht : 0 < t) (v w x : V) :
     ‖heatD3Map t v w x‖ ≤ ‖v‖ * ‖w‖ * heatD3Maj t x := by
   apply ContinuousLinearMap.opNorm_le_bound (heatD3Map t v w x)
@@ -319,6 +322,7 @@ def baseD2DtMaj (x : V) : ℝ :=
     (2 : ℝ)⁻¹ * ‖x‖ * baseD3Maj x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD2DtMaj_nonneg (x : V) : 0 ≤ baseD2DtMaj x := by
   unfold baseD2DtMaj
   exact add_nonneg
@@ -328,6 +332,7 @@ theorem baseD2DtMaj_nonneg (x : V) : 0 ≤ baseD2DtMaj x := by
       (baseD3Maj_nonneg x))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem baseD2Dt_bound (v w x : V) :
     ‖baseD2Dt v w x‖ ≤ ‖v‖ * ‖w‖ * baseD2DtMaj x := by
   let c : ℝ := ((Module.finrank ℝ V : ℝ) + 2) / 2
@@ -469,6 +474,7 @@ theorem heatD2_time {t : ℝ} (ht : 0 < t) (v w x : V) :
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2DtMaj_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     0 ≤ heatD2DtMaj t x := by
   unfold heatD2DtMaj
@@ -479,6 +485,7 @@ theorem heatD2DtMaj_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD2DtMaj_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] in
 theorem heatD2Dt_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
     ‖heatD2Dt t v w x‖ ≤ ‖v‖ * ‖w‖ * heatD2DtMaj t x := by
   unfold heatD2Dt heatD2DtMaj

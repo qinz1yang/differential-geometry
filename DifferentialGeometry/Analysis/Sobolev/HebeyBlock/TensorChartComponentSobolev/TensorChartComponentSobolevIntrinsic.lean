@@ -38,7 +38,7 @@ private lemma exists_perAlphaSobolevConstant
       ∀ (S : SmoothCcTensorH1 g r s)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
@@ -69,7 +69,7 @@ private lemma perAlphaSobolevConstant_intrinsic_bound
     (S : SmoothCcTensorH1 g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    wkpNormChart (I := I) (M := M) g 1 2
+    wkpNormChart (I := I) (M := M) 1 2
         (tensorChartComponentScalar (I := I) (M := M)
           g r s S.toCcTensor α Idx Jdx) ≤
       ENNReal.ofReal
@@ -86,7 +86,7 @@ private lemma wkpNormChart_tensorChartComponentScalar_eq_zero_of_inactive_intrin
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    wkpNormChart (I := I) (M := M) g 1 2
+    wkpNormChart (I := I) (M := M) 1 2
         (tensorChartComponentScalar (I := I) (M := M)
           g r s S α Idx Jdx) = 0 := by
   have h_zero :=
@@ -97,7 +97,7 @@ private lemma wkpNormChart_tensorChartComponentScalar_eq_zero_of_inactive_intrin
     tensorChartComponentScalar_eq_zero_of_pou_zero
       (I := I) (M := M) g r s α h_zero S Idx Jdx
   rw [h_scalar_zero]
-  exact wkpNormChart_zero_fun (I := I) (M := M) g (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+  exact wkpNormChart_zero_fun (I := I) (M := M) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
 
 private noncomputable def totalActiveSobolevConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) : ℝ :=
@@ -143,7 +143,7 @@ theorem tensorChartComponent_wkpNormChart_le
       ∀ (S : SmoothCcTensorH1 g r s) (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
@@ -153,7 +153,7 @@ theorem tensorChartComponent_wkpNormChart_le
   intro S α Idx Jdx
   by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
   · have h_per :
-        wkpNormChart (I := I) (M := M) g 1 2
+        wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx) ≤
           ENNReal.ofReal

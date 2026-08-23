@@ -52,7 +52,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 theorem deTurckForcing_solCoeff_continuous_smallTimeBase
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -73,10 +73,10 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
                 (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
                   (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ B i) ∧
       (∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)),
-        ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+        ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t‖ ≤
           deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super) ∧
-      (∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+      (∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i)
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
             (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -244,38 +244,38 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
           mul_le_mul_of_nonneg_left hterm
             (tensorSobolevWeight_nonneg (I := I) (M := M) i (-ρ))
       _ = Cτ * tensorSobolevWeight (I := I) (M := M) i (-ρ) := by ring
-  · have hae_coeff : ∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+  · have hae_coeff : ∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i)
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
           (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u)) := fun i =>
       MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume)
         (Set.Icc_subset_Icc le_rfl hd_le)
-        (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hT1 hc gforce i)
+        (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hc gforce i)
     have hae_all : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)),
-        ∀ i, (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+        ∀ i, (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i
           = perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t :=
       (MeasureTheory.ae_all_iff).2 hae_coeff
     filter_upwards [hae_all, MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
       (measurableSet_Icc (a := (0 : ℝ)) (b := d))] with t ht_coeff ht_mem
-    have hnorm_sq : ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+    have hnorm_sq : ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t‖ ^ 2
         = ∑' i, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
             * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
                 (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 := by
       rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
       exact tsum_congr (fun i => by rw [ht_coeff i])
-    have hWsq_le : ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+    have hWsq_le : ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t‖ ^ 2 ≤ R₀ ^ 2 := by
       rw [hnorm_sq]; exact hball_d t ht_mem
-    nlinarith [norm_nonneg (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+    nlinarith [norm_nonneg (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t), hR₀_pos.le, hWsq_le]
   · intro i
     exact MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume)
       (Set.Icc_subset_Icc le_rfl hd_le)
-      (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hT1 hc gforce i)
+      (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hc gforce i)
 
 private theorem exists_smoothCcTensor_of_allOrder_spectralMass_local
     (g₀ : SmoothRiemannianMetric I M)
@@ -344,7 +344,6 @@ open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorMultilinear
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
-open DifferentialGeometry.Geometry.Operator
 
 section FiniteOrderAnisotropicReconstruction
 
@@ -1171,6 +1170,8 @@ private lemma tensorChartComponentRaw_sub_eq
   ring
 
 set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma reconFO_raw_eq_chartRHS
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
@@ -1188,11 +1189,11 @@ private lemma reconFO_raw_eq_chartRHS
     exact hx
   have hcongr := tensorChartComponentRaw_congr_toSection
     (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg S hδ_lt hδS)
-    (DifferentialGeometry.PDE.RicciFlow.deTurckRHSSectionBg (I := I) g_bg
+    (DifferentialGeometry.PDE.RicciFlow.deTurckRHSSectionBackground (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδS))
     (fun z => rfl) α ![] Jdx x
   rw [hcongr,
-    tensorChartComponentRaw_deTurckRHSSectionBg_eq_chartRicciLie (I := I) (M := M)
+    tensorChartComponentRaw_deTurckRHSSectionBackground_eq_chartRicciLie (I := I) (M := M)
       g_bg (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδS) α hgood ![] Jdx,
     chartDeTurckRicciRHS_def]
 
@@ -2355,7 +2356,7 @@ private theorem deTurckRHSRecon_pathCoeff_finiteOrder_timeContDiff_withinMass
         unfold tensorSobolevWeight
         rw [Real.rpow_natCast, mul_comm 2 κ, pow_mul, sq]
       rw [hweq]
-      have hsummable := tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) hc
+      have hsummable := tensorL2Coeff_summable_sq (I := I) (M := M) hc
         (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
           (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 κ (Rjt t)))
       have hle_tsum : (tensorL2Coeff (I := I) (M := M) hc
@@ -2554,8 +2555,7 @@ private theorem deTurckRemainder_pathCoeff_finiteOrder_timeContDiff_withinMass
     nlinarith [hterm_recon, hterm_raw]
 
 private theorem deTurckRemainder_path_coeff_finiteOrder_timeJet_globalSection
-    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (_ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
+    (g₀ g_bg : SmoothRiemannianMetric I M)
     {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -2690,7 +2690,6 @@ private theorem deTurckRemainder_path_coeff_finiteOrder_timeJet_globalSection
 
 theorem deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
     {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -2720,7 +2719,7 @@ theorem deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass
   classical
   obtain ⟨ψ, Rjet, hψ_smooth, hψ_eq, hjet, hcovbnd⟩ :=
     deTurckRemainder_path_coeff_finiteOrder_timeJet_globalSection (I := I) (M := M)
-      g₀ g_bg a ha_super hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass
+      g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass
   refine ⟨ψ, hψ_smooth, ?_, ?_⟩
   · intro j hj σ hσ
     obtain ⟨k', hk'⟩ : ∃ k' : ℕ,
@@ -2789,7 +2788,7 @@ theorem deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass
 theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
-    {T : ℝ} (_hT : 0 < T) {d₂ : ℝ} (hd₂_pos : 0 < d₂) (_hd₂_le : d₂ ≤ T)
+    {d₂ : ℝ} (hd₂_pos : 0 < d₂)
     (w : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
     (hw_ball : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)),
       ‖w t‖ ≤ deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super)
@@ -2947,7 +2946,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       rw [h0, smoothCcToTensorHs_smul, zero_smul]
     refine ⟨(Classical.choose (deTurckSobolevNHa2_exists_of_super
       (I := I) (M := M) g₀ a ha_super)).2,
-      lt_of_le_of_lt hp_lt (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)), fun t
+      lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)), fun t
         => ?_⟩
     by_cases ht : t ∈ Set.Icc (0 : ℝ) d₂
     · exact hp_ball (F t) (hball_pt t ht)
@@ -2957,7 +2956,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       exact hp_pos.le
   obtain ⟨ψ, hψ_smooth, hψ_mass, hψ_coeff⟩ :=
     deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass (I := I) (M := M)
-      g₀ g_bg a ha_super hd₂_pos k F hδ_lt hδ_all φ hφ_smooth
+      g₀ g_bg a hd₂_pos k F hδ_lt hδ_all φ hφ_smooth
       hF_coeff hφ_mass
   refine ⟨ψ, hψ_smooth, hψ_mass, fun i => ?_⟩
   have hae_all : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)),
@@ -2984,11 +2983,11 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
 theorem deTurckForcing_finiteOrderSmoothDriver
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
-    {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    {T : ℝ} (hT : 0 < T)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       (fun t => deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
-        (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+        (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -3010,7 +3009,7 @@ theorem deTurckForcing_finiteOrderSmoothDriver
   classical
   obtain ⟨d, hd_pos, hd_le, hs_cont, hs_mass, hball, hcoeff_id⟩ :=
     deTurckForcing_solCoeff_continuous_smallTimeBase (I := I) (M := M)
-      g₀ a ha_super hT hT1 gforce hspatial
+      g₀ a ha_super hT gforce hspatial
   choose c hc_cont hc_ae using hs_cont
   have hae_d : ∀ i, c i =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
       (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -3032,7 +3031,7 @@ theorem deTurckForcing_finiteOrderSmoothDriver
   have hforce_coeff : ∀ i, (fun t => (gforce t).coeff i)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
         (fun t => (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
             (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)).coeff i) := by
     intro i
     exact MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume) hsub
@@ -3048,8 +3047,8 @@ theorem deTurckForcing_finiteOrderSmoothDriver
   | zero =>
     obtain ⟨ψ, hψ_smooth, hψ_mass, hψ_ae⟩ :=
       deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving (I := I) (M := M)
-        g₀ g_bg a ha_super hT hd_pos hd_le
-        (fun t => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+        g₀ g_bg a ha_super hd_pos
+        (fun t => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)
         hball 0
         c
@@ -3067,7 +3066,7 @@ theorem deTurckForcing_finiteOrderSmoothDriver
     obtain ⟨hφ_cont, hφ_mass⟩ :=
       perModeConv_finiteOrder_timeJet_spectralMass_gain (I := I) (M := M)
         g₀ hd_pos.le k fk hfk_cont hfk_mass
-    have hw_coeff : ∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+    have hw_coeff : ∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i)
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
           (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
@@ -3086,8 +3085,8 @@ theorem deTurckForcing_finiteOrderSmoothDriver
       exact (hcoeff_id i).trans hbridge
     obtain ⟨ψ, hψ_smooth, hψ_mass, hψ_ae⟩ :=
       deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving (I := I) (M := M)
-        g₀ g_bg a ha_super hT hd_pos hd_le
-        (fun t => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+        g₀ g_bg a ha_super hd_pos
+        (fun t => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)
         hball (k + 1)
         (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i))

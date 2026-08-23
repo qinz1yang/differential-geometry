@@ -16,7 +16,6 @@ namespace WithBoundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -26,7 +25,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 open DifferentialGeometry.Integral.Measure
 
 def boundaryLaplacian
-    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] [T2Space M]
+    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M)
     {f : BoundaryManifold I M → ℝ}
     (hf : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ f) :
@@ -36,8 +35,7 @@ def boundaryLaplacian
 omit [InnerProductSpace ℝ E] in
 omit [FiniteDimensional ℝ E] in
 @[simp] lemma boundaryLaplacian_def
-    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M)
     {f : BoundaryManifold I M → ℝ}
     (hf : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ f)
     (x : BoundaryManifold I M) :
@@ -58,8 +56,7 @@ theorem boundaryLaplacian_contMDiff
 omit [InnerProductSpace ℝ E] in
 omit [FiniteDimensional ℝ E] in
 theorem boundaryLaplacian_add
-    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M)
     {f h : BoundaryManifold I M → ℝ}
     (hf : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ f)
     (hh : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ h)
@@ -71,9 +68,8 @@ theorem boundaryLaplacian_add
 
 omit [InnerProductSpace ℝ E] in
 omit [FiniteDimensional ℝ E] in
-@[simp] theorem boundaryLaplacian_const
-    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric I M) (c : ℝ)
+theorem boundaryLaplacian_const
+    [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (c : ℝ)
     (x : BoundaryManifold I M) :
     boundaryLaplacian (I := I) (M := M) g
       (contMDiff_const : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞
@@ -83,8 +79,7 @@ omit [FiniteDimensional ℝ E] in
 omit [InnerProductSpace ℝ E] in
 omit [FiniteDimensional ℝ E] in
 theorem boundaryLaplacian_eq_zero_of_boundaryless
-    [I.Boundaryless] [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M)
     {f : BoundaryManifold I M → ℝ}
     (hf : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ f) :
     boundaryLaplacian (I := I) (M := M) g hf = 0 := by

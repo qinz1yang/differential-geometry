@@ -2848,7 +2848,6 @@ omit [Module.Finite ℝ E] in
 theorem intrinsicGeodesic_jointContinuity
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -3114,7 +3113,6 @@ omit [Module.Finite ℝ E] in
 theorem expMapIntrinsic_continuous
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -3127,7 +3125,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem expMapIntrinsic_continuous_of_complete_metric
-    [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) :

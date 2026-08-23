@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.DiagInvBranch
+import DifferentialGeometry.Geometry.Exponential.NormalBallHome
 
 set_option autoImplicit false
 
@@ -11,6 +12,7 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
+open NormalCoordinates
 namespace Exponential
 namespace DiagInvBranch
 
@@ -47,7 +49,6 @@ def readDom
 omit [ConnectedSpace M] in
 omit [InnerProductSpace ℝ E] in
 theorem readoutDomInf
-    [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
@@ -80,6 +81,83 @@ theorem readoutDomInf
   refine ⟨hopen, hp, hsmooth, ?_⟩
   intro y hy
   exact ⟨B.right_inv hy.1, B.proj_eq hy.1, B.exp_eq hy.1⟩
+
+section ChartReadout
+
+variable {E' : Type*} [NormedAddCommGroup E'] [InnerProductSpace ℝ E']
+  [FiniteDimensional ℝ E'] [NeZero (Module.finrank ℝ E')]
+variable {H' : Type*} [TopologicalSpace H']
+  {I' : ModelWithCorners ℝ E' H'} [I'.Boundaryless]
+variable {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
+  [IsManifold I' ∞ M'] [T2Space M'] [SigmaCompactSpace M'] [ConnectedSpace M']
+variable [RiemannianBundle (fun x : M' ↦ TangentSpace I' x)]
+variable [PseudoEMetricSpace M'] [IsRiemannianManifold I' M'] [CompleteSpace M']
+  [IsContinuousRiemannianBundle E' (fun x : M' ↦ TangentSpace I' x)]
+
+noncomputable def chartReadout
+    {g : SmoothRiemannianMetric I' M'}
+    {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
+      ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {p : M'} (B : DiagInvBranch (I := I') g hEnorm p)
+    (c : NormalBallChart (I := I') p) (y : M' × M') : E' :=
+  (c.tangentHome.symm (B.inv y)).2
+
+def chartReadDom
+    {g : SmoothRiemannianMetric I' M'}
+    {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
+      ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {p : M'} (B : DiagInvBranch (I := I') g hEnorm p)
+    (c : NormalBallChart (I := I') p) : Set (M' × M') :=
+  B.dom ∩ Prod.fst ⁻¹' c.restrictBall.target
+
+omit [ConnectedSpace M'] in
+theorem chartReadoutInf
+    {g : SmoothRiemannianMetric I' M'}
+    {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
+      ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {p : M'} (B : DiagInvBranch (I := I') g hEnorm p)
+    (c : NormalBallChart (I := I') p) :
+    IsOpen (B.chartReadDom c) ∧
+      (p, p) ∈ B.chartReadDom c ∧
+      ContMDiffOn (I'.prod I') 𝓘(ℝ, E') ∞
+        (B.chartReadout c) (B.chartReadDom c) ∧
+      ∀ y ∈ B.chartReadDom c,
+        diagExp (I := I') g hEnorm (B.inv y) = y ∧
+        (B.inv y).proj = y.1 ∧
+        expMapIntrinsic (I := I') g hEnorm y.1 (B.inv y).snd = y.2 := by
+  have hopen : IsOpen (B.chartReadDom c) :=
+    B.hom.open_target.inter (c.restrictBall.open_target.preimage continuous_fst)
+  have hpTarget : p ∈ c.restrictBall.target := by
+    refine ⟨0, ?_, ?_⟩
+    · change (0 : E') ∈ Metric.ball 0 c.radius
+      simpa only [Metric.mem_ball, dist_self] using c.radius_pos
+    · simpa only [NormalBallChart.restrictBall_apply] using c.map_zero
+  have hp : (p, p) ∈ B.chartReadDom c :=
+    ⟨B.center_mem, hpTarget⟩
+  have hsmooth : ContMDiffOn (I'.prod I') 𝓘(ℝ, E') ∞
+      (B.chartReadout c) (B.chartReadDom c) := by
+    intro y hy
+    have hbranchAt : ContMDiffAt (I'.prod I') I'.tangent ∞ B.inv y :=
+      (B.inv_inf y hy.1).contMDiffAt (B.hom.open_target.mem_nhds hy.1)
+    have hinTarget : B.inv y ∈ c.tangentHome.target := by
+      rw [c.tangentHome_target]
+      change (B.inv y).proj ∈ c.restrictBall.target
+      rw [B.proj_eq hy.1]
+      exact hy.2
+    have hcoordsAt : ContMDiffAt (I'.prod I') 𝓘(ℝ, E' × E') ∞
+        (fun z => c.tangentHome.symm (B.inv z)) y :=
+      (c.tangentHome_inv_inf (B.inv y) hinTarget).contMDiffAt
+        (c.tangentHome.open_target.mem_nhds hinTarget) |>.comp y hbranchAt
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hcoordsAt
+    have hreadAt : ContMDiffAt (I'.prod I') 𝓘(ℝ, E') ∞
+        (B.chartReadout c) y := by
+      simpa only [chartReadout] using contMDiffAt_snd.comp y hcoordsAt
+    exact hreadAt.contMDiffWithinAt
+  refine ⟨hopen, hp, hsmooth, ?_⟩
+  intro y hy
+  exact ⟨B.right_inv hy.1, B.proj_eq hy.1, B.exp_eq hy.1⟩
+
+end ChartReadout
 
 end DiagInvBranch
 end Exponential

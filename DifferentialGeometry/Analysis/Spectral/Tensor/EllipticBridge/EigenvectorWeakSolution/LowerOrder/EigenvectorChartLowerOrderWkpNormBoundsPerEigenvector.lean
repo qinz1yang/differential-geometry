@@ -45,7 +45,7 @@ section LowerOrderWkpNormBoundsUnconditional
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
+theorem wkpNorm_covPrincipalRotationCoeffLimit_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -118,7 +118,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ F partAtom
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
-      Csum hCsum_nn
+      Csum
       (fun x hx => (h_data x hx).1)
       (fun x _ => hCsum_bd x)
   have h_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s
@@ -166,7 +166,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
   exact h_bound
 
 omit [CompleteSpace E] in
-theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
+theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
@@ -284,7 +284,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fpart partAtom
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
-      Cpart hCpart_nn
+      Cpart
       (fun x hx => (h_part_data x hx).1)
       (fun x _ => hCpart_bd x)
   have h_comp_bound :
@@ -302,7 +302,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fcomp compAtom
       (fun x => x.2.2.2.2) (fun x _ => Finset.mem_univ _)
-      Ccomp hCcomp_nn
+      Ccomp
       (fun x hx => (h_comp_data x hx).1)
       (fun x _ => hCcomp_bd x)
   have h_part_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s
@@ -505,7 +505,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
       rw [mul_add]
 
 omit [CompleteSpace E] in
-theorem wkpNorm_weightedGradCoeffDivLimit_le_unconditional
+theorem wkpNorm_weightedGradCoeffDivLimit_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (K : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (l : Fin (Module.finrank ℝ E))
@@ -623,7 +623,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fcomp compAtom
       (fun x => x.2.2.2) (fun x _ => Finset.mem_univ _)
-      Ccomp hCcomp_nn
+      Ccomp
       (fun x hx => (h_comp_data x hx).1)
       (fun x _ => hCcomp_bd x)
   have h_part_bound :
@@ -639,7 +639,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_unconditional
     wkpNorm_finsetSum_le_const_mul_atomSum (I := I) (M := M)
       (α := α) (K := K) Finset.univ Finset.univ Fpart partAtom
       (fun x => (x.2.2.2, l)) (fun x _ => Finset.mem_univ _)
-      Cpart hCpart_nn
+      Cpart
       (fun x hx => (h_part_data x hx).1)
       (fun x _ => hCpart_bd x)
   have h_comp_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s

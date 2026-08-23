@@ -388,7 +388,7 @@ private lemma localDivergenceWithin_at_self_smoothSmul
     rw [hchartCoeff i]
 
 omit [InnerProductSpace ℝ E] in
-theorem divergence_g_with_boundary_smoothSmul [T2Space M]
+theorem divergence_g_with_boundary_smoothSmul
     (g : SmoothRiemannianMetric I M)
     (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -403,7 +403,7 @@ theorem divergence_g_with_boundary_smoothSmul [T2Space M]
   exact localDivergenceWithin_at_self_smoothSmul (I := I) g x φ hφ X
 
 omit [InnerProductSpace ℝ E] in
-theorem divergence_g_with_boundary_add [T2Space M]
+theorem divergence_g_with_boundary_add
     (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M,
@@ -504,7 +504,7 @@ theorem divergence_g_with_boundary_add [T2Space M]
   rw [Finset.sum_add_distrib, add_div]
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem divergence_g_with_boundary_zero [T2Space M]
+theorem divergence_g_with_boundary_zero
     (g : SmoothRiemannianMetric I M) :
     ∀ x : M, divergence_g_with_boundary (I := I) g
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by
@@ -580,8 +580,7 @@ omit [InnerProductSpace ℝ E] in
   rw [zero_div]
 
 omit [InnerProductSpace ℝ E] in
-theorem divergence_g_with_boundary_pou_tsum [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M)
+theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M, divergence_g_with_boundary (I := I) g X x =

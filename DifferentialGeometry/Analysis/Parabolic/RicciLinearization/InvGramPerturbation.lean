@@ -18,7 +18,6 @@ namespace RicciLinearization
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -116,12 +115,6 @@ instance : CoeFun (ChartMetricPerturbation E)
   ⟨ChartMetricPerturbation.toFun⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma coe_mk
-    (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → (E → ℝ))
-    (hsymm : ∀ i j y, f i j y = f j i y) (hsmooth : ∀ i j, ContDiff ℝ ∞ (f i j)) :
-    ⇑(ChartMetricPerturbation.mk f hsymm hsmooth) = f := rfl
-
-omit [NeZero (Module.finrank ℝ E)] in
 lemma symm (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) :
     h i j y = h j i y := h.symm' i j y
 
@@ -170,7 +163,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
         chartInvGramMatrix (I := I) g x x m n * (chartModelBasis E).repr ξ n := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma raisedCovectorComp_zero (g : SmoothRiemannianMetric I M) (x : M)
+lemma raisedCovectorComp_zero (g : SmoothRiemannianMetric I M) (x : M)
     (m : Fin (Module.finrank ℝ E)) :
     raisedCovectorComp (I := I) g x (0 : E) m = 0 := by
   simp [raisedCovectorComp]
@@ -202,7 +195,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
           chartInvGramMatrix (I := I) g x x m n * h m n (extChartAt I x x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma metricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
+lemma metricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
     metricTrace (I := I) g x (0 : ChartMetricPerturbation E) = 0 := by
   simp [metricTrace]
 
@@ -245,7 +238,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
             chartInvGramOnE (I := I) g α b m y * h a b y := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma invGramPerturbation_zero (g : SmoothRiemannianMetric I M) (α : M)
+lemma invGramPerturbation_zero (g : SmoothRiemannianMetric I M) (α : M)
     (l m : Fin (Module.finrank ℝ E)) (y : E) :
     invGramPerturbation (I := I) g α (0 : ChartMetricPerturbation E) l m y = 0 := by
   simp [invGramPerturbation]

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
-import DifferentialGeometry.Geometry.Metric.MetricBounds
+import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import DifferentialGeometry.Geometry.Operator.NormGradSq
 import Mathlib.Analysis.Normed.Operator.Extend
 open DifferentialGeometry.Geometry.Operator
@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -462,7 +461,7 @@ noncomputable def gradInnerCLM
       SmoothScalar g →L[ℝ] H1Compl g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem gradInnerCLM_smoothToH1Compl
+theorem gradInnerCLM_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) :
     gradInnerCLM (I := I) (M := M) g ρα

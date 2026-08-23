@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.TangentRiemannianRealized
+import DifferentialGeometry.Tensor.RSTensor.TangentMetric
 import Mathlib.Data.Matrix.Mul
 import Mathlib.LinearAlgebra.Dual.Basis
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian

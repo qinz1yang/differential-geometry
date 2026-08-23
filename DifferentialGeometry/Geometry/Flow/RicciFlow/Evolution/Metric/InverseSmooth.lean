@@ -241,7 +241,7 @@ theorem frameGramCLM_comp_frameGInvCLM
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
     (p : Real × M) :
     frameGramCLM (I := I) S frame p ∘L frameGInvCLM (Idx := Idx) gInv p =
       ContinuousLinearMap.id Real (Idx -> Real) := by
@@ -251,7 +251,7 @@ theorem frameGramCLM_comp_frameGInvCLM
     metric_mul_inverse_apply
       (metric := fun a b => metricCompInFrame (I := I) S frame p.1 p.2 a b)
       (gInv := fun a b => gInv p.1 p.2 a b)
-      (fun a b => (hinv p.1 p.2 a b).2)
+      (fun a b => (hinv p.1 p.2 (Set.mem_univ p.2) a b).2)
       v i
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -261,7 +261,7 @@ theorem frameGInvCLM_comp_frameGramCLM
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
     (p : Real × M) :
     frameGInvCLM (Idx := Idx) gInv p ∘L frameGramCLM (I := I) S frame p =
       ContinuousLinearMap.id Real (Idx -> Real) := by
@@ -271,7 +271,7 @@ theorem frameGInvCLM_comp_frameGramCLM
     inverse_mul_metric_apply
       (metric := fun a b => metricCompInFrame (I := I) S frame p.1 p.2 a b)
       (gInv := fun a b => gInv p.1 p.2 a b)
-      (fun a b => (hinv p.1 p.2 a b).1)
+      (fun a b => (hinv p.1 p.2 (Set.mem_univ p.2) a b).1)
       v i
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -281,7 +281,7 @@ theorem frameGramCLM_isInvertible
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
     (p : Real × M) :
     (frameGramCLM (I := I) S frame p).IsInvertible := by
   exact ContinuousLinearMap.IsInvertible.of_inverse
@@ -295,7 +295,7 @@ theorem frameGInvCLM_eq_inverse
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
     (p : Real × M) :
     ContinuousLinearMap.inverse (frameGramCLM (I := I) S frame p) =
       frameGInvCLM (Idx := Idx) gInv p := by
@@ -311,10 +311,6 @@ theorem frameGramCLM_comp_frameGInvCLM_at
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (p : Real × M)
-    (_hleft : forall a b : Idx,
-      (∑ k : Idx,
-        gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
-        (if a = b then 1 else 0))
     (hright : forall a b : Idx,
       (∑ k : Idx,
         metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
@@ -341,10 +337,7 @@ theorem frameGInvCLM_comp_frameGramCLM_at
       (∑ k : Idx,
         gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
         (if a = b then 1 else 0))
-    (_hright : forall a b : Idx,
-      (∑ k : Idx,
-        metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
-        (if a = b then 1 else 0)) :
+    :
     frameGInvCLM (Idx := Idx) gInv p ∘L frameGramCLM (I := I) S frame p =
       ContinuousLinearMap.id Real (Idx -> Real) := by
   classical
@@ -373,8 +366,8 @@ theorem frameGramCLM_isInvertible_at
         (if a = b then 1 else 0)) :
     (frameGramCLM (I := I) S frame p).IsInvertible := by
   exact ContinuousLinearMap.IsInvertible.of_inverse
-    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hleft hright)
-    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft hright)
+    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hright)
+    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft)
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem frameGInvCLM_eq_inverse_at
@@ -395,8 +388,8 @@ theorem frameGInvCLM_eq_inverse_at
     ContinuousLinearMap.inverse (frameGramCLM (I := I) S frame p) =
       frameGInvCLM (Idx := Idx) gInv p := by
   exact ContinuousLinearMap.inverse_eq
-    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hleft hright)
-    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft hright)
+    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hright)
+    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft)
 
 omit [SigmaCompactSpace M] in
 theorem frameGramCLM_hasDerivWithinAt
@@ -457,6 +450,7 @@ theorem hasFDerivAt_clmInv
   simpa [ContinuousLinearMap.inverse_equiv, ContinuousLinearEquiv.toUnit] using
     (hasFDerivAt_ringInverse (ContinuousLinearEquiv.toUnit e))
 
+omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordInvCLM_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -509,6 +503,7 @@ theorem coordFrameGramCLM_spacetimeSmooth
   intro j _hj
   exact (coordMetricSmooth (I := I) S hS x0 i j).smul contMDiffOn_const
 
+omit [SigmaCompactSpace M] in
 theorem coordFrameGInvCLM_spacetimeSmooth
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -570,6 +565,7 @@ theorem coordFrameGInvCLM_spacetimeSmooth
   exact
     (coordInvCLM_eq (I := I) S x0 (x := q.2) hq.2 q.1).symm
 
+omit [SigmaCompactSpace M] in
 theorem coordInvSmooth
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -632,6 +628,7 @@ theorem coordFrameGramCLM_contOn
   intro j _hj
   exact (coordMetricContOn (I := I) S hS x0 i j).smul continuousOn_const
 
+omit [SigmaCompactSpace M] in
 theorem coordFrameGInvCLM_contOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -686,6 +683,7 @@ theorem coordFrameGInvCLM_contOn
   · exact (coordInvCLM_eq (I := I) S x0 (x := q.2) hq.2 q.1).symm
   · exact (coordInvCLM_eq (I := I) S x0 (x := p.2) hp.2 p.1).symm
 
+omit [SigmaCompactSpace M] in
 theorem coordInvContOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -722,6 +720,7 @@ theorem coordInvContOn
     (sum_mul_pi_single (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
       (fun k => coordInv (I := I) S x0 p.1 p.2 i k) j).symm
 
+omit [SigmaCompactSpace M] in
 theorem coordInvSmoothAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -736,6 +735,35 @@ theorem coordInvSmoothAt
     (coordInvSmooth (I := I) S hS x0 i j).contMDiffAt
       (prod_mem_nhds (D.regular_isOpen.mem_nhds t.2)
         ((DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x0).mem_nhds hx))
+
+noncomputable def coordInvDt
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (x0 : M) :
+    Real -> M -> DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
+  fun t x i j =>
+    derivWithin (fun s : Real => coordInv (I := I) S x0 s x i j) D.carrier t
+
+omit [SigmaCompactSpace M] in
+theorem coordInvDerivLocal
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (x0 : M) :
+    InvMetricDerivLocal (D := D) (coordInv (I := I) S x0) (coordInvDt (I := I) S x0)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+  intro t x hx i j
+  have hslice :
+      ContMDiffAt 𝓘(Real, Real) (𝓘(Real, Real).prod I) ∞
+        (fun s : Real => (s, x)) (t : Real) :=
+    contMDiffAt_id.prodMk contMDiffAt_const
+  have hcomp :=
+    (coordInvSmoothAt (I := I) S hS x0 t x hx i j).comp (t : Real) hslice
+  have hcd : ContDiffAt Real ∞ (fun s : Real => coordInv (I := I) S x0 s x i j) (t : Real) := by
+    rw [contMDiffAt_iff_contDiffAt] at hcomp
+    simpa [Function.comp_def] using hcomp
+  simpa [coordInvDt] using
+    (hcd.differentiableAt (by simp)).differentiableWithinAt.hasDerivWithinAt
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem frameGInvCLM_spacetimeSmooth
@@ -907,7 +935,6 @@ theorem MetricFrameSpacetimeRegularityInFrameOnLocal.metricComp_mdiffAt
       intro y hy
       exact ⟨ht, hy⟩)
   exact (hcomp.contMDiffAt (hu.mem_nhds hx)).mdifferentiableAt (by simp)
-
 
 end Components
 

@@ -82,7 +82,7 @@ theorem exists_uniform_iteratedFDerivWithin_bound_of_contDiffOn
 theorem norm_iteratedFDerivWithin_mul_le_uniformBound
     {δ h : E → ℝ} {s : Set E} (hs : IsOpen s)
     (hδ : ContDiffOn ℝ ∞ δ s) (hh : ContDiffOn ℝ ∞ h s)
-    {K : Set E} (hKsub : K ⊆ s) {B : ℝ} (_hB_nn : 0 ≤ B) (N : ℕ)
+    {K : Set E} (hKsub : K ⊆ s) {B : ℝ} (N : ℕ)
     (hHbound : ∀ y ∈ K, ∀ m : ℕ, m ≤ N → ‖iteratedFDerivWithin ℝ m h s y‖ ≤ B)
     {y : E} (hy : y ∈ K) :
     ‖iteratedFDerivWithin ℝ N (fun z => δ z * h z) s y‖ ≤

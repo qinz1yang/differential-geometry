@@ -91,7 +91,6 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessMa
 lemma tensorialAt_X
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
     {Y : Π b : M, TangentSpace I b} {Z : Π b : M, V b} {x : M}
-    (_hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, F)) ((∞ : WithTop ℕ∞) + 1) (T% Z)) :
     TensorialAt I E (Φ := fun X : Π b : M, TangentSpace I b => riemannSec cov X Y Z x) x where
   smul := by
@@ -113,7 +112,6 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessMa
 lemma tensorialAt_Y
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
     {X : Π b : M, TangentSpace I b} {Z : Π b : M, V b} {x : M}
-    (_hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, F)) ((∞ : WithTop ℕ∞) + 1) (T% Z)) :
     TensorialAt I E (Φ := fun Y : Π b : M, TangentSpace I b => riemannSec cov X Y Z x) x where
   smul := by
@@ -137,21 +135,19 @@ lemma riemannSec_eq_of_X_eq_at
     {X X' Y : Π b : M, TangentSpace I b} {Z : Π b : M, V b} {x : M}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hX' : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X'))
-    (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, F)) ((∞ : WithTop ℕ∞) + 1) (T% Z))
     (hXX' : X x = X' x) :
     riemannSec cov X Y Z x = riemannSec cov X' Y Z x := by
   classical
   have hX_at : MDiffAt (T% X) x := (hX x).mdifferentiableAt (by simp)
   have hX'_at : MDiffAt (T% X') x := (hX' x).mdifferentiableAt (by simp)
-  exact (tensorialAt_X (cov := cov) (Y := Y) (Z := Z) hY hZ).pointwise hX_at hX'_at hXX'
+  exact (tensorialAt_X (cov := cov) (Y := Y) (Z := Z) hZ).pointwise hX_at hX'_at hXX'
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [ContMDiffVectorBundle ∞ F V I]
     [FiniteDimensional ℝ F] in
 lemma riemannSec_eq_of_Y_eq_at
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
     {X Y Y' : Π b : M, TangentSpace I b} {Z : Π b : M, V b} {x : M}
-    (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hY' : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y'))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, F)) ((∞ : WithTop ℕ∞) + 1) (T% Z))
@@ -160,7 +156,7 @@ lemma riemannSec_eq_of_Y_eq_at
   classical
   have hY_at : MDiffAt (T% Y) x := (hY x).mdifferentiableAt (by simp)
   have hY'_at : MDiffAt (T% Y') x := (hY' x).mdifferentiableAt (by simp)
-  exact (tensorialAt_Y (cov := cov) (X := X) (Z := Z) hX hZ).pointwise hY_at hY'_at hYY'
+  exact (tensorialAt_Y (cov := cov) (X := X) (Z := Z) hZ).pointwise hY_at hY'_at hYY'
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
@@ -525,9 +521,9 @@ theorem riemannSec_eq_of_pointwise_eq
   classical
   have hZ_le : ContMDiff I (I.prod 𝓘(ℝ, F)) ((∞ : WithTop ℕ∞) + 1) (T% Z) := by simpa using hZ
   have h1 : riemannSec cov X Y Z x = riemannSec cov X' Y Z x :=
-    riemannSec_eq_of_X_eq_at (cov := cov) hX hX' hY hZ_le hX_eq
+    riemannSec_eq_of_X_eq_at (cov := cov) hX hX' hZ_le hX_eq
   have h2 : riemannSec cov X' Y Z x = riemannSec cov X' Y' Z x :=
-    riemannSec_eq_of_Y_eq_at (cov := cov) hX' hY hY' hZ_le hY_eq
+    riemannSec_eq_of_Y_eq_at (cov := cov) hY hY' hZ_le hY_eq
   have h3 : riemannSec cov X' Y' Z x = riemannSec cov X' Y' Z' x :=
     riemannSec_eq_of_Z_eq_at (cov := cov) hX' hY' hZ hZ' hZ_eq
   rw [h1, h2, h3]

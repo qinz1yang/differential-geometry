@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopPolarFramed
 import DifferentialGeometry.Geometry.Metric.Completeness
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Geometry.Curvature
 
@@ -23,7 +25,7 @@ private lemma hypSn_scale (q δ t : Real) (hδ : δ ≠ 0) :
     rw [show (q * δ) * t = q * (δ * t) by ring]
     field_simp
 
-private lemma hypDensity_scale (q δ : Real) (d : Nat) (t : Real)
+theorem hypDens_scale (q δ : Real) (d : Nat) (t : Real)
     (hδ : δ ≠ 0) :
     δ ^ d * hypDensity (q * δ) d t = hypDensity q d (δ * t) := by
   rw [hypDensity, hypDensity, ← mul_pow, hypSn_scale q δ t hδ]
@@ -44,7 +46,7 @@ private lemma ratio_rescale
         s ^ d * F s / hypDensity q d s := by
     have hδne : δ ≠ 0 := hδ.ne'
     have ht : 0 < s / δ := div_pos hs hδ
-    have hscale := hypDensity_scale q δ d (s / δ) hδne
+    have hscale := hypDens_scale q δ d (s / δ) hδne
     rw [mul_div_cancel₀ s hδne] at hscale
     rw [mul_div_cancel₀ s hδne, div_pow]
     calc
@@ -262,11 +264,152 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 def hypRadVol (q : Real) (d : Nat) (R : Real) : Real :=
   ∫ t in (0 : Real)..R, hypDensity q d t
 
+theorem volSphere_finrank
+    [MeasurableSpace E] [BorelSpace E] :
+    (volume : Measure E).toSphere Set.univ =
+      (volume : Measure
+        (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ := by
+  letI : Nontrivial E :=
+    Module.nontrivial_of_finrank_pos
+      (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
+  letI : Nonempty (Fin (Module.finrank Real E)) :=
+    Fin.pos_iff_nonempty.mp
+      (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
+  rw [Measure.toSphere_apply_univ, Measure.toSphere_apply_univ,
+    InnerProductSpace.volume_ball, EuclideanSpace.volume_ball]
+  simp only [finrank_euclideanSpace, Fintype.card_fin]
+
 theorem hypRadVol_pos {q R : Real} {d : Nat} (hq : 0 ≤ q) (hR : 0 < R) :
     0 < hypRadVol q d R := by
   exact intervalIntegral.intervalIntegral_pos_of_pos_on
     ((hypDen_continuous q d).intervalIntegrable (0 : Real) R)
     (fun t ht => hypDensity_pos hq ht.1) hR
+
+theorem hypRad_lintegral
+    (q : Real) (hq : 0 ≤ q) (d : Nat) {R : Real} (hR : 0 < R) :
+    (∫⁻ r : Ioi (0 : Real),
+        (Iio (⟨R, hR⟩ : Ioi (0 : Real))).indicator
+          (fun r => ENNReal.ofReal (hypDensity (q * r.1) d 1)) r
+        ∂Measure.volumeIoiPow d) =
+      ENNReal.ofReal (hypRadVol q d R) := by
+  have hpowMeas : Measurable (fun r : Ioi (0 : Real) =>
+      ENNReal.ofReal (r.1 ^ d)) :=
+    ENNReal.measurable_ofReal.comp (measurable_subtype_coe.pow_const d)
+  rw [lintegral_indicator measurableSet_Iio, Measure.volumeIoiPow]
+  rw [setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable
+    _ hpowMeas _ measurableSet_Iio]
+  · have hmul :
+        (∫⁻ r : Ioi (0 : Real) in Iio (⟨R, hR⟩ : Ioi (0 : Real)),
+            ENNReal.ofReal (r.1 ^ d) *
+              ENNReal.ofReal (hypDensity (q * r.1) d 1)
+            ∂Measure.comap Subtype.val volume) =
+          ∫⁻ r : Ioi (0 : Real) in Iio (⟨R, hR⟩ : Ioi (0 : Real)),
+            ENNReal.ofReal (hypDensity q d r.1)
+            ∂Measure.comap Subtype.val volume := by
+          apply setLIntegral_congr_fun measurableSet_Iio
+          intro r _hr
+          change
+            ENNReal.ofReal (r.1 ^ d) *
+                ENNReal.ofReal (hypDensity (q * r.1) d 1) =
+              ENNReal.ofReal (hypDensity q d r.1)
+          rw [← ENNReal.ofReal_mul (pow_nonneg r.2.le d),
+            hypDens_scale q r.1 d 1 r.2.ne']
+          simp only [mul_one]
+    simp only [Pi.mul_apply]
+    rw [hmul]
+    rw [setLIntegral_subtype measurableSet_Ioi _
+      (fun t : Real => ENNReal.ofReal (hypDensity q d t))]
+    rw [image_subtype_val_Ioi_Iio, Measure.restrict_congr_set Ioo_ae_eq_Ioc]
+    rw [← ofReal_integral_eq_lintegral_ofReal]
+    · rw [hypRadVol, intervalIntegral.integral_of_le hR.le]
+    · exact (hypDen_continuous q d).intervalIntegrable (0 : Real) R |>.1
+    · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+      exact (hypDensity_pos hq ht.1).le
+  · filter_upwards [] with r
+    exact ENNReal.ofReal_lt_top
+
+theorem hypBall_lintegral
+    [MeasurableSpace E] [BorelSpace E]
+    (q : Real) (hq : 0 ≤ q) {R : Real} (hR : 0 < R) :
+    (∫⁻ w in ball (0 : E) R,
+        ENNReal.ofReal
+          (hypDensity (q * ‖w‖) (Module.finrank Real E - 1) 1)
+        ∂(volume : Measure E)) =
+      (volume : Measure E).toSphere Set.univ *
+        ENNReal.ofReal
+          (hypRadVol q (Module.finrank Real E - 1) R) := by
+  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+    (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
+  let d : Nat := Module.finrank Real E - 1
+  let F : E → ENNReal :=
+    (ball (0 : E) R).indicator
+      (fun w => ENNReal.ofReal (hypDensity (q * ‖w‖) d 1))
+  let G : Ioi (0 : Real) → ENNReal :=
+    (Iio (⟨R, hR⟩ : Ioi (0 : Real))).indicator
+      (fun r => ENNReal.ofReal (hypDensity (q * r.1) d 1))
+  have hscale (r : Ioi (0 : Real)) :
+      hypDensity (q * r.1) d 1 = hypDensity q d r.1 / r.1 ^ d := by
+    apply (eq_div_iff (pow_ne_zero d r.2.ne')).2
+    simpa only [mul_comm, mul_one] using
+      (hypDens_scale q r.1 d 1 r.2.ne')
+  have hrawMeas :
+      Measurable (fun r : Ioi (0 : Real) =>
+        ENNReal.ofReal (hypDensity (q * r.1) d 1)) := by
+    have hreal :
+        Measurable (fun r : Ioi (0 : Real) =>
+          hypDensity (q * r.1) d 1) := by
+      simp_rw [hscale]
+      exact ((hypDen_continuous q d).measurable.comp measurable_subtype_coe).div
+        (measurable_subtype_coe.pow_const d)
+    exact ENNReal.measurable_ofReal.comp hreal
+  have hG : Measurable G := by
+    exact hrawMeas.indicator measurableSet_Iio
+  have hpolar (z : sphere (0 : E) 1 × Ioi (0 : Real)) :
+      F (z.2.1 • z.1.1) = (1 : ENNReal) * G z.2 := by
+    dsimp only [F, G]
+    have hu : ‖z.1.1‖ = 1 := by
+      simpa only [mem_sphere_zero_iff_norm] using z.1.2
+    have hnorm : ‖z.2.1 • z.1.1‖ = z.2.1 := by
+      rw [norm_smul, Real.norm_of_nonneg z.2.2.le, hu, mul_one]
+    have hmem :
+        z.2.1 • z.1.1 ∈ ball (0 : E) R ↔
+          z.2 ∈ Iio (⟨R, hR⟩ : Ioi (0 : Real)) := by
+      rw [mem_ball, dist_zero_right, hnorm]
+      rfl
+    by_cases hz : z.2 ∈ Iio (⟨R, hR⟩ : Ioi (0 : Real))
+    · rw [Set.indicator_of_mem hz,
+        Set.indicator_of_mem (hmem.mpr hz), hnorm, one_mul]
+    · rw [Set.indicator_of_notMem hz,
+        Set.indicator_of_notMem (fun h => hz (hmem.mp h)), one_mul]
+  have hrad :
+      (∫⁻ r : Ioi (0 : Real), G r ∂Measure.volumeIoiPow d) =
+        ENNReal.ofReal (hypRadVol q d R) := by
+    dsimp only [G]
+    exact hypRad_lintegral q hq d hR
+  calc
+    (∫⁻ w in ball (0 : E) R,
+        ENNReal.ofReal (hypDensity (q * ‖w‖) d 1)
+        ∂(volume : Measure E)) =
+        ∫⁻ w, F w ∂(volume : Measure E) := by
+          dsimp only [F]
+          rw [lintegral_indicator measurableSet_ball]
+    _ = ∫⁻ z : sphere (0 : E) 1 × Ioi (0 : Real),
+          F (z.2.1 • z.1.1)
+          ∂((volume : Measure E).toSphere.prod
+            (Measure.volumeIoiPow d)) :=
+      lintegral_polar_prod (volume : Measure E) F
+    _ = ∫⁻ z : sphere (0 : E) 1 × Ioi (0 : Real),
+          (1 : ENNReal) * G z.2
+          ∂((volume : Measure E).toSphere.prod
+            (Measure.volumeIoiPow d)) :=
+      lintegral_congr hpolar
+    _ = (∫⁻ _u : sphere (0 : E) 1, (1 : ENNReal)
+          ∂(volume : Measure E).toSphere) *
+        ∫⁻ r : Ioi (0 : Real), G r ∂Measure.volumeIoiPow d :=
+      lintegral_prod_mul aemeasurable_const hG.aemeasurable
+    _ = (volume : Measure E).toSphere Set.univ *
+        ENNReal.ofReal (hypRadVol q d R) := by
+      rw [lintegral_const, one_mul, hrad]
 
 def normalBallVolume (g : SmoothRiemannianMetric I M) (p : M)
     (R : Real) : ENNReal :=
@@ -637,7 +780,6 @@ theorem normalBall_ratio
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem normalBall_cross_of_complete_metric
-    [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
@@ -671,7 +813,6 @@ theorem normalBall_cross_of_complete_metric
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem normalBall_ratio_of_complete_metric
-    [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) (q : Real) (hq : 0 ≤ q)

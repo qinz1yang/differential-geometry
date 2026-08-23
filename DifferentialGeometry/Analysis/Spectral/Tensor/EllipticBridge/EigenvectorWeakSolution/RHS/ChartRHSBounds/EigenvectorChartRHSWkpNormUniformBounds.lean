@@ -362,7 +362,7 @@ private lemma principalRotationCoeffTerm_wkpNorm_le_uniform
           ≤ ENNReal.ofReal C *
             wkpRhsAggregate (I := I) (M := M) g r s i α P₀ K := by
   obtain ⟨C, hC_nn, hC_bd⟩ :=
-    wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
+    wkpNorm_covPrincipalRotationCoeffLimit_le_uniform
       (I := I) (M := M) g r s K α P₀ h_pou
   refine ⟨C, hC_nn, fun i => ?_⟩
   rw [rhsTerm4]
@@ -389,7 +389,7 @@ private lemma lowerOrderRotationCoeffTerm_wkpNorm_le_uniform
           ≤ ENNReal.ofReal C *
             wkpRhsAggregate (I := I) (M := M) g r s i α P₀ K := by
   obtain ⟨C, hC_nn, hC_bd⟩ :=
-    wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
+    wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
       (I := I) (M := M) g r s K α P₀ h_pou
   refine ⟨2 * C, by positivity, fun i => ?_⟩
   rw [rhsTerm5]
@@ -453,7 +453,7 @@ private lemma weightedGradCoeffDivLimit_sum_wkpNorm_le_uniform
                   g r s i α P₀ K := by
     intro l
     obtain ⟨C, hC_nn, hC_bd⟩ :=
-      wkpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
+      wkpNorm_weightedGradCoeffDivLimit_le_uniform
         (I := I) (M := M) g r s K α P₀ l h_pou
     refine ⟨2 * C, by positivity, fun i => ?_⟩
     refine ⟨?_, ?_⟩
@@ -541,7 +541,7 @@ private lemma weightedGradDivTerm_wkpNorm_le_uniform
             g r s i α P₀ l y) = 0 :=
     Filter.Eventually.of_forall (fun _y hy =>
       Finset.sum_eq_zero (fun l _ =>
-        weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+        weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel
           (I := I) (M := M) g r s i α P₀ l hy))
   obtain ⟨_, h_coef_bd⟩ := hC₁_bd
     (fun y => ∑ l : Fin (Module.finrank ℝ E),

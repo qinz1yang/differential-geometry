@@ -23,7 +23,6 @@ namespace TensorRegularity
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 
@@ -35,7 +34,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 theorem chartFrameNormGlobalSmoothCoordMatrix_pullback_contDiffOn_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞

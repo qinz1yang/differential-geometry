@@ -25,7 +25,6 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -45,6 +44,7 @@ private noncomputable def iterCotangentCov
     (fun b : M => (cotangentCov cov).toFun θ b (Y b)) x (X x)) (W x)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricci_identity_oneForm
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -415,7 +415,6 @@ theorem inner_cov_gradFun_eq_abstractHessian [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {X Y : Π b : M, TangentSpace I b} {x : M}
-    (_hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
     g.inner x ((LeviCivita (I := I) g).toFun
                   (fun b => gradFun (I := I) g f b) x (X x)) (Y x) =
@@ -481,8 +480,8 @@ theorem inner_cov_gradFun_symm [I.Boundaryless]
       g.inner x ((LeviCivita (I := I) g).toFun
                   (fun b => gradFun (I := I) g f b) x (Y x)) (X x) := by
   classical
-  rw [inner_cov_gradFun_eq_abstractHessian (I := I) g hf hX hY,
-      inner_cov_gradFun_eq_abstractHessian (I := I) g hf hY hX]
+  rw [inner_cov_gradFun_eq_abstractHessian (I := I) g hf hY,
+      inner_cov_gradFun_eq_abstractHessian (I := I) g hf hX]
   exact abstractHessian_symm (I := I) g (hf.contMDiffAt.of_le (by
     have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
       exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
@@ -534,13 +533,11 @@ lemma vector_eq_iff_inner_eq
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
-lemma localConnLap_vector_grad_inner_eq_hessian_diff [I.Boundaryless]
+lemma localConnLap_vector_grad_inner_eq_hessian_diff
     (g : SmoothRiemannianMetric I M)
-    {f : M → ℝ} (_hf : ContMDiff I 𝓘(ℝ) ∞ f)
+    {f : M → ℝ}
     {w : Π b : M, TangentSpace I b}
-    (_hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
-    (_hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
     (x : M) :
     g.inner x (localConnLap_vector (LeviCivita (I := I) g) B
                   (fun b => gradFun (I := I) g f b) x) (w x) =
@@ -582,7 +579,6 @@ theorem localConnLap_vector_eq_bochnerFormula_of_inner_form [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
-    (_hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
     (x : M)
     (hInner : ∀ w : TangentSpace I x,
       g.inner x (localConnLap_vector (LeviCivita (I := I) g) B

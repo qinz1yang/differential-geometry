@@ -23,7 +23,7 @@ theorem linearizationNorm_continuousOn_box
   exact continuous_norm.comp_continuousOn hfull
 
 theorem exists_uniform_norm_fderiv_le_on_flow_box
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
     {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {ε : ℝ} {Φ : E × ℝ → E}
     (hΦ : IsLocalFlow f t₀ x₀ r (t₀ - ε) (t₀ + ε) Φ)
@@ -53,7 +53,7 @@ theorem exists_uniform_norm_fderiv_le_on_flow_box
   exact hq₀_max (show (x, τ) ∈ B from ⟨hx, hτ⟩)
 
 theorem isVariationalFlowProjection_mono_box
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
     {hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ}
     {T T' : ℝ} {ρ ρ' : ℝ≥0} {Y : E × ℝ → (E →L[ℝ] E)} {k : ℕ∞}

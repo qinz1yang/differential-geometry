@@ -21,7 +21,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 private lemma traceChristoffelAlg
     {Idx : Type*} [Fintype Idx]

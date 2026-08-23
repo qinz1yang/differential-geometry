@@ -77,13 +77,13 @@ private lemma norm_eq_norm_toModel
       (r := r) (s := s) (x := x) T‖ := rfl
 
 private lemma enorm_sq_apply_eq_ofReal_pushedNormSq
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
+    (r s : ℕ) (α : M)
     (S : Π b : M, TensorRSSpace r s I b)
     {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     (‖S ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ₑ : ℝ≥0∞) ^ 2
       = ENNReal.ofReal
-          (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+          (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
   classical
   set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
   have hnorm_eq : ‖S x‖ = ‖TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I)
@@ -91,10 +91,10 @@ private lemma enorm_sq_apply_eq_ofReal_pushedNormSq
     norm_eq_norm_toModel (S x)
   have henorm_eq : ‖S x‖ₑ = ENNReal.ofReal ‖S x‖ := (ofReal_norm _).symm
   have hpush_eq :
-      tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y
+      tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y
         = ‖TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
             (r := r) (s := s) (x := x) (S x)‖ ^ 2 := by
-    rw [tensorTrivProjPushedNormSq_apply_of_mem (I := I) (M := M) g r s α S hy]
+    rw [tensorTrivProjPushedNormSq_apply_of_mem (I := I) (M := M) r s α S hy]
   rw [henorm_eq, hpush_eq, ← hnorm_eq]
   rw [← ENNReal.ofReal_pow (norm_nonneg _) 2]
 
@@ -111,7 +111,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
   classical
   set Sfin : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hSfin_def
@@ -174,7 +174,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ENNReal.ofReal (cE * (Mα α + 1)) *
           ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
             ∂(volume : Measure EuclN))
       (Finset.sum_le_sum ?_) ?_
   · intro α hα_mem
@@ -199,7 +199,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             F ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
         ≤ ENNReal.ofReal (Mα α + 1) *
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
       intro y hy
       have hy_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
         rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
@@ -241,10 +241,10 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
       have hF_eq :
           F ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) =
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
         rw [hF_def]
         exact enorm_sq_apply_eq_ofReal_pushedNormSq
-          (I := I) (M := M) g r s α S hy
+          (I := I) (M := M) r s α S hy
       calc ENNReal.ofReal
               (chartDensity g α
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) *
@@ -265,7 +265,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             exact mul_le_mul_left hkey _
         _ = ENNReal.ofReal (Mα α + 1) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
             rw [hF_eq]
     have hint_le :
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -280,7 +280,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
           ≤ ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
               ENNReal.ofReal (Mα α + 1) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
               ∂(volume : Measure EuclN) := by
       exact MeasureTheory.setLIntegral_mono_ae'
         (chartTargetEuclid_measurableSet (I := I) (M := M) α)
@@ -289,12 +289,12 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal (Mα α + 1) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
             ∂(volume : Measure EuclN)
           = ENNReal.ofReal (Mα α + 1) *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
       rw [MeasureTheory.lintegral_const_mul']
       exact ENNReal.ofReal_ne_top
@@ -312,7 +312,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
           ≤ ENNReal.ofReal (cE * (Mα α + 1)) *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
       calc (euclideanHaarFactor E : ℝ≥0∞) *
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -328,27 +328,27 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal (Mα α + 1) *
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
             exact mul_le_mul_right hint_le _
         _ = (euclideanHaarFactor E : ℝ≥0∞) *
               (ENNReal.ofReal (Mα α + 1) *
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                   ∂(volume : Measure EuclN)) := by
             rw [hpull]
         _ = ((euclideanHaarFactor E : ℝ≥0∞) *
               ENNReal.ofReal (Mα α + 1)) *
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                   ∂(volume : Measure EuclN) := by
             ring
         _ = ENNReal.ofReal (cE * (Mα α + 1)) *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
             congr 1
             rw [hcE_def]
@@ -371,12 +371,12 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ENNReal.ofReal (cE * (Mα α + 1)) *
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
               ∂(volume : Measure EuclN)
           ≤ ENNReal.ofReal C *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
       intro α hα_mem
       exact mul_le_mul_left (hper_term_le α hα_mem) _
@@ -387,13 +387,13 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             ENNReal.ofReal C *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN)
           = ENNReal.ofReal C *
               ∑ α ∈ Sfin,
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                   ∂(volume : Measure EuclN) := by
       rw [← Finset.mul_sum]
     rw [← hpull_out]
@@ -412,7 +412,7 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
           ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
             ∂(volume : Measure EuclN) := by
   classical
   set Sfin : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hSfin_def
@@ -472,7 +472,7 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ENNReal.ofReal (cE * (Mα α + 1)) *
           ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
             ∂(volume : Measure EuclN))
       (Finset.sum_le_sum ?_) ?_
   · intro α hα_mem
@@ -497,7 +497,7 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             F ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
         ≤ ENNReal.ofReal (Mα α + 1) *
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
       intro y hy
       have hy_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
         rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
@@ -539,10 +539,10 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
       have hF_eq :
           F ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) =
             ENNReal.ofReal
-              (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+              (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
         rw [hF_def]
         exact enorm_sq_apply_eq_ofReal_pushedNormSq
-          (I := I) (M := M) g r s α S hy
+          (I := I) (M := M) r s α S hy
       calc ENNReal.ofReal
               (chartDensity g α
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) *
@@ -563,7 +563,7 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             exact mul_le_mul_left hkey _
         _ = ENNReal.ofReal (Mα α + 1) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y) := by
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y) := by
             rw [hF_eq]
     have hint_le :
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -578,7 +578,7 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
           ≤ ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
               ENNReal.ofReal (Mα α + 1) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
               ∂(volume : Measure EuclN) := by
       exact MeasureTheory.setLIntegral_mono_ae'
         (chartTargetEuclid_measurableSet (I := I) (M := M) α)
@@ -587,12 +587,12 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal (Mα α + 1) *
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
             ∂(volume : Measure EuclN)
           = ENNReal.ofReal (Mα α + 1) *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
       rw [MeasureTheory.lintegral_const_mul']
       exact ENNReal.ofReal_ne_top
@@ -610,27 +610,27 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
               ENNReal.ofReal (Mα α + 1) *
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
               ∂(volume : Measure EuclN) := by
           exact mul_le_mul_right hint_le _
       _ = (euclideanHaarFactor E : ℝ≥0∞) *
             (ENNReal.ofReal (Mα α + 1) *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN)) := by
           rw [hpull]
       _ = ((euclideanHaarFactor E : ℝ≥0∞) *
             ENNReal.ofReal (Mα α + 1)) *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
           ring
       _ = ENNReal.ofReal (cE * (Mα α + 1)) *
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
               ∂(volume : Measure EuclN) := by
           congr 1
           rw [hcE_def]
@@ -652,12 +652,12 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ENNReal.ofReal (cE * (Mα α + 1)) *
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
               ENNReal.ofReal
-                (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
               ∂(volume : Measure EuclN)
           ≤ ENNReal.ofReal C *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
       intro α hα_mem
       exact mul_le_mul_left (hper_term_le α hα_mem) _
@@ -668,13 +668,13 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
             ENNReal.ofReal C *
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
-                  (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                  (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN)
           = ENNReal.ofReal C *
               ∑ α ∈ Sfin,
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
-                    (tensorTrivProjPushedNormSq (I := I) (M := M) g r s α S y)
+                    (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                   ∂(volume : Measure EuclN) := by
       rw [← Finset.mul_sum]
     rw [← hpull_out]

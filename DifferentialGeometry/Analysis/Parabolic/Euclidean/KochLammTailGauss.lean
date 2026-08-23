@@ -18,7 +18,7 @@ def klTailGauss (p : ℝ) (x : V) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ (p / 2) * (baseHeat x) ^ (p / 2)
 
 def klTailMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] (p : ℝ) : ℝ :=
+    (p : ℝ) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ (p / 2) * basePowMass V (p / 2)
 
 theorem klTailGauss_mem {p : ℝ} (hp : 0 < p) :
@@ -58,7 +58,7 @@ theorem klTailKernel_int {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
         klTailMass V p := by
       rw [heatPow_scale (V := V) hu]
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem klHeatPow_tail {u p k : ℝ} (hu : 0 < u) (hp : 0 < p)
     (hk : 0 ≤ k) {x : V}
     (hlo : Real.sqrt 2 * k ≤ ‖(heatScale u)⁻¹ • x‖) :
@@ -103,7 +103,7 @@ theorem klHeatPow_tail {u p k : ℝ} (hu : 0 < u) (hp : 0 < p)
     rw [← Real.rpow_add hbasePos]
     congr 1
     ring
-  rw [heatKernel_pow (V := V) hu hp]
+  rw [heatKernel_pow (V := V) hu]
   change
     ((((heatScale u) ^ Module.finrank ℝ V)⁻¹) ^ p) *
         (baseHeat z) ^ p ≤ _

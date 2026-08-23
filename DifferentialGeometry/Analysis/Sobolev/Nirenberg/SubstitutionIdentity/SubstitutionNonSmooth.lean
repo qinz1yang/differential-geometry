@@ -65,20 +65,16 @@ private lemma shiftedEllipticity_pointwise
 
 theorem principal_term_ge_lambda_norm_sq_nonsmooth
     {Ω : Set EuclN} (B : SmoothEllipticBilinearForm d Ω)
-    {u : EuclN → ℝ}
-    (_hu_l2 : MemLp u 2 (volume : Measure EuclN))
     {g : Fin d → EuclN → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure EuclN))
-    (_h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : EuclN → ℝ} (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
-    (_hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {Ω' : Set EuclN} (_hΩ' : IsOpen Ω') (_hΩ'_compact : IsCompact (closure Ω'))
+    {Ω' : Set EuclN}
     (hΩ'_in_Ω : closure Ω' ⊆ Ω)
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
-    (k : Fin d) {h : ℝ} (_hh : h ≠ 0) (hh_le : |h| ≤ R₀) :
+    (k : Fin d) {h : ℝ} (hh_le : |h| ≤ R₀) :
     B.lam *
       ∫ x, (η x)^2 *
         ∑ i : Fin d, (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2
@@ -363,12 +359,11 @@ theorem nirenberg_master_inequality_nonsmooth
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → EuclN → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure EuclN))
-    (h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
     {η : EuclN → ℝ} (hη : ContDiff ℝ ⊤ η) (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set EuclN} (hΩ' : IsOpen Ω') (hΩ'_compact : IsCompact (closure Ω'))
-    (hΩ'_closure : closure Ω' ⊆ Ω) (hη_in_Ω' : tsupport η ⊆ Ω')
+    (hΩ'_closure : closure Ω' ⊆ Ω)
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
@@ -473,8 +468,7 @@ theorem nirenberg_master_inequality_nonsmooth
       (hh_supp_in_Ω' hh_le).trans (subset_closure.trans hΩ'_closure)
     have h_sub := h_substitution_identity hh hh_le h_thick
     have h_principal := principal_term_ge_lambda_norm_sq_nonsmooth (d := d)
-      B hu_l2 hg_l2 h_weakPartial hη_top hη_supp hη_range hΩ' hΩ'_compact
-      hΩ'_closure hh_supp_in_Ω' k hh hh_le
+      B hg_l2 hη_top hη_supp hΩ'_closure hh_supp_in_Ω' k hh_le
     set I : ℝ := ∫ x, (η x)^2 *
         ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x ^ 2
         ∂(volume : Measure EuclN) with hI_def
@@ -641,98 +635,11 @@ theorem nirenberg_master_inequality_nonsmooth
       exact h_combine
     exact h_combine_final
   exact nirenberg_master_inequality_after_young_nonsmooth (d := d) B hu_l2
-    hf_l2_loc hg_l2 h_weakPartial hη_top hη_supp hη_range hN h_fderiv_eta
-    hΩ' hΩ'_closure hΩ'_compact hη_in_Ω' hh_supp_in_Ω' k
+    hf_l2_loc hg_l2 hη_top hη_supp hη_range hN h_fderiv_eta
+    hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
 
-theorem nirenberg_substitution_identity_nonsmooth
-    {Ω : Set EuclN} (_hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
-    {u f : EuclN → ℝ}
-    (_hu_l2 : MemLp u 2 (volume : Measure EuclN))
-    (_hf_l2 : MemLp f 2 (volume : Measure EuclN))
-    {g : Fin d → EuclN → ℝ}
-    (_hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure EuclN))
-    (_h_weakPartial : ∀ i, DeGiorgi.HasWeakPartialDeriv (d := d) i (g i) u Set.univ)
-    (_h_weak :
-      SmoothEllipticBilinearForm.IsWeakSolution
-      (Ω := Ω) (B := B) u f)
-    {η : EuclN → ℝ} (_hη : ContDiff ℝ ⊤ η) (_hη_supp : HasCompactSupport η)
-    (_hη_supp_in_Ω : tsupport η ⊆ Ω)
-    (k : Fin d) {R₀ : ℝ} {h : ℝ} (_hh : h ≠ 0) (_hh_le : |h| ≤ R₀)
-    (_h_thick_in_Ω : Metric.cthickening |h| (tsupport η) ⊆ Ω)
-    (h_substitution_identity_holds :
-      ∫ x, (∑ i : Fin d, ∑ j : Fin d,
-          (DifferentialGeometry.Analysis.Sobolev.translate k h
-            (fun y : EuclN => B.a y i j)) x *
-          (η x)^2 *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x)
-        ∂(volume : Measure EuclN)
-      + ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
-          (DifferentialGeometry.Analysis.Sobolev.translate k h
-            (fun y : EuclN => B.a y i j)) x *
-          (η x) * ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-        ∂(volume : Measure EuclN)
-      + ∑ i : Fin d, ∑ j : Fin d, ∫ x,
-          (DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-            (fun y : EuclN => B.a y i j)) x *
-          (η x)^2 * (g i x) *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x
-        ∂(volume : Measure EuclN)
-      + ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
-          (DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-            (fun y : EuclN => B.a y i j)) x *
-          (η x) * ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-          (g i x) *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-        ∂(volume : Measure EuclN)
-      + ∫ x, B.c x * u x *
-          (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-            k h η u) x
-        ∂(volume : Measure EuclN)
-      = ∫ x, f x *
-          (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-            k h η u) x
-        ∂(volume : Measure EuclN)) :
-    ∫ x, (∑ i : Fin d, ∑ j : Fin d,
-        (DifferentialGeometry.Analysis.Sobolev.translate k h
-          (fun y : EuclN => B.a y i j)) x *
-        (η x)^2 *
-        DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
-        DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x)
-      ∂(volume : Measure EuclN)
-    + ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
-        (DifferentialGeometry.Analysis.Sobolev.translate k h
-          (fun y : EuclN => B.a y i j)) x *
-        (η x) * ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-        DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
-        DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-      ∂(volume : Measure EuclN)
-    + ∑ i : Fin d, ∑ j : Fin d, ∫ x,
-        (DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-          (fun y : EuclN => B.a y i j)) x *
-        (η x)^2 * (g i x) *
-        DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x
-      ∂(volume : Measure EuclN)
-    + ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
-        (DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-          (fun y : EuclN => B.a y i j)) x *
-        (η x) * ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-        (g i x) *
-        DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-      ∂(volume : Measure EuclN)
-    + ∫ x, B.c x * u x *
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-          k h η u) x
-      ∂(volume : Measure EuclN)
-    = ∫ x, f x *
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-          k h η u) x
-      ∂(volume : Measure EuclN) :=
-  h_substitution_identity_holds
 
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergSubstitutionNonSmooth

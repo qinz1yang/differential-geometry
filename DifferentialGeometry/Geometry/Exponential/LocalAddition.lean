@@ -30,12 +30,16 @@ def connCompOpen (p : M) : Opens M := by
 def connCompPt (p : M) : connCompOpen (I := I) p :=
   ⟨p, mem_connectedComponent⟩
 
-@[reducible] noncomputable def connCompConnected (p : M) :
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [T2Space M] [CompactSpace M] in
+theorem connCompConnected (p : M) :
     ConnectedSpace (connCompOpen (I := I) p) := by
   apply Subtype.connectedSpace
   simpa only [connCompOpen] using (isConnected_connectedComponent (x := p))
 
-@[reducible] noncomputable def connCompCompact (p : M) :
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [T2Space M] in
+theorem connCompCompact (p : M) :
     CompactSpace (connCompOpen (I := I) p) := by
   apply isCompact_iff_compactSpace.mp
   simpa only [connCompOpen] using
@@ -104,6 +108,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   exact ⟨fun _ _ => rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private theorem connComp_enorm
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle
@@ -182,7 +187,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem connAdd_cd
-    (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
+    (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
       (connDiagExp (I := I) g p)
       (⟨connCompPt (I := I) p, (0 : E)⟩ :
@@ -207,7 +212,7 @@ theorem connAdd_cd
       TangentBundle I (connCompOpen (I := I) p))
   exact diagExp_contMDiffAt_zero (I := I)
     (connCompMetric (I := I) g p) (connComp_enorm (I := I) g p)
-    (connCompPt (I := I) p) n hn
+    (connCompPt (I := I) p) n
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyPair
+import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
 

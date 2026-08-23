@@ -22,7 +22,6 @@ namespace Curvature
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.TensorMultilinear
 open DifferentialGeometry.TensorRSNabla
@@ -136,6 +135,7 @@ theorem nablaRicciBilin_chartBasis_contMDiffOn
 
 
 omit [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem nablaRicciEndo_contMDiff
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -219,6 +219,7 @@ lemma nablaRicSlotOpFib_apply_eval (g : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem nablaRicSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (s : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel (s + 1) (s + 1) ℝ E)) ∞
@@ -288,6 +289,7 @@ def nablaRicSlotOpField (g : SmoothRiemannianMetric I M)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma nablaRicSlotOpField_toSection (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (s : ℕ) (x : M) :
     (nablaRicSlotOpField (I := I) (M := M) g X s).toSection x =
@@ -310,7 +312,7 @@ def nablaRicTraceSection (g : SmoothRiemannianMetric I M)
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covGrad (I := I) (M := M) g 0 s S).toSection x) := by
   rw [nablaRicTraceSection,
-    appCc_toSection (I := I) (M := M) g (s + 1) (s + 1)
+    operatorFieldApplication_toSection (I := I) (M := M) g (s + 1) (s + 1)
       (nablaRicSlotOpField (I := I) (M := M) g X s) (covGrad (I := I) (M := M) g 0 s S) x]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -349,6 +351,7 @@ theorem nablaRicTraceSection_apply_leadingSlot
 
 
 omit [CompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem leviCivita_covDeriv_ricEndoRaisedFib (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (LeviCivita (I := I) g).toFun (fun y : M => ricEndoRaisedFib (I := I) g y (Y y)) x (X x) =
@@ -421,6 +424,7 @@ theorem leviCivita_covDeriv_ricEndoRaisedFib (g : SmoothRiemannianMetric I M)
   linarith [hcomp', hnabla', hcorr, hraise]
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 private theorem ricSlotOp_core_curry_reading (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (D : Tensor0SSpace (s + 1) I x) (v0 : E) :
@@ -515,6 +519,7 @@ private theorem ricSlotOp_core_curry_reading (g : SmoothRiemannianMetric I M) (s
   abel
 
 set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem tensorCovDerivAt_ricSlotOpField_eq_nablaRicSlotOpFib
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
@@ -575,7 +580,7 @@ theorem tensorCovDerivAt_ricTraceSection_eq_nablaRicTrace_add
   rw [show ricTraceSection (I := I) (M := M) g s S =
       operatorFieldApply (I := I) (M := M) g (s + 1) (s + 1) (ricSlotOpField (I := I) (M := M) g s)
         (covGrad (I := I) (M := M) g 0 s S) from rfl]
-  rw [tensorCovDerivAt_appCc_eq (I := I) (M := M) g (s + 1) (s + 1)
+  rw [tensorCovDerivAt_operatorFieldApplication_eq (I := I) (M := M) g (s + 1) (s + 1)
     (ricSlotOpField (I := I) (M := M) g s) (covGrad (I := I) (M := M) g 0 s S) x (X x)]
   congr 1
   rw [nablaRicTraceSection_toSection (I := I) (M := M) g X s S x,

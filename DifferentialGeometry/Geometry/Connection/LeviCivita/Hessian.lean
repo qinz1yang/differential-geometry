@@ -19,7 +19,6 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -28,10 +27,10 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+variable [IsManifold I 1 M] [IsManifold I 2 M]
 
 
-omit [CompleteSpace E] [IsManifold I 3 M] in
+omit [CompleteSpace E] in
 private theorem nabla0SFun_one_eval_smooth_slots
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))

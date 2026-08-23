@@ -296,6 +296,7 @@ private theorem curvatureAction_basis
   simp [rmAction4, Finset.sum_add_distrib]
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem canRmActionSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -356,10 +357,10 @@ private theorem canRmActionSum
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let R := fun P Q S T : TangentSpace I x =>
     Rm04 x (vec4 (I := I) P Q S T)
-  have hRm13 : Rm13RealizesConnection (I := I) cov Rm13 := by
+  have hRm13 : rm13RealizesConnection (I := I) cov Rm13 := by
     simpa [Rm13] using
       (rm13Section_realizes (I := I) (M := M) (cov := cov) (hcov := hcov))
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   have hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) :=
@@ -409,6 +410,7 @@ private theorem canRmActionSum
   simpa [cov, hcov, Rm13, Rm04, R] using hAlg
 
 omit [I.Boundaryless] [IsManifold I 1 M] in
+omit [SigmaCompactSpace M] in
 private theorem canRic_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -437,30 +439,26 @@ private theorem canRic_basis
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let Ric : Tensor02Section (I := I) (M := M) :=
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
-  have hRm13 : Rm13RealizesConnection (I := I) cov Rm13 := by
+  have hRm13 : rm13RealizesConnection (I := I) cov Rm13 := by
     simpa [Rm13] using
       (rm13Section_realizes (I := I) (M := M) (cov := cov) (hcov := hcov))
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   have hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) :=
     rm04LowersRm13At_of_realizes (I := I) g cov Rm13 Rm04 hRm13 hRm04 x
-  have hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13 := by
+  have hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13 := by
     intro y
     simp [Ric, Rm13,
       (CovariantDerivative.ricciSection_eq_trace
         (I := I) (M := M) cov hcov y)]
-  have hInvSym : ∀ i j : Idx,
-      identityInvMetric i j = identityInvMetric j i := by
-    intro i j
-    simp [identityInvMetric, diagonalInvMetric, eq_comm]
   have hTrace := ricciFirstTraceAt_of_rm13_section
     (I := I) g basis (identityInvMetric (Idx := Idx)) hinv
-    Ric Rm13 Rm04 hRic13 hLower hInvSym
+    Ric Rm13 Rm04 hRic13 hLower
   have h := hTrace a b
   simpa [cov, hcov, Rm04, Ric, identityInvMetric, diagonalInvMetric] using h
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem canRawLowering
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -490,7 +488,7 @@ private theorem canRawLowering
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let Ric : Tensor02Section (I := I) (M := M) :=
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   have hIn := rm04InputSkewAt_of_leviCivita_realizes
@@ -644,7 +642,7 @@ theorem canRmHessComm
       5 cov nablaRm04 x
   let N := fun U W X Y Z Q : TangentSpace I x =>
     nabla2Rm04 (Fin.cons U (vec5 (I := I) W X Y Z Q))
-  have hSymm := canRm2Symm (I := I) (M := M) g (x := x)
+  have hSymm := levi_civita_second_covariant_riemann_symmetries (I := I) (M := M) g (x := x)
   have hBianchi := canRmSecond_nabla (I := I) (M := M) g (x := x)
   have hRicci := canRmRicci (I := I) (M := M) g (x := x)
   dsimp [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04] at hSymm hRicci
@@ -679,6 +677,7 @@ theorem canRmHessComm
     comm_eq B V A D C V] at hAlg
   simpa [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04, N] using hAlg
 
+omit [SigmaCompactSpace M] in
 theorem canRicHessSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -759,7 +758,7 @@ theorem canRicHessSum
   have trace_eq (U W X Y : TangentSpace I x) :
       nabla2Ric (vec4 (I := I) U W X Y) =
         ∑ i : Idx, N U W (basis i) X Y (basis i) := by
-    have h := canNabla2RicTrace (I := I) (M := M) g basis
+    have h := levi_civita_second_covariant_ricci_eq_riemann_trace (I := I) (M := M) g basis
       (identityInvMetric (Idx := Idx)) hinv U W X Y
     simpa [cov, hcov, Rm04, Ric, nablaRm04, nabla2Rm04, nablaRic,
       nabla2Ric, N, identityInvMetric, diagonalInvMetric] using h
@@ -789,6 +788,7 @@ theorem canRicHessSum
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_neg_distrib]
 
+omit [SigmaCompactSpace M] in
 theorem hamiltonRm04Id
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}

@@ -1,0 +1,114 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormCoordinates
+import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.DiagonalCompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
+
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+universe u uE uH
+
+namespace DifferentialGeometry
+namespace HCGCompactness
+
+open scoped Manifold ContDiff Topology
+open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
+
+open DifferentialGeometry.PDE.RicciFlow
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E] [CompleteSpace E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
+variable [IsManifold I 1 M] [IsManifold I 2 M]
+variable [VectorBundle Real E (TangentSpace I : M → Type _)]
+variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+
+omit [Module.Finite ℝ E] in
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem metricCInfConvOnCompacts_of_normConv
+    [FiniteDimensional Real E]
+    (gSeq : ℕ → SmoothRiemannianMetric I M) (gInf gRef : SmoothRiemannianMetric I M)
+    (hnorm : ∀ (p : ℕ) (K : Set M), IsCompact K → ∀ ε : Real, 0 < ε →
+      ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+        metricDerivNorm (I := I) a (gSeq k) gInf gRef x < ε) :
+    MetricCInfConvOnCompacts (I := I) gSeq gInf gRef := by
+  intro K hK p ε hε
+  obtain ⟨k0, hk0⟩ := hnorm p K hK (ε / 2) (by positivity)
+  refine ⟨k0, fun k hk => ?_⟩
+  refine lt_of_le_of_lt
+    (metricDerivNormSupOn_le_of_forall (I := I) K p (gSeq k) gInf gRef (ε / 2) (by positivity)
+      (fun a hap x hxK => (hk0 k hk a hap x hxK).le)) (by linarith)
+
+omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem exists_subseq_hconv
+    [FiniteDimensional Real E]
+    (K : Set M) (p : ℕ)
+    (gSeq : ℕ → Real → SmoothRiemannianMetric I M)
+    (gInf : Real → SmoothRiemannianMetric I M) (gRef : SmoothRiemannianMetric I M)
+    (e : ℕ → Real)
+    (hstep : ∀ n : ℕ, ∀ φ : ℕ → ℕ, StrictMono φ →
+      ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+        ∀ ε : Real, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+          metricDerivNorm (I := I) a (gSeq ((φ ∘ ψ) k) (e n)) (gInf (e n)) gRef x < ε) :
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧
+      ∀ n : ℕ, ∀ ε : Real, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+        metricDerivNorm (I := I) a (gSeq (φ k) (e n)) (gInf (e n)) gRef x < ε := by
+  refine exists_diag_subseq
+    (fun n φ => ∀ ε : Real, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+      metricDerivNorm (I := I) a (gSeq (φ k) (e n)) (gInf (e n)) gRef x < ε)
+    hstep ?_ ?_
+  · intro n φ ψ hψ hP ε hε
+    obtain ⟨k0, hk0⟩ := hP ε hε
+    exact ⟨k0, fun k hk a hap x hxK => hk0 (ψ k) (le_trans hk hψ.le_apply) a hap x hxK⟩
+  · intro n φ m hP ε hε
+    obtain ⟨k0, hk0⟩ := hP ε hε
+    refine ⟨k0 + m, fun k hk a hap x hxK => ?_⟩
+    have hval := hk0 (k - m) (by omega) a hap x hxK
+    simp only [Nat.sub_add_cancel (show m ≤ k by omega)] at hval
+    exact hval
+
+omit [Module.Finite ℝ E] in
+omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem windowPreconv_of_perTime
+    [FiniteDimensional Real E]
+    (K : Set M) (β ψ : Real) (p : ℕ)
+    (gSeq : ℕ → Real → SmoothRiemannianMetric I M)
+    (gInf : Real → SmoothRiemannianMetric I M) (gRef : SmoothRiemannianMetric I M)
+    (L : Real) (hL : 0 ≤ L)
+    (hgLip : ∀ k : ℕ, ∀ s ∈ Set.Icc β ψ, ∀ t ∈ Set.Icc β ψ, ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+      metricDerivNorm (I := I) a (gSeq k s) (gSeq k t) gRef x ≤ L * |s - t|)
+    (hInfLip : ∀ s ∈ Set.Icc β ψ, ∀ t ∈ Set.Icc β ψ, ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+      metricDerivNorm (I := I) a (gInf s) (gInf t) gRef x ≤ L * |s - t|)
+    (e : ℕ → Real) (he : ∀ n : ℕ, e n ∈ Set.Icc β ψ)
+    (hdense : ∀ t ∈ Set.Icc β ψ, ∀ δ : Real, 0 < δ → ∃ n : ℕ, |t - e n| < δ)
+    (hstep : ∀ n : ℕ, ∀ φ : ℕ → ℕ, StrictMono φ →
+      ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+        ∀ ε : Real, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
+          metricDerivNorm (I := I) a (gSeq ((φ ∘ ψ) k) (e n)) (gInf (e n)) gRef x < ε) :
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧
+      ∀ ε : Real, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ t ∈ Set.Icc β ψ,
+        metricDerivNormSupOn (I := I) K p (gSeq (φ k) t) (gInf t) gRef < ε := by
+  obtain ⟨φ, hφ, hconv⟩ := exists_subseq_hconv (I := I) K p gSeq gInf gRef e hstep
+  refine ⟨φ, hφ, ?_⟩
+  refine windowPreconv (I := I) K β ψ p (fun k => gSeq (φ k)) gInf gRef L hL
+    (fun k => hgLip (φ k)) hInfLip (Set.range e) ?_ ?_
+  · intro t ht δ hδ
+    obtain ⟨n, hn⟩ := hdense t ht δ hδ
+    exact ⟨e n, ⟨n, rfl⟩, he n, hn⟩
+  · rintro τ ⟨n, rfl⟩ _ ε hε
+    exact hconv n ε hε
+
+end HCGCompactness
+end DifferentialGeometry

@@ -63,39 +63,6 @@ theorem smoothApproxSeq_smoothFChartResidual_memWkp
   rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
   exact smoothApproxSeq_smoothFChartResidual_memW1p (I := I) (M := M) g α hu_h n
 
-theorem fChartResidual_memW1p_from_smoothApprox_cauchy_identification
-    (g : SmoothRiemannianMetric I M) (α : M)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
-    (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-        (d := Module.finrank ℝ E) 1 2
-        (fun y =>
-          smoothFChartResidual (I := I) (M := M) g α
-            (smoothApproxSeq (I := I) (M := M) g hu_h m) y -
-          smoothFChartResidual (I := I) (M := M) g α
-            (smoothApproxSeq (I := I) (M := M) g hu_h n) y)
-        (chartTargetEuclid (I := I) (M := M) α) ≤ ENNReal.ofReal ε)
-    (h_identification : ∀ F_lim : EuclN → ℝ,
-      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 F_lim
-        (chartTargetEuclid (I := I) (M := M) α) →
-      Tendsto (fun n =>
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) 1 2
-          (fun y =>
-            smoothFChartResidual (I := I) (M := M) g α
-              (smoothApproxSeq (I := I) (M := M) g hu_h n) y - F_lim y)
-          (chartTargetEuclid (I := I) (M := M) α))
-        atTop (𝓝 0) →
-      F_lim =ᵐ[(volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)]
-        fChartResidual (I := I) (M := M) g α u_h) :
-    DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (fChartResidual (I := I) (M := M) g α u_h)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  fChartResidual_memW1p_unconditional (I := I) (M := M) g α hu_h
-    h_cauchy h_identification
-
 end FChartResidual
 end Laplacian
 end Analysis

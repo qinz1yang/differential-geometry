@@ -23,7 +23,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Tensor0SBundle
 
@@ -127,6 +126,7 @@ theorem connLaplacian_function_eq_chartLaplacian [I.Boundaryless]
     connLaplacian_function (I := I) g hf x = Δ_g (I := I) g ⟨_, hf⟩ x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem traceFun_abstractHessian_eq_laplacian [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
@@ -149,6 +149,7 @@ theorem traceFun_abstractHessian_eq_laplacian [I.Boundaryless]
   rw [← h1, h2, h3]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem traceFun_abstractHessian_eq_connLaplacian [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)

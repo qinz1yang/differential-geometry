@@ -10,7 +10,6 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology

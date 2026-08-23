@@ -25,7 +25,6 @@ private theorem headFreezeNabla
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3)
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -45,9 +44,9 @@ private theorem headFreezeNabla
       (n := (∞ : WithTop ℕ∞)) 2 :=
     freezeHead03Field (I := I) (M := M) A Y
   obtain ⟨Usec, hUsec, hUcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x U
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x U
   obtain ⟨Vsec, hVsec, hVcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x V
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x V
   let V2 : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)
     | ⟨0, _⟩ => Usec
@@ -137,7 +136,6 @@ theorem nabla2Trace02
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
-    (hcov1 : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -178,7 +176,7 @@ theorem nabla2Trace02
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec, hYcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x Y
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Y
   let B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 :=
     freezeHead03Field (I := I) (M := M) nablaA Ysec
@@ -317,7 +315,7 @@ theorem nabla2Trace02
         refine Finset.sum_congr rfl fun j _ => ?_
         congr 1
         have hfreeze :=
-          headFreezeNabla (I := I) (M := M) cov hcov1 nablaA Xsec Ysec
+          headFreezeNabla (I := I) (M := M) cov nablaA Xsec Ysec
             (hYcov Xsec) (basis i) (basis j)
         have hBtot :=
           totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H)
@@ -337,7 +335,6 @@ private theorem tailFreezeNabla
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -358,9 +355,9 @@ private theorem tailFreezeNabla
       (n := (∞ : WithTop ℕ∞)) 2 :=
     freezeTail04Field (I := I) (M := M) A Y Z
   obtain ⟨Usec, hUsec, hUcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x U
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x U
   obtain ⟨Vsec, hVsec, hVcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x V
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x V
   let V2 : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)
     | ⟨0, _⟩ => Usec
@@ -450,7 +447,6 @@ private theorem middleFreezeNabla
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -471,9 +467,9 @@ private theorem middleFreezeNabla
       (n := (∞ : WithTop ℕ∞)) 2 :=
     freezeMiddle04Field (I := I) (M := M) A Y Z
   obtain ⟨Usec, hUsec, hUcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x U
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x U
   obtain ⟨Vsec, hVsec, hVcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x V
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x V
   let V2 : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)
     | ⟨0, _⟩ => Usec
@@ -569,7 +565,6 @@ theorem nablaTrace04
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -602,9 +597,9 @@ theorem nablaTrace04
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec, hYcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x Y
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Y
   obtain ⟨Zsec, hZsec, hZcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x Z
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Z
   let B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 :=
     freezeMiddle04Field (I := I) (M := M) A Ysec Zsec
@@ -670,9 +665,9 @@ theorem nablaTrace04
   intro i _
   apply Finset.sum_congr rfl
   intro j _
-  congr 1
+  apply congrArg (fun z : ℝ => gInv i j * z)
   have hfreeze :=
-    middleFreezeNabla (I := I) (M := M) cov hcov A Xsec Ysec Zsec
+    middleFreezeNabla (I := I) (M := M) cov A Xsec Ysec Zsec
       (hYcov Xsec) (hZcov Xsec) (basis i) (basis j)
   simpa [B, nablaA, hXsec, hYsec, hZsec] using hfreeze
 

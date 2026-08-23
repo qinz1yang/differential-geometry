@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebeyToHs
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
@@ -78,7 +78,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (B : ℝ)
     (hΛ : ∀ a : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x (Λ a) (Λ a) ≤ B)
-    (_hB : 0 ≤ B) :
+    :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         (show TensorRSSpace 2 2 I x from
           TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) ≤

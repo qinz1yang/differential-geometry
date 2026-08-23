@@ -94,7 +94,6 @@ private theorem MemWkp_two_extend_via_cutoff_aux
       (d := Module.finrank ℝ E) k 2 (fun x => η x * u x) Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
       (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-      (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
       hΩ'_open hΩ_open hΩ'_in_Ω h_eta_u_in_Ω' h_tsupp_prod_in_Ω'
       h_compactSupport_prod
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
@@ -318,7 +317,7 @@ theorem chartSideH2kBridge_two_of_twice_diff_identities
             densityOnEuclid (I := I) g α y *
               effectiveSourceChartSecondOrder (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
             ∂(volume : Measure EuclN)) :
-    ChartSideH2kBridge (I := I) (M := M) g 2
+    ChartSideH2kBridge (I := I) (M := M) 2
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) := by
   intro α
@@ -353,17 +352,17 @@ theorem laplacianDomainPow_memWkpChart_four_two_of_twice_diff_identities
               effectiveSourceChartSecondOrder (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
             ∂(volume : Measure EuclN)) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) g 4 2
+      (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
   have h_bridge := chartSideH2kBridge_two_of_twice_diff_identities
     (I := I) (M := M) g hu_h h_twice_identities
   have h := laplacianDomainPow_memWkpChart_2k_of_chartSideH2kBridge
-    (I := I) (M := M) g 2 hu_h h_bridge
+    (I := I) (M := M) g 2 h_bridge
   have h_eq : (2 : ℕ) * 2 = 4 := by norm_num
   rw [h_eq] at h
   exact h

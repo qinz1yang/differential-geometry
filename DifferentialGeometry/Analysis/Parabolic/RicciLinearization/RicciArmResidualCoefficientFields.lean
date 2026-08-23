@@ -1,20 +1,20 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientDecomposition
+import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureRefoldMonomialFibreNormBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficients
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureDecompositionMonomialFibreNormBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnectionDifferenceCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldInputSlotSymmetrization
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsMetricPerturbation
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsConnDiffCommutator
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsConnectionDifferenceCommutator
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsSharpGradientKoszul
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsRicciFold
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsBackgroundDifferenceRefold
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsBackgroundDifferenceDecomposition
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsFrameKernelContraction
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -111,7 +111,7 @@ private theorem foldPerturbation_eq_metricDifference (g₀ g₁ : SmoothRiemanni
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private theorem foldCcTensor22_ext_of_appCc (g₀ : SmoothRiemannianMetric I M)
+private theorem foldCcTensor22_ext_of_operatorFieldApply (g₀ : SmoothRiemannianMetric I M)
     (C D : SmoothCcTensor g₀ 2 2)
     (h : ∀ W : SmoothCcTensor g₀ 0 2,
       operatorFieldApply (I := I) (M := M) g₀ 2 2 C W = operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -164,20 +164,20 @@ private theorem foldHalfRiemannBackgroundDifference_eq_residualFieldSum_add_kern
     (1 / 2 : ℝ) • (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
         - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) =
       ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁
-        + backgroundRicciCommutatorDiffRefoldRemainderField (I := I) (M := M) g₀ g₁
-        + refoldKernelContractionField (I := I) (M := M) g₀ g₁
+        + backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁
+        + decompositionKernelContractionField (I := I) (M := M) g₀ g₁
             (iteratedCovGrad (I := I) g₀ 0 2 2 P)
             (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
             (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 := by
   classical
   have hP := foldPerturbation_eq_metricDifference (I := I) (M := M) g₀ g₁ P htie hPsymm
   rw [hP]
-  refine foldCcTensor22_ext_of_appCc (I := I) (M := M) g₀ _ _ (fun W => ?_)
+  refine foldCcTensor22_ext_of_operatorFieldApply (I := I) (M := M) g₀ _ _ (fun W => ?_)
   have hprim :=
-    ricciArmOrder0RiemannHalfBgDiff_appCc_eq_residualFieldSum_add_refoldKernelSecondGrad
+    ricciArmOrder0RiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
       (I := I) (M := M) g₀ g₁ P htie hPsymm W
   rw [hP] at hprim
-  rw [appCc_smul_left (I := I) (M := M) g₀ 2 2, foldAppCc_sub_left (I := I) (M := M) g₀ 2 2]
+  rw [operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2, foldOperatorFieldApplication_sub_left (I := I) (M := M) g₀ 2 2]
   rw [hprim]
   rw [show (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
         (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
@@ -188,53 +188,53 @@ private theorem foldHalfRiemannBackgroundDifference_eq_residualFieldSum_add_kern
             (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁)
       - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
           (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁)) =
-      backgroundRicciCommutatorDiffRefoldRemainderField (I := I) (M := M) g₀ g₁ from rfl]
-  rw [appCc_add_left (I := I) (M := M) g₀ 2 2
+      backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁ from rfl]
+  rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2
     (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
-    (backgroundRicciCommutatorDiffRefoldRemainderField (I := I) (M := M) g₀ g₁) W]
-  rw [appCc_add_left (I := I) (M := M) g₀ 2 2
+    (backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁) W]
+  rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2
     (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁
-      + backgroundRicciCommutatorDiffRefoldRemainderField (I := I) (M := M) g₀ g₁)
-    (refoldKernelContractionField (I := I) (M := M) g₀ g₁
+      + backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁)
+    (decompositionKernelContractionField (I := I) (M := M) g₀ g₁
       (iteratedCovGrad (I := I) g₀ 0 2 2
         (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))
       (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
       (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1) W]
-  rw [appCc_add_left (I := I) (M := M) g₀ 2 2
+  rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2
     (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
-    (backgroundRicciCommutatorDiffRefoldRemainderField (I := I) (M := M) g₀ g₁) W]
-  rw [appCc_refoldKernelContractionField (I := I) (M := M) g₀ g₁
+    (backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁) W]
+  rw [operatorFieldApplication_decompositionKernelContractionField (I := I) (M := M) g₀ g₁
     (iteratedCovGrad (I := I) g₀ 0 2 2
       (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))
     (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
     (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 W]
 
 
-theorem linearizedRicciConnDiffOrder0RiemannHalfBgDiffCombInputSymm_eq_residualFieldSum
+theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfBackgroundDiffCombInputSymm_eq_residualFieldSum
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
     (hPsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ P x v w = smoothCcTensorBilinForm (I := I) g₀ P x w v) :
     ccInputSlotSymm (I := I) (M := M) g₀
-        (linearizedRicciConnDiffOrder0CoeffField (I := I) (M := M) g₀ g₁
+        (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁
           + (1 / 2 : ℝ) • (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
               - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)) =
       ccInputSlotSymm (I := I) (M := M) g₀
           (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
         + ccInputSlotSymm (I := I) (M := M) g₀
-            (backgroundRicciCommutatorDiffRefoldRemainderField (I := I) (M := M) g₀ g₁)
+            (backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁)
         + ccInputSlotSymm (I := I) (M := M) g₀
-            (linearizedRicciConnDiffOrder0CoeffField (I := I) (M := M) g₀ g₁)
+            (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁)
         + ccInputSlotSymm (I := I) (M := M) g₀
-            (refoldKernelContractionField (I := I) (M := M) g₀ g₁
+            (decompositionKernelContractionField (I := I) (M := M) g₀ g₁
               (iteratedCovGrad (I := I) g₀ 0 2 2 P)
               (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
               (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1) := by
   rw [foldHalfRiemannBackgroundDifference_eq_residualFieldSum_add_kernelContraction
     (I := I) (M := M) g₀ g₁ P htie hPsymm]
-  rw [ccInputSymm_add (I := I) (M := M) g₀, ccInputSymm_add (I := I) (M := M) g₀,
-    ccInputSymm_add (I := I) (M := M) g₀]
+  rw [ccInputSlotSymm_add (I := I) (M := M) g₀, ccInputSlotSymm_add (I := I) (M := M) g₀,
+    ccInputSlotSymm_add (I := I) (M := M) g₀]
   abel
 
 

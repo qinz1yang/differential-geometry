@@ -157,7 +157,7 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from B)
                 (unitZeroSec (I := I) (M := M) x))) (V a x)))) := by
   classical
-  obtain ⟨n, e, bse, hn, hbse, horth, _hsq, _hexp, _hrfns⟩ :=
+  obtain ⟨n, e, bse, hn, hbse, horth, _hsq, _hexp, _hriemannianFiberNormSq⟩ :=
     tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
   have hn' : n = Module.finrank ℝ E := hn
   subst hn'

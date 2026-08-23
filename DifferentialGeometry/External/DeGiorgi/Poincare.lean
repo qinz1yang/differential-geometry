@@ -5,8 +5,8 @@ import DifferentialGeometry.External.DeGiorgi.WholeSpaceSobolev
 
 noncomputable section
 
-open MeasureTheory Metric Filter Set Function
-open scoped ENNReal NNReal Topology
+open MeasureTheory Metric Filter Set
+open scoped ENNReal NNReal
 
 namespace DeGiorgi
 
@@ -269,6 +269,7 @@ theorem sphere_radial_integral_ball
     ∫ ω in Set.univ,
       (∫ r in Set.Ioo (0 : ℝ) R, r ^ (d - 1 : ℕ) • F (r • (ω : E)))
       ∂(volume : Measure E).toSphere := by
+  let _ := _hR
   set G : E → ℝ := (Metric.ball (0 : E) R).indicator F
   have hstep1 : ∫ z in Metric.ball (0 : E) R, F z ∂volume = ∫ z, G z ∂volume := by
     simp [G, integral_indicator measurableSet_ball]
@@ -800,6 +801,7 @@ theorem riesz_kernel_integrable
     {R : ℝ} (_hR : 0 < R) :
     IntegrableOn (fun x : E => ‖x‖ ^ (1 - (d : ℝ)))
       (Metric.ball (0 : E) R) volume := by
+  let _ := _hR
   let g : ℝ → ℝ := fun r => if r < R then r ^ (1 - (d : ℝ)) else 0
   have hag : (fun x : E => ‖x‖ ^ (1 - (d : ℝ))) =ᵐ[volume.restrict (Metric.ball (0 : E) R)]
       (g ∘ (‖·‖)) := by

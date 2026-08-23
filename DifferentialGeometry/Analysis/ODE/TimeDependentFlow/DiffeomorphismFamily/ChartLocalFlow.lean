@@ -13,14 +13,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem manifoldFlowFamily_of_regular
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hReg : ChartCoordPicardRegular X)
     (hRegNeg : ChartCoordPicardRegular (fun t x => -(X t x)))
-    (hSmoothX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      (X t ((chartAt H α).symm (I.symm y)) : E)))
-    (hSmoothNegX_chart : ∀ α : M, ContDiff ℝ ∞ (Function.uncurry fun t y =>
-      ((-X t ((chartAt H α).symm (I.symm y))) : E)))
     (hLocalFwd : ∀ (Φ : ℝ → M → M) (T : ℝ), 0 < T →
       (∀ x : M, ∃ α : M, x ∈ (chartLocalPicardData_of_regular X hReg α).U ∧
         ∀ s : ℝ, Φ s x = (chartAt H α).symm
@@ -71,6 +68,6 @@ theorem manifoldFlowFamily_of_regular
   manifoldFlowFamily_exists X
     (fun α => chartLocalPicardData_of_regular X hReg α)
     (fun α => chartLocalPicardData_of_regular (fun t x => -(X t x)) hRegNeg α)
-    hSmoothX_chart hSmoothNegX_chart hLocalFwd hLocalRev hBijPerChart
+    hLocalFwd hLocalRev hBijPerChart
 
 end DifferentialGeometry.Analysis.ODE

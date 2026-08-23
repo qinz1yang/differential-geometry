@@ -3,7 +3,6 @@ open DifferentialGeometry.Analysis.Sobolev
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option maxSynthPendingDepth 3
 
 noncomputable section
 
@@ -13,15 +12,14 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Sobolev
 
-open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (linearizedRicciArm0BaseCoeff linearizedRicciArm1BaseCoeff)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
-open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedFam)
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 
 private lemma norm_sq_le_two_sub {X : Type*} [SeminormedAddCommGroup X] (x y : X) :
     ‖x‖ ^ 2 ≤ 2 * ‖x - y‖ ^ 2 + 2 * ‖y‖ ^ 2 := by
@@ -95,7 +93,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem linearizedRicciArm0BaseCoeff_realizedFam_jetL2_summed_topSeparated
+theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -118,7 +116,7 @@ theorem linearizedRicciArm0BaseCoeff_realizedFam_jetL2_summed_topSeparated
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hbound⟩ :=
-    linearizedRicciArm0BaseCoeff_realizedFam_jetL2_perOrder_topSeparated
+    linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨2 * Ktop, by linarith, 2 * ∑ i ∈ Finset.range (a + 1), Kc i, ?_, ?_⟩
   · have := Finset.sum_nonneg (fun i (_ : i ∈ Finset.range (a + 1)) => hKc_nn i)
@@ -146,7 +144,7 @@ theorem linearizedRicciArm0BaseCoeff_realizedFam_jetL2_summed_topSeparated
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)
     (fun j => add_nonneg (sq_nonneg _) (sq_nonneg _)) hper
 
-theorem linearizedRicciArm1BaseCoeff_realizedFam_jetL2_summed_topSeparated
+theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -169,7 +167,7 @@ theorem linearizedRicciArm1BaseCoeff_realizedFam_jetL2_summed_topSeparated
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hbound⟩ :=
-    linearizedRicciArm1BaseCoeff_realizedFam_jetL2_perOrder_topSeparated
+    linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨2 * Ktop, by linarith, 2 * ∑ i ∈ Finset.range (a + 1), Kc i, ?_, ?_⟩
   · have := Finset.sum_nonneg (fun i (_ : i ∈ Finset.range (a + 1)) => hKc_nn i)

@@ -90,7 +90,6 @@ private theorem MemWkp_two_extend_via_cutoff
       (d := Module.finrank ℝ E) k 2 (fun x => η x * u x) Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
       (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-      (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
       hΩ'_open hΩ_open hΩ'_in_Ω h_eta_u_in_Ω' h_tsupp_prod_in_Ω'
       h_compactSupport_prod
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet

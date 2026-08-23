@@ -57,7 +57,7 @@ theorem fixedCoeffTower_covGrad_op (g : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fixedCoeffTower_base_appCc (g : SmoothRiemannianMetric I M)
+theorem fixedCoeffTower_base_operatorFieldApply (g : SmoothRiemannianMetric I M)
     (Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0))
     (r : ℕ) (W : SmoothCcTensor g 0 r) :
     fixedCoeffTowerOp (I := I) (M := M) g Φ₀ 0 r W =
@@ -71,7 +71,7 @@ def fixedCoeffDiffOp (g : SmoothRiemannianMetric I M)
   let covGrad_op := fixedCoeffTower_covGrad_op (I := I) (M := M) g Φ₀
   let hNF : ∀ (p r : ℕ), IsIteratedCovGradNormalForm (I := I) (M := M) g op p r :=
     fun p => normalForm_of_base (I := I) (M := M) g op covGrad_op Φ₀
-      (fun r W => fixedCoeffTower_base_appCc (I := I) (M := M) g Φ₀ r W) p
+      (fun r W => fixedCoeffTower_base_operatorFieldApply (I := I) (M := M) g Φ₀ r W) p
   { op := op
     covGrad_op := covGrad_op
     kappa := fun p r => Classical.choose
@@ -79,7 +79,7 @@ def fixedCoeffDiffOp (g : SmoothRiemannianMetric I M)
     kappa_nonneg := fun p r =>
       (Classical.choose_spec
         (exists_jet_bound_of_normalForm (I := I) (M := M) g op p r (hNF p r))).1
-    rfns_op_le := fun p r W x =>
+    riemannianFiberNormSq_op_le := fun p r W x =>
       (Classical.choose_spec
         (exists_jet_bound_of_normalForm (I := I) (M := M) g op p r (hNF p r))).2 W x }
 
@@ -95,12 +95,12 @@ theorem fixedCoeffDiffOp_iteratedCovGrad_singleSum_le (g : SmoothRiemannianMetri
         ∑ q ∈ Finset.range (a + 1),
           riemannianFiberNormSq (I := I) (M := M) g 0 (r + q) x₀
             ((iteratedCovGrad g 0 r q W).toSection x₀) :=
-  DiffBilinOp.exists_rfns_iteratedCovGrad_singleSum_le_at
+  DiffBilinOp.exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le_at
     (fixedCoeffDiffOp (I := I) (M := M) g Φ₀).op
     (fixedCoeffDiffOp (I := I) (M := M) g Φ₀).covGrad_op
     (fixedCoeffDiffOp (I := I) (M := M) g Φ₀).kappa
     (fixedCoeffDiffOp (I := I) (M := M) g Φ₀).kappa_nonneg x₀
-    (fun p r W => (fixedCoeffDiffOp (I := I) (M := M) g Φ₀).rfns_op_le p r W x₀) r W a
+    (fun p r W => (fixedCoeffDiffOp (I := I) (M := M) g Φ₀).riemannianFiberNormSq_op_le p r W x₀) r W a
 
 end Spectral
 end Analysis

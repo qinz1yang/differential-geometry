@@ -17,7 +17,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [Boundaryle
     [T2Space M] [SigmaCompactSpace M] in
 theorem chart_alpha_coord_gronwall_uniqueness
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ : M)
-    (T r r' : ℝ) (K : NNReal) (_hT_pos : 0 < T) (hr_lt_r' : r < r')
+    (T r r' : ℝ) (K : NNReal) (hr_lt_r' : r < r')
     (u v : ℝ → E)
     (hLip : ∀ t ∈ Set.Ico (0 : ℝ) T,
       LipschitzOnWith K
@@ -74,8 +74,8 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [Boundaryle
 theorem chart_cover_flow_unique_on_overlap_chart_alpha_coord
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ α₂ : M)
     (hper₁ : ChartLocalPicardData X α₁) (hper₂ : ChartLocalPicardData X α₂)
-    (S r r' : ℝ) (K : NNReal) (hS_pos : 0 < S) (hr_lt_r' : r < r')
-    (hS_le₁ : S ≤ hper₁.T) (_hS_le₂ : S ≤ hper₂.T)
+    (S r r' : ℝ) (K : NNReal) (hr_lt_r' : r < r')
+    (hS_le₁ : S ≤ hper₁.T)
     (x : M) (hx₁ : x ∈ hper₁.U) (hx₂ : x ∈ hper₂.U)
     (hLip : ∀ t ∈ Set.Ico (0 : ℝ) S,
       LipschitzOnWith K
@@ -170,7 +170,7 @@ theorem chart_cover_flow_unique_on_overlap_chart_alpha_coord
     exact hderiv_inter.mono_of_mem_nhdsWithin h_nhdsWithin
   have hEqOn : Set.EqOn u₁ u₂ (Set.Icc (0 : ℝ) S) :=
     chart_alpha_coord_gronwall_uniqueness (M := M) (I := I) (E := E)
-      X α₁ S r r' K hS_pos hr_lt_r' u₁ u₂
+      X α₁ S r r' K hr_lt_r' u₁ u₂
       hLip hu₁_cont hu2_cont hu₁_ode hu2_ode hu1_ball hu2_ball heq0
   intro s hs
   have hEq := hEqOn hs
@@ -284,7 +284,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [Boundaryle
 theorem chart_overlap_chart_alpha_coord_ode
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ α₂ : M)
     (hper₂ : ChartLocalPicardData X α₂)
-    (S : ℝ) (_hS_pos : 0 < S) (hS_le₂ : S ≤ hper₂.T)
+    (S : ℝ) (hS_le₂ : S ≤ hper₂.T)
     (x : M) (hx₂ : x ∈ hper₂.U)
     (hcompat : ∀ t ∈ Set.Ico (0 : ℝ) S,
       ∃ L : E →L[ℝ] E,

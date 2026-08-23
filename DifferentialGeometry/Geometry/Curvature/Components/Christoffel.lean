@@ -573,7 +573,7 @@ theorem rm13_eval_eq_christoffelCurvCoord
     (x₀ : M)
     (alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x₀)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x₀)
     (i k j : CoordinateIdx (𝕜 := Real) E) :
     Rm13 x₀ alpha
@@ -638,7 +638,7 @@ theorem rm13_coord_expand
     (x₀ : M)
     (alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x₀)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x₀)
     (X Y Z : TangentSpace I x₀) :
     Rm13 x₀ alpha (vec3 X Y Z) =
@@ -702,7 +702,7 @@ theorem ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
       (1 : WithTop ℕ∞))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (x₀ : M)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x₀)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     ricciFromRm13At (I := I) (M := M) (Rm13 x₀)

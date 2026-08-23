@@ -70,8 +70,8 @@ theorem exists_unified_chartFlow_data
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   obtain ⟨ρ₀, T₀, hρ₀_pos, hT₀_pos, hρ₀_le_V4, hT₀_lt_V4, h_orbit_in⟩ :=
-    exists_uniform_orbit_in_inner_ball (I := I) (p := p)
-      (x₀ := x₀) hx₀_def
+    exists_uniform_orbit_in_inner_ball
+      (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
       (Φ := Φ) hΦ_cd_V4 hΦ_init0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
@@ -149,10 +149,10 @@ theorem exists_unified_chartFlow_data
         (chartPhaseVF (I := I) g p (Φ (((x₀, v) : E × E), s))) s := by
     intro v hv s hs
     exact orbit_hasDerivAt_chartPhaseVF_uniform
-      (I := I) (g := g) (p := p) (x₀ := x₀) hx₀_def
-      (b := b) (r := r) (ε := ε) hr hε
-      (Φ := Φ) hΦ_ILF hb_sub
-      (ρ := ρ) (T := T) hρ_pos hT_pos hT_lt_ε hρ_le_r h_inner_T v hv s hs
+      (I := I) (g := g) (p := p) (x₀ := x₀)
+      (b := b) (r := r) (ε := ε)
+      (Φ := Φ) hΦ_ILF
+      (ρ := ρ) (T := T) hT_lt_ε hρ_le_r h_inner_T v hv s hs
   have hconst_ev : ∀ᶠ s in 𝓝 (0 : ℝ),
       Φ (((x₀, (0 : E)) : E × E), s) = ((x₀, (0 : E)) : E × E) := by
     change ∀ᶠ s in 𝓝 (0 : ℝ),

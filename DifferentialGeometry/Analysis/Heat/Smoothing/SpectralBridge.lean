@@ -44,7 +44,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩

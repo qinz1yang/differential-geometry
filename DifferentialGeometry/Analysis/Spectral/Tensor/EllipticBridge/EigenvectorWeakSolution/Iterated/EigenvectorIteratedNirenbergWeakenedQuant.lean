@@ -509,7 +509,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
             (d := Module.finrank ℝ E) 1 2 P
             (chartTargetEuclid (I := I) (M := M) α) :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_chosenWeakPartial_le
-        0 h_chart_open P l
+        0 P l
     exact h_mono.trans (h_eq ▸ h_chosen_le)
   have h_uChart_eLpNorm_le :
       eLpNorm D.u_chart 2
@@ -703,7 +703,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
               (d := Module.finrank ℝ E) 1 2 P
               (chartTargetEuclid (I := I) (M := M) α) :=
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_chosenWeakPartial_le
-          0 h_chart_open P i'
+          0 P i'
       have h_le_wkpNorm1 :
           eLpNorm (D.weak_partial i') 2
               ((volume : Measure EuclN).restrict Ω'') ≤
@@ -1218,7 +1218,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
             (d := Module.finrank ℝ E) 1 2 P
             (chartTargetEuclid (I := I) (M := M) α) :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_chosenWeakPartial_le
-        0 h_chart_open P l
+        0 P l
     exact h_mono.trans (h_eq ▸ h_chosen_le)
   have h_uChart_eLpNorm_le :
       eLpNorm D.u_chart 2
@@ -1386,7 +1386,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
               (d := Module.finrank ℝ E) 1 2 P
               (chartTargetEuclid (I := I) (M := M) α) :=
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_chosenWeakPartial_le
-          0 h_chart_open P i'
+          0 P i'
       have h_le_wkpNorm1 :
           eLpNorm (D.weak_partial i') 2
               ((volume : Measure EuclN).restrict Ω'') ≤

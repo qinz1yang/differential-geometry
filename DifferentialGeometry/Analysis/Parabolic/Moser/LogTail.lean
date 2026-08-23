@@ -10,7 +10,6 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry.Analysis.Parabolic.Moser
 
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Parabolic.Energy
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem

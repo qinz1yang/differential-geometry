@@ -19,7 +19,6 @@ open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

@@ -3,7 +3,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 
@@ -28,7 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M) (r m c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r m c I) (k : ℕ) :
@@ -52,7 +50,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
             (if i + 1 < k + 1 then
                 homTensorRSCovGradSec (I := I) (M := M) g r (m + (i + 1)) (c + k) (D (i + 1))
               else 0) +
-              slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i), fun W => ?_⟩
+              slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i), fun W => ?_⟩
       rw [show iteratedCovGrad g r c (k + 1) (homTensorRSFieldApply (I := I) (M := M) g r m c Q W) =
           covGrad (I := I) (M := M) g r (c + k)
             (iteratedCovGrad g r c k (homTensorRSFieldApply (I := I) (M := M) g r m c Q W)) from
@@ -66,7 +64,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
                 (homTensorRSCovGradSec (I := I) (M := M) g r (m + i) (c + k) (D i))
                 (iteratedCovGrad g r m i W) +
               homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
-                (slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i))
+                (slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i))
                 (iteratedCovGrad g r m (i + 1) W)) from
         Finset.sum_congr rfl (fun i _ => by
           rw [covGrad_appFullSec_eq (I := I) (M := M) g r (m + i) (c + k) (D i)
@@ -81,14 +79,14 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
                 (if i + 1 < k + 1 then
                     homTensorRSCovGradSec (I := I) (M := M) g r (m + (i + 1)) (c + k) (D (i + 1))
                   else 0) +
-                  slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i)))
+                  slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i)))
           (iteratedCovGrad g r m j W)) (k + 1)]
       rw [show (∑ i ∈ Finset.range (k + 1),
             homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
               ((if i + 1 < k + 1 then
                   homTensorRSCovGradSec (I := I) (M := M) g r (m + (i + 1)) (c + k) (D (i + 1))
                 else 0) +
-                slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i))
+                slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i))
               (iteratedCovGrad g r m (i + 1) W)) =
           (∑ i ∈ Finset.range (k + 1),
             homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
@@ -98,7 +96,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
               (iteratedCovGrad g r m (i + 1) W)) +
           (∑ i ∈ Finset.range (k + 1),
             homTensorRSFieldApply (I := I) (M := M) g r (m + (i + 1)) (c + (k + 1))
-              (slotExtendFullSec (I := I) (M := M) g r (m + i) (c + k) (D i))
+              (slotExtendFullSec (I := I) (M := M) r (m + i) (c + k) (D i))
               (iteratedCovGrad g r m (i + 1) W)) from by
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -122,7 +120,6 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
           (homTensorRSCovGradSec (I := I) (M := M) g r (m + i) (c + k) (D i))
           (iteratedCovGrad g r m i W)) k]
       abel
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_appFullSec_iteratedCovGrad_window_bound (g : SmoothRiemannianMetric I M)
@@ -227,7 +224,6 @@ private theorem riemannianFiberNormSq_congr_of_heq (g : SmoothRiemannianMetric I
   subst h
   rw [eq_of_heq hYZ]
 
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_iteratedCovGrad_comp (g : SmoothRiemannianMetric I M) (r s j i : ℕ)
@@ -252,7 +248,6 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_order_congr (g : SmoothRie
   rfl
 
 end NormedIteratedCovGrad
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_appFullSec_on_jet_iteratedCovGrad_window_bound (g : SmoothRiemannianMetric I M)

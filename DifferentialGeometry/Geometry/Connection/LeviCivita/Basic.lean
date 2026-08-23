@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricCompatible
 open DifferentialGeometry.Geometry.Curvature
@@ -84,22 +84,8 @@ def IsTorsionFreeFamilyOn
 def IsLeviCivitaFamilyOn
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D) : Prop :=
-  IsMetricCompatibleFamilyOn (I := I) G /\ IsTorsionFreeFamilyOn (I := I) G
-
-
-structure LeviCivitaCalculusOn
-    {D : RealTimeInterval}
-    (G : MetricConnectionFamilyOn (I := I) (M := M) D) : Prop where
-  metricCompatible : IsMetricCompatibleFamilyOn (I := I) G
-  torsionFree : IsTorsionFreeFamilyOn (I := I) G
-
-omit [SigmaCompactSpace M] [T2Space M] in
-theorem isLeviCivitaFamilyOn_of_calculus
-    {D : RealTimeInterval}
-    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
-    (hG : LeviCivitaCalculusOn (I := I) G) :
-    IsLeviCivitaFamilyOn (I := I) G :=
-  ⟨hG.metricCompatible, hG.torsionFree⟩
+  forall t : RealTimeInterval.FlowTime D,
+    IsLeviCivita (I := I) (G.connectionAt t) (G.metricAt t)
 
 end Family
 

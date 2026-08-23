@@ -12,7 +12,7 @@ and stage-one constants used in the Chapter 06 Moser argument.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 

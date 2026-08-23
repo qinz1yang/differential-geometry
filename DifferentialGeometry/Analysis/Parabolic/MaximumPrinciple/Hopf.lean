@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 theorem scalar_hopf_boundary_point_of_defining_function_on_compact_annulus
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -100,7 +100,7 @@ theorem scalar_hopf_boundary_point_of_defining_function_on_compact_annulus
 
 theorem scalar_hopf_boundary_point_of_defining_function_on_compact_annulus_of_continuousOn
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -224,7 +224,7 @@ theorem scalar_hopf_boundary_point_of_defining_function_on_compact_annulus_of_co
 
 theorem scalar_hopf_boundary_point_of_defining_function_on_compact_annulus_of_metricFamilySmoothOn
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -358,7 +358,7 @@ private theorem gradientFun_exp_mul_mdiffAt
 
 theorem scalar_hopf_boundary_point_with_potential_on_compact_annulus
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -476,7 +476,7 @@ theorem scalar_hopf_boundary_point_with_potential_on_compact_annulus
 
 theorem scalar_hopf_boundary_point_of_subsolution_on_compact_annulus
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -589,7 +589,7 @@ theorem scalar_hopf_boundary_point_of_subsolution_on_compact_annulus
 
 theorem scalar_hopf_boundary_comparison_on_compact_annulus
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)

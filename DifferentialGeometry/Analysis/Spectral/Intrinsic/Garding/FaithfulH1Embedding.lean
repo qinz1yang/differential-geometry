@@ -396,7 +396,7 @@ theorem smoothCcTensor_tensorL2Coeff_weighted_summable_even
   have h_parseval := tensorParseval_l2Coeff_ofCompact_sq
     (I := I) (M := M) h_compact
     (SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g 0 2 k T))
-  exact tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) h_compact
+  exact tensorL2Coeff_summable_sq (I := I) (M := M) h_compact
     (SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g 0 2 k T))
 
 theorem smoothCcTensor_tensorL2Coeff_weighted_summable

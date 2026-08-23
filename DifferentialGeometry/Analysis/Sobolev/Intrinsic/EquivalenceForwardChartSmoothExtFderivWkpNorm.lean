@@ -580,7 +580,7 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
   gcongr
 
 lemma wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {q : ℝ≥0∞} (hq_one : 1 ≤ q) (u : M → ℝ) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -591,7 +591,7 @@ lemma wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart
             : C^∞⟮I, M; ℝ⟯) x * u x))
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α) ≤
-      wkpNormChart (I := I) (M := M) g 1 q u := by
+      wkpNormChart (I := I) (M := M) 1 q u := by
   classical
   have h_ae :
       DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt

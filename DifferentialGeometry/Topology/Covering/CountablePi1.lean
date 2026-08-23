@@ -204,7 +204,7 @@ theorem uc_pi1_countable_basis_refinement
   · rw [← hBrange]; exact hs_basis
 
 theorem uc_pi1_countable_anchors
-    (X : Type*) [TopologicalSpace X] [Nonempty X]
+    (X : Type*) [Nonempty X]
     (B : ℕ → Set X) :
     ∃ anchor : ℕ × ℕ → X,
       ∀ p : ℕ × ℕ, (B p.1 ∩ B p.2).Nonempty → anchor p ∈ B p.1 ∩ B p.2 := by
@@ -310,7 +310,6 @@ theorem uc_pi1_countable_lebesgue_subdivision
 
 theorem uc_pi1_countable_piece_homotopy
     (X : Type*) [TopologicalSpace X]
-    [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     (B : ℕ → Set X)
     (hBnull : ∀ n, ∀ (x : X) (_ : x ∈ B n) (γ : _root_.Path x x),
         Set.range γ.toContinuousMap ⊆ B n →
@@ -538,8 +537,10 @@ lemma uc_pi1_countable_telescope
 
 theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     (X : Type*) [TopologicalSpace X]
-    [SecondCountableTopology X] [ConnectedSpace X] [LocPathConnectedSpace X]
-    [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
+    [hsecond : SecondCountableTopology X] [hconnected : ConnectedSpace X]
+    [hlocPath : LocPathConnectedSpace X]
+    [hsemilocally :
+      DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     (x : X)
     (B : ℕ → Set X)
     (hBopen : ∀ n, IsOpen (B n))
@@ -551,6 +552,10 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     ∃ (S : Type) (_ : Countable S) (f : S → FundamentalGroup X x),
       Function.Surjective f := by
   classical
+  let _ := hsecond
+  let _ := hconnected
+  let _ := hlocPath
+  let _ := hsemilocally
   haveI : Nonempty X := ⟨x⟩
   haveI : PathConnectedSpace X := PathConnectedSpace.of_locPathConnectedSpace
   have hBcov : (⋃ n, B n) = (Set.univ : Set X) := by

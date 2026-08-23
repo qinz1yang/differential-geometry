@@ -306,7 +306,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem uniformChartFlowBridge_of_match
     (g : SmoothRiemannianMetric I M) (p : M)
     {Φ : (E × E) × ℝ → E × E} {ρ T t' ρ' : ℝ}
-    (hρ : 0 < ρ) (_hT : 0 < T) (ht'_pos : 0 < t') (ht'_in : t' ∈ Set.Ioo (-T) T)
+    (hρ : 0 < ρ) (ht'_pos : 0 < t') (ht'_in : t' ∈ Set.Ioo (-T) T)
     (hρ'_pos : 0 < ρ')
     (hcd : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ) ×ˢ
@@ -391,12 +391,12 @@ theorem expMap_contMDiffAt_zero_of_chartFlowGeodesicMatch
     ContMDiffAt 𝓘(ℝ, E) I 1
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (0 : E) := by
-  obtain ⟨Φ, ρ, T, t', ρ', hρ, hT, ht'_pos, ht'_in, hρ'_pos,
+  obtain ⟨Φ, ρ, T, t', ρ', hρ, _hT, ht'_pos, ht'_in, hρ'_pos,
     hcd, hval, hval_p, hmatch⟩ := h
   exact expMap_contMDiffAt_zero_of_uniformChartFlowBridge (I := I) (g := g) (p := p)
     (uniformChartFlowBridge_of_match (I := I) (g := g) (p := p)
       (Φ := Φ) (ρ := ρ) (T := T) (t' := t') (ρ' := ρ')
-      hρ hT ht'_pos ht'_in hρ'_pos hcd hval hval_p hmatch)
+      hρ ht'_pos ht'_in hρ'_pos hcd hval hval_p hmatch)
 
 end Headline
 

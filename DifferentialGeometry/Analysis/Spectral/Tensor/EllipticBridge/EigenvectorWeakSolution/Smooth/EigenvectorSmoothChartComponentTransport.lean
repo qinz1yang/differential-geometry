@@ -258,7 +258,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
       =ᵐ[chartL2Measure (I := I) (M := M) β]
     (fun y => chartPushedRaw I β
         (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
-      ((chartTransitionTransportCLM (I := I) (M := M) g r s γ β P₀ Q
+      ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -275,7 +275,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
           γ Q.1 Q.2 x
       else 0) y with hA_def
   set B : EuclN → ℝ := fun y =>
-    ((chartTransitionTransportCLM (I := I) (M := M) g r s γ β P₀ Q
+    ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -283,11 +283,11 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y with hB_def
   set RHS : EuclN → ℝ := fun y =>
     chartPushedRaw (I := I) (M := M) β
-        (transportCoeffManifold (I := I) (M := M) g r s γ β P₀ Q) y *
+        (transportCoeffManifold (I := I) (M := M) r s γ β P₀ Q) y *
       eigenvectorChartComponentFun (I := I) (M := M) g r s i γ Q
         (chartTransitionEuclid (I := I) (M := M) β γ y) with hRHS_def
   have hB_eq : B =ᵐ[chartL2Measure (I := I) (M := M) β] RHS := by
-    have h := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M) g r s γ β
+    have h := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M) r s γ β
       P₀ Q (tensorL2ChartComponent (I := I) (M := M) g r s
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -427,7 +427,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
               hz_notin_srcγ
                 (chartKernelCutoff_tsupport_subset_source (I := I) (M := M) γ h))
           have h_coeff_zero : chartPushedRaw (I := I) (M := M) β
-              (transportCoeffManifold (I := I) (M := M) g r s γ β P₀ Q) y = 0 := by
+              (transportCoeffManifold (I := I) (M := M) r s γ β P₀ Q) y = 0 := by
             rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
               ← hz_def, transportCoeffManifold_apply, h_cutγ_zero]
             ring

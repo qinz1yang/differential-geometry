@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.UnitModel
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
@@ -25,29 +26,6 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Sobolev
-
-section NormedSpaceModel
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
-
-private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-def unitTensor (x : M) : Tensor0SSpace 0 I x :=
-  Tensor0SSpace.ofModel
-    (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
-
-def unitModel (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (W : SmoothCcTensor g 0 s) (x : M) : Tensor0SModel s ℝ E :=
-  Tensor0SSpace.toModel
-    ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
-      (unitTensor (I := I) (M := M) x))
-
-end NormedSpaceModel
 
 section NormedSpaceModel
 

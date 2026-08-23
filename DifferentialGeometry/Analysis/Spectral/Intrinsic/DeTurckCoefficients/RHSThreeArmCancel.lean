@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieThreeArmCancel
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0JointSmooth
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroJointSmooth
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSLowCoeff
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -16,11 +17,9 @@ open scoped Topology Manifold BigOperators ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -124,7 +123,7 @@ private theorem hjoint_add
       (fun s => Φ s + Ψ s) (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint] at hΦ hΨ ⊢
   have h := joint_rs_add (I := I) (r := r) (s := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (Φ p.2).toSection p.1)
     (fun p : M × ℝ => (Ψ p.2).toSection p.1) hΦ hΨ
   refine h.congr (fun p _ => ?_)
@@ -202,7 +201,7 @@ private theorem chartLie_symm
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem lieSlope_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -214,14 +213,14 @@ private theorem lieSlope_symm
         g_bg x i j s (extChartAt I x x) =
       lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         g_bg x j i s (extChartAt I x x) := by
-  rw [← deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope (I := I)
+  rw [← deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I)
       g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg x i j hs,
-    ← deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope (I := I)
+    ← deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I)
       g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg x j i hs]
   congr 1
   funext t
   exact chartLie_symm (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' t) g_bg x i j (extChartAt I x x)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) g_bg x i j (extChartAt I x x)
 
 theorem lieSum_eq_arms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -234,38 +233,38 @@ theorem lieSum_eq_arms
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
               (deTurckLieCoeffField (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg +
-                lieCorr0Field (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+                lieCorrectionZeroField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 0
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 3 2
               (deTurckLieArm1Coeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 4 2
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x ![v, w] := by
   classical
   let W : SmoothCcTensor g₀ 0 2 :=
     operatorFieldApply (I := I) (M := M) g₀ 2 2
           (deTurckLieCoeffField (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg +
-            lieCorr0Field (I := I) (M := M) g₀
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+            lieCorrectionZeroField (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
           (iteratedCovGrad (I := I) g₀ 0 2 0
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
         operatorFieldApply (I := I) (M := M) g₀ 3 2
           (deTurckLieArm1Coeff (I := I) (M := M) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
           (iteratedCovGrad (I := I) g₀ 0 2 1
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
         operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
   unfold lieSumSlope
@@ -291,65 +290,67 @@ theorem lieSum_eq_arms
         hδ_lt hδ hδ'_lt hδ' s x k i]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀ W x ![v, w]
 
-def rhsLow0Coeff
+def ricciDeTurckRemainderZeroOrderCoefficient
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (s : ℝ) : SmoothCcTensor g₀ 2 2 :=
-  (-2 : ℝ) • linearizedRicciConnDiffOrder0Coeff (I := I) g₀ T T' hδ hδ' s +
+  (-2 : ℝ) • linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s +
     (deTurckLieCoeffField (I := I) (M := M) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg +
-      lieCorr0Field (I := I) (M := M) g₀
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+      lieCorrectionZeroField (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
 
-def rhsLow1Coeff
+
+def ricciDeTurckRemainderFirstOrderCoefficient
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (s : ℝ) : SmoothCcTensor g₀ 3 2 :=
-  (-2 : ℝ) • linearizedRicciConnDiffOrder1Coeff (I := I) g₀ T T' hδ hδ' s +
+  (-2 : ℝ) • linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s +
     deTurckLieArm1Coeff (I := I) (M := M) g₀
-      (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
 
-theorem rhsLow0_path_joint
+theorem ricciDeTurckRemainderZeroOrderCoefficient_path_joint
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (fun s => rhsLow0Coeff (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+      (fun s => ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
       (δ := δ) (δ' := δ') := by
-  have hR := linearizedRicciConnDiffOrder0Coeff_jointContMDiffOn_smallPerturbationSet
+  have hR := linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPerturbationSet
     (I := I) g₀ T T' hδ hδ'
-  have hL := deTurckLieCoeffField_realizedFam_jointSmooth
+  have hL := deTurckLieCoeffField_metricPerturbationPath_jointSmooth
     (I := I) g₀ T T' hδ hδ' g_bg
-  have hC := lieCorr0_path_joint (I := I) g₀ T T' hδ hδ' g_bg
+  have hC := lieCorrectionZero_path_joint (I := I) g₀ T T' hδ hδ' g_bg
   have hLC := hjoint_add (I := I) (M := M) g₀ 2 _ _ hL hC
   have hR' := hjoint_smul (I := I) (M := M) g₀ 2 _ (-2 : ℝ) hR
-  simpa only [rhsLow0Coeff] using hjoint_add (I := I) (M := M) g₀ 2 _ _ hR' hLC
+  simpa only [ricciDeTurckRemainderZeroOrderCoefficient] using hjoint_add (I := I) (M := M) g₀ 2 _ _ hR' hLC
 
-theorem rhsLow1_path_joint
+omit [NeZero (Module.finrank ℝ E)] in
+theorem ricciDeTurckRemainderFirstOrderCoefficient_path_joint
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
-      (fun s => rhsLow1Coeff (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+      (fun s => ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
       (δ := δ) (δ' := δ') := by
-  have hR := linearizedRicciConnDiffOrder1Coeff_jointContMDiffOn_smallPerturbationSet
+  have hR := linearizedRicciConnectionDifferenceOrder1Coeff_jointContMDiffOn_smallPerturbationSet
     (I := I) g₀ T T' hδ hδ'
-  have hL := deTurckLieArm1Coeff_realizedFam_jointSmooth
+  have hL := deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
     (I := I) g₀ T T' hδ hδ' g_bg
   have hR' := hjoint_smul (I := I) (M := M) g₀ 3 _ (-2 : ℝ) hR
-  simpa only [rhsLow1Coeff] using hjoint_add (I := I) (M := M) g₀ 3 _ _ hR' hL
+  simpa only [ricciDeTurckRemainderFirstOrderCoefficient] using hjoint_add (I := I) (M := M) g₀ 3 _ _ hR' hL
 
-theorem rhsLow_eq_arms
+theorem ricciDeTurckRemainderLowOrder_eq_arms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -363,10 +364,10 @@ theorem rhsLow_eq_arms
     rhsLowTerm (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (rhsLow0Coeff (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (rhsLow1Coeff (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x ![v, w] := by
   classical
   have hsubsymm : ∀ (y : M) (u z : TangentSpace I y),
@@ -380,7 +381,7 @@ theorem rhsLow_eq_arms
     hδ_lt hδ hδ'_lt hδ' x v w hs
   have hLieSplit := lieSum_eq_split (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
-  have hTop := lieTop_add_swap (I := I) g₀ g_bg T T'
+  have hTop := lieTop_add_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
   rw [hsymmS] at hLie hTop
   have hLower :
@@ -390,35 +391,35 @@ theorem rhsLow_eq_arms
         unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 2 2
               (deTurckLieCoeffField (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg +
-                lieCorr0Field (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+                lieCorrectionZeroField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
             operatorFieldApply (I := I) (M := M) g₀ 3 2
               (deTurckLieArm1Coeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x ![v, w] := by
     simp only [unitModel_add_app] at hLie ⊢
     linear_combination hLie - hLieSplit - hTop
   have hR0 :
       linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s +
-          (linearizedRicciConnDiffOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
+          (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
             linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s) =
-        linearizedRicciConnDiffOrder0Coeff (I := I) g₀ T T' hδ hδ' s := by
+        linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s := by
     abel
   have hR1 :
       linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s +
-          (linearizedRicciConnDiffOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
+          (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
             linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s) =
-        linearizedRicciConnDiffOrder1Coeff (I := I) g₀ T T' hδ hδ' s := by
+        linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s := by
     abel
-  unfold rhsLowTerm rhsLow0Coeff rhsLow1Coeff
+  unfold rhsLowTerm ricciDeTurckRemainderZeroOrderCoefficient ricciDeTurckRemainderFirstOrderCoefficient
   rw [hR0, hR1]
-  simp only [appCc_add_left, unitModel_add_app] at hLower
-  simp only [appCc_add_left, appCc_smul_left, unitModel_add_app, unitModel_smul_app]
+  simp only [operatorFieldApplication_add_left, unitModel_add_app] at hLower
+  simp only [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, unitModel_add_app, unitModel_smul_app]
   linear_combination hLower
 
-theorem rhsSlope_eq_arms
+theorem ricciDeTurckRemainderSlope_eq_arms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -432,18 +433,18 @@ theorem rhsSlope_eq_arms
     rhsSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (rhsLow0Coeff (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (rhsLow1Coeff (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckPhiMetTotal (I := I) (M := M) g₀ g_bg
-              (realizedFam (I := I) g₀ T T' hδ hδ' s))
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x ![v, w] := by
   rw [rhsSlope_eq_split (I := I) g₀ g_bg T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w hs]
-  rw [rhsLow_eq_arms (I := I) g₀ g_bg T T' hTsymm hT'symm
+  rw [ricciDeTurckRemainderLowOrder_eq_arms (I := I) g₀ g_bg T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w hs]
   unfold rhsTopTerm
   simp only [unitModel_add_app]

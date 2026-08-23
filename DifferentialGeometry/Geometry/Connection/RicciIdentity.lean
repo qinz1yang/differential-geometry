@@ -25,8 +25,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 
-def nablaDualEval {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V]
-    (act : V -> R -> R) (conn : V -> V -> V)
+def nablaDualEval {R V : Type*} [CommRing R] (act : V -> R -> R) (conn : V -> V -> V)
     (X : V) (alpha : V -> R) (Y : V) : R :=
   act X (alpha Y) - alpha (conn X Y)
 
@@ -66,7 +65,7 @@ theorem oneFormRicciIdentity_of_connection
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x)
@@ -86,7 +85,7 @@ theorem oneFormRicciIdentity_of_smooth_connection
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (hcov_one : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -108,7 +107,7 @@ theorem oneFormRicciIdentity_of_connection_apply
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x)
@@ -132,7 +131,7 @@ theorem oneFormRicciIdentity_of_smooth_connection_apply
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (hcov_one : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov

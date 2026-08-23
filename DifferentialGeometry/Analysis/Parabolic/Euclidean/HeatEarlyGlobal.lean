@@ -47,14 +47,14 @@ def shellSeries (d : ℕ) : ℝ≥0∞ :=
   ∑' k : ℕ, ENNReal.ofReal (shellWeight d k)
 
 def earlyHeatC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [FiniteDimensional ℝ V] : ℝ≥0∞ :=
+    : ℝ≥0∞ :=
   nearHeatC V * shellSeries (Module.finrank ℝ V)
 
 theorem shellSeries_ne_top (d : ℕ) : shellSeries d ≠ ∞ :=
   (shellWeight_sum d).tsum_ofReal_ne_top
 
 theorem earlyHeatC_ne_top (V : Type*) [NormedAddCommGroup V]
-    [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] :
+    [InnerProductSpace ℝ V] :
     earlyHeatC V ≠ ∞ := by
   exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
     (shellSeries_ne_top (Module.finrank ℝ V))

@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOp
 
 namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
-open Bundle DifferentialGeometry DifferentialGeometry.Integral.Measure
+open Bundle DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Integral.L2

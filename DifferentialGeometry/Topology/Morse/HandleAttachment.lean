@@ -33,7 +33,7 @@ theorem modifiedNormalForm_sublevel_iff {n k : ℕ} (hk : k ≤ n) (c ε δ : �
   rw [modifiedNormalForm_eq_sub_dip]
   rw [morseNormalForm_split]
   dsimp [modelModifiedDip]
-  constructor <;> intro h <;> nlinarith
+  constructor <;> intro h <;> linarith
 
 theorem modelModifiedDip_sublevel_denom_pos {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) {y : MorseModel n} (hy : modifiedNormalForm hk c ε δ y ≤ c - ε) :
@@ -42,11 +42,12 @@ theorem modelModifiedDip_sublevel_denom_pos {n k : ℕ} (hk : k ≤ n) (c ε δ 
     (modifiedNormalForm_sublevel_iff hk c ε δ y).1 hy
   by_contra hnot
   have hden : ‖negPart hk y‖ ^ 2 + 2 * modelModifiedDip hk ε δ y - 2 * ε ≤ 0 := le_of_not_gt hnot
-  have hpos0 : ‖posPart hk y‖ ^ 2 = 0 := by nlinarith
+  have hpos0 : ‖posPart hk y‖ ^ 2 = 0 :=
+    le_antisymm (hle.trans hden) (sq_nonneg ‖posPart hk y‖)
   have hb0 : posPart hk y = 0 := norm_eq_zero.mp (sq_eq_zero_iff.mp hpos0)
   have hDnonneg : 0 ≤ modelModifiedDip hk ε δ y := modelModifiedDip_nonneg hk ε δ (le_of_lt hε) y
   have hmu : modMu ε (‖negPart hk y‖ ^ 2) = 3 / 2 * ε := by
-    exact modMu_const hε (by nlinarith [hden, hDnonneg])
+    exact modMu_const hε (by nlinarith only [hden, hDnonneg])
   have hs : ‖posPart hk y‖ ≤ δ / 2 := by
     rw [hb0]
     exact by
@@ -59,7 +60,7 @@ theorem modelModifiedDip_sublevel_denom_pos {n k : ℕ} (hk : k ≤ n) (c ε δ 
     dsimp [modelModifiedDip]
     rw [hmu, hga]
     ring
-  nlinarith [hden, hden', sq_nonneg ‖negPart hk y‖]
+  nlinarith only [hε, hden, hden', sq_nonneg ‖negPart hk y‖]
 
 noncomputable def modelModifiedStretchMap {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     (y : MorseModel n) : MorseModel n :=
@@ -90,10 +91,10 @@ theorem modelModifiedStretchMap_posPart_norm_sq {n k : ℕ} (hk : k ≤ n) (c ε
   rw [Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
   rw [mul_pow]
   rw [Real.sq_sqrt]
-  · field_simp
+  · ring
   · have hpos := modelModifiedDip_sublevel_denom_pos hk c ε δ hε hδ hy
     have hnum : 0 ≤ ‖negPart hk y‖ ^ 2 + r ^ 2 := by
-      nlinarith [sq_nonneg ‖negPart hk y‖, sq_nonneg r]
+      nlinarith only [sq_nonneg ‖negPart hk y‖, sq_nonneg r]
     exact div_nonneg hnum (le_of_lt hpos)
 
 theorem modelModifiedStretchMap_mem_upper {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ)
@@ -107,7 +108,7 @@ theorem modelModifiedStretchMap_mem_upper {n k : ℕ} (hk : k ≤ n) (c ε r δ 
     have hd : 0 < ‖negPart hk y‖ ^ 2 + 2 * modelModifiedDip hk ε δ y - 2 * ε :=
       modelModifiedDip_sublevel_denom_pos hk c ε δ hε hδ hy
     have hnonneg : 0 ≤ ‖negPart hk y‖ ^ 2 + r ^ 2 := by
-      nlinarith [sq_nonneg ‖negPart hk y‖, sq_nonneg r]
+      nlinarith only [sq_nonneg ‖negPart hk y‖, sq_nonneg r]
     have hle' : ‖posPart hk y‖ ^ 2 ≤ ‖negPart hk y‖ ^ 2 + 2 * modelModifiedDip hk ε δ y - 2 * ε :=
       (modifiedNormalForm_sublevel_iff hk c ε δ y).1 hy
     rw [hsq]
@@ -116,8 +117,8 @@ theorem modelModifiedStretchMap_mem_upper {n k : ℕ} (hk : k ≤ n) (c ε r δ 
           (‖negPart hk y‖ ^ 2 + r ^ 2) := by
       exact mul_le_mul_of_nonneg_right hle' hnonneg
     rw [div_le_iff₀ hd]
-    nlinarith [hmul]
-  nlinarith [hle]
+    nlinarith only [hmul]
+  nlinarith only [hle]
 
 theorem modelModifiedStretchMap_boundary {n k : ℕ} (hk : k ≤ n) (c ε r δ : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) {y : MorseModel n}
@@ -161,14 +162,14 @@ theorem modelModifiedStretchMap_strict {n k : ℕ} (hk : k ≤ n) (c ε r δ : �
   have hnorm : ‖posPart hk (modelModifiedStretchMap hk ε r δ y)‖ ^ 2 <
       ‖negPart hk y‖ ^ 2 + r ^ 2 := by
     rw [hsq]
-    have hpos : 0 < ‖negPart hk y‖ ^ 2 + r ^ 2 := by nlinarith [sq_nonneg ‖negPart hk y‖, hr]
+    have hpos : 0 < ‖negPart hk y‖ ^ 2 + r ^ 2 := by nlinarith only [sq_nonneg ‖negPart hk y‖, hr]
     have hmul : ‖posPart hk y‖ ^ 2 * (‖negPart hk y‖ ^ 2 + r ^ 2) <
         (‖negPart hk y‖ ^ 2 + 2 * modelModifiedDip hk ε δ y - 2 * ε) *
           (‖negPart hk y‖ ^ 2 + r ^ 2) := by
       exact mul_lt_mul_of_pos_right hle' hpos
     rw [div_lt_iff₀ hd]
-    nlinarith [hmul]
-  nlinarith [hnorm]
+    nlinarith only [hmul]
+  nlinarith only [hnorm]
 
 
 def modGammaSqrt (δ : ℝ) (u : ℝ) : ℝ := modGamma δ (Real.sqrt u)
@@ -197,15 +198,15 @@ theorem modelModifiedFiberDip_le {ε δ s u : ℝ} (hε : 0 ≤ ε) :
   have h1 : modMu ε s * modGammaSqrt δ u ≤ modMu ε s * 1 := by
     exact mul_le_mul_of_nonneg_left (modGamma_le_one δ (Real.sqrt u)) (modMu_nonneg hε)
   have h2 : modMu ε s ≤ 3 / 2 * ε := modMu_le (ε := ε) (t := s) hε
-  nlinarith [h1, h2]
+  nlinarith only [h1, h2]
 
 theorem modMu_denom_lower {ε s : ℝ} (hε : 0 < ε) (hs : 0 ≤ s) : 0 ≤ s + 2 * modMu ε s - 2 * ε := by
   by_cases hs2 : s ≤ 2 * ε
   · have hmu : modMu ε s = 3 / 2 * ε := modMu_const hε hs2
     rw [hmu]
-    nlinarith [hs]
+    nlinarith only [hε, hs]
   · have hmu : 0 ≤ modMu ε s := modMu_nonneg (le_of_lt hε)
-    nlinarith [hs, hmu]
+    nlinarith only [hε, hs, hs2, hmu]
 
 theorem modelModifiedFiberDip_zero {ε δ s : ℝ} (hδ : 0 < δ) :
     modelModifiedFiberDip ε δ s 0 = modMu ε s := by
@@ -223,14 +224,14 @@ theorem modelModifiedFiberRoot_exists (ε δ r s w2 : ℝ) (hε : 0 < ε) (hδ :
   let F : ℝ → ℝ := fun u => u * (s + r ^ 2) - w2 * (s + 2 * modelModifiedFiberDip ε δ s u - 2 * ε)
   have hsr : 0 < s + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-    nlinarith [hs, hr2]
+    nlinarith only [hs, hr2]
   have hF0 : F 0 ≤ 0 := by
     dsimp [F]
     rw [modelModifiedFiberDip_zero hδ]
     have hden : 0 ≤ s + 2 * modMu ε s - 2 * ε := modMu_denom_lower hε hs
-    nlinarith [hw, hden]
+    nlinarith only [hw, hden]
   have hq : 0 ≤ w2 * (s + ε) / (s + r ^ 2) := by
-    have hsε : 0 ≤ s + ε := by nlinarith [hs, hε]
+    have hsε : 0 ≤ s + ε := by nlinarith only [hs, hε]
     exact div_nonneg (mul_nonneg hw hsε) (le_of_lt hsr)
   obtain ⟨M, hM⟩ := exists_gt (w2 * (s + ε) / (s + r ^ 2))
   let U : ℝ := M + 1
@@ -240,8 +241,8 @@ theorem modelModifiedFiberRoot_exists (ε δ r s w2 : ℝ) (hε : 0 < ε) (hδ :
       have hDle : modelModifiedFiberDip ε δ s U ≤ 3 / 2 * ε := modelModifiedFiberDip_le (le_of_lt hε)
       nlinarith
     have hstep : w2 * (s + ε) < M * (s + r ^ 2) := (div_lt_iff₀ hsr).mp hM
-    have h1 : (M + 1) * (s + r ^ 2) - w2 * (s + ε) > 0 := by nlinarith [hstep, hsr]
-    nlinarith [hbd, h1]
+    have h1 : (M + 1) * (s + r ^ 2) - w2 * (s + ε) > 0 := by nlinarith only [hstep, hsr]
+    nlinarith only [hw, hbd, h1]
   have hcont : ContinuousOn F (Icc 0 U) := by
     have hcd : Continuous (fun u : ℝ => modelModifiedFiberDip ε δ s u) := by
       dsimp [modelModifiedFiberDip, modGammaSqrt]
@@ -272,7 +273,7 @@ theorem modelModifiedFiberRoot_unique (ε δ r s w2 : ℝ) (hε : 0 < ε) (hδ :
   have hlt := lt_or_gt_of_ne huv
   have hsr : 0 < s + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-    nlinarith [hs, hr2]
+    nlinarith only [hs, hr2]
   rcases hlt with hlt | hgt
   · have hmono : u * (s + r ^ 2) - w2 * (s + 2 * modelModifiedFiberDip ε δ s u - 2 * ε) <
       v * (s + r ^ 2) - w2 * (s + 2 * modelModifiedFiberDip ε δ s v - 2 * ε) := by
@@ -365,7 +366,7 @@ theorem modifiedSublevel_norm_sq_le {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ)
         rw [recombine_decompose hk z]
       _ = ‖negPart hk z‖ ^ 2 + ‖posPart hk z‖ ^ 2 :=
         morseNorm_recombine_sq hk (negPart hk z) (posPart hk z)
-  nlinarith [hpos, hdip, hnorm]
+  nlinarith only [hpos, hdip, hnorm]
 
 
 theorem modelModifiedFiberDenom_root_nonneg {ε δ r s w2 : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
@@ -384,20 +385,20 @@ theorem modelModifiedFiberDenom_root_nonneg {ε δ r s w2 : ℝ} (hε : 0 < ε) 
     have hd : 0 ≤ s + 2 * modMu ε s - 2 * ε := modMu_denom_lower hε hs
     dsimp [modelModifiedFiberDip]
     rw [hg0]
-    nlinarith [hmu, hd]
+    nlinarith only [hmu, hd]
   · have hpos : 0 < modelModifiedFiberRoot ε δ r hε hδ hr s w2 :=
       lt_of_le_of_ne (modelModifiedFiberRoot_nonneg (ε := ε) (δ := δ) (r := r) (s := s) (w2 := w2) hε hδ hr hs hw) (Ne.symm hu)
     have hroot' := modelModifiedFiberRoot_eq (ε := ε) (δ := δ) (r := r) (s := s) (w2 := w2) hε hδ hr hs hw
     have hsr : 0 < s + r ^ 2 := by
       have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-      nlinarith [hs, hr2]
+      nlinarith only [hs, hr2]
     have hmul : 0 ≤ modelModifiedFiberRoot ε δ r hε hδ hr s w2 * (s + r ^ 2) :=
       mul_nonneg (le_of_lt hpos) (le_of_lt hsr)
     have hrew : modelModifiedFiberRoot ε δ r hε hδ hr s w2 * (s + r ^ 2) =
         w2 * (s + 2 * modelModifiedFiberDip ε δ s (modelModifiedFiberRoot ε δ r hε hδ hr s w2)
           - 2 * ε) := by
       simpa [modelModifiedFiberDip] using hroot'
-    nlinarith [hmul, hrew, hw]
+    nlinarith only [hpos, hsr, hmul, hrew, hw]
 
 theorem modelModifiedUnstretchMap_posPart_norm_sq {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) (hr : r ≠ 0) (y : MorseModel n) :
@@ -415,7 +416,7 @@ theorem modelModifiedUnstretchMap_posPart_norm_sq {n k : ℕ} (hk : k ≤ n) (ε
   · field_simp
   · have hsr : 0 < ‖negPart hk y‖ ^ 2 + r ^ 2 := by
       have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-      nlinarith [sq_nonneg ‖negPart hk y‖, hr2]
+      nlinarith only [sq_nonneg ‖negPart hk y‖, hr2]
     have hden : 0 ≤ ‖negPart hk y‖ ^ 2 + 2 * modelModifiedFiberDip ε δ (‖negPart hk y‖ ^ 2)
         (modelModifiedFiberRoot ε δ r hε hδ hr (‖negPart hk y‖ ^ 2) (‖posPart hk y‖ ^ 2)) - 2 * ε :=
       modelModifiedFiberDenom_root_nonneg hε hδ hr (sq_nonneg ‖negPart hk y‖)
@@ -433,7 +434,7 @@ theorem modelModifiedUnstretchMap_mem_modified {n k : ℕ} (hk : k ≤ n) (c ε 
   have hsr : 0 < s + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
     rw [hs_def]
-    nlinarith [hr2]
+    nlinarith only [hr2]
   have hroot' : u * (s + r ^ 2) = w2 * D := by
     rw [hu_def, hD_def]
     simpa using (modelModifiedFiberRoot_eq (ε := ε) (δ := δ) (r := r) (s := s) (w2 := w2)
@@ -500,19 +501,19 @@ theorem modelModifiedFiberDenom_root_pos {ε δ r s w2 : ℝ} (hε : 0 < ε) (h�
       by_cases hs2 : s ≤ 2 * ε
       · have hmu : modMu ε s = 3 / 2 * ε := modMu_const hε hs2
         rw [hmu]
-        nlinarith [hs]
+        nlinarith only [hε, hs]
       · have hgt : 2 * ε < s := lt_of_not_ge hs2
         have hmu : 0 ≤ modMu ε s := modMu_nonneg (le_of_lt hε)
-        nlinarith [hmu]
+        nlinarith only [hgt, hmu]
     dsimp [modelModifiedFiberDip]
     rw [hg0]
-    nlinarith [hmain]
+    nlinarith only [hmain]
   · have hpos : 0 < modelModifiedFiberRoot ε δ r hε hδ hr s w2 :=
       lt_of_le_of_ne hroot_nonneg (Ne.symm hu)
     have hroot' := modelModifiedFiberRoot_eq (ε := ε) (δ := δ) (r := r) (s := s) (w2 := w2) hε hδ hr hs hw
     have hsr : 0 < s + r ^ 2 := by
       have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-      nlinarith [hs, hr2]
+      nlinarith only [hs, hr2]
     have hden_nonneg : 0 ≤ s + 2 * modelModifiedFiberDip ε δ s (modelModifiedFiberRoot ε δ r hε hδ hr s w2) - 2 * ε :=
       modelModifiedFiberDenom_root_nonneg hε hδ hr hs hw
     have hw2pos : 0 < w2 := by
@@ -550,7 +551,7 @@ theorem modelModifiedUnstretchMap_boundary {n k : ℕ} (hk : k ≤ n) (c ε r δ
   have hsr : 0 < s + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
     rw [hs_def]
-    nlinarith [hr2]
+    nlinarith only [hr2]
   have hroot' : u * (s + r ^ 2) = w2 * D := by
     rw [hu_def, hD_def]
     simpa using (modelModifiedFiberRoot_eq (ε := ε) (δ := δ) (r := r) (s := s) (w2 := w2)
@@ -588,7 +589,7 @@ theorem modelModifiedUnstretchMap_strict {n k : ℕ} (hk : k ≤ n) (c ε r δ :
   have hsr : 0 < s + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
     rw [hs_def]
-    nlinarith [hr2]
+    nlinarith only [hr2]
   have hroot' : u * (s + r ^ 2) = w2 * D := by
     rw [hu_def, hD_def]
     simpa using (modelModifiedFiberRoot_eq (ε := ε) (δ := δ) (r := r) (s := s) (w2 := w2)
@@ -649,7 +650,7 @@ theorem modelModifiedUnstretchMap_stretchMap {n k : ℕ} (hk : k ≤ n) (c ε r 
     modelModifiedDip_sublevel_denom_pos hk c ε δ hε hδ hy
   have hsr : 0 < ‖negPart hk y‖ ^ 2 + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-    nlinarith [hr2, sq_nonneg ‖negPart hk y‖]
+    nlinarith only [hr2, sq_nonneg ‖negPart hk y‖]
   have hdeq : ‖negPart hk y‖ ^ 2 + 2 * modelModifiedDip hk ε δ y - 2 * ε =
       ‖negPart hk y‖ ^ 2 + 2 * modelModifiedFiberDip ε δ (‖negPart hk y‖ ^ 2) (‖posPart hk y‖ ^ 2)
         - 2 * ε := by
@@ -725,7 +726,7 @@ theorem modelModifiedStretchMap_unstretchMap {n k : ℕ} (hk : k ≤ n) (ε r δ
   have hzneg : negPart hk z = negPart hk y := modelModifiedUnstretchMap_negPart hk ε r δ hε hδ hr y
   have hsr : 0 < ‖negPart hk y‖ ^ 2 + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-    nlinarith [hr2, sq_nonneg ‖negPart hk y‖]
+    nlinarith only [hr2, sq_nonneg ‖negPart hk y‖]
   have hroot' : modelModifiedFiberRoot ε δ r hε hδ hr (‖negPart hk y‖ ^ 2) (‖posPart hk y‖ ^ 2) * (‖negPart hk y‖ ^ 2 + r ^ 2) =
       ‖posPart hk y‖ ^ 2 * (‖negPart hk y‖ ^ 2 + 2 * modelModifiedFiberDip ε δ
         (‖negPart hk y‖ ^ 2)
@@ -865,7 +866,7 @@ theorem contDiffAt_modelModifiedStretchMap {n k : ℕ} (hk : k ≤ n) (ε r δ :
       (‖negPart hk y‖ ^ 2 + 2 * modelModifiedDip hk ε δ y - 2 * ε) := by
     have hnum0 : 0 < ‖negPart hk y‖ ^ 2 + r ^ 2 := by
       have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-      nlinarith [sq_nonneg ‖negPart hk y‖, hr2]
+      nlinarith only [sq_nonneg ‖negPart hk y‖, hr2]
     exact div_pos hnum0 hy
   have hsqrtAt : ContDiffAt ℝ (⊤ : ℕ∞) (fun t : ℝ => Real.sqrt t)
       ((‖negPart hk y‖ ^ 2 + r ^ 2) /
@@ -1164,7 +1165,7 @@ theorem modelModifiedFiberEquation_fiber_deriv_pos (ε δ r : ℝ) (hε : 0 < ε
     exact mul_nonpos_of_nonneg_of_nonpos (mul_nonneg (mul_nonneg (by positivity) hw) hmu) hga
   have hsr : 0 < s + r ^ 2 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-    nlinarith [hs, hr2]
+    nlinarith only [hs, hr2]
   nlinarith
 
 theorem modelModifiedFiberEquation_strictMono (ε δ r : ℝ) (hε : 0 < ε) (hδ : 0 < δ)
@@ -1309,7 +1310,7 @@ theorem contDiffOn_modelModifiedUnstretchFactor (ε δ r : ℝ) (hε : 0 < ε) (
     exact hfstW.add hc
   have hden0 : p.1 + r ^ 2 ≠ 0 := by
     have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-    have hpos : 0 < p.1 + r ^ 2 := by nlinarith [hp.1, hr2]
+    have hpos : 0 < p.1 + r ^ 2 := by nlinarith only [hp.1, hr2]
     exact ne_of_gt hpos
   have hratioW : ContDiffWithinAt ℝ (⊤ : ℕ∞)
       (fun q : ℝ × ℝ => (q.1 + 2 * modelModifiedFiberDip ε δ q.1
@@ -1322,7 +1323,7 @@ theorem contDiffOn_modelModifiedUnstretchFactor (ε δ r : ℝ) (hε : 0 < ε) (
       modelModifiedFiberDenom_root_pos hε hδ hr hp.1 hp.2
     have hdenpos : 0 < p.1 + r ^ 2 := by
       have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
-      nlinarith [hp.1, hr2]
+      nlinarith only [hp.1, hr2]
     exact div_pos hnum0 hdenpos
   have hsqrtAt : ContDiffAt ℝ (⊤ : ℕ∞) (fun t : ℝ => Real.sqrt t)
       ((p.1 + 2 * modelModifiedFiberDip ε δ p.1
@@ -1562,10 +1563,10 @@ theorem modelRoundedFunction_eq_attached_of_norm_le {n k : ℕ} (hk : k ≤ n) (
       have hnon : 0 ≤ morseNorm n y := by
         dsimp [morseNorm]
         exact norm_nonneg _
-      exact sq_le_sq' (by nlinarith [hnon, hR0]) hy
+      exact sq_le_sq' (by nlinarith only [hnon, hR0]) hy
     have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
@@ -1584,15 +1585,15 @@ theorem modelRoundedFunction_eq_morse_add_eps_of_norm_ge {n k : ℕ} (hk : k ≤
       have hnon : 0 ≤ morseNorm n y := by
         dsimp [morseNorm]
         exact norm_nonneg _
-      exact sq_le_sq' (by nlinarith [hR0, hR]) hy
+      exact sq_le_sq' (by nlinarith only [hR0, hR, hnon]) hy
     have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
       nlinarith
-    exact (one_le_div hden).mpr (by nlinarith [hsq])
+    exact (one_le_div hden).mpr (by nlinarith only [hsq])
   rw [Real.smoothTransition.one_of_one_le harg]
   ring
 
@@ -1637,10 +1638,10 @@ theorem modelCapRoundedLowerFunction_eq_inner_of_norm_le {n k : ℕ} (hk : k ≤
       have hnon : 0 ≤ morseNorm n y := by
         dsimp [morseNorm]
         exact norm_nonneg _
-      exact sq_le_sq' (by nlinarith [hnon, hR0]) hy
+      exact sq_le_sq' (by nlinarith only [hnon, hR0]) hy
     have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
@@ -1659,15 +1660,15 @@ theorem modelCapRoundedLowerFunction_eq_morse_add_eps_of_norm_ge {n k : ℕ} (hk
       have hnon : 0 ≤ morseNorm n y := by
         dsimp [morseNorm]
         exact norm_nonneg _
-      exact sq_le_sq' (by nlinarith [hR0, hR]) hy
+      exact sq_le_sq' (by nlinarith only [hR0, hR, hnon]) hy
     have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
       nlinarith
-    exact (one_le_div hden).mpr (by nlinarith [hsq])
+    exact (one_le_div hden).mpr (by nlinarith only [hsq])
   rw [Real.smoothTransition.one_of_one_le harg]
   ring
 
@@ -1767,7 +1768,7 @@ theorem modelLowerSublevel_norm_sq_lt_of_negPart_lt {n k : ℕ} (hk : k ≤ n) (
         rw [recombine_decompose hk y]
       _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
         morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-  nlinarith [hneg, hpos, hnorm]
+  nlinarith only [hneg, hpos, hnorm]
 
 theorem modelAttached_norm_sq_lt_of_negPart_lt {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     (hε : 0 ≤ ε) (hδ : 0 < δ) {y : MorseModel n}
@@ -1786,11 +1787,11 @@ theorem modelAttached_norm_sq_lt_of_negPart_lt {n k : ℕ} (hk : k ≤ n) (ε r 
   have hle : ‖negPart hk y‖ ^ 2 + max (r ^ 2) (‖negPart hk y‖ ^ 2) < 2 * (r ^ 2 + 2 * ε + δ) := by
     by_cases hle' : ‖negPart hk y‖ ^ 2 ≤ r ^ 2
     · have hmax : max (r ^ 2) (‖negPart hk y‖ ^ 2) = r ^ 2 := max_eq_left hle'
-      nlinarith [hneg, hle', hmax]
+      nlinarith only [hε, hδ, hneg, hle', hmax]
     · have hgt : r ^ 2 < ‖negPart hk y‖ ^ 2 := lt_of_not_ge hle'
       have hmax : max (r ^ 2) (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 := max_eq_right (le_of_lt hgt)
-      nlinarith [hneg, hgt, hmax]
-  nlinarith [hpos, hnorm, hle]
+      nlinarith only [hneg, hgt, hmax]
+  nlinarith only [hpos, hnorm, hle]
 
 theorem smoothCap_le_max_sub {ε r δ t : ℝ} :
     smoothCap ε r δ t ≤ max (r ^ 2) (t - 2 * ε) := by
@@ -1799,33 +1800,33 @@ theorem smoothCap_le_max_sub {ε r δ t : ℝ} :
   have hσ : 0 ≤ σ := by dsimp [σ]; exact Real.smoothTransition.nonneg _
   have hσ₁ : σ ≤ 1 := by dsimp [σ]; exact Real.smoothTransition.le_one _
   by_cases hle : t - 2 * ε - r ^ 2 ≤ 0
-  · have hmain : r ^ 2 + (t - 2 * ε - r ^ 2) * σ ≤ r ^ 2 := by nlinarith [hσ, hle]
+  · have hmain : r ^ 2 + (t - 2 * ε - r ^ 2) * σ ≤ r ^ 2 := by nlinarith only [hσ, hle]
     have hmax : r ^ 2 ≤ max (r ^ 2) (t - 2 * ε) := le_max_left _ _
-    nlinarith
+    exact hmain.trans hmax
   · have hpos : 0 < t - 2 * ε - r ^ 2 := lt_of_not_ge hle
-    have hmain : r ^ 2 + (t - 2 * ε - r ^ 2) * σ ≤ t - 2 * ε := by nlinarith [hσ₁, hpos]
+    have hmain : r ^ 2 + (t - 2 * ε - r ^ 2) * σ ≤ t - 2 * ε := by nlinarith only [hσ₁, hpos]
     have hmax : t - 2 * ε ≤ max (r ^ 2) (t - 2 * ε) := le_max_right _ _
-    nlinarith
+    exact hmain.trans hmax
 
 theorem modelLowerRoundBound_le_max_sub {ε r δ θ t : ℝ} (hδ : 0 < δ) (hθ : 0 < θ)
     (hδr : δ < r ^ 2) :
     modelLowerRoundBound ε r δ θ t ≤ max (r ^ 2) (t - 2 * ε) := by
   by_cases ht : 2 * ε < t
   · have hsc := modelRoundScale_sq_le_ratio hδ hθ hδr ht
-    have hden : 0 < t - 2 * ε := by linarith [ht]
+    have hden : 0 < t - 2 * ε := sub_pos.mpr ht
     have hratio : modelRoundRatio ε r δ t * (t - 2 * ε) = smoothCap ε r δ t := by
       dsimp [modelRoundRatio]
       rw [div_mul_cancel₀ _ (ne_of_gt hden)]
     have hle : modelLowerRoundBound ε r δ θ t ≤ smoothCap ε r δ t := by
       dsimp [modelLowerRoundBound]
-      nlinarith [hsc, hratio]
+      nlinarith only [hsc, hden, hratio]
     exact le_trans hle (smoothCap_le_max_sub (ε := ε) (r := r) (δ := δ) (t := t))
   · have htle : t ≤ 2 * ε := le_of_not_gt ht
     have hL : modelLowerRoundBound ε r δ θ t ≤ 0 := by
       dsimp [modelLowerRoundBound]
-      exact mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) (by nlinarith [htle])
+      exact mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) (by nlinarith only [htle])
     have hmax : 0 ≤ max (r ^ 2) (t - 2 * ε) := le_trans (sq_nonneg r) (le_max_left _ _)
-    nlinarith
+    exact hL.trans hmax
 
 theorem modelCapRoundedLowerFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk : k ≤ n)
     (c ε r δ θ R₀ R₁ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2)
@@ -1844,24 +1845,27 @@ theorem modelCapRoundedLowerFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk 
         _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
           morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
     have hsq : R₁ ^ 2 ≤ morseNorm n y ^ 2 := by
-      exact sq_le_sq' (by nlinarith [hR0, hR]) hy₁
-    have hbig' : r ^ 2 + 2 * ε + δ < R₁ ^ 2 := by
+      have hnon : 0 ≤ morseNorm n y := by
+        dsimp [morseNorm]
+        exact norm_nonneg _
+      exact sq_le_sq' (by nlinarith only [hR0, hR, hnon]) hy₁
+    have hbig' : 2 * (r ^ 2 + 2 * ε + δ) < R₁ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
-      have hb' : 2 * (r ^ 2 + 2 * ε + δ) < R₁ ^ 2 := by nlinarith [hbig, h01]
-      nlinarith
+      nlinarith only [hbig, h01]
     have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by
-      nlinarith [hnorm, hsq, hbig', hneg]
-    nlinarith
+      linarith only [hε, hnorm, hsq, hbig', hneg]
+    nlinarith only [hb]
   · have hy₁' : morseNorm n y < R₁ := lt_of_not_ge hy₁
     let σ : ℝ := Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))
     have hσ : 0 ≤ σ := by dsimp [σ]; exact Real.smoothTransition.nonneg _
     have hσ₁ : σ ≤ 1 := by dsimp [σ]; exact Real.smoothTransition.le_one _
     have hpos : R₀ ^ 2 < morseNorm n y ^ 2 := by
-      exact sq_lt_sq' (by nlinarith [hR0, norm_nonneg (morseNorm n y)]) hy₀
+      exact sq_lt_sq' (by
+        nlinarith only [hR0, hy₀, norm_nonneg (morseNorm n y)]) hy₀
     have hpos2 : ‖posPart hk y‖ ^ 2 > max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) := by
       have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
         calc
@@ -1871,15 +1875,16 @@ theorem modelCapRoundedLowerFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk 
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
       have hb : ‖negPart hk y‖ ^ 2 + max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) < R₀ ^ 2 := by
         have h1 : max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) ≤ r ^ 2 + 2 * ε + δ := by
-          exact max_le (by nlinarith) (by nlinarith [hneg])
-        nlinarith [hbig, h1, hneg]
-      nlinarith [hnorm, hpos, hb]
+          exact max_le (by nlinarith only [hε, hδ])
+            (by nlinarith only [hε, hneg])
+        nlinarith only [hbig, h1, hneg]
+      nlinarith only [hnorm, hpos, hb]
     have hF₁ : c < modelCapRoundedLowerFunctionInner hk c ε r δ θ y := by
       dsimp [modelCapRoundedLowerFunctionInner]
       have hL : modelLowerRoundBound ε r δ θ (‖negPart hk y‖ ^ 2) ≤
           max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) :=
         modelLowerRoundBound_le_max_sub hδ hθ hδr
-      nlinarith [hpos2, hL]
+      nlinarith only [hpos2, hL]
     have hF₂ : c < morseNormalForm hk c y + ε := by
       rw [morseNormalForm_split]
       have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
@@ -1888,8 +1893,10 @@ theorem modelCapRoundedLowerFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk 
             rw [recombine_decompose hk y]
           _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-      have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by nlinarith [hpos2, hnorm]
-      nlinarith
+      have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by
+        nlinarith only [hpos2,
+          le_max_right (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε)]
+      nlinarith only [hb]
     dsimp [modelCapRoundedLowerFunction]
     have hmain : c < modelCapRoundedLowerFunctionInner hk c ε r δ θ y +
         (morseNormalForm hk c y + ε - modelCapRoundedLowerFunctionInner hk c ε r δ θ y) * σ := by
@@ -1900,25 +1907,25 @@ theorem modelCapRoundedLowerFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk 
             have hnon : 0 ≤ morseNorm n y := by
               dsimp [morseNorm]
               exact norm_nonneg _
-            exact sq_lt_sq' (by nlinarith [hR0, hR, hnon]) hy₁'
-          have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by nlinarith [hR, hR0]
-          exact (div_lt_one hden).mpr (by nlinarith [hsq]))
-      have hpos1 : 0 < modelCapRoundedLowerFunctionInner hk c ε r δ θ y - c := by linarith [hF₁]
-      have hpos2' : 0 < morseNormalForm hk c y + ε - c := by linarith [hF₂]
+            exact sq_lt_sq' (by nlinarith only [hR0, hR, hnon]) hy₁'
+          have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by nlinarith only [hR, hR0]
+          exact (div_lt_one hden).mpr (by nlinarith only [hsq]))
+      have hpos1 : 0 < modelCapRoundedLowerFunctionInner hk c ε r δ θ y - c := sub_pos.mpr hF₁
+      have hpos2' : 0 < morseNormalForm hk c y + ε - c := sub_pos.mpr hF₂
       have hmain' : 0 < (1 - σ) * (modelCapRoundedLowerFunctionInner hk c ε r δ θ y - c) +
           σ * (morseNormalForm hk c y + ε - c) := by
         have h₁ : 0 < (1 - σ) * (modelCapRoundedLowerFunctionInner hk c ε r δ θ y - c) :=
-          mul_pos (by linarith [hσlt]) hpos1
+          mul_pos (sub_pos.mpr hσlt) hpos1
         have h₂ : 0 ≤ σ * (morseNormalForm hk c y + ε - c) :=
           mul_nonneg hσ (le_of_lt hpos2')
-        nlinarith
+        exact add_pos_of_pos_of_nonneg h₁ h₂
       have hrew : modelCapRoundedLowerFunctionInner hk c ε r δ θ y +
           (morseNormalForm hk c y + ε - modelCapRoundedLowerFunctionInner hk c ε r δ θ y) * σ - c =
           (1 - σ) * (modelCapRoundedLowerFunctionInner hk c ε r δ θ y - c) +
             σ * (morseNormalForm hk c y + ε - c) := by
         ring
       rw [← hrew] at hmain'
-      linarith
+      exact sub_pos.mp hmain'
     exact hmain
 
 theorem modelRoundedFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk : k ≤ n)
@@ -1937,24 +1944,27 @@ theorem modelRoundedFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk : k ≤ 
         _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
           morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
     have hsq : R₁ ^ 2 ≤ morseNorm n y ^ 2 := by
-      exact sq_le_sq' (by nlinarith [hR0, hR]) hy₁
-    have hbig' : r ^ 2 + 2 * ε + δ < R₁ ^ 2 := by
+      have hnon : 0 ≤ morseNorm n y := by
+        dsimp [morseNorm]
+        exact norm_nonneg _
+      exact sq_le_sq' (by nlinarith only [hR0, hR, hnon]) hy₁
+    have hbig' : 2 * (r ^ 2 + 2 * ε + δ) < R₁ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
-      have hb' : 2 * (r ^ 2 + 2 * ε + δ) < R₁ ^ 2 := by nlinarith [hbig, h01]
-      nlinarith
+      nlinarith only [hbig, h01]
     have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by
-      nlinarith [hnorm, hsq, hbig', hneg]
-    nlinarith
+      linarith only [hε, hnorm, hsq, hbig', hneg]
+    nlinarith only [hb]
   · have hy₁' : morseNorm n y < R₁ := lt_of_not_ge hy₁
     let σ : ℝ := Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))
     have hσ : 0 ≤ σ := by dsimp [σ]; exact Real.smoothTransition.nonneg _
     have hσ₁ : σ ≤ 1 := by dsimp [σ]; exact Real.smoothTransition.le_one _
     have hpos : R₀ ^ 2 < morseNorm n y ^ 2 := by
-      exact sq_lt_sq' (by nlinarith [hR0, norm_nonneg (morseNorm n y)]) hy₀
+      exact sq_lt_sq' (by
+        nlinarith only [hR0, hy₀, norm_nonneg (morseNorm n y)]) hy₀
     have hpos2 : ‖posPart hk y‖ ^ 2 > max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) := by
       have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
         calc
@@ -1964,14 +1974,15 @@ theorem modelRoundedFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk : k ≤ 
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
       have hb : ‖negPart hk y‖ ^ 2 + max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) < R₀ ^ 2 := by
         have h1 : max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) ≤ r ^ 2 + 2 * ε + δ := by
-          exact max_le (by nlinarith) (by nlinarith [hneg])
-        nlinarith [hbig, h1, hneg]
-      nlinarith [hnorm, hpos, hb]
+          exact max_le (by nlinarith only [hε, hδ])
+            (by nlinarith only [hε, hneg])
+        nlinarith only [hbig, h1, hneg]
+      nlinarith only [hnorm, hpos, hb]
     have hF₁ : c < modelAttachedFunction hk c ε r δ y := by
       dsimp [modelAttachedFunction]
       have hcap : smoothCap ε r δ (‖negPart hk y‖ ^ 2) ≤ max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) :=
         smoothCap_le_max_sub (ε := ε) (r := r) (δ := δ) (t := ‖negPart hk y‖ ^ 2)
-      nlinarith [hpos2, hcap]
+      nlinarith only [hpos2, hcap]
     have hF₂ : c < morseNormalForm hk c y + ε := by
       rw [morseNormalForm_split]
       have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
@@ -1980,8 +1991,10 @@ theorem modelRoundedFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk : k ≤ 
             rw [recombine_decompose hk y]
           _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-      have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by nlinarith [hpos2, hnorm]
-      nlinarith
+      have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by
+        nlinarith only [hpos2,
+          le_max_right (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε)]
+      nlinarith only [hb]
     dsimp [modelRoundedFunction]
     have hmain : c < modelAttachedFunction hk c ε r δ y +
         (morseNormalForm hk c y + ε - modelAttachedFunction hk c ε r δ y) * σ := by
@@ -1992,25 +2005,25 @@ theorem modelRoundedFunction_gt_c_of_norm_gt_negPart_lt {n k : ℕ} (hk : k ≤ 
             have hnon : 0 ≤ morseNorm n y := by
               dsimp [morseNorm]
               exact norm_nonneg _
-            exact sq_lt_sq' (by nlinarith [hR0, hR, hnon]) hy₁'
-          have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by nlinarith [hR, hR0]
-          exact (div_lt_one hden).mpr (by nlinarith [hsq]))
-      have hpos1 : 0 < modelAttachedFunction hk c ε r δ y - c := by linarith [hF₁]
-      have hpos2 : 0 < morseNormalForm hk c y + ε - c := by linarith [hF₂]
+            exact sq_lt_sq' (by nlinarith only [hR0, hR, hnon]) hy₁'
+          have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by nlinarith only [hR, hR0]
+          exact (div_lt_one hden).mpr (by nlinarith only [hsq]))
+      have hpos1 : 0 < modelAttachedFunction hk c ε r δ y - c := sub_pos.mpr hF₁
+      have hpos2 : 0 < morseNormalForm hk c y + ε - c := sub_pos.mpr hF₂
       have hmain' : 0 < (1 - σ) * (modelAttachedFunction hk c ε r δ y - c) +
           σ * (morseNormalForm hk c y + ε - c) := by
         have h₁ : 0 < (1 - σ) * (modelAttachedFunction hk c ε r δ y - c) :=
-          mul_pos (by linarith [hσlt]) hpos1
+          mul_pos (sub_pos.mpr hσlt) hpos1
         have h₂ : 0 ≤ σ * (morseNormalForm hk c y + ε - c) :=
           mul_nonneg hσ (le_of_lt hpos2)
-        nlinarith
+        exact add_pos_of_pos_of_nonneg h₁ h₂
       have hrew : modelAttachedFunction hk c ε r δ y +
           (morseNormalForm hk c y + ε - modelAttachedFunction hk c ε r δ y) * σ - c =
           (1 - σ) * (modelAttachedFunction hk c ε r δ y - c) +
             σ * (morseNormalForm hk c y + ε - c) := by
         ring
       rw [← hrew] at hmain'
-      linarith
+      exact sub_pos.mp hmain'
     exact hmain
 
 theorem modelRoundedFunction_le_c_iff_of_norm_gt {n k : ℕ} (hk : k ≤ n)
@@ -2042,8 +2055,9 @@ theorem modelRoundedFunction_le_c_iff_of_norm_gt {n k : ℕ} (hk : k ≤ n)
         have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
         have hnormle : morseNorm n y ^ 2 < R₀ ^ 2 := by
           have h1 := modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hy hlt
-          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by nlinarith [hbig]
-          nlinarith [h1, h2]
+          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by
+            nlinarith only [hε, hbig]
+          nlinarith only [h1, h2]
         have hle : morseNorm n y ≤ R₀ := by
           have habs := sq_lt_sq.mp hnormle
           have hnon : 0 ≤ morseNorm n y := by
@@ -2087,8 +2101,9 @@ theorem modelCapRoundedLowerFunction_le_c_iff_of_norm_gt {n k : ℕ} (hk : k ≤
         have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
         have hnormle : morseNorm n y ^ 2 < R₀ ^ 2 := by
           have h1 := modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hy hlt
-          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by nlinarith [hbig]
-          nlinarith [h1, h2]
+          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by
+            nlinarith only [hε, hbig]
+          nlinarith only [h1, h2]
         have hle : morseNorm n y ≤ R₀ := by
           have habs := sq_lt_sq.mp hnormle
           have hnon : 0 ≤ morseNorm n y := by
@@ -2123,8 +2138,9 @@ theorem modelCapRoundedLowerFunction_le_c_iff_inner_le_c {n k : ℕ} (hk : k ≤
         have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
         have hnormle : morseNorm n y ^ 2 < R₀ ^ 2 := by
           have h1 := modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hlow hlt
-          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by nlinarith [hbig]
-          nlinarith [h1, h2]
+          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by
+            nlinarith only [hε, hbig]
+          nlinarith only [h1, h2]
         have hle : morseNorm n y ≤ R₀ := by
           have habs := sq_lt_sq.mp hnormle
           have hnon : 0 ≤ morseNorm n y := by
@@ -2159,9 +2175,10 @@ theorem modelCapRoundedLowerFunction_le_c_iff_inner_le_c {n k : ℕ} (hk : k ≤
           have hle1 : ‖negPart hk y‖ ^ 2 + max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) <
               R₀ ^ 2 := by
             have h1 : max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) ≤ r ^ 2 + 2 * ε + δ := by
-              exact max_le (by nlinarith) (by nlinarith [hlt])
-            nlinarith [hbig, h1, hlt]
-          nlinarith [hnorm, hpos, hbound, hle1]
+              exact max_le (by nlinarith only [hε, hδ])
+                (by nlinarith only [hε, hlt])
+            nlinarith only [hbig, h1, hlt]
+          nlinarith only [hnorm, hpos, hbound, hle1]
         have hle : morseNorm n y ≤ R₀ := by
           have habs := sq_lt_sq.mp hnormle
           have hnon : 0 ≤ morseNorm n y := by
@@ -2201,8 +2218,9 @@ theorem modelRoundedFunction_sublevel_eq_attached_union_lower {n k : ℕ} (hk : 
         have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
         have hnormle : morseNorm n y ^ 2 < R₀ ^ 2 := by
           have h1 := modelLowerSublevel_norm_sq_lt_of_negPart_lt hk c ε r δ hlow hlt
-          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by nlinarith [hbig]
-          nlinarith [h1, h2]
+          have h2 : 2 * (r ^ 2 + 2 * ε + δ) - 2 * ε < R₀ ^ 2 := by
+            nlinarith only [hε, hbig]
+          nlinarith only [h1, h2]
         have hle : morseNorm n y ≤ R₀ := by
           have habs := sq_lt_sq.mp hnormle
           have hnon : 0 ≤ morseNorm n y := by
@@ -2224,7 +2242,7 @@ theorem modelRoundedFunction_sublevel_eq_attached_union_lower {n k : ℕ} (hk : 
           have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
           have hnormle : morseNorm n y ^ 2 < R₀ ^ 2 := by
             have h1 := modelAttached_norm_sq_lt_of_negPart_lt hk ε r δ (le_of_lt hε) hδ hatt hlt
-            nlinarith [hbig, h1]
+            nlinarith only [hbig, h1]
           have hle : morseNorm n y ≤ R₀ := by
             have habs := sq_lt_sq.mp hnormle
             have hnon : 0 ≤ morseNorm n y := by
@@ -2240,7 +2258,7 @@ theorem modelRoundedFunction_sublevel_eq_attached_union_lower {n k : ℕ} (hk : 
           have hcap : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε :=
             smoothCap_upper hδ hnegl
           rw [morseNormalForm_split]
-          nlinarith [hatt, hcap]
+          nlinarith only [hatt, hcap]
         exact (modelRoundedFunction_le_c_iff_of_norm_gt hk c ε r δ R₀ R₁ hε hδ hR hR0 hbig hnorm').mpr hlow
     · rcases hlow with ⟨hnegl, hlow⟩
       by_cases hnorm : morseNorm n y ≤ R₀
@@ -2249,7 +2267,7 @@ theorem modelRoundedFunction_sublevel_eq_attached_union_lower {n k : ℕ} (hk : 
           rw [morseNormalForm_split] at hlow
           have hcap : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε :=
             smoothCap_upper hδ hnegl
-          nlinarith [hlow, hcap]
+          nlinarith only [hlow, hcap]
         exact (modelRoundedFunction_le_c_iff_of_norm_le hk c ε r δ R₀ R₁ hR hR0 hnorm).mpr hatt
       · have hnorm' : R₀ < morseNorm n y := lt_of_not_ge hnorm
         exact (modelRoundedFunction_le_c_iff_of_norm_gt hk c ε r δ R₀ R₁ hε hδ hR hR0 hbig hnorm').mpr hlow
@@ -2271,19 +2289,21 @@ theorem modelRoundedFunction_gt_c_of_norm_ge_negPart_lt {n k : ℕ} (hk : k ≤ 
           rw [recombine_decompose hk y]
         _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
           morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-    have hbig' : r ^ 2 + 2 * ε + δ < R₁ ^ 2 := by
+    have hbig' : 2 * (r ^ 2 + 2 * ε + δ) < R₁ ^ 2 := by
       have h01 : R₀ ^ 2 < R₁ ^ 2 := by
-        have h0 : 0 ≤ R₁ := by nlinarith [hR0, hR]
+        have h0 : 0 ≤ R₁ := by nlinarith only [hR0, hR]
         exact sq_lt_sq.mpr (by
           rw [abs_of_nonneg hR0, abs_of_nonneg h0]
           exact hR)
-      have hb' : 2 * (r ^ 2 + 2 * ε + δ) < R₁ ^ 2 := by nlinarith [hbig, h01]
-      nlinarith
+      nlinarith only [hbig, h01]
     have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by
       have hsq : R₁ ^ 2 ≤ morseNorm n y ^ 2 := by
-        exact sq_le_sq' (by nlinarith [hR0, hR]) hy₁
-      nlinarith [hnorm, hsq, hbig', hneg]
-    nlinarith
+        have hnon : 0 ≤ morseNorm n y := by
+          dsimp [morseNorm]
+          exact norm_nonneg _
+        exact sq_le_sq' (by nlinarith only [hR0, hR, hnon]) hy₁
+      linarith only [hε, hnorm, hsq, hbig', hneg]
+    nlinarith only [hb]
   · have hy₁' : morseNorm n y < R₁ := lt_of_not_ge hy₁
     let σ : ℝ := Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))
     have hσ : 0 ≤ σ := by dsimp [σ]; exact Real.smoothTransition.nonneg _
@@ -2292,7 +2312,7 @@ theorem modelRoundedFunction_gt_c_of_norm_ge_negPart_lt {n k : ℕ} (hk : k ≤ 
       have hnon : 0 ≤ morseNorm n y := by
         dsimp [morseNorm]
         exact norm_nonneg _
-      exact sq_le_sq' (by nlinarith [hR0, hnon]) hy₀
+      exact sq_le_sq' (by nlinarith only [hR0, hnon]) hy₀
     have hpos2 : ‖posPart hk y‖ ^ 2 > max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) := by
       have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
         calc
@@ -2302,14 +2322,15 @@ theorem modelRoundedFunction_gt_c_of_norm_ge_negPart_lt {n k : ℕ} (hk : k ≤ 
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
       have hb : ‖negPart hk y‖ ^ 2 + max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) < R₀ ^ 2 := by
         have h1 : max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) ≤ r ^ 2 + 2 * ε + δ := by
-          exact max_le (by nlinarith) (by nlinarith [hneg])
-        nlinarith [hbig, h1, hneg]
-      nlinarith [hnorm, hpos, hb]
+          exact max_le (by nlinarith only [hε, hδ])
+            (by nlinarith only [hε, hneg])
+        nlinarith only [hbig, h1, hneg]
+      nlinarith only [hnorm, hpos, hb]
     have hF₁ : c < modelAttachedFunction hk c ε r δ y := by
       dsimp [modelAttachedFunction]
       have hcap : smoothCap ε r δ (‖negPart hk y‖ ^ 2) ≤ max (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε) :=
         smoothCap_le_max_sub (ε := ε) (r := r) (δ := δ) (t := ‖negPart hk y‖ ^ 2)
-      nlinarith [hpos2, hcap]
+      nlinarith only [hpos2, hcap]
     have hF₂ : c < morseNormalForm hk c y + ε := by
       rw [morseNormalForm_split]
       have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 := by
@@ -2318,8 +2339,10 @@ theorem modelRoundedFunction_gt_c_of_norm_ge_negPart_lt {n k : ℕ} (hk : k ≤ 
             rw [recombine_decompose hk y]
           _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
-      have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by nlinarith [hpos2, hnorm]
-      nlinarith
+      have hb : ‖negPart hk y‖ ^ 2 - 2 * ε < ‖posPart hk y‖ ^ 2 := by
+        nlinarith only [hpos2,
+          le_max_right (r ^ 2) (‖negPart hk y‖ ^ 2 - 2 * ε)]
+      nlinarith only [hb]
     dsimp [modelRoundedFunction]
     have hmain : c < modelAttachedFunction hk c ε r δ y +
         (morseNormalForm hk c y + ε - modelAttachedFunction hk c ε r δ y) * σ := by
@@ -2330,25 +2353,25 @@ theorem modelRoundedFunction_gt_c_of_norm_ge_negPart_lt {n k : ℕ} (hk : k ≤ 
             have hnon : 0 ≤ morseNorm n y := by
               dsimp [morseNorm]
               exact norm_nonneg _
-            exact sq_lt_sq' (by nlinarith [hR0, hR, hnon]) hy₁'
-          have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by nlinarith [hR, hR0]
-          exact (div_lt_one hden).mpr (by nlinarith [hsq]))
-      have hpos1 : 0 < modelAttachedFunction hk c ε r δ y - c := by linarith [hF₁]
-      have hpos2' : 0 < morseNormalForm hk c y + ε - c := by linarith [hF₂]
+            exact sq_lt_sq' (by nlinarith only [hR0, hR, hnon]) hy₁'
+          have hden : 0 < R₁ ^ 2 - R₀ ^ 2 := by nlinarith only [hR, hR0]
+          exact (div_lt_one hden).mpr (by nlinarith only [hsq]))
+      have hpos1 : 0 < modelAttachedFunction hk c ε r δ y - c := sub_pos.mpr hF₁
+      have hpos2' : 0 < morseNormalForm hk c y + ε - c := sub_pos.mpr hF₂
       have hmain' : 0 < (1 - σ) * (modelAttachedFunction hk c ε r δ y - c) +
           σ * (morseNormalForm hk c y + ε - c) := by
         have h₁ : 0 < (1 - σ) * (modelAttachedFunction hk c ε r δ y - c) :=
-          mul_pos (by linarith [hσlt]) hpos1
+          mul_pos (sub_pos.mpr hσlt) hpos1
         have h₂ : 0 ≤ σ * (morseNormalForm hk c y + ε - c) :=
           mul_nonneg hσ (le_of_lt hpos2')
-        nlinarith
+        exact add_pos_of_pos_of_nonneg h₁ h₂
       have hrew : modelAttachedFunction hk c ε r δ y +
           (morseNormalForm hk c y + ε - modelAttachedFunction hk c ε r δ y) * σ - c =
           (1 - σ) * (modelAttachedFunction hk c ε r δ y - c) +
             σ * (morseNormalForm hk c y + ε - c) := by
         ring
       rw [← hrew] at hmain'
-      linarith
+      exact sub_pos.mp hmain'
     exact hmain
 
 
@@ -2361,7 +2384,7 @@ theorem modelAttachedRegion_of_negPart_large_lower {n k : ℕ} (hk : k ≤ n) (c
   rw [morseNormalForm_split] at hlow
   have hsc : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε :=
     smoothCap_upper hδ ht
-  nlinarith [hlow, hsc]
+  nlinarith only [hlow, hsc]
 
 theorem modelRoundedFunction_le_c_iff_mem_attachedRegion {n k : ℕ} (hk : k ≤ n)
     (c ε r δ R₀ R₁ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hR : R₀ < R₁) (hR0 : 0 ≤ R₀)
@@ -2388,7 +2411,7 @@ theorem modelRoundedFunction_eq_attached_of_norm_gt {n k : ℕ} (hk : k ≤ n)
     have hlt : ‖negPart hk y‖ ^ 2 < r ^ 2 + 2 * ε + δ := lt_of_not_ge hnot
     have hnormle : morseNorm n y ^ 2 < R₀ ^ 2 := by
       have hmain := modelAttached_norm_sq_lt_of_negPart_lt hk ε r δ (le_of_lt hε) hδ hyatt hlt
-      nlinarith [hbig, hmain]
+      nlinarith only [hbig, hmain]
     have hle : morseNorm n y ≤ R₀ := by
       have hnon : 0 ≤ morseNorm n y := by
         dsimp [morseNorm]
@@ -2521,7 +2544,7 @@ theorem fderiv_modelRoundedFunction_ne_zero {n k : ℕ} (hk : k ≤ n)
           _ = ‖negPart hk y‖ ^ 2 + ‖posPart hk y‖ ^ 2 :=
             morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)
       have hsmall : morseNorm n y ^ 2 < R₀ ^ 2 := by
-        nlinarith [hle, hpos, hnormSq, hε, hbig]
+        nlinarith only [hle, hpos, hnormSq, hε, hbig]
       have hltR : morseNorm n y < R₀ := by
         have hnon : 0 ≤ morseNorm n y := by
           dsimp [morseNorm]
@@ -2580,18 +2603,18 @@ theorem smoothCap_ge_sub_two_mul_eps {ε r δ t : ℝ} (hδ : 0 < δ) :
       have hτle : Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) ≤ 1 :=
         Real.smoothTransition.le_one _
       have hw : t - 2 * ε - r ^ 2 ∈ Set.Icc (-δ) δ := by
-        constructor <;> nlinarith [hmid.1, hmid.2]
+        constructor <;> nlinarith only [hmid.1, hmid.2]
       have hprod : (t - 2 * ε - r ^ 2) * (Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) - 1) ≥ -δ := by
         by_cases hw0 : 0 ≤ t - 2 * ε - r ^ 2
         · have hσm1 : -1 ≤ Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) - 1 := by linarith [hτle]
           have h1 : (t - 2 * ε - r ^ 2) * (Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) - 1) ≥
               (t - 2 * ε - r ^ 2) * (-1) := mul_le_mul_of_nonneg_left hσm1 hw0
           have hwle : t - 2 * ε - r ^ 2 ≤ δ := hw.2
-          nlinarith [h1, hwle]
+          nlinarith only [h1, hwle]
         · have hσm1 : Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) - 1 ≤ 0 := by linarith [hτle]
           have h1 : 0 ≤ (t - 2 * ε - r ^ 2) * (Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) - 1) :=
             mul_nonneg_of_nonpos_of_nonpos (le_of_not_ge hw0) hσm1
-          nlinarith [h1, hδ]
+          nlinarith only [h1, hδ]
       have hb : r ^ 2 + (t - 2 * ε - r ^ 2) * Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) ≥
           t - 2 * ε - δ := by
         have hcalc : r ^ 2 + (t - 2 * ε - r ^ 2) * Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) -
@@ -2600,7 +2623,7 @@ theorem smoothCap_ge_sub_two_mul_eps {ε r δ t : ℝ} (hδ : 0 < δ) :
         have hd : 0 ≤ r ^ 2 + (t - 2 * ε - r ^ 2) * Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) -
             (t - 2 * ε - δ) := by
           rw [hcalc]
-          nlinarith [hprod, hδ]
+          nlinarith only [hprod, hδ]
         linarith
       exact hb
 
@@ -3494,279 +3517,6 @@ theorem modelSublevelFamily_value_split {n k : ℕ} (hk : k ≤ n) (c ε r δ R�
   rw [hu, hnorm]
   ring
 
-theorem fderiv_modelSublevelFamily_ne_zero_of_eq_zero {n k : ℕ} (hk : k ≤ n)
-    (c ε r δ R₀ R₁ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2)
-    (hR : R₀ < R₁) (hR0 : 0 ≤ R₀) (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2)
-    (hδR : 40 * δ < R₁ ^ 2 - R₀ ^ 2)
-    (s : ℝ) (hs : s ∈ Set.Icc (0 : ℝ) 1) (y : MorseModel n)
-    (hy : modelSublevelFamily hk c ε r δ R₀ R₁ s y = 0) :
-    fderiv ℝ (fun z : MorseModel n => modelSublevelFamily hk c ε r δ R₀ R₁ s z) y ≠ 0 := by
-  by_cases hs0 : s = 0
-  · have hval : modelRoundedFunction hk c ε r δ R₀ R₁ y = c := by
-      have : modelSublevelFamily hk c ε r δ R₀ R₁ 0 y = 0 := by simpa [hs0] using hy
-      dsimp [modelSublevelFamily] at this
-      nlinarith
-    intro hzero
-    have hz : fderiv ℝ (modelRoundedFunction hk c ε r δ R₀ R₁) y ≠ 0 :=
-      fderiv_modelRoundedFunction_ne_zero hk c ε r δ R₀ R₁ hε hδ hδr hR hR0 hbig y hval
-    have hfe : (fun z : MorseModel n => modelSublevelFamily hk c ε r δ R₀ R₁ 0 z) =
-        fun z : MorseModel n => modelRoundedFunction hk c ε r δ R₀ R₁ z - c := by
-      funext z
-      dsimp [modelSublevelFamily]
-      ring
-    have hfm : fderiv ℝ (fun z : MorseModel n => modelSublevelFamily hk c ε r δ R₀ R₁ 0 z) y =
-        fderiv ℝ (modelRoundedFunction hk c ε r δ R₀ R₁) y := by
-      rw [hfe]
-      rw [show (fun z : MorseModel n => modelRoundedFunction hk c ε r δ R₀ R₁ z - c) =
-          modelRoundedFunction hk c ε r δ R₀ R₁ - (fun _ : MorseModel n => c) by rfl]
-      rw [fderiv_sub (f := modelRoundedFunction hk c ε r δ R₀ R₁) (g := fun _ : MorseModel n => c)
-        (hf := differentiableAt_modelRoundedFunction hk c ε r δ R₀ R₁ y) (hg := differentiableAt_const c)]
-      simp
-    have hz0 : fderiv ℝ (modelRoundedFunction hk c ε r δ R₀ R₁) y = 0 := by
-      rw [← hfm]
-      simpa [hs0] using hzero
-    exact hz hz0
-  · have hs_pos : 0 < s := lt_of_le_of_ne hs.1 (Ne.symm hs0)
-    have hden_pos : 0 < R₁ ^ 2 - R₀ ^ 2 := by
-      have hlt : |R₀| < |R₁| := by
-        rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt (lt_of_le_of_lt hR0 hR))]
-        exact hR
-      have hsq : R₀ ^ 2 < R₁ ^ 2 := sq_lt_sq.mpr hlt
-      nlinarith
-    intro hzero
-    let wp : MorseModel n := recombine hk (0 : EuclideanSpace ℝ (Fin k)) (posPart hk y)
-    let wm : MorseModel n := recombine hk (negPart hk y) (0 : EuclideanSpace ℝ (Fin (n - k)))
-    let τ : ℝ := Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))
-    let τSlope : ℝ := deriv Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)) /
-      (R₁ ^ 2 - R₀ ^ 2)
-    let capSlope : ℝ := deriv (smoothCap ε r δ) (‖negPart hk y‖ ^ 2)
-    let Nval : ℝ := morseNormalForm hk c y - c
-    let Aval : ℝ := modelAttachedFunction hk c ε r δ y - c
-    have hτSlope_nonneg : 0 ≤ τSlope := by
-      dsimp [τSlope]
-      exact div_nonneg (smoothTransition_deriv_nonneg _) (le_of_lt hden_pos)
-    have hτSlope_le : τSlope ≤ 40 / (R₁ ^ 2 - R₀ ^ 2) := by
-      dsimp [τSlope]
-      have hd : deriv Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)) ≤ 40 :=
-        Real.smoothTransition_deriv_le_forty _
-      exact div_le_div_of_nonneg_right hd (le_of_lt hden_pos)
-    have hNεA_ge : -(δ / 2) ≤ Nval + ε - Aval := by
-      dsimp [Nval, Aval]
-      have hcap : ‖negPart hk y‖ ^ 2 - 2 * ε - δ ≤ smoothCap ε r δ (‖negPart hk y‖ ^ 2) :=
-        smoothCap_ge_sub_two_mul_eps (ε := ε) (δ := δ) hδ
-      have hmid : morseNormalForm hk c y - c + ε - (modelAttachedFunction hk c ε r δ y - c) =
-          ε + (1 / 2 : ℝ) * (smoothCap ε r δ (‖negPart hk y‖ ^ 2) - ‖negPart hk y‖ ^ 2) := by
-        rw [morseNormalForm_split hk c y]
-        unfold modelAttachedFunction
-        ring
-      rw [hmid]
-      nlinarith [hcap]
-    have hwp : ‖posPart hk y‖ ^ 2 *
-        (1 + 2 * (1 - s) * (Nval + ε - Aval) * τSlope) = 0 := by
-      have hd : fderiv ℝ (fun z : MorseModel n => modelSublevelFamily hk c ε r δ R₀ R₁ s z) y wp = 0 :=
-        congrArg (fun L : (MorseModel n →L[ℝ] ℝ) => L wp) hzero
-      rw [fderiv_modelSublevelFamily_direction_pos hk c ε r δ R₀ R₁ s hR hR0 y] at hd
-      simpa [wp, τSlope, Nval, Aval] using hd
-    have hwm : ‖negPart hk y‖ ^ 2 *
-        (-((1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s) +
-          2 * (1 - s) * (Nval + ε - Aval) * τSlope) = 0 := by
-      have hd : fderiv ℝ (fun z : MorseModel n => modelSublevelFamily hk c ε r δ R₀ R₁ s z) y wm = 0 :=
-        congrArg (fun L : (MorseModel n →L[ℝ] ℝ) => L wm) hzero
-      rw [fderiv_modelSublevelFamily_direction_neg hk c ε r δ R₀ R₁ s hR hR0 y] at hd
-      simpa [wm, τ, τSlope, capSlope, Nval, Aval] using hd
-    by_cases hpp : ‖posPart hk y‖ ^ 2 = 0
-    · by_cases hpm : ‖negPart hk y‖ ^ 2 = 0
-      · have hy0 : modelSublevelFamily hk c ε r δ R₀ R₁ s 0 = 0 := by
-          have hp : posPart hk y = 0 := by
-            have hnon : 0 ≤ ‖posPart hk y‖ := by positivity
-            exact norm_eq_zero.mp (sq_eq_zero_iff.mp hpp)
-          have hm : negPart hk y = 0 := by
-            have hnon : 0 ≤ ‖negPart hk y‖ := by positivity
-            exact norm_eq_zero.mp (sq_eq_zero_iff.mp hpm)
-          have hy' : y = 0 := recombine_zero_of_parts_eq_zero hk y hp hm
-          simpa [hy'] using hy
-        have hval0 : modelSublevelFamily hk c ε r δ R₀ R₁ s 0 = -(1 - s) * (r ^ 2 / 2) - s * ε := by
-          have hρ : morseNorm n 0 ≤ R₀ := by
-            simpa [morseNorm] using hR0
-          have hround : modelRoundedFunction hk c ε r δ R₀ R₁ 0 = modelAttachedFunction hk c ε r δ 0 :=
-            modelRoundedFunction_eq_attached_of_norm_le hk c ε r δ R₀ R₁ hR hR0 hρ
-          have hcap0 : smoothCap ε r δ 0 = r ^ 2 := by
-            rw [smoothCap_lower hδ (by nlinarith [hδr, hε] : 0 ≤ r ^ 2 + 2 * ε - δ)]
-          dsimp [modelSublevelFamily]
-          rw [hround]
-          dsimp [modelRoundedFunction, modelAttachedFunction]
-          rw [morseNormalForm_split hk c 0]
-          have hp0 : posPart hk (0 : MorseModel n) = 0 := by
-            ext i
-            simp [posPart]
-          have hn0 : negPart hk (0 : MorseModel n) = 0 := by
-            ext i
-            simp [negPart]
-          simp [hp0, hn0, hcap0]
-          ring
-        have hneq : -(1 - s) * (r ^ 2 / 2) - s * ε ≠ 0 := by
-          by_cases hs1 : s = 1
-          · rw [hs1]
-            simp
-            linarith [hε]
-          · have hs_lt : s < 1 := lt_of_le_of_ne hs.2 hs1
-            have h1sp : 0 < 1 - s := by linarith
-            have hr2 : 0 < r ^ 2 := by nlinarith [hδ, hδr]
-            have hterm1 : 0 < (1 - s) * (r ^ 2 / 2) := by positivity
-            have hterm2 : 0 ≤ s * ε := by positivity
-            have hpos : 0 < (1 - s) * (r ^ 2 / 2) + s * ε := by linarith
-            have hneg : -(1 - s) * (r ^ 2 / 2) - s * ε < 0 := by linarith
-            exact ne_of_lt hneg
-        exact False.elim (hneq (by
-          rw [← hval0]
-          exact hy0))
-      · have hβ : -((1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s) +
-            2 * (1 - s) * (Nval + ε - Aval) * τSlope = 0 := by
-          exact (mul_eq_zero.mp hwm).resolve_left hpm
-        have hτpos : 0 < τ := by
-          have hvalue : ε * ((1 - s) * τ - s) =
-              (1 / 2 : ℝ) * ((1 - s) * (1 - τ) * smoothCap ε r δ (‖negPart hk y‖ ^ 2) +
-                ((1 - s) * τ + s) * ‖negPart hk y‖ ^ 2) := by
-            have hsplit := modelSublevelFamily_value_split hk c ε r δ R₀ R₁ s y hpp
-            have hmain : ε * ((1 - s) * Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)) - s) -
-                (1 / 2 : ℝ) * ((1 - s) * (1 - Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) *
-                    smoothCap ε r δ (‖negPart hk y‖ ^ 2) +
-                  ((1 - s) * Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)) + s) *
-                    ‖negPart hk y‖ ^ 2) = 0 := by
-              rw [← hsplit]
-              exact hy
-            dsimp [τ]
-            linarith [hmain]
-          have hrhs_nonneg : 0 ≤ (1 / 2 : ℝ) * ((1 - s) * (1 - τ) * smoothCap ε r δ (‖negPart hk y‖ ^ 2) +
-              ((1 - s) * τ + s) * ‖negPart hk y‖ ^ 2) := by
-            have hcap : 0 < smoothCap ε r δ (‖negPart hk y‖ ^ 2) :=
-              smoothCap_pos hδ hδr
-            have h1s : 0 ≤ 1 - s := by linarith [hs.2]
-            have hτ01 : 0 ≤ τ ∧ τ ≤ 1 := by
-              dsimp [τ]
-              constructor
-              · exact Real.smoothTransition.nonneg _
-              · exact Real.smoothTransition.le_one _
-            have hτle1 : 1 - τ ≥ 0 := by linarith only [hτ01.2]
-            have hnon1 : 0 ≤ (1 - s) * (1 - τ) * smoothCap ε r δ (‖negPart hk y‖ ^ 2) := by positivity
-            have hτs : 0 ≤ (1 - s) * τ + s := by
-              have h1 : 0 ≤ (1 - s) * τ := mul_nonneg h1s hτ01.1
-              exact add_nonneg h1 hs.1
-            have hnon2 : 0 ≤ ((1 - s) * τ + s) * ‖negPart hk y‖ ^ 2 := by positivity
-            have hsum : 0 ≤ (1 - s) * (1 - τ) * smoothCap ε r δ (‖negPart hk y‖ ^ 2) +
-                ((1 - s) * τ + s) * ‖negPart hk y‖ ^ 2 := add_nonneg hnon1 hnon2
-            exact mul_nonneg (by norm_num) hsum
-          have hleq : (1 - s) * τ ≥ s := by
-            have : ε * ((1 - s) * τ - s) ≥ 0 := by
-              rw [hvalue]
-              exact hrhs_nonneg
-            nlinarith only [this, hε]
-          have hτ_nonneg : 0 ≤ τ := by
-            dsimp [τ]
-            exact Real.smoothTransition.nonneg _
-          have hprod_pos : 0 < (1 - s) * τ := by
-            nlinarith only [hleq, hs_pos]
-          have h1s_pos : 0 < 1 - s := by
-            by_contra hnot
-            have hle : 1 - s ≤ 0 := le_of_not_gt hnot
-            have hprod' : (1 - s) * τ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hle hτ_nonneg
-            nlinarith only [hprod_pos, hprod']
-          have hτpos_final : 0 < τ := by
-            by_contra hnot
-            have hle : τ ≤ 0 := le_of_not_gt hnot
-            have hτ0 : τ = 0 := le_antisymm hle hτ_nonneg
-            have hzero : (1 - s) * τ = 0 := by rw [hτ0]; ring
-            nlinarith only [hleq, hzero, hs_pos]
-          exact hτpos_final
-        have hvgt : R₀ ^ 2 < ‖negPart hk y‖ ^ 2 := by
-          have harg_pos : 0 < (morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2) := by
-            have hτ' : 0 < Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)) := by
-              simpa [τ] using hτpos
-            exact (smoothTransition_pos_iff _).mp hτ'
-          have hnorm_gt : R₀ ^ 2 < morseNorm n y ^ 2 := by
-            have hden0 : 0 < R₁ ^ 2 - R₀ ^ 2 := hden_pos
-            have : 0 < morseNorm n y ^ 2 - R₀ ^ 2 := by
-              simpa using (lt_div_iff₀ hden0).mp harg_pos
-            nlinarith only [this]
-          rw [morseNorm_sq_split hk y, hpp, zero_add] at hnorm_gt
-          exact hnorm_gt
-        have hcapv : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε := by
-          have hge : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk y‖ ^ 2 := by nlinarith only [hvgt, hbig]
-          exact smoothCap_upper hδ hge
-        have hcapSlope1 : capSlope = 1 := by
-          dsimp [capSlope]
-          have hge : r ^ 2 + 2 * ε + δ < ‖negPart hk y‖ ^ 2 := by
-            have : 2 * (r ^ 2 + 2 * ε + δ) < ‖negPart hk y‖ ^ 2 := by nlinarith only [hvgt, hbig]
-            nlinarith only [this]
-          exact deriv_smoothCap_eq_one_of_gt hδ hge
-        have hNεA_zero : Nval + ε - Aval = 0 := by
-          dsimp [Nval, Aval]
-          rw [morseNormalForm_split hk c y]
-          unfold modelAttachedFunction
-          rw [hcapv]
-          ring
-        have hβ' : -((1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s) = 0 := by
-          rw [hNεA_zero] at hβ
-          simpa using hβ
-        have hbneq : (1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s ≠ 0 := by
-          rw [hcapSlope1]
-          have hsum : (1 - s) * (1 - τ) + (1 - s) * τ + s = 1 := by
-            ring_nf
-          nlinarith only [hsum]
-        exact False.elim (by
-          have : -((1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s) = 0 := hβ'
-          have hmain : (1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s = 0 := by linarith
-          exact hbneq hmain)
-    · have hα : 1 + 2 * (1 - s) * (Nval + ε - Aval) * τSlope = 0 := by
-        exact (mul_eq_zero.mp hwp).resolve_left hpp
-      have hNεA_neg : Nval + ε - Aval < 0 := by
-        have hα' : 2 * (1 - s) * (Nval + ε - Aval) * τSlope = -1 := by nlinarith only [hα]
-        have h1s : 0 ≤ 1 - s := by linarith only [hs.2]
-        have hτnon : 0 ≤ τSlope := hτSlope_nonneg
-        by_contra hnot
-        have hge : 0 ≤ Nval + ε - Aval := le_of_not_gt hnot
-        have hprod : 0 ≤ 2 * (1 - s) * (Nval + ε - Aval) * τSlope := by
-          positivity
-        nlinarith only [hα', hprod]
-      have hα_lower : 0 < 1 + 2 * (1 - s) * (Nval + ε - Aval) * τSlope := by
-        have h1s : 0 ≤ 1 - s := by linarith only [hs.2]
-        have hle1 : 2 * (1 - s) * (-(δ / 2)) * τSlope ≤ 2 * (1 - s) * (Nval + ε - Aval) * τSlope := by
-          have hpr : 0 ≤ 2 * (1 - s) * τSlope := by
-            positivity
-          have hmul := mul_le_mul_of_nonneg_right hNεA_ge hpr
-          nlinarith only [hmul]
-        have hle2 : -((40 * δ) / (R₁ ^ 2 - R₀ ^ 2)) ≤ 2 * (1 - s) * (-(δ / 2)) * τSlope := by
-          have hcoef : 2 * (1 - s) * (δ / 2) * τSlope ≤ 40 * δ / (R₁ ^ 2 - R₀ ^ 2) := by
-            have h1sle : 1 - s ≤ 1 := by linarith only [hs.1]
-            have hcoef' : 2 * (1 - s) * (δ / 2) ≤ δ := by nlinarith only [h1sle, hδ]
-            have hmain : 2 * (1 - s) * (δ / 2) * τSlope ≤ δ * τSlope :=
-              mul_le_mul_of_nonneg_right hcoef' hτSlope_nonneg
-            have hdle : τSlope ≤ 40 / (R₁ ^ 2 - R₀ ^ 2) := hτSlope_le
-            have hstep : δ * τSlope ≤ 40 * δ / (R₁ ^ 2 - R₀ ^ 2) := by
-              have hmul := mul_le_mul_of_nonneg_left hdle (le_of_lt hδ)
-              have heq : δ * (40 / (R₁ ^ 2 - R₀ ^ 2)) = 40 * δ / (R₁ ^ 2 - R₀ ^ 2) := by ring
-              rw [← heq]
-              exact hmul
-            nlinarith only [hmain, hstep]
-          have hneg : -(40 * δ / (R₁ ^ 2 - R₀ ^ 2)) ≤ -(2 * (1 - s) * (δ / 2) * τSlope) :=
-            neg_le_neg hcoef
-          have hrew : -(2 * (1 - s) * (δ / 2) * τSlope) = 2 * (1 - s) * (-(δ / 2)) * τSlope := by ring
-          rw [hrew] at hneg
-          exact hneg
-        have hδR' : 40 * δ / (R₁ ^ 2 - R₀ ^ 2) < 1 := (div_lt_one (by positivity)).2 hδR
-        have hA_le_B : -((40 * δ) / (R₁ ^ 2 - R₀ ^ 2)) ≤
-            2 * (1 - s) * (Nval + ε - Aval) * τSlope := le_trans hle2 hle1
-        have hlb : 1 - 40 * δ / (R₁ ^ 2 - R₀ ^ 2) ≤
-            1 + 2 * (1 - s) * (Nval + ε - Aval) * τSlope := by
-          have hrew : 1 - 40 * δ / (R₁ ^ 2 - R₀ ^ 2) = 1 + -((40 * δ) / (R₁ ^ 2 - R₀ ^ 2)) := by ring
-          rw [hrew]
-          exact add_le_add (le_refl 1) hA_le_B
-        have hpos1 : 0 < 1 - 40 * δ / (R₁ ^ 2 - R₀ ^ 2) := sub_pos.mpr hδR'
-        exact lt_of_lt_of_le hpos1 hlb
-      exact False.elim (by
-        have : 0 < 1 + 2 * (1 - s) * (Nval + ε - Aval) * τSlope := hα_lower
-        rw [hα] at this
-        exact (not_lt_of_ge le_rfl) this)
 
 theorem modelSublevelFamily_notCritical_of_strip {n k : ℕ} (hk : k ≤ n)
     (c ε r δ R₀ R₁ ε₀ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2)
@@ -3782,7 +3532,7 @@ theorem modelSublevelFamily_notCritical_of_strip {n k : ℕ} (hk : k ≤ n)
       rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt (lt_of_le_of_lt hR0 hR))]
       exact hR
     have hsq : R₀ ^ 2 < R₁ ^ 2 := sq_lt_sq.mpr hlt
-    nlinarith
+    exact sub_pos.mpr hsq
   let wp : MorseModel n := recombine hk (0 : EuclideanSpace ℝ (Fin k)) (posPart hk y)
   let wm : MorseModel n := recombine hk (negPart hk y) (0 : EuclideanSpace ℝ (Fin (n - k)))
   let τ : ℝ := Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))
@@ -3809,7 +3559,7 @@ theorem modelSublevelFamily_notCritical_of_strip {n k : ℕ} (hk : k ≤ n)
       unfold modelAttachedFunction
       ring
     rw [hmid]
-    nlinarith [hcap]
+    nlinarith only [hcap]
   have hαpos : 0 < 1 + 2 * (1 - s) * (Nval + ε - Aval) * τSlope := by
     have h1s : 0 ≤ 1 - s := by linarith only [hs.2]
     have hle1 : 2 * (1 - s) * (-(δ / 2)) * τSlope ≤ 2 * (1 - s) * (Nval + ε - Aval) * τSlope := by
@@ -3873,7 +3623,7 @@ theorem modelSublevelFamily_notCritical_of_strip {n k : ℕ} (hk : k ≤ n)
       have hround : modelRoundedFunction hk c ε r δ R₀ R₁ 0 = modelAttachedFunction hk c ε r δ 0 :=
         modelRoundedFunction_eq_attached_of_norm_le hk c ε r δ R₀ R₁ hR hR0 hρ
       have hcap0 : smoothCap ε r δ 0 = r ^ 2 := by
-        rw [smoothCap_lower hδ (by nlinarith [hδr, hε] : 0 ≤ r ^ 2 + 2 * ε - δ)]
+        rw [smoothCap_lower hδ (by nlinarith only [hδr, hε] : 0 ≤ r ^ 2 + 2 * ε - δ)]
       dsimp [modelSublevelFamily]
       rw [hround]
       dsimp [modelRoundedFunction, modelAttachedFunction]
@@ -3896,8 +3646,10 @@ theorem modelSublevelFamily_notCritical_of_strip {n k : ℕ} (hk : k ≤ n)
           have h1 : 0 < s * ε := mul_pos hsgt hε
           have h2 : 0 ≤ (1 - s) * (r ^ 2 / 2) := by
             exact mul_nonneg (by linarith only [hs.2]) (by nlinarith only [hr2])
-          linarith
-      linarith
+          exact add_pos_of_nonneg_of_pos h2 h1
+      rw [show -(1 - s) * (r ^ 2 / 2) - s * ε =
+        -((1 - s) * (r ^ 2 / 2) + s * ε) by ring]
+      exact neg_lt_zero.mpr hpos
     have hval_abs : |-(1 - s) * (r ^ 2 / 2) - s * ε| = (1 - s) * (r ^ 2 / 2) + s * ε := by
       rw [abs_of_neg hval_neg]
       ring
@@ -4007,8 +3759,23 @@ theorem modelSublevelFamily_notCritical_of_strip {n k : ℕ} (hk : k ≤ n)
         have hsum : (1 - s) * (1 - τ) + (1 - s) * τ + s = 1 := by ring
         nlinarith only [hsum]
       exact False.elim (by
-        have hmain : (1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s = 0 := by linarith
+        have hmain : (1 - s) * (1 - τ) * capSlope + (1 - s) * τ + s = 0 :=
+          neg_eq_zero.mp hβ'
         exact hbneq hmain)
+
+theorem fderiv_modelSublevelFamily_ne_zero_of_eq_zero {n k : ℕ} (hk : k ≤ n)
+    (c ε r δ R₀ R₁ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2)
+    (hR : R₀ < R₁) (hR0 : 0 ≤ R₀) (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2)
+    (hδR : 40 * δ < R₁ ^ 2 - R₀ ^ 2)
+    (s : ℝ) (hs : s ∈ Set.Icc (0 : ℝ) 1) (y : MorseModel n)
+    (hy : modelSublevelFamily hk c ε r δ R₀ R₁ s y = 0) :
+    fderiv ℝ (fun z : MorseModel n => modelSublevelFamily hk c ε r δ R₀ R₁ s z) y ≠ 0 := by
+  have hr2 : 0 < r ^ 2 := lt_trans hδ hδr
+  have hmin : 0 < min (min ε (r ^ 2 / 2)) ((r ^ 2 - δ) / 2) :=
+    lt_min (lt_min hε (half_pos hr2)) (half_pos (sub_pos.mpr hδr))
+  apply modelSublevelFamily_notCritical_of_strip hk c ε r δ R₀ R₁ 0 hε hδ hδr hR hR0
+    hbig hδR (by simpa using hmin) s hs y
+  norm_num [hy]
 
 noncomputable def modelSublevelCutoffRatio {n k : ℕ} (hk : k ≤ n)
     (c ε r δ R₀ R₁ ε₀ : ℝ) (y : MorseModel n) : ℝ :=
@@ -4633,7 +4400,7 @@ theorem cutoffTransition_le_one {a ε' w t : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1)
     · rw [if_pos htε]
       have hσ : Real.smoothTransition ((t / ε') ^ w) ≤ 1 := Real.smoothTransition.le_one _
       have hσ0 : 0 ≤ Real.smoothTransition ((t / ε') ^ w) := Real.smoothTransition.nonneg _
-      have hat : a * t ≤ 1 := by nlinarith [ha, ht0, ht1]
+      have hat : a * t ≤ 1 := by nlinarith only [ha, ht0, ht1]
       have hat0 : 0 ≤ a * t := mul_nonneg ha0 ht0
       have hatσ : a * t * Real.smoothTransition ((t / ε') ^ w) ≤ a * t :=
         by simpa using (mul_le_mul_of_nonneg_left hσ hat0)
@@ -4762,11 +4529,11 @@ theorem cutoffTransition_deriv_lt_one {a ε' w t : ℝ} (ha0 : 0 ≤ a) (hε' : 
     simpa [mul_assoc, mul_left_comm, mul_comm] using hmul
   have hsum : Real.smoothTransition ((t / ε') ^ w) +
       w * (t / ε') ^ w * deriv Real.smoothTransition ((t / ε') ^ w) ≤ 1 + 40 * w := by
-    nlinarith [hσ, hterm]
+    nlinarith only [hσ, hterm]
   have hmain : a * (Real.smoothTransition ((t / ε') ^ w) +
       w * (t / ε') ^ w * deriv Real.smoothTransition ((t / ε') ^ w)) < 1 := by
     have hle := mul_le_mul_of_nonneg_left hsum ha0
-    nlinarith [hle, hslope]
+    nlinarith only [hle, hslope]
   exact hmain
 
 theorem cutoffTransition_le_mul {a ε' w t : ℝ} (ha0 : 0 ≤ a) (ht0 : 0 ≤ t) :
@@ -4810,7 +4577,7 @@ theorem cutoffTransition_deriv_le {a ε' w t : ℝ} (ha0 : 0 ≤ a) (hε' : 0 < 
     simpa [mul_assoc, mul_left_comm, mul_comm] using hmul
   have hsum : Real.smoothTransition ((t / ε') ^ w) +
       w * (t / ε') ^ w * deriv Real.smoothTransition ((t / ε') ^ w) ≤ 1 + 40 * w := by
-    nlinarith [hσ, hterm]
+    nlinarith only [hσ, hterm]
   have hmain : a * (Real.smoothTransition ((t / ε') ^ w) +
       w * (t / ε') ^ w * deriv Real.smoothTransition ((t / ε') ^ w)) ≤ a * (1 + 40 * w) :=
     mul_le_mul_of_nonneg_left hsum ha0
@@ -4825,7 +4592,7 @@ theorem cutoffTransition_junction_bound {a ε' w t : ℝ} (ha0 : 0 ≤ a) (hε' 
   have hder : deriv (cutoffTransition a ε' w) t ≤ a * (1 + 40 * w) :=
     cutoffTransition_deriv_le ha0 hε' ht0 htε hw
   have ht1 : 1 - t ≤ 1 := by linarith [ht0]
-  have ht1' : 0 ≤ 1 - t := by nlinarith [hε'1, htε]
+  have ht1' : 0 ≤ 1 - t := by nlinarith only [hε'1, htε]
   have h1 : deriv (cutoffTransition a ε' w) t * (1 - t) ≤ a * (1 + 40 * w) * 1 := by
     have hder0 : 0 ≤ deriv (cutoffTransition a ε' w) t := by
       have hmid := cutoffTransition_deriv_middle (a := a) (ε' := ε') (w := w) (t := t) hε' ht0 htε
@@ -4838,18 +4605,19 @@ theorem cutoffTransition_junction_bound {a ε' w t : ℝ} (ha0 : 0 ≤ a) (hε' 
         positivity
       have hsum : 0 ≤ Real.smoothTransition ((t / ε') ^ w) +
           w * (t / ε') ^ w * deriv Real.smoothTransition ((t / ε') ^ w) := by
-        nlinarith [h1, h2]
+        nlinarith only [h1, h2]
       exact mul_nonneg ha0 hsum
     have hmul := mul_le_mul hder ht1 ht1' (by positivity)
     simpa [mul_assoc] using hmul
   have h2 : a * t + a * (1 + 40 * w) ≤ a * (1 + 40 * w + ε') := by
-    have htε' : t < ε' := htε
-    nlinarith [htε']
+    have hatε : a * t ≤ a * ε' :=
+      mul_le_mul_of_nonneg_left (le_of_lt htε) ha0
+    nlinarith only [hatε]
   have hmain : cutoffTransition a ε' w t + deriv (cutoffTransition a ε' w) t * (1 - t) ≤
       a * t + a * (1 + 40 * w) := by
-    nlinarith [hle, h1]
+    nlinarith only [hle, h1]
   have hfinal : a * (1 + 40 * w + ε') < 1 := hslope
-  nlinarith [hmain, h2, hfinal]
+  nlinarith only [hmain, h2, hfinal]
 
 noncomputable def cutoffFunction (a ε' w η₁ : ℝ) (t : ℝ) : ℝ :=
   if t ≤ 0 then 0 else if t ≤ ε' then
@@ -4876,9 +4644,9 @@ theorem cutoffFunction_eq_one {a ε' w η₁ t : ℝ} (hη₁ : 0 < η₁) (hε'
     (ht1 : 1 < t) :
     cutoffFunction a ε' w η₁ t = 1 := by
   dsimp [cutoffFunction]
-  rw [if_neg (not_le_of_gt (by nlinarith [ht1]))]
-  rw [if_neg (not_le_of_gt (by nlinarith [hε'1, ht1]))]
-  rw [if_neg (not_le_of_gt (by nlinarith [hη₁, ht1]))]
+  rw [if_neg (not_le_of_gt (by nlinarith only [ht1]))]
+  rw [if_neg (not_le_of_gt (by nlinarith only [hε'1, ht1]))]
+  rw [if_neg (not_le_of_gt (by nlinarith only [hη₁, ht1]))]
   rw [if_neg (not_le_of_gt ht1)]
 
 theorem cutoffFunction_nonneg {a ε' w η₁ t : ℝ} (ha : 0 ≤ a) (ha1 : a ≤ 1) :
@@ -4907,7 +4675,7 @@ theorem cutoffFunction_nonneg {a ε' w η₁ t : ℝ} (ha : 0 ≤ a) (ha1 : a �
             simpa using (mul_le_mul ha1 ht1 ht0 (by norm_num : 0 ≤ (1 : ℝ)))
           have h2 : 0 ≤ 1 - a * t := by linarith
           have hprod := mul_nonneg h2 hσ
-          nlinarith [h1, hprod]
+          nlinarith only [h1, hprod]
         · rw [if_neg ht₂]
           exact zero_le_one
 
@@ -4942,14 +4710,14 @@ theorem cutoffFunction_le_one {a ε' w η₁ t : ℝ} (ha0 : 0 ≤ a) (ha : a �
           have hσ0 : 0 ≤ Real.smoothTransition ((t - (1 - η₁)) / η₁) :=
             Real.smoothTransition.nonneg _
           have hat1 : a * t ≤ 1 := by
-            nlinarith [ha, ht1, ht0, ha0]
+            nlinarith only [ha, ht1, ht0, ha0]
           have htail : 0 ≤ 1 - a * t := by linarith
           have hmul := mul_le_mul_of_nonneg_left hσ htail
           have hmain : a * t + (1 - a * t) * Real.smoothTransition ((t - (1 - η₁)) / η₁) ≤
               a * t + (1 - a * t) := by
-            nlinarith [hmul]
-          have hmain' : a * t + (1 - a * t) ≤ 1 := by nlinarith [hat1]
-          nlinarith [hmain, hmain']
+            nlinarith only [hmul]
+          have hmain' : a * t + (1 - a * t) ≤ 1 := by nlinarith only [hat1]
+          nlinarith only [hmain, hmain']
         · rw [if_neg ht₂]
 
 theorem modelRoundedFunction_value_le_of_posPart_eq_zero {n k : ℕ} (hk : k ≤ n)
@@ -4990,7 +4758,7 @@ theorem modelRoundedFunction_value_le_of_posPart_eq_zero {n k : ℕ} (hk : k ≤
     rw [hval]
     have hm : -(1 / 2 : ℝ) * smoothCap ε r δ t ≤ -(1 / 2 : ℝ) * (r ^ 2 - δ) :=
       mul_le_mul_of_nonpos_left hcap (by norm_num)
-    nlinarith [hm]
+    nlinarith only [hm]
   · have hcore' : R₀ ^ 2 ≤ ‖negPart hk y‖ ^ 2 := by
       simpa [t] using (le_of_not_gt hcore)
     have hcap : smoothCap ε r δ t = t - 2 * ε := by
@@ -5027,10 +4795,10 @@ theorem modelRoundedFunction_value_le_of_posPart_eq_zero {n k : ℕ} (hk : k ≤
     rw [hval]
     have hsq : R₀ ^ 2 ≤ t := hcore'
     have hm : -(1 / 2 : ℝ) * (t - 2 * ε) ≤ -R₀ ^ 2 / 2 + ε := by
-      nlinarith [hsq]
+      nlinarith only [hsq]
     have hR₀big : R₀ ^ 2 ≥ 2 * r ^ 2 + 4 * ε + 2 * δ := by nlinarith only [hbig]
     have hgoal : -R₀ ^ 2 / 2 + ε ≤ -(r ^ 2 - δ) / 2 := by
-      nlinarith [hR₀big]
+      nlinarith only [hε, hδ, hδr, hR₀big]
     exact le_trans hm hgoal
 
 theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k ≤ n)
@@ -5048,8 +4816,8 @@ theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k
     have hε₀' : ε₀ < (r ^ 2 - δ) / 2 := by
       have hle : min (min ε (r ^ 2 / 2)) ((r ^ 2 - δ) / 2) ≤ (r ^ 2 - δ) / 2 :=
         min_le_right _ _
-      nlinarith [hε₀, hle]
-    nlinarith [hval, hε₀']
+      nlinarith only [hε, hδ, hδr, hε₀, hle]
+    nlinarith only [hval, hε₀']
   have hpos : 0 < modelRoundedFunction hk c ε r δ R₀ R₁ y - c -
       (morseNormalForm hk c y - c - ε) := by
     have hge : 0 ≤ modelRoundedFunction hk c ε r δ R₀ R₁ y - c -
@@ -5059,8 +4827,8 @@ theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k
         have hcap' : smoothCap ε r δ t ≤ max (r ^ 2) t := smoothCap_le_max (le_of_lt hε) hδ
         have hmax : max (r ^ 2) t ≤ t + 2 * ε := by
           have ht0 : 0 ≤ t := by dsimp [t]; positivity
-          have h1 : r ^ 2 ≤ t + 2 * ε := by nlinarith [hr, ht0]
-          have h2 : t ≤ t + 2 * ε := by nlinarith [hε]
+          have h1 : r ^ 2 ≤ t + 2 * ε := by nlinarith only [hr, ht0]
+          have h2 : t ≤ t + 2 * ε := by nlinarith only [hε]
           exact max_le h1 h2
         exact le_trans hcap' hmax
       have hγβ : modelRoundedFunction hk c ε r δ R₀ R₁ y - c -
@@ -5088,11 +4856,11 @@ theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k
               rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt (lt_of_le_of_lt hR0 hR))]
               exact hR
             have hsq : R₀ ^ 2 < R₁ ^ 2 := sq_lt_sq.mpr hlt
-            nlinarith
+            exact sub_pos.mpr hsq
           have hnormge : R₀ ^ 2 ≤ morseNorm n y ^ 2 := by
             have hmain : 0 < morseNorm n y ^ 2 - R₀ ^ 2 := by
               simpa using ((lt_div_iff₀ hden).mp hargpos)
-            nlinarith
+            exact le_of_lt (sub_pos.mp hmain)
           have hcapUpper : smoothCap ε r δ (‖negPart hk y‖ ^ 2) =
               ‖negPart hk y‖ ^ 2 - 2 * ε := by
             apply smoothCap_upper hδ
@@ -5100,7 +4868,7 @@ theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k
               nlinarith only [hbig, hr]
             have hR₀pos : 0 < R₀ ^ 2 := by
               have hr2 : 0 < r ^ 2 := by nlinarith only [hδ, hδr]
-              have hpos2 : 0 < 2 * (r ^ 2 + 2 * ε + δ) := by nlinarith [hr2, hδ, hε]
+              have hpos2 : 0 < 2 * (r ^ 2 + 2 * ε + δ) := by nlinarith only [hr2, hδ, hε]
               exact lt_of_lt_of_le hpos2 hbig
             have hhalf : R₀ ^ 2 / 2 < R₀ ^ 2 := by nlinarith only [hR₀pos]
             have hmain : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk y‖ ^ 2 := by
@@ -5112,7 +4880,7 @@ theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k
                     rw [morseNorm_sq_eq_negPart_add_posPart hk y]
                     rw [hp]
                     simp
-                  nlinarith [hnormge, hnormeq]
+                  nlinarith only [hnormge, hnormeq]
             exact hmain
           have hG' : morseNormalForm hk c y - c + ε - (modelAttachedFunction hk c ε r δ y - c) = 0 := by
             rw [morseNormalForm_split hk c y]
@@ -5124,8 +4892,8 @@ theorem modelRoundedFunction_ratio_nonpos_of_posPart_eq_zero {n k : ℕ} (hk : k
       have hmain : 0 ≤ (‖negPart hk y‖ ^ 2 + 2 * ε - smoothCap ε r δ (‖negPart hk y‖ ^ 2)) / 2 := by
         have hle : smoothCap ε r δ (‖negPart hk y‖ ^ 2) ≤ ‖negPart hk y‖ ^ 2 + 2 * ε := by
           simpa [t] using hcap
-        nlinarith
-      nlinarith [hmain, hG]
+        exact div_nonneg (sub_nonneg.mpr hle) (by norm_num)
+      nlinarith only [hmain, hG]
     exact lt_of_le_of_ne hge (Ne.symm hden)
   dsimp [modelSublevelCutoffRatio]
   exact div_nonpos_of_nonpos_of_nonneg (le_of_lt hγ) (le_of_lt hpos)
@@ -5212,7 +4980,7 @@ theorem modelSublevelFamilyCutoff_notCritical_of_affine_ratio {n k : ℕ} (hk : 
       simp
     have hε'ρ : ε' < ρ := hρ
     rw [hρ0] at hε'ρ
-    linarith
+    exact (not_lt_of_ge (le_of_lt hε')) hε'ρ
   have hdpos := fderiv_modelSublevelFamilyCutoff_direction_pos hk c ε r δ R₀ R₁ ε₀ hR hR0
     θ s y hθdiff hden
   have hwp0 : fderiv ℝ (fun z => modelSublevelFamilyCutoff hk c ε r δ R₀ R₁ ε₀ θ s z) y wp = 0 :=
@@ -5225,7 +4993,7 @@ theorem modelSublevelFamilyCutoff_notCritical_of_affine_ratio {n k : ℕ} (hk : 
         rw [abs_of_nonneg hR0, abs_of_nonneg (le_of_lt (lt_of_le_of_lt hR0 hR))]
         exact hR
       have hsq : R₀ ^ 2 < R₁ ^ 2 := sq_lt_sq.mpr hlt
-      nlinarith
+      exact sub_pos.mpr hsq
     have hτSlope_nonneg : 0 ≤ τSlope := by
       dsimp [τSlope]
       exact div_nonneg (smoothTransition_deriv_nonneg _) (le_of_lt hden_pos)
@@ -5244,7 +5012,7 @@ theorem modelSublevelFamilyCutoff_notCritical_of_affine_ratio {n k : ℕ} (hk : 
         unfold modelAttachedFunction
         ring
       rw [hmid]
-      nlinarith [hcap]
+      nlinarith only [hcap]
     have hle1 : 2 * (-(δ / 2)) * τSlope ≤ 2 * G * τSlope := by
       have hpr : 0 ≤ 2 * τSlope := by positivity
       have hmul := mul_le_mul_of_nonneg_right hNεA_ge hpr
@@ -5273,7 +5041,7 @@ theorem modelSublevelFamilyCutoff_notCritical_of_affine_ratio {n k : ℕ} (hk : 
   have h1sa : 0 < 1 - s * a := by
     have hsle : s * a ≤ a := by
       simpa [mul_comm] using (mul_le_of_le_one_right ha hs.2)
-    nlinarith [ha1, hsle]
+    nlinarith only [ha1, hsle]
   have hpp : ‖posPart hk y‖ ^ 2 = 0 := by
     have hb : (1 - s * θ ρ - s * deriv θ ρ * (1 - ρ)) *
           (1 + 2 * (morseNormalForm hk c y - c + ε - (modelAttachedFunction hk c ε r δ y - c)) *
@@ -5475,15 +5243,15 @@ theorem modelLevelDampedUnstretch_boundary {n k : ℕ} (hk : k ≤ n) (c ε r δ
     have hsplit : modelAttachedFunction hk c ε r δ y =
         c + (1 / 2) * (‖posPart hk y‖ ^ 2 - smoothCap ε r δ (‖negPart hk y‖ ^ 2)) := by
       dsimp [modelAttachedFunction]
-    nlinarith [hA, hsplit]
+    nlinarith only [hA, hsplit]
   have hf_ge : c - ε - δ / 2 ≤ morseNormalForm hk c y := by
     have hcap : ‖negPart hk y‖ ^ 2 - 2 * ε - δ ≤ smoothCap ε r δ (‖negPart hk y‖ ^ 2) :=
       smoothCap_ge_sub_two_mul_eps (ε := ε) (δ := δ) hδ
     have hf : morseNormalForm hk c y = c + (1 / 2) * (‖posPart hk y‖ ^ 2 - ‖negPart hk y‖ ^ 2) :=
       morseNormalForm_split hk c y
     rw [hf, hp_eq]
-    nlinarith [hcap]
-  have hf_gt : c - ε - η + ε₀ < morseNormalForm hk c y := by nlinarith [hf_ge, hact]
+    nlinarith only [hcap]
+  have hf_gt : c - ε - η + ε₀ < morseNormalForm hk c y := by nlinarith only [hf_ge, hact]
   have hEq := modelLevelDampedUnstretch_eq_unstretch hk ε r δ c η ε₀ hε₀ y (le_of_lt hf_gt)
   rw [hEq]
   exact modelAttachedFunction_unstretch_boundary hk c ε r δ hδ hδr y hy hA
@@ -5587,12 +5355,12 @@ theorem modelLevelDampedUnstretch_eq_modelFlow {n k : ℕ} (hk : k ≤ n) (ε r 
       have hle : smoothCap ε r δ (‖negPart hk y‖ ^ 2) ≤ ‖negPart hk y‖ ^ 2 + r ^ 2 := by
         have hmax : max (r ^ 2) (‖negPart hk y‖ ^ 2) ≤ ‖negPart hk y‖ ^ 2 + r ^ 2 := by
           rw [max_le_iff]
-          constructor <;> nlinarith [sq_nonneg ‖negPart hk y‖]
+          constructor <;> nlinarith only [sq_nonneg ‖negPart hk y‖]
         exact le_trans (smoothCap_le_max (ε := ε) (r := r) (δ := δ)
           (t := ‖negPart hk y‖ ^ 2) hε hδ0) hmax
-      have hr2 : 0 < r ^ 2 := by nlinarith [hδ0, hδr]
+      have hr2 : 0 < r ^ 2 := by nlinarith only [hδ0, hδr]
       exact (Real.le_sqrt (by norm_num : (0 : ℝ) ≤ 1)
-        (div_nonneg (by nlinarith [sq_nonneg (‖negPart hk y‖ : ℝ), hr2])
+        (div_nonneg (by nlinarith only [sq_nonneg (‖negPart hk y‖ : ℝ), hr2])
           (le_of_lt hsc))).2 (by
         norm_num
         rw [one_le_div hsc]
@@ -5641,7 +5409,7 @@ theorem modelLevelDampedUnstretchTime_eq_unstretchTime {n k : ℕ} (hk : k ≤ n
       (‖negPart hk y‖ ^ 2 + r ^ 2) / smoothCap ε r δ (‖negPart hk y‖ ^ 2) :=
     Real.sq_sqrt (by
       have hsc : 0 < smoothCap ε r δ (‖negPart hk y‖ ^ 2) := smoothCap_pos hδ hδr
-      have hr2 : 0 < r ^ 2 := by nlinarith [hδ, hδr]
+      have hr2 : 0 < r ^ 2 := by nlinarith only [hδ, hδr]
       exact div_nonneg (by positivity) (le_of_lt hsc))
   have hfac : 1 + (Real.sqrt ((‖negPart hk y‖ ^ 2 + r ^ 2) /
       smoothCap ε r δ (‖negPart hk y‖ ^ 2)) - 1) * 1 =
@@ -5683,7 +5451,7 @@ theorem contDiff_modelLevelDampedUnstretchTime {n k : ℕ} (hk : k ≤ n) (ε r 
         smoothCap ε r δ (‖negPart hk y‖ ^ 2))) :=
     harg.sqrt (by
       intro y
-      have hr2 : 0 < r ^ 2 := by nlinarith [hδ, hδr]
+      have hr2 : 0 < r ^ 2 := by nlinarith only [hδ, hδr]
       exact ne_of_gt (div_pos (by positivity) (hcap_pos y)))
   have hnf : ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n => morseNormalForm hk c y) := by
     have hsplit : (fun y : MorseModel n => morseNormalForm hk c y) =
@@ -5734,7 +5502,7 @@ theorem modelAttachedUnstretchTime_eq_of_negPart_large {n k : ℕ} (hk : k ≤ n
   dsimp [modelAttachedUnstretchTime]
   have hsc : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε :=
     smoothCap_upper hδ0 ht
-  have hne : ‖negPart hk y‖ ^ 2 - 2 * ε ≠ 0 := by nlinarith [ht, hδ0]
+  have hne : ‖negPart hk y‖ ^ 2 - 2 * ε ≠ 0 := by nlinarith only [ht, hδ0]
   rw [hsc]
   field_simp [hne]
   ring
@@ -5745,7 +5513,7 @@ theorem modelAttachedUnstretchTime_eq_boundary {n k : ℕ} (hk : k ≤ n) (ε r 
     (hp : ‖posPart hk y‖ ^ 2 = ‖negPart hk y‖ ^ 2 - 2 * ε) :
     modelAttachedUnstretchTime hk ε r δ y = -(r ^ 2 + 2 * ε) / 2 := by
   rw [modelAttachedUnstretchTime_eq_of_negPart_large hk ε r δ hδ0 ht, hp]
-  have hpos : ‖negPart hk y‖ ^ 2 - 2 * ε ≠ 0 := by nlinarith [ht, hδ0]
+  have hpos : ‖negPart hk y‖ ^ 2 - 2 * ε ≠ 0 := by nlinarith only [ht, hδ0]
   field_simp [hpos]
 
 theorem modelAttachedUnstretchTime_neg_of_posPart_ne_zero {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
@@ -5770,14 +5538,15 @@ theorem modelAttachedUnstretchTime_neg_of_posPart_ne_zero {n k : ℕ} (hk : k �
     dsimp [sc, smoothCap]
     by_cases hβ1 : Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) = 1
     · rw [hβ1]
-      have hpos : 0 < t - (t - 2 * ε - r ^ 2) := by nlinarith [hδr]
-      nlinarith [hpos]
+      have hpos : 0 < t - (t - 2 * ε - r ^ 2) := by
+        nlinarith only [hε, hδ, hδr]
+      nlinarith only [hpos]
     · have hβlt1 : Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) < 1 :=
         lt_of_le_of_ne hβ.2 hβ1
       have h1 : 0 < t * (1 - Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ))) := by
         exact mul_pos htpos (sub_pos.mpr hβlt1)
       have h2 : 0 ≤ (2 * ε + r ^ 2) * Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) := by
-        exact mul_nonneg (by nlinarith [hδr]) hβ.1
+        exact mul_nonneg (by nlinarith only [hε, hδ, hδr]) hβ.1
       nlinarith
   have hratio_gt : 1 < (t + r ^ 2) / sc := by
     exact (one_lt_div hscpos).2 hsc_lt
@@ -5813,13 +5582,13 @@ theorem modelAttachedUnstretchTime_abs_le {n k : ℕ} (hk : k ≤ n) (ε r δ : 
     have h1 : 0 ≤ t * (1 - Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ))) := by
       exact mul_nonneg ht0 (sub_nonneg.mpr hβ.2)
     have h2 : 0 ≤ (2 * ε + r ^ 2) * Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) := by
-      exact mul_nonneg (by nlinarith [hδr]) hβ.1
+      exact mul_nonneg (by nlinarith only [hε, hδ, hδr]) hβ.1
     nlinarith
   have hdiff_le : t + r ^ 2 - sc ≤ 2 * ε + r ^ 2 + δ := by
     dsimp [sc, smoothCap]
     by_cases hβ1 : Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) = 1
     · rw [hβ1]
-      nlinarith [hδr]
+      nlinarith only [hε, hδ, hδr]
     · have hβlt1 : Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) < 1 :=
         lt_of_le_of_ne hβ.2 hβ1
       have harglt : t < r ^ 2 + 2 * ε + δ := by
@@ -5829,7 +5598,7 @@ theorem modelAttachedUnstretchTime_abs_le {n k : ℕ} (hk : k ≤ n) (ε r δ : 
           rw [le_div_iff₀ (by positivity : (0 : ℝ) < 2 * δ)]
           nlinarith
         exact hβ1 (Real.smoothTransition.eq_one_iff_one_le.mpr harg1)
-      have hle1 : t - 2 * ε - r ^ 2 ≤ δ := by nlinarith [harglt]
+      have hle1 : t - 2 * ε - r ^ 2 ≤ δ := by nlinarith only [harglt]
       have hmul : (t - 2 * ε - r ^ 2) * (1 - Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ))) ≤ δ := by
         have hpos : 0 ≤ 1 - Real.smoothTransition ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)) :=
           sub_nonneg.mpr hβ.2
@@ -5847,11 +5616,11 @@ theorem modelAttachedUnstretchTime_abs_le {n k : ℕ} (hk : k ≤ n) (ε r δ : 
       have hdiff0 : 0 ≤ (t + r ^ 2) / sc - 1 := by
         rw [le_sub_iff_add_le]
         rw [le_div_iff₀ hscpos]
-        nlinarith [hcap_le]
+        nlinarith only [hcap_le]
       exact mul_le_mul_of_nonneg_right hbsc hdiff0
     have hsc : sc * ((t + r ^ 2) / sc - 1) = t + r ^ 2 - sc := by
       field_simp [ne_of_gt hscpos]
-    nlinarith [hb, hsc, hdiff_le]
+    nlinarith only [hb, hsc, hdiff_le]
   dsimp [modelAttachedUnstretchTime]
   have harg : b * (1 - (t + r ^ 2) / sc) / 2 = -(b * ((t + r ^ 2) / sc - 1) / 2) := by ring
   rw [harg]
@@ -5862,11 +5631,11 @@ theorem modelAttachedUnstretchTime_abs_le {n k : ℕ} (hk : k ≤ n) (ε r δ : 
     have hdiff0 : 0 ≤ (t + r ^ 2) / sc - 1 := by
       rw [le_sub_iff_add_le]
       rw [le_div_iff₀ hscpos]
-      nlinarith [hcap_le]
+      nlinarith only [hcap_le]
     exact mul_nonneg hb0 hdiff0
   rw [hbabs]
   rw [abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2)]
-  nlinarith [hmain]
+  nlinarith only [hmain]
 
 theorem contDiff_modelAttachedUnstretchTime {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     (hδ : 0 < δ) (hδr : δ < r ^ 2) :

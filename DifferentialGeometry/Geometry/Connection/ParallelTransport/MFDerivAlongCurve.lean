@@ -157,7 +157,7 @@ theorem continuousOn_chartCoord_mfderiv_along_curve
 
 theorem chartCoord_mfderiv_along_curve_continuousOn
     {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (α : M)
-    {s : Set ℝ} (_hs : IsCompact s)
+    {s : Set ℝ}
     (hs_sub : s ⊆ γ ⁻¹' (chartAt H α).source) :
     ContinuousOn
       (fun t : ℝ =>
@@ -243,7 +243,7 @@ theorem mem_chartPullback_self {γ : ℝ → M} (t : ℝ) :
 
 omit [IsManifold I ∞ M] in
 theorem chartPullback_cover_compact
-    {γ : ℝ → M} (_hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {s : Set ℝ} (_hs : IsCompact s) :
+    {γ : ℝ → M} {s : Set ℝ} :
     s ⊆ ⋃ t₀ ∈ s, γ ⁻¹' (chartAt H (γ t₀)).source := by
   intro t ht
   refine mem_iUnion_of_mem t ?_
@@ -264,7 +264,7 @@ theorem exists_finite_chartPullback_subcover
       exact isOpen_extChartAt_source (I := I) (γ t₀)
     exact hγ.continuous.isOpen_preimage _ this
   have hcover : s ⊆ ⋃ t₀ ∈ s, γ ⁻¹' (chartAt H (γ t₀)).source :=
-    chartPullback_cover_compact (I := I) (M := M) (γ := γ) hγ hs
+    chartPullback_cover_compact (γ := γ)
   exact hs.elim_finite_subcover_image hopen hcover
 
 end MFDerivAlongCurve

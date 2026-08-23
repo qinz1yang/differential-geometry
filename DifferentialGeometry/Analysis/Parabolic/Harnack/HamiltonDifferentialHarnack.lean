@@ -117,6 +117,7 @@ theorem gradientFun_add
     gradientFun (I := I) g (f + h) x = gradientFun (I := I) g f x + gradientFun (I := I) g h x := by
   simpa using (DifferentialGeometry.Geometry.Operator.gradFun_add g hf hh)
 
+omit [SigmaCompactSpace M] in
 theorem normGradSq_log_heat_evolution_identity
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}
@@ -237,9 +238,11 @@ theorem normGradSq_log_heat_evolution_identity
   have hfrob : frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g
     (fun y => f t y) b) x =
       chartHessFrobeniusSq (I := I) g (fun y => Real.log (u t y)) x := by
-    simpa [f] using (frobeniusSq_grad_vector_eq_chartHessFrobeniusSq (I := I) g hslice_ft x)
+    change frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g
+      (fun y => f t y) b) x = chartHessFrobeniusSq (I := I) g (fun y => f t y) x
+    exact frobeniusSq_grad_vector_eq_chartHessFrobeniusSq (I := I) g hslice_ft x
   rw [hfrob] at hmain
-  simpa [f, N] using hmain
+  exact hmain
 
 theorem liYauQuantity_sq_div_n_le_chartHessFrobeniusSq
     [NeZero (Module.finrank ℝ E)]
@@ -306,7 +309,17 @@ theorem hamiltonF_ricci_dissipation_of_ricci_lower_bound
   have hstep : -2 * ricciTensor (I := I) g x (gradFun (I := I) g logut x)
         (gradFun (I := I) g logut x) +
       (-(2 * K)) * g.inner x (gradFun (I := I) g logut x) (gradFun (I := I) g logut x) ≤ 0 := by
-    nlinarith [hr]
+    calc
+      -2 * ricciTensor (I := I) g x (gradFun (I := I) g logut x)
+            (gradFun (I := I) g logut x) +
+          (-(2 * K)) * g.inner x (gradFun (I := I) g logut x)
+            (gradFun (I := I) g logut x) =
+        2 * (-K * g.inner x (gradFun (I := I) g logut x)
+            (gradFun (I := I) g logut x) -
+          ricciTensor (I := I) g x (gradFun (I := I) g logut x)
+            (gradFun (I := I) g logut x)) := by ring
+      _ ≤ 2 * 0 := mul_le_mul_of_nonneg_left (sub_nonpos.mpr hr) (by norm_num)
+      _ = 0 := mul_zero 2
   have hstep' : -2 * ricciTensor (I := I) g x (gradFun (I := I) g logut x)
         (gradFun (I := I) g logut x) +
       (-(2 * K)) * g.inner x (gradientFun (I := I) g logut x) (gradientFun
@@ -588,7 +601,8 @@ theorem hamiltonF_evolution_inequality_of_ricci_lower_bound
       exact h
     have hHess' : -2 * Real.exp (c2 * s) * chartHessFrobeniusSq (I := I) g (f s) x ≤
         -2 * Real.exp (c2 * s) * ((q s x)^2 / n) := by
-      exact mul_le_mul_of_nonpos_left hHess (by nlinarith)
+      exact mul_le_mul_of_nonpos_left hHess
+        (mul_nonpos_of_nonpos_of_nonneg (by norm_num) (Real.exp_nonneg _))
     have hHess'' : -2 * Real.exp (c2 * s) * chartHessFrobeniusSq (I := I) g (f s) x ≤
         -(2 / n) * Real.exp (c2 * s) * (q s x)^2 := by
       have hrewrite : -2 * Real.exp (c2 * s) * ((q s x)^2 / n) =
@@ -601,7 +615,7 @@ theorem hamiltonF_evolution_inequality_of_ricci_lower_bound
       have h := hamiltonF_ricci_dissipation_of_ricci_lower_bound (I := I) (M := M) g hRic u
         (t := s) x
       exact h
-    nlinarith [hdrift, hHess'', hRic2]
+    nlinarith only [hdrift, hHess'', hRic2]
   have hFle_at : deriv (fun τ' : ℝ => F τ' x) s - laplacianAt (I := I) Gfam s (F s) x ≤
       -(2 / n) * Real.exp (c2 * s) * (q s x)^2 := by
     rw [hFsplit]
@@ -623,7 +637,7 @@ theorem hamilton_strict_neg_of_slab_positivity
   have hFbig : Real.exp (2 * K * s) * (n / 2) / s + eps < F := by
     have hmain : Real.exp (2 * K * s) * (n / 2) + eps * s < s * F := by linarith
     have hdiv : (Real.exp (2 * K * s) * (n / 2) + eps * s) / s < F :=
-      (div_lt_iff₀ hspos).mpr (by nlinarith [hmain])
+      (div_lt_iff₀ hspos).mpr (by nlinarith only [hmain])
     have hrewrite : (Real.exp (2 * K * s) * (n / 2) + eps * s) / s =
         Real.exp (2 * K * s) * (n / 2) / s + eps := by
       field_simp [hspos.ne']

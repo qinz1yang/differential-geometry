@@ -89,7 +89,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem rm04Data_jacobi
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -174,7 +174,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem rm04_one_le
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -238,7 +238,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem rm04_one_ge
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)

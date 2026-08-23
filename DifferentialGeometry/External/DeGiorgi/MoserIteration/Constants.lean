@@ -11,7 +11,7 @@ This module contains the anchor constants for the Chapter 06 Moser iteration.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 
@@ -24,8 +24,9 @@ noncomputable def C_MoserAnchor (d : ℕ) [NeZero d] : ℝ :=
       (8 * (Mst : ℝ) ^ 2 * (C_gns d 2) ^ 2))
 
 /-- The geometric decay ratio `q = (d-2)/d` used in the Moser iteration. -/
-noncomputable def moserDecayRatio (d : ℕ) [NeZero d] : ℝ :=
-  ((d : ℝ) - 2) / (d : ℝ)
+noncomputable def moserDecayRatio (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+  let _ := hNeZero
+  exact ((d : ℝ) - 2) / (d : ℝ)
 
 /-- Dimension-only constant `C(d)` for the basic Moser `L^p → L∞` estimate.
 

@@ -480,7 +480,7 @@ def ewkpDist
 
 theorem ewkpComplete
     [NeZero d]
-    (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ∞)
+    (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] :
     @CompleteSpace (EuclidWkpQ (d := d) k p hp Ω)
       (ewkpNormedGroup (d := d) k p hp Ω).toUniformSpace := by
@@ -515,7 +515,7 @@ theorem ewkpComplete
       exact MemWkp.sub (d := d) hp Fact.out (rep m (u m)).2 (rep n (u n)).2
     exact (ENNReal.le_ofReal_iff_toReal_le hfinite hε.le).2 hreal.le
   obtain ⟨v, hv_mem, hv⟩ := MemWkp.exists_limit_of_wkpNorm_cauchy
-    (d := d) Fact.out k p hp hp_top
+    (d := d) Fact.out k p hp
     (u := fun n => (rep n (u n)).1)
     (fun n => (rep n (u n)).2) hrep_cauchy
   let vq : EuclidWkpQ (d := d) k p hp Ω :=

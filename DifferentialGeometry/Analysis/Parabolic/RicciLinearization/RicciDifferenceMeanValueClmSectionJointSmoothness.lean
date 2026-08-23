@@ -3,12 +3,11 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature
-
 
 noncomputable section
 
@@ -22,7 +21,6 @@ namespace PDE
 namespace DeTurck
 namespace RicciLinearization
 
-open DifferentialGeometry
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -78,7 +76,6 @@ theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
     {V₂ : M → Type*} [∀ x, AddCommGroup (V₂ x)] [∀ x, Module ℝ (V₂ x)]
     [TopologicalSpace (TotalSpace F₂ V₂)] [∀ x, TopologicalSpace (V₂ x)]
     [FiberBundle F₂ V₂] [VectorBundle ℝ F₂ V₂]
-    [ContMDiffVectorBundle ∞ F₂ V₂ I]
     [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul ℝ (V₂ x)]
     (φ : ∀ p : M × ℝ, V₁ p.1 →L[ℝ] V₂ p.1)
     (h : ∀ (Y : Cₛ^∞⟮I; F₁, V₁⟯),
@@ -184,7 +181,6 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
     {V₂ : M → Type*} [∀ x, AddCommGroup (V₂ x)] [∀ x, Module ℝ (V₂ x)]
     [TopologicalSpace (TotalSpace F₂ V₂)] [∀ x, TopologicalSpace (V₂ x)]
     [FiberBundle F₂ V₂] [VectorBundle ℝ F₂ V₂]
-    [ContMDiffVectorBundle ∞ F₂ V₂ I]
     [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul ℝ (V₂ x)]
     (φ : ∀ p : M × ℝ, V₁ p.1 →L[ℝ] V₂ p.1) {S : Set ℝ}
     (h : ∀ (Y : Cₛ^∞⟮I; F₁, V₁⟯),
@@ -284,6 +280,9 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
     rw [h_lf]
     rw [Trivialization.continuousLinearMapAt_apply]
     exact congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₂) hx₂) _
+
+alias contMDiffOn_clm_section_of_pointwise_jointMR :=
+  contMDiffOn_clm_section_of_pointwise_joint_manifold_time
 
 end RicciLinearization
 end DeTurck

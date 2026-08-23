@@ -122,13 +122,13 @@ theorem zero_mem_framedExp_source (g : SmoothRiemannianMetric I M) (p : M) :
   simpa using zero_mem_expMapDiffeo_source (I := I) g p
 
 omit [NeZero (Module.finrank Real E)] in
-@[simp] theorem framedExp_zero (g : SmoothRiemannianMetric I M) (p : M) :
+theorem framedExp_zero (g : SmoothRiemannianMetric I M) (p : M) :
     framedExpDiffeo (I := I) g p (0 : E) = p := by
   rw [framedExp_apply, map_zero]
   exact expMapDiffeo_zero (I := I) g p
 
 omit [NeZero (Module.finrank Real E)] in
-@[simp] theorem framedChart_centre (g : SmoothRiemannianMetric I M) (p : M) :
+theorem framedChart_centre (g : SmoothRiemannianMetric I M) (p : M) :
     framedChartAt (I := I) g p p = (0 : E) := by
   rw [framedChart_apply, normalChartAt_centre]
   exact map_zero (normalFrame (I := I) g p).symm

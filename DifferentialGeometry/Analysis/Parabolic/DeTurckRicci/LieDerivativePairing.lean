@@ -4,7 +4,6 @@ open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open Bundle Manifold Set

@@ -18,7 +18,6 @@ namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -104,6 +103,20 @@ private lemma chartRiemannTensor_contDiffOn_interior
   rw [hrw]
   exact (hdΓ1.sub hdΓ2).add hΓΓ
 
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartRicciTensor_contDiffOn_interior
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (i k : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ ∞ (fun y => chartRicciTensor (I := I) g α i k y)
+      (interior ((extChartAt I α).target : Set E)) := by
+  classical
+  change ContDiffOn ℝ ∞
+    (fun y => ∑ j : Fin (Module.finrank ℝ E),
+      chartRiemannTensor (I := I) g α i j k j y)
+    (interior ((extChartAt I α).target : Set E))
+  refine ContDiffOn.sum (fun j _ => ?_)
+  exact chartRiemannTensor_contDiffOn_interior (I := I) g α i j k j
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -19,17 +19,15 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
-def codifferentialOfVectorField [I.Boundaryless] [T2Space M]
+def codifferentialOfVectorField
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
   fun y => -divergence_g (I := I) g X y
 
 omit [InnerProductSpace ℝ E] in
-@[simp] lemma codifferentialOfVectorField_def [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+@[simp] lemma codifferentialOfVectorField_def (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
     codifferentialOfVectorField (I := I) g X y =
       -divergence_g (I := I) g X y := rfl
@@ -46,8 +44,7 @@ theorem codifferentialOfVectorField_contMDiff [I.Boundaryless] [T2Space M]
   exact hneg
 
 omit [InnerProductSpace ℝ E] in
-theorem codifferentialOfVectorField_add [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+theorem codifferentialOfVectorField_add [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
     codifferentialOfVectorField (I := I) g (X + Y) y =
       codifferentialOfVectorField (I := I) g X y +
@@ -58,8 +55,7 @@ theorem codifferentialOfVectorField_add [I.Boundaryless] [T2Space M]
   ring
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem codifferentialOfVectorField_zero [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) (y : M) :
+theorem codifferentialOfVectorField_zero [I.Boundaryless] (g : SmoothRiemannianMetric I M) (y : M) :
     codifferentialOfVectorField (I := I) g
         (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y = 0 := by
   change -divergence_g (I := I) g
@@ -67,21 +63,18 @@ omit [InnerProductSpace ℝ E] in
   rw [divergence_g_zero (I := I) g y]
   exact neg_zero
 
-def formLaplacianScalar [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
+def formLaplacianScalar [I.Boundaryless] (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) : M → ℝ :=
   codifferentialOfVectorField (I := I) g (grad_g (I := I) g ⟨_, hf⟩)
 
 omit [InnerProductSpace ℝ E] in
-@[simp] lemma formLaplacianScalar_def [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
+@[simp] lemma formLaplacianScalar_def [I.Boundaryless] (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (y : M) :
     formLaplacianScalar (I := I) g hf y =
       codifferentialOfVectorField (I := I) g (grad_g (I := I) g ⟨_, hf⟩) y := rfl
 
 omit [InnerProductSpace ℝ E] in
-theorem formLaplacianScalar_eq_neg_Δ_g [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
+theorem formLaplacianScalar_eq_neg_Δ_g [I.Boundaryless] (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (y : M) :
     formLaplacianScalar (I := I) g hf y =
       -DifferentialGeometry.Geometry.Operator.Δ_g (I := I) g ⟨_, hf⟩ y := by
@@ -98,8 +91,7 @@ theorem formLaplacianScalar_contMDiff [I.Boundaryless] [T2Space M]
   codifferentialOfVectorField_contMDiff (I := I) g (grad_g (I := I) g ⟨_, hf⟩)
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem formLaplacianScalar_zero [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+theorem formLaplacianScalar_zero [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (h0 : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (0 : ℝ))) (y : M) :
     formLaplacianScalar (I := I) g h0 y = 0 := by
   rw [formLaplacianScalar_eq_neg_Δ_g (I := I) g h0 y]
@@ -119,8 +111,7 @@ omit [InnerProductSpace ℝ E] in
   exact neg_zero
 
 omit [InnerProductSpace ℝ E] in
-theorem formLaplacianScalar_add [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+theorem formLaplacianScalar_add [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hfh : ContMDiff I 𝓘(ℝ, ℝ) ∞ (f + h)) (y : M) :

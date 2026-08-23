@@ -47,7 +47,7 @@ noncomputable def massForce
       (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T u)
 
 noncomputable def massDuh
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
@@ -56,7 +56,7 @@ noncomputable def massDuh
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (u : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T) :
     ET (I := I) (M := M) (g := g) (r := r) (s := s) a T :=
-  maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀
+  maxRegDuhamelMap (I := I) (M := M) a hT u₀
     (massForce B hB C hC f u)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -106,7 +106,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_diff
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
@@ -114,15 +114,15 @@ theorem massDuh_diff
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (u v : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T) :
-    ‖massDuh hT hT1 B hB C hC u₀ f u -
-        massDuh hT hT1 B hB C hC u₀ f v‖ ≤
+    ‖massDuh hT B hB C hC u₀ f u -
+        massDuh hT B hB C hC u₀ f v‖ ≤
       (2 * (C : ℝ)) * ‖u - v‖ := by
   calc
-    ‖massDuh hT hT1 B hB C hC u₀ f u -
-        massDuh hT hT1 B hB C hC u₀ f v‖
+    ‖massDuh hT B hB C hC u₀ f u -
+        massDuh hT B hB C hC u₀ f v‖
         ≤ 2 * ‖massForce B hB C hC f u - massForce B hB C hC f v‖ := by
       exact maxRegDuhamelMap_dist_le (I := I) (M := M)
-        (h_compact := h_compact) (a := a) hT hT1 u₀ _ _
+        (h_compact := h_compact) (a := a) hT u₀ _ _
     _ ≤ 2 * ((C : ℝ) * ‖u - v‖) := by
       gcongr
       exact massForce_bound B hB C hC f u v
@@ -132,7 +132,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_contract
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
@@ -141,20 +141,20 @@ theorem massDuh_contract
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (hsmall : 2 * (C : ℝ) < 1) :
     ContractingWith (2 * C)
-      (massDuh hT hT1 B hB C hC u₀ f) := by
+      (massDuh hT B hB C hC u₀ f) := by
   refine ⟨?_, LipschitzWith.of_dist_le_mul ?_⟩
   · rw [← NNReal.coe_lt_coe]
     simpa using hsmall
   · intro u v
     rw [dist_eq_norm, dist_eq_norm]
     simpa only [NNReal.coe_mul, NNReal.coe_ofNat] using
-      massDuh_diff h_compact hT hT1 B hB C hC u₀ f u v
+      massDuh_diff h_compact hT B hB C hC u₀ f u v
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_exists
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
@@ -163,10 +163,10 @@ theorem massDuh_exists
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (hsmall : 2 * (C : ℝ) < 1) :
     ∃! u : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T,
-      massDuh hT hT1 B hB C hC u₀ f u = u := by
-  let Φ := massDuh hT hT1 B hB C hC u₀ f
+      massDuh hT B hB C hC u₀ f u = u := by
+  let Φ := massDuh hT B hB C hC u₀ f
   have hcontr : ContractingWith (2 * C) Φ :=
-    massDuh_contract h_compact hT hT1 B hB C hC u₀ f hsmall
+    massDuh_contract h_compact hT B hB C hC u₀ f hsmall
   let uStar := ContractingWith.fixedPoint Φ hcontr
   refine ⟨uStar, ContractingWith.fixedPoint_isFixedPt hcontr, ?_⟩
   intro v hv
@@ -174,7 +174,7 @@ theorem massDuh_exists
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_trace
-    (hT : 0 < T) (hT1 : T ≤ 1)
+    (hT : 0 < T)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
@@ -182,14 +182,14 @@ theorem massDuh_trace
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (u : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T)
-    (hu : massDuh hT hT1 B hB C hC u₀ f u = u) :
+    (hu : massDuh hT B hB C hC u₀ f u = u) :
     timeH1.trace0
         (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T u =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀ := by
   rw [← hu]
   exact maxRegDuhamelMap_trace0 (I := I) (M := M)
-    (a := a) hT hT1 u₀ (massForce B hB C hC f u)
+    (a := a) hT u₀ (massForce B hB C hC f u)
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 

@@ -19,7 +19,6 @@ namespace DeTurckCoefficients
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -36,6 +35,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramMatrix_realize_apply
     (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -51,6 +52,8 @@ theorem chartGramMatrix_realize_apply
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramOnE_realize_sub_eq_symm_rawComponent
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -130,6 +133,8 @@ theorem chartGramOnE_realize_sub_eq_symm_rawComponent
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

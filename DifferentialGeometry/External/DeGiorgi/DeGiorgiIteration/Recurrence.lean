@@ -10,8 +10,8 @@ De Giorgi iteration scales used by the final Linfty assembly layer.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal
+open MeasureTheory Filter
+open scoped NNReal
 
 namespace DeGiorgi
 

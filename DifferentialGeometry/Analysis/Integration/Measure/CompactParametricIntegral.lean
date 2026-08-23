@@ -11,7 +11,7 @@ namespace DifferentialGeometry.Integral.Measure
 theorem integral_contOn_cpt
     {P X W : Type*} [TopologicalSpace P] [FirstCountableTopology P]
     [TopologicalSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
     [SecondCountableTopologyEither X W]
     (μ : Measure X) [IsFiniteMeasure μ]
     (F : P → X → W) {K : Set P} (hK : IsCompact K)

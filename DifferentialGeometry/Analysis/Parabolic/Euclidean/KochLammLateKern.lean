@@ -22,14 +22,14 @@ def klTermMeasure (t : ℝ) : Measure (ℝ × V) :=
 def klTermKernel (t : ℝ) (x : V) (z : ℝ × V) : ℝ :=
   heatKernel (t - z.1) (x - z.2)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem klTermKernel_nonneg (t : ℝ) (x : V) (z : ℝ × V) :
     0 ≤ klTermKernel t x z := by
   unfold klTermKernel heatKernel
   exact mul_nonneg (inv_nonneg.mpr (pow_nonneg (Real.sqrt_nonneg _) _))
     (baseHeat_nonneg _)
 
-theorem klTermKernel_memLp {t : ℝ} (ht : 0 < t) (x : V) :
+theorem klTermKernel_memLp {t : ℝ} (x : V) :
     MemLp (klTermKernel t x) (ENNReal.ofReal (klQDual V))
       (klTermMeasure (V := V) t) := by
   let p : ℝ := klQDual V
@@ -53,7 +53,7 @@ theorem klTermKernel_memLp {t : ℝ} (ht : 0 < t) (x : V) :
   have hbase : Integrable
       (fun s : ℝ ↦ (t - s) ^ klHeatExp V * basePowMass V p)
       (volume.restrict (Ioc (t / 2) t)) :=
-    (klTimePow_intble (V := V) ht).1.mul_const _
+    (klTimePow_intble (V := V)).1.mul_const _
   have houterEq :
       (fun s : ℝ ↦
           ∫ y : V, ‖(heatKernel (t - s) (x - y)) ^ p‖) =ᵐ[

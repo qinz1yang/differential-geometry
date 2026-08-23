@@ -172,7 +172,7 @@ theorem gradientFun_eq_zero_of_isLocalMax
     _ = 0 := by
       simpa [writtenInExtChartAt] using hderiv_chart
 
-@[simp] theorem gradientFun_const
+theorem gradientFun_const
     (g : SmoothRiemannianMetric I M) (c : Real) (x : M) :
     gradientFun (I := I) g (fun _ : M => c) x = 0 := by
   apply gradientFun_eq_zero_of_mfderiv_eq_zero
@@ -627,7 +627,7 @@ section AlgebraicRules
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 
 omit [FiniteDimensional ℝ E] in
-@[simp] theorem divergence_zero
+theorem divergence_zero
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (x : M) :
     divergence (I := I) cov (0 : (x : M) -> TangentSpace I x) x = 0 := by
@@ -642,6 +642,7 @@ theorem divergence_add
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
     divergence (I := I) cov (X + Y) x =
       divergence (I := I) cov X x + divergence (I := I) cov Y x := by
+  let _ := _hVB
   letI := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.add hX hY]
@@ -656,6 +657,7 @@ theorem divergence_const_smul
     (hX : MDiffAt (T% X) x) :
     divergence (I := I) cov (a • X) x =
       a * divergence (I := I) cov X x := by
+  let _ := _hVB
   letI := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hX]
@@ -671,6 +673,7 @@ theorem divergence_smul
     divergence (I := I) cov (f • X) x =
       f x * divergence (I := I) cov X x +
         extDerivFun (I := I) f x (X x) := by
+  let _ := _hVB
   letI := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.leibniz hX hf]
@@ -702,7 +705,7 @@ theorem divergence_sub
   rw [map_add, map_smul]
   simp [sub_eq_add_neg]
 
-@[simp] theorem laplacian_const
+theorem laplacian_const
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) (c : Real) (x : M) :
     laplacian (I := I) cov g (fun _ : M => c) x = 0 := by

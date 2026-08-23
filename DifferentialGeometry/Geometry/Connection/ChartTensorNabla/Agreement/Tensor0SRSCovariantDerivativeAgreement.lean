@@ -78,7 +78,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem unitScalarRSLift_apply_unit {s : ℕ} (x : M) (T : Tensor0SSpace s I x) :
+theorem unitScalarRSLift_apply_unit {s : ℕ} (x : M) (T : Tensor0SSpace s I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         unitScalarRSLift (I := I) (M := M) x T)
         (unitZeroSec (I := I) (M := M) x) = T := by
@@ -102,7 +102,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem unitScalarRSLiftSection_apply_unit {s : ℕ}
+theorem unitScalarRSLiftSection_apply_unit {s : ℕ}
     (S : Π y : M, Tensor0SSpace s I y) (y : M) :
     (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from
         unitScalarRSLiftSection (I := I) (M := M) S y)

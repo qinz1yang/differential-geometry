@@ -53,7 +53,7 @@ theorem bilinForm_trace_sq_le_card_mul_frobenius_sq
         exact mul_le_mul_of_nonneg_left h_sum h_card_nonneg
 
 theorem bilinForm_trace_sq_le_dim_mul_frobenius_sq
-    {V : Type*} [AddCommGroup V] [Module ℝ V] [Module.Finite ℝ V]
+    {V : Type*} [AddCommGroup V] [Module ℝ V]
     (B : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (b : Module.Basis (Fin (Module.finrank ℝ V)) ℝ V) :
     (∑ i : Fin (Module.finrank ℝ V), B (b i) (b i))^2 ≤
       (Module.finrank ℝ V : ℝ) *
@@ -507,7 +507,7 @@ theorem chartHess_trace_sq_le_dim_mul_frobenius_sq
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacian_sq_le_dim_mul_frobenius_sq_of_trace_eq
-    [I.Boundaryless] [T2Space M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
@@ -524,8 +524,7 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_of_trace_eq
   exact hbound
 
 theorem laplacian_sq_div_dim_le_frobenius_sq_of_trace_eq
-    [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M)
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
         Δ_g (I := I) g ⟨_, hf⟩ x) :

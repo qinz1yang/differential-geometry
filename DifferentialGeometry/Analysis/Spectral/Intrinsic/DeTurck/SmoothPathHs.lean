@@ -11,7 +11,6 @@ open Bundle Manifold Set Filter MeasureTheory DifferentialGeometry.Tensor0SBundl
 open scoped Manifold Topology ContDiff ENNReal BigOperators RealInnerProductSpace InnerProductSpace
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 
@@ -63,13 +62,13 @@ private theorem oneCc_apply (g : SmoothRiemannianMetric I M)
   rw [Tensor0SField.toRS0_apply, rankZero_one (I := I) (M := M)]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-private theorem appCc_one (g : SmoothRiemannianMetric I M) (c : ℕ)
+private theorem operatorFieldApplication_one (g : SmoothRiemannianMetric I M) (c : ℕ)
     (Phi : SmoothCcTensor g 0 c) :
     operatorFieldApply (I := I) (M := M) g 0 c Phi (oneCc (I := I) (M := M) g) = Phi := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [appCc_toSection]
+  rw [operatorFieldApplication_toSection]
   apply ContinuousLinearMap.ext
   intro A
   rw [ContinuousLinearMap.comp_apply, oneCc_apply (I := I) (M := M)]
@@ -101,7 +100,7 @@ theorem smoothHs_path_cd
       (fun t => appHs g 0 2 n (Phi t) U) =
         fun t => smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi t) := by
     funext t
-    rw [appHs_core, appCc_one (I := I) (M := M), ccHs_eq_smoothHs]
+    rw [appHs_core, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
   rwa [hpath] at h
 
 theorem smoothHs_deriv
@@ -141,10 +140,10 @@ theorem smoothHs_deriv
       (fun tau => appHs g 0 2 n (Phi tau) U) =
         fun tau => smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi tau) := by
     funext tau
-    rw [appHs_core, appCc_one (I := I) (M := M), ccHs_eq_smoothHs]
+    rw [appHs_core, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
   have hdval : appHs g 0 2 n (dPhi t) U =
       smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (dPhi t) := by
-    rw [appHs_core, appCc_one (I := I) (M := M), ccHs_eq_smoothHs]
+    rw [appHs_core, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
   rwa [hpath, hdval] at happ
 
 end DifferentialGeometry.Analysis.Spectral

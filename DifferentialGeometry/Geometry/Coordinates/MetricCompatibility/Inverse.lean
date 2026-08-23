@@ -18,7 +18,6 @@ namespace DifferentialGeometry.Tensor.Coordinates
 noncomputable section
 
 open Bundle
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators Topology
 
@@ -235,7 +234,6 @@ theorem metricFlatModelInChart_center_isInvertible
 
 omit [FiniteDimensional ℝ E] in
 theorem metricFlatModelInChart_contDiffWithinAt
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
     ContDiffWithinAt Real ∞
       (metricFlatModelInChart (I := I) g x₀)

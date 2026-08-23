@@ -9,7 +9,7 @@ Public Holder estimates obtained from the representative construction.
 
 noncomputable section
 
-open MeasureTheory Filter
+open MeasureTheory
 
 namespace DeGiorgi
 

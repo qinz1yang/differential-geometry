@@ -37,7 +37,7 @@ theorem smooth_representative_of_memWkpChart_forall
     (h_iterated_regularity :
       ∀ k : ℕ,
         DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-          (I := I) (M := M) g (2 * k) 2
+          (I := I) (M := M) (2 * k) 2
           (u : M → ℝ)) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) ∞ u_smooth ∧
@@ -102,7 +102,7 @@ theorem smooth_representative_of_memWkpChart_forall
       (I := I) (M := M) α).measurableSet
   have h_pushed_aeEq :
       DifferentialGeometry.Analysis.Sobolev.Chart.ChartPushedAEEq
-        (I := I) (M := M) g
+        (I := I) (M := M)
         (u : M → ℝ)
         u_meas := by
     intro α
@@ -133,10 +133,10 @@ theorem smooth_representative_of_memWkpChart_forall
     rw [h_eq]
   have h_iter_meas : ∀ k : ℕ,
       DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-        (I := I) (M := M) g (2 * k) 2 u_meas := by
+        (I := I) (M := M) (2 * k) 2 u_meas := by
     intro k
     exact (DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart_congr_chartPushed_ae
-      (I := I) (M := M) g (k := 2 * k) (p := 2)
+      (I := I) (M := M) (k := 2 * k) (p := 2)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_pushed_aeEq).mp
       (h_iterated_regularity k)
   obtain ⟨u_smooth, h_smooth, h_smooth_ae_meas⟩ :=
@@ -152,7 +152,7 @@ theorem heatSemigroup_smooth_representative
     (h_iterated_regularity :
       ∀ k : ℕ,
         DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-          (I := I) (M := M) g (2 * k) 2
+          (I := I) (M := M) (2 * k) 2
           ((heatSemigroup (I := I) (M := M) g t u_0 :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     ∃ u_smooth : M → ℝ,
@@ -186,13 +186,13 @@ theorem heatSemigroup_contMDiff_in_time
   have h_eval_smooth : ContDiff ℝ ∞ evalAt := evalAt.contDiff
   exact h_eval_smooth.contDiffOn.comp h_op (Set.mapsTo_univ _ _)
 
-theorem heatSemigroup_smooth_in_space_and_time
+theorem heatSemigroup_smooth_in_space_and_time_of_iterated_regularity
     (g : SmoothRiemannianMetric I M)
     (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (h_iterated_regularity_uniform :
       ∀ t : ℝ, 0 < t → ∀ k : ℕ,
         DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-          (I := I) (M := M) g (2 * k) 2
+          (I := I) (M := M) (2 * k) 2
           ((heatSemigroup (I := I) (M := M) g t u_0 :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     (∀ t : ℝ, 0 < t →

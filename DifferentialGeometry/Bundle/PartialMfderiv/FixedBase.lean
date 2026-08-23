@@ -25,7 +25,7 @@ theorem extDerivFun_comp_diffeomorph
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M N : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ M]
+    [TopologicalSpace N] [ChartedSpace H N]
     (f : N -> Real) (Phi : M ≃ₘ⟮I, I⟯ N) (x : M)
     (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f (Phi x)) :

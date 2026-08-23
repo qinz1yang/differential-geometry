@@ -27,7 +27,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 local notation "EuclN_E" =>
@@ -1256,12 +1255,11 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
-        wkpNormChart (I := I) (M := M) g 1 p u ≤
+        wkpNormChart (I := I) (M := M) 1 p u ≤
           ENNReal.ofReal C *
             (eLpNorm u p
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
@@ -1286,7 +1284,7 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
       (wkpNorm_chartPushed_le_const_mul_per_α (I := I) (M := M) g α hp_one hp_top)).1
   refine ⟨∑ α ∈ S, Cα α, Finset.sum_nonneg (fun α _ => hCα_nn α), ?_⟩
   intro u hu
-  have h_def : wkpNormChart (I := I) (M := M) g 1 p u =
+  have h_def : wkpNormChart (I := I) (M := M) 1 p u =
       ∑' α : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 p

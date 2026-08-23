@@ -99,7 +99,7 @@ omit [NeZero d] in
 theorem eLpNorm_kdi_partial_le_of_uniform_diffQuot
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     {Ω'' : Set E}
-    (i k : Fin d) {M : ℝ} (_hM_nn : 0 ≤ M)
+    (i k : Fin d) {M : ℝ}
     (h_uniform_bound : ∀ h : ℝ, 0 < |h| → |h| ≤ 1 →
       eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)))

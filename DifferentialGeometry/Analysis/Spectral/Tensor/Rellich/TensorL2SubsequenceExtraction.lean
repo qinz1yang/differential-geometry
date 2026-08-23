@@ -214,7 +214,7 @@ private lemma cauchySeq_tensorL2_of_componentBounded
     (hu_bdd : ∀ (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
@@ -383,7 +383,7 @@ theorem tensorH1Compl_to_tensorL2_relatively_compact
     (hu_bdd : ∀ (α : M)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
-      wkpNormChart (I := I) (M := M) g 1 2
+      wkpNormChart (I := I) (M := M) 1 2
           (tensorChartComponentScalar (I := I) (M := M)
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :

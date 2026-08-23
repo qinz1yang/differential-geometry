@@ -1,12 +1,11 @@
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.Cartan.Formula
+import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.VectorFieldSmooth
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
+import DifferentialGeometry.Geometry.Metric.DeTurck.Smoothness
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
@@ -19,7 +18,6 @@ namespace DifferentialGeometry.Analysis.Parabolic
 
 open Bundle
 open scoped Manifold ContDiff
-open DifferentialGeometry
 open DifferentialGeometry.PDE
 
 open DifferentialGeometry.Integral.Measure

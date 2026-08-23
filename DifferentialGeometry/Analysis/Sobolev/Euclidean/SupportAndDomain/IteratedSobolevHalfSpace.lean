@@ -387,7 +387,7 @@ theorem fderiv_isWeakPartialDeriv_of_smooth_interiorHalfSpace [NeZero d]
     hu_smooth
 
 theorem fderiv_memLp_of_smooth_compactSupport
-    {p : ℝ≥0∞} {Ω : Set E} (_hΩ : IsHalfSpaceRelOpen (d := d) Ω)
+    {p : ℝ≥0∞} {Ω : Set E}
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
     (hu_supp : HasCompactSupport u) (i : Fin d) :
     MemLp (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) p
@@ -407,7 +407,7 @@ theorem fderiv_memLp_of_smooth_compactSupport
   exact h_global.restrict (interiorHalfSpace Ω)
 
 theorem memLp_of_smooth_compactSupport
-    {p : ℝ≥0∞} {Ω : Set E} (_hΩ : IsHalfSpaceRelOpen (d := d) Ω)
+    {p : ℝ≥0∞} {Ω : Set E}
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
     (hu_supp : HasCompactSupport u) :
     MemLp u p ((volume : Measure E).restrict (interiorHalfSpace Ω)) := by
@@ -420,10 +420,10 @@ theorem memW1p_of_smooth_compactSupport_interiorHalfSpace
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
     (hu_supp : HasCompactSupport u) :
     DeGiorgi.MemW1p p u (interiorHalfSpace Ω) := by
-  refine ⟨memLp_of_smooth_compactSupport hΩ hu_smooth hu_supp, ?_⟩
+  refine ⟨memLp_of_smooth_compactSupport hu_smooth hu_supp, ?_⟩
   intro i
   refine ⟨fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1),
-    fderiv_memLp_of_smooth_compactSupport hΩ hu_smooth hu_supp i, ?_⟩
+    fderiv_memLp_of_smooth_compactSupport hu_smooth hu_supp i, ?_⟩
   exact fderiv_isWeakPartialDeriv_of_smooth_interiorHalfSpace hΩ
     (hu_smooth.of_le (by norm_cast)) i
 
@@ -453,7 +453,7 @@ theorem range_modelWithCornersEuclideanHalfSpace_eq_closedHalfSpace :
 theorem extChartAt_target_isHalfSpaceRelOpen
     {M : Type*} [TopologicalSpace M]
     [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M] (α : M) :
+    (α : M) :
     IsHalfSpaceRelOpen (d := n)
       (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target := by
   refine ⟨(modelWithCornersEuclideanHalfSpace n).symm ⁻¹'

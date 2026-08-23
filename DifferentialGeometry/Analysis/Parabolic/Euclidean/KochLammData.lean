@@ -36,19 +36,19 @@ variable {F G : Type*}
   [Fact (1 ≤ klQ V)] [Fact (klQ V ≠ ∞)]
 
 abbrev KLL2Data (T : ℝ) (G : Type*)
-    [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G] :=
+    [NormedAddCommGroup G] :=
   lp (fun i : KLCylIndex V T ↦ Lp G 2 (klCylMeasure i)) ∞
 
 abbrev KLLpData (T : ℝ) (G : Type*)
-    [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G] :=
+    [NormedAddCommGroup G] :=
   lp (fun i : KLCylIndex V T ↦ Lp G (klP V) (klLateMeasure i)) ∞
 
 abbrev KLL1Data (T : ℝ) (F : Type*)
-    [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F] :=
+    [NormedAddCommGroup F] :=
   lp (fun i : KLCylIndex V T ↦ Lp F 1 (klCylMeasure i)) ∞
 
 abbrev KLLqData (T : ℝ) (F : Type*)
-    [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F] :=
+    [NormedAddCommGroup F] :=
   lp (fun i : KLCylIndex V T ↦ Lp F (klQ V) (klLateMeasure i)) ∞
 
 abbrev KLPathData (T : ℝ) :=
@@ -63,18 +63,19 @@ abbrev KLSrc1Data (T : ℝ) :=
 
 section Complete
 
-omit [NormedSpace ℝ F] [Fact (klP V ≠ ∞)] [Fact (1 ≤ klQ V)]
+omit [NormedSpace ℝ F] [NormedSpace ℝ G] [Fact (klP V ≠ ∞)] [Fact (1 ≤ klQ V)]
   [Fact (klQ V ≠ ∞)] in
 theorem klPathData_complete (T : ℝ) :
     CompleteSpace (KLPathData (V := V) (F := F) (G := G) T) := by
   infer_instance
 
-omit [Fact (1 ≤ klP V)] [Fact (klP V ≠ ∞)] [Fact (klQ V ≠ ∞)] in
+omit [NormedSpace ℝ F] [NormedSpace ℝ G] [Fact (1 ≤ klP V)] [Fact (klP V ≠ ∞)]
+  [Fact (klQ V ≠ ∞)] in
 theorem klSrc0Data_complete (T : ℝ) :
     CompleteSpace (KLSrc0Data (V := V) (F := F) T) := by
   infer_instance
 
-omit [Fact (klP V ≠ ∞)] [Fact (1 ≤ klQ V)] [Fact (klQ V ≠ ∞)] in
+omit [NormedSpace ℝ F] [Fact (klP V ≠ ∞)] [Fact (1 ≤ klQ V)] [Fact (klQ V ≠ ∞)] in
 theorem klSrc1Data_complete (T : ℝ) :
     CompleteSpace (KLSrc1Data (V := V) (F := F) T) := by
   infer_instance

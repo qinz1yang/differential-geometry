@@ -141,7 +141,7 @@ theorem tensorRSChartFiberFromModel_apply_at (r s : ℕ) (α : M) {b : M}
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem tensor0SChartE_section_repr_tensorPartialEval_eq_tensorRS_repr_apply
     (r s : ℕ) (α : M) (T : Π b' : M, TensorRSSpace r s I b')
-    {b : M} (_hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    {b : M}
     (α_input : Tensor0SSpace r I b)
     {b' : M} (hb' : b' ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     tensor0SChartE_section_repr (I := I) s α
@@ -206,7 +206,7 @@ theorem tensorPartialEval_chartPullback_eventually_eq_evalAt_chartPullback
   rw [Function.comp_apply, Function.comp_apply]
   rw [tensorRSEvalAtCLM_apply]
   exact tensor0SChartE_section_repr_tensorPartialEval_eq_tensorRS_repr_apply
-    (I := I) r s α T (b := b) hb_base α_input (b' := φ.symm y) hyBase
+    (I := I) r s α T (b := b) α_input (b' := φ.symm y) hyBase
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem fderiv_tensorPartialEval_chartPullback_eq_comp_evalAt

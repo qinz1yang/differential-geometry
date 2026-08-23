@@ -25,7 +25,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor0SBundle
 
 private noncomputable def chartFrameNormFiber
     (g : SmoothRiemannianMetric I M) (α : M) (b : M)
@@ -742,8 +742,6 @@ theorem bochner_identity_smoothOrthoFrame_of_inner_form [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (x : M)
-    (hSmooth : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (smoothOrthoFrame (I := I) g x i)))
     (hInner : ∀ w : TangentSpace I x,
       g.inner x (localConnLap_vector (LeviCivita (I := I) g)
                   (smoothOrthoFrame (I := I) g x)
@@ -755,7 +753,7 @@ theorem bochner_identity_smoothOrthoFrame_of_inner_form [I.Boundaryless]
       gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   localConnLap_vector_eq_bochnerFormula_of_inner_form (I := I) g hf
-    (smoothOrthoFrame (I := I) g x) hSmooth x hInner
+    (smoothOrthoFrame (I := I) g x) x hInner
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem smoothOrthoFrame_orthonormal_at_center
@@ -1192,6 +1190,7 @@ theorem smoothOrtho_localOne
   contMDiffOn i := (smoothOrtho_local (I := I) g α).contMDiffOn i |>.of_le (by simp)
 
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem heart_of_bochner_smoothOrthoFrame [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
@@ -1207,7 +1206,571 @@ theorem heart_of_bochner_smoothOrthoFrame [I.Boundaryless]
       gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   bochner_identity_smoothOrthoFrame_of_inner_form (I := I) g hf x
-    (fun i => smoothOrthoFrame_smooth (I := I) g x i) hInner
+    hInner
+
+omit [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)]
+    [BoundarylessManifold I M] in
+lemma smoothOrthoOpen_subset_baseSet (α : M) :
+    smoothOrthoOpen (I := I) (M := M) α ⊆
+      (trivializationAt E (TangentSpace I) α).baseSet := by
+  exact fun b hb =>
+    smoothOrthoFrameNbhd_subset_baseSet (I := I) (M := M) α (interior_subset hb)
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
+private lemma continuousOn_section_iff_coord
+    {α : M} {s : Set (ℝ × M)}
+    (hs : ∀ q : ℝ × M, q ∈ s →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (v : (q : ℝ × M) → TangentSpace I q.2) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q)) s ↔
+      ContinuousOn (fun q : ℝ × M =>
+        ((trivializationAt E (TangentSpace I) α) ⟨q.2, v q⟩).2) s := by
+  classical
+  let e := trivializationAt E (TangentSpace I) α
+  let f : (q : ℝ × M) → TotalSpace E (fun x : M => TangentSpace I x) :=
+    fun q => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q)
+  have hsrc : ∀ q : ℝ × M, q ∈ s → f q ∈ e.source := by
+    intro q hq
+    rw [e.mem_source]
+    exact hs q hq
+  constructor
+  · intro hf
+    have hcomp : ContinuousOn (fun q : ℝ × M => e (f q)) s :=
+      e.continuousOn.comp hf hsrc
+    have hproj : ContinuousOn (fun q : ℝ × M => (e (f q)).2) s :=
+      continuous_snd.comp_continuousOn hcomp
+    refine hproj.congr ?_
+    intro q hq
+    rfl
+  · intro hc
+    have hpair : ContinuousOn (fun q : ℝ × M =>
+        (q.2, ((trivializationAt E (TangentSpace I) α) ⟨q.2, v q⟩).2)) s :=
+      (continuous_snd.continuousOn).prodMk hc
+    have hmaps : Set.MapsTo (fun q : ℝ × M =>
+        (q.2, ((trivializationAt E (TangentSpace I) α) ⟨q.2, v q⟩).2)) s
+        (e.baseSet ×ˢ (Set.univ : Set E)) := by
+      intro q hq
+      exact ⟨hs q hq, trivial⟩
+    have hsec : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q)) s := by
+      have hcomp := e.continuousOn_symm.comp hpair hmaps
+      refine hcomp.congr ?_
+      intro q hq
+      simpa using (e.symm_apply_apply_mk (hs q hq) (v q)).symm
+    exact hsec
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
+theorem continuousOn_tangentSection_smul
+    {α : M} {s : Set (ℝ × M)}
+    (hs : ∀ q : ℝ × M, q ∈ s →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (f : ℝ × M → ℝ) (hf : ContinuousOn f s)
+    (v : (q : ℝ × M) → TangentSpace I q.2)
+    (hv : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q)) s) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (f q • v q)) s := by
+  classical
+  let e := trivializationAt E (TangentSpace I) α
+  apply (continuousOn_section_iff_coord (α := α) hs (fun q => f q • v q)).mpr
+  have hc : ContinuousOn (fun q : ℝ × M => (e ⟨q.2, v q⟩).2) s :=
+    (continuousOn_section_iff_coord (α := α) hs v).mp hv
+  refine (hf.smul hc).congr ?_
+  intro q hq
+  have hb : q.2 ∈ e.baseSet := hs q hq
+  exact (e.linearEquivAt ℝ q.2 hb).map_smul (f q) (v q)
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
+private lemma continuousOn_section_add
+    {α : M} {s : Set (ℝ × M)}
+    (hs : ∀ q : ℝ × M, q ∈ s →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (v w : (q : ℝ × M) → TangentSpace I q.2)
+    (hv : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q)) s)
+    (hw : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (w q)) s) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q + w q)) s := by
+  classical
+  let e := trivializationAt E (TangentSpace I) α
+  apply (continuousOn_section_iff_coord (α := α) hs (fun q => v q + w q)).mpr
+  have hcv : ContinuousOn (fun q : ℝ × M => (e ⟨q.2, v q⟩).2) s :=
+    (continuousOn_section_iff_coord (α := α) hs v).mp hv
+  have hcw : ContinuousOn (fun q : ℝ × M => (e ⟨q.2, w q⟩).2) s :=
+    (continuousOn_section_iff_coord (α := α) hs w).mp hw
+  refine (hcv.add hcw).congr ?_
+  intro q hq
+  have hb : q.2 ∈ e.baseSet := hs q hq
+  exact (e.linearEquivAt ℝ q.2 hb).map_add (v q) (w q)
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
+private lemma continuousOn_section_sub
+    {α : M} {s : Set (ℝ × M)}
+    (hs : ∀ q : ℝ × M, q ∈ s →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (v w : (q : ℝ × M) → TangentSpace I q.2)
+    (hv : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q)) s)
+    (hw : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (w q)) s) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v q - w q)) s := by
+  classical
+  let e := trivializationAt E (TangentSpace I) α
+  apply (continuousOn_section_iff_coord (α := α) hs (fun q => v q - w q)).mpr
+  have hcv : ContinuousOn (fun q : ℝ × M => (e ⟨q.2, v q⟩).2) s :=
+    (continuousOn_section_iff_coord (α := α) hs v).mp hv
+  have hcw : ContinuousOn (fun q : ℝ × M => (e ⟨q.2, w q⟩).2) s :=
+    (continuousOn_section_iff_coord (α := α) hs w).mp hw
+  refine (hcv.sub hcw).congr ?_
+  intro q hq
+  have hb : q.2 ∈ e.baseSet := hs q hq
+  exact (e.linearEquivAt ℝ q.2 hb).map_sub (v q) (w q)
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
+theorem continuousOn_tangentSection_sum
+    {α : M} {s : Set (ℝ × M)}
+    (hs : ∀ q : ℝ × M, q ∈ s →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    {ι : Type*} (t : Finset ι)
+    (v : ι → (q : ℝ × M) → TangentSpace I q.2)
+    (hv : ∀ i ∈ t, ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (v i q)) s) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+          (∑ i ∈ t, v i q)) s := by
+  classical
+  induction t using Finset.induction_on with
+  | empty =>
+    apply (continuousOn_section_iff_coord (α := α) hs
+      (fun q => (∑ i ∈ (∅ : Finset ι), v i q))).mpr
+    have hconst : ContinuousOn (fun q : ℝ × M => (0 : E)) s := by fun_prop
+    refine hconst.congr ?_
+    intro q hq
+    change ((trivializationAt E (TangentSpace I) α) ⟨q.2, (0 : TangentSpace I q.2)⟩).2 = 0
+    have hb : q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet := hs q hq
+    have hlin : TangentSpace I q.2 ≃ₗ[ℝ] E :=
+      (trivializationAt E (TangentSpace I) α).linearEquivAt ℝ q.2 hb
+    change (trivializationAt E (TangentSpace I) α).linearEquivAt ℝ q.2 hb 0 = 0
+    exact map_zero _
+  | @insert a t hat ih =>
+    have hmain : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+          (v a q + ∑ i ∈ t, v i q)) s := by
+      exact continuousOn_section_add (I := I) hs
+        (v a) (fun q => ∑ i ∈ t, v i q)
+        (hv a (by simp))
+        (ih (fun i hi => hv i (by simp [hi])))
+    refine hmain.congr ?_
+    intro q hq
+    simp [Finset.sum_insert hat]
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
+private lemma metricInner_continuousOn_family
+    {K : Set ℝ}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+      (fun t x => metricTensorField (I := I) (g t) x))
+    {U : Set M}
+    (X Y : (q : ℝ × M) → TangentSpace I q.2)
+    (hX : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (X q))
+      (K ×ˢ U))
+    (hY : ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (Y q))
+      (K ×ˢ U)) :
+    ContinuousOn (fun q : ℝ × M => (g q.1).inner q.2 (X q) (Y q))
+      (K ×ˢ U) := by
+  classical
+  rw [continuousOn_iff_continuous_restrict]
+  let P := {q : ℝ × M // q.1 ∈ K ∧ q.2 ∈ U}
+  have heval := tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 2)
+    (K := K) (A := fun t x => metricTensorField (I := I) (g t) x) hG
+    (P := P) (τ := fun p : P => p.1.1) (b := fun p : P => p.1.2)
+    (continuous_fst.comp continuous_subtype_val) (fun p : P => p.2.1)
+    (continuous_snd.comp continuous_subtype_val)
+    (v := fun a : Fin 2 => fun p : P => if a = 0 then X p.1 else Y p.1)
+    (by
+      intro a
+      fin_cases a
+      · simpa using (continuousOn_iff_continuous_restrict.mp hX)
+      · simpa using (continuousOn_iff_continuous_restrict.mp hY))
+  refine heval.congr (fun p => ?_)
+  change metricTensorField (I := I) (g p.1.1) p.1.2
+      (fun i : Fin 2 => if i = 0 then X p.1 else Y p.1) =
+    (g p.1.1).inner p.1.2 (X p.1) (Y p.1)
+  rw [metricTensorField_apply]
+  simp
+
+omit [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)]
+    [BoundarylessManifold I M] in
+private lemma chartBasisVec_section_continuousOn_param
+    (α : M) (i : Fin (Module.finrank ℝ E)) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+          (chartBasisVecFiber (I := I) α i q.2))
+      (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
+  have hc := (chartBasisVec_contMDiffOn (I := I) α i).continuousOn
+  have hmap : ContinuousOn (fun q : ℝ × M => q.2)
+      (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+    continuous_snd.continuousOn
+  have hmaps : Set.MapsTo (fun q : ℝ × M => q.2)
+      (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)
+      (trivializationAt E (TangentSpace I) α).baseSet := by
+    intro q hq
+    exact hq.2
+  simpa [chartBasisVec] using hc.comp hmap hmaps
+
+omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
+    {K : Set ℝ}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+      (fun t x => metricTensorField (I := I) (g t) x))
+    (α : M) :
+    ∀ k : ℕ, ∀ i : Fin (Module.finrank ℝ E), i.val ≤ k →
+      ContinuousOn (fun q : ℝ × M =>
+          TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+            (chartFrameRawFiber (g q.1) α q.2 i))
+        (K ×ˢ smoothOrthoOpen (I := I) (M := M) α) ∧
+      ContinuousOn (fun q : ℝ × M =>
+          TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+            (chartFrameNormFiber (g q.1) α q.2 i))
+        (K ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+  classical
+  let U : Set M := smoothOrthoOpen (I := I) (M := M) α
+  have hU_base : ∀ q : ℝ × M,
+      q ∈ K ×ˢ U →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    intro q hq
+    exact smoothOrthoOpen_subset_baseSet (I := I) (M := M) α hq.2
+  have hbasis : ∀ i : Fin (Module.finrank ℝ E),
+      ContinuousOn (fun q : ℝ × M =>
+          TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+            (chartBasisVecFiber (I := I) α i q.2))
+        (K ×ˢ U) := by
+    intro i
+    exact (chartBasisVec_section_continuousOn_param (I := I) α i).mono (by
+      intro q hq
+      exact ⟨trivial, hU_base q hq⟩)
+  intro k
+  induction k with
+  | zero =>
+    intro i hi
+    have hi_val : i.val = 0 := Nat.le_zero.mp hi
+    have hi_eq : i = ⟨0, NeZero.pos _⟩ := Fin.ext hi_val
+    subst hi_eq
+    refine ⟨?_, ?_⟩
+    · have hsec_eq : ∀ q : ℝ × M,
+          chartFrameRawFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩ =
+            chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 :=
+        fun q => chartFrameRawFiber_at_zero (I := I) (g q.1) α q.2
+      have hT_eq : (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartFrameRawFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩)) =
+          (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) := by
+        funext q; rw [hsec_eq q]
+      rw [hT_eq]
+      exact hbasis ⟨0, NeZero.pos _⟩
+    · have hsec_eq : ∀ q : ℝ × M,
+          chartFrameNormFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩ =
+            (Real.sqrt ((g q.1).inner q.2
+                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
+              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 :=
+        fun q => chartFrameNormFiber_at_zero (I := I) (g q.1) α q.2
+      have hv : ContinuousOn (fun q : ℝ × M =>
+          TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
+          (K ×ˢ U) := hbasis ⟨0, NeZero.pos _⟩
+      have h_inner : ContinuousOn (fun q : ℝ × M =>
+          (g q.1).inner q.2
+            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
+          (K ×ˢ U) := by
+        exact metricInner_continuousOn_family (I := I) (M := M) g hG
+          (fun q => chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+          (fun q => chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) hv hv
+      have h_inner_pos : ∀ q : ℝ × M,
+          q ∈ K ×ˢ U →
+          0 < (g q.1).inner q.2
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) := by
+        intro q hq
+        have hLI := chartBasisFamily_linearIndependent (I := I) α (hU_base q hq)
+        have hv_ne_zero : chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 ≠ 0 :=
+          hLI.ne_zero ⟨0, NeZero.pos _⟩
+        exact (g q.1).pos q.2 _ hv_ne_zero
+      have h_sqrt : ContinuousOn (fun q : ℝ × M =>
+          Real.sqrt ((g q.1).inner q.2
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))
+          (K ×ˢ U) := h_inner.sqrt
+      have h_sqrt_ne : ∀ q : ℝ × M, q ∈ K ×ˢ U →
+          Real.sqrt ((g q.1).inner q.2
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) ≠ 0 := by
+        intro q hq
+        have := h_inner_pos q hq
+        exact ne_of_gt (Real.sqrt_pos.mpr this)
+      have h_inv : ContinuousOn (fun q : ℝ × M =>
+          (Real.sqrt ((g q.1).inner q.2
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹)
+          (K ×ˢ U) := h_sqrt.inv₀ h_sqrt_ne
+      have h_smul : ContinuousOn (fun q : ℝ × M =>
+          TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+            ((Real.sqrt ((g q.1).inner q.2
+                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
+              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
+          (K ×ˢ U) := continuousOn_tangentSection_smul (I := I) hU_base
+            (fun q : ℝ × M => (Real.sqrt ((g q.1).inner q.2
+                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹) h_inv
+            (fun q => chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) hv
+      have hT_eq : (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartFrameNormFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩)) =
+          (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              ((Real.sqrt ((g q.1).inner q.2
+                  (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                  (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
+                chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) := by
+        funext q; rw [hsec_eq q]
+      rw [hT_eq]
+      exact h_smul
+  | succ k ih =>
+    intro i hi
+    by_cases hcase : i.val ≤ k
+    · exact ih i hcase
+    · have ih_below : ∀ j : Fin (Module.finrank ℝ E), j.val < i.val →
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartFrameNormFiber (g q.1) α q.2 j))
+            (K ×ˢ U) := by
+        intro j hj
+        have hj_le_k : j.val ≤ k := by omega
+        exact (ih j hj_le_k).2
+      have hbase_i := hbasis i
+      have h_j'_small_section : ∀ j' : Fin i.val,
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartFrameNormFiber (g q.1) α q.2
+                ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
+            (K ×ˢ U) := by
+        intro j'
+        exact ih_below ⟨j'.val, lt_trans j'.isLt i.isLt⟩ j'.isLt
+      have h_innerCoef : ∀ j' : Fin i.val,
+          ContinuousOn (fun q : ℝ × M =>
+            (g q.1).inner q.2
+              (chartBasisVecFiber (I := I) α i q.2)
+              (chartFrameNormFiber (g q.1) α q.2
+                ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
+            (K ×ˢ U) := by
+        intro j'
+        exact metricInner_continuousOn_family (I := I) (M := M) g hG
+          (fun q => chartBasisVecFiber (I := I) α i q.2)
+          (fun q => chartFrameNormFiber (g q.1) α q.2
+            ⟨j'.val, lt_trans j'.isLt i.isLt⟩)
+          hbase_i (h_j'_small_section j')
+      have h_summand : ∀ j' ∈ (Finset.univ : Finset (Fin i.val)),
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              ((g q.1).inner q.2
+                (chartBasisVecFiber (I := I) α i q.2)
+                (chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
+            (K ×ˢ U) := by
+        intro j' _
+        exact continuousOn_tangentSection_smul (I := I) hU_base
+          (fun q : ℝ × M => (g q.1).inner q.2
+            (chartBasisVecFiber (I := I) α i q.2)
+            (chartFrameNormFiber (g q.1) α q.2
+              ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
+          (h_innerCoef j')
+          (fun q => chartFrameNormFiber (g q.1) α q.2
+            ⟨j'.val, lt_trans j'.isLt i.isLt⟩)
+          (h_j'_small_section j')
+      have h_sum :
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (∑ j' : Fin i.val,
+                (g q.1).inner q.2
+                  (chartBasisVecFiber (I := I) α i q.2)
+                  (chartFrameNormFiber (g q.1) α q.2
+                    ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
+            (K ×ˢ U) := continuousOn_tangentSection_sum (I := I) hU_base
+              (Finset.univ : Finset (Fin i.val))
+              (fun j' q => (g q.1).inner q.2
+                (chartBasisVecFiber (I := I) α i q.2)
+                (chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩)
+              h_summand
+      have h_raw : ContinuousOn (fun q : ℝ × M =>
+          TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+            (chartBasisVecFiber (I := I) α i q.2 -
+              ∑ j' : Fin i.val,
+                (g q.1).inner q.2
+                  (chartBasisVecFiber (I := I) α i q.2)
+                  (chartFrameNormFiber (g q.1) α q.2
+                    ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
+          (K ×ˢ U) :=
+        continuousOn_section_sub (I := I) hU_base
+          (fun q => chartBasisVecFiber (I := I) α i q.2)
+          (fun q => ∑ j' : Fin i.val,
+                (g q.1).inner q.2
+                  (chartBasisVecFiber (I := I) α i q.2)
+                  (chartFrameNormFiber (g q.1) α q.2
+                    ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩)
+          hbase_i h_sum
+      have h_raw_eq : ∀ q : ℝ × M,
+          chartFrameRawFiber (g q.1) α q.2 i =
+            chartBasisVecFiber (I := I) α i q.2 -
+              ∑ j' : Fin i.val,
+                (g q.1).inner q.2
+                  (chartBasisVecFiber (I := I) α i q.2)
+                  (chartFrameNormFiber (g q.1) α q.2
+                    ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                chartFrameNormFiber (g q.1) α q.2
+                  ⟨j'.val, lt_trans j'.isLt i.isLt⟩ := fun q => by
+        unfold chartFrameRawFiber; rfl
+      have h_raw_section :
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartFrameRawFiber (g q.1) α q.2 i))
+            (K ×ˢ U) := by
+        have hT_eq : (fun q : ℝ × M =>
+              TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+                (chartFrameRawFiber (g q.1) α q.2 i)) =
+            (fun q : ℝ × M =>
+              TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+                (chartBasisVecFiber (I := I) α i q.2 -
+                  ∑ j' : Fin i.val,
+                    (g q.1).inner q.2
+                      (chartBasisVecFiber (I := I) α i q.2)
+                      (chartFrameNormFiber (g q.1) α q.2
+                        ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
+                    chartFrameNormFiber (g q.1) α q.2
+                      ⟨j'.val, lt_trans j'.isLt i.isLt⟩)) := by
+          funext q; rw [h_raw_eq q]
+        rw [hT_eq]
+        exact h_raw
+      have h_inner_raw :
+          ContinuousOn (fun q : ℝ × M =>
+            (g q.1).inner q.2
+              (chartFrameRawFiber (g q.1) α q.2 i)
+              (chartFrameRawFiber (g q.1) α q.2 i))
+            (K ×ˢ U) :=
+        metricInner_continuousOn_family (I := I) (M := M) g hG
+          (fun q => chartFrameRawFiber (g q.1) α q.2 i)
+          (fun q => chartFrameRawFiber (g q.1) α q.2 i)
+          h_raw_section h_raw_section
+      have h_inner_raw_pos : ∀ q : ℝ × M,
+          q ∈ K ×ˢ U →
+          0 < (g q.1).inner q.2
+              (chartFrameRawFiber (g q.1) α q.2 i)
+              (chartFrameRawFiber (g q.1) α q.2 i) := by
+        intro q hq
+        have h_aux := chartFrameNormFiber_orth_strong_aux
+          (I := I) (g q.1) α (hU_base q hq) i.val i (le_refl _)
+        have hraw_ne : chartFrameRawFiber (g q.1) α q.2 i ≠ 0 := h_aux.1
+        exact (g q.1).pos q.2 _ hraw_ne
+      have h_sqrt_ne : ∀ q : ℝ × M, q ∈ K ×ˢ U →
+          Real.sqrt ((g q.1).inner q.2
+              (chartFrameRawFiber (g q.1) α q.2 i)
+              (chartFrameRawFiber (g q.1) α q.2 i)) ≠ 0 := by
+        intro q hq
+        have := h_inner_raw_pos q hq
+        exact ne_of_gt (Real.sqrt_pos.mpr this)
+      have h_sqrt :
+          ContinuousOn (fun q : ℝ × M => Real.sqrt
+            ((g q.1).inner q.2
+              (chartFrameRawFiber (g q.1) α q.2 i)
+              (chartFrameRawFiber (g q.1) α q.2 i)))
+            (K ×ˢ U) := h_inner_raw.sqrt
+      have h_inv :
+          ContinuousOn (fun q : ℝ × M =>
+            (Real.sqrt ((g q.1).inner q.2
+              (chartFrameRawFiber (g q.1) α q.2 i)
+              (chartFrameRawFiber (g q.1) α q.2 i)))⁻¹)
+            (K ×ˢ U) := h_sqrt.inv₀ h_sqrt_ne
+      have h_smul :
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              ((Real.sqrt ((g q.1).inner q.2
+                (chartFrameRawFiber (g q.1) α q.2 i)
+                (chartFrameRawFiber (g q.1) α q.2 i)))⁻¹ •
+                chartFrameRawFiber (g q.1) α q.2 i))
+            (K ×ˢ U) :=
+        continuousOn_tangentSection_smul (I := I) hU_base
+          (fun q : ℝ × M => (Real.sqrt ((g q.1).inner q.2
+            (chartFrameRawFiber (g q.1) α q.2 i)
+            (chartFrameRawFiber (g q.1) α q.2 i)))⁻¹)
+          h_inv
+          (fun q => chartFrameRawFiber (g q.1) α q.2 i)
+          h_raw_section
+      have h_norm_eq : ∀ q : ℝ × M,
+          chartFrameNormFiber (g q.1) α q.2 i =
+            (Real.sqrt ((g q.1).inner q.2
+                (chartFrameRawFiber (g q.1) α q.2 i)
+                (chartFrameRawFiber (g q.1) α q.2 i)))⁻¹ •
+              chartFrameRawFiber (g q.1) α q.2 i := fun q =>
+        chartFrameNormFiber_eq (I := I) (g q.1) α q.2 i
+      have h_norm_section :
+          ContinuousOn (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+              (chartFrameNormFiber (g q.1) α q.2 i))
+            (K ×ˢ U) := by
+        have hT_eq : (fun q : ℝ × M =>
+              TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+                (chartFrameNormFiber (g q.1) α q.2 i)) =
+            (fun q : ℝ × M =>
+              TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+                ((Real.sqrt ((g q.1).inner q.2
+                    (chartFrameRawFiber (g q.1) α q.2 i)
+                    (chartFrameRawFiber (g q.1) α q.2 i)))⁻¹ •
+                  chartFrameRawFiber (g q.1) α q.2 i)) := by
+          funext q; rw [h_norm_eq q]
+        rw [hT_eq]
+        exact h_smul
+      exact ⟨h_raw_section, h_norm_section⟩
+
+omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+theorem chartFrameNorm_continuousOn_metricFamily
+    {K : Set ℝ}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+      (fun t x => metricTensorField (I := I) (g t) x))
+    (α : M) (i : Fin (Module.finrank ℝ E)) :
+    ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+          (chartFrameNorm (I := I) (g q.1) α i q.2))
+      (K ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+  unfold chartFrameNorm
+  exact (chartFrameNormFiber_continuousOn_metricFamily_strong (I := I) (M := M) g hG α
+    i.val i (le_refl _)).2
 
 end Connection
 end Geometry

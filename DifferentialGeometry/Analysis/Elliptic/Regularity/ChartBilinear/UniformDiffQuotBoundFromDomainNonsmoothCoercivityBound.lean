@@ -53,10 +53,8 @@ theorem chartBilinear_master_nonsmooth_discharge
       (Module.finrank ℝ E) (Set.univ : Set EuclN))
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
-    (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {Ω' : Set EuclN} (_hΩ'_open : IsOpen Ω')
+    {Ω' : Set EuclN}
     (hΩ'_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
-    (_hΩ'_compact_closure : IsCompact (closure Ω'))
     (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
@@ -219,10 +217,9 @@ theorem chartBilinear_master_nonsmooth_discharge
           (d := Module.finrank ℝ E) k h (G j) x
         ∂(volume : Measure EuclN) := by
     exact principal_term_ge_lambda_norm_sq_nonsmooth
-      (d := Module.finrank ℝ E) B hu_g_l2 hG_l2 hG_isWP
-      hη hη_supp hη_range hΩ_principal_open
-      hΩ_principal_compact_closure hΩ_principal_in_univ
-      hh_supp_in_Ω_principal k hh hh_le
+      (d := Module.finrank ℝ E) B hG_l2
+      hη hη_supp hΩ_principal_in_univ
+      hh_supp_in_Ω_principal k hh_le
   have h_cthick_h_subset_r :
       Metric.cthickening |h| (tsupport η) ⊆ Metric.cthickening r (tsupport η) :=
     Metric.cthickening_mono (hh_le.trans hr_ge_R0) _

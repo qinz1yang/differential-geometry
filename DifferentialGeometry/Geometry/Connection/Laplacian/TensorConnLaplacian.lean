@@ -65,7 +65,7 @@ omit [NeZero (Module.finrank ℝ E)] in
               (smoothOrthoFrame (I := I) g x i x))) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem rawTensorConnLap_zero [CompleteSpace E]
+theorem rawTensorConnLap_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     rawTensorConnLap (I := I) g r s
         (fun _ : M => (0 : TensorRSSpace r s I _)) x = 0 := by
@@ -104,7 +104,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   simp
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rawTensorConnLap_add [CompleteSpace E]
+theorem rawTensorConnLap_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {T T' : Π b : M, TensorRSSpace r s I b}
     (hT : ∀ x : M, MDifferentiableAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))
@@ -190,7 +190,7 @@ theorem rawTensorConnLap_add [CompleteSpace E]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rawTensorConnLap_smul [CompleteSpace E]
+theorem rawTensorConnLap_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {T : Π b : M, TensorRSSpace r s I b} (c : ℝ)
     (hT : ∀ x : M, MDifferentiableAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))
@@ -285,7 +285,7 @@ private lemma cov_eq_zero_of_eventually_zero_on_open
   exact congrArg (fun φ => φ y) cov.zero
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rawTensorConnLap_eq_zero_of_eventually_zero [CompleteSpace E]
+theorem rawTensorConnLap_eq_zero_of_eventually_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {T : Π b : M, TensorRSSpace r s I b}
     {x : M} {U : Set M} (hU_open : IsOpen U) (hxU : x ∈ U)
@@ -359,7 +359,7 @@ theorem rawTensorConnLap_eq_zero_of_eventually_zero [CompleteSpace E]
   simp
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rawTensorConnLap_neg [CompleteSpace E]
+theorem rawTensorConnLap_neg
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {T : Π b : M, TensorRSSpace r s I b}
     (hT : ∀ x : M, MDifferentiableAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))
@@ -456,6 +456,7 @@ private lemma rawTensorConnLap_covApply_mdiff_at
     h_covApply.contMDiffAt (Filter.univ_mem)
   exact h_at.mdifferentiableAt (by simp)
 
+omit [CompleteSpace E] in
 theorem rawTensorConnLap_eq_zero_of_not_mem_tsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -486,6 +487,7 @@ theorem rawTensorConnLap_eq_zero_of_not_mem_tsupport
       (smoothOrthoFrame (I := I) g x i)
       (smoothOrthoFrame_smooth (I := I) g x i) x
 
+omit [CompleteSpace E] in
 theorem rawTensorConnLap_support_subset_tsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -505,6 +507,7 @@ theorem rawTensorConnLap_support_subset_tsupport
     (rawTensorConnLap (I := I) g r s (fun y : M => T y) x) = 0
   rw [h_zero, TensorRSSpace.toModel_zero]
 
+omit [CompleteSpace E] in
 theorem rawTensorConnLap_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -541,6 +544,7 @@ noncomputable def tensorConnLaplacian_of_contMDiff
     rawTensorConnLap_hasCompactSupport (I := I) g r s T.toSection
       T.hasCompactSupport
 
+omit [CompleteSpace E] in
 @[simp] lemma tensorConnLaplacian_of_contMDiff_toFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (hSmooth : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -551,6 +555,7 @@ noncomputable def tensorConnLaplacian_of_contMDiff
     (tensorConnLaplacian_of_contMDiff (I := I) g r s T hSmooth).toSection x =
       rawTensorConnLap (I := I) g r s (fun z : M => T.toSection z) x := rfl
 
+omit [CompleteSpace E] in
 theorem tensorConnLaplacian_of_contMDiff_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T T' : SmoothCcTensor g r s)
@@ -595,6 +600,7 @@ theorem tensorConnLaplacian_of_contMDiff_add
       (smoothOrthoFrame (I := I) g y i)
       (smoothOrthoFrame_smooth (I := I) g y i) y
 
+omit [CompleteSpace E] in
 theorem tensorConnLaplacian_of_contMDiff_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (T : SmoothCcTensor g r s)
@@ -629,6 +635,7 @@ theorem tensorConnLaplacian_of_contMDiff_smul
       (smoothOrthoFrame (I := I) g y i)
       (smoothOrthoFrame_smooth (I := I) g y i) y
 
+omit [CompleteSpace E] in
 theorem tensorConnLaplacian_of_contMDiff_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (hSmooth : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞

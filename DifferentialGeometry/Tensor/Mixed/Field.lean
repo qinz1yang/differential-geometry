@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Mixed.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Field
@@ -117,7 +118,11 @@ theorem toMultilinearSection_add {s : ℕ}
     (T₁ T₂ : MixedSection 𝕜 F IB E n 0 s) :
     (T₁ + T₂).toMultilinearSection n =
       T₁.toMultilinearSection n + T₂.toMultilinearSection n := by
-  ext x m; rfl
+  apply ContMDiffSection.ext
+  intro x
+  apply Bundle.continuousMultilinearMap.ext
+  intro m
+  rfl
 
 @[simp]
 theorem toMultilinearSection_smulByFun {s : ℕ}
@@ -125,7 +130,11 @@ theorem toMultilinearSection_smulByFun {s : ℕ}
     (T : MixedSection 𝕜 F IB E n 0 s) :
     (smulByFun n φ hφ T).toMultilinearSection n =
       MultilinearSection.smulByFun n φ hφ (T.toMultilinearSection n) := by
-  ext x m; rfl
+  apply ContMDiffSection.ext
+  intro x
+  apply Bundle.continuousMultilinearMap.ext
+  intro m
+  rfl
 
 omit [NormedAddCommGroup F] [NormedSpace 𝕜 F] [TopologicalSpace B]
   [TopologicalSpace (TotalSpace F E)] [FiberBundle F E] [VectorBundle 𝕜 F E]
@@ -208,7 +217,7 @@ noncomputable def multilinearBundle_mixedBundle_equiv
     [TopologicalSpace (TotalSpace FM EM')]
     [FiberBundle FM EM'] [VectorBundle ℝ FM EM']
     {nm : ℕ∞} [Fact (1 ≤ nm)] [ContMDiffVectorBundle nm FM EM' IM]
-    [IsManifold IM ∞ M] [SigmaCompactSpace M] [T2Space M]
+    [IsManifold IM ∞ M] [T2Space M]
     [FiniteDimensional ℝ EM] :
     ContMDiffVectorBundleEquiv ℝ IM nm
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => FM) ℝ)

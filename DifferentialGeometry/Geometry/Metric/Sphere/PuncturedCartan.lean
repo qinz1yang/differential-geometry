@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Geometry.Exponential.CartanNorm
 import DifferentialGeometry.Geometry.Metric.Polarization
 import DifferentialGeometry.Geometry.Metric.Sphere.RadialLog

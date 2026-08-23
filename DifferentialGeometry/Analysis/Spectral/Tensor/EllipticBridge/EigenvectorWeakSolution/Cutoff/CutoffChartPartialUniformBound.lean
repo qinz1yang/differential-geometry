@@ -27,7 +27,6 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Sobolev.Chart
@@ -461,7 +460,7 @@ private lemma exists_const_rawComponentCutoffM_sq_le
         rw [Real.norm_eq_abs, sq_abs]
       rw [h_abs]
       have hsq := mul_self_le_mul_self (norm_nonneg _) h_proj_le
-      nlinarith [hsq, norm_nonneg (tensorChartComponentProjection (E := E)
+      nlinarith only [hsq, norm_nonneg (tensorChartComponentProjection (E := E)
         r s Idx Jdx T), norm_nonneg T, hC_proj_nn]
     have h_triv_sq_le : ‖T‖ ^ 2 ≤ K *
         tensorInnerPointwise (I := I) (M := M) g r s b

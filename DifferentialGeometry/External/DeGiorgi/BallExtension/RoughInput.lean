@@ -10,8 +10,8 @@ packaging for the explicit unit-ball extension operator.
 
 noncomputable section
 
-open MeasureTheory Metric Filter Topology Set Function Matrix
-open scoped ENNReal NNReal RealInnerProductSpace
+open MeasureTheory Metric Filter
+open scoped ENNReal NNReal
 
 namespace DeGiorgi
 
@@ -511,11 +511,11 @@ theorem exists_global_smooth_W1p_approx_of_localizedWitness
     simpa [Measure.restrict_univ] using hφ_grad i
 
 /-- Explicit `L^p` constant from the unit-ball extension estimate. -/
-abbrev C_unitBallExtensionFun (d : ℕ) [NeZero d] : ℝ≥0∞ :=
+abbrev C_unitBallExtensionFun (d : ℕ) : ℝ≥0∞ :=
   1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))
 
 /-- Explicit gradient-side constant from the smooth unit-ball extension estimate. -/
-abbrev C_unitBallExtensionGrad (d : ℕ) [NeZero d] (p : ℝ) : ℝ≥0∞ :=
+abbrev C_unitBallExtensionGrad (d : ℕ) (p : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal ((2 : ℝ) ^ (2 * d)) * (2 : ℝ≥0∞) ^ (p - 1)
 
 omit [NeZero d] in
@@ -610,8 +610,7 @@ private theorem eLpNorm_le_of_lintegral_rpow_ofReal_le_generic
 
 theorem lintegral_rpow_norm_eq_eLpNorm_pow
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
-    [MeasurableSpace F] [BorelSpace F] {μ : Measure α}
-    {p : ℝ} (hp : 0 < p) {f : α → F} :
+    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} :
     ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ = eLpNorm f (ENNReal.ofReal p) μ ^ p := by
   let pnn : ℝ≥0 := Real.toNNReal p
   have hpnn0 : pnn ≠ 0 := by
@@ -803,8 +802,7 @@ theorem measurable_unitBallExtension
 
 omit [NeZero d] in
 theorem eLpNorm_component_le
-    {p : ℝ} (_hp : 0 < p) {F : E → E} {i : Fin d} {μ : Measure E}
-    (_hF_aesm : AEStronglyMeasurable F μ) :
+    {p : ℝ} {F : E → E} {i : Fin d} {μ : Measure E} :
     eLpNorm (fun x => F x i) (ENNReal.ofReal p) μ ≤ eLpNorm F (ENNReal.ofReal p) μ := by
   refine eLpNorm_mono ?_
   intro x

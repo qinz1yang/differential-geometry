@@ -67,14 +67,14 @@ private theorem negRm_isAlg
     intro X Y Z W
     simpa [metricRm04StdAt_apply, metricRm04_apply] using
       (rm04InputSkewAt_of_leviCivita_realizes
-        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04 X Y Z W)
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   have houtput : ∀ X Y Z W : TangentSpace I x,
       metricRm04StdAt (I := I) (M := M) g x X Y Z W =
         -metricRm04StdAt (I := I) (M := M) g x X Y W Z := by
     intro X Y Z W
     simpa [metricRm04StdAt_apply, metricRm04_apply] using
       (rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04 X Y Z W)
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   have hfirst : ∀ X Y Z W : TangentSpace I x,
       metricRm04StdAt (I := I) (M := M) g x X Y Z W +
           metricRm04StdAt (I := I) (M := M) g x Y Z X W +
@@ -82,7 +82,7 @@ private theorem negRm_isAlg
     intro X Y Z W
     simpa [metricRm04StdAt_apply, metricRm04_apply] using
       (firstBianchiAt_of_leviCivita_realizes
-        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04 X Y Z W)
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   refine
     { add_left := ?_
       smul_left := ?_
@@ -184,7 +184,6 @@ omit [IsManifold I 2 M]
   [IsManifold I 3 M]
   [SigmaCompactSpace M] in
 theorem riemannOp_of_rm
-    [NeZero (Module.finrank Real E)]
     [I.Boundaryless] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (hRm : ∀ X Y Z W : TangentSpace I x,

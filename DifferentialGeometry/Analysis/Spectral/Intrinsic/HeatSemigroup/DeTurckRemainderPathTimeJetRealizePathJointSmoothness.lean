@@ -52,10 +52,8 @@ section RealizePathJointSmoothness
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorMultilinear
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
-open DifferentialGeometry.Integral.Measure
 
 private local instance tensor0SModelNormedAddCommGroup_local {nn : ℕ} :
     NormedAddCommGroup (Tensor0SBundle.Tensor0SModel nn ℝ E) := inferInstance
@@ -224,6 +222,8 @@ private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
       · intro k; simp [Fin.cons_succ]
 
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem deTurckRHSField_realizePath_jointContMDiffOn
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ}
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)

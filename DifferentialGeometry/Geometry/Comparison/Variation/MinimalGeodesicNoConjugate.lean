@@ -100,7 +100,7 @@ theorem not_conj_of_min_len
       DifferentiableAt ℝ (chartRepAt (I := I) γ J t) t := by
     simpa only [γ, J] using
       variationField_chartRep_differentiableAt
-        (I := I) g f hf_smooth t
+        (I := I) f hf_smooth t
   have hDJdiff (t : ℝ) :
       DifferentiableAt ℝ (chartRepAt (I := I) γ DJ t) t := by
     simpa only [γ, J, DJ] using

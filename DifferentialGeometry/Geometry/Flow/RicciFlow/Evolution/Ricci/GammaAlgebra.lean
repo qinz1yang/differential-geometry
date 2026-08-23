@@ -45,7 +45,6 @@ def RicciVariationFormulaInFrameOn
       D.carrier
       (t : Real)
 
-
 def RicciVariationFormulaInFrameOnLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -107,7 +106,6 @@ def nablaGammaDtFromNabla2RicInFrame
 
 section CoordinateConnectionVariation
 
-open DifferentialGeometry.Tensor.Coordinates
 
 section RaisedContractAlgebra
 

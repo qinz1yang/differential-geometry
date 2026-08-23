@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Metric.Sphere.PolarBij
 
 noncomputable section

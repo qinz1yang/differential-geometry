@@ -195,7 +195,7 @@ private lemma pureRGenuineEndoFib_eq_frozen_on_nbhd
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g y i j)
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g x₀ hy i j)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem pureRGenuineEndoFib_contMDiff
     (g : SmoothRiemannianMetric I M) (m : ℕ) (W : SmoothCcTensor g 0 (m + 1)) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (m + 1) ℝ E)) ∞
@@ -224,7 +224,7 @@ private noncomputable def pureRGenuineEndoSucc
       contMDiff_toFun := pureRGenuineEndoFib_contMDiff (I := I) (M := M) g m W }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] private lemma pureRGenuineEndoSucc_toSection
     (g : SmoothRiemannianMetric I M) (m : ℕ) (W : SmoothCcTensor g 0 (m + 1)) (x : M) :
     (pureRGenuineEndoSucc (I := I) (M := M) g m W).toSection x =

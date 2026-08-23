@@ -22,7 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianVariational
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingChart
@@ -108,6 +107,7 @@ lemma gradFun_sub
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma Δ_g_neg
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -129,6 +129,7 @@ lemma Δ_g_neg
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma Δ_g_sub
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
@@ -270,8 +271,8 @@ lemma g_inner_grad_lap_polar
   rw [hp1, hp2]
   ring
 
-omit [CompactSpace M] in
-theorem bochner_polarised_pointwise
+omit [CompactSpace M] [SigmaCompactSpace M] in
+theorem bochner_polarised_pointwise_of_smoothness
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))
     (hφv_sub : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y))
@@ -292,9 +293,9 @@ theorem bochner_polarised_pointwise
               (gradFun (I := I) g (φ : M → ℝ) x)
               (gradFun (I := I) g (v : M → ℝ) x) := by
   classical
-  have hΔ_add := bochner_pointwise_concrete_metric_unconditional
+  have hΔ_add := bochner_pointwise_concrete_metric
     (I := I) g hφv_add x
-  have hΔ_sub := bochner_pointwise_concrete_metric_unconditional
+  have hΔ_sub := bochner_pointwise_concrete_metric
     (I := I) g hφv_sub x
   have hpolar_norm := normGradSqFun_polar (I := I) (M := M) g φ v x
   set N1 : M → ℝ := normGradSqFun (I := I) g (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y)
@@ -430,10 +431,35 @@ theorem bochner_polarised_pointwise
     rw [h_Δ_4ginner_eq_sub]
     rw [hΔN1, hΔN2]
     linarith [h_hessPolar, h_ricciPolar, h_gradLapPolar]
-  nlinarith [key]
+  have h4 : 4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
+      4 * (g.inner x
+            (gradFun (I := I) g (φ : M → ℝ) x)
+            (gradFun (I := I) g (Δ_g (I := I) g v) x) +
+          g.inner x
+            (gradFun (I := I) g (v : M → ℝ) x)
+            (gradFun (I := I) g (Δ_g (I := I) g φ) x) +
+          2 * hessPairingChart (I := I) g φ v x +
+          2 * ricciTensor (I := I) g x
+            (gradFun (I := I) g (φ : M → ℝ) x)
+            (gradFun (I := I) g (v : M → ℝ) x)) := by
+    calc
+      4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
+          8 * hessPairingChart (I := I) g φ v x +
+            8 * ricciTensor (I := I) g x
+              (gradFun (I := I) g (φ : M → ℝ) x)
+              (gradFun (I := I) g (v : M → ℝ) x) +
+            4 * (g.inner x
+                  (gradFun (I := I) g (φ : M → ℝ) x)
+                  (gradFun (I := I) g (Δ_g (I := I) g v) x) +
+                g.inner x
+                  (gradFun (I := I) g (v : M → ℝ) x)
+                  (gradFun (I := I) g (Δ_g (I := I) g φ) x)) := key
+      _ = _ := by ring
+  exact mul_left_cancel₀ (by norm_num : (4 : ℝ) ≠ 0) h4
 
 omit [CompactSpace M] in
-theorem bochner_polarised_pointwise_oneSubLap
+omit [SigmaCompactSpace M] in
+theorem bochner_polarised_pointwise_oneSubLap_of_smoothness
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))
     (hφv_sub : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y))
@@ -459,7 +485,7 @@ theorem bochner_polarised_pointwise_oneSubLap
         - 2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
               (gradFun (I := I) g (v : M → ℝ) x) := by
-  rw [bochner_polarised_pointwise (I := I) (M := M) g φ v hφv_add hφv_sub
+  rw [bochner_polarised_pointwise_of_smoothness (I := I) (M := M) g φ v hφv_add hφv_sub
     h_gphi_gv_smooth x]
   ring
 

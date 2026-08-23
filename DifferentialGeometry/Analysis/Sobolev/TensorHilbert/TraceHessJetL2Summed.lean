@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option maxSynthPendingDepth 3
 
 noncomputable section
 
@@ -15,17 +14,16 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Sobolev
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (metricCauchySchwarzBound ccTensorBilinSymm smoothCcTensorBilinForm ccTensorBilin_apply
     ccTensorModel
     ccTensorMultilinear ccTensorBilinSymm_contMDiff ccTensorBilinSymm_apply ccTensorBilinSymm_symm)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedFam)
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 
 private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ) :
     ∑ i ∈ Finset.range m, g (i + c) ≤ ∑ j ∈ Finset.range (m + c), g j := by
@@ -81,7 +79,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem traceHessianCoeff_realizedFam_jetL2_perOrder_topSeparated
+theorem traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -97,14 +95,14 @@ theorem traceHessianCoeff_realizedFam_jetL2_perOrder_topSeparated
         ∀ (i : ℕ), i ≤ a →
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
               (traceHessianCoeff (I := I) (M := M) g₀
-                (realizedFam (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤
             Ktop * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) T'‖ ^ 2) +
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨P, hP_nn, hP⟩ :=
-    traceHessianCoeff_realizedFam_jetL2_perOrder_ballUniform
+    traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨0, le_refl 0, P, hP_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs i hi
@@ -118,7 +116,7 @@ theorem traceHessianCoeff_realizedFam_jetL2_perOrder_topSeparated
   nlinarith [hb, hP_nn i, hlow_nn, htop_nn,
     mul_nonneg (hP_nn i) hlow_nn]
 
-theorem traceHessianCoeff_realizedFam_jetL2_summed_topSeparated
+theorem traceHessianCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -134,7 +132,7 @@ theorem traceHessianCoeff_realizedFam_jetL2_summed_topSeparated
           ∑ i ∈ Finset.range (a + 1),
               ‖iteratedCovGrad (I := I) g₀ 4 2 i
                 (traceHessianCoeff (I := I) (M := M) g₀
-                  (realizedFam (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤
             Ktop * (∑ j ∈ Finset.range (a + 2),
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) +
@@ -142,14 +140,14 @@ theorem traceHessianCoeff_realizedFam_jetL2_summed_topSeparated
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hper⟩ :=
-    traceHessianCoeff_realizedFam_jetL2_perOrder_topSeparated
+    traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Ktop, hKtop_nn, ∑ i ∈ Finset.range (a + 1), Kc i,
     Finset.sum_nonneg (fun i _ => hKc_nn i), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs
   exact jetL2_sum_lowShift a 1 2 Ktop hKtop_nn Kc hKc_nn
     (fun i => ‖iteratedCovGrad (I := I) g₀ 4 2 i
-      (traceHessianCoeff (I := I) (M := M) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s))‖ ^ 2)
+      (traceHessianCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2)
     (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)
     (fun j => add_nonneg (sq_nonneg _) (sq_nonneg _))

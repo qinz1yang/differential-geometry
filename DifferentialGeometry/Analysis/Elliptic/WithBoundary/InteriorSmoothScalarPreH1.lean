@@ -27,7 +27,6 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
@@ -191,6 +190,7 @@ end InteriorSmoothScalar
 variable [T2Space M] [CompactSpace M]
 
 omit [CompactSpace M] in
+omit [T2Space M] in
 lemma InteriorSmoothScalar.continuous_inner_grad
     {g : SmoothRiemannianMetric (I_half n) M} (f h : InteriorSmoothScalar g) :
     Continuous (fun x : M =>
@@ -323,6 +323,7 @@ lemma interiorSmoothScalarH1Inner_nonneg
   exact add_nonneg f.integral_mul_self_nonneg f.integral_inner_grad_self_nonneg
 
 omit [CompactSpace M] in
+omit [T2Space M] in
 @[simp] lemma grad_g_with_boundary_section_apply'
     {g : SmoothRiemannianMetric (I_half n) M}
     (f : InteriorSmoothScalar g) (x : M) :
@@ -333,6 +334,7 @@ omit [CompactSpace M] in
       gradFun (I := I_half n) g f.toFun x := rfl
 
 omit [CompactSpace M] in
+omit [T2Space M] in
 lemma InteriorSmoothScalar.grad_g_with_boundary_section_add_apply
     {g : SmoothRiemannianMetric (I_half n) M}
     (f₁ f₂ : InteriorSmoothScalar g) (x : M) :
@@ -475,6 +477,7 @@ lemma interiorSmoothScalarH1Inner_add_left
   ring
 
 omit [CompactSpace M] in
+omit [T2Space M] in
 lemma InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply
     {g : SmoothRiemannianMetric (I_half n) M}
     (c : ℝ) (f : InteriorSmoothScalar g) (x : M) :

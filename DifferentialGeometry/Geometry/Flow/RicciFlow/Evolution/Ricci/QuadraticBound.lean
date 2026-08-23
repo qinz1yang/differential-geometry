@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -22,7 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricci_quad_sol
+omit [SigmaCompactSpace M] in
+theorem ricci_quadratic_form_bound_of_solution_curvature_bound
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     {t C : Real} (x : M) (v : TangentSpace I x)

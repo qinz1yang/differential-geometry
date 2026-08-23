@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricContractionLeibnizGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldEvaluationLeibniz
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

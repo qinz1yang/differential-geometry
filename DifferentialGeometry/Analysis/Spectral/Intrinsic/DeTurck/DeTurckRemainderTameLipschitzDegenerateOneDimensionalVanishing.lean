@@ -12,36 +12,29 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RawC
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRicciRHSRealizeJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSSectionChartComponentIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckCurvatureArmCoeffField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckLinearization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSSectionRealizeUnitModel
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmOperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PathIntegralFibreNormTransfer
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTower
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffL2JetMoser
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciArmPrincipalCoeffBackgroundJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckPrincipalCoefficientBackgroundJetBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ContinuousSobolevRealization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieHigherOrderCoeffField
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamChartLieDeriv
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartLieDerivative
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffAppCcValue
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.RealizedGramDerivChartEvaluation
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffOperatorFieldApplicationValue
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.GramDerivativeChartEvaluation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieCoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm2CoeffL2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmConnLapJetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzRicciArmCoeffBallUniform
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLiePathValueDerivative
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionL2JetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniform
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniDecomposition
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -53,8 +46,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
@@ -63,26 +55,26 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_appCc_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
   linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_appCc
+  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
   linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
   linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciArmPrincipalCoeff traceHessianCoeff
+  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
   linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_realizedFam_rfns_ballUniform continuousBilinearMap_basis_expand
-  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local appCc_zero_left_local ccTensor02Symm
+  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (realizedSmallSet realizedSmallSet_isOpen Icc_subset_realizedSmallSet linearizedRicciAt
+  (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum jointContMDiff_toModel_continuous_slice
-  hasDerivAt_realizedRicciChartSum_general realizedFam)
+  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (symmAbsorbedCoeff symmAbsorbedCoeff_appCc_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
+  (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -96,11 +88,11 @@ private local instance instCompleteSpaceE_tame : CompleteSpace E :=
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
+  (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckLieArm2PrincipalCoeff deTurckLieArm1Coeff deTurckLieCoeffField
-  deTurckLieArm2PrincipalCoeff_realizedFam_jointSmooth deTurckLieArm1Coeff_realizedFam_jointSmooth
-  deTurckLieCoeffField_realizedFam_jointSmooth)
+  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+  deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
@@ -108,7 +100,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   deTurckLieArm2DivSlotPermAT traceHessianCoeff_toSection)
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (convexPerturbation convexPerturbation_gFibreOpBound realizedFam_inner_of_mem)
+  (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 set_option backward.isDefEq.respectTransparency false in
@@ -188,20 +180,20 @@ private lemma ricciCometricFourTraceCLM_eq_zero_of_finrank_eq_one (h1 : Module.f
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma dim1_linearizedRicciConnDiffOrder0CoeffField_eq_zero
+lemma dim1_linearizedRicciConnectionDifferenceOrder0CoeffField_eq_zero
     (h1 : Module.finrank ℝ E = 1) (g₀ g₁ : SmoothRiemannianMetric I M) :
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnDiffOrder0CoeffField
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0CoeffField
       (I := I) (M := M) g₀ g₁ = 0 := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw
-    [Analysis.Parabolic.TensorSpectral.linearizedRicciConnDiffOrder0CoeffField_toSection]
+    [Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0CoeffField_toSection]
   change
-    (Analysis.Parabolic.TensorSpectral.linearizedRicciConnDiffOrder0CometricTracedCLM
+    (Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0CometricTracedCLM
       (I := I) g₀ g₁ x) = _
   rw
-    [Analysis.Parabolic.TensorSpectral.linearizedRicciConnDiffOrder0CometricTracedCLM]
+    [Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0CometricTracedCLM]
   rw [ricciCometricFourTraceCLM_eq_zero_of_finrank_eq_one (I := I) h1 g₁ x]
   rw [ContinuousLinearMap.zero_comp]
   rfl
@@ -250,6 +242,7 @@ private lemma dim1_smoothOrthoFrame_ne_zero (g₁ : SmoothRiemannianMetric I M) 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 lemma dim1_ricciArmOrder0RiemannCoeff_eq_zero (h1 : Module.finrank ℝ E = 1)
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff

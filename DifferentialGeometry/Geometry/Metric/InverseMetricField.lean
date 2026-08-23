@@ -17,7 +17,6 @@ namespace DifferentialGeometry
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.TensorMultilinear (contMDiffAt_section_apply contMDiff_section_apply)
 
@@ -49,7 +48,7 @@ lemma inverseMetricSharpFib_inner (g : SmoothRiemannianMetric I M) (x : M)
   rw [inverseMetricSharpFib_apply]
   exact inner_metricSharp (I := I) g x (cotangentToDualLinear (I := I) (x := x) α) w
 
-@[simp] lemma inverseMetricSharpFib_zero (g : SmoothRiemannianMetric I M) (x : M) :
+lemma inverseMetricSharpFib_zero (g : SmoothRiemannianMetric I M) (x : M) :
     inverseMetricSharpFib (I := I) g x 0 = 0 := by
   rw [inverseMetricSharpFib_apply, map_zero]
   rw [metricSharp_def, map_zero]
@@ -130,7 +129,7 @@ theorem cotangentSection_chartComponent_contMDiffOn
       (hopen.mem_nhds hx₀base)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem inverseMetricSharpField_contMDiff (g : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 1 ℝ E →L[ℝ] E)
@@ -168,11 +167,13 @@ def inverseMetricSharpField (g : SmoothRiemannianMetric I M) :
   toFun := fun x : M => inverseMetricSharpFib (I := I) g x
   contMDiff_toFun := inverseMetricSharpField_contMDiff (I := I) g
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
+    [BoundarylessManifold I M] in
 @[simp] lemma inverseMetricSharpField_apply (g : SmoothRiemannianMetric I M) (x : M) :
     inverseMetricSharpField (I := I) g x = inverseMetricSharpFib (I := I) g x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] [I.Boundaryless] in
 theorem cometricBilin_contMDiff (g : SmoothRiemannianMetric I M)
     (α β : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun x : M => Tensor0SSpace 1 I x)⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞
@@ -204,7 +205,8 @@ theorem cometricBilin_contMDiff (g : SmoothRiemannianMetric I M)
   intro i
   exact hsharpβ
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [BoundarylessManifold I M] in
 theorem exists_uniform_cometricBilin_bound [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (α β : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun x : M => Tensor0SSpace 1 I x)⟯) :

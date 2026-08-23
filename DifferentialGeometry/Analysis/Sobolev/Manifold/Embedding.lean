@@ -59,15 +59,13 @@ theorem Euclidean.wkpNorm_zero_le_wkpNorm
   exact h_le
 
 theorem eLpNorm_chartPushed_p_le_wkpNorm_one
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} (u : M → ℝ) (α : M) :
+    [T2Space M] [SigmaCompactSpace M] {p : ℝ≥0∞} (u : M → ℝ) (α : M) :
     eLpNorm
         (chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
         p
         (MeasureTheory.volume.restrict (chartTargetEuclid (I := I) (M := M) α))
-      ≤ wkpNormChart (I := I) (M := M) g 1 p u := by
+      ≤ wkpNormChart (I := I) (M := M) 1 p u := by
   classical
   have h_per_α :
       eLpNorm
@@ -175,7 +173,7 @@ private theorem chartPushed_eq_zero_off_image_tsupport
 variable {u : M → ℝ}
 
 theorem chartPushed_support_subset_compact_in_target
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) :
     ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       y ∉ toEuclidean ''
@@ -201,9 +199,8 @@ theorem volume_chartImage_tsupport_lt_top
 
 theorem chartPushed_memLp_of_memWkpChart_subexp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hqp : q ≤ p) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M) :
     MeasureTheory.MemLp
       (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -268,9 +265,8 @@ theorem chartPushed_memLp_of_memWkpChart_subexp
 
 theorem eLpNorm_chartPushed_q_le_chartPushed_p_subexp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hq_pos : q ≠ 0) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M) :
     eLpNorm
         (chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -367,24 +363,23 @@ theorem eLpNorm_chartPushed_q_le_chartPushed_p_subexp
 
 theorem eLpNorm_chartPushed_q_le_wkpNorm_one_subexp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hq_pos : q ≠ 0) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M) :
     eLpNorm
         (chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
         q
         (MeasureTheory.volume.restrict (chartTargetEuclid (I := I) (M := M) α))
-      ≤ wkpNormChart (I := I) (M := M) g 1 p u
+      ≤ wkpNormChart (I := I) (M := M) 1 p u
         * (MeasureTheory.volume
             (toEuclidean ''
               ((extChartAt I α) ''
                 (tsupport
                   ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ)))))
             ^ (1 / q.toReal - 1 / p.toReal) := by
-  have h1 := eLpNorm_chartPushed_q_le_chartPushed_p_subexp (I := I) (M := M) g
+  have h1 := eLpNorm_chartPushed_q_le_chartPushed_p_subexp (I := I) (M := M)
     hq_pos hp_top hqp hu α
-  have h2 := eLpNorm_chartPushed_p_le_wkpNorm_one (I := I) (M := M) g (p := p) u α
+  have h2 := eLpNorm_chartPushed_p_le_wkpNorm_one (I := I) (M := M) (p := p) u α
   have h3 : eLpNorm
       (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -396,7 +391,7 @@ theorem eLpNorm_chartPushed_q_le_wkpNorm_one_subexp
               (tsupport
                 ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ)))))
           ^ (1 / q.toReal - 1 / p.toReal)
-      ≤ wkpNormChart (I := I) (M := M) g 1 p u
+      ≤ wkpNormChart (I := I) (M := M) 1 p u
         * (MeasureTheory.volume
             (toEuclidean ''
               ((extChartAt I α) ''
@@ -408,9 +403,8 @@ theorem eLpNorm_chartPushed_q_le_wkpNorm_one_subexp
 
 theorem lqChartSum_le_wkpNormChart_subexp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hq_pos : q ≠ 0) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) :
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) :
     ∑' α : M,
       eLpNorm
         (chartPushed (I := I) (M := M)
@@ -418,7 +412,7 @@ theorem lqChartSum_le_wkpNormChart_subexp
         q
         (MeasureTheory.volume.restrict (chartTargetEuclid (I := I) (M := M) α))
       ≤ ∑' α : M,
-        (wkpNormChart (I := I) (M := M) g 1 p u
+        (wkpNormChart (I := I) (M := M) 1 p u
           * (MeasureTheory.volume
               (toEuclidean ''
                 ((extChartAt I α) ''
@@ -427,20 +421,18 @@ theorem lqChartSum_le_wkpNormChart_subexp
               ^ (1 / q.toReal - 1 / p.toReal)) := by
   apply ENNReal.tsum_le_tsum
   intro α
-  exact eLpNorm_chartPushed_q_le_wkpNorm_one_subexp (I := I) (M := M) g
+  exact eLpNorm_chartPushed_q_le_wkpNorm_one_subexp (I := I) (M := M)
     hq_pos hp_top hqp hu α
 
 theorem lpChartSum_le_wkpNormChart
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} (u : M → ℝ) :
+    [T2Space M] [SigmaCompactSpace M] {p : ℝ≥0∞} (u : M → ℝ) :
     ∑' α : M,
       eLpNorm
         (chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
         p
         (MeasureTheory.volume.restrict (chartTargetEuclid (I := I) (M := M) α))
-      ≤ wkpNormChart (I := I) (M := M) g 1 p u := by
+      ≤ wkpNormChart (I := I) (M := M) 1 p u := by
   have h_per : ∀ α : M,
       eLpNorm
           (chartPushed (I := I) (M := M)
@@ -470,10 +462,8 @@ theorem lpChartSum_le_wkpNormChart
   exact h_step1
 
 theorem chartPushed_memLp_p
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p : ℝ≥0∞} {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
+    [T2Space M] [SigmaCompactSpace M] {p : ℝ≥0∞} {u : M → ℝ}
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M) :
     MeasureTheory.MemLp
       (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -483,15 +473,14 @@ theorem chartPushed_memLp_p
 
 theorem chartPushed_memLq_le_p
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {p q : ℝ≥0∞} (_hq_one : 1 ≤ q) (hqp : q ≤ p) {u : M → ℝ}
-    (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
+    {p q : ℝ≥0∞} (hqp : q ≤ p) {u : M → ℝ}
+    (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M) :
     MeasureTheory.MemLp
       (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
       q
       (MeasureTheory.volume.restrict (chartTargetEuclid (I := I) (M := M) α)) :=
-  chartPushed_memLp_of_memWkpChart_subexp (I := I) (M := M) g hqp hu α
+  chartPushed_memLp_of_memWkpChart_subexp (I := I) (M := M) hqp hu α
 
 end Chart
 end Sobolev

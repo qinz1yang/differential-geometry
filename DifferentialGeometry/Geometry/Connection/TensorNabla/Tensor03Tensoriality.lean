@@ -121,12 +121,9 @@ variable {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
 
 omit [FiniteDimensional ℝ E] in
 lemma tensor03Scalar_tensorialAt_X
-    (_covOn : IsCovariantDerivativeOn (V := (TangentSpace I : M → Type _)) E
-      (cov : (Π x : M, TangentSpace I x) →
-        (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)) Set.univ)
     (T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (x : M) (Y Z W : Π x : M, TangentSpace I x)
-    (_hY : MDiffAt (T% Y) x) (_hZ : MDiffAt (T% Z) x) (_hW : MDiffAt (T% W) x) :
+    :
     TensorialAt I E (tensor03Scalar cov T x · Y Z W) x where
   smul {f X} _hf _hX := by
     classical
@@ -157,7 +154,7 @@ lemma tensor03Scalar_tensorialAt_Y
         (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)) Set.univ)
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hT : MDiffAtTensor03 T x)
-    (X : Π x : M, TangentSpace I x) (_hX : MDiffAt (T% X) x)
+    (X : Π x : M, TangentSpace I x)
     (Z W : Π x : M, TangentSpace I x) (hZ : MDiffAt (T% Z) x) (hW : MDiffAt (T% W) x) :
     TensorialAt I E (tensor03Scalar cov T x X · Z W) x where
   smul {g Y} hg hY := by
@@ -232,7 +229,7 @@ lemma tensor03Scalar_tensorialAt_Z
         (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)) Set.univ)
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hT : MDiffAtTensor03 T x)
-    (X : Π x : M, TangentSpace I x) (_hX : MDiffAt (T% X) x)
+    (X : Π x : M, TangentSpace I x)
     (Y W : Π x : M, TangentSpace I x) (hY : MDiffAt (T% Y) x) (hW : MDiffAt (T% W) x) :
     TensorialAt I E (tensor03Scalar cov T x X Y · W) x where
   smul {g Z} hg hZ := by
@@ -305,7 +302,7 @@ lemma tensor03Scalar_tensorialAt_W
         (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)) Set.univ)
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ} {x : M}
     (hT : MDiffAtTensor03 T x)
-    (X : Π x : M, TangentSpace I x) (_hX : MDiffAt (T% X) x)
+    (X : Π x : M, TangentSpace I x)
     (Y Z : Π x : M, TangentSpace I x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
     TensorialAt I E (tensor03Scalar cov T x X Y Z) x where
   smul {g W} hg hW := by
@@ -379,13 +376,13 @@ private noncomputable def tensor03TrilinAt
   mkHom₃ (fun Y Z W => tensor03Scalar (cov.toFun) T x (FiberBundle.extend E v) Y Z W) x
     (fun Z W hZ hW =>
       tensor03Scalar_tensorialAt_Y cov.isCovariantDerivativeOnUniv hT
-        (FiberBundle.extend E v) (mdifferentiableAt_extend ..) Z W hZ hW)
+        (FiberBundle.extend E v) Z W hZ hW)
     (fun Y W hY hW =>
       tensor03Scalar_tensorialAt_Z cov.isCovariantDerivativeOnUniv hT
-        (FiberBundle.extend E v) (mdifferentiableAt_extend ..) Y W hY hW)
+        (FiberBundle.extend E v) Y W hY hW)
     (fun Y Z hY hZ =>
       tensor03Scalar_tensorialAt_W cov.isCovariantDerivativeOnUniv hT
-        (FiberBundle.extend E v) (mdifferentiableAt_extend ..) Y Z hY hZ)
+        (FiberBundle.extend E v) Y Z hY hZ)
 
 private lemma tensor03TrilinAt_apply_extend
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -494,7 +491,7 @@ lemma tensor03CovAt_apply_of_diff_extend
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     {T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     {x : M} (hT : MDiffAtTensor03 T x) {X Y Z W : Π x : M, TangentSpace I x}
-    (_hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x)
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x)
     (hW : MDiffAt (T% W) x) :
     tensor03CovAt cov T x (X x) (Y x) (Z x) (W x) =
       tensor03Scalar (cov.toFun) T x X Y Z W := by
@@ -533,4 +530,3 @@ end Geometry
 end DifferentialGeometry
 
 end
-

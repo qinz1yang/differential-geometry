@@ -73,7 +73,7 @@ theorem klLateNear_holder {T R : ℝ} {A₁ A_q : ℝ≥0}
   let μ := (klVolume : Measure (ℝ × V)).restrict (klLateCyl x R)
   have hk : MemLp (klTermKernel (R ^ 2) x)
       (ENNReal.ofReal (klQDual V)) μ :=
-    (klTermKernel_memLp (V := V) (sq_pos_of_pos hR) x).mono_measure
+    (klTermKernel_memLp (V := V) (t := R ^ 2) x).mono_measure
       (klLateMeasure_le (V := V) x R)
   have hf : MemLp f (ENNReal.ofReal (klQReal V)) μ := by
     simpa only [klQReal_ofReal] using

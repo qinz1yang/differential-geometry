@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RoughLaplacianCometricDoubleTrace
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTower
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldDifferentiatedTowerNormalForm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculusRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.KoszulSectionParallelRaise
@@ -10,7 +10,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-
 
 noncomputable section
 
@@ -53,7 +52,6 @@ private lemma real_split_pair_bound {S AB A B C : ℝ}
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M)
@@ -68,7 +66,6 @@ private lemma g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M)
     rw [hsplit, g₁.symm x (a - b) a, g₁.symm x (a - b) b, hab (a - b)]
     ring
   exact absurd hzero (ne_of_gt hpos)
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -87,14 +84,13 @@ private lemma cometricLmodel_covectorOfCLM_inner_loc (g₁ : SmoothRiemannianMet
       (fun _ : Fin 1 => (u : E)) = φ (u : E)
   rw [Tensor0SBundle.model_covectorOfCLM_apply]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem cometricLmodel_sub_eq_gInvDiffRaisedEndo
+theorem cometricLmodel_sub_eq_metricComparisonDifferenceEndomorphism
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (φ : E →L[ℝ] ℝ) :
     cometricLmodel (I := I) g₁ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)
         - cometricLmodel (I := I) g₀ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ) =
-      metricComparisonDiffEndo (I := I) g₀ g₁ x
+      metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
         (cometricLmodel (I := I) g₀ x
           (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) := by
   set α : Tensor0SSpace 1 I x :=
@@ -109,34 +105,34 @@ theorem cometricLmodel_sub_eq_gInvDiffRaisedEndo
     rw [hw₁, hα]; exact cometricLmodel_covectorOfCLM_inner_loc (I := I) g₁ x φ u
   have hg0w0 : g₀.inner x w₀ u = φ (u : E) := by
     rw [hw₀, hα]; exact cometricLmodel_covectorOfCLM_inner_loc (I := I) g₀ x φ u
-  have hRHS : g₁.inner x (metricComparisonDiffEndo (I := I) g₀ g₁ x w₀) u
+  have hRHS : g₁.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x w₀) u
       = g₀.inner x w₀ u - g₁.inner x w₀ u :=
-    inner_g1_gInvDiffRaisedEndo (I := I) g₀ g₁ x w₀ u
+    inner_g1_metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x w₀ u
   rw [hLHS, hRHS, hg1w1, hg0w0]
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem ricciArmPrincipalCoeffPure_appCc_sub_eq_gInvDiffContraction
+omit [I.Boundaryless] in
+theorem cometricDoubleTraceCoefficient_operatorFieldApplication_sub_eq_gInvDiffContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₁) W) x v
+          (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁) W) x v
       - unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₀) W) x v =
+          (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀) W) x v =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 W x
           (Fin.cons
-            (metricComparisonDiffEndo (I := I) g₀ g₁ x
+            (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
               (cometricLmodel (I := I) g₀ x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   classical
-  rw [ricciArmPrincipalCoeffPure_appCc_eq_roughLaplacian (I := I) (M := M) g₀ g₁ W x v,
-    ricciArmPrincipalCoeffPure_appCc_eq_roughLaplacian (I := I) (M := M) g₀ g₀ W x v]
+  rw [cometricDoubleTraceCoefficient_operatorFieldApplication_eq_roughLaplacian (I := I) (M := M) g₀ g₁ W x v,
+    cometricDoubleTraceCoefficient_operatorFieldApplication_eq_roughLaplacian (I := I) (M := M) g₀ g₀ W x v]
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   set rest : Fin 3 → E := Fin.cons (((Module.finBasis ℝ E) k : TangentSpace I x) : E)
@@ -172,15 +168,15 @@ theorem ricciArmPrincipalCoeffPure_appCc_sub_eq_gInvDiffContraction
             (Fin.cons ((Module.finBasis ℝ E) k) v))
       = unitModel (I := I) (M := M) g₀ 4 W x
           (Fin.cons
-            (metricComparisonDiffEndo (I := I) g₀ g₁ x
+            (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
               (cometricLmodel (I := I) g₀ x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
     rw [hcons (cometricLmodel (I := I) g₁ x _), hcons (cometricLmodel (I := I) g₀ x _),
-      hcons (metricComparisonDiffEndo (I := I) g₀ g₁ x _), hslot0]
+      hcons (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x _), hslot0]
     congr 2
-    rw [show (((metricComparisonDiffEndo (I := I) g₀ g₁ x
+    rw [show (((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
             (cometricLmodel (I := I) g₀ x
               (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))) : TangentSpace I x) : E)) =
@@ -190,35 +186,34 @@ theorem ricciArmPrincipalCoeffPure_appCc_sub_eq_gInvDiffContraction
           - cometricLmodel (I := I) g₀ x
             (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)) : TangentSpace I x) : E) from by
-      rw [cometricLmodel_sub_eq_gInvDiffRaisedEndo (I := I) g₀ g₁ x
+      rw [cometricLmodel_sub_eq_metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
         ((Module.finBasis ℝ E).cDualBasis k)]]
   exact hkey
-
 
 theorem connLapCometric_g1_sub_g0_eq_gInvDiffContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₁)
+          (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁)
           (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v
       - unitModel (I := I) (M := M) g₀ 2 (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
           (Fin.cons
-            (metricComparisonDiffEndo (I := I) g₀ g₁ x
+            (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
               (cometricLmodel (I := I) g₀ x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
-  rw [rawTensorConnLapSmooth_eq_appCc_cometricDoubleTrace (I := I) g₀ S x v]
-  exact ricciArmPrincipalCoeffPure_appCc_sub_eq_gInvDiffContraction (I := I) (M := M) g₀ g₁
+  rw [rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace (I := I) g₀ S x v]
+  exact cometricDoubleTraceCoefficient_operatorFieldApplication_sub_eq_gInvDiffContraction (I := I) (M := M) g₀ g₁
     (iteratedCovGrad (I := I) g₀ 0 2 2 S) x v
 
 def deTurckPrincipalCometricCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
-  ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₁
-    - ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₀
+  cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁
+    - cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀
 
 def deTurckPrincipalCometricArm (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 2 :=
@@ -226,21 +221,19 @@ def deTurckPrincipalCometricArm (g₀ g₁ : SmoothRiemannianMetric I M)
     (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
     (iteratedCovGrad (I := I) g₀ 0 2 2 S)
 
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma unitModel_appCc_sub_distrib
+private lemma unitModel_operatorFieldApplication_sub_distrib
     (g₀ : SmoothRiemannianMetric I M) (Φ₁ Φ₂ : SmoothCcTensor g₀ 4 2)
     (W : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₁ - Φ₂) W) x v =
       unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2 Φ₁ W) x v
         - unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2 Φ₂ W) x
           v := by
-  rw [appCc_sub_left (I := I) (M := M) g₀ 4 2]
+  rw [operatorFieldApplication_sub_left (I := I) (M := M) g₀ 4 2]
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
     ContinuousMultilinearMap.sub_apply]
-
 
 theorem deTurckPrincipalCometricArm_unitModel_eq_gInvDiffContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
@@ -249,39 +242,39 @@ theorem deTurckPrincipalCometricArm_unitModel_eq_gInvDiffContraction
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
           (Fin.cons
-            (metricComparisonDiffEndo (I := I) g₀ g₁ x
+            (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
               (cometricLmodel (I := I) g₀ x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   classical
   rw [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
-    unitModel_appCc_sub_distrib (I := I) (M := M) g₀
-      (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₁)
-      (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₀)
+    unitModel_operatorFieldApplication_sub_distrib (I := I) (M := M) g₀
+      (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁)
+      (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀)
       (iteratedCovGrad (I := I) g₀ 0 2 2 S) x v]
   have hg0 : unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₀)
+          (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀)
           (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v
       = unitModel (I := I) (M := M) g₀ 2 (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v :=
-    (rawTensorConnLapSmooth_eq_appCc_cometricDoubleTrace (I := I) g₀ S x v).symm
+    (rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace (I := I) g₀ S x v).symm
   rw [hg0]
   exact connLapCometric_g1_sub_g0_eq_gInvDiffContraction (I := I) (M := M) g₀ g₁ S x v
 
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma deTurckCoeff_clm_eq_doubleTrace_sub (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁).toSection x) =
       cometricDoubleTraceFib (I := I) g₁ 2 x - cometricDoubleTraceFib (I := I) g₀ 2 x := by
   rw [deTurckPrincipalCometricCoeff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply]
-  rw [ricciArmPrincipalCoeffPure_toSection (I := I) (M := M) g₀ g₁,
-    ricciArmPrincipalCoeffPure_toSection (I := I) (M := M) g₀ g₀]
-
+  rw [cometricDoubleTraceCoefficient_toSection (I := I) (M := M) g₀ g₁,
+    cometricDoubleTraceCoefficient_toSection (I := I) (M := M) g₀ g₀]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (w : Tensor0SSpace 4 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -290,7 +283,7 @@ private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (
       ∑ k : Fin (Module.finrank ℝ E),
         (Tensor0SSpace.toModel w)
           (Fin.cons
-            ((metricComparisonDiffEndo (I := I) g₀ g₁ x
+            ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
               (cometricLmodel (I := I) g₀ x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))) : TangentSpace I x) : E)
@@ -315,24 +308,24 @@ private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (
     hcurry (cometricLmodel (I := I) g₀ x
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k))),
-    hcurry (metricComparisonDiffEndo (I := I) g₀ g₁ x
+    hcurry (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
         (cometricLmodel (I := I) g₀ x
           (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k))))]
   rw [← ContinuousMultilinearMap.sub_apply, ← map_sub]
   congr 2
-  rw [cometricLmodel_sub_eq_gInvDiffRaisedEndo (I := I) g₀ g₁ x
+  rw [cometricLmodel_sub_eq_metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
     ((Module.finBasis ℝ E).cDualBasis k)]
 
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
+omit [I.Boundaryless] in
+lemma deTurckPrincipalCometricCoeff_eq_operatorFieldComposition_doubleTrace_slotInsertEndo
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁ =
       DifferentialGeometry.Analysis.Spectral.ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2
         (cometricDoubleTraceField (I := I) g₀ 2)
         (DifferentialGeometry.Geometry.Connection.endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁)) := by
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -342,14 +335,13 @@ lemma deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   beta_reduce
   rw [deTurckCoeff_toModel_eq (I := I) (M := M) g₀ g₁ x w m,
-    DifferentialGeometry.Analysis.Spectral.appCcRS_toSection,
+    DifferentialGeometry.Analysis.Spectral.operatorFieldComposition_toSection,
     ContinuousLinearMap.comp_apply, cometricDoubleTraceField_toSection,
     cometricDoubleTraceFib_toModel, modelDoubleTrace_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [DifferentialGeometry.Geometry.Connection.slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval, Fin.cons_zero, Fin.update_cons_zero]
   rfl
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -363,7 +355,6 @@ private lemma cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric I M)
   rw [cometricLmodel_covectorOfCLM_inner_loc (I := I) g₀ x
     ((g₀.inner x v).toLinearMap.toContinuousLinearMap) u]
   rfl
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -408,8 +399,8 @@ private lemma flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [hsum]
   exact cometricLmodel_covOf_g0flat_eq (I := I) g₀ x (e b)
 
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 private lemma deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g₀.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
@@ -417,7 +408,7 @@ private lemma deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     fiberNormSqComponent (I := I) (M := M) g₀ x 4 2
         (show TensorRSSpace 4 2 I x from
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁).toSection x) n e K J =
-      g₀.inner x (e (K 0)) (metricComparisonDiffEndo (I := I) g₀ g₁ x (e (K 1))) *
+      g₀.inner x (e (K 0)) (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x (e (K 1))) *
         ((if K 2 = J 0 then (1 : ℝ) else 0) * (if K 3 = J 1 then (1 : ℝ) else 0)) := by
   classical
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 4 2
@@ -435,7 +426,7 @@ private lemma deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M)
       (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis k)) with hRk
   set Λ : TangentSpace I x →L[ℝ] TangentSpace I x :=
-    metricComparisonDiffEndo (I := I) g₀ g₁ x with hΛ
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x with hΛ
   have hk : ∀ k : Fin (Module.finrank ℝ E),
       (Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K))
           (Fin.cons ((Λ (Rk k) : TangentSpace I x) : E)
@@ -474,7 +465,6 @@ private lemma deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     rw [map_smul, ContinuousLinearMap.map_smul, smul_eq_mul]
     ring
   rw [← hpull, flatRecon_eq_basisVec (I := I) g₀ x e (K 1)]
-
 
 private lemma sum_pi_fin_succ {n : ℕ} {β : Type*} [AddCommMonoid β]
     {N : ℕ} (g : (Fin (N + 1) → Fin n) → β) :
@@ -564,8 +554,8 @@ private lemma deTurckCoeff_componentSqSum_eq (n : ℕ) (f : Fin n → Fin n → 
     rw [Finset.sum_congr rfl (fun b _ => hb b), ← Finset.mul_sum]
   rw [Finset.sum_congr rfl (fun a _ => hstep a), ← Finset.mul_sum]
 
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -578,7 +568,7 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
       (Module.finrank ℝ E : ℝ) ^ 3 * (δ / (1 - δ)) ^ 2 := by
   classical
   set Λ : TangentSpace I x →L[ℝ] TangentSpace I x :=
-    metricComparisonDiffEndo (I := I) g₀ g₁ x with hΛ
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x with hΛ
   obtain ⟨n, e, hn, horth, hpar, hrepr⟩ :=
     exists_orthonormal_frame_riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
   have hnE : (n : ℝ) = (Module.finrank ℝ E : ℝ) := by rw [hn]; rfl
@@ -599,7 +589,7 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
   set r : ℝ := δ / (1 - δ) with hr
   have hper : ∀ b : Fin n, g₀.inner x (Λ (e b)) (Λ (e b)) ≤ r ^ 2 := by
     intro b
-    have hsqrt := sqrt_inner_gInvDiffRaisedEndo_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (e b)
+    have hsqrt := sqrt_inner_metricComparisonDifferenceEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x (e b)
     rw [← hΛ, ← hr] at hsqrt
     have he1 : g₀.inner x (e b) (e b) = 1 := by rw [horth b b]; simp
     rw [he1, Real.sqrt_one, mul_one] at hsqrt
@@ -629,7 +619,6 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
       ≤ (n : ℝ) ^ 2 * ((n : ℝ) * r ^ 2) := mul_le_mul_of_nonneg_left hAB hn_nn
     _ = (Module.finrank ℝ E : ℝ) ^ 3 * r ^ 2 := by rw [← hnE]; ring
 
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem riemannianFiberNormSq_deTurckPrincipalCometricArm_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -655,7 +644,7 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricArm_le
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
             (iteratedCovGrad (I := I) g₀ 0 2 2 S).toSection x)) := by
     rw [deTurckPrincipalCometricArm,
-      appCc_toSection (I := I) (M := M) g₀ 4 2
+      operatorFieldApplication_toSection (I := I) (M := M) g₀ 4 2
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
         (iteratedCovGrad (I := I) g₀ 0 2 2 S) x]
   rw [harm_sec]
@@ -667,7 +656,6 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricArm_le
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 4 x _
   exact mul_le_mul_of_nonneg_right hcoeff hW_nn
 
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma iteratedCovGrad_smul_local (g : SmoothRiemannianMetric I M) (r s j : ℕ)
@@ -677,7 +665,6 @@ private lemma iteratedCovGrad_smul_local (g : SmoothRiemannianMetric I M) (r s j
   | zero => simp only [iteratedCovGrad_zero]
   | succ j ih =>
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih, covGrad_smul]
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -691,12 +678,11 @@ private lemma riemannianFiberNormSq_smul_local (g : SmoothRiemannianMetric I M) 
     tensorInnerPointwise_smul_right]
   ring
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma combinedTrace42Model_apply_symbolic
     (L : Tensor0SBundle.Tensor0SModel 1 ℝ E →L[ℝ] E)
     (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (m : Fin 2 → E) :
-    ricciPrincipalCoeffDoubleTraceModel (E := E) L D m =
+    ricciPrincipalCoefficientDoubleTraceModel (E := E) L D m =
       (1 / 2 : ℝ) *
         (modelDoubleTrace (E := E) 2 L
             (ContinuousMultilinearMap.domDomCongr koszulDoubleTraceSlotPerm D) m
@@ -704,18 +690,18 @@ private lemma combinedTrace42Model_apply_symbolic
             (ContinuousMultilinearMap.domDomCongr koszulDoubleTraceSlotPerm D)
               (fun j : Fin 2 => m ((Equiv.swap (0 : Fin 2) 1) j))
           - modelDoubleTrace (E := E) 2 L D m) := by
-  rw [ricciPrincipalCoeffDoubleTraceModel, ContinuousLinearMap.smul_apply,
+  rw [ricciPrincipalCoefficientDoubleTraceModel, ContinuousLinearMap.smul_apply,
     ContinuousMultilinearMap.smul_apply, smul_eq_mul]
   congr 1
 
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private lemma ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum
+omit [I.Boundaryless] in
+private lemma ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindexSum
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₀)
-        + (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₀) =
+    (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
+          - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
+        + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
+          - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀) =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) koszulDoubleTraceSlotPerm
         + reindexCoeffGen (I := I) (M := M) g₀ 4 2
@@ -734,8 +720,8 @@ private lemma ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum
     ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply,
-    ricciArmPrincipalCoeff_toSection, ricciArmPrincipalCoeff_toSection,
-    ricciArmPrincipalCoeffFib_toModel, ricciArmPrincipalCoeffFib_toModel,
+    ricciDeTurckPrincipalCoefficient_toSection, ricciDeTurckPrincipalCoefficient_toSection,
+    ricciDeTurckPrincipalCoefficientFiber_toModel, ricciDeTurckPrincipalCoefficientFiber_toModel,
     combinedTrace42Model_apply_symbolic, combinedTrace42Model_apply_symbolic]
   rw [SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add, ContMDiffSection.coe_sub,
     ContMDiffSection.coe_add, Pi.sub_apply, Pi.add_apply, ContinuousLinearMap.sub_apply,
@@ -748,13 +734,12 @@ private lemma ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum
     ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.sub_apply]
   ring
 
-
-private lemma riemannianFiberNormSq_iteratedCovGrad_ricciArmPrincipalCoeff_sub_le
+private lemma riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoefficient_sub_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 4 2 i
-          (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
-            - ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
+          (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
+            - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)).toSection x) ≤
       (10 / 4 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 4 2 i
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)).toSection x) := by
@@ -764,11 +749,11 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciArmPrincipalCoeff_sub_l
   set R2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2
     (rsDomDomCongrSection (I := I) (M := M) g₀ 4 2 (Equiv.swap (0 : Fin 2) 1) R3)
     koszulDoubleTraceSlotPerm with hR2
-  set A := ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
-    - ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₀ with hA
+  set A := ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
+    - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀ with hA
   have hid : A + A = R1 + R2 - R3 := by
     rw [hA, hR1, hR2, hR3]
-    exact ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum (I := I) (M := M) g₀ g₁
+    exact ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindexSum (I := I) (M := M) g₀ g₁
   have hiter : iteratedCovGrad (I := I) g₀ 4 2 i A + iteratedCovGrad (I := I) g₀ 4 2 i A =
       iteratedCovGrad (I := I) g₀ 4 2 i R1 + iteratedCovGrad (I := I) g₀ 4 2 i R2
         - iteratedCovGrad (I := I) g₀ 4 2 i R3 := by
@@ -794,7 +779,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciArmPrincipalCoeff_sub_l
   have hbB : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x PB =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x PC := by
     rw [hPB, hPC, hR2]
-    exact rfns_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 4 2
+    exact riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 4 2
       koszulDoubleTraceSlotPerm
       (Equiv.swap (0 : Fin 2) 1) R3 i x
   have hnegC : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x (-PC) =
@@ -896,8 +881,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
         m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (Fin.succ k₂)))
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]
 
-
-private lemma rfns_iteratedCovGrad_slotInsertEndoCc_succ_le
+private lemma riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_le
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -917,14 +901,13 @@ private lemma rfns_iteratedCovGrad_slotInsertEndoCc_succ_le
           (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ))).toSection x) := by
     rw [slotInsertEndoCc_succ_eq_reindex_slotExtend_local (I := I) (M := M) g₀ s Λ]
-    exact rfns_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+    exact riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
       (Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
       (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ)) i x
   rw [hA]
-  exact rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ (s + 1) (s + 1)
+  exact riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ (s + 1) (s + 1)
     (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ) i x
-
 
 private lemma riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_succ_le
     (g₀ : SmoothRiemannianMetric I M)
@@ -939,8 +922,8 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_succ_l
           ((iteratedCovGrad (I := I) g₀ 2 2 l
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 Λ)).toSection x) := by
   have hfr : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
-  have h1 := rfns_iteratedCovGrad_slotInsertEndoCc_succ_le (I := I) (M := M) g₀ 2 Λ l x
-  have h2 := rfns_iteratedCovGrad_slotInsertEndoCc_succ_le (I := I) (M := M) g₀ 1 Λ l x
+  have h1 := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_le (I := I) (M := M) g₀ 2 Λ l x
+  have h2 := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_le (I := I) (M := M) g₀ 1 Λ l x
   calc riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + l) x
           ((iteratedCovGrad (I := I) g₀ 4 4 l
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3 Λ)).toSection x)
@@ -959,8 +942,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_succ_l
             ((iteratedCovGrad (I := I) g₀ 2 2 l
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 Λ)).toSection x) := by ring
 
-
-private lemma rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
+private lemma riemannianFiberNormSq_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
     (g₀ g₁ : SmoothRiemannianMetric I M) {K : ℝ} (hK_nn : 0 ≤ K)
     (hK_bound : ∀ b : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 b
       ((cometricDoubleTraceField (I := I) g₀ 2).toSection b) ≤ K)
@@ -972,21 +954,21 @@ private lemma rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
         ∑ l ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 2 2 l
-              (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by
+              (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by
   classical
   have hcovgrad0 : covGrad (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2) = 0 :=
     cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ 2
-  rw [deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo (I := I) (M := M) g₀ g₁]
+  rw [deTurckPrincipalCometricCoeff_eq_operatorFieldComposition_doubleTrace_slotInsertEndo (I := I) (M := M) g₀ g₁]
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀
     i 4 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
-    (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3 (gInvDiffRaisedEndoField (I := I) g₀ g₁)) x) ?_
+    (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)) x) ?_
   set Full : ℝ := ∑ l ∈ Finset.range (i + 1),
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 4 4 l
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x)
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x)
     with hFull
   have hFull_nn : 0 ≤ Full := by
     rw [hFull]
@@ -1019,7 +1001,7 @@ private lemma rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + l) x
             ((iteratedCovGrad (I := I) g₀ 4 4 l
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-                (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x) ≤ K * Full := by
+                (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x) ≤ K * Full := by
     calc ∑ k ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + k) x
               ((iteratedCovGrad (I := I) g₀ 4 2 k
@@ -1028,7 +1010,7 @@ private lemma rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
               riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + l) x
                 ((iteratedCovGrad (I := I) g₀ 4 4 l
                   (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-                    (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x)
+                    (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x)
         ≤ ∑ k ∈ Finset.range (i + 1),
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + k) x
               ((iteratedCovGrad (I := I) g₀ 4 2 k
@@ -1051,15 +1033,15 @@ private lemma rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
   have hFullLe : Full ≤ (Module.finrank ℝ E : ℝ) ^ 2 *
       ∑ l ∈ Finset.range (i + 1),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
-          ((iteratedCovGrad (I := I) g₀ 2 2 l (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by
+          ((iteratedCovGrad (I := I) g₀ 2 2 l (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by
     rw [hFull, Finset.mul_sum]
     refine Finset.sum_le_sum (fun l _ => ?_)
     have hb := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_succ_le (I := I) (M := M)
       g₀
-      (gInvDiffRaisedEndoField (I := I) g₀ g₁) l x
-    rw [show gInvDiffSlotCoeff (I := I) g₀ g₁ =
+      (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) l x
+    rw [show inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁ =
         endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁) from by
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) from by
       apply SmoothCcTensor.ext
       apply ContMDiffSection.ext
       intro y
@@ -1073,33 +1055,60 @@ private lemma rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
               riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + l) x
                 ((iteratedCovGrad (I := I) g₀ 4 4 l
                   (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-                    (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x)
+                    (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x)
       ≤ diagonalGridGrowthFactor (E := E) i * (K * Full) := mul_le_mul_of_nonneg_left hgridsum
         happ_nn
     _ ≤ diagonalGridGrowthFactor (E := E) i * (K * ((Module.finrank ℝ E : ℝ) ^ 2 *
           ∑ l ∈ Finset.range (i + 1),
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 2 2 l
-                (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x))) := by
+                (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))) := by
         refine mul_le_mul_of_nonneg_left ?_ happ_nn
         exact mul_le_mul_of_nonneg_left hFullLe hK_nn
     _ = diagonalGridGrowthFactor (E := E) i * K * (Module.finrank ℝ E : ℝ) ^ 2 *
           ∑ l ∈ Finset.range (i + 1),
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 2 2 l
-                (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by ring
+                (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by ring
 
+theorem pcc_riemannianFiberNormSq_of_bound
+    (g₀ g₁ : SmoothRiemannianMetric I M) {K : ℝ} (hK : 0 ≤ K)
+    (hKb : ∀ b : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 b
+      ((cometricDoubleTraceField (I := I) g₀ 2).toSection b) ≤ K)
+    (i : ℕ) (x : M) :
+    riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
+        ((iteratedCovGrad (I := I) g₀ 4 2 i
+          (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)).toSection x) ≤
+      operatorFieldApplicationGdiag (E := E) i * K * (Module.finrank ℝ E : ℝ) ^ 2 *
+        ∑ l ∈ Finset.range (i + 1),
+          riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
+            ((iteratedCovGrad (I := I) g₀ 2 2 l
+              (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) :=
+  riemannianFiberNormSq_iteratedCovGrad_deTurckPrincipalCometricCoeff_le
+    (I := I) (M := M) g₀ g₁ hK hKb i x
 
-theorem ricciArmPrincipalCoeff_sub_perOrder_rfns_le_gInvDiffSlotCoeff
+theorem ricci_sub_riemannianFiberNormSq
+    (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
+    riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
+        ((iteratedCovGrad (I := I) g₀ 4 2 i
+          (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
+            - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)).toSection x) ≤
+      (10 / 4 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
+        ((iteratedCovGrad (I := I) g₀ 4 2 i
+          (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)).toSection x) :=
+  riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoefficient_sub_le
+    (I := I) (M := M) g₀ g₁ i x
+
+theorem ricciDeTurckPrincipalCoefficient_sub_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧ ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 4 2 i
-            (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
-              - ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₀)).toSection x)
+            (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
+              - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)).toSection x)
       ≤ C i * ∑ j ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
-            ((iteratedCovGrad (I := I) g₀ 2 2 j (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection
+            ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection
               x) := by
   obtain ⟨K, hK_nn, hK_bound⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
@@ -1111,10 +1120,10 @@ theorem ricciArmPrincipalCoeff_sub_perOrder_rfns_le_gInvDiffSlotCoeff
       rw [diagonalGridGrowthFactor]; positivity
     exact mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) happ) hK_nn) (sq_nonneg _)
   · intro g₁ i x
-    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_ricciArmPrincipalCoeff_sub_le (I := I)
+    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoefficient_sub_le (I := I)
       (M := M)
       g₀ g₁ i x) ?_
-    have hH3 := rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le (I := I) (M := M)
+    have hH3 := riemannianFiberNormSq_iteratedCovGrad_deTurckPrincipalCometricCoeff_le (I := I) (M := M)
       g₀ g₁ hK_nn hK_bound i x
     calc (10 / 4 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 4 2 i
@@ -1123,16 +1132,16 @@ theorem ricciArmPrincipalCoeff_sub_perOrder_rfns_le_gInvDiffSlotCoeff
             ∑ l ∈ Finset.range (i + 1),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 2 2 l
-                  (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x)) :=
+                  (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x)) :=
           mul_le_mul_of_nonneg_left hH3 (by norm_num)
       _ = (10 / 4 : ℝ) * diagonalGridGrowthFactor (E := E) i * K * (Module.finrank ℝ E : ℝ) ^ 2 *
             ∑ l ∈ Finset.range (i + 1),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 2 2 l
-                  (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by ring
-
+                  (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deTurckPrincipalCometricCoeff_toSection_clm_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
@@ -1140,8 +1149,7 @@ theorem deTurckPrincipalCometricCoeff_toSection_clm_eq
       cometricDoubleTraceFib (I := I) g₁ 2 x - cometricDoubleTraceFib (I := I) g₀ 2 x :=
   deTurckCoeff_clm_eq_doubleTrace_sub (I := I) (M := M) g₀ g₁ x
 
-
-theorem deTurckPrincipalCometricCoeff_perOrder_rfns_le_gInvDiffSlotCoeff
+theorem deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧ ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -1149,7 +1157,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_rfns_le_gInvDiffSlotCoeff
             (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)).toSection x) ≤
         C i * ∑ j ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
-            ((iteratedCovGrad (I := I) g₀ 2 2 j (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection
+            ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection
               x) := by
   obtain ⟨K, hK_nn, hK_bound⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
@@ -1159,10 +1167,10 @@ theorem deTurckPrincipalCometricCoeff_perOrder_rfns_le_gInvDiffSlotCoeff
       rw [diagonalGridGrowthFactor]; positivity
     exact mul_nonneg (mul_nonneg happ hK_nn) (sq_nonneg _)
   · intro g₁ i x
-    exact rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le (I := I) (M := M)
+    exact riemannianFiberNormSq_iteratedCovGrad_deTurckPrincipalCometricCoeff_le (I := I) (M := M)
       g₀ g₁ hK_nn hK_bound i x
 
-theorem coeff_grad_rfns_le
+theorem coeff_grad_riemannianFiberNormSq_le
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 3 x
@@ -1170,13 +1178,13 @@ theorem coeff_grad_rfns_le
             (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)).toSection x) ≤
         C * riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
           ((covGrad (I := I) (M := M) g₀ 2 2
-            (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by
+            (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by
   obtain ⟨K, hK, hKpt⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
   let n : ℝ := Module.finrank ℝ E
   refine ⟨n ^ 3 * K, mul_nonneg (by positivity) hK, ?_⟩
   intro g₁ x
-  let Λ := gInvDiffRaisedEndoField (I := I) g₀ g₁
+  let Λ := metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁
   let D := cometricDoubleTraceField (I := I) g₀ 2
   let S := endoSlotZeroCcTensor (I := I) (M := M) g₀ 3 Λ
   have hgrad :
@@ -1185,14 +1193,14 @@ theorem coeff_grad_rfns_le
         ccOperatorFieldComp (I := I) (M := M) g₀ 4 5 3
           (slotExtend (I := I) (M := M) g₀ 4 2 D)
           (covGrad (I := I) (M := M) g₀ 4 4 S) := by
-    rw [deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
+    rw [deTurckPrincipalCometricCoeff_eq_operatorFieldComposition_doubleTrace_slotInsertEndo
       (I := I) (M := M) g₀ g₁]
     change covGrad (I := I) (M := M) g₀ 4 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2 D S) = _
-    rw [covGrad_appCcRS_eq,
+    rw [covGrad_operatorFieldComposition_eq,
       cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ 2,
-      appCcRS_zero_left, zero_add]
-  rw [hgrad, appCcRS_toSection]
+      operatorFieldComposition_zero_left, zero_add]
+  rw [hgrad, operatorFieldComposition_toSection]
   refine le_trans
     (riemannianFiberNormSq_compRS_le_mul (I := I) (M := M) g₀ 4 5 3 x
       (show TensorRSSpace 5 3 I x from
@@ -1201,17 +1209,17 @@ theorem coeff_grad_rfns_le
         (covGrad (I := I) (M := M) g₀ 4 4 S).toSection x)) ?_
   have hD : riemannianFiberNormSq (I := I) (M := M) g₀ 5 3 x
       ((slotExtend (I := I) (M := M) g₀ 4 2 D).toSection x) ≤ n * K := by
-    rw [rfns_slotExtend_eq (I := I) (M := M) g₀ 4 2 D x]
+    rw [riemannianFiberNormSq_slotExtend_eq (I := I) (M := M) g₀ 4 2 D x]
     exact mul_le_mul_of_nonneg_left (hKpt x) (by positivity)
   have hS : riemannianFiberNormSq (I := I) (M := M) g₀ 4 5 x
       ((covGrad (I := I) (M := M) g₀ 4 4 S).toSection x) ≤
         n ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
           ((covGrad (I := I) (M := M) g₀ 2 2
-            (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by
+            (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by
     have hs := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_succ_succ_le
       (I := I) (M := M) g₀ Λ 1 x
     simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero,
-      Nat.reduceAdd, gInvDiffSlotCoeff_eq_slotInsertEndoCc] using hs
+      Nat.reduceAdd, inverseMetricDifferenceSlotCoefficient_eq_slotInsertEndoCc] using hs
   have hright : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 4 5 x
       ((covGrad (I := I) (M := M) g₀ 4 4 S).toSection x) :=
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 5 x _
@@ -1226,12 +1234,12 @@ theorem coeff_grad_rfns_le
     _ ≤ (n * K) * (n ^ 2 *
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
             ((covGrad (I := I) (M := M) g₀ 2 2
-              (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x)) :=
+              (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x)) :=
       mul_le_mul_of_nonneg_left hS (mul_nonneg (by positivity) hK)
     _ = (n ^ 3 * K) *
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
             ((covGrad (I := I) (M := M) g₀ 2 2
-              (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by ring
+              (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by ring
 
 theorem coeff_jet_l2_sq
     (g₀ : SmoothRiemannianMetric I M) :
@@ -1240,9 +1248,9 @@ theorem coeff_jet_l2_sq
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
         C i * ∑ j ∈ Finset.range (i + 1),
           ‖iteratedCovGrad (I := I) g₀ 2 2 j
-            (gInvDiffSlotCoeff (I := I) g₀ g₁)‖ ^ 2 := by
+            (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)‖ ^ 2 := by
   obtain ⟨C, hC_nn, hC⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_rfns_le_gInvDiffSlotCoeff
+    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
       (I := I) (M := M) g₀
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ i
@@ -1250,13 +1258,13 @@ theorem coeff_jet_l2_sq
       (fun x => C i * ∑ j ∈ Finset.range (i + 1),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 2 2 j
-            (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x))
+            (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     (MeasureTheory.integrable_finset_sum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection
         (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j
-          (gInvDiffSlotCoeff (I := I) g₀ g₁)))).const_mul (C i)
+          (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))).const_mul (C i)
   have hnorm := normSq_le_integral_of_pointwise_fiberNormSq_le_rs
     (I := I) (M := M) g₀ 4 (2 + i)
     (iteratedCovGrad (I := I) g₀ 4 2 i
@@ -1264,7 +1272,7 @@ theorem coeff_jet_l2_sq
     (fun x => C i * ∑ j ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 2 2 j
-          (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x))
+          (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
     hF_int (fun x => hC g₁ i x)
   refine hnorm.trans (le_of_eq ?_)
   rw [MeasureTheory.integral_const_mul]
@@ -1273,16 +1281,15 @@ theorem coeff_jet_l2_sq
     (fun j _ => integrable_riemannianFiberNormSq_toSection
       (I := I) (M := M) g₀ 2 (2 + j)
       (iteratedCovGrad (I := I) g₀ 2 2 j
-        (gInvDiffSlotCoeff (I := I) g₀ g₁)))]
+        (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [SmoothCcTensor.norm_def (I := I) (M := M)
     (iteratedCovGrad (I := I) g₀ 2 2 j
-      (gInvDiffSlotCoeff (I := I) g₀ g₁))]
+      (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁))]
   exact (tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs
     (I := I) (M := M) g₀ 2 (2 + j)
     (iteratedCovGrad (I := I) g₀ 2 2 j
-      (gInvDiffSlotCoeff (I := I) g₀ g₁))).symm
-
+      (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁))).symm
 
 end TensorSpectral
 end Parabolic

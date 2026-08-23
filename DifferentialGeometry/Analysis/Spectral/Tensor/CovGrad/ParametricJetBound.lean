@@ -29,7 +29,7 @@ omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem joint_rfns_cont
+theorem joint_riemannianFiberNormSq_cont
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) {S K : Set ℝ}
     (hKS : K ⊆ S)
@@ -122,7 +122,7 @@ theorem covGrad_iter_joint
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem joint_jet_rfns
+theorem joint_jet_riemannianFiberNormSq
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) {S K : Set ℝ}
     (hKS : K ⊆ S)
@@ -136,7 +136,7 @@ theorem joint_jet_rfns
       riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) p.2
         ((iteratedCovGrad (I := I) g₀ r s i (Φ p.1)).toSection p.2))
       (K ×ˢ (Set.univ : Set M)) :=
-  joint_rfns_cont (I := I) (M := M) g₀ r (s + i)
+  joint_riemannianFiberNormSq_cont (I := I) (M := M) g₀ r (s + i)
     (fun t => iteratedCovGrad (I := I) g₀ r s i (Φ t)) hKS
     (covGrad_iter_joint (I := I) (M := M) g₀ r s i Φ S hjoint)
 
@@ -214,7 +214,7 @@ theorem joint_jet_small
     apply joint_small (f := fun t x =>
       riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) x
         ((iteratedCovGrad (I := I) g₀ r s i (Φ t)).toSection x)) hS
-    · exact joint_jet_rfns (I := I) (M := M) g₀ r s i Φ
+    · exact joint_jet_riemannianFiberNormSq (I := I) (M := M) g₀ r s i Φ
         (S := S) (K := S) (fun _ ht => ht) hjoint
     · intro x
       rw [hzero, hiter0 i]
@@ -268,7 +268,7 @@ theorem joint_jet_bdd
       riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) p.2
         ((iteratedCovGrad (I := I) g₀ r s i (Φ p.1)).toSection p.2)
     have hcont : ContinuousOn F (K ×ˢ (Set.univ : Set M)) :=
-      joint_jet_rfns (I := I) (M := M) g₀ r s i Φ hKS hjoint
+      joint_jet_riemannianFiberNormSq (I := I) (M := M) g₀ r s i Φ hKS hjoint
     obtain ⟨C₀, hC₀⟩ := (hprod.image_of_continuousOn hcont).bddAbove
     refine ⟨max C₀ 0, le_max_right _ _, ?_⟩
     intro t ht x

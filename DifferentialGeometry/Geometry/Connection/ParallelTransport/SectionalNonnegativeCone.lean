@@ -14,7 +14,7 @@ namespace Geometry
 namespace Riemannian
 namespace Variation
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Convex
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -54,7 +54,6 @@ noncomputable def parallelTransportTensor04CLEOnIcc [I.Boundaryless]
   tensor0SPullbackCLE (I := I) (M := M) 4
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
-@[simp]
 theorem parallelTransportTensor04CLEOnIcc_sectionalEval [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
     (hgamma : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) gamma)

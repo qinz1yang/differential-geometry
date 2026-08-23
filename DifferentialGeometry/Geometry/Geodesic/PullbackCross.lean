@@ -239,6 +239,94 @@ theorem geoEq_mapCrossAt
       (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) htargetVelZero
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+theorem geoEq_of_mapCrossAt
+    [I.Boundaryless] [J.Boundaryless]
+    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
+    (gamma : ℝ → M) (t : ℝ)
+    (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gamma t)
+    (hgeo : HasGeodesicEquationAt (I := J) g
+      (fun s => Phi (gamma s)) t) :
+    HasGeodesicEquationAt (I := I)
+      (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) gamma t := by
+  let delta : ℝ → N := fun s => Phi (gamma s)
+  have hdelta : ContMDiffAt 𝓘(ℝ, ℝ) J ∞ delta t :=
+    Phi.contMDiff.contMDiffAt.comp t hgamma
+  let V : ∀ s, TangentSpace I (gamma s) :=
+    fun s => (mfderiv 𝓘(ℝ, ℝ) I gamma s :
+      ℝ →L[ℝ] TangentSpace I (gamma s)) (1 : ℝ)
+  let W : ∀ s, TangentSpace J (delta s) :=
+    fun s => mfderiv I J (Phi : M → N) (gamma s) (V s)
+  have hVdiff : DifferentiableAt ℝ (chartRepAt (I := I) gamma V t) t := by
+    simpa [V] using velocity_rep_diffAt (I := I) gamma t hgamma
+  have hnat := covAlong_natCrossAt
+    (I := I) (J := J) g Phi gamma V t hgamma hVdiff
+  have hgamma2 : ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma t :=
+    hgamma.of_le
+      (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))
+  have hgammaEv : ∀ᶠ s in nhds t,
+      ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma s :=
+    (contMDiffAt_iff_contMDiffAt_nhds (n := 2) (by decide)).mp hgamma2
+  have hWvel : W =ᶠ[nhds t] fun s =>
+      (mfderiv 𝓘(ℝ, ℝ) J delta s :
+        ℝ →L[ℝ] TangentSpace J (delta s)) (1 : ℝ) := by
+    filter_upwards [hgammaEv] with s hs
+    have hPhi : MDifferentiableAt I J (Phi : M → N) (gamma s) :=
+      Phi.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+    have hgammaAt : MDifferentiableAt 𝓘(ℝ, ℝ) I gamma s :=
+      hs.mdifferentiableAt (by decide)
+    have hcomp := mfderiv_comp_apply
+      (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := J)
+      (g := (Phi : M → N)) (f := gamma) (x := s)
+      hPhi hgammaAt (1 : ℝ)
+    simpa [W, V, delta, Function.comp_def] using hcomp.symm
+  have hrep : chartRepAt (I := J) delta W t =ᶠ[nhds t]
+      chartRepAt (I := J) delta
+        (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
+          ℝ →L[ℝ] TangentSpace J (delta s)) (1 : ℝ)) t := by
+    filter_upwards [hWvel] with s hs
+    rw [chartRepAt_apply, chartRepAt_apply, hs]
+  have hcovEq : covDerivAlong (I := J) g delta W t =
+      covDerivAlong (I := J) g delta
+        (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
+          ℝ →L[ℝ] TangentSpace J (delta s)) (1 : ℝ)) t := by
+    rw [covDerivAlong_def, covDerivAlong_def,
+      chartCovDerivAlong_def, chartCovDerivAlong_def,
+      hrep.deriv_eq, hrep.eq_of_nhds]
+  have htargetVelZero : covDerivAlong (I := J) g delta
+      (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
+        ℝ →L[ℝ] TangentSpace J (delta s)) (1 : ℝ)) t = 0 :=
+    covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
+      (I := J) g delta t
+      (hdelta.of_le
+        (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) hgeo
+  have htargetZero : covDerivAlong (I := J) g delta W t = 0 := by
+    rw [hcovEq]
+    exact htargetVelZero
+  have hpushZero :
+      mfderiv I J (Phi : M → N) (gamma t)
+        (covDerivAlong (I := I)
+          (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
+          gamma V t) = 0 := by
+    rw [hnat, htargetZero]
+  have hinj :
+      Function.Injective (mfderiv I J (Phi : M → N) (gamma t)) := by
+    simpa only [Diffeomorph.mfderivToContinuousLinearEquiv_coe] using
+      (Phi.mfderivToContinuousLinearEquiv
+        (by decide : (∞ : WithTop ℕ∞) ≠ 0) (gamma t)).injective
+  have hsourceZero : covDerivAlong (I := I)
+      (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
+      gamma V t = 0 := by
+    apply hinj
+    rw [hpushZero, map_zero]
+  exact geoEq_of_covVel_C2 (I := I)
+    (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
+    gamma t hgamma2 (by simpa [V] using hsourceZero)
+
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem geoEq_mapCross
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -267,7 +355,6 @@ theorem geodesic_mapCross
       (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) gamma) :
     IsGeodesic (I := J) g (fun s => Phi (gamma s)) :=
   fun t => geoEq_mapCross (I := I) (J := J) g Phi gamma t hgamma (hgeo t)
-
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem geodesicOn_mapCross

@@ -71,7 +71,6 @@ private theorem tangentFieldModelInChart_sum_tangentConst_model
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (_hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (x₀ : M) (v : TangentSpace I x₀) :
     ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
       V x₀ = v ∧ cov (fun x => V x) x₀ = 0 := by
@@ -91,6 +90,9 @@ theorem exists_cov_zero_at
           tangentConstInChart (𝕜 := Real) (I := I) x₀ (b i) x
   let coeff : Fin (Module.finrank Real E) -> M -> Real :=
     fun i x => b.coord i (z (extChartAt I x₀ x))
+  have hz_contDiff : ContDiff Real (∞ : WithTop ℕ∞) z := by
+    unfold z
+    exact contDiff_const.sub (A.contDiff.comp (contDiff_id.sub contDiff_const))
   have hcoeff : ∀ i : Fin (Module.finrank Real E),
       ContMDiffOn I 𝓘(Real, Real) (∞ : WithTop ℕ∞) (coeff i) e.baseSet := by
     haveI : CompleteSpace E := FiniteDimensional.complete Real E
@@ -98,10 +100,7 @@ theorem exists_cov_zero_at
     let c : E →L[Real] Real := LinearMap.toContinuousLinearMap (b.coord i)
     have hz :
         ContDiff Real (∞ : WithTop ℕ∞) (fun y : E => b.coord i (z y)) := by
-      have hz' : ContDiff Real (∞ : WithTop ℕ∞) z := by
-        unfold z
-        fun_prop
-      simpa [c] using c.contDiff.comp hz'
+      simpa [c] using c.contDiff.comp hz_contDiff
     have hchart :
         ContMDiffOn I 𝓘(Real, E) (∞ : WithTop ℕ∞)
           (extChartAt I x₀) e.baseSet := by
@@ -247,8 +246,7 @@ theorem exists_cov_zero_at
       exact hVloc_model hy
     have hz_diff :
         DifferentiableWithinAt Real z (Set.range I) y₀ := by
-      unfold z
-      fun_prop
+      exact (hz_contDiff.differentiable (by simp)).differentiableAt.differentiableWithinAt
     have hVmodel :
         DifferentiableWithinAt Real
           (tangentFieldModelInChart (𝕜 := Real) (I := I) x₀ Vloc)
@@ -286,7 +284,7 @@ theorem exists_cov_zero_at
         have hA : HasFDerivAt (fun y : E => A (y - y₀)) A y₀ := by
           simpa using hA'
         have hconst : HasFDerivAt (fun _ : E => v₀) (0 : E →L[Real] E) y₀ := by
-          fun_prop
+          exact hasFDerivAt_const (x := y₀) (c := v₀)
         simpa [z] using hconst.sub hA
       have huniq : UniqueDiffWithinAt Real (Set.range I) y₀ :=
         I.uniqueDiffOn y₀ hzRange
@@ -358,14 +356,13 @@ theorem exists_cov_zero_at
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at_apply
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (x₀ : M) (v : TangentSpace I x₀) :
     ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
       V x₀ = v ∧
         ∀ W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
           ((cov (fun x => V x) x₀) (W x₀)) = 0 := by
   obtain ⟨V, hV, hcovV⟩ :=
-    exists_cov_zero_at (I := I) cov hcov x₀ v
+    exists_cov_zero_at (I := I) cov x₀ v
   refine ⟨V, hV, ?_⟩
   intro W
   rw [hcovV]

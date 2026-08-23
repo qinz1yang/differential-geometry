@@ -73,7 +73,7 @@ private theorem tensor0S_one_apply_smul
   rw [← hleft, ← hX]
   exact h
 
-private noncomputable def connDiffSlotCLM
+private noncomputable def connectionDifferenceSlotCLM
     (A :
       TangentSpace I x →L[Real]
         TangentSpace I x →L[Real] TangentSpace I x)
@@ -106,7 +106,7 @@ noncomputable def connectionDifferenceOutput
     (LinearMap.toContinuousLinearMap
       { toFun := fun X =>
           (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-            (connDiffSlotCLM (I := I) A α X)
+            (connectionDifferenceSlotCLM (I := I) A α X)
         map_add' := by
           intro X Y
           apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
@@ -137,7 +137,7 @@ theorem connectionDifferenceOutput_apply
   rw [ContinuousLinearMap.uncurryLeft_apply]
   change
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-        (connDiffSlotCLM (I := I) A α (v 0))) (fun i : Fin 1 => v i.succ) =
+        (connectionDifferenceSlotCLM (I := I) A α (v 0))) (fun i : Fin 1 => v i.succ) =
       α (fun _ : Fin 1 => (A (v 1)) (v 0))
   have htail : (fun i : Fin 1 => v i.succ) = fun _ : Fin 1 => v 1 := by
     funext i
@@ -146,7 +146,6 @@ theorem connectionDifferenceOutput_apply
   rw [htail]
   rfl
 
-@[simp]
 theorem connectionDifferenceOutput_apply_slots
     (A :
       TangentSpace I x →L[Real]
@@ -211,7 +210,6 @@ theorem connectionDifferenceTensorAt_apply
       ((CovariantDerivative.difference cov cov' x) (v 1)) (v 0))
   rw [connectionDifferenceOutput_apply]
 
-@[simp]
 theorem connectionDifferenceTensorAt_apply_slots
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
@@ -229,7 +227,7 @@ theorem connectionDifferenceTensorAt_apply_slots
 theorem componentRS_connectionDifferenceTensorAt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (i j k : Idx) :
@@ -238,6 +236,7 @@ theorem componentRS_connectionDifferenceTensorAt
         (fun q : Fin 2 => if q = 0 then i else j) =
       basis.coord k
         (((CovariantDerivative.difference cov cov' x) (basis j)) (basis i)) := by
+  classical
   rw [componentRS_apply_gen, connectionDifferenceTensorAt_apply]
   simp [basisTensor0S_apply]
 

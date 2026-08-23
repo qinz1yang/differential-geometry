@@ -16,7 +16,6 @@ namespace Connection
 open Bundle Manifold
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open scoped Manifold ContDiff
 

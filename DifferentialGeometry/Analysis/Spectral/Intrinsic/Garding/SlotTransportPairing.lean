@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.BalancedPairing
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -16,7 +16,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
-open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -71,7 +70,7 @@ theorem slot_pair_step (g : SmoothRiemannianMetric I M) (σ k : ℕ)
   rw [oneMinusConnLapSmooth_l2Inner_eq_add_covGrad
     (I := I) (M := M) g 0 σ]
   rw [covGrad_iterL (I := I) (M := M) g σ k V]
-  rw [covGrad_appCcRS_eq (I := I) (M := M) g 0 σ σ C V]
+  rw [covGrad_operatorFieldComposition_eq (I := I) (M := M) g 0 σ σ C V]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] in
@@ -267,10 +266,10 @@ private theorem app_shift_win (g : SmoothRiemannianMetric I M)
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧
       ShiftWin (I := I) (M := M) g σ m c Φ cc := by
   obtain ⟨cc, hcc_nn, hcc⟩ :=
-    exists_appCc_iteratedCovGrad_l2_window_bound
+    exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound
       (I := I) (M := M) g (σ + m) c Φ
   refine ⟨cc, hcc_nn, fun V p => ?_⟩
-  rw [appCcRS_zero_eq_appCc (I := I) (M := M) g (σ + m) c]
+  rw [operatorFieldComposition_zero_eq_operatorFieldApply (I := I) (M := M) g (σ + m) c]
   refine le_trans (hcc (iteratedCovGrad (I := I) g 0 σ m V) p) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hcc_nn p)
   have hshift := jet_shift_le (I := I) (M := M) g σ m (p + 1) V
@@ -288,7 +287,7 @@ private theorem shift_win_of_bdd (g : SmoothRiemannianMetric I M)
   obtain ⟨cc, hcc_nn, hcc⟩ :=
     app_jet_of_bdd (I := I) (M := M) g (sigma + m) c Phi A B hB_nn hB
   refine ⟨cc, hcc_nn, fun t ht V p => ?_⟩
-  rw [appCcRS_zero_eq_appCc (I := I) (M := M) g (sigma + m) c]
+  rw [operatorFieldComposition_zero_eq_operatorFieldApply (I := I) (M := M) g (sigma + m) c]
   refine le_trans (hcc t ht (iteratedCovGrad (I := I) g 0 sigma m V) p) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hcc_nn p)
   have hshift := jet_shift_le (I := I) (M := M) g sigma m (p + 1) V
@@ -313,7 +312,7 @@ private theorem slot_iter_bdd (g : SmoothRiemannianMetric I M) (sigma : ℕ)
       simpa only [slotExtendIter, Nat.add_zero, pow_zero, one_mul] using hB i t ht x
   | succ m ih =>
       intro i t ht x
-      have hslot := rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g
+      have hslot := riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g
         (sigma + m) (sigma + m)
         (slotExtendIter (I := I) (M := M) g sigma sigma m (C t)) i x
       have hprev := ih i t ht x
@@ -737,7 +736,7 @@ private theorem slot_main_bdd (g : SmoothRiemannianMetric I M)
               (slotExtendIter (I := I) (M := M) g sigma sigma m (C t)))).toSection x) ≤
           BD i := by
       intro i t ht x
-      rw [rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M)]
+      rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M)]
       exact slot_iter_bdd (I := I) (M := M) g sigma C A B hB m (i + 1) t ht x
     obtain ⟨cD, hcD_nn, hcD⟩ := shift_win_of_bdd (I := I) (M := M) g
       sigma m ((sigma + m) + 1)

@@ -28,7 +28,7 @@ theorem finite_image
 
 theorem mono
     (h : HasFiniteAtlasIndexOnCompact H M)
-    {K K' : Set M} (hK : IsCompact K) (hKK' : K' ⊆ K) (_hK' : IsCompact K') :
+    {K K' : Set M} (hK : IsCompact K) (hKK' : K' ⊆ K) :
     (Set.image (chartAt H) K').Finite :=
   (h K hK).subset (Set.image_mono hKK')
 

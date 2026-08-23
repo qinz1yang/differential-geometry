@@ -42,7 +42,6 @@ private theorem ode2_zero
 namespace IsJacobiSolOn
 
 theorem eq_zero_of_interior
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {a b c C : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiSolOn R a b y v)
     (hc : c ∈ Ioo a b) (hC : 0 ≤ C)

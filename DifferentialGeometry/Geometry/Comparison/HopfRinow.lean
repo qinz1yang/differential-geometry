@@ -57,7 +57,7 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M] [CompleteSpace M] in
+    [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_Iio_extend
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {b : ℝ}
@@ -84,7 +84,7 @@ private theorem hasGeodesicEquationAt_congr_of_eventuallyEq
 
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M] [CompleteSpace M] in
+    [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_Ici_of_endpointContinuation
     (g : SmoothRiemannianMetric I M) {γ₀ : ℝ → M} {b₀ : ℝ} (hb₀ : 0 < b₀)
@@ -339,7 +339,7 @@ theorem isGeodesicOn_Ici_of_complete
 
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M] [CompleteSpace M] in
+    [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_Ioo_extend
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a₀ b : ℝ} (ha₀b : a₀ < b)
@@ -413,7 +413,7 @@ theorem isGeodesicOn_Ioo_extend
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M] [CompleteSpace M] in
+    [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 theorem isGeodesicOn_Ioi_of_endpointContinuation
     (g : SmoothRiemannianMetric I M) {γ₀ : ℝ → M} {a₀ b₀ : ℝ}
     (ha₀ : a₀ < 0) (hb₀ : 0 < b₀)

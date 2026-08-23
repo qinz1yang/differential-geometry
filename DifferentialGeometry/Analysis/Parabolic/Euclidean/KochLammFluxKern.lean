@@ -23,7 +23,7 @@ def klFluxKernel (t : ℝ) (w x : V) (z : ℝ × V) : ℝ :=
 def klFluxMajor (t : ℝ) (x : V) (z : ℝ × V) : ℝ :=
   heatD1Maj (t - z.1) (x - z.2)
 
-omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem klFluxMajor_nonneg (t : ℝ) (x : V) (z : ℝ × V) :
     0 ≤ klFluxMajor t x z := by
   unfold klFluxMajor heatD1Maj
@@ -33,7 +33,7 @@ theorem klFluxMajor_nonneg (t : ℝ) (x : V) (z : ℝ × V) :
       (inv_nonneg.mpr (Real.sqrt_nonneg _)))
     (baseD1Maj_nonneg _)
 
-theorem klFluxMajor_memLp {t : ℝ} (ht : 0 < t) (x : V) :
+theorem klFluxMajor_memLp {t : ℝ} (x : V) :
     MemLp (klFluxMajor t x) (ENNReal.ofReal (klPDual V))
       (klTermMeasure (V := V) t) := by
   let p : ℝ := klPDual V
@@ -62,7 +62,7 @@ theorem klFluxMajor_memLp {t : ℝ} (ht : 0 < t) (x : V) :
   have hbase : Integrable
       (fun s : ℝ ↦ (t - s) ^ klD1Exp V * baseD1PowMass V p)
       (volume.restrict (Ioc (t / 2) t)) :=
-    (klD1Time_intble (V := V) ht).1.mul_const _
+    (klD1Time_intble (V := V)).1.mul_const _
   have houterEq :
       (fun s : ℝ ↦
           ∫ y : V, ‖(heatD1Maj (t - s) (x - y)) ^ p‖) =ᵐ[
@@ -87,7 +87,7 @@ theorem klFluxMajor_memLp {t : ℝ} (ht : 0 < t) (x : V) :
     Real.norm_of_nonneg (klFluxMajor_nonneg (V := V) t x _)] using hpow
 
 omit [Nontrivial V] in
-theorem klFluxKernel_ae {t : ℝ} (_ht : 0 < t) (w x : V) :
+theorem klFluxKernel_ae {t : ℝ} (w x : V) :
     ∀ᵐ z ∂(klTermMeasure (V := V) t),
       ‖klFluxKernel t w x z‖ ≤ ‖w‖ * klFluxMajor t x z := by
   have hkmeas0 : Measurable (klFluxKernel t w x) := by
@@ -110,7 +110,7 @@ theorem klFluxKernel_ae {t : ℝ} (_ht : 0 < t) (w x : V) :
   simpa only [klFluxKernel, klFluxMajor] using
     (heatD1_bound (V := V) hts w (x - y))
 
-theorem klFluxKernel_memLp {t : ℝ} (ht : 0 < t) (w x : V) :
+theorem klFluxKernel_memLp {t : ℝ} (w x : V) :
     MemLp (klFluxKernel t w x) (ENNReal.ofReal (klPDual V))
       (klTermMeasure (V := V) t) := by
   have hkmeas : AEStronglyMeasurable (klFluxKernel t w x)
@@ -120,12 +120,12 @@ theorem klFluxKernel_memLp {t : ℝ} (ht : 0 < t) (w x : V) :
     fun_prop
   have hbound : ∀ᵐ z ∂(klTermMeasure (V := V) t),
       ‖klFluxKernel t w x z‖ ≤ ‖‖w‖ * klFluxMajor t x z‖ :=
-    (klFluxKernel_ae (V := V) ht w x).mono fun z hz ↦ by
+    (klFluxKernel_ae (V := V) w x).mono fun z hz ↦ by
       simpa only [Real.norm_of_nonneg (norm_nonneg w),
         Real.norm_of_nonneg (klFluxMajor_nonneg (V := V) t x z), norm_mul]
         using hz
   exact MemLp.mono
-    ((klFluxMajor_memLp (V := V) ht x).const_mul ‖w‖)
+    ((klFluxMajor_memLp (V := V) (t := t) x).const_mul ‖w‖)
     hkmeas hbound
 
 def klFluxPowMass (t : ℝ) (x : V) : ℝ :=
@@ -140,7 +140,7 @@ theorem klFluxPowMass_eq {t : ℝ} (ht : 0 < t) (x : V) :
   have hi : Integrable
       (fun z : ℝ × V ↦ ‖klFluxMajor t x z‖ ^ klPDual V)
       (klTermMeasure (V := V) t) := by
-    have hm := (klFluxMajor_memLp (V := V) ht x).integrable_norm_rpow
+    have hm := (klFluxMajor_memLp (V := V) (t := t) x).integrable_norm_rpow
       (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     simpa only [ENNReal.toReal_ofReal hp.le] using hm
   have hi' : Integrable
