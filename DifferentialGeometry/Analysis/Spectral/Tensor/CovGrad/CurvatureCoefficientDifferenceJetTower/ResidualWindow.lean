@@ -48,7 +48,6 @@ open CurvatureCoefficientDifferenceJetTower
 section TopOrderSeparatedResidualIntegrator
 
 
-set_option backward.isDefEq.respectTransparency false
 
 theorem boundedFactorGridWindow_integral_ballUniform_flat_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -69,11 +68,11 @@ theorem boundedFactorGridWindow_integral_ballUniform_flat_allOrders
               Kflat i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kt, hKt_nn, hKt⟩ := antidiagonalTupleGrid_integral_ballUniform_tameWindow
     (I := I) (M := M) g₀ a ha_super hR
@@ -104,9 +103,9 @@ theorem boundedFactorGridWindow_integral_ballUniform_flat_allOrders
       Continuous (fun x => Combinatorics.boundedFactorGrid (b x) K k) := by
     intro K k
     simp only [Combinatorics.boundedFactorGrid]
-    refine continuous_finset_sum _ (fun n _ => ?_)
-    refine continuous_finset_sum _ (fun e _ => ?_)
-    exact continuous_finset_prod _ (fun m _ => hcont (e m))
+    refine continuous_finsetSum _ (fun n _ => ?_)
+    refine continuous_finsetSum _ (fun e _ => ?_)
+    exact continuous_finsetProd _ (fun m _ => hcont (e m))
   have hbfg_int : ∀ (K k : ℕ), MeasureTheory.Integrable
       (fun x => Combinatorics.boundedFactorGrid (b x) K k)
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
@@ -115,7 +114,7 @@ theorem boundedFactorGridWindow_integral_ballUniform_flat_allOrders
   have hWcont : Continuous (fun x =>
       Combinatorics.boundedFactorGridWindow (b x) (i + 1) (i + 3)) := by
     simp only [Combinatorics.boundedFactorGridWindow]
-    exact continuous_finset_sum _ (fun k _ => hbfg_cont (i + 1) k)
+    exact continuous_finsetSum _ (fun k _ => hbfg_cont (i + 1) k)
   have hWint : MeasureTheory.Integrable
       (fun x => Combinatorics.boundedFactorGridWindow (b x) (i + 1) (i + 3))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
@@ -130,7 +129,7 @@ theorem boundedFactorGridWindow_integral_ballUniform_flat_allOrders
     have hEq : (fun x => Combinatorics.boundedFactorGridWindow (b x) (i + 1) (i + 3)) =
         (fun x => ∑ k ∈ Finset.range (i + 3),
           Combinatorics.boundedFactorGrid (b x) (i + 1) k) := rfl
-    rw [hEq, MeasureTheory.integral_finset_sum _ (fun k _ => hbfg_int (i + 1) k),
+    rw [hEq, MeasureTheory.integral_finsetSum _ (fun k _ => hbfg_int (i + 1) k),
       Finset.sum_range_succ]
   rw [hInt_eq]
   have hlayer_le : ∀ k ∈ Finset.range (i + 2),

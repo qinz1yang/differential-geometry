@@ -206,9 +206,9 @@ theorem exists_orthoBasisFrameAt
   have hbnd : Bornology.IsVonNBounded Real {v : TangentSpace I x₀ |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x₀
-  letI nag : NormedAddCommGroup (TangentSpace I x₀) :=
+  let nag : NormedAddCommGroup (TangentSpace I x₀) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace Real (TangentSpace I x₀) :=
+  let ips : InnerProductSpace Real (TangentSpace I x₀) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank Real (TangentSpace I x₀) with hn_def
   set e : OrthonormalBasis (Fin n) Real (TangentSpace I x₀) :=

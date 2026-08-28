@@ -34,7 +34,8 @@ theorem exists_isLocalFlow_augmentedVectorField_and_contDiffOn_fromAugFlow_one_o
   obtain ⟨R_aug, ε_aug, hR_aug_pos, hε_aug_pos, aΦ, haΦ⟩ :=
     exists_isLocalFlow_augVF_of_C2 hf_C2 t₀ p₀
   have hf_succ : ContDiffOn ℝ ((1 : ℕ∞) + 1) (uncurry f) (Set.univ : Set (ℝ × E)) := by
-    simpa using hf_C2
+    norm_num
+    exact hf_C2
   have h_augVF_C1 : ContDiffOn ℝ 1 (uncurry (augmentedVectorField f))
       (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
     augVF_uncurry_contDiff (k := (1 : ℕ∞)) hf_succ

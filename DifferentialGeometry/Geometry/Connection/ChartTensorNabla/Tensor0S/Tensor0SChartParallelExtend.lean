@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartTorsio
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
@@ -150,11 +149,11 @@ lemma chartTensor0SParallelExtend_mdifferentiableAt
         (E := fun x : M => Tensor0SSpace r I x) b'
         (chartTensor0SParallelExtend (I := I) r α b T₀ b')) b := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (Tensor0SModel r ℝ E)
         (fun x : M => Tensor0SSpace r I x)) :=
     tensor0SBundle_topology r
-  letI _h_fib : FiberBundle (Tensor0SModel r ℝ E)
+  let _h_fib : FiberBundle (Tensor0SModel r ℝ E)
       (fun x : M => Tensor0SSpace r I x) :=
     tensor0SBundle_fiber r
   set e := trivializationAt (Tensor0SModel r ℝ E)

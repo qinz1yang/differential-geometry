@@ -25,12 +25,12 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma extDerivFun_comp_extChartAt_apply_basis_alpha
+lemma mvfderiv_comp_extChartAt_apply_basis_alpha
     (α : M) {gE : E → ℝ} {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (hgE : ContDiffAt ℝ ∞ gE (extChartAt I α x))
     (a : Fin (Module.finrank ℝ E)) :
-    extDerivFun (I := I) (fun b : M => gE (extChartAt I α b)) x
+    mvfderiv (I := I) (fun b : M => gE (extChartAt I α b)) x
         (chartBasisVecFiber (I := I) α a x) =
       partialDeriv (E := E) a gE (extChartAt I α x) := by
   classical
@@ -49,7 +49,7 @@ lemma extDerivFun_comp_extChartAt_apply_basis_alpha
     mdifferentiableAt_extChartAt (I := I) (x := α) hxchart
   have hG_mdiff : MDiffAt Gfun x := hgE_mdiff.comp x hphi_mdiff
   have hed_to_mfderiv :
-      extDerivFun (I := I) Gfun x (chartBasisVecFiber (I := I) α a x) =
+      mvfderiv (I := I) Gfun x (chartBasisVecFiber (I := I) α a x) =
         (mfderiv I 𝓘(ℝ) Gfun x : TangentSpace I x →L[ℝ] _)
           (chartBasisVecFiber (I := I) α a x) := rfl
   rw [hed_to_mfderiv]
@@ -184,7 +184,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
     fun m => MDifferentiableAt.smul_section (hΓc_diff m) (hframe_diff m)
   have hsum_diff :
       MDiffAt (T% fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) x :=
-    MDifferentiableAt.sum_section (s := Finset.univ) (t := term) hterm_diff
+    MDifferentiableAt.sum_section (s := Finset.univ) (t := term) (fun m _ => hterm_diff m)
   have hS_ev_sum :
       (fun y : M => S y) =ᶠ[𝓝 x]
         (fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) := by
@@ -212,7 +212,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
   rw [hsum_apply]
   have hleib : ∀ m : Fin (Module.finrank ℝ E),
       (cov.toFun (term m) x) (chartBasisVecFiber (I := I) α a x) =
-        extDerivFun (I := I) (Γc m) x (chartBasisVecFiber (I := I) α a x) •
+        mvfderiv (I := I) (Γc m) x (chartBasisVecFiber (I := I) α a x) •
             chartBasisVecFiber (I := I) α m x +
           Γc m x •
             (cov.toFun (fun y : M => chartBasisVecFiber (I := I) α m y) x)
@@ -225,16 +225,16 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
       funext y; rfl
     rw [hterm_eq]
     have happ := congr($(hleibniz) (chartBasisVecFiber (I := I) α a x))
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply] at happ
     rw [happ]
     rw [add_comm]
   rw [Finset.sum_congr rfl (fun m _ => hleib m)]
   have hder : ∀ m : Fin (Module.finrank ℝ E),
-      extDerivFun (I := I) (Γc m) x (chartBasisVecFiber (I := I) α a x) =
+      mvfderiv (I := I) (Γc m) x (chartBasisVecFiber (I := I) α a x) =
         partialDeriv (E := E) a (chartChristoffel (I := I) g α b i m) (extChartAt I α x) := by
     intro m
-    exact extDerivFun_comp_extChartAt_apply_basis_alpha (I := I) α hx
+    exact mvfderiv_comp_extChartAt_apply_basis_alpha (I := I) α hx
       (chartChristoffel_contDiffAt_alpha (I := I) g α b i m hx) a
   have hΓc_x : ∀ m : Fin (Module.finrank ℝ E),
       Γc m x = chartChristoffel (I := I) g α b i m (extChartAt I α x) := fun m => rfl
@@ -349,7 +349,7 @@ lemma mlieBracket_chartBasisVec_ext_self_eq_zero_alpha [I.Boundaryless]
     hXj_at hXk_at]
   rw [fderiv_chartE_section_repr_alpha_eq_zero_of_eventuallyEq (I := I) α k hx hU_open hxU hXk_eq]
   rw [fderiv_chartE_section_repr_alpha_eq_zero_of_eventuallyEq (I := I) α j hx hU_open hxU hXj_eq]
-  rw [ContinuousLinearMap.zero_apply, ContinuousLinearMap.zero_apply, sub_self,
+  rw [zero_apply, zero_apply, sub_self,
     ContinuousLinearMap.map_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -460,7 +460,7 @@ theorem ricciTensor_chartBasisVec_alpha_eq [I.Boundaryless]
         (chartBasisVecFiber (I := I) α p x) (chartBasisVecFiber (I := I) α q x) =
       chartRicciTensor (I := I) g α p q (extChartAt I α x) := by
   classical
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
   set bα : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
@@ -491,7 +491,7 @@ theorem ricciTensor_chartBasisVec_alpha_eq [I.Boundaryless]
           (chartBasisVecFiber (I := I) α p x)
           (chartBasisVecFiber (I := I) α q x) from rfl]
     rw [riemannOp_chartBasisVec_alpha_eq (I := I) g α q t p hx]
-    rw [map_sum, Finsupp.coe_finset_sum, Finset.sum_apply]
+    rw [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
     rw [Finset.sum_eq_single t]
     · rw [← hbα_apply t, LinearEquiv.map_smul, Finsupp.smul_apply,
         Module.Basis.repr_self_apply, smul_eq_mul, if_pos rfl, mul_one]

@@ -50,7 +50,6 @@ open CurvatureCoefficientDifferenceJetTower
 section TopOrderSeparatedResidualIntegrator
 
 
-set_option backward.isDefEq.respectTransparency false
 
 theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -76,7 +75,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
               Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topOrderSeparated_le
@@ -99,7 +98,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -363,7 +362,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
         _ = (2 * cbg i + 4 * KcCr i + 4 * KcCu i) * KI i *
             (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by ring
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     refine ⟨0, fun x => (IsEmpty.false x).elim, ?_, ?_⟩
     · have hz : ‖(0 : SmoothCcTensor g₀ 2 (2 + i))‖ = 0 := by
         rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,
@@ -389,7 +388,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
 
 section TopOrderSeparatedKoszulExport
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_pointwise_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

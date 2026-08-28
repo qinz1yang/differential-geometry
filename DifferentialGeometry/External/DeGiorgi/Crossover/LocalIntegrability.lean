@@ -270,8 +270,12 @@ private lemma integrableOn_rescaleToUnitBall_iff
         IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) := by
     have hmap_iff :=
       hT_emb.integrableOn_map_iff (μ := volume) (s := Metric.ball x₀ (R * ρ)) (f := f)
-    simpa [T, affine_preimage_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := ρ) hR] using
-      hmap_iff.symm
+    have hmap := hmap_iff.symm
+    rw [show T ⁻¹' Metric.ball x₀ (R * ρ) = Metric.ball (0 : E) ρ from
+      affine_preimage_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := ρ) hR] at hmap
+    change IntegrableOn (fun z => f (x₀ + R • z)) (Metric.ball (0 : E) ρ) volume ↔
+      IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) at hmap
+    simpa only [T] using hmap
   have hsmul :
       IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) ↔
         IntegrableOn f (Metric.ball x₀ (R * ρ)) volume := by
@@ -356,7 +360,7 @@ private theorem unitBall_average_abs_le_lpNorm_two
         MeasureTheory.lpNorm f 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
   let B1 : Set E := Metric.ball (0 : E) 1
   let μ1 : Measure E := volume.restrict B1
-  haveI : IsFiniteMeasure μ1 := by
+  have : IsFiniteMeasure μ1 := by
     simpa [μ1] using
       (show IsFiniteMeasure (volume.restrict B1) from by
         rw [isFiniteMeasure_restrict]
@@ -425,7 +429,7 @@ private theorem unitBall_sub_average_lpNorm_le_grad_lpNorm_two
           (fun z => ‖hw.weakGrad z‖) 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
   let B1 : Set E := Metric.ball (0 : E) 1
   let μ1 : Measure E := volume.restrict B1
-  haveI : IsFiniteMeasure μ1 := by
+  have : IsFiniteMeasure μ1 := by
     simpa [μ1] using
       (show IsFiniteMeasure (volume.restrict B1) from by
         rw [isFiniteMeasure_restrict]
@@ -483,7 +487,7 @@ private theorem unitBall_average_abs_sub_average_le_grad_lpNorm_two
       Cmo *
         MeasureTheory.lpNorm
           (fun z => ‖hw.weakGrad z‖) 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   calc
@@ -628,10 +632,16 @@ private theorem rescaled_weakGrad_lpNorm_eq
         = R * MeasureTheory.lpNorm
             (fun z => ‖hw.weakGrad (x₀ + R • z)‖) 2
               (volume.restrict (Metric.ball (0 : E) 1)) := by
-                simpa [smul_eq_mul, Real.norm_of_nonneg hR.le] using
-                  (MeasureTheory.lpNorm_const_smul (R : ℝ)
-                    (fun z => ‖hw.weakGrad (x₀ + R • z)‖)
-                    (volume.restrict (Metric.ball (0 : E) 1)) (p := (2 : ℝ≥0∞)))
+                have hnorm := MeasureTheory.lpNorm_const_smul (R : ℝ)
+                  (fun z => ‖hw.weakGrad (x₀ + R • z)‖)
+                  (volume.restrict (Metric.ball (0 : E) 1)) (p := (2 : ℝ≥0∞))
+                have hfun : (R : ℝ) • (fun z => ‖hw.weakGrad (x₀ + R • z)‖) =
+                    (fun z => R * ‖hw.weakGrad (x₀ + R • z)‖) := by
+                  funext z
+                  exact smul_eq_mul R ‖hw.weakGrad (x₀ + R • z)‖
+                rw [hfun] at hnorm
+                rw [show (↑‖R‖₊ : ℝ) = R by simp [Real.norm_of_nonneg hR.le]] at hnorm
+                exact hnorm
     _ = R * (R ^ (-(d : ℝ) / 2) *
           MeasureTheory.lpNorm
             (fun x => ‖hw.weakGrad x‖) 2

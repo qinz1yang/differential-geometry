@@ -48,6 +48,7 @@ def scalHessFrame
         nabla2Ric (vec4 (I := I) (F.basisAt hx i) (F.basisAt hx j)
           (F.basisAt hx k) (F.basisAt hx l))
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] in
 theorem scalHessFrameSymm
     [FiniteDimensional Real E]
@@ -81,9 +82,10 @@ theorem frameInvMetric_real
     {x : M} (hx : x ∈ F.domain) :
     MetricInverseInBasis_gen (I := I) (M := M) g x (F.basisAt hx)
       (frameInvMetric (I := I) (M := M) g F hx) := by
-  simpa [frameInvMetric] using
-    basisInvMetric_real (I := I) (M := M) (g := g) (x := x)
-      (basis := F.basisAt hx)
+  change MetricInverseInBasis_gen (I := I) (M := M) g x (F.basisAt hx)
+    (basisInvMetric (I := I) (M := M) g x (F.basisAt hx))
+  exact basisInvMetric_real (I := I) (M := M) (g := g) (x := x)
+    (basis := F.basisAt hx)
 
 
 def frameScalHess
@@ -94,6 +96,7 @@ def frameScalHess
   scalHessFrame (I := I) (M := M) g F hx
     (frameInvMetric (I := I) (M := M) g F hx) i j
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] in
 theorem frameScalHess_symm
     [FiniteDimensional Real E]

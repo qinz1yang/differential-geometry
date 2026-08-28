@@ -244,8 +244,33 @@ theorem galArmPair3_diag
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T)
     1 2 θ hA
   rw [← hrep] at hpair
-  simpa only [galerkinActionVectorBackground, smoothCcToTensorHs_coeff, Nat.reduceAdd,
-    T, hT, hZ, A] using hpair
+  have hgal :
+      galerkinActionVectorBackground (I := I) (M := M) g gBase hR hδ hreal F c =
+        smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ)
+          (A.secondOrderAction (I := I) (M := M) T +
+            A.firstOrderAction (I := I) (M := M) T) := by
+    dsimp only [galerkinActionVectorBackground, A, T, hT, hZ]
+  rw [hgal]
+  have hcoeff (i : TensorEigenIdx (I := I) (M := M) g 0 2) :
+      (smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ)
+        (A.secondOrderAction (I := I) (M := M) T +
+          A.firstOrderAction (I := I) (M := M) T)).coeff i =
+        tensorL2Coeff (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+          (SmoothCcTensor.toL2
+            (A.secondOrderAction (I := I) (M := M) T +
+              A.firstOrderAction (I := I) (M := M) T)) i :=
+    smoothCcToTensorHs_coeff (I := I) (M := M) g _ _ i
+  simp_rw [hcoeff]
+  have hthree : (((1 + 2 : ℕ) : ℝ)) = (3 : ℝ) := by norm_num
+  rw [hthree] at hpair
+  have hTfold : symmS (I := I) (M := M) g
+      (galCoreRep (I := I) (M := M) g R F c) = T := rfl
+  simp only [hTfold]
+  have hAfold : lowerScaleActionCoefficients (I := I) (M := M)
+      g gBase T hδ hT hZ = A := rfl
+  rw [hAfold]
+  exact hpair
 
 theorem galArmPair4_diag
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
@@ -300,8 +325,33 @@ theorem galArmPair4_diag
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T)
     1 3 θ hA
   rw [← hrep] at hpair
-  simpa only [galerkinActionVectorBackground, smoothCcToTensorHs_coeff, Nat.reduceAdd,
-    T, hT, hZ, A] using hpair
+  have hgal :
+      galerkinActionVectorBackground (I := I) (M := M) g gBase hR hδ hreal F c =
+        smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ)
+          (A.secondOrderAction (I := I) (M := M) T +
+            A.firstOrderAction (I := I) (M := M) T) := by
+    dsimp only [galerkinActionVectorBackground, A, T, hT, hZ]
+  rw [hgal]
+  have hcoeff (i : TensorEigenIdx (I := I) (M := M) g 0 2) :
+      (smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ)
+        (A.secondOrderAction (I := I) (M := M) T +
+          A.firstOrderAction (I := I) (M := M) T)).coeff i =
+        tensorL2Coeff (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
+          (SmoothCcTensor.toL2
+            (A.secondOrderAction (I := I) (M := M) T +
+              A.firstOrderAction (I := I) (M := M) T)) i :=
+    smoothCcToTensorHs_coeff (I := I) (M := M) g _ _ i
+  simp_rw [hcoeff]
+  have hfour : (((1 + 3 : ℕ) : ℝ)) = (4 : ℝ) := by norm_num
+  rw [hfour] at hpair
+  have hTfold : symmS (I := I) (M := M) g
+      (galCoreRep (I := I) (M := M) g R F c) = T := rfl
+  simp only [hTfold]
+  have hAfold : lowerScaleActionCoefficients (I := I) (M := M)
+      g gBase T hδ hT hZ = A := rfl
+  rw [hAfold]
+  exact hpair
 
 
 theorem galerkinFirstOrderActionFixedPairing_h3_bound

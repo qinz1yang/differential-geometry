@@ -31,13 +31,13 @@ theorem inner_eq_of_diag
         g'.inner x' (A u) (A u) +
           2 * g'.inner x' (A u) (A v) +
             g'.inner x' (A v) (A v) := by
-    rw [map_add, map_add, map_add, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.add_apply, g'.symm x' (A v) (A u)]
+    rw [map_add, map_add, map_add, add_apply,
+      add_apply, g'.symm x' (A v) (A u)]
     ring
   have hright :
       g.inner x (u + v) (u + v) =
         g.inner x u u + 2 * g.inner x u v + g.inner x v v := by
-    rw [(g.inner x).map_add u v, ContinuousLinearMap.add_apply,
+    rw [(g.inner x).map_add u v, add_apply,
       (g.inner x u).map_add u v, (g.inner x v).map_add u v,
       g.symm x v u]
     ring

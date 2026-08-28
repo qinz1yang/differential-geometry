@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCoeffi
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
@@ -25,6 +24,19 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+private lemma armSlotFib_toModel_apply (s : ℕ) (x : M)
+    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+    (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → E) :
+    Tensor0SSpace.toModel (armSlotFib (I := I) (M := M) s x Arm D) v =
+      Tensor0SSpace.toModel
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
+          (Arm ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
+        (Matrix.vecTail v) := by
+  exact armSlotFib_apply_eval (I := I) (M := M) s x Arm D
+    (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem armSlotEndoCc_succ
@@ -57,7 +69,7 @@ theorem armSlotEndoCc_succ
         Tensor0SSpace (s + 1 + 1) I x →L[ℝ]
           Tensor0SSpace (s + 1 + 1 + 1) I x) D =
     armSlotFib (I := I) (M := M) (s + 1) x (A x) D from rfl]
-  rw [armSlotFib_apply_eval]
+  rw [armSlotFib_toModel_apply]
   rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply,
     rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
@@ -84,19 +96,21 @@ theorem armSlotEndoCc_succ
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
             (Tensor0SSpace.toModel D)))
-        (m (((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
-          (Equiv.swap (1 : Fin (s + 1 + 1 + 1)) 2)) 0))) =
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          (m (((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
+            (Equiv.swap (1 : Fin (s + 1 + 1 + 1)) 2)) 0)))) =
     armSlotFib (I := I) (M := M) s x (A x)
       ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x)
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
             (Tensor0SSpace.toModel D)))
-        (m (((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
-          (Equiv.swap (1 : Fin (s + 1 + 1 + 1)) 2)) 0))) from rfl]
-  rw [armSlotFib_apply_eval]
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          (m (((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
+            (Equiv.swap (1 : Fin (s + 1 + 1 + 1)) 2)) 0)))) from rfl]
+  rw [armSlotFib_toModel_apply]
   rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
-  simp only [TensorMultilinear.tensor0S_curry_apply_eval,
+  simp only [TensorMultilinear.tensor0S_curry_toModel_apply,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   congr 1
   funext k
@@ -144,13 +158,14 @@ theorem armSlotEndoCc_sub
     apply ContinuousMultilinearMap.ext
     intro v
     dsimp only
-    rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply,
-      armSlotFib_apply_eval, armSlotFib_apply_eval, armSlotFib_apply_eval,
-      ContinuousLinearMap.sub_apply,
+    rw [Tensor0SSpace.toModel_sub, sub_apply,
+      armSlotFib_toModel_apply, armSlotFib_toModel_apply, armSlotFib_toModel_apply,
+      sub_apply,
       slotInsertEndoFib_sub_left (I := I) (M := M) (s + 1) 0 x
-        (A x (v 0)) (B x (v 0)),
-      ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-      ContinuousMultilinearMap.sub_apply]
+        (A x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+        (B x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))),
+      sub_apply, Tensor0SSpace.toModel_sub,
+      sub_apply]
   rw [hLHS, hRHS, show ((A - B) x) = A x - B x from rfl, hfib]
 
 end DifferentialGeometry.Analysis.Sobolev

@@ -117,7 +117,7 @@ theorem supersolution_iteration_inverse
             superStepConstInv (d := d) A p₀ n *
               superIterNormInv (d := d) (u := u) p₀ n := by
         rw [heq_norm, heq_step]
-        convert hNorm_succ using 2
+        simpa [superIterNormInv, superIterIntegralInv, p_n] using hNorm_succ
       -- Combine with IH
       calc superIterNormInv (d := d) (u := u) p₀ (n + 1)
           ≤ superStepConstInv (d := d) A p₀ n *
@@ -506,7 +506,7 @@ theorem supersolution_closeout_superlevel_null
     (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
       ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^ (1 / 2 : ℝ)
   let S : Set E := {x | c ≤ g x}
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -576,7 +576,8 @@ theorem supersolution_closeout_superlevel_null
       ext x
       exact hgq_eq x
     have hInt_mu : Integrable (fun x => g x ^ q_n) μ := by
-      simpa [μ, Bhalf] using hInt_half
+      change IntegrableOn (fun x => g x ^ q_n) Bhalf volume
+      exact hInt_half
     have hnonneg_ae : 0 ≤ᵐ[μ] fun x => g x ^ q_n := by
       exact Filter.Eventually.of_forall fun x => Real.rpow_nonneg (hg_nonneg x) _
     have hmarkov :
@@ -722,7 +723,7 @@ theorem supersolution_ae_closeout_inv
   let K : ℝ :=
     (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
       ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^ (1 / 2 : ℝ)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall

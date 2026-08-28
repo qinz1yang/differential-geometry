@@ -30,11 +30,11 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
       (fun b : Fin s => (Module.finBasis 𝕜 E) (lower b))
     =
       coordComponentRSAt (I := I) T upper lower := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  letI := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  letI : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) :=
+  let : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) :=
     Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := 𝕜) (E := E) r
   unfold tensorRSModelAt
   rw [coordComponentRSAt_apply, componentRS_apply_gen]
@@ -123,7 +123,6 @@ private theorem model_RS_component_eq_coord_component_comp_eventually {r s : ℕ
       exact (extChartAt I x₀).map_target hy
     simpa [trivializationAt] using hy_src
 
-set_option backward.isDefEq.respectTransparency false in
 omit [IsManifold I 2 M] in
 theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -132,13 +131,12 @@ theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
       (n := (∞ : WithTop ℕ∞)) r s) :
     ModelDerivEqCoordDerivRSAt (I := I) X x₀ (fun x => T x) := by
   classical
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H)
+  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) r s
-  letI := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H)
+  let := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) r s
-  letI := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H)
+  let := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) r s
-  letI : NormedSpace 𝕜 (TensorRSModel r s 𝕜 E) := inferInstance
   intro upper lower
   let z₀ : E := extChartAt I x₀ x₀
   let S : Set E := ((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ Set.range I
@@ -175,7 +173,11 @@ theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
         writtenInExtChartAt I 𝓘(𝕜, 𝕜) x₀ f := by
     have h := model_RS_component_eq_coord_component_comp_eventually
       (I := I) (M := M) (r := r) (s := s) x₀ (fun x => T x) upper lower
-    simpa [S, z₀, Tchart, β₀, u, β, f, writtenInExtChartAt] using h
+    rw [hS]
+    refine h.trans (Filter.Eventually.of_forall ?_)
+    intro y
+    simp only [f, β, β₀, writtenInExtChartAt, Function.comp_apply, extChartAt_self_apply,
+      modelWithCornersSelf_coe, Function.id_def]
   have hT_model := by
     have h := T.contMDiff x₀
     rw [contMDiffAt_section] at h
@@ -194,7 +196,8 @@ theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
           tensorRSModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             r s x₀ x (T x))
         ((extChartAt I x₀).symm z₀) := by
-    simpa [z₀, extChartAt_to_inv] using hT_model
+    rw [show (extChartAt I x₀).symm z₀ = x₀ by simp [z₀]]
+    simpa [tensorRSModelAt] using hT_model
   have hTchart_cd := by
     have hcomp := ContMDiffAt.comp_contMDiffWithinAt
       (I := 𝓘(𝕜, E)) (I' := I)
@@ -225,33 +228,57 @@ theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
     rw [mdifferentiableAt_iff_source_of_mem_source (I := I) (I' := 𝓘(𝕜, 𝕜))
       (x := x₀) (x' := x₀) (mem_chart_source H x₀)]
     rw [mdifferentiableWithinAt_iff_differentiableWithinAt]
-    simpa [writtenInExtChartAt, z₀, extChartAt, Function.comp_def] using hwritten_diff
+    have hwrite :
+        writtenInExtChartAt I 𝓘(𝕜, 𝕜) x₀ f =
+          fun y : E => f ((extChartAt I x₀).symm y) := by
+      funext y
+      rw [writtenInExtChartAt, extChartAt_model_space_eq_id]
+      rfl
+    rw [hwrite] at hwritten_diff
+    simpa [z₀, extChartAt, Function.comp_def] using hwritten_diff
   unfold modelDerivRSAt coordDerivRSAt
+  have hXmodel :
+      tangentSpaceModelContinuousLinearEquiv z₀
+          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+            (fun x => X x) (Set.range I) z₀) =
+        tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀) := by
+    unfold tangentSpaceModelContinuousLinearEquiv
+    exact hX
   change
     ((fderivWithin 𝕜 Tchart S z₀
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) z₀)) β₀) u =
-      (mfderiv I 𝓘(𝕜, 𝕜) f x₀) (X x₀)
-  rw [hX, hf_md.mfderiv]
+        (tangentSpaceModelContinuousLinearEquiv z₀
+          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+            (fun x => X x) (Set.range I) z₀))) β₀) u =
+      mvfderiv (I := I) f x₀ (X x₀)
+  rw [hXmodel]
+  unfold mvfderiv
+  rw [hf_md.mfderiv]
   have happly₁ :
-      (fderivWithin 𝕜 Tchart S z₀ (X x₀)) β₀ =
-        fderivWithin 𝕜 (fun y : E => Tchart y β₀) S z₀ (X x₀) := by
+      (fderivWithin 𝕜 Tchart S z₀
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀))) β₀ =
+        fderivWithin 𝕜 (fun y : E => Tchart y β₀) S z₀
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀)) := by
     have hconst : DifferentiableWithinAt 𝕜 (fun _ : E => β₀) S z₀ :=
       differentiableWithinAt_const β₀
     have h :=
-      congrArg (fun L => L (X x₀))
+      congrArg
+        (fun L => L (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀)))
         (fderivWithin_clm_apply (𝕜 := 𝕜) (s := S) (x := z₀)
           huniq hTchart_diff hconst)
-    simpa [fderivWithin_const_apply] using h.symm
+    simpa only [fderivWithin_const_apply, ContinuousLinearMap.comp_zero, zero_add,
+      ContinuousLinearMap.flip_apply] using h.symm
   rw [happly₁]
   have hfun_diff :
       DifferentiableWithinAt 𝕜 (fun y : E => Tchart y β₀) S z₀ := by
     exact hTchart_diff.clm_apply (differentiableWithinAt_const β₀)
   have happly₂ :
-      (fderivWithin 𝕜 (fun y : E => Tchart y β₀) S z₀ (X x₀)) u =
-        fderivWithin 𝕜 (fun y : E => (Tchart y β₀) u) S z₀ (X x₀) := by
+      (fderivWithin 𝕜 (fun y : E => Tchart y β₀) S z₀
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀))) u =
+        fderivWithin 𝕜 (fun y : E => (Tchart y β₀) u) S z₀
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀)) := by
     exact (fderivWithin_continuousMultilinear_apply_const_apply
-      huniq hfun_diff u (X x₀)).symm
+      huniq hfun_diff u
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀))).symm
   rw [happly₂]
   have hfd :
       fderivWithin 𝕜 (fun y : E => (Tchart y β₀) u) S z₀ =

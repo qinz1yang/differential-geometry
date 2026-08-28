@@ -40,7 +40,7 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 /-! ## Constants -/
 
 /-- Intermediate constant for the extension gradient bound. -/
-private noncomputable def C_extensionGrad (d : ℕ) [NeZero d] (p : ℝ) : ℝ≥0∞ :=
+private noncomputable def C_extensionGrad (d : ℕ) (p : ℝ) : ℝ≥0∞ :=
   1 + C_unitBallExtensionGrad d p * (ENNReal.ofReal (C_poinc_val d) + 1)
 
 /-- The Sobolev-Poincare constant on the unit ball. -/
@@ -232,7 +232,7 @@ private theorem poincare_unitBall_W1p
     simp only [pp]; rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal (le_of_lt hp)
   have hpp_top : pp ≠ ⊤ := ENNReal.ofReal_ne_top
-  haveI hμ_fin : IsFiniteMeasure μ :=
+  have hμ_fin : IsFiniteMeasure μ :=
     ⟨by rw [Measure.restrict_apply_univ]; exact measure_ball_lt_top.lt_top⟩
   -- Measurability helpers
   have hu_aesm : AEStronglyMeasurable u μ := hw.memLp.aestronglyMeasurable
@@ -317,7 +317,7 @@ private theorem poincare_unitBall_W1p
         pp μ)
       atTop (nhds 0) := by
     rw [show (0 : ℝ≥0∞) = ∑ _ : Fin d, (0 : ℝ≥0∞) from by simp]
-    exact tendsto_finset_sum _ fun i _ => hψ_grad i
+    exact tendsto_finsetSum _ fun i _ => hψ_grad i
   -- === eLpNorm(‖fderiv ψ_n‖) ≤ eLpNorm(‖G‖) + grad_err ===
   have hG_norm_aesm : AEStronglyMeasurable (fun x => ‖hw.weakGrad x‖) μ := by
     -- Follow the pattern from aestronglyMeasurable_euclidean_of_components_local
@@ -369,7 +369,7 @@ private theorem poincare_unitBall_W1p
       atTop (nhds 0) :=
     tendsto_of_tendsto_of_tendsto_of_le_of_le'
       tendsto_const_nhds hψ_fn
-      (Eventually.of_forall fun _ => zero_le _)
+      (Eventually.of_forall fun _ => zero_le)
       (Eventually.of_forall h_mean_le)
   -- === Triangle inequality for each n ===
   -- u - ⨍u = -(ψ_n-u) + (ψ_n-⨍ψ_n) + ⨍(ψ_n-u)
@@ -484,6 +484,7 @@ theorem poincare_unitBall_W1p_public
 
 /-! ## Extension gradient `eLpNorm` bound -/
 
+omit [NeZero d] in
 /-- Convert the lintegral-level extension gradient bound into an `eLpNorm`
 bound using Poincare. -/
 private theorem extension_gradient_eLpNorm_bound

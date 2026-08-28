@@ -298,7 +298,10 @@ theorem weighted_caccioppoli_of_supersolution
   have hFG_int : Integrable (fun x => F x * G x) μ := by
     rw [← memLp_one_iff_integrable]
     have hmem : MemLp (fun x => ‖F x‖ * ‖G x‖) 1 μ := by
-      simpa [mul_comm] using (hF_memLp.norm.mul hG_memLp.norm)
+      exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+        rw [Pi.mul_apply]
+        exact mul_comm _ _)
+        (hF_memLp.norm.mul hG_memLp.norm)
     simpa [F, G, Real.norm_of_nonneg (Real.sqrt_nonneg _)] using hmem
   have hcross_bound :
       ∀ᵐ x ∂μ, |φ x * Ψ (u x) * AuDφ x| ≤ F x * G x := by

@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -212,6 +214,14 @@ theorem evolvingFrameGram_constant_of_ricciFlow
     have hG := hmetric t x i j
     have hAB := hA.mul hB
     have hABG := hAB.mul hG
+    rw [show (fun s : Real =>
+        frameComp s x a i * frameComp s x b j * metricComp s x i j) =
+        (fun s : Real => frameComp s x a i) *
+      ((fun s : Real => frameComp s x b j) *
+            fun s : Real => metricComp s x i j) by
+      funext s
+      simp only [Pi.mul_apply]
+      ring]
     simpa [τ, dA, dB, termDeriv, mul_assoc] using hABG
   have hleft :
       (∑ i : Idx, ∑ j : Idx,
@@ -745,6 +755,17 @@ private theorem uhlenbeckPullbackRm_deriv
   have hABC := hAB.mul hC
   have hABCD := hABC.mul hD
   have hAll := hABCD.mul hR
+  rw [show (fun s : Real =>
+      iota s x a i * iota s x b j * iota s x c k * iota s x d l *
+        Rm04 s x i j k l) =
+      (fun s : Real => iota s x a i) *
+        ((fun s : Real => iota s x b j) *
+          ((fun s : Real => iota s x c k) *
+            ((fun s : Real => iota s x d l) *
+              fun s : Real => Rm04 s x i j k l))) by
+    funext s
+    simp only [Pi.mul_apply]
+    ring]
   simpa [uhlenbeckPullbackRmInFrame, uhlenbeckPullbackRmDerivRHSInFrame,
     derivProduct5RHS, iotaDotInFrame, mul_assoc] using hAll
 

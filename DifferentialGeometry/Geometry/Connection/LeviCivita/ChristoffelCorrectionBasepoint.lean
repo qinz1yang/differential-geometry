@@ -21,7 +21,9 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma trivToE_basepoint (α : M) (v : TangentSpace I α) :
-    trivToE (I := I) α α v = v := by
+    trivToE (I := I) α α v =
+      tangentSpaceModelContinuousLinearEquiv (I := I) α v := by
+  rw [tangentSpaceModelContinuousLinearEquiv_apply]
   classical
   have hcore : trivToE (I := I) α α
       = (tangentBundleCore I M).coordChange (achart H α) (achart H α) α :=
@@ -38,7 +40,8 @@ theorem christoffelCorrection_basepoint_apply
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr w) i *
+            (((chartModelBasis E).repr
+                (tangentSpaceModelContinuousLinearEquiv (I := I) α w)) i *
                 ((chartModelBasis E).repr Y) j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α α)) •
               (chartModelBasis E) k := by
@@ -49,8 +52,10 @@ theorem christoffelCorrection_basepoint_apply
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffelCorrection_basepoint_symm
     (g : SmoothRiemannianMetric I M) (α : M) (Y w : TangentSpace I α) :
-    christoffelCorrection (I := I) g α α Y w =
-      christoffelCorrection (I := I) g α α w Y := by
+    christoffelCorrection (I := I) g α α
+        (tangentSpaceModelContinuousLinearEquiv (I := I) α Y) w =
+      christoffelCorrection (I := I) g α α
+        (tangentSpaceModelContinuousLinearEquiv (I := I) α w) Y := by
   classical
   have hsym := christoffelCorrection_symm_cancel (I := I) g α α w Y
   rw [trivToE_basepoint (I := I) α Y, trivToE_basepoint (I := I) α w] at hsym

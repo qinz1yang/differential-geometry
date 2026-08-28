@@ -26,12 +26,14 @@ noncomputable abbrev covariantJetNormSq
     ‖iteratedCovGrad (I := I) g r s q S‖ ^ 2
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem covariantJetNormSq_nonneg
     (g : SmoothRiemannianMetric I M) {r s m : ℕ}
     (S : SmoothCcTensor g r s) :
     0 ≤ covariantJetNormSq (I := I) (M := M) g m S :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_smul
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -45,6 +47,7 @@ theorem covariantJetNormSq_smul
   rw [iteratedCovGrad_smul, norm_smul, Real.norm_eq_abs,
     mul_pow, sq_abs]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_add_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -81,6 +84,7 @@ theorem covariantJetNormSq_add_le
           ‖iteratedCovGrad (I := I) g r s q V‖ ^ 2) := by
       simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_sub_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -115,6 +119,7 @@ theorem covariantJetNormSq_sub_le
           ‖iteratedCovGrad (I := I) g r s q V‖ ^ 2) := by
       simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_neg
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -127,6 +132,7 @@ theorem covariantJetNormSq_neg
   rw [iteratedCovGrad_neg, norm_neg]
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem covariantJetNormSq_mono
     (g : SmoothRiemannianMetric I M) {r s m n : ℕ}
     (hmn : m ≤ n) (S : SmoothCcTensor g r s) :
@@ -138,6 +144,7 @@ theorem covariantJetNormSq_mono
     (fun _ _ _ => sq_nonneg _)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_zero_section
     (g : SmoothRiemannianMetric I M) (r s m : ℕ) :
     iteratedCovGrad (I := I) g r s m
@@ -147,6 +154,7 @@ theorem iteratedCovGrad_zero_section
   | succ m ih => rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem covariantJetNormSq_zero
     (g : SmoothRiemannianMetric I M) {r s m : ℕ} :
     covariantJetNormSq (I := I) (M := M) g m
@@ -156,6 +164,7 @@ theorem covariantJetNormSq_zero
   intro q _
   rw [iteratedCovGrad_zero_section, norm_zero, zero_pow (by norm_num)]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_sum_four_le
     (g : SmoothRiemannianMetric I M) {r s m : ℕ}
@@ -177,6 +186,7 @@ theorem covariantJetNormSq_sum_four_le
   refine (covariantJetNormSq_add_le (I := I) (M := M) g m (A + B + C) D).trans ?_
   nlinarith [sq_nonneg X]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 theorem covariantJetNormSq_sum_six_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)

@@ -35,11 +35,11 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem riemTent_mem_Icc
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x : M) :
     riemDistTent g a hr x ∈ Set.Icc (0 : ℝ) 1 := by
-  letI : RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   constructor
   · change 0 ≤ ((thickenedIndicator (show 0 < r / 4 by positivity)
       (Metric.closedEBall a (ENNReal.ofReal (r / 2))) x : ℝ≥0) : ℝ)
@@ -53,11 +53,11 @@ theorem riemTent_eq_one
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) {x : M}
     (hx : riemannianEDistOf (I := I) g a x ≤ ENNReal.ofReal (r / 2)) :
     riemDistTent g a hr x = 1 := by
-  letI : RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   have hx' : x ∈ Metric.closedEBall a (ENNReal.ofReal (r / 2)) := by
     rw [Metric.mem_closedEBall', IsRiemannianManifold.out (I := I) a x]
     simpa only [riemannianEDistOf] using hx
@@ -73,11 +73,11 @@ theorem riemTent_eq_zero
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) {x : M}
     (hx : ENNReal.ofReal (3 * r / 4) ≤ riemannianEDistOf (I := I) g a x) :
     riemDistTent g a hr x = 0 := by
-  letI : RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   let S : Set M := Metric.closedEBall a (ENNReal.ofReal (r / 2))
   have hx' : ENNReal.ofReal (3 * r / 4) ≤ edist a x := by
     rw [IsRiemannianManifold.out (I := I) a x]
@@ -112,7 +112,7 @@ theorem riemTent_support
     Function.support (riemDistTent g a hr) ⊆
       {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal (3 * r / 4)} := by
   intro x hx
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   by_contra hdist
   exact hx (riemTent_eq_zero g a hr (not_lt.1 hdist))
 
@@ -122,11 +122,11 @@ theorem riemTent_tsupport
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     tsupport (riemDistTent g a hr) ⊆
       {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal r} := by
-  letI : RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   have hsupp : Function.support (riemDistTent g a hr) ⊆
       Metric.closedEBall a (ENNReal.ofReal (3 * r / 4)) := by
     intro x hx
@@ -150,18 +150,20 @@ theorem riemTent_lip
     edist (riemDistTent g a hr x) (riemDistTent g a hr y) ≤
       ENNReal.ofNNReal (⟨4 / r, div_nonneg (by norm_num) hr.le⟩ : ℝ≥0) *
         riemannianEDistOf (I := I) g x y := by
-  letI : RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   let hδ : 0 < r / 4 := by positivity
   let S : Set M := Metric.closedEBall a (ENNReal.ofReal (r / 2))
   have hreal : LipschitzWith (r / 4).toNNReal⁻¹
       (fun z : M => ((thickenedIndicator hδ S z : ℝ≥0) : ℝ)) :=
-    by simpa only [one_mul, Function.comp_apply] using
-      NNReal.isometry_coe.lipschitz.comp
+    by
+      have h := NNReal.isometry_coe.lipschitz.comp
         (lipschitzWith_thickenedIndicator hδ S)
+      intro x y
+      simpa only [Function.comp_apply, one_mul] using h x y
   have hconst : (r / 4).toNNReal⁻¹ =
       (⟨4 / r, div_nonneg (by norm_num) hr.le⟩ : ℝ≥0) := by
     apply NNReal.eq

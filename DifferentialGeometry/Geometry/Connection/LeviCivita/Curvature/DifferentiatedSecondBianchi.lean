@@ -73,18 +73,19 @@ theorem canRmSecond_nabla
       5 cov nablaRm04 x
   let nablaRmCyc : Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5 :=
-    MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) rmBianchiCyc nablaRm04
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) rmBianchiCyc nablaRm04
   let nablaRmCyc2 : Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5 :=
-    MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) rmBianchiCyc2 nablaRm04
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) rmBianchiCyc2 nablaRm04
   have hcyc : nablaRm04 + nablaRmCyc + nablaRmCyc2 = 0 := by
     refine DFunLike.ext _ _ fun y => ?_
     apply ContinuousMultilinearMap.ext
     intro slots
-    change nablaRm04 y slots +
-        nablaRm04 y (slots ∘ rmBianchiCyc) +
+    change (nablaRm04 y + nablaRmCyc y + nablaRmCyc2 y) slots =
+      (0 : Tensor0SSpace 5 I y) slots
+    rw [Tensor0SSpace.add_apply, Tensor0SSpace.add_apply, Tensor0SSpace.zero_apply]
+    dsimp only [nablaRmCyc, nablaRmCyc2]
+    change nablaRm04 y slots + nablaRm04 y (slots ∘ rmBianchiCyc) +
       nablaRm04 y (slots ∘ rmBianchiCyc2) = 0
     have hB := levi_civita_second_bianchi (I := I) (M := M) g (x := y)
     dsimp at hB
@@ -135,6 +136,7 @@ theorem canRmSecond_nabla
           5 cov (nablaRm04 + nablaRmCyc + nablaRmCyc2) x = 0 := by
     rw [hcyc]
     exact hzero
+  dsimp only [nablaRmCyc, nablaRmCyc2] at hderiv
   rw [totalNabla0SFun_add (I := I), totalNabla0SFun_add (I := I),
     totalNabla0SFun_domDomCongr (I := I),
     totalNabla0SFun_domDomCongr (I := I)] at hderiv

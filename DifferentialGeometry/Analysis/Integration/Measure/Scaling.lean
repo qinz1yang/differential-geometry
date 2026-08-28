@@ -98,6 +98,7 @@ theorem volume_scaleMetric [T2Space M] [SigmaCompactSpace M]
         (scaleMetric (I := I) c hc g) =
       ENNReal.ofReal (Real.sqrt c) ^ Module.finrank Real E •
         riemannianVolumeMeasure (I := I) (M := M) g := by
+  rw [riemannianVolumeMeasure_def, riemannianVolumeMeasure_def]
   simpa only [sqrt_pow c hc.le,
     ENNReal.ofReal_pow (Real.sqrt_nonneg c)] using
     riemMeasure_scale (I := I) (M := M) c hc g (chartAtlasPOU I M)

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
 import DifferentialGeometry.Analysis.Sobolev.Manifold.RellichOnM
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
-import Mathlib.Analysis.Normed.Operator.Compact
+import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Topology.Sequences
 open DifferentialGeometry.Geometry.Operator
 
@@ -75,7 +75,7 @@ private lemma SmoothScalar.sqrt_g_inner_grad_memLp_two
           ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
       2 (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have h_cont : Continuous (fun x : M => Real.sqrt
       (g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
@@ -286,7 +286,7 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
               ((grad_g (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))) := by
       funext x
-      simp [grad_g_apply]
+      rfl
     rw [h_eq] at h
     have h_l2 := eLpNorm_smoothScalar_le_norm_smoothScalar (I := I) (M := M) (s n)
     have h_grad := eLpNorm_sqrt_g_inner_grad_le_norm_smoothScalar (I := I) (M := M) (s n)
@@ -361,7 +361,9 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
         (f_ℒp := fun k => (s (φ k)).memLp_two)
         (f_lim := u_lim)
         (f_lim_ℒp := hu_lim_memLp_pou)).mpr hu_lim_tendsto_pou
-    convert h using 2
+    rw [hL_def]
+    refine h.congr' (Filter.Eventually.of_forall fun k ↦ ?_)
+    exact smoothToLp_apply (I := I) (M := M) g (s (φ k))
   have h_y_tendsto : Tendsto (fun k => y (φ k)) atTop (𝓝 L) := by
     rw [tendsto_iff_dist_tendsto_zero]
     refine squeeze_zero (f := fun k : ℕ =>

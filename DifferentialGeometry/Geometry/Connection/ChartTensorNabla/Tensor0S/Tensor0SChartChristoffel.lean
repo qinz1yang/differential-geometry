@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
@@ -133,11 +132,11 @@ lemma tensor0SIntrinsicChartCLM_add_section (s : ℕ) (α : M)
   unfold tensor0SIntrinsicChartCLM
   rw [hfd]
   ext v
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [ContinuousLinearMap.add_apply, map_add]
+  rw [add_apply, map_add]
 
 omit [CompleteSpace E] [T2Space M] in
 lemma tensor0SIntrinsicChartCLM_smul_section (s : ℕ) (α : M)
@@ -167,10 +166,10 @@ lemma tensor0SIntrinsicChartCLM_smul_section (s : ℕ) (α : M)
   unfold tensor0SIntrinsicChartCLM
   rw [hfd]
   ext v
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [ContinuousLinearMap.smul_apply, map_smul]
+  rw [smul_apply, map_smul]
 
 variable
   (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -207,7 +206,7 @@ theorem tensor0SCovariantDerivative_chart_decomp_apply (s : ℕ) (α : M)
         tensor0SChartChristoffelCorrection (I := I) cov s α T b v := by
   classical
   rw [tensor0SCovariantDerivative_chart_decomp (I := I) cov s α T b]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
 
 omit [CompleteSpace E] in
 theorem tensor0SCovariantDerivative_chart_decomp_vectorField

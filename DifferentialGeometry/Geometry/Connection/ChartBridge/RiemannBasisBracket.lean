@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Bundle.Frame
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
@@ -34,7 +35,6 @@ private lemma chartBasis_baseSet_eq_chartSource (x₀ : M) :
 private lemma chartBasisVecFiber_symmL_apply (x₀ : M) (i : Fin (Module.finrank ℝ E)) (x : M) :
     chartBasisVecFiber (I := I) x₀ i x =
       (trivializationAt E (TangentSpace I) x₀).symmL ℝ x ((chartModelBasis E) i) := by
-  rw [Trivialization.symmL_apply]
   rfl
 
 private lemma chartBasisVecFiber_apply_of_mem {x₀ x : M}
@@ -54,7 +54,7 @@ private lemma chartBasisVecFiber_pullback_eq_const (x₀ : M) (i : Fin (Module.f
         (chartBasisVecFiber (I := I) x₀ i) (Set.range I)
       =ᶠ[𝓝[Set.range I] (extChartAt I x₀ x₀)]
         fun _ : E => ((chartModelBasis E) i : E) := by
-  haveI : IsManifold I (1 : WithTop ℕ∞) M :=
+  have : IsManifold I (1 : WithTop ℕ∞) M :=
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   filter_upwards [extChartAt_target_mem_nhdsWithin (I := I) x₀] with y hy
   simp only [VectorField.mpullbackWithin_apply]
@@ -99,34 +99,6 @@ theorem mlieBracket_chartBasisVec_self_eq_zero (x₀ : M)
   rw [lieBracketWithin_const_const]
   exact ContinuousLinearMap.map_zero _
 
-omit [FiniteDimensional ℝ E] in
-private lemma trivToE_self_eq_id (x : M) :
-    (trivToE (I := I) x x : TangentSpace I x →L[ℝ] E) =
-      ContinuousLinearMap.id ℝ (TangentSpace I x) := by
-  classical
-  have h := TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
-    (x₀ := x) (x := x) (mem_chart_source H x)
-  rw [show (trivToE (I := I) x x : TangentSpace I x →L[ℝ] E) =
-        (trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x from rfl]
-  rw [h]
-  exact mfderiv_extChartAt_self (I := I) (x := x)
-
-omit [FiniteDimensional ℝ E] in
-private lemma trivFromE_self_apply (x : M) (w : E) :
-    trivFromE (I := I) x x w = w := by
-  classical
-  have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt' x
-  have h := trivToE_trivFromE (I := I) x hbase w
-  have hid : trivToE (I := I) x x (trivFromE (I := I) x x w) = trivFromE (I := I) x x w := by
-    rw [trivToE_self_eq_id (I := I) x]; rfl
-  rwa [hid] at h
-
-private lemma chartBasisVecFiber_self_aux (x : M) (i : Fin (Module.finrank ℝ E)) :
-    chartBasisVecFiber (I := I) x i x = (chartModelBasis E) i := by
-  rw [chartBasisVecFiber_symmL_apply (I := I) x i x]
-  exact trivFromE_self_apply (I := I) x ((chartModelBasis E) i)
-
 variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
@@ -148,7 +120,9 @@ theorem exists_smooth_chartBasisExtension (x : M) :
         (trivializationAt E (TangentSpace I) x).baseSet := by
     intro i
     have h := chartBasisVec_contMDiffOn (I := I) x i
-    simpa using h
+    change ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (chartBasisVec (I := I) x i)
+      (trivializationAt E (TangentSpace I) x).baseSet
+    exact h
   obtain ⟨s', hs'⟩ :=
     exists_contMDiffSection_eqOn_nhd (I := I) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       (s := fun i b => chartBasisVecFiber (I := I) x i b) hs hbase_open hx_base
@@ -165,8 +139,9 @@ theorem LeviCivita_chartBasisVec_neighborhood_formula
     (hXnhds : ∀ᶠ b in 𝓝 x, ∀ i, X i b = chartBasisVecFiber (I := I) x i b)
     (i j k : Fin (Module.finrank ℝ E)) :
     riemannOp (cov := LeviCivita (I := I) g) x
-        ((chartModelBasis E) j) ((chartModelBasis E) k)
-        ((chartModelBasis E) i) =
+        ((centeredChartTangentBasis (I := I) x) j)
+        ((centeredChartTangentBasis (I := I) x) k)
+        ((centeredChartTangentBasis (I := I) x) i) =
       (LeviCivita (I := I) g).toFun
           (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X k)
             (X i)) x (X j x) -
@@ -174,16 +149,18 @@ theorem LeviCivita_chartBasisVec_neighborhood_formula
           (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X j)
             (X i)) x (X k x) := by
   classical
-  have hXx : ∀ i, X i x = (chartModelBasis E) i := by
+  have hXx : ∀ i, X i x = (centeredChartTangentBasis (I := I) x) i := by
     intro i
     have hb : ∀ i, X i x = chartBasisVecFiber (I := I) x i x := hXnhds.self_of_nhds
-    rw [hb i, chartBasisVecFiber_self_aux (I := I) x i]
+    rw [hb i, chartBasisVecFiber_self (I := I) x i]
   have hsec : riemannOp (cov := LeviCivita (I := I) g) x
-      ((chartModelBasis E) j) ((chartModelBasis E) k) ((chartModelBasis E) i) =
+      ((centeredChartTangentBasis (I := I) x) j)
+      ((centeredChartTangentBasis (I := I) x) k)
+      ((centeredChartTangentBasis (I := I) x) i) =
       riemannSec (LeviCivita (I := I) g) (X j) (X k) (X i) x := by
-    rw [show ((chartModelBasis E) j : TangentSpace I x) = X j x from (hXx j).symm,
-        show ((chartModelBasis E) k : TangentSpace I x) = X k x from (hXx k).symm,
-        show ((chartModelBasis E) i : TangentSpace I x) = X i x from (hXx i).symm]
+    rw [show (centeredChartTangentBasis (I := I) x) j = X j x from (hXx j).symm,
+        show (centeredChartTangentBasis (I := I) x) k = X k x from (hXx k).symm,
+        show (centeredChartTangentBasis (I := I) x) i = X i x from (hXx i).symm]
     exact riemannOp_apply_smooth (cov := LeviCivita (I := I) g) (hX j) (hX k) (hX i)
   rw [hsec, riemannSec_def]
   have hXj_eq : (X j) =ᶠ[𝓝 x] chartBasisVecFiber (I := I) x j := by
@@ -254,9 +231,7 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
           (extChartAt I x b) = 0 := by
     have hev : (chartE_section_repr (I := I) x Xi ∘ (extChartAt I x).symm)
         =ᶠ[𝓝 (extChartAt I x b)] (fun _ : E => ((chartModelBasis E) i : E)) := by
-      rw [Filter.eventuallyEq_iff_exists_mem] at hXi_nhds
-      obtain ⟨W, hW_nhds, hW_eq⟩ := hXi_nhds
-      obtain ⟨W', hW'W, hW'_open, hbW'⟩ := mem_nhds_iff.mp hW_nhds
+      obtain ⟨W', hW'_eq, hW'_open, hbW'⟩ := mem_nhds_iff.mp hXi_nhds
       set V : Set E :=
         (extChartAt I x).target ∩
           (extChartAt I x).symm ⁻¹'
@@ -279,12 +254,12 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
       simp only [Function.comp_apply, chartE_section_repr_eq_trivToE]
       rw [show Xi ((extChartAt I x).symm y) =
             chartBasisVecFiber (I := I) x i ((extChartAt I x).symm y) from
-          hW_eq (hW'W hy_W')]
+          hW'_eq hy_W']
       have := chartE_section_repr_chartBasisVec_baseSet (I := I) x i hy_base
       rw [chartE_section_repr_eq_trivToE] at this
       exact this
     rw [hev.fderiv_eq, fderiv_const_apply]
-  rw [hfd0, ContinuousLinearMap.zero_apply, zero_add]
+  rw [hfd0, zero_apply, zero_add]
   rw [show chartE_section_repr (I := I) x Xi b = (chartModelBasis E) i from by
     rw [chartE_section_repr_eq_trivToE,
         show Xi b = chartBasisVecFiber (I := I) x i b from hXi_nhds.self_of_nhds]
@@ -418,7 +393,7 @@ private lemma fderiv_christoffelSum_apply
   rw [fderiv_fun_sum (fun m _ =>
     (chartChristoffel_differentiableAt_self (I := I) g x k i m).smul_const
       ((chartModelBasis E) m))]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   rw [fderiv_smul_const (chartChristoffel_differentiableAt_self (I := I) g x k i m)
     ((chartModelBasis E) m)]
@@ -437,14 +412,14 @@ private lemma LeviCivita_covApply_secondLayer
     (hXnhds : ∀ᶠ b in 𝓝 x, ∀ p, X p b = chartBasisVecFiber (I := I) x p b) :
     (LeviCivita (I := I) g).toFun
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X k) (X i)) x
-        ((chartModelBasis E) j) =
+        ((centeredChartTangentBasis (I := I) x) j) =
       ∑ l : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l)
               (extChartAt I x x) +
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x j m l (extChartAt I x x) *
                 chartChristoffel (I := I) g x k i m (extChartAt I x x)) •
-          (chartModelBasis E) l := by
+          (centeredChartTangentBasis (I := I) x) l := by
   classical
   set S : Π b : M, TangentSpace I b :=
     DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X k) (X i) with hS_def
@@ -465,17 +440,21 @@ private lemma LeviCivita_covApply_secondLayer
           (∑ m : Fin (Module.finrank ℝ E), c m • (chartModelBasis E) m)) q = c q := by
     intro q
     rw [map_sum]
-    simp only [map_smul, Finsupp.coe_finset_sum, Finset.sum_apply, Finsupp.coe_smul,
+    simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
       Pi.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single q
       (fun m _ hm => by rw [Module.Basis.repr_self_apply, if_neg hm, mul_zero])
       (fun hq => absurd (Finset.mem_univ q) hq)]
     rw [Module.Basis.repr_self_apply, if_pos rfl, mul_one]
-  rw [LeviCivita_chart_apply (I := I) g x hx_good hS_at ((chartModelBasis E) j)]
-  rw [chartLeviCivita_apply (I := I) g x S hx_good ((chartModelBasis E) j)]
+  rw [LeviCivita_chart_apply (I := I) g x hx_good hS_at
+    ((centeredChartTangentBasis (I := I) x) j)]
+  rw [chartLeviCivita_apply (I := I) g x S hx_good
+    ((centeredChartTangentBasis (I := I) x) j)]
   have hev := chartE_section_repr_covApply_eventuallyEq (I := I) g x i k hXnhds
-  rw [show trivToE (I := I) x x ((chartModelBasis E) j) = (chartModelBasis E) j from by
-    rw [trivToE_self_eq_id (I := I) x]; rfl]
+  rw [show trivToE (I := I) x x ((centeredChartTangentBasis (I := I) x) j) =
+      (chartModelBasis E) j by
+    rw [trivToE_self_apply, centeredChartTangentBasis_apply,
+      ContinuousLinearEquiv.apply_symm_apply]]
   rw [hev.fderiv_eq, fderiv_christoffelSum_apply (I := I) g x i j k]
   have hSx_repr : chartE_section_repr (I := I) x S x =
       ∑ m : Fin (Module.finrank ℝ E), c m • (chartModelBasis E) m := by
@@ -486,9 +465,11 @@ private lemma LeviCivita_covApply_secondLayer
   rw [hSx_repr]
   rw [christoffelCorrection_apply (I := I) g x x
     (∑ m : Fin (Module.finrank ℝ E), c m • (chartModelBasis E) m)
-    ((chartModelBasis E) j)]
-  rw [show trivToE (I := I) x x ((chartModelBasis E) j) = (chartModelBasis E) j from by
-    rw [trivToE_self_eq_id (I := I) x]; rfl]
+    ((centeredChartTangentBasis (I := I) x) j)]
+  rw [show trivToE (I := I) x x ((centeredChartTangentBasis (I := I) x) j) =
+      (chartModelBasis E) j by
+    rw [trivToE_self_apply, centeredChartTangentBasis_apply,
+      ContinuousLinearEquiv.apply_symm_apply]]
   have hrepr_ej : ∀ p : Fin (Module.finrank ℝ E),
       ((chartModelBasis E).repr ((chartModelBasis E) j)) p = if j = p then (1 : ℝ) else 0 := by
     intro p; rw [Module.Basis.repr_self_apply]
@@ -550,16 +531,15 @@ private lemma LeviCivita_covApply_secondLayer
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [(trivFromE (I := I) x x).map_smul]
   congr 1
-  exact trivFromE_self_apply (I := I) x ((chartModelBasis E) l)
+  rw [trivFromE_self_apply, centeredChartTangentBasis_apply]
 
-omit [FiniteDimensional ℝ E] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma coord_sum_smul_basis
-    {b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E}
-    (c : Fin (Module.finrank ℝ E) → ℝ) (l : Fin (Module.finrank ℝ E)) :
-    (b.repr (∑ l' : Fin (Module.finrank ℝ E), c l' • b l')) l = c l := by
+    {V ι : Type*} [AddCommMonoid V] [Module ℝ V] [Fintype ι]
+    {b : Module.Basis ι ℝ V} (c : ι → ℝ) (l : ι) :
+    (b.repr (∑ l' : ι, c l' • b l')) l = c l := by
   classical
   rw [map_sum]
-  simp only [map_smul, Finsupp.coe_finset_sum, Finset.sum_apply, Finsupp.coe_smul,
+  simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
     Pi.smul_apply, smul_eq_mul]
   rw [Finset.sum_eq_single l
     (fun l' _ hl' => by rw [Module.Basis.repr_self_apply, if_neg hl', mul_zero])
@@ -575,9 +555,9 @@ theorem chartRiemannBasisIdentity_LeviCivita [I.Boundaryless]
   classical
   intro i j k l
   obtain ⟨X, hX, hXnhds⟩ := exists_smooth_chartBasisExtension (I := I) x
-  have hXx : ∀ p, X p x = (chartModelBasis E) p := by
+  have hXx : ∀ p, X p x = (centeredChartTangentBasis (I := I) x) p := by
     intro p
-    rw [hXnhds.self_of_nhds p, chartBasisVecFiber_self_aux (I := I) x p]
+    rw [hXnhds.self_of_nhds p, chartBasisVecFiber_self (I := I) x p]
   have hvec :
       (LeviCivita (I := I) g).toFun
           (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X k)
@@ -587,7 +567,7 @@ theorem chartRiemannBasisIdentity_LeviCivita [I.Boundaryless]
             (X i)) x (X k x) =
       ∑ l' : Fin (Module.finrank ℝ E),
         chartRiemannTensor (I := I) g x i j k l' (extChartAt I x x) •
-          (chartModelBasis E) l' := by
+          (centeredChartTangentBasis (I := I) x) l' := by
     rw [hXx j, hXx k]
     rw [LeviCivita_covApply_secondLayer (I := I) g x i j k hX hXnhds]
     rw [LeviCivita_covApply_secondLayer (I := I) g x i k j hX hXnhds]
@@ -598,17 +578,17 @@ theorem chartRiemannBasisIdentity_LeviCivita [I.Boundaryless]
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x j m l' (extChartAt I x x) *
                 chartChristoffel (I := I) g x k i m (extChartAt I x x)) •
-          (chartModelBasis E) l')
+          (centeredChartTangentBasis (I := I) x) l')
       (g := fun l' : Fin (Module.finrank ℝ E) =>
         (partialDeriv (E := E) k (chartChristoffel (I := I) g x j i l')
               (extChartAt I x x) +
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x k m l' (extChartAt I x x) *
                 chartChristoffel (I := I) g x j i m (extChartAt I x x)) •
-          (chartModelBasis E) l')).symm ?_
+          (centeredChartTangentBasis (I := I) x) l')).symm ?_
     refine Finset.sum_congr rfl (fun l' _ => ?_)
     rw [← sub_smul]
-    refine congrArg (fun t : ℝ => t • (chartModelBasis E) l') ?_
+    refine congrArg (fun t : ℝ => t • (centeredChartTangentBasis (I := I) x) l') ?_
     rw [chartRiemannTensor_def]
     rw [show chartChristoffel (I := I) g x k i l' = chartChristoffel (I := I) g x i k l' from
       funext (fun y => chartChristoffel_symm (I := I) g x k i l' y)]
@@ -634,7 +614,7 @@ theorem chartRiemannBasisIdentity_LeviCivita [I.Boundaryless]
     ring
   rw [LeviCivita_chartBasisVec_neighborhood_formula (I := I) g x hX hXnhds i j k]
   rw [hvec]
-  exact coord_sum_smul_basis (b := chartModelBasis E)
+  exact coord_sum_smul_basis (b := centeredChartTangentBasis (I := I) x)
     (c := fun l' => chartRiemannTensor (I := I) g x i j k l' (extChartAt I x x)) l
 
 end Connection

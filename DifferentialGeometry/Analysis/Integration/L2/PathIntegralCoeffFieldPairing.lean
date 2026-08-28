@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenc
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
@@ -208,12 +207,12 @@ private theorem inner_pathIntegralCoeffField_data
       IntervalIntegrable (fun t : ℝ => Inner.inner ℝ V (Φ t))
         volume 0 1 := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
-  letI : MeasurableSpace ℝ := borel ℝ
-  letI : BorelSpace ℝ := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace ℝ := borel ℝ
+  let : BorelSpace ℝ := ⟨rfl⟩
   let μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ :=
+  let : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   let Ξ := pathIntegralCoeffField (I := I) (M := M) g 0 2 Φ S hS hSI hjoint
@@ -287,7 +286,7 @@ private theorem inner_pathIntegralCoeffField_data
   obtain ⟨Cb, hCb⟩ := (hcompact.image_of_continuousOn hFcont.norm).bddAbove
   have huIoc : Set.uIoc (0 : ℝ) 1 = Set.Ioc (0 : ℝ) 1 :=
     Set.uIoc_of_le (by norm_num)
-  haveI : IsFiniteMeasure (volume.restrict (Set.uIoc (0 : ℝ) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (Set.uIoc (0 : ℝ) 1)) := by
     constructor
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter,
       huIoc, Real.volume_Ioc]

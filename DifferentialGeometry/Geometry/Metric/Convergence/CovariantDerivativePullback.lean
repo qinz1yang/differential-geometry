@@ -7,6 +7,8 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -37,8 +39,8 @@ variable [BoundarylessManifold I M] [BoundarylessManifold I N]
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricCovDeriv_one_pullback_sections
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 1 N] (h gRef : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -96,8 +98,8 @@ theorem metricCovDeriv_one_pullback_sections
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricCovDeriv_one_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 1 N] (h gRef : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (x : M) (v0 : TangentSpace I x) (v : Fin 2 -> TangentSpace I x) :
     metricCovDeriv (I := I) (Diffeomorph.pullbackMetric (I := I) h Phi)
@@ -126,8 +128,7 @@ theorem metricCovDeriv_one_pullback
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 private theorem metricCovDeriv_succ_eval_smooth_slots'
-    [SigmaCompactSpace M] [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
     (h gRef : SmoothRiemannianMetric I M) (a : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -136,7 +137,7 @@ private theorem metricCovDeriv_succ_eval_smooth_slots'
     (x : M) :
     metricCovDeriv (I := I) h gRef (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCovDeriv (I := I) h gRef a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),
@@ -154,8 +155,7 @@ private theorem metricCovDeriv_succ_eval_smooth_slots'
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 private theorem covDerivOfField_succ_eval_smooth_slots
-    [SigmaCompactSpace M] [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
     (gRef : SmoothRiemannianMetric I M)
     (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
@@ -167,7 +167,7 @@ private theorem covDerivOfField_succ_eval_smooth_slots
     (x : M) :
     covDerivOfField (I := I) gRef A0 (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => covDerivOfField (I := I) gRef A0 a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),
@@ -185,8 +185,8 @@ private theorem covDerivOfField_succ_eval_smooth_slots
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricCovDeriv_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
@@ -243,10 +243,10 @@ theorem metricCovDeriv_pullback
             (fun q : Fin (a + 2) => pushFwdSection (I := I) Phi (V q)) (Phi x)
         rw [hleft, hright]
         have hderiv :
-            extDerivFun (I := I)
+            mvfderiv (I := I)
                 (fun y : M => metricCovDeriv (I := I) hPb refPb a y
                   (fun q : Fin (a + 2) => V q y)) x (X x) =
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun z : N => metricCovDeriv (I := I) h gRef a z
                   (fun q : Fin (a + 2) =>
                     pushFwdSection (I := I) Phi (V q) z)) (Phi x)
@@ -270,7 +270,7 @@ theorem metricCovDeriv_pullback
               (Phi x)).mdifferentiableAt (by simp)
           rw [hscalar]
           simpa [pushFwdSection_apply_at_image] using
-            extDerivFun_comp_diffeomorph (I := I)
+            mvfderiv_comp_diffeomorph (I := I)
               (f := fun z : N => metricCovDeriv (I := I) h gRef a z
                 (fun q : Fin (a + 2) => pushFwdSection (I := I) Phi (V q) z))
               Phi x (X x) hf
@@ -352,12 +352,10 @@ theorem metricCovDeriv_pullback
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem covDerivOfField_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     (gRef : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (A0M : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
@@ -408,10 +406,10 @@ theorem covDerivOfField_pullback
             (fun q : Fin (a + 2) => pushFwdSection (I := I) Phi (V q)) (Phi x)
         rw [hleft, hright]
         have hderiv :
-            extDerivFun (I := I)
+            mvfderiv (I := I)
                 (fun y : M => covDerivOfField (I := I) refPb A0M a y
                   (fun q : Fin (a + 2) => V q y)) x (X x) =
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun z : N => covDerivOfField (I := I) gRef A0N a z
                   (fun q : Fin (a + 2) =>
                     pushFwdSection (I := I) Phi (V q) z)) (Phi x)
@@ -435,7 +433,7 @@ theorem covDerivOfField_pullback
               (Phi x)).mdifferentiableAt (by simp)
           rw [hscalar]
           simpa [pushFwdSection_apply_at_image] using
-            extDerivFun_comp_diffeomorph (I := I)
+            mvfderiv_comp_diffeomorph (I := I)
               (f := fun z : N => covDerivOfField (I := I) gRef A0N a z
                 (fun q : Fin (a + 2) => pushFwdSection (I := I) Phi (V q) z))
               Phi x (X x) hf
@@ -539,7 +537,7 @@ theorem metricRm04StdAt_eq_inner_riemannOp
     show metricRm04At (I := I) g x
         = riemannCurvature04At g (metricCov (I := I) g) (metricCov_smooth (I := I) g) x from rfl,
     riemannCurvature04At_apply_const]
-  haveI : CovariantDerivative.ContMDiffCovariantDerivative (metricCov (I := I) g) ∞ :=
+  have : CovariantDerivative.ContMDiffCovariantDerivative (metricCov (I := I) g) ∞ :=
     LeviCivita_isContMDiff g
   rw [riemannCurvatureAux_tangentConst_eq_riemannOp (metricCov (I := I) g)
       (metricCov_smooth (I := I) g) x X Y Z,
@@ -549,8 +547,8 @@ theorem metricRm04StdAt_eq_inner_riemannOp
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem ricciTensor_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N)
     (x : M) (v w : TangentSpace I x) :
     ricciTensor (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ) x v w
@@ -587,8 +585,8 @@ theorem ricciTensor_pullback
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem ricciSection_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N)
     (y : M) (slots : Fin 2 → TangentSpace I y) :
     CovariantDerivative.ricciSection (I := I)
@@ -614,8 +612,8 @@ theorem ricciSection_pullback
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricDiffCovDerivAt_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
@@ -707,12 +705,17 @@ theorem normSq0S_pullback_eval_of_orthonormal
     have h :=
       metricInverseInBasis_of_orthonormal
         (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
-    simpa [identityInvMetric, diagonalInvMetric] using h
+    change MetricInverseInBasis_gen (I := I)
+      (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
+        (fun a k => if a = k then (1 : Real) else 0)
+    exact h
   have hinv' :
       MetricInverseInBasis_gen (I := I) g (Phi x) basis'
         (identityInvMetric (Idx := Idx)) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
-    simpa [identityInvMetric, diagonalInvMetric] using h
+    change MetricInverseInBasis_gen (I := I) g (Phi x) basis'
+      (fun a k => if a = k then (1 : Real) else 0)
+    exact h
   rw [normSq0S_identity_eq_sum_sq (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) x s basis hinv Tpb,
     normSq0S_identity_eq_sum_sq (I := I) g (Phi x) s basis' hinv' T]
@@ -725,8 +728,8 @@ theorem normSq0S_pullback_eval_of_orthonormal
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricDerivNorm_pullback_of_orthonormal
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
@@ -758,8 +761,8 @@ theorem metricDerivNorm_pullback_of_orthonormal
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricDerivNorm_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
@@ -782,8 +785,8 @@ theorem metricDerivNorm_pullback
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricDerivNormSupOn_pullback_image
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
@@ -812,8 +815,8 @@ theorem metricDerivNormSupOn_pullback_image
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricCInf_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N]
@@ -834,8 +837,8 @@ theorem metricCInf_pullback
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
 theorem metricScalarAt_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 1 N] (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N) (x : M) :
     metricScalarAt (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) x
       = metricScalarAt (I := I) g (Phi x) := by
@@ -862,13 +865,16 @@ theorem metricScalarAt_pullback
   have hinv :
       MetricInverseInBasis_gen (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         identityInvMetric := by
-    simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal
-        (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
+    change MetricInverseInBasis_gen (I := I)
+      (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
+        (fun a k => if a = k then (1 : Real) else 0)
+    exact metricInverseInBasis_of_orthonormal
+      (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
   have hinv' :
       MetricInverseInBasis_gen (I := I) g (Phi x) basis' identityInvMetric := by
-    simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
+    change MetricInverseInBasis_gen (I := I) g (Phi x) basis'
+      (fun a k => if a = k then (1 : Real) else 0)
+    exact metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
   rw [metricScalarAt_def, metricScalarAt_def,
     metricTracePair0SAt_eq_sum_basis (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) basis identityInvMetric hinv
@@ -885,12 +891,13 @@ theorem metricScalarAt_pullback
     exact ricciTensor_pullback (I := I) g Phi x (basis i) (basis j)
   rw [hric]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    [BoundarylessManifold I N] in
 theorem metricCovDerivNorm_pullback
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
-    [SigmaCompactSpace N] [T2Space N]
+    [T2Space N]
     (a : ℕ) (h gRef : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M) :
     metricCovDerivNorm (I := I) a
         (Diffeomorph.pullbackMetric (I := I) h Φ)

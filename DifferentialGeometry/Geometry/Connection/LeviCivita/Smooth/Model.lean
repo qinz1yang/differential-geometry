@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -24,68 +25,29 @@ variable [SigmaCompactSpace M] [T2Space M]
 noncomputable def metricFlatContinuousEquiv
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
     E ≃L[Real] (E →L[Real] Real) :=
-  ((metricFlatEquiv (I := I) g x₀).trans
-    (LinearMap.toContinuousLinearMap :
-      (E →ₗ[Real] Real) ≃ₗ[Real] (E →L[Real] Real))).toContinuousLinearEquiv
+  Tensor.Coordinates.metricFlatContinuousEquiv (I := I) g x₀
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatContinuousEquiv_apply
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v w : E) :
-    ((metricFlatContinuousEquiv (I := I) g x₀) v) w = g.inner x₀ v w := by
-  change ((metricFlatEquiv (I := I) g x₀) v) w = g.inner x₀ v w
-  rw [metricFlatEquiv_apply]
+    ((metricFlatContinuousEquiv (I := I) g x₀) v) w =
+      g.inner x₀
+        ((trivializationAt E (TangentSpace I) x₀).symmL Real x₀ v)
+        ((trivializationAt E (TangentSpace I) x₀).symmL Real x₀ w) :=
+  Tensor.Coordinates.metricFlatContinuousEquiv_apply (I := I) g x₀ v w
 
 noncomputable def metricFlatModelInChart
     (g : SmoothRiemannianMetric I M) (x₀ : M) (y : E) :
     E →L[Real] E →L[Real] Real :=
-  (trivializationAt (E →L[Real] E →L[Real] Real)
-      (fun p : M => TangentSpace I p →L[Real] TangentSpace I p →L[Real] Real) x₀
-      ⟨(extChartAt I x₀).symm y, g.inner ((extChartAt I x₀).symm y)⟩).2
+  Tensor.Coordinates.metricFlatModelInChart (I := I) g x₀ y
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_center_eq
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
     metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀) =
       (metricFlatContinuousEquiv (I := I) g x₀ :
-        E →L[Real] (E →L[Real] Real)) := by
-  have hcenter :
-      (extChartAt I x₀).symm (extChartAt I x₀ x₀) = x₀ :=
-    (extChartAt I x₀).left_inv (mem_extChartAt_source (I := I) x₀)
-  ext v w
-  simp only [metricFlatModelInChart]
-  rw [hom_trivializationAt_apply]
-  rw [hcenter]
-  change
-    (ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[Real] Real)
-        (fun p : M => TangentSpace I p →L[Real] Real) x₀ x₀ x₀ x₀
-        (g.inner x₀) v) w =
-      ((metricFlatContinuousEquiv (I := I) g x₀) v) w
-  have hxT :
-      x₀ ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
-    simp
-  have hxDual :
-      x₀ ∈ (trivializationAt (E →L[Real] Real)
-          (fun p : M => TangentSpace I p →L[Real] Real) x₀).baseSet := by
-    rw [hom_trivializationAt_baseSet]
-    exact ⟨hxT, by simp⟩
-  rw [ContinuousLinearMap.inCoordinates_eq hxT hxDual]
-  simp [metricFlatContinuousEquiv, hom_trivializationAt,
-    Trivialization.continuousLinearMap_apply]
-  have hL :
-      (trivializationAt E (TangentSpace I) x₀).symmL Real x₀ =
-        (1 : E →L[Real] E) := by
-    rw [TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x₀) (b := x₀) (mem_chart_source H x₀)]
-    ext z
-    exact (tangentBundleCore I M).coordChange_self (achart H x₀) x₀
-      (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H x₀) z
-  have hsymm (z : E) :
-      (trivializationAt E (TangentSpace I) x₀).symm x₀ z = z := by
-    change (trivializationAt E (TangentSpace I) x₀).symmL Real x₀ z = z
-    rw [hL]
-    rfl
-  simp only [hsymm]
-  rfl
+        E →L[Real] (E →L[Real] Real)) :=
+  Tensor.Coordinates.metricFlatModelInChart_center_eq (I := I) g x₀
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_center_isInvertible
@@ -154,26 +116,14 @@ theorem metricFlatModelInChart_apply_of_target
   let p : M := (extChartAt I x₀).symm y
   have hp_src : p ∈ (extChartAt I x₀).source := by
     simpa [p] using (extChartAt I x₀).map_target hy
+  have hp_frame : p ∈ coordinateFrameSet (I := I) x₀ := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hp_src
   have hpy : extChartAt I x₀ p = y := by
     simpa [p] using (extChartAt I x₀).right_inv hy
   have hcenter : (extChartAt I x₀).symm (extChartAt I x₀ p) = p :=
     (extChartAt I x₀).left_inv hp_src
   rw [← hpy, hcenter]
-  simp only [metricFlatModelInChart]
-  rw [hom_trivializationAt_apply]
-  rw [hcenter]
-  have hpT :
-      p ∈
-        (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
-    simpa [TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp_src
-  have hpDual :
-      p ∈
-        (trivializationAt (E →L[Real] Real)
-          (fun p : M => TangentSpace I p →L[Real] Real) x₀).baseSet := by
-    rw [hom_trivializationAt_baseSet]
-    exact ⟨hpT, by simp⟩
-  rw [ContinuousLinearMap.inCoordinates_eq hpT hpDual]
-  simp [hom_trivializationAt, Trivialization.continuousLinearMap_apply]
+  exact Tensor.Coordinates.flatChart_apply (I := I) g x₀ hp_frame v w
 
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -282,30 +232,10 @@ private theorem inverseMetricFlatModelInChart_component_center_eq_symm
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord i))) := by
-  let A : E ≃L[Real] (E →L[Real] Real) := metricFlatContinuousEquiv (I := I) g x₀
-  let ε : CoordinateIdx (𝕜 := Real) E -> E →L[Real] Real :=
-    fun a => LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord a)
-  have hInv :
-      ContinuousLinearMap.inverse
-          (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)) =
-        A.symm := by
-    rw [metricFlatModelInChart_center_eq (I := I) g x₀]
-    exact ContinuousLinearMap.inverse_equiv A
-  rw [hInv]
-  calc
-    (Module.finBasis Real E).coord i (A.symm (ε j))
-        = (ε i) (A.symm (ε j)) := rfl
-    _ = (A (A.symm (ε i))) (A.symm (ε j)) := by
-          rw [A.apply_symm_apply]
-    _ = g.inner x₀ (A.symm (ε i)) (A.symm (ε j)) := by
-          rw [metricFlatContinuousEquiv_apply]
-    _ = g.inner x₀ (A.symm (ε j)) (A.symm (ε i)) := by
-          exact g.symm x₀ (A.symm (ε i)) (A.symm (ε j))
-    _ = (A (A.symm (ε j))) (A.symm (ε i)) := by
-          rw [metricFlatContinuousEquiv_apply]
-    _ = (ε j) (A.symm (ε i)) := by
-          rw [A.apply_symm_apply]
-    _ = (Module.finBasis Real E).coord j (A.symm (ε i)) := rfl
+  simpa only [metricFlatModelInChart,
+    Tensor.Coordinates.inverseMetricFlatModelInChart_component] using
+    Tensor.Coordinates.inverseMetricFlatModelInChart_component_center_eq_symm
+      (I := I) g x₀ i j
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -316,119 +246,10 @@ theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
           ((ContinuousLinearMap.inverse
               (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
             (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))) := by
-  classical
-  let A : E ≃L[Real] (E →L[Real] Real) := metricFlatContinuousEquiv (I := I) g x₀
-  let ε : CoordinateIdx (𝕜 := Real) E -> E →L[Real] Real :=
-    fun a => LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord a)
-  let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
-    fun k l =>
-      (Module.finBasis Real E).coord k
-        ((ContinuousLinearMap.inverse
-            (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀))) (ε l))
-  have hInv :
-      ContinuousLinearMap.inverse
-          (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)) =
-        A.symm := by
-    rw [metricFlatModelInChart_center_eq (I := I) g x₀]
-    exact ContinuousLinearMap.inverse_equiv A
-  have hbasis :
-      coordinateFrameAt_toBasis (I := I) x₀ = Module.finBasis Real E :=
-    coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀
-  have hginv (k l : CoordinateIdx (𝕜 := Real) E) :
-      gInv k l = (Module.finBasis Real E).coord k (A.symm (ε l)) := by
-    dsimp [gInv]
-    simpa [extChartAt] using
-      congrArg (fun L : (E →L[Real] Real) →L[Real] E =>
-        (Module.finBasis Real E).coord k (L (ε l))) hInv
-  have hsym (k l : CoordinateIdx (𝕜 := Real) E) : gInv k l = gInv l k := by
-    simp only [hginv]
-    calc
-      (Module.finBasis Real E).coord k (A.symm (ε l))
-          = (ε k) (A.symm (ε l)) := rfl
-      _ = (A (A.symm (ε k))) (A.symm (ε l)) := by
-            rw [A.apply_symm_apply]
-      _ = g.inner x₀ (A.symm (ε k)) (A.symm (ε l)) := by
-            rw [metricFlatContinuousEquiv_apply]
-      _ = g.inner x₀ (A.symm (ε l)) (A.symm (ε k)) := by
-            exact g.symm x₀ (A.symm (ε k)) (A.symm (ε l))
-      _ = (A (A.symm (ε l))) (A.symm (ε k)) := by
-            rw [metricFlatContinuousEquiv_apply]
-      _ = (ε l) (A.symm (ε k)) := by
-            rw [A.apply_symm_apply]
-      _ = (Module.finBasis Real E).coord l (A.symm (ε k)) := rfl
-  have hsecond (i j : CoordinateIdx (𝕜 := Real) E) :
-      (∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x₀ ((coordinateFrameAt_toBasis (I := I) x₀) i)
-            ((coordinateFrameAt_toBasis (I := I) x₀) k) * gInv k j) =
-        (if i = j then 1 else 0) := by
-    rw [hbasis]
-    simp only [hginv]
-    calc
-      (∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x₀ ((Module.finBasis Real E) i) ((Module.finBasis Real E) k) *
-            (Module.finBasis Real E).coord k (A.symm (ε j)))
-          = g.inner x₀ ((Module.finBasis Real E) i)
-              (∑ k : CoordinateIdx (𝕜 := Real) E,
-                (Module.finBasis Real E).coord k (A.symm (ε j)) •
-                  (Module.finBasis Real E) k) := by
-            rw [map_sum]
-            refine Finset.sum_congr rfl fun k _ => ?_
-            have hmap :=
-              map_smul (g.inner x₀ ((Module.finBasis Real E) i))
-                ((Module.finBasis Real E).coord k (A.symm (ε j)))
-                ((Module.finBasis Real E) k)
-            calc
-              g.inner x₀ ((Module.finBasis Real E) i) ((Module.finBasis Real E) k) *
-                  (Module.finBasis Real E).coord k (A.symm (ε j))
-                  = (Module.finBasis Real E).coord k (A.symm (ε j)) *
-                      g.inner x₀ ((Module.finBasis Real E) i)
-                        ((Module.finBasis Real E) k) := by ring
-              _ = (Module.finBasis Real E).coord k (A.symm (ε j)) •
-                    g.inner x₀ ((Module.finBasis Real E) i)
-                      ((Module.finBasis Real E) k) := by simp
-              _ = g.inner x₀ ((Module.finBasis Real E) i)
-                    ((Module.finBasis Real E).coord k (A.symm (ε j)) •
-                      (Module.finBasis Real E) k) := hmap.symm
-      _ = g.inner x₀ ((Module.finBasis Real E) i) (A.symm (ε j)) := by
-            have hsum :
-                (∑ k : CoordinateIdx (𝕜 := Real) E,
-                  (Module.finBasis Real E).coord k (A.symm (ε j)) •
-                    (Module.finBasis Real E) k) = A.symm (ε j) := by
-              exact (Module.finBasis Real E).sum_repr (A.symm (ε j))
-            exact congrArg (fun v => g.inner x₀ ((Module.finBasis Real E) i) v) hsum
-      _ = g.inner x₀ (A.symm (ε j)) ((Module.finBasis Real E) i) := by
-            exact g.symm x₀ ((Module.finBasis Real E) i) (A.symm (ε j))
-      _ = (A (A.symm (ε j))) ((Module.finBasis Real E) i) := by
-            rw [metricFlatContinuousEquiv_apply]
-      _ = ε j ((Module.finBasis Real E) i) := by
-            rw [A.apply_symm_apply]
-      _ = (if i = j then 1 else 0) := by
-            by_cases hij : i = j
-            · subst hij
-              simp [ε]
-            · have hji : j ≠ i := by exact fun h => hij h.symm
-              simp [ε, hji, hij]
-  intro i j
-  constructor
-  · calc
-      (∑ k : CoordinateIdx (𝕜 := Real) E,
-          gInv i k * g.inner x₀ ((coordinateFrameAt_toBasis (I := I) x₀) k)
-            ((coordinateFrameAt_toBasis (I := I) x₀) j))
-          = ∑ k : CoordinateIdx (𝕜 := Real) E,
-              g.inner x₀ ((coordinateFrameAt_toBasis (I := I) x₀) j)
-                ((coordinateFrameAt_toBasis (I := I) x₀) k) * gInv k i := by
-            refine Finset.sum_congr rfl fun k _ => ?_
-            rw [hsym i k, g.symm x₀ ((coordinateFrameAt_toBasis (I := I) x₀) k)
-              ((coordinateFrameAt_toBasis (I := I) x₀) j)]
-            ring
-      _ = (if j = i then 1 else 0) := hsecond j i
-      _ = (if i = j then 1 else 0) := by
-            by_cases hij : i = j
-            · subst hij
-              simp
-            · have hji : j ≠ i := fun h => hij h.symm
-              simp [hij, hji]
-  · exact hsecond i j
+  simpa only [metricFlatModelInChart,
+    Tensor.Coordinates.inverseMetricFlatModelInChart_component] using
+    Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+      (I := I) g x₀
 
 noncomputable def metricFlatModelInChart_component
     (g : SmoothRiemannianMetric I M) (x₀ : M)

@@ -100,9 +100,9 @@ theorem g_inner_eq_chart_sum
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_smul]
   rw [hL]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   rw [map_sum]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)

@@ -106,8 +106,8 @@ theorem variational_flow_flat_pairing_hasDerivAt
         ContinuousLinearMap.map_neg (g.inner α) _]
     have hslot1 : g.inner α Vflat dΦw
         = -g.inner α nablaV dΦw + g.inner α Cv dΦw := by
-      rw [hcorr_v', hbil1, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.neg_apply]
+      rw [hcorr_v', hbil1, add_apply,
+        neg_apply]
     have hslot2 : g.inner α dΦv Wflat
         = -g.inner α dΦv nablaW + g.inner α dΦv Cw := by
       rw [hcorr_w', ContinuousLinearMap.map_add (g.inner α dΦv) _ _,

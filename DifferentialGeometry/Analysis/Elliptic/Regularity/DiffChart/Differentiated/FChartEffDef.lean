@@ -445,9 +445,9 @@ private lemma diffChartForcingNumerator_memLp_vol_K
               (laplacianDomainPow_succ_subset_laplacianDomain
                 (I := I) (M := M) g 1 hu_h)).weak_partial i y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact weightedInvGramDerivOnEuclid_fderiv_mul_weak_partial_memLp_vol_K (I := I) (M := M) g α l
       hu_h i j
@@ -457,9 +457,9 @@ private lemma diffChartForcingNumerator_memLp_vol_K
             chosenSecondPartialChartPushedU
               (I := I) (M := M) g α u_h i j y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact weightedInvGramDerivOnEuclid_mul_secondPartialChartPushedU_memLp_vol_K (I := I) (M := M) g
       α l hu_h i j
@@ -468,7 +468,8 @@ private lemma diffChartForcingNumerator_memLp_vol_K
   have h_step3 := h_step2.add h_IV
   have h_step4 := h_step3.add h_V
   unfold diffChartForcingNumerator
-  convert h_step4 using 2 with y
+  exact MemLp.ae_eq (Filter.Eventually.of_forall fun y => by
+    simp only [Pi.add_apply, Pi.sub_apply]) h_step4
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

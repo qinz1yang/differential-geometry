@@ -86,7 +86,7 @@ private lemma chartRepAt_restrict_eq_comp
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma deriv_chartE_repr_comp_curve_eq
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [BoundarylessManifold I M]
     (γ : ℝ → M) (X : ∀ y : M, TangentSpace I y) (r₀ : ℝ)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hX : MDiffAt (T% X) (γ r₀)) :
@@ -238,7 +238,7 @@ theorem covDerivAlong_eq_leviCivita_of_eventuallyEq [T2Space M] [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covDerivAlong_restrict_eq_leviCivita
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [T2Space M] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (X : ∀ y : M, TangentSpace I y) (r₀ : ℝ)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hX : MDiffAt (T% X) (γ r₀)) :

@@ -13,7 +13,8 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle DifferentialGeometry.Tensor0SBundle
+open Bundle Manifold MeasureTheory Set
+open _root_.DifferentialGeometry.Tensor0SBundle
 open _root_.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
@@ -165,7 +166,8 @@ variable {s : Nat}
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 private theorem lowerZero_unit (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
     (W : TensorRSSpace 0 s I x) (w : Fin (0 + s) → TangentSpace I x) :
-    lowerAllUpperIndices (I := I) (M := M) g 0 s x (TensorRSSpace.toModel W) w =
+    lowerAllUpperIndices (I := I) (M := M) g 0 s x (TensorRSSpace.toModel W)
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
       (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from W)
         (unitZeroSec (I := I) (M := M) x) (fun j : Fin s => w (Fin.natAdd 0 j)) := by
   rw [lowerAllUpperIndices_apply, separableFormAt_zero]

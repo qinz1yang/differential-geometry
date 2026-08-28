@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -90,7 +89,7 @@ theorem g_inner_gradFun_le_pou_weighted_fiber_norm_atoms_on_pouTsupport_h1
                           (fun b' => S.toCcTensor.toSection b')
                           (chartBasisVecFiber (I := I) α k) b l)‖ ^ 2)) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨A₀, B₀, hA₀_nn, hB₀_nn, hbound₀⟩ :=
     g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport_h1

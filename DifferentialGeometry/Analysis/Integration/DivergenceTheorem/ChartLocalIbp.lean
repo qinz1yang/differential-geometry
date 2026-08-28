@@ -96,7 +96,7 @@ private lemma vwIntegrandOnE_apply_of_notMem
     vwIntegrandOnE (I := I) g α X i y = 0 :=
   Set.indicator_of_notMem hy _
 
-private lemma vwIntegrandOnE_contDiffOn_target [I.Boundaryless]
+private lemma vwIntegrandOnE_contDiffOn_target
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) :
@@ -282,7 +282,7 @@ private lemma phiOnE_eq_scalarOnE_on_target
   rfl
 
 omit [Module.Finite ℝ E] in
-private lemma phiOnE_contDiffOn_target [I.Boundaryless]
+private lemma phiOnE_contDiffOn_target
     (α : M) {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ) :
     ContDiffOn ℝ ∞ (phiOnE (I := I) α φ) (extChartAt I α).target := by
   have hsmooth : ContDiffOn ℝ ∞
@@ -336,7 +336,7 @@ private lemma phiOnE_tsupport_subset_chartImage
   exact chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
-private lemma phiOnE_hasCompactSupport [I.Boundaryless]
+private lemma phiOnE_hasCompactSupport
     (α : M) {φ : M → ℝ}
     (hφ_compactSupp : HasCompactSupport φ)
     (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
@@ -438,7 +438,7 @@ private theorem ibp_per_index [I.Boundaryless]
   have hvw_cont_on_tsupp : ContinuousOn (vwIntegrandOnE (I := I) g α X i)
       (tsupport (phiOnE (I := I) α φ)) :=
     hvw_cont.mono hphi_tsupp_in_target
-  haveI : IsFiniteMeasureOnCompacts (modelHaar (E := E)) := by infer_instance
+  have : IsFiniteMeasureOnCompacts (modelHaar (E := E)) := by infer_instance
   have hI1_smooth : ContDiff ℝ ∞
       (fun y => vwIntegrandOnE (I := I) g α X i y * phiOnE (I := I) α φ y) := by
     refine contDiff_of_smooth_on_open_zero_outside (U := (extChartAt I α).target)
@@ -616,7 +616,8 @@ private theorem ibp_lip_index [I.Boundaryless]
         (vwIntegrandOnE_contDiffOn_target (I := I) g α X i)
     simpa only [q, smul_eq_mul] using hsmul
   have hq_compact : HasCompactSupport q := by
-    simpa only [q] using hχ_compact.mul_right
+    rw [show q = χ * vwIntegrandOnE (I := I) g α X i by rfl]
+    exact hχ_compact.mul_right
   obtain ⟨D, hq_lip⟩ : ∃ D, LipschitzWith D q :=
     ContDiff.lipschitzWith_of_hasCompactSupport hq_compact hq_smooth (by simp)
   let v : E := (chartModelBasis E) i
@@ -643,7 +644,7 @@ private theorem ibp_lip_index [I.Boundaryless]
         ring
       · have hline :=
           ((HasFDerivAt.of_notMem_tsupport ℝ hy).hasLineDerivAt v).lineDeriv
-        simp only [ContinuousLinearMap.zero_apply] at hline
+        simp only [zero_apply] at hline
         change lineDeriv ℝ (phiOnE (I := I) α φ) y v * q y =
           vwIntegrandOnE (I := I) g α X i y *
             lineDeriv ℝ (phiOnE (I := I) α φ) y v
@@ -712,9 +713,11 @@ private theorem ibp_lip_index [I.Boundaryless]
   have hleft0 : Integrable
       (fun y => lineDeriv ℝ (phiOnE (I := I) α φ) y v * q y)
       (modelHaar (E := E)) := by
-    simpa only [smul_eq_mul, mul_comm] using
-      hq_int.smul_of_top_left
-        (hφ_lip.memLp_lineDeriv (μ := modelHaar (E := E)) v)
+    refine (hq_int.smul_of_top_left
+      (hφ_lip.memLp_lineDeriv (μ := modelHaar (E := E)) v)).congr ?_
+    exact Filter.Eventually.of_forall fun y => by
+      change q y * lineDeriv ℝ (phiOnE (I := I) α φ) y v = _
+      exact mul_comm _ _
   have hrhs : Integrable
       (fun y => vwIntegrandOnE (I := I) g α X i y *
         lineDeriv ℝ (phiOnE (I := I) α φ) y v)
@@ -723,9 +726,11 @@ private theorem ibp_lip_index [I.Boundaryless]
   have hright0 : Integrable
       (fun y => lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y)
       (modelHaar (E := E)) := by
-    simpa only [smul_eq_mul, mul_comm] using
-      hphi_int.smul_of_top_left
-        (hq_lip.memLp_lineDeriv (μ := modelHaar (E := E)) (-v))
+    refine (hphi_int.smul_of_top_left
+      (hq_lip.memLp_lineDeriv (μ := modelHaar (E := E)) (-v))).congr ?_
+    exact Filter.Eventually.of_forall fun y => by
+      change phiOnE (I := I) α φ y * lineDeriv ℝ q y (-v) = _
+      exact mul_comm _ _
   have hneg_lhs : Integrable
       (fun y => -(partialDeriv (E := E) i
         (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y))
@@ -735,7 +740,8 @@ private theorem ibp_lip_index [I.Boundaryless]
       (fun y => partialDeriv (E := E) i
         (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y)
       (modelHaar (E := E)) :=
-    integrable_neg_iff.mp (by simpa only [Pi.neg_apply] using hneg_lhs)
+    integrable_neg_iff.mp (hneg_lhs.congr <|
+      Filter.Eventually.of_forall fun _ => rfl)
   refine ⟨heq, hlhs, ?_⟩
   simpa only [v] using hrhs
 
@@ -1014,12 +1020,17 @@ theorem tangent_lip_int [I.Boundaryless]
         vwIntegrandOnE (I := I) g α X i y *
           lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
       (modelHaar (E := E)) := by
-    exact integrable_finset_sum _ fun i _ => (hidx i).2.2
+    exact integrable_finsetSum _ fun i _ => (hidx i).2.2
   have hsum_on : Integrable
       (fun y => ∑ i : Fin (Module.finrank ℝ E),
         vwIntegrandOnE (I := I) g α X i y *
           lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) μ₀ := by
-    simpa only [μ₀] using hsum.integrableOn
+    change IntegrableOn
+      (fun y => ∑ i : Fin (Module.finrank ℝ E),
+        vwIntegrandOnE (I := I) g α X i y *
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+      (extChartAt I α).target (modelHaar (E := E))
+    exact hsum.integrableOn
   have hweighted : Integrable
       (fun y => (w y).toReal •
         chartActionM (I := I) α X φ ((extChartAt I α).symm y)) μ₀ := by
@@ -1237,7 +1248,7 @@ theorem chart_local_ibp [I.Boundaryless]
               partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
               phiOnE (I := I) α φ y) from
       by funext y; rw [Finset.sum_mul]]
-    rw [integral_finset_sum]
+    rw [integral_finsetSum]
     intro i _
     exact summand_int (I := I) g α X hφ hφ_compactSupp hφ_supp i
   rw [h_sum_int]
@@ -1276,7 +1287,7 @@ theorem chart_local_ibp [I.Boundaryless]
           vwIntegrandOnE (I := I) g α X i y *
             partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
         ∂(modelHaar (E := E)) := by
-    rw [← integral_finset_sum]
+    rw [← integral_finsetSum]
     intro i _
     exact summand_int' (I := I) g α X hφ hφ_compactSupp hφ_supp i
   rw [h_sum_back]
@@ -1373,7 +1384,7 @@ theorem chart_local_ibp_lip [I.Boundaryless]
             phiOnE (I := I) α φ y) from by
       funext y
       rw [Finset.sum_mul]]
-    rw [integral_finset_sum]
+    rw [integral_finsetSum]
     intro i _
     exact (hidx i).2.1
   rw [h_sum_int]
@@ -1396,7 +1407,7 @@ theorem chart_local_ibp_lip [I.Boundaryless]
           vwIntegrandOnE (I := I) g α X i y *
             lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
         ∂(modelHaar (E := E)) := by
-    rw [← integral_finset_sum]
+    rw [← integral_finsetSum]
     intro i _
     exact (hidx i).2.2
   rw [h_sum_back]

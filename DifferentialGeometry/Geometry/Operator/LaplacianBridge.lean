@@ -39,7 +39,7 @@ theorem divergence_levi_eq
   classical
   by_cases hdim : Module.finrank Real E = 0
   · have htang : Module.finrank Real (TangentSpace I x) = 0 := hdim
-    letI : Subsingleton (TangentSpace I x) :=
+    let : Subsingleton (TangentSpace I x) :=
       Module.finrank_zero_iff.mp htang
     rw [divergence_eq]
     rw [Subsingleton.elim (LeviCivita (I := I) g Z.toFun x).toLinearMap 0]
@@ -53,12 +53,12 @@ theorem divergence_levi_eq
       exact (Nat.not_lt_zero _ hi0).elim
     rw [huniv]
     simp
-  letI : NeZero (Module.finrank Real E) := ⟨hdim⟩
+  let : NeZero (Module.finrank Real E) := ⟨hdim⟩
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis
@@ -102,7 +102,13 @@ theorem laplacian_levi_eq
     laplacian (I := I) (LeviCivita (I := I) g) g f x =
       Δ_g (I := I) g ⟨_, hf⟩ x := by
   have hdiv := divergence_levi_eq (I := I) g (grad_g (I := I) g ⟨_, hf⟩) x
-  simpa only [laplacian_eq, grad_g_apply, Δ_g_def] using hdiv
+  unfold laplacian Δ_g
+  have hgrad : gradientFun (I := I) g f = (grad_g (I := I) g ⟨f, hf⟩).toFun := by
+    funext y
+    unfold gradientFun grad_g gradFun mvfderiv
+    rfl
+  rw [hgrad]
+  exact hdiv
 
 omit [NeZero (Module.finrank Real E)] in
 omit [CompactSpace M] in

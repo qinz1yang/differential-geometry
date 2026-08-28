@@ -130,7 +130,7 @@ private lemma wkpNorm_coef_mul_factor_le_uniform
         (fun y => coef y * factor y) := by
       have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
           (volume : Measure EuclN).restrict Ω :=
-        Measure.restrict_mono Set.diff_subset le_rfl
+        Measure.restrict_mono Set.sdiff_subset le_rfl
       have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
           factor y = 0 := by
         have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
@@ -238,11 +238,11 @@ private lemma exists_uniform_const_of_finite_wkpNorm_bounds_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (atom d (proj j))
             (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   refine ⟨∑ j : ι, Cf j, Finset.sum_nonneg (fun j _ => hCf_nn j), ?_⟩
   intro d j
   refine (h_data d j).trans ?_
-  refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_right ?_ (zero_le)
   refine ENNReal.ofReal_le_ofReal ?_
   exact Finset.single_le_sum
     (f := fun j' => Cf j') (fun j' _ => hCf_nn j') (Finset.mem_univ j)
@@ -664,7 +664,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le)
   have hcomp : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
         (fun y => ∑ x : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s × Fin
           (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s), Fcomp i x
@@ -678,7 +678,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
             Ω := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le)
   have h_part_group_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
       (fun y => ∑ x : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s × Fin
         (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)), Fpart i x y) Ω :=
@@ -1051,7 +1051,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform
             Ω := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le)
   have hpart : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
         (fun y => ∑ x : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s × Fin
           (Module.finrank ℝ E) × TensorCompIdx (E := E) r s), Fpart i x y) Ω
@@ -1066,7 +1066,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le_uniform
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le)
   have h_comp_group_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
       (fun y => ∑ x : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s × Fin
         (Module.finrank ℝ E) × TensorCompIdx (E := E) r s), Fcomp i x y) Ω :=

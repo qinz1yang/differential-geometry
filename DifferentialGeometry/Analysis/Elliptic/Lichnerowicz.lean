@@ -11,6 +11,8 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -98,7 +100,7 @@ private theorem lichnerowicz_inequality
     (Module.finrank ℝ E : ℝ) * K ≤ lam := by
   classical
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set n : ℝ := (Module.finrank ℝ E : ℝ) with hn_def
   have hn_ge_two_real : (2 : ℝ) ≤ n := by
@@ -199,7 +201,7 @@ private theorem lichnerowicz_inequality
       rw [Filter.EventuallyEq.mfderiv_eq h_eqOn_nhd]
       exact const_smul_mfderiv (hf.mdifferentiable (by simp) x) (-lam)
     rw [h_d_Δf_eq]
-    rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [smul_apply, smul_eq_mul]
   have h_int_eigen_inner :
       ∫ x, g.inner x (Gf x) (GΔf x) ∂μ =
         -lam * ∫ x, g.inner x (Gf x) (Gf x) ∂μ := by
@@ -402,7 +404,7 @@ private theorem g_inner_self_eq_sum_sq_inner_orthonormal
   ring
 
 private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     (Δ_g (I := I) g ⟨_, hf⟩ x)^2 ≤
@@ -465,7 +467,7 @@ private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
     · intro j _ hjk
       rw [if_neg (fun h => hjk h.symm), mul_zero]
   have hpos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     Fin.pos_iff_nonempty.mp hpos
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I x) := by
@@ -510,7 +512,7 @@ private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ricciTensor_grad_grad_contMDiff
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞
@@ -534,7 +536,7 @@ private theorem ricciTensor_grad_grad_contMDiff
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ricciTensor_grad_grad_continuous
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     Continuous (fun b : M => ricciTensor (I := I) g b
@@ -542,7 +544,7 @@ private theorem ricciTensor_grad_grad_continuous
   (ricciTensor_grad_grad_contMDiff (I := I) g hf).continuous
 
 theorem chartHessFrobeniusSq_continuous
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     Continuous (fun b : M => chartHessFrobeniusSq (I := I) g f b) := by
@@ -670,7 +672,6 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
     (by
       refine h_ricci_cont.congr ?_
       intro x
-      simp only [grad_g_apply]
       change ricciTensor (I := I) g x (gradFun (I := I) g f x) (gradFun (I := I) g f x) =
         ricciTensor (I := I) g x (gradFun (I := I) g f x) (gradFun (I := I) g f x)
       rfl)

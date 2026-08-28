@@ -252,7 +252,7 @@ private lemma wkpNorm_sum_le_const_mul_aggregate
         rw [h_cast]
 
 private lemma wkpNorm_sub_le
-    {d : ℕ} [NeZero d] {k : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
+    {d k : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) {u v : EuclideanSpace ℝ (Fin d) → ℝ}
     (hu : MemWkp (d := d) k 2 u Ω) (hv : MemWkp (d := d) k 2 v Ω) :
     iteratedWeakSobolevNorm (d := d) k 2 (fun y => u y - v y) Ω ≤
@@ -649,7 +649,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_wkpNorm_le
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (chartTargetEuclid (I := I) (M := M) α))
-      (fun k _ => zero_le _) (Finset.mem_univ a)) ?_
+      (fun k _ => zero_le) (Finset.mem_univ a)) ?_
     exact le_trans le_self_add (le_trans le_self_add le_self_add)
   have h_inner : ∀ a : Fin (Module.finrank ℝ E),
       (MemWkp (d := Module.finrank ℝ E) K 2
@@ -785,7 +785,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_wkpNorm_le
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (chartTargetEuclid (I := I) (M := M) α))
-      (fun k _ => zero_le _) (Finset.mem_univ a)) ?_
+      (fun k _ => zero_le) (Finset.mem_univ a)) ?_
     exact le_trans le_self_add (le_trans le_self_add le_self_add)
   have h_inner : ∀ a : Fin (Module.finrank ℝ E),
       (MemWkp (d := Module.finrank ℝ E) K 2
@@ -1203,7 +1203,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_wkpNorm_le_uniform
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
           (chartTargetEuclid (I := I) (M := M) α))
-        (fun k _ => zero_le _) (Finset.mem_univ a)) ?_
+        (fun k _ => zero_le) (Finset.mem_univ a)) ?_
       exact le_trans le_self_add (le_trans le_self_add le_self_add)
   have h_inner : ∀ a : Fin (Module.finrank ℝ E),
       (∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -1369,7 +1369,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_wkpNorm_le_uniform
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (chartTargetEuclid (I := I) (M := M) α))
-      (fun k _ => zero_le _) (Finset.mem_univ a)) ?_
+      (fun k _ => zero_le) (Finset.mem_univ a)) ?_
     exact le_trans le_self_add (le_trans le_self_add le_self_add)
   have h_inner : ∀ a : Fin (Module.finrank ℝ E),
       (∀ i : TensorEigenIdx (I := I) (M := M) g r s,

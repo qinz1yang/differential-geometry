@@ -53,8 +53,9 @@ theorem t02Norm_metricDiff
     have h :=
       DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
         (I := I) g basis hON
-    simpa [Tensor0SBundle.identityInvMetric,
-      Tensor0SBundle.diagonalInvMetric] using h
+    change Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
+      (fun a k => if a = k then (1 : Real) else 0)
+    exact h
   rw [t02Norm_eq_iterCov (I := I)
       (Tensor0SBundle.metricTensorField (I := I) G) g a basis hinv,
     metricDerivNorm_eq_iterCov (I := I) G g g a basis hinv]
@@ -235,7 +236,8 @@ theorem sqrt_norm_le_basis_comp_of_coercive
         have habs :
             |tensor0SComponent (I := I) T (fun i => basis i) slots| ≤
               |B| := by
-          simpa only [component0S_apply, abs_of_nonneg hBnn] using hB slots
+          simpa only [tensor0SComponent_apply, component0S_apply,
+            abs_of_nonneg hBnn] using hB slots
         simpa only [sq_abs] using sq_le_sq.mpr habs
       _ = (Fintype.card (Fin s → Idx) : Real) * B ^ 2 := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]

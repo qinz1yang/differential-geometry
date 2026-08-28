@@ -67,7 +67,7 @@ def Rm04DataAt
         (radialJacobiField (I := I) g p x w t)
         (radialJacobiField (I := I) g p x w t)
 
-omit [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M]
   [SigmaCompactSpace M] in
 lemma jacobi_radius_le_c2
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -76,7 +76,7 @@ lemma jacobi_radius_le_c2
   have hpos := expMapC2Radius_pos (I := I) g p
   linarith
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma jacobiRadius_lt_exp
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
     (hx : ‖x‖ < jacobiVarRadius (I := I) g p) :
@@ -99,21 +99,19 @@ theorem rm04Data_jacobi
   intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm
   have hdiff := jacobi_diff_of_lt (I := I) g p hx hw hb
   refine ⟨?_, ?_, ?_⟩
-  · simpa [radialCurve, radialJacobiField] using hdiff.1
-  · simpa [radialCurve, radialJacobiField] using hdiff.2
+  · exact hdiff.1
+  · exact hdiff.2
   · have hJac : ∀ t ∈ Ioo (0 : ℝ) b,
         IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
           (radialJacobiField (I := I) g p x w) t := by
       intro t ht
       have ht01 : t ∈ Ioo (0 : ℝ) 1 :=
         ⟨ht.1, lt_of_lt_of_le ht.2 hb⟩
-      simpa [radialCurve, radialJacobiField] using
-        (radial_jacobi_of_lt (I := I) g p hx hw t ht01)
+      exact radial_jacobi_of_lt (I := I) g p hx hw t ht01
     have hJac0 :
         IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
           (radialJacobiField (I := I) g p x w) 0 := by
-      simpa [radialCurve, radialJacobiField] using
-        (jacobi_zero_of_lt (I := I) g hEnorm p hx hw)
+      exact jacobi_zero_of_lt (I := I) g hEnorm p hx hw
     have hxrad : ‖x‖ < expMapC2Radius (I := I) g p :=
       jacobiRadius_lt_exp (I := I) g p hx
     have hbasis :
@@ -125,11 +123,12 @@ theorem rm04Data_jacobi
                   (basis i) (basis j) =
                 if i = j then (1 : ℝ) else 0 := by
       intro t _ht
-      simpa [show Module.finrank ℝ
+      have hfin : Module.finrank ℝ
           (TangentSpace I (radialCurve (I := I) g p x t)) =
-            Module.finrank ℝ E from rfl] using
-        (DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
-          (I := I) g (radialCurve (I := I) g p x t))
+            Module.finrank ℝ E := rfl
+      rw [← hfin]
+      exact DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+        (I := I) g (radialCurve (I := I) g p x t)
     choose basis hON using hbasis
     have hcurv : ∀ t ∈ Ioo (0 : ℝ) b,
         g.inner (radialCurve (I := I) g p x t)
@@ -226,8 +225,7 @@ theorem rm04_one_le
           (show TangentSpace I p from (v • y)) : M))
         (radialJacobiField (I := I) g p y z) 0 : E) = z := by
     intro y z hy hz
-    simpa [radialJacobiField] using
-      (radial_deriv_of_lt (I := I) g p hy hz)
+    exact radial_deriv_of_lt (I := I) g p hy hz
   exact radialJacobi_one_le_of_scaled_radius_at (I := I) g p x w
     ha hK hb0 h1b hγ hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderiv hx hw hinit hmodel (jacobiRadius_lt_exp (I := I) g p hx)
@@ -291,8 +289,7 @@ theorem rm04_one_ge
           (show TangentSpace I p from (v • y)) : M))
         (radialJacobiField (I := I) g p y z) 0 : E) = z := by
     intro y z hy hz
-    simpa [radialJacobiField] using
-      (radial_deriv_of_lt (I := I) g p hy hz)
+    exact radial_deriv_of_lt (I := I) g p hy hz
   exact radialJacobi_one_ge_of_scaled_radius_at (I := I) g p x w
     ha hK hb0 h1b hγ hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderiv hx hw hmodel (jacobiRadius_lt_exp (I := I) g p hx)

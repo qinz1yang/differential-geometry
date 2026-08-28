@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingOscillation
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -81,7 +82,12 @@ theorem evolvingLogCenterDrift_continuous
     hnum.div hmass fun t =>
       (evolvingCutoffMass_pos
         (I := I) (M := M) g cutoff t hcutoff.continuous hne).ne'
-  simpa only [evolvingLogCenterDrift] using hratio.add continuous_const
+  change Continuous (fun t =>
+    2 * evolvingCutoffGradientError
+        (I := I) (M := M) g cutoff (fun _ _ => 1) t /
+        evolvingCutoffMass (I := I) (M := M) g cutoff t +
+      max 1 C * H ^ 2)
+  exact hratio.add continuous_const
 
 omit [I.Boundaryless] in
 theorem exists_nonnegative_evolving_log_center_drift_upper_bound
@@ -152,7 +158,13 @@ theorem hasDerivAt_evolvingShiftedLogCenter
     intervalIntegral.integral_hasDerivAt_right
       (hdrift.intervalIntegrable base t)
       hdrift.aestronglyMeasurable.stronglyMeasurableAtFilter hdrift.continuousAt
-  simpa only [evolvingShiftedLogCenter, logu] using haverage'.add hprimitive
+  change HasDerivAt
+    ((evolvingLocalizedAverage (I := I) (M := M) g cutoff logu) +
+      fun q => ∫ s in base..q,
+        evolvingLogCenterDrift (I := I) (M := M) g cutoff C H s)
+    (deriv (evolvingLocalizedAverage (I := I) (M := M) g cutoff logu) t +
+      evolvingLogCenterDrift (I := I) (M := M) g cutoff C H t) t
+  exact haverage'.add hprimitive
 
 omit [I.Boundaryless] in
 theorem contDiff_evolvingShiftedLogCenter
@@ -195,8 +207,13 @@ theorem contDiff_evolvingShiftedLogCenter
     ⟨fun p => logu p.1 p.2, hlog⟩
   have htime : Continuous (fun p : ℝ × M =>
       deriv (fun s => logu s p.2) p.1) := by
-    simpa only [F, logu] using
-      (DifferentialGeometry.contMDiff_partial_deriv_fst I F).continuous
+    have h := (DifferentialGeometry.contMDiff_partial_deriv_fst I F).continuous
+    have heq : (fun p : ℝ × M => deriv (fun s => F (s, p.2)) p.1) =
+        (fun p : ℝ × M => deriv (fun s => logu s p.2) p.1) := by
+      funext p
+      congr 1
+    rw [← heq]
+    exact h
   have htrace : Continuous (fun p : ℝ × M => trace p.1 p.2) := by
     exact continuous_const.mul
       (traceTimeDerivMetric_joint_continuous (I := I) (M := M) hg)
@@ -268,8 +285,9 @@ theorem evolving_log_spatial_energy_differential_of_supersolution
   rw [hderiv.deriv] at hfixed
   simpa only [evolvingLocalizedDirichletEnergy, localizedDirichletEnergy,
     evolvingCutoffGradientError, cutoffDirichletEnergy,
-    riemannianMeasureFamily_def, smoothScalarSlice_toFun, cutoff_t,
-    one_pow, one_mul] using hfixed
+    riemannianMeasureFamily_def, smoothScalarSlice_toFun_eq, cutoff_t,
+    one_pow, one_mul,
+    DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun] using hfixed
 
 theorem evolving_log_average_deriv_lower_bound_of_supersolution
     (g : ℝ → SmoothRiemannianMetric I M) (cutoff : M → ℝ)
@@ -315,7 +333,7 @@ theorem evolving_log_average_deriv_lower_bound_of_supersolution
   let covarianceIntegrand : M → ℝ := fun x =>
     cutoff x ^ 2 * trace x * (logu t x - average)
   let hlog := contMDiff_log_of_pos hu hpos
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)

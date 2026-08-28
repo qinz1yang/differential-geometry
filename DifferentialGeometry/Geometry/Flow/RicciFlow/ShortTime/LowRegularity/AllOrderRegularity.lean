@@ -147,7 +147,7 @@ private theorem coord_eq_smoothN
           (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
             (deTurckRemainderSection (I := I) (M := M) g (F t) hδ_lt (hδ' t))) i := by
   classical
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
   have hsm2 : ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -431,7 +431,7 @@ private theorem lowRegularity_forceJetStep
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] ψ i) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   have hδlt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)
   have hmass0 : ∀ σ : ℝ, 0 ≤ σ →
@@ -632,7 +632,7 @@ private theorem lowRegularity_forceDriver
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] f i) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   set w : ℝ → tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) :=
     fun t => maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
@@ -649,7 +649,7 @@ private theorem lowRegularity_forceDriver
       perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) p.1) with hc_def
   have hc_cont : ∀ i, Continuous (c i) := fun i =>
-    Continuous.Icc_extend' ((hpmc_contOn i).restrict)
+    Continuous.Icc_extend' ((hpmc_contOn i).domRestrict)
   have hc_eqOn : ∀ i, Set.EqOn (c i)
       (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u)) (Set.Icc (0 : ℝ) T) := by
@@ -763,7 +763,7 @@ theorem carrier_coeff_pmConv
         perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   obtain ⟨B0, hB0_sum, hB0_le⟩ := hf_mass0
   set pr : ℝ → ℝ :=
@@ -927,7 +927,7 @@ theorem exists_forcing_spectral_jet_mass_control (hDim : Module.finrank ℝ E = 
         ∀ i, (fun t => (fHi t).coeff i) =ᵐ[timeMeasure T] fc i := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   have hbridge : ∀ S : SmoothCcTensor g 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) S‖ ≤ R →
@@ -1103,7 +1103,7 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
       (∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun u t‖ ≤ Rcap) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   obtain ⟨FHi, C2Hi, hA2Hi, hC2Hi, hA1Hi, uHi, fHi, ucs, FLo, R, hR, hreal,
     -, hhiL2, -, htr, hder, -, hfInc, -, -, -, -, -, hforceId,

@@ -78,10 +78,11 @@ theorem eq_zero_of_interior
     have hbase := (hsol.deriv_fst (c + t) (Ioo_subset_Icc_self hu)).hasDerivAt
       (Icc_mem_nhds hu.1 hu.2)
     have hshift : HasDerivAt (fun s : ℝ => c + s) 1 t := by
-      simpa using (hasDerivAt_const t c).add (hasDerivAt_id t)
+      change HasDerivAt ((fun _ : ℝ => c) + id) 1 t
+      simpa only [zero_add] using (hasDerivAt_const t c).add (hasDerivAt_id t)
     have hcomp := hbase.scomp t hshift
-    simpa only [Ypos, Vpos, Function.comp_apply, one_smul] using
-      hcomp.hasDerivWithinAt
+    change HasDerivWithinAt (y ∘ HAdd.hAdd c) (v (c + t)) (Ici t) t
+    simpa only [one_smul] using hcomp.hasDerivWithinAt
   have hVpos_deriv :
       ∀ t ∈ Ico 0 Bpos, HasDerivWithinAt Vpos (Wpos t) (Ici t) t := by
     intro t ht
@@ -93,10 +94,12 @@ theorem eq_zero_of_interior
     have hbase := (hsol.deriv_snd (c + t) (Ioo_subset_Icc_self hu)).hasDerivAt
       (Icc_mem_nhds hu.1 hu.2)
     have hshift : HasDerivAt (fun s : ℝ => c + s) 1 t := by
-      simpa using (hasDerivAt_const t c).add (hasDerivAt_id t)
+      change HasDerivAt ((fun _ : ℝ => c) + id) 1 t
+      simpa only [zero_add] using (hasDerivAt_const t c).add (hasDerivAt_id t)
     have hcomp := hbase.scomp t hshift
-    simpa only [Vpos, Wpos, Function.comp_apply, one_smul] using
-      hcomp.hasDerivWithinAt
+    change HasDerivWithinAt (v ∘ HAdd.hAdd c)
+      (-(R (c + t)) (y (c + t))) (Ici t) t
+    simpa only [one_smul] using hcomp.hasDerivWithinAt
   have hWpos_bound : ∀ t ∈ Ico 0 Bpos, ‖Wpos t‖ ≤ C * ‖Ypos t‖ := by
     intro t ht
     have htIcc : t ∈ Icc 0 Bpos := Ico_subset_Icc_self ht
@@ -151,10 +154,11 @@ theorem eq_zero_of_interior
     have hbase := (hsol.deriv_fst (c - t) (Ioo_subset_Icc_self hu)).hasDerivAt
       (Icc_mem_nhds hu.1 hu.2)
     have hshift : HasDerivAt (fun s : ℝ => c - s) (-1) t := by
-      simpa using (hasDerivAt_const t c).sub (hasDerivAt_id t)
+      change HasDerivAt ((fun _ : ℝ => c) - id) (-1) t
+      simpa only [zero_sub] using (hasDerivAt_const t c).sub (hasDerivAt_id t)
     have hcomp := hbase.scomp t hshift
-    simpa only [Yneg, Vneg, Function.comp_apply, neg_one_smul] using
-      hcomp.hasDerivWithinAt
+    change HasDerivWithinAt (y ∘ fun s : ℝ => c - s) (-v (c - t)) (Ici t) t
+    simpa only [neg_one_smul] using hcomp.hasDerivWithinAt
   have hVneg_deriv :
       ∀ t ∈ Ico 0 Bneg, HasDerivWithinAt Vneg (Wneg t) (Ici t) t := by
     intro t ht
@@ -166,10 +170,12 @@ theorem eq_zero_of_interior
     have hbase := (hsol.deriv_snd (c - t) (Ioo_subset_Icc_self hu)).hasDerivAt
       (Icc_mem_nhds hu.1 hu.2)
     have hshift : HasDerivAt (fun s : ℝ => c - s) (-1) t := by
-      simpa using (hasDerivAt_const t c).sub (hasDerivAt_id t)
+      change HasDerivAt ((fun _ : ℝ => c) - id) (-1) t
+      simpa only [zero_sub] using (hasDerivAt_const t c).sub (hasDerivAt_id t)
     have hcomp := (hbase.scomp t hshift).neg
-    simpa only [Vneg, Wneg, Function.comp_apply, neg_one_smul, neg_neg] using
-      hcomp.hasDerivWithinAt
+    change HasDerivWithinAt (-v ∘ fun s : ℝ => c - s)
+      (-(R (c - t)) (y (c - t))) (Ici t) t
+    simpa only [neg_one_smul, neg_neg] using hcomp.hasDerivWithinAt
   have hWneg_bound : ∀ t ∈ Ico 0 Bneg, ‖Wneg t‖ ≤ C * ‖Yneg t‖ := by
     intro t ht
     have htIcc : t ∈ Icc 0 Bneg := Ico_subset_Icc_self ht

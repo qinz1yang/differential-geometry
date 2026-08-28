@@ -49,11 +49,11 @@ theorem lower_of
     ∀ (t : Real), t ∈ Set.Icc β ψ →
       ∀ (x : P.M) (v : TangentSpace I x),
         c * R.inner x v v ≤ (co.gInf t).inner x v v := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   intro t ht x v
   have hinner : Filter.Tendsto
       (fun k ↦ (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t).inner x v v)

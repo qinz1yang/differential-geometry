@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -81,7 +80,7 @@ private lemma chartInvGramMatrix_l1Sum_continuousOn_chartSource
       (chartAt H α).source := by
   classical
   unfold chartInvGramMatrix_l1Sum
-  refine continuousOn_finset_sum _ (fun ij _ => ?_)
+  refine continuousOn_finsetSum _ (fun ij _ => ?_)
   exact (chartInvGramMatrix_entry_continuousOn_chartSource
     (I := I) (M := M) g α ij.1 ij.2).abs
 

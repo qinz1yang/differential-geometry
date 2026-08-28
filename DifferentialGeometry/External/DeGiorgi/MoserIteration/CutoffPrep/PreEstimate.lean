@@ -291,8 +291,10 @@ theorem moser_preMoser
     · exact hv_memLp_q.aestronglyMeasurable
   have hv_int :
       IntegrableOn (fun x => |v x| ^ qexp) Ω volume := by
-    simpa [μ, Ω, q, qexp, hq_toReal, Real.norm_eq_abs] using
-      hv_memLp_q.integrable_norm_rpow hq_ne_zero ENNReal.ofReal_ne_top
+    change Integrable (fun x => |v x| ^ qexp) μ
+    convert hv_memLp_q.integrable_norm_rpow hq_ne_zero ENNReal.ofReal_ne_top using 1
+    funext x
+    rw [Real.norm_eq_abs, hq_toReal]
   have hpow_eq_on :
       ∀ x ∈ Metric.ball (0 : E) r,
         |v x| ^ qexp = |max (u x) 0| ^ (moserChi d * p) := by

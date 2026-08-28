@@ -96,7 +96,7 @@ lemma divergence_g_with_boundary_pou_continuous
     Continuous (divergence_g_with_boundary_pou (n := n) (M := M) g X) := by
   classical
   unfold divergence_g_with_boundary_pou
-  exact continuous_finset_sum _ (fun α _ =>
+  exact continuous_finsetSum _ (fun α _ =>
     localDivergenceWithin_mul_pou_continuous (n := n) (M := M) g α X)
 
 private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
@@ -124,7 +124,7 @@ private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
   refine MeasureTheory.ae_iff.mpr ?_
   apply MeasureTheory.measure_mono_null _ h_bad_measzero
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   by_cases hx_chart : x ∈ (chartAt (EuclideanHalfSpace n) α).source
   · by_cases hx_int : x ∈ (I_half n).interior M
     · exfalso; apply hx
@@ -194,7 +194,7 @@ lemma divergence_g_with_boundary_ae_pou
   refine MeasureTheory.ae_iff.mpr ?_
   apply MeasureTheory.measure_mono_null _ h_bad_measzero
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   rw [Classical.not_imp] at hx
   obtain ⟨hρne, hne⟩ := hx
   by_cases hx_chart : x ∈ (chartAt (EuclideanHalfSpace n) α).source
@@ -277,7 +277,7 @@ lemma FullSmoothScalar.oneSubLapClassicalRep_memLp
     {g : SmoothRiemannianMetric (I_half n) M} (u : FullSmoothScalar g) :
     MemLp u.oneSubLapClassicalRep 2
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I_half n) (M := M) g
   exact u.oneSubLapClassicalRep_continuous.memLp_of_hasCompactSupport
@@ -347,7 +347,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
             v.toFun x
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
   classical
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I_half n) (M := M) g

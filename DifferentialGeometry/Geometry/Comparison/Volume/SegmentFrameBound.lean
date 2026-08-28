@@ -63,11 +63,11 @@ private theorem fullDens_eq_trans
     | none => ell⁻¹ • u
     | some i => v ⟨i, by simpa only [d] using i.2⟩
   let D := (tangentMetricData_gen (I := I) g p).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I p) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I p) :=
+  let : InnerProductSpace.Core Real (TangentSpace I p) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I p) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I p) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I p) :=
+  let : InnerProductSpace Real (TangentSpace I p) :=
     @InnerProductSpace.ofCore Real (TangentSpace I p) _ _ _ D.toCore.toCore
   have hinner (w z : TangentSpace I p) :
       (Inner.inner Real w z : Real) = g.inner p w z := rfl
@@ -77,25 +77,26 @@ private theorem fullDens_eq_trans
     rw [hinner]
     rcases i with _ | i <;> rcases j with _ | j
     · change g.inner p (ell⁻¹ • u) (ell⁻¹ • u) = 1
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, _root_.smul_apply, smul_eq_mul]
       rw [← hell_sq]
       field_simp [hell.ne']
     · change g.inner p (ell⁻¹ • u)
           (v ⟨j, by simpa only [d] using j.2⟩) = 0
-      simp only [map_smul, ContinuousLinearMap.smul_apply, hperp, smul_eq_mul,
-        mul_zero]
+      rw [(g.inner p).map_smul, _root_.smul_apply,
+        hperp ⟨j, by simpa only [d] using j.2⟩, smul_zero]
     · change g.inner p (v ⟨i, by simpa only [d] using i.2⟩)
           (ell⁻¹ • u) = 0
       rw [g.symm]
-      simp only [map_smul, ContinuousLinearMap.smul_apply, hperp, smul_eq_mul,
-        mul_zero]
+      rw [(g.inner p).map_smul, _root_.smul_apply,
+        hperp ⟨i, by simpa only [d] using i.2⟩, smul_zero]
     · simpa only [a, Option.some.injEq] using
         hON ⟨i, by simpa only [d] using i.2⟩
           ⟨j, by simpa only [d] using j.2⟩
   have hcard :
       Fintype.card (Option (Fin d)) =
         Module.finrank Real (TangentSpace I p) := by
-    simpa only [Fintype.card_option, Fintype.card_fin] using hdim
+    rw [Fintype.card_option, Fintype.card_fin]
+    with_unfolding_all exact hdim
   let Ba : Module.Basis (Option (Fin d)) Real (TangentSpace I p) :=
     basisOfOrthonormalOfCardEqFinrank ha hcard
   have hBa (i : Option (Fin d)) : Ba i = a i := by
@@ -170,13 +171,17 @@ private theorem fullDens_eq_trans
             simp only [Va, hBa, a]]
       rw [hjac_smul, radialJac_eq_vel (I := I) g hEnorm p u]
       simp only [C, Matrix.diagonal_apply]
-      simp
+      simp only [Fin.eta, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
+        ↓reduceIte, Option.elim_none]
+      with_unfolding_all rfl
     · rw [show Va (some i) 1 =
           intrinsicJacobi (I := I) g hEnorm p u
             (v ⟨i, by simpa only [d] using i.2⟩) 1 by
             simp only [Va, hBa, a]]
       simp only [C, Matrix.diagonal_apply]
-      simp
+      simp only [Fin.eta, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
+        ↓reduceIte, Option.elim_some, one_smul]
+      with_unfolding_all rfl
   have hCdet : C.det = ell⁻¹ := by
     simp [C]
   have hCabs : |C.det| = ell⁻¹ := by
@@ -194,7 +199,9 @@ private theorem fullDens_eq_trans
     rw [hscale, hCabs, hsplit]
     rw [← mul_assoc, inv_mul_cancel₀ hell.ne', one_mul]
   have hbasis := jacDens_basis (I := I) g hEnorm p u Ba Bs
-  rw [show |Ba.det Bs| = 1 by simpa only [Cb] using hdet_basis, one_mul] at hbasis
+  rw [show |Ba.det Bs| = 1 by
+    rw [Ba.det_apply]
+    exact hdet_basis, one_mul] at hbasis
   have hreindex := curveDensity_reindex (I := I) g γ
     (fun i t => intrinsicJacobi (I := I) g hEnorm p u
       (B i) t) 1 e
@@ -237,21 +244,15 @@ theorem expDens_scale
     let β : E →L[Real] E →L[Real] Real := g.inner p
     let U : E := u
     change β (t • U) (t • U) = t ^ 2 * β U U
-    have hleft : β (t • U) (t • U) = t * β U (t • U) := by
-      have h := congrArg (fun A : E →L[Real] Real => A (t • U)) (β.map_smul t U)
-      simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
-    have hright : β U (t • U) = t * β U U := by
-      simpa only [smul_eq_mul] using (β U).map_smul t U
-    rw [hleft, hright, pow_two]
+    rw [β.map_smul, _root_.smul_apply, (β U).map_smul]
+    simp only [smul_eq_mul, pow_two]
     ring
   have htu : 0 < g.inner p (t • u) (t • u) := by
     rw [hinner]
     exact mul_pos (sq_pos_of_pos ht) hu
   have hperp' : ∀ i, g.inner p (t • u) (v i) = 0 := by
     intro i
-    have h := congrArg (fun A : TangentSpace I p →L[Real] Real => A (v i))
-      ((g.inner p).map_smul t u)
-    simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul, hperp i, mul_zero] using h
+    rw [(g.inner p).map_smul, _root_.smul_apply, hperp i, smul_zero]
   rw [fullDens_eq_trans (I := I) g hEnorm p (t • u) htu B hB v hON hperp']
   have hscale := transDens_scale (I := I) g hEnorm p u v t
   rw [abs_of_pos ht] at hscale

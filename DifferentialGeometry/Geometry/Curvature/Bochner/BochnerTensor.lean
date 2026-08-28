@@ -17,7 +17,6 @@ open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Connection
@@ -186,7 +185,7 @@ theorem norm02_smooth
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
     refine ContMDiffAt.sum fun k _ => ContMDiffAt.sum fun l _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact
@@ -227,9 +226,13 @@ theorem inner02_eq_coord_direct
         gInv i k * gInv j l *
           A (vec2 (basis i) (basis j)) *
             B (vec2 (basis k) (basis l)) := by
-  simpa [inner02, vec2] using
-    Tensor0SBundle.inner0S_two_eq_coord_direct (I := I) (M := M) g x
-      basis gInv hinv A B
+  have h := Tensor0SBundle.inner0S_two_eq_coord_direct
+    (I := I) (M := M) g x basis gInv hinv A B
+  change inner02 (I := I) g x A B =
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      gInv i k * gInv j l * A (vec2 (basis i) (basis j)) *
+        B (vec2 (basis k) (basis l)) at h
+  exact h
 
 omit [FiniteDimensional ℝ E] in
 theorem metricInverseInBasis_of_frame
@@ -267,10 +270,16 @@ theorem inner02_eq_coord
       Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (G.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) :=
     metricInverseInBasis_of_frame (I := I) G gInv frame hframe hinv t hx
-  simpa [tensor02Comp, vec2, IsLocalFrameOn.toBasisAt_coe] using
-    inner02_eq_coord_direct (I := I) (G.metric t) x
-      (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) hinvAt
-      (A t x) (B t x)
+  have h := inner02_eq_coord_direct (I := I) (G.metric t) x
+    (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) hinvAt
+    (A t x) (B t x)
+  simp only [IsLocalFrameOn.toBasisAt_coe] at h
+  change inner02 (I := I) (G.metric t) x (A t x) (B t x) =
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      gInv t x i k * gInv t x j l *
+        (A t x) (vec2 (frame i x) (frame j x)) *
+          (B t x) (vec2 (frame k x) (frame l x)) at h
+  exact h
 
 
 theorem normSq02_eq_coord
@@ -515,15 +524,7 @@ private theorem tensor0S_curry_apply_cons_local
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
     (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
-  change
-    (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
-        X)
-        tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
-        (Fin.cons X tail)
-  rw [continuousMultilinearCurryLeftEquiv_apply]
+  exact Tensor0SBundle.tensor0S_curry_apply_cons (I := I) s A X tail
 
 omit [IsManifold I ∞ M] [FiniteDimensional ℝ E] in
 private theorem fin_cons_vec2_eq_vec3
@@ -781,7 +782,7 @@ noncomputable def freeze02Field
     tensor02FreezeNabla (I := I) (nablaA x) (Y x)
   rfl
 
-theorem tensor02_inner_extDerivFun_eq_inner_nabla
+theorem tensor02_inner_mvfderiv_eq_inner_nabla
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
@@ -796,14 +797,14 @@ theorem tensor02_inner_extDerivFun_eq_inner_nabla
       (M := M) 2 cov B nablaB)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun y : M => inner02 (I := I) g y (A y) (B y)) x (X x) =
       inner02 (I := I) g x
         (tensor02FreezeNabla (I := I) (nablaA x) (X x)) (B x) +
         inner02 (I := I) g x (A x)
           (tensor02FreezeNabla (I := I) (nablaB x) (X x)) := by
   have h :=
-    Tensor0SBundle.inner0S_two_metricCompatible_extDerivFun (I := I)
+    Tensor0SBundle.inner0S_two_metricCompatible_mvfderiv (I := I)
       cov g hmc A B nablaA nablaB hA hB X x
   have hfreezeA :
       tensor02FreezeNabla (I := I) (nablaA x) (X x) =
@@ -844,7 +845,7 @@ private theorem inner02_nablaFun
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => inner02 (I := I) g y (A y) (B y)) x (X x) =
       inner02 (I := I) g x
         (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -857,7 +858,6 @@ private theorem inner02_nablaFun
 
 private theorem eval_pt0S
     [T2Space M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {s : Nat} {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s}
@@ -869,7 +869,7 @@ private theorem eval_pt0S
     (V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)) :
     nablaA x (Fin.cons W (fun q : Fin s => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M => A y (fun q : Fin s => V q y)) x W -
       ∑ q : Fin s,
         A x
@@ -906,7 +906,7 @@ theorem du_norm02
     ContMDiffSection.exists_eq_at_gen
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have hinner :=
-    tensor02_inner_extDerivFun_eq_inner_nabla
+    tensor02_inner_mvfderiv_eq_inner_nabla
       (I := I) cov g hmc A A nablaA nablaA hA hA Wsec x
   calc
     du x (fun _ : Fin 1 => W)
@@ -915,11 +915,11 @@ theorem du_norm02
             (fun _ : Fin 1 => W) := by
               rw [hdu x]
               rfl
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun y : M => normSq02 (I := I) g y (A y)) x W := by
-          exact differential1FormFun_apply_eq_extDerivFun
+          exact differential1FormFun_apply_eq_mvfderiv
             (I := I) (fun y : M => normSq02 (I := I) g y (A y)) x W
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun y : M => inner02 (I := I) g y (A y) (A y)) x (Wsec x) := by
           simp [normSq02, hWsec]
     _ =
@@ -951,10 +951,10 @@ omit [FiniteDimensional ℝ E] in
       nabla2A (vec4 (I := I) X Y Z W) := by
   unfold tensor02FreezeNabla2
   rw [freezeLastTwo0S3_apply]
-  change Tensor0SSpace.toModel
+  change Tensor0SSpace.eval
       (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X)
       (vec3 (I := I) Y Z W) =
-    Tensor0SSpace.toModel nabla2A (vec4 (I := I) X Y Z W)
+    Tensor0SSpace.eval nabla2A (vec4 (I := I) X Y Z W)
   rw [TensorMultilinear.tensor0S_curry_apply_eval_gen]
   congr 1
   exact fin_cons_vec3_eq_vec4 (I := I) X Y Z W
@@ -979,7 +979,7 @@ theorem freeze02_deriv
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           2 * inner02 (I := I) g y
             (tensor02FreezeNabla (I := I) (nablaA y) (Y y)) (A y))
@@ -1002,7 +1002,7 @@ theorem freeze02_deriv
         (fun y : M => inner02 (I := I) g y (B y) (A y)) x :=
     inner02_mdiff (I := I) g B A x
   have hscale := congrArg (fun L => L (X x))
-    (extDerivFun_const_mul I (2 : Real) hf)
+    (mvfderiv_const_mul I (2 : Real) hf)
   have hinner := inner02_nablaFun (I := I) cov g hmc B A X x
   have hAderiv :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1049,7 +1049,7 @@ theorem freeze02_deriv
       TotalNabla0SRealizes.eval_smooth_slots
         (I := I) h2 X V3 x
     let D : Real :=
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => nablaA p (fun a : Fin 3 => V3 a p)) x (X x)
     let CY : Real :=
       nablaA x
@@ -1061,7 +1061,7 @@ theorem freeze02_deriv
       nablaA x
         (vec3 (I := I) (Y x) (v 0) ((cov (fun y : M => W y) x) (X x)))
     have hDfree :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => B p (fun a : Fin 2 => V2 a p)) x (X x) = D := by
       exact DifferentialGeometry.Tensor.Coordinates.deriv_congr_nhds
         (I := I) (X x)
@@ -1112,7 +1112,8 @@ theorem freeze02_deriv
         fin_cases a
         · simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
         · simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
-        · simpa [Function.update, DifferentialGeometry.Geometry.Curvature.vec3] using hW
+        · change W x = v 1
+          exact hW
       have hWupd :
           Function.update
               (Fin.cons (Y x) (fun a : Fin 2 => (if a = 0 then Z else W) x)) 2
@@ -1150,8 +1151,7 @@ theorem freeze02_deriv
             vec3 (I := I) (Y x) (v 0) ((cov (fun y : M => W y) x) (X x)) := by
         funext a
         fin_cases a <;> simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
-      simp only [Nat.reduceAdd, Fin.isValue, ContinuousLinearMap.coe_comp',
-        ContinuousLinearEquiv.coe_coe, Function.comp_apply, directionalDeriv_eq,
+      simp only [Nat.reduceAdd, Fin.isValue,
         Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, Fin.succ_zero_eq_one,
         ↓reduceIte, Finset.univ_unique, Fin.default_eq_zero, Fin.succ_ne_zero,
         Finset.sum_singleton, Fin.succ_one_eq_two, V3, V2] at h
@@ -1192,13 +1192,13 @@ theorem freeze02_deriv
           rw [htot, hCY]
           ring
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           2 * inner02 (I := I) g y
             (tensor02FreezeNabla (I := I) (nablaA y) (Y y)) (A y))
         x (X x)
         =
-      2 * extDerivFun (I := I)
+      2 * mvfderiv (I := I)
         (fun y : M => inner02 (I := I) g y (B y) (A y)) x (X x) := by
         simpa [B, Pi.smul_apply, smul_eq_mul] using hscale
     _ =
@@ -1285,7 +1285,7 @@ theorem hess_norm02
     exact du_norm02 (I := I) cov g hmc A nablaA hA du hdu (X j y)
   have hnablaDu :
       nablaDuAt (I := I) cov (X i) du x (fun _ : Fin 1 => basis j) =
-        extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => X j y))
+        mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => X j y))
           x (X i x) -
         du x (fun _ : Fin 1 => (cov (fun y : M => X j y) x) (X i x)) := by
     have h := DifferentialGeometry.Tensor.Coordinates.nabla0SFun_one_eval_smooth_slots
@@ -1311,11 +1311,11 @@ theorem hess_norm02
       _ = nablaDuAt (I := I) cov (X i) du x (fun _ : Fin 1 => basis j) := by
               exact hHess (X i) (basis j)
       _ =
-          extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => X j y))
+          mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => X j y))
             x (X i x) -
           du x (fun _ : Fin 1 => (cov (fun y : M => X j y) x) (X i x)) := hnablaDu
       _ =
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M =>
               2 * inner02 (I := I) g y
                 (tensor02FreezeNabla (I := I) (nablaA y) (X j y)) (A y))

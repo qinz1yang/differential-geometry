@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Metric Function
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -40,7 +39,7 @@ private lemma sphere_isCompact :
   have hcont : Continuous
       (fun ξ : Fin (Module.finrank ℝ E) → ℝ =>
         ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) :=
-    continuous_finset_sum _ (fun i _ => (continuous_apply i).pow 2)
+    continuous_finsetSum _ (fun i _ => (continuous_apply i).pow 2)
   have hclosed : IsClosed {ξ : Fin (Module.finrank ℝ E) → ℝ |
       ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2 = 1} :=
     isClosed_eq hcont continuous_const
@@ -109,8 +108,8 @@ theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
   have hQ_cont : ContinuousOn Q
       ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ
         (Set.univ : Set (Fin (Module.finrank ℝ E) → ℝ))) := by
-    refine continuousOn_finset_sum _ (fun i _ => ?_)
-    refine continuousOn_finset_sum _ (fun j _ => ?_)
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
       · have hentry := (chartInvGramMatrix_entry_contMDiffOn
@@ -213,7 +212,7 @@ theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
     intro b hb ξ
     by_cases hKα_ne : Kα.Nonempty
     · by_cases hn : Nonempty (Fin (Module.finrank ℝ E))
-      · haveI : Nonempty (Fin (Module.finrank ℝ E)) := hn
+      · have : Nonempty (Fin (Module.finrank ℝ E)) := hn
         set i₀ : Fin (Module.finrank ℝ E) := Classical.arbitrary _
         set e₀ : Fin (Module.finrank ℝ E) → ℝ :=
           (Pi.single i₀ (1 : ℝ) : Fin (Module.finrank ℝ E) → ℝ) with he₀_def
@@ -261,8 +260,8 @@ theorem chartInvGram_quad_ub
   have hQ_cont : ContinuousOn Q
       ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ
         (Set.univ : Set (Fin (Module.finrank ℝ E) → ℝ))) := by
-    refine continuousOn_finset_sum _ (fun i _ => ?_)
-    refine continuousOn_finset_sum _ (fun j _ => ?_)
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
       · have hentry := (chartInvGramMatrix_entry_contMDiffOn
@@ -676,7 +675,7 @@ theorem chartInvGram_pou_lb
       (fun k b _hb v => hequiv k b v)
   choose cα hcα hbound using hper
   by_cases hM : Nonempty M
-  · letI : Nonempty M := hM
+  · let : Nonempty M := hM
     let b₀ : M := Classical.arbitrary M
     obtain ⟨α₀, hα₀_pos⟩ :
         ∃ α : M, 0 < (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) b₀ :=

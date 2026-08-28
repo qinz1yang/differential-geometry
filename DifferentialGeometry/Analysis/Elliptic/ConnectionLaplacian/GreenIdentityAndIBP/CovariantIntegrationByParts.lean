@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -146,7 +145,7 @@ theorem integral_tensorInner_tangentAction_add_smul_divergence_eq_zero
               * divergence_g (I := I) g V x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     rw [← hLHS]; exact hIBP
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have hAB_cont : Continuous
       (tangentSectionAction (I := I) V
@@ -231,7 +230,7 @@ theorem integral_tensorInner_covDeriv_integrationByParts
               * divergence_g (I := I) g V x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have hC_int : Integrable
       (fun x : M => tensorInnerScalar (I := I) (M := M) g r s W S x

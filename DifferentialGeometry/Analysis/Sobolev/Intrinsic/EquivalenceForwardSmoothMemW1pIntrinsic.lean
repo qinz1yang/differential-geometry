@@ -63,12 +63,12 @@ private lemma exists_bound_continuous_compactSpace
     exact (hM ⟨x⟩).elim
 
 private lemma continuous_memLp_of_compactSpace
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {f : M → ℝ} (hf : Continuous f) :
     MemLp f p (riemannianVolumeMeasure I M g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have hmeas : AEStronglyMeasurable f (riemannianVolumeMeasure I M g) :=
@@ -131,10 +131,10 @@ theorem MemW1pIntrinsicLp_of_MemWkpChart_smooth
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.MemW1pIntrinsicLp
       (I := I) (M := M) g p u := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   exact ⟨continuous_memLp_of_compactSpace g p hu_smooth.continuous,
     gradFun (I := I) g u,
     hasWeakRiemannianGradLp_gradFun (I := I) (M := M) g hu_smooth,
@@ -149,10 +149,10 @@ theorem w1pNormIntrinsicLp_lt_top_of_MemWkpChart_smooth
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
       (I := I) (M := M) g p u < ⊤ := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hsmooth_mem : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.MemW1pIntrinsicLp
     (I := I) (M := M) g p u :=
     MemW1pIntrinsicLp_of_MemWkpChart_smooth (I := I) (M := M) g p hu_smooth
@@ -195,10 +195,10 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth
         (I := I) (M := M) g p u
         ≤ ENNReal.ofReal C *
           wkpNormChart (I := I) (M := M) 1 p u := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_intrinsic_lt_top : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
       (I := I) (M := M) g p u < ⊤ :=
     w1pNormIntrinsicLp_lt_top_of_MemWkpChart_smooth
@@ -288,7 +288,7 @@ lemma continuous_g_norm_gradFun
   exact Real.continuous_sqrt.comp hcont
 
 private lemma exists_bound_g_norm_gradFun
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x : M,
@@ -326,14 +326,14 @@ private lemma eLpNorm_g_norm_gradFun_chart_local_lt_top_smooth
         (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) < ⊤ := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hcont := continuous_g_norm_gradFun (I := I) (M := M) g hu
   obtain ⟨C, hC_nn, hC_bound⟩ :=
     exists_bound_g_norm_gradFun (I := I) (M := M) g hu
-  haveI hRiemMeas_finite : IsFiniteMeasure
+  have hRiemMeas_finite : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) :=
     DifferentialGeometry.Integral.Measure.riemannianMeasure_isFiniteMeasure_of_compactSpace
@@ -390,10 +390,10 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
       ≤ ENNReal.ofReal C *
           wkpNormChart (I := I) (M := M) 1 p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_lt_top := eLpNorm_g_norm_gradFun_chart_local_lt_top_smooth
     (I := I) (M := M) g hp_one α hu_smooth
   have hu_chart : MemWkpChart (I := I) (M := M) 1 p u :=

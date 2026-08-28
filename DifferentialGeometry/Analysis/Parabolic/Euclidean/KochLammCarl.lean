@@ -29,7 +29,7 @@ theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V)) :
     refine lintegral_congr ?_
     intro z
     rw [show (2 : ℝ≥0∞).toReal = 2 by norm_num,
-      ← ofReal_norm_eq_enorm, ENNReal.ofReal_pow (norm_nonneg _) 2]
+      ← ofReal_norm, ENNReal.ofReal_pow (norm_nonneg _) 2]
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, ENNReal.rpow_natCast]
   rw [hpow, ← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
   norm_num

@@ -209,7 +209,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 def geodesicVectorFieldChart (g : SmoothRiemannianMetric I M) (α : M)
     (p : TangentBundle I M) : TangentSpace I.tangent p :=
   (trivializationAt (E × E) (TangentSpace I.tangent)
-      (⟨α, (0 : E)⟩ : TangentBundle I M)).symm p
+      (⟨α, (0 : E)⟩ : TangentBundle I M)).symmL ℝ p
     (geodesicVectorFieldChartFiber (I := I) g α p)
 
 def geodesicChartDomain (α : M) : Set (TangentBundle I M) :=
@@ -279,13 +279,9 @@ lemma geodesicVectorFieldChart_zero_section
   rw [hfiber]
   set e := trivializationAt (E × E) (TangentSpace I.tangent)
       (⟨α, (0 : E)⟩ : TangentBundle I M)
-  have hcoe := Bundle.Trivialization.coe_symmₗ (R := ℝ) e
-    (⟨α, (0 : E)⟩ : TangentBundle I M)
-  have : e.symm (⟨α, (0 : E)⟩ : TangentBundle I M) (0 : E × E) = 0 := by
-    have h := congrFun hcoe (0 : E × E)
-    rw [← h]
-    exact map_zero _
-  exact this
+  have he : (⟨α, (0 : E)⟩ : TangentBundle I M) ∈ e.baseSet := by
+    simp [e]
+  exact map_zero (e.symmL ℝ (⟨α, (0 : E)⟩ : TangentBundle I M))
 
 def IsGeodesicAt (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (t₀ : ℝ) : Prop :=
@@ -431,7 +427,13 @@ theorem hasGeodesicEquationAt_comp_neg
       have := (ha.scomp τ (hasDerivAt_neg τ))
       simpa [Function.comp_def] using this
     have hfin := hinner.neg
-    simpa using hfin
+    have hfun : -(fun s : ℝ => deriv u (-s)) = fun s => -deriv u (-s) := by
+      funext s
+      rfl
+    have hder : -((-1 : ℝ) • a) = a := by
+      rw [neg_one_smul, neg_neg]
+    rw [hfun, hder] at hfin
+    exact hfin
   · rw [chartChristoffelContraction_neg (I := I) g _ v]
     exact hgeo
 
@@ -599,8 +601,8 @@ lemma chartChristoffelContraction_scalarCoeff_contMDiffOn
             chartCoord (E := E) j (chartFiberCoord (I := I) α p))
       (geodesicChartDomain (I := I) α) := by
   classical
-  refine contMDiffOn_finset_sum (fun i _ => ?_)
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun i _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   have hΓ : ContMDiffOn I.tangent 𝓘(ℝ) ∞
       (fun p : TangentBundle I M =>
         chartChristoffel (I := I) g α i j k (extChartAt I α p.proj))
@@ -639,7 +641,7 @@ lemma chartChristoffelContraction_chartFiber_contMDiffOn
       (geodesicChartDomain (I := I) α) := by
   classical
   unfold chartChristoffelContraction
-  refine contMDiffOn_finset_sum (fun k _ => ?_)
+  refine contMDiffOn_finsetSum (fun k _ => ?_)
   have hscalar := chartChristoffelContraction_scalarCoeff_contMDiffOn (I := I) g α k
   have hconst : ContMDiffOn I.tangent 𝓘(ℝ, E) ∞
       (fun _ : TangentBundle I M => (chartModelBasis E) k)
@@ -691,6 +693,7 @@ lemma trivializationAt_apply_geodesicVectorFieldChart
   have hp' : p ∈ (trivializationAt (E × E) (TangentSpace I.tangent)
       (⟨α, (0 : E)⟩ : TangentBundle I M)).baseSet := by
     rw [← geodesicChartDomain_eq_trivBaseSet (I := I) α]; exact hp
+  rw [geodesicVectorFieldChart, Trivialization.symmL_apply _ hp']
   exact (trivializationAt (E × E) (TangentSpace I.tangent)
     (⟨α, (0 : E)⟩ : TangentBundle I M)).apply_mk_symm hp'
       (geodesicVectorFieldChartFiber (I := I) g α p)

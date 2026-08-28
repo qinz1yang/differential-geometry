@@ -6,7 +6,6 @@ import Mathlib.Analysis.Normed.Operator.Extend
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -37,12 +36,14 @@ noncomputable def smoothCcTensorHsLinearEquiv
   map_add' S T := SmoothCcTensorHs.toCcTensor_add S T
   map_smul' c S := SmoothCcTensorHs.toCcTensor_smul c S
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma smoothCcTensorHsLinearEquiv_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensorHs g r s 0) :
     smoothCcTensorHsLinearEquiv (I := I) (M := M) g r s S = S.toCcTensor := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma smoothCcTensorHsLinearEquiv_symm_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     (smoothCcTensorHsLinearEquiv (I := I) (M := M) g r s).symm T = ⟨T⟩ := rfl

@@ -78,7 +78,7 @@ theorem riemann_quad_le
     g.inner q
         (riemannOp (LeviCivita (I := I) g) q J V V) J ≤
       K * g.inner q J J * g.inner q V V := by
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   have hJJ : 0 ≤ g.inner q J J :=
     by
       rcases eq_or_ne J 0 with hzero | hne

@@ -31,7 +31,9 @@ theorem projN_cont (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (N : 
     (hcont : Continuous Nfun) :
     Continuous (projNfun (I := I) (M := M) g₀ a N Nfun) := by
   have h := (spatialProj_lip (I := I) (M := M) g₀ (a : ℝ) N).continuous.comp hcont
-  simpa [projNfun, Function.comp_def] using h
+  change Continuous
+    ((spatialEigenProj (I := I) (M := M) g₀ (a : ℝ) N) ∘ Nfun)
+  exact h
 
 omit [BoundarylessManifold I M] in
 theorem projN_tame (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (N : ℕ)

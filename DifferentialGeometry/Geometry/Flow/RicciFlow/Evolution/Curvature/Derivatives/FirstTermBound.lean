@@ -37,7 +37,7 @@ theorem nablaLapComm_T1_eq_covDerivK
         (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ a b c m) -
       nabla3Rm04Field (I := I) S (t : Real) x₀
         (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ a c b m) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
               (S.base.rm04 (t : Real) p)

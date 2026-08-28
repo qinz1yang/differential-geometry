@@ -30,6 +30,15 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+private theorem contMDiff_exp_neg {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x => Real.exp (-f x)) := by
+  have h := Real.contDiff_exp.contMDiff.comp hf.neg
+  convert h using 1
+  · with_reducible_and_instances rfl
+  · rfl
+
 theorem green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -105,7 +114,9 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian'
           ((grad_g (I := I) g ⟨_, hh⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
-    simpa using tangentSectionAction_eq_inner_grad_g (I := I) g ⟨_, hh⟩ X x
+    rw [hX_def]
+    exact tangentSectionAction_eq_inner_grad_g (I := I) g ⟨_, hh⟩
+      (grad_g (I := I) g ⟨_, hf⟩) x
   have hRHS_eq : ∀ x : M,
       h x * divergence_g (I := I) g X x = h x * Δ_g (I := I) g ⟨_, hf⟩ x := by
     intro x; rfl
@@ -145,7 +156,7 @@ theorem green_second_integral_smul_laplacian_sub_eq_zero
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       rw [← h1, h2]
     linarith
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hΔh_cont : Continuous (Δ_g (I := I) g ⟨_, hh⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, hh⟩).continuous
@@ -177,15 +188,15 @@ theorem expNegWeightedGreen
       ∫ x, q x *
         Δ_g (I := I) g
           ⟨fun x : M => Real.exp (-(f x)),
-            by simpa using Real.contDiff_exp.contMDiff.comp hf.neg⟩ x
+            contMDiff_exp_neg hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   let expNeg : M → ℝ := fun x => Real.exp (-(f x))
   have hexp : ContMDiff I 𝓘(ℝ, ℝ) ∞ expNeg := by
-    simpa [expNeg] using Real.contDiff_exp.contMDiff.comp hf.neg
+    exact contMDiff_exp_neg hf
   have hgreen := green_second_integral_smul_laplacian_sub_eq_zero
     (I := I) g (f := expNeg) (h := q) hexp hq
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hΔq_cont : Continuous (Δ_g (I := I) g ⟨_, hq⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, hq⟩).continuous
@@ -224,7 +235,7 @@ theorem expNegLap
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     Δ_g (I := I) g
         ⟨fun x : M => Real.exp (-(f x)),
-          by simpa using Real.contDiff_exp.contMDiff.comp hf.neg⟩ x =
+          contMDiff_exp_neg hf⟩ x =
       Real.exp (-(f x)) *
         (-Δ_g (I := I) g ⟨_, hf⟩ x +
           g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
@@ -235,13 +246,15 @@ theorem expNegLap
   let expNeg : M → ℝ := fun y => Real.exp (-(f y))
   let phi : M → ℝ := fun y => -expNeg y
   have hexp : ContMDiff I 𝓘(ℝ, ℝ) ∞ expNeg := by
-    simpa [expNeg] using Real.contDiff_exp.contMDiff.comp hf.neg
+    exact contMDiff_exp_neg hf
   have hphi : ContMDiff I 𝓘(ℝ, ℝ) ∞ phi := by
     simpa [phi] using hexp.neg
+  let expNegMap : C^∞⟮I, M; ℝ⟯ := ⟨expNeg, hexp⟩
+  let fMap : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have hsection :
-      (grad_g (I := I) g ⟨_, hexp⟩ :
+      (grad_g (I := I) g expNegMap :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-        smoothSmul (I := I) phi hphi (grad_g (I := I) g ⟨_, hf⟩) := by
+        smoothSmul (I := I) phi hphi (grad_g (I := I) g fMap) := by
     ext y
     rw [grad_g_apply, smoothSmul_apply, grad_g_apply]
     change gradFun (I := I) g (fun y : M => Real.exp (-(f y))) y =
@@ -249,29 +262,31 @@ theorem expNegLap
     dsimp [phi, expNeg]
     exact gradFun_exp_neg (I := I) g (hf.mdifferentiable (by simp) y)
   have hactExp := tangentSectionAction_grad_g_eq_inner
-    (I := I) g hexp (grad_g (I := I) g ⟨_, hf⟩) x
+    (I := I) g hexp (grad_g (I := I) g fMap) x
   rw [hsection] at hactExp
   have hactPhi :
-      tangentSectionAction (I := I) (grad_g (I := I) g ⟨_, hf⟩) phi x =
+      tangentSectionAction (I := I) (grad_g (I := I) g fMap) phi x =
         Real.exp (-(f x)) *
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          g.inner x ((grad_g (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((grad_g (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     have hneg :
-        tangentSectionAction (I := I) (grad_g (I := I) g ⟨_, hf⟩) phi x =
-          -tangentSectionAction (I := I) (grad_g (I := I) g ⟨_, hf⟩) expNeg x := by
+        tangentSectionAction (I := I) (grad_g (I := I) g fMap) phi x =
+          -tangentSectionAction (I := I) (grad_g (I := I) g fMap) expNeg x := by
       have hmdiff_exp : MDifferentiableAt I 𝓘(ℝ, ℝ) expNeg x :=
         hexp.mdifferentiable (by simp) x
       have hmf :
           mfderiv I 𝓘(ℝ, ℝ) phi x =
             -mfderiv I 𝓘(ℝ, ℝ) expNeg x := by
-        simpa [phi] using hmdiff_exp.hasMFDerivAt.neg.mfderiv
+        dsimp [phi]
+        change mfderiv I 𝓘(ℝ, ℝ) (-expNeg) x = -mfderiv I 𝓘(ℝ, ℝ) expNeg x
+        exact hmdiff_exp.hasMFDerivAt.neg.mfderiv
       change mfderiv I 𝓘(ℝ, ℝ) phi x
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((grad_g (I := I) g fMap :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         -(mfderiv I 𝓘(ℝ, ℝ) expNeg x
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((grad_g (I := I) g fMap :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       rw [hmf]
       rfl
@@ -280,11 +295,17 @@ theorem expNegLap
     dsimp [phi, expNeg]
     simp [smul_eq_mul]
   change divergence_g (I := I) g
-      (grad_g (I := I) g ⟨_, hexp⟩) x = _
+      (grad_g (I := I) g expNegMap) x =
+    Real.exp (-(f x)) *
+      (-divergence_g (I := I) g (grad_g (I := I) g fMap) x +
+        g.inner x ((grad_g (I := I) g fMap :
+            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+          ((grad_g (I := I) g fMap :
+            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
   rw [hsection]
-  rw [divergence_g_smoothSmul (I := I) g phi hphi (grad_g (I := I) g ⟨_, hf⟩) x]
+  rw [divergence_g_smoothSmul (I := I) g phi hphi (grad_g (I := I) g fMap) x]
   rw [hactPhi]
-  simp [Δ_g, phi, expNeg]
+  simp [phi, expNeg]
   ring
 
 theorem expNegGreen
@@ -310,7 +331,7 @@ theorem expNegGreen
   change q x *
       Δ_g (I := I) g
         ⟨fun x : M => Real.exp (-(f x)),
-          by simpa using Real.contDiff_exp.contMDiff.comp hf.neg⟩ x =
+          contMDiff_exp_neg hf⟩ x =
     q x *
       (Real.exp (-(f x)) *
         (-Δ_g (I := I) g ⟨_, hf⟩ x +
@@ -335,7 +356,7 @@ theorem expNegLap_eq_gradSq
   classical
   let expNeg : M → ℝ := fun x => Real.exp (-(f x))
   have hexp : ContMDiff I 𝓘(ℝ, ℝ) ∞ expNeg := by
-    simpa [expNeg] using Real.contDiff_exp.contMDiff.comp hf.neg
+    exact contMDiff_exp_neg hf
   have hgreen :=
     green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
       (I := I) g (f := expNeg) (h := f) hexp hf
@@ -377,7 +398,7 @@ theorem expNegLap_eq_gradSq
             (gradFun (I := I) g f x))
     rw [gradFun_exp_neg (I := I) g hfx]
     rw [map_smul]
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     rw [smul_eq_mul]
     ring_nf
   have hneg :

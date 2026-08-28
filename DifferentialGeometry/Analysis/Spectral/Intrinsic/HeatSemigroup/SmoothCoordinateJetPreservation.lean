@@ -336,7 +336,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
         ∀ i, (fun t => (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a (w t)).coeff i)
             =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)] ψ i := by
   classical
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g₀) (r := 0) (s := 2)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)

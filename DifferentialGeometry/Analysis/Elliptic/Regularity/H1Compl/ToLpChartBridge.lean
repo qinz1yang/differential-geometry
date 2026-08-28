@@ -184,9 +184,6 @@ private lemma chartPushedRaw_pou_mul_support_subset_kα
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) ≠ 0 := by
       intro h_ρ_zero
       apply hy_ne
-      change (chartAtlasPOU I M α : M → ℝ)
-          ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
-        u ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) = 0
       rw [h_ρ_zero]; ring
     have hp_in_supp_ρα : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         Function.support (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) := hρα_ne
@@ -473,7 +470,7 @@ theorem eLpNorm_chartPushed_chartPulledWeightedMeasure_restrict_le
       have h_zero_eq : (fun _ : EuclN => (0 : ℝ)) = (0 : EuclN → ℝ) := rfl
       rw [h_zero_eq, MeasureTheory.eLpNorm_zero]
     rw [h_eLpNorm_zero]
-    exact zero_le _
+    exact zero_le
 
 private noncomputable def extChartAtSymmExt (α : M) : E → M := by
   classical
@@ -632,7 +629,7 @@ theorem chartPushed_tendsto_chartPulledWeightedMeasure
     ENNReal.Tendsto.const_mul h_tendsto (Or.inr ENNReal.ofReal_ne_top)
   rw [mul_zero] at h_rhs_tendsto
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h_rhs_tendsto
-    (fun _ => zero_le _) ?_
+    (fun _ => zero_le) ?_
   intro n
   exact h_bnd n
 

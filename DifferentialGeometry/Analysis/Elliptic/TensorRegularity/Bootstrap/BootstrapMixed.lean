@@ -425,7 +425,7 @@ theorem perturbedSource_memWkp_of_source_memWkp
   rw [← add_mul, ← add_mul,
     ← ENNReal.ofReal_add (by norm_num : (0 : ℝ) ≤ 1) hK_c_nn,
     ← ENNReal.ofReal_add (by positivity) hK_div_nn]
-  refine mul_le_mul_of_nonneg_right (le_of_eq ?_) (zero_le _)
+  refine mul_le_mul_of_nonneg_right (le_of_eq ?_) (zero_le)
   rw [ENNReal.ofReal_eq_ofReal_iff (by positivity) (by positivity)]
   ring
 

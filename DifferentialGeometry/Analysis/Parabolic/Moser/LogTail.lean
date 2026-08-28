@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.ExponentialRescaling
 import DifferentialGeometry.Analysis.Parabolic.Moser.Oscillation
 import Mathlib.MeasureTheory.Integral.Prod
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -51,7 +52,7 @@ theorem intervalIntegrable_localizedSuperlevelMass
   let F : ℝ × M → ℝ := fun z => S.indicator
     (fun q => cutoff.toFun q.2 ^ 2) z
   let inner : ℝ → ℝ := fun t => ∫ x, F (t, x) ∂μ
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -132,7 +133,7 @@ theorem localized_superlevel_chebyshev_of_center
   let S : Set M := {x : M | level < u.toFun x}
   let oscilland : M → ℝ := fun x =>
     cutoff.toFun x ^ 2 * (u.toFun x - center) ^ 2
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -196,7 +197,7 @@ theorem localized_sublevel_chebyshev_of_center
   let S : Set M := {x : M | u.toFun x < level}
   let oscilland : M → ℝ := fun x =>
     cutoff.toFun x ^ 2 * (u.toFun x - center) ^ 2
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -423,8 +424,9 @@ theorem contDiff_shiftedLogCenter
       (I := I) (M := M) cutoff (fun s x => Real.log (u s x)) hlog
   have hshifted_smooth : ContDiff ℝ ∞ (fun t => mass t + t * source) :=
     hmass_smooth.add (contDiff_id.mul contDiff_const)
-  simpa only [shiftedLogCenter, shiftedLogMass, mass, source] using
-    hshifted_smooth.div_const (cutoffMass (I := I) (M := M) cutoff)
+  change ContDiff ℝ ∞ (fun t =>
+    (mass t + t * source) / cutoffMass (I := I) (M := M) cutoff)
+  exact hshifted_smooth.div_const (cutoffMass (I := I) (M := M) cutoff)
 
 theorem integral_deriv_div_center_gap_sq
     (center : ℝ → ℝ)
@@ -451,7 +453,10 @@ theorem integral_deriv_div_center_gap_sq
       simpa only [gap, Pi.sub_apply, Pi.add_apply, zero_sub] using
         ((hasDerivAt_const t (center b)).sub hcenter_deriv).add_const r
     have hinv := hgap_deriv.inv (hgap_pos t ht).ne'
-    simpa only [reciprocal, one_div, neg_neg] using hinv
+    have hinv' : HasDerivAt reciprocal (-(-deriv center t) / gap t ^ 2) t := by
+      refine hinv.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+      simp only [reciprocal, one_div, Pi.inv_apply]
+    simpa only [neg_neg] using hinv'
   have hderiv_cont : ContinuousOn
       (fun t => deriv center t / gap t ^ 2) (uIcc a b) := by
     rw [uIcc_of_le hab]
@@ -492,7 +497,8 @@ theorem integral_deriv_div_center_gap_sq_from_left
         -(-deriv center t / gap t ^ 2) = deriv center t / gap t ^ 2 := by
       ring
     rw [hcoefficient] at hinv
-    simpa only [negativeReciprocal, one_div] using hinv
+    refine hinv.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+    simp only [negativeReciprocal, one_div, Pi.neg_apply, Pi.inv_apply]
   have hderiv_cont : ContinuousOn
       (fun t => deriv center t / gap t ^ 2) (uIcc a b) := by
     rw [uIcc_of_le hab]
@@ -689,15 +695,20 @@ theorem shifted_log_mass_monotone_on
     have hmass_deriv : HasDerivAt mass (deriv mass t) t :=
       (hmass_smooth.differentiable (by simp) t).hasDerivAt
     have hshifted_deriv : HasDerivAt shifted (deriv mass t + source) t := by
-      simpa only [one_mul, id_eq] using
-        hmass_deriv.add ((hasDerivAt_id t).mul_const source)
+      have hadd := hmass_deriv.add ((hasDerivAt_id t).mul_const source)
+      have hadd' : HasDerivAt (mass + fun y => id y * source)
+          (deriv mass t + source) t := by
+        simpa only [one_mul] using hadd
+      refine hadd'.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+      simp only [shifted, Pi.add_apply, id_eq]
     rw [hshifted_deriv.deriv]
     change (1 / 2 : ℝ) *
         localizedDirichletEnergy (I := I) (M := M) cutoff
           (smoothScalarSlice (I := I) g (fun s x => Real.log (u s x)) hlog t) ≤
       deriv mass t + source at hdiff
     linarith
-  simpa only [shiftedLogMass, hlog, mass, source, shifted] using hmono
+  change MonotoneOn shifted (Icc a b)
+  exact hmono
 
 theorem shifted_log_center_monotone_on
     (g : SmoothRiemannianMetric I M)
@@ -748,14 +759,19 @@ theorem half_localized_dirichlet_energy_le_shifted_log_center_deriv
     (hmass_smooth.differentiable (by simp) t).hasDerivAt
   have hshifted_deriv :
       HasDerivAt (fun s => mass s + s * source) (deriv mass t + source) t := by
-    simpa only [one_mul, id_eq] using
-      hmass_deriv.add ((hasDerivAt_id t).mul_const source)
+    have hadd := hmass_deriv.add ((hasDerivAt_id t).mul_const source)
+    have hadd' : HasDerivAt (mass + fun y => id y * source)
+        (deriv mass t + source) t := by
+      simpa only [one_mul] using hadd
+    refine hadd'.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+    simp only [Pi.add_apply, id_eq]
   have hcenter_deriv :
       HasDerivAt (shiftedLogCenter (I := I) (M := M) g cutoff u hu hpos)
         ((deriv mass t + source) /
           cutoffMass (I := I) (M := M) cutoff) t := by
-    simpa only [shiftedLogCenter, shiftedLogMass, mass, source] using
-      hshifted_deriv.div_const (cutoffMass (I := I) (M := M) cutoff)
+    have hdiv := hshifted_deriv.div_const (cutoffMass (I := I) (M := M) cutoff)
+    refine hdiv.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+    rfl
   have hdiff := log_energy_differential_of_supersolution
     (I := I) (M := M) g cutoff u hu hpos t hpde
   change (1 / 2 : ℝ) *
@@ -1111,9 +1127,10 @@ theorem integrated_late_centered_log_sublevel_tail_of_supersolution
             (contMDiff_log_of_pos hu hpos) s)
           (center - s * rate - r) := by
     intro s
-    simpa only [mul_comm, add_neg] using
-      localizedSublevelMass_log_exponentialTimeRescale
-        (I := I) (M := M) g deviationCutoff rate center u hu hpos s (-r)
+    rw [sub_eq_add_neg]
+    rw [mul_comm s rate]
+    exact localizedSublevelMass_log_exponentialTimeRescale
+      (I := I) (M := M) g deviationCutoff rate center u hu hpos s (-r)
   simp_rw [show logCenterDrift (I := I) (M := M) g averagingCutoff = rate from rfl,
     show shiftedLogCenter (I := I) (M := M) g averagingCutoff u hu hpos τ = center from rfl,
     hpointwise]

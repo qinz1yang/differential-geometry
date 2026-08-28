@@ -419,9 +419,27 @@ private theorem slotdiffReduce
                   (Function.update (fun l : Fin (4 + k) => basis (I0 l.succ)) q
                     (basis e))))) := by
     intro i
-    simpa [metricTraceInput] using
-      (slotdiffBasisEq (I := I) S t k basis horth i i (I0 0)
-        (fun q : Fin (4 + k) => I0 q.succ))
+    have hinput₁ :
+        metricTraceInput (I := I) (basis i) (basis i)
+            (Fin.cons (basis (I0 0)) (fun l : Fin (4 + k) => basis (I0 l.succ))) =
+          Fin.cons (basis i)
+            (metricTraceInput (I := I) (basis i) (basis (I0 0))
+              (fun l : Fin (4 + k) => basis (I0 l.succ))) := by
+      funext j
+      refine Fin.cases rfl (fun j => ?_) j
+      refine Fin.cases rfl (fun _ => rfl) j
+    have hinput₂ :
+        metricTraceInput (I := I) (basis i) (basis (I0 0))
+            (Fin.cons (basis i) (fun l : Fin (4 + k) => basis (I0 l.succ))) =
+          Fin.cons (basis i)
+            (metricTraceInput (I := I) (basis (I0 0)) (basis i)
+              (fun l : Fin (4 + k) => basis (I0 l.succ))) := by
+      funext j
+      refine Fin.cases rfl (fun j => ?_) j
+      refine Fin.cases rfl (fun _ => rfl) j
+    rw [hinput₁, hinput₂]
+    exact slotdiffBasisEq (I := I) S t k basis horth i i (I0 0)
+      (fun q : Fin (4 + k) => I0 q.succ)
   rw [Finset.sum_congr rfl fun i _ => hterm i]
   rw [Finset.sum_neg_distrib]
   congr 1
@@ -507,8 +525,8 @@ def commStarField
           (sigmaCurvPos k q hq))
   (-1 : Real) • (TA + TB + TC)
 
-set_option backward.isDefEq.respectTransparency false in
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private theorem commStarField_data
     (S : SolutionOn (I := I) (M := M) D)
@@ -731,6 +749,7 @@ private theorem commStarField_data
     simp [T, tensor0SComponent_apply, hTAp, hTBp, hTCp, Finset.sum_add_distrib]
     ring_nf
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem commStarField_cost
     (S : SolutionOn (I := I) (M := M) D)
@@ -741,6 +760,7 @@ theorem commStarField_cost
   classical
   exact (commStarField_data (I := I) S t k).1
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem commStarField_spec
     (S : SolutionOn (I := I) (M := M) D)
@@ -758,9 +778,10 @@ theorem commStarField_spec
               (nablaKRm04Field (I := I) S (t : Real) (k + 2))) x (fun p => basis (I0 p))
       = tensor0SComponent (I := I) (commStarField (I := I) S t k x)
           (fun i => basis i) I0 := by
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   exact (commStarField_data (I := I) S t k).2 x basis horth I0
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem spatialCommStarSum
     (S : SolutionOn (I := I) (M := M) D)

@@ -161,7 +161,7 @@ theorem ricciSym_of_basis
         Ric (vec2 (I := I) (basis j) (basis i))) :
     RicciSymAt (I := I) Ric := by
   classical
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   intro X Y
   let cx : Idx -> Real := fun i => basis.repr X i
   let cy : Idx -> Real := fun i => basis.repr Y i
@@ -182,12 +182,26 @@ theorem ricciSym_of_basis
           ∑ r : Fin 2 -> Idx,
             Ric (fun a : Fin 2 =>
               (if a = 0 then cx (r a) else cy (r a)) • basis (r a)) := by
-      simpa using
-        (ContinuousMultilinearMap.map_sum
-          (f := Ric)
-          (g := fun a j =>
-            (if a = 0 then cx j else cy j) • basis j))
-    simpa [vec2] using hsum
+      change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 => ∑ j : Idx,
+            (if a = 0 then cx j else cy j) • basis j) =
+        ∑ r : Fin 2 → Idx, (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 =>
+            (if a = 0 then cx (r a) else cy (r a)) • basis (r a))
+      exact ContinuousMultilinearMap.map_sum
+        (f := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+        (g := fun a j => (if a = 0 then cx j else cy j) • basis j)
+    change Ric (fun a : Fin 2 =>
+      if a = 0 then ∑ i : Idx, cx i • basis i else ∑ i : Idx, cy i • basis i) = _
+    have hfun :
+        (fun a : Fin 2 => ∑ j : Idx,
+          (if a = 0 then cx j else cy j) • basis j) =
+        (fun a : Fin 2 =>
+          if a = 0 then ∑ i : Idx, cx i • basis i else ∑ i : Idx, cy i • basis i) := by
+      funext a
+      fin_cases a <;> simp
+    rw [← hfun]
+    exact hsum
   have hYX :
       Ric (vec2 (I := I) Y X) =
         ∑ r : Fin 2 -> Idx,
@@ -201,12 +215,26 @@ theorem ricciSym_of_basis
           ∑ r : Fin 2 -> Idx,
             Ric (fun a : Fin 2 =>
               (if a = 0 then cy (r a) else cx (r a)) • basis (r a)) := by
-      simpa using
-        (ContinuousMultilinearMap.map_sum
-          (f := Ric)
-          (g := fun a j =>
-            (if a = 0 then cy j else cx j) • basis j))
-    simpa [vec2] using hsum
+      change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 => ∑ j : Idx,
+            (if a = 0 then cy j else cx j) • basis j) =
+        ∑ r : Fin 2 → Idx, (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 =>
+            (if a = 0 then cy (r a) else cx (r a)) • basis (r a))
+      exact ContinuousMultilinearMap.map_sum
+        (f := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+        (g := fun a j => (if a = 0 then cy j else cx j) • basis j)
+    change Ric (fun a : Fin 2 =>
+      if a = 0 then ∑ i : Idx, cy i • basis i else ∑ i : Idx, cx i • basis i) = _
+    have hfun :
+        (fun a : Fin 2 => ∑ j : Idx,
+          (if a = 0 then cy j else cx j) • basis j) =
+        (fun a : Fin 2 =>
+          if a = 0 then ∑ i : Idx, cy i • basis i else ∑ i : Idx, cx i • basis i) := by
+      funext a
+      fin_cases a <;> simp
+    rw [← hfun]
+    exact hsum
   rw [hXY, hYX]
   rw [sum_fin_two_fun, sum_fin_two_fun]
   rw [Finset.sum_comm]

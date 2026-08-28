@@ -15,6 +15,8 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -171,7 +173,7 @@ def metricCovDerivCompInFrameAtBase
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base var : Real) (x : M) (d a b : Idx) : Real :=
-  extDerivFun (I := I)
+  mvfderiv (I := I)
       (fun y : M => (S.family.metric var).inner y (frame a y) (frame b y))
       x (frame d x) -
     (S.family.metric var).inner x
@@ -284,14 +286,14 @@ theorem metricCovDerivCompInFrameAtBase_eq_connectionDiff
   unfold metricCovDerivCompInFrameAtBase connectionDiffLoweredInFrame
     connectionDiffVectorInFrame
   have hmc' :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => (S.family.metric var).inner y (frame a y) (frame b y))
           x (frame d x) =
         (S.family.metric var).inner x
             ((S.family.connection var (frame a) x) (frame d x)) (frame b x) +
           (S.family.metric var).inner x (frame a x)
             ((S.family.connection var (frame b) x) (frame d x)) := by
-    simpa [extDerivFun] using hmc
+    simpa [DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricAt] using hmc
   rw [hmc']
   simp
   ring
@@ -421,7 +423,7 @@ def ricciCovDerivCompInFrame
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M) (d a b : Idx) : Real :=
-  extDerivFun (I := I)
+  mvfderiv (I := I)
       (fun y : M => ricciCompInFrame (I := I) S frame t y a b)
       x (frame d x) -
     S.ricciAt t x
@@ -466,7 +468,7 @@ def ricciSecondCovDerivCompInFrame
     (hframe : IsLocalFrameOn I E 1 frame u)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real)
     (t : Real) (x : M) (d a i j : Idx) : Real :=
-  extDerivFun (I := I) (fun y : M => nablaRic t y a i j) x
+  mvfderiv (I := I) (fun y : M => nablaRic t y a i j) x
       (frame d x) -
     (∑ p : Idx,
       DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
@@ -554,10 +556,10 @@ theorem metricCovDerivOfMix
   have hExtRaw :
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => metricCompInFrame (I := I) S frame s y a b)
             x (frame d x))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun y : M => (-2 : Real) *
             ricciCompInFrame (I := I) S frame (t : Real) y a b)
           x (frame d x))
@@ -566,26 +568,26 @@ theorem metricCovDerivOfMix
     fixedBaseExtDerivTimeDerivativeOnRegular_apply (I := I)
       (h := hmix a b) (t := (t : Real)) t.2 (x := x) hx (frame d x)
   have hscale :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => (-2 : Real) *
             ricciCompInFrame (I := I) S frame (t : Real) y a b)
           x (frame d x) =
         (-2 : Real) *
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
             x (frame d x) := by
     have h :=
-      extDerivFun_const_mul (I := I) (-2 : Real)
+      mvfderiv_const_mul (I := I) (-2 : Real)
         (hricci (t : Real) x hx a b)
     simpa [smul_eq_mul] using congrArg (fun L => L (frame d x)) h
   have hExt :
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => metricCompInFrame (I := I) S frame s y a b)
             x (frame d x))
         ((-2 : Real) *
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
             x (frame d x))
         D.carrier
@@ -614,13 +616,13 @@ theorem metricCovDerivOfMix
   have hDeriv :
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun y : M => metricCompInFrame (I := I) S frame s y a b)
               x (frame d x) -
             (S.family.metric s).inner x Ca (frame b x) -
             (S.family.metric s).inner x (frame a x) Cb)
         (((-2 : Real) *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x)) -
           ((-2 : Real) *
@@ -638,7 +640,7 @@ theorem metricCovDerivOfMix
     unfold ricciCovDerivCompInFrame at hn
     change
       (-2 : Real) *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x) -
           (-2 : Real) *
@@ -676,11 +678,11 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
   have hExt :
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => metricCompInFrame (I := I) S frame s y a b)
             x (frame d x))
         ((-2 : Real) *
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
             x (frame d x))
         D.carrier
@@ -709,13 +711,13 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
   have hDeriv :
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun y : M => metricCompInFrame (I := I) S frame s y a b)
               x (frame d x) -
             (S.family.metric s).inner x Ca (frame b x) -
             (S.family.metric s).inner x (frame a x) Cb)
         (((-2 : Real) *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x)) -
           ((-2 : Real) *
@@ -733,7 +735,7 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
     unfold ricciCovDerivCompInFrame at hn
     change
       (-2 : Real) *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x) -
           (-2 : Real) *

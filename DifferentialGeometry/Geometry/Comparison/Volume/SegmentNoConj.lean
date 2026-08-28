@@ -40,7 +40,7 @@ theorem segDom_no_conj
     ∀ t ∈ Ioo (0 : ℝ) 1,
       ¬ IsConjVec (I := I) g hEnorm x
         ((t • v : TangentSpace I x) : E) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   classical
   let L : ℝ := Real.sqrt (g.inner x v v)
   let u : TangentSpace I x := L⁻¹ • v

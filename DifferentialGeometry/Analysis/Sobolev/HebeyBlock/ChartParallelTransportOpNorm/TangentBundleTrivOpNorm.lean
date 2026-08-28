@@ -32,9 +32,9 @@ private lemma exists_W_and_constant_tangent
     ∃ W : Set M, IsOpen W ∧ y₀ ∈ W ∧ ∃ N : ℝ, 0 < N ∧ ∀ b ∈ W,
       ‖(trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b‖ ≤ N := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   obtain ⟨C₁, hC₁_pos, hC₁_ev⟩ :=
     eventually_norm_trivializationAt_lt E (fun b : M => TangentSpace I b) y₀
@@ -100,10 +100,8 @@ private lemma exists_W_and_constant_tangent
         (ey₀.symmL ℝ b (ey₀.continuousLinearMapAt ℝ b T)) := by
     change (ey₀.coordChangeL ℝ eα b) (ey₀.continuousLinearMapAt ℝ b T) = _
     rw [Trivialization.coordChangeL_apply _ _ hboth]
-    simp only [Bundle.Trivialization.continuousLinearMapAt_apply,
-        Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_α,
-        Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_y₀,
-        Bundle.Trivialization.symmL_apply]
+    rw [ey₀.symmL_apply hb_y₀]
+    exact (Trivialization.continuousLinearMapAt_apply_of_mem Real eα hb_α _).symm
   have h_inv (T : TangentSpace I b) :
       ey₀.symmL ℝ b (ey₀.continuousLinearMapAt ℝ b T) = T :=
     Trivialization.symmL_continuousLinearMapAt (R := ℝ) ey₀ hb_y₀ T
@@ -139,9 +137,9 @@ theorem chartTriv_opNorm_isBounded_on_compact
     ∃ C : ℝ, 0 ≤ C ∧ ∀ b ∈ K,
       ‖(trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b‖ ≤ C := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   let W : M → Set M := fun y₀ =>
     if hy : y₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet then

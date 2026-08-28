@@ -208,7 +208,7 @@ lemma delta_nonneg_of_ball_gFibreOpBound [Nonempty M] (g₀ : SmoothRiemannianMe
     exact hR₀
   obtain ⟨x₀⟩ := ‹Nonempty M›
   obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-    haveI : Nontrivial (TangentSpace I x₀) := by
+    have : Nontrivial (TangentSpace I x₀) := by
       have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
         have hrk : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
         rw [hrk]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -678,6 +678,7 @@ lemma hs_extreme_interp {f : ℕ → ℝ} (hf_nn : ∀ k, 0 ≤ f k)
   · exact hkey α β hab hαγ hβγ hsum
   · rw [mul_comm]; exact hkey β α hab hβγ hαγ (by omega)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma iteratedCovGrad_norm_comp (g₀ : SmoothRiemannianMetric I M) (r s l m : ℕ)

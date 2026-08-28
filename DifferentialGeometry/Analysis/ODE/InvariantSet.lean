@@ -35,7 +35,9 @@ theorem HasDerivAt.mem_posTangentConeAt_of_eventually_mem_right
   · apply Tendsto.congr' _ hγ.tendsto_slope_zero_right
     filter_upwards [self_mem_nhdsWithin] with h hh
     have hpos : 0 < h := hh
-    simp [c, d, max_eq_left (inv_nonneg.mpr hpos.le), NNReal.smul_def]
+    rw [NNReal.smul_def]
+    simp [c, d, max_eq_left (inv_nonneg.mpr hpos.le)]
+    congr 1
 
 theorem IsIntegralCurve.mem_posTangentConeAt_of_mapsTo_right
     {f : ℝ → E → E} {γ : ℝ → E} {t : ℝ} {C : Set E}

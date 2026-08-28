@@ -6,7 +6,6 @@ open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 open scoped Manifold Topology Bundle ContDiff BigOperators

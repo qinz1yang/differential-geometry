@@ -2,7 +2,6 @@ import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

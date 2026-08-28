@@ -143,18 +143,18 @@ lemma riemannSec_smul_left
     simp [covApply]
   have h2 : cov.toFun (covApply cov (f • X) Z) x (Y x) =
       f x • cov.toFun (covApply cov X Z) x (Y x)
-        + extDerivFun f x (Y x) • cov.toFun Z x (X x) := by
+        + mvfderiv (I := I) f x (Y x) • cov.toFun Z x (X x) := by
     rw [hcov_smul]
     rw [cov.isCovariantDerivativeOnUniv.leibniz hcXZ hf]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
           ContinuousLinearMap.smulRight_apply]
   have hbr : VectorField.mlieBracket I (f • X) Y x =
-      - (extDerivFun f x (Y x)) • X x
+      - (mvfderiv (I := I) f x (Y x)) • X x
         + f x • VectorField.mlieBracket I X Y x := by
     have := VectorField.mlieBracket_smul_left (V := X) (W := Y) (x := x) hf hX
     convert this using 2
   have h3 : cov.toFun Z x (VectorField.mlieBracket I (f • X) Y x) =
-      - extDerivFun f x (Y x) • cov.toFun Z x (X x)
+      - mvfderiv (I := I) f x (Y x) • cov.toFun Z x (X x)
         + f x • cov.toFun Z x (VectorField.mlieBracket I X Y x) := by
     rw [hbr]
     simp [neg_smul]
@@ -348,7 +348,7 @@ lemma riemannSec_add_third
       cov.toFun Z x + cov.toFun Z' x :=
     cov.isCovariantDerivativeOnUniv.add (hZnhd.self_of_nhds) (hZ'nhd.self_of_nhds)
   rw [hZZ'_at]
-  simp only [ContinuousLinearMap.add_apply]
+  simp only [add_apply]
   abel
 
 
@@ -364,34 +364,34 @@ lemma riemannSec_smul_third
     (hcYZ : MDiffAt (T% (covApply cov Y Z)) x)
     (hcXfZ : MDiffAt (T% (covApply cov X (f • Z))) x)
     (hcYfZ : MDiffAt (T% (covApply cov Y (f • Z))) x)
-    (hYf : MDiffAt (fun b => extDerivFun f b (Y b)) x)
-    (hXf : MDiffAt (fun b => extDerivFun f b (X b)) x)
+    (hYf : MDiffAt (fun b => mvfderiv (I := I) f b (Y b)) x)
+    (hXf : MDiffAt (fun b => mvfderiv (I := I) f b (X b)) x)
     (hf_smul_cYZ : MDiffAt (T% (f • covApply cov Y Z)) x)
     (hf_smul_cXZ : MDiffAt (T% (f • covApply cov X Z)) x)
-    (hYf_smul_Z : MDiffAt (T% ((fun b => extDerivFun f b (Y b)) • Z)) x)
-    (hXf_smul_Z : MDiffAt (T% ((fun b => extDerivFun f b (X b)) • Z)) x)
+    (hYf_smul_Z : MDiffAt (T% ((fun b => mvfderiv (I := I) f b (Y b)) • Z)) x)
+    (hXf_smul_Z : MDiffAt (T% ((fun b => mvfderiv (I := I) f b (X b)) • Z)) x)
     (hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E)) :
     riemannSec cov X Y (f • Z) x = f x • riemannSec cov X Y Z x := by
   classical
-  set Yf : M → ℝ := fun b => extDerivFun f b (Y b) with hYf_def
-  set Xf : M → ℝ := fun b => extDerivFun f b (X b) with hXf_def
+  set Yf : M → ℝ := fun b => mvfderiv (I := I) f b (Y b) with hYf_def
+  set Xf : M → ℝ := fun b => mvfderiv (I := I) f b (X b) with hXf_def
   have heventY :
       ∀ᶠ b in 𝓝 x, covApply cov Y (f • Z) b =
         ((f • covApply cov Y Z) + (Yf • Z)) b := by
     filter_upwards [hfnhd, hZnhd] with b hfb hZb
     change cov.toFun (f • Z) b (Y b) =
-      f b • cov.toFun Z b (Y b) + extDerivFun f b (Y b) • Z b
+      f b • cov.toFun Z b (Y b) + mvfderiv (I := I) f b (Y b) • Z b
     rw [cov.isCovariantDerivativeOnUniv.leibniz hZb hfb]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
           ContinuousLinearMap.smulRight_apply]
   have heventX :
       ∀ᶠ b in 𝓝 x, covApply cov X (f • Z) b =
         ((f • covApply cov X Z) + (Xf • Z)) b := by
     filter_upwards [hfnhd, hZnhd] with b hfb hZb
     change cov.toFun (f • Z) b (X b) =
-      f b • cov.toFun Z b (X b) + extDerivFun f b (X b) • Z b
+      f b • cov.toFun Z b (X b) + mvfderiv (I := I) f b (X b) • Z b
     rw [cov.isCovariantDerivativeOnUniv.leibniz hZb hfb]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
           ContinuousLinearMap.smulRight_apply]
   have hsplitY : MDiffAt (T% ((f • covApply cov Y Z) + (Yf • Z))) x :=
     mdifferentiableAt_add_section hf_smul_cYZ hYf_smul_Z
@@ -416,14 +416,15 @@ lemma riemannSec_smul_third
       cov.isCovariantDerivativeOnUniv.leibniz hZx hYf,
       cov.isCovariantDerivativeOnUniv.leibniz hcXZ hf_mdiff,
       cov.isCovariantDerivativeOnUniv.leibniz hZx hXf]
-  rw [show cov.toFun (f • Z) x = f x • cov.toFun Z x + (extDerivFun f x).smulRight (Z x) from
+  rw [show cov.toFun (f • Z) x = f x • cov.toFun Z x +
+      (mvfderiv (I := I) f x).smulRight (Z x) from
       cov.isCovariantDerivativeOnUniv.leibniz hZx hf_mdiff]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
              ContinuousLinearMap.smulRight_apply]
   have hfound :
-      extDerivFun f x (VectorField.mlieBracket I X Y x) =
-        extDerivFun Yf x (X x) - extDerivFun Xf x (Y x) :=
-    DifferentialGeometry.Geometry.Connection.extDerivFun_apply_mlieBracket hX hY hf hx_int
+      mvfderiv (I := I) f x (VectorField.mlieBracket I X Y x) =
+        mvfderiv (I := I) Yf x (X x) - mvfderiv (I := I) Xf x (Y x) :=
+    DifferentialGeometry.Geometry.Connection.mvfderiv_apply_mlieBracket hX hY hf hx_int
   rw [hfound]
   simp only [hXf_def, hYf_def]
   simp only [covApply_apply]
@@ -518,10 +519,10 @@ theorem riemannSec_first_bianchi_levi_civita
       riemannSec (LeviCivita (I := I) g) Y Z X x +
       riemannSec (LeviCivita (I := I) g) Z X Y x = 0 := by
   classical
-  haveI : IsManifold I (minSmoothness ℝ 3) M := by
+  have : IsManifold I (minSmoothness ℝ 3) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     infer_instance
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set cov := LeviCivita (I := I) g with hcov
   have htor : cov.torsion = 0 := LeviCivita_torsion_eq_zero (I := I) g
   unfold riemannSec
@@ -531,7 +532,7 @@ theorem riemannSec_first_bianchi_levi_civita
     have := cov_covApply_sub_eq_cov_mlieBracket (cov := cov) htor hYnhd hZnhd hcYZ hcZY hbrYZ
     have happ : (cov.toFun (covApply cov Y Z) x - cov.toFun (covApply cov Z Y) x) (X x) =
         cov.toFun (VectorField.mlieBracket I Y Z) x (X x) := by rw [this]
-    simp only [ContinuousLinearMap.sub_apply] at happ
+    simp only [sub_apply] at happ
     exact happ
   have hpairY :
       cov.toFun (covApply cov Z X) x (Y x) - cov.toFun (covApply cov X Z) x (Y x) =
@@ -539,7 +540,7 @@ theorem riemannSec_first_bianchi_levi_civita
     have := cov_covApply_sub_eq_cov_mlieBracket (cov := cov) htor hZnhd hXnhd hcZX hcXZ hbrZX
     have happ : (cov.toFun (covApply cov Z X) x - cov.toFun (covApply cov X Z) x) (Y x) =
         cov.toFun (VectorField.mlieBracket I Z X) x (Y x) := by rw [this]
-    simp only [ContinuousLinearMap.sub_apply] at happ
+    simp only [sub_apply] at happ
     exact happ
   have hpairZ :
       cov.toFun (covApply cov X Y) x (Z x) - cov.toFun (covApply cov Y X) x (Z x) =
@@ -547,7 +548,7 @@ theorem riemannSec_first_bianchi_levi_civita
     have := cov_covApply_sub_eq_cov_mlieBracket (cov := cov) htor hXnhd hYnhd hcXY hcYX hbrXY
     have happ : (cov.toFun (covApply cov X Y) x - cov.toFun (covApply cov Y X) x) (Z x) =
         cov.toFun (VectorField.mlieBracket I X Y) x (Z x) := by rw [this]
-    simp only [ContinuousLinearMap.sub_apply] at happ
+    simp only [sub_apply] at happ
     exact happ
   have hJacobi := VectorField.leibniz_identity_mlieBracket_apply (I := I)
     (U := X) (V := Y) (W := Z) (x := x) hX2 hY2 hZ2

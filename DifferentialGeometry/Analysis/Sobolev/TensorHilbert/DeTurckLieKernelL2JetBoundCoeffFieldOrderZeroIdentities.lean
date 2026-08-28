@@ -18,7 +18,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -316,7 +315,7 @@ theorem sqrt_metric_inner_add_le (g : SmoothRiemannianMetric I M) (x : M)
   have hvv := metric_inner_self_nonneg (I := I) (M := M) g x v
   have hexp : g.inner x (u + v) (u + v) =
       g.inner x u u + g.inner x u v + (g.inner x v u + g.inner x v v) := by
-    simp only [map_add, ContinuousLinearMap.add_apply]
+    simp only [map_add, add_apply]
     ring
   have hsymm : g.inner x v u = g.inner x u v := g.symm x v u
   have hcs := abs_metric_inner_le (I := I) (M := M) g x u v
@@ -337,7 +336,7 @@ theorem sqrt_metric_inner_sub_le (g : SmoothRiemannianMetric I M) (x : M)
     Real.sqrt (g.inner x (u - v) (u - v)) ≤
       Real.sqrt (g.inner x u u) + Real.sqrt (g.inner x v v) := by
   have hneg : g.inner x (-v) (-v) = g.inner x v v := by
-    simp only [map_neg, ContinuousLinearMap.neg_apply, neg_neg]
+    simp only [map_neg, neg_apply, neg_neg]
   have h := sqrt_metric_inner_add_le (I := I) (M := M) g x u (-v)
   rw [← sub_eq_add_neg] at h
   rw [hneg] at h

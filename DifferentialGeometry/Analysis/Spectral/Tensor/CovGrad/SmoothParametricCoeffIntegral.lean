@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Interval
 
@@ -41,7 +40,7 @@ private theorem tube_bound {W : Type*} [NormedAddCommGroup W] (Φ : H × ℝ →
 
 
 omit [NormedSpace ℝ H] [FiniteDimensional ℝ H] in
-private theorem slice_continuousOn {F : Type u} [NormedAddCommGroup F] [NormedSpace ℝ F]
+private theorem slice_continuousOn {F : Type u} [NormedAddCommGroup F]
     (G : H × ℝ → F) (U : Set H) (hU : IsOpen U) (S : Set ℝ) (hS : IsOpen S)
     (hGc : ContinuousOn G (U ×ˢ S)) (y' : H) (hy' : y' ∈ U) :
     ContinuousOn (fun t : ℝ => G (y', t)) S := by
@@ -328,7 +327,7 @@ theorem pathIntegralCoeffField_operatorFieldApplication_eq (g₀ : SmoothRiemann
         (E := fun z : M => TensorRSSpace r s' I z) p.1 ((Φ p.2).toSection p.1))
       ((univ : Set M) ×ˢ S))
     (hcont : ∀ x : M, ContinuousOn (fun t : ℝ => TensorRSSpace.toModel ((Φ t).toSection x)) S)
-    (x : M) (v : Fin s' → TangentSpace I x) :
+    (x : M) (v : Fin s' → E) :
     unitModel (I := I) (M := M) g₀ s'
         (operatorFieldApply (I := I) (M := M) g₀ r s'
           (pathIntegralCoeffField (I := I) (M := M) g₀ r s' Φ S hS hSI hjoint) W) x v =

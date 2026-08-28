@@ -33,7 +33,8 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private theorem operatorFieldApplication_sub_right_ec
     (g : SmoothRiemannianMetric I M) (r s : Nat)
     (Phi : SmoothCcTensor g r s) (W1 W2 : SmoothCcTensor g 0 r) :
@@ -48,6 +49,19 @@ private theorem operatorFieldApplication_sub_right_ec
     abel
   exact eq_sub_of_add_eq h
 
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private theorem centered_commutator_finish
+    {g : SmoothRiemannianMetric I M}
+    (J LA LB BH CH BC BG P20 P11L P11R Cross : SmoothCcTensor g 0 2)
+    (hJ : J = LA + LB - CH - Cross)
+    (hLtop : LB = BH - BG - P20 - P11L - P11R)
+    (hsub : BC = BH - CH) :
+    J = LA + BC - BG - P20 - P11L - P11R - Cross := by
+  rw [hJ, hLtop, hsub]
+  module
+
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurck_remainder_centered_commutator_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -253,7 +267,6 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
           oneMinusConnLapSmooth (I := I) g 0 2
             (operatorFieldApply (I := I) (M := M) g 4 2 B HT) -
           operatorFieldApply (I := I) (M := M) g 4 2 C HLT - Cross := by
-    change J = _
     dsimp only [J, PairComm]
     calc
       oneMinusConnLapSmooth (I := I) g 0 2
@@ -311,19 +324,23 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
     dsimp only [G, P20, P11L, P11R, Tr]
     simp only [operatorFieldApplication_add_right]
     module
-  change J =
-    oneMinusConnLapSmooth (I := I) g 0 2
-        (operatorFieldApply (I := I) (M := M) g 2 2 A T) +
-      operatorFieldApply (I := I) (M := M) g 4 2 (B - C) HLT -
-      operatorFieldApply (I := I) (M := M) g 4 2 B G -
-      P20 - P11L - P11R - Cross
   have hsub :
       operatorFieldApply (I := I) (M := M) g 4 2 (B - C) HLT =
         operatorFieldApply (I := I) (M := M) g 4 2 B HLT -
           operatorFieldApply (I := I) (M := M) g 4 2 C HLT :=
     operatorFieldApplication_sub_left (I := I) (M := M) g 4 2 B C HLT
-  rw [hJ, hLtop, hsub]
-  module
+  have hfinal := centered_commutator_finish J
+    (oneMinusConnLapSmooth (I := I) g 0 2
+      (operatorFieldApply (I := I) (M := M) g 2 2 A T))
+    (oneMinusConnLapSmooth (I := I) g 0 2
+      (operatorFieldApply (I := I) (M := M) g 4 2 B HT))
+    (operatorFieldApply (I := I) (M := M) g 4 2 B HLT)
+    (operatorFieldApply (I := I) (M := M) g 4 2 C HLT)
+    (operatorFieldApply (I := I) (M := M) g 4 2 (B - C) HLT)
+    (operatorFieldApply (I := I) (M := M) g 4 2 B G)
+    P20 P11L P11R Cross hJ hLtop hsub
+  simpa only [gs, R0, K0, LT, HT, HLT, Q, Z, Cross, PairComm, C, J,
+    A, B, G, Tr, P20, P11L, P11R] using hfinal
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

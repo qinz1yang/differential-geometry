@@ -85,9 +85,14 @@ theorem conjCoeff_rev
     exact ContMDiffOn.prodMk
       (ContMDiffOn.sub contMDiffOn_const contMDiffOn_snd)
       contMDiffOn_fst
-  simpa only [conjCoeffRev] using
-    (conjCoeff_joint (I := I) S hS).comp hmove
-      (fun p hp => ⟨hp.2, Set.mem_univ p.1⟩)
+  have hfun : conjCoeffRev (I := I) (M := M) S (T : Real) =
+      (fun p : Real × M => (conjCoeff (I := I) (M := M) S p.1 : M → Real) p.2) ∘
+        (fun p : M × Real => ((T : Real) - p.2, p.1)) := by
+    funext p
+    rfl
+  rw [hfun]
+  exact (conjCoeff_joint (I := I) S hS).comp hmove
+    (fun p hp => ⟨hp.2, Set.mem_univ p.1⟩)
 
 noncomputable def conjA1
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -103,7 +108,7 @@ theorem conjA1_cont
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) {A : Set Real}
     (hreg : ∀ s ∈ A, (T : Real) - s ∈ D.regular) :
     ContinuousOn (fun s : Real => conjA1 (I := I) (M := M) S T s) A := by
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
         tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
@@ -113,7 +118,7 @@ theorem conjA1_cont
       Tendsto (fun s : Real => (T : Real) - s)
         (𝓝 s0) (𝓝 (K : Real)) := by
     dsimp only [K]
-    simpa only using
+    simpa only [id_eq] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (𝓝 s0) (𝓝 s0)))
   change Tendsto
@@ -163,14 +168,14 @@ theorem conjA1_short
           ‖conjA1 (I := I) (M := M) S T s‖ ≤ (C1 : Real)) ∧
         ∀ᵐ s ∂timeMeasure tau,
           ‖conjA1 (I := I) (M := M) S T s‖ ≤ (C1 : Real) := by
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
         tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
         (𝓝 0) (𝓝 (T : Real)) := by
-    simpa only [sub_zero] using
+    simpa only [id_eq, sub_zero] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (𝓝 0) (𝓝 0)))
   have hreg :
@@ -208,7 +213,7 @@ theorem conjA1_short
       (T : Real) - s ∈ D.regular ∧
         ∀ x : M,
           |S.scalar ((T : Real) - s) x - S.scalar (T : Real) x| ≤ 1 := by
-    simpa only [U] using hIccU hs
+    simpa only [U, Set.mem_ofPred_eq] using hIccU hs
   have hRcont : Continuous (fun x : M => |S.scalar (T : Real) x|) := by
     have hscalar := metricScalar_smooth (I := I) (M := M)
       (S.family.metric (T : Real))
@@ -281,7 +286,7 @@ theorem conjCoeff_bound
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
         (𝓝 0) (𝓝 (T : Real)) := by
-    simpa only [sub_zero] using
+    simpa only [id_eq, sub_zero] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (𝓝 0) (𝓝 0)))
   have hcoef :

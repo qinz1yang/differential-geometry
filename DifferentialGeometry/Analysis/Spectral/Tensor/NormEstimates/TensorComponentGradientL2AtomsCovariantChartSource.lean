@@ -21,7 +21,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -222,7 +221,7 @@ private lemma norm_sq_sum_triv_chartTensorRSCovariantDerivative_continuousOn_cha
             ^ 2)
       ((chartAt H α).source) := by
   classical
-  refine continuousOn_finset_sum _ (fun k _ => ?_)
+  refine continuousOn_finsetSum _ (fun k _ => ?_)
   have h_proj := triv_chartTensorRSCovariantDerivative_continuousOn_chart_source
     (I := I) (M := M) g r s α S k
   have h_norm : ContinuousOn

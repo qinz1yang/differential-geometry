@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenc
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -89,7 +88,7 @@ theorem threeArmJoint_smul
     linearizedRicciThreeArmHjoint (I := I) (M := M) g r
       (fun s => c • A s) (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint] at hA ⊢
-  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r 2
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -100,7 +99,11 @@ theorem threeArmJoint_smul
   have hA' := (Bundle.contMDiffWithinAt_totalSpace
     (F := TensorRSModel r 2 ℝ E)
     (E := fun z : M => TensorRSSpace r 2 I z)).mp (hA p₀ hp₀)
-  refine ((contMDiffWithinAt_const (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  refine ((contMDiffWithinAt_const
+    (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+    (M := M × ℝ) (M' := ℝ) (n := ∞)
+    (s := (Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (x := p₀) (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in
         nhdsWithin p₀ ((Set.univ : Set M) ×ˢ
           metricPerturbationPathDomain (δ := δ) (δ' := δ')),

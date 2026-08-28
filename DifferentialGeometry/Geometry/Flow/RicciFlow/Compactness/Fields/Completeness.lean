@@ -43,9 +43,9 @@ theorem complete_at
     {t : Real} (ht : t ∈ Set.Icc β ψ) :
     MetricComplete (I := I)
       ({ P with metric := co.gInf t } : PointedRiemannianManifold (I := I)) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
   exact MetricComplete.complete_of_lower P hP (co.gInf t) c hc
     (ConvOut.lower_of (I := I) (Φ := Φ) co hseq t ht)
 

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.Chart.Christoffel
 import DifferentialGeometry.Geometry.Connection.Chart.CoordinateFrame
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
+import DifferentialGeometry.Bundle.TangentSpace
 
 noncomputable section
 
@@ -98,21 +99,32 @@ theorem connCoeff_eq_christoffelAlong_coord
             (by simp [coordinateTrivializationAt]) := by
       ext a
       rw [IsLocalFrameOn.toBasisAt_coe]
-      simp [coordinateFrameAt,
-        coordinateTrivializationAt]
+      exact (coordinateTrivializationAt (I := I) x₀).localFrame_apply_of_mem_baseSet
+        (Module.finBasis Real E) (coordinateFrameAt_mem (I := I) x₀)
     unfold IsLocalFrameOn.coeff
     rw [dif_pos (coordinateFrameAt_mem (I := I) x₀)]
     rw [hbasis (coordinateFrameAt_mem (I := I) x₀)]
-    simp [Bundle.Trivialization.basisAt]
-    simp only [Bundle.Trivialization.linearMapAt_apply]
-    simp [coordinateTrivializationAt]
+    simp only [Bundle.Trivialization.basisAt, Module.Basis.coord_apply]
+    rw [Module.Basis.map_repr, LinearEquiv.trans_apply]
+    apply congrArg (fun w ↦ (Module.finBasis Real E).repr w k)
+    rw [LinearEquiv.symm_symm]
+    calc
+      (coordinateTrivializationAt (I := I) x₀).linearEquivAt Real x₀ _
+          ((cov (coordinateFrameAt (I := I) x₀ j) x₀) (X x₀)) =
+          ((coordinateTrivializationAt (I := I) x₀)
+            ⟨x₀, (cov (coordinateFrameAt (I := I) x₀ j) x₀) (X x₀)⟩).2 :=
+        Bundle.Trivialization.linearEquivAt_apply _ _ _ _
+      _ = (coordinateTrivializationAt (I := I) x₀).continuousLinearMapAt Real x₀
+          ((cov (coordinateFrameAt (I := I) x₀ j) x₀) (X x₀)) :=
+        (Bundle.Trivialization.continuousLinearMapAt_apply_of_mem Real _
+          (coordinateFrameAt_mem (I := I) x₀) _).symm
   rw [hcoeff]
 
 def coordDeriv0SAt {s : ℕ}
     (X : (x : M) -> TangentSpace I x) (x₀ : M)
     (α : (x : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) s x)
     (slots : Fin s -> CoordinateIdx E) : Real :=
-  mfderiv I 𝓘(Real, Real)
+  mvfderiv (I := I)
     (fun y : M => α y (fun a => coordinateFrameAt (I := I) x₀ (slots a) y))
     x₀ (X x₀)
 
@@ -121,8 +133,10 @@ def modelDeriv0SAt {s : ℕ}
     (x₀ : M)
     (α : (x : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) s x)
     (slots : Fin s -> CoordinateIdx E) : Real :=
-  let X' := VectorField.mpullbackWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-    (fun x => X x) (Set.range I)
+  let X' : E → E := fun z =>
+    tangentSpaceModelContinuousLinearEquiv z
+      (VectorField.mpullbackWithin 𝓘(Real, E) I (extChartAt I x₀).symm
+        (fun x => X x) (Set.range I) z)
   let α' : E -> ContinuousMultilinearMap Real (fun _ : Fin s => E) Real :=
     fun y => tensor0SModelInChart (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) s x₀ α y
@@ -203,7 +217,6 @@ private theorem model_component_eq_coord_component_comp_eventually {s : ℕ}
   rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hy_src]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
     (X : ContMDiffSection I E (⊤ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x₀ : M)
@@ -211,16 +224,16 @@ theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
       (n := (⊤ : WithTop ℕ∞)) s) :
     ModelDerivEqCoordDeriv0SAt (I := I) X x₀ (fun x => α x) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) s
-  letI := Tensor0SBundle.tensor0SBundle_fiber (𝕜 := Real) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundle_fiber (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) s
-  letI := Tensor0SBundle.tensor0SBundle_vector (𝕜 := Real) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundle_vector (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) s
-  letI : NormedSpace Real
+  let : NormedSpace Real
       (ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) :=
     Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
-  letI : NormedSpace Real (Tensor0SModel s Real E) :=
+  let : NormedSpace Real (Tensor0SModel s Real E) :=
     Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
   intro slots
   let z₀ : E := extChartAt I x₀ x₀
@@ -252,11 +265,23 @@ theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
         writtenInExtChartAt I 𝓘(Real, Real) x₀ f := by
     have h := model_component_eq_coord_component_comp_eventually
       (I := I) (M := M) (s := s) x₀ (fun x => α x) slots
-    simpa [S, z₀, Achart, u, f, writtenInExtChartAt] using h
+    have h' :
+        (fun y : E ↦ Achart y u) =ᶠ[nhdsWithin z₀ S]
+          (fun y ↦ (α ((extChartAt I x₀).symm y))
+            (fun a ↦ coordinateFrameAt x₀ (slots a) ((extChartAt I x₀).symm y))) := by
+      simpa only [hS, z₀, Achart, u] using h
+    refine h'.trans (Filter.Eventually.of_forall fun y ↦ ?_)
+    simp only [f, writtenInExtChartAt, extChartAt_model_space_eq_id,
+      PartialEquiv.refl_coe, Function.comp_apply, Function.id_def]
   have hα_model := by
     have h := α.contMDiff x₀
     rw [contMDiffAt_section] at h
-    simpa [tensor0SModelAt, Tensor0SModel] using h
+    change ContMDiffAt I
+      (modelWithCornersSelf Real
+        (ContinuousMultilinearMap Real (fun _ : Fin s ↦ E) Real))
+      (⊤ : WithTop ℕ∞)
+      (fun x : M ↦ tensor0SModelAt (s := s) x₀ x (α x)) x₀
+    exact h
   have hsymm :
       ContMDiffWithinAt 𝓘(Real, E) I (⊤ : WithTop ℕ∞)
         (extChartAt I x₀).symm S z₀ := by
@@ -299,7 +324,14 @@ theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
     rw [mdifferentiableAt_iff_source_of_mem_source (I := I) (I' := 𝓘(Real, Real))
       (x := x₀) (x' := x₀) (mem_chart_source H x₀)]
     rw [mdifferentiableWithinAt_iff_differentiableWithinAt]
-    simpa [writtenInExtChartAt, z₀, extChartAt, Function.comp_def] using hwritten_diff
+    have hwrite :
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ f =
+          fun y : E => f ((extChartAt I x₀).symm y) := by
+      funext y
+      rw [writtenInExtChartAt, extChartAt_model_space_eq_id]
+      rfl
+    rw [hwrite] at hwritten_diff
+    simpa [z₀, extChartAt, Function.comp_def] using hwritten_diff
   unfold modelDeriv0SAt coordDeriv0SAt
   change
     (fderivWithin Real Achart S z₀

@@ -670,11 +670,16 @@ private theorem coordPair04 {x : M}
     intro v
     rw [ricciPair04_apply]
     congr 2
+  have hslots2 (i j : Fin 3) :
+      (fun q : Fin 2 => if q = 0 then basis i else basis j) =
+        fun q : Fin 2 => basis (if q = 0 then i else j) := by
+    funext q
+    fin_cases q <;> rfl
   simp [tensor0SComponent, DifferentialGeometry.Geometry.Curvature.rm04CompAt,
     DifferentialGeometry.Geometry.Curvature.ricciCompAt,
     DifferentialGeometry.Geometry.Curvature.slots4,
     DifferentialGeometry.Geometry.Curvature.slots2,
-    hpair, mul_assoc]
+    hpair, hslots2, mul_assoc]
 
 theorem curvRic_inner {x : M}
     (g : SmoothMetric_gen I M)
@@ -993,7 +998,6 @@ theorem trace_free_ricci_reaction_relation_at_point {x : M}
 private theorem raiseRicci_delta
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -1008,7 +1012,6 @@ private theorem raiseRicci_delta
 
 theorem ricci_norm_sq_in_frame_eq_basis
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
     (frame : Fin 3 -> (x : M) -> TangentSpace I x)
@@ -1047,7 +1050,6 @@ theorem ricci_norm_sq_in_frame_eq_basis
 
 theorem ricci_norm_curvature_reaction_in_frame_eq_basis
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1094,7 +1096,6 @@ theorem ricci_norm_curvature_reaction_in_frame_eq_basis
 
 theorem trace_free_ricci_reaction_relation_of_frame_basis
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1148,7 +1149,6 @@ theorem trace_free_ricci_reaction_relation_of_frame_basis
 
 theorem trace_free_ricci_reaction_relation_of_first_trace_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1338,12 +1338,19 @@ theorem ricciSym_of_basis
           ∑ r : Fin 2 -> Idx,
             A (fun a : Fin 2 =>
               (if a = 0 then cx (r a) else cy (r a)) • basis (r a)) := by
-      simpa using
+      exact
         (ContinuousMultilinearMap.map_sum
           (f := A)
           (g := fun a j =>
             (if a = 0 then cx j else cy j) • basis j))
-    simpa [DifferentialGeometry.Geometry.Curvature.vec2] using hsum
+    have hfun : DifferentialGeometry.Geometry.Curvature.vec2 (I := I)
+        (∑ i : Idx, cx i • basis i) (∑ i : Idx, cy i • basis i) =
+        fun a : Fin 2 => ∑ j : Idx,
+          (if a = 0 then cx j else cy j) • basis j := by
+      funext a
+      fin_cases a <;> simp [DifferentialGeometry.Geometry.Curvature.vec2]
+    rw [hfun]
+    exact hsum
   have hYX :
       A (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) Y X) =
         ∑ r : Fin 2 -> Idx,
@@ -1357,12 +1364,19 @@ theorem ricciSym_of_basis
           ∑ r : Fin 2 -> Idx,
             A (fun a : Fin 2 =>
               (if a = 0 then cy (r a) else cx (r a)) • basis (r a)) := by
-      simpa using
+      exact
         (ContinuousMultilinearMap.map_sum
           (f := A)
           (g := fun a j =>
             (if a = 0 then cy j else cx j) • basis j))
-    simpa [DifferentialGeometry.Geometry.Curvature.vec2] using hsum
+    have hfun : DifferentialGeometry.Geometry.Curvature.vec2 (I := I)
+        (∑ i : Idx, cy i • basis i) (∑ i : Idx, cx i • basis i) =
+        fun a : Fin 2 => ∑ j : Idx,
+          (if a = 0 then cy j else cx j) • basis j := by
+      funext a
+      fin_cases a <;> simp [DifferentialGeometry.Geometry.Curvature.vec2]
+    rw [hfun]
+    exact hsum
   rw [hXY, hYX]
   rw [sum_fin_two_fun_local, sum_fin_two_fun_local]
   rw [Finset.sum_comm]

@@ -75,7 +75,7 @@ private theorem wkpNorm_le_of_memWkp_precompact_uniform
     (tsupport_smul_subset_left χ u).trans hχ_supp
   have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_ae_eq_u : v =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin d))).restrict Ω] u := by
-    have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by rw [Set.inter_union_diff]
+    have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by rw [Set.inter_union_sdiff]
     have h_on_inter :
         v =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin d))).restrict (Ω ∩ N)] u := by
       refine (ae_restrict_iff' (hΩ_open.measurableSet.inter hN_meas)).mpr ?_
@@ -83,7 +83,7 @@ private theorem wkpNorm_le_of_memWkp_precompact_uniform
       simp only [hv_def, hχ_one x hx.2, one_mul]
     have h_on_diff :
         v =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin d))).restrict (Ω \ N)] u := by
-      have h_sub : Ω \ N ⊆ Ω \ K := Set.diff_subset_diff_right hK_sub_N
+      have h_sub : Ω \ N ⊆ Ω \ K := Set.sdiff_subset_sdiff_right hK_sub_N
       have hu_zero_diff :
           u =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin d))).restrict (Ω \ N)] 0 :=
         hu_ae_zero.filter_mono
@@ -556,7 +556,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
             ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal (c_d * Ccomp * φnorm) := by
       refine h_density.trans ?_
-      refine (mul_le_mul_of_nonneg_left h_weighted (zero_le _)).trans ?_
+      refine (mul_le_mul_of_nonneg_left h_weighted (zero_le)).trans ?_
       rw [← mul_assoc, ← ENNReal.ofReal_mul hc_d_nn,
         ← ENNReal.ofReal_mul (mul_nonneg hc_d_nn hCcomp_nn)]
     have h_real_le : c_d * Ccomp * φnorm ≤ T_atom := by
@@ -588,7 +588,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
             ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal (c_d * (Cf * (i.fst.val)⁻¹) * φnorm) := by
       refine h_density.trans ?_
-      refine (mul_le_mul_of_nonneg_left h_weighted (zero_le _)).trans ?_
+      refine (mul_le_mul_of_nonneg_left h_weighted (zero_le)).trans ?_
       rw [← mul_assoc, ← ENNReal.ofReal_mul hc_d_nn,
         ← ENNReal.ofReal_mul
           (mul_nonneg hc_d_nn (mul_nonneg hCf_nn hμinv_pos.le))]
@@ -795,7 +795,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
           chartPouKernel (I := I) (M := M) α)),
         y ∉ chartPouKernel (I := I) (M := M) α →
           D.u_chart y = 0 :=
-      ae_mono (Measure.restrict_mono_set _ Set.diff_subset) h_ae
+      ae_mono (Measure.restrict_mono_set _ Set.sdiff_subset) h_ae
     rw [Filter.EventuallyEq, ae_restrict_iff' hV_meas]
     filter_upwards [(ae_restrict_iff' hV_meas).mp h_ae_V] with y hy
     intro hy_V

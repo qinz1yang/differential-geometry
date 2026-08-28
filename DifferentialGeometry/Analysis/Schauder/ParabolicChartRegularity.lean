@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Schauder.EvolvingMetric
 import DifferentialGeometry.Analysis.Schauder.ParabolicBallExtension
 
+
 noncomputable section
 
 open Matrix Set
@@ -18,7 +19,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclN (E : Type uE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 omit [FiniteDimensional Real E] in
@@ -49,7 +50,7 @@ theorem contDiffOn_potential_in_extChart_of_contMDiffOn
       𝓘(Real, Real) 1
       (fun p : Real × E ↦ V p.1 ((extChartAt I chartCenter).symm p.2))
       (J ×ˢ interior (extChartAt I chartCenter).target) := by
-    simpa only [Ψ, Function.comp_apply] using hcomp
+    exact hcomp.congr (fun _ _ => rfl)
   rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
     ← chartedSpaceSelf_prod]
   exact hcomp'
@@ -70,7 +71,7 @@ theorem exists_parabolicChartPotentialCoefficient_schauder_bounds
       HolderWith Kc alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) K)).restrict
+          (parabolicCylinder (Set.Icc a b) K)).domRestrict
             (parabolicChartPotentialCoefficient (I := I) V chartCenter)) := by
   obtain ⟨Bc, Kc, hnorm, hholder⟩ :=
     exists_norm_bound_and_holderWith_restrict_parabolicCylinder_Icc_of_contDiffOn
@@ -80,13 +81,18 @@ theorem exists_parabolicChartPotentialCoefficient_schauder_bounds
   refine ⟨Bc, Kc', ?_, ?_⟩
   · intro p hp
     have h := hnorm (parabolicLinearMap L p) hp
-    simpa only [L, parabolicChartPotentialCoefficient,
-      euclideanChartPoint, Function.comp_apply, parabolicLinearMap_time,
-      parabolicLinearMap_space, parabolicToProduct] using h
+    change ‖V p.time ((extChartAt I chartCenter).symm
+      ((toEuclidean (E := E)).symm p.space))‖ ≤ Bc
+    exact h
   · have h := parabolicHolder_linearMap L hholder
-    simpa only [L, Kc', parabolicChartPotentialCoefficient,
-      euclideanChartPoint, Function.comp_apply, parabolicLinearMap_time,
-      parabolicLinearMap_space, parabolicToProduct] using h
+    change HolderWith Kc' alpha
+      ((parabolicLinearPreimage
+        ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
+        (parabolicCylinder (Set.Icc a b) K)).domRestrict
+          (parabolicChartPotentialCoefficient (I := I) V chartCenter))
+    refine holderWith_congr h ?_
+    intro p
+    rfl
 
 end DifferentialGeometry.Analysis.Schauder
 
@@ -104,7 +110,7 @@ variable {E : Type vE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclM (E : Type vE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 theorem exists_uniform_parabolic_chart_nondivergence_operator_coefficient_schauder_bounds_of_finite
@@ -134,7 +140,7 @@ theorem exists_uniform_parabolic_chart_nondivergence_operator_coefficient_schaud
       (∀ r i j, HolderWith (Ka i j) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclM E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K r))).restrict
+          (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
             (parabolicChartPrincipalCoefficient (I := I) G.metric
               (chartCenter r) i j))) ∧
       (∀ r p, p ∈ parabolicLinearPreimage
@@ -151,7 +157,7 @@ theorem exists_uniform_parabolic_chart_nondivergence_operator_coefficient_schaud
       (∀ r k, HolderWith (Kb k) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclM E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K r))).restrict
+          (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
             (parabolicChartDriftCoefficient (I := I) G.metric
               (chartCenter r) k))) ∧
       (∀ r p, p ∈ parabolicLinearPreimage
@@ -162,11 +168,11 @@ theorem exists_uniform_parabolic_chart_nondivergence_operator_coefficient_schaud
       ∀ r, HolderWith Kc alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclM E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K r))).restrict
+          (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
             (parabolicChartPotentialCoefficient (I := I) V
               (chartCenter r))) := by
   classical
-  letI := Fintype.ofFinite Achart
+  let := Fintype.ofFinite Achart
   obtain ⟨Apr, Ka, Bb, Kb, hAnorm, ha, hpos, hbnorm, hb⟩ :=
     exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_finite
       hG hab habreg chartCenter K hK hKconv hKchart halpha
@@ -179,7 +185,7 @@ theorem exists_uniform_parabolic_chart_nondivergence_operator_coefficient_schaud
       HolderWith Kcr alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclM E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K r))).restrict
+          (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
             (parabolicChartPotentialCoefficient (I := I) V
               (chartCenter r))) := by
     intro r
@@ -191,10 +197,10 @@ theorem exists_uniform_parabolic_chart_nondivergence_operator_coefficient_schaud
   refine ⟨Apr, Ka, Bb, Kb, Bc, Kc, hAnorm, ha, hpos, hbnorm, hb, ?_, ?_⟩
   · intro r p hp
     exact (hpotential r).1 p hp |>.trans
-      (Finset.single_le_sum (fun s _ ↦ zero_le (Bcr s)) (Finset.mem_univ r))
+      (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Bcr s)) (Finset.mem_univ r))
   · intro r
     exact (hpotential r).2.mono
-      (Finset.single_le_sum (fun s _ ↦ zero_le (Kcr s)) (Finset.mem_univ r))
+      (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Kcr s)) (Finset.mem_univ r))
 
 theorem exists_parabolic_chart_nondivergence_operator_coefficient_schauder_bounds_on_closedBall
     {D : RealTimeInterval}
@@ -221,7 +227,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_schauder_bound
           chartCenter i j p‖ ≤ Apr i j) ∧
       (∀ i j, HolderWith (Ka i j) alpha
         ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall center R)).restrict
+          (Metric.closedBall center R)).domRestrict
             (parabolicChartPrincipalCoefficient (I := I) G.metric
               chartCenter i j))) ∧
       (∀ p, p ∈ parabolicCylinder (Set.Icc a b)
@@ -235,7 +241,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_schauder_bound
           chartCenter k p‖ ≤ Bb k) ∧
       (∀ k, HolderWith (Kb k) alpha
         ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall center R)).restrict
+          (Metric.closedBall center R)).domRestrict
             (parabolicChartDriftCoefficient (I := I) G.metric
               chartCenter k))) ∧
       (∀ p, p ∈ parabolicCylinder (Set.Icc a b)
@@ -244,7 +250,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_schauder_bound
           chartCenter p‖ ≤ Bc) ∧
       HolderWith Kc alpha
         ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall center R)).restrict
+          (Metric.closedBall center R)).domRestrict
             (parabolicChartPotentialCoefficient (I := I) V chartCenter)) := by
   let e := (toEuclidean (E := E)).symm
   let K := e '' Metric.closedBall center R
@@ -319,7 +325,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
               Apr i j) ∧
         (∀ x : ↥s, ∀ i j, HolderWith (Ka i j) alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartPrincipalCoefficient (I := I) G.metric x.1 i j))) ∧
         (∀ x : ↥s, ∀ p,
           p ∈ parabolicCylinder (Set.Icc a b)
@@ -332,7 +338,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
             ‖parabolicChartDriftCoefficient (I := I) G.metric x.1 k p‖ ≤ Bb k) ∧
         (∀ x : ↥s, ∀ k, HolderWith (Kb k) alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartDriftCoefficient (I := I) G.metric x.1 k))) ∧
         (∀ x : ↥s, ∀ p,
           p ∈ parabolicCylinder (Set.Icc a b)
@@ -340,7 +346,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
             ‖parabolicChartPotentialCoefficient (I := I) V x.1 p‖ ≤ Bc) ∧
         ∀ x : ↥s, HolderWith Kc alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartPotentialCoefficient (I := I) V x.1)) := by
   classical
   obtain ⟨s, r, R, Rext, hradii, hchart, hcover,
@@ -368,7 +374,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
         ‖parabolicChartPotentialCoefficient (I := I) V x.1 p‖ ≤ Bcx) ∧
       HolderWith Kcx alpha
         ((parabolicLinearPreimage (e : EuclM E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K x))).restrict
+          (parabolicCylinder (Set.Icc a b) (K x))).domRestrict
             (parabolicChartPotentialCoefficient (I := I) V x.1)) := by
     intro x
     have hVchart :=
@@ -399,11 +405,11 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
     Apr, Ka, Bb, Kb, Bc, Kc, hAnorm, ha, hpos, hbnorm, hb, ?_, ?_⟩
   · intro x p hp
     exact (hpotential x).1 p (by rw [hpreimage x]; exact hp) |>.trans
-      (Finset.single_le_sum (fun y _ ↦ zero_le (Bcx y)) (Finset.mem_univ x))
+      (Finset.single_le_sum (fun y _ ↦ (zero_le : 0 ≤ Bcx y)) (Finset.mem_univ x))
   · intro x
     rw [← hpreimage x]
     exact (hpotential x).2.mono
-      (Finset.single_le_sum (fun y _ ↦ zero_le (Kcx y)) (Finset.mem_univ x))
+      (Finset.single_le_sum (fun y _ ↦ (zero_le : 0 ≤ Kcx y)) (Finset.mem_univ x))
 
 theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_operator_schauder_and_ellipticity_bounds
     [I.Boundaryless] [CompactSpace M] [NeZero (Module.finrank Real E)]
@@ -436,7 +442,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
               Apr i j) ∧
         (∀ x : ↥s, ∀ i j, HolderWith (Ka i j) alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartPrincipalCoefficient (I := I) G.metric x.1 i j))) ∧
         (∀ x : ↥s, ∀ p,
           p ∈ parabolicCylinder (Set.Icc a b)
@@ -457,7 +463,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
             ‖parabolicChartDriftCoefficient (I := I) G.metric x.1 k p‖ ≤ Bb k) ∧
         (∀ x : ↥s, ∀ k, HolderWith (Kb k) alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartDriftCoefficient (I := I) G.metric x.1 k))) ∧
         (∀ x : ↥s, ∀ p,
           p ∈ parabolicCylinder (Set.Icc a b)
@@ -465,7 +471,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
             ‖parabolicChartPotentialCoefficient (I := I) V x.1 p‖ ≤ Bc) ∧
         ∀ x : ↥s, HolderWith Kc alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartPotentialCoefficient (I := I) V x.1)) := by
   classical
   obtain ⟨s, r, R, Rext, hradii, hchart, hcover,

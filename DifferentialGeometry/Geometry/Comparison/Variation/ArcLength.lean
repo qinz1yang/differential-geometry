@@ -134,8 +134,7 @@ private lemma mfderiv_partial_t_eq
     mfderiv_prod_eq_add_comp (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ)) (I'' := I)
       (f := fun q : ℝ × ℝ => f q.1 q.2) (p := (s, t)) hf_mdiff
   conv_lhs => rw [hpartials]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_comp',
-    Function.comp_apply, id_eq]
+  simp only [    ]
   change ((mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f z t) s) (0 : ℝ)) +
       ((mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f s z) t) (1 : ℝ)) =
     (mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f s z) t) (1 : ℝ)
@@ -249,9 +248,9 @@ private lemma continuous_g_inner_along_param
     (hw : Continuous (fun p : ℝ × ℝ => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) (b p) (w p))) :
     Continuous (fun p : ℝ × ℝ => g.inner (b p) (v p) (w p)) := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := Continuous.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := b) (v := v) (w := w) hv hw

@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
@@ -42,7 +41,7 @@ private lemma real_split_triple_bound {S AB A B C R : ℝ}
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -63,7 +62,7 @@ private lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul'
     tensorInnerPointwise_smul_right]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_symmS_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     {R : ℝ}
@@ -118,7 +117,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_symmS_le
         · exact mul_le_mul_of_nonneg_left hRB (by norm_num)
     _ = R ^ 2 := by ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_iteratedCovGrad_domDomCongr_symmSCovGrad3_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     {R : ℝ}
@@ -137,7 +136,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_domDomCongr_symmSCovGrad3_le
   have hbnd := riemannianFiberNormSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ a T hTjet (i + 1) (by omega) x
   exact le_trans (le_of_eq hcomm) hbnd
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     {R : ℝ}

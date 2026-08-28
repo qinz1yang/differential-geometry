@@ -6,7 +6,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -560,7 +559,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -820,7 +818,10 @@ theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
         ring
   have hSV3j : covariantJetNormSq (I := I) (M := M) g 3 (S - V) ≤ D3 ^ 2 := by
     refine (hjet3 (S - V)).trans ?_
-    simpa only [D3, mul_assoc] using pow_le_pow_left₀
+    dsimp only [D3]
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [hthree]
+    simpa only [mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC3 (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hSV3 hC3) 2
   have hout := hpair S V

@@ -54,7 +54,7 @@ private theorem wkpNorm_assembly_le
       refine ⟨0, by norm_num, fun {u} _hu_cd _hu_cpt => ?_⟩
       have hUniq : ∀ idx : Fin 0 → Fin d, idx = (fun i : Fin 0 => i.elim0) :=
         fun idx => by funext i; exact i.elim0
-      haveI : Unique (Fin 0 → Fin d) :=
+      have : Unique (Fin 0 → Fin d) :=
         { default := fun i : Fin 0 => i.elim0
           uniq := fun idx => (hUniq idx).symm ▸ rfl }
       have h_sum :
@@ -192,7 +192,7 @@ private theorem wkpNorm_assembly_le
                     (EuclideanSpace.single i 1)) Ω
               ≤ ∑ _i : Fin d, N * iteratedWeakSobolevNorm (d := d) (m + 2) 2 u Ω :=
                 Finset.sum_le_sum (fun i _ =>
-                  mul_le_mul_of_nonneg_left (h_partial_le i) (zero_le _))
+                  mul_le_mul_of_nonneg_left (h_partial_le i) (zero_le))
             _ = (d : ℝ≥0∞) * (N * iteratedWeakSobolevNorm (d := d) (m + 2) 2 u Ω) := by
                 rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
                   nsmul_eq_mul]
@@ -425,13 +425,13 @@ private theorem wkpNorm_iteratedPerturbedSource_zero_le
                 iteratedWeakSobolevNorm (d := d) (m + 2) 2 u Ω) := by
         refine hf'_norm.trans ?_
         exact mul_le_mul_of_nonneg_right
-          (ENNReal.ofReal_le_ofReal (hK_step_le_Kmax (idx 0))) (zero_le _)
+          (ENNReal.ofReal_le_ofReal (hK_step_le_Kmax (idx 0))) (zero_le)
       have hu'_le : iteratedWeakSobolevNorm (d := d) (m + 1) 2 u' Ω ≤
           iteratedWeakSobolevNorm (d := d) (m + 2) 2 u Ω :=
         wkpNorm_classicalPartial_le (d := d) hΩ_open hu_cd hu_mem_succ2 (idx 0)
       refine h_ih.trans ?_
       rw [ENNReal.ofReal_mul hC_nn, mul_assoc]
-      refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+      refine mul_le_mul_of_nonneg_left ?_ (zero_le)
       calc iteratedWeakSobolevNorm (d := d) m 2 f' Ω + iteratedWeakSobolevNorm (d := d) (m + 1) 2 u'
              Ω
           ≤ (ENNReal.ofReal Kmax *
@@ -648,7 +648,7 @@ private theorem smooth_cc_wkp2_wkpNorm_le
         ∑ j : Fin d, ∫ x,
           ((fderiv ℝ w x) (EuclideanSpace.single j 1)) ^ 2
           ∂(volume : Measure EE) := by
-      rw [integral_finset_sum]
+      rw [integral_finsetSum]
       intro j _
       exact (((hw_partial_cd j).continuous).pow 2).integrable_of_hasCompactSupport
         (hasCompactSupport_sq (d := d) (hw_partial_cpt j))
@@ -683,7 +683,7 @@ private theorem smooth_cc_wkp2_wkpNorm_le
       fun j => eLpNorm (chosenWeakPartial' (d := d) 2 j w Ω'') 2
         (volume.restrict Ω'') with haj_def
     have h_sumsq_le : (∑ j : Fin d, (aj j) ^ 2) ≤ (∑ j : Fin d, aj j) ^ 2 :=
-      Finset.sum_sq_le_sq_sum_of_nonneg (fun j _ => zero_le _)
+      Finset.sum_sq_le_sq_sum_of_nonneg (fun j _ => zero_le)
     calc (∑ j : Fin d, (aj j) ^ 2) + b ^ 2
         ≤ (∑ j : Fin d, aj j) ^ 2 + b ^ 2 :=
           add_le_add h_sumsq_le le_rfl
@@ -697,7 +697,7 @@ private theorem smooth_cc_wkp2_wkpNorm_le
   refine h_engine_le.trans ?_
   rw [ENNReal.ofReal_mul hC_nn,
     (rpow_half_ofReal_eq_ofReal_sqrt hD_nn).symm]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   have hD_split : ENNReal.ofReal D =
       ENNReal.ofReal
         ((∫ x, ∑ j : Fin d,
@@ -849,7 +849,7 @@ private theorem tensorComponent_aPriori_succ
             iteratedWeakSobolevNorm (d := dimE) (m + 1) 2 u Ω'') :=
       hCs hu_cd hu_cpt hRHS_cd hRHS_cpt idx
     refine h_wrap.trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     calc iteratedWeakSobolevNorm (d := dimE) 1 2 (iterClassicalPartial (d := dimE) m idx u) Ω'' +
           iteratedWeakSobolevNorm (d := dimE) 0 2
             (iteratedPerturbedSource (d := dimE) B m u RHS idx) Ω''
@@ -913,7 +913,7 @@ private theorem tensorComponent_aPriori_succ
         rw [h_first_eq, ← hN_eq]
     _ ≤ ENNReal.ofReal (((dimE : ℝ) ^ m) * Cw * (Cs + 1)) * DR +
           ENNReal.ofReal N.toReal * DR :=
-        add_le_add le_rfl (mul_le_mul_of_nonneg_left h_u_le_DR (zero_le _))
+        add_le_add le_rfl (mul_le_mul_of_nonneg_left h_u_le_DR (zero_le))
     _ = ENNReal.ofReal
           (((dimE : ℝ) ^ m) * Cw * (Cs + 1) + N.toReal) * DR := by
         rw [← add_mul,
@@ -1019,10 +1019,10 @@ theorem tensorComponent_aPriori_succ_sum
       Finset.single_le_sum
         (f := fun P : CompIdx E r s => iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
           (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
-        (fun P _ => zero_le _) (Finset.mem_univ P₀)
+        (fun P _ => zero_le) (Finset.mem_univ P₀)
     refine h_step.trans ?_
     rw [ENNReal.ofReal_mul (hCstep_nn P₀), mul_assoc]
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     rw [show (ENNReal.ofReal (Ksrc P₀ + 1)) =
         ENNReal.ofReal (Ksrc P₀) + 1 from by
       rw [ENNReal.ofReal_add (hKsrc_nn P₀) (by norm_num : (0 : ℝ) ≤ 1),

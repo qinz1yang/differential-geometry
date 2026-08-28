@@ -25,7 +25,7 @@ private lemma memLp_two_of_continuous_compact_closure
     hS_cc.measure_lt_top
   have h_volume_lt_top : volume S < ⊤ :=
     lt_of_le_of_lt (measure_mono subset_closure) h_volume_closure_lt_top
-  haveI : IsFiniteMeasure (volume.restrict S) := by
+  have : IsFiniteMeasure (volume.restrict S) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact h_volume_lt_top

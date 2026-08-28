@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def cotangentToCLM_gen {x : M} (α : Tensor0SSpace 1 I x) :
     TangentSpace I x →L[Real] Real :=
   continuousMultilinearCurryFin1 Real (TangentSpace I x) Real
-    (Tensor0SSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α)
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 1 x α)
 
 def cotangentToDual_gen {x : M} (α : Tensor0SSpace 1 I x) :
     Module.Dual Real (TangentSpace I x) :=
@@ -30,10 +30,14 @@ omit [FiniteDimensional ℝ E] in
 @[simp] theorem cotangentToDual_apply_gen {x : M}
     (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
     cotangentToDual_gen (I := I) α X = α (fun _ : Fin 1 => X) := by
-  simpa [cotangentToDual_gen, cotangentToCLM_gen, Tensor0SSpace.toModel,
-    tensor0SSpace_continuousLinearEquiv] using
-    congrArg (fun v : Fin 1 -> TangentSpace I x => α v)
-    (funext fun i => by fin_cases i; rfl)
+  let hM : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  change continuousMultilinearCurryFin1 Real (TangentSpace I x) Real
+      (@tensor0SSpaceFiberContinuousLinearEquiv Real _ E _ _ H _ I M _ _ hM 1 x α) X =
+      α (fun _ : Fin 1 => X)
+  rw [continuousMultilinearCurryFin1_apply,
+    @tensor0SSpaceFiberContinuousLinearEquiv_apply Real _ E _ _ H _ I M _ _ hM]
+  congr 1
 
 def cotangentToDualLinear_gen {x : M} :
     Tensor0SSpace 1 I x →ₗ[Real] Module.Dual Real (TangentSpace I x) where
@@ -91,7 +95,7 @@ def dualToCotangentLinear {x : M} :
 
 @[simp] theorem dualToCotangent_apply_gen {x : M}
     (α : Module.Dual Real (TangentSpace I x)) (X : TangentSpace I x) :
-    dualToCotangent_gen (I := I) α (fun _ : Fin 1 => X) = α X := by
+    Tensor0SSpace.eval (dualToCotangent_gen (I := I) α) (fun _ : Fin 1 => X) = α X := by
   change
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
         (LinearMap.toContinuousLinearMap α)) (fun _ : Fin 1 => X) = α X
@@ -101,7 +105,8 @@ def dualToCotangentLinear {x : M} :
     (α : Module.Dual Real (TangentSpace I x)) :
     cotangentToDual_gen (I := I) (dualToCotangent_gen (I := I) α) = α := by
   ext X
-  simp
+  change Tensor0SSpace.eval (dualToCotangent_gen (I := I) α) (fun _ : Fin 1 => X) = α X
+  exact dualToCotangent_apply_gen α X
 
 def cotangentSharpLinear_gen (g : SmoothMetric_gen I M) (x : M) :
     Tensor0SSpace 1 I x →ₗ[Real] TangentSpace I x :=
@@ -393,10 +398,14 @@ theorem invBasis_unique {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   let G : Matrix Idx Idx Real := fun i j => g.inner x (basis i) (basis j)
   have hAG : A * G = 1 := by
     ext i j
-    simpa [A, G, Matrix.mul_apply] using (h₁ i j).1
+    change (∑ k, gInv₁ i k * g.inner x (basis k) (basis j)) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (h₁ i j).1
   have hGB : G * B = 1 := by
     ext i j
-    simpa [B, G, Matrix.mul_apply] using (h₂ i j).2
+    change (∑ k, g.inner x (basis i) (basis k) * gInv₂ k j) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (h₂ i j).2
   have hAB : A = B := by
     calc
       A = A * 1 := by simp
@@ -404,7 +413,8 @@ theorem invBasis_unique {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       _ = (A * G) * B := by rw [Matrix.mul_assoc]
       _ = 1 * B := by rw [hAG]
       _ = B := by simp
-  simpa [A, B] using hAB
+  funext i j
+  exact congrArg (fun C : Matrix Idx Idx Real => C i j) hAB
 
 omit [FiniteDimensional ℝ E] in
 theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -418,13 +428,18 @@ theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   let G : Matrix Idx Idx Real := fun i j => g.inner x (basis i) (basis j)
   have hAG : A * G = 1 := by
     ext i j
-    simpa [A, G, Matrix.mul_apply] using (hinv i j).1
+    change (∑ k, gInv i k * g.inner x (basis k) (basis j)) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (hinv i j).1
   have hGA : G * A = 1 := by
     ext i j
-    simpa [A, G, Matrix.mul_apply] using (hinv i j).2
+    change (∑ k, g.inner x (basis i) (basis k) * gInv k j) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (hinv i j).2
   have hGt : Matrix.transpose G = G := by
     ext i j
-    simpa [G] using g.symm x (basis j) (basis i)
+    rw [Matrix.transpose_apply]
+    exact g.symm x (basis j) (basis i)
   have hAtG : Matrix.transpose A * G = 1 := by
     calc
       Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
@@ -439,7 +454,8 @@ theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       _ = A := by simp
   intro i j
   have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
-  simpa [A] using hentry
+  change A i j = A j i
+  exact (Matrix.transpose_apply A j i).symm.trans hentry
 
 omit [FiniteDimensional ℝ E] in
 theorem coord_eq_invInner {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -528,7 +544,7 @@ theorem eq_of_inner_basis_eq_gen
     {X Y : TangentSpace I x}
     (h : forall i : Idx, g.inner x X (basis i) = g.inner x Y (basis i)) :
     X = Y := by
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   apply tangentFlatLinear_injective_gen (I := I) g x
   ext Z
   have hcoord (L : TangentSpace I x →ₗ[Real] Real) :

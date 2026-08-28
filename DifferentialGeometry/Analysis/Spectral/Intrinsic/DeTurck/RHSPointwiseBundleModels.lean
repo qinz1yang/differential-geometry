@@ -7,6 +7,7 @@ import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RicciDiffAffine
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
 
+
 noncomputable section
 
 

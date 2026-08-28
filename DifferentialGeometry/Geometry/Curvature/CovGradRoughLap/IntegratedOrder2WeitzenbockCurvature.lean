@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -30,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem secondCovDeriv_covGrad_antisymm_eq_riemannOp_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {X Y : Π b : M, TangentSpace I b} {x : M}
@@ -47,7 +46,7 @@ theorem secondCovDeriv_covGrad_antisymm_eq_riemannOp_gen
     hX hY (covGrad (I := I) (M := M) g 0 s S).toSection.contMDiff
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem riemannOp_covGrad_fiberNormSq_le_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     ∃ Cx : ℝ, 0 ≤ Cx ∧

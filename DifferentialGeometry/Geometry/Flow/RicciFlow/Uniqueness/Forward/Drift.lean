@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Remainder
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -36,10 +35,10 @@ private theorem drift_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -80,7 +79,8 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless
 @[simp] private theorem reindexDriftTensor_apply (e : Equiv.Perm (Fin 4))
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (v : Fin 4 → TangentSpace I x) :
-    reindexDriftTensor (I := I) e T v = T (fun a : Fin 4 => v (e a)) :=
+    Tensor0SSpace.eval (reindexDriftTensor (I := I) e T) v =
+      Tensor0SSpace.eval T (fun a : Fin 4 => v (e a)) :=
   Tensor0SSpace.domDomCongr_apply (I := I) e T v
 
 def driftSlots
@@ -93,12 +93,13 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless
 theorem driftSlots_apply
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (X Y Z W : TangentSpace I x) :
-    driftSlots (I := I) T (vec4 (I := I) X Y Z W) =
-      (T (vec4 (I := I) X Y Z W) - T (vec4 (I := I) Z W Y X)) +
-        (T (vec4 (I := I) Z W X Y) - T (vec4 (I := I) X Y W Z)) := by
-  rw [driftSlots, Tensor0SSpace.add_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x]
+    Tensor0SSpace.eval (driftSlots (I := I) T) (vec4 (I := I) X Y Z W) =
+      (Tensor0SSpace.eval T (vec4 (I := I) X Y Z W) -
+        Tensor0SSpace.eval T (vec4 (I := I) Z W Y X)) +
+      (Tensor0SSpace.eval T (vec4 (I := I) Z W X Y) -
+        Tensor0SSpace.eval T (vec4 (I := I) X Y W Z)) := by
+  rw [driftSlots, Tensor0SSpace.eval_add, Tensor0SSpace.eval_sub,
+    Tensor0SSpace.eval_sub]
   simp only [reindexDriftTensor_apply]
   congr 2 <;>
     · congr 1
@@ -110,9 +111,11 @@ theorem driftSlots_add
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x) :
     driftSlots (I := I) (A + B) =
       driftSlots (I := I) A + driftSlots (I := I) B := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
-  simp only [driftSlots, Tensor0SSpace.add_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x, reindexDriftTensor_apply]
+  refine tensor0SSpace_ext (𝕜 := Real) 4 x fun v => ?_
+  change Tensor0SSpace.eval (driftSlots (I := I) (A + B)) v =
+    Tensor0SSpace.eval (driftSlots (I := I) A + driftSlots (I := I) B) v
+  simp only [driftSlots, Tensor0SSpace.eval_add, Tensor0SSpace.eval_sub,
+    reindexDriftTensor_apply]
   ring
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
@@ -120,9 +123,11 @@ theorem driftSlots_sub
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x) :
     driftSlots (I := I) A - driftSlots (I := I) B =
       driftSlots (I := I) (A - B) := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
-  simp only [driftSlots, Tensor0SSpace.add_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x, reindexDriftTensor_apply]
+  refine tensor0SSpace_ext (𝕜 := Real) 4 x fun v => ?_
+  change Tensor0SSpace.eval (driftSlots (I := I) A - driftSlots (I := I) B) v =
+    Tensor0SSpace.eval (driftSlots (I := I) (A - B)) v
+  simp only [driftSlots, Tensor0SSpace.eval_add, Tensor0SSpace.eval_sub,
+    reindexDriftTensor_apply]
   ring
 
 variable [NeZero (Module.finrank Real E)]
@@ -203,15 +208,27 @@ theorem lowerTri_split
       TangentSpace I x →L[Real] TangentSpace I x) :
     lowerTri (I := I) q₁ A₁ - lowerTri (I := I) q₂ A₂ =
       lowerTri (I := I) (q₁ - q₂) A₁ + lowerTri (I := I) q₂ (A₁ - A₂) := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
-  rw [Tensor0SSpace.sub_apply (I := I) 4 x,
-    Tensor0SSpace.add_apply (I := I) 4 x,
+  refine tensor0SSpace_ext (𝕜 := Real) 4 x fun v => ?_
+  change Tensor0SSpace.eval (lowerTri (I := I) q₁ A₁ - lowerTri (I := I) q₂ A₂) v =
+    Tensor0SSpace.eval
+      (lowerTri (I := I) (q₁ - q₂) A₁ + lowerTri (I := I) q₂ (A₁ - A₂)) v
+  rw [Tensor0SSpace.eval_sub, Tensor0SSpace.eval_add,
     lowerTri_apply, lowerTri_apply, lowerTri_apply, lowerTri_apply,
-    Tensor0SSpace.sub_apply (I := I) 2 x]
+    Tensor0SSpace.eval_sub]
   have hA :
       (((A₁ - A₂) (v 0)) (v 1)) (v 2) =
         ((A₁ (v 0)) (v 1)) (v 2) - ((A₂ (v 0)) (v 1)) (v 2) := rfl
-  rw [hA, drift02_sub_left]
+  rw [hA]
+  have hsub := drift02_sub_left (I := I) q₂
+    (((A₁ (v 0)) (v 1)) (v 2)) (((A₂ (v 0)) (v 1)) (v 2)) (v 3)
+  change Tensor0SSpace.eval q₂
+      (fun a : Fin 2 => if a = 0 then
+        ((A₁ (v 0)) (v 1)) (v 2) - ((A₂ (v 0)) (v 1)) (v 2) else v 3) =
+    Tensor0SSpace.eval q₂
+        (fun a : Fin 2 => if a = 0 then ((A₁ (v 0)) (v 1)) (v 2) else v 3) -
+      Tensor0SSpace.eval q₂
+        (fun a : Fin 2 => if a = 0 then ((A₂ (v 0)) (v 1)) (v 2) else v 3) at hsub
+  rw [hsub]
   ring
 
 
@@ -220,13 +237,31 @@ theorem lowerRm_eq_rm04 (g : SmoothRiemannianMetric I M) (x : M) :
     lowerTri (I := I) (metricTensorField (I := I) g x)
         (riemannOp (metricCov (I := I) g) x) =
       metricRm04At (I := I) g x := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
+  refine tensor0SSpace_ext (𝕜 := Real) 4 x fun v => ?_
+  change Tensor0SSpace.eval
+      (lowerTri (I := I) (metricTensorField (I := I) g x)
+        (riemannOp (metricCov (I := I) g) x)) v =
+    Tensor0SSpace.eval (metricRm04At (I := I) g x) v
   have hv : vec4 (I := I) (v 0) (v 1) (v 2) (v 3) = v := by
     funext a
     fin_cases a <;> simp [vec4]
-  rw [lowerTri_apply, metricTensorField_apply]
-  simpa only [hv] using
-    (metricRm04At_inner (I := I) g x (v 0) (v 1) (v 2) (v 3)).symm
+  have hleft :
+      Tensor0SSpace.eval
+          (lowerTri (I := I) (metricTensorField (I := I) g x)
+            (riemannOp (metricCov (I := I) g) x)) v =
+        g.inner x ((((riemannOp (metricCov (I := I) g) x) (v 0)) (v 1)) (v 2)) (v 3) := by
+    rw [lowerTri_apply, metricTensorField_eval]
+    simp
+  calc
+    Tensor0SSpace.eval
+        (lowerTri (I := I) (metricTensorField (I := I) g x)
+          (riemannOp (metricCov (I := I) g) x)) v =
+        g.inner x ((((riemannOp (metricCov (I := I) g) x) (v 0)) (v 1)) (v 2)) (v 3) := hleft
+    _ = Tensor0SSpace.eval (metricRm04At (I := I) g x)
+        (vec4 (I := I) (v 0) (v 1) (v 2) (v 3)) :=
+      (metricRm04At_inner (I := I) g x (v 0) (v 1) (v 2) (v 3)).symm
+    _ = Tensor0SSpace.eval (metricRm04At (I := I) g x) v :=
+      congrArg (Tensor0SSpace.eval (metricRm04At (I := I) g x)) hv
 
 def ricciDrift04 (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
@@ -371,8 +406,9 @@ private theorem ricciLow_comp
     (gInv : Idx → Idx → Real)
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
     (X Y Z : TangentSpace I x) (l : Idx) :
-    lowerTri (I := I) (metricRicciAt (I := I) g x)
-        (riemannOp (metricCov (I := I) g) x)
+    Tensor0SSpace.eval
+        (lowerTri (I := I) (metricRicciAt (I := I) g x)
+          (riemannOp (metricCov (I := I) g) x))
         (vec4 (I := I) X Y Z (basis l)) =
       ∑ p : Idx,
         (∑ a : Idx, gInv p a *
@@ -388,6 +424,10 @@ private theorem ricciLow_comp
     exact Finset.sum_congr rfl fun a _ => by
       rw [metricRm04At_inner]
   have hsym := invMetric_symm (I := I) g x basis gInv hinv
+  change Tensor0SSpace.eval
+    (lowerTri (I := I) (metricRicciAt (I := I) g x)
+      (riemannOp (metricCov (I := I) g) x))
+      (vec4 (I := I) X Y Z (basis l)) = _
   rw [lowerTri_apply]
   change metricRicciAt (I := I) g x
       (fun a : Fin 2 => if a = 0 then V else basis l) = _
@@ -438,7 +478,7 @@ theorem ricciDrift_comp
     (gInv : Idx → Idx → Real)
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
     (i j k l : Idx) :
-    ricciDrift04 (I := I) g x
+    Tensor0SSpace.eval (ricciDrift04 (I := I) g x)
         (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
       (∑ p : Idx,
         (∑ a : Idx, gInv p a *

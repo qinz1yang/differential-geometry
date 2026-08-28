@@ -59,11 +59,11 @@ theorem gInf_zero_eq
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
     co.gInf 0 = g₀ := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨n, hzeroN⟩ := RealTimeInterval.mem_openWindow (t₀ := t₀) hzero
   exact DifferentialGeometry.HCGCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)

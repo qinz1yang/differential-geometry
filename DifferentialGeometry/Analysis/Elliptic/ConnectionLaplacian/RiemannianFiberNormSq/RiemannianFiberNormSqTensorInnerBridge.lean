@@ -7,6 +7,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.Data.Fin.Tuple.Basic
+
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -31,37 +33,41 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private noncomputable def mixedGram
     (g : SmoothRiemannianMetric I M) (x : M)
-    (frame : Fin (Module.finrank ℝ E) → TangentSpace I x) :
+    (frame : Fin (Module.finrank ℝ E) → E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun i a => g.inner x ((chartModelBasis E) i) (frame a)
+  Matrix.of fun i a =>
+    modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) (frame a)
 
 omit [CompleteSpace E] in
 @[simp] private lemma mixedGram_apply
     (g : SmoothRiemannianMetric I M) (x : M)
-    (frame : Fin (Module.finrank ℝ E) → TangentSpace I x)
+    (frame : Fin (Module.finrank ℝ E) → E)
     (i a : Fin (Module.finrank ℝ E)) :
     mixedGram (I := I) (M := M) g x frame i a =
-      g.inner x ((chartModelBasis E) i) (frame a) := rfl
+      modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) (frame a) := rfl
 
 omit [Module.Finite ℝ E] [CompleteSpace E] in
 private lemma orthoFrame_expansion
     (g : SmoothRiemannianMetric I M) (x : M)
-    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x))
-    (horth : ∀ a b, g.inner x (frame a) (frame b) = if a = b then 1 else 0)
-    (v : TangentSpace I x) :
-    v = ∑ a : Fin (Module.finrank ℝ E), g.inner x v (frame a) • frame a := by
+    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
+    (horth : ∀ a b, modelInnerAt (I := I) (M := M) g x (frame a) (frame b) =
+      if a = b then 1 else 0)
+    (v : E) :
+    v = ∑ a : Fin (Module.finrank ℝ E),
+      modelInnerAt (I := I) (M := M) g x v (frame a) • frame a := by
   classical
   conv_lhs => rw [← frame.sum_repr v]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   congr 1
-  have hv : g.inner x v (frame a) =
+  have hv : modelInnerAt (I := I) (M := M) g x v (frame a) =
       ∑ b : Fin (Module.finrank ℝ E),
-        frame.repr v b * g.inner x (frame b) (frame a) := by
+        frame.repr v b *
+          modelInnerAt (I := I) (M := M) g x (frame b) (frame a) := by
     conv_lhs => rw [show v = ∑ b : Fin (Module.finrank ℝ E),
       frame.repr v b • frame b from (frame.sum_repr v).symm]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
   rw [hv, Finset.sum_eq_single a]
   · rw [horth a a, if_pos rfl, mul_one]
   · intro b _ hba
@@ -72,8 +78,9 @@ private lemma orthoFrame_expansion
 omit [CompleteSpace E] in
 private lemma gramMatrixAt_eq_mixedGram_mul_transpose
     (g : SmoothRiemannianMetric I M) (x : M)
-    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x))
-    (horth : ∀ a b, g.inner x (frame a) (frame b) = if a = b then 1 else 0) :
+    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
+    (horth : ∀ a b, modelInnerAt (I := I) (M := M) g x (frame a) (frame b) =
+      if a = b then 1 else 0) :
     gramMatrixAt (I := I) (M := M) g x =
       mixedGram (I := I) (M := M) g x frame *
         (mixedGram (I := I) (M := M) g x frame)ᵀ := by
@@ -82,12 +89,15 @@ private lemma gramMatrixAt_eq_mixedGram_mul_transpose
   rw [gramMatrixAt_apply, Matrix.mul_apply]
   have hexp : (chartModelBasis E) j =
       ∑ a : Fin (Module.finrank ℝ E),
-        g.inner x ((chartModelBasis E) j) (frame a) • frame a :=
+        modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) j) (frame a) •
+          frame a :=
     orthoFrame_expansion (I := I) (M := M) g x frame horth ((chartModelBasis E) j)
-  calc g.inner x ((chartModelBasis E) i) ((chartModelBasis E) j)
-      = g.inner x ((chartModelBasis E) i)
+  calc modelInnerAt (I := I) (M := M) g x
+        ((chartModelBasis E) i) ((chartModelBasis E) j)
+      = modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
           (∑ a : Fin (Module.finrank ℝ E),
-            g.inner x ((chartModelBasis E) j) (frame a) • frame a) := by rw [← hexp]
+            modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) j) (frame a) •
+              frame a) := by rw [← hexp]
     _ = ∑ a : Fin (Module.finrank ℝ E),
           mixedGram (I := I) (M := M) g x frame i a *
             (mixedGram (I := I) (M := M) g x frame)ᵀ a j := by
@@ -100,8 +110,9 @@ private lemma gramMatrixAt_eq_mixedGram_mul_transpose
 omit [CompleteSpace E] in
 private lemma mixedGram_isUnit
     (g : SmoothRiemannianMetric I M) (x : M)
-    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x))
-    (horth : ∀ a b, g.inner x (frame a) (frame b) = if a = b then 1 else 0) :
+    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
+    (horth : ∀ a b, modelInnerAt (I := I) (M := M) g x (frame a) (frame b) =
+      if a = b then 1 else 0) :
     IsUnit (mixedGram (I := I) (M := M) g x frame) := by
   classical
   rw [Matrix.isUnit_iff_isUnit_det]
@@ -118,8 +129,9 @@ private lemma mixedGram_isUnit
 omit [CompleteSpace E] in
 private lemma mixedGram_transpose_mul_inv_mul
     (g : SmoothRiemannianMetric I M) (x : M)
-    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x))
-    (horth : ∀ a b, g.inner x (frame a) (frame b) = if a = b then 1 else 0) :
+    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
+    (horth : ∀ a b, modelInnerAt (I := I) (M := M) g x (frame a) (frame b) =
+      if a = b then 1 else 0) :
     (mixedGram (I := I) (M := M) g x frame)ᵀ *
         ((gramMatrixAt (I := I) (M := M) g x)⁻¹ *
           mixedGram (I := I) (M := M) g x frame) = 1 := by
@@ -201,8 +213,9 @@ private lemma curryLeft_sum_smul {s : ℕ}
 omit [CompleteSpace E] in
 private lemma tensorInnerPointwise_0s_succ_orthoFrame
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
-    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x))
-    (horth : ∀ a b, g.inner x (frame a) (frame b) = if a = b then 1 else 0)
+    (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
+    (horth : ∀ a b, modelInnerAt (I := I) (M := M) g x (frame a) (frame b) =
+      if a = b then 1 else 0)
     (S T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
     covariantTensorInnerPointwise (I := I) (M := M) (s + 1) g x S T =
       ∑ a : Fin (Module.finrank ℝ E),
@@ -339,59 +352,82 @@ theorem tensorInnerPointwise_0s_eq_diag_sum_orthoFrame
     (S T : ContinuousMultilinearMap ℝ (fun _ : Fin N => E) ℝ) :
     covariantTensorInnerPointwise (I := I) (M := M) N g x S T =
       ∑ φ : Fin N → Fin (Module.finrank ℝ E),
-        S (fun k => frame (φ k)) * T (fun k => frame (φ k)) := by
+        S (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (φ k))) *
+          T (fun k =>
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (φ k))) := by
   classical
-  induction N with
-  | zero =>
-      rw [tensorInnerPointwise_0s_zero_arity]
-      rw [Finset.sum_eq_single (fun a : Fin 0 => a.elim0)]
-      · congr 1 <;>
-          (congr 1; funext a; exact a.elim0)
-      · intro b _ hb
-        exact absurd (funext fun a => a.elim0) hb
-      · intro h
-        exact absurd (Finset.mem_univ _) h
-  | succ s ih =>
-      rw [tensorInnerPointwise_0s_succ_orthoFrame (I := I) (M := M) g x s frame horth S T]
-      have hstep : ∀ a : Fin (Module.finrank ℝ E),
-          covariantTensorInnerPointwise (I := I) (M := M) s g x
-              (S.curryLeft (frame a)) (T.curryLeft (frame a)) =
-            ∑ ψ : Fin s → Fin (Module.finrank ℝ E),
-              S (fun k => frame ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) *
-                T (fun k => frame
-                  ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
-        intro a
-        rw [ih (S.curryLeft (frame a)) (T.curryLeft (frame a))]
-        refine Finset.sum_congr rfl (fun ψ _ => ?_)
-        have hS : (S.curryLeft (frame a)) (fun k => frame (ψ k)) =
-            S (fun k => frame
-              ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
-          rw [ContinuousMultilinearMap.curryLeft_apply]
-          congr 1
-          funext k
-          refine Fin.cases ?_ ?_ k
-          · simp
-          · intro m; simp
-        have hT : (T.curryLeft (frame a)) (fun k => frame (ψ k)) =
-            T (fun k => frame
-              ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
-          rw [ContinuousMultilinearMap.curryLeft_apply]
-          congr 1
-          funext k
-          refine Fin.cases ?_ ?_ k
-          · simp
-          · intro m; simp
-        rw [hS, hT]
-      rw [Finset.sum_congr rfl (fun a _ => hstep a)]
-      rw [← Fintype.sum_equiv
-        (Fin.consEquiv (fun _ : Fin (s + 1) => Fin (Module.finrank ℝ E)))
-        (fun p => S (fun k => frame
-            ((Fin.cons p.1 p.2 : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) *
-          T (fun k => frame
-            ((Fin.cons p.1 p.2 : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)))
-        (fun φ => S (fun k => frame (φ k)) * T (fun k => frame (φ k)))
-        (fun p => rfl)]
-      rw [Fintype.sum_prod_type]
+  let tangentModel := tangentSpaceModelContinuousLinearEquiv (I := I) x
+  let frameModel : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
+    frame.map tangentModel.toLinearEquiv
+  have hframeModel_apply : ∀ i, frameModel i = tangentModel (frame i) := by
+    intro i
+    simp only [frameModel, Module.Basis.map_apply]
+    rfl
+  have horthModel : ∀ a b,
+      modelInnerAt (I := I) (M := M) g x (frameModel a) (frameModel b) =
+        if a = b then 1 else 0 := by
+    intro a b
+    simp only [hframeModel_apply, modelInnerAt_apply, tangentModel]
+    rw [(tangentSpaceModelContinuousLinearEquiv (I := I) x).symm_apply_apply,
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm_apply_apply]
+    exact horth a b
+  have hmodel : covariantTensorInnerPointwise (I := I) (M := M) N g x S T =
+      ∑ φ : Fin N → Fin (Module.finrank ℝ E),
+        S (fun k => frameModel (φ k)) * T (fun k => frameModel (φ k)) := by
+    induction N with
+    | zero =>
+        rw [tensorInnerPointwise_0s_zero_arity]
+        rw [Finset.sum_eq_single (fun a : Fin 0 => a.elim0)]
+        · congr 1 <;>
+            (congr 1; funext a; exact a.elim0)
+        · intro b _ hb
+          exact absurd (funext fun a => a.elim0) hb
+        · intro h
+          exact absurd (Finset.mem_univ _) h
+    | succ s ih =>
+        rw [tensorInnerPointwise_0s_succ_orthoFrame (I := I) (M := M) g x s
+          frameModel horthModel S T]
+        have hstep : ∀ a : Fin (Module.finrank ℝ E),
+            covariantTensorInnerPointwise (I := I) (M := M) s g x
+                (S.curryLeft (frameModel a)) (T.curryLeft (frameModel a)) =
+              ∑ ψ : Fin s → Fin (Module.finrank ℝ E),
+                S (fun k => frameModel
+                  ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) *
+                  T (fun k => frameModel
+                    ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
+          intro a
+          rw [ih (S.curryLeft (frameModel a)) (T.curryLeft (frameModel a))]
+          refine Finset.sum_congr rfl (fun ψ _ => ?_)
+          have hS : (S.curryLeft (frameModel a)) (fun k => frameModel (ψ k)) =
+              S (fun k => frameModel
+                ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
+            rw [ContinuousMultilinearMap.curryLeft_apply]
+            congr 1
+            funext k
+            refine Fin.cases ?_ ?_ k
+            · simp
+            · intro m; simp
+          have hT : (T.curryLeft (frameModel a)) (fun k => frameModel (ψ k)) =
+              T (fun k => frameModel
+                ((Fin.cons a ψ : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
+            rw [ContinuousMultilinearMap.curryLeft_apply]
+            congr 1
+            funext k
+            refine Fin.cases ?_ ?_ k
+            · simp
+            · intro m; simp
+          rw [hS, hT]
+        rw [Finset.sum_congr rfl (fun a _ => hstep a)]
+        rw [← Fintype.sum_equiv
+          (Fin.consEquiv (fun _ : Fin (s + 1) => Fin (Module.finrank ℝ E)))
+          (fun p => S (fun k => frameModel
+              ((Fin.cons p.1 p.2 : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) *
+            T (fun k => frameModel
+              ((Fin.cons p.1 p.2 : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)))
+          (fun φ => S (fun k => frameModel (φ k)) * T (fun k => frameModel (φ k)))
+          (fun p => rfl)]
+        rw [Fintype.sum_prod_type]
+  simpa only [hframeModel_apply, tangentModel] using hmodel
 
 omit [CompleteSpace E] in
 private lemma lower_toModel_append_eq_fiberNormSqComponent
@@ -401,7 +437,9 @@ private lemma lower_toModel_append_eq_fiberNormSqComponent
     lowerAllUpperIndices (I := I) (M := M) g r s x
         (TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
           (r := r) (s := s) (x := x) T)
-        (Fin.append (fun k => e (K k)) (fun j => e (J j)))
+        (Fin.append
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (K k)))
+          (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J j))))
       = fiberNormSqComponent (I := I) (M := M) g x r s T n e K J := by
   rw [lowerAllUpperIndices_apply]
   simp only [Fin.append_left, Fin.append_right]
@@ -427,9 +465,9 @@ private lemma riemannianFiberNormSq_frame_witness
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I x) with hn_def
   set eob : OrthonormalBasis (Fin n) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _
@@ -481,21 +519,25 @@ theorem riemannianFiberNormSq_eq_tensorInnerPointwise
         (Fin s → Fin (Module.finrank ℝ E)) =>
       fiberNormSqComponent (I := I) (M := M) g x r s T (Module.finrank ℝ E) e p.1 p.2 ^ 2)
     (fun φ : Fin (r + s) → Fin (Module.finrank ℝ E) =>
-      (lowerAllUpperIndices (I := I) (M := M) g r s x Tm) (fun k => bse (φ k)) *
-        (lowerAllUpperIndices (I := I) (M := M) g r s x Tm) (fun k => bse (φ k)))
+      (lowerAllUpperIndices (I := I) (M := M) g r s x Tm)
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (φ k))) *
+        (lowerAllUpperIndices (I := I) (M := M) g r s x Tm)
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (φ k))))
     ?_]
   · rw [Fintype.sum_prod_type]
   · intro p
     have hbse_e : ∀ i : Fin (Module.finrank ℝ E), bse i = e i := hbse
     have happend :
-        (fun k => bse ((Fin.appendEquiv r s) p k)) =
-          Fin.append (fun k => e (p.1 k)) (fun j => e (p.2 j)) := by
+        (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (bse ((Fin.appendEquiv r s) p k))) =
+          Fin.append
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (p.1 k)))
+            (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (p.2 j))) := by
       funext k
       simp only [hbse_e, Fin.appendEquiv_apply]
       induction k using Fin.addCases with
       | left i => simp only [Fin.append_left]
       | right i => simp only [Fin.append_right]
-    dsimp only
     rw [happend, hTm_def, pow_two]
     congr 1 <;>
       exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x T
@@ -537,21 +579,25 @@ theorem tensorInnerPointwise_eq_sum_componentS_mul
       fiberNormSqComponent (I := I) (M := M) g x r s A (Module.finrank ℝ E) e p.1 p.2 *
         fiberNormSqComponent (I := I) (M := M) g x r s B (Module.finrank ℝ E) e p.1 p.2)
     (fun φ : Fin (r + s) → Fin (Module.finrank ℝ E) =>
-      (lowerAllUpperIndices (I := I) (M := M) g r s x Am) (fun k => bse (φ k)) *
-        (lowerAllUpperIndices (I := I) (M := M) g r s x Bm) (fun k => bse (φ k)))
+      (lowerAllUpperIndices (I := I) (M := M) g r s x Am)
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (φ k))) *
+        (lowerAllUpperIndices (I := I) (M := M) g r s x Bm)
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (φ k))))
     ?_]
   · rw [Fintype.sum_prod_type]
   · intro p
     have hbse_e : ∀ i : Fin (Module.finrank ℝ E), bse i = e i := hbse
     have happend :
-        (fun k => bse ((Fin.appendEquiv r s) p k)) =
-          Fin.append (fun k => e (p.1 k)) (fun j => e (p.2 j)) := by
+        (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (bse ((Fin.appendEquiv r s) p k))) =
+          Fin.append
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (p.1 k)))
+            (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (p.2 j))) := by
       funext k
       simp only [hbse_e, Fin.appendEquiv_apply]
       induction k using Fin.addCases with
       | left i => simp only [Fin.append_left]
       | right i => simp only [Fin.append_right]
-    dsimp only
     rw [happend, hAm_def, hBm_def]
     congr 1
     · exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x A

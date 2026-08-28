@@ -7,6 +7,7 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
+
 open Bundle Manifold Set FiberBundle
 open scoped Manifold Topology ContDiff
 
@@ -28,9 +29,11 @@ open DifferentialGeometry.Tensor0SBundle
 
 noncomputable def hessTensorAt
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
-    Tensor0SSpace (E := E) (H := H) (I := I) (M := M) 2 x :=
-  (((continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ).symm.toContinuousLinearMap).comp
-    (hessFun (I := I) g f x).toContinuousBilinearMap).uncurryLeft
+    Tensor0SSpace (E := E) (H := H) (I := I) (M := M) 2 x := by
+  let _ : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
+  exact
+    (((continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ).symm.toContinuousLinearMap).comp
+      (hessFun (I := I) g f x).toContinuousBilinearMap).uncurryLeft
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
 @[simp]
@@ -109,14 +112,12 @@ theorem laplacian_eq_chart_hessian_trace [I.Boundaryless]
   intro i _
   apply Finset.sum_congr rfl
   intro j _
-  change gInv i j * hessFun (I := I) g f x (basis i) (basis j) = _
+  rw [hessTensorAt_apply]
   rw [hessFun_eq_cov_local (I := I) g isOpen_univ hf.contMDiffOn
     (Set.mem_univ x)]
   rw [abstractHessian_eq_inner_cov_gradFun_extend (I := I) g hf]
-  change chartInvGramMatrix (I := I) g α x i j *
-      abstractHessian (I := I) g f x
-        (chartBasisVecFiber (I := I) α i x)
-        (chartBasisVecFiber (I := I) α j x) = _
+  dsimp only [gInv, basis]
+  rw [chartBasisFamily_apply, chartBasisFamily_apply]
   rw [chartAlphaMatrixIdentity_holds (I := I) g α hf hx i j]
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in

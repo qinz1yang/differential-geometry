@@ -294,7 +294,7 @@ theorem eLpNorm_mollifyEps_le
           ENNReal.ofReal (‖((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x)‖
             ^ (2 : ℝ)) := by
         intro x
-        rw [← ofReal_norm_eq_enorm,
+        rw [← ofReal_norm,
           ENNReal.ofReal_rpow_of_nonneg (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 2)]
       have h_lint_pt :
           (fun x => ‖((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x)‖ₑ
@@ -626,7 +626,7 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
       ∑ j : Fin d, ∫ y in Ω',
           ((fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1)) ^ 2
         ∂(volume : Measure E) := by
-    refine integral_finset_sum (μ := (volume : Measure E).restrict Ω') Finset.univ ?_
+    refine integral_finsetSum (μ := (volume : Measure E).restrict Ω') Finset.univ ?_
     intro j _
     have h_norm_eq : ∀ y : E,
         ((fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1)) ^ 2 =

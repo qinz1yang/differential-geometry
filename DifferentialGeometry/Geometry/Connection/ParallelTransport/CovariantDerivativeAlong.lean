@@ -476,6 +476,7 @@ private theorem trivCoord_comp_symmL_eq_transition [I.Boundaryless]
   rw [← hcc]
   exact hcomp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covDerivAlong_chart_foot_invariance [I.Boundaryless]
     {n : WithTop ℕ∞} [ENat.LEInfty n] (hn : n ≠ 0)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
@@ -750,7 +751,9 @@ theorem chartRep_diff
           ℝ (γ s) (V s)) t := by
     rw [← contMDiffAt_iff_contDiffAt]
     exact hfiber'
-  simpa only [chartRepAt] using hfiberDiff.differentiableAt (by simp)
+  let hdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t :=
+    hfiberDiff.differentiableAt (by simp)
+  exact hdiff
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartRepAt_sum {ι : Type*} (s : Finset ι) (γ : ℝ → M)

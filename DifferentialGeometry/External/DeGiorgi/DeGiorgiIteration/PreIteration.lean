@@ -73,7 +73,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_ballPosPart
         ((((lam - θ) ^ 2)⁻¹ *
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^ (2 / (d : ℝ))) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   have hθ_int :
@@ -152,7 +152,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
         ((((lam - θ) ^ 2)⁻¹ *
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^ (2 / (d : ℝ))) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let hwTheta : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
@@ -170,10 +170,6 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
       ∫ x in Metric.ball x₀ r, ‖hwTheta.weakGrad x‖ ^ 2 ∂volume ≤
         (4 * ellipticityRatio A * Cη ^ 2) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
-    change
-      ∫ x in Metric.ball x₀ r, ‖hwTheta.weakGrad x‖ ^ 2 ∂volume ≤
-        (4 * ellipticityRatio A * Cη ^ 2) *
-          ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume
     exact
       deGiorgi_energy_estimate_on_concentricBalls_of_posPartApprox
         A hs hr hrs hsub hu happroxBallTheta hη hη_nonneg hη_eq_one
@@ -182,10 +178,6 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
       ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
         Csob * (∫ x in Metric.ball x₀ r, ‖hwTheta.weakGrad x‖ ^ 2 ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
-    change
-      ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-        Csob * (∫ x in Metric.ball x₀ r, ‖hwTheta.weakGrad x‖ ^ 2 ∂volume) *
-          ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ))
     exact hsob
   exact
     deGiorgi_preiter_of_energy
@@ -224,7 +216,7 @@ private theorem deGiorgi_cutoffSobolev_prepare
   let v : E → ℝ := deGiorgiCutoffTestGeneral η u θ
   have hΩ_open : IsOpen Ω := isOpen_ball
   have hΩ_meas : MeasurableSet Ω := measurableSet_ball
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -347,7 +339,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
   let q : ℝ≥0∞ := ENNReal.ofReal ((d : ℝ) * 2 / ((d : ℝ) - 2))
   have hB_meas : MeasurableSet B := measurableSet_ball
   have hBsubΩ : B ⊆ Ω := Metric.ball_subset_ball (le_of_lt hrs)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -360,6 +352,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     simpa using hwηθ_real.weakGrad_norm_memLp
   have hθ_int_B :
       IntegrableOn (fun x => |positivePartSub u θ x| ^ 2) B volume := by
+    change Integrable (fun x => |positivePartSub u θ x| ^ 2) (volume.restrict B)
     simpa [B, pow_two] using (hwθ.restrict isOpen_ball hBsubΩ).memLp.integrable_sq
   have hlam_sq_aesm :
       AEStronglyMeasurable (fun x => |positivePartSub u lam x| ^ 2) (volume.restrict B) := by
@@ -388,6 +381,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     simpa [Real.norm_eq_abs, abs_of_nonneg hlam_sq_nonneg] using hsq
   have hg_int :
       IntegrableOn g Ω volume := by
+    change Integrable g μ
     simpa [g, pow_two] using hwηθ_memLp2.integrable_sq
   have hgT_int :
       IntegrableOn (T.indicator g) Ω volume := hg_int.indicator hT_meas
@@ -686,7 +680,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_ballPosPart
   let _ := _hη_nonneg
   have hs : 0 < s := lt_trans hr hrs
   let v : E → ℝ := deGiorgiCutoffTestGeneral η u θ
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   have hη_comp : HasCompactSupport η :=
@@ -1064,7 +1058,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
     rw [hgrad_eq]
     exact hgrad_bound_phi
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   have hpre := deGiorgi_preiter_of_energy

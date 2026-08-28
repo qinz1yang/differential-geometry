@@ -33,7 +33,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -1174,7 +1173,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_g
       (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
         deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀)
       (fun x => hpt g₁ P htie hδ_le' hδ0 hδ i x)
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg -
           deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀)‖ = 0 :=
@@ -1325,7 +1324,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_order0_data
     linarith [h1, h2]
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_metricPerturbationPath_zero_endpoint_eq_smul_covDerivSharp
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -1410,7 +1409,7 @@ theorem covDerivConnectionDifference_metricPerturbationPath_zero_endpoint_eq_smu
     have hsmul := (LeviCivita (I := I)
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ 0)).isCovariantDerivativeOnUniv.smul_const
       (σ := fun b => X b) (x := x) (0 : ℝ) hσX (Set.mem_univ x)
-    rw [hsmul, ContinuousLinearMap.smul_apply]
+    rw [hsmul, smul_apply]
     rw [hconn0 x (Z x) (covApply (LeviCivita (I := I)
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ 0)) (fun b => X b) (fun b => Y b) x),
       hconn0 x (covApply (LeviCivita (I := I)
@@ -1482,7 +1481,7 @@ theorem covDerivConnectionDifference_metricPerturbationPath_zero_endpoint_eq_smu
           (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ 0)
             (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b)))
       (x := x) s hσ (Set.mem_univ x)
-    rw [hsmul, ContinuousLinearMap.smul_apply]
+    rw [hsmul, smul_apply]
     rw [hpoint x (Z x) (covApply (LeviCivita (I := I)
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ 0)) (fun b => X b) (fun b => Y b) x),
       hpoint x (covApply (LeviCivita (I := I)

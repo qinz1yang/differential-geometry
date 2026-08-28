@@ -13,7 +13,6 @@ open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -33,10 +32,10 @@ noncomputable def eval0SLinear (n : ℕ) :
   toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
   map_add' Φ₁ Φ₂ := by
     funext φ
-    simp [ContinuousMultilinearMap.add_apply]
+    simp [add_apply]
   map_smul' c Φ := by
     funext φ
-    simp [ContinuousMultilinearMap.smul_apply]
+    simp [smul_apply]
 
 @[simp] lemma eval0SLinear_apply (n : ℕ)
     (Φ : Tensor0SModel n ℝ E)
@@ -122,10 +121,10 @@ noncomputable def evalAtBasisLinear_TensorRSModel (r s : ℕ) :
       (fun k : Fin s => (chartModelBasis E) (p.2 k))
   map_add' T₁ T₂ := by
     funext p
-    simp [ContinuousLinearMap.add_apply, ContinuousMultilinearMap.add_apply]
+    simp [add_apply, add_apply]
   map_smul' c T := by
     funext p
-    simp [ContinuousLinearMap.smul_apply, ContinuousMultilinearMap.smul_apply]
+    simp [smul_apply, smul_apply]
 
 @[simp] lemma evalAtBasisLinear_TensorRSModel_apply (r s : ℕ)
     (T : TensorRSModel r s ℝ E)
@@ -173,11 +172,11 @@ private lemma evalAtBasisLinear_TensorRSModel_injective (r s : ℕ) :
 private lemma finrank_tensorRSModel_loc (r s : ℕ) :
     Module.finrank ℝ (TensorRSModel r s ℝ E) =
       (Module.finrank ℝ E) ^ (r + s) := by
-  haveI : FiniteDimensional ℝ (Tensor0SModel r ℝ E) :=
+  have : FiniteDimensional ℝ (Tensor0SModel r ℝ E) :=
     continuousMultilinearMap_finiteDimensional r
-  haveI : FiniteDimensional ℝ (Tensor0SModel s ℝ E) :=
+  have : FiniteDimensional ℝ (Tensor0SModel s ℝ E) :=
     continuousMultilinearMap_finiteDimensional s
-  haveI : Module.Free ℝ (Tensor0SModel s ℝ E) := inferInstance
+  have : Module.Free ℝ (Tensor0SModel s ℝ E) := inferInstance
   have e : (Tensor0SModel r ℝ E →L[ℝ] Tensor0SModel s ℝ E) ≃ₗ[ℝ]
       (Tensor0SModel r ℝ E →ₗ[ℝ] Tensor0SModel s ℝ E) :=
     LinearMap.toContinuousLinearMap.symm
@@ -198,7 +197,7 @@ private lemma finrank_basis_pair_pi_loc (r s : ℕ) :
 
 private lemma evalAtBasisLinear_TensorRSModel_bijective (r s : ℕ) :
     Function.Bijective (evalAtBasisLinear_TensorRSModel (E := E) r s) := by
-  haveI : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
+  have : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_finiteDimensional r s
   have h_inj := evalAtBasisLinear_TensorRSModel_injective (E := E) r s
   refine ⟨h_inj, ?_⟩

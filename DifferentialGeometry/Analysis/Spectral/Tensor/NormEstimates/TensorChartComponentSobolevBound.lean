@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -206,11 +205,11 @@ private theorem tensorChartComponentScalar_eLpNorm_le_smoothCcTensor
           ENNReal.ofReal (totalActiveConstant (I := I) (M := M) g r s) *
             ENNReal.ofReal
               (tensorL2Norm (I := I) (M := M) g r s S.toFun) :=
-      mul_le_mul_of_nonneg_right h_const_le (by exact zero_le _)
+      mul_le_mul_of_nonneg_right h_const_le (by exact zero_le)
     exact h_per.trans h_envelope_le
   · rw [eLpNorm_tensorChartComponentScalar_eq_zero_of_inactive
       (I := I) (M := M) g r s hα S Idx Jdx]
-    exact zero_le _
+    exact zero_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma tensorL2Norm_eq_norm_toCcTensor
@@ -244,7 +243,7 @@ private lemma coe_nnnorm_eq_ofReal_norm_scalar {X : Type*} [SeminormedAddCommGro
     (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -294,7 +293,7 @@ theorem tensorChartComponentScalar_eLpNorm_le
         ENNReal.ofReal C₀ * (‖S‖₊ : ℝ≥0∞) :=
     mul_le_mul_of_nonneg_left
       (ofReal_tensorL2Norm_le_norm_ennreal (I := I) (M := M) g r s S)
-      (by exact zero_le _)
+      (by exact zero_le)
   exact h_smoothCc'.trans h_rhs_le
 
 omit [NeZero (Module.finrank ℝ E)] in

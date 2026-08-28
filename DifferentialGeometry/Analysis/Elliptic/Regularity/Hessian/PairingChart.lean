@@ -62,6 +62,7 @@ private lemma smoothSubOfTwoSmooth
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => φ x - v x) :=
   φ.contMDiff.sub v.contMDiff
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
 theorem hessPairingChart_continuous
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) :
@@ -78,7 +79,7 @@ theorem hessPairingChart_memLp_two
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) :
     MemLp (hessPairingChart (I := I) g φ v) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact (hessPairingChart_continuous (I := I) g φ v).memLp_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)

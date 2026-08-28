@@ -64,6 +64,7 @@ lemma connFixGridC_nonneg (Λ : ℝ) (j : ℕ) :
     · unfold connectionDifferenceTwoC
       positivity
 
+omit [SigmaCompactSpace M] in
 theorem connFix_grid_uniform
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) :
     ∃ F : ℕ → ℝ, (∀ j, 0 ≤ F j) ∧
@@ -152,17 +153,17 @@ theorem connFix_h2_uniform
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + 0) x
           ((iteratedCovGrad (I := I) g₀ 1 2 0
             (connectionDifferenceSection (I := I) gBase g₀)).toSection x) ≤ C₀ := by
-    simpa only [C₀, A₀, R₁, connectionDifferenceZeroSqC, hDim] using hpt₀
+    simpa only [C₀, A₀, R₁, connectionDifferenceZeroSqC, hDim, Nat.cast_ofNat] using hpt₀
   have hpt₁' : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + 1) x
           ((iteratedCovGrad (I := I) g₀ 1 2 1
             (connectionDifferenceSection (I := I) gBase g₀)).toSection x) ≤ C₁ := by
-    simpa only [C₁, A₁, R₁, R₂, connectionDifferenceOneSqC, hDim] using hpt₁
+    simpa only [C₁, A₁, R₁, R₂, connectionDifferenceOneSqC, hDim, Nat.cast_ofNat] using hpt₁
   have hpt₂' : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + 2) x
           ((iteratedCovGrad (I := I) g₀ 1 2 2
             (connectionDifferenceSection (I := I) gBase g₀)).toSection x) ≤ C₂ := by
-    simpa only [C₂, A₂, R₁, R₂, R₃, connectionDifferenceTwoC, hDim] using hpt₂
+    simpa only [C₂, A₂, R₁, R₂, R₃, connectionDifferenceTwoC, hDim, Nat.cast_ofNat] using hpt₂
   have hvol := (volumeReal_cross (I := I) (M := M) gBase g₀ hEq).1
   have hvolV :
       ((riemannianVolumeMeasure (I := I) (M := M) g₀) Set.univ).toReal ≤ V := by

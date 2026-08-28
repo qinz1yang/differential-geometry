@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SlotSplitParsevalBridge
+
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -28,27 +30,41 @@ theorem tensor0S_uncurry_cons_eval_of_expansion
     {s : ℕ} {x : M} (T : Tensor0SSpace (s + 1) I x)
     {n : ℕ} (c : Fin n → ℝ) (e : Fin n → TangentSpace I x)
     (w : TangentSpace I x) (hw : w = ∑ a : Fin n, c a • e a)
-    (m : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel T (Fin.cons w m) =
+    (m : Fin s → E) :
+    Tensor0SSpace.toModel T
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       ∑ a : Fin n, c a • Tensor0SSpace.toModel
         (tensor0S_curry (I := I) (M := M) s x T (e a)) m := by
   classical
-  rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s) (b := x) T w m]
+  simp only [Tensor0SSpace.toModel_apply_model_vector]
+  let wm : Fin (s + 1) → E :=
+    Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m
+  have hcons :
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+        (wm i)) =
+        Fin.cons w
+          (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) := by
+    unfold wm
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp
+    · simp
+  rw [hcons]
+  change Tensor0SSpace.eval T
+      (Fin.cons w
+        (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))) =
+    ∑ a : Fin n, c a • Tensor0SSpace.eval
+      (tensor0S_curry (I := I) (M := M) s x T (e a))
+        (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))
+  rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s) (b := x)
+    T w (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))]
   rw [hw]
   rw [map_sum (tensor0S_curry (I := I) (M := M) s x T) (fun a => c a • e a) Finset.univ]
-  rw [show Tensor0SSpace.toModel
-        (∑ a : Fin n, tensor0S_curry (I := I) (M := M) s x T (c a • e a)) =
-      ∑ a : Fin n, Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x T (c a • e a)) from by
-    rw [← Tensor0SSpace.toModelL_apply]
-    rw [map_sum]
-    refine Finset.sum_congr rfl (fun a _ => ?_)
-    rw [Tensor0SSpace.toModelL_apply]]
-  rw [ContinuousMultilinearMap.sum_apply]
+  simp only [Tensor0SSpace.eval_eq]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [(tensor0S_curry (I := I) (M := M) s x T).map_smul (c a) (e a)]
-  rw [Tensor0SSpace.toModel_smul (c a) (tensor0S_curry (I := I) (M := M) s x T (e a))]
-  rw [ContinuousMultilinearMap.smul_apply]
+  rw [smul_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -56,11 +72,47 @@ theorem tensor0S_uncurry_cons_eval_orthonormal
     (g : SmoothRiemannianMetric I M) {s : ℕ} {x : M} (T : Tensor0SSpace (s + 1) I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (hv_expand : ∀ u : TangentSpace I x, u = ∑ a : Fin n, g.inner x (e a) u • e a)
-    (w : TangentSpace I x) (m : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel T (Fin.cons w m) =
+    (w : TangentSpace I x) (m : Fin s → E) :
+    Tensor0SSpace.toModel T
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
         (tensor0S_curry (I := I) (M := M) s x T (e a)) m :=
   tensor0S_uncurry_cons_eval_of_expansion (I := I) (M := M) T
+    (fun a => g.inner x (e a) w) e w (hv_expand w) m
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [T2Space M] [BoundarylessManifold I M] in
+theorem tensor0S_uncurry_cons_eval_of_expansion_natural
+    {s : ℕ} {x : M} (T : Tensor0SSpace (s + 1) I x)
+    {n : ℕ} (c : Fin n → ℝ) (e : Fin n → TangentSpace I x)
+    (w : TangentSpace I x) (hw : w = ∑ a : Fin n, c a • e a)
+    (m : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval T (Fin.cons w m) =
+      ∑ a : Fin n, c a • Tensor0SSpace.eval
+        (tensor0S_curry (I := I) (M := M) s x T (e a)) m := by
+  classical
+  rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s) (b := x)
+    T w m]
+  rw [hw]
+  rw [map_sum (tensor0S_curry (I := I) (M := M) s x T)
+    (fun a => c a • e a) Finset.univ]
+  simp only [Tensor0SSpace.eval_eq]
+  rw [sum_apply]
+  refine Finset.sum_congr rfl (fun a _ => ?_)
+  rw [(tensor0S_curry (I := I) (M := M) s x T).map_smul (c a) (e a)]
+  rw [smul_apply]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [T2Space M] [BoundarylessManifold I M] in
+theorem tensor0S_uncurry_cons_eval_orthonormal_natural
+    (g : SmoothRiemannianMetric I M) {s : ℕ} {x : M} (T : Tensor0SSpace (s + 1) I x)
+    {n : ℕ} (e : Fin n → TangentSpace I x)
+    (hv_expand : ∀ u : TangentSpace I x, u = ∑ a : Fin n, g.inner x (e a) u • e a)
+    (w : TangentSpace I x) (m : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval T (Fin.cons w m) =
+      ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.eval
+        (tensor0S_curry (I := I) (M := M) s x T (e a)) m :=
+  tensor0S_uncurry_cons_eval_of_expansion_natural (I := I) (M := M) T
     (fun a => g.inner x (e a) w) e w (hv_expand w) m
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -84,7 +136,6 @@ lemma slot0Curry_coframeS_eq_tensor0S_curry
       coframeS_apply (I := I) (M := M) g x 0 e K₀]
     simp
   rw [hscalar, one_smul]
-  rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -93,10 +144,11 @@ theorem tensorRS_section_uncurry_cons_eval_slot0Curry
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
     (hv_expand : ∀ u : TangentSpace I x, u = ∑ a : Fin n, g.inner x (e a) u • e a)
     (T : TensorRSSpace 0 (s + 1) I x)
-    (w : TangentSpace I x) (m : Fin s → TangentSpace I x) :
+    (w : TangentSpace I x) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
-          (coframeS (I := I) (M := M) g x 0 e K₀)) (Fin.cons w m) =
+          (coframeS (I := I) (M := M) g x 0 e K₀))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
         ((slot0Curry (I := I) (M := M) g x s e K₀ T a :
             Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x)
@@ -116,8 +168,9 @@ theorem tensor0S_eq_sum_slot0_uncurry
       n = Module.finrank ℝ (TangentSpace I x) ∧
       (∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0) ∧
       ∀ (T : Tensor0SSpace (s + 1) I x) (w : TangentSpace I x)
-        (m : Fin s → TangentSpace I x),
-        Tensor0SSpace.toModel T (Fin.cons w m) =
+        (m : Fin s → E),
+        Tensor0SSpace.toModel T
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
           ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
             (tensor0S_curry (I := I) (M := M) s x T (e a)) m := by
   classical
@@ -134,10 +187,11 @@ theorem tensorRS_section_eq_sum_slot0Curry_uncurry
       n = Module.finrank ℝ (TangentSpace I x) ∧
       (∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0) ∧
       ∀ (T : TensorRSSpace 0 (s + 1) I x) (w : TangentSpace I x)
-        (m : Fin s → TangentSpace I x),
+        (m : Fin s → E),
         Tensor0SSpace.toModel
             ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
-              (coframeS (I := I) (M := M) g x 0 e K₀)) (Fin.cons w m) =
+              (coframeS (I := I) (M := M) g x 0 e K₀))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
           ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
             ((slot0Curry (I := I) (M := M) g x s e K₀ T a :
                 Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x)

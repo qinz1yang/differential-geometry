@@ -53,7 +53,7 @@ private theorem spatialJet_contDiffOn
       (G := fun t y => fderiv Real (G t) y) hJ hV hfd
     have hcurried :=
       (continuousMultilinearCurryFin1 Real E (E →L[Real] F)).symm.contDiff.comp_contDiffOn hfd2
-    letI :
+    let :
         NormedAddCommGroup
           (ContinuousMultilinearMap Real (fun _ : Fin 1 => E) (E →L[Real] F)) :=
       ContinuousMultilinearMap.normedAddCommGroup
@@ -115,7 +115,12 @@ theorem chartGramOnE_contDiffOn
       (e.localFrame b j ((extChartAt I α).symm y))
   rw [e.localFrame_apply_of_mem_baseSet b (hmaps hp).2,
     e.localFrame_apply_of_mem_baseSet b (hmaps hp).2]
-  rfl
+  have hbase : (extChartAt I α).symm y ∈
+      (trivializationAt E (TangentSpace I) α).baseSet := (hmaps hp).2
+  simp only [chartGramOnE, chartGramMatrix, Matrix.of_apply, chartBasisVecFiber,
+    Trivialization.basisAt, Module.Basis.map_apply, e, b,
+    Trivialization.linearEquivAt_symm_apply]
+  rw [Trivialization.symmL_apply _ hbase, Trivialization.symmL_apply _ hbase]
 
 omit [CompleteSpace E] in
 theorem chartGram_jet_continuousOn
@@ -355,7 +360,7 @@ private theorem gradientCoeffOnE_continuousOn
             partialDeriv (E := E) j (scalarOnE (I := I) α ρ) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
-  refine continuousOn_finset_sum _ fun j _ => ?_
+  refine continuousOn_finsetSum _ fun j _ => ?_
   exact (chartInvGramOnE_continuousOn (I := I) hG hJreg α i j).mul
     (scalarPartialOnE_continuousOn (I := I) α hρ J j)
 
@@ -402,12 +407,14 @@ theorem gradient_continuousOn [I.Boundaryless]
         partialDeriv (E := E) j (scalarOnE (I := I) α ρ) (extChartAt I α q.2)
   have hcoeff : ∀ i, ContinuousOn (coeff i) S := by
     intro i
-    simpa only [coeff, ψ, Function.comp_apply] using
-      (gradientCoeffOnE_continuousOn (I := I) hG hJreg α hρ i).comp hψ hmapsψ
+    have h := (gradientCoeffOnE_continuousOn (I := I) hG hJreg α hρ i).comp hψ hmapsψ
+    refine h.congr ?_
+    intro q hq
+    rfl
   let coord : Real × M → E := fun q =>
     ∑ i : Fin (Module.finrank Real E), coeff i q • chartModelBasis E i
   have hcoord : ContinuousOn coord S := by
-    refine continuousOn_finset_sum _ fun i _ => ?_
+    refine continuousOn_finsetSum _ fun i _ => ?_
     exact (hcoeff i).smul continuousOn_const
   let toPair : Real × M → M × E := fun q => (q.2, coord q)
   have hpair : ContinuousOn toPair S :=
@@ -431,8 +438,7 @@ theorem gradient_continuousOn [I.Boundaryless]
       (gradFun (I := I) (G.metric q.1) ρ q.2) : TangentBundle I M) =
         TotalSpace.mk' E q.2 (e.symm q.2 (coord q))
     congr 1
-    change gradFun (I := I) (G.metric q.1) ρ q.2 =
-      e.symmL Real q.2 (coord q)
+    rw [← e.symmL_apply (R := Real) hbase (coord q)]
     rw [hcoord_eq, map_sum]
     simp only [map_smul]
     rw [← gradChartLocal_eq_gradFun (I := I) (G.metric q.1) α
@@ -443,7 +449,7 @@ theorem gradient_continuousOn [I.Boundaryless]
     unfold gradChartLocal
     apply Finset.sum_congr rfl
     intro i _
-    rw [chartBasisVecFiber, Trivialization.symmL_apply]
+    rw [chartBasisVecFiber, Trivialization.symmL_apply _ hbase]
   · intro q hq
     exact ⟨hq.1.1, hq.2.2⟩
 
@@ -462,8 +468,8 @@ private theorem gradientNormSqOnE_continuousOn
             partialDeriv (E := E) i (scalarOnE (I := I) α ρ) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
-  refine continuousOn_finset_sum _ fun i _ =>
-    continuousOn_finset_sum _ fun j _ => ?_
+  refine continuousOn_finsetSum _ fun i _ =>
+    continuousOn_finsetSum _ fun j _ => ?_
   exact ((chartInvGramOnE_continuousOn (I := I) hG hJreg α i j).mul
     (scalarPartialOnE_continuousOn (I := I) α hρ J j)).mul
     (scalarPartialOnE_continuousOn (I := I) α hρ J i)
@@ -486,11 +492,11 @@ private theorem leviCivitaLaplacianOnE_continuousOn
                   partialDeriv (E := E) k (scalarOnE (I := I) α ρ) p.2))
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
-  refine continuousOn_finset_sum _ fun i _ =>
-    continuousOn_finset_sum _ fun j _ => ?_
+  refine continuousOn_finsetSum _ fun i _ =>
+    continuousOn_finsetSum _ fun j _ => ?_
   refine (chartInvGramOnE_continuousOn (I := I) hG hJreg α i j).mul ?_
   refine (scalarSecondPartialOnE_continuousOn (I := I) α hρ J i j).sub ?_
-  refine continuousOn_finset_sum _ fun k _ => ?_
+  refine continuousOn_finsetSum _ fun k _ => ?_
   exact (chartChristoffelOnE_continuousOn (I := I) hG hJreg hJ α i j k).mul
     (scalarPartialOnE_continuousOn (I := I) α hρ J k)
 
@@ -597,9 +603,16 @@ theorem gradientAt_continuousOn [I.Boundaryless]
         (TotalSpace.mk' E p.2
           (gradientAt (I := I) G p.1 ρ p.2) : TangentBundle I M))
       (J ×ˢ (Set.univ : Set M)) := by
-  simpa only [MetricConnectionFamily.restrict_metric, gradientAt_eq] using
-    MetricFamilySmoothOn.gradient_continuousOn
-      (I := I) (G := G.restrict D) hG hJreg hρ
+  have h := MetricFamilySmoothOn.gradient_continuousOn
+    (I := I) (G := G.restrict D) hG hJreg hρ
+  have hfun : (fun p : Real × M =>
+      (TotalSpace.mk' E p.2 (gradientAt (I := I) G p.1 ρ p.2) : TangentBundle I M)) =
+      fun p : Real × M =>
+        (TotalSpace.mk' E p.2 (gradFun (I := I) (G.metric p.1) ρ p.2) : TangentBundle I M) := by
+    funext p
+    congr 1
+  rw [hfun]
+  simpa only [MetricConnectionFamily.restrict_metric] using h
 
 omit [CompleteSpace E] in
 theorem gradient_norm_sq_continuousOn [I.Boundaryless]
@@ -652,8 +665,11 @@ theorem heatOperatorWithDrift_continuousOn [I.Boundaryless] [T2Space M]
     ContinuousOn (fun p : Real × M =>
       heatOperatorWithDrift (I := I) G p.1 (X p.1) ρ p.2)
       (J ×ˢ (Set.univ : Set M)) := by
-  simpa only [heatOperatorWithDrift] using
-    (G.laplacianAt_continuousOn hG hJreg hJ hconn hρ).add hdrift
+  have h := (G.laplacianAt_continuousOn hG hJreg hJ hconn hρ).add hdrift
+  change ContinuousOn (fun p : Real × M =>
+    laplacianAt (I := I) G p.1 ρ p.2 + driftTerm (I := I) G p.1 (X p.1) ρ p.2)
+      (J ×ˢ (Set.univ : Set M)) at h
+  exact h
 
 end MetricConnectionFamily
 

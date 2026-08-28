@@ -161,7 +161,7 @@ private lemma chartLocalMeasure_open_pos_under_boundaryless [I.Boundaryless]
   have h0_eq : ∫⁻ y in W, ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y)) *
         V.indicator (fun _ => (1 : ℝ≥0∞)) ((extChartAt I α).symm y)
           ∂(modelHaar (E := E)) = 0 :=
-    le_antisymm h0 (zero_le _)
+    le_antisymm h0 bot_le
   have hT_meas : MeasurableSet (extChartAt I α).target :=
     measurableSet_extChartAt_target (I := I) α
   have haem_density_T : AEMeasurable

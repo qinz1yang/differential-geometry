@@ -127,15 +127,15 @@ theorem open_upgrade_of_raw
     exists d : FlowUpgrade (I := I) X mc,
       forall t : Real, t ∈ X.D.carrier ->
         MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
-  letI : TopologicalSpace mc.limit.M := mc.limit.topology
-  letI : ChartedSpace H mc.limit.M := mc.limit.charted
-  letI : T2Space mc.limit.M := mc.limit.t2
-  letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
-  letI : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
-  letI : IsManifold I 1 mc.limit.M :=
+  let : TopologicalSpace mc.limit.M := mc.limit.topology
+  let : ChartedSpace H mc.limit.M := mc.limit.charted
+  let : T2Space mc.limit.M := mc.limit.t2
+  let : IsManifold I ∞ mc.limit.M := mc.limit.smooth
+  let : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
+  let : IsManifold I 1 mc.limit.M :=
     IsManifold.of_le (I := I) (M := mc.limit.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) <= ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
     change IsManifold I ∞ mc.limit.M
     infer_instance
   obtain ⟨co⟩ := exists_openConv_raw (I := I) (Φ := Phi)
@@ -180,20 +180,20 @@ theorem open_upgrade_of_raw
       (nhds (metricScalarAt (I := I) (co.gInf t) x))
     refine Filter.Tendsto.congr' (Filter.Eventually.of_forall (fun k => ?_))
       (hscalarRaw t ht x)
-    letI : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).topology
-    letI : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).charted
-    letI : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).smooth
-    letI : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).sigmaCompact
-    letI : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).t2
-    letI : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
       IsManifold.of_le (n := ∞)
         (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (X.term ((mc.subseq ∘ co.φ) k)).M := by
       change IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M
       infer_instance
@@ -210,20 +210,20 @@ theorem open_upgrade_of_raw
         (metricRicci (I := I) (co.gInf t) x)))
     refine Filter.Tendsto.congr' (Filter.Eventually.of_forall (fun k => ?_))
       (hricRaw t ht x)
-    letI : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).topology
-    letI : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).charted
-    letI : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).smooth
-    letI : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).sigmaCompact
-    letI : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).t2
-    letI : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
       IsManifold.of_le (n := ∞)
         (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (X.term ((mc.subseq ∘ co.φ) k)).M := by
       change IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M
       infer_instance

@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -190,7 +189,7 @@ private lemma ccBilinSymm_add (g : SmoothRiemannianMetric I M)
       ccTensorBilinSymm (I := I) g T x v w +
         ccTensorBilinSymm (I := I) g U x v w := by
   simp only [ccTensorBilinSymm_apply, ccTensorBilin_apply, ccModel_add,
-    ContinuousMultilinearMap.add_apply]
+    add_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
@@ -214,9 +213,9 @@ lemma symmRaiseEndo_add (g : SmoothRiemannianMetric I M)
         symmRaiseEndo (I := I) (M := M) g U x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [ContinuousLinearMap.add_apply, map_add]
+  rw [add_apply, map_add]
   simp only [symmRaiseEndo_apply, inner_symmRaiseEndo]
-  rw [ContinuousLinearMap.add_apply, ccBilinSymm_add]
+  rw [add_apply, ccBilinSymm_add]
   rw [inner_symmRaiseEndo, inner_symmRaiseEndo]
 
 omit [BoundarylessManifold I M] in
@@ -238,18 +237,20 @@ lemma symmRaiseEndo_smul (g : SmoothRiemannianMetric I M) (a : ℝ)
       a • symmRaiseEndo (I := I) (M := M) g T x from by
     rw [ContMDiffSection.coe_smul]
     rfl]
-  rw [ContinuousLinearMap.smul_apply, map_smul]
+  rw [smul_apply, map_smul]
   simp only [symmRaiseEndo_apply, inner_symmRaiseEndo]
-  rw [ContinuousLinearMap.smul_apply, ccTensorBilinSymm_smul]
+  rw [smul_apply, ccTensorBilinSymm_smul]
   rw [inner_symmRaiseEndo, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_eq_bilin (g : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g 0 2) (x : M) (u w : TangentSpace I x) :
+    (S : SmoothCcTensor g 0 2) (x : M) (u w : E) :
     unitModel (I := I) (M := M) g 2 S x ![u, w] =
-      ccTensorBilin (I := I) g S x u w := by
-  rw [ccTensorBilin_apply (I := I) g S x u w, ccTensorModel]
+      ccTensorBilin (I := I) g S x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm w) := by
+  rw [ccTensorBilin_apply, ccTensorModel]
   rw [show ccTensorMultilinear (I := I) g S x =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         S.toSection x) (unitZeroSec (I := I) (M := M) x) from rfl]
@@ -261,25 +262,28 @@ private lemma unitModel_eq_bilin (g : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma interior_product_toModel_eval (s : ℕ) (x : M)
     (v : TangentSpace I x) (D : Tensor0SSpace (s + 1) I x)
-    (w : Fin s → TangentSpace I x) :
+    (w : Fin s → E) :
     Tensor0SSpace.toModel
         (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SSpace.toModel D
-        (Fin.cons (show E from v) (fun k => (show E from w k))) := by
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma toModel_om_single (x : M) (om : Tensor0SSpace 1 I x)
-    (m : Fin 1 → TangentSpace I x) :
-    Tensor0SSpace.toModel om (fun k => (m k : E)) =
-      cotangentToDual (I := I) (x := x) om (m 0) := by
-  rw [show (fun k : Fin 1 => (m k : E)) =
-      (fun _ : Fin 1 => (m 0 : E)) from by
+    (m : Fin 1 → E) :
+    Tensor0SSpace.toModel om m =
+      cotangentToDual (I := I) (x := x) om
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
+  rw [Tensor0SSpace.toModel_apply_model_vector]
+  rw [show (fun k : Fin 1 =>
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m k)) =
+      (fun _ : Fin 1 =>
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) from by
     funext k
     fin_cases k
     rfl]
   rw [cotangentToDual_apply]
-  rfl
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
@@ -304,7 +308,8 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g 0
           (symmRaiseEndo (I := I) (M := M) g T)).toSection x) om) w =
-      ccTensorBilinSymm (I := I) g T x (w 0)
+      ccTensorBilinSymm (I := I) g T x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
         (inverseMetricSharpFib (I := I) g x om) := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (slotInsertEndoCc (I := I) (M := M) g 0
@@ -314,15 +319,20 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
     rw [slotInsertEndoFib_apply_eval]
     rw [toModel_om_single (I := I) (M := M) x om
       (Function.update w 0
-        (symmRaiseEndo (I := I) (M := M) g T x (w 0)))]
-    rw [Function.update_self]
+        (tangentLinearMapToModel
+          (symmRaiseEndo (I := I) (M := M) g T x) (w 0)))]
+    rw [Function.update_self, tangentLinearMapToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply]
     rw [symmRaiseEndo_apply]
     rw [show cotangentToDual (I := I) (x := x) om
-        (symmRaiseEndoFib (I := I) (M := M) g T x (w 0)) =
+        (symmRaiseEndoFib (I := I) (M := M) g T x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))) =
       cotangentToDualLinear (I := I) (x := x) om
-        (symmRaiseEndoFib (I := I) (M := M) g T x (w 0)) from rfl]
+        (symmRaiseEndoFib (I := I) (M := M) g T x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))) from rfl]
     rw [← inverseMetricSharpFib_inner (I := I) g x om
-      (symmRaiseEndoFib (I := I) (M := M) g T x (w 0))]
+      (symmRaiseEndoFib (I := I) (M := M) g T x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0)))]
     rw [g.symm]
     rw [inner_symmRaiseEndo]
   rw [hleft]
@@ -352,17 +362,20 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
     (symmS (I := I) (M := M) g T) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
-      (Fin.cons (show E from inverseMetricSharpFib (I := I) g x om)
-        (fun k => (show E from w k)) : Fin 2 → E)
+      (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g x om)) w : Fin 2 → E)
           ((Equiv.swap (0 : Fin 2) 1) i)) =
-      (![(w 0 : E),
-        (show E from inverseMetricSharpFib (I := I) g x om)] : Fin 2 → E) from by
+      (![w 0, tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (inverseMetricSharpFib (I := I) g x om)] : Fin 2 → E) from by
     funext i
     fin_cases i <;> rfl]
   rw [unitModel_eq_bilin (I := I) (M := M) g
     (symmS (I := I) (M := M) g T) x
-    (w 0) (inverseMetricSharpFib (I := I) g x om)]
+    (w 0) (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (inverseMetricSharpFib (I := I) g x om))]
   rw [ccTensorBilin_symmS (I := I) (M := M) g T x]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
 
 end TensorSpectral
 end Parabolic

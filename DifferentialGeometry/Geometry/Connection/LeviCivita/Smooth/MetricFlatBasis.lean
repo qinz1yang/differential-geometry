@@ -90,10 +90,10 @@ private theorem localMetricCoeff_deriv_contMDiffAt
     (a i j : ι) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun q : M => localMetricCoeff (I := I) e b g i j q)
           y (e.localFrame b a y)) x := by
-  exact extDerivFun_apply_contMDiffAt_of_section
+  exact mvfderiv_apply_contMDiffAt_of_section
     (I := I)
     (f := fun q : M => localMetricCoeff (I := I) e b g i j q)
     (X := e.localFrame b a)
@@ -111,10 +111,10 @@ private theorem localMetricBracket_contMDiffAt
       (fun y : M =>
         g.inner y (e.localFrame b i y)
           (VectorField.mlieBracket I (e.localFrame b j) (e.localFrame b k) y)) x := by
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  have : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 2 M)
-  haveI : IsManifold I (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
   have hi := localFrame_contMDiffAt (I := I) e b hx i
@@ -165,8 +165,11 @@ private theorem koszulScalar_localFrame_contMDiffAt
   have h4 := localMetricBracket_contMDiffAt (I := I) e b g hx i j k
   have h5 := localMetricBracket_contMDiffAt (I := I) e b g hx j k i
   have h6 := localMetricBracket_contMDiffAt (I := I) e b g hx k i j
-  simpa [koszulScalar, directionalDeriv, localMetricCoeff] using
-    (((h1.add h2).sub h3).sub h4).add h5 |>.add h6
+  have hsum := (((h1.add h2).sub h3).sub h4).add h5 |>.add h6
+  simp only [localMetricCoeff] at hsum
+  unfold koszulScalar directionalDerivAlong
+  refine hsum.congr_of_eventuallyEq ?_
+  exact Filter.Eventually.of_forall fun _ => rfl
 
 
 private noncomputable def coordCLM {ι : Type*} (b : Module.Basis ι Real E) (i : ι) :
@@ -215,8 +218,8 @@ private theorem localFrame_sum_coord_smul
         = ∑ i : ι, b.coord i v • e.symmL Real x (b i) := by
           apply Finset.sum_congr rfl
           intro i _
-          simp [e.localFrame_apply_of_mem_baseSet (b := b) hx,
-            Bundle.Trivialization.basisAt]
+          rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
+          exact congrArg ((b.coord i v) • ·) (e.symmL_apply hx (b i)).symm
     _ = e.symmL Real x (∑ i : ι, b.coord i v • b i) := by
           rw [map_sum]
           apply Finset.sum_congr rfl
@@ -260,7 +263,7 @@ theorem localMetricFlatBasis_isInvertible {ι : Type*} [Fintype ι]
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet) :
     (localMetricFlatBasis (I := I) e b g x).IsInvertible := by
-  haveI : CompleteSpace (E →L[Real] Real) := inferInstance
+  have : CompleteSpace (E →L[Real] Real) := inferInstance
   let A : E →ₗ[Real] (E →L[Real] Real) :=
     (localMetricFlatBasis (I := I) e b g x).toLinearMap
   have hker : LinearMap.ker A = ⊥ := by
@@ -336,7 +339,7 @@ private theorem localInvMetricCoeff_contMDiffAt_of_isInvertible {ι : Type*} [Fi
     (hInv : (localMetricFlatBasis (I := I) e b g x).IsInvertible) (k l : ι) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M => localInvMetricCoeff (I := I) e b g k l y) x := by
-  haveI : CompleteSpace E := FiniteDimensional.complete Real E
+  have : CompleteSpace E := FiniteDimensional.complete Real E
   let εl : E →L[Real] Real := coordCLM (E := E) b l
   let εk : E →L[Real] Real := coordCLM (E := E) b k
   have hflat :=
@@ -466,18 +469,18 @@ private theorem localFrame_coeff_eq_sum_localInvMetric_inner {ι : Type*} [Finty
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
     (k : ι) (V : TangentSpace I x) :
-    e.localFrame_coeff I b k x V =
+    e.localFrameCoeff I b k x V =
       ∑ l : ι,
         localInvMetricCoeff (I := I) e b g k l x *
           g.inner x (e.localFrame b l x) V := by
   let v : E := e.continuousLinearMapAt Real x V
   have hcoeff :
-      e.localFrame_coeff I b k x V = b.coord k v := by
+      e.localFrameCoeff I b k x V = b.coord k v := by
     classical
     let σ : (y : M) → TangentSpace I y := fun y => if h : x = y then h ▸ V else 0
     have hσx : σ x = V := by
       simp [σ]
-    have hσ := Bundle.Trivialization.localFrame_coeff_apply_of_mem_baseSet
+    have hσ := Bundle.Trivialization.localFrameCoeff_apply_of_mem_baseSet
       (𝕜 := Real) (F := E) (V := (TangentSpace I : M → Type _)) (I := I)
       (e := e) (b := b) hx σ k
     rw [hσx] at hσ
@@ -493,7 +496,7 @@ private theorem localFrame_coeff_eq_sum_localInvMetric_inner {ι : Type*} [Finty
       exact e.symmL_continuousLinearMapAt (R := Real) hx V
     have hl : e.symmL Real x (b l) = e.localFrame b l x := by
       rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
-      simp [Bundle.Trivialization.basisAt]
+      exact e.symmL_apply hx (b l)
     rw [localMetricFlatBasis_eq_inner (I := I) e b g hx v (b l), hv, hl]
   rw [hcoeff, basis_coord_eq_sum_localInvMetric_flat (I := I) e b g hx]
   apply Finset.sum_congr rfl
@@ -506,7 +509,7 @@ private theorem lc_christoffel_eq_koszul_sum {ι : Type*} [Fintype ι]
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
     (i j k : ι) :
-    e.localFrame_coeff I b k x
+    e.localFrameCoeff I b k x
         ((leviCivitaConnectionOfMetric (I := I) g (e.localFrame b j) x)
           (e.localFrame b i x)) =
       (1 / 2 : Real) *
@@ -569,7 +572,7 @@ theorem lc_christoffel_contMDiffAt {ι : Type*} [Finite ι]
     (i j k : ι) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrame_coeff I b k y
+        e.localFrameCoeff I b k y
           ((leviCivitaConnectionOfMetric (I := I) g (e.localFrame b j) y)
             (e.localFrame b i y))) x := by
   have hRhs :
@@ -585,7 +588,7 @@ theorem lc_christoffel_contMDiffAt {ι : Type*} [Finite ι]
       (koszulScalar_localFrame_contMDiffAt (I := I) e b g hx i j l)
   have heq :
       (fun y : M =>
-        e.localFrame_coeff I b k y
+        e.localFrameCoeff I b k y
           ((leviCivitaConnectionOfMetric (I := I) g (e.localFrame b j) y)
             (e.localFrame b i y))) =ᶠ[𝓝 x]
       fun y : M =>

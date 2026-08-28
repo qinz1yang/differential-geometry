@@ -10,6 +10,7 @@ open scoped Topology Manifold ContDiff ENNReal NNReal
 
 noncomputable section
 
+
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
@@ -29,14 +30,14 @@ theorem continuous_riemannianEDist
     letI : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
     Continuous (fun q : M ↦ riemannianEDist I p q) := by
-  letI : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
+  let : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  haveI : RegularSpace M := inferInstance
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have : RegularSpace M := inferInstance
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   exact (continuous_const.edist continuous_id)
 
 attribute [local instance] normedAddCommGroupTangentSpaceVectorSpace
@@ -54,12 +55,19 @@ theorem chart_symm_edist_le
         ∀ z ∈ Metric.ball (extChartAt I x x) r ∩ range I,
           riemannianEDist I ((extChartAt I x).symm y)
               ((extChartAt I x).symm z) ≤ C * edist y z := by
+  let (y : E) : NormedAddCommGroup (TangentSpace 𝓘(ℝ, E) y) :=
+    normedAddCommGroupTangentSpaceVectorSpace y
+  let (y : E) : NormedSpace ℝ (TangentSpace 𝓘(ℝ, E) y) :=
+    normedSpaceTangentSpaceVectorSpace y
+  let D (y : E) : E →L[ℝ] TangentSpace I ((extChartAt I x).symm y) :=
+    mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm (range I) y
   rcases eventually_enorm_mfderivWithin_symm_extChartAt_lt I x with
     ⟨C, C_pos, hC⟩
+  change ∀ᶠ y in 𝓝[range I] (extChartAt I x x), ‖D y‖ₑ < C at hC
   obtain ⟨r, r_pos, hr⟩ : ∃ r > 0,
       Metric.ball (extChartAt I x x) r ∩ range I ⊆
         (extChartAt I x).target ∩
-          {y | ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C} :=
+          {y | ‖D y‖ₑ < C} :=
     Metric.mem_nhdsWithin_iff.1
       (inter_mem (extChartAt_target_mem_nhdsWithin x) hC)
   refine ⟨C, C_pos, r, r_pos, ?_⟩
@@ -67,7 +75,7 @@ theorem chart_symm_edist_le
   let eta := ContinuousAffineMap.lineMap (R := ℝ) y z
   set gamma := (extChartAt I x).symm ∘ eta
   have heta : Icc 0 1 ⊆ ⇑eta ⁻¹' ((extChartAt I x).target ∩
-      {w | ‖mfderiv[range I] (extChartAt I x).symm w‖ₑ < C}) := by
+      {w | ‖D w‖ₑ < C}) := by
     simp only [← image_subset_iff, ContinuousAffineMap.coe_lineMap_eq,
       ← segment_eq_image_lineMap, eta]
     apply Subset.trans _ hr
@@ -99,10 +107,9 @@ theorem chart_symm_edist_le
     · rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
       exact uniqueDiffOn_Icc zero_lt_one t ht
   have happly : mfderiv[Icc 0 1] gamma t 1 =
-      (mfderiv[range I] (extChartAt I x).symm (eta t))
-        (mfderiv[Icc 0 1] eta t 1) := congr($hcomp 1)
+      D (eta t) (mfderiv[Icc 0 1] eta t 1) := congr($hcomp 1)
   rw [happly]
-  apply (ContinuousLinearMap.le_opNorm_enorm _ _).trans
+  apply (ContinuousLinearMap.le_opENorm (D (eta t)) _).trans
   gcongr
   · exact (heta.2 ht).le
   · simp only [mfderivWithin_eq_fderivWithin]
@@ -268,7 +275,9 @@ theorem chart_inv_edist_le
   have hyCoord :
       y₀ ∈ ((extChartAt I α).symm ≫ extChartAt I q).source := by
     rw [PartialEquiv.trans_source]
-    exact ⟨hy₀, by simpa only [q] using mem_extChartAt_source (I := I) q⟩
+    refine ⟨hy₀, ?_⟩
+    change (extChartAt I α).symm y₀ ∈ (extChartAt I q).source
+    simpa only [q] using mem_extChartAt_source (I := I) q
   have hF : ContDiffWithinAt ℝ 1 F (range I) y₀ := by
     simpa only [F] using
       contDiffWithinAt_ext_coord_change (I := I) q α hyCoord
@@ -328,9 +337,9 @@ theorem continuousOn_riemannianEDist_toReal_on_finite
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
     ContinuousOn (fun q : M ↦ (riemannianEDist I p q).toReal)
       {q : M | riemannianEDist I p q ≠ (∞ : ℝ≥0∞)} := by
-  letI : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
+  let : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
   refine ENNReal.continuousOn_toReal.comp'
     (continuous_riemannianEDist g p).continuousOn (fun q hq ↦ ?_)

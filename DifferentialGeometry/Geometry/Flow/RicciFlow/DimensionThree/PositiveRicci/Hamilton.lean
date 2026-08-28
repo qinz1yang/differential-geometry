@@ -31,8 +31,8 @@ theorem hamilton_positive_ricci
     (hpos : admitsPositiveRicci (I := I) (M := M)) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) ∧
       isSphericalSpaceForm (I := I) (M := M) := by
-  haveI : I.Boundaryless := hM.2.2.1
-  haveI : NeZero (Module.finrank Real E) := ⟨by
+  have : I.Boundaryless := hM.2.2.1
+  have : NeZero (Module.finrank Real E) := ⟨by
     rw [hM.2.2.2]; norm_num⟩
   have hconst :
       admitsConstantPositiveSectionalCurvature (I := I) (M := M) :=

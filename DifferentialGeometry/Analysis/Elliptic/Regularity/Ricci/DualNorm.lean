@@ -110,8 +110,8 @@ theorem chartRicciDualNormSq_contMDiffOn
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
   unfold chartRicciDualNormSq
-  refine contMDiffOn_finset_sum (fun i _ => ?_)
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun i _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   have h1 := ricciCovectorChartCoord_contMDiffOn (I := I) g α φ i
   have h2 := ricciCovectorChartCoord_contMDiffOn (I := I) g α φ j
   have h3 := chartInvGramMatrix_entry_contMDiffOn (I := I) g α i j
@@ -222,10 +222,10 @@ lemma inner_ricciSharpChartLocal_chartBasis
                 chartBasisVecFiber (I := I) α i b)) =
             (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
                 g.inner b (chartBasisVecFiber (I := I) α i b)) from ?_]
-    · rw [ContinuousLinearMap.sum_apply]
+    · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
     · rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -384,10 +384,10 @@ private lemma inner_ricciSharpChartLocal_self_eq
       intro i _
       rw [map_smul]
     rw [hL]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     have hR :
         g.inner b (chartBasisVecFiber (I := I) α i b)
             (∑ j, ricciSharpChartCoeff (I := I) g α φ j b •

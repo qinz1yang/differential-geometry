@@ -9,7 +9,6 @@ open DifferentialGeometry.Integral.L2 (SmoothCcTensor)
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -82,11 +81,11 @@ theorem chart_pulled_covApply_explicit_formula
             (chartTensorRSOutputSlotCorrection (I := I) r s g α
               T.toFun B.toFun b l) := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
     tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
     tensorRSBundle_fiber r s
   have hb_baseRS : b ∈ (trivializationAt (TensorRSModel r s ℝ E)

@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -39,7 +38,6 @@ def TensorNullEigenvectorLowerBound
 theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     {G : Real → SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
@@ -170,7 +168,6 @@ theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
 theorem tensor_positive_definite_on_of_strict_supersolution
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     {G : Real → SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
@@ -196,7 +193,6 @@ theorem tensor_positive_definite_on_of_strict_supersolution
 theorem tensor_positive_definite_on_of_null_reaction_lower_bound
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     {G : Real → SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}

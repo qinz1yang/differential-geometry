@@ -279,7 +279,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
           christoffelVariation x p i j)
     (hgrad :
       ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+        mvfderiv (I := I) potential x (coordinateFrameAt (I := I) x p x) =
           gradPotential x p)
     (hzero : ∀ x : M, ∀ d i j : CoordinateIdx (𝕜 := Real) E,
       inverseMetricCovDerivForMetricCompInFrame
@@ -293,7 +293,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
         x d i j = 0)
     (hNabla : ∀ x : M, ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
       nablaChristoffelVariation x d k i j =
-        extDerivFun (I := I) (compFun (I := I) A x k i j) x
+        mvfderiv (I := I) (compFun (I := I) A x k i j) x
             (coordinateFrameAt (I := I) x d x) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             christoffelSymbolInFrame
@@ -521,7 +521,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
           christoffelVariation x p i j)
     (hgrad :
       ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+        mvfderiv (I := I) potential x (coordinateFrameAt (I := I) x p x) =
           gradPotential x p)
     (hzero : ∀ x : M, ∀ d i j : CoordinateIdx (𝕜 := Real) E,
       inverseMetricCovDerivForMetricCompInFrame
@@ -535,7 +535,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
         x d i j = 0)
     (hNabla : ∀ x : M, ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
       nablaChristoffelVariation x d k i j =
-        extDerivFun (I := I) (compFun (I := I) A x k i j) x
+        mvfderiv (I := I) (compFun (I := I) A x k i j) x
             (coordinateFrameAt (I := I) x d x) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             christoffelSymbolInFrame

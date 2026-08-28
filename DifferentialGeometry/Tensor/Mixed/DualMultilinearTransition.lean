@@ -6,6 +6,7 @@ import DifferentialGeometry.Tensor.Mixed.Naturality
 import DifferentialGeometry.Tensor.Product.Section
 import DifferentialGeometry.Tensor.Product.HomEquiv
 
+
 namespace DifferentialGeometry.Tensor.Mixed
 
 
@@ -27,7 +28,6 @@ variable {E : B → Type*} [∀ x, NormedAddCommGroup (E x)] [∀ x, NormedSpace
   [TopologicalSpace (TotalSpace F E)]
   [FiberBundle F E] [VectorBundle 𝕜 F E]
 
-set_option backward.isDefEq.respectTransparency false
 
 local instance (r : ℕ) : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
   continuousMultilinearMap_finiteDimensional r
@@ -104,11 +104,14 @@ theorem dualMultilinearSymmTransition {r : ℕ} (x₀ x : B)
         𝕜 x (v i))
       (((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx).symm a)
     rw [Trivialization.symmL_continuousLinearMapAt _ hxx_dual] at hdual
-    have h_symm_eq :
-        ((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx).symm a =
-          (trivializationAt F E x).symmL 𝕜 x a := rfl
-    rw [h_symm_eq, Trivialization.continuousLinearMapAt_symmL _ hxx] at hdual
-    exact hdual.symm
+    rw [← Trivialization.coe_continuousLinearEquivAt_eq' _ hxx] at hdual
+    calc
+      _ = (Trivialization.continuousLinearMapAt 𝕜
+          (trivializationAt (F →L[𝕜] 𝕜) (_root_.Bundle.dual 𝕜 E) x) x (v i))
+          (((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx)
+            (((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx).symm a)) := by
+            rw [((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx).apply_symm_apply]
+      _ = _ := hdual.symm
   have hx_dual_x₀ :
       x ∈ (trivializationAt (F →L[𝕜] 𝕜) (_root_.Bundle.dual 𝕜 E) x₀).baseSet :=
     hx_dual
@@ -123,11 +126,14 @@ theorem dualMultilinearSymmTransition {r : ℕ} (x₀ x : B)
         𝕜 x (v i))
       (((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).symm (Φ a))
     rw [Trivialization.symmL_continuousLinearMapAt _ hx_dual_x₀] at hdual
-    have h_symm_eq :
-        ((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).symm (Φ a) =
-          (trivializationAt F E x₀).symmL 𝕜 x (Φ a) := rfl
-    rw [h_symm_eq, Trivialization.continuousLinearMapAt_symmL _ hx] at hdual
-    exact hdual.symm
+    rw [← Trivialization.coe_continuousLinearEquivAt_eq' _ hx] at hdual
+    calc
+      _ = (Trivialization.continuousLinearMapAt 𝕜
+          (trivializationAt (F →L[𝕜] 𝕜) (_root_.Bundle.dual 𝕜 E) x₀) x (v i))
+          (((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx)
+            (((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).symm (Φ a))) := by
+            rw [((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).apply_symm_apply]
+      _ = _ := hdual.symm
   rw [hLHS]
   change _ =
     ((trivializationAt (F →L[𝕜] 𝕜) (_root_.Bundle.dual 𝕜 E) x₀).continuousLinearMapAt

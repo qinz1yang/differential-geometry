@@ -182,7 +182,7 @@ lemma eigenvectorChartWeakPartial_memWkp_and_wkpNorm_le
           covGradAggregate (I := I) (M := M) g r s i K β :=
       mul_le_mul_of_nonneg_left
         (chartCompNorm_center_le_covGradAggregate (I := I) (M := M)
-          g r s i K β P) (zero_le _)
+          g r s i K β P) (zero_le)
 
 omit [CompleteSpace E] in
 lemma eigenvectorChartWeakPartial_wkpNorm_le_uniform
@@ -303,7 +303,7 @@ lemma eigenvectorChartWeakPartial_wkpNorm_le_uniform
           covGradAggregate (I := I) (M := M) g r s i K β :=
       mul_le_mul_of_nonneg_left
         (chartCompNorm_center_le_covGradAggregate (I := I) (M := M)
-          g r s i K β P) (zero_le _)
+          g r s i K β P) (zero_le)
     _ = ENNReal.ofReal (i.fst.val)⁻¹ *
           covGradAggregate (I := I) (M := M) g r s i K β := by
       rw [hμ_norm]

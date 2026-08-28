@@ -40,7 +40,7 @@ def christoffelCoordFun
 def christoffelCoordDerivAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (x₀ : M) (dir i j k : CoordinateIdx (𝕜 := Real) E) : Real :=
-  extDerivFun (I := I) (christoffelCoordFun (I := I) cov x₀ i j k) x₀
+  mvfderiv (I := I) (christoffelCoordFun (I := I) cov x₀ i j k) x₀
     (coordinateFrameAt (I := I) x₀ dir x₀)
 
 def christoffelCurvCoeffAt
@@ -108,7 +108,8 @@ private theorem covariantDerivative_finset_sum
   | insert i t hit ih =>
       have hσi : MDiffAt (T% (σ i)) x := hσ i
       have hsum : MDiffAt (T% (t.sum σ)) x := by
-        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ) hσ
+        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ)
+          (fun i _ => hσ i)
         simpa using hsum_raw
       calc
         (cov ((insert i t).sum σ) x) v
@@ -133,7 +134,7 @@ private theorem covariantDerivative_coordFrame_coeff
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff a p (V p)) x₀) :
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff m x₀
         ((cov V x₀) (coordinateFrameAt (I := I) x₀ i x₀)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M =>
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff m p (V p)) x₀
         (coordinateFrameAt (I := I) x₀ i x₀) +
@@ -157,21 +158,31 @@ private theorem covariantDerivative_coordFrame_coeff
   have hsum_diff : MDiffAt
       (T% ((Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum term)) x₀ := by
     simpa using MDifferentiableAt.sum_section
-      (s := (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E))) (t := term) hterm_diff
+      (s := (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E))) (t := term)
+      (fun a _ => hterm_diff a)
   have hV_ev :
       V =ᶠ[nhds x₀]
         fun p : M => ∑ a : CoordinateIdx (𝕜 := Real) E, z a p • frame a p := by
     filter_upwards
       [(coordinateFrameSet_open (I := I) x₀).mem_nhds hx₀] with p hp
-    simpa [z, frame, hframe] using (hframe.coeff_sum_eq V hp)
+    change V p = ∑ a, hframe.coeff a p (V p) • frame a p
+    exact hframe.coeff_sum_eq V hp
   have hcov_congr :
       cov V x₀ = cov ((Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum term) x₀ :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hV hsum_diff
-      (by simp) (by simpa [term] using hV_ev)
+      (by simp) (by
+        filter_upwards [hV_ev] with p hp
+        calc
+          V p = ∑ a, z a p • frame a p := hp
+          _ = ∑ a, (z a • frame a) p := by
+            refine Finset.sum_congr rfl (fun a _ => ?_)
+            rfl
+          _ = ((Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum term) p := by
+            rw [Finset.sum_apply])
   have hcov_sum :
       (cov V x₀) (frame i x₀) =
         ∑ a : CoordinateIdx (𝕜 := Real) E,
-          (extDerivFun (I := I) (z a) x₀ (frame i x₀) • frame a x₀ +
+          (mvfderiv (I := I) (z a) x₀ (frame i x₀) • frame a x₀ +
             z a x₀ • (cov (frame a) x₀) (frame i x₀)) := by
     calc
       (cov V x₀) (frame i x₀)
@@ -182,7 +193,7 @@ private theorem covariantDerivative_coordFrame_coeff
             exact covariantDerivative_finset_sum (I := I) cov
               (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)) term (frame i x₀) hterm_diff
       _ = ∑ a : CoordinateIdx (𝕜 := Real) E,
-            (extDerivFun (I := I) (z a) x₀ (frame i x₀) • frame a x₀ +
+            (mvfderiv (I := I) (z a) x₀ (frame i x₀) • frame a x₀ +
               z a x₀ • (cov (frame a) x₀) (frame i x₀)) := by
             refine Finset.sum_congr rfl fun a _ => ?_
             have hleib := congr($(cov.isCovariantDerivativeOnUniv.leibniz
@@ -195,9 +206,9 @@ private theorem covariantDerivative_coordFrame_coeff
   rw [Finset.sum_add_distrib]
   have hdiag :
       (∑ a : CoordinateIdx (𝕜 := Real) E,
-          extDerivFun (I := I) (z a) x₀ (frame i x₀) *
+          mvfderiv (I := I) (z a) x₀ (frame i x₀) *
             hframe.coeff m x₀ (frame a x₀)) =
-        extDerivFun (I := I) (z m) x₀ (frame i x₀) := by
+        mvfderiv (I := I) (z m) x₀ (frame i x₀) := by
     have hcoeff_frame (a : CoordinateIdx (𝕜 := Real) E) :
         hframe.coeff m x₀ (frame a x₀) = if a = m then 1 else 0 := by
       rw [coordinateFrameAt_coeff_eq_toBasis_coord (I := I) x₀ (frame a x₀) m]
@@ -216,10 +227,10 @@ private theorem covariantDerivative_coordFrame_coeff
         simpa [coordinateFrameAt_toBasis_apply, Finsupp.single_apply, ham] using hb
     rw [show
       (∑ a : CoordinateIdx (𝕜 := Real) E,
-          extDerivFun (I := I) (z a) x₀ (frame i x₀) *
+          mvfderiv (I := I) (z a) x₀ (frame i x₀) *
             hframe.coeff m x₀ (frame a x₀)) =
         ∑ a : CoordinateIdx (𝕜 := Real) E,
-          (if a = m then extDerivFun (I := I) (z m) x₀ (frame i x₀) else 0) by
+          (if a = m then mvfderiv (I := I) (z m) x₀ (frame i x₀) else 0) by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hcoeff_frame a]
         by_cases ham : a = m
@@ -335,11 +346,14 @@ theorem christoffelCoordFun_mdiffAt_one
     simpa [Z, frame] using
       coordinateFrame_covariantDeriv_mdiffAt_one (I := I) cov hcov x₀ i j
   have hcoeff :=
-    mdifferentiableAt_localFrame_coeff
+    mdifferentiableAt_localFrameCoeff
       (I := I) (e := e) (b := b) hx hZ k
-  simpa [christoffelCoordFun, christoffelSymbolInFrame, e, b, frame, Z,
-    coordinateFrameAt, coordinateFrameAt_isLocalFrame_one,
-    coordinateTrivializationAt] using hcoeff
+  change MDifferentiableAt I 𝓘(Real, Real)
+    (fun x => (Trivialization.localFrameCoeff I
+      (trivializationAt E (TangentSpace I) x₀) (Module.finBasis ℝ E) k x)
+      ((cov (coordinateFrameAt (I := I) x₀ j) x)
+        (coordinateFrameAt (I := I) x₀ i x))) x₀
+  exact hcoeff
 
 private theorem coordinateFrame_coeff_contMDiffAt_of_contMDiffAt
     (Z : (x : M) -> TangentSpace I x) {x₀ : M}
@@ -354,12 +368,14 @@ private theorem coordinateFrame_coeff_contMDiffAt_of_contMDiffAt
   have hx : x₀ ∈ e.baseSet := by
     simp [e, coordinateTrivializationAt]
   have hcoeff :=
-    contMDiffAt_localFrame_coeff
+    contMDiffAt_localFrameCoeff
       (I := I) (V := TangentSpace I) (e := e)
       (b := Module.finBasis Real E) (s := Z)
       (k := (∞ : WithTop ℕ∞)) hx hZ j
-  simpa [e, coordinateTrivializationAt, coordinateFrameAt_isLocalFrame_one,
-    coordinateFrameAt] using hcoeff
+  change ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+    (fun y => (Trivialization.localFrameCoeff I
+      (trivializationAt E (TangentSpace I) x₀) (Module.finBasis ℝ E) j y) (Z y)) x₀
+  exact hcoeff
 
 theorem connection_curvature_coord_of_christoffel
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -763,7 +779,20 @@ theorem ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
           christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
             ((coordinateFrameAt_toBasis (I := I) x₀).repr
               (coordinateFrameAt (I := I) x₀ m x₀)) a := by
-    simpa [basis, coordinateFrameAt_toBasis_apply, dualToCotangent_apply_gen] using h
+    calc
+      ((Rm13 x₀) (dualToCotangent_gen (I := I) (basis.coord a)))
+          (vec3 (basis a) (basis i) (basis j)) =
+        ∑ m : CoordinateIdx (𝕜 := Real) E,
+          christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
+            (dualToCotangent_gen (I := I) (basis.coord a))
+              (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ m x₀) := by
+        simpa [basis, coordinateFrameAt_toBasis_apply] using h
+      _ = ∑ m : CoordinateIdx (𝕜 := Real) E,
+          christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
+            ((coordinateFrameAt_toBasis (I := I) x₀).repr
+              (coordinateFrameAt (I := I) x₀ m x₀)) a := by
+        refine Finset.sum_congr rfl (fun m _ => ?_)
+        congr 1
   rw [h']
   exact hsum
 

@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -46,7 +45,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
   rw [modelRankCast, finCongr_refl]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem interiorProductField_contMDiff (s : ℕ)
@@ -59,9 +57,9 @@ theorem interiorProductField_contMDiff (s : ℕ)
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace s I z) x
         (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x (X x) (α x))) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
   intro x₀
   rw [Bundle.contMDiffAt_section (F := Tensor0SBundle.Tensor0SModel s ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace s I z)]
@@ -101,7 +99,6 @@ theorem interiorProductField_contMDiff (s : ℕ)
   · intro j
     rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem contractTraceField_contMDiff (r s : ℕ)
@@ -114,15 +111,15 @@ theorem contractTraceField_contMDiff (r s : ℕ)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x
         (Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s x
           (T x))) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (1 + r) (s + 1)
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (1 + r)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r
   intro x₀
   rw [Bundle.contMDiffAt_section (F := Tensor0SBundle.TensorRSModel r s ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)]
@@ -148,7 +145,7 @@ theorem contractTraceField_contMDiff (r s : ℕ)
   have h_cLMAt : ∀ (k : ℕ) (U : Tensor0SBundle.Tensor0SSpace k I x) (v : Fin k → E),
       (trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
         (fun z : M => Tensor0SBundle.Tensor0SSpace k I z) x₀).continuousLinearMapAt ℝ x U v =
-      U (fun i => L (v i)) := by
+      Tensor0SBundle.Tensor0SSpace.toModel U (fun i => L (v i)) := by
     intro k U v
     rw [Trivialization.continuousLinearMapAt_apply,
       show ⇑((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
@@ -158,8 +155,9 @@ theorem contractTraceField_contMDiff (r s : ℕ)
       (trivializationAt _ _ x₀).coe_linearMapAt_of_mem (R := ℝ) hx]
     rfl
   have h_symmL : ∀ (k : ℕ) (U : Tensor0SBundle.Tensor0SModel k ℝ E) (u : Fin k → E),
-      ((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
-        (fun z : M => Tensor0SBundle.Tensor0SSpace k I z) x₀).symmL ℝ x U) u =
+      Tensor0SBundle.Tensor0SSpace.toModel
+        ((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
+          (fun z : M => Tensor0SBundle.Tensor0SSpace k I z) x₀).symmL ℝ x U) u =
         U (fun i => Linv (u i)) := by
     intro k U u
     have h_inv : ∀ z : E, L (Linv z) = z := by
@@ -169,9 +167,11 @@ theorem contractTraceField_contMDiff (r s : ℕ)
     have hu : u = fun i => L (Linv (u i)) := by
       funext i; exact (h_inv (u i)).symm
     calc
-      ((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
-        (fun z : M => Tensor0SBundle.Tensor0SSpace k I z) x₀).symmL ℝ x U) u
-          = ((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
+      Tensor0SBundle.Tensor0SSpace.toModel
+          ((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
+            (fun z : M => Tensor0SBundle.Tensor0SSpace k I z) x₀).symmL ℝ x U) u
+          = Tensor0SBundle.Tensor0SSpace.toModel
+            ((trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
               (fun z : M => Tensor0SBundle.Tensor0SSpace k I z) x₀).symmL ℝ x U)
               (fun i => L (Linv (u i))) := by rw [← hu]
       _ = (trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
@@ -197,13 +197,15 @@ theorem contractTraceField_contMDiff (r s : ℕ)
       ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (s + 1) L)
         (Tx ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β))) v
     rw [h_cLMAt, Tensor0SBundle.model_covariantChange_apply]
-    have hβ :
-        (trivializationAt (Tensor0SBundle.Tensor0SModel (1 + r) ℝ E)
-          (fun z : M => Tensor0SBundle.Tensor0SSpace (1 + r) I z) x₀).symmL ℝ x β =
+    rw [← Tensor0SBundle.TensorRSSpace.toModel_apply_toModel]
+    have hβ : Tensor0SBundle.Tensor0SSpace.toModel
+        ((trivializationAt (Tensor0SBundle.Tensor0SModel (1 + r) ℝ E)
+          (fun z : M => Tensor0SBundle.Tensor0SSpace (1 + r) I z) x₀).symmL ℝ x β) =
           (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β := by
       refine ContinuousMultilinearMap.ext fun u => ?_
-      rw [h_symmL]; rfl
-    rw [hβ]; rfl
+      exact h_symmL (1 + r) β u
+    rw [hβ, hTxdef]
+    rfl
   have h_output :
       (trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
         (fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x₀
@@ -243,7 +245,6 @@ theorem contractTraceField_contMDiff (r s : ℕ)
   exact (Tensor0SBundle.model_contract_trace_naturality (𝕜 := ℝ) (E := E)
     r s L Linv hL Tx).symm
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem tensor0SField_castRank_contMDiff {m n : ℕ} (h : m = n)
@@ -285,7 +286,7 @@ theorem modelDoubleTrace_apply (s : ℕ) (L : Tensor0SBundle.Tensor0SModel 1 ℝ
             (Fin.cons ((Module.finBasis ℝ E) k) m)) := by
   classical
   rw [modelDoubleTrace]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousMultilinearMap.sum_apply,
+  simp only [sum_apply, sum_apply,
     ContinuousLinearMap.comp_apply]
   rfl
 
@@ -376,7 +377,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
       raiseSlot0ModelL (E := E) s (cometricLmodel (I := I) g₀ x)
         (Tensor0SBundle.Tensor0SSpace.toModel D) := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [SigmaCompactSpace M] in
 theorem cometricRaiseSlot0Fib_section_contMDiff (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -430,7 +430,6 @@ theorem contract_trace_unitZero_toModel (s : ℕ) (x : M)
   rw [Tensor0SBundle.contract_trace]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -511,7 +510,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
       (modelRankCast (E := E) (rfl : (p + 2) = p + 2) (Tensor0SBundle.Tensor0SSpace.toModel D)) = _
   rw [modelRankCast_refl]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -587,7 +585,7 @@ private theorem model_cons_slot0_sum {s : ℕ} {ι : Type*} (fs : Finset ι)
       ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s + 1) => E) ℝ) T u) rest := by
     intro u
     rw [continuousMultilinearCurryLeftEquiv_apply]
-  rw [h, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [h, map_sum, sum_apply]
   exact Finset.sum_congr rfl fun i _ => (h (f i)).symm
 
 
@@ -599,7 +597,7 @@ private theorem model_cons_slot0_smul {s : ℕ} (c : ℝ) (u : E)
       ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s + 1) => E) ℝ) T z) rest := by
     intro z
     rw [continuousMultilinearCurryLeftEquiv_apply]
-  rw [h, map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul, ← h]
+  rw [h, map_smul, smul_apply, smul_eq_mul, ← h]
 
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -675,24 +673,34 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem cometricLmodel_dualBasis_inner (g₀ : SmoothRiemannianMetric I M) (y : M)
     (k : Fin (Module.finrank ℝ E)) (u : TangentSpace I y) :
-    g₀.inner y (cometricLmodel (I := I) g₀ y
+    g₀.inner y ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+      (cometricLmodel (I := I) g₀ y
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))) u =
-      (Module.finBasis ℝ E).repr (u : E) k := by
-  have h1 : cometricLmodel (I := I) g₀ y
+          ((Module.finBasis ℝ E).cDualBasis k)))) u =
+      (Module.finBasis ℝ E).repr
+        (tangentSpaceModelContinuousLinearEquiv (I := I) y u) k := by
+  have h1 : (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+      (cometricLmodel (I := I) g₀ y
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k)) =
+          ((Module.finBasis ℝ E).cDualBasis k))) =
       inverseMetricSharpFib (I := I) g₀ y
         ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
           (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k))) := rfl
   rw [h1, inverseMetricSharpFib_inner (I := I) g₀ y _ u, cotangentToDualLinear_apply,
     cotangentToDual_apply]
-  have h2 : (((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
+  change Tensor0SBundle.Tensor0SSpace.eval
+      ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))) (fun _ : Fin 1 => u) : ℝ) =
+          ((Module.finBasis ℝ E).cDualBasis k))) (fun _ : Fin 1 => u) = _
+  have h2 : Tensor0SBundle.Tensor0SSpace.eval
+      ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
+        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          ((Module.finBasis ℝ E).cDualBasis k))) (fun _ : Fin 1 => u) =
       Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-        ((Module.finBasis ℝ E).cDualBasis k) (fun _ : Fin 1 => (u : E)) := rfl
+        ((Module.finBasis ℝ E).cDualBasis k)
+          (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) y u) := by
+    exact Tensor0SBundle.Tensor0SSpace.eval_ofModel _ _
   rw [h2, Tensor0SBundle.model_covectorOfCLM_apply]
   rw [show ((Module.finBasis ℝ E).cDualBasis k) =
       LinearMap.toContinuousLinearMap ((Module.finBasis ℝ E).coord k) from by
@@ -710,88 +718,125 @@ theorem cometric_dualTrace_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M
     (T : Tensor0SBundle.Tensor0SModel (s + 2) ℝ E) (mm : Fin s → E) :
     ∑ k : Fin (Module.finrank ℝ E),
         T (Fin.cons (cometricLmodel (I := I) g₀ y
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k)))
+                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) mm)) =
       ∑ i : Fin (Module.finrank ℝ E),
-        T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) mm)) := by
+        T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₀ x i y))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₀ x i y)) mm)) := by
   classical
   have hsharp : ∀ (k : Fin (Module.finrank ℝ E)) (u : TangentSpace I y),
-      g₀.inner y (cometricLmodel (I := I) g₀ y
+      g₀.inner y ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+        (cometricLmodel (I := I) g₀ y
           (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-            ((Module.finBasis ℝ E).cDualBasis k))) u =
-        (Module.finBasis ℝ E).repr (u : E) k :=
+            ((Module.finBasis ℝ E).cDualBasis k)))) u =
+        (Module.finBasis ℝ E).repr
+          (tangentSpaceModelContinuousLinearEquiv (I := I) y u) k :=
     fun k u => cometricLmodel_dualBasis_inner (I := I) g₀ y k u
   have hexp : ∀ k : Fin (Module.finrank ℝ E),
-      cometricLmodel (I := I) g₀ y
+      (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+        (cometricLmodel (I := I) g₀ y
           (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-            ((Module.finBasis ℝ E).cDualBasis k)) =
+            ((Module.finBasis ℝ E).cDualBasis k))) =
         ∑ i : Fin (Module.finrank ℝ E),
           ((Module.finBasis ℝ E).repr
-              ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) k) •
+              (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                (smoothOrthoFrame (I := I) g₀ x i y)) k) •
             smoothOrthoFrame (I := I) g₀ x i y := by
     intro k
     conv_lhs => rw [smoothOrthoFrame_expansion_at (I := I) g₀ x hy
-      (cometricLmodel (I := I) g₀ y
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+        (cometricLmodel (I := I) g₀ y
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k)))]
+          ((Module.finBasis ℝ E).cDualBasis k))))]
     exact Finset.sum_congr rfl fun i _ => by
       rw [hsharp k (smoothOrthoFrame (I := I) g₀ x i y)]
+  have hexp_model : ∀ k : Fin (Module.finrank ℝ E),
+      cometricLmodel (I := I) g₀ y
+            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              ((Module.finBasis ℝ E).cDualBasis k)) =
+        ∑ i : Fin (Module.finrank ℝ E),
+          ((Module.finBasis ℝ E).repr
+              (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                (smoothOrthoFrame (I := I) g₀ x i y)) k) •
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₀ x i y) := by
+    intro k
+    simpa only [ContinuousLinearEquiv.apply_symm_apply, map_sum, map_smul, RingHom.id_apply] using
+      congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) y) (hexp k)
   calc ∑ k : Fin (Module.finrank ℝ E),
       T (Fin.cons (cometricLmodel (I := I) g₀ y
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k)))
+              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) mm))
       = ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
           ((Module.finBasis ℝ E).repr
-              ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) k) *
-            T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
+              (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                (smoothOrthoFrame (I := I) g₀ x i y)) k) *
+            T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y))
                 (Fin.cons ((Module.finBasis ℝ E) k) mm)) := by
         refine Finset.sum_congr rfl fun k _ => ?_
-        rw [hexp k, model_cons_slot0_sum (E := E)]
+        rw [hexp_model k, model_cons_slot0_sum (E := E)]
         exact Finset.sum_congr rfl fun i _ => model_cons_slot0_smul (E := E) _ _ T _
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           ((Module.finBasis ℝ E).repr
-              ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) k) *
-            T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
+              (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                (smoothOrthoFrame (I := I) g₀ x i y)) k) *
+            T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y))
                 (Fin.cons ((Module.finBasis ℝ E) k) mm)) := Finset.sum_comm
     _ = ∑ i : Fin (Module.finrank ℝ E),
-          T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) mm)) := by
+          T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                (smoothOrthoFrame (I := I) g₀ x i y))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                (smoothOrthoFrame (I := I) g₀ x i y)) mm)) := by
         refine Finset.sum_congr rfl fun i _ => ?_
         have hcurry : ∀ z : E,
-            T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
+            T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y))
                 (Fin.cons z mm)) =
             ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s + 2) => E) ℝ) T
-                ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E))
+                (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y)))
               (Fin.cons z mm) := by
           intro z
           rw [continuousMultilinearCurryLeftEquiv_apply]
         calc ∑ k : Fin (Module.finrank ℝ E),
             ((Module.finBasis ℝ E).repr
-                ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) k) *
-              T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
+                (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y)) k) *
+              T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                    (smoothOrthoFrame (I := I) g₀ x i y))
                   (Fin.cons ((Module.finBasis ℝ E) k) mm))
             = ∑ k : Fin (Module.finrank ℝ E),
                 ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s + 2) => E) ℝ) T
-                    ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E))
+                    (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                      (smoothOrthoFrame (I := I) g₀ x i y)))
                   (Fin.cons (((Module.finBasis ℝ E).repr
-                      ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) k) •
+                      (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                        (smoothOrthoFrame (I := I) g₀ x i y)) k) •
                     ((Module.finBasis ℝ E) k)) mm) := by
               refine Finset.sum_congr rfl fun k _ => ?_
               rw [model_cons_slot0_smul (E := E), ← hcurry]
           _ = ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s + 2) => E) ℝ) T
-                  ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E))
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                    (smoothOrthoFrame (I := I) g₀ x i y)))
                 (Fin.cons (∑ k : Fin (Module.finrank ℝ E),
                   ((Module.finBasis ℝ E).repr
-                      ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) k) •
+                      (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                        (smoothOrthoFrame (I := I) g₀ x i y)) k) •
                     ((Module.finBasis ℝ E) k)) mm) :=
               (model_cons_slot0_sum (E := E) Finset.univ _ _ mm).symm
-          _ = T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)
-                (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) mm)) := by
+          _ = T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y)) mm)) := by
               rw [(Module.finBasis ℝ E).sum_repr
-                ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E), ← hcurry]
+                (tangentSpaceModelContinuousLinearEquiv (I := I) y
+                  (smoothOrthoFrame (I := I) g₀ x i y)), ← hcurry]
 
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
@@ -863,31 +908,37 @@ theorem cometricDoubleTraceFib_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric
               (smoothOrthoFrame (I := I) g₀ x i y))
             (smoothOrthoFrame (I := I) g₀ x i y)) from
     map_sum (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) p y) _ _]
-  rw [ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ (s := p) x hy
     (Tensor0SBundle.Tensor0SSpace.toModel D) mm]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) y D
         (smoothOrthoFrame (I := I) g₀ x i y))
-      (v0 := ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E)) (vs := mm),
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (T := D)
-      (v0 := ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E))
-      (vs := Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) mm)]
+      (v0 := smoothOrthoFrame (I := I) g₀ x i y) (vs := mm),
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M) (T := D)
+      (v0 := smoothOrthoFrame (I := I) g₀ x i y)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+        (smoothOrthoFrame (I := I) g₀ x i y)) mm)]
 
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private theorem orthoFrame_skew_correction_cancel (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
-    (v : E) (T : Tensor0SBundle.Tensor0SModel (p + 2) ℝ E) (mm : Fin p → E) :
+    (v : TangentSpace I x) (T : Tensor0SBundle.Tensor0SModel (p + 2) ℝ E)
+    (mm : Fin p → E) :
     (∑ i : Fin (Module.finrank ℝ E),
-        T (Fin.cons (((LeviCivita (I := I) g₀).toFun
-              (smoothOrthoFrame (I := I) g₀ x i) x v : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) mm)))
+        T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun
+                (smoothOrthoFrame (I := I) g₀ x i) x v))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x)) mm)))
       + (∑ i : Fin (Module.finrank ℝ E),
-          T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-              (Fin.cons (((LeviCivita (I := I) g₀).toFun
-                  (smoothOrthoFrame (I := I) g₀ x i) x v : TangentSpace I x) : E) mm))) = 0 := by
+          T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                ((LeviCivita (I := I) g₀).toFun
+                  (smoothOrthoFrame (I := I) g₀ x i) x v)) mm))) = 0 := by
   classical
   set a : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun i j =>
     g₀.inner x ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v)
@@ -907,63 +958,82 @@ private theorem orthoFrame_skew_correction_cancel (g₀ : SmoothRiemannianMetric
     fun i => smoothOrthoFrame_expansion_at (I := I) g₀ x
       (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
       ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v)
+  have hexp_model : ∀ i : Fin (Module.finrank ℝ E),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v) =
+        ∑ j : Fin (Module.finrank ℝ E), a i j •
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x j x) := by
+    intro i
+    simpa only [map_sum, map_smul, RingHom.id_apply] using
+      congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) (hexp i)
   have hS1 : (∑ i : Fin (Module.finrank ℝ E),
-      T (Fin.cons (((LeviCivita (I := I) g₀).toFun
-            (smoothOrthoFrame (I := I) g₀ x i) x v : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) mm))) =
+      T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((LeviCivita (I := I) g₀).toFun
+              (smoothOrthoFrame (I := I) g₀ x i) x v))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x)) mm))) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        a i j * T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) mm)) := by
+        a i j * T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x j x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x)) mm)) := by
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [show (((LeviCivita (I := I) g₀).toFun
-          (smoothOrthoFrame (I := I) g₀ x i) x v : TangentSpace I x) : E) =
-        ((∑ j : Fin (Module.finrank ℝ E),
-          a i j • smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E) from by
-      rw [← hexp i]]
+    rw [hexp_model i]
     rw [model_cons_slot0_sum (E := E)]
     exact Finset.sum_congr rfl fun j _ => model_cons_slot0_smul (E := E) _ _ T _
   have hS2 : (∑ i : Fin (Module.finrank ℝ E),
-      T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-          (Fin.cons (((LeviCivita (I := I) g₀).toFun
-              (smoothOrthoFrame (I := I) g₀ x i) x v : TangentSpace I x) : E) mm))) =
+      T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((LeviCivita (I := I) g₀).toFun
+              (smoothOrthoFrame (I := I) g₀ x i) x v)) mm))) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        a i j * T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E) mm)) := by
+        a i j * T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x j x)) mm)) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     have hcurry : ∀ z : E,
-        T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
+        T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x))
             (Fin.cons z mm)) =
         ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (p + 2) => E) ℝ) T
-            ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x)))
           (Fin.cons z mm) := by
       intro z
       rw [continuousMultilinearCurryLeftEquiv_apply]
     rw [hcurry]
-    rw [show (((LeviCivita (I := I) g₀).toFun
-          (smoothOrthoFrame (I := I) g₀ x i) x v : TangentSpace I x) : E) =
-        ((∑ j : Fin (Module.finrank ℝ E),
-          a i j • smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E) from by
-      rw [← hexp i]]
+    rw [hexp_model i]
     rw [model_cons_slot0_sum (E := E)]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [model_cons_slot0_smul (E := E), ← hcurry]
   rw [hS1, hS2]
   have h2 : (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-      a i j * T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E) mm))) =
+      a i j * T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₀ x j x)) mm))) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        -(a i j * T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) mm))) := by
+        -(a i j * T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x j x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x)) mm))) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [haskew j i, neg_mul]
   rw [h2]
   rw [show (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-      -(a i j * T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) mm)))) =
+      -(a i j * T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x j x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₀ x i x)) mm)))) =
       -(∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        a i j * T (Fin.cons ((smoothOrthoFrame (I := I) g₀ x j x : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) mm))) from by
+        a i j * T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x j x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x)) mm))) from by
     rw [← Finset.sum_neg_distrib]
     exact Finset.sum_congr rfl fun i _ => by rw [← Finset.sum_neg_distrib]]
   exact add_neg_cancel _
@@ -972,7 +1042,7 @@ private theorem orthoFrame_skew_correction_cancel (g₀ : SmoothRiemannianMetric
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private theorem orthoFrame_corrections_sum_eq_zero (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
-    (v : E) (W : Tensor0SBundle.Tensor0SSpace (p + 2) I x) :
+    (v : TangentSpace I x) (W : Tensor0SBundle.Tensor0SSpace (p + 2) I x) :
     (∑ i : Fin (Module.finrank ℝ E),
         Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) p x
           (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) x W
@@ -992,15 +1062,15 @@ private theorem orthoFrame_corrections_sum_eq_zero (g₀ : SmoothRiemannianMetri
           (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) p x
             (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) x W z₁) z₂) mm =
         Tensor0SBundle.Tensor0SSpace.toModel W
-          (Fin.cons ((z₁ : TangentSpace I x) : E)
-            (Fin.cons ((z₂ : TangentSpace I x) : E) mm)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x z₁)
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x z₂) mm)) := by
     intro z₁ z₂
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) x W z₁)
-      (v0 := ((z₂ : TangentSpace I x) : E)) (vs := mm)]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (T := W)
-      (v0 := ((z₁ : TangentSpace I x) : E))
-      (vs := Fin.cons ((z₂ : TangentSpace I x) : E) mm)]
+      (v0 := z₂) (vs := mm)]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M) (T := W)
+      (v0 := z₁)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x z₂) mm)]
   rw [Tensor0SBundle.Tensor0SSpace.toModel_add]
   rw [show Tensor0SBundle.Tensor0SSpace.toModel
         (∑ i : Fin (Module.finrank ℝ E),
@@ -1028,15 +1098,15 @@ private theorem orthoFrame_corrections_sum_eq_zero (g₀ : SmoothRiemannianMetri
               (smoothOrthoFrame (I := I) g₀ x i x))
             ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v)) from
     map_sum (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) p x) _ _]
-  rw [ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.sum_apply,
-    ContinuousMultilinearMap.sum_apply]
+  rw [add_apply, sum_apply,
+    sum_apply]
   rw [Finset.sum_congr rfl (fun i (_ : i ∈ Finset.univ) =>
     heval ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v)
       (smoothOrthoFrame (I := I) g₀ x i x))]
   rw [Finset.sum_congr rfl (fun i (_ : i ∈ Finset.univ) =>
     heval (smoothOrthoFrame (I := I) g₀ x i x)
       ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v))]
-  rw [Tensor0SBundle.Tensor0SSpace.toModel_zero, ContinuousMultilinearMap.zero_apply]
+  rw [Tensor0SBundle.Tensor0SSpace.toModel_zero, zero_apply]
   exact orthoFrame_skew_correction_cancel (I := I) g₀ p x v
     (Tensor0SBundle.Tensor0SSpace.toModel W) mm
 
@@ -1123,10 +1193,9 @@ private theorem covDeriv_doubleInsert_leibniz (g₀ : SmoothRiemannianMetric I M
     DifferentialGeometry.Geometry.Connection.tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g₀ (p + 1) (fun y : M => w y) (x := x) hw_at Ci v
   rw [h1, h2, map_add (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) p x),
-    ContinuousLinearMap.add_apply]
+    add_apply]
 
-set_option backward.isDefEq.respectTransparency false in
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric I M) (p : ℕ) :
     Analysis.Parabolic.TensorSpectral.covGrad (I := I) (M := M) g₀ (p + 2) p
         (cometricDoubleTraceField (I := I) g₀ p) = 0 := by
@@ -1134,7 +1203,9 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
   have hdir : ∀ (x : M) (v : E),
       Analysis.Parabolic.TensorSpectral.tensorCovDerivAt (I := I) (M := M) g₀ (p + 2) p
         (cometricDoubleTraceField (I := I) g₀ p) x v = 0 := by
-    intro x v
+    intro x vModel
+    let v : TangentSpace I x :=
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm vModel
     apply ContinuousLinearMap.ext
     intro D
     obtain ⟨w, hw⟩ := ContMDiffSection.exists_eq_at (I := I)
@@ -1143,7 +1214,7 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
     have hPR := TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) (p + 2) p
       (LeviCivita (I := I) g₀) (cometricDoubleTraceField (I := I) g₀ p).toSection w x v
     rw [Analysis.Parabolic.TensorSpectral.tensorCovDerivAt_def (I := I) (M := M) g₀ (p + 2) p
-      (cometricDoubleTraceField (I := I) g₀ p) x v, ContinuousLinearMap.zero_apply, ← hw]
+      (cometricDoubleTraceField (I := I) g₀ p) x vModel, zero_apply, ← hw]
     refine Eq.trans hPR ?_
     rw [sub_eq_zero]
     have hCi_smooth : ∀ i : Fin (Module.finrank ℝ E),
@@ -1254,7 +1325,7 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
         _ = (∑ i : Fin (Module.finrank ℝ E),
               (Tensor0SNabla.tensor0SCovariantDerivative I M p
                 (LeviCivita (I := I) g₀)).toFun (fun y : M => ti i y) x v) := by
-            rw [ContinuousLinearMap.sum_apply]
+            rw [sum_apply]
         _ = (∑ i : Fin (Module.finrank ℝ E),
               (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) p x
                   (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) x
@@ -1302,12 +1373,13 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   beta_reduce
   rw [Integral.L2.SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero, Pi.zero_apply,
-    ContinuousLinearMap.zero_apply, Tensor0SBundle.Tensor0SSpace.toModel_zero,
-    ContinuousMultilinearMap.zero_apply,
+    zero_apply, Tensor0SBundle.Tensor0SSpace.toModel_zero,
+    zero_apply,
     Analysis.Parabolic.TensorSpectral.covGrad_toSection_apply_eval
       (I := I) (M := M) g₀ (p + 2) p (cometricDoubleTraceField (I := I) g₀ p) x D m,
-    hdir x (m 0), ContinuousLinearMap.zero_apply, Tensor0SBundle.Tensor0SSpace.toModel_zero,
-    ContinuousMultilinearMap.zero_apply]
+    hdir x (m 0), zero_apply,
+    Tensor0SBundle.Tensor0SSpace.toModel_zero,
+    zero_apply]
 
 end DeTurck
 end Spectral

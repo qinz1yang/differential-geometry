@@ -186,7 +186,7 @@ private theorem mem_regionNormalDirections_iff_mem_fiberNormalDirections
   constructor
   · intro h
     rw [fiberHamiltonIveyNormalDirections]
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     refine ⟨hν, ?_⟩
     rcases h with hlt | hz
     · left
@@ -195,10 +195,10 @@ private theorem mem_regionNormalDirections_iff_mem_fiberNormalDirections
       simpa [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν] using hz
   · intro h
     rw [fiberHamiltonIveyNormalDirections] at h
-    simp only [Set.mem_setOf_eq] at h
+    simp only [Set.mem_ofPred_eq] at h
     rcases h with ⟨hν', hlt⟩
     rw [regionNormalDirections]
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     rcases hlt with hlt | hz
     · left
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν'⟩ =
@@ -304,9 +304,20 @@ private theorem regionSupport_eq_sSup
       fiberHamiltonIveyNormalDirections basisAt x := by
     exact (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hν₀alg).mp
       (by
-        rw [regionNormalDirections]
-        simp only [Set.mem_setOf_eq]
-        simpa [hreg] using hν)
+        change
+          (euclideanMatrixSymmetrization_isHermitian
+            (matrixToEuclidean (regionProjMatrix (I := I) g (basisAt x)
+              (algebraicCurvatureTensorProjection (I := I) g x ν)))).eigenvalues₀ 0 < 0 ∨
+            euclideanMatrixSymmetrization
+              (matrixToEuclidean (regionProjMatrix (I := I) g (basisAt x)
+                (algebraicCurvatureTensorProjection (I := I) g x ν))) = 0
+        change
+          (euclideanMatrixSymmetrization_isHermitian
+            (matrixToEuclidean (regionProjMatrix (I := I) g (basisAt x) ν))).eigenvalues₀ 0 < 0 ∨
+            euclideanMatrixSymmetrization
+              (matrixToEuclidean (regionProjMatrix (I := I) g (basisAt x) ν)) = 0 at hν
+        rw [hreg]
+        exact hν)
   have hmain := fiberHamiltonIveySupport_eq_sSup (I := I) g basisAt horth0 hK hτ x hν₀N
   have hsup : fiberHamiltonIveySupport basisAt K τ x
         (algebraicCurvatureTensorProjection (I := I) g x ν : Tensor04At (I := I) (M := M) x) =
@@ -370,7 +381,7 @@ private theorem regionNormalDirections_of_normal
   have hν₀R : (pν : Tensor04At (I := I) (M := M) x) ∈ regionNormalDirections (I := I) g basisAt x :=
     (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hν₀alg).mpr hν₀N
   rw [regionNormalDirections] at hν₀R ⊢
-  simp only [Set.mem_setOf_eq] at hν₀R ⊢
+  simp only [Set.mem_ofPred_eq] at hν₀R ⊢
   have hreg : regionProjMatrix (I := I) g (basisAt x) (pν : Tensor04At (I := I) (M := M) x) =
       regionProjMatrix (I := I) g (basisAt x) ν := by
     unfold regionProjMatrix
@@ -510,7 +521,11 @@ private theorem regionSource_le_regionSupportDeriv_of_tangent
           exact curvatureOperatorMatrixAt_isHermitian x (basisAt x) (algebraicCurvatureTensorProjection (I := I) g x ν)
         exact Matrix.IsSymm.ext (fun i j => by
           have hh := congrFun (congrFun hherm i) j
-          simpa [Matrix.conjTranspose, star_trivial] using hh)
+          change curvatureOperatorMatrixAt (I := I) x (basisAt x)
+              (algebraicCurvatureTensorProjection (I := I) g x ν) j i =
+            curvatureOperatorMatrixAt (I := I) x (basisAt x)
+              (algebraicCurvatureTensorProjection (I := I) g x ν) i j
+          exact hh)
       have hzeroM : euclideanToMatrix w = 0 := by
         have h := euclideanMatrixSymmetrization_matrixToEuclidean_symm (M := euclideanToMatrix w) hM
         rw [matrixToEuclidean_euclideanToMatrix] at h
@@ -714,12 +729,12 @@ private theorem regionSource_lipschitzOn_closedBall_uniform
   rcases hamiltonIveyMatrixReactionEuclidean_lipschitzOn_closedBall R hR with ⟨Lst, hLst⟩
   refine ⟨Lst, ?_⟩
   intro x ν
-  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
     (tensor0SMetricData (I := I) g x 4).toCore
-  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
-  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
   have hnorm_eq : ∀ A : Tensor04At (I := I) (M := M) x,
@@ -1137,13 +1152,13 @@ private theorem fiberRegionPropagationOn_of_flatSupport
     ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M,
       uhlenbeckPulledRm04At S basisAt iota t x ∈ fiberHamiltonIveyRegion basisAt K t x := by
   classical
-  letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     fun x => @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
-  letI : ∀ x : M, InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     fun x => @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
-  letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
     fun x => inferInstance
   rcases exists_pulledRm_norm_bound (I := I) (M := M) hT S hS hdim basisAt iota hiota0 hgram horth0 with
     ⟨R, hRge, hbound⟩
@@ -1390,11 +1405,15 @@ private theorem fiberInner_compUhlenbeck_isometry_full
   have hinv0 : MetricInverseInBasis_gen (I := I) (S.base.metric 0) x (basisAt x)
       (identityInvMetric (Idx := Fin 3)) :=
     Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
-      (I := I) (S.base.metric 0) (basisAt x) (by simpa [delta3] using horth0 x)
+      (I := I) (S.base.metric 0) (basisAt x) (by
+        intro i j
+        exact horth0 x i j)
   have hinvt : MetricInverseInBasis_gen (I := I) (S.base.metric t) x moving
       (identityInvMetric (Idx := Fin 3)) :=
     Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
-      (I := I) (S.base.metric t) moving (by simpa [delta3] using horth_moving)
+      (I := I) (S.base.metric t) moving (by
+        intro i j
+        exact horth_moving i j)
   have hdiag : ∀ (g : SmoothRiemannianMetric I M)
       (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
       (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
@@ -1668,11 +1687,10 @@ private theorem metricTraceInput_eq_cons_cons {x : M} {s : ℕ}
 
 omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
   [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-private theorem extDerivFun_zero_at {x : M} (v : TangentSpace I x) :
-    extDerivFun (I := I) (fun _ : M => (0 : Real)) x v = 0 := by
-  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv (I := I) (fun _ : M => (0 : Real)) x v]
+private theorem mvfderiv_zero_at {x : M} (v : TangentSpace I x) :
+    mvfderiv (I := I) (fun _ : M => (0 : Real)) x v = 0 := by
+  rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv (I := I) (fun _ : M => (0 : Real)) x v]
   simp
-  rfl
 
 omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
   [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -1705,7 +1723,7 @@ private theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
   classical
   have hEV : ∀ k : ι,
       nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V (perms k a) x)) =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x) -
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x) -
           ∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
             ((cov (fun p : M => V (perms k a) p) x) (X x))) := by
     intro k
@@ -1719,31 +1737,31 @@ private theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
       fun _ : M => (0 : Real) := by
     filter_upwards with p
     exact hid p (fun a : Fin s => V a p)
-  have hExt : (∑ k : ι, c k * extDerivFun (I := I)
+  have hExt : (∑ k : ι, c k * mvfderiv (I := I)
       (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x)) = 0 := by
     calc
-      (∑ k : ι, c k * extDerivFun (I := I)
+      (∑ k : ι, c k * mvfderiv (I := I)
           (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x))
-          = ∑ k : ι, extDerivFun (I := I)
+          = ∑ k : ι, mvfderiv (I := I)
               (fun p : M => c k * α p (fun a : Fin s => V (perms k a) p)) x (X x) := by
             refine Finset.sum_congr rfl ?_
             intro k _
-            rw [extDerivFun_const_mul_apply (I := I) (c k) (X x) (hgdiff k)]
-      _ = extDerivFun (I := I)
+            rw [mvfderiv_const_mul_apply (I := I) (c k) (X x) (hgdiff k)]
+      _ = mvfderiv (I := I)
             (fun p : M => ∑ k : ι, c k * α p (fun a : Fin s => V (perms k a) p)) x (X x) := by
           have hfun : (fun p : M => ∑ k : ι, c k * α p (fun a : Fin s => V (perms k a) p)) =
               Finset.univ.sum (fun k : ι => fun p : M => c k * α p (fun a : Fin s => V (perms k a) p)) := by
             funext p
             simp [Finset.sum_apply]
           rw [hfun]
-          rw [extDerivFun_finset_sum (I := I) (t := Finset.univ)
+          rw [mvfderiv_finset_sum (I := I) (t := Finset.univ)
             (f := fun k : ι => fun p : M => c k * α p (fun a : Fin s => V (perms k a) p))
             (x := x) (v := X x) (by
               intro k _
               exact mdiffAt_const_mul (c k) (hgdiff k))]
       _ = 0 := by
-          rw [extDerivFun_congr_eventually (I := I) (v := X x) hgzero]
-          exact extDerivFun_zero_at (I := I) (X x)
+          rw [mvfderiv_congr_eventually (I := I) (v := X x) hgzero]
+          exact mvfderiv_zero_at (I := I) (X x)
   have hreindex : ∀ k : ι,
       (∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
           ((cov (fun p : M => V (perms k a) p) x) (X x)))) =
@@ -1813,14 +1831,14 @@ private theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
                 ((cov (fun p : M => V a' p) x) (X x))))
   calc
     (∑ k : ι, c k * nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V (perms k a) x)))
-        = ∑ k : ι, c k * (extDerivFun (I := I)
+        = ∑ k : ι, c k * (mvfderiv (I := I)
             (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x) -
           ∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
             ((cov (fun p : M => V (perms k a) p) x) (X x)))) := by
           refine Finset.sum_congr rfl ?_
           intro k _
           rw [hEV k]
-    _ = (∑ k : ι, c k * extDerivFun (I := I)
+    _ = (∑ k : ι, c k * mvfderiv (I := I)
           (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x)) -
         (∑ k : ι, c k * (∑ a : Fin s, α x
           (Function.update (fun b : Fin s => V (perms k b) x) a
@@ -2339,7 +2357,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
     funext a
     exact hV a
   have hderiv : nablaα x (Fin.cons u (vec4 X Y Z W)) =
-      extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := by
+      mvfderiv (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := by
     have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V x
     simpa [hU, s, d, f, hslots] using h
   have hmdiff_f : MDifferentiableAt I 𝓘(Real, Real) f x :=
@@ -2349,7 +2367,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
   have hderiv_perm : ∀ (Wp : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
       (hW : (fun a : Fin 4 => Wp a x) = vec4 Y X Z W),
       nablaα x (Fin.cons u (vec4 Y X Z W)) =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => Wp a p)) x (U x) -
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => Wp a p)) x (U x) -
           ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => Wp b x) a
             ((cov (fun p : M => Wp a p) x) (U x))) := by
     intro Wp hW
@@ -2363,7 +2381,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
       funext a
       fin_cases a <;> simp [V01, σ01, hV, vec4]
     have hderiv01 : nablaα x (Fin.cons u (vec4 Y X Z W)) =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V01 a p)) x (U x) -
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V01 a p)) x (U x) -
           ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V01 b x) a
             ((cov (fun p : M => V01 a p) x) (U x))) := hderiv_perm V01 hV01
     have hfun01 : (fun p : M => α p (fun a : Fin 4 => V01 a p)) =
@@ -2385,11 +2403,11 @@ private lemma fiberRegion_nabla_of_algCurvForm
         _ = -α p (fun a : Fin 4 => V a p) := by
               rw [hrec2]
               rfl
-    have hext01 : extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V01 a p)) x (U x) =
-        -extDerivFun (I := I) f x (U x) := by
-      have hneg : extDerivFun (I := I) (fun p : M => -α p (fun a : Fin 4 => V a p)) x (U x) =
-          -extDerivFun (I := I) f x (U x) :=
-        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U x) hmdiff_f
+    have hext01 : mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V01 a p)) x (U x) =
+        -mvfderiv (I := I) f x (U x) := by
+      have hneg : mvfderiv (I := I) (fun p : M => -α p (fun a : Fin 4 => V a p)) x (U x) =
+          -mvfderiv (I := I) f x (U x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_neg_at (I := I) (f := f) (x := x) (U x) hmdiff_f
       rw [← hfun01] at hneg
       simpa [f] using hneg
     have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ σ01) = 0 := by
@@ -2419,7 +2437,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
       linarith [hpair, hsimpa]
     calc
       nablaα x (Fin.cons u (vec4 X Y Z W))
-          = extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := hderiv
+          = mvfderiv (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := hderiv
       _ = -nablaα x (Fin.cons u (vec4 Y X Z W)) := by
             rw [hderiv01]
             rw [hext01, hsum01]
@@ -2432,7 +2450,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
       funext a
       fin_cases a <;> simp [V23, σ23, hV, vec4]
     have hderiv23 : nablaα x (Fin.cons u (vec4 X Y W Z)) =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V23 a p)) x (U x) -
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V23 a p)) x (U x) -
           ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V23 b x) a
             ((cov (fun p : M => V23 a p) x) (U x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V23 x
@@ -2456,11 +2474,11 @@ private lemma fiberRegion_nabla_of_algCurvForm
         _ = -α p (fun a : Fin 4 => V a p) := by
               rw [hrec2]
               rfl
-    have hext23 : extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V23 a p)) x (U x) =
-        -extDerivFun (I := I) f x (U x) := by
-      have hneg : extDerivFun (I := I) (fun p : M => -α p (fun a : Fin 4 => V a p)) x (U x) =
-          -extDerivFun (I := I) f x (U x) :=
-        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U x) hmdiff_f
+    have hext23 : mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V23 a p)) x (U x) =
+        -mvfderiv (I := I) f x (U x) := by
+      have hneg : mvfderiv (I := I) (fun p : M => -α p (fun a : Fin 4 => V a p)) x (U x) =
+          -mvfderiv (I := I) f x (U x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_neg_at (I := I) (f := f) (x := x) (U x) hmdiff_f
       rw [← hfun23] at hneg
       simpa [f] using hneg
     have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ σ23) = 0 := by
@@ -2490,7 +2508,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
       linarith [hpair, hsimpa]
     calc
       nablaα x (Fin.cons u (vec4 X Y Z W))
-          = extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := hderiv
+          = mvfderiv (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := hderiv
       _ = -nablaα x (Fin.cons u (vec4 X Y W Z)) := by
             rw [hderiv23]
             rw [hext23, hsum23]
@@ -2509,13 +2527,13 @@ private lemma fiberRegion_nabla_of_algCurvForm
       funext a
       fin_cases a <;> simp [V3, τ, hV, vec4]
     have hderiv2 : nablaα x (Fin.cons u (vec4 Y Z X W)) =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) -
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) -
           ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V2 b x) a
             ((cov (fun p : M => V2 a p) x) (U x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V2 x
       simpa [hU, hV2] using h
     have hderiv3 : nablaα x (Fin.cons u (vec4 Z X Y W)) =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) -
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) -
           ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V3 b x) a
             ((cov (fun p : M => V3 a p) x) (U x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V3 x
@@ -2555,11 +2573,11 @@ private lemma fiberRegion_nabla_of_algCurvForm
                 α p (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) := by
               rw [hrec1, h2p, h3p]
         _ = 0 := hb
-    have hext2 : extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) =
-        -extDerivFun (I := I) f x (U x) - extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) := by
+    have hext2 : mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) =
+        -mvfderiv (I := I) f x (U x) - mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) := by
       let f2 : M → ℝ := fun p => α p (fun a : Fin 4 => V2 a p)
       let f3 : M → ℝ := fun p => α p (fun a : Fin 4 => V3 a p)
-      have h1 : extDerivFun (I := I) (f + f2 + f3) x (U x) = 0 := by
+      have h1 : mvfderiv (I := I) (f + f2 + f3) x (U x) = 0 := by
         have hzero : f + f2 + f3 = 0 := hfun
         simp [hzero]
       have hmd1 : MDifferentiableAt I 𝓘(Real, Real) f x := hmdiff_f
@@ -2571,26 +2589,26 @@ private lemma fiberRegion_nabla_of_algCurvForm
         ContMDiffAt.mdifferentiableAt
           (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α V3 x)
           (by simp)
-      have h12 := extDerivFun_add (I := I) (g := f) (g' := f2) (x := x) hmd1 hmd2
-      have h123 := extDerivFun_add (I := I) (g := f + f2) (g' := f3) (x := x) (hmd1.add hmd2) hmd3
-      have hsum_deriv : extDerivFun (I := I) (f + f2 + f3) x (U x) =
-          extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) +
-            extDerivFun (I := I) f3 x (U x) := by
+      have h12 := mvfderiv_add (I := I) (g := f) (g' := f2) (x := x) hmd1 hmd2
+      have h123 := mvfderiv_add (I := I) (g := f + f2) (g' := f3) (x := x) (hmd1.add hmd2) hmd3
+      have hsum_deriv : mvfderiv (I := I) (f + f2 + f3) x (U x) =
+          mvfderiv (I := I) f x (U x) + mvfderiv (I := I) f2 x (U x) +
+            mvfderiv (I := I) f3 x (U x) := by
         calc
-          extDerivFun (I := I) (f + f2 + f3) x (U x)
-              = extDerivFun (I := I) (f + f2) x (U x) + extDerivFun (I := I) f3 x (U x) := by
-                simpa [ContinuousLinearMap.add_apply] using congr(($(h123) : _) (U x))
-          _ = (extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x)) +
-                extDerivFun (I := I) f3 x (U x) := by
-                have happ : extDerivFun (I := I) (f + f2) x (U x) =
-                    extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) := by
-                  simpa [ContinuousLinearMap.add_apply] using congr(($(h12) : _) (U x))
+          mvfderiv (I := I) (f + f2 + f3) x (U x)
+              = mvfderiv (I := I) (f + f2) x (U x) + mvfderiv (I := I) f3 x (U x) := by
+                simpa [add_apply] using congr(($(h123) : _) (U x))
+          _ = (mvfderiv (I := I) f x (U x) + mvfderiv (I := I) f2 x (U x)) +
+                mvfderiv (I := I) f3 x (U x) := by
+                have happ : mvfderiv (I := I) (f + f2) x (U x) =
+                    mvfderiv (I := I) f x (U x) + mvfderiv (I := I) f2 x (U x) := by
+                  simpa [add_apply] using congr(($(h12) : _) (U x))
                 rw [happ]
-          _ = extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) +
-                extDerivFun (I := I) f3 x (U x) := by
+          _ = mvfderiv (I := I) f x (U x) + mvfderiv (I := I) f2 x (U x) +
+                mvfderiv (I := I) f3 x (U x) := by
                 simp [add_assoc]
-      have htotal : extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) +
-            extDerivFun (I := I) f3 x (U x) = 0 := by
+      have htotal : mvfderiv (I := I) f x (U x) + mvfderiv (I := I) f2 x (U x) +
+            mvfderiv (I := I) f3 x (U x) = 0 := by
         rwa [hsum_deriv] at h1
       linarith
     have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ τ) + α x (v ∘ τ ∘ τ) = 0 := by
@@ -2633,11 +2651,11 @@ private lemma fiberRegion_nabla_of_algCurvForm
     calc
       nablaα x (Fin.cons u (vec4 X Y Z W)) + nablaα x (Fin.cons u (vec4 Y Z X W)) +
           nablaα x (Fin.cons u (vec4 Z X Y W))
-          = (extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a))) +
-              (extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) -
+          = (mvfderiv (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a))) +
+              (mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) -
                 ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V2 b x) a
                   ((cov (fun p : M => V2 a p) x) (U x)))) +
-              (extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) -
+              (mvfderiv (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) -
                 ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V3 b x) a
                   ((cov (fun p : M => V3 a p) x) (U x)))) := by
             rw [hderiv, hderiv2, hderiv3]
@@ -2729,7 +2747,7 @@ private lemma fiberRegion_nabla2_of_algCurvForm
     funext a
     fin_cases a <;> simp [W2, hU2, hV, vec4]
   have hderiv : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
-      extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := by
+      mvfderiv (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := by
     have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2 x
     simpa [hU1, s5, d5, f, hslots] using h
   have hmdiff_f : MDifferentiableAt I 𝓘(Real, Real) f x :=
@@ -2755,7 +2773,7 @@ private lemma fiberRegion_nabla2_of_algCurvForm
       funext a
       fin_cases a <;> simp [W2', hU2, hV01, vec4]
     have hderiv01 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y X Z W))) =
-        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) x (U1 x) -
+        mvfderiv (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) x (U1 x) -
           ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2' b x) a
             ((cov (fun p : M => W2' a p) x) (U1 x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2' x
@@ -2787,11 +2805,11 @@ private lemma fiberRegion_nabla2_of_algCurvForm
         _ = -nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p))) := hsym
         _ = -nablaα p (fun a : Fin 5 => W2 a p) := by
               rw [hrec2]
-    have hext01 : extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) x (U1 x) =
-        -extDerivFun (I := I) f x (U1 x) := by
-      have hneg : extDerivFun (I := I) (fun p : M => -nablaα p (fun a : Fin 5 => W2 a p)) x (U1 x) =
-          -extDerivFun (I := I) f x (U1 x) :=
-        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U1 x) hmdiff_f
+    have hext01 : mvfderiv (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) x (U1 x) =
+        -mvfderiv (I := I) f x (U1 x) := by
+      have hneg : mvfderiv (I := I) (fun p : M => -nablaα p (fun a : Fin 5 => W2 a p)) x (U1 x) =
+          -mvfderiv (I := I) f x (U1 x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_neg_at (I := I) (f := f) (x := x) (U1 x) hmdiff_f
       rw [← hfun01] at hneg
       simpa [f] using hneg
     have hβ : ∀ v : Fin 5 → TangentSpace I x, nablaα x v + nablaα x (v ∘ σ12) = 0 := by
@@ -2845,7 +2863,7 @@ private lemma fiberRegion_nabla2_of_algCurvForm
       linarith [hpair]
     calc
       nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W)))
-          = extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := hderiv
+          = mvfderiv (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := hderiv
       _ = -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y X Z W))) := by
             rw [hderiv01]
             rw [hext01, hsum01]
@@ -2864,7 +2882,7 @@ private lemma fiberRegion_nabla2_of_algCurvForm
       funext a
       fin_cases a <;> simp [W2'', hU2, hV02, vec4]
     have hderiv02 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y W Z))) =
-        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) x (U1 x) -
+        mvfderiv (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) x (U1 x) -
           ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2'' b x) a
             ((cov (fun p : M => W2'' a p) x) (U1 x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2'' x
@@ -2896,11 +2914,11 @@ private lemma fiberRegion_nabla2_of_algCurvForm
         _ = -nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p))) := hsym
         _ = -nablaα p (fun a : Fin 5 => W2 a p) := by
               rw [hrec2]
-    have hext02 : extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) x (U1 x) =
-        -extDerivFun (I := I) f x (U1 x) := by
-      have hneg : extDerivFun (I := I) (fun p : M => -nablaα p (fun a : Fin 5 => W2 a p)) x (U1 x) =
-          -extDerivFun (I := I) f x (U1 x) :=
-        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U1 x) hmdiff_f
+    have hext02 : mvfderiv (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) x (U1 x) =
+        -mvfderiv (I := I) f x (U1 x) := by
+      have hneg : mvfderiv (I := I) (fun p : M => -nablaα p (fun a : Fin 5 => W2 a p)) x (U1 x) =
+          -mvfderiv (I := I) f x (U1 x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_neg_at (I := I) (f := f) (x := x) (U1 x) hmdiff_f
       rw [← hfun02] at hneg
       simpa [f] using hneg
     have hβ : ∀ v : Fin 5 → TangentSpace I x, nablaα x v + nablaα x (v ∘ σ34) = 0 := by
@@ -2954,7 +2972,7 @@ private lemma fiberRegion_nabla2_of_algCurvForm
       linarith [hpair]
     calc
       nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W)))
-          = extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := hderiv
+          = mvfderiv (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := hderiv
       _ = -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y W Z))) := by
             rw [hderiv02]
             rw [hext02, hsum02]
@@ -2984,13 +3002,13 @@ private lemma fiberRegion_nabla2_of_algCurvForm
       funext a
       fin_cases a <;> simp [W2c, hU2, hV3, vec4]
     have hderiv2 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y Z X W))) =
-        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2b a p)) x (U1 x) -
+        mvfderiv (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2b a p)) x (U1 x) -
           ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2b b x) a
             ((cov (fun p : M => W2b a p) x) (U1 x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2b x
       simpa [hU1, hslots2] using h
     have hderiv3 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Z X Y W))) =
-        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2c a p)) x (U1 x) -
+        mvfderiv (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2c a p)) x (U1 x) -
           ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2c b x) a
             ((cov (fun p : M => W2c a p) x) (U1 x))) := by
       have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2c x
@@ -3032,9 +3050,9 @@ private lemma fiberRegion_nabla2_of_algCurvForm
                 nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p))) := by
               rw [hrec1, hrec2, hrec3]
         _ = 0 := hsym
-    have hext2 : extDerivFun (I := I) f2 x (U1 x) =
-        -extDerivFun (I := I) f x (U1 x) - extDerivFun (I := I) f3 x (U1 x) := by
-      have h1 : extDerivFun (I := I) (f + f2 + f3) x (U1 x) = 0 := by
+    have hext2 : mvfderiv (I := I) f2 x (U1 x) =
+        -mvfderiv (I := I) f x (U1 x) - mvfderiv (I := I) f3 x (U1 x) := by
+      have h1 : mvfderiv (I := I) (f + f2 + f3) x (U1 x) = 0 := by
         have hzero : f + f2 + f3 = 0 := hfun
         simp [hzero]
       have hmd1 : MDifferentiableAt I 𝓘(Real, Real) f x := hmdiff_f
@@ -3046,26 +3064,26 @@ private lemma fiberRegion_nabla2_of_algCurvForm
         ContMDiffAt.mdifferentiableAt
           (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) nablaα W2c x)
           (by simp)
-      have h12 := extDerivFun_add (I := I) (g := f) (g' := f2) (x := x) hmd1 hmd2
-      have h123 := extDerivFun_add (I := I) (g := f + f2) (g' := f3) (x := x) (hmd1.add hmd2) hmd3
-      have hsum_deriv : extDerivFun (I := I) (f + f2 + f3) x (U1 x) =
-          extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) +
-            extDerivFun (I := I) f3 x (U1 x) := by
+      have h12 := mvfderiv_add (I := I) (g := f) (g' := f2) (x := x) hmd1 hmd2
+      have h123 := mvfderiv_add (I := I) (g := f + f2) (g' := f3) (x := x) (hmd1.add hmd2) hmd3
+      have hsum_deriv : mvfderiv (I := I) (f + f2 + f3) x (U1 x) =
+          mvfderiv (I := I) f x (U1 x) + mvfderiv (I := I) f2 x (U1 x) +
+            mvfderiv (I := I) f3 x (U1 x) := by
         calc
-          extDerivFun (I := I) (f + f2 + f3) x (U1 x)
-              = extDerivFun (I := I) (f + f2) x (U1 x) + extDerivFun (I := I) f3 x (U1 x) := by
-                simpa [ContinuousLinearMap.add_apply] using congr(($(h123) : _) (U1 x))
-          _ = (extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x)) +
-                extDerivFun (I := I) f3 x (U1 x) := by
-                have happ : extDerivFun (I := I) (f + f2) x (U1 x) =
-                    extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) := by
-                  simpa [ContinuousLinearMap.add_apply] using congr(($(h12) : _) (U1 x))
+          mvfderiv (I := I) (f + f2 + f3) x (U1 x)
+              = mvfderiv (I := I) (f + f2) x (U1 x) + mvfderiv (I := I) f3 x (U1 x) := by
+                simpa [add_apply] using congr(($(h123) : _) (U1 x))
+          _ = (mvfderiv (I := I) f x (U1 x) + mvfderiv (I := I) f2 x (U1 x)) +
+                mvfderiv (I := I) f3 x (U1 x) := by
+                have happ : mvfderiv (I := I) (f + f2) x (U1 x) =
+                    mvfderiv (I := I) f x (U1 x) + mvfderiv (I := I) f2 x (U1 x) := by
+                  simpa [add_apply] using congr(($(h12) : _) (U1 x))
                 rw [happ]
-          _ = extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) +
-                extDerivFun (I := I) f3 x (U1 x) := by
+          _ = mvfderiv (I := I) f x (U1 x) + mvfderiv (I := I) f2 x (U1 x) +
+                mvfderiv (I := I) f3 x (U1 x) := by
                 simp [add_assoc]
-      have htotal : extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) +
-            extDerivFun (I := I) f3 x (U1 x) = 0 := by
+      have htotal : mvfderiv (I := I) f x (U1 x) + mvfderiv (I := I) f2 x (U1 x) +
+            mvfderiv (I := I) f3 x (U1 x) = 0 := by
         rwa [hsum_deriv] at h1
       linarith
     have hβ : ∀ v : Fin 5 → TangentSpace I x,
@@ -3159,11 +3177,11 @@ private lemma fiberRegion_nabla2_of_algCurvForm
       nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) +
           nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y Z X W))) +
           nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Z X Y W)))
-          = (extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) +
-              (extDerivFun (I := I) f2 x (U1 x) -
+          = (mvfderiv (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) +
+              (mvfderiv (I := I) f2 x (U1 x) -
                 ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2b b x) a
                   ((cov (fun p : M => W2b a p) x) (U1 x)))) +
-              (extDerivFun (I := I) f3 x (U1 x) -
+              (mvfderiv (I := I) f3 x (U1 x) -
                 ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2c b x) a
                   ((cov (fun p : M => W2c a p) x) (U1 x)))) := by
             rw [hderiv, hderiv2, hderiv3]
@@ -3387,8 +3405,8 @@ private theorem pulledRmComp_pullback
       (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
     uhlenbeckPullbackRmInFrame iota
       (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) t x a b c d
-  simpa [solutionRm04CompInFrame, rm04Comp] using
-    uhlenbeckPulledRm04At_apply_basis (I := I) (M := M) S basisAt iota t x a b c d
+  convert uhlenbeckPulledRm04At_apply_basis
+    (I := I) (M := M) S basisAt iota t x a b c d using 1 ; rfl
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
 private lemma fiberRegion_pulledComponent_continuousOn_time
@@ -3411,7 +3429,7 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
       ContinuousOn (fun s : ℝ => tensor04StdAt (I := I) (M := M) (S.base.rm04 s x) v w y z)
         (Set.Icc 0 T) := by
     intro v w y z
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     let P : Set ℝ := Set.Icc 0 T
     have hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 P
         (fun t x => S.base.rm04 t x) := by
@@ -3435,7 +3453,9 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
         tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z) := by
       refine heval.congr (fun p => ?_)
       rfl
-    simpa [P] using hmain
+    change Continuous (fun p : {q : ℝ // q ∈ Set.Icc 0 T} =>
+      tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z)
+    simpa only [P] using hmain
   have hpoly : ∀ s : ℝ,
       tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota s x)
           (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
@@ -3445,19 +3465,26 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
               (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l) := by
     intro s
     have h := uhlenbeckPulledRm04At_apply_basis (I := I) (M := M) S basisAt iota s x a b c d
-    simpa [solutionRm04CompInFrame, rm04Comp] using h
+    convert h using 1 ; rfl
   rw [continuousOn_congr (fun s hs => hpoly s)]
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro i _
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro j _
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro k _
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro l _
-  simpa [mul_assoc] using
+  have hmul :=
     ((((hiota_comp a i).mul (hiota_comp b j)).mul (hiota_comp c k)).mul (hiota_comp d l)).mul
       (hrm04_comp (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l))
+  rw [show (fun s ↦ iota s x a i * iota s x b j * iota s x c k * iota s x d l *
+      tensor04StdAt (I := I) (M := M) (S.base.rm04 s x)
+        (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) =
+    (fun s ↦ (((iota s x a i * iota s x b j) * iota s x c k) * iota s x d l) *
+      tensor04StdAt (I := I) (M := M) (S.base.rm04 s x)
+        (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) by rfl]
+  exact hmul
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
   [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -3646,7 +3673,13 @@ private theorem fiberRegion_pulledRmComp_eq_rm
     _ = S.base.rm04 t x (vec4 (I := I) (moving a) (moving b) (moving c) (moving d)) := rfl
     _ = rm (fun i j : Fin 3 => S.ricciAt t x (vec2 (I := I) (moving i) (moving j))) a b c d := by
           have h := rm04Comp_ortho_eq_rm (I := I) S t (hdim x) moving hmovingOrth (slots4 a b c d)
-          simpa [slots4, Fin.isValue, Fin.reduceEq, reduceIte] using h
+          have hslots : (fun p : Fin 4 =>
+              moving (if p = 0 then a else if p = 1 then b else if p = 2 then c else d)) =
+              vec4 (I := I) (moving a) (moving b) (moving c) (moving d) := by
+            funext p
+            fin_cases p <;> rfl
+          rw [← hslots]
+          exact h
 
 omit [I.Boundaryless] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
 private theorem fiberRegion_pulledBTensor_eq_bTensorDown
@@ -3988,7 +4021,7 @@ private lemma fiberRegion_pulledTensor_apply_basis
         (Function.update m0 0 (basisAt x p)) := by
     have h := fiberRegion_continuousMultilinearMap_update_sum (f := Q) m0 (0 : Fin 4)
       (fun p : Fin 3 => iota t x a p) (fun p : Fin 3 => basisAt x p)
-    simpa [smul_eq_mul] using h
+    with_unfolding_all exact h
   rw [h0]
   have h1 : ∀ p : Fin 3,
       (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
@@ -4006,7 +4039,8 @@ private lemma fiberRegion_pulledTensor_apply_basis
       · subst hn
         simp [m0]
       · simp [hn]
-    simpa [hself, smul_eq_mul] using h
+    simp only [hself] at h
+    with_unfolding_all exact h
   have h2 : ∀ p q : Fin 3,
       (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
         (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) =
@@ -4025,7 +4059,8 @@ private lemma fiberRegion_pulledTensor_apply_basis
       · subst hn
         simp [m0]
       · simp [hn]
-    simpa [hself, smul_eq_mul] using h
+    simp only [hself] at h
+    with_unfolding_all exact h
   have h3 : ∀ p q r : Fin 3,
       (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
         (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
@@ -4047,7 +4082,8 @@ private lemma fiberRegion_pulledTensor_apply_basis
       · subst hn
         simp [m0]
       · simp [hn]
-    simpa [hself, smul_eq_mul] using h
+    simp only [hself] at h
+    with_unfolding_all exact h
   have hbase : ∀ p q r l : Fin 3,
       (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
         (Function.update (Function.update (Function.update (Function.update m0 0
@@ -4111,6 +4147,7 @@ private lemma fiberRegion_pulledTensor_apply_basis
               (vec4 (basisAt x p) (basisAt x j) (basisAt x k) (basisAt x l)) := by
           simp [Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
 
+omit [SigmaCompactSpace M] in
 private theorem fiber_region_heat_reaction_on
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -4143,13 +4180,13 @@ private theorem fiber_region_heat_reaction_on
         (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
         (uhlenbeckPulledRm04At S basisAt iota)) := by
   classical
-  letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     fun x => @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
-  letI : ∀ x : M, InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     fun x => @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
-  letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
     fun x => inferInstance
   classical
   let D : RealTimeInterval := RealTimeInterval.closed 0 T hT.le
@@ -4208,10 +4245,14 @@ private theorem fiber_region_heat_reaction_on
       intro ij
       have h := fiberRegion_pulledComponent_continuousOn_time (I := I) (M := M) hT S hS basisAt iota
         hiotaCont x (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2 (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1
-      simpa [A, uhlenbeckCurvatureOperatorMatrix] using h
+      change ContinuousOn
+        (fun s : ℝ ↦ pulledRmComp S basisAt iota s x
+          (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2
+          (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1) (Set.Icc 0 T)
+      exact h
     have hsum : ContinuousOn (fun s : ℝ => ∑ ij : Fin 3 × Fin 3,
         (A s x).ofLp ij * (w x (ν x)).ofLp ij) (Set.Icc 0 T) := by
-      refine continuousOn_finset_sum Finset.univ ?_
+      refine continuousOn_finsetSum Finset.univ ?_
       intro ij _
       exact (hAcomp ij).mul continuousOn_const
     have hinner_cont : ContinuousOn (fun s : ℝ => inner ℝ (A s x) (w x (ν x))) (Set.Icc 0 T) := by
@@ -4229,7 +4270,9 @@ private theorem fiber_region_heat_reaction_on
         rw [hscalar_eq s x (ν x)]
       rw [hfun]
       exact hinner_cont.const_mul 4
-    simpa [D] using hmain.continuousWithinAt ht
+    change ContinuousWithinAt (fun s : ℝ ↦ bundleInnerScalarization u ν s x)
+      (Set.Icc 0 T) t
+    exact hmain.continuousWithinAt ht
   · intro ν t ht x hflat
     rcases hflat with ⟨η, nablaη, nabla2η, basis, hOrth, heqν, hη, h2η, hflat1, hflat2⟩
     have hlocal : (fun y : M => bundleInnerScalarization u ν t y) =ᶠ[𝓝 x]
@@ -4576,12 +4619,16 @@ private theorem algebraicCurvatureTensorProjection_compUhlenbeck_commute
   classical
   let U : TangentSpace I x →L[ℝ] TangentSpace I x := uhlenbeckEndomorphismAt (basisAt x) iota t
   let compU : Tensor04At (I := I) (M := M) x → Tensor04At (I := I) (M := M) x :=
-    fun B => B.compContinuousLinearMap (fun _ : Fin 4 => U)
+    fun B => (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x).symm
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x B).compContinuousLinearMap
+        (fun _ : Fin 4 => U))
   let e : TangentSpace I x ≃ₗ[ℝ] TangentSpace I x :=
     LinearEquiv.ofBijective U.toLinearMap (uhlenbeckEndomorphism_invertible hT S basisAt iota hiota0 hgram ht x)
   let Uinv : TangentSpace I x →L[ℝ] TangentSpace I x := e.symm.toContinuousLinearMap
   let compUinv : Tensor04At (I := I) (M := M) x → Tensor04At (I := I) (M := M) x :=
-    fun B => B.compContinuousLinearMap (fun _ : Fin 4 => Uinv)
+    fun B => (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x).symm
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x B).compContinuousLinearMap
+        (fun _ : Fin 4 => Uinv))
   have hUinvU : ∀ v : TangentSpace I x, Uinv (U v) = v := by
     intro v
     change e.symm (e v) = v
@@ -4590,10 +4637,11 @@ private theorem algebraicCurvatureTensorProjection_compUhlenbeck_commute
     intro B
     apply tensor0SSpace_ext 4 x
     intro v
-    change ContinuousMultilinearMap.compContinuousLinearMap
-        (ContinuousMultilinearMap.compContinuousLinearMap B (fun _ : Fin 4 => Uinv))
-        (fun _ : Fin 4 => U) v = B v
-    rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+    change Tensor0SSpace.eval (compU (compUinv B)) v = Tensor0SSpace.eval B v
+    dsimp [compU, compUinv]
+    rw [Tensor0SSpace.eval_fiber_equiv_symm,
+      ContinuousLinearEquiv.apply_symm_apply,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply,
       ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext i
@@ -4749,6 +4797,7 @@ variable [T2Space (TangentBundle I M)]
 
 section TensorTransport
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -4769,17 +4818,16 @@ private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
         (χ y) ^ 4 •
           (O.transpose * regionProjMatrix (I := I) g basis η₀ * O) := by
   classical
-  let Tlin : E →ₗ[Real] E := radialTransportLinearMapAt g p y
+  let Tlin : TangentSpace I p →ₗ[Real] TangentSpace I y := radialTransportLinearMapAt g p y
   have hTbij : Function.Bijective Tlin := by
     have hTinj : Function.Injective Tlin := by
       intro a b hab
       exact radialTransportSection_injective (I := I) g p y hy
         (by simpa [Tlin, radialTransportLinearMapAt] using hab)
     have hTsurj : Function.Surjective Tlin :=
-      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
-        (K := Real) (V := E) (V₂ := E) rfl).mp hTinj
+      radialTransportLinearMapAt_surjective (I := I) g p y hy
     exact ⟨hTinj, hTsurj⟩
-  let e : E ≃ₗ[Real] E := LinearEquiv.ofBijective Tlin hTbij
+  let e : TangentSpace I p ≃ₗ[Real] TangentSpace I y := LinearEquiv.ofBijective Tlin hTbij
   let basisY : Module.Basis (Fin 3) Real (TangentSpace I y) := basis.map e
   have horthY : OrthonormalBasisAt (I := I) g y basisY := by
     intro a b
@@ -4835,7 +4883,11 @@ private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
       exact radialTransportInverseAt_left_inverse (I := I) g p y hy _
   have hconj : curvatureOperatorMatrixAt (I := I) y basis' AY =
       O.transpose * curvatureOperatorMatrixAt (I := I) y basisY AY * O := by
-    simpa [O] using tensor04CurvatureOperatorMatrixAt_conj_of_orthonormal
+    rw [← tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt
+      (I := I) basis' AY]
+    rw [← tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt
+      (I := I) basisY AY]
+    simpa only [O] using tensor04CurvatureOperatorMatrixAt_conj_of_orthonormal
       (I := I) (M := M) g basisY basis' horthY AY
   rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW y]
   unfold regionProjMatrix
@@ -4857,7 +4909,7 @@ omit [IsManifold I 3 M] [SigmaCompactSpace M] [NeZero (Module.finrank Real E)]
   [T2Space (TangentBundle I M)] [I.Boundaryless] in
 private theorem fiberRegion_hasFlatSupportSectionsOn
     {T : Real} (hT : 0 < T) [I.Boundaryless]
-    [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+    [T2Space (TangentBundle I M)]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
@@ -4885,15 +4937,15 @@ private theorem fiberRegion_hasFlatSupportSectionsOn
         (regionNormalDirections (I := I) (S.base.metric 0) basisAt)
         (fiberRegionSupport hT (I := I) (M := M) S basisAt K)) := by
   classical
-  letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     fun x ↦ @InnerProductSpace.Core.toNormedAddCommGroup Real
       (Tensor04At (I := I) (M := M) x) inferInstance inferInstance inferInstance
       (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
-  letI : ∀ x : M, InnerProductSpace Real (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, InnerProductSpace Real (Tensor04At (I := I) (M := M) x) :=
     fun x ↦ @InnerProductSpace.ofCore Real (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance
       (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
-  letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+  let : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
     fun _ ↦ inferInstance
   refine ⟨?_⟩
   intro t ht x₀ ν' hν'
@@ -5015,7 +5067,7 @@ private theorem fiberRegion_hasFlatSupportSectionsOn
                   regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν' * O) := by
               rw [hcenterEq]
       rw [regionNormalDirections] at hν' ⊢
-      simp only [Set.mem_setOf_eq] at hν' ⊢
+      simp only [Set.mem_ofPred_eq] at hν' ⊢
       have hρ : 0 ≤ (χ y) ^ 4 := pow_nonneg (χ.nonneg : 0 ≤ χ y) 4
       have hmain := regionNormalDirections_conj_scale_condition
         (M := regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν')
@@ -5131,6 +5183,7 @@ end TensorTransport
 end RadialTransportLinear
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem curvatureOperatorRegionPropagationOn_zero_aux
     {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [Nonempty M]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -5143,11 +5196,11 @@ private theorem curvatureOperatorRegionPropagationOn_zero_aux
           (I := I) (S.base.metric 0) x⟩ K) :
     curvatureOperatorRegionPropagationOn (I := I) (M := M) S K 0 T := by
   classical
-  letI : NeZero (Module.finrank Real E) := ⟨by
+  let : NeZero (Module.finrank Real E) := ⟨by
     intro hzero
     have hthree := hdim (Classical.choice (inferInstance : Nonempty M))
     have hthree' : Module.finrank Real E = 3 := by
-      simpa only [TangentSpace] using hthree
+      with_unfolding_all exact hthree
     omega⟩
   let basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x) :=
     fun x ↦ Classical.choose
@@ -5169,8 +5222,13 @@ private theorem curvatureOperatorRegionPropagationOn_zero_aux
       (D := RealTimeInterval.closed 0 T hT.le) iota
       (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
         (fun a x ↦ basisAt x a)) := by
-    simpa [iota, BundleIsomorphismODEInFrameOn, uhlenbeckRupOfSolution,
-      solutionRicciOneUpInFrame] using hspec.2.2.1
+    change FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
+      (ricciOneUpCompInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x ↦ basisAt x a))
+    change FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
+      (uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x ↦ basisAt x a))
+    simpa only [iota] using hspec.2.2.1
   have hgram : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a))
           iota t x a b =
@@ -5193,6 +5251,7 @@ private theorem curvatureOperatorRegionPropagationOn_zero_aux
   simpa [curvatureOperatorRegionPropagationOn] using hprop
 
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
@@ -5210,14 +5269,15 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
   classical
   cases isEmpty_or_nonempty M with
   | inl hM =>
-      letI := hM
+      let := hM
       intro t ht x
       exact isEmptyElim x
   | inr hM =>
-      letI := hM
+      let := hM
       have hdimT : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3 := by
         intro x
-        simpa using hdim
+        rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+        exact hdim
       let Sshift : SolutionOn (I := I) (M := M) (D.timeShift t0) := S.timeShift t0
       let D0 : RealTimeInterval := RealTimeInterval.closed 0 T hT.le
       let S0 : SolutionOn (I := I) (M := M) D0 := Sshift.timeRestrict D0
@@ -5242,7 +5302,8 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
         (I := I) (M := M) hT S0 hS0 hdimT hK hinit0
       have hpropShift : curvatureOperatorRegionPropagationOn
           (I := I) (M := M) Sshift K 0 T := by
-        simpa [S0, SolutionOn.timeRestrict] using hprop0
+        unfold curvatureOperatorRegionPropagationOn at hprop0 ⊢
+        exact hprop0
       exact curvatureOperatorRegionPropagationOn_timeShift
         (I := I) (M := M) S hpropShift
 
@@ -5284,16 +5345,16 @@ theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound
   · subst T
     exact curvatureOperatorRegionPropagationOn_initial
       (I := I) (M := M) S hK hdim hinit
-  · letI : IsManifold I 1 M :=
+  · let : IsManifold I 1 M :=
       IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
         (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-    letI : IsManifold I 2 M :=
+    let : IsManifold I 2 M :=
       IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
         (by decide : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-    letI : IsManifold I 3 M :=
+    let : IsManifold I 3 M :=
       IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
         (by decide : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-    letI : SigmaCompactSpace M := CompactSpace.sigmaCompact
+    let : SigmaCompactSpace M := CompactSpace.sigmaCompact
     exact curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
       (I := I) (M := M) S hS hTpos hK hslab hreg hdim hinit
 

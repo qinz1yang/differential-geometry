@@ -26,9 +26,9 @@ lemma exists_monotone_precompact_open_exhaustion
       (Monotone Ω_seq) ∧
       (⋃ n, Ω_seq n) = Ω := by
   classical
-  haveI : LocallyCompactSpace ↥Ω := hΩ_open.locallyCompactSpace
-  haveI : SecondCountableTopology ↥Ω := inferInstance
-  haveI : SigmaCompactSpace ↥Ω :=
+  have : LocallyCompactSpace ↥Ω := hΩ_open.locallyCompactSpace
+  have : SecondCountableTopology ↥Ω := inferInstance
+  have : SigmaCompactSpace ↥Ω :=
     sigmaCompactSpace_of_locallyCompact_secondCountable
   set K_sub : ℕ → Set ↥Ω := compactCovering ↥Ω with hK_sub_def
   have hK_sub_compact : ∀ n, IsCompact (K_sub n) := isCompact_compactCovering ↥Ω
@@ -152,7 +152,7 @@ lemma patchedFunction_ae_eq_on_each
       have hΩ_seq_succ_meas : MeasurableSet (Ω_seq (n+1)) :=
         (hΩ_seq_open (n+1)).measurableSet
       have h_set_eq : Ω_seq (n+1) = Ω_seq n ∪ (Ω_seq (n+1) \ Ω_seq n) := by
-        rw [union_diff_self]
+        rw [union_sdiff_self]
         exact (union_eq_right.mpr (hΩ_seq_mono (Nat.le_succ n))).symm
       have h_ae_on_left :
           patchedFunction Ω_seq g_seq =ᵐ[volume.restrict (Ω_seq n)] g_seq (n+1) := by

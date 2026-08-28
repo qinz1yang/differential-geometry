@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -68,12 +67,12 @@ private lemma sum_wkpNorm_sq_α_le_wtwokTwoNorm_sq
         (∑ Jdx : Fin s → Fin (Module.finrank ℝ E), (w α Idx Jdx) ^ 2) ≤
           (∑ Jdx : Fin s → Fin (Module.finrank ℝ E), w α Idx Jdx) ^ 2 := by
     intro Idx
-    exact Finset.sum_sq_le_sq_sum_of_nonneg (fun Jdx _ => zero_le _)
+    exact Finset.sum_sq_le_sq_sum_of_nonneg (fun Jdx _ => zero_le)
   set u : (Fin r → Fin (Module.finrank ℝ E)) → ℝ≥0∞ :=
     fun Idx => ∑ Jdx : Fin s → Fin (Module.finrank ℝ E), w α Idx Jdx with hu_def
   have h_outer : (∑ Idx : Fin r → Fin (Module.finrank ℝ E), (u Idx) ^ 2) ≤
       (∑ Idx : Fin r → Fin (Module.finrank ℝ E), u Idx) ^ 2 :=
-    Finset.sum_sq_le_sq_sum_of_nonneg (fun Idx _ => zero_le _)
+    Finset.sum_sq_le_sq_sum_of_nonneg (fun Idx _ => zero_le)
   have h_double :
       (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E), (w α Idx Jdx) ^ 2) ≤
@@ -178,7 +177,7 @@ theorem chart_α_pou_sq_repr_L2_le_wtwokTwoNorm_sq
   refine le_trans (hK_up_le T) ?_
   have h_sum_le := sum_wkpNorm_sq_α_le_wtwokTwoNorm_sq
     (I := I) (M := M) g r s α T
-  exact mul_le_mul_of_nonneg_left h_sum_le (zero_le _)
+  exact mul_le_mul_of_nonneg_left h_sum_le (zero_le)
 
 end TensorSpectral
 end Parabolic

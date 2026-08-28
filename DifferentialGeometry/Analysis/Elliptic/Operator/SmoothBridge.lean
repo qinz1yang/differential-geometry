@@ -68,7 +68,7 @@ theorem smoothScalarH1Inner_eq_integral_oneSubLap_mul
       ∫ x, (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   unfold smoothScalarH1Inner
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hv_cs : HasCompactSupport v.toFun := HasCompactSupport.of_compactSpace _
   have hu_cs : HasCompactSupport u.toFun := HasCompactSupport.of_compactSpace _

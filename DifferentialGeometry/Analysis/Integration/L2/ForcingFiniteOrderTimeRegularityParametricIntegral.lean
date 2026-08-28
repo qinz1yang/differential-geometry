@@ -118,7 +118,15 @@ private theorem partialSnd_contMDiffOn_Icc_finiteOrder
       contMDiffWithinAt_snd contMDiffWithinAt_id contMDiffWithinAt_const le_rfl
       (Set.mapsTo_id _) hp₀
       (fun q hq => hq.2) hUM
-  simpa [inTangentCoordinates_model_space] using h_apply
+  rw [inTangentCoordinates_model_space
+    (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+    (f := fun p : M × ℝ => p.2)
+    (g := fun p : M × ℝ => f p.1 p.2)
+    (ϕ := fun p : M × ℝ =>
+      (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
+        (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2))
+    (x₀ := p₀)] at h_apply
+  exact h_apply
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem hasDerivWithinAt_integral_param_Icc_finiteOrder
@@ -336,7 +344,8 @@ theorem iteratedDerivWithin_integral_param_Icc_finiteOrder
           (hUD t ht)
       rw [iteratedDerivWithin_congr hderiv_eqOn ht₀, ih Fd hFd_joint t₀ ht₀]
       refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-      exact (iteratedDerivWithin_succ').symm
+      exact (congrFun (iteratedDerivWithin_succ'
+        (n := n) (f := fun s : ℝ => f x s) (s := Set.Icc (0 : ℝ) T)) t₀).symm
 
 
 end Integration

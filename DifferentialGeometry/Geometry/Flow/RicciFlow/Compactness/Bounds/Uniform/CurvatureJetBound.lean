@@ -62,7 +62,7 @@ private lemma gAddNorm_le
       g.inner x a a + 2 * g.inner x a b + g.inner x b b := by
     have h1 : g.inner x (a + b) (a + b) =
         g.inner x a (a + b) + g.inner x b (a + b) := by
-      rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+      rw [map_add (g.inner x), add_apply]
     have h2 : g.inner x a (a + b) = g.inner x a a + g.inner x a b :=
       map_add (g.inner x a) a b
     have h3 : g.inner x b (a + b) = g.inner x b a + g.inner x b b :=
@@ -241,13 +241,13 @@ private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M
       |D v w| ≤ c / 2 * (gBase.inner x v v + gBase.inner x w w) := by
     intro v w
     have hpol : (4 : ℝ) * D v w = D (v + w) (v + w) - D (v - w) (v - w) := by
-      simp only [map_add, map_sub, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.sub_apply]
+      simp only [map_add, map_sub, add_apply,
+        sub_apply]
       rw [hDsymm w v]; ring
     have hpar : gBase.inner x (v + w) (v + w) + gBase.inner x (v - w) (v - w) =
         2 * gBase.inner x v v + 2 * gBase.inner x w w := by
-      simp only [map_add, map_sub, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.sub_apply]
+      simp only [map_add, map_sub, add_apply,
+        sub_apply]
       ring
     obtain ⟨hd1lo, hd1hi⟩ := abs_le.mp (hdiag (v + w))
     obtain ⟨hd2lo, hd2hi⟩ := abs_le.mp (hdiag (v - w))
@@ -261,7 +261,7 @@ private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M
     linarith
   intro v w
   rcases eq_or_ne v 0 with rfl | hv
-  · simp only [map_zero, ContinuousLinearMap.zero_apply, abs_zero]
+  · simp only [map_zero, zero_apply, abs_zero]
     exact mul_nonneg (mul_nonneg hc (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
   rcases eq_or_ne w 0 with rfl | hw
   · simp only [map_zero, abs_zero]
@@ -273,13 +273,13 @@ private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M
     set a := Real.sqrt (gBase.inner x v v) with ha_def
     set b := Real.sqrt (gBase.inner x w w) with hb_def
     have hna : gBase.inner x (a⁻¹ • v) (a⁻¹ • v) = 1 := by
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       rw [← Real.sq_sqrt hvv.le, ← ha_def]; field_simp
     have hnb : gBase.inner x (b⁻¹ • w) (b⁻¹ • w) = 1 := by
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       rw [← Real.sq_sqrt hww.le, ← hb_def]; field_simp
     have hDscale : D (a⁻¹ • v) (b⁻¹ • w) = a⁻¹ * b⁻¹ * D v w := by
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]; ring
+      simp only [map_smul, smul_apply, smul_eq_mul]; ring
     have hAMs := hAM (a⁻¹ • v) (b⁻¹ • w)
     rw [hna, hnb, hDscale, abs_mul, abs_mul,
       abs_of_pos (by positivity : (0 : ℝ) < a⁻¹),
@@ -359,18 +359,19 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
   [T2Space M] in
 private lemma lowerAllUpper_zero_eq_unit'
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
-    (W : SmoothCcTensor gBase 0 s) (w : Fin (0 + s) → TangentSpace I x) :
+    (W : SmoothCcTensor gBase 0 s) (w : Fin (0 + s) → E) :
     lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
         (TensorRSSpace.toModel
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)) w =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
-        (unitZeroSec (I := I) (M := M) x) (fun j : Fin s => w (Fin.natAdd 0 j)) := by
+      Tensor0SSpace.toModel
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
+          (unitZeroSec (I := I) (M := M) x))
+        (fun j : Fin s => w (Fin.natAdd 0 j)) := by
   rw [lowerAllUpperIndices_apply, separableFormAt_zero]
   rw [show (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) =
       Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x) from rfl]
   rw [← toModel_tensorRS_apply (I := I) (M := M) 0 s x (W.toSection x)
     (unitZeroSec (I := I) (M := M) x)]
-  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] in
@@ -400,11 +401,13 @@ private lemma riemannianFiberNormSq_eq_normSq0S_unit'
     (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm) (Equiv.refl _)) _ _ ?_
   intro slots
   rw [Tensor0SBundle.component0S_apply]
-  rw [lowerAllUpper_zero_eq_unit' (I := I) gBase s x W]
+  with_unfolding_all
+    rw [lowerAllUpper_zero_eq_unit' (I := I) gBase s x W]
   rw [sq]
   congr 1 <;>
     (congr 1; funext a;
      simp only [Equiv.arrowCongr_apply, Equiv.coe_refl, Function.comp_apply, id_eq];
+     rw [tangentSpaceModelContinuousLinearEquiv_apply];
      congr 1;
      apply Fin.ext;
      simp)
@@ -447,7 +450,7 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
     ‖((metricDifferenceCcTensor (I := I) (M := M) gBase g₀).toSection x :
         TensorRSSpace 0 2 I x)‖ ≤ (Module.finrank ℝ E : ℝ) * (Λ - 1) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 2
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
   have hΛ1 : (0 : ℝ) ≤ Λ - 1 := by linarith
@@ -510,7 +513,7 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
     ‖((iteratedCovGrad gBase 0 2 (a + 1)
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)).toSection x :
         TensorRSSpace 0 (2 + (a + 1)) I x)‖ ≤ Λ := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
   have hBzero : ‖((iteratedCovGrad gBase 0 2 (a + 1)
         (metricCcTensor (I := I) (M := M) gBase gBase)).toSection x :
@@ -552,12 +555,15 @@ theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : �
     (le_of_eq ?_)
   · intro j hj
     fin_cases hj
-    · simpa only [iteratedCovGrad_zero] using
-        metricDiff_order0_bound (I := I) (M := M) gBase g₀ hΛ hcomp x
-    · simpa only [iteratedCovGrad_zero] using
-        metricDiff_orderPos_bound (I := I) (M := M) gBase g₀ 0 hjet1 x
-    · simpa only [iteratedCovGrad_zero] using
-        metricDiff_orderPos_bound (I := I) (M := M) gBase g₀ 1 hjet2 x
+    · simp only []
+      with_unfolding_all exact
+        (metricDiff_order0_bound (I := I) (M := M) gBase g₀ hΛ hcomp x)
+    · simp only [if_neg (by norm_num : ¬(1 : ℕ) = 0)]
+      with_unfolding_all exact
+        (metricDiff_orderPos_bound (I := I) (M := M) gBase g₀ 0 hjet1 x)
+    · simp only [if_neg (by norm_num : ¬(2 : ℕ) = 0)]
+      with_unfolding_all exact
+        (metricDiff_orderPos_bound (I := I) (M := M) gBase g₀ 1 hjet2 x)
   · rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
       Finset.sum_range_zero, zero_add, if_pos (rfl : (0 : ℕ) = 0),
       if_neg (by norm_num : ¬(1 : ℕ) = 0), if_neg (by norm_num : ¬(2 : ℕ) = 0)]
@@ -723,8 +729,10 @@ theorem convexCombPath_jetBound (g₀ gBase : SmoothRiemannianMetric I M) {Λ : 
   intro x _
   have hfield : metricCovDeriv (convexCombPath g₀ gBase t ⟨ht0, ht1⟩) gBase (a + 1) x =
       t • metricCovDeriv g₀ gBase (a + 1) x := by
-    rw [metricCovDeriv_convexCombPath_succ]
-    simp only [ContMDiffSection.coe_smul, Pi.smul_apply]
+    with_unfolding_all exact
+      (congrArg (fun S => S x)
+        (metricCovDeriv_convexCombPath_succ (I := I) (M := M)
+          g₀ gBase t ⟨ht0, ht1⟩ a))
   have hnorm : metricCovDerivNorm (a + 1) (convexCombPath g₀ gBase t ⟨ht0, ht1⟩) gBase x =
       |t| * metricCovDerivNorm (a + 1) g₀ gBase x := by
     unfold metricCovDerivNorm

@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle Set DifferentialGeometry.Tensor0SBundle
@@ -56,15 +55,15 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2
 private lemma tensor0SChartFiberFromModel_zero_empty (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (w : Tensor0SModel 0 ℝ E) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b) ℝ from
-      tensor0SChartFiberFromModel (I := I) 0 α b w)
+    Tensor0SSpace.eval
+        (tensor0SChartFiberFromModel (I := I) 0 α b w)
         (fun i : Fin 0 => Fin.elim0 i) =
       w (fun i : Fin 0 => Fin.elim0 i) := by
   classical
   unfold tensor0SChartFiberFromModel
   rw [tensor0SBundle_symmL_apply_eq_compContinuousLinearMap
     (I := I) (n := 0) α (b := b) hb w]
+  rw [Tensor0SSpace.eval_fiber_equiv_symm]
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   funext i
@@ -184,22 +183,17 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (hT_at : TensorSectionMDiffAt (I := I) 0 T b)
     (v : TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b) ℝ from
-      tensor0SIntrinsicChartCLM (I := I) 0 α T b v)
+    Tensor0SSpace.eval
+        (tensor0SIntrinsicChartCLM (I := I) 0 α T b v)
         (fun i : Fin 0 => Fin.elim0 i) =
-      mfderiv I 𝓘(ℝ) (fun b' : M =>
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-          (fun i : Fin 0 => Fin.elim0 i)) b v := by
+      mvfderiv (I := I) (fun b' : M =>
+        Tensor0SSpace.eval (T b') (fun i : Fin 0 => Fin.elim0 i)) b v := by
   classical
   set φ := extChartAt I α
   set repr : M → Tensor0SModel 0 ℝ E :=
     tensor0SChartE_section_repr (I := I) 0 α T
   set scalarFn : M → ℝ := fun b' : M =>
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-      (fun i : Fin 0 => Fin.elim0 i)
+    Tensor0SSpace.eval (T b') (fun i : Fin 0 => Fin.elim0 i)
   set v0 : E := trivToE (I := I) α b v
   have hb_src : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
@@ -209,7 +203,9 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
   rw [tensor0SIntrinsicChartCLM_apply (I := I) 0 α T b v]
   rw [tensor0SChartFiberFromModel_zero_empty (I := I) α hb_base
-      (fderiv ℝ (repr ∘ φ.symm) (φ b) v0)]
+      (fderiv ℝ
+        (tensor0SChartE_section_repr (I := I) 0 α T ∘ (extChartAt I α).symm)
+        (extChartAt I α b) (trivToE (I := I) α b v))]
   change evalEmptyCLM (E := E) (fderiv ℝ (repr ∘ φ.symm) (φ b) v0) = _
   have hDiff_repr_pullback : DifferentiableAt ℝ (repr ∘ φ.symm) (φ b) :=
     differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt

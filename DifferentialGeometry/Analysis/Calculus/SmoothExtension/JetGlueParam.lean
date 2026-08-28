@@ -228,13 +228,15 @@ theorem iteratedFDerivWithin_seam_match {V : Set E} (hV : IsOpen V) :
       have hιmapsL : Set.MapsTo ι V sL := fun v hv => ⟨Set.self_mem_Iic, hv⟩
       have hιmapsR : Set.MapsTo ι V sR := fun v hv => ⟨Set.self_mem_Ici, hv⟩
       have hιfd : HasFDerivWithinAt ι (ContinuousLinearMap.inr ℝ ℝ E) V z := by
-        simpa [hι_def] using (ContinuousLinearMap.inr ℝ ℝ E).hasFDerivWithinAt
+        change HasFDerivWithinAt (ContinuousLinearMap.inr ℝ ℝ E)
+          (ContinuousLinearMap.inr ℝ ℝ E) V z
+        exact (ContinuousLinearMap.inr ℝ ℝ E).hasFDerivWithinAt
       have hιdiff : DifferentiableWithinAt ℝ ι V z := hιfd.differentiableWithinAt
       have hgLdiff : DifferentiableWithinAt ℝ gL sL (0, z) :=
-        (hL.differentiableOn_iteratedFDerivWithin (by exact_mod_cast ENat.coe_lt_top n) hUDL)
+        (hL.differentiableOn_iteratedFDerivWithin (by exact_mod_cast ENat.natCast_lt_top n) hUDL)
           (0, z) hmemL
       have hgRdiff : DifferentiableWithinAt ℝ gR sR (0, z) :=
-        (hR.differentiableOn_iteratedFDerivWithin (by exact_mod_cast ENat.coe_lt_top n) hUDR)
+        (hR.differentiableOn_iteratedFDerivWithin (by exact_mod_cast ENat.natCast_lt_top n) hUDR)
           (0, z) hmemR
       have hEqV : Set.EqOn (gL ∘ ι) (gR ∘ ι) V := by
         intro v hv
@@ -254,7 +256,7 @@ theorem iteratedFDerivWithin_seam_match {V : Set E} (hV : IsOpen V) :
           = (fderivWithin ℝ gR sR (0, z)).comp (ContinuousLinearMap.inr ℝ ℝ E) := by
         rw [← hchainL, ← hchainR]; exact hcongr
       have happ := congrArg (fun L => L e) hcomp_eq
-      simpa only [hgL_def, hgR_def, ContinuousLinearMap.coe_comp', Function.comp_apply,
+      simpa only [hgL_def, hgR_def, ContinuousLinearMap.coe_comp, Function.comp_apply,
         ContinuousLinearMap.inr_apply] using happ
     rw [hsplit, map_add, map_add, map_smul, map_smul, htrans, hseam]
 

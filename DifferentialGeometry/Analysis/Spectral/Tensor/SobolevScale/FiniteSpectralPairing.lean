@@ -207,7 +207,7 @@ theorem finite_pair_split
     _ = _ := cc_pair_tsum_split (I := I) (M := M) g 2 a b
       (finiteEigenCombo (I := I) (M := M) g F c) A
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem connIter_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (theta : ℝ)
     (T : SmoothCcTensor g r s) :
@@ -231,6 +231,7 @@ private theorem connIter_smul
           (oneMinusConnLapSmoothIter (I := I) g r s k T)
       rw [hraw, smul_sub]
 
+omit [SigmaCompactSpace M] in
 private theorem connIter_symmS
     (g : SmoothRiemannianMetric I M) (k : ℕ) (T : SmoothCcTensor g 0 2) :
     oneMinusConnLapSmoothIter (I := I) g 0 2 k

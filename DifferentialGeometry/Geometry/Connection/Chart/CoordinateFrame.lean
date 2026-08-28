@@ -7,6 +7,7 @@ import Mathlib.Geometry.Manifold.VectorField.LieBracket
 
 noncomputable section
 
+
 namespace DifferentialGeometry
 namespace Coordinates
 
@@ -91,16 +92,19 @@ theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
   rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
     (e := trivializationAt E (TangentSpace I : M -> Type _) x₀)
     (b := Module.finBasis Real E) (i := i) hx_triv]
-  simpa [Bundle.Trivialization.basisAt, Trivialization.symmL_apply, extChartAt] using
-    congrArg (fun L : E →L[Real] TangentSpace I x => L ((Module.finBasis Real E) i))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_src)
+  rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
+    Trivialization.linearEquivAt_symm_apply]
+  rw [← Trivialization.symmL_apply (R := Real)
+    (trivializationAt E (TangentSpace I : M → Type _) x₀) hx_triv]
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_src]
+  rfl
 
 private theorem coordinateFrame_pullback_eq_const (x₀ : M) (i : CoordinateIdx E) :
     VectorField.mpullbackWithin 𝓘(Real, E) I (extChartAt I x₀).symm
         (coordinateFrameAt (I := I) x₀ i) (Set.range I)
       =ᶠ[𝓝[Set.range I] (extChartAt I x₀ x₀)]
         fun _ : E => (Module.finBasis Real E i : E) := by
-  haveI : IsManifold I (1 : WithTop ℕ∞) M :=
+  have : IsManifold I (1 : WithTop ℕ∞) M :=
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   filter_upwards [extChartAt_target_mem_nhdsWithin (I := I) x₀] with y hy
   simp only [VectorField.mpullbackWithin_apply]

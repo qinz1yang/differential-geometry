@@ -333,7 +333,7 @@ private lemma lintegral_enorm_sqrt_grad_v_sq_eq
     intro x
     have h_grad_eq : ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = gradFun (I := I) g v.toFun x := by
-      simp [grad_g_apply]
+      exact grad_g_apply (I := I) g ⟨v.toFun, v.smooth⟩ x
     rw [h_grad_eq]
     have h1 : ‖Real.sqrt (g.inner x (gradFun (I := I) g v.toFun x)
         (gradFun (I := I) g v.toFun x))‖ₑ ^ (2 : ℝ) =

@@ -1,4 +1,5 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Integral.IntegrableOn
 import Mathlib.MeasureTheory.Integral.MeanInequalities
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 
@@ -39,7 +40,7 @@ theorem holder_integral_prod_rpow_le_prod_integral_rpow
     exact Finset.prod_congr rfl fun i hi =>
       (ENNReal.ofReal_rpow_of_nonneg (hx i hi) (hθ i hi)).symm
   have hfin : ∀ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ≠ ⊤ :=
-    fun i hi => (hf_int i hi).lintegral_lt_top.ne
+    fun i hi => (Integrable.lintegral_lt_top (hf_int i hi)).ne
   have hRfin : (∏ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ^ θ i) ≠ ⊤ :=
     (ENNReal.prod_lt_top fun i hi =>
       ENNReal.rpow_lt_top_of_nonneg (hθ i hi) (hfin i hi)).ne

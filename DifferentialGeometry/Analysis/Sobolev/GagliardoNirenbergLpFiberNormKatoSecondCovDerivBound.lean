@@ -45,6 +45,7 @@ section GeneralValenceRS
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
     DifferentialGeometry.TensorRSNabla DifferentialGeometry.TensorMultilinear
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
     (g : SmoothRiemannianMetric I M) (r m : ℕ)
     (w : Integral.L2.SmoothCcTensor g r m) (x : M) :
@@ -105,16 +106,7 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
           from T2) ωK)
         (fun k : Fin (m + 1 + 1) =>
           e ((Fin.cons i (Fin.cons i J) : Fin (m + 1 + 1) → Fin n) k))
-    rw [show ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace
-            (m + 1 + 1) I x from T2) ωK)
-          (fun k : Fin (m + 1 + 1) =>
-            e ((Fin.cons i (Fin.cons i J) : Fin (m + 1 + 1) → Fin n) k)) =
-        Tensor0SBundle.Tensor0SSpace.toModel
-          ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace
-              (m + 1 + 1) I x from T2) ωK)
-          (Fin.cons (e i) (Fin.cons (e i) (fun k : Fin m => e (J k)))) from by
-      rw [htuple]; rfl]
-    rw [hT2_def]
+    rw [htuple, hT2_def]
     exact hbridge.symm
   have hdiag_term : ∀ i : Fin n,
       riemannianFiberNormSq (I := I) (M := M) g r m x
@@ -180,6 +172,7 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
           (Fin.cons i (Fin.cons b J))) ^ 2)
     (fun b _ => Finset.sum_nonneg (fun J _ => sq_nonneg _)) (Finset.mem_univ i)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem rawConnLap_innerWith_sqrt_finrank_bound_rs
     (g : SmoothRiemannianMetric I M) (r m : ℕ)
     (w : Integral.L2.SmoothCcTensor g r m) (x : M) :
@@ -309,7 +302,7 @@ omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
     (g : SmoothRiemannianMetric I M) (r p : ℕ)
     (Q : Integral.L2.SmoothCcTensor g r p) (x : M) (v : TangentSpace I x) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => riemannianFiberNormSq (I := I) (M := M) g r p y (Q.toSection y)) x v =
       2 * Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
         (Tensor0SBundle.TensorRSSpace.toModel
@@ -323,7 +316,7 @@ private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
     funext y
     rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r p y (Q.toSection y)]
   rw [hfun]
-  rw [show extDerivFun (I := I)
+  rw [show mvfderiv (I := I)
         (fun y : M => Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p y
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))) x v =
@@ -380,11 +373,12 @@ private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
   rw [hbridge]
   ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs
     (g : SmoothRiemannianMetric I M) (r p : ℕ)
     (Q : Integral.L2.SmoothCcTensor g r p) (x : M) :
     ∑ a : Fin (Module.finrank ℝ E),
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun y : M => riemannianFiberNormSq (I := I) (M := M) g r p y (Q.toSection y)) x
           (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2 ≤
       4 * riemannianFiberNormSq (I := I) (M := M) g r p x (Q.toSection x) *
@@ -407,7 +401,7 @@ theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs
   have hss_nn : ∀ a, 0 ≤ ss a := fun a =>
     riemannianFiberNormSq_nonneg (I := I) (M := M) g r p x (V a)
   have hterm : ∀ a : Fin n,
-      (extDerivFun (I := I)
+      (mvfderiv (I := I)
         (fun y : M => riemannianFiberNormSq (I := I) (M := M) g r p y (Q.toSection y)) x (e a)) ^ 2
           ≤
         4 * ss a * rQ := by
@@ -444,7 +438,7 @@ theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs
     rw [hss_def, hV_def]
     rfl
   calc ∑ a : Fin n,
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun y : M => riemannianFiberNormSq (I := I) (M := M) g r p y (Q.toSection y)) x
           (e a)) ^ 2
       ≤ ∑ a : Fin n, 4 * ss a * rQ := Finset.sum_le_sum (fun a _ => hterm a)
@@ -453,6 +447,7 @@ theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs
     _ = 4 * rQ * riemannianFiberNormSq (I := I) (M := M) g r (p + 1) x
           ((covGrad (I := I) (M := M) g r p Q).toSection x) := by rw [hframe]; ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem prependCovGradSlot_fiberNormSq_frame_sum_rs
     (g : SmoothRiemannianMetric I M) (r t : ℕ) (ζ : C^∞⟮I, M; ℝ⟯)
@@ -460,7 +455,7 @@ theorem prependCovGradSlot_fiberNormSq_frame_sum_rs
     riemannianFiberNormSq (I := I) (M := M) g r (t + 1) x
         ((prependCovGradSlot (I := I) (M := M) g r t ζ S).toSection x) =
       (∑ a : Fin (Module.finrank ℝ E),
-          (extDerivFun (I := I) (ζ : M → ℝ) x
+          (mvfderiv (I := I) (ζ : M → ℝ) x
             (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) *
         riemannianFiberNormSq (I := I) (M := M) g r t x (S.toSection x) := by
   classical
@@ -474,15 +469,15 @@ theorem prependCovGradSlot_fiberNormSq_frame_sum_rs
       (I := I) g x a b
   rw [prependCovGradSlot_toSection_apply (I := I) (M := M) g r t ζ S x]
   rw [riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs (I := I) (M := M) g r t x
-    ((extDerivFun (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) e hn_def horth]
+    ((mvfderiv (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) e hn_def horth]
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [ContinuousLinearMap.smulRight_apply]
-  rw [show ((extDerivFun (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x :
+  rw [show ((mvfderiv (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x :
         Tensor0SBundle.TensorRSSpace r t I x) =
-      (extDerivFun (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x from rfl]
+      (mvfderiv (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x from rfl]
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r t x
-    ((extDerivFun (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x),
+    ((mvfderiv (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x),
     riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r t x (S.toSection x)]
   rw [Tensor0SBundle.TensorRSSpace.toModel_smul,
     Integral.L2.tensorInnerPointwise_smul_left, Integral.L2.tensorInnerPointwise_smul_right]

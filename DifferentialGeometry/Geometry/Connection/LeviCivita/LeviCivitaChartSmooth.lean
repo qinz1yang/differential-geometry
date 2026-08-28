@@ -85,13 +85,13 @@ lemma christoffelCorrectionCLM_apply
               (chartModelBasis E) k := by
   classical
   unfold christoffelCorrectionCLM
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   change ((chartModelBasis E).repr (chartE_section_repr (I := I) α σ x) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
       christoffelBlockCLM (E := E) i k w =
@@ -247,9 +247,9 @@ lemma christoffelCorrectionCLM_contMDiffOn
       (chartLeviCivitaGoodSet (I := I) α) := by
   classical
   unfold christoffelCorrectionCLM
-  refine contMDiffOn_finset_sum (t := Finset.univ) (fun i _ => ?_)
-  refine contMDiffOn_finset_sum (t := Finset.univ) (fun j _ => ?_)
-  refine contMDiffOn_finset_sum (t := Finset.univ) (fun k _ => ?_)
+  refine contMDiffOn_finsetSum (t := Finset.univ) (fun i _ => ?_)
+  refine contMDiffOn_finsetSum (t := Finset.univ) (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (t := Finset.univ) (fun k _ => ?_)
   have hrepr_smooth :=
     chartE_section_repr_basis_component_contMDiffOn (I := I) α (j := j) hσ
   have hΓ_smooth :=
@@ -334,7 +334,7 @@ lemma inCoordinates_chartLeviCivita_eq
         (chartE_section_repr (I := I) α σ x) (trivFromE (I := I) α x w) =
       christoffelCorrectionCLM (I := I) g α σ x w from
     christoffelCorrection_eq_christoffelCorrectionCLM (I := I) g α σ hx_base w]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartLeviCivita_contMDiffCovariantDerivativeOn

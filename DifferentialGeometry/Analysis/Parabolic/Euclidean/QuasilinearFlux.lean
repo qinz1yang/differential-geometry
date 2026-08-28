@@ -28,10 +28,10 @@ theorem coeffD2_decomposition
         (fderiv ℝ c (u x) (fderiv ℝ u x p)) • fderiv ℝ w x q := by
   have hcu : DifferentiableAt ℝ (fun z => c (u z)) x := hc.comp x hu
   have hprod := fderiv_fun_smul hcu hDq
-  have hcomp := fderiv_comp' (x := x) hc hu
+  have hcomp := fderiv_fun_comp (x := x) hc hu
   have happ := congrArg (fun L : V →L[ℝ] F => L p) hprod
   rw [hcomp] at happ
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.comp_apply] at happ
   rw [happ]
   abel
@@ -56,7 +56,7 @@ theorem fluxDiff_norm (A : U → G →L[ℝ] F)
   have hsplit :
       A u₁ d₁ - A u₂ d₂ =
         (A u₁ - A u₂) d₁ + A u₂ (d₁ - d₂) := by
-    simp only [ContinuousLinearMap.sub_apply, map_sub]
+    simp only [sub_apply, map_sub]
     abel
   rw [hsplit]
   calc
@@ -248,7 +248,7 @@ theorem corrDiff_norm (C : U → G →L[ℝ] H →L[ℝ] F)
       C u₁ d₁ e₁ - C u₂ d₂ e₂ =
         (C u₁ - C u₂) d₁ e₁ +
           C u₂ (d₁ - d₂) e₁ + C u₂ d₂ (e₁ - e₂) := by
-    simp only [ContinuousLinearMap.sub_apply, map_sub]
+    simp only [sub_apply, map_sub]
     abel
   rw [hsplit]
   calc

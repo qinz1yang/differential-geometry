@@ -46,7 +46,7 @@ theorem posDef_isVonNBounded
       · have hvnorm : (0 : ℝ) < ‖v‖ := norm_pos_iff.mpr hv
         have hscaleAll : ∀ (r : ℝ) (w : E), g (r • w) (r • w) = r ^ 2 * g w w := by
           intro r w
-          rw [(g (r • w)).map_smul, map_smul, ContinuousLinearMap.smul_apply,
+          rw [(g (r • w)).map_smul, map_smul, smul_apply,
             smul_eq_mul, smul_eq_mul]; ring
         have hu_sphere : ((‖v‖)⁻¹ • v) ∈ Metric.sphere (0 : E) 1 := by
           rw [Metric.mem_sphere, dist_zero_right, norm_smul, norm_inv, norm_norm]
@@ -60,7 +60,7 @@ theorem posDef_isVonNBounded
         rw [hscale]
         nlinarith [sq_nonneg ‖v‖, hvnorm, hmin']
   refine ⟨Real.sqrt (1 / c), fun v hv => ?_⟩
-  simp only [Set.mem_setOf_eq] at hv
+  simp only [Set.mem_ofPred_eq] at hv
   have h2 : c * ‖v‖ ^ 2 < 1 := lt_of_le_of_lt (hcoer v) hv
   have h3 : ‖v‖ ^ 2 < 1 / c := by rw [lt_div_iff₀ hc, mul_comm]; exact h2
   calc ‖v‖ = Real.sqrt (‖v‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
@@ -137,7 +137,7 @@ lemma inCoordinates_localFiber (x₀ : M) {x : M}
   set e₁ := trivializationAt E (TangentSpace I) x₀ with he₁
   ext v w
   rw [ContinuousLinearMap.inCoordinates]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   rw [oneForm_continuousLinearMapAt x₀ hx]
   simp only [ContinuousLinearMap.comp_apply]
   change inner ℝ (tangentTrivializationContinuousLinearMapAt (I := I) x₀ x (e₁.symmL ℝ x v))
@@ -189,10 +189,10 @@ lemma convex_posDefForms (x : M) : Convex ℝ (posDefForms (I := I) x) := by
   intro φ hφ ψ hψ a b ha hb hab
   refine ⟨?_, ?_⟩
   · intro v w
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [add_apply, smul_apply, smul_eq_mul]
     rw [hφ.1 v w, hψ.1 v w]
   · intro v hv
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [add_apply, smul_apply, smul_eq_mul]
     have h1 := hφ.2 v hv
     have h2 := hψ.2 v hv
     rcases lt_or_eq_of_le ha with ha' | ha'

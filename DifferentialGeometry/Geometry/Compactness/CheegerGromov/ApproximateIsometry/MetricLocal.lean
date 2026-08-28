@@ -131,12 +131,12 @@ theorem HasSuppConvData.source_stay
     dsimp only
     let Lphi := L.subseq hphi
     let Yk := X.obj (Lphi.φ (kn n))
-    letI : TopologicalSpace Yk.M := Yk.topology
-    letI : ChartedSpace H Yk.M := Yk.charted
-    letI : IsManifold I ∞ Yk.M := Yk.smooth
-    letI : T2Space Yk.M := Yk.t2
-    letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-    letI : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
+    let : TopologicalSpace Yk.M := Yk.topology
+    let : ChartedSpace H Yk.M := Yk.charted
+    let : IsManifold I ∞ Yk.M := Yk.smooth
+    let : T2Space Yk.M := Yk.t2
+    let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+    let : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
     let ck := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
     let chiK := NormalCoordinates.normalChartAt (I := I) Yk.metric ck
     intro w hw
@@ -247,13 +247,13 @@ theorem HasStageJetData.pb_buf_tail
       chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R k →
         mapDerivNorm j (Q k l) (B k) z ≤ eps := by
   classical
-  letI : NormedAddCommGroup (E →L[Real] Real) :=
+  let : NormedAddCommGroup (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] Real) :=
+  let : NormedSpace Real (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[Real] E →L[Real] Real) :=
+  let : NormedAddCommGroup (E →L[Real] E →L[Real] Real) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] E →L[Real] Real) :=
+  let : NormedSpace Real (E →L[Real] E →L[Real] Real) :=
     ContinuousLinearMap.toNormedSpace
   dsimp only
   let Lphi := L.subseq hphi
@@ -347,7 +347,8 @@ theorem HasStageJetData.pb_buf_tail
   have hln : Tendsto ln atTop atTop :=
     (tendsto_atTop_mono hl tendsto_id).comp hψ.tendsto_atTop
   have hzn : Tendsto zn atTop (𝓝 zInf) := by
-    simpa only [zn] using hzconv
+    change Tendsto (z ∘ ψ) atTop _
+    exact hzconv
   have hbuffer' : ∀ n, Metric.closedBall (zn n) eta ⊆
       interior (C0 alpha) := fun n ↦ hbuffer (ψ n)
   have hsource' : ∀ n,
@@ -443,12 +444,12 @@ theorem HasStageJetData.pb_buf_tail
           Lphi.hatSourceBall inp.decay P S (kn n) := by
     dsimp only
     let Yk := X.obj (Lphi.φ (kn n))
-    letI : TopologicalSpace Yk.M := Yk.topology
-    letI : ChartedSpace H Yk.M := Yk.charted
-    letI : IsManifold I ∞ Yk.M := Yk.smooth
-    letI : T2Space Yk.M := Yk.t2
-    letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-    letI : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
+    let : TopologicalSpace Yk.M := Yk.topology
+    let : ChartedSpace H Yk.M := Yk.charted
+    let : IsManifold I ∞ Yk.M := Yk.smooth
+    let : T2Space Yk.M := Yk.t2
+    let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+    let : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
     have hsrc := hsource' n
     change dist
       ((NormalCoordinates.normalChartAt (I := I) Yk.metric
@@ -462,10 +463,37 @@ theorem HasStageJetData.pb_buf_tail
   have hjet := hNjet (kn n) hkJet (ln n) hlJet alpha (zn n) hznC0
     hznInt hsrcS
   have hAcd : ContDiffAt Real (∞ : WithTop ℕ∞) (A (kn n) (ln n)) (zn n) := by
-    simpa only [A, Lphi] using hjet.2.1
+    with_unfolding_all
+      exact hjet.2.1
   have hAclose : dist (A (kn n) (ln n) (zn n)) (zn n) ≤ eta / 2 := by
-    simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      dist_eq_norm, A, Lphi] using hjet.2.2 0 le_rfl
+    let Ykn := X.obj (Lphi.φ (kn n))
+    let Yln := X.obj (Lphi.φ (ln n))
+    let : TopologicalSpace Ykn.M := Ykn.topology
+    let : ChartedSpace H Ykn.M := Ykn.charted
+    let : IsManifold I ∞ Ykn.M := Ykn.smooth
+    let : T2Space (TangentBundle I Ykn.M) := Ykn.t2TangentBundle
+    let : TopologicalSpace Yln.M := Yln.topology
+    let : ChartedSpace H Yln.M := Yln.charted
+    let : IsManifold I ∞ Yln.M := Yln.smooth
+    let : T2Space (TangentBundle I Yln.M) := Yln.t2TangentBundle
+    let ckn := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
+    let cln := seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat)
+    have hhom : (legacyBallChart (I := I) Ykn ckn).hom (zn n) =
+        (NormalCoordinates.normalChartAt (I := I) Ykn.metric ckn).symm
+          (zn n) := by
+      rfl
+    have hinv : (legacyBallChart (I := I) Yln cln).inv =
+        NormalCoordinates.normalChartAt (I := I) Yln.metric cln := by
+      simpa only using legacyInv_eq (I := I) Yln cln
+    have hjet0 := hjet.2.2 0 le_rfl
+    simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
+      MetricCompactnessInputs.toCore, legacyChartFamily] at hjet0
+    change ‖(legacyBallChart (I := I) Yln cln).inv
+        (stageComparisonMap inp P Lphi r hr (kn n) (ln n)
+          ((legacyBallChart (I := I) Ykn ckn).hom (zn n))) - zn n‖ ≤
+      eta / 2 at hjet0
+    rw [hinv, hhom] at hjet0
+    simpa only [dist_eq_norm, A, Ykn, Yln, ckn, cln] using hjet0
   have hAzInt : A (kn n) (ln n) (zn n) ∈ interior (C0 alpha) := by
     apply hbuffer' n
     rw [Metric.mem_closedBall]
@@ -502,7 +530,11 @@ theorem HasStageJetData.pb_buf_tail
     have hpair := hBAcd.prodMk hDAcd
     have hpull := (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
       (E := E) (F := E)).contDiffAt.comp (zn n) hpair
-    simpa only [Q] using hpull
+    change ContDiffAt Real (∞ : WithTop ℕ∞)
+      (pullbackForm ∘ fun x =>
+        (B (ln n) (A (kn n) (ln n) x),
+          fderiv Real (A (kn n) (ln n)) x)) (zn n)
+    exact hpull
   have hle : mapDerivNorm (j (ψ n)) (Q (kn n) (ln n))
       (B (kn n)) (zn n) ≤ eps := by
     calc
@@ -646,17 +678,17 @@ theorem HasStageJetData.pb_local_tail
       hstage.pb_buf_tail inp P L hr phi hphi U C0 C1 aInf Jinf Jbarinf
         gInf alpha hRS hSr (heta alpha) p eps heps
   choose Nalpha hNalpha using hlocal
-  letI := Fintype.ofFinite (LiveSlot L inp.pack r)
+  let := Fintype.ofFinite (LiveSlot L inp.pack r)
   refine ⟨eta, heta, Finset.univ.sup Nalpha, ?_⟩
   intro k hk l hl
   dsimp only
   let Yk := X.obj (Lphi.φ k)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   intro y hy
   have hyBig : y ∈ Lphi.hatSourceBall inp.decay P r k :=
     cball_subset_of_le (hRS.trans hSr).le hy
@@ -664,7 +696,8 @@ theorem HasStageJetData.pb_local_tail
   let chiK := NormalCoordinates.normalChartAt (I := I) Yk.metric
     (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
   have hzy' : chiK.symm z = y := by
-    simpa only [chiK, Yk, Lphi] using hzy
+    with_unfolding_all
+      exact hzy
   have hzSource : chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R k := by
     simpa only [hzy'] using hy
   have hAlpha : Nalpha alpha ≤ Finset.univ.sup Nalpha :=

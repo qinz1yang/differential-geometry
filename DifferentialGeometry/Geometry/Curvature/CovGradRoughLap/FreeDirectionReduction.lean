@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -39,6 +38,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [CompactSpace M] in
 lemma covGrad_rawConnLap_unit_eval_curry
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -49,7 +49,8 @@ lemma covGrad_rawConnLap_unit_eval_curry
           (unitZeroSec (I := I) (M := M) x)) w =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         tensorCovDerivAt (I := I) (M := M) g 0 2
-          (rawTensorConnLapSmooth g 0 2 T₀) x w)
+          (rawTensorConnLapSmooth g 0 2 T₀) x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x w))
         (unitZeroSec (I := I) (M := M) x) := by
   have := curry_covGrad_unit_eval_general (I := I) (M := M) g 2
     (rawTensorConnLapSmooth g 0 2 T₀) x w
@@ -99,11 +100,9 @@ lemma frame_trace_third_eq_swap_unit
   have hswap := frame_trace_thirdCovDeriv_swap (I := I) g 0 2
     (W := smoothExtensionTangent (I := I) x w) (T := fun y : M => T₀.toSection y) (x := x)
     hW hT₀
-  have happ := congrArg
-    (fun (φ : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x) =>
-      φ (unitZeroSec (I := I) (M := M) x)) hswap
-  simpa only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.add_apply] using happ
+  rw [hswap, add_apply, sum_apply]
 
+omit [CompactSpace M] in
 lemma curry_unitGradAbstractRoughLap_along
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -129,17 +128,19 @@ lemma curry_unitGradAbstractRoughLap_along
               (fun z : M =>
                 (show Tensor0SSpace 0 I z →L[ℝ] Tensor0SSpace 2 I z from
                   tensorCovDerivAt (I := I) (M := M) g 0 2 T₀ z
-                    (smoothExtensionTangent (I := I) x w z))
+                    (tangentSpaceModelContinuousLinearEquiv (I := I) z
+                      (smoothExtensionTangent (I := I) x w z)))
                   (unitZeroSec (I := I) (M := M) z)) x
               (smoothExtensionTangent (I := I) x
                 ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x
                   (smoothOrthoFrame (I := I) g x i x)) x) -
             (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
               tensorCovDerivAt (I := I) (M := M) g 0 2 T₀ x
-                ((LeviCivita (I := I) g).toFun (smoothExtensionTangent (I := I) x w) x
-                  (smoothExtensionTangent (I := I) x
-                    ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x
-                      (smoothOrthoFrame (I := I) g x i x)) x)))
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g).toFun (smoothExtensionTangent (I := I) x w) x
+                    (smoothExtensionTangent (I := I) x
+                      ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x
+                        (smoothOrthoFrame (I := I) g x i x)) x))))
               (unitZeroSec (I := I) (M := M) x))) := by
   classical
   have hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothExtensionTangent (I := I) x w)) :=
@@ -168,7 +169,7 @@ lemma curry_unitGradAbstractRoughLap_along
                 (smoothOrthoFrame (I := I) g x i) x
                 (smoothOrthoFrame (I := I) g x i x)))) from
       map_sum (tensor0S_curry (I := I) (M := M) 2 x) _ _]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothOrthoFrame (I := I) g x i)) :=
     smoothOrthoFrame_smooth (I := I) g x i
@@ -177,7 +178,7 @@ lemma curry_unitGradAbstractRoughLap_along
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x
           (smoothOrthoFrame (I := I) g x i x)))) :=
     smoothExtensionTangent_contMDiff x _
-  rw [map_sub, ContinuousLinearMap.sub_apply]
+  rw [map_sub, sub_apply]
   rw [curry_abstract_covDeriv_covApply_unitGrad_unfold (I := I) (M := M) g T₀ hB hB hW]
   have hCx : smoothExtensionTangent (I := I) x
       ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x

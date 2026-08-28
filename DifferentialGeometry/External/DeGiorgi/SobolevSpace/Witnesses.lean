@@ -2,6 +2,7 @@
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 
+
 /-!
 # Chapter 02: Sobolev Witness Layer
 
@@ -99,7 +100,8 @@ noncomputable def MemW1pWitness.add
   weakGrad := fun x => hu.weakGrad x + hv.weakGrad x
   weakGrad_component_memLp := by
     intro i
-    simpa using (hu.weakGrad_component_memLp i).add (hv.weakGrad_component_memLp i)
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ => rfl)
+      ((hu.weakGrad_component_memLp i).add (hv.weakGrad_component_memLp i))
   isWeakGrad := by
     intro i φ hφ hφ_supp hφ_sub
     let ei : E := EuclideanSpace.single i (1 : ℝ)
@@ -274,7 +276,7 @@ noncomputable def MemW1pWitness.mul_smooth_bounded_p
             _ ≤ C₁ * ‖u x‖ := by
                   gcongr
                   exact hη_grad_bound x
-    simpa using hfirst.add hsecond
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ => rfl) (hfirst.add hsecond)
   isWeakGrad := by
     intro i
     simpa using HasWeakPartialDeriv.mul_smooth hΩ
@@ -373,7 +375,7 @@ theorem MemW01p.add
               eLpNorm (fun x => φv n x - v x) 2 (volume.restrict Ω))
           atTop (nhds (0 + 0)) :=
       hφu_fun.add hφv_fun
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun n => zero_le _)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun _ => bot_le)
       hupper
     simpa using hsum
   · intro i
@@ -440,7 +442,7 @@ theorem MemW01p.add
                 2 (volume.restrict Ω))
           atTop (nhds (0 + 0)) :=
       (hφu_grad i).add (hφv_grad i)
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun n => zero_le _)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun _ => bot_le)
       hupper
     simpa using hsum
 
@@ -455,7 +457,12 @@ theorem MemW01p.smul
   · intro n
     simpa [smul_eq_mul] using (contDiff_const.mul (hφ_smooth n))
   · intro n
-    simpa [Pi.smul_apply, smul_eq_mul] using (hφ_compact n).smul_left (f := fun _ : E => c)
+    have hsupp := (hφ_compact n).smul_left (f := fun _ : E => c)
+    have heq : (fun _ : E => c) • φ n = fun x => c * φ n x := by
+      funext x
+      rfl
+    rw [heq] at hsupp
+    exact hsupp
   · intro n
     simpa [Pi.smul_apply, smul_eq_mul] using
       (tsupport_smul_subset_right (fun _ : E => c) (φ n)).trans (hφ_sub n)
@@ -508,7 +515,10 @@ theorem MemW01p.smul
               (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) - hwu.weakGrad x i) := by
         ext x
         have hfd : fderiv ℝ (fun y => c * φ n y) x = c • fderiv ℝ (φ n) x := by
-          simpa [smul_eq_mul] using congrFun (fderiv_const_smul_field (𝕜 := ℝ) (f := φ n) c) x
+          rw [show (fun y => c * φ n y) = c • φ n by
+            funext y
+            simp [smul_eq_mul]]
+          exact congrFun (fderiv_const_smul_field (𝕜 := ℝ) (f := φ n) c) x
         simp [MemW1pWitness.smul, Pi.smul_apply, smul_eq_mul, hfd]
         ring
       rw [hfun, eLpNorm_const_smul]

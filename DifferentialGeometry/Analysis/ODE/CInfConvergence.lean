@@ -19,7 +19,7 @@ universe uP uX
 
 private theorem ode_c0_on_compact
     {P X : Type*}
-    [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
     {A : Set P} {J : Set ℝ} {V : Set X}
     (hA : IsOpen A)

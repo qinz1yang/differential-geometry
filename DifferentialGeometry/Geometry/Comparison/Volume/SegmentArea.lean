@@ -48,7 +48,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 private theorem pou_term_exp_eq
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -349,7 +349,7 @@ omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 private theorem pou_term_exp_le
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -501,7 +501,7 @@ omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem riemVol_exp_image_le
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -529,7 +529,7 @@ theorem riemVol_exp_image_le
       (ENNReal.measurable_ofReal.comp hDcont.measurable)
   set Tρ : Set M := {α : M | (Function.support (chartAtlasPOU I M α)).Nonempty} with hTρ
   have hCρ : Tρ.Countable := countable_nonempty_support_of_pou (I := I) (chartAtlasPOU I M)
-  haveI : Countable Tρ := hCρ.to_subtype
+  have : Countable Tρ := hCρ.to_subtype
   have hsupp : Function.support (fun α : M => ∫⁻ v in K,
       ENNReal.ofReal (chartAtlasPOU I M α
           (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
@@ -538,7 +538,7 @@ theorem riemVol_exp_image_le
     by_contra hαT
     refine hα ?_
     have hz : Function.support (chartAtlasPOU I M α) = ∅ := by
-      rw [hTρ, Set.mem_setOf_eq, Set.not_nonempty_iff_eq_empty] at hαT; exact hαT
+      rw [hTρ, Set.mem_ofPred_eq, Set.not_nonempty_iff_eq_empty] at hαT; exact hαT
     have hzero : ∀ v : E, chartAtlasPOU I M α
         (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)) = 0 := by
       intro v
@@ -550,7 +550,7 @@ theorem riemVol_exp_image_le
       (chartAtlasPOU I M α
         (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))) ⊆ Tρ := by
     intro v α hα
-    rw [hTρ, Set.mem_setOf_eq]
+    rw [hTρ, Set.mem_ofPred_eq]
     refine Set.nonempty_iff_ne_empty.2 (fun hempty => ?_)
     have hval : chartAtlasPOU I M α
         (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)) = 0 := by
@@ -576,7 +576,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem riemVol_exp_image_eq
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
       (fun (x : M) ↦ TangentSpace I x)]
@@ -623,7 +623,7 @@ theorem riemVol_exp_image_eq
   have hCρ : Tρ.Countable :=
     countable_nonempty_support_of_pou
       (I := I) (chartAtlasPOU I M)
-  haveI : Countable Tρ := hCρ.to_subtype
+  have : Countable Tρ := hCρ.to_subtype
   have hsupp : Function.support (fun α : M =>
       ∫⁻ v in K,
         ENNReal.ofReal (chartAtlasPOU I M α
@@ -636,7 +636,7 @@ theorem riemVol_exp_image_eq
     by_contra hαT
     refine hα ?_
     have hz : Function.support (chartAtlasPOU I M α) = ∅ := by
-      rw [hTρ, Set.mem_setOf_eq,
+      rw [hTρ, Set.mem_ofPred_eq,
         Set.not_nonempty_iff_eq_empty] at hαT
       exact hαT
     have hzero : ∀ v : E,
@@ -657,7 +657,7 @@ theorem riemVol_exp_image_eq
           (expMapIntrinsic (I := I) g hEnorm x
             (show TangentSpace I x from v)))) ⊆ Tρ := by
     intro v α hα
-    rw [hTρ, Set.mem_setOf_eq]
+    rw [hTρ, Set.mem_ofPred_eq]
     refine Set.nonempty_iff_ne_empty.2 (fun hempty => ?_)
     have hval :
         chartAtlasPOU I M α
@@ -768,7 +768,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem riemVol_mul_le_area
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
       (fun (x : M) ↦ TangentSpace I x)]
@@ -836,29 +836,30 @@ theorem riemVol_mul_le_area
       _ = ∑' n : ℕ, (F '' P n).indicator 1 y := by
         apply tsum_congr
         intro n
-        simp only [J, Set.indicator, Set.mem_setOf_eq, Pi.one_apply]
+        simp only [J, Set.indicator, Set.mem_ofPred_eq, Pi.one_apply]
   calc
     m.toENNReal *
           riemannianVolumeMeasure (I := I) (M := M) g S =
         ∫⁻ _y in S, m.toENNReal
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
       (setLIntegral_const S m.toENNReal).symm
-    _ ≤ ∫⁻ y in S, ∑' n : ℕ, (F '' P n).indicator 1 y
+    _ ≤ ∫⁻ y in S, ∑' n : ℕ,
+          (F '' P n).indicator (fun _ => (1 : ENNReal)) y
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
       setLIntegral_mono' hS hpoint
-    _ ≤ ∫⁻ y, ∑' n : ℕ, (F '' P n).indicator 1 y
+    _ ≤ ∫⁻ y, ∑' n : ℕ,
+          (F '' P n).indicator (fun _ => (1 : ENNReal)) y
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
       setLIntegral_le_lintegral S _
     _ = ∑' n : ℕ,
-        ∫⁻ y, (F '' P n).indicator 1 y
+        ∫⁻ y, (F '' P n).indicator (fun _ => (1 : ENNReal)) y
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-      simpa only using
-        (lintegral_tsum
-          (μ := riemannianVolumeMeasure (I := I) (M := M) g)
-          (f := fun n y =>
-            (F '' P n).indicator (fun _ => (1 : ENNReal)) y)
-          (fun n =>
-            (measurable_const.indicator (hQmeas n)).aemeasurable))
+      exact lintegral_tsum
+        (μ := riemannianVolumeMeasure (I := I) (M := M) g)
+        (f := fun n y =>
+          (F '' P n).indicator (fun _ => (1 : ENNReal)) y)
+        (fun n =>
+          (measurable_const.indicator (hQmeas n)).aemeasurable)
     _ = ∑' n : ℕ,
         riemannianVolumeMeasure (I := I) (M := M) g (F '' P n) := by
       apply tsum_congr

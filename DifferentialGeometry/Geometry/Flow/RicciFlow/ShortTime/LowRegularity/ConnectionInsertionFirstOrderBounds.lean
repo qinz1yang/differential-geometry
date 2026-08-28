@@ -127,8 +127,9 @@ private theorem app_h2h1
       SmoothCcTensorH1 g p c)) hnorm 2
   rw [smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g p c
     (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsquare
-  simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-    iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hsquare
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
+    iteratedCovGrad_zero, iteratedCovGrad_succ]
+  simpa only [Nat.add_zero] using hsquare
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem grid_h1_low
@@ -159,7 +160,7 @@ private theorem grid_h1_low
       (fun x => ∑ k ∈ Finset.range (i + 2),
         lowJetGrid (I := I) (M := M) g P k x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro k hk
     exact (hgrid k (by have := Finset.mem_range.mp hk; omega)).1
   have hscaled : MeasureTheory.Integrable
@@ -176,7 +177,7 @@ private theorem grid_h1_low
   refine hnorm.trans ?_
   rw [MeasureTheory.integral_const_mul]
   refine mul_le_mul_of_nonneg_left ?_ (hC i)
-  rw [MeasureTheory.integral_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
     (fun k hk => (hgrid k (by have := Finset.mem_range.mp hk; omega)).1)]
   exact Finset.sum_le_sum fun k hk =>
     (hgrid k (by have := Finset.mem_range.mp hk; omega)).2
@@ -219,7 +220,15 @@ theorem connSec_h1
       (∫ x, lowJetGrid (I := I) (M := M) g₀ P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤ K R k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P R hR hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g₀ P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P R hR hP k hk
   have hle := grid_h1_low (I := I) (M := M) g₀ P (K R) C
     (hK R hR) hgr hC (connectionDifferenceSection (I := I) g₁ g₀) (by
       intro i hi x
@@ -415,10 +424,14 @@ theorem insert_h1
   have hKD : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i KD‖ ^ 2) ≤ (BK R) ^ 2 := by
     simpa only [KD] using hk g₁ P htie R hR hP
+  have hT_pure : T =
+      lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1 := by
+    rfl
   have hVD : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 1 i VD‖ ^ 2) ≤ (BV R) ^ 2 := by
     dsimp only [VD]
     rw [lieCorrectionZeroVFlat_sub_eq_trace_comp_kappa_sub (I := I) (M := M) g₀ g₁ gB]
+    rw [← hT_pure]
     simpa only [T, KD, BV] using
       hvprod T KD (Bt R) (BK R) (hBt R hR) (hBK R hR) hT hKD
   have hVDs : (∑ i ∈ Finset.range 3,

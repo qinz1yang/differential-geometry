@@ -46,8 +46,8 @@ theorem solutionGramMatrix_posDef
     (t : Real) (x : M) :
     (solutionGramMatrix (I := I) (M := M) S basisAt t x).PosDef := by
   classical
-  letI : Finite Idx := Module.Finite.finite_basis (basisAt x)
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Finite Idx := Module.Finite.finite_basis (basisAt x)
+  let : Fintype Idx := Fintype.ofFinite Idx
   refine Matrix.posDef_iff_dotProduct_mulVec.mpr ?_
   constructor
   · ext i j
@@ -83,8 +83,8 @@ theorem solutionGramMatrix_posDef
               ring
         _ = (S.family.metric t).inner x (∑ i : Idx, v i • basisAt x i)
               (∑ i : Idx, v i • basisAt x i) := by
-              simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum',
-                ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+              simp only [map_sum, map_smul, FunLike.coe_sum,
+                FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
                 smul_eq_mul, Finset.mul_sum]
               apply Finset.sum_congr rfl
               intro x1 hx1
@@ -204,7 +204,7 @@ theorem solutionInverseMetricComponents_entry_continuousOn
     exact (continuous_apply (i := j) : Continuous (fun B : Idx → ℝ => B j)).comp
       (continuous_apply (i := i))
   have hcomp := hproj.comp_continuousOn hinv_cont
-  simpa [solutionInverseMetricComponents] using hcomp
+  exact hcomp.congr fun _ _ => rfl
 
 end DifferentialGeometry.PDE.RicciFlow
 

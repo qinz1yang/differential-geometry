@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -59,10 +58,10 @@ theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
     tensorHessianBilinAt (I := I) g 0 k (fun z : M => T.toSection z) hT x with hΨ
   set B : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] TensorRSSpace 0 k I x :=
     LinearMap.mk₂ ℝ (fun u v => Ψ u v)
-      (fun u u' v => by beta_reduce; rw [map_add, ContinuousLinearMap.add_apply])
-      (fun c u v => by beta_reduce; rw [map_smul, ContinuousLinearMap.smul_apply])
-      (fun u v v' => by beta_reduce; rw [map_add])
-      (fun c u v => by beta_reduce; rw [map_smul])
+      (fun u u' v => by rw [map_add, add_apply])
+      (fun c u v => by rw [map_smul, smul_apply])
+      (fun u v v' => by rw [map_add])
+      (fun c u v => by rw [map_smul])
   have hframe := rawTensorConnLap_eq_frame_trace (I := I) g 0 k
     (fun z : M => T.toSection z) hT x e horth
   have hpars := parseval_family_sum_bilin_eq (I := I) (M := M) g x
@@ -113,7 +112,7 @@ private lemma tensor0SAsRS_add (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     intro v
     rw [Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_add, Tensor0SSpace.toModel_add,
       Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.add_apply,
+    simp only [smul_apply, add_apply,
       smul_eq_mul]
     ring
   exact h
@@ -225,20 +224,16 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
         (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
           ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) v))))
       (fun u u' v => by
-        beta_reduce
         rw [map_add ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A₀) u u',
           tensor0SAsRS_add, TensorRSSpace.toModel_add, tensorInnerPointwise_add_left])
       (fun c u v => by
-        beta_reduce
         rw [map_smul ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A₀) c u,
           tensor0SAsRS_smul, TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_left,
           smul_eq_mul])
       (fun u v v' => by
-        beta_reduce
         rw [map_add ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) B₀) v v',
           tensor0SAsRS_add, TensorRSSpace.toModel_add, tensorInnerPointwise_add_right])
       (fun c u v => by
-        beta_reduce
         rw [map_smul ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) B₀) c v,
           tensor0SAsRS_smul, TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_right,
           smul_eq_mul])

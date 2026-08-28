@@ -14,7 +14,6 @@ import Mathlib.Analysis.Normed.Operator.Extend
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -40,11 +39,10 @@ namespace SmoothCcTensor
 
 section UniformInducing
 
-variable [T2Space M] [SigmaCompactSpace M] [InnerProductSpace ℝ E]
+variable [T2Space M] [SigmaCompactSpace M]
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 
-omit [InnerProductSpace ℝ E] in
 theorem isUniformInducing_toL2 :
     IsUniformInducing (toL2 (g := g) (r := r) (s := s)) := by
   have hcoe : (toL2 (g := g) (r := r) (s := s) :
@@ -63,7 +61,7 @@ end UniformInducing
 
 section ExtendL2
 
-variable [T2Space M] [SigmaCompactSpace M] [InnerProductSpace ℝ E]
+variable [T2Space M] [SigmaCompactSpace M]
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
@@ -73,14 +71,12 @@ def extendL2 (T : SmoothCcTensor g r s →L[ℝ] F) :
   T.extend (toL2 (g := g) (r := r) (s := s))
 
 
-omit [InnerProductSpace ℝ E] in
 theorem extendL2_apply_toL2 (T : SmoothCcTensor g r s →L[ℝ] F)
     (S : SmoothCcTensor g r s) :
     extendL2 T ((toL2 (g := g) (r := r) (s := s)) S) = T S :=
   ContinuousLinearMap.extend_eq T denseRange_toL2 isUniformInducing_toL2 S
 
 
-omit [InnerProductSpace ℝ E] in
 theorem extendL2_unique (T : SmoothCcTensor g r s →L[ℝ] F)
     (U : TensorL2 r s g →L[ℝ] F)
     (h : U.comp (toL2 (g := g) (r := r) (s := s)) = T) :
@@ -91,7 +87,7 @@ end ExtendL2
 
 section MapL2
 
-variable [T2Space M] [SigmaCompactSpace M] [InnerProductSpace ℝ E]
+variable [T2Space M] [SigmaCompactSpace M]
 variable {g : SmoothRiemannianMetric I M} {r₁ s₁ r₂ s₂ : ℕ}
 
 
@@ -101,7 +97,6 @@ def mapL2
   T.completion
 
 
-omit [InnerProductSpace ℝ E] in
 theorem mapL2_apply_toL2
     (T : SmoothCcTensor g r₁ s₁ →L[ℝ] SmoothCcTensor g r₂ s₂)
     (S : SmoothCcTensor g r₁ s₁) :
@@ -115,7 +110,6 @@ theorem mapL2_apply_toL2
   exact T.completion_apply_coe S
 
 
-omit [InnerProductSpace ℝ E] in
 theorem mapL2_unique
     (T : SmoothCcTensor g r₁ s₁ →L[ℝ] SmoothCcTensor g r₂ s₂)
     (U : TensorL2 r₁ s₁ g →L[ℝ] TensorL2 r₂ s₂ g)
@@ -133,7 +127,8 @@ theorem mapL2_unique
       (toL2_apply (g := g) (r := r₁) (s := s₁) a).symm
     have hU : U ((toL2 (g := g) (r := r₁) (s := s₁)) a) =
         (toL2 (g := g) (r := r₂) (s := s₂)) (T a) := by
-      have := congrArg (fun (φ : _ →L[ℝ] _) => φ a) h
+      have := congrArg
+        (fun φ : SmoothCcTensor g r₁ s₁ →L[ℝ] TensorL2 r₂ s₂ g => φ a) h
       simpa using this
     have hM : (mapL2 T) ((toL2 (g := g) (r := r₁) (s := s₁)) a) =
         (toL2 (g := g) (r := r₂) (s := s₂)) (T a) :=

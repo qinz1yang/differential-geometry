@@ -15,12 +15,6 @@ theorem contMDiff_partial_deriv_fst
     (F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯) :
     ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) := by
-  have hrw : (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) =
-      fun p : ℝ × M => (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun t => F (t, p.2)) p.1) (1 : ℝ) := by
-    funext p
-    rw [mfderiv_eq_fderiv]
-    exact (fderiv_apply_one_eq_deriv (f := fun t => F (t, p.2)) (x := p.1)).symm
-  rw [hrw]
   rw [contMDiff_infty]
   intro n p₀
   have harg : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
@@ -43,6 +37,6 @@ theorem contMDiff_partial_deriv_fst
       contMDiffAt_id
       contMDiffAt_const
       le_rfl
-  simpa [inTangentCoordinates_model_space] using h_apply
+  simpa [inTangentCoordinates_model_space] using! h_apply
 
 end DifferentialGeometry

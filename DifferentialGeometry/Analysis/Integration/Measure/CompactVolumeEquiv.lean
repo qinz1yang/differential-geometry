@@ -42,9 +42,9 @@ lemma density_cont_of_gram
       simp [Units.smul_def]
       rfl
     rw [hexp]
-    refine continuousOn_finset_sum _ (fun sigma _ => ?_)
+    refine continuousOn_finsetSum _ (fun sigma _ => ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ => ?_)
+    refine continuousOn_finsetProd _ (fun i _ => ?_)
     exact hG (sigma i) i
   exact Real.continuous_sqrt.comp_continuousOn hdet
 

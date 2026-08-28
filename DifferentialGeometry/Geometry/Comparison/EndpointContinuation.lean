@@ -20,6 +20,8 @@ import Mathlib.Topology.EMetricSpace.Lipschitz
 import DifferentialGeometry.Geometry.Comparison.GeodesicSpeedBound
 import DifferentialGeometry.Geometry.Comparison.ChartVelocityConvergence
 import DifferentialGeometry.Geometry.Comparison.LocalGeodesicSeed
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -114,7 +116,7 @@ theorem hasEndpointContinuation_of_complete
       (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) ≤ c ^ 2)
     (_hγ : IsGeodesicOn (I := I) g γ (Set.Ioo aL b)) :
     HasEndpointContinuation (I := I) g γ b := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hγ_mdiff_on : MDifferentiableOn 𝓘(ℝ, ℝ) I γ (Set.Ioo aL b) :=
     hγ_smooth.mdifferentiableOn (by norm_num)
   obtain ⟨y, hy_metric⟩ :=
@@ -134,7 +136,11 @@ theorem hasEndpointContinuation_of_complete
   have hu_lim : Tendsto u (𝓝[<] b) (𝓝 (extChartAt I y y)) := by
     have hcont_at : ContinuousAt (extChartAt I y) y := continuousAt_extChartAt (I := I) y
     have := hcont_at.tendsto.comp hy_mfld
-    simpa [hu_def, chartCurve] using this
+    have hchart : (extChartAt I y) ∘ γ = chartCurve (I := I) y γ := by
+      rfl
+    rw [hchart] at this
+    rw [hu_def]
+    exact this
   have hsrc_ev : ∀ᶠ s in 𝓝[<] b, γ s ∈ (chartAt H y).source :=
     hy_mfld ((chartAt H y).open_source.mem_nhds hy_src)
   obtain ⟨ε, K₁, S, hε, hS_compact, hS_sub, hbound⟩ :=
@@ -188,7 +194,11 @@ theorem hasEndpointContinuation_of_complete
       hφ_mdiff.comp s (hγ_mdiffAt s hs)
     have hdiff : DifferentiableAt ℝ ((extChartAt I y) ∘ γ) s :=
       hcomp.differentiableAt
-    simpa [hu_def, chartCurve] using hdiff.hasDerivAt
+    have hchart : (extChartAt I y) ∘ γ = u := by
+      rw [hu_def]
+      rfl
+    rw [← hchart]
+    exact hdiff.hasDerivAt
   obtain ⟨wγ, hwγ⟩ :=
     chartVelocity_converges_at_finite_endpoint_Ioo (I := I) g y
       (u := u) (u' := deriv u) (a := a) (b := b) (K₁ := K₁) (S := S)
@@ -230,7 +240,11 @@ theorem hasEndpointContinuation_of_complete
       hφ_mdiff.comp t (hη_mdiffOn t ht)
     have hdiff : DifferentiableAt ℝ ((extChartAt I y) ∘ η) t :=
       hcomp.differentiableAt
-    simpa [huη_def, chartCurve] using hdiff.hasDerivAt
+    have hchart : (extChartAt I y) ∘ η = uη := by
+      rw [huη_def]
+      rfl
+    rw [← hchart]
+    exact hdiff.hasDerivAt
   have hODE_η : ∀ t ∈ Set.Ioo (-δ) δ,
       HasDerivAt (deriv uη)
         (- chartChristoffelContraction (I := I) g y (deriv uη t) (deriv uη t) (uη t)) t := by

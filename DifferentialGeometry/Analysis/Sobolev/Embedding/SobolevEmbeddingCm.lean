@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -41,12 +40,14 @@ noncomputable def iteratedCovGrad
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma iteratedCovGrad_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     iteratedCovGrad g r s 0 T = T := rfl
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma iteratedCovGrad_succ
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) (T : SmoothCcTensor g r s) :
     iteratedCovGrad g r s (j + 1) T =

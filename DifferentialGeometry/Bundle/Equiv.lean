@@ -425,7 +425,7 @@ private lemma continuousAt_clm_of_pointwise
     {A : X → (F₁ →L[𝕜] F₂)} {x : X}
     (h : ∀ v, ContinuousAt (fun q => A q v) x) :
     ContinuousAt A x := by
-  haveI : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
+  have : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
   let bF₁ := Module.finBasis 𝕜 F₁
   let evalBasis : (F₁ →L[𝕜] F₂) →L[𝕜] (Fin (Module.finrank 𝕜 F₁) → F₂) :=
     ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply 𝕜 F₂ (bF₁ i))
@@ -501,7 +501,7 @@ private lemma continuous_symm_of_fiberBijective'
         refine ContinuousAt.comp ?_ hcomp1
         exact he₂_at
       exact hcomp2.snd
-    haveI : CompleteSpace F₁ := FiniteDimensional.complete 𝕜 F₁
+    have : CompleteSpace F₁ := FiniteDimensional.complete 𝕜 F₁
     have hA_inv_at_x : (A x : F₁ →L[𝕜] F₂).IsInvertible :=
       trivializationCoord_isInvertible (baseMap := baseMap) hφ_bij x x ⟨hx₁, hx₂⟩
     have hA_inv_cont : ContinuousAt (ContinuousLinearMap.inverse ∘ A) x :=
@@ -890,14 +890,14 @@ lemma contMDiffAt_clm_of_pointwise
     {A : X → (F₁ →L[𝕜] F₂)} {x : X}
     (h : ∀ v, ContMDiffAt IB 𝓘(𝕜, F₂) n (fun q => A q v) x) :
     ContMDiffAt IB 𝓘(𝕜, F₁ →L[𝕜] F₂) n A x := by
-  haveI : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
+  have : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
   let bF₁ := Module.finBasis 𝕜 F₁
   let evalBasis : (F₁ →L[𝕜] F₂) →L[𝕜] (Fin (Module.finrank 𝕜 F₁) → F₂) :=
     ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply 𝕜 F₂ (bF₁ i))
   have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
     ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
     congr 1; ext i; exact congrArg _ (congrFun heq i)
-  haveI : FiniteDimensional 𝕜 (Fin (Module.finrank 𝕜 F₁) → F₂) := inferInstance
+  have : FiniteDimensional 𝕜 (Fin (Module.finrank 𝕜 F₁) → F₂) := inferInstance
   obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
     (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
   let g : (Fin (Module.finrank 𝕜 F₁) → F₂) →L[𝕜] (F₁ →L[𝕜] F₂) :=
@@ -980,7 +980,7 @@ private lemma contMDiff_symm_of_fiberBijective'
           (fun q => e₂ (Φ (e₁.toOpenPartialHomeomorph.symm (q, v)))) x := by
         refine he₂_at.comp x hcomp1
       exact hcomp2.snd
-    haveI : CompleteSpace F₁ := FiniteDimensional.complete 𝕜 F₁
+    have : CompleteSpace F₁ := FiniteDimensional.complete 𝕜 F₁
     have hA_inv_at_x : (A x : F₁ →L[𝕜] F₂).IsInvertible :=
       trivializationCoord_isInvertible (baseMap := baseMap) hφ_bij x x ⟨hx₁, hx₂⟩
     have hA_inv_contMDiff : ContMDiffAt IB 𝓘(𝕜, F₂ →L[𝕜] F₁) n
@@ -1136,7 +1136,7 @@ noncomputable def ContMDiffVectorBundleEquiv.ofMutualInverseHoms
           contMDiff_toFun := hcΦ
           contMDiff_invFun := hcΨ }
       fiberLinearEquiv := fun x =>
-        LinearEquiv.ofLinear (φ x) (ψ x)
+        LinearEquiv.ofLinearMap (φ x) (ψ x)
           (LinearMap.ext fun v => by
             have h := hΦΨ ⟨x, v⟩
             simp only [compatΦ, compatΨ] at h

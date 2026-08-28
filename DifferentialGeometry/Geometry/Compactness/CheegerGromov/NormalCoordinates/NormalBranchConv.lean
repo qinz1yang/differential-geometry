@@ -324,7 +324,9 @@ theorem HasDiagPairConv.exists_diag_inv
     change (z, 0) ∈ Metric.ball (0 : E × E) qInf
     rw [Metric.mem_ball, Prod.dist_eq]
     change max (dist z (0 : E)) (dist (0 : E) 0) < (qInf : Real)
-    simpa only [dist_self, max_eq_left dist_nonneg] using hKq hz
+    have hzq : dist z (0 : E) < (qInf : Real) := by
+      with_unfolding_all exact hKq hz
+    simpa only [dist_self, max_eq_left dist_nonneg] using hzq
   simpa only [Q, diag, Kdiag] using
     Analysis.OpenPartialHomeomorph.exists_symm_cInf
       Metric.isOpen_ball hKdiag hforward hsource hstage_cd hInf_cd
@@ -510,7 +512,7 @@ theorem exists_diagPair_at
         deltaStage deltaInf e eInf ∧
       ∀ n, NormalDiagFence (I := I) (X.obj n) (c n) q (e n) := by
   classical
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   obtain ⟨deltaStage, hdeltaStage, _hdeltaStageEq, hflow⟩ :=
     h.exists_flow_at hcomplete hconn R q hq hqWide hqAcc herr
@@ -614,7 +616,7 @@ theorem exists_diagPair_conv
         (eInf : OpenPartialHomeomorph (E × E) (E × E)),
       HasDiagPairConv hcomplete hconn c qStage qInf deltaStage deltaInf e eInf := by
   classical
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   obtain ⟨qStage, deltaStage, hqStage, _hqStageRadius, hdeltaStage,
       _hdeltaStageEq, hflow⟩ := h.exists_uniform_flow hcomplete hconn R

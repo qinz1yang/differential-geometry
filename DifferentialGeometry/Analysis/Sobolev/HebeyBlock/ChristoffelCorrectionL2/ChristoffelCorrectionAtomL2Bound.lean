@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -50,8 +49,7 @@ private lemma trivFromE_apply_eq_zero_of_notMem_baseSet
     trivFromE (I := I) α b w = 0 := by
   classical
   change (trivializationAt E (TangentSpace I) α).symmL ℝ b w = 0
-  rw [Bundle.Trivialization.symmL_apply]
-  exact Bundle.Trivialization.symm_apply_of_notMem
+  exact Bundle.Trivialization.symmL_apply_of_notMem
     (trivializationAt E (TangentSpace I) α) hb w
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -218,10 +216,10 @@ private lemma g_inner_sum_smul_chartBasisVec_self_eq_double_sum
     intro p _
     rw [map_smul]
   rw [h_left]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro p _
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro q _
@@ -505,7 +503,7 @@ theorem chartAtlasPOU_mul_sqrt_g_inner_chartLeviCivitaParallelCLM_chartBasisVec_
         (riemannianVolumeMeasure (I := I) (M := M) g) ≤
       ENNReal.ofReal C := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   obtain ⟨K, hK_nn, h_pt⟩ :=
     chartAtlasPOU_mul_sqrt_g_inner_Phi_le_sqrt_const_globally
@@ -682,7 +680,7 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
       rw [h_zero b]; ring
     rw [h_integrand_zero]
     rw [eLpNorm_zero']
-    exact zero_le _
+    exact zero_le
 
 end HebeyBlock
 end Sobolev

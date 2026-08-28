@@ -49,9 +49,9 @@ def hamiltonCGHLimitOfSmoothCGH
   charted := L.charted
   smooth := L.smooth
   smooth_plus := by
-    letI : TopologicalSpace L.M := L.topology
-    letI : ChartedSpace H L.M := L.charted
-    letI : IsManifold I ∞ L.M := L.smooth
+    let : TopologicalSpace L.M := L.topology
+    let : ChartedSpace H L.M := L.charted
+    let : IsManifold I ∞ L.M := L.smooth
     change IsManifold I ∞ L.M
     infer_instance
   sigmaCompact := L.sigmaCompact
@@ -92,9 +92,11 @@ theorem HamiltonSourceLink.realizes
   · intro i t ht
     exact hsource.time_mem i t ht
   · intro i
-    simpa [hamiltonCGHLimitOfSmoothCGH] using hsource.basepoint_map i
+    with_unfolding_all
+      exact hsource.basepoint_map i
   · intro i t ht
-    simpa [hamiltonCGHLimitOfSmoothCGH] using hsource.metric_eq i t ht
+    with_unfolding_all
+      exact hsource.metric_eq i t ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -119,19 +121,19 @@ theorem base_scalar_convergence_of_smooth_cgh
   have hscalar := hconv.scalar_converges 0 h0 L.basepoint
   refine hscalar.congr' ?_
   filter_upwards with k
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
+  let : ChartedSpace H (X.term (subseq k)).M :=
     (X.term (subseq k)).charted
-  letI : IsManifold I ∞ (X.term (subseq k)).M :=
+  let : IsManifold I ∞ (X.term (subseq k)).M :=
     (X.term (subseq k)).smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
       (X.term (subseq k)).M := by
     change IsManifold I ∞ (X.term (subseq k)).M
     infer_instance
-  letI : SigmaCompactSpace (X.term (subseq k)).M :=
+  let : SigmaCompactSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).sigmaCompact
-  letI : T2Space (X.term (subseq k)).M :=
+  let : T2Space (X.term (subseq k)).M :=
     (X.term (subseq k)).t2
   calc
     (X.term (subseq k)).S.scalar 0 (hconv.spatial.maps.map k (L.atTime 0).basepoint)
@@ -142,6 +144,7 @@ theorem base_scalar_convergence_of_smooth_cgh
           simpa using hsource.baseScalar (subseq k)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem tracefree_ricci_decay_at_zero_of_smooth_cgh
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
@@ -160,12 +163,12 @@ theorem tracefree_ricci_decay_at_zero_of_smooth_cgh
     (hreal : HamiltonSourceRealization (I := I) (M := M) P Q hsel L) :
     limitTracefreeRicciDecayAt (I := I) L 0 := by
   classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
+  let : TopologicalSpace L.N := L.topology
+  let : ChartedSpace H L.N := L.charted
+  let : IsManifold I ∞ L.N := L.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
+  let : SigmaCompactSpace L.N := L.sigmaCompact
+  let : T2Space L.N := L.t2
   rcases hamilton_rescaled_tracefree_ricci_norm_sq_at_zero_bound (I := I) P Q hsel hscalar hpinch with
     ⟨epsilon, C, hepsilon, _hepsilon1, _hC, hbound⟩
   have hconv :
@@ -214,19 +217,19 @@ theorem tracefree_ricci_decay_at_zero_of_smooth_cgh
         refine ⟨hdecay, Filter.Eventually.of_forall ?_⟩
         intro k
         let i : Nat := L.cghSubseq k
-        letI : TopologicalSpace (L.sourceTerm i).M :=
+        let : TopologicalSpace (L.sourceTerm i).M :=
           (L.sourceTerm i).topology
-        letI : ChartedSpace H (L.sourceTerm i).M :=
+        let : ChartedSpace H (L.sourceTerm i).M :=
           (L.sourceTerm i).charted
-        letI : IsManifold I ∞ (L.sourceTerm i).M :=
+        let : IsManifold I ∞ (L.sourceTerm i).M :=
           (L.sourceTerm i).smooth
-        letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+        let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
             (L.sourceTerm i).M := by
           change IsManifold I ∞ (L.sourceTerm i).M
           infer_instance
-        letI : SigmaCompactSpace (L.sourceTerm i).M :=
+        let : SigmaCompactSpace (L.sourceTerm i).M :=
           (L.sourceTerm i).sigmaCompact
-        letI : T2Space (L.sourceTerm i).M :=
+        let : T2Space (L.sourceTerm i).M :=
           (L.sourceTerm i).t2
         have hcross :
             DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
@@ -262,6 +265,7 @@ theorem tracefree_ricci_decay_at_zero_of_smooth_cgh
   exact hsmall 0 h0
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem round_at_zero_of_smooth_cgh
     {omega : Real} (h0omega : 0 < omega)
     (hdim : Module.finrank Real E = 3)
@@ -312,20 +316,21 @@ theorem round_at_zero_of_smooth_cgh
         h0 hsubseq hconv hcomplete)
   have hbaseOne : limitBaseScalarOne (I := I) (M := M) Lh :=
     limit_base_scalar_one (I := I) (M := M) P Q hsel hbaseConv
-  letI : TopologicalSpace Lh.N := Lh.topology
-  letI : ChartedSpace H Lh.N := Lh.charted
-  letI : IsManifold I ∞ Lh.N := Lh.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) Lh.N := Lh.smooth_plus
-  letI : SigmaCompactSpace Lh.N := Lh.sigmaCompact
-  letI : T2Space Lh.N := Lh.t2
-  letI : T2Space (TangentBundle I Lh.N) := Lh.t2TangentBundle
+  let : TopologicalSpace Lh.N := Lh.topology
+  let : ChartedSpace H Lh.N := Lh.charted
+  let : IsManifold I ∞ Lh.N := Lh.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) Lh.N := Lh.smooth_plus
+  let : SigmaCompactSpace Lh.N := Lh.sigmaCompact
+  let : T2Space Lh.N := Lh.t2
+  let : T2Space (TangentBundle I Lh.N) := Lh.t2TangentBundle
   have hbaseEq : Lh.S.scalar 0 Lh.basepoint = 1 := by
     simpa [limitBaseScalarOne] using hbaseOne
   have hbasePos : 0 < Lh.S.scalar 0 Lh.basepoint := by
     rw [hbaseEq]
     exact one_pos
   have hconn : hamiltonLimitConnected (I := I) (M := M) Lh := by
-    simpa [Lh, hamiltonCGHLimitOfSmoothCGH, hamiltonLimitConnected] using hconnected
+    with_unfolding_all
+      exact hconnected
   have hbdry : hamiltonLimitBoundaryless (I := I) := by
     simpa [Lh, hamiltonCGHLimitOfSmoothCGH, hamiltonLimitBoundaryless] using
       (inferInstance : I.Boundaryless)
@@ -346,7 +351,8 @@ theorem flow_upgrade_data_connected
       ConnectedSpace (d.data.L.atTime (I := I) 0).M := by
     rw [d.data.hL0]
     exact hconn
-  simpa only [PointedFlowData.atTime] using hAt0
+  with_unfolding_all
+    exact hAt0
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem flow_upgrade_data_converges
@@ -368,6 +374,7 @@ theorem flow_upgrade_data_converges
      letI : T2Space d.data.L.M := d.data.L.t2
      d.data.L.S.family.metric) d.data.conv⟩
 
+omit [SigmaCompactSpace M] in
 theorem constant_positive_sectional_curvature_of_smooth_cgh
     {omega : Real} (h0omega : 0 < omega)
     (hM : isClosedThreeManifold (I := I) (M := M))

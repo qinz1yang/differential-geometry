@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiCoord
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -181,7 +183,6 @@ theorem jacobi_coord_xfer
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [← hmatch t hIcc i j]
         ring
-      simp only []
       rw [hw]
       calc
         |∑ j, (g'.inner (γ' t) (F' j t) (Y' t) -
@@ -212,8 +213,8 @@ theorem jacobi_coord_xfer
               refine Finset.sum_congr rfl fun j _ => ?_
               rw [abs_sub_comm]
               ring)
-    (fun i => by simp only []; rw [h0 i, sub_self])
-    (fun i => by simp only []; rw [h0' i, sub_self])
+    (fun i => by rw [h0 i, sub_self])
+    (fun i => by rw [h0' i, sub_self])
   intro t ht i
   exact sub_eq_zero.mp (hzero t ht i)
 

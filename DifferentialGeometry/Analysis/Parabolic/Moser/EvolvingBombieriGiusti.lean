@@ -101,7 +101,7 @@ theorem canonicalEvolvingEarlyBombieriGiustiStepEnvelope_le_polynomial
   have htime : localTime ≤ T * m ^ 4 := by
     calc
       localTime ≤ T * m ^ 2 := by
-        simpa only [localTime, T, m] using
+        simpa only [localTime, T, m, div_eq_mul_inv] using
           two_mul_bombieriGiustiIncreasingLevel_gap_inv_le hbτ k
       _ ≤ T * m ^ 4 := mul_le_mul_of_nonneg_left hm_sq_four hT
   have hgradient : localGradient ≤ K * m ^ 4 := by
@@ -1188,7 +1188,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
           (canonicalEvolvingEarlyBombieriGiustiReverseCost
             (Module.finrank ℝ E) V C p₀ A b τ G B lower upper k) / 4)) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   conv_lhs =>
@@ -1312,7 +1312,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
             (Module.finrank ℝ E) Vfixed Vmoving C G B
               τ c d D lower upper k) / 4)) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let inv : ℝ → M → ℝ := fun t x => (u t x)⁻¹
@@ -1373,7 +1373,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       ENNReal.toReal_mono (measure_ne_top _ _) (hdom S)
     have hset : S = {z : ℝ × M | Real.log (u z.1 z.2) < -r} := by
       ext z
-      simp only [S, inv, mem_setOf_eq, Real.log_inv]
+      simp only [S, inv, mem_ofPred_eq, Real.log_inv]
       constructor <;> intro hz <;> linarith
     change (localizedSpacetimeMeasure (I := I) (M := M)
       (bombieriGiustiSpatialCutoff rho lower upper k)
@@ -1464,7 +1464,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
             (Module.finrank ℝ E) Vfixed Vmoving C G B
               τ c d D lower upper (j + k)) / 4)) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let inv : ℝ → M → ℝ := fun t x => (u t x)⁻¹
@@ -1518,7 +1518,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       ENNReal.toReal_mono (measure_ne_top _ _) (hdom S)
     have hset : S = {z : ℝ × M | Real.log (u z.1 z.2) < -r} := by
       ext z
-      simp only [S, inv, mem_setOf_eq, Real.log_inv]
+      simp only [S, inv, mem_ofPred_eq, Real.log_inv]
       constructor <;> intro hz <;> linarith
     change (localizedSpacetimeMeasure (I := I) (M := M)
       (bombieriGiustiSpatialCutoff rho lower upper (j + k))

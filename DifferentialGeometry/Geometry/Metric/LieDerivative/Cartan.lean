@@ -4,6 +4,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 namespace DifferentialGeometry
@@ -173,7 +174,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
           ((chartModelBasis E).repr (fderiv ℝ F (extChartAt I x x)
             ((chartModelBasis E) j))) i from by
       rw [map_sum]
-      simp only [map_smul, Finsupp.coe_finset_sum, Finset.sum_apply, Finsupp.coe_smul,
+      simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
         Pi.smul_apply, smul_eq_mul]]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     congr 1
@@ -212,7 +213,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
                       (W : ∀ x : M, TangentSpace I x) x)) j' *
                   chartChristoffel (I := I) g x i' j' k' (extChartAt I x x)) *
                 ((chartModelBasis E).repr ((chartModelBasis E) k')) i from by
-      simp only [map_sum, map_smul, Finsupp.coe_finset_sum, Finset.sum_apply,
+      simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply,
         Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]]
     have hrepr_basis : ∀ (r s : Fin (Module.finrank ℝ E)),
         ((chartModelBasis E).repr ((chartModelBasis E) r)) s =
@@ -473,6 +474,16 @@ theorem cartan_formula_for_lie_deriv_metric
   have hx_src : x ∈ (extChartAt I x).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx_good
   rw [lieDerivMetric_apply (I := I) g W x v w]
+  have hrepr : ∀ u : TangentSpace I x,
+      (centeredChartTangentBasis (I := I) x).repr u =
+        (chartModelBasis E).repr (trivToE (I := I) x x u) := by
+    intro u
+    change (chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x u) = _
+    rw [show centeredChartTangentEquiv (I := I) x u = trivToE (I := I) x x u from
+      congrFun ((trivializationAt E (TangentSpace I) x).coe_continuousLinearEquivAt_eq
+        (R := ℝ) (FiberBundle.mem_baseSet_trivializationAt' x)) u]
+  rw [hrepr v, hrepr w, cartan_trivToE_self_apply (I := I) x v,
+    cartan_trivToE_self_apply (I := I) x w]
   have hLDM_eq : ∀ (i j : Fin (Module.finrank ℝ E)),
       lieDerivMetricMatrix (I := I) g W i j x =
         chartLieDerivMetricMatrix (I := I) g W x i j x := fun i j => rfl

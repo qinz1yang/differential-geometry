@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -31,9 +30,9 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessMa
 private theorem tensor02_add_left
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (u₁ u₂ Z : TangentSpace I x) :
-    q (fun a : Fin 2 => if a = 0 then u₁ + u₂ else Z) =
-      q (fun a : Fin 2 => if a = 0 then u₁ else Z) +
-        q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by
+    Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ + u₂ else Z) =
+      Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ else Z) +
+        Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by
   classical
   set m : Fin 2 -> TangentSpace I x := fun a => if a = 0 then u₁ else Z with hm
   have hupd : ∀ u : TangentSpace I x,
@@ -41,6 +40,7 @@ private theorem tensor02_add_left
     intro u
     funext a
     fin_cases a <;> simp [hm]
+  rw [Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq]
   calc q (fun a : Fin 2 => if a = 0 then u₁ + u₂ else Z)
       = q (Function.update m 0 (u₁ + u₂)) := by rw [hupd]
     _ = q (Function.update m 0 u₁) + q (Function.update m 0 u₂) := q.map_update_add m 0 u₁ u₂
@@ -51,8 +51,8 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessMa
 private theorem tensor02_smul_left
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (c : Real) (u Z : TangentSpace I x) :
-    q (fun a : Fin 2 => if a = 0 then c • u else Z) =
-      c * q (fun a : Fin 2 => if a = 0 then u else Z) := by
+    Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then c • u else Z) =
+      c * Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u else Z) := by
   classical
   set m : Fin 2 -> TangentSpace I x := fun a => if a = 0 then u else Z with hm
   have hupd : ∀ u' : TangentSpace I x,
@@ -60,6 +60,7 @@ private theorem tensor02_smul_left
     intro u'
     funext a
     fin_cases a <;> simp [hm]
+  rw [Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq]
   calc q (fun a : Fin 2 => if a = 0 then c • u else Z)
       = q (Function.update m 0 (c • u)) := by rw [hupd]
     _ = c • q (Function.update m 0 u) := q.map_update_smul m 0 c u
@@ -71,11 +72,12 @@ private theorem lowerBilin_add
     (A B : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x) :
     lowerBilin (I := I) q (A + B) =
       lowerBilin (I := I) q A + lowerBilin (I := I) q B := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
-  have hsum : (lowerBilin (I := I) q A + lowerBilin (I := I) q B) v =
-      lowerBilin (I := I) q A v + lowerBilin (I := I) q B v :=
-    Tensor0SSpace.add_apply (I := I) 3 x _ _ v
-  rw [hsum, lowerBilin_apply, lowerBilin_apply, lowerBilin_apply]
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x).injective
+  apply ContinuousMultilinearMap.ext
+  intro v
+  change Tensor0SSpace.eval (lowerBilin (I := I) q (A + B)) v =
+    Tensor0SSpace.eval (lowerBilin (I := I) q A + lowerBilin (I := I) q B) v
+  rw [Tensor0SSpace.eval_add, lowerBilin_apply, lowerBilin_apply, lowerBilin_apply]
   have hAB : ((A + B) (v 1)) (v 0) = (A (v 1)) (v 0) + (B (v 1)) (v 0) := rfl
   rw [hAB, tensor02_add_left]
 
@@ -85,10 +87,12 @@ private theorem lowerBilin_smul
     (c : Real)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x) :
     lowerBilin (I := I) q (c • A) = c • lowerBilin (I := I) q A := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
-  have hsmul : (c • lowerBilin (I := I) q A) v = c • (lowerBilin (I := I) q A v) :=
-    Tensor0SSpace.smul_apply (I := I) 3 x c _ v
-  rw [hsmul, lowerBilin_apply, lowerBilin_apply]
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x).injective
+  apply ContinuousMultilinearMap.ext
+  intro v
+  change Tensor0SSpace.eval (lowerBilin (I := I) q (c • A)) v =
+    Tensor0SSpace.eval (c • lowerBilin (I := I) q A) v
+  rw [Tensor0SSpace.eval_smul, lowerBilin_apply, lowerBilin_apply]
   have hA : ((c • A) (v 1)) (v 0) = c • ((A (v 1)) (v 0)) := rfl
   rw [hA, tensor02_smul_left, smul_eq_mul]
 
@@ -118,12 +122,12 @@ private theorem lowerTriOut_apply
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
       TangentSpace I x)
     (w : Fin 4 -> TangentSpace I x) :
-    lowerTriOut (I := I) q A w =
-      q (fun a : Fin 2 => if a = 0 then ((A (w 0)) (w 2)) (w 1) else w 3) := by
-  have h : lowerTriOut (I := I) q A w =
-      lowerBilin (I := I) q (A (w 0)) (Fin.tail w) := by
-    rw [lowerTriOut, ContinuousLinearMap.uncurryLeft_apply]
-    exact rfl
+    Tensor0SSpace.eval (lowerTriOut (I := I) q A) w =
+      Tensor0SSpace.eval q
+        (fun a : Fin 2 => if a = 0 then ((A (w 0)) (w 2)) (w 1) else w 3) := by
+  have h : Tensor0SSpace.eval (lowerTriOut (I := I) q A) w =
+      Tensor0SSpace.eval (lowerBilin (I := I) q (A (w 0))) (Fin.tail w) := by
+    rfl
   rw [h, lowerBilin_apply]
   congr 1
 
@@ -141,10 +145,12 @@ theorem lowerTri_apply
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
       TangentSpace I x)
     (v : Fin 4 -> TangentSpace I x) :
-    lowerTri (I := I) q A v =
-      q (fun a : Fin 2 => if a = 0 then ((A (v 0)) (v 1)) (v 2) else v 3) := by
-  have h : lowerTri (I := I) q A v =
-      lowerTriOut (I := I) q A (fun i : Fin 4 => v (Equiv.swap (1 : Fin 4) 2 i)) := rfl
+    Tensor0SSpace.eval (lowerTri (I := I) q A) v =
+      Tensor0SSpace.eval q
+        (fun a : Fin 2 => if a = 0 then ((A (v 0)) (v 1)) (v 2) else v 3) := by
+  have h : Tensor0SSpace.eval (lowerTri (I := I) q A) v =
+      Tensor0SSpace.eval (lowerTriOut (I := I) q A)
+        (fun i : Fin 4 => v (Equiv.swap (1 : Fin 4) 2 i)) := rfl
   rw [h, lowerTriOut_apply]
   congr 1
 
@@ -157,9 +163,9 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessMa
 private theorem tensor02_sub_left
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (u₁ u₂ Z : TangentSpace I x) :
-    q (fun a : Fin 2 => if a = 0 then u₁ - u₂ else Z) =
-      q (fun a : Fin 2 => if a = 0 then u₁ else Z) -
-        q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by
+    Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ - u₂ else Z) =
+      Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ else Z) -
+        Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by
   have h := tensor02_add_left (I := I) q (u₁ - u₂) u₂ Z
   rw [sub_add_cancel] at h
   exact eq_sub_of_add_eq h.symm
@@ -167,9 +173,11 @@ private theorem tensor02_sub_left
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem metricField_slot0 (g : SmoothRiemannianMetric I M) (x : M)
     (u Z : TangentSpace I x) :
-    metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then u else Z) =
+    Tensor0SSpace.eval (metricTensorField (I := I) g x)
+        (fun a : Fin 2 => if a = 0 then u else Z) =
       g.inner x u Z := by
-  rw [metricTensorField_apply]; simp
+  rw [Tensor0SSpace.eval_eq, metricTensorField_apply]
+  simp
 
 private instance instContMDiffMetricCov (g : SmoothRiemannianMetric I M) :
     CovariantDerivative.ContMDiffCovariantDerivative (metricCov (I := I) g) ∞ :=
@@ -194,13 +202,19 @@ theorem rmDiffLowAt_eq_lowerTri (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     rmDiffLowAt (I := I) g₁ g₂ x =
       lowerTri (I := I) (metricTensorField (I := I) g₁ x) (rmDiffVec (I := I) g₁ g₂ x) := by
   classical
-  refine ContinuousMultilinearMap.ext fun v => ?_
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x).injective
+  apply ContinuousMultilinearMap.ext
+  intro v
+  change Tensor0SSpace.eval (rmDiffLowAt (I := I) g₁ g₂ x) v =
+    Tensor0SSpace.eval
+      (lowerTri (I := I) (metricTensorField (I := I) g₁ x) (rmDiffVec (I := I) g₁ g₂ x)) v
   have hv : DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (v 0) (v 1) (v 2) (v 3) = v := by
     funext i
     fin_cases i <;> simp [DifferentialGeometry.Geometry.Curvature.vec4]
   have h₁ :
-      DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
-          (I := I) g₁ (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x v =
+      Tensor0SSpace.eval
+          (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
+            (I := I) g₁ (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x) v =
         g₁.inner x (v 3)
           (DifferentialGeometry.Geometry.Curvature.riemannOp (metricCov (I := I) g₁) x
             (v 0) (v 1) (v 2)) := by
@@ -210,10 +224,14 @@ theorem rmDiffLowAt_eq_lowerTri (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
       (I := I) (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x (v 0) (v 1) (v 2),
       hv] at h
+    change Tensor0SSpace.eval
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
+        (I := I) g₁ (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x) v = _ at h
     exact h
   have h₂ :
-      DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
-          (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x v =
+      Tensor0SSpace.eval
+          (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
+            (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x) v =
         g₁.inner x (v 3)
           (DifferentialGeometry.Geometry.Curvature.riemannOp (metricCov (I := I) g₂) x
             (v 0) (v 1) (v 2)) := by
@@ -223,13 +241,18 @@ theorem rmDiffLowAt_eq_lowerTri (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
       (I := I) (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x (v 0) (v 1) (v 2),
       hv] at h
+    change Tensor0SSpace.eval
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
+        (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x) v = _ at h
     exact h
-  have hsub : rmDiffLowAt (I := I) g₁ g₂ x v =
-      DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
-          (I := I) g₁ (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x v -
-        DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
-          (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x v :=
-    Tensor0SSpace.sub_apply (I := I) 4 x _ _ v
+  have hsub : Tensor0SSpace.eval (rmDiffLowAt (I := I) g₁ g₂ x) v =
+      Tensor0SSpace.eval
+          (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
+            (I := I) g₁ (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x) v -
+        Tensor0SSpace.eval
+          (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
+            (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x) v := by
+    rw [rmDiffLowAt, Tensor0SSpace.eval_sub]
   have hvec : ((rmDiffVec (I := I) g₁ g₂ x (v 0)) (v 1)) (v 2) =
       DifferentialGeometry.Geometry.Curvature.riemannOp (metricCov (I := I) g₁) x
           (v 0) (v 1) (v 2) -
@@ -269,26 +292,28 @@ theorem rmDiffDot_apply (g₁ g₂ : Real → SmoothRiemannianMetric I M)
       TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
         TangentSpace I x)
     (t : Real) (x : M) (v : Fin 4 -> TangentSpace I x) :
-    rmDiffDot (I := I) g₁ g₂ Sdot t x v =
-      (-2 : Real) * metricRicciAt (I := I) (g₁ t) x
+    Tensor0SSpace.eval (rmDiffDot (I := I) g₁ g₂ Sdot t x) v =
+      (-2 : Real) * Tensor0SSpace.eval (metricRicciAt (I := I) (g₁ t) x)
           (fun a : Fin 2 => if a = 0 then
             ((rmDiffVec (I := I) (g₁ t) (g₂ t) x (v 0)) (v 1)) (v 2) else v 3) +
         (g₁ t).inner x (((Sdot x (v 0)) (v 1)) (v 2)) (v 3) := by
   have hadd :
-      rmDiffDot (I := I) g₁ g₂ Sdot t x v =
-        ((-2 : Real) •
+      Tensor0SSpace.eval (rmDiffDot (I := I) g₁ g₂ Sdot t x) v =
+        Tensor0SSpace.eval ((-2 : Real) •
             lowerTri (I := I) (metricRicciAt (I := I) (g₁ t) x)
               (rmDiffVec (I := I) (g₁ t) (g₂ t) x)) v +
-          lowerTri (I := I) (metricTensorField (I := I) (g₁ t) x) (Sdot x) v :=
-    Tensor0SSpace.add_apply (I := I) 4 x _ _ v
+          Tensor0SSpace.eval
+            (lowerTri (I := I) (metricTensorField (I := I) (g₁ t) x) (Sdot x)) v := by
+    rw [rmDiffDot, Tensor0SSpace.eval_add]
   have hsmul :
-      ((-2 : Real) •
+      Tensor0SSpace.eval ((-2 : Real) •
           lowerTri (I := I) (metricRicciAt (I := I) (g₁ t) x)
             (rmDiffVec (I := I) (g₁ t) (g₂ t) x)) v =
         (-2 : Real) •
-          lowerTri (I := I) (metricRicciAt (I := I) (g₁ t) x)
-            (rmDiffVec (I := I) (g₁ t) (g₂ t) x) v :=
-    Tensor0SSpace.smul_apply (I := I) 4 x (-2 : Real) _ v
+          Tensor0SSpace.eval
+            (lowerTri (I := I) (metricRicciAt (I := I) (g₁ t) x)
+              (rmDiffVec (I := I) (g₁ t) (g₂ t) x)) v := by
+    rw [Tensor0SSpace.eval_smul]
   rw [hadd, hsmul, lowerTri_apply, lowerTri_apply, smul_eq_mul, metricField_slot0]
 
 end Speed
@@ -313,8 +338,9 @@ theorem rmDiffLow_hasDerivAt
         (fun r : Real => ((rmDiffVec (I := I) (g₁ r) (g₂ r) x X) Y) Z)
         (((Sdot x X) Y) Z) t)
     (v : Fin 4 -> TangentSpace I x) :
-    HasDerivAt (fun r : Real => rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
-      (rmDiffDot (I := I) g₁ g₂ Sdot t x v) t := by
+    HasDerivAt (fun r : Real =>
+        Tensor0SSpace.eval (rmDiffLowAt (I := I) (g₁ r) (g₂ r) x) v)
+      (Tensor0SSpace.eval (rmDiffDot (I := I) g₁ g₂ Sdot t x) v) t := by
   classical
   set b : Module.Basis
       (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x) :=
@@ -335,13 +361,20 @@ theorem rmDiffLow_hasDerivAt
       ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
         (fun a : Fin 2 => if a = 0 then b k else v 3)) t := fun k => hPDE₁ (b k) (v 3)
   have hsum : ∀ r : Real,
-      rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v =
+      Tensor0SSpace.eval (rmDiffLowAt (I := I) (g₁ r) (g₂ r) x) v =
         ∑ k, b.repr (F r) k * (g₁ r).inner x (b k) (v 3) := by
     intro r
     rw [rmDiffLowAt_eq_lowerTri, lowerTri_apply,
-      show ((rmDiffVec (I := I) (g₁ r) (g₂ r) x (v 0)) (v 1)) (v 2) = F r from rfl,
-      tensor02_expand (I := I) (metricTensorField (I := I) (g₁ r) x) b (F r) (v 3)]
-    exact Finset.sum_congr rfl fun k _ => by rw [metricField_slot0]
+      show ((rmDiffVec (I := I) (g₁ r) (g₂ r) x (v 0)) (v 1)) (v 2) = F r from rfl]
+    have hexp := tensor02_expand (I := I)
+      (metricTensorField (I := I) (g₁ r) x) b (F r) (v 3)
+    change Tensor0SSpace.eval (metricTensorField (I := I) (g₁ r) x)
+        (fun a : Fin 2 => if a = 0 then F r else v 3) = _ at hexp
+    rw [hexp]
+    exact Finset.sum_congr rfl fun k _ => by
+      change b.repr (F r) k * Tensor0SSpace.eval (metricTensorField (I := I) (g₁ r) x)
+        (fun a : Fin 2 => if a = 0 then b k else v 3) = _
+      rw [metricField_slot0]
   have hderiv : HasDerivAt (fun r : Real => ∑ k, b.repr (F r) k * (g₁ r).inner x (b k) (v 3))
       (∑ k, (b.repr Fdot k * (g₁ t).inner x (b k) (v 3) +
         b.repr (F t) k * ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
@@ -351,13 +384,21 @@ theorem rmDiffLow_hasDerivAt
       (∑ k, (b.repr Fdot k * (g₁ t).inner x (b k) (v 3) +
         b.repr (F t) k * ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
           (fun a : Fin 2 => if a = 0 then b k else v 3)))) =
-        rmDiffDot (I := I) g₁ g₂ Sdot t x v := by
+        Tensor0SSpace.eval (rmDiffDot (I := I) g₁ g₂ Sdot t x) v := by
     rw [Finset.sum_add_distrib, rmDiffDot_apply]
     have hg : (∑ k, b.repr Fdot k * (g₁ t).inner x (b k) (v 3)) =
         (g₁ t).inner x Fdot (v 3) := by
-      rw [← metricField_slot0 (I := I) (g₁ t) x Fdot (v 3),
-        tensor02_expand (I := I) (metricTensorField (I := I) (g₁ t) x) b Fdot (v 3)]
-      exact Finset.sum_congr rfl fun k _ => by rw [metricField_slot0]
+      rw [← metricField_slot0 (I := I) (g₁ t) x Fdot (v 3)]
+      have hexp := tensor02_expand (I := I)
+        (metricTensorField (I := I) (g₁ t) x) b Fdot (v 3)
+      change Tensor0SSpace.eval (metricTensorField (I := I) (g₁ t) x)
+          (fun a : Fin 2 => if a = 0 then Fdot else v 3) = _ at hexp
+      rw [hexp]
+      exact Finset.sum_congr rfl fun k _ => by
+        change b.repr Fdot k * (g₁ t).inner x (b k) (v 3) =
+          b.repr Fdot k * Tensor0SSpace.eval (metricTensorField (I := I) (g₁ t) x)
+            (fun a : Fin 2 => if a = 0 then b k else v 3)
+        rw [metricField_slot0]
     have hr : (∑ k, b.repr (F t) k * ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
           (fun a : Fin 2 => if a = 0 then b k else v 3))) =
         (-2 : Real) * metricRicciAt (I := I) (g₁ t) x
@@ -366,6 +407,15 @@ theorem rmDiffLow_hasDerivAt
         Finset.mul_sum]
       exact Finset.sum_congr rfl fun k _ => by ring
     rw [hg, hr]
+    rw [show F t = ((rmDiffVec (I := I) (g₁ t) (g₂ t) x (v 0)) (v 1)) (v 2) from rfl,
+      show Fdot = ((Sdot x (v 0)) (v 1)) (v 2) from rfl]
+    have hric : metricRicciAt (I := I) (g₁ t) x
+          (fun a : Fin 2 => if a = 0 then
+            ((rmDiffVec (I := I) (g₁ t) (g₂ t) x (v 0)) (v 1)) (v 2) else v 3) =
+        Tensor0SSpace.eval (metricRicciAt (I := I) (g₁ t) x)
+          (fun a : Fin 2 => if a = 0 then
+            ((rmDiffVec (I := I) (g₁ t) (g₂ t) x (v 0)) (v 1)) (v 2) else v 3) := rfl
+    rw [hric]
     ring
   have := hderiv.congr_deriv hval
   simpa only [hsum] using this

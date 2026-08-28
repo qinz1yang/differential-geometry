@@ -696,7 +696,7 @@ theorem heatSemigroup_continuous_at_zero
     have h_total : Tendsto (fun t : ℝ =>
         ∑ i ∈ T, (Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) - 1) ^ 2 *
           (⟪b i, u⟫_ℝ) ^ 2) (𝓝 0) (𝓝 (∑ i ∈ T, (0 : ℝ))) :=
-      tendsto_finset_sum T h_each
+      tendsto_finsetSum T h_each
     simpa using h_total
   rw [Metric.tendsto_nhds] at h_head_tendsto
   obtain ⟨δ, hδ_pos, hδ⟩ := Metric.eventually_nhds_iff_ball.mp

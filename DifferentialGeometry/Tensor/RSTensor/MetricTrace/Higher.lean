@@ -22,8 +22,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 private theorem headFreezeNabla
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3)
@@ -69,9 +68,9 @@ private theorem headFreezeNabla
     nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) cov X V3 A x
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => B p (fun a : Fin 2 => V2 a p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M => A p (fun a : Fin 3 => V3 a p)) x (X x) := by
     have hfun :
         (fun p : M => B p (fun a : Fin 2 => V2 a p)) =
@@ -131,7 +130,7 @@ private theorem headFreezeNabla
         simpa [metricTrace_finCons_vec3_eq_vec4 (I := I)] using hAtot.symm
 
 theorem nabla2Trace02
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
+    [T2Space M] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -256,7 +255,7 @@ theorem nabla2Trace02
           (fun _ : Fin 1 => Ysec x) := by
           simpa [HessTrace] using hHessEval
       _ =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M =>
               duSec (I := I) traceA htrace p (fun a : Fin 1 => V1 a p))
             x (Xsec x) := by
@@ -269,7 +268,7 @@ theorem nabla2Trace02
           rw [heval, hcorr]
           ring
       _ =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun y : M => metricTracePair0SAt (I := I) g (B y))
             x (Xsec x) := by
           rw [hdu_fun]
@@ -277,7 +276,7 @@ theorem nabla2Trace02
         differential1FormFun (I := I)
           (fun y : M => metricTracePair0SAt (I := I) g (B y)) x
           (fun _ : Fin 1 => X) := by
-          simp [differential1FormFun_apply_eq_extDerivFun, hXsec]
+          simp [differential1FormFun_apply_eq_mvfderiv, hXsec]
   have htraceB := dTrace02_eq (I := I) (M := M) cov g hmc B Xsec x
   have htraceB_sum :
       metricTracePair0SAt (I := I) g
@@ -332,8 +331,7 @@ theorem nabla2Trace02
         simpa [B, nabla2A, hXsec, hYsec, metricTrace_finCons_vec2_eq_vec3 (I := I)] using h
 
 private theorem tailFreezeNabla
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -382,9 +380,9 @@ private theorem tailFreezeNabla
     nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) cov X V4 A x
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => B p (fun a : Fin 2 => V2 a p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M => A p (fun a : Fin 4 => V4 a p)) x (X x) := by
     have hfun :
         (fun p : M => B p (fun a : Fin 2 => V2 a p)) =
@@ -444,8 +442,7 @@ private theorem tailFreezeNabla
         simpa [hUsec, hVsec] using hAtot.symm
 
 private theorem middleFreezeNabla
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -494,9 +491,9 @@ private theorem middleFreezeNabla
     nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) cov X V4 A x
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => B p (fun a : Fin 2 => V2 a p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M => A p (fun a : Fin 4 => V4 a p)) x (X x) := by
     have hfun :
         (fun p : M => B p (fun a : Fin 2 => V2 a p)) =
@@ -562,7 +559,7 @@ private theorem middleFreezeNabla
         simpa [hUsec, hVsec] using hAtot.symm
 
 theorem nablaTrace04
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
+    [T2Space M] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -640,7 +637,7 @@ theorem nablaTrace04
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 cov Xsec traceA x (vec2 (I := I) Y Z) := by
           simpa [nablaTraceA, hXsec, metricTrace_finCons_vec2_eq_vec3 (I := I)] using htot
-      _ = extDerivFun (I := I) traceB x (Xsec x) := by
+      _ = mvfderiv (I := I) traceB x (Xsec x) := by
           have hV2x :
               (fun a : Fin 2 => V2 a x) = vec2 (I := I) Y Z := by
             funext a
@@ -650,7 +647,7 @@ theorem nablaTrace04
           rw [hfun]
           ring
       _ = dTraceB (fun _ : Fin 1 => X) := by
-          simp [dTraceB, differential1FormFun_apply_eq_extDerivFun, hXsec]
+          simp [dTraceB, differential1FormFun_apply_eq_mvfderiv, hXsec]
   have htrace02 :
       dTraceB (fun _ : Fin 1 => X) =
         ∑ i : Idx, ∑ j : Idx,

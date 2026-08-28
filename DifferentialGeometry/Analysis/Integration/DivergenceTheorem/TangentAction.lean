@@ -10,6 +10,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.LineDeriv.Basic
 
+
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -130,14 +131,15 @@ lemma mfderiv_chart_diff (α : M)
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
     have heq : chartBasisVecFiber (I := I) α i x =
-        T.symm x ((chartModelBasis E) i) := rfl
+        T.symm x ((chartModelBasis E) i) := by
+      rw [chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
         T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i)) =
           (chartModelBasis E) i := by
       have : T.symm x ((chartModelBasis E) i) =
           T.symmL ℝ x ((chartModelBasis E) i) := by
-        rw [Trivialization.symmL_apply]
+        rw [Trivialization.symmL_apply T hbase]
       rw [this, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
@@ -205,14 +207,14 @@ lemma mfderiv_chartBasisVecFiber (α : M)
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
     have heq : chartBasisVecFiber (I := I) α i x = T.symm x ((chartModelBasis E) i) :=
-      rfl
+      by rw [chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
         T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i))
           = (chartModelBasis E) i := by
       have : T.symm x ((chartModelBasis E) i)
             = T.symmL ℝ x ((chartModelBasis E) i) := by
-        rw [Trivialization.symmL_apply]
+        rw [Trivialization.symmL_apply T hbase]
       rw [this, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
@@ -376,7 +378,7 @@ theorem tangentSectionAction_contMDiffOn
       exact this
     exact tangentSectionAction_chartLocal (I := I) α X hf hx_chart hx.2
   refine ContMDiffOn.congr ?_ hcongr
-  refine contMDiffOn_finset_sum (fun i _ => ?_)
+  refine contMDiffOn_finsetSum (fun i _ => ?_)
   refine ContMDiffOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞ (chartCoeff (I := I) α X i)
         (trivializationAt E (TangentSpace I) α).baseSet :=

@@ -7,6 +7,7 @@ import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Tensor.Product.Defs
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Multilinear.Tensor
+import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
 open DifferentialGeometry.Tensor.Multilinear
 
 
@@ -14,7 +15,6 @@ namespace DifferentialGeometry
 namespace Tensor0SBundle
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 
@@ -52,8 +52,8 @@ def tensorRSField_smulByFun
     TensorRSField n r s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ⟨fun x => φ x • α x, by
-    letI := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
-    letI := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+    let := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+    let := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
     intro x₀
     rw [contMDiffAt_section]
     have hα := α.contMDiff x₀
@@ -108,15 +108,15 @@ noncomputable def Tensor0SField.fromScalarField [CompleteSpace 𝕜]
       intro x
       simp_rw [continuousMultilinearMap_basis_repr]
       rfl
-    simp_rw [hcoord]
-    exact hf.contMDiffAt⟩
+    exact (hf.contMDiffAt).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun x => hcoord x)⟩
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
 theorem Tensor0SField.fromScalarField_apply [CompleteSpace 𝕜]
     (f : M → 𝕜) (hf : ContMDiff I 𝓘(𝕜) n f) (x : M) (v : Fin 0 → TangentSpace I x) :
-    Tensor0SSpace.toModel (Tensor0SField.fromScalarField n f hf x) v = f x := by
-  unfold Tensor0SField.fromScalarField Tensor0SSpace.toModel tensor0SSpace_continuousLinearEquiv
+    Tensor0SField.fromScalarField n f hf x v = f x := by
+  unfold Tensor0SField.fromScalarField
   exact ContinuousMultilinearMap.constOfIsEmpty_apply _ _ _ _
 
 noncomputable def Tensor0SField.toScalarField
@@ -129,9 +129,9 @@ theorem Tensor0SField.toScalarField_contMDiff [CompleteSpace 𝕜]
     (α : Tensor0SField n 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     ContMDiff I 𝓘(𝕜) n α.toScalarField := by
   rcases hM with ⟨⟩
-  letI : IsManifold I (n + 1) M := IsManifold.mk
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0
-  letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := n)
+  let : IsManifold I (n + 1) M := IsManifold.mk
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0
+  let := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := n)
   let d := Module.finrank 𝕜 E
   let b : Module.Basis (Fin d) 𝕜 E := Module.finBasis 𝕜 E
   have hα := ((contMDiff_multilinearSection_iff_coord (TangentSpace I) n b
@@ -145,9 +145,7 @@ theorem Tensor0SField.toScalarField_contMDiff [CompleteSpace 𝕜]
   have hα_const : α x = ContinuousMultilinearMap.constOfIsEmpty 𝕜
       (fun _ : Fin 0 => TangentSpace I x) (Tensor0SField.toScalarField n α x) := by
     ext v
-    simp only [tensor0SSpace_continuousLinearEquiv, ContinuousLinearEquiv.coe_mk,
-      LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, id,
-      Tensor0SField.toScalarField, Tensor0SSpace.toModel]
+    simp only [tensor0SSpace_continuousLinearEquiv,             Tensor0SField.toScalarField, Tensor0SSpace.toModel]
     change DFunLike.coe (F := ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => TangentSpace I x) 𝕜)
       (α x) v =
       DFunLike.coe (F := ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => TangentSpace I x) 𝕜)
@@ -172,13 +170,11 @@ theorem Tensor0SField.fromScalarField_toScalarField [CompleteSpace 𝕜]
     Tensor0SField.fromScalarField n (Tensor0SField.toScalarField n α)
       (Tensor0SField.toScalarField_contMDiff n
         (inferInstance : IsManifold I (n + 1) M) α) = α := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0
   apply ContMDiffSection.ext; intro x
   simp only [Tensor0SField.fromScalarField]
   symm; ext v
-  simp only [tensor0SSpace_continuousLinearEquiv, ContinuousLinearEquiv.coe_mk,
-    LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, id,
-    Tensor0SField.toScalarField, Tensor0SSpace.toModel]
+  simp only [tensor0SSpace_continuousLinearEquiv,         Tensor0SField.toScalarField, Tensor0SSpace.toModel]
   change DFunLike.coe (F := ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => TangentSpace I x) 𝕜)
     (α x) v =
     DFunLike.coe (F := ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => TangentSpace I x) 𝕜)
@@ -193,7 +189,7 @@ theorem Tensor0SField.toScalarField_add
   ext x
   simp only [Tensor0SField.toScalarField, Pi.add_apply]
   rw [show (α + β) x = α x + β x from rfl, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+    add_apply]
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
@@ -203,33 +199,37 @@ theorem Tensor0SField.toScalarField_smulByFun
     (tensor0SField_smulByFun n φ hφ α).toScalarField n = φ * α.toScalarField n := by
   ext x
   simp only [Tensor0SField.toScalarField, tensor0SField_smulByFun_apply,
-    Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, Pi.mul_apply, smul_eq_mul]
+    Tensor0SSpace.toModel_smul, smul_apply, Pi.mul_apply, smul_eq_mul]
 
 omit n in
 noncomputable def tensor0SSpace_evalScalar (x : M) :
     Tensor0SSpace 0 I x →L[𝕜] 𝕜 :=
-  (ContinuousMultilinearMap.apply 𝕜 (fun _ : Fin 0 => E) 𝕜 Fin.elim0).comp
-    (Tensor0SSpace.toModelL 0 x)
+  (ContinuousMultilinearMap.apply 𝕜
+    (fun _ : Fin 0 => TangentSpace I x) 𝕜 Fin.elim0).comp
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).toContinuousLinearMap
 
 omit n in
 omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem Tensor0SSpace.evalScalar_apply (x : M) (c : Tensor0SSpace 0 I x) :
-    tensor0SSpace_evalScalar x c = c Fin.elim0 := by
-  change Tensor0SSpace.toModel c Fin.elim0 = c Fin.elim0
-  exact congrArg c (Subsingleton.elim _ _)
+    tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c = c Fin.elim0 := by
+  change
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x c) Fin.elim0 = c Fin.elim0
+  rw [tensor0SSpaceFiberContinuousLinearEquiv_apply]
+  rfl
 
 omit n in
 noncomputable def Tensor0SSpace.toRS0 {s : ℕ} {x : M} (A : Tensor0SSpace s I x) :
     TensorRSSpace 0 s I x :=
-  (tensor0SSpace_evalScalar x).smulRight A
+  (tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x).smulRight A
 
 omit n in
 omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem Tensor0SSpace.toRS0_apply {s : ℕ} {x : M}
     (A : Tensor0SSpace s I x) (c : Tensor0SSpace 0 I x) :
-    Tensor0SSpace.toRS0 A c = tensor0SSpace_evalScalar x c • A :=
+    Tensor0SSpace.toRS0 A c =
+      tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c • A :=
   rfl
 
 noncomputable def Tensor0SField.toTensorRSField {s : ℕ}
@@ -239,7 +239,8 @@ noncomputable def Tensor0SField.toTensorRSField {s : ℕ}
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0 s
   letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0
   letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  exact ⟨fun x => (tensor0SSpace_evalScalar x).smulRight (α x), by
+  exact ⟨fun x =>
+      (tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x).smulRight (α x), by
     intro x₀
     rw [contMDiffAt_section x₀]
     have hα := (contMDiffAt_section x₀).mp α.contMDiff.contMDiffAt
@@ -259,10 +260,10 @@ noncomputable def Tensor0SField.toTensorRSField {s : ℕ}
     intro m
     rw [hom_trivializationAt_apply]
     simp only [ContinuousLinearMap.inCoordinates,
-      ContinuousLinearMap.coe_comp', Function.comp_apply,
+      ContinuousLinearMap.coe_comp, Function.comp_apply,
       ContinuousLinearMap.smulRight_apply,
       ContinuousLinearMap.smulRightL_apply_apply,
-      ContinuousMultilinearMap.smul_apply,
+      smul_apply,
       map_smul,
       Tensor0SSpace.evalScalar_apply]
     have hc₀ :
@@ -293,7 +294,8 @@ omit [IsManifold I (n + 1) M] in
 theorem Tensor0SField.toRS0_apply {s : ℕ}
     (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (x : M) (c : Tensor0SSpace 0 I x) :
-    α.toTensorRSField n x c = tensor0SSpace_evalScalar x c • α x :=
+    α.toTensorRSField n x c =
+      tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c • α x :=
   rfl
 
 omit [IsManifold I (n + 1) M] in
@@ -310,7 +312,6 @@ end Tensor0SBundle
 namespace Tensor0SBundle
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 
@@ -320,30 +321,127 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   [FiniteDimensional 𝕜 E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ω M]
+variable (n : WithTop ℕ∞)
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I 1 M] [IsManifold I (n + 1) M]
 variable {s q : ℕ}
 
-variable (n : WithTop ℕ∞)
+noncomputable def Tensor0SField.domDomCongr {s s' : ℕ} (e : Fin s ≃ Fin s')
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField n s' (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) := by
+  letI : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  exact MultilinearSection.domDomCongr (F := E) (E := TangentSpace I) (IB := I) n e α
+
+@[simp]
+theorem Tensor0SField.domDomCongr_apply {s s' : ℕ} (e : Fin s ≃ Fin s')
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (x : M) :
+    Tensor0SField.domDomCongr n e α x = Tensor0SSpace.domDomCongr (α x) e := by
+  apply tensor0SSpace_ext (I := I) s' x
+  intro v
+  change ContinuousMultilinearMap.domDomCongr e
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (α x)) v = _
+  rw [ContinuousMultilinearMap.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
+  simp only [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
 
 noncomputable def tensor0SField_product
     (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (β : Tensor0SField n q (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
-    Tensor0SField n (s + q) (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (s + q)
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) q
-  ⟨fun x => (α x).product_fun (β x), by
-    let d := Module.finrank 𝕜 E
-    let b : Module.Basis (Fin d) 𝕜 E := Module.finBasis 𝕜 E
-    rw [contMDiff_multilinearSection_iff_coord (TangentSpace I) n b]
-    intro σ x₀
-    have hα := ((contMDiff_multilinearSection_iff_coord (TangentSpace I) n b
-      (fun x => (α x : Tensor0SSpace s I x))).mp α.contMDiff)
-    have hβ := ((contMDiff_multilinearSection_iff_coord (TangentSpace I) n b
-      (fun x => (β x : Tensor0SSpace q I x))).mp β.contMDiff)
-    simp_rw [Bundle.continuousMultilinearMap.triv_coord_product b σ x₀ _ (α _) (β _)]
-    exact (contMDiffAt_const (c := ContinuousLinearMap.mul 𝕜 𝕜).clm_apply
-      (hα (σ ∘ Fin.castAdd q) x₀)).clm_apply (hβ (σ ∘ Fin.natAdd s) x₀)⟩
+    Tensor0SField n (s + q) (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) := by
+  letI : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  exact MultilinearSection.product (F := E) (E := TangentSpace I) (IB := I) n α β
+
+@[simp]
+theorem Tensor0SField.domDomCongr_zero {s s' : ℕ} (e : Fin s ≃ Fin s') :
+    Tensor0SField.domDomCongr n e
+        (0 : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) = 0 := by
+  apply DFunLike.ext _ _
+  intro x
+  apply tensor0SSpace_ext (I := I) s' x
+  intro v
+  change Tensor0SSpace.eval
+      (Tensor0SSpace.domDomCongr (0 : Tensor0SSpace s I x) e) v =
+    Tensor0SSpace.eval (0 : Tensor0SSpace s' I x) v
+  rw [Tensor0SSpace.eval_domDomCongr]
+  simp
+
+@[simp]
+theorem Tensor0SField.domDomCongr_refl {s : ℕ}
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField.domDomCongr n (Equiv.refl (Fin s)) α = α := by
+  let _ : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  unfold Tensor0SField.domDomCongr
+  exact MultilinearSection.domDomCongr_refl n α
+
+theorem Tensor0SField.domDomCongr_trans {s s' s'' : ℕ}
+    (e₁ : Fin s ≃ Fin s') (e₂ : Fin s' ≃ Fin s'')
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField.domDomCongr n e₂ (Tensor0SField.domDomCongr n e₁ α) =
+      Tensor0SField.domDomCongr n (e₁.trans e₂) α := by
+  let _ : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  unfold Tensor0SField.domDomCongr
+  exact MultilinearSection.domDomCongr_trans n e₁ e₂ α
+
+theorem Tensor0SField.domDomCongr_add {s s' : ℕ} (e : Fin s ≃ Fin s')
+    (α β : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField.domDomCongr n e (α + β) =
+      Tensor0SField.domDomCongr n e α + Tensor0SField.domDomCongr n e β := by
+  let _ : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  unfold Tensor0SField.domDomCongr
+  exact MultilinearSection.domDomCongr_add n e α β
+
+@[simp]
+theorem tensor0SField_product_zero
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    tensor0SField_product n α
+        (0 : Tensor0SField n q (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) = 0 := by
+  let _ : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  unfold tensor0SField_product
+  exact MultilinearSection.product_zero n α
+
+theorem tensor0SField_product_add_left
+    (α β : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (γ : Tensor0SField n q (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    tensor0SField_product n (α + β) γ =
+      tensor0SField_product n α γ + tensor0SField_product n β γ := by
+  let _ : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  unfold tensor0SField_product
+  exact MultilinearSection.product_add_left n α β γ
+
+theorem tensor0SField_product_domDomCongr_left {s' : ℕ} (e : Fin s ≃ Fin s')
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (β : Tensor0SField n q (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    tensor0SField_product n (Tensor0SField.domDomCongr n e α) β =
+      Tensor0SField.domDomCongr n
+        (finSumFinEquiv.symm.trans
+          ((Equiv.sumCongr e (Equiv.refl (Fin q))).trans finSumFinEquiv))
+        (tensor0SField_product n α β) := by
+  let _ : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+    TangentBundle.contMDiffVectorBundle
+  unfold tensor0SField_product Tensor0SField.domDomCongr
+  exact MultilinearSection.product_domDomCongr_left n e α β
+
+theorem Tensor0SField.domDomCongr_id_of_valPres {s : ℕ} (e : Fin s ≃ Fin s)
+    (he : ∀ i, ((e i : Fin s) : ℕ) = (i : ℕ))
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField.domDomCongr n e α = α := by
+  have hee : e = Equiv.refl (Fin s) := Equiv.ext fun i => Fin.ext (he i)
+  subst e
+  apply DFunLike.ext _ _
+  intro x
+  apply tensor0SSpace_ext (I := I) s x
+  intro v
+  change Tensor0SSpace.eval (Tensor0SSpace.domDomCongr (α x) (Equiv.refl (Fin s))) v =
+    Tensor0SSpace.eval (α x) v
+  rw [Tensor0SSpace.eval_domDomCongr]
+  rfl
 
 end
 end Tensor0SBundle

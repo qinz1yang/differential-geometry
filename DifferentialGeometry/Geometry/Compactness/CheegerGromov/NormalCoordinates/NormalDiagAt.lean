@@ -69,28 +69,28 @@ theorem normalDiagAtFull
               (E × E) →L[Real] (E × E))‖₊⁻¹ -
             PhaseFlow.phaseErr (normalPhaseK h (2 * q)))⁻¹ *
           PhaseFlow.phaseErr (normalPhaseK h (2 * q))) := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : IsManifold I 1 (X.obj k).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : IsManifold I 1 (X.obj k).M := IsManifold.of_le
     (I := I) (M := (X.obj k).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : ConnectedSpace (X.obj k).M := hconn
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : ConnectedSpace (X.obj k).M := hconn
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle (fun y : (X.obj k).M ↦ TangentSpace I y) :=
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle (fun y : (X.obj k).M ↦ TangentSpace I y) :=
     (X.obj k).riemBundle (I := I)
-  letI : (y : (X.obj k).M) → InnerProductSpace Real (TangentSpace I y) :=
+  let : (y : (X.obj k).M) → InnerProductSpace Real (TangentSpace I y) :=
     (X.obj k).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : (X.obj k).M ↦ TangentSpace I y) :=
     (X.obj k).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
+  let : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
   obtain ⟨Φ, hΦ0, hΦcont, hΦwithin, _hΦat, hΦbox, hΦzero,
       happrox, hΦsmooth⟩ :=

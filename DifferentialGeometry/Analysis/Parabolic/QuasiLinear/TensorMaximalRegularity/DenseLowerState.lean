@@ -64,7 +64,8 @@ theorem dense_lowerCore {D : Set X} (hD : Dense D)
     exact le_of_lt hdV.2⟩
   refine ⟨dS, ?_, ?_⟩
   · apply hball
-    simpa only [dS, Subtype.dist_eq] using hdV.1
+    change dist d (u : X) < ε
+    exact hdV.1
   · change d ∈ D
     exact hdD
 

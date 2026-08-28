@@ -1,6 +1,8 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-08-20: made the small-ball average triangle estimate explicit
+-- Modified 2026-08-23: migrated Mathlib APIs and made coercion and rescaling bridges explicit
 import DifferentialGeometry.External.DeGiorgi.Crossover.LogGradient
+
 
 /-!
 # Crossover Exponential Integrability
@@ -102,7 +104,7 @@ theorem crossover_volumeReal_ball_eq
       r ^ d * volume.real (Metric.ball (0 : E) 1) := by
   have hd : d ≠ 0 := NeZero.ne d
   have hdpos : 0 < d := Nat.pos_of_ne_zero hd
-  haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
+  have : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
     simpa [finrank_euclideanSpace] using hdpos
   rw [← Measure.addHaar_real_closedBall_eq_addHaar_real_ball (μ := volume) x r,
     Measure.addHaar_real_closedBall (μ := volume) x hr.le]
@@ -114,7 +116,7 @@ theorem crossover_volumeReal_closedBall_eq
       r ^ d * volume.real (Metric.ball (0 : E) 1) := by
   have hd : d ≠ 0 := NeZero.ne d
   have hdpos : 0 < d := Nat.pos_of_ne_zero hd
-  haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
+  have : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
     simpa [finrank_euclideanSpace] using hdpos
   rw [Measure.addHaar_real_closedBall (μ := volume) x hr.le]
   simp [finrank_euclideanSpace]
@@ -234,7 +236,9 @@ theorem weak_harnack_stage_one_forward_ball
   let AR : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1) :=
     rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR ALoc
   have hsuperLoc : IsSupersolution ALoc.1 u := by
-    simpa [ALoc] using hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
+    change IsSupersolution
+      (A.1.restrict (Metric.ball_subset_closedBall.trans hsub)) u
+    exact hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
   have hposR : ∀ z ∈ Metric.ball (0 : E) 1, 0 < uR z := by
     intro z hz
     have hz_ball : x₀ + R • z ∈ Metric.ball x₀ R := by
@@ -258,16 +262,16 @@ theorem weak_harnack_stage_one_forward_ball
         (R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ (R / 2 : ℝ),
             |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)) ∂volume := by
-    dsimp [uR]
-    simpa [show R * (1 / 2 : ℝ) = R / 2 by ring] using
-      crossover_integral_comp_affine_ball (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
-        (fun x => |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)))
+    rw [show uR = fun z => u (x₀ + R • z) by rfl]
+    rw [show R / 2 = R * (1 / 2 : ℝ) by ring]
+    exact crossover_integral_comp_affine_ball (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
+      (fun x => |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)))
   have hunit_eq :
       ∫ z in Metric.ball (0 : E) 1, |uR z| ^ p ∂volume =
         (R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ R, |u x| ^ p ∂volume := by
-    dsimp [uR]
-    simpa using
+    rw [show uR = fun z => u (x₀ + R • z) by rfl]
+    simpa only [mul_one] using
       crossover_integral_comp_affine_ball (x₀ := x₀) (R := R) (ρ := (1 : ℝ)) hR
         (fun x => |u x| ^ p)
   rw [hhalf_eq, hunit_eq] at hbase
@@ -294,7 +298,9 @@ theorem weak_harnack_stage_one_inverse_ball
   let AR : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1) :=
     rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR ALoc
   have hsuperLoc : IsSupersolution ALoc.1 u := by
-    simpa [ALoc] using hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
+    change IsSupersolution
+      (A.1.restrict (Metric.ball_subset_closedBall.trans hsub)) u
+    exact hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
   have hposR : ∀ z ∈ Metric.ball (0 : E) 1, 0 < uR z := by
     intro z hz
     have hz_ball : x₀ + R • z ∈ Metric.ball x₀ R := by
@@ -315,13 +321,14 @@ theorem weak_harnack_stage_one_inverse_ball
   have hess :
       essInf uR (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))) =
         essInf u (volume.restrict (Metric.ball x₀ (R / 2 : ℝ))) := by
-    simpa [uR] using essInf_rescale_halfBall (d := d) (x₀ := x₀) (R := R) hR
+    rw [show uR = fun z => u (x₀ + R • z) by rfl]
+    exact essInf_rescale_halfBall (d := d) (x₀ := x₀) (R := R) hR
   have hunit_eq :
       ∫ z in Metric.ball (0 : E) 1, |(uR z)⁻¹| ^ p ∂volume =
         (R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ R, |(u x)⁻¹| ^ p ∂volume := by
-    dsimp [uR]
-    simpa using
+    rw [show uR = fun z => u (x₀ + R • z) by rfl]
+    simpa only [mul_one] using
       crossover_integral_comp_affine_ball (x₀ := x₀) (R := R) (ρ := (1 : ℝ)) hR
         (fun x => |(u x)⁻¹| ^ p)
   rw [hess] at hbase
@@ -376,7 +383,10 @@ theorem regularizedLog_unit_halfBall_meanOscillation
           AEMeasurable (fun x => ((u x + ε) ^ 2)⁻¹) (volume.restrict Ω) := by
         exact AEMeasurable.inv (((hw_u.memLp.aestronglyMeasurable.add_const ε).pow 2).aemeasurable)
       exact hden_ae'.aestronglyMeasurable
-    simpa [div_eq_mul_inv] using hnum_ae.mul hden_ae
+    change AEStronglyMeasurable
+      ((fun x => η.toFun x ^ 2) * fun x => ((u x + ε) ^ 2)⁻¹)
+      (volume.restrict Ω)
+    exact hnum_ae.mul hden_ae
   have hfactor_bound :
       ∀ᵐ x ∂(volume.restrict Ω), |η.toFun x ^ 2 / (u x + ε) ^ 2| ≤ 1 / ε ^ 2 := by
     filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
@@ -403,9 +413,11 @@ theorem regularizedLog_unit_halfBall_meanOscillation
       IntegrableOn
         (fun x => η.toFun x ^ 2 / (u x + ε) ^ 2 * ‖hw_u.weakGrad x‖ ^ 2)
         Ω volume := by
-    simpa [Ω, mul_assoc, mul_left_comm, mul_comm] using
-      (hw_u.weakGrad_norm_memLp.integrable_sq).bdd_mul
-        (c := 1 / ε ^ 2) hfactor_meas hfactor_bound
+    change Integrable
+      (fun x => η.toFun x ^ 2 / (u x + ε) ^ 2 * ‖hw_u.weakGrad x‖ ^ 2)
+      (volume.restrict Ω)
+    exact (hw_u.weakGrad_norm_memLp.integrable_sq).bdd_mul
+      (c := 1 / ε ^ 2) hfactor_meas hfactor_bound
   have hhalf_eq :
       ∫ x in Bhalf, ‖hw_v_half.weakGrad x‖ ^ 2 ∂volume =
         ∫ x in Bhalf, η.toFun x ^ 2 / (u x + ε) ^ 2 * ‖hw_u.weakGrad x‖ ^ 2 ∂volume := by
@@ -417,8 +429,8 @@ theorem regularizedLog_unit_halfBall_meanOscillation
         hw_v_half.weakGrad x = (-(1 / (u x + ε))) • hw_u.weakGrad x := by
       have hgrad := regularizedLogWitness_grad (Ω := Ω) Metric.isOpen_ball hu_pos hw_u hε
       ext i
-      simpa [hw_v_half, Pi.smul_apply, smul_eq_mul] using
-        hgrad x hxΩ i
+      change (regularizedLogWitness Metric.isOpen_ball hu_pos hw_u hε).weakGrad x i = _
+      simpa only [WithLp.ofLp_smul, Pi.smul_apply, smul_eq_mul] using hgrad x hxΩ i
     have hηx : η.toFun x = 1 := η.eq_one x hx
     calc
       ‖hw_v_half.weakGrad x‖ ^ 2
@@ -593,7 +605,9 @@ theorem regularizedLog_ball_meanOscillation
   let AR : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1) :=
     rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR ALoc
   have hsuperLoc : IsSupersolution ALoc.1 u := by
-    simpa [ALoc] using hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
+    change IsSupersolution
+      (A.1.restrict (Metric.ball_subset_closedBall.trans hsub)) u
+    exact hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
   have hposR : ∀ z ∈ Metric.ball (0 : E) 1, 0 < uR z := by
     intro z hz
     have hz_ball : x₀ + R • z ∈ Metric.ball x₀ R := by
@@ -615,18 +629,22 @@ theorem regularizedLog_ball_meanOscillation
   have havg :
       ⨍ y in Metric.ball (0 : E) (1 / 2 : ℝ), regularizedLogFun (u := uR) hε y ∂volume =
         ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume := by
-    simpa [uR, v, show R * (1 / 2 : ℝ) = R / 2 by ring] using
-      crossover_average_rescale_ball_radius (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR (by norm_num)
-        v
+    rw [show (fun y => regularizedLogFun (u := uR) hε y) =
+      (fun y => v (x₀ + R • y)) by
+        funext y
+        rfl]
+    rw [show R / 2 = R * (1 / 2 : ℝ) by ring]
+    exact crossover_average_rescale_ball_radius (x₀ := x₀) (R := R)
+      (ρ := (1 / 2 : ℝ)) hR (by norm_num) v
   have hrescale :
       (⨍ x in Metric.ball x₀ (R / 2 : ℝ),
         |v x - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume| ∂volume) =
       (⨍ z in Metric.ball (0 : E) (1 / 2 : ℝ),
         |v (x₀ + R • z) - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume| ∂volume) := by
     symm
-    simpa [show R * (1 / 2 : ℝ) = R / 2 by ring] using
-      crossover_average_abs_sub_average_rescale_ball_radius
-        (u := v) (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR (by norm_num)
+    rw [show R / 2 = R * (1 / 2 : ℝ) by ring]
+    exact crossover_average_abs_sub_average_rescale_ball_radius
+      (u := v) (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR (by norm_num)
   have hunit' :
       (⨍ z in Metric.ball (0 : E) (1 / 2 : ℝ),
         |v (x₀ + R • z) - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume| ∂volume) ≤
@@ -639,9 +657,9 @@ theorem regularizedLog_ball_meanOscillation
     have havg' :
         ⨍ y in Metric.ball (0 : E) (1 / 2 : ℝ), v (x₀ + R • y) ∂volume =
           ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume := by
-      simpa [show R * (1 / 2 : ℝ) = R / 2 by ring] using
-        crossover_average_rescale_ball_radius (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
-          (by norm_num) v
+      rw [show R / 2 = R * (1 / 2 : ℝ) by ring]
+      exact crossover_average_rescale_ball_radius (x₀ := x₀) (R := R)
+        (ρ := (1 / 2 : ℝ)) hR (by norm_num) v
     have hunit'' :
         (⨍ z in Metric.ball (0 : E) (1 / 2 : ℝ),
           |regularizedLogFun (u := uR) hε z -
@@ -790,7 +808,7 @@ lemma regularizedLog_integrableOn_ball
     (isSupersolution_memW1p hsuper).someWitness
   let hw_v : MemW1pWitness 2 (regularizedLogFun (u := u) hε) Ω := by
     simpa [Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hu_pos hw_u hε
-  letI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
+  let : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
     refine ⟨?_⟩
     simpa using
       (measure_ball_lt_top (μ := volume) (x := x₀) (r := R))
@@ -1356,7 +1374,7 @@ theorem regularizedLog_smallBall_exp_average_le
   let f : E → ℝ := fun z => ‖v z - avg‖
   let M : ℝ := c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)
   let β : ℝ := 1 / (C_JN d * M)
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     refine ⟨?_⟩
     simpa [μ, B] using
       (measure_ball_lt_top (μ := volume) (x := x₀) (r := (1 / 48 : ℝ)))
@@ -1469,7 +1487,17 @@ theorem regularizedLog_smallBall_exp_average_le
         (M := M) (by norm_num) hM_pos
         (regularizedLogMeasurable_measurable (d := d) (A := A) hu_pos hsuper hε)
         hv_int_small hv_bmo_small ht
-    simpa [μ, B, f, avg, M, Measure.restrict_apply, measurableSet_ball,
+    have hrestrict :
+        μ {a : E | t < f a} = volume (B ∩ {a : E | t < f a}) := by
+      rw [show μ = volume.restrict B by rfl,
+        Measure.restrict_apply' (show MeasurableSet B by exact measurableSet_ball), Set.inter_comm]
+    have hset :
+        B ∩ {a : E | t < f a} =
+          {x : E | dist x x₀ < (1 / 48 : ℝ) ∧ t < |v x - avg|} := by
+      ext x
+      simp [B, f, Metric.mem_ball]
+    rw [hrestrict, hset]
+    simpa [μ, B, f, avg, M, Measure.restrict_apply, measurableSet_ball, Metric.mem_ball,
       Set.inter_comm, Set.inter_left_comm, Set.inter_assoc] using hbase
   have hf_nonneg : 0 ≤ᵐ[μ] f := Eventually.of_forall fun _ => norm_nonneg _
   have hf_meas : AEMeasurable f μ := by
@@ -1863,7 +1891,7 @@ theorem regularizedLog_halfBall_exp_average_to_origin_le
   have hsum_int :
       Integrable G μ := by
     dsimp [G]
-    refine integrable_finset_sum _ ?_
+    refine integrable_finsetSum _ ?_
     intro c hc
     exact hterm_int c hc
   have hdom_plain :
@@ -1946,7 +1974,7 @@ theorem regularizedLog_halfBall_exp_average_to_origin_le
           ≤ ∫ x, G x ∂μ := hint_le_sum
       _ = Finset.sum t (fun c => ∫ x, Set.indicator (Metric.ball c (1 / 48 : ℝ)) F x ∂μ) := by
             dsimp [G]
-            rw [integral_finset_sum]
+            rw [integral_finsetSum]
             intro c hc
             exact hterm_int c hc
       _ ≤ Finset.sum t (fun c => ∫ x in Metric.ball c (1 / 48 : ℝ), F x ∂volume) := by

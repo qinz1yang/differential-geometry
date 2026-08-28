@@ -5,6 +5,7 @@ import Mathlib.Topology.Instances.NNReal.Lemmas
 
 noncomputable section
 
+
 open Set
 open scoped BigOperators NNReal Topology
 
@@ -27,17 +28,19 @@ theorem holderWith_tsum {alpha : NNReal} {C : Nat → NNReal}
     classical
     induction s using Finset.induction_on with
     | empty =>
-        simpa only [Finset.sum_empty] using
-          (HolderWith.zero : HolderWith 0 alpha (0 : X → G))
+        intro x y
+        simp only [Finset.sum_empty, edist_self]
+        exact bot_le
     | @insert n s hn ih =>
+        intro x y
         simpa only [Finset.sum_insert hn, Pi.add_apply] using
-          (hf n).add ih
+          ((hf n).add ih) x y
   have hpartial : ∀ N,
       HolderWith (∑' n, C n) alpha
         (fun x ↦ ∑ n ∈ Finset.range N, f n x) := by
     intro N
     exact (hfinset (Finset.range N)).mono
-      (hC.sum_le_tsum (Finset.range N) fun _ _ ↦ zero_le _)
+      (hC.sum_le_tsum (Finset.range N) fun _ _ ↦ bot_le)
   intro x y
   exact le_of_tendsto
     ((hpoint x).hasSum.tendsto_sum_nat.edist
@@ -105,8 +108,9 @@ private theorem exists_boundedHolderSpace_pointwise_tsum
   have hreal := ENNReal.toReal_mono
     (show ((((2 : NNReal) * S : NNReal) : ENNReal) ≠ ⊤) from
       ENNReal.coe_ne_top) hgauge
-  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul,
-    G, g, S] using hreal
+  change (eHolderGauge alpha g).toReal ≤ (((2 : NNReal) * S : NNReal) : Real)
+  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul, ENNReal.coe_toReal,
+    S] using hreal
 
 instance (alpha : NNReal) :
     CompleteSpace (BoundedHolderSpace (X := X) (F := F) alpha) := by
@@ -208,21 +212,21 @@ private theorem exists_contDiffHolderSpace_pointwise_tsum
     intro j hj x
     exact Summable.of_norm_bounded hf fun n ↦ hjetBound j n x hj
   have htermHolder : ∀ n, HolderWith ‖f n‖₊ alpha
-      (Set.univ.restrict
+      (Set.univ.domRestrict
         (iteratedFDeriv Real k (contDiffHolderSpaceFun (f n)))) := by
     intro n
     apply topSpatialJet_holderWith_restrict
     rw [eContDiffHolderGaugeOn_eq_ofReal_norm]
-    simp only [ofReal_norm_eq_enorm, enorm_eq_nnnorm, le_refl]
+    simp only [ofReal_norm, enorm_eq_nnnorm, le_refl]
   have htopHolderTsum : HolderWith S alpha
       (fun x : (Set.univ : Set V) ↦
-        ∑' n, Set.univ.restrict
+        ∑' n, Set.univ.domRestrict
           (iteratedFDeriv Real k
             (contDiffHolderSpaceFun (f n))) x) := by
     exact holderWith_tsum hfNN htermHolder fun x ↦
       hjetSummable k (by exact_mod_cast (le_refl k)) x
   have htopHolder : HolderWith S alpha
-      (Set.univ.restrict (iteratedFDeriv Real k g)) := by
+      (Set.univ.domRestrict (iteratedFDeriv Real k g)) := by
     intro x y
     change edist (iteratedFDeriv Real k g x)
       (iteratedFDeriv Real k g y) ≤ _
@@ -269,8 +273,10 @@ private theorem exists_contDiffHolderSpace_pointwise_tsum
   have hreal := ENNReal.toReal_mono
     (show ((((k + 2 : Nat) : NNReal) * S : NNReal) : ENNReal) ≠ ⊤ from
       ENNReal.coe_ne_top) hgauge'
-  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul,
-    Nat.cast_ofNat, G, g, S] using hreal
+  change (eContDiffHolderGaugeOn k alpha Set.univ g).toReal ≤
+    ((((k + 2 : Nat) : NNReal) * S : NNReal) : Real)
+  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul, ENNReal.coe_toReal,
+    Nat.cast_ofNat, S] using hreal
 
 instance (k : Nat) (alpha : NNReal) :
     CompleteSpace (ContDiffHolderSpace (V := V) (F := F) k alpha) := by
@@ -396,9 +402,8 @@ private theorem exists_parabolicC2HolderSpace_pointwise_tsum
           (parabolicPoint t x)) t := by
     intro n x t
     have hdiff := (u n).2.1.1.2 (parabolicPoint t x) (Set.mem_univ _)
-    simpa only [parabolicTimeDerivative, parabolicPoint_time,
-      parabolicPoint_space, fderiv_apply_one_eq_deriv] using
-        hdiff.hasDerivAt
+    change HasDerivAt (fun s ↦ (u n) s x) (deriv (fun s ↦ (u n) s x) t) t
+    exact hdiff.hasDerivAt
   have htimeBound : ∀ n x t,
       ‖parabolicTimeDerivative (parabolicC2HolderSpaceFun (u n))
         (parabolicPoint t x)‖ ≤ ‖u n‖ := by
@@ -432,39 +437,39 @@ private theorem exists_parabolicC2HolderSpace_pointwise_tsum
     exact Summable.of_norm_bounded hu fun n ↦
       parabolicC2HolderSpace_timeDerivative_norm_le (u n) p
   have htermSpaceHolder : ∀ n, HolderWith ‖u n‖₊ alpha
-      (Set.univ.restrict (parabolicSpatialJet 2
+      (Set.univ.domRestrict (parabolicSpatialJet 2
         (parabolicC2HolderSpaceFun (u n)))) := by
     intro n
     apply parabolicSpatialJet_holderWith_restrict
     rw [eParabolicC2HolderGaugeOn_eq_ofReal_norm]
-    simp only [ofReal_norm_eq_enorm, enorm_eq_nnnorm, le_refl]
+    simp only [ofReal_norm, enorm_eq_nnnorm, le_refl]
   have htermTimeHolder : ∀ n, HolderWith ‖u n‖₊ alpha
-      (Set.univ.restrict (parabolicTimeDerivative
+      (Set.univ.domRestrict (parabolicTimeDerivative
         (parabolicC2HolderSpaceFun (u n)))) := by
     intro n
     apply parabolicTimeDerivative_holderWith_restrict
     rw [eParabolicC2HolderGaugeOn_eq_ofReal_norm]
-    simp only [ofReal_norm_eq_enorm, enorm_eq_nnnorm, le_refl]
+    simp only [ofReal_norm, enorm_eq_nnnorm, le_refl]
   have hspaceHolderTsum : HolderWith S alpha
       (fun p : (Set.univ : Set (ParabolicPoint V)) ↦
-        ∑' n, Set.univ.restrict (parabolicSpatialJet 2
+        ∑' n, Set.univ.domRestrict (parabolicSpatialJet 2
           (parabolicC2HolderSpaceFun (u n))) p) := by
     exact holderWith_tsum huNN htermSpaceHolder fun p ↦
       hspaceJetSummable 2 (by norm_num) p
   have htimeHolderTsum : HolderWith S alpha
       (fun p : (Set.univ : Set (ParabolicPoint V)) ↦
-        ∑' n, Set.univ.restrict (parabolicTimeDerivative
+        ∑' n, Set.univ.domRestrict (parabolicTimeDerivative
           (parabolicC2HolderSpaceFun (u n))) p) := by
     exact holderWith_tsum huNN htermTimeHolder fun p ↦ htimeSummable p
   have hspaceHolder : HolderWith S alpha
-      (Set.univ.restrict (parabolicSpatialJet 2 v)) := by
+      (Set.univ.domRestrict (parabolicSpatialJet 2 v)) := by
     intro p q
     change edist (parabolicSpatialJet 2 v p)
       (parabolicSpatialJet 2 v q) ≤ _
     rw [hspaceJetEq 2 (by norm_num) p, hspaceJetEq 2 (by norm_num) q]
     exact hspaceHolderTsum p q
   have htimeHolder : HolderWith S alpha
-      (Set.univ.restrict (parabolicTimeDerivative v)) := by
+      (Set.univ.domRestrict (parabolicTimeDerivative v)) := by
     intro p q
     change edist (parabolicTimeDerivative v p)
       (parabolicTimeDerivative v q) ≤ _
@@ -530,8 +535,10 @@ private theorem exists_parabolicC2HolderSpace_pointwise_tsum
   have hreal := ENNReal.toReal_mono
     (show (((6 : NNReal) * S : NNReal) : ENNReal) ≠ ⊤ from
       ENNReal.coe_ne_top) hgauge'
-  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul,
-    Nat.cast_ofNat, Vsum, v, S] using hreal
+  change (eParabolicC2HolderGaugeOn alpha Set.univ v).toReal ≤
+    (((6 : NNReal) * S : NNReal) : Real)
+  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul, ENNReal.coe_toReal,
+    Nat.cast_ofNat, S] using hreal
 
 instance (alpha : NNReal) :
     CompleteSpace (ParabolicC2HolderSpace (V := V) (F := F) alpha) := by

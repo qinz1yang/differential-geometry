@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -53,8 +52,8 @@ theorem abstractRHSFrameComponent_eq_ricci_add_lie
           (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g)
             (smoothRiemannianMetricToInfty (I := I) g_bg)) x)
       (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) = _
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [add_apply, add_apply,
+    smul_apply, smul_apply, smul_eq_mul]
   rfl
 
 omit [CompactSpace M] in
@@ -115,8 +114,10 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap_of_basisIdentity
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
         (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (chartFrameVec (I := I) α i x)) q *
-          ((chartModelBasis E).repr (chartFrameVec (I := I) α j x)) p *
+        ((centeredChartTangentBasis (I := I) x).repr
+            (chartFrameVec (I := I) α i x)) q *
+          ((centeredChartTangentBasis (I := I) x).repr
+            (chartFrameVec (I := I) α j x)) p *
           chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
             (extChartAt I x x) :=
   ricciTensor_eq_chartRicciSwap_of_basis_identity (I := I)
@@ -142,8 +143,8 @@ theorem ricciTensor_eq_chartRicciSwap
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x v w =
       ∑ p : Fin (Module.finrank ℝ E),
         ∑ q : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) q *
-            ((chartModelBasis E).repr w) p *
+          ((centeredChartTangentBasis (I := I) x).repr v) q *
+            ((centeredChartTangentBasis (I := I) x).repr w) p *
             chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
               (extChartAt I x x) :=
   ricciTensor_eq_chartRicciSwap_of_basis_identity (I := I)
@@ -186,8 +187,10 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
         (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (chartFrameVec (I := I) α i x)) q *
-          ((chartModelBasis E).repr (chartFrameVec (I := I) α j x)) p *
+        ((centeredChartTangentBasis (I := I) x).repr
+            (chartFrameVec (I := I) α i x)) q *
+          ((centeredChartTangentBasis (I := I) x).repr
+            (chartFrameVec (I := I) α j x)) p *
           chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
             (extChartAt I x x) :=
   abstractRicciFrameComponent_eq_chartRicciSwap_of_basisIdentity (I := I) g α x i j
@@ -251,7 +254,7 @@ theorem abstractRHSFrameComponent_diff_eq_chartCarrier_diff
         (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
       chartDeTurckRHSComp (I := I) g_bg g₁ α i j (extChartAt I α x) -
         chartDeTurckRHSComp (I := I) g_bg g₂ α i j (extChartAt I α x) := by
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply,
+  rw [sub_apply, sub_apply,
     abstractRHSFrameComponent_eq_chartCarrier (I := I) g_bg g₁ α i j hx,
     abstractRHSFrameComponent_eq_chartCarrier (I := I) g_bg g₂ α i j hx]
 

@@ -30,14 +30,16 @@ theorem unitModel_of_deTurckRHSSection_realize
     (hW : W.toSection =
       (deTurckRHSSection (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).toSection)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2 W x v =
       deTurckRicciRHS (I := I) g_bg
-        (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x (v 0) (v 1) := by
+        (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [unitModel]
   change Tensor0SSpace.toModel ((W.toSection x) _) v = _
-  rw [hW]
-  exact deTurckRHSSection_toModel_apply (I := I) g_bg
-    (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x v
+  rw [hW, Tensor0SSpace.toModel_apply_model_vector]
+  exact deTurckRHSSection_eval (I := I) g_bg
+    (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x _
 
 end DifferentialGeometry.Analysis.Spectral

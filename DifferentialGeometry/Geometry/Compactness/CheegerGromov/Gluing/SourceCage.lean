@@ -22,7 +22,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E]
-[InnerProductSpace Real E] [FiniteDimensional Real E]
+  [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
@@ -66,7 +66,7 @@ theorem hatSource_nhds
       (X.obj (L.φ n)).topology
     hatSourceBall (I := I) (X := X) hd P L s n ∈ nhds x := by
   let Y := X.obj (L.φ n)
-  letI : TopologicalSpace Y.M := Y.topology
+  let : TopologicalSpace Y.M := Y.topology
   have hopen :
       @IsOpen Y.M Y.topology
         (letI : MetricSpace Y.M := (P (L.φ n)).ms
@@ -76,19 +76,19 @@ theorem hatSource_nhds
           (P (L.φ n)).ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
           (letI : MetricSpace Y.M := (P (L.φ n)).ms
            Metric.ball Y.basepoint s) := by
-      letI : MetricSpace Y.M := (P (L.φ n)).ms
+      let : MetricSpace Y.M := (P (L.φ n)).ms
       exact Metric.isOpen_ball
     rw [ProperMetricOn.top_eq Y (P (L.φ n))] at hb
     exact hb
   have hxopen :
       x ∈ (letI : MetricSpace Y.M := (P (L.φ n)).ms
         Metric.ball Y.basepoint s) := by
-    letI : MetricSpace Y.M := (P (L.φ n)).ms
+    let : MetricSpace Y.M := (P (L.φ n)).ms
     exact Metric.closedBall_subset_ball hRs
       (by simpa only [hatSourceBall] using hx)
   refine mem_of_superset (hopen.mem_nhds hxopen) ?_
   intro y hy
-  letI : MetricSpace Y.M := (P (L.φ n)).ms
+  let : MetricSpace Y.M := (P (L.φ n)).ms
   simpa only [hatSourceBall] using (Metric.ball_subset_closedBall hy)
 
 omit [Module.Finite ℝ E] in
@@ -101,8 +101,8 @@ theorem hatSourceCompact
     (r : Real) (n : Nat) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     IsCompact (NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n) := by
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
-  haveI : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  have : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
   have htop := ProperMetricOn.top_eq (X.obj (L.φ n)) (P (L.φ n))
   have hcompact :
       @IsCompact (X.obj (L.φ n)).M
@@ -161,9 +161,9 @@ theorem hatBallInCompact
       (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
         (P := P) (L := L) (pb := pb) (r := r) (k := k) (γ := gamma) :
         Set (X.obj (L.φ k)).M) ⊆ K := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   have htop := ProperMetricOn.top_eq (X.obj (L.φ k)) (P (L.φ k))
   cases hcenter : seqCenter hd D P (L.φ k) (gamma : Nat) with
   | none =>
@@ -225,8 +225,8 @@ theorem hatCageData
           (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
           Set (X.obj (L.φ n)).M)) ⊆
         NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
   let S : Set (X.obj (L.φ n)).M :=
     NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n
   let H : Set (X.obj (L.φ n)).M :=
@@ -255,7 +255,7 @@ theorem hatCageCompact
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     forall gamma : Fin (pb.A r),
       IsCompact (NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma) := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   intro gamma
   exact (NetLimitData.hatCageData (I := I) (X := X) hd P L pb r n gamma).1
 
@@ -274,7 +274,7 @@ theorem hatCageSub
           (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
           Set (X.obj (L.φ n)).M)) ⊆
         NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   intro gamma
   exact (NetLimitData.hatCageData (I := I) (X := X) hd P L pb r n gamma).2
 
@@ -292,8 +292,8 @@ theorem hatCageInClosed
     letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
     NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma ⊆
       Metric.closedBall c (4 * L.lamInf (gamma : Nat)) := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
   have htop := ProperMetricOn.top_eq (X.obj (L.φ n)) (P (L.φ n))
   have hclosed :
       @IsClosed (X.obj (L.φ n)).M (X.obj (L.φ n)).topology
@@ -348,12 +348,12 @@ theorem hatCageSrcOfBall
     NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma ⊆
       (NormalCoordinates.normalChartAt (I := I) (X.obj (L.φ n)).metric
         (center gamma)).source := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
   exact
     (NetLimitData.hatCageInClosed (I := I) (X := X) hd P L pb r n gamma hcenter).trans
       hball
@@ -503,11 +503,11 @@ theorem hatSuppCageData
       (forall gamma : ι, forall v : E,
         v ∈ (NormalCoordinates.normalChartAt (I := I) (X.obj (L.φ n)).metric
           (center gamma)) '' sourceK gamma -> Binf gamma v ∈ V' gamma) := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
   let sourceBall : Set (X.obj (L.φ n)).M := s
   let chart : ι -> (X.obj (L.φ n)).M -> E := fun gamma =>

@@ -88,7 +88,7 @@ theorem ricci_identity_oneForm
   have hcXW_at : MDiffAt (T% (covApply cov X W)) x :=
     (hcXW_smooth x).mdifferentiableAt (by simp)
   have hpair_Y_glob :
-      (fun b : M => extDerivFun (I := I) (fun b' : M => θ b' (W b')) b (Y b)) =
+      (fun b : M => mvfderiv (I := I) (fun b' : M => θ b' (W b')) b (Y b)) =
       (fun b : M => ((cotangentCov cov).toFun θ b (Y b)) (W b) +
         θ b (cov.toFun W b (Y b))) := by
     funext b
@@ -96,27 +96,27 @@ theorem ricci_identity_oneForm
     have hW_b : MDiffAt (T% W) b := (hW b).mdifferentiableAt (by simp)
     exact cotangentCov_dualPairing cov hθ_b hW_b (Y b)
   have hpair_X_glob :
-      (fun b : M => extDerivFun (I := I) (fun b' : M => θ b' (W b')) b (X b)) =
+      (fun b : M => mvfderiv (I := I) (fun b' : M => θ b' (W b')) b (X b)) =
       (fun b : M => ((cotangentCov cov).toFun θ b (X b)) (W b) +
         θ b (cov.toFun W b (X b))) := by
     funext b
     have hθ_b : MDiffAtCotangent θ b := (hθ b).mdifferentiableAt (by simp)
     have hW_b : MDiffAt (T% W) b := (hW b).mdifferentiableAt (by simp)
     exact cotangentCov_dualPairing cov hθ_b hW_b (X b)
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
-  haveI : CompleteSpace E := inferInstance
+  have : CompleteSpace E := inferInstance
   have hfound :
-      extDerivFun (I := I) (fun b : M => θ b (W b)) x
+      mvfderiv (I := I) (fun b : M => θ b (W b)) x
         (VectorField.mlieBracket I X Y x) =
-      extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' : M => θ b' (W b')) b (Y b)) x (X x) -
-      extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' : M => θ b' (W b')) b (X b)) x (Y x) :=
-    DifferentialGeometry.Geometry.Connection.extDerivFun_apply_mlieBracket hX_at hY_at hf_2 hx_int
+      mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' : M => θ b' (W b')) b (Y b)) x (X x) -
+      mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' : M => θ b' (W b')) b (X b)) x (Y x) :=
+    DifferentialGeometry.Geometry.Connection.mvfderiv_apply_mlieBracket hX_at hY_at hf_2 hx_int
   rw [hpair_Y_glob, hpair_X_glob] at hfound
-  have hpair_br : extDerivFun (I := I) (fun b : M => θ b (W b)) x
+  have hpair_br : mvfderiv (I := I) (fun b : M => θ b (W b)) x
         (VectorField.mlieBracket I X Y x) =
       ((cotangentCov cov).toFun θ x (VectorField.mlieBracket I X Y x)) (W x) +
         θ x (cov.toFun W x (VectorField.mlieBracket I X Y x)) :=
@@ -148,33 +148,33 @@ theorem ricci_identity_oneForm
     rw [h_eq_fn]
     have hsmooth := cotangentCov_pairing_contMDiff hθ hcXW_smooth
     exact (hsmooth x).mdifferentiableAt (by simp)
-  have hadd_X : extDerivFun (I := I)
+  have hadd_X : mvfderiv (I := I)
         (fun b : M => ((cotangentCov cov).toFun θ b (Y b)) (W b) +
           θ b (cov.toFun W b (Y b))) x =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun b : M => ((cotangentCov cov).toFun θ b (Y b)) (W b)) x +
-        extDerivFun (I := I) (fun b : M => θ b (cov.toFun W b (Y b))) x :=
-    extDerivFun_add hsum1_diff hsum2_diff
-  have hadd_Y : extDerivFun (I := I)
+        mvfderiv (I := I) (fun b : M => θ b (cov.toFun W b (Y b))) x :=
+    mvfderiv_add hsum1_diff hsum2_diff
+  have hadd_Y : mvfderiv (I := I)
         (fun b : M => ((cotangentCov cov).toFun θ b (X b)) (W b) +
           θ b (cov.toFun W b (X b))) x =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun b : M => ((cotangentCov cov).toFun θ b (X b)) (W b)) x +
-        extDerivFun (I := I) (fun b : M => θ b (cov.toFun W b (X b))) x :=
-    extDerivFun_add hsum3_diff hsum4_diff
-  have hadd_X_app : extDerivFun (I := I)
+        mvfderiv (I := I) (fun b : M => θ b (cov.toFun W b (X b))) x :=
+    mvfderiv_add hsum3_diff hsum4_diff
+  have hadd_X_app : mvfderiv (I := I)
         (fun b : M => ((cotangentCov cov).toFun θ b (Y b)) (W b) +
           θ b (cov.toFun W b (Y b))) x (X x) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun b : M => ((cotangentCov cov).toFun θ b (Y b)) (W b)) x (X x) +
-        extDerivFun (I := I) (fun b : M => θ b (cov.toFun W b (Y b))) x (X x) := by
+        mvfderiv (I := I) (fun b : M => θ b (cov.toFun W b (Y b))) x (X x) := by
     rw [hadd_X]; rfl
-  have hadd_Y_app : extDerivFun (I := I)
+  have hadd_Y_app : mvfderiv (I := I)
         (fun b : M => ((cotangentCov cov).toFun θ b (X b)) (W b) +
           θ b (cov.toFun W b (X b))) x (Y x) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun b : M => ((cotangentCov cov).toFun θ b (X b)) (W b)) x (Y x) +
-        extDerivFun (I := I) (fun b : M => θ b (cov.toFun W b (X b))) x (Y x) := by
+        mvfderiv (I := I) (fun b : M => θ b (cov.toFun W b (X b))) x (Y x) := by
     rw [hadd_Y]; rfl
   rw [hadd_X_app, hadd_Y_app] at hfound
   have hθY_at : MDiffAtCotangent
@@ -203,20 +203,20 @@ theorem ricci_identity_oneForm
       exact (hres x (Set.mem_univ x)).contMDiffAt (Filter.univ_mem) |>.mdifferentiableAt
         (by simp)
     exact h_section.clm_bundle_apply (v := X) hX_at
-  have h_iter_X : extDerivFun (I := I)
+  have h_iter_X : mvfderiv (I := I)
         (fun b : M => ((cotangentCov cov).toFun θ b (Y b)) (W b)) x (X x) =
       ((cotangentCov cov).toFun
           (fun b : M => (cotangentCov cov).toFun θ b (Y b)) x (X x)) (W x) +
         ((cotangentCov cov).toFun θ x (Y x)) (cov.toFun W x (X x)) :=
     cotangentCov_dualPairing cov hθY_at hW_at (X x)
-  have h_iter_Y : extDerivFun (I := I)
+  have h_iter_Y : mvfderiv (I := I)
         (fun b : M => ((cotangentCov cov).toFun θ b (X b)) (W b)) x (Y x) =
       ((cotangentCov cov).toFun
           (fun b : M => (cotangentCov cov).toFun θ b (X b)) x (Y x)) (W x) +
         ((cotangentCov cov).toFun θ x (X x)) (cov.toFun W x (Y x)) :=
     cotangentCov_dualPairing cov hθX_at hW_at (Y x)
   rw [h_iter_X, h_iter_Y] at hfound
-  have hB_eq : extDerivFun (I := I)
+  have hB_eq : mvfderiv (I := I)
       (fun b : M => θ b (cov.toFun W b (Y b))) x (X x) =
       ((cotangentCov cov).toFun θ) x (X x) (covApply cov Y W x) +
         θ x (cov.toFun (covApply cov Y W) x (X x)) := by
@@ -224,7 +224,7 @@ theorem ricci_identity_oneForm
     have h_eq_fn : (fun b : M => θ b (cov.toFun W b (Y b))) =
         (fun b : M => θ b (covApply cov Y W b)) := by funext b; rfl
     rw [h_eq_fn]; exact hpair
-  have hB'_eq : extDerivFun (I := I)
+  have hB'_eq : mvfderiv (I := I)
       (fun b : M => θ b (cov.toFun W b (X b))) x (Y x) =
       ((cotangentCov cov).toFun θ) x (Y x) (covApply cov X W x) +
         θ x (cov.toFun (covApply cov X W) x (Y x)) := by
@@ -285,10 +285,10 @@ theorem ricciTensor_gradFun_eq_frame_sum_riemannSec [I.Boundaryless]
     (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
-    (x : M) (hBx : ∀ i, B i x = (chartModelBasis E) i) :
+    (x : M) (hBx : ∀ i, B i x = centeredChartTangentBasis (I := I) x i) :
     ricciTensor (I := I) g x (gradFun (I := I) g f x) (w x) =
       ∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (centeredChartTangentBasis (I := I) x).repr
           (riemannSec (LeviCivita (I := I) g) (B i) w
             (fun y => gradFun (I := I) g f y) x) i := by
   classical
@@ -351,12 +351,12 @@ lemma ricciSharpVec_add
   rw [show g.inner x (ricciSharpVec (I := I) g x v + ricciSharpVec (I := I) g x v') w =
         g.inner x (ricciSharpVec (I := I) g x v) w +
           g.inner x (ricciSharpVec (I := I) g x v') w from
-      by rw [map_add, ContinuousLinearMap.add_apply]]
+      by rw [map_add, add_apply]]
   rw [inner_ricciSharpVec (I := I) g x v w,
       inner_ricciSharpVec (I := I) g x v' w]
   rw [show ricciTensor (I := I) g x (v + v') w =
         ricciTensor (I := I) g x v w + ricciTensor (I := I) g x v' w from by
-      rw [map_add, ContinuousLinearMap.add_apply]]
+      rw [map_add, add_apply]]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -368,11 +368,11 @@ lemma ricciSharpVec_smul
   intro w
   rw [show g.inner x (c • ricciSharpVec (I := I) g x v) w =
         c * g.inner x (ricciSharpVec (I := I) g x v) w from
-      by rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]]
+      by rw [map_smul, smul_apply, smul_eq_mul]]
   rw [inner_ricciSharpVec (I := I) g x v w]
   rw [show ricciTensor (I := I) g x (c • v) w =
         c * ricciTensor (I := I) g x v w from by
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]]
+      rw [map_smul, smul_apply, smul_eq_mul]]
 
 noncomputable def ricciSharp
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -421,7 +421,7 @@ theorem inner_cov_gradFun_eq_abstractHessian [I.Boundaryless]
       abstractHessian (I := I) g f x (X x) (Y x) := by
   classical
   set cov := LeviCivita (I := I) g with hcov
-  set θ : Π b : M, TangentSpace I b →L[ℝ] ℝ := extDerivFun (I := I) f with hθ_def
+  set θ : Π b : M, TangentSpace I b →L[ℝ] ℝ := mvfderiv (I := I) f with hθ_def
   have h_grad_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun y : M => TotalSpace.mk' E (E := TangentSpace I) y
         (gradFun (I := I) g f y)) :=
@@ -431,34 +431,34 @@ theorem inner_cov_gradFun_eq_abstractHessian [I.Boundaryless]
   have hY_at : MDiffAt (T% Y) x := (hY x).mdifferentiableAt (by simp)
   have hθ_at : MDiffAtCotangent θ x := by
     have hext_smooth :=
-      cotangentCov_extDerivFun_smooth (I := I) hf
+      cotangentCov_mvfderiv_smooth (I := I) hf
     exact (hext_smooth x).mdifferentiableAt (by simp)
   have hpair := cotangentCov_dualPairing cov hθ_at h_grad_at (X x)
   have hpair' := cotangentCov_dualPairing cov hθ_at hY_at (X x)
-  have h_eq_fn : (fun b : M => extDerivFun (I := I) f b (Y b)) =
+  have h_eq_fn : (fun b : M => mvfderiv (I := I) f b (Y b)) =
       (fun b : M => g.inner b (gradFun (I := I) g f b) (Y b)) := by
     funext b
-    exact (gradFun_metricDual_extDerivFun (I := I) g f b (Y b)).symm
+    exact (gradFun_metricDual_mvfderiv (I := I) g f b (Y b)).symm
   have hmc := (LeviCivita_isMetricCompatible (I := I) g).apply h_grad_at hY_at (X x)
-  have hmc' : extDerivFun (I := I) (fun b => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x) =
+  have hmc' : mvfderiv (I := I) (fun b => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x) =
       g.inner x (cov.toFun (fun b => gradFun (I := I) g f b) x (X x)) (Y x) +
         g.inner x (gradFun (I := I) g f x) (cov.toFun Y x (X x)) := by
-    have hext_eq : extDerivFun (I := I) (fun b => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x)
+    have hext_eq : mvfderiv (I := I) (fun b => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x)
       =
         (mfderiv I 𝓘(ℝ) (fun b : M => g.inner b (gradFun (I := I) g f b) (Y b)) x) (X x) := rfl
     rw [hext_eq, hmc]
-  have h_lhs_eq : extDerivFun (I := I) (fun b : M => θ b (Y b)) x (X x) =
-      extDerivFun (I := I) (fun b : M => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x) := by
+  have h_lhs_eq : mvfderiv (I := I) (fun b : M => θ b (Y b)) x (X x) =
+      mvfderiv (I := I) (fun b : M => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x) := by
     have h_eq : (fun b : M => θ b (Y b)) =
         (fun b : M => g.inner b (gradFun (I := I) g f b) (Y b)) := h_eq_fn
     rw [h_eq]
   rw [h_lhs_eq] at hpair'
   have h_grad_inner : g.inner x (gradFun (I := I) g f x) (cov.toFun Y x (X x)) =
       θ x (cov.toFun Y x (X x)) := by
-    rw [gradFun_metricDual_extDerivFun (I := I) g f x (cov.toFun Y x (X x))]
+    rw [gradFun_metricDual_mvfderiv (I := I) g f x (cov.toFun Y x (X x))]
   have hkey : g.inner x (cov.toFun (fun b => gradFun (I := I) g f b) x (X x)) (Y x) =
       ((cotangentCov cov).toFun θ x (X x)) (Y x) := by
-    have hlhs : extDerivFun (I := I) (fun b => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x) =
+    have hlhs : mvfderiv (I := I) (fun b => g.inner b (gradFun (I := I) g f b) (Y b)) x (X x) =
         g.inner x (cov.toFun (fun b => gradFun (I := I) g f b) x (X x)) (Y x) +
           g.inner x (gradFun (I := I) g f x) (cov.toFun Y x (X x)) := hmc'
     rw [h_grad_inner] at hlhs
@@ -565,13 +565,13 @@ lemma localConnLap_vector_grad_inner_eq_hessian_diff
     induction S using Finset.induction_on with
     | empty => simp
     | @insert a s has ih =>
-      rw [Finset.sum_insert has, Finset.sum_insert has, ContinuousLinearMap.add_apply, ih]
+      rw [Finset.sum_insert has, Finset.sum_insert has, add_apply, ih]
   rw [h1, h2]
   refine Finset.sum_congr rfl ?_
   intro i _
   show g.inner x (u i) (w x) = _
   rw [hu_def]
-  rw [map_sub, ContinuousLinearMap.sub_apply]
+  rw [map_sub, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -596,7 +596,7 @@ theorem localConnLap_vector_eq_bochnerFormula_of_inner_form [I.Boundaryless]
         ricciSharp (I := I) g x (gradFun (I := I) g f x)) w =
       g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w from
-    by rw [map_add, ContinuousLinearMap.add_apply]]
+    by rw [map_add, add_apply]]
 
 end Curvature
 end Geometry

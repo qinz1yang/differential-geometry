@@ -104,10 +104,10 @@ theorem deriv_eq_zero_ae_on_zeroSet {f : ℝ → ℝ}
     ∀ᵐ x, f x = 0 → deriv f x = 0 := by
   rw [ae_iff]
   have heq : {x | ¬(f x = 0 → deriv f x = 0)} = {x | f x = 0 ∧ deriv f x ≠ 0} := by
-    ext x; simp only [mem_setOf_eq, Classical.not_imp, ne_eq]
+    ext x; simp only [mem_ofPred_eq, Classical.not_imp, ne_eq]
   rw [heq]
   rw [ae_iff] at hf_diff
-  apply le_antisymm _ (zero_le _)
+  apply le_antisymm _ bot_le
   calc volume {x | f x = 0 ∧ deriv f x ≠ 0}
       ≤ volume ({x | f x = 0 ∧ deriv f x ≠ 0 ∧ HasDerivAt f (deriv f x) x} ∪
                 {x | ¬HasDerivAt f (deriv f x) x}) := by
@@ -449,9 +449,10 @@ theorem w11_ae_eq_ac_representative
           (ae_of_all _ fun x => by ring))
     have hF_ii : IntervalIntegrable (fun x => (∫ t in a..x, g t) * deriv φ x) volume a b := by
       apply integrableOn_Ioo_intervalIntegrable hab.le
-      have hcont := (intervalIntegral.continuousOn_primitive (μ := volume)
-        (integrableOn_Icc_of_Ioo hg)).congr
-        (fun x hx => by change ∫ t in a..x, g t = _; rw [intervalIntegral.integral_of_le hx.1])
+      have hcont : ContinuousOn (fun x => ∫ t in a..x, g t) (Icc a b) :=
+        (intervalIntegral.continuousOn_primitive (μ := volume)
+          (integrableOn_Icc_of_Ioo hg)).congr
+          (fun x hx => by simp only [intervalIntegral.integral_of_le hx.1])
       exact (hcont.mul (hφ.continuous_deriv (by norm_cast)).continuousOn).integrableOn_compact
         isCompact_Icc |>.mono_set Ioo_subset_Icc_self
     rw [intervalIntegral.integral_sub hu_ii hF_ii,
@@ -682,7 +683,7 @@ private theorem weakGrad_integral_test_eq_zero
     have heq : ∀ n, ∫ x in Ω, Φ n (u x) * diψ x =
         ∫ x in tsupport ψ, Φ n (u x) * diψ x := by
       intro n
-      exact setIntegral_eq_of_subset_of_forall_diff_eq_zero hΩ.measurableSet hψ_supp
+      exact setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hΩ.measurableSet hψ_supp
         (fun x ⟨_, hx_not⟩ => by simp [image_eq_zero_of_notMem_tsupport
           (show x ∉ tsupport diψ from fun h => hx_not (hdiψ_tsup h))])
     -- Bound: ‖∫ Φ_n(u) * diψ‖ ≤ (1/(n+1)) * M * μ(K)
@@ -724,7 +725,7 @@ private theorem weakGrad_integral_test_eq_zero
         · exact ae_of_all _ fun x => by
             rw [norm_mul]; exact mul_le_mul_of_nonneg_left (hMψ ⟨x, rfl⟩) (norm_nonneg _)
       -- Extend to Ω: outside tsupport ψ, ψ = 0 so G_i * ψ = 0
-      exact this.of_ae_diff_eq_zero hΩ.measurableSet.nullMeasurableSet
+      exact this.of_ae_sdiff_eq_zero hΩ.measurableSet.nullMeasurableSet
         (ae_of_all _ fun x ⟨_, hx⟩ => by simp [image_eq_zero_of_notMem_tsupport hx])
     -- Apply dominated convergence
     change Filter.Tendsto (fun n => ∫ x, (deriv (Φ n) (u x) * G x i) * ψ x ∂volume.restrict Ω)

@@ -70,11 +70,11 @@ lemma tensor0SCovariantDerivative_one_cotangentToCLM
     (v : TangentSpace I x) :
     cotangentToCLM (I := I)
         (tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g) α x v) (Y x) =
-      extDerivFun (I := I) (fun b : M => cotangentToCLM (I := I) (α b) (Y b)) x v -
+      mvfderiv (I := I) (fun b : M => cotangentToCLM (I := I) (α b) (Y b)) x v -
         cotangentToCLM (I := I) (α x) ((LeviCivita (I := I) g).toFun (fun y => Y y) x v) := by
   classical
   have hCLM : ∀ {b : M} (β : Tensor0SSpace 1 I b) (u : TangentSpace I b),
-      cotangentToCLM (I := I) β u = Tensor0SSpace.toModel β (fun _ : Fin 1 => u) := by
+      cotangentToCLM (I := I) β u = Tensor0SSpace.eval β (fun _ : Fin 1 => u) := by
     intro b β u
     have h := cotangentToDual_apply (I := I) β u
     rw [show cotangentToDual (I := I) β u = cotangentToCLM (I := I) β u from rfl] at h
@@ -97,6 +97,17 @@ lemma tensor0SCovariantDerivative_one_cotangentToCLM
       rw [scalarFn_eq_toModel_elim0 (I := I) (M := M)
         (fun y : M => curriedSection I M α y (Y y)) b]
       rw [Tensor0SNabla.curriedSection_apply (I := I) (M := M) α b]
+      rw [Tensor0SSpace.toModel_apply_model_vector]
+      have hempty :
+          (fun i : Fin 0 => (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+            (i.elim0 : E)) =
+          (fun i : Fin 0 => (i.elim0 : TangentSpace I b)) := by
+        funext i
+        exact i.elim0
+      rw [hempty]
+      change Tensor0SSpace.eval
+          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 b (α b) (Y b))
+            (fun i : Fin 0 => i.elim0) = cotangentToCLM (I := I) (α b) (Y b)
       rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
         (T := α b) (v0 := Y b) (vs := fun i : Fin 0 => i.elim0)]
       rw [hCLM]
@@ -118,7 +129,9 @@ theorem cotangentCov_eq_tensorCovDerivAt_ccTensor01
     cotangentCov (LeviCivita (I := I) g) (ccTensorOneForm g σ) x v w =
       cotangentToCLM (I := I)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
-            tensorCovDerivAt g 0 1 σ x v) (unitZeroSec (I := I) (M := M) x)) w := by
+            tensorCovDerivAt g 0 1 σ x
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x v))
+          (unitZeroSec (I := I) (M := M) x)) w := by
   classical
   obtain ⟨X, hXx⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := (TangentSpace I : M → Type _)) (n := (⊤ : ℕ∞)) x v
@@ -153,6 +166,7 @@ theorem cotangentCov_eq_tensorCovDerivAt_ccTensor01
   rw [← hYx]
   congr 2
   rw [tensorCovDerivAt_def]
+  rw [(tangentSpaceModelContinuousLinearEquiv (I := I) x).symm_apply_apply]
   exact (tensorCovDerivAt_unitEval (I := I) (M := M) g σ x v).symm
 
 end Connection

@@ -784,8 +784,9 @@ theorem ricciLichAt
     ring
   exact hRicci.congr_deriv hSpec.symm
 
+omit [SigmaCompactSpace M] in
 theorem coordRicciLich
-    [I.Boundaryless] [IsManifold I (∞ + 1) M]
+    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -825,8 +826,9 @@ noncomputable def ricciPairRHS
           (coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀))
           t x₀ i j
 
+omit [SigmaCompactSpace M] in
 theorem ricciPairCoord
-    [I.Boundaryless] [IsManifold I (∞ + 1) M]
+    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -856,8 +858,17 @@ theorem ricciPairCoord
     have h :=
       tensor0S_two_eval_coordFrame_sum (I := I)
         (M := M) (x₀ := x₀) (Ax := S.ricci s x₀) v w
-    simpa [b, frame, DifferentialGeometry.Geometry.Curvature.vec2,
-      ricciCompInFrame, SolutionOn.ricci, SolutionOn.ricciAt] using h
+    have hslots (U V : TangentSpace I x₀) :
+        (fun q : Fin 2 => if q = 0 then U else V) =
+          DifferentialGeometry.Geometry.Curvature.vec2 (I := I) U V := by
+      funext q
+      fin_cases q <;> rfl
+    have hricciAt (slots : Fin 2 → TangentSpace I x₀) :
+        S.base.ricciAt s x₀ slots = S.base.ricci s x₀ slots := rfl
+    have hsolutionRicciAt (slots : Fin 2 → TangentSpace I x₀) :
+        S.ricciAt s x₀ slots = S.base.ricci s x₀ slots := rfl
+    simpa only [b, frame, hslots, ricciCompInFrame, SolutionOn.ricci,
+      hricciAt, hsolutionRicciAt] using h
   have hsum_deriv :
       HasDerivWithinAt
         (fun s : Real =>

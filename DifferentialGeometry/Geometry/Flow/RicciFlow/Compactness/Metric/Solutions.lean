@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -188,10 +187,12 @@ theorem exists_uniform_zero_order_metric_covariant_derivative_bound
   have hself :
       Tensor0SBundle.normSq0S (I := I) (gSeq i t) z 2
           (metricTensor0S (I := I) (gSeq i t) z) = n := by
-    simpa [n] using
-      normSq0S_metricTensor0S_eq_card (I := I) (gSeq i t) basis
-        (Tensor0SBundle.identityInvMetric
-          (Idx := Fin (Module.finrank Real (TangentSpace I z)))) hinv
+    have hcard := normSq0S_metricTensor0S_eq_card (I := I) (gSeq i t) basis
+      (Tensor0SBundle.identityInvMetric
+        (Idx := Fin (Module.finrank Real (TangentSpace I z)))) hinv
+    have hfr : Module.finrank Real (TangentSpace I z) = Module.finrank Real E := rfl
+    rw [Fintype.card_fin, hfr] at hcard
+    simpa only [n, Fintype.card_fin] using hcard
   have hcov :
       metricCovDerivNorm (I := I) 0 (gSeq i t) gRef z =
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef z 2
@@ -295,7 +296,9 @@ theorem hgLip0Sol
             Real.sqrt (Tensor0SBundle.normSq0S (I := I) (gSeq i r) x 2
               (ricCovTower (I := I) (gSeq i r) (gSeq i r) 0 x)) := by
         rw [nablaRicReal_normSq]
-        simpa using hcomp
+        change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x 2
+            (ricCovTower (I := I) (gSeq i r) (gSeq i r) 0 x)) ≤ _
+        exact hcomp
       have hshi := hShi i r hr x (hKU hx)
       calc
         2 * Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (0 + 2)

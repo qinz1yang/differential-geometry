@@ -6,7 +6,6 @@ import Mathlib.Topology.VectorBundle.Hom
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -54,7 +53,7 @@ theorem tensorRS_trivAt_symmL_apply_eq_self_on_locality
       (F₂ := Tensor0SModel s ℝ E)
       (E₂ := fun y : M => Tensor0SSpace s I y)
       (e₁ := er) (e₂ := es) (b := b) hb_RS D
-    change (eRS.symm b D : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) = _
+    rw [eRS.symmL_apply hb_RS D]
     rw [show (eRS.symm b D : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) =
           ((_root_.Bundle.Pretrivialization.continuousLinearMap (𝕜₁ := ℝ) (𝕜₂ := ℝ)
             (σ := RingHom.id ℝ) (F₁ := Tensor0SModel r ℝ E)

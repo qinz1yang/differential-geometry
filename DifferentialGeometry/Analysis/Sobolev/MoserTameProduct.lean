@@ -24,7 +24,7 @@ variable
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem exists_moserTameProduct_iteratedCovGrad_l2Norm_le
     (g : SmoothRiemannianMetric I M) (p q k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -151,7 +151,7 @@ theorem exists_moserTameProduct_iteratedCovGrad_l2Norm_le
         rw [hexp]; linarith
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem exists_moserTameProduct_three_iteratedCovGrad_l2Norm_le
     (g : SmoothRiemannianMetric I M) (p q r k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -404,7 +404,7 @@ theorem exists_moserTameProduct_three_iteratedCovGrad_l2Norm_le
         linarith
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem exists_moserTameProduct_pi_iteratedCovGrad_l2Norm_le
     (g : SmoothRiemannianMetric I M) {n : ℕ} (hn : 0 < n) (p : Fin n → ℕ) (k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -790,6 +790,7 @@ private theorem hlp_real (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : ℝ) (hM
 
 end DiscreteLogConvex
 
+omit [CompactSpace M] in
 private theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm
     (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 1 ≤ K ∧

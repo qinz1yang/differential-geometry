@@ -51,6 +51,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem armJet_norm_comp (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ)
@@ -83,6 +84,7 @@ theorem armJet_norm_comp (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ)
   have hb : (0 : ℝ) ≤ ‖iteratedCovGrad (I := I) g₀ 0 s (j + i) S‖ := norm_nonneg _
   rw [← Real.sqrt_sq ha, ← Real.sqrt_sq hb, hsq]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armJet_norm_order_congr (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -91,6 +93,7 @@ private theorem armJet_norm_order_congr (g₀ : SmoothRiemannianMetric I M) (s :
   subst h
   rfl
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem armJet_operatorFieldComposition_norm_le (g₀ : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) :
@@ -468,6 +471,7 @@ theorem armJet_abs_pairing_le (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [← h]
   exact abs_real_inner_le_norm A B
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem armJet_jetSum_mono (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {m m' : ℕ}
@@ -477,6 +481,7 @@ theorem armJet_jetSum_mono (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {m m' :
   Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_subset_range.mpr h)
     (fun _ _ _ => norm_nonneg _)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem armJet_jetSum_covGrad_le (g₀ : SmoothRiemannianMetric I M) (s m : ℕ)
@@ -496,6 +501,7 @@ theorem armJet_jetSum_covGrad_le (g₀ : SmoothRiemannianMetric I M) (s m : ℕ)
   have h0 : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 0 s 0 v‖ := norm_nonneg _
   linarith [h]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem armJet_jetProduct_le (g₀ : SmoothRiemannianMetric I M) (n p q : ℕ)

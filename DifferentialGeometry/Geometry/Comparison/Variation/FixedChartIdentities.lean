@@ -26,7 +26,7 @@ namespace Riemannian
 namespace Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
@@ -41,6 +41,25 @@ def IsSmoothVariation
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (f : ℝ → ℝ → M) : Prop :=
   ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I (8 : ℕ) (fun p : ℝ × ℝ => f p.1 p.2)
+
+open DifferentialGeometry.Integral.DivergenceTheorem
+
+omit [NeZero (Module.finrank ℝ E)] in
+def chartCoordCLM (i : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
+  (chartModelBasis E).coord i |>.toContinuousLinearMap
+
+omit [NeZero (Module.finrank ℝ E)] in
+@[simp] lemma chartCoordCLM_apply (i : Fin (Module.finrank ℝ E)) (v : E) :
+    chartCoordCLM (E := E) i v = chartCoord (E := E) i v := rfl
+
+omit [NeZero (Module.finrank ℝ E)] in
+lemma hasDerivAt_chartCoord {P : ℝ → E} {P' : E} {s : ℝ} (hP : HasDerivAt P P' s)
+    (i : Fin (Module.finrank ℝ E)) :
+    HasDerivAt (fun u => chartCoord (E := E) i (P u)) (chartCoord (E := E) i P') s := by
+  have h := (chartCoordCLM (E := E) i).hasFDerivAt.comp_hasDerivAt s hP
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
+
+variable [InnerProductSpace ℝ E]
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma partial_snd_apply_one (G : ℝ × ℝ → E) (u t : ℝ)
@@ -125,7 +144,8 @@ private lemma eventually_diff_along_fst (G : ℝ × ℝ → E) (s t : ℝ)
     (hC1.eventually (by norm_num)).mono (fun p hp => hp.differentiableAt one_ne_zero)
   have hcont : Continuous (fun u : ℝ => (u, t)) := by continuity
   have h2 : Filter.Tendsto (fun u : ℝ => (u, t)) (nhds s) (nhds (s, t)) := by
-    simpa using hcont.continuousAt (x := s)
+    change ContinuousAt (fun u : ℝ => (u, t)) s
+    exact hcont.continuousAt
   exact h2.eventually hdiffG
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -137,7 +157,8 @@ private lemma eventually_diff_along_snd (G : ℝ × ℝ → E) (s t : ℝ)
     (hC1.eventually (by norm_num)).mono (fun p hp => hp.differentiableAt one_ne_zero)
   have hcont : Continuous (fun v : ℝ => (s, v)) := by continuity
   have h2 : Filter.Tendsto (fun v : ℝ => (s, v)) (nhds t) (nhds (s, t)) := by
-    simpa using hcont.continuousAt (x := t)
+    change ContinuousAt (fun v : ℝ => (s, v)) t
+    exact hcont.continuousAt
   exact h2.eventually hdiffG
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -259,20 +280,6 @@ theorem commute_ds_dt_fixed_chart
 section FixedChartCurvatureHelpers
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-def chartCoordCLM (i : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
-  (chartModelBasis E).coord i |>.toContinuousLinearMap
-
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma chartCoordCLM_apply (i : Fin (Module.finrank ℝ E)) (v : E) :
-    chartCoordCLM (E := E) i v = chartCoord (E := E) i v := rfl
-
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
-lemma hasDerivAt_chartCoord {P : ℝ → E} {P' : E} {s : ℝ} (hP : HasDerivAt P P' s)
-    (i : Fin (Module.finrank ℝ E)) :
-    HasDerivAt (fun u => chartCoord (E := E) i (P u)) (chartCoord (E := E) i P') s := by
-  have := (chartCoordCLM (E := E) i).hasFDerivAt.comp_hasDerivAt s hP
-  simpa using this
-
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 lemma hasDerivAt_chartChristoffelContraction
@@ -383,7 +390,8 @@ lemma hasDerivAt_partial_snd (F : ℝ → ℝ → E) (s t : ℝ)
     (hC1.eventually (by norm_num)).mono (fun p hp => hp.differentiableAt one_ne_zero)
   have hcont : Continuous (fun u : ℝ => (u, t)) := by continuity
   have htend : Filter.Tendsto (fun u : ℝ => (u, t)) (nhds s) (nhds (s, t)) := by
-    simpa using hcont.continuousAt (x := s)
+    change ContinuousAt (fun u : ℝ => (u, t)) s
+    exact hcont.continuousAt
   have hev : (fun u : ℝ => fderiv ℝ (fun v : ℝ => F u v) t (1 : ℝ))
       =ᶠ[nhds s] (fun u : ℝ => fderiv ℝ G (u, t) (0, 1)) := by
     filter_upwards [htend.eventually hdiffG] with u hu
@@ -405,7 +413,9 @@ lemma hasDerivAt_slice_fst (F : ℝ → ℝ → E) (s t : ℝ)
   have := hcomp.hasDerivAt
   have hFeq : (fun u : ℝ => F u t) = (fun u : ℝ => G (u, t)) := rfl
   rw [hFeq]
-  simpa [ContinuousLinearMap.inl] using this
+  refine (this.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+  simp [ContinuousLinearMap.inl]
 
 lemma hasDerivAt_slice_snd (F : ℝ → ℝ → E) (s t : ℝ)
     (hF : DifferentiableAt ℝ (fun p : ℝ × ℝ => F p.1 p.2) (s, t)) :
@@ -421,7 +431,9 @@ lemma hasDerivAt_slice_snd (F : ℝ → ℝ → E) (s t : ℝ)
   have := hcomp.hasDerivAt
   have hFeq : (fun v : ℝ => F s v) = (fun v : ℝ => G (s, v)) := rfl
   rw [hFeq]
-  simpa [ContinuousLinearMap.inr] using this
+  refine (this.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+  simp [ContinuousLinearMap.inr]
 
 lemma hasDerivAt_partial_fst (F : ℝ → ℝ → E) (s t : ℝ)
     (hF : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => F p.1 p.2) (s, t)) :
@@ -448,7 +460,8 @@ lemma hasDerivAt_partial_fst (F : ℝ → ℝ → E) (s t : ℝ)
     (hC1.eventually (by norm_num)).mono (fun p hp => hp.differentiableAt one_ne_zero)
   have hcont : Continuous (fun v : ℝ => (s, v)) := by continuity
   have htend : Filter.Tendsto (fun v : ℝ => (s, v)) (nhds t) (nhds (s, t)) := by
-    simpa using hcont.continuousAt (x := t)
+    change ContinuousAt (fun v : ℝ => (s, v)) t
+    exact hcont.continuousAt
   have hev : (fun v : ℝ => fderiv ℝ (fun u : ℝ => F u v) s (1 : ℝ))
       =ᶠ[nhds t] (fun v : ℝ => fderiv ℝ G (s, v) (1, 0)) := by
     filter_upwards [htend.eventually hdiffG] with v hv
@@ -735,7 +748,11 @@ lemma curvPart_eq_chartRiemannCLM
           - chartChristoffelContraction (I := I) g x D₂
             (chartChristoffelContraction (I := I) g x D₁ Yv (extChartAt I x x))
             (extChartAt I x x))
-      = chartRiemannCLM (I := I) g x D₁ D₂ Yv := by
+      = centeredChartTangentEquiv (I := I) x
+          (chartRiemannCLM (I := I) g x
+            ((centeredChartTangentEquiv (I := I) x).symm D₁)
+            ((centeredChartTangentEquiv (I := I) x).symm D₂)
+            ((centeredChartTangentEquiv (I := I) x).symm Yv)) := by
   classical
   set y₀ : E := extChartAt I x x with hy₀
   set d₁ : Fin (Module.finrank ℝ E) → ℝ := fun i => chartCoord (E := E) i D₁ with hd₁
@@ -775,10 +792,14 @@ lemma curvPart_eq_chartRiemannCLM
           (chartChristoffelContraction (I := I) g x D₁ Yv y₀)
         = ∑ p, ∑ q, chartChristoffel (I := I) g x p q j y₀ * d₁ p * yc q from
       chartCoord_chartChristoffelContraction (I := I) g x D₁ Yv y₀ j]
-  have hRHS : chartRiemannCLM (I := I) g x D₁ D₂ Yv
+  have hRHS : centeredChartTangentEquiv (I := I) x
+        (chartRiemannCLM (I := I) g x
+          ((centeredChartTangentEquiv (I := I) x).symm D₁)
+          ((centeredChartTangentEquiv (I := I) x).symm D₂)
+          ((centeredChartTangentEquiv (I := I) x).symm Yv))
       = ∑ l, (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
           chartRiemannTensor (I := I) g x i j k l y₀) • chartModelBasis E l := by
-    rw [chartRiemannCLM_apply]
+    rw [chart_riemann_clm_model_apply]
     rw [show (∑ i, ∑ j, ∑ k, ∑ l,
             ((chartModelBasis E).repr Yv i * (chartModelBasis E).repr D₁ j *
                 (chartModelBasis E).repr D₂ k *
@@ -988,10 +1009,13 @@ lemma commutator_eq_chartRiemannCLM
       - chartCovDerivAlong (I := I) g (f s t) (fun v : ℝ => f s v) (fun v : ℝ =>
         chartCovDerivAlong (I := I) g (f s t) (fun u : ℝ => f u v)
           (fun u : ℝ => Y u v) s) t
-      = chartRiemannCLM (I := I) g (f s t)
-          (fderiv ℝ (fun u : ℝ => extChartAt I (f s t) (f u t)) s (1 : ℝ))
-          (fderiv ℝ (fun v : ℝ => extChartAt I (f s t) (f s v)) t (1 : ℝ))
-          (Y s t) := by
+      = centeredChartTangentEquiv (I := I) (f s t)
+          (chartRiemannCLM (I := I) g (f s t)
+            ((centeredChartTangentEquiv (I := I) (f s t)).symm
+              (fderiv ℝ (fun u : ℝ => extChartAt I (f s t) (f u t)) s (1 : ℝ)))
+            ((centeredChartTangentEquiv (I := I) (f s t)).symm
+              (fderiv ℝ (fun v : ℝ => extChartAt I (f s t) (f s v)) t (1 : ℝ)))
+            ((centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
   classical
   set α : M := f s t with hα
   set y₀ : E := extChartAt I α (f s t) with hy₀
@@ -1137,12 +1161,15 @@ theorem chartCovDerivAlong_commutator_eq_riemannOp_on_variation
       - chartCovDerivAlong (I := I) g (f s t) (fun v : ℝ => f s v) (fun v : ℝ =>
         chartCovDerivAlong (I := I) g (f s t) (fun u : ℝ => f u v)
           (fun u : ℝ => Y u v) s) t
-    = (DifferentialGeometry.Geometry.Curvature.riemannOp
-        (DifferentialGeometry.Geometry.Connection.LeviCivita
-          (I := I) g) (f s t))
-        (fderiv ℝ (fun u : ℝ => extChartAt I (f s t) (f u t)) s (1 : ℝ))
-        (fderiv ℝ (fun v : ℝ => extChartAt I (f s t) (f s v)) t (1 : ℝ))
-        (Y s t) := by
+    = centeredChartTangentEquiv (I := I) (f s t)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita
+            (I := I) g) (f s t))
+          ((centeredChartTangentEquiv (I := I) (f s t)).symm
+            (fderiv ℝ (fun u : ℝ => extChartAt I (f s t) (f u t)) s (1 : ℝ)))
+          ((centeredChartTangentEquiv (I := I) (f s t)).symm
+            (fderiv ℝ (fun v : ℝ => extChartAt I (f s t) (f s v)) t (1 : ℝ)))
+          ((centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
   have hF : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => extChartAt I (f s t) (f p.1 p.2)) (s, t) :=
     chartPulled_contDiffAt (I := I) f hf s t
   rw [Aux7.commutator_eq_chartRiemannCLM (I := I) g f Y s t hF hY,

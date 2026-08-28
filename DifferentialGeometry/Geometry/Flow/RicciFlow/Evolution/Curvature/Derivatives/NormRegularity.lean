@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -62,8 +64,14 @@ theorem towerNorm_joint
       (self_mem_chartLeviCivitaGoodSet (I := I) p.2) k slots
     refine hsmooth.congr_of_eventuallyEq ?_
     filter_upwards [hdomain] with q hq
-    simpa only [frame, tensor0SComponent_apply, frameTuple] using
-      (iteratedRmComp_eq_nablaKRm04Field (I := I) S x0 q.1 k hq.2 slots).symm
+    have hargs :
+        (fun a => frame (slots a) q.2) =
+          frameTuple (coordinateFrameAt (I := I) x0) q.2 slots := by
+      funext a
+      rfl
+    rw [tensor0SComponent_apply, hargs]
+    exact (iteratedRmComp_eq_nablaKRm04Field
+      (I := I) S x0 q.1 k hq.2 slots).symm
   have hcontract :
       ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
         (modelWithCornersSelf Real Real) ∞
@@ -92,7 +100,7 @@ theorem towerNorm_joint
   have hinvBasis : MetricInverseInBasis_gen
       (I := I) (S.base.metric q.1) q.2 basis
       (fun i j => coordInv (I := I) S x0 q.1 q.2 i j) := by
-    simpa only [basis, coordInv] using
+    simpa only [basis, coordInv, SolutionOn.family] using
       (gInvBasisAt (I := I) (S.base.metric q.1) x0 hq.2)
   change normSq0S (I := I) (S.base.metric q.1) q.2 (4 + k)
       (nablaKRm04Field (I := I) S q.1 k q.2) = _

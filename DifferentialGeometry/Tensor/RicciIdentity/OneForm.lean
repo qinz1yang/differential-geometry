@@ -251,7 +251,10 @@ theorem one_form_third_comm_of_coord
       nabla2Alpha - swapFirstTwo0S (I := I) nabla2Alpha = -Rm13 x alpha := by
     apply ext0S_basis (I := I) basis
     intro slots
-    simpa [component0S, swapFirstTwo0S] using hcoord slots
+    change nabla2Alpha (fun a ↦ basis (slots a)) -
+        nabla2Alpha (fun a ↦ basis (slots ((Equiv.swap (0 : Fin 3) 1) a))) =
+      -Rm13 x alpha (fun a ↦ basis (slots a))
+    exact hcoord slots
   intro X Y Z
   have h_eval := congrArg
     (fun A :

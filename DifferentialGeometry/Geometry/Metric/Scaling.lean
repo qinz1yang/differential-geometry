@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
+import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -61,29 +62,29 @@ def scaleMetric (c : Real) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) : SmoothRiemannianMetric I M where
   inner x := c • g.inner x
   symm x v w := by
-    simp [ContinuousLinearMap.smul_apply, smul_eq_mul, g.symm x v w]
+    simp [smul_apply, smul_eq_mul, g.symm x v w]
   pos x v hv := by
-    simpa [ContinuousLinearMap.smul_apply, smul_eq_mul] using
+    simpa [smul_apply, smul_eq_mul] using
       mul_pos hc (g.pos x v hv)
   isVonNBounded x := by
     by_cases hlarge : 1 <= c
     · refine (g.isVonNBounded x).subset ?_
       intro v hv
-      simp only [Set.mem_setOf_eq] at hv ⊢
+      simp only [Set.mem_ofPred_eq] at hv ⊢
       by_cases hv0 : v = 0
       · simp [hv0]
       · have hpos := g.pos x v hv0
-        simp only [ContinuousLinearMap.smul_apply, smul_eq_mul] at hv
+        simp only [smul_apply, smul_eq_mul] at hv
         nlinarith
     · have hsmall : c < 1 := lt_of_not_ge hlarge
       let L : TangentSpace I x →L[Real] TangentSpace I x :=
         c⁻¹ • (1 : TangentSpace I x →L[Real] TangentSpace I x)
       refine ((g.isVonNBounded x).image L).subset ?_
       intro v hv
-      simp only [Set.mem_setOf_eq] at hv
+      simp only [Set.mem_ofPred_eq] at hv
       refine ⟨c • v, ?_, ?_⟩
-      · simp only [Set.mem_setOf_eq]
-        simp only [ContinuousLinearMap.smul_apply, smul_eq_mul] at hv
+      · simp only [Set.mem_ofPred_eq]
+        simp only [smul_apply, smul_eq_mul] at hv
         have hscale :
             g.inner x (c • v) (c • v) =
               c * (c * g.inner x v v) := by
@@ -142,27 +143,22 @@ theorem mc_scaleMetric
   let f : M -> Real := fun y : M => g.inner y (Y y) (Z y)
   have hf : MDiffAt f x :=
     mdifferentiableAt_metric_inner (I := I) g hY hZ
-  set f' : TangentSpace I x →L[Real] Real :=
-    mfderiv I 𝓘(Real, Real) f x
-  set cf' : TangentSpace I x →L[Real] Real :=
-    mfderiv I 𝓘(Real, Real) (c • f) x
-  have hderivMap :=
-    const_smul_mfderiv (I := I)
-      (f := f) (z := x) hf c
-  have hderivMap' : cf' = c • f' := by
-    simpa [f', cf'] using hderivMap
+  have hderivMap : mvfderiv (I := I) (c • f) x = c • mvfderiv (I := I) f x := by
+    change mvfderiv (I := I) (fun y : M => c * f y) x = c • mvfderiv (I := I) f x
+    exact mvfderiv_const_mul I c hf
   have hcompat := hmc x X Y Z hX hY hZ
   simp only [scaleMetric_inner]
   change
-    cf' (X x) =
+    mvfderiv (I := I) (c • f) x (X x) =
       c * g.inner x (cov Y x (X x)) (Z x) +
         c * g.inner x (Y x) (cov Z x (X x))
   have hcompat' :
-      f' (X x) =
+      mvfderiv (I := I) f x (X x) =
         g.inner x (cov Y x (X x)) (Z x) +
           g.inner x (Y x) (cov Z x (X x)) := by
-    simpa [f, f'] using hcompat
-  rw [hderivMap', ContinuousLinearMap.smul_apply, hcompat']
+    change mvfderiv (I := I) f x (X x) = _ at hcompat
+    exact hcompat
+  rw [hderivMap, smul_apply, hcompat']
   rw [smul_eq_mul]
   ring
 

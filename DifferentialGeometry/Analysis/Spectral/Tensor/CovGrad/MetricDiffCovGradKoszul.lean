@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -58,7 +57,7 @@ private lemma tensorSectionMDiffAt_curriedSection_apply_loc
 
 private def bilinEvalFn (V : Π b : M, Tensor0SSpace 2 I b)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
-  fun b => Tensor0SSpace.toModel (V b) (Fin.cons (Y b) ![Z b])
+  fun b => Tensor0SSpace.eval (V b) (Fin.cons (Y b) ![Z b])
 
 private def bilinCurriedSec (V : Π b : M, Tensor0SSpace 2 I b)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -75,6 +74,9 @@ private lemma scalarFn_bilinCurriedSec
       bilinEvalFn (I := I) (M := M) V Y Z := by
   funext b
   rw [scalarFn_eq_toModel_elim0 (I := I) (M := M), bilinCurriedSec, bilinEvalFn]
+  rw [show (fun i : Fin 0 => Fin.elim0 i) =
+      (fun i : Fin 0 => tangentSpaceModelContinuousLinearEquiv (I := I) b i.elim0) from
+    Subsingleton.elim _ _, Tensor0SSpace.toModel_apply_tangent]
   rw [Tensor0SNabla.curriedSection_apply (s := 0)
         (T := fun y : M => Tensor0SNabla.curriedSection I M V y (Y y))]
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -91,36 +93,36 @@ private theorem tensor0SCovariantDerivative02_consEval_leibnizDefect
     (g₀ : SmoothRiemannianMetric I M) (V : Π b : M, Tensor0SSpace 2 I b) {x : M}
     (hV : TensorSectionMDiffAt (I := I) 2 V x)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)).toFun V x v)
         (Fin.cons (Y x) ![Z x]) =
       directionalDeriv (I := I) (bilinEvalFn (I := I) (M := M) V Y Z) x v
-        - Tensor0SSpace.toModel (V x)
+        - Tensor0SSpace.eval (V x)
             (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x v) ![Z x])
-        - Tensor0SSpace.toModel (V x)
+        - Tensor0SSpace.eval (V x)
             (Fin.cons (Y x) ![(LeviCivita (I := I) g₀).toFun (fun b => Z b) x v]) := by
   classical
   set W₁ : Π b : M, Tensor0SSpace 1 I b :=
     fun b => Tensor0SNabla.curriedSection I M V b (Y b) with hW₁
   have hW₁_mdiff : TensorSectionMDiffAt (I := I) 1 W₁ x :=
     tensorSectionMDiffAt_curriedSection_apply_loc (I := I) (M := M) 1 V hV Y
-  have hpeel1 := tensor0SCovariantDerivative_succ_consEval_peel
+  have hpeel1 := tensor0SCovariantDerivative_succ_consEval_peel_natural
     (I := I) (M := M) g₀ 1 V hV Y v ![Z x]
-  have hpeel2 := tensor0SCovariantDerivative_succ_consEval_peel
+  have hpeel2 := tensor0SCovariantDerivative_succ_consEval_peel_natural
     (I := I) (M := M) g₀ 0 W₁ hW₁_mdiff Z v (fun i => Fin.elim0 i)
-  have hbase : Tensor0SSpace.toModel
+  have hbase : Tensor0SSpace.eval
       ((Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g₀)).toFun
         (fun b : M => Tensor0SNabla.curriedSection I M W₁ b (Z b)) x v)
       (fun i => Fin.elim0 i) =
       directionalDeriv (I := I) (bilinEvalFn (I := I) (M := M) V Y Z) x v := by
-    rw [tensor0SCovariantDerivative_zero_toModel_apply (I := I) (M := M) g₀
+    rw [tensor0SCovariantDerivative_zero_eval_apply (I := I) (M := M) g₀
       (fun b : M => Tensor0SNabla.curriedSection I M W₁ b (Z b)) x v]
     rw [show (fun b : M => Tensor0SNabla.curriedSection I M W₁ b (Z b)) =
         bilinCurriedSec (I := I) (M := M) V Y Z from rfl]
     rw [scalarFn_bilinCurriedSec (I := I) (M := M) V Y Z]
-  have hcorr2 : Tensor0SSpace.toModel (W₁ x)
+  have hcorr2 : Tensor0SSpace.eval (W₁ x)
         (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x v) (fun i => Fin.elim0 i)) =
-      Tensor0SSpace.toModel (V x)
+      Tensor0SSpace.eval (V x)
         (Fin.cons (Y x) ![(LeviCivita (I := I) g₀).toFun (fun b => Z b) x v]) := by
     have hW₁x : W₁ x = Tensor0SNabla.curriedSection I M V x (Y x) := rfl
     rw [hW₁x, Tensor0SNabla.curriedSection_apply]
@@ -133,17 +135,18 @@ private theorem tensor0SCovariantDerivative02_consEval_leibnizDefect
     fin_cases k <;> rfl
   rw [hpeel1]
   rw [show (fun y : M => Tensor0SNabla.curriedSection I M V y (Y y)) = W₁ from rfl]
-  rw [show (![Z x] : Fin 1 → E) = Fin.cons (Z x) (fun i => Fin.elim0 i) from by
+  rw [show (![Z x] : Fin 1 → TangentSpace I x) =
+      Fin.cons (Z x) (fun i => Fin.elim0 i) from by
     funext k; refine Fin.cases rfl (fun j => j.elim0) k]
   rw [hpeel2, hbase, hcorr2]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem covGrad02_unitModel_eval_eq_leibnizDefect
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (v : TangentSpace I x)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 0 2 S).toSection x)
           (unitZeroSec (I := I) (M := M) x))
@@ -151,16 +154,16 @@ theorem covGrad02_unitModel_eval_eq_leibnizDefect
       directionalDeriv (I := I)
           (bilinEvalFn (I := I) (M := M)
             (unitEvalSection (I := I) (M := M) g₀ 2 S) Y Z) x v
-        - Tensor0SSpace.toModel
+        - Tensor0SSpace.eval
             (unitEvalSection (I := I) (M := M) g₀ 2 S x)
             (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x v) ![Z x])
-        - Tensor0SSpace.toModel
+        - Tensor0SSpace.eval
             (unitEvalSection (I := I) (M := M) g₀ 2 S x)
             (Fin.cons (Y x) ![(LeviCivita (I := I) g₀).toFun (fun b => Z b) x v]) := by
   classical
   have hV : TensorSectionMDiffAt (I := I) 2 (unitEvalSection (I := I) (M := M) g₀ 2 S) x :=
     ((contMDiff_unitEvalSection (I := I) (M := M) g₀ 2 S) x).mdifferentiableAt (by simp)
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g₀ 0 2 S x
+  rw [covGrad_toSection_apply_natural (I := I) (M := M) g₀ 0 2 S x
     (unitZeroSec (I := I) (M := M) x) (Fin.cons v (Fin.cons (Y x) ![Z x]))]
   rw [show (Fin.cons v (Fin.cons (Y x) ![Z x]) : Fin 3 → TangentSpace I x) 0 = v from rfl]
   rw [show Matrix.vecTail (Fin.cons v (Fin.cons (Y x) ![Z x]) : Fin 3 → TangentSpace I x)
@@ -169,17 +172,19 @@ theorem covGrad02_unitModel_eval_eq_leibnizDefect
       refine Fin.cases rfl (fun j => ?_) k
       refine Fin.cases rfl (fun j' => ?_) j
       exact j'.elim0]
-  rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 0 2 S x v]
+  rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 0 2 S x
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x v)]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
   rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ 2 S.toSection x v]
   exact tensor0SCovariantDerivative02_consEval_leibnizDefect (I := I) (M := M) g₀
     (unitEvalSection (I := I) (M := M) g₀ 2 S) hV Y Z v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma unitEvalSection_toModel_eq_ccTensorBilin
+private lemma unitEvalSection_eval_eq_ccTensorBilin
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (b : M)
     (Y Z : TangentSpace I b) :
-    Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 2 S b) (Fin.cons Y ![Z]) =
+    Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S b) (Fin.cons Y ![Z]) =
       smoothCcTensorBilinForm (I := I) g₀ S b Y Z := by
   rw [ccTensorBilin_apply (I := I) g₀ S b Y Z]
   rw [ccTensorModel]
@@ -191,14 +196,14 @@ private lemma unitEvalSection_toModel_eq_ccTensorBilin
   funext k
   fin_cases k <;> rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (hbil : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ S b u w =
         g₁.inner b u w - g₁'.inner b u w)
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 0 2 S).toSection x)
           (unitZeroSec (I := I) (M := M) x))
@@ -212,20 +217,20 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv
   have hfun : bilinEvalFn (I := I) (M := M) (unitEvalSection (I := I) (M := M) g₀ 2 S) Y Z =
       fun b : M => g₁.inner b (Y b) (Z b) - g₁'.inner b (Y b) (Z b) := by
     funext b
-    rw [bilinEvalFn, unitEvalSection_toModel_eq_ccTensorBilin (I := I) (M := M) g₀ S b (Y b) (Z b),
+    rw [bilinEvalFn, unitEvalSection_eval_eq_ccTensorBilin (I := I) (M := M) g₀ S b (Y b) (Z b),
       hbil b (Y b) (Z b)]
   rw [hfun]
-  have hcorrY : Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 2 S x)
+  have hcorrY : Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S x)
         (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)) ![Z x]) =
       g₁.inner x ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)) (Z x)
         - g₁'.inner x ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)) (Z x) := by
-    rw [unitEvalSection_toModel_eq_ccTensorBilin (I := I) (M := M) g₀ S x
+    rw [unitEvalSection_eval_eq_ccTensorBilin (I := I) (M := M) g₀ S x
       ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)) (Z x), hbil]
-  have hcorrZ : Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 2 S x)
+  have hcorrZ : Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S x)
         (Fin.cons (Y x) ![(LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)]) =
       g₁.inner x (Y x) ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x))
         - g₁'.inner x (Y x) ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)) := by
-    rw [unitEvalSection_toModel_eq_ccTensorBilin (I := I) (M := M) g₀ S x (Y x)
+    rw [unitEvalSection_eval_eq_ccTensorBilin (I := I) (M := M) g₀ S x (Y x)
       ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)), hbil]
   rw [hcorrY, hcorrZ]
   have hg₁ : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun b : M => g₁.inner b (Y b) (Z b)) x :=
@@ -247,14 +252,14 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv
   rw [metricCovDeriv, metricCovDeriv]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (hbil : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ S b u w =
         g₁.inner b u w - g₁'.inner b u w)
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 0 2 S).toSection x)
           (unitZeroSec (I := I) (M := M) x))
@@ -271,34 +276,45 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bilinEvalFn_unitEvalSection_eq_unitModel
+private lemma bilinEvalFn_unitEvalSection_eq_eval
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (b : M)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     bilinEvalFn (I := I) (M := M) (unitEvalSection (I := I) (M := M) g₀ 2 S) Y Z b =
-      unitModel (I := I) (M := M) g₀ 2 S b (Fin.cons (Y b) ![Z b]) := rfl
+      Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S b)
+        (Fin.cons (Y b) ![Z b]) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_domDomCongrSection_swap_eval
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (v : TangentSpace I x)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 0 2
             (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S)).toSection x)
           (unitZeroSec (I := I) (M := M) x))
         (Fin.cons v (Fin.cons (Y x) ![Z x])) =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 0 2 S).toSection x)
           (unitZeroSec (I := I) (M := M) x))
         (Fin.cons v (Fin.cons (Z x) ![Y x])) := by
   classical
   have hswap : ∀ b : M, ∀ (P Q : TangentSpace I b),
-      unitModel (I := I) (M := M) g₀ 2
-          (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S) b (Fin.cons P ![Q]) =
-        unitModel (I := I) (M := M) g₀ 2 S b (Fin.cons Q ![P]) := by
+      Tensor0SSpace.eval
+          (unitEvalSection (I := I) (M := M) g₀ 2
+            (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S) b) (Fin.cons P ![Q]) =
+        Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S b)
+          (Fin.cons Q ![P]) := by
     intro b P Q
+    rw [← Tensor0SSpace.toModel_apply_tangent, ← Tensor0SSpace.toModel_apply_tangent]
+    change unitModel (I := I) (M := M) g₀ 2
+        (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S) b
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (((Fin.cons P ![Q]) : Fin 2 → TangentSpace I b) i)) =
+      unitModel (I := I) (M := M) g₀ 2 S b
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (((Fin.cons Q ![P]) : Fin 2 → TangentSpace I b) i))
     rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap 0 1) S b]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     congr 1
@@ -312,21 +328,21 @@ theorem covGrad_domDomCongrSection_swap_eval
           (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S)) Y Z =
       bilinEvalFn (I := I) (M := M) (unitEvalSection (I := I) (M := M) g₀ 2 S) Z Y := by
     funext b
-    rw [bilinEvalFn_unitEvalSection_eq_unitModel, bilinEvalFn_unitEvalSection_eq_unitModel]
+    rw [bilinEvalFn_unitEvalSection_eq_eval, bilinEvalFn_unitEvalSection_eq_eval]
     exact hswap b (Y b) (Z b)
   rw [hbil]
-  have hcorr1 : Tensor0SSpace.toModel
+  have hcorr1 : Tensor0SSpace.eval
         (unitEvalSection (I := I) (M := M) g₀ 2
           (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S) x)
         (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x v) ![Z x]) =
-      Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 2 S x)
+      Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S x)
         (Fin.cons (Z x) ![(LeviCivita (I := I) g₀).toFun (fun b => Y b) x v]) :=
     hswap x ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x v) (Z x)
-  have hcorr2 : Tensor0SSpace.toModel
+  have hcorr2 : Tensor0SSpace.eval
         (unitEvalSection (I := I) (M := M) g₀ 2
           (domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) S) x)
         (Fin.cons (Y x) ![(LeviCivita (I := I) g₀).toFun (fun b => Z b) x v]) =
-      Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 2 S x)
+      Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g₀ 2 S x)
         (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x v) ![Y x]) :=
     hswap x (Y x) ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x v)
   rw [hcorr1, hcorr2]

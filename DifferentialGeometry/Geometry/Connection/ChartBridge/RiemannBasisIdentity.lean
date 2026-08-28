@@ -29,12 +29,12 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma extDerivFun_comp_extChartAt_apply_basis [I.Boundaryless]
+lemma mvfderiv_comp_extChartAt_apply_basis [I.Boundaryless]
     (x : M) {gE : E → ℝ}
     (hgE : ContDiffAt ℝ ∞ gE (extChartAt I x x))
     (a : Fin (Module.finrank ℝ E)) :
-    extDerivFun (I := I) (fun b : M => gE (extChartAt I x b)) x
-        ((chartModelBasis E) a) =
+    mvfderiv (I := I) (fun b : M => gE (extChartAt I x b)) x
+        (centeredChartTangentBasis (I := I) x a) =
       partialDeriv (E := E) a gE (extChartAt I x x) := by
   classical
   have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
@@ -52,13 +52,10 @@ lemma extDerivFun_comp_extChartAt_apply_basis [I.Boundaryless]
   have hphi_mdiff : MDiffAt (extChartAt I x) x :=
     mdifferentiableAt_extChartAt (I := I) (x := x) hxsrc
   have hG_mdiff : MDiffAt Gfun x := hgE_mdiff.comp x hphi_mdiff
-  have hed_to_mfderiv :
-      extDerivFun (I := I) Gfun x ((chartModelBasis E) a) =
-        (mfderiv I 𝓘(ℝ) Gfun x : TangentSpace I x →L[ℝ] _) ((chartModelBasis E) a) := rfl
-  rw [hed_to_mfderiv]
   rw [mfderiv_scalar_eq_chart_fderiv (I := I) x Gfun hxsrc hxint hG_mdiff
-    ((chartModelBasis E) a)]
-  rw [trivToE_self_apply (I := I) x ((chartModelBasis E) a)]
+    (centeredChartTangentBasis (I := I) x a)]
+  rw [trivToE_self_apply (I := I) x (centeredChartTangentBasis (I := I) x a)]
+  rw [centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
   have htgt_nhds : ((extChartAt I x).target : Set E) ∈ 𝓝 (extChartAt I x x) :=
     Filter.mem_of_superset (isOpen_interior.mem_nhds hxint) interior_subset
   have hcompose_eq : (Gfun ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)] gE := by
@@ -134,7 +131,8 @@ lemma leviCivita_finset_sum_apply
   | insert i t hit ih =>
       have hσi : MDiffAt (T% (σ i)) x := hσ i
       have hsum : MDiffAt (T% (t.sum σ)) x := by
-        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ) hσ
+        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ)
+          (fun i _ => hσ i)
         simpa using hsum_raw
       calc
         (cov.toFun ((insert i t).sum σ) x) v
@@ -166,7 +164,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g x a m l (extChartAt I x x) *
               chartChristoffel (I := I) g x b i m (extChartAt I x x)) •
-          (chartModelBasis E) l := by
+          centeredChartTangentBasis (I := I) x l := by
   classical
   set cov := LeviCivita (I := I) g with hcov_def
   have hXa_x : Xa x = chartBasisVecFiber (I := I) x a x := hXa_eq x hxU
@@ -217,7 +215,8 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
     fun m => MDifferentiableAt.smul_section (hΓc_diff m) (hframe_diff m)
   have hsum_diff :
       MDiffAt (T% fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) x :=
-    MDifferentiableAt.sum_section (s := Finset.univ) (t := term) hterm_diff
+    MDifferentiableAt.sum_section (s := Finset.univ) (t := term)
+      (fun m _ => hterm_diff m)
   have hS_ev_sum :
       (fun y : M => S y) =ᶠ[𝓝 x]
         (fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) := by
@@ -245,7 +244,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
   rw [hsum_apply]
   have hleib : ∀ m : Fin (Module.finrank ℝ E),
       (cov.toFun (term m) x) (chartBasisVecFiber (I := I) x a x) =
-        extDerivFun (I := I) (Γc m) x (chartBasisVecFiber (I := I) x a x) •
+        mvfderiv (I := I) (Γc m) x (chartBasisVecFiber (I := I) x a x) •
             chartBasisVecFiber (I := I) x m x +
           Γc m x •
             (cov.toFun (fun y : M => chartBasisVecFiber (I := I) x m y) x)
@@ -258,20 +257,20 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
       funext y; rfl
     rw [hterm_eq]
     have happ := congr($(hleibniz) (chartBasisVecFiber (I := I) x a x))
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply] at happ
     rw [happ]
     rw [add_comm]
   rw [Finset.sum_congr rfl (fun m _ => hleib m)]
   have hder : ∀ m : Fin (Module.finrank ℝ E),
-      extDerivFun (I := I) (Γc m) x (chartBasisVecFiber (I := I) x a x) =
+      mvfderiv (I := I) (Γc m) x (chartBasisVecFiber (I := I) x a x) =
         partialDeriv (E := E) a (chartChristoffel (I := I) g x b i m) (extChartAt I x x) := by
     intro m
     rw [chartBasisVecFiber_self (I := I) x a]
-    exact extDerivFun_comp_extChartAt_apply_basis (I := I) x
+    exact mvfderiv_comp_extChartAt_apply_basis (I := I) x
       (chartChristoffel_contDiffAt_self (I := I) g x b i m) a
   have hframe_x : ∀ m : Fin (Module.finrank ℝ E),
-      chartBasisVecFiber (I := I) x m x = (chartModelBasis E) m :=
+      chartBasisVecFiber (I := I) x m x = centeredChartTangentBasis (I := I) x m :=
     fun m => chartBasisVecFiber_self (I := I) x m
   have hΓc_x : ∀ m : Fin (Module.finrank ℝ E),
       Γc m x = chartChristoffel (I := I) g x b i m (extChartAt I x x) := fun m => rfl
@@ -279,18 +278,18 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
       (cov.toFun (fun y : M => chartBasisVecFiber (I := I) x m y) x)
           (chartBasisVecFiber (I := I) x a x) =
         ∑ l : Fin (Module.finrank ℝ E),
-          chartChristoffel (I := I) g x a m l (extChartAt I x x) • (chartModelBasis E) l := by
+          chartChristoffel (I := I) g x a m l (extChartAt I x x) •
+            centeredChartTangentBasis (I := I) x l := by
     intro m
     have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
       self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
     rw [LeviCivita_chartBasisVec_alpha_basis_apply (I := I) g x a m hx_good]
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [chartBasisVecFiber_self (I := I) x l]
-    rfl
   rw [Finset.sum_congr rfl (fun m _ => by
     rw [hder m, hframe_x m, hΓc_x m, hinner m])]
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
-    fun l => (chartModelBasis E) l with he_def
+    fun l => centeredChartTangentBasis (I := I) x l with he_def
   set D : Fin (Module.finrank ℝ E) → ℝ :=
     fun m => partialDeriv (E := E) a (chartChristoffel (I := I) g x b i m) (extChartAt I x x)
     with hD_def
@@ -386,10 +385,12 @@ lemma mlieBracket_chartBasisVec_ext_self_eq_zero [I.Boundaryless]
     extChartAt_target_subset_interior_of_boundaryless (I := I) x hxtgt
   have hXj_at : MDiffAt (T% Xj) x := (hXj x).mdifferentiableAt (by simp)
   have hXk_at : MDiffAt (T% Xk) x := (hXk x).mdifferentiableAt (by simp)
+  apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
+  rw [map_zero]
   rw [mlieBracket_eq_chart_fderiv_diff (I := I) x Xj Xk hxint]
   rw [fderiv_chartE_section_repr_eq_zero_of_eventuallyEq (I := I) x k hU_open hxU hXk_eq]
   rw [fderiv_chartE_section_repr_eq_zero_of_eventuallyEq (I := I) x j hU_open hxU hXj_eq]
-  rw [ContinuousLinearMap.zero_apply, ContinuousLinearMap.zero_apply]
+  change (0 : E) - 0 = 0
   exact sub_self 0
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -398,9 +399,13 @@ lemma riemannOp_chartBasis_eq_chartRiemannCLM_basis [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j k : Fin (Module.finrank ℝ E)) :
     riemannOp (cov := LeviCivita (I := I) g) x
-        ((chartModelBasis E) j) ((chartModelBasis E) k) ((chartModelBasis E) i) =
+        (centeredChartTangentBasis (I := I) x j)
+        (centeredChartTangentBasis (I := I) x k)
+        (centeredChartTangentBasis (I := I) x i) =
       chartRiemannCLM (I := I) g x
-        ((chartModelBasis E) j) ((chartModelBasis E) k) ((chartModelBasis E) i) := by
+        (centeredChartTangentBasis (I := I) x j)
+        (centeredChartTangentBasis (I := I) x k)
+        (centeredChartTangentBasis (I := I) x i) := by
   classical
   set cov := LeviCivita (I := I) g with hcov_def
   obtain ⟨Xj, Uj, hXj_sm, hUj_open, hxUj, hUj_good, hXj_eq⟩ :=
@@ -420,15 +425,15 @@ lemma riemannOp_chartBasis_eq_chartRiemannCLM_basis [I.Boundaryless]
     fun y hy => hXk_eq y hy.1.2
   have hXi_eqU : ∀ y ∈ U, Xi y = chartBasisVecFiber (I := I) x i y :=
     fun y hy => hXi_eq y hy.2
-  have hXj_x : Xj x = (chartModelBasis E) j := by
+  have hXj_x : Xj x = centeredChartTangentBasis (I := I) x j := by
     rw [hXj_eqU x hxU, chartBasisVecFiber_self (I := I) x j]
-  have hXk_x : Xk x = (chartModelBasis E) k := by
+  have hXk_x : Xk x = centeredChartTangentBasis (I := I) x k := by
     rw [hXk_eqU x hxU, chartBasisVecFiber_self (I := I) x k]
-  have hXi_x : Xi x = (chartModelBasis E) i := by
+  have hXi_x : Xi x = centeredChartTangentBasis (I := I) x i := by
     rw [hXi_eqU x hxU, chartBasisVecFiber_self (I := I) x i]
-  rw [show ((chartModelBasis E) j : TangentSpace I x) = Xj x from hXj_x.symm,
-      show ((chartModelBasis E) k : TangentSpace I x) = Xk x from hXk_x.symm,
-      show ((chartModelBasis E) i : TangentSpace I x) = Xi x from hXi_x.symm]
+  rw [show centeredChartTangentBasis (I := I) x j = Xj x from hXj_x.symm,
+      show centeredChartTangentBasis (I := I) x k = Xk x from hXk_x.symm,
+      show centeredChartTangentBasis (I := I) x i = Xi x from hXi_x.symm]
   rw [riemannOp_apply_smooth (cov := cov) hXj_sm hXk_sm hXi_sm]
   rw [riemannSec_def]
   rw [mlieBracket_chartBasisVec_ext_self_eq_zero (I := I) x j k hXj_sm hXk_sm

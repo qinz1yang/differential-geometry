@@ -69,7 +69,7 @@ private lemma summable_geom_pow_two : Summable (fun i : ℕ => (1 : ℝ) / 2 ^ i
 
 private lemma summable_2_div_pow : Summable (fun N : ℕ => 2 * (1 : ℝ) / 2 ^ N) := by
   have h := summable_geom_pow_two.const_smul (2 : ℝ)
-  simpa [smul_eq_mul] using h
+  exact h.congr fun N => by simp only [smul_eq_mul, div_eq_mul_inv]; ring
 
 private lemma tsum_ofReal_2_div_pow_ne_top :
     ∑' i : ℕ, ENNReal.ofReal (2 * (1 : ℝ) / 2 ^ i) ≠ ∞ := by
@@ -340,7 +340,6 @@ private theorem exists_iter_limits_subseq
     exact (h_each j β hj).choose_spec.2
 
 private theorem subseq_limit_memWkp_and_wkpNorm_tendsto
-    [NeZero d]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u : ℕ → E → ℝ}
@@ -440,10 +439,10 @@ private theorem subseq_limit_memWkp_and_wkpNorm_tendsto
             (fun x => u (φ n) x - v 0 ![] x) Ω)
           p (volume.restrict Ω))
         atTop (𝓝 0) := fun β => h_per_pair j hj β
-    have hsum := tendsto_finset_sum (Finset.univ : Finset (Fin j → Fin d))
+    have hsum := tendsto_finsetSum (Finset.univ : Finset (Fin j → Fin d))
       (fun β _ => h_β_tendsto β)
     simpa using hsum
-  have hfinal := tendsto_finset_sum (Finset.range (k + 1)) h_inner_tendsto
+  have hfinal := tendsto_finsetSum (Finset.range (k + 1)) h_inner_tendsto
   simpa using hfinal
 
 private theorem wkpNorm_tendsto_of_cauchy_of_subseq
@@ -514,7 +513,6 @@ private theorem wkpNorm_tendsto_of_cauchy_of_subseq
     _ = ε := ENNReal.ofReal_toReal hε_ne
 
 theorem MemWkp.exists_limit_of_wkpNorm_cauchy
-    [NeZero d]
     {Ω : Set E} (hΩ_open : IsOpen Ω)
     (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p)
     {u : ℕ → E → ℝ}

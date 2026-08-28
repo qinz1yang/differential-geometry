@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
     CovariantDerivative
@@ -157,6 +156,7 @@ lemma loweredCovDerivAlongVFraw_eq_zero_off_tsupport
 omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma loweredCovDerivAlongVFraw_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)

@@ -6,7 +6,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -79,7 +78,7 @@ theorem modelNorm_le_gNorm_pointwise
     ∃ C : ℝ, 0 < C ∧ ∀ T : TensorRSSpace r s I x₀,
       ‖TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T‖ ≤ C * ‖T‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₀, hC₀_pos, hC₀_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
@@ -103,7 +102,7 @@ theorem gNorm_le_modelNorm_pointwise
     ∃ D : ℝ, 0 < D ∧ ∀ T : TensorRSSpace r s I x₀,
       ‖T‖ ≤ D * ‖TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨D₀, hD₀_pos, hD₀_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact

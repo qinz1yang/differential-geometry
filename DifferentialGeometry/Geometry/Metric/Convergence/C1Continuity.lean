@@ -6,6 +6,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormCoordinate
 import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Uniqueness
 import Mathlib.Topology.Instances.Matrix
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -134,7 +136,13 @@ private theorem derivNorm_pair_cont
     have hadjc : ContinuousAt (fun p ↦ (Gm p).adjugate) ((t, t), x₀) :=
       (continuous_id.matrix_adjugate).continuousAt.comp hGmc
     have hmain := (hdetc.inv₀ (hdetne ((t, t), x₀) hxU)).smul hadjc
-    simpa only [Matrix.inv_def, Ring.inverse_eq_inv] using hmain
+    have heq : (fun p ↦ (Gm p)⁻¹) =
+        ((fun p ↦ (Gm p).det)⁻¹ • fun p ↦ (Gm p).adjugate) := by
+      funext p
+      change (Gm p)⁻¹ = (Gm p).det⁻¹ • (Gm p).adjugate
+      rw [Matrix.inv_def, Ring.inverse_eq_inv]
+    rw [heq]
+    exact hmain
   have hGinvEnt (i j : Idx) :
       ContinuousAt (fun p ↦ (Gm p)⁻¹ i j) ((t, t), x₀) :=
     continuousAt_pi.1 (continuousAt_pi.1 hGinvc i) j
@@ -148,11 +156,11 @@ private theorem derivNorm_pair_cont
             (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2
           (fun z ↦ frame (J₀ z) p.2)
   have hq : ContinuousAt q ((t, t), x₀) := by
-    refine tendsto_finset_sum _ fun I₀ _ ↦ tendsto_finset_sum _ fun J₀ _ ↦ ?_
+    refine tendsto_finsetSum _ fun I₀ _ ↦ tendsto_finsetSum _ fun J₀ _ ↦ ?_
     have hp : ContinuousAt
         (fun p ↦ ∏ z : Fin (a + 2), (Gm p)⁻¹ (I₀ z) (J₀ z))
         ((t, t), x₀) :=
-      tendsto_finset_prod _ fun z _ ↦ hGinvEnt (I₀ z) (J₀ z)
+      tendsto_finsetProd _ fun z _ ↦ hGinvEnt (I₀ z) (J₀ z)
     exact (hp.mul (by simpa [frame, Idx] using hc I₀)).mul
       (by simpa [frame, Idx] using hc J₀)
   have heq :
@@ -247,9 +255,11 @@ private theorem metric0_pair_cont
       (g := fun q : Real × M ↦
         (g_fam q.1).inner q.2 (frame i q.2) (frame j q.2))
       hs.continuousAt (continuousAt_fst.fst.prodMk continuousAt_snd)
-  simpa only [metricDiffCovDerivAt, metricCovDeriv,
-    Tensor0SBundle.metricTensorField_apply, Pi.sub_apply,
-    ContinuousMultilinearMap.sub_apply, frame, Idx, i, j] using hvar.sub hbase
+  change ContinuousAt
+    (fun p : (Real × Real) × M ↦
+      (g_fam p.1.2).inner p.2 (frame i p.2) (frame j p.2) -
+        (g_fam p.1.1).inner p.2 (frame i p.2) (frame j p.2)) ((t, t), x₀)
+  exact hvar.sub hbase
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -290,11 +300,11 @@ private theorem metric1_pair_cont
   let mv : (Real × Real) × M → Idx → Idx → Real := fun p i j ↦
     (g_fam p.1.2).inner p.2 (frame i p.2) (frame j p.2)
   let db : (Real × Real) × M → Idx → Idx → Idx → Real :=
-    fun p d i j ↦ extDerivFun (I := I)
+    fun p d i j ↦ mvfderiv (I := I)
       (fun y : M ↦ (g_fam p.1.1).inner y (frame i y) (frame j y))
       p.2 (frame d p.2)
   let dv : (Real × Real) × M → Idx → Idx → Idx → Real :=
-    fun p d i j ↦ extDerivFun (I := I)
+    fun p d i j ↦ mvfderiv (I := I)
       (fun y : M ↦ (g_fam p.1.2).inner y (frame i y) (frame j y))
       p.2 (frame d p.2)
   let Gm : (Real × Real) × M → Matrix Idx Idx Real :=
@@ -322,7 +332,7 @@ private theorem metric1_pair_cont
       ((hframe.contMDiffAt hUo hxU d))
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.1, p.2))
-      (g := fun q : Real × M ↦ extDerivFun (I := I)
+      (g := fun q : Real × M ↦ mvfderiv (I := I)
         (fun y : M ↦ (g_fam q.1).inner y (frame i y) (frame j y))
         q.2 (frame d q.2))
       hd.continuousAt (continuousAt_fst.fst.prodMk continuousAt_snd)
@@ -333,7 +343,7 @@ private theorem metric1_pair_cont
       ((hframe.contMDiffAt hUo hxU d))
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.2, p.2))
-      (g := fun q : Real × M ↦ extDerivFun (I := I)
+      (g := fun q : Real × M ↦ mvfderiv (I := I)
         (fun y : M ↦ (g_fam q.1).inner y (frame i y) (frame j y))
         q.2 (frame d q.2))
       hd.continuousAt (continuousAt_fst.snd.prodMk continuousAt_snd)
@@ -382,8 +392,13 @@ private theorem metric1_pair_cont
       (continuous_id.matrix_det).continuousAt.comp hGmc
     have hadjc : ContinuousAt (fun p ↦ (Gm p).adjugate) ((t, t), x₀) :=
       (continuous_id.matrix_adjugate).continuousAt.comp hGmc
-    simpa only [Matrix.inv_def, Ring.inverse_eq_inv] using
-      (hdetc.inv₀ (hdetne ((t, t), x₀) hxU)).smul hadjc
+    have heq : (fun p ↦ (Gm p)⁻¹) =
+        ((fun p ↦ (Gm p).det)⁻¹ • fun p ↦ (Gm p).adjugate) := by
+      funext p
+      change (Gm p)⁻¹ = (Gm p).det⁻¹ • (Gm p).adjugate
+      rw [Matrix.inv_def, Ring.inverse_eq_inv]
+    rw [heq]
+    exact (hdetc.inv₀ (hdetne ((t, t), x₀) hxU)).smul hadjc
   have hGinv (i j : Idx) : ContinuousAt (fun p ↦ (Gm p)⁻¹ i j) ((t, t), x₀) :=
     continuousAt_pi.1 (continuousAt_pi.1 hGinvc i) j
   let gamma : (Real × Real) × M → Idx → Idx → Idx → Real :=
@@ -391,7 +406,7 @@ private theorem metric1_pair_cont
       (db p d i l + db p i d l - db p l d i)
   have hgamma (d i k : Idx) :
       ContinuousAt (fun p ↦ gamma p d i k) ((t, t), x₀) := by
-    exact continuousAt_const.mul (tendsto_finset_sum _ fun l _ ↦
+    exact continuousAt_const.mul (tendsto_finsetSum _ fun l _ ↦
       (hGinv k l).mul (((hdb d i l).add (hdb i d l)).sub (hdb l d i)))
   let rhs : (Real × Real) × M → Idx → Idx → Idx → Real :=
     fun p d i j ↦
@@ -400,9 +415,9 @@ private theorem metric1_pair_cont
         ∑ k : Idx, gamma p d j k * (mv p i k - mb p i k)
   have hrhs (d i j : Idx) : ContinuousAt (fun p ↦ rhs p d i j) ((t, t), x₀) := by
     exact ((hdv d i j).sub (hdb d i j)).sub
-      (tendsto_finset_sum _ fun k _ ↦
+      (tendsto_finsetSum _ fun k _ ↦
         (hgamma d i k).mul ((hmVar k j).sub (hmBase k j))) |>.sub
-      (tendsto_finset_sum _ fun k _ ↦
+      (tendsto_finsetSum _ fun k _ ↦
         (hgamma d j k).mul ((hmVar i k).sub (hmBase i k)))
   apply derivNorm_pair_cont (I := I) g_fam hG ht x₀ 1
   intro slots
@@ -434,7 +449,7 @@ private theorem metric1_pair_cont
       christoffelSymbolInFrame
           (leviCivitaConnectionOfMetric (I := I) (g_fam p.1.1))
           frame hframe1 p.2 a b c = gamma p a b c := by
-    simpa [gamma, db, frame, Gm, mb, basis] using
+    simpa [gamma, db, frame, Gm, mb, basis, directionalDerivAlong] using
       coordinateFrame_christoffel_formula_point_of_isLeviCivita
         (I := I) (g := g_fam p.1.1)
         (leviCivitaConnectionOfMetric_isLeviCivita (I := I) (g_fam p.1.1))
@@ -784,7 +799,7 @@ private theorem metric_c_patch
       ContinuousAt
         (fun p : Real × M => ∑ I0, (c p I0) ^ 2)
         ((T : Real), x) := by
-    exact tendsto_finset_sum Finset.univ fun I0 _ => (hc I0).pow 2
+    exact tendsto_finsetSum Finset.univ fun I0 _ => (hc I0).pow 2
   have hq : ContinuousAt q ((T : Real), x) := by
     exact continuousAt_const.mul
       (Real.continuous_sqrt.continuousAt.comp hsum)
@@ -914,7 +929,7 @@ private theorem metric_b_patch
       ContinuousAt
         (fun p : Real × M => ∑ I0, (c p I0) ^ 2)
         (t, x) := by
-    exact tendsto_finset_sum Finset.univ fun I0 _ => (hc I0).pow 2
+    exact tendsto_finsetSum Finset.univ fun I0 _ => (hc I0).pow 2
   have hb : ContinuousAt b (t, x) := by
     exact continuousAt_const.mul
       (Real.continuous_sqrt.continuousAt.comp hsum)

@@ -27,6 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 theorem riemannTopOrderPairing_cancellation
     (g gm : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (C₀ : SmoothCcTensor g 2 2) (C₂ : SmoothCcTensor g 4 2)

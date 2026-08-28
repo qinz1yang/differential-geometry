@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfStateRough
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfRoughFixedPoint
 
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 open MeasureTheory
 open scoped ENNReal RealInnerProductSpace
 

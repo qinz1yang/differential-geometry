@@ -42,7 +42,7 @@ theorem Euclidean.wkpNorm_zero_le_wkpNorm
     simp only [innerSum]
     have hUniq : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) := fun α => by
       funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin d) :=
+    have : Unique (Fin 0 → Fin d) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α => (hUniq α).symm ▸ rfl }
     rw [Fintype.sum_unique
@@ -53,7 +53,7 @@ theorem Euclidean.wkpNorm_zero_le_wkpNorm
   have h0 : (0 : ℕ) ∈ Finset.range (k + 1) := by
     rw [Finset.mem_range]; omega
   have h_le : innerSum 0 ≤ ∑ j ∈ Finset.range (k + 1), innerSum j :=
-    Finset.single_le_sum (f := innerSum) (fun i _ => zero_le _) h0
+    Finset.single_le_sum (f := innerSum) (fun _ _ => bot_le) h0
   rw [hWkp]
   rw [← h_inner0]
   exact h_le

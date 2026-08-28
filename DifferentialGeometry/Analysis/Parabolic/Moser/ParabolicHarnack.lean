@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.Moser.SmallExponentLocalBoundedne
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothDenseLp
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -503,11 +504,9 @@ theorem harnack_on_standard_separated_cylinders_of_poincare_inequality
   classical
   have hgrad_one : ∀ x : M, gradFun (I := I) g (SmoothScalar.one g).toFun x = 0 := by
     intro x
-    unfold gradFun
     rw [SmoothScalar.one_toFun]
-    rw [mfderiv_const]
-    simp
-    rfl
+    apply gradFun_eq_zero_of_mfderiv_eq_zero
+    exact mfderiv_const
   have hrhoGrad : ∀ x : M,
       g.inner x (gradFun (I := I) g (SmoothScalar.one g).toFun x)
         (gradFun (I := I) g (SmoothScalar.one g).toFun x) ≤ 0 := by

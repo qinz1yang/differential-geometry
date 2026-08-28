@@ -59,6 +59,7 @@ def NormalOverlapOn
       expMapDiffeo (I := I) Y.metric x z ∈
         (normalChartAt (I := I) Y.metric y).source
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem cont_diff_on_normal_transition
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) {U : Set E}
     (hUx :
@@ -77,10 +78,10 @@ theorem cont_diff_on_normal_transition
           (expMap (I := I) Y.metric y (show TangentSpace I y from v) : Y.M)) ''
             Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric y))) :
     ContDiffOn ℝ (⊤ : ℕ∞) (normalTransition (I := I) Y x y) U := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [← contMDiffOn_iff_contDiffOn]
   have hexp : ContMDiffOn 𝓘(ℝ, E) I ∞
       (fun z => expMapDiffeo (I := I) Y.metric x z) U :=
@@ -102,6 +103,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_transition_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)

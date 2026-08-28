@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -55,7 +54,8 @@ noncomputable def tensorCovDerivAt
     (S : SmoothCcTensor g r s) (x : M) (v : E) :
     TensorRSSpace r s I x :=
   tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
-    (fun y : M => S.toSection y) x v
+    (fun y : M => S.toSection y) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -65,7 +65,8 @@ lemma tensorCovDerivAt_def
     (S : SmoothCcTensor g r s) (x : M) (v : E) :
     tensorCovDerivAt (I := I) (M := M) g r s S x v =
       tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
-        (fun y : M => S.toSection y) x v := rfl
+        (fun y : M => S.toSection y) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v) := rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -97,7 +98,8 @@ lemma tensorCovDerivAt_add
       (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)).toFun
           (fun y : M => S₂.toSection y) x := hadd
   change (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)).toFun
-      (fun y : M => S₁.toSection y + S₂.toSection y) x v = _
+      (fun y : M => S₁.toSection y + S₂.toSection y) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v) = _
   rw [hclm]
   rfl
 
@@ -127,14 +129,16 @@ lemma tensorCovDerivAt_smul
       (hσ := (S.toSection.contMDiff.mdifferentiable (by norm_num)).mdifferentiableAt)
       (hg := hf_mdiff)
       (hx := (by trivial : x ∈ (Set.univ : Set M)))
-  have hext_zero : extDerivFun (I := I) (fun _ : M => c) x = 0 := by
-    unfold extDerivFun
+  have hext_zero : mvfderiv (I := I) (fun _ : M => c) x = 0 := by
+    unfold mvfderiv
     simp [mfderiv_const]
   change (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)).toFun
-      ((fun _ : M => c) • fun y : M => S.toSection y) x v = _
+      ((fun _ : M => c) • fun y : M => S.toSection y) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v) = _
   rw [hcov_leibniz]
   rw [hext_zero]
-  simp [ContinuousLinearMap.smul_apply]
+  rw [ContinuousLinearMap.zero_smulRight, add_zero]
+  rfl
 
 noncomputable def tensorCovDerivPointwiseInner
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

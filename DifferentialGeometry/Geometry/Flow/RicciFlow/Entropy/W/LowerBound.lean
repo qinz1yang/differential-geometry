@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.LogSobolev
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
 import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Estimate
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -48,7 +50,7 @@ theorem w_fixed_lower
             (perelmanPotential 3 tau (fun y => v y * v y)) := by
   classical
   let μ := riemannianVolumeMeasure I M g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -90,7 +92,7 @@ theorem w_fixed_lower
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
       (grad_g (I := I) g ⟨_, hv⟩) (grad_g (I := I) g ⟨_, hv⟩)
-    simpa only [energy, grad_g_apply] using hinner
+    exact hinner.congr (fun _ => rfl)
   have hv2cont : Continuous (fun x => v x ^ 2) := hv.continuous.pow 2
   have hR2cont : Continuous (fun x => R x * v x ^ 2) := hRcont.mul hv2cont
   have hentcont : Continuous entropy := by
@@ -122,8 +124,8 @@ theorem w_fixed_lower
       -tauMax * K0 ≤ -tau * K0 := by
         nlinarith [mul_nonneg (sub_nonneg.mpr htau_le) hK0]
       _ ≤ tau * S := by
-        convert mul_le_mul_of_nonneg_left hS0 htau0.le using 1
-        all_goals ring
+        simpa only [mul_neg, mul_one, neg_mul] using
+          mul_le_mul_of_nonneg_left hS0 htau0.le
   have hLog' := hLog htau hv hpos hmass
   change Ent ≤ 2 * tau * A - ((3 : Real) / 2) * Real.log tau + L at hLog'
   have hW :

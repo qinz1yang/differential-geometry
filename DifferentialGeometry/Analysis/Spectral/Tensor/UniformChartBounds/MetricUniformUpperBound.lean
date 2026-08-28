@@ -13,7 +13,6 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -24,6 +23,7 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Analysis.Laplacian
@@ -60,7 +60,7 @@ private lemma g_inner_eq_chartGramBilin_of_chartAt_eq
     (g : SmoothRiemannianMetric I M) {b b₀ : M}
     (h_chart : chartAt H b = chartAt H b₀)
     (hb : b ∈ (chartAt H b₀).source) (v : E) :
-    g.inner b v v =
+    modelInnerAt (I := I) (M := M) g b v v =
       chartGramBilin (I := I) (M := M) g b₀ b v v := by
   rw [chartGramBilin_eq_innerJinv (I := I) (M := M) g b₀ b v v]
   rw [chartJinv_eq_id_of_chartAt_eq (I := I) (M := M) h_chart hb]
@@ -72,6 +72,10 @@ private lemma chartGramBilin_continuousOn_chartSource
     ContinuousOn (fun b : M => chartGramBilin (I := I) (M := M) g b₀ b)
       (chartAt H b₀).source := by
   classical
+  let hAdd : AddGroup (E →L[ℝ] E →L[ℝ] ℝ) := inferInstance
+  let hTop : IsTopologicalAddGroup (E →L[ℝ] E →L[ℝ] ℝ) := inferInstance
+  let _ : ContinuousAdd (E →L[ℝ] E →L[ℝ] ℝ) :=
+    @IsTopologicalAddGroup.toContinuousAdd _ _ hAdd hTop
   have h_eq : ∀ b : M,
       chartGramBilin (I := I) (M := M) g b₀ b =
         ∑ j : Fin (Module.finrank ℝ E),
@@ -80,8 +84,8 @@ private lemma chartGramBilin_continuousOn_chartSource
               (chartCoordCLM E j).smulRight (chartCoordCLM E k) := by
     intro b; rfl
   refine ContinuousOn.congr ?_ (fun b _ => (h_eq b).symm)
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
-  refine continuousOn_finset_sum _ (fun k _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun k _ => ?_)
   have h_entry : ContinuousOn (fun b : M => chartGramMatrix g b₀ b j k)
       (chartAt H b₀).source := by
     have hsmooth := chartGramMatrix_entry_contMDiffOn (I := I) g b₀ j k
@@ -96,8 +100,14 @@ omit [InnerProductSpace ℝ E] [T2Space M] in
 private lemma chartGramBilin_norm_continuousOn
     (g : SmoothRiemannianMetric I M) (b₀ : M) :
     ContinuousOn (fun b : M => ‖chartGramBilin (I := I) (M := M) g b₀ b‖)
-      (chartAt H b₀).source :=
-  continuous_norm.comp_continuousOn
+      (chartAt H b₀).source := by
+  let hNorm : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let hSemiComm : SeminormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
+    @NormedAddCommGroup.toSeminormedAddCommGroup _ hNorm
+  let _ : SeminormedAddGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
+    @SeminormedAddCommGroup.toSeminormedAddGroup _ hSemiComm
+  exact continuous_norm.comp_continuousOn
     (chartGramBilin_continuousOn_chartSource (I := I) (M := M) g b₀)
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
@@ -105,8 +115,9 @@ private lemma g_inner_le_chartGramBilin_norm_sq
     (g : SmoothRiemannianMetric I M) {b b₀ : M}
     (h_chart : chartAt H b = chartAt H b₀)
     (hb : b ∈ (chartAt H b₀).source) (v : E) :
-    g.inner b v v ≤ ‖chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ ^ 2 := by
-  have h_eq : g.inner b v v =
+    modelInnerAt (I := I) (M := M) g b v v ≤
+      ‖chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ ^ 2 := by
+  have h_eq : modelInnerAt (I := I) (M := M) g b v v =
       chartGramBilin (I := I) (M := M) g b₀ b v v :=
     g_inner_eq_chartGramBilin_of_chartAt_eq (I := I) (M := M) g h_chart hb v
   rw [h_eq]
@@ -208,7 +219,7 @@ theorem g_inner_chartJinv_sqrt_uniform_upper_bound_on_compact
     {K_base : Set M} (hK_base : IsCompact K_base)
     (hK_sub : K_base ⊆ (chartAt H α).source) :
     ∃ K : ℝ, 0 < K ∧ ∀ b ∈ K_base, ∀ v : E,
-      Real.sqrt (g.inner b
+      Real.sqrt (modelInnerAt (I := I) (M := M) g b
           (chartTrivializationLinearMapSymm (I := I) (M := M) α b v)
           (chartTrivializationLinearMapSymm (I := I) (M := M) α b v)) ≤ K * ‖v‖ := by
   obtain ⟨K, hK_pos, h⟩ :=

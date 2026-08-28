@@ -253,7 +253,8 @@ theorem UnitSpeedFlow.flow_image_sublevel (Φ : UnitSpeedFlow f a b)
 theorem GradientLikeFlow.toDiffeomorph_image_sublevel (Φ : GradientLikeFlow I f a b)
     {t : ℝ} (ht : t ∈ Set.Icc 0 (b - a)) :
     Φ.toDiffeomorph t '' sublevel f b = sublevel f (b - t) := by
-  simpa [toDiffeomorph] using Φ.flow_image_sublevel ht
+  rw [show (⇑(Φ.toDiffeomorph t) : M → M) = Φ.flow t from rfl]
+  exact Φ.flow_image_sublevel ht
 
 omit [TopologicalSpace M] in
 theorem UnitSpeedFlow.image_sublevels (Φ : UnitSpeedFlow f a b) (hab : a ≤ b) :
@@ -331,7 +332,12 @@ theorem sublevel_transport_of_stripUnitSpeedVectorField [I.Boundaryless]
     change f (Φ (a - b) x) ≤ b
     have hγ' : IsMIntegralCurve (fun s : ℝ => Φ (s - t) x) v := by
       have hc := IsMIntegralCurve.comp_add (curveAt_integralCurve v hcomplete x) (-t)
-      simpa [Φ, sub_eq_add_neg] using hc
+      have hfun : (curveAt v hcomplete x ∘ fun s : ℝ ↦ s + -t) =
+          fun s : ℝ ↦ Φ (s - t) x := by
+        funext s
+        rfl
+      rw [← hfun]
+      exact hc
     have hrb := f_rate_bounds_of_integralCurve f hf v hrate (hγ := hγ') (t := t) ht
     have hmain : f (Φ (-t) x) ≤ f x + t := by
       have h1 : f (Φ (-t) x) - t ≤ f x := by
@@ -441,7 +447,12 @@ theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
     · change f (Φ (a - b) x) ≤ b
       have hγ' : IsMIntegralCurve (fun s : ℝ => Φ (s - t) x) v := by
         have hc := IsMIntegralCurve.comp_add (curveAt_integralCurve v hcomplete x) (-t)
-        simpa [Φ, sub_eq_add_neg] using hc
+        have hfun : (curveAt v hcomplete x ∘ fun s : ℝ ↦ s + -t) =
+            fun s : ℝ ↦ Φ (s - t) x := by
+          funext s
+          rfl
+        rw [← hfun]
+        exact hc
       have hrb := f_rate_bounds_of_integralCurve f hf v hrate (hγ := hγ') (t := t) ht
       have hmain : f (Φ (-t) x) ≤ f x + t := by
         have h1 : f (Φ (-t) x) - t ≤ f x := by
@@ -501,7 +512,8 @@ theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
 
 theorem GradientLikeFlow.toDiffeomorph_image_sublevels (Φ : GradientLikeFlow I f a b) (hab : a ≤ b) :
     Φ.toDiffeomorph (a - b) '' sublevel f a = sublevel f b := by
-  simpa [GradientLikeFlow.toDiffeomorph] using (UnitSpeedFlow.image_sublevels Φ.toUnitSpeedFlow hab)
+  rw [show (⇑(Φ.toDiffeomorph (a - b)) : M → M) = Φ.flow (a - b) from rfl]
+  exact UnitSpeedFlow.image_sublevels Φ.toUnitSpeedFlow hab
 
 noncomputable def linearModelFlow (a b : ℝ) :
     GradientLikeFlow 𝓘(ℝ, MorseModel 1) (fun y : MorseModel 1 => y 0) a b where

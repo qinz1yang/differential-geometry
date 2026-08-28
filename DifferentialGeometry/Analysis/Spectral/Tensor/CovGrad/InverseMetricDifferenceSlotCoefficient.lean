@@ -34,14 +34,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [CompleteSpace E]
 
-set_option backward.isDefEq.respectTransparency false in
 def inverseMetricDifferenceSlotCoefficient (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M => TensorRSSpace.ofCLM (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x)
       contMDiff_toFun := gInvDiffSlotEndo_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
 def inverseMetricDifferenceCoefficientFamily (g₀ g₁ : SmoothRiemannianMetric I M) :
     ∀ r : ℕ, SmoothCcTensor g₀ (r + 0) (r + 0) :=
   fun r => match r with
@@ -60,7 +58,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [CompleteSpace E]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] in
 theorem inverseMetricDifferenceCoefficientFamily_iteratedCovGrad_singleSum_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (x₀ : M) (W : SmoothCcTensor g₀ 0 2) (a : ℕ) :
@@ -77,9 +74,8 @@ theorem inverseMetricDifferenceCoefficientFamily_iteratedCovGrad_singleSum_le
   fixedCoeffDiffOp_iteratedCovGrad_singleSum_le (I := I) (M := M) g₀
     (inverseMetricDifferenceCoefficientFamily (I := I) g₀ g₁) x₀ 2 W a
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_inverseMetricDifferenceSlotCoefficient_toSection_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (covGrad (I := I) (M := M) g₀ 2 2 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x =
@@ -88,7 +84,6 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_toSection_eq
           (fun y : M => (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection y) x) :=
   covGrad_toSection_apply (I := I) (M := M) g₀ 2 2 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_inverseMetricDifferenceSlotCoefficient_leibniz
@@ -97,16 +92,16 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_leibniz
     (x : M) (v : TangentSpace I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         tensorCovDerivAt (I := I) (M := M) g₀ 2 2
-          (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x v) (w x) =
+          (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) (w x) =
       Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
         (fun y => metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ y (w y)) x v -
       metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x
         (Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀) w x v) := by
-  rw [tensorCovDerivAt_def]
+  rw [tensorCovDerivAt_def, ContinuousLinearEquiv.symm_apply_apply]
   exact tensorRSCovariantDerivative_apply I M 2 2 (LeviCivita (I := I) g₀)
     (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection w x v
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_inverseMetricDifferenceSlotCoefficient_leibniz_value
@@ -116,7 +111,8 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_leibniz_value
       w x = D ∧
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           tensorCovDerivAt (I := I) (M := M) g₀ 2 2
-            (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x v) D =
+            (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) D =
         Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
           (fun y => metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ y (w y)) x v -
         metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x
@@ -125,7 +121,7 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_leibniz_value
     (F := Tensor0SModel 2 ℝ E) (V := fun y : M => Tensor0SSpace 2 I y)
     (n := (⊤ : ℕ∞)) x D
   refine ⟨w, hw, ?_⟩
-  rw [← hw, tensorCovDerivAt_def]
+  rw [← hw, tensorCovDerivAt_def, ContinuousLinearEquiv.symm_apply_apply]
   exact tensorRSCovariantDerivative_apply I M 2 2 (LeviCivita (I := I) g₀)
     (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection w x v
 

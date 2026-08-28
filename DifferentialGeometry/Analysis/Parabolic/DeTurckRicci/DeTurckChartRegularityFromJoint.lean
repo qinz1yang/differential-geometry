@@ -560,10 +560,10 @@ private lemma deTurckVF_jointContMDiffOn_goodSet
               ((chartModelBasis E) k : E))
           (s ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
       intro k
-      refine ContMDiffOn.smul (V := E) ?_ contMDiffOn_const
-      exact jointDeTurckVFComp_alongChart_contMDiffOn g_bg T g_DT hJ α k hs
+      exact (jointDeTurckVFComp_alongChart_contMDiffOn g_bg T g_DT hJ α k hs).smul
+        contMDiffOn_const
     refine ContMDiffOn.congr ?_ hread_eq
-    exact contMDiffOn_finset_sum (fun k _ => hsummand k)
+    exact contMDiffOn_finsetSum (fun k _ => hsummand k)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

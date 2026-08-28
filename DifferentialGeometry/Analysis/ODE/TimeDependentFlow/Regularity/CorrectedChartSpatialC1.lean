@@ -187,7 +187,7 @@ theorem corrected_chart_field_lipschitz_of_data
     intro t ht
     rcases eq_or_lt_of_le ht.1 with h0 | h0
     · subst h0
-      haveI : (nhdsWithin (0:ℝ) (Set.Ioo (0:ℝ) L)).NeBot := left_nhdsWithin_Ioo_neBot hL_pos
+      have : (nhdsWithin (0:ℝ) (Set.Ioo (0:ℝ) L)).NeBot := left_nhdsWithin_Ioo_neBot hL_pos
       refine lipschitzOnWith_of_tendsto_aux
         (fun s => fun y : E => chartTrivRepr (I := I) α (X s) y)
         (fun y : E => chartTrivRepr (I := I) α (X 0) y) (Real.toNNReal C)

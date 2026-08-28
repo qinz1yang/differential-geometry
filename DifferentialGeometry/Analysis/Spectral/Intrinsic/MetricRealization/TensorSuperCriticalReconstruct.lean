@@ -19,7 +19,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -68,7 +67,7 @@ private lemma chartTargetEuclid_sdiff_chartPouKernel_subset' (α : M) :
     chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  Set.diff_subset
+  Set.sdiff_subset
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma superCriticalChartComponent_ae_zero_off_kernel
@@ -172,7 +171,7 @@ theorem superCriticalChartComponent_exists_smooth_representative
     superCriticalChartComponent_ae_zero_off_kernel
       (I := I) (M := M) g r s w α P₀
   have hK_closed : IsClosed K := hK_compact.isClosed
-  have hΩK_subset : Ω \ K ⊆ Ω := Set.diff_subset
+  have hΩK_subset : Ω \ K ⊆ Ω := Set.sdiff_subset
   have hu₀_ae_u_ΩK : u₀ =ᵐ[(volume : Measure EuclN).restrict (Ω \ K)] u :=
     Filter.EventuallyEq.symm
       (ae_restrict_of_ae_restrict_of_subset hΩK_subset hu_ae_u₀)
@@ -200,7 +199,7 @@ theorem superCriticalChartComponent_exists_smooth_representative
       u =ᵐ[(volume : Measure EuclN).restrict K] u_smooth :=
     (hu₀_ae_u_K.symm).trans hu_smooth_ae_u₀_K.symm
   have hΩ_eq : Ω = K ∪ (Ω \ K) := by
-    rw [Set.union_diff_cancel hK_subset_Ω]
+    rw [Set.union_sdiff_cancel hK_subset_Ω]
   have hu_ae_u_smooth :
       u =ᵐ[(volume : Measure EuclN).restrict Ω] u_smooth := by
     rw [hΩ_eq]
@@ -635,7 +634,7 @@ private lemma wChartComp_ae_eq_chartKernelCutoffPushed_mul (w : TensorL2 r s g)
           (chartTargetEuclid (I := I) (M := M) γ \
             chartPouKernel (I := I) (M := M) γ) := by
       rw [Measure.restrict_restrict hK_meas.compl, Set.inter_comm,
-        ← Set.diff_eq]
+        ← Set.sdiff_eq]
     rw [h_restrict_eq]
     exact h_off_raw
   have h_off_K : ∀ᵐ y ∂((volume : Measure EuclN).restrict

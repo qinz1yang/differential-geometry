@@ -5,7 +5,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -499,6 +498,7 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
       simp only [L]
       ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 private theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_sub_eq_two_terms
@@ -705,7 +705,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1217,7 +1216,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1371,7 +1369,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1484,7 +1481,7 @@ theorem exists_lowOrderFirstDerivativeCoefficient_pairing_secondOrder_bound
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [P, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1492,7 +1489,7 @@ theorem exists_lowOrderFirstDerivativeCoefficient_pairing_secondOrder_bound
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [Q, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -1766,7 +1763,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1841,6 +1837,7 @@ theorem exists_lowOrderFirstDerivativePathIntegral_secondOrder_bound
           R A hR hA hT2 hT3 hTn hs)
   simpa only [lowOrderFirstDerivativePathIntegral, covariantJetNormSq, Nat.reduceAdd] using hpath
 
+omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegral_apply_decomposition
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1872,7 +1869,9 @@ theorem lowerScalePathIntegral_apply_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    simpa only [JointlySmoothCcTensorFamily, S, Ψ] using
+    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+      (δ := δ) (δ' := δ)
+    simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
         g g T hδ hδZ
   have hjL : JointlySmoothCcTensorFamily (I := I) g 2 2 S L := by
@@ -1948,6 +1947,7 @@ theorem lowerScalePathIntegral_apply_decomposition
   rw [hone, unitModel_add (I := I) (M := M) g,
     iteratedCovGrad_succ, iteratedCovGrad_zero]
 
+omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegral_apply_affine_decomposition
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1981,7 +1981,9 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    simpa only [JointlySmoothCcTensorFamily, S, Ψ] using
+    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+      (δ := δ) (δ' := δ)
+    simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
         g g T hδ hδZ
   have hjL : JointlySmoothCcTensorFamily (I := I) g 2 2 S L := by

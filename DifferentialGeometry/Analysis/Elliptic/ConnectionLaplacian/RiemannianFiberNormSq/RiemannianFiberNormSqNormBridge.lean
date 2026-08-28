@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
@@ -59,7 +58,7 @@ theorem inner_self_eq_tensorInnerPointwise
     (inner ℝ T T : ℝ) =
       tensorInnerPointwise (I := I) (M := M) g r s x
         (TensorRSSpace.toModel T) (TensorRSSpace.toModel T) := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   have hclm : (tensorRSRiemannianInnerCLM (I := I) (M := M) g r s x T T : ℝ) =
       tensorInnerPointwise (I := I) (M := M) g r s x
@@ -79,7 +78,7 @@ theorem norm_eq_sqrt_tensorInnerPointwise
       Real.sqrt
         (tensorInnerPointwise (I := I) (M := M) g r s x
           (TensorRSSpace.toModel T) (TensorRSSpace.toModel T)) := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   rw [← inner_self_eq_tensorInnerPointwise (I := I) (M := M) g r s x T]
   rw [real_inner_self_eq_norm_sq]
@@ -98,7 +97,7 @@ theorem norm_eq_of_tensorInnerPointwise_eq
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
     ‖T‖ = ‖S‖ := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   rw [norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x T,
     norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x S, h]

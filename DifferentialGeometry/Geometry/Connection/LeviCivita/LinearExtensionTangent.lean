@@ -9,6 +9,7 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
+
 open Bundle Manifold Set FiberBundle NormedSpace
 open scoped Manifold Topology ContDiff
 
@@ -20,23 +21,23 @@ namespace Connection
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 def tangentCoord (x : M) (w : TangentSpace I x) : E :=
   (trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x w
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] lemma tangentCoord_apply (x : M) (w : TangentSpace I x) :
     tangentCoord (I := I) x w =
       (trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x w := rfl
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 lemma tangentCoord_zero (x : M) : tangentCoord (I := I) x 0 = 0 := by
   simp [tangentCoord]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 lemma tangentCoord_smul (x : M) (c : ℝ) (w : TangentSpace I x) :
     tangentCoord (I := I) x (c • w) = c • tangentCoord (I := I) x w := by
   simp [tangentCoord]
@@ -44,12 +45,12 @@ lemma tangentCoord_smul (x : M) (c : ℝ) (w : TangentSpace I x) :
 def coordExtensionTangent (x : M) (w : TangentSpace I x) (b : M) : TangentSpace I b :=
   (trivializationAt E (TangentSpace I) x).symmL ℝ b (tangentCoord (I := I) x w)
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] lemma coordExtensionTangent_apply (x : M) (w : TangentSpace I x) (b : M) :
     coordExtensionTangent (I := I) x w b =
       (trivializationAt E (TangentSpace I) x).symmL ℝ b (tangentCoord (I := I) x w) := rfl
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 lemma coordExtensionTangent_self (x : M) (w : TangentSpace I x) :
     coordExtensionTangent (I := I) x w x = w := by
   classical
@@ -58,18 +59,18 @@ lemma coordExtensionTangent_self (x : M) (w : TangentSpace I x) :
   simp only [coordExtensionTangent_apply, tangentCoord_apply]
   exact (trivializationAt E (TangentSpace I) x).symmL_continuousLinearMapAt hx w
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 lemma coordExtensionTangent_map_zero (x : M) (b : M) :
     coordExtensionTangent (I := I) x (0 : TangentSpace I x) b = 0 := by
   rw [coordExtensionTangent_apply, tangentCoord_zero, map_zero]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 lemma coordExtensionTangent_map_smul (x : M) (c : ℝ) (w : TangentSpace I x) (b : M) :
     coordExtensionTangent (I := I) x (c • w) b =
       c • coordExtensionTangent (I := I) x w b := by
   simp only [coordExtensionTangent_apply, tangentCoord_smul, map_smul]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 lemma coordExtensionTangent_contMDiffOn (x : M) (w : TangentSpace I x) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (T% (coordExtensionTangent (I := I) x w))
@@ -96,7 +97,8 @@ lemma coordExtensionTangent_contMDiffOn (x : M) (w : TangentSpace I x) :
     have h := (trivializationAt E (TangentSpace I) x).apply_mk_symm hb
       (tangentCoord (I := I) x w)
     simpa using congrArg Prod.snd h
-  simpa [coordExtensionTangent, Trivialization.symmL_apply] using happ
+  rw [coordExtensionTangent, Trivialization.symmL_apply _ hb]
+  exact happ
 
 def linExtBump (x : M) : SmoothBumpFunction I x :=
   Classical.arbitrary (SmoothBumpFunction I x)
@@ -105,29 +107,25 @@ def linearExtensionTangent (x : M) (w : TangentSpace I x) :
     Π b : M, TangentSpace I b :=
   fun b => (linExtBump (I := I) x : M → ℝ) b • coordExtensionTangent (I := I) x w b
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma linearExtensionTangent_apply (x : M) (w : TangentSpace I x) (b : M) :
     linearExtensionTangent (I := I) x w b =
       (linExtBump (I := I) x : M → ℝ) b • coordExtensionTangent (I := I) x w b := rfl
 
-omit [InnerProductSpace ℝ E] [IsManifold I ∞ M] in
+omit [IsManifold I ∞ M] in
 lemma linExtBump_eq_one (x : M) : (linExtBump (I := I) x : M → ℝ) x = 1 :=
   (linExtBump (I := I) x).eq_one
 
-omit [InnerProductSpace ℝ E] in
 theorem linearExtensionTangent_eq (x : M) (w : TangentSpace I x) :
     linearExtensionTangent (I := I) x w x = w := by
   rw [linearExtensionTangent_apply, linExtBump_eq_one, one_smul,
     coordExtensionTangent_self]
 
-omit [InnerProductSpace ℝ E] in
 theorem linearExtensionTangent_map_zero (x : M) :
     linearExtensionTangent (I := I) x (0 : TangentSpace I x) = 0 := by
   funext b
   rw [linearExtensionTangent_apply, coordExtensionTangent_map_zero, smul_zero]
   rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem linearExtensionTangent_map_smul (x : M) (c : ℝ) (w : TangentSpace I x) :
     linearExtensionTangent (I := I) x (c • w) =
       c • linearExtensionTangent (I := I) x w := by
@@ -135,7 +133,6 @@ theorem linearExtensionTangent_map_smul (x : M) (c : ℝ) (w : TangentSpace I x)
   rw [Pi.smul_apply, linearExtensionTangent_apply, linearExtensionTangent_apply,
     coordExtensionTangent_map_smul, smul_comm]
 
-omit [InnerProductSpace ℝ E] in
 theorem linearExtensionTangent_smooth [T2Space M] (x : M) (w : TangentSpace I x) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (linearExtensionTangent (I := I) x w)) := by
   classical
@@ -168,7 +165,7 @@ section Reduction
 variable [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma chartE_section_repr_coordExtensionTangent_eq
     (x : M) (w : TangentSpace I x) {b : M}
@@ -178,7 +175,7 @@ lemma chartE_section_repr_coordExtensionTangent_eq
   rw [chartE_section_repr_eq_trivToE, coordExtensionTangent_apply]
   exact (trivializationAt E (TangentSpace I) x).continuousLinearMapAt_symmL (R := ℝ) hb _
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma chartE_section_repr_linearExtensionTangent_eventuallyEq_const
     (x : M) (w : TangentSpace I x) :
@@ -199,7 +196,7 @@ lemma chartE_section_repr_linearExtensionTangent_eventuallyEq_const
   rw [chartE_section_repr_eq_trivToE, hWb, ← chartE_section_repr_eq_trivToE]
   exact chartE_section_repr_coordExtensionTangent_eq (I := I) x w hb2
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma fderiv_chartE_section_repr_linearExtensionTangent_eq_zero
     (x : M) (w : TangentSpace I x) :
@@ -230,7 +227,7 @@ lemma fderiv_chartE_section_repr_linearExtensionTangent_eq_zero
   rw [hconst.fderiv_eq]
   exact fderiv_const_apply (𝕜 := ℝ) (tangentCoord (I := I) x w)
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem covApply_linearExtensionTangent_basepoint_eq
     (g : SmoothRiemannianMetric I M) (x : M) (w : TangentSpace I x)

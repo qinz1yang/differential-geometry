@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricCovariantSmoothness
+
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -204,10 +206,10 @@ private theorem metricDiff02ModelFun_toModel_apply
     Tensor0SSpace.toModel (metricDiff02ModelFun (I := I) g₁ g₂ x) v =
       metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) := by
   unfold metricDiff02ModelFun
-  rw [Tensor0SSpace.toModel_ofModel]
+  change (biForm₂ToModel (TangentSpace I x)
+    (metricDiff02 (I := I) g₁ g₂ x)) v = _
   exact biForm₂ToModel_apply (TangentSpace I x) (metricDiff02 (I := I) g₁ g₂ x) v
 
-set_option backward.isDefEq.respectTransparency false in
 def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 2 :=
   letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -244,7 +246,7 @@ def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem metricDiff02Field_toModel_apply
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.toModel (metricDiff02Field (I := I) g₁ g₂ x) v =
+    metricDiff02Field (I := I) g₁ g₂ x v =
       metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) :=
   metricDiff02ModelFun_toModel_apply (I := I) g₁ g₂ x v
 
@@ -323,10 +325,10 @@ private theorem metricDiff02CovModelFun_toModel_apply
     Tensor0SSpace.toModel (metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x) v =
       metricDiff02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) := by
   unfold metricDiff02CovModelFun
-  rw [Tensor0SSpace.toModel_ofModel]
+  change (triFormToModel (TangentSpace I x)
+    (metricDiff02Cov (I := I) g₀ g₁ g₂ x)) v = _
   exact triFormToModel_apply (TangentSpace I x) (metricDiff02Cov (I := I) g₀ g₁ g₂ x) v
 
-set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
   letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
@@ -366,7 +368,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 @[simp] theorem metricDiff02CovField_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 3 → TangentSpace I x) :
-    Tensor0SSpace.toModel (metricDiff02CovField (I := I) g₀ g₁ g₂ x) v =
+    metricDiff02CovField (I := I) g₀ g₁ g₂ x v =
       metricDiff02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) :=
   metricDiff02CovModelFun_toModel_apply (I := I) g₀ g₁ g₂ x v
 
@@ -447,10 +449,10 @@ private theorem metricDiff02CovIterateModelFun_toModel_apply
     Tensor0SSpace.toModel (metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x) v =
       metricDiff02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) := by
   unfold metricDiff02CovIterateModelFun
-  rw [Tensor0SSpace.toModel_ofModel]
+  change (quadFormToModel (TangentSpace I x)
+    (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x)) v = _
   exact quadFormToModel_apply (TangentSpace I x) (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x) v
 
-set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 4 :=
   letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
@@ -490,23 +492,20 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 @[simp] theorem metricDiff02CovIterateField_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 4 → TangentSpace I x) :
-    Tensor0SSpace.toModel (metricDiff02CovIterateField (I := I) g₀ g₁ g₂ x) v =
+    metricDiff02CovIterateField (I := I) g₀ g₁ g₂ x v =
       metricDiff02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) :=
   metricDiff02CovIterateModelFun_toModel_apply (I := I) g₀ g₁ g₂ x v
 
-set_option backward.isDefEq.respectTransparency false in
 def metricDiff02MixedSection (g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
     (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02Field (I := I) g₁ g₂)
 
-set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 3 ℝ E, (fun x : M => TensorRSSpace 0 3 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
     (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02CovField (I := I) g₀ g₁ g₂)
 
-set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovIterateMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 4 ℝ E, (fun x : M => TensorRSSpace 0 4 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)

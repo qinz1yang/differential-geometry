@@ -87,7 +87,7 @@ theorem eigenvectorChartComponent_exists_smooth_representative
       g r s i α P₀
   have hK_closed : IsClosed K := hK_compact.isClosed
   have hΩK_open : IsOpen (Ω \ K) := hΩ_open.sdiff hK_closed
-  have hΩK_subset : Ω \ K ⊆ Ω := Set.diff_subset
+  have hΩK_subset : Ω \ K ⊆ Ω := Set.sdiff_subset
   have hu₀_ae_u_ΩK : u₀ =ᵐ[(volume : Measure EuclN).restrict (Ω \ K)] u :=
     Filter.EventuallyEq.symm
       (ae_restrict_of_ae_restrict_of_subset hΩK_subset hu_ae_u₀)
@@ -115,7 +115,7 @@ theorem eigenvectorChartComponent_exists_smooth_representative
       u =ᵐ[(volume : Measure EuclN).restrict K] u_smooth :=
     (hu₀_ae_u_K.symm).trans hu_smooth_ae_u₀_K.symm
   have hΩ_eq : Ω = K ∪ (Ω \ K) := by
-    rw [Set.union_diff_cancel hK_subset_Ω]
+    rw [Set.union_sdiff_cancel hK_subset_Ω]
   have hu_ae_u_smooth :
       u =ᵐ[(volume : Measure EuclN).restrict Ω] u_smooth := by
     rw [hΩ_eq]

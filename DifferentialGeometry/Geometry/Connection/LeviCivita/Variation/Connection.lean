@@ -78,7 +78,7 @@ def metricCovAtBase
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base var : Real) (x : M) (d a b : Idx) : Real :=
-  extDerivFun (I := I)
+  mvfderiv (I := I)
       (fun y : M => (G.metric var).inner y (frame a y) (frame b y))
       x (frame d x) -
     (G.metric var).inner x
@@ -207,10 +207,10 @@ def metricExtDtOn
   ∀ x : M, x ∈ u -> ∀ d a b : Idx,
     HasDerivAt
       (fun s : Real =>
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M => (G.metric s).inner y (frame a y) (frame b y))
           x (frame d x))
-      (extDerivFun (I := I) (fun y : M => metricDot y a b) x (frame d x))
+      (mvfderiv (I := I) (fun y : M => metricDot y a b) x (frame d x))
       base
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
@@ -257,7 +257,7 @@ def dotCovAt
     (hframe : IsLocalFrameOn I E 1 frame u)
     (metricDot : M -> Idx -> Idx -> Real)
     (x : M) (d a b : Idx) : Real :=
-  extDerivFun (I := I) (fun y : M => metricDot y a b) x (frame d x) -
+  mvfderiv (I := I) (fun y : M => metricDot y a b) x (frame d x) -
     (∑ p : Idx,
       DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe x d a p *
         metricDot x p b) -
@@ -408,7 +408,7 @@ theorem covDtEqDotCov
   have hDeriv :
       HasDerivAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun y : M => (G.metric s).inner y (frame a y) (frame b y))
               x (frame d x) -
             (G.metric s).inner x Ca (frame b x) -
@@ -473,7 +473,7 @@ theorem metricCovVar_ext
   have hDeriv :
       HasDerivAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun y : M => (G.metric s).inner y (frame a y) (frame b y))
               x (frame d x) -
             (G.metric s).inner x Ca (frame b x) -
@@ -595,14 +595,14 @@ theorem metricCovAtBase_eq_connectionDifference
       (I := I) (hLC var).1 (frame d) (frame a) (frame b) hfd hfa hfb
   unfold metricCovAtBase connectionDifferenceLow connectionDifferenceVec
   have hmc' :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => (G.metric var).inner y (frame a y) (frame b y))
           x (frame d x) =
         (G.metric var).inner x
             ((G.connection var (frame a) x) (frame d x)) (frame b x) +
           (G.metric var).inner x (frame a x)
             ((G.connection var (frame b) x) (frame d x)) := by
-    simpa [extDerivFun] using hmc
+    with_unfolding_all exact hmc
   rw [hmc']
   simp
   ring
@@ -1486,7 +1486,14 @@ theorem varLowDeriv
                 (metricDot x k l) base := by
             simpa [metricComp] using hmetricVar x hx k l
           have hmul := hγ.mul hm
-          simpa [gammaSub, metricComp] using hmul))
+          have hmul' :
+              HasDerivAt (fun s : Real => gammaSub k s * metricComp k s)
+                (gammaDot x k i j * metricComp k base +
+                  gammaSub k base * metricDot x k l) base := by
+            change HasDerivAt
+              ((fun s : Real => gammaSub k s) * fun s => metricComp k s) _ base
+            exact hmul
+          simpa [gammaSub, metricComp] using hmul'))
   have hEq :
       (fun s : Real => connectionDifferenceLow (I := I) G frame s base s x i j l) =ᶠ[nhds base]
         (fun s : Real => ∑ k : Idx, gammaSub k s * metricComp k s) := by

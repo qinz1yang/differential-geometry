@@ -25,7 +25,7 @@ def IsMetricCompatibleAt_gen
     MDiffAt (T% X) x ->
       MDiffAt (T% Y) x ->
         MDiffAt (T% Z) x ->
-          mfderiv I 𝓘(Real, Real) (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
+          mvfderiv I (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
             g.inner x (cov Y x (X x)) (Z x) +
               g.inner x (Y x) (cov Z x (X x))
 
@@ -41,7 +41,7 @@ theorem metric_compatible_at_apply
     (hmc : IsMetricCompatibleAt_gen (I := I) cov g x)
     (X Y Z : (p : M) -> TangentSpace I p)
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
-    mfderiv I 𝓘(Real, Real) (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
+    mvfderiv I (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
       g.inner x (cov Y x (X x)) (Z x) +
         g.inner x (Y x) (cov Z x (X x)) :=
   hmc X Y Z hX hY hZ
@@ -54,7 +54,7 @@ theorem metric_compatible_apply
     {x : M}
     (X Y Z : (p : M) -> TangentSpace I p)
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
-    mfderiv I 𝓘(Real, Real) (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
+    mvfderiv I (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
       g.inner x (cov Y x (X x)) (Z x) +
         g.inner x (Y x) (cov Z x (X x)) :=
   metric_compatible_at_apply (I := I) (hmc x) X Y Z hX hY hZ

@@ -9,7 +9,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoef
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroVectorBundleExpansion
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -49,6 +48,10 @@ private theorem connLow_self_zero
   intro m
   change unitModel (I := I) (M := M) g 3
       (metricLoweredConnectionDifferenceCoefficient (I := I) g g) x m = 0
+  rw [show m = fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) by
+    funext i
+    exact (tangentSpaceModelContinuousLinearEquiv (I := I) x).apply_symm_apply (m i)]
   rw [connectionDifferenceLoweredCc_unitModel_apply']
   rw [PDE.DeTurck.connectionDifference_self]
   simp
@@ -260,10 +263,10 @@ theorem insert_h1_uniform
     apply tensorRSSpace_ext 1 1 x
     intro om
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply]
+      sub_apply]
     simp only [cometricRaiseSlot0Field_toSection]
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply]
+      sub_apply]
     rfl
   have hSDform :
       SD = cometricRaiseSlot0Field (I := I) (M := M) g₀ 0 AD := by

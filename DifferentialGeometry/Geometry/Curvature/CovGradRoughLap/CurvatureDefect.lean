@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -43,6 +42,7 @@ noncomputable def covGradRoughLapCurv
   rawTensorConnLapSmooth (I := I) g 0 3 (covGrad (I := I) (M := M) g 0 2 T₀) -
     covGrad (I := I) (M := M) g 0 2 (rawTensorConnLapSmooth (I := I) g 0 2 T₀)
 
+omit [CompactSpace M] in
 theorem covGradRoughLap_commutator_eq
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) :
     rawTensorConnLapSmooth (I := I) g 0 3 (covGrad (I := I) (M := M) g 0 2 T₀) =
@@ -99,6 +99,7 @@ theorem rhs_curry_eq_swap_add_residual
   rw [add_comm]
   rw [sub_add_cancel]
 
+omit [CompactSpace M] in
 theorem covGrad_rawConnLap_curry_eq_swap_add_residual
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -112,6 +113,7 @@ theorem covGrad_rawConnLap_curry_eq_swap_add_residual
   rw [covGrad_rawConnLap_unit_eval_curry (I := I) (M := M) g T₀ x w]
   exact rhs_curry_eq_swap_add_residual (I := I) (M := M) g T₀ x w
 
+omit [CompactSpace M] in
 theorem frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -158,6 +160,7 @@ noncomputable def covGradRoughLapCurv_gen
   rawTensorConnLapSmooth (I := I) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s T₀) -
     covGrad (I := I) (M := M) g 0 s (rawTensorConnLapSmooth (I := I) g 0 s T₀)
 
+omit [CompactSpace M] in
 lemma covGrad_rawConnLap_unit_eval_curry_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
@@ -220,6 +223,7 @@ theorem rhs_curry_eq_swap_add_residual_gen
   rw [add_comm]
   rw [sub_add_cancel]
 
+omit [CompactSpace M] in
 theorem covGrad_rawConnLap_curry_eq_swap_add_residual_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
@@ -268,8 +272,9 @@ lemma frame_trace_third_eq_swap_unit_gen
   have happ := congrArg
     (fun (φ : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) =>
       φ (unitZeroSec (I := I) (M := M) x)) hswap
-  simpa only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.add_apply] using happ
+  simpa only [sum_apply, add_apply] using happ
 
+omit [CompactSpace M] in
 theorem frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :

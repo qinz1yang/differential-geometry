@@ -41,14 +41,14 @@ private noncomputable def lieDerivMetricClmAux
       have := (lieDerivMetric (I := I) g W x).map_add v v'
       have happ := congrArg
         (fun (φ : TangentSpace I x →ₗ[ℝ] ℝ) => φ w) this
-      simp [ContinuousLinearMap.add_apply,
+      simp [add_apply,
              LinearMap.coe_toContinuousLinearMap']
     map_smul' := fun c v => by
       ext w
       have := (lieDerivMetric (I := I) g W x).map_smul c v
       have happ := congrArg
         (fun (φ : TangentSpace I x →ₗ[ℝ] ℝ) => φ w) this
-      simp [ContinuousLinearMap.smul_apply,
+      simp [smul_apply,
              LinearMap.coe_toContinuousLinearMap', smul_eq_mul]}
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -92,8 +92,8 @@ theorem deTurckRicciRHS_apply
       = (-2 : ℝ) * ricciTensor (I := I) g x v w
         + lieDerivMetric (I := I) g (deTurckVF (I := I) g g_bg) x v w := by
   unfold deTurckRicciRHS
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+  rw [add_apply, add_apply,
+      smul_apply, smul_apply]
   rw [lieDerivMetricClm_apply]
   simp only [smul_eq_mul]
   rfl

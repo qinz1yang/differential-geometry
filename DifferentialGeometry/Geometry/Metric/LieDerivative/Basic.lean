@@ -161,14 +161,14 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
     (fun v w =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) i *
-            ((chartModelBasis E).repr w) j *
+          ((centeredChartTangentBasis (I := I) x).repr v) i *
+            ((centeredChartTangentBasis (I := I) x).repr w) j *
             lieDerivMetricMatrix (I := I) g W i j x)
     (fun v₁ v₂ w => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (v₁ + v₂) =
-          (chartModelBasis E).repr v₁ + (chartModelBasis E).repr v₂ := map_add _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
+          (centeredChartTangentBasis (I := I) x).repr v₁ +
+            (centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
       rw [hrepr, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [← Finset.sum_add_distrib]
@@ -177,9 +177,8 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
       ring)
     (fun c v w => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (c • v) =
-          c • (chartModelBasis E).repr v := map_smul _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • v) =
+          c • (centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -189,9 +188,9 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
       ring)
     (fun v w₁ w₂ => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (w₁ + w₂) =
-          (chartModelBasis E).repr w₁ + (chartModelBasis E).repr w₂ := map_add _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
+          (centeredChartTangentBasis (I := I) x).repr w₁ +
+            (centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
       rw [hrepr, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [← Finset.sum_add_distrib]
@@ -200,9 +199,8 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
       ring)
     (fun c v w => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (c • w) =
-          c • (chartModelBasis E).repr w := map_smul _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • w) =
+          c • (centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -218,8 +216,8 @@ lemma lieDerivMetric_apply (g : SmoothRiemannianMetric I M)
     lieDerivMetric (I := I) g W x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) i *
-            ((chartModelBasis E).repr w) j *
+          ((centeredChartTangentBasis (I := I) x).repr v) i *
+            ((centeredChartTangentBasis (I := I) x).repr w) j *
             lieDerivMetricMatrix (I := I) g W i j x :=
   rfl
 
@@ -228,15 +226,18 @@ lemma lieDerivMetric_basis_apply (g : SmoothRiemannianMetric I M)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     lieDerivMetric (I := I) g W x
-        ((chartModelBasis E) i) ((chartModelBasis E) j) =
+        (centeredChartTangentBasis (I := I) x i)
+        (centeredChartTangentBasis (I := I) x j) =
       lieDerivMetricMatrix (I := I) g W i j x := by
   classical
   rw [lieDerivMetric_apply]
   conv_lhs => rw [show
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr ((chartModelBasis E) i)) i' *
-            ((chartModelBasis E).repr ((chartModelBasis E) j)) j' *
+          ((centeredChartTangentBasis (I := I) x).repr
+            (centeredChartTangentBasis (I := I) x i)) i' *
+            ((centeredChartTangentBasis (I := I) x).repr
+              (centeredChartTangentBasis (I := I) x j)) j' *
             lieDerivMetricMatrix (I := I) g W i' j' x) =
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
@@ -562,7 +563,7 @@ theorem lieDerivMetricMatrix_smul_vectorField [I.Boundaryless]
           (extChartAt I x x) :=
         (hsmooth.contDiffAt htargetnhds).differentiableAt (by simp)
       rw [heq.fderiv_eq, fderiv_fun_const_smul hdiff,
-        ContinuousLinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
     rw [hpd]
     ring
   rw [hconv, hdeform (fun k => chartGramMatrix (I := I) g x x k j) i,
@@ -708,7 +709,7 @@ lemma chartLieMetricConvective_contMDiffOn [I.Boundaryless]
       (chartLieMetricConvective (I := I) g W α i j) (chartAt H α).source := by
   refine ContMDiffOn.congr ?_ (fun x _ => (chartLieMetricConvective_def
     (I := I) g W α i j x))
-  exact contMDiffOn_finset_sum (fun k _ =>
+  exact contMDiffOn_finsetSum (fun k _ =>
     chartLieMetricConvective_summand_contMDiffOn (I := I) g W α i j k)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -720,7 +721,7 @@ lemma chartLieMetricDeform_contMDiffOn [I.Boundaryless]
       (chartLieMetricDeform (I := I) g W α i j) (chartAt H α).source := by
   refine ContMDiffOn.congr ?_ (fun x _ => (chartLieMetricDeform_def
     (I := I) g W α i j x))
-  exact contMDiffOn_finset_sum (fun k _ =>
+  exact contMDiffOn_finsetSum (fun k _ =>
     chartLieMetricDeform_summand_contMDiffOn (I := I) g W α i j k)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in

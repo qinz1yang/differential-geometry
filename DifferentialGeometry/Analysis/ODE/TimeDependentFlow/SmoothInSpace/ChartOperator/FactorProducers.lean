@@ -6,6 +6,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 namespace DifferentialGeometry.Analysis.ODE
@@ -29,11 +30,8 @@ theorem hasDerivAt_clm_comp_right
     {A : ℝ → (E →L[ℝ] E)} {A' : E →L[ℝ] E} {t : ℝ}
     (hA : HasDerivAt A A' t) (R : E →L[ℝ] E) :
     HasDerivAt (fun s : ℝ => (A s).comp R) (A'.comp R) t := by
-  have hcompR : HasFDerivAt (fun L : E →L[ℝ] E => L.comp R)
-      ((ContinuousLinearMap.compL ℝ E E E).flip R) (A t) :=
-    ((ContinuousLinearMap.compL ℝ E E E).flip R).hasFDerivAt
-  have := hcompR.comp_hasDerivAt t hA
-  simpa using this
+  have hR : HasDerivAt (fun _ : ℝ => R) 0 t := hasDerivAt_const t R
+  simpa only [ContinuousLinearMap.comp_zero, add_zero] using hA.clm_comp hR
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
   [BoundarylessManifold I M] in
@@ -85,7 +83,7 @@ theorem chartCloseFderiv_hasDerivAt_of_eucl
         =ᶠ[𝓝 x] (fun y => Φ_eucl (extChartAt I α y) s)) :
     HasDerivAt (chartCloseFderiv (I := I) Φ_fam α x)
       (D'_eucl.comp (trivToE (I := I) α x)) t := by
-  letI : InnerProductSpace ℝ (TangentSpace I x) := (inferInstance : InnerProductSpace ℝ E)
+  let : InnerProductSpace ℝ (TangentSpace I x) := (inferInstance : InnerProductSpace ℝ E)
   have hpost : HasDerivAt
       (fun s : ℝ => (fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I α x)).comp (trivToE (I := I) α x))
       (D'_eucl.comp (trivToE (I := I) α x)) t :=
@@ -192,7 +190,7 @@ theorem chartCloseTriv_hasDerivAt_of_movingTriv
       ((-ContinuousLinearMap.mulLeftRight ℝ (E →L[ℝ] E)
           (1 : E →L[ℝ] E) (1 : E →L[ℝ] E)) g') t := by
     have := (hgt_eq ▸ hinv_fderiv).comp_hasDerivAt t hg
-    simpa using this
+    exact this.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   have hmem : ∀ᶠ s : ℝ in 𝓝 t,
       (Φ_fam s : M → M) x ∈ (chartAt H α).source :=
     flow_orbit_eventually_mem_chartAt_source (I := I) Φ_fam t x hcontAt

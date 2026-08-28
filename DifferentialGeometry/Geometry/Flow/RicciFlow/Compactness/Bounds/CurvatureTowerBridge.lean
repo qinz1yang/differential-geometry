@@ -7,7 +7,6 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

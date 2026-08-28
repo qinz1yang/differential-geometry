@@ -76,7 +76,7 @@ theorem tensorEigenIdx_one_add_lambda_lt_finite
           1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ}
           = ⋃ μ ∈ B, Sigma.mk μ '' Set.univ := by
       ext ⟨μ, k⟩
-      simp only [Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_image, Set.mem_univ,
+      simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_image, Set.mem_univ,
         true_and]
       constructor
       · intro h
@@ -93,7 +93,7 @@ theorem tensorEigenIdx_one_add_lambda_lt_finite
       intro i hi
       have hlam := tensor_lambda_nonneg (I := I) (M := M) i
       have hΛle := not_lt.1 hΛ
-      simp only [Set.mem_setOf_eq] at hi
+      simp only [Set.mem_ofPred_eq] at hi
       linarith
     rw [hempty]; exact Set.finite_empty
 
@@ -342,7 +342,7 @@ theorem tendsto_of_coeff
   have hfin0 : Tendsto (fun n =>
       ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i σ' * ((d n).coeff i) ^ 2)
       atTop (𝓝 0) := by
-    have h := tendsto_finset_sum (s := F)
+    have h := tendsto_finsetSum (s := F)
       (f := fun i n => tensorSobolevWeight (I := I) (M := M) i σ' * ((d n).coeff i) ^ 2)
       (a := fun _ : ι => (0 : ℝ))
       (fun i _ => by

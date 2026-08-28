@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -289,11 +288,11 @@ theorem intrinsic_piece_iteratedFDeriv_two_bound
                 (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
                 (extChartAt I α b)‖) := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
     tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
     tensorRSBundle_fiber r s
   obtain ⟨C, hC_nn, hC_bound⟩ := iteratedFDeriv_u_bound_012 (I := I) (M := M) α B

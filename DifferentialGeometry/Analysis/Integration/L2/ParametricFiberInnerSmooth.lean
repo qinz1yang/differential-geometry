@@ -13,7 +13,6 @@ import Mathlib.Analysis.Normed.Group.Bounded
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -29,7 +28,8 @@ theorem contMDiff_partial_deriv_snd
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
       (fun p : M × ℝ => deriv (fun s => F (p.1, s)) p.2) := by
   have hrw : (fun p : M × ℝ => deriv (fun s => F (p.1, s)) p.2) =
-      fun p : M × ℝ => (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s => F (p.1, s)) p.2) (1 : ℝ) := by
+      fun p : M × ℝ => tangentLinearMapToModel
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s => F (p.1, s)) p.2) (1 : ℝ) := by
     funext p
     rw [mfderiv_eq_fderiv]
     exact (fderiv_apply_one_eq_deriv (f := fun s => F (p.1, s)) (x := p.2)).symm
@@ -48,7 +48,9 @@ theorem contMDiff_partial_deriv_snd
       (g₂ := fun _ : M × ℝ => (1 : ℝ)) (x₀ := p₀) (m := (n : WithTop ℕ∞))
       ((hF.of_le (by exact_mod_cast le_top : ((n : WithTop ℕ∞) + 1) ≤ ∞)).contMDiffAt)
       contMDiffAt_snd contMDiffAt_id contMDiffAt_const le_rfl
-  simpa [inTangentCoordinates_model_space] using h_apply
+  rw [← hrw]
+  simpa [inTangentCoordinates_model_space, mfderiv_eq_fderiv,
+    fderiv_apply_one_eq_deriv] using h_apply
 
 section ParamIntegral
 
@@ -168,7 +170,9 @@ theorem partialSnd_contMDiffOn_Icc
     (uniqueDiffOn_Icc hT0).uniqueMDiffOn
   have hrw : (fun p : M × ℝ => derivWithin (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2) =
       fun p : M × ℝ =>
-        (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2) (1 : ℝ) := by
+        tangentLinearMapToModel
+          (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s => f p.1 s)
+            (Set.Icc (0 : ℝ) T) p.2) (1 : ℝ) := by
     funext p
     rw [mfderivWithin_eq_fderivWithin]
     exact (fderivWithin_derivWithin (𝕜 := ℝ) (f := fun s => f p.1 s)
@@ -202,7 +206,9 @@ theorem partialSnd_contMDiffOn_Icc
       contMDiffWithinAt_snd contMDiffWithinAt_id contMDiffWithinAt_const le_rfl
       (Set.mapsTo_id _) hp₀
       (fun q hq => hq.2) hUM
-  simpa [inTangentCoordinates_model_space] using h_apply
+  rw [← hrw]
+  simpa [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin,
+    fderivWithin_derivWithin] using h_apply
 
 theorem hasDerivWithinAt_integral_of_jointContMDiffOn_Icc
     (μ : Measure M) [IsFiniteMeasure μ] (f : M → ℝ → ℝ) {T : ℝ} (hT : 0 < T)
@@ -368,7 +374,7 @@ theorem contDiff_integral_fiberInner_of_jointContMDiffOn
           tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             (b.toFun p.1) ((R p.2).toFun p.1))) :
     ContDiff ℝ ∞ (fun t => (inner ℝ b (R t) : ℝ)) := by
-  haveI : IsFiniteMeasure
+  have _ : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   have hpt : (fun t => (inner ℝ b (R t) : ℝ)) =
@@ -395,7 +401,7 @@ theorem contDiffOn_integral_fiberInner_of_jointContMDiffOn_Icc
             (b.toFun p.1) ((R p.2).toFun p.1))
         ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T)) :
     ContDiffOn ℝ ∞ (fun t => (inner ℝ b (R t) : ℝ)) (Set.Icc (0 : ℝ) T) := by
-  haveI : IsFiniteMeasure
+  have _ : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   have hpt : (fun t => (inner ℝ b (R t) : ℝ)) =

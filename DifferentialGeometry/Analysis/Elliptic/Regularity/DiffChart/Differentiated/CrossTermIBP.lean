@@ -314,7 +314,7 @@ theorem cross_derivative_term_ibp
   have hvolK_finite' : (volume.restrict K : Measure EuclN) Set.univ < (⊤ : ℝ≥0∞) := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hvolK_finite
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
   have hψ_cont : Continuous ψ := hψ_smooth.continuous
   have hψ_fderiv_j_cont : ∀ j : Fin (Module.finrank ℝ E),
       Continuous (fun y : EuclN => (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) :=
@@ -562,11 +562,11 @@ theorem cross_derivative_term_ibp
             ∫ y in Ω, A i j y * v i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
               ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_LHS_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_LHS_pair i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_LHS_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_LHS_pair i j)]
   have hRHS1_sum_swap :
       ∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
@@ -577,11 +577,11 @@ theorem cross_derivative_term_ibp
           ∑ j : Fin (Module.finrank ℝ E),
             ∫ y in Ω, dA i j j y * v i y * ψ y
               ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_RHS1_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_RHS1_pair i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_RHS1_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_RHS1_pair i j)]
   have hRHS2_sum_swap :
       ∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
@@ -592,11 +592,11 @@ theorem cross_derivative_term_ibp
           ∑ j : Fin (Module.finrank ℝ E),
             ∫ y in Ω, A i j y * u₂ i j y * ψ y
               ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_RHS2_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_RHS2_pair i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_RHS2_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_RHS2_pair i j)]
   rw [hLHS_sum_swap, hRHS1_sum_swap, hRHS2_sum_swap]
   have hLHS_neg :
       ∑ i : Fin (Module.finrank ℝ E),

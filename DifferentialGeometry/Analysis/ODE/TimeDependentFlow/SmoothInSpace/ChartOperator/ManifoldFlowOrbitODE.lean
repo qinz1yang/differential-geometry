@@ -78,18 +78,24 @@ theorem chartCloseDop_deriv_basepoint_apply
         + (chartCloseTriv (I := I) Φ_fam (Φ_fam t x) x t).comp P') v
       = T' (mfderiv I I (Φ_fam t : M → M) x v) + P' v := by
   classical
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+  let w : E := v
+  let z : E := mfderiv I I (Φ_fam t : M → M) x v
+  change (T'.comp (chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t)
+      + (chartCloseTriv (I := I) Φ_fam (Φ_fam t x) x t).comp P') w =
+    T' z + P' w
+  rw [add_apply, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.comp_apply]
-  rw [chartCloseTriv_basepoint (I := I) Φ_fam t x (P' v)]
-  have hPv : chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t v
-      = mfderiv I I (Φ_fam t : M → M) x v := by
-    have hdop : flowOrbitChartTrivDerivOp (I := I) Φ_fam (Φ_fam t x) x t v
-        = chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t v := by
+  rw [chartCloseTriv_basepoint (I := I) Φ_fam t x (P' w)]
+  have hPv : chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t w = z := by
+    have hdop : flowOrbitChartTrivDerivOp (I := I) Φ_fam (Φ_fam t x) x t w
+        = chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t w := by
       rw [chartCloseDop_apply]
       exact chartCloseTriv_basepoint (I := I) Φ_fam t x
-        (chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t v)
+        (chartCloseFderiv (I := I) Φ_fam (Φ_fam t x) x t w)
     rw [← hdop]
-    exact chartCloseDop_basepoint_apply_eq_mfderiv (I := I) Φ_fam t x v
+    have hbase := chartCloseDop_basepoint_apply_eq_mfderiv (I := I) Φ_fam t x v
+    change flowOrbitChartTrivDerivOp (I := I) Φ_fam (Φ_fam t x) x t w = z at hbase
+    exact hbase
   rw [hPv]
 
 omit [NeZero (Module.finrank ℝ E)] in

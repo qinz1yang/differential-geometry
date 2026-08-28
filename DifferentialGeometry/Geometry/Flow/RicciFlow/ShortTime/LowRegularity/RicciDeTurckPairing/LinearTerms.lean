@@ -11,7 +11,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -68,9 +67,13 @@ theorem metricLoweredConnectionDifference_self
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g fun x => ?_
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [metricLoweredConnectionDifference_unitModel_apply]
+  have hm : m = fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) := by
+    funext i
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+  rw [hm, metricLoweredConnectionDifference_unitModel_apply]
   simp only [PDE.DeTurck.connectionDifference_self, Pi.zero_apply,
-    ContinuousLinearMap.zero_apply, map_zero]
+    zero_apply, map_zero]
   rfl
 theorem exists_metricLoweredConnectionDifference_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -183,7 +186,7 @@ private lemma rankZeroTensor_eq_smul_unit (x : M) (c : Tensor0SSpace 0 I x) :
   apply ContinuousMultilinearMap.ext
   intro v
   beta_reduce
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
+  rw [Tensor0SSpace.toModel_smul, smul_apply,
     smul_eq_mul]
   have h1 : Tensor0SSpace.toModel
       (unitTensor (I := I) (M := M) x) v = (1 : ℝ) := rfl
@@ -197,7 +200,8 @@ private lemma metricConnectionDifferenceLoweredCoefficient_unitModel
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3
-        (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀) x m =
+        (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (m 0) (m 1)) (m 2) := by
   rw [unitModel]
   rw [show (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x
@@ -237,21 +241,23 @@ private lemma metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
     B (u 0) (Fin.tail u)]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B (u 0) =
+  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)) =
       Tensor0SSpace.toModel B (fun _ : Fin 1 => u 0) •
         unitTensor (I := I) (M := M) x := by
     have h2 := rankZeroTensor_eq_smul_unit (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B (u 0))
+      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
     rw [h2]
     congr 1
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
       (T := B) (v0 := u 0) (vs := fun i : Fin 0 => i.elim0)]
     congr 1
     funext k
     fin_cases k
     rfl
   rw [hc, ContinuousLinearMap.map_smul, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
@@ -259,7 +265,13 @@ private lemma metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
       unitModel (I := I) (M := M) g₀ 3
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀) x
         (fun j => Fin.tail u j) from by rw [unitModel]]
-  rw [metricConnectionDifferenceLoweredCoefficient_unitModel (I := I) (M := M) g₀ g₁ x (fun j => Fin.tail u j)]
+  have hm : (fun j => Fin.tail u j) =
+      fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (Fin.tail u j)) := by
+    funext j
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+  rw [hm, metricConnectionDifferenceLoweredCoefficient_unitModel (I := I) (M := M) g₀ g₁ x
+    (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (Fin.tail u j))]
   have hcast : ((Fin.cons (u 0) (Fin.tail u) : Fin 4 → E) ∘
       Fin.castAdd 3) = (fun _ : Fin 1 => u 0) := by
     funext i
@@ -504,7 +516,7 @@ theorem exists_lieCorrectionZeroVectorBundle_covariantJetNormSq_difference_bound
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -512,7 +524,7 @@ theorem exists_lieCorrectionZeroVectorBundle_covariantJetNormSq_difference_bound
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -961,7 +973,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -1245,7 +1256,7 @@ theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism
         (Module.finrank ℝ E : ℝ) * B1 R * A * D2) ^ 2 := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem riemannCurvatureCoefficientField_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
     riemannCurvatureCoefficientField (I := I) (M := M) g T - riemannCurvatureCoefficientField (I := I) (M := M) g U =
@@ -1361,7 +1372,7 @@ theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_bou
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceQuadraticPairedTensor_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gT - connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gU =
@@ -1382,7 +1393,7 @@ theorem connectionDifferenceQuadraticPairedTensor_sub
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceQuadraticComposedTensor_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gT - connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gU =
@@ -1559,7 +1570,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderTensor_covariantJetNormSq_b
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -1753,7 +1764,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderTensor_covariantJetNormSq_d
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1761,7 +1772,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderTensor_covariantJetNormSq_d
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -2143,7 +2154,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderPairTrace_covariantJetNormS
         (mul_le_mul_of_nonneg_left hbase hfr) hfr
     _ = fr ^ 2 * Cr R * ((1 + A) ^ 4 * D3 ^ 2) := by ring
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deTurckLieEdgePairingFamily_eq_deTurckLieCovariantDerivativeExpansionPairTraceFamily
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -2482,7 +2493,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -2535,6 +2545,7 @@ variable
 
 namespace RicciDeTurckPairing
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem ricciCovariantDerivativeConnectionDifference_self
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) :
@@ -2596,13 +2607,14 @@ theorem unitModel_add
         unitModel (I := I) (M := M) g 2 B x v := by
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
-    Pi.add_apply, ContinuousLinearMap.add_apply,
-    Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+    Pi.add_apply, add_apply,
+    Tensor0SSpace.toModel_add, add_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma tensor0S_curry_zero_eq_smul_unitTensor
     (x : M) (D : Tensor0SSpace 1 I x) (v₀ : E) :
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D v₀ =
+    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v₀) =
       Tensor0SSpace.toModel D (fun _ : Fin 1 => v₀) •
         unitTensor (I := I) (M := M) x := by
   apply Tensor0SSpace.toModel_injective
@@ -2610,12 +2622,13 @@ private lemma tensor0S_curry_zero_eq_smul_unitTensor
   intro m
   beta_reduce
   have h₁ : Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D v₀) m =
+      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v₀)) m =
       Tensor0SSpace.toModel D (Fin.cons v₀ m) :=
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 0)
+    TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 0)
       (T := D) (v0 := v₀) (vs := m)
   rw [h₁, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, unitTensor_toModel_apply (I := I) (M := M) x m,
+    smul_apply, unitTensor_toModel_apply (I := I) (M := M) x m,
     smul_eq_mul, mul_one]
   congr 1
   funext k
@@ -2659,7 +2672,8 @@ private lemma slotExtendIter_two_zero_three_apply (g : SmoothRiemannianMetric I 
     rw [slotExtendFib_apply_eval (I := I) (M := M) 1 4 x _ D
       (m 0) (Fin.tail m)]
     set D₁ : Tensor0SSpace 1 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD₁
+      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₁
     rw [show
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
           (slotExtendIter (I := I) (M := M) g 0 3 1 K).toSection x) D₁) =
@@ -2675,10 +2689,10 @@ private lemma slotExtendIter_two_zero_three_apply (g : SmoothRiemannianMetric I 
     rw [tensor0S_curry_zero_eq_smul_unitTensor (I := I) (M := M) x D₁ (m 1)]
     rw [continuousLinearMap_apply_smul_unitTensor (I := I) (M := M) x 3 _ _]
     rw [← hkappa, Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     have hD₁val : Tensor0SSpace.toModel D₁ (fun _ : Fin 1 => m 1) =
         Tensor0SSpace.toModel D ![m 0, m 1] := by
-      rw [hD₁, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₁, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 1) (T := D) (v0 := m 0)
         (vs := fun _ : Fin 1 => m 1)]
       congr 1
@@ -2728,7 +2742,8 @@ lemma slotExtendIter_two_zero_four_apply (g : SmoothRiemannianMetric I M)
     rw [slotExtendFib_apply_eval (I := I) (M := M) 1 5 x _ D
       (m 0) (Fin.tail m)]
     set D₁ : Tensor0SSpace 1 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD₁
+      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₁
     rw [show
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
           (slotExtendIter (I := I) (M := M) g 0 4 1 K).toSection x) D₁) =
@@ -2744,10 +2759,10 @@ lemma slotExtendIter_two_zero_four_apply (g : SmoothRiemannianMetric I M)
     rw [tensor0S_curry_zero_eq_smul_unitTensor (I := I) (M := M) x D₁ (m 1)]
     rw [continuousLinearMap_apply_smul_unitTensor (I := I) (M := M) x 4 _ _]
     rw [← hkappa, Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     have hD₁val : Tensor0SSpace.toModel D₁ (fun _ : Fin 1 => m 1) =
         Tensor0SSpace.toModel D ![m 0, m 1] := by
-      rw [hD₁, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₁, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 1) (T := D) (v0 := m 0)
         (vs := fun _ : Fin 1 => m 1)]
       congr 1
@@ -2797,7 +2812,8 @@ private lemma slotExtendIter_two_zero_two_apply (g : SmoothRiemannianMetric I M)
     rw [slotExtendFib_apply_eval (I := I) (M := M) 1 3 x _ D
       (m 0) (Fin.tail m)]
     set D₁ : Tensor0SSpace 1 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD₁
+      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₁
     rw [show
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (slotExtendIter (I := I) (M := M) g 0 2 1 K).toSection x) D₁) =
@@ -2813,10 +2829,10 @@ private lemma slotExtendIter_two_zero_two_apply (g : SmoothRiemannianMetric I M)
     rw [tensor0S_curry_zero_eq_smul_unitTensor (I := I) (M := M) x D₁ (m 1)]
     rw [continuousLinearMap_apply_smul_unitTensor (I := I) (M := M) x 2 _ _]
     rw [← hkappa, Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     have hD₁val : Tensor0SSpace.toModel D₁ (fun _ : Fin 1 => m 1) =
         Tensor0SSpace.toModel D ![m 0, m 1] := by
-      rw [hD₁, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₁, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 1) (T := D) (v0 := m 0)
         (vs := fun _ : Fin 1 => m 1)]
       congr 1
@@ -2866,7 +2882,8 @@ private lemma slotExtendIter_three_zero_two_apply (g : SmoothRiemannianMetric I 
     rw [slotExtendFib_apply_eval (I := I) (M := M) 2 4 x _ D
       (m 0) (Fin.tail m)]
     set D₂ : Tensor0SSpace 2 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (m 0) with hD₂
+      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_two_zero_two_apply (I := I) (M := M) g K x D₂, ← hkappa,
       tensor0SProdKappaFib_apply (I := I) x kappa D₂,
       Tensor0SSpace.toModel_ofModel,
@@ -2874,7 +2891,7 @@ private lemma slotExtendIter_three_zero_two_apply (g : SmoothRiemannianMetric I 
     have hD₂val : Tensor0SSpace.toModel D₂
         ((Fin.tail m : Fin 4 → E) ∘ Fin.castAdd 2) =
         Tensor0SSpace.toModel D ![m 0, m 1, m 2] := by
-      rw [hD₂, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₂, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 2) (T := D) (v0 := m 0)
         (vs := (Fin.tail m : Fin 4 → E) ∘ Fin.castAdd 2)]
       congr 1
@@ -2924,7 +2941,8 @@ lemma slotExtendIter_three_zero_three_apply (g : SmoothRiemannianMetric I M)
     rw [slotExtendFib_apply_eval (I := I) (M := M) 2 5 x _ D
       (m 0) (Fin.tail m)]
     set D₂ : Tensor0SSpace 2 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (m 0) with hD₂
+      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_two_zero_three_apply (I := I) (M := M) g K x D₂, ← hkappa,
       tensor0SProdKappaFib_apply (I := I) x kappa D₂,
       Tensor0SSpace.toModel_ofModel,
@@ -2932,7 +2950,7 @@ lemma slotExtendIter_three_zero_three_apply (g : SmoothRiemannianMetric I M)
     have hD₂val : Tensor0SSpace.toModel D₂
         ((Fin.tail m : Fin 5 → E) ∘ Fin.castAdd 3) =
         Tensor0SSpace.toModel D ![m 0, m 1, m 2] := by
-      rw [hD₂, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₂, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 2) (T := D) (v0 := m 0)
         (vs := (Fin.tail m : Fin 5 → E) ∘ Fin.castAdd 3)]
       congr 1
@@ -3043,7 +3061,7 @@ noncomputable def koszulCovectorCoefficient
       permCoeff (I := I) (M := M) g (finRotate 3) -
       permCoeff (I := I) (M := M) g (Equiv.swap (1 : Fin 3) 2))
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem koszulCovectorCoefficient_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -3074,6 +3092,7 @@ noncomputable def metricConnectionDifferenceLoweringCoefficient
     (permCoeff (I := I) (M := M) g (finRotate 3).symm)
     (koszulCovectorCoefficient (I := I) (M := M) g)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricConnectionDifferenceLoweringCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -3186,6 +3205,7 @@ noncomputable def lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient
             (tensorThreeTwoProductCoefficient (I := I) (M := M) g W)
             (metricConnectionDifferenceLoweringCoefficient (I := I) (M := M) g)))))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_apply
     (g gm gB : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3240,6 +3260,7 @@ noncomputable def lieCorrectionZeroMixedConnectionDerivativeCoefficient
       lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g gm gB W
         (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_apply
     (g gm gB : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3280,6 +3301,7 @@ noncomputable def lieCorrectionZeroVectorBundleDerivativeCoefficient
     SmoothCcTensor g 3 2 :=
   (2 : ℝ) • lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient (I := I) (M := M) g gm W
 
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroVectorBundleDerivativeCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
     (hP : ∀ (x : M) (u v : TangentSpace I x),
@@ -3314,6 +3336,58 @@ noncomputable def connectionDifferenceInsertionInnerDerivativeCoefficient
       (symmRaiseEndo (I := I) (M := M) g W))
     (permCoeff (I := I) (M := M) g (finRotate 3))
 
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModel_eq_ccTensorBilin_toModel
+    (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
+    (x : M) (v : Fin 2 → E) :
+    unitModel (I := I) (M := M) g 2 S x v =
+      ccTensorBilin (I := I) g S x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
+  have h := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+  change unitModel (I := I) (M := M) g 2 S x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))] = _ at h
+  have hv : v = ![v 0, v 1] := by
+    funext i
+    fin_cases i <;> rfl
+  conv_lhs => rw [hv]
+  simpa only [ContinuousLinearEquiv.apply_symm_apply] using h
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private lemma connContr11_insert_toModel
+    (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
+    (D : Tensor0SSpace 2 I x) (v : Fin 3 → E) :
+    Tensor0SSpace.toModel
+        ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
+          (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁).toSection x) D) v =
+      Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2))),
+          v 0] := by
+  rw [connectionDifferenceContrInsertionInnerField_toSection, connContr11_insert]
+  congr 1
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private lemma metricLoweredConnectionDifferenceCoefficient_unitModel_toModel
+    (g g₁ : SmoothRiemannianMetric I M) (x : M) (v : Fin 3 → E) :
+    unitModel (I := I) (M := M) g 3
+        (metricLoweredConnectionDifferenceCoefficient (I := I) g g₁) x v =
+      g.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2)) := by
+  have h := connectionDifferenceLoweredCc_unitModel_apply' (I := I) (M := M) g g₁ x
+    (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
+  simpa only [ContinuousLinearEquiv.apply_symm_apply] using h
+
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
@@ -3337,47 +3411,40 @@ theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
   intro x
   apply ContinuousMultilinearMap.ext
   intro m
-  have hm : m = ![m 0, m 1, m 2] := by
-    funext j
-    fin_cases j <;> rfl
   rw [unitModel, unitModel, operatorFieldApplication_toSection, operatorFieldApplication_toSection,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [connectionDifferenceContrInsertionInnerField_toSection]
-  conv_lhs => rw [hm]
-  rw [connContr11_insert']
-  rw [show Tensor0SSpace.toModel
-      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (symmS (I := I) (M := M) g W).toSection x)
-        (unitTensor (I := I) (M := M) x))
-      ![PDE.DeTurck.connectionDifference (I := I) gm g x (m 1) (m 2), m 0] =
-        ccTensorBilin (I := I) g (symmS (I := I) (M := M) g W) x
-          (PDE.DeTurck.connectionDifference (I := I) gm g x (m 1) (m 2)) (m 0) by
-    rw [← unitModel_eq_ccTensorBilin_local (I := I) (M := M) g]
-    rfl]
+  rw [connContr11_insert_toModel]
+  change unitModel (I := I) (M := M) g 2 (symmS (I := I) (M := M) g W) x _ = _
+  rw [unitModel_eq_ccTensorBilin_toModel]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one,
+    ContinuousLinearEquiv.symm_apply_apply]
   rw [ccTensorBilin_symmS]
-  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
-  rw [show Tensor0SSpace.toModel
+  change _ = Tensor0SSpace.toModel
+    (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib (I := I) (M := M) 3 0 x
+      (symmRaiseEndo (I := I) (M := M) g W x)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (domDomCongrSection (I := I) g (finRotate 3)
           (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)).toSection x)
-        (unitTensor (I := I) (M := M) x))
-      (Function.update m 0
-        (symmRaiseEndo (I := I) (M := M) g W x (m 0))) =
-        unitModel (I := I) (M := M) g 3
-          (domDomCongrSection (I := I) g (finRotate 3)
-            (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)) x
-          (Function.update m 0
-            (symmRaiseEndo (I := I) (M := M) g W x (m 0))) from rfl]
+        (unitTensor (I := I) (M := M) x))) m
+  rw [slotInsertEndoFib_apply_eval]
+  change _ = unitModel (I := I) (M := M) g 3
+    (domDomCongrSection (I := I) g (finRotate 3)
+      (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)) x
+    (Function.update m 0
+      (tangentLinearMapToModel (symmRaiseEndo (I := I) (M := M) g W x) (m 0)))
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i =>
       Function.update m 0
-        (symmRaiseEndo (I := I) (M := M) g W x (m 0)) ((finRotate 3) i)) =
-        ![m 1, m 2, symmRaiseEndo (I := I) (M := M) g W x (m 0)] by
+        (tangentLinearMapToModel (symmRaiseEndo (I := I) (M := M) g W x) (m 0))
+          ((finRotate 3) i)) =
+        ![m 1, m 2,
+          tangentLinearMapToModel (symmRaiseEndo (I := I) (M := M) g W x) (m 0)] by
     funext j
     fin_cases j <;> rfl]
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [metricLoweredConnectionDifferenceCoefficient_unitModel_toModel]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-    Matrix.head_cons, Matrix.tail_cons]
+    Matrix.head_cons, Matrix.tail_cons, tangentLinearMapToModel_apply,
+    ContinuousLinearEquiv.symm_apply_apply]
   rw [g.symm, symmRaiseEndo_apply, inner_symmRaiseEndo]
   exact ccTensorBilinSymm_symm (I := I) g W x _ _
 
@@ -3388,6 +3455,7 @@ noncomputable def connectionDifferenceInsertionInnerActionCoefficient
     (connectionDifferenceInsertionInnerDerivativeCoefficient (I := I) (M := M) g W)
     (RicciDeTurckLowOrder.connectionDifferenceLowOrderOperator (I := I) (M := M) g gm)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceInsertionInnerActionCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3460,10 +3528,29 @@ private theorem operatorFieldApplication_reindexCoeffGen_symmetrized_input
         (symmS (I := I) (M := M) g W) x ![v 1, v 0] =
       unitModel (I := I) (M := M) g 2
         (symmS (I := I) (M := M) g W) x ![v 0, v 1]
-    rw [unitModel_eq_ccTensorBilin_local,
-      unitModel_eq_ccTensorBilin_local, ccTensorBilin_symmS,
-      ccTensorBilin_symmS]
-    exact ccTensorBilinSymm_symm (I := I) g W x (v 1) (v 0)
+    have hleft := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g
+      (symmS (I := I) (M := M) g W) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+    have hright := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g
+      (symmS (I := I) (M := M) g W) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+    change unitModel (I := I) (M := M) g 2 (symmS (I := I) (M := M) g W) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))] = _ at hleft
+    change unitModel (I := I) (M := M) g 2 (symmS (I := I) (M := M) g W) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))] = _ at hright
+    simp only [ContinuousLinearEquiv.apply_symm_apply] at hleft hright
+    rw [hleft, hright, ccTensorBilin_symmS, ccTensorBilin_symmS]
+    exact ccTensorBilinSymm_symm (I := I) g W x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
   rw [hu]
 
 def ricciQuadraticPermutation_cycleZeroThreeOneTwo : Equiv.Perm (Fin 4) :=
@@ -3512,6 +3599,7 @@ noncomputable def ricciQuadraticKernelDerivativeNestedTerm
         (permCoeff (I := I) (M := M) g mid)
         (connectionDifferenceInsertionInnerActionCoefficient (I := I) (M := M) g gm W)))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciQuadraticKernelDerivativeNestedTerm_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3542,6 +3630,7 @@ theorem ricciQuadraticKernelDerivativeNestedTerm_apply
   conv_rhs =>
     rw [← operatorFieldApplication_assoc, ← operatorFieldApplication_assoc, ← operatorFieldApplication_assoc]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3613,15 +3702,30 @@ private noncomputable def reindexedNestedConnectionDifferenceKernelTerm_rotateIn
     innerCoreInPerm10
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem ricciConnectionDifferenceQuadraticKernel_eq_sum
+private noncomputable def ricciConnectionDifferenceQuadraticKernelSum
     (g gm : SmoothRiemannianMetric I M) :
-    ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm =
+    SmoothCcTensor g 2 4 :=
       nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g gm +
       reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g gm +
       nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g gm +
       reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g gm +
       bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g gm +
-      reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo (I := I) (M := M) g gm := by
+      reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo (I := I) (M := M) g gm
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem ricciConnectionDifferenceQuadraticKernel_eq_sum
+    (g gm : SmoothRiemannianMetric I M) :
+    ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm =
+      ricciConnectionDifferenceQuadraticKernelSum (I := I) (M := M) g gm := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro m
+  unfold ricciConnectionDifferenceQuadraticKernel ricciConnectionDifferenceQuadraticKernelSum
   rfl
 
 noncomputable def ricciQuadraticKernelDerivativeBareTerm
@@ -3633,6 +3737,7 @@ noncomputable def ricciQuadraticKernelDerivativeBareTerm
       (connectionDifferenceContravariantInsertionField (I := I) g gm)
       (connectionDifferenceInsertionInnerActionCoefficient (I := I) (M := M) g gm W))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciQuadraticKernelDerivativeBareTerm_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3661,6 +3766,7 @@ theorem ricciQuadraticKernelDerivativeBareTerm_apply
   conv_rhs =>
     rw [← operatorFieldApplication_assoc, ← operatorFieldApplication_assoc]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3679,6 +3785,7 @@ private theorem reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBl
   exact ricciQuadraticKernelDerivativeNestedTerm_apply (I := I) (M := M) g gm P W
     ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_swapBlocks hP htie
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3697,6 +3804,7 @@ private theorem nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThree
   exact ricciQuadraticKernelDerivativeNestedTerm_apply (I := I) (M := M) g gm P W
     ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_cycleZeroThreeTwo hP htie
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3714,6 +3822,7 @@ private theorem reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
   rw [reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo, operatorFieldApplication_reindexCoeffGen_symmetrized_input]
   exact ricciQuadraticKernelDerivativeBareTerm_apply (I := I) (M := M) g gm P W ricciQuadraticPermutation_cycleZeroOneThreeTwo hP htie
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem bareConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3731,6 +3840,7 @@ private theorem bareConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply
   rw [bareConnectionDifferenceKernelTerm_cycleZeroOneTwo]
   exact ricciQuadraticKernelDerivativeBareTerm_apply (I := I) (M := M) g gm P W ricciQuadraticPermutation_cycleZeroOneTwo hP htie
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3766,6 +3876,7 @@ noncomputable def ricciConnectionDifferenceQuadraticDerivativeCoefficient
     (ricciCometricFourTraceCastG0 (I := I) g gm)
     (ricciQuadraticKernelDerivativeCoefficient (I := I) (M := M) g gm W)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
@@ -3782,6 +3893,7 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_apply
         (ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gm W)
         (covGrad (I := I) (M := M) g 0 2 P) := by
   rw [ricciConnectionDifferenceQuadraticArm, ← operatorFieldApplication_assoc, ricciConnectionDifferenceQuadraticKernel_eq_sum]
+  unfold ricciConnectionDifferenceQuadraticKernelSum
   simp only [operatorFieldApplication_add_left]
   have h0 := nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo_apply (I := I) (M := M) g gm P W hP htie
   have h1 := reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks_apply (I := I) (M := M) g gm P W hP htie
@@ -3839,6 +3951,7 @@ noncomputable def ricciConnectionDifferenceDerivativeCoefficient
     RicciDeTurckLowOrder.ricciConnectionDerivativeTransposedCoefficient (I := I) (M := M) g gm
       (symmS (I := I) (M := M) g W)
 
+omit [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceDerivativeCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
     (hP : ∀ (x : M) (u v : TangentSpace I x),
@@ -3862,6 +3975,7 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_apply
   rw [haa, hda]
   rw [ricciConnectionDifferenceDerivativeCoefficient, operatorFieldApplication_add_left]
 
+omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegrand_decomposition
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),

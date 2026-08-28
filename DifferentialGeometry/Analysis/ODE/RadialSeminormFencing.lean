@@ -48,8 +48,8 @@ private lemma psd_cauchy_schwarz (B : F →L[ℝ] F →L[ℝ] ℝ)
       intro t
       have h := hnn (x - t • y)
       have expand : B (x - t • y) (x - t • y) = B x x - 2 * t * B x y + t ^ 2 * B y y := by
-        simp only [map_sub, map_smul, ContinuousLinearMap.sub_apply,
-          ContinuousLinearMap.smul_apply, smul_eq_mul]
+        simp only [map_sub, map_smul, sub_apply,
+          smul_apply, smul_eq_mul]
         rw [hsym y x]; ring
       rw [expand, hy] at h; linarith [h]
     rw [hy, mul_zero]
@@ -63,8 +63,8 @@ private lemma psd_cauchy_schwarz (B : F →L[ℝ] F →L[ℝ] ℝ)
     have h := hnn (x - (B x y / B y y) • y)
     have expand : B (x - (B x y / B y y) • y) (x - (B x y / B y y) • y)
         = B x x - (B x y) ^ 2 / B y y := by
-      simp only [map_sub, map_smul, ContinuousLinearMap.sub_apply,
-        ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_sub, map_smul, sub_apply,
+        smul_apply, smul_eq_mul]
       rw [hsym y x]; field_simp; ring
     rw [expand] at h
     have hb : (B x y) ^ 2 / B y y ≤ B x x := by linarith
@@ -77,7 +77,7 @@ private lemma psd_seminorm_triangle (B : F →L[ℝ] F →L[ℝ] ℝ)
   have hxx := hnn x; have hyy := hnn y
   have hcs := psd_cauchy_schwarz B hsym hnn x y
   have hexp : B (x + y) (x + y) = B x x + 2 * B x y + B y y := by
-    simp only [map_add, ContinuousLinearMap.add_apply]; rw [hsym y x]; ring
+    simp only [map_add, add_apply]; rw [hsym y x]; ring
   have hbxy_le : B x y ≤ Real.sqrt (B x x) * Real.sqrt (B y y) := by
     have h1 : B x y ≤ |B x y| := le_abs_self _
     have h2 : |B x y| ≤ Real.sqrt (B x x) * Real.sqrt (B y y) := by
@@ -105,7 +105,7 @@ private lemma psd_reverse_triangle (B : F →L[ℝ] F →L[ℝ] ℝ)
   have hsymq : B (y - x) (y - x) = B (x - y) (x - y) := by
     have hyx : y - x = -(x - y) := by abel
     rw [hyx]
-    simp only [map_neg, ContinuousLinearMap.neg_apply, neg_neg]
+    simp only [map_neg, neg_apply, neg_neg]
   rw [hsymq] at h2
   rw [abs_sub_le_iff]; constructor <;> linarith
 
@@ -141,11 +141,15 @@ lemma angular_hasDerivAt_zero (B : F →L[ℝ] F →L[ℝ] ℝ)
   set k : ℝ := B (c t) c' with hk_def
   have hinv : HasDerivAt (fun s => (ρ s)⁻¹) (-(k / ρ t) / (ρ t)^2) t := by
     have h := hρ.inv hrne
-    simpa [hk_def] using h
+    change HasDerivAt (fun s => (ρ s)⁻¹)
+      (-((B (c t) c' / ρ t)) / (ρ t) ^ 2) t at h
+    simpa only [hk_def] using h
   have hθ' : HasDerivAt (fun s => (ρ s)⁻¹ • c s)
       ((ρ t)⁻¹ • c' + (-(k / ρ t) / (ρ t)^2) • c t) t := by
     have h := hinv.smul hc
-    simpa using h
+    change HasDerivAt (fun s => (ρ s)⁻¹ • c s)
+      ((ρ t)⁻¹ • c' + (-(k / ρ t) / (ρ t) ^ 2) • c t) t at h
+    exact h
   have hzero : (ρ t)⁻¹ • c' + (-(k / ρ t) / (ρ t)^2) • c t = 0 := by
     rw [hrad]
     rw [smul_smul, ← add_smul]

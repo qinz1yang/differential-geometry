@@ -309,7 +309,7 @@ private lemma eLpNorm_fderiv_smooth_le_d_mul_wkpNorm
           Ω := by
     rw [hWkpEq, Finset.sum_range_succ, Finset.sum_range_one, ← h_j1_term]
     refine le_add_of_nonneg_left ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_wkp.trans ?_
   have hd_pos : 0 < d := NeZero.pos d
   have hd_one_le : (1 : ℝ≥0∞) ≤ (d : ℝ≥0∞) := by exact_mod_cast hd_pos
@@ -474,7 +474,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
           ENNReal.ofReal (1 / (n + 1 : ℝ)) := fun n =>
       (h_eLpNorm_diff_le_wkp n).trans (hφ_close n)
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_decay_to_zero
-      (Filter.Eventually.of_forall (fun _ => zero_le _))
+      (Filter.Eventually.of_forall (fun _ => zero_le))
       (Filter.Eventually.of_forall h_total_le)
   have hf_aesm : AEStronglyMeasurable f (volume.restrict Ω) := hf.memLp.aestronglyMeasurable
   have hφ_aesm : ∀ n, AEStronglyMeasurable (φ n) (volume.restrict Ω) :=
@@ -538,14 +538,14 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
             (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω)) := by
     refine Filter.liminf_le_liminf (Filter.Eventually.of_forall h_per_n_v2) ?_ ?_
     · exact isBoundedUnder_of_eventually_ge (a := 0)
-        (Filter.Eventually.of_forall (fun _ => zero_le _))
+        (Filter.Eventually.of_forall (fun _ => zero_le))
     · exact isCoboundedUnder_ge_of_eventually_le atTop
         (Filter.Eventually.of_forall (fun _ => le_top))
   have h_wkp_diff_decay : Tendsto (fun n =>
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := d) 1 p_enn (fun x => f x - φ n x) Ω) atTop (nhds 0) := by
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_decay_to_zero
-      (Filter.Eventually.of_forall (fun _ => zero_le _))
+      (Filter.Eventually.of_forall (fun _ => zero_le))
       (Filter.Eventually.of_forall hφ_close)
   have h_wkp_diff_subseq_decay : Tendsto (fun n =>
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -573,7 +573,14 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω)
         = C * N := by
-    simpa using ENNReal.liminf_add_of_right_tendsto_zero h_C_diff_decay (fun _ => C * N)
+    rw [show (fun n => C * N + C *
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+          (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω) =
+      (fun _ => C * N) + (fun n => C *
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+          (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω) by rfl]
+    rw [ENNReal.liminf_add_of_right_tendsto_zero h_C_diff_decay]
+    simp
   rw [h_liminf_const_add] at h_liminf_le_C_lim
   exact h_fatou.trans h_liminf_le_C_lim
 
@@ -880,7 +887,7 @@ private theorem perChart_eLpNorm_pStar_le
     _ = K_α * wkpNormChart (I := I) (M := M) 1 p_enn u := by rw [hK_α_def]; ring
 
 private theorem chartAtlasPOU_pou_decomp_subcritical
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (u : M → ℝ) (x : M) :
     u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
       (I := I) (M := M),

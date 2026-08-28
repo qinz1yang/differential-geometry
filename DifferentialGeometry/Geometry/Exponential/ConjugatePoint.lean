@@ -75,16 +75,36 @@ theorem curveVelocity_comp_affine
   have ha_one : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) a t (1 : ℝ) = c := by
     rw [mfderiv_eq_fderiv]
     have hfd : HasFDerivAt a (c • (1 : ℝ →L[ℝ] ℝ)) t := by
-      simpa only [a] using
-        (((hasFDerivAt_id t).const_mul c).add_const d)
+      have hadd : HasFDerivAt a
+          ((c • (1 : ℝ →L[ℝ] ℝ)) + (0 : ℝ →L[ℝ] ℝ)) t := by
+        change HasFDerivAt (fun s : ℝ => c * s + d)
+          ((c • (1 : ℝ →L[ℝ] ℝ)) + (0 : ℝ →L[ℝ] ℝ)) t
+        refine HasFDerivAt.add ?_ (hasFDerivAt_const (x := t) d)
+        refine ((c • (1 : ℝ →L[ℝ] ℝ)).hasFDerivAt
+          (x := t)).congr_of_eventuallyEq ?_
+        filter_upwards with s
+        simp only [smul_apply, one_apply_eq_self, smul_eq_mul]
+      rw [add_zero] at hadd
+      exact hadd
     rw [hfd.fderiv]
     change c • ((1 : ℝ →L[ℝ] ℝ) (1 : ℝ)) = c
-    rw [ContinuousLinearMap.one_apply, smul_eq_mul, mul_one]
+    rw [one_apply_eq_self, smul_eq_mul, mul_one]
   change mfderiv 𝓘(ℝ, ℝ) I (γ ∘ a) t (1 : ℝ) =
     c • mfderiv 𝓘(ℝ, ℝ) I γ (a t) (1 : ℝ)
   rw [hcomp, ha_one]
-  simpa only [smul_eq_mul, mul_one] using
-    map_smul (mfderiv 𝓘(ℝ, ℝ) I γ (a t)) c (1 : ℝ)
+  let A := mfderiv 𝓘(ℝ, ℝ) I γ (a t)
+  have hA : A
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, ℝ)) (a t)).symm c) =
+      c • A
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, ℝ)) (a t)).symm 1) := by
+    rw [← A.map_smul]
+    congr 1
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(ℝ, ℝ)) (a t)).injective
+    simp
+  with_unfolding_all exact hA
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)] in
@@ -125,7 +145,7 @@ private theorem jacobi_comp_affine
         (L t) (curveVelocity (I := I) δ t)
         (curveVelocity (I := I) δ t) = 0
   rw [hD2, hvel]
-  simp only [map_smul, ContinuousLinearMap.smul_apply, smul_smul]
+  simp only [map_smul, smul_apply, smul_smul]
   rw [← smul_add, hJ (c * t + d), smul_zero]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -144,7 +164,14 @@ private theorem intrinsicGeodesic_smooth
   have hincl : ContMDiff 𝓘(ℝ, ℝ)
       (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞ (fun t : ℝ => ((0 : ℝ), t)) :=
     contMDiff_const.prodMk contMDiff_id
-  simpa only [Function.comp_apply, smul_zero, add_zero] using hvar.comp hincl
+  have hcomp := hvar.comp hincl
+  rw [show intrinsicGeodesic (I := I) g hEnorm p u =
+      (fun q : ℝ × ℝ => intrinsicGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from u + q.1 • (0 : TangentSpace I p)) q.2) ∘
+        fun t : ℝ => ((0 : ℝ), t) by
+    funext t
+    simp only [Function.comp_apply, zero_smul, add_zero]]
+  exact hcomp
 
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -231,9 +258,10 @@ theorem intrGeo_rev_vel
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (u : TangentSpace I p) :
     let z := intrinsicVelocityLift (I := I) g hEnorm p u 1
-    (mfderiv 𝓘(ℝ, ℝ) I
-        (intrinsicGeodesic (I := I) g hEnorm z.proj (-z.snd))
-        1 (1 : ℝ) : E) = -(u : E) := by
+    let δ := intrinsicGeodesic (I := I) g hEnorm z.proj (-z.snd)
+    tangentSpaceModelContinuousLinearEquiv (I := I) (δ 1)
+        (mfderiv 𝓘(ℝ, ℝ) I δ 1 (1 : ℝ)) =
+      -tangentSpaceModelContinuousLinearEquiv (I := I) p u := by
   let γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm p u
   let z := intrinsicVelocityLift (I := I) g hEnorm p u 1
   let δ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm z.proj (-z.snd)
@@ -243,24 +271,40 @@ theorem intrGeo_rev_vel
     intrinsicGeodesic_smooth (I := I) g hEnorm p u
   have hcomp := curveVelocity_comp_affine (I := I) γ (-1) 1 1
     (hγ_inf.contMDiffAt.mdifferentiableAt (by simp))
-  have hcomp' :
-      (curveVelocity (I := I) (fun t => γ (1 - t)) 1 : E) =
-        (-1 : ℝ) • curveVelocity (I := I) γ 0 := by
-    have hfun :
-        (fun t : ℝ => γ (1 - t)) =
-          fun t : ℝ => γ ((-1 : ℝ) * t + 1) := by
-      funext t
-      congr 1
-      ring
-    rw [hfun]
-    have ht : (-1 : ℝ) * 1 + 1 = 0 := by norm_num
-    rw [ht] at hcomp
-    simpa only [neg_one_smul] using hcomp
-  change (curveVelocity (I := I) δ 1 : E) = -(u : E)
-  rw [hδ, hcomp', neg_one_smul]
-  exact congrArg Neg.neg (by
-    simpa only [curveVelocity, γ] using
-      intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p u)
+  have hfun :
+      (fun t : ℝ => γ (1 - t)) =
+        fun t : ℝ => γ ((-1 : ℝ) * t + 1) := by
+    funext t
+    congr 1
+    ring
+  have hcompE := congrArg
+    (tangentSpaceModelContinuousLinearEquiv (I := I)
+      (γ ((-1 : ℝ) * 1 + 1))) hcomp
+  rw [map_smul] at hcompE
+  have ht : (-1 : ℝ) * 1 + 1 = 0 := by norm_num
+  rw [ht] at hcompE
+  rw [← hfun] at hcompE
+  have hzero := intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p u
+  have hzeroE := congrArg
+    (tangentSpaceModelContinuousLinearEquiv (I := I)
+      (intrinsicGeodesic (I := I) g hEnorm p u 0)) hzero
+  have hγ0 : intrinsicGeodesic (I := I) g hEnorm p u 0 = p :=
+    intrinsicGeodesic_zero (I := I) g hEnorm p u
+  rw [hγ0] at hzeroE
+  change tangentSpaceModelContinuousLinearEquiv (I := I) (δ 1)
+      (curveVelocity (I := I) δ 1) =
+    -tangentSpaceModelContinuousLinearEquiv (I := I) p u
+  rw [hδ]
+  have hrev1 : (fun t : ℝ => γ (1 - t)) 1 = γ 0 := by norm_num
+  rw [hrev1]
+  calc
+    tangentSpaceModelContinuousLinearEquiv (I := I) (γ 0)
+        (curveVelocity (I := I) (fun t => γ (1 - t)) 1) =
+      -tangentSpaceModelContinuousLinearEquiv (I := I) (γ 0)
+        (curveVelocity (I := I) γ 0) := by
+          simpa only [neg_one_smul] using hcompE
+    _ = -tangentSpaceModelContinuousLinearEquiv (I := I) p u :=
+      congrArg Neg.neg hzeroE
 
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -287,6 +331,23 @@ private theorem exp_pair_reverse
           (-z.snd : E) b) := by
   let γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm p u
   let z := intrinsicVelocityLift (I := I) g hEnorm p u 1
+  let uE : E := tangentSpaceModelContinuousLinearEquiv (I := I) p u
+  let aE : E := tangentSpaceModelContinuousLinearEquiv (I := I) p a
+  let zE : E := tangentSpaceModelContinuousLinearEquiv (I := I) z.proj (-z.snd)
+  let bT : TangentSpace I z.proj :=
+    (tangentSpaceModelContinuousLinearEquiv (I := I) z.proj).symm b
+  have huE : (show TangentSpace I p from uE) = u := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) p).injective
+    rw [tangentSpaceModelContinuousLinearEquiv_apply]
+  have haE : (show TangentSpace I p from aE) = a := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) p).injective
+    rw [tangentSpaceModelContinuousLinearEquiv_apply]
+  have hzE : (show TangentSpace I z.proj from zE) = -z.snd := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) z.proj).injective
+    rw [tangentSpaceModelContinuousLinearEquiv_apply]
+  have hbT : (show TangentSpace I z.proj from b) = bT := by
+    simp only [bT, tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    rfl
   let δ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm z.proj (-z.snd)
   generalize hrev_def : (fun t => γ ((-1 : ℝ) * t + 1)) = rev
   have hδrev : δ = rev := by
@@ -297,11 +358,11 @@ private theorem exp_pair_reverse
     congr 1
     ring
   let F : ℝ → ℝ → M := fun s t =>
-    intrinsicGeodesic (I := I) g hEnorm p (u + s • a) t
+    intrinsicGeodesic (I := I) g hEnorm p
+      (show TangentSpace I p from (uE + s • aE : E)) t
   let G : ℝ → ℝ → M := fun s t =>
     intrinsicGeodesic (I := I) g hEnorm z.proj
-      ((show TangentSpace I z.proj from -z.snd) +
-        s • (show TangentSpace I z.proj from b)) t
+      (show TangentSpace I z.proj from (zE + s • b : E)) t
   let J : ∀ t : ℝ, TangentSpace I (γ t) := fun t =>
     mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => F s t) 0 (1 : ℝ)
   let K : ∀ t : ℝ, TangentSpace I (δ t) := fun t =>
@@ -309,12 +370,13 @@ private theorem exp_pair_reverse
   have hF_inf :
       ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
         (fun q : ℝ × ℝ => F q.1 q.2) := by
-    simpa only [F] using intrinsicVar_smooth (I := I) g hEnorm p (u : E) (a : E)
+    simpa only [F] using
+      intrinsicVar_smooth (I := I) g hEnorm p uE aE
   have hG_inf :
       ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
         (fun q : ℝ × ℝ => G q.1 q.2) := by
     simpa only [G] using
-      intrinsicVar_smooth (I := I) g hEnorm z.proj (-z.snd : E) b
+      intrinsicVar_smooth (I := I) g hEnorm z.proj zE b
   have hF_smooth : IsSmoothVariation (I := I) F :=
     hF_inf.of_le ENat.LEInfty.out
   have hG_smooth : IsSmoothVariation (I := I) G :=
@@ -329,7 +391,8 @@ private theorem exp_pair_reverse
       (I := I) F hF_smooth t
     have hF0 : (fun v => F 0 v) = γ := by
       funext v
-      simp only [F, γ, zero_smul, add_zero]
+      simp only [F, zero_smul, add_zero]
+      rw [huE]
     rw [hF0] at h
     simpa only [F, J] using h
   have hDJdiff (t : ℝ) :
@@ -340,7 +403,8 @@ private theorem exp_pair_reverse
       (I := I) g F hF_smooth t
     have hF0 : (fun v => F 0 v) = γ := by
       funext v
-      simp only [F, γ, zero_smul, add_zero]
+      simp only [F, zero_smul, add_zero]
+      rw [huE]
     rw [hF0] at h
     simpa only [F, J] using h
   have hKdiff (t : ℝ) :
@@ -349,7 +413,8 @@ private theorem exp_pair_reverse
       (I := I) G hG_smooth t
     have hG0 : (fun v => G 0 v) = δ := by
       funext v
-      simp only [G, δ, zero_smul, add_zero]
+      simp only [G, zero_smul, add_zero]
+      rw [hzE]
     rw [hG0] at h
     simpa only [G, K] using h
   have hDKdiff (t : ℝ) :
@@ -360,15 +425,28 @@ private theorem exp_pair_reverse
       (I := I) g G hG_smooth t
     have hG0 : (fun v => G 0 v) = δ := by
       funext v
-      simp only [G, δ, zero_smul, add_zero]
+      simp only [G, zero_smul, add_zero]
+      rw [hzE]
     rw [hG0] at h
     simpa only [G, K] using h
   have hJacJ : IsJacobiAlong (I := I) g γ J := by
-    simpa only [γ, J] using
-      intrinsic_jacobi (I := I) g hEnorm p (u : E) (a : E)
+    have hcurve :
+        (fun t => intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from uE) t) = γ := by
+      funext t
+      rw [huE]
+    have h := intrinsic_jacobi (I := I) g hEnorm p uE aE
+    rw [hcurve] at h
+    simpa only [γ, J, F] using h
   have hJacK : IsJacobiAlong (I := I) g δ K := by
-    simpa only [δ, K, G] using
-      intrinsic_jacobi (I := I) g hEnorm z.proj (-z.snd : E) b
+    have hcurve :
+        (fun t => intrinsicGeodesic (I := I) g hEnorm z.proj
+          (show TangentSpace I z.proj from zE) t) = δ := by
+      funext t
+      rw [hzE]
+    have h := intrinsic_jacobi (I := I) g hEnorm z.proj zE b
+    rw [hcurve] at h
+    simpa only [δ, K, G] using h
   cases hδrev
   let Hrev : ℝ → ℝ → M := fun s t => F s ((-1 : ℝ) * t + 1)
   let JR : ∀ t : ℝ, TangentSpace I (δ t) :=
@@ -392,7 +470,8 @@ private theorem exp_pair_reverse
     have hH0 : (fun v => Hrev 0 v) = δ := by
       rw [← hrev_def]
       funext v
-      simp only [Hrev, F, γ, zero_smul, add_zero]
+      simp only [Hrev, F, zero_smul, add_zero]
+      rw [huE]
     rw [hH0] at h
     simpa only [Hrev, JR] using h
   have hDJRdiff (t : ℝ) :
@@ -404,7 +483,8 @@ private theorem exp_pair_reverse
     have hH0 : (fun v => Hrev 0 v) = δ := by
       rw [← hrev_def]
       funext v
-      simp only [Hrev, F, γ, zero_smul, add_zero]
+      simp only [Hrev, F, zero_smul, add_zero]
+      rw [huE]
     rw [hH0] at h
     simpa only [Hrev, JR] using h
   have hJacJR : IsJacobiAlong (I := I) g δ JR := by
@@ -436,17 +516,24 @@ private theorem exp_pair_reverse
     rw [hconst, mfderiv_const]
     rfl
   have hDJ0 :
-      (covDerivAlong (I := I) g γ J 0 : E) = (a : E) := by
-    simpa only [γ, J] using
-      intrinsic_jacobi_d0 (I := I) g hEnorm p (u : E) (a : E)
-  have hJ1 :
-      (J 1 : E) =
-        mfderiv 𝓘(ℝ, E) I
-          (fun w : E => expMapIntrinsic (I := I) g hEnorm p
-            (show TangentSpace I p from w))
-          (u : E) (a : E) := by
-    simpa only [γ, J] using
-      intrinsic_jacobi_one (I := I) g hEnorm p (u : E) (a : E)
+      covDerivAlong (I := I) g γ J 0 = a := by
+    have hcurve :
+        (fun t => intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from uE) t) = γ := by
+      funext t
+      rw [huE]
+    have hp0 : intrinsicGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from uE) 0 = γ 0 := by
+      rw [huE]
+    have h := intrinsic_jacobi_d0 (I := I) g hEnorm p uE aE
+    have htransport := hp0 ▸ h
+    rw [hcurve] at htransport
+    have h' : covDerivAlong (I := I) g γ J 0 =
+        (show TangentSpace I p from aE) := by
+      with_unfolding_all
+        simpa only [γ, J, F] using htransport
+    exact h'.trans haE
+  have hJ1 := intrinsic_jacobi_one (I := I) g hEnorm p uE aE
   have hK0 : K 0 = 0 := by
     have hconst :
         (fun s : ℝ => G s 0) = fun _ : ℝ => z.proj := by
@@ -456,17 +543,24 @@ private theorem exp_pair_reverse
     rw [hconst, mfderiv_const]
     rfl
   have hDK0 :
-      (covDerivAlong (I := I) g δ K 0 : E) = b := by
-    simpa only [K, G] using
-      intrinsic_jacobi_d0 (I := I) g hEnorm z.proj (-z.snd : E) b
-  have hK1 :
-      (K 1 : E) =
-        mfderiv 𝓘(ℝ, E) I
-          (fun w : E => expMapIntrinsic (I := I) g hEnorm z.proj
-            (show TangentSpace I z.proj from w))
-          (-z.snd : E) b := by
-    simpa only [K, G] using
-      intrinsic_jacobi_one (I := I) g hEnorm z.proj (-z.snd : E) b
+      covDerivAlong (I := I) g δ K 0 = bT := by
+    have hcurve :
+        (fun t => intrinsicGeodesic (I := I) g hEnorm z.proj
+          (show TangentSpace I z.proj from zE) t) = δ := by
+      funext t
+      rw [hzE]
+    have hp0 : intrinsicGeodesic (I := I) g hEnorm z.proj
+        (show TangentSpace I z.proj from zE) 0 = δ 0 := by
+      rw [hzE]
+    have h := intrinsic_jacobi_d0 (I := I) g hEnorm z.proj zE b
+    have htransport := hp0 ▸ h
+    rw [hcurve] at htransport
+    have h' : covDerivAlong (I := I) g δ K 0 =
+        (show TangentSpace I z.proj from b) := by
+      with_unfolding_all
+        simpa only [δ, K, G] using htransport
+    exact h'.trans hbT
+  have hK1 := intrinsic_jacobi_one (I := I) g hEnorm z.proj zE b
   have hDJR (t : ℝ) :
       covDerivAlong (I := I) g δ JR t =
         (-1 : ℝ) • covDerivAlong (I := I) g γ J ((-1 : ℝ) * t + 1) := by
@@ -500,7 +594,7 @@ private theorem exp_pair_reverse
         intrinsicGeodesic_zero (I := I) g hEnorm p u
     exact h.symm.trans hγ0
   have hpair :
-      g.inner p (K 1) a = g.inner z.proj b (J 1) := by
+      g.inner p (K 1) a = g.inner z.proj bT (J 1) := by
     simp only [jacobiWronskian] at hW10
     rw [hJR1, hJ0, hDJR1, hDJ0, hK0, hDK0, hJR0] at hW10
     have hz1 :
@@ -514,17 +608,17 @@ private theorem exp_pair_reverse
       rfl
     have hWsimple :
         0 - g.inner (δ 1) (K 1) (-a) =
-          g.inner (δ 0) b (J 1) - 0 := by
+          g.inner (δ 0) bT (J 1) - 0 := by
       calc
         0 - g.inner (δ 1) (K 1) (-a) =
             g.inner (δ 1) (covDerivAlong (I := I) g δ K 1)
                 (0 : TangentSpace I (δ 1)) -
               g.inner (δ 1) (K 1) (-a) := by rw [hz1]
         _ =
-            g.inner (δ 0) b (J 1) -
+            g.inner (δ 0) bT (J 1) -
               g.inner (δ 0) (0 : TangentSpace I (δ 0))
                 (covDerivAlong (I := I) g δ JR 0) := hW10
-        _ = g.inner (δ 0) b (J 1) - 0 := by rw [hz0]
+        _ = g.inner (δ 0) bT (J 1) - 0 := by rw [hz0]
     rw [hδ1, hδ0] at hWsimple
     have hneg1 :
         g.inner p (K 1) (-a) = -g.inner p (K 1) a :=
@@ -538,14 +632,30 @@ private theorem exp_pair_reverse
             (show TangentSpace I p from w))
           (u : E) (a : E))
         b =
-      g.inner z.proj b (J 1) := by rw [hJ1, g.symm]
+      g.inner z.proj b (J 1) := by
+        with_unfolding_all
+          change g.inner z.proj
+              (mfderiv 𝓘(ℝ, E) I
+                (fun w : E => expMapIntrinsic (I := I) g hEnorm p
+                  (show TangentSpace I p from w)) uE aE)
+              bT = g.inner z.proj bT (J 1)
+          rw [← hJ1]
+          exact g.symm z.proj _ _
     _ = g.inner p (K 1) a := hpair.symm
     _ =
       g.inner p a
         (mfderiv 𝓘(ℝ, E) I
           (fun w : E => expMapIntrinsic (I := I) g hEnorm z.proj
             (show TangentSpace I z.proj from w))
-          (-z.snd : E) b) := by rw [hK1, g.symm]
+          (-z.snd : E) b) := by
+      with_unfolding_all
+        change g.inner p (K 1) a =
+          g.inner p a
+            (mfderiv 𝓘(ℝ, E) I
+              (fun w : E => expMapIntrinsic (I := I) g hEnorm z.proj
+                (show TangentSpace I z.proj from w)) zE b)
+        rw [← hK1]
+        exact g.symm p _ _
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -559,7 +669,8 @@ def IsConjVec
   ¬ Function.Injective fun w : E =>
       mfderiv 𝓘(ℝ, E) I
         (fun b : E => expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from b)) x w
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm b)) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x).symm w)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -575,11 +686,17 @@ theorem isConjVec_iff
       ∃ w : E, w ≠ 0 ∧
         mfderiv 𝓘(ℝ, E) I
           (fun b : E => expMapIntrinsic (I := I) g hEnorm p
-            (show TangentSpace I p from b)) x w = 0 := by
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm b)) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x).symm w) = 0 := by
   classical
-  set f := mfderiv 𝓘(ℝ, E) I
-    (fun b : E => expMapIntrinsic (I := I) g hEnorm p
-      (show TangentSpace I p from b)) x with hf
+  let e := tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x
+  let f : E →L[ℝ] TangentSpace I
+      (expMapIntrinsic (I := I) g hEnorm p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm x)) :=
+    (mfderiv 𝓘(ℝ, E) I
+      (fun b : E => expMapIntrinsic (I := I) g hEnorm p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm b)) x).comp
+          e.symm.toContinuousLinearMap
   have hker : Function.Injective (fun w : E => f w) ↔
       ∀ w : E, f w = 0 → w = 0 := by
     constructor
@@ -592,8 +709,9 @@ theorem isConjVec_iff
         calc f (a - b) = f a - f b := map_sub f a b
           _ = 0 := by rw [hab', sub_self]
       exact sub_eq_zero.mp (hker _ hsub)
-  unfold IsConjVec
-  rw [← hf, hker]
+  with_unfolding_all change (¬ Function.Injective fun w : E => f w) ↔
+    ∃ w : E, w ≠ 0 ∧ f w = 0
+  rw [hker]
   push Not
   constructor
   · rintro ⟨w, hw0, hwne⟩
@@ -641,9 +759,9 @@ theorem conjVec_reverse
         g.inner z.proj (x - y) (x - y) =
             g.inner z.proj (A a) (x - y) := by rw [ha]
         _ = g.inner p a (B (x - y)) := by
-          simpa only [A, B, z] using
-            exp_pair_reverse (I := I) g hEnorm p u
-              (show TangentSpace I p from a) (x - y)
+          with_unfolding_all
+            exact (exp_pair_reverse (I := I) g hEnorm p u
+              (show TangentSpace I p from a) (x - y))
         _ = 0 := by
           rw [hB0]
           exact map_zero _
@@ -664,9 +782,9 @@ theorem conjVec_reverse
             g.inner p (x - y) (B b) := by rw [hb]
         _ = g.inner z.proj (A (x - y)) b := by
           symm
-          simpa only [A, B, z] using
-            exp_pair_reverse (I := I) g hEnorm p u
-              (show TangentSpace I p from x - y) b
+          with_unfolding_all
+            exact (exp_pair_reverse (I := I) g hEnorm p u
+              (show TangentSpace I p from x - y) b)
         _ = 0 := by
           rw [hA0]
           have hz :
@@ -697,7 +815,7 @@ theorem isConjVec_iff_jacobi
   rw [isConjVec_iff (I := I) g hEnorm p x]
   refine exists_congr fun w => and_congr_right fun _ => ?_
   rw [intrinsic_jacobi_one (I := I) g hEnorm p x w]
-  rfl
+  with_unfolding_all rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

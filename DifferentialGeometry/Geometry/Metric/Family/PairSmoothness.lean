@@ -55,16 +55,16 @@ theorem pairSmoothAt
     (hcompOn i j).contMDiffAt hmemProd
   have hcoeff : ∀ (a : Fin 2) i,
       ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-        (fun y : M => e.localFrame_coeff I b i y ((V a) y)) x := fun a i =>
-    contMDiffAt_localFrame_coeff (I := I) b hxe
+        (fun y : M => e.localFrameCoeff I b i y ((V a) y)) x := fun a i =>
+    contMDiffAt_localFrameCoeff (I := I) b hxe
       ((V a).contMDiff.contMDiffAt) i
   have hsum :
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
         (∞ : WithTop ℕ∞)
         (fun q : Real × M =>
           ∑ i, ∑ j,
-            e.localFrame_coeff I b i q.2 ((V 0) q.2) *
-              e.localFrame_coeff I b j q.2 ((V 1) q.2) *
+            e.localFrameCoeff I b i q.2 ((V 0) q.2) *
+              e.localFrameCoeff I b j q.2 ((V 1) q.2) *
               (g_fam q.1).inner q.2
                 (e.localFrame b i q.2) (e.localFrame b j q.2))
         (t, x) := by
@@ -78,20 +78,20 @@ theorem pairSmoothAt
     (I := I) b (s := fun y => (V 1) y) hxe
   have hev : ∀ᶠ q : Real × M in 𝓝 (t, x),
       ((V 0) q.2 =
-        ∑ i, e.localFrame_coeff I b i q.2 ((V 0) q.2) • e.localFrame b i q.2) ∧
+        ∑ i, e.localFrameCoeff I b i q.2 ((V 0) q.2) • e.localFrame b i q.2) ∧
       ((V 1) q.2 =
-        ∑ i, e.localFrame_coeff I b i q.2 ((V 1) q.2) • e.localFrame b i q.2) :=
+        ∑ i, e.localFrameCoeff I b i q.2 ((V 1) q.2) • e.localFrame b i q.2) :=
     (continuous_snd.tendsto (t, x)).eventually (hev0.and hev1)
   filter_upwards [hev] with q hq
   have hexp :
       (g_fam q.1).inner q.2 ((V 0) q.2) ((V 1) q.2) =
         (g_fam q.1).inner q.2
-          (∑ i, e.localFrame_coeff I b i q.2 ((V 0) q.2) • e.localFrame b i q.2)
-          (∑ j, e.localFrame_coeff I b j q.2 ((V 1) q.2) • e.localFrame b j q.2) := by
+          (∑ i, e.localFrameCoeff I b i q.2 ((V 0) q.2) • e.localFrame b i q.2)
+          (∑ j, e.localFrameCoeff I b j q.2 ((V 1) q.2) • e.localFrame b j q.2) := by
     rw [← hq.1, ← hq.2]
   rw [hexp]
-  simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
+  simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
+    smul_apply, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
     ring

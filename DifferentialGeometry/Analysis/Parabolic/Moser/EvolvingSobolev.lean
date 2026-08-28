@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.Moser.Sobolev
 
 noncomputable section
 
+
 open Bundle Manifold MeasureTheory Set
 open scoped Manifold Topology ContDiff
 
@@ -46,11 +47,20 @@ theorem evolving_localized_parabolic_sobolev_le
     smoothScalarSlice (I := I) (g t) u hu t
   have hfixed := localized_parabolic_sobolev_le
     (I := I) (M := M) (g t) hdim cutoffSlice uSlice
+  have huSlice :
+      (smoothScalarSlice (I := I) (g t) u hu t).toFun = u t := rfl
+  have hgradSlice (x : M) :
+      gradFun (I := I) (g t)
+          (smoothScalarSlice (I := I) (g t) u hu t).toFun x =
+        gradFun (I := I) (g t) (u t) x := by
+    rw [huSlice]
+  have hgradient (f : M → ℝ) (x : M) :
+      gradientFun (I := I) (g t) f x = gradFun (I := I) (g t) f x := rfl
   simpa only [cutoffSlice, uSlice, smoothScalarSlice_toFun,
     riemannianMeasureFamily_def, localizedL2Mass,
     localizedDirichletEnergy, cutoffGradientError,
     evolvingLocalizedL2Mass, evolvingLocalizedDirichletEnergy,
-    evolvingCutoffGradientError] using hfixed
+    evolvingCutoffGradientError, hgradSlice, hgradient] using hfixed
 
 theorem evolving_localized_parabolic_sobolev_time_le
     (g : ℝ → SmoothRiemannianMetric I M)
@@ -115,8 +125,9 @@ theorem evolving_localized_parabolic_sobolev_time_le
         (I := I) (M := M) g cutoff u isCompact_Icc hg
           hcutoff.continuous hu.continuous
   have henergy : ContinuousOn energy (Icc a b) := by
-    simpa only [energy, mass, dirichlet, error] using
-      (hmass.add hdirichlet).add herror
+    have h := (hmass.add hdirichlet).add herror
+    change ContinuousOn (fun t => mass t + dirichlet t + error t) (Icc a b) at h
+    exact h
   have hmass_nonneg : ∀ t ∈ Icc a b, 0 ≤ mass t := by
     intro t _
     exact evolvingLocalizedL2Mass_nonneg

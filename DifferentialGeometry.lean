@@ -1849,6 +1849,7 @@ import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Bundle.TangentCoordChange
+import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Bundle.TensorProduct
 import DifferentialGeometry.Bundle.VectorField
 import DifferentialGeometry.Bundle.VectorFieldLieBracket
@@ -3227,6 +3228,7 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.TensorRSModelEvalBasis
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
 import DifferentialGeometry.Tensor.RSTensor.CurvatureAction
 import DifferentialGeometry.Tensor.RSTensor.Defs
+import DifferentialGeometry.Tensor.RSTensor.Product
 import DifferentialGeometry.Tensor.RSTensor.Derivation.Contract
 import DifferentialGeometry.Tensor.RSTensor.Derivation.GradientBundleEquiv
 import DifferentialGeometry.Tensor.RSTensor.Derivation.LieDerivative

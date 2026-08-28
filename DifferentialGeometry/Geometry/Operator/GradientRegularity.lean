@@ -30,7 +30,7 @@ private theorem gradientFun_coeff_eq_sum
       ∑ l : CoordinateIdx (𝕜 := Real) E,
         inverseMetricFlatModelInChart_component (I := I) g x₀ k l
             (extChartAt I x₀ y) *
-          extDerivFun (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
+          mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
   classical
   let basis : Module.Basis (CoordinateIdx (𝕜 := Real) E) Real (TangentSpace I y) :=
     (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt hy
@@ -55,19 +55,18 @@ private theorem gradientFun_coeff_eq_sum
     exact (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt_coe hy l
   have hinner :
       g.inner y (gradientFun (I := I) g f y) (basis l) =
-        extDerivFun (I := I) f y (basis l) := by
+        mvfderiv (I := I) f y (basis l) := by
     rw [inner_gradientFun (I := I) g f y (basis l)]
-    rw [← DifferentialGeometry.extDerivFun_real_eq_mfderiv (I := I) f y (basis l)]
   calc
     gInv k l * g.inner y (basis l) (gradientFun (I := I) g f y)
         = gInv k l * g.inner y (gradientFun (I := I) g f y) (basis l) := by
           rw [g.symm y (basis l) (gradientFun (I := I) g f y)]
-    _ = gInv k l * extDerivFun (I := I) f y (basis l) := by
+    _ = gInv k l * mvfderiv (I := I) f y (basis l) := by
           rw [hinner]
     _ =
           inverseMetricFlatModelInChart_component (I := I) g x₀ k l
             (extChartAt I x₀ y) *
-          extDerivFun (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
+          mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
           rw [hbasis_l]
 
 theorem gradientFun_contMDiffAt
@@ -85,7 +84,7 @@ theorem gradientFun_contMDiffAt
     ∑ l : CoordinateIdx (𝕜 := Real) E,
       inverseMetricFlatModelInChart_component (I := I) g x₀ k l
           (extChartAt I x₀ y) *
-        extDerivFun (I := I) f y (coordinateFrameAt (I := I) x₀ l y)
+        mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)
   have hrhs : ContMDiffAt I 𝓘(Real, Real) ∞ rhs x₀ := by
     refine ContMDiffAt.sum fun l _ => ?_
     have hginv :
@@ -105,8 +104,8 @@ theorem gradientFun_contMDiffAt
     have hderiv :
         ContMDiffAt I 𝓘(Real, Real) ∞
           (fun y : M =>
-            extDerivFun (I := I) f y (coordinateFrameAt (I := I) x₀ l y)) x₀ :=
-      extDerivFun_apply_contMDiffAt_of_section (I := I)
+            mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)) x₀ :=
+      mvfderiv_apply_contMDiffAt_of_section (I := I)
         (f := f) (X := coordinateFrameAt (I := I) x₀ l)
         hf hframe
     exact hginv.mul hderiv
@@ -152,8 +151,11 @@ theorem laplacian_congr_of_eventuallyEq
       (fun y : M => gradientFun (I := I) g f y) =ᶠ[nhds x]
         (fun y : M => gradientFun (I := I) g h y) := by
     filter_upwards [heq.eventuallyEq_nhds] with y hy
-    unfold gradientFun metricSharp
-    rw [hy.mfderiv_eq]
+    have hmf := Filter.EventuallyEq.mfderiv_eq
+      (I := I) (I' := 𝓘(Real, Real)) hy
+    have hvalue := hy.eq_of_nhds
+    unfold gradientFun metricSharp mvfderiv
+    rw [hmf, hvalue]
   have hgrad_f : MDiffAt
       (T% fun y : M => gradientFun (I := I) g f y) x :=
     (gradientFun_contMDiffAt (I := I) g hf).mdifferentiableAt (by simp)
@@ -224,7 +226,10 @@ theorem mdiffAt_const_mul_sub_const_smul_gradientFun
         gradientFun (I := I) g (fun z : M => a * (f z - c)) y)) x := by
   let u : M -> Real := fun y => a * (f y - c)
   have hu : ContMDiff I 𝓘(Real, Real) ∞ u := by
-    simpa [u] using (contMDiff_const.mul (hf.sub contMDiff_const))
+    let h : ContMDiff I 𝓘(Real, Real) ∞
+        (fun y : M => a * (f y - c)) :=
+      contMDiff_const.mul (hf.sub contMDiff_const)
+    exact h
   have hudiff : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) u y := by
     intro y
     exact hu.contMDiffAt.mdifferentiableAt (by simp)

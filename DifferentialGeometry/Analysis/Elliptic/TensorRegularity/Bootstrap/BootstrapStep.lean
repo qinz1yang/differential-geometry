@@ -461,7 +461,7 @@ theorem smooth_cc_h2_loc_memWkp_two
           (fun x => ∑ j : Fin d,
             ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2)
           (volume : Measure EE) := by
-        refine integrable_finset_sum Finset.univ (fun j _ => ?_)
+        refine integrable_finsetSum Finset.univ (fun j _ => ?_)
         have h_cont : Continuous
             (fun x => ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2) :=
           ((hu_partial_smooth j).continuous).pow 2
@@ -551,7 +551,7 @@ theorem smooth_cc_h2_loc_memWkp_two
           (fun x => ∑ j : Fin d,
             ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2)
           (volume : Measure EE) := by
-        refine integrable_finset_sum Finset.univ (fun j _ => ?_)
+        refine integrable_finsetSum Finset.univ (fun j _ => ?_)
         exact (((hu_partial_smooth j).continuous).pow 2).integrable_of_hasCompactSupport
           (hasCompactSupport_sq (d := d) (hu_partial_cpt j))
       have h_partial_sq_int : Integrable

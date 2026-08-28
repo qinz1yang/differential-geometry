@@ -95,7 +95,7 @@ private lemma extendedDensity_eq_density_of_chi_one
   rw [hχ_one]; ring
 
 private theorem exists_smooth_metric_extension_with_density
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN}
     (hK : IsCompact K)

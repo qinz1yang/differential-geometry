@@ -604,7 +604,7 @@ theorem chartBilinear_v_test_sq_discharge
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single k 1) := by
       have hη_diff : Differentiable ℝ η := hη.differentiable (by simp)
       rw [fderiv_fun_pow 2 (hη_diff y)]
-      rw [ContinuousLinearMap.smul_apply]
+      rw [smul_apply]
       have h1 : (η y) ^ ((2 : ℕ) - 1) = η y := by norm_num
       rw [h1]
       have h_two : ((2 : ℕ) • η y) = 2 * η y := by rw [two_smul]; ring

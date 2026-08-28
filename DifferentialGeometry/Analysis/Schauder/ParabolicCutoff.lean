@@ -35,8 +35,8 @@ theorem timeCutoffBcf_hasDerivAt
     (center : Real) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) (t : Real) :
     HasDerivAt (timeCutoffBcf center hr hrR : Real → Real)
       (timeCutoffDerivBcf center hr hrR t) t := by
-  simpa only [timeCutoffBcf_apply, timeCutoffDerivBcf_apply] using
-    (hasFDerivAt_ballCutoff center r R t).hasDerivAt
+  change HasDerivAt (ballCutoff center r R) (ballCutoffFDeriv center r R t 1) t
+  exact (hasFDerivAt_ballCutoff center r R t).hasDerivAt
 
 def timeCutoffDerivHolderConst (r R : Real) : NNReal :=
   ballCutoffFDerivHolderConst r R
@@ -46,8 +46,9 @@ theorem timeCutoffBcf_holderWith
     {beta : NNReal} (hbeta1 : beta ≤ 1) :
     HolderWith (ballCutoffHolderConst r R) beta
       (timeCutoffBcf center hr hrR : Real → Real) := by
+  intro x y
   simpa only [timeCutoffBcf_apply] using
-    ballCutoff_holderWith (V := Real) hr hrR (zero_le beta) hbeta1
+    ballCutoff_holderWith (V := Real) hr hrR bot_le hbeta1 x y
 
 theorem timeCutoffDerivBcf_holderWith
     (center : Real) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
@@ -56,7 +57,7 @@ theorem timeCutoffDerivBcf_holderWith
       (timeCutoffDerivBcf center hr hrR : Real → Real) := by
   let L := ContinuousLinearMap.apply Real Real (1 : Real)
   have hbase := ballCutoffFDeriv_holderWith (V := Real) (center := center)
-    hr hrR (zero_le beta) hbeta1
+    hr hrR bot_le hbeta1
   have hL : LipschitzWith 1 L := by
     apply LipschitzWith.of_dist_le_mul
     intro A B
@@ -68,8 +69,10 @@ theorem timeCutoffDerivBcf_holderWith
   have hcomp := hL.holderWith.comp hbase
   change HolderWith (timeCutoffDerivHolderConst r R) beta
     (fun t ↦ ballCutoffFDeriv center r R t 1)
+  intro x y
   simpa only [timeCutoffDerivHolderConst, L, Function.comp_apply,
-    NNReal.coe_one, NNReal.rpow_one, mul_one, one_mul] using hcomp
+    ContinuousLinearMap.apply_apply, NNReal.coe_one, NNReal.rpow_one,
+    mul_one, one_mul] using hcomp x y
 
 theorem timeCutoffBcf_parabolic_holderWith
     {V : Type*} [PseudoMetricSpace V]
@@ -328,7 +331,8 @@ theorem separableBcfPath_hasDerivAt
     (v : BoundedContinuousFunction V F) (t : Real)
     (heta : HasDerivAt (eta : Real → Real) (deta t) t) :
     HasDerivAt (separableBcfPath eta v) (deta t • v) t := by
-  simpa only [separableBcfPath] using heta.smul_const v
+  unfold separableBcfPath
+  exact heta.smul_const v
 
 end Separable
 
@@ -346,7 +350,8 @@ theorem separableBcfPath_hasFDerivAt
     (t : Real) (x : V) :
     HasFDerivAt (separableBcfPath eta v t : V → F)
       (eta t • dv x) x := by
-  simpa only [separableBcfPath_apply] using (hv x).const_smul (eta t)
+  change HasFDerivAt (fun y => eta t • v y) (eta t • dv x) x
+  exact (hv x).const_smul (eta t)
 
 theorem separableBcfPath_fderiv_hasFDerivAt
     (eta : BoundedContinuousFunction Real Real)
@@ -356,7 +361,8 @@ theorem separableBcfPath_fderiv_hasFDerivAt
     (t : Real) (x : V) :
     HasFDerivAt (separableBcfPath eta dv t : V → V →L[Real] F)
       (eta t • d2v x) x := by
-  simpa only [separableBcfPath_apply] using (hdv x).const_smul (eta t)
+  change HasFDerivAt (fun y => eta t • dv y) (eta t • d2v x) x
+  exact (hdv x).const_smul (eta t)
 
 omit [NormedSpace Real V] in
 theorem separableBcfPath_holderWith_restrict
@@ -368,21 +374,26 @@ theorem separableBcfPath_holderWith_restrict
     (hetaNorm : ∀ t, ‖eta t‖ ≤ Meta)
     (hvNorm : ∀ x, ‖v x‖ ≤ Mv) :
     HolderWith (Meta * Kv + Mv * Keta) alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ separableBcfPath eta v p.time p.space)) := by
   let Q := parabolicCylinder J (Set.univ : Set V)
   have hetaFull : HolderWith Keta alpha
       (fun p : ParabolicPoint V ↦ eta p.time) :=
     holderWith_parabolic_const_space heta
   have hetaQ : HolderWith Keta alpha
-      (Q.restrict (fun p : ParabolicPoint V ↦ eta p.time)) :=
+      (Q.domRestrict (fun p : ParabolicPoint V ↦ eta p.time)) :=
     (hetaFull.holderOnWith Q).holderWith
   have hvQ : HolderWith Kv alpha
-      (Q.restrict (fun p : ParabolicPoint V ↦ v p.space)) :=
+      (Q.domRestrict (fun p : ParabolicPoint V ↦ v p.space)) :=
     holderWith_parabolic_const_time (v : V → F) hv J
   have hproduct := holderWith_smul_of_norm_le hetaQ hvQ
     (fun p ↦ hetaNorm p.1.time) (fun p ↦ hvNorm p.1.space)
-  simpa only [Q, Set.restrict_apply, separableBcfPath_apply] using hproduct
+  change HolderWith (Meta * Kv + Mv * Keta) alpha
+    (fun p : Q ↦ eta p.1.time • v p.1.space) at hproduct
+  change HolderWith (Meta * Kv + Mv * Keta) alpha
+    (fun p : parabolicCylinder J (Set.univ : Set V) ↦
+      eta p.1.time • v p.1.space)
+  simpa only [Q] using hproduct
 
 end Spatial
 

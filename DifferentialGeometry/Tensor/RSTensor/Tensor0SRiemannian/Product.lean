@@ -25,10 +25,8 @@ theorem inner0S_product_one_two
     (α β : Tensor0SSpace 1 I x)
     (A B : Tensor0SSpace 2 I x) :
     inner0S (I := I) g x 3
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A)
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) β B) =
+        (Tensor0SSpace.product (r := 1) (s := 2) α A)
+        (Tensor0SSpace.product (r := 1) (s := 2) β B) =
       inner0S (I := I) g x 1 α β *
         inner0S (I := I) g x 2 A B := by
   classical
@@ -36,10 +34,8 @@ theorem inner0S_product_one_two
     inner0S_eq_coord (I := I) g x 1 basis gInv hinv,
     inner0S_eq_coord (I := I) g x 2 basis gInv hinv]
   rw [coordInner0S_succ_eq (I := I) 2 gInv
-    (Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A)
-    (Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) β B) basis]
+    (Tensor0SSpace.product (r := 1) (s := 2) α A)
+    (Tensor0SSpace.product (r := 1) (s := 2) β B) basis]
   simp_rw [tensor0S_curry_product_one_two (I := I)]
   simp_rw [coordInner0S_smul_smul (I := I) 2 gInv A B basis]
   rw [coordInner0S_one_eq (I := I) gInv α β basis]
@@ -62,8 +58,7 @@ theorem inner0S_three_product_right
     (α : Tensor0SSpace 1 I x)
     (A : Tensor0SSpace 2 I x) :
     inner0S (I := I) g x 3 N
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A) =
+        (Tensor0SSpace.product (r := 1) (s := 2) α A) =
       inner0S (I := I) g x 2
         ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x N)
           (cotangentSharp_gen (I := I) g x α))
@@ -72,8 +67,7 @@ theorem inner0S_three_product_right
   rw [inner0S_eq_coord (I := I) g x 3 basis gInv hinv,
     inner0S_eq_coord (I := I) g x 2 basis gInv hinv]
   rw [coordInner0S_succ_eq (I := I) 2 gInv N
-    (Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A) basis]
+    (Tensor0SSpace.product (r := 1) (s := 2) α A) basis]
   simp_rw [tensor0S_curry_product_one_two (I := I)]
   simp_rw [coordInner0S_smul_right (I := I) 2 gInv _ A basis]
   rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv α]
@@ -105,20 +99,15 @@ theorem normSq0S_smul_sub_product_one_two
     (A : Tensor0SSpace 2 I x) :
     normSq0S (I := I) g x 3
         (r • N -
-          (show Tensor0SSpace 3 I x from
-            Bundle.continuousMultilinearMap.product_fun
-              (𝕜 := Real) (F := E) (E := TangentSpace I)
-              (s := 1) (q := 2) α A)) =
+          Tensor0SSpace.product (r := 1) (s := 2) α A) =
       r ^ 2 * normSq0S (I := I) g x 3 N -
         2 * r * inner0S (I := I) g x 3 N
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A) +
+          (Tensor0SSpace.product (r := 1) (s := 2) α A) +
         inner0S (I := I) g x 1 α α *
           normSq0S (I := I) g x 2 A := by
   classical
   let P : Tensor0SSpace 3 I x :=
-    Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A
+    Tensor0SSpace.product (r := 1) (s := 2) α A
   have hprod :
       inner0S (I := I) g x 3 P P =
         inner0S (I := I) g x 1 α α *
@@ -873,47 +862,52 @@ theorem deriv4sum
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => A y i j) x)
     (hB : ∀ i j : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => B y i j) x) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
           U y i k * U y j l * A y i j * B y k l) x v =
       ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-        (((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
-            U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+        (((mvfderiv (I := I) (fun y : M => U y i k) x v) * U x j l +
+            U x i k * (mvfderiv (I := I) (fun y : M => U y j l) x v)) *
             A x i j * B x k l +
           U x i k * U x j l *
-            ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
-              A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v))) := by
+            ((mvfderiv (I := I) (fun y : M => A y i j) x v) * B x k l +
+              A x i j * (mvfderiv (I := I) (fun y : M => B y k l) x v))) := by
   classical
   let F : Idx -> Idx -> Idx -> Idx -> M -> Real :=
     fun i j k l y => U y i k * U y j l * A y i j * B y k l
   have hterm (i j k l : Idx) :
-      extDerivFun (I := I) (F i j k l) x v =
-        ((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
-            U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+      mvfderiv (I := I) (F i j k l) x v =
+        ((mvfderiv (I := I) (fun y : M => U y i k) x v) * U x j l +
+            U x i k * (mvfderiv (I := I) (fun y : M => U y j l) x v)) *
             A x i j * B x k l +
           U x i k * U x j l *
-            ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
-              A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v)) := by
-    have hUU := DifferentialGeometry.Tensor.Coordinates.extDerivFun_mul_real
+            ((mvfderiv (I := I) (fun y : M => A y i j) x v) * B x k l +
+              A x i j * (mvfderiv (I := I) (fun y : M => B y k l) x v)) := by
+    have hUU := DifferentialGeometry.Tensor.Coordinates.mvfderiv_mul_real
       (I := I) (x := x) v (hU i k) (hU j l)
-    have hAB := DifferentialGeometry.Tensor.Coordinates.extDerivFun_mul_real
+    have hAB := DifferentialGeometry.Tensor.Coordinates.mvfderiv_mul_real
       (I := I) (x := x) v (hA i j) (hB k l)
-    have hAll := DifferentialGeometry.Tensor.Coordinates.extDerivFun_mul_real
+    have hAll := DifferentialGeometry.Tensor.Coordinates.mvfderiv_mul_real
       (I := I) (x := x) v ((hU i k).mul (hU j l)) ((hA i j).mul (hB k l))
+    have hUUfun : (fun y : M => U y i k * U y j l) =
+        (fun y : M => U y i k) * (fun y : M => U y j l) := rfl
+    have hABfun : (fun y : M => A y i j * B y k l) =
+        (fun y : M => A y i j) * (fun y : M => B y k l) := rfl
     calc
-      extDerivFun (I := I) (F i j k l) x v =
+      mvfderiv (I := I) (F i j k l) x v =
           (U x i k * U x j l) *
-              extDerivFun (I := I) (fun y : M => A y i j * B y k l) x v +
-            extDerivFun (I := I) (fun y : M => U y i k * U y j l) x v *
+              mvfderiv (I := I) (fun y : M => A y i j * B y k l) x v +
+            mvfderiv (I := I) (fun y : M => U y i k * U y j l) x v *
               (A x i j * B x k l) := by
+            rw [hUUfun, hABfun]
             simpa [F, mul_assoc] using hAll
       _ =
-          ((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
-              U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+          ((mvfderiv (I := I) (fun y : M => U y i k) x v) * U x j l +
+              U x i k * (mvfderiv (I := I) (fun y : M => U y j l) x v)) *
               A x i j * B x k l +
             U x i k * U x j l *
-              ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
-                A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v)) := by
+              ((mvfderiv (I := I) (fun y : M => A y i j) x v) * B x k l +
+                A x i j * (mvfderiv (I := I) (fun y : M => B y k l) x v)) := by
             rw [hUU, hAB]
             ring
   have hmdiff_l (i j k l : Idx) :
@@ -968,21 +962,21 @@ theorem deriv4sum
         intro i _hi
         exact hF1_mdiff i)
   have hF3_deriv (i j k : Idx) :
-      extDerivFun (I := I) (F3 i j k) x v =
-        ∑ l : Idx, extDerivFun (I := I) (F i j k l) x v := by
+      mvfderiv (I := I) (F3 i j k) x v =
+        ∑ l : Idx, mvfderiv (I := I) (F i j k l) x v := by
     dsimp [F3]
     exact
-      DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+      DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
       (I := I) (t := (Finset.univ : Finset Idx))
       (fun l : Idx => F i j k l) v
       (by
         intro l _hl
         exact hmdiff_l i j k l)
   have hF2_deriv (i j : Idx) :
-      extDerivFun (I := I) (F2 i j) x v =
+      mvfderiv (I := I) (F2 i j) x v =
         ∑ k : Idx, ∑ l : Idx,
-          extDerivFun (I := I) (F i j k l) x v := by
-    have h := DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+          mvfderiv (I := I) (F i j k l) x v := by
+    have h := DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
       (I := I) (t := (Finset.univ : Finset Idx))
       (fun k : Idx => F3 i j k) v
       (by
@@ -990,10 +984,10 @@ theorem deriv4sum
         exact hF3_mdiff i j k)
     simpa [F2, Finset.sum_apply, hF3_deriv] using h
   have hF1_deriv (i : Idx) :
-      extDerivFun (I := I) (F1 i) x v =
+      mvfderiv (I := I) (F1 i) x v =
         ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-          extDerivFun (I := I) (F i j k l) x v := by
-    have h := DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+          mvfderiv (I := I) (F i j k l) x v := by
+    have h := DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
       (I := I) (t := (Finset.univ : Finset Idx))
       (fun j : Idx => F2 i j) v
       (by
@@ -1001,10 +995,10 @@ theorem deriv4sum
         exact hF2_mdiff i j)
     simpa [F1, Finset.sum_apply, hF2_deriv] using h
   have hF0_deriv :
-      extDerivFun (I := I) F0 x v =
+      mvfderiv (I := I) F0 x v =
         ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-          extDerivFun (I := I) (F i j k l) x v := by
-    have h := DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+          mvfderiv (I := I) (F i j k l) x v := by
+    have h := DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
       (I := I) (t := (Finset.univ : Finset Idx))
       (fun i : Idx => F1 i) v
       (by
@@ -1017,27 +1011,27 @@ theorem deriv4sum
     funext y
     simp [F0, F1, F2, F3, F]
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
           U y i k * U y j l * A y i j * B y k l) x v =
-      extDerivFun (I := I) F0 x v := by
+      mvfderiv (I := I) F0 x v := by
         rw [hF0_eq]
     _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-          extDerivFun (I := I) (F i j k l) x v := hF0_deriv
+          mvfderiv (I := I) (F i j k l) x v := hF0_deriv
     _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-        (((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
-            U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+        (((mvfderiv (I := I) (fun y : M => U y i k) x v) * U x j l +
+            U x i k * (mvfderiv (I := I) (fun y : M => U y j l) x v)) *
             A x i j * B x k l +
           U x i k * U x j l *
-            ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
-              A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v))) := by
+            ((mvfderiv (I := I) (fun y : M => A y i j) x v) * B x k l +
+              A x i j * (mvfderiv (I := I) (fun y : M => B y k l) x v))) := by
         refine Finset.sum_congr rfl fun i _hi => ?_
         refine Finset.sum_congr rfl fun j _hj => ?_
         refine Finset.sum_congr rfl fun k _hk => ?_
         refine Finset.sum_congr rfl fun l _hl => ?_
         exact hterm i j k l
 
-@[simp] theorem fin2_apply_ite {α β : Type*} (f : α -> β) (i j : α) :
+theorem fin2_apply_ite {α β : Type*} (f : α -> β) (i j : α) :
     (fun q : Fin 2 => f (if q = 0 then i else j)) =
       fun q : Fin 2 => if q = 0 then f i else f j := by
   funext q

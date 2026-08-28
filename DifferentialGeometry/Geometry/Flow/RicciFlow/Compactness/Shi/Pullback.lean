@@ -38,10 +38,10 @@ theorem covDerivOfField_apply_eq_iterCov
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
+    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 N] [IsManifold I 2 N]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (s : ℕ) (x : M)
     (slots : Fin (2 + s) → TangentSpace I x) :
     ricCovTower (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ)
@@ -70,10 +70,10 @@ theorem ricCovTower_pullback
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_normSq0S_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
+    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 N] [IsManifold I 2 N]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (s : ℕ) (x : M) :
     Tensor0SBundle.normSq0S (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ) x (2 + s)
         (ricCovTower (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ)
@@ -90,10 +90,10 @@ theorem ricCovTower_normSq0S_pullback
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem movingShiBoundOn_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
+    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 N] [IsManifold I 2 N]
     (gSeq : ℕ → ℝ → SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N)
     (U : Set N) (β ψ : ℝ) (Nord : ℕ) (KShi : ℝ) (V : Set M)
     (hV : ∀ x ∈ V, Φ x ∈ U)

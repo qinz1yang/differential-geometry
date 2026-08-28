@@ -160,7 +160,7 @@ private lemma lintegral_chartLocalMeasure_le_lintegral_riemannianVolumeMeasure
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_off_zero
     intro x hx
-    simp only [Set.mem_setOf_eq] at hx
+    simp only [Set.mem_ofPred_eq] at hx
     have hx' : x ∈ (chartAt H α).sourceᶜ ∨ x ∈ (chartAt H α).source := by
       by_cases h : x ∈ (chartAt H α).source
       · exact Or.inr h
@@ -176,7 +176,7 @@ private lemma lintegral_chartLocalMeasure_le_lintegral_riemannianVolumeMeasure
   refine MeasureTheory.lintegral_mono fun x => ?_
   by_cases hx : x ∈ (chartAt H α).source
   · rw [hFtilde_def, Set.indicator_of_mem hx]
-  · rw [hFtilde_def, Set.indicator_of_notMem hx]; exact zero_le _
+  · rw [hFtilde_def, Set.indicator_of_notMem hx]; exact zero_le
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma lintegral_density_chartPushedRaw_pow_le
@@ -492,8 +492,12 @@ lemma chartPushedRawLpFromLp_tendsto
     have h_sub : Tendsto (fun n => F n - F_lim) atTop (𝓝 0) := by
       have := h_tendsto.sub (tendsto_const_nhds (x := F_lim))
       simpa using this
-    simpa using (continuous_norm.tendsto (0 :
-      Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
+    change Tendsto
+      ((fun a : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) => ‖a‖) ∘
+        fun n => F n - F_lim) atTop (nhds 0)
+    simpa only [norm_zero] using
+      (continuous_norm.tendsto (0 :
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
   have h_two_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h_two_ne_top : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
   have h_eLpNorm_eq : ∀ n,
@@ -564,7 +568,7 @@ lemma chartPushedRawLpFromLp_tendsto
       have h := ENNReal.Tendsto.const_mul (a := c) (b := 0) h_diff_tendsto (Or.inr h_c_ne_top)
       simpa using h
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h_const_tendsto
-      (fun _ => zero_le _)
+      (fun _ => zero_le)
       (fun n => eLpNorm_chartPushedRaw_le (I := I) (M := M) g α (h_meas n))
   rw [tendsto_iff_dist_tendsto_zero]
   have h_dist_eq : ∀ n,
@@ -617,7 +621,14 @@ lemma chartPushedRawLpFromLp_tendsto
             (I := I) (M := M) α)))) atTop (𝓝 0) := by
     have h_comp := (ENNReal.tendsto_toReal (by norm_num : (0 : ℝ≥0∞) ≠ ⊤)).comp
       h_chart_eLp_tendsto
-    simpa using h_comp
+    change Tendsto (ENNReal.toReal ∘ fun n => eLpNorm
+      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
+        (fun x => ((F n : Lp ℝ 2 _) : M → ℝ) x -
+          ((F_lim : Lp ℝ 2 _) : M → ℝ) x)) 2
+      ((chartPulledWeightedMeasure (I := I) g α).restrict
+        (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
+          (I := I) (M := M) α))) atTop (nhds 0)
+    exact h_comp
   exact h_toReal_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -790,7 +801,7 @@ lemma chartPushedRaw_aeEq_of_aeEq
             (I := I) (M := M) α,
           ENNReal.ofReal (densityOnEuclid (I := I) g α y) *
             ‖DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α d y‖ₑ ^ (2 : ℝ)
-          ∂(volume : Measure EuclN)) = 0 := le_antisymm h_bound (zero_le _)
+          ∂(volume : Measure EuclN)) = 0 := le_antisymm h_bound (zero_le)
     rcases mul_eq_zero.mp h_mul_eq with hzero | hzero
     · exact absurd hzero h_c_E_ne_zero
     · exact hzero

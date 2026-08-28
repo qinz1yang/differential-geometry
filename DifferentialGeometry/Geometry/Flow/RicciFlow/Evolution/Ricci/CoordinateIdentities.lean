@@ -140,8 +140,24 @@ theorem canNablaSymmAt
           basis (fun m n : CoordinateIdx (𝕜 := Real) E =>
             coordInv (I := I) S y t y m n)
           hinv p q
-      simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, basis,
-        coordinateFrameAt_toBasis_apply] using h
+      have hbasis : ∀ i, basis i = coordinateFrameAt (I := I) y i y := by
+        intro i
+        simp only [basis, coordinateFrameAt_toBasis_apply]
+      have hslots (U V : TangentSpace I y) :
+          (fun r : Fin 2 => if r = 0 then U else V) =
+            DifferentialGeometry.Geometry.Curvature.vec2 (I := I) U V := by
+        funext r
+        fin_cases r <;> rfl
+      rw [hbasis p, hbasis q, hslots, hslots]
+      change DifferentialGeometry.Geometry.Curvature.metricRicciAt
+          (I := I) (M := M) (S.family.metric t) y
+          (DifferentialGeometry.Geometry.Curvature.vec2 (I := I)
+            (coordinateFrameAt (I := I) y p y) (coordinateFrameAt (I := I) y q y)) =
+        DifferentialGeometry.Geometry.Curvature.metricRicciAt
+          (I := I) (M := M) (S.family.metric t) y
+          (DifferentialGeometry.Geometry.Curvature.vec2 (I := I)
+            (coordinateFrameAt (I := I) y q y) (coordinateFrameAt (I := I) y p y))
+      simpa only [hbasis p, hbasis q] using h
     exact
       DifferentialGeometry.Tensor.Coordinates.tensor0S_two_symm_of_coordFrame
         (I := I) basis (S.ricci t y) hcomp U V
@@ -187,7 +203,6 @@ theorem coordNablaSymmOn
 
 omit [SigmaCompactSpace M] in
 theorem canBianchiAt
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) {x : M}
@@ -219,11 +234,24 @@ theorem canBianchiAt
         (I := I) (M := M) (S.family.metric t) x basis gInvAt := by
     have h :=
       DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) (S.family.metric t) x₀ hx
-    simpa [basis, hframe, gInvAt, coordInv,
-      IsLocalFrameOn.toBasisAt_coe] using h
+    change Tensor0SBundle.MetricInverseInBasis_gen
+      (I := I) (M := M) (S.family.metric t) x basis gInvAt at h
+    exact h
   have hmetric :=
     DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_data (I := I) (M := M)
       (g := S.family.metric t) basis gInvAt hinv
+  change ∃ nablaRm04,
+      DifferentialGeometry.Geometry.Curvature.SecondBianchiAt (I := I) nablaRm04 ∧
+      DifferentialGeometry.Geometry.Curvature.NablaRmSymmAt (I := I) nablaRm04 ∧
+      DifferentialGeometry.Geometry.Curvature.NablaRicTraceAt (I := I) basis gInvAt
+        nablaRm04
+        (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 (S.family.connection t) (S.ricci t) x) ∧
+      DifferentialGeometry.Geometry.Curvature.DScalarTraceAt (I := I) basis gInvAt
+        (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 (S.family.connection t) (S.ricci t) x)
+        (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I)
+          (S.scalar t) x) at hmetric
   simpa [SolutionOn.family, SolutionOn.ricci, SolutionOn.scalar,
     SolutionFamily.connection, SolutionFamily.rm04, SolutionFamily.ricci,
     SolutionFamily.scalar, metricCov, metricRm04, metricRicci, metricScalarAt,
@@ -234,7 +262,6 @@ theorem canBianchiAt
 
 omit [SigmaCompactSpace M] in
 theorem coordBianchiTr
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -284,7 +311,6 @@ theorem coordBianchiTr
 
 omit [SigmaCompactSpace M] in
 theorem coordBianchiOn
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -326,8 +352,8 @@ theorem coordBianchiOn
           (coordNab2On (I := I) S x₀) (t : Real) x hx d a i j)
       htrace
 
+omit [SigmaCompactSpace M] in
 theorem canHessAt
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
@@ -432,8 +458,8 @@ theorem canHessAt
           refine Finset.sum_congr rfl fun l _ => ?_
           rw [hcan j i k l]
 
+omit [SigmaCompactSpace M] in
 theorem coordHessOn
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -447,9 +473,8 @@ theorem coordHessOn
   subst x
   exact canHessAt (I := I) S x₀ (t : Real) i j
 
+omit [SigmaCompactSpace M] in
 theorem coordCommAt
-    [I.Boundaryless]
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -823,9 +848,9 @@ theorem evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
   have hAt := h t x₀ (by simp) i j
   simpa [ricciEvolutionRHSInFrame] using hAt
 
+omit [SigmaCompactSpace M] in
 theorem coordRicciEvol
     [I.Boundaryless]
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -928,7 +953,12 @@ theorem coordRicciEvol
       (fun s _ => connCurvOfSol (I := I) S x₀ s)
       hmix hcomm
   have hAt := hEvol t x₀ (by simp) i j
-  simpa [gInv, frame, nabla2Ric, coordRoughRic, ricciEvolutionRHSInFrame] using hAt
+  have hrough : roughLapRicInFrame (M := M) gInv nabla2Ric =
+      coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀) := by
+    funext s x a b
+    rfl
+  rw [hrough] at hAt
+  simpa [gInv, frame, nabla2Ric, ricciEvolutionRHSInFrame] using hAt
 
 end CoordinateFrameRicciEvolution
 

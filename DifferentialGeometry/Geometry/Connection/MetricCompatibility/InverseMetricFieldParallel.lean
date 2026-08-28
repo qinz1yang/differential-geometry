@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter FiberBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -108,7 +107,9 @@ theorem cotangentCov_leviCivita_connectionDifference
   have hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) y (Y y)) x :=
     mdifferentiableAt_extend ..
-  have hYx : Y x = w := by rw [hYdef]; simp [FiberBundle.extend]
+  have hYx : Y x = w := by
+    rw [hYdef]
+    exact FiberBundle.extend_apply_self (F := E) w
   have hpair₁ := cotangentCov_dualPairing (LeviCivita (I := I) g₁) hθ hY v
   have hpair₀ := cotangentCov_dualPairing (LeviCivita (I := I) g₀) hθ hY v
   have hsub : ((cotangentCov (LeviCivita (I := I) g₁)).toFun θ x v) (Y x) -
@@ -168,7 +169,7 @@ theorem covGrad_inverseMetricSharpFib_cross
     refine LinearMap.ext (fun w => ?_)
     have hb := cotangentCov_leviCivita_connectionDifference (I := I) g₀ g₁ hβcot v w
     simp only [hD, LinearMap.add_apply, ContinuousLinearMap.coe_coe,
-      ContinuousLinearMap.neg_apply, ContinuousLinearMap.comp_apply,
+      neg_apply, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.flip_apply]
     linarith [hb]
   have hsharp_split :

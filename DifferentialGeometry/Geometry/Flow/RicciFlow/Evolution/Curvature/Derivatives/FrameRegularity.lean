@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.CoordinateRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -50,14 +52,14 @@ theorem frameTowerSmooth
   let e := coordinateTrivializationAt (I := I) x0
   let b := Module.finBasis Real E
   let coeff : Idx -> CoordinateIdx (𝕜 := Real) E -> M -> Real :=
-    fun i j y => e.localFrame_coeff I b j y (frame i y)
+    fun i j y => e.localFrameCoeff I b j y (frame i y)
   have hxcoord : x ∈ coordinateFrameSet (I := I) x0 :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
   have hcoeff : ∀ i j,
       ContMDiffAt I (modelWithCornersSelf Real Real) ∞
         (fun y : M => coeff i j y) x := by
     intro i j
-    exact contMDiffAt_localFrame_coeff
+    exact contMDiffAt_localFrameCoeff
       (I := I) (V := TangentSpace I) (e := e) (b := b)
       (s := frame i) (k := (∞ : WithTop ℕ∞)) hxcoord
       (hframe.contMDiffAt hu hxu i) j
@@ -97,14 +99,17 @@ theorem frameTowerSmooth
           (fun s => frameComp0S (I := I) (S.base.rm04 s) frame)
           k p.1 p.2 idx =
         A (fun q => frame (idx q) p.2) := by
-      simpa [A, frameTuple] using
-        iterRmLF_eq_nabla (I := I) S p.1 frame hframe1 hu k hp.1 idx
+      have hargs : frameTuple frame p.2 idx = fun q => frame (idx q) p.2 := by
+        funext q
+        rfl
+      rw [← hargs]
+      exact iterRmLF_eq_nabla (I := I) S p.1 frame hframe1 hu k hp.1 idx
     _ = A (fun q =>
           ∑ j : CoordinateIdx (𝕜 := Real) E,
             coeff (idx q) j p.2 • coordinateFrameAt (I := I) x0 j p.2) := by
       congr 1
       funext q
-      exact e.eq_sum_localFrame_coeff_smul hp.2
+      exact e.eq_sum_localFrameCoeff_smul hp.2
     _ = ∑ slots : Fin (4 + k) -> CoordinateIdx (𝕜 := Real) E,
           A (fun q => coeff (idx q) (slots q) p.2 •
             coordinateFrameAt (I := I) x0 (slots q) p.2) := by

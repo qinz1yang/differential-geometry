@@ -33,6 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [ConnectedSpace M] [BoundarylessManifold I M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem family_vol_low
     [T2Space (TangentBundle I M)]
     {omega : Real} (h0omega : 0 < omega)
@@ -178,13 +179,13 @@ theorem family_vol_low
       linarith [hw_norm, hR_pos a]
     · exact hB_closed hz
   have hctrl_t := hctrl a t (ht.trans htau_a)
-  letI : Bundle.RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : Bundle.RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨(g_fam (t : Real)).toRiemannianMetric⟩
   have hspd : ∀ q ∈ Metric.closedBall (0 : E) (2 * RLoc a), ∀ ξ : E,
       ‖mfderiv 𝓘(Real, E) I (Ψ a) q ξ‖ₑ ≤
         ENNReal.ofReal (LLoc a * ‖ξ‖) := by
     intro q hq ξ
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     change ENNReal.ofReal
       (Real.sqrt
         ((g_fam (t : Real)).inner ((Ψ a) q)

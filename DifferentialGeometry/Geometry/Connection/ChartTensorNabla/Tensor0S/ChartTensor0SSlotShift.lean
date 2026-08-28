@@ -63,14 +63,10 @@ lemma chartTensor0SSlotCorrection_apply_localSlotCLM (s : ℕ)
     (T : Π b' : M, Tensor0SSpace s I b')
     (X : Π b' : M, TangentSpace I b') (b : M) (k : Fin s)
     (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-      chartTensor0SSlotCorrection (I := I) s g α T X b k) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from T b)
-        (fun i : Fin s =>
-          localSlotCLM (I := I) s k
-              (chartLeviCivitaParallelCLM (I := I) g α b X) i (m i)) := by
+    Tensor0SSpace.eval (chartTensor0SSlotCorrection (I := I) s g α T X b k) m =
+      Tensor0SSpace.eval (T b) (fun i : Fin s =>
+        localSlotCLM (I := I) s k
+            (chartLeviCivitaParallelCLM (I := I) g α b X) i (m i)) := by
   rw [chartTensor0SSlotCorrection_eq_localSlotCLM_compose
     (I := I) s g α T X b k]
   rfl
@@ -80,21 +76,13 @@ lemma tensor0SPartialEval_apply_tangent (s : ℕ)
     (T : Π b' : M, Tensor0SSpace (s + 1) I b')
     (Y : Π b' : M, TangentSpace I b') (b : M)
     (vs : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-      tensor0SPartialEval I M T Y b) vs =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from T b)
-        (Fin.cons (Y b) vs) := by
+    Tensor0SSpace.eval (tensor0SPartialEval I M T Y b) vs =
+      Tensor0SSpace.eval (T b) (Fin.cons (Y b) vs) := by
   classical
-  change (show ContinuousMultilinearMap ℝ
-      (fun _ : Fin s => TangentSpace I b) ℝ from
-    tensor0S_curry (I := I) (M := M) s b (T b) (Y b)) vs =
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from T b)
-      (Fin.cons (Y b) vs)
-  exact TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-    (T := T b) (v0 := Y b) (vs := vs)
+  exact (Tensor0SSpace.eval_eq _ _).trans
+    ((TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+      (T := T b) (v0 := Y b) (vs := vs)).trans
+        (Tensor0SSpace.eval_eq _ _).symm)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in
@@ -156,13 +144,11 @@ theorem chartTensor0SSlotCorrection_succ_eq_partialEval
     (X : Π b' : M, TangentSpace I b')
     (b : M) (v : TangentSpace I b)
     (k : Fin s) (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-      chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k.succ)
-        (Fin.cons (chartParallelExtend (I := I) α b v b) m) =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        chartTensor0SSlotCorrection (I := I) s g α
+    Tensor0SSpace.eval
+        (chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k.succ)
+          (Fin.cons (chartParallelExtend (I := I) α b v b) m) =
+      Tensor0SSpace.eval
+        (chartTensor0SSlotCorrection (I := I) s g α
           (tensor0SPartialEval I M T
             (chartParallelExtend (I := I) α b v)) X b k) m := by
   classical
@@ -189,13 +175,11 @@ theorem chartTensor0SSlotCorrection_succ_eq_partialEval_of_mem
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (v : TangentSpace I b)
     (k : Fin s) (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-      chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k.succ)
-        (Fin.cons v m) =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        chartTensor0SSlotCorrection (I := I) s g α
+    Tensor0SSpace.eval
+        (chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k.succ)
+          (Fin.cons v m) =
+      Tensor0SSpace.eval
+        (chartTensor0SSlotCorrection (I := I) s g α
           (tensor0SPartialEval I M T
             (chartParallelExtend (I := I) α b v)) X b k) m := by
   classical

@@ -48,8 +48,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem mem_segDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {x : M} {v : TangentSpace I x} :
     v ∈ SegDom (I := I) g hEnorm x ↔
       Real.sqrt (g.inner x v v)

@@ -50,20 +50,20 @@ noncomputable def dInclEquiv (x : sphere (0 : E) 1) :
     inferInstanceAs (T2Space (EuclideanSpace ℝ (Fin n)))
   have hmem : ∀ v : TangentSpace (𝓡 n) x, dIncl (n := n) x v ∈ (ℝ ∙ (↑x : E))ᗮ := by
     intro v
-    rw [← range_mfderiv_coe_sphere (n := n) x]
+    rw [← range_mvfderiv_subtypeVal (n := n) x]
     exact ⟨v, rfl⟩
   refine LinearEquiv.toContinuousLinearEquiv
     (LinearEquiv.ofBijective ((dIncl (n := n) x).codRestrict _ hmem).toLinearMap ⟨?_, ?_⟩)
   · intro a b hab
-    exact mfderiv_coe_sphere_injective x (by simpa using congrArg Subtype.val hab)
+    exact injective_mvfderiv_subtypeVal_sphere x (congrArg Subtype.val hab)
   · intro w
-    obtain ⟨v, hv⟩ := (range_mfderiv_coe_sphere (n := n) x).ge w.2
+    obtain ⟨v, hv⟩ := (range_mvfderiv_subtypeVal (n := n) x).ge w.2
     exact ⟨v, Subtype.ext hv⟩
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem dInclEquiv_coe (x : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) x) :
     ((dInclEquiv (n := n) x v : (ℝ ∙ (↑x : E))ᗮ) : E) = dIncl (n := n) x v := by
-  simp only [dInclEquiv, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.ofBijective_apply]
+  simp only [dInclEquiv, LinearEquiv.coe_toContinuousLinearEquiv']
   rfl
 
 omit [FiniteDimensional ℝ E] in
@@ -82,12 +82,12 @@ theorem dInclField_smul (g : sphere (0 : E) 1 → ℝ)
 
 noncomputable def ambDeriv (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x)
     (x : sphere (0 : E) 1) : TangentSpace (𝓡 n) x →L[ℝ] E :=
-  (mfderiv (𝓡 n) 𝓘(ℝ, E) (dInclField (n := n) Y) x : TangentSpace (𝓡 n) x →L[ℝ] E)
+  mvfderiv (𝓡 n) (dInclField (n := n) Y) x
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem ambDeriv_apply (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x)
     (x : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) x) :
-    ambDeriv (n := n) Y x v = mfderiv (𝓡 n) 𝓘(ℝ, E) (dInclField (n := n) Y) x v := rfl
+    ambDeriv (n := n) Y x v = mvfderiv (𝓡 n) (dInclField (n := n) Y) x v := rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem ambDeriv_add {Y Y' : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x} {x : sphere (0 : E) 1}
@@ -99,11 +99,11 @@ theorem ambDeriv_add {Y Y' : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x} 
     ambDeriv (n := n) (Y + Y') x v
       = ambDeriv (n := n) Y x v + ambDeriv (n := n) Y' x v := by
   have h : ambDeriv (n := n) (Y + Y') x = ambDeriv (n := n) Y x + ambDeriv (n := n) Y' x := by
-    have h0 := mfderiv_add (dInclField_mdifferentiableAt (n := n) hY)
+    have h0 := mvfderiv_add (dInclField_mdifferentiableAt (n := n) hY)
       (dInclField_mdifferentiableAt (n := n) hY')
     rw [← dInclField_add] at h0
     exact h0
-  rw [h, ContinuousLinearMap.add_apply]
+  rw [h, add_apply]
 
 omit [FiniteDimensional ℝ E] in
 theorem ambDeriv_smul {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x}
@@ -112,21 +112,27 @@ theorem ambDeriv_smul {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x}
       (fun y => (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) y (Y y))) x)
     (hg : MDifferentiableAt (𝓡 n) 𝓘(ℝ, ℝ) g x) (v : TangentSpace (𝓡 n) x) :
     ambDeriv (n := n) (g • Y) x v
-      = g x • ambDeriv (n := n) Y x v + (extDerivFun g x v) • dInclField (n := n) Y x := by
-  have key := fromTangentSpace_mfderiv_smul_apply hg (dInclField_mdifferentiableAt (n := n) hY) v
+      = g x • ambDeriv (n := n) Y x v +
+          (mvfderiv (𝓡 n) g x v) • dInclField (n := n) Y x := by
+  have key := DFunLike.congr_fun
+    (mvfderiv_smul hg (dInclField_mdifferentiableAt (n := n) hY)) v
   rw [← dInclField_smul] at key
+  change mvfderiv (𝓡 n) (dInclField (n := n) (g • Y)) x v =
+    g x • mvfderiv (𝓡 n) (dInclField (n := n) Y) x v +
+      mvfderiv (𝓡 n) g x v • dInclField (n := n) Y x
   exact key
 
 noncomputable def projConn (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x) :
     ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x :=
   fun x => (dInclEquiv (n := n) x).symm.toContinuousLinearMap.comp
-    (((ℝ ∙ (↑x : E))ᗮ).orthogonalProjection.comp (ambDeriv (n := n) Y x))
+    (((ℝ ∙ (↑x : E))ᗮ).orthogonalProjectionOnto.comp (ambDeriv (n := n) Y x))
 
 omit [FiniteDimensional ℝ E] in
 theorem dIncl_projConn (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x)
     (x : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) x) :
     dIncl (n := n) x (projConn (n := n) Y x v)
-      = (↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjection (ambDeriv (n := n) Y x v)) : E) := by
+      = (↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjectionOnto
+          (ambDeriv (n := n) Y x v)) : E) := by
   simp only [projConn, ContinuousLinearMap.comp_apply]
   rw [← dInclEquiv_coe (n := n) x]
   congr 1
@@ -141,22 +147,24 @@ noncomputable def projConnCD :
     refine { add := ?_, leibniz := ?_ }
     · intro Y Y' x hY hY' _
       ext v
-      rw [ContinuousLinearMap.add_apply]
-      refine mfderiv_coe_sphere_injective x ?_
+      rw [add_apply]
+      refine injective_mvfderiv_subtypeVal_sphere x ?_
       change dIncl (n := n) x (projConn (n := n) (Y + Y') x v)
         = dIncl (n := n) x (projConn (n := n) Y x v + projConn (n := n) Y' x v)
       rw [map_add, dIncl_projConn, dIncl_projConn, dIncl_projConn, ambDeriv_add hY hY',
         map_add, Submodule.coe_add]
     · intro Y g x hY hg _
       ext v
-      rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+      rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
-      refine mfderiv_coe_sphere_injective x ?_
+      refine injective_mvfderiv_subtypeVal_sphere x ?_
       change dIncl (n := n) x (projConn (n := n) (g • Y) x v)
-        = dIncl (n := n) x (g x • projConn (n := n) Y x v + (extDerivFun g x v) • Y x)
+        = dIncl (n := n) x (g x • projConn (n := n) Y x v +
+          (mvfderiv (𝓡 n) g x v) • Y x)
       have hmem : dInclField (n := n) Y x ∈ (ℝ ∙ (↑x : E))ᗮ := by
-        rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨Y x, rfl⟩
-      have hfix : (↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjection (dInclField (n := n) Y x)) : E)
+        rw [← range_mvfderiv_subtypeVal (n := n) x]; exact ⟨Y x, rfl⟩
+      have hfix : (↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjectionOnto
+          (dInclField (n := n) Y x)) : E)
           = dInclField (n := n) Y x := by
         rw [← Submodule.starProjection_apply]
         exact Submodule.starProjection_eq_self_iff.mpr hmem

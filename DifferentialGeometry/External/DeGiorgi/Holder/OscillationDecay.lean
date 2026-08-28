@@ -205,7 +205,10 @@ theorem holderOnWith_of_realBound
       _ = ENNReal.ofReal K * edist x y ^ α := by
             rw [edist_dist, dist_eq_norm, ENNReal.ofReal_rpow_of_nonneg (norm_nonneg _) hα]
   convert hmain using 1
-  rw [(ENNReal.ofReal_eq_coe_nnreal (x := K) hK).symm, NNReal.coe_mk]
+  change ENNReal.ofNNReal (NNReal.mk K hK) *
+      edist x y ^ ((NNReal.mk α hα : NNReal) : ℝ) =
+    ENNReal.ofReal K * edist x y ^ α
+  rw [← ENNReal.ofReal_eq_coe_nnreal hK, NNReal.coe_mk]
 
 omit [NeZero d] in
 theorem pointwise_le_of_ae_le_on_ball_inter_half

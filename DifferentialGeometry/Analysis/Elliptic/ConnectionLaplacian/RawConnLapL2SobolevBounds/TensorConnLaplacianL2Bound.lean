@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open MeasureTheory

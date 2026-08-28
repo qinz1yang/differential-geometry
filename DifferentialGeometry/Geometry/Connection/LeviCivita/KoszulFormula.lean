@@ -31,29 +31,22 @@ private instance tangentSpace_finiteDimensional (x : M) :
 
 def tangentConstAt (x : M) (v : TangentSpace I x) (p : M) :
     TangentSpace I p :=
-  TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p
+  TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x
+    ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v) p
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem tangentConstAt_apply (x : M) (v : TangentSpace I x) (p : M) :
     tangentConstAt (I := I) x v p =
-      TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p := by
+      TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x
+        ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v) p := by
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem tangentConstAt_self (x : M) (v : TangentSpace I x) :
     tangentConstAt (I := I) x v x = v := by
   unfold tangentConstAt
-  rw [TensorLieDeriv.tangentConstInChart_apply]
-  have hL :
-      (trivializationAt E (TangentSpace I) x).symmL Real x =
-        (1 : E →L[Real] E) := by
-    rw [TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x) (b := x) (mem_chart_source H x)]
-    ext w
-    exact (tangentBundleCore I M).coordChange_self (achart H x) x
-      (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H x) w
-  rw [hL]
-  rfl
+  exact TensorLieDeriv.tangentConstInChart_self_continuousLinearMapAt
+    (𝕜 := Real) (I := I) x v
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem tangentConstAt_add (x : M) (v w : TangentSpace I x) :
@@ -61,14 +54,16 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
       (tangentConstAt (I := I) x v : (p : M) -> TangentSpace I p) +
         tangentConstAt (I := I) x w := by
   unfold tangentConstAt
-  exact TensorLieDeriv.tangentConstInChart_add (𝕜 := Real) (I := I) x v w
+  rw [map_add]
+  exact TensorLieDeriv.tangentConstInChart_add (𝕜 := Real) (I := I) x _ _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem tangentConstAt_smul (x : M) (a : Real) (v : TangentSpace I x) :
     (tangentConstAt (I := I) x (a • v) : (p : M) -> TangentSpace I p) =
       a • (tangentConstAt (I := I) x v : (p : M) -> TangentSpace I p) := by
   unfold tangentConstAt
-  exact TensorLieDeriv.tangentConstInChart_smul (𝕜 := Real) (I := I) x a v
+  rw [map_smul]
+  exact TensorLieDeriv.tangentConstInChart_smul (𝕜 := Real) (I := I) x a _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem mdifferentiableAt_tangentConstAt_self
@@ -76,7 +71,8 @@ theorem mdifferentiableAt_tangentConstAt_self
     MDiffAt (T% (tangentConstAt (I := I) x v : (p : M) -> TangentSpace I p)) x := by
   unfold tangentConstAt
   exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-    (𝕜 := Real) (I := I) (x₀ := x) (p := x) v
+    (𝕜 := Real) (I := I) (x₀ := x) (p := x)
+    ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v)
     (mem_baseSet_trivializationAt E (TangentSpace I) x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -107,7 +103,7 @@ private theorem mdifferentiableAt_metric_inner
 
 def directionalDerivAlong
     (X : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M) : Real :=
-  extDerivFun (I := I) f x (X x)
+  mvfderiv (I := I) f x (X x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in
@@ -139,8 +135,8 @@ private theorem directionalDerivAlong_add_fun
       directionalDerivAlong (I := I) X f x +
         directionalDerivAlong (I := I) X h x := by
   unfold directionalDerivAlong
-  rw [extDerivFun_add hf hh]
-  rw [ContinuousLinearMap.add_apply]
+  rw [mvfderiv_add hf hh]
+  rw [add_apply]
 
 def koszulScalar
     (g : SmoothRiemannianMetric I M)
@@ -170,15 +166,15 @@ private theorem koszulScalar_add_first
       (fun y : M => g.inner y (Z y) (X y)) +
         (fun y : M => g.inner y (Z y) (X' y)) by
         funext y; simp [Pi.add_apply]]
-  rw [extDerivFun_add hZX hZX']
+  rw [mvfderiv_add hZX hZX']
   rw [show (fun y : M => g.inner y ((X + X') y) (Y y)) =
       (fun y : M => g.inner y (X y) (Y y)) +
         (fun y : M => g.inner y (X' y) (Y y)) by
         funext y; simp [Pi.add_apply]]
-  rw [extDerivFun_add hXY hX'Y]
+  rw [mvfderiv_add hXY hX'Y]
   rw [VectorField.mlieBracket_add_right (I := I) (V := Z) hX hX']
   rw [VectorField.mlieBracket_add_left (I := I) (W := Y) hX hX']
-  simp [Pi.add_apply, map_add, ContinuousLinearMap.add_apply]
+  simp [Pi.add_apply, map_add, add_apply]
   abel_nf
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
@@ -209,25 +205,23 @@ private theorem koszulScalar_add_second
   rw [directionalDerivAlong_add_fun (I := I) Z x hXY hXY']
   rw [VectorField.mlieBracket_add_left (I := I) (W := Z) hY hY']
   rw [VectorField.mlieBracket_add_right (I := I) (V := X) hY hY']
-  simp [Pi.add_apply, map_add, ContinuousLinearMap.add_apply]
+  simp [Pi.add_apply, map_add, add_apply]
   abel_nf
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in
-private theorem extDerivFun_mul_at
+private theorem mvfderiv_mul_at
     {f h : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
-    extDerivFun (I := I) (fun y : M => f y * h y) x v =
-      f x * extDerivFun (I := I) h x v +
-        extDerivFun (I := I) f x v * h x := by
-  change extDerivFun (I := I) (f • h) x v =
-      f x * extDerivFun (I := I) h x v +
-        extDerivFun (I := I) f x v * h x
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := h) hf hh v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc]
-    using hprod
+    mvfderiv (I := I) (fun y : M => f y * h y) x v =
+      f x * mvfderiv (I := I) h x v +
+        mvfderiv (I := I) f x v * h x := by
+  change mvfderiv (I := I) (f • h) x v =
+      f x * mvfderiv (I := I) h x v +
+        mvfderiv (I := I) f x v * h x
+  rw [mvfderiv_smul hf hh]
+  simp [smul_eq_mul, mul_comm]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in
@@ -239,7 +233,7 @@ private theorem directionalDerivAlong_mul_fun
       f x * directionalDerivAlong (I := I) X h x +
         directionalDerivAlong (I := I) X f x * h x := by
   unfold directionalDerivAlong
-  exact extDerivFun_mul_at (I := I) (v := X x) hf hh
+  exact mvfderiv_mul_at (I := I) (v := X x) hf hh
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in
@@ -248,8 +242,8 @@ private theorem directionalDerivAlong_smul_fun_left
     directionalDerivAlong (I := I) (f • X) h x =
       f x * directionalDerivAlong (I := I) X h x := by
   unfold directionalDerivAlong
-  change (extDerivFun (I := I) h x) (f x • X x) =
-    f x * (extDerivFun (I := I) h x) (X x)
+  change (mvfderiv (I := I) h x) (f x • X x) =
+    f x * (mvfderiv (I := I) h x) (X x)
   rw [map_smul]
   rfl
 
@@ -272,21 +266,19 @@ private theorem koszulScalar_smul_first
       (fun y : M => f y * g.inner y (X y) (Y y)) by
         funext y; simp]
   unfold directionalDerivAlong
-  rw [extDerivFun_mul_at (I := I) (v := Y x) hf hZX]
-  rw [extDerivFun_mul_at (I := I) (v := Z x) hf hXY]
+  rw [mvfderiv_mul_at (I := I) (v := Y x) hf hZX]
+  rw [mvfderiv_mul_at (I := I) (v := Z x) hf hXY]
   rw [VectorField.mlieBracket_smul_right (I := I) (V := Z) (W := X) hf hX]
   rw [VectorField.mlieBracket_smul_left (I := I) (V := X) (W := Y) hf hX]
   have hdfY :
-      NormedSpace.fromTangentSpace (f x)
-          (mfderiv I 𝓘(Real, Real) f x (Y x)) =
-        extDerivFun (I := I) f x (Y x) := by
+      mvfderiv (I := I) f x (Y x) =
+        mvfderiv (I := I) f x (Y x) := by
     rfl
   have hdfZ :
-      NormedSpace.fromTangentSpace (f x)
-          (mfderiv I 𝓘(Real, Real) f x (Z x)) =
-        extDerivFun (I := I) f x (Z x) := by
+      mvfderiv (I := I) f x (Z x) =
+        mvfderiv (I := I) f x (Z x) := by
     rfl
-  simp only [hdfY, hdfZ, map_add, map_smul, map_neg, smul_eq_mul,
+  simp only [map_add, map_smul, map_neg, smul_eq_mul,
     neg_smul, sub_eq_add_neg]
   rw [show (f • X) x = f x • X x by rfl]
   simp only [map_smul]
@@ -321,13 +313,11 @@ private theorem koszulScalar_smul_second
   rw [VectorField.mlieBracket_smul_left (I := I) (W := Z) hf hY]
   rw [VectorField.mlieBracket_smul_right (I := I) (V := X) hf hY]
   have hdfZ :
-      NormedSpace.fromTangentSpace (f x)
-          (mfderiv I 𝓘(Real, Real) f x (Z x)) =
+      mvfderiv (I := I) f x (Z x) =
         directionalDerivAlong (I := I) Z f x := by
     rfl
   have hdfX :
-      NormedSpace.fromTangentSpace (f x)
-          (mfderiv I 𝓘(Real, Real) f x (X x)) =
+      mvfderiv (I := I) f x (X x) =
         directionalDerivAlong (I := I) X f x := by
     rfl
   simp only [hdfZ, hdfX, map_add, map_smul, map_neg, smul_eq_mul,
@@ -368,7 +358,7 @@ private theorem koszulScalar_add_third
   rw [directionalDerivAlong_add_left]
   rw [VectorField.mlieBracket_add_right (I := I) (V := Y) hZ hZ']
   rw [VectorField.mlieBracket_add_left (I := I) (W := X) hZ hZ']
-  simp [Pi.add_apply, map_add, ContinuousLinearMap.add_apply]
+  simp [Pi.add_apply, map_add, add_apply]
   abel_nf
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
@@ -395,13 +385,11 @@ private theorem koszulScalar_smul_third
   rw [VectorField.mlieBracket_smul_right (I := I) (V := Y) hf hZ]
   rw [VectorField.mlieBracket_smul_left (I := I) (W := X) hf hZ]
   have hdfX :
-      NormedSpace.fromTangentSpace (f x)
-          (mfderiv I 𝓘(Real, Real) f x (X x)) =
+      mvfderiv (I := I) f x (X x) =
         directionalDerivAlong (I := I) X f x := by
     rfl
   have hdfY :
-      NormedSpace.fromTangentSpace (f x)
-          (mfderiv I 𝓘(Real, Real) f x (Y x)) =
+      mvfderiv (I := I) f x (Y x) =
         directionalDerivAlong (I := I) Y f x := by
     rfl
   simp only [hdfX, hdfY, map_add, map_smul, map_neg, smul_eq_mul,
@@ -995,7 +983,7 @@ def leviCivitaConnectionOfMetric
         leibniz := ?_ }
     · intro Y Y' x hY hY' _hx
       ext v
-      rw [ContinuousLinearMap.add_apply]
+      rw [add_apply]
       rw [leviCivitaConnectionCandidateAt_agreesWithDescended
         (I := I) g (Y + Y') x (mdifferentiableAt_add_section hY hY') v]
       rw [leviCivitaConnectionCandidateAt_agreesWithDescended
@@ -1008,7 +996,7 @@ def leviCivitaConnectionOfMetric
         (mdifferentiableAt_tangentConstAt_self (I := I) x v) hY hY'
     · intro Y f x hY hf _hx
       ext v
-      rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+      rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
       rw [leviCivitaConnectionCandidateAt_agreesWithDescended
         (I := I) g (f • Y) x (hf.smul_section hY) v]

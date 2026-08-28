@@ -4,7 +4,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap

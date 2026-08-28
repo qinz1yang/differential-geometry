@@ -51,13 +51,13 @@ theorem constant_positive_sectional_curvature_implies_spherical_space_form
       (I := I) (M := M) hcompact hconn hbdry hdim g c hc hsec
   exact ⟨⟨model.1, model.2⟩⟩
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem spherical_space_form_admits_constant_positive_sectional_curvature
-    [I.Boundaryless]
     (model : isSphericalSpaceFormQuotient I M) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) := by
   obtain ⟨S⟩ := model
-  haveI : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) := by
+  have : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) := by
     rw [finrank_euclideanSpace_fin]; infer_instance
   obtain ⟨c, hc, hsec⟩ := S.data.gQuot_constPosSec
   refine ⟨Diffeomorph.pullbackMetricCross S.data.gQuot S.equiv, c, hc, fun x X Y => ?_⟩
@@ -66,9 +66,9 @@ theorem spherical_space_form_admits_constant_positive_sectional_curvature
     ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x Y Y,
     ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x X Y]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem spherical_space_form_implies_constant_positive_sectional_curvature
-    [I.Boundaryless]
     (hsph : isSphericalSpaceForm (I := I) (M := M)) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) :=
   spherical_space_form_admits_constant_positive_sectional_curvature
@@ -79,7 +79,7 @@ theorem constant_positive_sectional_curvature_iff_spherical_space_form
     (hM : isClosedThreeManifold (I := I) (M := M)) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) ↔
       isSphericalSpaceForm (I := I) (M := M) := by
-  letI : I.Boundaryless := hM.2.2.1
+  let : I.Boundaryless := hM.2.2.1
   constructor
   · exact constant_positive_sectional_curvature_implies_spherical_space_form
       (I := I) (M := M) hM

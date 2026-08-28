@@ -14,7 +14,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis

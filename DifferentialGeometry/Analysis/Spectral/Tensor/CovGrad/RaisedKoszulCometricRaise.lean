@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -98,30 +97,53 @@ noncomputable def koszulCovecCc (g₀ : SmoothRiemannianMetric I M)
           (symmSCovGrad3 (I := I) g₀ T))
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma koszulCovecCc_unitModel (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (x : M) (a b c : TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ T) x ![c, a, b] =
+    unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ T) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       (1 / 2 : ℝ) *
-        (unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x ![b, a, c]
-          + unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x ![a, b, c]
-          - unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x ![c, b, a]) := by
+        (unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x c]
+          + unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x c]
+          - unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x a]) := by
   classical
   set W : SmoothCcTensor g₀ 0 3 := symmSCovGrad3 (I := I) g₀ T with hW
-  have hperm : ∀ (σ : Equiv.Perm (Fin 3)) (m : Fin 3 → TangentSpace I x),
+  have hperm : ∀ (σ : Equiv.Perm (Fin 3)) (m : Fin 3 → E),
       unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀ σ W) x m =
         unitModel (I := I) (M := M) g₀ 3 W x (fun i => m (σ i)) := by
     intro σ m
     rw [domDomCongrSection_unitModel (I := I) g₀ σ W x,
       ContinuousMultilinearMap.domDomCongr_apply]
-  have hlin : unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ T) x ![c, a, b] =
+  have hlin : unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ T) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       (1 / 2 : ℝ) *
         (unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀
-              (Equiv.swap (0 : Fin 3) 2) W) x ![c, a, b]
+              (Equiv.swap (0 : Fin 3) 2) W) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b]
           + unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀ (finRotate 3) W) x
-              ![c, a, b]
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b]
           - unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀
-              (Equiv.swap (1 : Fin 3) 2) W) x ![c, a, b]) := by
+              (Equiv.swap (1 : Fin 3) 2) W) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b]) := by
     simp only [koszulCovecCc, unitModel, SmoothCcTensor.toSection_smul,
       SmoothCcTensor.toSection_add,
       SmoothCcTensor.toSection_sub, ContMDiffSection.coe_smul, ContMDiffSection.coe_add,
@@ -129,13 +151,29 @@ lemma koszulCovecCc_unitModel (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcT
 ]
     rfl
   rw [hlin, hperm, hperm, hperm]
-  have e1 : (fun i => (![c, a, b] : Fin 3 → TangentSpace I x) ((Equiv.swap (0 : Fin 3) 2) i)) =
-      ![b, a, c] := by
+  have e1 : (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x b] : Fin 3 → E)
+      ((Equiv.swap (0 : Fin 3) 2) i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x c] := by
     funext i; fin_cases i <;> simp [Equiv.swap_apply_def]
-  have e2 : (fun i => (![c, a, b] : Fin 3 → TangentSpace I x) ((finRotate 3) i)) = ![a, b, c] := by
-    funext i; fin_cases i <;> simp [finRotate_succ_apply]
-  have e3 : (fun i => (![c, a, b] : Fin 3 → TangentSpace I x) ((Equiv.swap (1 : Fin 3) 2) i)) =
-      ![c, b, a] := by
+  have e2 : (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x b] : Fin 3 → E)
+      ((finRotate 3) i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x c] := by
+    funext i; fin_cases i <;> simp [finRotate_apply]
+  have e3 : (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x b] : Fin 3 → E)
+      ((Equiv.swap (1 : Fin 3) 2) i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x a] := by
     funext i; fin_cases i <;> simp [Equiv.swap_apply_def]
   rw [e1, e2, e3]
 

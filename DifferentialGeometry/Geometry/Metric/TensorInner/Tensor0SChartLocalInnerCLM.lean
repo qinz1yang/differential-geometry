@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SChartLocalInner
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
@@ -103,11 +103,11 @@ noncomputable def curryLeftAtCLM (s : ℕ) (v : E) :
       map_add' := fun S₁ S₂ => by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
+              add_apply]
       map_smul' := fun c S => by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply] }
+              smul_apply] }
     ‖v‖
     (fun S => by
       change ‖S.curryLeft v‖ ≤ _
@@ -167,13 +167,13 @@ private lemma chartTensorInnerPointwise_0sCLM_succ_eq
   refine ContinuousLinearMap.ext ?_
   intro T
   rw [chartTensorInnerPointwise_0sCLM_apply, chartTensorInnerPointwise_0s_succ]
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro j _
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
+  rw [smul_apply, smul_apply,
     composeCurryAtIJ_apply, smul_eq_mul,
     chartTensorInnerPointwise_0sCLM_apply]
 

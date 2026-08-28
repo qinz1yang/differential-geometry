@@ -92,6 +92,7 @@ theorem coreLap_norm_le
   calc
     ‖coreLap d2u x‖ ≤ Module.finrank ℝ V * ‖d2u x‖ := by
       have h := lapEval_dist_le (V := V) (F := F) (d2u x) 0
+      change ‖lapEval (d2u x)‖ ≤ Module.finrank ℝ V * ‖d2u x‖
       simpa only [map_zero, dist_zero_right] using h
     _ ≤ Module.finrank ℝ V * ‖d2u‖ :=
       mul_le_mul_of_nonneg_left (d2u.norm_coe_le_norm x)
@@ -106,11 +107,13 @@ theorem coreLap_holder
       (lapEval (V := V) (F := F)) := by
     apply LipschitzWith.of_dist_le_mul
     intro A B
-    simpa only [Nat.cast_ofNat, NNReal.smul_def, smul_eq_mul] using
-      lapEval_dist_le (V := V) (F := F) A B
+    change dist (lapEval A) (lapEval B) ≤
+      (Module.finrank ℝ V : ℝ) * dist A B
+    exact lapEval_dist_le (V := V) (F := F) A B
   have hcomp := hlip.holderWith.comp h
-  simpa only [coreLap, Function.comp_apply, NNReal.coe_natCast,
-    NNReal.coe_one, NNReal.rpow_one, mul_one, one_mul] using hcomp
+  change HolderWith (Module.finrank ℝ V * K) alpha
+    ((lapEval (V := V) (F := F)) ∘ d2u)
+  simpa only [NNReal.coe_one, NNReal.rpow_one, mul_one, one_mul] using hcomp
 
 end CoreOperators
 
@@ -295,8 +298,10 @@ theorem heatSup_zero {K : ℝ≥0} (u : BoundedContinuousFunction V F)
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
     have hfull : Tendsto (fun t : ℝ => Real.sqrt (Real.sqrt t))
         (𝓝 0) (𝓝 0) := by
-      simpa only [Function.comp_apply, Real.sqrt_zero] using
-        (Real.continuous_sqrt.comp Real.continuous_sqrt).tendsto (0 : ℝ)
+      change Tendsto (Real.sqrt ∘ Real.sqrt) (𝓝 0) (𝓝 0)
+      have ht := (Real.continuous_sqrt.comp Real.continuous_sqrt).tendsto (0 : ℝ)
+      rw [show (Real.sqrt ∘ Real.sqrt) 0 = 0 by norm_num] at ht
+      exact ht
     simpa only [heatScale, Real.sqrt_zero] using hfull.mono_left nhdsWithin_le_nhds
   have hupper : Tendsto
       (fun t : ℝ => (K : ℝ) * Real.sqrt (heatScale t) * heatC0Half V)
@@ -412,10 +417,11 @@ theorem heatScaled_time {t : ℝ} (ht : 0 < t)
     intro z s hs_mem
     have hs_pos : 0 < s := hs₀.trans hs_mem
     have hscale : HasDerivAt heatScale (1 / (2 * heatScale s)) s := by
-      simpa only [heatScale] using Real.hasDerivAt_sqrt hs_pos.ne'
+      exact (Real.hasDerivAt_sqrt hs_pos.ne').congr_of_eventuallyEq <|
+        Filter.Eventually.of_forall fun q => by rfl
     have harg : HasDerivAt (fun q : ℝ => x - heatScale q • z)
         ((-(2 * heatScale s)⁻¹) • z) s := by
-      convert (hasDerivAt_const s x).sub (hscale.smul_const z) using 1
+      refine ((hasDerivAt_const s x).sub (hscale.smul_const z)).congr_deriv ?_
       simp only [zero_sub, one_div, neg_smul]
     have hcomp := (hu (x - heatScale s • z)).comp_hasDerivAt s harg
     dsimp only [F₀, F₁, scaledDt]
@@ -478,8 +484,9 @@ theorem scaledDt_eq_lap {t : ℝ} (ht : 0 < t)
       HasFDerivAt p (-r • ContinuousLinearMap.id ℝ V) z := by
     intro z
     dsimp only [p]
-    simpa using (hasFDerivAt_const x z).sub
-      ((r • ContinuousLinearMap.id ℝ V).hasFDerivAt)
+    refine (((hasFDerivAt_const x z).sub
+      ((r • ContinuousLinearMap.id ℝ V).hasFDerivAt)).congr_fderiv (by simp)).congr_of_eventuallyEq ?_
+    exact Filter.Eventually.of_forall fun y => by rfl
   have hgder : ∀ (i : Fin (Module.finrank ℝ V)) (z : V),
       fderiv ℝ (fun y : V => du (p y) (b i)) z (b i) =
         (-r) • d2u (p z) (b i) (b i) := by
@@ -489,7 +496,8 @@ theorem scaledDt_eq_lap {t : ℝ} (ht : 0 < t)
     have heval := ev.hasFDerivAt.comp z hcomp
     have hfd : fderiv ℝ (fun y : V => du (p y) (b i)) z =
         ev.comp ((d2u (p z)).comp (-r • ContinuousLinearMap.id ℝ V)) := by
-      simpa only [Function.comp_apply] using heval.fderiv
+      exact (heval.congr_of_eventuallyEq <|
+        Filter.Eventually.of_forall fun y => by rfl).fderiv
     rw [hfd]
     simp [ev]
   have hgdiff : ∀ (i : Fin (Module.finrank ℝ V)) (z : V),
@@ -596,7 +604,7 @@ theorem scaledDt_eq_lap {t : ℝ} (ht : 0 < t)
       exact hpoint z
     _ = ∑ i : Fin (Module.finrank ℝ V),
           ∫ z : V, r⁻¹ • (baseD1 (b i) z • du (p z) (b i)) := by
-      rw [MeasureTheory.integral_finset_sum _ (fun i _ => hterm_int i)]
+      rw [MeasureTheory.integral_finsetSum _ (fun i _ => hterm_int i)]
     _ = ∑ i : Fin (Module.finrank ℝ V),
           ∫ z : V, baseHeat z • d2u (p z) (b i) (b i) := by
       apply Finset.sum_congr rfl
@@ -604,7 +612,7 @@ theorem scaledDt_eq_lap {t : ℝ} (ht : 0 < t)
       exact hdir i
     _ = ∫ z : V, ∑ i : Fin (Module.finrank ℝ V),
           baseHeat z • d2u (p z) (b i) (b i) := by
-      rw [MeasureTheory.integral_finset_sum _ (fun i _ => hD2int i)]
+      rw [MeasureTheory.integral_finsetSum _ (fun i _ => hD2int i)]
     _ = ∫ z : V, baseHeat z • coreLap d2u (p z) := by
       apply integral_congr_ae
       filter_upwards with z
@@ -773,7 +781,8 @@ private theorem volterra_zero {t : ℝ}
     · exact ((b.continuous.comp (continuous_const.sub continuous_id)).smul hk)
         |>.intervalIntegrable t q
   rw [hsplit]
-  simpa only [Pi.add_apply, add_zero] using hfixed.add htail_der
+  exact ((hfixed.add htail_der).congr_deriv (by simp)).congr_of_eventuallyEq <|
+    Filter.Eventually.of_forall fun q => by rfl
 private theorem volterra_time {t : ℝ}
     (b db : BoundedContinuousFunction ℝ ℝ)
     (hb : ∀ q : ℝ, HasDerivAt (b : ℝ → ℝ) (db q) q)
@@ -786,9 +795,8 @@ private theorem volterra_time {t : ℝ}
     b - BoundedContinuousFunction.const ℝ (b 0)
   have hbz : ∀ q : ℝ, HasDerivAt (bz : ℝ → ℝ) (db q) q := by
     intro q
-    simpa only [bz, BoundedContinuousFunction.coe_sub,
-      BoundedContinuousFunction.const_apply, Pi.sub_apply] using
-      (hb q).sub_const (b 0)
+    exact ((hb q).sub_const (b 0)).congr_of_eventuallyEq <|
+      Filter.Eventually.of_forall fun s => by rfl
   have hbz0 : bz 0 = 0 := by simp [bz]
   have hz := volterra_zero (t := t) bz db hbz hbz0 k hk Ck hk_bound
   have hc : HasDerivAt
@@ -819,7 +827,8 @@ private theorem volterra_time {t : ℝ}
     congr 1
     ring
   rw [hsplit]
-  simpa only [add_assoc] using hc.add hz
+  exact (hc.add hz).congr_of_eventuallyEq <|
+    Filter.Eventually.of_forall fun q => by rfl
 
 def frozenDuh (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F) (x : V) : F :=
@@ -904,9 +913,11 @@ theorem frozenDuh_lap (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) (x : V) :
     lapEval (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
       frozenDuh (V := V) (F := F) t a (coreLap d2u) x := by
-  simpa only [coreLap] using
-    frozenDuh_map (V := V) (F := V →L[ℝ] V →L[ℝ] F)
-      (G := F) (lapEval (V := V) (F := F)) t a d2u x
+  change lapEval (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
+    frozenDuh (V := V) (F := F) t a
+      ((lapEval (V := V) (F := F)).compLeftContinuousBounded V d2u) x
+  exact frozenDuh_map (V := V) (F := V →L[ℝ] V →L[ℝ] F)
+    (G := F) (lapEval (V := V) (F := F)) t a d2u x
 
 theorem frozenDuh_time {t : ℝ} (ht : 0 < t)
     (a da : BoundedContinuousFunction ℝ ℝ)
@@ -940,13 +951,15 @@ theorem frozenDuh_time {t : ℝ} (ht : 0 < t)
       HasDerivAt g (gp r) r := by
     intro r hr
     have harg : HasDerivAt (fun s : ℝ => t - s) (-1) r := by
-      convert (hasDerivAt_const r t).sub (hasDerivAt_id r) using 1 ; ring
+      exact ((hasDerivAt_const r t).sub (hasDerivAt_id r)).congr_deriv (by ring)
     have harev : HasDerivAt (fun s : ℝ => a (t - s)) (-da (t - r)) r := by
-      convert (ha (t - r)).comp r harg using 1 ; ring
+      exact ((ha (t - r)).comp r harg).congr_deriv (by ring)
     have hheat := heatScaled_time hr.1 u du hu x
     rw [scaledDt_eq_lap hr.1 du d2u hdu x] at hheat
     dsimp only [g, gp]
-    convert harev.smul hheat using 1 ; simp [sub_eq_add_neg]
+    refine ((harev.smul hheat).congr_deriv ?_).congr_of_eventuallyEq ?_
+    · simp [sub_eq_add_neg]
+    · exact Filter.Eventually.of_forall fun s => by rfl
   have hftc : (∫ r in (0 : ℝ)..t, gp r) = g t - g 0 := by
     have hzero : Tendsto g (𝓝[>] (0 : ℝ)) (𝓝 (g 0)) :=
       hg_cont.continuousAt.tendsto.mono_left nhdsWithin_le_nhds

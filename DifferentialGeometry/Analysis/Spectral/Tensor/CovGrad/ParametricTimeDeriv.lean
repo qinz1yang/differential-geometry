@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
@@ -29,7 +28,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [FiniteDimensional ℝ E] [CompactSpace M] in
 private theorem timeDeriv2_at
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {f : M × ℝ → F} {p₀ : M × ℝ} {m n : WithTop ℕ∞}
     (hf : ContMDiffAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, F) n f p₀)
     (hmn : m + 1 ≤ n) :
@@ -62,7 +61,14 @@ private theorem timeDeriv2_at
       (g₂ := fun _ : M × ℝ => (1 : ℝ))
       (x₀ := p₀) (m := m) (n := n)
       hf' contMDiffAt_snd contMDiffAt_id contMDiffAt_const hmn
-  simpa [inTangentCoordinates_model_space] using hApply
+  refine hApply.congr_of_eventuallyEq ?_
+  filter_upwards with p
+  have hcoord := congrFun
+    (inTangentCoordinates_model_space
+      (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, F))
+      (fun p : M × ℝ => p.2) (fun x : M × ℝ => f (x.1, x.2))
+      (fun x : M × ℝ => mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) (fun t => f (x.1, t)) x.2) p₀) p
+  exact (congrArg (fun A : ℝ →L[ℝ] F => A 1) hcoord).symm
 
 private noncomputable def timeDerivFib
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
@@ -135,9 +141,14 @@ private theorem modelPath_diff
     rw [R.symm_apply_apply]
   rw [hcoordEq] at hslice
   have hback := K.symm.toContinuousLinearMap.differentiableAt.comp t hslice
-  convert hback using 1
-  funext τ
-  exact (K.symm_apply_apply _).symm
+  have hcancel :
+      (K.symm.toContinuousLinearMap ∘
+          fun τ : ℝ => K (TensorRSSpace.toModel ((Φ τ).toSection x))) =
+        fun τ : ℝ => TensorRSSpace.toModel ((Φ τ).toSection x) := by
+    funext τ
+    exact K.symm_apply_apply _
+  rw [hcancel] at hback
+  exact hback
 
 omit [CompactSpace M] in
 private theorem coord_deriv_eq
@@ -211,9 +222,14 @@ private theorem coord_deriv_eq
       (fun t : ℝ => TensorRSSpace.toModel ((Φ t).toSection p.1)) p.2 := by
     rw [hcoordEq] at hslice
     have hback := K.symm.toContinuousLinearMap.differentiableAt.comp p.2 hslice
-    convert hback using 1
-    funext t
-    exact (K.symm_apply_apply _).symm
+    have hcancel :
+        (K.symm.toContinuousLinearMap ∘
+            fun t : ℝ => K (TensorRSSpace.toModel ((Φ t).toSection p.1))) =
+          fun t : ℝ => TensorRSSpace.toModel ((Φ t).toSection p.1) := by
+      funext t
+      exact K.symm_apply_apply _
+    rw [hcancel] at hback
+    exact hback
   have hcomp := K.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt
     p.2 hmodelDiff.hasDerivAt
   rw [hreadoff, hcoordEq]

@@ -120,7 +120,6 @@ private lemma eLpNorm_norm_iteratedFDeriv_chartSmoothExt_pou_mul_restrict_ball_e
         eLpNorm_indicator_eq_eLpNorm_restrict hΩ_meas
 
 private lemma sum_eLpNorm_norm_iteratedFDeriv_chartSmoothExt_le_wkpNorm
-    [NeZero (Module.finrank ℝ E)]
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (k : ℕ) :
     ∑ j ∈ Finset.range (k + 1),
@@ -422,7 +421,7 @@ private lemma per_chart_smooth_iteratedFDeriv_sup_bound
           (f := fun j' : ℕ =>
             eLpNorm (fun z : EuclN => ‖iteratedFDeriv ℝ j' f z‖) (ENNReal.ofReal p)
               (volume.restrict (chartTargetEuclid (I := I) (M := M) α)))
-          (fun _ _ => zero_le _) hj
+          (fun _ _ => zero_le) hj
       exact lt_of_le_of_lt h_sum_j_le
         (wkpNormChart_lt_top_of_contMDiff_k (I := I) (M := M) hp_enn_one (m + 1) hu) |>.ne
     rw [← h_sum_eq]

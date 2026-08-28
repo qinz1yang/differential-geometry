@@ -93,11 +93,11 @@ theorem unifTwoIdRegOn {s : Set M} {USeq : ℕ → ℕ → ι → Set M}
             (r := rSeq k l) (qstar := fun x : M => x) x hcomplete (hr k l x hx)
             (hqstar k l x hx) (hactive_mem k l x hx) ((hμ k l x hx).1)
             ((hμ k l x hx).2.1) (hstrict k l x hx)) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   refine unifTwoIdOfFillOn (I := I) (g := g) (join := join) hcomplete hr hqstar
     hactive_mem (fun k l x hx => (hμ k l x hx).1)
     (fun k l x hx => (hμ k l x hx).2.1) hstrict ?_
@@ -164,11 +164,11 @@ theorem unifTwoIdDataOn {s : Set M} {USeq : ℕ → ℕ → ι → Set M}
             (r := rSeq k l) (qstar := fun x : M => x) x hcomplete (hr k l x hx)
             (hqstar k l x hx) (hactive_mem k l x hx) ((hdata k l x hx).1.1)
             ((hdata k l x hx).1.2.1) (hstrict k l x hx)) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact unifTwoIdRegOn (I := I) (g := g) (join := join) (USeq := USeq)
     hcomplete hr hqstar hactive_mem (fun k l x hx => (hdata k l x hx).1)
     hstrict (fun k l x hx i hμx => (hdata k l x hx).2 i hμx) hpts
@@ -224,11 +224,11 @@ theorem unifTwoIdDataSelf {s : Set M} {USeq : ℕ → ℕ → ι → Set M}
             (qstar := fun x : M => x) x hcomplete (hr k l x hx)
             (hactive_mem k l x hx) ((hdata k l x hx).1.1)
             ((hdata k l x hx).1.2.1) (hstrict k l x hx)) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact unif_two_id_fill_on (I := I) (g := g) (join := join)
     (fun k l x hx => inputOfFillSelf (I := I) (g := g) (μ := μSeq k l)
       (pts := ptsSeq k l) (join := join) (r := rSeq k l)
@@ -276,9 +276,9 @@ theorem eqn_local (x : X)
           (show TangentSpace I (centerAverage (I := I) g μ pts join p r h x) from
             NormalCoordinates.normalChartAt (I := I) g
               (centerAverage (I := I) g μ pts join p r h x) (pts x i)) = 0) := by
-  simpa [centerAverage] using
-    centerOfMass.expInv_eqn_local (I := I) (g := g) (μ := μ x) (pts := pts x)
-      (join := join) (p := p x) (r := r x) (h x) hdiffSummands hsrc
+  unfold centerAverage
+  exact centerOfMass.expInv_eqn_local (I := I) (g := g) (μ := μ x) (pts := pts x)
+    (join := join) (p := p x) (r := r x) (h x) hdiffSummands hsrc
 
 theorem eqn_local_on {s : Set X} {qstar : X → M}
     (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
@@ -322,11 +322,11 @@ theorem eqn_local_on {s : Set X} {qstar : X → M}
             NormalCoordinates.normalChartAt (I := I) g
               (centerAverageOn (I := I) g s μ pts join p r qstar hOn x)
               (pts x i)) = 0) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hcm :
       centerAverageOn (I := I) g s μ pts join p r qstar hOn x =
         centerOfMass (I := I) g (μ x) (pts x) join (p x) (r x) (hOn x hx) :=
@@ -358,7 +358,7 @@ theorem finite_cover_two_tail {J Y : Type*} [Finite J]
     ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N,
       ∀ j, ∀ y ∈ S j, Q j a b y := by
   classical
-  letI := Fintype.ofFinite J
+  let := Fintype.ofFinite J
   choose Nj hNj using hlocal
   refine ⟨Finset.univ.sup Nj, ?_⟩
   intro a ha b hb j y hy

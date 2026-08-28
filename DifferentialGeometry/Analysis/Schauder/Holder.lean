@@ -54,7 +54,7 @@ theorem holderWith_restrict_of_norm_le_of_lipschitzOnWith
     HolderWith
       (L * epsilon ^ ((1 : NNReal) - alpha : Real) +
         2 * M / epsilon ^ (alpha : Real)) alpha
-      (s.restrict f) := by
+      (s.domRestrict f) := by
   rw [HolderWith.restrict_iff]
   intro x hx y hy
   rw [edist_nndist, edist_nndist,
@@ -87,7 +87,6 @@ theorem holderWith_restrict_of_norm_le_of_lipschitzOnWith
               ((epsilon : Real) ^ ((1 : NNReal) - alpha : Real) *
                 dist x y ^ (alpha : Real)) := by
             gcongr
-            exact sub_nonneg.mpr halphaReal
           _ = (L : Real) * (epsilon : Real) ^
               ((1 : NNReal) - alpha : Real) *
                 dist x y ^ (alpha : Real) := by ring
@@ -203,7 +202,7 @@ theorem eSupNormOn_le {s : Set X} {f : X → F} {C : ENNReal} :
   simp only [eSupNormOn, iSup_le_iff, Subtype.forall]
 
 def eHolderSeminormOn (alpha : NNReal) (s : Set X) (f : X → F) : ENNReal :=
-  eHolderNorm alpha (s.restrict f)
+  eHolderNorm alpha (s.domRestrict f)
 
 theorem eHolderSeminormOn_congr {s : Set X} {f g : X → F}
     (hfg : Set.EqOn f g s) (alpha : NNReal) :
@@ -216,8 +215,8 @@ theorem eHolderSeminormOn_congr {s : Set X} {f g : X → F}
 theorem holderWith_restrict_of_eHolderSeminormOn_le
     {alpha C : NNReal} {s : Set X} {f : X → F}
     (h : eHolderSeminormOn alpha s f ≤ C) :
-    HolderWith C alpha (s.restrict f) := by
-  let g : s → F := s.restrict f
+    HolderWith C alpha (s.domRestrict f) := by
+  let g : s → F := s.domRestrict f
   have he : eHolderNorm alpha g ≤ (C : ENNReal) := by
     simpa only [eHolderSeminormOn, g] using h
   have hmem : MemHolder alpha g :=
@@ -372,7 +371,7 @@ theorem holderWith_continuousMultilinearMap_of_stdOrthonormalBasis
       _ ≤ ∑ β : Fin j → Fin (Module.finrank Real V),
           (C β : Real) * dist x y ^ (alpha : Real) := by
         gcongr with β
-        simpa only [ContinuousMultilinearMap.sub_apply, dist_eq_norm] using
+        simpa only [sub_apply, dist_eq_norm] using
           (h β).dist_le x y
       _ = (∑ β, C β : NNReal) * dist x y ^ (alpha : Real) := by
         push_cast
@@ -420,7 +419,7 @@ theorem holderWith_continuousLinearMap_two_of_stdOrthonormalBasis
         intro i hi
         apply Finset.sum_le_sum
         intro j hj
-        simpa only [ContinuousLinearMap.sub_apply, dist_eq_norm] using
+        simpa only [sub_apply, dist_eq_norm] using
           (h i j).dist_le x y
       _ = ((∑ i, ∑ j, C i j : NNReal) : Real) *
           dist x y ^ (alpha : Real) := by
@@ -459,11 +458,11 @@ theorem eHolderSeminormOn_sub_le
     (alpha : NNReal) (s : Set X) (f g : X → F) :
     eHolderSeminormOn alpha s (f - g) ≤
       eHolderSeminormOn alpha s f + eHolderSeminormOn alpha s g := by
-  have hrestrict : s.restrict (f - g) = s.restrict f - s.restrict g := by
+  have hrestrict : s.domRestrict (f - g) = s.domRestrict f - s.domRestrict g := by
     rfl
-  have hneg : eHolderNorm alpha (-s.restrict g) =
-      eHolderNorm alpha (s.restrict g) := by
-    have hfun : -s.restrict g = (-1 : Real) • s.restrict g := by
+  have hneg : eHolderNorm alpha (-s.domRestrict g) =
+      eHolderNorm alpha (s.domRestrict g) := by
+    have hfun : -s.domRestrict g = (-1 : Real) • s.domRestrict g := by
       ext x
       simp
     rw [hfun, eHolderNorm_smul]
@@ -471,7 +470,7 @@ theorem eHolderSeminormOn_sub_le
   unfold eHolderSeminormOn
   rw [hrestrict, sub_eq_add_neg]
   exact eHolderNorm_add_le.trans_eq
-    (congrArg (eHolderNorm alpha (s.restrict f) + ·) hneg)
+    (congrArg (eHolderNorm alpha (s.domRestrict f) + ·) hneg)
 
 def eContDiffHolderGaugeOn (k : Nat) (alpha : NNReal)
     (s : Set V) (f : V → F) : ENNReal :=
@@ -557,7 +556,7 @@ theorem eContDiffHolderGaugeOn_sub_le
 def IsContDiffHolderOn (k : Nat) (alpha : NNReal)
     (s : Set V) (f : V → F) : Prop :=
   (∀ x ∈ s, ContDiffAt Real k f x) ∧
-    MemHolder alpha (s.restrict (iteratedFDeriv Real k f))
+    MemHolder alpha (s.domRestrict (iteratedFDeriv Real k f))
 
 theorem eContDiffHolderGaugeOn_le
     {k : Nat} {alpha : NNReal} {s : Set V} {f : V → F}
@@ -565,7 +564,7 @@ theorem eContDiffHolderGaugeOn_le
     (hspatial : ∀ j ≤ k, ∀ x ∈ s,
       ‖iteratedFDeriv Real j f x‖ ≤ Cspatial j)
     (hholder : HolderWith Cholder alpha
-      (s.restrict (iteratedFDeriv Real k f))) :
+      (s.domRestrict (iteratedFDeriv Real k f))) :
     eContDiffHolderGaugeOn k alpha s f ≤
       (∑ j ∈ Finset.range (k + 1), (Cspatial j : ENNReal)) + Cholder := by
   have hsup : ∀ j ≤ k,
@@ -589,7 +588,8 @@ theorem spatialJet_le_eContDiffHolderGaugeOn
   have hterm : eSupNormOn s (iteratedFDeriv Real j f) ≤
       ∑ q ∈ Finset.range (k + 1), eSupNormOn s (iteratedFDeriv Real q f) :=
     Finset.single_le_sum
-      (fun q _ => zero_le (eSupNormOn s (iteratedFDeriv Real q f)))
+      (fun q _ => (bot_le : (⊥ : ENNReal) ≤
+        eSupNormOn s (iteratedFDeriv Real q f)))
       (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hj))
   exact (norm_le_eSupNormOn s (iteratedFDeriv Real j f) x hx).trans
     (hterm.trans (by
@@ -614,7 +614,7 @@ theorem spatialJet_norm_le {k : Nat} {alpha C : NNReal}
 theorem topSpatialJet_holderWith_restrict {k : Nat} {alpha C : NNReal}
     {s : Set V} {f : V → F}
     (h : eContDiffHolderGaugeOn k alpha s f ≤ C) :
-    HolderWith C alpha (s.restrict (iteratedFDeriv Real k f)) :=
+    HolderWith C alpha (s.domRestrict (iteratedFDeriv Real k f)) :=
   holderWith_restrict_of_eHolderSeminormOn_le
     ((holderSeminorm_le_eContDiffHolderGaugeOn k alpha s f).trans h)
 
@@ -707,7 +707,7 @@ theorem parabolicHolder_space_dist_le
     {V F : Type*} [PseudoMetricSpace V] [MetricSpace F]
     {alpha C : NNReal} {Q : Set (ParabolicPoint V)}
     {f : ParabolicPoint V → F}
-    (h : HolderWith C alpha (Q.restrict f))
+    (h : HolderWith C alpha (Q.domRestrict f))
     {t : Real} {x y : V}
     (hx : parabolicPoint t x ∈ Q) (hy : parabolicPoint t y ∈ Q) :
     dist (f (parabolicPoint t x)) (f (parabolicPoint t y)) ≤
@@ -722,7 +722,7 @@ theorem parabolicHolder_time_dist_le
     {V F : Type*} [PseudoMetricSpace V] [MetricSpace F]
     {alpha C : NNReal} {Q : Set (ParabolicPoint V)}
     {f : ParabolicPoint V → F}
-    (h : HolderWith C alpha (Q.restrict f))
+    (h : HolderWith C alpha (Q.domRestrict f))
     {t s : Real} {x : V}
     (ht : parabolicPoint t x ∈ Q) (hs : parabolicPoint s x ∈ Q) :
     dist (f (parabolicPoint t x)) (f (parabolicPoint s x)) ≤
@@ -740,7 +740,7 @@ theorem holderWith_slice_of_parabolicCylinder
     {V F : Type*} [PseudoMetricSpace V] [PseudoMetricSpace F]
     {alpha C : NNReal} {J : Set Real} {f : Real → V → F}
     (h : HolderWith C alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p => f p.time p.space)))
     {t : Real} (ht : t ∈ J) :
     HolderWith C alpha (f t) := by
@@ -764,21 +764,21 @@ theorem holderWith_parabolic_const_time
     {alpha K : NNReal} (f : V → F) (hf : HolderWith K alpha f)
     (J : Set Real) :
     HolderWith K alpha
-      ((parabolicCylinder J Set.univ).restrict (fun p => f p.space)) := by
+      ((parabolicCylinder J Set.univ).domRestrict (fun p => f p.space)) := by
   have hsnd : LipschitzWith 1 (fun p : ParabolicPoint V => p.space) :=
     LipschitzWith.prod_snd
   have hfull := hf.comp hsnd.holderWith
   have hfull' : HolderWith K alpha
       (fun p : ParabolicPoint V => f p.space) := by
-    simpa only [NNReal.one_rpow, mul_one, Function.comp_apply, one_mul] using hfull
+    simpa only [NNReal.one_rpow, mul_one, Function.comp_apply, one_mul] using! hfull
   exact (hfull'.holderOnWith (parabolicCylinder J Set.univ)).holderWith
 
 theorem holderWith_restrict_parabolic_const_time
     {V F : Type*} [PseudoMetricSpace V] [PseudoMetricSpace F]
     {alpha K : NNReal} {s : Set V} (f : V → F)
-    (hf : HolderWith K alpha (s.restrict f)) (J : Set Real) :
+    (hf : HolderWith K alpha (s.domRestrict f)) (J : Set Real) :
     HolderWith K alpha
-      ((parabolicCylinder J s).restrict (fun p => f p.space)) := by
+      ((parabolicCylinder J s).domRestrict (fun p => f p.space)) := by
   have hsnd : LipschitzWith 1
       (fun p : parabolicCylinder J s =>
         (⟨p.1.space, p.2.2⟩ : s)) := by
@@ -789,7 +789,7 @@ theorem holderWith_restrict_parabolic_const_time
       (fun p => p.2.2)
   have hcomp := hf.comp hsnd.holderWith
   simpa only [NNReal.one_rpow, mul_one,
-    Function.comp_apply, Set.restrict_apply] using hcomp
+    Function.comp_apply] using! hcomp
 
 theorem holderWith_parabolic_const_space
     {V F : Type*} [PseudoMetricSpace V] [MetricSpace F]
@@ -868,7 +868,7 @@ theorem parabolicTimeDerivative_add
   change (fderiv Real
       ((fun t ↦ u t p.space) + fun t ↦ v t p.space) p.time) 1 = _
   rw [fderiv_add hu hv]
-  exact ContinuousLinearMap.add_apply _ _ _
+  exact add_apply _ _ _
 
 def eParabolicC2HolderGaugeOn (alpha : NNReal)
     (Q : Set (ParabolicPoint V)) (u : Real → V → F) : ENNReal :=
@@ -959,14 +959,14 @@ theorem parabolicSpatialGradientHolderSeminorm_le_with_lower_jets
 theorem parabolicValue_holderWith_restrict_of_lower_jets
     {alpha C : NNReal} {Q : Set (ParabolicPoint V)} {u : Real → V → F}
     (h : eParabolicC2HolderGaugeWithLowerJetsOn alpha Q u ≤ C) :
-    HolderWith C alpha (Q.restrict (fun p ↦ u p.time p.space)) :=
+    HolderWith C alpha (Q.domRestrict (fun p ↦ u p.time p.space)) :=
   holderWith_restrict_of_eHolderSeminormOn_le
     ((parabolicValueHolderSeminorm_le_with_lower_jets alpha Q u).trans h)
 
 theorem parabolicSpatialGradient_holderWith_restrict_of_lower_jets
     {alpha C : NNReal} {Q : Set (ParabolicPoint V)} {u : Real → V → F}
     (h : eParabolicC2HolderGaugeWithLowerJetsOn alpha Q u ≤ C) :
-    HolderWith C alpha (Q.restrict (parabolicSpatialJet 1 u)) :=
+    HolderWith C alpha (Q.domRestrict (parabolicSpatialJet 1 u)) :=
   holderWith_restrict_of_eHolderSeminormOn_le
     ((parabolicSpatialGradientHolderSeminorm_le_with_lower_jets
       alpha Q u).trans h)
@@ -976,9 +976,9 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_le
     (C Cvalue Cgradient : NNReal)
     (hgauge : eParabolicC2HolderGaugeOn alpha Q u ≤ C)
     (hvalue : HolderWith Cvalue alpha
-      (Q.restrict (fun p ↦ u p.time p.space)))
+      (Q.domRestrict (fun p ↦ u p.time p.space)))
     (hgradient : HolderWith Cgradient alpha
-      (Q.restrict (parabolicSpatialJet 1 u))) :
+      (Q.domRestrict (parabolicSpatialJet 1 u))) :
     eParabolicC2HolderGaugeWithLowerJetsOn alpha Q u ≤
       C + Cvalue + Cgradient := by
   unfold eParabolicC2HolderGaugeWithLowerJetsOn
@@ -1013,7 +1013,7 @@ theorem eParabolicC2HolderGaugeOn_add_le
       (fderiv Real (fun t ↦ u t p.space) p.time) 1 +
         (fderiv Real (fun t ↦ v t p.space) p.time) 1
     rw [fderiv_add (hu.2 p hp) (hv.2 p hp)]
-    exact ContinuousLinearMap.add_apply _ _ _
+    exact add_apply _ _ _
   unfold eParabolicC2HolderGaugeOn
   calc
     (∑ j ∈ Finset.range 3,
@@ -1084,7 +1084,7 @@ theorem eParabolicC2HolderGaugeOn_sub_le
       (fderiv Real (fun t => u t p.space) p.time) 1 -
         (fderiv Real (fun t => v t p.space) p.time) 1
     rw [fderiv_sub (hu.2 p hp) (hv.2 p hp)]
-    exact ContinuousLinearMap.sub_apply _ _ _
+    exact sub_apply _ _ _
   unfold eParabolicC2HolderGaugeOn
   calc
     (∑ j ∈ Finset.range 3,
@@ -1131,8 +1131,8 @@ theorem eParabolicC2HolderGaugeOn_sub_le
 def IsParabolicC2HolderOn (alpha : NNReal)
     (Q : Set (ParabolicPoint V)) (u : Real → V → F) : Prop :=
   IsParabolicC2On Q u ∧
-    MemHolder alpha (Q.restrict (parabolicSpatialJet 2 u)) ∧
-    MemHolder alpha (Q.restrict (parabolicTimeDerivative u))
+    MemHolder alpha (Q.domRestrict (parabolicSpatialJet 2 u)) ∧
+    MemHolder alpha (Q.domRestrict (parabolicTimeDerivative u))
 
 theorem eParabolicC2HolderGaugeOn_le
     {alpha : NNReal} {Q : Set (ParabolicPoint V)} {u : Real → V → F}
@@ -1141,9 +1141,9 @@ theorem eParabolicC2HolderGaugeOn_le
       ‖parabolicSpatialJet j u p‖ ≤ Cspatial j)
     (htime : ∀ p ∈ Q, ‖parabolicTimeDerivative u p‖ ≤ Ctime)
     (hspatialHolder : HolderWith CspatialHolder alpha
-      (Q.restrict (parabolicSpatialJet 2 u)))
+      (Q.domRestrict (parabolicSpatialJet 2 u)))
     (htimeHolder : HolderWith CtimeHolder alpha
-      (Q.restrict (parabolicTimeDerivative u))) :
+      (Q.domRestrict (parabolicTimeDerivative u))) :
     eParabolicC2HolderGaugeOn alpha Q u ≤
       (∑ j ∈ Finset.range 3, (Cspatial j : ENNReal)) + Ctime +
         CspatialHolder + CtimeHolder := by
@@ -1177,7 +1177,8 @@ theorem parabolicSpatialJet_le
   have hterm : eSupNormOn Q (parabolicSpatialJet j u) ≤
       ∑ q ∈ Finset.range 3, eSupNormOn Q (parabolicSpatialJet q u) :=
     Finset.single_le_sum
-      (fun q _ => zero_le (eSupNormOn Q (parabolicSpatialJet q u)))
+      (fun q _ => (bot_le : (⊥ : ENNReal) ≤
+        eSupNormOn Q (parabolicSpatialJet q u)))
       (Finset.mem_range.mpr hj)
   exact (norm_le_eSupNormOn Q (parabolicSpatialJet j u) p hp).trans
     (hterm.trans (by
@@ -1228,14 +1229,14 @@ theorem parabolicTimeDerivative_norm_le {alpha C : NNReal}
 theorem parabolicSpatialJet_holderWith_restrict {alpha C : NNReal}
     {Q : Set (ParabolicPoint V)} {u : Real → V → F}
     (h : eParabolicC2HolderGaugeOn alpha Q u ≤ C) :
-    HolderWith C alpha (Q.restrict (parabolicSpatialJet 2 u)) :=
+    HolderWith C alpha (Q.domRestrict (parabolicSpatialJet 2 u)) :=
   holderWith_restrict_of_eHolderSeminormOn_le
     ((parabolicSpatialHolderSeminorm_le alpha Q u).trans h)
 
 theorem parabolicTimeDerivative_holderWith_restrict {alpha C : NNReal}
     {Q : Set (ParabolicPoint V)} {u : Real → V → F}
     (h : eParabolicC2HolderGaugeOn alpha Q u ≤ C) :
-    HolderWith C alpha (Q.restrict (parabolicTimeDerivative u)) :=
+    HolderWith C alpha (Q.domRestrict (parabolicTimeDerivative u)) :=
   holderWith_restrict_of_eHolderSeminormOn_le
     ((parabolicTimeHolderSeminorm_le alpha Q u).trans h)
 
@@ -1259,7 +1260,7 @@ theorem eContDiffHolderGaugeOn_slice_le
       (f := fun q x => parabolicSpatialJet 2 u (parabolicPoint q x)) hpar ht
     have hslice' := (hslice.holderOnWith (Set.univ : Set V)).holderWith
     simpa only [parabolicSpatialJet, parabolicPoint_time,
-      parabolicPoint_space] using hslice'
+      parabolicPoint_space] using! hslice'
 
 end Parabolic
 

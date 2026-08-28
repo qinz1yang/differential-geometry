@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle Set DifferentialGeometry.Tensor0SBundle
@@ -124,6 +123,7 @@ theorem tensorRSChartFiberFromModel_apply_at (r s : ℕ) (α : M) {b : M}
       (F₂ := Tensor0SModel s ℝ E)
       (E₂ := fun y : M => Tensor0SSpace s I y)
       (e₁ := er) (e₂ := es) (b := b) hbase_RS D
+    rw [eRS.symmL_apply hbase_RS]
     change (eRS.symm b D : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) = _
     rw [show (eRS.symm b D : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) =
           ((_root_.Bundle.Pretrivialization.continuousLinearMap (𝕜₁ := ℝ) (𝕜₂ := ℝ)
@@ -259,14 +259,14 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
             (chartTensor0SParallelExtend (I := I) r α b α_input))
           b (X b) := by
   classical
-  letI _h_top_rs : TopologicalSpace
+  let _h_top_rs : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y)) :=
     tensorRSBundle_topology r s
-  letI _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
+  let _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y)) :=
     tensor0SBundle_topology s
-  letI _h_top_r : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
+  let _h_top_r : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
       (fun y : M => Tensor0SSpace r I y)) :=
     tensor0SBundle_topology r
   have hb_src : b ∈ (extChartAt I α).source :=
@@ -324,7 +324,8 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
               (extChartAt I α).symm)
             (extChartAt I α b) w_E) := by
     have := congrArg (fun L : E →L[ℝ] Tensor0SModel s ℝ E => L w_E) hfderivEq
-    simpa [ContinuousLinearMap.comp_apply] using this
+    rw [hDα_def]
+    simpa only [ContinuousLinearMap.comp_apply] using this
   rw [hfderiv_at_wE]
   rw [tensorRSEvalAtCLM_apply]
 

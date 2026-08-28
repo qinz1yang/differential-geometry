@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -47,8 +46,7 @@ theorem covDerivOfField_eq_iterCov
     (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2) (m : ℕ) :
     covDerivOfField (I := I) gRef A0 m =
-      MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (acEquiv m)
+      Tensor0SBundle.Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (acEquiv m)
         (iterCov (I := I) gRef 2 A0 m) := by
   induction m with
   | zero =>
@@ -74,11 +72,7 @@ theorem metricCovDerivNorm_eq_iterCov
         (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x)) := by
   unfold metricCovDerivNorm
   rw [metricCovDeriv_eq_covDerivOfField, covDerivOfField_eq_iterCov]
-  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (N + 2)
-      (ContinuousMultilinearMap.domDomCongr (acEquiv N)
-        (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x))) =
-    Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
-      (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x))
+  rw [Tensor0SBundle.Tensor0SField.domDomCongr_apply]
   rw [normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv N)
       (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x)]
 
@@ -106,15 +100,7 @@ theorem metricDerivNorm_eq_iterCov
       metricCovDeriv_eq_covDerivOfField (I := I) gInf gRef N]
     rfl
   rw [hsub, covDerivOfField_eq_iterCov]
-  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (N + 2)
-      (ContinuousMultilinearMap.domDomCongr (acEquiv N)
-        (iterCov (I := I) gRef 2
-          (Tensor0SBundle.metricTensorField (I := I) gk
-            - Tensor0SBundle.metricTensorField (I := I) gInf) N x))) =
-    Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
-      (iterCov (I := I) gRef 2
-        (Tensor0SBundle.metricTensorField (I := I) gk
-          - Tensor0SBundle.metricTensorField (I := I) gInf) N x))
+  rw [Tensor0SBundle.Tensor0SField.domDomCongr_apply]
   rw [normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv N)
       (iterCov (I := I) gRef 2
         (Tensor0SBundle.metricTensorField (I := I) gk

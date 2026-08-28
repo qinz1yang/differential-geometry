@@ -142,11 +142,11 @@ theorem scalar_curvature_sq_heat_equation
   intro t x
   have h := hscalar t x
   have hmul := h.mul h
-  convert hmul using 1
-  · ext s
-    simp [pow_two]
-  · simp [scalarCurvatureSqLaplacian]
-    ring
+  have hpow := hmul.congr
+    (fun s _ => pow_two (scalar s x)) (pow_two (scalar (t : Real) x))
+  refine hpow.congr_deriv ?_
+  unfold scalarCurvatureSqLaplacian
+  ring
 
 def TraceFreeRicciNormSqHeatEquationOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -196,7 +196,14 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_reaction_relation
                 4 * scalar (t : Real) x * ricciNormSq (t : Real) x)))
         D.carrier
         (t : Real) := by
-    simpa [mul_assoc] using hRic'.sub (hSq'.const_mul ((1 : Real) / 3))
+    have hsub := hRic'.sub (hSq'.const_mul ((1 : Real) / 3))
+    have hfun :
+        ((fun s : Real => ricciNormSq s x) -
+          fun s : Real => ((1 : Real) / 3) * scalar s x ^ 2) =
+          fun s : Real => ricciNormSq s x - ((1 : Real) / 3) * scalar s x ^ 2 := by
+      rfl
+    rw [← hfun]
+    exact hsub
   have hDeriv :
       HasDerivWithinAt
         (fun s : Real => traceFreeRicciNormSq scalar ricciNormSq s x)
@@ -208,8 +215,13 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_reaction_relation
                 4 * scalar (t : Real) x * ricciNormSq (t : Real) x)))
         D.carrier
         (t : Real) := by
-    simpa [traceFreeRicciNormSq, traceFreeRicciNormSqAt, div_eq_mul_inv, mul_assoc, mul_comm,
-      mul_left_comm] using hDeriv0
+    have hfun : (fun s : Real => traceFreeRicciNormSq scalar ricciNormSq s x) =
+        fun s : Real => ricciNormSq s x - ((1 : Real) / 3) * scalar s x ^ 2 := by
+      funext s
+      unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+      ring
+    rw [hfun]
+    exact hDeriv0
   have hValue :
       ((ricciNormLap (t : Real) x +
           (-2 * nablaRicNormSq (t : Real) x + 4 * reaction (t : Real) x)) -

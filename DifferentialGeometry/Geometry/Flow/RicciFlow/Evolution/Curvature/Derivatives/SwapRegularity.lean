@@ -2,6 +2,8 @@ import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.TailRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.FrameRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -259,7 +261,16 @@ theorem tailTowerData
           (fun s : Real => frameComp0S (I := I) (S'.base.rm04 s) frame x m)
           (t : Real) := by
         rw [← contMDiffAt_iff_contDiffAt]
-        simpa only [iteratedRmComp_zero] using hslice
+        have hslice' := hslice
+        simp only [iteratedRmComp_zero] at hslice'
+        have hfun :
+            ((fun p : Real × M ↦ frameComp0S (I := I) (S'.base.rm04 p.1) frame p.2 m) ∘
+                fun s : Real ↦ (s, x)) =
+              fun s : Real ↦ frameComp0S (I := I) (S'.base.rm04 s) frame x m := by
+          funext s
+          rfl
+        rw [← hfun]
+        exact hslice'
       exact hcd.differentiableAt (by simp)
     simpa only [baseDt] using hdiff.hasDerivAt.hasDerivWithinAt
   have hchr : ∀ (t : RealTimeInterval.RegularTime D')
@@ -327,7 +338,7 @@ theorem towerDataAt
           ∀ (y : M), y ∈ u → ∀ (k : Nat) (d : Idx) (m : Fin (4 + k) → Idx),
             HasDerivWithinAt
               (fun s : Real =>
-                extDerivFun (I := I)
+                mvfderiv (I := I)
                   (fun z : M =>
                     iteratedRmComp (I := I) frame
                       (fun r x => christoffelSymbolInFrame
@@ -335,7 +346,7 @@ theorem towerDataAt
                       (fun r => frameComp0S (I := I) (S.base.rm04 r) frame)
                       k s z m)
                   y (frame d y))
-              (extDerivFun (I := I)
+              (mvfderiv (I := I)
                 (fun z : M =>
                   iteratedRmCompDt (I := I) frame
                     (fun r x => christoffelSymbolInFrame
@@ -386,8 +397,13 @@ theorem towerDataAt
       intro a' b'
       simpa only [Sab, Dab, Dt, SolutionOn.timeRestrict_base] using
         horthU y hy a' b'
-    simpa only [Sab, Dab, Dt, SolutionOn.timeRestrict,
-      SolutionOn.family, tt] using hchrId tt y hy horth i j p
+    have hid := hchrId tt y hy horth i j p
+    simp only [Sab, Dab, SolutionOn.timeRestrict, tt] at hid
+    have hSid : ({ base := S.base } : SolutionOn (I := I) (M := M) D) = S := by
+      cases S
+      rfl
+    rw [hSid] at hid
+    exact hid
   · intro y hy k d m
     have h := hswap k m (t : Real) htDt y hy (frame d y)
     have h' := h.hasDerivAt hDt

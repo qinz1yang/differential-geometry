@@ -29,9 +29,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [SigmaCompactSpace M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 
-set_option backward.isDefEq.respectTransparency false in
 
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem exists_ric_trace
     (g : SmoothRiemannianMetric I M)
     (Rm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -39,8 +38,7 @@ theorem exists_ric_trace
     ∃ e : Fin (4 + k) ≃ Fin ((2 + k) + 2),
       iterCov (I := I) g 2 (trace04Field (I := I) (M := M) g Rm) k =
         metricTraceFirstTwoField (I := I) (M := M) g
-          (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) e
+          (Tensor0SField.domDomCongr (I := I) (∞ : WithTop ℕ∞) e
             (iterCov (I := I) g 4 Rm k)) := by
   classical
   induction k with
@@ -60,10 +58,10 @@ theorem exists_ric_trace
         (trace04Field (I := I) (M := M) g Rm) k
       have hout := Tensor0SBundle.totalNabla0SRealizes_unique (I := I) hric htrace
       refine ⟨(frontExtendEquiv e).trans (traceNablaShuffle (2 + k)), ?_⟩
-      rw [← MultilinearSection.domDomCongr_trans]
+      rw [← Tensor0SField.domDomCongr_trans]
       exact hout
 
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem iterRic_normSq_le
     (g : SmoothRiemannianMetric I M)
     (Rm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -76,10 +74,9 @@ theorem iterRic_normSq_le
   obtain ⟨e, he⟩ := exists_ric_trace (I := I) g Rm k
   rw [he]
   have htrace := trace_normSq_rank_le (I := I) g
-    ((MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) e
+    ((Tensor0SField.domDomCongr (I := I) (∞ : WithTop ℕ∞) e
       (iterCov (I := I) g 4 Rm k)) x)
-  rw [MultilinearSection.domDomCongr_apply] at htrace
+  rw [Tensor0SField.domDomCongr_apply] at htrace
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   have hinv : MetricInverseInBasis_gen (I := I) g x basis
       (identityInvMetric
@@ -117,7 +114,7 @@ theorem nablaKRm_eq_iterCov
       exact Tensor0SBundle.totalNabla0SRealizes_unique (I := I) hleft'
         (iterCov_realizes (I := I) (S.base.metric t) (S.base.rm04 t) k)
 
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricTower_normSq_le
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : Nat) (x : M) :

@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -194,7 +193,7 @@ theorem genuineCurvTraceFixedFrameCovDeriv_contMDiff
 noncomputable def genuineThirdCurvFieldFibPureR
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (w : TangentSpace I x)
-    (m : Fin s → TangentSpace I x) : ℝ :=
+    (m : Fin s → E) : ℝ :=
   ∑ a : Fin n, g.inner x (e a) w •
     Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
@@ -206,7 +205,7 @@ noncomputable def genuineThirdCurvFieldFibPureR
 noncomputable def genuineThirdCurvFieldFibCovDeriv
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (w : TangentSpace I x)
-    (m : Fin s → TangentSpace I x) : ℝ :=
+    (m : Fin s → E) : ℝ :=
   ∑ a : Fin n, g.inner x (e a) w •
     Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
@@ -219,7 +218,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem genuineThirdCurvFieldFib_eq_pureR_add_covDeriv
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (w : TangentSpace I x)
-    (m : Fin s → TangentSpace I x) :
+    (m : Fin s → E) :
     genuineThirdCurvFieldFib (I := I) (M := M) g s S x e w m =
       genuineThirdCurvFieldFibPureR (I := I) (M := M) g s S x e w m +
         genuineThirdCurvFieldFibCovDeriv (I := I) (M := M) g s S x e w m := by
@@ -254,8 +253,8 @@ theorem genuineThirdCurvFieldFib_eq_pureR_add_covDeriv
     rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensor3rdCurvGenuine (I := I) g 0 s (smoothExtensionTangent (I := I) x (e a))
             (fun y : M => S.toSection y) x) = _ from hclm]
-    rw [ContinuousLinearMap.add_apply]
-  rw [hsplit_val, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, smul_add]
+    rw [add_apply]
+  rw [hsplit_val, Tensor0SSpace.toModel_add, add_apply, smul_add]
 
 private def genuinePureRDirLMSummand
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
@@ -294,7 +293,7 @@ private lemma genuinePureRDirCLM_apply_extend
       genuineCurvTraceFixedFrameCurvatureOnly (I := I) g s (smoothExtensionTangent (I := I) x v)
         (smoothOrthoFrame (I := I) g x) (fun y : M => S.toSection y) x := by
   classical
-  rw [genuineCurvatureOnlyDirectionalCLM, ContinuousLinearMap.sum_apply,
+  rw [genuineCurvatureOnlyDirectionalCLM, sum_apply,
     genuineCurvTraceFixedFrameCurvatureOnly]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [genuinePureRDirCLMSummand, LinearMap.coe_toContinuousLinearMap', genuinePureRDirLMSummand,
@@ -338,24 +337,28 @@ private lemma genericTensor0S_curry_covGradBundleEquiv_unit
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro u
-  rw [show Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-            covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
-            (unitZeroSec (I := I) (M := M) x)) v) u =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
-          (unitZeroSec (I := I) (M := M) x))
-        (Fin.cons v u) from
-    (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s) (b := x)
+  let vu : Fin (s + 1) → E :=
+    Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u
+  have hcurry := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+    ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+      covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
+      (unitZeroSec (I := I) (M := M) x))
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u
+  rw [ContinuousLinearEquiv.symm_apply_apply] at hcurry
+  rw [hcurry]
+  change Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
-        (unitZeroSec (I := I) (M := M) x)) v u)]
-  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) 0 s x Φ
-    (unitZeroSec (I := I) (M := M) x) (Fin.cons v u)]
-  have hzero : (Fin.cons v u : Fin (s + 1) → TangentSpace I x) 0 = v := by rw [Fin.cons_zero]
-  have htail : Matrix.vecTail (Fin.cons v u : Fin (s + 1) → TangentSpace I x) = u := by
+        (unitZeroSec (I := I) (M := M) x)) vu = _
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
+    (unitZeroSec (I := I) (M := M) x) vu]
+  have hzero :
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          (vu 0) = v := by
+    unfold vu
+    rw [Fin.cons_zero, ContinuousLinearEquiv.symm_apply_apply]
+  have htail : Matrix.vecTail vu = u := by
+    unfold vu
     funext k; rw [Matrix.vecTail, Function.comp_apply, Fin.cons_succ]
   rw [hzero, htail]
 
@@ -422,7 +425,7 @@ lemma pureRDirCLMFixedFrame_apply_smooth
     pureRDirCLMFixedFrame (I := I) (M := M) g s S B x (W x) =
       genuineCurvTraceFixedFrameCurvatureOnly (I := I) g s W B (fun y : M => S.toSection y) x := by
   classical
-  rw [pureRDirCLMFixedFrame, ContinuousLinearMap.sum_apply, genuineCurvTraceFixedFrameCurvatureOnly]
+  rw [pureRDirCLMFixedFrame, sum_apply, genuineCurvTraceFixedFrameCurvatureOnly]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [pureRDirCLMSummandFixedFrame, LinearMap.coe_toContinuousLinearMap',
     pureRDirLMSummandFixedFrame, LinearMap.coe_mk, AddHom.coe_mk]
@@ -451,7 +454,6 @@ private lemma pureRDirCLMFixedFrame_smoothOrthoFrame
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem pureRDirCLMFixedFrame_homSection_contMDiff
-    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
@@ -489,7 +491,6 @@ private lemma genuineCurvPureRFibFixedFrame_smoothOrthoFrame
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem genuineCurvPureRFibFixedFrame_contMDiff
-    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
@@ -536,11 +537,11 @@ private noncomputable def pureRValuedBilinAt
         ((tensorCov (I := I) g 0 s).toFun (fun b : M => S.toSection b) y)
       map_add' := fun X X' => by
         ext Y
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
+        simp only [ContinuousLinearMap.comp_apply, add_apply,
           (riemannOp (tensorCov (I := I) g 0 s) y).map_add X X']
       map_smul' := fun c X => by
         ext Y
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           RingHom.id_apply, (riemannOp (tensorCov (I := I) g 0 s) y).map_smul c X] }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -584,7 +585,6 @@ private lemma pureRValuedBilinAt_frame_summand
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem genuineCurvTraceFixedFramePureR_frame_independent
-    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {W : Π b : M, TangentSpace I b}
     {B C : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
@@ -598,15 +598,15 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
     genuineCurvTraceFixedFrameCurvatureOnly (I := I) g s W B (fun b : M => S.toSection b) y =
       genuineCurvTraceFixedFrameCurvatureOnly (I := I) g s W C (fun b : M => S.toSection b) y := by
   classical
-  haveI : T2Space (TangentSpace I y) := inferInstanceAs (T2Space E)
-  haveI : FiniteDimensional ℝ (TangentSpace I y) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : T2Space (TangentSpace I y) := inferInstanceAs (T2Space E)
+  have : FiniteDimensional ℝ (TangentSpace I y) := inferInstanceAs (FiniteDimensional ℝ E)
   refine ContinuousLinearMap.ext (fun D => ?_)
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  haveI : T2Space (TensorRSSpace 0 s I y) :=
+  have : T2Space (TensorRSSpace 0 s I y) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y))
-  haveI : FiniteDimensional ℝ (TensorRSSpace 0 s I y) :=
+  have : FiniteDimensional ℝ (TensorRSSpace 0 s I y) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y))
   set scalarize : TensorRSSpace 0 s I y →L[ℝ] ℝ :=
     LinearMap.toContinuousLinearMap
@@ -615,12 +615,12 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
         map_add' := fun T T' => by
           change Tensor0SSpace.toModel ((T + T') D) m =
             Tensor0SSpace.toModel (T D) m + Tensor0SSpace.toModel (T' D) m
-          rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-            ContinuousMultilinearMap.add_apply]
+          rw [add_apply, Tensor0SSpace.toModel_add,
+            add_apply]
         map_smul' := fun c T => by
           change Tensor0SSpace.toModel ((c • T) D) m = c • Tensor0SSpace.toModel (T D) m
-          rw [ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul,
-            ContinuousMultilinearMap.smul_apply] }
+          rw [smul_apply, Tensor0SSpace.toModel_smul,
+            smul_apply] }
     with hscalarize_def
   have hscalarize_apply : ∀ T : TensorRSSpace 0 s I y,
       scalarize T = Tensor0SSpace.toModel
@@ -636,13 +636,13 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
             scalarize (pureRValuedBilinAt (I := I) (M := M) g s S W y X Y) +
               scalarize (pureRValuedBilinAt (I := I) (M := M) g s S W y X' Y)
           rw [map_add (pureRValuedBilinAt (I := I) (M := M) g s S W y) X X',
-            ContinuousLinearMap.add_apply, map_add scalarize]
+            add_apply, map_add scalarize]
         map_smul' := fun c X => by
           ext Y
           change scalarize (pureRValuedBilinAt (I := I) (M := M) g s S W y (c • X) Y) =
             c • scalarize (pureRValuedBilinAt (I := I) (M := M) g s S W y X Y)
           rw [map_smul (pureRValuedBilinAt (I := I) (M := M) g s S W y) c X,
-            ContinuousLinearMap.smul_apply, map_smul scalarize] }
+            smul_apply, map_smul scalarize] }
     with hHb_def
   have hHb_apply : ∀ X Y : TangentSpace I y,
       Hb X Y = Tensor0SSpace.toModel
@@ -667,8 +667,8 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
           (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from
             riemannSec (tensorCov (I := I) g 0 s) (F i) W
               (covApply (tensorCov (I := I) g 0 s) (F i) (fun b : M => S.toSection b)) y) D := by
-      rw [genuineCurvTraceFixedFrameCurvatureOnly, ContinuousLinearMap.sum_apply]
-    rw [hsum_apply, ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+      rw [genuineCurvTraceFixedFrameCurvatureOnly, sum_apply]
+    rw [hsum_apply, ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [Tensor0SSpace.toModelL_apply, hHb_apply (F i y) (F i y),
       pureRValuedBilinAt_frame_summand (I := I) (M := M) g s S hW hF i y]
@@ -678,7 +678,6 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
 
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd
-    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
     genuineCurvPureRFib (I := I) (M := M) g s S y =
@@ -708,7 +707,6 @@ private lemma genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd
 
 omit [CompactSpace M] [I.Boundaryless] in
 private theorem genuineCurvPureRFib_contMDiff
-    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
@@ -750,7 +748,7 @@ private lemma smoothOrthoFrame_parseval_expand
     u = ∑ a : Fin (Module.finrank ℝ E),
       g.inner x (smoothOrthoFrame (I := I) g x a x) u • (smoothOrthoFrame (I := I) g x a x) := by
   classical
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun a => smoothOrthoFrame (I := I) g x a x with he_def
@@ -802,11 +800,12 @@ theorem GcurvSection_toSection_eq_genuineThirdCurvFieldFibPureR
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
       n = Module.finrank ℝ (TangentSpace I x) ∧
       (∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0) ∧
-      ∀ (w : TangentSpace I x) (m : Fin s → TangentSpace I x),
+      ∀ (w : TangentSpace I x) (m : Fin s → E),
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (genuineCurvatureOnlySection (I := I) (M := M) g s S).toSection x)
-              (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+              (unitZeroSec (I := I) (M := M) x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
           genuineThirdCurvFieldFibPureR (I := I) (M := M) g s S x e w m := by
   classical
   refine ⟨Module.finrank ℝ E, fun a => smoothOrthoFrame (I := I) g x a x, rfl,
@@ -819,7 +818,8 @@ theorem GcurvSection_toSection_eq_genuineThirdCurvFieldFibPureR
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (genuineCurvPureRSection (I := I) (M := M) g s S).toSection x)
-        (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+        (unitZeroSec (I := I) (M := M) x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
     genuineThirdCurvFieldFibPureR (I := I) (M := M) g s S x e w m
   rw [genuineCurvPureRSection_toSection]
   rw [tensor0S_uncurry_cons_eval_orthonormal (I := I) (M := M) g

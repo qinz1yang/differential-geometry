@@ -11,6 +11,7 @@ open DifferentialGeometry.Geometry.Operator
 noncomputable section
 
 
+
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
 
@@ -175,7 +176,7 @@ private lemma coeff_cov_eq_deriv_add_christoffel
       x₀
         ((cov Z.toFun x₀) (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀ i
           x₀)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M =>
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I)
               x₀).coeff k y (Z.toFun y))
@@ -208,14 +209,14 @@ private lemma coeff_cov_eq_deriv_add_christoffel
     have hxe : x₀ ∈ e.baseSet := by
       simp [e, DifferentialGeometry.Tensor.Coordinates.coordinateTrivializationAt]
     have hraw :=
-      contMDiffAt_localFrame_coeff
+      contMDiffAt_localFrameCoeff
         (I := I) (V := TangentSpace I) (e := e)
         (b := Module.finBasis Real E) (s := Z.toFun)
         (k := (1 : WithTop ℕ∞)) hxe hZ1 l
     have hcoeff : ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞) (Zc l) x₀ := by
-      simpa [Zc, hframe_def, e, DifferentialGeometry.Tensor.Coordinates.coordinateTrivializationAt,
-        DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one,
-        DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt] using hraw
+      change ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
+        (fun y => (Trivialization.localFrameCoeff I e (Module.finBasis Real E) l y) (Z.toFun y)) x₀
+      exact hraw
     exact hcoeff.mdifferentiableAt (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
   have hframevec_diff : ∀ l,
       MDifferentiableAt I (I.prod 𝓘(Real, E))
@@ -260,13 +261,13 @@ private lemma coeff_cov_eq_deriv_add_christoffel
   have hcov_sum :
       cov (fun y : M => ∑ l, Zc l y • frame l y) x₀ =
         ∑ l, (Zc l x₀ • cov (frame l) x₀ +
-          (extDerivFun (I := I) (Zc l) x₀).smulRight (frame l x₀)) := by
+          (mvfderiv (I := I) (Zc l) x₀).smulRight (frame l x₀)) := by
     classical
     have hadd : ∀ (s : Finset
       (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)),
         cov (fun y : M => ∑ l ∈ s, Zc l y • frame l y) x₀ =
           ∑ l ∈ s, (Zc l x₀ • cov (frame l) x₀ +
-            (extDerivFun (I := I) (Zc l) x₀).smulRight (frame l x₀)) := by
+            (mvfderiv (I := I) (Zc l) x₀).smulRight (frame l x₀)) := by
       intro s
       induction s using Finset.induction_on with
       | empty =>
@@ -288,7 +289,7 @@ private lemma coeff_cov_eq_deriv_add_christoffel
   have hcovZ :
       cov Z.toFun x₀ =
         ∑ l, (Zc l x₀ • cov (frame l) x₀ +
-          (extDerivFun (I := I) (Zc l) x₀).smulRight (frame l x₀)) := by
+          (mvfderiv (I := I) (Zc l) x₀).smulRight (frame l x₀)) := by
     rw [← hcov_sum]
     exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZdiff
       (by
@@ -296,18 +297,18 @@ private lemma coeff_cov_eq_deriv_add_christoffel
         simpa using hsumdiff)
       univ_mem hZexp
   rw [hcovZ]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   rw [map_sum]
   have hk_each : ∀ l,
       hframe.coeff k x₀
           ((Zc l x₀ • cov (frame l) x₀ +
-            (extDerivFun (I := I) (Zc l) x₀).smulRight (frame l x₀)) (frame i x₀)) =
+            (mvfderiv (I := I) (Zc l) x₀).smulRight (frame l x₀)) (frame i x₀)) =
         Zc l x₀ *
             DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe x₀ i l
               k +
-          (if k = l then extDerivFun (I := I) (Zc k) x₀ (frame i x₀) else 0) := by
+          (if k = l then mvfderiv (I := I) (Zc k) x₀ (frame i x₀) else 0) := by
     intro l
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    rw [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply, map_add]
     congr 1
     · rw [map_smul, smul_eq_mul]
@@ -329,7 +330,7 @@ private lemma coeff_cov_eq_deriv_add_christoffel
   rw [Finset.sum_add_distrib]
   rw [add_comm]
   congr 1
-  · rw [Finset.sum_ite_eq Finset.univ k (fun _ => extDerivFun (I := I) (Zc k) x₀ (frame i x₀))]
+  · rw [Finset.sum_ite_eq Finset.univ k (fun _ => mvfderiv (I := I) (Zc k) x₀ (frame i x₀))]
     rw [if_pos (Finset.mem_univ k)]
   · refine Finset.sum_congr rfl fun l _ => ?_
     rw [hZc_def]
@@ -346,7 +347,7 @@ private lemma inner_cov_frame_eq
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀ i x₀))
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀ j x₀) =
       ∑ k : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
             (fun y : M =>
               (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I)
                 x₀).coeff k y (Z.toFun y))
@@ -370,9 +371,9 @@ private lemma inner_cov_frame_eq
       ∑ k, hframe.coeff k x₀ ((cov Z.toFun x₀) (frame i x₀)) • frame k x₀ :=
     hframe.coeff_sum_eq (fun _ => (cov Z.toFun x₀) (frame i x₀)) hx₀
   rw [hexpand]
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, sum_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
   rw [coeff_cov_eq_deriv_add_christoffel cov Z x₀ i k]
 
 omit [CompactSpace M] in
@@ -383,7 +384,7 @@ theorem divergence_g_eq_coordinateFrame_covariant_divergence
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     divergence_g (I := I) g Z x =
       ∑ p : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
             (fun y : M =>
               (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I)
                 x).coeff p y (Z.toFun y))
@@ -413,7 +414,7 @@ theorem divergence_g_eq_coordinateFrame_covariant_divergence
   set C : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun i k =>
-      extDerivFun (I := I) (fun y : M => hfo.coeff k y (Z.toFun y)) x (frame i x) +
+      mvfderiv (I := I) (fun y : M => hfo.coeff k y (Z.toFun y)) x (frame i x) +
         ∑ l, DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
           (LeviCivita (I := I) g)
             frame hfo x i l k * hfo.coeff l x (Z.toFun x) with hC_def

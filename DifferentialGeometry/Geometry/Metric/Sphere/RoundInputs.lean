@@ -5,6 +5,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 open Bundle Metric
 open scoped ENNReal Manifold
 
@@ -33,13 +34,12 @@ theorem round_enorm :
     ∀ (x : sphere (0 : A) 1) (w : TangentSpace (𝓡 n) x),
       ‖w‖ₑ = ENNReal.ofReal
         (Real.sqrt ((roundMetric (E := A) (n := n)).inner x w w)) := by
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun x : sphere (0 : A) 1 => TangentSpace (𝓡 n) x) :=
     roundBundle (A := A) (n := n)
   intro x w
-  simpa only using
-    (Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-      (I := 𝓡 n) (roundMetric (E := A) (n := n)) x w)
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+  rfl
 
 def sphereBasisPt {m : ℕ} (i : Fin m) :
     sphere (0 : EuclideanSpace ℝ (Fin m)) 1 :=

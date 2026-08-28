@@ -48,11 +48,11 @@ theorem chartSymmUnif
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     UniformContinuousOn
       (fun v : E => (NormalCoordinates.normalChartAt (I := I) g p).symm v) K := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let ψ := NormalCoordinates.normalChartAt (I := I) g p
   have hcont : ContinuousOn (fun v : E => ψ.symm v) K := by
     simpa [ψ] using ψ.contMDiffOn_invFun.continuousOn.mono hKtarget
@@ -79,11 +79,11 @@ theorem chartSymmIdConv
       ∀ a : Nat, a ≥ N → ∀ b : Nat, b ≥ N → ∀ v : E, v ∈ K →
         dist ((NormalCoordinates.normalChartAt (I := I) g p).symm v)
           ((NormalCoordinates.normalChartAt (I := I) g p).symm (F a b v)) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let ψ := NormalCoordinates.normalChartAt (I := I) g p
   obtain ⟨η, hηpos, hηtarget⟩ :=
     hK.exists_cthickening_subset_open ψ.open_target hKtarget
@@ -106,8 +106,9 @@ theorem chartSymmIdConv
   have hFvK' : F a b v ∈ K' := by
     exact Metric.mem_cthickening_of_dist_le (F a b v) v η K hv
       (le_trans (le_of_lt hdist) (min_le_right δ η))
-  simpa [dist_comm] using
-    hδ (F a b v) hFvK' v hvK' (lt_of_lt_of_le hdist (min_le_left δ η))
+  change dist (ψ.symm v) (ψ.symm (F a b v)) < ε
+  exact hδ v hvK' (F a b v) hFvK'
+    (by simpa only [dist_comm] using lt_of_lt_of_le hdist (min_le_left δ η))
 
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -134,11 +135,11 @@ theorem chartPtsConv
       ∀ a : Nat, a ≥ N → ∀ b : Nat, b ≥ N → ∀ x : M, x ∈ S →
         dist x ((NormalCoordinates.normalChartAt (I := I) g p).symm
           (F a b ((NormalCoordinates.normalChartAt (I := I) g p) x))) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let ψ := NormalCoordinates.normalChartAt (I := I) g p
   have hdecoded :
       ∀ ε : Real, ε > 0 → ∃ N : Nat,
@@ -182,11 +183,11 @@ theorem chartPtsSrcK
       ∀ a : Nat, a ≥ N -> ∀ b : Nat, b ≥ N -> ∀ x : M, x ∈ S ->
         dist x ((NormalCoordinates.normalChartAt (I := I) g p).symm
           (F a b ((NormalCoordinates.normalChartAt (I := I) g p) x))) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let ψ := NormalCoordinates.normalChartAt (I := I) g p
   have hcont : ContinuousOn (fun x : M => ψ x) Ksrc := by
     exact ψ.contMDiffOn_toFun.continuousOn.mono hsrcK
@@ -224,27 +225,29 @@ theorem properBallSrcOfRad
     letI : MetricSpace Y.M := P.ms
     Metric.closedBall c R ⊆
       (NormalCoordinates.normalChartAt (I := I) Y.metric c).source := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := P.ms
-  letI : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
-    ⟨Y.metric.toRiemannianMetric⟩
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := P.ms
+  let cg : ContinuousRiemannianMetric E (fun x : Y.M => TangentSpace I x) :=
+    Y.metric.toContinuousRiemannianMetric
+  let : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+    ⟨cg.toRiemannianMetric⟩
   have hEnorm :
       ∀ x : Y.M, ∀ v : TangentSpace I x,
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (Y.metric.inner x v v)) := by
     intro x v
-    simpa using
-      (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) Y.metric x v)
+    exact
+      DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) Y.metric x v
   intro y hy
   have hed :
       riemannianEDist I c y =
         ENNReal.ofReal (dist c y) := by
-    have h := P.realizes c y
-    simpa [PointedRiemannianManifold.emetricSpace] using h
+    change (letI : EMetricSpace Y.M := Y.emetricSpace; edist c y) = _
+    exact P.realizes c y
   have hfin : riemannianEDist I c y ≠ (⊤ : ℝ≥0∞) := by
     rw [hed]
     exact ENNReal.ofReal_ne_top
@@ -280,23 +283,25 @@ theorem properBallNormal
       (show TangentSpace I c from v) ∈ expDomain (I := I) Y.metric c ∧
       Real.sqrt (Y.metric.inner c v v) = dist c y ∧
       y = expMap (I := I) Y.metric c (show TangentSpace I c from v) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := P.ms
-  letI : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
-    ⟨Y.metric.toRiemannianMetric⟩
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := P.ms
+  let cg : ContinuousRiemannianMetric E (fun x : Y.M => TangentSpace I x) :=
+    Y.metric.toContinuousRiemannianMetric
+  let : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+    ⟨cg.toRiemannianMetric⟩
   have hEnorm : ∀ x : Y.M, ∀ w : TangentSpace I x,
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (Y.metric.inner x w w)) := by
     intro x w
-    simpa using
-      (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) Y.metric x w)
+    exact
+      DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) Y.metric x w
   have hed : riemannianEDist I c y = ENNReal.ofReal (dist c y) := by
-    have h := P.realizes c y
-    simpa [PointedRiemannianManifold.emetricSpace] using h
+    change (letI : EMetricSpace Y.M := Y.emetricSpace; edist c y) = _
+    exact P.realizes c y
   have hfin : riemannianEDist I c y ≠ (⊤ : ENNReal) := by
     rw [hed]
     exact ENNReal.ofReal_ne_top
@@ -333,29 +338,32 @@ theorem properExpDist
     letI : MetricSpace Y.M := P.ms
     dist c (expMap (I := I) Y.metric c (show TangentSpace I c from v)) =
       Real.sqrt (Y.metric.inner c v v) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := P.ms
-  letI : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
-    ⟨Y.metric.toRiemannianMetric⟩
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := P.ms
+  let cg : ContinuousRiemannianMetric E (fun x : Y.M => TangentSpace I x) :=
+    Y.metric.toContinuousRiemannianMetric
+  let : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+    ⟨cg.toRiemannianMetric⟩
   have hEnorm : ∀ x : Y.M, ∀ w : TangentSpace I x,
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (Y.metric.inner x w w)) := by
     intro x w
-    simpa using
-      (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) Y.metric x w)
+    exact
+      DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) Y.metric x w
   have hed := edist_exp_eq_radius (I := I) Y.metric c hEnorm hv
   have hdist :
       riemannianEDist I c
           (expMap (I := I) Y.metric c (show TangentSpace I c from v)) =
         ENNReal.ofReal
           (dist c (expMap (I := I) Y.metric c (show TangentSpace I c from v))) := by
-    have h := P.realizes c
+    change (letI : EMetricSpace Y.M := Y.emetricSpace
+      edist c (expMap (I := I) Y.metric c (show TangentSpace I c from v))) = _
+    exact P.realizes c
       (expMap (I := I) Y.metric c (show TangentSpace I c from v))
-    simpa [PointedRiemannianManifold.emetricSpace] using h
   have hofReal :
       ENNReal.ofReal
           (dist c (expMap (I := I) Y.metric c (show TangentSpace I c from v))) =

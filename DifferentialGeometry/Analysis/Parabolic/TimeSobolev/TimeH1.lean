@@ -260,7 +260,7 @@ theorem hasDerivWithinAt_toFun_of_continuousOn (u : timeH1 X T) {g : ℝ → X}
       exact ae_imp_of_ae_restrict hrestr
     have hderiv : HasDerivWithinAt (fun s => ∫ r in (0 : ℝ)..s, g r) (g t)
         (Icc (0 : ℝ) T) t := by
-      haveI hfact : Fact (t ∈ Icc (0 : ℝ) T) := ⟨ht⟩
+      have hfact : Fact (t ∈ Icc (0 : ℝ) T) := ⟨ht⟩
       have hint : IntervalIntegrable g volume 0 t :=
         MeasureTheory.IntegrableOn.intervalIntegrable (by
           rw [uIcc_of_le ht.1]
@@ -274,7 +274,7 @@ theorem hasDerivWithinAt_toFun_of_continuousOn (u : timeH1 X T) {g : ℝ → X}
         (Icc (0 : ℝ) T) t :=
       hderiv.congr (fun s hs => hae s hs) (hae t ht)
     have := hderiv'.const_add u.init
-    simpa only [toFun] using this
+    simpa only [toFun] using! this
   · rw [Icc_eq_empty (by linarith)] at ht
     exact absurd ht (notMem_empty t)
 
@@ -349,7 +349,7 @@ theorem norm_toFun_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
       (TimeSobolev.integrableOn u.deriv).norm
     refine setIntegral_mono_set hintT ?_ ?_
     · filter_upwards with s using norm_nonneg _
-    · refine HasSubset.Subset.eventuallyLE ?_
+    · refine LE.le.eventuallyLE ?_
       intro s hs
       exact ⟨le_of_lt hs.1, le_trans hs.2 htT⟩
   have hCS : (∫ s in Icc (0 : ℝ) T, ‖u.deriv s‖) ≤ Real.sqrt T * ‖u.deriv‖ :=

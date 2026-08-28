@@ -10,7 +10,7 @@ import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 
 
@@ -135,14 +135,13 @@ private lemma tensor0SRiemannianInner_diagonal_clm_apply
           (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T) := by
   rw [tensor0SRiemannianInnerCLM_apply, innerBundleCLM_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma innerModel_diagonal_sublevel_isBounded
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
     Bornology.IsBounded
       {T : Tensor0SModel s ℝ E |
         innerModelCLM (I := I) (M := M) g s b T T < 1} := by
   by_cases hNT : Nontrivial (Tensor0SModel s ℝ E)
-  · haveI := hNT
+  · have := hNT
     have hPD : ∀ v : Tensor0SModel s ℝ E,
         v ≠ 0 → 0 < innerModelCLM (I := I) (M := M) g s b v v := by
       intro v hv
@@ -172,7 +171,7 @@ private lemma innerModel_diagonal_sublevel_isBounded
       (innerModelCLM (I := I) (M := M) g s b) hPD hNN hSmulL hSmulR
   · have hSubsingleton : Subsingleton (Tensor0SModel s ℝ E) :=
       not_nontrivial_iff_subsingleton.mp hNT
-    haveI := hSubsingleton
+    have := hSubsingleton
     refine (Metric.isBounded_iff_subset_ball 0).mpr ⟨1, ?_⟩
     intro v _
     rw [Metric.mem_ball, dist_zero_right]
@@ -208,8 +207,8 @@ theorem tensor0SRiemannianInner_isVonNBounded
     ext v
     refine ⟨?_, ?_⟩
     · rintro ⟨T, hT, rfl⟩
-      rw [Set.mem_setOf_eq] at hT
-      rw [Set.mem_setOf_eq, tensor0SRiemannianInner_diagonal_clm_apply]
+      rw [Set.mem_ofPred_eq] at hT
+      rw [Set.mem_ofPred_eq, tensor0SRiemannianInner_diagonal_clm_apply]
       have hRound : (e (e.symm T) : _) = T := e.apply_symm_apply T
       have hToModel :
           Tensor0SBundle.Tensor0SSpace.toModel
@@ -221,8 +220,8 @@ theorem tensor0SRiemannianInner_isVonNBounded
       exact hT
     · intro hv
       refine ⟨e v, ?_, ?_⟩
-      · rw [Set.mem_setOf_eq]
-        rw [Set.mem_setOf_eq, tensor0SRiemannianInner_diagonal_clm_apply] at hv
+      · rw [Set.mem_ofPred_eq]
+        rw [Set.mem_ofPred_eq, tensor0SRiemannianInner_diagonal_clm_apply] at hv
         change covariantTensorInnerPointwise (I := I) (M := M) s g b _ _ < 1
         exact hv
       · exact e.symm_apply_apply v

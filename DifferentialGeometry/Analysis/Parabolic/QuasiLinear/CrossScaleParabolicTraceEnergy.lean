@@ -163,7 +163,7 @@ theorem tsum_intervalIntegral_energyIntegrand_eq
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ∑' i, (∫ s in (0 : ℝ)..t, u.energyIntegrand i s) =
       ∫ s in (0 : ℝ)..t, ∑' i, u.energyIntegrand i s := by
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     CrossScaleField.countable_eigenIdx (I := I) (M := M) (g := g) (r := r) (s := s)
   set μ : Measure ℝ := volume.restrict (Set.Ioc (0 : ℝ) t) with hμ
   have hF_int : ∀ i, Integrable (u.energyIntegrand i) μ := fun i =>
@@ -180,8 +180,8 @@ theorem tsum_intervalIntegral_energyIntegrand_eq
     intro S
     have hfin_int : ∀ i ∈ S, Integrable (fun s => ‖u.energyIntegrand i s‖) μ :=
       fun i _ => (hF_int i).norm
-    rw [← MeasureTheory.integral_finset_sum S hfin_int]
-    refine integral_mono_ae (MeasureTheory.integrable_finset_sum S hfin_int) hbound_int ?_
+    rw [← MeasureTheory.integral_finsetSum S hfin_int]
+    refine integral_mono_ae (MeasureTheory.integrable_finsetSum S hfin_int) hbound_int ?_
     filter_upwards [haebnd] with s hs
     calc ∑ i ∈ S, ‖u.energyIntegrand i s‖
         = ∑ i ∈ S, |u.energyIntegrand i s| := by
@@ -211,8 +211,8 @@ lemma summable_integral_norm_energyIntegrand {t : ℝ} (ht : t ∈ Icc (0 : ℝ)
   intro S
   have hfin_int : ∀ i ∈ S, Integrable (fun s => ‖u.energyIntegrand i s‖) μ :=
     fun i _ => (u.integrableOn_energyIntegrand i ht).norm
-  rw [← MeasureTheory.integral_finset_sum S hfin_int]
-  refine integral_mono_ae (MeasureTheory.integrable_finset_sum S hfin_int) hbound_int ?_
+  rw [← MeasureTheory.integral_finsetSum S hfin_int]
+  refine integral_mono_ae (MeasureTheory.integrable_finsetSum S hfin_int) hbound_int ?_
   filter_upwards [haebnd] with s hs
   calc ∑ i ∈ S, ‖u.energyIntegrand i s‖
       = ∑ i ∈ S, |u.energyIntegrand i s| := by
@@ -274,8 +274,8 @@ theorem normSq_repr_le_init_add_integral (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc 
     have hrw : ∀ i, (∫ s in (0 : ℝ)..t, u.energyIntegrand i s) =
         ∫ s, u.energyIntegrand i s ∂μ := fun i => intervalIntegral.integral_of_le ht.1
     rw [Finset.sum_congr rfl (fun i _ => hrw i),
-      ← MeasureTheory.integral_finset_sum S hfin_int]
-    refine integral_mono_ae (MeasureTheory.integrable_finset_sum S hfin_int) hbound_int ?_
+      ← MeasureTheory.integral_finsetSum S hfin_int]
+    refine integral_mono_ae (MeasureTheory.integrable_finsetSum S hfin_int) hbound_int ?_
     filter_upwards [haebnd] with s hs
     calc ∑ i ∈ S, u.energyIntegrand i s
         ≤ ∑ i ∈ S, |u.energyIntegrand i s| :=
@@ -312,7 +312,7 @@ lemma norm_intervalIntegral_energyIntegrand_le (hT : 0 < T)
     _ ≤ ∫ s in Set.Ioc (0 : ℝ) T, ‖u.energyIntegrand i s‖ := by
         refine setIntegral_mono_set
           ((u.integrableOn_energyIntegrand i ⟨hT.le, le_rfl⟩).norm)
-          (ae_of_all _ (fun s => norm_nonneg _)) (HasSubset.Subset.eventuallyLE hsub)
+          (ae_of_all _ (fun s => norm_nonneg _)) (LE.le.eventuallyLE hsub)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem continuousOn_normSq_repr (hT : 0 < T) :

@@ -25,7 +25,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -383,7 +382,7 @@ private lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
     (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -444,7 +443,7 @@ theorem exists_integral_indicator_tsupp_raw_sq_le_const_mul_h1NormSq
         ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) :=
     mul_le_mul_of_nonneg_left
       (ofReal_tensorL2Norm_le_norm_ennreal (I := I) (M := M) g r s S)
-      (by exact zero_le _)
+      (by exact zero_le)
   exact h_smoothCc'.trans h_rhs_le
 
 end RawAtoms
@@ -499,7 +498,7 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
             2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨M_F_in, hM_F_in_nn, hM_F_in_le⟩ :=
     chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local

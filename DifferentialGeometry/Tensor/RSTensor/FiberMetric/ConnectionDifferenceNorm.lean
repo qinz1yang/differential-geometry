@@ -60,16 +60,17 @@ theorem connectionDifferenceVec_norm_le
   have hkey :
       connectionDifferenceTensorAt (I := I) cov cov' x α
           (fun q : Fin 2 => if q = 0 then X else Y) = g.inner x w w := by
-    change connectionDifferenceOutput (I := I)
-        (CovariantDerivative.difference cov cov' x) α
+    change Tensor0SSpace.eval
+        (connectionDifferenceOutput (I := I)
+          (CovariantDerivative.difference cov cov' x) α)
         (fun q : Fin 2 => if q = 0 then X else Y) = g.inner x w w
     rw [connectionDifferenceOutput_apply_slots, hα, dualToCotangent_apply_gen,
       tangentFlatLinear_apply_gen, ← hw]
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis

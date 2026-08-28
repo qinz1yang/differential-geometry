@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.RegionDistance
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -341,8 +342,16 @@ theorem zero_mem_fiberHamiltonIveyRegion
     (0 : Tensor04At (I := I) (M := M) x) ∈
       fiberHamiltonIveyRegion basisAt K τ x := by
   refine (mem_fiberHamiltonIveyRegion basisAt K τ x 0).2 ⟨by simp, ?_⟩
-  simpa [curvatureOperatorMatrixAt] using
-    (zero_mem_hamiltonIveyConvexMatrixRegion hK hτ)
+  change curvatureOperatorMatrixAt (I := I) x (basisAt x)
+      (0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+    hamiltonIveyConvexMatrixRegion K τ
+  have hzero : curvatureOperatorMatrixAt (I := I) x (basisAt x)
+      (0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) = 0 := by
+    ext i j
+    change (0 : Tensor04At (I := I) (M := M) x) _ = 0
+    exact Tensor0SSpace.zero_apply 4 x _
+  rw [hzero]
+  exact zero_mem_hamiltonIveyConvexMatrixRegion hK hτ
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
   [SigmaCompactSpace M] [T2Space M] in
@@ -385,26 +394,26 @@ theorem isClosed_fiberHamiltonIveyRegion
   have hAlgebraic : @IsClosed (Tensor04At (I := I) (M := M) x) metricTopology
       (algebraicCurvatureTensorSubmodule (I := I) (M := M) x :
         Set (Tensor04At (I := I) (M := M) x)) := by
-    letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+    let _ : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
       (tensor0SMetricData (I := I) g x 4).toCore
-    letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) := metricNorm
-    letI : NormedSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+    let _ : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) := metricNorm
+    let _ : NormedSpace ℝ (Tensor04At (I := I) (M := M) x) :=
       InnerProductSpace.Core.toNormedSpace
-    letI : IsBoundedSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
-    letI : ContinuousSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
+    let _ : IsBoundedSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
+    let _ : ContinuousSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
     exact @Submodule.closed_of_finiteDimensional ℝ
       (Tensor04At (I := I) (M := M) x) inferInstance inferInstance inferInstance
         metricTopology inferInstance inferInstance inferInstance inferInstance
           (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) inferInstance
   have hL : @Continuous (Tensor04At (I := I) (M := M) x)
       (EuclideanSpace ℝ (Fin 3 × Fin 3)) metricTopology inferInstance L := by
-    letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+    let _ : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
       (tensor0SMetricData (I := I) g x 4).toCore
-    letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) := metricNorm
-    letI : NormedSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+    let _ : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) := metricNorm
+    let _ : NormedSpace ℝ (Tensor04At (I := I) (M := M) x) :=
       InnerProductSpace.Core.toNormedSpace
-    letI : IsBoundedSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
-    letI : ContinuousSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
+    let _ : IsBoundedSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
+    let _ : ContinuousSMul ℝ (Tensor04At (I := I) (M := M) x) := inferInstance
     exact @LinearMap.continuous_of_finiteDimensional ℝ inferInstance
       (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance metricTopology inferInstance inferInstance
@@ -1026,15 +1035,15 @@ omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [SigmaCompactSpace 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 2 M] [SigmaCompactSpace M] [T2Space M] in
 theorem fiberHamiltonIveyRegion_matrixImage_eq_regionEuclidean_of_orthonormal
     (g : SmoothRiemannianMetric I M) (x : M)
-    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
-    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (basisAt : ∀ y : M, Module.Basis (Fin 3) ℝ (TangentSpace I y))
+    (horth : OrthonormalBasisAt (I := I) g x (basisAt x))
     (K τ : ℝ) :
     (fun A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x =>
-      matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis
+      matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) (basisAt x)
         (A : Tensor04At (I := I) (M := M) x))) ''
       ((fun A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x =>
         (A : Tensor04At (I := I) (M := M) x)) ⁻¹'
-        fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) K τ x)
+        fiberHamiltonIveyRegion (I := I) basisAt K τ x)
     = hamiltonIveyConvexMatrixRegionEuclidean K τ := by
   classical
   ext q
@@ -1056,32 +1065,34 @@ theorem fiberHamiltonIveyRegion_matrixImage_eq_regionEuclidean_of_orthonormal
       have h := congrFun (congrFun hherm i) j
       simpa [Matrix.conjTranspose, Matrix.transpose_apply, star_trivial] using h
     let A₀ : Tensor04At (I := I) (M := M) x :=
-      fiberOperatorTensor (I := I) g basis (euclideanToMatrix q)
+      fiberOperatorTensor (I := I) g (basisAt x) (euclideanToMatrix q)
     have hA₀ : A₀ ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
-      fiberOperatorTensor_mem_algebraic (I := I) g basis hsymm
-    have hmat : tensor04CurvatureOperatorMatrixAt (I := I) basis A₀ = euclideanToMatrix q := by
+      fiberOperatorTensor_mem_algebraic (I := I) g (basisAt x) hsymm
+    have hmat : tensor04CurvatureOperatorMatrixAt (I := I) (basisAt x) A₀ =
+        euclideanToMatrix q := by
       exact tensor04CurvatureOperatorMatrixAt_fiberOperatorTensor
-        (I := I) g basis horth (euclideanToMatrix q)
+        (I := I) g (basisAt x) horth (euclideanToMatrix q)
     refine ⟨⟨A₀, hA₀⟩, ?_, ?_⟩
     · rw [Set.mem_preimage]
       rw [fiberHamiltonIveyRegion_eq_inter_preimage_euclidean]
       constructor
       · exact hA₀
       · change matrixToEuclidean
-          (tensor04CurvatureOperatorMatrixAt (I := I) basis A₀) ∈
+          (tensor04CurvatureOperatorMatrixAt (I := I) (basisAt x) A₀) ∈
             hamiltonIveyConvexMatrixRegionEuclidean K τ
         rw [hmat]
         rw [matrixToEuclidean_euclideanToMatrix]
         exact hq
-    · change matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis A₀) = q
+    · change matrixToEuclidean
+          (tensor04CurvatureOperatorMatrixAt (I := I) (basisAt x) A₀) = q
       rw [hmat]
       exact matrixToEuclidean_euclideanToMatrix q
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [SigmaCompactSpace M] [T2Space M] in
 theorem infDist_fiberHamiltonIveyRegion_eq_two_mul_matrixInfDist_of_orthonormal
     (g : SmoothRiemannianMetric I M) (x : M)
-    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
-    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (basisAt : ∀ y : M, Module.Basis (Fin 3) ℝ (TangentSpace I y))
+    (horth : OrthonormalBasisAt (I := I) g x (basisAt x))
     {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
     (A : Tensor04At (I := I) (M := M) x)
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
@@ -1093,43 +1104,44 @@ theorem infDist_fiberHamiltonIveyRegion_eq_two_mul_matrixInfDist_of_orthonormal
     letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
       @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
         inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
-    Metric.infDist A (fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) K τ x) =
-      2 * Metric.infDist (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis A))
+    Metric.infDist A (fiberHamiltonIveyRegion (I := I) basisAt K τ x) =
+      2 * Metric.infDist
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) (basisAt x) A))
         (hamiltonIveyConvexMatrixRegionEuclidean K τ) := by
   classical
-  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+  let _ : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
     (tensor0SMetricData (I := I) g x 4).toCore
-  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let _ : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
-  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+  let _ : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
   let C : Set (Tensor04At (I := I) (M := M) x) :=
-    fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) K τ x
+    fiberHamiltonIveyRegion (I := I) basisAt K τ x
   let S : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)) :=
     hamiltonIveyConvexMatrixRegionEuclidean K τ
   let m : Tensor04At (I := I) (M := M) x → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
-    fun B => matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis B)
+    fun B => matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) (basisAt x) B)
   have himg : (fun B : algebraicCurvatureTensorSubmodule (I := I) (M := M) x =>
         m (B : Tensor04At (I := I) (M := M) x)) ''
       ((fun B : algebraicCurvatureTensorSubmodule (I := I) (M := M) x =>
         (B : Tensor04At (I := I) (M := M) x)) ⁻¹' C) = S := by
     simpa [C, S, m] using fiberHamiltonIveyRegion_matrixImage_eq_regionEuclidean_of_orthonormal
-      (I := I) g x basis horth K τ
+      (I := I) g x basisAt horth K τ
   have hdist : ∀ (B : Tensor04At (I := I) (M := M) x),
       B ∈ C → dist A B = 2 * dist (m A) (m B) := by
     intro B hB
     have hBmem := hB
-    change B ∈ fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) K τ x at hBmem
+    change B ∈ fiberHamiltonIveyRegion (I := I) basisAt K τ x at hBmem
     rw [fiberHamiltonIveyRegion_eq_inter_preimage_euclidean] at hBmem
     have hB' : B ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x := hBmem.1
     have hd := dist_algebraicCurvatureTensor_eq_two_mul_matrixDist_of_orthonormal (I := I) (M := M)
-      g x basis horth ⟨A, hA⟩ ⟨B, hB'⟩
+      g x (basisAt x) horth ⟨A, hA⟩ ⟨B, hB'⟩
     simpa [m] using hd
   have hS_ne : S.Nonempty := nonempty_hamiltonIveyConvexMatrixRegionEuclidean hK hτ
   have hC_ne : C.Nonempty := by
-    exact nonempty_fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) hK hτ x
+    exact nonempty_fiberHamiltonIveyRegion (I := I) basisAt hK hτ x
   apply le_antisymm
   · have hle : ∀ q : EuclideanSpace ℝ (Fin 3 × Fin 3), q ∈ S →
         Metric.infDist A C ≤ 2 * dist (m A) q := by
@@ -1159,9 +1171,9 @@ theorem infDist_fiberHamiltonIveyRegion_eq_two_mul_matrixInfDist_of_orthonormal
         2 * Metric.infDist (m A) S ≤ dist A B := by
       intro B hB
       have hBsub : B ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
-        (mem_fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) K τ x B).mp hB |>.1
+        (mem_fiberHamiltonIveyRegion (I := I) basisAt K τ x B).mp hB |>.1
       have hBm : m B ∈ S := by
-        exact (mem_fiberHamiltonIveyRegion (I := I) (fun _ : M => basis) K τ x B).mp hB |>.2
+        exact (mem_fiberHamiltonIveyRegion (I := I) basisAt K τ x B).mp hB |>.2
       have hd := hdist B hB
       have h1 : Metric.infDist (m A) S ≤ dist (m A) (m B) :=
         Metric.infDist_le_dist_of_mem hBm
@@ -1332,7 +1344,10 @@ theorem tensor04CurvatureOperatorMatrixAt_conj_of_orthonormal
     have hM : (curvatureOperatorMatrixAt (I := I) x b A).IsHermitian :=
       curvatureOperatorMatrixAt_isHermitian (I := I) x b A
     have h := congrFun (congrFun hM i) j
-    simpa [Mat, Matrix.conjTranspose, Matrix.transpose_apply, star_trivial] using h
+    rw [Matrix.conjTranspose_apply, star_trivial] at h
+    change tensor04CurvatureOperatorMatrixAt (I := I) b (A : Tensor04At x) j i =
+      tensor04CurvatureOperatorMatrixAt (I := I) b (A : Tensor04At x) i j
+    simpa only [tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt] using h
   have hTensor_mem : fiberOperatorTensor (I := I) g b Mat ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
     fiberOperatorTensor_mem_algebraic (I := I) g b hsymm

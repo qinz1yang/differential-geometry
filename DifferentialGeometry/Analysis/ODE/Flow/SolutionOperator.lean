@@ -44,10 +44,10 @@ theorem exists_linearODE_solution_of_short
   have htmin_le_t₀ : tmin ≤ h₀ := by change h₀ - T ≤ h₀; linarith
   have ht₀_le_tmax : h₀ ≤ tmax := by change h₀ ≤ h₀ + T; linarith
   let t₀Icc : Icc tmin tmax := ⟨h₀, ⟨htmin_le_t₀, ht₀_le_tmax⟩⟩
-  let aN : ℝ≥0 := ⟨a₀, ha₀_nn⟩
-  let rN : ℝ≥0 := ⟨r₀, hr₀_nn⟩
-  let LN : ℝ≥0 := ⟨M * a₀, mul_nonneg hM ha₀_nn⟩
-  let KN : ℝ≥0 := ⟨M, hM⟩
+  let aN : ℝ≥0 := NNReal.mk a₀ ha₀_nn
+  let rN : ℝ≥0 := NNReal.mk r₀ hr₀_nn
+  let LN : ℝ≥0 := NNReal.mk (M * a₀) (mul_nonneg hM ha₀_nn)
+  let KN : ℝ≥0 := NNReal.mk M hM
   have hpl : IsPicardLindelof v t₀Icc (0 : G) aN rN LN KN := by
     refine
     { lipschitzOnWith := ?_,
@@ -65,7 +65,9 @@ theorem exists_linearODE_solution_of_short
     · intro t ht y hy
       have hAt_bd : ‖A t‖ ≤ M := hA_bd t ht
       have hy_norm : ‖y‖ ≤ a₀ := by
-        simpa [mem_closedBall_zero_iff] using hy
+        have hy' : ‖y‖ ≤ (aN : ℝ) := by
+          simpa only [mem_closedBall_zero_iff] using hy
+        simpa only [aN, NNReal.coe_mk] using hy'
       change ‖v t y‖ ≤ (LN : ℝ)
       calc ‖v t y‖ = ‖A t y‖ := rfl
         _ ≤ ‖A t‖ * ‖y‖ := (A t).le_opNorm y

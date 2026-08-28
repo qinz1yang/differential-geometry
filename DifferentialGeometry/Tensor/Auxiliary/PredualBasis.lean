@@ -47,7 +47,7 @@ theorem cdual_sum_repr {d : ℕ} [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜]
   rw [show ((∑ k, (α (b k)) • LinearMap.toContinuousLinearMap (b.coord k)
         : E →L[𝕜] 𝕜) : E →ₗ[𝕜] 𝕜) =
       ∑ k, (α (b k)) • (b.coord k) by
-    rw [ContinuousLinearMap.coe_sum]
+    rw [ContinuousLinearMap.toLinearMap_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [ContinuousLinearMap.coe_smul, LinearMap.coe_toContinuousLinearMap]]
+    rw [ContinuousLinearMap.toLinearMap_smul, LinearMap.coe_toContinuousLinearMap]]
   exact b.sum_dual_apply_smul_coord (α : E →ₗ[𝕜] 𝕜)

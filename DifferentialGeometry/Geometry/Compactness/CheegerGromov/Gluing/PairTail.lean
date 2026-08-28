@@ -89,13 +89,13 @@ theorem MetricCompactnessInputs.atom_trans_small
     normalTransition (I := I) (X.obj (L.φ k)) x
         (seqCenterD inp.decay P L k (gamma : Nat)) z ∈
       Metric.ball 0 (6 * L.lamInf (gamma : Nat)) := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   cases hc : seqCenter inp.decay inp.D P (L.φ k) (gamma : Nat) with
   | none =>
       exact False.elim (hne (by simp [seqAtom, hc]))
@@ -202,9 +202,18 @@ theorem MetricCompactnessInputs.weight_trans_small
     normalTransition (I := I) (X.obj (L.φ k)) (beta k)
         (seqCenterD inp.decay P L k (gamma : Nat)) z ∈
       Metric.ball 0 (6 * L.lamInf (gamma : Nat)) := by
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    (X.obj (L.φ k)).t2TangentBundle
   apply inp.atom_trans_small P L r k hgp (beta k) gamma hGp z
-  simpa only [seqAtomChart] using
-    (num_ne_of_cut_ne (num_ne_of_raw_ne hweight))
+  have hnum := num_ne_of_cut_ne (num_ne_of_raw_ne hweight)
+  change seqAtom inp.decay inp.hD P L inp.pack r k gamma
+      (Geometry.Riemannian.NormalCoordinates.expMapDiffeo
+        (I := I) (X.obj (L.φ k)).metric (beta k) z) ≠ 0 at hnum
+  exact hnum
 
 theorem MetricCompactnessInputs.pair_exp_maps_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -248,13 +257,13 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
       BInter inp.decay inp.D P L.lamInf
         (α.1 : Nat) (β.1 : Nat) (L.φ k) := hinter.frequently
   filter_upwards [hinter, hrad, hgp, hα, hβ] with k hk hradk hgpk hx hy
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   have hzeroX : (0 : E) ∈ Metric.ball 0
       (inp.normalBounds.radius (L.φ k)
         (seqCenterD inp.decay P L k (α.1 : Nat))) := by
@@ -265,9 +274,10 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
       (X.obj (L.φ k)).metric.inner
           (seqCenterD inp.decay P L k (α.1 : Nat)) z z ≤ 2 * ‖z‖ ^ 2 := by
     intro z
-    simpa only [normalMetric_zero (I := I)] using
-      (inp.normalBounds.metric_equiv (L.φ k)
-        (seqCenterD inp.decay P L k (α.1 : Nat)) 0 hzeroX z).2
+    rw [← normalMetric_zero (I := I) (X.obj (L.φ k))
+      (seqCenterD inp.decay P L k (α.1 : Nat))]
+    exact (inp.normalBounds.metric_equiv (L.φ k)
+      (seqCenterD inp.decay P L k (α.1 : Nat)) 0 hzeroX z).2
   have hhalf : (1 / 2 : Real) ≤
       Geometry.Riemannian.gpCoerciveConst (I := I)
         (X.obj (L.φ k)).metric
@@ -325,13 +335,13 @@ theorem MetricCompactnessInputs.pair_overlap_tail
   have hβ := seqCenterD_live inp.decay P L (β.1 : Nat) β.2
   filter_upwards [hmaps, hrad, hmetric, hα, hβ]
     with k hmapsk hradk hmetrick hx hy
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   have hExp : (1 : Real) ≤
       Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)) := by
     rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]

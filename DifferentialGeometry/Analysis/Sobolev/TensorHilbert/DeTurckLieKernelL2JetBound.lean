@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -380,7 +379,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) Pc).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 3)) hint_k).const_mul (C i)
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 3)) hint_k).const_mul (C i)
   have hnorm := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
     (iteratedCovGrad (I := I) g₀ 2 2 i
       (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg))
@@ -393,7 +392,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
     hint hpt
   refine le_trans hnorm ?_
   rw [MeasureTheory.integral_const_mul]
-  rw [MeasureTheory.integral_finset_sum (Finset.range (i + 3)) hint_k]
+  rw [MeasureTheory.integral_finsetSum (Finset.range (i + 3)) hint_k]
   refine mul_le_mul_of_nonneg_left ?_ (hC_nn i)
   refine Finset.sum_le_sum fun k hk => ?_
   rw [Finset.mem_range] at hk
@@ -437,6 +436,7 @@ theorem grid_mul_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (m1 m2 m3 : ℕ)
       antidiagonalTuplePairCount m1 m2 * antidiagonalTupleGridPartialSum b m3 :=
   antidiagonalTupleGridPartialSum_mul_le b hb m1 m2 m3 h3
 
+omit [SigmaCompactSpace M] in
 theorem quad_tower
     (g₀ ga gb : SmoothRiemannianMetric I M)
     (j : ℕ) (x : M) (b : ℕ → ℝ) (hb : ∀ l, 0 ≤ b l)
@@ -463,12 +463,14 @@ theorem quad_tower
     Ba Bb hBa_nn hBb_nn harm hin
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem lower_raise (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
         (deTurckLieConnectionDifferenceDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg) =
       deTurckLieConnectionDifferenceDerivativeKernel (I := I) (M := M) g₀ g₁ g_bg :=
   deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (I := I) (M := M) g₀ g₁ g_bg
 
+omit [SigmaCompactSpace M] in
 theorem insert_riemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + j) x
@@ -480,16 +482,6 @@ theorem insert_riemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M)
           ((iteratedCovGrad (I := I) g₀ 0 2 j
             (symmS (I := I) (M := M) g₀ T)).toSection x) :=
   riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (I := I) (M := M) g₀ T j x
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (c : ℝ)
-    (v : TensorRSSpace r s I x) :
-    riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
-      c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s x v :=
-  riemannianFiberNormSq_smul_deTurckLieConnectionDifferenceDerivative
-    (I := I) (M := M) g r s x c v
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in

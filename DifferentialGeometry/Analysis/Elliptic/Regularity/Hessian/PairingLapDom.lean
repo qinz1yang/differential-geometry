@@ -159,7 +159,7 @@ lemma chartHessianPhiOnEuclid_continuousOn
         (chartTargetEuclid (I := I) (M := M) α) (extChartAt I α).target := fun y hy =>
       toEuclidean_symm_mem_target (I := I) hy
     exact h_smooth_iter.continuousOn.comp h_toE_cont.continuousOn h_maps
-  · refine continuousOn_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  · refine continuousOn_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun k _ => ?_)
     have h_toE_cont : Continuous (fun y : EuclN => (toEuclidean (E := E)).symm y) :=
       (toEuclidean (E := E)).symm.continuous
@@ -515,13 +515,13 @@ theorem hessPairingChartLocal_memLp_two
                   laplacianDomainHessianChart (I := I) (M := M) g α (u_h := u_h) k l y) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun i _ => ?_)
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun j _ => ?_)
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun k _ => ?_)
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => ?_)
     exact cutoffSummand_memLp_two (I := I) (M := M) g α φ hu_h i j k l
   exact MemLp.ae_eq h_ae.symm h_cutoff_memLp
@@ -833,14 +833,14 @@ theorem riemannianVolumeMeasure_pullback_null
     apply Set.eq_of_subset_of_subset
     · intro x ⟨hx_src, hx_N⟩
       refine ⟨hx_src, ?_⟩
-      simp only [Set.mem_setOf_eq]
+      simp only [Set.mem_ofPred_eq]
       rw [DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt_apply_of_mem
         (I := I) α hx_src]
       exact hx_N
     · intro x ⟨hx_src, hx_N⟩
       refine ⟨hx_src, ?_⟩
-      simp only [Set.mem_setOf_eq]
-      simp only [Set.mem_setOf_eq] at hx_N
+      simp only [Set.mem_ofPred_eq]
+      simp only [Set.mem_ofPred_eq] at hx_N
       rw [DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt_apply_of_mem
         (I := I) α hx_src] at hx_N
       exact hx_N
@@ -984,10 +984,10 @@ private lemma chartContribSurrogate_ae_eq
   rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   by_cases hx_src : x ∈ (chartAt H α).source
   · refine ⟨hx_src, ?_⟩
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     have h_y_in_target : (toEuclidean (E := E)) ((extChartAt I α) x) ∈
         chartTargetEuclid (I := I) (M := M) α := by
       refine ⟨(extChartAt I α) x, ?_, rfl⟩
@@ -1132,7 +1132,7 @@ theorem hessPairingMOnLapDom_memLp_two
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   unfold hessPairingMOnLapDom
-  refine memLp_finset_sum _ ?_
+  refine memLp_finsetSum _ ?_
   intro α _
   exact hessPairingMChartContribution_memLp_two
     (I := I) (M := M) g φ α hu_h

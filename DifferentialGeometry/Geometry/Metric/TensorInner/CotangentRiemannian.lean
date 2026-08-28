@@ -6,6 +6,7 @@ namespace Tensor0SBundle
 
 noncomputable section
 
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -14,9 +15,28 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 def cotangentToCLM {x : M} (α : Tensor0SSpace 1 I x) :
-    TangentSpace I x →L[Real] Real :=
-  continuousMultilinearCurryFin1 Real (TangentSpace I x) Real
-    (Tensor0SSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α)
+    TangentSpace I x →L[Real] Real where
+  toFun X := α (fun _ => X)
+  map_add' X Y := by
+    have h := α.toMultilinearMap.map_update_add (fun _ => 0) 0 X Y
+    change α.toMultilinearMap (fun _ => X + Y) =
+      α.toMultilinearMap (fun _ => X) + α.toMultilinearMap (fun _ => Y)
+    rw [show (fun _ : Fin 1 => X + Y) = Function.update (fun _ => 0) 0 (X + Y) by
+      funext i; fin_cases i; simp]
+    rw [show (fun _ : Fin 1 => X) = Function.update (fun _ => 0) 0 X by
+      funext i; fin_cases i; simp]
+    rw [show (fun _ : Fin 1 => Y) = Function.update (fun _ => 0) 0 Y by
+      funext i; fin_cases i; simp]
+    exact h
+  map_smul' c X := by
+    have h := α.toMultilinearMap.map_update_smul (fun _ => 0) 0 c X
+    change α.toMultilinearMap (fun _ => c • X) = c • α.toMultilinearMap (fun _ => X)
+    rw [show (fun _ : Fin 1 => c • X) = Function.update (fun _ => 0) 0 (c • X) by
+      funext i; fin_cases i; simp]
+    rw [show (fun _ : Fin 1 => X) = Function.update (fun _ => 0) 0 X by
+      funext i; fin_cases i; simp]
+    exact h
+  cont := α.cont.comp (continuous_pi fun _ => continuous_id)
 
 def cotangentToDual {x : M} (α : Tensor0SSpace 1 I x) :
     Module.Dual Real (TangentSpace I x) :=
@@ -26,10 +46,7 @@ omit [FiniteDimensional ℝ E] in
 @[simp] theorem cotangentToDual_apply {x : M}
     (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
     cotangentToDual (I := I) α X = α (fun _ : Fin 1 => X) := by
-  simpa [cotangentToDual, cotangentToCLM, Tensor0SSpace.toModel,
-    tensor0SSpace_continuousLinearEquiv] using
-    congrArg (fun v : Fin 1 -> TangentSpace I x => α v)
-    (funext fun i => by fin_cases i; rfl)
+  rfl
 
 def cotangentToDualLinear {x : M} :
     Tensor0SSpace 1 I x →ₗ[Real] Module.Dual Real (TangentSpace I x) where
@@ -60,18 +77,23 @@ theorem cotangentToDualLinear_injective {x : M} :
   have h0 := congrArg (fun L : Module.Dual Real (TangentSpace I x) => L (v 0)) h
   simpa [cotangentToDualLinear, cotangentToDual_apply, hv] using h0
 
+private noncomputable def tangentDualToCLM {x : M}
+    (α : Module.Dual Real (TangentSpace I x)) : TangentSpace I x →L[Real] Real :=
+  LinearMap.toContinuousLinearMap α
+
 def dualToCotangent {x : M} (α : Module.Dual Real (TangentSpace I x)) :
     Tensor0SSpace 1 I x :=
   Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-      (LinearMap.toContinuousLinearMap α))
+      (tangentDualToCLM (I := I) α))
 
 @[simp] theorem dualToCotangent_apply {x : M}
     (α : Module.Dual Real (TangentSpace I x)) (X : TangentSpace I x) :
     dualToCotangent (I := I) α (fun _ : Fin 1 => X) = α X := by
   change
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-        (LinearMap.toContinuousLinearMap α)) (fun _ : Fin 1 => X) = α X
+        (tangentDualToCLM (I := I) α)) (fun _ : Fin 1 => X) = α X
+  unfold tangentDualToCLM
   rfl
 
 @[simp] theorem cotangentToDual_dualToCotangent {x : M}
@@ -280,7 +302,7 @@ theorem eq_of_inner_basis_eq
     {X Y : TangentSpace I x}
     (h : forall i : Idx, g.inner x X (basis i) = g.inner x Y (basis i)) :
     X = Y := by
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   apply tangentFlatLinear_injective (I := I) g x
   ext Z
   have hcoord (L : TangentSpace I x →ₗ[Real] Real) :

@@ -87,8 +87,7 @@ theorem cartanMap_smooth
         expMapIntrinsic (I := I') g' hEnorm' p'
           (show TangentSpace I' p' from u)) :=
     intrinsicFiber_smooth (I := I') g' hEnorm' p'
-  simpa only [cartanMap, U, invf, Function.comp_apply] using
-    hexp.comp_contMDiffOn hmid
+  exact (hexp.comp_contMDiffOn hmid).congr fun _ _ => rfl
 
 omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
@@ -119,7 +118,7 @@ theorem cartanMap_sq
         (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y) =
       g.inner x Y Y := by
   let invf : M → E := fun z => ((B.inv (p, z)).snd : E)
-  let midf : M → E := fun z => i (invf z)
+  let midf : M → E := (fun z : E => i z) ∘ invf
   let expf : E → M := fun u =>
     expMapIntrinsic (I := I) g hEnorm p
       (show TangentSpace I p from u)
@@ -142,7 +141,7 @@ theorem cartanMap_sq
       (fun z : E => i z) (invf x) :=
     i.mdifferentiableAt
   have hmid : MDifferentiableAt I 𝓘(ℝ, E) midf x := by
-    simpa only [midf, Function.comp_apply] using hiDiff.comp x hinv
+    exact hiDiff.comp x hinv
   have hexpInf : ContMDiffAt 𝓘(ℝ, E) I' ∞ expf' (midf x) :=
     (intrinsicFiber_smooth (I := I') g' hEnorm' p').contMDiffAt
   have hexp' : MDifferentiableAt 𝓘(ℝ, E) I' expf' (midf x) :=
@@ -155,7 +154,9 @@ theorem cartanMap_sq
         (g := fun z : E => i z) (f := invf) (x := x)
         hiDiff hinv Y
     rw [ContinuousLinearEquiv.mfderiv_eq] at hchain
-    simpa only [midf, w, Function.comp_apply] using hchain
+    change mfderiv I 𝓘(ℝ, E) ((fun z : E => i z) ∘ invf) x Y =
+      i.toContinuousLinearMap (mfderiv I 𝓘(ℝ, E) invf x Y)
+    exact hchain
   have hmapDeriv :
       mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y =
         mfderiv 𝓘(ℝ, E) I' expf' (i u) (i w) := by
@@ -165,20 +166,44 @@ theorem cartanMap_sq
         (g := expf') (f := midf) (x := x)
         hexp' hmid Y
     rw [hmidDeriv] at hchain
-    simpa only [cartanMap, expf', midf, invf, u,
-      Function.comp_apply] using hchain
+    have hfun : cartanMap B p g' hEnorm' p' i = expf' ∘ midf := by
+      funext z
+      rfl
+    rw [hfun]
+    have hmidU : midf x = i u := by
+      rfl
+    rw [hmidU] at hchain
+    exact hchain
   have htransfer :=
     expDiff_sq_xfer (I := I) (I' := I')
       g hEnorm g' hEnorm' p p' u w i hi hR hR'
-  have hright :
-      ((mfderiv 𝓘(ℝ, E) I expf u w : TangentSpace I _) : E) =
-        (Y : E) := by
-    have hx' : x ∈ (B.fixed p).dom := by
-      simpa only [DiagInvBranch.fixed_target] using hx
-    simpa only [expf, invf, u, w] using
-      exp_inv_mfderiv (I := I) (B.fixed p) hx' Y
   have hbase : expf u = x := by
     simpa only [expf, invf, u] using B.exp_eq hx
+  have hright :
+      mfderiv 𝓘(ℝ, E) I expf u w = Y := by
+    have hx' : x ∈ (B.fixed p).dom := by
+      simpa only [DiagInvBranch.fixed_target] using hx
+    have h := exp_inv_mfderiv (I := I) (B.fixed p) hx' Y
+    have hinvFun : (B.fixed p).inv = invf := by
+      rfl
+    rw [hinvFun] at h
+    have hexp :
+        (fun z : E =>
+          expMapIntrinsic (I := I) g hEnorm p
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm z)) =
+          expf := by
+      funext z
+      simp only [expf, tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    dsimp only at h
+    rw [hexp] at h
+    simp only [ContinuousLinearEquiv.symm_apply_apply] at h
+    change
+      tangentSpaceModelContinuousLinearEquiv (I := I) (expf u)
+          (mfderiv 𝓘(ℝ, E) I expf u w) =
+        tangentSpaceModelContinuousLinearEquiv (I := I) x Y at h
+    rw [hbase] at h
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
+    exact h
   have htransfer' :
       g'.inner (expf' (i u))
           (mfderiv 𝓘(ℝ, E) I' expf' (i u) (i w))
@@ -242,9 +267,9 @@ private noncomputable def pdTrans
     {I₁ : ModelWithCorners ℝ E H₁}
     {I₂ : ModelWithCorners ℝ E H₂}
     {M₀ M₁ M₂ : Type*}
-    [TopologicalSpace M₀] [ChartedSpace H₀ M₀] [IsManifold I₀ ∞ M₀]
-    [TopologicalSpace M₁] [ChartedSpace H₁ M₁] [IsManifold I₁ ∞ M₁]
-    [TopologicalSpace M₂] [ChartedSpace H₂ M₂] [IsManifold I₂ ∞ M₂]
+    [TopologicalSpace M₀] [ChartedSpace H₀ M₀]
+    [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+    [TopologicalSpace M₂] [ChartedSpace H₂ M₂]
     (Φ : PartialDiffeomorph I₀ I₁ M₀ M₁ ∞)
     (Ψ : PartialDiffeomorph I₁ I₂ M₁ M₂ ∞) :
     PartialDiffeomorph I₀ I₂ M₀ M₂ ∞ where
@@ -294,9 +319,9 @@ private theorem pdTrans_source
     {I₁ : ModelWithCorners ℝ E H₁}
     {I₂ : ModelWithCorners ℝ E H₂}
     {M₀ M₁ M₂ : Type*}
-    [TopologicalSpace M₀] [ChartedSpace H₀ M₀] [IsManifold I₀ ∞ M₀]
-    [TopologicalSpace M₁] [ChartedSpace H₁ M₁] [IsManifold I₁ ∞ M₁]
-    [TopologicalSpace M₂] [ChartedSpace H₂ M₂] [IsManifold I₂ ∞ M₂]
+    [TopologicalSpace M₀] [ChartedSpace H₀ M₀]
+    [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+    [TopologicalSpace M₂] [ChartedSpace H₂ M₂]
     (Φ : PartialDiffeomorph I₀ I₁ M₀ M₁ ∞)
     (Ψ : PartialDiffeomorph I₁ I₂ M₁ M₂ ∞) :
     (pdTrans Φ Ψ).source =
@@ -313,9 +338,9 @@ private theorem pdTrans_apply
     {I₁ : ModelWithCorners ℝ E H₁}
     {I₂ : ModelWithCorners ℝ E H₂}
     {M₀ M₁ M₂ : Type*}
-    [TopologicalSpace M₀] [ChartedSpace H₀ M₀] [IsManifold I₀ ∞ M₀]
-    [TopologicalSpace M₁] [ChartedSpace H₁ M₁] [IsManifold I₁ ∞ M₁]
-    [TopologicalSpace M₂] [ChartedSpace H₂ M₂] [IsManifold I₂ ∞ M₂]
+    [TopologicalSpace M₀] [ChartedSpace H₀ M₀]
+    [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+    [TopologicalSpace M₂] [ChartedSpace H₂ M₂]
     (Φ : PartialDiffeomorph I₀ I₁ M₀ M₁ ∞)
     (Ψ : PartialDiffeomorph I₁ I₂ M₁ M₂ ∞) (x : M₀) :
     pdTrans Φ Ψ x = Ψ (Φ x) :=

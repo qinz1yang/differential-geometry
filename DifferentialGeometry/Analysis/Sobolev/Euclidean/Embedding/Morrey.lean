@@ -361,7 +361,7 @@ private theorem exists_smooth_cutoff_approx
 
 omit [NeZero d] in
 private lemma eLpNorm_one_le_eLpNorm_p_finite_measure
-    {p : ℝ} (hp : 1 < p) {μ : Measure E} [IsFiniteMeasure μ]
+    {p : ℝ} (hp : 1 < p) {μ : Measure E}
     {f : E → ℝ} (hf : MemLp f (ENNReal.ofReal p) μ) :
     eLpNorm f 1 μ ≤ eLpNorm f (ENNReal.ofReal p) μ *
       (μ Set.univ) ^ (1 - 1 / p) := by
@@ -397,7 +397,7 @@ private lemma tendsto_eLpNorm_one_of_tendsto_eLpNorm_p
     ENNReal.Tendsto.mul_const h (Or.inr h_pow_ne_top)
   rw [zero_mul] at h_const
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_const
-    (Filter.Eventually.of_forall fun _ => zero_le _)
+    (Filter.Eventually.of_forall fun _ => zero_le)
     (Filter.Eventually.of_forall ?_)
   intro n
   exact eLpNorm_one_le_eLpNorm_p_finite_measure (d := d) hp (hF n)
@@ -415,7 +415,7 @@ private lemma tendsto_setIntegral_of_eLpNorm_p_to_zero
     Tendsto (fun n => ∫ x in Ω, F n x ∂volume) atTop
       (𝓝 (∫ x in Ω, g x ∂volume)) := by
   classical
-  haveI : IsFiniteMeasure (volume.restrict Ω : Measure E) := by
+  have : IsFiniteMeasure (volume.restrict Ω : Measure E) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply_univ]
     exact lt_of_le_of_ne le_top hΩ_finite
@@ -444,7 +444,8 @@ private lemma tendsto_setIntegral_of_eLpNorm_p_to_zero
       exact ENNReal.ofReal_le_ofReal hp.le
     exact memLp_one_iff_integrable.mp ((hF n).mono_exponent h_one_le_p)
   have h_int_tendsto :=
-    MeasureTheory.tendsto_integral_of_L1 (μ := volume.restrict Ω) g hg_int
+    MeasureTheory.tendsto_integral_of_L1 (μ := volume.restrict Ω) g
+      hg_int.aestronglyMeasurable
       (Filter.Eventually.of_forall hF_int) h_lint
   have hF_eq_setInt : ∀ n, ∫ x, F n x ∂(volume.restrict Ω) =
       ∫ x in Ω, F n x ∂volume := fun n => rfl
@@ -618,7 +619,7 @@ private lemma smooth_avg_diff_pointwise_bound
     show ‖φ w - Mavg‖ ≤ Cval
     exact smooth_pointwise_holder_bound_explicit (d := d) hp hr hφ hw
   have hvol_finite : (volume (Metric.ball c ρ) : ℝ≥0∞) ≠ ⊤ := measure_ball_lt_top.ne
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball c ρ) : Measure E) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball c ρ) : Measure E) := by
     refine ⟨?_⟩; rw [Measure.restrict_apply_univ]; exact lt_of_le_of_ne le_top hvol_finite
   have hvol_pos : 0 < (volume (Metric.ball c ρ)).toReal :=
     ENNReal.toReal_pos (measure_ball_pos volume c hρ).ne' measure_ball_lt_top.ne
@@ -1122,7 +1123,7 @@ theorem mean_value_inequality_W1p
         (fun n => eLpNorm (fun z => φ n z - η z * u z) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball x ρ))) atTop (𝓝 0) := by
       refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
-        h_phi_to_eta_u (Filter.Eventually.of_forall fun _ => zero_le _)
+        h_phi_to_eta_u (Filter.Eventually.of_forall fun _ => zero_le)
         (Filter.Eventually.of_forall ?_)
       intro n
       refine eLpNorm_mono_measure _ ?_
@@ -1132,7 +1133,7 @@ theorem mean_value_inequality_W1p
         (fun n => eLpNorm (fun z => φ n z - η z * u z) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball y ρ))) atTop (𝓝 0) := by
       refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
-        h_phi_to_eta_u (Filter.Eventually.of_forall fun _ => zero_le _)
+        h_phi_to_eta_u (Filter.Eventually.of_forall fun _ => zero_le)
         (Filter.Eventually.of_forall ?_)
       intro n
       refine eLpNorm_mono_measure _ ?_
@@ -1198,7 +1199,7 @@ theorem mean_value_inequality_W1p
           (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ (3 * R / 4)))) atTop (𝓝 0) := by
       intro i
       refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
-        (h_per_comp_full i) (Filter.Eventually.of_forall fun _ => zero_le _)
+        (h_per_comp_full i) (Filter.Eventually.of_forall fun _ => zero_le)
         (Filter.Eventually.of_forall ?_)
       intro n
       exact eLpNorm_mono_measure _ (Measure.restrict_mono_set _ h_ball_R34_sub)
@@ -1277,7 +1278,7 @@ theorem mean_value_inequality_W1p
         exact this.eLpNorm_ne_top
       rw [h_target_eq]
       refine (Filter.tendsto_congr h_sum_real_eq).mpr ?_
-      exact tendsto_finset_sum _ (fun i _ => h_per_comp_toReal_u i)
+      exact tendsto_finsetSum _ (fun i _ => h_per_comp_toReal_u i)
     have h_n_bound :
         ∀ n,
           ‖(⨍ z in Metric.ball x ρ, φ n z ∂volume) -
@@ -1709,7 +1710,7 @@ private theorem morrey_representative_of_W1pWitness
       (fun n => eLpNorm (fun z => φ n z - η z * u z) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball x₀ (3 * R / 4)))) atTop (𝓝 0) := by
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
-      hφ_fun (Filter.Eventually.of_forall fun _ => zero_le _)
+      hφ_fun (Filter.Eventually.of_forall fun _ => zero_le)
       (Filter.Eventually.of_forall ?_)
     intro n
     exact eLpNorm_mono_measure _ (Measure.restrict_mono_set _ h_ball_R34_sub_R)
@@ -1731,7 +1732,7 @@ private theorem morrey_representative_of_W1pWitness
           - hw'.weakGrad z i) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball x₀ R))) atTop (𝓝 0) := hφ_grad i
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_full
-      (Filter.Eventually.of_forall fun _ => zero_le _)
+      (Filter.Eventually.of_forall fun _ => zero_le)
       (Filter.Eventually.of_forall ?_)
     intro n
     exact eLpNorm_mono_measure _ (Measure.restrict_mono_set _ h_ball_R34_sub_R)
@@ -1765,7 +1766,7 @@ private theorem morrey_representative_of_W1pWitness
           (volume.restrict (Metric.ball x₀ (3 * R / 4)))).toReal) atTop (𝓝 0) := by
       have h_zero_eq : (0 : ℝ) = ∑ _i : Fin d, (0 : ℝ) := by simp
       rw [h_zero_eq]
-      exact tendsto_finset_sum _ (fun i _ => h_phi_grad_to_w_R34_real i)
+      exact tendsto_finsetSum _ (fun i _ => h_phi_grad_to_w_R34_real i)
     exact h_phi_to_eta_u_R34_real.add h_sum_to_zero
   have h_phi_diff_smooth : ∀ n m, ContDiff ℝ (⊤ : ℕ∞) (fun z => φ n z - φ m z) :=
     fun n m => (hφ_smooth n).sub (hφ_smooth m)
@@ -1993,7 +1994,7 @@ private theorem morrey_representative_of_W1pWitness
         (fun n => eLpNorm (fun z => φ n z - η z * u z) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball x₀ (R / 4)))) atTop (𝓝 0) := by
       refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
-        h_phi_to_eta_u_R34 (Filter.Eventually.of_forall fun _ => zero_le _)
+        h_phi_to_eta_u_R34 (Filter.Eventually.of_forall fun _ => zero_le)
         (Filter.Eventually.of_forall ?_)
       intro n
       exact eLpNorm_mono_measure _ (Measure.restrict_mono_set _ h_ball_R4_sub_R34)
@@ -2090,7 +2091,7 @@ private theorem morrey_representative_of_W1pWitness
           (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ (3 * R / 4)))).toReal) atTop
       (𝓝 (∑ i : Fin d, (eLpNorm (fun z => hu.weakGrad z i) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball x₀ (3 * R / 4)))).toReal)) :=
-    tendsto_finset_sum _ (fun i _ => h_phi_grad_real_to_w_u i)
+    tendsto_finsetSum _ (fun i _ => h_phi_grad_real_to_w_u i)
   have h_grad_norm_le_sum_components : ∀ n,
       (eLpNorm (fun z => ‖fderiv ℝ (φ n) z‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball x₀ (3 * R / 4)))).toReal ≤

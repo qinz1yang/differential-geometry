@@ -14,7 +14,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -30,7 +30,7 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
+
 
 open Bundle Set ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -146,7 +146,7 @@ theorem trivializationAt_apply (s : ℕ)
     ((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀) ⟨x, T⟩).2 v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i)) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   change (((trivializationAt E (TangentSpace I) x₀).continuousMultilinearMap 𝕜 s)
       ⟨x, T⟩).2 v =
     T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i))
@@ -163,7 +163,7 @@ theorem continuousLinearEquivAt_apply (s : ℕ)
           (show x ∈ (trivializationAt (Tensor0SModel s 𝕜 E)
             (fun x => Tensor0SSpace s I x) x₀).baseSet from hx) T) v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i)) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   change ((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀) ⟨x, T⟩).2 v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i))
@@ -177,7 +177,7 @@ theorem continuousLinearMapAt_apply (s : ℕ)
     (trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x T v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i)) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   rw [Bundle.Trivialization.continuousLinearMapAt_apply,
     show ⇑((trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).linearMapAt 𝕜 x) =
@@ -192,7 +192,7 @@ theorem constInChart_apply (s : ℕ)
     (β : Tensor0SModel s 𝕜 E) (v : Fin s → TangentSpace I x) :
     (constInChart (𝕜 := 𝕜) (I := I) s x₀ β x) v =
       β (fun i => (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt 𝕜 x (v i)) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   let eT := trivializationAt (Tensor0SModel s 𝕜 E)
     (fun x => Tensor0SSpace s I x) x₀
   let e := trivializationAt E (TangentSpace I) x₀
@@ -226,14 +226,24 @@ theorem trivializationAt_apply (r s : ℕ)
       (T ((trivializationAt (Tensor0SModel r 𝕜 E)
         (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x β))
         (fun a => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v a)) := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let : FiberBundle (Tensor0SModel r 𝕜 E) (fun y : M => Tensor0SSpace r I y) :=
+    tensor0SBundle_fiber r
+  let : FiberBundle (Tensor0SModel s 𝕜 E) (fun y : M => Tensor0SSpace s I y) :=
+    tensor0SBundle_fiber s
+  let : VectorBundle 𝕜 (Tensor0SModel r 𝕜 E) (fun y : M => Tensor0SSpace r I y) :=
+    tensor0SBundle_vector r
+  let : VectorBundle 𝕜 (Tensor0SModel s 𝕜 E) (fun y : M => Tensor0SSpace s I y) :=
+    tensor0SBundle_vector s
   have hxR : x ∈ (trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀).baseSet := hx
   have hxS : x ∈ (trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).baseSet := hx
-  rw [hom_trivializationAt_apply]
+  rw [hom_trivializationAt_apply (RingHom.id 𝕜)
+    (F₁ := Tensor0SModel r 𝕜 E) (E₁ := fun y => Tensor0SSpace r I y)
+    (F₂ := Tensor0SModel s 𝕜 E) (E₂ := fun y => Tensor0SSpace s I y)]
   rw [ContinuousLinearMap.inCoordinates_eq hxR hxS]
   change (((trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).continuousLinearEquivAt 𝕜 x hxS)
@@ -246,7 +256,9 @@ theorem trivializationAt_apply (r s : ℕ)
       ((trivializationAt (Tensor0SModel r 𝕜 E)
           (fun x => Tensor0SSpace r I x) x₀).continuousLinearEquivAt 𝕜 x hxR).symm β =
         (trivializationAt (Tensor0SModel r 𝕜 E)
-          (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x β := rfl
+          (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x β :=
+    congrFun ((trivializationAt (Tensor0SModel r 𝕜 E)
+      (fun x => Tensor0SSpace r I x) x₀).symm_continuousLinearEquivAt_eq hxR) β
   rw [hβ]
   exact Tensor0SSpace.continuousLinearEquivAt_apply
     (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) s hx _ v
@@ -266,8 +278,8 @@ theorem trivializationAt_basis_coord {d r s : ℕ}
         (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x
           ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ)))
         (fun a => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (bE (σ a))) := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   exact trivializationAt_apply (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) r s hx T
     ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ)
     (fun a : Fin s => bE (σ a))

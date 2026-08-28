@@ -12,16 +12,22 @@ open Filter Function Set
 
 instance (n : ℕ) : CompactSpace (ClosedCell n) := by
   have h : IsCompact ({x : EuclideanSpace ℝ (Fin n) | ‖x‖ ≤ 1} : Set (EuclideanSpace ℝ (Fin n))) := by
-    convert (isCompact_closedBall (x := (0 : EuclideanSpace ℝ (Fin n))) (r := 1)) using 1
-    ext x
-    simp [Metric.closedBall, dist_zero_right]
+    have heq : ({x : EuclideanSpace ℝ (Fin n) | ‖x‖ ≤ 1} : Set _) =
+        Metric.closedBall 0 1 := by
+      ext x
+      simp only [Set.mem_ofPred_eq, Metric.mem_closedBall, dist_zero_right]
+    rw [heq]
+    exact isCompact_closedBall (x := (0 : EuclideanSpace ℝ (Fin n))) (r := 1)
   exact isCompact_iff_compactSpace.mp h
 
 instance (n : ℕ) : CompactSpace (CellBoundary n) := by
   have h : IsCompact ({x : EuclideanSpace ℝ (Fin n) | ‖x‖ = 1} : Set (EuclideanSpace ℝ (Fin n))) := by
-    convert (isCompact_sphere (x := (0 : EuclideanSpace ℝ (Fin n))) (r := 1)) using 1
-    ext x
-    simp [Metric.sphere, dist_zero_right]
+    have heq : ({x : EuclideanSpace ℝ (Fin n) | ‖x‖ = 1} : Set _) =
+        Metric.sphere 0 1 := by
+      ext x
+      simp only [Set.mem_ofPred_eq, Metric.mem_sphere, dist_zero_right]
+    rw [heq]
+    exact isCompact_sphere (x := (0 : EuclideanSpace ℝ (Fin n))) (r := 1)
   exact isCompact_iff_compactSpace.mp h
 
 theorem continuous_cellBoundaryInclusion (n : ℕ) : Continuous (cellBoundaryInclusion n) := by
@@ -31,7 +37,8 @@ theorem continuous_cellBoundaryInclusion (n : ℕ) : Continuous (cellBoundaryInc
 theorem injective_cellBoundaryInclusion (n : ℕ) : Function.Injective (cellBoundaryInclusion n) := by
   intro x y h
   have hval : (x : EuclideanSpace ℝ (Fin n)) = (y : EuclideanSpace ℝ (Fin n)) := by
-    simpa using congrArg (fun z : ClosedCell n => (z : EuclideanSpace ℝ (Fin n))) h
+    simpa [cellBoundaryInclusion] using
+      congrArg (fun z : ClosedCell n => (z : EuclideanSpace ℝ (Fin n))) h
   apply Subtype.ext
   exact hval
 

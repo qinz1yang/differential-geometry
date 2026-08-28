@@ -46,16 +46,16 @@ theorem ricci_directional_quotient_interval_integrable_of_solution
         ((-2 : Real) * S.ricciAt s x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)) /
           (S.family.metric s).inner x v v)
       MeasureTheory.volume t0 t := by
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M; infer_instance
   apply ContinuousOn.intervalIntegrable
   have hnum : ContinuousOn
       (fun s : Real =>
         (-2 : Real) * S.ricciAt s x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v))
       (Set.uIcc t0 t) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hev :=
       DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
       (hA := hS.ricciCont) (P := {s : Real // s ∈ Set.uIcc t0 t})
@@ -69,7 +69,7 @@ theorem ricci_directional_quotient_interval_integrable_of_solution
       funext i; fin_cases i <;> rfl]
     simp [DifferentialGeometry.PDE.RicciFlow.SolutionOn.ricciAt]
   have hden : ContinuousOn (fun s : Real => (S.family.metric s).inner x v v) (Set.uIcc t0 t) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hev :=
       DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
       (hA := DifferentialGeometry.Geometry.Curvature.metricTensor_cont_of_metricFamilySmoothOn
@@ -79,7 +79,7 @@ theorem ricci_directional_quotient_interval_integrable_of_solution
       (fun p => hsub p.2) continuous_const (v := fun _ _ => v) (fun _ => continuous_const)
     refine hev.congr ?_
     intro p
-    simp only [Set.restrict]
+    simp only [Set.domRestrict]
     rw [Tensor0SBundle.metricTensorField_apply]
   exact hnum.div hden (fun s _ => ne_of_gt ((S.family.metric s).pos x v hv))
 

@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 
+
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 
@@ -366,7 +367,7 @@ theorem metricCovDeriv_two_eval_smooth_slots
     (x : M) :
     metricCovDeriv (I := I) h gRef 2 x
         (Fin.cons (X x) (fun a : Fin 3 => V a x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricCovDeriv (I := I) h gRef 1 p
               (fun a : Fin 3 => V a p)) x (X x) -
@@ -377,15 +378,18 @@ theorem metricCovDeriv_two_eval_smooth_slots
                 gRef)
                   (fun p : M => V a p) x) (X x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have hM1 : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  let _ := hM1
+  have hM2 : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  let _ := hM2
+  have hMsucc : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
+  let _ := hMsucc
   let cov :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef
   let A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -415,7 +419,7 @@ theorem metricCovDeriv_two_eval_smooth_slots
     (Tensor0SBundle.totalNabla0S (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov A hreg x)
         (Fin.cons (X x) (fun a : Fin 3 => V a x)) =
-      extDerivFun (I := I) (fun p : M => A p (fun a : Fin 3 => V a p))
+      mvfderiv (I := I) (fun p : M => A p (fun a : Fin 3 => V a p))
         x (X x) -
         ∑ a : Fin 3,
           A x
@@ -435,7 +439,7 @@ theorem metricCovDeriv_three_eval_smooth_slots
     (x : M) :
     metricCovDeriv (I := I) h gRef 3 x
         (Fin.cons (X x) (fun a : Fin 4 => V a x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricCovDeriv (I := I) h gRef 2 p
               (fun a : Fin 4 => V a p)) x (X x) -
@@ -446,15 +450,18 @@ theorem metricCovDeriv_three_eval_smooth_slots
                 gRef)
                   (fun p : M => V a p) x) (X x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have hM1 : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  let _ := hM1
+  have hM2 : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  let _ := hM2
+  have hMsucc : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
+  let _ := hMsucc
   let cov :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef
   let A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -484,7 +491,7 @@ theorem metricCovDeriv_three_eval_smooth_slots
     (Tensor0SBundle.totalNabla0S (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov A hreg x)
         (Fin.cons (X x) (fun a : Fin 4 => V a x)) =
-      extDerivFun (I := I) (fun p : M => A p (fun a : Fin 4 => V a p))
+      mvfderiv (I := I) (fun p : M => A p (fun a : Fin 4 => V a p))
         x (X x) -
         ∑ a : Fin 4,
           A x
@@ -580,28 +587,28 @@ theorem metricCov2_coord
     rw [Tensor0SBundle.component0S_apply] at hcomp
     simpa [hVy, hslot3, IsLocalFrameOn.toBasisAt_coe, cov, hframe1] using hcomp
   have hext :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricCovDeriv (I := I) g h 1 p
               (fun q : Fin 3 => V q p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             DifferentialGeometry.Tensor.Coordinates.metricCovDerivForMetricCompInFrame
               (I := I) g cov frame hframe1 y a b c) x (frame d x) := by
     calc
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricCovDeriv (I := I) g h 1 p
               (fun q : Fin 3 => V q p)) x (X x)
           =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             DifferentialGeometry.Tensor.Coordinates.metricCovDerivForMetricCompInFrame
               (I := I) g cov frame hframe1 y a b c) x (X x) := by
-          exact DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+          exact DifferentialGeometry.Tensor.Coordinates.mvfderiv_congr_eventually
             (I := I) (X x) hscalar
       _ =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             DifferentialGeometry.Tensor.Coordinates.metricCovDerivForMetricCompInFrame
               (I := I) g cov frame hframe1 y a b c) x (frame d x) := by
@@ -672,8 +679,7 @@ theorem metricCov2_coord
                 DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x
                   d a p •
                   frame p x) slots
-          simpa [A, slots, ContinuousMultilinearMap.map_update_smul,
-            Tensor0SBundle.Tensor0SSpace.map_update_smul, smul_eq_mul] using hsum
+          exact hsum
       _ =
         ∑ p : Idx,
           DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p
@@ -783,8 +789,7 @@ theorem metricCov2_coord
                 DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x
                   d b p •
                   frame p x) slots
-          simpa [A, slots, ContinuousMultilinearMap.map_update_smul,
-            Tensor0SBundle.Tensor0SSpace.map_update_smul, smul_eq_mul] using hsum
+          exact hsum
       _ =
         ∑ p : Idx,
           DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p
@@ -894,8 +899,7 @@ theorem metricCov2_coord
                 DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x
                   d c p •
                   frame p x) slots
-          simpa [A, slots, ContinuousMultilinearMap.map_update_smul,
-            Tensor0SBundle.Tensor0SSpace.map_update_smul, smul_eq_mul] using hsum
+          exact hsum
       _ =
         ∑ p : Idx,
           DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p
@@ -1049,28 +1053,28 @@ theorem metricCov3_coord
     simpa [hVy, slot, slots4_cons, IsLocalFrameOn.toBasisAt_coe, cov, hframe1]
       using hcomp
   have hext :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricCovDeriv (I := I) g h 2 p
               (fun q : Fin 4 => V q p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             DifferentialGeometry.Tensor.Coordinates.metricCovDeriv2ForMetricCompInFrame
               (I := I) g cov frame hframe1 y d a b c) x (frame m x) := by
     calc
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricCovDeriv (I := I) g h 2 p
               (fun q : Fin 4 => V q p)) x (X x)
           =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             DifferentialGeometry.Tensor.Coordinates.metricCovDeriv2ForMetricCompInFrame
               (I := I) g cov frame hframe1 y d a b c) x (X x) := by
-          exact DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+          exact DifferentialGeometry.Tensor.Coordinates.mvfderiv_congr_eventually
             (I := I) (X x) hscalar
       _ =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             DifferentialGeometry.Tensor.Coordinates.metricCovDeriv2ForMetricCompInFrame
               (I := I) g cov frame hframe1 y d a b c) x (frame m x) := by
@@ -1145,8 +1149,7 @@ theorem metricCov3_coord
                 DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x
                   m (slot r) p •
                   frame p x) slotsT
-          simpa [A, slotsT, ContinuousMultilinearMap.map_update_smul,
-            Tensor0SBundle.Tensor0SSpace.map_update_smul, smul_eq_mul] using hsum
+          exact hsum
       _ =
         ∑ p : Idx,
           DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame cov frame hframe1 x m
@@ -1445,12 +1448,15 @@ theorem exists_diagInv_of_metricUniformEquivalentOn
       (forall i : Fin (Module.finrank Real (TangentSpace I x)), μ i <= C) := by
   classical
   let D := (Tensor0SBundle.tangentMetricData (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let core : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let _ := core
+  let normedAddCommGroup : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let _ := normedAddCommGroup
+  let innerProductSpace : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  let _ := innerProductSpace
   let T : TangentSpace I x →ₗ[Real] TangentSpace I x :=
     ((Tensor0SBundle.tangentFlatEquiv (I := I) g x).symm.toLinearMap).comp
       (Tensor0SBundle.tangentFlatEquiv (I := I) h x).toLinearMap
@@ -1485,8 +1491,8 @@ theorem exists_diagInv_of_metricUniformEquivalentOn
     have hinner :
         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       Tensor0SBundle.MetricFiberData.toCore_inner D (ob i) (ob j)
-    simpa [basis, Tensor0SBundle.MetricFiberData.inner,
-      Tensor0SBundle.tangentMetricData] using hinner.symm.trans hij
+    change D.inner (ob i) (ob j) = if i = j then 1 else 0
+    exact hinner.symm.trans hij
   have hT_eig (i : Fin n) :
       T (basis i) = lam i • basis i := by
     simp [basis, lam, ob, hT.apply_eigenvectorBasis hn i]
@@ -1986,7 +1992,13 @@ theorem covOneCompDiff
       funext q
       fin_cases q <;> simp [hY, hZ]
     rw [← hX, htail]
-    simpa [covG, alpha] using
+    change
+      metricCovDeriv (I := I) h gRef 1 x
+          (Fin.cons (X x) (fun q : Fin 2 => if q = 0 then Y x else Z x)) =
+        Tensor0SBundle.nabla0SFun (𝕜 := Real) (E := E) (H := H)
+          (I := I) (M := M) 2 covG X (metricCovDeriv (I := I) h gRef 0) x
+          (fun q : Fin 2 => if q = 0 then Y x else Z x)
+    simpa [covG] using
       metricCovDeriv_one_apply_section (I := I) h gRef X x
         (fun q : Fin 2 => if q = 0 then Y x else Z x)
   have hnabla :
@@ -2304,7 +2316,7 @@ theorem covOne_le_diff_basis
         2 * Real.sqrt (DifferentialGeometry.Geometry.Connection.componentL2Sq3 D) := by
     exact DifferentialGeometry.Geometry.Connection.metricCov_l2_le (Idx := Idx) A D (by
       intro a b c
-      simpa [A, D, add_comm, add_left_comm, add_assoc] using hcombo a b c)
+      simpa [A, D, A0, D0, add_comm, add_left_comm, add_assoc] using hcombo a b c)
   rw [hA, hD]
   exact hmain
 
@@ -2401,7 +2413,7 @@ theorem diff_le_covOne_basis
         (3 / 2 : Real) * Real.sqrt (DifferentialGeometry.Geometry.Connection.componentL2Sq3 A) := by
     exact DifferentialGeometry.Geometry.Connection.gammaSub_l2_le (Idx := Idx) A D (by
       intro a b e
-      simpa [A, D, add_comm, add_left_comm, add_assoc] using hcombo a b e)
+      simpa [A, D, A0, D0, add_comm, add_left_comm, add_assoc] using hcombo a b e)
   rw [hA, hD]
   exact hmain
 

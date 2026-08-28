@@ -10,7 +10,6 @@ import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval

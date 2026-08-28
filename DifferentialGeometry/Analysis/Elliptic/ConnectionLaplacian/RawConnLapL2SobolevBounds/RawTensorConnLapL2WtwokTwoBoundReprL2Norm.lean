@@ -17,7 +17,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -350,11 +349,11 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 rhsIntegrand Idx Jdx y ∂(volume : Measure EuclN) := by
-    rw [MeasureTheory.lintegral_finset_sum _
+    rw [MeasureTheory.lintegral_finsetSum _
       (fun Idx _ => by
         exact Finset.measurable_sum _ (fun Jdx _ => h_rhsIntegrand_meas Idx Jdx))]
     refine Finset.sum_congr rfl (fun Idx _ => ?_)
-    exact MeasureTheory.lintegral_finset_sum _
+    exact MeasureTheory.lintegral_finsetSum _
       (fun Jdx _ => h_rhsIntegrand_meas Idx Jdx)
   rw [h_int_double_sum] at h_int_mono
   have h_per_idx_jdx : ∀ Idx Jdx,
@@ -380,7 +379,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
             (ENNReal.ofReal
               ‖tensorChartComp (I := I) (M := M) g r s T α Idx Jdx y‖) ^ 2 from
         ENNReal.ofReal_pow (norm_nonneg _) 2]
-      rw [ofReal_norm_eq_enorm]
+      rw [ofReal_norm]
     rw [h_rhs_eq_enorm]
     have h_sq_eLp :=
       sq_eLpNorm_two_eq_lintegral_enorm_sq
@@ -403,7 +402,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
               (chartTargetEuclid (I := I) (M := M) α)) from
       wkpNorm_zero (d := Module.finrank ℝ E) 2 _ _]
   refine le_trans h_int_mono ?_
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   refine Finset.sum_le_sum (fun Idx _ => ?_)
   refine Finset.sum_le_sum (fun Jdx _ => ?_)
   exact h_per_idx_jdx Idx Jdx

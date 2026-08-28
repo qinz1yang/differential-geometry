@@ -8,7 +8,6 @@ import Mathlib.Topology.Separation.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -124,10 +123,10 @@ private lemma chartFiberToModel_norm_le_coordChangeL_norm_on_locality
       change (eb₀.coordChangeL ℝ eα b)
           (eb₀.continuousLinearMapAt ℝ b T) = _
       rw [Trivialization.coordChangeL_apply _ _ ⟨hb_b₀', hb_α'⟩]
+      rw [eb₀.symmL_apply hb_b₀' (eb₀.continuousLinearMapAt ℝ b T)]
       simp only [Bundle.Trivialization.continuousLinearMapAt_apply,
           Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_α',
-          Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_b₀',
-          Bundle.Trivialization.symmL_apply]
+          Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_b₀']
     have h_inv : eb₀.symmL ℝ b (eb₀.continuousLinearMapAt ℝ b T) = T :=
       Trivialization.symmL_continuousLinearMapAt (R := ℝ) eb₀ hb_b₀' T
     rw [h_cc, h_inv]

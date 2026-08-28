@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.InteriorCompactSupport
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.Algebra.Support
 import DifferentialGeometry.Geometry.Operator.Gradient
 
@@ -22,7 +22,7 @@ namespace WithBoundary
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -34,12 +34,11 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma isOpen_interior_M : IsOpen (I.interior M) :=
   I.isOpen_interior (M := M) (n := ∞)
     (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
 
-omit [InnerProductSpace ℝ E] in
 private lemma gradFun_eq_zero_on_compl_tsupport
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     {x : M} (hx : x ∈ (tsupport f)ᶜ) :
@@ -51,7 +50,6 @@ private lemma gradFun_eq_zero_on_compl_tsupport
     exact hy (subset_tsupport _ hne)
   exact gradFun_eq_zero_of_eventuallyEq_zero (I := I) g hev
 
-omit [InnerProductSpace ℝ E] in
 private lemma gradFun_total_eq_zeroSection_on_compl_tsupport
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     {y : M} (hy : y ∈ (tsupport f)ᶜ) :
@@ -62,7 +60,6 @@ private lemma gradFun_total_eq_zeroSection_on_compl_tsupport
   rw [hzero]
   rfl
 
-omit [InnerProductSpace ℝ E] in
 private lemma gradFun_total_contMDiffOn_compl_tsupport
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -75,7 +72,7 @@ private lemma gradFun_total_contMDiffOn_compl_tsupport
   intro y hy
   exact gradFun_total_eq_zeroSection_on_compl_tsupport (I := I) g hy
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma interior_union_compl_tsupport_eq_univ
     {f : M → ℝ} (hf_int : tsupport f ⊆ I.interior M) :
     I.interior M ∪ (tsupport f)ᶜ = (Set.univ : Set M) := by
@@ -106,7 +103,6 @@ def grad_g_with_boundary_section (g : SmoothRiemannianMetric I M)
       interior_union_compl_tsupport_eq_univ (I := I) (M := M) hf_int
     exact contMDiff_of_contMDiffOn_union_of_isOpen hs ht hcover hs_open ht_open⟩
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma grad_g_with_boundary_section_apply (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) (x : M) :
@@ -114,7 +110,6 @@ omit [InnerProductSpace ℝ E] in
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       gradFun (I := I) g f x := rfl
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma grad_g_with_boundary_section_coe (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) (x : M) :
@@ -122,7 +117,6 @@ omit [InnerProductSpace ℝ E] in
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       grad_g_with_boundary (I := I) g f x := rfl
 
-omit [InnerProductSpace ℝ E] in
 lemma support_grad_g_with_boundary_section_subset (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) :
@@ -132,7 +126,6 @@ lemma support_grad_g_with_boundary_section_subset (g : SmoothRiemannianMetric I 
           ∀ x, TangentSpace I x) ⊆ tsupport f :=
   support_grad_g_with_boundary_subset (I := I) g f
 
-omit [InnerProductSpace ℝ E] in
 lemma tsupport_grad_g_with_boundary_section_subset (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) :
@@ -143,7 +136,6 @@ lemma tsupport_grad_g_with_boundary_section_subset (g : SmoothRiemannianMetric I
     (support_grad_g_with_boundary_section_subset (I := I) g hf hf_int)
     (isClosed_tsupport _)
 
-omit [InnerProductSpace ℝ E] in
 lemma tsupport_grad_g_with_boundary_section_subset_interior (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) :
@@ -152,7 +144,6 @@ lemma tsupport_grad_g_with_boundary_section_subset_interior (g : SmoothRiemannia
       ∀ x, TangentSpace I x) ⊆ I.interior M :=
   (tsupport_grad_g_with_boundary_section_subset (I := I) g hf hf_int).trans hf_int
 
-omit [InnerProductSpace ℝ E] in
 lemma hasCompactSupport_grad_g_with_boundary_section [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -171,7 +162,6 @@ def Δ_g_with_boundary (g : SmoothRiemannianMetric I M)
   divergence_g_with_boundary (I := I) g
     (grad_g_with_boundary_section (I := I) g hf hf_int)
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma Δ_g_with_boundary_def (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) (x : M) :
@@ -179,7 +169,6 @@ omit [InnerProductSpace ℝ E] in
       divergence_g_with_boundary (I := I) g
         (grad_g_with_boundary_section (I := I) g hf hf_int) x := rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem Δ_g_with_boundary_contMDiffOn_interior [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -189,7 +178,6 @@ theorem Δ_g_with_boundary_contMDiffOn_interior [T2Space M]
   divergence_g_with_boundary_contMDiffOn_interior (I := I) g
     (grad_g_with_boundary_section (I := I) g hf hf_int)
 
-omit [InnerProductSpace ℝ E] in
 lemma tsupport_Δ_g_with_boundary_subset (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_int : tsupport f ⊆ I.interior M) :
@@ -201,7 +189,6 @@ lemma tsupport_Δ_g_with_boundary_subset (g : SmoothRiemannianMetric I M)
       (I := I) g (grad_g_with_boundary_section (I := I) g hf hf_int)
   exact h1.trans (tsupport_grad_g_with_boundary_section_subset (I := I) g hf hf_int)
 
-omit [InnerProductSpace ℝ E] in
 theorem Δ_g_with_boundary_continuous [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -228,7 +215,6 @@ theorem Δ_g_with_boundary_continuous [T2Space M]
       exact hy (subset_tsupport _ hne)
     exact (continuous_const.continuousAt.congr hev_zero.symm)
 
-omit [InnerProductSpace ℝ E] in
 lemma hasCompactSupport_Δ_g_with_boundary [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)

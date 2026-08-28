@@ -46,6 +46,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
   [T2Space M] [SigmaCompactSpace M]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem mfderiv_exp_injective_of_jacobi
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}

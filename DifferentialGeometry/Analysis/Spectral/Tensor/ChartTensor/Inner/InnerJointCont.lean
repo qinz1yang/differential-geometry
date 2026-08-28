@@ -6,7 +6,6 @@ import Mathlib.LinearAlgebra.Basis.VectorSpace
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -168,9 +167,9 @@ theorem chartTensorInnerPointwise_rs_model_quadratic_continuousOn
                 chartTensorInnerPointwise_rs_model
                   (I := I) (M := M) g r s α bT.1 (basis i) (basis j))
         (baseSet ×ˢ Set.univ) := by
-    refine continuousOn_finset_sum _ ?_
+    refine continuousOn_finsetSum _ ?_
     intro i _
-    refine continuousOn_finset_sum _ ?_
+    refine continuousOn_finsetSum _ ?_
     intro j _
     have hφi : ContinuousOn
         (fun bT : M × TensorRSModel r s ℝ E => φ i bT.2)

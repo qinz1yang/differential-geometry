@@ -592,7 +592,7 @@ private lemma per_alpha_j_basis_integral_bound
                   (Fin (Module.finrank ℝ E)) ℝ (basisIdx i))| ^ 2)
           ∂(volume :
             Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))) := by
-    rw [MeasureTheory.lintegral_finset_sum' _ (fun basisIdx _ => h_basis_aem basisIdx)]
+    rw [MeasureTheory.lintegral_finsetSum' _ (fun basisIdx _ => h_basis_aem basisIdx)]
   have h_pt_le :
       (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
         ∑ basisIdx : Fin j → Fin (Module.finrank ℝ E),

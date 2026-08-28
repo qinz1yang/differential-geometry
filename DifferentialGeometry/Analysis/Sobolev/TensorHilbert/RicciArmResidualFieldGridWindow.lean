@@ -53,6 +53,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -845,7 +846,6 @@ theorem
               CX w * Combinatorics.windowPairCellCount (u + 1) (w + 1))) *
           Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by ring
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem operatorFieldComposition_smul_left_local (g : SmoothRiemannianMetric I M) (a b c : ℕ)
@@ -863,7 +863,6 @@ private theorem operatorFieldComposition_smul_left_local (g : SmoothRiemannianMe
     rw [SmoothCcTensor.toSection_smul]; rfl]
   rw [ContinuousLinearMap.smul_comp]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 @[simp] private theorem operatorFieldComposition_ccSlotSwapField_involutive (g : SmoothRiemannianMetric I M)
@@ -1213,7 +1212,7 @@ private def sigmaQ2 : Equiv.Perm (Fin 6) :=
    fun i => (![2, 4, 1, 3, 5, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
@@ -1400,12 +1399,12 @@ private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
   rw [unitModel_sub_pt (I := I) (M := M) g₀ 4
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x]
-  rw [ContinuousMultilinearMap.sub_apply]
+  rw [sub_apply]
   rw [hM1, hM2]
   rw [connectionDifferenceAACommKernelBilin_apply (I := I) g₀ g₁ x p q v0 v1]
   rw [hT1, hT2]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 private lemma ricciArmOrder0AACommCoeffField_eq_decomposition (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w) :
@@ -1436,17 +1435,15 @@ private lemma ricciArmOrder0AACommCoeffField_eq_decomposition (P : SmoothCcTenso
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b _ => ?_
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [show unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x
-      ![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] =
-      connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x
-        (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
-        (v 0) (v 1) from
-    qCommFoldWeights_unitModel_eq_kernel (I := I) (M := M) g₀ g₁ P htie x
-      (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
-      (v 0) (v 1)]
+  have hq := qCommFoldWeights_unitModel_eq_kernel
+    (I := I) (M := M) g₀ g₁ P htie x
+    (smoothOrthoFrame (I := I) g₁ x a x)
+    (smoothOrthoFrame (I := I) g₁ x b x) (v 0) (v 1)
+  have hmul := congrArg (fun z : Real =>
+    D.toModel ![(smoothOrthoFrame (I := I) g₁ x a x : E),
+      (smoothOrthoFrame (I := I) g₁ x b x : E)] * z) hq
+  with_unfolding_all
+    exact hmul.symm
 
 lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffField_window
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1832,7 +1829,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
 
 end NormedAACommInputSymmetrization
 
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 

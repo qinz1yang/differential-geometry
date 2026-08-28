@@ -400,12 +400,12 @@ theorem memLp_evenReflect_of_contDiff_hasCompactSupport
   exact h_cont.memLp_of_hasCompactSupport h_supp_compact
 
 private noncomputable def fderivVec
-    {n : ℕ} [NeZero n] (f : EuclideanSpace ℝ (Fin n) → ℝ)
+    {n : ℕ} (f : EuclideanSpace ℝ (Fin n) → ℝ)
     (y : EuclideanSpace ℝ (Fin n)) : EuclideanSpace ℝ (Fin n) :=
   WithLp.toLp 2 (fun i : Fin n => (fderiv ℝ f y) (EuclideanSpace.single i 1))
 
 @[simp] lemma fderivVec_apply
-    {n : ℕ} [NeZero n] (f : EuclideanSpace ℝ (Fin n) → ℝ)
+    {n : ℕ} (f : EuclideanSpace ℝ (Fin n) → ℝ)
     (y : EuclideanSpace ℝ (Fin n)) (i : Fin n) :
     fderivVec f y i = (fderiv ℝ f y) (EuclideanSpace.single i 1) := by
   unfold fderivVec
@@ -866,7 +866,7 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
     hg.differentiable (by simp)
   rw [h_eq]
   rw [fderiv_fun_add hf_diff.differentiableAt hg_diff.differentiableAt]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   set iso : EuclideanSpace ℝ (Fin n) ≃L[ℝ] EuclideanSpace ℝ (Fin n) :=
     (signFlipLIE n).toContinuousLinearEquiv with hiso_def
   have h_iso_apply : ∀ z, (iso : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n)) z =
@@ -885,7 +885,7 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
     rw [h_iso_apply] at h
     exact h
   rw [h_fderiv_comp]
-  rw [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rw [ContinuousLinearMap.coe_comp, Function.comp_apply]
   have h_clm_eval :
       (iso : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n))
         (EuclideanSpace.single i 1) = signFlipFun n (EuclideanSpace.single i 1) :=
@@ -908,7 +908,7 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
       have h_filt_eq : f =ᶠ[nhds (signFlipFun n y)] 0 := h_eventually
       rw [Filter.EventuallyEq.fderiv_eq h_filt_eq]
       simp
-    rw [h_fderiv_sfy_zero, ContinuousLinearMap.zero_apply, add_zero]
+    rw [h_fderiv_sfy_zero, zero_apply, add_zero]
     rw [evenReflectGrad_apply_component_upper f hupper i]
   · have h_y_not_supp : y ∉ tsupport f := by
       intro hin
@@ -924,7 +924,7 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
       have h_filt_eq : f =ᶠ[nhds y] 0 := h_eventually
       rw [Filter.EventuallyEq.fderiv_eq h_filt_eq]
       simp
-    rw [h_fderiv_y_zero, ContinuousLinearMap.zero_apply, zero_add]
+    rw [h_fderiv_y_zero, zero_apply, zero_add]
     by_cases hi : i = 0
     · subst hi
       rw [evenReflectGrad_apply_lower_component_zero f hlower]
@@ -1076,7 +1076,7 @@ lemma fderiv_shiftDownE0 {n : ℕ} [NeZero n] (δ : ℝ)
     fderiv ℝ (shiftDownE0 (n := n) δ) y =
       ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n)) := by
   unfold shiftDownE0
-  rw [fderiv_sub_const, fderiv_id']
+  rw [fderiv_sub_const, fderiv_fun_id]
 
 private noncomputable def shiftDownFun {n : ℕ} [NeZero n] (δ : ℝ)
     (f : EuclideanSpace ℝ (Fin n) → ℝ) :
@@ -1101,7 +1101,7 @@ lemma fderiv_shiftDownFun_apply
   have h_fun_eq : shiftDownFun (n := n) δ f = f ∘ shiftDownE0 δ := rfl
   rw [h_fun_eq]
   rw [fderiv_comp y hf_diff.differentiableAt hg_diff.differentiableAt]
-  rw [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rw [ContinuousLinearMap.coe_comp, Function.comp_apply]
   rw [fderiv_shiftDownE0]
   simp
 
@@ -1343,8 +1343,8 @@ lemma volume_boundaryHyperplane_eq_zero {n : ℕ} [NeZero n] :
       (d := n) : Set (EuclideanSpace ℝ (Fin n))) = (H : Set (EuclideanSpace ℝ (Fin n))) := by
     ext y
     simp only [DifferentialGeometry.Analysis.Sobolev.Euclidean.boundaryHyperplane_def,
-      Set.mem_setOf_eq, SetLike.mem_coe, LinearMap.mem_ker, H, φ,
-      LinearMap.coe_mk, AddHom.coe_mk]
+      Set.mem_ofPred_eq, SetLike.mem_coe, LinearMap.mem_ker, H]
+    rw [show φ y = y 0 by rfl]
   rw [h_set_eq]
   apply Measure.addHaar_submodule volume H
   intro h_top
@@ -1352,7 +1352,7 @@ lemma volume_boundaryHyperplane_eq_zero {n : ℕ} [NeZero n] :
     rw [h_top]; exact Submodule.mem_top
   have h_basisE0_zero : (basisE0 (n := n) : EuclideanSpace ℝ (Fin n)) 0 = 0 := by
     have := h_basisE0_in
-    simp only [LinearMap.mem_ker, H, φ, LinearMap.coe_mk, AddHom.coe_mk] at this
+    simp only [LinearMap.mem_ker, H, φ] at this
     exact this
   rw [basisE0_apply_zero] at h_basisE0_zero
   exact one_ne_zero h_basisE0_zero

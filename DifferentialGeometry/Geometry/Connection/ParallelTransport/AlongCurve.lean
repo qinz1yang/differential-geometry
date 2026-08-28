@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartGramChristoffel
+import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.Analysis.ODE.Gronwall
 open DifferentialGeometry.Geometry.Operator
 
@@ -337,7 +338,11 @@ theorem IsCovDerivAlongChart.add
               (chartCurve (I := I) α γ t) :=
     ChartChristoffel.contraction_add_right (uPrime t) (Y₁ t) (Y₂ t)
   convert hadd using 1
-  rw [hΓadd]; module
+  · funext s
+    change Y₁ s + Y₂ s = Y₁ s + Y₂ s
+    rfl
+  · rw [hΓadd]
+    module
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem IsCovDerivAlongChart.smul
@@ -357,7 +362,10 @@ theorem IsCovDerivAlongChart.smul
               (chartCurve (I := I) α γ t) :=
     ChartChristoffel.contraction_smul_right c (uPrime t) (Y t)
   convert hcY using 1
-  rw [hΓsmul, smul_sub]
+  · funext s
+    change c • Y s = c • Y s
+    rfl
+  · rw [hΓsmul, smul_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem IsCovDerivAlongChart.neg
@@ -408,7 +416,11 @@ theorem IsCovDerivAlongChart.smulFun
               (chartCurve (I := I) α γ t) :=
     ChartChristoffel.contraction_smul_right (f t) (uPrime t) (Y t)
   convert hfY using 1
-  rw [hΓsmul, smul_sub]; module
+  · funext s
+    change f s • Y s = f s • Y s
+    rfl
+  · rw [hΓsmul, smul_sub]
+    module
 
 def IsParallelChart (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M)
     (uPrime : ℝ → E) (Y : ℝ → E) (s : Set ℝ) : Prop :=
@@ -644,9 +656,9 @@ theorem inner_eq_chartGramOnE_bilinear_on_baseSet
     rw [map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_smul]
-  rw [hL, ContinuousLinearMap.sum_apply]
+  rw [hL, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [map_smul, smul_eq_mul, hvfib, chartGramMatrix_apply]
@@ -764,8 +776,24 @@ theorem chartGramAlongCurve_hasDerivAt
       chartSectionCoord_hasDerivAt (X := W) (Xprime := Wprime) j hW
     have hGV := hG.mul hVi
     have hGVW := hGV.mul hWj
-    convert hGVW using 2
-    ring
+    refine (hGVW.congr_of_eventuallyEq ?_).congr_deriv ?_
+    · exact Filter.Eventually.of_forall fun s => by
+        change chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ s) *
+            chartCoord (E := E) i (V s) * chartCoord (E := E) j (W s) =
+          chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ s) *
+            chartCoord (E := E) i (V s) * chartCoord (E := E) j (W s)
+        rfl
+    · change
+        ((∑ k : Fin (Module.finrank ℝ E),
+              chartCoord (E := E) k (uPrime t) *
+                partialDeriv (E := E) k (chartGramOnE (I := I) g α i j)
+                  (chartCurve (I := I) α γ t)) *
+            chartCoord (E := E) i (V t) +
+          chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ t) *
+            chartCoord (E := E) i (Vprime t)) * chartCoord (E := E) j (W t) +
+          chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ t) *
+            chartCoord (E := E) i (V t) * chartCoord (E := E) j (Wprime t) = _
+      ring
   have hsum : HasDerivAt
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         (fun s => chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ s) *
@@ -804,7 +832,7 @@ lemma chartCoord_chartChristoffelContraction
         chartChristoffel (I := I) g α i j l y *
           chartCoord (E := E) i v * chartCoord (E := E) j w := by
   classical
-  rw [chartChristoffelContraction_def, chartCoord, map_sum, Finsupp.finset_sum_apply]
+  rw [chartChristoffelContraction_def, chartCoord, map_sum, Finsupp.finsetSum_apply]
   have hbasis : ∀ k : Fin (Module.finrank ℝ E),
       (chartModelBasis E).repr ((chartModelBasis E) k) l = if k = l then 1 else 0 := by
     intro k

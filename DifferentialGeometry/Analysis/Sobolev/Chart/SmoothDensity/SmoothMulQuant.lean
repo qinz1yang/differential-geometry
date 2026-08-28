@@ -251,7 +251,7 @@ theorem wkpNormChart_smooth_mul_le
             (chartPushed (I := I) (M := M)
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
             (chartTargetEuclid (I := I) (M := M) α) := by
-          refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+          refine mul_le_mul_of_nonneg_right ?_ (zero_le)
           exact ENNReal.ofReal_le_ofReal (hKα_le_max α hαS)
   · have h_zero_pou : ∀ x : M,
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α

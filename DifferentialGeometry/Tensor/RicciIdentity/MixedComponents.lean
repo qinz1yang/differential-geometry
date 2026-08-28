@@ -122,7 +122,7 @@ private lemma update_update_same_apply {Idx : Type*}
     simp
   · simp [Function.update, hpq]
 
-private def updateSwapEquiv {Idx : Type*} [DecidableEq Idx] {r : ℕ}
+private def updateSwapEquiv {Idx : Type*} {r : ℕ}
     (p : Fin r) : ((Fin r -> Idx) × Idx) ≃ ((Fin r -> Idx) × Idx) where
   toFun Am := (Function.update Am.1 p Am.2, Am.1 p)
   invFun Am := (Function.update Am.1 p Am.2, Am.1 p)

@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -41,7 +40,7 @@ lemma smoothOrthoFrame_parsevalExpand
     u = ∑ a : Fin (Module.finrank ℝ E),
       g.inner x (smoothOrthoFrame (I := I) g x a x) u • (smoothOrthoFrame (I := I) g x a x) := by
   classical
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun a => smoothOrthoFrame (I := I) g x a x with he_def
@@ -96,7 +95,7 @@ private lemma tensor0SAsRS_add_loc {t : ℕ} (x : M) (C D : Tensor0SSpace t I x)
         tensor0SToTensorRS (I := I) (M := M) x C) τ +
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace t I x from
           tensor0SToTensorRS (I := I) (M := M) x D) τ from by
-    rw [ContinuousLinearMap.add_apply]]
+    rw [add_apply]]
   rw [tensor0SAsRS_apply (I := I) (M := M) x C τ, tensor0SAsRS_apply (I := I) (M := M) x D τ,
     smul_add]
 
@@ -112,15 +111,15 @@ private lemma tensor0SAsRS_smul_loc {t : ℕ} (x : M) (c : ℝ) (C : Tensor0SSpa
         c • tensor0SToTensorRS (I := I) (M := M) x C) τ =
       c • (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace t I x from
         tensor0SToTensorRS (I := I) (M := M) x C) τ from by
-    rw [ContinuousLinearMap.smul_apply]]
+    rw [smul_apply]]
   rw [tensor0SAsRS_apply (I := I) (M := M) x C τ, smul_comm]
 
 noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
     (v : TangentSpace I x) :
     TensorRSSpace 0 (s + 1) I x →L[ℝ] TensorRSSpace 0 s I x :=
-  haveI : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
+  have : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
-  haveI : T2Space (TensorRSSpace 0 (s + 1) I x) :=
+  have : T2Space (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
   LinearMap.toContinuousLinearMap
     { toFun := fun Wx =>
@@ -138,9 +137,9 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
           rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W₁ + W₂) =
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W₁) +
                 (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W₂) from rfl,
-            ContinuousLinearMap.add_apply]
+            add_apply]
         rw [hval, map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x),
-          ContinuousLinearMap.add_apply,
+          add_apply,
           tensor0SAsRS_add_loc (I := I) (M := M) x]
       map_smul' := fun c W => by
         have hval : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from c • W)
@@ -149,9 +148,9 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
               (unitZeroSec (I := I) (M := M) x) := by
           rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from c • W) =
               c • (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W) from rfl,
-            ContinuousLinearMap.smul_apply]
+            smul_apply]
         rw [hval, map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x),
-          ContinuousLinearMap.smul_apply, tensor0SAsRS_smul_loc (I := I) (M := M) x]
+          smul_apply, tensor0SAsRS_smul_loc (I := I) (M := M) x]
         rfl }
 
 
@@ -164,9 +163,9 @@ lemma slot0SliceFib_apply (x : M) (s : ℕ) (v : TangentSpace I x)
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
             (unitZeroSec (I := I) (M := M) x)) v) := by
-  haveI : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
+  have : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
-  haveI : T2Space (TensorRSSpace 0 (s + 1) I x) :=
+  have : T2Space (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
   rw [tensorSlotZeroEvalFib, LinearMap.coe_toContinuousLinearMap']
   rfl
@@ -181,11 +180,12 @@ lemma slot0SliceFib_eq_covGradBundleEquiv_symm (x : M) (s : ℕ) (v : TangentSpa
   classical
   apply tensorRSSpace_ext (𝕜 := ℝ) 0 s x
   intro D
-  apply Tensor0SSpace.toModel_injective
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
+  change Tensor0SSpace.eval _ m = Tensor0SSpace.eval _ m
   rw [slot0SliceFib_apply]
   rw [tensor0SAsRS_apply (I := I) (M := M) x _ D]
-  simp only [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+  simp only [Tensor0SSpace.eval_smul]
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
       (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
         (unitZeroSec (I := I) (M := M) x)) (v0 := v) (vs := m)]
@@ -196,9 +196,9 @@ lemma slot0SliceFib_eq_covGradBundleEquiv_symm (x : M) (s : ℕ) (v : TangentSpa
           (unitZeroSec (I := I) (M := M) x) from by
     conv_lhs => rw [tensor0S_zero_span' (I := I) (M := M) x D]
     rw [ContinuousLinearMap.map_smul]]
-  simp only [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+  simp only [Tensor0SSpace.eval_smul]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma slot0SliceFib_covGrad_eq (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (x : M) (v : TangentSpace I x) :
     tensorSlotZeroEvalFib (I := I) (M := M) x s v ((covGrad (I := I) (M := M) g 0 s S).toSection x)
@@ -250,17 +250,17 @@ noncomputable def curvatureGradContractionDirLM
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_add (riemannOp (tensorCov (I := I) g 0 s) x (B i x)) w w',
-      ContinuousLinearMap.add_apply, smul_add]
+      add_apply, smul_add]
     rw [map_add (riemannOp (LeviCivita (I := I) g) x (B i x)) w w',
-      ContinuousLinearMap.add_apply, slot0SliceFib_dir_add (I := I) (M := M) x s]
+      add_apply, slot0SliceFib_dir_add (I := I) (M := M) x s]
     abel
   map_smul' c w := by
     rw [RingHom.id_apply, Finset.smul_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_smul (riemannOp (tensorCov (I := I) g 0 s) x (B i x)) c w,
-      ContinuousLinearMap.smul_apply, smul_comm (2 : ℝ) c]
+      smul_apply, smul_comm (2 : ℝ) c]
     rw [map_smul (riemannOp (LeviCivita (I := I) g) x (B i x)) c w,
-      ContinuousLinearMap.smul_apply, slot0SliceFib_dir_smul (I := I) (M := M) x s]
+      smul_apply, slot0SliceFib_dir_smul (I := I) (M := M) x s]
     rw [smul_sub]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -308,7 +308,7 @@ lemma gradArmDirCLM_value_add
         (I := I) (M := M) g s B x W₂ := by
   apply ContinuousLinearMap.ext
   intro w
-  rw [ContinuousLinearMap.add_apply, gradArmDirCLM_apply, gradArmDirCLM_apply, gradArmDirCLM_apply,
+  rw [add_apply, gradArmDirCLM_apply, gradArmDirCLM_apply, gradArmDirCLM_apply,
     ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [map_add (tensorSlotZeroEvalFib (I := I) (M := M) x s (B i x)) W₁ W₂,
@@ -326,7 +326,7 @@ lemma gradArmDirCLM_value_smul
       c • curvatureGradContractionDirCLM (I := I) (M := M) g s B x W := by
   apply ContinuousLinearMap.ext
   intro w
-  rw [ContinuousLinearMap.smul_apply, gradArmDirCLM_apply, gradArmDirCLM_apply, Finset.smul_sum]
+  rw [smul_apply, gradArmDirCLM_apply, gradArmDirCLM_apply, Finset.smul_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [map_smul (tensorSlotZeroEvalFib (I := I) (M := M) x s (B i x)) c W,
     map_smul (riemannOp (tensorCov (I := I) g 0 s) x (B i x) w),
@@ -362,13 +362,14 @@ lemma gradArmFib_apply
     curvatureGradContractionFib (I := I) (M := M) g s B x Wx =
       covGradBundleEquiv (I := I) (M := M) 0 s x
         (curvatureGradContractionDirCLM (I := I) (M := M) g s B x Wx) := by
-  haveI : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
+  have : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
-  haveI : T2Space (TensorRSSpace 0 (s + 1) I x) :=
+  have : T2Space (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
   rw [curvatureGradContractionFib, LinearMap.coe_toContinuousLinearMap']
   rfl
 
+omit [CompactSpace M] in
 lemma gradArmFib_covGrad_slice_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
@@ -558,7 +559,7 @@ lemma frameSum_riemannOp_LeviCivita_eq_neg_ricEndoRaised
   classical
   apply SmoothRiemannianMetric.eq_of_inner_eq (I := I) g
   intro ζ
-  rw [map_sum, ContinuousLinearMap.sum_apply, map_neg]
+  rw [map_sum, sum_apply, map_neg]
   have hflip : ∀ i : Fin (Module.finrank ℝ E),
       g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) v (e i)) ζ =
         - g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) v ζ) (e i) := by
@@ -570,7 +571,7 @@ lemma frameSum_riemannOp_LeviCivita_eq_neg_ricEndoRaised
     rw [hsymm] at hskew
     linarith [hskew]
   rw [Finset.sum_congr rfl (fun i _ => hflip i), Finset.sum_neg_distrib]
-  rw [ContinuousLinearMap.neg_apply, inner_ricEndoRaisedFib (I := I) (M := M) g x v ζ,
+  rw [neg_apply, inner_ricEndoRaisedFib (I := I) (M := M) g x v ζ,
     ricciTensor_eq_orthonormal_trace (I := I) g x v ζ e horth]
 
 private noncomputable def curvatureGradContractionBilin
@@ -598,13 +599,12 @@ private noncomputable def curvatureGradContractionBilin
           simp only [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T + T') =
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T) +
                 (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T') from rfl,
-            ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-            ContinuousMultilinearMap.add_apply]
+            add_apply, Tensor0SSpace.toModel_add]
         map_smul' := fun c T => by
           simp only [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from c • T) =
               c • (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T) from rfl,
-            ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul,
-            ContinuousMultilinearMap.smul_apply, RingHom.id_apply] }
+            smul_apply, Tensor0SSpace.toModel_smul,
+            smul_apply, RingHom.id_apply] }
   let sliceDirCLM : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x :=
     LinearMap.toContinuousLinearMap
       { toFun := fun b => tensorSlotZeroEvalFib (I := I) (M := M) x s b Wx
@@ -622,12 +622,12 @@ private noncomputable def curvatureGradContractionBilin
         ((riemannOp (tensorCov (I := I) g 0 s) x a w).comp sliceDirCLM)
       map_add' := fun a a' => by
         apply ContinuousLinearMap.ext; intro b
-        simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+        simp only [add_apply, ContinuousLinearMap.comp_apply,
           (riemannOp (tensorCov (I := I) g 0 s) x).map_add a a']
         exact evalCLM.map_add _ _
       map_smul' := fun c a => by
         apply ContinuousLinearMap.ext; intro b
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply,
+        simp only [smul_apply, ContinuousLinearMap.comp_apply,
           RingHom.id_apply, (riemannOp (tensorCov (I := I) g 0 s) x).map_smul c a]
         exact evalCLM.map_smul c _ }
 
@@ -675,9 +675,8 @@ private lemma gradArmDirCLM_summand_toModel
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensorSlotZeroEvalFib (I := I) (M := M) x s
             (riemannOp (LeviCivita (I := I) g) x (B i x) w (B i x)) Wx) from rfl]
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
-    Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.smul_apply]
+  rw [sub_apply, smul_apply,
+    Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_smul, sub_apply, smul_apply]
   rw [rArmBilin_apply (I := I) (M := M) g s x w Wx m (B i x) (B i x)]
   rfl
 
@@ -697,8 +696,8 @@ lemma toModel_unit_finsum {ι : Type*} (s : ℕ) (x : M) (fs : Finset ι)
       rw [Finset.sum_empty, Finset.sum_empty]
       rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
             (0 : TensorRSSpace 0 s I x)) (unitZeroSec (I := I) (M := M) x) =
-          (0 : Tensor0SSpace s I x) from ContinuousLinearMap.zero_apply _]
-      rw [Tensor0SSpace.toModel_zero, ContinuousMultilinearMap.zero_apply]
+          (0 : Tensor0SSpace s I x) from zero_apply _]
+      rw [Tensor0SSpace.toModel_zero, zero_apply]
   | insert a t ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
       rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T a + ∑ i ∈ t, T i)
@@ -710,8 +709,22 @@ lemma toModel_unit_finsum {ι : Type*} (s : ℕ) (x : M) (fs : Finset ι)
         rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T a + ∑ i ∈ t, T i) =
             (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T a) +
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from ∑ i ∈ t, T i) from rfl,
-          ContinuousLinearMap.add_apply]]
-      rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, ih]
+          add_apply]]
+      rw [Tensor0SSpace.toModel_add, add_apply, ih]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
+lemma eval_unit_finsum {ι : Type*} (s : ℕ) (x : M) (fs : Finset ι)
+    (T : ι → TensorRSSpace 0 s I x) (m : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from ∑ i ∈ fs, T i)
+          (unitZeroSec (I := I) (M := M) x)) m =
+      ∑ i ∈ fs, Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T i)
+          (unitZeroSec (I := I) (M := M) x)) m := by
+  simpa only [Tensor0SSpace.toModel_apply_tangent] using
+    toModel_unit_finsum (I := I) (M := M) s x fs T
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i))
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -766,7 +779,7 @@ lemma gradArmDirCLM_frame_independent
       conv_lhs => rw [tensor0S_zero_span' (I := I) (M := M) x D]
       rw [ContinuousLinearMap.map_smul]
       simp only [Tensor0SSpace.toModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
     rw [hstep, hT]
     apply congrArg (fun z : ℝ => tensor00Scalar (I := I) (M := M) x D * z)
     exact toModel_unit_finsum (I := I) (M := M) s x Finset.univ

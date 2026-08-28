@@ -7,7 +7,6 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Function
     DifferentialGeometry.TensorLieDeriv
@@ -83,9 +82,11 @@ theorem tensor0S_eval_covariantDerivative_slot_contMDiff {s : ℕ}
   have hW :
       ContMDiff I₀ (I₀.prod 𝓘(Real, E₀)) ∞
         (fun p : M₀ => (⟨p, W p⟩ : TotalSpace E₀ (TangentSpace I₀ : M₀ → Type _))) := by
-    simpa [W] using
+    refine
       (CovariantDerivative.ContMDiffCovariantDerivative.contMDiff_apply
-        (𝕜 := Real) (I := I₀) (M := M₀) cov hcov X (Y a))
+        (𝕜 := Real) (I := I₀) (M := M₀) cov hcov X (Y a)).congr ?_
+    intro p
+    rfl
   let V : Fin s → (p : M₀) → TangentSpace I₀ p :=
     Function.update (fun b : Fin s => fun p : M₀ => Y b p) a W
   have hV : ∀ i : Fin s,

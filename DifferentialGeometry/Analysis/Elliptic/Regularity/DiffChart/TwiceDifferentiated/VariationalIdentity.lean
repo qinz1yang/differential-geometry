@@ -483,11 +483,11 @@ private lemma numerator_secondOrder_decomp
     densityDerivOnEuclid (I := I) g α l₁ y *
       chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
   have hint_A1 : Integrable int_A1 ((volume : Measure EuclN).restrict Ω) :=
-    integrable_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => h_int_X1_named i j))
+    integrable_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => h_int_X1_named i j))
   have hint_A2 : Integrable int_A2 ((volume : Measure EuclN).restrict Ω) :=
-    integrable_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => h_int_X2_named i j))
+    integrable_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => h_int_X2_named i j))
   have hint_A3 : Integrable int_A3 ((volume : Measure EuclN).restrict Ω) :=
     (integrable_triple_psi h_dc_l₂_cont_on (h_base_wp_int l₁)).neg
   have hint_B1 : Integrable int_B1 ((volume : Measure EuclN).restrict Ω) :=
@@ -495,17 +495,17 @@ private lemma numerator_secondOrder_decomp
   have hint_B2 : Integrable int_B2 ((volume : Measure EuclN).restrict Ω) :=
     integrable_triple_psi h_c_cont_on h_fChartDeriv2_int
   have hint_C1 : Integrable int_C1 ((volume : Measure EuclN).restrict Ω) :=
-    integrable_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => h_int_C1_pair i j))
+    integrable_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => h_int_C1_pair i j))
   have hint_C2 : Integrable int_C2 ((volume : Measure EuclN).restrict Ω) :=
-    integrable_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => h_int_C2_pair i j))
+    integrable_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => h_int_C2_pair i j))
   have hint_C3 : Integrable int_C3 ((volume : Measure EuclN).restrict Ω) :=
-    integrable_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => h_int_C3_pair i j))
+    integrable_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => h_int_C3_pair i j))
   have hint_C4 : Integrable int_C4 ((volume : Measure EuclN).restrict Ω) :=
-    integrable_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => h_int_C4_pair i j))
+    integrable_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => h_int_C4_pair i j))
   have hint_D1 : Integrable int_D1 ((volume : Measure EuclN).restrict Ω) :=
     (integrable_triple_psi h_d2c_cont_on h_base_uc_int).neg
   have hint_D2 : Integrable int_D2 ((volume : Measure EuclN).restrict Ω) :=
@@ -529,10 +529,10 @@ private lemma numerator_secondOrder_decomp
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), X1 i j
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_X1_named i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_X1_named i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_X1_named i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_X1_named i j)]
   have eq_intA2 : (∫ y in Ω, int_A2 y ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), X2 i j := by
@@ -546,10 +546,10 @@ private lemma numerator_secondOrder_decomp
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), X2 i j
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_X2_named i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_X2_named i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_X2_named i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_X2_named i j)]
   have eq_intA3 : (∫ y in Ω, int_A3 y ∂(volume : Measure EuclN)) = - N_A3 := by
     change (∫ y in Ω,
         - (densityDerivOnEuclid (I := I) g α l₂ y *
@@ -572,10 +572,10 @@ private lemma numerator_secondOrder_decomp
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C1 i j
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_C1_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_C1_pair i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_C1_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_C1_pair i j)]
   have eq_intC2 : (∫ y in Ω, int_C2 y ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C2 i j := by
@@ -588,10 +588,10 @@ private lemma numerator_secondOrder_decomp
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C2 i j
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_C2_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_C2_pair i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_C2_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_C2_pair i j)]
   have eq_intC3 : (∫ y in Ω, int_C3 y ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C3 i j := by
@@ -605,10 +605,10 @@ private lemma numerator_secondOrder_decomp
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C3 i j
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_C3_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_C3_pair i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_C3_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_C3_pair i j)]
   have eq_intC4 : (∫ y in Ω, int_C4 y ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C4 i j := by
@@ -621,10 +621,10 @@ private lemma numerator_secondOrder_decomp
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C4 i j
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_C4_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_C4_pair i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_C4_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_C4_pair i j)]
   have eq_intD1 : (∫ y in Ω, int_D1 y ∂(volume : Measure EuclN)) = - N_D1 := by
     change (∫ y in Ω,
         - (densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y *
@@ -881,7 +881,7 @@ theorem twice_differentiated_variational_identity_holds
       (volume.restrict K : Measure EuclN) Set.univ < (⊤ : ℝ≥0∞) := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hvolK_finite
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
   have hψj_fderiv_cont : ∀ j k : Fin (Module.finrank ℝ E),
       Continuous (fun y : EuclN => (fderiv ℝ (ψj j) y) (EuclideanSpace.single k 1)) :=
     fun j k => ((hψj_smooth j).continuous_fderiv (by simp)).clm_apply
@@ -1003,11 +1003,11 @@ theorem twice_differentiated_variational_identity_holds
             chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₁ y *
             (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1)
             ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_A1_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_A1_pair i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_A1_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_A1_pair i j)]
   have sum_swap_C :
       ∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
@@ -1022,11 +1022,11 @@ theorem twice_differentiated_variational_identity_holds
             D_base.weak_partial i y *
             (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1)
             ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_C_pair i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_C_pair i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_C_pair i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_C_pair i j)]
   rw [hA1_Schwarz, hC_Schwarz, sum_swap_LHS_A1, sum_swap_C] at h_once
   have h_LHS_A1_after_IBP :
       ∑ i : Fin (Module.finrank ℝ E),
@@ -1437,11 +1437,11 @@ theorem twice_differentiated_variational_identity_holds
                 (I := I) (M := M) g α u_h i l₁ l₂ y *
               ψj j y)
         ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_Y1_ij i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_Y1_ij i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_Y1_ij i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_Y1_ij i j)]
   have hψj_consolidate_LHS1 :
       ∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
@@ -1646,11 +1646,11 @@ theorem twice_differentiated_variational_identity_holds
                   (I := I) (M := M) g α u_h i l₁ l₂ y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_Y1_ij i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_Y1_ij i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_Y1_ij i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_Y1_ij i j)]
   have h_α1_sub2_to_lhs1 :
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), α1_sub2 i j) = I_lhs1_target := by

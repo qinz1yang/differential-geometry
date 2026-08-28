@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -1314,8 +1316,16 @@ theorem raisedRicciCompInFrame_hasDerivWithinAt
                   have hia := h_inv t x hx i a
                   have hjb := h_inv t x hx j b
                   have hrab := h_ricci t x a b
-                  have hprod := (hia.mul hjb).mul hrab
-                  simpa [Pi.mul_apply, mul_assoc, add_mul] using hprod))))
+                  have hprod := hia.smul (hjb.smul hrab)
+                  convert hprod using 1
+                  · funext s
+                    change gInv s x i a * gInv s x j b *
+                      ricciCompInFrame (I := I) S frame s x a b =
+                        gInv s x i a * (gInv s x j b *
+                          ricciCompInFrame (I := I) S frame s x a b)
+                    ring
+                  · simp [smul_eq_mul]
+                    ring))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem raisedRicciDerivAt
@@ -1390,8 +1400,16 @@ theorem raisedRicciDerivAt
                   have hia := h_inv t x hx i a
                   have hjb := h_inv t x hx j b
                   have hrab := h_ricci a b
-                  have hprod := (hia.mul hjb).mul hrab
-                  simpa [Pi.mul_apply, mul_assoc, add_mul] using hprod))))
+                  have hprod := hia.smul (hjb.smul hrab)
+                  convert hprod using 1
+                  · funext s
+                    change gInv s x i a * gInv s x j b *
+                      ricciCompInFrame (I := I) S frame s x a b =
+                        gInv s x i a * (gInv s x j b *
+                          ricciCompInFrame (I := I) S frame s x a b)
+                    ring
+                  · simp [smul_eq_mul]
+                    ring))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqInFrame_hasDerivWithinAt
@@ -1450,8 +1468,12 @@ theorem ricciNormSqInFrame_hasDerivWithinAt
                   have hRaised :=
                     raisedRicciCompInFrame_hasDerivWithinAt
                       (I := I) S Rm04 gInv frame roughLapRic h_inv h_ricci t x hx i j
-                  have hprod := hRic.mul hRaised
-                  simpa [Pi.mul_apply] using hprod))))
+                  have hprod := hRic.smul hRaised
+                  convert hprod using 1
+                  · funext s
+                    rfl
+                  · simp [smul_eq_mul]
+                    ring))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqDerivAt
@@ -1517,8 +1539,12 @@ theorem ricciNormSqDerivAt
                     raisedRicciDerivAt
                       (I := I) S Rm04 gInv frame roughLapRic h_inv t x hx
                       h_ricci i j
-                  have hprod := hRic.mul hRaised
-                  simpa [Pi.mul_apply] using hprod))))
+                  have hprod := hRic.smul hRaised
+                  convert hprod using 1
+                  · funext s
+                    rfl
+                  · simp [smul_eq_mul]
+                    ring))))
 
 end Components
 

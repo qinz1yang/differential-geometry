@@ -76,7 +76,8 @@ theorem preimage_inl_none_side_well_defined'
 theorem optionCongr_removeNone_of_fix_none {α : Type*}
     (σ : Equiv.Perm (Option α)) (h : σ none = none) :
     (Equiv.removeNone σ).optionCongr = σ := by
-  rw [map_equiv_removeNone, h]; simp
+  rw [map_equiv_removeNone, h]
+  rw [Equiv.swap_self, ← Equiv.Perm.one_def, one_mul]
 
 theorem removeNone_inv_mul {α : Type*}
     (σ₁ σ₂ : Equiv.Perm (Option α))
@@ -84,7 +85,6 @@ theorem removeNone_inv_mul {α : Type*}
     Equiv.removeNone (σ₁⁻¹ * σ₂) =
       (Equiv.removeNone σ₁)⁻¹ * Equiv.removeNone σ₂ := by
   apply Equiv.optionCongr_injective
-  have h12 : (σ₁⁻¹ * σ₂) none = none := by simp [Equiv.Perm.coe_mul, h₁, h₂]
   have h12 : (σ₁⁻¹ * σ₂) none = none := by simp [Equiv.Perm.coe_mul, h₁, h₂]
   have h_lhs := optionCongr_removeNone_of_fix_none _ h12
   have h_oc : ∀ (σ : Equiv.Perm (Option α)) (hσ : σ none = none) (b : α),

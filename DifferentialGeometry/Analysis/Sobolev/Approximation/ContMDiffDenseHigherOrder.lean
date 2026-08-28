@@ -25,7 +25,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma chartCutoff_smul_chartPushed_memWkp_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) k p u) (α : M)
     {η : EuclN → ℝ}
@@ -46,7 +46,6 @@ private lemma chartCutoff_smul_chartPushed_memWkp_k
 
 private theorem exists_smooth_strong_support_approx_k
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) k p u)
     (α : M) (ε_per : ℝ) (hε_per : 0 < ε_per) :
@@ -131,7 +130,7 @@ private theorem exists_smooth_strong_support_approx_k
   exact hχ_close
 
 private lemma tightenedChartPushed_memWkp_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) k p u) (α : M)
     {η_M : M → ℝ}
@@ -157,7 +156,7 @@ private lemma tightenedChartPushed_memWkp_k
     hηE_smooth hC_target
 
 private lemma wkpNorm_tightenedChartPushed_sub_eq_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
@@ -822,7 +821,7 @@ theorem contMDiff_dense_in_WkpChart_k
   set v : M → ℝ := fun x =>
     ∑ α ∈ S.attach, chartPullback I (α : M) (χ α) x with hv_def
   have hv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ v := by
-    refine contMDiff_finset_sum_chartPullback (I := I) (M := M)
+    refine contMDiff_finsetSum_chartPullback (I := I) (M := M)
       (S := S.attach) (α := fun α : S => (α : M)) (ψ := fun α => χ α) ?_ ?_ ?_
     · intro α _; exact hχ_smooth α
     · intro α _; exact hχ_cpt α
@@ -866,7 +865,6 @@ theorem contMDiff_dense_in_WkpChart_k
                 χ α y) x := by
       funext x
       have h1 := congrFun h_u_decomp x
-      simp only at h1
       change u x - v x = _
       rw [hv_def]
       simp only
@@ -979,7 +977,7 @@ theorem contMDiff_dense_in_WkpChart_k
           (hη_one_on_tsupport α) u (χ α)]
         exact hχ_close α
       refine h_bd.trans ?_
-      exact mul_le_mul_of_nonneg_left h_diff_close (zero_le _)
+      exact mul_le_mul_of_nonneg_left h_diff_close (zero_le)
     have h_summand_mem : ∀ α ∈ S.attach,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) k p

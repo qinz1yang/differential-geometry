@@ -61,7 +61,7 @@ private lemma euclidPartial_eq_zero_of_notMem_tsupport
     Filter.eventually_of_mem hy_nhds
       (fun y' hy' => image_eq_zero_of_notMem_tsupport hy')
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hg_zero_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private lemma contDiff_of_contDiffOn_chartTarget

@@ -37,6 +37,8 @@ theorem contMDiffAt_codRestr {N' : Type u} [TopologicalSpace N'] [ChartedSpace H
   refine ⟨Topology.IsInducing.subtypeVal.continuousAt_iff.mpr
     (by simpa [Function.comp_def] using hcont), ?_⟩
   convert hdiff using 2
+  funext y
+  rfl
 
 end CodRestrict
 
@@ -148,9 +150,13 @@ theorem PartialDiffeomorph.opensDiffeo_mfderiv
       = (mfderiv I I (Φ : M → N) (p : M)).comp
           (mfderiv I I (Subtype.val : U → M) p) :=
     mfderiv_comp p hΦd hvalU
-  have happ := DFunLike.congr_fun (h1.symm.trans h2) v
-  simpa only [F, ContinuousLinearMap.comp_apply,
-    mfderiv_subtype_val (I := I) W (F p), mfderiv_subtype_val (I := I) U p] using happ
+  have hmap := h1.symm.trans h2
+  rw [mfderiv_subtype_val (I := I) W (F p),
+    mfderiv_subtype_val (I := I) U p] at hmap
+  have happ := DFunLike.congr_fun hmap v
+  change mfderiv I I (F : U → W) p v =
+    mfderiv I I (Φ : M → N) (p : M) v at happ
+  exact happ
 
 noncomputable def PartialDiffeomorph.opensMap
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -221,9 +227,12 @@ theorem PartialDiffeomorph.opensMap_mfderiv
       (mfderiv I I (Φ : M → N) (p : M)).comp
         (mfderiv I I (Subtype.val : U → M) p) :=
     mfderiv_comp p hΦd hvalU
-  have happ := DFunLike.congr_fun (h1.symm.trans h2) v
-  simpa only [F, ContinuousLinearMap.comp_apply,
-    mfderiv_subtype_val (I := I) V (F p), mfderiv_subtype_val (I := I) U p] using happ
+  have hmap := h1.symm.trans h2
+  rw [mfderiv_subtype_val (I := I) V (F p),
+    mfderiv_subtype_val (I := I) U p] at hmap
+  have happ := DFunLike.congr_fun hmap v
+  change mfderiv I I F p v = mfderiv I I (Φ : M → N) (p : M) v at happ
+  exact happ
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I ∞ N] in
@@ -234,7 +243,7 @@ theorem PartialDiffeomorph.opensMap_inv_mdiff
     ContMDiffOn I I ∞ (Function.invFun (PartialDiffeomorph.opensMap Φ hUV))
       (Set.range (PartialDiffeomorph.opensMap Φ hUV)) := by
   let W : Opens N := ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
-  letI : Nonempty W := by
+  let : Nonempty W := by
     obtain ⟨x⟩ := (inferInstance : Nonempty U)
     exact ⟨⟨(Φ : M → N) x, ⟨x, x.2, rfl⟩⟩⟩
   have hWV : W ≤ V := hUV
@@ -380,10 +389,12 @@ theorem PartialDiffeomorph.liftOpen_mfderiv
     ((contMDiff_subtype_val (I := I) (U := U)).contMDiffAt).mdifferentiableAt
       (by decide : (∞ : WithTop ℕ∞) ≠ 0)
   have hcomp := mfderiv_comp x hval hΦd
-  have happ := DFunLike.congr_fun hcomp v
   change mfderiv I I (fun y : M => ((Φ y : U) : N)) x v = _
-  simpa only [ContinuousLinearMap.comp_apply,
-    mfderiv_subtype_val (I := I) U (Φ x)] using happ
+  rw [mfderiv_subtype_val (I := I) U (Φ x)] at hcomp
+  have happ := DFunLike.congr_fun hcomp v
+  change mfderiv I I (fun y : M => ((Φ y : U) : N)) x v =
+    mfderiv I I (Φ : M → U) x v at happ
+  exact happ
 
 end OpensDiffeo
 

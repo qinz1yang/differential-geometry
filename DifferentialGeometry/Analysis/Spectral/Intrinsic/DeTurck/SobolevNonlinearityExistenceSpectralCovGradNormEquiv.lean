@@ -309,6 +309,7 @@ private theorem covGrad_rawConnLapIter_l2_le_ccSpectralEmbed_odd
     · exact (ccSpectralEmbed (I := I) (M := M) g₀ ((2 * i + 1 : ℕ) : ℝ) S).weighted_summable
   exact le_of_sq_le_sq hsq hnn
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem norm_iteratedCovGrad_comp_local
@@ -337,6 +338,7 @@ private theorem norm_iteratedCovGrad_comp_local
   have h2 : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 0 s (j + i) S‖ := norm_nonneg _
   nlinarith [hsq, h1, h2]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem norm_iteratedCovGrad_order_eq

@@ -55,7 +55,8 @@ theorem recenteredBallRetraction_lipschitzWith
       LipschitzWith (1 * (2 * 1))
         (fun v : X => c + ballRetraction R (v - c)) :=
     hadd.comp ((lipschitzWith_ballRetraction (X := X) hR).comp hshift)
-  simpa [recenteredBallRetraction] using hcomp
+  change LipschitzWith 2 (fun v : X => c + ballRetraction R (v - c))
+  simpa only [one_mul, mul_one] using hcomp
 
 end RecentreNormed
 
@@ -76,7 +77,8 @@ theorem recenteredBallRetraction_lipschitzWith_one
       LipschitzWith (1 * (1 * 1))
         (fun v : X => c + ballRetraction R (v - c)) :=
     hadd.comp ((lipschitzWith_one_ballRetraction (X := X) hR).comp hshift)
-  simpa [recenteredBallRetraction] using hcomp
+  change LipschitzWith 1 (fun v : X => c + ballRetraction R (v - c))
+  simpa only [one_mul, mul_one] using hcomp
 
 end RecentreHilbert
 

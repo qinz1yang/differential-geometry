@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -185,7 +184,10 @@ theorem contMDiff_transportCoeffManifold
     have hprod : ContMDiffAt I (𝓘(ℝ, ℝ)) ∞
         (transportCoeffManifold (I := I) (M := M) r s β α P₀ Q) x := by
       have := (hcutα.mul hcutβ).mul hcoeff_at
-      simpa [transportCoeffManifold] using this
+      unfold transportCoeffManifold
+      convert this using 1
+      funext y
+      rfl
     exact hprod
   · have hsupp_sub := tsupport_transportCoeffManifold_subset
       (I := I) (M := M) r s β α P₀ Q
@@ -517,11 +519,11 @@ private lemma exists_eLpNorm_transportFun_bound
     _ ≤ ENNReal.ofReal C * (ENNReal.ofReal Kchg *
             eLpNorm (f : EuclN → ℝ) 2
               ((volume : Measure EuclN).restrict D.Ωβα)) :=
-          mul_le_mul_of_nonneg_left h_chg (zero_le _)
+          mul_le_mul_of_nonneg_left h_chg (zero_le)
     _ ≤ ENNReal.ofReal C * (ENNReal.ofReal Kchg *
             eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β)) :=
           mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left h_mono (zero_le _)) (zero_le _)
+            (mul_le_mul_of_nonneg_left h_mono (zero_le)) (zero_le)
     _ = ENNReal.ofReal (C * Kchg) *
             eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β) := by
           rw [ENNReal.ofReal_mul hC_nn, mul_assoc]

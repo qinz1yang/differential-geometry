@@ -31,28 +31,28 @@ noncomputable def PointedRiemannianManifold.intrInjRadius
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) X)
     (x : X.M) : ENNReal := by
-  letI : TopologicalSpace X.M := X.topology
-  letI : ChartedSpace H X.M := X.charted
-  letI : IsManifold I ∞ X.M := X.smooth
-  letI : IsManifold I 1 X.M :=
+  let _ : TopologicalSpace X.M := X.topology
+  let _ : ChartedSpace H X.M := X.charted
+  let _ : IsManifold I ∞ X.M := X.smooth
+  let _ : IsManifold I 1 X.M :=
     IsManifold.of_le (I := I) (M := X.M) (n := ∞) (by decide)
-  letI : T2Space X.M := X.t2
-  letI : SigmaCompactSpace X.M := X.sigmaCompact
-  letI : T2Space (TangentBundle I X.M) := X.t2TangentBundle
-  letI : RiemannianBundle (fun y : X.M => TangentSpace I y) :=
+  let _ : T2Space X.M := X.t2
+  let _ : SigmaCompactSpace X.M := X.sigmaCompact
+  let _ : T2Space (TangentBundle I X.M) := X.t2TangentBundle
+  let _ : RiemannianBundle (fun y : X.M => TangentSpace I y) :=
     X.riemBundle (I := I)
-  letI : (y : X.M) → InnerProductSpace Real (TangentSpace I y) :=
+  let _ : (y : X.M) → InnerProductSpace Real (TangentSpace I y) :=
     X.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun y : X.M => TangentSpace I y) := X.riemBundle_cont (I := I)
-  letI : EMetricSpace X.M := X.emetricSpace (I := I)
-  letI : CompleteSpace X.M := MetricComplete.complete (I := I) X hcomplete
+  let _ : EMetricSpace X.M := X.emetricSpace (I := I)
+  let _ : CompleteSpace X.M := MetricComplete.complete (I := I) X hcomplete
   let hEnorm : ∀ (y : X.M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (X.metric.inner y w w)) := by
     intro y w
-    simpa using
-      (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) X.metric y w)
+    with_unfolding_all
+      exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) X.metric y w
   exact Geometry.Riemannian.NormalCoordinates.intrInjRadius
     (I := I) X.metric hEnorm x
 
@@ -114,33 +114,33 @@ theorem HasInjRadiusAt.injOn_ball
     let hEnorm : ∀ (y : X.M) (w : TangentSpace I y),
         ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (X.metric.inner y w w)) := by
       intro y w
-      simpa using
-        (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) X.metric y w)
+      with_unfolding_all
+        exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) X.metric y w
     Set.InjOn (intrinsicFramedExp (I := I) X.metric hEnorm x)
       (Metric.ball (0 : E) r) := by
-  letI : TopologicalSpace X.M := X.topology
-  letI : ChartedSpace H X.M := X.charted
-  letI : IsManifold I ∞ X.M := X.smooth
-  letI : IsManifold I 1 X.M :=
+  let _ : TopologicalSpace X.M := X.topology
+  let _ : ChartedSpace H X.M := X.charted
+  let _ : IsManifold I ∞ X.M := X.smooth
+  let _ : IsManifold I 1 X.M :=
     IsManifold.of_le (I := I) (M := X.M) (n := ∞) (by decide)
-  letI : T2Space X.M := X.t2
-  letI : SigmaCompactSpace X.M := X.sigmaCompact
-  letI : T2Space (TangentBundle I X.M) := X.t2TangentBundle
-  letI : RiemannianBundle (fun y : X.M => TangentSpace I y) :=
+  let _ : T2Space X.M := X.t2
+  let _ : SigmaCompactSpace X.M := X.sigmaCompact
+  let _ : T2Space (TangentBundle I X.M) := X.t2TangentBundle
+  let _ : RiemannianBundle (fun y : X.M => TangentSpace I y) :=
     X.riemBundle (I := I)
-  letI : (y : X.M) → InnerProductSpace Real (TangentSpace I y) :=
+  let _ : (y : X.M) → InnerProductSpace Real (TangentSpace I y) :=
     X.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun y : X.M => TangentSpace I y) := X.riemBundle_cont (I := I)
-  letI : EMetricSpace X.M := X.emetricSpace (I := I)
-  letI : CompleteSpace X.M := MetricComplete.complete (I := I) X hcomplete
+  let _ : EMetricSpace X.M := X.emetricSpace (I := I)
+  let _ : CompleteSpace X.M := MetricComplete.complete (I := I) X hcomplete
   let hEnorm : ∀ (y : X.M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (X.metric.inner y w w)) := by
     intro y w
-    simpa using
-      (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) X.metric y w)
+    with_unfolding_all
+      exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) X.metric y w
   apply intrInjOn_ball (I := I) X.metric hEnorm x
   exact ((ENNReal.ofReal_lt_ofReal_iff h.1).2 hr).trans_le <| by
     simpa only [PointedRiemannianManifold.intrInjRadius] using

@@ -26,6 +26,6 @@ def frameExtData {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     (A : M → (Fin r → Idx) → Real) (x : M) :
     (Fin r → Idx) → Idx → Real :=
-  fun m d => extDerivFun (I := I) (fun y : M => A y m) x (frame d x)
+  fun m d => mvfderiv (I := I) (fun y : M => A y m) x (frame d x)
 
 end DifferentialGeometry.PDE.RicciFlow

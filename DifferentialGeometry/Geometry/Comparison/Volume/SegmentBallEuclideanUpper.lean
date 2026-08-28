@@ -48,7 +48,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
           (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere Set.univ)
         * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
   classical
-  letI : Nontrivial E :=
+  let : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   let L : E ≃L[ℝ] E := normalFrame (I := I) (E := E) g x
@@ -62,7 +62,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
         (isClosed_segDom (I := I) g hEnorm x)
   have hpre :
       L ⁻¹' gBall (I := I) g x R = Metric.ball (0 : E) R := by
-    simpa only [L] using preimage_gBall (I := I) (E := E) g x R
+    with_unfolding_all exact preimage_gBall (I := I) (E := E) g x R
   have hcover :
       {y : M | riemannianEDist I x y < ENNReal.ofReal R} ⊆
         (fun b : E =>
@@ -73,7 +73,12 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
       ball_sub_image_segDom (I := I) g hEnorm x R hy
     have hwopen : L.symm v ∈ Metric.ball (0 : E) R := by
       rw [← hpre]
-      simpa only [Set.mem_preimage, L.apply_symm_apply] using hv.2
+      change (show TangentSpace I x from
+        L (L.symm (show E from v))) ∈ gBall (I := I) g x R
+      have hL : L (L.symm (show E from v)) = (show E from v) :=
+        L.apply_symm_apply (show E from v)
+      rw [hL]
+      exact hv.2
     refine ⟨v, ⟨hv.1, ?_⟩, hexp⟩
     exact ⟨L.symm v, Metric.ball_subset_closedBall hwopen, L.apply_symm_apply v⟩
   let Dn : E → ℝ := fun w =>
@@ -117,7 +122,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
         q hq hu0 hno hRic
     have hsqrt :
         Real.sqrt (g.inner x (L w) (L w)) = ‖w‖ := by
-      simpa only [L] using normalFrame_sqrt (I := I) g x w
+      with_unfolding_all exact normalFrame_sqrt (I := I) g x w
     apply ENNReal.ofReal_le_ofReal
     simpa only [Dn, Dh, hsqrt] using hdens
   have hmono :
@@ -175,7 +180,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
       riemVol_exp_image_le (I := I) g hEnorm x hK
     _ = ∫⁻ w in L ⁻¹' K,
         ENNReal.ofReal (Dn w) ∂(volume : Measure E) := by
-      simpa only [Dn, L] using
+      with_unfolding_all exact
         expJac_normal_int (I := I) (E := E) g hEnorm x K
     _ ≤ ((volume : Measure
           (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere Set.univ)

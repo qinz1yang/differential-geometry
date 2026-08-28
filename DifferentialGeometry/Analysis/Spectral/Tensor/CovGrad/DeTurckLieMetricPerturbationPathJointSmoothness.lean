@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -54,7 +53,7 @@ theorem jointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -89,7 +88,7 @@ theorem jointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -122,7 +121,7 @@ theorem jointTotalSpace0S_smulFun_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (f p.2 • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -166,9 +165,9 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
             (Tensor0SBundle.Tensor0SSpace.toModel (A pp))
             (Tensor0SBundle.Tensor0SSpace.toModel (B pp)))))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) p
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) q
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) p
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) q
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (p + q)
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -194,30 +193,36 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
     intro v
     rw [modelProdCLM_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
     change (Tensor0SBundle.Tensor0SSpace.toModel (A pp))
-          (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1
-            ((v ∘ Fin.castAdd q) i)) *
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) pp.1
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1
+              ((v ∘ Fin.castAdd q) i))) *
         (Tensor0SBundle.Tensor0SSpace.toModel (B pp))
-          (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1
-            ((v ∘ Fin.natAdd p) i)) =
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) pp.1
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1
+              ((v ∘ Fin.natAdd p) i))) =
       (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
         (Tensor0SBundle.Tensor0SSpace.toModel (A pp))
         (Tensor0SBundle.Tensor0SSpace.toModel (B pp)))
-        (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1 (v i))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) pp.1
+          ((trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1 (v i)))
     rw [Bundle.continuousMultilinearMap.modelProduct_apply]
     rfl
   · apply ContinuousMultilinearMap.ext
     intro v
     rw [modelProdCLM_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
     change (Tensor0SBundle.Tensor0SSpace.toModel (A p₀))
-          (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1
-            ((v ∘ Fin.castAdd q) i)) *
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p₀.1
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1
+              ((v ∘ Fin.castAdd q) i))) *
         (Tensor0SBundle.Tensor0SSpace.toModel (B p₀))
-          (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1
-            ((v ∘ Fin.natAdd p) i)) =
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p₀.1
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1
+              ((v ∘ Fin.natAdd p) i))) =
       (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
         (Tensor0SBundle.Tensor0SSpace.toModel (A p₀))
         (Tensor0SBundle.Tensor0SSpace.toModel (B p₀)))
-        (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1 (v i))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p₀.1
+          ((trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1 (v i)))
     rw [Bundle.continuousMultilinearMap.modelProduct_apply]
     rfl
 
@@ -314,9 +319,9 @@ private theorem deTurckVFChartLocal_metricPerturbationPath_jointContMDiffOn
             chartBasisVecFiber (I := I) α k q.1⟩).2)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine ContMDiffOn.congr ?_ hcoord_eq
-    refine contMDiffOn_finset_sum (fun k _ => ?_)
+    refine contMDiffOn_finsetSum (fun k _ => ?_)
     exact (hcoeff k).smul contMDiffOn_const
-  haveI : MemTrivializationAtlas e := by rw [he]; infer_instance
+  have : MemTrivializationAtlas e := by rw [he]; infer_instance
   rw [Bundle.Trivialization.contMDiffOn_iff (e := e) ?_]
   · exact ⟨contMDiffOn_fst, hcoordSmooth⟩
   · rintro q ⟨hqx, _⟩
@@ -385,7 +390,7 @@ private noncomputable def covGradSymmSValue (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covGradSymmSValue_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
@@ -400,7 +405,7 @@ private theorem covGradSymmSValue_contMDiff (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covGradSymmSValue_convexPerturbation (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) (s : ℝ) (x : M) :
     covGradSymmSValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) x =
@@ -418,7 +423,7 @@ private theorem covGradSymmSValue_convexPerturbation (g₀ : SmoothRiemannianMet
 
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covGradSymmSValueFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (_hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T)
@@ -494,9 +499,9 @@ private theorem metricConnectionDifferenceLoweredFib_split (gm gA gC gB : Smooth
   rw [Tensor0SBundle.Tensor0SSpace.toModel_add]
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [ContinuousMultilinearMap.add_apply, metricConnectionDifferenceLoweredFib_toModel,
+  rw [add_apply, metricConnectionDifferenceLoweredFib_toModel,
     metricConnectionDifferenceLoweredFib_toModel, metricConnectionDifferenceLoweredFib_toModel,
-    connectionDifference_split_middle (I := I) gA gC gB, map_add, ContinuousLinearMap.add_apply]
+    connectionDifference_split_middle (I := I) gA gC gB, map_add, add_apply]
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -518,8 +523,8 @@ private theorem metricConnectionDifferenceLowered_fixedPair_affine (g₀ : Smoot
     Tensor0SBundle.Tensor0SSpace.toModel_smul, Tensor0SBundle.Tensor0SSpace.toModel_smul]
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.smul_apply,
+  rw [add_apply, add_apply,
+    smul_apply, smul_apply,
     metricConnectionDifferenceLoweredFib_toModel, metricConnectionDifferenceLoweredFib_toModel,
     ccBilinConnectionDifferenceLoweredFib_toModel, ccBilinConnectionDifferenceLoweredFib_toModel]
   rw [metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hs,
@@ -527,7 +532,7 @@ private theorem metricConnectionDifferenceLowered_fixedPair_affine (g₀ : Smoot
   simp only [smul_eq_mul]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -589,8 +594,8 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
   rw [metricConnectionDifferenceLoweredFib_toModel, Tensor0SBundle.Tensor0SSpace.toModel_smul,
     Tensor0SBundle.Tensor0SSpace.toModel_sub, Tensor0SBundle.Tensor0SSpace.toModel_add,
     Tensor0SBundle.Tensor0SSpace.toModel_ofModel, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
-  rw [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.domDomCongr_apply,
+  rw [smul_apply, sub_apply,
+    add_apply, ContinuousMultilinearMap.domDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
   have hg₁ : ∀ (b : M) (u w : TangentSpace I b),
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner b u w =
@@ -599,18 +604,37 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
     fun b u w => metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hp.2 b u w
   have hid := connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
-    (convexPerturbation (I := I) g₀ T T' p.2) hg₁ p.1 (v 0) (v 1) (v 2)
+    (convexPerturbation (I := I) g₀ T T' p.2) hg₁ p.1
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v 0))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v 1))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v 2))
   rw [hid]
   have h1 : (fun j => v (arm1LowerSwapPermA j)) = ![v 1, v 0, v 2] := by
     funext j; fin_cases j <;> rfl
   have h3 : (fun j => v (arm1LowerSwapPermC j)) = ![v 2, v 1, v 0] := by
     funext j; fin_cases j <;> rfl
   rw [h1, h3]
-  have huM : ∀ vv : Fin 3 → TangentSpace I p.1,
+  have huM : ∀ vv : Fin 3 → E,
       unitModel (I := I) (M := M) g₀ 3
         (covGrad (I := I) (M := M) g₀ 0 2
           (ccTensor02Symm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2))) p.1 vv =
       Tensor0SBundle.Tensor0SSpace.toModel (Vfam p) vv := fun vv => rfl
+  have hunitModelEval (a b c : E) :
+      unitModel (I := I) (M := M) g₀ 3
+          (covGrad (I := I) (M := M) g₀ 0 2
+            (ccTensor02Symm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2))) p.1
+          ![a, b, c] =
+        Tensor0SBundle.Tensor0SSpace.eval
+          (unitEvalSection (I := I) (M := M) g₀ 3
+            (covGrad (I := I) (M := M) g₀ 0 2
+              (ccTensor02Symm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2))) p.1)
+          ![(tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm a,
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm b,
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm c] := by
+    rw [unitModel, unitEvalSection_apply]
+    rfl
+  rw [← hunitModelEval (v 1) (v 0) (v 2), ← hunitModelEval (v 0) (v 1) (v 2),
+    ← hunitModelEval (v 2) (v 1) (v 0)]
   rw [huM ![v 1, v 0, v 2], huM ![v 0, v 1, v 2], huM ![v 2, v 1, v 0]]
   have hv012 : Tensor0SBundle.Tensor0SSpace.toModel (Vfam p) v =
       Tensor0SBundle.Tensor0SSpace.toModel (Vfam p) ![v 0, v 1, v 2] := by
@@ -619,7 +643,7 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
   rw [hv012]
   simp only [smul_eq_mul]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem metricConnectionDifferenceLowered_bgFam_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

@@ -108,8 +108,9 @@ theorem connectionDifferenceSup_le
     ⟨hΛ, fun x _ => hcomp x⟩
   intro x v w
   have h := connectionDifference_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
-  simpa [connectionDifferenceZeroC, DifferentialGeometry.PDE.DeTurck.connectionDifference,
-    mul_assoc, mul_left_comm, mul_comm] using h
+  unfold DifferentialGeometry.PDE.DeTurck.connectionDifference
+    DifferentialGeometry.Geometry.Connection.LeviCivita
+  simpa [connectionDifferenceZeroC, mul_assoc, mul_left_comm, mul_comm] using h
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in

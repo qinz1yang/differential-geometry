@@ -25,7 +25,7 @@ theorem hasDerivAt_of_right
   have hgderivIcc : ∀ x ∈ Icc a b,
       HasDerivWithinAt g (f' x) (Icc a b) x := by
     intro x hxIcc
-    letI : Fact (x ∈ Icc a b) := ⟨hxIcc⟩
+    let : Fact (x ∈ Icc a b) := ⟨hxIcc⟩
     have hxU : x ∈ uIcc a b := by
       simpa only [uIcc_of_le hab.le] using hxIcc
     have hprim : HasDerivWithinAt
@@ -46,7 +46,9 @@ theorem hasDerivAt_of_right
       rw [← uIcc_of_le hab.le]
       exact intervalIntegral.continuousOn_primitive_interval
         ((intervalIntegrable_iff').mp hint)
-    simpa only [g] using continuousOn_const.add hprim
+    change ContinuousOn ((fun _ => f a) +
+      fun x => intervalIntegral f' a x volume) (Icc a b)
+    exact continuousOn_const.add hprim
   have hfg : ∀ x ∈ Icc a b, f x = g x := by
     apply eq_of_has_deriv_right_eq hderiv hgderiv hf hgcont
     simp only [g, intervalIntegral.integral_same, add_zero]
@@ -85,7 +87,8 @@ theorem contDiffOn_of_right
       ((Icc c d) ×ˢ (Set.univ : Set F)) := by
     have hglobal : ContDiff Real ∞
         (Function.uncurry (fun _ : Real ↦ v)) := by
-      simpa only [Function.uncurry_apply_pair] using hv.comp contDiff_snd
+      change ContDiff Real ∞ (v ∘ Prod.snd)
+      exact hv.comp contDiff_snd
     exact hglobal.contDiffOn
   have hlocal : ∀ r ∈ Icc c d, HasDerivWithinAt f
       ((fun _ : Real ↦ v) r (f r)) (Icc c d) r := by

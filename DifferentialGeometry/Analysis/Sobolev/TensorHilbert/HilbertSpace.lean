@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -94,7 +93,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 instance : SMul ℕ (SmoothCcTensorHs g r s k) := ⟨nsmulRec⟩
 instance : SMul ℤ (SmoothCcTensorHs g r s k) := ⟨zsmulRec⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma toCcTensor_nsmul (S : SmoothCcTensorHs g r s k) (n : ℕ) :
     (n • S).toCcTensor = n • S.toCcTensor := by
   induction n with
@@ -107,7 +107,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
       have hn : (nsmulRec n S).toCcTensor = n • S.toCcTensor := ih
       rw [toCcTensor_add, hn, succ_nsmul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma toCcTensor_zsmul (S : SmoothCcTensorHs g r s k) (z : ℤ) :
     (z • S).toCcTensor = z • S.toCcTensor := by
   rcases z with n | n

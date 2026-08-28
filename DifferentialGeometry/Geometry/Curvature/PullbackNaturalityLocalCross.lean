@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
 import DifferentialGeometry.Geometry.Metric.LocalPullback
 import DifferentialGeometry.Topology.SigmaCompactOpen
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -28,6 +29,7 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
   [IsManifold J ∞ N] [IsManifold J 1 N]
   [T2Space N] [SigmaCompactSpace N] [J.Boundaryless]
 
+omit [I.Boundaryless] [J.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem rm04_localPull
     (g : SmoothRiemannianMetric J N) (f : M → N)
@@ -48,10 +50,23 @@ theorem rm04_localPull
   let Ψ : Diffeomorph I J U V ∞ :=
     DifferentialGeometry.PartialDiffeomorph.toOpensDiffeoCross Φ hU
   let xu : U := ⟨x, hxΦ⟩
-  letI : SigmaCompactSpace U :=
+  let toU (v : TangentSpace I x) : TangentSpace I xu :=
+    (tangentSpaceModelContinuousLinearEquiv (I := I) xu).symm
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
+  have htoU (v : TangentSpace I x) :
+      mfderiv I I (Subtype.val : U → M) xu (toU v) = v := by
+    rw [mfderiv_subtype_val_apply]
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
+    change (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) xu).symm
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x v
+    rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    exact tangentSpaceModelContinuousLinearEquiv_apply (I := I) x v
+  let _ : SigmaCompactSpace U :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  letI : SigmaCompactSpace V :=
+  let _ : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
   have hEqNhds : f =ᶠ[𝓝 x] (Φ : M → N) :=
@@ -63,6 +78,13 @@ theorem rm04_localPull
         mfderiv I J (Φ : M → N) (y : M) v := by
     simpa only [Ψ] using
       DifferentialGeometry.PartialDiffeomorph.mfderiv_toOpensDiffeoCross Φ hU y v
+  have hΨdAmbient (y : U) (v : TangentSpace I y) :
+      mfderiv J J (Subtype.val : V → N) (Ψ y)
+          (mfderiv I J (Ψ : U → V) y v) =
+        mfderiv I J (Φ : M → N) (y : M)
+          (mfderiv I I (Subtype.val : U → M) y v) := by
+    rw [mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
+    exact hΨd y v
   have hΨval (y : U) : ((Ψ y : V) : N) = (Φ : M → N) (y : M) := by
     rfl
   have hmetric :
@@ -77,48 +99,78 @@ theorem rm04_localPull
     have hdfY : mfderiv I J f (y : M) =
         mfderiv I J (Φ : M → N) (y : M) :=
       hEqYNhds.mfderiv_eq
-    rw [SmoothRiemannianMetric.restrictOpen_inner,
-      localPullMetric_inner,
-      Diffeomorph.pullbackMetricCross_inner,
-      SmoothRiemannianMetric.restrictOpen_inner,
-      hΨval, hΨd, hΨd,
-      hEq hyΦ, hdfY]
+    calc
+      ((localPullMetric (I := I) (J := J) g f hf).restrictOpen (I := I) U).inner
+          y v w =
+          (localPullMetric (I := I) (J := J) g f hf).inner (y : M)
+            (mfderiv I I (Subtype.val : U → M) y v)
+            (mfderiv I I (Subtype.val : U → M) y w) := by
+              rw [SmoothRiemannianMetric.restrictOpen_inner,
+                mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
+      _ = g.inner (f (y : M))
+            (mfderiv I J f (y : M)
+              (mfderiv I I (Subtype.val : U → M) y v))
+            (mfderiv I J f (y : M)
+              (mfderiv I I (Subtype.val : U → M) y w)) :=
+        localPullMetric_inner (I := I) (J := J) g f hf (y : M)
+          (mfderiv I I (Subtype.val : U → M) y v)
+          (mfderiv I I (Subtype.val : U → M) y w)
+      _ = g.inner ((Φ : M → N) (y : M))
+            (mfderiv I J (Φ : M → N) (y : M)
+              (mfderiv I I (Subtype.val : U → M) y v))
+            (mfderiv I J (Φ : M → N) (y : M)
+              (mfderiv I I (Subtype.val : U → M) y w)) := by
+        rw [hEq hyΦ, hdfY]
+      _ = (g.restrictOpen (I := J) V).inner (Ψ y)
+            (mfderiv I J (Ψ : U → V) y v)
+            (mfderiv I J (Ψ : U → V) y w) := by
+        rw [SmoothRiemannianMetric.restrictOpen_inner,
+          mfderiv_subtype_val_apply, mfderiv_subtype_val_apply,
+          hΨd, hΨd, hΨval]
+      _ = (Diffeomorph.pullbackMetricCross (I := I) (J := J)
+            (g.restrictOpen (I := J) V) Ψ).inner y v w :=
+        (Diffeomorph.pullbackMetricCross_inner
+          (I := I) (J := J) (g.restrictOpen (I := J) V) Ψ y v w).symm
   calc
     metricRm04StdAt (I := I) (M := M)
         (localPullMetric (I := I) (J := J) g f hf) x X Y Z W =
         metricRm04StdAt (I := I) (M := U)
           ((localPullMetric (I := I) (J := J) g f hf).restrictOpen (I := I) U)
-          xu X Y Z W := by
-            exact (metricRm04StdAt_restrictOpen
-              (I := I) (localPullMetric (I := I) (J := J) g f hf)
-              U xu X Y Z W).symm
+          xu (toU X) (toU Y) (toU Z) (toU W) := by
+            rw [metricRm04StdAt_restrictOpen, htoU, htoU, htoU, htoU]
     _ = metricRm04StdAt (I := I) (M := U)
           (Diffeomorph.pullbackMetricCross (I := I) (J := J)
             (g.restrictOpen (I := J) V) Ψ)
-          xu X Y Z W := by rw [hmetric]
+          xu (toU X) (toU Y) (toU Z) (toU W) := by rw [hmetric]
     _ = metricRm04StdAt (I := J) (M := V)
           (g.restrictOpen (I := J) V) (Ψ xu)
-          (mfderiv I J (Ψ : U → V) xu X)
-          (mfderiv I J (Ψ : U → V) xu Y)
-          (mfderiv I J (Ψ : U → V) xu Z)
-          (mfderiv I J (Ψ : U → V) xu W) :=
+          (mfderiv I J (Ψ : U → V) xu (toU X))
+          (mfderiv I J (Ψ : U → V) xu (toU Y))
+          (mfderiv I J (Ψ : U → V) xu (toU Z))
+          (mfderiv I J (Ψ : U → V) xu (toU W)) :=
       metricRm04Std_pullbackCross
-        (I := I) (J := J) (g.restrictOpen (I := J) V) Ψ xu X Y Z W
+        (I := I) (J := J) (g.restrictOpen (I := J) V) Ψ xu
+          (toU X) (toU Y) (toU Z) (toU W)
     _ = metricRm04StdAt (I := J) (M := N) g ((Ψ xu : V) : N)
-          (mfderiv I J (Ψ : U → V) xu X)
-          (mfderiv I J (Ψ : U → V) xu Y)
-          (mfderiv I J (Ψ : U → V) xu Z)
-          (mfderiv I J (Ψ : U → V) xu W) :=
+          (mfderiv J J (Subtype.val : V → N) (Ψ xu)
+            (mfderiv I J (Ψ : U → V) xu (toU X)))
+          (mfderiv J J (Subtype.val : V → N) (Ψ xu)
+            (mfderiv I J (Ψ : U → V) xu (toU Y)))
+          (mfderiv J J (Subtype.val : V → N) (Ψ xu)
+            (mfderiv I J (Ψ : U → V) xu (toU Z)))
+          (mfderiv J J (Subtype.val : V → N) (Ψ xu)
+            (mfderiv I J (Ψ : U → V) xu (toU W))) :=
       metricRm04StdAt_restrictOpen
         (I := J) g V (Ψ xu)
-          (mfderiv I J (Ψ : U → V) xu X)
-          (mfderiv I J (Ψ : U → V) xu Y)
-          (mfderiv I J (Ψ : U → V) xu Z)
-          (mfderiv I J (Ψ : U → V) xu W)
+          (mfderiv I J (Ψ : U → V) xu (toU X))
+          (mfderiv I J (Ψ : U → V) xu (toU Y))
+          (mfderiv I J (Ψ : U → V) xu (toU Z))
+          (mfderiv I J (Ψ : U → V) xu (toU W))
     _ = metricRm04StdAt (I := J) (M := N) g (f x)
           (mfderiv I J f x X) (mfderiv I J f x Y)
           (mfderiv I J f x Z) (mfderiv I J f x W) := by
-      rw [hΨval, hΨd, hΨd, hΨd, hΨd, ← hdf]
+      rw [hΨdAmbient, hΨdAmbient, hΨdAmbient, hΨdAmbient,
+        htoU, htoU, htoU, htoU, hΨval, ← hdf]
       change metricRm04StdAt (I := J) (M := N) g ((Φ : M → N) x)
           (mfderiv I J f x X) (mfderiv I J f x Y)
           (mfderiv I J f x Z) (mfderiv I J f x W) = _

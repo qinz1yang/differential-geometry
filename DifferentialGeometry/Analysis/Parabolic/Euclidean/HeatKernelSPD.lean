@@ -20,9 +20,22 @@ private abbrev matrixCLM (A : Matrix n n ℝ) :
   Matrix.toEuclideanCLM (n := n) (𝕜 := ℝ) A
 def spdSqrtEquiv (A : Matrix n n ℝ) (hA : A.PosDef) :
     EuclideanSpace ℝ n ≃L[ℝ] EuclideanSpace ℝ n :=
-  let hS : (CFC.sqrt A).PosDef := hA.isStrictlyPositive.sqrt.posDef
-  (Matrix.toLinearEquiv (EuclideanSpace.basisFun n ℝ).toBasis
-      (CFC.sqrt A) (isUnit_iff_ne_zero.mpr hS.det_pos.ne')).toContinuousLinearEquiv
+  let S := CFC.sqrt A
+  let hS : S.PosDef := hA.isStrictlyPositive.sqrt.posDef
+  let L := matrixCLM S
+  have hunit : IsUnit S :=
+    (Matrix.isUnit_iff_isUnit_det S).mpr
+      (isUnit_iff_ne_zero.mpr hS.det_pos.ne')
+  have hinj : Function.Injective L := by
+    intro x y hxy
+    apply WithLp.ofLp_injective
+    apply Matrix.mulVec_injective_of_isUnit hunit
+    simpa only [L, matrixCLM, Matrix.ofLp_toEuclideanCLM] using
+      congrArg WithLp.ofLp hxy
+  ContinuousLinearEquiv.ofBijective L
+    (LinearMap.ker_eq_bot.mpr hinj)
+    (LinearMap.range_eq_top.mpr
+      (L.toLinearMap.surjective_of_injective hinj))
 
 @[simp]
 theorem spdSqrtEquiv_apply (A : Matrix n n ℝ) (hA : A.PosDef)
@@ -55,7 +68,7 @@ theorem spdSqrt_selfAdj (A : Matrix n n ℝ) (hA : A.PosDef) :
       EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n) =
         Matrix.toEuclideanLin (CFC.sqrt A) from
       Matrix.coe_toEuclideanCLM_eq_toEuclideanLin (CFC.sqrt A)]
-  exact Matrix.isHermitian_iff_isSymmetric.mp
+  exact Matrix.isSymmetric_toEuclideanLin_iff.mpr
     (CFC.sqrt_nonneg A).isSelfAdjoint.isHermitian
 theorem spdSqrt_norm_sq (A : Matrix n n ℝ) (hA : A.PosDef)
     (x : EuclideanSpace ℝ n) :

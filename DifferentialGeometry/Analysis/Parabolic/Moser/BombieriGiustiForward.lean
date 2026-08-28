@@ -448,7 +448,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
           (canonicalEarlyBombieriGiustiReverseCost (I := I) (M := M)
             (Module.finrank ℝ E) g hdim p₀ A b τ B lower upper k) / 4)) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let rate := logCenterDrift (I := I) (M := M) g averagingCutoff
@@ -550,7 +550,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
       g hdim rho outer averagingCutoff C hC hP u hu hpos hp₀ hp₀_one
         hAb hbτ hB hlowerUpper hrho hmeasure hmeasure_le_one houter hmass hpde
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   have hc₀ : 0 ≤

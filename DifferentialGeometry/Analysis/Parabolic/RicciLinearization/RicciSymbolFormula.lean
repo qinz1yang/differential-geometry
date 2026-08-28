@@ -52,40 +52,42 @@ section FibreForm
 def formComp (x : M)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (c d : Fin (Module.finrank ℝ E)) : ℝ :=
-  t ((chartModelBasis E) c) ((chartModelBasis E) d)
+  t (centeredChartTangentBasis (I := I) x c)
+    (centeredChartTangentBasis (I := I) x d)
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 @[simp] lemma formComp_def (x : M)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (c d : Fin (Module.finrank ℝ E)) :
     formComp (I := I) x t c d =
-      t ((chartModelBasis E) c) ((chartModelBasis E) d) := rfl
+      t (centeredChartTangentBasis (I := I) x c)
+        (centeredChartTangentBasis (I := I) x d) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 @[simp] lemma formComp_zero (x : M) (c d : Fin (Module.finrank ℝ E)) :
     formComp (I := I) x
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) c d = 0 := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma formComp_add (x : M)
     (t t' : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (c d : Fin (Module.finrank ℝ E)) :
     formComp (I := I) x (t + t') c d =
       formComp (I := I) x t c d + formComp (I := I) x t' c d := by
-  simp [formComp]
+  rfl
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma formComp_smul (x : M) (a : ℝ)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (c d : Fin (Module.finrank ℝ E)) :
     formComp (I := I) x (a • t) c d = a * formComp (I := I) x t c d := by
-  simp [formComp]
+  rfl
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma formComp_symm (x : M)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
@@ -111,7 +113,9 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 lemma formMetricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
     formMetricTrace (I := I) g x
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) = 0 := by
-  simp [formMetricTrace]
+  rw [formMetricTrace_def]
+  exact Finset.sum_eq_zero fun m _ =>
+    Finset.sum_eq_zero fun n _ => by rw [formComp_zero, mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma formMetricTrace_add (g : SmoothRiemannianMetric I M) (x : M)
@@ -156,7 +160,8 @@ lemma raisedFormContraction_zero (g : SmoothRiemannianMetric I M) (x : M) (ξ : 
     (k : Fin (Module.finrank ℝ E)) :
     raisedFormContraction (I := I) g x ξ
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) k = 0 := by
-  simp [raisedFormContraction]
+  rw [raisedFormContraction_def]
+  exact Finset.sum_eq_zero fun l _ => by rw [formComp_zero, mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma raisedFormContraction_add (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
@@ -201,7 +206,8 @@ lemma raisedFormContractionSnd_zero (g : SmoothRiemannianMetric I M) (x : M)
     (ξ : E) (i : Fin (Module.finrank ℝ E)) :
     raisedFormContractionSnd (I := I) g x ξ
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) i = 0 := by
-  simp [raisedFormContractionSnd]
+  rw [raisedFormContractionSnd_def]
+  exact Finset.sum_eq_zero fun j _ => by rw [formComp_zero, mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma raisedFormContractionSnd_add (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)

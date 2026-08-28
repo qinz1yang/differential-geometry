@@ -10,6 +10,7 @@ import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Set Function Filter Bundle Manifold
@@ -36,11 +37,12 @@ variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+    [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
     (b : ℝ) (v : TangentSpace I p) :
     g.inner p (b • v) (b • v) = b ^ 2 * g.inner p v v := by
-  rw [(g.inner p).map_smul b v, ContinuousLinearMap.smul_apply,
+  rw [(g.inner p).map_smul b v, smul_apply,
     (g.inner p v).map_smul b v]
   simp only [smul_eq_mul]
   ring
@@ -48,7 +50,8 @@ lemma gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+    [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma sqrt_gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
     {b : ℝ} (hb : 0 ≤ b) (v : TangentSpace I p) :
     Real.sqrt (g.inner p (b • v) (b • v)) = b * Real.sqrt (g.inner p v v) := by
@@ -58,7 +61,8 @@ lemma sqrt_gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+    [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma gInner_self_nonneg (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) : 0 ≤ g.inner p v v := by
   rcases eq_or_ne v 0 with hv | hv
@@ -118,7 +122,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 lemma gUnitSphere_isCompact (g : SmoothRiemannianMetric I M) (p : M) :
     IsCompact {w : TangentSpace I p | g.inner p w w = 1} := by
-  haveI : ProperSpace (TangentSpace I p) :=
+  have : ProperSpace (TangentSpace I p) :=
     FiniteDimensional.proper_real (TangentSpace I p)
   exact Metric.isCompact_of_isClosed_isBounded
     (gUnitSphere_isClosed (I := I) g p) (gUnitSphere_isBounded (I := I) g p)
@@ -129,7 +133,7 @@ omit [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 lemma gLenBall_isCompact (g : SmoothRiemannianMetric I M) (p : M) (C : ℝ) :
     IsCompact {v : E | Real.sqrt (g.inner p v v) ≤ C} := by
-  haveI : ProperSpace E := FiniteDimensional.proper_real E
+  have : ProperSpace E := FiniteDimensional.proper_real E
   refine Metric.isCompact_of_isClosed_isBounded
     (isClosed_Iic.preimage (continuous_sqrt_gInner_self (I := I) g p)) ?_
   rw [isBounded_iff_forall_norm_le]
@@ -188,10 +192,10 @@ lemma continuous_riemannianEDist_to
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (q : M) :
     Continuous (fun q' : M => riemannianEDist I q' q) := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  haveI : RegularSpace M := inferInstance
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have : RegularSpace M := inferInstance
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   exact (continuous_id.edist continuous_const)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -214,7 +218,7 @@ theorem exists_min_riemannianEDist_on_intrinsicSphere
     with hsph_def
   have hsph_ne : sph.Nonempty := by
     have hfin_pos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
-    haveI : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
+    have : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
     obtain ⟨x, hx_ne⟩ : ∃ x : TangentSpace I p, x ≠ 0 :=
       ⟨(exists_ne (0 : E)).choose, (exists_ne (0 : E)).choose_spec⟩
     have hc_pos : 0 < g.inner p x x := g.pos p x hx_ne
@@ -271,7 +275,7 @@ theorem riemannianEDist_ne_top
     (p q : M) : riemannianEDist I p q ≠ (⊤ : ℝ≥0∞) := by
   set S : Set M := {z : M | riemannianEDist I p z ≠ ⊤} with hS
   have hpS : p ∈ S := by
-    simp only [hS, Set.mem_setOf_eq, riemannianEDist_self]; exact ENNReal.zero_ne_top
+    simp only [hS, Set.mem_ofPred_eq, riemannianEDist_self]; exact ENNReal.zero_ne_top
   have hSopen : IsOpen S := by
     rw [isOpen_iff_mem_nhds]
     intro z₀ hz₀
@@ -279,7 +283,7 @@ theorem riemannianEDist_ne_top
     have hloc : ∀ᶠ z in nhds z₀, riemannianEDist I z₀ z < (1 : ℝ≥0∞) :=
       eventually_riemannianEDist_lt I z₀ one_pos
     filter_upwards [hloc] with z hz
-    simp only [hS, Set.mem_setOf_eq]
+    simp only [hS, Set.mem_ofPred_eq]
     have htri : riemannianEDist I p z ≤
         riemannianEDist I p z₀ + riemannianEDist I z₀ z := riemannianEDist_triangle
     have hlt : riemannianEDist I p z < ⊤ :=
@@ -291,11 +295,11 @@ theorem riemannianEDist_ne_top
     rw [isOpen_iff_mem_nhds]
     intro z₀ hz₀
     have hinf : riemannianEDist I p z₀ = ⊤ := by
-      simpa only [hS, Set.mem_compl_iff, Set.mem_setOf_eq, not_not] using hz₀
+      simpa only [hS, Set.mem_compl_iff, Set.mem_ofPred_eq, not_not] using hz₀
     have hloc : ∀ᶠ z in nhds z₀, riemannianEDist I z₀ z < (1 : ℝ≥0∞) :=
       eventually_riemannianEDist_lt I z₀ one_pos
     filter_upwards [hloc] with z hz
-    simp only [hS, Set.mem_compl_iff, Set.mem_setOf_eq, not_not]
+    simp only [hS, Set.mem_compl_iff, Set.mem_ofPred_eq, not_not]
     by_contra hpz
     have hpz' : riemannianEDist I p z ≠ ⊤ := hpz
     have htri : riemannianEDist I p z₀ ≤
@@ -334,7 +338,7 @@ theorem radialDistToReal_continuous
       riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q) :=
     hdist.comp hray
   refine ENNReal.continuousOn_toReal.comp_continuous hcomp (fun t => ?_)
-  rw [Set.mem_setOf_eq]
+  rw [Set.mem_ofPred_eq]
   exact riemannianEDist_ne_top (I := I) _ q
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -369,7 +373,7 @@ theorem propagationSet_isClosed
         {t : ℝ |
           (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal
             = r - t} := by
-    ext t; simp only [Set.mem_setOf_eq, Set.mem_inter_iff]
+    ext t; simp only [Set.mem_ofPred_eq, Set.mem_inter_iff]
   rw [hsplit]
   exact isClosed_Icc.inter heq
 
@@ -379,11 +383,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I 
 theorem riemannianEDist_eq_zero_imp_eq
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (a b : M) (h : riemannianEDist I a b = 0) : a = b := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  haveI : RegularSpace M := inferInstance
-  haveI : T3Space M := inferInstance
-  letI em : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  have : RegularSpace M := inferInstance
+  have : T3Space M := inferInstance
+  let em : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
   have hedist : @edist M em.toEDist a b = 0 := h
   exact (@edist_eq_zero M em a b).mp hedist
 
@@ -474,8 +478,8 @@ theorem intrinsicGeodesic_riemannianEDist_le
     riemannianEDist I (intrinsicGeodesic (I := I) g hEnorm p v s)
         (intrinsicGeodesic (I := I) g hEnorm p v t)
       ≤ ENNReal.ofReal (Real.sqrt (g.inner p v v) * (t - s)) := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm p v with hγ_def
   set c : ℝ := Real.sqrt (g.inner p v v) with hc_def
   have hc_nn : (0 : ℝ) ≤ c := Real.sqrt_nonneg _
@@ -583,7 +587,7 @@ private theorem radialDist_cont_ne
       riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q) :=
     hdist.comp hray
   refine ENNReal.continuousOn_toReal.comp_continuous hcomp (fun t => ?_)
-  rw [Set.mem_setOf_eq]
+  rw [Set.mem_ofPred_eq]
   exact radial_dist_ne_top (I := I) g hEnorm p q u hpq t
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -619,7 +623,7 @@ private theorem propSet_closed_ne
           (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal
             = r - t} := by
     ext t
-    simp only [Set.mem_setOf_eq, Set.mem_inter_iff]
+    simp only [Set.mem_ofPred_eq, Set.mem_inter_iff]
   rw [hsplit]
   exact isClosed_Icc.inter heq
 
@@ -882,7 +886,8 @@ theorem expMapIntrinsic_local_surjective
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 theorem chartCurve_contDiffAt_top_of_isGeodesicOn
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ} {t : ℝ}
     (hs : IsOpen s) (ht : t ∈ s)
@@ -893,7 +898,7 @@ theorem chartCurve_contDiffAt_top_of_isGeodesicOn
       (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve
         (I := I) (γ t) γ) t := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set α : M := γ t with hα_def
   set u : ℝ → E := DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve
     (I := I) α γ with hu_def
@@ -990,7 +995,8 @@ theorem chartCurve_contDiffAt_top_of_isGeodesicOn
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_contMDiffAt_top
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ} {t : ℝ}
     (hs : IsOpen s) (ht : t ∈ s)
@@ -1043,7 +1049,8 @@ theorem isGeodesicOn_contMDiffAt_top
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_contMDiffOn_top
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ}
     (hs : IsOpen s)
@@ -1055,7 +1062,8 @@ theorem isGeodesicOn_contMDiffOn_top
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [T2Space (TangentBundle I M)]
+    [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem isGeodesic_contMDiff
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
@@ -1081,8 +1089,8 @@ theorem sphere_jump
         riemannianEDist I x y = ENNReal.ofReal δ ∧
         riemannianEDist I y q = ENNReal.ofReal (ρ - δ) := by
   classical
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨ρ₀, hρ₀_pos, hagree⟩ :=
     exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm x
   obtain ⟨ρ₂, hρ₂_pos, hradial⟩ :=
@@ -1100,7 +1108,7 @@ theorem sphere_jump
     with hsph_def
   have hsph_ne : sph.Nonempty := by
     have hfin_pos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
-    haveI : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
+    have : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
     obtain ⟨a, ha_ne⟩ : ∃ a : TangentSpace I x, a ≠ 0 :=
       ⟨(exists_ne (0 : E)).choose, (exists_ne (0 : E)).choose_spec⟩
     have hc_pos : 0 < g.inner x a a := g.pos x a ha_ne
@@ -1362,9 +1370,10 @@ private lemma isSmoothVariation_of_chartGlue
         apply hext.comp (hξ.comp contMDiff_snd).contMDiffOn
         intro q hq; exact hWsub q.2 hq
       apply hcomp.add
-      apply ContMDiffOn.smul
+      apply ContMDiffOn.smul (I := 𝓘(ℝ, ℝ))
       · exact (hη.comp contMDiff_fst).contMDiffOn
-      · exact ((hβ.comp contMDiff_snd).contMDiffOn).smul contMDiffOn_const
+      · exact ((hβ.comp contMDiff_snd).contMDiffOn).smul
+          (I := 𝓘(ℝ, ℝ)) contMDiffOn_const
     have hcompose : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
         ((extChartAt I c).symm ∘
           (fun q : ℝ × ℝ => extChartAt I c (ξ q.2) + ηf q.1 • (βf q.2 • w)))
@@ -1385,7 +1394,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [T2Space (TangentBundle I M)]
     [SigmaCompactSpace M] in
 private lemma broken_piece_firstVariation
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (c : M) (w : E) {ξ : ℝ → M} {len : ℝ} (hlen : 0 < len)
@@ -1623,7 +1631,6 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [T2Space (TangentBundle I M)]
     [SigmaCompactSpace M] in
 theorem broken_minimizer_velocity_match
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [hContinuous : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1687,9 +1694,11 @@ theorem broken_minimizer_velocity_match
         simpa using (hasDerivAt_id (0 : ℝ)).div_const ρ
       have h2 : HasDerivAt Real.sin (Real.cos (0 / ρ)) (0 / ρ) := Real.hasDerivAt_sin _
       have h4 := ((h2.comp 0 h1).const_mul ρ)
-      simp only [Real.cos_zero, zero_div] at h4
-      convert h4 using 1
-      field_simp
+      simp only [Real.cos_zero, zero_div, one_mul] at h4
+      have hρinv : ρ * (1 / ρ) = 1 := by
+        field_simp
+      rw [hρinv] at h4
+      simpa only [hηf_def, Function.comp_apply] using h4
     have hηbd : ∀ s, |ηf s| ≤ ρ := by
       intro s
       rw [hηf_def, abs_mul, abs_of_pos hρ_pos]
@@ -1786,7 +1795,7 @@ theorem broken_minimizer_velocity_match
             ((trivializationAt E (TangentSpace I) c).symmL ℝ (γ 0) (βγ 0 • w))
             (mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ))
           = g.inner c δ Tminus := by
-        rw [← hc_def, hsymm1, hsymm0γ, map_zero, ContinuousLinearMap.zero_apply, sub_zero]
+        rw [← hc_def, hsymm1, hsymm0γ, map_zero, zero_apply, sub_zero]
       rw [← heq]; exact hbdryγ
     have hbdryσ' : HasDerivAt (fun s : ℝ => arcLength (I := I) g (fun t : ℝ => Fσ s t) 0 ℓ₂)
         (- g.inner c δ Tplus) 0 := by
@@ -1797,7 +1806,7 @@ theorem broken_minimizer_velocity_match
             ((trivializationAt E (TangentSpace I) c).symmL ℝ (σ 0) (βσ 0 • w))
             (mfderiv (𝓘(ℝ, ℝ)) I σ 0 (1 : ℝ))
           = - g.inner c δ Tplus := by
-        rw [hσ0c, hsymm1σ, hsymm0σ, map_zero, ContinuousLinearMap.zero_apply, zero_sub]
+        rw [hσ0c, hsymm1σ, hsymm0σ, map_zero, zero_apply, zero_sub]
         rfl
       rw [← heq]; exact hbdryσ
     set Lfun : ℝ → ℝ := fun s : ℝ =>
@@ -1969,8 +1978,8 @@ theorem intrinsicGeodesic_continuation
   have hη_vel : (mfderiv 𝓘(ℝ, ℝ) I η 0 (1 : ℝ) : E) = (w₂ : E) := by
     have hshift : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => s + t₀)
         (0 : ℝ) (ContinuousLinearMap.id ℝ ℝ) := by
-      rw [hasMFDerivAt_iff_hasFDerivAt]
-      simpa using (hasFDerivAt_id (0 : ℝ)).add_const t₀
+      apply hasMFDerivAt_iff_hasFDerivAt.mpr
+      exact (hasFDerivAt_id (0 : ℝ)).add_const t₀
     have hγ_at : HasMFDerivAt 𝓘(ℝ, ℝ) I γ ((0 : ℝ) + t₀) (mfderiv 𝓘(ℝ, ℝ) I γ ((0 : ℝ) + t₀)) := by
       rw [zero_add]; exact hmdiff_γ.hasMFDerivAt
     have hη_mfderiv : mfderiv 𝓘(ℝ, ℝ) I η 0
@@ -2230,8 +2239,8 @@ theorem exists_continuous_path_realizing_riemannianEDist
       exact ENNReal.ofReal_toReal hfin
     have hpath_le : pathELength I (intrinsicGeodesic (I := I) g hEnorm p v) 0 1 ≤
         ENNReal.ofReal (Real.sqrt (g.inner p v v)) := by
-      letI : MeasurableSpace M := borel M
-      haveI : BorelSpace M := ⟨rfl⟩
+      let : MeasurableSpace M := borel M
+      have : BorelSpace M := ⟨rfl⟩
       have hγ_C1 : ContMDiffOn 𝓘(ℝ,
         ℝ) I 1 (intrinsicGeodesic (I := I) g hEnorm p v) (Set.Icc (0 : ℝ) (1 : ℝ)) :=
         (intrinsicGeodesic_contMDiffOn (I := I) g hEnorm p v).mono (Set.subset_univ _)
@@ -2314,8 +2323,7 @@ theorem exists_unit_speed_minimizing_geodesic_between_points
     let η : ℝ → M := fun _ => p
     refine ⟨η, 0, le_rfl, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · rfl
-    · change η 0 = q
-      simp [η, hpq]
+    · simp [η, hpq]
     · exact contMDiffOn_const
     · exact (isGeodesic_const g p).isGeodesicOn (Set.Icc (0 : ℝ) 0)
     · intro t ht
@@ -2398,20 +2406,20 @@ theorem hopf_rinow_expMapIntrinsic_surjective_of_complete_metric
       fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
     ∃ v : TangentSpace I p, expMapIntrinsic (I := I) g hEnorm p v = q ∧
       Real.sqrt (g.inner p v v) = (riemannianEDist I p q).toReal := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M :=
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
     (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
-  letI : CompleteSpace M := hcomplete.complete
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -2442,20 +2450,20 @@ theorem minExp_of_complete_metric
       fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
     ∃ v : TangentSpace I p, expMapIntrinsic (I := I) g hEnorm p v = q ∧
       Real.sqrt (g.inner p v v) = (riemannianEDist I p q).toReal := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M :=
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
     (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
-  letI : CompleteSpace M := hcomplete.complete
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

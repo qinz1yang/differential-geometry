@@ -1,5 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Basic
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
+import DifferentialGeometry.Tensor.RSTensor.Product
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -163,10 +164,10 @@ theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
     0 <= LinearMap.trace Real (TangentSpace I x) A := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   rw [LinearMap.trace_eq_sum_inner A
     (stdOrthonormalBasis Real (TangentSpace I x))]
@@ -327,11 +328,11 @@ theorem tensor0S_curry_one_apply
       A (fun a : Fin 2 => if a = 0 then X else Y) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (1 + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+        (fun _ : Fin (1 + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
         X)
         (fun _ : Fin 1 => Y)) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
         (fun a : Fin 2 => if a = 0 then X else Y)
   rw [continuousMultilinearCurryLeftEquiv_apply]
   congr 1
@@ -346,11 +347,11 @@ theorem tensor0S_curry_apply_cons
       A (Fin.cons X tail) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (fun _ : Fin (s + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         X)
         tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         (Fin.cons X tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
 
@@ -605,16 +606,17 @@ theorem tensor0S_curry_product_one_two
     (α : Tensor0SSpace 1 I x) (A : Tensor0SSpace 2 I x)
     (X : TangentSpace I x) :
     (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (F := E) (E := TangentSpace I)
-          (s := 1) (q := 2) α A) X) =
+        (Tensor0SSpace.product (r := 1) (s := 2) α A) X) =
       α (fun _ : Fin 1 => X) • A := by
   refine ContinuousMultilinearMap.ext fun v => ?_
-  change (Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (F := E) (E := TangentSpace I) α A) (Fin.cons X v) =
-    α (fun _ : Fin 1 => X) * A v
-  rw [Bundle.continuousMultilinearMap.product_fun_apply
-    (𝕜 := Real) (F := E) (E := TangentSpace I)]
+  change
+    (((continuousMultilinearCurryLeftEquiv Real
+        (fun _ : Fin 3 => TangentSpace I x) Real)
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 3 x
+          (Tensor0SSpace.product (r := 1) (s := 2) α A)) X) v) =
+      α (fun _ : Fin 1 => X) * A v
+  rw [continuousMultilinearCurryLeftEquiv_apply,
+    tensor0SSpaceFiberContinuousLinearEquiv_apply_apply, Tensor0SSpace.product_apply]
   have hhead :
       (Fin.cons X v ∘ Fin.castAdd 2) = fun _ : Fin 1 => X := by
     funext a
@@ -625,7 +627,6 @@ theorem tensor0S_curry_product_one_two
     funext a
     fin_cases a <;> rfl
   rw [hhead, htail]
-  rfl
 
 end
 

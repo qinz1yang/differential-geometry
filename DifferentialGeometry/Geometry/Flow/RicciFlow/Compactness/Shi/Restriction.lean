@@ -42,28 +42,8 @@ theorem ricciSection_restrictOpen
           (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g)
           (x : M) slots := by
   let _ := hManifoldU
-  have hLHS :
-      CovariantDerivative.ricciSection (I := I)
-          (leviCivitaConnectionOfMetric (I := I) (g.restrictOpen (I := I) U))
-          (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I)
-            (g.restrictOpen (I := I) U)) x slots
-        = ricciTensor (I := I) (M := U) (g.restrictOpen (I := I) U) x (slots 0) (slots 1) := by
-    have hvecU : slots = vec2 (I := I) (slots 0) (slots 1) := by
-      funext i; fin_cases i <;> rfl
-    rw [hvecU]
-    exact ricciSection_eq_ricciTensor (I := I) (g.restrictOpen (I := I) U) x (slots 0) (slots 1)
-  have hRHS :
-      CovariantDerivative.ricciSection (I := I)
-          (leviCivitaConnectionOfMetric (I := I) g)
-          (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g)
-          (x : M) slots
-        = ricciTensor (I := I) (M := M) g (x : M) (slots 0) (slots 1) := by
-    have hvecM : slots = vec2 (I := I) (slots 0) (slots 1) := by
-      funext i; fin_cases i <;> rfl
-    rw [hvecM]
-    exact ricciSection_eq_ricciTensor (I := I) g (x : M) (slots 0) (slots 1)
-  rw [hLHS, hRHS]
-  exact ricciTensor_restrictOpen (I := I) g U x (slots 0) (slots 1)
+  simpa only [metricRicci, metricCov, mfderiv_subtype_val_apply] using
+    metricRicci_restrictOpen_eval (I := I) g U x slots
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -88,6 +68,11 @@ theorem ricCovTower_restrictOpen
     ricCovTower (I := I) (g.restrictOpen (I := I) U)
         (g.restrictOpen (I := I) U) s x slots
       = ricCovTower (I := I) g g s (x : M) slots := by
+  let slotsU : Fin (s + 2) → TangentSpace I x := slots ∘ (acEquiv s).symm
+  let slotsM : Fin (2 + s) → TangentSpace I (x : M) := fun i => slots i
+  let slotsCovM : Fin (s + 2) → TangentSpace I (x : M) :=
+    slotsM ∘ (acEquiv s).symm
+  let slotsUCoe : Fin (s + 2) → TangentSpace I (x : M) := fun i => slotsU i
   have hrestrict := covDerivOfField_restrictOpen (I := I) g U
     (CovariantDerivative.ricciSection (I := I)
       (leviCivitaConnectionOfMetric (I := I) (g.restrictOpen (I := I) U))
@@ -96,11 +81,40 @@ theorem ricCovTower_restrictOpen
     (CovariantDerivative.ricciSection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g)
       (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g))
-    (ricciSection_restrictOpen (I := I) g U) s x (slots ∘ (acEquiv s).symm)
-  rw [covDerivOfField_apply_eq_iterCov', covDerivOfField_apply_eq_iterCov'] at hrestrict
+    (ricciSection_restrictOpen (I := I) g U) s x slotsU
+  change covDerivOfField (I := I) (g.restrictOpen (I := I) U)
+      (CovariantDerivative.ricciSection (I := I)
+        (leviCivitaConnectionOfMetric (I := I) (g.restrictOpen (I := I) U))
+        (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I)
+          (g.restrictOpen (I := I) U))) s x slotsU =
+    covDerivOfField (I := I) g
+      (CovariantDerivative.ricciSection (I := I)
+        (leviCivitaConnectionOfMetric (I := I) g)
+        (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g))
+      s (x : M) slotsUCoe at hrestrict
+  have hslots : slotsUCoe = slotsCovM := by
+    funext i
+    rfl
+  rw [hslots] at hrestrict
+  rw [covDerivOfField_apply_eq_iterCov' (I := I),
+    covDerivOfField_apply_eq_iterCov' (I := I)] at hrestrict
+  change
+    (iterCov (I := I) (g.restrictOpen (I := I) U) 2
+      (CovariantDerivative.ricciSection (I := I)
+        (leviCivitaConnectionOfMetric (I := I) (g.restrictOpen (I := I) U))
+        (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I)
+          (g.restrictOpen (I := I) U))) s x) slots =
+      (iterCov (I := I) g 2
+        (CovariantDerivative.ricciSection (I := I)
+          (leviCivitaConnectionOfMetric (I := I) g)
+          (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g))
+        s (x : M)) slotsM
   convert hrestrict using 2 <;>
-    · funext i
-      simp only [Function.comp_apply, Equiv.symm_apply_apply]
+    funext i
+  · change slots i = slots ((acEquiv s).symm ((acEquiv s) i))
+    rw [Equiv.symm_apply_apply]
+  · change slotsM i = slotsM ((acEquiv s).symm ((acEquiv s) i))
+    rw [Equiv.symm_apply_apply]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

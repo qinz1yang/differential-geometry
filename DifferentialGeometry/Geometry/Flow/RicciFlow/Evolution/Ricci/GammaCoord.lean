@@ -34,7 +34,7 @@ def christoffelVariationCovDerivCoordAt
         CoordinateIdx (𝕜 := Real) E -> Real)
     (t : Real) (x₀ : M)
     (dir k i j : CoordinateIdx (𝕜 := Real) E) : Real :=
-  extDerivFun (I := I) (fun x : M => gammaDt t x i j k) x₀
+  mvfderiv (I := I) (fun x : M => gammaDt t x i j k) x₀
       (coordinateFrameAt (I := I) x₀ dir x₀) +
     (∑ a : CoordinateIdx (𝕜 := Real) E,
       DifferentialGeometry.Geometry.Curvature.christoffelCoordAt (I := I) cov x₀ dir a k *
@@ -92,17 +92,22 @@ private theorem christoffelCoordDerivAt_hasDerivWithinAt_of_christoffelVariation
         DifferentialGeometry.Geometry.Curvature.christoffelCoordDerivAt (I := I)
           (S.family.connection s)
           x₀ dir i j k)
-      (extDerivFun (I := I) (fun y : M => rhs (t : Real) y i j k) x₀
+      (mvfderiv (I := I) (fun y : M => rhs (t : Real) y i j k) x₀
         (coordinateFrameAt (I := I) x₀ dir x₀))
       D.carrier
       (t : Real) := by
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ :=
     coordinateFrameAt_mem (I := I) x₀
-  simpa [DifferentialGeometry.Geometry.Curvature.christoffelCoordDerivAt,
-    DifferentialGeometry.Geometry.Curvature.christoffelCoordFun] using
-    fixedBaseExtDerivTimeDerivativeOnRegular_apply (I := I) (h := hmix i j k)
+  have h := fixedBaseExtDerivTimeDerivativeOnRegular_apply (I := I) (h := hmix i j k)
       (t := (t : Real)) t.2 (x := x₀) hx₀
       (coordinateFrameAt (I := I) x₀ dir x₀)
+  change HasDerivWithinAt
+    (fun s : Real =>
+      DifferentialGeometry.Geometry.Curvature.christoffelCoordDerivAt (I := I)
+        (S.family.connection s) x₀ dir i j k)
+    (mvfderiv (I := I) (fun y : M => rhs (t : Real) y i j k) x₀
+      (coordinateFrameAt (I := I) x₀ dir x₀)) D.carrier (t : Real) at h
+  exact h
 
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem christoffelCoordAt_hasDerivWithinAt_of_christoffelVariation
@@ -225,9 +230,9 @@ theorem christoffelCurvCoeffAt_hasDerivWithinAt_of_christoffelVariation
           DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt (I := I)
             (S.family.connection s)
             x₀ i k j m)
-        ((extDerivFun (I := I) (fun y : M => rhs (t : Real) y k j m) x₀
+        ((mvfderiv (I := I) (fun y : M => rhs (t : Real) y k j m) x₀
             (coordinateFrameAt (I := I) x₀ i x₀) -
-          extDerivFun (I := I) (fun y : M => rhs (t : Real) y i j m) x₀
+          mvfderiv (I := I) (fun y : M => rhs (t : Real) y i j m) x₀
             (coordinateFrameAt (I := I) x₀ k x₀)) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             (rhs (t : Real) x₀ k j a *
@@ -245,10 +250,12 @@ theorem christoffelCurvCoeffAt_hasDerivWithinAt_of_christoffelVariation
               rhs (t : Real) x₀ k a m)))
         D.carrier
         (t : Real) := by
-    simpa [DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt, sub_eq_add_neg,
-      add_assoc,
-      Finset.sum_add_distrib] using
-      (((hD_i.sub hD_k).add hprod_left).sub hprod_right)
+    have h := ((hD_i.sub hD_k).add hprod_left).sub hprod_right
+    change HasDerivWithinAt
+      (fun s : Real =>
+        DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt (I := I)
+          (S.family.connection s) x₀ i k j m) _ D.carrier (t : Real) at h
+    exact h.congr_deriv (by simp only [Finset.sum_add_distrib])
   refine hraw.congr_deriv ?_
   have hsymm :
       ∀ a b c : CoordinateIdx (𝕜 := Real) E,
@@ -269,7 +276,7 @@ theorem christoffelCurvCoeffAt_hasDerivWithinAt_of_christoffelVariation
   let dA : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun dir a b c =>
-      extDerivFun (I := I) (fun y : M => rhs (t : Real) y a b c) x₀
+      mvfderiv (I := I) (fun y : M => rhs (t : Real) y a b c) x₀
         (coordinateFrameAt (I := I) x₀ dir x₀)
   have hΓsymm : ∀ a b c : CoordinateIdx (𝕜 := Real) E, Γ a b c = Γ b a c := by
     intro a b c
@@ -448,7 +455,7 @@ theorem gammaCovNab2Core
     let G : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
       fun a l => gInv (t : Real) x₀ a l
     let dG : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
-      fun a l => extDerivFun (I := I) (fun y : M => gInv (t : Real) y a l)
+      fun a l => mvfderiv (I := I) (fun y : M => gInv (t : Real) y a l)
         x₀ (frame d x₀)
     let N :
         CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
@@ -457,7 +464,7 @@ theorem gammaCovNab2Core
     let dN :
         CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
           CoordinateIdx (𝕜 := Real) E -> Real :=
-      fun a b c => extDerivFun (I := I)
+      fun a b c => mvfderiv (I := I)
         (fun y : M => nablaRic (t : Real) y a b c) x₀ (frame d x₀)
     have hlower_mdiff :
         ∀ a b c : CoordinateIdx (𝕜 := Real) E,
@@ -466,28 +473,31 @@ theorem gammaCovNab2Core
               christoffelVariationLoweredRHSInFrame nablaRic
                 (t : Real) y a b c) x₀ := by
       intro a b c
-      simpa [christoffelVariationLoweredRHSInFrame] using
-        (((hN_mdiff a b c).neg.sub (hN_mdiff b a c)).add (hN_mdiff c a b))
+      have h := ((hN_mdiff a b c).neg.sub (hN_mdiff b a c)).add (hN_mdiff c a b)
+      change MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => christoffelVariationLoweredRHSInFrame nablaRic
+          (t : Real) y a b c) x₀ at h
+      exact h
     have hlower_deriv :
         ∀ a b c : CoordinateIdx (𝕜 := Real) E,
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun y : M =>
                 christoffelVariationLoweredRHSInFrame nablaRic
                   (t : Real) y a b c) x₀ (frame d x₀) =
             lowerRHS dN a b c := by
       intro a b c
       unfold christoffelVariationLoweredRHSInFrame lowerRHS dN
-      rw [ricci_extDerivFun_add (I := I) (v := frame d x₀)
+      rw [ricci_mvfderiv_add (I := I) (v := frame d x₀)
         (f := fun y : M => -nablaRic (t : Real) y a b c -
           nablaRic (t : Real) y b a c)
         (g := fun y : M => nablaRic (t : Real) y c a b)
         ((hN_mdiff a b c).neg.sub (hN_mdiff b a c)) (hN_mdiff c a b)]
-      rw [ricci_extDerivFun_sub (I := I) (v := frame d x₀)
+      rw [ricci_mvfderiv_sub (I := I) (v := frame d x₀)
         (f := fun y : M => -nablaRic (t : Real) y a b c)
         (g := fun y : M => nablaRic (t : Real) y b a c)
         (hN_mdiff a b c).neg (hN_mdiff b a c)]
-      rw [ricci_extDerivFun_neg (I := I) (v := frame d x₀)
-        (f := fun y : M => nablaRic (t : Real) y a b c) (hN_mdiff a b c)]
+      rw [ricci_mvfderiv_neg (I := I) (v := frame d x₀)
+        (f := fun y : M => nablaRic (t : Real) y a b c)]
     have hgamma_eval :
         ∀ a b c : CoordinateIdx (𝕜 := Real) E,
           christoffelEvolutionRHSInFrame (M := M) gInv nablaRic
@@ -498,7 +508,7 @@ theorem gammaCovNab2Core
       simp [christoffelEvolutionRHSInFrame,
         christoffelVariationLoweredRHSInFrame, lowerRHS, G, N]
     have hgamma_deriv :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun y : M =>
               christoffelEvolutionRHSInFrame (M := M) gInv nablaRic
                 (t : Real) y i j k) x₀ (frame d x₀) =
@@ -517,14 +527,14 @@ theorem gammaCovNab2Core
         ext y
         simp
       rw [hsumfun]
-      rw [ricci_extDerivFun_finset_sum (I := I)
+      rw [ricci_mvfderiv_finset_sum (I := I)
         (t := (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)))
         (f := fun l y =>
           gInv (t : Real) y k l *
             christoffelVariationLoweredRHSInFrame nablaRic (t : Real) y i j l)
         (x := x₀) (v := frame d x₀)]
       · refine Finset.sum_congr rfl fun l _ => ?_
-        rw [ricci_extDerivFun_mul (I := I) (v := frame d x₀)
+        rw [ricci_mvfderiv_mul (I := I) (v := frame d x₀)
           (f := fun y : M => gInv (t : Real) y k l)
           (g := fun y : M =>
             christoffelVariationLoweredRHSInFrame nablaRic (t : Real) y i j l)

@@ -37,7 +37,7 @@ private theorem nabla0SFun_one_eval_smooth_slots
     (α : OneFormSection (I := I) (M := M)) (x : M) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X α x) (fun _ : Fin 1 => Y x) =
-      extDerivFun (I := I) (fun p : M => α p (fun _ : Fin 1 => Y p)) x (X x) -
+      mvfderiv (I := I) (fun p : M => α p (fun _ : Fin 1 => Y p)) x (X x) -
         α x (fun _ : Fin 1 => (cov (fun p : M => Y p) x) (X x)) := by
   classical
   let V : Fin 1 -> (p : M) -> TangentSpace I p := fun _ p => Y p
@@ -84,7 +84,7 @@ private theorem nabla0SFun_one_eval_smooth_slots
 
 
 private theorem leviCivita_nablaDuSec_pointwise_symm_direct
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
@@ -140,35 +140,35 @@ private theorem leviCivita_nablaDuSec_pointwise_symm_direct
   have hleft_eval :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         1 cov X duSec x (fun _ : Fin 1 => Y x) =
-        extDerivFun (I := I) (fun p : M => duSec p (fun _ : Fin 1 => Y p)) x (X x) -
+        mvfderiv (I := I) (fun p : M => duSec p (fun _ : Fin 1 => Y p)) x (X x) -
           duSec x (fun _ : Fin 1 => covYX) := by
     simpa [cov, covYX] using
       nabla0SFun_one_eval_smooth_slots (I := I) cov X Y duSec x
   have hright_eval :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         1 cov Y duSec x (fun _ : Fin 1 => X x) =
-        extDerivFun (I := I) (fun p : M => duSec p (fun _ : Fin 1 => X p)) x (Y x) -
+        mvfderiv (I := I) (fun p : M => duSec p (fun _ : Fin 1 => X p)) x (Y x) -
           duSec x (fun _ : Fin 1 => covXY) := by
     simpa [cov, covXY] using
       nabla0SFun_one_eval_smooth_slots (I := I) cov Y X duSec x
   have hduY_fun :
       (fun p : M => duSec p (fun _ : Fin 1 => Y p)) =
-        fun p : M => extDerivFun (I := I) u p (Y p) := by
+        fun p : M => mvfderiv (I := I) u p (Y p) := by
     funext p
     rw [hdu p]
-    simp [duField, differential1FormFun_apply_eq_extDerivFun]
+    simp [duField, differential1FormFun_apply_eq_mvfderiv]
   have hduX_fun :
       (fun p : M => duSec p (fun _ : Fin 1 => X p)) =
-        fun p : M => extDerivFun (I := I) u p (X p) := by
+        fun p : M => mvfderiv (I := I) u p (X p) := by
     funext p
     rw [hdu p]
-    simp [duField, differential1FormFun_apply_eq_extDerivFun]
+    simp [duField, differential1FormFun_apply_eq_mvfderiv]
   have hscalar :
-      extDerivFun (I := I) (fun p : M => duSec p (fun _ : Fin 1 => Y p)) x (X x) -
-          extDerivFun (I := I) (fun p : M => duSec p (fun _ : Fin 1 => X p)) x (Y x) =
-        extDerivFun (I := I) u x bracket := by
+      mvfderiv (I := I) (fun p : M => duSec p (fun _ : Fin 1 => Y p)) x (X x) -
+          mvfderiv (I := I) (fun p : M => duSec p (fun _ : Fin 1 => X p)) x (Y x) =
+        mvfderiv (I := I) u x bracket := by
     rw [hduY_fun, hduX_fun]
-    exact (extDerivFun_apply_mlieBracket
+    exact (mvfderiv_apply_mlieBracket
       (I := I) (fun p : M => X p) (fun p : M => Y p) u x hX2 hY2 hu2).symm
   have htf := leviCivitaConnectionOfMetric_isTorsionFree (I := I) g
   have htorsion :
@@ -179,16 +179,16 @@ private theorem leviCivita_nablaDuSec_pointwise_symm_direct
   have hcorr :
       duSec x (fun _ : Fin 1 => covYX) -
           duSec x (fun _ : Fin 1 => covXY) =
-        extDerivFun (I := I) u x bracket := by
+        mvfderiv (I := I) u x bracket := by
     rw [hdu x]
-    simp only [duField, differential1FormFun_apply_eq_extDerivFun]
-    unfold extDerivFun
+    simp only [duField, differential1FormFun_apply_eq_mvfderiv]
+    unfold mvfderiv
     rw [← map_sub, htorsion]
   rw [hleft, hright, hleft_eval, hright_eval]
   linarith
 
 private theorem leviCivita_nablaDuSec_coordFrame_symm
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
@@ -209,7 +209,7 @@ private theorem leviCivita_nablaDuSec_coordFrame_symm
     (coordinateFrameAt_toBasis (I := I) x j)
 
 private theorem leviCivita_nablaDuSec_pointwise_symm
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
@@ -225,12 +225,18 @@ private theorem leviCivita_nablaDuSec_pointwise_symm
     (I := I) (coordinateFrameAt_toBasis (I := I) x) (nablaDuSec x) ?_
   · exact hsymm U V
   intro i j
-  simpa [vec2] using
-    leviCivita_nablaDuSec_coordFrame_symm
-      (I := I) g u hu duSec nablaDuSec hnabla hdu x i j
+  have h := leviCivita_nablaDuSec_coordFrame_symm
+    (I := I) g u hu duSec nablaDuSec hnabla hdu x i j
+  rw [coordinateFrameAt_toBasis_apply, coordinateFrameAt_toBasis_apply] at h
+  change nablaDuSec x
+      (fun q : Fin 2 => if q = 0 then coordinateFrameAt x i x else coordinateFrameAt x j x) =
+    nablaDuSec x
+      (fun q : Fin 2 => if q = 0 then coordinateFrameAt x j x else coordinateFrameAt x i x) at h
+  rw [coordinateFrameAt_toBasis_apply, coordinateFrameAt_toBasis_apply]
+  exact h
 
 theorem hessSymm
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     {x : M} (U V : TangentSpace I x) :
@@ -258,7 +264,7 @@ theorem hessSymm
       (I := I) g u hu du Hess hnabla hdu x U V
 
 theorem oneFormLastTwoSymmAt_of_leviCivita_du
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
@@ -294,6 +300,10 @@ theorem oneFormLastTwoSymmAt_of_leviCivita_du
       (I := I) cov S nablaDuSec x hsymm Y Z
   rw [← hSx]
   rw [hleft, hright]
-  simpa [vec2] using hs
+  change (nabla0SFun (I := I) 2 cov S nablaDuSec x)
+      (fun q : Fin 2 => if q = 0 then Y else Z) =
+    (nabla0SFun (I := I) 2 cov S nablaDuSec x)
+      (fun q : Fin 2 => if q = 0 then Z else Y)
+  exact hs
 
 end DifferentialGeometry.Geometry.Connection

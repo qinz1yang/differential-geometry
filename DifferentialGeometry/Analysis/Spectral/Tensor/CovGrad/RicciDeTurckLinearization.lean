@@ -19,7 +19,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -53,7 +52,8 @@ private theorem zeroTensor_eq_smul_unitTensor (x : M)
   have hunit : Tensor0SNabla.tensor0Iso I M x (unitTensor (I := I) (M := M) x) = (1 : ℝ) := by
     have h := Tensor0SNabla.scalarFn_unitZero (I := I) (M := M)
     have hx := congrFun h x
-    simpa [Tensor0SNabla.scalarFn_apply, unitTensor] using hx
+    change Tensor0SNabla.tensor0Iso I M x (unitTensor (I := I) (M := M) x) = 1 at hx
+    exact hx
   apply (Tensor0SNabla.tensor0Iso I M x).injective
   rw [map_smul, hunit, smul_eq_mul, mul_one]
 
@@ -95,7 +95,7 @@ private theorem unitModel_add (g : SmoothRiemannianMetric I M) (s : ℕ)
   classical
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
+    add_apply, Tensor0SSpace.toModel_add]
 
 end NormedSpaceModel
 
@@ -141,14 +141,17 @@ theorem domDomCongrField_contMDiff (g : SmoothRiemannianMetric I M) {s : ℕ}
             (ContinuousMultilinearMap.domDomCongr σ
               (unitModel (I := I) (M := M) g s S x)) :
             Tensor0SSpace s I x))) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
   classical
   have hSfield : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SSpace s I z) x
         (Tensor0SSpace.ofModel (unitModel (I := I) (M := M) g s S x))) := by
-    simpa only [Tensor0SSpace.ofModel_toModel, unitModel] using
-      (contMDiff_unitEvalSection (I := I) (M := M) g s S)
+    change ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
+      (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
+        (E := fun z : M => Tensor0SSpace s I z) x
+        (unitEvalSection (I := I) (M := M) g s S x))
+    exact contMDiff_unitEvalSection (I := I) (M := M) g s S
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
     (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
     (fun x => (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
@@ -164,10 +167,19 @@ theorem domDomCongrField_contMDiff (g : SmoothRiemannianMetric I M) {s : ℕ}
   filter_upwards [Filter.univ_mem] with x _
   rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
   change (ContinuousMultilinearMap.domDomCongr σ
-      (unitModel (I := I) (M := M) g s S x))
-      (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-        ((Module.finBasis ℝ E) (τ j))) = _
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
+      (unitModel (I := I) (M := M) g s S x)).compContinuousLinearMap
+        (fun _ : Fin s =>
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x).toContinuousLinearMap.comp
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ x))
+        (fun j => (Module.finBasis ℝ E) (τ j)) =
+    (unitModel (I := I) (M := M) g s S x).compContinuousLinearMap
+        (fun _ : Fin s =>
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x).toContinuousLinearMap.comp
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ x))
+        (fun j => (Module.finBasis ℝ E) ((τ ∘ σ) j))
+  rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+    ContinuousMultilinearMap.domDomCongr_apply,
+    ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rfl
 
 noncomputable def domDomCongrField (g : SmoothRiemannianMetric I M) {s : ℕ}
@@ -219,7 +231,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_iteratedCovGrad_unitModel_domDomCongrSection (g : SmoothRiemannianMetric I M) {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g 0 s) (i : ℕ) :
     ∃ σ' : Equiv.Perm (Fin (s + i)),
@@ -232,7 +244,7 @@ theorem exists_iteratedCovGrad_unitModel_domDomCongrSection (g : SmoothRiemannia
     (domDomCongrSection (I := I) g σ S)
     (fun y => domDomCongrSection_unitModel (I := I) g σ S y) i
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
     (g : SmoothRiemannianMetric I M) {s : ℕ} (σ : Equiv.Perm (Fin s))
     (S : SmoothCcTensor g 0 s) (i : ℕ) (x : M) :

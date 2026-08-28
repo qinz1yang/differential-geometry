@@ -871,14 +871,16 @@ private theorem tendsto_eLpNorm_normedConvolution_sub
       (ENNReal.ofReal (εr / 3) + ENNReal.ofReal (εr / 3)) + ENNReal.ofReal (εr / 3) := by
     have hfg' : eLpNorm (fun x => f x - g x) (ENNReal.ofReal p) volume ≤ ENNReal.ofReal
       (εr / 3) := by
-      simpa [sub_eq_add_neg, add_comm] using hfg
+      rw [show (fun x => f x - g x) = f - g by rfl]
+      exact hfg
     have hgf' : eLpNorm (fun x => g x - f x) (ENNReal.ofReal p) volume ≤ ENNReal.ofReal
       (εr / 3) := by
       have hEq :
           eLpNorm (fun x => f x - g x) (ENNReal.ofReal p) volume =
             eLpNorm (fun x => g x - f x) (ENNReal.ofReal p) volume := by
-        simpa [sub_eq_add_neg] using
-          (eLpNorm_sub_comm (fun x => f x) (fun x => g x) (ENNReal.ofReal p) volume)
+        rw [show (fun x => f x - g x) = f - g by rfl,
+          show (fun x => g x - f x) = g - f by rfl]
+        exact eLpNorm_sub_comm f g (ENNReal.ofReal p) volume
       rw [← hEq]
       exact hfg'
     have hfirst_le :
@@ -1001,8 +1003,11 @@ private theorem convolution_fderiv_eq_convolution_weakPartial_univ
   let T : Homeomorph E E := (Homeomorph.neg E).trans (Homeomorph.addLeft x)
   let ψ : E → ℝ := φ ∘ T
   have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ := by
-    simpa [ψ, T, Function.comp, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
-      hφ_smooth.comp (contDiff_const.add contDiff_id.neg)
+    change ContDiff ℝ (⊤ : ℕ∞) (φ ∘ (T : E → E))
+    rw [show (T : E → E) = fun t => x + -t by
+      funext t
+      rfl]
+    exact hφ_smooth.comp (contDiff_const.add contDiff_id.neg)
   have hψ_compact : HasCompactSupport ψ := by
     simpa [ψ, T, Function.comp] using hφ_compact.comp_homeomorph T
   have key := hweak ψ hψ_smooth hψ_compact (by simp)
@@ -1014,10 +1019,16 @@ private theorem convolution_fderiv_eq_convolution_weakPartial_univ
     have hfd :
         HasFDerivAt ψ
           (((fderiv ℝ φ (x + -t)).comp ((0 : E →L[ℝ] E) - 1)) : E →L[ℝ] ℝ) t := by
-      simpa [ψ, T, Function.comp, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
-        ((hφ_smooth.differentiable
-            (show (((⊤ : ℕ∞) : WithTop ℕ∞)) ≠ 0 by simp) (x + -t)).hasFDerivAt.comp t
-          ((hasFDerivAt_const x t).add (hasFDerivAt_id t).neg))
+      change HasFDerivAt (φ ∘ (T : E → E)) _ t
+      rw [show (T : E → E) = fun z => x + -z by
+        funext z
+        rfl]
+      have hcomp := (hφ_smooth.differentiable
+          (show (((⊤ : ℕ∞) : WithTop ℕ∞)) ≠ 0 by simp) (x + -t)).hasFDerivAt.comp t
+        ((hasFDerivAt_const x t).add (hasFDerivAt_id t).neg)
+      exact hcomp.congr_fderiv (by
+        ext z
+        simp)
     calc
       (fderiv ℝ ψ t) (EuclideanSpace.single i 1)
         = (((fderiv ℝ φ (x + -t)).comp ((0 : E →L[ℝ] E) - 1))
@@ -1337,7 +1348,8 @@ theorem exists_smooth_W1p_approx_of_supportedWitness
       let ψ : E → ℝ := fun x => χ x * φ x
       have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ := hχ_smooth.mul hφ_smooth
       have hψ_compact : HasCompactSupport ψ := by
-        simpa [ψ] using hχ_compact.mul_right (f' := φ)
+        rw [show ψ = χ * φ by rfl]
+        exact hχ_compact.mul_right
       have hψ_sub : tsupport ψ ⊆ Ω := (tsupport_smul_subset_left χ φ).trans hχ_sub
       have key := hw.isWeakGrad i ψ hψ_smooth hψ_compact hψ_sub
       let ei : E := EuclideanSpace.single i 1
@@ -1357,7 +1369,7 @@ theorem exists_smooth_W1p_approx_of_supportedWitness
           have hχ_diff : Differentiable ℝ χ := hχ_smooth.differentiable (by simp)
           have hφ_diff : Differentiable ℝ φ := hφ_smooth.differentiable (by simp)
           rw [fderiv_fun_mul hχ_diff.differentiableAt hφ_diff.differentiableAt]
-          simp [ei, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+          simp [ei, add_apply, smul_apply,
             smul_eq_mul, hχx, hdχx]
         · have hux : u x = 0 := zero_outside_of_tsupport_subset (Ω := K) hu_sub hx
           simp [hux]
@@ -1428,11 +1440,14 @@ theorem exists_smooth_W1p_approx_of_supportedWitness
         Tendsto
           (fun n => eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal p) volume)
           atTop (nhds 0) := by
-      simpa [ψ] using hφ_fun.comp (tendsto_add_atTop_nat N)
+      change Tendsto
+        ((fun n => eLpNorm (fun x => φ n x - u x) (ENNReal.ofReal p) volume) ∘
+          fun n => n + N) atTop (nhds 0)
+      exact hφ_fun.comp (tendsto_add_atTop_nat N)
     have hψ_fun_nonneg :
         ∀ n,
           (0 : ℝ≥0∞) ≤ eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal p) (volume.restrict Ω) :=
-      fun n => zero_le _
+      fun _ => bot_le
     have hψ_fun_bound :
         ∀ n,
           eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal p) (volume.restrict Ω) ≤
@@ -1449,14 +1464,18 @@ theorem exists_smooth_W1p_approx_of_supportedWitness
               (fun x => (fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i)
               (ENNReal.ofReal p) volume)
           atTop (nhds 0) := by
-      simpa [ψ] using (hφ_grad i).comp (tendsto_add_atTop_nat N)
+      change Tendsto
+        ((fun n => eLpNorm
+          (fun x => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i)
+          (ENNReal.ofReal p) volume) ∘ fun n => n + N) atTop (nhds 0)
+      exact (hφ_grad i).comp (tendsto_add_atTop_nat N)
     have hψ_grad_nonneg :
         ∀ n,
           (0 : ℝ≥0∞) ≤
             eLpNorm
               (fun x => (fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i)
               (ENNReal.ofReal p) (volume.restrict Ω) :=
-      fun n => zero_le _
+      fun _ => bot_le
     have hψ_grad_bound :
         ∀ n,
           eLpNorm

@@ -9,6 +9,7 @@ import DifferentialGeometry.Geometry.Exponential.Defs
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Bundle Manifold Set Filter Function
@@ -49,10 +50,11 @@ private lemma velocity_enorm_le_of_speedSq_le
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 private lemma isGeodesicOn_hreg_record
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    [PseudoEMetricSpace M] [hriemannian : IsRiemannianManifold I M]
+    [hcomplete : CompleteSpace M]
+    [hcontinuous : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {η γ : ℝ → M} {a₀ δ b c : ℝ}
@@ -66,6 +68,9 @@ private lemma isGeodesicOn_hreg_record
       (∀ τ ∈ Set.Ioo a₀ b, ‖mfderiv 𝓘(ℝ, ℝ) I γ τ 1‖ₑ ≤ ENNReal.ofReal c) ∧
       (∀ s ∈ Set.Ioo a₀ b, (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1)
         (mfderiv 𝓘(ℝ, ℝ) I γ s 1) ≤ c ^ 2) := by
+  let _ := hriemannian
+  let _ := hcomplete
+  let _ := hcontinuous
   have hagree_nhds : γ =ᶠ[nhds (0 : ℝ)] η := by
     have hwin_open : IsOpen (Set.Ioo a₀ (min δ b)) := isOpen_Ioo
     have hwin_mem : (0 : ℝ) ∈ Set.Ioo a₀ (min δ b) := ⟨ha₀, lt_min hδ hb⟩
@@ -112,7 +117,7 @@ theorem exists_complete_geodesic_at_velocity
     ∃ Γ : ℝ → M, IsGeodesic (I := I) g Γ ∧ Γ 0 = p ∧
       (mfderiv 𝓘(ℝ, ℝ) I Γ 0 (1 : ℝ) : E) = (v : E) ∧ Continuous Γ := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨η, δ, hδ, hη0, _hηcont0, hηv, hη_mdiff, _hη_src, hη_geo⟩ :=
     HopfRinow.exists_isGeodesicOn_Ioo_at_velocity (I := I) g p v
   have hη_cont : ContinuousOn η (Set.Ioo (-δ) δ) :=
@@ -162,29 +167,32 @@ theorem exists_complete_geodesic_at_velocity
     exact ⟨by linarith [ht.2], by linarith [ht.1, ha₀_gt]⟩
   have hηr0 : ηr 0 = p := by simp [hηr_def, neg_zero, hη0]
   have hηr_mfderiv : mfderiv 𝓘(ℝ, ℝ) I ηr 0
-      = (mfderiv 𝓘(ℝ, ℝ) I η 0).comp (- ContinuousLinearMap.id ℝ ℝ) := by
+      = (mfderiv 𝓘(ℝ, ℝ) I η 0).comp
+        (- ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))) := by
     have hneg : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => -s)
-        (0 : ℝ) (- ContinuousLinearMap.id ℝ ℝ) := by
-      rw [hasMFDerivAt_iff_hasFDerivAt]
-      simpa using (hasFDerivAt_id (0 : ℝ)).neg
+        (0 : ℝ) (- ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))) := by
+      exact ((hasMFDerivAt_id (I := 𝓘(ℝ, ℝ)) (0 : ℝ)).neg).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
     have hη_at : HasMFDerivAt 𝓘(ℝ, ℝ) I η (-(0 : ℝ))
         (mfderiv 𝓘(ℝ, ℝ) I η 0) := by
       rw [neg_zero]; exact hη_mdiff0.hasMFDerivAt
     have hcomp : HasMFDerivAt 𝓘(ℝ, ℝ) I ηr 0
-        ((mfderiv 𝓘(ℝ, ℝ) I η 0).comp (- ContinuousLinearMap.id ℝ ℝ)) :=
+        ((mfderiv 𝓘(ℝ, ℝ) I η 0).comp
+          (- ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ)))) :=
       hη_at.comp 0 hneg
     exact hcomp.mfderiv
   have hηr_val : mfderiv 𝓘(ℝ, ℝ) I ηr 0 1 = -(mfderiv 𝓘(ℝ, ℝ) I η 0 1) := by
     rw [hηr_mfderiv]
-    change (mfderiv 𝓘(ℝ, ℝ) I η 0) ((- ContinuousLinearMap.id ℝ ℝ) 1)
-      = -(mfderiv 𝓘(ℝ, ℝ) I η 0 1)
-    rw [ContinuousLinearMap.neg_apply, ContinuousLinearMap.id_apply]
+    change (mfderiv 𝓘(ℝ, ℝ) I η 0)
+      ((- ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))) 1)
+        = -(mfderiv 𝓘(ℝ, ℝ) I η 0 1)
+    rw [neg_apply, ContinuousLinearMap.id_apply]
     exact map_neg (mfderiv 𝓘(ℝ, ℝ) I η 0) 1
   have hηr_speed0 : (g.inner (ηr 0)) (mfderiv 𝓘(ℝ, ℝ) I ηr 0 1)
       (mfderiv 𝓘(ℝ, ℝ) I ηr 0 1)
       = (g.inner (η 0)) (mfderiv 𝓘(ℝ, ℝ) I η 0 1) (mfderiv 𝓘(ℝ, ℝ) I η 0 1) := by
     rw [hηr_val, hηr0, hη0]
-    simp only [map_neg, ContinuousLinearMap.neg_apply, neg_neg]
+    simp only [map_neg, neg_apply, neg_neg]
   have hηr_speed_le : (g.inner (ηr 0)) (mfderiv 𝓘(ℝ, ℝ) I ηr 0 1)
       (mfderiv 𝓘(ℝ, ℝ) I ηr 0 1) ≤ c ^ 2 := by rw [hηr_speed0]; exact hηspeed_le
   obtain ⟨Γrf, hΓrf_geo, hΓrf_cont, hΓrf_agree⟩ :=
@@ -379,7 +387,8 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 theorem chartPhase_eventually_of_geodesicOn
     (g : SmoothRiemannianMetric I M) (q : M) {γ : ℝ → M} {O : Set ℝ} {t : ℝ}
     (hO_open : IsOpen O) (htO : t ∈ O)
@@ -470,7 +479,9 @@ theorem chartPhaseVF_orbit_uniqueness_at
     have hadd : HasDerivAt (fun r : ℝ => r + t) 1 s := by
       simpa using (hasDerivAt_id s).add_const t
     have hcomp := HasDerivAt.scomp s hder hadd
-    simpa [hd₁_def, mul_one] using hcomp
+    change HasDerivAt (c₁ ∘ fun r : ℝ => r + t)
+      (Geodesic.chartPhaseVF (I := I) g q (c₁ (s + t))) s
+    simpa [Function.comp_def, mul_one] using hcomp
   have hdd2 : ∀ᶠ s in 𝓝 (0 : ℝ),
       HasDerivAt d₂ (Geodesic.chartPhaseVF (I := I) g q (d₂ s)) s ∧
         d₂ s ∈ (interior (extChartAt I q).target) ×ˢ (Set.univ : Set E) := by
@@ -480,7 +491,9 @@ theorem chartPhaseVF_orbit_uniqueness_at
     have hadd : HasDerivAt (fun r : ℝ => r + t) 1 s := by
       simpa using (hasDerivAt_id s).add_const t
     have hcomp := HasDerivAt.scomp s hder hadd
-    simpa [hd₂_def, mul_one] using hcomp
+    change HasDerivAt (c₂ ∘ fun r : ℝ => r + t)
+      (Geodesic.chartPhaseVF (I := I) g q (c₂ (s + t))) s
+    simpa [Function.comp_def, mul_one] using hcomp
   have hdeq : d₁ =ᶠ[𝓝 (0 : ℝ)] d₂ :=
     chartPhaseVF_orbit_uniqueness (I := I) (g := g) (α := q) hz₀ he1 he2 hdd1 hdd2
   have hshift2 : Filter.Tendsto (fun s : ℝ => s - t) (𝓝 t) (𝓝 0) := by
@@ -493,7 +506,8 @@ theorem chartPhaseVF_orbit_uniqueness_at
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 private theorem chartPhase_continuousAt_of_geodesicOn
     (g : SmoothRiemannianMetric I M) (q : M) {γ : ℝ → M} {O : Set ℝ} {t : ℝ}
     (hO_open : IsOpen O) (htO : t ∈ O)
@@ -508,7 +522,8 @@ private theorem chartPhase_continuousAt_of_geodesicOn
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 private theorem geodesic_eventuallyEq_of_chartPhase_eq
     (g : SmoothRiemannianMetric I M) (q : M) {γ₁ γ₂ : ℝ → M} {O : Set ℝ} {t : ℝ}
     (hO_open : IsOpen O) (htO : t ∈ O)
@@ -552,7 +567,7 @@ private theorem geodesic_eventuallyEq_of_chartPhase_eq
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem chartCurve_deriv_zero_eq
     (q : M) {γ : ℝ → M} {v : E}
     (hγ_mdiff : MDifferentiableAt 𝓘(ℝ, ℝ) I γ 0)
@@ -658,7 +673,7 @@ theorem expMapIntrinsic_eq_expMap_of_geodesicOn
     have hEq : A = Set.Icc (0 : ℝ) 1 ∩
         ((fun s => (cM s, cI s)) ⁻¹' {p : (E × E) × (E × E) | p.1 = p.2}) := by
       ext s
-      simp only [hA_def, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_preimage]
+      simp only [hA_def, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_preimage]
     rw [hEq]; exact hpre
   have hA_openIn : ∀ t ∈ A, ∃ U : Set ℝ, IsOpen U ∧ t ∈ U ∧
       U ∩ Set.Icc (0 : ℝ) 1 ⊆ A := by
@@ -686,7 +701,7 @@ theorem expMapIntrinsic_eq_expMap_of_geodesicOn
     set S : Set ℝ := Set.Icc (0 : ℝ) 1 with hS_def
     have hS_conn : IsPreconnected S := (isPreconnected_Icc)
     have hA_sub_S : A ⊆ S := fun s hs => hs.1
-    haveI : PreconnectedSpace (↥S) := isPreconnected_iff_preconnectedSpace.mp hS_conn
+    have : PreconnectedSpace (↥S) := isPreconnected_iff_preconnectedSpace.mp hS_conn
     set Asub : Set (↥S) := {x : ↥S | (x : ℝ) ∈ A} with hAsub_def
     have hAsub_clopen : IsClopen Asub := by
       constructor
@@ -735,7 +750,7 @@ theorem exists_maximalGeodesic_data_of_small
         (∀ t ∈ Set.Ioo a b,
           maximalGeodesic (I := I) g q v t ∈ (chartAt H q).source) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
     Exponential.exists_uniform_existence_interval (I := I) (g := g) (p := q)
   set t' : ℝ := T / 2 with ht'_def
@@ -832,7 +847,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactS
 private lemma gq_coercive (g : SmoothRiemannianMetric I M) (q : M) :
     ∃ c : ℝ, 0 < c ∧ ∀ x : E, c * ‖x‖ ^ 2 ≤ g.inner q x x := by
   classical
-  haveI : ProperSpace E := FiniteDimensional.proper_rclike (K := ℝ) (E := E)
+  have : ProperSpace E := FiniteDimensional.proper_rclike (K := ℝ) (E := E)
   set B : E →L[ℝ] E →L[ℝ] ℝ := g.inner q with hB_def
   set Q : E → ℝ := fun x => B x x with hQ
   have hQcont : Continuous Q := by
@@ -1030,7 +1045,7 @@ theorem intrinsicGeodesic_foot_in_source_of_small
     · intro r hr
       obtain ⟨hrO', hrphase, hr_src⟩ := hW_sub hr
       exact ⟨hO'_sub_O hrO', hrphase, hr_src⟩
-  haveI : PreconnectedSpace (↥O) := isPreconnected_iff_preconnectedSpace.mp hO_conn
+  have : PreconnectedSpace (↥O) := isPreconnected_iff_preconnectedSpace.mp hO_conn
   set Asub : Set (↥O) := {x : ↥O | (x : ℝ) ∈ A} with hAsub_def
   have hAsub_open : IsOpen Asub := by
     rw [isOpen_iff_mem_nhds]
@@ -1102,7 +1117,7 @@ theorem intrinsicGeodesic_foot_in_source_of_small
         rw [Filter.disjoint_principal_right]
         refine Filter.mem_of_superset hnhds_sub ?_
         intro y hy
-        simp only [Set.mem_preimage, Set.mem_setOf_eq] at hy
+        simp only [Set.mem_preimage, Set.mem_ofPred_eq] at hy
         intro hyAsub
         exact hy (hyAsub.2.1)
       exact (clusterPt_iff_not_disjoint.mp hx) hdisj
@@ -1248,7 +1263,7 @@ private theorem hasGeodesicEquationAt_comp_const_smul
       (c • (c • a)) t := by
     have hinner : HasDerivAt (fun s => deriv w (c * s)) (c • a) t := by
       have := ha.scomp t (haff t)
-      simpa [hw_def] using this
+      simpa [hw_def, Function.comp_def] using this
     have houter : HasDerivAt (fun s => c • deriv w (c * s)) (c • (c • a)) t :=
       hinner.const_smul c
     exact houter.congr_of_eventuallyEq hderiv_eq
@@ -1269,7 +1284,8 @@ private theorem hasGeodesicEquationAt_comp_const_smul
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 private theorem geodesic_eventuallyEq_of_initial_local
     (g : SmoothRiemannianMetric I M) {γ₁ γ₂ : ℝ → M} {t₀ : ℝ}
     (hγ₁_cont : Continuous γ₁) (hγ₂_cont : Continuous γ₂)
@@ -1309,7 +1325,8 @@ private theorem geodesic_eventuallyEq_of_initial_local
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesic_eq_of_initial
     (g : SmoothRiemannianMetric I M) {Γ₁ Γ₂ : ℝ → M}
     (h₁ : Geodesic.IsGeodesic (I := I) g Γ₁) (h₂ : Geodesic.IsGeodesic (I := I) g Γ₂)
@@ -1437,7 +1454,8 @@ theorem isGeodesic_eq_of_initial
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem geo_eqOn_of_init
     (g : SmoothRiemannianMetric I M) {Γ₁ Γ₂ : ℝ → M} {O : Set ℝ}
     (hO_open : IsOpen O) (hO_conn : IsPreconnected O) (h0O : (0 : ℝ) ∈ O)
@@ -1543,7 +1561,7 @@ theorem geo_eqOn_of_init
         Filter.EventuallyEq.deriv_eq hcc
       simp only [hc₁_def, hc₂_def, hfst, hsnd]
     let l : Filter (↥O) := 𝓝 x ⊓ 𝓟 S
-    letI : NeBot l := hx
+    let : NeBot l := hx
     have hS_mem : S ∈ l := by
       rw [show l = 𝓝 x ⊓ 𝓟 S by rfl]
       exact Filter.mem_inf_of_right (by simp)
@@ -1601,7 +1619,7 @@ theorem geo_eqOn_of_init
     exact geodesic_eventuallyEq_of_chartPhase_eq (I := I) g q hU_open h0U
       (hc₁.mono hU_sub_O) (hc₂.mono hU_sub_O) hsrc₁ hsrc₂
       (fun y hy => h₁ y (hU_sub_O hy)) (fun y hy => h₂ y (hU_sub_O hy)) hphase
-  haveI : PreconnectedSpace (↥O) := isPreconnected_iff_preconnectedSpace.mp hO_conn
+  have : PreconnectedSpace (↥O) := isPreconnected_iff_preconnectedSpace.mp hO_conn
   have hS_univ : S = Set.univ := (show IsClopen S from ⟨hS_closed, hS_open⟩).eq_univ
     ⟨⟨0, h0O⟩, h0S⟩
   intro t ht
@@ -1631,12 +1649,13 @@ theorem geo_end_eq_intr
       (hcont.mono hO_sub)
       (intrinsicGeodesic_continuous (I := I) g hEnorm q v).continuousOn
     · simp [h0]
-    · simpa [γI, hv] using
-        (intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm q v).symm
+    · have hγv : (mfderiv 𝓘(ℝ, ℝ) I γI 0 (1 : ℝ) : E) = (v : E) := by
+        exact intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm q v
+      exact hv.trans hγv.symm
   have h1_closure : (1 : ℝ) ∈ closure (Set.Ioo (-1 : ℝ) 1) := by
     rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
     norm_num
-  letI : NeBot (𝓝[Set.Ioo (-1 : ℝ) 1] (1 : ℝ)) :=
+  let : NeBot (𝓝[Set.Ioo (-1 : ℝ) 1] (1 : ℝ)) :=
     mem_closure_iff_nhdsWithin_neBot.mp h1_closure
   have hΓ_lim : Filter.Tendsto Γ (𝓝[Set.Ioo (-1 : ℝ) 1] (1 : ℝ)) (𝓝 (Γ 1)) :=
     (hcont 1 (by norm_num)).mono hO_sub
@@ -1675,24 +1694,28 @@ theorem intrinsicGeodesic_smul
     exact hasGeodesicEquationAt_comp_const_smul (I := I) g t s (hφ_geo (t * s))
   have hΓrep_cont : Continuous Γrep := hφ_cont.comp (by fun_prop)
   have hΓrep0 : Γrep 0 = p := by rw [hΓrep_def]; simp only [mul_zero]; exact hφ0
-  have hscale_mfderiv : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => t * s)
-      (0 : ℝ) (t • ContinuousLinearMap.id ℝ ℝ) := by
-    rw [hasMFDerivAt_iff_hasFDerivAt]
-    have hfd : HasFDerivAt (fun s : ℝ => t * s) (t • ContinuousLinearMap.id ℝ ℝ) (0 : ℝ) := by
-      simpa [mul_comm] using
-        ((hasFDerivAt_id (0 : ℝ)).const_mul t)
-    simpa using hfd
+  have hscale_fderiv : HasFDerivAt (fun s : ℝ => t * s)
+      (t • ContinuousLinearMap.id ℝ ℝ) (0 : ℝ) := by
+    simpa [mul_comm] using ((hasFDerivAt_id (0 : ℝ)).const_mul t)
+  have hscale_mdiff : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
+      (fun s : ℝ => t * s) 0 :=
+    hscale_fderiv.differentiableAt.mdifferentiableAt
   have hφ_at : HasMFDerivAt 𝓘(ℝ, ℝ) I φ (t * (0 : ℝ)) (mfderiv 𝓘(ℝ, ℝ) I φ 0) := by
     rw [mul_zero]; exact hφ_mdiff0.hasMFDerivAt
   have hΓrep_mfderiv : mfderiv 𝓘(ℝ, ℝ) I Γrep 0
-      = (mfderiv 𝓘(ℝ, ℝ) I φ 0).comp (t • ContinuousLinearMap.id ℝ ℝ) :=
-    (hφ_at.comp 0 hscale_mfderiv).mfderiv
+      = (mfderiv 𝓘(ℝ, ℝ) I φ 0).comp
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => t * s) 0) := by
+    rw [hΓrep_def]
+    exact (hφ_at.comp 0 hscale_mdiff.hasMFDerivAt).mfderiv
   have hΓrep_vel : (mfderiv 𝓘(ℝ, ℝ) I Γrep 0 (1 : ℝ) : E) = ((t • u : TangentSpace I p) : E) := by
     have h1 : mfderiv 𝓘(ℝ, ℝ) I Γrep 0 (1 : ℝ)
-        = (mfderiv 𝓘(ℝ, ℝ) I φ 0) ((t • ContinuousLinearMap.id ℝ ℝ) (1 : ℝ)) := by
+        = (mfderiv 𝓘(ℝ, ℝ) I φ 0)
+          (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => t * s) 0 (1 : ℝ)) := by
       rw [hΓrep_mfderiv]; rfl
-    have h2 : (t • ContinuousLinearMap.id ℝ ℝ) (1 : ℝ) = t • (1 : ℝ) := by
-      rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply]
+    have h2 : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => t * s) 0 (1 : ℝ) =
+        t • (1 : ℝ) := by
+      rw [mfderiv_eq_fderiv, hscale_fderiv.fderiv]
+      with_unfolding_all rfl
     have happ : mfderiv 𝓘(ℝ, ℝ) I Γrep 0 (1 : ℝ)
         = t • (mfderiv 𝓘(ℝ, ℝ) I φ 0) (1 : ℝ) := by
       rw [h1, h2]
@@ -1753,31 +1776,15 @@ theorem exp_radial_eq_intr
       =ᶠ[nhds (0 : ℝ)] intrinsicGeodesic (I := I) g hEnorm q u := by
   classical
   obtain ⟨ρ, hρ_pos, heq⟩ := exp_eq_intr_of_small (I := I) g hEnorm q
-  have hcont_norm : ContinuousAt
-      (fun z : E => Real.sqrt (g.inner q z z)) (0 : E) := by
-    fun_prop
-  have hcont_smul :
-      ContinuousAt (fun s : ℝ => ((s • u : TangentSpace I q) : E)) (0 : ℝ) := by
-    fun_prop
-  have hcont_norm_at : ContinuousAt
-      (fun z : E => Real.sqrt (g.inner q z z))
-      (((0 : ℝ) • u : TangentSpace I q) : E) := by
-    simpa using hcont_norm
-  have hlim_comp : Tendsto
-      ((fun z : E => Real.sqrt (g.inner q z z)) ∘
-        (fun s : ℝ => ((s • u : TangentSpace I q) : E)))
-      (nhds (0 : ℝ))
-      (nhds ((fun z : E => Real.sqrt (g.inner q z z))
-        (((0 : ℝ) • u : TangentSpace I q) : E))) :=
-    ContinuousAt.comp
-      (x := (0 : ℝ))
-      (f := fun s : ℝ => ((s • u : TangentSpace I q) : E))
-      (g := fun z : E => Real.sqrt (g.inner q z z))
-      hcont_norm_at hcont_smul
   have hlim : Tendsto
       (fun s : ℝ => Real.sqrt (g.inner q ((s • u : TangentSpace I q) : E)
         ((s • u : TangentSpace I q) : E))) (nhds (0 : ℝ)) (nhds (0 : ℝ)) := by
-    simpa [Function.comp_def] using hlim_comp
+    have hcont : ContinuousAt
+        (fun s : ℝ => Real.sqrt (g.inner q ((s • u : TangentSpace I q) : E)
+          ((s • u : TangentSpace I q) : E))) 0 := by
+      fun_prop
+    change Tendsto _ (nhds 0) (nhds _) at hcont
+    simpa using hcont
   have hsmall : {s : ℝ | Real.sqrt (g.inner q ((s • u : TangentSpace I q) : E)
         ((s • u : TangentSpace I q) : E)) < ρ} ∈ nhds (0 : ℝ) := by
     have hIio : Set.Iio ρ ∈ nhds (0 : ℝ) := isOpen_Iio.mem_nhds hρ_pos
@@ -1828,7 +1835,9 @@ theorem exp_radial_d2_zero
     have hsmall : ‖(0 : ℝ) • a‖ < expMapC2Radius (I := I) g q := by
       simp [expMapC2Radius_pos (I := I) g q]
     have hC2a := radialCurve_contMDiffAt2 (I := I) g q a 0 hsmall
-    simpa [a] using hC2a
+    change ContMDiffAt 𝓘(ℝ, ℝ) I 2
+      (fun s : ℝ => expMap (I := I) g q (show TangentSpace I q from s • a)) 0
+    exact hC2a
   exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
     (I := I) g _ 0 hC2 (exp_radial_geo_zero (I := I) g hEnorm q u)
 

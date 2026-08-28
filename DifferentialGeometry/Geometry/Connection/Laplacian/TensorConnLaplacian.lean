@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -142,7 +141,11 @@ theorem rawTensorConnLap_add
   have h_addT : cov.toFun (fun y => T y + T' y) x =
       cov.toFun T x + cov.toFun T' x := by
     have h_add := hcov_loc.add (σ := T) (σ' := T') (hT x) (hT' x)
-    convert h_add using 1
+    have heq : (fun y => T y + T' y) = T + T' := by
+      funext y
+      rfl
+    rw [heq]
+    exact h_add
   have h_covApply_add : covApply cov (smoothOrthoFrame (I := I) g x i)
       (fun y => T y + T' y) =
       covApply cov (smoothOrthoFrame (I := I) g x i) T +
@@ -186,7 +189,7 @@ theorem rawTensorConnLap_add
           (smoothOrthoFrame (I := I) g x i) x
           (smoothOrthoFrame (I := I) g x i x)))
   rw [h_second_deriv_add, h_addT]
-  simp only [ContinuousLinearMap.add_apply]
+  simp only [add_apply]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -249,7 +252,7 @@ theorem rawTensorConnLap_smul
           (smoothOrthoFrame (I := I) g x i) x
           (smoothOrthoFrame (I := I) g x i x)))
   rw [h_second_smul, h_smulT]
-  simp only [ContinuousLinearMap.smul_apply, smul_sub]
+  simp only [smul_apply, smul_sub]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -809,7 +812,7 @@ private lemma rawTensorConnLap_fixedFrame_firstSummand_contMDiff
         (covApply cov (B i)
           (fun z : M => covApply cov (B i) T z) y)) b :=
     hOn.contMDiffAt (Filter.univ_mem)
-  convert hAt
+  exact hAt.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -879,7 +882,7 @@ private lemma rawTensorConnLap_fixedFrame_secondSummand_contMDiff
         (E := fun z : M => TensorRSSpace r s I z) y
         (covApply cov W T y)) b :=
     hOn.contMDiffAt (Filter.univ_mem)
-  convert hAt
+  exact hAt.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1041,7 +1044,7 @@ private theorem rawTensorConnLap_psi_tensorialAt_left
         cov_RS.toFun T y (cov_TM.toFun X y (Y y)))
     rw [h_covApply_smul, h_leib_RS, h_leib_TM]
     have h_covApply_pt : covApply cov_RS X T y = cov_RS.toFun T y (X y) := rfl
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.map_add,
       ContinuousLinearMap.map_smul, smul_sub, h_covApply_pt]
     abel
@@ -1084,7 +1087,7 @@ private theorem rawTensorConnLap_psi_tensorialAt_left
       (cov_RS.toFun (covApply cov_RS X' T) y (Y y) -
         cov_RS.toFun T y (cov_TM.toFun X' y (Y y)))
     rw [h_covApply_add, h_add_RS, h_add_TM]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.map_add]
+    simp only [add_apply, ContinuousLinearMap.map_add]
     abel
 
 omit [CompleteSpace E] in
@@ -1249,7 +1252,7 @@ theorem rawTensorConnLap_eq_frame_trace
             (∑ j : Fin (Module.finrank ℝ E), g.inner y (B i) (C j) • C j) w =
           ∑ j : Fin (Module.finrank ℝ E),
             g.inner y (B i) (C j) * g.inner y (C j) w from by
-      rw [map_sum, ContinuousLinearMap.sum_apply]
+      rw [map_sum, sum_apply]
       refine Finset.sum_congr rfl ?_
       intro j _
       rw [show ((g.inner y) (g.inner y (B i) (C j) • C j)) w =
@@ -1275,10 +1278,10 @@ theorem rawTensorConnLap_eq_frame_trace
       refine Finset.sum_congr rfl ?_
       intro j _
       exact Ψ.map_smul (aB j) (C j)]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro j _
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     rw [show Ψ (C j) (∑ k : Fin (Module.finrank ℝ E), aB k • C k) =
           ∑ k : Fin (Module.finrank ℝ E), aB k • Ψ (C j) (C k) from by
       rw [map_sum]

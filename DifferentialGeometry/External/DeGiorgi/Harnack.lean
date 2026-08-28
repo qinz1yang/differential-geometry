@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-23: migrated elaboration-sensitive rescaling proofs to Mathlib 4.33
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.DeGiorgiIteration
 import DifferentialGeometry.External.DeGiorgi.Localization
@@ -10,6 +11,7 @@ import DifferentialGeometry.External.DeGiorgi.Support.IterationConstants
 import Mathlib.MeasureTheory.Function.EssSup
 import Mathlib.MeasureTheory.Measure.OpenPos
 import Mathlib.Topology.Compactness.Compact
+
 
 /-!
 # Chapter 07: Harnack Consequences
@@ -399,7 +401,7 @@ private theorem ae_le_localHarnack_on_eighthBall
   let huEighth : MemW1pWitness 2 u (Metric.ball c (1 / 8 : ℝ)) :=
     MemW1p.someWitness hsolEighth.1.1
   have hfin : Module.finrank ℝ E = d := by simp [AmbientSpace]
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball c (1 / 8 : ℝ))) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball c (1 / 8 : ℝ))) := by
     rw [MeasureTheory.isFiniteMeasure_iff]
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := (1 / 8 : ℝ)))
   have hu_memLp_p :
@@ -455,8 +457,9 @@ private theorem ae_le_localHarnack_on_eighthBall
     dsimp [Ahalf] at hweak_raw'
     rw [← harnack_p_eq_from_q (d := d), harnack_outerExponent_eq (d := d) hd,
       localWeakHarnackBase_eq (d := d) hd] at hweak_raw'
-    convert hweak_raw' using 1
-    norm_num
+    rw [show (1 / 2 : ℝ) / 4 = 1 / 8 by norm_num] at hweak_raw'
+    simpa only [quarterBallInf, Ahalf, NormalizedEllipticCoeff.restrict,
+      EllipticCoeff.restrict] using hweak_raw'
   have hscale :
       ((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ =
         ((4 : ℝ) ^ (d : ℝ)) * (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹) := by

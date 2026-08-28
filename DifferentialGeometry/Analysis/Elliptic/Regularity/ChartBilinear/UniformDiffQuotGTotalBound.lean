@@ -235,7 +235,7 @@ theorem gTotal_le_data_eLpNorm
       ∑ l : Fin (Module.finrank ℝ E),
         ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
           χ x * D.weak_partial l x) ^ 2) (closure Ω') (volume : Measure EuclN) := by
-    have h_sum := integrable_finset_sum
+    have h_sum := integrable_finsetSum
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => (h_each_gg_int l).integrable)
     have h_eq : (fun x : EuclN => ∑ l : Fin (Module.finrank ℝ E),
@@ -324,7 +324,7 @@ theorem gTotal_le_data_eLpNorm
   have h_wp_sum_sq_int : IntegrableOn
       (fun x => ∑ l : Fin (Module.finrank ℝ E), (D.weak_partial l x) ^ 2)
       (closure Ω') (volume : Measure EuclN) := by
-    have h_sum := integrable_finset_sum
+    have h_sum := integrable_finsetSum
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => (h_wp_sq_int l).integrable)
     have h_eq : (fun x : EuclN => ∑ l : Fin (Module.finrank ℝ E),
@@ -371,7 +371,7 @@ theorem gTotal_le_data_eLpNorm
           (D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) =
         ∑ l : Fin (Module.finrank ℝ E), ∫ x in closure Ω',
           (D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN) :=
-      integral_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+      integral_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l _ => (h_wp_sq_int l).integrable)
     rw [h_sum_swap]
     have h_sum_eq : (∑ l : Fin (Module.finrank ℝ E), ∫ x in closure Ω',

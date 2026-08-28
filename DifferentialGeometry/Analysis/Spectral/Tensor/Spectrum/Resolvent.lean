@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.Defs
-import Mathlib.Analysis.Normed.Operator.Compact
+import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 

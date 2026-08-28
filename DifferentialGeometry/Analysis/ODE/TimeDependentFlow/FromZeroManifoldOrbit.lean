@@ -145,12 +145,12 @@ private theorem fromZero_orbit_confined
       hg_cont.preimage_isClosed_of_isClosed isClosed_Icc isClosed_Iic
     have heq : Set.Icc (0 : ℝ) δ ∩ g ⁻¹' Set.Iic 0 = S ∩ Set.Icc (0 : ℝ) δ := by
       ext t
-      simp only [hS, hg, Set.mem_inter_iff, Set.mem_preimage, Set.mem_Iic, Set.mem_setOf_eq,
+      simp only [hS, hg, Set.mem_inter_iff, Set.mem_preimage, Set.mem_Iic, Set.mem_ofPred_eq,
         sub_nonpos]
       tauto
     rwa [heq] at hpre
   have h0S : (0 : ℝ) ∈ S := by
-    simp only [hS, Set.mem_setOf_eq, hγ_init, dist_self, mul_zero, le_refl]
+    simp only [hS, Set.mem_ofPred_eq, hγ_init, dist_self, mul_zero, le_refl]
   have hgt : ∀ x ∈ S ∩ Set.Ico (0 : ℝ) δ, ∀ y ∈ Set.Ioi x, (S ∩ Set.Ioc x y).Nonempty := by
     rintro x ⟨hxS, hx_mem⟩ y hy
     have hxδ : x < δ := hx_mem.2
@@ -211,7 +211,7 @@ private theorem fromZero_orbit_confined
       exact norm_image_sub_le_of_norm_deriv_right_le_segment hcont_xz hderiv_xz hvel z
         (right_mem_Icc.2 (le_of_lt hxz))
     refine ⟨z, ?_, hxz, hzy⟩
-    simp only [hS, Set.mem_setOf_eq]
+    simp only [hS, Set.mem_ofPred_eq]
     calc dist (γ z) x₀ ≤ dist (γ z) (γ x) + dist (γ x) x₀ := dist_triangle _ _ _
       _ = ‖γ z - γ x‖ + dist (γ x) x₀ := by rw [dist_eq_norm]
       _ ≤ L * (z - x) + L * x := by gcongr; exact hxS
@@ -317,15 +317,25 @@ theorem fromZero_manifold_orbit_of_lipschitz
           = tangentCoordChange I q α q (X t q) := rfl
       rw [hFeq, ← hq_round]
       exact pushforward_velocity_cancellation (I := I) α q hq_src (X t q)
+    let w : TangentSpace 𝓘(ℝ, E) (γE t) := F t (γE t)
+    have hw :
+        (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (γE t)) w =
+          X t q := hcancel
     have hvelCLM :
         (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (γE t)) ∘L
-            ((ContinuousLinearMap.id ℝ ℝ).smulRight (F t (γE t)))
+            ((ContinuousLinearMap.id ℝ ℝ).smulRight w)
           = (1 : ℝ →L[ℝ] ℝ).smulRight (X t q) :=
       ContinuousLinearMap.ext fun rr => by
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply,
-          ContinuousLinearMap.id_apply, ContinuousLinearMap.one_apply, map_smul, hcancel]
+        change
+          (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (γE t))
+              (rr • w) = rr • X t q
+        rw [map_smul, hw]
     rw [← hvelCLM]
-    exact hbridge
+    let h : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+        (fun s' => (extChartAt I α).symm (γE s')) (Set.Ici (0 : ℝ)) t
+          ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (γE t)) ∘L
+            ((ContinuousLinearMap.id ℝ ℝ).smulRight w)) := hbridge
+    exact h
 
 omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem fromZero_orbit_of_window

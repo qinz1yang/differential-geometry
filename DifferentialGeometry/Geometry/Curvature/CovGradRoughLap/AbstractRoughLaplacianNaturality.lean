@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -35,7 +34,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma contMDiff_covApply_unitGradField
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X : Π b : M, TangentSpace I b}
@@ -54,7 +53,7 @@ lemma contMDiff_covApply_unitGradField
   exact covApply_contMDiff
     (cov := Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)) hX hU
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma contMDiff_curried_covApply_unitGradField
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X : Π b : M, TangentSpace I b}
@@ -70,7 +69,7 @@ lemma contMDiff_curried_covApply_unitGradField
       (unitGradField (I := I) (M := M) g T₀))).mp
     (contMDiff_covApply_unitGradField (I := I) (M := M) g T₀ hX)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma curriedSection_covApply_unitGradField_eq
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X Y : Π b : M, TangentSpace I b}
@@ -96,7 +95,7 @@ lemma curriedSection_covApply_unitGradField_eq
   rw [covApply_apply]
   exact curry_abstract_covDeriv_unitGrad_unfold' (I := I) (M := M) g T₀ hX hY
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma curry_abstract_covDeriv_covApply_unitGrad_unfold
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X Vfield Y : Π b : M, TangentSpace I b} {x : M}
@@ -126,7 +125,7 @@ lemma curry_abstract_covDeriv_covApply_unitGrad_unfold
     ((hVfield x).mdifferentiableAt (by simp))
     ((hY x).mdifferentiableAt (by simp))
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma curry_abstract_covDeriv_covApply_unitGrad_unfold_inner
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X Vfield Y : Π b : M, TangentSpace I b} {x : M}

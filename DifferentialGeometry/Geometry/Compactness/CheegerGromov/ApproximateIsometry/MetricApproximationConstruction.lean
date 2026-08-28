@@ -58,15 +58,15 @@ theorem fderiv_pair_sub_id_le {Φ : P × Q → E'} {u : E' → P} {v w : E' → 
     have h1 : fderiv ℝ (fun y => Φ (u y, w y)) x = fderiv ℝ (fun y : E' => y) x :=
       Filter.EventuallyEq.fderiv_eq hdiag
     rw [hW.fderiv] at h1
-    rw [h1, fderiv_id']
+    rw [h1, fderiv_fun_id]
   have hsplit : DΦv.comp (Du.prod Dv) - ContinuousLinearMap.id ℝ E'
       = (DΦv - DΦw).comp (Du.prod Dv)
         + DΦw.comp ((0 : E' →L[ℝ] P).prod (Dv - Dw)) := by
     rw [← hkey]
     ext ξ
-    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.prod_apply, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.zero_apply]
+    simp only [sub_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.prod_apply, add_apply,
+      zero_apply]
     have hpt : (((0 : P), Dv ξ - Dw ξ) : P × Q) = (Du ξ, Dv ξ) - (Du ξ, Dw ξ) := by
       simp [Prod.mk_sub_mk]
     rw [hpt, map_sub]
@@ -232,11 +232,13 @@ theorem normWeightsConv {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
   have hsum0 := mapCInfConv_clm hU Lsum hpi hpic hpiinfc
   have hLapp : ∀ v : ι → ℝ, Lsum v = ∑ j, v j := by
     intro v
-    rw [hLsum, ContinuousLinearMap.sum_apply]
+    rw [hLsum, sum_apply]
     exact Finset.sum_congr rfl fun j _ => ContinuousLinearMap.proj_apply j v
   have hsum : MapCInfConvOnCompacts U (fun k y => ∑ j, num k j y)
       (fun y => ∑ j, numinf j y) := by
-    refine hsum0.congr hU (fun k y _ => ?_) (fun y _ => ?_) <;> rw [hLapp]
+    refine hsum0.congr hU (fun k y _ => ?_) (fun y _ => ?_)
+    · exact (hLapp (fun j => num k j y)).symm
+    · exact (hLapp (fun j => numinf j y)).symm
   have hsumc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y => ∑ j, num k j y) U :=
     fun k => ContDiffOn.sum fun j _ => hc k j
   have hsuminfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y => ∑ j, numinf j y) U :=
@@ -408,8 +410,8 @@ theorem bilinPerturb {B : E' →L[ℝ] E' →L[ℝ] ℝ} {A : E' →L[ℝ] E'} (
   have hsplit : B (A v) (A w) - B v w
       = B ((A - ContinuousLinearMap.id ℝ E') v) (A w)
         + B v ((A - ContinuousLinearMap.id ℝ E') w) := by
-    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.coe_id', id_eq, map_sub,
-      ContinuousLinearMap.sub_apply]
+    simp only [sub_apply, ContinuousLinearMap.coe_id', id_eq, map_sub,
+      sub_apply]
     abel
   rw [hsplit]
   have h1 : |B ((A - ContinuousLinearMap.id ℝ E') v) (A w)|
@@ -445,7 +447,7 @@ theorem quadPerturbTri {B₀ B₁ : E' →L[ℝ] E' →L[ℝ] ℝ} {A : E' →L[
   have h1 := bilinPerturb (B := B₁) (A := A) v v
   have h2 : |B₁ v v - B₀ v v| ≤ ‖B₁ - B₀‖ * (‖v‖ * ‖v‖) := by
     have : B₁ v v - B₀ v v = (B₁ - B₀) v v := by
-      simp [ContinuousLinearMap.sub_apply]
+      simp [sub_apply]
     rw [this, ← Real.norm_eq_abs]
     calc ‖(B₁ - B₀) v v‖ ≤ ‖B₁ - B₀‖ * ‖v‖ * ‖v‖ :=
           ContinuousLinearMap.le_opNorm₂ _ v v
@@ -464,7 +466,7 @@ theorem bilinPerturbTri {B₀ B₁ : E' →L[ℝ] E' →L[ℝ] ℝ} {A : E' →L
   have h1 := bilinPerturb (B := B₁) (A := A) v w
   have h2 : |B₁ v w - B₀ v w| ≤ ‖B₁ - B₀‖ * (‖v‖ * ‖w‖) := by
     have hsub : B₁ v w - B₀ v w = (B₁ - B₀) v w := by
-      simp [ContinuousLinearMap.sub_apply]
+      simp [sub_apply]
     rw [hsub, ← Real.norm_eq_abs]
     calc ‖(B₁ - B₀) v w‖ ≤ ‖B₁ - B₀‖ * ‖v‖ * ‖w‖ :=
           ContinuousLinearMap.le_opNorm₂ _ v w
@@ -661,9 +663,9 @@ theorem hlocOn_of_chartNeumann {F : M → N} {U : Set M} (n : ℕ) (hn : 1 ≤ n
         fderiv ℝ (writtenInExtChartAt I I y F) (extChartAt I y y)‖ < 1) :
     IsLocalDiffeomorphOn I I (n : ℕ∞) F U := by
   have hle : ((n : ℕ∞) : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast le_top
-  have hne : ((n : ℕ∞) : WithTop ℕ∞) ≠ ∞ := by exact_mod_cast (ENat.coe_ne_top n)
-  haveI : IsManifold I ((n : ℕ∞) : WithTop ℕ∞) M := IsManifold.of_le hle
-  haveI : IsManifold I ((n : ℕ∞) : WithTop ℕ∞) N := IsManifold.of_le hle
+  have hne : ((n : ℕ∞) : WithTop ℕ∞) ≠ ∞ := by exact_mod_cast (ENat.natCast_ne_top n)
+  have : IsManifold I ((n : ℕ∞) : WithTop ℕ∞) M := IsManifold.of_le hle
+  have : IsManifold I ((n : ℕ∞) : WithTop ℕ∞) N := IsManifold.of_le hle
   exact Coordinates.contMDiffOn_isLocalDiffeomorphOn (by exact_mod_cast hn) hne hU hf
     (fun y hy => Coordinates.isInvertible_of_norm_id_sub_lt (hneu y hy))
 
@@ -777,10 +779,10 @@ theorem centerOfMass_diag
     (μ : ι → ℝ) (pts : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
     (h : CenterInput (I := I) g μ pts join p r) (q : M') (hall : ∀ i, pts i = q) :
     centerOfMass (I := I) g μ pts join p r h = q := by
-  letI : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M' := HopfRinow.riemMetricSpace (I := I) (M := M')
+  let : MetricSpace M' := HopfRinow.riemMetricSpace (I := I) (M := M')
   have hnear : ∀ i : ι, dist q (pts i) ≤ (0 : ℝ) := fun i => by rw [hall i, dist_self]
   have hd := centerOfMass.dist_le (I := I) (g := g) (μ := μ) (pts := pts) (join := join)
     (p := p) (r := r) h le_rfl hnear
@@ -814,10 +816,10 @@ theorem centerOfMass_delta
     (h : CenterInput (I := I) g μ pts join p r) (i0 : ι)
     (hdead : ∀ i, i ≠ i0 → μ i = 0) :
     centerOfMass (I := I) g μ pts join p r h = pts i0 := by
-  letI : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M' := HopfRinow.riemMetricSpace (I := I) (M := M')
+  let : MetricSpace M' := HopfRinow.riemMetricSpace (I := I) (M := M')
   have hzero : CenterOfMass.centerEnergy (I := I) g μ pts (pts i0) = 0 := by
     simp only [CenterOfMass.centerEnergy]
     rw [Finset.sum_eq_zero, mul_zero]
@@ -1209,7 +1211,9 @@ theorem pullbackErrNorm
       mul_le_mul (hbd i) (hbd j) (norm_nonneg _) hs0
     have hcoefnn : 0 ≤ (‖gn.inner (F y)‖ * ε * (2 + ε)) + η := by positivity
     exact mul_le_mul_of_nonneg_left hbb hcoefnn
-  simpa using hmain
+  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gk y 2
+      (hpb.pullback y - Tensor0SBundle.metricTensorField (I := I) gk y)) ≤ _
+  simpa only [Fintype.card_fin] using hmain
 
 def mapMetricApproximationOnOfBounds
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
@@ -1331,7 +1335,7 @@ theorem exists_partial_diffeomorph_metric_approximation_of_bounds
       Metric.closedBall Ok r ⊆ Phi.source ∧
       Phi Ok = Oℓ ∧
       Nonempty (PartialDiffeomorphMetricApproximation (I := I) (Metric.closedBall Ok r) ε p Phi g h) := by
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) N'' := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) N'' := by
     change IsManifold I ∞ N''
     exact nManifold
   exact
@@ -1418,11 +1422,11 @@ theorem edistLeOfEquivOn (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (
       ⟨Y.metric.toRiemannianMetric⟩
     Manifold.riemannianEDist J' x (γ 1)
       ≤ ENNReal.ofReal (Real.sqrt 2 * ‖v‖) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace G Y.M := Y.charted
-  letI : IsManifold J' ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace G Y.M := Y.charted
+  let : IsManifold J' ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
+  let : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   have h1 : Manifold.riemannianEDist J' x (γ 1) ≤ Manifold.pathELength J' γ 0 1 :=
     Manifold.riemannianEDist_le_pathELength hγ hend rfl zero_le_one
@@ -1479,11 +1483,11 @@ theorem normLowerOfSep (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x 
         ⟨Y.metric.toRiemannianMetric⟩
       ENNReal.ofReal lam ≤ Manifold.riemannianEDist J' x (γ 1)) :
     lam / Real.sqrt 2 ≤ ‖v‖ := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace G Y.M := Y.charted
-  letI : IsManifold J' ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace G Y.M := Y.charted
+  let : IsManifold J' ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
+  let : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   have hup := edistLeOfEquivOn (J' := J') Y x heq hseg γ hγ hend hderiv
   have hchain : ENNReal.ofReal lam ≤ ENNReal.ofReal (Real.sqrt 2 * ‖v‖) := hlam.trans hup
@@ -1494,6 +1498,7 @@ theorem normLowerOfSep (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x 
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+omit [NeZero (Module.finrank Real F)] in
 theorem normLowerOfSepExp
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x : Y.M)
     {U : Set F} {v : F}
@@ -1510,11 +1515,11 @@ theorem normLowerOfSepExp
       ENNReal.ofReal lam ≤ Manifold.riemannianEDist J' x
         (expMap (I := J') Y.metric x (show TangentSpace J' x from v)) →
       lam / Real.sqrt 2 ≤ ‖v‖ := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace G Y.M := Y.charted
-  letI : IsManifold J' ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace G Y.M := Y.charted
+  let : IsManifold J' ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
+  let : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   intro hsub lam hlam
   have hsmall : ∀ t ∈ Set.Icc (0 : ℝ) 1,
@@ -1581,12 +1586,12 @@ theorem seqChartNorm_ge
     hd.lambda D 0 / Real.sqrt 2 ≤
       ‖NormalCoordinates.normalChartAt (I := J') (Z.obj k).metric c
         (Z.obj k).basepoint‖ := by
-  letI : TopologicalSpace (Z.obj k).M := (Z.obj k).topology
-  letI : ChartedSpace G (Z.obj k).M := (Z.obj k).charted
-  letI : IsManifold J' ∞ (Z.obj k).M := (Z.obj k).smooth
-  letI : T2Space (TangentBundle J' (Z.obj k).M) :=
+  let : TopologicalSpace (Z.obj k).M := (Z.obj k).topology
+  let : ChartedSpace G (Z.obj k).M := (Z.obj k).charted
+  let : IsManifold J' ∞ (Z.obj k).M := (Z.obj k).smooth
+  let : T2Space (TangentBundle J' (Z.obj k).M) :=
     (Z.obj k).t2TangentBundle
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : (Z.obj k).M => TangentSpace J' y) :=
     ⟨(Z.obj k).metric.toRiemannianMetric⟩
   intro hbase hseg hsub
@@ -1610,7 +1615,10 @@ theorem seqChartNorm_ge
   have hsep : ENNReal.ofReal (hd.lambda D 0) ≤
       Manifold.riemannianEDist J' c (Z.obj k).basepoint := by
     have h := seqCenter_edist_ge (I := J') (X := Z) hd hD P k hα hc
-    simpa [PointedRiemannianManifold.emetricSpace] using h
+    change ENNReal.ofReal (hd.lambda D 0) ≤
+      (letI : EMetricSpace (Z.obj k).M := (Z.obj k).emetricSpace
+       edist c (Z.obj k).basepoint)
+    exact h
   rw [← hexp] at hsep
   exact normLowerOfSepExp (J' := J') (Z.obj k) c heq hseg hsub hsep
 
@@ -1656,11 +1664,11 @@ theorem normLowerOfSepFramed
         ⟨Y.metric.toRiemannianMetric⟩
       ENNReal.ofReal lam ≤ Manifold.riemannianEDist J' x (γ 1)) :
     lam / Real.sqrt 2 ≤ ‖v‖ := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace G Y.M := Y.charted
-  letI : IsManifold J' ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace G Y.M := Y.charted
+  let : IsManifold J' ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
+  let : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   have h1 : Manifold.riemannianEDist J' x (γ 1) ≤
       Manifold.pathELength J' γ 0 1 :=
@@ -1720,11 +1728,11 @@ theorem normLowerOfSepFramedExp
           (show TangentSpace J' x from
             NormalCoordinates.normalFrame (I := J') Y.metric x v)) →
       lam / Real.sqrt 2 ≤ ‖v‖ := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace G Y.M := Y.charted
-  letI : IsManifold J' ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace G Y.M := Y.charted
+  let : IsManifold J' ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
+  let : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   intro hsub lam hlam
   have hsmall : ∀ t ∈ Set.Icc (0 : ℝ) 1,
@@ -1774,7 +1782,8 @@ theorem normLowerOfSepFramedExp
     intro t ht
     exact radialEnorm_framed (I := J') Y x v t (hsmall t ht)
   apply normLowerOfSepFramed (J' := J') Y x heq hseg _ hcurve hend hderiv
-  simpa only [one_smul] using hlam
+  rw [one_smul]
+  exact hlam
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -1800,11 +1809,11 @@ theorem seqFramedChartNorm_ge
     hd.lambda D 0 / Real.sqrt 2 ≤
       ‖NormalCoordinates.framedChartAt (I := J') (Z.obj k).metric c
         (Z.obj k).basepoint‖ := by
-  letI : TopologicalSpace (Z.obj k).M := (Z.obj k).topology
-  letI : ChartedSpace G (Z.obj k).M := (Z.obj k).charted
-  letI : IsManifold J' ∞ (Z.obj k).M := (Z.obj k).smooth
-  letI : T2Space (TangentBundle J' (Z.obj k).M) := (Z.obj k).t2TangentBundle
-  letI : RiemannianBundle (fun y : (Z.obj k).M => TangentSpace J' y) :=
+  let : TopologicalSpace (Z.obj k).M := (Z.obj k).topology
+  let : ChartedSpace G (Z.obj k).M := (Z.obj k).charted
+  let : IsManifold J' ∞ (Z.obj k).M := (Z.obj k).smooth
+  let : T2Space (TangentBundle J' (Z.obj k).M) := (Z.obj k).t2TangentBundle
+  let : RiemannianBundle (fun y : (Z.obj k).M => TangentSpace J' y) :=
     ⟨(Z.obj k).metric.toRiemannianMetric⟩
   intro hbase hseg hsub
   have hvsrc :
@@ -1829,7 +1838,10 @@ theorem seqFramedChartNorm_ge
   have hsep : ENNReal.ofReal (hd.lambda D 0) ≤
       Manifold.riemannianEDist J' c (Z.obj k).basepoint := by
     have h := seqCenter_edist_ge (I := J') (X := Z) hd hD P k hα hc
-    simpa [PointedRiemannianManifold.emetricSpace] using h
+    change ENNReal.ofReal (hd.lambda D 0) ≤
+      (letI : EMetricSpace (Z.obj k).M := (Z.obj k).emetricSpace
+       edist c (Z.obj k).basepoint)
+    exact h
   rw [← hexp] at hsep
   exact normLowerOfSepFramedExp (J' := J') (Z.obj k) c heq hseg hsub hsep
 

@@ -128,7 +128,8 @@ omit [NeZero (Module.finrank ℝ E)]
   pseudoEMetricSpace
   riemannianManifold
   completeSpaceM
-  continuousRiemannianBundle in
+  continuousRiemannianBundle
+  riemannianBundle in
 theorem exists_perp_basis
     (g : SmoothRiemannianMetric I M) (p : M) (u : TangentSpace I p)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)

@@ -132,7 +132,7 @@ theorem variational_flow_feeds_cartan_witness
   have h_A_value : g.inner y Vraw dΦw
       = -g.inner y ((LeviCivita (I := I) g)
           (X : ∀ x : M, TangentSpace I x) y dΦv) dΦw := by
-    rw [hVraw, map_neg, ContinuousLinearMap.neg_apply]
+    rw [hVraw, map_neg, neg_apply]
   have h_B_value : g.inner y dΦv Wraw
       = -g.inner y dΦv ((LeviCivita (I := I) g)
           (X : ∀ x : M, TangentSpace I x) y dΦw) := by

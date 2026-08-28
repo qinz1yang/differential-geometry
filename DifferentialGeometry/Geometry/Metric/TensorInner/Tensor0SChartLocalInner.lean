@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
@@ -71,9 +71,9 @@ private lemma chartGramMatrix_adjugate_entry_contMDiffOn
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp2]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const) ?_
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   by_cases hσkj : σ k = j
   · have heq :
         (fun b : M =>
@@ -182,8 +182,8 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
         funext b
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun i _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · exact chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
       · exact ih
@@ -199,7 +199,7 @@ lemma chartTensorInnerPointwise_0s_add_left
   induction s with
   | zero =>
       change (S₁ + S₂) _ * T _ = S₁ _ * T _ + S₂ _ * T _
-      rw [ContinuousMultilinearMap.add_apply]; ring
+      rw [add_apply]; ring
   | succ s ih =>
       rw [chartTensorInnerPointwise_0s_succ,
           chartTensorInnerPointwise_0s_succ,
@@ -216,7 +216,7 @@ lemma chartTensorInnerPointwise_0s_add_left
               S₂.curryLeft ((chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
+              add_apply]
       rw [hcurry, ih]
       ring
 
@@ -228,7 +228,7 @@ lemma chartTensorInnerPointwise_0s_smul_left
   induction s with
   | zero =>
       change (c • S) _ * T _ = c * (S _ * T _)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]; ring
+      rw [smul_apply, smul_eq_mul]; ring
   | succ s ih =>
       rw [chartTensorInnerPointwise_0s_succ,
           chartTensorInnerPointwise_0s_succ,
@@ -243,7 +243,7 @@ lemma chartTensorInnerPointwise_0s_smul_left
             c • S.curryLeft ((chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply]
+              smul_apply]
       rw [hcurry, ih]
       ring
 
@@ -256,7 +256,7 @@ lemma chartTensorInnerPointwise_0s_add_right
   induction s with
   | zero =>
       change S _ * (T₁ + T₂) _ = S _ * T₁ _ + S _ * T₂ _
-      rw [ContinuousMultilinearMap.add_apply]; ring
+      rw [add_apply]; ring
   | succ s ih =>
       rw [chartTensorInnerPointwise_0s_succ,
           chartTensorInnerPointwise_0s_succ,
@@ -273,7 +273,7 @@ lemma chartTensorInnerPointwise_0s_add_right
               T₂.curryLeft ((chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
+              add_apply]
       rw [hcurry, ih]
       ring
 
@@ -285,7 +285,7 @@ lemma chartTensorInnerPointwise_0s_smul_right
   induction s with
   | zero =>
       change S _ * (c • T) _ = c * (S _ * T _)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]; ring
+      rw [smul_apply, smul_eq_mul]; ring
   | succ s ih =>
       rw [chartTensorInnerPointwise_0s_succ,
           chartTensorInnerPointwise_0s_succ,
@@ -300,7 +300,7 @@ lemma chartTensorInnerPointwise_0s_smul_right
             c • T.curryLeft ((chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply]
+              smul_apply]
       rw [hcurry, ih]
       ring
 

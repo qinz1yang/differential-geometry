@@ -25,24 +25,9 @@ private theorem fderiv_partial_eq_comp {f : E → ℝ → F} (p : E × ℝ)
     fderiv ℝ (fun y : E => f y p.2) p.1 =
       (fderiv ℝ (fun q : E × ℝ => f q.1 q.2) p).comp (inlCLM E ℝ) := by
   have hseg : HasFDerivAt (fun y : E => (y, p.2)) (inlCLM E ℝ) p.1 := by
-    dsimp [inlCLM]
-    have hseg0 : HasFDerivAt (fun y : E => (y, (0 : ℝ)))
-        ((1 : E →L[ℝ] E).prod (0 : E →L[ℝ] ℝ)) p.1 :=
-      ContinuousLinearMap.hasFDerivAt
-        (f := ((1 : E →L[ℝ] E).prod (0 : E →L[ℝ] ℝ) : E →L[ℝ] E × ℝ)) (x := p.1)
-    have hcst : HasFDerivAt (fun y : E => (0, p.2)) (0 : E →L[ℝ] E × ℝ) p.1 :=
-      by
-        let c0 : E × ℝ := Prod.mk 0 p.2
-        have hc0 : HasFDerivAt (fun _ : E => c0) (0 : E →L[ℝ] E × ℝ) p.1 :=
-          hasFDerivAt_const c0 p.1
-        have hfun : (fun y : E => (0, p.2)) = fun _ : E => c0 := by
-          funext y
-          rfl
-        rwa [hfun]
-    have hsum := hseg0.add hcst
-    convert hsum using 1
-    · ext y <;> simp [Prod.mk_add_mk]
-    · simp [add_zero]
+    change HasFDerivAt (fun y : E => (id y, p.2))
+      ((ContinuousLinearMap.id ℝ E).prod (0 : E →L[ℝ] ℝ)) p.1
+    exact (hasFDerivAt_id p.1).prodMk (hasFDerivAt_const p.2 p.1)
   have hcomp := hd.hasFDerivAt.comp p.1 hseg
   have hfun : (fun y : E => f y p.2) = (fun q : E × ℝ => f q.1 q.2) ∘ (fun y : E => (y, p.2)) := by
     funext y
@@ -168,22 +153,9 @@ private theorem hasFDerivAt_paramIntervalIntegral (f : E → ℝ → F)
               norm_num : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).differentiableAt Filter.univ_mem
           have hemb : DifferentiableAt ℝ (fun y : E => (y, t)) x := by
             have h0 : HasFDerivAt (fun y : E => (y, t)) (inlCLM E ℝ) x := by
-              have hseg0 : HasFDerivAt (fun y : E => (y, (0 : ℝ)))
-                  ((1 : E →L[ℝ] E).prod (0 : E →L[ℝ] ℝ)) x :=
-                ContinuousLinearMap.hasFDerivAt
-                  (f := ((1 : E →L[ℝ] E).prod (0 : E →L[ℝ] ℝ) : E →L[ℝ] E × ℝ)) (x := x)
-              have hcst : HasFDerivAt (fun y : E => (0, t)) (0 : E →L[ℝ] E × ℝ) x := by
-                let c0 : E × ℝ := Prod.mk 0 t
-                have hc0 : HasFDerivAt (fun _ : E => c0) (0 : E →L[ℝ] E × ℝ) x :=
-                  hasFDerivAt_const c0 x
-                have hfun : (fun y : E => (0, t)) = fun _ : E => c0 := by
-                  funext y
-                  rfl
-                rwa [hfun]
-              have hsum := hseg0.add hcst
-              convert hsum using 1
-              · ext y <;> simp [Prod.mk_add_mk]
-              · simp [inlCLM, add_zero]
+              change HasFDerivAt (fun y : E => (id y, t))
+                ((ContinuousLinearMap.id ℝ E).prod (0 : E →L[ℝ] ℝ)) x
+              exact (hasFDerivAt_id x).prodMk (hasFDerivAt_const t x)
             exact h0.differentiableAt
           exact hdiffUnc.comp x hemb
       simpa [F'] using hdiff.hasFDerivAt)

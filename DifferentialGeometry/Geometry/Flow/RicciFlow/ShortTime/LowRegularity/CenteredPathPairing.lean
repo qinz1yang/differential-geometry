@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Lowe
 
 noncomputable section
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
@@ -249,6 +248,7 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
     g (fun s => R s + K0) T S hRK
   have hQ : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Q
       (δ := delta) (δ' := delta) := by
+    rw [linearizedRicciThreeArmHjoint]
     simpa only [Q] using ricciDeTurckTopOrderPairingCoefficient_joint_contDiff (I := I) (M := M)
       g T T hdelta hdeltaZ ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps
   have hZ0 := operatorFieldApplication_fixed_jointContMDiffOn (I := I) (M := M) g Q T S hQ
@@ -264,7 +264,9 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
         hdelta_lt hdelta hdeltaZ + K0 =
       pathIntegralCoeffField (I := I) (M := M) g 2 2
         (fun s => R s + K0) S metricPerturbationPathDomain_isOpen hSI hRK := by
-    simpa only [R, K0, S] using pathIntegralCoeffField_add_const
+    change pathIntegralCoeffField (I := I) (M := M) g 2 2 R S
+        metricPerturbationPathDomain_isOpen hSI hR + K0 = _
+    simpa only [K0] using pathIntegralCoeffField_add_const
       (I := I) (M := M) g R K0 S metricPerturbationPathDomain_isOpen hSI hR hRK
   have hA0Int : operatorFieldApply (I := I) (M := M) g 2 2
         (rhsDecomposition0Int (I := I) (M := M) g g_bg T
@@ -289,15 +291,19 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
         hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0 =
       pathIntegralCoeffField (I := I) (M := M) g 4 2
         (fun s => Φ s - Φ0) S metricPerturbationPathDomain_isOpen hSI hC := by
-    have hΦ := rhs_top_path_joint (I := I) (M := M)
+    have hΦlin := rhs_top_path_joint (I := I) (M := M)
       g T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
     have hΦneg := threeArmJoint_add (I := I) (M := M) g Φ (fun _ => -Φ0)
-      (by simpa only [Φ] using hΦ)
+      (by simpa only [Φ] using hΦlin)
       (threeArmJoint_const (I := I) (M := M) g (-Φ0))
+    have hΦ := hΦlin
+    have hΦneg' := hΦneg
+    rw [linearizedRicciThreeArmHjoint] at hΦ hΦneg'
+    unfold rhsTopPathIntegral
     simpa only [Φ, Φ0, S, sub_eq_add_neg] using
       pathIntegralCoeffField_add_const (I := I) (M := M)
         g Φ (-Φ0) S metricPerturbationPathDomain_isOpen hSI
-          (by simpa only [Φ] using hΦ) hΦneg
+          (by simpa only [Φ, S] using hΦ) (by simpa only [Φ, Φ0, S] using hΦneg')
   have hCHTInt : operatorFieldApply (I := I) (M := M) g 4 2
         (rhsTopPathIntegral (I := I) (M := M) g T 0
           hdelta_lt hdelta hdelta_lt hdeltaZ - Φ0) HT =

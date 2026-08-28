@@ -39,20 +39,16 @@ private theorem stMetricCompat
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) (S.base.metric t)
 
-set_option backward.isDefEq.respectTransparency false in
 
 def starProd (S : SolutionOn (I := I) (M := M) D) (t : Real) (a b : ℕ) :
     (r : ℕ) → Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (((4 + a) + (4 + b)) + 2 * r)
-  | 0 => MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 4 + a) (q := 4 + b)
+  | 0 => tensor0SField_product (𝕜 := Real) (E := E) (I := I) (n := (∞ : WithTop ℕ∞)) (s := 4 + a) (q := 4 + b)
       (nablaKRm04Field (I := I) S t a) (nablaKRm04Field (I := I) S t b)
-  | (r + 1) => MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
+  | (r + 1) => tensor0SField_product (𝕜 := Real) (E := E) (I := I) (n := (∞ : WithTop ℕ∞))
       (s := ((4 + a) + (4 + b)) + 2 * r) (q := 2)
       (starProd S t a b r) (metricTensorField (I := I) (S.family.metric t))
 
-set_option backward.isDefEq.respectTransparency false in
 def mtIter (g : SmoothRiemannianMetric I M) {s : ℕ} :
     (τ : ℕ) → Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2 * τ) →
@@ -62,7 +58,6 @@ def mtIter (g : SmoothRiemannianMetric I M) {s : ℕ} :
   | (τ + 1), A => mtIter g τ
       (metricTraceFirstTwoField (I := I) (M := M) (s := s + 2 * τ) g A)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
 theorem mtIter_add (g : SmoothRiemannianMetric I M) {s : ℕ} (τ : ℕ) :
@@ -78,7 +73,6 @@ theorem mtIter_add (g : SmoothRiemannianMetric I M) {s : ℕ} (τ : ℕ) :
       rw [metricTraceFirstTwoField_add, ih]
       rfl
 
-set_option backward.isDefEq.respectTransparency false in
 
 def starBaseField
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k a b r : ℕ)
@@ -86,10 +80,8 @@ def starBaseField
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (4 + k) :=
   mtIter (I := I) (S.family.metric t) (2 + r)
-    (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b r))
+    (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b r))
 
-set_option backward.isDefEq.respectTransparency false in
 
 inductive StarSum2 (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     (k : ℕ) → Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -110,7 +102,6 @@ inductive StarSum2 (S : SolutionOn (I := I) (M := M) D) (t : Real) :
       (σ : Fin (((4 + a) + (4 + b)) + 2 * r) ≃ Fin ((4 + k) + 2 * (2 + r))) :
       StarSum2 S t k (starBaseField (I := I) S t k a b r σ)
 
-set_option backward.isDefEq.respectTransparency false in
 
 inductive StarSum2Cost (Idx : Type*) [Fintype Idx]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
@@ -180,7 +171,6 @@ theorem StarSum2.cost {Idx : Type*} [Fintype Idx]
       exact ⟨|c| * C, StarSum2Cost.smul c hC⟩
   | base a b r σ => exact ⟨_, StarSum2Cost.base _ a b r σ⟩
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem starSum2_sum {S : SolutionOn (I := I) (M := M) D} {t : Real} {k : ℕ}
@@ -199,7 +189,6 @@ theorem starSum2_sum {S : SolutionOn (I := I) (M := M) D} {t : Real} {k : ℕ}
       exact StarSum2.add (h a (Finset.mem_insert_self a s))
         (ih (fun q hq => h q (Finset.mem_insert_of_mem hq)))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -220,7 +209,6 @@ theorem starSum2Cost_sum {Idx : Type*} [Fintype Idx]
       exact StarSum2Cost.add (h a (Finset.mem_insert_self a s))
         (ih (fun q hq => h q (Finset.mem_insert_of_mem hq)))
 
-set_option backward.isDefEq.respectTransparency false in
 
 def stNabla (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : ℕ}
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -232,7 +220,6 @@ def stNabla (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : ℕ}
     (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t) T)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem stNabla_realizes (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : ℕ}
@@ -245,7 +232,6 @@ theorem stNabla_realizes (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : �
     (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t) T)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -264,7 +250,6 @@ theorem stNabla_zero
   have h3 := totalNabla0SRealizes_unique (I := I) hc h2
   rw [h3, zero_smul]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -277,7 +262,6 @@ theorem stNabla_add
   totalNabla0SRealizes_unique (I := I) (stNabla_realizes (I := I) S t (A + B))
     ((stNabla_realizes (I := I) S t A).add (stNabla_realizes (I := I) S t B))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -290,7 +274,6 @@ theorem stNabla_smul
   totalNabla0SRealizes_unique (I := I) (stNabla_realizes (I := I) S t (c • A))
     ((stNabla_realizes (I := I) S t A).smul c)
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -306,11 +289,9 @@ theorem starProdNabla
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           (((4 + a) + (4 + b)) + 2 * r) (S.family.connection t)
           (starProd (I := I) S t a b r)
-          (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞) e₁
+          (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) e₁
               (starProd (I := I) S t (a + 1) b r)
-            + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞) e₂
+            + Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) e₂
               (starProd (I := I) S t a (b + 1) r)) := by
   intro r
   induction r with
@@ -328,14 +309,14 @@ theorem starProdNabla
       have hp := nabla0S_product_realizes (I := I) (M := M) (S.family.connection t)
         (starProd (I := I) S t a b r)
         (metricTensorField (I := I) (S.family.metric t)) _ 0 hr h0
-      rw [MultilinearSection.product_zero, MultilinearSection.domDomCongr_zero, add_zero,
-        MultilinearSection.product_add_left, MultilinearSection.product_domDomCongr_left,
-        MultilinearSection.product_domDomCongr_left, MultilinearSection.domDomCongr_add,
-        MultilinearSection.domDomCongr_trans, MultilinearSection.domDomCongr_trans] at hp
+      rw [tensor0SField_product_zero, Tensor0SField.domDomCongr_zero, add_zero,
+        tensor0SField_product_add_left, tensor0SField_product_domDomCongr_left,
+        tensor0SField_product_domDomCongr_left, Tensor0SField.domDomCongr_add,
+        Tensor0SField.domDomCongr_trans, Tensor0SField.domDomCongr_trans] at hp
       exact ⟨_, _, hp⟩
 
-set_option backward.isDefEq.respectTransparency false in
 
+omit [I.Boundaryless] [CompleteSpace E] in
 omit [SigmaCompactSpace M] in
 theorem stNablaMtIter
     (g : SmoothRiemannianMetric I M)
@@ -352,13 +333,12 @@ theorem stNablaMtIter
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           s cov (mtIter (I := I) g τ A)
           (mtIter (I := I) g τ
-            (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞) ρ nablaA)) := by
+            (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) ρ nablaA)) := by
   induction τ with
   | zero =>
       intro A nablaA h
       refine ⟨Equiv.refl _, ?_⟩
-      rw [MultilinearSection.domDomCongr_refl]
+      rw [Tensor0SField.domDomCongr_refl]
       exact h
   | succ τ ih =>
       intro A nablaA h
@@ -367,18 +347,16 @@ theorem stNablaMtIter
       obtain ⟨ρ', h2⟩ := ih
         (metricTraceFirstTwoField (I := I) (M := M) (s := s + 2 * τ) g A)
         (metricTraceFirstTwoField (I := I) (M := M) (s := (s + 2 * τ) + 1) g
-          (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞)
+          (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
             (traceNablaShuffle (s + 2 * τ)) nablaA)) h1
       rw [← metricTraceFirstTwoField_domDomCongr (I := I) (M := M) g ρ'
-            (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞)
+            (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
               (traceNablaShuffle (s + 2 * τ)) nablaA),
-          MultilinearSection.domDomCongr_trans] at h2
+          Tensor0SField.domDomCongr_trans] at h2
       exact ⟨_, h2⟩
 
-set_option backward.isDefEq.respectTransparency false in
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem stNabla_starBase
@@ -401,11 +379,11 @@ theorem stNabla_starBase
   refine ⟨e₁.trans ((frontExtendEquiv σ).trans ρ),
     e₂.trans ((frontExtendEquiv σ).trans ρ), ?_⟩
   rw [heq]
-  simp only [MultilinearSection.domDomCongr_add, MultilinearSection.domDomCongr_trans,
+  simp only [Tensor0SField.domDomCongr_add, Tensor0SField.domDomCongr_trans,
     Equiv.trans_assoc, starBaseField]
   rw [mtIter_add]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem StarSum2.nabla
@@ -432,8 +410,8 @@ theorem StarSum2.nabla
       exact StarSum2.add (StarSum2.base _ (a + 1) b r σL)
         (StarSum2.base _ a (b + 1) r σR)
 
-set_option backward.isDefEq.respectTransparency false in
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem StarSum2Cost.nabla
@@ -464,7 +442,6 @@ theorem StarSum2Cost.nabla
           (StarSum2Cost.base (I := I) (Idx := Idx) (S := S) (t := t)
             _ a (b + 1) r σR))
 
-set_option backward.isDefEq.respectTransparency false in
 
 def stNormSq (S : SolutionOn (I := I) (M := M) D) (t : Real) (j : ℕ) (x : M)
     {Idx : Type*} [Fintype Idx]
@@ -498,7 +475,6 @@ private theorem mtInputBasis {x : M} {Idx : Type*} {s' : ℕ}
   simp only [metricTraceInput_apply]
   split_ifs <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -534,7 +510,6 @@ private theorem mtfOrthoBd
   rw [hmt]
   exact hX _
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -556,7 +531,10 @@ private theorem mtIterOrthoBd
   induction τ with
   | zero =>
       intro X c hX mm
-      simpa using hX mm
+      unfold mtIter
+      change ∀ mm : Fin s' → Idx, |X x (fun q => basis (mm q))| ≤ c at hX
+      rw [pow_zero, one_mul]
+      exact hX mm
   | succ τ ih =>
       intro X c hX mm
       have h1 : ∀ mm' : Fin ((s' + 2 * τ) + 2) → Idx,
@@ -567,7 +545,6 @@ private theorem mtIterOrthoBd
       refine le_trans h2 (le_of_eq ?_)
       ring
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -607,7 +584,13 @@ private theorem starProdBd {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
         (metricTensorField (I := I) (S.family.metric t) x)
         (fun q => basis (mm q))
       refine le_trans (le_of_eq (congrArg abs hpf)) ?_
-      rw [abs_mul, metricTensorField_apply]
+      rw [abs_mul]
+      change
+        |Tensor0SSpace.eval (starProd (I := I) S t a b r x)
+            ((fun q => basis (mm q)) ∘ Fin.castAdd 2)| *
+          |Tensor0SSpace.eval (metricTensorField (I := I) (S.family.metric t) x)
+            ((fun q => basis (mm q)) ∘ Fin.natAdd (((4 + a) + (4 + b)) + 2 * r))| ≤ _
+      rw [metricTensorField_eval]
       refine le_trans (mul_le_mul (ih _) ?_ (abs_nonneg _)
         (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))) (le_of_eq (mul_one _))
       change |(S.family.metric t).inner x
@@ -616,7 +599,6 @@ private theorem starProdBd {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       rw [horth]
       split_ifs <;> simp
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -663,14 +645,17 @@ theorem StarSum2Cost.bound
       simp only [Fintype.card_fin] at hcard
       have hab : a + b = k := by omega
       have hinner : ∀ mm : Fin ((4 + k) + 2 * (2 + r)) → Idx,
-          |(MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
+          |(Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) σ
               (starProd (I := I) S t a b r)) x (fun q => basis (mm q))| ≤
             Real.sqrt (stNormSq (I := I) S t a x basis) *
               Real.sqrt (stNormSq (I := I) S t b x basis) := by
         intro mm
-        rw [MultilinearSection.domDomCongr_apply,
-          ContinuousMultilinearMap.domDomCongr_apply]
+        change
+          |Tensor0SSpace.eval
+              ((Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I)
+                (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b r)) x)
+              (fun q => basis (mm q))| ≤ _
+        rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.eval_domDomCongr]
         exact starProdBd (I := I) S t a b basis horth r (fun p => mm (σ p))
       have htop := mtIterOrthoBd (I := I) (S.family.metric t) basis horth
         (s' := 4 + k) (2 + r) _ _ hinner m
@@ -689,7 +674,6 @@ theorem StarSum2Cost.bound
         exact hs
       exact le_trans htop (mul_le_mul_of_nonneg_left hsingle (by positivity))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -741,14 +725,17 @@ theorem StarSum2.bound
       refine ⟨(Fintype.card Idx : Real) ^ (2 + r), by positivity,
         fun x basis horth m => ?_⟩
       have hinner : ∀ mm : Fin ((4 + k) + 2 * (2 + r)) → Idx,
-          |(MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
+          |(Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) σ
               (starProd (I := I) S t a b r)) x (fun q => basis (mm q))| ≤
             Real.sqrt (stNormSq (I := I) S t a x basis) *
               Real.sqrt (stNormSq (I := I) S t b x basis) := by
         intro mm
-        rw [MultilinearSection.domDomCongr_apply,
-          ContinuousMultilinearMap.domDomCongr_apply]
+        change
+          |Tensor0SSpace.eval
+              ((Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I)
+                (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b r)) x)
+              (fun q => basis (mm q))| ≤ _
+        rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.eval_domDomCongr]
         exact starProdBd (I := I) S t a b basis horth r (fun p => mm (σ p))
       have htop := mtIterOrthoBd (I := I) (S.family.metric t) basis horth
         (s' := 4 + k) (2 + r) _ _ hinner m
@@ -767,7 +754,6 @@ theorem StarSum2.bound
         exact hs
       exact le_trans htop (mul_le_mul_of_nonneg_left hsingle (by positivity))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -795,7 +781,6 @@ private theorem mtfDiag
   rw [sumIdentityDiag (fun i j => (X x)
     (metricTraceInput (I := I) (basis i) (basis j) (fun q => basis (mm q))))]
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -811,15 +796,13 @@ theorem starBase_comp_eq
     (m : Fin (4 + k) → Idx) :
     starBaseField (I := I) S t k a b 0 σ x (fun p => basis (m p))
       = ∑ j : Idx, ∑ i : Idx,
-          (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b 0)) x
+          (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b 0)) x
             (metricTraceInput (I := I) (basis i) (basis i)
               (metricTraceInput (I := I) (basis j) (basis j)
                 (fun p => basis (m p)))) := by
   classical
   rw [starBaseField]
-  set A := MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b 0) with hA
+  set A := Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b 0) with hA
   rw [show mtIter (I := I) (S.family.metric t) (2 + 0) A
       = metricTraceFirstTwoField (I := I) (M := M) (S.family.metric t)
           (metricTraceFirstTwoField (I := I) (M := M) (S.family.metric t) A) from rfl]
@@ -828,9 +811,7 @@ theorem starBase_comp_eq
   refine Finset.sum_congr rfl fun j _ => ?_
   obtain ⟨mIdx, hmIdx⟩ := mtInputBasis (I := I) basis j j m
   rw [hmIdx, mtfDiag (I := I) (S.family.metric t) basis horth A mIdx, ← hmIdx]
-  rfl
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -856,16 +837,29 @@ theorem starBaseProd_eq
                 (σ (Fin.natAdd (4 + a) p))) := by
   rw [starBase_comp_eq (I := I) S t k a b basis horth σ m]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
-  rw [MultilinearSection.domDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply]
-  exact Bundle.continuousMultilinearMap.product_fun_apply
-    (nablaKRm04Field (I := I) S t a x) (nablaKRm04Field (I := I) S t b x)
-    (fun p => metricTraceInput (I := I) (basis i) (basis i)
-      (metricTraceInput (I := I) (basis j) (basis j) (fun p => basis (m p))) (σ p))
+  change Tensor0SSpace.eval
+      ((Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I)
+        (∞ : WithTop ℕ∞) σ (starProd (I := I) S t a b 0)) x)
+      (metricTraceInput (I := I) (basis i) (basis i)
+        (metricTraceInput (I := I) (basis j) (basis j) (fun p => basis (m p)))) =
+    Tensor0SSpace.eval (nablaKRm04Field (I := I) S t a x)
+        (fun p => metricTraceInput (I := I) (basis i) (basis i)
+          (metricTraceInput (I := I) (basis j) (basis j) (fun p => basis (m p)))
+          (σ (Fin.castAdd (4 + b) p))) *
+      Tensor0SSpace.eval (nablaKRm04Field (I := I) S t b x)
+        (fun p => metricTraceInput (I := I) (basis i) (basis i)
+          (metricTraceInput (I := I) (basis j) (basis j) (fun p => basis (m p)))
+          (σ (Fin.natAdd (4 + a) p)))
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.eval_domDomCongr,
+    show starProd (I := I) S t a b 0 =
+        tensor0SField_product (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
+          (nablaKRm04Field (I := I) S t a) (nablaKRm04Field (I := I) S t b) from rfl,
+    tensor0SField_product_eval]
+  rfl
 
 def btPermE : Fin (((4 + 0) + (4 + 0)) + 2 * 0) ≃ Fin ((4 + 0) + 2 * (2 + 0)) :=
   Equiv.ofBijective ![4, 0, 5, 2, 6, 1, 7, 3] (by decide)
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -922,7 +916,6 @@ def σD3 : Fin (((4 + 0) + (4 + 0)) + 2 * 0) ≃ Fin ((4 + 0) + 2 * (2 + 0)) :=
 def σD4 : Fin (((4 + 0) + (4 + 0)) + 2 * 0) ≃ Fin ((4 + 0) + 2 * (2 + 0)) :=
   Equiv.ofBijective ![7, 0, 2, 1, 4, 5, 6, 3] (by decide)
 
-set_option backward.isDefEq.respectTransparency false in
 
 def e0Field (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -936,7 +929,6 @@ def e0Field (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     + starBaseField (I := I) S t 0 0 0 0 σD3
     + starBaseField (I := I) S t 0 0 0 0 σD4
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem e0Field_mem (S : SolutionOn (I := I) (M := M) D) (t : Real) :
@@ -953,7 +945,6 @@ theorem e0Field_mem (S : SolutionOn (I := I) (M := M) D) (t : Real) :
   · exact StarSum2.base 0 0 0 0 σD3
   · exact StarSum2.base 0 0 0 0 σD4
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -970,13 +961,13 @@ theorem e0Field_cost (S : SolutionOn (I := I) (M := M) D) (t : Real) :
       (StarSum2Cost.base 0 0 0 0 σD2))
       (StarSum2Cost.base 0 0 0 0 σD3))
       (StarSum2Cost.base 0 0 0 0 σD4) using 1
-  norm_num
+  all_goals try norm_num
+  all_goals infer_instance
 
 section ComponentIdentity
 
 open DifferentialGeometry.Dim3Reaction
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -994,7 +985,7 @@ theorem rmComp_eq_rm
     (n : Fin 4 → Fin 3) :
     nablaKRm04Field (I := I) S t 0 x (fun p => basis (n p))
       = rm R (n 0) (n 1) (n 2) (n 3) := by
-  haveI : NeZero (Module.finrank Real E) :=
+  have : NeZero (Module.finrank Real E) :=
     ⟨by have h : Module.finrank Real E = 3 := hdim; omega⟩
   rw [nablaKRm04Field_zero,
     solution_rm04_kn_all (I := I) S t x hdim (fun p => basis (n p))]
@@ -1025,11 +1016,9 @@ variable (m : Fin (4 + 0) → Idx)
 
 include horth
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem btStar2
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σBt2 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1052,11 +1041,9 @@ theorem btStar2
       simp [σBt2, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hL, hR]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem btStar3
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σBt3 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1079,11 +1066,9 @@ theorem btStar3
       simp [σBt3, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hL, hR]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem btStar4
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σBt4 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1106,11 +1091,9 @@ theorem btStar4
       simp [σBt4, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hL, hR]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem drStar1
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σD1 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1133,11 +1116,9 @@ theorem drStar1
       simp [σD1, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hL, hR]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem drStar2
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σD2 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1160,11 +1141,9 @@ theorem drStar2
       simp [σD2, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hL, hR]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem drStar3
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σD3 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1187,11 +1166,9 @@ theorem drStar3
       simp [σD3, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hL, hR]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem drStar4
-    [Module.Finite ℝ E]
     :
     starBaseField (I := I) S t 0 0 0 0 σD4 x (fun p => basis (m p))
       = ∑ e : Idx, ∑ f : Idx,
@@ -1216,7 +1193,6 @@ theorem drStar4
 
 end TermIdentities
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -1263,7 +1239,6 @@ theorem e0Field_comp
 end ComponentIdentity
 
 open DifferentialGeometry.Dim3Reaction in
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -1311,7 +1286,7 @@ theorem residualStarSum_zero
           D.carrier (t : Real) := by
   refine ⟨e0Field (I := I) S (t : Real), e0Field_mem (I := I) S (t : Real), ?_⟩
   intro x basis horth I0
-  haveI : NeZero (Module.finrank Real E) :=
+  have : NeZero (Module.finrank Real E) :=
     ⟨by have h : Module.finrank Real E = 3 := hdim x; omega⟩
   have htr : S.scalar (t : Real) x
       = sc (fun i j => S.ricciAt (t : Real) x (vec2 (I := I) (basis i) (basis j))) := by

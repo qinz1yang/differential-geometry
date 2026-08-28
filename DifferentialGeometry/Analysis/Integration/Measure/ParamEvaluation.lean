@@ -3,6 +3,7 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 noncomputable section
 
+
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff ENNReal Matrix
 
@@ -110,14 +111,15 @@ lemma paramDeriv_chartBasis_eq_sum
       mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (paramChartMap (I := I) x₀ Ψ) w =
         (mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) (Ψ w)).comp
           (mfderiv 𝓘(ℝ, E) I Ψ w) := by
-    simpa [paramChartMap, Function.comp_def] using
-      (mfderiv_comp (I := 𝓘(ℝ, E)) (I' := I) (I'' := 𝓘(ℝ, E))
-        (g := extChartAt I x₀) (f := Ψ) (x := w) hchartdiff hΨdiff)
+    unfold paramChartMap
+    exact mfderiv_comp (I := 𝓘(ℝ, E)) (I' := I) (I'' := 𝓘(ℝ, E))
+      (g := extChartAt I x₀) (f := Ψ) (x := w) hchartdiff hΨdiff
   have hchain_f :
       fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w =
         (mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) (Ψ w)).comp
           (mfderiv 𝓘(ℝ, E) I Ψ w) := by
-    simpa [mfderiv_eq_fderiv] using hchain
+    erw [← mfderiv_eq_fderiv]
+    exact hchain
   set T₀ : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) x₀
   apply (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).injective
@@ -151,9 +153,9 @@ lemma paramDeriv_chartBasis_eq_sum
               chartBasisVecFiber (I := I) x₀ k (Ψ w) =
                 (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).symm
                   ((chartModelBasis E) k) := by
-            change T₀.symm (Ψ w) ((chartModelBasis E) k) =
-              (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).symm ((chartModelBasis E) k)
-            rfl
+            unfold chartBasisVecFiber
+            exact (congrFun (T₀.symm_continuousLinearEquivAt_eq hx)
+              ((chartModelBasis E) k)).symm
           rw [hbasis]
           rw [ContinuousLinearEquiv.apply_symm_apply]
 
@@ -182,10 +184,10 @@ lemma paramGramMatrix_pullback_eq_sum
     intro k _
     rw [map_smul]
   rw [hL]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro k _
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   have hR :
       g.inner (Ψ w) (chartBasisVecFiber (I := I) x₀ k (Ψ w))
           (∑ l, paramJacobianMatrix (I := I) x₀ Ψ w l j •
@@ -276,7 +278,9 @@ lemma paramChartMap_contDiffOn
       (extChartAt I x₀ ∘ Ψ) s :=
     hchart.comp hΨ hmaps
   exact contMDiffOn_iff_contDiffOn.mp
-    (by simpa [paramChartMap, Function.comp_def] using hcomp)
+    (by
+      unfold paramChartMap
+      exact hcomp)
 
 lemma paramGram_contOn
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -300,9 +304,9 @@ lemma paramGram_contOn
     have hcoord : Continuous
         (fun v : E => ((chartModelBasis E).coord k).toContinuousLinearMap v) :=
       ((chartModelBasis E).coord k).toContinuousLinearMap.continuous
-    simpa only [paramJacobianMatrix_apply, LinearMap.coe_toContinuousLinearMap',
-      Module.Basis.coord_apply] using
-      hcoord.comp_continuousOn (happ.comp_continuousOn hfderiv)
+    unfold paramJacobianMatrix
+    simp only [LinearMap.toMatrix_apply]
+    exact hcoord.comp_continuousOn (happ.comp_continuousOn hfderiv)
   have hΨcont : ContinuousOn Ψ s :=
     (Ψ.contMDiffOn_toFun.mono hs_source).continuousOn
   have hG : ∀ k l, ContinuousOn
@@ -310,7 +314,7 @@ lemma paramGram_contOn
     intro k l
     exact (chartGramMatrix_entry_contMDiffOn (I := I) g x₀ k l).continuousOn.comp
       hΨcont hs_chart
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   apply continuous_matrix
   intro i j
   have hsum : ContinuousOn
@@ -318,13 +322,13 @@ lemma paramGram_contOn
         paramJacobianMatrix (I := I) x₀ Ψ w k i *
         paramJacobianMatrix (I := I) x₀ Ψ w l j *
         chartGramMatrix g x₀ (Ψ w) k l) s := by
-    refine continuousOn_finset_sum _ fun k _ => ?_
-    refine continuousOn_finset_sum _ fun l _ => ?_
+    refine continuousOn_finsetSum _ fun k _ => ?_
+    refine continuousOn_finsetSum _ fun l _ => ?_
     exact ((hJ k i).mul (hJ l j)).mul (hG k l)
-  simpa only [Set.restrict_apply] using
-    (hsum.congr fun w hw =>
-      paramGramMatrix_pullback_eq_sum (I := I) g x₀ Ψ
-        (hs_source hw) (hs_chart w hw) i j).restrict
+  change Continuous (s.domRestrict fun w => paramGramMatrix (I := I) g Ψ w i j)
+  exact (hsum.congr fun w hw =>
+    paramGramMatrix_pullback_eq_sum (I := I) g x₀ Ψ
+      (hs_source hw) (hs_chart w hw) i j).domRestrict
 
 lemma paramDensity_continuousOn_chart
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -356,7 +360,7 @@ lemma paramDensity_contOn
     (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) :
     ContinuousOn (paramDensity (I := I) g Ψ) Ψ.source := by
-  rw [continuousOn_iff_continuous_restrict, continuous_iff_continuousAt]
+  rw [continuousOn_iff_continuous_domRestrict, continuous_iff_continuousAt]
   intro w
   let x₀ : M := Ψ w
   let U : Set E := Ψ.source ∩ Ψ ⁻¹' (chartAt H x₀).source
@@ -372,10 +376,12 @@ lemma paramDensity_contOn
       Ψ z ∈ (trivializationAt E (TangentSpace I) x₀).baseSet := by
     intro z hz
     dsimp only [U] at hz
-    simpa only [trivializationAt_baseSet_eq_chartAt_source (I := I)] using hz.2
+    rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
+    exact hz.2
   have hwU : (w : E) ∈ U := by
     refine ⟨w.2, ?_⟩
-    simpa only [x₀] using mem_chart_source H (Ψ w)
+    change Ψ w ∈ (chartAt H (Ψ w)).source
+    exact mem_chart_source H (Ψ w)
   have hcontU : ContinuousOn (paramDensity (I := I) g Ψ) U :=
     paramDensity_continuousOn_chart (I := I) g x₀ Ψ
       hUopen hU_source hU_chart
@@ -410,7 +416,8 @@ lemma paramChartMap_hasFDerivWithinAt
     mdifferentiableAt_extChartAt (I := I) (x := x₀) (y := Ψ w) hxchart
   have hTdiff : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ, E)
       (paramChartMap (I := I) x₀ Ψ) w := by
-    simpa [paramChartMap, Function.comp_def] using hchartdiff.comp w hΨdiff
+    unfold paramChartMap
+    exact hchartdiff.comp w hΨdiff
   exact hTdiff.differentiableAt.hasFDerivAt.hasFDerivWithinAt
 
 omit [FiniteDimensional ℝ E] in
@@ -528,7 +535,7 @@ lemma measurableSet_symm_image_param
     MeasurableSet (Ψ.symm '' A) := by
   have hsrc_meas : MeasurableSet Ψ.source := Ψ.open_source.measurableSet
   have hcont : Continuous (fun w : Ψ.source => Ψ (w : E)) :=
-    continuousOn_iff_continuous_restrict.mp Ψ.contMDiffOn_toFun.continuousOn
+    continuousOn_iff_continuous_domRestrict.mp Ψ.contMDiffOn_toFun.continuousOn
   have hpre_sub :
       MeasurableSet {w : Ψ.source | Ψ (w : E) ∈ A} :=
     hcont.measurable hA_meas
@@ -1038,7 +1045,7 @@ lemma tsum_param_pou_piece_eq_subtype
   refine tsum_subtype_eq_of_support_subset
     (s := {α : M | (Function.support (ρ α)).Nonempty}) ?_
   intro α hα
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   by_contra hne
   rw [Set.not_nonempty_iff_eq_empty] at hne
   exact hα (param_pou_piece_zero (I := I) g ρ α hne Ψ)
@@ -1128,9 +1135,11 @@ theorem riemannianMeasure_image_param_eq
     riemannianMeasure (I := I) g ρ (Ψ '' B)
         = ∫⁻ x, (Ψ '' B).indicator (fun _ : M => (1 : ℝ≥0∞)) x
             ∂(riemannianMeasure (I := I) g ρ) := by
-          simpa using
-            (MeasureTheory.lintegral_indicator_one
-              (μ := riemannianMeasure (I := I) g ρ) hB_image_meas).symm
+          change riemannianMeasure (I := I) g ρ (Ψ '' B) =
+            ∫⁻ x, (Ψ '' B).indicator (1 : M → ℝ≥0∞) x
+              ∂(riemannianMeasure (I := I) g ρ)
+          exact (MeasureTheory.lintegral_indicator_one
+            (μ := riemannianMeasure (I := I) g ρ) hB_image_meas).symm
     _ = ∑' α : M, ∫⁻ x,
           ENNReal.ofReal (ρ α x) *
             (Ψ '' B).indicator (fun _ : M => (1 : ℝ≥0∞)) x
@@ -1166,7 +1175,7 @@ theorem riemannianMeasure_image_param_eq
               ENNReal.ofReal (paramDensity (I := I) g Ψ w) *
                 ENNReal.ofReal (ρ α.val (Ψ w))) w
         ∂(modelHaar (E := E)) := by
-          haveI hCρ : Countable {α : M | (Function.support (ρ α)).Nonempty} :=
+          have hCρ : Countable {α : M | (Function.support (ρ α)).Nonempty} :=
             (countable_nonempty_support_of_pou (I := I) ρ).to_subtype
           symm
           exact MeasureTheory.lintegral_tsum (μ := modelHaar (E := E)) (fun α =>
@@ -1288,10 +1297,10 @@ lemma paramGramMatrix_dotProduct_mulVec
       intro i _
       rw [map_smul]
     rw [hL]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     have hR :
         g.inner (Ψ w)
             (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
@@ -1333,9 +1342,10 @@ lemma paramGramMatrix_posDef
   have hli : LinearIndependent ℝ
       (fun i : Fin (Module.finrank ℝ E) =>
         mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i)) := by
-    simpa [Function.comp_def] using
-      (chartModelBasis E).linearIndependent.map'
-        (mfderiv 𝓘(ℝ, E) I Ψ w).toLinearMap hker
+    change LinearIndependent ℝ
+      ((mfderiv 𝓘(ℝ, E) I Ψ w).toLinearMap ∘ chartModelBasis E)
+    exact (chartModelBasis E).linearIndependent.map'
+      (mfderiv 𝓘(ℝ, E) I Ψ w).toLinearMap hker
   have hvnz : v ≠ 0 := by
     intro hv0
     rw [Fintype.linearIndependent_iff] at hli

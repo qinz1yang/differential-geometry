@@ -66,11 +66,14 @@ private lemma frame_gram_change
     (hz : z ∈ (framedExpDiffeo (I := I) g p).source) :
     (paramGramMatrix (I := I) g (framedExpDiffeo (I := I) g p) z).det =
       ((modelBasisAt (I := I) (E := E) p).det (frameBasis (I := I) g p)) ^ 2 *
-        (normalGramMatrix (I := I) g p (normalFrame (I := I) g p z)).det := by
+        (normalGramMatrix (I := I) g p
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p z))).det := by
   let q : M := framedExpDiffeo (I := I) g p z
   let D : TangentSpace I p →L[Real] TangentSpace I q :=
     mfderiv 𝓘(Real, E) I (expMapDiffeo (I := I) g p)
-      (normalFrame (I := I) g p z)
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p
+        (normalFrame (I := I) g p z))
   have hframed :
       paramGramMatrix (I := I) g (framedExpDiffeo (I := I) g p) z =
         basisGram (g.inner q) (fun i => D (frameBasis (I := I) g p i)) := by
@@ -81,7 +84,9 @@ private lemma frame_gram_change
     rfl
   have hraw :
       basisGram (g.inner q) (fun i => D (modelBasisAt (I := I) (E := E) p i)) =
-        normalGramMatrix (I := I) g p (normalFrame (I := I) g p z) := by
+        normalGramMatrix (I := I) g p
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p z)) := by
     ext i j
     simp only [basisGram, Matrix.of_apply, modelBasisAt, q, D]
     rw [framedExp_apply]
@@ -112,7 +117,7 @@ private lemma frame_gram_change
         (frameBasis (I := I) g p j)).symm]
     simp only [basisGram, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
       Module.Basis.toMatrix_apply, map_sum, map_smul,
-      ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      sum_apply, smul_apply, smul_eq_mul]
     simp only [Finset.mul_sum, Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro l _
@@ -138,7 +143,9 @@ theorem exists_framed_den
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ c : Real, 0 < c ∧ ∀ z ∈ (framedExpDiffeo (I := I) g p).source,
       paramDensity (I := I) g (framedExpDiffeo (I := I) g p) z =
-        c * normalChartDensity (I := I) g p (normalFrame (I := I) g p z) := by
+        c * normalChartDensity (I := I) g p
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p z)) := by
   let d : Real := (modelBasisAt (I := I) (E := E) p).det
     (frameBasis (I := I) g p)
   refine ⟨|d|, abs_pos.mpr (by
@@ -161,7 +168,8 @@ theorem framedRatio_anti
     (hnormal : AntitoneOn
       (fun r =>
         r ^ d * normalChartDensity (I := I) g p
-            (r • normalFrame (I := I) g p u) /
+            (r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p u)) /
           hypDensity q d r)
       (Ioo (0 : Real) b)) :
     AntitoneOn
@@ -176,15 +184,19 @@ theorem framedRatio_anti
     s ^ d * paramDensity (I := I) g (framedExpDiffeo (I := I) g p) (s • u) /
           hypDensity q d s =
         c * (s ^ d * normalChartDensity (I := I) g p
-            (s • normalFrame (I := I) g p u) / hypDensity q d s) := by
-      rw [hdensity (s • u) (hsrc hs), map_smul]
+            (s • tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p u)) / hypDensity q d s) := by
+      rw [hdensity (s • u) (hsrc hs), map_smul,
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p).map_smul]
       ring
     _ ≤ c * (r ^ d * normalChartDensity (I := I) g p
-            (r • normalFrame (I := I) g p u) / hypDensity q d r) :=
+            (r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p u)) / hypDensity q d r) :=
       mul_le_mul_of_nonneg_left (hnormal hr hs hrs) hc.le
     _ = r ^ d * paramDensity (I := I) g
           (framedExpDiffeo (I := I) g p) (r • u) / hypDensity q d r := by
-      rw [hdensity (r • u) (hsrc hr), map_smul]
+      rw [hdensity (r • u) (hsrc hr), map_smul,
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p).map_smul]
       ring
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]

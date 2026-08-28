@@ -31,8 +31,8 @@ def compSubseq
     PointedRiemannianCGMaps (I := I) X L (subseq ∘ φ) where
   partialDiffeomorph k := Φ.partialDiffeomorph (φ k)
   source_exhausts := by
-    letI : TopologicalSpace L.M := L.topology
-    letI : ChartedSpace H L.M := L.charted
+    let : TopologicalSpace L.M := L.topology
+    let : ChartedSpace H L.M := L.charted
     exact Φ.source_exhausts.comp_subseq hφ
   base_mem k := Φ.base_mem (φ k)
   basepoint_map k := Φ.basepoint_map (φ k)

@@ -43,7 +43,7 @@ theorem smooth_grad_memLp_on_ball
   have hM_nonneg : 0 ≤ M := by
     have h1 : x₀ ∈ Metric.closedBall x₀ R := Metric.mem_closedBall_self hR.le
     exact le_trans (norm_nonneg _) (hM x₀ h1)
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply_univ]
     exact measure_ball_lt_top
@@ -973,7 +973,7 @@ private theorem smooth_memLp_on_ball
     MemLp u (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R)) := by
   obtain ⟨M, hM⟩ := IsCompact.exists_bound_of_continuousOn
     (isCompact_closedBall x₀ R) hu.continuous.continuousOn
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply_univ]
     exact measure_ball_lt_top
@@ -998,7 +998,7 @@ private lemma smooth_setIntegral_norm_le_eLpNorm
   have hu_memLp : MemLp u (ENNReal.ofReal p)
       (volume.restrict (Metric.ball x₀ R)) := smooth_memLp_on_ball hp_pos hR hu
   set μ : Measure E := volume.restrict (Metric.ball x₀ R) with hμ_def
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     refine ⟨?_⟩
     rw [hμ_def, Measure.restrict_apply_univ]
     exact measure_ball_lt_top

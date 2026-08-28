@@ -202,12 +202,15 @@ theorem exists_smooth_time_clamp
     ring
   · intro t ht
     have hinnerDeriv : HasDerivAt inner (1 / margin) t := by
-      simpa only [one_div] using ((hasDerivAt_id t).sub_const center).div_const margin
+      dsimp only [inner]
+      simpa only [one_div] using!
+        ((hasDerivAt_id t).sub_const center).div_const margin
     have hcomp := (hψderiv (inner t) (hinnerMem t ht)).comp t hinnerDeriv
     have hscaled := hcomp.const_mul margin
     have htotal := (hasDerivAt_const t center).add hscaled
     have htotal' : HasDerivAt ρ (0 + margin * (1 * (1 / margin))) t := by
-      simpa only [ρ, Function.comp_apply] using htotal
+      dsimp only [ρ]
+      simpa only [Function.comp_apply] using! htotal
     have hcoefficient : 0 + margin * (1 * (1 / margin)) = 1 := by
       field_simp [hmargin.ne']
       ring

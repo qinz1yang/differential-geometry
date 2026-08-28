@@ -151,6 +151,7 @@ private lemma gradSlot_comp0_le
           _ = C := Real.sqrt_sq hC
     _ = 2 * C := by simp
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gradSlot_comp1_le
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -263,6 +264,7 @@ theorem gradSlot_riemannianFiberNormSq_zero
       push_cast
       ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradSlot_riemannianFiberNormSq_one
     (g : SmoothRiemannianMetric I M) {C : ℝ} (hC : 0 ≤ C)

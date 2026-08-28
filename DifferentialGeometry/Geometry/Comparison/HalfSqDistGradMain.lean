@@ -1,6 +1,9 @@
+import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
 import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradVar
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -87,7 +90,7 @@ theorem halfSqDist_curve_hasDerivAt
     HasDerivAt (fun s : ℝ => CenterOfMass.halfSqDist pt (f s 0))
       (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q
         (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f s 0) 0 (1 : ℝ))) 0 := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro hdiff
   set β : ℝ → M := fun s : ℝ => f s 0 with hβ_def
   have hsl : ContMDiff 𝓘(ℝ, ℝ) I (8 : ℕ) β :=
@@ -95,12 +98,16 @@ theorem halfSqDist_curve_hasDerivAt
   have hβmd : MDifferentiableAt 𝓘(ℝ, ℝ) I β 0 :=
     (hsl.contMDiffAt).mdifferentiableAt (by norm_num)
   have hβ0 : β 0 = q := by rw [hβ_def]; exact hf00
-  have hg : HasMFDerivAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) (β 0)
-      (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q) := by
-    rw [hβ0]; exact hdiff.hasMFDerivAt
-  have hcomp := hg.comp (0 : ℝ) hβmd.hasMFDerivAt
-  rw [hasMFDerivAt_iff_hasFDerivAt, hasFDerivAt_iff_hasDerivAt] at hcomp
-  simpa [ContinuousLinearMap.comp_apply] using hcomp
+  have hdiffβ :
+      MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) (β 0) := by
+    rw [hβ0]
+    exact hdiff
+  have hcurve :=
+    DifferentialGeometry.Analysis.Calculus.hasDerivAt_comp_mfderiv_along
+      I (CenterOfMass.halfSqDist pt) β 0 hdiffβ hβmd
+  rw [hβ0] at hcurve
+  convert hcurve using 1
+  all_goals rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -130,7 +137,7 @@ theorem dist_le_arcLength
                 (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))))) :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     dist (γ a) (γ b) ≤ arcLength (I := I) g γ a b := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   rw [HopfRinow.riemMetric_dist_eq (I := I) (γ a) (γ b)]
   calc (riemannianEDist I (γ a) (γ b)).toReal
       ≤ (ENNReal.ofReal (arcLength (I := I) g γ a b)).toReal :=
@@ -162,7 +169,7 @@ theorem halfSqDist_dir_deriv
       = L * (- g.inner q
           (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f s 0) 0 (1 : ℝ))
           (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm q u) 0 (1 : ℝ))) := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro hLdist hdiff
   set γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm q u with hγ_def
   have hA := halfArcLengthSq_deriv (I := I) g hEnorm q pt u L hL f hf hfc hgL hfixL hguu
@@ -211,7 +218,7 @@ theorem grad_halfSqDist_min
     Real.sqrt (g.inner q v v) = (riemannianEDist I q pt).toReal →
     MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q →
     gradientFun (I := I) g (CenterOfMass.halfSqDist pt) q = -v := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro hexp hlen hdiff
   by_cases hpt : pt = q
   · rw [hpt] at hlen hdiff ⊢
@@ -275,11 +282,26 @@ theorem grad_halfSqDist_min
         intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm q u
       rw [hw', hu'] at hval
       have hvw : g.inner q v w = L * g.inner q u w := by
-        rw [← hLu, (g.inner q).map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
-      change mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q w =
-        g.inner q (-v) w
-      rw [hval, (g.inner q).map_neg, ContinuousLinearMap.neg_apply, hvw,
-        g.symm q w u, mul_neg]
+        rw [← hLu, (g.inner q).map_smul, smul_apply, smul_eq_mul]
+      have hvalReal :
+          (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q w : ℝ) =
+            L * (-g.inner q w u) := by
+        convert hval using 1
+      have hneg : g.inner q (-v) w = -g.inner q v w := by
+        rw [(g.inner q).map_neg]
+        rfl
+      have hsym :
+          L * (-g.inner q w u) = -(L * g.inner q u w) := by
+        rw [g.symm q w u]
+        ring
+      have hvwNeg : -(L * g.inner q u w) = -g.inner q v w :=
+        (congrArg Neg.neg hvw).symm
+      have hresult :
+          (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q w : ℝ) =
+            g.inner q (-v) w :=
+        hvalReal.trans (hsym.trans (hvwNeg.trans hneg.symm))
+      convert hresult using 1
+      all_goals rfl
     exact gradientFun_eq_of_flat (I := I) g hflat
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -299,7 +321,7 @@ theorem halfSqDist_flat
       (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q).toLinearMap =
         metricFlatEquiv (I := I) g q
           (-(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt)) := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨ρ, hρ, hgeo⟩ := exists_central_geodesic (I := I) g hEnorm q
   refine ⟨ρ, hρ, ?_⟩
   intro pt hpt_src hpt_ne hsmall hdiff
@@ -320,12 +342,28 @@ theorem halfSqDist_flat
   have hnc : g.inner q
       (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) w
       = L * g.inner q u w := by
-    rw [← hLu, (g.inner q).map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
-  change mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q w
-      = g.inner q
-          (-(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt)) w
-  rw [hval, (g.inner q).map_neg, ContinuousLinearMap.neg_apply, hnc, g.symm q w u,
-    mul_neg]
+    rw [← hLu, (g.inner q).map_smul, smul_apply, smul_eq_mul]
+  let nc : TangentSpace I q :=
+    show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt
+  have hvalReal :
+      (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q w : ℝ) =
+        L * (-g.inner q w u) := by
+    convert hval using 1
+  have hneg : g.inner q (-nc) w = -g.inner q nc w := by
+    rw [(g.inner q).map_neg]
+    rfl
+  have hsym :
+      L * (-g.inner q w u) = -(L * g.inner q u w) := by
+    rw [g.symm q w u]
+    ring
+  have hncNeg : -(L * g.inner q u w) = -g.inner q nc w := by
+    exact (congrArg Neg.neg hnc).symm
+  have hresult :
+      (mfderiv I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q w : ℝ) =
+        g.inner q (-nc) w :=
+    hvalReal.trans (hsym.trans (hncNeg.trans hneg.symm))
+  convert hresult using 1
+  all_goals rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -343,7 +381,7 @@ theorem grad_halfSqDist
       MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q →
       gradientFun (I := I) g (CenterOfMass.halfSqDist pt) q =
         -(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨ρ, hρ, hflat⟩ := halfSqDist_flat (I := I) g hEnorm q
   refine ⟨ρ, hρ, ?_⟩
   intro pt hsrc hne hsmall hdiff
@@ -378,20 +416,20 @@ theorem grad_halfSqDist_of_complete_metric
       MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q →
       gradientFun (I := I) g (CenterOfMass.halfSqDist pt) q =
         -(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M :=
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
     (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
-  letI : CompleteSpace M := hcomplete.complete
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

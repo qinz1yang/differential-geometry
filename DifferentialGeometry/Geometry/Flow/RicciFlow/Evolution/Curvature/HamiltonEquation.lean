@@ -131,8 +131,8 @@ private theorem coordNab2_eq
           (coordinateFrameAt (I := I) x₀ a x₀)
           (coordinateFrameAt (I := I) x₀ i x₀)
           (coordinateFrameAt (I := I) x₀ j x₀)) := by
-  simpa only [solNabla2Ric, solNablaRic] using
-    coordNab2Ric_eq_nabla2RicField (I := I) S x₀ t d a i j
+  rw [coordNab2Ric_eq_nabla2RicField (I := I) S x₀ t d a i j]
+  rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I 1 M]
   [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -479,6 +479,7 @@ private theorem rm04Var_eq_tensor
       rw [hessVar_apply]
       simp only [coordNab2_eq]
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem varTensor_eq_ham
@@ -770,9 +771,8 @@ theorem rm04Base_of_solution_any
   have hinv : MetricInverseInBasis_gen
       (I := I) (S.base.metric (t : Real)) x basis
       (identityInvMetric (Idx := Idx)) := by
-    simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal
-        (I := I) (S.base.metric (t : Real)) basis horth
+    exact metricInverseInBasis_identity_of_orthonormal
+      (I := I) (S.base.metric (t : Real)) basis horth
   exact hvar.congr_deriv (varTensor_eq_ham (I := I) S (t : Real) x basis hinv m)
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -26,9 +26,11 @@ theorem hasDerivAt_clm_pre_post
     HasDerivAt (fun s : ℝ => Q (A s d)) (Q (A' d)) t := by
   have hEval : HasDerivAt (fun s : ℝ => A s d) (A' d) t := by
     have := (ContinuousLinearMap.apply ℝ E d).hasFDerivAt.comp_hasDerivAt t hA
-    simpa [ContinuousLinearMap.apply_apply] using this
+    change HasDerivAt (fun s : ℝ => A s d) (A' d) t at this
+    exact this
   have := Q.hasFDerivAt.comp_hasDerivAt t hEval
-  simpa using this
+  change HasDerivAt (fun s : ℝ => Q (A s d)) (Q (A' d)) t at this
+  exact this
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in

@@ -44,7 +44,7 @@ theorem connTraceAction_coord
               componentRS (I := I) (coordinateFrameAt_basis (I := I) x₀ hx)
                 (A x) (fun _ : Fin 1 => p)
                 (fun q : Fin 2 => if q = 0 then i else j)) *
-          extDerivFun (I := I) potential x
+          mvfderiv (I := I) potential x
             (coordinateFrameAt (I := I) x₀ p x) := by
   classical
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -56,8 +56,7 @@ theorem connTraceAction_coord
         hframe.coeff p x (X x) • frame p x := by
     simpa [X, frame, hframe] using hframe.coeff_sum_eq (fun y : M => X y) hx
   rw [DifferentialGeometry.Integral.DivergenceTheorem.tangentSectionAction_def]
-  rw [← DifferentialGeometry.extDerivFun_real_eq_mfderiv I potential x (X x)]
-  change extDerivFun (I := I) potential x (X x) = _
+  change mvfderiv (I := I) potential x (X x) = _
   rw [hX, map_sum]
   refine Finset.sum_congr rfl ?_
   intro p _
@@ -90,7 +89,7 @@ def connTraceAction
               (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
               (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j)) *
-        extDerivFun (I := I) potential x
+        mvfderiv (I := I) potential x
           (coordinateFrameAt (I := I) x p x)
 
 def gammaActionTrace
@@ -539,7 +538,7 @@ theorem connTraceAction_eq_gamma
           christoffelVariation x p i j)
     (hgrad :
       ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+        mvfderiv (I := I) potential x (coordinateFrameAt (I := I) x p x) =
           gradPotential x p) :
     connTraceAction (I := I) g A potential =
       gammaActionTrace (I := I) g christoffelVariation gradPotential := by
@@ -580,7 +579,7 @@ theorem weightedTrace_of_raw
           christoffelVariation x p i j)
     (hgrad :
       ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+        mvfderiv (I := I) potential x (coordinateFrameAt (I := I) x p x) =
           gradPotential x p) :
     ∀ x : M,
       christoffelWeightedDivergenceTrace (I := I) g

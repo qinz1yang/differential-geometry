@@ -13,7 +13,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
@@ -28,6 +28,7 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 set_option autoImplicit false
 
 noncomputable section
+
 
 namespace DifferentialGeometry
 namespace Tensor0SBundle
@@ -62,8 +63,7 @@ theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
   change ((∑ i ∈ S, T i) v) = ∑ i ∈ S, (T i) v
   induction S using Finset.induction_on with
   | empty =>
-      change (0 : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) v = 0
-      simp
+      exact Tensor0SSpace.zero_apply s x v
   | insert a S ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
       change T a v + (∑ i ∈ S, T i) v = T a v + ∑ i ∈ S, T i v

@@ -28,9 +28,11 @@ theorem parabolicTimeDerivative_eq
       dtimeU p.time p.space := by
   have hpoint : HasDerivAt (fun t ↦ u t p.space)
       (dtimeU p.time p.space) p.time := by
-    simpa only [BoundedContinuousFunction.evalCLM_apply] using
-      (BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
-        |>.comp_hasDerivAt p.time (huTime p.time hp.1)
+    change HasDerivAt
+      ((BoundedContinuousFunction.evalCLM Real p.space) ∘ u)
+      ((BoundedContinuousFunction.evalCLM Real p.space) (dtimeU p.time)) p.time
+    exact (BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
+      |>.comp_hasDerivAt p.time (huTime p.time hp.1)
   unfold parabolicTimeDerivative
   rw [hpoint.hasFDerivAt.fderiv]
   simp only [ContinuousLinearMap.toSpanSingleton_apply, one_smul]
@@ -80,14 +82,14 @@ theorem parabolicTimeDerivative_holderWith_restrict
     (hgauge : eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder J Set.univ) (fun t x ↦ u t x) ≤ C) :
     HolderWith C alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ dtimeU p.time p.space)) := by
   have hbase :=
     DifferentialGeometry.Analysis.Schauder.parabolicTimeDerivative_holderWith_restrict
       hgauge
-  have hfun : (parabolicCylinder J Set.univ).restrict
+  have hfun : (parabolicCylinder J Set.univ).domRestrict
       (parabolicTimeDerivative (fun t x ↦ u t x)) =
-        (parabolicCylinder J Set.univ).restrict
+        (parabolicCylinder J Set.univ).domRestrict
           (fun p ↦ dtimeU p.time p.space) := by
     funext p
     exact parabolicTimeDerivative_eq u dtimeU huTime p.2
@@ -121,15 +123,15 @@ theorem parabolicSpatialDerivative_holderWith_restrict_of_interpolation
       ‖u p.time p.space‖ ≤ M) :
     HolderWith
       (parabolicSpatialGradientInterpolationConst epsilon alpha C M) alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ du p.time p.space)) := by
   let e := continuousMultilinearCurryFin1 Real (Euc n) F
   have hjet := parabolicSpatialJet_one_holderWith_restrict_of_interpolation
     hJ epsilon hepsilon halpha huC2 hgauge huNorm
   have hcomp := e.lipschitz.holderWith.comp hjet
-  have hfun : e ∘ (parabolicCylinder J Set.univ).restrict
+  have hfun : e ∘ (parabolicCylinder J Set.univ).domRestrict
       (parabolicSpatialJet 1 (fun t x ↦ u t x)) =
-        (parabolicCylinder J Set.univ).restrict
+        (parabolicCylinder J Set.univ).domRestrict
           (fun p ↦ du p.time p.space) := by
     funext p
     exact parabolicSpatialJet_one_eq u du hu p.2
@@ -170,14 +172,14 @@ theorem parabolicSpatialSecondDerivative_holderWith_restrict
     (hgauge : eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder J Set.univ) (fun t x ↦ u t x) ≤ C) :
     HolderWith C alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ d2u p.time p.space)) := by
   let e := hessianCurryEquiv (Euc n) F
   have hbase := parabolicSpatialJet_holderWith_restrict hgauge
   have hcomp := e.lipschitz.holderWith.comp hbase
-  have hfun : e ∘ (parabolicCylinder J Set.univ).restrict
+  have hfun : e ∘ (parabolicCylinder J Set.univ).domRestrict
       (parabolicSpatialJet 2 (fun t x ↦ u t x)) =
-        (parabolicCylinder J Set.univ).restrict
+        (parabolicCylinder J Set.univ).domRestrict
           (fun p ↦ d2u p.time p.space) := by
     funext p
     exact hessianCurryEquiv_parabolicSpatialJet_two_eq u du d2u hu hdu p.2

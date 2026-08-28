@@ -16,7 +16,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
@@ -25,6 +25,7 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Bundle.TangentSpace
 
 namespace DifferentialGeometry
 namespace Tensor0SBundle
@@ -39,6 +40,21 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
+
+private noncomputable def vectorFieldModelPullbackWithin (x₀ : M)
+    (X : (x : M) → TangentSpace I x) (z : E) : E :=
+  tangentSpaceModelContinuousLinearEquiv (I := 𝓘(𝕜, E)) z
+    (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+      X (Set.range I) z)
+
+omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [IsManifold I ∞ M] in
+theorem vector_field_model_pullback_within_eq_mpullback_within (x₀ : M)
+    (X : (x : M) → TangentSpace I x) (z : E) :
+    vectorFieldModelPullbackWithin (I := I) x₀ X z =
+      VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+        X (Set.range I) z := by
+  unfold vectorFieldModelPullbackWithin
+  rw [tangentSpaceModelContinuousLinearEquiv_apply]
 
 private theorem fderivWithin_eq_sum_basis_coord
     {F : E -> E} {u : Set E} {y Xy : E}
@@ -101,7 +117,7 @@ private theorem fderivWithin_eq_sum_basis_coord
     simp at hi
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
-private theorem fderivWithin_chart_scalar_eq_extDerivFun
+private theorem fderivWithin_chart_scalar_eq_mvfderiv
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x₀ : M) (φ : E -> 𝕜) (f : M -> 𝕜)
     (hf : MDifferentiableAt I 𝓘(𝕜, 𝕜) f x₀)
@@ -109,9 +125,9 @@ private theorem fderivWithin_chart_scalar_eq_extDerivFun
       φ =ᶠ[𝓝[Set.range I] (extChartAt I x₀ x₀)]
         writtenInExtChartAt I 𝓘(𝕜, 𝕜) x₀ f) :
     fderivWithin 𝕜 φ (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) =
-      extDerivFun (I := I) f x₀ (X x₀) := by
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) =
+      mvfderiv (I := I) f x₀ (X x₀) := by
   let z₀ : E := extChartAt I x₀ x₀
   have hzRange : z₀ ∈ Set.range I :=
     extChartAt_target_subset_range x₀ (mem_extChartAt_target (I := I) x₀)
@@ -129,13 +145,13 @@ private theorem fderivWithin_chart_scalar_eq_extDerivFun
     heq.fderivWithin_eq_of_mem hzRange
   change
     fderivWithin 𝕜 φ (Set.range I) z₀
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) z₀) =
-      (mfderiv I 𝓘(𝕜, 𝕜) f x₀) (X x₀)
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x) z₀) =
+      mvfderiv (I := I) f x₀ (X x₀)
+  unfold vectorFieldModelPullbackWithin mvfderiv
   rw [hX, hf.mfderiv, hfd]
   rfl
 
-private theorem tangentFieldModelInChart_fderivWithin_eq_sum_extDerivFun_coord
+private theorem tangentFieldModelInChart_fderivWithin_eq_sum_mvfderiv_coord
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (V : (x : M) -> TangentSpace I x) (x₀ : M)
     (hVmodel :
@@ -151,10 +167,10 @@ private theorem tangentFieldModelInChart_fderivWithin_eq_sum_extDerivFun_coord
     fderivWithin 𝕜
         (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V)
         (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) =
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) =
       ∑ i : Fin (Module.finrank 𝕜 E),
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M =>
             (Module.finBasis 𝕜 E).coord i
               (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V
@@ -165,8 +181,8 @@ private theorem tangentFieldModelInChart_fderivWithin_eq_sum_extDerivFun_coord
   let b : Module.Basis (Fin (Module.finrank 𝕜 E)) 𝕜 E := Module.finBasis 𝕜 E
   have hbasis := fderivWithin_eq_sum_basis_coord
     (F := F) (u := Set.range I) (y := extChartAt I x₀ x₀)
-    (Xy := VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-      (fun x => X x) (Set.range I) (extChartAt I x₀ x₀))
+    (Xy := vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+      (extChartAt I x₀ x₀))
     hVmodel (I.uniqueDiffOn (extChartAt I x₀ x₀)
       (extChartAt_target_subset_range x₀ (mem_extChartAt_target (I := I) x₀)))
   rw [hbasis]
@@ -187,7 +203,7 @@ private theorem tangentFieldModelInChart_fderivWithin_eq_sum_extDerivFun_coord
     change b.coord i (F y) =
       b.coord i (F (extChartAt I x₀ ((extChartAt I x₀).symm y)))
     rw [hright]
-  exact fderivWithin_chart_scalar_eq_extDerivFun
+  exact fderivWithin_chart_scalar_eq_mvfderiv
     (I := I) X x₀ φ f (hcoord i) heq
 
 theorem covariantDerivative_modelInChart_center_eq_fderiv_plus_connection
@@ -210,8 +226,8 @@ theorem covariantDerivative_modelInChart_center_eq_fderiv_plus_connection
       fderivWithin 𝕜
         (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V)
         (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) +
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) +
       connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀
         (extChartAt I x₀ x₀)
         (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V
@@ -226,14 +242,14 @@ theorem covariantDerivative_modelInChart_center_eq_fderiv_plus_connection
   have hsum := covariantDerivative_modelInChart_center_eq_sum
     (𝕜 := 𝕜) (I := I) cov (fun x => X x) V x₀ hV hcoord
   have hderiv :=
-    tangentFieldModelInChart_fderivWithin_eq_sum_extDerivFun_coord
+    tangentFieldModelInChart_fderivWithin_eq_sum_mvfderiv_coord
       (I := I) X V x₀ hVmodel hcoord
   calc
     tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀
         (fun p : M => (cov V p) (X p)) (extChartAt I x₀ x₀)
         =
       (∑ i : Fin (Module.finrank 𝕜 E),
-        extDerivFun (I := I) (zfun i) x₀ (X x₀) • b i) +
+        mvfderiv (I := I) (zfun i) x₀ (X x₀) • b i) +
       connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀
         (extChartAt I x₀ x₀)
         (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V
@@ -243,8 +259,8 @@ theorem covariantDerivative_modelInChart_center_eq_fderiv_plus_connection
       fderivWithin 𝕜
         (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V)
         (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) +
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) +
       connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀
         (extChartAt I x₀ x₀)
         (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V
@@ -309,15 +325,15 @@ private theorem tensor0SModelInChart_apply_update_modelSlot_center {s : ℕ}
   · subst hb
     simp only [extChartAt, OpenPartialHomeomorph.extend, PartialEquiv.coe_trans,
       ModelWithCorners.toPartialEquiv_coe, OpenPartialHomeomorph.toFun_eq_coe,
-      Function.comp_apply, Function.update_self, Trivialization.symmL_apply]
+      Function.comp_apply, Function.update_self]
     exact tangentFieldModelInChart_center_symmL (I := I) W x₀
   · simp only [extChartAt, OpenPartialHomeomorph.extend, PartialEquiv.coe_trans,
       ModelWithCorners.toPartialEquiv_coe, OpenPartialHomeomorph.toFun_eq_coe,
-      Function.comp_apply, Function.update_of_ne hb, Trivialization.symmL_apply]
+      Function.comp_apply, Function.update_of_ne hb]
     exact tangentFieldModelInChart_center_symmL (I := I) (V b) x₀
 
 omit [CompleteSpace 𝕜] in
-private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_extDerivFun {s : ℕ}
+private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_mvfderiv {s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
@@ -331,9 +347,9 @@ private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_extDerivFun {s :
             (fun a : Fin s =>
               tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a) y))
         (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) =
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
         x₀ (X x₀) := by
   let φ : E -> 𝕜 :=
     fun y : E =>
@@ -359,11 +375,11 @@ private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_extDerivFun {s :
     unfold tangentFieldModelInChart
     exact (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL_continuousLinearMapAt
       (R := 𝕜) hbase (V a ((extChartAt I x₀).symm y))
-  exact fderivWithin_chart_scalar_eq_extDerivFun
+  exact fderivWithin_chart_scalar_eq_mvfderiv
     (I := I) X x₀ φ f hpair heq
 
 omit [CompleteSpace 𝕜] in
-private theorem fderivWithin_localTensor0S_eval_modelSlots_center_eq_extDerivFun {s : ℕ}
+private theorem fderivWithin_localTensor0S_eval_modelSlots_center_eq_mvfderiv {s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s x)
@@ -377,9 +393,9 @@ private theorem fderivWithin_localTensor0S_eval_modelSlots_center_eq_extDerivFun
             (fun a : Fin s =>
               tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a) y))
         (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) =
-      extDerivFun (I := I) (fun p : M => β p (fun a : Fin s => V a p))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) =
+      mvfderiv (I := I) (fun p : M => β p (fun a : Fin s => V a p))
         x₀ (X x₀) := by
   let φ : E -> 𝕜 :=
     fun y : E =>
@@ -405,12 +421,11 @@ private theorem fderivWithin_localTensor0S_eval_modelSlots_center_eq_extDerivFun
     unfold tangentFieldModelInChart
     exact (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL_continuousLinearMapAt
       (R := 𝕜) hbase (V a ((extChartAt I x₀).symm y))
-  exact fderivWithin_chart_scalar_eq_extDerivFun
+  exact fderivWithin_chart_scalar_eq_mvfderiv
     (I := I) X x₀ φ f hpair heq
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
-private theorem fderivWithin_tensorRS_eval_modelSlots_center_eq_extDerivFun {r s : ℕ}
+private theorem fderivWithin_tensorRS_eval_modelSlots_center_eq_mvfderiv {r s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r s)
@@ -428,12 +443,12 @@ private theorem fderivWithin_tensorRS_eval_modelSlots_center_eq_extDerivFun {r s
             (fun a : Fin s =>
               tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a) y))
         (Set.range I) (extChartAt I x₀ x₀)
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) =
-      extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x)
+          (extChartAt I x₀ x₀)) =
+      mvfderiv (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
         x₀ (X x₀) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) := inferInstance
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) := inferInstance
   let φ : E -> 𝕜 :=
     fun y : E =>
       (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -473,7 +488,7 @@ private theorem fderivWithin_tensorRS_eval_modelSlots_center_eq_extDerivFun {r s
         exact (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL_continuousLinearMapAt
           (R := 𝕜) hbase (V a ((extChartAt I x₀).symm y))
     · exact hbase
-  exact fderivWithin_chart_scalar_eq_extDerivFun
+  exact fderivWithin_chart_scalar_eq_mvfderiv
     (I := I) X x₀ φ f hpair heq
 
 noncomputable def localCovariantDerivTensor0SAt (r : ℕ)
@@ -486,14 +501,12 @@ noncomputable def localCovariantDerivTensor0SAt (r : ℕ)
   exact (trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀).symm x₀
     (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-      (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-        (fun x => X x) (Set.range I))
+      (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
       (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
       (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
         (M := M) r x₀ β)
       (Set.range I) (extChartAt I x₀ x₀))
 
-set_option backward.isDefEq.respectTransparency false in
 theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -520,18 +533,17 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
     (localCovariantDerivTensor0SAt
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀)
       (fun a : Fin r => V a x₀) =
-      extDerivFun (I := I) (fun p : M => β p (fun a : Fin r => V a p))
+      mvfderiv (I := I) (fun p : M => β p (fun a : Fin r => V a p))
         x₀ (X x₀) -
         ∑ a : Fin r,
           β x₀
             (Function.update (fun b : Fin r => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
-    VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-      (fun x => X x) (Set.range I) y₀
+    vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x) y₀
   let βm : E -> Tensor0SModel (𝕜 := 𝕜) (E := E) r :=
     tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r x₀ β
@@ -549,10 +561,10 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
   have hpair_deriv :
       fderivWithin 𝕜 (fun y : E => βm y (fun a : Fin r => Vm a y))
           (Set.range I) y₀ Xmodel =
-        extDerivFun (I := I) (fun p : M => β p (fun a : Fin r => V a p))
+        mvfderiv (I := I) (fun p : M => β p (fun a : Fin r => V a p))
           x₀ (X x₀) := by
     simpa [βm, Vm, Xmodel, y₀] using
-      fderivWithin_localTensor0S_eval_modelSlots_center_eq_extDerivFun
+      fderivWithin_localTensor0S_eval_modelSlots_center_eq_mvfderiv
         (I := I) X β V x₀ hpair
   have hcov_model : ∀ a : Fin r,
       tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀
@@ -568,22 +580,21 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
           (slots a)) =
         fun a : Fin r => V a x₀ := by
     funext a
-    simpa [slots, Vm] using tangentFieldModelInChart_center_symmL (I := I) (V a) x₀
+    simpa [slots, Vm, y₀] using
+      tangentFieldModelInChart_center_symmL (I := I) (V a) x₀
   have hleft_model :
       (localCovariantDerivTensor0SAt
         (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀)
         (fun a : Fin r => V a x₀) =
       (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀) slots := by
     let eβ := trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀
     let Mβ : Tensor0SModel r 𝕜 E :=
       covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀
     have hcoordEval :
@@ -636,8 +647,7 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
       (fun a : Fin r => V a x₀)
         =
       (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀) slots := hleft_model
     _ =
@@ -645,7 +655,7 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
         ∑ a : Fin r, βm y₀ (Function.update slots a (Γ (slots a))) := by
           simp [covariantDeriv_tensor0SModelWithin_apply_slots, βm, Xmodel, Γ, slots, y₀]
     _ =
-      extDerivFun (I := I) (fun p : M => β p (fun a : Fin r => V a p))
+      mvfderiv (I := I) (fun p : M => β p (fun a : Fin r => V a p))
           x₀ (X x₀) -
         ∑ a : Fin r,
           βm y₀
@@ -657,7 +667,7 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
           rw [Finset.sum_add_distrib]
           abel
     _ =
-      extDerivFun (I := I) (fun p : M => β p (fun a : Fin r => V a p))
+      mvfderiv (I := I) (fun p : M => β p (fun a : Fin r => V a p))
           x₀ (X x₀) -
         ∑ a : Fin r,
           β x₀
@@ -665,7 +675,6 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
               ((cov (V a) x₀) (X x₀))) := by
           rw [hcorr_sum]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
 private theorem tensorRSModelInChart_apply_modelSlots_center {r s : ℕ}
     (A : (x : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -680,13 +689,12 @@ private theorem tensorRSModelInChart_apply_modelSlots_center {r s : ℕ}
         (fun a : Fin s =>
           (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL 𝕜 x₀
             (slots a)) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   rw [tensorRSModelInChart, extChartAt_to_inv]
   exact TensorRSSpace.trivializationAt_apply
     (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x₀) r s
     (FiberBundle.mem_baseSet_trivializationAt' x₀) (A x₀) βm slots
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
 private theorem tensorRSModelInChart_apply_update_modelOutputSlot_center {r s : ℕ}
     (A : (x : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -707,7 +715,7 @@ private theorem tensorRSModelInChart_apply_update_modelOutputSlot_center {r s : 
           (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ W
             (extChartAt I x₀ x₀))) =
       (A x₀ (β x₀)) (Function.update (fun b : Fin s => V b x₀) a (W x₀)) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   rw [tensorRSModelInChart_apply_modelSlots_center]
   have hβ :
       (trivializationAt (Tensor0SModel r 𝕜 E)
@@ -810,7 +818,7 @@ theorem localCovDeriv0S_sub {r : ℕ}
       ((cov (V a) x₀) (X x₀))
       ((cov' (V a) x₀) (X x₀))).symm
   let D : 𝕜 :=
-    extDerivFun (I := I) (fun p : M => β p (fun a : Fin r => V a p))
+    mvfderiv (I := I) (fun p : M => β p (fun a : Fin r => V a p))
       x₀ (X x₀)
   let Scov : 𝕜 :=
     ∑ a : Fin r, β x₀ (Function.update slots a ((cov (V a) x₀) (X x₀)))
@@ -837,7 +845,6 @@ theorem localCovDeriv0S_sub {r : ℕ}
   rw [← hsum]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nablaRSFun_eval_moving_raw {r s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -865,7 +872,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
               (extChartAt I x₀ p))) x₀) :
     (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀) =
-      extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
         x₀ (X x₀) -
         (T x₀ (localCovariantDerivTensor0SAt
           (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀))
@@ -874,12 +881,11 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
           (T x₀ (β x₀))
             (Function.update (fun b : Fin s => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
-    VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-      (fun x => X x) (Set.range I) y₀
+    vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x) y₀
   let Tm : E -> TensorRSModel r s 𝕜 E :=
     tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r s x₀ (fun x => T x)
@@ -911,12 +917,12 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
       (I'' := 𝓘(𝕜, TensorRSModel r s 𝕜 E))
       (x := y₀) hmodel_center hsymm
     have hdiff := hcomp.contDiffWithinAt.differentiableWithinAt (by simp)
-    simpa [Tm, tensorRSModelInChart, y₀] using hdiff
+    let hdiff' : DifferentiableWithinAt 𝕜 Tm (Set.range I) y₀ := hdiff
+    exact hdiff'
   have hprod := covariantDeriv_tensorRSModelWithin_eval_derivation
     (𝕜 := 𝕜) (E := E) (r := r) (s := s)
     Tm βm Vm
-    (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-      (fun x => X x) (Set.range I))
+    (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
     (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
     (Set.range I) y₀ hTdiff hβmodel hVmodel
     (I.uniqueDiffOn y₀
@@ -924,10 +930,10 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
   have hpair_deriv :
       fderivWithin 𝕜 (fun y : E => (Tm y (βm y)) (fun a : Fin s => Vm a y))
           (Set.range I) y₀ Xmodel =
-        extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
+        mvfderiv (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
           x₀ (X x₀) := by
     simpa [Tm, βm, Vm, Xmodel, y₀] using
-      fderivWithin_tensorRS_eval_modelSlots_center_eq_extDerivFun
+      fderivWithin_tensorRS_eval_modelSlots_center_eq_mvfderiv
         (I := I) X T β V x₀ hpair
   have hcov_model : ∀ a : Fin s,
       tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀
@@ -943,13 +949,13 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
           (slots a)) =
         fun a : Fin s => V a x₀ := by
     funext a
-    simpa [slots, Vm] using tangentFieldModelInChart_center_symmL (I := I) (V a) x₀
+    simpa [slots, Vm, y₀] using
+      tangentFieldModelInChart_center_symmL (I := I) (V a) x₀
   have hleft_model :
       (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀) =
         (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            (fun x => X x) (Set.range I))
+          (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := by
     have hβcenter :
@@ -976,8 +982,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
         tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             r s x₀ F y₀ =
           covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
-            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-              (fun x => X x) (Set.range I))
+            (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
             (connectionEndomorphismInChart
               (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
             Tm (Set.range I) y₀ := by
@@ -989,6 +994,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
         TensorLieDeriv.mcovariantDeriv_tensorRSWithinFromConnection
       rw [TensorLieDeriv.modelAt_mcovRS]
       simp only [Tm, Set.preimage_univ, Set.univ_inter]
+      rfl
     calc
       (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀) =
@@ -997,16 +1003,14 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
             rw [tensorRSModelInChart_apply_modelSlots_center,
               hβcenter, hslots_center]
       _ = (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            (fun x => X x) (Set.range I))
+          (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart
             (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := by rw [hmodel]
   have hinput :
       (Tm y₀
         (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            (fun x => X x) (Set.range I))
+          (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           βm (Set.range I) y₀)) slots =
         (T x₀ (localCovariantDerivTensor0SAt
@@ -1016,12 +1020,13 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (r := r) (s := s) (A := fun x => T x)
       (βm := covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I))
+        (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀)
       (slots := slots) x₀
     rw [hslots_center] at h
+    rw [Trivialization.symmL_apply _
+      (FiberBundle.mem_baseSet_trivializationAt' x₀)] at h
     simpa [Tm, βm, localCovariantDerivTensor0SAt, Xmodel, Γ, y₀] using h
   have houtput_sum :
       (∑ a : Fin s,
@@ -1044,8 +1049,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
       r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀)
         =
       (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            (fun x => X x) (Set.range I))
+          (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := hleft_model
     _ =
@@ -1053,8 +1057,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
           (Set.range I) y₀ Xmodel -
         (Tm y₀
           (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
-            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-              (fun x => X x) (Set.range I))
+            (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
             (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
             βm (Set.range I) y₀))
           (fun a : Fin s => Vm a y₀) -
@@ -1066,7 +1069,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
               (fderivWithin 𝕜 (Vm a) (Set.range I) y₀ Xmodel + Γ (Vm a y₀))) := by
           simpa [Xmodel, Γ, slots] using hprod
     _ =
-      extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
           x₀ (X x₀) -
         (T x₀ (localCovariantDerivTensor0SAt
           (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀))
@@ -1148,7 +1151,7 @@ theorem nablaRSFun_sub_raw {r s : ℕ}
       ((cov (V a) x₀) (X x₀))
       ((cov' (V a) x₀) (X x₀))).symm
   let D : 𝕜 :=
-    extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
+    mvfderiv (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
       x₀ (X x₀)
   let Lcov : 𝕜 :=
     (T x₀
@@ -1179,7 +1182,6 @@ theorem nablaRSFun_sub_raw {r s : ℕ}
   rw [← hsum]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -1202,7 +1204,7 @@ theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
               (extChartAt I x₀ p))) x₀) :
     (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       s cov X α x₀) (fun a : Fin s => V a x₀) =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
         x₀ (X x₀) -
         ∑ a : Fin s,
           α x₀
@@ -1211,8 +1213,7 @@ theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
-    VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-      (fun x => X x) (Set.range I) y₀
+    vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x) y₀
   let αm : E -> Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
     tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s x₀ (fun x => α x)
@@ -1236,10 +1237,10 @@ theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
   have hpair_deriv :
       fderivWithin 𝕜 (fun y : E => αm y (fun a : Fin s => Vm a y))
           (Set.range I) y₀ Xmodel =
-        extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+        mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
           x₀ (X x₀) := by
     simpa [αm, Vm, Xmodel, y₀] using
-      fderivWithin_tensor0S_eval_modelSlots_center_eq_extDerivFun
+      fderivWithin_tensor0S_eval_modelSlots_center_eq_mvfderiv
         (I := I) X α V x₀ hpair
   have hcov_model : ∀ a : Fin s,
       tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀
@@ -1260,7 +1261,7 @@ theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
         tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (slots a) x₀) =
         fun a : Fin s => V a x₀ := by
     funext a
-    simpa [slots, Vm, tangentConstInChart] using
+    simpa [slots, Vm, y₀, tangentConstInChart] using
       tangentFieldModelInChart_center_symmL (I := I) (V a) x₀
   have hcorr_sum :
       ∑ a : Fin s,
@@ -1289,9 +1290,9 @@ theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
     _ =
       fderivWithin 𝕜 αm (Set.range I) y₀ Xmodel slots -
         ∑ a : Fin s, αm y₀ (Function.update slots a (Γ (slots a))) := by
-          simpa [αm, Xmodel, Γ, y₀] using hfixed
+          simpa [αm, Xmodel, Γ, y₀, vectorFieldModelPullbackWithin] using hfixed
     _ =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
           x₀ (X x₀) -
         ∑ a : Fin s,
           αm y₀
@@ -1303,7 +1304,7 @@ theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
           rw [Finset.sum_add_distrib]
           abel
     _ =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
           x₀ (X x₀) -
         ∑ a : Fin s,
           α x₀

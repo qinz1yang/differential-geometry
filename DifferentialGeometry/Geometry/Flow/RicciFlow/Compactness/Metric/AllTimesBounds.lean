@@ -489,7 +489,8 @@ theorem metricCovOrderWindow_of_evolution
     refine
       (sq_le_sq₀ (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)).1 ?_
     rw [Real.sq_sqrt htarget_nonneg]
-    simpa [U] using hfinal_sq
+    change U t ≤ _
+    exact hfinal_sq
   exact hnorm_le
 
 omit [SigmaCompactSpace M] in

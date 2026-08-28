@@ -136,7 +136,23 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
       hK.hreal hK.core_cont hK.htame hG
-      (by simpa only [R, hreal] using hpair'') fseq
+      (by
+        intro F c hc
+        have hc' : ‖galLowView (I := I) (M := M) g 1
+            (finiteEigenComboHs (I := I) (M := M) g F c
+              (((1 : ℕ) : ℝ) + 2))‖ ≤ R := by
+          exact hc
+        have haction :
+            galerkinActionVectorBackground (I := I) (M := M) g gBase
+                (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
+                  K.outer_pos K.realize_pos).le K.threshold_lt
+                (lowRegularityMetricRealization (I := I) (M := M) g
+                  K.realize_pos.le hK.hreal) F c =
+              galerkinActionVectorBackground (I := I) (M := M) g gBase hR
+                K.threshold_lt hreal F c := by
+          rfl
+        rw [haction]
+        exact hpair'' F c hc') fseq
       (fun N => (hpack N).2.1) (fun N => (hpack N).2.2.1) hL2H3
   refine ⟨u, gforce, fseq, Φ, hsolveAt, ?_, hΦ⟩
   intro i t ht

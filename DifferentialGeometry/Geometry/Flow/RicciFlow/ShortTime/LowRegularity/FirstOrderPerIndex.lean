@@ -225,7 +225,6 @@ private theorem a1Arm0Background (hDim : Module.finrank ℝ E = 3)
     (fun i _ x => hsup i x)
     (fun i hi x => by
       rw [Finset.mem_sdiff, Finset.mem_range, Finset.mem_range] at hi
-      change _ ≤ (Cd0 ^ 2 + Cd1 ^ 2) * J (q + 3 - i)
       have h0 : riemannianFiberNormSq (I := I) (M := M) g 0 (2 + 0) x
           ((iteratedCovGrad (I := I) g 0 2 0 T).toSection x) ≤
             Cd0 ^ 2 * J 3 := by

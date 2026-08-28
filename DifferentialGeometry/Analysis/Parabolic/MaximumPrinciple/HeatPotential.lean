@@ -24,7 +24,7 @@ variable [IsManifold I ∞ M]
 
 omit [CompleteSpace E] in
 private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -46,7 +46,10 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
       (spacetimeSlab (M := M) T') := by
     have hscale : Continuous (fun p : Real × M => Real.exp (-C * p.1)) := by
       exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
-    simpa only [J] using hscale.continuousOn.mul hu_cont
+    have h := hscale.continuousOn.mul hu_cont
+    change ContinuousOn (fun p : Real × M => Real.exp (-C * p.1) * u p.1 p.2)
+      (spacetimeSlab (M := M) T') at h
+    exact h
   have hJ0 : forall x : M, 0 <= J 0 x := by
     intro x
     simpa [J] using hinit x
@@ -68,7 +71,12 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
       change t ∈ Set.Icc 0 T
       exact ⟨ht.1, ht.2.trans hT'lt.le⟩
     have hJsmooth : ContMDiff I 𝓘(Real, Real) ∞ (J t) := by
-      simpa only [J] using contMDiff_const.mul (hsol.sliceSmooth t htcarrier)
+      have h : ContMDiff I 𝓘(Real, Real) ∞
+          ((fun _ : M => Real.exp (-C * t)) * u t) :=
+        contMDiff_const.mul (hsol.sliceSmooth t htcarrier)
+      change ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => Real.exp (-C * t) * u t x) at h
+      exact h
     exact hJsmooth.mdifferentiable (by simp) x
   have hJ_grad : forall t : Real, t ∈ Set.Icc 0 T' -> 0 < t ->
       forall x : M, MDiffAt (T% fun y : M =>
@@ -78,7 +86,12 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
       change t ∈ Set.Icc 0 T
       exact ⟨ht.1, ht.2.trans hT'lt.le⟩
     have hJsmooth : ContMDiff I 𝓘(Real, Real) ∞ (J t) := by
-      simpa only [J] using contMDiff_const.mul (hsol.sliceSmooth t htcarrier)
+      have h : ContMDiff I 𝓘(Real, Real) ∞
+          ((fun _ : M => Real.exp (-C * t)) * u t) :=
+        contMDiff_const.mul (hsol.sliceSmooth t htcarrier)
+      change ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => Real.exp (-C * t) * u t x) at h
+      exact h
     exact gradientFun_mdiffAt (I := I) (G.metric t) hJsmooth x
   have hnegative : forall t : Real, t ∈ Set.Icc 0 T' -> 0 < t ->
       forall x : M, J t x < 0 ->
@@ -138,7 +151,7 @@ private theorem heat_pot_supersolution_nonneg_on_strict_subinterval
 
 omit [CompleteSpace E] in
 theorem heat_pot_supersolution_nonneg
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -211,7 +224,7 @@ theorem heat_pot_supersolution_nonneg
 
 omit [CompleteSpace E] in
 theorem heat_pot_nonneg
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -225,7 +238,6 @@ theorem heat_pot_nonneg
 
 omit [CompleteSpace E] in
 private theorem heat_pot_exp_rescale_barrier_operator_nonneg
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -269,7 +281,12 @@ private theorem heat_pot_exp_rescale_barrier_operator_nonneg
       MDifferentiableAt I 𝓘(Real, Real) (z t) y := by
     intro y
     have hzsmooth : ContMDiff I 𝓘(Real, Real) ∞ (z t) := by
-      simpa only [z] using contMDiff_const.mul husmooth
+      have h : ContMDiff I 𝓘(Real, Real) ∞
+          ((fun _ : M => Real.exp (C * t)) * u t) :=
+        contMDiff_const.mul husmooth
+      change ContMDiff I 𝓘(Real, Real) ∞
+        (fun y : M => Real.exp (C * t) * u t y) at h
+      exact h
     exact hzsmooth.mdifferentiable (by simp) y
   have hz_time : DifferentiableWithinAt Real
       (fun s : Real => z s x) (Set.Icc 0 T') t := by
@@ -321,7 +338,7 @@ private theorem heat_pot_exp_rescale_barrier_operator_nonneg
 
 omit [CompleteSpace E] in
 private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -346,8 +363,14 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
       (spacetimeSlab (M := M) T') := by
     have hscale : Continuous (fun p : Real × M => Real.exp (C * p.1)) := by
       exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
-    simpa only [w, z] using
+    have h : ContinuousOn
+        (((fun p : Real × M => Real.exp (C * p.1)) *
+          fun p : Real × M => u p.1 p.2) - fun _ => c)
+        (spacetimeSlab (M := M) T') :=
       (hscale.continuousOn.mul hu_cont).sub continuousOn_const
+    change ContinuousOn (fun p : Real × M => Real.exp (C * p.1) * u p.1 p.2 - c)
+      (spacetimeSlab (M := M) T') at h
+    exact h
   have hw0 : forall x : M, 0 <= w 0 x := by
     intro x
     simpa [w, z] using hc_le x
@@ -372,8 +395,12 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
       change t ∈ Set.Icc 0 T
       exact ⟨ht.1, ht.2.trans hT'lt.le⟩
     have hwsmooth : ContMDiff I 𝓘(Real, Real) ∞ (w t) := by
-      simpa only [w, z] using
+      have h : ContMDiff I 𝓘(Real, Real) ∞
+          (fun x : M => ((fun _ : M => Real.exp (C * t)) * u t) x - c) :=
         (contMDiff_const.mul (hsol.sliceSmooth t htcarrier)).sub_const c
+      change ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => Real.exp (C * t) * u t x - c) at h
+      exact h
     exact hwsmooth.mdifferentiable (by simp) x
   have hw_grad : forall t : Real, t ∈ Set.Icc 0 T' -> 0 < t ->
       forall x : M, MDiffAt (T% fun y : M =>
@@ -383,8 +410,12 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
       change t ∈ Set.Icc 0 T
       exact ⟨ht.1, ht.2.trans hT'lt.le⟩
     have hwsmooth : ContMDiff I 𝓘(Real, Real) ∞ (w t) := by
-      simpa only [w, z] using
+      have h : ContMDiff I 𝓘(Real, Real) ∞
+          (fun x : M => ((fun _ : M => Real.exp (C * t)) * u t) x - c) :=
         (contMDiff_const.mul (hsol.sliceSmooth t htcarrier)).sub_const c
+      change ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => Real.exp (C * t) * u t x - c) at h
+      exact h
     exact gradientFun_mdiffAt (I := I) (G.metric t) hwsmooth x
   have hnegative : forall t : Real, t ∈ Set.Icc 0 T' -> 0 < t ->
       forall x : M, w t x < 0 ->
@@ -402,7 +433,7 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
 
 omit [CompleteSpace E] in
 theorem heat_pot_pos
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -415,7 +446,7 @@ theorem heat_pot_pos
   rcases isEmpty_or_nonempty M with hM | hM
   · intro _t _ht x
     exact (hM.false x).elim
-  letI : Nonempty M := hM
+  let : Nonempty M := hM
   by_cases hTzero : T = 0
   · intro t ht x
     have htzero : t = 0 := le_antisymm (by simpa [hTzero] using ht.2) ht.1
@@ -469,8 +500,10 @@ theorem heat_pot_pos
       (Set.Icc (0 : Real) T ×ˢ Set.univ) := by
     have hscale : Continuous (fun p : Real × M => Real.exp (C * p.1)) := by
       exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
-    simpa only [z, RealTimeInterval.closed] using
-      hscale.continuousOn.mul hsol.jointCont
+    have h := hscale.continuousOn.mul hsol.jointCont
+    change ContinuousOn (fun p : Real × M => Real.exp (C * p.1) * u p.1 p.2)
+      (Set.Icc (0 : Real) T ×ˢ Set.univ) at h
+    exact h
   intro t ht x
   rcases eq_or_lt_of_le ht.2 with htT | htT
   · have ht_eq : t = T := htT
@@ -512,7 +545,7 @@ theorem heat_pot_pos
 
 omit [CompleteSpace E] in
 theorem heat_nonneg
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (u : Real → M → Real)
@@ -524,7 +557,7 @@ theorem heat_nonneg
 
 omit [CompleteSpace E] in
 theorem heat_pos
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (u : Real → M → Real)

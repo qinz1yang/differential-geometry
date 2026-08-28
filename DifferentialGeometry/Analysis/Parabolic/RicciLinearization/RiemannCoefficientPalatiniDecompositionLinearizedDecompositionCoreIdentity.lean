@@ -25,7 +25,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -61,7 +60,6 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -88,7 +86,7 @@ private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operat
   apply ContinuousMultilinearMap.ext
   intro v
   rw [bdTensor0S_zero_rank_decomp (I := I) (M := M) x t]
-  simp only [map_smul, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
+  simp only [map_smul, Tensor0SSpace.toModel_smul, smul_apply,
     smul_eq_mul]
   congr 1
   rw [bdPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
@@ -122,7 +120,7 @@ private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operat
   generalize σ i = k
   fin_cases k <;> rfl
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem bdLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -154,7 +152,7 @@ theorem bdLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient
       ((q 2).trans (Equiv.swap (0 : Fin 4) 1))]
 
 omit [CompactSpace M] [BoundarylessManifold I M]
-  [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+  [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma linearizedDecompositionMetricPerturbationPath_zero (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -163,7 +161,7 @@ private lemma linearizedDecompositionMetricPerturbationPath_zero (g₀ : SmoothR
     metricPerturbationPath (I := I) g₀ T 0 hδ hδZ 0 = g₀ := by
   by_cases h : |1 - (0 : ℝ)| * δ + |(0 : ℝ)| * δ < 1
   · refine riemannianMetric_eq_of_inner _ _ (fun b v w => ?_)
-    have hmem : (0 : ℝ) ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) := Set.mem_setOf.mpr h
+    have hmem : (0 : ℝ) ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) := h
     rw [metricPerturbationPath_inner_of_mem (I := I) g₀ T 0 hδ hδZ hmem b v w,
       convexPerturbation_zero]
     have hz : ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) b v w = 0 := by
@@ -172,7 +170,8 @@ private lemma linearizedDecompositionMetricPerturbationPath_zero (g₀ : SmoothR
     rw [hz, add_zero]
   · rw [metricPerturbationPath, dif_neg h]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private lemma lrKoszulCovec_congr {g g' : SmoothRiemannianMetric I M} (h : g = g')
     (S : SmoothCcTensor g 0 2) (S' : SmoothCcTensor g' 0 2)
     (hs : HEq S S') (x : M) (u ζ : TangentSpace I x) :
@@ -212,6 +211,7 @@ private lemma lrSymmS_eq_self (g₀ : SmoothRiemannianMetric I M)
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lrConnectionDifference_linearization (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -253,7 +253,7 @@ private lemma lrConnectionDifference_linearization (g₀ : SmoothRiemannianMetri
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x
           (linearizedKoszulCovec (I := I) g₀ T x u ζ) := hkey
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma lrConnectionDifference_inner (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -266,7 +266,7 @@ private lemma lrConnectionDifference_inner (g₀ : SmoothRiemannianMetric I M)
         (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x u ζ) z =
       s * linearizedKoszulCovec (I := I) g₀ T x u ζ z := by
   rw [lrConnectionDifference_linearization (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm hs x u ζ,
-    map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    map_smul, smul_apply, smul_eq_mul,
     DifferentialGeometry.Geometry.Operator.inner_metricSharp]
 
 private def linearizedKoszulTensor (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
@@ -279,28 +279,45 @@ private def linearizedKoszulTensor (g₀ : SmoothRiemannianMetric I M) (T : Smoo
       - domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2)
         (covGrad (I := I) (M := M) g₀ 0 2 T))
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma lrKT_unitModel (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (z u ζ : TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x ![z, u, ζ] =
+    unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x z,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x ζ] =
       linearizedKoszulCovec (I := I) g₀ T x u ζ z := by
   rw [linearizedKoszulTensor, bdUnitModel_smul, bdUnitModel_sub, bdUnitModel_add]
-  simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.add_apply, smul_eq_mul]
+  simp only [smul_apply, sub_apply, add_apply, smul_eq_mul]
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel]
   simp only [ContinuousMultilinearMap.domDomCongr_apply]
   rw [linearizedKoszulCovec_apply]
-  have h1 : (fun i => (![z, u, ζ] : Fin 3 → TangentSpace I x)
-      ((Equiv.swap (0 : Fin 3) 2) i)) = ![ζ, u, z] := by
+  have h1 : (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x z,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x ζ] : Fin 3 → E)
+      ((Equiv.swap (0 : Fin 3) 2) i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x ζ,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x z] := by
     funext i
     fin_cases i <;> rfl
-  have h2 : (fun i => (![z, u, ζ] : Fin 3 → TangentSpace I x) ((finRotate 3) i)) =
-      ![u, ζ, z] := by
+  have h2 : (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x z,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x ζ] : Fin 3 → E)
+      ((finRotate 3) i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x ζ,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x z] := by
     funext i
     fin_cases i <;> rfl
-  have h3 : (fun i => (![z, u, ζ] : Fin 3 → TangentSpace I x)
-      ((Equiv.swap (1 : Fin 3) 2) i)) = ![z, ζ, u] := by
+  have h3 : (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x z,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x ζ] : Fin 3 → E)
+      ((Equiv.swap (1 : Fin 3) 2) i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x z,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x ζ,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x u] := by
     funext i
     fin_cases i <;> rfl
   rw [h1, h2, h3]
@@ -316,23 +333,27 @@ private lemma lrUnitEval_tsmdiffAt (g : SmoothRiemannianMetric I M) (n : ℕ)
     (unitZeroSec (I := I) (M := M)).contMDiff
   exact ((hsm x).mdifferentiableAt (by simp))
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma lrUnitModel_covGrad_eval (g : SmoothRiemannianMetric I M) (n : ℕ)
     (W : SmoothCcTensor g 0 n) (x : M) (v : Fin (n + 1) → TangentSpace I x) :
-    unitModel (I := I) (M := M) g (n + 1) (covGrad (I := I) (M := M) g 0 n W) x v =
+    unitModel (I := I) (M := M) g (n + 1) (covGrad (I := I) (M := M) g 0 n W) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) =
       Tensor0SSpace.toModel
         (show Tensor0SSpace n I x from
           Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g)
             (fun y : M =>
               (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace n I y from
                 W.toSection y) (unitZeroSec (I := I) (M := M) y)) x (v 0))
-        (Matrix.vecTail v) := by
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (Matrix.vecTail v i)) := by
   rw [unitModel]
   rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 n W x
-    (unitZeroSec (I := I) (M := M) x) v]
+    (unitZeroSec (I := I) (M := M) x)
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))]
   congr 1
-  rw [tensorCovDerivAt_def]
+  rw [tensorCovDerivAt_def (I := I) (M := M) g 0 n W x
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0))]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
   rw [TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) 0 n
     (LeviCivita (I := I) g) W.toSection (unitZeroSec (I := I) (M := M)) x (v 0)]
   rw [show (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)
@@ -343,9 +364,9 @@ private lemma lrUnitModel_covGrad_eval (g : SmoothRiemannianMetric I M) (n : ℕ
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma lrExtDerivFun_apply_scalar (f : M → ℝ) {x : M} (v : TangentSpace I x) :
-    extDerivFun (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
+    mvfderiv (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
+  simp only [mvfderiv, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
+  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -390,12 +411,12 @@ private lemma lrCovDerivConnectionDifference_self_zero (g₀ : SmoothRiemannianM
     smoothExtensionTangent_mdiff (I := I) x v0 x
   have hsmul := (LeviCivita (I := I) g₀).isCovariantDerivativeOnUniv.smul_const
     (σ := smoothExtensionTangent (I := I) x v0) (x := x) (0 : ℝ) hσX (Set.mem_univ x)
-  rw [hsmul, ContinuousLinearMap.smul_apply]
+  rw [hsmul, smul_apply]
   rw [bdConnectionDifference_self_apply (I := I) (M := M) g₀ x, bdConnectionDifference_self_apply (I := I) (M := M) g₀ x,
     zero_smul]
   simp
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -408,7 +429,10 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
         (connectionDifferenceCovDerivOp (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x v0 p q) v1 =
       s * unitModel (I := I) (M := M) g₀ 4
           (covGrad (I := I) (M := M) g₀ 0 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T)) x
-          ![v0, v1, p, q]
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q]
         - (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s).inner x
             (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x p q)
             (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x v1 v0)
@@ -430,7 +454,7 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       simp only [bdConnectionDifference_self_apply (I := I) (M := M) g₀ x, sub_self, add_zero]
     rw [hker0]
     simp only [bdConnectionDifference_self_apply (I := I) (M := M) g₀ x, map_zero,
-      ContinuousLinearMap.zero_apply, zero_mul, sub_self]
+      zero_apply, zero_mul, sub_self]
   · have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
       Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
     rw [DifferentialGeometry.Analysis.Sobolev.deTurckLieConnectionDifferenceDerivativeCovKernel_backgroundSplit (I := I) (M := M) g₀
@@ -511,9 +535,9 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
           - gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x
               (covApply (LeviCivita (I := I) g₀) X0 Pe x) q) v1 := by
       rw [hexpand, hdiffSec, hsmul, hX0x, hPex, hQex]
-      rw [ContinuousLinearMap.smul_apply]
-      rw [map_sub, map_sub, ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply]
+      rw [map_sub, map_sub, sub_apply, sub_apply]
+      rw [map_smul, smul_apply, smul_eq_mul]
     have hmc : directionalDeriv (I := I) (fun b : M => gs.inner b (Ψ b) (Z1 b)) x (X0 x)
         - gs.inner x ((LeviCivita (I := I) gs).toFun Ψ x (X0 x)) (Z1 x)
         - gs.inner x (Ψ x) ((LeviCivita (I := I) gs).toFun Z1 x (X0 x)) = 0 :=
@@ -540,7 +564,9 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       rw [hPex, hQex]
     have hΨinner : ∀ w : TangentSpace I x, gs.inner x (Ψ x) w =
         unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-          ![w, p, q] := by
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x w,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q] := by
       intro w
       rw [hΨval, DifferentialGeometry.Geometry.Operator.inner_metricSharp,
         lrKT_unitModel (I := I) (M := M) g₀ T x w p q]
@@ -558,7 +584,7 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
         (linearizedKoszulTensor (I := I) (M := M) g₀ T).toSection y)
           (unitZeroSec (I := I) (M := M) y)
       with hKTsec_def
-    have hKTsec_toModel : ∀ (y : M) (w : Fin 3 → TangentSpace I y),
+    have hKTsec_toModel : ∀ (y : M) (w : Fin 3 → E),
         Tensor0SSpace.toModel (KTsec y) w =
           unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) y w := by
       intro y w
@@ -572,11 +598,26 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
               (fun u : M => Tensor0SNabla.curriedSection I M KTsec u (Z1s u)) z (Ps z))
             y (Qs y)) := by
       funext b
-      rw [curried3_toModel_eval (I := I) (M := M) KTsec Z1s Ps Qs b]
-      rw [hKTsec_toModel b ![Z1s b, Ps b, Qs b]]
+      have hcurried := curried3_toModel_eval (I := I) (M := M) KTsec Z1s Ps Qs b
+      change Tensor0SNabla.scalarFn I M
+          (fun y : M => Tensor0SNabla.curriedSection I M
+            (fun z : M => Tensor0SNabla.curriedSection I M
+              (fun u : M => Tensor0SNabla.curriedSection I M KTsec u (Z1s u)) z (Ps z))
+            y (Qs y)) b =
+        Tensor0SSpace.toModel (KTsec b)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) b (Z1s b),
+            tangentSpaceModelContinuousLinearEquiv (I := I) b (Ps b),
+            tangentSpaceModelContinuousLinearEquiv (I := I) b (Qs b)] at hcurried
+      rw [hcurried]
+      rw [hKTsec_toModel b
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) b (Z1s b),
+          tangentSpaceModelContinuousLinearEquiv (I := I) b (Ps b),
+          tangentSpaceModelContinuousLinearEquiv (I := I) b (Qs b)]]
       change gs.inner b (Ψ b) (Z1 b) =
         unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) b
-          ![Z1 b, Pe b, Qe b]
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) b (Z1 b),
+            tangentSpaceModelContinuousLinearEquiv (I := I) b (Pe b),
+            tangentSpaceModelContinuousLinearEquiv (I := I) b (Qe b)]
       rw [hΨ_def]
       change gs.inner b (DifferentialGeometry.Geometry.Operator.metricSharp (I := I) gs b
           (linearizedKoszulCovec (I := I) g₀ T b (Pe b) (Qe b))) (Z1 b) = _
@@ -596,19 +637,37 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
     rw [hZ1s_coe, hPs_coe, hQs_coe, hZ1sx, hPsx, hQsx] at hpeel
     have hbridge : unitModel (I := I) (M := M) g₀ 4
         (covGrad (I := I) (M := M) g₀ 0 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T)) x
-        ![v0, v1, p, q] =
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
         Tensor0SSpace.toModel
           (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g₀)
-            KTsec x v0) ![v1, p, q] := by
+            KTsec x v0)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q] := by
       have h := lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 3
         (linearizedKoszulTensor (I := I) (M := M) g₀ T) x ![v0, v1, p, q]
+      have hmodel :
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((![v0, v1, p, q] : Fin 4 → TangentSpace I x) i)) =
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q] := by
+        funext i
+        fin_cases i <;> rfl
+      rw [hmodel] at h
       rw [h]
       rw [show (![v0, v1, p, q] : Fin 4 → TangentSpace I x) 0 = v0 from rfl]
       rw [show Matrix.vecTail (![v0, v1, p, q] : Fin 4 → TangentSpace I x) = ![v1, p, q] from by
         funext k
         fin_cases k <;> rfl]
+      rw [hKTsec_def]
+      congr 1
     have hED : directionalDeriv (I := I) (fun b : M => gs.inner b (Ψ b) (Z1 b)) x v0 =
-        extDerivFun (I := I) (Tensor0SNabla.scalarFn I M
+        mvfderiv (I := I) (Tensor0SNabla.scalarFn I M
           (fun y : M => Tensor0SNabla.curriedSection I M
             (fun z : M => Tensor0SNabla.curriedSection I M
               (fun u : M => Tensor0SNabla.curriedSection I M KTsec u (Z1s u)) z (Ps z))
@@ -616,15 +675,52 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       rw [directionalDeriv_eq, lrExtDerivFun_apply_scalar, hscal_eq]
       rfl
     have hKW : ∀ (a b c : TangentSpace I x),
-        Tensor0SSpace.toModel (KTsec x) ![a, b, c] =
+        Tensor0SSpace.toModel (KTsec x)
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x c] =
           unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-            ![a, b, c] :=
-      fun a b c => hKTsec_toModel x ![a, b, c]
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x c] :=
+      fun a b c => hKTsec_toModel x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x c]
+    change Tensor0SSpace.toModel
+        (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g₀)
+          KTsec x v0)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
+      mvfderiv (I := I) (Tensor0SNabla.scalarFn I M
+          (fun y : M => Tensor0SNabla.curriedSection I M
+            (fun z : M => Tensor0SNabla.curriedSection I M
+              (fun u : M => Tensor0SNabla.curriedSection I M KTsec u (Z1s u)) z (Ps z))
+            y (Qs y))) x v0
+        - Tensor0SSpace.toModel (KTsec x)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun Z1 x v0),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q]
+        - Tensor0SSpace.toModel (KTsec x)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun Pe x v0),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q]
+        - Tensor0SSpace.toModel (KTsec x)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun Qe x v0)] at hpeel
     rw [hKW, hKW, hKW] at hpeel
     have hQL3 : gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x p
         (covApply (LeviCivita (I := I) g₀) X0 Qe x)) v1 =
         s * unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-          ![v1, p, (LeviCivita (I := I) g₀).toFun Qe x v0] := by
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun Qe x v0)] := by
       rw [hinner_cd x p (covApply (LeviCivita (I := I) g₀) X0 Qe x) v1]
       rw [show covApply (LeviCivita (I := I) g₀) X0 Qe x =
         (LeviCivita (I := I) g₀).toFun Qe x (X0 x) from rfl, hX0x]
@@ -633,7 +729,10 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
     have hQL2 : gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x
         (covApply (LeviCivita (I := I) g₀) X0 Pe x) q) v1 =
         s * unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-          ![v1, (LeviCivita (I := I) g₀).toFun Pe x v0, q] := by
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun Pe x v0),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q] := by
       rw [hinner_cd x (covApply (LeviCivita (I := I) g₀) X0 Pe x) q v1]
       rw [show covApply (LeviCivita (I := I) g₀) X0 Pe x =
         (LeviCivita (I := I) g₀).toFun Pe x (X0 x) from rfl, hX0x]
@@ -648,8 +747,8 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       rw [hcdpq]
       rw [show PDE.DeTurck.connectionDifference (I := I) gs g₀ x (s • Ψ x) v0 =
           s • PDE.DeTurck.connectionDifference (I := I) gs g₀ x (Ψ x) v0 from by
-        rw [map_smul, ContinuousLinearMap.smul_apply]]
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        rw [map_smul, smul_apply]]
+      rw [map_smul, smul_apply, smul_eq_mul]
     have hQ1 : gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x p q)
         (PDE.DeTurck.connectionDifference (I := I) gs g₀ x v1 v0) =
         s * gs.inner x (Ψ x) (PDE.DeTurck.connectionDifference (I := I) gs g₀ x v1 v0) := by
@@ -657,7 +756,10 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       rw [hΨval, DifferentialGeometry.Geometry.Operator.inner_metricSharp]
     have hΨZ1hat : gs.inner x (Ψ x) ((LeviCivita (I := I) gs).toFun Z1 x v0) =
         unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-            ![(LeviCivita (I := I) g₀).toFun Z1 x v0, p, q]
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                ((LeviCivita (I := I) g₀).toFun Z1 x v0),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q]
           + gs.inner x (Ψ x) (PDE.DeTurck.connectionDifference (I := I) gs g₀ x v1 v0) := by
       rw [hZ1hat, map_add]
       rw [hΨinner ((LeviCivita (I := I) g₀).toFun Z1 x v0)]
@@ -665,34 +767,58 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
         gs.inner x ((LeviCivita (I := I) g₀).toFun Ψ x v0) v1
           + gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x (Ψ x) v0) v1
           + (unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-              ![(LeviCivita (I := I) g₀).toFun Z1 x v0, p, q]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g₀).toFun Z1 x v0),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x q]
             + gs.inner x (Ψ x) (PDE.DeTurck.connectionDifference (I := I) gs g₀ x v1 v0)) := by
       have h1 : gs.inner x ((LeviCivita (I := I) gs).toFun Ψ x v0) v1 =
           gs.inner x ((LeviCivita (I := I) g₀).toFun Ψ x v0) v1
             + gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x (Ψ x) v0) v1 := by
-        rw [hΨhat, map_add, ContinuousLinearMap.add_apply]
+        rw [hΨhat, map_add, add_apply]
       rw [← hΨZ1hat, ← h1]
       linarith [hmc]
     have hpeel' : Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g₀)
-          KTsec x v0) ![v1, p, q] =
+          KTsec x v0)
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
         directionalDeriv (I := I) (fun b : M => gs.inner b (Ψ b) (Z1 b)) x v0
           - unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-              ![(LeviCivita (I := I) g₀).toFun Z1 x v0, p, q]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g₀).toFun Z1 x v0),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x q]
           - unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-              ![v1, (LeviCivita (I := I) g₀).toFun Pe x v0, q]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g₀).toFun Pe x v0),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x q]
           - unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-              ![v1, p, (LeviCivita (I := I) g₀).toFun Qe x v0] := by
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g₀).toFun Qe x v0)] := by
       rw [hED]
       exact hpeel
     have hE3 : s * gs.inner x ((LeviCivita (I := I) g₀).toFun Ψ x v0) v1 =
         s * unitModel (I := I) (M := M) g₀ 4
             (covGrad (I := I) (M := M) g₀ 0 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T)) x
-            ![v0, v1, p, q]
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q]
           + s * unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-              ![v1, (LeviCivita (I := I) g₀).toFun Pe x v0, q]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g₀).toFun Pe x v0),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x q]
           + s * unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-              ![v1, p, (LeviCivita (I := I) g₀).toFun Qe x v0]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((LeviCivita (I := I) g₀).toFun Qe x v0)]
           - s * gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x (Ψ x) v0) v1
           - s * gs.inner x (Ψ x) (PDE.DeTurck.connectionDifference (I := I) gs g₀ x v1 v0) := by
       rw [hbridge, hpeel', hmc']
@@ -712,7 +838,7 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
           - gs.inner x (PDE.DeTurck.connectionDifference (I := I) gs g₀ x p
               (PDE.DeTurck.connectionDifference (I := I) gs g₀ x q v0)) v1 from by
       rw [map_sub, map_sub, map_add]
-      simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply]]
+      simp only [sub_apply, add_apply]]
     rw [hE2, hQL3, hQL2, hQ0, hQ1]
     linear_combination hE3
 
@@ -721,12 +847,13 @@ def connectionDifferenceMetricLoweredTensor (g₀ gm : SmoothRiemannianMetric I 
     (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 (metricComparisonEndomorphismField (I := I) (M := M) gm g₀))
     (domDomCongrSection (I := I) g₀ (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gm))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrOmegaHat_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 3 (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm) x m =
+    unitModel (I := I) (M := M) g₀ 3
+        (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 1) (m 2)) (m 0) := by
   rw [unitModel]
   rw [show (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm).toSection x
@@ -749,32 +876,45 @@ private lemma lrOmegaHat_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
         (domDomCongrSection (I := I) g₀ (finRotate 3)
           (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gm)) x from rfl]
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
+  rw [tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply]
   rw [show (fun i : Fin 3 =>
-      Function.update (fun k : Fin 3 => (m k : E)) 0
-        (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x ((fun k : Fin 3 => (m k : E)) 0))
+      Function.update
+        (fun k : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x (m k)) 0
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)))
         ((finRotate 3) i)) =
-    (fun i : Fin 3 => (((![m 1, m 2,
+    (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![m 1, m 2,
       (show TangentSpace I x from
         Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) gm g₀ x (m 0))] :
-      Fin 3 → TangentSpace I x)) i : E)) from by
+      Fin 3 → TangentSpace I x) i)) from by
     funext i
     fin_cases i
-    · change Function.update (fun k : Fin 3 => (m k : E)) 0
-          (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)) ((finRotate 3) 0) = (m 1 : E)
+    · change Function.update
+          (fun k : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x (m k)) 0
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)))
+          ((finRotate 3) 0) = tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1)
       rw [show (finRotate 3) (0 : Fin 3) = 1 from by decide]
       rw [Function.update_of_ne (by decide : (1 : Fin 3) ≠ 0)]
-    · change Function.update (fun k : Fin 3 => (m k : E)) 0
-          (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)) ((finRotate 3) 1) = (m 2 : E)
+    · change Function.update
+          (fun k : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x (m k)) 0
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)))
+          ((finRotate 3) 1) = tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2)
       rw [show (finRotate 3) (1 : Fin 3) = 2 from by decide]
       rw [Function.update_of_ne (by decide : (2 : Fin 3) ≠ 0)]
-    · change Function.update (fun k : Fin 3 => (m k : E)) 0
-          (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)) ((finRotate 3) 2) =
-        (show TangentSpace I x from
-          Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) gm g₀ x (m 0))
+    · change Function.update
+          (fun k : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x (m k)) 0
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x (m 0)))
+          ((finRotate 3) 2) = tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) gm g₀ x (m 0))
       rw [show (finRotate 3) (2 : Fin 3) = 0 from by decide]
       rw [Function.update_self]
       rfl]
   rw [bdConnectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g₀ gm x]
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons]
   exact bdG0_inner_lambda (I := I) (M := M) g₀ gm x
@@ -791,42 +931,50 @@ def connectionDifferenceQuadraticComposedTensor (g₀ gm : SmoothRiemannianMetri
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 1)
       (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma lrArmSlotTuple (g₀ gm : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
-    (Function.update (Matrix.vecTail (fun k : Fin 4 => (m k : E))) 0
-        (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x ((fun k : Fin 4 => (m k : E)) 0)
-          (Matrix.vecTail (fun k : Fin 4 => (m k : E)) 0))) =
-      (fun i : Fin 3 => (((![(show TangentSpace I x from
-        PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)), m 2, m 3] :
-        Fin 3 → TangentSpace I x)) i : E)) := by
+    Function.update
+        (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (Matrix.vecTail m i)) 0
+        (tangentLinearMapToModel
+          ((connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x) (m 0))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (Matrix.vecTail m 0))) =
+      (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((![(show TangentSpace I x from
+          PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)), m 2, m 3] :
+          Fin 3 → TangentSpace I x) i)) := by
+  rw [tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply]
   funext k
   fin_cases k
-  · change Function.update (Matrix.vecTail (fun k : Fin 4 => (m k : E))) 0
-        (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x ((fun k : Fin 4 => (m k : E)) 0)
-          (Matrix.vecTail (fun k : Fin 4 => (m k : E)) 0)) (0 : Fin 3) =
-      ((show TangentSpace I x from
-        PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)) : E)
+  · change Function.update
+        (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (Matrix.vecTail m i)) 0
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1))) 0 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1))
     rw [Function.update_self]
-    rfl
-  · change Function.update (Matrix.vecTail (fun k : Fin 4 => (m k : E))) 0
-        (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x ((fun k : Fin 4 => (m k : E)) 0)
-          (Matrix.vecTail (fun k : Fin 4 => (m k : E)) 0)) (1 : Fin 3) = (m 2 : E)
+  · change Function.update
+        (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (Matrix.vecTail m i)) 0 _ 1 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2)
     rw [Function.update_of_ne (by decide : (1 : Fin 3) ≠ 0)]
     rfl
-  · change Function.update (Matrix.vecTail (fun k : Fin 4 => (m k : E))) 0
-        (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x ((fun k : Fin 4 => (m k : E)) 0)
-          (Matrix.vecTail (fun k : Fin 4 => (m k : E)) 0)) (2 : Fin 3) = (m 3 : E)
+  · change Function.update
+        (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (Matrix.vecTail m i)) 0 _ 2 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)
     rw [Function.update_of_ne (by decide : (2 : Fin 3) ≠ 0)]
     rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ gm) x m =
+    unitModel (I := I) (M := M) g₀ 4
+        (connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ gm) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 2) (m 3))
         (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)) := by
   rw [unitModel]
@@ -838,11 +986,13 @@ private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
           (unitTensor (I := I) (M := M) x)) from by
     rw [connectionDifferenceQuadraticPairedTensor, operatorFieldComposition_toSection]
     rfl]
+  rw [Tensor0SSpace.toModel_apply_tangent]
   rw [armSlotFib_apply_eval (I := I) (M := M) 2 x
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm).toSection x)
-      (unitTensor (I := I) (M := M) x)) (fun k : Fin 4 => (m k : E))]
+      (unitTensor (I := I) (M := M) x)) m]
+  rw [← Tensor0SSpace.toModel_apply_tangent]
   rw [slotInsertEndoFib_apply_eval]
   rw [lrArmSlotTuple (I := I) (M := M) g₀ gm x m]
   rw [show Tensor0SSpace.toModel
@@ -854,12 +1004,13 @@ private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ gm) x m =
+    unitModel (I := I) (M := M) g₀ 4
+        (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ gm) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g₀ x
         (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)) (m 3)) (m 2) := by
   rw [unitModel]
@@ -872,12 +1023,14 @@ private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
           (unitTensor (I := I) (M := M) x)) from by
     rw [connectionDifferenceQuadraticComposedTensor, operatorFieldComposition_toSection]
     rfl]
+  rw [Tensor0SSpace.toModel_apply_tangent]
   rw [armSlotFib_apply_eval (I := I) (M := M) 2 x
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 1)
         (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm)).toSection x)
-      (unitTensor (I := I) (M := M) x)) (fun k : Fin 4 => (m k : E))]
+      (unitTensor (I := I) (M := M) x)) m]
+  rw [← Tensor0SSpace.toModel_apply_tangent]
   rw [slotInsertEndoFib_apply_eval]
   rw [lrArmSlotTuple (I := I) (M := M) g₀ gm x m]
   rw [show Tensor0SSpace.toModel
@@ -890,12 +1043,14 @@ private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
           (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm)) x from rfl]
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 3 =>
-      (fun j : Fin 3 => (((![(show TangentSpace I x from
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((![(show TangentSpace I x from
           PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)), m 2, m 3] :
-          Fin 3 → TangentSpace I x)) j : E)) ((Equiv.swap (0 : Fin 3) 1) i)) =
-    (fun i : Fin 3 => (((![m 2, (show TangentSpace I x from
+          Fin 3 → TangentSpace I x) ((Equiv.swap (0 : Fin 3) 1) i))) =
+    (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![m 2, (show TangentSpace I x from
         PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 0) (m 1)), m 3] :
-        Fin 3 → TangentSpace I x)) i : E)) from by
+        Fin 3 → TangentSpace I x) i)) from by
     funext i
     fin_cases i <;> rfl]
   rw [lrOmegaHat_unitModel_apply (I := I) (M := M) g₀ gm x]
@@ -930,12 +1085,16 @@ def connectionDifferenceQuadraticCurvatureTerm (g₀ gm : SmoothRiemannianMetric
     + domDomCongrSection (I := I) g₀ lrPermC
       (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ gm)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrQuadF_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀ gm) x m =
+    unitModel (I := I) (M := M) g₀ 4
+        (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀ gm) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] =
       gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 2) (m 3))
           (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 1) (m 0))
         + gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 2) (m 3))
@@ -948,9 +1107,16 @@ private lemma lrQuadF_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
             (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 3) (m 0)) (m 2)) (m 1)
         + gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g₀ x
             (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 3) (m 1)) (m 2)) (m 0) := by
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] : Fin 4 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) from by
+      funext i
+      fin_cases i <;> rfl]
   rw [connectionDifferenceQuadraticCurvatureTerm]
   rw [bdUnitModel_add, bdUnitModel_add, bdUnitModel_add, bdUnitModel_add, bdUnitModel_add]
-  simp only [ContinuousMultilinearMap.add_apply]
+  simp only [add_apply]
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel]
@@ -1010,17 +1176,19 @@ def riemannLoweredContractionB (g₀ : SmoothRiemannianMetric I M) : SmoothCcTen
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-          (riemannLoweredContractionA (I := I) (M := M) g₀).toSection x) D) m =
+          (riemannLoweredContractionA (I := I) (M := M) g₀).toSection x) D)
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       ∑ e : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-            ![(smoothOrthoFrame (I := I) g₀ x e x : E), (m 3 : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] *
           g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 2))
             (smoothOrthoFrame (I := I) g₀ x e x) := by
   classical
@@ -1029,7 +1197,7 @@ private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 lrSigmaW1
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D with hY_def
-  have hYval : ∀ w : Fin 6 → TangentSpace I x,
+  have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
         Tensor0SSpace.toModel D ![w 0, w 5] *
           unitModel (I := I) (M := M) g₀ 4
@@ -1081,31 +1249,42 @@ private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
-    (Tensor0SSpace.toModel Y) (fun j => (m j : E))]
+    (Tensor0SSpace.toModel Y)
+    (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (m j))]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]
   change Tensor0SSpace.toModel D
-      ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E), (m 3 : E)] *
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₀ x e x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] *
       unitModel (I := I) (M := M) g₀ 4
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀) x
-        ![(m 0 : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
-          (m 1 : E), (m 2 : E)] = _
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x e x),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2)] = _
   rw [riemannLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₀ g₀ x
-    ![(m 0 : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
-      (m 1 : E), (m 2 : E)]]
+    ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) g₀ x e x),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2)]]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-          (riemannLoweredContractionB (I := I) (M := M) g₀).toSection x) D) m =
+          (riemannLoweredContractionB (I := I) (M := M) g₀).toSection x) D)
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       ∑ e : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-            ![(m 2 : E), (smoothOrthoFrame (I := I) g₀ x e x : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x e x)] *
           g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 3))
             (smoothOrthoFrame (I := I) g₀ x e x) := by
   classical
@@ -1114,7 +1293,7 @@ private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 lrSigmaW2
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D with hY_def
-  have hYval : ∀ w : Fin 6 → TangentSpace I x,
+  have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
         Tensor0SSpace.toModel D ![w 4, w 0] *
           unitModel (I := I) (M := M) g₀ 4
@@ -1166,18 +1345,27 @@ private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
-    (Tensor0SSpace.toModel Y) (fun j => (m j : E))]
+    (Tensor0SSpace.toModel Y)
+    (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (m j))]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]
   change Tensor0SSpace.toModel D
-      ![(m 2 : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] *
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₀ x e x)] *
       unitModel (I := I) (M := M) g₀ 4
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀) x
-        ![(m 0 : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
-          (m 1 : E), (m 3 : E)] = _
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x e x),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] = _
   rw [riemannLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₀ g₀ x
-    ![(m 0 : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
-      (m 1 : E), (m 3 : E)]]
+    ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) g₀ x e x),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)]]
   rfl
 
 def riemannCurvatureCoefficientField (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
@@ -1186,32 +1374,52 @@ def riemannCurvatureCoefficientField (g₀ : SmoothRiemannianMetric I M) (T : Sm
     + ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4
       (riemannLoweredContractionB (I := I) (M := M) g₀) T
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma lrCurvF_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 4 (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T) x m =
+    unitModel (I := I) (M := M) g₀ 4
+        (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] =
       smoothCcTensorBilinForm (I := I) g₀ T x
           (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 2)) (m 3)
         + smoothCcTensorBilinForm (I := I) g₀ T x (m 2)
             (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 3)) := by
   classical
-  rw [riemannCurvatureCoefficientField, bdUnitModel_add, ContinuousMultilinearMap.add_apply]
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 2),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (m 3)] : Fin 4 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) from by
+      funext i
+      fin_cases i <;> rfl]
+  rw [riemannCurvatureCoefficientField, bdUnitModel_add]
+  simp only [add_apply]
   have hTu : ∀ (a b : TangentSpace I x),
       Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from T.toSection x)
-            (unitTensor (I := I) (M := M) x)) ![(a : E), (b : E)] =
+            (unitTensor (I := I) (M := M) x))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
         smoothCcTensorBilinForm (I := I) g₀ T x a b := by
     intro a b
     rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from T.toSection x)
           (unitTensor (I := I) (M := M) x)) =
       unitModel (I := I) (M := M) g₀ 2 T x from rfl]
-    rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ T x a b]
+    have hab := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ T x a b
+    change unitModel (I := I) (M := M) g₀ 2 T x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
+      smoothCcTensorBilinForm (I := I) g₀ T x a b at hab
+    exact hab
   have h1 : unitModel (I := I) (M := M) g₀ 4
       (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4
-        (riemannLoweredContractionA (I := I) (M := M) g₀) T) x m =
+        (riemannLoweredContractionA (I := I) (M := M) g₀) T) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       smoothCcTensorBilinForm (I := I) g₀ T x
         (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 2)) (m 3) := by
     rw [unitModel]
@@ -1246,15 +1454,16 @@ private lemma lrCurvF_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
         g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 2))
             (smoothOrthoFrame (I := I) g₀ x e x) *
           smoothCcTensorBilinForm (I := I) g₀ T x (smoothOrthoFrame (I := I) g₀ x e x) (m 3) from by
-      rw [map_sum, ContinuousLinearMap.sum_apply]
+      rw [map_sum, sum_apply]
       refine Finset.sum_congr rfl fun e _ => ?_
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]]
+      rw [map_smul, smul_apply, smul_eq_mul]]
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [hTu (smoothOrthoFrame (I := I) g₀ x e x) (m 3)]
     ring
   have h2 : unitModel (I := I) (M := M) g₀ 4
       (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4
-        (riemannLoweredContractionB (I := I) (M := M) g₀) T) x m =
+        (riemannLoweredContractionB (I := I) (M := M) g₀) T) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       smoothCcTensorBilinForm (I := I) g₀ T x (m 2)
         (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 3)) := by
     rw [unitModel]
@@ -1333,12 +1542,19 @@ private lemma lrCoeff_eq_unitScalarRSLift (g₀ : SmoothRiemannianMetric I M)
     rw [unitScalarRSLift_apply_unit]
   exact h
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (x : M) (a b c d : TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x ![a, b, c, d]
+    unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x d]
       - unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-          ![b, a, c, d] =
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x d] =
     -(smoothCcTensorBilinForm (I := I) g₀ T x (riemannOp (LeviCivita (I := I) g₀) x a b c) d
       + smoothCcTensorBilinForm (I := I) g₀ T x c
         (riemannOp (LeviCivita (I := I) g₀) x a b d)) := by
@@ -1366,7 +1582,7 @@ private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀
     g₀ 2 T hX hY x ![c, d]
   have hYX := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M)
     g₀ 2 T hY hX x ![c, d]
-  have hUM : ∀ v : Fin 4 → TangentSpace I x,
+  have hUM : ∀ v : Fin 4 → E,
       unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x v =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ]
@@ -1377,20 +1593,46 @@ private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀
     intro v
     rw [unitModel, hiteratedCovGrad]
     rfl
-  rw [hUM ![X x, Y x, c, d], hUM ![Y x, X x, c, d], hconsXY, hconsYX, hXY, hYX]
+  have hmodelXY :
+      (![tangentSpaceModelContinuousLinearEquiv (I := I) x (X x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x d] : Fin 4 → E) =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((![X x, Y x, c, d] : Fin 4 → TangentSpace I x) i)) := by
+    funext i
+    fin_cases i <;> rfl
+  have hmodelYX :
+      (![tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (X x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x d] : Fin 4 → E) =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((![Y x, X x, c, d] : Fin 4 → TangentSpace I x) i)) := by
+    funext i
+    fin_cases i <;> rfl
+  rw [hUM, hUM, hmodelXY, hmodelYX,
+    Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.toModel_apply_tangent,
+    hconsXY, hconsYX, hXY, hYX]
   have hdiff : Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         tensorSecondCovDeriv (I := I) g₀ 0 2 X Y (fun y : M => T.toSection y) x)
-        (unitZeroSec (I := I) (M := M) x)) ![c, d]
+        (unitZeroSec (I := I) (M := M) x))
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x d]
       - Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
           tensorSecondCovDeriv (I := I) g₀ 0 2 Y X (fun y : M => T.toSection y) x)
-          (unitZeroSec (I := I) (M := M) x)) ![c, d]
+          (unitZeroSec (I := I) (M := M) x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x d]
       = Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
           riemannOp (tensorCov (I := I) g₀ 0 2) x (X x) (Y x)
             ((T.toSection x : TensorRSSpace 0 2 I x)))
-          (unitZeroSec (I := I) (M := M) x)) ![c, d] := by
+          (unitZeroSec (I := I) (M := M) x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x d] := by
     rw [← tensorSecondCovDeriv_antisymm_eq_riemannOp (I := I) g₀ 0 2 hX hY
       T.toSection.contMDiff]
     rw [show (show Tensor0SSpace 0 I x →L[ℝ]
@@ -1401,8 +1643,19 @@ private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀
         tensorSecondCovDeriv (I := I) g₀ 0 2 X Y (fun y : M => T.toSection y) x) -
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         tensorSecondCovDeriv (I := I) g₀ 0 2 Y X (fun y : M => T.toSection y) x) from rfl]
-    rw [ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-      ContinuousMultilinearMap.sub_apply]
+    rw [sub_apply, Tensor0SSpace.toModel_sub, sub_apply]
+  change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+        tensorSecondCovDeriv (I := I) g₀ 0 2 X Y (fun y : M => T.toSection y) x)
+        (unitZeroSec (I := I) (M := M) x))
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x d]
+      - Tensor0SSpace.toModel
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+          tensorSecondCovDeriv (I := I) g₀ 0 2 Y X (fun y : M => T.toSection y) x)
+          (unitZeroSec (I := I) (M := M) x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x d] = _
   rw [hdiff]
   rw [show ((T.toSection x : TensorRSSpace 0 2 I x)) =
       unitScalarRSLift (I := I) (M := M) x
@@ -1441,6 +1694,10 @@ private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀
         Tensor0SSpace 2 I x from T.toSection x)
         (unitZeroSec (I := I) (M := M) x)) = AP x from rfl]
   rw [hop]
+  change Tensor0SSpace.eval
+      (riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M 2
+        (LeviCivita (I := I) g₀)) (fun b' => Xb b') (fun b' => Yb b') AP x)
+      ![c, d] = _
   rw [riemannSec_tensor0SCov_apply_eval (I := I) (M := M) g₀ 2 Xb Yb AP hAP_smooth x ![c, d]]
   rw [Fin.sum_univ_two]
   rw [show (![c, d] : Fin 2 → TangentSpace I x) 0 = c from rfl,
@@ -1460,24 +1717,32 @@ private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀
     exact hu.symm
   rw [hbase c, hbase d]
   have hAPtoModel : ∀ (m : Fin 2 → TangentSpace I x),
-      Tensor0SSpace.toModel (AP x) (fun i => (m i : E)) =
+      Tensor0SSpace.toModel (AP x)
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
         smoothCcTensorBilinForm (I := I) g₀ T x (m 0) (m 1) := by
     intro m
-    have h1 : Tensor0SSpace.toModel (AP x) (fun i => (m i : E)) =
-        unitModel (I := I) (M := M) g₀ 2 T x m := rfl
-    rw [h1, show m = ![m 0, m 1] from funext (fun i => by fin_cases i <;> rfl),
-      unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ T x (m 0) (m 1)]
-    rfl
-  rw [show Tensor0SSpace.toModel (AP x)
-        ![(riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) c : E), (d : E)] =
-      smoothCcTensorBilinForm (I := I) g₀ T x
-        (riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) c) d from
-    hAPtoModel ![riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) c, d]]
-  rw [show Tensor0SSpace.toModel (AP x)
-        ![(c : E), (riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) d : E)] =
-      smoothCcTensorBilinForm (I := I) g₀ T x c
-        (riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) d) from
-    hAPtoModel ![c, riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) d]]
+    rw [hAP_def]
+    change unitModel (I := I) (M := M) g₀ 2 T x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) = _
+    have h := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ T x (m 0) (m 1)
+    change unitModel (I := I) (M := M) g₀ 2 T x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1)] = _ at h
+    rw [show (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (m 1)] from by
+      funext i
+      fin_cases i <;> rfl]
+    exact h
+  have hAPeval : ∀ (m : Fin 2 → TangentSpace I x),
+      Tensor0SSpace.eval (AP x) m =
+        smoothCcTensorBilinForm (I := I) g₀ T x (m 0) (m 1) := by
+    intro m
+    rw [← Tensor0SSpace.toModel_apply_tangent]
+    exact hAPtoModel m
+  rw [hAPeval ![riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) c, d],
+    hAPeval ![c, riemannOp (LeviCivita (I := I) g₀) x (X x) (Y x) d]]
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma lrUnitEval_ddc_rel (g₀ : SmoothRiemannianMetric I M) (n : ℕ)
@@ -1497,14 +1762,17 @@ private lemma lrUnitEval_ddc_rel (g₀ : SmoothRiemannianMetric I M) (n : ℕ)
   rw [unitModel, unitModel] at h
   exact h
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma lrCovGrad_ddc_unitModel (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 3)) (W : SmoothCcTensor g₀ 0 3) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
-        (covGrad (I := I) (M := M) g₀ 0 3 (domDomCongrSection (I := I) g₀ σ W)) x w =
+        (covGrad (I := I) (M := M) g₀ 0 3 (domDomCongrSection (I := I) g₀ σ W)) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
       unitModel (I := I) (M := M) g₀ 4 (covGrad (I := I) (M := M) g₀ 0 3 W) x
-        (Fin.cons (w 0) (fun j => Matrix.vecTail w (σ j))) := by
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((Fin.cons (w 0) (fun j => Matrix.vecTail w (σ j)) :
+            Fin 4 → TangentSpace I x) i)) := by
   rw [lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 3
     (domDomCongrSection (I := I) g₀ σ W) x w]
   rw [lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 3 W x
@@ -1565,15 +1833,25 @@ private lemma lrTsec_rel (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor
   rw [unitModel] at h
   exact h
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma lrCovGradT_argswap (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (y : M) (w : Fin 3 → TangentSpace I y) :
-    unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 T) y w =
+    unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 T) y
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y (w i)) =
       unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 T) y
-        ![w 0, w 2, w 1] := by
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) y (w 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y (w 2),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y (w 1)] := by
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) y (w 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) y (w 2),
+      tangentSpaceModelContinuousLinearEquiv (I := I) y (w 1)] : Fin 3 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
+      ((![w 0, w 2, w 1] : Fin 3 → TangentSpace I y) i)) from by
+      funext i
+      fin_cases i <;> rfl]
   rw [lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 2 T y w,
     lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 2 T y ![w 0, w 2, w 1]]
   have hW := lrUnitEval_tsmdiffAt (I := I) (M := M) g₀ 2 T y
@@ -1604,18 +1882,19 @@ private lemma lrCovGradT_argswap (g₀ : SmoothRiemannianMetric I M)
           Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
             (fun z : M => (show Tensor0SSpace 0 I z →L[ℝ] Tensor0SSpace 2 I z from
               T.toSection z) (unitZeroSec (I := I) (M := M) z)) y (w 0)))
-      (Matrix.vecTail w) =
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y (Matrix.vecTail w i)) =
     Tensor0SSpace.toModel
       (show Tensor0SSpace 2 I y from
         Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
           (fun z : M => (show Tensor0SSpace 0 I z →L[ℝ] Tensor0SSpace 2 I z from
             T.toSection z) (unitZeroSec (I := I) (M := M) z)) y (w 0))
-      (fun i => Matrix.vecTail w ((Equiv.swap (0 : Fin 2) 1) i)) from rfl]
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
+        (Matrix.vecTail w ((Equiv.swap (0 : Fin 2) 1) i))) from rfl]
   refine congrArg _ ?_
   funext i
   fin_cases i <;> rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma lrCgTsec_rel (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -1639,25 +1918,47 @@ private lemma lrCgTsec_rel (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTens
       funext fun i => by fin_cases i <;> rfl
     rw [hveta2]
     conv_lhs => rw [hveta]
-    exact lrCovGradT_argswap (I := I) (M := M) g₀ T hTsymm y ![v 0, v 1, v 2]
+    have hs := lrCovGradT_argswap (I := I) (M := M) g₀ T hTsymm y
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i))
+    simp only [ContinuousLinearEquiv.apply_symm_apply] at hs
+    rw [hveta] at hs
+    exact hs
   rw [unitModel] at h
   exact h
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma lrICG2_argswap (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (x : M) (a b c d : TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x ![a, b, c, d] =
+    unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x d] =
       unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-        ![a, b, d, c] := by
-  have hUM : ∀ v : Fin 4 → TangentSpace I x,
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x d,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x c] := by
+  have hUM : ∀ v : Fin 4 → E,
       unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x v =
       unitModel (I := I) (M := M) g₀ 4
-        (covGrad (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 T)) x v :=
+        (covGrad (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 T)) x
+        v :=
     fun v => rfl
-  rw [hUM ![a, b, c, d], hUM ![a, b, d, c]]
+  rw [hUM, hUM]
+  change unitModel (I := I) (M := M) g₀ 4
+      (covGrad (I := I) (M := M) g₀ 0 3
+        (covGrad (I := I) (M := M) g₀ 0 2 T)) x
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((![a, b, c, d] : Fin 4 → TangentSpace I x) i)) =
+    unitModel (I := I) (M := M) g₀ 4
+      (covGrad (I := I) (M := M) g₀ 0 3
+        (covGrad (I := I) (M := M) g₀ 0 2 T)) x
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((![a, b, d, c] : Fin 4 → TangentSpace I x) i))
   rw [lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 3
     (covGrad (I := I) (M := M) g₀ 0 2 T) x ![a, b, c, d]]
   rw [lrUnitModel_covGrad_eval (I := I) (M := M) g₀ 3
@@ -1697,7 +1998,8 @@ private lemma lrICG2_argswap (g₀ : SmoothRiemannianMetric I M)
               (covGrad (I := I) (M := M) g₀ 0 2 T).toSection z)
               (unitZeroSec (I := I) (M := M) z)) x
             ((![a, b, c, d] : Fin 4 → TangentSpace I x) 0)))
-      (Matrix.vecTail (![a, b, c, d] : Fin 4 → TangentSpace I x)) =
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (Matrix.vecTail (![a, b, c, d] : Fin 4 → TangentSpace I x) i)) =
     Tensor0SSpace.toModel
       (show Tensor0SSpace 3 I x from
         Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g₀)
@@ -1705,36 +2007,58 @@ private lemma lrICG2_argswap (g₀ : SmoothRiemannianMetric I M)
             (covGrad (I := I) (M := M) g₀ 0 2 T).toSection z)
             (unitZeroSec (I := I) (M := M) z)) x
           ((![a, b, c, d] : Fin 4 → TangentSpace I x) 0))
-      (fun i => Matrix.vecTail (![a, b, c, d] : Fin 4 → TangentSpace I x)
-        ((Equiv.swap (1 : Fin 3) 2) i)) from rfl]
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (Matrix.vecTail (![a, b, c, d] : Fin 4 → TangentSpace I x)
+          ((Equiv.swap (1 : Fin 3) 2) i))) from rfl]
   refine congrArg _ ?_
   funext i
   fin_cases i <;> rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lrCovGradKT_unitModel (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (w0 w1 w2 w3 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
         (covGrad (I := I) (M := M) g₀ 0 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T)) x
-        ![w0, w1, w2, w3] =
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w1,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w3] =
       (1 / 2 : ℝ) *
         (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-            ![w0, w3, w2, w1]
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x w3,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x w1]
           + unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-              ![w0, w2, w3, w1]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x w3,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x w1]
           - unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-              ![w0, w1, w3, w2]) := by
-  have hUM : ∀ v : Fin 4 → TangentSpace I x,
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x w1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x w3,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x w2]) := by
+  have hUM : ∀ v : Fin 4 → E,
       unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x v =
       unitModel (I := I) (M := M) g₀ 4
-        (covGrad (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 T)) x v :=
+        (covGrad (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 T)) x
+        v :=
     fun v => rfl
-  rw [hUM ![w0, w3, w2, w1], hUM ![w0, w2, w3, w1], hUM ![w0, w1, w3, w2]]
+  rw [hUM, hUM, hUM]
   rw [linearizedKoszulTensor, covGrad_smul, covGrad_sub, covGrad_add]
   rw [bdUnitModel_smul]
-  rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-  rw [bdUnitModel_sub, ContinuousMultilinearMap.sub_apply,
-    bdUnitModel_add, ContinuousMultilinearMap.add_apply]
+  rw [smul_apply, smul_eq_mul]
+  rw [bdUnitModel_sub, sub_apply, bdUnitModel_add, add_apply]
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w1,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w3] : Fin 4 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![w0, w1, w2, w3] : Fin 4 → TangentSpace I x) i)) from by
+      funext i
+      fin_cases i <;> rfl]
   rw [lrCovGrad_ddc_unitModel (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 3) 2)
       (covGrad (I := I) (M := M) g₀ 0 2 T) x ![w0, w1, w2, w3],
     lrCovGrad_ddc_unitModel (I := I) (M := M) g₀ (finRotate 3)
@@ -1747,6 +2071,30 @@ private lemma lrCovGradKT_unitModel (g₀ : SmoothRiemannianMetric I M)
     ![w0, w3, w2, w1] from by
     funext k
     fin_cases k <;> rfl]
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w3,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w1] : Fin 4 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![w0, w3, w2, w1] : Fin 4 → TangentSpace I x) i)) from by
+      funext i
+      fin_cases i <;> rfl]
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w3,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w1] : Fin 4 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![w0, w2, w3, w1] : Fin 4 → TangentSpace I x) i)) from by
+      funext i
+      fin_cases i <;> rfl]
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w1,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w3,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x w2] : Fin 4 → E) =
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![w0, w1, w3, w2] : Fin 4 → TangentSpace I x) i)) from by
+      funext i
+      fin_cases i <;> rfl]
   rw [show (Fin.cons ((![w0, w1, w2, w3] : Fin 4 → TangentSpace I x) 0)
       (fun j => Matrix.vecTail (![w0, w1, w2, w3] : Fin 4 → TangentSpace I x)
         ((finRotate 3) j)) : Fin 4 → TangentSpace I x) =
@@ -1784,6 +2132,7 @@ theorem deTurckLieCovariantDerivativeRemainderTensor_eq
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) :=
   rfl
 
+omit [SigmaCompactSpace M] in
 private theorem lrSummand (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1798,36 +2147,80 @@ private theorem lrSummand (g₀ : SmoothRiemannianMetric I M)
           (connectionDifferenceCovDerivOp (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x v1 pf qf) v0)
       + s * ((1 / 2 : ℝ) *
           (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-              ![v0, v1, pf, qf]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x qf]
             + unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-                ![v0, v1, qf, pf])
+                ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x qf,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x pf])
         - (1 / 2 : ℝ) *
           (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-              ![v0, pf, qf, v1]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x qf,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x v1]
             + unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-                ![v0, qf, pf, v1])
+                ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x qf,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x v1])
         - (1 / 2 : ℝ) *
           (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-              ![v1, pf, qf, v0]
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x qf,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x v0]
             + unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-                ![v1, qf, pf, v0])) =
+                ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x qf,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x v0])) =
       unitModel (I := I) (M := M) g₀ 4 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s) x
-        ![v0, v1, pf, qf] := by
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x qf] := by
   classical
   have hR4 : unitModel (I := I) (M := M) g₀ 4 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s) x
-      ![v0, v1, pf, qf] =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x qf] =
       (-(s / 2) : ℝ) * unitModel (I := I) (M := M) g₀ 4
         (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T) x
-          ![v0, v1, pf, qf]
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x qf]
         - unitModel (I := I) (M := M) g₀ 4
             (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) x
-            ![v0, v1, pf, qf] := by
-    rw [deTurckLieCovariantDerivativeRemainderTensor, bdUnitModel_sub, ContinuousMultilinearMap.sub_apply, bdUnitModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-  rw [hR4, lrQuadF_unitModel_apply (I := I) (M := M) g₀
-    (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x ![v0, v1, pf, qf],
-    lrCurvF_unitModel_apply g₀ T x ![v0, v1, pf, qf]]
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x qf] := by
+    rw [deTurckLieCovariantDerivativeRemainderTensor, bdUnitModel_sub, sub_apply, bdUnitModel_smul,
+      smul_apply, smul_eq_mul]
+  have hquad := lrQuadF_unitModel_apply (I := I) (M := M) g₀
+    (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x ![v0, v1, pf, qf]
+  change unitModel (I := I) (M := M) g₀ 4
+      (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x qf] = _ at hquad
+  have hcurv := lrCurvF_unitModel_apply (I := I) (M := M) g₀ T x ![v0, v1, pf, qf]
+  change unitModel (I := I) (M := M) g₀ 4
+      (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x qf] = _ at hcurv
+  rw [hR4, hquad, hcurv]
   rw [lrKernel_inner (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm hs x v0 v1 pf qf,
     lrKernel_inner (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm hs x v1 v0 pf qf]
   rw [lrCovGradKT_unitModel (I := I) (M := M) g₀ T x v0 v1 pf qf,
@@ -1858,6 +2251,7 @@ private theorem lrSummand (g₀ : SmoothRiemannianMetric I M)
     Matrix.cons_val_two, Matrix.tail_cons, Matrix.cons_val_three]
   linear_combination (s / 2) * hric + (s / 2) * hswap
 
+omit [SigmaCompactSpace M] in
 theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1902,8 +2296,8 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
       rw [show (c • F).toSection x = c • F.toSection x from by
         rw [SmoothCcTensor.toSection_smul]; rfl]
       ]
-    rw [ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    rw [smul_apply, Tensor0SSpace.toModel_smul,
+      smul_apply, smul_eq_mul]
   have hadd_desc : ∀ (F G : SmoothCcTensor g₀ 2 2),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -1922,8 +2316,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
       rw [show (F + G).toSection x = F.toSection x + G.toSection x from by
         rw [SmoothCcTensor.toSection_add]; rfl]
       ]
-    rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-      ContinuousMultilinearMap.add_apply]
+    rw [add_apply, Tensor0SSpace.toModel_add, add_apply]
   have hsub_desc : ∀ (F G : SmoothCcTensor g₀ 2 2),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -1942,8 +2335,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
       rw [show (F - G).toSection x = F.toSection x - G.toSection x from by
         rw [SmoothCcTensor.toSection_sub]; rfl]
       ]
-    rw [ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-      ContinuousMultilinearMap.sub_apply]
+    rw [sub_apply, Tensor0SSpace.toModel_sub, sub_apply]
   have hARM : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
@@ -2209,19 +2601,19 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
                 (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x :
                   E)])))) := by
     intro b a
-    have hddc : ∀ (σ : Equiv.Perm (Fin 4)) (m0 m1 m2 m3 : TangentSpace I x),
+    have hddc : ∀ (σ : Equiv.Perm (Fin 4)) (m : Fin 4 → E),
         unitModel (I := I) (M := M) g₀ 4
           (domDomCongrSection (I := I) g₀ σ (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x
-          ![m0, m1, m2, m3] =
+          m =
         unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x
-          (fun i => (![m0, m1, m2, m3] : Fin 4 → TangentSpace I x) (σ i)) := by
-      intro σ m0 m1 m2 m3
+          (fun i => m (σ i)) := by
+      intro σ m
       rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
     rw [hddc, hddc, hddc, hddc, hddc, hddc]
     rw [show (fun i => (![v 0, v 1,
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] :
-        Fin 4 → TangentSpace I x)
+        Fin 4 → E)
         (((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) i)) =
       ![v 0,
@@ -2233,7 +2625,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     rw [show (fun i => (![v 0, v 1,
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] :
-        Fin 4 → TangentSpace I x)
+        Fin 4 → E)
         ((((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
             (Equiv.swap (0 : Fin 4) 1)).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) i)) =
@@ -2246,7 +2638,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     rw [show (fun i => (![v 0, v 1,
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] :
-        Fin 4 → TangentSpace I x)
+        Fin 4 → E)
         (((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
             Equiv.swap (0 : Fin 4) 1).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) i)) =
@@ -2259,7 +2651,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     rw [show (fun i => (![v 0, v 1,
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] :
-        Fin 4 → TangentSpace I x)
+        Fin 4 → E)
         ((((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
               Equiv.swap (0 : Fin 4) 1).trans
             (Equiv.swap (0 : Fin 4) 1)).trans
@@ -2273,7 +2665,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     rw [show (fun i => (![v 0, v 1,
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] :
-        Fin 4 → TangentSpace I x)
+        Fin 4 → E)
         (((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) i)) =
       ![v 0, v 1,
@@ -2284,7 +2676,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     rw [show (fun i => (![v 0, v 1,
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] :
-        Fin 4 → TangentSpace I x)
+        Fin 4 → E)
         ((((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
             (Equiv.swap (0 : Fin 4) 1)).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) i)) =
@@ -2294,13 +2686,18 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
       funext i
       fin_cases i <;> rfl]
     have hsummand := lrSummand (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm hs x
-      (v 0) (v 1)
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
       (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x)
       (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x)
+    simp only [ContinuousLinearEquiv.apply_symm_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply] at hsummand
+    simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply] at hsummand
     linear_combination (-(Tensor0SSpace.toModel D
       ![(smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
         (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)])) *
       hsummand
+  simp only [tangentSpaceModelContinuousLinearEquiv_apply]
   rw [show (∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel D
           ![(smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
@@ -2401,6 +2798,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
   simp only [Finset.sum_add_distrib, ← Finset.mul_sum]
   ring
 
+omit [SigmaCompactSpace M] in
 theorem lieCov_residual (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀

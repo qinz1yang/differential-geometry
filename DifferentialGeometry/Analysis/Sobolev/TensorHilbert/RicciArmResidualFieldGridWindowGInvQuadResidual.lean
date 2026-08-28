@@ -10,6 +10,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 
+
 noncomputable section
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
@@ -40,6 +41,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -96,7 +98,7 @@ lemma tensor0S_rank0_eq_smul_unit (x : M) (c : Tensor0SSpace 0 I x) :
   apply ContinuousMultilinearMap.ext
   intro v
   beta_reduce
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   have h1 : Tensor0SSpace.toModel (unitTensor (I := I) (M := M) x) v = (1 : ℝ) := rfl
   rw [h1, mul_one]
   congr 1
@@ -218,7 +220,6 @@ private lemma interiorProduct_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I
   rw [h1]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -265,24 +266,42 @@ private lemma connectionDifferenceSection_eq_raise_lowered :
             (inverseMetricSharpFib (I := I) g₀ x om) D) YZ from rfl]
     rw [interiorProduct_toModel_eval (I := I) (M := M) (1 + 1) x
       (inverseMetricSharpFib (I := I) g₀ x om) D YZ, ← hu]
-  rw [hLHS, hRHS]
-  have hum : unitModel (I := I) (M := M) g₀ 3
-      (domDomCongrSection (I := I) g₀ (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) x =
-      Tensor0SSpace.toModel D := rfl
-  rw [show Tensor0SSpace.toModel D (Fin.cons (show E from u) (fun k => (show E from YZ k))) =
-        unitModel (I := I) (M := M) g₀ 3
-          (domDomCongrSection (I := I) g₀ (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) x
-          ![u, YZ 0, YZ 1] from by
-    rw [hum]; congr 1; funext k; fin_cases k <;> rfl]
-  rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
-  rw [show (fun i => (![u, YZ 0, YZ 1] : Fin 3 → TangentSpace I x) ((finRotate 3) i)) =
-        ![YZ 0, YZ 1, u] from by
-    funext i; fin_cases i <;> simp [finRotate_succ_apply]]
-  rw [connectionDifferenceLowered_unitModel_value (I := I) (M := M) g₀ g₁ x ![YZ 0, YZ 1, u]]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Matrix.cons_val_two, Matrix.tail_cons]
-  rw [g₀.symm x u (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1))]
+  calc
+    (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        connectionDifferenceFib (I := I) g₁ g₀ x) om YZ =
+        g₀.inner x u
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1)) := hLHS
+    _ = Tensor0SSpace.toModel D
+          (Fin.cons (show E from u) (fun k => (show E from YZ k))) := by
+      have hum : unitModel (I := I) (M := M) g₀ 3
+          (domDomCongrSection (I := I) g₀ (finRotate 3)
+            (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) x =
+          Tensor0SSpace.toModel D := rfl
+      rw [show Tensor0SSpace.toModel D
+            (Fin.cons (show E from u) (fun k => (show E from YZ k))) =
+          unitModel (I := I) (M := M) g₀ 3
+            (domDomCongrSection (I := I) g₀ (finRotate 3)
+              (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) x
+            ![u, YZ 0, YZ 1] from by
+        rw [hum]
+        congr 1
+        funext k
+        fin_cases k <;> rfl]
+      rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
+      have hvalue := connectionDifferenceLowered_unitModel_value (I := I) (M := M)
+        g₀ g₁ x ![YZ 0, YZ 1, u]
+      rw [g₀.symm x u
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1))]
+      with_unfolding_all
+        convert hvalue.symm using 1
+        · simp
+        · congr 1
+          funext i
+          fin_cases i <;> rfl
+    _ = (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        cometricRaiseSlot0Fib (I := I) g₀ 1 x D) om YZ := hRHS.symm
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLowered_eq_connectionDifferenceSection (n : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
@@ -318,8 +337,12 @@ private lemma cometricDoubleTraceFib_toModel_center (p : ℕ) (x : M)
     Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₀ p x D) m =
       ∑ c : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E) m)) := by
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x c x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x c x)) m)) := by
   rw [show Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₀ p x D) m =
       modelDoubleTrace (E := E) p (cometricLmodel (I := I) g₀ x)
         (Tensor0SSpace.toModel D) m from by
@@ -330,7 +353,6 @@ private lemma cometricDoubleTraceFib_toModel_center (p : ℕ) (x : M)
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) m
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -342,7 +364,11 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) om)
         (Fin.cons v0 vs) =
       Tensor0SSpace.toModel om ![v0] *
-        g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (vs 0) (vs 1)) (vs 2) := by
+        g₀.inner x
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (vs 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (vs 1)))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (vs 2)) := by
   have h0 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
         (slotExtend (I := I) (M := M) g₀ 0 3
@@ -355,20 +381,22 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
   rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x) om v0 vs]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om v0 =
+  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0) =
       Tensor0SSpace.toModel om ![v0] • unitTensor (I := I) (M := M) x := by
     have h1 := tensor0S_rank0_eq_smul_unit (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om v0)
+      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))
     rw [h1]
     congr 1
   rw [hc, ContinuousLinearMap.map_smul, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
   congr 1
-  have hu := connectionDifferenceLowered_unitModel_value (I := I) (M := M) g₀ g₁ x vs
+  have hu := connectionDifferenceLowered_unitModel_value (I := I) (M := M) g₀ g₁ x
+    (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (vs i))
   rw [unitModel] at hu
   exact hu
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 2 → E) :
@@ -376,10 +404,14 @@ private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x) om) m =
       ∑ c : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel om ![((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E)] *
+        Tensor0SSpace.toModel om
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x c x)] *
           g₀.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-              (smoothOrthoFrame (I := I) g₀ x c x) (m 0)) (m 1) := by
+              (smoothOrthoFrame (I := I) g₀ x c x)
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1)) := by
   have h0 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x) om) m =
@@ -395,11 +427,12 @@ private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x
         (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) om) m]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [slotExtend_connectionDifferenceLowered_toModel (I := I) (M := M) g₀ g₁ x om
-    ((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E)
-    (Fin.cons ((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E) m)]
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g₀ x c x))
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g₀ x c x)) m)]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I x) (m : Fin 1 → E) :
@@ -408,12 +441,14 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
           (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁).toSection x) D) m =
       ∑ a : Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-            ![((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E),
-              ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x c x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x a x)] *
           g₀.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
               (smoothOrthoFrame (I := I) g₀ x c x) (smoothOrthoFrame (I := I) g₀ x a x))
-            (m 0) := by
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
   have h0 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
         (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁).toSection x) D) m =
@@ -446,29 +481,33 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
     (Tensor0SSpace.ofModel
       (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
         (Tensor0SSpace.toModel D)))
-    ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E)
-    (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) m)]
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g₀ x a x))
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g₀ x a x)) m)]
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [gInvQuadDecompositionArm_toModel (I := I) (M := M) g₀ g₁ x
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
       (Tensor0SSpace.ofModel
         (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
           (Tensor0SSpace.toModel D)))
-      ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E))
-    (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) m)]
+      (smoothOrthoFrame (I := I) g₀ x a x))
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g₀ x a x)) m)]
   refine Finset.sum_congr rfl fun c _ => ?_
   congr 1
-  · rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+  · rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := Tensor0SSpace.ofModel
         (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
           (Tensor0SSpace.toModel D)))
-      (v0 := ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E))
-      (vs := ![((smoothOrthoFrame (I := I) g₀ x c x : TangentSpace I x) : E)])]
+      (v0 := smoothOrthoFrame (I := I) g₀ x a x)
+      (vs := ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) g₀ x c x)])]
     rw [Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
     congr 1
     funext i
     fin_cases i <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem gInvDiffQuadResidualField_eq_decomposition :
@@ -487,20 +526,25 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
   intro v
   beta_reduce
   have hsplit : ∀ u : TangentSpace I x,
-      g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u (v 0)) (v 1) =
+      g₀.inner x
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x u (smoothOrthoFrame (I := I) g₀ x e x) *
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-            (smoothOrthoFrame (I := I) g₀ x e x) (v 0)) (v 1) := by
+            (smoothOrthoFrame (I := I) g₀ x e x)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
     intro u
     conv_lhs => rw [orthoFrame_expansion_at_center (I := I) (M := M) g₀ x u]
     rw [map_sum (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x) _ Finset.univ,
-      ContinuousLinearMap.sum_apply, map_sum (g₀.inner x) _ Finset.univ,
-      ContinuousLinearMap.sum_apply]
+      sum_apply, map_sum (g₀.inner x) _ Finset.univ,
+      sum_apply]
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [map_smul (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x),
-      ContinuousLinearMap.smul_apply, map_smul (g₀.inner x),
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
+      smul_apply, map_smul (g₀.inner x),
+      smul_apply, smul_eq_mul]
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2
@@ -509,13 +553,17 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
       ∑ e : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         ∑ q : Fin (Module.finrank ℝ E),
         (Tensor0SSpace.toModel D
-            ![((smoothOrthoFrame (I := I) g₀ x q x : TangentSpace I x) : E),
-              ((smoothOrthoFrame (I := I) g₀ x p x : TangentSpace I x) : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x q x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x p x)] *
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
               (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))
             (smoothOrthoFrame (I := I) g₀ x e x)) *
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-          (smoothOrthoFrame (I := I) g₀ x e x) (v 0)) (v 1) := by
+          (smoothOrthoFrame (I := I) g₀ x e x)
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
     have hr0 : Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2
@@ -532,7 +580,8 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
         (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁).toSection x) D) v]
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [gInvQuadDecompositionWeight_toModel (I := I) (M := M) g₀ g₁ x D
-      ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)]]
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) g₀ x e x)]]
     rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [Finset.sum_mul]
@@ -545,10 +594,13 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
               (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))
-              (v 0)) (v 1) *
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) *
             Tensor0SSpace.toModel D
-              ![((smoothOrthoFrame (I := I) g₀ x q x : TangentSpace I x) : E),
-                ((smoothOrthoFrame (I := I) g₀ x p x : TangentSpace I x) : E)] := by
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x q x),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x p x)] := by
         rw [show Tensor0SSpace.toModel
             ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
               (gInvDiffQuadResidualField (I := I) (M := M) g₀ g₁).toSection x) D) v =
@@ -560,13 +612,17 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
     _ = ∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
           ∑ e : Fin (Module.finrank ℝ E),
           (Tensor0SSpace.toModel D
-              ![((smoothOrthoFrame (I := I) g₀ x q x : TangentSpace I x) : E),
-                ((smoothOrthoFrame (I := I) g₀ x p x : TangentSpace I x) : E)] *
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x q x),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x p x)] *
             g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))
               (smoothOrthoFrame (I := I) g₀ x e x)) *
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-            (smoothOrthoFrame (I := I) g₀ x e x) (v 0)) (v 1) := by
+            (smoothOrthoFrame (I := I) g₀ x e x)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
         refine Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun p _ => ?_
         rw [hsplit (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
           (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))]
@@ -576,35 +632,47 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
     _ = ∑ q : Fin (Module.finrank ℝ E), ∑ e : Fin (Module.finrank ℝ E),
           ∑ p : Fin (Module.finrank ℝ E),
           (Tensor0SSpace.toModel D
-              ![((smoothOrthoFrame (I := I) g₀ x q x : TangentSpace I x) : E),
-                ((smoothOrthoFrame (I := I) g₀ x p x : TangentSpace I x) : E)] *
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x q x),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x p x)] *
             g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))
               (smoothOrthoFrame (I := I) g₀ x e x)) *
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-            (smoothOrthoFrame (I := I) g₀ x e x) (v 0)) (v 1) :=
+            (smoothOrthoFrame (I := I) g₀ x e x)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) :=
         Finset.sum_congr rfl fun q _ => Finset.sum_comm
     _ = ∑ e : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
           ∑ p : Fin (Module.finrank ℝ E),
           (Tensor0SSpace.toModel D
-              ![((smoothOrthoFrame (I := I) g₀ x q x : TangentSpace I x) : E),
-                ((smoothOrthoFrame (I := I) g₀ x p x : TangentSpace I x) : E)] *
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x q x),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x p x)] *
             g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))
               (smoothOrthoFrame (I := I) g₀ x e x)) *
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-            (smoothOrthoFrame (I := I) g₀ x e x) (v 0)) (v 1) :=
+            (smoothOrthoFrame (I := I) g₀ x e x)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) :=
         Finset.sum_comm
     _ = ∑ e : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
           ∑ q : Fin (Module.finrank ℝ E),
           (Tensor0SSpace.toModel D
-              ![((smoothOrthoFrame (I := I) g₀ x q x : TangentSpace I x) : E),
-                ((smoothOrthoFrame (I := I) g₀ x p x : TangentSpace I x) : E)] *
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x q x),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x p x)] *
             g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
                 (smoothOrthoFrame (I := I) g₀ x q x) (smoothOrthoFrame (I := I) g₀ x p x))
               (smoothOrthoFrame (I := I) g₀ x e x)) *
           g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-            (smoothOrthoFrame (I := I) g₀ x e x) (v 0)) (v 1) :=
+            (smoothOrthoFrame (I := I) g₀ x e x)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) :=
         Finset.sum_congr rfl fun e _ => Finset.sum_comm
     _ = Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from

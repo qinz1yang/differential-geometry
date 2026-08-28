@@ -85,7 +85,9 @@ theorem metricPreconvFull
       exact hval)
   refine ⟨phi0 ∘ phid, hphi0.comp hphid, gInf, ?_, fun eps heps => ?_⟩
   · intro x
-    simpa only [Function.comp_apply] using (hconv x).comp hphid.tendsto_atTop
+    have h := (hconv x).comp hphid.tendsto_atTop
+    change Tendsto (fun m => (gSeq (phi0 (phid m))).inner x) atTop (𝓝 (gInf.inner x)) at h
+    exact h
   · obtain ⟨F, hF⟩ := hK.elim_finite_subcover (fun n => W (e n)) (fun n => hWopen (e n))
       (fun z hz => hcovN (Set.mem_univ z))
     have perN : forall n, n ∈ F -> exists k0 : Nat, forall k : Nat, k0 <= k ->
@@ -263,7 +265,10 @@ theorem netFullDiag
       obtain ⟨gLim, hinner, hlim⟩ := hP
       refine ⟨gLim, ?_, fun eps heps => ?_⟩
       · intro x
-        simpa only [Function.comp_apply] using (hinner x).comp hpsi.tendsto_atTop
+        have h := (hinner x).comp hpsi.tendsto_atTop
+        change Tendsto (fun k => (gSeq (rho (psi k)) (e n)).inner x) atTop
+          (𝓝 (gLim.inner x)) at h
+        exact h
       · obtain ⟨k0, hk0⟩ := hlim eps heps
         exact ⟨k0, fun k hk a ha x hx => by
           simpa only [Function.comp_apply] using

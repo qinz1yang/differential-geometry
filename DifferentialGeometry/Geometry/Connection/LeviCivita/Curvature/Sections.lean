@@ -70,6 +70,7 @@ theorem scalar_curvature_differential_eq_ricci_trace
         (I := I) g)
       Ric basis gInv hinv X
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem scalar_curvature_hessian_trace_symmetric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -170,7 +171,6 @@ private theorem tensor0S_update_zero {s : ℕ} {x : M}
     A (Function.update slots a 0) = 0 := by
   exact A.map_coord_zero a (by simp)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem nabla0SFun_perm
     {s : ℕ}
@@ -225,12 +225,12 @@ private theorem nabla0SFun_perm
     funext p
     simpa [Vσ] using hperm p (fun a : Fin s => V a p)
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => A p (fun a : Fin s => V a p)) x (X x) =
-        c * extDerivFun (I := I)
+        c * mvfderiv (I := I)
           (fun p : M => A p (fun a : Fin s => Vσ a p)) x (X x) := by
     rw [hfun]
-    have hmul := extDerivFun_const_mul
+    have hmul := mvfderiv_const_mul
       (I := I) c (f := fun p : M => A p (fun a : Fin s => Vσ a p))
       (x := x) hfσ
     exact congrArg (fun L : TangentSpace I x →L[Real] Real => L (X x)) hmul
@@ -629,7 +629,7 @@ theorem levi_civita_second_bianchi
           | ⟨3, _⟩ => Wsec)
         Rm04 x
     have hderiv :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M =>
               Rm04 p
                 (fun a : Fin 4 =>
@@ -651,7 +651,12 @@ theorem levi_civita_second_bianchi
                     | ⟨3, _⟩ => Wsec) p)) =
             fun p : M => g.inner p (Wsec p) (Rcurv p) := by
         funext p
-        simpa [Rcurv, Rm04, vec4, DifferentialGeometry.Geometry.Curvature.vec4] using
+        change Rm04 p
+            (vec4 (I := I) (P p) (Q p) (R p) (Wsec p)) =
+          g.inner p (Wsec p)
+            (connectionRiemannCurvatureField (I := I) cov
+              (fun q : M => P q) (fun q : M => Q q) (fun q : M => R q) p)
+        exact
           DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section_apply_smooth
             (I := I) g cov hcov P Q R Wsec p
       have hDmd : MDiffAt (T% fun p : M => D p) x :=
@@ -665,7 +670,6 @@ theorem levi_civita_second_bianchi
           (I := I) (x := x) hmc (fun p : M => D p) (fun p : M => Wsec p)
           (fun p : M => Rcurv p) hDmd hWmd hRmd
       rw [hfun]
-      rw [extDerivFun_real_eq_mfderiv]
       rw [hmetric]
       rw [hcovW D]
       simp [hWsec]
@@ -735,7 +739,13 @@ theorem levi_civita_second_bianchi
               = Φ (fun p : M => Z0 p) := by
                 exact TensorialAt.pointwise (I := I) (F := E) hTens hUmd hZmd hU
           _ = 0 := by
-                simpa [Φ, Z0] using TensorialAt.zero (I := I) (F := E) hTens
+                have hZ0 : (fun p : M => Z0 p) =
+                    (0 : (p : M) → TangentSpace I p) := by
+                  funext p
+                  rfl
+                change Φ (fun p : M => Z0 p) = 0
+                rw [hZ0]
+                exact TensorialAt.zero (I := I) (F := E) hTens
       have hzero_mid
           (U V T : ContMDiffSection I E (∞ : WithTop ℕ∞)
             (TangentSpace I : M -> Type _)) (hV : V x = 0) :
@@ -757,7 +767,13 @@ theorem levi_civita_second_bianchi
               = Φ (fun p : M => Z0 p) := by
                 exact TensorialAt.pointwise (I := I) (F := E) hTens hVmd hZmd hV
           _ = 0 := by
-                simpa [Φ, Z0] using TensorialAt.zero (I := I) (F := E) hTens
+                have hZ0 : (fun p : M => Z0 p) =
+                    (0 : (p : M) → TangentSpace I p) := by
+                  funext p
+                  rfl
+                change Φ (fun p : M => Z0 p) = 0
+                rw [hZ0]
+                exact TensorialAt.zero (I := I) (F := E) hTens
       have hzero_right
           (U V T : ContMDiffSection I E (∞ : WithTop ℕ∞)
             (TangentSpace I : M -> Type _)) (hT : T x = 0) :
@@ -803,29 +819,43 @@ theorem levi_civita_second_bianchi
           simp
         exact hcong.trans hz
       have hDPx : DP x = 0 := by
-        simpa [DP] using hcovP D
+        change (cov (fun q : M => P q) x) (D x) = 0
+        exact hcovP D
       have hDQx : DQ x = 0 := by
-        simpa [DQ] using hcovQ D
+        change (cov (fun q : M => Q q) x) (D x) = 0
+        exact hcovQ D
       have hDRx : DR x = 0 := by
-        simpa [DR] using hcovR D
+        change (cov (fun q : M => R q) x) (D x) = 0
+        exact hcovR D
       have hPterm :
           connectionRiemannCurvatureField (I := I) cov
             (fun p : M => (cov (fun q : M => P q) p) (D p))
             (fun p : M => Q p) (fun p : M => R p) x = 0 := by
-        simpa [DP] using hzero_first DP Q R hDPx
+        change connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => DP p) (fun p : M => Q p) (fun p : M => R p) x = 0
+        exact hzero_first DP Q R hDPx
       have hQterm :
           connectionRiemannCurvatureField (I := I) cov
             (fun p : M => P p)
             (fun p : M => (cov (fun q : M => Q q) p) (D p))
             (fun p : M => R p) x = 0 := by
-        simpa [DQ] using hzero_mid P DQ R hDQx
+        change connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => P p) (fun p : M => DQ p) (fun p : M => R p) x = 0
+        exact hzero_mid P DQ R hDQx
       have hRterm :
           connectionRiemannCurvatureField (I := I) cov
             (fun p : M => P p) (fun p : M => Q p)
             (fun p : M => (cov (fun q : M => R q) p) (D p)) x = 0 := by
-        simpa [DR] using hzero_right P Q DR hDRx
+        change connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => P p) (fun p : M => Q p) (fun p : M => DR p) x = 0
+        exact hzero_right P Q DR hDRx
+      have hRcurvFun : (fun p : M => Rcurv p) =
+          fun p : M => connectionRiemannCurvatureField (I := I) cov
+            (fun q : M => P q) (fun q : M => Q q) (fun q : M => R q) p := rfl
       unfold curvCovDerivOpAt
-      simp [Rcurv, hPterm, hQterm, hRterm]
+      rw [hPterm, hQterm, hRterm, sub_zero, sub_zero, sub_zero]
+      exact congrArg (fun S : (p : M) → TangentSpace I p => (cov S x) (D x))
+        hRcurvFun.symm
     calc
       nablaRm04 (vec5 (I := I) D0 (P x) (Q x) (R x) W)
           =
@@ -855,7 +885,7 @@ theorem levi_civita_second_bianchi
                 funext a
                 fin_cases a <;> simp [hWsec, vec4, DifferentialGeometry.Geometry.Curvature.vec4]]
       _ =
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun p : M =>
               Rm04 p
                 (fun a : Fin 4 =>
@@ -916,7 +946,6 @@ theorem levi_civita_second_bianchi
   rw [h1, h2, h3]
   simpa [add_assoc] using hinner
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem levi_civita_ricci_section_eq_riemann_trace
     (g : SmoothRiemannianMetric I M) :
@@ -954,7 +983,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
   have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let _ := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   dsimp
   apply ContMDiffSection.ext
@@ -1010,7 +1039,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
         (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) := by
         simp [metricTraceFirstTwo0STensor_apply, metricTraceFirstTwo0SAt]
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem levi_civita_covariant_ricci_eq_riemann_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1062,8 +1091,7 @@ theorem levi_civita_covariant_ricci_eq_riemann_trace
   simpa [cov, hcov, Rm04, Ric, nablaRm04, nablaRic, hRicField,
     finCons_vec4_eq_vec5] using htrace
 
-set_option backward.isDefEq.respectTransparency false in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1124,17 +1152,17 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
       3 cov nablaRic x
   let rmPerm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
-    MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) trace04Perm Rm04
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) trace04Perm Rm04
   let nablaRmPerm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 5 :=
-    MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) (frontExtendEquiv trace04Perm) nablaRm04
+      (n := (∞ : WithTop ℕ∞)) (2 + 2 + 1) :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+      (frontExtendEquiv trace04Perm) nablaRm04
+  let traceInput : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) (3 + 2) :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 2) nablaRmPerm
   let traceNablaRm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
-    metricTraceFirstTwoField (I := I) (M := M) g
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (traceNablaShuffle 2) nablaRmPerm)
+    metricTraceFirstTwoField (I := I) (M := M) g traceInput
   have hRm : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4 cov Rm04 nablaRm04 := by
     exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I)
@@ -1176,13 +1204,15 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
           gInv i j * nabla2Rm04
             (Fin.cons A (vec5 (I := I) B (basis i) C D (basis j))) := by
     rw [hnablaRic]
-    rw [nabla_metricTraceFirstTwo0S (I := I) (M := M) cov g
+    rw [show traceNablaRm = metricTraceFirstTwoField (I := I) (M := M) g traceInput
+      from rfl]
+    rw [nabla_metricTraceFirstTwo0S (s := 3) (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
-      _ basis gInv hinv A (vec3 (I := I) B C D)]
+      traceInput basis gInv hinv A (vec3 (I := I) B C D)]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     apply congrArg (fun z : Real => gInv i j * z)
-    dsimp [traceNablaRm]
+    dsimp [traceInput]
     rw [totalNabla0SFun_domDomCongr (I := I)]
     rw [Tensor0SSpace.domDomCongr_apply]
     dsimp [nablaRmPerm]
@@ -1219,7 +1249,6 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     metricTrace_finCons_vec3_eq_vec4] using hmain
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 theorem levi_civita_second_covariant_riemann_symmetries
     (g : SmoothRiemannianMetric I M)
     {x : M} :
@@ -1272,7 +1301,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
       rw [slots5_eq_vec5 (I := I) slots]
       have h := (levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := y)).1
         (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
-      simpa [σ, vec5, Equiv.ofBijective] using h
+      simpa [nablaRm04, totalNabla0S_apply, σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
       ContMDiffSection.exists_eq_at_gen
         (I := I) (F := E) (V := TangentSpace I)
@@ -1303,7 +1332,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
       rw [slots5_eq_vec5 (I := I) slots]
       have h := (levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := y)).2.1
         (slots 0) (slots 2) (slots 1) (slots 3) (slots 4)
-      simpa [σ, vec5, Equiv.ofBijective] using h
+      simpa [nablaRm04, totalNabla0S_apply, σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
       ContMDiffSection.exists_eq_at_gen
         (I := I) (F := E) (V := TangentSpace I)
@@ -1333,7 +1362,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
       rw [slots5_eq_vec5 (I := I) slots]
       have h := (levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := y)).2.2
         (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
-      simpa [σ, vec5, Equiv.ofBijective] using h
+      simpa [nablaRm04, totalNabla0S_apply, σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
       ContMDiffSection.exists_eq_at_gen
         (I := I) (F := E) (V := TangentSpace I)
@@ -1353,7 +1382,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
     rw [hleft, hright]
     simpa [σ, vec5, Equiv.ofBijective] using h
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem levi_civita_bianchi_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1405,7 +1434,7 @@ theorem levi_civita_bianchi_trace_identities
       levi_civita_covariant_ricci_eq_riemann_trace (I := I) (M := M) g basis gInv hinv
   exact ⟨hSecond, hSymm, hTrace⟩
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem levi_civita_bianchi_scalar_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -1465,7 +1494,7 @@ theorem levi_civita_bianchi_scalar_trace_identities
       scalar_curvature_differential_eq_ricci_trace (I := I) (M := M) g basis gInv hinv
   exact ⟨hcore.1, hcore.2.1, hcore.2.2, hscalar⟩
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem exists_levi_civita_bianchi_trace_data
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)

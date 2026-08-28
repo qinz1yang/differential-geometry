@@ -323,7 +323,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h (g_g l) x)^2)
           ((volume : Measure EuclN).restrict Ω'') := by
-      have h_aux := integrable_finset_sum
+      have h_aux := integrable_finsetSum
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l _ => h_per_l_int l)
       have h_eq :
@@ -539,7 +539,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h (g_g l) x)^2)
         ((volume : Measure EuclN).restrict Ω'') := by
-    have h_aux := integrable_finset_sum
+    have h_aux := integrable_finsetSum
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => h_per_l_int l)
     have h_eq :

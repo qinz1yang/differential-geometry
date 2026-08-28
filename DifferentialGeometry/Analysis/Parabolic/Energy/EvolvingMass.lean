@@ -130,7 +130,7 @@ theorem measurable_evolvingLocalizedSuperlevelIntegral
     let S : Set M := {x : M | level t < u t x}
     let weight : M → ℝ := fun x => cutoff x ^ 2
     let F : ℕ → M → ℝ := fun n x => weight x * ramp n t x
-    letI : IsFiniteMeasure μ := by
+    let : IsFiniteMeasure μ := by
       dsimp only [μ, riemannianMeasureFamily_def]
       exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
         (I := I) (M := M) (g t)
@@ -211,7 +211,7 @@ theorem intervalIntegrable_evolvingLocalizedSuperlevelIntegral
   have hnonneg : 0 ≤ mass t := integral_nonneg fun x => sq_nonneg _
   rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily_def]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -301,9 +301,15 @@ theorem hasDerivAt_evolvingLocalizedIntegral
     have hu_at : HasDerivAt (fun s : ℝ => u s x)
         (deriv (fun s : ℝ => u s x) t) t :=
       (hfiber.differentiable (by norm_num)).differentiableAt.hasDerivAt
-    have hproduct := ((hasDerivAt_const t (cutoff x ^ 2)).mul hu_at).deriv
-    simpa only [Pi.mul_apply, zero_mul, zero_add] using hproduct
-  convert hraw using 1
+    have hproduct : HasDerivAt (fun s => cutoff x ^ 2 * u s x)
+        (cutoff x ^ 2 * deriv (fun s => u s x) t) t :=
+      (((hasDerivAt_const t (cutoff x ^ 2)).mul hu_at).congr_deriv (by ring))
+        |>.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
+    exact hproduct.deriv
+  change HasDerivAt
+    (fun s => ∫ x, cutoff x ^ 2 * u s x
+      ∂(riemannianMeasureFamily (I := I) (M := M) g s)) _ t
+  apply hraw.congr_deriv
   apply integral_congr_ae
   filter_upwards [] with x
   rw [hderiv x]
@@ -323,6 +329,7 @@ theorem hasDerivAt_evolvingLocalizedL2Mass
           (2 * u t x * deriv (fun s => u s x) t +
             (1 / 2) * traceTimeDerivMetric (I := I) g t x * u t x ^ 2)
         ∂(riemannianMeasureFamily (I := I) (M := M) g t)) t := by
+  let _ := (inferInstance : CompactSpace M)
   have hu_sq : ContMDiff ((modelWithCornersSelf ℝ ℝ).prod I)
       (modelWithCornersSelf ℝ ℝ) ∞
       (fun p : ℝ × M => u p.1 p.2 ^ 2) := hu.pow 2
@@ -338,10 +345,15 @@ theorem hasDerivAt_evolvingLocalizedL2Mass
     have hu_at : HasDerivAt (fun s : ℝ => u s x)
         (deriv (fun s : ℝ => u s x) t) t :=
       (hfiber.differentiable (by norm_num)).differentiableAt.hasDerivAt
-    have hsquare := (hu_at.pow 2).deriv
-    convert hsquare using 1
-    ring
-  convert hraw using 1
+    have hsquare : HasDerivAt (fun s => u s x ^ 2)
+        (2 * u t x * deriv (fun s => u s x) t) t :=
+      ((hu_at.pow 2).congr_deriv (by norm_num)) |>.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
+    exact hsquare.deriv
+  change HasDerivAt
+    (evolvingLocalizedIntegral (I := I) (M := M) g cutoff
+      (fun s x => u s x ^ 2)) _ t
+  apply hraw.congr_deriv
   apply integral_congr_ae
   filter_upwards [] with x
   rw [hderiv x]
@@ -361,8 +373,8 @@ theorem deriv_evolvingLocalizedL2Mass_continuousOn
     ⟨fun p => u p.1 p.2, hu⟩
   have htime : Continuous
       (fun p : ℝ × M => deriv (fun s => u s p.2) p.1) := by
-    simpa only [F] using
-      (DifferentialGeometry.contMDiff_partial_deriv_fst I F).continuous
+    exact (DifferentialGeometry.contMDiff_partial_deriv_fst I F).continuous.congr
+      (fun _ => rfl)
   have hintegral : ContinuousOn
       (fun s => ∫ x, cutoff x ^ 2 *
           (2 * u s x * deriv (fun r => u r x) s +
@@ -392,7 +404,7 @@ theorem evolvingLocalizedVolumeDistortion_le
     evolvingLocalizedVolumeDistortion (I := I) (M := M) g cutoff u t ≤
       (1 / 2) * B * evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u t := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -430,7 +442,7 @@ theorem neg_evolvingLocalizedVolumeDistortion_le
       (1 / 2) * B * evolvingLocalizedL2Mass
         (I := I) (M := M) g cutoff u t := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -475,7 +487,7 @@ theorem deriv_evolvingLocalizedL2Mass_le_of_trace_le
   rw [(hasDerivAt_evolvingLocalizedL2Mass
     (I := I) (M := M) g cutoff u t hg hcutoff hu).deriv]
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)

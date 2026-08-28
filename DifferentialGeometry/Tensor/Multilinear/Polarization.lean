@@ -446,8 +446,8 @@ theorem opNorm_le_diag2
     have hqu : B q u = B u q := hsymm q u
     dsimp only [p, m]
     simp only [map_smul, map_add, map_sub,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.sub_apply, smul_eq_mul]
+      smul_apply, add_apply,
+      sub_apply, smul_eq_mul]
     rw [hqu]
     ring
   have huq : |B u q| ≤ 2 * C := by
@@ -460,7 +460,7 @@ theorem opNorm_le_diag2
     calc
       B v w = B (‖v‖ • u) (‖w‖ • q) := by rw [hv_eq, hw_eq]
       _ = (‖v‖ * ‖w‖) * B u q := by
-        simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        simp only [map_smul, smul_apply, smul_eq_mul]
         ring
   rw [hscale, Real.norm_eq_abs, abs_mul,
     abs_of_nonneg (mul_nonneg (norm_nonneg v) (norm_nonneg w))]

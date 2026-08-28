@@ -19,7 +19,10 @@ theorem pointwise_oscillation_decay_of_complementary_harnack
   intro x hx y hy
   have hsum := add_le_add (hupper e he y hy) (hlower e he x hx)
   have hraw : M - m ≤ F * ((M - m) - (u y - u x)) := by
-    convert hsum using 1 <;> ring
+    calc
+      M - m = (M - u e) + (u e - m) := by ring
+      _ ≤ F * (M - u y) + F * (u x - m) := hsum
+      _ = F * ((M - m) - (u y - u x)) := by ring
   have hdiv : (M - m) / F ≤ (M - m) - (u y - u x) := by
     apply (div_le_iff₀ hFpos).2
     simpa only [mul_comm] using hraw
@@ -96,7 +99,6 @@ theorem exists_holder_exponent_of_contraction
     exact (Real.exp_log htheta_pos).symm
   rw [heq]
   apply Real.rpow_le_rpow_of_exponent_ge hlambda hlambda_one.le
-  change (alpha : ℝ) ≤ beta
   exact min_le_right _ _
 
 theorem exists_holder_exponent_of_harnack_factor
@@ -199,7 +201,9 @@ theorem holderOnWith_of_geometric_oscillation_decay
       rw [ENNReal.ofReal_mul hconstant]
     _ = (K : ENNReal) * edist x y ^ (alpha : ℝ) := by
       rw [edist_dist, ENNReal.ofReal_rpow_of_nonneg dist_nonneg halpha_real.le]
-      rw [(ENNReal.ofReal_eq_coe_nnreal hconstant).symm]
+      dsimp only [K]
+      rw [ENNReal.ofReal_eq_coe_nnreal hconstant]
+      congr 1
 
 theorem holderOnWith_of_oscillation_decay
     {X Y : Type*} [MetricSpace X] [PseudoMetricSpace Y]

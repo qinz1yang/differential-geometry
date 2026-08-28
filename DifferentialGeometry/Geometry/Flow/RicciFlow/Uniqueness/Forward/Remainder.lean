@@ -4,7 +4,6 @@ import DifferentialGeometry.Tensor.RSTensor.NormSqProduct
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -38,7 +37,7 @@ theorem lowOfComp_ext (g : SmoothRiemannianMetric I M)
     (c : Idx → Idx → Idx → Idx → Real)
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (hcomp : ∀ i j k l,
-      T (vec4 (I := I) (b i) (b j) (b k) (b l)) = c i j k l) :
+      Tensor0SSpace.eval T (vec4 (I := I) (b i) (b j) (b k) (b l)) = c i j k l) :
     lowOfComp (I := I) g b c = T := by
   classical
   refine ContinuousMultilinearMap.toMultilinearMap_injective
@@ -47,7 +46,9 @@ theorem lowOfComp_ext (g : SmoothRiemannianMetric I M)
       vec4 (I := I) (b (w 0)) (b (w 1)) (b (w 2)) (b (w 3)) := by
     funext p
     fin_cases p <;> simp [vec4]
-  simp only [ContinuousMultilinearMap.coe_coe, hw]
+  change Tensor0SSpace.eval (lowOfComp (I := I) g b c) (fun p => b (w p)) =
+    Tensor0SSpace.eval T (fun p => b (w p))
+  rw [hw]
   rw [lowOfComp_eval]
   exact (hcomp (w 0) (w 1) (w 2) (w 3)).symm
 
@@ -96,9 +97,9 @@ theorem rmDotRem_low
               riemann04RicciDriftInFrame Ric₂ Rm₂ t x i j k l) := by
   apply lowOfComp_ext (I := I)
   intro i j k l
-  rw [Tensor0SSpace.sub_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x,
-    Tensor0SSpace.smul_apply (I := I) 4 x,
+  rw [Tensor0SSpace.eval_sub,
+    Tensor0SSpace.eval_sub,
+    Tensor0SSpace.eval_smul,
     lowOfComp_eval, lowOfComp_eval]
   rfl
 
@@ -199,10 +200,10 @@ private theorem rem_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -224,7 +225,7 @@ private theorem rem_repr_inner {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     (v : TangentSpace I x) (k : Idx) :
     basis.repr v k = g.inner x v (basis k) := by
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   have hval : g.inner x v (basis k) =
       metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then v else basis k) := by
     rw [metricTensorField_apply]
@@ -261,55 +262,66 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     metricTensorField (I := I) g₂ - metricTensorField (I := I) g₁
   let V : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1 + 2) x :=
-    ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithTwoInputs s)
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := s + 1) (q := 2) T Hdiff x)
+    (Tensor0SSpace.product (T x) (Hdiff x)).domDomCongr
+      (reLowerPermutationWithTwoInputs s)
   have hself : reLower (I := I) g₁ g₁ T x = T x := by
     refine ContinuousMultilinearMap.ext fun tail => ?_
+    change Tensor0SSpace.eval (reLower (I := I) g₁ g₁ T x) tail =
+      Tensor0SSpace.eval (T x) tail
     rw [reLower_apply (I := I) g₁ g₁ T x, sharpFlat_self]
     rw [Function.update_eq_self]
   have htrace : reLower (I := I) g₂ g₁ T x - T x =
       metricTraceFirstTwo0STensor (I := I) g₁ V := by
     rw [← hself]
     refine ContinuousMultilinearMap.ext fun tail => ?_
-    rw [Tensor0SSpace.sub_apply (I := I) (s + 1) x,
+    change Tensor0SSpace.eval
+        (reLower (I := I) g₂ g₁ T x - reLower (I := I) g₁ g₁ T x) tail =
+      Tensor0SSpace.eval (metricTraceFirstTwo0STensor (I := I) g₁ V) tail
+    have htraceBasis :
+        Tensor0SSpace.eval (metricTraceFirstTwo0STensor (I := I) g₁ V) tail =
+          metricTrace0S2InBasis (I := I) basis identityInvMetric V tail := by
+      change metricTraceFirstTwo0STensor (I := I) g₁ V tail = _
+      rw [metricTraceFirstTwo0STensor_apply,
+        metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g₁ basis _ hinv]
+    rw [Tensor0SSpace.eval_sub,
       reLower_eval (I := I) g₂ g₁ T basis _ hinv tail,
       reLower_eval (I := I) g₁ g₁ T basis _ hinv tail,
-      metricTraceFirstTwo0STensor_apply,
-      metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g₁ basis _ hinv]
+      htraceBasis]
     unfold metricTrace0S2InBasis
     change
       (∑ i, ∑ j, identityInvMetric i j *
-          (T x (Function.update tail (Fin.last s) (basis i)) *
+          (Tensor0SSpace.eval (T x) (Function.update tail (Fin.last s) (basis i)) *
             g₂.inner x (basis j) (tail (Fin.last s)))) -
         (∑ i, ∑ j, identityInvMetric i j *
-          (T x (Function.update tail (Fin.last s) (basis i)) *
+          (Tensor0SSpace.eval (T x) (Function.update tail (Fin.last s) (basis i)) *
             g₁.inner x (basis j) (tail (Fin.last s)))) =
       ∑ i, ∑ j, identityInvMetric i j *
-        V (metricTraceInput (I := I) (basis i) (basis j) tail)
+        Tensor0SSpace.eval V (metricTraceInput (I := I) (basis i) (basis j) tail)
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
     change
       identityInvMetric i j *
-          (T x (Function.update tail (Fin.last s) (basis i)) *
+          (Tensor0SSpace.eval (T x) (Function.update tail (Fin.last s) (basis i)) *
             g₂.inner x (basis j) (tail (Fin.last s))) -
         identityInvMetric i j *
-          (T x (Function.update tail (Fin.last s) (basis i)) *
+          (Tensor0SSpace.eval (T x) (Function.update tail (Fin.last s) (basis i)) *
             g₁.inner x (basis j) (tail (Fin.last s))) =
       identityInvMetric i j *
-        (ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithTwoInputs s)
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := s + 1) (q := 2) T Hdiff x))
-          (metricTraceInput (I := I) (basis i) (basis j) tail)
-    rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
+        Tensor0SSpace.eval V (metricTraceInput (I := I) (basis i) (basis j) tail)
+    rw [show V = (Tensor0SSpace.product (T x) (Hdiff x)).domDomCongr
+      (reLowerPermutationWithTwoInputs s) from rfl,
+      Tensor0SSpace.eval_domDomCongr]
+    have hproduct := Tensor0SSpace.product_apply (T x) (Hdiff x)
+      (metricTraceInput (I := I) (basis i) (basis j) tail ∘
+        reLowerPermutationWithTwoInputs s)
+    change Tensor0SSpace.eval (Tensor0SSpace.product (T x) (Hdiff x)) _ =
+      Tensor0SSpace.eval (T x) _ * Tensor0SSpace.eval (Hdiff x) _ at hproduct
+    rw [hproduct]
     have hfirst :
-        ((fun k =>
-          metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPermutationWithTwoInputs s k)) ∘
-            Fin.castAdd 2) =
+        ((metricTraceInput (I := I) (basis i) (basis j) tail ∘
+          reLowerPermutationWithTwoInputs s) ∘ Fin.castAdd 2) =
             Function.update tail (Fin.last s) (basis i) := by
       funext k
       exact reLowerPermutationWithTwoInputs_first_block (I := I) (basis i) (basis j) tail k
@@ -337,21 +349,18 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       metricTensorField_apply, metricTensorField_apply]
     have h10 : (1 : Fin 2) ≠ 0 := by decide
     simp only [if_true, h10, if_false]
+    rw [Tensor0SSpace.eval_eq]
     ring
   have hprod :
       normSq0S (I := I) g₁ x (s + 1 + 2)
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := s + 1) (q := 2) T Hdiff x) =
+          (Tensor0SSpace.product (T x) (Hdiff x)) =
         normSq0S (I := I) g₁ x (s + 1) (T x) *
           normSq0S (I := I) g₁ x 2 (Hdiff x) :=
-    normSq0S_product (I := I) g₁ x basis hinv T Hdiff
+    normSq0S_prod (I := I) g₁ x basis hinv (T x) (Hdiff x)
   have hcongr :
       normSq0S (I := I) g₁ x (s + 1 + 2) V =
         normSq0S (I := I) g₁ x (s + 1 + 2)
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := s + 1) (q := 2) T Hdiff x) :=
+          (Tensor0SSpace.product (T x) (Hdiff x)) :=
     normSq0S_domDomCongr (I := I) g₁ x basis hinv (reLowerPermutationWithTwoInputs s) _
   have hH :
       normSq0S (I := I) g₁ x 2 (Hdiff x) = metricDiffSq (I := I) g₁ g₂ x := by
@@ -423,38 +432,54 @@ theorem lowerTriSq_le (g : SmoothRiemannianMetric I M)
   let P : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
     lowerTri (I := I) (metricTensorField (I := I) g x) A
   let V : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 6 x :=
-    ContinuousMultilinearMap.domDomCongr lowerTriPerm
-      (Bundle.continuousMultilinearMap.product_fun
-        (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) P Q)
+    (Tensor0SSpace.product P Q).domDomCongr lowerTriPerm
   have htrace :
       lowerTri (I := I) Q A =
         metricTraceFirstTwo0STensor (I := I) g V := by
     refine ContinuousMultilinearMap.ext fun u => ?_
-    rw [lowerTri_apply, metricTraceFirstTwo0STensor_apply,
-      metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis _ hinv]
+    change Tensor0SSpace.eval (lowerTri (I := I) Q A) u =
+      Tensor0SSpace.eval (metricTraceFirstTwo0STensor (I := I) g V) u
+    have htraceBasis :
+        Tensor0SSpace.eval (metricTraceFirstTwo0STensor (I := I) g V) u =
+          metricTrace0S2InBasis (I := I) basis identityInvMetric V u := by
+      change metricTraceFirstTwo0STensor (I := I) g V u = _
+      rw [metricTraceFirstTwo0STensor_apply,
+        metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis _ hinv]
+    rw [lowerTri_apply, htraceBasis]
     unfold metricTrace0S2InBasis
+    change Tensor0SSpace.eval Q
+        (fun a : Fin 2 => if a = 0 then ((A (u 0)) (u 1)) (u 2) else u 3) =
+      ∑ i, ∑ j, identityInvMetric i j *
+        Tensor0SSpace.eval V (metricTraceInput (I := I) (basis i) (basis j) u)
     have hV : ∀ i j,
-        V (metricTraceInput (I := I) (basis i) (basis j) u) =
-          lowerTri (I := I) (metricTensorField (I := I) g x) A
+        Tensor0SSpace.eval V (metricTraceInput (I := I) (basis i) (basis j) u) =
+          Tensor0SSpace.eval (lowerTri (I := I) (metricTensorField (I := I) g x) A)
               ![u 0, u 1, u 2, basis i] *
-            Q (fun a : Fin 2 => if a = 0 then basis j else u 3) := by
+            Tensor0SSpace.eval Q (fun a : Fin 2 => if a = 0 then basis j else u 3) := by
       intro i j
       dsimp only [V, P]
-      rw [Tensor0SSpace.domDomCongr_apply,
-        Bundle.continuousMultilinearMap.product_fun_apply]
+      rw [Tensor0SSpace.eval_domDomCongr]
+      have hproduct := Tensor0SSpace.product_apply
+        (lowerTri (I := I) (metricTensorField (I := I) g x) A) Q
+        (metricTraceInput (I := I) (basis i) (basis j) u ∘ lowerTriPerm)
+      change Tensor0SSpace.eval
+          (Tensor0SSpace.product
+            (lowerTri (I := I) (metricTensorField (I := I) g x) A) Q) _ =
+        Tensor0SSpace.eval
+            (lowerTri (I := I) (metricTensorField (I := I) g x) A) _ *
+          Tensor0SSpace.eval Q _ at hproduct
+      rw [hproduct]
       have hPslots :
-          ((fun p =>
-            metricTraceInput (I := I) (basis i) (basis j) u (lowerTriPerm p)) ∘
-              Fin.castAdd 2) =
+          ((metricTraceInput (I := I) (basis i) (basis j) u ∘ lowerTriPerm) ∘
+            Fin.castAdd 2) =
             ![u 0, u 1, u 2, basis i] := by
         funext p
         fin_cases p <;>
           simp [Function.comp_apply, lowerTriPerm, Equiv.ofBijective, Fin.castAdd,
             metricTraceInput_apply]
       have hQslots :
-          ((fun p =>
-            metricTraceInput (I := I) (basis i) (basis j) u (lowerTriPerm p)) ∘
-              Fin.natAdd 4) =
+          ((metricTraceInput (I := I) (basis i) (basis j) u ∘ lowerTriPerm) ∘
+            Fin.natAdd 4) =
             fun a : Fin 2 => if a = 0 then basis j else u 3 := by
         funext p
         fin_cases p <;>
@@ -463,23 +488,24 @@ theorem lowerTriSq_le (g : SmoothRiemannianMetric I M)
       rw [hPslots, hQslots]
     simp_rw [hV]
     simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul, zero_mul]
-    rw [tensor02_expand (I := I) Q basis
-      (((A (u 0)) (u 1)) (u 2)) (u 3)]
+    have hQ := tensor02_expand (I := I) Q basis
+      (((A (u 0)) (u 1)) (u 2)) (u 3)
+    change Tensor0SSpace.eval Q
+        (fun a : Fin 2 => if a = 0 then ((A (u 0)) (u 1)) (u 2) else u 3) =
+      ∑ k, basis.repr (((A (u 0)) (u 1)) (u 2)) k *
+        Tensor0SSpace.eval Q (fun a : Fin 2 => if a = 0 then basis k else u 3) at hQ
+    rw [hQ]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [rem_repr_inner (I := I) g basis hON]
-    simp [lowerTri_apply, metricTensorField_apply]
+    simp [lowerTri_apply]
   rw [htrace]
   have htr := traceNormSq_le (I := I) (s := 4) g x V
   have hcongr :
       normSq0S (I := I) g x 6 V =
-        normSq0S (I := I) g x 6
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) P Q) :=
+        normSq0S (I := I) g x 6 (Tensor0SSpace.product P Q) :=
     normSq0S_domDomCongr (I := I) g x basis hinv lowerTriPerm _
   have hprod :
-      normSq0S (I := I) g x 6
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) P Q) =
+      normSq0S (I := I) g x 6 (Tensor0SSpace.product P Q) =
         normSq0S (I := I) g x 4 P * normSq0S (I := I) g x 2 Q :=
     normSq0S_prod (I := I) g x basis hinv P Q
   rw [hcongr, hprod] at htr
@@ -522,8 +548,13 @@ theorem lowerTriSwapSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
       lowerTri (I := I) (metricDiffAt (I := I) g₁ g₂ x) A =
         -lowerTri (I := I) (metricDiffAt (I := I) g₂ g₁ x) A := by
     refine ContinuousMultilinearMap.ext fun v => ?_
-    rw [lowerTri_apply, Tensor0SSpace.neg_apply, lowerTri_apply]
-    simp only [metricDiffAt_apply]
+    change Tensor0SSpace.eval
+        (lowerTri (I := I) (metricDiffAt (I := I) g₁ g₂ x) A) v =
+      Tensor0SSpace.eval
+        (-lowerTri (I := I) (metricDiffAt (I := I) g₂ g₁ x) A) v
+    rw [lowerTri_apply, Tensor0SSpace.eval_neg, lowerTri_apply]
+    rw [Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq,
+      metricDiffAt_apply, metricDiffAt_apply]
     ring
   have hsymm := metric_equiv_symm (I := I) g₁ g₂ x hC hequiv
   have hcmp := normSq0S_upper_le_of_equiv (I := I) g₂ g₁ x 4 hC hsymm
@@ -585,21 +616,40 @@ theorem ownRmDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
       lowerTri (I := I) (metricDiffAt (I := I) g₁ g₂ x) A =
         P - metricRm04At (I := I) g₂ x := by
     refine ContinuousMultilinearMap.ext fun v => ?_
+    change Tensor0SSpace.eval
+        (lowerTri (I := I) (metricDiffAt (I := I) g₁ g₂ x) A) v =
+      Tensor0SSpace.eval (P - metricRm04At (I := I) g₂ x) v
     have hv : v = vec4 (I := I) (v 0) (v 1) (v 2) (v 3) := by
       funext i
       fin_cases i <;> rfl
-    rw [hv, lowerTri_apply, Tensor0SSpace.sub_apply,
-      rm04mix_inner (I := I) g₁ g₂ x,
-      metricRm04At_inner (I := I) g₂ x]
-    simp [metricDiffAt_apply, A, vec4]
+    have hmix := rm04mix_inner (I := I) g₁ g₂ x (v 0) (v 1) (v 2) (v 3)
+    change Tensor0SSpace.eval P
+      (vec4 (I := I) (v 0) (v 1) (v 2) (v 3)) = _ at hmix
+    have hmetric := metricRm04At_inner (I := I) g₂ x (v 0) (v 1) (v 2) (v 3)
+    change Tensor0SSpace.eval (metricRm04At (I := I) g₂ x)
+      (vec4 (I := I) (v 0) (v 1) (v 2) (v 3)) = _ at hmetric
+    rw [hv, lowerTri_apply, Tensor0SSpace.eval_sub, hmix, hmetric]
+    have hmetricDiff := metricDiffAt_apply (I := I) g₁ g₂ x
+      (fun a : Fin 2 => if a = 0 then ((A (v 0)) (v 1)) (v 2) else v 3)
+    change Tensor0SSpace.eval (metricDiffAt (I := I) g₁ g₂ x) _ = _ at hmetricDiff
+    exact hmetricDiff
   have hsplit :
       metricRm04At (I := I) g₁ x - metricRm04At (I := I) g₂ x =
         rmDiffLowAt (I := I) g₁ g₂ x +
           lowerTri (I := I) (metricDiffAt (I := I) g₁ g₂ x) A := by
     refine ContinuousMultilinearMap.ext fun v => ?_
-    rw [Tensor0SSpace.sub_apply, Tensor0SSpace.add_apply, rmDiffLowAt_apply]
-    have hg := congrArg (fun T => T v) hgap
-    simp only [Tensor0SSpace.sub_apply] at hg
+    change Tensor0SSpace.eval
+        (metricRm04At (I := I) g₁ x - metricRm04At (I := I) g₂ x) v =
+      Tensor0SSpace.eval
+        (rmDiffLowAt (I := I) g₁ g₂ x +
+          lowerTri (I := I) (metricDiffAt (I := I) g₁ g₂ x) A) v
+    have hdiff := rmDiffLowAt_apply (I := I) g₁ g₂ x v
+    change Tensor0SSpace.eval (rmDiffLowAt (I := I) g₁ g₂ x) v =
+      Tensor0SSpace.eval (metricRm04At (I := I) g₁ x) v -
+        Tensor0SSpace.eval P v at hdiff
+    rw [Tensor0SSpace.eval_sub, Tensor0SSpace.eval_add, hdiff]
+    have hg := congrArg (fun T => Tensor0SSpace.eval T v) hgap
+    simp only [Tensor0SSpace.eval_sub] at hg
     rw [hg]
     ring
   have hadd := normSq0S_add_le (I := I) g₁ x 4
@@ -612,11 +662,20 @@ theorem ownRmDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     have heq :
         lowerTri (I := I) (metricTensorField (I := I) g₁ x) A = P := by
       refine ContinuousMultilinearMap.ext fun v => ?_
+      change Tensor0SSpace.eval
+          (lowerTri (I := I) (metricTensorField (I := I) g₁ x) A) v =
+        Tensor0SSpace.eval P v
       have hv : v = vec4 (I := I) (v 0) (v 1) (v 2) (v 3) := by
         funext i
         fin_cases i <;> rfl
-      rw [hv, lowerTri_apply, rm04mix_inner (I := I) g₁ g₂ x]
-      simp [metricTensorField_apply, A, vec4]
+      have hmix := rm04mix_inner (I := I) g₁ g₂ x (v 0) (v 1) (v 2) (v 3)
+      change Tensor0SSpace.eval P
+        (vec4 (I := I) (v 0) (v 1) (v 2) (v 3)) = _ at hmix
+      rw [hv, lowerTri_apply, hmix]
+      have hmetric := metricTensorField_apply (I := I) g₁ x
+        (fun a : Fin 2 => if a = 0 then ((A (v 0)) (v 1)) (v 2) else v 3)
+      change Tensor0SSpace.eval (metricTensorField (I := I) g₁ x) _ = _ at hmetric
+      exact hmetric
     rw [heq]
     exact hP
   rw [hsplit]
@@ -699,11 +758,15 @@ theorem traceProdSq_le (g : SmoothRiemannianMetric I M) {a b r : ℕ}
           (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
             (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
             (s := a) (q := b) A B x) := by
-    simpa only [W, MultilinearSection.domDomCongr_apply] using
-      (normSq0S_domDomCongr (I := I) g x basis hinv σ
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-          (s := a) (q := b) A B x))
+    change normSq0S (I := I) g x (r + 2)
+        (ContinuousMultilinearMap.domDomCongr σ
+          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
+            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
+            (s := a) (q := b) A B x)) = _
+    exact normSq0S_domDomCongr (I := I) g x basis hinv σ
+      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
+        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
+        (s := a) (q := b) A B x)
   have hprod :
       normSq0S (I := I) g x (a + b)
           (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
@@ -741,7 +804,7 @@ theorem uhlSpeed_low
         (uhlRm2Vec (I := I) g basisAt Rm04 roughLapRm04 B ricciOneUp t x) := by
   apply lowOfComp_ext (I := I)
   intro i j k l
-  rw [lowerTri_apply, metricTensorField_apply]
+  rw [lowerTri_apply, Tensor0SSpace.eval_eq, metricTensorField_apply]
   have hv :
       ((uhlRm2Vec (I := I) g basisAt Rm04 roughLapRm04 B ricciOneUp t x
         (basisAt x i)) (basisAt x j)) (basisAt x k) =

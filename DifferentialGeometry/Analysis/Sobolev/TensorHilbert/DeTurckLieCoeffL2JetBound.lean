@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -99,7 +98,7 @@ private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
               (Equiv.swap (0 : Fin 2) 1)).toSection x) D) m
-  rw [hsum, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [hsum, Tensor0SSpace.toModel_add, add_apply]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D
       = deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D from rfl]
@@ -161,28 +160,28 @@ private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
     (fun i => m ((Equiv.swap (0 : Fin 2) 1) i))]
   rw [Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   have harg : (fun k => Function.update (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
-        (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x
+        (tangentLinearMapToModel (I := I)
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
           ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
         ((Equiv.swap (0 : Fin 2) 1) k))
-      = Function.update m 1 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x (m 1)) := by
-    funext k
+      = Function.update m 1
+          (tangentLinearMapToModel (I := I)
+            (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (m 1)) := by
     have hswap0 : (Equiv.swap (0 : Fin 2) 1) 0 = 1 := Equiv.swap_apply_left 0 1
     have hswap1 : (Equiv.swap (0 : Fin 2) 1) 1 = 0 := Equiv.swap_apply_right 0 1
-    simp only [Function.update_apply]
-    rw [hswap0, Equiv.swap_apply_self]
-    have hcond : ((Equiv.swap (0 : Fin 2) 1) k = 0) = (k = 1) := by
-      apply propext
-      constructor
-      · intro h
-        have h2 := congrArg (Equiv.swap (0 : Fin 2) 1) h
-        rwa [Equiv.swap_apply_self, hswap0] at h2
-      · intro h
-        rw [h, hswap1]
-    simp only [hcond]
+    funext k
+    fin_cases k
+    · simp only [Fin.isValue, Fin.zero_eta, Equiv.swap_apply_left, ne_eq, one_ne_zero,
+        not_false_eq_true, Function.update_of_ne, zero_ne_one]
+      exact congrArg m hswap1
+    · simp only [Fin.isValue, Fin.mk_one, Equiv.swap_apply_right, Function.update_self]
+      exact congrArg
+        (fun z => tangentLinearMapToModel (I := I)
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (m z)) hswap0
   rw [harg]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem normSq_iteratedCovGrad_le_scaled_of_pointwise
     (g₀ : SmoothRiemannianMetric I M) (X : SmoothCcTensor g₀ 2 2) (Y : SmoothCcTensor g₀ 1 1)
     (i : ℕ) (c : ℝ)
@@ -211,6 +210,7 @@ private theorem normSq_iteratedCovGrad_le_scaled_of_pointwise
   exact (tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g₀ 1 (1 + i)
     (iteratedCovGrad (I := I) g₀ 1 1 i Y)).symm
 
+omit [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionFirstSummand_le
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -226,6 +226,7 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivat
   rw [pow_one] at h
   exact h
 
+omit [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionSecondSummand_le
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -449,14 +450,13 @@ private lemma deTurckLieCovariantDerivativeInsertion_endoSlotZeroCcTensor_sub (g
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
     rw [SmoothCcTensor.toSection_sub]
     rfl]
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A - B) x) = A x - B x from by
     rw [ContMDiffSection.coe_sub]
     rfl]
-  rw [slotInsertEndoFib_sub_left, ContinuousLinearMap.sub_apply]
+  rw [slotInsertEndoFib_sub_left, sub_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma deTurckLieCovariantDerivativeInsertion_reindex_sub (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 2 2) (ρ : Equiv.Perm (Fin 2)) :
@@ -472,9 +472,9 @@ private lemma deTurckLieCovariantDerivativeInsertion_reindex_sub (g₀ : SmoothR
     ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoeffFibGen_apply,
     reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    ContinuousLinearMap.sub_apply]
+    sub_apply]
 
 theorem normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertion_backgroundDifference_le
     (g₀ g₁ g_bg g_ref : SmoothRiemannianMetric I M) (i : ℕ) :

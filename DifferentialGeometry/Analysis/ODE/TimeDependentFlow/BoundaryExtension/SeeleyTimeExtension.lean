@@ -138,8 +138,7 @@ theorem partitionOfUnity_assembled_section_contMDiff
   refine contMDiffAt_finsum hlf ?_
   intro i
   by_cases hi : q₀ ∈ tsupport (fun q : ℝ × M => ρ i q.2)
-  · refine ContMDiffAt.smul ?_ (hsummand i hi)
-    exact ((ρ i).contMDiff.comp contMDiff_snd).contMDiffAt
+  · exact ((ρ i).contMDiff.comp contMDiff_snd).contMDiffAt.smul (hsummand i hi)
   · exact contMDiffAt_of_notMem (compl_subset_compl.mpr
       (tsupport_smul_subset_left (fun q : ℝ × M => ρ i q.2) (g i)) hi) ∞
 

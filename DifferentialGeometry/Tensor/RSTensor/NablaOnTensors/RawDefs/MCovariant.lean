@@ -7,7 +7,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -39,8 +38,9 @@ theorem modelAt_mcovRS {r s : ℕ}
         (mcovariantDeriv_tensorRSWithin (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) (n := n) r s X ΓX T u x₀) =
       covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          X (Set.range I))
+        (fun z => tangentSpaceModelContinuousLinearEquiv z
+          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+            X (Set.range I) z))
         ΓX
         (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
           (M := M) r s x₀ (fun x => T x))
@@ -69,8 +69,9 @@ theorem mcovariantDeriv_tensor0SWithin_apply_slots {s : ℕ}
               (I := I) (M := M) s x₀ (fun x => α x) y)
           (((extChartAt I x₀).symm ⁻¹' u) ∩ range I)
           (extChartAt I x₀ x₀)
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            X (range I) (extChartAt I x₀ x₀))
+          (tangentSpaceModelContinuousLinearEquiv (extChartAt I x₀ x₀)
+            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+              X (range I) (extChartAt I x₀ x₀)))
           slots -
         ∑ a : Fin s,
           (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)

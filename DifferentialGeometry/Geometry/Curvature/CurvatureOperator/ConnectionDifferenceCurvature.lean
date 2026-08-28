@@ -37,7 +37,7 @@ theorem diff_eval (cov₀ cov₁ : CovariantDerivative I F V)
   have h := cov₁.isCovariantDerivativeOnUniv.difference_apply
     cov₀.isCovariantDerivativeOnUniv (x := x) (mem_univ x) (σ := σ) hσ
   have := congrArg (fun (φ : TangentSpace I x →L[ℝ] V x) => φ v) h
-  simp only [ContinuousLinearMap.sub_apply] at this
+  simp only [sub_apply] at this
   rw [show CovariantDerivative.difference cov₁ cov₀ =
       cov₁.isCovariantDerivativeOnUniv.difference cov₀.isCovariantDerivativeOnUniv from rfl]
   exact this
@@ -139,7 +139,7 @@ theorem covApply_cov1_outer_expand (x : M) :
       cov₀.toFun (covApply cov₀ Y Z) x + cov₀.toFun (diffSec cov₀ cov₁ Y Z) x :=
     cov₀.isCovariantDerivativeOnUniv.add hcov0YZ_at hdiffYZ_at
   rw [hadd0]
-  simp only [ContinuousLinearMap.add_apply]
+  simp only [add_apply]
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M]
   [CovariantDerivative.ContMDiffCovariantDerivative cov₀ ∞]
@@ -174,12 +174,12 @@ theorem riemannSec_difference_raw (x : M) :
         ((covApply cov₀ Y Z + diffSec cov₀ cov₁ Y Z) x) (X x) =
       CovariantDerivative.difference cov₁ cov₀ x (covApply cov₀ Y Z x) (X x)
       + CovariantDerivative.difference cov₁ cov₀ x (diffSec cov₀ cov₁ Y Z x) (X x) := by
-    rw [Pi.add_apply, map_add, ContinuousLinearMap.add_apply]
+    rw [Pi.add_apply, map_add, add_apply]
   have hsplitY : CovariantDerivative.difference cov₁ cov₀ x
         ((covApply cov₀ X Z + diffSec cov₀ cov₁ X Z) x) (Y x) =
       CovariantDerivative.difference cov₁ cov₀ x (covApply cov₀ X Z x) (Y x)
       + CovariantDerivative.difference cov₁ cov₀ x (diffSec cov₀ cov₁ X Z x) (Y x) := by
-    rw [Pi.add_apply, map_add, ContinuousLinearMap.add_apply]
+    rw [Pi.add_apply, map_add, add_apply]
   rw [hsplitX, hsplitY]
   abel
 
@@ -250,19 +250,21 @@ theorem ricciTensor_sub_eq_basisSum (g₀ g₁ : SmoothRiemannianMetric I M) (x 
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g₁ x v w - ricciTensor (I := I) g₀ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((centeredChartTangentBasis (I := I) x).repr
             (riemannSec (LeviCivita (I := I) g₁)
-                (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                (smoothExtensionTangent (I := I) x
+                  (centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x) i
-          - (chartModelBasis E).repr
+          - (centeredChartTangentBasis (I := I) x).repr
             (riemannSec (LeviCivita (I := I) g₀)
-                (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                (smoothExtensionTangent (I := I) x
+                  (centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x) i) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  set b := chartModelBasis E with hb
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
+  set b := centeredChartTangentBasis (I := I) x with hb
   set V := smoothExtensionTangent (I := I) x v with hV
   set W := smoothExtensionTangent (I := I) x w with hW
   have hV_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V) := smoothExtensionTangent_contMDiff x v
@@ -294,35 +296,40 @@ theorem ricciTensor_sub_eq_basisSum_difference (g₀ g₁ : SmoothRiemannianMetr
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g₁ x v w - ricciTensor (I := I) g₀ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (centeredChartTangentBasis (I := I) x).repr
           ((covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
-                (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                (smoothExtensionTangent (I := I) x
+                  (centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x
               - covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                 (smoothExtensionTangent (I := I) x v)
-                (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                (smoothExtensionTangent (I := I) x
+                  (centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x w) x)
             + (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₀) x
                   (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                     (smoothExtensionTangent (I := I) x v)
                     (smoothExtensionTangent (I := I) x w) x)
-                  (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x)
+                  (smoothExtensionTangent (I := I) x
+                    (centeredChartTangentBasis (I := I) x i) x)
                 - CovariantDerivative.difference (LeviCivita (I := I) g₁)
                     (LeviCivita (I := I) g₀) x
                   (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
-                    (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                    (smoothExtensionTangent (I := I) x
+                      (centeredChartTangentBasis (I := I) x i))
                     (smoothExtensionTangent (I := I) x w) x)
                   (smoothExtensionTangent (I := I) x v x))) i := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   rw [ricciTensor_sub_eq_basisSum (I := I) g₀ g₁ x v w]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  set B := smoothExtensionTangent (I := I) x ((chartModelBasis E) i) with hB
+  set B := smoothExtensionTangent (I := I) x
+    (centeredChartTangentBasis (I := I) x i) with hB
   set V := smoothExtensionTangent (I := I) x v with hV
   set W := smoothExtensionTangent (I := I) x w with hW
   have hB_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B) :=
-    smoothExtensionTangent_contMDiff x ((chartModelBasis E) i)
+    smoothExtensionTangent_contMDiff x (centeredChartTangentBasis (I := I) x i)
   have hV_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V) := smoothExtensionTangent_contMDiff x v
   have hW_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W) := smoothExtensionTangent_contMDiff x w
   have htor : (LeviCivita (I := I) g₀).torsion = 0 := LeviCivita_torsion_eq_zero (I := I) g₀
@@ -339,17 +346,21 @@ theorem ricciTensor_sub_eq_basisSum_difference (g₀ g₁ : SmoothRiemannianMetr
               (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁) B W x) (V x)) := by
     rw [hdiff]; abel
   have hreprsub :
-      (chartModelBasis E).repr (riemannSec (LeviCivita (I := I) g₁) B V W x) i
-        - (chartModelBasis E).repr (riemannSec (LeviCivita (I := I) g₀) B V W x) i =
-      (chartModelBasis E).repr
+      (centeredChartTangentBasis (I := I) x).repr
+          (riemannSec (LeviCivita (I := I) g₁) B V W x) i
+        - (centeredChartTangentBasis (I := I) x).repr
+          (riemannSec (LeviCivita (I := I) g₀) B V W x) i =
+      (centeredChartTangentBasis (I := I) x).repr
         (riemannSec (LeviCivita (I := I) g₁) B V W x
           - riemannSec (LeviCivita (I := I) g₀) B V W x) i := by
-    have hms : (chartModelBasis E).repr
+    have hms : (centeredChartTangentBasis (I := I) x).repr
         (riemannSec (LeviCivita (I := I) g₁) B V W x
           - riemannSec (LeviCivita (I := I) g₀) B V W x) =
-        (chartModelBasis E).repr (riemannSec (LeviCivita (I := I) g₁) B V W x)
-          - (chartModelBasis E).repr (riemannSec (LeviCivita (I := I) g₀) B V W x) :=
-      map_sub (chartModelBasis E).repr _ _
+        (centeredChartTangentBasis (I := I) x).repr
+            (riemannSec (LeviCivita (I := I) g₁) B V W x)
+          - (centeredChartTangentBasis (I := I) x).repr
+            (riemannSec (LeviCivita (I := I) g₀) B V W x) :=
+      map_sub (centeredChartTangentBasis (I := I) x).repr _ _
     rw [hms, Finsupp.sub_apply]
   rw [hreprsub, hdiff_sub]
 

@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -184,7 +183,7 @@ theorem covDerivOfField_eval_contMDiffAt
       have hdec : ∀ q : Real × M,
           (covDerivOfField (I := I) gRef (A q.1) (p + 1)) q.2
               (fun a : Fin (p + 3) => V a q.2)
-            = extDerivFun (I := I)
+            = mvfderiv (I := I)
                 (fun y : M => (covDerivOfField (I := I) gRef (A q.1) p) y
                   (fun a : Fin (p + 2) => V a.succ y)) q.2 ((V 0) q.2)
               - ∑ a : Fin (p + 2),
@@ -238,7 +237,7 @@ theorem covDerivOfField_eval_contMDiffAt
           (covDerivOfField (I := I) gRef (A q.1) (p + 1)) q.2
             (fun a : Fin (p + 3) => V a q.2))
           = fun q : Real × M =>
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun y : M => (covDerivOfField (I := I) gRef (A q.1) p) y
                   (fun a : Fin (p + 2) => V a.succ y)) q.2 ((V 0) q.2)
               - ∑ a : Fin (p + 2),
@@ -295,7 +294,7 @@ theorem covDerivOfField_eval_smoothAt
       have hdec : ∀ y : M,
           (covDerivOfField (I := I) gRef A0 (p + 1)) y
               (fun a : Fin (p + 3) => V a y)
-            = extDerivFun (I := I)
+            = mvfderiv (I := I)
                 (fun z : M => (covDerivOfField (I := I) gRef A0 p) z
                   (fun a : Fin (p + 2) => V a.succ z)) y ((V 0) y)
               - ∑ a : Fin (p + 2),
@@ -329,7 +328,7 @@ theorem covDerivOfField_eval_smoothAt
         congr 1
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hupd a]
-      have h1 := extDerivFun_apply_contMDiffAt I
+      have h1 := mvfderiv_apply_contMDiffAt I
         (f := fun z : M => (covDerivOfField (I := I) gRef A0 p) z
           (fun a : Fin (p + 2) => V a.succ z))
         (x₀ := x)
@@ -348,7 +347,7 @@ theorem covDerivOfField_eval_smoothAt
           (covDerivOfField (I := I) gRef A0 (p + 1)) y
             (fun a : Fin (p + 3) => V a y))
           = fun y : M =>
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun z : M => (covDerivOfField (I := I) gRef A0 p) z
                   (fun a : Fin (p + 2) => V a.succ z)) y ((V 0) y)
               - ∑ a : Fin (p + 2),

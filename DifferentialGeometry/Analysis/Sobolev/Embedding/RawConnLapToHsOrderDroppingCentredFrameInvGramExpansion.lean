@@ -59,7 +59,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 section CentredFrameCoordExpansion
 
-set_option backward.isDefEq.respectTransparency false
 
 
 
@@ -130,10 +129,10 @@ private lemma centredFrame_gram_expand
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [map_smul]
-  rw [hL, ContinuousLinearMap.sum_apply]
+  rw [hL, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro k _
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   have hR : g.inner b (v k) (∑ l, d l • v l) = ∑ l, d l * g.inner b (v k) (v l) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
@@ -531,7 +530,7 @@ private lemma centred_cov_RS_finsum_smul_section_leibniz_apply
       ∑ i ∈ s_finset,
         (f i b • (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g)).toFun (σ i) b v +
-          extDerivFun (f i) b v • σ i b) := by
+          mvfderiv (I := I) (f i) b v • σ i b) := by
   classical
   induction s_finset using Finset.induction_on with
   | empty =>
@@ -595,10 +594,10 @@ private lemma centred_cov_RS_finsum_smul_section_leibniz_apply
     rw [h_smul_form]
     rw [h_leib_k]
     have h_ih := ih hf_rest hσ_rest
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [h_ih]
     rw [Finset.sum_insert hkt]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -625,7 +624,7 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
                 (fun z : M => T₀.toSection z)) b
               (chartBasisVecFiber (I := I) α l b)) +
       (∑ k : Fin (Module.finrank ℝ E),
-        extDerivFun (fun z : M =>
+        mvfderiv (I := I) (fun z : M =>
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z)
             b (chartBasisVecFiber (I := I) α l b) •
           covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
@@ -871,8 +870,16 @@ private lemma chartProjCLM_covApply_chartBasis_eq_euclidPartial_add_lowerOrder
         chartTensorRSCovariantDerivative (I := I) r s g α (fun z : M => T₀.toSection z)
           (fun z : M => chartBasisVecFiber (I := I) α m z) b := by
     rw [covApply_apply]
-    rw [← tensorCovDerivAt_def (I := I) (M := M) g r s T₀ b
-      (chartBasisVecFiber (I := I) α m b)]
+    have hCovDerivAt :
+        TensorRSNabla.tensorRSCovariantDerivative I M r s
+            (LeviCivita (I := I) g) (fun z : M => T₀.toSection z) b
+            (chartBasisVecFiber (I := I) α m b) =
+          tensorCovDerivAt (I := I) (M := M) g r s T₀ b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (chartBasisVecFiber (I := I) α m b)) := by
+      rw [tensorCovDerivAt_def,
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]
+    rw [hCovDerivAt]
     exact tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
       (I := I) (M := M) g r s T₀ α m (b := b) hb
   rw [hAbstract]
@@ -887,7 +894,6 @@ end CentredFrameCoordExpansion
 
 section B4Bridge
 
-set_option backward.isDefEq.respectTransparency false
 
 
 
@@ -922,7 +928,7 @@ private lemma centredFrame_proj_summand_expand
       (∑ l : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
           centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
-            (extDerivFun (fun z : M =>
+            (mvfderiv (I := I) (fun z : M =>
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                 b (chartBasisVecFiber (I := I) α l b) *
               chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -961,7 +967,7 @@ private lemma centredFrame_proj_summand_expand
                   (fun z : M => T₀.toSection z)) b
                 (chartBasisVecFiber (I := I) α l b)) +
         (∑ k : Fin (Module.finrank ℝ E),
-          extDerivFun (fun z : M =>
+          mvfderiv (I := I) (fun z : M =>
               centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
               b (chartBasisVecFiber (I := I) α l b) •
             covApply cov_RS
@@ -985,7 +991,7 @@ private lemma centredFrame_proj_summand_expand
                         (fun z : M => T₀.toSection z)) b
                       (chartBasisVecFiber (I := I) α l b)) +
               (∑ k : Fin (Module.finrank ℝ E),
-                extDerivFun (fun z : M =>
+                mvfderiv (I := I) (fun z : M =>
                     centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                     b (chartBasisVecFiber (I := I) α l b) •
                   covApply cov_RS
@@ -1012,7 +1018,7 @@ private lemma centredFrame_proj_summand_expand
                         (fun z : M => T₀.toSection z)) b
                       (chartBasisVecFiber (I := I) α l b)) +
               (∑ k : Fin (Module.finrank ℝ E),
-                extDerivFun (fun z : M =>
+                mvfderiv (I := I) (fun z : M =>
                     centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                     b (chartBasisVecFiber (I := I) α l b) •
                   covApply cov_RS
@@ -1029,7 +1035,7 @@ private lemma centredFrame_proj_summand_expand
                     (chartBasisVecFiber (I := I) α l b)))) +
           (∑ k : Fin (Module.finrank ℝ E),
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
-              (extDerivFun (fun z : M =>
+              (mvfderiv (I := I) (fun z : M =>
                   centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                   b (chartBasisVecFiber (I := I) α l b) *
                 chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -1161,7 +1167,7 @@ private lemma rawConnLap_chartα_firstOrder_remainder_smooth_coeff_form
             ∑ l : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
-                  (extDerivFun (fun z : M =>
+                  (mvfderiv (I := I) (fun z : M =>
                       centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                       b (chartBasisVecFiber (I := I) α l b) *
                     chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -1202,7 +1208,7 @@ private lemma rawConnLap_chartα_firstOrder_remainder_smooth_coeff_form
         ∑ l : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
-              (extDerivFun (fun z : M =>
+              (mvfderiv (I := I) (fun z : M =>
                   centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                   b (chartBasisVecFiber (I := I) α l b) *
                 chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -1253,7 +1259,7 @@ private lemma rawConnLap_chartα_firstOrder_remainder_smooth_coeff_form
             (∑ l : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
-                  (extDerivFun (fun z : M =>
+                  (mvfderiv (I := I) (fun z : M =>
                       centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                       b (chartBasisVecFiber (I := I) α l b) *
                     chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -1349,7 +1355,7 @@ theorem rawTensorConnLap_chartα_proj_eq_invGramPrincipalSum_on_goodSet
           (∑ l : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
               centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
-                (extDerivFun (fun z : M =>
+                (mvfderiv (I := I) (fun z : M =>
                     centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
                     b (chartBasisVecFiber (I := I) α l b) *
                   chartProjCLM (I := I) (M := M) r s α Idx Jdx b

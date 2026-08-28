@@ -40,7 +40,7 @@ lemma riemannianFiberNormSq_eq_bundle_norm_sq'
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
     riemannianFiberNormSq (I := I) (M := M) g r s x z = ‖z‖ ^ 2 := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   have h_inner :
       (DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM
@@ -66,9 +66,9 @@ theorem riemannianFiberNormSq_clm_apply_le_of_sqrt_le
     ∀ v : TensorRSSpace 0 r I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (φ v) ≤
         μ ^ 2 * riemannianFiberNormSq (I := I) (M := M) g 0 r x v := by
-  letI instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
+  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 r
-  letI instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
+  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 s
   intro v
   have hsrc_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g 0 r x v :=

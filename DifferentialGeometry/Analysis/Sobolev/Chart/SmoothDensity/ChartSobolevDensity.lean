@@ -133,8 +133,6 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       have h_le := Finset.single_le_sum (s := Finset.range (k + 1))
         (f := fun j => (Fintype.card (Fin j → Fin d) : ℝ))
         (fun j _ => by positivity) h_zero_in
-      rw [show ((fun j => (Fintype.card (Fin j → Fin d) : ℝ)) 0 : ℝ) =
-          (Fintype.card (Fin 0 → Fin d) : ℝ) from rfl] at h_le
       rw [h_at_zero] at h_le
       linarith
     have h_kfact_D_pos : 0 < (k.factorial : ℝ) * Φ.derivBoundMaxOne ^ k := by
@@ -270,7 +268,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       funext x; rfl
     rw [h_δcomp_eq] at hS1
     refine hS1.trans ?_
-    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le _)).trans ?_
+    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le)).trans ?_
     rw [← ENNReal.ofReal_mul hK_nonneg]
     refine ENNReal.ofReal_le_ofReal ?_
     calc K_const * (2 * ((1 : ℝ) / (N0 + 1 : ℝ)))
@@ -307,12 +305,12 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
       · intro j hj
         rw [Finset.mem_range] at hj ⊢; omega
-      · intros _ _ _; exact zero_le _
+      · intros _ _ _; exact zero_le
     have h_arg_eq : (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) =
         (fun x => (fun y => u y - ψ n y) (Φ.toFun x)) := by funext x; rfl
     rw [h_arg_eq]
     refine h_chg.trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact h_eLp_le_wkp.trans (hψ_close n)
   have h_uΦ_aestrong :
       AEStronglyMeasurable (fun x => u (Φ.toFun x)) (volume.restrict Ω) := by
@@ -356,7 +354,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           unfold iteratedWeakSobolevNorm
           refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
           · intro j hj; rw [Finset.mem_range] at hj ⊢; omega
-          · intros _ _ _; exact zero_le _
+          · intros _ _ _; exact zero_le
         have h_second :
             eLpNorm (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) p
                 (volume.restrict Ω) ≤
@@ -384,7 +382,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           rw [h_neg]
           exact h_Lp_close n
         exact add_le_add h_first h_second
-      apply le_antisymm _ (zero_le _)
+      apply le_antisymm _ (zero_le)
       have h_tendsto_first :
           Filter.Tendsto
             (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => vΦ x - ψ n (Φ.toFun x)) Ω)
@@ -424,7 +422,8 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
               (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
             tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
           have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
-          simpa [ENNReal.ofReal_zero] using h_ofReal
+          rw [ENNReal.ofReal_zero] at h_ofReal
+          exact h_ofReal
         set C : ℝ≥0∞ := ENNReal.ofReal
             ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) with hC_def
         have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top
@@ -510,7 +509,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
             (iteratedWeakSobolevNorm (d := d) k p u Ω' + ENNReal.ofReal
               ((1 : ℝ) / (n + 1 : ℝ))) := by
       refine h_smooth_bound.trans ?_
-      exact mul_le_mul_of_nonneg_left h_ψn_le_u (zero_le _)
+      exact mul_le_mul_of_nonneg_left h_ψn_le_u (zero_le)
     refine le_trans (add_le_add (le_refl _) h_bound_ψn) ?_
     rw [mul_add]
     have h_eq_RHS : ENNReal.ofReal K_const * iteratedWeakSobolevNorm (d := d) k p u Ω' = RHS := rfl
@@ -560,7 +559,8 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
         tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
       have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
-      simpa [ENNReal.ofReal_zero] using h_ofReal
+      rw [ENNReal.ofReal_zero] at h_ofReal
+      exact h_ofReal
     set C : ℝ≥0∞ := ENNReal.ofReal K_const with hC_def
     have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top
     have h_const_mul := ENNReal.Tendsto.const_mul (a := C) (b := 0)
@@ -602,7 +602,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma chartPushed_chartPullback_self
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) (χ : EuclN → ℝ) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     chartPushed (I := I) (M := M)

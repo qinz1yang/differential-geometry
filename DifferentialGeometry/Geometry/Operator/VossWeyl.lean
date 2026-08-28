@@ -41,7 +41,8 @@ lemma chartInvGramOnE_posDef
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     rwa [trivializationAt_baseSet_eq_chartAt_source]
   have hpos := chartGramMatrix_posDef (I := I) g α hbase
-  simpa only [chartInvGramOnE_def, chartInvGramMatrix] using hpos.inv
+  change (chartGramMatrix (I := I) g α ((extChartAt I α).symm y))⁻¹.PosDef
+  exact hpos.inv
 
 def gradChartCoeffOnE (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
     (i : Fin (Module.finrank ℝ E)) : E → ℝ :=
@@ -130,7 +131,7 @@ lemma chartCoeff_grad_g_eq_gradChartCoeff [I.Boundaryless]
             gradChartCoeff (I := I) g α f k x • b k) i =
         gradChartCoeff (I := I) g α f i x := by
     rw [map_sum]
-    rw [Finsupp.coe_finset_sum, Finset.sum_apply]
+    rw [Finsupp.coe_finsetSum, Finset.sum_apply]
     rw [Finset.sum_eq_single i]
     · rw [map_smul, Module.Basis.repr_self]
       simp
@@ -220,8 +221,10 @@ theorem voss_weyl_laplacian_formula_of_closed
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source) :
     Δ_g (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x := by
+  let fSmooth : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨f, hf⟩
+  change Δ_g (I := I) g fSmooth x = chartVossWeylLaplacian (I := I) g α f x
   rw [Δ_g_def]
-  rw [voss_weyl_divergence_formula (I := I) g α (grad_g (I := I) g ⟨_, hf⟩) hx]
+  rw [voss_weyl_divergence_formula (I := I) g α (grad_g (I := I) g fSmooth) hx]
   exact localDivergence_grad_g_eq_chartVossWeylLaplacian (I := I) g α hf hx
 
 theorem laplacian_eq_chartVossWeyl_of_sigmaCompact
@@ -230,8 +233,10 @@ theorem laplacian_eq_chartVossWeyl_of_sigmaCompact
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source) :
     Δ_g (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x := by
+  let fSmooth : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨f, hf⟩
+  change Δ_g (I := I) g fSmooth x = chartVossWeylLaplacian (I := I) g α f x
   rw [Δ_g_def]
-  rw [voss_weyl_divergence_formula (I := I) g α (grad_g (I := I) g ⟨_, hf⟩) hx]
+  rw [voss_weyl_divergence_formula (I := I) g α (grad_g (I := I) g fSmooth) hx]
   exact localDivergence_grad_g_eq_chartVossWeylLaplacian (I := I) g α hf hx
 
 theorem voss_weyl_laplacian_formula_pointwise

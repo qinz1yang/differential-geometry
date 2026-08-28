@@ -711,7 +711,6 @@ private lemma tsupport_pou_mul_sub_subset_tsupport_pou_aux
       (subset_tsupport _ hv_supp)
 
 private lemma memLp_pou_mul_riemannianMeasure_aux
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -762,7 +761,6 @@ private lemma memLp_pou_mul_riemannianMeasure_aux
 
 omit [I.Boundaryless] in
 private lemma eLpNorm_pou_mul_diff_riemannianMeasure_le
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p) (α : M) :
     ∃ C : ℝ, 0 < C ∧
@@ -889,7 +887,6 @@ private lemma eLpNorm_chartPushedRaw_diff_chartTarget_eq_chartNbhdM
   rw [Set.inter_self]
 
 private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
-    [NeZero (Module.finrank ℝ E)]
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
     (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
@@ -1026,7 +1023,6 @@ private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
   exact add_le_add hjN hkN
 
 private lemma exists_riemannianMeasure_limit_pou_mul
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
@@ -1069,7 +1065,7 @@ private lemma exists_riemannianMeasure_limit_pou_mul
   have hf_seq_mem : ∀ n, MemLp (f_seq n) (ENNReal.ofReal p) μ_g := fun n =>
     memLp_pou_mul_riemannianMeasure_aux (I := I) (M := M) g hp_one
       (hu_meas (φ n)) (hu_mem (φ n)) α
-  haveI hp_fact : Fact (1 ≤ ENNReal.ofReal p) := ⟨by
+  have hp_fact : Fact (1 ≤ ENNReal.ofReal p) := ⟨by
     simpa using (ENNReal.ofReal_le_ofReal hp_one.le :
       ENNReal.ofReal (1 : ℝ) ≤ ENNReal.ofReal p)⟩
   let F : ℕ → MeasureTheory.Lp ℝ (ENNReal.ofReal p) μ_g := fun n =>
@@ -1244,7 +1240,7 @@ theorem rellich_kondrachov_chart_seq
   have hu_lim_memLp : MemLp u_lim (ENNReal.ofReal p)
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
-    exact memLp_finset_sum S.attach (fun α _ => hv_memLp α.1 α.2)
+    exact memLp_finsetSum S.attach (fun α _ => hv_memLp α.1 α.2)
   refine ⟨φ, hφ_mono, u_lim, hu_lim_memLp, ?_⟩
   refine ENNReal.tendsto_atTop_zero.mpr ?_
   intro ε hε
@@ -1275,7 +1271,7 @@ theorem rellich_kondrachov_chart_seq
         exact absurd ⟨x⟩ hM_empty
       rw [h_diff_zero]
       rw [eLpNorm_zero]
-      exact zero_le _
+      exact zero_le
   have hn_pos : 0 < n := Nat.pos_of_ne_zero hn
   have h_per_α_eLp : ∀ α ∈ S.attach, ∃ N : ℕ, ∀ k ≥ N,
       eLpNorm

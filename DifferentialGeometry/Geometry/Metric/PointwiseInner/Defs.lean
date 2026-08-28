@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 
 
 noncomputable section

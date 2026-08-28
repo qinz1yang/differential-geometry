@@ -110,6 +110,7 @@ theorem gallim_w_lt
   obtain ⟨tauC, htauC, _htauC_tau, hcontC⟩ :=
     gallim_w_cont (I := I) (M := M) hS hDim hτ hlim ha hpos
   have hW0 : Tendsto W (𝓝[>] (0 : Real)) (𝓝 (W 0)) := by
+    change ContinuousWithinAt W (Set.Ioi 0) 0
     have hcont0 := hcontC 0 ⟨le_rfl, htauC.le⟩
     simpa only [W, n, G, u, f, R, Q] using
       hcont0.mono_of_mem_nhdsWithin (Icc_mem_nhdsGT htauC)
@@ -146,7 +147,7 @@ theorem gallim_w_lt
       ∀ x : M, 0 < uShift r x := by
     intro r hr x
     have hrOld : r - a ∈ Set.Ioo (0 : Real) tau := by
-      simpa only [Dr, RealTimeInterval.timeShift_regular, Set.mem_setOf_eq,
+      simpa only [Dr, RealTimeInterval.timeShift_regular, Set.mem_ofPred_eq,
         RealTimeInterval.closed, sub_eq_add_neg] using hr.1
     exact hpos (r - a) ⟨hrOld.1.le, hrOld.2.le⟩ x
   let GShift := reverseFamily (I := I) (M := M)

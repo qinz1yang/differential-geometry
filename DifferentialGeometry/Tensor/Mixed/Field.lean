@@ -9,7 +9,6 @@ import DifferentialGeometry.Bundle.Section
 noncomputable section
 namespace DifferentialGeometry
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set ContinuousLinearMap
 
@@ -93,10 +92,10 @@ noncomputable def fromMultilinearSection {s : ℕ}
     intro m
     rw [hom_trivializationAt_apply]
     simp only [ContinuousLinearMap.inCoordinates,
-      ContinuousLinearMap.coe_comp', Function.comp_apply,
+      ContinuousLinearMap.coe_comp, Function.comp_apply,
       ContinuousLinearMap.smulRight_apply,
       ContinuousLinearMap.smulRightL_apply_apply,
-      ContinuousMultilinearMap.smul_apply,
+      smul_apply,
       map_smul,
       eval₀_apply]
     rw [Bundle.continuousMultilinearMap.triv_zero_symmL_apply_elim0
@@ -145,7 +144,7 @@ theorem zero_fiber_eq_smul_constOfIsEmpty {x : B}
       : Bundle.continuousMultilinearMap 𝕜 0 F E x) = ψ := by
   apply Bundle.continuousMultilinearMap.ext
   intro m
-  rw [ContinuousMultilinearMap.smul_apply,
+  rw [smul_apply,
     ContinuousMultilinearMap.constOfIsEmpty_apply, smul_eq_mul, mul_one]
   exact (congrArg ψ (Subsingleton.elim _ _)).symm
 
@@ -182,7 +181,7 @@ theorem fromMultilinearSection_add {s : ℕ}
       (eval₀ (F := F) (E := E) x).smulRight (β.1 x)
   apply ContinuousLinearMap.ext
   intro ψ
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smulRight_apply,
+  rw [add_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smulRight_apply,
     smul_add]
 
@@ -195,7 +194,7 @@ theorem fromMultilinearSection_smulByFun {s : ℕ}
     φ x • (eval₀ (F := F) (E := E) x).smulRight (α.1 x)
   apply ContinuousLinearMap.ext
   intro ψ
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
+  rw [smul_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.smulRight_apply, smul_comm]
 
 end MixedSection

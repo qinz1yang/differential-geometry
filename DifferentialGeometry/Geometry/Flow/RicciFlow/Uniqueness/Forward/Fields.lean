@@ -86,22 +86,29 @@ private theorem connectionDifferenceOutAt_apply (g : SmoothRiemannianMetric I M)
   change
     DifferentialGeometry.Integral.L2.lowerAllUpperIndices (I := I) (M := M) g 1 2 x
         (TensorRSSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-          (connectionDifferenceTensorAt (I := I) cov cov' x)) w = _
+          (connectionDifferenceTensorAt (I := I) cov cov' x))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) = _
   rw [DifferentialGeometry.Integral.L2.lowerAllUpperIndices_apply]
   change
-    connectionDifferenceOutput (I := I) (CovariantDerivative.difference cov cov' x)
+    Tensor0SSpace.eval
+      (connectionDifferenceOutput (I := I) (CovariantDerivative.difference cov cov' x)
         (Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           (DifferentialGeometry.Integral.L2.separableFormAt (I := I) (M := M) g x 1
-            (fun i : Fin 1 => w (Fin.castAdd 2 i))))
+            (fun i : Fin 1 =>
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (w (Fin.castAdd 2 i))))))
         (fun j : Fin 2 => w (Fin.natAdd 1 j)) = _
   rw [connectionDifferenceOutput_apply]
   change
     DifferentialGeometry.Integral.L2.separableFormAt (I := I) (M := M) g x 1
-        (fun i : Fin 1 => w (Fin.castAdd 2 i))
+        (fun i : Fin 1 =>
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (w (Fin.castAdd 2 i)))
         (fun _ : Fin 1 =>
-          CovariantDerivative.difference cov cov' x
-            (w (Fin.natAdd 1 (1 : Fin 2))) (w (Fin.natAdd 1 (0 : Fin 2)))) = _
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (CovariantDerivative.difference cov cov' x
+              (w (Fin.natAdd 1 (1 : Fin 2))) (w (Fin.natAdd 1 (0 : Fin 2))))) = _
   rw [DifferentialGeometry.Integral.L2.separableFormAt_apply]
+  simp only [DifferentialGeometry.Integral.L2.modelInnerAt_apply,
+    ContinuousLinearEquiv.symm_apply_apply]
   simp
 
 def connectionDifferenceLowAt (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
@@ -112,12 +119,12 @@ def connectionDifferenceLowAt (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem connectionDifferenceLowAt_apply (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (v : Fin 3 -> TangentSpace I x) :
-    connectionDifferenceLowAt (I := I) g₁ g₂ x v =
+    Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) g₁ g₂ x) v =
       g₁.inner x
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
           (v 1) (v 0))
         (v 2) := by
-  have h : connectionDifferenceLowAt (I := I) g₁ g₂ x v =
+  have h : Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) g₁ g₂ x) v =
       g₁.inner x (v 2)
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
           (v 1) (v 0)) :=
@@ -133,9 +140,11 @@ omit [SigmaCompactSpace M] in
 theorem connectionDifferenceLowAt_self (g : SmoothRiemannianMetric I M) (x : M) :
     connectionDifferenceLowAt (I := I) g g x = 0 := by
   refine ContinuousMultilinearMap.ext fun v => ?_
-  have h := connectionDifferenceLowAt_apply (I := I) g g x v
-  rw [covDiff_self] at h
-  simpa using h
+  change Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) g g x) v =
+    Tensor0SSpace.eval 0 v
+  rw [connectionDifferenceLowAt_apply, covDiff_self]
+  change g.inner x 0 (v 2) = 0
+  rw [map_zero (g.inner x), zero_apply]
 
 def rmDiffLowAt (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 4 I x :=

@@ -22,8 +22,9 @@ theorem shellWeight_sum (d : ℕ) : Summable (shellWeight d) := by
   have hsucc := hbase.comp_injective Nat.succ_injective
   have hmul := hsucc.mul_left
     ((5 : ℝ) ^ d * Real.exp (4 : ℝ)⁻¹)
-  convert hmul using 1
-  funext k
+  refine hmul.congr ?_
+  intro k
+  symm
   simp only [shellWeight, Function.comp_apply, Nat.cast_succ]
   rw [mul_pow]
   calc
@@ -216,7 +217,7 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
       ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ =
           ENNReal.ofReal
             (heatKernel (t - z.1) (x - z.2) * ‖f z‖) := by
-        rw [← ofReal_norm_eq_enorm, norm_smul, Real.norm_eq_abs,
+        rw [← ofReal_norm, norm_smul, Real.norm_eq_abs,
           abs_of_nonneg hk0]
       _ ≤ ENNReal.ofReal (K * ‖f z‖) :=
         ENNReal.ofReal_le_ofReal

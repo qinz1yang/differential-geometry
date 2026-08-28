@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 
+
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 open DifferentialGeometry.Analysis.Sobolev
@@ -77,7 +78,9 @@ theorem operatorFieldApplication_h2_h4_h2
   have hJ :
       ∑ j ∈ Finset.range 5,
           ‖iteratedCovGrad (I := I) g 0 s j U‖ ≤ B := by
-    simpa only [B, N, Nat.reduceAdd] using hin U
+    have hinU := hin U
+    rw [show (((4 : ℕ) : ℝ)) = 4 by norm_num] at hinU
+    simpa only [B, N, Nat.reduceAdd] using hinU
   have hWsum :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 (s + 2) j W‖ ≤ B := by
@@ -137,7 +140,9 @@ theorem operatorFieldApplication_h2_h4_h2
       ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ) Y‖ ≤
         Csp * ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 c j Y‖ := by
-    simpa only [Nat.reduceAdd] using hsp Y
+    have hsp' := hsp Y
+    rw [show (((2 : ℕ) : ℝ)) = 2 by norm_num] at hsp'
+    simpa only [Nat.reduceAdd] using hsp'
   change ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ) Y‖ ≤
     C * A * N
   calc

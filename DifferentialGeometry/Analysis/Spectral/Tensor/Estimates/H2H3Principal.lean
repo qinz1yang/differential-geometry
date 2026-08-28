@@ -5,6 +5,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 
+
 namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators
@@ -20,6 +21,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [T2Space M] [SigmaCompactSpace M]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem grad_iteratedCovGrad2_norm
     (g : SmoothRiemannianMetric I M) (s : ℕ) (U : SmoothCcTensor g 0 s) :
@@ -412,7 +414,7 @@ theorem operatorFieldApplication_h2_h3_h1
         Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := by
     rw [← show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num]
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero,
-      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ] using hsp Y
+      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero] using hsp Y
   change ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) Y‖ ≤ _
   calc
     ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) Y‖
@@ -481,7 +483,8 @@ theorem operatorFieldApplication_c1_h2_h1
       (Finset.single_le_sum
         (f := fun j => ‖iteratedCovGrad (I := I) g 0 r j U‖)
         (fun j _ => norm_nonneg _) (by norm_num)).trans hJ
-    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.zero_add] using hpick
+    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.zero_add,
+      Nat.add_zero] using hpick
   have hUsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 r x (U.toSection x) ≤
         (Cpt * N) ^ 2 := by
@@ -557,7 +560,7 @@ theorem operatorFieldApplication_c1_h2_h1
         Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := by
     rw [← show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num]
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero,
-      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ] using hsp Y
+      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero] using hsp Y
   change ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) Y‖ ≤ _
   calc
     _ ≤ Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := hspec
@@ -593,7 +596,8 @@ theorem operatorFieldApplication_h2_h2_h1
       Finset.single_le_sum
         (f := fun j => ‖iteratedCovGrad (I := I) g r c j Φ‖ ^ 2)
         (fun j _ => sq_nonneg _) (by norm_num)
-    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.zero_add] using
+    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.zero_add,
+      Nat.add_zero] using
       hpick.trans hΦjet
   have hΦ1 : ‖covGrad (I := I) (M := M) g r c Φ‖ ≤ A := by
     nlinarith [norm_nonneg (covGrad (I := I) (M := M) g r c Φ)]
@@ -757,7 +761,7 @@ theorem operatorFieldApplication_h2_cov_h1
         Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := by
     rw [← show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num]
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero,
-      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ] using hsp Y
+      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero] using hsp Y
   change ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) Y‖ ≤ _
   calc
     _ ≤ Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := hspec
@@ -832,7 +836,7 @@ theorem operatorFieldApplication_h3_h1
     simp only [Finset.mem_range]
     omega
   have hW1' : ‖covGrad (I := I) (M := M) g 0 (s + 2) W‖ ≤ J := by
-    simpa only [iteratedCovGrad_succ, Nat.add_zero] using hW1
+    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero] using hW1
   let K : ℕ → ℝ := fun _ => B ^ 2
   have hK : ∀ i, i ≤ 1 → 0 ≤ K i := fun _ _ => sq_nonneg B
   have hΦK : ∀ i, i ≤ 1 → ∀ x : M,

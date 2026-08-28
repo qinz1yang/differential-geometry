@@ -28,8 +28,8 @@ theorem dualTensorHomEquiv_symm_naturality
     rw [ih₁, ih₂]
   | tmul f w =>
     ext v
-    simp only [dualTensorHomEquiv, dualTensorHomEquivOfBasis, LinearEquiv.ofLinear_apply,
-      dualTensorHom_apply, TensorProduct.map_tmul, LinearMap.dualMap_apply,
+    simp only [dualTensorHomEquiv_eq_dualTensorHomEquivOfBasis (Module.Free.chooseBasis 𝕜 V),
+      dualTensorHomEquivOfBasis_apply, dualTensorHom_apply, TensorProduct.map_tmul, LinearMap.dualMap_apply,
       LinearMap.comp_apply, LinearEquiv.coe_toLinearMap, map_smul]
 
 namespace ContinuousMultilinearMap
@@ -68,8 +68,8 @@ theorem homEquivCDualTensor_symm_tmul
     TensorProduct.congr_symm_tmul, LinearEquiv.refl_symm, LinearEquiv.refl_apply]
   have h_inner : (dualTensorHomEquiv 𝕜 V W
         (LinearMap.toContinuousLinearMap.symm η ⊗ₜ[𝕜] w)) v = η v • w := by
-    simp only [dualTensorHomEquiv, dualTensorHomEquivOfBasis, LinearEquiv.ofLinear_apply,
-      dualTensorHom_apply]
+    simp only [dualTensorHomEquiv_eq_dualTensorHomEquivOfBasis (Module.Free.chooseBasis 𝕜 V),
+      dualTensorHomEquivOfBasis_apply, dualTensorHom_apply]
     rfl
   exact h_inner
 
@@ -86,9 +86,9 @@ private lemma multilinearHomEquivDualMultilinearTensor_naturality_tmul
           (ContinuousLinearMap.compL 𝕜 F F 𝕜).flip Φ.toContinuousLinearMap)).toLinearMap
         (compContinuousLinearMapL
           (fun _ : Fin s => Φ.symm.toContinuousLinearMap)).toLinearMap (α ⊗ₜ[𝕜] β) := by
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional r
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional s
   set MHE := multilinearHomEquivDualMultilinearTensor 𝕜 F r s with hMHE_def
   set η := (dualMultilinearEquivMultilinearOfDual 𝕜 F r).symm α with hη_def
@@ -150,9 +150,9 @@ theorem multilinearHomEquivDualMultilinearTensor_naturality
         (compContinuousLinearMapL
           (fun _ : Fin s => Φ.symm.toContinuousLinearMap)).toLinearMap
         (multilinearHomEquivDualMultilinearTensor 𝕜 F r s f) := by
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional r
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional s
   set MHE := multilinearHomEquivDualMultilinearTensor 𝕜 F r s with hMHE_def
   set t := MHE f with ht_def

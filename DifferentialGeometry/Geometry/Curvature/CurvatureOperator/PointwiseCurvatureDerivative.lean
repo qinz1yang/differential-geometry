@@ -121,9 +121,14 @@ theorem canNablaRm_apply
       (fun p : M => Rm04 p (fun a : Fin 4 => slots a p)) =
         fun p : M => g.inner p (W p) (Rcurv p) := by
     funext p
-    simpa [Rcurv, Rm04, slots, vec4] using
-      CovariantDerivative.rm04Section_apply_smooth
-        (I := I) g cov hcov X Y Z W p
+    change
+      CovariantDerivative.rm04Section (I := I) g cov hcov p
+          (vec4 (I := I) (X p) (Y p) (Z p) (W p)) =
+        g.inner p (W p)
+          (connectionRiemannCurvatureField (I := I) cov
+            (fun q : M => X q) (fun q : M => Y q) (fun q : M => Z q) p)
+    exact CovariantDerivative.rm04Section_apply_smooth
+      (I := I) g cov hcov X Y Z W p
   have hDmd : MDiffAt (T% fun p : M => D p) x :=
     (D.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
   have hWmd : MDiffAt (T% fun p : M => W p) x :=
@@ -137,12 +142,12 @@ theorem canNablaRm_apply
       (fun p : M => D p) (fun p : M => W p) (fun p : M => Rcurv p)
       hDmd hWmd hRmd
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => Rm04 p (fun a : Fin 4 => slots a p))
           x (D x) =
         g.inner x (DW x) (Rcurv x) +
           g.inner x (W x) ((cov (fun p : M => Rcurv p) x) (D x)) := by
-    rw [hfun, extDerivFun_real_eq_mfderiv, hmetric]
+    rw [hfun, hmetric]
     rfl
   have hcorr0 :
       Rm04 x
@@ -151,9 +156,11 @@ theorem canNablaRm_apply
         g.inner x (W x)
           (connectionRiemannCurvatureField (I := I) cov
             (fun p : M => DX p) (fun p : M => Y p) (fun p : M => Z p) x) := by
-    simpa [Rm04, slots, DX, vec4] using
-      CovariantDerivative.rm04Section_apply_smooth
-        (I := I) g cov hcov DX Y Z W x
+    change
+      CovariantDerivative.rm04Section (I := I) g cov hcov x
+          (vec4 (I := I) (DX x) (Y x) (Z x) (W x)) = _
+    exact CovariantDerivative.rm04Section_apply_smooth
+      (I := I) g cov hcov DX Y Z W x
   have hcorr1 :
       Rm04 x
           (Function.update (fun b : Fin 4 => slots b x) 1
@@ -161,9 +168,11 @@ theorem canNablaRm_apply
         g.inner x (W x)
           (connectionRiemannCurvatureField (I := I) cov
             (fun p : M => X p) (fun p : M => DY p) (fun p : M => Z p) x) := by
-    simpa [Rm04, slots, DY, vec4] using
-      CovariantDerivative.rm04Section_apply_smooth
-        (I := I) g cov hcov X DY Z W x
+    change
+      CovariantDerivative.rm04Section (I := I) g cov hcov x
+          (vec4 (I := I) (X x) (DY x) (Z x) (W x)) = _
+    exact CovariantDerivative.rm04Section_apply_smooth
+      (I := I) g cov hcov X DY Z W x
   have hcorr2 :
       Rm04 x
           (Function.update (fun b : Fin 4 => slots b x) 2
@@ -171,17 +180,24 @@ theorem canNablaRm_apply
         g.inner x (W x)
           (connectionRiemannCurvatureField (I := I) cov
             (fun p : M => X p) (fun p : M => Y p) (fun p : M => DZ p) x) := by
-    simpa [Rm04, slots, DZ, vec4] using
-      CovariantDerivative.rm04Section_apply_smooth
-        (I := I) g cov hcov X Y DZ W x
+    change
+      CovariantDerivative.rm04Section (I := I) g cov hcov x
+          (vec4 (I := I) (X x) (Y x) (DZ x) (W x)) = _
+    exact CovariantDerivative.rm04Section_apply_smooth
+      (I := I) g cov hcov X Y DZ W x
   have hcorr3 :
       Rm04 x
           (Function.update (fun b : Fin 4 => slots b x) 3
             ((cov (fun p : M => slots 3 p) x) (D x))) =
         g.inner x (DW x) (Rcurv x) := by
-    simpa [Rm04, slots, DW, Rcurv, vec4] using
-      CovariantDerivative.rm04Section_apply_smooth
-        (I := I) g cov hcov X Y Z DW x
+    change
+      CovariantDerivative.rm04Section (I := I) g cov hcov x
+          (vec4 (I := I) (X x) (Y x) (Z x) (DW x)) =
+        g.inner x (DW x)
+          (connectionRiemannCurvatureField (I := I) cov
+            (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x)
+    exact CovariantDerivative.rm04Section_apply_smooth
+      (I := I) g cov hcov X Y Z DW x
   have hcorr :
       (∑ a : Fin 4,
           Rm04 x
@@ -227,7 +243,7 @@ theorem canNablaRm_apply
           congr 1
           funext a
           fin_cases a <;> rfl
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun p : M => Rm04 p (fun a : Fin 4 => slots a p))
           x (D x) -
         ∑ a : Fin 4,

@@ -97,9 +97,9 @@ theorem laplacian_schauder_norm_estimate
   let f0 := boundedHolderSpaceToBoundedContinuousFunction alpha halpha0 f
   have hu : ∀ x : V, HasFDerivAt (u0 : V → F) (du x) x := by
     intro x
-    simpa only [u0, du,
-      contDiffHolderSpaceToBoundedContinuousFunction_apply] using
+    let h : HasFDerivAt (u0 : V → F) (du x) x :=
       contDiffHolderSpace_hasFDerivAt 2 alpha (by omega) u x
+    exact h
   have hdu : ∀ x : V,
       HasFDerivAt (du : V → V →L[Real] F) (d2u x) x := by
     intro x
@@ -119,14 +119,15 @@ theorem laplacian_schauder_norm_estimate
     simpa using norm_boundedHolderSpace_apply_le f x
   have hholder : HolderWith ‖f‖₊ alpha (coreLap d2u) := by
     rw [hcore]
-    simpa only [boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith f
+    let h : HolderWith ‖f‖₊ alpha (f0 : V → F) :=
+      boundedHolderSpace_holderWith f
+    exact h
   have hgauge := laplacian_schauder_estimate halpha0 halpha1
     u0 du d2u hu hdu hbound hholder
   rw [norm_contDiffHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top hgauge
-  simpa only [u0, f, laplacianSchauderNormConst]
-    using hreal
+  let h : ‖u‖ ≤ laplacianSchauderNormConst alpha u := hreal
+  exact h
 
 section PositiveDefinite
 
@@ -258,8 +259,11 @@ theorem spd_laplacian_schauder_estimate
   have hholder' : HolderWith K' alpha fp := by
     rw [hfp]
     have hraw := hholder.comp L.lipschitz.holderWith
-    simpa only [K', NNReal.coe_one, NNReal.rpow_one, one_mul, mul_one,
-      linPullBcf_apply, Function.comp_apply] using hraw
+    have hraw' : HolderWith K' alpha
+        ((spdMatrixLap A hA d2u : Euc n → F) ∘ L) := by
+      simpa only [K', NNReal.coe_one, NNReal.rpow_one, one_mul, mul_one] using hraw
+    let h : HolderWith K' alpha (linPullBcf L (spdMatrixLap A hA d2u)) := hraw'
+    exact h
   have hup : ∀ x : Euc n,
       HasFDerivAt (up : Euc n → F) (dup x) x :=
     fun x ↦ linPull_fderiv L u du hu x
@@ -270,7 +274,9 @@ theorem spd_laplacian_schauder_estimate
     up dup d2up hup hdup hbound' hholder'
   apply eContDiffHolderGaugeOn_linearEquiv_le L alpha
     (laplacianSchauderConst alpha K' B up) (u : Euc n → F)
-  simpa only [up, linPullBcf_apply] using hpull
+  let h : eContDiffHolderGaugeOn 2 alpha Set.univ (fun x => u (L x)) ≤
+      laplacianSchauderConst alpha K' B up := hpull
+  exact h
 
 def spdLaplacianSchauderNormConst
     (A : Matrix n n Real) (hA : A.PosDef) (alpha : NNReal)
@@ -291,9 +297,9 @@ theorem spd_laplacian_schauder_norm_estimate
   let f0 := boundedHolderSpaceToBoundedContinuousFunction alpha halpha0 f
   have hu : ∀ x : Euc n, HasFDerivAt (u0 : Euc n → F) (du x) x := by
     intro x
-    simpa only [u0, du,
-      contDiffHolderSpaceToBoundedContinuousFunction_apply] using
+    let h : HasFDerivAt (u0 : Euc n → F) (du x) x :=
       contDiffHolderSpace_hasFDerivAt 2 alpha (by omega) u x
+    exact h
   have hdu : ∀ x : Euc n,
       HasFDerivAt (du : Euc n → Euc n →L[Real] F) (d2u x) x := by
     intro x
@@ -314,14 +320,15 @@ theorem spd_laplacian_schauder_norm_estimate
     simpa using norm_boundedHolderSpace_apply_le f x
   have hholder : HolderWith ‖f‖₊ alpha (spdMatrixLap A hA d2u) := by
     rw [hcore]
-    simpa only [boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith f
+    let h : HolderWith ‖f‖₊ alpha (f0 : Euc n → F) :=
+      boundedHolderSpace_holderWith f
+    exact h
   have hgauge := spd_laplacian_schauder_estimate halpha0 halpha1
     A hA u0 du d2u hu hdu hbound hholder
   rw [norm_contDiffHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top hgauge
-  simpa only [u0, f, spdLaplacianSchauderNormConst]
-    using hreal
+  let h : ‖u‖ ≤ spdLaplacianSchauderNormConst A hA alpha u := hreal
+  exact h
 
 end PositiveDefinite
 

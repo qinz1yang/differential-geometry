@@ -117,7 +117,7 @@ private def testLinear (x α : M) (ξ : E) (y : E) : ℝ :=
   ∑ a : Fin (Module.finrank ℝ E),
     (chartModelBasis E).repr ξ a * (chartModelBasis E).repr (y - extChartAt I α x) a
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 private lemma symbolTestPerturbation_apply (x α : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
@@ -131,7 +131,7 @@ private lemma testLinear_self (x α : M) (ξ : E) :
     testLinear (I := I) x α ξ (extChartAt I α x) = 0 := by
   simp [testLinear]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma symbolTestPerturbation_apply_self (x α : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
@@ -152,7 +152,7 @@ private lemma testLinear_differentiableAt (x α : M) (ξ : E) (y : E) :
   exact (((chartModelBasis E).coord a).toContinuousLinearMap.differentiableAt).comp y
     ((differentiableAt_id).sub (differentiableAt_const _))
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma partialDeriv_symbolTestPerturbation_self (x α : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
@@ -188,7 +188,8 @@ def IsPrincipalSymbolOfSecondOrderPart
       (∀ v w, t v w = t w v) →
         (∀ ht : ∀ v w, t v w = t w v, ∀ i j : Fin (Module.finrank ℝ E),
             P (symbolTestPerturbation (I := I) x x ξ t ht) x i j (extChartAt I x x) =
-              - (σ x ξ t) ((chartModelBasis E) i) ((chartModelBasis E) j)) ∧
+              - (σ x ξ t) (centeredChartTangentBasis (I := I) x i)
+                (centeredChartTangentBasis (I := I) x j)) ∧
           σ x ξ t =
               (- DifferentialGeometry.PDE.DeTurck.metricCovectorNormSq (I := I) g₀ x ξ) •
                 t ∧
@@ -262,7 +263,8 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
       ((extChartAt I x).map_source hx_src)
   obtain ⟨gfam, hfam0, hfam_deriv, hfam_smooth, hfam_jet1, hfam_jet2⟩ := hfam hξt
   have hσ_zero : ∀ i j : Fin (Module.finrank ℝ E),
-      (σ x ξ t) ((chartModelBasis E) i) ((chartModelBasis E) j) = 0 := by
+      (σ x ξ t) (centeredChartTangentBasis (I := I) x i)
+        (centeredChartTangentBasis (I := I) x j) = 0 := by
     intro i j
     have hsymbol := (hσ x ξ hξ t ht).1 ht i j
     have hderiv0 :
@@ -286,7 +288,8 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
     rw [hP0] at hsymbol
     linarith [hsymbol]
   have hσt_zero : σ x ξ t = 0 := by
-    refine LinearMap.ext_basis (chartModelBasis E) (chartModelBasis E) (fun i j => ?_)
+    refine LinearMap.ext_basis (centeredChartTangentBasis (I := I) x)
+      (centeredChartTangentBasis (I := I) x) (fun i j => ?_)
     exact hσ_zero i j
   have hσt_isotropic := (hσ x ξ hξ t ht).2.1
   rw [hσt_zero] at hσt_isotropic

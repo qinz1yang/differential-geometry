@@ -30,6 +30,7 @@ def hsTwoJetC (d : ℕ) : ℝ := Real.sqrt (2 * (1 + (d : ℝ) ^ 2))
 
 theorem hsTwoJetC_nonneg (d : ℕ) : 0 ≤ hsTwoJetC d := Real.sqrt_nonneg _
 
+omit [CompactSpace M] in
 theorem rawLap_le_grad2
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     ‖rawTensorConnLapSmooth (I := I) g 0 s S‖ ≤

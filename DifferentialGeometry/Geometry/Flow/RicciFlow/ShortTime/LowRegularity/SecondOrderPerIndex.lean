@@ -48,6 +48,7 @@ theorem operatorFieldApplicationPerIdxL2 (g₀ : SmoothRiemannianMetric I M) (b�
   exact app_jet_sq_le (I := I) (M := M) g₀ b₀ s₀ q Φ W (fun i => Λ i ^ 2)
     (fun i _ => sq_nonneg (Λ i)) (fun i _ x => hsup i x)
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem iteratedCovGradWinShift (g : SmoothRiemannianMetric I M) (r s m p : ℕ)
     (Ψ : SmoothCcTensor g r s) :

@@ -8,7 +8,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -167,7 +166,6 @@ lemma chartTensorInnerPointwise_rs_model_nonneg
 
 section Smoothness
 
-variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
 
 private noncomputable def localEvalBasisLinear (n : ℕ) :
     Tensor0SModel n ℝ E →ₗ[ℝ]
@@ -175,19 +173,17 @@ private noncomputable def localEvalBasisLinear (n : ℕ) :
   toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
   map_add' Φ₁ Φ₂ := by
     funext φ
-    simp [ContinuousMultilinearMap.add_apply]
+    simp [add_apply]
   map_smul' c Φ := by
     funext φ
-    simp [ContinuousMultilinearMap.smul_apply]
+    simp [smul_apply]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma localEvalBasisLinear_apply (n : ℕ)
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     localEvalBasisLinear (E := E) n Φ φ =
       Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma localEvalBasisLinear_injective (n : ℕ) :
     Function.Injective (localEvalBasisLinear (E := E) n) := by
   intro Φ₁ Φ₂ h
@@ -196,7 +192,6 @@ private lemma localEvalBasisLinear_injective (n : ℕ) :
   intro v
   exact congr_fun h v
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma local_finrank_tensor0SModel (n : ℕ) :
     Module.finrank ℝ (Tensor0SModel n ℝ E) =
       (Module.finrank ℝ E) ^ n := by
@@ -219,14 +214,13 @@ private lemma local_finrank_tensor0SModel (n : ℕ) :
       rw [φ.finrank_eq, Module.finrank_linearMap, ih]
       ring
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] in
 private lemma local_finrank_basis_pi (n : ℕ) :
     Module.finrank ℝ ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) =
       (Module.finrank ℝ E) ^ n := by
   rw [Module.finrank_pi, Fintype.card_pi]
   simp [Fintype.card_fin]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma localEvalBasisLinear_bijective (n : ℕ) :
     Function.Bijective (localEvalBasisLinear (E := E) n) := by
   have h_inj := localEvalBasisLinear_injective (E := E) n
@@ -242,14 +236,13 @@ private noncomputable def localEvalBasisCLE (n : ℕ) :
   (LinearEquiv.ofBijective (localEvalBasisLinear (E := E) n)
     (localEvalBasisLinear_bijective (E := E) n)).toContinuousLinearEquiv
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma localEvalBasisCLE_apply (n : ℕ)
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     localEvalBasisCLE (E := E) n Φ φ =
       Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
 
-omit [IsManifold I ∞ M] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [IsManifold I ∞ M] in
 private lemma local_contMDiffOn_into_tensor0SModel_of_eval_basis
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
@@ -271,7 +264,6 @@ private lemma local_contMDiffOn_into_tensor0SModel_of_eval_basis
   intro b _
   exact ((localEvalBasisCLE (E := E) n).symm_apply_apply (Φ b)).symm
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     (g : SmoothRiemannianMetric I M) {r : ℕ} (α : M)
     (φ_first ψ : Fin r → Fin (Module.finrank ℝ E)) :
@@ -294,7 +286,7 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     funext b
     exact chartSeparableFormAt_apply (I := I) (M := M) g α b r _ _
   rw [heq]
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   have hentry :
       (fun b : M =>
           chartGramBilin (I := I) (M := M) g α b
@@ -311,13 +303,12 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     funext b
     rw [chartGramBilin_apply]
   rw [hentry]
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
-  refine contMDiffOn_finset_sum (fun kk _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun kk _ => ?_)
   refine ContMDiffOn.mul ?_ contMDiffOn_const
   refine ContMDiffOn.mul ?_ contMDiffOn_const
   exact chartGramMatrix_entry_contMDiffOn (I := I) g α j kk
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : TensorRSModel r s ℝ E)
@@ -374,7 +365,6 @@ private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
   intro b _
   exact hcomposed_apply _
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem chartTensorInnerPointwise_rs_model_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ T₁ : TensorRSModel r s ℝ E) :

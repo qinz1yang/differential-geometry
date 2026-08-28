@@ -42,8 +42,7 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
   Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
     (E := fun y : M => TensorRSSpace r s I y) x
 
-omit [NeZero (Module.finrank ℝ E)] in
-set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -98,7 +97,7 @@ private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
   rw [hA_def]
   exact hbridge
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem covDerivConnectionDifference_fibreNorm_le
@@ -119,7 +118,7 @@ theorem covDerivConnectionDifference_fibreNorm_le
         Real.sqrt (g₂.inner x v v) * Real.sqrt (g₂.inner x w w) *
           Real.sqrt (g₂.inner x u u) := by
   classical
-  letI instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
+  let instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₂ 1 3
   set W : Tensor0SBundle.TensorRSSpace 1 3 I x :=
     (covGrad (I := I) (M := M) g₂ 1 2 (connectionDifferenceSection (I := I) g₁ g₂)).toSection x with hW_def
@@ -168,17 +167,15 @@ theorem covDerivConnectionDifference_fibreNorm_le
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
 private theorem field_eq_mcd1
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M) :
     (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
         (Tensor0SBundle.metricTensorField (I := I) g₁)
         (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 1 := by
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   apply DFunLike.ext
   intro x
   rw [Tensor0SBundle.totalNabla0S_apply]
@@ -188,8 +185,6 @@ private theorem field_eq_mcd1
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
 private theorem nabla3_eq_mcd2
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) (slots : Fin 3 → TangentSpace I x) :
@@ -346,7 +341,6 @@ theorem connectionDifference_gJet_le
         (3 / 2 * Λ' * (Real.sqrt Λ ^ 2 + Λ) *
           (Real.sqrt (g₂.inner x w w) * Real.sqrt (g₂.inner x u u)) * Λ) * hs2
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_g1_le
@@ -371,12 +365,12 @@ theorem covDerivConnectionDifference_g1_le
         Real.sqrt (g₁.inner x v v) * Real.sqrt (g₁.inner x w w) *
           Real.sqrt (g₁.inner x u u) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₁ x
   set B : TangentSpace I x :=

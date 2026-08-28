@@ -26,48 +26,28 @@ private lemma infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by decide
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
-private lemma mfderiv_self_after_symm_at_image
+private noncomputable def inverseMfderivAtImage
     (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) :
-    (mfderiv I I (⇑Φ) x).comp (mfderiv I I (⇑Φ.symm) (Φ x))
-      = ContinuousLinearMap.id ℝ (TangentSpace I x) := by
-  have hΦsymm : MDifferentiableAt I I (⇑Φ.symm) (Φ x) :=
-    Φ.symm.mdifferentiable infty_ne_zero (Φ x)
-  have hΦ : MDifferentiableAt I I (⇑Φ) (Φ.symm (Φ x)) := by
-    have : Φ.symm (Φ x) = x := Φ.symm_apply_apply x
-    rw [this]; exact Φ.mdifferentiable infty_ne_zero x
-  have hcomp : (⇑Φ) ∘ (⇑Φ.symm) = (id : M → M) := by
-    funext z; exact Φ.apply_symm_apply z
-  have hchain := mfderiv_comp (Φ x) hΦ hΦsymm
-  rw [hcomp, mfderiv_id] at hchain
-  have hsym : Φ.symm (Φ x) = x := Φ.symm_apply_apply x
-  have hΦatx : mfderiv I I (⇑Φ) (Φ.symm (Φ x)) = mfderiv I I (⇑Φ) x := by
-    congr 1
-  rw [hΦatx] at hchain
-  exact hchain.symm
+    TangentSpace I (Φ x) →L[ℝ] TangentSpace I x :=
+  (Φ.mfderivToContinuousLinearEquiv infty_ne_zero x).symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
-private lemma mfderiv_apply_mfderiv_symm
+private lemma mfderiv_apply_inverseMfderivAtImage
     (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) (w : TangentSpace I (Φ x)) :
-    mfderiv I I (⇑Φ) x (mfderiv I I (⇑Φ.symm) (Φ x) w) = w := by
-  have h := mfderiv_self_after_symm_at_image (I := I) Φ x
-  have := congrArg (fun f : TangentSpace I x →L[ℝ] TangentSpace I x => f w) h
-  simpa [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using this
+    mfderiv I I (⇑Φ) x (inverseMfderivAtImage (I := I) Φ x w) = w := by
+  change (Φ.mfderivToContinuousLinearEquiv infty_ne_zero x)
+    ((Φ.mfderivToContinuousLinearEquiv infty_ne_zero x).symm w) = w
+  exact ContinuousLinearEquiv.apply_symm_apply _ w
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
-private lemma mfderiv_symm_apply_mfderiv
+private lemma inverseMfderivAtImage_apply_mfderiv
     (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) (v : TangentSpace I x) :
-    mfderiv I I (⇑Φ.symm) (Φ x) (mfderiv I I (⇑Φ) x v) = v := by
-  have hΦ : MDifferentiableAt I I (⇑Φ) x := Φ.mdifferentiable infty_ne_zero x
-  have hΦsymm : MDifferentiableAt I I (⇑Φ.symm) (Φ x) :=
-    Φ.symm.mdifferentiable infty_ne_zero (Φ x)
-  have hcomp : (⇑Φ.symm) ∘ (⇑Φ) = (id : M → M) := by
-    funext z; exact Φ.symm_apply_apply z
-  have hchain := mfderiv_comp x hΦsymm hΦ
-  rw [hcomp, mfderiv_id] at hchain
-  have := congrArg (fun f : TangentSpace I x →L[ℝ] TangentSpace I x => f v) hchain.symm
-  simpa [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using this
+    inverseMfderivAtImage (I := I) Φ x (mfderiv I I (⇑Φ) x v) = v := by
+  change (Φ.mfderivToContinuousLinearEquiv infty_ne_zero x).symm
+    ((Φ.mfderivToContinuousLinearEquiv infty_ne_zero x) v) = v
+  exact ContinuousLinearEquiv.symm_apply_apply _ v
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -88,7 +68,7 @@ private def conjCovFun
     (Y : ∀ x : M, TangentSpace I x) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=
   let inner : TangentSpace I (Φ x) →L[ℝ] TangentSpace I x :=
-    (mfderiv I I (⇑Φ.symm) (Φ x)).comp
+    (inverseMfderivAtImage (I := I) Φ x).comp
       ((LeviCivita (I := I) g).toFun (Diffeomorph.pushforward Φ Y) (Φ x))
   inner.comp (mfderiv I I (⇑Φ) x)
 
@@ -98,7 +78,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (Y : ∀ x : M, TangentSpace I x) (x : M) (v : TangentSpace I x) :
     conjCovFun g Φ Y x v =
-      mfderiv I I (⇑Φ.symm) (Φ x)
+      inverseMfderivAtImage (I := I) Φ x
         ((LeviCivita (I := I) g).toFun (Diffeomorph.pushforward Φ Y) (Φ x)
           (mfderiv I I (⇑Φ) x v)) := rfl
 
@@ -149,7 +129,7 @@ private lemma pushforward_mdiffAt
     MDifferentiableAt I I.tangent
       (fun y : M => (TotalSpace.mk' E y (Diffeomorph.pushforward Φ Y y) : TangentBundle I M))
       (Φ x) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hfun_eq := pushforward_eq_mpullback_symm_fun (I := I) Φ Y
   have hY' : MDifferentiableAt I I.tangent
       (fun y : M => (TotalSpace.mk' E y (Y y) : TangentBundle I M))
@@ -161,9 +141,8 @@ private lemma pushforward_mdiffAt
     refine ⟨(Diffeomorph.mfderivToContinuousLinearEquiv Φ.symm infty_ne_zero (Φ x)), ?_⟩
     exact Diffeomorph.mfderivToContinuousLinearEquiv_coe (Φ := Φ.symm) (x := Φ x) infty_ne_zero
   have hmn : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
-    have h1 : (2 : ℕ∞) ≤ ⊤ := le_top
-    have h2 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := WithTop.coe_le_coe.mpr h1
-    convert h2 using 1
+    change ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞)
+    exact WithTop.coe_le_coe.mpr le_top
   have hmpb := MDifferentiableAt.mpullback_vectorField (I := I) (I' := I)
     (V := Y) (f := (⇑Φ.symm)) (x₀ := Φ x) (n := (∞ : WithTop ℕ∞))
     hY' hΦsymm_smooth hinv hmn
@@ -218,16 +197,16 @@ private lemma conjCovFun_torsion_free
     (Diffeomorph.pushforward Φ Y (Φ x)) with hB_def
   have hAB : A - B = VectorField.mlieBracket I (Diffeomorph.pushforward Φ X)
       (Diffeomorph.pushforward Φ Y) (Φ x) := hTF_g
-  calc mfderiv I I (⇑Φ.symm) (Φ x) A - mfderiv I I (⇑Φ.symm) (Φ x) B
-      = mfderiv I I (⇑Φ.symm) (Φ x) (A - B) := by
+  calc inverseMfderivAtImage (I := I) Φ x A - inverseMfderivAtImage (I := I) Φ x B
+      = inverseMfderivAtImage (I := I) Φ x (A - B) := by
         rw [← ContinuousLinearMap.map_sub]
-    _ = mfderiv I I (⇑Φ.symm) (Φ x)
+    _ = inverseMfderivAtImage (I := I) Φ x
           (VectorField.mlieBracket I (Diffeomorph.pushforward Φ X)
             (Diffeomorph.pushforward Φ Y) (Φ x)) := by rw [hAB]
-    _ = mfderiv I I (⇑Φ.symm) (Φ x)
-          (mfderiv I I (⇑Φ) x ((VectorField.mlieBracket I X Y) x)) := by rw [hbracket]
-    _ = (VectorField.mlieBracket I X Y) x :=
-        mfderiv_symm_apply_mfderiv (I := I) Φ x ((VectorField.mlieBracket I X Y) x)
+    _ = (VectorField.mlieBracket I X Y) x := by
+      rw [hbracket]
+      exact inverseMfderivAtImage_apply_mfderiv (I := I) Φ x
+        ((VectorField.mlieBracket I X Y) x)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -319,7 +298,7 @@ private lemma conjCovFun_metric_compatible
         = (LeviCivita (I := I) g).toFun (Diffeomorph.pushforward Φ Y) (Φ x)
             (mfderiv I I (⇑Φ) x v) := by
       simp only [conjCovFun_apply]
-      exact mfderiv_apply_mfderiv_symm (I := I) Φ x _
+      exact mfderiv_apply_inverseMfderivAtImage (I := I) Φ x _
     have h2 : mfderiv I I (⇑Φ) x (Z x) = Diffeomorph.pushforward Φ Z (Φ x) :=
       (pushforward_at_image (I := I) Φ Z x).symm
     rw [h1, h2]
@@ -336,7 +315,7 @@ private lemma conjCovFun_metric_compatible
         = (LeviCivita (I := I) g).toFun (Diffeomorph.pushforward Φ Z) (Φ x)
             (mfderiv I I (⇑Φ) x v) := by
       simp only [conjCovFun_apply]
-      exact mfderiv_apply_mfderiv_symm (I := I) Φ x _
+      exact mfderiv_apply_inverseMfderivAtImage (I := I) Φ x _
     rw [h1, h2]
   rw [hrhs1, hrhs2]
 
@@ -403,6 +382,6 @@ theorem LeviCivita_covariantDerivative_pullback_pointwise
   rw [show v = V x from hVx.symm] at *
   rw [hKey]
   simp only [conjCovFun_apply]
-  exact mfderiv_apply_mfderiv_symm (I := I) Φ x _
+  exact mfderiv_apply_inverseMfderivAtImage (I := I) Φ x _
 
 end DifferentialGeometry.Geometry.Connection

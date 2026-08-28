@@ -56,7 +56,7 @@ instance tensorFiberTopology_continuousSMul (x : B) :
 
 instance tensorFiberTopology_t2Space (x : B) :
     @T2Space (E₁ x ⊗[𝕜] E₂ x) (tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x) := by
-  letI : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) := tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
+  let : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) := tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
   exact T2Space.of_injective_continuous (trivEquiv 𝕜 F₁ F₂ E₁ E₂ x).injective <| by
     change @Continuous _ _ (TopologicalSpace.induced _ _) _ _
     exact continuous_induced_dom

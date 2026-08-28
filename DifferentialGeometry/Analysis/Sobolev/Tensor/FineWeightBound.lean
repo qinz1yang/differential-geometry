@@ -21,9 +21,9 @@ theorem weight_sum_bound
         ∑ a, ENNReal.ofReal (∑ b, K b) * v a := by
       refine Finset.sum_le_sum ?_
       intro a ha
-      exact mul_le_mul_of_nonneg_right
+      simpa only [mul_comm] using mul_le_mul_right
         (ENNReal.ofReal_le_ofReal
-          (Finset.single_le_sum (fun b _ => hK b) ha)) (zero_le _)
+          (Finset.single_le_sum (fun b _ => hK b) ha)) (v a)
     _ = ENNReal.ofReal (∑ b, K b) * ∑ a, v a := by
       rw [Finset.mul_sum]
 

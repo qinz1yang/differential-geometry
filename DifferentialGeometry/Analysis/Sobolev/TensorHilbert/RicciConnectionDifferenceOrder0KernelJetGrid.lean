@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -105,8 +104,11 @@ theorem connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁).toSection x) D) u =
       Tensor0SSpace.toModel D
-        ![((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x ((u 1 : E)) ((u 2 : E)) :
-            TangentSpace I x) : E), u 0] := by
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 2))),
+          u 0] := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁).toSection x) D) =
         connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) D from rfl]
@@ -117,8 +119,11 @@ theorem connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
           (slotExtend (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))
           innerContractionSwapPerm).toSection x) D) u =
       Tensor0SSpace.toModel D
-        ![((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x ((u 1 : E)) ((u 2 : E)) :
-            TangentSpace I x) : E), u 0] := by
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 2))),
+          u 0] := by
     set D' : Tensor0SSpace 2 I x := Tensor0SSpace.ofModel (I := I) (x := x)
       (ContinuousMultilinearMap.domDomCongr innerContractionSwapPerm
         (Tensor0SSpace.toModel D)) with hD'_def
@@ -139,15 +144,22 @@ theorem connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
     rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D' (u 0)))
+          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))))
         (Matrix.vecTail u) =
         Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D' (u 0))
-          (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-            ((u 1 : E)) ((u 2 : E)) : TangentSpace I x) : E)) from rfl]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1) D' (u 0)
-      (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-        ((u 1 : E)) ((u 2 : E)) : TangentSpace I x) : E))]
+          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
+          (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 2)))) from rfl]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+      (n := 1) D' (u 0)
+      (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 2))))]
     rw [hD'_def, Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
     congr 1
     funext j
@@ -206,9 +218,9 @@ private lemma rs13ContrVec_pairing (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3
           Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i) := by
     refine ContinuousMultilinearMap.ext (fun w => ?_)
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [sum_apply]
     rw [Finset.sum_congr rfl (fun i _ => by
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+      rw [smul_apply, smul_eq_mul,
         Tensor0SBundle.model_covectorOfCLM_apply])]
     rw [sum_cons_cDual_collapse (I := I) (M := M) β ![] (w 0)]
     congr 1
@@ -237,11 +249,11 @@ private lemma rs13ContrVec_pairing (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3
     exact Finset.sum_congr rfl (fun i _ => by rw [hci i])
   rw [hL0, hRHS]
   conv_lhs => rw [hexp]
-  rw [map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [map_sum, sum_apply]
   exact Finset.sum_congr rfl (fun i _ => by
-    rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul])
+    rw [map_smul, smul_apply, smul_eq_mul])
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifferenceGradContrInsertionFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 4 ℝ E)
@@ -278,7 +290,7 @@ def connectionDifferenceGradContrInsertionField (g₀ g₁ : SmoothRiemannianMet
       contMDiff_toFun := connectionDifferenceGradContrInsertionFib_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] theorem connectionDifferenceGradContrInsertionField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (connectionDifferenceGradContrInsertionField (I := I) g₀ g₁).toSection x =
@@ -287,7 +299,7 @@ omit [NeZero (Module.finrank ℝ E)] in
           ((covGrad (I := I) (M := M) g₀ 1 2
             (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifferenceGradContrInsertionField_eq_reindex_slotExtend
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceGradContrInsertionField (I := I) g₀ g₁ =
@@ -353,8 +365,11 @@ theorem connectionDifferenceGradContrInsertionField_eq_reindex_slotExtend
     rw [rs13ContrVec_pairing (I := I) (M := M) x
       (show Tensor0SBundle.TensorRSSpace 1 3 I x from
         (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D' (u 0)) (Matrix.vecTail u)]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1) D' (u 0)
+      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
+      (Matrix.vecTail u)]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 1) D'
+      (u 0)
       (fun _ : Fin 1 => rs13ContrVec (I := I) (M := M) x
         (show Tensor0SBundle.TensorRSSpace 1 3 I x from
           (covGrad (I := I) (M := M) g₀ 1 2
@@ -366,55 +381,50 @@ theorem connectionDifferenceGradContrInsertionField_eq_reindex_slotExtend
     fin_cases j <;> rfl
   exact hL.trans hR.symm
 
-omit [NeZero (Module.finrank ℝ E)] in
+noncomputable def linearizedRicciConnectionDifferenceOrder0KernelFib
+    (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+    Tensor0SBundle.TensorRSSpace 2 4 I x :=
+  linearizedRicciConnectionDifferenceOrder0CLM (I := I) x
+    ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
+    ((covGrad (I := I) (M := M) g₀ 1 2
+      (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0KernelFib_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 4 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 4 I z) x
-        (show Tensor0SBundle.TensorRSSpace 2 4 I x from
-          linearizedRicciConnectionDifferenceOrder0CLM (I := I) x
-            ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-            ((covGrad (I := I) (M := M) g₀ 1 2
-              (connectionDifferenceSection (I := I) g₁ g₀)).toSection x))) := by
+        (linearizedRicciConnectionDifferenceOrder0KernelFib (I := I) g₀ g₁ x)) := by
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₁ := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z)
     (F₂ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
     (V₂ := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z)
-    (φ := fun x : M => linearizedRicciConnectionDifferenceOrder0CLM (I := I) x
-      ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-      ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x))
+    (φ := fun x : M =>
+      linearizedRicciConnectionDifferenceOrder0KernelFib (I := I) g₀ g₁ x)
   intro Y
   have hE0 := linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff (I := I) g₀ g₁
     (fun x => Y x) Y.contMDiff
   refine hE0.congr (fun x => ?_)
-  exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 4 ℝ E)
-    (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) x t) rfl
+  apply TotalSpace.mk_inj.mpr
+  simp only [linearizedRicciConnectionDifferenceOrder0KernelFib]
 
 def linearizedRicciConnectionDifferenceOrder0KernelField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 4 where
   toSection :=
     { toFun := fun x : M =>
-        (show Tensor0SBundle.TensorRSSpace 2 4 I x from
-          linearizedRicciConnectionDifferenceOrder0CLM (I := I) x
-            ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-            ((covGrad (I := I) (M := M) g₀ 1 2
-              (connectionDifferenceSection (I := I) g₁ g₀)).toSection x))
+        linearizedRicciConnectionDifferenceOrder0KernelFib (I := I) g₀ g₁ x
       contMDiff_toFun := linearizedRicciConnectionDifferenceOrder0KernelFib_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0KernelField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (linearizedRicciConnectionDifferenceOrder0KernelField (I := I) g₀ g₁).toSection x =
-      (show Tensor0SBundle.TensorRSSpace 2 4 I x from
-        linearizedRicciConnectionDifferenceOrder0CLM (I := I) x
-          ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          ((covGrad (I := I) (M := M) g₀ 1 2
-            (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)) := rfl
+      linearizedRicciConnectionDifferenceOrder0KernelFib (I := I) g₀ g₁ x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0CoeffField_eq_ricciCometricFourTrace_comp_kernelField
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁ =
@@ -424,7 +434,16 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_eq_ricciCometricFour
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rfl
+  rw [linearizedRicciConnectionDifferenceOrder0CoeffField_toSection,
+    operatorFieldComposition_toSection, ricciCometricFourTraceCastG0_toSection,
+    linearizedRicciConnectionDifferenceOrder0KernelField_toSection]
+  rw [linearizedRicciConnectionDifferenceOrder0CometricTracedCLM]
+  unfold linearizedRicciConnectionDifferenceOrder0KernelFib
+  convert Eq.refl ((ricciCometricFourTraceCLM (I := I) g₁ x).comp
+    (linearizedRicciConnectionDifferenceOrder0CLM (I := I) x
+      ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
+      ((covGrad (I := I) (M := M) g₀ 1 2
+        (connectionDifferenceSection (I := I) g₁ g₀)).toSection x))) using 1
 
 private def kOut0Perm3201 : Equiv.Perm (Fin 4) :=
   ⟨![3, 2, 0, 1], ![2, 3, 1, 0], by decide, by decide⟩
@@ -484,7 +503,28 @@ private def slotPermCc0 (g₀ : SmoothRiemannianMetric I M) {d : ℕ} (ρ : Equi
       contMDiff_toFun := slotPermCc0Fib_contMDiff (I := I) (M := M) g₀ ρ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private theorem slotPermCc0_toSection
+    (g₀ : SmoothRiemannianMetric I M) {d : ℕ}
+    (ρ : Equiv.Perm (Fin d)) (x : M) :
+    (slotPermCc0 (I := I) (M := M) g₀ ρ).toSection x =
+      (show Tensor0SBundle.TensorRSSpace d d I x from slotPermCLM (I := I) ρ x) := rfl
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+private theorem reindexCoeffFibGen_innerContractionSwapPerm_eq_comp
+    {s : ℕ} (x : M)
+    (A : Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace s I x) :
+    reindexCoeffFibGen (I := I) 2 s innerContractionSwapPerm x A =
+      A.comp (slotPermCLM (I := I) perm2_10 x) := by
+  apply ContinuousLinearMap.ext
+  intro D
+  rw [reindexCoeffFibGen_apply, ContinuousLinearMap.comp_apply, slotPermCLM_apply]
+  rfl
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem order0KernelField_eq_arm_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder0KernelField (I := I) g₀ g₁ =
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
@@ -538,8 +578,30 @@ private theorem order0KernelField_eq_arm_combination (g₀ g₁ : SmoothRiemanni
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rfl
+  rw [linearizedRicciConnectionDifferenceOrder0KernelField_toSection]
+  unfold linearizedRicciConnectionDifferenceOrder0KernelFib
+  simp only [SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_sub,
+    ContMDiffSection.coe_add, ContMDiffSection.coe_sub, Pi.add_apply, Pi.sub_apply,
+    operatorFieldComposition_toSection, reindexCoeffGen_toSection,
+    connectionDifferenceContravariantInsertionField_toSection,
+    connectionDifferenceContrInsertionInnerField_toSection,
+    connectionDifferenceGradContrInsertionField_toSection]
+  simp only [reindexCoeffFibGen_innerContractionSwapPerm_eq_comp]
+  rw [show kOut0Perm3201 = perm4_3201 from rfl,
+    show kOut0Perm2301 = perm4_2301 from rfl,
+    show kOut0Perm3102 = perm4_3102 from rfl,
+    show kOut0Perm1302 = perm4_1302 from rfl,
+    show kOut0Perm1203 = perm4_1203 from rfl,
+    show kOut0Perm2103 = perm4_2103 from rfl,
+    show kOut0Perm3012 = perm4_3012 from rfl,
+    show kOut0Perm2013 = perm4_2013 from rfl,
+    show kMid0Perm102 = perm3_102 from rfl,
+    show kMid0Perm120 = perm3_120 from rfl]
+  unfold linearizedRicciConnectionDifferenceOrder0CLM
+  simp only [slotPermCc0_toSection]
+  simp only [ContinuousLinearMap.comp_assoc]
 
+omit [SigmaCompactSpace M] in
 private theorem armOuter24_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g₀ 2 4) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + q) x
@@ -559,6 +621,7 @@ private theorem armOuter24_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetr
         ((show Tensor0SSpace 2 I y →L[ℝ] Tensor0SSpace 4 I y from W.toSection y) d) := rfl
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
+omit [SigmaCompactSpace M] in
 private theorem armOuter23_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 3)) (W : SmoothCcTensor g₀ 2 3) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + q) x
@@ -580,6 +643,7 @@ private theorem armOuter23_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetr
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma o0IteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -600,6 +664,7 @@ private lemma o0RiemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s
     tensorInnerPointwise_smul_right]
   ring
 
+omit [SigmaCompactSpace M] in
 private theorem quadArm_riemannianFiberNormSq_windowGrid_le (g₀ : SmoothRiemannianMetric I M)
     (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
     (core : SmoothCcTensor g₀ 3 4) (W23 : SmoothCcTensor g₀ 2 3)
@@ -720,6 +785,7 @@ private lemma riemannianFiberNormSq_eightArm_cascade (g : SmoothRiemannianMetric
     (v1 + v2 + v3 + v4 + v5 + v6 - v7) v8
   linarith [c12, c123, c1234, c12345, c123456, cm7, cm8, h1, h2, h3, h4, h5, h6, h7, h8]
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0KernelField_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
@@ -1333,6 +1399,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diago
       (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁)).toSection x)
   nlinarith only [c12, c3, c4, hpure, hpn]
 
+omit [SigmaCompactSpace M] in
 theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)

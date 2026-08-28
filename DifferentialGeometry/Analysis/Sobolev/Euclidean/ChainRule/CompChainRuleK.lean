@@ -794,7 +794,7 @@ private lemma jacobian_lower_pointwise_bound
   have h_le : ENNReal.ofReal Φ.jacobian_lower_bound ≤
       ENNReal.ofReal |(fderiv ℝ Φ.toFun x).det| :=
     ENNReal.ofReal_le_ofReal (Φ.jacobian_lower x hx)
-  exact mul_le_mul_of_nonneg_right h_le (zero_le _)
+  exact mul_le_mul_of_nonneg_right h_le (zero_le)
 
 omit [NeZero d] in
 private lemma lintegral_rpow_enorm_comp_le
@@ -1083,7 +1083,7 @@ private lemma eLpNorm_iterWeakPartial_comp_le
   have hConst_norm : (‖Const‖ₑ : ℝ≥0∞) = ENNReal.ofReal Const :=
     Real.enorm_of_nonneg hConst_nonneg
   rw [hConst_norm]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   have h_strong_meas : ∀ n ∈ Finset.range (k + 1),
       AEStronglyMeasurable
         (fun x => ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) (volume.restrict Ω) := by
@@ -1136,8 +1136,6 @@ private lemma wkpComp_const_card_sum_pos (k : ℕ) :
   have h_le := Finset.single_le_sum (s := Finset.range (k + 1))
     (f := fun j => (Fintype.card (Fin j → Fin d) : ℝ))
     (fun j _ => by positivity) h_zero_in
-  rw [show ((fun j => (Fintype.card (Fin j → Fin d) : ℝ)) 0 : ℝ) =
-      (Fintype.card (Fin 0 → Fin d) : ℝ) from rfl] at h_le
   rw [h_at_zero] at h_le
   linarith
 
@@ -1153,8 +1151,6 @@ private lemma wkpComp_const_card_sum_ge_one (k : ℕ) :
   have h_le := Finset.single_le_sum (s := Finset.range (k + 1))
     (f := fun j => (Fintype.card (Fin j → Fin d) : ℝ))
     (fun j _ => by positivity) h_zero_in
-  rw [show ((fun j => (Fintype.card (Fin j → Fin d) : ℝ)) 0 : ℝ) =
-      (Fintype.card (Fin 0 → Fin d) : ℝ) from rfl] at h_le
   rw [h_at_zero] at h_le
   exact h_le
 
@@ -1235,7 +1231,7 @@ theorem wkpNorm_comp_smooth_le
     have h_iter_le := eLpNorm_iteratedFDeriv_le_wkpNorm
       (d := d) hΩ' hp_one k hψ_smooth hψ_cpt hψ_supp
     refine h1.trans ?_
-    refine (mul_le_mul_of_nonneg_left h_sum_le_chg (zero_le _)).trans ?_
+    refine (mul_le_mul_of_nonneg_left h_sum_le_chg (zero_le)).trans ?_
     have h_step :
         ENNReal.ofReal Comp_const *
           (ENNReal.ofReal Kchg *
@@ -1463,7 +1459,7 @@ theorem MemWkp.comp_smoothDiffeoBounded
       funext x; rfl
     rw [h_δcomp_eq] at hS1
     refine hS1.trans ?_
-    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le _)).trans ?_
+    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le)).trans ?_
     rw [← ENNReal.ofReal_mul hK_nonneg]
     refine ENNReal.ofReal_le_ofReal ?_
     calc K_const * (2 * ((1 : ℝ) / (N0 + 1 : ℝ)))
@@ -1500,12 +1496,12 @@ theorem MemWkp.comp_smoothDiffeoBounded
       refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
       · intro j hj
         rw [Finset.mem_range] at hj ⊢; omega
-      · intros _ _ _; exact zero_le _
+      · intros _ _ _; exact zero_le
     have h_arg_eq : (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) =
         (fun x => (fun y => u y - ψ n y) (Φ.toFun x)) := by funext x; rfl
     rw [h_arg_eq]
     refine h_chg.trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact h_eLp_le_wkp.trans (hψ_close n)
   have h_uΦ_aestrong :
       AEStronglyMeasurable (fun x => u (Φ.toFun x)) (volume.restrict Ω) := by
@@ -1549,7 +1545,7 @@ theorem MemWkp.comp_smoothDiffeoBounded
           unfold iteratedWeakSobolevNorm
           refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
           · intro j hj; rw [Finset.mem_range] at hj ⊢; omega
-          · intros _ _ _; exact zero_le _
+          · intros _ _ _; exact zero_le
         have h_second :
             eLpNorm (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) p
                 (volume.restrict Ω) ≤
@@ -1577,7 +1573,7 @@ theorem MemWkp.comp_smoothDiffeoBounded
           rw [h_neg]
           exact h_Lp_close n
         exact add_le_add h_first h_second
-      apply le_antisymm _ (zero_le _)
+      apply le_antisymm _ (zero_le)
       have h_tendsto_first :
           Filter.Tendsto
             (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω)
@@ -1616,8 +1612,8 @@ theorem MemWkp.comp_smoothDiffeoBounded
           have h_real : Filter.Tendsto
               (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
             tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
-          have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
-          simpa [ENNReal.ofReal_zero] using h_ofReal
+          rw [← ENNReal.ofReal_zero]
+          exact (ENNReal.continuous_ofReal.tendsto 0).comp h_real
         set C : ℝ≥0∞ := ENNReal.ofReal
             ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) with hC_def
         have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top

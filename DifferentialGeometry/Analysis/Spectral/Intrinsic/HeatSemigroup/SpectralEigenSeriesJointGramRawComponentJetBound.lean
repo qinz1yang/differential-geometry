@@ -249,7 +249,7 @@ lemma exists_rawCompOnE_jet_le_toHs_on_compact
     have hzi := hCzf i S hb_mem
     rw [hy_eq] at hzi
     refine le_trans hzi ?_
-    letI : Bundle.RiemannianBundle (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
+    let : Bundle.RiemannianBundle (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
     exact mul_le_mul_of_nonneg_right (hCz_le i hi) (norm_nonneg _)
   have hemb := hCemb S b

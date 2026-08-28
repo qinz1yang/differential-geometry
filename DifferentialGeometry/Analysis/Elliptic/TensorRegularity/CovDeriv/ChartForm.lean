@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -332,7 +331,8 @@ lemma tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
     (m : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     tensorCovDerivAt (I := I) (M := M) g r s S b
-        (chartBasisVecFiber (I := I) α m b) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartBasisVecFiber (I := I) α m b)) =
       chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
         (chartBasisVecFiber (I := I) α m) b := by
   classical
@@ -347,11 +347,14 @@ lemma tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
   have hloc := chartTensorRSCovariantDerivative_locality (I := I) r s g α
     S.toSection Xfield.toFun (chartBasisVecFiber (I := I) α m) b hXfield'
   calc tensorCovDerivAt (I := I) (M := M) g r s S b
-          (chartBasisVecFiber (I := I) α m b)
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α m b))
       = TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g) (fun y : M => S.toSection y) b
           (Xfield.toFun b) := by
-        rw [tensorCovDerivAt_def, hXfield']
+        rw [tensorCovDerivAt_def,
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply,
+          hXfield']
     _ = chartTensorRSCovariantDerivative (I := I) r s g α
           (fun y : M => S.toSection y) Xfield.toFun b := hagree.symm
     _ = chartTensorRSCovariantDerivative (I := I) r s g α
@@ -492,14 +495,16 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
   unfold chartTensorCovDerivPointwiseInner
   have hcov_S : ∀ i : Fin (Module.finrank ℝ E),
       tensorCovDerivAt (I := I) (M := M) g r s S b
-          (chartBasisVecFiber (I := I) α i b) =
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α i b)) =
         chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
           (chartBasisVecFiber (I := I) α i) b := fun i =>
     tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
       g r s S α i hb_good
   have hcov_T : ∀ j : Fin (Module.finrank ℝ E),
       tensorCovDerivAt (I := I) (M := M) g r s T b
-          (chartBasisVecFiber (I := I) α j b) =
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α j b)) =
         chartTensorRSCovariantDerivative (I := I) r s g α T.toSection
           (chartBasisVecFiber (I := I) α j) b := fun j =>
     tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
@@ -519,10 +524,12 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b)))
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                    (chartBasisVecFiber (I := I) α i b))))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s T b
-                  (chartBasisVecFiber (I := I) α j b)))) =
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                    (chartBasisVecFiber (I := I) α j b))))) =
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramEuclid (I := I) g α i j y *
             tensorInnerPointwise (I := I) (M := M) g r s b

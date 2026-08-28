@@ -249,7 +249,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_wkpM
         (ENNReal.ofReal ((1 : ℝ) / ((a : ℝ) + 1)) +
           ENNReal.ofReal ((1 : ℝ) / ((b : ℝ) + 1))) := by
     refine h_bilinear.trans ?_
-    exact mul_le_mul_of_nonneg_left h_chartWm1_cauchy (zero_le _)
+    exact mul_le_mul_of_nonneg_left h_chartWm1_cauchy (zero_le)
   refine h_step.trans ?_
   have hN0a : (N0 : ℝ) ≤ (a : ℝ) := by exact_mod_cast ha
   have hN0b : (N0 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hb
@@ -282,7 +282,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_wkpM
       ENNReal.ofReal C *
         (ENNReal.ofReal ((1 : ℝ) / ((N0 : ℝ) + 1)) +
           ENNReal.ofReal ((1 : ℝ) / ((N0 : ℝ) + 1))) :=
-    mul_le_mul_of_nonneg_left hsum_le (zero_le _)
+    mul_le_mul_of_nonneg_left hsum_le (zero_le)
   refine hC_step.trans ?_
   have hN0_inv_nn : (0 : ℝ) ≤ (1 : ℝ) / ((N0 : ℝ) + 1) := by positivity
   have h_add :
@@ -467,7 +467,7 @@ private theorem eLpNorm_diff_smoothApproxSeqWkpM_tendsto_zero
         (hu_meas.sub
           (smoothApproxSeqWkpM (I := I) (M := M) g m hu_chart n).smooth.continuous.measurable)
     rw [hC_zero, ENNReal.ofReal_zero, zero_mul] at h_bnd
-    exact h_bnd.trans (zero_le _)
+    exact h_bnd.trans (zero_le)
   have hC_pos : 0 < C := lt_of_le_of_ne hC_nn (Ne.symm hC_zero)
   by_cases hε_top : ε = ⊤
   · refine ⟨0, ?_⟩
@@ -750,7 +750,7 @@ private lemma eLpNorm_tendsto_zero_of_wkpNorm_m_two_tendsto_zero
         (d := Module.finrank ℝ E) m 2
         (fun y => u n y - F_lim y) Ω)
     tendsto_const_nhds h_tendsto
-    (fun _ => zero_le _)
+    (fun _ => zero_le)
     (fun n => eLpNorm_le_wkpNorm_m_two m (fun y => u n y - F_lim y) Ω)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in

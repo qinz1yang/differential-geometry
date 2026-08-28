@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set MeasureTheory Filter Topology Function NormedSpace
 open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators

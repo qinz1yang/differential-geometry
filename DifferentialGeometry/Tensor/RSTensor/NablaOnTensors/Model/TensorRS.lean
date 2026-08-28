@@ -7,7 +7,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -295,7 +294,7 @@ theorem lieDeriv_correctionL_apply_basisTensor0S {d r : ℕ}
   ext lower
   rw [continuousMultilinearMap_basis_repr]
   simp only [map_sum, map_smul, Module.Basis.repr_self]
-  simp only [Finsupp.finset_sum_apply, Finsupp.smul_apply,
+  simp only [Finsupp.finsetSum_apply, Finsupp.smul_apply,
     Finsupp.single_apply, smul_eq_mul]
   rw [lieDeriv_correctionL_apply_slots]
   change
@@ -370,7 +369,7 @@ theorem covariantDeriv_tensorRSModelAt_apply_basis_slots {d r s : ℕ}
     lower
   rw [hupper, hlower_expanded]
   simp only [map_sum, map_smul,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.smul_apply,
+    sum_apply, smul_apply,
     smul_eq_mul]
   abel
 
@@ -418,7 +417,7 @@ theorem covDerivRS_sub_apply {d r s : ℕ}
               b
               (basis k))))) := by
   classical
-  simp only [ContinuousLinearMap.sub_apply, ContinuousMultilinearMap.sub_apply]
+  simp only [sub_apply, sub_apply]
   rw [covariantDeriv_tensorRSModelAt_apply_basis_slots basis dT_X ΓX T upper lower]
   rw [covariantDeriv_tensorRSModelAt_apply_basis_slots basis dT_X ΓX' T upper lower]
   abel

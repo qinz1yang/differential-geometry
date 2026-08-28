@@ -76,13 +76,13 @@ private lemma unitModel_zero (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) 
 variable [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem metricPrincipalDefect_symm_zero
     (g₀ g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
-    (hWsymm : ∀ (x : M) (u₀ u₁ u₂ u₃ : TangentSpace I x),
+    (hWsymm : ∀ (x : M) (u₀ u₁ u₂ u₃ : E),
       unitModel (I := I) (M := M) g₀ 4 W x ![u₀, u₁, u₂, u₃] =
         unitModel (I := I) (M := M) g₀ 4 W x ![u₁, u₀, u₂, u₃]) :
     operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -94,11 +94,10 @@ theorem metricPrincipalDefect_symm_zero
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [unitModel_zero, ContinuousMultilinearMap.zero_apply]
+  rw [unitModel_zero, zero_apply]
   rw [deTurckMetricPrincipalDefectTotal, operatorFieldApplication_sub_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left, operatorFieldApplication_add_left]
   rw [unitModel_sub, unitModel_sub, unitModel_add, unitModel_add,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply]
+    sub_apply, sub_apply, add_apply, add_apply]
   have hLie :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff_apply_eq
       (I := I) g₀ g W x v
@@ -213,6 +212,7 @@ omit [I.Boundaryless] [SigmaCompactSpace M] in
   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.gradSlotCurv_apply
     (I := I) (M := M) g₀ x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradSwapCurv_spec (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
@@ -231,7 +231,7 @@ noncomputable def metricPrincipalDefectCurvCoeff
           (I := I) (M := M) g₀ g)
     (gradSwapCurvCoeff (I := I) g₀)
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricPrincipalDefect_curv_fold
     (g₀ g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
@@ -259,18 +259,18 @@ theorem metricPrincipalDefect_curv_fold
       abel
     rw [h]
     norm_num
-  have hsym : ∀ (x : M) (u₀ u₁ u₂ u₃ : TangentSpace I x),
+  have hsym : ∀ (x : M) (u₀ u₁ u₂ u₃ : E),
       unitModel (I := I) (M := M) g₀ 4 (W + Wsw) x ![u₀, u₁, u₂, u₃] =
         unitModel (I := I) (M := M) g₀ 4 (W + Wsw) x ![u₁, u₀, u₂, u₃] := by
     intro x u₀ u₁ u₂ u₃
-    have hv : ∀ a b : TangentSpace I x,
-        (fun i => (![a, b, u₂, u₃] : Fin 4 → TangentSpace I x)
+    have hv : ∀ a b : E,
+        (fun i => (![a, b, u₂, u₃] : Fin 4 → E)
           ((Equiv.swap (0 : Fin 4) 1) i)) = ![b, a, u₂, u₃] := by
       intro a b
       funext i
       fin_cases i <;> rfl
     rw [unitModel_add (I := I) g₀ 4 W Wsw x,
-      ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply,
+      add_apply, add_apply,
       hWsw_def,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel
         (I := I) g₀ (Equiv.swap (0 : Fin 4) 1) W x,

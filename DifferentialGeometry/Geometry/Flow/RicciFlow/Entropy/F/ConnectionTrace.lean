@@ -42,7 +42,7 @@ theorem connTraceUTrace
     (hginvDeriv :
       ∀ d i j : CoordinateIdx (𝕜 := Real) E,
         gInvDeriv d i j =
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M =>
               inverseMetricFlatModelInChart_component (I := I) g x i j
                 (extChartAt I x y))
@@ -118,7 +118,7 @@ theorem connTraceUTrace
         =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun y : M =>
                 inverseMetricFlatModelInChart_component (I := I) g x i j
                   (extChartAt I x y))
@@ -305,7 +305,7 @@ private theorem compFun_center
         (A x) (fun _ : Fin 1 => p)
         (fun q : Fin 2 => if q = 0 then i else j) := by
   classical
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
   have hconst :
@@ -379,11 +379,11 @@ private theorem connTraceRawDiv_eq_productSum
       (∑ p : CoordinateIdx (𝕜 := Real) E,
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            (extDerivFun (I := I) (gInvFun (I := I) g x i j) x
+            (mvfderiv (I := I) (gInvFun (I := I) g x i j) x
                   (coordinateFrameAt (I := I) x p x) *
                 compFun (I := I) A x p i j x +
               gInvFun (I := I) g x i j x *
-                extDerivFun (I := I) (compFun (I := I) A x p i j) x
+                mvfderiv (I := I) (compFun (I := I) A x p i j) x
                   (coordinateFrameAt (I := I) x p x))) +
         (∑ p : CoordinateIdx (𝕜 := Real) E,
           (∑ i : CoordinateIdx (𝕜 := Real) E,
@@ -417,21 +417,27 @@ private theorem connTraceRawDiv_eq_productSum
       rw [hZ]
       exact connTraceCoeff_one_eventually (I := I) g A x p
     have hderiv_eq :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun y : M =>
               (coordinateFrameAt_isLocalFrame_one (I := I) x).coeff p y (Z.toFun y))
             x (coordinateFrameAt (I := I) x p x) =
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M =>
               ∑ i : CoordinateIdx (𝕜 := Real) E,
                 ∑ j : CoordinateIdx (𝕜 := Real) E,
                   gInvFun (I := I) g x i j y * compFun (I := I) A x p i j y)
             x (coordinateFrameAt (I := I) x p x) := by
-      rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
-      congr 1
-      exact Filter.EventuallyEq.mfderiv_eq hev'
+      rw [mvfderiv_real_eq_mfderiv, mvfderiv_real_eq_mfderiv]
+      exact congrArg (fun L => L (coordinateFrameAt (I := I) x p x))
+        (Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real))
+          (f₁ := fun y : M =>
+            (coordinateFrameAt_isLocalFrame_one (I := I) x).coeff p y (Z.toFun y))
+          (f := fun y : M =>
+            ∑ i : CoordinateIdx (𝕜 := Real) E,
+              ∑ j : CoordinateIdx (𝕜 := Real) E,
+                gInvFun (I := I) g x i j y * compFun (I := I) A x p i j y) hev')
     rw [hderiv_eq]
-    rw [extDerivFun_finset_sum_sum_mul_at (I := I) Finset.univ Finset.univ
+    rw [mvfderiv_finset_sum_sum_mul_at (I := I) Finset.univ Finset.univ
       (fun i j => gInvFun (I := I) g x i j)
       (fun i j => compFun (I := I) A x p i j)
       (coordinateFrameAt (I := I) x p x)
@@ -515,7 +521,7 @@ theorem connTraceRaw_eq_gamma
           x d i j = 0)
     (hNabla : ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
       nablaChristoffelVariation x d k i j =
-        extDerivFun (I := I) (compFun (I := I) A x k i j) x
+        mvfderiv (I := I) (compFun (I := I) A x k i j) x
             (coordinateFrameAt (I := I) x d x) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             christoffelSymbolInFrame cov
@@ -557,12 +563,12 @@ theorem connTraceRaw_eq_gamma
   set dU : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
       CoordinateIdx (𝕜 := Real) E -> Real :=
     fun d i j =>
-      extDerivFun (I := I) (gInvFun (I := I) g x i j) x
+      mvfderiv (I := I) (gInvFun (I := I) g x i j) x
         (coordinateFrameAt (I := I) x d x) with hdU
   set dA : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun d k i j =>
-      extDerivFun (I := I) (compFun (I := I) A x k i j) x
+      mvfderiv (I := I) (compFun (I := I) A x k i j) x
         (coordinateFrameAt (I := I) x d x) with hdA
   set U : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j => gInvFun (I := I) g x i j x with hU
@@ -592,7 +598,7 @@ theorem connTraceRaw_eq_gamma
     (by
       intro d
       have h := hUtrace d
-      simpa [U, Acomp, Gamma, compFun_center] using h)
+      simpa [U, Acomp, Gamma, gInvFun_center, compFun_center] using h)
     (by
       intro i j
       have h := hAtrace i j
@@ -602,11 +608,11 @@ theorem connTraceRaw_eq_gamma
       (∑ p : CoordinateIdx (𝕜 := Real) E,
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            (extDerivFun (I := I) (gInvFun (I := I) g x i j) x
+            (mvfderiv (I := I) (gInvFun (I := I) g x i j) x
                   (coordinateFrameAt (I := I) x p x) *
                 compFun (I := I) A x p i j x +
               gInvFun (I := I) g x i j x *
-                extDerivFun (I := I) (compFun (I := I) A x p i j) x
+                mvfderiv (I := I) (compFun (I := I) A x p i j) x
                   (coordinateFrameAt (I := I) x p x))) +
         (∑ p : CoordinateIdx (𝕜 := Real) E,
           (∑ i : CoordinateIdx (𝕜 := Real) E,
@@ -653,7 +659,7 @@ theorem connTraceRaw_of_components
         x d i j = 0)
     (hNabla : ∀ x : M, ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
       nablaChristoffelVariation x d k i j =
-        extDerivFun (I := I) (compFun (I := I) A x k i j) x
+        mvfderiv (I := I) (compFun (I := I) A x k i j) x
             (coordinateFrameAt (I := I) x d x) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             christoffelSymbolInFrame cov

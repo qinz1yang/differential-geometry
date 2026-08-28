@@ -59,7 +59,7 @@ private lemma exists_coeff_ge
     apply (WithLp.linearEquiv 2 ℝ (ι → ℝ)).injective
     apply hv.fintypeLinearCombination_injective
     apply (toEuclidean (E := E)).injective
-    simpa only [familyCoeffMap_apply] using hcd
+    exact hcd
   rcases (familyCoeffMap (E := E) v).injective_iff_antilipschitz.mp hinj with
     ⟨K, _hK, hanti⟩
   refine ⟨1 / ((K : ℝ) + 1), by positivity, ?_⟩
@@ -188,7 +188,8 @@ theorem exists_radial_base
       continuous_id.smul continuous_const
     have hc0 : Tendsto (fun t : ℝ => t • x) (𝓝 0) (𝓝 (0 : E)) := by
       simpa using (hc.continuousAt (x := (0 : ℝ))).tendsto
-    simpa using hc0.mono_left inf_le_left
+    change Tendsto (fun t : ℝ => t • x) (𝓝 0 ⊓ 𝓟 (Ioi 0)) (𝓝 (0 : E))
+    exact hc0.mono_left inf_le_left
   have hclose : ∀ᶠ t in 𝓝[>] (0 : ℝ),
       normalGramMatrix (I := I) g p (t • x) ∈ Metric.ball A₀ ε :=
     htx.eventually hclose0
@@ -223,9 +224,9 @@ theorem exists_radial_base
         radialJacobiField (I := I) g p 0 ((chartModelBasis E) j) 1 =
           (chartModelBasis E) j := by
       rw [radialJacobi_one (I := I) g p 0 _ hzeroRad]
-      simpa using congrArg
-        (fun L : E →L[ℝ] TangentSpace I p => L ((chartModelBasis E) j))
-        (mfderiv_expMap_at_zero (I := I) g p)
+      simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+      rw [mfderiv_expMap_at_zero (I := I) g p]
+      rfl
     simp_rw [hJzero]
     rfl
   have hscale : (n : ℝ) ^ 2 * ε = B₀ ^ 2 / 2 := by
@@ -299,6 +300,7 @@ theorem exists_radial_base
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_perp
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p)
@@ -306,14 +308,27 @@ lemma radialJacobi_perp
     g.inner (radialCurve (I := I) g p x t)
       (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
       (radialJacobiField (I := I) g p x w t) = 0 := by
-  let L := mfderiv 𝓘(ℝ, E) I
-    (fun z : E => (expMap (I := I) g p
-      (show TangentSpace I p from z) : M)) (t • x)
+  let L : E → TangentSpace I (radialCurve (I := I) g p x t) := fun z =>
+    mfderiv 𝓘(ℝ, E) I
+      (fun z : E => (expMap (I := I) g p
+        (show TangentSpace I p from z) : M)) (t • x)
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ, E)) (t • x)).symm z)
   have hvel : curveVelocity (I := I) (radialCurve (I := I) g p x) t = L x := by
-    simpa only [curveVelocity, radialCurve, L] using
-      mfderiv_exp_radial (I := I) g p x t htx
+    change mfderiv 𝓘(ℝ, ℝ) I
+        (fun u : ℝ => (expMap (I := I) g p
+          (show TangentSpace I p from u • x) : M)) t (1 : ℝ) =
+      mfderiv 𝓘(ℝ, E) I
+        (fun z : E => (expMap (I := I) g p
+          (show TangentSpace I p from z) : M)) (t • x)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, E)) (t • x)).symm x)
+    rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    exact mfderiv_exp_radial (I := I) g p x t htx
   have hJ : radialJacobiField (I := I) g p x w t = L (t • w) := by
-    simpa only [L] using radialJacobi_at (I := I) g p x w t htx
+    simpa only [L,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+        radialJacobi_at (I := I) g p x w t htx
   have horth : g.inner p (t • x) w = 0 := by
     have hmap := congrArg (fun A : E →L[ℝ] ℝ => A w) ((g.inner p).map_smul t x)
     calc
@@ -325,17 +340,39 @@ lemma radialJacobi_perp
   calc
     g.inner (radialCurve (I := I) g p x t) (L x) (L (t • w)) =
         g.inner (radialCurve (I := I) g p x t) (L (t • x)) (L w) := by
-      have hLw : L (t • w) = t • L w := L.map_smul t w
-      have hLx : L (t • x) = t • L x := L.map_smul t x
+      have hLw : L (t • w) = t • L w := by
+        dsimp only [L]
+        rw [map_smul, map_smul]
+        rfl
+      have hLx : L (t • x) = t • L x := by
+        dsimp only [L]
+        rw [map_smul, map_smul]
+        rfl
       rw [hLw, hLx]
       have hleft := (g.inner (radialCurve (I := I) g p x t) (L x)).map_smul t (L w)
       have hright := congrArg (fun A : _ →L[ℝ] ℝ => A (L w))
         ((g.inner (radialCurve (I := I) g p x t)).map_smul t (L x))
-      simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using hleft.trans hright.symm
-    _ = 0 := by simpa only [radialCurve, L] using hgauss
+      simpa only [smul_apply, smul_eq_mul] using hleft.trans hright.symm
+    _ = 0 := by
+      change g.inner
+          (expMap (I := I) g p (show TangentSpace I p from t • x))
+          (mfderiv 𝓘(ℝ, E) I
+            (fun z : E => (expMap (I := I) g p
+              (show TangentSpace I p from z) : M)) (t • x)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(ℝ, E)) (t • x)).symm (t • x)))
+          (mfderiv 𝓘(ℝ, E) I
+            (fun z : E => (expMap (I := I) g p
+              (show TangentSpace I p from z) : M)) (t • x)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(ℝ, E)) (t • x)).symm w)) = 0
+      rw [tangentSpaceModelContinuousLinearEquiv_symm_apply,
+        tangentSpaceModelContinuousLinearEquiv_symm_apply]
+      exact hgauss
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_dperp
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
     (hx : ‖x‖ < expMapC2Radius (I := I) g p)
@@ -356,14 +393,21 @@ lemma radialJacobi_dperp
       _ = ‖x‖ := one_mul _
       _ < expMapC2Radius (I := I) g p := hx
   have hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t := by
-    simpa only [γ, radialCurve] using
-      radialCurve_contMDiffAt2 (I := I) g p x t htx
+    change ContMDiffAt 𝓘(ℝ, ℝ) I 2
+      (fun u : ℝ => (expMap (I := I) g p
+        (show TangentSpace I p from u • x) : M)) t
+    exact radialCurve_contMDiffAt2 (I := I) g p x t htx
   have hgeo : HasGeodesicEquationAt (I := I) g γ t := by
-    simpa only [γ, radialCurve] using radial_geo_at (I := I) g p x hx t ht
+    change HasGeodesicEquationAt (I := I) g
+      (fun u : ℝ => (expMap (I := I) g p
+        (show TangentSpace I p from u • x) : M)) t
+    exact radial_geo_at (I := I) g p x hx t ht
   have hvelDiff : DifferentiableAt ℝ
       (chartRepAt (I := I) γ (curveVelocity (I := I) γ) t) t := by
-    simpa only [curveVelocity, chartRepAt] using
-      MFDerivAlongCurve.velocity_coord_diff (I := I) γ t hγ
+    change DifferentiableAt ℝ
+      (fun u => (trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt ℝ
+        (γ u) (mfderiv 𝓘(ℝ, ℝ) I γ u (1 : ℝ))) t
+    exact MFDerivAlongCurve.velocity_coord_diff (I := I) γ t hγ
   have hinner := inner_deriv_at (I := I) (n := (2 : WithTop ℕ∞))
     (by norm_num) g γ (curveVelocity (I := I) γ) J t hγ hvelDiff (by
       simpa only [γ, J] using hJdiff)
@@ -383,15 +427,27 @@ lemma radialJacobi_dperp
       (fun s : ℝ => g.inner (γ s) (curveVelocity (I := I) γ s) (J s)) 0 t :=
     (hasDerivAt_const (x := t) (c := (0 : ℝ))).congr_of_eventuallyEq hzeroEv
   have hvelZero : covDerivAlong (I := I) g γ (curveVelocity (I := I) γ) t = 0 := by
-    simpa only [curveVelocity] using
-      covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
-        (I := I) g γ t hγ hgeo
+    change covDerivAlong (I := I) g γ
+      (fun s => mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ)) t = 0
+    exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
+      (I := I) g γ t hγ hgeo
   have huniq := hinner.unique hzero
-  simp only [hvelZero, map_zero, ContinuousLinearMap.zero_apply, zero_add] at huniq
+  have hfirst :
+      g.inner (γ t) (covDerivAlong (I := I) g γ
+        (curveVelocity (I := I) γ) t) (J t) = 0 := by
+    rw [hvelZero]
+    calc
+      g.inner (γ t) (0 : TangentSpace I (γ t)) (J t) =
+          (0 : TangentSpace I (γ t) →L[ℝ] ℝ) (J t) :=
+        congrArg (fun A : TangentSpace I (γ t) →L[ℝ] ℝ => A (J t))
+          (ContinuousLinearMap.map_zero (g.inner (γ t)))
+      _ = 0 := rfl
+  rw [hfirst, zero_add] at huniq
   simpa only [γ, J] using huniq
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialRatio_ge
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
@@ -415,7 +471,8 @@ theorem radialRatio_ge
       continuous_id.smul continuous_const
     have hc0 : Tendsto (fun t : ℝ => t • x) (𝓝 0) (𝓝 (0 : E)) := by
       simpa using (hc.continuousAt (x := (0 : ℝ))).tendsto
-    simpa using hc0.mono_left inf_le_left
+    change Tendsto (fun t : ℝ => t • x) (𝓝 0 ⊓ 𝓟 (Ioi 0)) (𝓝 (0 : E))
+    exact hc0.mono_left inf_le_left
   have hsrc : ∀ᶠ t in 𝓝[>] (0 : ℝ),
       t • x ∈ (expMapDiffeo (I := I) g p).source := by
     exact htx.eventually ((expMapDiffeo (I := I) g p).open_source.mem_nhds
@@ -444,21 +501,15 @@ theorem radialRatio_ge
     let J := radialJacobiField (I := I) g p (t • x) (∑ i, c i • v i) 1
     have hsum :
         (∑ i, c i • radialJacobiField (I := I) g p x (v i) t) = t • J := by
-      calc
-        (∑ i, c i • radialJacobiField (I := I) g p x (v i) t) =
-            radialJacobiField (I := I) g p x (∑ i, c i • v i) t :=
-          (radialJacobi_sum_at (I := I) g p x v (⇑c) t htrad).symm
-        _ = radialJacobiField (I := I) g p (t • x)
-            (t • ∑ i, c i • v i) 1 :=
-          radialJacobi_scale (I := I) g p x (∑ i, c i • v i) t
-        _ = t • J := by
-          dsimp only [J]
-          rw [radialJacobi_one_smul (I := I) g p (t • x)
-            (∑ i, c i • v i) t htrad]
+      rw [← radialJacobi_sum_at (I := I) g p x v (⇑c) t htrad]
+      rw [radialJacobi_scale (I := I) g p x (∑ i, c i • v i) t]
+      dsimp only [J]
+      rw [radialJacobi_one_smul (I := I) g p (t • x)
+        (∑ i, c i • v i) t htrad]
     have hscale_aux (z : TangentSpace I (radialCurve (I := I) g p x t)) :
         g.inner (radialCurve (I := I) g p x t) (t • z) (t • z) =
           t ^ 2 * g.inner (radialCurve (I := I) g p x t) z z := by
-      rw [map_smul (g.inner _), ContinuousLinearMap.smul_apply,
+      rw [map_smul (g.inner _), smul_apply,
         map_smul (g.inner _ z), smul_eq_mul, smul_eq_mul]
       ring
     have hscale : g.inner (radialCurve (I := I) g p x t) (t • J) (t • J) =
@@ -481,6 +532,7 @@ theorem radialRatio_ge
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialRatio_basis
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
@@ -505,7 +557,8 @@ theorem radialRatio_basis
       continuous_id.smul continuous_const
     have hc0 : Tendsto (fun t : ℝ => t • x) (𝓝 0) (𝓝 (0 : E)) := by
       simpa using (hc.continuousAt (x := (0 : ℝ))).tendsto
-    simpa using hc0.mono_left inf_le_left
+    change Tendsto (fun t : ℝ => t • x) (𝓝 0 ⊓ 𝓟 (Ioi 0)) (𝓝 (0 : E))
+    exact hc0.mono_left inf_le_left
   have hrad : ∀ᶠ t in 𝓝[>] (0 : ℝ),
       ‖t • x‖ < expMapC2Radius (I := I) g p := by
     have hball := htx.eventually
@@ -583,7 +636,7 @@ theorem radialRatio_basis
           (y : TangentSpace I (radialCurve (I := I) g p x t)) :
           g.inner (radialCurve (I := I) g p x t) (‖d‖ • y) (‖d‖ • y) =
             ‖d‖ ^ 2 * g.inner (radialCurve (I := I) g p x t) y y := by
-        rw [map_smul (g.inner _), ContinuousLinearMap.smul_apply,
+        rw [map_smul (g.inner _), smul_apply,
           map_smul (g.inner _ y), smul_eq_mul, smul_eq_mul]
         ring
       exact hscale_aux (radialJacobiField (I := I) g p (t • x) z 1)
@@ -699,8 +752,10 @@ theorem exists_radial_cmp
       ContMDiffAt 𝓘(ℝ, ℝ) I (2 : WithTop ℕ∞)
         (radialCurve (I := I) g p x) t := by
     intro t ht
-    simpa only [radialCurve] using
-      radialCurve_contMDiffAt2 (I := I) g p x t (htx t ht)
+    change ContMDiffAt 𝓘(ℝ, ℝ) I (2 : WithTop ℕ∞)
+      (fun u : ℝ => (expMap (I := I) g p
+        (show TangentSpace I p from u • x) : M)) t
+    exact radialCurve_contMDiffAt2 (I := I) g p x t (htx t ht)
   have hspeed : ∀ t ∈ Ioo (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -779,6 +834,7 @@ theorem exists_radial_cmp
         (q * a) b (Module.finrank ℝ E - 1) (mul_nonneg hq ha.le)
         hγ hVdiff hLI hWronsk hmean
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem normalRatio_anti
     {ι : Type*} [Fintype ι] [DecidableEq ι]

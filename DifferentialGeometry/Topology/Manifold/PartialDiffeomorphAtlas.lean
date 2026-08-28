@@ -72,7 +72,8 @@ theorem mem_maximalAtlas_of_contMDiffOn
     model_mem_contDiffGroupoid_of_contMDiffOn (I := I) hf hf_symm
   refine ⟨?_, ?_⟩
   · simpa [f] using hfG
-  · simpa [f] using (contDiffGroupoid n I).symm hfG
+  · simpa only [f, OpenPartialHomeomorph.trans_symm_eq_symm_trans_symm,
+      OpenPartialHomeomorph.symm_symm] using (contDiffGroupoid n I).symm hfG
 
 end OpenPartialHomeomorph
 
@@ -152,8 +153,8 @@ theorem toOpenPartialHomeomorph_mem_maximalAtlas
     Φ.toOpenPartialHomeomorph ∈ IsManifold.maximalAtlas I n M := by
   exact OpenPartialHomeomorph.mem_maximalAtlas_of_contMDiffOn (I := I)
     Φ.toOpenPartialHomeomorph
-    (by simpa using Φ.contMDiffOn_toFun)
-    (by simpa using Φ.contMDiffOn_invFun)
+    (Φ.contMDiffOn_toFun.congr fun _ _ => rfl)
+    (Φ.contMDiffOn_invFun.congr fun _ _ => rfl)
 
 end PartialDiffeomorph
 

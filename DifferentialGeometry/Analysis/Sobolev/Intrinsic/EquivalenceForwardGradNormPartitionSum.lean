@@ -137,7 +137,7 @@ private lemma gradFun_finset_sum
     rw [Finset.sum_insert hα₀_notMem]
 
 private lemma gradFun_eq_sum_gradFun_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x =
@@ -180,7 +180,7 @@ private lemma gradFun_eq_sum_gradFun_pou_mul
   exact gradFun_finset_sum (I := I) (M := M) g S h hh_diff x
 
 lemma gNormGrad_le_finset_sum_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     gNormGrad (I := I) (M := M) g u x ≤
@@ -233,7 +233,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
             rw [show ((g.inner x) (a + t • b)) =
                 ((g.inner x) a) + ((g.inner x) (t • b)) from
               (g.inner x).map_add a (t • b)]
-            simp [ContinuousLinearMap.add_apply]
+            simp [add_apply]
           have h2 : g.inner x a (a + t • b) =
               g.inner x a a + t * g.inner x a b := by
             have h_dist : (g.inner x a) (a + t • b) =

@@ -31,9 +31,9 @@ theorem parabolicFrozenMatrixOperator_eq_of_bcf_jets
       dtU p.time p.space - matrixLap A (d2u p.time p.space) := by
   have htime : HasDerivAt (fun t ↦ u t p.space)
       (dtU p.time p.space) p.time := by
-    simpa only [BoundedContinuousFunction.evalCLM_apply] using
-      (BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
-        |>.comp_hasDerivAt p.time huTime
+    exact ((BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
+      |>.comp_hasDerivAt p.time huTime).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall (fun _ => rfl))
   have hspace : hessianCurryEquiv (Euc n) F
       (parabolicSpatialJet 2 (fun t x ↦ u t x) p) =
         d2u p.time p.space := by
@@ -69,11 +69,11 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_classical_solution
       (parabolicCylinder (Icc (0 : Real) S) Set.univ)
       (parabolicVariableMatrixOperator a (fun t x ↦ u t x)) ≤ Bf)
     (hsourceHolder : HolderWith Kf alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicVariableMatrixOperator a (fun t x ↦ u t x))))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)
@@ -124,9 +124,9 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_classical_solution
           (parabolicFrozenMatrixOperator A (fun t x ↦ u t x)) p hp).trans
             (by simpa only [ENNReal.coe_add] using hfrozen.1)
   have hholderG : HolderWith (Kf + Kdefect) alpha
-      (Q.restrict (fun p ↦ g p.time p.space)) := by
-    have heq : Q.restrict (fun p ↦ g p.time p.space) =
-        Q.restrict (parabolicFrozenMatrixOperator A
+      (Q.domRestrict (fun p ↦ g p.time p.space)) := by
+    have heq : Q.domRestrict (fun p ↦ g p.time p.space) =
+        Q.domRestrict (parabolicFrozenMatrixOperator A
           (fun t x ↦ u t x)) := by
       funext p
       exact hgfrozen p.2

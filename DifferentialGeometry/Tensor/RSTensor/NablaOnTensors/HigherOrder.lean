@@ -12,7 +12,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology Bundle ContDiff
@@ -70,7 +69,6 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap DifferentialGeometry.TensorLieDeriv
 open scoped Manifold Topology Bundle ContDiff
@@ -245,10 +243,12 @@ theorem totalNabla0SFun_apply_section (s : ℕ)
     | zero => exact hXinput
     | succ a => exact congrFun hslotsInput a
   have hmpull :
-      VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x).symm
-          (fun y : M => X y) (Set.range I) y₀ =
+      tangentSpaceModelContinuousLinearEquiv y₀
+        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x).symm
+          (fun y : M => X y) (Set.range I) y₀) =
         Xmodel := by
-    simp only [y₀, Xmodel, e, VectorField.mpullbackWithin_apply]
+    simp only [y₀, Xmodel, e, VectorField.mpullbackWithin_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
     rw [extChartAt_to_inv]
     rw [TangentBundle.continuousLinearMapAt_trivializationAt
       (I := I) (x₀ := x) (x := x) (mem_chart_source H x)]
@@ -319,6 +319,23 @@ theorem totalNabla0SFun_apply_section (s : ℕ)
       nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s cov X α x slots := by
           rw [hslotsInput]
+
+omit [IsManifold I ∞ M] in
+theorem totalNabla0SFun_eval_section (s : ℕ)
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    (x : M) (slots : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval
+        (totalNabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+          s cov α x)
+        (Fin.cons (X x) slots) =
+      Tensor0SSpace.eval
+        (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x)
+        slots := by
+  exact totalNabla0SFun_apply_section s cov X α x slots
 
 def TotalNabla0SRealizes (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -402,7 +419,7 @@ theorem TotalNabla0SRealizes.eval_smooth_slots {s : ℕ}
       (TangentSpace I : M → Type _))
     (x₀ : M) :
     nablaAlpha x₀ (Fin.cons (X x₀) (fun a : Fin s => V a x₀)) =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
         x₀ (X x₀) -
         ∑ a : Fin s,
           α x₀
@@ -413,7 +430,7 @@ theorem TotalNabla0SRealizes.eval_smooth_slots {s : ℕ}
         = nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             s cov X α x₀ (fun a : Fin s => V a x₀) := by
           exact h.apply X x₀ (fun a : Fin s => V a x₀)
-    _ = extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+    _ = mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
           x₀ (X x₀) -
           ∑ a : Fin s,
             α x₀
@@ -438,7 +455,7 @@ theorem TotalNabla0SRealizes.eval_C1_slots {s : ℕ}
       ContMDiffAt I (I.prod 𝓘(𝕜, E)) (1 : WithTop ℕ∞)
         (fun y : M => (⟨y, V a y⟩ : TotalSpace E (TangentSpace I : M → Type _))) x₀) :
     nablaAlpha x₀ (Fin.cons (X x₀) (fun a : Fin s => V a x₀)) =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
         x₀ (X x₀) -
         ∑ a : Fin s,
           α x₀
@@ -449,7 +466,7 @@ theorem TotalNabla0SRealizes.eval_C1_slots {s : ℕ}
         = nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             s cov X α x₀ (fun a : Fin s => V a x₀) := by
           exact h.apply X x₀ (fun a : Fin s => V a x₀)
-    _ = extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+    _ = mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
           x₀ (X x₀) -
           ∑ a : Fin s,
             α x₀
@@ -584,7 +601,6 @@ end
 
 section RealLinearity
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap DifferentialGeometry.TensorLieDeriv
 open scoped Manifold Topology Bundle ContDiff
@@ -643,7 +659,7 @@ theorem nabla0SFun_sub_cov
       ((cov (fun p : M => V a p) x) (X x))
       ((cov' (fun p : M => V a p) x) (X x))).symm
   let D : Real :=
-    (extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p)) x) (X x)
+    (mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p)) x) (X x)
   let Scov : Real :=
     ∑ a : Fin s,
       α x (Function.update slots a ((cov (fun p : M => V a p) x) (X x)))
@@ -794,21 +810,21 @@ theorem nabla0SFun_add [T2Space M] {s : ℕ}
     (tensor0SField_eval_smooth_slots_contMDiffAt (I := I) β V x).mdifferentiableAt
       (by simp)
   have hext :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => (α + β) p (fun a : Fin s => V a p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => α p (fun a : Fin s => V a p)) x (X x) +
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun p : M => β p (fun a : Fin s => V a p)) x (X x) := by
     change
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           ((fun p : M => α p (fun a : Fin s => V a p)) +
             fun p : M => β p (fun a : Fin s => V a p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => α p (fun a : Fin s => V a p)) x (X x) +
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun p : M => β p (fun a : Fin s => V a p)) x (X x)
-    rw [extDerivFun_add hfα hfβ]
+    rw [mvfderiv_add hfα hfβ]
     rfl
   simp only [component0S_apply]
   rw [← hslots]
@@ -876,12 +892,12 @@ theorem nabla0SFun_smul [T2Space M] {s : ℕ}
     (tensor0SField_eval_smooth_slots_contMDiffAt (I := I) α V x).mdifferentiableAt
       (by simp)
   have hext :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => (c • α) p (fun a : Fin s => V a p)) x (X x) =
         c *
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun p : M => α p (fun a : Fin s => V a p)) x (X x) := by
-    have h := DifferentialGeometry.extDerivFun_const_mul I c hfα
+    have h := DifferentialGeometry.mvfderiv_const_mul I c hfα
     exact congrArg (fun L : TangentSpace I x →L[Real] Real => L (X x)) h
   simp only [component0S_apply]
   rw [← hslots]
@@ -892,8 +908,7 @@ theorem nabla0SFun_smul [T2Space M] {s : ℕ}
         (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           s cov X α x) (fun a : Fin s => V a x)
   rw [hsmul, hα, hext]
-  simp only [coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply,
-    ContMDiffSection.coe_smul, Pi.smul_apply]
+  simp only [    ContMDiffSection.coe_smul, Pi.smul_apply]
   have hcorr :
       (∑ a : Fin s,
         (c • α x)

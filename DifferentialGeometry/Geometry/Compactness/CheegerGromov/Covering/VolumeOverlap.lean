@@ -39,9 +39,9 @@ omit [NeZero (Module.finrank ℝ E)]
 theorem riemannOp_dim1_zero (h1 : Module.finrank ℝ E = 1)
     (g : SmoothRiemannianMetric I M) (x : M) (u v w : TangentSpace I x) :
     riemannOp (LeviCivita (I := I) g) x u v w = 0 := by
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   have hfr : Module.finrank ℝ (TangentSpace I x) = 1 := h1
-  haveI : Nontrivial (TangentSpace I x) :=
+  have : Nontrivial (TangentSpace I x) :=
     Module.nontrivial_of_finrank_pos (by rw [hfr]; exact one_pos)
   obtain ⟨e, he⟩ := exists_ne (0 : TangentSpace I x)
   have hspan := (finrank_eq_one_iff_of_nonzero' e he).mp hfr
@@ -54,8 +54,8 @@ theorem riemannOp_dim1_zero (h1 : Module.finrank ℝ E = 1)
       nth_rewrite 2 [hsw]
       exact add_neg_cancel _
     exact (smul_eq_zero.mp h2).resolve_left (by norm_num)
-  rw [← ha, ← hb, map_smul, ContinuousLinearMap.smul_apply, map_smul,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, hee,
+  rw [← ha, ← hb, map_smul, smul_apply, map_smul,
+    smul_apply, smul_apply, hee,
     smul_zero, smul_zero]
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -70,8 +70,8 @@ theorem ricci_dim1_bddBelow (h1 : Module.finrank ℝ E = 1)
     rw [ricciTensor_apply_basisSum]
     refine Finset.sum_eq_zero ?_
     intro i _
-    have hz : (chartModelBasis E).repr (0 : TangentSpace I x) = 0 := map_zero _
-    rw [riemannOp_dim1_zero h1 g x ((chartModelBasis E) i) v v, hz, Finsupp.zero_apply]
+    rw [riemannOp_dim1_zero h1 g x ((centeredChartTangentBasis x) i) v v,
+      map_zero, Finsupp.zero_apply]
   rw [hzero]
 
 end Dim1
@@ -95,26 +95,26 @@ def volInput_of_bg
             Imult := fun m => segImult (Module.finrank ℝ E) q r0 m,
             ballMult := ?_ }, rfl⟩
   intro m k α _ _ centers r hr hcap hsep z J hJz
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : IsManifold I 1 (X.obj k).M :=
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : IsManifold I 1 (X.obj k).M :=
     IsManifold.of_le (I := I) (M := (X.obj k).M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle (fun x : (X.obj k).M => TangentSpace I x) :=
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle (fun x : (X.obj k).M => TangentSpace I x) :=
     (X.obj k).riemBundle
-  haveI : IsContinuousRiemannianBundle E (fun x : (X.obj k).M => TangentSpace I x) :=
+  have : IsContinuousRiemannianBundle E (fun x : (X.obj k).M => TangentSpace I x) :=
     (X.obj k).riemBundle_cont
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
-  haveI : IsRiemannianManifold I (X.obj k).M := ⟨fun _ _ => rfl⟩
-  letI : ConnectedSpace (X.obj k).M := hconn k
-  haveI : CompleteSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  have : IsRiemannianManifold I (X.obj k).M := ⟨fun _ _ => rfl⟩
+  let : ConnectedSpace (X.obj k).M := hconn k
+  have : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (X.obj k) (hcpl.complete k)
   have hRic : RicciBoundedBelow (I := I) (X.obj k).metric
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2)) := by
@@ -155,8 +155,9 @@ def volInput_of_bg
   have hEnorm : ∀ (y : (X.obj k).M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
     intro y w
-    simpa using
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) (X.obj k).metric y w
+    with_unfolding_all
+      exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) (X.obj k).metric y w
   have hbridge : ∀ x y : (X.obj k).M,
       riemannianEDist I x y = ENNReal.ofReal (hd.dist k x y) := by
     intro x y

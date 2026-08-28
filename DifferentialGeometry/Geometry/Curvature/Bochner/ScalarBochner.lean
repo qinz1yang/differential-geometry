@@ -21,6 +21,7 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 import DifferentialGeometry.Geometry.Operator.Operators
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
@@ -244,17 +245,14 @@ private theorem curry_three_apply_vec2 {x : M}
     tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X
         (vec2 (I := I) Y Z) =
       T (vec3 (I := I) X Y Z) := by
-  change
-    (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin 3 => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 3 x) T)
-        X)
-        (vec2 (I := I) Y Z)) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 3 x) T)
-        (vec3 (I := I) X Y Z)
-  rw [continuousMultilinearCurryLeftEquiv_apply]
-  congr 1
-  exact fin_cons_vec2_eq_vec3_local (I := I) X Y Z
+  calc
+    tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X
+        (vec2 (I := I) Y Z) =
+      T (Fin.cons X (vec2 (I := I) Y Z)) :=
+        TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+          (T := T) (v0 := X) (vs := vec2 (I := I) Y Z)
+    _ = T (vec3 (I := I) X Y Z) := by
+      rw [fin_cons_vec2_eq_vec3_local]
 
 private theorem freezeLastTwo0S3_eq_curry {x : M}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
@@ -289,7 +287,7 @@ theorem extDeriv_metricTrace_eq_traceNabla
       (M := M) 2 cov A nablaA)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => metricTracePair0SAt (I := I) g (A y)) x (X x) =
       metricTraceLastTwo0SAt3 (I := I) g (nablaA x) (X x) := by
   classical
@@ -383,10 +381,11 @@ theorem traceNablaHessianRealizesDLapAt_of_lapTrace
         fun y : M => metricTracePair0SAt (I := I) g (nablaDuSec y) := by
     funext y
     rw [hlap y, scalarLapTraceAt]
-  rw [differential1FormFun_apply_eq_extDerivFun]
+  rw [differential1FormFun_apply_eq_mvfderiv]
   change traceNablaHessianForDLap (I := I) g (nabla2DuSec x) Y =
-    extDerivFun (I := I) (fun y : M => laplacian (I := I) cov g u y) x Y
+    mvfderiv (I := I) (fun y : M => laplacian (I := I) cov g u y) x Y
   rw [hfun]
+  change metricTraceLastTwo0SAt3 (I := I) g (nabla2DuSec x) Y = _
   simpa [hX] using htrace.symm
 
 theorem lapTrace_eq_direct
@@ -565,8 +564,9 @@ theorem nabla2DuTrailingSymmCoord_of_tensor
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (hsymm : OneFormLastTwoSymmAt (I := I) nabla2Du) :
     Nabla2DuTrailingSymmCoord (nabla2DuCoord (I := I) basis nabla2Du) := by
-  simpa [nabla2DuCoord] using
-    nabla2OneFormTrailingSymmCoord_of_tensor (I := I) basis nabla2Du hsymm
+  change Nabla2DuTrailingSymmCoord
+    (nabla2OneFormCoord (I := I) basis nabla2Du)
+  exact nabla2OneFormTrailingSymmCoord_of_tensor (I := I) basis nabla2Du hsymm
 
 theorem curvatureActionTraceEqualsRicGradCoord_of_tensor
     {Idx : Type*} [Fintype Idx]
@@ -580,10 +580,13 @@ theorem curvatureActionTraceEqualsRicGradCoord_of_tensor
     CurvatureActionTraceEqualsRicGradCoord gInv
       (curvatureActionOnDuCoord (I := I) Rm13 u basis)
       (ricGradCoord (I := I) g Ric u basis) := by
-  simpa [curvatureActionOnDuCoord, ricGradCoord, CurvatureTraceDuEqRicciGradAt] using
-    curvatureActionTraceEqualsRicVectorCoord_of_tensor (I := I) Ric Rm13
-      (differential1FormFun (I := I) u x) basis gInv
-      (gradientFun (I := I) g u x) hcurv
+  change CurvatureActionTraceEqualsRicGradCoord gInv
+    (curvatureActionOnOneFormCoord (I := I) Rm13
+      (differential1FormFun (I := I) u x) basis)
+    (ricciVectorCoord (I := I) Ric basis (gradientFun (I := I) g u x))
+  exact curvatureActionTraceEqualsRicVectorCoord_of_tensor (I := I) Ric Rm13
+    (differential1FormFun (I := I) u x) basis gInv
+    (gradientFun (I := I) g u x) hcurv
 
 theorem oneFormRicciTraceComm_coordAt_of_third_comm
     (g : SmoothRiemannianMetric I M)
@@ -832,9 +835,11 @@ theorem nabla_norm_eq_coord
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
     normSq0S (I := I) g x 2 nablaAlphaX =
       oneFormNablaNormCoord (I := I) basis gInv nablaAlphaX := by
-  simpa [oneFormNablaNormCoord, vec2] using
-    Tensor0SBundle.normSq0S_two_eq_coord (I := I) (M := M) g x
-      basis gInv hinv nablaAlphaX
+  have h := Tensor0SBundle.normSq0S_two_eq_coord (I := I) (M := M) g x
+    basis gInv hinv nablaAlphaX
+  change normSq0S (I := I) g x 2 nablaAlphaX =
+    oneFormNablaNormCoord (I := I) basis gInv nablaAlphaX at h
+  exact h
 
 theorem oneForm_norm_product_rule_of_trace
     {Idx : Type*} [Fintype Idx]

@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -362,7 +361,7 @@ private theorem integral_pou_tensorCovDerivPointwiseInner_eq_frame_sum
   rw [integral_congr_ae (Filter.Eventually.of_forall hdist)]
   have hρ_cont : Continuous ((chartAtlasPOU I M α : M → ℝ)) :=
     (chartAtlasPOU I M α).contMDiff.continuous
-  refine MeasureTheory.integral_finset_sum (Finset.univ) (fun i _ => ?_)
+  refine MeasureTheory.integral_finsetSum (Finset.univ) (fun i _ => ?_)
   exact perDir_integrable_of_continuous (I := I) g
     (hρ_cont.mul (perDirCross_continuous (I := I) (M := M) g T v α i))
 

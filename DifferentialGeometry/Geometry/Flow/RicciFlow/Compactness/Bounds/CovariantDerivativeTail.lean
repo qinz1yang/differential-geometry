@@ -65,7 +65,9 @@ private theorem covOrder_zero_point
     have hcard := normSq0S_metricTensor0S_eq_card (I := I) g basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) hinv
-    simpa using hcard
+    have hfr : Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
+    rw [Fintype.card_fin, hfr] at hcard
+    exact hcard
   have hcov :
       metricCovDerivNorm (I := I) 0 g gRef x =
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x 2
@@ -216,8 +218,8 @@ theorem covOrder_tower_const
               metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initC q)
           (_htime : ∀ t : Real, t ∈ Set.Icc β ψ → |t - t0| ≤ timeRadius),
           MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef r Cw := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   let Stable := fun (K' : Set M) (r : Nat) (Cw : Real) =>
     ∀ {β ψ t0 : Real}
       {gSeq : Nat → Real → SmoothRiemannianMetric I M}

@@ -264,11 +264,11 @@ private lemma chartInnerOnE_summand_fderiv_apply
                   chartGramOnE (I := I) g α i j y) =
       (fun y : E => (u y * v y) * ggij y) from rfl]
   rw [hfd_uv_g]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.smul_apply]
+  rw [add_apply, smul_apply,
+      smul_apply]
   rw [hfd_uv]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.smul_apply]
+  rw [add_apply, smul_apply,
+      smul_apply]
   simp only [smul_eq_mul]
   ring
 
@@ -305,11 +305,11 @@ private lemma chartInnerOnE_fderiv_apply
     apply DifferentiableAt.fun_sum
     intro j _
     exact chartInnerOnE_summand_differentiableAt (I := I) g α hx hY hZ i j)]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [fderiv_fun_sum (fun j _ =>
     chartInnerOnE_summand_differentiableAt (I := I) g α hx hY hZ i j)]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   exact chartInnerOnE_summand_fderiv_apply (I := I) g α hx hY hZ i j w
 

@@ -158,7 +158,7 @@ theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
     intro x
     rw [chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x]
     simp
-  rw [← MeasureTheory.lintegral_finset_sum]
+  rw [← MeasureTheory.lintegral_finsetSum]
   · refine MeasureTheory.lintegral_congr (fun x => ?_)
     rw [← hF_eq x, hsum_one x, one_mul]
   · intro β _

@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -32,7 +31,7 @@ open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla
 
 section PouGradientCancellation
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -74,7 +73,7 @@ theorem chartAtlasPOU_tangentSectionAction_finset_sum_eq_zero
 end PouGradientCancellation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [Module.Finite ℝ E] [InnerProductSpace ℝ E]
+  [Module.Finite ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -88,7 +87,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma tangentSectionAction_smoothSmul
     (ρ : M → ℝ) (hρ : ContMDiff I 𝓘(ℝ) ∞ ρ)
@@ -97,10 +96,12 @@ lemma tangentSectionAction_smoothSmul
       ρ x * tangentSectionAction (I := I) B f x := by
   rw [tangentSectionAction_def, tangentSectionAction_def]
   rw [smoothSmul_apply]
-  rw [(mfderiv I 𝓘(ℝ) f x).map_smul (ρ x) (B x)]
-  rw [smul_eq_mul]
+  change tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (f x)
+      ((mfderiv I 𝓘(ℝ) f x) (ρ x • B x)) =
+    ρ x * tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (f x)
+      ((mfderiv I 𝓘(ℝ) f x) (B x))
+  rw [(mfderiv I 𝓘(ℝ) f x).map_smul, map_smul, smul_eq_mul]
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
     (g : SmoothRiemannianMetric I M)
     (T v : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)

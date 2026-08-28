@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -35,7 +34,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck in
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
-set_option backward.isDefEq.respectTransparency false in
 theorem cometricCastG0_order0sup_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
@@ -55,7 +53,7 @@ theorem cometricCastG0_order0sup_jetL2_radiusFree
             Flow i * (1 + ∑ j ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set Φ : SmoothCcTensor g₀ 3 1 := cometricDoubleTraceField (I := I) g₀ 1 with hΦ_def
   obtain ⟨C_base, hC_base_nn, hC_base⟩ :=
@@ -224,7 +222,7 @@ theorem cometricCastG0_order0sup_jetL2_radiusFree
                 ((iteratedCovGrad (I := I) g₀ 3 3 q W).toSection x)))
           (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
         apply MeasureTheory.Integrable.const_mul
-        apply MeasureTheory.integrable_finset_sum
+        apply MeasureTheory.integrable_finsetSum
         intro q _
         exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 3 (3 + q)
           (iteratedCovGrad (I := I) g₀ 3 3 q W)
@@ -232,7 +230,7 @@ theorem cometricCastG0_order0sup_jetL2_radiusFree
         (iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)) _ hint hpt
       refine le_trans hkey ?_
       rw [MeasureTheory.integral_const_mul,
-        MeasureTheory.integral_finset_sum _ (fun q _ =>
+        MeasureTheory.integral_finsetSum _ (fun q _ =>
           integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 3 (3 + q)
             (iteratedCovGrad (I := I) g₀ 3 3 q W))]
       have hconv : ∀ q ∈ Finset.range (l + 1),
@@ -314,7 +312,7 @@ private lemma metricComparisonEndomorphismField_decomp_rf (g₀ g₁ : SmoothRie
     rw [ContMDiffSection.coe_add]; rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x) =
       metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x from rfl]
   rw [metricComparisonEndomorphismField_apply, metricComparisonEndomorphism_self_rf, ContinuousLinearMap.id_apply]
@@ -337,10 +335,10 @@ private lemma slotInsertEndoCc_add_rf (g₀ : SmoothRiemannianMetric I M) (s : �
       (slotInsertEndoCc (I := I) (M := M) g₀ s A).toSection x +
         (slotInsertEndoCc (I := I) (M := M) g₀ s B).toSection x from by
     rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -384,7 +382,6 @@ private lemma sharpFlatEndoCc_eq_insert_fullRaised_rf (g₀ g₁ : SmoothRiemann
   rw [cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
   rw [g₀.symm x w (inverseMetricSharpFib (I := I) g₁ x om)]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
@@ -404,7 +401,7 @@ theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
             Flow i * (1 + ∑ j ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set IdIns : SmoothCcTensor g₀ 1 1 :=
     slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -538,7 +535,7 @@ theorem connectionDifferenceSection_lowOrder_jetL2_radiusFree
             Flow i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kt0, hKt0_nn, Kc0, hKc0_nn, hbot⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_topOrderSeparated_le (I := I) (M := M) g₀ hδ₀
@@ -884,6 +881,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGrid
       _ = (2 * SΦ l + 2 * (operatorFieldApplicationGdiag (E := E) l * (∑ i' ∈ Finset.range (l + 1), SΦ i') *
             (fr ^ 2 * ∑ q ∈ Finset.range (l + 1), C_base q))) * antidiagonalTupleGridWindow := by ring
 
+omit [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_antidiagonalTupleGridWindow_rf
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ccd : ℕ → ℝ, (∀ l, 0 ≤ Ccd l) ∧
@@ -1035,7 +1033,7 @@ theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_le
             Flow i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kcg, hKcg_nn, hcg⟩ := riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
@@ -1170,7 +1168,7 @@ theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_le
             ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
       simp only [Combinatorics.antidiagonalTupleGridWindow]
-      exact MeasureTheory.integrable_finset_sum _ (fun k _ => (hAG k).1)
+      exact MeasureTheory.integrable_finsetSum _ (fun k _ => (hAG k).1)
     have hFint : MeasureTheory.Integrable
         (fun x => Komega n * Combinatorics.antidiagonalTupleGridWindow
           (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
@@ -1189,7 +1187,7 @@ theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_le
         ∑ k ∈ Finset.range (n + 2),
           K_rf k * (1 + ‖iteratedCovGrad (I := I) g₀ 0 2 k P‖ ^ 2) := by
       simp only [Combinatorics.antidiagonalTupleGridWindow]
-      rw [MeasureTheory.integral_finset_sum _ (fun k _ => (hAG k).1)]
+      rw [MeasureTheory.integral_finsetSum _ (fun k _ => (hAG k).1)]
       exact Finset.sum_le_sum (fun k _ => (hAG k).2)
     exact hwin_bd
   set S' : ℝ := ∑ j ∈ Finset.range (i + 2),
@@ -1223,6 +1221,7 @@ theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_le
     _ = (∑ q ∈ Finset.range (i + 1), Komega q * ∑ k ∈ Finset.range (q + 2), K_rf k) * (1 + S') := by
         rw [Finset.sum_mul]
 
+omit [SigmaCompactSpace M] in
 private lemma exists_riemannianFiberNormSq_connectionDifference_topsep_rf
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ l, 0 ≤ Kc l) ∧
@@ -1325,7 +1324,7 @@ theorem connectionDifference_L2_topsep_rf
     fun n => Kc_pt n * ∑ k ∈ Finset.range (n + 2), K_rf k,
     fun n => mul_nonneg (hKc_pt_nn n) (Finset.sum_nonneg fun k _ => hK_rf_nn k), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup n hn
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set S' : ℝ := ∑ j ∈ Finset.range (n + 2),
     ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 with hS'_def
@@ -1356,7 +1355,7 @@ theorem connectionDifference_L2_topsep_rf
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (n + 2))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    exact MeasureTheory.integrable_finset_sum _ (fun k _ => (hAG k).1)
+    exact MeasureTheory.integrable_finsetSum _ (fun k _ => (hAG k).1)
   have htop_int : MeasureTheory.Integrable (fun x =>
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (n + 1)) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (n + 1) P).toSection x))
@@ -1385,7 +1384,7 @@ theorem connectionDifference_L2_topsep_rf
       ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
       (∑ k ∈ Finset.range (n + 2), K_rf k) * (1 + S') := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    rw [MeasureTheory.integral_finset_sum _ (fun k _ => (hAG k).1), Finset.sum_mul]
+    rw [MeasureTheory.integral_finsetSum _ (fun k _ => (hAG k).1), Finset.sum_mul]
     refine Finset.sum_le_sum (fun k hk => ?_)
     refine le_trans (hAG k).2 ?_
     have hkS' : ‖iteratedCovGrad (I := I) g₀ 0 2 k P‖ ^ 2 ≤ S' :=
@@ -1713,7 +1712,7 @@ theorem deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated
             Flow n * (1 + ∑ j ∈ Finset.range (n + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Ktop_xi, hKtop_xi_nn, Flow_xi, hFlow_xi_nn, hxi⟩ :=
     metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
@@ -1764,7 +1763,7 @@ theorem deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (n + 2))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    exact MeasureTheory.integrable_finset_sum _ (fun k _ => (hAG k).1)
+    exact MeasureTheory.integrable_finsetSum _ (fun k _ => (hAG k).1)
   have hwxi_int : MeasureTheory.Integrable
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x))
@@ -1796,7 +1795,7 @@ theorem deTurckVectorFieldCovector_iteratedCovGrad_norm_sq_topOrderSeparated
       ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
       (∑ k ∈ Finset.range (n + 2), K_rf k) * (1 + S') := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    rw [MeasureTheory.integral_finset_sum _ (fun k _ => (hAG k).1), Finset.sum_mul]
+    rw [MeasureTheory.integral_finsetSum _ (fun k _ => (hAG k).1), Finset.sum_mul]
     refine Finset.sum_le_sum (fun k hk => ?_)
     refine le_trans (hAG k).2 ?_
     have hkS' : ‖iteratedCovGrad (I := I) g₀ 0 2 k P‖ ^ 2 ≤ S' :=
@@ -1984,7 +1983,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedC
     fun i => mul_nonneg (mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) i) (hKB_nn i))
       (Finset.sum_nonneg fun k _ => hK_rf_nn k), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup i
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set S' : ℝ := ∑ j ∈ Finset.range (i + 3),
     ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 with hS'_def
@@ -2027,7 +2026,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedC
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    exact MeasureTheory.integrable_finset_sum _ (fun k _ => (hAG k).1)
+    exact MeasureTheory.integrable_finsetSum _ (fun k _ => (hAG k).1)
   have hbridge := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 0 (2 + i)
     (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg))
     (fun x => (operatorFieldApplicationGdiag (E := E) i * KB i) * Combinatorics.antidiagonalTupleGridWindow
@@ -2041,7 +2040,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedC
       ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
       (∑ k ∈ Finset.range (i + 3), K_rf k) * (1 + S') := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    rw [MeasureTheory.integral_finset_sum _ (fun k _ => (hAG k).1), Finset.sum_mul]
+    rw [MeasureTheory.integral_finsetSum _ (fun k _ => (hAG k).1), Finset.sum_mul]
     refine Finset.sum_le_sum (fun k hk => ?_)
     refine le_trans (hAG k).2 ?_
     have hkS' : ‖iteratedCovGrad (I := I) g₀ 0 2 k P‖ ^ 2 ≤ S' :=

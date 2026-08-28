@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -37,7 +38,7 @@ private theorem covDerivOfField_succ_eval
     (x : M) :
     covDerivOfField (I := I) gRef A0 (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => covDerivOfField (I := I) gRef A0 a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),
@@ -102,10 +103,10 @@ theorem covDerivOfField_restrictOpen
           covDerivOfField_succ_eval (I := I) gRef A0M a X V (x : M)
         rw [hleft, hright]
         have hderiv :
-            extDerivFun (I := I)
+            mvfderiv (I := I)
                 (fun y : U => covDerivOfField (I := I) (gRef.restrictOpen (I := I) U) A0U a y
                   (fun q : Fin (a + 2) => VU q y)) x (XU x) =
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun z : M => covDerivOfField (I := I) gRef A0M a z
                   (fun q : Fin (a + 2) => V q z)) (x : M) (X (x : M)) := by
           have hscalar :
@@ -125,7 +126,7 @@ theorem covDerivOfField_restrictOpen
           rw [hscalar]
           have hXU : XU x = X (x : M) := restrictOpenTangentSection_apply (I := I) U X x
           rw [hXU]
-          exact extDerivFun_restrictOpen (I := I) U
+          exact mvfderiv_restrictOpen (I := I) U
             (fun z : M => covDerivOfField (I := I) gRef A0M a z
               (fun q : Fin (a + 2) => V q z)) x (X (x : M)) hf
         have hsum :
@@ -164,6 +165,7 @@ theorem covDerivOfField_restrictOpen
               exact hcov
             · rw [Function.update_of_ne hqp, Function.update_of_ne hqp]
               simp only [VU, restrictOpenTangentSection_apply]
+              rfl
           have hih := ih x (Function.update (fun q : Fin (a + 2) => VU q x) p covL)
           calc
             covDerivOfField (I := I) (gRef.restrictOpen (I := I) U) A0U a x

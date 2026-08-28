@@ -41,7 +41,7 @@ theorem smoothCc_norm_le_of_fibreSq (g : SmoothRiemannianMetric I M) {r s : ℕ}
       riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x) ≤ K ^ 2) :
     ‖S‖ ≤ K *
       Real.sqrt ((riemannianVolumeMeasure (I := I) (M := M) g).real Set.univ) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hvol : 0 ≤ (riemannianVolumeMeasure (I := I) (M := M) g).real Set.univ :=
     ENNReal.toReal_nonneg
@@ -77,7 +77,7 @@ theorem volReal_cross_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (riemannianVolumeMeasure (I := I) (M := M) g₀).real Set.univ ≤
       Real.sqrt (Λ ^ Module.finrank ℝ E) *
         (riemannianVolumeMeasure (I := I) (M := M) gBase).real Set.univ := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) gBase) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) gBase) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) gBase
   have hmeas := (volumeMeasure_cross_le (I := I) (M := M) gBase g₀ hEq).1
   have hpt := Measure.le_iff'.mp hmeas Set.univ
@@ -115,6 +115,7 @@ theorem realizeMetric_zero (g₀ : SmoothRiemannianMetric I M) {δ : ℝ} (hδ :
     ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
   ring
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 theorem rawTensorConnLapSmooth_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     rawTensorConnLapSmooth (I := I) g r s (0 : SmoothCcTensor g r s) = 0 := by
@@ -122,6 +123,7 @@ theorem rawTensorConnLapSmooth_zero (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (0 : SmoothCcTensor g r s) (0 : SmoothCcTensor g r s)
   rwa [sub_self, sub_self] at h
 
+omit [SigmaCompactSpace M] in
 theorem deTurckRem_zero (g₀ g_bg : SmoothRiemannianMetric I M) {δ : ℝ} (hδ : δ < 1)
     (hb : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :

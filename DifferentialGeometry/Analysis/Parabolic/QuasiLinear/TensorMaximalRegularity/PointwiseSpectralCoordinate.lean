@@ -146,7 +146,7 @@ private theorem carrier_toFun_coeff_eq_perModeConv_IccExtend (hT : 0 < T)
     Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i) with hφi_def
   have hφi_cont : Continuous φi := by
     refine Continuous.Icc_extend' ?_
-    exact (hcoord i).restrict
+    exact (hcoord i).domRestrict
   have hφi_mem : ∀ {x : ℝ}, x ∈ Set.Icc (0 : ℝ) T → φi x = (F x).coeff i := by
     intro x hx
     rw [hφi_def, Set.IccExtend_of_mem hT.le _ hx]
@@ -215,7 +215,7 @@ theorem carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (hT : 0 < T)
     Set.IccExtend hd₂_pos.le (fun p : ↑(Set.Icc (0 : ℝ) d₂) => (F p.1).coeff i) with hφi_def
   have hφi_cont : Continuous φi := by
     refine Continuous.Icc_extend' ?_
-    exact (hcoord i).restrict
+    exact (hcoord i).domRestrict
   have hφi_mem : ∀ {x : ℝ}, x ∈ Set.Icc (0 : ℝ) d₂ → φi x = (F x).coeff i := by
     intro x hx
     rw [hφi_def, Set.IccExtend_of_mem hd₂_pos.le _ hx]
@@ -288,7 +288,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id_restrict (hT : 0 < T
       (fun p : ↑(Set.Icc (0 : ℝ) d₂) => (F p.1).coeff i), ?_, ?_⟩
   · intro i
     refine Continuous.Icc_extend' ?_
-    exact (hcoord i).restrict
+    exact (hcoord i).domRestrict
   · intro t ht i
     rw [tensorHsToL2_tensorL2Coeff ha]
     exact carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (I := I) (M := M)
@@ -352,7 +352,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T)
     ?_, ?_, ?_⟩
   · intro i
     refine Continuous.Icc_extend' ?_
-    exact (hcoord i).restrict
+    exact (hcoord i).domRestrict
   · intro c hc t ht
     refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) (hsum c hc)
     · refine mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i c) ?_
@@ -362,7 +362,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T)
         Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i) with hφi_def
       have hφi_cont : Continuous φi := by
         refine Continuous.Icc_extend' ?_
-        exact (hcoord i).restrict
+        exact (hcoord i).domRestrict
       have hforcing : forcingMass (I := I) (M := M) gforce c i =
           tensorSobolevWeight (I := I) (M := M) i c *
             ∫ τ in Set.Icc (0 : ℝ) T,
@@ -393,7 +393,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T)
           ← MeasureTheory.integral_Icc_eq_integral_Ioc]
         refine MeasureTheory.setIntegral_mono_set (hφi_cont.pow 2).integrableOn_Icc ?_ ?_
         · filter_upwards with x; positivity
-        · exact HasSubset.Subset.eventuallyLE (Set.Icc_subset_Icc le_rfl ht.2)
+        · exact LE.le.eventuallyLE (Set.Icc_subset_Icc le_rfl ht.2)
       rw [hforcing, hIcc_eq]
       exact mul_le_mul_of_nonneg_left htint (tensorSobolevWeight_nonneg (I := I) (M := M) i c)
   · intro t ht i
@@ -422,7 +422,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id (hT : 0 < T)
     ?_, ?_⟩
   · intro i
     refine Continuous.Icc_extend' ?_
-    exact (hcoord i).restrict
+    exact (hcoord i).domRestrict
   · intro t ht i
     rw [tensorHsToL2_tensorL2Coeff ha]
     exact carrier_toFun_coeff_eq_perModeConv_IccExtend (I := I) (M := M)

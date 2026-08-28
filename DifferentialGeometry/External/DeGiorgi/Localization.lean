@@ -131,7 +131,8 @@ private theorem affine_scale_measure_ne_zero
     exact abs_pos.mpr hpow_ne
   exact inv_pos.mpr habs_pos
 
-private noncomputable def affineMeasurableEmbedding
+omit [NeZero d] in
+private theorem affineMeasurableEmbedding
     {x₀ : E} {R : ℝ} (hR : 0 < R) :
     MeasurableEmbedding (fun z : E => x₀ + R • z) :=
   ((MeasurableEquiv.addLeft x₀).measurableEmbedding).comp
@@ -150,8 +151,10 @@ theorem essSup_rescale_halfBall
   have hmap :
       Measure.map T μsrc =
         ENNReal.ofReal (|R ^ Module.finrank ℝ E|⁻¹) • μdst := by
-    simpa [μsrc, μdst, T, show R * (1 / 2 : ℝ) = R / 2 by ring] using
-      affine_map_restrict_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
+    have h := affine_map_restrict_ball_mul (d := d) (x₀ := x₀) (R := R)
+      (ρ := (1 / 2 : ℝ)) hR
+    rw [show R * (1 / 2 : ℝ) = R / 2 by ring] at h
+    simpa [μsrc, μdst, T] using h
   have hiff :
       ∀ a : ℝ,
         (∀ᵐ z ∂μsrc, u (T z) ≤ a) ↔ ∀ᵐ x ∂μdst, u x ≤ a := by
@@ -188,8 +191,10 @@ theorem essInf_rescale_halfBall
   have hmap :
       Measure.map T μsrc =
         ENNReal.ofReal (|R ^ Module.finrank ℝ E|⁻¹) • μdst := by
-    simpa [μsrc, μdst, T, show R * (1 / 2 : ℝ) = R / 2 by ring] using
-      affine_map_restrict_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
+    have h := affine_map_restrict_ball_mul (d := d) (x₀ := x₀) (R := R)
+      (ρ := (1 / 2 : ℝ)) hR
+    rw [show R * (1 / 2 : ℝ) = R / 2 by ring] at h
+    simpa [μsrc, μdst, T] using h
   have hiff :
       ∀ a : ℝ,
         (∀ᵐ z ∂μsrc, a ≤ u (T z)) ↔ ∀ᵐ x ∂μdst, a ≤ u x := by
@@ -427,7 +432,8 @@ theorem IsSubsolution.congr_ae
   intro hv φ hφ hφw hφ_nonneg
   let hu : MemW1pWitness 2 u Ω := MemW1pWitness.of_ae_eq huv.symm hv
   have hineq : bilinFormOfCoeff A hu hφw ≤ 0 := hsub.2 hu φ hφ hφw hφ_nonneg
-  simpa [hu, MemW1pWitness.of_ae_eq] using hineq
+  change bilinFormOfCoeff A hv hφw ≤ 0 at hineq
+  exact hineq
 
 theorem IsSupersolution.congr_ae
     {Ω : Set E} {A : EllipticCoeff d Ω} {u v : E → ℝ}
@@ -438,7 +444,8 @@ theorem IsSupersolution.congr_ae
   intro hv φ hφ hφw hφ_nonneg
   let hu : MemW1pWitness 2 u Ω := MemW1pWitness.of_ae_eq huv.symm hv
   have hineq : 0 ≤ bilinFormOfCoeff A hu hφw := hsuper.2 hu φ hφ hφw hφ_nonneg
-  simpa [hu, MemW1pWitness.of_ae_eq] using hineq
+  change 0 ≤ bilinFormOfCoeff A hv hφw at hineq
+  exact hineq
 
 theorem IsSolution.congr_ae
     {Ω : Set E} {A : EllipticCoeff d Ω} {u v : E → ℝ}
@@ -534,7 +541,7 @@ theorem IsSubsolution.sub_const_ball
     (hsub : IsSubsolution A u) (k : ℝ) :
     IsSubsolution A (fun x => u x - k) := by
   let _ := _hr
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball c r)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball c r)) := by
     rw [MeasureTheory.isFiniteMeasure_iff]
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := r))
   let hu : MemW1pWitness 2 u (Metric.ball c r) := MemW1p.someWitness hsub.1
@@ -548,8 +555,8 @@ theorem IsSubsolution.sub_const_ball
     MemW1pWitness.of_ae_eq (Ω := Metric.ball c r)
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : bilinFormOfCoeff A huBack hφ ≤ 0 := hsub.2 huBack φ hφ0 hφ hφ_nonneg
-  simpa [huBack, huBackRaw, MemW1pWitness.of_ae_eq, MemW1pWitness.sub_const,
-    sub_eq_add_neg, add_assoc] using hineq
+  change bilinFormOfCoeff A hv hφ ≤ 0 at hineq
+  exact hineq
 
 theorem IsSupersolution.sub_const_ball
     {c : E} {r : ℝ} (_hr : 0 < r)
@@ -557,7 +564,7 @@ theorem IsSupersolution.sub_const_ball
     (hsuper : IsSupersolution A u) (k : ℝ) :
     IsSupersolution A (fun x => u x - k) := by
   let _ := _hr
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball c r)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball c r)) := by
     rw [MeasureTheory.isFiniteMeasure_iff]
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := r))
   let hu : MemW1pWitness 2 u (Metric.ball c r) := MemW1p.someWitness hsuper.1
@@ -571,8 +578,8 @@ theorem IsSupersolution.sub_const_ball
     MemW1pWitness.of_ae_eq (Ω := Metric.ball c r)
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : 0 ≤ bilinFormOfCoeff A huBack hφ := hsuper.2 huBack φ hφ0 hφ hφ_nonneg
-  simpa [huBack, huBackRaw, MemW1pWitness.of_ae_eq, MemW1pWitness.sub_const,
-    sub_eq_add_neg, add_assoc] using hineq
+  change 0 ≤ bilinFormOfCoeff A hv hφ at hineq
+  exact hineq
 
 theorem IsSolution.sub_const_ball
     {c : E} {r : ℝ} (hr : 0 < r)
@@ -598,8 +605,11 @@ theorem IsSubsolution.neg_ball
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : bilinFormOfCoeff A huBack hφ ≤ 0 := hsub.2 huBack φ hφ0 hφ hφ_nonneg
   have hsmul : bilinFormOfCoeff A huBack hφ = -bilinFormOfCoeff A hv hφ := by
-    simpa [huBack, huBackRaw, MemW1pWitness.of_ae_eq] using
-      (bilinFormOfCoeff_smul_left (-1) A hv hφ)
+    calc
+      bilinFormOfCoeff A huBack hφ = bilinFormOfCoeff A (hv.smul (-1)) hφ := rfl
+      _ = (-1 : ℝ) * bilinFormOfCoeff A hv hφ :=
+        bilinFormOfCoeff_smul_left (-1) A hv hφ
+      _ = -bilinFormOfCoeff A hv hφ := neg_one_mul _
   rw [hsmul] at hineq
   linarith
 
@@ -620,8 +630,11 @@ theorem IsSupersolution.neg_ball
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : 0 ≤ bilinFormOfCoeff A huBack hφ := hsuper.2 huBack φ hφ0 hφ hφ_nonneg
   have hsmul : bilinFormOfCoeff A huBack hφ = -bilinFormOfCoeff A hv hφ := by
-    simpa [huBack, huBackRaw, MemW1pWitness.of_ae_eq] using
-      (bilinFormOfCoeff_smul_left (-1) A hv hφ)
+    calc
+      bilinFormOfCoeff A huBack hφ = bilinFormOfCoeff A (hv.smul (-1)) hφ := rfl
+      _ = (-1 : ℝ) * bilinFormOfCoeff A hv hφ :=
+        bilinFormOfCoeff_smul_left (-1) A hv hφ
+      _ = -bilinFormOfCoeff A hv hφ := neg_one_mul _
   rw [hsmul] at hineq
   linarith
 

@@ -57,7 +57,7 @@ private theorem clm_apply_sub_le
     (A B : X →L[ℝ] Y) (x y : X) :
     ‖A x - B y‖ ≤ ‖A - B‖ * ‖x‖ + ‖B‖ * ‖x - y‖ := by
   rw [show A x - B y = (A - B) x + B (x - y) by
-    simp only [ContinuousLinearMap.sub_apply, map_sub]
+    simp only [sub_apply, map_sub]
     module]
   exact (norm_add_le _ _).trans
     (add_le_add ((A - B).le_opNorm x) (B.le_opNorm (x - y)))
@@ -125,7 +125,7 @@ theorem lowerScaleN_frozen
     lowerScaleN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u =
       lowerScaleForce (I := I) (M := M) g +
         lowerScaleA (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u u := by
-  simp only [lowerScaleN, lowerScaleA, ContinuousLinearMap.add_apply,
+  simp only [lowerScaleN, lowerScaleA, add_apply,
     ContinuousLinearMap.comp_apply]
   rw [radialCLM_h3 (I := I) (M := M) g hρ,
     radialCLM_h2 (I := I) (M := M) g hρ.le]
@@ -260,7 +260,10 @@ theorem lowerScaleA_aemeas
       (metricH2 (I := I) (M := M) g)
       (metricH1 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA1 hR2J
-  simpa only [lowerScaleA] using h2.add h1
+  refine (h2.add h1).congr ?_
+  exact Filter.Eventually.of_forall fun x => by
+    unfold lowerScaleA
+    congr 5
 
 private theorem lowerScaleN_sub_eq
     (g : SmoothRiemannianMetric I M)
@@ -285,7 +288,7 @@ private theorem lowerScaleN_sub_eq
         A2 (incl32 (I := I) (M := M) g v) (Ru - Rv) +
         (A1 u - A1 v) Su + A1 v (Su - Sv) := by
   dsimp only
-  simp only [lowerScaleN, ContinuousLinearMap.sub_apply, map_sub]
+  simp only [lowerScaleN, sub_apply, map_sub]
   module
 
 private theorem lowerScaleN_sub_le

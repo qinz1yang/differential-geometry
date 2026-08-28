@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.Auxiliary
@@ -43,7 +44,7 @@ private theorem chartRep_restrict
 omit [CompleteSpace E] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private theorem deriv_repr_comp_at
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [BoundarylessManifold I M]
     (gamma : ℝ → M)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (t : ℝ)
@@ -97,7 +98,7 @@ private theorem deriv_repr_comp_at
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covAlong_restrict_at
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [T2Space M] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (t : ℝ)
@@ -205,7 +206,12 @@ private theorem mfderiv_from_chart
     have happ := congrArg (fun L => L v) hchain
     rw [mfderivWithin_eq_fderivWithin, mfderivWithin_univ] at happ
     rw [hsymm] at happ
-    simpa [writtenInExtChartAt, z, ContinuousLinearMap.comp_apply] using happ
+    have happF := congrArg (NormedSpace.fromTangentSpace _) happ
+    change fderivWithin ℝ (f ∘ (extChartAt I a).symm) (Set.range I) z v =
+      mfderiv I 𝓘(ℝ, F) f p
+        ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I a).symm
+          (Set.range I) z) v) at happF
+    exact happF
   have hfield :
       trivFromE (I := I) a p v =
         (mfderivWithin 𝓘(ℝ, E) I (extChartAt I a).symm
@@ -213,7 +219,9 @@ private theorem mfderiv_from_chart
     have hlin := TangentBundle.symmL_trivializationAt
       (𝕜 := ℝ) (I := I) (x₀ := a) (x := p) hp
     have happ := congrArg (fun L => L v) hlin
-    simpa [trivFromE, z] using happ
+    change ((trivializationAt E (TangentSpace I) a).symmL ℝ p) v =
+      (mfderivWithin 𝓘(ℝ, E) I (extChartAt I a).symm (Set.range I) z) v
+    exact happ
   have hwithin :
       fderivWithin ℝ (writtenInExtChartAt I 𝓘(ℝ, F) a f)
           (Set.range I) z v =
@@ -225,7 +233,7 @@ private theorem mfderiv_from_chart
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [FiniteDimensional ℝ F]
     [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 private theorem triv_mfderiv_cross
-    [I.Boundaryless] [J.Boundaryless]
+    [I.Boundaryless]
     [IsManifold I 1 M] [IsManifold J 1 N]
     (Phi : M ≃ₘ⟮I, J⟯ N) (a p : M) (b : N)
     (hp : p ∈ (chartAt H a).source)
@@ -250,21 +258,25 @@ private theorem triv_mfderiv_cross
   have hfixed := mfderiv_from_chart (I := I)
     (f := fun y : M => extChartAt J b (Phi y)) a p hp
     (hext.comp p hPhi) v
-  calc
-    mfderiv J 𝓘(ℝ, F) (extChartAt J b) (Phi p)
+  have hfirst :
+      mfderiv J 𝓘(ℝ, F) (extChartAt J b) (Phi p)
           (mfderiv I J (Phi : M → N) p (trivFromE (I := I) a p v)) =
         mfderiv I 𝓘(ℝ, F) (fun y : M => extChartAt J b (Phi y)) p
           (trivFromE (I := I) a p v) := by
-      simpa [Function.comp_def] using hcomp.symm
-    _ = fderiv ℝ
-        (fun z : E => extChartAt J b (Phi ((extChartAt I a).symm z)))
-        (extChartAt I a p) v := by
-      simpa [writtenInExtChartAt, Function.comp_def] using hfixed
+    simpa [Function.comp_def] using hcomp.symm
+  have hsecond :
+      mfderiv I 𝓘(ℝ, F) (fun y : M => extChartAt J b (Phi y)) p
+          (trivFromE (I := I) a p v) =
+        fderiv ℝ
+          (fun z : E => extChartAt J b (Phi ((extChartAt I a).symm z)))
+          (extChartAt I a p) v := by
+    simpa [writtenInExtChartAt, Function.comp_def, chartAt_self_eq] using hfixed
+  exact hfirst.trans hsecond
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [FiniteDimensional ℝ F]
     [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 private theorem chartRep_mapCross_ev
-    [I.Boundaryless] [J.Boundaryless]
+    [I.Boundaryless]
     [IsManifold I 1 M] [IsManifold J 1 N]
     (Phi : M ≃ₘ⟮I, J⟯ N) (gamma : ℝ → M)
     (V : ∀ s, TangentSpace I (gamma s)) (t : ℝ)
@@ -319,7 +331,7 @@ private theorem deriv_fderiv_apply_zero
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [FiniteDimensional ℝ F]
     [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 private theorem chartRep_mapCross_diff
-    [I.Boundaryless] [J.Boundaryless]
+    [I.Boundaryless]
     [IsManifold I 1 M] [IsManifold J 1 N]
     (Phi : M ≃ₘ⟮I, J⟯ N) (gamma : ℝ → M)
     (V : ∀ s, TangentSpace I (gamma s)) (t : ℝ)
@@ -342,7 +354,8 @@ private theorem chartRep_mapCross_diff
     have hwithin := (contMDiffAt_iff.mp hPhi).2
     have hinfty : ContDiffAt ℝ ∞ psi (u t) := by
       simpa [psi, u, a, chartCurve,
-        ModelWithCorners.Boundaryless.range_eq_univ (I := I)] using hwithin
+        ModelWithCorners.Boundaryless.range_eq_univ (I := I),
+        contDiffWithinAt_univ] using hwithin
     exact hinfty.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))
   have hDpsi : DifferentiableAt ℝ (fun s => fderiv ℝ psi (u s)) t := by
     exact ((hpsi.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)).comp t hu
@@ -355,11 +368,10 @@ private theorem chartRep_mapCross_diff
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompleteSpace F]
     [NeZero (Module.finrank ℝ F)] in
 private theorem covAlong_mapCross_zero
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [I.Boundaryless]
+    [T2Space M]
+    [IsManifold I 1 M]
+    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M) (V : ∀ s, TangentSpace I (gamma s)) (t : ℝ)
     (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gamma t)
@@ -393,7 +405,8 @@ private theorem covAlong_mapCross_zero
     have hwithin := (contMDiffAt_iff.mp hPhi).2
     have hinfty : ContDiffAt ℝ ∞ psi (u t) := by
       simpa [psi, u, a, chartCurve,
-        ModelWithCorners.Boundaryless.range_eq_univ (I := I)] using hwithin
+        ModelWithCorners.Boundaryless.range_eq_univ (I := I),
+        contDiffWithinAt_univ] using hwithin
     exact hinfty.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))
   have hrepEv :
       chartRepAt (I := J) delta W t =ᶠ[nhds t]
@@ -464,8 +477,8 @@ private theorem covAlong_mapCross_zero
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_mapCrossAt
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold J 1 N] (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -525,8 +538,8 @@ theorem covAlong_mapCrossAt
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_mapCross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold J 1 N] (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -542,11 +555,11 @@ theorem covAlong_mapCross
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_natCrossAt
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M] [hIM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [IsManifold J 1 N] [hJN : IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M) (V : ∀ s, TangentSpace I (gamma s)) (t : ℝ)
     (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gamma t)
@@ -557,6 +570,8 @@ theorem covAlong_natCrossAt
           gamma V t) =
       covDerivAlong (I := J) g (fun s => Phi (gamma s))
         (fun s => mfderiv I J (Phi : M → N) (gamma s) (V s)) t := by
+  let _ := hIM
+  let _ := hJN
   let Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     { toFun := linearExtensionTangent (I := I) (gamma t) (V t)
@@ -597,7 +612,8 @@ theorem covAlong_natCrossAt
     rw [hRrep]
     exact hV.sub hYdiff
   have hRt : R t = 0 := by
-    simp [R, Yalong, Y]
+    change V t - linearExtensionTangent (I := I) (gamma t) (V t) (gamma t) = 0
+    rw [linearExtensionTangent_eq, sub_self]
   have hYmapDiff : DifferentiableAt ℝ
       (chartRepAt (I := J) delta Ymap t) t := by
     simpa [delta, Ymap] using
@@ -653,9 +669,9 @@ theorem covAlong_natCrossAt
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_natCross
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)

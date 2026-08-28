@@ -4,7 +4,6 @@ import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

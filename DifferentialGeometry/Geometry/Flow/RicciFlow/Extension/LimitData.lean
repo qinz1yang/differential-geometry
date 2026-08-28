@@ -22,7 +22,7 @@ variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
 variable [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
-variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
+variable [SigmaCompactSpace M]
 
 def cinftyLimitData_of_allMBounds
     {alpha omega : ℝ} {hαω : alpha < omega}
@@ -70,7 +70,7 @@ def cinftyLimitData_of_solution
       rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by
     intro t ht
-    simpa [SolutionOn.family, SolutionFamily.connection] using
+    simpa [SolutionOn.family, SolutionFamily.connection, metricCov] using
       hRm (⟨t, ht⟩ : RealTimeInterval.FlowTime
         (RealTimeInterval.closedOpen alpha omega hαω))
   have hCan := canonical_curvature_norm_sq_bounded_of_realization

@@ -48,7 +48,7 @@ private lemma sqrt_g0_inner_add_le
       g₀.inner x a a + 2 * g₀.inner x a b + g₀.inner x b b := by
     have h1 : g₀.inner x (a + b) (a + b)
         = g₀.inner x a (a + b) + g₀.inner x b (a + b) := by
-      rw [map_add (g₀.inner x), ContinuousLinearMap.add_apply]
+      rw [map_add (g₀.inner x), add_apply]
     have h2 : g₀.inner x a (a + b) = g₀.inner x a a + g₀.inner x a b :=
       map_add (g₀.inner x a) a b
     have h3 : g₀.inner x b (a + b) = g₀.inner x b a + g₀.inner x b b :=

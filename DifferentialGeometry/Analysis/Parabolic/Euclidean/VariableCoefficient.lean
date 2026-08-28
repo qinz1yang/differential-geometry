@@ -73,7 +73,7 @@ def parabolicMatrixCoefficientRescale
     n → n → ParabolicPoint (Euc n) → Real :=
   fun i j p ↦ a i j (parabolicDilationAt r p0 p)
 
-omit [DecidableEq n] [Nonempty n] in
+omit [Fintype n] [DecidableEq n] [Nonempty n] in
 @[simp]
 theorem parabolicMatrixCoefficientRescale_apply
     (r : NNReal) (p0 : ParabolicPoint (Euc n))
@@ -82,13 +82,14 @@ theorem parabolicMatrixCoefficientRescale_apply
     parabolicMatrixCoefficientRescale r p0 a i j p =
       a i j (parabolicDilationAt r p0 p) := rfl
 
-omit [DecidableEq n] [Nonempty n] in
+omit [Fintype n] [DecidableEq n] [Nonempty n] in
 theorem parabolicMatrixCoefficientRescale_origin
     (r : NNReal) (p0 : ParabolicPoint (Euc n))
     (a : n → n → ParabolicPoint (Euc n) → Real) (i j : n) :
     parabolicMatrixCoefficientRescale r p0 a i j
         (parabolicPoint 0 0) = a i j p0 := by
-  simp [parabolicMatrixCoefficientRescale]
+  simp [parabolicMatrixCoefficientRescale, parabolicDilationAt,
+    parabolicTranslation, parabolicDilation]
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicMatrixCoefficientRescale_holderWith_unitBall
@@ -97,13 +98,16 @@ theorem parabolicMatrixCoefficientRescale_holderWith_unitBall
     (a : n → n → ParabolicPoint (Euc n) → Real)
     (Ka : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball p0 r).restrict (a i j))) :
+      ((Metric.ball p0 r).domRestrict (a i j))) :
     ∀ i j, HolderWith (Ka i j * r ^ (alpha : Real)) alpha
-      ((Metric.ball (parabolicPoint 0 0) 1).restrict
+      ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
         (parabolicMatrixCoefficientRescale r p0 a i j)) := by
   intro i j
-  simpa only [Function.comp_def, parabolicMatrixCoefficientRescale] using
+  let h : HolderWith (Ka i j * r ^ (alpha : Real)) alpha
+      ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
+        (parabolicMatrixCoefficientRescale r p0 a i j)) :=
     parabolicHolder_dilationAt_unitBall r hr p0 (ha i j)
+  exact h
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicMatrixCoefficientRescale_norm_sub_le_of_mem_unitBall
@@ -112,7 +116,7 @@ theorem parabolicMatrixCoefficientRescale_norm_sub_le_of_mem_unitBall
     (a : n → n → ParabolicPoint (Euc n) → Real)
     (Ka : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball p0 r).restrict (a i j)))
+      ((Metric.ball p0 r).domRestrict (a i j)))
     (i j : n) (p : ParabolicPoint (Euc n))
     (hp : p ∈ Metric.ball (parabolicPoint 0 0) 1) :
     ‖a i j p0 - parabolicMatrixCoefficientRescale r p0 a i j p‖ ≤
@@ -167,7 +171,8 @@ theorem parabolicMatrixFreezeSupConst_rescale
     (Ka : n → n → NNReal) (c : NNReal) :
     parabolicMatrixFreezeSupConst (fun i j ↦ Ka i j * c) =
       c * parabolicMatrixFreezeSupConst Ka := by
-  simpa only [mul_comm] using parabolicMatrixFreezeSupConst_mul Ka c
+  simpa only [parabolicMatrixFreezeSupConst, mul_comm] using
+    parabolicMatrixFreezeSupConst_mul Ka c
 
 omit [Nonempty n] [NormedSpace Real F] in
 theorem spdParabolicSchauderDefectConst_rescale
@@ -272,10 +277,10 @@ theorem exists_parabolicMatrixCoefficientRescale_schauder_bounds_of_holderWith
     (alpha : NNReal) (halpha : 0 < alpha) (Ka : n → n → NNReal)
     (T : Real) (R : NNReal) (hR : 0 < R)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball p0 R).restrict (a i j))) :
+      ((Metric.ball p0 R).domRestrict (a i j))) :
     ∃ r : NNReal, 0 < r ∧ r ≤ R ∧
       (∀ i j, HolderWith (Ka i j * r ^ (alpha : Real)) alpha
-        ((Metric.ball (parabolicPoint 0 0) 1).restrict
+        ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
           (parabolicMatrixCoefficientRescale r p0 a i j))) ∧
       (∀ i j p, p ∈ Metric.ball (parabolicPoint 0 0) 1 →
         ‖a i j p0 - parabolicMatrixCoefficientRescale r p0 a i j p‖ ≤
@@ -288,7 +293,7 @@ theorem exists_parabolicMatrixCoefficientRescale_schauder_bounds_of_holderWith
     exists_pos_le_rescale_spdParabolicSchauderDefectConst_lt_one
       (Matrix.of fun i j ↦ a i j p0) hA alpha halpha Ka T R hR
   have har : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball p0 r).restrict (a i j)) := by
+      ((Metric.ball p0 r).domRestrict (a i j)) := by
     intro i j
     apply HolderOnWith.holderWith
     exact (HolderWith.restrict_iff.mp (ha i j)).mono
@@ -313,12 +318,12 @@ theorem exists_parabolicMatrixCoefficientRescale_schauder_bounds_of_holderWith_o
     (alpha : NNReal) (halpha : 0 < alpha) (Ka : n → n → NNReal)
     (T : Real)
     (hcoeff : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (coeff i j))) :
     ∃ rho : NNReal, 0 < rho ∧ rho ≤ 1 ∧
       (rho : Real) ≤ parabolicInteriorRadius a t₀ t₁ b r R ∧
       (∀ i j, HolderWith (Ka i j * rho ^ (alpha : Real)) alpha
-        ((Metric.ball (parabolicPoint 0 0) 1).restrict
+        ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
           (parabolicMatrixCoefficientRescale rho p0 coeff i j))) ∧
       (∀ i j p, p ∈ Metric.ball (parabolicPoint 0 0) 1 →
         ‖coeff i j p0 - parabolicMatrixCoefficientRescale rho p0 coeff i j p‖ ≤
@@ -337,9 +342,9 @@ theorem exists_parabolicMatrixCoefficientRescale_schauder_bounds_of_holderWith_o
     apply (Metric.ball_subset_ball ?_).trans
       (ball_parabolicInteriorRadius_subset_parabolicCylinder
         hat₀ ht₁b hrR hp0)
-    simpa only [radius, delta, NNReal.coe_mk] using min_le_left delta 1
+    exact_mod_cast min_le_left delta 1
   have hlocal : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball p0 radius).restrict (coeff i j)) := by
+      ((Metric.ball p0 radius).domRestrict (coeff i j)) := by
     intro i j
     exact ((HolderWith.restrict_iff.mp (hcoeff i j)).mono hball).holderWith
   obtain ⟨rho, hrho, hrhoRadius, hholder, hoscillation, hsmall⟩ :=
@@ -353,7 +358,7 @@ theorem exists_parabolicMatrixCoefficientRescale_schauder_bounds_of_holderWith_o
   · calc
       (rho : Real) ≤ radius := by exact_mod_cast hrhoRadius
       _ ≤ delta := by
-        simpa only [radius, NNReal.coe_mk] using min_le_left delta 1
+        exact_mod_cast min_le_left delta 1
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
@@ -432,18 +437,18 @@ theorem parabolicVariableMatrixOperator_rescaleAt_holderWith_unitBall
     (a : n → n → ParabolicPoint (Euc n) → Real)
     (u : Real → Euc n → F) (hspace : ∀ t, ContDiff Real 2 (u t))
     (hoperator : HolderWith K alpha
-      ((Metric.ball p0 r).restrict (parabolicVariableMatrixOperator a u))) :
+      ((Metric.ball p0 r).domRestrict (parabolicVariableMatrixOperator a u))) :
     HolderWith (K * r ^ (alpha : Real) * r ^ 2) alpha
-      ((Metric.ball (parabolicPoint 0 0) 1).restrict
+      ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
         (parabolicVariableMatrixOperator
           (parabolicMatrixCoefficientRescale r p0 a)
           (parabolicRescaleAt r p0 u))) := by
   have heq :
-      (Metric.ball (parabolicPoint 0 0) 1).restrict
+      (Metric.ball (parabolicPoint 0 0) 1).domRestrict
           (parabolicVariableMatrixOperator
             (parabolicMatrixCoefficientRescale r p0 a)
             (parabolicRescaleAt r p0 u)) =
-        (Metric.ball (parabolicPoint 0 0) 1).restrict
+        (Metric.ball (parabolicPoint 0 0) 1).domRestrict
           (parabolicSourceRescaleAt r p0
             (parabolicVariableMatrixOperator a u)) := by
     funext p
@@ -477,15 +482,16 @@ theorem parabolicFrozenMatrixLap_eq_variable_add_defect
     parabolicFrozenMatrixLap (fun i j ↦ a i j p0) u p =
       parabolicVariableMatrixLap a u p +
         parabolicMatrixLapFreezeDefect a p0 u p := by
-  simp only [parabolicFrozenMatrixLap_apply,
-    parabolicVariableMatrixLap_apply, parabolicMatrixLapFreezeDefect]
+  simp only [parabolicVariableMatrixLap_apply, parabolicMatrixLapFreezeDefect]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i _hi
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro j _hj
-  module
+  rw [← add_smul]
+  congr 1
+  ring
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicTimeDerivative_sub_frozenMatrixLap
@@ -537,7 +543,7 @@ theorem parabolicHessianComponent_holderWith_restrict
     {alpha X : NNReal} {Q : Set (ParabolicPoint (Euc n))}
     {u : Real → Euc n → F}
     (h : eParabolicC2HolderGaugeOn alpha Q u ≤ X) (i j : n) :
-    HolderWith X alpha (Q.restrict (parabolicHessianComponent u i j)) := by
+    HolderWith X alpha (Q.domRestrict (parabolicHessianComponent u i j)) := by
   have hjet := parabolicSpatialJet_holderWith_restrict h
   intro p q
   rw [edist_dist, edist_dist]
@@ -552,7 +558,7 @@ theorem parabolicHessianComponent_holderWith_restrict
         hessianCurryEquiv (Euc n) F (parabolicSpatialJet 2 u q.1)
           (EuclideanSpace.basisFun n Real i)
           (EuclideanSpace.basisFun n Real j)‖ ≤ _
-    rw [← ContinuousLinearMap.sub_apply, ← ContinuousLinearMap.sub_apply,
+    rw [← _root_.sub_apply, ← _root_.sub_apply,
       ← map_sub]
     calc
       ‖hessianCurryEquiv (Euc n) F
@@ -651,12 +657,12 @@ theorem parabolicMatrixLapFreezeDefect_holderWith_restrict
     (a : n → n → ParabolicPoint (Euc n) → Real)
     (p0 : ParabolicPoint (Euc n)) (u : Real → Euc n → F)
     (Ka omega : n → n → NNReal)
-    (ha : ∀ i j, HolderWith (Ka i j) alpha (Q.restrict (a i j)))
+    (ha : ∀ i j, HolderWith (Ka i j) alpha (Q.domRestrict (a i j)))
     (homega : ∀ i j p, p ∈ Q → ‖a i j p0 - a i j p‖ ≤ omega i j)
     (hu : eParabolicC2HolderGaugeOn alpha Q u ≤ X) :
     HolderWith
       (∑ i, ∑ j, (omega i j * X + X * Ka i j)) alpha
-      (Q.restrict (parabolicMatrixLapFreezeDefect a p0 u)) := by
+      (Q.domRestrict (parabolicMatrixLapFreezeDefect a p0 u)) := by
   classical
   let C : n → n → NNReal :=
     fun i j ↦ omega i j * X + X * Ka i j
@@ -691,7 +697,9 @@ theorem parabolicMatrixLapFreezeDefect_holderWith_restrict
     (f := fun (i : n) (p : Q) ↦ ∑ j, (a i j p0 - a i j p.1) •
       parabolicHessianComponent u i j p.1)
     (fun i _ ↦ hinner i)
-  simpa only [C, parabolicMatrixLapFreezeDefect, Set.restrict_apply] using hall
+  let h : HolderWith (∑ i, ∑ j, (omega i j * X + X * Ka i j)) alpha
+      (Q.domRestrict (parabolicMatrixLapFreezeDefect a p0 u)) := hall
+  exact h
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicFrozenMatrixOperator_source_estimate
@@ -702,8 +710,8 @@ theorem parabolicFrozenMatrixOperator_source_estimate
     (hsourceBound :
       eSupNormOn Q (parabolicVariableMatrixOperator a u) ≤ Bf)
     (hsourceHolder : HolderWith Kf alpha
-      (Q.restrict (parabolicVariableMatrixOperator a u)))
-    (ha : ∀ i j, HolderWith (Ka i j) alpha (Q.restrict (a i j)))
+      (Q.domRestrict (parabolicVariableMatrixOperator a u)))
+    (ha : ∀ i j, HolderWith (Ka i j) alpha (Q.domRestrict (a i j)))
     (homega : ∀ i j p, p ∈ Q → ‖a i j p0 - a i j p‖ ≤ omega i j)
     (hu : eParabolicC2HolderGaugeOn alpha Q u ≤ X) :
     eSupNormOn Q
@@ -711,7 +719,7 @@ theorem parabolicFrozenMatrixOperator_source_estimate
         Bf + ∑ i, ∑ j, omega i j * X ∧
       HolderWith
         (Kf + ∑ i, ∑ j, (omega i j * X + X * Ka i j)) alpha
-        (Q.restrict
+        (Q.domRestrict
           (parabolicFrozenMatrixOperator (fun i j ↦ a i j p0) u)) := by
   have heq :
       parabolicFrozenMatrixOperator (fun i j ↦ a i j p0) u =
@@ -740,7 +748,7 @@ theorem spdHeatDuh_parabolicFrozenMatrixOperator_eq
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun q ↦ f q.time q.space))) :
     parabolicFrozenMatrixOperator A
         (fun t x ↦ spdHeatDuh A hA t f x) p =
@@ -782,7 +790,7 @@ theorem spdHeatDuh_parabolic_schauder_solution
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ f p.time p.space))) :
     (∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
         parabolicFrozenMatrixOperator A
@@ -820,11 +828,11 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_frozen_representatio
       (parabolicCylinder (Icc (0 : Real) S) Set.univ)
       (parabolicVariableMatrixOperator a u) ≤ Bf)
     (hsourceHolder : HolderWith Kf alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicVariableMatrixOperator a u)))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)
@@ -862,9 +870,9 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_frozen_representatio
           (parabolicFrozenMatrixOperator A u) p hp).trans (by
             simpa only [ENNReal.coe_add] using hfrozen.1)
   have hholderG : HolderWith (Kf + Kdefect) alpha
-      (Q.restrict (fun p ↦ g p.time p.space)) := by
-    have heq : Q.restrict (fun p ↦ g p.time p.space) =
-        Q.restrict (parabolicFrozenMatrixOperator A u) := by
+      (Q.domRestrict (fun p ↦ g p.time p.space)) := by
+    have heq : Q.domRestrict (fun p ↦ g p.time p.space) =
+        Q.domRestrict (parabolicFrozenMatrixOperator A u) := by
       funext p
       exact hgfrozen p.2
     rw [heq]
@@ -903,11 +911,11 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_frozen_representatio
       (parabolicCylinder (Icc (0 : Real) S) Set.univ)
       (parabolicVariableMatrixOperator a u) ≤ Bf)
     (hsourceHolder : HolderWith Kf alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicVariableMatrixOperator a u)))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)

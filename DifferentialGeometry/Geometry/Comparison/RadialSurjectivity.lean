@@ -28,7 +28,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -39,18 +39,18 @@ def gBall (g : SmoothRiemannianMetric I M) (p : M) (R : ℝ) :
     Set (TangentSpace I p) :=
   {v : TangentSpace I p | Real.sqrt (g.inner p v v) ≤ R}
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
     (b : ℝ) (v : TangentSpace I p) :
     g.inner p (b • v) (b • v) = b ^ 2 * g.inner p v v := by
-  rw [(g.inner p).map_smul b v, ContinuousLinearMap.smul_apply,
+  rw [(g.inner p).map_smul b v, smul_apply,
     (g.inner p v).map_smul b v]
   simp only [smul_eq_mul]
   ring
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma sqrt_gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
     {b : ℝ} (hb : 0 ≤ b) (v : TangentSpace I p) :
     Real.sqrt (g.inner p (b • v) (b • v)) =
@@ -58,8 +58,8 @@ lemma sqrt_gInner_smul_self (g : SmoothRiemannianMetric I M) (p : M)
   rw [gInner_smul_self (I := I) g p b v, Real.sqrt_mul (sq_nonneg b),
     Real.sqrt_sq hb]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma zero_mem_gBall (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
     (hR : 0 ≤ R) : (0 : TangentSpace I p) ∈ gBall (I := I) g p R := by
   have h0 : g.inner p (0 : TangentSpace I p) (0 : TangentSpace I p) = 0 := by
@@ -68,8 +68,8 @@ lemma zero_mem_gBall (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
   rw [h0, Real.sqrt_zero]
   exact hR
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 lemma starConvex_gBall (g : SmoothRiemannianMetric I M) (p : M) (R : ℝ) :
     StarConvex ℝ (0 : TangentSpace I p) (gBall (I := I) g p R) := by
   intro y hy a b ha hb hab
@@ -86,8 +86,8 @@ lemma starConvex_gBall (g : SmoothRiemannianMetric I M) (p : M) (R : ℝ) :
     _ = Real.sqrt (g.inner p y y) := one_mul _
     _ ≤ R := hy'
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem gBall_isPreconnected (g : SmoothRiemannianMetric I M) (p : M)
     {R : ℝ} (hR : 0 ≤ R) :
     IsPreconnected (gBall (I := I) g p R) :=
@@ -99,7 +99,7 @@ def radialMinSet (g : SmoothRiemannianMetric I M) (p : M) : Set M :=
     expMap (I := I) g p v = q ∧
       ENNReal.ofReal (Real.sqrt (g.inner p v v)) = riemannianEDist I p q}
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem p_mem_radialMinSet [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (p : M) :
     p ∈ radialMinSet (I := I) g p := by
@@ -108,45 +108,45 @@ theorem p_mem_radialMinSet [T2Space (TangentBundle I M)]
     simp
   rw [h0, Real.sqrt_zero, ENNReal.ofReal_zero, riemannianEDist_self]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private lemma gInner_self_nonneg (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) : 0 ≤ g.inner p v v := by
   rcases eq_or_ne v 0 with hv | hv
   · subst hv; simp
   · exact (g.pos p v hv).le
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] in
 private lemma continuous_gInner_self (g : SmoothRiemannianMetric I M) (p : M) :
     Continuous (fun v : TangentSpace I p => g.inner p v v) :=
   (g.inner p).continuous.clm_apply continuous_id
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] in
 private lemma continuous_sqrt_gInner_self (g : SmoothRiemannianMetric I M)
     (p : M) :
     Continuous (fun v : TangentSpace I p => Real.sqrt (g.inner p v v)) :=
   Real.continuous_sqrt.comp (continuous_gInner_self (I := I) g p)
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] in
 private lemma isClosed_gBall (g : SmoothRiemannianMetric I M) (p : M)
     (R : ℝ) : IsClosed (gBall (I := I) g p R) := by
   have hpre : gBall (I := I) g p R =
       (fun v : TangentSpace I p => Real.sqrt (g.inner p v v)) ⁻¹' Set.Iic R := by
-    ext v; simp only [gBall, Set.mem_setOf_eq, Set.mem_preimage, Set.mem_Iic]
+    ext v; simp only [gBall, Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_Iic]
   rw [hpre]
   exact IsClosed.preimage (continuous_sqrt_gInner_self (I := I) g p) isClosed_Iic
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] in
 private lemma isBounded_gBall (g : SmoothRiemannianMetric I M) (p : M)
     (R : ℝ) : Bornology.IsBounded (gBall (I := I) g p R) := by
   rcases lt_or_ge R 0 with hR | hR
   · have hempty : gBall (I := I) g p R = ∅ := by
       ext v
-      simp only [gBall, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_le]
+      simp only [gBall, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_le]
       exact lt_of_lt_of_le hR (Real.sqrt_nonneg _)
     rw [hempty]; exact Bornology.isBounded_empty
   · obtain ⟨r, hr⟩ :=
@@ -179,10 +179,10 @@ private lemma isBounded_gBall (g : SmoothRiemannianMetric I M) (p : M)
     rw [hv_eq, norm_smul, Real.norm_eq_abs, abs_of_pos hRpos]
     exact mul_le_mul_of_nonneg_left hwnorm hRpos.le
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma isCompact_gBall (g : SmoothRiemannianMetric I M) (p : M)
     (R : ℝ) : IsCompact (gBall (I := I) g p R) := by
-  haveI : ProperSpace (TangentSpace I p) := FiniteDimensional.proper_real (TangentSpace I p)
+  have : ProperSpace (TangentSpace I p) := FiniteDimensional.proper_real (TangentSpace I p)
   exact Metric.isCompact_of_isClosed_isBounded
     (isClosed_gBall (I := I) g p R) (isBounded_gBall (I := I) g p R)
 
@@ -191,15 +191,15 @@ variable [PseudoEMetricSpace M] [T2Space (TangentBundle I M)]
 variable [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
 variable [IsRiemannianManifold I M] [CompleteSpace M]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [ConnectedSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [ConnectedSpace M]
     [PseudoEMetricSpace M] [T2Space (TangentBundle I M)] [IsRiemannianManifold I M]
     [CompleteSpace M] in
 private lemma continuous_riemannianEDist_ambient
     (p : M) : Continuous (fun q : M => riemannianEDist I p q) := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  haveI : RegularSpace M := inferInstance
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have : RegularSpace M := inferInstance
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   exact (continuous_const.edist continuous_id)
 
 end RadialSurjectivity

@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -36,7 +35,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma pureRFrozenSlot0_covGrad_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
@@ -63,20 +62,21 @@ private lemma pureRFrozenDiffOp0_eq_fixedFramePureRSection
   rw [fixedFramePureRSection_toSection, pureRFrozenEndoFib, genuineCurvPureRFibFixedFrame]
   refine congrArg (covGradBundleEquiv (I := I) (M := M) 0 s x) ?_
   refine ContinuousLinearMap.ext (fun v => ?_)
-  rw [pureRFrozenDirCLM_apply, pureRDirCLMFixedFrame, ContinuousLinearMap.sum_apply]
+  rw [pureRFrozenDirCLM_apply, pureRDirCLMFixedFrame, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [pureRDirCLMSummandFixedFrame, LinearMap.coe_toContinuousLinearMap',
     pureRDirLMSummandFixedFrame,
     LinearMap.coe_mk, AddHom.coe_mk, pureRFrozenSlot0_covGrad_eq (I := I) (M := M) g s S B x i]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem covGrad_heq_congr_tw (g : SmoothRiemannianMetric I M) {a b : ℕ}
     (h : a = b) {Y : SmoothCcTensor g 0 a} {Z : SmoothCcTensor g 0 b} (hYZ : HEq Y Z) :
     HEq (covGrad (I := I) (M := M) g 0 a Y) (covGrad (I := I) (M := M) g 0 b Z) := by
   subst h
   rw [eq_of_heq hYZ]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_covGrad_comm_heq_tw (g : SmoothRiemannianMetric I M)
@@ -103,6 +103,7 @@ private theorem riemannianFiberNormSq_toSection_heq_congr_tw (g : SmoothRiemanni
   subst h
   rw [eq_of_heq hYZ]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_toSection_iteratedCovGrad_covGrad_comm

@@ -76,10 +76,19 @@ theorem revGram_smooth
   refine hcomp.congr ?_
   intro p hp
   have hx : p.2 ∈ e.baseSet := hp.2
-  simp only [Function.comp_apply, chartGramMatrix_apply]
+  simp only [Function.comp_apply, chartGramMatrix_apply, reverse_metric]
   rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx,
     e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-  rfl
+  have hbasis (k : Fin (Module.finrank Real E)) :
+      e.basisAt (chartModelBasis E) hx k = chartBasisVecFiber (I := I) x₀ k p.2 := by
+    unfold Bundle.Trivialization.basisAt chartBasisVecFiber
+    rw [Module.Basis.map_apply]
+    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
+  rw [hbasis i, hbasis j]
+  have hmetric : (flowG (I := I) S).metric (T - p.1) =
+      S.family.metric (T - p.1) := by
+    rfl
+  rw [hmetric]
 
 end Normed
 
@@ -107,12 +116,21 @@ theorem revTrace_eq
     -S.ricciAt (T - r) y (vec2 (I := I) X Y)
   let scalar : Real → M → Real := fun r y => -S.scalar (T - r) y
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by
-    simpa using
-      (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have h := (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have hfun : (fun _ : Real => T) - id = fun r : Real => T - r := by
+      funext r
+      rfl
+    rw [hfun] at h
+    simpa only [zero_sub] using h
   have hEq : MetricVariationEquationDerivAt (I := I) G Ric s := by
     intro y X Y
     have hcomp := (metricDerivAt (I := I) S hS ⟨T - s, hs⟩ y X Y).comp s hsub
-    simpa [G, Ric, reverseFamily, flowG] using hcomp
+    have hfun : ((fun r : Real => (S.family.metric r).inner y X Y) ∘
+        fun r : Real => T - r) = fun r : Real => (G.metric r).inner y X Y := by
+      funext r
+      rfl
+    rw [hfun] at hcomp
+    simpa [Ric] using hcomp
   have hScalar : scalarRealizesRicciTraceInFrame (I := I)
       (scalar s) (Ric s)
       (volumeTraceInvMetricComponents (I := I) (M := M) (G.metric s))
@@ -165,6 +183,7 @@ variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
+omit [SigmaCompactSpace M] in
 theorem revScalar_time
     [I.Boundaryless]
     {D : RealTimeInterval}
@@ -186,8 +205,12 @@ theorem revScalar_time
       (fun _ => rfl) (fun _ => rfl) ⟨T - s, hs⟩ x).hasDerivAt
       (D.regular_mem_nhds hs)
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by
-    simpa only [sub_eq_add_neg, Pi.add_apply, Pi.neg_apply, id_eq, zero_add] using
-      (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have h := (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have hfun : (fun _ : Real => T) - id = fun r : Real => T - r := by
+      funext r
+      rfl
+    rw [hfun] at h
+    simpa only [zero_sub] using h
   have hcomp := hbase.comp s hsub
   have hderiv :
       (laplacianAt (I := I) G (T - s) (S.scalar (T - s)) x +
@@ -201,7 +224,13 @@ theorem revScalar_time
               x 2 (S.ricci (T - s) x)) := by
     simp only [laplacianAt, reverseFamily, G, flowG, SolutionOn.family]
     ring
-  simpa only [Function.comp_apply, G] using hcomp.congr_deriv hderiv
+  have h := hcomp.congr_deriv hderiv
+  have hfun : ((fun r : Real => S.scalar r x) ∘ fun r : Real => T - r) =
+      fun r : Real => S.scalar (T - r) x := by
+    funext r
+    rfl
+  rw [hfun] at h
+  exact h
 
 omit [SigmaCompactSpace M] in
 theorem revGradSq_time
@@ -273,8 +302,12 @@ theorem revGradSq_time
       V s y - (n : Real) / (2 * s)
   let Q : Tensor0SSpace 2 I x := -S.ricciAt (T - s) x
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by
-    simpa only [sub_eq_add_neg, Pi.add_apply, Pi.neg_apply, id_eq, zero_add] using
-      (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have h := (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have hfun : (fun _ : Real => T) - id = fun r : Real => T - r := by
+      funext r
+      rfl
+    rw [hfun] at h
+    simpa only [zero_sub] using h
   have hg (X Y : TangentSpace I x) :
       HasDerivAt
         (fun r : Real => (G.metric r).inner x X Y)
@@ -288,12 +321,17 @@ theorem revGradSq_time
       rw [show (fun a : Fin 2 => if a = 0 then X else Y) = vec2 X Y by rfl]
       rw [Tensor0SSpace.neg_apply]
       ring
-    simpa only [Function.comp_apply, G, reverseFamily, flowG] using
-      hcomp.congr_deriv hderiv
+    have h := hcomp.congr_deriv hderiv
+    have hfun : ((fun r : Real => (S.family.metric r).inner x X Y) ∘
+        fun r : Real => T - r) = fun r : Real => (G.metric r).inner x X Y := by
+      funext r
+      rfl
+    rw [hfun] at h
+    exact h
   have hdf (X : TangentSpace I x) :
       HasDerivAt
-        (fun r : Real => extDerivFun (I := I) (f r) x X)
-        (extDerivFun (I := I) ft x X) s := by
+        (fun r : Real => mvfderiv (I := I) (f r) x X)
+        (mvfderiv (I := I) ft x X) s := by
     simpa only [G, f, ft] using
       potential_df_time (I := I) Dr G V u n hu hpos hs hspos x X
   have hmain := normGradSq_time (I := I) G.metric f ft Q hg hdf

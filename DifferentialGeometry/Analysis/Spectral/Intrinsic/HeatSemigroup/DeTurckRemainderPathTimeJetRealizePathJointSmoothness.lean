@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
@@ -55,13 +54,6 @@ open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 
-private local instance tensor0SModelNormedAddCommGroup_local {nn : ℕ} :
-    NormedAddCommGroup (Tensor0SBundle.Tensor0SModel nn ℝ E) := inferInstance
-
-private local instance tensor0SModelNormedSpace_local {nn : ℕ} :
-    NormedSpace ℝ (Tensor0SBundle.Tensor0SModel nn ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace nn
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem contMDiffWithinAt_curriedSection_prod_full {n : ℕ}
@@ -76,18 +68,15 @@ private theorem contMDiffWithinAt_curriedSection_prod_full {n : ℕ}
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p.1
         (tensor0S_curry (I := I) (M := M) n p.1 (T p))) s p₀ := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
-      (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y)) :=
-    tensor0SBundle_topology (n + 1)
   rw [Bundle.contMDiffWithinAt_totalSpace
     (F := E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
     (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y)
     (IB := I) (IM := I.prod 𝓘(ℝ, ℝ))]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
-  have hT_at := (Bundle.contMDiffWithinAt_totalSpace
-    (F := Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
-    (E := fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y)
-    (IB := I) (IM := I.prod 𝓘(ℝ, ℝ))).mp hT |>.2
+  have hT_total := hT
+  with_unfolding_all
+    rw [Bundle.contMDiffWithinAt_totalSpace] at hT_total
+  have hT_at := hT_total.2
   have hcurry :
       ContMDiff 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
         𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E) (∞ : WithTop ℕ∞)
@@ -136,7 +125,7 @@ private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
     (_hv : ∀ i, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1 (v i p)) s p₀),
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-      (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.toModel (T p) (fun i => v i p)) s p₀
+      (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.eval (T p) (fun i => v i p)) s p₀
   | 0, s, p₀, T, hT, v, _hv => by
     have hT_at := (Bundle.contMDiffWithinAt_totalSpace
       (F := Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -209,11 +198,7 @@ private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
       refine Fin.cases ?_ ?_ j
       · simp [Fin.cons_zero]
       · intro k; simp [Fin.cons_succ]
-    · change Tensor0SBundle.Tensor0SSpace.toModel (T p₀) (fun i : Fin (n + 1) => v i p₀) =
-        Tensor0SBundle.Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) n p₀.1 (T p₀)) (v 0 p₀))
-          (fun i : Fin n => v i.succ p₀)
-      rw [tensor0S_curry_apply_eval]
+    · rw [tensor0S_curry_apply_eval]
       refine Eq.symm ?_
       congr 1
       funext j
@@ -238,7 +223,6 @@ theorem deTurckRHSField_realizePath_jointContMDiffOn
           (tensorSectionRealizeMetric (I := I) g₀ (F q.1) hδ_lt (hδ q.1)) q.2))
       (Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   set gfam : ℝ → SmoothRiemannianMetric I M :=
     fun t : ℝ => tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t) with hgfam
   refine contMDiffOn_of_locally_contMDiffOn ?_
@@ -287,15 +271,17 @@ theorem deTurckRHSField_realizePath_jointContMDiffOn
       rw [continuousMultilinearMap_basis_repr]
       rw [trivializationAt_tensor0SBundle_succ_fibre]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-      change Tensor0SBundle.Tensor0SSpace.toModel
+      change Tensor0SBundle.Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (gfam q.1) q.2)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ q.2
             ((chartModelBasis E) (σ i))) = _
-      rw [deTurckRHSField_toModel_apply]
+      rw [deTurckRHSField_eval]
       have hframe : ∀ i : Fin 2,
           (trivializationAt E (TangentSpace I) α).symmL ℝ q.2 ((chartModelBasis E) (σ i)) =
             chartBasisVecFiber (I := I) α (σ i) q.2 :=
-        fun i => by rw [chartBasisVecFiber, Trivialization.symmL_apply]
+        fun i => by
+          rw [chartBasisVecFiber, Trivialization.symmL_apply _
+            (chartLeviCivitaGoodSet_mem_baseSet (I := I) hqgood)]
       rw [hframe 0, hframe 1]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
         (gfam q.1) g_bg α (σ 0) (σ 1) hqgood]
@@ -304,15 +290,17 @@ theorem deTurckRHSField_realizePath_jointContMDiffOn
       rw [continuousMultilinearMap_basis_repr]
       rw [trivializationAt_tensor0SBundle_succ_fibre]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-      change Tensor0SBundle.Tensor0SSpace.toModel
+      change Tensor0SBundle.Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (gfam p₀.1) p₀.2)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.2
             ((chartModelBasis E) (σ i))) = _
-      rw [deTurckRHSField_toModel_apply]
+      rw [deTurckRHSField_eval]
       have hframe : ∀ i : Fin 2,
           (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.2 ((chartModelBasis E) (σ i)) =
             chartBasisVecFiber (I := I) α (σ i) p₀.2 :=
-        fun i => by rw [chartBasisVecFiber, Trivialization.symmL_apply]
+        fun i => by
+          rw [chartBasisVecFiber, Trivialization.symmL_apply _
+            (chartLeviCivitaGoodSet_mem_baseSet (I := I) hp₀good)]
       rw [hframe 0, hframe 1]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
         (gfam p₀.1) g_bg α (σ 0) (σ 1) hp₀good]
@@ -350,7 +338,6 @@ theorem contMDiff_constOfIsEmpty_tensor0S_section :
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 0 I z) p.1
         (Tensor0SBundle.Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)))) := by
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0
   intro p₀
   rw [Bundle.contMDiffAt_totalSpace
     (F := Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -449,8 +436,8 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
         funext p
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun i _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · have hinv := chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
         have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
@@ -678,7 +665,19 @@ theorem deTurckRHSSection_realize_path_tensorInner_eigenSmooth_jointContMDiffOn
     rw [hl]
     apply ContinuousMultilinearMap.ext
     intro v
-    rw [deTurckRHSSection_toModel_apply, ← deTurckRHSField_toModel_apply]
+    rw [Tensor0SBundle.Tensor0SSpace.toModel_apply_model_vector,
+      Tensor0SBundle.Tensor0SSpace.toModel_apply_model_vector]
+    change Tensor0SBundle.Tensor0SSpace.eval
+        ((deTurckRHSSection (I := I) g_bg (gfam p.2)).toSection p.1
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I p.1) (1 : ℝ)))
+          (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v i)) =
+      Tensor0SBundle.Tensor0SSpace.eval
+        (deTurckRHSField (I := I) g_bg (gfam p.2) p.1)
+          (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v i))
+    rw [deTurckRHSSection_eval]
+    exact (deTurckRHSField_eval (I := I) g_bg (gfam p.2) p.1
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v i))).symm
   have hcoeff_recon : ∀ φ : Fin (0 + 2) → Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ =>

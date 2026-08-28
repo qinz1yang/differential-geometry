@@ -6,7 +6,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -53,7 +52,7 @@ theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact
               ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
                 (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx x) ^ 2 := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₀, hC₀_pos, hC₀_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact

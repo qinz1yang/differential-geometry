@@ -146,7 +146,7 @@ lemma wkpNorm_eq_of_compactSupport_smooth_subset
   rw [show (1 : ℕ) + 1 = 1 + 1 from rfl, Finset.sum_range_succ, Finset.sum_range_one]
   have h0_unique : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) :=
     fun α => by funext i; exact i.elim0
-  haveI : Unique (Fin 0 → Fin d) :=
+  have : Unique (Fin 0 → Fin d) :=
     { default := fun i : Fin 0 => i.elim0
       uniq := fun α => (h0_unique α).symm ▸ rfl }
   rw [Fintype.sum_unique
@@ -566,7 +566,7 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder_strict
           fderiv ℝ (fun z => chartTransitionEuclid (I := I) (M := M) α γ
               (chartTransitionEuclid (I := I) (M := M) γ α z)) y =
             ContinuousLinearMap.id ℝ EuclN := by
-        rw [h_evt.fderiv_eq]; exact fderiv_id'
+        rw [h_evt.fderiv_eq]; exact fderiv_fun_id
       have h_fderiv_comp :
           fderiv ℝ (fun z => chartTransitionEuclid (I := I) (M := M) α γ
               (chartTransitionEuclid (I := I) (M := M) γ α z)) y =
@@ -827,7 +827,7 @@ theorem cross_chart_bound_strict_strong
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
       (d := Module.finrank ℝ E) hp_one
       (chartTargetEuclid_isOpen (I := I) (M := M) γ)]
-    exact zero_le _
+    exact zero_le
   obtain ⟨Ω_γα, Ω_αγ, hΩγα_open, hΩαγ_open, hΩγα_subset_target, hΩαγ_subset_target,
     hΩγα_subset_overlap, _hΩαγ_subset_overlap, hKM_image_in_Ωγα, Φ,
     hΦ_eq_on_Ωγα, _hΦ_inv_eq_on_Ωαγ⟩ :=
@@ -1047,8 +1047,6 @@ theorem cross_chart_bound_strict_strong
       have h_le := Finset.single_le_sum (s := Finset.range (1 + 1))
         (f := fun j => (Fintype.card (Fin j → Fin (Module.finrank ℝ E)) : ℝ))
         (fun j _ => by positivity) h_zero_in
-      rw [show ((fun j => (Fintype.card (Fin j → Fin (Module.finrank ℝ E)) : ℝ)) 0 : ℝ) =
-          (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) from rfl] at h_le
       rw [h_at_zero] at h_le
       linarith
     have h_kfact_D_pos : 0 < ((1 : ℕ).factorial : ℝ) * Φ.derivBoundMaxOne ^ 1 := by
@@ -1410,7 +1408,7 @@ theorem cross_chart_bound_strict_strong
             (d := Module.finrank ℝ E) 1 p χ Ωα_target) := by
     refine h_chain_step.trans ?_
     rw [h_wkp_subset_α]
-    exact mul_le_mul_of_nonneg_left h_leib_α_step (zero_le _)
+    exact mul_le_mul_of_nonneg_left h_leib_α_step (zero_le)
   have h_combined :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 1 p ψ_total Ω_γα ≤
@@ -1419,7 +1417,7 @@ theorem cross_chart_bound_strict_strong
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 1 p χ Ωα_target)) := by
     refine h_leib_step.trans ?_
-    exact mul_le_mul_of_nonneg_left h_chain_combined (zero_le _)
+    exact mul_le_mul_of_nonneg_left h_chain_combined (zero_le)
   refine h_combined.trans ?_
   have h_K_eq : ENNReal.ofReal K_leib *
       (ENNReal.ofReal K_chain * (ENNReal.ofReal K_leib_α *

@@ -76,7 +76,6 @@ theorem nablaKRmNablaFrozenSlotField_realizes
       1 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaKRmFrozenSlotField (I := I) S t k q Y))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -110,8 +109,7 @@ theorem nablaKRmFrozenSlot_chartBasis_contMDiffOn
     ((freezeAllBut0SField (I := I) (M := M) (nablaKRm04Field (I := I) S t k) q Y).contMDiff x₀)
     (v := fun _ : Fin 1 => fun b : M => chartBasisVecFiber (I := I) α j b)
     (fun _ => hv_at)
-  simpa [nablaKRmFrozenSlotField, Tensor0SSpace.toModel,
-    tensor0SSpace_continuousLinearEquiv_apply] using h_eval
+  with_unfolding_all exact h_eval
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
 def nablaKRmFrozenSlotSharpSection
@@ -227,7 +225,7 @@ theorem nablaKRmRaise_summand_covDeriv
     (hVc : ((S.family.connection (t : Real) (fun p : M => Vc p) x₀) (X x₀)) = 0)
     (hVm : ∀ i : Fin (4 + k),
       ((S.family.connection (t : Real) (fun p : M => Vm i p) x₀) (X x₀)) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           S.base.rm04 (t : Real) y
             (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
@@ -377,7 +375,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
       nablaKRm04Field (I := I) S (t : Real) (k + 3) x₀
         (Fin.cons (X x₀)
           (metricTraceInput (I := I) (Vc x₀) (Vb x₀) (fun i : Fin (4 + k) => Vm i x₀))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
             (nablaKRm04Field (I := I) S (t : Real) k y)
@@ -436,7 +434,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
       nablaKRm04Field (I := I) S (t : Real) (k + 3) x₀
           (Fin.cons (X x₀)
             (metricTraceInput (I := I) (Vb x₀) (Vc x₀) (fun i : Fin (4 + k) => Vm i x₀))) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M =>
             nablaKRm04Field (I := I) S (t : Real) (k + 2) p (fun a : Fin (4 + (k + 2)) => Wbc a p))
           x₀ (X x₀) := hbc
@@ -444,7 +442,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
       nablaKRm04Field (I := I) S (t : Real) (k + 3) x₀
           (Fin.cons (X x₀)
             (metricTraceInput (I := I) (Vc x₀) (Vb x₀) (fun i : Fin (4 + k) => Vm i x₀))) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M =>
             nablaKRm04Field (I := I) S (t : Real) (k + 2) p (fun a : Fin (4 + (k + 2)) => Wcb a p))
           x₀ (X x₀) := hcb
@@ -465,7 +463,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
     (tensor0SField_eval_smooth_slots_contMDiffAt
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (nablaKRm04Field (I := I) S (t : Real) (k + 2)) Wcb x₀).mdifferentiableAt (by simp)
-  rw [← extDerivFun_sub_at (I := I) (X x₀) hmdiff_bc hmdiff_cb]
+  rw [← mvfderiv_sub_at (I := I) (X x₀) hmdiff_bc hmdiff_cb]
   have hfield :
       (fun y : M =>
           nablaKRm04Field (I := I) S (t : Real) (k + 2) y (fun a : Fin (4 + (k + 2)) => Wbc a y) -
@@ -558,21 +556,21 @@ theorem nablaK_antisym_eq_rm04_raise_leibniz
       simp [nablaKRmRaiseSlotSections, vec4, nablaKRmFrozenSlotSharpSection_apply,
         Matrix.cons_val_zero, Matrix.cons_val_one]
   have hstep3 :
-      extDerivFun (I := I) (fun y : M => -∑ q : Fin (4 + k), g q y) x₀ (X x₀) =
-        -∑ q : Fin (4 + k), extDerivFun (I := I) (g q) x₀ (X x₀) := by
+      mvfderiv (I := I) (fun y : M => -∑ q : Fin (4 + k), g q y) x₀ (X x₀) =
+        -∑ q : Fin (4 + k), mvfderiv (I := I) (g q) x₀ (X x₀) := by
     have hsumfun : (fun y : M => ∑ q : Fin (4 + k), g q y) =
         (Finset.univ : Finset (Fin (4 + k))).sum g := by
       funext y; simp [Finset.sum_apply]
     have hneg :
-        extDerivFun (I := I) (fun y : M => -∑ q : Fin (4 + k), g q y) x₀ (X x₀) =
-          -extDerivFun (I := I) (fun y : M => ∑ q : Fin (4 + k), g q y) x₀ (X x₀) :=
-      extDerivFun_neg_at (I := I) (f := fun y : M => ∑ q : Fin (4 + k), g q y) (X x₀)
+        mvfderiv (I := I) (fun y : M => -∑ q : Fin (4 + k), g q y) x₀ (X x₀) =
+          -mvfderiv (I := I) (fun y : M => ∑ q : Fin (4 + k), g q y) x₀ (X x₀) :=
+      mvfderiv_neg_at (I := I) (f := fun y : M => ∑ q : Fin (4 + k), g q y) (X x₀)
         (by
           rw [hsumfun]
           exact MDifferentiableAt.sum (𝕜 := Real) (I := I)
             (t := (Finset.univ : Finset (Fin (4 + k)))) (fun q _ => hmdiff_q q))
     rw [hneg, hsumfun]
-    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real (I := I)
+    rw [DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real (I := I)
       (t := (Finset.univ : Finset (Fin (4 + k)))) g (X x₀) (fun q _ => hmdiff_q q)]
   rw [hstep3]
   congr 1
@@ -900,6 +898,7 @@ theorem abs_spatialBracket_nablaKRm_ortho_le
   rw [← compNormSqMulti_eq_compNormSq4_basis (I := I) (S.base.rm04 (t : Real) x₀) basis] at hC
   exact hC
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_spatialComm_nablaKRm_ortho_le

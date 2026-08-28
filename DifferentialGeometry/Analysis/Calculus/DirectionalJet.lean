@@ -423,12 +423,12 @@ theorem iteratedDeriv_line
   have hT_open : IsOpen T := hS_open.preimage L.continuous
   have hzeroT : (0 : ℝ) ∈ T := by
     simpa only [T, Set.mem_preimage, L, ContinuousLinearMap.smulRight_apply,
-      ContinuousLinearMap.one_apply, zero_smul] using hzeroS
+      one_apply_eq_self, zero_smul] using hzeroS
   have hLzero : L (0 : ℝ) ∈ S := by
     exact hzeroT
   have hLzero_eq : L (0 : ℝ) = 0 := by
     simp only [L, ContinuousLinearMap.smulRight_apply,
-      ContinuousLinearMap.one_apply, zero_smul]
+      one_apply_eq_self, zero_smul]
   have hcomp :=
     L.iteratedFDerivWithin_comp_right hq hS_open.uniqueDiffOn
       hT_open.uniqueDiffOn hLzero (i := n) le_rfl
@@ -444,7 +444,7 @@ theorem iteratedDeriv_line
   have hline : q ∘ L = fun t : ℝ => f (x + t • v) := by
     funext t
     simp only [q, Function.comp_apply, L, ContinuousLinearMap.smulRight_apply,
-      ContinuousLinearMap.one_apply]
+      one_apply_eq_self]
   rw [hline] at hcomp
   have happ := congrArg
     (fun A : ContinuousMultilinearMap ℝ (fun _ : Fin n => ℝ) F =>
@@ -452,7 +452,7 @@ theorem iteratedDeriv_line
   simpa only [iteratedDeriv_eq_iteratedFDeriv,
     ContinuousMultilinearMap.compContinuousLinearMap_apply,
     Function.comp_apply, L, ContinuousLinearMap.smulRight_apply,
-    ContinuousLinearMap.one_apply, one_smul] using happ
+    one_apply_eq_self, one_smul] using happ
 
 theorem iteratedDeriv_clm
     {f : ℝ → F} {x : ℝ} (L : F →L[ℝ] G)

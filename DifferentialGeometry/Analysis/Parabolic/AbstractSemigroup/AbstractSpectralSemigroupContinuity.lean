@@ -68,7 +68,7 @@ theorem abstractSpectralSemigroup_continuous_at_zero (b : HilbertBasis ι ℝ X)
         simpa using this
       have := h_sq_to_zero.mul_const ((⟪b i, v⟫_ℝ) ^ 2)
       simpa using this
-    have h_total := tendsto_finset_sum T_fin h_each
+    have h_total := tendsto_finsetSum T_fin h_each
     simpa using h_total
   rw [Metric.tendsto_nhds] at h_head_tendsto
   obtain ⟨δ, hδ_pos, hδ⟩ := Metric.eventually_nhds_iff_ball.mp

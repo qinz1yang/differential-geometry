@@ -12,7 +12,7 @@ namespace DivergenceTheorem
 namespace WithBoundary
 
 class HasOrientableBoundary
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H} [hI : HasSmoothBoundary E H I]
@@ -26,7 +26,7 @@ where
         inwardCoordAt (M := M) α₀ y - c • inwardCoordAt (M := M) α₁ y ∈
           Set.range (boundaryInclusionMfderiv (M := M) y).toLinearMap
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -42,7 +42,7 @@ theorem inwardCoord_chart_consistent
         Set.range (boundaryInclusionMfderiv (M := M) y).toLinearMap :=
   HasOrientableBoundary.inwardCoord_chart_consistent α₀ α₁ y hα₀ hα₁
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] in
 theorem inwardCoord_chart_consistent_self (α : BoundaryManifold I M)
     (y : BoundaryManifold I M) :
     ∃ c : ℝ, 0 < c ∧

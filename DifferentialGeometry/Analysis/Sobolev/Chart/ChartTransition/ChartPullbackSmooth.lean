@@ -21,7 +21,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [IsManifold I ∞ M] in
 private lemma tsupport_chartPullback_subset
-    [I.Boundaryless] [T2Space M]
+    [T2Space M]
     (α : M)
     {ψ : EuclN → ℝ}
     (hψ_cpt : HasCompactSupport ψ)
@@ -84,7 +84,6 @@ private lemma tsupport_chartPullback_subset
 
 omit [IsManifold I ∞ M] in
 private lemma tsupport_chartPullback_image_subset_chartAt_source
-    [I.Boundaryless]
     (α : M)
     {ψ : EuclN → ℝ}
     (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -104,7 +103,7 @@ private lemma tsupport_chartPullback_image_subset_chartAt_source
   exact hx_in_src
 
 theorem chartPullback_contMDiff
-    [T2Space M] [I.Boundaryless]
+    [T2Space M]
     (α : M)
     {ψ : EuclN → ℝ}
     (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)

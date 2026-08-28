@@ -25,7 +25,7 @@ namespace WithBoundary
 
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -45,7 +45,6 @@ noncomputable def boundaryFaceSum
     chartBoundaryFaceIntegral (I := I) g α X
       ((chartAtlasPOU I M) α : M → ℝ)
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma boundaryFaceSum_def
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -59,7 +58,6 @@ section StokesGlobal
 
 variable [hI : HasSmoothBoundary E H I]
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -71,9 +69,7 @@ theorem integral_divergence_with_boundary_eq_boundaryFaceSum
   exact stokes_compact_via_pou (I := I) g X
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma inner_grad_grad_continuous_of_interior_support
-    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
@@ -137,7 +133,6 @@ private lemma inner_grad_grad_continuous_of_interior_support
   exact (h_eq x).symm
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_continuous
     [T2Space M]
     (g : SmoothRiemannianMetric I M)
@@ -149,9 +144,8 @@ private lemma f_mul_Δ_continuous
 
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_hasCompactSupport
-    [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (_hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -160,7 +154,6 @@ private lemma f_mul_Δ_hasCompactSupport
   HasCompactSupport.of_compactSpace _
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_integrable
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -169,13 +162,12 @@ private lemma f_mul_Δ_integrable
     Integrable
       (fun x : M => f x * Δ_g_with_boundary (I := I) g hh hh_int x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact (f_mul_Δ_continuous (I := I) g hf hh hh_int).integrable_of_hasCompactSupport
     (f_mul_Δ_hasCompactSupport (I := I) g hf hh hh_int)
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma inner_grad_grad_integrable
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -184,13 +176,12 @@ private lemma inner_grad_grad_integrable
     Integrable
       (fun x : M => g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact (inner_grad_grad_continuous_of_interior_support
     (I := I) g hf hh hh_int).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
-omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -255,7 +246,6 @@ theorem green_first_with_boundary
   linarith
 
 
-omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -284,7 +274,6 @@ theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
   rw [h_div_Y_zero] at h_stokes
   exact h_stokes.symm
 
-omit [InnerProductSpace ℝ E] in
 private theorem green_first_with_boundary_swap
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -299,7 +288,6 @@ private theorem green_first_with_boundary_swap
           (grad_g_with_boundary_section (I := I) g hf hf_int)) :=
   green_first_with_boundary (I := I) g hh hf hf_int
 
-omit [InnerProductSpace ℝ E] in
 theorem green_second_with_boundary
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)

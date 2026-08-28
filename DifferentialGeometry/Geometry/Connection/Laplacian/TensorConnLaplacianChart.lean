@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -67,11 +66,11 @@ theorem rawTensorConnLap_eq_chart
               (smoothOrthoFrame (I := I) g y i) y
               (smoothOrthoFrame (I := I) g y i y))) := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
     tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
     tensorRSBundle_fiber r s
   rw [rawTensorConnLap_frame_trace (I := I) g r s T.toFun y]

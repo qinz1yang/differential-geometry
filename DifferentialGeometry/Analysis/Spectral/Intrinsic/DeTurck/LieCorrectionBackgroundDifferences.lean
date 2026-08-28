@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Manifold Topology ContDiff
@@ -48,12 +47,12 @@ private lemma endoSlotZeroCcTensor_sub (g₀ : SmoothRiemannianMetric I M) (s : 
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
     rw [SmoothCcTensor.toSection_sub]
     rfl]
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A - B) x) = A x - B x from by
     rw [ContMDiffSection.coe_sub]
     rfl]
-  rw [slotInsertEndoFib_sub_left, ContinuousLinearMap.sub_apply]
+  rw [slotInsertEndoFib_sub_left, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -65,46 +64,9 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  apply ContinuousLinearMap.ext
-  intro D
-  apply Tensor0SSpace.toModel_injective
-  refine ContinuousMultilinearMap.ext (fun m => ?_)
-  have hsub : (X - Y).toSection x = X.toSection x - Y.toSection x := by
-    rw [SmoothCcTensor.toSection_sub]
-    rfl
-  have hsub2 :
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 σ X -
-          rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 σ Y).toSection x =
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 σ X).toSection x -
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 σ Y).toSection x := by
-    rw [SmoothCcTensor.toSection_sub]
-    rfl
-  rw [rsDomDomCongrSection_toSection, hsub, hsub2]
-  rw [rsDomDomCongrSection_toSection, rsDomDomCongrSection_toSection]
-  have hfib : ∀ (y : Tensor0SSpace 2 I x) (w : Fin 2 → TangentSpace I x),
-      Tensor0SSpace.toModel y w = (y : Tensor0SSpace 2 I x) w := fun _ _ => rfl
-  rw [hfib, hfib]
-  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (X.toSection x - Y.toSection x) D m]
-  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)) D) =
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D -
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D from rfl]
-  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (X.toSection x - Y.toSection x : TensorRSSpace 2 2 I x)) D) =
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from X.toSection x) D -
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from Y.toSection x) D from rfl]
-  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D -
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D : Tensor0SSpace 2 I x) m =
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D : Tensor0SSpace 2 I x) m -
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D : Tensor0SSpace 2 I x) m from rfl]
-  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (X.toSection x) D m]
-  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (Y.toSection x) D m]
+  change tensorRS_domDomCongr σ ((X - Y).toSection x) =
+    tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)
+  rw [SmoothCcTensor.toSection_sub]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
@@ -122,10 +84,10 @@ private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
+    reindexCoeffFibGen_apply, sub_apply]
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem lieCorrectionZeroNEndoSec_sub_insert_eq_lieCorrectionZeroCdVField_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -138,7 +100,7 @@ theorem lieCorrectionZeroNEndoSec_sub_insert_eq_lieCorrectionZeroCdVField_sub
     lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem lieCorrectionZeroInsertionField_sub_eq_nEndoInsert
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ gB -
@@ -159,6 +121,7 @@ theorem lieCorrectionZeroInsertionField_sub_eq_nEndoInsert
   change (_ + _) - (_ + _) = _
   abel
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem lieCorrectionZeroVFlat_sub_eq_trace_comp_kappa_sub
@@ -172,6 +135,7 @@ theorem lieCorrectionZeroVFlat_sub_eq_trace_comp_kappa_sub
   rw [ccOperatorFieldComp_sub_right]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem lieCorrectionZeroIVField_sub_eq_trace_comp_slotExtend_vflat_sub
@@ -186,6 +150,7 @@ theorem lieCorrectionZeroIVField_sub_eq_trace_comp_slotExtend_vflat_sub
   rw [slotExtendIter_sub, ccOperatorFieldComp_sub_right]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem lieCorrectionZeroCdVField_sub_eq_comp_connectionDifference

@@ -8,6 +8,7 @@ import Mathlib.Topology.UnitInterval
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 open Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 
@@ -158,8 +159,7 @@ theorem minJoin_edist_le
 
 theorem minJoin_arcLength
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (a b : M) :
     Variation.arcLength (I := I) g (minJoin (I := I) g hEnorm a b) 0 1 =
       (riemannianEDist I a b).toReal := by
@@ -195,8 +195,7 @@ theorem minJoin_arcLength
 
 theorem minJoin_pathLen
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (a b : M) :
     Manifold.pathELength I (minJoin (I := I) g hEnorm a b) 0 1 =
       ENNReal.ofReal ((riemannianEDist I a b).toReal) := by
@@ -273,8 +272,8 @@ theorem intrinsicGeodesic_riemannianEDist_le_radius
     (p : M) (v : TangentSpace I p) {t : ℝ} (ht : 0 ≤ t) :
     riemannianEDist I p (intrinsicGeodesic (I := I) g hEnorm p v t)
       ≤ ENNReal.ofReal (Real.sqrt (g.inner p v v) * t) := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm p v with hγ_def
   set c : ℝ := Real.sqrt (g.inner p v v) with hc_def
   have hc_nn : (0 : ℝ) ≤ c := Real.sqrt_nonneg _
@@ -374,19 +373,19 @@ theorem joinedIn_centre_smallNormalBall_of_complete_metric
       fun x w => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x w
     JoinedIn (smallNormalBall (I := I) p ρ) p
       (expMapIntrinsic (I := I) g hEnorm p v) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x w
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x w

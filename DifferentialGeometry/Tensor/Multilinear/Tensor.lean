@@ -11,7 +11,6 @@ open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 
@@ -60,7 +59,7 @@ theorem product_fun_apply {s q : ℕ} {x : B}
   conv_lhs =>
     rw [show ∀ (c : 𝕜) (f : ContinuousMultilinearMap 𝕜 (fun _ : Fin q => F) 𝕜)
         (w : Fin q → F), (c • f) w = c * f w
-      from fun c f w => by simp [ContinuousMultilinearMap.smul_apply, smul_eq_mul]]
+      from fun c f w => by simp [smul_apply, smul_eq_mul]]
   simp_rw [show ∀ (n : ℕ) (T : Bundle.continuousMultilinearMap 𝕜 n F E x)
       (w : Fin n → F), toModel T w =
       T (fun i => (trivializationAt F E x).symmL 𝕜 x (w i)) from fun _ _ _ => rfl,
@@ -110,8 +109,8 @@ noncomputable def product_bilinear (s q : ℕ) (x : B) :
       simp only [ContinuousMultilinearMap.domDomCongr_apply,
                  ContinuousMultilinearMap.uncurrySum_apply,
                  ContinuousMultilinearMap.smulRight_apply,
-                 ContinuousMultilinearMap.add_apply,
-                 ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+                 add_apply,
+                 smul_apply, smul_eq_mul]
       ring)
     (fun c α β => by
       apply toModel_injective (F := F) (E := E)
@@ -120,7 +119,7 @@ noncomputable def product_bilinear (s q : ℕ) (x : B) :
       simp only [ContinuousMultilinearMap.domDomCongr_apply,
                  ContinuousMultilinearMap.uncurrySum_apply,
                  ContinuousMultilinearMap.smulRight_apply,
-                 ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+                 smul_apply, smul_eq_mul]
       ring)
     (fun α β₁ β₂ => by
       apply toModel_injective (F := F) (E := E)
@@ -129,8 +128,8 @@ noncomputable def product_bilinear (s q : ℕ) (x : B) :
       simp only [ContinuousMultilinearMap.domDomCongr_apply,
                  ContinuousMultilinearMap.uncurrySum_apply,
                  ContinuousMultilinearMap.smulRight_apply,
-                 ContinuousMultilinearMap.add_apply,
-                 ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+                 add_apply,
+                 smul_apply, smul_eq_mul]
       ring)
     (fun c α β => by
       apply toModel_injective (F := F) (E := E)
@@ -139,7 +138,7 @@ noncomputable def product_bilinear (s q : ℕ) (x : B) :
       simp only [ContinuousMultilinearMap.domDomCongr_apply,
                  ContinuousMultilinearMap.uncurrySum_apply,
                  ContinuousMultilinearMap.smulRight_apply,
-                 ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+                 smul_apply, smul_eq_mul]
       ring)
 
 noncomputable def fromTensor (s q : ℕ) (x : B) :
@@ -255,13 +254,14 @@ theorem fromTensor_map_ofModel {s q : ℕ} {x : B}
     ofModel (F := F) (E := E) (x := x) (modelFromTensor s q t) := by
   induction t using TensorProduct.induction_on with
   | zero => simp [fromTensor, modelFromTensor, ofModel]
-  | add t₁ t₂ ih₁ ih₂ => simp [map_add, ih₁, ih₂, ofModel]
+  | add t₁ t₂ ih₁ ih₂ =>
+    simp only [map_add, ofModel]
+    exact congrArg₂ (· + ·) ih₁ ih₂
   | tmul f g =>
     simp only [TensorProduct.map_tmul, fromTensor, TensorProduct.lift.tmul,
       product_bilinear, LinearMap.mk₂_apply, modelFromTensor]
     exact product_fun_ofModel f g
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def equiv (s q : ℕ) (x : B) :
     Bundle.continuousMultilinearMap 𝕜 (s + q) F E x ≃ₗ[𝕜]
     TensorProduct 𝕜 (Bundle.continuousMultilinearMap 𝕜 s F E x)
@@ -291,7 +291,6 @@ end
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set ContinuousLinearMap
 
@@ -332,11 +331,11 @@ theorem triv_fromTensor_eq_modelFromTensor (s q : ℕ) (x₀ x : B)
         (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                    Bundle.continuousMultilinearMap 𝕜 q F E x) x₀
         ⟨x, t⟩).2) := by
-  letI := Bundle.TensorProduct.tensorFiberTopology
+  let := Bundle.TensorProduct.tensorFiberTopology
     𝕜 (MLF s) (MLF q)
     (Bundle.continuousMultilinearMap 𝕜 s F E)
     (Bundle.continuousMultilinearMap 𝕜 q F E)
-  letI := Bundle.TensorProduct.fiberBundle
+  let := Bundle.TensorProduct.fiberBundle
     (𝕜 := 𝕜) (B := B) (F₁ := MLF s) (F₂ := MLF q)
     (E₁ := Bundle.continuousMultilinearMap 𝕜 s F E)
     (E₂ := Bundle.continuousMultilinearMap 𝕜 q F E)
@@ -412,11 +411,11 @@ theorem triv_toTensor_eq_modelFromTensorEquiv_symm {d : ℕ}
       (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                  Bundle.continuousMultilinearMap 𝕜 q F E x) x₀
       ⟨x, t⟩).2 := by
-  letI := Bundle.TensorProduct.tensorFiberTopology
+  let := Bundle.TensorProduct.tensorFiberTopology
     𝕜 (MLF s) (MLF q)
     (Bundle.continuousMultilinearMap 𝕜 s F E)
     (Bundle.continuousMultilinearMap 𝕜 q F E)
-  letI := Bundle.TensorProduct.fiberBundle
+  let := Bundle.TensorProduct.fiberBundle
     (𝕜 := 𝕜) (B := B) (F₁ := MLF s) (F₂ := MLF q)
     (E₁ := Bundle.continuousMultilinearMap 𝕜 s F E)
     (E₂ := Bundle.continuousMultilinearMap 𝕜 q F E)
@@ -471,7 +470,7 @@ theorem product_add_left (α β : MultilinearSection 𝕜 F IB E n s)
   have hab : (α + β) x = α x + β x := rfl
   rw [hab]
   simp [Bundle.continuousMultilinearMap.product_fun_apply,
-    ContinuousMultilinearMap.add_apply, add_mul]
+    add_apply, add_mul]
 
 end Product
 
@@ -607,8 +606,8 @@ theorem multilinearTensorFiberwiseEquiv_smooth
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                        Bundle.continuousMultilinearMap 𝕜 q F E x))) := by
   let _ := _hE
-  letI := _hE
-  haveI : ContMDiffVectorBundle n
+  let := _hE
+  have : ContMDiffVectorBundle n
       ((MLF s) ⊗[𝕜] (MLF q))
       (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                  Bundle.continuousMultilinearMap 𝕜 q F E x) IB := inferInstance
@@ -647,12 +646,12 @@ theorem multilinearTensorFiberwiseEquiv_symm_smooth
           TotalSpace (MLF (s + q))
             (fun x => Bundle.continuousMultilinearMap 𝕜 (s + q) F E x))) := by
   let _ := _hE
-  letI := _hE
-  letI : NormedAddCommGroup ((MLF s) ⊗[𝕜] (MLF q)) :=
+  let := _hE
+  let : NormedAddCommGroup ((MLF s) ⊗[𝕜] (MLF q)) :=
     Bundle.TensorProduct.instNormedAddCommGroup_tensor
-  letI : NormedSpace 𝕜 ((MLF s) ⊗[𝕜] (MLF q)) :=
+  let : NormedSpace 𝕜 ((MLF s) ⊗[𝕜] (MLF q)) :=
     Bundle.TensorProduct.instNormedSpace_model_tensor
-  haveI : ContMDiffVectorBundle n
+  have : ContMDiffVectorBundle n
       ((MLF s) ⊗[𝕜] (MLF q))
       (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
                  Bundle.continuousMultilinearMap 𝕜 q F E x) IB := inferInstance

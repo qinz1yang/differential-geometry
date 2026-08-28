@@ -184,7 +184,11 @@ noncomputable def MemW1pWitness.mul_smooth_bounded
             _ ≤ C₁ * ‖u x‖ := by
                   gcongr
                   exact hη_grad_bound x
-    simpa using hfirst.add hsecond
+    let h : MemLp
+        (fun x => η x * hw.weakGrad x i +
+          (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x)
+        2 (volume.restrict Ω) := hfirst.add hsecond
+    exact h
   isWeakGrad := by
     intro i
     simpa using HasWeakPartialDeriv.mul_smooth hΩ
@@ -444,9 +448,10 @@ theorem tendsto_eLpNorm_indicator_diff_mul_of_tendsto_eLpNorm
     have hu_pos : NullMeasurableSet {x | 0 < u x} μ := by
       exact AEStronglyMeasurable.nullMeasurableSet_lt
         (μ := μ) stronglyMeasurable_const.aestronglyMeasurable hu_aestrong
-    simpa [F] using
-      ((hG_memLp.aestronglyMeasurable.indicator₀ hψ_pos).sub
-        (hG_memLp.aestronglyMeasurable.indicator₀ hu_pos))
+    let h : AEStronglyMeasurable (F n) μ :=
+      (hG_memLp.aestronglyMeasurable.indicator₀ hψ_pos).sub
+        (hG_memLp.aestronglyMeasurable.indicator₀ hu_pos)
+    exact h
   have hF_dom : ∀ n x, ‖F n x‖ ≤ ‖G x‖ := by
     intro n x
     exact indicator_diff_mul_le_abs (a := ψ n x) (c := u x) (d := G x)
@@ -587,7 +592,12 @@ private theorem weakPartialDeriv_positivePart_of_contDiff
   obtain ⟨Cf, hLip_f⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hf_supp hf one_ne_zero
   obtain ⟨Cφ, hLip_φ⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hφ_supp hφ (by simp)
   have hLip_pos : LipschitzWith Cf (fun y => max (f y) 0) := by
-    simpa [Function.comp] using (MeasureTheory.Lp.lipschitzWith_pos_part.comp hLip_f)
+    have hcomp := MeasureTheory.Lp.lipschitzWith_pos_part.comp hLip_f
+    have hcomp' : LipschitzWith Cf ((fun y : ℝ => max y 0) ∘ f) := by
+      simpa only [one_mul] using hcomp
+    let h : LipschitzWith Cf (fun y => max (f y) 0) :=
+      hcomp'
+    exact h
   let ei : E := EuclideanSpace.single i (1 : ℝ)
   have hLineDeriv_f :
       ∀ x, lineDeriv ℝ (fun y => max (f y) 0) x ei =

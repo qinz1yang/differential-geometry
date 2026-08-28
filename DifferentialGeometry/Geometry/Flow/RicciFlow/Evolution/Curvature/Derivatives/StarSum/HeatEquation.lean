@@ -19,8 +19,8 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Dim3Reaction in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem resStarBoundLF
@@ -70,12 +70,12 @@ theorem resStarBoundLF
     (hswap : ∀ (y : M), y ∈ u → ∀ (k' : ℕ) (d : Fin 3) (m : Fin (4 + k') → Fin 3),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun z : M =>
               iteratedRmComp (I := I) frame (lfChr (I := I) S frame hframe)
                 (lfBase (I := I) S frame)
                 k' s z m) y (frame d y))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun z : M =>
             iteratedRmCompDt (I := I) frame (lfChr (I := I) S frame hframe) chrDt
               (lfBase (I := I) S frame) baseDt k' (t : Real) z m) y (frame d y))

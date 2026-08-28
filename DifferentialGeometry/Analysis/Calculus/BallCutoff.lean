@@ -33,7 +33,7 @@ theorem ballCutoffArgumentFDeriv_apply [InnerProductSpace ℝ E]
     ballCutoffArgumentFDeriv center r R x v =
       (R ^ 2 - r ^ 2)⁻¹ * (2 * inner ℝ (x - center) v) := by
   simp only [ballCutoffArgumentFDeriv, two_nsmul,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    add_apply, smul_apply,
     coe_innerSL_apply, inner_sub_left, smul_eq_mul]
   ring
 
@@ -45,11 +45,11 @@ theorem ballCutoffArgumentFDeriv2_apply [InnerProductSpace ℝ E]
   unfold ballCutoffArgumentFDeriv2
   change ((((R ^ 2 - r ^ 2)⁻¹ •
     ((2 : ℕ) • (innerSL ℝ (E := E) : E →L[ℝ] E →L[ℝ] ℝ))) v) w) = _
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   have hn :
       (((2 : ℕ) • (innerSL ℝ (E := E) : E →L[ℝ] E →L[ℝ] ℝ)) v) =
         (2 : ℕ) • innerSL ℝ v := rfl
-  rw [hn, ContinuousLinearMap.smul_apply]
+  rw [hn, smul_apply]
   have hn' : (((2 : ℕ) • innerSL ℝ v) w) =
       (2 : ℕ) • inner ℝ v w := rfl
   rw [hn', nsmul_eq_mul]
@@ -83,13 +83,13 @@ theorem hasFDerivAt_ballCutoffArgument [InnerProductSpace ℝ E]
   have hnorm := ((hasFDerivAt_id x).sub_const center).norm_sq
   have h := (hnorm.sub_const (r ^ 2)).mul_const (R ^ 2 - r ^ 2)⁻¹
   have h' := (hasFDerivAt_const (x := x) (c := (1 : ℝ))).add h
-  simpa [ballCutoffArgument, ballCutoffArgumentFDeriv] using h'
+  simpa [ballCutoffArgument, ballCutoffArgumentFDeriv] using! h'
 
 theorem hasFDerivAt_ballCutoffArgumentFDeriv [InnerProductSpace ℝ E]
     (center : E) (r R : ℝ) (x : E) :
     HasFDerivAt (ballCutoffArgumentFDeriv center r R)
       (ballCutoffArgumentFDeriv2 r R) x := by
-  simpa [ballCutoffArgumentFDeriv, ballCutoffArgumentFDeriv2] using
+  simpa [ballCutoffArgumentFDeriv, ballCutoffArgumentFDeriv2] using!
     (((R ^ 2 - r ^ 2)⁻¹ •
       ((2 : ℕ) • (innerSL ℝ (E := E) : E →L[ℝ] E →L[ℝ] ℝ))).hasFDerivAt.comp x
       ((hasFDerivAt_id x).sub_const center))
@@ -103,7 +103,7 @@ theorem hasFDerivAt_ballCutoff [InnerProductSpace ℝ E]
       (ballCutoffArgument center r R x) :=
     (CutoffProfile.contDiff.differentiable (by simp)
       (ballCutoffArgument center r R x)).hasDerivAt
-  simpa only [ballCutoff, ballCutoffFDeriv, Function.comp_def] using
+  simpa only [ballCutoff, ballCutoffFDeriv, Function.comp_def] using!
     hprofile.comp_hasFDerivAt x
       (hasFDerivAt_ballCutoffArgument center r R x)
 
@@ -128,7 +128,7 @@ theorem hasFDerivAt_ballCutoffFDeriv [InnerProductSpace ℝ E]
     simpa only [Function.comp_def] using
       hprofile2.comp_hasFDerivAt x
         (hasFDerivAt_ballCutoffArgument center r R x)
-  simpa only [ballCutoffFDeriv, ballCutoffFDeriv2] using
+  simpa only [ballCutoffFDeriv, ballCutoffFDeriv2] using!
     hcoefficient.smul
       (hasFDerivAt_ballCutoffArgumentFDeriv center r R x)
 
@@ -353,9 +353,9 @@ theorem ballCutoff_contDiff [InnerProductSpace ℝ E]
   have hnorm : ContDiff ℝ ∞ (fun x : E ↦ ‖x - center‖ ^ 2) :=
     (contDiff_id.sub contDiff_const).norm_sq ℝ
   have harg : ContDiff ℝ ∞ (ballCutoffArgument center r R) := by
-    simpa [ballCutoffArgument] using
+    simpa [ballCutoffArgument] using!
       (contDiff_const.add ((hnorm.sub contDiff_const).div_const (R ^ 2 - r ^ 2)))
-  simpa [ballCutoffArgument, ballCutoff] using
+  simpa [ballCutoffArgument, ballCutoff] using!
     CutoffProfile.contDiff.comp harg
 
 theorem fderiv_ballCutoff [InnerProductSpace ℝ E]

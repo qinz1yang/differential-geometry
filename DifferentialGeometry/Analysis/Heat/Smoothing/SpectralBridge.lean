@@ -201,7 +201,7 @@ theorem tensorEigen00_rawLap_eq
   rw [tensorL2Coeff_smul (I := I) (M := M) hc
     (- TensorEigenIdx.lambda (I := I) (M := M) i)
     (SmoothCcTensor.toL2 (eigenvectorSmooth g 0 0 i)) j]
-  haveI : DecidableEq (TensorEigenIdx00 g) := Classical.decEq _
+  let _ : DecidableEq (TensorEigenIdx00 g) := Classical.decEq _
   have hcoeff := tensorL2Coeff_eigenvectorSmooth00 (I := I) (M := M) g j i
   rw [← SmoothCcTensor.toL2_apply] at hcoeff
   rw [hcoeff]
@@ -267,12 +267,13 @@ theorem scalar0_rawLap_eq_scalarLap
     rw [rawTensorConnLapSmooth_toSection_apply]
     rw [rawLapSection_eq_toRS0 (I := I) (M := M) g S x]
     rw [Tensor0SSpace.toRS0_apply]
-    have hone : tensor0SSpace_evalScalar x
+    have hone : (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
         (Tensor0SField.one0 (n := (∞ : WithTop ℕ∞))
           (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) x) = 1 := by
       change Tensor0SSpace.toModel (Tensor0SField.one0 (n := (∞ : WithTop ℕ∞))
         (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) x) Fin.elim0 = 1
-      rw [Tensor0SField.one0_apply]
+      exact Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
+        (I := I) (M := M) (∞ : WithTop ℕ∞) x Fin.elim0
     rw [hone, one_smul]
     symm
     apply (Tensor0SNabla.tensor0Iso I M x).injective

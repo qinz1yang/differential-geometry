@@ -56,8 +56,8 @@ noncomputable def constPosQuotient
     S.equiv.surjective.connectedSpace S.equiv.continuous
   letI : Inhabited S.Q :=
     Classical.inhabited_of_nonempty inferInstance
-  letI : LocPathConnectedSpace S.Q :=
-    ChartedSpace.locPathConnectedSpace
+  letI : LocallyPathConnectedSpace S.Q :=
+    ChartedSpace.locallyPathConnectedSpace
       (EuclideanSpace ℝ (Fin 3)) S.Q
   letI :
       Riemannian.Topology.SemilocallySimplyConnectedSpace S.Q :=
@@ -105,7 +105,8 @@ noncomputable def constPosQuotient
       (EuclideanSpace ℝ (Fin 4)) 3 :=
     roundQuotientUC g₁ d (by simpa only [g₁] using hd)
   refine ⟨data, ?_⟩
-  simpa only [data] using S.equiv
+  change M ≃ₘ⟮I, 𝓡 3⟯ S.Q
+  exact S.equiv
 
 end Geometry
 end DifferentialGeometry

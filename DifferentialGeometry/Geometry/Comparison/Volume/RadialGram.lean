@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
 open DifferentialGeometry.Geometry.Curvature
 
+
 noncomputable section
 
 open Set Bundle
@@ -32,6 +33,7 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_li
     {ι : Type*} {v : ι → E}
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : ℝ}
@@ -63,8 +65,11 @@ lemma radialJacobi_li
       (fun i ↦ radialJacobiField (I := I) g p x (v i) t) =
         fun i ↦ L (t • v i) := by
     funext i
-    rw [radialJacobi_scale (I := I) g p x (v i) t,
-      radialJacobi_one (I := I) g p (t • x) (t • v i) htx_rad]
+    rw [radialJacobi_scale (I := I) g p x (v i) t]
+    convert radialJacobi_one (I := I) g p (t • x) (t • v i) htx_rad using 1
+    all_goals
+      simp only [L, tangentSpaceModelContinuousLinearEquiv_symm_apply]
+      rfl
   rw [hfield]
   exact hmapped
 
@@ -116,13 +121,19 @@ theorem radial_wronsk_zero
   obtain ⟨hKdiff, hDKdiff⟩ := hdiff x z hxrd hzrd hb1
   have hJ0 := hJac0 x w hx0 hw0
   have hK0 := hJac0 x z hx0 hz0
+  have hcurve :
+      (fun v : ℝ => Geodesic.maximalGeodesic (I := I) g p
+        (show TangentSpace I p from v • x) 1) = radialCurve (I := I) g p x := by
+    funext v
+    rfl
   have hJacJ : ∀ s ∈ Icc (0 : ℝ) b,
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) s := by
     intro s hs
     by_cases hs0 : s = 0
     · subst s
-      simpa only [radialCurve] using hJ0
+      rw [← hcurve]
+      exact hJ0
     · exact hJac x w hxj hwj (b := (1 : ℝ)) le_rfl s
         ⟨lt_of_le_of_ne hs.1 (Ne.symm hs0), hs.2.trans_lt hblt⟩
   have hJacK : ∀ s ∈ Icc (0 : ℝ) b,
@@ -131,7 +142,8 @@ theorem radial_wronsk_zero
     intro s hs
     by_cases hs0 : s = 0
     · subst s
-      simpa only [radialCurve] using hK0
+      rw [← hcurve]
+      exact hK0
     · exact hJac x z hxj hzj (b := (1 : ℝ)) le_rfl s
         ⟨lt_of_le_of_ne hs.1 (Ne.symm hs0), hs.2.trans_lt hblt⟩
   exact wronskian_zero_on (I := I) (by norm_num) g
@@ -170,7 +182,7 @@ private lemma gram_basis_change
   rw [show B j = ∑ l, (e.repr (B j)) l • e l from (e.sum_repr (B j)).symm]
   simp only [basisGram, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
     Module.Basis.toMatrix_apply, map_sum, map_smul,
-    ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    sum_apply, smul_apply, smul_eq_mul]
   simp only [Finset.mul_sum, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro l _
@@ -208,6 +220,7 @@ private noncomputable def endpointGram
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma endpoint_det_basis
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     (B : Module.Basis (Option ι) ℝ E)
@@ -261,7 +274,7 @@ private lemma bilin_smul_left
     (β : V →L[ℝ] V →L[ℝ] ℝ) (a : ℝ) (x y : V) :
     β (a • x) y = a * β x y := by
   have h := congrArg (fun A : V →L[ℝ] ℝ => A y) (β.map_smul a x)
-  simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+  simpa only [smul_apply, smul_eq_mul] using h
 
 private lemma bilin_smul_both
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -273,6 +286,7 @@ private lemma bilin_smul_both
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma endpoint_det_split
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
     (B : Module.Basis (Option ι) ℝ E)
@@ -281,20 +295,20 @@ private lemma endpoint_det_split
     (hrad : ‖r • u‖ < expMapC2Radius (I := I) g p) :
     (endpointGram (I := I) g p (r • u) B).det =
       g.inner p u u * (transverseEndGram (I := I) g p u r B).det := by
-  let q : M := radialCurve (I := I) g p u r
-  let L : E →L[ℝ] TangentSpace I q := mfderiv 𝓘(ℝ, E) I
+  let q : M := expMap (I := I) g p (show TangentSpace I p from r • u)
+  let L := mfderiv 𝓘(ℝ, E) I
     (fun z : E => (expMap (I := I) g p
       (show TangentSpace I p from z) : M)) (r • u)
   have hfield : ∀ o : Option ι,
       radialJacobiField (I := I) g p (r • u) (B o) 1 = L (B o) := by
     intro o
-    simpa only [L, q, radialCurve] using
+    simpa only [L, tangentSpaceModelContinuousLinearEquiv_symm_apply] using
       radialJacobi_one (I := I) g p (r • u) (B o) hrad
   have hgauss := gauss_lemma_pullback (I := I) g p hrad
   have hLru : L (r • u) = r • L u := L.map_smul r u
   have hdiagRaw : g.inner q (L (r • u)) (L (r • u)) =
       g.inner p (r • u) (r • u) := by
-    simpa only [q, radialCurve, L] using hgauss.1
+    simpa only [q, L] using hgauss.1
   have hdiagScaled : r ^ 2 * g.inner q (L u) (L u) =
       r ^ 2 * g.inner p u u := by
     rw [hLru] at hdiagRaw
@@ -316,7 +330,7 @@ private lemma endpoint_det_split
         _ = 0 := by rw [hperp i, mul_zero]
     have hs := hgauss.2 horth
     have hsRaw : g.inner q (L (r • u)) (L (B (some i))) = 0 := by
-      simpa only [q, radialCurve, L] using hs
+      simpa only [q, L] using hs
     have hs' : r * g.inner q (L u) (L (B (some i))) = 0 := by
       rw [hLru] at hsRaw
       rw [bilin_smul_left] at hsRaw
@@ -341,7 +355,7 @@ private lemma endpoint_det_split
         simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inl,
           Equiv.optionEquivSumPUnit_symm_inr, endpointGram, Matrix.of_apply,
-          Matrix.fromBlocks_apply₁₂, hfield, hBu, q]
+          Matrix.fromBlocks_apply₁₂, hfield, hBu]
         rw [g.symm]
         exact hcross i
     · cases a
@@ -349,12 +363,12 @@ private lemma endpoint_det_split
       · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inr,
           Equiv.optionEquivSumPUnit_symm_inl, endpointGram, Matrix.of_apply,
-          Matrix.fromBlocks_apply₂₁, hfield, hBu, q]
+          Matrix.fromBlocks_apply₂₁, hfield, hBu]
         exact hcross j
       · cases b
         simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inr, endpointGram, Matrix.of_apply,
-          Matrix.fromBlocks_apply₂₂, D, hfield, hBu, q]
+          Matrix.fromBlocks_apply₂₂, D, hfield, hBu]
         exact hdiag
   have hreindexDet :
       (Matrix.reindex e e (endpointGram (I := I) g p (r • u) B)).det =
@@ -372,6 +386,7 @@ private lemma endpoint_det_split
 omit [Fintype ι] [DecidableEq ι] in
 omit [T2Space M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma curveGram_end
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
     (B : Module.Basis (Option ι) ℝ E) {r : ℝ}
@@ -382,27 +397,25 @@ private lemma curveGram_end
   ext i j
   have hi : radialJacobiField (I := I) g p u (B (some i)) r =
       r • radialJacobiField (I := I) g p (r • u) (B (some i)) 1 := by
-    calc
-      radialJacobiField (I := I) g p u (B (some i)) r =
-          radialJacobiField (I := I) g p (r • u) (r • B (some i)) 1 :=
-        radialJacobi_scale (I := I) g p u (B (some i)) r
-      _ = r • radialJacobiField (I := I) g p (r • u) (B (some i)) 1 :=
-        radialJacobi_one_smul (I := I) g p (r • u) (B (some i)) r hrad
+    rw [radialJacobi_scale (I := I) g p u (B (some i)) r]
+    convert radialJacobi_one_smul
+      (I := I) g p (r • u) (B (some i)) r hrad using 1
+    all_goals rfl
   have hj : radialJacobiField (I := I) g p u (B (some j)) r =
       r • radialJacobiField (I := I) g p (r • u) (B (some j)) 1 := by
-    calc
-      radialJacobiField (I := I) g p u (B (some j)) r =
-          radialJacobiField (I := I) g p (r • u) (r • B (some j)) 1 :=
-        radialJacobi_scale (I := I) g p u (B (some j)) r
-      _ = r • radialJacobiField (I := I) g p (r • u) (B (some j)) 1 :=
-        radialJacobi_one_smul (I := I) g p (r • u) (B (some j)) r hrad
+    rw [radialJacobi_scale (I := I) g p u (B (some j)) r]
+    convert radialJacobi_one_smul
+      (I := I) g p (r • u) (B (some j)) r hrad using 1
+    all_goals rfl
   simp only [curveGram, Matrix.of_apply, Matrix.smul_apply, transverseEndGram]
   rw [hi, hj]
-  simpa only [smul_eq_mul] using bilin_smul_both
-    (g.inner (radialCurve (I := I) g p u r)) r
-    (radialJacobiField (I := I) g p (r • u) (B (some i)) 1)
-    (radialJacobiField (I := I) g p (r • u) (B (some j)) 1)
+  convert bilin_smul_both
+      (g.inner (radialCurve (I := I) g p u r)) r
+      (radialJacobiField (I := I) g p (r • u) (B (some i)) 1)
+      (radialJacobiField (I := I) g p (r • u) (B (some j)) 1) using 1
+  all_goals rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 private lemma curveGram_det_scale
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
@@ -421,6 +434,7 @@ private lemma model_det_ne
     (modelBasisFor B).det B ≠ 0 :=
   ((modelBasisFor B).isUnit_det B).ne_zero
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 private lemma density_det_eq
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
@@ -454,6 +468,7 @@ private lemma density_det_eq
           (fun i => radialJacobiField (I := I) g p u (B (some i))) r).det := by
       rw [hcurve]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem normalDensity_curve
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
@@ -621,8 +636,7 @@ theorem normalChartDensity_zero_of_perpOrthonormal
             basisGram, Matrix.of_apply, Matrix.fromBlocks_apply₂₁, hBu]
           exact hperp j
         · cases b
-          rw [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.fromBlocks_apply₂₂,
-            basisGram, Matrix.of_apply]
+          rw [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.fromBlocks_apply₂₂]
           change g.inner p (B none) (B none) = D PUnit.unit PUnit.unit
           rw [hBu]
           rfl
@@ -636,8 +650,19 @@ theorem normalChartDensity_zero_of_perpOrthonormal
     rfl
   have hdetrel : (basisGram (g.inner p) B).det =
       ((modelBasisFor B).det B) ^ 2 * (basisGram (g.inner p) (modelBasisFor B)).det := by
-    simpa using (gram_det_change (β := g.inner p)
-      (L := (ContinuousLinearMap.id ℝ E)) (e := modelBasisFor B) (B := B))
+    have h := gram_det_change (β := g.inner p) (L := ContinuousLinearMap.id ℝ E)
+      (e := modelBasisFor B) (B := B)
+    have hleft : basisGram (g.inner p) (fun i => (ContinuousLinearMap.id ℝ E) (B i)) =
+        basisGram (g.inner p) B := by
+      ext i j
+      rfl
+    have hright : basisGram (g.inner p)
+        (fun i => (ContinuousLinearMap.id ℝ E) ((modelBasisFor B) i)) =
+        basisGram (g.inner p) (modelBasisFor B) := by
+      ext i j
+      rfl
+    exact (congrArg Matrix.det hleft).symm.trans
+      (h.trans (congrArg (fun A => ((modelBasisFor B).det B) ^ 2 * A.det) hright))
   have hXeq : (basisGram (g.inner p) (modelBasisFor B)).det =
       g.inner p u u / ((modelBasisFor B).det B) ^ 2 := by
     rw [eq_div_iff (pow_ne_zero 2 ha_ne)]

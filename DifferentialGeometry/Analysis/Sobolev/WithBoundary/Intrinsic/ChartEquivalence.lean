@@ -22,7 +22,7 @@ namespace Sobolev
 namespace WithBoundary
 namespace EquivalenceFull
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -62,14 +62,13 @@ private lemma exists_bound_continuous_compactSpace
     intro x
     exact (hM ⟨x⟩).elim
 
-omit [InnerProductSpace ℝ E] in
 private lemma continuous_memLp_of_compactSpace
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {f : M → ℝ} (hf : Continuous f) :
     MemLp f p (riemannianVolumeMeasure I M g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have hmeas : AEStronglyMeasurable f (riemannianVolumeMeasure I M g) :=
@@ -77,14 +76,12 @@ private lemma continuous_memLp_of_compactSpace
   obtain ⟨C, _hC_nn, hC⟩ := exists_bound_continuous_compactSpace hf
   exact MemLp.of_bound hmeas C (Filter.Eventually.of_forall (fun x => hC x))
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma isOpen_interior_M : IsOpen (I.interior M) :=
   I.isOpen_interior (M := M) (n := ∞)
     (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
 
-omit [InnerProductSpace ℝ E] in
 private lemma tangentSectionAction_continuous_of_X_interior_support
-    [T2Space M]
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ) ∞ u)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX_int : tsupport (X : ∀ x, TangentSpace I x) ⊆ I.interior M) :
@@ -126,7 +123,6 @@ private lemma tangentSectionAction_continuous_of_X_interior_support
       exact (mfderiv I 𝓘(ℝ, ℝ) u y).map_zero
     exact (continuous_const.continuousAt.congr hev_zero.symm)
 
-omit [InnerProductSpace ℝ E] in
 private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -226,7 +222,6 @@ private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
     rw [← h_int_split, ← h_div_Y_split]; exact h_div_Y_zero
   linarith [h_sum_zero]
 
-omit [InnerProductSpace ℝ E] in
 private lemma memLp_g_norm_gradFun_interior_smooth
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
@@ -254,9 +249,8 @@ private lemma memLp_g_norm_gradFun_interior_smooth
     Real.continuous_sqrt.comp hgrad_inner_cont
   exact continuous_memLp_of_compactSpace g p hG_cont
 
-omit [InnerProductSpace ℝ E] in
 private lemma hasWeakRiemannianGradLp_withBoundary_gradFun_interior
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hu_int : tsupport u ⊆ I.interior M) :
@@ -302,10 +296,10 @@ theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff_interior
     (hu_int : tsupport u ⊆ I.interior M) :
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.MemW1pIntrinsicLp_withBoundary
       (I := I) (M := M) g p u := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   exact
     ⟨continuous_memLp_of_compactSpace g p hu.continuous,
       (fun x : M => (gradFun (I := I) g u x : E)),
@@ -328,7 +322,6 @@ theorem MemW1pIntrinsicLp_withBoundary_of_MemWkpChart_smooth_interior
   MemW1pIntrinsicLp_withBoundary_of_contMDiff_interior
     (I := I) (M := M) g p hu_smooth hu_int
 
-omit [InnerProductSpace ℝ E] in
 private lemma partialDerivWithin_scalarOnE_continuousOn_target
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (j : Fin (Module.finrank ℝ E)) :
@@ -348,7 +341,6 @@ private lemma partialDerivWithin_scalarOnE_continuousOn_target
     partialDerivWithin_contDiffOn_top_of_uniqueDiffOn (i := j) hbase hUD
   exact hpartial_target.continuousOn
 
-omit [InnerProductSpace ℝ E] in
 private lemma partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (j : Fin (Module.finrank ℝ E)) :
@@ -376,7 +368,6 @@ private lemma partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
     exact (extChartAt I α).map_source hxsrc
   exact hpartial.comp hchart hmaps
 
-omit [InnerProductSpace ℝ E] in
 private lemma gradChartCoeffWithin_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -391,7 +382,7 @@ private lemma gradChartCoeffWithin_continuousOn_source
               (scalarOnE (I := I) α u) (extChartAt I α y) := by
     intro y _; rfl
   refine ContinuousOn.congr ?_ heq
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine ContinuousOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞
         (fun y => chartInvGramMatrix (I := I) g α y i j)
@@ -407,7 +398,6 @@ private lemma gradChartCoeffWithin_continuousOn_source
   · exact partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
       (I := I) α hu j
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartGramMatrix_entry_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -421,7 +411,6 @@ private lemma chartGramMatrix_entry_continuousOn_source
   rw [trivializationAt_baseSet_eq_chartAt_source]
   exact hy
 
-omit [InnerProductSpace ℝ E] in
 private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
     (g : SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -467,9 +456,9 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
           = ∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y •
                 g.inner y (chartBasisVecFiber (I := I) α i y) from ?_]
-      · rw [ContinuousLinearMap.sum_apply]
+      · rw [sum_apply]
         refine Finset.sum_congr rfl (fun i _ => ?_)
-        rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+        rw [smul_apply, smul_eq_mul]
         rw [show (g.inner y (chartBasisVecFiber (I := I) α i y))
               (∑ j : Fin (Module.finrank ℝ E),
                 gradChartCoeffWithin (I := I) g α u j y •
@@ -489,16 +478,14 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [map_smul]
   refine ContinuousOn.congr ?_ (fun y hy => h_expand y hy)
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) ?_
   · exact gradChartCoeffWithin_continuousOn_source (I := I) g α hu i
   · exact gradChartCoeffWithin_continuousOn_source (I := I) g α hu j
   · exact chartGramMatrix_entry_continuousOn_source (I := I) g α i j
 
-omit [InnerProductSpace ℝ E] in
 private lemma g_inner_gradFun_gradFun_continuous
-    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     Continuous (fun x : M =>
@@ -511,7 +498,6 @@ private lemma g_inner_gradFun_gradFun_continuous
     g_inner_gradFun_gradFun_continuousOn_chart_source (I := I) g x hu
   exact (hcontOn x hx_chart).continuousAt (hopen.mem_nhds hx_chart)
 
-omit [InnerProductSpace ℝ E] in
 private lemma memLp_g_norm_gradFun_smooth
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
@@ -522,7 +508,6 @@ private lemma memLp_g_norm_gradFun_smooth
   have hcont := g_inner_gradFun_gradFun_continuous (I := I) (M := M) g hu
   exact continuous_memLp_of_compactSpace g p (Real.continuous_sqrt.comp hcont)
 
-omit [InnerProductSpace ℝ E] in
 private lemma tangentSectionAction_chartLocal_within
     (α : M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -553,7 +538,6 @@ private lemma tangentSectionAction_chartLocal_within
   rw [mfderiv_chartBasisVecFiber_within_of_smooth (I := I) α hu hx i]
   rfl
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartCoeff_continuousOn_source
     (α : M) (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) :
@@ -566,7 +550,6 @@ private lemma chartCoeff_continuousOn_source
   rw [trivializationAt_baseSet_eq_chartAt_source]
   exact hy
 
-omit [InnerProductSpace ℝ E] in
 private lemma tangentSectionAction_continuousOn_chart_source
     (α : M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -581,15 +564,13 @@ private lemma tangentSectionAction_continuousOn_chart_source
               (scalarOnE (I := I) α u) (extChartAt I α y) :=
     fun y hy => tangentSectionAction_chartLocal_within (I := I) α Y hu hy
   refine ContinuousOn.congr ?_ (fun y hy => h_eq y hy)
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
   refine ContinuousOn.mul ?_ ?_
   · exact chartCoeff_continuousOn_source (I := I) α Y i
   · exact partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
       (I := I) α hu i
 
-omit [InnerProductSpace ℝ E] in
 private lemma tangentSectionAction_continuous
-    [T2Space M]
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     Continuous (tangentSectionAction (I := I) Y u) := by
@@ -600,9 +581,7 @@ private lemma tangentSectionAction_continuous
   have hcontOn := tangentSectionAction_continuousOn_chart_source (I := I) x Y hu
   exact (hcontOn x hx_chart).continuousAt (hopen.mem_nhds hx_chart)
 
-omit [InnerProductSpace ℝ E] in
 private lemma continuous_g_inner_gradFun_section
-    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -616,9 +595,8 @@ private lemma continuous_g_inner_gradFun_section
   exact (tangentSectionAction_continuous (I := I) (M := M) Y hu).congr
     (fun x => (h_eq x).symm)
 
-omit [InnerProductSpace ℝ E] in
 private lemma hasWeakRiemannianGradLp_withBoundary_gradFun_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u
@@ -649,10 +627,10 @@ theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.MemW1pIntrinsicLp_withBoundary
       (I := I) (M := M) g p u := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   exact
     ⟨continuous_memLp_of_compactSpace g p hu.continuous,
       (fun x : M => (gradFun (I := I) g u x : E)),
@@ -683,10 +661,10 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
       (I := I) (M := M) g p u < ⊤ := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hmem :
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.MemW1pIntrinsicLp_withBoundary
       (I := I) (M := M) g p u :=
@@ -710,10 +688,10 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
     (hu_int : tsupport u ⊆ I.interior M) :
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLp_withBoundary
       (I := I) (M := M) g p u < ⊤ := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hmem :
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.MemW1pIntrinsicLp_withBoundary
       (I := I) (M := M) g p u :=
@@ -727,9 +705,8 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
   refine lt_of_le_of_lt (iInf_le_of_le G (iInf_le _ hG_weak)) ?_
   exact hG_p.2
 
-omit [InnerProductSpace ℝ E] in
 private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_withBoundary_zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -738,10 +715,10 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_withBoundary_zero
       (I := I) (M := M) g p u = 0) :
     u = (fun _ => (0 : ℝ)) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_eLp_u_zero : eLpNorm u p (riemannianVolumeMeasure I M g) = 0 := by
     have h_le_sum :
         eLpNorm u p (riemannianVolumeMeasure I M g) ≤
@@ -751,7 +728,7 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_withBoundary_zero
         w1pNormIntrinsicLp_withBoundary
       exact le_self_add
     rw [h_zero] at h_le_sum
-    exact le_antisymm h_le_sum (zero_le _)
+    exact le_antisymm h_le_sum (zero_le)
   have h_aestronglyMeasurable : AEStronglyMeasurable u
       (riemannianVolumeMeasure I M g) :=
     hu_smooth.continuous.aestronglyMeasurable

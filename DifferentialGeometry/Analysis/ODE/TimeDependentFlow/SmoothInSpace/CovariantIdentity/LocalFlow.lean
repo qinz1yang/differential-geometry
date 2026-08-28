@@ -39,7 +39,7 @@ theorem flatLinearization_eq_rawFderiv_add_movingTriv
     fderiv ℝ (fun z => -(chartTrivRepr (I := I) α X z)) (extChartAt I α α) w
       = -(fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α) w
           + movingTrivCorrection (I := I) α X w) := by
-  rw [fderiv_fun_neg, ContinuousLinearMap.neg_apply]
+  rw [fderiv_fun_neg, neg_apply]
   rw [chartTrivRepr_fderiv_eq_rawFderiv_add_movingTriv (I := I) α X w hR hC]
 
 end Reconciliation

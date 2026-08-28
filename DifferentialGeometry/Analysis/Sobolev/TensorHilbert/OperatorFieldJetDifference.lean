@@ -20,6 +20,7 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem operatorFieldComposition_sub
     (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g b c) (W₁ W₂ : SmoothCcTensor g a b) :

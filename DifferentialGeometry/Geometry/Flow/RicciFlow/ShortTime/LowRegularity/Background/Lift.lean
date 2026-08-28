@@ -221,7 +221,7 @@ theorem background_first_order_operator_of_decomposition
       (FLo x + GLo x)
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (2 : ℝ) ≤ 3 by norm_num) v)
-    simp only [ContinuousLinearMap.add_apply, map_add, h1, h2]
+    simp only [add_apply, map_add, h1, h2]
 
 theorem isBackgroundSecondOrderActionAt_of_radial
     (hDim : Module.finrank ℝ E = 3)

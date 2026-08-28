@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap Filter
 open scoped Manifold Topology ContDiff BigOperators InnerProductSpace
@@ -209,9 +208,9 @@ lemma homTensorRS_riemannianFiberNormSq_clm_apply_le
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
     riemannianFiberNormSq (I := I) (M := M) g r c x (A v) ≤
       ‖A‖ ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r a x v := by
-  letI instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
+  let instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r a
-  letI instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
+  let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
   rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r c x (A v),
     riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r a x v]
@@ -241,9 +240,9 @@ theorem continuous_homTensorRS_opNorm
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
     Continuous (fun x : M => ‖Ψ x‖) := by
-  letI instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
+  let instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r a
-  letI instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
+  let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
   exact continuous_homBundle_opNorm_generic
     (F₁ := TensorRSModel r a ℝ E) (F₂ := TensorRSModel r c ℝ E)
@@ -265,9 +264,9 @@ theorem exists_uniform_homTensorRS_opNorm_sq
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x : M, ‖Ψ x‖ ^ 2 ≤ C := by
-  letI instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
+  let instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r a
-  letI instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
+  let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
   have hcont : Continuous (fun x : M => ‖Ψ x‖) :=
     continuous_homTensorRS_opNorm (I := I) (M := M) g r a c Ψ hΨ
@@ -314,9 +313,9 @@ theorem exists_continuous_riemannianFiberNormSq_homTensorRS_section_clm_le
       ∀ (x : M) (v : TensorRSSpace r a I x),
         riemannianFiberNormSq (I := I) (M := M) g r c x (Ψ x v) ≤
           Cop x * riemannianFiberNormSq (I := I) (M := M) g r a x v := by
-  letI instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
+  let instA : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r a
-  letI instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
+  let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r c
   obtain ⟨N, hN_cont, hN_nonneg, hN_bound⟩ :=
     exists_continuous_homTensorRS_opNorm_sq (I := I) (M := M) g r a c Ψ hΨ

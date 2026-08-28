@@ -78,7 +78,7 @@ private lemma measurable_pou_mul
   exact hcont.measurable.mul hu
 
 private theorem chartAtlasPOU_pou_decomp
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (u : M → ℝ) (x : M) :
     u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
       (I := I) (M := M),
@@ -307,7 +307,7 @@ theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x * u x
     exact hpointwise x
   refine (memLp_congr_ae h_ae).mpr ?_
-  refine memLp_finset_sum' (ε' := ℝ) S ?_
+  refine memLp_finsetSum' (ε' := ℝ) S ?_
   intro α _
   exact perChart_memLp_riemannianMeasure (I := I) (M := M) g hp_one hp_top
     hq_one hq_top hqp hu_meas hu α

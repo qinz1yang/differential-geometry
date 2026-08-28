@@ -112,7 +112,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
         rw [hX]; rfl]
   rw [heval, hX]
   have hext :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => A p (fun q : Fin s => V q p)) x (frame (n 0) x) =
         frameExtData (I := I) frame (frameComp0S (I := I) A frame) x
           (Fin.tail n) (n 0) := by
@@ -169,12 +169,12 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
 end StepBridge
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem extDerivFun_eventuallyEq_congr
+theorem mvfderiv_eventuallyEq_congr
     {f g : M → Real} {x : M} (V : TangentSpace I x)
     (h : f =ᶠ[nhds x] g) :
-    extDerivFun (I := I) f x V = extDerivFun (I := I) g x V := by
-  rw [extDerivFun_real_eq_mfderiv (I := I) f x V,
-    extDerivFun_real_eq_mfderiv (I := I) g x V]
+    mvfderiv (I := I) f x V = mvfderiv (I := I) g x V := by
+  rw [mvfderiv_real_eq_mfderiv (I := I) f x V,
+    mvfderiv_real_eq_mfderiv (I := I) g x V]
   rw [Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real)) h]
   rfl
 

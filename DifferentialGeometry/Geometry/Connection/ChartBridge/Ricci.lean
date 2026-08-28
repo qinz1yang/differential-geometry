@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Riemann
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -20,15 +21,46 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
+noncomputable local instance tangentEndomorphismNormedAddCommGroup (x : M) :
+    NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+noncomputable local instance tangentEndomorphismNormedSpace (x : M) :
+    NormedSpace ℝ (TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  ContinuousLinearMap.toNormedSpace
+
+noncomputable local instance tangentBilinearEndomorphismNormedAddCommGroup (x : M) :
+    NormedAddCommGroup
+      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+noncomputable local instance tangentBilinearEndomorphismNormedSpace (x : M) :
+    NormedSpace ℝ
+      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  ContinuousLinearMap.toNormedSpace
+
+noncomputable local instance tangentTrilinearEndomorphismNormedAddCommGroup (x : M) :
+    NormedAddCommGroup
+      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
+        TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+noncomputable local instance tangentTrilinearEndomorphismNormedSpace (x : M) :
+    NormedSpace ℝ
+      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
+        TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  ContinuousLinearMap.toNormedSpace
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 def chartRiemannBasisIdentity (g : SmoothRiemannianMetric I M) (x : M) : Prop :=
   ∀ i j k l : Fin (Module.finrank ℝ E),
-    ((chartModelBasis E).repr
+    ((centeredChartTangentBasis (I := I) x).repr
         (riemannOp (cov := LeviCivita (I := I) g) x
-          ((chartModelBasis E) j) ((chartModelBasis E) k)
-          ((chartModelBasis E) i))) l =
+          (centeredChartTangentBasis (I := I) x j)
+          (centeredChartTangentBasis (I := I) x k)
+          (centeredChartTangentBasis (I := I) x i))) l =
       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -37,15 +69,17 @@ theorem chartRiemannBasisIdentity_iff (g : SmoothRiemannianMetric I M) (x : M) :
     chartRiemannBasisIdentity (I := I) g x ↔
       ∀ i j k : Fin (Module.finrank ℝ E),
         riemannOp (cov := LeviCivita (I := I) g) x
-            ((chartModelBasis E) j) ((chartModelBasis E) k)
-            ((chartModelBasis E) i) =
+            (centeredChartTangentBasis (I := I) x j)
+            (centeredChartTangentBasis (I := I) x k)
+            (centeredChartTangentBasis (I := I) x i) =
           chartRiemannCLM (I := I) g x
-            ((chartModelBasis E) j) ((chartModelBasis E) k)
-            ((chartModelBasis E) i) := by
+            (centeredChartTangentBasis (I := I) x j)
+            (centeredChartTangentBasis (I := I) x k)
+            (centeredChartTangentBasis (I := I) x i) := by
   classical
   constructor
   · intro h i j k
-    apply (chartModelBasis E).repr.injective
+    apply (centeredChartTangentBasis (I := I) x).repr.injective
     ext l
     rw [h i j k]
     rw [chartRiemannCLM_repr_basis (I := I) g x i j k l]
@@ -62,7 +96,8 @@ theorem riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
     riemannOp (cov := LeviCivita (I := I) g) x v w u =
       chartRiemannCLM (I := I) g x v w u := by
   classical
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    centeredChartTangentBasis (I := I) x with hb_def
   have hbasis := (chartRiemannBasisIdentity_iff (I := I) g x).mp h
   have hv : v = ∑ j : Fin (Module.finrank ℝ E), b.repr v j • b j :=
     (Module.Basis.sum_repr b v).symm
@@ -91,7 +126,7 @@ theorem riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
         ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           (b.repr v j * b.repr w k) •
             riemannOp (cov := LeviCivita (I := I) g) x (b j) (b k) := by
-      rw [h1, ContinuousLinearMap.sum_apply]
+      rw [h1, sum_apply]
       refine Finset.sum_congr rfl fun j _ => ?_
       have h_smul : (b.repr v j • riemannOp (cov := LeviCivita (I := I) g) x (b j)) w =
           b.repr v j • riemannOp (cov := LeviCivita (I := I) g) x (b j) w := rfl
@@ -111,9 +146,9 @@ theorem riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [smul_smul]
     rw [h2]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
     have h_smul :
         ((b.repr v j * b.repr w k) •
@@ -155,7 +190,7 @@ theorem riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
     have h2 : chartRiemannCLM (I := I) g x v w =
         ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           (b.repr v j * b.repr w k) • chartRiemannCLM (I := I) g x (b j) (b k) := by
-      rw [h1, ContinuousLinearMap.sum_apply]
+      rw [h1, sum_apply]
       refine Finset.sum_congr rfl fun j _ => ?_
       have h_smul : (b.repr v j • chartRiemannCLM (I := I) g x (b j)) w =
           b.repr v j • chartRiemannCLM (I := I) g x (b j) w := rfl
@@ -174,9 +209,9 @@ theorem riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
       rw [h_inner, Finset.smul_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [smul_smul]
-    rw [h2, ContinuousLinearMap.sum_apply]
+    rw [h2, sum_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
     have h_smul : ((b.repr v j * b.repr w k) • chartRiemannCLM (I := I) g x (b j) (b k)) u =
         (b.repr v j * b.repr w k) • chartRiemannCLM (I := I) g x (b j) (b k) u := rfl
@@ -210,11 +245,12 @@ theorem ricciTensor_eq_chartRicciSwap_of_basis_identity
     ricciTensor (I := I) g x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) k *
-            ((chartModelBasis E).repr w) i *
+          ((centeredChartTangentBasis (I := I) x).repr v) k *
+            ((centeredChartTangentBasis (I := I) x).repr w) i *
             chartRicciTensor (I := I) g x i k (extChartAt I x x) := by
   classical
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    centeredChartTangentBasis (I := I) x with hb_def
   rw [ricciTensor_apply_basisSum]
   have hrewrite_term : ∀ t : Fin (Module.finrank ℝ E),
       (b.repr (riemannOp (cov := LeviCivita (I := I) g) x (b t) v w)) t =
@@ -229,18 +265,19 @@ theorem ricciTensor_eq_chartRicciSwap_of_basis_identity
               chartRiemannTensor (I := I) g x i t k t (extChartAt I x x) := by
     intro t
     rw [chartRiemannCLM_apply]
-    rw [map_sum]; rw [Finsupp.coe_finset_sum]; rw [Finset.sum_apply]
+    rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [map_sum]; rw [Finsupp.coe_finset_sum]; rw [Finset.sum_apply]
+    rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
     have h_smul_repr : ∀ (c : ℝ) (l : Fin (Module.finrank ℝ E)),
-        ((b.repr (c • (b l : E))) t : ℝ) = c * (if l = t then (1 : ℝ) else 0) := by
+        ((b.repr (c • (b l : TangentSpace I x))) t : ℝ) =
+          c * (if l = t then (1 : ℝ) else 0) := by
       intro c l
       rw [LinearEquiv.map_smul, Finsupp.smul_apply, smul_eq_mul]
       rw [Module.Basis.repr_self_apply]
     rw [Finset.sum_eq_single t]
-    · rw [map_sum]; rw [Finsupp.coe_finset_sum]; rw [Finset.sum_apply]
+    · rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
       refine Finset.sum_congr rfl fun k _ => ?_
-      rw [map_sum]; rw [Finsupp.coe_finset_sum]; rw [Finset.sum_apply]
+      rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
       rw [Finset.sum_eq_single t]
       · rw [h_smul_repr]
         rw [if_pos rfl, mul_one]
@@ -253,10 +290,10 @@ theorem ricciTensor_eq_chartRicciSwap_of_basis_identity
       · intro hl
         exact absurd (Finset.mem_univ t) hl
     · intro j _ hj_ne
-      rw [map_sum]; rw [Finsupp.coe_finset_sum]; rw [Finset.sum_apply]
+      rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
       apply Finset.sum_eq_zero
       intro k _
-      rw [map_sum]; rw [Finsupp.coe_finset_sum]; rw [Finset.sum_apply]
+      rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
       apply Finset.sum_eq_zero
       intro l _
       rw [h_smul_repr]

@@ -96,7 +96,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
 private lemma g_inner_add_left
     (g : SmoothRiemannianMetric I M) (x : M) (v w y : TangentSpace I x) :
     g.inner x (v + w) y = g.inner x v y + g.inner x w y := by
-  rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+  rw [map_add (g.inner x), add_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -110,7 +110,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
 private lemma g_inner_smul_left
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ) (v y : TangentSpace I x) :
     g.inner x (c • v) y = c * g.inner x v y := by
-  rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul (g.inner x), smul_apply, smul_eq_mul]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -125,7 +125,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
 private lemma g_inner_zero_left
     (g : SmoothRiemannianMetric I M) (x : M) (y : TangentSpace I x) :
     g.inner x (0 : TangentSpace I x) y = 0 := by
-  rw [map_zero, ContinuousLinearMap.zero_apply]
+  rw [map_zero, zero_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -246,21 +246,17 @@ lemma radialJacobiGram_quadratic
   have hright :
       g.inner q (∑ i, v i • J i) (∑ i, v i • J i) =
         ∑ i, ∑ j, v i * (g.inner q (J i) (J j) * v j) := by
-    have hmap :=
-      congrArg (fun L : TangentSpace I q →L[ℝ] ℝ => L (∑ j, v j • J j))
-        (map_sum (g.inner q) (fun i => v i • J i) Finset.univ)
     change
-      (fun L : TangentSpace I q →L[ℝ] ℝ => L (∑ j, v j • J j))
-          ((g.inner q) (∑ i, v i • J i)) =
+      g.inner q (∑ i, v i • J i) (∑ j, v j • J j) =
         ∑ i, ∑ j, v i * (g.inner q (J i) (J j) * v j)
-    rw [hmap]
-    simp only [ContinuousLinearMap.sum_apply]
+    rw [map_sum (g.inner q) (fun i => v i • J i) Finset.univ]
+    simp only [sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
     have hsecond :
         g.inner q (J i) (∑ j, v j • J j) =
           ∑ j, g.inner q (J i) (v j • J j) :=
       map_sum (g.inner q (J i)) (fun j => v j • J j) Finset.univ
-    rw [map_smul (g.inner q), ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [map_smul (g.inner q), smul_apply, smul_eq_mul]
     rw [hsecond, Finset.mul_sum]
     simp only [ContinuousLinearMap.map_smul, smul_eq_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -269,6 +265,7 @@ lemma radialJacobiGram_quadratic
     g.inner q (∑ i, v i • J i) (∑ i, v i • J i)
   rw [hleft, hright]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_le_of_radial_entry_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {C : ℝ}
@@ -297,6 +294,7 @@ lemma normalDensity_le_of_radial_entry_bound
       (A := radialJacobiGram (I := I) g p x)
       (C := C) hdet_nonneg hentry
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_le_of_radial_length_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {B : ℝ}
@@ -314,6 +312,7 @@ lemma normalDensity_le_of_radial_length_bound
     (I := I) g p hxsrc hxrad
     (radialEntry_le_of_length_bound (I := I) g p x hB hJ)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {K b B : ℝ}
@@ -373,6 +372,7 @@ lemma density_le_gronwall
     (radialJacobi_fin_le (I := I) g p x hK hb h1b hγ hcard F hpar hON
       hFdiff hJdiff hDJdiff hODE hG)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_init_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {K b A B : ℝ}
@@ -428,6 +428,7 @@ lemma density_le_gronwall_of_init_bound
     (radialJacobi_fin_le_of_init_bound (I := I) g p x hK hb h1b hγ hcard F
       hpar hON hFdiff hJdiff hDJdiff hODE hinit hmodel)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_deriv_eq
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {K b A B : ℝ}
@@ -483,6 +484,7 @@ lemma density_le_gronwall_of_deriv_eq
     (radialJacobi_fin_le_of_deriv_eq (I := I) g p x hK hb h1b hγ hcard F
       hpar hON hFdiff hJdiff hDJdiff hODE hderiv hbasis hmodel)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_radius_deriv
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {r K b A B : ℝ}
@@ -541,6 +543,7 @@ lemma density_le_gronwall_of_radius_deriv
       hpar hON hFdiff hJdiff hDJdiff hODE hderivRadius hxsmall hbasisSmall
       hbasis hmodel)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_scaled_radius
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {a r K b A B : ℝ}
@@ -648,9 +651,9 @@ theorem exists_dens_le_rm04_at
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b A B hBnn ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodel
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   exact normalDensity_le_of_radial_length_bound (I := I) g p hxsrc hxrad hBnn
     (hfin x hx ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
       hγ hcard F hpar hON hFdiff hinit hmodel hxrad)
@@ -705,6 +708,7 @@ theorem exists_dens_le_rm04
   exact h x hx hBnn ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm hxsrc hxrad
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hinit hmodel
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialJacobiGram_posDef
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
@@ -715,6 +719,7 @@ lemma radialJacobiGram_posDef
   exact DifferentialGeometry.Integral.Measure.paramGramMatrix_posDef
     (I := I) g (NormalCoordinates.expMapDiffeo (I := I) g p) hxsrc
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_eigen_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {a : ℝ}
@@ -733,6 +738,7 @@ lemma normalDensity_ge_of_eigen_bound
       (radialJacobiGram_posDef (I := I) g p hxsrc hxrad).posSemidef
       ha heig
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_rayleigh_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {a : ℝ}
@@ -752,6 +758,7 @@ lemma normalDensity_ge_of_rayleigh_bound
       (radialJacobiGram_posDef (I := I) g p hxsrc hxrad).posSemidef
       ha hray
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_combo_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {a : ℝ}
@@ -769,6 +776,7 @@ lemma normalDensity_ge_of_combo_bound
       rw [← radialJacobiGram_quadratic (I := I) g p x (⇑v)] at h
       simpa using h)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_dir_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {a : ℝ}
@@ -841,9 +849,9 @@ theorem exists_dens_ge_rm04_at
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff hmodel
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   exact normalDensity_ge_of_dir_bound (I := I) g p hxsrc hxrad (sq_nonneg B)
     (hdir x hx ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
       hγ hcard F hpar hON hFdiff hmodel hxrad)
@@ -963,9 +971,9 @@ theorem exists_dens_two_rm04_at
   intro x hx a K R Vb b A B hBnn ha hK hVb hb0 hb1 h1b hsmallBasis hsmallDir
     hlaunch hKbound hRm hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff
     hinit hmodelLe hmodelGe
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   have hxle : ‖x‖ < rle := lt_of_lt_of_le hx (min_le_left rle rge)
   have hxge : ‖x‖ < rge := lt_of_lt_of_le hx (min_le_right rle rge)
   have hsmallBasis_le :
@@ -1049,9 +1057,9 @@ theorem exists_dens_pair_rm04_at
   intro x hx a K R Vb b A Blo Bhi hBlo hBhi ha hK hVb hb0 hb1 h1b
     hsmallBasis hsmallDir hlaunch hKbound hRm hxsrc hxrad hγ ι _ _ _ hcard F
     hpar hON hFdiff hinit hmodelLe hmodelGe
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   have hxle : ‖x‖ < rle := lt_of_lt_of_le hx (min_le_left rle rge)
   have hxge : ‖x‖ < rge := lt_of_lt_of_le hx (min_le_right rle rge)
   have hsmallBasis_le :
@@ -1136,7 +1144,7 @@ theorem exists_dens_two_rm04
     hxsrc hxrad (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff
     hinit hmodelLe hmodelGe
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma ball_src_of_radius
     (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
     (hR : R ≤ expMapC2Radius (I := I) g p) :
@@ -1148,6 +1156,7 @@ lemma ball_src_of_radius
     ball_subset_normalChartAt_target (I := I) g p (hwR.trans_le hR)
   simpa [normalChartAt_target_eq (I := I) g p] using hw_target
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_det
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {c : ℝ}
@@ -1158,6 +1167,7 @@ lemma density_ge_det
   rw [normalDensity_radial (I := I) g p hxsrc hxrad]
   exact Real.sqrt_le_sqrt hdet
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_det_ball
     (g : SmoothRiemannianMetric I M) (p : M) {R c : ℝ}
@@ -1175,6 +1185,7 @@ lemma density_ge_det_ball
     exact hwR.trans_le hR
   exact density_ge_det (I := I) g p hwsrc hwrad (hdet w hw)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_rayleigh_ball
     (g : SmoothRiemannianMetric I M) (p : M) {R a : ℝ}
@@ -1195,6 +1206,7 @@ lemma density_ge_rayleigh_ball
     exact hwR.trans_le hR
   exact normalDensity_ge_of_rayleigh_bound (I := I) g p hwsrc hwrad ha (hray w hw)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_combo_ball
     (g : SmoothRiemannianMetric I M) (p : M) {R a : ℝ}
@@ -1216,6 +1228,7 @@ lemma density_ge_combo_ball
     exact hwR.trans_le hR
   exact normalDensity_ge_of_combo_bound (I := I) g p hwsrc hwrad ha (hcombo w hw)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_dir_ball
     (g : SmoothRiemannianMetric I M) (p : M) {R a : ℝ}
@@ -1239,6 +1252,7 @@ lemma density_ge_dir_ball
     exact hwR.trans_le hR
   exact normalDensity_ge_of_dir_bound (I := I) g p hwsrc hwrad ha (hdir w hw)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalChart_volume_le_of_radial_entry_bound
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)
@@ -1279,6 +1293,7 @@ theorem normalChart_volume_le_of_radial_entry_bound
   exact normalDensity_le_of_radial_entry_bound
     (I := I) g p hwsrc hwrad (hentry w hw)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalChart_volume_le_of_radial_length_bound
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)
@@ -1300,6 +1315,7 @@ theorem normalChart_volume_le_of_radial_length_bound
     (I := I) g p hA_meas hA_source hA_rad
     (fun w hw => radialEntry_le_of_length_bound (I := I) g p w hB (hJ w hw))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalChart_volume_le_const_mul_of_radial_length_bound
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)

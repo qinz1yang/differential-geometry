@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Connection.Chart.NablaComponents.OneForm
 import DifferentialGeometry.Geometry.Connection.Chart.NablaComponents.TwoTensor
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Geometry.Manifold.IntegralCurve.Transform
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -109,14 +110,40 @@ theorem hasDerivWithinAt_chartPhaseVF_at_zero_section_within
   set q₀ : TangentBundle I M := (⟨α, (0 : E)⟩ : TangentBundle I M) with hq₀_def
   have hf_chsrc : f t ∈ (chartAt (ModelProd H E) q₀).source :=
     (mem_chartAt_modelProd_zero_source_iff (I := I) α (f t)).mpr hsrc
-  rw [hasDerivWithinAt_iff_hasFDerivWithinAt, ← hasMFDerivWithinAt_iff_hasFDerivWithinAt]
-  apply (HasMFDerivWithinAt.comp t
-    (hasMFDerivWithinAt_extChartAt (I := I.tangent) hf_chsrc) (hf t ht)
-    (Set.subset_preimage_image _ _)).congr_mfderiv
-  rw [mfderiv_chartAt_eq_tangentCoordChange hf_chsrc, hq₀_def]
+  rw [hasDerivWithinAt_iff_hasFDerivWithinAt]
+  have hchart : HasMFDerivWithinAt I.tangent 𝓘(ℝ, E × E)
+      (extChartAt I.tangent q₀) Set.univ (f t)
+      (tangentLinearMapOfModel (I := I.tangent) (I' := 𝓘(ℝ, E × E))
+        (x := f t) (y := I.tangent (chartAt (ModelProd H E) q₀ (f t)))
+        (tangentCoordChange I.tangent (f t) q₀ (f t))) := by
+    have hchartRaw := (ModelWithCorners.hasMFDerivAt_model I.tangent).comp (f t)
+      (((mdifferentiable_chart q₀).mdifferentiableAt hf_chsrc).hasMFDerivAt)
+    refine hchartRaw.hasMFDerivWithinAt.congr_mfderiv ?_
+    apply tangentLinearMapToModel_injective
+    rw [tangentLinearMapToModel_comp, tangentLinearMapToModel_ofModel,
+      tangentLinearMapToModel_ofModel, ContinuousLinearMap.id_comp]
+    apply ContinuousLinearMap.ext
+    intro v
+    rw [tangentLinearMapToModel_apply,
+      mfderiv_chartAt_eq_tangentCoordChange hf_chsrc]
+    rfl
+  have hfClean : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I.tangent f S t
+      (tangentLinearMapOfModel (I := 𝓘(ℝ, ℝ)) (I' := I.tangent)
+        (x := t) (y := f t)
+        (ContinuousLinearMap.toSpanSingleton ℝ
+          (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f t)
+            (geodesicVectorFieldChart (I := I) g α (f t))))) := by
+    refine (hf t ht).congr_mfderiv ?_
+    apply tangentLinearMapToModel_injective
+    rw [tangentLinearMapToModel_ofModel]
+    apply ContinuousLinearMap.ext_ring
+    rfl
+  have hcomp := HasMFDerivWithinAt.comp t hchart hfClean
+    (fun _ _ => Set.mem_univ _)
   have hval :
       (tangentCoordChange I.tangent (f t) (⟨α, (0 : E)⟩ : TangentBundle I M) (f t))
-          (geodesicVectorFieldChart (I := I) g α (f t)) =
+          (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f t)
+            (geodesicVectorFieldChart (I := I) g α (f t))) =
         chartPhaseVF (I := I) g α
           (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (f t)) := by
     trans (geodesicVectorFieldChartFiber (I := I) g α (f t))
@@ -124,16 +151,26 @@ theorem hasDerivWithinAt_chartPhaseVF_at_zero_section_within
     · symm
       rw [extChartAt_tangent_zero_apply_chartFiber (I := I) α hsrc]
       rfl
-  apply ContinuousLinearMap.ext_ring
-  change (tangentCoordChange I.tangent (f t) (⟨α, (0 : E)⟩ : TangentBundle I M) (f t))
-      ((ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ)
-        (geodesicVectorFieldChart (I := I) g α (f t))) 1) =
-    (ContinuousLinearMap.toSpanSingleton ℝ
-      (chartPhaseVF (I := I) g α
-        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (f t)))) 1
-  rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.one_apply, one_smul,
-    ContinuousLinearMap.toSpanSingleton_apply, one_smul]
-  exact hval
+  have hcompClean : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E × E)
+      ((extChartAt I.tangent q₀) ∘ f) S t
+      (tangentLinearMapOfModel (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, E × E))
+        (x := t) (y := I.tangent (chartAt (ModelProd H E) q₀ (f t)))
+        (ContinuousLinearMap.toSpanSingleton ℝ
+          (chartPhaseVF (I := I) g α
+            (extChartAt I.tangent q₀ (f t))))) := by
+    refine hcomp.congr_mfderiv ?_
+    apply ContinuousLinearMap.ext
+    intro r
+    apply (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E × E))
+      (extChartAt I.tangent q₀ (f t))).injective
+    change tangentCoordChange I.tangent (f t) q₀ (f t)
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) t r •
+          tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f t)
+            (geodesicVectorFieldChart (I := I) g α (f t))) =
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) t r •
+        chartPhaseVF (I := I) g α (extChartAt I.tangent q₀ (f t))
+    rw [map_smul, hq₀_def, hval]
+  exact HasMFDerivWithinAt.hasFDerivWithinAt_model hcompClean
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem hasMFDerivWithinAt_of_chartPhase_at_zero_section
@@ -143,8 +180,11 @@ theorem hasMFDerivWithinAt_of_chartPhase_at_zero_section
     (hd : HasDerivWithinAt
       (fun s => extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (c s)) w S' s₀) :
     HasMFDerivWithinAt 𝓘(ℝ, ℝ) I.tangent c S' s₀
-      ((ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ)
-        (tangentCoordChange I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (c s₀) (c s₀) w))) := by
+      (tangentLinearMapOfModel (I := 𝓘(ℝ, ℝ)) (I' := I.tangent)
+        (x := s₀) (y := c s₀)
+        (ContinuousLinearMap.toSpanSingleton ℝ
+          (tangentCoordChange I.tangent
+            (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) (c s₀) (c s₀) w))) := by
   classical
   set q₀ : TangentBundle I M := (⟨α, (0 : E)⟩ : TangentBundle I M) with hq₀
   have hcs0_mem_extq0 : c s₀ ∈ (extChartAt I.tangent q₀).source := by
@@ -157,7 +197,8 @@ theorem hasMFDerivWithinAt_of_chartPhase_at_zero_section
   refine ⟨hcont, ?_⟩
   simp only [mfld_simps]
   change HasFDerivWithinAt (fun s => extChartAt I.tangent (c s₀) (c s))
-    (ContinuousLinearMap.smulRight 1 (tangentCoordChange I.tangent q₀ (c s₀) (c s₀) w)) S' s₀
+    (ContinuousLinearMap.toSpanSingleton ℝ
+      (tangentCoordChange I.tangent q₀ (c s₀) (c s₀) w)) S' s₀
   have htrans : HasFDerivWithinAt
       ((extChartAt I.tangent (c s₀)) ∘ (extChartAt I.tangent q₀).symm)
       (tangentCoordChange I.tangent q₀ (c s₀) (c s₀))
@@ -175,7 +216,7 @@ theorem hasMFDerivWithinAt_of_chartPhase_at_zero_section
       (((extChartAt I.tangent (c s₀)) ∘ (extChartAt I.tangent q₀).symm) ∘
         (fun s => extChartAt I.tangent q₀ (c s)))
       ((tangentCoordChange I.tangent q₀ (c s₀) (c s₀)).comp
-        (ContinuousLinearMap.smulRight 1 w))
+        (ContinuousLinearMap.toSpanSingleton ℝ w))
       (S' ∩ c ⁻¹' (extChartAt I.tangent q₀).source) s₀ :=
     HasFDerivWithinAt.comp s₀ htrans (hd.mono Set.inter_subset_left) hmaps
   have hfun_congr : Set.EqOn
@@ -192,16 +233,17 @@ theorem hasMFDerivWithinAt_of_chartPhase_at_zero_section
     simp only [Function.comp_apply]
     rw [(extChartAt I.tangent q₀).left_inv hcs0_mem_extq0]
   have hCLM_eq : (tangentCoordChange I.tangent q₀ (c s₀) (c s₀)).comp
-        (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w)
-      = ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ)
+        (ContinuousLinearMap.toSpanSingleton ℝ w)
+      = ContinuousLinearMap.toSpanSingleton ℝ
           (tangentCoordChange I.tangent q₀ (c s₀) (c s₀) w) := by
-    apply ContinuousLinearMap.ext_ring
-    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply,
-      ContinuousLinearMap.one_apply, one_smul, ContinuousLinearMap.smulRight_apply,
-      ContinuousLinearMap.one_apply, one_smul]
+    apply ContinuousLinearMap.ext
+    intro r
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
+      ContinuousLinearMap.toSpanSingleton_apply, map_smul]
   rw [hCLM_eq] at hcomp
   have hcomp2 : HasFDerivWithinAt (fun s => extChartAt I.tangent (c s₀) (c s))
-      (ContinuousLinearMap.smulRight 1 (tangentCoordChange I.tangent q₀ (c s₀) (c s₀) w))
+      (ContinuousLinearMap.toSpanSingleton ℝ
+        (tangentCoordChange I.tangent q₀ (c s₀) (c s₀) w))
       (S' ∩ c ⁻¹' (extChartAt I.tangent q₀).source) s₀ :=
     hcomp.congr hfun_congr.symm hself
   rwa [hasFDerivWithinAt_inter' hUnhds] at hcomp2
@@ -214,13 +256,18 @@ theorem hasMFDerivWithinAt_of_chartDeriv_self
     (hcont : ContinuousWithinAt c S' s₀)
     (hd : HasDerivWithinAt (fun s => extChartAt I.tangent (c s₀) (c s)) w S' s₀) :
     HasMFDerivWithinAt 𝓘(ℝ, ℝ) I.tangent c S' s₀
-      ((ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ)
-        (tangentCoordChange I.tangent (c s₀) (c s₀) (c s₀) w))) := by
+      (tangentLinearMapOfModel (I := 𝓘(ℝ, ℝ)) (I' := I.tangent)
+        (x := s₀) (y := c s₀)
+        (ContinuousLinearMap.toSpanSingleton ℝ
+          (tangentCoordChange I.tangent (c s₀) (c s₀) (c s₀) w))) := by
   refine ⟨hcont, ?_⟩
-  rw [tangentCoordChange_self (I := I.tangent) (mem_extChartAt_source (c s₀))]
   rw [hasDerivWithinAt_iff_hasFDerivWithinAt] at hd
-  simp only [mfld_simps] at hd ⊢
-  convert hd using 1
+  simp only [mfld_simps]
+  change HasFDerivWithinAt (fun s => extChartAt I.tangent (c s₀) (c s))
+    (ContinuousLinearMap.toSpanSingleton ℝ
+      (tangentCoordChange I.tangent (c s₀) (c s₀) (c s₀) w)) S' s₀
+  rw [tangentCoordChange_self (I := I.tangent) (mem_extChartAt_source (c s₀))]
+  exact hd
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem geodesicVectorFieldChart_eq_zero_of_notMem_source
@@ -232,7 +279,7 @@ theorem geodesicVectorFieldChart_eq_zero_of_notMem_source
       (⟨α, (0 : E)⟩ : TangentBundle I M)).baseSet := by
     rw [← geodesicChartDomain_eq_trivBaseSet]
     exact fun hh => hp (proj_mem_chartAt_source_of_mem_geodesicChartDomain (I := I) hh)
-  rw [Bundle.Trivialization.symm_apply_of_notMem _ hbase]
+  rw [Bundle.Trivialization.symmL_apply_of_notMem _ hbase]
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem extChartAt_tangent_zero_fiberScale (β : M) (c : ℝ) {q : TangentBundle I M}
@@ -251,12 +298,17 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem tangentCoordChange_zero_section_geodesicVF
     (g : SmoothRiemannianMetric I M) (α : M) (q : TangentBundle I M)
     (hq : q.proj ∈ (chartAt H α).source) :
-    tangentCoordChange I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q q
+    tangentCoordChange I.tangent
+        (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) q q
       (geodesicVectorFieldChartFiber (I := I) g α q)
-      = geodesicVectorFieldChart (I := I) g α q := by
+      = tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q
+          (geodesicVectorFieldChart (I := I) g α q) := by
   classical
   have hfwd := tangentCoordChange_tangent_geodesicVF (I := I) g α q hq
-  rw [← hfwd, tangentCoordChange_comp (I := I.tangent)]
+  rw [← hfwd]
+  rw [tangentCoordChange_comp (I := I.tangent)
+    (w := q) (x := (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M))
+    (y := q) (z := q)]
   · rw [tangentCoordChange_self (I := I.tangent) (mem_extChartAt_source q)]
   · have hself : q ∈ (extChartAt I.tangent q).source := mem_extChartAt_source q
     have hα : q ∈ (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
@@ -289,7 +341,7 @@ private theorem fiberRescaleCLM_apply (c : ℝ) (y : E × E) :
   change ((ContinuousLinearMap.id ℝ E) y.1, (c • (ContinuousLinearMap.id ℝ E)) y.2) = _
   refine Prod.ext rfl ?_
   change (c • (ContinuousLinearMap.id ℝ E)) y.2 = c • y.2
-  rw [ContinuousLinearMap.smul_apply]; rfl
+  rw [smul_apply]; rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem inchart_rescaledLift_chartPhase
@@ -415,15 +467,21 @@ private theorem offchart_rescaledLift_chartDeriv_self
   have hself_src : f a ∈ (extChartAt I.tangent (f a)).source := mem_extChartAt_source (f a)
   have hfwd : HasDerivWithinAt (fun s' => extChartAt I.tangent (f a) (f s'))
       (tangentCoordChange I.tangent (f a) (f a) (f a)
-        (geodesicVectorFieldChart (I := I) g α (f a))) S a :=
+        (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f a)
+          (geodesicVectorFieldChart (I := I) g α (f a)))) S a :=
     hf.hasDerivWithinAt (t₀ := a) hs₀ hself_src
   have hVzero : geodesicVectorFieldChart (I := I) g α (f a) = 0 :=
     geodesicVectorFieldChart_eq_zero_of_notMem_source (I := I) g α (f a) hoff
-  rw [hVzero, tangentCoordChange_self (I := I.tangent) hself_src] at hfwd
+  have hVzero_model :
+      tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f a)
+          (geodesicVectorFieldChart (I := I) g α (f a)) = 0 := by
+    rw [hVzero, map_zero]
+  have hfwd0 : HasDerivWithinAt (fun s' => extChartAt I.tangent (f a) (f s'))
+      (0 : E × E) S a := hfwd.congr_deriv (by rw [hVzero_model, map_zero])
   have hcomp : HasDerivWithinAt
       ((fun s' => extChartAt I.tangent (f a) (f s')) ∘ aff) (c • (0 : E × E))
       {s : ℝ | c * s + d ∈ S} s₀ :=
-    HasDerivWithinAt.scomp (x := s₀) (haff_s0 ▸ hfwd) haff_deriv hmaps
+    HasDerivWithinAt.scomp (x := s₀) (haff_s0 ▸ hfwd0) haff_deriv hmaps
   rw [smul_zero] at hcomp
   have hcomp2 : HasDerivWithinAt
       (fun s => fiberRescaleCLM (E := E) c ((fun s' => extChartAt I.tangent (f a) (f s')) (aff s)))
@@ -523,11 +581,22 @@ theorem scaledTangentLift_transport
         (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (L s₀)))
       hLcont hLsrc hdin
     have heq : geodesicVectorFieldChart (I := I) g α (L s₀)
-        = tangentCoordChange I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (L s₀) (L s₀)
-            (chartPhaseVF (I := I) g α
-              (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (L s₀))) := by
-      rw [chartPhaseVF_extChartAt_zero_section (I := I) g α hLsrc,
-          tangentCoordChange_zero_section_geodesicVF (I := I) g α (L s₀) hLsrc]
+        = (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (L s₀)).symm
+            (tangentCoordChange I.tangent
+              (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) (L s₀) (L s₀)
+              (chartPhaseVF (I := I) g α
+                (extChartAt I.tangent
+                  (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) (L s₀)))) := by
+      apply (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (L s₀)).injective
+      rw [ContinuousLinearEquiv.apply_symm_apply]
+      have hphase : chartPhaseVF (I := I) g α
+          (extChartAt I.tangent
+            (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) (L s₀)) =
+          geodesicVectorFieldChartFiber (I := I) g α (L s₀) :=
+        chartPhaseVF_extChartAt_zero_section (I := I) g α hLsrc
+      rw [hphase]
+      exact (tangentCoordChange_zero_section_geodesicVF
+        (I := I) g α (L s₀) hLsrc).symm
     rw [heq]
     exact hrev
   · have hdoff := offchart_rescaledLift_chartDeriv_self (I := I) g α hf c d hs₀' hsrc
@@ -536,8 +605,10 @@ theorem scaledTangentLift_transport
     have hVzero : geodesicVectorFieldChart (I := I) g α (L s₀) = 0 :=
       geodesicVectorFieldChart_eq_zero_of_notMem_source (I := I) g α (L s₀) hsrc
     have heq : geodesicVectorFieldChart (I := I) g α (L s₀)
-        = tangentCoordChange I.tangent (L s₀) (L s₀) (L s₀) (0 : E × E) := by
-      rw [tangentCoordChange_self (I := I.tangent) (mem_extChartAt_source (L s₀)) (v := 0)]
+        = (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (L s₀)).symm
+            (tangentCoordChange I.tangent (L s₀) (L s₀) (L s₀) (0 : E × E)) := by
+      rw [tangentCoordChange_self (I := I.tangent) (mem_extChartAt_source (L s₀)) (v := 0),
+        map_zero]
       exact hVzero
     rw [heq]
     exact hrev

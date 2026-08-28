@@ -32,7 +32,7 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -44,12 +44,11 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma isOpen_interior_M : IsOpen (I.interior M) :=
   I.isOpen_interior (M := M) (n := ∞)
     (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
 
-omit [InnerProductSpace ℝ E] in
 private lemma localDivergenceWithin_zero_of_eventuallyEq_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) {x : M}
@@ -127,7 +126,6 @@ private lemma localDivergenceWithin_zero_of_eventuallyEq_zero
     exact hsum_zero i]
   rw [zero_div]
 
-omit [InnerProductSpace ℝ E] in
 lemma divergence_g_with_boundary_zero_of_eventuallyEq_zero
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) {x : M}
@@ -138,7 +136,6 @@ lemma divergence_g_with_boundary_zero_of_eventuallyEq_zero
     (mem_chart_source H x) hev
 
 
-omit [InnerProductSpace ℝ E] in
 lemma support_divergence_g_with_boundary_subset
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -155,7 +152,6 @@ lemma support_divergence_g_with_boundary_subset
     exact hy (subset_tsupport _ hyS)
   exact hx (divergence_g_with_boundary_zero_of_eventuallyEq_zero (I := I) g X hev)
 
-omit [InnerProductSpace ℝ E] in
 lemma tsupport_divergence_g_with_boundary_subset
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -164,7 +160,6 @@ lemma tsupport_divergence_g_with_boundary_subset
     (support_divergence_g_with_boundary_subset
       (I := I) g X) (isClosed_tsupport _)
 
-omit [InnerProductSpace ℝ E] in
 lemma hasCompactSupport_divergence_g_with_boundary
     (g : SmoothRiemannianMetric I M)
     {X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯}
@@ -174,7 +169,6 @@ lemma hasCompactSupport_divergence_g_with_boundary
     (support_divergence_g_with_boundary_subset
       (I := I) g X)
 
-omit [InnerProductSpace ℝ E] in
 private lemma tangentSectionAction_continuous_of_interior_support
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
@@ -220,7 +214,6 @@ private lemma tangentSectionAction_continuous_of_interior_support
       rw [hmfderiv_zero]; rfl
     exact (continuous_const.continuousAt.congr hev_action.symm)
 
-omit [InnerProductSpace ℝ E] in
 private lemma exists_smooth_interior_cutoff
     [T2Space M] [SigmaCompactSpace M]
     {K : Set M} (hK_compact : IsCompact K) (hK_sub : K ⊆ I.interior M) :
@@ -228,9 +221,9 @@ private lemma exists_smooth_interior_cutoff
       tsupport χ ⊆ I.interior M ∧
       (∀ᶠ y in 𝓝ˢ K, χ y = 1) ∧ (∀ y, χ y ∈ Icc (0 : ℝ) 1) := by
   classical
-  haveI : LocallyCompactSpace M := locallyCompactSpace_of_chartedSpace E H I M
-  haveI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
-  haveI : NormalSpace M := NormalSpace.of_regularSpace_lindelofSpace
+  have : LocallyCompactSpace M := locallyCompactSpace_of_chartedSpace E H I M
+  have : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  have : NormalSpace M := NormalSpace.of_regularSpace_lindelofSpace
   obtain ⟨L, hL_compact, hKL, hL_sub_int⟩ :=
     exists_compact_between hK_compact (isOpen_interior_M (I := I) (M := M)) hK_sub
   obtain ⟨f, hf_one, hf_zero, hf_range⟩ :=
@@ -248,7 +241,6 @@ private lemma exists_smooth_interior_cutoff
     by_contra hyL
     exact hy (hf_zero y hyL)
 
-omit [InnerProductSpace ℝ E] in
 private lemma integrable_cLM_of_cs_chartSource
     [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -294,7 +286,6 @@ private lemma integrable_cLM_of_cs_chartSource
           rw [setLIntegral_const, one_mul]
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
 
-omit [InnerProductSpace ℝ E] in
 private lemma withDensity_pou_restrict_zero_of_disjoint
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -321,7 +312,6 @@ private lemma withDensity_pou_restrict_zero_of_disjoint
   rw [hρα_zero]
   simp
 
-omit [InnerProductSpace ℝ E] in
 private lemma riemannianVolumeMeasure_restrict_finset_sum
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -378,7 +368,6 @@ private lemma riemannianVolumeMeasure_restrict_finset_sum
         (fun x : M => ENNReal.ofReal (ρ α x))).restrict K from rfl]
     rw [ih, ← Measure.restrict_add]
 
-omit [InnerProductSpace ℝ E] in
 private lemma integral_riemannianVolume_compactSupport_finset_sum
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -394,7 +383,7 @@ private lemma integral_riemannianVolume_compactSupport_finset_sum
   have hK_closed : IsClosed K := isClosed_tsupport _
   have hK_meas : MeasurableSet K := hK_closed.measurableSet
   set S : Finset M := (pouFinset_for_compactSet (I := I) (M := M) hK_compact).toFinset
-  haveI : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isLocallyFiniteMeasure (I := I) (M := M) g
   have hLHS : ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g)
       = ∫ x in K, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
@@ -431,7 +420,7 @@ private lemma integral_riemannianVolume_compactSupport_finset_sum
         hh_cont.integrable_of_hasCompactSupport hh_cs
       exact hh_int_global.mono_measure
         (chartLocalMeasure_withDensity_le_riemannianMeasure (I := I) (M := M) g ρ α)
-    exact integral_finset_sum_measure hh_int
+    exact integral_finsetSum_measure hh_int
   refine Finset.sum_congr rfl (fun α _ => ?_)
   have hρ_aem : AEMeasurable (fun x : M => ENNReal.ofReal ((ρ α : M → ℝ) x))
       (chartLocalMeasure (I := I) g α) :=
@@ -447,7 +436,6 @@ private lemma integral_riemannianVolume_compactSupport_finset_sum
   change (ENNReal.ofReal ((ρ α : M → ℝ) x)).toReal • h x = h x * ((ρ α : M → ℝ) x)
   rw [ENNReal.toReal_ofReal (ρ.nonneg α x), smul_eq_mul, mul_comm]
 
-omit [InnerProductSpace ℝ E] in
 private lemma integral_riemannianVolume_eq_chartLocal_of_support_in_chart
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α₀ : M)
@@ -476,7 +464,6 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_support_in_chart
     refine chartLocalMeasure_integral_eq_of_support_in_overlap (I := I) g α α₀
       (fun x => f x * ρ α x) ?_
     intro x hx
-    simp only
     by_cases hxα : x ∈ (chartAt H α).source
     · have hxα₀ : x ∉ (chartAt H α₀).source := fun hxα₀' => hx ⟨hxα, hxα₀'⟩
       have hxnotin : x ∉ tsupport f := fun h => hxα₀ (hf_supp h)
@@ -510,7 +497,7 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_support_in_chart
       hcont hcs_each (hsupp_sub.trans hf_supp)
   rw [show (∑ α ∈ S, ∫ x, f x * ρ α x ∂(chartLocalMeasure (I := I) g α₀))
       = ∫ x, ∑ α ∈ S, f x * ρ α x ∂(chartLocalMeasure (I := I) g α₀) from
-        (integral_finset_sum (μ := chartLocalMeasure (I := I) g α₀) S h_each_int).symm]
+        (integral_finsetSum (μ := chartLocalMeasure (I := I) g α₀) S h_each_int).symm]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   simp only
   rw [← Finset.mul_sum]
@@ -523,7 +510,6 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_support_in_chart
     exact ρ.sum_finsupport' x (mem_univ x) hfins
   rw [hsum_one, mul_one]
 
-omit [InnerProductSpace ℝ E] in
 private lemma integral_riemannianVolume_eq_chartLocal_of_compactSupport_in_chart
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α₀ : M)
@@ -547,7 +533,6 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_compactSupport_in_chart
     refine chartLocalMeasure_integral_eq_of_support_in_overlap (I := I) g α α₀
       (fun x => h x * (ρ α : M → ℝ) x) ?_
     intro x hx
-    change h x * (ρ α : M → ℝ) x = 0
     by_cases hxα : x ∈ (chartAt H α).source
     · have hxα₀ : x ∉ (chartAt H α₀).source := fun h' => hx ⟨hxα, h'⟩
       have hxK : x ∉ K := fun h' => hxα₀ (hh_supp h')
@@ -581,7 +566,7 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_compactSupport_in_chart
       hcont hcs_each (hsupp_sub.trans hh_supp)
   rw [show (∑ α ∈ S, ∫ x, h x * (ρ α : M → ℝ) x ∂(chartLocalMeasure (I := I) g α₀))
       = ∫ x, ∑ α ∈ S, h x * (ρ α : M → ℝ) x ∂(chartLocalMeasure (I := I) g α₀) from
-        (integral_finset_sum (μ := chartLocalMeasure (I := I) g α₀) S hint_each).symm]
+        (integral_finsetSum (μ := chartLocalMeasure (I := I) g α₀) S hint_each).symm]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   change (∑ α ∈ S, h x * (ρ α : M → ℝ) x) = h x
   rw [← Finset.mul_sum]
@@ -599,7 +584,6 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_compactSupport_in_chart
       exact hxK (subset_tsupport _ hne)
     rw [hh_zero, zero_mul]
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -779,7 +763,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
     exact (integral_riemannianVolume_eq_chartLocal_of_support_in_chart
       (I := I) g α (hAct_cont α) (hAct_supp α)).symm
   rw [Finset.sum_congr rfl h_step_e]
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have h_each_int : ∀ α ∈ S, Integrable
       (fun x : M => tangentSectionAction (I := I) X (φ α) x)
@@ -795,7 +779,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
             ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       = ∫ x, ∑ α ∈ S, tangentSectionAction (I := I) X (φ α) x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) from
-        (integral_finset_sum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
+        (integral_finsetSum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
           S h_each_int).symm]
   have h_pt : ∀ x : M,
       ∑ α ∈ S, tangentSectionAction (I := I) X (φ α) x = 0 := by
@@ -855,7 +839,6 @@ theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
       = (fun _ : M => (0 : ℝ)) from funext h_pt]
   rw [integral_zero, neg_zero]
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -915,7 +898,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interi
     apply Finset.sum_subset hSdiv
     intro α _ hα_notin
     rw [Set.Finite.mem_toFinset _] at hα_notin
-    simp only [Set.mem_setOf_eq] at hα_notin
+    simp only [Set.mem_ofPred_eq] at hα_notin
     rw [Set.not_nonempty_iff_eq_empty] at hα_notin
     have h_zero : ∀ x : M,
         divergence_g_with_boundary (I := I) g X x * (ρ α : M → ℝ) x = 0 := by
@@ -1086,7 +1069,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interi
     exact (integral_riemannianVolume_eq_chartLocal_of_compactSupport_in_chart
       (I := I) g α (hAct_cont α) (hAct_cs α) (hAct_supp α)).symm
   rw [Finset.sum_congr rfl h_step_e]
-  haveI : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isLocallyFiniteMeasure (I := I) (M := M) g
   have hAct_int : ∀ α ∈ S, Integrable
       (fun x : M => tangentSectionAction (I := I) X (φ α) x)
@@ -1096,7 +1079,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interi
             ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       = ∫ x, ∑ α ∈ S, tangentSectionAction (I := I) X (φ α) x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) from
-        (integral_finset_sum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
+        (integral_finsetSum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
           S hAct_int).symm]
   have h_pt : ∀ x : M,
       ∑ α ∈ S, tangentSectionAction (I := I) X (φ α) x = 0 := by

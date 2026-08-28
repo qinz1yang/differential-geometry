@@ -113,7 +113,9 @@ private theorem endpointCarrier_mem_nhds
         | negInf =>
             simp [TimeEndpoint.upperLt] at ht
         | finite b =>
-            simpa [TimeEndpoint.lowerLt, TimeEndpoint.upperLt] using Iio_mem_nhds ht.2
+            refine Filter.mem_of_superset (Iio_mem_nhds ht.2) ?_
+            intro s hs
+            exact ⟨trivial, hs⟩
         | posInf =>
             simp [TimeEndpoint.lowerLt, TimeEndpoint.upperLt]
     | finite a =>
@@ -121,9 +123,12 @@ private theorem endpointCarrier_mem_nhds
         | negInf =>
             simp [TimeEndpoint.upperLt] at ht
         | finite b =>
-            simpa [TimeEndpoint.lowerLt, TimeEndpoint.upperLt] using Ioo_mem_nhds ht.1 ht.2
+            change Set.Ioo a b ∈ 𝓝 t
+            exact Ioo_mem_nhds ht.1 ht.2
         | posInf =>
-            simpa [TimeEndpoint.lowerLt, TimeEndpoint.upperLt] using Ioi_mem_nhds ht.1
+            refine Filter.mem_of_superset (Ioi_mem_nhds ht.1) ?_
+            intro s hs
+            exact ⟨hs, trivial⟩
     | posInf =>
         simp [TimeEndpoint.lowerLt] at ht
   exact
@@ -208,12 +213,16 @@ def ofEndpoints
     have h1 : IsOpen {t : Real | TimeEndpoint.lowerLt a t} := by
       cases a with
       | negInf => simp [TimeEndpoint.lowerLt]
-      | finite s => simpa [TimeEndpoint.lowerLt] using isOpen_Ioi
+      | finite s =>
+          change IsOpen (Set.Ioi s)
+          exact isOpen_Ioi
       | posInf => simp [TimeEndpoint.lowerLt]
     have h2 : IsOpen {t : Real | TimeEndpoint.upperLt t b} := by
       cases b with
       | negInf => simp [TimeEndpoint.upperLt]
-      | finite s => simpa [TimeEndpoint.upperLt] using isOpen_Iio
+      | finite s =>
+          change IsOpen (Set.Iio s)
+          exact isOpen_Iio
       | posInf => simp [TimeEndpoint.upperLt]
     exact h1.inter h2
   regular_mem_nhds := by

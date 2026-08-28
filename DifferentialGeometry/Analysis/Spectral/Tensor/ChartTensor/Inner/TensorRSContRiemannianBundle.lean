@@ -12,7 +12,6 @@ import Mathlib.Topology.VectorBundle.Riemannian
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Bornology
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -199,10 +198,32 @@ private lemma toModel_trivAt_symm_eq_chartRSTwist
             Tensor0SModel r ℝ E) =
       α'.compContinuousLinearMap
         (fun _ : Fin r => chartTrivializationLinearMapSymm (I := I) (M := M) α b) := by
-    have := triv_continuousLinearMapAt_eq_compContinuousLinearMap
+    have h := triv_continuousLinearMapAt_eq_compContinuousLinearMap
       (I := I) (M := M) (s := r) (b₀ := α) (b := b) hb_r
-      (T := show Bundle.continuousMultilinearMap ℝ r E (TangentSpace I) b from α')
-    convert this using 1
+      (T := Tensor0SBundle.Tensor0SSpace.ofModel
+        (I := I) (x := b) α')
+    change
+      ((trivializationAt (Tensor0SModel r ℝ E)
+          (Bundle.continuousMultilinearMap ℝ r E (TangentSpace I)) α).continuousLinearMapAt
+            ℝ b (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := b) α')) =
+        (Tensor0SBundle.Tensor0SSpace.toModel
+          (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := b) α')).compContinuousLinearMap
+            (fun _ : Fin r =>
+              (trivializationAt E (TangentSpace I) α).symmL ℝ b) at h
+    change
+      ((trivializationAt (Tensor0SModel r ℝ E)
+          (Bundle.continuousMultilinearMap ℝ r E (TangentSpace I)) α).continuousLinearMapAt
+            ℝ b (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := b) α')) =
+        _
+    have hlinear : chartTrivializationLinearMapSymm (I := I) (M := M) α b =
+        (trivializationAt E (TangentSpace I) α).symmL ℝ b := by
+      ext z
+      exact tangentSpaceModelContinuousLinearEquiv_apply (I := I) b _
+    rw [show (fun _ : Fin r ↦ chartTrivializationLinearMapSymm
+        (I := I) (M := M) α b) =
+        (fun _ : Fin r ↦ (trivializationAt E (TangentSpace I) α).symmL ℝ b) from
+      funext (fun _ ↦ hlinear)]
+    simpa only [Tensor0SBundle.Tensor0SSpace.toModel_ofModel] using h
   rw [h_er]
   set Tβ : Tensor0SModel s ℝ E :=
     v (α'.compContinuousLinearMap
@@ -214,21 +235,24 @@ private lemma toModel_trivAt_symm_eq_chartRSTwist
             Tensor0SModel s ℝ E) =
       Tβ.compContinuousLinearMap
         (fun _ : Fin s => chartTrivializationLinearMap (I := I) (M := M) α b) := by
-    have :=
+    have h :=
       Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
         (𝕜 := ℝ) (B := M) (F := E) (E := (TangentSpace I : M → Type _))
         (s := s) (x₀ := α) (x := b) hb_s Tβ
-    have htoModel_eq :
-        (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          ((es.symmL ℝ b) (show Tensor0SSpace s I b from Tβ)) :
-            Tensor0SModel s ℝ E) =
-        (show ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ from
-          (es.symmL ℝ b) (show Tensor0SSpace s I b from Tβ)) := by
-      exact Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply
-        (I := I) (M := M) s b _
-    rw [htoModel_eq]
-    convert this using 1
+    change
+      Tensor0SBundle.Tensor0SSpace.toModel
+          ((trivializationAt (Tensor0SModel s ℝ E)
+            (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) α).symmL
+              ℝ b Tβ) =
+        _ at h
+    change
+      Tensor0SBundle.Tensor0SSpace.toModel
+          ((trivializationAt (Tensor0SModel s ℝ E)
+            (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) α).symmL
+              ℝ b Tβ) =
+        Tβ.compContinuousLinearMap
+          (fun _ : Fin s => (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b)
+    exact h
   have h_lhs_simplify :
       Tensor0SBundle.Tensor0SSpace.toModel
         (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
@@ -357,7 +381,6 @@ end DifferentialGeometry
 
 namespace DifferentialGeometry.Tensor.TensorRSRiemannianBundleContinuous
 
-set_option backward.isDefEq.respectTransparency false
 
 
 open DifferentialGeometry.Integral.Measure
@@ -448,9 +471,9 @@ instance tensorRS_isContinuousRiemannianBundle
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
     IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
       (fun b : M => TensorRSSpace r s I b) := by
-  letI hRiemannian : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let hRiemannian : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  letI : (b : M) → NormedAddCommGroup (TensorRSSpace r s I b) := fun b =>
+  let _ : (b : M) → NormedAddCommGroup (TensorRSSpace r s I b) := fun b =>
     (hRiemannian.g.toCore b).toNormedAddCommGroupOfTopology
       (hRiemannian.g.continuousAt b) (hRiemannian.g.isVonNBounded b)
   refine ⟨?_⟩

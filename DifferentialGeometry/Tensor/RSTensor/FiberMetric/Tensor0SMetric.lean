@@ -3,12 +3,17 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Topology.Algebra.Module.FiniteDimension
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 
 namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
+
 
 open scoped Manifold ContDiff BigOperators
 
@@ -214,15 +219,15 @@ private theorem metric_adjoint_eq_adjoint
     letI : InnerProductSpace Real W :=
       @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
     MetricFiberData.adjoint DV DW A = LinearMap.adjoint A := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   apply LinearMap.ext
   intro y
@@ -240,15 +245,15 @@ private theorem homFlatLinear_comm [AddCommGroup V] [Module Real V]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A B : V →ₗ[Real] W) :
     homFlatLinear DV DW A B = homFlatLinear DV DW B A := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   have hA := metric_adjoint_eq_adjoint DV DW A
   have hB := metric_adjoint_eq_adjoint DV DW B
@@ -263,15 +268,15 @@ private theorem homFlatLinear_nonneg [AddCommGroup V] [Module Real V]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A : V →ₗ[Real] W) :
     0 <= homFlatLinear DV DW A A := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   have hA := metric_adjoint_eq_adjoint DV DW A
   change 0 <= LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp A)
@@ -284,15 +289,15 @@ private theorem homFlatLinear_self_eq_zero_iff [AddCommGroup V] [Module Real V]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A : V →ₗ[Real] W) :
     homFlatLinear DV DW A A = 0 ↔ A = 0 := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   have hA := metric_adjoint_eq_adjoint DV DW A
   change LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp A) = 0 ↔ A = 0
@@ -342,9 +347,9 @@ def homCLM [AddCommGroup V] [Module Real V] [TopologicalSpace V]
 end MetricFiberData
 
 def scalarMetricData (x : M) :
-    MetricFiberData (Tensor0SSpace 0 I x) :=
+  MetricFiberData (Tensor0SSpace 0 I x) :=
   MetricFiberData.pullback
-    ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x).toLinearEquiv.trans
+    ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x).toLinearEquiv.trans
       (continuousMultilinearCurryFin0 Real (TangentSpace I x) Real).toLinearEquiv)
     MetricFiberData.real
 
@@ -523,13 +528,13 @@ noncomputable def tensor0SFiberNormHomeomorph
   let standardTopology : TopologicalSpace (Tensor0SSpace s I x) := inferInstance
   refine @Homeomorph.mk (Tensor0SSpace s I x) (Tensor0SSpace s I x)
     metricTopology standardTopology (Equiv.refl (Tensor0SSpace s I x)) ?_ ?_
-  · letI : NormedAddCommGroup (Tensor0SSpace s I x) := metricNorm
-    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+  · let : NormedAddCommGroup (Tensor0SSpace s I x) := metricNorm
+    let : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
       (tensor0SMetricData (I := I) g x s).toCore
-    letI : NormedSpace Real (Tensor0SSpace s I x) :=
+    let : NormedSpace Real (Tensor0SSpace s I x) :=
       InnerProductSpace.Core.toNormedSpace
-    letI : IsBoundedSMul Real (Tensor0SSpace s I x) := inferInstance
-    letI : ContinuousSMul Real (Tensor0SSpace s I x) := inferInstance
+    let : IsBoundedSMul Real (Tensor0SSpace s I x) := inferInstance
+    let : ContinuousSMul Real (Tensor0SSpace s I x) := inferInstance
     exact @LinearMap.continuous_of_finiteDimensional Real inferInstance
       (Tensor0SSpace s I x)
       inferInstance inferInstance metricTopology inferInstance inferInstance
@@ -537,13 +542,13 @@ noncomputable def tensor0SFiberNormHomeomorph
       inferInstance inferInstance standardTopology inferInstance inferInstance
       inferInstance inferInstance inferInstance
       (LinearMap.id : Tensor0SSpace s I x →ₗ[Real] Tensor0SSpace s I x)
-  · letI : NormedAddCommGroup (Tensor0SSpace s I x) := metricNorm
-    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+  · let : NormedAddCommGroup (Tensor0SSpace s I x) := metricNorm
+    let : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
       (tensor0SMetricData (I := I) g x s).toCore
-    letI : NormedSpace Real (Tensor0SSpace s I x) :=
+    let : NormedSpace Real (Tensor0SSpace s I x) :=
       InnerProductSpace.Core.toNormedSpace
-    letI : IsBoundedSMul Real (Tensor0SSpace s I x) := inferInstance
-    letI : ContinuousSMul Real (Tensor0SSpace s I x) := inferInstance
+    let : IsBoundedSMul Real (Tensor0SSpace s I x) := inferInstance
+    let : ContinuousSMul Real (Tensor0SSpace s I x) := inferInstance
     exact @LinearMap.continuous_of_finiteDimensional Real inferInstance
       (Tensor0SSpace s I x)
       inferInstance inferInstance standardTopology inferInstance inferInstance
@@ -573,9 +578,9 @@ theorem inner0S_sq_le_mul
     (inner0S (I := I) g x s A B) ^ 2 <=
       normSq0S (I := I) g x s A * normSq0S (I := I) g x s B := by
   let D := tensor0SMetricData (I := I) g x s
-  letI : PreInnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+  let : PreInnerProductSpace.Core Real (Tensor0SSpace s I x) :=
     D.toCore.toCore
-  letI : Inner Real (Tensor0SSpace s I x) :=
+  let : Inner Real (Tensor0SSpace s I x) :=
     D.toCore.toCore.toInner
   have hcs :=
     InnerProductSpace.Core.inner_mul_inner_self_le
@@ -892,11 +897,11 @@ private theorem tensor0S_curry_one_apply
       A (fun a : Fin 2 => if a = 0 then X else Y) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (1 + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+        (fun _ : Fin (1 + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
         X)
         (fun _ : Fin 1 => Y)) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
         (fun a : Fin 2 => if a = 0 then X else Y)
   rw [continuousMultilinearCurryLeftEquiv_apply]
   congr 1
@@ -911,11 +916,11 @@ private theorem tensor0S_curry_apply_cons
       A (Fin.cons X tail) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (fun _ : Fin (s + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         X)
         tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         (Fin.cons X tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
 
@@ -935,35 +940,35 @@ theorem normSq0S_two_eq_coord
   have hTopAdd1 : IsTopologicalAddGroup (Tensor0SSpace 1 I x) :=
     Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
       (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
-  haveI : IsTopologicalAddGroup (Tensor0SSpace 1 I x) := hTopAdd1
+  have : IsTopologicalAddGroup (Tensor0SSpace 1 I x) := hTopAdd1
   have hContSMul1 : ContinuousSMul Real (Tensor0SSpace 1 I x) :=
     Bundle.continuousMultilinearMap.instContinuousSMul
       (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
-  haveI : ContinuousSMul Real (Tensor0SSpace 1 I x) := hContSMul1
+  have : ContinuousSMul Real (Tensor0SSpace 1 I x) := hContSMul1
   have hContAdd1 : ContinuousAdd (Tensor0SSpace 1 I x) :=
     IsTopologicalAddGroup.toContinuousAdd
-  haveI : ContinuousAdd (Tensor0SSpace 1 I x) := hContAdd1
-  haveI : ContinuousConstSMul Real (Tensor0SSpace 1 I x) := inferInstance
-  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  have : ContinuousAdd (Tensor0SSpace 1 I x) := hContAdd1
+  have : ContinuousConstSMul Real (Tensor0SSpace 1 I x) := inferInstance
+  let : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     @ContinuousLinearMap.topologicalSpace
       Real Real inferInstance inferInstance (RingHom.id Real)
       (TangentSpace I x) (Tensor0SSpace 1 I x)
       inferInstance inferInstance inferInstance inferInstance
       inferInstance inferInstance hTopAdd1
-  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  let : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     @ContinuousLinearMap.addCommGroup
       Real inferInstance Real inferInstance
       (TangentSpace I x) inferInstance inferInstance
       (Tensor0SSpace 1 I x) inferInstance inferInstance
       inferInstance inferInstance (RingHom.id Real) hTopAdd1
-  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  let : Module Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     @ContinuousLinearMap.module
       Real Real Real inferInstance inferInstance inferInstance
       (TangentSpace I x) inferInstance inferInstance inferInstance
       (Tensor0SSpace 1 I x) inferInstance inferInstance
       inferInstance inferInstance inferInstance inferInstance
       (RingHom.id Real) hContAdd1
-  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  let : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     (@LinearMap.toContinuousLinearMap
       Real inferInstance
       (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance
@@ -1046,35 +1051,35 @@ theorem inner0S_two_eq_coord_direct
   have hTopAdd1 : IsTopologicalAddGroup (Tensor0SSpace 1 I x) :=
     Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
       (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
-  haveI : IsTopologicalAddGroup (Tensor0SSpace 1 I x) := hTopAdd1
+  have : IsTopologicalAddGroup (Tensor0SSpace 1 I x) := hTopAdd1
   have hContSMul1 : ContinuousSMul Real (Tensor0SSpace 1 I x) :=
     Bundle.continuousMultilinearMap.instContinuousSMul
       (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
-  haveI : ContinuousSMul Real (Tensor0SSpace 1 I x) := hContSMul1
+  have : ContinuousSMul Real (Tensor0SSpace 1 I x) := hContSMul1
   have hContAdd1 : ContinuousAdd (Tensor0SSpace 1 I x) :=
     IsTopologicalAddGroup.toContinuousAdd
-  haveI : ContinuousAdd (Tensor0SSpace 1 I x) := hContAdd1
-  haveI : ContinuousConstSMul Real (Tensor0SSpace 1 I x) := inferInstance
-  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  have : ContinuousAdd (Tensor0SSpace 1 I x) := hContAdd1
+  have : ContinuousConstSMul Real (Tensor0SSpace 1 I x) := inferInstance
+  let : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     @ContinuousLinearMap.topologicalSpace
       Real Real inferInstance inferInstance (RingHom.id Real)
       (TangentSpace I x) (Tensor0SSpace 1 I x)
       inferInstance inferInstance inferInstance inferInstance
       inferInstance inferInstance hTopAdd1
-  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  let : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     @ContinuousLinearMap.addCommGroup
       Real inferInstance Real inferInstance
       (TangentSpace I x) inferInstance inferInstance
       (Tensor0SSpace 1 I x) inferInstance inferInstance
       inferInstance inferInstance (RingHom.id Real) hTopAdd1
-  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  let : Module Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     @ContinuousLinearMap.module
       Real Real Real inferInstance inferInstance inferInstance
       (TangentSpace I x) inferInstance inferInstance inferInstance
       (Tensor0SSpace 1 I x) inferInstance inferInstance
       inferInstance inferInstance inferInstance inferInstance
       (RingHom.id Real) hContAdd1
-  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+  let : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
     (@LinearMap.toContinuousLinearMap
       Real inferInstance
       (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance
@@ -1151,12 +1156,16 @@ private theorem inner0S_zero_eq
     MetricFiberData.realFlatLinear
   change
     ((continuousMultilinearCurryFin0 Real (TangentSpace I x) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x) A)) *
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x) A)) *
       ((continuousMultilinearCurryFin0 Real (TangentSpace I x) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x) B)) =
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x) B)) =
       A Fin.elim0 * B Fin.elim0
-  simp [tensor0SSpace_continuousLinearEquiv]
-  congr
+  rw [continuousMultilinearCurryFin0_apply, continuousMultilinearCurryFin0_apply]
+  rw [tensor0SSpaceFiberContinuousLinearEquiv_apply,
+    tensor0SSpaceFiberContinuousLinearEquiv_apply]
+  have hzero : (0 : Fin 0 → TangentSpace I x) = Fin.elim0 := Subsingleton.elim _ _
+  rw [hzero]
+  rfl
 
 omit [FiniteDimensional ℝ E] in
 private theorem coordInner0S_zero_eq
@@ -1210,35 +1219,35 @@ private theorem tensor0SMetricStep_inner_eq_coordStep
   have hTopAdd0 : IsTopologicalAddGroup (Tensor0SSpace s I x) :=
     Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
       (𝕜 := Real) (F := E) (E := TangentSpace I) s x
-  haveI : IsTopologicalAddGroup (Tensor0SSpace s I x) := hTopAdd0
+  have : IsTopologicalAddGroup (Tensor0SSpace s I x) := hTopAdd0
   have hContSMul0 : ContinuousSMul Real (Tensor0SSpace s I x) :=
     Bundle.continuousMultilinearMap.instContinuousSMul
       (𝕜 := Real) (F := E) (E := TangentSpace I) s x
-  haveI : ContinuousSMul Real (Tensor0SSpace s I x) := hContSMul0
+  have : ContinuousSMul Real (Tensor0SSpace s I x) := hContSMul0
   have hContAdd0 : ContinuousAdd (Tensor0SSpace s I x) :=
     IsTopologicalAddGroup.toContinuousAdd
-  haveI : ContinuousAdd (Tensor0SSpace s I x) := hContAdd0
-  haveI : ContinuousConstSMul Real (Tensor0SSpace s I x) := inferInstance
-  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+  have : ContinuousAdd (Tensor0SSpace s I x) := hContAdd0
+  have : ContinuousConstSMul Real (Tensor0SSpace s I x) := inferInstance
+  let : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
     @ContinuousLinearMap.topologicalSpace
       Real Real inferInstance inferInstance (RingHom.id Real)
       (TangentSpace I x) (Tensor0SSpace s I x)
       inferInstance inferInstance inferInstance inferInstance
       inferInstance inferInstance hTopAdd0
-  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+  let : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
     @ContinuousLinearMap.addCommGroup
       Real inferInstance Real inferInstance
       (TangentSpace I x) inferInstance inferInstance
       (Tensor0SSpace s I x) inferInstance inferInstance
       inferInstance inferInstance (RingHom.id Real) hTopAdd0
-  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+  let : Module Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
     @ContinuousLinearMap.module
       Real Real Real inferInstance inferInstance inferInstance
       (TangentSpace I x) inferInstance inferInstance inferInstance
       (Tensor0SSpace s I x) inferInstance inferInstance
       inferInstance inferInstance inferInstance inferInstance
       (RingHom.id Real) hContAdd0
-  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+  let : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
     (@LinearMap.toContinuousLinearMap
       Real inferInstance
       (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance

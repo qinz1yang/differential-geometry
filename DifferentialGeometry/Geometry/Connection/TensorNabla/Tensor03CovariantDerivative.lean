@@ -220,15 +220,15 @@ private lemma tensor03CovFun_add_apply
     rw [tensor03CovAt_apply_of_diff_extend cov hsum_T hY hZ hW,
         tensor03CovAt_apply_of_diff_extend cov hT_t hY hZ hW,
         tensor03CovAt_apply_of_diff_extend cov hT'_t hY hZ hW]
-    change extDerivFun (I := I) (fun b => (T + T') b (Y b) (Z b) (W b)) x (X x)
+    change mvfderiv (I := I) (fun b => (T + T') b (Y b) (Z b) (W b)) x (X x)
         - (T + T') x (cov.toFun Y x (X x)) (Z x) (W x)
         - (T + T') x (Y x) (cov.toFun Z x (X x)) (W x)
         - (T + T') x (Y x) (Z x) (cov.toFun W x (X x)) =
-      (extDerivFun (I := I) (fun b => T b (Y b) (Z b) (W b)) x (X x)
+      (mvfderiv (I := I) (fun b => T b (Y b) (Z b) (W b)) x (X x)
         - T x (cov.toFun Y x (X x)) (Z x) (W x)
         - T x (Y x) (cov.toFun Z x (X x)) (W x)
         - T x (Y x) (Z x) (cov.toFun W x (X x))) +
-      (extDerivFun (I := I) (fun b => T' b (Y b) (Z b) (W b)) x (X x)
+      (mvfderiv (I := I) (fun b => T' b (Y b) (Z b) (W b)) x (X x)
         - T' x (cov.toFun Y x (X x)) (Z x) (W x)
         - T' x (Y x) (cov.toFun Z x (X x)) (W x)
         - T' x (Y x) (Z x) (cov.toFun W x (X x)))
@@ -240,13 +240,13 @@ private lemma tensor03CovFun_add_apply
         (fun b : M => T b (Y b) (Z b) (W b)) +
           (fun b : M => T' b (Y b) (Z b) (W b)) := by
       funext b
-      simp only [Pi.add_apply, ContinuousLinearMap.add_apply]
-    have hext_add : extDerivFun (I := I) (fun b => (T + T') b (Y b) (Z b) (W b)) x =
-        extDerivFun (I := I) (fun b => T b (Y b) (Z b) (W b)) x +
-        extDerivFun (I := I) (fun b => T' b (Y b) (Z b) (W b)) x := by
-      rw [hpair_eq, extDerivFun_add hpair_T hpair_T']
+      simp only [Pi.add_apply, add_apply]
+    have hext_add : mvfderiv (I := I) (fun b => (T + T') b (Y b) (Z b) (W b)) x =
+        mvfderiv (I := I) (fun b => T b (Y b) (Z b) (W b)) x +
+        mvfderiv (I := I) (fun b => T' b (Y b) (Z b) (W b)) x := by
+      rw [hpair_eq, mvfderiv_add hpair_T hpair_T']
     rw [hext_add]
-    simp only [Pi.add_apply, ContinuousLinearMap.add_apply]
+    simp only [Pi.add_apply, add_apply]
     ring
 
 private lemma tensor03CovFun_add
@@ -266,7 +266,8 @@ private lemma tensor03CovFun_leibniz_apply
     {g : M → ℝ} {x : M} (hT : MDiffAtTensor03 T x) (hg : MDiffAt g x)
     (v y z w : TangentSpace I x) :
     tensor03CovFun cov (g • T) x v y z w =
-      g x • tensor03CovFun cov T x v y z w + extDerivFun g x v • T x y z w := by
+      g x • tensor03CovFun cov T x v y z w +
+        mvfderiv (I := I) g x v • T x y z w := by
     classical
     have hT_t : MDiffAtTensor03 T x := hT
     have hsum_T : MDiffAtTensor03 (g • T) x := hg.smul_section hT
@@ -286,24 +287,24 @@ private lemma tensor03CovFun_leibniz_apply
     rw [tensor03CovFun_apply, tensor03CovFun_apply]
     rw [tensor03CovAt_apply_of_diff_extend cov hsum_T hY hZ hW]
     rw [tensor03CovAt_apply_of_diff_extend cov hT_t hY hZ hW]
-    change extDerivFun (I := I) (fun b => (g • T) b (Y b) (Z b) (W b)) x (X x)
+    change mvfderiv (I := I) (fun b => (g • T) b (Y b) (Z b) (W b)) x (X x)
         - (g • T) x (cov.toFun Y x (X x)) (Z x) (W x)
         - (g • T) x (Y x) (cov.toFun Z x (X x)) (W x)
         - (g • T) x (Y x) (Z x) (cov.toFun W x (X x)) =
-      g x • (extDerivFun (I := I) (fun b => T b (Y b) (Z b) (W b)) x (X x)
+      g x • (mvfderiv (I := I) (fun b => T b (Y b) (Z b) (W b)) x (X x)
         - T x (cov.toFun Y x (X x)) (Z x) (W x)
         - T x (Y x) (cov.toFun Z x (X x)) (W x)
         - T x (Y x) (Z x) (cov.toFun W x (X x))) +
-      extDerivFun (I := I) g x (X x) • T x (Y x) (Z x) (W x)
+      mvfderiv (I := I) g x (X x) • T x (Y x) (Z x) (W x)
     set h : M → ℝ := fun b => T b (Y b) (Z b) (W b) with hh_def
     have hh : MDifferentiableAt I 𝓘(ℝ, ℝ) h x :=
       mdifferentiableAt_tensor03_pairing hT_t hY hZ hW
     have hg' : MDifferentiableAt I 𝓘(ℝ, ℝ) g x := hg
     have hpair_eq : (fun b : M => (g • T) b (Y b) (Z b) (W b)) = (fun b : M => g b * h b) := by
       funext b
-      simp only [Pi.smul_apply', ContinuousLinearMap.smul_apply, smul_eq_mul, hh_def]
-    rw [hpair_eq, extDerivFun_mul_apply hg' hh]
-    simp only [Pi.smul_apply', ContinuousLinearMap.smul_apply]
+      simp only [Pi.smul_apply', smul_apply, smul_eq_mul, hh_def]
+    rw [hpair_eq, mvfderiv_mul_apply hg' hh]
+    simp only [Pi.smul_apply', smul_apply]
     have hhx : h x = T x (Y x) (Z x) (W x) := rfl
     rw [hhx]
     simp only [smul_eq_mul]
@@ -315,9 +316,9 @@ private lemma tensor03CovFun_leibniz
       TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     {g : M → ℝ} {x : M} (hT : MDiffAtTensor03 T x) (hg : MDiffAt g x) :
     tensor03CovFun cov (g • T) x =
-      g x • tensor03CovFun cov T x + (extDerivFun g x).smulRight (T x) := by
+      g x • tensor03CovFun cov T x + (mvfderiv (I := I) g x).smulRight (T x) := by
   ext v y z w
-  simpa only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simpa only [add_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply] using tensor03CovFun_leibniz_apply cov hT hg v y z w
 
 lemma tensor03CovFun_isCovariantDerivativeOn

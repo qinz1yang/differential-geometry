@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenc
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
 import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
 
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -90,7 +91,11 @@ theorem hasDerivAt_metricPerturbationPath_chartGramOnE (g₀ : SmoothRiemannianM
   have h2 : HasDerivAt (fun s : ℝ => s * G) G s₀ := by
     simpa using (hasDerivAt_id s₀).mul_const G
   have hbase : HasDerivAt (fun s : ℝ => (1 - s) * F + s * G) (G - F) s₀ := by
-    have := h1.add h2; convert this using 1; ring
+    have hfun : (fun s : ℝ => (1 - s) * F + s * G) =
+        (fun s : ℝ => (1 - s) * F) + fun s : ℝ => s * G := by
+      rfl
+    rw [hfun, show G - F = -F + G by ring]
+    exact h1.add h2
   refine (hbase.congr_of_eventuallyEq heq).congr_deriv ?_
   rw [realizedGramDeriv, hF, hG]
 
@@ -180,7 +185,16 @@ theorem hasDerivAt_metricPerturbationPath_chartInvGramOnE (g₀ : SmoothRiemanni
     have hconstg : HasDerivAt (fun _ : ℝ => chartGramOnE (I := I) gs x p q y) 0 s₀ :=
       hasDerivAt_const s₀ _
     have hg := hasDerivAt_metricPerturbationPath_chartGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q y hs₀
-    simpa using hconstg.sub hg
+    have hfun :
+        (fun s : ℝ => chartGramOnE (I := I) gs x p q y -
+          chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x p q y) =
+          (fun _ : ℝ => chartGramOnE (I := I) gs x p q y) -
+            fun s : ℝ => chartGramOnE (I := I)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x p q y := by
+      rfl
+    rw [hfun, show -(realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q y) =
+      0 - realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q y by ring]
+    exact hconstg.sub hg
   have hsum : HasDerivAt
       (fun s : ℝ => ∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k p y *
@@ -429,7 +443,8 @@ theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric 
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ} (hs₀ : s₀ ∈ Set.Ioo (0 : ℝ) 1) :
     HasDerivAt (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w)
       (∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           (∑ j : Fin (Module.finrank ℝ E),
             deriv (fun s : ℝ =>
               chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k j
@@ -440,7 +455,8 @@ theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric 
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have hbody : (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w) =
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           chartRicciTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k
             (extChartAt I x x)) := by
     funext s; rw [realizedRicciChartSum]

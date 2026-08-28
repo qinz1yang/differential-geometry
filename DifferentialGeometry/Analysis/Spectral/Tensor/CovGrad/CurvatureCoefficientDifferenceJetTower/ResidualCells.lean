@@ -66,7 +66,6 @@ open CurvatureCoefficientDifferenceJetTower
 section TopOrderSeparatedResidualIntegrator
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -97,14 +96,14 @@ theorem productTerm_integral_tame_le_ordS
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
         (i : ℝ) * (max Λ (max C 1)) ^ (7 * i) * R ^ 2 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   have hi_pos : 0 < i := hi1
   have hiR_pos : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi_pos
   have hiR_ne : (i : ℝ) ≠ 0 := ne_of_gt hiR_pos
@@ -143,7 +142,7 @@ theorem productTerm_integral_tame_le_ordS
     have hcp : Continuous (fun x => ∏ m : Fin n,
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + e m) x
           ((iteratedCovGrad (I := I) g₀ 0 s (e m) u).toSection x)) :=
-      continuous_finset_prod Finset.univ (fun m _ => hcont (e m))
+      continuous_finsetProd Finset.univ (fun m _ => hcont (e m))
     exact hcp.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   refine ⟨hint_prod, ?_⟩
   set Mbar : ℝ := max Λ (max C 1) with hMbar
@@ -422,7 +421,7 @@ theorem productTerm_integral_tame_le_ordS
         (fun x => ∑ m ∈ Sset, ((e m : ℝ) / i) *
           (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 s (e m) u).toSection x)) ^ ((i : ℝ) / (e m : ℝ))) μ := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro m _
       exact (hint_rpow (e m) ((i : ℝ) / (e m : ℝ)) (by positivity)).const_mul _
     have hint_eq : (∫ x, ∑ m ∈ Sset, ((e m : ℝ) / i) *
@@ -431,7 +430,7 @@ theorem productTerm_integral_tame_le_ordS
         ∑ m ∈ Sset, ((e m : ℝ) / i) *
           (∫ x, (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 s (e m) u).toSection x)) ^ ((i : ℝ) / (e m : ℝ)) ∂μ) := by
-      rw [MeasureTheory.integral_finset_sum]
+      rw [MeasureTheory.integral_finsetSum]
       · apply Finset.sum_congr rfl
         intro m _; rw [MeasureTheory.integral_const_mul]
       · intro m _
@@ -500,14 +499,14 @@ theorem cappedTopLayerCell_integral_le
       (((i : ℝ) + 2) * MBv ^ (9 * (i + 2))) *
         (1 + ∑ j ∈ Finset.range (i + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   have hMBv_nn : 0 ≤ MBv := le_trans zero_le_one hMBv1
   have hLam2_nn : 0 ≤ Lam ^ 2 := sq_nonneg _
   set Wsum : ℝ := 1 + ∑ j ∈ Finset.range (i + 2),
@@ -538,7 +537,7 @@ theorem cappedTopLayerCell_integral_le
         (iteratedCovGrad (I := I) g₀ 0 2 (e m) P) x]
   have hF_int : MeasureTheory.Integrable F μ := by
     have hcp : Continuous F := by
-      rw [hF]; exact continuous_finset_prod _ (fun m _ => hfac_cont m)
+      rw [hF]; exact continuous_finsetProd _ (fun m _ => hfac_cont m)
     exact hcp.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   set high : Finset (Fin n) := Finset.univ.filter (fun m => 3 ≤ e m) with hhigh
   set low : Finset (Fin n) := Finset.univ.filter (fun m => ¬ 3 ≤ e m) with hlow
@@ -636,7 +635,7 @@ theorem cappedTopLayerCell_integral_le
       have hcp : Continuous (fun x => ∏ m ∈ high,
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) :=
-        continuous_finset_prod _ (fun m _ => hfac_cont m)
+        continuous_finsetProd _ (fun m _ => hfac_cont m)
       exact hcp.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
     have hnorm_int : ∀ (s' : ℕ) (w : Integral.L2.SmoothCcTensor g₀ 0 s'),
         (∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ 0 s' x (w.toSection x) ∂μ) = ‖w‖ ^ 2 := by

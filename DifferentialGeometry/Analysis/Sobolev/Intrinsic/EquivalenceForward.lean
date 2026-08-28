@@ -63,7 +63,7 @@ private lemma chartInvGramMatrix_l1Sum_continuousOn
       (chartAt H α).source := by
   classical
   unfold chartInvGramMatrix_l1Sum
-  refine continuousOn_finset_sum _ (fun ij _ => ?_)
+  refine continuousOn_finsetSum _ (fun ij _ => ?_)
   have h1 :
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun x : M =>
@@ -1030,10 +1030,10 @@ theorem eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
           ≤ ENNReal.ofReal C *
               wkpNormChart (I := I) (M := M) 1 p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set S : Finset M :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
   have h_per_α : ∀ α : M, ∃ C_α : ℝ, 0 ≤ C_α ∧
@@ -1150,10 +1150,10 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
           ENNReal.ofReal C *
             wkpNormChart (I := I) (M := M) 1 p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨C₀, hC₀_nn, hC₀_bound⟩ :=
     eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       (I := I) (M := M) g hp_one hp_top
@@ -1231,7 +1231,7 @@ theorem MemWkpChart_of_MemW1pIntrinsicLp_smooth
     (I := I) (M := M) hp_one hu_smooth
 
 private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -1239,10 +1239,10 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
       (I := I) (M := M) g p u = 0) :
     u = (fun _ => (0 : ℝ)) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_eLp_u_zero : eLpNorm u p
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) = 0 := by
     have h_le_sum :
@@ -1253,7 +1253,7 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
       unfold DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
       exact le_self_add
     rw [h_zero] at h_le_sum
-    exact le_antisymm h_le_sum (zero_le _)
+    exact le_antisymm h_le_sum (zero_le)
   have h_aestronglyMeasurable : AEStronglyMeasurable u
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     hu_smooth.continuous.aestronglyMeasurable
@@ -1292,10 +1292,10 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth
           DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
             (I := I) (M := M) g p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_chart_lt_top : wkpNormChart (I := I) (M := M) 1 p u < ⊤ :=
     DifferentialGeometry.Analysis.Sobolev.Equivalence.wkpNormChart_lt_top_of_contMDiff
       (I := I) (M := M) hp_one hu_smooth
@@ -1346,10 +1346,10 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth_uniform
               (I := I) (M := M) g p u := by
   intro u hu_smooth
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   by_cases h_intr_zero :
       DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
         (I := I) (M := M) g p u = 0
@@ -1387,10 +1387,10 @@ theorem wkpNormChart_w1pNormIntrinsicLp_equiv_smooth_uniform
                 DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
                   (I := I) (M := M) g p u) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨K, hK_nn, hK_bound⟩ :=
     w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
       (I := I) (M := M) g hp_one hp_top
@@ -1460,11 +1460,11 @@ private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
         DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g]
       (fun x : M => Real.sqrt (g.inner x (G x) (G x))) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -1637,11 +1637,11 @@ private lemma eLpNorm_gradFun_le_eLpNorm_smooth_of_HasWeakRiemannianGradLp
       eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g

@@ -273,13 +273,13 @@ theorem quasilinearDuhamelMap_contracting (hT : 0 < T) (hT1 : T ≤ 1)
       tensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N) (hL : 2 * (L : ℝ) < 1) :
     ContractingWith
-      ⟨(L : ℝ) * (1 + T),
-        mul_nonneg L.coe_nonneg (by linarith [hT.le])⟩
+      (NNReal.mk ((L : ℝ) * (1 + T))
+        (mul_nonneg L.coe_nonneg (by linarith [hT.le])))
       (quasilinearDuhamelMap (I := I) (M := M) a hT u₀ hN) := by
   refine ⟨?_, ?_⟩
-  · rw [← NNReal.coe_lt_coe]
-    simpa using quasilinear_contraction_const_lt_one
-      (L := L) (T := T) hT1 hL
+  · exact NNReal.coe_lt_coe.mp (by
+      simpa only [NNReal.coe_mk, NNReal.coe_one] using quasilinear_contraction_const_lt_one
+        (L := L) (T := T) hT1 hL)
   · refine LipschitzWith.of_dist_le_mul (fun gforce gforce' => ?_)
     have h := quasilinearDuhamelMap_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT u₀ hN gforce gforce'

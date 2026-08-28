@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Interval
@@ -435,7 +434,7 @@ theorem covApply_section_jointContMDiffOn
     ⟨contMDiffWithinAt_fst, hfib⟩)
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem covGrad_step_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
     (Ψ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ)

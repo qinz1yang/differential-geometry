@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -95,9 +94,9 @@ private lemma lintegral_fintype_sum_two
       simp only [Finset.sum_apply]
     rw [h_eq]
     exact h_sum
-  rw [lintegral_finset_sum' Finset.univ (fun i _ => h_inner i)]
+  rw [lintegral_finsetSum' Finset.univ (fun i _ => h_inner i)]
   refine Finset.sum_congr rfl fun i _ => ?_
-  exact lintegral_finset_sum' Finset.univ fun j _ => hf i j
+  exact lintegral_finsetSum' Finset.univ fun j _ => hf i j
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
     {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α) :
@@ -1053,8 +1052,8 @@ theorem chartTargetPouWeightedL2NormSq_iteratedFDeriv_two_repr_le_sum_chartComp_
                       ∂(volume : Measure EuclN))) := by
   classical
   by_cases hE : Nontrivial E
-  · letI : Nontrivial E := hE
-    letI : NeZero (Module.finrank ℝ E) :=
+  · let : Nontrivial E := hE
+    let : NeZero (Module.finrank ℝ E) :=
       ⟨Nat.ne_of_gt (Module.finrank_pos (R := ℝ) (M := E))⟩
     obtain ⟨K_pou2, hK_pou2_nn, hK_pou2_bound⟩ :=
       exists_pou_symm_iteratedFDeriv_two_uniform_bound (I := I) (M := M) α
@@ -1449,7 +1448,7 @@ theorem chartTargetPouWeightedL2NormSq_iteratedFDeriv_two_repr_le_sum_chartComp_
               (∑ Idx, ∑ Jdx,
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                     rIntegrand Idx Jdx y ∂(volume : Measure EuclN))) := by rfl
-  · letI : Subsingleton E := not_nontrivial_iff_subsingleton.mp hE
+  · let : Subsingleton E := not_nontrivial_iff_subsingleton.mp hE
     refine ⟨0, le_rfl, ?_⟩
     intro T
     have h_deriv (y : EuclN) :
@@ -1507,10 +1506,10 @@ private lemma sum_sq_le_sq_sum_finset
   have hineq : ∀ i ∈ s, (f i) ^ 2 ≤ f i * S := by
     intro i hi
     have hi_le_S : f i ≤ S := Finset.single_le_sum
-      (f := f) (fun _ _ => zero_le _) hi
+      (f := f) (fun _ _ => zero_le) hi
     have hsq_eq : (f i) ^ 2 = f i * f i := sq (f i)
     rw [hsq_eq]
-    exact mul_le_mul_of_nonneg_left hi_le_S (zero_le _)
+    exact mul_le_mul_of_nonneg_left hi_le_S (zero_le)
   calc ∑ i ∈ s, (f i) ^ 2
       ≤ ∑ i ∈ s, f i * S := Finset.sum_le_sum hineq
     _ = (∑ i ∈ s, f i) * S := by rw [← Finset.sum_mul]
@@ -1527,7 +1526,7 @@ private lemma tsum_sq_le_sq_tsum_ennreal
     intro i
     have hsq : (f i) ^ 2 = f i * f i := sq (f i)
     rw [hsq]
-    exact mul_le_mul_of_nonneg_left (h_le i) (zero_le _)
+    exact mul_le_mul_of_nonneg_left (h_le i) (zero_le)
   calc ∑' i, (f i) ^ 2
       ≤ ∑' i, f i * S :=
         ENNReal.tsum_le_tsum h_pointwise
@@ -1581,7 +1580,7 @@ private lemma wkpNorm_zero_sq_le_wtwokTwoNorm_sq
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
                   (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx')
                   (chartTargetEuclid (I := I) (M := M) α))
-              (fun _ _ => zero_le _) (Finset.mem_univ Jdx)
+              (fun _ _ => zero_le) (Finset.mem_univ Jdx)
         _ ≤ ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
               ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
@@ -1593,7 +1592,7 @@ private lemma wkpNorm_zero_sq_le_wtwokTwoNorm_sq
                   iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
                     (tensorChartComp (I := I) (M := M) g r s T α Idx' Jdx')
                     (chartTargetEuclid (I := I) (M := M) α))
-              (fun _ _ => zero_le _) (Finset.mem_univ Idx)
+              (fun _ _ => zero_le) (Finset.mem_univ Idx)
     refine h_term.trans ?_
     exact ENNReal.le_tsum α
   have h_combined : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 0 2
@@ -1713,7 +1712,7 @@ private lemma wkpNorm_one_sq_le_wtwokTwoNorm_sq
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
                   (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx')
                   (chartTargetEuclid (I := I) (M := M) α))
-              (fun _ _ => zero_le _) (Finset.mem_univ Jdx)
+              (fun _ _ => zero_le) (Finset.mem_univ Jdx)
         _ ≤ ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
               ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
@@ -1725,7 +1724,7 @@ private lemma wkpNorm_one_sq_le_wtwokTwoNorm_sq
                   iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
                     (tensorChartComp (I := I) (M := M) g r s T α Idx' Jdx')
                     (chartTargetEuclid (I := I) (M := M) α))
-              (fun _ _ => zero_le _) (Finset.mem_univ Idx)
+              (fun _ _ => zero_le) (Finset.mem_univ Idx)
     refine h_term.trans ?_
     exact ENNReal.le_tsum α
   exact pow_le_pow_left' (h12.trans h_α) 2
@@ -1767,7 +1766,7 @@ private lemma wkpNorm_two_sq_le_wtwokTwoNorm_sq
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
                   (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx')
                   (chartTargetEuclid (I := I) (M := M) α))
-              (fun _ _ => zero_le _) (Finset.mem_univ Jdx)
+              (fun _ _ => zero_le) (Finset.mem_univ Jdx)
         _ ≤ ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
               ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
@@ -1779,7 +1778,7 @@ private lemma wkpNorm_two_sq_le_wtwokTwoNorm_sq
                   iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
                     (tensorChartComp (I := I) (M := M) g r s T α Idx' Jdx')
                     (chartTargetEuclid (I := I) (M := M) α))
-              (fun _ _ => zero_le _) (Finset.mem_univ Idx)
+              (fun _ _ => zero_le) (Finset.mem_univ Idx)
     refine h_term.trans ?_
     exact ENNReal.le_tsum α
   exact pow_le_pow_left' h_α 2
@@ -2130,7 +2129,7 @@ private lemma int_fderiv_tensorChartComp_β_sq_le_wkpNorm_two_sq
     rw [show (fd y ^ 2) = ‖fd y‖ ^ 2 from by rw [Real.norm_eq_abs, sq_abs]]
     rw [show ENNReal.ofReal (‖fd y‖ ^ 2) = (ENNReal.ofReal ‖fd y‖) ^ 2 from
       ENNReal.ofReal_pow (norm_nonneg _) 2]
-    rw [ofReal_norm_eq_enorm]
+    rw [ofReal_norm]
   rw [← h_sq_eLp_eq]
   have h_β_open : IsOpen (chartTargetEuclid (I := I) (M := M) β) :=
     chartTargetEuclid_isOpen (I := I) (M := M) β
@@ -2223,7 +2222,7 @@ private lemma int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
     rw [show (fd y ^ 2) = ‖fd y‖ ^ 2 from by rw [Real.norm_eq_abs, sq_abs]]
     rw [show ENNReal.ofReal (‖fd y‖ ^ 2) = (ENNReal.ofReal ‖fd y‖) ^ 2 from
       ENNReal.ofReal_pow (norm_nonneg _) 2]
-    rw [ofReal_norm_eq_enorm]
+    rw [ofReal_norm]
   rw [← h_sq_eLp_eq]
   have h_β_open : IsOpen (chartTargetEuclid (I := I) (M := M) β) :=
     chartTargetEuclid_isOpen (I := I) (M := M) β
@@ -2306,7 +2305,7 @@ private lemma int_iteratedFDeriv_two_pou_raw_α_symm_sq_le
       (Filter.Eventually.of_forall (fun y hy => h_pt y hy))
   refine h_int_mono.trans ?_
   rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   exact int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
     (I := I) (M := M) g r s T α α Idx Jdx
 
@@ -2342,7 +2341,7 @@ private lemma per_alpha_V_int_le_wtwokTwoNorm_sq
   refine (hK_a_bound T).trans ?_
   rw [ENNReal.ofReal_mul hK_a_nn]
   rw [mul_assoc]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   have h_per_IJ : ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
       (Jdx : Fin s → Fin (Module.finrank ℝ E)),
       (iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 0 2

@@ -26,6 +26,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -160,7 +161,7 @@ private theorem negGInvDiffRaisedEndo_g0_self_adjoint
     (a b : TangentSpace I x) :
     g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) a) b
       = g₀.inner x a ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) b) := by
-  simp only [ContinuousLinearMap.neg_apply, map_neg]
+  simp only [neg_apply, map_neg]
   rw [metricComparisonDifferenceEndomorphism_g0_self_adjoint (I := I) g₀ g₁ x a b]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -174,7 +175,9 @@ private theorem negGInvDiffRaisedEndo_inner_self_le
     (x : M) (v : TangentSpace I x) :
     g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) v) v
       ≤ (δ / (1 - δ)) * g₀.inner x v v := by
-  rw [ContinuousLinearMap.neg_apply, map_neg]
+  change g₀.inner x
+      (-(metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x v)) v ≤ _
+  rw [map_neg]
   have hbnd := abs_inner_metricComparisonDifferenceEndomorphism_le (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v v
   have hv_nn : 0 ≤ g₀.inner x v v := metric_inner_self_nonneg (I := I) (M := M) g₀ x v
   have hsq : Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x v v) = g₀.inner x v v := by
@@ -327,14 +330,25 @@ private theorem armPrincipalSlotPairing_eq_neg_inner
     funext x
     rw [hBfun x,
       toModel_negGInvDiffSlotApplied_eq (I := I) g₀ g₁ (2 + n) x (A.toSection x)]
-  rw [show (fun x => TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (A.toSection x)) = A.toFun from rfl,
-    heq]
-  have hsmul : (fun x => - B.toFun x) = (-1 : ℝ) • B.toFun := by
+  rw [← hA_def]
+  rw [show A.toFun =
+      (fun x => TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (A.toSection x)) from rfl]
+  have hBneg : B.toFun =
+      (fun x => -TensorRSSpace.toModel (𝕜 := ℝ) (E := E)
+        (negGInvDiffSlotApplied (I := I) g₀ g₁ (2 + n) x (A.toSection x))) := by
     funext x
-    exact (neg_one_smul ℝ (B.toFun x)).symm
-  rw [hsmul,
-    tensorL2Inner_smul_right (I := I) (M := M) g₀ 0 ((2 + n) + 1) (-1 : ℝ) A.toFun B.toFun]
-  ring
+    have hx := congrFun heq x
+    rw [hx, neg_neg]
+  rw [hBneg]
+  have hsmul :
+      (fun x => -TensorRSSpace.toModel (𝕜 := ℝ) (E := E)
+        (negGInvDiffSlotApplied (I := I) g₀ g₁ (2 + n) x (A.toSection x))) =
+        (-1 : ℝ) • (fun x => TensorRSSpace.toModel (𝕜 := ℝ) (E := E)
+          (negGInvDiffSlotApplied (I := I) g₀ g₁ (2 + n) x (A.toSection x))) := by
+    funext x
+    exact (neg_one_smul ℝ _).symm
+  rw [hsmul, tensorL2Inner_smul_right]
+  rw [neg_one_mul, neg_neg]
 
 private lemma armResidual_vecTail_cons {α : Type*} {n : ℕ} (a : α) (w : Fin n → α) :
     Matrix.vecTail (Fin.cons a w) = w := by
@@ -358,9 +372,9 @@ private lemma armResidual_model_slot0_linear {s : ℕ} {ι : Type*} (fs : Finset
       ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s + 1) => E) ℝ) T u) rest := by
     intro u
     rw [continuousMultilinearCurryLeftEquiv_apply]
-  rw [h, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [h, map_sum, sum_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul, ← h]
+  rw [map_smul, smul_apply, smul_eq_mul, ← h]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma armResidual_model_slot1_linear {s : ℕ} {ι : Type*} (fs : Finset ι)
@@ -442,16 +456,18 @@ private lemma armResidual_toModel_contract_covariant (s : ℕ) (b : M) (v : Tang
           Tensor0SBundle.contract_covariant 0 s b v A) D) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from A) D)
-        (Fin.cons ((v : TangentSpace I b) : E) m) :=
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b v) m) :=
   rfl
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma armResidual_covDivergence_toSection (g₀ : SmoothRiemannianMetric I M)
     (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) (b : M) :
     ((covDivergence (I := I) (M := M) g₀ s V).toSection b : TensorRSSpace 0 s I b) =
       ∑ i : Fin (Module.finrank ℝ E),
         Tensor0SBundle.contract_covariant 0 s b (smoothOrthoFrame (I := I) g₀ b i b)
           (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b
-            (smoothOrthoFrame (I := I) g₀ b i b)) := by
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b))) := by
   classical
   rw [covDivergence_toSection_apply (I := I) (M := M) g₀ s V b]
   rw [covDivergenceRaw]
@@ -462,7 +478,9 @@ private lemma armResidual_covDivergence_toSection (g₀ : SmoothRiemannianMetric
     (smoothOrthoFrame_smooth (I := I) g₀ b i).contMDiffAt.mdifferentiableAt (by simp)
   rw [codiffPsi_apply (I := I) (M := M) g₀ s V b hSmooth_at hSmooth_at]
   rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 0 (s + 1) V b
-    (smoothOrthoFrame (I := I) g₀ b i b)]
+    (tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (smoothOrthoFrame (I := I) g₀ b i b)),
+    ContinuousLinearEquiv.symm_apply_apply]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
@@ -471,8 +489,10 @@ private lemma armResidual_toModel_doubleTraceFib (g₀ : SmoothRiemannianMetric 
     Tensor0SSpace.toModel (DeTurck.cometricDoubleTraceFib (I := I) g₀ 2 b W) m =
       ∑ i : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel W
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b)) m)) := by
   classical
   rw [DeTurck.cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g₀ 2 b
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) b) W]
@@ -481,28 +501,33 @@ private lemma armResidual_toModel_doubleTraceFib (g₀ : SmoothRiemannianMetric 
       (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W
         (smoothOrthoFrame (I := I) g₀ b i b))
       (smoothOrthoFrame (I := I) g₀ b i b))]
-  rw [ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
     (T := Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W
       (smoothOrthoFrame (I := I) g₀ b i b))
-    (v0 := ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)) (vs := m)]
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (T := W)
-    (v0 := ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E))
-    (vs := Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)]
+    (v0 := smoothOrthoFrame (I := I) g₀ b i b) (vs := m)]
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M) (T := W)
+    (v0 := smoothOrthoFrame (I := I) g₀ b i b)
+    (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (smoothOrthoFrame (I := I) g₀ b i b)) m)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 private lemma armResidual_slot01_transpose (g₀ g₁ : SmoothRiemannianMetric I M) (b : M)
     (T : Tensor0SBundle.Tensor0SModel (2 + 1 + 1) ℝ E) (m : Fin 2 → E) :
     (∑ i : Fin (Module.finrank ℝ E),
-        T (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-            (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
-                (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m))) =
+        T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
+                (smoothOrthoFrame (I := I) g₀ b i b))) m))) =
       ∑ i : Fin (Module.finrank ℝ E),
-        T (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
-              (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)) := by
+        T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
+                (smoothOrthoFrame (I := I) g₀ b i b)))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b)) m)) := by
   classical
   set e : Fin (Module.finrank ℝ E) → TangentSpace I b :=
     fun i => smoothOrthoFrame (I := I) g₀ b i b with he
@@ -513,35 +538,61 @@ private lemma armResidual_slot01_transpose (g₀ g₁ : SmoothRiemannianMetric I
   have hexp : ∀ v : TangentSpace I b,
       v = ∑ j : Fin (Module.finrank ℝ E), g₀.inner b v (e j) • e j :=
     fun v => armResidual_orthoFrame_expansion (I := I) (M := M) g₀ b v
+  have hexpM : ∀ v : TangentSpace I b,
+      tangentSpaceModelContinuousLinearEquiv (I := I) b v =
+        ∑ j : Fin (Module.finrank ℝ E), g₀.inner b v (e j) •
+          tangentSpaceModelContinuousLinearEquiv (I := I) b (e j) := by
+    intro v
+    calc
+      tangentSpaceModelContinuousLinearEquiv (I := I) b v =
+          tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (∑ j : Fin (Module.finrank ℝ E), g₀.inner b v (e j) • e j) :=
+        congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) b) (hexp v)
+      _ = ∑ j : Fin (Module.finrank ℝ E), g₀.inner b v (e j) •
+          tangentSpaceModelContinuousLinearEquiv (I := I) b (e j) := by
+        rw [map_sum]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [map_smul]
   have hL : ∀ i : Fin (Module.finrank ℝ E),
-      T (Fin.cons ((e i : TangentSpace I b) : E)
-          (Fin.cons ((Λ (e i) : TangentSpace I b) : E) m)) =
+      T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Λ (e i))) m)) =
         ∑ j : Fin (Module.finrank ℝ E), g₀.inner b (Λ (e i)) (e j) *
-          T (Fin.cons ((e i : TangentSpace I b) : E)
-              (Fin.cons ((e j : TangentSpace I b) : E) m)) := by
+          T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e j)) m)) := by
     intro i
-    conv_lhs => rw [hexp (Λ (e i))]
-    exact armResidual_model_slot1_linear (E := E) Finset.univ T ((e i : TangentSpace I b) : E)
-      (fun j => g₀.inner b (Λ (e i)) (e j)) (fun j => ((e j : TangentSpace I b) : E)) m
+    conv_lhs => rw [hexpM (Λ (e i))]
+    exact armResidual_model_slot1_linear (E := E) Finset.univ T
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i))
+      (fun j => g₀.inner b (Λ (e i)) (e j))
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) b (e j)) m
   have hR : ∀ i : Fin (Module.finrank ℝ E),
-      T (Fin.cons ((Λ (e i) : TangentSpace I b) : E)
-          (Fin.cons ((e i : TangentSpace I b) : E) m)) =
+      T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Λ (e i)))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i)) m)) =
         ∑ j : Fin (Module.finrank ℝ E), g₀.inner b (Λ (e i)) (e j) *
-          T (Fin.cons ((e j : TangentSpace I b) : E)
-              (Fin.cons ((e i : TangentSpace I b) : E) m)) := by
+          T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e j))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i)) m)) := by
     intro i
-    conv_lhs => rw [hexp (Λ (e i))]
+    conv_lhs => rw [hexpM (Λ (e i))]
     exact armResidual_model_slot0_linear (E := E) Finset.univ T
-      (fun j => g₀.inner b (Λ (e i)) (e j)) (fun j => ((e j : TangentSpace I b) : E))
-      (Fin.cons ((e i : TangentSpace I b) : E) m)
+      (fun j => g₀.inner b (Λ (e i)) (e j))
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) b (e j))
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i)) m)
+  subst e
   rw [Finset.sum_congr rfl (fun i _ => hL i), Finset.sum_congr rfl (fun i _ => hR i)]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  have hco : g₀.inner b (Λ (e j)) (e i) = g₀.inner b (Λ (e i)) (e j) := by
-    rw [hadj (e j) (e i), g₀.symm b (e j) (Λ (e i))]
+  have hco : g₀.inner b (Λ (smoothOrthoFrame (I := I) g₀ b j b))
+      (smoothOrthoFrame (I := I) g₀ b i b) =
+      g₀.inner b (Λ (smoothOrthoFrame (I := I) g₀ b i b))
+        (smoothOrthoFrame (I := I) g₀ b j b) := by
+    rw [hadj (smoothOrthoFrame (I := I) g₀ b j b)
+      (smoothOrthoFrame (I := I) g₀ b i b),
+      g₀.symm b (smoothOrthoFrame (I := I) g₀ b j b)
+        (Λ (smoothOrthoFrame (I := I) g₀ b i b))]
   rw [hco]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private lemma armResidual_covGrad_eval (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (W : SmoothCcTensor g₀ 0 s) (b : M) (D : Tensor0SSpace 0 I b)
     (v0 : E) (vs : Fin s → E) :
@@ -560,7 +611,7 @@ private lemma armResidual_covGrad_eval (g₀ : SmoothRiemannianMetric I M) (s : 
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace s I b from
         tensorCovDerivAt (I := I) (M := M) g₀ 0 s W b v0) D) w) ht)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma armResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (u₀ : SmoothCcTensor g₀ 0 2) (b : M) (D : Tensor0SSpace 0 I b) (m : Fin 2 → E)
     (i : Fin (Module.finrank ℝ E)) :
@@ -572,69 +623,60 @@ private lemma armResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric I
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
                   (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
                 (covGrad (I := I) (M := M) g₀ 0 2 u₀)) b
-              (smoothOrthoFrame (I := I) g₀ b i b))) D) m =
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                (smoothOrthoFrame (I := I) g₀ b i b)))) D) m =
       Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
           (Fin.cons
-            ((((endoCovariantDerivative (I := I) (M := M) g₀)
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (((endoCovariantDerivative (I := I) (M := M) g₀)
                   (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
                   (smoothOrthoFrame (I := I) g₀ b i b))
-                (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m) +
+                (smoothOrthoFrame (I := I) g₀ b i b))) m) +
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace ((2 + 1) + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 (2 + 1)
               (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toSection b) D)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-            (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
-                (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
+                (smoothOrthoFrame (I := I) g₀ b i b))) m)) := by
   classical
   set ei : TangentSpace I b := smoothOrthoFrame (I := I) g₀ b i b with hei
   set Du : SmoothCcTensor g₀ 0 (2 + 1) := covGrad (I := I) (M := M) g₀ 0 2 u₀ with hDu
   set Λf := metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ with hΛf
   rw [armResidual_toModel_contract_covariant (I := I) (M := M) 2 b ei _ D m]
   have hderiv := tensorCovDerivAt_operatorFieldApplication_eq (I := I) (M := M) g₀ (2 + 1) (2 + 1)
-    (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf) Du b ((ei : TangentSpace I b) : E)
+    (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf) Du b
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b ei)
   rw [hderiv]
-  rw [show ((((show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
-          tensorCovDerivAt (I := I) (M := M) g₀ (2 + 1) (2 + 1)
-            (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf) b ((ei : TangentSpace I b) : E)).comp
-          (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from Du.toSection b) +
-        (show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
-          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf).toSection b).comp
-          (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
-            tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) Du b
-              ((ei : TangentSpace I b) : E))) : TensorRSSpace 0 (2 + 1) I b)) D =
-      (show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
-          tensorCovDerivAt (I := I) (M := M) g₀ (2 + 1) (2 + 1)
-            (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf) b ((ei : TangentSpace I b) : E))
-        ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from Du.toSection b) D) +
-      (show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
-          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf).toSection b)
-        ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
-          tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) Du b
-            ((ei : TangentSpace I b) : E)) D) from rfl]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    Tensor0SSpace.toModel_add, add_apply]
   congr 1
   · rw [tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g₀ 2 Λf b
-      ((ei : TangentSpace I b) : E)]
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b ei),
+      ContinuousLinearEquiv.symm_apply_apply]
     rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (2 + 1) 0 b
-      ((endoCovariantDerivative (I := I) (M := M) g₀) Λf b ((ei : TangentSpace I b) : E))
+      ((endoCovariantDerivative (I := I) (M := M) g₀) Λf b ei)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from Du.toSection b) D)
-      (Fin.cons ((ei : TangentSpace I b) : E) m)]
-    rw [Fin.cons_zero, Fin.update_cons_zero]
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b ei) m)]
+    rw [Fin.cons_zero, tangentLinearMapToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply, Fin.update_cons_zero]
   · rw [slotInsertEndoCc_toSection (I := I) (M := M) g₀ 2 Λf b]
     rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (2 + 1) 0 b (Λf b)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
         tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) Du b
-          ((ei : TangentSpace I b) : E)) D)
-      (Fin.cons ((ei : TangentSpace I b) : E) m)]
-    rw [Fin.cons_zero, Fin.update_cons_zero]
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b ei)) D)
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b ei) m)]
+    rw [Fin.cons_zero, tangentLinearMapToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply, Fin.update_cons_zero]
     exact (armResidual_covGrad_eval (I := I) (M := M) g₀ (2 + 1) Du b D
-      ((ei : TangentSpace I b) : E)
-      (Fin.cons ((Λf b (ei : TangentSpace I b) : TangentSpace I b) : E) m)).symm
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b ei)
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Λf b ei)) m)).symm
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma armResidual_arm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (u₀ : SmoothCcTensor g₀ 0 2) (b : M) (D : Tensor0SSpace 0 I b) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -645,9 +687,11 @@ private lemma armResidual_arm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace ((2 + 1) + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 (2 + 1)
               (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toSection b) D)
-          (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
-              (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
+                (smoothOrthoFrame (I := I) g₀ b i b)))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b)) m)) := by
   classical
   rw [deTurckPrincipalCometricArm,
     deTurckPrincipalCometricCoeff_eq_operatorFieldComposition_doubleTrace_slotInsertEndo (I := I) (M := M) g₀ g₁]
@@ -675,11 +719,15 @@ private lemma armResidual_arm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M
     (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
     ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
       (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D)
-    (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-      (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m))]
-  rw [Fin.cons_zero, Fin.update_cons_zero]
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (smoothOrthoFrame (I := I) g₀ b i b))
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (smoothOrthoFrame (I := I) g₀ b i b)) m))]
+  rw [Fin.cons_zero, tangentLinearMapToModel_apply,
+    ContinuousLinearEquiv.symm_apply_apply, Fin.update_cons_zero]
   rfl
 
+omit [SigmaCompactSpace M] in
 private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (u₀ : SmoothCcTensor g₀ 0 2) (b : M) (D : Tensor0SSpace 0 I b) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -696,10 +744,11 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
           (Fin.cons
-            ((((endoCovariantDerivative (I := I) (M := M) g₀)
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (((endoCovariantDerivative (I := I) (M := M) g₀)
                   (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
                   (smoothOrthoFrame (I := I) g₀ b i b))
-                (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m) := by
+                (smoothOrthoFrame (I := I) g₀ b i b))) m) := by
   classical
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
@@ -733,8 +782,10 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
             (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection b)
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
           (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))
-      (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)) =
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b)) m)) =
       Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
           ((endoCovariantDerivative (I := I) (M := M) g₀)
@@ -742,18 +793,22 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
             (smoothOrthoFrame (I := I) g₀ b i b))
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m) := by
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b)) m) := by
     have h := covGrad_slotInsertEndoCc_toSection_eq (I := I) (M := M) g₀ 2
       (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
         (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
-      (Fin.cons (smoothOrthoFrame (I := I) g₀ b i b)
-        (Fin.cons (smoothOrthoFrame (I := I) g₀ b i b) m))
-    have ht : Matrix.vecTail (Fin.cons (smoothOrthoFrame (I := I) g₀ b i b)
-        (Fin.cons (smoothOrthoFrame (I := I) g₀ b i b) m) :
-          Fin (2 + 1 + 1) → TangentSpace I b) =
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m :
-          Fin (2 + 1) → E) := by
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b)) m))
+    have ht : Matrix.vecTail (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (smoothOrthoFrame (I := I) g₀ b i b))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b)) m) : Fin (2 + 1 + 1) → E) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (smoothOrthoFrame (I := I) g₀ b i b)) m : Fin (2 + 1) → E) := by
       funext j
       refine Fin.cases ?_ (fun j' => ?_) j
       · rfl
@@ -774,25 +829,32 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
           (smoothOrthoFrame (I := I) g₀ b i b))
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
           (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))
-      (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m) =
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (smoothOrthoFrame (I := I) g₀ b i b)) m) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
           (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
         (Function.update
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m) 0
-          (((endoCovariantDerivative (I := I) (M := M) g₀)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (smoothOrthoFrame (I := I) g₀ b i b)) m) 0
+          (tangentLinearMapToModel
+            ((endoCovariantDerivative (I := I) (M := M) g₀)
               (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
               (smoothOrthoFrame (I := I) g₀ b i b))
-            ((Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m :
+            ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b)) m :
               Fin (2 + 1) → E) 0))) :=
     slotInsertEndoFib_apply_eval (I := I) (M := M) (2 + 1) 0 b _ _ _
   rw [happ]
-  rw [show ((Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m :
-      Fin (2 + 1) → E) 0) = ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
+  rw [show ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (smoothOrthoFrame (I := I) g₀ b i b)) m : Fin (2 + 1) → E) 0) =
+      tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (smoothOrthoFrame (I := I) g₀ b i b)
     from rfl]
-  rw [Fin.update_cons_zero]
+  rw [tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply,
+    Fin.update_cons_zero]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 private theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMetric I M)
     (u₀ : SmoothCcTensor g₀ 0 2) :
     covDivergence (I := I) (M := M) g₀ 2
@@ -808,7 +870,7 @@ private theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMet
                 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))))
           (covGrad (I := I) (M := M) g₀ 0 2 u₀) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro b
@@ -840,24 +902,27 @@ private theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMet
     (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
       (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ u₀).toSection b) D +
     (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from Garm.toSection b) D from rfl]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [Tensor0SSpace.toModel_add, add_apply]
   rw [armResidual_covDivergence_toSection (I := I) (M := M) g₀ 2 P b]
   rw [show ((∑ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
         (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) P b
-          (smoothOrthoFrame (I := I) g₀ b i b)) : TensorRSSpace 0 2 I b)) D =
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (smoothOrthoFrame (I := I) g₀ b i b))) : TensorRSSpace 0 2 I b)) D =
     ∑ i : Fin (Module.finrank ℝ E),
       (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
         Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
           (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) P b
-            (smoothOrthoFrame (I := I) g₀ b i b))) D from by
-    exact ContinuousLinearMap.sum_apply _ _ _]
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b)))) D from by
+    exact sum_apply _ _ _]
   rw [armResidual_toModel_sum (I := I) (M := M) b Finset.univ
     (fun i => (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
       Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
         (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) P b
-          (smoothOrthoFrame (I := I) g₀ b i b))) D)]
-  rw [ContinuousMultilinearMap.sum_apply]
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (smoothOrthoFrame (I := I) g₀ b i b)))) D)]
+  rw [sum_apply]
   rw [hP]
   rw [Finset.sum_congr rfl (fun i _ =>
     armResidual_contract_term_eq (I := I) (M := M) g₀ g₁ u₀ b D m i)]
@@ -977,6 +1042,7 @@ theorem edgeArm_ibp (g₀ g₁ : SmoothRiemannianMetric I M)
           (iteratedCovGrad (I := I) g₀ 0 2 1 u₀)⟫_ℝ : ℝ) :=
   deTurckArm_residual_ibp_zero (I := I) (M := M) g₀ g₁ u₀
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem armJet_norm_comp (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ)
     (S : SmoothCcTensor g₀ 0 s) :
@@ -1008,13 +1074,14 @@ private theorem armJet_norm_comp (g₀ : SmoothRiemannianMetric I M) (s j i : �
   have hb : (0 : ℝ) ≤ ‖iteratedCovGrad (I := I) g₀ 0 s (j + i) S‖ := norm_nonneg _
   rw [← Real.sqrt_sq ha, ← Real.sqrt_sq hb, hsq]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem armJet_norm_order_congr (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     {n n' : ℕ} (h : n = n') (S : SmoothCcTensor g₀ 0 s) :
     ‖iteratedCovGrad (I := I) g₀ 0 s n S‖ = ‖iteratedCovGrad (I := I) g₀ 0 s n' S‖ := by
   subst h
   rfl
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem armJet_operatorFieldComposition_norm_le (g₀ : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) :
@@ -1393,7 +1460,7 @@ private theorem armJet_abs_pairing_le (g₀ : SmoothRiemannianMetric I M) (s : �
   rw [← h]
   exact abs_real_inner_le_norm A B
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem armJet_jetSum_mono (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {m m' : ℕ}
     (h : m ≤ m') (v : SmoothCcTensor g₀ 0 s) :
     ∑ q ∈ Finset.range m, ‖iteratedCovGrad (I := I) g₀ 0 s q v‖ ≤
@@ -1401,6 +1468,7 @@ private theorem armJet_jetSum_mono (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_subset_range.mpr h)
     (fun _ _ _ => norm_nonneg _)
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem armJet_jetSum_covGrad_le (g₀ : SmoothRiemannianMetric I M) (s m : ℕ)
     (v : SmoothCcTensor g₀ 0 s) :
@@ -1419,7 +1487,7 @@ private theorem armJet_jetSum_covGrad_le (g₀ : SmoothRiemannianMetric I M) (s 
   have h0 : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 0 s 0 v‖ := norm_nonneg _
   linarith [h]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem armJet_jetProduct_le (g₀ : SmoothRiemannianMetric I M) (n p q : ℕ)
     (hp : p ≤ n + 2) (hq : q ≤ n + 2) (hpq : p + q ≤ 2 * n + 3)
     (u₀ : SmoothCcTensor g₀ 0 2) :
@@ -1483,7 +1551,7 @@ private theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric
     have hL : ‖oneMinusConnLapSmoothIter (I := I) g₀ 0 2 b u₀‖ ≤
         CfL 0 * ∑ q ∈ Finset.range (2 * b + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 q u₀‖ := by
       have h := hCfL 0 u₀
-      simpa only [Nat.zero_add] using h
+      simpa only [Nat.zero_add, iteratedCovGrad_zero] using h
     have hR : ‖oneMinusConnLapSmoothIter (I := I) g₀ 0 2 a GT‖ ≤
         CfR 0 * ((∑ q ∈ Finset.range (2 * a + 1), CfG q) *
           ∑ k ∈ Finset.range (2 * a + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 k u₀‖) := by
@@ -1645,6 +1713,7 @@ private theorem armAsm_iterL_norm_le (g₀ : SmoothRiemannianMetric I M) (σ a :
   have h := hCf 0 v
   simpa only [Nat.zero_add, iteratedCovGrad_zero] using h
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem armAsm_shifted_jetSum_le (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
     (u₀ : SmoothCcTensor g₀ 0 2) :
@@ -1847,7 +1916,6 @@ private theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem armSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (A B : SmoothCcTensor g 0 (t + 2)) :
@@ -1868,6 +1936,7 @@ private theorem armSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t
     rw [SmoothCcTensor.toSection_sub]; rfl]
   exact map_sub _ _ _
 
+omit [SigmaCompactSpace M] in
 private theorem armSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
@@ -1889,6 +1958,7 @@ private theorem armSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric I
     armSwap_appFullSec_sub_right (I := I) (M := M) g t F U
       (rawTensorConnLapSmooth (I := I) g 0 (t + 2) U)]
 
+omit [SigmaCompactSpace M] in
 private theorem armSwap_iterL_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
@@ -1913,6 +1983,7 @@ private theorem armSwap_iterL_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
         (oneMinusConnLapSmoothIter (I := I) g 0 (t + 2) d U),
       oneMinusConnLapSmoothIter_succ]
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 private theorem armLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (A B : SmoothCcTensor g r s) :
@@ -1922,6 +1993,7 @@ private theorem armLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric 
   rw [rawTensorConnLapSmooth_sub (I := I) (M := M) g r s A B]
   abel
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 private theorem armLadder_iterL_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -2277,7 +2349,7 @@ private theorem armStep_pairing_diff_abs_le (g₀ g₁ : SmoothRiemannianMetric 
       C * ((∑ j ∈ Finset.range (m + k + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖) *
         (∑ j ∈ Finset.range (m + k + 3), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨F, R, hF, hE2⟩ :=
     exists_secondCovGrad_swap_ricciDefect_homField (I := I) (M := M) g₀ 0 (2 + m)
   obtain ⟨cWm, hcWm_nn, hcWm⟩ := armAsm_operatorFieldApplication_jet_window (I := I) (M := M) g₀ (m + 1)
@@ -3170,7 +3242,7 @@ private theorem oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_le_jetProduc
       (I := I) (M := M) g₀ g₁ n
   obtain ⟨C₂, hC₂_nn, h₂⟩ := arm_g0Term_abs_le_jetProduct (I := I) (M := M) g₀ g₁ n
   refine ⟨C₁ + C₂, add_nonneg hC₁_nn hC₂_nn, fun u₀ => ?_⟩
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set G₀ : SmoothCcTensor g₀ (2 + 1) (2 + 0) :=
     ccOperatorFieldComp (I := I) (M := M) g₀ (2 + 1) ((2 + 1) + 1) (2 + 0)
       (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
@@ -3221,7 +3293,7 @@ private theorem oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_le_jetProduc
   linarith [h₁u, h₂u, habs1, habs2, hgreen]
 
 private theorem exists_oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_jetBound_core
-    [Nonempty M] (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
+    (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (_htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
@@ -3284,7 +3356,7 @@ private theorem exists_oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_jetBo
   nlinarith only [hres_u, hyoung, hA, hB]
 
 private theorem oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_le
-    [Nonempty M] (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
+    (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
@@ -3301,7 +3373,7 @@ private theorem oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_le
     (I := I) (M := M) g₀ g₁ n h htie hδ_lt hδ_nn hδ
 
 private theorem oneMinusConnLapIter_pairing_fold
-    [Nonempty M] (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
+    (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
@@ -3331,7 +3403,7 @@ private theorem oneMinusConnLapIter_pairing_fold
 
 omit [BoundarylessManifold I M] in
 private theorem armPrincipalSlotPairing_le_dirichlet_top
-    [Nonempty M] (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
+    (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + h y v w)
@@ -3341,7 +3413,7 @@ private theorem armPrincipalSlotPairing_le_dirichlet_top
       (δ / (1 - δ)) *
         ‖SmoothCcTensor.toL2 (iteratedCovGrad (I := I) g₀ 0 2 (n + 1) u₀)‖ ^ 2 := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set A : SmoothCcTensor g₀ 0 ((2 + n) + 1) :=
     iteratedCovGrad (I := I) g₀ 0 2 (n + 1) u₀ with hA_def
   set B : SmoothCcTensor g₀ 0 ((2 + n) + 1) :=
@@ -3415,7 +3487,7 @@ private theorem armPrincipalSlotPairing_le_dirichlet_top
   exact hslot
 
 omit [BoundarylessManifold I M] in
-theorem edgeArm_slot_le [Nonempty M]
+theorem edgeArm_slot_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -3430,7 +3502,7 @@ theorem edgeArm_slot_le [Nonempty M]
     (I := I) (M := M) g₀ g₁ n h htie hδ_lt hδ_nn hδ u₀
 
 private theorem dirichlet_top_le_spectral_add_lower
-    [Nonempty M] (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+    (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ Cgap : ℝ, 0 ≤ Cgap ∧
       ∀ (u₀ : SmoothCcTensor g₀ 0 2),
         ‖SmoothCcTensor.toL2 (iteratedCovGrad (I := I) g₀ 0 2 (n + 1) u₀)‖ ^ 2 ≤
@@ -3440,7 +3512,7 @@ private theorem dirichlet_top_le_spectral_add_lower
     (I := I) (M := M) g₀ n
 
 private theorem oneMinusConnLapIter_l2Inner_deTurckPrincipalCometricArm_le
-    [Nonempty M] (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+    (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∀ (g₁ : SmoothRiemannianMetric I M)
       (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ),
       (∀ (y : M) (v w : TangentSpace I y),
@@ -3487,7 +3559,7 @@ private theorem oneMinusConnLapIter_l2Inner_deTurckPrincipalCometricArm_le
   nlinarith [hstep, hr, hMnp_nn]
 
 theorem deTurckPrincipalCometricArm_spectralPairing_tsum_le
-    [Nonempty M] (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+    (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∀ (g₁ : SmoothRiemannianMetric I M)
       (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ),
       (∀ (y : M) (v w : TangentSpace I y),
@@ -3526,7 +3598,7 @@ theorem deTurckPrincipalCometricArm_spectralPairing_tsum_le
   linarith [hb]
 
 theorem two_mul_inner_smoothCcToTensorHs_deTurckPrincipalCometricArm_le
-    [Nonempty M] (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+    (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∀ (g₁ : SmoothRiemannianMetric I M)
       (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ),
       (∀ (y : M) (v w : TangentSpace I y),
@@ -3563,7 +3635,7 @@ theorem two_mul_inner_smoothCcToTensorHs_deTurckPrincipalCometricArm_le
   exact hbound u₀
 
 theorem two_mul_inner_smoothCcToTensorHs_deTurckPrincipalCometricArm_lt_one
-    [Nonempty M] (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+    (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∀ (g₁ : SmoothRiemannianMetric I M)
       (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ),
       (∀ (y : M) (v w : TangentSpace I y),

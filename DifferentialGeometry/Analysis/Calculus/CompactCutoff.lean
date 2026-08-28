@@ -21,8 +21,8 @@ theorem exists_bump_compact
       χ =ᶠ[𝓝ˢ K] 1 ∧
       tsupport χ ⊆ U ∧
       Set.range χ ⊆ Set.Icc 0 1 := by
-  haveI : NormalSpace E := inferInstance
-  haveI : LocallyCompactSpace E := inferInstance
+  have : NormalSpace E := inferInstance
+  have : LocallyCompactSpace E := inferInstance
   obtain ⟨L, hL, hKL, hLU⟩ := exists_compact_between hK hU hKU
   obtain ⟨χM, hχone, hχzero, hχrange⟩ :=
     exists_contMDiffMap_one_nhds_of_subset_interior
@@ -59,10 +59,10 @@ theorem exists_mfd_bump
       χ =ᶠ[𝓝ˢ K] 1 ∧
       tsupport χ ⊆ U ∧
       Set.range χ ⊆ Set.Icc 0 1 := by
-  haveI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
-  haveI : NormalSpace M := inferInstance
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  have : NormalSpace M := inferInstance
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   obtain ⟨L, hL, hKL, hLU⟩ := exists_compact_between hK hU hKU
   obtain ⟨χM, hχone, hχzero, hχrange⟩ :=
     exists_contMDiffMap_one_nhds_of_subset_interior

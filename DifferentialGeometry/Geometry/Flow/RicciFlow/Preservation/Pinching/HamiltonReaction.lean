@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.QuotientEvolution
+import DifferentialGeometry.Tensor.RSTensor.Product
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -114,10 +115,7 @@ def ricciGradCoupleAt {x : M}
     (dScalar : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 1 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 3 x :=
   scalar • nablaRic -
-    (show Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 3 x from
-      Bundle.continuousMultilinearMap.product_fun
-        (𝕜 := Real) (F := E) (E := TangentSpace I)
-        (s := 1) (q := 2) dScalar Ric)
+    Tensor0SSpace.product dScalar Ric
 
 def ricciGradCoupleSq
     (g : Real -> SmoothMetric_gen I M)
@@ -163,9 +161,7 @@ theorem ricciGradCoupleSq_exp_inner
       scalar t x ^ 2 * nablaRicNormSq t x -
         2 * scalar t x *
           inner0S (I := I) (G.metric t) x 3 (nablaRic t x)
-            (Bundle.continuousMultilinearMap.product_fun
-              (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-              (s := 1) (q := 2)
+            (Tensor0SSpace.product
               (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
               (Ric t x)) +
         gradScalarNormSq t x * ricciNormSq t x := by
@@ -224,9 +220,7 @@ theorem ricciMixed_eq_gradNorm
           (RicSec y))
         duRicNorm) :
     2 * inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-            (s := 1) (q := 2)
+          (Tensor0SSpace.product
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
       (G.metric t).inner x
@@ -241,9 +235,7 @@ theorem ricciMixed_eq_gradNorm
                    (RicSec y)
   have hcontract :
       inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-            (s := 1) (q := 2)
+          (Tensor0SSpace.product
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
         inner0S (I := I) (G.metric t) x 2
@@ -291,9 +283,7 @@ theorem ricciMixed_eq_gradNorm
         (I := I) (G.metric t) normFun x W
   calc
     2 * inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-            (s := 1) (q := 2)
+          (Tensor0SSpace.product
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x))
         = 2 * inner0S (I := I) (G.metric t) x 2
@@ -354,9 +344,7 @@ theorem ricciMixed_eq_tfGrad
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x)) :
     2 * scalar t x *
         inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-            (s := 1) (q := 2)
+          (Tensor0SSpace.product
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
       scalar t x *
@@ -429,16 +417,12 @@ theorem ricciMixed_eq_tfGrad
   calc
     2 * scalar t x *
         inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-            (s := 1) (q := 2)
+          (Tensor0SSpace.product
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x))
         = scalar t x *
             (2 * inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
-              (Bundle.continuousMultilinearMap.product_fun
-                (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-                (s := 1) (q := 2)
+              (Tensor0SSpace.product
                 (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t)
                   x)
                 (RicSec x))) := by ring
@@ -485,9 +469,7 @@ theorem ricciGradCoupleSq_exp_mixed
     (hmixed :
       2 * scalar t x *
           inner0S (I := I) (G.metric t) x 3 (nablaRic t x)
-            (Bundle.continuousMultilinearMap.product_fun
-              (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-              (s := 1) (q := 2)
+            (Tensor0SSpace.product
               (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
               (Ric t x)) =
         scalar t x *
@@ -901,9 +883,7 @@ theorem pinch_quotient_evolution_of_mixed_term_identity
       2 * scalar (t : Real) x *
           inner0S (I := I) (G.metric (t : Real)) x 3
             (nablaRic (t : Real) x)
-            (Bundle.continuousMultilinearMap.product_fun
-              (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
-              (s := 1) (q := 2)
+            (Tensor0SSpace.product
               (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I)
                 (scalar (t : Real)) x)
               (Ric (t : Real) x)) =

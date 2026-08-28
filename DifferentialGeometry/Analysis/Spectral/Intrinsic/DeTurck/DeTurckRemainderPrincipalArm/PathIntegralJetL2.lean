@@ -53,7 +53,7 @@ section
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 
-set_option backward.isDefEq.respectTransparency false in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -75,7 +75,6 @@ private theorem iteratedCovGrad_jointContMDiffOn
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_jointContinuousOn
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -136,7 +135,6 @@ private theorem riemannianFiberNormSq_jointContinuousOn
       ((Ψ t).toSection x),
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem pathIntegralCoeffField_congr_of_family_eq
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -159,7 +157,7 @@ private theorem pathIntegralCoeffField_congr_of_family_eq
   intro x
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_pathIntegralCoeffField_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -209,7 +207,6 @@ private theorem iteratedCovGrad_pathIntegralCoeffField_comm
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx (j + 1) (Φ t)) S hS hSI hjgsucc hji
       (by funext t; rw [iteratedCovGrad_succ])
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem armField_pathIntegral_jetL2_perOrder_le
     (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
@@ -273,12 +270,12 @@ theorem armField_pathIntegral_jetL2_perOrder_le
           riemannianFiberNormSq (I := I) (M := M) g₀ r (2 + i) p.2
             ((iteratedCovGrad (I := I) g₀ r 2 i (Φ p.1)).toSection p.2))
           (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) := hri
-      letI : MeasurableSpace E := borel E
-      haveI : BorelSpace E := ⟨rfl⟩
-      letI : MeasurableSpace M := borel M
-      haveI : BorelSpace M := ⟨rfl⟩
+      let : MeasurableSpace E := borel E
+      have : BorelSpace E := ⟨rfl⟩
+      let : MeasurableSpace M := borel M
+      have : BorelSpace M := ⟨rfl⟩
       set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-      haveI : IsFiniteMeasure μ :=
+      have : IsFiniteMeasure μ :=
         riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
       have hnormsq : ∀ t : ℝ,
           ‖iteratedCovGrad (I := I) g₀ r 2 i (Φ t)‖ ^ 2 =

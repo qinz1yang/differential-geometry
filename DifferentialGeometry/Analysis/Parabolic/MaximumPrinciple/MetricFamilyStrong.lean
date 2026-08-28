@@ -23,7 +23,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -57,7 +57,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_of_metricFamilySmo
     u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_positive_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -92,7 +92,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_positive_of_metric
     u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super ht hx y
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -128,7 +128,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_of_
     V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_positive_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -165,7 +165,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_pos
     V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV ht hx y
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -208,7 +208,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
         V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_positive_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -252,7 +252,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
         V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV ht hx y
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -293,7 +293,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_of_metr
   · exact hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_positive_of_metricFamilySmoothOn
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

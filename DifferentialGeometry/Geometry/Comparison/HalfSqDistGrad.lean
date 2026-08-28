@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimis
 import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -78,7 +79,7 @@ theorem exists_dist_eq_sqrt
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q},
       Real.sqrt (g.inner q v v) < ρ →
         dist q (expMapIntrinsic (I := I) g hEnorm q v) = Real.sqrt (g.inner q v v) := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨ρ, hρ, hradial⟩ := radial_riemannianEDist_eq_of_small' (I := I) g hEnorm q
   refine ⟨ρ, hρ, ?_⟩
   intro v hv
@@ -138,7 +139,7 @@ theorem exists_central_geodesic
         IsGeodesicOn (I := I) g (intrinsicGeodesic (I := I) g hEnorm q u) (Set.Icc 0 L) ∧
         (mfderiv (𝓘(ℝ, ℝ)) I (intrinsicGeodesic (I := I) g hEnorm q u) 0 (1 : ℝ) : E) = (u : E) ∧
         arcLength (I := I) g (intrinsicGeodesic (I := I) g hEnorm q u) 0 L = L := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨ρ₄, hρ₄, hround⟩ := exists_expMapIntrinsic_normalChart (I := I) g hEnorm q
   obtain ⟨ρ₃, hρ₃, hdistlem⟩ := exists_dist_eq_sqrt (I := I) g hEnorm q
   refine ⟨min ρ₃ ρ₄, lt_min hρ₃ hρ₄, ?_⟩
@@ -185,7 +186,7 @@ theorem exists_halfSqDist_md
             (NormalCoordinates.normalChartAt (I := I) g pt q)
             (NormalCoordinates.normalChartAt (I := I) g pt q)) < ρ →
       MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨ρd, hρd, hdist⟩ := exists_dist_eq_sqrt (I := I) g hEnorm pt
   obtain ⟨ρe, hρe, hexp⟩ := exists_expMapIntrinsic_normalChart (I := I) g hEnorm pt
   refine ⟨min ρd ρe, lt_min hρd hρe, ?_⟩
@@ -201,7 +202,13 @@ theorem exists_halfSqDist_md
         (fun y : M ↦ (1 / 2 : ℝ) * B (ψ y) (ψ y)) q :=
       contMDiffAt_const.mul
         (((contMDiffAt_const (c := B)).clm_apply hψ).clm_apply hψ)
-    simpa only [B] using hquadB
+    have hfun :
+        (fun y : M ↦ (1 / 2 : ℝ) * g.inner pt (ψ y) (ψ y)) =
+          fun y : M ↦ (1 / 2 : ℝ) * B (ψ y) (ψ y) := by
+      funext y
+      rfl
+    rw [hfun]
+    exact hquadB
   have hrad : ContinuousAt
       (fun y : M ↦ Real.sqrt (g.inner pt (ψ y) (ψ y))) q :=
     (continuous_sqrt_gInner_self (I := I) g pt).continuousAt.comp hψ.continuousAt
@@ -260,20 +267,20 @@ theorem exists_halfSqDist_md_of_complete_metric
             (NormalCoordinates.normalChartAt (I := I) g pt q)
             (NormalCoordinates.normalChartAt (I := I) g pt q)) < ρ →
       MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M :=
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
     (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
-  letI : CompleteSpace M := hcomplete.complete
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
@@ -61,7 +60,7 @@ private theorem jointTotalSpaceRS_sub {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -236,9 +235,9 @@ theorem deTurckRHSReconSection_oneMinusConnLapIter_normSq_continuousOn
         (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k (Rjt t))‖ ^ 2)
       (Set.Icc (0 : ℝ) T) := by
   classical
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀

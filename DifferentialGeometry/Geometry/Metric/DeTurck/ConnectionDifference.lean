@@ -163,9 +163,9 @@ private theorem bilin_ortho_family_diag_eq_chartGram_trace
     have hfirst : A (∑ m, famCoord (I := I) x F i m • chartBasisVecFiber (I := I) x m x) =
         ∑ m, famCoord (I := I) x F i m • A (chartBasisVecFiber (I := I) x m x) := by
       rw [map_sum]; refine Finset.sum_congr rfl (fun m _ => ?_); rw [map_smul]
-    rw [hfirst, ContinuousLinearMap.sum_apply]
+    rw [hfirst, sum_apply]
     refine Finset.sum_congr rfl (fun m _ => ?_)
-    rw [ContinuousLinearMap.smul_apply, map_sum, Finset.smul_sum]
+    rw [smul_apply, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl (fun n _ => ?_)
     rw [map_smul, smul_smul]
   rw [Finset.sum_congr rfl (fun i _ => hsummand i)]
@@ -248,7 +248,7 @@ theorem connectionDifference_outerCovDeriv_eq (g g_bg : SmoothRiemannianMetric I
             - connectionDifference (I := I) g g_bg x (Z x) (connectionDifference (I := I) g g_bg x (Y x) (X x))
             - connectionDifference (I := I) g g_bg x (connectionDifference (I := I) g g_bg x (Z x) (X x)) (Y x)) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set cov₀ := LeviCivita (I := I) g_bg with hcov₀
   set cov₁ := LeviCivita (I := I) g with hcov₁
   have hAeq : connectionDifference (I := I) g g_bg =
@@ -276,7 +276,7 @@ theorem connectionDifference_outerCovDeriv_eq (g g_bg : SmoothRiemannianMetric I
       cov₀.toFun (diffSec cov₀ cov₁ Y Z) x (X x)
         + connectionDifference (I := I) g g_bg x (connectionDifference (I := I) g g_bg x (Z x) (Y x)) (X x) := by
     rw [← hT1]; abel
-  rw [hcA1, hcA2, hT1', ← hAeq, map_add, map_add, ContinuousLinearMap.add_apply]
+  rw [hcA1, hcA2, hT1', ← hAeq, map_add, map_add, add_apply]
   abel
 
 end DeTurck

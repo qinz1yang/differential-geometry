@@ -59,7 +59,7 @@ private theorem memLp_riemannianFiberNormSq_rpow
     MeasureTheory.MemLp
       (fun x => (riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x)) ^ a) p
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
-  haveI : MeasureTheory.IsFiniteMeasure
+  have : MeasureTheory.IsFiniteMeasure
     (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -87,7 +87,7 @@ theorem real_holder_three_nonneg
   classical
   set μ : MeasureTheory.Measure M :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g with hμ
-  haveI : MeasureTheory.IsFiniteMeasure μ :=
+  have : MeasureTheory.IsFiniteMeasure μ :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set α' : ℝ := (β⁻¹ + γ⁻¹)⁻¹ with hα'def
   have hβγpos : 0 < β⁻¹ + γ⁻¹ := by positivity

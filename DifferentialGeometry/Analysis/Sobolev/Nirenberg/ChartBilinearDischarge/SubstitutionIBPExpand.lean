@@ -474,13 +474,13 @@ theorem variational_identity_after_ibp
                     DifferentialGeometry.Analysis.Sobolev.diffQuot
                       (d := Module.finrank ℝ E) k h D.u_chart z) y
             ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum]
+    rw [integral_finsetSum]
     · refine Finset.sum_congr rfl fun i _ => ?_
-      rw [integral_finset_sum]
+      rw [integral_finsetSum]
       intro j _
       exact h_principal_integrable i j
     · intro i _
-      exact integrable_finset_sum _ (fun j _ => h_principal_integrable i j)
+      exact integrable_finsetSum _ (fun j _ => h_principal_integrable i j)
   have h_int_swap_after :
       ∫ y in Metric.cthickening |h| K_0,
           (∑ i : Fin (Module.finrank ℝ E),
@@ -510,13 +510,13 @@ theorem variational_identity_after_ibp
                 DifferentialGeometry.Analysis.Sobolev.diffQuot
                   (d := Module.finrank ℝ E) k h D.u_chart y)
             ∂(volume : Measure EuclN) := by
-    rw [integral_finset_sum]
+    rw [integral_finsetSum]
     · refine Finset.sum_congr rfl fun i _ => ?_
-      rw [integral_finset_sum]
+      rw [integral_finsetSum]
       intro j _
       exact h_principal_integrable_after i j
     · intro i _
-      exact integrable_finset_sum _ (fun j _ => h_principal_integrable_after i j)
+      exact integrable_finsetSum _ (fun j _ => h_principal_integrable_after i j)
   have h_per_ij_eq :
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),

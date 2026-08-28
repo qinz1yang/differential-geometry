@@ -34,8 +34,8 @@ theorem deTurckRicciRHS_isPointwiseSymm
     (g_bg g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     deTurckRicciRHS (I := I) g_bg g x v w =
       deTurckRicciRHS (I := I) g_bg g x w v := by
-  simp only [deTurckRicciRHS, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, lieDerivMetricClm_apply]
+  simp only [deTurckRicciRHS, add_apply,
+    smul_apply, smul_eq_mul, lieDerivMetricClm_apply]
   rw [DifferentialGeometry.Geometry.Curvature.ricciTensor_symm (I := I)
         (smoothRiemannianMetricToInfty (I := I) g) x v w,
     DeTurck.lieDerivMetric_isPointwiseSymm (I := I)
@@ -123,7 +123,7 @@ private lemma partialDeriv_testLinearForm (x : M) (ξ : E)
   · intro b _ hb; rw [if_neg (Ne.symm hb)]; ring
   · intro hp; exact absurd (Finset.mem_univ p) hp
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma partialDeriv_partialDeriv_symbolTestPerturbation_self (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
@@ -241,7 +241,8 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
             (E := E)
             (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
             (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀) x ξ t)
-          ((chartModelBasis E) i) ((chartModelBasis E) j) := by
+          (centeredChartTangentBasis (I := I) x i)
+          (centeredChartTangentBasis (I := I) x j) := by
   classical
   set hh : ChartMetricPerturbation E := symbolTestPerturbation (I := I) x x ξ t ht with hhdef
   have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
@@ -360,7 +361,8 @@ theorem deTurckRicciRHS_chartLinearization_and_readoff
                     (E := E)
                     (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
                     (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀) x ξ t)
-                  ((chartModelBasis E) i) ((chartModelBasis E) j)) := by
+                  (centeredChartTangentBasis (I := I) x i)
+                  (centeredChartTangentBasis (I := I) x j)) := by
   refine ⟨?_, ?_⟩
   · refine ⟨fun h α i j y => metricFamilyDeTurckRicciFirstOrderRemainder (I := I)
       g₀ g_bg α h i j y, ?_, ?_⟩

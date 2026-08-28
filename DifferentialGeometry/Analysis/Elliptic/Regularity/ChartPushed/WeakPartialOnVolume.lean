@@ -314,8 +314,10 @@ private lemma chartPushed_lp_tendsto_of_smoothApprox
       have := h_lp_tendsto.sub
         (tendsto_const_nhds (x := H1ComplToLp (I := I) (M := M) g u_h))
       simpa using this
-    simpa using (continuous_norm.tendsto (0 :
+    have hnorm := (continuous_norm.tendsto (0 :
       Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
+    rw [norm_zero] at hnorm
+    exact hnorm.congr' (Filter.Eventually.of_forall fun _ ↦ rfl)
   have h_lp_eLpNorm_tendsto :
       Tendsto (fun n => eLpNorm
         (((smoothToLp (I := I) (M := M) g (v n) -
@@ -455,9 +457,11 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
           (I := I) (M := M) g α j
           (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h))
       simpa using this
-    simpa using (continuous_norm.tendsto (0 :
+    have hnorm := (continuous_norm.tendsto (0 :
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)))).comp h_sub
+    rw [norm_zero] at hnorm
+    exact hnorm.congr' (Filter.Eventually.of_forall fun _ ↦ rfl)
   have h_eLpNorm_eq : ∀ n,
       eLpNorm (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
@@ -741,7 +745,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
       simpa using h
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le
       tendsto_const_nhds h_const_mul_tendsto
-      (fun _ => zero_le _) (fun n => hC_vol_Ω _)
+      (fun _ => zero_le) (fun n => hC_vol_Ω _)
   have h_partial_tendsto_vol :
       Tendsto (fun n => eLpNorm
         (fun y =>
@@ -767,7 +771,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
       simpa using h
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le
       tendsto_const_nhds h_const_mul_tendsto
-      (fun _ => zero_le _) (fun n => hC_vol_Ω _)
+      (fun _ => zero_le) (fun n => hC_vol_Ω _)
   set u_n_chart : ℕ → EuclN → ℝ := fun n =>
     chartPushed (I := I) (M := M) (chartAtlasPOU I M) α (v n).toFun
     with hu_n_chart_def

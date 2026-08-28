@@ -79,7 +79,7 @@ theorem entropy_le_moment
     simp only [ρ, ENNReal.ofReal_lt_top]
   have hsq0 : 0 ≤ᵐ[μ] fun x => v x ^ 2 :=
     Filter.Eventually.of_forall fun x => sq_nonneg (v x)
-  letI : IsProbabilityMeasure ν := by
+  let : IsProbabilityMeasure ν := by
     dsimp only [ν, ρ]
     exact withDensity_prob μ hv2 hsq0 hmass
   have hvposν : ∀ᵐ x ∂ν, 0 < v x := by
@@ -145,7 +145,7 @@ theorem entropy_supp_le
   have hρtop : ∀ᵐ x ∂μ, ρ x < ⊤ := by
     filter_upwards with x
     simp only [ρ, ENNReal.ofReal_lt_top]
-  letI : IsProbabilityMeasure ν := by
+  let : IsProbabilityMeasure ν := by
     dsimp only [ν, ρ]
     exact withDensity_prob μ hwi (Filter.Eventually.of_forall hw0) hmass
   have hXmeas : Measurable X := by
@@ -198,8 +198,8 @@ theorem entropy_supp_le
       ring
   let S : Set α := {x | w x ≠ 0}
   have hS : MeasurableSet S := by
-    simpa only [S, Set.compl_setOf, not_not] using
-      (hwmeas (measurableSet_singleton 0)).compl
+    rw [show S = (w ⁻¹' {0})ᶜ by ext x; simp [S]]
+    exact (hwmeas (measurableSet_singleton 0)).compl
   have hmoment : (∫ x, X x ∂ν) = (μ S).toReal := by
     rw [show ν = μ.withDensity ρ by rfl]
     rw [integral_withDensity_eq_integral_toReal_smul₀ hρ hρtop]
@@ -210,13 +210,13 @@ theorem entropy_supp_le
         filter_upwards with x
         dsimp only [ρ, X, S]
         by_cases hx : w x = 0
-        · have hxS : x ∉ {y | w y ≠ 0} := by simpa only [Set.mem_setOf_eq, not_not]
-            using hx
+        · have hxS : x ∉ {y | w y ≠ 0} := fun hne => hne hx
           rw [Set.indicator_of_notMem hxS]
           simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, if_pos,
             smul_eq_mul, zero_mul]
         · have hxS : x ∈ {y | w y ≠ 0} := by
-            simpa only [Set.mem_setOf_eq] using hx
+            change w x ≠ 0
+            exact hx
           rw [Set.indicator_of_mem hxS]
           simp only [ENNReal.toReal_ofReal (hw0 x), if_neg hx, smul_eq_mul,
             mul_inv_cancel₀ hx]

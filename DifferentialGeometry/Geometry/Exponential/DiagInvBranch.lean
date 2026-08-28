@@ -45,23 +45,20 @@ namespace DiagInvBranch
 
 def inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
     M × M → TangentBundle I M :=
   B.hom.symm
 
 def dom
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p) : Set (M × M) :=
   B.hom.target
 
 theorem right_inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
     {y : M × M} (hy : y ∈ B.dom) :
     diagExp (I := I) g hEnorm (B.inv y) = y := by
@@ -73,8 +70,7 @@ theorem right_inv
 
 theorem left_inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
     {u : TangentBundle I M} (hu : u ∈ B.hom.source) :
     B.inv (diagExp (I := I) g hEnorm u) = u := by
@@ -85,8 +81,7 @@ theorem left_inv
 
 theorem inv_eq_of_exp
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p y pt : M} (B : DiagInvBranch (I := I) g hEnorm p)
     {v : TangentSpace I y}
     (hvsrc : (⟨y, v⟩ : TangentBundle I M) ∈ B.hom.source)
@@ -101,8 +96,7 @@ theorem inv_eq_of_exp
 
 theorem proj_eq
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
     {y : M × M} (hy : y ∈ B.dom) :
     (B.inv y).proj = y.1 := by
@@ -120,7 +114,9 @@ theorem inv_snd_inf
     (contMDiff_id.prodMk contMDiff_const).contMDiffOn
   have hinv : ContMDiffOn I I.tangent ∞
       (fun y : M ↦ B.inv (y, pt)) S := by
-    simpa only [inv, dom, Function.comp_apply] using B.inv_inf.comp hpair hdom
+    have hcomp := B.inv_inf.comp hpair hdom
+    refine hcomp.congr ?_
+    exact fun _ _ => rfl
   refine hinv.congr ?_
   intro y hy
   refine TotalSpace.ext (B.proj_eq (hdom y hy)).symm ?_
@@ -128,19 +124,19 @@ theorem inv_snd_inf
 
 theorem inv_fst_inf
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p pt : M} (B : DiagInvBranch (I := I) g hEnorm p) {S : Set M}
     (hdom : ∀ y ∈ S, (pt, y) ∈ B.dom) :
     ContMDiffOn I I.tangent ∞ (fun y : M ↦ B.inv (pt, y)) S := by
   have hpair : ContMDiffOn I (I.prod I) ∞ (fun y : M ↦ (pt, y)) S :=
     (contMDiff_const.prodMk contMDiff_id).contMDiffOn
-  simpa only [inv, dom, Function.comp_apply] using B.inv_inf.comp hpair hdom
+  have hcomp := B.inv_inf.comp hpair hdom
+  refine hcomp.congr ?_
+  exact fun _ _ => rfl
 
 theorem inv_fst_coord_inf
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {c p : M} (B : DiagInvBranch (I := I) g hEnorm c) {S : Set M}
     (hdom : ∀ z ∈ S, (p, z) ∈ B.dom) :
     ContMDiffOn I 𝓘(Real, E) ∞
@@ -173,8 +169,7 @@ theorem inv_fst_coord_inf
 
 theorem exp_eq
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
     {y : M × M} (hy : y ∈ B.dom) :
     expMapIntrinsic (I := I) g hEnorm y.1 (B.inv y).snd = y.2 := by
@@ -188,8 +183,7 @@ theorem exp_eq
 
 noncomputable def fixed
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {c : M} (B : DiagInvBranch (I := I) g hEnorm c) (p : M) :
     ExpInvBranch (I := I) g hEnorm p := by
   classical
@@ -292,8 +286,7 @@ noncomputable def fixed
 
 @[simp] theorem fixed_source
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {c p : M} (B : DiagInvBranch (I := I) g hEnorm c) (u : E) :
     u ∈ (B.fixed p).hom.source ↔
       (⟨p, show TangentSpace I p from u⟩ : TangentBundle I M) ∈
@@ -302,8 +295,7 @@ noncomputable def fixed
 
 @[simp] theorem fixed_target
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {c p : M} (B : DiagInvBranch (I := I) g hEnorm c) (y : M) :
     y ∈ (B.fixed p).dom ↔ (p, y) ∈ B.dom :=
   Iff.rfl
@@ -311,8 +303,7 @@ noncomputable def fixed
 theorem inv_eq_normal_lt
     [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p y q : M} (B : DiagInvBranch (I := I) g hEnorm p)
     (hy : (y, q) ∈ B.dom)
     (hsmall : Real.sqrt
@@ -336,8 +327,7 @@ theorem inv_eq_normal_lt
 
 theorem center_mem
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
     (p, p) ∈ B.dom := by
   let z : TangentBundle I M := ⟨p, (0 : TangentSpace I p)⟩
@@ -354,8 +344,7 @@ theorem center_mem
 
 theorem center_inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
     B.inv (p, p) =
       (⟨p, (0 : TangentSpace I p)⟩ : TangentBundle I M) := by

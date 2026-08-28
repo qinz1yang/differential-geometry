@@ -58,29 +58,12 @@ private theorem branchEnergy_inf
     B.inv_inf
   have hinner : ContMDiffOn I 𝓘(Real, Real) ∞
       (fun z : M => g.inner p (B.inv z) (B.inv z)) B.dom := by
-    simpa only [gp] using (hgp.clm_apply hinv).clm_apply hinv
-  simpa only [branchEnergy] using
-    (contMDiffOn_const.mul hinner)
+    with_unfolding_all exact (hgp.clm_apply hinv).clm_apply hinv
+  with_unfolding_all exact contMDiffOn_const.mul hinner
 
 private theorem quad_deriv2 (c t : Real) :
     (deriv^[2] (fun s : Real => (1 / 2 : Real) * s ^ 2 * c)) t = c := by
-  have hfirst :
-      deriv (fun s : Real => (1 / 2 : Real) * s ^ 2 * c) =
-        fun s : Real => s * c := by
-    funext s
-    have hd :
-        HasDerivAt (fun r : Real => (1 / 2 : Real) * r ^ 2 * c)
-          (s * c) s := by
-      convert
-        (((hasDerivAt_id s).pow 2).const_mul (1 / 2 : Real)).mul_const c
-          using 1
-      all_goals simp only [id_eq]
-      all_goals ring
-    exact hd.deriv
-  change
-    deriv (deriv (fun s : Real => (1 / 2 : Real) * s ^ 2 * c)) t = c
-  rw [hfirst]
-  simpa only [one_mul] using ((hasDerivAt_id t).mul_const c).deriv
+  norm_num [Function.iterate_succ_apply]
 
 private theorem branch_hess_zero
     (g : SmoothRiemannianMetric I M)
@@ -103,8 +86,7 @@ private theorem branch_hess_zero
     have hzero :
         intrinsicGeodesic (I := I) g hEnorm p
             (0 : TangentSpace I p) 1 = p := by
-      simpa only [expMapIntrinsic_def] using
-        expMapIntrinsic_zero (I := I) g hEnorm p
+      with_unfolding_all exact expMapIntrinsic_zero (I := I) g hEnorm p
     exact hs.symm.trans hzero
   have hJ (W : TangentSpace I p) (t : Real) :
       (J W t : E) = t • (W : E) := by
@@ -121,7 +103,7 @@ private theorem branch_hess_zero
           (0 : E)) (t • (W : E)) at hraw
     rw [mfderiv_expMapIntrinsic_at_zero
       (I := I) g hEnorm p] at hraw
-    simpa only [ContinuousLinearMap.id_apply] using hraw
+    with_unfolding_all exact hraw
   have hcurve :
       γ =ᶠ[𝓝 (1 : Real)] fun _ : Real => p :=
     Filter.Eventually.of_forall hγ
@@ -137,8 +119,9 @@ private theorem branch_hess_zero
         hcurve hfield
   have hline :
       HasDerivAt (fun t : Real => t • (Y : E)) (Y : E) 1 := by
-    simpa only [one_smul] using
-      ((hasDerivAt_id (1 : Real)).smul_const (Y : E))
+    with_unfolding_all
+      simpa only [id_eq, one_smul] using
+        ((hasDerivAt_id (1 : Real)).smul_const (Y : E))
   have hconst :=
     covDerivAlong_const
       (I := I) g p
@@ -211,23 +194,23 @@ theorem intrBranch_hess_pos
           (expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x u) Y Y := by
   classical
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
+  let : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
@@ -301,7 +284,7 @@ theorem intrBranch_hess_pos
     have hraw :=
       intrinsic_jacobi_one
         (I := 𝓘(Real, E)) gExt hExt x (u : E) V
-    simpa only [J, intrinsicJacobi, expf, D] using hraw
+    with_unfolding_all exact hraw
   have hJw : J w 1 = Y := by
     have hright :=
       exp_inv_mfderiv
@@ -315,7 +298,7 @@ theorem intrBranch_hess_pos
       exact B.left_inv huB
     have hright' :
         mfderiv 𝓘(Real, E) 𝓘(Real, E) expf (B.inv q) w = Y := by
-      simpa only [expf, w] using hright
+      with_unfolding_all exact hright
     have hbase :
         D w =
           mfderiv 𝓘(Real, E) 𝓘(Real, E) expf (B.inv q) w := by
@@ -348,8 +331,7 @@ theorem intrBranch_hess_pos
         _ = gExt.inner x u w - α * gExt.inner x u uE := by
           exact congrArg (fun z : Real => gExt.inner x u w - z)
             (by
-              simpa only [smul_eq_mul] using
-                (gExt.inner x u).map_smul α uE)
+              with_unfolding_all exact (gExt.inner x u).map_smul α uE)
         _ = 0 := by
           change
             gExt.inner x u w -
@@ -413,8 +395,7 @@ theorem intrBranch_hess_pos
                   (fun L : TangentSpace 𝓘(Real, E) x →L[Real] Real =>
                     L (t • u))
                   hleftMap
-              _ = _ := by
-                simp only [ContinuousLinearMap.smul_apply, smul_eq_mul]
+              _ = _ := by with_unfolding_all rfl
           have hright := (gExt.inner x u).map_smul t u
           calc
             _ = (1 / 2 : Real) *
@@ -424,7 +405,7 @@ theorem intrBranch_hess_pos
             _ = (1 / 2 : Real) *
                 (t * (t * gExt.inner x u u)) := by
               exact congrArg (fun r : Real => (1 / 2 : Real) * (t * r))
-                (by simpa only [smul_eq_mul] using hright)
+                (by with_unfolding_all exact hright)
             _ = _ := by ring
     have hd2Energy :
         (deriv^[2]
@@ -441,25 +422,19 @@ theorem intrBranch_hess_pos
     have hJu :
         J uE 1 =
           Variation.curveVelocity (I := 𝓘(Real, E)) γ 1 := by
-      simpa only [γ, J, uE] using
+      with_unfolding_all
+        exact
         intrJacobi_self
           (I := 𝓘(Real, E)) gExt hExt x u
+    have hqγ : q = γ 1 := by
+      with_unfolding_all rfl
     have hdiag :
         hessFun (I := 𝓘(Real, E)) gExt
             (branchEnergy (I := 𝓘(Real, E)) gExt B)
             q (J uE 1) (J uE 1) =
           gExt.inner x u u := by
-      rw [hJu]
-      have hd2Geo' :
-          (deriv^[2]
-              ((branchEnergy (I := 𝓘(Real, E)) gExt B) ∘ γ)) 1 =
-            hessFun (I := 𝓘(Real, E)) gExt
-              (branchEnergy (I := 𝓘(Real, E)) gExt B)
-              q
-              (Variation.curveVelocity (I := 𝓘(Real, E)) γ 1)
-              (Variation.curveVelocity (I := 𝓘(Real, E)) γ 1) := by
-        simpa only [γ, q, expMapIntrinsic_def] using hd2Geo
-      exact hd2Geo'.symm.trans hd2Energy
+      rw [hJu, hqγ]
+      with_unfolding_all exact hd2Geo.symm.trans hd2Energy
     have hcross :
         hessFun (I := 𝓘(Real, E)) gExt
             (branchEnergy (I := 𝓘(Real, E)) gExt B)
@@ -478,8 +453,9 @@ theorem intrBranch_hess_pos
                 (I := 𝓘(Real, E)) gExt γ (J W) 1)
               (J uE 1) = 0 := by
         rw [hJu, gExt.symm]
-        simpa only [γ, J] using hdperp
-      simpa only [γ, J, q, expMapIntrinsic_def] using hh.trans hpair
+        with_unfolding_all simpa only [γ, J] using hdperp
+      rw [hqγ]
+      with_unfolding_all exact hh.trans hpair
     have hcross' :
         hessFun (I := 𝓘(Real, E)) gExt
             (branchEnergy (I := 𝓘(Real, E)) gExt B)
@@ -515,16 +491,14 @@ theorem intrBranch_hess_pos
             (branchEnergy (I := 𝓘(Real, E)) gExt B) q
             (J uE 1)).map_smul α (J uE 1)
       calc
-        _ = α * hessFun (I := 𝓘(Real, E)) gExt
+        _ = α • hessFun (I := 𝓘(Real, E)) gExt
               (branchEnergy (I := 𝓘(Real, E)) gExt B) q
-              (J uE 1) (α • J uE 1) := by
-          simpa only [smul_eq_mul] using hleft
-        _ = α * (α * hessFun (I := 𝓘(Real, E)) gExt
+              (J uE 1) (α • J uE 1) := hleft
+        _ = α • (α • hessFun (I := 𝓘(Real, E)) gExt
               (branchEnergy (I := 𝓘(Real, E)) gExt B) q
               (J uE 1) (J uE 1)) := by
-          exact congrArg (fun r : Real => α * r)
-            (by simpa only [smul_eq_mul] using hright)
-        _ = _ := by ring
+          exact congrArg (fun r : Real => α • r) hright
+        _ = _ := by simp only [smul_eq_mul]; ring
     change
       0 < hessFun (I := 𝓘(Real, E)) gExt
         (branchEnergy (I := 𝓘(Real, E)) gExt B) q Y Y
@@ -550,7 +524,8 @@ theorem intrBranch_hess_pos
             (branchEnergy (I := 𝓘(Real, E)) gExt B)
             q (J W 1) (J W 1) := by
         dsimp only at hh hpair
-        simpa only [γ, J, q, expMapIntrinsic_def] using hh.symm ▸ hpair
+        with_unfolding_all
+          simpa only [γ, J, q, expMapIntrinsic_def] using hh.symm ▸ hpair
       have hcrossA :
           hessFun (I := 𝓘(Real, E)) gExt
               (branchEnergy (I := 𝓘(Real, E)) gExt B) q
@@ -560,11 +535,10 @@ theorem intrBranch_hess_pos
             (branchEnergy (I := 𝓘(Real, E)) gExt B) q
             (J W 1)).map_smul α (J uE 1)
         calc
-          _ = α * hessFun (I := 𝓘(Real, E)) gExt
+          _ = α • hessFun (I := 𝓘(Real, E)) gExt
                 (branchEnergy (I := 𝓘(Real, E)) gExt B) q
-                (J W 1) (J uE 1) := by
-            simpa only [smul_eq_mul] using hs
-          _ = 0 := by rw [hcross, mul_zero]
+                (J W 1) (J uE 1) := hs
+          _ = 0 := by rw [hcross, smul_zero]
       have hcrossA' :
           hessFun (I := 𝓘(Real, E)) gExt
               (branchEnergy (I := 𝓘(Real, E)) gExt B) q
@@ -575,11 +549,10 @@ theorem intrBranch_hess_pos
               (branchEnergy (I := 𝓘(Real, E)) gExt B) q)
             α (J uE 1) (J W 1)
         calc
-          _ = α * hessFun (I := 𝓘(Real, E)) gExt
+          _ = α • hessFun (I := 𝓘(Real, E)) gExt
                 (branchEnergy (I := 𝓘(Real, E)) gExt B) q
-                (J uE 1) (J W 1) := by
-            simpa only [smul_eq_mul] using hs
-          _ = 0 := by rw [hcross', mul_zero]
+                (J uE 1) (J W 1) := hs
+          _ = 0 := by rw [hcross', smul_zero]
       have hexpand :
           hessFun (I := 𝓘(Real, E)) gExt
               (branchEnergy (I := 𝓘(Real, E)) gExt B) q
@@ -704,17 +677,17 @@ theorem intrCore_jensen_min
     intrCoreJensenMinProp (I := I) g hEnorm p (a := a) hR hloc := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   dsimp only [intrCoreJensenMinProp]
@@ -732,23 +705,23 @@ theorem intrCore_jensen_min
   obtain ⟨join, hjoin⟩ :=
     exists_fenced_min (I := I) g hEnorm p hR h4aR hloc
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
+  let : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
@@ -788,8 +761,10 @@ theorem intrCore_jensen_min
     have hvEnd :
         intrExtLaunch (I := I) g hEnorm p hR hloc
             (x : E) v 1 = (y : E) := by
-      simpa only [gExt, hExt, v, intrExtLaunch, expMapIntrinsic_def] using
-        minimizingVec_exp
+      with_unfolding_all
+        change expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt
+          (x : E) v = (y : E)
+        exact minimizingVec_exp
           (I := 𝓘(Real, E)) gExt hExt (x : E) (y : E)
     have hcoreExt :=
       intrExt_edge_core
@@ -852,9 +827,9 @@ theorem intrCore_jensen_min
       simpa only [γ, gExt] using
         intrExtJoin_geo (I := I) g hEnorm p hR hloc (x : E) (y : E)
     have hvel (t : Real) :
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t (1 : Real) : E) ≠ 0 := by
-      simpa only [γ, uxy, gExt, hExt, intrExtJoin, minJoin] using
-        intrGeo_vel_ne
+        mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t (1 : Real) ≠ 0 := by
+      with_unfolding_all
+        exact intrGeo_vel_ne
           (I := 𝓘(Real, E)) gExt hExt (x : E) uxy huxy t
     let f : E → Real := fun z =>
       (1 / 2 : Real) *
@@ -865,7 +840,7 @@ theorem intrCore_jensen_min
           riemannianEDist 𝓘(Real, E) (pt : E) z ≠ (⊤ : ENNReal)} =
           Set.univ := by
       ext z
-      simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
+      simp only [Set.mem_ofPred_eq, Set.mem_univ, iff_true]
       exact riemannianEDist_ne_top (I := 𝓘(Real, E)) (pt : E) z
     have hdistCont :
         Continuous fun z : E =>
@@ -946,9 +921,14 @@ theorem intrCore_jensen_min
           intrExtJoin_fenced
             (I := I) g hEnorm p hR h4aR hloc hpt hqU
       let Y : E :=
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t (1 : Real) : E)
+        tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t)
+          (mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t (1 : Real))
       have hY : Y ≠ 0 := by
-        simpa only [Y] using hvel t
+        intro hYzero
+        apply hvel t
+        apply (tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) (γ t)).injective
+        simpa only [map_zero, Y] using hYzero
       have hposRaw :=
         intrBranch_hess_pos
           (I := I) g hEnorm p hR hloc hK hRm hsmallL
@@ -1046,7 +1026,7 @@ theorem coreJoin_len
     Manifold.pathELength 𝓘(Real, E) (join x y) 0 1 =
       riemannianEDistOf (I := 𝓘(Real, E)) gPull x y := by
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
@@ -1067,17 +1047,17 @@ theorem coreJoin_len
           (show (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) from le_top)
         ).comp_contMDiffOn hγU
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
@@ -1088,8 +1068,14 @@ theorem coreJoin_len
       Manifold.pathELength 𝓘(Real, E) γU 0 1 =
         Manifold.pathELength I
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γE) 0 1 := by
-    simpa only [γU, γE, intrExpOn, Function.comp_apply] using
-      (intrPull_pathLen (I := I) g hEnorm p hloc hγU).symm
+    have hraw := (intrPull_pathLen (I := I) g hEnorm p hloc hγU).symm
+    have hcurve :
+        (intrExpOn (I := I) g hEnorm p R ∘ γU) =
+          (intrinsicFramedExp (I := I) g hEnorm p) ∘ γE := by
+      funext t
+      with_unfolding_all rfl
+    exact hraw.trans
+      (congrArg (fun c : Real → M => Manifold.pathELength I c 0 1) hcurve)
   have hext :
       Manifold.pathELength 𝓘(Real, E) γE 0 1 =
         Manifold.pathELength I

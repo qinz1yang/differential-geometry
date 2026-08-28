@@ -279,7 +279,7 @@ theorem chartBilinearFK_diffQuot_u_discharge
   have h_sum_intOn : IntegrableOn
       (fun x => ∑ l : Fin (Module.finrank ℝ E), (D.weak_partial l x) ^ 2)
       Ω' (volume : Measure EuclN) :=
-    integrable_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    integrable_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (μ := (volume : Measure EuclN).restrict Ω')
       (f := fun l x => (D.weak_partial l x) ^ 2)
       (fun l _ => h_per_l_intOn l)

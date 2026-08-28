@@ -9,7 +9,6 @@ import Mathlib.Topology.Separation.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -78,10 +77,11 @@ private lemma tensorRSChartFiberToModel_local_bound
         (ey₀.symmL ℝ b (ey₀.continuousLinearMapAt ℝ b T)) := by
     change (ey₀.coordChangeL ℝ eα b) (ey₀.continuousLinearMapAt ℝ b T) = _
     rw [Trivialization.coordChangeL_apply _ _ ⟨hb_y₀_RS, hb_α_RS⟩]
+    rw [← Bundle.Trivialization.symmL_apply (R := ℝ) ey₀ hb_y₀_RS
+      (ey₀.continuousLinearMapAt ℝ b T)]
     simp only [Bundle.Trivialization.continuousLinearMapAt_apply,
       Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_α_RS,
-      Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_y₀_RS,
-      Bundle.Trivialization.symmL_apply]
+      Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_y₀_RS]
   have h_inv : ey₀.symmL ℝ b (ey₀.continuousLinearMapAt ℝ b T) = T :=
     Trivialization.symmL_continuousLinearMapAt (R := ℝ) ey₀ hb_y₀_RS T
   have h_factor :
@@ -123,9 +123,9 @@ private lemma exists_W_and_constant
             (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b T :
             TensorRSModel r s ℝ E)‖ ≤ N * ‖T‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  haveI hICRB : IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
+  have hICRB : IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
       (fun b : M => TensorRSSpace r s I b) :=
     tensorRS_isContinuousRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₁, hC₁_pos, hC₁_ev⟩ :=
@@ -194,7 +194,7 @@ theorem tensorRSChartFiberToModel_opNorm_isBounded_on_compact
           (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b T :
           TensorRSModel r s ℝ E)‖ ≤ C * ‖T‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   let W : M → Set M := fun y₀ =>
     if hy : y₀ ∈ (chartAt H α).source then

@@ -3,7 +3,7 @@ Author: Yuan Liao
 Coauthor: Ayush Khaitan, Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorField.Pullback
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
@@ -12,7 +12,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -149,7 +148,7 @@ lemma substituteArg_add_right (i : Fin s)
     substituteArg s i α (DX + DY) = substituteArg s i α DX + substituteArg s i α DY := by
   ext v
   simp only [substituteArg, ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    ContinuousMultilinearMap.add_apply]
+    add_apply]
   convert α.map_update_add (fun j => v j) i (DX (v i)) (DY (v i))
   all_goals
     rename_i j
@@ -163,7 +162,7 @@ lemma substituteArg_smul_right (i : Fin s)
     substituteArg s i α (c • DX) = c • substituteArg s i α DX := by
   ext v
   simp only [substituteArg, ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    ContinuousMultilinearMap.smul_apply]
+    smul_apply]
   convert α.map_update_smul (fun j => v j) i c (DX (v i))
   all_goals
     rename_i j
@@ -208,8 +207,8 @@ lemma lieDeriv_correction_modelProduct (s q : ℕ) (DX : E →L[𝕜] E)
           α (lieDeriv_correction q DX β) := by
   ext v
   rw [lieDeriv_correction, Fin.sum_univ_add]
-  simp only [lieDeriv_correction, ContinuousMultilinearMap.sum_apply,
-    ContinuousMultilinearMap.add_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
+  simp only [lieDeriv_correction, sum_apply,
+    add_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
   · rw [Finset.sum_mul]
     apply Finset.sum_congr rfl
@@ -352,16 +351,16 @@ theorem contDiffWithinAt_lieDeriv_tensorRSFullWithin (r s : ℕ) {m n' : WithTop
       ContDiffWithinAt 𝕜 m
         (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s
           (fderivWithin 𝕜 X u y)) u x := by
-    simpa using
-      hDX.continuousLinearMap_comp
-        (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+    exact (hDX.continuousLinearMap_comp
+      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl) rfl
   have hCorrR :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r
           (fderivWithin 𝕜 X u y)) u x := by
-    simpa using
-      hDX.continuousLinearMap_comp
-        (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) r)
+    exact (hDX.continuousLinearMap_comp
+      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) r)).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl) rfl
   have hOut :
       ContDiffWithinAt 𝕜 m
         (fun y => (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s

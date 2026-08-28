@@ -74,14 +74,15 @@ theorem velJac_gram_split
     curveGram (I := I) g γ (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1
       with hT
   have hdiag : g.inner (γ 1) vel vel = g.inner x u u := by
-    simpa only [hvel, curveVelocity, hγ] using
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x u 1
+    convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x u 1 using 1
+    all_goals rfl
   have hcross : ∀ i, g.inner (γ 1) vel
       (intrinsicJacobi (I := I) g hEnorm x u (w i) 1) = 0 := by
     intro i
     have hp := intrinsicJacobi_perp (I := I) g hEnorm x u (w i)
     rw [hperp i] at hp
-    simpa only [hvel, hγ, curveVelocity, intrinsicVelocityLift] using hp
+    convert hp using 1
+    all_goals rfl
   let e : Option (Fin d) ≃ Fin d ⊕ PUnit.{1} := Equiv.optionEquivSumPUnit (Fin d)
   let D : Matrix PUnit.{1} PUnit.{1} ℝ := Matrix.of fun _ _ => g.inner x u u
   have hblock :
@@ -146,7 +147,8 @@ theorem velJac_density_split
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M]
   [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)] in
+  [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+  [Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
 theorem curveGram_recomb
     {ι : Type*} [Fintype ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -162,9 +164,9 @@ theorem curveGram_recomb
           = ∑ k, C k i • g.inner (γ t) (V k t) := by
       rw [map_sum]
       exact Finset.sum_congr rfl fun k _ => ContinuousLinearMap.map_smul _ _ _
-    rw [hL, ContinuousLinearMap.sum_apply]
+    rw [hL, _root_.sum_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [ContinuousLinearMap.smul_apply]
+    rw [_root_.smul_apply]
     have hR : g.inner (γ t) (V k t) (∑ l, C l j • V l t)
           = ∑ l, C l j * g.inner (γ t) (V k t) (V l t) := by
       rw [map_sum]
@@ -198,7 +200,8 @@ theorem curveDensity_reindex
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M]
   [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)] in
+  [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+  [Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
 theorem curveDensity_recomb
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -225,9 +228,11 @@ theorem jacDens_basis
           (fun i t => intrinsicJacobi (I := I) g hEnorm x u (B i) t) 1 := by
   classical
   let C : Matrix ι ι ℝ := B.toMatrix B'
-  let L :=
+  let hMetric : IsMetricNorm (I := I) (M := M) g := hEnorm
+  let L : E →L[ℝ] TangentSpace I
+      (intrinsicGeodesic (I := I) g hEnorm x u 1) :=
     mfderiv 𝓘(ℝ, E) I
-      (fun b : E => expMapIntrinsic (I := I) g hEnorm x
+      (fun b : E => expMapIntrinsic (I := I) g hMetric x
         (show TangentSpace I x from b))
       (show E from u)
   have hcoord (i : ι) : B' i = ∑ k, C k i • B k := by
@@ -239,19 +244,24 @@ theorem jacDens_basis
   have hjac (i : ι) :
       intrinsicJacobi (I := I) g hEnorm x u (B' i) 1 =
         ∑ k, C k i • intrinsicJacobi (I := I) g hEnorm x u (B k) 1 := by
-    rw [hcol, hcoord i]
-    change
-      L (∑ k, C k i • (show E from B k)) =
-        ∑ k, C k i • intrinsicJacobi (I := I) g hEnorm x u (B k) 1
-    rw [map_sum]
-    apply Finset.sum_congr rfl
-    intro k _hk
+    rw [hcol (B' i)]
+    have hcoordE :
+        (show E from B' i) = ∑ k, C k i • (show E from B k) :=
+      hcoord i
+    rw [hcoordE]
     calc
-      L (C k i • (show E from B k)) =
-          C k i • L (show E from B k) := L.map_smul _ _
-      _ = C k i • intrinsicJacobi (I := I) g hEnorm x u (B k) 1 := by
-        rw [hcol]
-        rfl
+      L (∑ k, C k i • (show E from B k)) =
+          ∑ k, L (C k i • (show E from B k)) := by
+        exact map_sum L (fun k => C k i • (show E from B k)) Finset.univ
+      _ = ∑ k, C k i • L (show E from B k) := by
+        apply Finset.sum_congr rfl
+        intro k _hk
+        exact L.map_smul _ _
+      _ = ∑ k, C k i •
+          intrinsicJacobi (I := I) g hEnorm x u (B k) 1 := by
+        apply Finset.sum_congr rfl
+        intro k _hk
+        exact congrArg (C k i • ·) (hcol (B k)).symm
   simpa only [C, Module.Basis.det_apply] using
     curveDensity_recomb (I := I) g
       (intrinsicGeodesic (I := I) g hEnorm x u)
@@ -326,7 +336,7 @@ theorem transDens_scale
     change β (t • X) (t • Y) = t ^ 2 * β X Y
     have hleft : β (t • X) (t • Y) = t * β X (t • Y) := by
       have h := congrArg (fun A : E →L[ℝ] ℝ => A (t • Y)) (β.map_smul t X)
-      simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+      simpa only [_root_.smul_apply, smul_eq_mul] using h
     have hright : β X (t • Y) = t * β X Y := by
       simpa only [smul_eq_mul] using (β X).map_smul t Y
     rw [hleft, hright, pow_two]
@@ -355,8 +365,7 @@ theorem radialJac_eq_vel
       Filter.univ_mem).mdifferentiableAt (by norm_num)
   have hshift : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun r : ℝ => 1 + r) 0
       (ContinuousLinearMap.id ℝ ℝ) := by
-    rw [hasMFDerivAt_iff_hasFDerivAt]
-    simpa using ((hasFDerivAt_id (0 : ℝ)).const_add (1 : ℝ))
+    exact (((hasFDerivAt_id (0 : ℝ)).const_add (1 : ℝ))).hasMFDerivAt
   have hφ_at : HasMFDerivAt 𝓘(ℝ, ℝ) I φ (1 + (0 : ℝ)) (mfderiv 𝓘(ℝ, ℝ) I φ 1) := by
     rw [add_zero]; exact hφ_mdiff1.hasMFDerivAt
   have hcomp : HasMFDerivAt 𝓘(ℝ, ℝ) I (fun r : ℝ => φ (1 + r)) 0

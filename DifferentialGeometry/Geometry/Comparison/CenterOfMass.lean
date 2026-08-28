@@ -95,7 +95,7 @@ theorem metricEnergy_cont (μ : ι -> Real) (pts : ι -> X) :
     Continuous (metricEnergy μ pts) := by
   unfold metricEnergy
   exact continuous_const.mul
-    (continuous_finset_sum _ fun i _ =>
+    (continuous_finsetSum _ fun i _ =>
       continuous_const.mul
         ((Continuous.dist continuous_id continuous_const).pow 2))
 
@@ -206,7 +206,7 @@ theorem metricEnergy_argmin_stable {P : Type*} [TopologicalSpace P] [FirstCounta
   classical
   have Econt : Continuous (fun aq : P × X => metricEnergy (μ aq.1) (pts aq.1) aq.2) := by
     unfold metricEnergy
-    refine continuous_const.mul (continuous_finset_sum _ (fun i _ => ?_))
+    refine continuous_const.mul (continuous_finsetSum _ (fun i _ => ?_))
     refine ((continuous_apply i).comp (hμ.comp continuous_fst)).mul ?_
     exact (Continuous.dist continuous_snd
       ((continuous_apply i).comp (hpts.comp continuous_fst))).pow 2
@@ -546,9 +546,9 @@ theorem centerEnergy_cont (g : SmoothRiemannianMetric I M)
     (μ : ι -> Real) (pts : ι -> M) :
     Continuous (centerEnergy (I := I) g μ pts) := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   have hdist : ∀ i : ι, Continuous fun q : M =>
       (riemannianEDist I q (pts i)).toReal := by
@@ -564,8 +564,11 @@ theorem centerEnergy_cont (g : SmoothRiemannianMetric I M)
     simpa [riemannianEDist_comm] using hbase
   have hsum : Continuous fun q : M =>
       ∑ i : ι, μ i * (riemannianEDist I q (pts i)).toReal ^ 2 :=
-    continuous_finset_sum _ fun i _ => continuous_const.mul ((hdist i).pow 2)
-  simpa [centerEnergy] using continuous_const.mul hsum
+    continuous_finsetSum _ fun i _ => continuous_const.mul ((hdist i).pow 2)
+  unfold centerEnergy
+  have hhalf : Continuous (fun _ : M => (1 / 2 : Real)) := continuous_const
+  refine (hhalf.mul hsum).congr ?_
+  exact fun _ => rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)]
     [SigmaCompactSpace M] in
@@ -598,12 +601,12 @@ theorem exists_minOn_ball [T3Space M] (g : SmoothRiemannianMetric I M)
     ∃ q ∈ Metric.closedBall p R, ∀ y ∈ Metric.closedBall p R,
       centerEnergy (I := I) g μ pts q ≤ centerEnergy (I := I) g μ pts y := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  haveI : ProperSpace M :=
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  have : ProperSpace M :=
     HopfRinow.properSpace_riemMetric (I := I) (M := M) hcomplete g hEnorm
   exact exists_minOn_compact (I := I) g μ pts (isCompact_closedBall p R)
     ⟨p, by simpa [Metric.mem_closedBall] using hR⟩
@@ -620,11 +623,11 @@ theorem centerEnergy_eq_dist [T3Space M] (g : SmoothRiemannianMetric I M)
     centerEnergy (I := I) g μ pts q =
       metricEnergy μ pts q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   simp [centerEnergy, metricEnergy, HopfRinow.riemMetric_dist_eq (I := I) (M := M)]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
@@ -643,11 +646,11 @@ theorem centerEnergy_min_dist_le [T3Space M] (g : SmoothRiemannianMetric I M)
       (∀ y : M, centerEnergy (I := I) g μ pts q ≤ centerEnergy (I := I) g μ pts y) ->
       dist q qstar ≤ 2 * ε := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro hε hpts hμ_nonneg hμ_pos hmin
   refine metricEnergy_min_dist_le μ pts hε hpts hμ_nonneg hμ_pos ?_
   intro y
@@ -670,11 +673,11 @@ theorem grad_centerEnergy [T3Space M] (g : SmoothRiemannianMetric I M)
       gradientFun (I := I) g (centerEnergy (I := I) g μ pts) x =
         ∑ i : κ, μ i • gradientFun (I := I) g (halfSqDist (pts i)) x := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro μ pts x hdiff
   have hfun :
       centerEnergy (I := I) g μ pts =
@@ -705,11 +708,11 @@ theorem sum_grad_eq_zero [T3Space M] (g : SmoothRiemannianMetric I M)
       (∀ i : κ, MDifferentiableAt I 𝓘(Real, Real) (halfSqDist (pts i)) q) ->
       ∑ i : κ, μ i • gradientFun (I := I) g (halfSqDist (pts i)) q = 0 := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro μ pts q hmin hdiffEnergy hdiffSummands
   have hlocal : IsLocalMin (centerEnergy (I := I) g μ pts) q := by
     unfold IsLocalMin IsMinFilter
@@ -740,32 +743,28 @@ theorem sum_expInv_eq_zero [T3Space M] (g : SmoothRiemannianMetric I M)
       ∑ i : κ, μ i •
         (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q (pts i)) = 0 := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro μ pts q hmin hdiffEnergy hdiffSummands hgrad
+  let v : κ → TangentSpace I q := fun i =>
+    show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q (pts i)
   have hsum :=
     sum_grad_eq_zero (I := I) g μ pts q hmin hdiffEnergy hdiffSummands
   have hneg :
-      ∑ i : κ, μ i •
-        (-(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q (pts i))) =
-          0 := by
+      ∑ i : κ, μ i • (-v i) = 0 := by
     calc
-      ∑ i : κ, μ i •
-          (-(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q (pts i))) =
+      ∑ i : κ, μ i • (-v i) =
           ∑ i : κ, μ i • gradientFun (I := I) g (halfSqDist (pts i)) q := by
             apply Finset.sum_congr rfl
             intro i _
             rw [hgrad i]
       _ = 0 := hsum
-  have hsum_neg :
-      - (∑ i : κ, μ i •
-        (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q (pts i))) =
-          0 := by
-    simpa [Finset.sum_neg_distrib, smul_neg] using hneg
-  exact neg_eq_zero.mp hsum_neg
+  simp_rw [smul_neg] at hneg
+  rw [Finset.sum_neg_distrib] at hneg
+  exact neg_eq_zero.mp hneg
 
 omit [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -823,11 +822,11 @@ theorem grad_halfSqDist_of_flat [T3Space M] (g : SmoothRiemannianMetric I M)
     gradientFun (I := I) g (halfSqDist pt) q =
       - (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro hflat
   exact gradientFun_eq_of_flat (I := I) g hflat
 
@@ -851,11 +850,11 @@ theorem sum_expInv_of_flat [T3Space M] (g : SmoothRiemannianMetric I M)
       ∑ i : κ, μ i •
         (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q (pts i)) = 0 := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro μ pts q hmin hdiffEnergy hdiffSummands hflat
   exact sum_expInv_eq_zero (I := I) g μ pts q hmin hdiffEnergy hdiffSummands
     (fun i => grad_halfSqDist_of_flat (I := I) g (pts i) q (hflat i))
@@ -874,19 +873,20 @@ theorem centerEnergy_strict [T3Space M] (g : SmoothRiemannianMetric I M)
       (∀ i : ι, StrictMidJensenOn join S (halfSqDist (pts i))) ->
       StrictMidConvexOn join S (centerEnergy (I := I) g μ pts) := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join S hμ_nonneg hμ_pos hjensen
   have hmetric := metricEnergy_strict μ pts hμ_nonneg hμ_pos hjensen
   intro a ha b hb hne
   obtain ⟨hmS, hm_lt⟩ := hmetric a ha b hb hne
   refine ⟨hmS, ?_⟩
-  simpa [centerEnergy_eq_dist (I := I) g μ pts (join a b (1 / 2 : Real)),
+  rw [centerEnergy_eq_dist (I := I) g μ pts (join a b (1 / 2 : Real)),
     centerEnergy_eq_dist (I := I) g μ pts a,
-    centerEnergy_eq_dist (I := I) g μ pts b] using hm_lt
+    centerEnergy_eq_dist (I := I) g μ pts b]
+  exact hm_lt
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
@@ -901,11 +901,11 @@ theorem centerEnergy_lt_far [T3Space M] (g : SmoothRiemannianMetric I M)
       2 * r ≤ dist p q -> (∀ i : ι, 0 ≤ μ i) -> (∃ i : ι, 0 < μ i) ->
       centerEnergy (I := I) g μ pts p < centerEnergy (I := I) g μ pts q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro p q r hr hpts hq hμ_nonneg hμ_pos
   rw [centerEnergy_eq_dist (I := I) g μ pts p,
     centerEnergy_eq_dist (I := I) g μ pts q]
@@ -935,11 +935,11 @@ theorem exists_global_min [T3Space M] (g : SmoothRiemannianMetric I M)
       ∃ q ∈ Metric.closedBall p (2 * r), ∀ y : M,
         centerEnergy (I := I) g μ pts q ≤ centerEnergy (I := I) g μ pts y := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro p r hr hpts hμ_nonneg hμ_pos
   obtain ⟨q, hqball, hqmin⟩ :=
     exists_minOn_ball (I := I) g hcomplete hEnorm μ pts p (R := 2 * r) (by linarith)
@@ -983,11 +983,11 @@ theorem exists_global_min_dist_le [T3Space M] (g : SmoothRiemannianMetric I M)
         (∀ y : M, centerEnergy (I := I) g μ pts q ≤ centerEnergy (I := I) g μ pts y) ∧
           dist q qstar ≤ 2 * ε := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro p qstar r ε hr hpts hε hnear hμ_nonneg hμ_pos
   obtain ⟨q, hqball, hqmin⟩ :=
     exists_global_min (I := I) g hcomplete hEnorm μ pts hr hpts hμ_nonneg hμ_pos
@@ -1025,11 +1025,11 @@ theorem exists_unique_min [T3Space M] (g : SmoothRiemannianMetric I M)
           (∀ z : M, centerEnergy (I := I) g μ pts y ≤
             centerEnergy (I := I) g μ pts z) -> y = q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join p r hr hpts hμ_nonneg hμ_pos hstrict
   obtain ⟨q, hqball, hqmin⟩ :=
     exists_global_min (I := I) g hcomplete hEnorm μ pts hr hpts hμ_nonneg hμ_pos
@@ -1079,11 +1079,11 @@ theorem exists_unique_min_dist_le [T3Space M] (g : SmoothRiemannianMetric I M)
           (∀ z : M, centerEnergy (I := I) g μ pts y ≤
             centerEnergy (I := I) g μ pts z) -> y = q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join p qstar r ε hr hpts hε hnear hμ_nonneg hμ_pos hstrict
   obtain ⟨q, hqball, hqmin, huniq⟩ :=
     exists_unique_min (I := I) g hcomplete hEnorm μ pts join hr hpts
@@ -1122,11 +1122,11 @@ theorem exists_unique_jensen [T3Space M] (g : SmoothRiemannianMetric I M)
           (∀ z : M, centerEnergy (I := I) g μ pts y ≤
             centerEnergy (I := I) g μ pts z) -> y = q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join p r hr hpts hμ_nonneg hμ_pos hjensen
   exact exists_unique_min (I := I) g hcomplete hEnorm μ pts join hr hpts
     hμ_nonneg hμ_pos
@@ -1165,11 +1165,11 @@ theorem exists_unique_jensen_dist_le [T3Space M] (g : SmoothRiemannianMetric I M
           (∀ z : M, centerEnergy (I := I) g μ pts y ≤
             centerEnergy (I := I) g μ pts z) -> y = q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join p qstar r ε hr hpts hε hnear hμ_nonneg hμ_pos hjensen
   exact exists_unique_min_dist_le (I := I) g hcomplete hEnorm μ pts join hr hpts
     hε hnear hμ_nonneg hμ_pos
@@ -1214,11 +1214,11 @@ theorem exists_unique_curve [T3Space M] (g : SmoothRiemannianMetric I M)
           (∀ z : M, centerEnergy (I := I) g μ pts y ≤
             centerEnergy (I := I) g μ pts z) -> y = q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join p r hr hpts hμ_nonneg hμ_pos hmid hzero hone hstrict
   refine exists_unique_jensen (I := I) g hcomplete hEnorm μ pts join hr hpts
     hμ_nonneg hμ_pos ?_
@@ -1267,11 +1267,11 @@ theorem exists_unique_curve_dist_le [T3Space M] (g : SmoothRiemannianMetric I M)
           (∀ z : M, centerEnergy (I := I) g μ pts y ≤
             centerEnergy (I := I) g μ pts z) -> y = q := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro join p qstar r ε hr hpts hε hnear hμ_nonneg hμ_pos hmid hzero hone hstrict
   refine exists_unique_jensen_dist_le (I := I) g hcomplete hEnorm μ pts join hr hpts
     hε hnear hμ_nonneg hμ_pos ?_

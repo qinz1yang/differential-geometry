@@ -74,7 +74,10 @@ theorem variationalForcing_continuousOn
           (linearODESolution A a b' h₀ Z₀ p.1 p.2))
       (U ×ˢ Set.Ioo a b') :=
     ContinuousOn.clm_apply happ hZ_cont
-  convert hgoal using 1
+  refine hgoal.congr ?_
+  intro p _
+  unfold variationalForcing
+  rfl
 
 theorem variationalW_hasDerivAt
     {A : F → ℝ → (G →L[ℝ] G)} {a b' h₀ : ℝ} {Z₀ : F → G}
@@ -232,7 +235,7 @@ theorem variationalW_add_in_v
               (linearODESolution A a b' h₀ Z₀ x s)
           + A x s (variationalSolution A a b' h₀ Z₀ x v₁ s
               + variationalSolution A a b' h₀ Z₀ x v₂ s)
-      rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.map_add]
+      rw [add_apply, ContinuousLinearMap.map_add]
       abel
     rw [← h_eq]
     exact hsum
@@ -366,7 +369,7 @@ theorem variationalW_smul_in_v
         = A x s (c • variationalSolution A a b' h₀ Z₀ x v s)
           + (fderiv ℝ (fun y => A y s) x) (c • v)
               (linearODESolution A a b' h₀ Z₀ x s)
-      rw [hL, ContinuousLinearMap.smul_apply, ContinuousLinearMap.map_smul, smul_add]
+      rw [hL, smul_apply, ContinuousLinearMap.map_smul, smul_add]
       abel
     rw [← h_eq]
     exact hsmul
@@ -539,7 +542,12 @@ private theorem variationalW_norm_bound_on_Icc
           + A x (2 * h₀ - s) (W (2 * h₀ - s))) (2 * h₀ - s) :=
         hW_deriv (2 * h₀ - s) (hIcc_bwd_sub (h_dom_swap s hs))
       have h_chain : HasDerivAt (fun r : ℝ => 2 * h₀ - r) (-1 : ℝ) s := by
-        simpa using ((hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s))
+        refine (((hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s)).congr_of_eventuallyEq
+          ?_).congr_deriv ?_
+        · exact Filter.Eventually.of_forall fun r => by
+            change 2 * h₀ - r = 2 * h₀ - r
+            rfl
+        · norm_num
       have hd' := hd.scomp s h_chain
       have h_eq_smul :
           (-1 : ℝ) • ((fderiv ℝ (fun y => A y (2 * h₀ - s)) x) v
@@ -853,7 +861,12 @@ theorem norm_le_gronwallBound_on_Icc
       have hd := hR_deriv (2 * h₀ - s)
         (hIcc_bwd_sub (h_dom_swap s hs))
       have hchain : HasDerivAt (fun r : ℝ => 2 * h₀ - r) (-1 : ℝ) s := by
-        simpa using (hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s)
+        refine (((hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s)).congr_of_eventuallyEq
+          ?_).congr_deriv ?_
+        · exact Filter.Eventually.of_forall fun r => by
+            change 2 * h₀ - r = 2 * h₀ - r
+            rfl
+        · norm_num
       have hd' := hd.scomp s hchain
       rw [show ((-1 : ℝ) • R' (2 * h₀ - s) : G) =
         -(R' (2 * h₀ - s)) by exact neg_one_smul ℝ _] at hd'
@@ -1101,7 +1114,9 @@ theorem linearODESolution_hasFDerivAt_param
   have hDAnorm_cont_K : ContinuousOn
       (fun p : F × ℝ => ‖fderiv ℝ (fun z => A z p.2) p.1‖) K :=
     by
-      simpa only [Function.uncurry_apply_pair] using hDA_cont_K.norm
+      refine hDA_cont_K.norm.congr ?_
+      intro p _
+      rfl
   obtain ⟨pP, _, hP_bd⟩ := hK_cpt.exists_isMaxOn hK_ne hDAnorm_cont_K
   set P : ℝ := ‖fderiv ℝ (fun z => A z pP.2) pP.1‖ with hP_def
   have hP_nn : 0 ≤ P := norm_nonneg _
@@ -1376,7 +1391,7 @@ theorem linearODESolution_hasFDerivAt_param
           = (Z (x + h) s - Z x s) + (-variationalSolution A a b' h₀ Z₀ x h s) by abel,
         ContinuousLinearMap.map_add, ContinuousLinearMap.map_sub,
         ContinuousLinearMap.map_neg]
-      rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply,
+      rw [sub_apply, sub_apply,
         ContinuousLinearMap.map_sub]
       abel
     rw [h_eq] at hRderiv
@@ -1652,8 +1667,11 @@ private theorem linearODESolution_hasFDerivAt_joint
               have hd1 := hZ_deriv_at r hr
               have hd2 : HasDerivAt (fun r => (r - t₀) • v₀) v₀ r := by
                 have h_base := ((hasDerivAt_id r).sub (hasDerivAt_const r t₀)).smul_const v₀
-                convert h_base using 1
-                simp
+                refine (h_base.congr_of_eventuallyEq ?_).congr_deriv ?_
+                · exact Filter.Eventually.of_forall fun y => by
+                    change (y - t₀) • v₀ = (y - t₀) • v₀
+                    rfl
+                · simp
               exact hd1.sub hd2
             exact hd.deriv
           have h_uIcc_sub : Set.uIcc t₀ (t₀ + s) ⊆ Set.Ioo a b' := by
@@ -1700,6 +1718,9 @@ private theorem linearODESolution_hasFDerivAt_joint
                 mul_le_mul_of_nonneg_left (norm_snd_le (h, s)) (by linarith)
         · have h_param_bd : ‖Z (x₀ + h) t₀ - Z x₀ t₀ - L_x h‖ ≤ c / 2 * ‖h‖ := by
             have := hδ_x_bd (show dist h 0 < δ_x by rwa [dist_zero_right])
+            have hLx : L_x h = variationalSolution A a b' h₀ Z₀ x₀ h t₀ := by
+              exact variationalW_clm_apply h₀_mem hU hA_cont hDA_cont hZ₀_cont hx₀ ht₀ h
+            rw [hLx]
             simpa [hZ_def] using this
           calc ‖Z (x₀ + h) t₀ - Z x₀ t₀ - L_x h‖
               ≤ c / 2 * ‖h‖ := h_param_bd

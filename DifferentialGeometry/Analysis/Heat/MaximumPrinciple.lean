@@ -238,7 +238,8 @@ private lemma sndFDeriv_apply_self_nonpos_of_isLocalMax
     have hφ_deriv : HasDerivAt φ v t := by
       have h1 : HasDerivAt (fun s : ℝ => s • v) v t := by
         simpa using (hasDerivAt_id t).smul_const v
-      simpa using (hasDerivAt_const t y₀).add h1
+      rw [hφ_def]
+      exact h1.const_add y₀
     have hf_hasFDeriv : HasFDerivAt ftilde (fderiv ℝ ftilde (φ t)) (φ t) := hf_diff.hasFDerivAt
     have hcomp := hf_hasFDeriv.comp_hasDerivAt t hφ_deriv
     have hg_hasDeriv : HasDerivAt g (fderiv ℝ ftilde (φ t) v) t := by
@@ -261,7 +262,8 @@ private lemma sndFDeriv_apply_self_nonpos_of_isLocalMax
     have hφ_hasDeriv : HasDerivAt φ v 0 := by
       have h1 : HasDerivAt (fun s : ℝ => s • v) v 0 := by
         simpa using (hasDerivAt_id (0 : ℝ)).smul_const v
-      simpa using (hasDerivAt_const (0 : ℝ) y₀).add h1
+      rw [hφ_def]
+      exact h1.const_add y₀
     have h_inner : HasDerivAt ((fderiv ℝ ftilde) ∘ φ)
         ((fderiv ℝ (fderiv ℝ ftilde) y₀) v) 0 :=
       HasFDerivAt.comp_hasDerivAt_of_eq (hl := hfderiv_hasFDeriv)
@@ -331,8 +333,8 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
     calc B v v = (∑ i, (b.repr v) i • (B (b i))) v := by
             rw [step1]
       _ = ∑ i, (b.repr v) i • ((B (b i)) v) := by
-            rw [ContinuousLinearMap.sum_apply]
-            simp only [ContinuousLinearMap.smul_apply]
+            rw [sum_apply]
+            simp only [smul_apply]
       _ = ∑ i, (b.repr v) i • (∑ j, (b.repr v) j • (B (b i)) (b j)) := by
             refine Finset.sum_congr rfl ?_
             intros i _
@@ -354,7 +356,7 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartHessianTensor_quad_form_nonpos_at_max
-    [I.Boundaryless] [T2Space M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x_max : M} (h_max : ∀ x : M, f x ≤ f x_max)
@@ -531,8 +533,7 @@ theorem weak_maximum_principle_of_closed
   classical
   have key : ∀ {δ : ℝ}, 0 < δ → ∀ {η : ℝ}, 0 < η → η < T →
       ∀ t ∈ Set.Icc (0 : ℝ) (T - η), ∀ x : M, u t x ≤ δ * (t + 1) := by
-    intros δ hδ η hη hηT
-    intros t ht x
+    intro δ hδ η hη hηT t ht x
     set K : Set (ℝ × M) := Set.Icc (0 : ℝ) (T - η) ×ˢ (Set.univ : Set M) with hK_def
     have hK_compact : IsCompact K :=
       (isCompact_Icc (a := (0 : ℝ)) (b := T - η)).prod (CompactSpace.isCompact_univ)

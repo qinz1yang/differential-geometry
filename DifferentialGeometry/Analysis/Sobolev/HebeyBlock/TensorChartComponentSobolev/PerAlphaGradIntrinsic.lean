@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -208,11 +207,11 @@ theorem tensorChartComponentScalar_grad_eLpNorm_le
           ENNReal.ofReal
               (totalActiveGradConstant (I := I) (M := M) g r s) *
               (‖S‖₊ : ℝ≥0∞) :=
-      mul_le_mul_of_nonneg_right h_const_le (by exact zero_le _)
+      mul_le_mul_of_nonneg_right h_const_le (by exact zero_le)
     exact h_per.trans h_envelope_le
   · rw [eLpNorm_sqrt_g_inner_gradFun_eq_zero_of_inactive_intrinsic
       (I := I) (M := M) g r s hα S.toCcTensor Idx Jdx]
-    exact zero_le _
+    exact zero_le
 
 end HebeyBlock
 end Sobolev

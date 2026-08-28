@@ -94,9 +94,12 @@ theorem gradientFun_pullback
   ext w
   rw [metricFlatEquiv_apply, metricFlatEquiv_apply, gradientFun_eq, inner_metricSharp,
     Diffeomorph.pullbackMetric_inner, he, ContinuousLinearEquiv.coe_coe,
-    ContinuousLinearEquiv.apply_symm_apply, gradientFun_eq, inner_metricSharp,
-    mfderiv_comp y hf (Φ.contMDiff.mdifferentiableAt infty_ne_zero)]
-  simp only [ContinuousLinearMap.coe_comp, he]
+    ContinuousLinearEquiv.apply_symm_apply, gradientFun_eq, inner_metricSharp]
+  change mvfderiv (I := I) (f ∘ (Φ : M → N)) y w =
+    mvfderiv (I := I) f (Φ y)
+      ((Φ.mfderivToContinuousLinearEquiv infty_ne_zero y) w)
+  rw [mvfderiv_comp_apply y hf (Φ.contMDiff.mdifferentiableAt infty_ne_zero) w]
+  simp only [he]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
@@ -136,7 +139,7 @@ def solutionOn_pullback [hSigma : SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem pullback_coeff_eq
-    [SigmaCompactSpace M] [T2Space M] [SigmaCompactSpace N] [T2Space N]
+    [SigmaCompactSpace M] [T2Space M]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (Φ : M ≃ₘ⟮I, I⟯ N)
     (x : M) (X Y : TangentSpace I x) :
@@ -149,7 +152,7 @@ private theorem pullback_coeff_eq
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricFamilySmoothOn_pullback
     [SigmaCompactSpace M] [T2Space M]
-    [SigmaCompactSpace N] [T2Space N]
+    [T2Space N]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
@@ -208,7 +211,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricVariationEquation_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M]
     [IsManifold I 1 N]
     {D : RealTimeInterval}
@@ -238,7 +241,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     {D : RealTimeInterval}
@@ -254,7 +257,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarCont_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I 2 N]
@@ -279,7 +282,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarTime_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I 2 N]
@@ -301,8 +304,8 @@ theorem scalarTime_pullback
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricRicci_pullback_eval
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M]
     [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M)
@@ -331,7 +334,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciNorm_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     {D : RealTimeInterval}
@@ -356,7 +359,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciNormSpace_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I 2 N]
@@ -379,7 +382,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciCont_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     {D : RealTimeInterval}
@@ -399,10 +402,10 @@ theorem ricciCont_pullback
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricRm04_pullback_eval
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M]
+    [T2Space N]
+    [IsManifold I 1 M]
+    [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M)
     (slots : Fin 4 → TangentSpace I x) :
     metricRm04 (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ) x slots
@@ -432,10 +435,10 @@ theorem metricRm04_pullback_eval
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rm04Cont_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [SigmaCompactSpace M] [T2Space M]
+    [T2Space N]
+    [IsManifold I 1 M]
+    [IsManifold I 1 N]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
@@ -465,7 +468,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem isSolutionOn_pullback
     [FiniteDimensional ℝ E]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
+    [T2Space N] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     {D : RealTimeInterval}

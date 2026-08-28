@@ -89,7 +89,7 @@ lemma FullSmoothScalar.oneSubLap_memLp_of_interior_support
     MemLp (fun x : M =>
         u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth hu_int x)
       2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I_half n) (M := M) g
   exact (u.oneSubLap_continuous_of_interior_support hu_int).memLp_of_hasCompactSupport
@@ -111,7 +111,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
             v.toFun x
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) g
   have h_green : ∫ x, g.inner x (gradFun (I := I_half n) g v.toFun x)
             (gradFun (I := I_half n) g u.toFun x)

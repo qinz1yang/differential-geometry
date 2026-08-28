@@ -6,7 +6,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -408,7 +407,9 @@ theorem ofCompact
     exact metricUnitTimeSlab_icc_compact_of_bundle (I := I) (M := M)
       G t0 (t0 + delta) (G t0)
       (by
-        simpa [metricBundleQuad] using hMetric delta t0 hdelta hsub)
+        change Continuous (metricBundleQuad (I := I) (M := M) G
+          (Set.Icc t0 (t0 + delta)))
+        exact hMetric delta t0 hdelta hsub)
   metricQuadCont := hMetric
   tensorQuadCont := hTensor
   barrierFixedContinuous := hFixed
@@ -628,7 +629,9 @@ theorem ofCompact
     exact metricUnitTimeSlab_icc_compact_of_bundle (I := I) (M := M)
       G t0 (t0 + delta) (G t0)
       (by
-        simpa [metricBundleQuad] using hMetric delta t0 hdelta hsub)
+        change Continuous (metricBundleQuad (I := I) (M := M) G
+          (Set.Icc t0 (t0 + delta)))
+        exact hMetric delta t0 hdelta hsub)
   metricQuadCont := hMetric
   tensorQuadCont := hTensor
   barrierFixedContinuous := hFixed

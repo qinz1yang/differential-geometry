@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
@@ -36,32 +35,37 @@ theorem scalar0_raw_eq
     g 0 0 S α hx Fin.elim0 Fin.elim0]
   have hunit :
       chartFrameBasisModel (I := I) (M := M) α x 0 Fin.elim0 =
-        ContinuousMultilinearMap.constOfIsEmpty ℝ
-          (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ) := by
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) := by
+    apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).injective
     apply ContinuousMultilinearMap.ext
     intro v
-    rw [chartFrameBasisModel_apply, Fin.prod_univ_zero,
+    rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
+      ContinuousLinearEquiv.apply_symm_apply, chartFrameBasisModel_apply, Fin.prod_univ_zero,
       ContinuousMultilinearMap.constOfIsEmpty_apply]
   rw [hunit]
   have hone :
       Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) (∞ : WithTop ℕ∞) x =
-        ContinuousMultilinearMap.constOfIsEmpty ℝ
-          (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ) := by
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) := by
+    apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).injective
     apply ContinuousMultilinearMap.ext
     intro v
-    simpa only [Tensor0SSpace.toModel,
-      tensor0SSpace_continuousLinearEquiv_apply,
-      ContinuousMultilinearMap.constOfIsEmpty_apply] using
-      (Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
-        (I := I) (M := M) (∞ : WithTop ℕ∞) x v)
+    rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
+      ContinuousLinearEquiv.apply_symm_apply, ContinuousMultilinearMap.constOfIsEmpty_apply]
+    exact Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
+      (I := I) (M := M) (∞ : WithTop ℕ∞) x v
   rw [TensorRSField.scalar0, Tensor0SField.toScalarField,
     TensorRSField.rs0_apply, hone, Tensor0SSpace.toModel,
     tensor0SSpace_continuousLinearEquiv_apply]
   exact congrArg
     (S.toSection x
-      (ContinuousMultilinearMap.constOfIsEmpty ℝ
-        (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)))
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))))
     (Subsingleton.elim _ _)
 
 end TensorSpectral

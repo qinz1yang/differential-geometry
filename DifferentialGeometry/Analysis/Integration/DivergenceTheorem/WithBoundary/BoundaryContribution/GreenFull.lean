@@ -62,7 +62,7 @@ end ClassicalLaplacian
 
 section IntegrabilityHelpers
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -70,7 +70,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instMeasurableSpaceE : MeasurableSpace E := borel E
 private local instance instBorelSpaceE : @BorelSpace E _ (borel E) := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] in
 private lemma integrable_divergence_g_with_boundary
     [hI : HasSmoothBoundary E H I]
     [T2Space M] [CompactSpace M]
@@ -193,7 +192,7 @@ private lemma integrable_divergence_g_with_boundary
     refine MeasureTheory.ae_iff.mpr ?_
     apply MeasureTheory.measure_mono_null _ h_bad_measzero
     intro x hx
-    simp only [Set.mem_setOf_eq] at hx
+    simp only [Set.mem_ofPred_eq] at hx
     by_cases hx_chart : x ∈ (chartAt H α).source
     · by_cases hx_int : x ∈ I.interior M
       · exfalso; apply hx
@@ -219,7 +218,7 @@ private lemma integrable_divergence_g_with_boundary
   have hVol_eq :=
     riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g
   rw [hVol_eq]
-  rw [integrable_finset_sum_measure]
+  rw [integrable_finsetSum_measure]
   intro α _hα
   have hρα_meas : Measurable (fun y : M => ENNReal.ofReal ((ρ α : M → ℝ) y)) :=
     ENNReal.measurable_ofReal.comp (ρ α).contMDiff.continuous.measurable
@@ -342,10 +341,10 @@ theorem green_first_eq_boundary_surface_integral
           ∂(riemannianVolumeMeasure (I := I') (M := M) g) := by
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     exact h_combined x
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I') (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I') (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I') (M := M) g
-  haveI : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
+  have : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
     rw [finrank_euclideanSpace_fin]
     infer_instance
   have hgrad_f_smooth : ContMDiff I' (I'.prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞

@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TensorLif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Relowering
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -31,7 +30,8 @@ section Algebra
 
 variable {s : ℕ}
 
-omit [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [IsManifold I ∞ M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem fieldSub_eval
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) (x : M) (v : Fin s -> TangentSpace I x) :
@@ -40,7 +40,8 @@ private theorem fieldSub_eval
   rw [h]
   exact Tensor0SSpace.sub_apply (I := I) s x _ _ v
 
-omit [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [IsManifold I ∞ M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem fieldAdd_eval
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) (x : M) (v : Fin s -> TangentSpace I x) :
@@ -55,6 +56,15 @@ private theorem metField0 (g : SmoothRiemannianMetric I M) (x : M)
     metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then u else Z) =
       g.inner x u Z := by
   rw [metricTensorField_apply]; simp
+
+omit [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem metField0_eval (g : SmoothRiemannianMetric I M) (x : M)
+    (u Z : TangentSpace I x) :
+    Tensor0SSpace.eval (metricTensorField (I := I) g x)
+        (fun a : Fin 2 => if a = 0 then u else Z) = g.inner x u Z := by
+  change metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then u else Z) = _
+  exact metField0 (I := I) g x u Z
 
 end Algebra
 
@@ -156,7 +166,8 @@ omit [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.B
 theorem lowOfComp_eval (g : SmoothRiemannianMetric I M) {x : M}
     (b : Module.Basis Idx Real (TangentSpace I x))
     (c : Idx -> Idx -> Idx -> Idx -> Real) (i j k l : Idx) :
-    lowOfComp (I := I) g b c (vec4 (I := I) (b i) (b j) (b k) (b l)) = c i j k l := by
+    Tensor0SSpace.eval (lowOfComp (I := I) g b c)
+      (vec4 (I := I) (b i) (b j) (b k) (b l)) = c i j k l := by
   rw [lowOfComp, lowerTri_apply]
   have hv0 : (vec4 (I := I) (b i) (b j) (b k) (b l)) 0 = b i := rfl
   have hv1 : (vec4 (I := I) (b i) (b j) (b k) (b l)) 1 = b j := rfl
@@ -164,7 +175,7 @@ theorem lowOfComp_eval (g : SmoothRiemannianMetric I M) {x : M}
   have hv3 : (vec4 (I := I) (b i) (b j) (b k) (b l)) 3 = b l := rfl
   rw [hv0, hv1, hv2, hv3, quadOfComp_vec (I := I) b
     (fun i' j' k' => raiseAt (I := I) g x b (fun m : Idx => c i' j' k' m)) i j k,
-    metField0, inner_raiseAt]
+    metField0_eval, inner_raiseAt]
 
 end Fiber
 
@@ -223,7 +234,7 @@ theorem vec3_deriv_basis {Idx : Type*} [Finite Idx]
     (X Y Z : TangentSpace I x) :
     HasDerivAt (fun r : Real => ((F r X) Y) Z) (((Sdot X) Y) Z) t := by
   classical
-  haveI : Fintype Idx := Fintype.ofFinite Idx
+  have : Fintype Idx := Fintype.ofFinite Idx
   have hexp : ∀ r : Real, ((F r X) Y) Z =
       ∑ i, ∑ j, ∑ k, (b.repr X i * b.repr Y j * b.repr Z k) • ((F r (b i)) (b j)) (b k) :=
     fun r => tri_expand (I := I) _ b X Y Z
@@ -352,23 +363,26 @@ theorem gap_deriv (g₁ g₂ : Real -> SmoothRiemannianMetric I M)
           (-2 : Real) * metricRicciAt (I := I) (g₁ t) x
             (fun a : Fin 2 => if a = 0 then V t else v 3)) =
         gapDot (I := I) (g₁ t) (g₂ t) Rm2dot v := by
-    rw [gapDot, Tensor0SSpace.sub_apply (I := I) 4 x _ _ v,
-      Tensor0SSpace.smul_apply (I := I) 4 x (2 : Real) _ v,
+    change _ = Tensor0SSpace.eval (gapDot (I := I) (g₁ t) (g₂ t) Rm2dot) v
+    rw [gapDot, Tensor0SSpace.eval_sub,
+      Tensor0SSpace.eval_smul,
       lowerTri_apply, lowerTri_apply,
-      Tensor0SSpace.sub_apply (I := I) 2 x (metricRicciAt (I := I) (g₁ t) x)
-        (metricRicciAt (I := I) (g₂ t) x) _,
+      Tensor0SSpace.eval_sub,
       metricDiffAt]
-    have hmet : (metricTensorField (I := I) (g₁ t) x - metricTensorField (I := I) (g₂ t) x)
+    have hmet : Tensor0SSpace.eval
+        (metricTensorField (I := I) (g₁ t) x - metricTensorField (I := I) (g₂ t) x)
         (fun a : Fin 2 => if a = 0 then ((Rm2dot (v 0)) (v 1)) (v 2) else v 3) =
         (g₁ t).inner x (((Rm2dot (v 0)) (v 1)) (v 2)) (v 3) -
           (g₂ t).inner x (((Rm2dot (v 0)) (v 1)) (v 2)) (v 3) := by
-      rw [Tensor0SSpace.sub_apply (I := I) 2 x _ _ _, metField0, metField0]
+      rw [Tensor0SSpace.eval_sub, metField0_eval, metField0_eval]
     rw [hmet, smul_eq_mul]
     have hVt : V t = riemannOp (metricCov (I := I) (g₂ t)) x (v 0) (v 1) (v 2) := rfl
     rw [hVt]
+    rw [Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq]
     ring
   have hfin := hmain.congr_deriv hval
-  simpa only [hgap] using hfin
+  apply hfin.congr_of_eventuallyEq
+  exact Filter.Eventually.of_forall hgap
 
 end Deriv
 
@@ -384,6 +398,8 @@ theorem reLower_rm2Low (g₁ g₂ : SmoothRiemannianMetric I M)
     reLower (I := I) g₂ g₁ P x = metricRm04At (I := I) g₂ x := by
   classical
   refine ContinuousMultilinearMap.ext fun tail => ?_
+  change Tensor0SSpace.eval (reLower (I := I) g₂ g₁ P x) tail =
+    Tensor0SSpace.eval (metricRm04At (I := I) g₂ x) tail
   have hl3 : (Fin.last 3 : Fin 4) = (3 : Fin 4) := rfl
   have hupd : Function.update tail (Fin.last 3)
       (sharpFlat (I := I) g₂ g₁ x (tail (Fin.last 3))) =
@@ -394,11 +410,24 @@ theorem reLower_rm2Low (g₁ g₂ : SmoothRiemannianMetric I M)
   have htail : tail = vec4 (I := I) (tail 0) (tail 1) (tail 2) (tail (Fin.last 3)) := by
     funext i
     fin_cases i <;> simp [vec4, hl3]
-  rw [reLower_apply (I := I) g₂ g₁ P x tail, hP, hupd, rm04mix_inner, inner_sharpFlat]
+  rw [reLower_apply (I := I) g₂ g₁ P x tail, hP, hupd]
+  have hmix := rm04mix_inner (I := I) g₁ g₂ x (tail 0) (tail 1) (tail 2)
+    (sharpFlat (I := I) g₂ g₁ x (tail (Fin.last 3)))
+  change Tensor0SSpace.eval
+      (CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
+        (metricCov_smooth (I := I) g₂) x)
+      (vec4 (I := I) (tail 0) (tail 1) (tail 2)
+        (sharpFlat (I := I) g₂ g₁ x (tail (Fin.last 3)))) = _ at hmix
+  rw [hmix, inner_sharpFlat]
   conv_rhs => rw [htail]
-  rw [metricRm04At_inner]
+  have hmetric := metricRm04At_inner (I := I) g₂ x (tail 0) (tail 1) (tail 2)
+    (tail (Fin.last 3))
+  change Tensor0SSpace.eval (metricRm04At (I := I) g₂ x)
+      (vec4 (I := I) (tail 0) (tail 1) (tail 2) (tail (Fin.last 3))) = _ at hmetric
+  rw [hmetric]
 
 
+omit [I.Boundaryless] in
 omit [IsManifold I 2 M] [CompleteSpace E] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem lapGap_eq (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -515,6 +544,7 @@ def sdecRem (g₁ g₂ : SmoothRiemannianMetric I M) {x : M}
         (lapDiffFlux (I := I) g₁ g₂ (metricTensorField (I := I) g₂))) x
 
 
+omit [I.Boundaryless] in
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem sdec_core
@@ -606,7 +636,7 @@ theorem sdec_core
       frameVec4 (I := I) (fun m z => basisAt z m) x (w 0) (w 1) (w 2) (w 3) := by
     funext p
     fin_cases p <;> simp [frameVec4, vec4]
-  simp only [ContinuousMultilinearMap.coe_coe, hw]
+  simp only [hw]
   set i : Idx := w 0 with hi
   set j : Idx := w 1 with hj
   set k : Idx := w 2 with hk
@@ -650,11 +680,19 @@ theorem sdec_core
   have hG := gap_deriv (I := I) g₁ g₂
     (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x)
     hPDE₁' hPDE₂' hRm2 v
-  have hfunS : (fun r : Real => rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v) =
+  have hfunS : (fun r : Real =>
+      Tensor0SSpace.eval (rmDiffLowAt (I := I) (g₁ r) (g₂ r) x) v) =
       (fun r : Real =>
-        (metricRm04At (I := I) (g₁ r) x - metricRm04At (I := I) (g₂ r) x) v +
-          gapAt (I := I) (g₁ r) (g₂ r) x v) :=
-    funext fun r => rmDiffLow_split (I := I) (g₁ r) (g₂ r) x v
+        Tensor0SSpace.eval
+            (metricRm04At (I := I) (g₁ r) x - metricRm04At (I := I) (g₂ r) x) v +
+          Tensor0SSpace.eval (gapAt (I := I) (g₁ r) (g₂ r) x) v) := by
+    funext r
+    have hsplit := rmDiffLow_split (I := I) (g₁ r) (g₂ r) x v
+    change Tensor0SSpace.eval (rmDiffLowAt (I := I) (g₁ r) (g₂ r) x) v =
+      Tensor0SSpace.eval
+          (metricRm04At (I := I) (g₁ r) x - metricRm04At (I := I) (g₂ r) x) v +
+        Tensor0SSpace.eval (gapAt (I := I) (g₁ r) (g₂ r) x) v at hsplit
+    exact hsplit
   rw [hfunS] at hS
   have huniq := hS.unique (hD.add hG)
   have e1 : roughLap0SField (I := I) (g₁ t) (Tf₁ t - Tf₂ t) x v =
@@ -693,12 +731,68 @@ theorem sdec_core
         metricTraceFirstTwoField (I := I) (M := M) (s := 4) (g₁ t)
           (reLowerPair (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t) P)
             (lapDiffFlux (I := I) (g₁ t) (g₂ t) (metricTensorField (I := I) (g₂ t)))) x v := by
-    rw [sdecRem, Tensor0SSpace.sub_apply (I := I) 4 x _ _ v,
-      Tensor0SSpace.sub_apply (I := I) 4 x _ _ v,
-      Tensor0SSpace.add_apply (I := I) 4 x _ _ v, hvv, lowOfComp_eval]
-  rw [Tensor0SSpace.add_apply (I := I) 4 x _ _ v, Tensor0SSpace.add_apply (I := I) 4 x _ _ v,
-    e3, e4]
+    change Tensor0SSpace.eval
+      (sdecRem (I := I) (g₁ t) (g₂ t) P (basisAt x)
+        (rmDotRem (I := I) (g₁ t) (g₂ t) (Tf₂ t) Rm04₁ Rm04₂ B₁ B₂
+          ricciOneUp₁ ricciOneUp₂ (fun m z => basisAt z m) t x)
+        (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x)) v = _
+    rw [sdecRem, Tensor0SSpace.eval_sub,
+      Tensor0SSpace.eval_sub, Tensor0SSpace.eval_add, hvv, lowOfComp_eval]
+    simp only [Tensor0SSpace.eval_eq]
+  have e3' : Tensor0SSpace.eval
+        (covDiv0SField (I := I) (g₁ t)
+          (sdecFlux (I := I) (g₁ t) (g₂ t) (Tf₂ t) P) x) v =
+      Tensor0SSpace.eval
+          (covDiv0SField (I := I) (g₁ t)
+            (lapDiffFlux (I := I) (g₁ t) (g₂ t) (Tf₂ t)) x) v -
+        Tensor0SSpace.eval
+          (covDiv0SField (I := I) (g₁ t)
+            (reLowerPair (I := I) (g₁ t) P
+              (lapDiffFlux (I := I) (g₁ t) (g₂ t)
+                (metricTensorField (I := I) (g₂ t)))) x) v := by
+    change covDiv0SField (I := I) (g₁ t)
+        (sdecFlux (I := I) (g₁ t) (g₂ t) (Tf₂ t) P) x v = _
+    exact e3
+  have e4' : Tensor0SSpace.eval
+        (sdecRem (I := I) (g₁ t) (g₂ t) P (basisAt x)
+          (rmDotRem (I := I) (g₁ t) (g₂ t) (Tf₂ t) Rm04₁ Rm04₂ B₁ B₂
+            ricciOneUp₁ ricciOneUp₂ (fun m z => basisAt z m) t x)
+          (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x)) v =
+      rmDotRem (I := I) (g₁ t) (g₂ t) (Tf₂ t) Rm04₁ Rm04₂ B₁ B₂
+          ricciOneUp₁ ricciOneUp₂ (fun m z => basisAt z m) t x i j k l +
+        Tensor0SSpace.eval
+          (gapDot (I := I) (g₁ t) (g₂ t)
+            (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x)) v -
+        Tensor0SSpace.eval
+          ((reLower (I := I) (g₂ t) (g₁ t) (roughLap0SField (I := I) (g₁ t) P) -
+            roughLap0SField (I := I) (g₁ t) P) x) v -
+        Tensor0SSpace.eval
+          (metricTraceFirstTwoField (I := I) (M := M) (s := 4) (g₁ t)
+            (reLowerPair (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t) P)
+              (lapDiffFlux (I := I) (g₁ t) (g₂ t)
+                (metricTensorField (I := I) (g₂ t)))) x) v := by
+    change sdecRem (I := I) (g₁ t) (g₂ t) P (basisAt x)
+        (rmDotRem (I := I) (g₁ t) (g₂ t) (Tf₂ t) Rm04₁ Rm04₂ B₁ B₂
+          ricciOneUp₁ ricciOneUp₂ (fun m z => basisAt z m) t x)
+        (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x) v = _
+    exact e4
+  change Tensor0SSpace.eval
+      (rmDiffDot (I := I) g₁ g₂
+        (uhlRmDiffSpeed (I := I) g₁ g₂ basisAt Rm04₁ roughLapRm04₁ B₁ ricciOneUp₁
+          Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t) t x) v =
+    Tensor0SSpace.eval
+      (roughLap0SField (I := I) (g₁ t) (Sfield t) x +
+        covDiv0SField (I := I) (g₁ t)
+          (sdecFlux (I := I) (g₁ t) (g₂ t) (Tf₂ t) P) x +
+        sdecRem (I := I) (g₁ t) (g₂ t) P (basisAt x)
+          (rmDotRem (I := I) (g₁ t) (g₂ t) (Tf₂ t) Rm04₁ Rm04₂ B₁ B₂
+            ricciOneUp₁ ricciOneUp₂ (fun m z => basisAt z m) t x)
+          (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x)) v
+  rw [Tensor0SSpace.eval_add, Tensor0SSpace.eval_add,
+    e3', e4']
   rw [huniq, e1, e2]
+  simp only [Tensor0SSpace.eval_eq]
+  rw [← hvdef]
   ring
 
 def sdecUflux (g₁ g₂ : Real -> SmoothRiemannianMetric I M)

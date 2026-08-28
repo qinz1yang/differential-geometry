@@ -90,13 +90,15 @@ theorem injective_attachingSphereInclusion (k l : ℕ) : Injective (attachingSph
   intro x y h
   apply Subtype.ext
   have hfst := congrArg Prod.fst h
-  simpa using congrArg (fun z : ClosedCell k => (z : EuclideanSpace ℝ (Fin k))) hfst
+  simpa [attachingSphereInclusion, cellBoundaryInclusion] using
+    congrArg (fun z : ClosedCell k => (z : EuclideanSpace ℝ (Fin k))) hfst
 
 theorem injective_beltSphereInclusion (k l : ℕ) : Injective (beltSphereInclusion k l) := by
   intro x y h
   apply Subtype.ext
   have hsnd := congrArg Prod.snd h
-  simpa using congrArg (fun z : ClosedCell l => (z : EuclideanSpace ℝ (Fin l))) hsnd
+  simpa [beltSphereInclusion, cellBoundaryInclusion] using
+    congrArg (fun z : ClosedCell l => (z : EuclideanSpace ℝ (Fin l))) hsnd
 
 theorem injective_attachingSphereInclusionAttachingRegion (k l : ℕ) :
     Injective (attachingSphereInclusionAttachingRegion k l) := by

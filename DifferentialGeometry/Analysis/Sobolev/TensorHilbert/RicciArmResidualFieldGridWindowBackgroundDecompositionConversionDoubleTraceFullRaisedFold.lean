@@ -46,7 +46,6 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma movingMetricDoubleTraceField_self_eq (s : ℕ) :
@@ -58,7 +57,6 @@ lemma movingMetricDoubleTraceField_self_eq (s : ℕ) :
   rw [cometricDoubleTraceField_toSection]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_add_local (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -76,12 +74,11 @@ private lemma slotInsertEndoCc_add_local (s : ℕ)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ s A).toSection x +
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
     rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_diff_split_local :
@@ -97,7 +94,7 @@ private lemma metricComparisonEndomorphismField_diff_split_local :
     rw [ContMDiffSection.coe_add]; rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x) = metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
     from rfl]
   rw [metricComparisonEndomorphismField_apply]
@@ -105,7 +102,6 @@ private lemma metricComparisonEndomorphismField_diff_split_local :
   rw [show metricComparisonEndomorphism (I := I) g₀ g₀ x v = v from by
     rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma operatorFieldComposition_slotInsert_id_eq (s c : ℕ) (Φ : SmoothCcTensor g₀ (s + 1) c) :
@@ -129,11 +125,13 @@ private lemma operatorFieldComposition_slotInsert_id_eq (s c : ℕ) (Φ : Smooth
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   rw [slotInsertEndoFib_apply_eval]
-  rw [show (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x (m 0)) = m 0 from by
-    rw [metricComparisonEndomorphismField_apply, metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
+  rw [show tangentLinearMapToModel
+      (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) (m 0) = m 0 from by
+    rw [tangentLinearMapToModel_apply, metricComparisonEndomorphismField_apply,
+      metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM,
+      ContinuousLinearEquiv.apply_symm_apply]]
   rw [Function.update_eq_self]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
@@ -165,6 +163,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
       (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
+    with_unfolding_all rfl
   rw [hLHS]
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
@@ -269,20 +268,13 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
             (smoothOrthoFrame (I := I) g₁ x c x))
           (fun a => (smoothOrthoFrame (I := I) g₀ x a x : E)) mm
         rw [← hsum]
-        congr 2
         have hrep0 := tangent_eq_sum_inner_smoothOrthoFrame (I := I) (M := M) g₀ x
           (smoothOrthoFrame (I := I) g₁ x c x)
-        rw [show (∑ a : Fin (Module.finrank ℝ E),
-            g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
-              (smoothOrthoFrame (I := I) g₁ x c x) •
-              (smoothOrthoFrame (I := I) g₀ x a x : E)) =
-            ((∑ a : Fin (Module.finrank ℝ E),
-              g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
-                (smoothOrthoFrame (I := I) g₁ x c x) •
-                smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) from rfl]
-        rw [← hrep0]
+        with_unfolding_all exact
+          (congrArg (fun u : TangentSpace I x =>
+            Tensor0SSpace.toModel Z
+              (Fin.cons (smoothOrthoFrame (I := I) g₁ x c x) (Fin.cons u mm))) hrep0.symm)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma movingMetricDoubleTraceField_cross_split (s : ℕ) :
@@ -305,7 +297,6 @@ def secondMetricPairTraceOperator : SmoothCcTensor g₀ 6 2 :=
     (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 2)
     (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 4)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
@@ -318,17 +309,21 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-            ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x b x)] *
           unitModel (I := I) (M := M) g₀ 4 X x
-            ![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] := by
+            ![v 0, v 1, tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x b x)] := by
   classical
   set Y : Tensor0SSpace 6 I x :=
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D with hY_def
-  have hYval : ∀ w : Fin 6 → TangentSpace I x,
+  have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
         Tensor0SSpace.toModel D ![w 1, w 3] *
           unitModel (I := I) (M := M) g₀ 4 X x ![w 4, w 5, w 0, w 2] := by
@@ -372,12 +367,15 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [cometricDoubleTraceFib_toModel (I := I) g₁ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₁ x)]
-  rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
-    (Tensor0SSpace.toModel Y)
-    (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-      (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-        (fun j => (v j : E))))]
+  with_unfolding_all
+    rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
+      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (Tensor0SSpace.toModel Y)
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₁ x b x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x b x))
+          (fun j => (v j : E))))]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [hYval]
   rfl
@@ -388,11 +386,10 @@ def riemannCometricDoubleTraceFold : SmoothCcTensor g₀ 2 4 :=
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
-    (m : Fin 4 → TangentSpace I x) :
+    (m : Fin 4 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
           (riemannCometricDoubleTraceFold (I := I) (M := M) g₀).toSection x) D) m =
@@ -407,7 +404,7 @@ lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 (Equiv.swap (1 : Fin 6) 3)
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D with hY_def
-  have hYval : ∀ w : Fin 6 → TangentSpace I x,
+  have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
         Tensor0SSpace.toModel D ![w 0, w 3] *
           unitModel (I := I) (M := M) g₀ 4

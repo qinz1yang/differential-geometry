@@ -151,6 +151,7 @@ lemma smoothFChartResidual_memWkp_two_two
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
     hp_one hΩ_open h_ae.symm).mp hP_sum
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkp_fChartResidual_of_wkpNorm_cauchy_identification_w22
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

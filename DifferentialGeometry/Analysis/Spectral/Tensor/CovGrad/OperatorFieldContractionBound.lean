@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -46,7 +45,7 @@ lemma riemannianFiberNormSq_repr_of_orthoFrame_cb
         fiberNormSqSummand (I := I) (M := M) g x 0 t S n e K J := by
   classical
   subst hn
-  haveI : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
+  have : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
@@ -175,10 +174,11 @@ private lemma fiberNormSqComponent_comp_eq
         fiberNormSqComponent (I := I) (M := M) g x 0 r Wx n e K₀ P *
           fiberNormSqComponent (I := I) (M := M) g x r s Φx n e P J := by
   classical
-  change (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φx)
-      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from Wx)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K₀ k)))))
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φx)
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from Wx)
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+            (fun k => g.inner x (e (K₀ k))))))
       (fun k => e (J k)) = _
   set wval : Tensor0SSpace r I x :=
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from Wx)
@@ -194,17 +194,10 @@ private lemma fiberNormSqComponent_comp_eq
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φx)
           (coframeS (I := I) (M := M) g x r e P) from by
     refine Finset.sum_congr rfl (fun P _ => ?_); rw [map_smul]]
-  rw [show ((∑ P : Fin r → Fin n, (wval (fun k : Fin r => e (P k))) •
-        (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φx)
-          (coframeS (I := I) (M := M) g x r e P)) (fun k => e (J k)) : ℝ) =
-      Tensor0SSpace.toModel (∑ P : Fin r → Fin n, (wval (fun k : Fin r => e (P k))) •
-        (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φx)
-          (coframeS (I := I) (M := M) g x r e P)) (fun k => e (J k)) from rfl]
-  rw [← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [Tensor0SSpace.eval_sum]
   refine Finset.sum_congr rfl (fun P _ => ?_)
-  rw [Tensor0SSpace.toModelL_apply, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply]
-  have hΦcomp : Tensor0SSpace.toModel
+  rw [Tensor0SSpace.eval_smul]
+  have hΦcomp : Tensor0SSpace.eval
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φx)
         (coframeS (I := I) (M := M) g x r e P)) (fun k => e (J k)) =
       fiberNormSqComponent (I := I) (M := M) g x r s Φx n e P J := rfl
@@ -271,7 +264,7 @@ theorem riemannianFiberNormSq_comp_le_mul
 
 
 omit [CompleteSpace E] in
-omit [BoundarylessManifold I M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem exists_uniform_riemannianFiberNormSq_operatorFieldApplication_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (Φ : SmoothCcTensor g r s) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (W : SmoothCcTensor g 0 r) (x : M),

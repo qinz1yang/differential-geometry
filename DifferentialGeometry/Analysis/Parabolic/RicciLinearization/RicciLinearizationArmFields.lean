@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -172,7 +171,7 @@ theorem domDomCongrFib_apply (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x) :
         (ContinuousMultilinearMap.domDomCongr traceHessianSlotPerm
           (Tensor0SBundle.Tensor0SSpace.toModel D)) := by
   rw [domDomCongrFib]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
   rfl
 
@@ -192,7 +191,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
   rw [traceHessianFib, ContinuousLinearMap.comp_apply, cometricDoubleTraceFib_toModel,
     domDomCongrFib_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem domDomCongr_section_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
@@ -221,12 +219,12 @@ private theorem domDomCongr_section_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d)
   rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
   change (ContinuousMultilinearMap.domDomCongr ρ
       (Tensor0SBundle.Tensor0SSpace.toModel (Z x)))
-      (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-        ((Module.finBasis ℝ E) (τ j))) = _
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
+          ((Module.finBasis ℝ E) (τ j)))) = _
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -250,7 +248,6 @@ theorem traceHessianFib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [traceHessianFib, ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
-  rfl
 
 noncomputable def traceHessianCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 where
@@ -296,7 +293,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 theorem cometricLmodel_covectorOfCLM_inner (g₁ : SmoothRiemannianMetric I M) (y : M)
     (φ : E →L[ℝ] ℝ) (u : TangentSpace I y) :
     g₁.inner y (cometricLmodel (I := I) g₁ y
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) u = φ (u : E) := by
+        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) u =
+      φ (tangentSpaceModelContinuousLinearEquiv (I := I) y u) := by
   have h1 : cometricLmodel (I := I) g₁ y
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ) =
       inverseMetricSharpFib (I := I) g₁ y
@@ -305,7 +303,8 @@ theorem cometricLmodel_covectorOfCLM_inner (g₁ : SmoothRiemannianMetric I M) (
   rw [h1, inverseMetricSharpFib_inner (I := I) g₁ y _ u, cotangentToDualLinear_apply,
     cotangentToDual_apply]
   change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)
-      (fun _ : Fin 1 => (u : E)) = φ (u : E)
+      (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) y u) =
+    φ (tangentSpaceModelContinuousLinearEquiv (I := I) y u)
   rw [Tensor0SBundle.model_covectorOfCLM_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -313,7 +312,7 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem traceHessianCoeff_apply_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2 (traceHessianCoeff (I := I) (M := M) g₀ g₁) W)
           x v =

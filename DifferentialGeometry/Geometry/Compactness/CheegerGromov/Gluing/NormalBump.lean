@@ -70,6 +70,7 @@ theorem normalBump_one (g : SmoothRiemannianMetric I M) (p : M)
   rw [normalBump_of_mem g p f hq]
   exact f.one_of_mem_closedBall hinner
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalBump_tsupport (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : E))
     (hr : f.rOut < expMapC2Radius (I := I) g p) :
@@ -107,6 +108,7 @@ theorem normalBump_tsupport (g : SmoothRiemannianMetric I M) (p : M)
   refine ⟨ψ q, hvball, ?_⟩
   exact ψ.toPartialEquiv.left_inv hqsrc
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalBump_src (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : E))
     (hr : f.rOut < expMapC2Radius (I := I) g p) :
@@ -118,6 +120,7 @@ theorem normalBump_src (g : SmoothRiemannianMetric I M) (p : M)
   rw [Metric.mem_closedBall, dist_zero_right] at hv
   exact ball_subset_normalChartAt_target (I := I) g p (hv.trans_lt hr)
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalBump_contMDiff (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : E))
     (hr : f.rOut < expMapC2Radius (I := I) g p) :
@@ -315,6 +318,7 @@ theorem normalRaw_of_ne (g : SmoothRiemannianMetric I M) (p : ι → M)
   funext q
   rw [normalRaw, if_neg hi]
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalRaw_contMDiff (g : SmoothRiemannianMetric I M) (p : ι → M)
     (cut : ContDiffBump (0 : E)) (f : ι → ContDiffBump (0 : E)) (i0 i : ι)
     (hcut : cut.rOut < expMapC2Radius (I := I) g (p i0))

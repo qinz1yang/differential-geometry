@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -47,16 +49,24 @@ private theorem curveVel_affine
   have ha_one : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) a t (1 : ℝ) = c := by
     rw [mfderiv_eq_fderiv]
     have hfd : HasFDerivAt a (c • (1 : ℝ →L[ℝ] ℝ)) t := by
-      simpa only [a] using
-        (((hasFDerivAt_id t).const_mul c).add_const d)
+      let : NormedAddCommGroup ℝ := Real.normedAddCommGroup
+      let : NormedSpace ℝ ℝ := NormedAlgebra.toNormedSpace ℝ
+      change HasFDerivAt (fun s : ℝ => c * s + d) (c • (1 : ℝ →L[ℝ] ℝ)) t
+      exact ((hasFDerivAt_id t).const_mul c).add_const d
     rw [hfd.fderiv]
     change c • ((1 : ℝ →L[ℝ] ℝ) (1 : ℝ)) = c
-    rw [ContinuousLinearMap.one_apply, smul_eq_mul, mul_one]
+    rw [one_apply_eq_self, smul_eq_mul, mul_one]
   change mfderiv 𝓘(ℝ, ℝ) I (γ ∘ a) t (1 : ℝ) =
     c • mfderiv 𝓘(ℝ, ℝ) I γ (a t) (1 : ℝ)
   rw [hcomp, ha_one]
-  simpa only [smul_eq_mul, mul_one] using
-    map_smul (mfderiv 𝓘(ℝ, ℝ) I γ (a t)) c (1 : ℝ)
+  change mfderiv 𝓘(ℝ, ℝ) I γ (a t) c =
+    c • mfderiv 𝓘(ℝ, ℝ) I γ (a t) (1 : ℝ)
+  calc
+    mfderiv 𝓘(ℝ, ℝ) I γ (a t) c =
+        mfderiv 𝓘(ℝ, ℝ) I γ (a t) (c • (1 : ℝ)) := by
+      rw [smul_eq_mul, mul_one]
+    _ = c • mfderiv 𝓘(ℝ, ℝ) I γ (a t) (1 : ℝ) :=
+      map_smul (mfderiv 𝓘(ℝ, ℝ) I γ (a t)) c (1 : ℝ)
 
 omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -109,7 +119,9 @@ private theorem tailCurve_eq
         ((1 - s₀) * t)
     _ = γ ((1 - s₀) * t + s₀) := by
       have h := congrFun hcontinue ((1 - s₀) * t)
-      simpa only [γ, intrinsicVelocityLift] using h.symm
+      unfold γ
+      convert h.symm using 1
+      rfl
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -304,8 +316,9 @@ theorem tail_not_conj_of_min
     simpa only [z₁, intrinsicVelocityLift, expMapIntrinsic_def] using hexp
   have hspeed₁ :
       g.inner z₁.proj z₁.snd z₁.snd = g.inner O v v := by
-    simpa only [z₁, intrinsicVelocityLift, γ] using
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm O v 1
+    unfold z₁
+    convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm O v 1 using 1
+    rfl
   have hinner : g.inner O v v = r ^ 2 := by
     have hsqrt_sq :=
       Real.sq_sqrt (gInner_self_nonneg (I := I) g O v)
@@ -320,8 +333,10 @@ theorem tail_not_conj_of_min
     have hcontinue :=
       intrinsicGeodesic_continuation (I := I) g hEnorm O v 1
     have h := congrFun hcontinue (-1)
-    simpa only [z₁, γ, intrinsicVelocityLift, neg_add_cancel,
-      intrinsicGeodesic_zero] using h.symm
+    unfold z₁
+    convert h.symm using 1
+    · rfl
+    · rw [neg_add_cancel, intrinsicGeodesic_zero]
   have hscale : r • eRev = (-1 : ℝ) • z₁.snd := by
     dsimp only [eRev]
     rw [smul_smul]
@@ -404,13 +419,20 @@ theorem tail_not_conj_of_min
   have hvec :
       -((intrinsicVelocityLift (I := I) g hEnorm z.proj uTail 1).snd : E) =
         ell • (eRev : E) := by
-    rw [htail_vel]
-    dsimp only [ell, eRev]
-    rw [smul_smul]
     have hcoeff : -(1 - s₀) = (1 - s₀) * r * -r⁻¹ := by
       field_simp [hr_ne]
-    simpa only [neg_smul] using
-      congrArg (fun a : ℝ => a • (z₁.snd : E)) hcoeff
+    have hneg :
+        -((intrinsicVelocityLift (I := I) g hEnorm z.proj uTail 1).snd : E) =
+          -((1 - s₀) • (z₁.snd : E)) :=
+      congrArg (fun y : E => -y) htail_vel
+    have hscalar :
+        -((1 - s₀) • (z₁.snd : E)) =
+          ((1 - s₀) * r * -r⁻¹) • (z₁.snd : E) := by
+      rw [← neg_smul]
+      exact congrArg (fun a : ℝ => a • (z₁.snd : E)) hcoeff
+    dsimp only [ell, eRev]
+    rw [smul_smul]
+    exact hneg.trans hscalar
   apply hrev_no
   simpa only [htail_end, hvec] using htail_rev
 
@@ -452,8 +474,9 @@ theorem tail_no_conj
     exact mul_pos (sub_pos.mpr hs₀.2) hr_pos
   have hspeed :
       g.inner z.proj z.snd z.snd = g.inner O v v := by
-    simpa only [z, intrinsicVelocityLift, γ] using
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm O v s₀
+    unfold z
+    convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm O v s₀ using 1
+    rfl
   have hinner : g.inner O v v = r ^ 2 := by
     have hsqrt_sq :=
       Real.sq_sqrt (gInner_self_nonneg (I := I) g O v)

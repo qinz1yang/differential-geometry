@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Fields
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricDeriv
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -71,7 +72,7 @@ theorem normSq0S_moving_deriv {s : Nat} {x : M} {t : Real}
   let Tdt : (Fin s → Fin (Module.finrank Real (TangentSpace I x))) → Real := fun I0 =>
     tensor0SComponent (I := I) Tdot (fun i => basis i) I0
   have hinvAll (r : Real) :
-      MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
+      MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r) := by
     simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by

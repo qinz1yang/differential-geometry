@@ -64,10 +64,10 @@ theorem limit_accel_bounds
   let aInf : E × E → E := fun z ↦ (MetricKoszul.metricSpray gInf z).2
   have hg_cd : ∀ n, ContDiffOn Real ∞ (g n) U := by
     intro n
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     have hrad : U ⊆ Metric.ball (0 : E) (d.chart n (c n)).radius := by
       exact (d.phaseRadius_chart (hc n)).trans <|
@@ -78,10 +78,10 @@ theorem limit_accel_bounds
         Metric.isOpen_ball ((d.chart n (c n)).smooth_to.mono hrad)
   have hg_co : ∀ n z, z ∈ U → IsCoercive (g n z) := by
     intro n z hz
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     exact (d.metricBounds n (c n)).equiv.coercive
       (X.obj n).metric (d.phaseRadius_metric (hc n) hz)
@@ -106,12 +106,12 @@ theorem limit_accel_bounds
     have heq : (fun n ↦ (MetricKoszul.metricSpray (g n) z).2) =
         fun n ↦ a n z := by
       funext n
-      letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-      letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-      letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-      letI : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
-      letI : T2Space (X.obj n).M := (X.obj n).t2
-      letI : T2Space (TangentBundle I (X.obj n).M) :=
+      let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+      let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+      let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+      let : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
+      let : T2Space (X.obj n).M := (X.obj n).t2
+      let : T2Space (TangentBundle I (X.obj n).M) :=
         (X.obj n).t2TangentBundle
       have hmetric := d.phaseRadius_metric (hc n) hz.1
       have hquarter := d.phaseRadius_chart (hc n) hz.1
@@ -133,12 +133,12 @@ theorem limit_accel_bounds
       (continuous_dist.tendsto (aInf x, aInf y)).comp
         ((hacc_tendsto x hx).prodMk_nhds (hacc_tendsto y hy))
     refine le_of_tendsto hdist (Filter.Eventually.of_forall fun n ↦ ?_)
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
-    letI : T2Space (X.obj n).M := (X.obj n).t2
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
+    let : T2Space (X.obj n).M := (X.obj n).t2
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     have hlip := chartAccel_lip (I := I) (X.obj n).metric
       (d.chart n (c n)) (d.metricBounds n (c n))
@@ -149,12 +149,12 @@ theorem limit_accel_bounds
     have hnorm : Tendsto (fun n ↦ ‖a n z‖) atTop (nhds ‖aInf z‖) :=
       (continuous_norm.tendsto (aInf z)).comp (hacc_tendsto z hz)
     exact le_of_tendsto hnorm (Filter.Eventually.of_forall fun n ↦ by
-      letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-      letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-      letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-      letI : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
-      letI : T2Space (X.obj n).M := (X.obj n).t2
-      letI : T2Space (TangentBundle I (X.obj n).M) :=
+      let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+      let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+      let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+      let : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
+      let : T2Space (X.obj n).M := (X.obj n).t2
+      let : T2Space (TangentBundle I (X.obj n).M) :=
         (X.obj n).t2TangentBundle
       simpa only [a, BoundedGeometryNormalData.metricBounds] using
         chartAccel_norm (I := I) (X.obj n).metric
@@ -212,14 +212,14 @@ theorem exists_limit_phase
     intro z hz
     refine ⟨?_, hz.2⟩
     rw [mem_ball_zero_iff]
-    exact hz.1.trans_lt (by simpa only [P, NNReal.coe_mul,
-      NNReal.coe_natCast] using hqPos)
+    exact hz.1.trans_lt (by
+      with_unfolding_all exact hqPos)
   have haLip : LipschitzOnWith (d.phaseK V) aInf
       (PhaseFlow.phaseBox (E := E) P V) := haLipFull.mono hbox
   have haNorm : ∀ z ∈ PhaseFlow.phaseBox (E := E) P V,
       ‖aInf z‖ ≤ (A : Real) := by
     intro z hz
-    simpa only [A, NNReal.coe_mk] using haNormFull z (hbox hz)
+    with_unfolding_all exact haNormFull z (hbox hz)
   have hVP : V ≤ half * P := by
     rw [← NNReal.coe_le_coe]
     change (2 : Real) * (q : Real) ≤ (1 / 2 : Real) * (4 * (q : Real))
@@ -276,7 +276,7 @@ theorem exists_limit_phase
     intro z hz t ht
     have hpos := (hmem z hz t (hsmall ht)).1
     simpa only [U, mem_ball_zero_iff] using hpos.trans_lt (by
-      simpa only [P, NNReal.coe_mul, NNReal.coe_natCast] using hqPos)
+      with_unfolding_all exact hqPos)
   have hcont01 : ∀ z ∈ Metric.closedBall (0 : E × E) q,
       ContinuousOn (ΦInf z) (Icc 0 1) :=
     fun z hz ↦ (hcont z hz).mono hsmall
@@ -293,9 +293,8 @@ theorem exists_limit_phase
   have hzeroCurve : IsIntegralCurveOn (fun _ : Real ↦ (0 : E × E))
       (fun _ ↦ MetricKoszul.metricSpray gInf) (Icc 0 1) := by
     intro t _ht
-    simpa [MetricKoszul.metricSpray] using
-      (hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
-        (c := (0 : E × E)))
+    convert hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
+      (c := (0 : E × E)) using 1 ; simp [MetricKoszul.metricSpray]
   have hspraySmooth : ContDiffOn Real ∞ (MetricKoszul.metricSpray gInf)
       phaseU := by
     apply MetricKoszul.metricSpray_contDiffOn Metric.isOpen_ball hgInf_cd
@@ -442,9 +441,8 @@ theorem exists_limit_diag
     have hconstCurve : IsIntegralCurveOn (fun _ : Real ↦ (z, 0))
         (fun _ ↦ MetricKoszul.metricSpray gInf) (Icc 0 1) := by
       intro t _ht
-      simpa [MetricKoszul.metricSpray] using
-        (hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
-          (c := (z, 0)))
+      convert hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
+        (c := (z, (0 : E))) using 1 ; simp [MetricKoszul.metricSpray]
     let phaseU : Set (E × E) :=
       Metric.ball (0 : E) (d.phaseRadius R) ×ˢ Set.univ
     have hspraySmooth : ContDiffOn Real ∞ (MetricKoszul.metricSpray gInf)
@@ -534,30 +532,30 @@ private theorem exists_stage_flow
               (E × E) →L[Real] (E × E))‖₊⁻¹ -
             PhaseFlow.phaseErr (d.phaseK (2 * q)))⁻¹ *
           PhaseFlow.phaseErr (d.phaseK (2 * q))) := by
-  letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-  letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-  letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-  letI : IsManifold I 1 (X.obj n).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+  let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+  let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+  let : IsManifold I 1 (X.obj n).M := IsManifold.of_le
     (I := I) (M := (X.obj n).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
-  letI : T2Space (X.obj n).M := (X.obj n).t2
-  letI : ConnectedSpace (X.obj n).M := hconn n
-  letI : T2Space (TangentBundle I (X.obj n).M) :=
+  let : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
+  let : T2Space (X.obj n).M := (X.obj n).t2
+  let : ConnectedSpace (X.obj n).M := hconn n
+  let : T2Space (TangentBundle I (X.obj n).M) :=
     (X.obj n).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj n).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj n).M :=
     Manifold.metrizableSpace I (X.obj n).M
-  letI : T3Space (X.obj n).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj n).M := inferInstance
+  let : RiemannianBundle
       (fun y : (X.obj n).M ↦ TangentSpace I y) :=
     (X.obj n).riemBundle (I := I)
-  letI : (y : (X.obj n).M) →
+  let : (y : (X.obj n).M) →
       InnerProductSpace Real (TangentSpace I y) :=
     (X.obj n).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : (X.obj n).M ↦ TangentSpace I y) :=
     (X.obj n).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj n).M := (X.obj n).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj n).M :=
+  let : EMetricSpace (X.obj n).M := (X.obj n).emetricSpace (I := I)
+  let : CompleteSpace (X.obj n).M :=
     MetricComplete.complete (I := I) (X.obj n) (hcomplete.complete n)
   let c := d.chart n x
   let b := d.metricBounds n x
@@ -754,11 +752,11 @@ theorem exists_diagInv_conv
   let Q : Set (E × E) := Metric.ball 0 qInf
   have hg_cd : ∀ n, ContDiffOn Real ∞ (d.chartMetric n (c n)) U := by
     intro n
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : T2Space (X.obj n).M := (X.obj n).t2
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (X.obj n).M := (X.obj n).t2
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     have hrad : U ⊆ Metric.ball (0 : E) (d.chart n (c n)).radius := by
       exact (d.phaseRadius_chart (hc n)).trans <|
@@ -770,11 +768,11 @@ theorem exists_diagInv_conv
   have hg_co : ∀ n z, z ∈ U →
       IsCoercive (d.chartMetric n (c n) z) := by
     intro n z hz
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : T2Space (X.obj n).M := (X.obj n).t2
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (X.obj n).M := (X.obj n).t2
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     exact (d.metricBounds n (c n)).equiv.coercive
       (X.obj n).metric (d.phaseRadius_metric (hc n) hz)
@@ -933,12 +931,12 @@ theorem exists_diagPair_at
   have hphaseK : d.phaseK (2 * qInf) ≤ d.phaseK (2 * q) := by
     let Y := X.obj 0
     let x₀ := Y.basepoint
-    letI : TopologicalSpace Y.M := Y.topology
-    letI : ChartedSpace H Y.M := Y.charted
-    letI : IsManifold I ∞ Y.M := Y.smooth
-    letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-    letI : T2Space Y.M := Y.t2
-    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    let : TopologicalSpace Y.M := Y.topology
+    let : ChartedSpace H Y.M := Y.charted
+    let : IsManifold I ∞ Y.M := Y.smooth
+    let : SigmaCompactSpace Y.M := Y.sigmaCompact
+    let : T2Space Y.M := Y.t2
+    let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     simpa only [Y, x₀, d.chartPhaseK_eq] using
       chartPhaseK_mono (I := I) Y.metric (d.metricBounds 0 x₀) hqInfTwo
   have herrLe : PhaseFlow.phaseErr (d.phaseK (2 * qInf)) ≤

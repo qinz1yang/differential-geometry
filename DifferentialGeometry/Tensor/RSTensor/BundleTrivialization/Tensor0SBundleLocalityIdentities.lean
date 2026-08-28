@@ -2,12 +2,12 @@ import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SInnerSectionContinuity
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle
+import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -31,7 +31,8 @@ omit [FiniteDimensional ℝ E] in
 private lemma tangent_trivb₀_symmL_eq_id_of_chartAt_eq
     {b b₀ : M} (h_chart : chartAt H b = chartAt H b₀)
     (hb : b ∈ (chartAt H b₀).source) :
-    (trivializationAt E (TangentSpace I) b₀).symmL ℝ b = (1 : E →L[ℝ] E) := by
+    (trivializationAt E (TangentSpace I) b₀).symmL ℝ b =
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm.toContinuousLinearMap := by
   rw [TangentBundle.symmL_trivializationAt_eq_core (𝕜 := ℝ) (I := I)
     (b₀ := b₀) (b := b) hb]
   rw [achart_eq_of_chartAt_eq (H := H) (M := M) h_chart]
@@ -45,7 +46,7 @@ private lemma tangent_trivb₀_clmAt_eq_id_of_chartAt_eq
     {b b₀ : M} (h_chart : chartAt H b = chartAt H b₀)
     (hb : b ∈ (chartAt H b₀).source) :
     (trivializationAt E (TangentSpace I) b₀).continuousLinearMapAt ℝ b =
-      (1 : E →L[ℝ] E) := by
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).toContinuousLinearMap := by
   rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
     (𝕜 := ℝ) (I := I) (b₀ := b₀) (b := b) hb]
   rw [achart_eq_of_chartAt_eq (H := H) (M := M) h_chart]

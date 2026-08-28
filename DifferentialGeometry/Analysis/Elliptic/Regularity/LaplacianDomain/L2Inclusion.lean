@@ -35,7 +35,7 @@ omit [I.Boundaryless] in
 lemma SmoothScalar.memLp_two {g : SmoothRiemannianMetric I M}
     (f : SmoothScalar g) :
     MemLp f.toFun 2 (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact f.smooth.continuous.memLp_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
@@ -142,7 +142,7 @@ theorem smoothToLp_injective (g : SmoothRiemannianMetric I M) :
     rw [hfh]
   have hfun_ae : f.toFun =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g] h.toFun :=
     hf_ae.symm.trans (hlp_ae.trans hh_ae)
-  letI : (riemannianVolumeMeasure (I := I) (M := M) g).IsOpenPosMeasure :=
+  let : (riemannianVolumeMeasure (I := I) (M := M) g).IsOpenPosMeasure :=
     riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
   exact congrFun ((Continuous.ae_eq_iff_eq
     (riemannianVolumeMeasure (I := I) (M := M) g)

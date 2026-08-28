@@ -11,6 +11,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import Mathlib.Tactic.Ring
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -82,9 +83,12 @@ theorem ricciCompInFrame_eq_rm04_trace
       ∑ k : Idx, ∑ l : Idx,
         gInv t x k l *
           DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x k i j l := by
-  simpa [ricciCompInFrame] using
-    DifferentialGeometry.Geometry.Curvature.ricciComp_eq_trace (I := I)
-      (S.ricci t) (Rm04 t) (gInv t) frame (htrace t) x i j
+  unfold ricciCompInFrame
+  change (S.base.ricciAt t x)
+    (DifferentialGeometry.Geometry.Curvature.vec2 (frame i x) (frame j x)) = _
+  rw [← S.base.ricci_apply t x]
+  exact DifferentialGeometry.Geometry.Curvature.ricciComp_eq_trace (I := I)
+    (S.ricci t) (Rm04 t) (gInv t) frame (htrace t) x i j
 
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem metricInverseInBasis_of_solution_frame
@@ -205,9 +209,14 @@ theorem rm13OfSol
     (S : SolutionOn (I := I) (M := M) D) (s : Real) :
     DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
       (S.family.connection s) (S.base.rm13 s) := by
-  simpa [SolutionFamily.connection,
-    SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric s)).rm13Realizes
+  have h := (metricCurvData (I := I) (M := M) (S.base.metric s)).rm13Realizes
+  change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
+    (metricCov (I := I) (M := M) (S.base.metric s))
+    (metricRm13 (I := I) (M := M) (S.base.metric s)) at h
+  change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
+    (metricCov (I := I) (M := M) (S.base.metric s))
+    (metricRm13 (I := I) (M := M) (S.base.metric s))
+  exact h
 
 omit [SigmaCompactSpace M] in
 theorem ricciTraceOfSol
@@ -215,8 +224,11 @@ theorem ricciTraceOfSol
     (S : SolutionOn (I := I) (M := M) D) (s : Real) :
     DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
       (S.ricci s) (S.base.rm13 s) := by
-  simpa [SolutionOn.ricci_eq, SolutionFamily.ricci, SolutionFamily.rm13] using
-    (metricCurvData (I := I) (M := M) (S.base.metric s)).ricciRealizes
+  have h := (metricCurvData (I := I) (M := M) (S.base.metric s)).ricciRealizes
+  change DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
+    (metricRicci (I := I) (M := M) (S.base.metric s))
+    (metricRm13 (I := I) (M := M) (S.base.metric s)) at h
+  simpa only [SolutionOn.ricci_eq, SolutionFamily.ricci, SolutionFamily.rm13] using h
 
 def RicciSymmetricInFrameOnRegular
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

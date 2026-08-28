@@ -292,13 +292,18 @@ lemma contDiffOn_unitBallShellFormula
   have hinv :
       ContDiffOn ℝ 1 (fun x : E => EuclideanGeometry.inversion (0 : E) 1 x)
         (unitBallOuterShell (d := d)) := by
-    simpa using
-      (contDiffOn_const.inversion contDiffOn_const contDiffOn_id
-        (fun x hx => by
-          have hx0 : 0 < ‖x‖ := by linarith [hx.1]
-          have hxne_norm : ‖x‖ ≠ 0 := ne_of_gt hx0
-          intro hxz
-          exact hxne_norm (by simpa [hxz])))
+    have hne : ∀ x ∈ unitBallOuterShell (d := d), ‖x‖ ≠ 0 := by
+      intro x hx
+      exact ne_of_gt (by linarith [hx.1])
+    have hfactor : ContDiffOn ℝ 1 (fun x : E => (1 / ‖x‖) ^ (2 : ℕ))
+        (unitBallOuterShell (d := d)) :=
+      (contDiffOn_const.div hnorm hne).pow 2
+    have hscaled : ContDiffOn ℝ 1 (fun x : E => (1 / ‖x‖) ^ (2 : ℕ) • x)
+        (unitBallOuterShell (d := d)) :=
+      contDiff_smul.comp_contDiffOn (hfactor.prodMk contDiffOn_id)
+    exact hscaled.congr fun x hx => by
+      rw [EuclideanGeometry.inversion, dist_zero_right]
+      simp only [vsub_eq_sub, vadd_eq_add, sub_zero, add_zero]
   exact hscalar.mul (hu.comp_contDiffOn hinv)
 
 omit [NeZero d] in
@@ -595,8 +600,7 @@ theorem aestronglyMeasurable_euclidean_of_components_local
 
 private theorem eLpNorm_le_of_lintegral_rpow_ofReal_le_generic
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
-    [MeasurableSpace F] [BorelSpace F] {μ : Measure α}
-    {p : ℝ} (hp : 0 < p) {f : α → F} {A : ℝ≥0∞}
+    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} {A : ℝ≥0∞}
     (hA : ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ ≤ A) :
     eLpNorm f (ENNReal.ofReal p) μ ≤ A ^ (1 / p) := by
   have hp0 : (ENNReal.ofReal p) ≠ 0 := by
@@ -790,8 +794,8 @@ private theorem measurable_unitBallRetraction :
 omit [NeZero d] in
 private theorem measurable_unitBallCutoff :
     Measurable (unitBallCutoff (d := d)) := by
-  simpa [unitBallCutoff] using
-    (measurable_const.min ((measurable_const.sub measurable_norm).max measurable_const))
+  unfold unitBallCutoff
+  exact measurable_const.min ((measurable_const.sub measurable_norm).max measurable_const)
 
 omit [NeZero d] in
 theorem measurable_unitBallExtension

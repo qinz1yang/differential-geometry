@@ -32,7 +32,7 @@ theorem cmm_finiteDimensional (r : ℕ) :
   | zero =>
       exact (continuousMultilinearCurryFin0 ℝ E F).symm.toLinearEquiv.finiteDimensional
   | succ r ih =>
-      haveI := ih
+      have := ih
       exact ((continuousMultilinearCurryLeftEquiv ℝ
         (fun _ : Fin (r + 1) => E) F).symm.toLinearEquiv).finiteDimensional
 
@@ -84,12 +84,12 @@ theorem exists_cInf_subseq
       (contDiff_infty.mp (hΦ k) r).continuous_iteratedFDeriv'⟩
   have hcpt : ∀ r : ℕ, IsCompact (closure (Set.range (Fb r))) := by
     intro r
-    haveI := cmm_finiteDimensional (E := E) (F := F) r
+    have := cmm_finiteDimensional (E := E) (F := F) r
     refine arzelaAscoli_isCompact_closure (Fb r)
       (equicont_iteratedFDeriv Φ hΦ hbdd r) (fun x => ?_)
     obtain ⟨M, hM⟩ := hbdd r {x} isCompact_singleton
     exact ⟨M, fun k => hM k x rfl⟩
-  haveI : ∀ r : ℕ, CompactSpace (closure (Set.range (Fb r))) :=
+  have : ∀ r : ℕ, CompactSpace (closure (Set.range (Fb r))) :=
     fun r => isCompact_iff_compactSpace.mp (hcpt r)
   set xseq : ℕ → Π r : ℕ, closure (Set.range (Fb r)) :=
     fun k r => ⟨Fb r k, subset_closure ⟨k, rfl⟩⟩ with hxseq
@@ -104,7 +104,7 @@ theorem exists_cInf_subseq
     have h1 : Tendsto (fun k => xseq (φ k) r) atTop (𝓝 (a r)) :=
       (tendsto_pi_nhds.mp ha) r
     have h2 := (continuous_subtype_val.tendsto (a r)).comp h1
-    simpa [hxseq, hG, Function.comp] using h2
+    simpa [hxseq, hG, Function.comp] using! h2
   have hGunif : ∀ r : ℕ, ∀ K : Set E, IsCompact K →
       TendstoUniformlyOn (fun k => ⇑(Fb r (φ k))) (⇑(G r)) atTop K :=
     fun r => ContinuousMap.tendsto_iff_forall_isCompact_tendstoUniformlyOn.mp (hGconv r)
@@ -117,7 +117,7 @@ theorem exists_cInf_subseq
       have h2 := ((continuousMultilinearCurryLeftEquiv ℝ
           (fun _ : Fin (r + 1) => E) F).isometry.uniformContinuous).comp_tendstoUniformlyOn
         ((hGunif (r + 1) _ hball).mono Metric.ball_subset_closedBall)
-      simpa [Function.comp_def] using h2
+      simpa [Function.comp_def] using! h2
     have hfd : ∀ k : ℕ, ∀ y ∈ Metric.ball x₀ 1,
         HasFDerivAt (⇑(Fb r (φ k))) (((Fb (r + 1) (φ k)) y).curryLeft) y := fun k y _ =>
       (contDiff_infty.mp (hΦ (φ k)) (r + 1)).ftaylorSeries.fderiv r
@@ -209,7 +209,7 @@ theorem exists_cInf_subseq_on
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Φinf U ∧
         MapCInfConvOnCompacts U (fun k => Φ (φ k)) Φinf := by
   classical
-  haveI : LocallyCompactSpace U := hU.locallyCompactSpace
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
   have hbddW : ∀ r : ℕ, ∀ K : Set E, IsCompact K → K ⊆ U →
       ∃ M : ℝ, ∀ k : ℕ, ∀ x ∈ K, ‖iteratedFDerivWithin ℝ r (Φ k) U x‖ ≤ M := by
     intro r K hK hKU
@@ -222,13 +222,13 @@ theorem exists_cInf_subseq_on
         hU.uniqueDiffOn).comp_continuous continuous_subtype_val (fun x => x.2)⟩
   have hcpt : ∀ r : ℕ, IsCompact (closure (Set.range (Fb r))) := by
     intro r
-    haveI := cmm_finiteDimensional (E := E) (F := F) r
+    have := cmm_finiteDimensional (E := E) (F := F) r
     refine arzelaAscoli_isCompact_closure (Fb r)
       (equicontOn_iteratedFDerivWithin hU Φ hΦ hbddW r) (fun x => ?_)
     obtain ⟨M, hM⟩ := hbddW r {(x : E)} isCompact_singleton
       (Set.singleton_subset_iff.mpr x.2)
     exact ⟨M, fun k => hM k (x : E) rfl⟩
-  haveI : ∀ r : ℕ, CompactSpace (closure (Set.range (Fb r))) :=
+  have : ∀ r : ℕ, CompactSpace (closure (Set.range (Fb r))) :=
     fun r => isCompact_iff_compactSpace.mp (hcpt r)
   set xseq : ℕ → Π r : ℕ, closure (Set.range (Fb r)) :=
     fun k r => ⟨Fb r k, subset_closure ⟨k, rfl⟩⟩ with hxseq
@@ -242,7 +242,7 @@ theorem exists_cInf_subseq_on
     intro r
     have h1 : Tendsto (fun k => xseq (φ k) r) atTop (𝓝 (a r)) := (tendsto_pi_nhds.mp ha) r
     have h2 := (continuous_subtype_val.tendsto (a r)).comp h1
-    simpa [hxseq, hG, Function.comp] using h2
+    simpa [hxseq, hG, Function.comp] using! h2
   have hGunif : ∀ r : ℕ, ∀ K : Set U, IsCompact K →
       TendstoUniformlyOn (fun k => ⇑(Fb r (φ k))) (⇑(G r)) atTop K :=
     fun r => ContinuousMap.tendsto_iff_forall_isCompact_tendstoUniformlyOn.mp (hGconv r)
@@ -280,7 +280,7 @@ theorem exists_cInf_subseq_on
           (fun _ : Fin (r + 1) => E) F).isometry.uniformContinuous).comp_tendstoUniformlyOn
         ((hGunifE (r + 1) (Metric.closedBall x₀ (ρ / 2)) (isCompact_closedBall _ _)
             hball2U).mono Metric.ball_subset_closedBall)
-      simpa [Function.comp_def] using h2
+      simpa [Function.comp_def] using! h2
     have hfd : ∀ k : ℕ, ∀ y ∈ Metric.ball x₀ (ρ / 2),
         HasFDerivAt (iteratedFDerivWithin ℝ r (Φ (φ k)) U)
           ((iteratedFDerivWithin ℝ (r + 1) (Φ (φ k)) U y).curryLeft) y := fun k y hy =>
@@ -295,9 +295,10 @@ theorem exists_cInf_subseq_on
       (Metric.mem_ball_self (by positivity))
   have hcontGext : ∀ m : ℕ, ContinuousOn (Gext m) U := by
     intro m
-    rw [continuousOn_iff_continuous_restrict]
-    have he : Set.restrict U (Gext m) = ⇑(G m) := by
-      funext x; simp only [Set.restrict_apply]; rw [hGext m (x : E) x.2]
+    rw [continuousOn_iff_continuous_domRestrict]
+    have he : Set.domRestrict U (Gext m) = ⇑(G m) := by
+      funext x
+      exact hGext m (x : E) x.2
     rw [he]; exact (G m).continuous
   have htaylor : HasFTaylorSeriesUpToOn (⊤ : ℕ∞) Φinf (fun y r => Gext r y) U :=
     ⟨fun _ _ => rfl, fun m _ x hx => (hGderiv m x hx).hasFDerivWithinAt,

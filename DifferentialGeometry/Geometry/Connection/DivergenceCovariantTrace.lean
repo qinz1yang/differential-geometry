@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -359,9 +358,9 @@ lemma inner_leviCivita_chartBasis_eq
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
   rw [tangent_eq_coordSum (I := I) α hb_base
     ((LeviCivita (I := I) g).toFun Z.toFun b (chartBasisVecFiber (I := I) α m b))]
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
   rw [chartCoord_leviCivita_chartBasis (I := I) g α Z m k hb]
   rw [chartGramMatrix_apply]
 
@@ -415,9 +414,9 @@ lemma frameTrace_eq_metricTrace
       rw [map_sum]
       refine Finset.sum_congr rfl (fun m _ => ?_)
       rw [map_smul]
-    rw [hslot1, ContinuousLinearMap.sum_apply]
+    rw [hslot1, sum_apply]
     refine Finset.sum_congr rfl (fun m _ => ?_)
-    rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [smul_apply, smul_eq_mul]
     rw [map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl (fun n _ => ?_)
     rw [map_smul, smul_eq_mul]
@@ -585,7 +584,7 @@ lemma localDivergence_eq_coord_covariant_divergence
     refine Finset.sum_congr rfl (fun i _ => ?_)
     unfold partialDeriv
     rw [fderiv_fun_mul (hcoeff_diff i) hdens_diff]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [add_apply, smul_apply, smul_eq_mul]
     ring
   rw [hnum]
   rw [show (∑ i : Fin (Module.finrank ℝ E),

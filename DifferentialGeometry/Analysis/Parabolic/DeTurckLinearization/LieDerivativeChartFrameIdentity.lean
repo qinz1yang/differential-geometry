@@ -157,7 +157,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
                       (W : ∀ x : M, TangentSpace I x) x)) j' *
                   chartChristoffel (I := I) g α i' j' k' (extChartAt I α x)) *
                 ((chartModelBasis E).repr ((chartModelBasis E) k')) k from by
-      simp only [map_sum, map_smul, Finsupp.coe_finset_sum, Finset.sum_apply,
+      simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply,
         Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]]
     have hrepr_basis : ∀ (r s : Fin (Module.finrank ℝ E)),
         ((chartModelBasis E).repr ((chartModelBasis E) r)) s =

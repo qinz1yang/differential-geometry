@@ -60,7 +60,7 @@ private lemma self_subset_thickening_of_pos
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushed_pou_zero_off_KApha
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) :
     ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       y ∉ chartImagePOUTsupport (I := I) (M := M) α →

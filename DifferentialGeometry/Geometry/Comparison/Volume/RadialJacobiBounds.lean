@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
 
+
 noncomputable section
 
 open Set
@@ -30,6 +31,15 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 private noncomputable def coeffModelCLM :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →L[ℝ] E :=
   (toEuclidean (E := E)).symm.toContinuousLinearMap
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+private lemma metric_inner_self_nonneg
+    (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
+    0 ≤ g.inner x v v := by
+  by_cases hv : v = 0
+  · simp [hv]
+  · exact (g.pos x v hv).le
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma coeffModelCLM_eq_sum
@@ -232,8 +242,12 @@ lemma dir_deriv_radius
           (∑ i, v i • (chartModelBasis E) i)) 0 : E) =
         ∑ i, v i • (chartModelBasis E) i := by
   intro v hv
-  simpa [radialCurve] using
-    hderivRadius x (∑ i, v i • (chartModelBasis E) i) hx (hdirSmall v hv)
+  have hcurve :
+      radialCurve (I := I) g p x =
+        fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • x) :=
+    rfl
+  rw [hcurve]
+  exact hderivRadius x (∑ i, v i • (chartModelBasis E) i) hx (hdirSmall v hv)
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -920,26 +934,21 @@ theorem radialJacobi_sq_ge_at
     B ^ 2 ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from x))
       (radialJacobiField (I := I) g p x w 1)
       (radialJacobiField (I := I) g p x w 1) := by
-  set q := radialCurve (I := I) g p x 1 with hq
-  set J : TangentSpace I q := radialJacobiField (I := I) g p x w 1 with hJdef
-  have hsqrt : B ≤ Real.sqrt (g.inner q J J) := by
-    rw [hq, radialCurve_one]
-    exact
-      radialJacobi_one_ge_at (I := I) g p x w hK hb h1b hγ hcard F hpar hON
-        hFdiff hJdiff hDJdiff hODE hB
-  have hsq : B ^ 2 ≤ (Real.sqrt (g.inner q J J)) ^ 2 :=
+  have hsqrt :=
+    radialJacobi_one_ge_at (I := I) g p x w hK hb h1b hγ hcard F hpar hON
+      hFdiff hJdiff hDJdiff hODE hB
+  have hsq :=
     (sq_le_sq₀ hB_nonneg (Real.sqrt_nonneg _)).2 hsqrt
-  have hJ_nonneg : 0 ≤ g.inner q J J := by
-    rcases eq_or_ne J 0 with hJ | hJ
-    · rw [hJ]
-      have hzero :
-          (g.inner q) (0 : TangentSpace I q) = (0 : TangentSpace I q →L[ℝ] ℝ) :=
-        map_zero (g.inner q)
-      rw [hzero]
-      rfl
-    · exact (g.pos q J hJ).le
-  rw [← radialCurve_one (I := I) g p x]
-  simpa [hq, hJdef] using hsq.trans_eq (Real.sq_sqrt hJ_nonneg)
+  have hpoint :
+      expMap (I := I) g p (show TangentSpace I p from (1 : ℝ) • x) =
+        expMap (I := I) g p (show TangentSpace I p from x) := by
+    rw [one_smul]
+  have hJ_nonneg :
+      0 ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from x))
+        (radialJacobiField (I := I) g p x w 1)
+        (radialJacobiField (I := I) g p x w 1) := by
+    exact metric_inner_self_nonneg (I := I) g _ _
+  exact hsq.trans_eq (Real.sq_sqrt hJ_nonneg)
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -994,26 +1003,21 @@ theorem radialJacobi_sq_ge
     B ^ 2 ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from x))
       (radialJacobiField (I := I) g p x w 1)
       (radialJacobiField (I := I) g p x w 1) := by
-  set q := radialCurve (I := I) g p x 1 with hq
-  set J : TangentSpace I q := radialJacobiField (I := I) g p x w 1 with hJdef
-  have hsqrt : B ≤ Real.sqrt (g.inner q J J) := by
-    rw [hq, radialCurve_one]
-    exact
-      radialJacobi_one_ge (I := I) g p x w hK hb h1b hγ hcard F hpar hON
-        hFdiff hJdiff hDJdiff hODE hB
-  have hsq : B ^ 2 ≤ (Real.sqrt (g.inner q J J)) ^ 2 :=
+  have hsqrt :=
+    radialJacobi_one_ge (I := I) g p x w hK hb h1b hγ hcard F hpar hON
+      hFdiff hJdiff hDJdiff hODE hB
+  have hsq :=
     (sq_le_sq₀ hB_nonneg (Real.sqrt_nonneg _)).2 hsqrt
-  have hJ_nonneg : 0 ≤ g.inner q J J := by
-    rcases eq_or_ne J 0 with hJ | hJ
-    · rw [hJ]
-      have hzero :
-          (g.inner q) (0 : TangentSpace I q) = (0 : TangentSpace I q →L[ℝ] ℝ) :=
-        map_zero (g.inner q)
-      rw [hzero]
-      rfl
-    · exact (g.pos q J hJ).le
-  rw [← radialCurve_one (I := I) g p x]
-  simpa [hq, hJdef] using hsq.trans_eq (Real.sq_sqrt hJ_nonneg)
+  have hpoint :
+      expMap (I := I) g p (show TangentSpace I p from (1 : ℝ) • x) =
+        expMap (I := I) g p (show TangentSpace I p from x) := by
+    rw [one_smul]
+  have hJ_nonneg :
+      0 ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from x))
+        (radialJacobiField (I := I) g p x w 1)
+        (radialJacobiField (I := I) g p x w 1) := by
+    exact metric_inner_self_nonneg (I := I) g _ _
+  exact hsq.trans_eq (Real.sq_sqrt hJ_nonneg)
 
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -1471,7 +1475,12 @@ lemma fin_deriv_radius
         (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0 : E) =
         (chartModelBasis E) k := by
   intro k
-  simpa [radialCurve] using hderivRadius x ((chartModelBasis E) k) hx (hbasisSmall k)
+  have hcurve :
+      radialCurve (I := I) g p x =
+        fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • x) :=
+    rfl
+  rw [hcurve]
+  exact hderivRadius x ((chartModelBasis E) k) hx (hbasisSmall k)
 
 end Radial
 

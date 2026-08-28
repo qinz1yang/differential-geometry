@@ -157,7 +157,7 @@ private lemma chartPulledIntegralWeight_tsupport_subset
     (chartPulledIntegralWeight_support_subset (I := I) (M := M) g α θ) ?_
   exact (chartSrcPreimage_isCompact (I := I) (M := M) α hθ_cs hθ_supp).isClosed
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private lemma chartPulledIntegralWeight_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (α : M) {θ : EuclN → ℝ}
     (hθ_cs : HasCompactSupport θ)
@@ -272,7 +272,7 @@ lemma chartPulledIntegralWeight_memLp
     MemLp (chartPulledIntegralWeight (I := I) (M := M) g α θ) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact (chartPulledIntegralWeight_continuous (I := I) (M := M) g α
       hθ_cont hθ_cs hθ_supp).memLp_of_hasCompactSupport

@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -49,11 +48,11 @@ private noncomputable def pureRSlot0BilinAt
         ((covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W y))
       map_add' := fun X X' => by
         ext Y
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
+        simp only [ContinuousLinearMap.comp_apply, add_apply,
           (riemannOp (tensorCov (I := I) g 0 m) y).map_add X X']
       map_smul' := fun c X => by
         ext Y
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           RingHom.id_apply, (riemannOp (tensorCov (I := I) g 0 m) y).map_smul c X] }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -91,16 +90,16 @@ private theorem pureRFrozenDirCLM_frame_independent
     pureRFrozenDirCLM (I := I) (M := M) g m B (fun b : M => W.toSection b) y =
       pureRFrozenDirCLM (I := I) (M := M) g m C (fun b : M => W.toSection b) y := by
   classical
-  haveI : T2Space (TangentSpace I y) := inferInstanceAs (T2Space E)
-  haveI : FiniteDimensional ℝ (TangentSpace I y) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : T2Space (TangentSpace I y) := inferInstanceAs (T2Space E)
+  have : FiniteDimensional ℝ (TangentSpace I y) := inferInstanceAs (FiniteDimensional ℝ E)
   refine ContinuousLinearMap.ext (fun v => ?_)
   refine ContinuousLinearMap.ext (fun D => ?_)
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro mtail
-  haveI : T2Space (TensorRSSpace 0 m I y) :=
+  have : T2Space (TensorRSSpace 0 m I y) :=
     inferInstanceAs (T2Space (Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace m I y))
-  haveI : FiniteDimensional ℝ (TensorRSSpace 0 m I y) :=
+  have : FiniteDimensional ℝ (TensorRSSpace 0 m I y) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace m I y))
   set scalarize : TensorRSSpace 0 m I y →L[ℝ] ℝ :=
     LinearMap.toContinuousLinearMap
@@ -109,12 +108,12 @@ private theorem pureRFrozenDirCLM_frame_independent
         map_add' := fun T T' => by
           change Tensor0SSpace.toModel ((T + T') D) mtail =
             Tensor0SSpace.toModel (T D) mtail + Tensor0SSpace.toModel (T' D) mtail
-          rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-            ContinuousMultilinearMap.add_apply]
+          rw [add_apply, Tensor0SSpace.toModel_add,
+            add_apply]
         map_smul' := fun c T => by
           change Tensor0SSpace.toModel ((c • T) D) mtail = c • Tensor0SSpace.toModel (T D) mtail
-          rw [ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul,
-            ContinuousMultilinearMap.smul_apply] }
+          rw [smul_apply, Tensor0SSpace.toModel_smul,
+            smul_apply] }
     with hscalarize_def
   have hscalarize_apply : ∀ T : TensorRSSpace 0 m I y,
       scalarize T = Tensor0SSpace.toModel
@@ -135,7 +134,7 @@ private theorem pureRFrozenDirCLM_frame_independent
                 (fun b : M => W.toSection b) y v X' Y)
           rw [map_add (pureRSlot0BilinAt (I := I) (M := M) g m
             (fun b : M => W.toSection b) y v) X X',
-            ContinuousLinearMap.add_apply, map_add scalarize]
+            add_apply, map_add scalarize]
         map_smul' := fun c X => by
           ext Y
           change scalarize (pureRSlot0BilinAt (I := I) (M := M) g m
@@ -144,7 +143,7 @@ private theorem pureRFrozenDirCLM_frame_independent
               (fun b : M => W.toSection b) y v X Y)
           rw [map_smul (pureRSlot0BilinAt (I := I) (M := M) g m
             (fun b : M => W.toSection b) y v) c X,
-            ContinuousLinearMap.smul_apply, map_smul scalarize] }
+            smul_apply, map_smul scalarize] }
     with hHb_def
   have hHb_apply : ∀ X Y : TangentSpace I y,
       Hb X Y = Tensor0SSpace.toModel
@@ -167,8 +166,8 @@ private theorem pureRFrozenDirCLM_frame_independent
           (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace m I y from
             riemannOp (tensorCov (I := I) g 0 m) y (F i y) v
               ((covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (F i y))) D := by
-      rw [pureRFrozenDirCLM_apply, ContinuousLinearMap.sum_apply]
-    rw [hsum_apply, ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+      rw [pureRFrozenDirCLM_apply, sum_apply]
+    rw [hsum_apply, ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [Tensor0SSpace.toModelL_apply, hHb_apply (F i y) (F i y),
       pureRSlot0BilinAt_frame_summand (I := I) (M := M) g m W F i y v]
@@ -246,6 +245,7 @@ noncomputable def pureRGenuineDiffOp
         castCcTensorRank g 0 (by omega : (r + 1) + p = r + (p + 1))
           (pureRGenuineDiffOp g p (r + 1) (covGrad (I := I) (M := M) g 0 r W))
 
+omit [SigmaCompactSpace M] in
 theorem covGrad_pureRGenuineDiffOp_eq
     (g : SmoothRiemannianMetric I M) (p r : ℕ) (W : SmoothCcTensor g 0 r) :
     covGrad (I := I) (M := M) g 0 (r + p) (pureRGenuineDiffOp (I := I) (M := M) g p r W) =
@@ -277,8 +277,8 @@ private lemma pureRGenuineEndoFib_linear
     ← map_add (covGradBundleEquiv (I := I) (M := M) 0 m x)]
   refine congrArg (covGradBundleEquiv (I := I) (M := M) 0 m x) ?_
   refine ContinuousLinearMap.ext (fun v => ?_)
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smul_apply,
+  rw [add_apply, smul_apply,
+    smul_apply,
     pureRFrozenDirCLM_apply, pureRFrozenDirCLM_apply, pureRFrozenDirCLM_apply,
     Finset.smul_sum, Finset.smul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -288,8 +288,8 @@ private lemma pureRGenuineEndoFib_linear
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
   rw [hval, map_add, map_smul, map_smul,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smul_apply, map_add, map_smul, map_smul]
+    add_apply, smul_apply,
+    smul_apply, map_add, map_smul, map_smul]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -307,6 +307,7 @@ private lemma pureRGenuineEndoFib_local
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [hx]
 
+omit [SigmaCompactSpace M] in
 private theorem pureRGenuineDiffOp_isOrderZeroCurvFactor (g : SmoothRiemannianMetric I M) :
     IsPointwiseLinearLocalOperator (I := I) (M := M) g
       (pureRGenuineDiffOp (I := I) (M := M) g) where

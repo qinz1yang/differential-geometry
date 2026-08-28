@@ -232,7 +232,7 @@ theorem existsPinnedDeriv
           rw [hDsplit v u]
           abel
         simp only [ContinuousLinearMap.prod_apply, ContinuousLinearMap.comp_apply,
-          ContinuousLinearMap.sub_apply, ContinuousLinearMap.coe_fst',
+          sub_apply, ContinuousLinearMap.coe_fst',
           ContinuousLinearMap.coe_snd', ContinuousLinearMap.inr_apply,
           ContinuousLinearEquiv.coe_coe, Prod.mk.injEq, and_true]
         rw [hk2]
@@ -240,7 +240,7 @@ theorem existsPinnedDeriv
       (by
         rintro ⟨a, b⟩
         simp only [ContinuousLinearMap.prod_apply, ContinuousLinearMap.comp_apply,
-          ContinuousLinearMap.sub_apply, ContinuousLinearMap.coe_fst',
+          sub_apply, ContinuousLinearMap.coe_fst',
           ContinuousLinearMap.coe_snd', ContinuousLinearMap.inr_apply,
           ContinuousLinearEquiv.coe_coe, Prod.mk.injEq, and_true]
         rw [hDsplit (L.symm (a - D ((0 : E), b))) b, L.apply_symm_apply]
@@ -603,10 +603,10 @@ theorem exists_readoutEBall
   have hextract : ∃ δ : ℝ≥0∞, 0 < δ ∧ δ < ⊤ ∧
       {y : M × M |
         max (riemannianEDist I y.1 p) (riemannianEDist I y.2 p) < δ} ⊆ U := by
-    haveI : LocallyCompactSpace M :=
+    have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
-    haveI : RegularSpace M := inferInstance
-    letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+    have : RegularSpace M := inferInstance
+    let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
     obtain ⟨ε, hεpos, hεball⟩ := EMetric.isOpen_iff.mp hUopen (p, p) hpU
     let δ : ℝ≥0∞ := min ε 1
     have hδpos : 0 < δ := lt_min hεpos (by norm_num)
@@ -647,11 +647,11 @@ theorem centerPairs_lt_of
       max
         (riemannianEDist I (centerOfMass (I := I) g μ pts join p r h) q)
         (riemannianEDist I (pts i) q) < δ := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hriem (x y : M) :
       riemannianEDist I x y = ENNReal.ofReal (dist x y) := by
     rw [HopfRinow.riemMetric_dist_eq (I := I) x y]
@@ -840,15 +840,15 @@ theorem readoutB_sum_eq
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, B.inv (y, qs i) =
-      (⟨y, (show TangentSpace I y from
-        (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))⟩ : TangentBundle I M)) :
+      (⟨y, (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+        (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)⟩ : TangentBundle I M)) :
     (∑ i, μ i • B.diagReadout (y, qs i)) =
       (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy
-        (show TangentSpace I y from
-          ∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) := by
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+          (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))) := by
   have hterm : ∀ i, B.diagReadout (y, qs i) =
       (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy
-        (show TangentSpace I y from
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
           (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) := by
     intro i
     unfold DiagInvBranch.diagReadout
@@ -857,7 +857,9 @@ theorem readoutB_sum_eq
       ((trivializationAt E (TangentSpace I) p).apply_eq_prod_continuousLinearEquivAt ℝ y hy _)
   simp_rw [hterm]
   rw [map_sum]
-  exact Finset.sum_congr rfl (fun i _ => (map_smul _ (μ i) _).symm)
+  rw [map_sum]
+  exact Finset.sum_congr rfl (fun i _ => by
+    rw [map_smul, map_smul])
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -871,12 +873,13 @@ theorem readoutB_zero_iff
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, B.inv (y, qs i) =
-      (⟨y, (show TangentSpace I y from
-        (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))⟩ : TangentBundle I M)) :
+      (⟨y, (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+        (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)⟩ : TangentBundle I M)) :
     (∑ i, μ i • B.diagReadout (y, qs i)) = 0 ↔
       (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) = 0 := by
   rw [readoutB_sum_eq (I := I) g hEnorm p B μ y qs hy hpt]
-  exact (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff
+  rw [(trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff]
+  exact (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm.map_eq_zero_iff
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -967,17 +970,17 @@ theorem readout_sum_eq_clm
     (p : M) {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, diagExpInv (I := I) g hEnorm p (y, qs i)
-      = (⟨y, (show TangentSpace I y from
-          (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))⟩ : TangentBundle I M)) :
+      = (⟨y, (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+          (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)⟩ : TangentBundle I M)) :
     (∑ i, μ i • (trivializationAt E (TangentSpace I) p
         (diagExpInv (I := I) g hEnorm p (y, qs i))).2)
       = (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy
-          (show TangentSpace I y from
-            ∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) := by
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+            (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))) := by
   have hterm : ∀ i, (trivializationAt E (TangentSpace I) p
       (diagExpInv (I := I) g hEnorm p (y, qs i))).2
       = (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy
-          (show TangentSpace I y from
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
             (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) := by
     intro i
     rw [hpt i]
@@ -985,7 +988,9 @@ theorem readout_sum_eq_clm
       ((trivializationAt E (TangentSpace I) p).apply_eq_prod_continuousLinearEquivAt ℝ y hy _)
   simp_rw [hterm]
   rw [map_sum]
-  exact Finset.sum_congr rfl (fun i _ => (map_smul _ (μ i) _).symm)
+  rw [map_sum]
+  exact Finset.sum_congr rfl (fun i _ => by
+    rw [map_smul, map_smul])
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -998,13 +1003,14 @@ theorem readout_sum_eq_zero_iff
     (p : M) {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, diagExpInv (I := I) g hEnorm p (y, qs i)
-      = (⟨y, (show TangentSpace I y from
-          (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))⟩ : TangentBundle I M)) :
+      = (⟨y, (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+          (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)⟩ : TangentBundle I M)) :
     (∑ i, μ i • (trivializationAt E (TangentSpace I) p
         (diagExpInv (I := I) g hEnorm p (y, qs i))).2) = 0
       ↔ (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) = 0 := by
   rw [readout_sum_eq_clm (I := I) g hEnorm p μ y qs hy hpt]
-  exact (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff
+  rw [(trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff]
+  exact (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm.map_eq_zero_iff
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

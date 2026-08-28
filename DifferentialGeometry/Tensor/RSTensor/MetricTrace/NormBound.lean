@@ -120,10 +120,10 @@ theorem trace_normSq_rank_le
         normSq0S (I := I) g x (s + 2) T := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let _ : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis
@@ -143,6 +143,8 @@ theorem trace_normSq_rank_le
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
   have h := trace_normSq_le (I := I) g basis hinv T
+  have hrank : Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
+  rw [hrank] at h
   simpa [basis, pow_add] using h
 
 end Tensor0SBundle

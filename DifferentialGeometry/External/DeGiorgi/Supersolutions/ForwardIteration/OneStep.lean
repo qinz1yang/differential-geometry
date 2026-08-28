@@ -139,7 +139,8 @@ theorem supersolution_preMoser_forward
     · exact ENNReal.ofReal_ne_top
     · exact hv_memLp_q.aestronglyMeasurable
   have hv_int : IntegrableOn (fun x => |v x| ^ qexp) Ω volume := by
-    simpa [μ, Ω, q, qexp, ENNReal.toReal_ofReal hq_pos.le, Real.norm_eq_abs] using
+    change Integrable (fun x => |v x| ^ qexp) (volume.restrict Ω)
+    simpa [μ, q, qexp, ENNReal.toReal_ofReal hq_pos.le, Real.norm_eq_abs] using
       hv_memLp_q.integrable_norm_rpow hq_ne_zero ENNReal.ofReal_ne_top
   have hpow_eq_on : ∀ x ∈ Metric.ball (0 : E) r,
       |v x| ^ qexp = |u x| ^ (moserChi d * p) := by

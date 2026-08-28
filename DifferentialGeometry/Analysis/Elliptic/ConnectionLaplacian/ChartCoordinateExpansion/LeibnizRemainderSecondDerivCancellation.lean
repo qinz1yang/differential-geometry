@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter NormedSpace
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -46,7 +45,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
         ∑ l : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
-              (extDerivFun (I := I) (fun z : M =>
+              (mvfderiv (I := I) (fun z : M =>
                   chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                     g α i k z) b
                   (chartBasisVecFiber (I := I) α l b)) *
@@ -93,7 +92,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                   (fun z : M => T₀.toSection z)) b
                 (chartBasisVecFiber (I := I) α l b))) +
         (∑ k : Fin (Module.finrank ℝ E),
-          (extDerivFun (I := I) (fun z : M =>
+          (mvfderiv (I := I) (fun z : M =>
               chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z)
               b (chartBasisVecFiber (I := I) α l b)) *
             proj (covApply cov_RS
@@ -123,14 +122,14 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
       exact hproj_lin_smul _ _
     have hsum2 :
         proj (∑ k : Fin (Module.finrank ℝ E),
-            (extDerivFun (I := I) (fun z : M =>
+            (mvfderiv (I := I) (fun z : M =>
                 chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                   g α i k z) b (chartBasisVecFiber (I := I) α l b)) •
               covApply cov_RS
                 (fun z : M => chartBasisVecFiber (I := I) α k z)
                 (fun z : M => T₀.toSection z) b) =
           ∑ k : Fin (Module.finrank ℝ E),
-            (extDerivFun (I := I) (fun z : M =>
+            (mvfderiv (I := I) (fun z : M =>
                 chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                   g α i k z) b (chartBasisVecFiber (I := I) α l b)) *
               proj (covApply cov_RS
@@ -154,7 +153,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
   set Z₂ : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ := fun i l k =>
     chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
-      (extDerivFun (I := I) (fun z : M =>
+      (mvfderiv (I := I) (fun z : M =>
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z) b
           (chartBasisVecFiber (I := I) α l b)) *
       proj (covApply cov_RS
@@ -310,7 +309,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
       rw [Finset.sum_mul]
     rw [hFactor]
     rw [hOrtho]
-    simp only [hproj_def, htriv_def, hcov_RS_def, ContinuousLinearMap.coe_comp',
+    simp only [hproj_def, htriv_def, hcov_RS_def, ContinuousLinearMap.coe_comp,
       Function.comp_apply]
   have hCross_collapse :
       (∑ i : Fin (Module.finrank ℝ E),
@@ -321,7 +320,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
             ∑ k : Fin (Module.finrank ℝ E),
               chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                 g α i l b *
-                (extDerivFun (I := I) (fun z : M =>
+                (mvfderiv (I := I) (fun z : M =>
                     chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                       g α i k z) b
                     (chartBasisVecFiber (I := I) α l b)) *
@@ -340,7 +339,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
     refine Finset.sum_congr rfl ?_
     intro k _
     simp only [hZ₂_def, hproj_def, htriv_def, hcov_RS_def,
-      ContinuousLinearMap.coe_comp', Function.comp_apply]
+      ContinuousLinearMap.coe_comp, Function.comp_apply]
   change (∑ i : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
@@ -412,7 +411,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                         g α i).toFun
                       (fun z : M => T₀.toSection z)) b
                     (chartBasisVecFiber (I := I) α l b))) := by
-      simp only [hproj_def, htriv_def, hcov_RS_def, ContinuousLinearMap.coe_comp',
+      simp only [hproj_def, htriv_def, hcov_RS_def, ContinuousLinearMap.coe_comp,
         Function.comp_apply]
     rw [hRewrite]
     exact hFrameDS_eq

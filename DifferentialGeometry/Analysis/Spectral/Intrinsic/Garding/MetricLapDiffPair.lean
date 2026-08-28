@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -37,15 +36,16 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem toRS0_sub {x : M} (A B : Tensor0SSpace 0 I x) :
     Tensor0SSpace.toRS0 (A - B) =
       Tensor0SSpace.toRS0 A - Tensor0SSpace.toRS0 B := by
   apply ContinuousLinearMap.ext
   intro c
-  change tensor0SSpace_evalScalar x c • (A - B) =
-    tensor0SSpace_evalScalar x c • A - tensor0SSpace_evalScalar x c • B
+  change (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • (A - B) =
+    (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
+      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
   exact smul_sub _ _ _
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
@@ -241,7 +241,7 @@ theorem lapDiff_pair_core
           lapDiffCore (I := I) (M := M) q k v‖ ^ 2 <=
         C * rho ^ 2 * ‖v‖ ^ 2 := by
     rw [lapDiffCore_pair_sq (I := I) (M := M) q h k v]
-    simpa only [rho] using henergy h v.1 v.2 hsmall
+    simpa only [rho, Submodule.norm_coe] using henergy h v.1 v.2 hsmall
   have hrhs :
       (Real.sqrt C * |rho| * ‖v‖) ^ 2 =
         C * rho ^ 2 * ‖v‖ ^ 2 := by
@@ -290,11 +290,11 @@ theorem lapDiff_pair_norm
         lapDiffOp (I := I) (M := M) q k).continuous.norm
       (continuous_const.mul continuous_norm)
   · intro v
-    rw [ContinuousLinearMap.sub_apply]
+    rw [sub_apply]
     simp only [Submodule.coe_subtype]
     rw [lapDiffOp_core (I := I) (M := M) q h v hqh,
       lapDiffOp_core (I := I) (M := M) q k v hqk]
-    simpa only [B, rho] using hcore h v hkh
+    simpa only [B, rho, Submodule.norm_coe] using hcore h v hkh
 
 end Spectral
 end Analysis

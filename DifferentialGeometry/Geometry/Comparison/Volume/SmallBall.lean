@@ -47,12 +47,12 @@ theorem edist_vol_pos
       continuous_const
   have hUne : U.Nonempty := by
     refine ⟨a, ?_⟩
-    simp only [U, mem_setOf_eq, riemannianEDistOf,
+    simp only [U, mem_ofPred_eq, riemannianEDistOf,
       Manifold.riemannianEDist_self]
     exact ENNReal.ofReal_pos.mpr hr
-  letI : μ.IsOpenPosMeasure :=
+  let : μ.IsOpenPosMeasure :=
     riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ :=
+  let : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   exact ENNReal.toReal_pos (hUopen.measure_pos μ hUne).ne' (measure_ne_top μ U)
@@ -111,18 +111,23 @@ omit [FiniteDimensional ℝ E]
   [T2Space M] [T2Space (TangentBundle I M)] in
 private lemma sqrt_inner_le_norm
     (g : SmoothRiemannianMetric I M) (p : M) (w : E) :
-    Real.sqrt (g.inner p w w) ≤ (Real.sqrt ‖g.inner p‖ + 1) * ‖w‖ := by
-  have hop : |g.inner p w w| ≤ ‖g.inner p‖ * ‖w‖ * ‖w‖ := by
-    simpa only [Real.norm_eq_abs] using (g.inner p).le_opNorm₂ w w
-  have hquad : g.inner p w w ≤ ‖g.inner p‖ * ‖w‖ ^ 2 := by
+    Real.sqrt (g.inner p w w) ≤
+      (Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ + 1) * ‖w‖ := by
+  let gp := tangentBilinearFormToModel (I := I) p (g.inner p)
+  have hgp : gp w w = g.inner p w w := by
+    rfl
+  have hop : |gp w w| ≤ ‖gp‖ * ‖w‖ * ‖w‖ := by
+    simpa only [Real.norm_eq_abs] using gp.le_opNorm₂ w w
+  have hquad : g.inner p w w ≤ ‖gp‖ * ‖w‖ ^ 2 := by
     calc
-      g.inner p w w ≤ |g.inner p w w| := le_abs_self _
-      _ ≤ ‖g.inner p‖ * ‖w‖ * ‖w‖ := hop
-      _ = ‖g.inner p‖ * ‖w‖ ^ 2 := by ring
+      g.inner p w w = gp w w := hgp.symm
+      _ ≤ |gp w w| := le_abs_self _
+      _ ≤ ‖gp‖ * ‖w‖ * ‖w‖ := hop
+      _ = ‖gp‖ * ‖w‖ ^ 2 := by ring
   have hsqrt := Real.sqrt_le_sqrt hquad
-  rw [Real.sqrt_mul (norm_nonneg (g.inner p)), Real.sqrt_sq (norm_nonneg w)] at hsqrt
+  rw [Real.sqrt_mul (norm_nonneg gp), Real.sqrt_sq (norm_nonneg w)] at hsqrt
   exact hsqrt.trans (by
-    nlinarith [Real.sqrt_nonneg ‖g.inner p‖, norm_nonneg w])
+    nlinarith [Real.sqrt_nonneg ‖gp‖, norm_nonneg w])
 
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
@@ -131,8 +136,9 @@ private lemma exists_inner_bound
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ w : E,
       Real.sqrt (g.inner p w w) ≤ C * ‖w‖ := by
-  refine ⟨Real.sqrt ‖g.inner p‖ + 1, ?_, ?_⟩
-  · nlinarith [Real.sqrt_nonneg ‖g.inner p‖]
+  refine ⟨Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ + 1, ?_, ?_⟩
+  · nlinarith [Real.sqrt_nonneg
+      ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖]
   · exact sqrt_inner_le_norm (I := I) g p
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -179,7 +185,7 @@ theorem exists_ball_vol_low
     exact lt_min hδ (lt_min hρv hC2)
   refine ⟨ε, ρ, hε, hρ, ?_⟩
   intro s hs hsρ
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hsδ : s ≤ δ := hsρ.trans (min_le_left _ _)
   have hsρv : s ≤ ρv := hsρ.trans ((min_le_right _ _).trans (min_le_left _ _))
   have hsC2 : s ≤ expMapC2Radius (I := I) g p :=
@@ -220,7 +226,7 @@ theorem exists_ball_vol_low
       have : ‖w‖ < δ := hwnorm.trans_le
         ((mul_le_of_le_one_left hs.le ha_le).trans hsδ)
       simpa only [Metric.mem_ball, dist_zero_right] using this)
-  letI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hreal := ENNReal.toReal_mono (measure_ne_top _ _) hlower
   have hpow : 0 ≤ (a * s) ^ Module.finrank ℝ E := by positivity
@@ -240,26 +246,26 @@ theorem exists_edist_vol
       ε * s ^ Module.finrank ℝ E ≤
         (riemannianVolumeMeasure (I := I) (M := M) g
           {x : M | riemannianEDistOf (I := I) g p x < ENNReal.ofReal s}).toReal := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
-  letI : CompleteSpace M := inferInstance
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := inferInstance
   have hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)) := by
     intro x w
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
   obtain ⟨ε, ρ, hε, hρ, hvol⟩ :=
     exists_ball_vol_low (I := I) (M := M) g hEnorm p
   refine ⟨ε, ρ, hε, hρ, ?_⟩
   intro s hs hsρ
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hset : Metric.ball p s =
       {x : M | riemannianEDistOf (I := I) g p x < ENNReal.ofReal s} := by
     ext x
-    simp only [Metric.mem_ball, mem_setOf_eq, riemannianEDistOf]
+    simp only [Metric.mem_ball, mem_ofPred_eq, riemannianEDistOf]
     rw [dist_comm]
     rw [HopfRinow.riemMetric_dist_eq (I := I) (M := M) p x]
     exact (ENNReal.lt_ofReal_iff_toReal_lt

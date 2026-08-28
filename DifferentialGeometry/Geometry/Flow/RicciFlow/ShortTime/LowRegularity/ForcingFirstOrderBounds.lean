@@ -11,6 +11,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -546,7 +547,9 @@ theorem rhs_h0_lip {ι : Type*}
     simpa only [Finset.sum_range_one, iteratedCovGrad_zero, Nat.zero_add] using hsp'
   have hinput : ∑ i ∈ Finset.range 3, ‖T i‖ ≤
       Cin * ‖ccTensorToHs (I := I) (M := M) gBase 2 (2 : ℝ) U‖ := by
-    simpa only [T] using hin U
+    have hinput' := hin U
+    norm_num at hinput' ⊢
+    exact hinput'
   change ‖ccTensorToHs (I := I) (M := M) gBase 2 (0 : ℝ) S‖ ≤
     (Csp * C₀ * Cin) *
       ‖ccTensorToHs (I := I) (M := M) gBase 2 (2 : ℝ) U‖
@@ -823,7 +826,9 @@ theorem rhs_h1_lip {ι : Type*}
       _ = (C₀ + C₁) * ∑ i ∈ Finset.range 4, ‖T i‖ := by ring
   have hinput : ∑ i ∈ Finset.range 4, ‖T i‖ ≤
       Cin * ‖ccTensorToHs (I := I) (M := M) gBase 2 (3 : ℝ) U‖ := by
-    simpa only [T] using hin U
+    have hinput' := hin U
+    norm_num at hinput' ⊢
+    exact hinput'
   change ‖ccTensorToHs (I := I) (M := M) gBase 2 (1 : ℝ) S‖ ≤
     (Csp * (C₀ + C₁) * Cin) *
       ‖ccTensorToHs (I := I) (M := M) gBase 2 (3 : ℝ) U‖

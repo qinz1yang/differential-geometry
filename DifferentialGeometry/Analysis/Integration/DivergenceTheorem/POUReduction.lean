@@ -7,7 +7,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 
 
 noncomputable section
@@ -149,8 +149,8 @@ private lemma localDivergence_at_self_smoothSmul [I.Boundaryless]
         u y₀ • fderiv ℝ (v i) y₀ + v i y₀ • fderiv ℝ u y₀ :=
       fderiv_fun_mul hu_diff (hv_diff i)
     rw [hmul]
-    rw [ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+    rw [add_apply,
+        smul_apply, smul_apply]
     simp only [smul_eq_mul]
     ring
   have hLHS_num :
@@ -239,14 +239,14 @@ theorem tangentSectionAction_finset_sum
       ∑ α ∈ s, tangentSectionAction (I := I) X (f α) x := by
   classical
   have heq : ∀ g : M → ℝ, ∀ y : M, ∀ v : TangentSpace I y,
-      (mfderiv I 𝓘(ℝ, ℝ) g y) v = extDerivFun (I := I) g y v := by
+      (mfderiv I 𝓘(ℝ, ℝ) g y) v = mvfderiv (I := I) g y v := by
     intro g y v
     rfl
   simp only [tangentSectionAction_def, heq]
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    change (extDerivFun (I := I) (fun _ : M => (0 : ℝ)) x) (X x) = 0
+    change (mvfderiv (I := I) (fun _ : M => (0 : ℝ)) x) (X x) = 0
     change (((NormedSpace.fromTangentSpace ((fun _ : M => (0 : ℝ)) x)).toContinuousLinearMap ∘L
         (mfderiv I 𝓘(ℝ, ℝ) (fun _ : M => (0 : ℝ)) x)) (X x) : ℝ) = 0
     rw [mfderiv_const]
@@ -274,8 +274,8 @@ theorem tangentSectionAction_finset_sum
           rw [Finset.sum_insert hγ]
           exact (ht γ hmem_γ).add (ih' ht_rest)
       exact aux s hmem_rest
-    rw [extDerivFun_add (hf α hmem_α) hsum_diff]
-    rw [ContinuousLinearMap.add_apply]
+    rw [mvfderiv_add (hf α hmem_α) hsum_diff]
+    rw [add_apply]
     rw [ih_eq]
 
 omit [Module.Finite ℝ E] in

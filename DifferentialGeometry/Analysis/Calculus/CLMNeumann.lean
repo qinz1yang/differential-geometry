@@ -16,7 +16,9 @@ theorem invertible_of_id_sub [CompleteSpace E] {T : E →L[ℝ] E}
     (h : ‖ContinuousLinearMap.id ℝ E - T‖ < 1) : T.IsInvertible := by
   have hu : IsUnit T := by
     have h1 : IsUnit (1 - (1 - T)) := by
-      have hlt : ‖(1 : E →L[ℝ] E) - T‖ < 1 := by simpa using h
+      have hlt : ‖(1 : E →L[ℝ] E) - T‖ < 1 := by
+        change ‖ContinuousLinearMap.id ℝ E - T‖ < 1
+        exact h
       exact (Units.oneSub _ hlt).isUnit
     simpa using h1
   obtain ⟨u, hu⟩ := hu
@@ -67,7 +69,8 @@ theorem sum_near_neg_inv [Fintype ι] [CompleteSpace E]
   refine ⟨e.trans (ContinuousLinearEquiv.neg ℝ), ?_⟩
   ext x
   have he_apply : e x = -S x := by
-    simpa only [neg_apply] using congrArg (fun f : E →L[ℝ] E => f x) he
+    change e.toContinuousLinearMap x = -S x
+    exact congrArg (fun f : E →L[ℝ] E => f x) he
   change -e x = (∑ i, μ i • A i) x
   rw [he_apply, neg_neg]
 

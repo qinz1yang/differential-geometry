@@ -5,6 +5,7 @@ import DifferentialGeometry.Topology.FiberBundleT2
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Set Filter Topology Metric Bundle Manifold Function
@@ -207,8 +208,7 @@ theorem intrinsicFiber_smooth
       (fun v : E => (⟨p, v⟩ : TangentBundle I M)) := by
     rw [← heq]
     exact hsymm
-  simpa only [Function.comp_apply] using
-    (intrinsicExp_smooth (I := I) g hEnorm).comp htotal
+  with_unfolding_all exact (intrinsicExp_smooth (I := I) g hEnorm).comp htotal
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -271,8 +271,8 @@ theorem intrinsicVar_smooth
         (show TangentSpace I p from launch q) 1 =
       intrinsicGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from x + q.1 • w) q.2
-    simpa only [launch] using
-      intrinsicGeodesic_smul (I := I) g hEnorm p
+    with_unfolding_all
+      exact intrinsicGeodesic_smul (I := I) g hEnorm p
         (show TangentSpace I p from x + q.1 • w) q.2
   rw [heq] at hcomp
   exact hcomp

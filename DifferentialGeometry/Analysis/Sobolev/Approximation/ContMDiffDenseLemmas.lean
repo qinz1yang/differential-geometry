@@ -28,8 +28,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-theorem contMDiff_finset_sum_chartPullback
-    [T2Space M] [I.Boundaryless]
+theorem contMDiff_finsetSum_chartPullback
+    [T2Space M]
     {ι : Type*} (S : Finset ι) (α : ι → M)
     (ψ : ι → EuclN → ℝ)
     (hψ_smooth : ∀ i ∈ S, ContDiff ℝ (⊤ : ℕ∞) (ψ i))

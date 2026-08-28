@@ -80,15 +80,15 @@ theorem isSolution
     IsSolutionOn (I := I)
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M) X.D) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   have hgram := OpenConvOut.gramSmooth (I := I) (Φ := Φ) ht₀ hD co
@@ -200,11 +200,11 @@ noncomputable def flowUpgrade_of_open
       refMetric := ?_
       conv := ?_ }
   · intro k
-    letI : TopologicalSpace (X.term (mc'.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc'.subseq k)).M :=
       (X.term (mc'.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc'.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc'.subseq k)).M :=
       (X.term (mc'.subseq k)).charted
-    letI : SigmaCompactSpace (X.term (mc'.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc'.subseq k)).M :=
       (X.term (mc'.subseq k)).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.target_open (I := I) Φ' k)

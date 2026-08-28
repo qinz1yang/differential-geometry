@@ -59,7 +59,8 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 namespace CurvatureCoefficientDifferenceJetTower
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 theorem riemannianFiberNormSqIterCont (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (l : ℕ) :
     Continuous (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -72,7 +73,7 @@ theorem riemannianFiberNormSqIterCont (g₀ : SmoothRiemannianMetric I M) (P : S
     ← Integral.L2.SmoothCcTensor.toFun_apply (I := I) (M := M)
       (iteratedCovGrad (I := I) g₀ 0 2 l P) x]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 theorem jetSupLow (g₀ : SmoothRiemannianMetric I M) {a : ℕ} {R Cemb Lam : ℝ}
     (hR : 0 ≤ R)
     (hCemb : ∀ (W : SmoothCcTensor g₀ 0 2) (x : M),

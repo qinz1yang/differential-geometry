@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
 
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -167,7 +169,9 @@ theorem chartRep_contDiffOn (f : M → Real) (x₀ : M)
       (f ∘ (extChartAt I x₀).symm) (extChartAt I x₀).target :=
     contMDiffOn_iff_contDiffOn.mp hcomp
   have hwrite : writtenInExtChartAt I 𝓘(Real, Real) x₀ f
-      = f ∘ (extChartAt I x₀).symm := by funext z; simp [writtenInExtChartAt]
+      = f ∘ (extChartAt I x₀).symm := by
+    funext z
+    simp [writtenInExtChartAt, chartAt_self_eq]
   rw [hwrite]; exact hcd
 
 omit [IsManifold I 2 M] in
@@ -252,8 +256,14 @@ theorem bumpTower_slotExpand_conv
             rw [← hstep1]
       _ = ∑ i ∈ s, c i q * (covDerivOfField (I := I) gRef A0 p) q
               (Function.update (fun a => V a q) j (frame i q)) := by
-            simpa using ((covDerivOfField (I := I) gRef A0 p) q).toMultilinearMap.map_update_sum
-              s j (fun i => c i q • frame i q) (fun a => V a q)
+            change ((covDerivOfField (I := I) gRef A0 p) q).toMultilinearMap
+                (Function.update (fun a => V a q) j (∑ i ∈ s, c i q • frame i q)) =
+              ∑ i ∈ s, c i q *
+                ((covDerivOfField (I := I) gRef A0 p) q).toMultilinearMap
+                  (Function.update (fun a => V a q) j (frame i q))
+            rw [((covDerivOfField (I := I) gRef A0 p) q).toMultilinearMap.map_update_sum]
+            refine Finset.sum_congr rfl fun i _ => ?_
+            rw [MultilinearMap.map_update_smul, smul_eq_mul]
       _ = ∑ i ∈ s, c i q • (covDerivOfField (I := I) gRef A0 p) q
               (fun a => (Function.update V j (frame i)) a q) := by
             refine Finset.sum_congr rfl fun i _ => ?_
@@ -588,13 +598,13 @@ theorem exists_frameData (x₀ : M) {Kc : Set M} (hKc : IsCompact Kc)
         ∀ᶠ x in 𝓝ˢ Kc, σ x = tangentConstInChart (𝕜 := Real) (I := I) x₀ (b i) x :=
     fun i => exists_section_eqOn_compact (I := I) x₀ (b i) hKc hKchart
   choose frame hframeσ using hσex
-  refine ⟨frame, b, hframeσ, fun W0 => ⟨fun i w => e.localFrame_coeff I b i w (W0 w), ?_, ?_⟩⟩
+  refine ⟨frame, b, hframeσ, fun W0 => ⟨fun i w => e.localFrameCoeff I b i w (W0 w), ?_, ?_⟩⟩
   · intro i
     rw [← hbase]
-    exact contMDiffOn_baseSet_localFrame_coeff b W0.contMDiff.contMDiffOn i
+    exact contMDiffOn_baseSet_localFrameCoeff b W0.contMDiff.contMDiffOn i
   · intro w hw
     have hwbase : w ∈ e.baseSet := by rw [hbase]; exact hKchart hw
-    have hexp := e.eq_sum_localFrame_coeff_smul (I := I) (b := b)
+    have hexp := e.eq_sum_localFrameCoeff_smul (I := I) (b := b)
       (s := (W0 : ∀ x : M, TangentSpace I x)) hwbase
     rw [hexp]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -602,9 +612,9 @@ theorem exists_frameData (x₀ : M) {Kc : Set M} (hKc : IsCompact Kc)
       (hframeσ i).self_of_nhdsSet w hw
     have hlf_eq : e.localFrame b i w = tangentConstInChart (𝕜 := Real) (I := I) x₀ (b i) w := by
       rw [e.localFrame_apply_of_mem_baseSet b hwbase]
-      simp [Bundle.Trivialization.basisAt, tangentConstInChart_apply, he]
-    change e.localFrame_coeff I b i w (W0 w) • e.localFrame b i w
-        = e.localFrame_coeff I b i w (W0 w) • frame i w
+      exact (e.symmL_apply hwbase (b i)).symm
+    change e.localFrameCoeff I b i w (W0 w) • e.localFrame b i w
+        = e.localFrameCoeff I b i w (W0 w) • frame i w
     rw [hlf_eq, hframe_eq]
 
 omit [IsManifold I 2 M] in
@@ -717,8 +727,8 @@ private theorem chart_component_precompactness_family
               (Tensor0SBundle.metricTensorField (I := I) (gSeq k)) 0) w
                 (fun a => Vfam p a w)) x) x‖ ≤ Mr) := by
   classical
-  haveI : NormalSpace E := inferInstance
-  haveI : LocallyCompactSpace E := inferInstance
+  have : NormalSpace E := inferInstance
+  have : LocallyCompactSpace E := inferInstance
   set tgt := (extChartAt I x₀).target with htgt
   have htgt_open : IsOpen tgt := isOpen_extChartAt_target (I := I) x₀
   set EK₀ : Set E := extChartAt I x₀ '' K₀ with hEK₀

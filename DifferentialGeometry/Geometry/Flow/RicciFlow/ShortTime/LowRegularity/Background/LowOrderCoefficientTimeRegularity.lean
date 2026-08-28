@@ -60,6 +60,7 @@ private noncomputable def zeroData
   firstOrderCoefficient := 0
   secondOrderCoefficient := 0
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem zeroData_a1
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2) :
@@ -67,6 +68,7 @@ private theorem zeroData_a1
   simp only [zeroData, LowerScaleActionCoefficients.firstOrderAction, ← operatorFieldComposition_zero_eq_operatorFieldApply,
     operatorFieldComposition_zero_left, zero_add]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iter_zero
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) :
@@ -76,6 +78,7 @@ private theorem iter_zero
     (0 : ℝ) (0 : SmoothCcTensor g r s)
   simpa only [zero_smul] using h
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem lowJet_zero
     (g : SmoothRiemannianMetric I M) (r s m : ℕ) :

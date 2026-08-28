@@ -38,9 +38,9 @@ open DifferentialGeometry.Geometry.Riemannian.Variation
 
 omit [SigmaCompactSpace M] in
 theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
-    (g : SmoothRiemannianMetric I M) (x : M) (X : E)
+    (g : SmoothRiemannianMetric I M) (x : M) (X : TangentSpace I x)
     (hUnit : g.inner x X X = 1)
-    (e : Fin (Module.finrank ℝ E - 1) → E)
+    (e : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0)
     (hPerp : ∀ i, g.inner x (e i) X = 0) :
     (∑ i : Fin (Module.finrank ℝ E - 1),
@@ -50,8 +50,9 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
   have hn_pos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
   have hn_eq : Module.finrank ℝ E - 1 + 1 = Module.finrank ℝ E :=
     Nat.succ_pred_eq_of_pos hn_pos
-  let B' : Fin (Module.finrank ℝ E - 1 + 1) → E := Fin.cases X e
-  let B : Fin (Module.finrank ℝ E) → E := fun i => B' (Fin.cast hn_eq.symm i)
+  let B' : Fin (Module.finrank ℝ E - 1 + 1) → TangentSpace I x := Fin.cases X e
+  let B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
+    fun i => B' (Fin.cast hn_eq.symm i)
   have hB_zero : B (⟨0, hn_pos⟩ : Fin (Module.finrank ℝ E)) = X := by
     change B' (Fin.cast hn_eq.symm ⟨0, hn_pos⟩) = X
     have hcast_eq : Fin.cast hn_eq.symm (⟨0, hn_pos⟩ : Fin (Module.finrank ℝ E)) =
@@ -180,13 +181,15 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
     · exact absurd h2_zero (by norm_num)
     · exact hv_zero
   rw [hR_self]
-  simp only [map_zero, ContinuousLinearMap.zero_apply, zero_add]
+  rw [map_zero]
+  change _ = 0 + _
+  rw [zero_add]
 
 omit [SigmaCompactSpace M] in
 theorem ricci_eq_sum_perp
-    (g : SmoothRiemannianMetric I M) (x : M) (X : E)
+    (g : SmoothRiemannianMetric I M) (x : M) (X : TangentSpace I x)
     (hPos : 0 < g.inner x X X)
-    (e : Fin (Module.finrank ℝ E - 1) → E)
+    (e : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0)
     (hPerp : ∀ i, g.inner x (e i) X = 0) :
     (∑ i : Fin (Module.finrank ℝ E - 1),
@@ -194,7 +197,7 @@ theorem ricci_eq_sum_perp
       = ricciTensor (I := I) g x X X := by
   classical
   let a : ℝ := Real.sqrt (g.inner x X X)
-  let X₀ : E := a⁻¹ • X
+  let X₀ : TangentSpace I x := a⁻¹ • X
   have ha : 0 < a := Real.sqrt_pos.2 hPos
   have ha_ne : a ≠ 0 := ha.ne'
   have ha_sq : a ^ 2 = g.inner x X X := by
@@ -203,24 +206,26 @@ theorem ricci_eq_sum_perp
     dsimp only [X₀]
     rw [smul_smul, mul_inv_cancel₀ ha_ne, one_smul]
   have bilinear_smul
-      (B : E →L[ℝ] E →L[ℝ] ℝ) (c : ℝ) (v w : E) :
+      (B : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+      (c : ℝ) (v w : TangentSpace I x) :
       B (c • v) (c • w) = c ^ 2 * B v w := by
     calc
       B (c • v) (c • w) = (c • B v) (c • w) := by
         rw [B.map_smul]
       _ = c * B v (c • w) := by
-        rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+        rw [smul_apply, smul_eq_mul]
       _ = c * (c * B v w) := by
         rw [(B v).map_smul, smul_eq_mul]
       _ = c ^ 2 * B v w := by ring
   have vector_bilinear_smul
-      (T : E →L[ℝ] E →L[ℝ] E) (c : ℝ) (v w : E) :
+      (T : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
+      (c : ℝ) (v w : TangentSpace I x) :
       T (c • v) (c • w) = c ^ 2 • T v w := by
     calc
       T (c • v) (c • w) = (c • T v) (c • w) := by
         rw [T.map_smul]
       _ = c • T v (c • w) := by
-        rw [ContinuousLinearMap.smul_apply]
+        rw [smul_apply]
       _ = c • (c • T v w) := by rw [(T v).map_smul]
       _ = c ^ 2 • T v w := by
         rw [smul_smul]
@@ -254,15 +259,12 @@ theorem ricci_eq_sum_perp
               (e i) := by rw [hX]
       _ = g.inner x
           (a ^ 2 • riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) := by
-        exact congrArg (fun z : E => g.inner x z (e i))
+        exact congrArg (fun z : TangentSpace I x => g.inner x z (e i))
           (vector_bilinear_smul
             (riemannOp (LeviCivita (I := I) g) x (e i)) a X₀ X₀)
       _ = a ^ 2 *
           g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) := by
-        have h := congrArg (fun L : E →L[ℝ] ℝ => L (e i))
-          ((g.inner x).map_smul (a ^ 2)
-            (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀))
-        simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+        rw [(g.inner x).map_smul, smul_apply, smul_eq_mul]
   have hric :
       ricciTensor (I := I) g x X X =
         a ^ 2 * ricciTensor (I := I) g x X₀ X₀ := by
@@ -423,7 +425,7 @@ theorem sum_index_form_integrand_eval
             = (piOverL * cosπL) *
               (g.inner (γ t) ((e i).toFun t))
                 ((piOverL * cosπL) • (e i).toFun t) := by
-        simp [ContinuousLinearMap.smul_apply, smul_eq_mul]
+        with_unfolding_all rfl
       rw [this]
       have hpull2 :
           (g.inner (γ t) ((e i).toFun t)) ((piOverL * cosπL) • (e i).toFun t)
@@ -457,7 +459,7 @@ theorem sum_index_form_integrand_eval
         exact (riemannOp (LeviCivita (I := I) g) (γ t)).map_smul sinπL
           ((e i).toFun t)
       rw [hsmul]
-      simp [ContinuousLinearMap.smul_apply]
+      simp [smul_apply]
     have h_gp : mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ) = uPrime t := h_gammaPrime
     have h_inner_R :
         g.inner (γ t)
@@ -499,7 +501,7 @@ theorem sum_index_form_integrand_eval
                   (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
                   (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))))
               (sinπL • (e i).toFun t) := by
-        simp [ContinuousLinearMap.smul_apply, smul_eq_mul]
+        with_unfolding_all rfl
       rw [hR1]
       have hR2 :
           (g.inner (γ t)
@@ -669,7 +671,7 @@ theorem sum_index_form_frame_evaluation
                   ((SectionAlongCurve.smulFun
                     (fun s => Real.sin (Real.pi * s / L)) (e i)).toFun) t
         from Finset.sum_congr rfl (fun i _ => hIF i)]
-    exact (intervalIntegral.integral_finset_sum
+    exact (intervalIntegral.integral_finsetSum
       (s := (Finset.univ : Finset (Fin (Module.finrank ℝ E - 1))))
       (f := fun i t =>
         indexFormIntegrand (I := I) g γ
@@ -996,7 +998,10 @@ theorem bonnet_myers_length_le_of_ricci_bound
       rw [show (g.inner (γ t)) (Real.sin (Real.pi * t / L) • (e i).toFun t)
             = Real.sin (Real.pi * t / L) • (g.inner (γ t)) ((e i).toFun t) from
           map_smul (g.inner (γ t)) _ _]
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul, _hPerp t ht i, mul_zero]
+      with_unfolding_all
+        change Real.sin (Real.pi * t / L) *
+          g.inner (γ t) ((e i).toFun t) (uPrime t) = 0
+        rw [_hPerp t ht i, mul_zero]
     refine indexForm_nonneg_of_minimising_geodesic
       (I := I) g hEnorm γ L
       (fun t => (SectionAlongCurve.smulFun

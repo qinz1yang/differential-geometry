@@ -232,16 +232,20 @@ private theorem riemannCurvatureAux_tangentConst_add_third
           fun p : M => (cov Z₂c p) (Yc p)) x := by
     exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZ₁₂Y hsumY
       (by simp)
-      (by simpa [Z₁₂c, Z₁c, Z₂c, Yc] using
-        cov_tangentConst_add_apply_eventuallyEq (I := I) cov x Z₁ Z₂ Y)
+      (by
+        filter_upwards [cov_tangentConst_add_apply_eventuallyEq
+          (I := I) cov x Z₁ Z₂ Y] with p hp
+        simpa [Z₁₂c, Z₁c, Z₂c, Yc] using hp)
   have hcongrX :
       cov (fun p : M => (cov Z₁₂c p) (Xc p)) x =
         cov ((fun p : M => (cov Z₁c p) (Xc p)) +
           fun p : M => (cov Z₂c p) (Xc p)) x := by
     exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZ₁₂X hsumX
       (by simp)
-      (by simpa [Z₁₂c, Z₁c, Z₂c, Xc] using
-        cov_tangentConst_add_apply_eventuallyEq (I := I) cov x Z₁ Z₂ X)
+      (by
+        filter_upwards [cov_tangentConst_add_apply_eventuallyEq
+          (I := I) cov x Z₁ Z₂ X] with p hp
+        simpa [Z₁₂c, Z₁c, Z₂c, Xc] using hp)
   change
     riemannCurvatureAux cov Xc Yc Z₁₂c x =
       riemannCurvatureAux cov Xc Yc Z₁c x +
@@ -295,15 +299,19 @@ private theorem riemannCurvatureAux_tangentConst_smul_third
         cov (a • fun p : M => (cov Zc p) (Yc p)) x := by
     exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZaY hsmulY
       (by simp)
-      (by simpa [Za, Zc, Yc] using
-        cov_tangentConst_smul_apply_eventuallyEq (I := I) cov x a Z Y)
+      (by
+        filter_upwards [cov_tangentConst_smul_apply_eventuallyEq
+          (I := I) cov x a Z Y] with p hp
+        simpa [Za, Zc, Yc] using hp)
   have hcongrX :
       cov (fun p : M => (cov Za p) (Xc p)) x =
         cov (a • fun p : M => (cov Zc p) (Xc p)) x := by
     exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZaX hsmulX
       (by simp)
-      (by simpa [Za, Zc, Xc] using
-        cov_tangentConst_smul_apply_eventuallyEq (I := I) cov x a Z X)
+      (by
+        filter_upwards [cov_tangentConst_smul_apply_eventuallyEq
+          (I := I) cov x a Z X] with p hp
+        simpa [Za, Zc, Xc] using hp)
   change
     riemannCurvatureAux cov Xc Yc Za x =
       a • riemannCurvatureAux cov Xc Yc Zc x
@@ -314,7 +322,7 @@ private theorem riemannCurvatureAux_tangentConst_smul_third
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hZY]
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hZX]
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hZ]
-  simp [Pi.smul_apply]
+  simp
   module
 
 private noncomputable def riemannCurvatureZCLM
@@ -323,6 +331,7 @@ private noncomputable def riemannCurvatureZCLM
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y : TangentSpace I x) :
     TangentSpace I x →L[Real] Real :=
+  let _ : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
   LinearMap.toContinuousLinearMap
     { toFun := fun Z =>
         cotangentToDual_gen α
@@ -610,6 +619,8 @@ theorem riemannCurvature04At_apply_const
           (tangentConstAt (I := I) x Z) x) := by
   dsimp [riemannCurvature04At]
   rw [tensor04StdOfOutAt_apply]
+  let modelVec : Fin 4 → E := fun i =>
+    tangentSpaceModelContinuousLinearEquiv (I := I) x (vec4 W X Y Z i)
   change
     (ContinuousLinearMap.uncurryLeft
         (𝕜 := Real) (n := 3) (Ei := fun _ : Fin 4 => E) (G := Real)
@@ -617,12 +628,15 @@ theorem riemannCurvature04At_apply_const
             (riemannCurvatureAt cov hcov x)).comp
           (tangentFlatCotangentModelCLM (I := I) g x)) :
           E →L[Real] ContinuousMultilinearMap Real (fun _ : Fin 3 => E) Real))
-        (vec4 W X Y Z) =
+        modelVec =
       g.inner x W
         (riemannCurvatureAux cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x)
   rw [ContinuousLinearMap.uncurryLeft_apply]
+  rw [ContinuousLinearMap.comp_apply]
+  unfold TensorRSSpace.toModel
+  rw [tensorRSSpace_continuousLinearEquiv_apply_apply]
   change
     riemannCurvatureAt cov hcov x
         (Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

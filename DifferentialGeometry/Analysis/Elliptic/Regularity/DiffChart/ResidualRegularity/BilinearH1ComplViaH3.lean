@@ -189,11 +189,11 @@ private lemma chartTargetEuclid_sigmaCompact_cover
   classical
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
-  haveI : LocallyCompactSpace ↥(chartTargetEuclid (I := I) (M := M) α) :=
+  have : LocallyCompactSpace ↥(chartTargetEuclid (I := I) (M := M) α) :=
     hΩ_open.locallyCompactSpace
-  haveI : SecondCountableTopology ↥(chartTargetEuclid (I := I) (M := M) α) :=
+  have : SecondCountableTopology ↥(chartTargetEuclid (I := I) (M := M) α) :=
     inferInstance
-  haveI : SigmaCompactSpace ↥(chartTargetEuclid (I := I) (M := M) α) :=
+  have : SigmaCompactSpace ↥(chartTargetEuclid (I := I) (M := M) α) :=
     sigmaCompactSpace_of_locallyCompact_secondCountable
   obtain ⟨K_sub, hK_sub_compact, hK_sub_cov⟩ :=
     SigmaCompactSpace.exists_compact_covering

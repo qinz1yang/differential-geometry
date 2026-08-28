@@ -30,7 +30,6 @@ variable {E : B → Type*} [∀ x, NormedAddCommGroup (E x)] [∀ x, NormedSpace
   [TopologicalSpace (TotalSpace F E)]
   [FiberBundle F E] [VectorBundle 𝕜 F E]
 
-set_option backward.isDefEq.respectTransparency false
 
 local instance (r : ℕ) : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
   continuousMultilinearMap_finiteDimensional r
@@ -475,7 +474,9 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (mem_baseSet_trivializationAt F E x)).symm
           ((trivializationAt F E x).continuousLinearMapAt 𝕜 x (w i)) =
         (trivializationAt F E x).symmL 𝕜 x
-          ((trivializationAt F E x).continuousLinearMapAt 𝕜 x (w i)) := rfl
+          ((trivializationAt F E x).continuousLinearMapAt 𝕜 x (w i)) := by
+        rw [Trivialization.symm_continuousLinearEquivAt_eq _
+          (mem_baseSet_trivializationAt F E x)]
       rw [h_sym_eq, Trivialization.symmL_continuousLinearMapAt _
         (mem_baseSet_trivializationAt F E x)]
     have h_vec : (fun i : Fin s => (trivializationAt F E x₀).symmL 𝕜 x (v i)) =
@@ -485,7 +486,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
       simp only [ContinuousLinearEquiv.symm_trans_apply, ContinuousLinearEquiv.symm_symm,
         Trivialization.coe_continuousLinearEquivAt_eq _ (mem_baseSet_trivializationAt F E x)]
       rw [Trivialization.symmL_continuousLinearMapAt _ (mem_baseSet_trivializationAt F E x)]
-      rfl
+      rw [Trivialization.symm_continuousLinearEquivAt_eq _ hx]
     rw [h_arg, h_vec]
   rw [hLHS, hRHS]
   exact (ContinuousMultilinearMap.multilinearHomEquivDualMultilinearTensor_naturality

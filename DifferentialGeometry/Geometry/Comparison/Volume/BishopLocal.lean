@@ -55,8 +55,11 @@ theorem framedBall_eq_small
         (g.inner p (normalFrame (I := I) g p z)
           (normalFrame (I := I) g p z)) < expRadiusGp (I := I) g p :=
       hvExp.trans_le (min_le_right _ _)
-    rw [mem_smallNormalBall, framedExp_apply,
-      expMapDiffeo_apply_eq (I := I) g p hvSrc,
+    have hzFramedSrc : z ∈ (framedExpDiffeo (I := I) g p).source := by
+      rw [framedExp_source]
+      exact hvSrc
+    rw [mem_smallNormalBall, framedExp_eq_expMap (I := I) g p hzFramedSrc,
+      framedExpMap_apply,
       edist_exp_eq_radius (I := I) g p hEnorm hvGp,
       normalFrame_sqrt]
     exact (ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z)).2 hzNorm
@@ -82,8 +85,14 @@ theorem framedBall_eq_small
       rw [mem_ball, dist_zero_right, hzNorm, hvLen]
       exact hdist
     refine ⟨z, hzBall, ?_⟩
-    rw [framedExp_apply, hzFrame,
-      expDiffeo_eq_intr (I := I) g hEnorm p hvSmall, hvExp]
+    rw [framedExp_apply, hzFrame]
+    calc
+      expMapDiffeo (I := I) g p
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p v) =
+          expMapIntrinsic (I := I) g hEnorm p v := by
+        with_unfolding_all
+          exact expDiffeo_eq_intr (I := I) g hEnorm p hvSmall
+      _ = q := hvExp
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -107,7 +116,7 @@ theorem localBall_eq_normal
     (p : M) {R : Real} (hR : 0 < R)
     (hRexp : R < expDiffeoRadius (I := I) g hEnorm p) :
     localBallVolume (I := I) g p R = normalBallVolume (I := I) g p R := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hball : ball p R = smallNormalBall (I := I) p R :=
     Set.Subset.antisymm
       (metricBall_subset_smallNormalBall (I := I) (M := M))
@@ -205,19 +214,19 @@ theorem localBall_cross_of_complete_metric
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
           localBallVolume (I := I) g p r *
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -294,19 +303,19 @@ theorem localBall_ratio_of_complete_metric
         (fun R => riemannianVolumeMeasure (I := I) (M := M) g (ball p R) /
           ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

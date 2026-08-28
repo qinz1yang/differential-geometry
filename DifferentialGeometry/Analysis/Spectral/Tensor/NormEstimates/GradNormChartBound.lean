@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -334,8 +333,8 @@ theorem partialDeriv_scalarOnE_tensorChartComponentScalar_leibniz
           scalarOnE (I := I) α raw z • fderiv ℝ (scalarOnE (I := I) α ρ) z :=
     fderiv_fun_mul hρ_diff hraw_diff
   rw [h_fderiv_mul]
-  rw [ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+  rw [add_apply,
+      smul_apply, smul_apply]
   simp only [smul_eq_mul]
   ring
 
@@ -388,7 +387,7 @@ private lemma sum_sq_partialDeriv_scalarOnE_chartAtlasPOU_continuousOn
       (extChartAt I α).target :=
     h_smooth.continuousOn_fderiv_of_isOpen (isOpen_extChartAt_target (I := I) α)
       (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
-  refine continuousOn_finset_sum _ ?_
+  refine continuousOn_finsetSum _ ?_
   intro k _
   unfold partialDeriv
   have h_eval_cont :

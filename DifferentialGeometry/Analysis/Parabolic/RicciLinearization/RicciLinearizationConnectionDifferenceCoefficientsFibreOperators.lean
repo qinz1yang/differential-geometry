@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -105,7 +104,7 @@ theorem slotPermCLM_apply {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M)
         (ContinuousMultilinearMap.domDomCongr ρ
           (Tensor0SBundle.Tensor0SSpace.toModel D)) := by
   rw [slotPermCLM]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
   rfl
 
@@ -129,7 +128,7 @@ theorem tensorProdWithCLM_apply (m k : ℕ) (x : M)
           (Tensor0SBundle.Tensor0SSpace.toModel P)
           (Tensor0SBundle.Tensor0SSpace.toModel Q)) := by
   rw [tensorProdWithCLM]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, Bundle.continuousMultilinearMap.modelProductL_apply]
   rfl
 
@@ -152,9 +151,8 @@ noncomputable def tensorProdPairCLM (m k : ℕ) (x : M) :
               (Tensor0SBundle.Tensor0SSpace.toModel Q) := by
           apply ContinuousMultilinearMap.ext
           intro v
-          simp only [Bundle.continuousMultilinearMap.modelProduct_apply,
-            ContinuousMultilinearMap.add_apply, add_mul]
-        rw [ContinuousLinearMap.add_apply, tensorProdWithCLM_apply, tensorProdWithCLM_apply,
+          simp only [Bundle.continuousMultilinearMap.modelProduct_apply, add_apply, add_mul]
+        rw [add_apply, tensorProdWithCLM_apply, tensorProdWithCLM_apply,
           tensorProdWithCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_add, hsplit]
         exact map_add
           ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) (m + k) x).symm) _ _
@@ -170,9 +168,9 @@ noncomputable def tensorProdPairCLM (m k : ℕ) (x : M) :
           apply ContinuousMultilinearMap.ext
           intro v
           simp only [Bundle.continuousMultilinearMap.modelProduct_apply,
-            ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+            smul_apply, smul_eq_mul]
           ring
-        rw [RingHom.id_apply, ContinuousLinearMap.smul_apply, tensorProdWithCLM_apply,
+        rw [RingHom.id_apply, smul_apply, tensorProdWithCLM_apply,
           tensorProdWithCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_smul, hsplit]
         exact map_smul
           ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) (m + k) x).symm) c _ }

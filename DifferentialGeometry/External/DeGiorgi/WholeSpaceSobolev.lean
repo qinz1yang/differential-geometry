@@ -12,6 +12,7 @@ The main export is `DeGiorgi.sobolev_of_approx`.
 
 noncomputable section
 
+
 open MeasureTheory Filter
 open scoped ENNReal NNReal
 
@@ -194,9 +195,17 @@ private theorem partialDiff_sum_tendsto_zero
     rw [tendsto_pi_nhds]
     intro i
     simpa using hφ_grad i
-  simpa using
-    ((continuous_finset_sum Finset.univ fun i _ => continuous_apply i).tendsto
-      (0 : Fin d → ℝ≥0∞)).comp hpi
+  change Tendsto
+    ((fun a : Fin d → ℝ≥0∞ => ∑ i, a i) ∘ fun n i =>
+      eLpNorm
+        (fun x => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) - G x i)
+        (ENNReal.ofReal p) volume) atTop (nhds 0)
+  have h := ((continuous_finsetSum Finset.univ fun i _ => continuous_apply i).tendsto
+    (0 : Fin d → ℝ≥0∞)).comp hpi
+  have hzero : (∑ i, (0 : Fin d → ℝ≥0∞) i) = 0 := by
+    exact Finset.sum_const_zero
+  rw [hzero] at h
+  exact h
 
 omit [NeZero d] in
 private theorem gradVec_eLpNorm_le_sum
@@ -345,7 +354,7 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
         gradVec_eLpNorm_le_sum (p := p) (φ := φ) (G := G) hp hφ_smooth hG_comp_aesm n
     have hZeroLE :
         ∀ᶠ n in atTop, (0 : ℝ≥0∞) ≤ eLpNorm (fun x => gradVec n x - G x) p_enn volume :=
-      Eventually.of_forall fun n => zero_le _
+      Eventually.of_forall fun n => zero_le
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
       (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (nhds 0) from tendsto_const_nhds)
       hNormCompTendsto
@@ -439,9 +448,11 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
                         mul_le_mul_right hn C)
                     hu_grad hv_rhs
         _ = atTop.liminf (fun _ : ℕ => C * eLpNorm (fun x => ‖G x‖) p_enn volume) := by
-              simpa using
-                ENNReal.liminf_add_of_right_tendsto_zero hDiffZeroSubseq
-                  (fun _ : ℕ => C * eLpNorm (fun x => ‖G x‖) p_enn volume)
+              change atTop.liminf
+                ((fun _ : ℕ => C * eLpNorm (fun x => ‖G x‖) p_enn volume) +
+                  fun n => C * eLpNorm (fun x => gradVec (σ n) x - G x) p_enn volume) = _
+              exact ENNReal.liminf_add_of_right_tendsto_zero hDiffZeroSubseq
+                (fun _ : ℕ => C * eLpNorm (fun x => ‖G x‖) p_enn volume)
         _ = C * eLpNorm (fun x => ‖G x‖) p_enn volume := by
               simp
     have hu_phi :

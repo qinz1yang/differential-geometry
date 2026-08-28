@@ -55,12 +55,12 @@ theorem exists_endMetric
   classical
   cases isEmpty_or_nonempty M with
   | inl hM =>
-      letI : IsEmpty M := hM
+      let _ : IsEmpty M := hM
       refine ⟨S.base.metric alpha, ?_⟩
       intro x0
       exact isEmptyElim x0
   | inr hM =>
-      letI : Nonempty M := hM
+      let _ : Nonempty M := hM
       obtain ⟨Lambda, hLambda, t1, ht1, hEquivTail⟩ := hEquiv
       obtain ⟨beta, ht1beta, hBetaOmega⟩ := exists_between ht1.2
       have hBeta : beta ∈ Set.Ioo alpha omega :=
@@ -123,8 +123,13 @@ theorem exists_endMetric
             (ricCovTower (I := I) (S.base.metric s) (S.base.metric s) 0 x)
                 (vec2 (I := I) v w) =
               ricciTensor (I := I) (S.base.metric s) x v w := by
-          simpa [ricCovTower] using
-            (ricciSection_eq_ricciTensor (I := I) (S.base.metric s) x v w)
+          change
+            DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
+                (I := I) (M := M)
+                (leviCivitaConnectionOfMetric (I := I) (S.base.metric s))
+                (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+                  (I := I) (M := M) (S.base.metric s)) x (vec2 (I := I) v w) = _
+          exact ricciSection_eq_ricciTensor (I := I) (S.base.metric s) x v w
         have hv := (hEquivTail s
           ⟨le_of_lt (lt_trans ht1beta hs.1), hs.2⟩ x v).2
         have hw := (hEquivTail s
@@ -198,7 +203,8 @@ theorem exists_endMetric
       have hLimitSeq : Tendsto (fun n : Nat =>
           Integral.Measure.chartGramMatrix (I := I)
             (S.base.metric (tSeq (phi n))) x0 x i j) atTop (nhds L) := by
-        simpa using hLimit.comp (hSeqLeft.comp hPhi.tendsto_atTop)
+        exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl)
+          (hLimit.comp (hSeqLeft.comp hPhi.tendsto_atTop))
       have hEvalCont : Continuous
           (fun eta : TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real =>
             eta v w) :=
@@ -208,8 +214,8 @@ theorem exists_endMetric
           Integral.Measure.chartGramMatrix (I := I)
             (S.base.metric (tSeq (phi n))) x0 x i j) atTop
           (nhds (Integral.Measure.chartGramMatrix (I := I) gInf x0 x i j)) := by
-        simpa [gSeq, gRef, Integral.Measure.chartGramMatrix_apply, v, w] using
-          (hEvalCont.tendsto (gInf.inner x)).comp (hInner x)
+        exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl)
+          ((hEvalCont.tendsto (gInf.inner x)).comp (hInner x))
       have hEq : L = Integral.Measure.chartGramMatrix (I := I) gInf x0 x i j :=
         tendsto_nhds_unique hLimitSeq hMetricSeq
       rwa [hEq] at hLimit

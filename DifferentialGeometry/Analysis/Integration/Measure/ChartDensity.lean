@@ -77,8 +77,8 @@ theorem map_toEuclidean_modelHaar_eq_volume :
         MeasureTheory.Measure
           (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
   have h₁ :
       MeasureTheory.Measure.map (toEuclidean (E := E))
           (modelHaar (E := E)) =

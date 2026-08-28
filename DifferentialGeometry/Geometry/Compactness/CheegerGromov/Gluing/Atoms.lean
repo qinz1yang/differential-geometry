@@ -66,11 +66,11 @@ theorem gluing_atom_mem_Icc
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (p : Y.M)
     (lam : Real) (hlam : 0 < lam) (q : Y.M) :
     gluingAtom Y p lam hlam q ∈ Set.Icc (0 : Real) 1 := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact quadNormal_mem_Icc Y.metric p (gluingBump lam hlam) q
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -94,12 +94,12 @@ theorem gluing_atom_mem_ball
     (hq : gluingAtom Y p lam hlam q ≠ 0) :
     letI : MetricSpace Y.M := P.ms
     q ∈ Metric.ball p (4 * lam) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := P.ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := P.ms
   have hsupp : q ∈ Function.support
       (quadNormal Y.metric p (gluingBump lam hlam)) := by
     rw [Function.mem_support]
@@ -141,12 +141,12 @@ theorem gluing_atom_eq_dist
     letI : MetricSpace Y.M := P.ms
     gluingAtom Y p lam hlam q =
       gluingBump lam hlam ((dist p q) ^ 2) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := P.ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := P.ms
   have hlocal (hdist : dist p q < 4 * lam) :
       gluingAtom Y p lam hlam q =
         gluingBump lam hlam ((dist p q) ^ 2) := by
@@ -247,7 +247,7 @@ theorem seqAtom_some (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     seqAtom hd hD P L pb r k gamma = fun q =>
       gluingBump (L.lamInf (gamma : Nat))
         (hd.lambda_pos hD (L.rInf (gamma : Nat))) ((dist c q) ^ 2) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   simp [seqAtom, hc]
 
 theorem seqAtom_contMDiff (hd : InjRadiusDecayInput (I := I) X) {D : Real}
@@ -262,18 +262,18 @@ theorem seqAtom_contMDiff (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       (X.obj (L.φ k)).t2TangentBundle
     ContMDiff I (modelWithCornersSelf Real Real) ∞
       (seqAtom hd hD P L pb r k gamma) := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
   cases hc : seqCenter hd D P (L.φ k) (gamma : Nat) with
   | none =>
       rw [seqAtom_none hd hD P L pb r k gamma hc]
       exact contMDiff_const
   | some c =>
-      letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+      let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       let lam := L.lamInf (gamma : Nat)
       let hlam := hd.lambda_pos hD (L.rInf (gamma : Nat))
       have hR : 4 * lam <
@@ -300,7 +300,7 @@ theorem seqAtom_Icc (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   cases hc : seqCenter hd D P (L.φ k) (gamma : Nat) with
   | none => simp [seqAtom, hc]
   | some c =>
-      letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+      let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       rw [seqAtom_some hd hD P L pb r k gamma hc]
       exact ⟨(gluingBump _ _).nonneg, (gluingBump _ _).le_one⟩
 
@@ -324,7 +324,7 @@ theorem seqAtom_one_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   | some c =>
       let lam := L.lamInf (gamma : Nat)
       have hlam : 0 < lam := hd.lambda_pos hD (L.rInf (gamma : Nat))
-      letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+      let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       have hdist_lt : dist c q < 3 * lam := by
         simpa only [NetLimitData.innerBall, hc, Metric.mem_ball, dist_comm] using hq
       rw [seqAtom_some hd hD P L pb r k gamma hc]
@@ -354,7 +354,7 @@ theorem seqAtom_mem_hat_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   | some c =>
       let lam := L.lamInf (gamma : Nat)
       have hlam : 0 < lam := hd.lambda_pos hD (L.rInf (gamma : Nat))
-      letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+      let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       have hsupp : (dist c q) ^ 2 ∈
           Function.support (gluingBump lam hlam) := by
         rw [Function.mem_support]
@@ -434,7 +434,7 @@ private theorem packA_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   let O := (X.obj 0).basepoint
   have hself : hd.dist 0 O O = 0 := by
     have hz : ENNReal.ofReal (hd.dist 0 O O) = 0 := by
-      letI : EMetricSpace (X.obj 0).M := (X.obj 0).emetricSpace
+      let : EMetricSpace (X.obj 0).M := (X.obj 0).emetricSpace
       rw [← hre.edist_eq 0 O O, edist_self]
     exact le_antisymm (ENNReal.ofReal_eq_zero.mp hz) (hre.dist_nonneg 0 O O)
   have hcard := pb.card_le 0 r ({O} : Finset (X.obj 0).M) (by
@@ -465,7 +465,7 @@ theorem seqAtom_base_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     seqAtom hd hD P L pb r k (baseIndex hd hre pb hr)
         (X.obj (L.φ k)).basepoint = 1 := by
   apply seqAtom_one_raw hd hD P L pb r k
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   simp only [NetLimitData.innerBall, baseIndex_val, seqCenter_zero, Metric.mem_ball,
     dist_self]
   exact mul_pos (by norm_num) (hd.lambda_pos hD (L.rInf 0))

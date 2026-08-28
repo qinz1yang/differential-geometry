@@ -428,6 +428,9 @@ private theorem hamilton_shi_rm
             (Q.time j) (hamiltonBlowupScale (I := I) P Q j) s) x) ≤
         (100 : Real) ^ 2 *
           (hamiltonBlowupScale (I := I) P Q j) ^ 2 := by
+    rw [show DifferentialGeometry.PDE.RicciFlow.paraTime
+      (Q.time j) (hamiltonBlowupScale (I := I) P Q j) s =
+        Q.time j + s / hamiltonBlowupScale (I := I) P Q j by rfl]
     simpa [hamiltonRiemannNormSq, hamiltonSolution, hamiltonRescaledTime] using hold
   have hscale := hsel.1 j
   have hmul := mul_le_mul_of_nonneg_left hold'
@@ -643,7 +646,7 @@ private theorem hamilton_win_shi
             (hamiltonRescaledSolution (I := I) P Q hsel
               (hamiltonStart (I := I) P Q hsel hwindow + i)).family.metric t)
           N KShi := by
-  letI : CompactSpace M := hcompact
+  let : CompactSpace M := hcompact
   intro N
   let KShi : Real :=
     shiOpenConst (Module.finrank Real E) ((100 : Real) ^ 2)
@@ -694,7 +697,7 @@ private theorem hamilton_win_shi
       change Tensor0SBundle.normSq0S (I := I)
           (Sraw.family.metric t) x 4 (Sraw.base.rm04 t x) ≤
         (100 : Real) ^ 2
-      simpa only [Sraw, j] using
+      simpa only [Sraw, j, DifferentialGeometry.PDE.RicciFlow.SolutionOn.family_metric] using
         hamilton_shi_rm (I := I) P Q hsel hwindow hrm i t ht x)
     N
   simpa only [Fraw, Sraw, j, KShi] using hShi
@@ -734,17 +737,17 @@ private theorem hamilton_src_rm
   let hzero : (0 : Real) ∈ X.D.carrier := by
     change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
     exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
-  letI : TopologicalSpace (X.term i).M := (X.term i).topology
-  letI : ChartedSpace H (X.term i).M := (X.term i).charted
-  letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
-  letI : IsManifold I 1 (X.term i).M :=
+  let : TopologicalSpace (X.term i).M := (X.term i).topology
+  let : ChartedSpace H (X.term i).M := (X.term i).charted
+  let : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+  let : IsManifold I 1 (X.term i).M :=
     IsManifold.of_le (I := I) (M := (X.term i).M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
     change IsManifold I ∞ (X.term i).M
     infer_instance
-  letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
-  letI : T2Space (X.term i).M := (X.term i).t2
+  let : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
+  let : T2Space (X.term i).M := (X.term i).t2
   let B := PointedFlowData.baseFlowBall (I := I) (X.term i)
     hzero r hr
   change B.IsRmControlled
@@ -826,79 +829,79 @@ theorem hamilton_source_chart_jet_bound
       (Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ×ˢ C) := by
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
   change PointedCGHMaps (I := I) X P₀ subseq at Φ
-  letI : TopologicalSpace P₀.M := P₀.topology
-  letI : ChartedSpace H P₀.M := P₀.charted
-  letI : T2Space P₀.M := P₀.t2
-  letI : IsManifold I ∞ P₀.M := P₀.smooth
-  letI : SigmaCompactSpace P₀.M := P₀.sigmaCompact
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace P₀.M := P₀.topology
+  let : ChartedSpace H P₀.M := P₀.charted
+  let : T2Space P₀.M := P₀.t2
+  let : IsManifold I ∞ P₀.M := P₀.smooth
+  let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
+  let : ChartedSpace H (X.term (subseq k)).M :=
     (X.term (subseq k)).charted
-  letI : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
-  letI : IsManifold I ∞ (X.term (subseq k)).M :=
+  let : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
+  let : IsManifold I ∞ (X.term (subseq k)).M :=
     (X.term (subseq k)).smooth
-  letI : IsManifold I 1 (X.term (subseq k)).M :=
+  let : IsManifold I 1 (X.term (subseq k)).M :=
     IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
       (n := (∞ : WithTop ℕ∞)) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 (X.term (subseq k)).M :=
+  let : IsManifold I 2 (X.term (subseq k)).M :=
     IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
       (n := (∞ : WithTop ℕ∞)) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term (subseq k)).M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term (subseq k)).M := by
     change IsManifold I ∞ (X.term (subseq k)).M
     infer_instance
-  letI : SigmaCompactSpace (X.term (subseq k)).M :=
+  let : SigmaCompactSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).sigmaCompact
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
     sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
     sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) :=
+  let : T2Space (SourceDomain (I := I) Φ k) :=
     sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
     sourceDomSmooth (I := I) Φ k
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
       (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k)
     infer_instance
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI : SigmaCompactSpace ↥(targetOpen (I := I) Φ k) :=
+  let : SigmaCompactSpace ↥(targetOpen (I := I) Φ k) :=
     targetDomSigmaOf (I := I) Φ k (htgt k)
-  letI : T2Space ↥(targetOpen (I := I) Φ k) :=
+  let : T2Space ↥(targetOpen (I := I) Φ k) :=
     targetDomT2 (I := I) Φ k
-  letI : IsManifold I 1 ↥(targetOpen (I := I) Φ k) :=
+  let : IsManifold I 1 ↥(targetOpen (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := ↥(targetOpen (I := I) Φ k))
       (n := (∞ : WithTop ℕ∞)) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
       ↥(targetOpen (I := I) Φ k) := by
     change IsManifold I ∞ ↥(targetOpen (I := I) Φ k)
     infer_instance
-  letI : TopologicalSpace (TargetDomain (I := I) Φ k) :=
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) :=
     targetDomTop (I := I) Φ k
-  letI : ChartedSpace H (TargetDomain (I := I) Φ k) :=
+  let : ChartedSpace H (TargetDomain (I := I) Φ k) :=
     targetDomCharted (I := I) Φ k
-  letI : T2Space (TargetDomain (I := I) Φ k) :=
+  let : T2Space (TargetDomain (I := I) Φ k) :=
     targetDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I ∞ (TargetDomain (I := I) Φ k) :=
     targetDomSmooth (I := I) Φ k
-  letI : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (TargetDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
       (TargetDomain (I := I) Φ k) := by
     change IsManifold I ∞ (TargetDomain (I := I) Φ k)
     infer_instance
-  letI : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
+  let : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
     targetDomSigmaOf (I := I) Φ k (htgt k)
   let j₀ := hamiltonStart (I := I) P Q hsel hwindow + subseq k
   let Draw := DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -973,11 +976,11 @@ theorem hamilton_limit_chart_jets_continuous
               (I := I) (co.gInf p.1) x₀ i j) p.2)
         (Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ×ˢ
           interior (extChartAt I x₀).target) := by
-  letI : TopologicalSpace P₀.M := P₀.topology
-  letI : ChartedSpace H P₀.M := P₀.charted
-  letI : T2Space P₀.M := P₀.t2
-  letI : IsManifold I ∞ P₀.M := P₀.smooth
-  letI : SigmaCompactSpace P₀.M := P₀.sigmaCompact
+  let : TopologicalSpace P₀.M := P₀.topology
+  let : ChartedSpace H P₀.M := P₀.charted
+  let : T2Space P₀.M := P₀.t2
+  let : IsManifold I ∞ P₀.M := P₀.smooth
+  let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
   apply ConvOut.gramJets_of_stage (I := I) (Φ := Φ) co
   intro r x₀ i j C hCc hCtgt
   let K : Set P₀.M := (extChartAt I x₀).symm '' C
@@ -991,6 +994,7 @@ theorem hamilton_limit_chart_jets_continuous
     (co.φ k) r x₀ i j hCtgt
   simpa only [K] using hkgrow (co.φ k) (hk.trans (co.hφ.id_le k))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_limit_chart_gram_smooth
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
@@ -1022,17 +1026,18 @@ theorem hamilton_limit_chart_gram_smooth
             (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P₀.M := P₀.topology
-  letI : ChartedSpace H P₀.M := P₀.charted
-  letI : T2Space P₀.M := P₀.t2
-  letI : IsManifold I ∞ P₀.M := P₀.smooth
-  letI : SigmaCompactSpace P₀.M := P₀.sigmaCompact
+  let : TopologicalSpace P₀.M := P₀.topology
+  let : ChartedSpace H P₀.M := P₀.charted
+  let : T2Space P₀.M := P₀.t2
+  let : IsManifold I ∞ P₀.M := P₀.smooth
+  let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
   apply ConvOut.gramSmoothIcc (I := I) (Φ := Φ)
     (neg_lt_zero.mpr (sq_pos_of_pos hamilton_reference_radius_pos))
   · exact Set.Subset.rfl
   · exact Set.Subset.rfl
   · exact hamilton_limit_chart_jets_continuous (I := I) h0omega P hD Q hsel hwindow Φ co
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_limit_is_solution
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
@@ -1063,11 +1068,11 @@ theorem hamilton_limit_is_solution
         DifferentialGeometry.PDE.RicciFlow.SolutionOn
           (I := I) (M := P₀.M)
           (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D) := by
-  letI : TopologicalSpace P₀.M := P₀.topology
-  letI : ChartedSpace H P₀.M := P₀.charted
-  letI : T2Space P₀.M := P₀.t2
-  letI : IsManifold I ∞ P₀.M := P₀.smooth
-  letI : SigmaCompactSpace P₀.M := P₀.sigmaCompact
+  let : TopologicalSpace P₀.M := P₀.topology
+  let : ChartedSpace H P₀.M := P₀.charted
+  let : T2Space P₀.M := P₀.t2
+  let : IsManifold I ∞ P₀.M := P₀.smooth
+  let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
   let J : Set Real := Set.Icc (-(hamilton_reference_radius ^ 2)) 0
   have hJlt : -(hamilton_reference_radius ^ 2) < (0 : Real) :=
     neg_lt_zero.mpr (sq_pos_of_pos hamilton_reference_radius_pos)
@@ -1183,14 +1188,14 @@ noncomputable def hamiltonSourceDerivativeInput
         nonneg := fun k => Real.sqrt_nonneg _
         bound := ?_ }
     intro i k
-    letI : TopologicalSpace (X.term i).M := (X.term i).topology
-    letI : ChartedSpace H (X.term i).M := (X.term i).charted
-    letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
+    let : TopologicalSpace (X.term i).M := (X.term i).topology
+    let : ChartedSpace H (X.term i).M := (X.term i).charted
+    let : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
       change IsManifold I ∞ (X.term i).M
       infer_instance
-    letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
-    letI : T2Space (X.term i).M := (X.term i).t2
+    let : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
+    let : T2Space (X.term i).M := (X.term i).t2
     let j := hamiltonStart (I := I) P Q hsel hwindow + i
     let Draw := DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
       (Q.time j) (hamiltonBlowupScale (I := I) P Q j)
@@ -1230,7 +1235,8 @@ noncomputable def hamiltonSourceDerivativeInput
         change Tensor0SBundle.normSq0S (I := I)
             (Sraw.family.metric t) x 4 (Sraw.base.rm04 t x) ≤
           (100 : Real) ^ 2
-        simpa only [Sraw, j] using
+        simpa only [Sraw, j,
+          DifferentialGeometry.PDE.RicciFlow.SolutionOn.family_metric] using
           hamilton_shi_rm (I := I) P Q hsel hwindow hrm i t ht x)
       k
     unfold HasSpacetimeCurvDerivBound
@@ -1246,13 +1252,12 @@ noncomputable def hamiltonSourceDerivativeInput
           hamiltonShiLeft (-(hamilton_reference_radius ^ 2)) 0 k k)
     rw [curvNormSq_eq (S := (X.term i).S)]
     apply Real.sqrt_le_sqrt
-    change DifferentialGeometry.PDE.RicciFlow.nablaKRm04NormSqIntrinsic
-        (I := I)
-        ((hamiltonRescaledSolution (I := I) P Q hsel j).timeRestrict hamiltonCommonD)
+    change DifferentialGeometry.PDE.RicciFlow.nablaKRm04NormSqIntrinsic (I := I)
+        (Sraw.timeRestrict hamiltonCommonD)
         k t x ≤
       rmOpenBound (Module.finrank Real E) ((100 : Real) ^ 2)
         hamiltonShiLeft (-(hamilton_reference_radius ^ 2)) 0 k k
-    rw [nablaK_restrict]
+    rw [nablaK_restrict (I := I) Sraw k t x]
     simpa only [Fraw, Sraw, j] using hsq k le_rfl t ht' x
   have hzero : (0 : Real) ∈ X.D.carrier := by
     change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
@@ -1404,27 +1409,27 @@ theorem hamilton_flow_upgrade_of_metric_compactness
         t ∈ (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.carrier →
           MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
   classical
-  letI : CompactSpace M := hcompact
+  let : CompactSpace M := hcompact
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
   let mc := canon.compactness
   let Phi := pointedCGHMaps_of_manifold (I := I) X
     mc.limit mc.subseq mc.maps
-  letI : TopologicalSpace mc.limit.M := mc.limit.topology
-  letI : ChartedSpace H mc.limit.M := mc.limit.charted
-  letI : T2Space mc.limit.M := mc.limit.t2
-  letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
-  letI : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
+  let : TopologicalSpace mc.limit.M := mc.limit.topology
+  let : ChartedSpace H mc.limit.M := mc.limit.charted
+  let : T2Space mc.limit.M := mc.limit.t2
+  let : IsManifold I ∞ mc.limit.M := mc.limit.smooth
+  let : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
   have hsrc : SrcSigma (I := I) Phi := by
     intro k
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.source_open (I := I) Phi k)
   have htgt : TgtSigma (I := I) Phi := by
     intro k
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.target_open (I := I) Phi k)
@@ -1455,15 +1460,15 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   have hsrcZero (k : Nat) :
       tgtRefSrc (I := I) Phi gRefT k =
         srcMetric (I := I) Phi hsrc htgt k 0 := by
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : T2Space (X.term (mc.subseq k)).M :=
+    let : T2Space (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).t2
-    letI : IsManifold I ∞ (X.term (mc.subseq k)).M :=
+    let : IsManifold I ∞ (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).smooth
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     rfl
   have hrel : ∀ k : Nat,
@@ -1504,23 +1509,36 @@ theorem hamilton_flow_upgrade_of_metric_compactness
         (-(hamilton_reference_radius ^ 2)) 0 (gRefT k)
         (fun _ t => (X.term (mc.subseq k)).S.family.metric t) B := by
     intro k
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : T2Space (X.term (mc.subseq k)).M :=
+    let : T2Space (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).t2
-    letI : IsManifold I ∞ (X.term (mc.subseq k)).M :=
+    let : IsManifold I ∞ (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).smooth
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     have hall := hwindowRaw (mc.subseq k)
+    have hmetric (t : Real) :
+        (X.term (mc.subseq k)).S.family.metric t =
+          (hamiltonRescaledSolution (I := I) P Q hsel
+            (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric t := by
+      rfl
     have hall' : MetricUniformEquivalentOnWindow (I := I) Set.univ
         (-(hamilton_reference_radius ^ 2)) 0 (gRefT k)
         (fun _ t => (X.term (mc.subseq k)).S.family.metric t) B := by
-      simpa only [X, hamiltonSourceSequence,
-        DifferentialGeometry.PDE.RicciFlow.SolutionOn.timeRestrict_metric,
-        gRefT, B] using hall
+      intro i t ht
+      rw [show gRefT k = (X.term (mc.subseq k)).S.family.metric 0 by rfl]
+      rw [hmetric 0]
+      change MetricUniformEquivalentOn (I := I) Set.univ
+        ((hamiltonRescaledSolution (I := I) P Q hsel
+          (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric 0)
+        ((X.term (mc.subseq k)).S.family.metric t) (B t)
+      rw [hmetric t]
+      with_unfolding_all
+        simpa only [B,
+          DifferentialGeometry.PDE.RicciFlow.SolutionOn.family_metric] using hall i t ht
     intro i t ht
     refine ⟨(hall' i t ht).1, ?_⟩
     intro x _hx v
@@ -1545,20 +1563,42 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       hamilton_win_shi (I := I) h0omega hcompact P hD Q hsel hwindow hrm N
     refine ⟨KShi, hKShi, ?_⟩
     intro k
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : T2Space (X.term (mc.subseq k)).M :=
+    let : T2Space (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).t2
-    letI : IsManifold I ∞ (X.term (mc.subseq k)).M :=
+    let : IsManifold I ∞ (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).smooth
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     intro s hs i t ht x _hx
-    simpa only [X, hamiltonSourceSequence,
-      DifferentialGeometry.PDE.RicciFlow.SolutionOn.timeRestrict_metric] using
-      hShiAll (mc.subseq k) s hs i t ht x (Set.mem_univ x)
+    have hmetric :
+        (X.term (mc.subseq k)).S.family.metric t =
+          (hamiltonRescaledSolution (I := I) P Q hsel
+            (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric t := by
+      rfl
+    change Real.sqrt
+        (Tensor0SBundle.normSq0S (I := I)
+          ((X.term (mc.subseq k)).S.family.metric t) x (2 + s)
+          (ricCovTower (I := I) ((X.term (mc.subseq k)).S.family.metric t)
+            ((X.term (mc.subseq k)).S.family.metric t) s x)) ≤ KShi
+    rw [hmetric]
+    have hraw := hShiAll (mc.subseq k) s hs i t ht x (Set.mem_univ x)
+    with_unfolding_all
+      change Real.sqrt
+          (Tensor0SBundle.normSq0S (I := I)
+            ((hamiltonRescaledSolution (I := I) P Q hsel
+              (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric t)
+            x (2 + s)
+            (ricCovTower (I := I)
+              ((hamiltonRescaledSolution (I := I) P Q hsel
+                (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric t)
+              ((hamiltonRescaledSolution (I := I) P Q hsel
+                (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric t)
+              s x)) ≤ KShi at hraw
+    exact hraw
   have hShiSrc : ∀ N : Nat, ∃ KShi : Real, 0 ≤ KShi ∧
       ∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
@@ -1599,15 +1639,15 @@ theorem hamilton_flow_upgrade_of_metric_compactness
           (refRes (I := I) Phi mc.limit.metric k)
           (srcMetric (I := I) Phi hsrc htgt k t) (Crel * Bmax) := by
     intro k t ht
-    letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
+    let : TopologicalSpace (SourceDomain (I := I) Phi k) :=
       sourceDomTop (I := I) Phi k
-    letI : ChartedSpace H (SourceDomain (I := I) Phi k) :=
+    let : ChartedSpace H (SourceDomain (I := I) Phi k) :=
       sourceDomCharted (I := I) Phi k
-    letI : T2Space (SourceDomain (I := I) Phi k) :=
+    let : T2Space (SourceDomain (I := I) Phi k) :=
       sourceDomT2 (I := I) Phi k
-    letI : IsManifold I ∞ (SourceDomain (I := I) Phi k) :=
+    let : IsManifold I ∞ (SourceDomain (I := I) Phi k) :=
       sourceDomSmooth (I := I) Phi k
-    letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
+    let : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
       sourceDomSigmaOf (I := I) Phi k (hsrc k)
     have hEq := srcEquivOn (I := I) Phi mc.limit.metric hsrc htgt
       (-(hamilton_reference_radius ^ 2)) 0 gRefT B Crel hequivT hrel k t ht
@@ -1642,6 +1682,11 @@ theorem hamilton_flow_upgrade_of_metric_compactness
               sourceDomSmooth (I := I) Phi k
             (srcMetric (I := I) Phi hsrc htgt k t).inner y v v := by
     intro k t ht y v
+    have href :
+        (refRes (I := I) Phi mc.limit.metric k).inner y v v =
+          mc.limit.metric.inner (y : mc.limit.M) v v := by
+      rfl
+    rw [← href]
     simpa only [cLow] using
       ((hequivSrc k t ht).2 y (Set.mem_univ y) v).1
   have hcovTail :
@@ -1733,20 +1778,20 @@ theorem hamilton_flow_upgrade_of_metric_compactness
         (I := I) (co.gInf t) x))
     refine Filter.Tendsto.congr'
       (Filter.Eventually.of_forall (fun k => ?_)) (hscalarRaw t ht x)
-    letI : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).topology
-    letI : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).charted
-    letI : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).smooth
-    letI : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).sigmaCompact
-    letI : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).t2
-    letI : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
       IsManifold.of_le (n := ∞)
         (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (X.term ((mc.subseq ∘ co.φ) k)).M := by
       change IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M
       infer_instance
@@ -1766,20 +1811,20 @@ theorem hamilton_flow_upgrade_of_metric_compactness
           (I := I) (co.gInf t) x)))
     refine Filter.Tendsto.congr'
       (Filter.Eventually.of_forall (fun k => ?_)) (hricRaw t ht x)
-    letI : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).topology
-    letI : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).charted
-    letI : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).smooth
-    letI : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).sigmaCompact
-    letI : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).t2
-    letI : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
       IsManifold.of_le (n := ∞)
         (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (X.term ((mc.subseq ∘ co.φ) k)).M := by
       change IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M
       infer_instance
@@ -1831,10 +1876,10 @@ theorem exists_hamilton_vol
         (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow),
       IsFlowerScaleVolBound (I := I) V := by
   classical
-  letI : CompactSpace M := hM.1
-  letI : ConnectedSpace M := hM.2.1
-  letI : I.Boundaryless := hM.2.2.1
-  letI : NeZero (Module.finrank Real E) := ⟨by
+  let : CompactSpace M := hM.1
+  let : ConnectedSpace M := hM.2.1
+  let : I.Boundaryless := hM.2.2.1
+  let : NeZero (Module.finrank Real E) := ⟨by
     rw [hM.2.2.2]
     norm_num⟩
   have hsol : PDE.RicciFlow.IsSolutionOn (I := I) P.S :=
@@ -1920,13 +1965,8 @@ theorem exists_hamilton_vol
     have hkB : B.IsKappaNoncollapsed kappa :=
       hbelow_i.2 (hamiltonRescaledInitialTime (I := I) P Q hsel j) B
         hradius hRmB
-    simpa only [V, X, B, j, hamiltonSourceSequence,
-      PointedFlowData.baseFlowBall, hamiltonRescaledBall,
-      PDE.RicciFlow.Perelman.FlowMetricBall.IsKappaNoncollapsed,
-      PDE.RicciFlow.Perelman.FlowMetricBall.volume,
-      PDE.RicciFlow.Perelman.FlowMetricBall.set,
-      PDE.RicciFlow.Perelman.FlowMetricBall.setAt,
-      PDE.RicciFlow.SolutionOn.timeRestrict_metric] using hkB
+    with_unfolding_all
+      exact hkB
 
 
 structure HamiltonSourceLink

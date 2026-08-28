@@ -74,7 +74,10 @@ private noncomputable def MemW1pWitness.sub
   weakGrad := fun x => hu.weakGrad x - hv.weakGrad x
   weakGrad_component_memLp := by
     intro i
-    simpa using (hu.weakGrad_component_memLp i).sub (hv.weakGrad_component_memLp i)
+    let h : MemLp (fun x => hu.weakGrad x i - hv.weakGrad x i) 2
+        (volume.restrict Ω) :=
+      (hu.weakGrad_component_memLp i).sub (hv.weakGrad_component_memLp i)
+    exact h
   isWeakGrad := by
     intro i φ hφ hφ_supp hφ_sub
     let ei : E := EuclideanSpace.single i (1 : ℝ)
@@ -319,8 +322,12 @@ private theorem weighted_caccioppoli_absorb_core
     exact weighted_caccioppoli_pointwise_core hΛ hx
   have hupper_int :
       Integrable (fun x => (1 / 2 : ℝ) * η x ^ 2 * Q x + 2 * Λ * ζ x ^ 2 * |v x| ^ 2) μ := by
-    simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using
-      (hleft_int.const_mul (1 / 2 : ℝ)).add (hbound_int.const_mul (2 * Λ))
+    refine ((hleft_int.const_mul (1 / 2 : ℝ)).add
+      (hbound_int.const_mul (2 * Λ))).congr ?_
+    filter_upwards with x
+    change (1 / 2 : ℝ) * (η x ^ 2 * Q x) + 2 * Λ * (ζ x ^ 2 * |v x| ^ 2) =
+      (1 / 2 : ℝ) * η x ^ 2 * Q x + 2 * Λ * ζ x ^ 2 * |v x| ^ 2
+    ring
   have hcross_bound :
       ∫ x, 2 * η x * |v x| * ζ x * |M x| ∂μ ≤
         ∫ x, (1 / 2 : ℝ) * η x ^ 2 * Q x + 2 * Λ * ζ x ^ 2 * |v x| ^ 2 ∂μ := by
@@ -479,8 +486,12 @@ theorem caccioppoli_weighted_of_subsolution
         (fun x =>
           (1 / 2 : ℝ) * leftTerm x + 2 * A.Λ * (gradEtaNorm x ^ 2 * |positivePartSub u k x| ^ 2))
             μ := by
-    simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using
+    let h : Integrable
+        (fun x =>
+          (1 / 2 : ℝ) * leftTerm x + 2 * A.Λ * (gradEtaNorm x ^ 2 * |positivePartSub u k x| ^ 2))
+            μ :=
       (hleft_int.const_mul (1 / 2 : ℝ)).add (hbound_int.const_mul (2 * A.Λ))
+    exact h
   have hcrossAbs_int :
       Integrable crossAbs μ := by
     refine Integrable.mono' hcross_upper_int ?_ ?_
@@ -664,7 +675,7 @@ theorem caccioppoli_weighted_on_ball_of_ballPosPart
       4 * ellipticityRatio A *
         ∫ x in Metric.ball x₀ s, ‖fderiv ℝ η x‖ ^ 2 * |positivePartSub u k x| ^ 2 ∂volume := by
   let _ := _hs
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   have hη_comp : HasCompactSupport η :=
@@ -711,7 +722,7 @@ theorem caccioppoli_weighted_on_ball_of_posPartApprox
         hs hu k happroxBallShift).weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A *
         ∫ x in Metric.ball x₀ s, ‖fderiv ℝ η x‖ ^ 2 * |positivePartSub u k x| ^ 2 ∂volume := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let hw_trunc : MemW1pWitness 2 (positivePartSub u k) (Metric.ball x₀ s) :=
@@ -750,7 +761,9 @@ theorem deGiorgi_energy_estimate_on_concentricBalls_of_ballPosPart
   have htrunc_sq_int :
       IntegrableOn (fun x => ‖hw_trunc.weakGrad x‖ ^ 2)
         (Metric.ball x₀ s) volume := by
-    simpa [pow_two] using hw_trunc.weakGrad_norm_memLp.integrable_sq
+    let h : IntegrableOn (fun x => ‖hw_trunc.weakGrad x‖ ^ 2)
+        (Metric.ball x₀ s) volume := hw_trunc.weakGrad_norm_memLp.integrable_sq
+    exact h
   have hweighted_int :
       IntegrableOn (fun x => η x ^ 2 * ‖hw_trunc.weakGrad x‖ ^ 2)
         (Metric.ball x₀ s) volume := by
@@ -772,7 +785,9 @@ theorem deGiorgi_energy_estimate_on_concentricBalls_of_ballPosPart
   have hpos_sq_int :
       IntegrableOn (fun x => |positivePartSub u k x| ^ 2)
         (Metric.ball x₀ s) volume := by
-    simpa [pow_two] using hw_trunc.memLp.integrable_sq
+    refine hw_trunc.memLp.integrable_sq.congr ?_
+    filter_upwards with x
+    rw [sq_abs]
   have hgrad_term_int :
       IntegrableOn (fun x => ‖fderiv ℝ η x‖ ^ 2 * |positivePartSub u k x| ^ 2)
         (Metric.ball x₀ s) volume := by
@@ -1003,8 +1018,12 @@ theorem weighted_caccioppoli_absorb
     exact weighted_caccioppoli_pointwise hΛ hx
   have hupper_int :
       Integrable (fun x => (1 / 2 : ℝ) * η x ^ 2 * E x + 2 * Λ * ζ x ^ 2 * |v x| ^ 2) μ := by
-    simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using
-      (hleft_int.const_mul (1 / 2 : ℝ)).add (hbound_int.const_mul (2 * Λ))
+    refine ((hleft_int.const_mul (1 / 2 : ℝ)).add
+      (hbound_int.const_mul (2 * Λ))).congr ?_
+    filter_upwards with x
+    change (1 / 2 : ℝ) * (η x ^ 2 * E x) + 2 * Λ * (ζ x ^ 2 * |v x| ^ 2) =
+      (1 / 2 : ℝ) * η x ^ 2 * E x + 2 * Λ * ζ x ^ 2 * |v x| ^ 2
+    ring
   have hcross_bound :
       ∫ x, 2 * η x * |v x| * ζ x * |M x| ∂μ ≤
         ∫ x, (1 / 2 : ℝ) * η x ^ 2 * E x + 2 * Λ * ζ x ^ 2 * |v x| ^ 2 ∂μ := by
@@ -1070,7 +1089,9 @@ theorem caccioppoli_localize_on_subset
     exact hsq
   have hgrad_int :
       IntegrableOn (fun x => C_grad ^ 2 * |v x| ^ 2) t μ := by
-    simpa using hv_sq_int.const_mul (C_grad ^ 2)
+    let h : IntegrableOn (fun x => C_grad ^ 2 * |v x| ^ 2) t μ :=
+      hv_sq_int.const_mul (C_grad ^ 2)
+    exact h
   have hgrad_bound :
       ∫ x in t, ζ x ^ 2 * |v x| ^ 2 ∂μ ≤ ∫ x in t, C_grad ^ 2 * |v x| ^ 2 ∂μ := by
     refine integral_mono_ae hzv_int hgrad_int ?_

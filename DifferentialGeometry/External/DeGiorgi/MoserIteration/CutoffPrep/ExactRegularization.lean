@@ -45,7 +45,7 @@ lemma moserPosPartWitnessUnitBall_grad_eq_on_pos
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) 1)),
       0 < u x →
         (moserPosPartWitnessUnitBall (d := d) (u := u) hu1).weakGrad x = hu1.weakGrad x := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  let _ : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let happrox0 :=
@@ -749,7 +749,7 @@ theorem tendsto_moserEpsSeq :
 
 theorem moserEpsSeq_le_one (n : ℕ) : moserEpsSeq n ≤ 1 := by
   dsimp [moserEpsSeq]
-  have hn_nonneg : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le n
+  have hn_nonneg : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le (n := n)
   have hden_ge : (1 : ℝ) ≤ (n : ℝ) + 1 := by linarith
   exact inv_le_one_of_one_le₀ hden_ge
 
@@ -925,8 +925,11 @@ theorem moser_weighted_absorb
         (fun x =>
           (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +
             2 * Λ * ζ x ^ 2 * (|ψ x| ^ 2 / ψd x)) μ := by
-    simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using
-      (hleft_int.const_mul (1 / 2 : ℝ)).add (hbound_int.const_mul (2 * Λ))
+    convert (hleft_int.const_mul (1 / 2 : ℝ)).add
+      (hbound_int.const_mul (2 * Λ)) using 1 <;> try rfl
+    ring_nf
+    funext x
+    rfl
   have hcross_bound :
       ∫ x, 2 * η x * |ψ x| * ζ x * |M x| ∂μ ≤
         ∫ x, (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +

@@ -211,7 +211,7 @@ lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
   rw [hρu_def, ← h_eq]
 
 private noncomputable def chartLocalIntegralPouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   ∫⁻ x, (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -219,7 +219,7 @@ private noncomputable def chartLocalIntegralPouTsupport
       ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α)
 
 private noncomputable def euclideanDensityIntegralPouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -234,7 +234,7 @@ private noncomputable def euclideanDensityIntegralPouTsupport
       ∂(volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))))
 
 private noncomputable def chartHaarFactor
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   chartLocalIntegralPouTsupport (I := I) (M := M) g α /

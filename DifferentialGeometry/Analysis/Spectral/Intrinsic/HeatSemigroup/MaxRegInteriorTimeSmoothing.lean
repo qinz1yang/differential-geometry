@@ -85,10 +85,18 @@ private theorem perModeConv_sq_le_T_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
   have hintegral_t_nn : 0 ≤ ∫ s in (0 : ℝ)..t, f s ^ 2 :=
     intervalIntegral.integral_nonneg ht0 (fun s _ => sq_nonneg _)
   have hintegral_le : (∫ s in (0 : ℝ)..t, f s ^ 2) ≤ ∫ s in (0 : ℝ)..T, f s ^ 2 := by
-    rw [← intervalIntegral.integral_add_adjacent_intervals
-        (b := t) (c := T)
-        (((hf.pow 2)).intervalIntegrable 0 t)
-        (((hf.pow 2)).intervalIntegrable t T)]
+    have hpow : Continuous (fun s : ℝ => f s ^ 2) := hf.pow 2
+    have hzeroT : IntervalIntegrable (fun s : ℝ => f s ^ 2) volume 0 t :=
+      hpow.intervalIntegrable 0 t
+    have hInttT : IntervalIntegrable (fun s : ℝ => f s ^ 2) volume t T :=
+      hpow.intervalIntegrable t T
+    have hadd := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+      (b := t) (c := T)
+      hzeroT hInttT
+    have heq : (∫ s in (0 : ℝ)..T, f s ^ 2) =
+        (∫ s in (0 : ℝ)..t, f s ^ 2) + ∫ s in t..T, f s ^ 2 := by
+      simpa only [Pi.pow_apply] using hadd.symm
+    rw [heq]
     have htail : 0 ≤ ∫ s in t..T, f s ^ 2 :=
       intervalIntegral.integral_nonneg htT (fun s _ => sq_nonneg _)
     linarith

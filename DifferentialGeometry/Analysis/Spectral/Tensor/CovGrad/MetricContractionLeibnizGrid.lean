@@ -29,14 +29,14 @@ variable [CompleteSpace E]
 section RankCast
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem covGrad_heq_congr_db (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b} (hYZ : HEq Y Z) :
     HEq (covGrad g r a Y) (covGrad g r b Z) := by
   subst h; rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_covGrad_comm_heq_db (g : SmoothRiemannianMetric I M) (r s m : ℕ)
     (X : SmoothCcTensor g r s) :
     HEq (iteratedCovGrad g r (s + 1) m (covGrad g r s X))
@@ -58,7 +58,7 @@ private theorem riemannianFiberNormSq_toSection_heq_congr (g : SmoothRiemannianM
   subst h; rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db (g : SmoothRiemannianMetric I M)
     (r s m : ℕ) (W : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r ((s + 1) + m) x
@@ -73,7 +73,7 @@ def castCcTensorRank (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h :
   h ▸ W
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_castCcTensorRank (g : SmoothRiemannianMetric I M)
     (r : ℕ)
     {a b : ℕ} (h : a = b) (W : SmoothCcTensor g r a) (j : ℕ) (x : M) :
@@ -151,7 +151,7 @@ namespace DiffBilinOp
 variable {g : SmoothRiemannianMetric I M}
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
     ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g 0 ((r + p) + j) x
@@ -284,7 +284,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ
         (mul_le_mul_of_nonneg_left hB (by norm_num))
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le (Φ : DiffBilinOp g) :
     ∃ C : ℕ → ℕ → ℝ, (∀ r j, 0 ≤ C r j) ∧
       ∀ (r : ℕ) (W : SmoothCcTensor g 0 r) (j : ℕ) (x : M),
@@ -300,7 +300,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le (Φ : DiffBili
   simpa only [Nat.add_zero, Nat.zero_add] using hgrid
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_grid_at
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (hcovGrad_op : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
@@ -445,7 +445,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_grid_at
         (mul_le_mul_of_nonneg_left hB (by norm_num))
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le_at
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (hcovGrad_op : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),

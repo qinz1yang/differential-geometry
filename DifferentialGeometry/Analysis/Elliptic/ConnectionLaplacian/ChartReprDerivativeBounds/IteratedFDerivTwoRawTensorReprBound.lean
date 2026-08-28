@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -55,11 +54,11 @@ private lemma raw_reprT_contDiffOn_goodSet
         (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
     tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
     tensorRSBundle_fiber r s
   set S : SmoothCcTensor g r s := rawTensorConnLapSmooth (I := I) g r s T

@@ -2,6 +2,7 @@
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.Sequences
 import Mathlib.Topology.MetricSpace.Thickening
 
+
 /-!
 # Moser Cutoff Preparation Basics
 
@@ -205,7 +206,7 @@ theorem sobolev_prepare_on_ball
   have hΩ_open : IsOpen Ω := by
     simp [Ω]
   have hΩ_meas : MeasurableSet Ω := measurableSet_ball
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -411,13 +412,19 @@ theorem local_ae_bound_on_halfBall_of_subsolution
       IntegrableOn
         (fun z => |max (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u z) 0| ^ 2)
         (Metric.ball (0 : E) 1) volume := by
-    simpa [huR, rescaleToUnitBall, pow_two] using huR.memLp.pos_part.integrable_sq
+    change Integrable _ (volume.restrict (Metric.ball (0 : E) 1))
+    refine huR.memLp.pos_part.integrable_sq.congr
+      (Filter.Eventually.of_forall ?_)
+    intro z
+    simp [rescaleToUnitBall, pow_two]
   have hsub_scaled :
       IsSubsolution
         (rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR Aball).1
         (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u) := by
-    simpa [Aball] using
-      rescaleToUnitBall_isSubsolution (d := d) (x₀ := x₀) (R := R) hR Aball.1 hsub_ball
+    change IsSubsolution (rescaleCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR Aball.1)
+      (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u)
+    exact rescaleToUnitBall_isSubsolution (d := d) (x₀ := x₀) (R := R)
+      hR Aball.1 hsub_ball
   obtain ⟨lamStar, hlam_pos, -, hbound_unit⟩ :=
     linfty_subsolution_DeGiorgi_exists_threshold (d := d) hd
       (rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR Aball).1
@@ -593,14 +600,16 @@ theorem moser_comp_abs_le_linear
     ∃ M, 0 ≤ M ∧ ∀ t, |Φ t| ≤ M * |t| := by
   obtain ⟨M, hM⟩ := hΦ'_bdd
   have hM_nonneg : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
-  have hΦ_lip : LipschitzWith ⟨M, hM_nonneg⟩ Φ :=
+  have hΦ_lip : LipschitzWith (⟨M, hM_nonneg⟩ : NNReal) Φ :=
     lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
-      simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
-      exact (Real.norm_eq_abs _).symm ▸ hM t)
+      change ‖deriv Φ t‖ ≤ M
+      simpa only [Real.norm_eq_abs] using hM t)
   refine ⟨M, hM_nonneg, ?_⟩
   intro t
   have ht := hΦ_lip.dist_le_mul t 0
-  simpa [Real.dist_eq, hΦ0, Real.norm_eq_abs] using ht
+  simp only [Real.dist_eq, hΦ0, sub_zero] at ht
+  change |Φ t| ≤ M * |t| at ht
+  exact ht
 
 /-- Smooth bounded-derivative composition helper for Chapter 06.
 
@@ -617,14 +626,16 @@ noncomputable def MemW1pWitness.comp_smooth_bounded
   let M : ℝ := Classical.choose hΦ'_bdd
   have hM : ∀ t, |deriv Φ t| ≤ M := Classical.choose_spec hΦ'_bdd
   have hM_nonneg : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
-  have hΦ_lip : LipschitzWith ⟨M, hM_nonneg⟩ Φ :=
+  have hΦ_lip : LipschitzWith (⟨M, hM_nonneg⟩ : NNReal) Φ :=
     lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
-      simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
-      exact (Real.norm_eq_abs _).symm ▸ hM t)
+      change ‖deriv Φ t‖ ≤ M
+      simpa only [Real.norm_eq_abs] using hM t)
   have hΦ_abs_le : ∀ t, |Φ t| ≤ M * |t| := by
     intro t
     have ht := hΦ_lip.dist_le_mul t 0
-    simpa [Real.dist_eq, hΦ0, Real.norm_eq_abs] using ht
+    simp only [Real.dist_eq, hΦ0, sub_zero] at ht
+    change |Φ t| ≤ M * |t| at ht
+    exact ht
   have hcomp_memLp :
       MemLp (fun x => Φ (u x)) 2 (volume.restrict Ω) := by
     refine MemLp.of_le_mul (g := u) (c := M) hu.memLp ?_ ?_
@@ -681,7 +692,7 @@ theorem moser_shiftApprox_on_ball_of_unitBall
               2 (volume.restrict (Metric.ball (0 : E) s)))
           Filter.atTop (nhds 0)) := by
   let _ := _hs
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let huShift : MemW1pWitness 2 (fun x => u x - θ) (Metric.ball (0 : E) 1) :=
@@ -816,12 +827,13 @@ lemma positivePartSub_grad_eq_on_superlevel
       have huxk : 0 ≤ u x - k := le_of_lt (sub_pos.mpr hku)
       simp [w, positivePartSub, max_eq_left huxk]
     have hgrad0 : hw_diff.weakGrad x i = 0 := hx hfun
-    have hgrad0' :
-        (hu.weakGrad x).ofLp i - (hw_trunc.weakGrad x).ofLp i = 0 := by
-      simpa [hw_diff, hw_shift, w, MemW1pWitness.add, MemW1pWitness.smul,
-        MemW1pWitness.sub_const, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-        using hgrad0
-    exact sub_eq_zero.mp hgrad0'
+    simp only [hw_diff, hw_shift, w, MemW1pWitness.add, MemW1pWitness.smul,
+      MemW1pWitness.sub_const, WithLp.ofLp_add, WithLp.ofLp_smul,
+      Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hgrad0
+    have hcomponent :
+        (hu.weakGrad x).ofLp i = (hw_trunc.weakGrad x).ofLp i := by
+      linarith only [hgrad0]
+    exact hcomponent
   filter_upwards [ae_all_iff.2 hcomp] with x hx hku
   ext i
   exact hx i hku
@@ -855,7 +867,7 @@ lemma moserClippedPosPartWitness_grad_eq_on_midrange
         (moserClippedPosPartWitness (d := d) (u := u) (s := s) (N := N) hs hs1 hN hu1).weakGrad x =
           (hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)).weakGrad x := by
   let Ω := Metric.ball (0 : E) s
-  letI : IsFiniteMeasure (volume.restrict Ω) := by
+  let : IsFiniteMeasure (volume.restrict Ω) := by
     dsimp [Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -921,7 +933,7 @@ lemma moserClippedPosPartWitness_grad_zero_on_toplevel
         (moserClippedPosPartWitness (d := d) (u := u) (s := s) (N := N) hs hs1 hN hu1).weakGrad x =
           0 := by
   let Ω := Metric.ball (0 : E) s
-  letI : IsFiniteMeasure (volume.restrict Ω) := by
+  let : IsFiniteMeasure (volume.restrict Ω) := by
     dsimp [Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne

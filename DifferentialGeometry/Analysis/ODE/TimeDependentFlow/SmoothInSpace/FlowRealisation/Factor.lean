@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOp
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.EuclideanVariationalODE
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.FlatPairedResidual
+
+
 open DifferentialGeometry.Geometry.Connection
 
 
@@ -67,8 +69,11 @@ theorem chartMovingTriv_orbit_hasDerivAt_of_chartJet
     (hc : HasDerivAt (fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x)) velChart t) :
     HasDerivAt (fun s : ℝ => chartMovingTriv (I := I) α
         (extChartAt I α ((Φ_fam s : M → M) x))) (G' velChart) t := by
-  have := hGfd.comp_hasDerivAt t hc
-  simpa using this
+  change HasDerivAt
+    ((fun z => chartMovingTriv (I := I) α z) ∘
+      fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x))
+    (G' velChart) t
+  exact hGfd.comp_hasDerivAt t hc
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -147,17 +152,20 @@ theorem leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
       (extChartAt I (Φ_fam t x) (Φ_fam t x))) :
     (LeviCivita (I := I) g) (X : ∀ y : M, TangentSpace I y) (Φ_fam t x)
         (mfderiv I I (Φ_fam t : M → M) x u)
-      = (fderiv ℝ (chartRawRepr (I := I) (Φ_fam t x)
-              (X : ∀ y : M, TangentSpace I y))
-            (extChartAt I (Φ_fam t x) (Φ_fam t x))
-            (mfderiv I I (Φ_fam t : M → M) x u)
-          + movingTrivCorrection (I := I) (Φ_fam t x)
-              (X : ∀ y : M, TangentSpace I y)
-              (mfderiv I I (Φ_fam t : M → M) x u))
-        + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-            (chartE_section_repr (I := I) (Φ_fam t x)
-              (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
-            (mfderiv I I (Φ_fam t : M → M) x u) :=
+      = (centeredChartTangentEquiv (I := I) (Φ_fam t x)).symm
+          ((fderiv ℝ (chartRawRepr (I := I) (Φ_fam t x)
+                (X : ∀ y : M, TangentSpace I y))
+              (extChartAt I (Φ_fam t x) (Φ_fam t x))
+              ((centeredChartTangentEquiv (I := I) (Φ_fam t x))
+                (mfderiv I I (Φ_fam t : M → M) x u))
+            + movingTrivCorrection (I := I) (Φ_fam t x)
+                (X : ∀ y : M, TangentSpace I y)
+                ((centeredChartTangentEquiv (I := I) (Φ_fam t x))
+                  (mfderiv I I (Φ_fam t : M → M) x u)))
+          + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
+              (chartE_section_repr (I := I) (Φ_fam t x)
+                (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
+              (mfderiv I I (Φ_fam t : M → M) x u)) :=
   leviCivita_basepoint_eq_rawFderiv_add_corrections (I := I) g (Φ_fam t x)
     (X : ∀ y : M, TangentSpace I y) (mfderiv I I (Φ_fam t : M → M) x u)
     hα (X.mdifferentiableAt) hRdiff hCdiff
@@ -207,10 +215,18 @@ theorem variational_flow_flat_paired_residual_of_chart_realisation
         + metricTransportResidual (I := I) g X Φ_fam t x v w) t :=
   variational_flow_flat_paired_residual_hasDerivAt (I := I) g X Φ_fam t x v w
     T'v P'v T'w P'w hv_flat hw_flat hflatval_v hflatval_w
-    (leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections (I := I) g X Φ_fam t x v hα hRdiff
-      hCdiff)
-    (leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections (I := I) g X Φ_fam t x w hα hRdiff
-      hCdiff)
+    (by
+      simpa only [centeredChartTangentEquiv_apply,
+        tangentSpaceModelContinuousLinearEquiv_apply,
+        centeredChartTangentEquiv_symm_apply] using
+          leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
+            (I := I) g X Φ_fam t x v hα hRdiff hCdiff)
+    (by
+      simpa only [centeredChartTangentEquiv_apply,
+        tangentSpaceModelContinuousLinearEquiv_apply,
+        centeredChartTangentEquiv_symm_apply] using
+          leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
+            (I := I) g X Φ_fam t x w hα hRdiff hCdiff)
 
 end PairedResidualDischarge
 

@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometricOperatorH2
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -73,7 +74,6 @@ private noncomputable def fullH2
   appHs (I := I) (M := M) g 4 4 2
     (fullCoeff4 (I := I) (M := M) g a b)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -98,7 +98,6 @@ private lemma raise_eq_diff
   rw [htie x v w]
   ring
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -130,7 +129,7 @@ private lemma fullField_decomp
         metricComparisonEndomorphismField (I := I) (M := M) g g x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   rw [show metricComparisonDifferenceEndomorphismField (I := I) a b x =
       metricComparisonDifferenceEndomorphism (I := I) a b x from rfl]
   rw [metricComparisonEndomorphismField_apply]
@@ -155,7 +154,7 @@ private lemma fullH2_decomp
         fullH2 (I := I) (M := M) g g g := by
   apply ContinuousLinearMap.ext
   intro U
-  simp only [fullH2, diffH2, ContinuousLinearMap.add_apply]
+  simp only [fullH2, diffH2, add_apply]
   rw [fullCoeff_decomp (I := I) (M := M) g a b]
   exact appHs_add (I := I) (M := M) g 4 4 2
     (diffCoeff4 (I := I) (M := M) g a b)

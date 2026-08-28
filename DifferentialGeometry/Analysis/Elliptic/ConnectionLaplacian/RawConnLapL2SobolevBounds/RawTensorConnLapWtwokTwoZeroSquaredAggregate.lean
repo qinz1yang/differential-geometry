@@ -8,7 +8,6 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -56,7 +55,7 @@ private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
       ENNReal.rpow_natCast]
     rw [show ((f x) ^ 2 : ℝ) = ‖f x‖ ^ 2 from by
       rw [Real.norm_eq_abs, sq_abs]]
-    rw [← ofReal_norm_eq_enorm]
+    rw [← ofReal_norm]
     rw [ENNReal.ofReal_pow (norm_nonneg _) 2]
   have h_step1 : (I ^ ((1 : ℝ) / 2)) ^ 2 = (I ^ ((1 : ℝ) / 2)) ^ ((2 : ℕ) : ℝ) := by
     rw [ENNReal.rpow_natCast]

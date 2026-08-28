@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -84,11 +83,11 @@ theorem chartTensorRSSecondCovariantDerivative_eq_abstract
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)) X.toFun T.toFun) X'.toFun y := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
     tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
     tensorRSBundle_fiber r s
   have hCovApply_smooth :

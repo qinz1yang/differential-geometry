@@ -112,6 +112,12 @@ theorem exists_calabiTail
   let z : TangentBundle I M :=
     intrinsicVelocityLift (I := I) g hEnorm O v s₀
   let u : TangentSpace I z.proj := (1 - s₀) • z.snd
+  let zE : E := tangentSpaceModelContinuousLinearEquiv (I := I) z.proj z.snd
+  let uE : E := (1 - s₀) • zE
+  have huE :
+      uE = tangentSpaceModelContinuousLinearEquiv (I := I) z.proj u := by
+    dsimp only [uE, zE, u]
+    rw [map_smul]
   let left : Real := s₀ * r
   let ell : Real := (1 - s₀) * r
   have hs₀ : s₀ ∈ Set.Ioo (0 : Real) 1 := by
@@ -128,11 +134,11 @@ theorem exists_calabiTail
         (riemannianEDist I O x).toReal :=
     hlen.trans hr_def
   have hnot :
-      ¬ IsConjVec (I := I) g hEnorm z.proj (u : E) := by
-    simpa only [z, u] using
-      Geometry.Riemannian.Variation.tail_not_conj_of_min
-        (I := I) g hEnorm v hexp hlen_dist
-          (hr_def ▸ hr) hs₀
+      ¬ IsConjVec (I := I) g hEnorm z.proj
+        (tangentSpaceModelContinuousLinearEquiv (I := I) z.proj u) := by
+    with_unfolding_all
+      exact Geometry.Riemannian.Variation.tail_not_conj_of_min
+        (I := I) g hEnorm v hexp hlen_dist (hr_def ▸ hr) hs₀
   obtain ⟨B, hsource⟩ :=
     branch_of_not_conj (I := I) g hEnorm hnot
   have hexp_tail :
@@ -167,13 +173,16 @@ theorem exists_calabiTail
         congr 1
         ring
       _ = x := hend
-  have hmap_eq : B.hom (u : E) = x :=
-    (B.hom_eq hsource).symm.trans hexp_tail
-  have hscale_cont : Continuous (fun t : Real => t • (u : E)) :=
+  have hmap_eq : B.hom uE = x :=
+    by
+      rw [huE]
+      exact (B.hom_eq hsource).symm.trans hexp_tail
+  have hscale_cont : Continuous (fun t : Real => t • uE) :=
     continuous_id.smul continuous_const
   have hsource_nhds :
-      {t : Real | t • (u : E) ∈ B.hom.source} ∈ 𝓝 (1 : Real) := by
+      {t : Real | t • uE ∈ B.hom.source} ∈ 𝓝 (1 : Real) := by
     apply hscale_cont.continuousAt.preimage_mem_nhds
+    rw [huE]
     simpa only [one_smul] using B.hom.open_source.mem_nhds hsource
   obtain ⟨ε, hε, hε_sub⟩ := Metric.mem_nhds_iff.mp hsource_nhds
   let b : Real := 1 + ε / 2
@@ -182,7 +191,7 @@ theorem exists_calabiTail
     linarith
   have hsource_tail :
       ∀ t ∈ Set.Icc (1 : Real) b,
-        t • (u : E) ∈ B.hom.source := by
+        t • uE ∈ B.hom.source := by
     intro t ht
     apply hε_sub
     rw [Metric.mem_ball, Real.dist_eq,
@@ -194,23 +203,34 @@ theorem exists_calabiTail
   have htail_no :
       ∀ t ∈ Set.Ioc (0 : Real) 1,
         ¬ IsConjVec (I := I) g hEnorm z.proj
-          ((t • u : TangentSpace I z.proj) : E) := by
-    simpa only [z, u] using
-      Geometry.Riemannian.Variation.tail_no_conj
-        (I := I) g hEnorm v hexp hlen_dist
-          (hr_def ▸ hr) hs₀
+          (t • uE) := by
+    intro t ht
+    have htModel :
+        t • uE = tangentSpaceModelContinuousLinearEquiv (I := I) z.proj (t • u) := by
+      dsimp only [uE, zE, u]
+      rw [map_smul, map_smul]
+    rw [htModel]
+    with_unfolding_all
+      exact Geometry.Riemannian.Variation.tail_no_conj
+        (I := I) g hEnorm v hexp hlen_dist (hr_def ▸ hr) hs₀ t ht
   have hno :
       ∀ t ∈ Set.Ioo (0 : Real) b,
         ¬ IsConjVec (I := I) g hEnorm z.proj
-          ((t • u : TangentSpace I z.proj) : E) := by
+          (t • uE) := by
     intro t ht
     rcases le_total t 1 with ht1 | h1t
     · exact htail_no t ⟨ht.1, ht1⟩
     · exact B.not_conj (hsource_tail t ⟨h1t, ht.2.le⟩)
   have hspeed :
       g.inner z.proj z.snd z.snd = g.inner O v v := by
-    simpa only [z, intrinsicVelocityLift] using
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm O v s₀
+    rw [show z.proj = intrinsicGeodesic (I := I) g hEnorm O v s₀ by
+      exact velocityLift_proj (I := I) g hEnorm O v s₀]
+    rw [show z.snd =
+        (mfderiv 𝓘(Real, Real) I
+          (intrinsicGeodesic (I := I) g hEnorm O v) s₀ :
+            Real →L[Real] TangentSpace I
+              (intrinsicGeodesic (I := I) g hEnorm O v s₀)) 1 by rfl]
+    exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm O v s₀
   have hu_norm :
       Real.sqrt (g.inner z.proj u u) = ell := by
     dsimp only [u]
@@ -377,29 +397,39 @@ theorem exists_calabiData
       _ = gradientFun (I := I) g
             (branchRadius (I := I) g tail.branch) x := by
         rw [gradientFun_const, zero_add]
+  let velocityAtOne : TangentSpace I
+      (intrinsicGeodesic (I := I) g hEnorm tail.p tail.u 1) :=
+    (mfderiv 𝓘(Real, Real) I
+      (intrinsicGeodesic (I := I) g hEnorm tail.p tail.u) 1) 1
+  let velocityE : E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I)
+      (intrinsicGeodesic (I := I) g hEnorm tail.p tail.u 1) velocityAtOne
+  let Vx : TangentSpace I x :=
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+      velocityE
   have hgrad_br :
       gradientFun (I := I) g
           (branchRadius (I := I) g tail.branch) x =
         (Real.sqrt (g.inner tail.p tail.u tail.u))⁻¹ •
-          (intrinsicVelocityLift
-            (I := I) g hEnorm tail.p tail.u 1).snd := by
+          Vx := by
     have h :=
       grad_branchRadius
         (I := I) tail.branch tail.source_mem hu_pos
     rw [tail.exp_eq] at h
-    exact h
+    dsimp only [Vx, velocityE, velocityAtOne]
+    with_unfolding_all
+      convert h using 1
+      all_goals rfl
   have hspeed :
-      g.inner x
-          (intrinsicVelocityLift
-            (I := I) g hEnorm tail.p tail.u 1).snd
-          (intrinsicVelocityLift
-            (I := I) g hEnorm tail.p tail.u 1).snd =
+      g.inner x Vx Vx =
         g.inner tail.p tail.u tail.u := by
     have h :=
       intrinsicGeodesic_speedSq_eq
         (I := I) g hEnorm tail.p tail.u 1
     rw [← expMapIntrinsic_def, tail.exp_eq] at h
-    simpa only [intrinsicVelocityLift] using h
+    dsimp only [Vx, velocityE, velocityAtOne]
+    convert h using 1
+    all_goals rfl
   have hu_sq :
       g.inner tail.p tail.u tail.u = tail.ell ^ 2 := by
     have hsq :=
@@ -407,24 +437,12 @@ theorem exists_calabiData
         (gInner_self_nonneg (I := I) g tail.p tail.u)
     rw [tail.u_norm] at hsq
     exact hsq.symm
-  let Vx : TangentSpace I x :=
-    show TangentSpace I x from
-      ((intrinsicVelocityLift
-        (I := I) g hEnorm tail.p tail.u 1).snd : E)
-  have hgrad_br' :
-      gradientFun (I := I) g
-          (branchRadius (I := I) g tail.branch) x =
-        (Real.sqrt (g.inner tail.p tail.u tail.u))⁻¹ • Vx := by
-    simpa only [Vx] using hgrad_br
-  have hspeed' :
-      g.inner x Vx Vx = g.inner tail.p tail.u tail.u := by
-    simpa only [Vx] using hspeed
   have hgrad_norm :
       g.inner x
           (gradientFun (I := I) g rho x)
           (gradientFun (I := I) g rho x) = 1 := by
-    rw [hgrad_rho, hgrad_br',
-      gInner_smul_self (I := I) g x, hspeed', tail.u_norm,
+    rw [hgrad_rho, hgrad_br,
+      gInner_smul_self (I := I) g x, hspeed, tail.u_norm,
       hu_sq]
     field_simp [tail.ell_pos.ne']
   obtain ⟨U, hUopen, hxU, hbrU⟩ :=
@@ -433,8 +451,10 @@ theorem exists_calabiData
   rw [tail.exp_eq] at hxU
   have hrhoU :
       ContMDiffOn I 𝓘(Real, Real) ∞ rho U := by
-    simpa only [rho] using
-      (contMDiffOn_const.add hbrU)
+    dsimp only [rho]
+    change ContMDiffOn I 𝓘(Real, Real) ∞
+      ((fun _ : M => tail.left) + branchRadius (I := I) g tail.branch) U
+    exact contMDiffOn_const.add hbrU
   have hrho_ev :
       ∀ᶠ y in 𝓝 x,
         MDifferentiableAt I 𝓘(Real, Real) rho y := by
@@ -544,19 +564,19 @@ theorem exists_calabiData_of_complete_metric
           (LeviCivita (I := I) g) g rho x ≤
         2 * ((Module.finrank Real E - 1 : Nat) : Real) / r +
           ((Module.finrank Real E - 1 : Nat) : Real) * q := by
-  letI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let _ : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M => TangentSpace I y) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+  let _ : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro y v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
@@ -634,19 +654,19 @@ theorem calabiDist_support_of_complete_metric
           (LeviCivita (I := I) g) g rho x ≤
         2 * ((Module.finrank Real E - 1 : Nat) : Real) / r +
           ((Module.finrank Real E - 1 : Nat) : Real) * q := by
-  letI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let _ : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M => TangentSpace I y) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+  let _ : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro y v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
@@ -690,13 +710,13 @@ theorem edistOf_le_arcLength
     riemannianEDistOf (I := I) g (γ a) (γ b) ≤
       ENNReal.ofReal
         (Geometry.Riemannian.Variation.arcLength (I := I) g γ a b) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   change riemannianEDist I (γ a) (γ b) ≤ _
   apply Geometry.Riemannian.Geodesic.riemannianEDist_le_arcLength
     (I := I) g hab hγ
   intro t ht
-  rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   congr 2
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -718,7 +738,7 @@ theorem edistOf_le_two_arcs
           (Geometry.Riemannian.Variation.arcLength (I := I) g γ a b) +
         ENNReal.ofReal
           (Geometry.Riemannian.Variation.arcLength (I := I) g δ c d) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   change riemannianEDist I (γ a) (δ d) ≤ _
   calc

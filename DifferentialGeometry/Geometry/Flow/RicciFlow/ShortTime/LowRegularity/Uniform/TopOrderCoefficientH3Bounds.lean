@@ -98,6 +98,7 @@ private theorem endo_slot_succ_eq
   simpa only [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
     slotInsertEndoCc_succ_eq_reindex_slotExtend (I := I) (M := M) g q P
 
+omit [SigmaCompactSpace M] in
 private theorem endo_slot_succ_pointwise
     (g : SmoothRiemannianMetric I M) (q i : ℕ)
     (P : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -182,6 +183,7 @@ private theorem endo_slot_succ_jet
   exact Finset.sum_le_sum fun j _ =>
     endo_slot_succ_sq (I := I) (M := M) g q j P
 
+omit [SigmaCompactSpace M] in
 private theorem endo_slot_three_pointwise
     (g : SmoothRiemannianMetric I M)
     (P : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -238,6 +240,7 @@ private theorem endo_slot_three_jet
         (endo_slot_succ_jet (I := I) (M := M) g 1 n P) hfr
     _ = _ := by ring
 
+omit [SigmaCompactSpace M] in
 private theorem endo_slot_five_pointwise
     (g : SmoothRiemannianMetric I M)
     (P : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -347,6 +350,7 @@ private theorem double_trace_jet_four
   norm_num
   simpa only [iteratedCovGrad_zero] using h0
 
+omit [SigmaCompactSpace M] in
 private theorem full_slot_pointwise
     (g gm : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2)
@@ -756,6 +760,7 @@ private theorem slot_iter_pointwise
             riemannianFiberNormSq (I := I) (M := M) g r s x
               (A.toSection x) := by rw [pow_succ]; ring
 
+omit [SigmaCompactSpace M] in
 private theorem mono_ext_pointwise
     (g : SmoothRiemannianMetric I M) (r s w : ℕ)
     (tau : Equiv.Perm (Fin (s + w)))
@@ -776,6 +781,7 @@ private theorem mono_ext_pointwise
   rw [monoExt, hperm]
   exact slot_iter_pointwise (I := I) (M := M) g r s A x w
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_four_add
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -807,6 +813,7 @@ private theorem jet_four_add
     _ = _ := by
       rw [← Finset.mul_sum, Finset.sum_add_distrib]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_four_smul
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -839,7 +846,6 @@ private theorem reindex_jet_four_eq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem perm_app_eq_reindex
     (g : SmoothRiemannianMetric I M) {d : ℕ}
     (A : SmoothCcTensor g d d) (e : Equiv.Perm (Fin d)) :
@@ -857,6 +863,7 @@ private theorem perm_app_eq_reindex
       A.toSection x) (slotPermCLM (I := I) e x D) = _
   rw [slotPermCLM_apply]
 
+omit [SigmaCompactSpace M] in
 private theorem perm_left_pointwise_jet
     (g : SmoothRiemannianMetric I M) {d : ℕ}
     (e : Equiv.Perm (Fin d)) (A : SmoothCcTensor g d d)
@@ -974,7 +981,6 @@ private theorem slot_extend_sq
   rw [MeasureTheory.integral_const_mul, hint] at hsq
   exact hsq
 
-set_option backward.isDefEq.respectTransparency false in
 theorem ricciConnectionPrincipalCoefficient_h3_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -1507,14 +1513,15 @@ theorem ricciConnectionDifferenceDerivativeMetricWeight_h3_of_metricComparison
   · intro y
     have hc := riemannianFiberNormSq_compRS_le_mul
       (I := I) (M := M) g 0 2 2 y (F.toSection y) (T.toSection y)
+    rw [← operatorFieldComposition_toSection] at hc
     have hm := mul_le_mul (hFpt y) (hTpt y)
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 2 y _)
       hFq
     calc
       _ ≤ riemannianFiberNormSq (I := I) (M := M) g 2 2 y (F.toSection y) *
           riemannianFiberNormSq (I := I) (M := M) g 0 2 y (T.toSection y) := by
-        simpa only [F, RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeMetricWeight, operatorFieldComposition_zero_eq_operatorFieldApply,
-          operatorFieldComposition_toSection] using hc
+        simpa only [F, RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeMetricWeight,
+          operatorFieldComposition_zero_eq_operatorFieldApply] using hc
       _ ≤ Fq * (C2 * x) ^ 2 := hm
       _ = (Real.sqrt Fq * (C2 * x)) ^ 2 := by
         calc
@@ -1907,7 +1914,6 @@ theorem ricciConnectionDifferenceTopOrderCoefficient_h3_of_metricWeight_and_prin
     (I := I) (M := M) g gm T x N Dp Dj Kt Tp Cr
     hDp hTp hCr hx hxPsq htransPt htransJet hdagPt hdagJet happR
 
-set_option backward.isDefEq.respectTransparency false in
 theorem ricciConnectionDifferenceTopOrderCoefficient_h3_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)

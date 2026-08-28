@@ -6,7 +6,6 @@ import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle Set DifferentialGeometry.Tensor0SBundle
@@ -75,22 +74,29 @@ theorem tensor0SBundle_symmL_apply_eq_compContinuousLinearMap {n : ℕ}
     ((trivializationAt (Tensor0SModel n ℝ E)
         (fun y : M => Tensor0SSpace n I y) α).symmL ℝ b D :
         Tensor0SSpace n I b) =
-      (D.compContinuousLinearMap (fun _ : Fin n => trivToE (I := I) α b) :
-        ContinuousMultilinearMap ℝ
-          (fun _ : Fin n => TangentSpace I b) ℝ) := by
-  letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) n b).symm
+        (D.compContinuousLinearMap (fun _ : Fin n => trivToE (I := I) α b)) := by
+  let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
       (fun y : M => Tensor0SSpace n I y)) :=
     tensor0SBundle_topology n
   have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply'
     (𝕜 := ℝ) (s := n) (F := E) (E := (TangentSpace I : M → Type _))
     (e := trivializationAt E (TangentSpace I) α) (b := b) hb D
+  have hbTensor : b ∈ (trivializationAt (Tensor0SModel n ℝ E)
+      (fun y : M => Tensor0SSpace n I y) α).baseSet := by
+    change b ∈ (trivializationAt E (TangentSpace I) α).baseSet
+    exact hb
+  rw [(trivializationAt (Tensor0SModel n ℝ E)
+    (fun y : M => Tensor0SSpace n I y) α).symmL_apply hbTensor]
   change (trivializationAt (Tensor0SModel n ℝ E)
-      (fun y : M => Tensor0SSpace n I y) α).symm b D = _
+    (fun y : M => Tensor0SSpace n I y) α).symm b D = _
   rw [show (trivializationAt (Tensor0SModel n ℝ E)
-        (fun y : M => Tensor0SSpace n I y) α).symm b D =
-          ((Pretrivialization.continuousMultilinearMap (𝕜 := ℝ) (s := n)
-            (F := E) (E := (TangentSpace I : M → Type _))
-            (trivializationAt E (TangentSpace I) α)).symm b D) from rfl]
+      (fun y : M => Tensor0SSpace n I y) α).symm b D =
+        ((Pretrivialization.continuousMultilinearMap (𝕜 := ℝ) (s := n)
+          (F := E) (E := (TangentSpace I : M → Type _))
+          (trivializationAt E (TangentSpace I) α)).symm b D) from rfl]
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) n b).injective
+  rw [ContinuousLinearEquiv.apply_symm_apply]
   exact h
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -224,21 +230,19 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
       (extChartAt I α b))
     (X : Π b' : M, TangentSpace I b')
     (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-      tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b))
+    Tensor0SSpace.eval
+        (tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b))
         (Fin.cons (chartParallelExtend (I := I) α b v b) m) =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        tensor0SIntrinsicChartCLM (I := I) s α
+      Tensor0SSpace.eval
+        (tensor0SIntrinsicChartCLM (I := I) s α
           (Tensor0SPartialEval.tensor0SPartialEval I M T
             (chartParallelExtend (I := I) α b v))
           b (X b)) m := by
   classical
-  letI _h_top_succ : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let _h_top_succ : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun y : M => Tensor0SSpace (s + 1) I y)) :=
     tensor0SBundle_topology (s + 1)
-  letI _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
+  let _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y)) :=
     tensor0SBundle_topology s
   have hb_src : b ∈ (extChartAt I α).source :=
@@ -250,28 +254,21 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
   set w : E := trivToE (I := I) α b (X b) with hw_def
   set mE : Fin s → E := fun i => trivToE (I := I) α b (m i) with hmt_def
   have hLHS_unfold :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b))
+      Tensor0SSpace.eval
+        (tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b))
         (Fin.cons (chartParallelExtend (I := I) α b v b) m) =
       (fderiv ℝ
         (tensor0SChartE_section_repr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
         (extChartAt I α b) w)
         (Fin.cons (trivToE (I := I) α b v) mE) := by
     rw [tensor0SIntrinsicChartCLM_apply (I := I) (s + 1) α T b (X b)]
-    show (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        tensor0SChartFiberFromModel (I := I) (s + 1) α b
-          (fderiv ℝ
-            (tensor0SChartE_section_repr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
-            (extChartAt I α b) (trivToE (I := I) α b (X b))))
-        (Fin.cons (chartParallelExtend (I := I) α b v b) m) = _
     unfold tensor0SChartFiberFromModel
     set D := fderiv ℝ
         (tensor0SChartE_section_repr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
         (extChartAt I α b) (trivToE (I := I) α b (X b))
     rw [tensor0SBundle_symmL_apply_eq_compContinuousLinearMap
       (I := I) (M := M) (n := s + 1) α hb_base D]
+    rw [Tensor0SSpace.eval_fiber_equiv_symm]
     rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext j
@@ -285,9 +282,8 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
       rfl
   rw [hLHS_unfold]
   have hRHS_unfold :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        tensor0SIntrinsicChartCLM (I := I) s α
+      Tensor0SSpace.eval
+        (tensor0SIntrinsicChartCLM (I := I) s α
           (Tensor0SPartialEval.tensor0SPartialEval I M T
             (chartParallelExtend (I := I) α b v))
           b (X b)) m =
@@ -298,12 +294,6 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
           (extChartAt I α).symm)
         (extChartAt I α b) w) mE := by
     rw [tensor0SIntrinsicChartCLM_apply (I := I) s α _ b (X b)]
-    show (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-        tensor0SChartFiberFromModel (I := I) s α b
-          (fderiv ℝ
-            (tensor0SChartE_section_repr (I := I) s α _ ∘ (extChartAt I α).symm)
-            (extChartAt I α b) (trivToE (I := I) α b (X b)))) m = _
     unfold tensor0SChartFiberFromModel
     set D' := fderiv ℝ
         (tensor0SChartE_section_repr (I := I) s α
@@ -312,6 +302,7 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
         (extChartAt I α b) (trivToE (I := I) α b (X b))
     rw [tensor0SBundle_symmL_apply_eq_compContinuousLinearMap
       (I := I) (M := M) (n := s) α hb_base D']
+    rw [Tensor0SSpace.eval_fiber_equiv_symm]
     rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rw [hRHS_unfold]
   have hfderivEq := fderiv_partialEval_chartPullback_eq_comp_curryLeftEval

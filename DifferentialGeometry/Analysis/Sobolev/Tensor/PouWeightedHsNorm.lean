@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -83,7 +82,7 @@ theorem tensorPouSobolevHsNorm_nonneg
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     0 ≤ tensorPouSobolevHsNorm (I := I) (M := M) g k T :=
-  zero_le _
+  zero_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -270,7 +269,7 @@ theorem tensorPouSobolevHsNorm_le_succ
     refine Finset.sum_le_sum ?_
     intro IJ _
     exact Finset.sum_le_sum_of_subset_of_nonneg hrange
-      (by intro j _ _; exact zero_le _)
+      (by intro j _ _; exact zero_le)
   have htsum_le :
       (∑' α : M,
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -433,7 +432,7 @@ theorem iteratedFDeriv_basisEval_smul_eq
         ∘ (toEuclidean (E := E)).symm) y :=
     h_cdAt.of_le (by exact_mod_cast le_top)
   rw [iteratedFDeriv_const_smul_apply h_cdAt_n]
-  exact ContinuousMultilinearMap.smul_apply _ _ _
+  exact smul_apply _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem tensorPouSobolevHsNorm_smul

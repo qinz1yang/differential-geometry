@@ -4,7 +4,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -116,7 +115,8 @@ theorem tensor02_realizes_ext
   have hm : m = vec2 (I := I) (m 0) (m 1) := by
     funext i
     fin_cases i <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
-  rw [hm, hT, hU]
+  rw [hm]
+  exact (hT (m 0) (m 1)).trans (hU (m 0) (m 1)).symm
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem rawSym2_idem

@@ -136,7 +136,10 @@ private theorem hmfSpecPush_cd
               (fun w : EuclideanSpace ℝ {i // i ∈ S} × M ↦
                 mfderivWithin I I (f w) (Set.univ : Set M) w.2) p z) := by
       funext z
-      rw [inTangentCoordinates, mfderivWithin_univ]
+      unfold inTangentCoordinates
+      congr 1
+      exact (congrFun
+        (mfderivWithin_univ (I := I) (I' := I) (f := f z)) z.2).symm
     rw [hrw]
     exact hφ
 
@@ -150,10 +153,11 @@ private theorem hmfRaisedFrame_cd
       (fun x : M ↦ (TotalSpace.mk' E x
         (metricComparisonEndomorphism (I := I) q h x
           (smoothOrthoFrame (I := I) q x₀ i x)) : TangentBundle I M)) := by
-  simpa only [metricComparisonEndomorphismField_apply] using ContMDiff.clm_bundle_apply
-    (b := id)
-    (metricComparisonEndomorphismField (I := I) (M := M) q h).contMDiff_toFun
-    (smoothOrthoFrame_smooth (I := I) q x₀ i)
+  with_unfolding_all
+    exact ContMDiff.clm_bundle_apply
+      (b := id)
+      (metricComparisonEndomorphismField (I := I) (M := M) q h).contMDiff_toFun
+      (smoothOrthoFrame_smooth (I := I) q x₀ i)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfSpecFrozen_cd
@@ -199,8 +203,8 @@ private theorem hmfSpecFrozen_cd
           (E := fun y : M ↦
             TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
           (F p) (q.inner (F p))) D := by
-    simpa only [Function.comp_apply] using
-      (q.contMDiff.of_le
+    with_unfolding_all
+      exact (q.contMDiff.of_le
         (show ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) from
           WithTop.coe_le_coe.mpr le_top)).comp_contMDiffOn
         (hmap.of_le (by norm_num))
@@ -305,7 +309,16 @@ theorem hmfSpecDens_cd
           (hmfSpecIncl (I := I) (M := M) q S z.1) z.2)
       (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
     intro z hz
-    simpa only [hmfSpecMap_apply] using hmap z hz
+    have hfun :
+        (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
+          hmfSpecMap (I := I) (M := M) q S p.2 p.1) =
+        (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
+          hmfAdd (I := I) (M := M) q
+            (hmfSpecIncl (I := I) (M := M) q S p.1) p.2) := by
+      funext p
+      exact hmfSpecMap_apply (I := I) (M := M) q S p.2 p.1
+    rw [← hfun]
+    exact hmap z hz
   have hfrozen := hmfSpecFrozen_cd (I := I) (M := M) q h S R hmap' p.2 p hp
   refine hfrozen.congr_of_eventuallyEq_of_mem ?_ hp
   have hnbhd : ∀ᶠ z : EuclideanSpace ℝ {i // i ∈ S} × M in
@@ -333,7 +346,11 @@ theorem hmfSpecCoeff_cd
             (hmfSpecMap (I := I) (M := M) q S p.2 p.1)
             (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
               (hmfSpecMap (I := I) (M := M) q S p.2)
-              p.1 v) : TangentBundle I M))
+              p.1
+              ((tangentSpaceModelContinuousLinearEquiv
+                (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
+                p.1).symm.toContinuousLinearMap v)) :
+            TangentBundle I M))
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hmap⟩ :=
     hmfSpecMap_cd (I := I) (M := M) q S 3
@@ -355,8 +372,8 @@ theorem hmfSpecCoeff_cd
         (𝓘(ℝ, V).prod I) (3 : ℕ∞)
         (fun z : (V × M) × V ↦ (z.2, z.1.2)) (p, p.1) :=
       contMDiffAt_snd.prodMk (contMDiffAt_fst.snd)
-    simpa only [Function.uncurry_apply_pair, f, F] using
-      hmapAt.comp (p, p.1) hpre
+    with_unfolding_all
+      exact hmapAt.comp (p, p.1) hpre
   have hg : ContMDiffAt (𝓘(ℝ, V).prod I) 𝓘(ℝ, V) (2 : ℕ∞)
       (fun z : V × M ↦ z.1) p := contMDiffAt_fst
   have hφ := ContMDiffAt.mfderiv
@@ -384,7 +401,8 @@ theorem hmfSpecCoeff_cd
     (ϕ := fun z : V × M ↦ mfderiv IV I (f z) z.1)
     (v := fun _ : V × M ↦ v) (m₀ := p) (n := (2 : ℕ∞))
     ?_ hv hb₂
-  · convert hkey.contMDiffWithinAt using 2
+  · with_unfolding_all
+      exact hkey.contMDiffWithinAt
   · have hrw :
         (fun z : V × M ↦
           ContinuousLinearMap.inCoordinates V (TangentSpace IV (M := V))
@@ -395,8 +413,8 @@ theorem hmfSpecCoeff_cd
             inTangentCoordinates IV I (fun w : V × M ↦ w.1)
               (fun w : V × M ↦ f w w.1)
               (fun w : V × M ↦ mfderiv IV I (f w) w.1) p z) := by
-      funext z
-      rw [inTangentCoordinates]
+      with_unfolding_all
+        rfl
     rw [hrw]
     exact hφ
 
@@ -428,28 +446,28 @@ private theorem hmfFiberExp_mfd
     (q : SmoothRiemannianMetric I M) (x : M) :
     mfderiv 𝓘(ℝ, E) I (hmfFiberExp (I := I) (M := M) q x) 0 =
       ContinuousLinearMap.id ℝ E := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  letI : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
     ⟨q.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : M ↦ TangentSpace I y) :=
     ⟨q.inner, q.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
-  letI : PseudoEMetricSpace M :=
+  let : PseudoEMetricSpace M :=
     PseudoEMetricSpace.ofRiemannianMetric I M
   have hEnorm : ∀ (y : M) (v : TangentSpace I y),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (q.inner y v v)) := by
     intro y v
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
-  simpa only [hmfFiberExp, hmfDiagExp, diagExp_snd] using
-    (mfderiv_expMapIntrinsic_at_zero (I := I) q hEnorm x)
+  with_unfolding_all
+    exact mfderiv_expMapIntrinsic_at_zero (I := I) q hEnorm x
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfFiberExp_md
     (q : SmoothRiemannianMetric I M) (x : M) :
     MDifferentiableAt 𝓘(ℝ, E) I
       (hmfFiberExp (I := I) (M := M) q x) 0 := by
-  haveI : Nontrivial E :=
+  have : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   by_contra hnot
@@ -457,7 +475,8 @@ private theorem hmfFiberExp_md
   rw [mfderiv_zero_of_not_mdifferentiableAt hnot] at hzero
   obtain ⟨v, hv⟩ := exists_ne (0 : E)
   have hv' : (0 : E) = v := by
-    simpa using DFunLike.congr_fun hzero v
+    with_unfolding_all
+      exact DFunLike.congr_fun hzero v
   exact hv hv'.symm
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
@@ -478,13 +497,15 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
     rfl
   have hline_md : MDifferentiableAt 𝓘(ℝ) 𝓘(ℝ, E) line 0 := by
     have hMD : ContMDiff 𝓘(ℝ) 𝓘(ℝ, E) ∞ line := by
-      simpa only [line] using contMDiff_id.smul contMDiff_const
+      with_unfolding_all
+        exact contMDiff_id.smul contMDiff_const
     exact hMD.contMDiffAt.mdifferentiableAt (by decide)
   have hline : mfderiv 𝓘(ℝ) 𝓘(ℝ, E) line 0 (1 : ℝ) = w := by
     rw [mfderiv_eq_fderiv]
     have h : HasFDerivAt line
         ((1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
-      simpa only [line] using (hasFDerivAt_id (0 : ℝ)).smul_const w
+      with_unfolding_all
+        exact (hasFDerivAt_id (0 : ℝ)).smul_const w
     rw [h.fderiv]
     change (1 : ℝ) • w = w
     exact one_smul ℝ w
@@ -507,7 +528,8 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
     rw [hline_zero]
     have hmfd := DFunLike.congr_fun
       (hmfFiberExp_mfd (I := I) (M := M) q x) w
-    simpa only [ContinuousLinearMap.id_apply, w] using hmfd
+    with_unfolding_all
+      exact hmfd
   exact hcomp.trans hgoal
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space M]
@@ -520,31 +542,36 @@ private theorem hmfUnitLift
       S.toSection x := by
   apply tensorRSSpace_ext (I := I) (M := M) 0 1 x
   intro c
-  have hc : c = tensor0SSpace_evalScalar x c •
+  have hc : c = (tensor0SSpace_evalScalar
+      (𝕜 := ℝ) (I := I) (M := M) x) c •
       unitZeroSec (I := I) (M := M) x := by
     apply Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
     intro v
     change Tensor0SSpace.toModel c v =
       Tensor0SSpace.toModel
-        (tensor0SSpace_evalScalar x c •
+        ((tensor0SSpace_evalScalar
+          (𝕜 := ℝ) (I := I) (M := M) x) c •
           unitZeroSec (I := I) (M := M) x) v
     rw [Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, unitZeroSec_apply,
+      smul_apply, unitZeroSec_apply,
       Tensor0SSpace.toModel_ofModel,
       ContinuousMultilinearMap.constOfIsEmpty_apply, smul_eq_mul,
       Tensor0SSpace.evalScalar_apply, mul_one]
     exact congrArg (Tensor0SSpace.toModel c)
       (Subsingleton.elim v Fin.elim0)
-  change tensor0SSpace_evalScalar x c •
+  change (tensor0SSpace_evalScalar
+      (𝕜 := ℝ) (I := I) (M := M) x) c •
       unitEvalSection (I := I) (M := M) q 1 S x =
     (S.toSection x) c
   rw [unitEvalSection_apply]
   calc
-    tensor0SSpace_evalScalar x c •
+    (tensor0SSpace_evalScalar
+        (𝕜 := ℝ) (I := I) (M := M) x) c •
           (S.toSection x) (unitZeroSec (I := I) (M := M) x) =
         (S.toSection x)
-          (tensor0SSpace_evalScalar x c •
+          ((tensor0SSpace_evalScalar
+            (𝕜 := ℝ) (I := I) (M := M) x) c •
             unitZeroSec (I := I) (M := M) x) := by
       rw [map_smul]
     _ = (S.toSection x) c := congrArg (S.toSection x) hc.symm
@@ -563,12 +590,14 @@ private theorem hmfChartInv
   constructor
   · have hij := congrFun (congrFun
       (gramMatrixAt_inv_mul_self (I := I) (M := M) q x) i) j
-    simpa only [Matrix.mul_apply, gramMatrixAt_apply, Matrix.one_apply] using hij
+    with_unfolding_all
+      exact hij
   · have hmul : gramMatrixAt (I := I) (M := M) q x *
         (gramMatrixAt (I := I) (M := M) q x)⁻¹ = 1 :=
       Matrix.mul_nonsing_inv _ hdet
     have hij := congrFun (congrFun hmul i) j
-    simpa only [Matrix.mul_apply, gramMatrixAt_apply, Matrix.one_apply] using hij
+    with_unfolding_all
+      exact hij
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
@@ -614,21 +643,51 @@ private theorem hmfCovInner
             (fun k : Fin 0 ↦ Fin.elim0 k) =
           cotangentToDual (I := I) α ((chartModelBasis E) i) := by
       rw [ContinuousMultilinearMap.curryLeft_apply,
-        cotangentToDual_apply]
-      congr 1
-      funext k
-      fin_cases k
-      rfl
+        Tensor0SSpace.toModel_apply_model_vector]
+      let X : TangentSpace I x :=
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          ((chartModelBasis E) i)
+      have hvec :
+          (fun k : Fin 1 =>
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (@Fin.cons 0 (fun _ : Fin 1 => E) ((chartModelBasis E) i)
+                (fun k : Fin 0 => Fin.elim0 k) k)) =
+            fun _ : Fin 1 => X := by
+        funext k
+        fin_cases k
+        rfl
+      rw [hvec]
+      calc
+        α (fun _ : Fin 1 => X) = cotangentToDual (I := I) α X :=
+          (cotangentToDual_apply (I := I) α X).symm
+        _ = cotangentToDual (I := I) α ((chartModelBasis E) i) := by
+          with_unfolding_all
+            rfl
     have hβ :
         ((Tensor0SSpace.toModel β).curryLeft ((chartModelBasis E) j))
             (fun k : Fin 0 ↦ Fin.elim0 k) =
           cotangentToDual (I := I) β ((chartModelBasis E) j) := by
       rw [ContinuousMultilinearMap.curryLeft_apply,
-        cotangentToDual_apply]
-      congr 1
-      funext k
-      fin_cases k
-      rfl
+        Tensor0SSpace.toModel_apply_model_vector]
+      let X : TangentSpace I x :=
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          ((chartModelBasis E) j)
+      have hvec :
+          (fun k : Fin 1 =>
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (@Fin.cons 0 (fun _ : Fin 1 => E) ((chartModelBasis E) j)
+                (fun k : Fin 0 => Fin.elim0 k) k)) =
+            fun _ : Fin 1 => X := by
+        funext k
+        fin_cases k
+        rfl
+      rw [hvec]
+      calc
+        β (fun _ : Fin 1 => X) = cotangentToDual (I := I) β X :=
+          (cotangentToDual_apply (I := I) β X).symm
+        _ = cotangentToDual (I := I) β ((chartModelBasis E) j) := by
+          with_unfolding_all
+            rfl
     rw [hα, hβ]
     ring
   calc

@@ -148,7 +148,8 @@ theorem flowball_wform
     (fun x hx => hR x hx)
   simpa only [R, FlowMetricBall.set, FlowMetricBall.setAt,
     FlowMetricBall.volume,
-    DifferentialGeometry.Integral.Measure.volumeMeasureOn] using hw
+    DifferentialGeometry.Integral.Measure.volumeMeasureOn_eq_metric,
+    SolutionOn.family_metric] using hw
 
 theorem flowball_w_upper
     {S : SolutionOn (I := I) (M := M) D}
@@ -187,7 +188,7 @@ theorem flowball_w_upper
           Real.log B.volume.toReal +
           (Real.log (perelmanDensityPrefactor
             (Module.finrank ℝ E) (B.radius ^ 2)) - (Module.finrank ℝ E : ℝ)) + δ := by
-  letI : Nonempty M := ⟨B.center⟩
+  let : Nonempty M := ⟨B.center⟩
   let g : SmoothRiemannianMetric I M := S.base.metric time
   let μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g
   let n : ℕ := Module.finrank ℝ E
@@ -311,7 +312,10 @@ theorem exists_sel_w_bound
           ((ENNReal.ofReal (5 / B'.radius) * B'.volume ^ (1 / 2 : ℝ)).toReal /
             ((H ^ (1 / 2 : ℝ) / 2).toReal)) ^ 2 ≤
         400 * (2 : ℝ) ^ (n + 1) := by
-    exact cutoff_grad_le B'.radius_pos hHr (by simpa only [n, H] using hdouble)
+    exact cutoff_grad_le B'.radius_pos hHr (by
+      simpa only [n, H,
+        DifferentialGeometry.Integral.Measure.volumeMeasureOn_eq_metric,
+        SolutionOn.family_metric] using hdouble)
   have hcurv := scale_curv_eq n B'.radius_pos
   have hB'vol : 0 < B'.volume.toReal := by
     simpa only [FlowMetricBall.volume, FlowMetricBall.set, FlowMetricBall.setAt,

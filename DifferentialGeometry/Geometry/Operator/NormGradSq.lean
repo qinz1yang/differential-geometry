@@ -60,7 +60,7 @@ private lemma contMDiff_g_inner_aux
       (fun x : M => TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _)) x (w x))) :
     ContMDiff I 𝓘(ℝ) ∞ (fun b : M => g.inner b (v b) (w b)) := by
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   have h := ContMDiff.inner_bundle (F := E) (B := M) (E := (TangentSpace I : M → Type _))
     (b := fun x => x) (v := v) (w := w) hv hw
@@ -88,17 +88,14 @@ theorem normGradSqFun_continuous [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     Continuous (normGradSqFun (I := I) g f) := by
+  let fs : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have h :=
     TangentBundle.continuous_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g ⟨_, hf⟩) (grad_g (I := I) g ⟨_, hf⟩)
+      (grad_g (I := I) g fs) (grad_g (I := I) g fs)
   refine h.congr ?_
   intro b
-  change g.inner b ((grad_g (I := I) g ⟨_, hf⟩ :
-      Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b)
-        ((grad_g (I := I) g ⟨_, hf⟩ :
-          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b) =
-      normGradSqFun (I := I) g f b
-  rw [grad_g_apply]
+  change g.inner b (gradFun (I := I) g f b) (gradFun (I := I) g f b) =
+    normGradSqFun (I := I) g f b
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -106,17 +103,14 @@ theorem normGradSqFun_contMDiff [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiff I 𝓘(ℝ) ∞ (normGradSqFun (I := I) g f) := by
+  let fs : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have h :=
     contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g ⟨_, hf⟩) (grad_g (I := I) g ⟨_, hf⟩)
+      (grad_g (I := I) g fs) (grad_g (I := I) g fs)
   refine h.congr ?_
   intro b
-  change g.inner b ((grad_g (I := I) g ⟨_, hf⟩ :
-      Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b)
-        ((grad_g (I := I) g ⟨_, hf⟩ :
-          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b) =
-      normGradSqFun (I := I) g f b
-  rw [grad_g_apply]
+  change g.inner b (gradFun (I := I) g f b) (gradFun (I := I) g f b) =
+    normGradSqFun (I := I) g f b
   rfl
 
 end Operator

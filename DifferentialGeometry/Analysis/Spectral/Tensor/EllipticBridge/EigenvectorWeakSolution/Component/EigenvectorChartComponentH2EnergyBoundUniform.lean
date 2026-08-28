@@ -91,7 +91,7 @@ private lemma eigenvectorChartComponentFun_ae_zero_of_notMem_activeFinset
             (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α =
         chartTargetEuclid (I := I) (M := M) α := by
-    rw [h_kernel_empty, Set.diff_empty, ← h_target_eq]
+    rw [h_kernel_empty, Set.sdiff_empty, ← h_target_eq]
   rw [h_set_eq] at h_ae
   exact h_ae
 
@@ -302,13 +302,13 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖ :=
-      mul_le_mul_of_nonneg_right h_const_le (zero_le _)
+      mul_le_mul_of_nonneg_right h_const_le (zero_le)
     exact h_per.trans h_envelope
   · have h_zero :=
       wkpNorm_two_eigenvectorChartComponentFun_eq_zero_of_notMem_activeFinset
         (I := I) (M := M) g r s i hα P₀
     rw [h_zero]
-    exact zero_le _
+    exact zero_le
 
 end TensorSpectral
 end Parabolic

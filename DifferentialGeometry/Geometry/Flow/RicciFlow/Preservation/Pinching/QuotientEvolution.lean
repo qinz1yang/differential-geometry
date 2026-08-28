@@ -220,12 +220,25 @@ theorem quotHeat_at
   have hpsiPowDt :=
     hpsiDt.rpow_const (p := -beta) (Or.inl (hpsiPos x).ne')
   have hdt := hphiPowDt.mul hpsiPowDt
-  convert hdt using 1
-  · unfold quotLap quotHeatRHS quotField
+  have hfield : (fun s : Real => quotField (M := M) phi psi alpha beta s x) =
+      (fun s => phi s x ^ alpha) * fun s => psi s x ^ (-beta) := by
+    funext s
+    rw [Pi.mul_apply]
+    rfl
+  have hvalue : quotLap (I := I) G phi psi alpha beta (t : Real) x +
+      quotHeatRHS (I := I) G phi psi phiHeat psiHeat alpha beta (t : Real) x =
+        (phiLap (t : Real) x + phiHeat (t : Real) x) * alpha *
+            phi (t : Real) x ^ (alpha - 1) * psi (t : Real) x ^ (-beta) +
+          phi (t : Real) x ^ alpha *
+            ((psiLap (t : Real) x + psiHeat (t : Real) x) * -beta *
+              psi (t : Real) x ^ (-beta - 1)) := by
+    unfold quotLap quotHeatRHS quotField
     simp only [tt] at hA_lap hB_lap hAB_lap hgradA hgradB hphiLap hpsiLap
     rw [hAB_lap, hA_lap, hB_lap, hgradA, hgradB, hphiLap, hpsiLap]
     simp [A, B, tt, smul_eq_mul]
     ring_nf
+  rw [hfield, hvalue]
+  exact hdt
 
 omit [Module.Finite ℝ E] in
 theorem quotHeat
@@ -446,14 +459,24 @@ theorem quotHeat1_of_nonneg
     congr 1
     funext y
     simp [B]
-  convert hdt using 1
-  · funext s
-    simp [quotField]
-  · unfold quotLap quotHeatRHS quotField
+  have hfield : (fun s : Real => quotField (M := M) phi psi 1 beta s x) =
+      (fun s => phi s x) * fun s => psi s x ^ (-beta) := by
+    funext s
+    rw [Pi.mul_apply]
+    simp only [quotField, Real.rpow_one]
+  have hvalue : quotLap (I := I) G phi psi 1 beta (t : Real) x +
+      quotHeatRHS (I := I) G phi psi phiHeat psiHeat 1 beta (t : Real) x =
+        (phiLap (t : Real) x + phiHeat (t : Real) x) * psi (t : Real) x ^ (-beta) +
+          phi (t : Real) x *
+            ((psiLap (t : Real) x + psiHeat (t : Real) x) * -beta *
+              psi (t : Real) x ^ (-beta - 1)) := by
+    unfold quotLap quotHeatRHS quotField
     simp only [tt] at hB_lap hphiB_lap hgradB hphiLap hpsiLap hfield_lap
     rw [hfield_lap, hphiB_lap, hB_lap, hgradB, hphiLap t x, hpsiLap t x]
     simp [B, tt, smul_eq_mul]
     ring_nf
+  rw [hfield, hvalue]
+  exact hdt
 
 omit [Module.Finite ℝ E] in
 theorem quotient_evolution_of_laplacian_identities

@@ -32,7 +32,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma weightedInvGramOnEuclid_bounded_on_compact
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK : IsCompact K)
@@ -60,7 +59,6 @@ private lemma weightedInvGramOnEuclid_bounded_on_compact
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma densityOnEuclid_bounded_above_on_compact
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -96,7 +94,7 @@ private lemma tendsto_setIntegral_mul_of_eLpNorm_tendsto_zero_l2
     Tendsto (fun n => ∫ x, Y x * ψ_n n x ∂μ) atTop
       (𝓝 (∫ x, Y x * ψ x ∂μ)) := by
   classical
-  haveI hpqT : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
+  have hpqT : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
     refine ⟨?_⟩
     rw [inv_one]
     rw [show ((2 : ℝ≥0∞)⁻¹ + (2 : ℝ≥0∞)⁻¹) = 2 * (2 : ℝ≥0∞)⁻¹ from by ring]
@@ -117,7 +115,7 @@ private lemma tendsto_setIntegral_mul_of_eLpNorm_tendsto_zero_l2
       have hofreal :
           ENNReal.ofReal ‖∫ x, Y x * (ψ_n n x - ψ x) ∂μ‖ =
             ‖∫ x, Y x * (ψ_n n x - ψ x) ∂μ‖ₑ :=
-        ofReal_norm_eq_enorm _
+        ofReal_norm _
       rw [hofreal]
       exact hint
     have h_lintegral_eq :
@@ -274,7 +272,7 @@ theorem chart_bilinear_identity_h1_0
       densityOnEuclid (I := I) g α y * D.f_chart y * ψ y
       ∂(volume : Measure EuclN) := by
   classical
-  haveI hpqT : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
+  have hpqT : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
     refine ⟨?_⟩
     rw [inv_one]
     rw [show ((2 : ℝ≥0∞)⁻¹ + (2 : ℝ≥0∞)⁻¹) = 2 * (2 : ℝ≥0∞)⁻¹ from by ring]
@@ -433,7 +431,7 @@ theorem chart_bilinear_identity_h1_0
                 D.weak_partial i y *
                 (fderiv ℝ (ψ_seq n) y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN) := by
-      apply setIntegral_eq_of_subset_of_forall_diff_eq_zero hChart_meas
+      apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hChart_meas
         (hK_0_in.trans (subset_refl _))
       intro y hy
       have hy_notin_supp : y ∉ tsupport (ψ_seq n) := fun hin =>
@@ -472,7 +470,7 @@ theorem chart_bilinear_identity_h1_0
         ∫ y in K_0,
           densityOnEuclid (I := I) g α y * D.u_chart y * ψ_seq n y
           ∂(volume : Measure EuclN) := by
-      apply setIntegral_eq_of_subset_of_forall_diff_eq_zero hChart_meas
+      apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hChart_meas
         (hK_0_in.trans (subset_refl _))
       intro y hy
       have hy_notin_supp : y ∉ tsupport (ψ_seq n) := fun hin =>
@@ -487,7 +485,7 @@ theorem chart_bilinear_identity_h1_0
         ∫ y in K_0,
           densityOnEuclid (I := I) g α y * D.f_chart y * ψ_seq n y
           ∂(volume : Measure EuclN) := by
-      apply setIntegral_eq_of_subset_of_forall_diff_eq_zero hChart_meas
+      apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hChart_meas
         (hK_0_in.trans (subset_refl _))
       intro y hy
       have hy_notin_supp : y ∉ tsupport (ψ_seq n) := fun hin =>
@@ -641,13 +639,13 @@ theorem chart_bilinear_identity_h1_0
               ∂(volume : Measure EuclN) := by
       intro n
       simp only [hμ_def] at h_summand_int_n
-      rw [integral_finset_sum]
+      rw [integral_finsetSum]
       · refine Finset.sum_congr rfl fun i _ => ?_
-        rw [integral_finset_sum]
+        rw [integral_finsetSum]
         intro j _
         exact h_summand_int_n n i j
       · intro i _
-        exact integrable_finset_sum _ (fun j _ => h_summand_int_n n i j)
+        exact integrable_finsetSum _ (fun j _ => h_summand_int_n n i j)
     have h_int_swap_lim :
         ∫ y in K_0, (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
@@ -663,13 +661,13 @@ theorem chart_bilinear_identity_h1_0
                 weak_partial_ψ j y
               ∂(volume : Measure EuclN) := by
       simp only [hμ_def] at h_summand_int_lim
-      rw [integral_finset_sum]
+      rw [integral_finsetSum]
       · refine Finset.sum_congr rfl fun i _ => ?_
-        rw [integral_finset_sum]
+        rw [integral_finsetSum]
         intro j _
         exact h_summand_int_lim i j
       · intro i _
-        exact integrable_finset_sum _ (fun j _ => h_summand_int_lim i j)
+        exact integrable_finsetSum _ (fun j _ => h_summand_int_lim i j)
     have h_per_ij_tendsto :
         Tendsto
           (fun n => ∑ i : Fin (Module.finrank ℝ E),
@@ -687,9 +685,9 @@ theorem chart_bilinear_identity_h1_0
                   D.weak_partial i y *
                   weak_partial_ψ j y
                 ∂(volume : Measure EuclN))) := by
-      apply tendsto_finset_sum
+      apply tendsto_finsetSum
       intro i _
-      apply tendsto_finset_sum
+      apply tendsto_finsetSum
       intro j _
       exact h_lhs_principal_n_converges i j
     have h_eq_n :

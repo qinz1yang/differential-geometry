@@ -80,10 +80,10 @@ private lemma surfaceMeasure_isFiniteMeasure
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M) :
     IsFiniteMeasure
       (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) := by
-  haveI : CompactSpace
+  have : CompactSpace
       (BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M) :=
     compactSpace_boundaryManifold (n := n) (M := M)
-  haveI :=
+  have :=
     surfaceMeasure_isFiniteMeasureOnCompacts
       (I := modelWithCornersEuclideanHalfSpace n) (M := M) g
   exact CompactSpace.isFiniteMeasure
@@ -236,7 +236,7 @@ private lemma sum_integral_eq_integral_sum_pou
                 (X b.val)
             ∂(surfaceMeasure
               (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) :=
-    integral_finset_sum (s := S)
+    integral_finsetSum (s := S)
       (fun α _ => h_per α)
   rw [← h_swap]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun b => ?_))

@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -56,7 +55,6 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -80,8 +78,10 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
         (cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ s).toSection x) Z) mm =
       ∑ c : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Z
-          (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E) mm)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x c x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x c x)) mm)) := by
     rw [show ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
         (cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ s).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g₁ s x Z from rfl]
@@ -98,9 +98,11 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) mm =
       ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Z
-          (Fin.cons (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x
-              (smoothOrthoFrame (I := I) g₀ x a x))
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (metricComparisonEndomorphism (I := I) g₀ g₁ x
+                (smoothOrthoFrame (I := I) g₀ x a x)))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x a x)) mm)) := by
     rw [show ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
           (cometricDoubleTraceField (I := I) g₀ s)
@@ -124,17 +126,19 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
     rfl
   rw [hRHS]
   have hGrep : ∀ a : Fin (Module.finrank ℝ E),
-      (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x)) =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (metricComparisonEndomorphism (I := I) g₀ g₁ x
+            (smoothOrthoFrame (I := I) g₀ x a x)) =
         ∑ c : Fin (Module.finrank ℝ E),
           (g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x) (smoothOrthoFrame (I := I) g₁ x c x)) •
-            (smoothOrthoFrame (I := I) g₁ x c x : E) := by
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x c x) := by
     intro a
     have h1 := smoothOrthoFrame_center_repr (I := I) (M := M) g₁ x
       (metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))
-    rw [show (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x
-        (smoothOrthoFrame (I := I) g₀ x a x)) =
-        metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x) from rfl]
-    conv_lhs => rw [h1]
+    have h1model := congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) h1
+    simp only [map_sum, map_smul] at h1model
+    rw [h1model]
     refine Finset.sum_congr rfl fun c _ => ?_
     congr 1
     rw [g₁.symm x (smoothOrthoFrame (I := I) g₁ x c x)
@@ -144,15 +148,19 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
   symm
   calc (∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Z
-          (Fin.cons (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x
-              (smoothOrthoFrame (I := I) g₀ x a x))
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (metricComparisonEndomorphism (I := I) g₀ g₁ x
+                (smoothOrthoFrame (I := I) g₀ x a x)))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x a x)) mm)))
       = ∑ a : Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
           (g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x)) *
           Tensor0SSpace.toModel Z
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x c x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x a x)) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
         exact toModel_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (E := E)
@@ -160,47 +168,50 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
-          (fun c => (smoothOrthoFrame (I := I) g₁ x c x : E))
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)
+          (fun c => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x c x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x a x)) mm)
     _ = ∑ c : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
           (g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x)) *
           Tensor0SSpace.toModel Z
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) :=
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x c x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x a x)) mm)) :=
         Finset.sum_comm
     _ = ∑ c : Fin (Module.finrank ℝ E),
           Tensor0SSpace.toModel Z
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E) mm)) := by
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x c x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x c x)) mm)) := by
         refine Finset.sum_congr rfl fun c _ => ?_
         have hsum := toModel_cons_cons_sum_smul_deTurckLieConnectionDifferenceDerivative (E := E)
           (Tensor0SSpace.toModel Z)
-          ((smoothOrthoFrame (I := I) g₁ x c x : TangentSpace I x) : E)
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x c x))
           (Module.finrank ℝ E)
           (fun a => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
-          (fun a => (smoothOrthoFrame (I := I) g₀ x a x : E)) mm
+          (fun a => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x a x)) mm
         rw [← hsum]
-        congr 2
+        apply congrArg (fun z : E =>
+          Tensor0SSpace.toModel Z
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x c x)) (Fin.cons z mm)))
         have hrep0 := smoothOrthoFrame_center_repr (I := I) (M := M) g₀ x
           (smoothOrthoFrame (I := I) g₁ x c x)
-        rw [show (∑ a : Fin (Module.finrank ℝ E),
-            g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
-              (smoothOrthoFrame (I := I) g₁ x c x) •
-              (smoothOrthoFrame (I := I) g₀ x a x : E)) =
-            ((∑ a : Fin (Module.finrank ℝ E),
-              g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
-                (smoothOrthoFrame (I := I) g₁ x c x) •
-                smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) from rfl]
-        rw [← hrep0]
+        have hrep0model := congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) hrep0.symm
+        simpa only [map_sum, map_smul] using hrep0model
 
 def deTurckLieConnectionDifferenceDerivativePairTraceOperator (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 6 2 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 6 4 2
     (cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ 2)
     (cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ 4)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel (g₀ gm : SmoothRiemannianMetric I M)
@@ -212,17 +223,21 @@ private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel 
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-            ![(smoothOrthoFrame (I := I) gm x a x : E),
-              (smoothOrthoFrame (I := I) gm x b x : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) gm x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) gm x b x)] *
           unitModel (I := I) (M := M) g₀ 4 X x
-            ![v 0, v 1, (smoothOrthoFrame (I := I) gm x a x : E),
-              (smoothOrthoFrame (I := I) gm x b x : E)] := by
+            ![v 0, v 1, tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) gm x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) gm x b x)] := by
   classical
   set Y : Tensor0SSpace 6 I x :=
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 deTurckLieConnectionDifferenceDerivativeInputPermutation
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D with hY_def
-  have hYval : ∀ w : Fin 6 → TangentSpace I x,
+  have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
         Tensor0SSpace.toModel D ![w 1, w 3] *
           unitModel (I := I) (M := M) g₀ 4 X x ![w 4, w 5, w 0, w 2] := by
@@ -238,8 +253,16 @@ private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel 
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) deTurckLieConnectionDifferenceDerivativeInputPermutation
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
+    rw [show (fun i => w (deTurckLieConnectionDifferenceDerivativeInputPermutation i)) =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+            (w (deTurckLieConnectionDifferenceDerivativeInputPermutation i)))) from by
+      funext i
+      rw [ContinuousLinearEquiv.apply_symm_apply]]
     rw [slotExtendIter_two_toModel_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ X x D
-      (fun i => w (deTurckLieConnectionDifferenceDerivativeInputPermutation i))]
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+        (w (deTurckLieConnectionDifferenceDerivativeInputPermutation i)))]
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
     refine congrArg₂ (· * ·) ?_ ?_
     · refine congrArg _ ?_
       funext k
@@ -268,9 +291,10 @@ private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel 
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y)
-    (Fin.cons ((smoothOrthoFrame (I := I) gm x b x : TangentSpace I x) : E)
-      (Fin.cons ((smoothOrthoFrame (I := I) gm x b x : TangentSpace I x) : E)
-        (fun j => (v j : E))))]
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) gm x b x))
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) gm x b x)) v))]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [hYval]
   rfl
@@ -281,7 +305,6 @@ def deTurckLieConnectionDifferenceDerivativeSymCc (g₀ : SmoothRiemannianMetric
       (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) +
     deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -289,16 +312,23 @@ private lemma deTurckLieConnectionDifferenceDerivativeLoweredG1Cc_unitModel_appl
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
-    (x : M) (m : Fin 4 → TangentSpace I x) :
+    (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) x m =
-      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3)) (m 0) := by
+      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
   rw [deTurckLieConnectionDifferenceDerivativeLoweredG1Cc, unitModel_add_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 4]
   rw [deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x m]
   rw [deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (I := I) (M := M) g₀ T g₁ g_bg x m]
-  rw [htie x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3)) (m 0)]
+  rw [htie x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -306,11 +336,19 @@ private lemma deTurckLieConnectionDifferenceDerivativeSymCc_unitModel_apply (g�
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
-    (x : M) (m : Fin 4 → TangentSpace I x) :
+    (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (deTurckLieConnectionDifferenceDerivativeSymCc (I := I) (M := M) g₀ T g₁ g_bg) x m =
-      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 0) (m 2) (m 3)) (m 1) +
-        g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3)) (m 0) := by
+      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1)) +
+        g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
   rw [deTurckLieConnectionDifferenceDerivativeSymCc, unitModel_add_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 4]
   rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
     (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) x]
@@ -323,6 +361,7 @@ private lemma deTurckLieConnectionDifferenceDerivativeSymCc_unitModel_apply (g�
     show (Equiv.swap (0 : Fin 4) 1) 2 = 2 from by decide,
     show (Equiv.swap (0 : Fin 4) 1) 3 = 3 from by decide]
 
+omit [SigmaCompactSpace M] in
 private lemma iteratedCovGrad_succ_cometricDT_zero_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M) (s m : ℕ) :
     iteratedCovGrad (I := I) g₀ (s + 2) s (m + 1)
       (cometricDoubleTraceField (I := I) g₀ s) = 0 := by
@@ -576,7 +615,6 @@ theorem exists_deTurckLieConnectionDifferenceDerivativePairTraceOperator_fiberNo
     _ = _ := by
         rw [← Finset.sum_mul, ← mul_assoc]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_eq_pairTrace
@@ -624,7 +662,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_eq_pairTrace
     rfl
   rw [hsmul]
   beta_reduce
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   rw [deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel (I := I) (M := M) g₀ g₁
     (deTurckLieConnectionDifferenceDerivativeSymCc (I := I) (M := M) g₀ T g₁ g_bg) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -638,40 +676,55 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_eq_pairTrace
   rw [deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x) x D v]
   have hXval : ∀ a b : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeSymCc (I := I) (M := M) g₀ T g₁ g_bg) x
-        ![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-          (smoothOrthoFrame (I := I) g₁ x b x : E)] =
-      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 0)
-          (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)) (v 1) +
-        g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 1)
-          (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)) (v 0) := by
+        ![v 0, v 1,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] =
+      g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) +
+        g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+          (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) := by
     intro a b
     rw [deTurckLieConnectionDifferenceDerivativeSymCc_unitModel_apply (I := I) (M := M) g₀ T g₁ g_bg htie x
-      (![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] : Fin 4 → TangentSpace I x)]
-    rw [show (![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] : Fin 4 → TangentSpace I x) 0 = v 0 from rfl]
-    rw [show (![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] : Fin 4 → TangentSpace I x) 1 = v 1 from rfl]
-    rw [show (![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] : Fin 4 → TangentSpace I x) 2 =
-      smoothOrthoFrame (I := I) g₁ x a x from rfl]
-    rw [show (![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] : Fin 4 → TangentSpace I x) 3 =
-      smoothOrthoFrame (I := I) g₁ x b x from rfl]
+      (![v 0, v 1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] : Fin 4 → E)]
+    rw [show (![v 0, v 1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] : Fin 4 → E) 0 =
+      v 0 from rfl]
+    rw [show (![v 0, v 1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] : Fin 4 → E) 1 =
+      v 1 from rfl]
+    rw [show (![v 0, v 1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] : Fin 4 → E) 2 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x) from rfl]
+    rw [show (![v 0, v 1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] : Fin 4 → E) 3 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x) from rfl]
+    rw [ContinuousLinearEquiv.symm_apply_apply, ContinuousLinearEquiv.symm_apply_apply]
   rw [show (∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel D
-          ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-            (smoothOrthoFrame (I := I) g₁ x b x : E)] *
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] *
         unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeSymCc (I := I) (M := M) g₀ T g₁ g_bg) x
-          ![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-            (smoothOrthoFrame (I := I) g₁ x b x : E)]) =
+          ![v 0, v 1,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)]) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-            ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] *
           unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeSymCc (I := I) (M := M) g₀ T g₁ g_bg) x
-            ![v 0, v 1, (smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] from Finset.sum_comm]
+            ![v 0, v 1,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] from Finset.sum_comm]
   rw [neg_one_mul, neg_one_mul]
   congr 1
   refine Finset.sum_congr rfl fun a _ => ?_

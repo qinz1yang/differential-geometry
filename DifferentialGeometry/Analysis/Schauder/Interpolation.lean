@@ -4,6 +4,7 @@ import Mathlib.Topology.ContinuousMap.Bounded.Normed
 
 noncomputable section
 
+
 open Set
 open scoped BoundedContinuousFunction NNReal
 
@@ -427,7 +428,7 @@ theorem parabolicValue_holderWith_restrict_of_interpolation
     (huNorm : ∀ p, p ∈ parabolicCylinder J Omega →
       ‖u p.time p.space‖ ≤ M) :
     HolderWith (parabolicValueInterpolationConst epsilon alpha C M) alpha
-      ((parabolicCylinder J Omega).restrict
+      ((parabolicCylinder J Omega).domRestrict
         (fun p : ParabolicPoint V ↦ u p.time p.space)) := by
   simpa only [parabolicValueInterpolationConst] using
     holderWith_restrict_of_norm_le_of_lipschitzOnWith
@@ -447,7 +448,7 @@ theorem parabolicValue_holderWith_restrict_of_convex
     (hgauge : eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder J Omega) u ≤ C) :
     HolderWith (2 * C) alpha
-      ((parabolicCylinder J Omega).restrict
+      ((parabolicCylinder J Omega).domRestrict
         (fun p : ParabolicPoint V ↦ u p.time p.space)) := by
   have hnorm : ∀ p : parabolicCylinder J Omega,
       ‖u p.1.time p.1.space‖ ≤ C := by
@@ -456,7 +457,7 @@ theorem parabolicValue_holderWith_restrict_of_convex
       (j := 0) (by omega) (p := p.1) p.2
     simpa only [parabolicSpatialJet, norm_iteratedFDeriv_zero] using hzero
   have hzero : HolderWith (2 * C) 0
-      ((parabolicCylinder J Omega).restrict
+      ((parabolicCylinder J Omega).domRestrict
         (fun p : ParabolicPoint V ↦ u p.time p.space)) :=
     holderWith_zero_of_norm_le hnorm
   simpa only [max_self] using hzero.of_le_of_le
@@ -558,7 +559,7 @@ theorem parabolicValue_holderWith_restrict
     (hgauge : eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder J Set.univ) u ≤ C) :
     HolderWith (2 * C) alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p : ParabolicPoint V ↦ u p.time p.space)) := by
   have hnorm : ∀ p : parabolicCylinder J (Set.univ : Set V),
       ‖u p.1.time p.1.space‖ ≤ C := by
@@ -567,7 +568,7 @@ theorem parabolicValue_holderWith_restrict
       (j := 0) (by omega) (p := p.1) p.2
     simpa only [parabolicSpatialJet, norm_iteratedFDeriv_zero] using hzero
   have hzero : HolderWith (2 * C) 0
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p : ParabolicPoint V ↦ u p.time p.space)) :=
     holderWith_zero_of_norm_le hnorm
   have hlip :=
@@ -584,7 +585,7 @@ theorem lipschitzWith_time_slice_of_parabolicC2HolderGauge
     LipschitzWith C (fun t ↦ u t x) := by
   have hQ : parabolicCylinder Set.univ (Set.univ : Set V) = Set.univ := by
     ext p
-    simp only [parabolicCylinder, Set.mem_setOf_eq, Set.mem_univ, and_self]
+    simp only [parabolicCylinder, Set.mem_ofPred_eq, Set.mem_univ, and_self]
   rw [← hQ] at hu hgauge
   rw [← lipschitzOnWith_univ]
   exact lipschitzOnWith_time_slice_of_parabolicC2HolderGaugeOn
@@ -736,14 +737,14 @@ theorem norm_parabolicSpatialJet_one_time_sub_le_of_mem
     apply lipschitzWith_of_nnnorm_fderiv_le hfdiff
     intro y
     rw [← NNReal.coe_le_coe]
-    simpa only [coe_nnnorm] using hsecond y
+    simpa only [coe_nnnorm, NNReal.coe_mul, NNReal.coe_ofNat] using hsecond y
   let delta : NNReal := Real.toNNReal |t - s|
   have hfnorm : ∀ y, ‖f y‖ ≤ C * delta := by
     intro y
     have htime :=
       (lipschitzOnWith_time_slice_of_parabolicC2HolderGaugeOn
         hJ hu hgauge y).dist_le_mul t ht s hs
-    simpa only [f, dist_eq_norm, Real.dist_eq, delta, NNReal.coe_mul,
+    simpa only [f, dist_eq_norm, Real.dist_eq, Real.norm_eq_abs, delta, NNReal.coe_mul,
       Real.coe_toNNReal _ (abs_nonneg _)] using htime
   have hdelta : 0 < |t - s| := abs_pos.mpr (sub_ne_zero.mpr hts)
   have hsqrt : 0 < Real.sqrt |t - s| := Real.sqrt_pos.2 hdelta
@@ -1015,14 +1016,14 @@ theorem norm_parabolicSpatialJet_one_time_sub_le_of_mem_buffered_ball
       (𝕜 := Real) hfdiff
     · intro y hy
       rw [← NNReal.coe_le_coe]
-      simpa only [coe_nnnorm] using hsecond y hy
+      simpa only [coe_nnnorm, NNReal.coe_mul, NNReal.coe_ofNat] using hsecond y hy
   let theta : NNReal := Real.toNNReal |t - s|
   have hfnorm : ∀ y ∈ Metric.ball center R, ‖f y‖ ≤ C * theta := by
     intro y hy
     have htime :=
       (lipschitzOnWith_time_slice_of_parabolicC2HolderGaugeOn_of_mem
         hJ hu hgauge hy).dist_le_mul t ht s hs
-    simpa only [f, dist_eq_norm, Real.dist_eq, theta, NNReal.coe_mul,
+    simpa only [f, dist_eq_norm, Real.dist_eq, Real.norm_eq_abs, theta, NNReal.coe_mul,
       Real.coe_toNNReal _ (abs_nonneg _)] using htime
   have habs : 0 < |t - s| := abs_pos.mpr (sub_ne_zero.mpr hts)
   have hsqrt : 0 < Real.sqrt |t - s| := Real.sqrt_pos.2 habs
@@ -1125,7 +1126,7 @@ theorem norm_parabolicSpatialJet_one_time_sub_le_of_mem_buffered_ball
       _ ≤ (4 * C + 2 * C / delta : NNReal) * Real.sqrt |t - s| := by
         apply mul_le_mul_of_nonneg_right _ (Real.sqrt_nonneg _)
         exact_mod_cast
-          (le_add_of_nonneg_left (zero_le (4 * C : NNReal)))
+          (le_add_of_nonneg_left zero_le)
 
 theorem lipschitzOnWith_parabolicSpatialJet_one_of_buffered_ball
     {J : Set Real} (hJ : Convex Real J)
@@ -1268,7 +1269,7 @@ theorem parabolicSpatialJet_one_holderWith_restrict_of_buffered_ball_interpolati
     HolderWith
       (bufferedParabolicSpatialGradientInterpolationConst
         epsilon delta alpha C M) alpha
-      ((parabolicCylinder J (Metric.closedBall center r)).restrict
+      ((parabolicCylinder J (Metric.closedBall center r)).domRestrict
         (parabolicSpatialJet 1 u)) := by
   have hdelta : 0 < delta := hepsilon.trans hepsilonDelta
   have hepsilonBuffer : r + (epsilon : Real) < R := by
@@ -1303,7 +1304,7 @@ theorem parabolicSpatialJet_one_holderWith_restrict_of_buffered_ball
     (hgauge : eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder J (Metric.ball center R)) u ≤ C) :
     HolderWith (bufferedParabolicSpatialGradientConst C delta) alpha
-      ((parabolicCylinder J (Metric.closedBall center r)).restrict
+      ((parabolicCylinder J (Metric.closedBall center r)).domRestrict
         (parabolicSpatialJet 1 u)) := by
   have hrR : r < R := by
     calc
@@ -1316,7 +1317,7 @@ theorem parabolicSpatialJet_one_holderWith_restrict_of_buffered_ball
     exact parabolicSpatialJet_norm_le hgauge (by omega)
       ⟨p.2.1, (Metric.mem_closedBall.mp p.2.2).trans_lt hrR⟩
   have hzero : HolderWith (2 * C) 0
-      ((parabolicCylinder J (Metric.closedBall center r)).restrict
+      ((parabolicCylinder J (Metric.closedBall center r)).domRestrict
         (parabolicSpatialJet 1 u)) :=
     holderWith_zero_of_norm_le hnorm
   have hlip :=
@@ -1509,13 +1510,13 @@ theorem norm_parabolicSpatialJet_one_time_sub_le
     apply lipschitzWith_of_nnnorm_fderiv_le hfdiff
     intro y
     rw [← NNReal.coe_le_coe]
-    simpa only [coe_nnnorm] using hsecond y
+    simpa only [coe_nnnorm, NNReal.coe_mul, NNReal.coe_ofNat] using hsecond y
   let delta : NNReal := Real.toNNReal |t - s|
   have hfnorm : ∀ y, ‖f y‖ ≤ C * delta := by
     intro y
     have htime := (lipschitzWith_time_slice_of_parabolicC2HolderGauge
       hu hgauge y).dist_le_mul t s
-    simpa only [f, dist_eq_norm, Real.dist_eq, delta, NNReal.coe_mul,
+    simpa only [f, dist_eq_norm, Real.dist_eq, Real.norm_eq_abs, delta, NNReal.coe_mul,
       Real.coe_toNNReal _ (abs_nonneg _)] using htime
   have hdelta : 0 < |t - s| := abs_pos.mpr (sub_ne_zero.mpr hts)
   have hsqrt : 0 < Real.sqrt |t - s| := Real.sqrt_pos.2 hdelta
@@ -1679,7 +1680,7 @@ theorem parabolicSpatialJet_one_holderWith_restrict_of_interpolation
       p ∈ parabolicCylinder J Set.univ → ‖u p.time p.space‖ ≤ M) :
     HolderWith
       (parabolicSpatialGradientInterpolationConst epsilon alpha C M) alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (parabolicSpatialJet 1 u)) := by
   have hnorm : ∀ p ∈ parabolicCylinder J (Set.univ : Set V),
       ‖parabolicSpatialJet 1 u p‖ ≤ 2 * M / epsilon + C * epsilon := by
@@ -1703,14 +1704,14 @@ theorem parabolicSpatialJet_one_holderWith_restrict
     (hgauge : eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder J Set.univ) u ≤ C) :
     HolderWith (5 * C) alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (parabolicSpatialJet 1 u)) := by
   have hnorm : ∀ p : parabolicCylinder J (Set.univ : Set V),
       ‖parabolicSpatialJet 1 u p.1‖ ≤ C := by
     intro p
     exact parabolicSpatialJet_norm_le hgauge (by omega) p.2
   have hzero : HolderWith (2 * C) 0
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (parabolicSpatialJet 1 u)) :=
     holderWith_zero_of_norm_le hnorm
   have hlip :=
@@ -1873,11 +1874,11 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_univ_le
     eParabolicC2HolderGaugeWithLowerJetsOn alpha Set.univ u ≤
       ((8 * C : NNReal) : ENNReal) := by
   have hvalue : HolderWith (2 * C) alpha
-      (Set.univ.restrict (fun p : ParabolicPoint V ↦ u p.time p.space)) :=
+      (Set.univ.domRestrict (fun p : ParabolicPoint V ↦ u p.time p.space)) :=
     (parabolicValue_holderWith halpha hu hgauge).holderOnWith Set.univ
       |>.holderWith
   have hgradient : HolderWith (5 * C) alpha
-      (Set.univ.restrict (parabolicSpatialJet 1 u)) :=
+      (Set.univ.domRestrict (parabolicSpatialJet 1 u)) :=
     (parabolicSpatialJet_one_holderWith halpha hu hgauge).holderOnWith Set.univ
       |>.holderWith
   calc

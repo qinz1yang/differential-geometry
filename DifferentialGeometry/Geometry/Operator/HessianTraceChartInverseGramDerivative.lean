@@ -119,12 +119,12 @@ lemma partialDeriv_chartInvGramOnE_eq
     rw [hfS_def]
     unfold partialDeriv
     rw [fderiv_fun_sum (fun b _ => hf_diff b)]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [fderiv_fun_mul (𝕜 := ℝ)
       (chartGramOnE_differentiableAt_interior (I := I) g α j b hy)
       (chartInvGramOnE_differentiableAt_interior (I := I) g α b p hy)]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [add_apply, smul_apply, smul_eq_mul]
     ring
   rw [hexpand] at hfS_partialDeriv_zero
   have hidentity_ap : ∀ a : Fin (Module.finrank ℝ E),
@@ -178,12 +178,12 @@ lemma partialDeriv_chartInvGramOnE_eq
               partialDeriv (E := E) l (chartInvGramOnE (I := I) g α b p) y₀) := by
       unfold partialDeriv
       rw [fderiv_fun_sum (fun b _ => hf_diff_a b)]
-      rw [ContinuousLinearMap.sum_apply]
+      rw [sum_apply]
       refine Finset.sum_congr rfl (fun b _ => ?_)
       rw [fderiv_fun_mul (𝕜 := ℝ)
         (chartGramOnE_differentiableAt_interior (I := I) g α a b hy)
         (chartInvGramOnE_differentiableAt_interior (I := I) g α b p hy)]
-      simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [add_apply, smul_apply, smul_eq_mul]
       ring
     rw [hexpand_a] at hpartial_zero
     exact hpartial_zero
@@ -425,16 +425,16 @@ lemma partialDeriv2_chartInvGramOnE_eq
                 partialDeriv (E := E) j (chartGramOnE (I := I) g α p q) y') y₀ from
       fderiv_neg]
     rw [fderiv_fun_sum (fun p _ => h_inner_sum_diff p)]
-    simp only [ContinuousLinearMap.neg_apply, ContinuousLinearMap.sum_apply, neg_inj]
+    simp only [neg_apply, sum_apply, neg_inj]
     refine Finset.sum_congr rfl (fun p _ => ?_)
     rw [fderiv_fun_sum (fun q _ => h_summand_diff p q)]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun q _ => ?_)
     rw [fderiv_fun_mul (𝕜 := ℝ)
       (DifferentiableAt.fun_mul (hG_diff_kp p) (hG_diff_ql q))
       (h_dG_diff p q)]
     rw [fderiv_fun_mul (𝕜 := ℝ) (hG_diff_kp p) (hG_diff_ql q)]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       smul_eq_mul]
     change chartInvGramOnE (I := I) g α k p y₀ *
         chartInvGramOnE (I := I) g α q l y₀ *

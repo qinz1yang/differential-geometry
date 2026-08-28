@@ -44,7 +44,9 @@ private lemma mfderiv_extChartAt_apply_triv_symm
     (x₀ := α) (x := x) hxchart]
   have h_symm_eq : ((trivializationAt E (TangentSpace I) α).symm x
         : E → TangentSpace I x) v_E
-      = ((trivializationAt E (TangentSpace I) α).symmL ℝ x : E →L[ℝ] TangentSpace I x) v_E := rfl
+      = ((trivializationAt E (TangentSpace I) α).symmL ℝ x : E →L[ℝ] TangentSpace I x) v_E :=
+    (Trivialization.symmL_apply
+      (trivializationAt E (TangentSpace I) α) hbase v_E).symm
   rw [h_symm_eq]
   exact Trivialization.continuousLinearMapAt_symmL
     (R := ℝ) (trivializationAt E (TangentSpace I) α) hbase v_E
@@ -295,7 +297,7 @@ private lemma sq_fderiv_chartSmoothExt_apply_le_g_inner_mul
     (chartTargetUnitFiber (I := I) α i x)
 
 private lemma eLpNorm_chartPushed_le_const_mul_eLpNorm_u
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -477,7 +479,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
       have h_a_self_eq : g.inner x a a = ((ρ : M → ℝ) x)^2 * g.inner x gu gu := by
         change (g.inner x ((((ρ : M → ℝ) x)) • gu)) ((((ρ : M → ℝ) x)) • gu) =
           _ * g.inner x gu gu
-        rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply]
+        rw [(g.inner x).map_smul, smul_apply]
         rw [(g.inner x gu).map_smul]
         simp [smul_eq_mul, sq]; ring
       rw [h_a_self_eq, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
@@ -485,7 +487,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
         |u x| * Real.sqrt (g.inner x gρ gρ) := by
       have h_b_self_eq : g.inner x b b = (u x)^2 * g.inner x gρ gρ := by
         change (g.inner x ((u x) • gρ)) ((u x) • gρ) = _ * g.inner x gρ gρ
-        rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply]
+        rw [(g.inner x).map_smul, smul_apply]
         rw [(g.inner x gρ).map_smul]
         simp [smul_eq_mul, sq]; ring
       rw [h_b_self_eq, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
@@ -725,7 +727,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
       exact fderiv_const_apply 0
     rw [h_fderiv_zero]
     change |((0 : EuclN_E →L[ℝ] ℝ) (EuclideanSpace.single i (1 : ℝ)))| ≤ _
-    rw [ContinuousLinearMap.zero_apply, abs_zero]
+    rw [zero_apply, abs_zero]
     apply mul_nonneg (mul_nonneg hK_grad_nn (Real.sqrt_nonneg _))
     rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
       (I := I) α (fun z : M => |u z| +
@@ -1061,7 +1063,7 @@ private lemma wkpNorm_chartPushed_le_const_mul_per_α
   intro u hu
   rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_sum]
   rw [Finset.sum_range_succ, Finset.sum_range_one]
-  haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
+  have : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
     { default := fun i : Fin 0 => i.elim0
       uniq := fun β => by funext j; exact j.elim0 }
   rw [Fintype.sum_unique]
@@ -1271,10 +1273,10 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
                       (I := I) g u x))) p
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set S : Finset M :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
   set Cα : M → ℝ := fun α => Classical.choose

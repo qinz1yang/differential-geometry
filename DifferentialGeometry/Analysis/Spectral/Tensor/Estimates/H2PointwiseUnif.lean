@@ -218,10 +218,10 @@ theorem gFibreOp_of_fiberSq
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x (T.toSection x) ≤ K ^ 2) :
     gFibreOpBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T) K := by
   intro x v w
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
-  letI instNormed : ∀ b : M,
+  let instNormed : ∀ b : M,
       NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     fun b =>
       Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal

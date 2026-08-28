@@ -30,7 +30,7 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem ricciFrameDiffAt
-    {Idx : Type} [Finite Idx]
+    {Idx : Type}
     (g : SmoothRiemannianMetric I M)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {u : Set M}

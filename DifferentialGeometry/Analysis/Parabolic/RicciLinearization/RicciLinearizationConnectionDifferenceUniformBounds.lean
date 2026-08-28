@@ -17,7 +17,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -86,30 +85,37 @@ private theorem tensor0SSpace_apply_eq_toModel {s : ℕ} {x : M}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem fiberNormSqComponent_order0CometricTraced_eq
+private theorem fiberNormSqComponent_cometricTraced_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
-    (A : Tensor0SBundle.TensorRSSpace 1 2 I x)
-    (DA : Tensor0SBundle.TensorRSSpace 1 3 I x)
-    (n : ℕ) (e : Fin n → TangentSpace I x) (K J : Fin 2 → Fin n) :
-    fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
+    {p : ℕ}
+    (L : Tensor0SBundle.Tensor0SSpace p I x →L[ℝ]
+      Tensor0SBundle.Tensor0SSpace 4 I x)
+    (n : ℕ) (e : Fin n → TangentSpace I x)
+    (K : Fin p → Fin n) (J : Fin 2 → Fin n) :
+    fiberNormSqComponent (I := I) (M := M) g₀ x p 2
         ((ricciCometricFourTraceCLM (I := I) g₁ x).comp
-          (linearizedRicciConnectionDifferenceOrder0CLM (I := I) x A DA)) n e K J =
+          L) n e K J =
       Tensor0SBundle.Tensor0SSpace.toModel
         (ricciCometricFourTraceCLM (I := I) g₁ x
-          (linearizedRicciConnectionDifferenceOrder0CLM (I := I) x A DA
-            (coframeS (I := I) (M := M) g₀ x 2 e K)))
+          (L (coframeS (I := I) (M := M) g₀ x p e K)))
         (fun j => ((e (J j) : TangentSpace I x) : E)) := by
   unfold fiberNormSqComponent
   rw [ContinuousLinearMap.comp_apply]
   have hcoframe :
-      (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 2) ℝ).compContinuousLinearMap
-          (fun k => g₀.inner x (e (K k))) =
-        coframeS (I := I) (M := M) g₀ x 2 e K := rfl
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) p x).symm
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin p) ℝ).compContinuousLinearMap
+            (fun k => g₀.inner x (e (K k)))) =
+        coframeS (I := I) (M := M) g₀ x p e K := rfl
   rw [hcoframe]
-  exact tensor0SSpace_apply_eq_toModel _ _
+  convert tensor0SSpace_apply_eq_toModel
+    (ricciCometricFourTraceCLM (I := I) g₁ x
+      (L (coframeS (I := I) (M := M) g₀ x p e K)))
+    (fun j => e (J j)) using 1
+  exact Tensor0SSpace.eval_eq _ _
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
+omit [SigmaCompactSpace M] in
 private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnectionDifferenceFib_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -153,7 +159,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
   refine ⟨max (nn ^ 2 * nn ^ 2 * Mc0 ^ 2) (nn ^ 3 * nn ^ 2 * Mc1 ^ 2),
     le_trans (by positivity) (le_max_left _ _), ?_⟩
   intro g₁ P htie δc hδc_le hbound x henv
-  letI instT3 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
+  let instT3 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
   have hboundm : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P)
     δm := by
@@ -187,7 +193,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
           Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
         ‖(iteratedCovGrad (I := I) g₀ 0 2 k P).toSection x‖) := by
       intro k _
-      letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
+      let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       exact norm_nonneg _
     exact le_trans (Finset.single_le_sum hterms
@@ -258,11 +264,33 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
     have hZx : Z x = v 2 := smoothExtensionTangent_eq (I := I) x (v 2)
     have hbr := connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference (I := I) g₁ g₀ om X Y Z x
     rw [hom, hXx, hYx, hZx] at hbr
-    have hargs : (fun j : Fin 3 => (v j : E)) =
-        (Fin.cons (v 0) (Fin.cons (v 1) ![v 2]) : Fin 3 → TangentSpace I x) := by
+    have hargs : (fun j : Fin 3 =>
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (v j)) =
+          Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 1))
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x (v 2)]) := by
       funext j
       fin_cases j <;> rfl
-    rw [hargs, hbr]
+    have hbr' :
+        Tensor0SBundle.Tensor0SSpace.toModel
+          ((show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ]
+              Tensor0SBundle.Tensor0SSpace 3 I x from
+            (covGrad (I := I) (M := M) g₀ 1 2
+              (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) omg)
+          (fun j : Fin 3 =>
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (v j)) =
+          omg (fun _ : Fin 1 =>
+            covDerivConnectionDifference (I := I) g₀ g₁ X Z Y x) := by
+      rw [hargs]
+      exact hbr
+    change |Tensor0SBundle.Tensor0SSpace.toModel
+        ((show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ]
+            Tensor0SBundle.Tensor0SSpace 3 I x from
+          (covGrad (I := I) (M := M) g₀ 1 2
+            (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) omg)
+        (fun j : Fin 3 =>
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))| ≤ _
+    rw [hbr']
     set vec : TangentSpace I x := covDerivConnectionDifference (I := I) g₀ g₁ X Z Y x with hvec
     rw [show omg (fun _ : Fin 1 => vec) =
         cotangentToDual (I := I) (x := x) omg vec from
@@ -308,7 +336,11 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
             (ricciCometricFourTraceCLM (I := I) g₁ x
               (linearizedRicciConnectionDifferenceOrder1CLM (I := I) x A
                 (coframeS (I := I) (M := M) g₀ x 3 e K)))
-            (fun j => ((e (J j) : TangentSpace I x) : E)) := rfl
+            (fun j => ((e (J j) : TangentSpace I x) : E)) := by
+        rw [linearizedRicciConnectionDifferenceOrder1CometricTracedCLM]
+        rw [← hAset]
+        exact fiberNormSqComponent_cometricTraced_eq g₀ g₁ x
+          (linearizedRicciConnectionDifferenceOrder1CLM (I := I) x A) _ e K J
       have hfpb := fibPointwiseBound_order1CLM (I := I) g₀ x e horth hrepr_v A hCA_nn hpwA'
         (fibPointwiseBound_coframe (I := I) g₀ x 3 e horth K)
       have hb := fourTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr_v hq0 hqb hfpb
@@ -368,7 +400,8 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
         (fun j => ((e (J j) : TangentSpace I x) : E)) := by
         rw [linearizedRicciConnectionDifferenceOrder0CometricTracedCLM]
         rw [← hAset, ← hDAset]
-        exact fiberNormSqComponent_order0CometricTraced_eq g₀ g₁ x A DAv _ e K J
+        exact fiberNormSqComponent_cometricTraced_eq g₀ g₁ x
+          (linearizedRicciConnectionDifferenceOrder0CLM (I := I) x A DAv) _ e K J
       have hfpb := fibPointwiseBound_order0CLM (I := I) g₀ x e horth hrepr_v A hCA_nn hpwA'
         DAv hCcd0 hDAf (fibPointwiseBound_coframe (I := I) g₀ x 2 e horth K)
       have hb := fourTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr_v hq0 hqb hfpb
@@ -479,6 +512,7 @@ theorem exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDiffere
     exact Real.sqrt_le_sqrt hmain.2
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
+omit [SigmaCompactSpace M] in
 theorem ricci_coeff_riemannianFiberNormSq_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧

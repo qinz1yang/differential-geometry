@@ -513,7 +513,7 @@ lemma volumeReal_ball_eq (x : E) {r : ℝ} (hr : 0 < r) :
     rw [hballx, hball0]
     simp
   · have hdpos : 0 < d := Nat.pos_of_ne_zero hd
-    haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
+    have : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
       simpa [finrank_euclideanSpace] using hdpos
     rw [← Measure.addHaar_real_closedBall_eq_addHaar_real_ball (μ := volume) x r,
       Measure.addHaar_real_closedBall (μ := volume) x hr.le]

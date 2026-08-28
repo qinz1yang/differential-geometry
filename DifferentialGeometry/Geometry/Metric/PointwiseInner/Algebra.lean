@@ -6,7 +6,7 @@ import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Multilinear.Basis
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 
 
 noncomputable section
@@ -34,7 +34,7 @@ theorem tensorInnerPointwise_0s_add_left
   induction s with
   | zero =>
       change (S₁ + S₂) _ * T _ = S₁ _ * T _ + S₂ _ * T _
-      rw [ContinuousMultilinearMap.add_apply]
+      rw [add_apply]
       ring
   | succ s ih =>
       rw [tensorInnerPointwise_0s_succ, tensorInnerPointwise_0s_succ,
@@ -51,7 +51,7 @@ theorem tensorInnerPointwise_0s_add_left
               S₂.curryLeft ((chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
+              add_apply]
       rw [hcurry, ih]
       ring
 
@@ -64,7 +64,7 @@ theorem tensorInnerPointwise_0s_add_right
   induction s with
   | zero =>
       change S _ * (T₁ + T₂) _ = S _ * T₁ _ + S _ * T₂ _
-      rw [ContinuousMultilinearMap.add_apply]
+      rw [add_apply]
       ring
   | succ s ih =>
       rw [tensorInnerPointwise_0s_succ, tensorInnerPointwise_0s_succ,
@@ -81,7 +81,7 @@ theorem tensorInnerPointwise_0s_add_right
               T₂.curryLeft ((chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
+              add_apply]
       rw [hcurry, ih]
       ring
 
@@ -93,7 +93,7 @@ theorem tensorInnerPointwise_0s_smul_left
   induction s with
   | zero =>
       change (c • S) _ * T _ = c * (S _ * T _)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
       ring
   | succ s ih =>
       rw [tensorInnerPointwise_0s_succ, tensorInnerPointwise_0s_succ,
@@ -108,7 +108,7 @@ theorem tensorInnerPointwise_0s_smul_left
             c • S.curryLeft ((chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply]
+              smul_apply]
       rw [hcurry, ih]
       ring
 
@@ -120,7 +120,7 @@ theorem tensorInnerPointwise_0s_smul_right
   induction s with
   | zero =>
       change S _ * (c • T) _ = c * (S _ * T _)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
       ring
   | succ s ih =>
       rw [tensorInnerPointwise_0s_succ, tensorInnerPointwise_0s_succ,
@@ -135,7 +135,7 @@ theorem tensorInnerPointwise_0s_smul_right
             c • T.curryLeft ((chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply]
+              smul_apply]
       rw [hcurry, ih]
       ring
 
@@ -561,13 +561,13 @@ theorem tensorInnerPointwise_0s_eq_zero_iff
               c • (∑ i ∈ A, f i) = ∑ i ∈ A, c • f i := fun A c f => by
             refine ContinuousMultilinearMap.ext ?_
             intro w
-            rw [ContinuousMultilinearMap.smul_apply,
-              ContinuousMultilinearMap.sum_apply,
-              ContinuousMultilinearMap.sum_apply]
+            rw [smul_apply,
+              sum_apply,
+              sum_apply]
             rw [Finset.smul_sum]
             refine Finset.sum_congr rfl ?_
             intro i _
-            rw [ContinuousMultilinearMap.smul_apply]
+            rw [smul_apply]
           have hexpand : ∀ k : Fin n,
               (U j k) • W k = ∑ i : Fin n, (U j k * U i k) • Sfam i := by
             intro k

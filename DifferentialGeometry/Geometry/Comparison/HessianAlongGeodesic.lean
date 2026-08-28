@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import Mathlib.Analysis.Convex.Deriv
+
+
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
@@ -63,18 +65,26 @@ private theorem deriv_comp_grad
     hf.contMDiffAt.mdifferentiableAt (by simp)
   have hγmd : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t :=
     hγ.contMDiffAt.mdifferentiableAt (by simp)
-  have hcomp := hfmd.hasMFDerivAt.comp t hγmd.hasMFDerivAt
-  rw [hasMFDerivAt_iff_hasFDerivAt, hasFDerivAt_iff_hasDerivAt] at hcomp
-  have hd : HasDerivAt (f ∘ γ)
-      (mfderiv I 𝓘(ℝ, ℝ) f (γ t)
-        ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)) t := by
-    simpa only [ContinuousLinearMap.comp_apply] using hcomp
-  rw [hd.deriv]
+  let e : TangentSpace 𝓘(ℝ, ℝ) t :=
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm 1
+  have he : e = (1 : TangentSpace 𝓘(ℝ, ℝ) t) := by
+    apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).injective
+    simp only [e, ContinuousLinearEquiv.apply_symm_apply]
+    rfl
+  have hd : deriv (f ∘ γ) t = mvfderiv 𝓘(ℝ, ℝ) (f ∘ γ) t e := by
+    unfold mvfderiv
+    rw [mfderiv_eq_fderiv]
+    change deriv (f ∘ γ) t =
+      fderiv ℝ (f ∘ γ) t (NormedSpace.fromTangentSpace (𝕜 := ℝ) t e)
+    rw [show NormedSpace.fromTangentSpace (𝕜 := ℝ) t e = 1 by
+      exact (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).apply_symm_apply 1,
+      fderiv_apply_one_eq_deriv]
+  rw [hd, mvfderiv_comp_apply t hfmd hγmd e, he]
   exact (gradFun_metricDual (I := I) g f (γ t)
     ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)).symm
 
 omit [InnerProductSpace ℝ E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deriv2_comp_geo_at
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -84,10 +94,8 @@ theorem deriv2_comp_geo_at
       hessFun (I := I) g f (γ t)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1) := by
-  let V : ∀ s, TangentSpace I (γ s) :=
-    fun s => gradFun (I := I) g f (γ s)
-  let W : ∀ s, TangentSpace I (γ s) :=
-    fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] TangentSpace I (γ s)) 1
+  let V := fun s => gradFun (I := I) g f (γ s)
+  let W := fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] _) (1 : ℝ)
   have hfirst : deriv (f ∘ γ) = fun s => g.inner (γ s) (V s) (W s) := by
     funext s
     exact deriv_comp_grad (I := I) g hf hγ s
@@ -114,6 +122,7 @@ theorem deriv2_comp_geo_at
           (hγ.contMDiffAt.of_le
             (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤)))
           hgeo
+  change (deriv^[2] (f ∘ γ)) t = hessFun (I := I) g f (γ t) (W t) (W t)
   calc
     (deriv^[2] (f ∘ γ)) t = deriv (deriv (f ∘ γ)) t := by rfl
     _ = deriv (fun s => g.inner (γ s) (V s) (W s)) t := by rw [hfirst]
@@ -122,14 +131,11 @@ theorem deriv2_comp_geo_at
     _ = g.inner (γ t)
         ((LeviCivita (I := I) g) (fun x => gradFun (I := I) g f x) (γ t) (W t))
         (W t) := by rw [hVcov, hWcov]; simp
-    _ = hessFun (I := I) g f (γ t)
-        ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)
-        ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1) := by
-      simpa only [W, gradient_eq_gradFun] using
-        (hessFun_eq_cov_grad (I := I) g hf (γ t) (W t) (W t)).symm
+    _ = hessFun (I := I) g f (γ t) (W t) (W t) :=
+      (hessFun_eq_cov_grad (I := I) g hf (γ t) (W t) (W t)).symm
 
 omit [InnerProductSpace ℝ E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deriv2_comp_geo
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -142,7 +148,7 @@ theorem deriv2_comp_geo
   deriv2_comp_geo_at (I := I) g hf hγ (hgeo t)
 
 omit [InnerProductSpace ℝ E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deriv2_geo_on_at
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {U : Set M}
     (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
@@ -169,7 +175,7 @@ theorem deriv2_geo_on_at
       rw [hessFun_congr (I := I) g hFf]
 
 omit [InnerProductSpace ℝ E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deriv2_comp_geo_on
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {U : Set M}
     (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
@@ -182,7 +188,7 @@ theorem deriv2_comp_geo_on
   deriv2_geo_on_at (I := I) g hU hf hγ (hgeo t) ht
 
 omit [InnerProductSpace ℝ E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem strictConvex_geo_on
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {U : Set M}
     (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
@@ -203,7 +209,7 @@ theorem strictConvex_geo_on
   exact hpos t ht
 
 omit [InnerProductSpace ℝ E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem strictConvex_geo
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {U : Set M}
     (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)

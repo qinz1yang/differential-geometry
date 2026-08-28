@@ -23,15 +23,15 @@ theorem holderWith_restrict_comp_of_lipschitzWith
     {s : Set X} {t : Set Y} {L K alpha : NNReal}
     (phi : X → Y) (f : Y → F)
     (hphi : LipschitzWith L phi) (hst : MapsTo phi s t)
-    (hf : HolderWith K alpha (t.restrict f)) :
-    HolderWith (K * L ^ (alpha : Real)) alpha (s.restrict (f ∘ phi)) := by
+    (hf : HolderWith K alpha (t.domRestrict f)) :
+    HolderWith (K * L ^ (alpha : Real)) alpha (s.domRestrict (f ∘ phi)) := by
   let phi' : s → t := fun x ↦ ⟨phi x, hst x.2⟩
   have hphi' : LipschitzWith L phi' := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
     exact hphi.dist_le_mul x.1 y.1
   have hcomp := hf.comp hphi'.holderWith
-  have heq : t.restrict f ∘ phi' = s.restrict (f ∘ phi) := by
+  have heq : t.domRestrict f ∘ phi' = s.domRestrict (f ∘ phi) := by
     rfl
   rw [heq] at hcomp
   simpa only [mul_one] using hcomp
@@ -193,9 +193,9 @@ theorem holderWith_restrict_comp_parabolicMap
     {L K alpha : NNReal} (hL : 1 ≤ L)
     (phi : X → Y) (f : ParabolicPoint Y → F)
     (hphi : LipschitzWith L phi) (hQR : MapsTo (parabolicMap phi) Q R)
-    (hf : HolderWith K alpha (R.restrict f)) :
+    (hf : HolderWith K alpha (R.domRestrict f)) :
     HolderWith (K * L ^ (alpha : Real)) alpha
-      (Q.restrict (f ∘ parabolicMap phi)) := by
+      (Q.domRestrict (f ∘ parabolicMap phi)) := by
   exact holderWith_restrict_comp_of_lipschitzWith
     (parabolicMap phi) f (lipschitzWith_parabolicMap hL hphi) hQR hf
 

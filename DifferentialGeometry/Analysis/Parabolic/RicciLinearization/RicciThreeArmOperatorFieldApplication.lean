@@ -26,7 +26,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -57,6 +56,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+private noncomputable def tangentModel {n : ℕ} (x : M)
+    (v : Fin n → TangentSpace I x) : Fin n → E :=
+  fun i ↦ tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)
+
 theorem exists_linearizedRicciOrder1DivCoeff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -84,7 +87,8 @@ theorem exists_linearizedRicciOrder1DivCoeff (g₀ : SmoothRiemannianMetric I M)
                 + operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s)
                   (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
                 + operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s)
-                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
+                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
+              (tangentModel (I := I) x v) := by
   classical
   obtain ⟨_, _, _, hident, _, _⟩ :=
     (exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
@@ -111,7 +115,8 @@ theorem exists_linearizedRicciOrder1DivCoeff (g₀ : SmoothRiemannianMetric I M)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
       (linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ') x
   · intro s hs x v
-    exact hident hTsymm hT'symm s hs x v hδ_lt hδ'_lt
+    with_unfolding_all
+      exact hident hTsymm hT'symm s hs x v hδ_lt hδ'_lt
 
 theorem linearizedRicci_lichnerowicz_arm1_identity (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -140,7 +145,8 @@ theorem linearizedRicci_lichnerowicz_arm1_identity (g₀ : SmoothRiemannianMetri
                 + operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s)
                   (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
                 + operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s)
-                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v :=
+                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
+              (tangentModel (I := I) x v) :=
   exists_linearizedRicciOrder1DivCoeff (I := I) g₀ T T' hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
 
 theorem exists_linearizedRicci_threeArm_coeffFields
@@ -170,7 +176,8 @@ theorem exists_linearizedRicci_threeArm_coeffFields
                 + operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s)
                   (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
                 + operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s)
-                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
+                  (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
+              (tangentModel (I := I) x v) := by
   exact linearizedRicci_lichnerowicz_arm1_identity (I := I) g₀ T T'
     hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
 
@@ -196,7 +203,8 @@ theorem exists_ricciArmOrder1Coeff
               + operatorFieldApply (I := I) (M := M) g₀ 3 2 R₁
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
               + operatorFieldApply (I := I) (M := M) g₀ 4 2 R₂
-                (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
+                (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
+            (tangentModel (I := I) x v) := by
   classical
   obtain ⟨Φ₀, Φ₁, Φ₂, hj0, hj1, hj2, hc0, hc1, hc2, hid⟩ :=
     exists_linearizedRicci_threeArm_coeffFields (I := I) (M := M) g₀ T T'
@@ -224,15 +232,17 @@ theorem exists_ricciArmOrder1Coeff
   rw [hRic]
   have hintegrand : ∀ᵐ s ∂MeasureTheory.volume, s ∈ Set.uIoc (0 : ℝ) 1 →
       linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
-        unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Φ₀ s) W₀) x v
+        unitModel (I := I) (M := M) g₀ 2
+          (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Φ₀ s) W₀) x
+          (tangentModel (I := I) x v)
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s) W₁)
-            x v
+            x (tangentModel (I := I) x v)
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s) W₂)
-            x v := by
+            x (tangentModel (I := I) x v) := by
     rw [MeasureTheory.ae_iff]
     have hnull : MeasureTheory.volume ({1} : Set ℝ) = 0 := by simp
     refine MeasureTheory.measure_mono_null (fun s hs => ?_) hnull
-    rw [Set.mem_setOf_eq, Classical.not_imp] at hs
+    rw [Set.mem_ofPred_eq, Classical.not_imp] at hs
     obtain ⟨hsmem, hsneq⟩ := hs
     rw [Set.uIoc_of_le zero_le_one, Set.mem_Ioc] at hsmem
     rw [Set.mem_singleton_iff]
@@ -243,27 +253,36 @@ theorem exists_ricciArmOrder1Coeff
   rw [intervalIntegral.integral_congr_ae hintegrand]
   have hI0 : IntervalIntegrable
       (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Φ₀ s) W₀) x v)
+        (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Φ₀ s) W₀) x
+        (tangentModel (I := I) x v))
       MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 2 Φ₀ W₀ hSI hc0 x v
+    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 2 Φ₀ W₀ hSI hc0 x
+      (tangentModel (I := I) x v)
   have hI1 : IntervalIntegrable
       (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s) W₁) x v)
+        (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s) W₁) x
+        (tangentModel (I := I) x v))
       MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 3 Φ₁ W₁ hSI hc1 x v
+    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 3 Φ₁ W₁ hSI hc1 x
+      (tangentModel (I := I) x v)
   have hI2 : IntervalIntegrable
       (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s) W₂) x v)
+        (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s) W₂) x
+        (tangentModel (I := I) x v))
       MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 4 Φ₂ W₂ hSI hc2 x v
+    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 4 Φ₂ W₂ hSI hc2 x
+      (tangentModel (I := I) x v)
   rw [intervalIntegral.integral_add (hI0.add hI1) hI2,
     intervalIntegral.integral_add hI0 hI1]
   have he0 := pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 2 2 Φ₀ W₀
-    (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 hc0 x v
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 hc0 x
+      (tangentModel (I := I) x v)
   have he1 := pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 3 2 Φ₁ W₁
-    (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 hc1 x v
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 hc1 x
+      (tangentModel (I := I) x v)
   have he2 := pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 4 2 Φ₂ W₂
-    (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 hc2 x v
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 hc2 x
+      (tangentModel (I := I) x v)
   rw [← hR₀] at he0
   rw [← hR₁] at he1
   rw [← hR₂] at he2
@@ -294,7 +313,8 @@ theorem ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
               + operatorFieldApply (I := I) (M := M) g₀ 3 2 R₁
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
               + operatorFieldApply (I := I) (M := M) g₀ 4 2 R₂
-                (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
+                (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
+            (tangentModel (I := I) x v) := by
   classical
   obtain ⟨R₀, R₁, R₂, hR⟩ :=
     exists_ricciArmOrder1Coeff (I := I) (M := M) g₀ T T'
@@ -314,7 +334,7 @@ theorem ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
       (-2 : ℝ) • (A₀ + A₁ + A₂) := by
     rw [smul_add, smul_add]
   rw [hsmulsum]
-  rw [unitModel_smul_local, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [unitModel_smul_local, smul_apply, smul_eq_mul]
   have htoinfty : ∀ (g : SmoothRiemannianMetric I M),
       ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x (v 0) (v 1) =
         ricciTensor (I := I) g x (v 0) (v 1) := fun g => rfl

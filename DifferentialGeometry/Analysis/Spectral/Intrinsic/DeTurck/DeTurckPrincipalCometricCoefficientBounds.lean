@@ -7,6 +7,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -107,9 +108,11 @@ private theorem exists_secondOrderJetProductGrid_integral_bound
     intro j hj0 hj2
     have hb := hgn T Lam hLam hLam_sup j hj0 hj2
     have hnorm : tensorL2Norm (I := I) g 0 4
-        (iteratedCovGrad (I := I) g 0 2 2 T).toFun = R := by
-      exact (SmoothCcTensor.norm_def
-        (iteratedCovGrad (I := I) g 0 2 2 T)).symm
+        (covGrad (I := I) g 0 3 (covGrad (I := I) g 0 2 T)).toFun = R := by
+      simpa only [R, iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero,
+        Nat.reduceAdd] using
+        (SmoothCcTensor.norm_def
+          (iteratedCovGrad (I := I) g 0 2 2 T)).symm
     simpa [hnorm] using hb
   have hterm : ∀ n ∈ Finset.range 3,
       ∀ e ∈ Finset.Nat.antidiagonalTuple n 2,
@@ -137,10 +140,10 @@ private theorem exists_secondOrderJetProductGrid_integral_bound
   have hgrid_int : MeasureTheory.Integrable
       (secondOrderJetProductGrid (I := I) (M := M) g T)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    dsimp [secondOrderJetProductGrid]
-    apply MeasureTheory.integrable_finset_sum
+    unfold secondOrderJetProductGrid
+    apply MeasureTheory.integrable_finsetSum
     intro n hn
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro e he
     exact (hterm n hn e he).1
   refine ⟨hgrid_int, ?_⟩
@@ -152,12 +155,12 @@ private theorem exists_secondOrderJetProductGrid_integral_bound
             ((iteratedCovGrad (I := I) g 0 2 (e m) T).toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) by
     dsimp [secondOrderJetProductGrid]
-    rw [MeasureTheory.integral_finset_sum _
-      (fun n hn => MeasureTheory.integrable_finset_sum _
+    rw [MeasureTheory.integral_finsetSum _
+      (fun n hn => MeasureTheory.integrable_finsetSum _
         (fun e he => (hterm n hn e he).1))]
     apply Finset.sum_congr rfl
     intro n hn
-    exact MeasureTheory.integral_finset_sum _ (fun e he => (hterm n hn e he).1)]
+    exact MeasureTheory.integral_finsetSum _ (fun e he => (hterm n hn e he).1)]
   calc
     ∑ n ∈ Finset.range 3, ∑ e ∈ Finset.Nat.antidiagonalTuple n 2,
         ∫ x, ∏ m : Fin n,
@@ -275,10 +278,16 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound
         n * (δ / (1 - δ)) ≤ n * (2 * δ) :=
           mul_le_mul_of_nonneg_left hratio hn
         _ = 2 * n * Cop * N := by dsimp [δ]; ring
+    have hcoeff :
+        (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x =
+          (show TensorRSSpace 2 2 I x from
+            TensorRSSpace.ofCLM
+              (metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x)) := by
+      rfl
     calc
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x)
-          ≤ (n * (δ / (1 - δ))) ^ 2 := by simpa [n] using hb
+          ≤ (n * (δ / (1 - δ))) ^ 2 := by rw [hcoeff]; simpa [n] using hb
       _ ≤ (2 * n * Cop * N) ^ 2 :=
         pow_le_pow_left₀ (mul_nonneg hn hratio_nn) hmul 2
       _ = Kpt * N ^ 2 := by dsimp [Kpt]; ring
@@ -291,7 +300,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound
     dsimp [K₀, vol]
     ring_nf
     exact le_rfl
-  letI inst3 : Bundle.RiemannianBundle
+  let inst3 : Bundle.RiemannianBundle
       (fun x : M => TensorRSSpace 0 3 I x) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
   have hgrad_pt : ∀ x : M,

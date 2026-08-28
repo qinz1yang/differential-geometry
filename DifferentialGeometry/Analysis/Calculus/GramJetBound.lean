@@ -59,7 +59,7 @@ private theorem gramLinear_bound (A B : E →L[ℝ] F) :
   calc
     ‖realInnerCLM (A u) (B v)‖ ≤
         ‖A u‖ * ‖B v‖ := by
-      simpa only [realInnerCLM, innerSL_apply_apply] using
+      simpa only [realInnerCLM, innerSL_apply_apply] using!
         (norm_inner_le_norm (𝕜 := ℝ) (A u) (B v))
     _ ≤ (‖A‖ * ‖u‖) * (‖B‖ * ‖v‖) := by
       gcongr
@@ -87,7 +87,7 @@ theorem gram_jet_le {N : WithTop ℕ∞} {J : D → (E →L[ℝ] F)}
         (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i J x‖ *
           ‖iteratedFDeriv ℝ (n - i) J x‖ :=
   by
-    letI gramNorm :
+    let gramNorm :
         Norm ((E →L[ℝ] F) →L[ℝ] (E →L[ℝ] F) →L[ℝ] (E →L[ℝ] E →L[ℝ] ℝ)) :=
       ⟨fun T => ContinuousLinearMap.opNorm
         (𝕜 := ℝ) (𝕜₂ := ℝ)
@@ -96,7 +96,8 @@ theorem gram_jet_le {N : WithTop ℕ∞} {J : D → (E →L[ℝ] F)}
         (σ₁₂ := RingHom.id ℝ) T⟩
     have hGram : ‖gramBilinear (E := E) (F := F)‖ ≤ 1 := by
       exact ContinuousLinearMap.opNorm_le_bound₂ _ zero_le_one fun A B => by
-        simpa only [one_mul] using gramLinear_bound (E := E) (F := F) A B
+        simpa only [one_mul] using!
+          gramLinear_bound (E := E) (F := F) A B
     exact
       (gramBilinear (E := E) (F := F)).norm_iteratedFDeriv_le_of_bilinear_of_le_one
         hJ hJ x hn hGram

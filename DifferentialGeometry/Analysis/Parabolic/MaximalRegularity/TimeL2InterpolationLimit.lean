@@ -79,7 +79,7 @@ private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_timeModeCoeff_tendsto_zero_of_norm_tendsto_zero
-    [NeZero (Module.finrank ℝ E)] {a : ℝ} {T : ℝ}
+    {a : ℝ} {T : ℝ}
     (d : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (hd : Tendsto (fun n => ‖d n‖) atTop (𝓝 0))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -276,7 +276,7 @@ theorem timeL2_norm_tendsto_zero_of_low_tendsto_of_uniform
       ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i σ' *
         ‖timeModeCoeff (I := I) (M := M) (d n) i‖ ^ 2)
       atTop (𝓝 0) := by
-    have h := tendsto_finset_sum (s := F)
+    have h := tendsto_finsetSum (s := F)
       (f := fun i n => tensorSobolevWeight (I := I) (M := M) i σ' *
         ‖timeModeCoeff (I := I) (M := M) (d n) i‖ ^ 2)
       (a := fun _ : ι => (0 : ℝ))

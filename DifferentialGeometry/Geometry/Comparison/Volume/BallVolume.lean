@@ -51,7 +51,7 @@ lemma modelHaar_ball {R : ℝ} (hR : 0 < R) :
     (MeasureTheory.Measure.addHaar_ball_of_pos
       (μ := modelHaar (E := E)) (x := (0 : E)) hR)
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma ball_tgt_of_radius
     (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
     (hR : R ≤ expMapC2Radius (I := I) g p) :
@@ -139,6 +139,7 @@ lemma coordBall_meas
       Metric.isOpen_ball hball_target
   exact hopen.measurableSet
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem vol_le_ball_of_len
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)
@@ -172,6 +173,7 @@ theorem vol_le_ball_of_len
       by
         gcongr
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem vol_le_ball_of_len_radius
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)
@@ -195,6 +197,7 @@ theorem vol_le_ball_of_len_radius
     exact Metric.mem_ball.mpr ((Metric.mem_ball.mp (hA_ball hw)).trans_le hR)
   exact vol_le_ball_of_len (I := I) g p hA_meas hA_source hB hA_rad hA_ball hJ
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_le
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
@@ -230,6 +233,7 @@ theorem coordBall_vol_le
     hA_meas hA_source hB hR hA_ball
     (fun w hw => hJ w (hA_ball hw))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_le_tgt
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
@@ -249,6 +253,7 @@ theorem coordBall_vol_le_tgt
   coordBall_vol_le (I := I) g p hB hR hball_target
     (coordBall_meas (I := I) g p hball_target) hJ
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_scale
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
@@ -270,6 +275,7 @@ theorem coordBall_vol_scale
   simpa [modelHaar_ball (E := E) hRpos] using
     coordBall_vol_le_tgt (I := I) g p hB hR hball_target hJ
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_scale_c2
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
@@ -323,7 +329,8 @@ theorem coordBall_vol_ge
     (fun w hw => by
       have hw' : w ∈ φ '' (φ.symm '' Metric.ball (0 : E) R) := by
         simpa [φ] using hw
-      exact hdens w (by simpa [hA_image] using hw'))
+      rw [hA_image] at hw'
+      exact hdens w hw')
   change ENNReal.ofReal c * (modelHaar (E := E)) (φ '' (φ.symm '' Metric.ball (0 : E) R)) ≤
     riemannianVolumeMeasure (I := I) (M := M) g (φ.symm '' Metric.ball (0 : E) R) at hge
   rw [hA_image] at hge
@@ -345,6 +352,7 @@ theorem coordBall_vol_ge_sc
   simpa [modelHaar_ball (E := E) hRpos] using
     coordBall_vol_ge (I := I) g p hball_target hdens
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_ge_sc_c2
     (g : SmoothRiemannianMetric I M) (p : M)
     {c R : ℝ} (hRpos : 0 < R)
@@ -388,7 +396,9 @@ theorem coordBall_subset_smallNormalBall_of_agree
   have hconf' :
       expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from w) ∈
         smallNormalBall (I := I) p s := by
-    simpa [expMapIntrinsic_def] using hconf
+    change intrinsicGeodesic (I := I) g hEnorm p
+      (show TangentSpace I p from w) 1 ∈ smallNormalBall (I := I) p s
+    exact hconf
   rw [hagree w hw, ← hsymm] at hconf'
   exact hconf'
 
@@ -434,6 +444,7 @@ theorem smallNormalBall_vol_ge_sc
     (coordBall_vol_ge_sc (I := I) g p hRpos hball_target hdens)
     (MeasureTheory.measure_mono hcoord_subset)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem smallNormalBall_vol_ge_sc_c2
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -491,7 +502,7 @@ theorem smallNormalBall_subset_metricBall
     {p : M} {s : ℝ} :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     smallNormalBall (I := I) p s ⊆ Metric.ball p s := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro y hy
   rw [Metric.mem_ball]
   rw [dist_comm]
@@ -510,7 +521,7 @@ theorem metricBall_subset_smallNormalBall
     {p : M} {s : ℝ} :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     Metric.ball p s ⊆ smallNormalBall (I := I) p s := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro y hy
   rw [Metric.mem_ball] at hy
   rw [dist_comm] at hy
@@ -529,7 +540,7 @@ theorem metricBall_meas
     (p : M) (s : ℝ) :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     MeasurableSet (Metric.ball p s) := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact Metric.isOpen_ball.measurableSet
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -559,7 +570,7 @@ theorem exists_metricBall_vol_ge_sc_local
   obtain ⟨ρ, hρpos, hsmall⟩ := exists_smallNormalBall_vol_ge_sc (I := I) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
   intro c R s hRpos hR hρball hgs hdens
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact le_trans
     (hsmall hRpos hR hρball hgs hdens)
     (MeasureTheory.measure_mono (smallNormalBall_subset_metricBall (I := I) (M := M)))
@@ -587,25 +598,30 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 private lemma sqrt_inner_le_opNorm_const
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
-    Real.sqrt (g.inner p x x) ≤ (Real.sqrt ‖g.inner p‖ + 1) * ‖x‖ := by
+    Real.sqrt (g.inner p x x) ≤
+      (Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ + 1) * ‖x‖ := by
+  let gp := tangentBilinearFormToModel (I := I) p (g.inner p)
+  have hgp : gp x x = g.inner p x x := by
+    rfl
   have hop :
-      |g.inner p x x| ≤ ‖g.inner p‖ * ‖x‖ * ‖x‖ := by
-    simpa [Real.norm_eq_abs] using (g.inner p).le_opNorm₂ x x
+      |gp x x| ≤ ‖gp‖ * ‖x‖ * ‖x‖ := by
+    simpa [Real.norm_eq_abs] using gp.le_opNorm₂ x x
   have hquad :
-      g.inner p x x ≤ ‖g.inner p‖ * ‖x‖ ^ 2 := by
+      g.inner p x x ≤ ‖gp‖ * ‖x‖ ^ 2 := by
     calc
-      g.inner p x x ≤ |g.inner p x x| := le_abs_self _
-      _ ≤ ‖g.inner p‖ * ‖x‖ * ‖x‖ := hop
-      _ = ‖g.inner p‖ * ‖x‖ ^ 2 := by ring
+      g.inner p x x = gp x x := hgp.symm
+      _ ≤ |gp x x| := le_abs_self _
+      _ ≤ ‖gp‖ * ‖x‖ * ‖x‖ := hop
+      _ = ‖gp‖ * ‖x‖ ^ 2 := by ring
   have hsqrt :
-      Real.sqrt (g.inner p x x) ≤ Real.sqrt (‖g.inner p‖ * ‖x‖ ^ 2) :=
+      Real.sqrt (g.inner p x x) ≤ Real.sqrt (‖gp‖ * ‖x‖ ^ 2) :=
     Real.sqrt_le_sqrt hquad
   have hprod :
-      Real.sqrt (‖g.inner p‖ * ‖x‖ ^ 2) = Real.sqrt ‖g.inner p‖ * ‖x‖ := by
-    rw [Real.sqrt_mul (norm_nonneg (g.inner p)), Real.sqrt_sq (norm_nonneg x)]
+      Real.sqrt (‖gp‖ * ‖x‖ ^ 2) = Real.sqrt ‖gp‖ * ‖x‖ := by
+    rw [Real.sqrt_mul (norm_nonneg gp), Real.sqrt_sq (norm_nonneg x)]
   have hmul :
-      Real.sqrt ‖g.inner p‖ * ‖x‖ ≤ (Real.sqrt ‖g.inner p‖ + 1) * ‖x‖ := by
-    nlinarith [Real.sqrt_nonneg ‖g.inner p‖, norm_nonneg x]
+      Real.sqrt ‖gp‖ * ‖x‖ ≤ (Real.sqrt ‖gp‖ + 1) * ‖x‖ := by
+    nlinarith [Real.sqrt_nonneg ‖gp‖, norm_nonneg x]
   exact hsqrt.trans (by simpa [hprod] using hmul)
 
 private noncomputable def basisNormSupBV : ℝ :=
@@ -643,11 +659,15 @@ private lemma exists_basis_upper_const
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ A : ℝ, ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A := by
-  refine ⟨(Real.sqrt ‖g.inner p‖ + 1) * basisNormSupBV (E := E), ?_⟩
+  refine ⟨(Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ + 1) *
+    basisNormSupBV (E := E), ?_⟩
   intro k
+  have hsqrt_nonneg :
+      0 ≤ Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ :=
+    Real.sqrt_nonneg _
   exact (sqrt_inner_le_opNorm_const (I := I) g p ((chartModelBasis E) k)).trans
     (mul_le_mul_of_nonneg_left (norm_basis_le_supBV (E := E) k)
-      (by nlinarith [Real.sqrt_nonneg ‖g.inner p‖]))
+      (by nlinarith))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -655,13 +675,17 @@ private lemma exists_metric_upper_launch_const
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ C : ℝ, 0 < C ∧ ∀ {R : ℝ}, 0 ≤ R →
       ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ C * R := by
-  refine ⟨Real.sqrt ‖g.inner p‖ + 1, ?_, ?_⟩
-  · nlinarith [Real.sqrt_nonneg ‖g.inner p‖]
+  refine ⟨Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ + 1, ?_, ?_⟩
+  · nlinarith [Real.sqrt_nonneg
+      ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖]
   intro R hR w hw
   have hw_norm_le : ‖w‖ ≤ R := by
     exact le_of_lt (by simpa [Metric.mem_ball, dist_eq_norm] using hw)
+  have hsqrt_nonneg :
+      0 ≤ Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ :=
+    Real.sqrt_nonneg _
   exact (sqrt_inner_le_opNorm_const (I := I) g p w).trans
-    (mul_le_mul_of_nonneg_left hw_norm_le (by nlinarith [Real.sqrt_nonneg ‖g.inner p‖]))
+    (mul_le_mul_of_nonneg_left hw_norm_le (by nlinarith))
 
 private lemma exists_pos_lt_mul_sq_le {S κ ρ : ℝ}
     (hκ : 0 < κ) (hρ : 0 < ρ) :
@@ -746,7 +770,7 @@ theorem metricBall_chartCtrl
   refine ⟨min ρ₀ (expRadiusGp (I := I) g p),
     lt_min hρ₀pos (expRadiusGp_pos (I := I) g p), ?_⟩
   intro R s hsR hsρ hs_div_R
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let ψ := normalChartAt (I := I) g p
   have hpoint : ∀ y ∈ Metric.ball p s,
       y ∈ ψ.source ∧ ψ y ∈ Metric.ball (0 : E) R := by
@@ -803,6 +827,7 @@ theorem metricBall_chartCtrl
     rintro z ⟨y, hy, rfl⟩
     exact (hpoint y hy).2⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricBall_vol_le [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R s : ℝ} (hB : 0 ≤ B)
@@ -826,6 +851,7 @@ theorem metricBall_vol_le [PseudoMetricSpace M]
     hball_meas hball_source hB hR hball_coord
     (fun w hw => hJ w (hball_coord hw))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricBall_vol_scale [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R s : ℝ} (hB : 0 ≤ B)
@@ -904,7 +930,7 @@ theorem exists_metricBall_vol_scale_local
   obtain ⟨ρ, hρpos, hctrl⟩ := metricBall_chartCtrl (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
   intro B R s hB hRpos hsR hsρ hs_div_R hRC2 hmeas hJ
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨hsource, hcoord⟩ := hctrl hsR hsρ hs_div_R
   exact metricBall_vol_scale (I := I) g p hB hRpos hRC2 hmeas hsource hcoord hJ
 
@@ -933,7 +959,7 @@ theorem exists_metricBall_vol_le_dens_local
   obtain ⟨ρ, hρpos, hctrl⟩ := metricBall_chartCtrl (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
   intro C R s hRpos hsR hsρ hs_div_R hdens
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨hsource, hcoord⟩ := hctrl hsR hsρ hs_div_R
   exact metricBall_vol_scale_density (I := I) g p hRpos
     (metricBall_meas (I := I) (M := M) p s) hsource hcoord hdens
@@ -975,7 +1001,7 @@ theorem exists_vol_two_dens
   obtain ⟨ρup, hρup_pos, hupper⟩ := exists_metricBall_vol_le_dens_local (I := I) (M := M) g hEnorm p
   refine ⟨min ρlo ρup, lt_min hρlo_pos hρup_pos, ?_⟩
   intro c C R s hRpos hR hρball hgs hdensLower hsR hsρ hsdiv hdensUpper
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hρlo_ball : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρlo :=
     fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
@@ -1024,7 +1050,7 @@ theorem exists_vol_two_dens_pairR
   refine ⟨min ρlo ρup, lt_min hρlo_pos hρup_pos, ?_⟩
   intro c C Rlo Rup s hRlo_pos hRlo hρlo_ball hgs hdensLower hRup_pos hsRup hsρ
     hsdiv hdensUpper
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hρlo_ball' : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρlo :=
     fun w hw => lt_of_lt_of_le (hρlo_ball w hw) (min_le_left _ _)
@@ -1046,7 +1072,7 @@ structure RadialExtData
     Set.EqOn (gamma w) (radialCurve (I := I) g p w) (Set.Icc 0 b)
 
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma exists_radialExtData
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
     (hb1 : b ≤ 1)
@@ -1219,9 +1245,9 @@ def rm04FrameDataOfExt
     (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D) :
     Rm04FrameData (I := I) g p R b where
   ι := Fd.ι
-  fintype := inferInstance
-  decidableEq := inferInstance
-  nonempty := inferInstance
+  fintype := Fd.fintype
+  decidableEq := Fd.decidableEq
+  nonempty := Fd.nonempty
   F := fun w i t => radialFrameOfExt (I := I) g D Fd w i t
 
 
@@ -1242,7 +1268,8 @@ lemma rm04FrameDataOfExt_card
     Module.finrank ℝ E from rfl] at h
   rw [show Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t)) =
     Module.finrank ℝ E from rfl]
-  simpa [rm04FrameDataOfExt] using h
+  rw [← Nat.card_eq_fintype_card] at h ⊢
+  exact h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -1262,8 +1289,17 @@ lemma rm04FrameDataOfExt_ON
   have htN : t ∈ Set.Icc (-(D.eps w)) (b + D.eps w) :=
     ⟨by linarith [ht.1, D.eps_pos w hw], by linarith [ht.2, D.eps_pos w hw]⟩
   have hbase := D.eqOn w hw ht
-  rw [← hbase]
-  simpa [rm04FrameDataOfExt, radialFrameOfExt, hw, htN] using hON w hw t ht i j
+  have h := hON w hw t ht i j
+  rw [hbase] at h
+  by_cases hij : i = j
+  · have hijFd : (show Fd.ι from i) = (show Fd.ι from j) := hij
+    rw [if_pos hijFd] at h
+    rw [if_pos hij]
+    simpa [rm04FrameDataOfExt, radialFrameOfExt, hw, htN] using h
+  · have hijFd : ¬(show Fd.ι from i) = (show Fd.ι from j) := hij
+    rw [if_neg hijFd] at h
+    rw [if_neg hij]
+    simpa [rm04FrameDataOfExt, radialFrameOfExt, hw, htN] using h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -1282,6 +1318,7 @@ lemma radialFrameOfExt_evEq
   have hsN : s ∈ Set.Icc (-(D.eps w)) (b + D.eps w) :=
     ⟨le_of_lt hs.1, le_of_lt hs.2⟩
   simp [rm04FrameDataOfExt, radialFrameOfExt, hw, hsN]
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -1300,14 +1337,8 @@ lemma rm04FrameDataOfExt_par
   have hV := radialFrameOfExt_evEq (I := I) g D Fd w hw i t ht
   have hcongr := covDerivAlong_congr_curve (I := I) g
     ((rm04FrameDataOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
-  have hparE : (covDerivAlong (I := I) g (D.gamma w) (Fd.F w i) t : E) = 0 := by
-    simpa using congrArg (fun v => (v : E)) (hpar w hw i t ht)
-  have hgoalE :
-      (covDerivAlong (I := I) g (radialCurve (I := I) g p w)
-        ((rm04FrameDataOfExt (I := I) g D Fd).F w i) t : E) = 0 := by
-    rw [hcongr, hparE]
-    rfl
-  simpa using hgoalE
+  rw [hcongr]
+  exact hpar w hw i t ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -1557,7 +1588,7 @@ lemma IsRm04VolPairHyp.radialC2
         (radialCurve (I := I) g p w) (Set.Icc (0 : ℝ) b) :=
   radialC2OnBallIcc (I := I) g p H.hRC2 H.hb1
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma radialC1AtBall
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
     (hR : R ≤ expMapC2Radius (I := I) g p) (hb : b ≤ 1) :
@@ -1981,10 +2012,10 @@ theorem exists_vol_two_rm04_at
   intro a K Rm Vb b A B R s hBnn ha hK hRm_nonneg hVb hb0 hb1 h1b hRpos hRρ
     hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch hKbound hRm hγ
     ι _ _ _ hcard F hpar hON hFdiff hinit hmodelLe hmodelGe
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   have hρvol_ball : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρvol :=
     fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
@@ -2096,10 +2127,10 @@ theorem exists_vol_pair_rm04_at
   intro a K Rm Vb b A Blo Bhi R s hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b
     hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
     hKbound hRm hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodelLe hmodelGe
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   have hρvol_ball : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρvol :=
     fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
@@ -2218,10 +2249,10 @@ theorem exists_pairR_rm04_at
     h1b hRlo_pos hRloρ hRloC2 hρlo_ball hgs hRup_pos hRupρ hRupC2 hsRup hsρ hsdiv
     hsmallBasis hsmallDir hlaunch hKbound hRm hγ ι _ _ _ hcard F hpar hON hFdiff
     hinit hmodelLe hmodelGe
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  letI : Fintype ι := ‹Fintype ι›
-  letI : DecidableEq ι := ‹DecidableEq ι›
-  letI : Nonempty ι := ‹Nonempty ι›
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : Fintype ι := ‹Fintype ι›
+  let : DecidableEq ι := ‹DecidableEq ι›
+  let : Nonempty ι := ‹Nonempty ι›
   have hρvol_ball : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρvol :=
     fun w hw => lt_of_lt_of_le (hρlo_ball w hw) (min_le_left _ _)
@@ -2387,9 +2418,9 @@ theorem exists_pairR_rglobal
         ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p w) t := by
     intro w hw
     exact radialC1AtBall (I := I) g p hRupC2 hb1 w (hmemRup w hw)
-  letI : Fintype D.ι := D.fintype
-  letI : DecidableEq D.ι := D.decidableEq
-  letI : Nonempty D.ι := D.nonempty
+  let : Fintype D.ι := D.fintype
+  let : DecidableEq D.ι := D.decidableEq
+  let : Nonempty D.ι := D.nonempty
   exact hvol (a := a) (K := K) (Rm := Rm) (Vb := Vb) (b := b) (A := a * A)
     (Blo := Blo) (Bhi := Bhi) (Rlo := Rlo) (Rup := Rup) (s := s)
     hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b hRlo_pos hRloρ hRloC2
@@ -2472,7 +2503,7 @@ theorem exists_pairR_rm1
     ]
   have hK_nonneg : 0 ≤ K := by
     exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hRm_nonneg) (sq_nonneg (C * Rup))
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact hvol (Rm := Rm) (b := 1) (A := A) (Blo := Blo) (Bhi := Bhi)
     (Rlo := Rlo) (Rup := Rup) (s := s) hBlo.le hBhi hRm_nonneg zero_le_one
     le_rfl le_rfl hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ
@@ -2842,19 +2873,19 @@ theorem exists_pairR_bound_of_complete_metric
                 (Bhi * Bhi) ^ Module.finrank ℝ E)) *
               (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
                 (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -2887,10 +2918,10 @@ theorem exists_vol_rm04_pair_pkg
   obtain ⟨ρ, hρ, hvol⟩ := exists_vol_pair_rm04_at (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρ, ?_⟩
   intro a K Rm Vb b A Blo Bhi R s D H
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  letI : Fintype D.ι := D.fintype
-  letI : DecidableEq D.ι := D.decidableEq
-  letI : Nonempty D.ι := D.nonempty
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : Fintype D.ι := D.fintype
+  let : DecidableEq D.ι := D.decidableEq
+  let : Nonempty D.ι := D.nonempty
   exact hvol H.hBlo H.hBhi H.ha H.hK H.hRm_nonneg H.hVb H.hb0 H.hb1 H.h1b
     H.hRpos H.hRρ H.hRC2 H.hρball H.hgs H.hsR H.hsρ H.hsdiv
     H.hsmallBasis H.hsmallDir H.hlaunch H.hKbound H.hRm H.hγ

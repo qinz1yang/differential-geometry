@@ -44,28 +44,28 @@ theorem compact_of_ricci
     (hcomplete : MetricComplete (I := I) P) :
     letI : TopologicalSpace P.M := P.topology
     CompactSpace P.M := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
-  letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
-  letI : ConnectedSpace P.M := hconn
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
+  let : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let : ConnectedSpace P.M := hconn
   let g := P.metric
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : P.M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : P.M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : P.M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : P.M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
-  letI : TopologicalSpace.MetrizableSpace P.M :=
+  let : TopologicalSpace.MetrizableSpace P.M :=
     Manifold.metrizableSpace I P.M
-  letI : T3Space P.M := inferInstance
+  let : T3Space P.M := inferInstance
   have hComplete :
       letI : EMetricSpace P.M := EMetricSpace.ofRiemannianMetric I P.M
       CompleteSpace P.M := by
-    simpa [MetricComplete] using hcomplete
-  letI : EMetricSpace P.M := EMetricSpace.ofRiemannianMetric I P.M
-  letI : IsRiemannianManifold I P.M := inferInstance
-  letI : CompleteSpace P.M := hComplete
+    exact MetricComplete.complete (I := I) P hcomplete
+  let : EMetricSpace P.M := EMetricSpace.ofRiemannianMetric I P.M
+  let : IsRiemannianManifold I P.M := inferInstance
+  let : CompleteSpace P.M := hComplete
   exact
     DifferentialGeometry.Geometry.Riemannian.BonnetMyers.bonnet_myers_compactSpace_of_ricci_bound
       (E := E) g hdim hK hRic (fun x v =>

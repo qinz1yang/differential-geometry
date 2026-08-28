@@ -10,7 +10,7 @@ namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -24,7 +24,7 @@ def chartRiemannLower (g : SmoothRiemannianMetric I M) (α : M)
     chartGramOnE (I := I) g α l m y *
       chartRiemannTensor (I := I) g α i j k m y
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartRiemannLower_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j k l : Fin (Module.finrank ℝ E)) (y : E) :
@@ -33,7 +33,6 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
         chartGramOnE (I := I) g α l m y *
           chartRiemannTensor (I := I) g α i j k m y := rfl
 
-omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRiemannLower_antisymm_jk
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -59,7 +58,7 @@ def sectionalCurvatureNumerator (g : SmoothRiemannianMetric I M) (p : M)
                 ((chartModelBasis E).repr w) k *
                   chartRiemannLower (I := I) g p i j k l (extChartAt I p p)
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma sectionalCurvatureNumerator_def
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -79,7 +78,7 @@ def sectionalCurvatureDenominator (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) : ℝ :=
   g.inner p v v * g.inner p w w - (g.inner p v w) ^ 2
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma sectionalCurvatureDenominator_def
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -91,7 +90,7 @@ def sectionalCurvature (g : SmoothRiemannianMetric I M) (p : M)
   sectionalCurvatureNumerator (I := I) g p v w /
     sectionalCurvatureDenominator (I := I) g p v w
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma sectionalCurvature_def
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -99,7 +98,7 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
       sectionalCurvatureNumerator (I := I) g p v w /
         sectionalCurvatureDenominator (I := I) g p v w := rfl
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma chart_metric_cauchy_schwarz
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -116,7 +115,7 @@ private lemma chart_metric_cauchy_schwarz
     have h_first : g.inner p (t • v + w) =
         t • g.inner p v + g.inner p w := by
       rw [map_add, map_smul]
-    rw [h_first, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    rw [h_first, add_apply, smul_apply,
         smul_eq_mul, ContinuousLinearMap.map_add, ContinuousLinearMap.map_add,
         ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul,
         smul_eq_mul, smul_eq_mul, g.symm p w v]
@@ -158,7 +157,7 @@ private lemma chart_metric_cauchy_schwarz
     rw [h_expand] at h_mul
     linarith
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_nonneg
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -166,7 +165,7 @@ theorem sectionalCurvatureDenominator_nonneg
   rw [sectionalCurvatureDenominator_def]
   linarith [chart_metric_cauchy_schwarz (I := I) g p v w]
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_eq_zero_of_left_smul
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v : TangentSpace I p) :
@@ -174,13 +173,13 @@ theorem sectionalCurvatureDenominator_eq_zero_of_left_smul
   rw [sectionalCurvatureDenominator_def]
   have h1 : g.inner p (c • v) = c • g.inner p v := map_smul _ _ _
   have hLL : g.inner p (c • v) (c • v) = c ^ 2 * g.inner p v v := by
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    rw [h1, smul_apply, smul_eq_mul,
         ContinuousLinearMap.map_smul, smul_eq_mul]; ring
   have hL : g.inner p (c • v) v = c * g.inner p v v := by
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [h1, smul_apply, smul_eq_mul]
   rw [hLL, hL]; ring
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_eq_zero_of_right_smul
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v : TangentSpace I p) :
@@ -188,13 +187,13 @@ theorem sectionalCurvatureDenominator_eq_zero_of_right_smul
   rw [sectionalCurvatureDenominator_def]
   have h1 : g.inner p (c • v) = c • g.inner p v := map_smul _ _ _
   have hRR : g.inner p (c • v) (c • v) = c ^ 2 * g.inner p v v := by
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    rw [h1, smul_apply, smul_eq_mul,
         ContinuousLinearMap.map_smul, smul_eq_mul]; ring
   have hR : g.inner p v (c • v) = c * g.inner p v v := by
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
   rw [hRR, hR]; ring
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureNumerator_smul_left
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v w : TangentSpace I p) :
@@ -213,7 +212,7 @@ theorem sectionalCurvatureNumerator_smul_left
   simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
   ring
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureNumerator_smul_right
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v w : TangentSpace I p) :
@@ -232,7 +231,7 @@ theorem sectionalCurvatureNumerator_smul_right
   simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
   ring
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_smul_left
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v w : TangentSpace I p) :
@@ -241,13 +240,13 @@ theorem sectionalCurvatureDenominator_smul_left
   rw [sectionalCurvatureDenominator_def, sectionalCurvatureDenominator_def]
   have h1 : g.inner p (c • v) = c • g.inner p v := map_smul _ _ _
   have hLL : g.inner p (c • v) (c • v) = c ^ 2 * g.inner p v v := by
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    rw [h1, smul_apply, smul_eq_mul,
         ContinuousLinearMap.map_smul, smul_eq_mul]; ring
   have hL : g.inner p (c • v) w = c * g.inner p v w := by
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [h1, smul_apply, smul_eq_mul]
   rw [hLL, hL]; ring
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_smul_right
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v w : TangentSpace I p) :
@@ -256,13 +255,13 @@ theorem sectionalCurvatureDenominator_smul_right
   rw [sectionalCurvatureDenominator_def, sectionalCurvatureDenominator_def]
   have h1 : g.inner p (c • w) = c • g.inner p w := map_smul _ _ _
   have hRR : g.inner p (c • w) (c • w) = c ^ 2 * g.inner p w w := by
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    rw [h1, smul_apply, smul_eq_mul,
         ContinuousLinearMap.map_smul, smul_eq_mul]; ring
   have hR : g.inner p v (c • w) = c * g.inner p v w := by
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
   rw [hRR, hR]; ring
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_smul_left
     (g : SmoothRiemannianMetric I M) (p : M) {c : ℝ} (hc : c ≠ 0)
     (v w : TangentSpace I p) :
@@ -273,7 +272,7 @@ theorem sectionalCurvature_smul_left
       sectionalCurvatureDenominator_smul_left,
       mul_div_mul_left _ _ (pow_ne_zero 2 hc)]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_smul_right
     (g : SmoothRiemannianMetric I M) (p : M) {c : ℝ} (hc : c ≠ 0)
     (v w : TangentSpace I p) :
@@ -284,7 +283,7 @@ theorem sectionalCurvature_smul_right
       sectionalCurvatureDenominator_smul_right,
       mul_div_mul_left _ _ (pow_ne_zero 2 hc)]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_of_linearly_dependent_left
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v : TangentSpace I p) :
@@ -293,7 +292,7 @@ theorem sectionalCurvature_of_linearly_dependent_left
       sectionalCurvatureDenominator_eq_zero_of_left_smul]
   exact div_zero _
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_of_linearly_dependent_right
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v : TangentSpace I p) :
@@ -302,7 +301,7 @@ theorem sectionalCurvature_of_linearly_dependent_right
       sectionalCurvatureDenominator_eq_zero_of_right_smul]
   exact div_zero _
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_self
     (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) :
@@ -310,7 +309,7 @@ theorem sectionalCurvature_self
   have h := sectionalCurvature_of_linearly_dependent_left (I := I) g p 1 v
   rw [one_smul] at h; exact h
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_zero_left
     (g : SmoothRiemannianMetric I M) (p : M)
     (w : TangentSpace I p) :
@@ -318,7 +317,7 @@ theorem sectionalCurvature_zero_left
   have h := sectionalCurvature_of_linearly_dependent_left (I := I) g p 0 w
   rw [zero_smul] at h; exact h
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_zero_right
     (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) :
@@ -326,7 +325,7 @@ theorem sectionalCurvature_zero_right
   have h := sectionalCurvature_of_linearly_dependent_right (I := I) g p 0 v
   rw [zero_smul] at h; exact h
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_neg_left
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -337,7 +336,7 @@ theorem sectionalCurvature_neg_left
   rw [neg_one_smul] at h
   exact h
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_neg_right
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -348,7 +347,7 @@ theorem sectionalCurvature_neg_right
   rw [neg_one_smul] at h
   exact h
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_neg_neg
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -357,7 +356,7 @@ theorem sectionalCurvature_neg_neg
   rw [sectionalCurvature_neg_left (I := I) g p v (-w),
       sectionalCurvature_neg_right (I := I) g p v w]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_smul_smul
     (g : SmoothRiemannianMetric I M) (p : M) {c d : ℝ}
     (hc : c ≠ 0) (hd : d ≠ 0) (v w : TangentSpace I p) :
@@ -366,7 +365,7 @@ theorem sectionalCurvature_smul_smul
   rw [sectionalCurvature_smul_left (I := I) g p hc v (d • w),
       sectionalCurvature_smul_right (I := I) g p hd v w]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_neg_smul_left
     (g : SmoothRiemannianMetric I M) (p : M) {c : ℝ} (hc : c ≠ 0)
     (v w : TangentSpace I p) :
@@ -375,7 +374,7 @@ theorem sectionalCurvature_neg_smul_left
   rw [sectionalCurvature_neg_left (I := I) g p (c • v) w,
       sectionalCurvature_smul_left (I := I) g p hc v w]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_neg_smul_right
     (g : SmoothRiemannianMetric I M) (p : M) {c : ℝ} (hc : c ≠ 0)
     (v w : TangentSpace I p) :
@@ -404,7 +403,6 @@ private lemma chartFourFold_reverse_sum
   refine Finset.sum_congr rfl ?_; intro i _
   ring
 
-omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureNumerator_symm_of_chartRiemannLower_second_pair_antisymm
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -433,7 +431,7 @@ theorem sectionalCurvatureNumerator_symm_of_chartRiemannLower_second_pair_antisy
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [h_combined i j k l]
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_symm
     (g : SmoothRiemannianMetric I M) (p : M)
     (v w : TangentSpace I p) :
@@ -443,7 +441,6 @@ theorem sectionalCurvatureDenominator_symm
   rw [g.symm p v w]
   ring
 
-omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_symm_of_chartRiemannLower_second_pair_antisymm
     (g : SmoothRiemannianMetric I M) (p : M)

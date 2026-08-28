@@ -25,8 +25,7 @@ variable {E H M : Type*}
   [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace Real E]
-    [FiniteDimensional Real E] :=
+private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 omit [NeZero (Module.finrank Real E)] [IsManifold I ∞ M] in

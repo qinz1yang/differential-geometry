@@ -319,7 +319,7 @@ private lemma integrable_triple
       ((volume : Measure EuclN).restrict K) Set.univ < (⊤ : ℝ≥0∞) := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hK_compact.measure_lt_top
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
   have hu_int_K : IntegrableOn u K (volume : Measure EuclN) :=
     (hu K hK_compact hK_in).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   set ah : EuclN → ℝ := fun y => a y * h y with hah_def
@@ -613,10 +613,10 @@ theorem chartBilinear_diff_variational_identity
               D.weak_partial i y *
               (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) = _
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_LHS i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_LHS i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_LHS i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_LHS i j)]
   have h_sum_principal :
       ∑ i, ∑ j, LHS_m_pair i j =
       (∑ i, ∑ j, A_pair i j) + (∑ i, ∑ j, B_pair i j) -
@@ -698,10 +698,10 @@ theorem chartBilinear_diff_variational_identity
               chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i) Ω y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) = _
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_PR i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_PR i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_PR i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_PR i j)]
   set goal_RHS : ℝ :=
     ∫ y in Ω,
       diffVariationalSource (I := I) (M := M) g α D l y * ψ y
@@ -738,11 +738,11 @@ theorem chartBilinear_diff_variational_identity
         ∂(volume : Measure EuclN) from rfl,
       setIntegral_congr_fun hΩ_meas (fun y _ => h_integrand_eq y)]
     have hint_A : Integrable f_A ((volume : Measure EuclN).restrict Ω) :=
-      integrable_finset_sum _ (fun i _ =>
-        integrable_finset_sum _ (fun j _ => h_int_A i j))
+      integrable_finsetSum _ (fun i _ =>
+        integrable_finsetSum _ (fun j _ => h_int_A i j))
     have hint_B : Integrable f_B ((volume : Measure EuclN).restrict Ω) :=
-      integrable_finset_sum _ (fun i _ =>
-        integrable_finset_sum _ (fun j _ => h_int_B i j))
+      integrable_finsetSum _ (fun i _ =>
+        integrable_finsetSum _ (fun j _ => h_int_B i j))
     have hint_C : Integrable f_C ((volume : Measure EuclN).restrict Ω) :=
       (integrable_triple hΩ_open h_dens_deriv_cont h_u_loc
         hψ_cont hψ_cs hψ_supp).neg
@@ -770,10 +770,10 @@ theorem chartBilinear_diff_variational_identity
               (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
                 (EuclideanSpace.single j 1) * D.weak_partial i y * ψ y
           ∂(volume : Measure EuclN)) = _
-      rw [integral_finset_sum _ (fun i _ =>
-        (integrable_finset_sum _ (fun j _ => h_int_A i j)))]
+      rw [integral_finsetSum _ (fun i _ =>
+        (integrable_finsetSum _ (fun j _ => h_int_A i j)))]
       refine Finset.sum_congr rfl ?_; intro i _
-      rw [integral_finset_sum _ (fun j _ => h_int_A i j)]
+      rw [integral_finsetSum _ (fun j _ => h_int_A i j)]
     have h_int_f_B : (∫ y in Ω, f_B y ∂(volume : Measure EuclN)) =
         ∑ i, ∑ j, B_pair i j := by
       change (∫ y in Ω,
@@ -783,10 +783,10 @@ theorem chartBilinear_diff_variational_identity
               chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
                 (D.weak_partial i) Ω y * ψ y
           ∂(volume : Measure EuclN)) = _
-      rw [integral_finset_sum _ (fun i _ =>
-        (integrable_finset_sum _ (fun j _ => h_int_B i j)))]
+      rw [integral_finsetSum _ (fun i _ =>
+        (integrable_finsetSum _ (fun j _ => h_int_B i j)))]
       refine Finset.sum_congr rfl ?_; intro i _
-      rw [integral_finset_sum _ (fun j _ => h_int_B i j)]
+      rw [integral_finsetSum _ (fun j _ => h_int_B i j)]
     have h_int_f_C : (∫ y in Ω, f_C y ∂(volume : Measure EuclN)) = -N_C := by
       change (∫ y in Ω,
           -(densityDerivOnEuclid (I := I) g α l y * D.u_chart y * ψ y)

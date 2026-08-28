@@ -22,15 +22,15 @@ local notation "MLF" s => ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) �
 
 noncomputable instance multilinearMap_finiteDimensional (s : ℕ) :
     FiniteDimensional 𝕜 (MultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) := by
-  haveI : Module.Finite 𝕜 F := inferInstance
-  haveI : Module.Free 𝕜 F := inferInstance
-  haveI : Module.Finite 𝕜 𝕜 := inferInstance
-  haveI : Module.Free 𝕜 𝕜 := inferInstance
+  have : Module.Finite 𝕜 F := inferInstance
+  have : Module.Free 𝕜 F := inferInstance
+  have : Module.Finite 𝕜 𝕜 := inferInstance
+  have : Module.Free 𝕜 𝕜 := inferInstance
   infer_instance
 
 noncomputable instance continuousMultilinearMap_finiteDimensional (s : ℕ) :
     FiniteDimensional 𝕜 (MLF s) := by
-  haveI : FiniteDimensional 𝕜 (MultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (MultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
     multilinearMap_finiteDimensional s
   exact FiniteDimensional.of_injective
     ContinuousMultilinearMap.toMultilinearMapLinear
@@ -46,9 +46,9 @@ theorem finrank_continuousMultilinearMap (s : ℕ) :
   | succ s ih =>
     have e := continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (s + 1) => F) 𝕜
     rw [e.toLinearEquiv.finrank_eq]
-    haveI : FiniteDimensional 𝕜 (MLF s) := continuousMultilinearMap_finiteDimensional s
-    haveI : Module.Free 𝕜 F := inferInstance
-    haveI : Module.Free 𝕜 (MLF s) := inferInstance
+    have : FiniteDimensional 𝕜 (MLF s) := continuousMultilinearMap_finiteDimensional s
+    have : Module.Free 𝕜 F := inferInstance
+    have : Module.Free 𝕜 (MLF s) := inferInstance
     have e2 : (F →L[𝕜] MLF s) ≃ₗ[𝕜] (F →ₗ[𝕜] MLF s) := LinearMap.toContinuousLinearMap.symm
     rw [e2.finrank_eq, Module.finrank_linearMap 𝕜 𝕜, ih]
     ring
@@ -80,7 +80,7 @@ theorem continuousMultilinearMap_basisElem_linearIndependent {d : ℕ}
   intro c hc σ'
   have h1 : (∑ σ : Fin s → Fin d, c σ • continuousMultilinearMap_basisElem b s σ)
       (fun j => b (σ' j)) = 0 := by rw [hc]; rfl
-  simp only [ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.smul_apply,
+  simp only [sum_apply, smul_apply,
     continuousMultilinearMap_basisElem_apply] at h1
   simp only [smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
   rwa [smul_eq_mul, mul_one] at h1
@@ -103,7 +103,7 @@ theorem continuousMultilinearMap_basis_repr {d : ℕ} (b : Module.Basis (Fin d) 
     fun ρ => congr_fun (Module.Basis.coe_mk
       (continuousMultilinearMap_basisElem_linearIndependent b s) _) ρ
   conv_rhs => rw [← (continuousMultilinearMap_basis b s).sum_repr f]
-  simp only [ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.smul_apply,
+  simp only [sum_apply, smul_apply,
     smul_eq_mul, hbasis, continuousMultilinearMap_basisElem_apply,
     mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 

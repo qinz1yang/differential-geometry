@@ -15,7 +15,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -35,7 +35,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -64,7 +63,7 @@ theorem covariantDeriv_tensor0SModelAt_apply_slots {s : ℕ}
         ∑ a : Fin s, α (Function.update slots a (ΓX (slots a))) := by
   classical
   unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
-  simp only [ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.sum_apply,
+  simp only [sub_apply, sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -96,7 +95,7 @@ theorem lieDeriv_correctionL_apply_slots {s : ℕ}
   classical
   rw [lieDeriv_correctionL_apply]
   unfold lieDeriv_correction substituteArg
-  simp only [ContinuousMultilinearMap.sum_apply,
+  simp only [sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   refine Finset.sum_congr rfl fun a _ => ?_
   congr 1
@@ -140,8 +139,8 @@ theorem fderivWithin_tensor0SModel_eval_linear_slots {s : ℕ}
     fderivWithin_continuousMultilinearMapCompContinuousLinearMap
       (𝕜 := 𝕜) (f := α) (g := L) (s := u) (x := y) hα hL hu
   rw [hF]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.comp_apply, ContinuousMultilinearMap.add_apply]
+  rw [add_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.comp_apply, add_apply]
   change
     ((fderivWithin 𝕜 α u y) Xy).compContinuousLinearMap
         (fun x : Fin s => L x y) c +

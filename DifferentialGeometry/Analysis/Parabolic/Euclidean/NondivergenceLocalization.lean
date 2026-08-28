@@ -254,10 +254,10 @@ theorem parabolicNondivergenceOperator_timeCenteredRescaleExtension_holderWith
         Euc n → F))
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau rho p0) Q P)
     (hoperator : HolderWith K alpha
-      (P.restrict (parabolicNondivergenceOperator principal drift potential
+      (P.domRestrict (parabolicNondivergenceOperator principal drift potential
         (fun t x ↦ u t x)))) :
     HolderWith (K * rho ^ (alpha : Real) * rho ^ 2) alpha
-      (Q.restrict (parabolicNondivergenceOperator
+      (Q.domRestrict (parabolicNondivergenceOperator
         (parabolicMatrixCoefficientRescaleExtension
           tau R rho p0 principal)
         (parabolicDriftCoefficientRescaleExtension
@@ -266,7 +266,7 @@ theorem parabolicNondivergenceOperator_timeCenteredRescaleExtension_holderWith
           tau R rho p0 potential)
         (fun t x ↦ BoundedContinuousFunction.parabolicTimeCenteredRescaleAt
           tau rho p0 u t x))) := by
-  have heq : Q.restrict (parabolicNondivergenceOperator
+  have heq : Q.domRestrict (parabolicNondivergenceOperator
       (parabolicMatrixCoefficientRescaleExtension
         tau R rho p0 principal)
       (parabolicDriftCoefficientRescaleExtension
@@ -275,7 +275,7 @@ theorem parabolicNondivergenceOperator_timeCenteredRescaleExtension_holderWith
         tau R rho p0 potential)
       (fun t x ↦ BoundedContinuousFunction.parabolicTimeCenteredRescaleAt
         tau rho p0 u t x)) =
-      Q.restrict (parabolicTimeCenteredSourceRescaleAt tau rho p0
+      Q.domRestrict (parabolicTimeCenteredSourceRescaleAt tau rho p0
         (parabolicNondivergenceOperator principal drift potential
           (fun t x ↦ u t x))) := by
     funext p
@@ -334,19 +334,19 @@ def IsParabolicNondivergenceSchauderScale
     (maxRadius T : Real) (rho : NNReal) : Prop :=
   0 < rho ∧ rho ≤ 1 ∧ (rho : Real) ≤ maxRadius ∧
   (∀ i j, HolderWith (Ka i j * rho ^ (alpha : Real)) alpha
-    ((Metric.ball (parabolicPoint 0 0) 1).restrict
+    ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
       (parabolicMatrixCoefficientRescale rho p principal i j))) ∧
   (∀ i j q, q ∈ Metric.ball (parabolicPoint 0 0) 1 →
     ‖principal i j p -
         parabolicMatrixCoefficientRescale rho p principal i j q‖ ≤
       Ka i j * rho ^ (alpha : Real)) ∧
   (∀ i, HolderWith (Kb i * rho ^ (alpha : Real) * rho) alpha
-    ((Metric.ball (parabolicPoint 0 0) 1).restrict
+    ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
       (parabolicDriftCoefficientRescale rho p drift i))) ∧
   (∀ i q, q ∈ Metric.ball (parabolicPoint 0 0) 1 →
     ‖parabolicDriftCoefficientRescale rho p drift i q‖ ≤ rho * Bb i) ∧
   HolderWith (Kc * rho ^ (alpha : Real) * rho ^ 2) alpha
-    ((Metric.ball (parabolicPoint 0 0) 1).restrict
+    ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
       (parabolicPotentialCoefficientRescale rho p potential)) ∧
   (∀ q, q ∈ Metric.ball (parabolicPoint 0 0) 1 →
     ‖parabolicPotentialCoefficientRescale rho p potential q‖ ≤ rho ^ 2 * Bc) ∧
@@ -374,7 +374,7 @@ theorem exists_parabolicNondivergenceCoefficientRescaleExtension_schauder_bounds
         parabolicMatrixCoefficientRescaleExtension
           tau R rho p principal i j (parabolicPoint tau 0)).PosDef,
       (∀ i j, HolderWith (Ka i j * rho ^ (alpha : Real)) alpha
-        ((parabolicCylinder J Set.univ).restrict
+        ((parabolicCylinder J Set.univ).domRestrict
           (parabolicMatrixCoefficientRescaleExtension
             tau R rho p principal i j))) ∧
       (∀ i j q, q ∈ parabolicCylinder J Set.univ →
@@ -388,14 +388,14 @@ theorem exists_parabolicNondivergenceCoefficientRescaleExtension_schauder_bounds
             tau R rho p principal i j q‖ ≤
           ‖principal i j p‖₊ + Ka i j * rho ^ (alpha : Real)) ∧
       (∀ i, HolderWith (Kb i * rho ^ (alpha : Real) * rho) alpha
-        ((parabolicCylinder J Set.univ).restrict
+        ((parabolicCylinder J Set.univ).domRestrict
           (parabolicDriftCoefficientRescaleExtension
             tau R rho p drift i))) ∧
       (∀ i q, q ∈ parabolicCylinder J Set.univ →
         ‖parabolicDriftCoefficientRescaleExtension
             tau R rho p drift i q‖ ≤ rho * Bb i) ∧
       HolderWith (Kc * rho ^ (alpha : Real) * rho ^ 2) alpha
-        ((parabolicCylinder J Set.univ).restrict
+        ((parabolicCylinder J Set.univ).domRestrict
           (parabolicPotentialCoefficientRescaleExtension
             tau R rho p potential)) ∧
       (∀ q, q ∈ parabolicCylinder J Set.univ →
@@ -447,7 +447,8 @@ theorem exists_parabolicNondivergenceCoefficientRescaleExtension_schauder_bounds
           parabolicMatrixCoefficientRescaleExtension
             tau R rho p principal i j q‖ ≤
           Ka i j * rho ^ (alpha : Real) := by
-      simpa only [parabolicMatrixCoefficientRescaleExtension] using
+      simpa only [parabolicMatrixCoefficientRescaleExtension,
+        NNReal.coe_mul, NNReal.coe_rpow] using
         hoscillation
     calc
       ‖parabolicMatrixCoefficientRescaleExtension
@@ -504,13 +505,13 @@ theorem exists_finite_parabolicNondivergence_schauder_cover
     (Ka : n → n → NNReal) (Kb Bb : n → NNReal) (Kc Bc : NNReal)
     (T : Real)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (principal i j)))
     (hb : ∀ i, HolderWith (Kb i) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (drift i)))
     (hc : HolderWith Kc alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         potential))
     (hbNorm : ∀ i p,
       p ∈ parabolicCylinder (Set.Icc a b) (Metric.closedBall center R) →
@@ -565,13 +566,13 @@ theorem exists_finite_buffered_parabolicNondivergence_schauder_cover
     (Ka : n → n → NNReal) (Kb Bb : n → NNReal) (Kc Bc : NNReal)
     (T : Real) (theta : NNReal) (htheta : 0 < theta)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (principal i j)))
     (hb : ∀ i, HolderWith (Kb i) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (drift i)))
     (hc : HolderWith Kc alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         potential))
     (hbNorm : ∀ i p,
       p ∈ parabolicCylinder (Set.Icc a b) (Metric.closedBall center R) →
@@ -621,13 +622,13 @@ theorem exists_parabolicNondivergence_schauder_estimate_of_local_scaledBall_esti
     (Ka : n → n → NNReal) (Kb Bb : n → NNReal) (Kc Bc : NNReal)
     (T : Real)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (principal i j)))
     (hb : ∀ i, HolderWith (Kb i) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (drift i)))
     (hc : HolderWith Kc alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         potential))
     (hbNorm : ∀ i p,
       p ∈ parabolicCylinder (Set.Icc a b) (Metric.closedBall center R) →

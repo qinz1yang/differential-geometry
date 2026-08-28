@@ -182,7 +182,7 @@ noncomputable def coordNab2Ric
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
   fun t x d a i j =>
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           nablaRicComp (I := I) S (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt
             (I := I) x0)

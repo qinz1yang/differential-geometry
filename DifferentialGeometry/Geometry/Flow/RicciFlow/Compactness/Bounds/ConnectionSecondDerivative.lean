@@ -59,9 +59,9 @@ theorem field1_eq_mcd1
         (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 1 := by
   let _ := hContMDiffBundle
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   apply DFunLike.ext
   intro x
   rw [Tensor0SBundle.totalNabla0S_apply]
@@ -81,9 +81,9 @@ theorem field2_eq_mcd2
           (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
         (DifferentialGeometry.Integral.Connection.metricField_totalReg2 (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 2 := by
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   apply DFunLike.ext
   intro x
   rw [Tensor0SBundle.totalNabla0S_apply, field1_eq_mcd1 (I := I) g₁ g₂]
@@ -191,10 +191,10 @@ theorem covDerivConnectionDifference_contMDiff
     ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (T% (fun p => covDerivConnectionDifference (I := I) g₂ g₁
         (fun b => W b) (fun b => X b) (fun b => Y b) p)) := by
-  haveI : CovariantDerivative.ContMDiffCovariantDerivative
+  have : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
-  haveI : CovariantDerivative.ContMDiffCovariantDerivative
+  have : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₁) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
   have hcast : ∀ (S : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
@@ -270,10 +270,10 @@ theorem koszul2
                 (fun b => W b) (fun b => X b) (fun b => Y b) x,
               Z x] := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
-  haveI hcov2 : CovariantDerivative.ContMDiffCovariantDerivative
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have hcov2 : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   have hZcast : ∀ (S : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
@@ -347,7 +347,7 @@ theorem koszul2
         b c, ← e1 b, ← e1 c, ← e1 d]
   have g_sub : ∀ (a b : TangentSpace I x),
       g₁.inner x (a - b) (Z x) = g₁.inner x a (Z x) - g₁.inner x b (Z x) := by
-    intro a b; rw [map_sub (g₁.inner x), ContinuousLinearMap.sub_apply]
+    intro a b; rw [map_sub (g₁.inner x), sub_apply]
   have hcons3 : ∀ (a b c : TangentSpace I x),
       Fin.cons a (![b, c] : Fin 2 → TangentSpace I x) = (![a, b, c] : Fin 3 → TangentSpace I x) := by
     intro a b c; funext i; fin_cases i <;> rfl
@@ -406,8 +406,8 @@ theorem koszul2
   rw [show (fun p : M => 2 * g₁.inner p
         (covDerivConnectionDifference (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) p) (Z p))
       = (fun p : M => 2 * g₁.inner p (Qsec p) (Z p)) from rfl,
-    extDerivFun_const_mul I (2 : ℝ) hQZdiff] at hmaster
-  simp only [ContinuousLinearMap.smul_apply, smul_eq_mul] at hmaster
+    mvfderiv_const_mul I (2 : ℝ) hQZdiff] at hmaster
+  simp only [smul_apply, smul_eq_mul] at hmaster
   rw [hLeib] at hmaster
   simp only [nabla4_eq_mcd3, nabla3_eq_mcd2, nabla2_eq_mcd1] at hmaster hkW hkX hkY hkZ
   simp only [field2_eq_mcd2] at hmaster
@@ -436,7 +436,6 @@ open DifferentialGeometry.Geometry.Curvature
     exists_gOrthonormalBasis) in
 open DifferentialGeometry.Geometry.Connection (leviCivitaConnectionOfMetric) in
 open DifferentialGeometry.Analysis.Laplacian (metric_inner_self_nonneg) in
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covDConnectionDifference2_g1_le
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -467,9 +466,9 @@ theorem covDConnectionDifference2_g1_le
         Real.sqrt (g₁.inner x v' v') * Real.sqrt (g₁.inner x v v) *
           Real.sqrt (g₁.inner x w w) * Real.sqrt (g₁.inner x u u) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₁ x
   set NA : ℝ := Real.sqrt (Tensor0SBundle.normSqRS (I := I) (g := g₁) (x := x) 1 2
@@ -853,7 +852,7 @@ theorem covStep2_diffStep_peel
     covStep (I := I) g₂ (s + 2)
         (covStep (I := I) g₂ (s + 1) (diffStep (I := I) g₁ g₂ s S)) x
         (Fin.cons (U x) (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x))))
-      = extDerivFun (I := I)
+      = mvfderiv (I := I)
             (fun y : M =>
               (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
                   (covDerivConnectionDifference (I := I) g₂ g₁
@@ -877,17 +876,17 @@ theorem covStep2_diffStep_peel
                         Fin (s + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
                           (TangentSpace I : M -> Type _)) q y) x) (U x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   set RR : Fin (s + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) := Fin.cons W (Fin.cons V Vslots) with hRRdef
@@ -930,7 +929,7 @@ theorem covStep2_diffStep_branch1
     (Vslots : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (a : Fin s) (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
           (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x)
@@ -956,22 +955,22 @@ theorem covStep2_diffStep_branch1
             ((leviCivitaConnectionOfMetric (I := I) g₂
                 (fun y : M => Vslots b y) x) (U x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₁) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set CDCsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -1006,7 +1005,7 @@ theorem covStep2_diffStep_branch1
     rw [hσeval y]
   rw [hInnerFun]
   have hpeel := covStep_eval_smooth_slots (I := I) g₂ s S U σ x
-  have hpeel' : extDerivFun (I := I) (fun y : M => (S y) (fun b : Fin s => (σ b) y)) x (U x)
+  have hpeel' : mvfderiv (I := I) (fun y : M => (S y) (fun b : Fin s => (σ b) y)) x (U x)
       = covStep (I := I) g₂ s S x (Fin.cons (U x) (fun b : Fin s => (σ b) x))
         + ∑ q : Fin s, (S x) (Function.update (fun b : Fin s => (σ b) x) q
             ((leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => (σ q) y) x) (U x))) := by
@@ -1061,7 +1060,7 @@ theorem covStep2_diffStep_branch2
     (Vslots : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (a : Fin s) (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => covStep (I := I) g₂ s S y
           (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
             ((CovariantDerivative.difference
@@ -1103,22 +1102,22 @@ theorem covStep2_diffStep_branch2
                     (Vslots a x)) (V x))) b
               ((leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => Vslots b y) x) (U x)))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₁) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set Asec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -1162,7 +1161,7 @@ theorem covStep2_diffStep_branch2
     rw [hρpt y]
   rw [hInnerFun]
   have hpeel := covStep_eval_smooth_slots (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) U ρ x
-  have hpeel' : extDerivFun (I := I)
+  have hpeel' : mvfderiv (I := I)
         (fun y : M => covStep (I := I) g₂ s S y (fun p : Fin (s + 1) => (ρ p) y)) x (U x)
       = covStep (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) x
           (Fin.cons (U x) (fun p : Fin (s + 1) => (ρ p) x))
@@ -1216,7 +1215,6 @@ theorem covStep2_diffStep_branch2
   rw [Function.update_idem, hρa, hfact, hoff]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 theorem covStep2_branch1_mdiff
@@ -1232,22 +1230,22 @@ theorem covStep2_branch1_mdiff
         (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₁) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set CDCsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -1287,11 +1285,11 @@ theorem covStep2_branch1_mdiff
     (hv := fun b => ((σ b).contMDiff.contMDiffAt))
   have hSAt : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
       (fun y : M => (S y) (fun b : Fin s => (σ b) y)) x := by
-    simpa [Tensor0SBundle.Tensor0SSpace.toModel,
-      Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply] using hEval
+    change ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => Tensor0SSpace.eval (S y) (fun b : Fin s => (σ b) y)) x
+    exact hEval
   exact hSAt.mdifferentiableAt (by simp)
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem covStep2_branch2_mdiff
@@ -1310,22 +1308,22 @@ theorem covStep2_branch2_mdiff
               (leviCivitaConnectionOfMetric (I := I) g₂) y
               (Vslots a y)) (V y))))) x := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₁) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set Asec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -1374,8 +1372,10 @@ theorem covStep2_branch2_mdiff
     (hv := fun p => ((ρ p).contMDiff.contMDiffAt))
   have hSAt : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
       (fun y : M => covStep (I := I) g₂ s S y (fun p : Fin (s + 1) => (ρ p) y)) x := by
-    simpa [Tensor0SBundle.Tensor0SSpace.toModel,
-      Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply] using hEval
+    change ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => Tensor0SSpace.eval (covStep (I := I) g₂ s S y)
+        (fun p : Fin (s + 1) => (ρ p) y)) x
+    exact hEval
   exact hSAt.mdifferentiableAt (by simp)
 
 open DifferentialGeometry.Integral.Connection in
@@ -1388,7 +1388,7 @@ theorem covStep2_diffStep_split
     (Vslots : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
               (covDerivConnectionDifference (I := I) g₂ g₁
@@ -1399,11 +1399,11 @@ theorem covStep2_diffStep_split
                     (leviCivitaConnectionOfMetric (I := I) g₁)
                     (leviCivitaConnectionOfMetric (I := I) g₂) y
                     (Vslots a y)) (V y))))) x (U x)
-      = (-∑ a : Fin s, extDerivFun (I := I)
+      = (-∑ a : Fin s, mvfderiv (I := I)
             (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
               (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x))
-        - ∑ a : Fin s, extDerivFun (I := I)
+        - ∑ a : Fin s, mvfderiv (I := I)
             (fun y : M => covStep (I := I) g₂ s S y
               (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
                 ((CovariantDerivative.difference
@@ -1460,11 +1460,11 @@ theorem covStep2_diffStep_split
               (Vslots a y)) (V y))))) x := by
     rw [hsum2]
     exact mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT2 a)
-  have e1 : extDerivFun (I := I)
+  have e1 : mvfderiv (I := I)
         (fun y : M => -∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
           (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x)
-      = -∑ a : Fin s, extDerivFun (I := I)
+      = -∑ a : Fin s, mvfderiv (I := I)
           (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
             (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x) := by
@@ -1478,25 +1478,25 @@ theorem covStep2_diffStep_split
       funext y
       simp only [Finset.sum_apply]
     rw [hneg,
-      extDerivFun_neg_at (I := I) (U x)
+      mvfderiv_neg_at (I := I) (U x)
         (mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT1 a)),
-      extDerivFun_finset_sum_at (I := I) Finset.univ _ (U x) (fun a _ => hT1 a)]
-  have e2 : extDerivFun (I := I)
+      mvfderiv_finset_sum_at (I := I) Finset.univ _ (U x) (fun a _ => hT1 a)]
+  have e2 : mvfderiv (I := I)
         (fun y : M => ∑ a : Fin s, covStep (I := I) g₂ s S y
           (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
             ((CovariantDerivative.difference
                 (leviCivitaConnectionOfMetric (I := I) g₁)
                 (leviCivitaConnectionOfMetric (I := I) g₂) y
                 (Vslots a y)) (V y))))) x (U x)
-      = ∑ a : Fin s, extDerivFun (I := I)
+      = ∑ a : Fin s, mvfderiv (I := I)
           (fun y : M => covStep (I := I) g₂ s S y
             (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
               ((CovariantDerivative.difference
                   (leviCivitaConnectionOfMetric (I := I) g₁)
                   (leviCivitaConnectionOfMetric (I := I) g₂) y
                   (Vslots a y)) (V y))))) x (U x) := by
-    rw [hsum2, extDerivFun_finset_sum_at (I := I) Finset.univ _ (U x) (fun a _ => hT2 a)]
-  have hsub : extDerivFun (I := I)
+    rw [hsum2, mvfderiv_finset_sum_at (I := I) Finset.univ _ (U x) (fun a _ => hT2 a)]
+  have hsub : mvfderiv (I := I)
         (fun y : M =>
           (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
               (covDerivConnectionDifference (I := I) g₂ g₁
@@ -1507,18 +1507,18 @@ theorem covStep2_diffStep_split
                     (leviCivitaConnectionOfMetric (I := I) g₁)
                     (leviCivitaConnectionOfMetric (I := I) g₂) y
                     (Vslots a y)) (V y))))) x (U x)
-      = extDerivFun (I := I)
+      = mvfderiv (I := I)
             (fun y : M => -∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
               (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x)
-        - extDerivFun (I := I)
+        - mvfderiv (I := I)
             (fun y : M => ∑ a : Fin s, covStep (I := I) g₂ s S y
               (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
                 ((CovariantDerivative.difference
                     (leviCivitaConnectionOfMetric (I := I) g₁)
                     (leviCivitaConnectionOfMetric (I := I) g₂) y
                     (Vslots a y)) (V y))))) x (U x) :=
-    extDerivFun_sub_at (I := I) (U x) hf1.neg hf2
+    mvfderiv_sub_at (I := I) (U x) hf1.neg hf2
   rw [hsub, e1, e2]
 
 open DifferentialGeometry.Integral.Connection in
@@ -1601,19 +1601,19 @@ theorem covStep2_OC_q0
                     (leviCivitaConnectionOfMetric (I := I) g₂) x
                     (Vslots a x)) (V x)))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   have hcast : ∀ (P : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)),
@@ -1664,19 +1664,19 @@ theorem covStep2_OC_q1
                     (Vslots a x))
                   ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => V z) x) (U x))))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   have hcast : ∀ (P : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)),
@@ -1739,19 +1739,19 @@ theorem covStep2_OC_int
                       (leviCivitaConnectionOfMetric (I := I) g₂) x
                       (Vslots a x)) (V x))))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   have hcast : ∀ (P : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)),
@@ -2063,7 +2063,6 @@ theorem covStep2_mixedComm_split
   rw [diffStep_leibniz (I := I) g₁ g₂ s S]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem covStep2_mixedComm_eval_sub
@@ -2159,17 +2158,17 @@ private theorem mixedComm_le
             + Real.sqrt (normSq0S (I := I) g₂ x (s + 2)
                 (covStep (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   set CA2 : ℝ := 3 / 2 * Λ ^ 5 * Λ''' + 9 / 2 * Λ ^ 6 * Λ' * Λ'' + 3 * Λ ^ 7 * Λ' ^ 3 with hCA2def
   set CA1 : ℝ := 3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) with hCA1def
@@ -2720,9 +2719,9 @@ theorem covStepDiff2_le
             + Real.sqrt (normSq0S (I := I) g₂ x (s + 2)
                 (covStep (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   let Cbr : ℝ := mixedCommC (E := E) s Λ Λ' Λ'' Λ'''
   have hCbr_nn : 0 ≤ Cbr := by

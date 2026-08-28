@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TimeLocalNemytskii
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TensorSobolevLowerState
+
+
 open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
@@ -67,11 +69,8 @@ theorem field_mem_lowerRS
 
 private theorem l2_four
     {T : ℝ} {X Y Z W V : Type*}
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
-    [NormedAddCommGroup Z] [NormedSpace ℝ Z] [CompleteSpace Z]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V]
+    [NormedAddCommGroup X] [NormedAddCommGroup Y] [NormedAddCommGroup Z]
+    [NormedAddCommGroup W] [NormedAddCommGroup V]
     (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T)
     (r : timeL2 W T) (s : timeL2 V T) {A B C D : ℝ}
     (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C) (hD : 0 ≤ D)
@@ -232,7 +231,10 @@ private theorem time_partial_tame_at
   have hstateJ : ∀ u : lowerStateRS (I := I) (M := M) g₀ r s a R,
       ‖J (u : _)‖ ≤ R := by
     intro u
-    simpa only [lowerStateRS, lowerBall, J] using u.property
+    have hu := u.property
+    change ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
+      (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (u : _)‖ ≤ R at hu
+    simpa only [J] using hu
   set ρ : ℝ := R / 4 with hρdef
   have hρ : 0 < ρ := by rw [hρdef]; positivity
   have h2ρR : 2 * ρ ≤ R := by rw [hρdef]; nlinarith [hR]
@@ -431,7 +433,7 @@ private theorem time_partial_tame_at
           ha12 (field F - field F'))
           =ᵐ[timeMeasure T]
         fun t => J ((field F - field F') t) := by
-      simpa only [J] using
+      simpa only [J, timeL2Inclusion] using
         (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
           ha12).coeFn_compLpL
           (p := 2) (μ := timeMeasure T) (field F - field F')

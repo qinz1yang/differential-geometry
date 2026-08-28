@@ -1,6 +1,7 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.Iteration
 
+
 /-!
 # Moser Linfty Closeout
 
@@ -91,7 +92,7 @@ private theorem moser_closeout_superlevel_null
   let g : E → ℝ := fun x => f x ^ (p₀ / 2)
   let K : ℝ := moserLinftyBoundPow (d := d) A (u := u) p₀ ^ (1 / 2 : ℝ)
   let S : Set E := {x | c ≤ g x}
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -162,7 +163,7 @@ private theorem moser_closeout_superlevel_null
       ext x
       exact hgq_eq x
     have hInt_mu : Integrable (fun x => g x ^ q_n) μ := by
-      simpa [μ, Bhalf] using hInt_half
+      exact hInt_half.integrable
     have hnonneg_ae : 0 ≤ᵐ[μ] fun x => g x ^ q_n := by
       exact Filter.Eventually.of_forall fun x => Real.rpow_nonneg (hg_nonneg x) _
     have hmarkov :
@@ -294,7 +295,7 @@ private theorem moser_ae_closeout
   let f : E → ℝ := fun x => |max (u x) 0|
   let g : E → ℝ := fun x => f x ^ (p₀ / 2)
   let K : ℝ := moserLinftyBoundPow (d := d) A (u := u) p₀ ^ (1 / 2 : ℝ)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -472,7 +473,7 @@ theorem linfty_subsolution_Moser_two
                 (Real.rpow_nonneg A.1.Λ_nonneg _)
             have hone : (1 : ℝ) ≤ (2 / (2 - 1 : ℝ)) ^ (d : ℝ) := by
               have hbase : (1 : ℝ) ≤ 2 / (2 - 1 : ℝ) := by norm_num
-              have hd_nonneg : 0 ≤ (d : ℝ) := by exact_mod_cast Nat.zero_le d
+              have hd_nonneg : 0 ≤ (d : ℝ) := by exact_mod_cast Nat.zero_le (n := d)
               exact Real.one_le_rpow hbase hd_nonneg
             simpa [mul_assoc] using
               (mul_le_mul_of_nonneg_left hone hleft_nonneg)

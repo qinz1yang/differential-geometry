@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -47,6 +46,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+private noncomputable def tangentModel (x : M) : TangentSpace I x →L[ℝ] E :=
+  tangentSpaceModelContinuousLinearEquiv (I := I) x
+
 section UniformBound
 
 
@@ -55,18 +57,21 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma flat_toModel_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
     (uu : TangentSpace I x) (v : Fin 1 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x uu) v =
-      g₀.inner x uu ((v 0 : E) : TangentSpace I x) := by
+      g₀.inner x uu ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) := by
   have h1 : Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x uu) v =
-      (g0FlatCLM (I := I) g₀ x uu) (fun j : Fin 1 => ((v j : E) : TangentSpace I x)) := rfl
+      (g0FlatCLM (I := I) g₀ x uu)
+        (fun j : Fin 1 => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j)) := rfl
   rw [h1]
-  have h2 : (fun j : Fin 1 => ((v j : E) : TangentSpace I x)) =
-      (fun _ : Fin 1 => ((v 0 : E) : TangentSpace I x)) := by
+  have h2 : (fun j : Fin 1 => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j)) =
+      (fun _ : Fin 1 => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) := by
     funext j
     fin_cases j
     rfl
   rw [h2]
-  rw [show (g0FlatCLM (I := I) g₀ x uu) (fun _ : Fin 1 => ((v 0 : E) : TangentSpace I x)) =
-      cotangentToDual (I := I) (x := x) (g0FlatCLM (I := I) g₀ x uu) ((v 0 : E) : TangentSpace I x)
+  rw [show (g0FlatCLM (I := I) g₀ x uu)
+        (fun _ : Fin 1 => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) =
+      cotangentToDual (I := I) (x := x) (g0FlatCLM (I := I) g₀ x uu)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
     from (cotangentToDual_apply (I := I) (x := x) _ _).symm]
   rw [cotangentToDual_g0FlatCLM]
 
@@ -84,8 +89,10 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
         F (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i)) ((Module.finBasis ℝ E) i)) =
       ∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E)) := by
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (e a)) := by
   classical
+  let ι := tangentSpaceModelContinuousLinearEquiv (I := I) x
   have hcdual : ∀ i : Fin (Module.finrank ℝ E),
       ((Module.finBasis ℝ E).cDualBasis i) =
         LinearMap.toContinuousLinearMap ((Module.finBasis ℝ E).coord i) := by
@@ -96,42 +103,43 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
   have hexp : ∀ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis i) =
-        ∑ a : Fin n, ((Module.finBasis ℝ E).coord i ((e a : E))) •
+        ∑ a : Fin n, ((Module.finBasis ℝ E).coord i (ι (e a))) •
           Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)) := by
     intro i
     apply ContinuousMultilinearMap.ext
     intro v
     rw [Tensor0SBundle.model_covectorOfCLM_apply, hcdual i]
-    have hRHS : (∑ a : Fin n, ((Module.finBasis ℝ E).coord i ((e a : E))) •
+    have hRHS : (∑ a : Fin n, ((Module.finBasis ℝ E).coord i (ι (e a))) •
           Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) v =
-        ∑ a : Fin n, ((Module.finBasis ℝ E).coord i ((e a : E))) *
-          g₀.inner x (e a) ((v 0 : E) : TangentSpace I x) := by
-      rw [ContinuousMultilinearMap.sum_apply]
+        ∑ a : Fin n, ((Module.finBasis ℝ E).coord i (ι (e a))) *
+          g₀.inner x (e a) (ι.symm (v 0)) := by
+      rw [sum_apply]
       refine Finset.sum_congr rfl (fun a _ => ?_)
-      rw [ContinuousMultilinearMap.smul_apply, flat_toModel_apply, smul_eq_mul]
+      rw [smul_apply, flat_toModel_apply, smul_eq_mul]
     rw [hRHS]
-    have hv0 : ((v 0 : E) : TangentSpace I x) =
-        ∑ a : Fin n, g₀.inner x (e a) ((v 0 : E) : TangentSpace I x) • e a :=
-      hrepr ((v 0 : E) : TangentSpace I x)
+    have hv0 : v 0 =
+        ∑ a : Fin n, g₀.inner x (e a) (ι.symm (v 0)) • ι (e a) := by
+      have h := congrArg ι (hrepr (ι.symm (v 0)))
+      simpa only [ContinuousLinearEquiv.apply_symm_apply, map_sum, map_smul] using h
     calc LinearMap.toContinuousLinearMap ((Module.finBasis ℝ E).coord i) (v 0)
         = (Module.finBasis ℝ E).coord i (v 0) := rfl
       _ = (Module.finBasis ℝ E).coord i
-            (∑ a : Fin n, g₀.inner x (e a) ((v 0 : E) : TangentSpace I x) • ((e a : E))) := by
+            (∑ a : Fin n, g₀.inner x (e a) (ι.symm (v 0)) • ι (e a)) := by
           exact congrArg ((Module.finBasis ℝ E).coord i) hv0
-      _ = ∑ a : Fin n, g₀.inner x (e a) ((v 0 : E) : TangentSpace I x) *
-            (Module.finBasis ℝ E).coord i ((e a : E)) := by
+      _ = ∑ a : Fin n, g₀.inner x (e a) (ι.symm (v 0)) *
+            (Module.finBasis ℝ E).coord i (ι (e a)) := by
           rw [map_sum]
           refine Finset.sum_congr rfl (fun a _ => ?_)
           rw [map_smul, smul_eq_mul]
-      _ = ∑ a : Fin n, (Module.finBasis ℝ E).coord i ((e a : E)) *
-            g₀.inner x (e a) ((v 0 : E) : TangentSpace I x) := by
+      _ = ∑ a : Fin n, (Module.finBasis ℝ E).coord i (ι (e a)) *
+            g₀.inner x (e a) (ι.symm (v 0)) := by
           refine Finset.sum_congr rfl (fun a _ => ?_)
           ring
   calc (∑ i : Fin (Module.finrank ℝ E),
         F (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i)) ((Module.finBasis ℝ E) i))
       = ∑ i : Fin (Module.finrank ℝ E), ∑ a : Fin n,
-          ((Module.finBasis ℝ E).coord i ((e a : E))) *
+          ((Module.finBasis ℝ E).coord i (ι (e a))) *
             F (Tensor0SBundle.Tensor0SSpace.toModel
                 (g0FlatCLM (I := I) g₀ x (e a))) ((Module.finBasis ℝ E) i) := by
         refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -157,33 +165,33 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
         have hFℓ : ∀ z, F (Tensor0SBundle.Tensor0SSpace.toModel
             (g0FlatCLM (I := I) g₀ x (e a))) z = ℓ z := fun z => rfl
         calc (∑ i : Fin (Module.finrank ℝ E),
-              ((Module.finBasis ℝ E).coord i ((e a : E))) *
+              ((Module.finBasis ℝ E).coord i (ι (e a))) *
                 F (Tensor0SBundle.Tensor0SSpace.toModel
                     (g0FlatCLM (I := I) g₀ x (e a))) ((Module.finBasis ℝ E) i))
             = ∑ i : Fin (Module.finrank ℝ E),
-                ℓ (((Module.finBasis ℝ E).coord i ((e a : E))) • (Module.finBasis ℝ E) i) := by
+                ℓ (((Module.finBasis ℝ E).coord i (ι (e a))) • (Module.finBasis ℝ E) i) := by
               refine Finset.sum_congr rfl (fun i _ => ?_)
               rw [map_smul, smul_eq_mul, ← hFℓ]
           _ = ℓ (∑ i : Fin (Module.finrank ℝ E),
-                ((Module.finBasis ℝ E).coord i ((e a : E))) • (Module.finBasis ℝ E) i) :=
+                ((Module.finBasis ℝ E).coord i (ι (e a))) • (Module.finBasis ℝ E) i) :=
               (map_sum ℓ _ _).symm
           _ = F (Tensor0SBundle.Tensor0SSpace.toModel
-                (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E)) := by
+                (g0FlatCLM (I := I) g₀ x (e a))) (ι (e a)) := by
               rw [← hFℓ]
               congr 1
-              have hbe := (Module.finBasis ℝ E).sum_repr ((e a : E))
+              have hbe := (Module.finBasis ℝ E).sum_repr (ι (e a))
               calc (∑ i : Fin (Module.finrank ℝ E),
-                    ((Module.finBasis ℝ E).coord i ((e a : E))) • (Module.finBasis ℝ E) i)
+                    ((Module.finBasis ℝ E).coord i (ι (e a))) • (Module.finBasis ℝ E) i)
                   = ∑ i : Fin (Module.finrank ℝ E),
-                      ((Module.finBasis ℝ E).repr ((e a : E)) i) • (Module.finBasis ℝ E) i := by
+                      ((Module.finBasis ℝ E).repr (ι (e a)) i) • (Module.finBasis ℝ E) i := by
                     refine Finset.sum_congr rfl (fun i _ => ?_)
                     rw [Module.Basis.coord_apply]
-                _ = (e a : E) := hbe
+                _ = ι (e a) := hbe
 
 def fibPointwiseBound (g₀ : SmoothRiemannianMetric I M) (x : M) (d : ℕ) (c : ℝ)
     (Z : Tensor0SBundle.Tensor0SSpace d I x) : Prop :=
   0 ≤ c ∧ ∀ w : Fin d → TangentSpace I x,
-    |Tensor0SBundle.Tensor0SSpace.toModel Z (fun j => (w j : E))| ≤
+    |Tensor0SBundle.Tensor0SSpace.toModel Z (fun j => tangentModel (I := I) x (w j))| ≤
       c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j))
 
 
@@ -198,7 +206,8 @@ lemma fibPointwiseBound_coframe (g₀ : SmoothRiemannianMetric I M) (x : M) (d :
   refine ⟨zero_le_one, ?_⟩
   intro w
   have hval : Tensor0SBundle.Tensor0SSpace.toModel
-      (coframeS (I := I) (M := M) g₀ x d e K) (fun j => (w j : E)) =
+      (coframeS (I := I) (M := M) g₀ x d e K)
+        (fun j => tangentModel (I := I) x (w j)) =
       coframeS (I := I) (M := M) g₀ x d e K (fun j => w j) := rfl
   rw [hval, coframeS_apply, one_mul, Finset.abs_prod]
   refine Finset.prod_le_prod (fun j _ => abs_nonneg _) (fun j _ => ?_)
@@ -217,9 +226,9 @@ private lemma fibPointwiseBound_slotPerm (g₀ : SmoothRiemannianMetric I M) (x 
   refine ⟨hZ.1, ?_⟩
   intro w
   have hsp : Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) ρ x Z)
-      (fun j => (w j : E)) =
+      (fun j => tangentModel (I := I) x (w j)) =
       (ContinuousMultilinearMap.domDomCongr ρ (Tensor0SBundle.Tensor0SSpace.toModel Z))
-        (fun j => (w j : E)) := by
+        (fun j => tangentModel (I := I) x (w j)) := by
     rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
   rw [hsp, ContinuousMultilinearMap.domDomCongr_apply]
   have hb := hZ.2 (fun j => w (ρ j))
@@ -291,39 +300,42 @@ private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) 
     (hB : ∀ (a : Fin n) (v : Fin 2 → TangentSpace I x),
       |(Tensor0SBundle.TensorRSSpace.toModel B
           (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-          (fun j => (v j : E))| ≤
+          (fun j => tangentModel (I := I) x (v j))| ≤
         CB * (Real.sqrt (g₀.inner x (v 0) (v 0)) * Real.sqrt (g₀.inner x (v 1) (v 1))))
     {c : ℝ} {D : Tensor0SBundle.Tensor0SSpace 3 I x}
     (hD : fibPointwiseBound (I := I) g₀ x 3 c D) :
     fibPointwiseBound (I := I) g₀ x 4 ((n : ℝ) * CB * c) (connContrCLM (I := I) 2 1 x B D) := by
   refine ⟨mul_nonneg (mul_nonneg (Nat.cast_nonneg n) hCB) hD.1, ?_⟩
   intro w
-  rw [connContrCLM_toModel_apply (I := I) 2 1 x B D (fun j => (w j : E))]
+  rw [connContrCLM_toModel_apply (I := I) 2 1 x B D
+    (fun j => tangentModel (I := I) x (w j))]
   have hfirst : ∀ z : E,
-      (Fin.cons z (fun j => (w j : E)) ∘ Fin.castAdd 2 : Fin 3 → E) =
-        ![z, (w 0 : E), (w 1 : E)] := by
+      (Fin.cons z (fun j => tangentModel (I := I) x (w j)) ∘ Fin.castAdd 2 : Fin 3 → E) =
+        ![z, tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)] := by
     intro z
     funext j
     fin_cases j <;> rfl
   have hlast : ∀ z : E,
-      (Fin.cons z (fun j => (w j : E)) ∘ Fin.natAdd 3 : Fin 2 → E) =
-        ![(w 2 : E), (w 3 : E)] := by
+      (Fin.cons z (fun j => tangentModel (I := I) x (w j)) ∘ Fin.natAdd 3 : Fin 2 → E) =
+        ![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)] := by
     intro z
     funext j
     fin_cases j <;> rfl
   simp only [hfirst, hlast]
   set F : Tensor0SBundle.Tensor0SModel 1 ℝ E → E → ℝ := fun β z =>
-    Tensor0SBundle.Tensor0SSpace.toModel D ![z, (w 0 : E), (w 1 : E)] *
-      (Tensor0SBundle.TensorRSSpace.toModel B β) ![(w 2 : E), (w 3 : E)] with hF
+    Tensor0SBundle.Tensor0SSpace.toModel D
+        ![z, tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)] *
+      (Tensor0SBundle.TensorRSSpace.toModel B β)
+        ![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)] with hF
   have hFβ : ∀ z : E, IsLinearMap ℝ (fun β => F β z) := by
     intro z
     constructor
     · intro β₁ β₂
       rw [hF]
-      simp only [map_add, ContinuousMultilinearMap.add_apply, mul_add]
+      simp only [map_add, add_apply, mul_add]
     · intro cc β
       rw [hF]
-      simp only [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       ring
   have hFz : ∀ β, IsLinearMap ℝ (fun z : E => F β z) := by
     intro β
@@ -331,51 +343,71 @@ private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) 
     · intro z₁ z₂
       rw [hF]
       simp only
-      rw [show (![z₁ + z₂, (w 0 : E), (w 1 : E)] : Fin 3 → E) =
-          Fin.cons (z₁ + z₂) ![(w 0 : E), (w 1 : E)] from rfl]
-      rw [show (![z₁, (w 0 : E), (w 1 : E)] : Fin 3 → E) =
-          Fin.cons z₁ ![(w 0 : E), (w 1 : E)] from rfl]
-      rw [show (![z₂, (w 0 : E), (w 1 : E)] : Fin 3 → E) =
-          Fin.cons z₂ ![(w 0 : E), (w 1 : E)] from rfl]
+      rw [show (![z₁ + z₂, tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)] : Fin 3 → E) =
+          Fin.cons (z₁ + z₂) ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)] from rfl]
+      rw [show (![z₁, tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)] : Fin 3 → E) =
+          Fin.cons z₁ ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)] from rfl]
+      rw [show (![z₂, tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)] : Fin 3 → E) =
+          Fin.cons z₂ ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)] from rfl]
       rw [show Tensor0SBundle.Tensor0SSpace.toModel D
-          (Fin.cons (z₁ + z₂) ![(w 0 : E), (w 1 : E)]) =
-          Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z₁ ![(w 0 : E), (w 1 : E)]) +
-            Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z₂ ![(w 0 : E), (w 1 : E)]) from
+          (Fin.cons (z₁ + z₂) ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)]) =
+          Tensor0SBundle.Tensor0SSpace.toModel D
+              (Fin.cons z₁ ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)]) +
+            Tensor0SBundle.Tensor0SSpace.toModel D
+              (Fin.cons z₂ ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)]) from
         (Tensor0SBundle.Tensor0SSpace.toModel D).toMultilinearMap.cons_add _ z₁ z₂]
       ring
     · intro cc z
       rw [hF]
       simp only
-      rw [show (![cc • z, (w 0 : E), (w 1 : E)] : Fin 3 → E) =
-          Fin.cons (cc • z) ![(w 0 : E), (w 1 : E)] from rfl]
-      rw [show (![z, (w 0 : E), (w 1 : E)] : Fin 3 → E) =
-          Fin.cons z ![(w 0 : E), (w 1 : E)] from rfl]
+      rw [show (![cc • z, tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)] : Fin 3 → E) =
+          Fin.cons (cc • z) ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)] from rfl]
+      rw [show (![z, tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)] : Fin 3 → E) =
+          Fin.cons z ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)] from rfl]
       rw [show Tensor0SBundle.Tensor0SSpace.toModel D
-          (Fin.cons (cc • z) ![(w 0 : E), (w 1 : E)]) =
-          cc • Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z ![(w 0 : E), (w 1 : E)]) from
+          (Fin.cons (cc • z) ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)]) =
+          cc • Tensor0SBundle.Tensor0SSpace.toModel D
+            (Fin.cons z ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)]) from
         (Tensor0SBundle.Tensor0SSpace.toModel D).toMultilinearMap.cons_smul _ cc z]
       rw [smul_eq_mul, smul_eq_mul]
       ring
   rw [show (∑ i : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel D ![((Module.finBasis ℝ E) i), (w 0 : E), (w 1 : E)] *
+      Tensor0SBundle.Tensor0SSpace.toModel D ![((Module.finBasis ℝ E) i),
+          tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)] *
         (Tensor0SBundle.TensorRSSpace.toModel B
             (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
-          ![(w 2 : E), (w 3 : E)]) =
+          ![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)]) =
       ∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E)) from
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a)) from
     dualPair_sum_swap (I := I) g₀ x F hFβ hFz e horth hrepr]
   have hterm : ∀ a : Fin n,
-      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))| ≤
+      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a))| ≤
         CB * c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) := by
     intro a
     rw [hF]
     simp only
     rw [abs_mul]
-    have hDterm : |Tensor0SBundle.Tensor0SSpace.toModel D ![((e a : E)), (w 0 : E), (w 1 : E)]| ≤
+    have hDterm : |Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)]| ≤
         c * (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) := by
-      have harg : (![((e a : E)), (w 0 : E), (w 1 : E)] : Fin 3 → E) =
-          (fun j => ((![e a, w 0, w 1] : Fin 3 → TangentSpace I x) j : E)) := by
+      have harg : (![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0),
+          tangentModel (I := I) x (w 1)] : Fin 3 → E) =
+          (fun j => tangentModel (I := I) x
+            ((![e a, w 0, w 1] : Fin 3 → TangentSpace I x) j)) := by
         funext j
         fin_cases j <;> rfl
       rw [harg]
@@ -393,18 +425,20 @@ private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) 
       exact hb
     have hBterm : |(Tensor0SBundle.TensorRSSpace.toModel B
         (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-        ![(w 2 : E), (w 3 : E)]| ≤
+        ![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)]| ≤
         CB * (Real.sqrt (g₀.inner x (w 2) (w 2)) * Real.sqrt (g₀.inner x (w 3) (w 3))) := by
-      have harg : (![(w 2 : E), (w 3 : E)] : Fin 2 → E) =
-          (fun j => ((![w 2, w 3] : Fin 2 → TangentSpace I x) j : E)) := by
+      have harg : (![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)] : Fin 2 → E) =
+          (fun j => tangentModel (I := I) x ((![w 2, w 3] : Fin 2 → TangentSpace I x) j)) := by
         funext j
         fin_cases j <;> rfl
       rw [harg]
       exact hB a ![w 2, w 3]
-    calc |Tensor0SBundle.Tensor0SSpace.toModel D ![((e a : E)), (w 0 : E), (w 1 : E)]| *
+    calc |Tensor0SBundle.Tensor0SSpace.toModel D
+          ![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)]| *
           |(Tensor0SBundle.TensorRSSpace.toModel B
               (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-              ![(w 2 : E), (w 3 : E)]|
+              ![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)]|
         ≤ (c * (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1)))) *
             (CB * (Real.sqrt (g₀.inner x (w 2) (w 2)) * Real.sqrt (g₀.inner x (w 3) (w 3)))) :=
           mul_le_mul hDterm hBterm (abs_nonneg _)
@@ -413,9 +447,11 @@ private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) 
           rw [Fin.prod_univ_four]
           ring
   calc |∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))|
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a))|
       ≤ ∑ a : Fin n,
-          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))| :=
+          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+            (tangentModel (I := I) x (e a))| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ _a : Fin n, CB * c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) :=
         Finset.sum_le_sum (fun a _ => hterm a)
@@ -441,31 +477,34 @@ private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) 
     fibPointwiseBound (I := I) g₀ x 3 ((n : ℝ) * CB * c) (connContrCLM (I := I) 1 1 x B D) := by
   refine ⟨mul_nonneg (mul_nonneg (Nat.cast_nonneg n) hCB) hD.1, ?_⟩
   intro w
-  rw [connContrCLM_toModel_apply (I := I) 1 1 x B D (fun j => (w j : E))]
+  rw [connContrCLM_toModel_apply (I := I) 1 1 x B D
+    (fun j => tangentModel (I := I) x (w j))]
   have hfirst : ∀ z : E,
-      (Fin.cons z (fun j => (w j : E)) ∘ Fin.castAdd 2 : Fin 2 → E) = ![z, (w 0 : E)] := by
+      (Fin.cons z (fun j => tangentModel (I := I) x (w j)) ∘ Fin.castAdd 2 : Fin 2 → E) =
+        ![z, tangentModel (I := I) x (w 0)] := by
     intro z
     funext j
     fin_cases j <;> rfl
   have hlast : ∀ z : E,
-      (Fin.cons z (fun j => (w j : E)) ∘ Fin.natAdd 2 : Fin 2 → E) =
-        ![(w 1 : E), (w 2 : E)] := by
+      (Fin.cons z (fun j => tangentModel (I := I) x (w j)) ∘ Fin.natAdd 2 : Fin 2 → E) =
+        ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2)] := by
     intro z
     funext j
     fin_cases j <;> rfl
   simp only [hfirst, hlast]
   set F : Tensor0SBundle.Tensor0SModel 1 ℝ E → E → ℝ := fun β z =>
-    Tensor0SBundle.Tensor0SSpace.toModel D ![z, (w 0 : E)] *
-      (Tensor0SBundle.TensorRSSpace.toModel B β) ![(w 1 : E), (w 2 : E)] with hF
+    Tensor0SBundle.Tensor0SSpace.toModel D ![z, tangentModel (I := I) x (w 0)] *
+      (Tensor0SBundle.TensorRSSpace.toModel B β)
+        ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2)] with hF
   have hFβ : ∀ z : E, IsLinearMap ℝ (fun β => F β z) := by
     intro z
     constructor
     · intro β₁ β₂
       rw [hF]
-      simp only [map_add, ContinuousMultilinearMap.add_apply, mul_add]
+      simp only [map_add, add_apply, mul_add]
     · intro cc β
       rw [hF]
-      simp only [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       ring
   have hFz : ∀ β, IsLinearMap ℝ (fun z : E => F β z) := by
     intro β
@@ -473,44 +512,60 @@ private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) 
     · intro z₁ z₂
       rw [hF]
       simp only
-      rw [show (![z₁ + z₂, (w 0 : E)] : Fin 2 → E) = Fin.cons (z₁ + z₂) ![(w 0 : E)] from rfl,
-        show (![z₁, (w 0 : E)] : Fin 2 → E) = Fin.cons z₁ ![(w 0 : E)] from rfl,
-        show (![z₂, (w 0 : E)] : Fin 2 → E) = Fin.cons z₂ ![(w 0 : E)] from rfl]
-      rw [show Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons (z₁ + z₂) ![(w 0 : E)]) =
-          Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z₁ ![(w 0 : E)]) +
-            Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z₂ ![(w 0 : E)]) from
+      rw [show (![z₁ + z₂, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons (z₁ + z₂) ![tangentModel (I := I) x (w 0)] from rfl,
+        show (![z₁, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons z₁ ![tangentModel (I := I) x (w 0)] from rfl,
+        show (![z₂, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons z₂ ![tangentModel (I := I) x (w 0)] from rfl]
+      rw [show Tensor0SBundle.Tensor0SSpace.toModel D
+          (Fin.cons (z₁ + z₂) ![tangentModel (I := I) x (w 0)]) =
+          Tensor0SBundle.Tensor0SSpace.toModel D
+              (Fin.cons z₁ ![tangentModel (I := I) x (w 0)]) +
+            Tensor0SBundle.Tensor0SSpace.toModel D
+              (Fin.cons z₂ ![tangentModel (I := I) x (w 0)]) from
         (Tensor0SBundle.Tensor0SSpace.toModel D).toMultilinearMap.cons_add _ z₁ z₂]
       ring
     · intro cc z
       rw [hF]
       simp only
-      rw [show (![cc • z, (w 0 : E)] : Fin 2 → E) = Fin.cons (cc • z) ![(w 0 : E)] from rfl,
-        show (![z, (w 0 : E)] : Fin 2 → E) = Fin.cons z ![(w 0 : E)] from rfl]
-      rw [show Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons (cc • z) ![(w 0 : E)]) =
-          cc • Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z ![(w 0 : E)]) from
+      rw [show (![cc • z, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons (cc • z) ![tangentModel (I := I) x (w 0)] from rfl,
+        show (![z, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons z ![tangentModel (I := I) x (w 0)] from rfl]
+      rw [show Tensor0SBundle.Tensor0SSpace.toModel D
+          (Fin.cons (cc • z) ![tangentModel (I := I) x (w 0)]) =
+          cc • Tensor0SBundle.Tensor0SSpace.toModel D
+            (Fin.cons z ![tangentModel (I := I) x (w 0)]) from
         (Tensor0SBundle.Tensor0SSpace.toModel D).toMultilinearMap.cons_smul _ cc z]
       rw [smul_eq_mul, smul_eq_mul]
       ring
   rw [show (∑ i : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel D ![((Module.finBasis ℝ E) i), (w 0 : E)] *
+      Tensor0SBundle.Tensor0SSpace.toModel D
+          ![((Module.finBasis ℝ E) i), tangentModel (I := I) x (w 0)] *
         (Tensor0SBundle.TensorRSSpace.toModel B
             (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
-          ![(w 1 : E), (w 2 : E)]) =
+          ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2)]) =
       ∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E)) from
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a)) from
     dualPair_sum_swap (I := I) g₀ x F hFβ hFz e horth hrepr]
   have hterm : ∀ a : Fin n,
-      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))| ≤
+      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a))| ≤
         CB * c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) := by
     intro a
     rw [hF]
     simp only
     rw [abs_mul]
-    have hDterm : |Tensor0SBundle.Tensor0SSpace.toModel D ![((e a : E)), (w 0 : E)]| ≤
+    have hDterm : |Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0)]| ≤
         c * Real.sqrt (g₀.inner x (w 0) (w 0)) := by
-      have harg : (![((e a : E)), (w 0 : E)] : Fin 2 → E) =
-          (fun j => ((![e a, w 0] : Fin 2 → TangentSpace I x) j : E)) := by
+      have harg : (![tangentModel (I := I) x (e a),
+          tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          (fun j => tangentModel (I := I) x
+            ((![e a, w 0] : Fin 2 → TangentSpace I x) j)) := by
         funext j
         fin_cases j <;> rfl
       rw [harg]
@@ -527,18 +582,21 @@ private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) 
       exact hb
     have hBterm : |(Tensor0SBundle.TensorRSSpace.toModel B
         (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-        ![(w 1 : E), (w 2 : E)]| ≤
+        ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2)]| ≤
         CB * (Real.sqrt (g₀.inner x (w 1) (w 1)) * Real.sqrt (g₀.inner x (w 2) (w 2))) := by
-      have harg : (![(w 1 : E), (w 2 : E)] : Fin 2 → E) =
-          (fun j => ((![w 1, w 2] : Fin 2 → TangentSpace I x) j : E)) := by
+      have harg : (![tangentModel (I := I) x (w 1),
+          tangentModel (I := I) x (w 2)] : Fin 2 → E) =
+          (fun j => tangentModel (I := I) x
+            ((![w 1, w 2] : Fin 2 → TangentSpace I x) j)) := by
         funext j
         fin_cases j <;> rfl
       rw [harg]
       exact hB a ![w 1, w 2]
-    calc |Tensor0SBundle.Tensor0SSpace.toModel D ![((e a : E)), (w 0 : E)]| *
+    calc |Tensor0SBundle.Tensor0SSpace.toModel D
+          ![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0)]| *
           |(Tensor0SBundle.TensorRSSpace.toModel B
               (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-              ![(w 1 : E), (w 2 : E)]|
+              ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2)]|
         ≤ (c * Real.sqrt (g₀.inner x (w 0) (w 0))) *
             (CB * (Real.sqrt (g₀.inner x (w 1) (w 1)) * Real.sqrt (g₀.inner x (w 2) (w 2)))) :=
           mul_le_mul hDterm hBterm (abs_nonneg _)
@@ -547,9 +605,11 @@ private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) 
           rw [Fin.prod_univ_three]
           ring
   calc |∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))|
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a))|
       ≤ ∑ a : Fin n,
-          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))| :=
+          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+            (tangentModel (I := I) x (e a))| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ _a : Fin n, CB * c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) :=
         Finset.sum_le_sum (fun a _ => hterm a)
@@ -576,31 +636,36 @@ private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) 
     fibPointwiseBound (I := I) g₀ x 4 ((n : ℝ) * CB * c) (connContrCLM (I := I) 1 2 x B D) := by
   refine ⟨mul_nonneg (mul_nonneg (Nat.cast_nonneg n) hCB) hD.1, ?_⟩
   intro w
-  rw [connContrCLM_toModel_apply (I := I) 1 2 x B D (fun j => (w j : E))]
+  rw [connContrCLM_toModel_apply (I := I) 1 2 x B D
+    (fun j => tangentModel (I := I) x (w j))]
   have hfirst : ∀ z : E,
-      (Fin.cons z (fun j => (w j : E)) ∘ Fin.castAdd 3 : Fin 2 → E) = ![z, (w 0 : E)] := by
+      (Fin.cons z (fun j => tangentModel (I := I) x (w j)) ∘ Fin.castAdd 3 : Fin 2 → E) =
+        ![z, tangentModel (I := I) x (w 0)] := by
     intro z
     funext j
     fin_cases j <;> rfl
   have hlast : ∀ z : E,
-      (Fin.cons z (fun j => (w j : E)) ∘ Fin.natAdd 2 : Fin 3 → E) =
-        ![(w 1 : E), (w 2 : E), (w 3 : E)] := by
+      (Fin.cons z (fun j => tangentModel (I := I) x (w j)) ∘ Fin.natAdd 2 : Fin 3 → E) =
+        ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
+          tangentModel (I := I) x (w 3)] := by
     intro z
     funext j
     fin_cases j <;> rfl
   simp only [hfirst, hlast]
   set F : Tensor0SBundle.Tensor0SModel 1 ℝ E → E → ℝ := fun β z =>
-    Tensor0SBundle.Tensor0SSpace.toModel D ![z, (w 0 : E)] *
-      (Tensor0SBundle.TensorRSSpace.toModel B β) ![(w 1 : E), (w 2 : E), (w 3 : E)] with hF
+    Tensor0SBundle.Tensor0SSpace.toModel D ![z, tangentModel (I := I) x (w 0)] *
+      (Tensor0SBundle.TensorRSSpace.toModel B β)
+        ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
+          tangentModel (I := I) x (w 3)] with hF
   have hFβ : ∀ z : E, IsLinearMap ℝ (fun β => F β z) := by
     intro z
     constructor
     · intro β₁ β₂
       rw [hF]
-      simp only [map_add, ContinuousMultilinearMap.add_apply, mul_add]
+      simp only [map_add, add_apply, mul_add]
     · intro cc β
       rw [hF]
-      simp only [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       ring
   have hFz : ∀ β, IsLinearMap ℝ (fun z : E => F β z) := by
     intro β
@@ -608,44 +673,61 @@ private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) 
     · intro z₁ z₂
       rw [hF]
       simp only
-      rw [show (![z₁ + z₂, (w 0 : E)] : Fin 2 → E) = Fin.cons (z₁ + z₂) ![(w 0 : E)] from rfl,
-        show (![z₁, (w 0 : E)] : Fin 2 → E) = Fin.cons z₁ ![(w 0 : E)] from rfl,
-        show (![z₂, (w 0 : E)] : Fin 2 → E) = Fin.cons z₂ ![(w 0 : E)] from rfl]
-      rw [show Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons (z₁ + z₂) ![(w 0 : E)]) =
-          Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z₁ ![(w 0 : E)]) +
-            Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z₂ ![(w 0 : E)]) from
+      rw [show (![z₁ + z₂, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons (z₁ + z₂) ![tangentModel (I := I) x (w 0)] from rfl,
+        show (![z₁, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons z₁ ![tangentModel (I := I) x (w 0)] from rfl,
+        show (![z₂, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons z₂ ![tangentModel (I := I) x (w 0)] from rfl]
+      rw [show Tensor0SBundle.Tensor0SSpace.toModel D
+          (Fin.cons (z₁ + z₂) ![tangentModel (I := I) x (w 0)]) =
+          Tensor0SBundle.Tensor0SSpace.toModel D
+              (Fin.cons z₁ ![tangentModel (I := I) x (w 0)]) +
+            Tensor0SBundle.Tensor0SSpace.toModel D
+              (Fin.cons z₂ ![tangentModel (I := I) x (w 0)]) from
         (Tensor0SBundle.Tensor0SSpace.toModel D).toMultilinearMap.cons_add _ z₁ z₂]
       ring
     · intro cc z
       rw [hF]
       simp only
-      rw [show (![cc • z, (w 0 : E)] : Fin 2 → E) = Fin.cons (cc • z) ![(w 0 : E)] from rfl,
-        show (![z, (w 0 : E)] : Fin 2 → E) = Fin.cons z ![(w 0 : E)] from rfl]
-      rw [show Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons (cc • z) ![(w 0 : E)]) =
-          cc • Tensor0SBundle.Tensor0SSpace.toModel D (Fin.cons z ![(w 0 : E)]) from
+      rw [show (![cc • z, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons (cc • z) ![tangentModel (I := I) x (w 0)] from rfl,
+        show (![z, tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          Fin.cons z ![tangentModel (I := I) x (w 0)] from rfl]
+      rw [show Tensor0SBundle.Tensor0SSpace.toModel D
+          (Fin.cons (cc • z) ![tangentModel (I := I) x (w 0)]) =
+          cc • Tensor0SBundle.Tensor0SSpace.toModel D
+            (Fin.cons z ![tangentModel (I := I) x (w 0)]) from
         (Tensor0SBundle.Tensor0SSpace.toModel D).toMultilinearMap.cons_smul _ cc z]
       rw [smul_eq_mul, smul_eq_mul]
       ring
   rw [show (∑ i : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.Tensor0SSpace.toModel D ![((Module.finBasis ℝ E) i), (w 0 : E)] *
+      Tensor0SBundle.Tensor0SSpace.toModel D
+          ![((Module.finBasis ℝ E) i), tangentModel (I := I) x (w 0)] *
         (Tensor0SBundle.TensorRSSpace.toModel B
             (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
-          ![(w 1 : E), (w 2 : E), (w 3 : E)]) =
+          ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
+            tangentModel (I := I) x (w 3)]) =
       ∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E)) from
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a)) from
     dualPair_sum_swap (I := I) g₀ x F hFβ hFz e horth hrepr]
   have hterm : ∀ a : Fin n,
-      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))| ≤
+      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a))| ≤
         CB * c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) := by
     intro a
     rw [hF]
     simp only
     rw [abs_mul]
-    have hDterm : |Tensor0SBundle.Tensor0SSpace.toModel D ![((e a : E)), (w 0 : E)]| ≤
+    have hDterm : |Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0)]| ≤
         c * Real.sqrt (g₀.inner x (w 0) (w 0)) := by
-      have harg : (![((e a : E)), (w 0 : E)] : Fin 2 → E) =
-          (fun j => ((![e a, w 0] : Fin 2 → TangentSpace I x) j : E)) := by
+      have harg : (![tangentModel (I := I) x (e a),
+          tangentModel (I := I) x (w 0)] : Fin 2 → E) =
+          (fun j => tangentModel (I := I) x
+            ((![e a, w 0] : Fin 2 → TangentSpace I x) j)) := by
         funext j
         fin_cases j <;> rfl
       rw [harg]
@@ -662,19 +744,24 @@ private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) 
       exact hb
     have hBterm : |(Tensor0SBundle.TensorRSSpace.toModel B
         (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-        ![(w 1 : E), (w 2 : E), (w 3 : E)]| ≤
+        ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
+          tangentModel (I := I) x (w 3)]| ≤
         CB * (Real.sqrt (g₀.inner x (w 1) (w 1)) * Real.sqrt (g₀.inner x (w 2) (w 2)) *
           Real.sqrt (g₀.inner x (w 3) (w 3))) := by
-      have harg : (![(w 1 : E), (w 2 : E), (w 3 : E)] : Fin 3 → E) =
-          (fun j => ((![w 1, w 2, w 3] : Fin 3 → TangentSpace I x) j : E)) := by
+      have harg : (![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
+          tangentModel (I := I) x (w 3)] : Fin 3 → E) =
+          (fun j => tangentModel (I := I) x
+            ((![w 1, w 2, w 3] : Fin 3 → TangentSpace I x) j)) := by
         funext j
         fin_cases j <;> rfl
       rw [harg]
       exact hB a ![w 1, w 2, w 3]
-    calc |Tensor0SBundle.Tensor0SSpace.toModel D ![((e a : E)), (w 0 : E)]| *
+    calc |Tensor0SBundle.Tensor0SSpace.toModel D
+          ![tangentModel (I := I) x (e a), tangentModel (I := I) x (w 0)]| *
           |(Tensor0SBundle.TensorRSSpace.toModel B
               (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))))
-              ![(w 1 : E), (w 2 : E), (w 3 : E)]|
+              ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
+                tangentModel (I := I) x (w 3)]|
         ≤ (c * Real.sqrt (g₀.inner x (w 0) (w 0))) *
             (CB * (Real.sqrt (g₀.inner x (w 1) (w 1)) * Real.sqrt (g₀.inner x (w 2) (w 2)) *
               Real.sqrt (g₀.inner x (w 3) (w 3)))) :=
@@ -684,9 +771,11 @@ private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) 
           rw [Fin.prod_univ_four]
           ring
   calc |∑ a : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))|
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+          (tangentModel (I := I) x (e a))|
       ≤ ∑ a : Fin n,
-          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a))) ((e a : E))| :=
+          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
+            (tangentModel (I := I) x (e a))| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ _a : Fin n, CB * c * ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) :=
         Finset.sum_le_sum (fun a _ => hterm a)
@@ -710,14 +799,14 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
     (hZ : fibPointwiseBound (I := I) g₀ x 4 c Z)
     (w : Fin 2 → TangentSpace I x) :
     |Tensor0SBundle.Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ 2 x Z)
-        (fun j => (w j : E))| ≤
+        (fun j => tangentModel (I := I) x (w j))| ≤
       (n : ℝ) * q * c *
         (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) := by
   rw [cometricDoubleTraceFib_toModel, modelDoubleTrace_apply]
   set F : Tensor0SBundle.Tensor0SModel 1 ℝ E → E → ℝ := fun β z =>
     Tensor0SBundle.Tensor0SSpace.toModel Z
       (Fin.cons (cometricLmodel (I := I) g₁ x β)
-        (Fin.cons z ![(w 0 : E), (w 1 : E)])) with hF
+        (Fin.cons z ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)])) with hF
   have hFβ : ∀ z : E, IsLinearMap ℝ (fun β => F β z) := by
     intro z
     constructor
@@ -733,9 +822,11 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
     intro β
     have hupd : ∀ z : E,
         (Fin.cons (cometricLmodel (I := I) g₁ x β)
-          (Fin.cons z ![(w 0 : E), (w 1 : E)]) : Fin 4 → E) =
+          (Fin.cons z ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)]) : Fin 4 → E) =
         Function.update (Fin.cons (cometricLmodel (I := I) g₁ x β)
-          (Fin.cons (0 : E) ![(w 0 : E), (w 1 : E)])) 1 z := by
+          (Fin.cons (0 : E) ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)])) 1 z := by
       intro z
       funext j
       fin_cases j <;> rfl
@@ -751,20 +842,26 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
       rw [hupd (cc • z), hupd z, smul_eq_mul]
       have := (Tensor0SBundle.Tensor0SSpace.toModel Z).map_update_smul
         (Fin.cons (cometricLmodel (I := I) g₁ x β)
-          (Fin.cons (0 : E) ![(w 0 : E), (w 1 : E)])) 1 cc z
+          (Fin.cons (0 : E) ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)])) 1 cc z
       rw [this, smul_eq_mul]
   have hswap : (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel Z
         (Fin.cons (cometricLmodel (I := I) g₁ x
             (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
-          (Fin.cons ((Module.finBasis ℝ E) k) (fun j => (w j : E))))) =
+          (Fin.cons ((Module.finBasis ℝ E) k)
+            (fun j => tangentModel (I := I) x (w j))))) =
       ∑ b : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b))) ((e b : E)) := by
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b)))
+          (tangentModel (I := I) x (e b)) := by
     have hargs : ∀ (z : E) (β : Tensor0SBundle.Tensor0SModel 1 ℝ E),
-        (Fin.cons (cometricLmodel (I := I) g₁ x β) (Fin.cons z (fun j => (w j : E))) :
+        (Fin.cons (cometricLmodel (I := I) g₁ x β)
+          (Fin.cons z (fun j => tangentModel (I := I) x (w j))) :
           Fin 4 → E) =
-        Fin.cons (cometricLmodel (I := I) g₁ x β) (Fin.cons z ![(w 0 : E), (w 1 : E)]) := by
+        Fin.cons (cometricLmodel (I := I) g₁ x β)
+          (Fin.cons z ![tangentModel (I := I) x (w 0),
+            tangentModel (I := I) x (w 1)]) := by
       intro z β
       funext j
       fin_cases j <;> rfl
@@ -773,7 +870,8 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
           (Fin.cons (cometricLmodel (I := I) g₁ x
               (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
-            (Fin.cons ((Module.finBasis ℝ E) k) (fun j => (w j : E))))) =
+            (Fin.cons ((Module.finBasis ℝ E) k)
+              (fun j => tangentModel (I := I) x (w j))))) =
         ∑ k : Fin (Module.finrank ℝ E),
           F (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)) ((Module.finBasis ℝ E) k) := by
@@ -785,22 +883,31 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
     exact dualPair_sum_swap (I := I) g₀ x F hFβ hFz e horth hrepr
   rw [hswap]
   have hterm : ∀ b : Fin n,
-      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b))) ((e b : E))| ≤
+      |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b)))
+          (tangentModel (I := I) x (e b))| ≤
         q * c * (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) := by
     intro b
     rw [hF]
     simp only
     have hcml : cometricLmodel (I := I) g₁ x
         (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b))) =
-        inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x (e b)) := by
-      exact congrArg (inverseMetricSharpFib (I := I) g₁ x)
-        (Tensor0SBundle.Tensor0SSpace.ofModel_toModel (g0FlatCLM (I := I) g₀ x (e b)))
+        tangentModel (I := I) x
+          (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x (e b))) := by
+      with_unfolding_all
+        change tangentModel (I := I) x
+              (inverseMetricSharpFib (I := I) g₁ x
+                (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x)
+                  (Tensor0SBundle.Tensor0SSpace.toModel
+                    (g0FlatCLM (I := I) g₀ x (e b))))) = _
+      rw [Tensor0SBundle.Tensor0SSpace.ofModel_toModel]
     rw [hcml]
     set qb : TangentSpace I x :=
       inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x (e b)) with hqbdef
-    have harg : (Fin.cons ((qb : TangentSpace I x) : E)
-        (Fin.cons ((e b : E)) ![(w 0 : E), (w 1 : E)]) : Fin 4 → E) =
-        (fun j => ((![qb, e b, w 0, w 1] : Fin 4 → TangentSpace I x) j : E)) := by
+    have harg : (Fin.cons (tangentModel (I := I) x qb)
+        (Fin.cons (tangentModel (I := I) x (e b))
+          ![tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)]) : Fin 4 → E) =
+        (fun j => tangentModel (I := I) x
+          ((![qb, e b, w 0, w 1] : Fin 4 → TangentSpace I x) j)) := by
       funext j
       fin_cases j <;> rfl
     rw [harg]
@@ -831,9 +938,11 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
       _ = q * c * (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) := by
           ring
   calc |∑ b : Fin n,
-        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b))) ((e b : E))|
+        F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b)))
+          (tangentModel (I := I) x (e b))|
       ≤ ∑ b : Fin n,
-          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b))) ((e b : E))| :=
+          |F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e b)))
+            (tangentModel (I := I) x (e b))| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ _b : Fin n, q * c *
           (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) :=
@@ -859,7 +968,8 @@ lemma fourTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (hZ : fibPointwiseBound (I := I) g₀ x 4 c Z)
     (w : Fin 2 → TangentSpace I x) :
     |Tensor0SBundle.Tensor0SSpace.toModel
-        (ricciCometricFourTraceCLM (I := I) g₁ x Z) (fun j => (w j : E))| ≤
+        (ricciCometricFourTraceCLM (I := I) g₁ x Z)
+          (fun j => tangentModel (I := I) x (w j))| ≤
       2 * (n : ℝ) * q * c *
         (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) := by
   have hexpand : ricciCometricFourTraceCLM (I := I) g₁ x Z =
@@ -871,8 +981,7 @@ lemma fourTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
   rw [hexpand, Tensor0SBundle.Tensor0SSpace.toModel_smul,
     Tensor0SBundle.Tensor0SSpace.toModel_sub, Tensor0SBundle.Tensor0SSpace.toModel_sub,
     Tensor0SBundle.Tensor0SSpace.toModel_add]
-  rw [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.add_apply]
+  rw [smul_apply, sub_apply, sub_apply, add_apply]
   set t₁ := Tensor0SBundle.Tensor0SSpace.toModel
     (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_0231 x Z))
     (fun j => (w j : E)) with ht₁
@@ -960,9 +1069,7 @@ lemma fibPointwiseBound_order1CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [hval, Tensor0SBundle.Tensor0SSpace.toModel_neg, Tensor0SBundle.Tensor0SSpace.toModel_add,
     Tensor0SBundle.Tensor0SSpace.toModel_add, Tensor0SBundle.Tensor0SSpace.toModel_add,
     Tensor0SBundle.Tensor0SSpace.toModel_add]
-  rw [ContinuousMultilinearMap.neg_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.add_apply, abs_neg]
+  rw [neg_apply, add_apply, add_apply, add_apply, add_apply, abs_neg]
   set P4 : ℝ := ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) with hP4
   have hP4nn : 0 ≤ P4 := fibPointwiseBound_prod_nonneg (I := I) g₀ x w
   have b₁ := h₁.2 w
@@ -974,22 +1081,22 @@ lemma fibPointwiseBound_order1CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
   set v₁ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_0312 x
       (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_102 x D)))
-    (fun j => (w j : E)) with hv₁
+    (fun j => tangentModel (I := I) x (w j)) with hv₁
   set v₂ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_0213 x
       (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_120 x D)))
-    (fun j => (w j : E)) with hv₂
+    (fun j => tangentModel (I := I) x (w j)) with hv₂
   set v₃ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_2301 x (connContrCLM (I := I) 2 1 x A D))
-    (fun j => (w j : E)) with hv₃
+    (fun j => tangentModel (I := I) x (w j)) with hv₃
   set v₄ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_1302 x
       (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_102 x D)))
-    (fun j => (w j : E)) with hv₄
+    (fun j => tangentModel (I := I) x (w j)) with hv₄
   set v₅ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_1203 x
       (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_120 x D)))
-    (fun j => (w j : E)) with hv₅
+    (fun j => tangentModel (I := I) x (w j)) with hv₅
   have habs : |v₁ + v₂ + v₃ + v₄ + v₅| ≤ |v₁| + |v₂| + |v₃| + |v₄| + |v₅| := by
     have i1 : |v₁ + v₂| ≤ |v₁| + |v₂| := abs_add_le _ _
     have i2 : |v₁ + v₂ + v₃| ≤ |v₁ + v₂| + |v₃| := abs_add_le _ _
@@ -1081,10 +1188,7 @@ lemma fibPointwiseBound_order0CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     Tensor0SBundle.Tensor0SSpace.toModel_add, Tensor0SBundle.Tensor0SSpace.toModel_add,
     Tensor0SBundle.Tensor0SSpace.toModel_add, Tensor0SBundle.Tensor0SSpace.toModel_add,
     Tensor0SBundle.Tensor0SSpace.toModel_add]
-  rw [ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.add_apply]
+  rw [sub_apply, sub_apply, add_apply, add_apply, add_apply, add_apply, add_apply]
   set P4 : ℝ := ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) with hP4
   have hP4nn : 0 ≤ P4 := fibPointwiseBound_prod_nonneg (I := I) g₀ x w
   have b₃ := hu₃.2 w
@@ -1100,40 +1204,40 @@ lemma fibPointwiseBound_order0CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     (slotPermCLM (I := I) cdPerm4_3201 x
       (connContrCLM (I := I) 2 1 x A
         (slotPermCLM (I := I) cdPerm3_102 x (connContrCLM (I := I) 1 1 x A D))))
-    (fun j => (w j : E)) with hy₃
+    (fun j => tangentModel (I := I) x (w j)) with hy₃
   set y₄ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_2301 x
       (connContrCLM (I := I) 2 1 x A
         (slotPermCLM (I := I) cdPerm3_102 x
           (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D)))))
-    (fun j => (w j : E)) with hy₄
+    (fun j => tangentModel (I := I) x (w j)) with hy₄
   set y₅ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_3102 x
       (connContrCLM (I := I) 2 1 x A
         (slotPermCLM (I := I) cdPerm3_120 x (connContrCLM (I := I) 1 1 x A D))))
-    (fun j => (w j : E)) with hy₅
+    (fun j => tangentModel (I := I) x (w j)) with hy₅
   set y₆ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_1302 x
       (connContrCLM (I := I) 2 1 x A
         (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D))))
-    (fun j => (w j : E)) with hy₆
+    (fun j => tangentModel (I := I) x (w j)) with hy₆
   set y₇ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_1203 x
       (connContrCLM (I := I) 2 1 x A (connContrCLM (I := I) 1 1 x A D)))
-    (fun j => (w j : E)) with hy₇
+    (fun j => tangentModel (I := I) x (w j)) with hy₇
   set y₈ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_2103 x
       (connContrCLM (I := I) 2 1 x A
         (slotPermCLM (I := I) cdPerm3_120 x
           (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D)))))
-    (fun j => (w j : E)) with hy₈
+    (fun j => tangentModel (I := I) x (w j)) with hy₈
   set y₁ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_3012 x (connContrCLM (I := I) 1 2 x DA D))
-    (fun j => (w j : E)) with hy₁
+    (fun j => tangentModel (I := I) x (w j)) with hy₁
   set y₂ := Tensor0SBundle.Tensor0SSpace.toModel
     (slotPermCLM (I := I) cdPerm4_2013 x
       (connContrCLM (I := I) 1 2 x DA (slotPermCLM (I := I) cdPerm2_10 x D)))
-    (fun j => (w j : E)) with hy₂
+    (fun j => tangentModel (I := I) x (w j)) with hy₂
   have habs : |y₃ + y₄ + y₅ + y₆ + y₇ + y₈ - y₁ - y₂| ≤
       |y₃| + |y₄| + |y₅| + |y₆| + |y₇| + |y₈| + |y₁| + |y₂| := by
     have i1 : |y₃ + y₄| ≤ |y₃| + |y₄| := abs_add_le _ _

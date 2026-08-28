@@ -36,7 +36,6 @@ def compContinuousAlternatingMap₂ (f : N →L[𝕜] N' →L[𝕜] N'')
       simp only [ContinuousAlternatingMap.map_update_add, map_add]
       congr)
     (map_update_smul' := fun m i c x => by
-      dsimp
       rw [ContinuousAlternatingMap.map_update_smul, ContinuousLinearMap.map_smul]
       congr)
   let F₂ : ContinuousMultilinearMap 𝕜 (fun _ ↦ M) (M' [⋀^ι']→L[𝕜] N'') :=
@@ -104,7 +103,7 @@ omit [Fintype ι] in
 theorem compContinuousAlternatingMapCLM_cont [Finite ι] :
     Continuous (ContinuousAlternatingMap.compContinuousLinearMapCLM :
     (M →L[𝕜] M') → (M' [⋀^ι]→L[𝕜] N) →L[𝕜] (M [⋀^ι]→L[𝕜] N)) := by
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   let φ : (M [⋀^ι]→L[𝕜] N) →ₗᵢ[𝕜] _ := ContinuousAlternatingMap.toContinuousMultilinearMapLI
   let Φ : ((M' [⋀^ι]→L[𝕜] N) →L[𝕜] (M [⋀^ι]→L[𝕜] N)) →ₗᵢ[𝕜] _ := φ.compLeft _ (RingHom.id _)
   rw [← Φ.comp_continuous_iff]
@@ -204,7 +203,7 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapL_continuous :
     Continuous (fun p : F₁ →L[𝕜] F₁ ↦
     (ContinuousAlternatingMap.compContinuousLinearMapCLM p :
     (F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂))) := by
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   let φ : (F₁ [⋀^ι]→L[𝕜] F₂) →ₗᵢ[𝕜] _ := ContinuousAlternatingMap.toContinuousMultilinearMapLI
   let Φ : ((F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂)) →ₗᵢ[𝕜] _ := φ.compLeft _ (RingHom.id _)
   rw [← Φ.comp_continuous_iff]
@@ -248,11 +247,13 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_real :
           (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
       fun_prop
     convert h₂.comp h₁ using 1
+    rfl
   have heψ : IsClosed (Set.range (ψ : F₁ [⋀^ι]→L[ℝ] F₂ →
       ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
     exact (isClosedEmbedding_toContinuousMultilinearMap (𝕜 := ℝ) (E := F₁) (F := F₂)).isClosed_range
   have heΦ : IsClosed (Set.range Φ) := by
-    simpa [Φ] using DifferentialGeometry.AnalyticTransfer.isClosed_range_comp ψ heψ
+    simpa [Φ] using!
+      DifferentialGeometry.AnalyticTransfer.isClosed_range_comp ψ heψ
   exact DifferentialGeometry.AnalyticTransfer.contDiff_of_comp_linearIsometry_omega Φ heΦ hh
 
 theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_real :
@@ -289,6 +290,7 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space_re
           (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
       fun_prop
     convert h₂.comp h₁ using 1
+    rfl
   have heψ : IsClosed (Set.range (ψ : F₁' [⋀^ι]→L[ℝ] F₂ →
       ContinuousMultilinearMap ℝ (fun _ : ι => F₁') F₂)) := by
     exact (isClosedEmbedding_toContinuousMultilinearMap (𝕜 := ℝ) (E := F₁')
@@ -297,7 +299,8 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space_re
       ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
     exact (isClosedEmbedding_toContinuousMultilinearMap (𝕜 := ℝ) (E := F₁) (F := F₂)).isClosed_range
   have heΦ : IsClosed (Set.range Φ) := by
-    simpa [Φ] using DifferentialGeometry.AnalyticTransfer.isClosed_range_comp ψ₀ heψ₀
+    simpa [Φ] using!
+      DifferentialGeometry.AnalyticTransfer.isClosed_range_comp ψ₀ heψ₀
   exact DifferentialGeometry.AnalyticTransfer.contDiff_of_comp_linearIsometry_omega Φ heΦ hh
 
 theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_of_space_real
@@ -363,7 +366,7 @@ private noncomputable def alternatizationCLM : (ContinuousMultilinearMap 𝕜
             c • ContinuousMultilinearMap.alternatization f := by
           ext v
           rw [ContinuousMultilinearMap.alternatization_apply_apply]
-          simp only [ContinuousMultilinearMap.smul_apply]
+          simp only [_root_.smul_apply]
           rw [ContinuousAlternatingMap.smul_apply,
             ContinuousMultilinearMap.alternatization_apply_apply,
             Finset.smul_sum]

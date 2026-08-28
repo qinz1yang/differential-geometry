@@ -73,8 +73,10 @@ theorem heat_pot_add
           (D.regular ×ˢ (Set.univ : Set M)) := by
       intro p hp
       exact ⟨by simpa [sub_eq_add_neg] using hp.1, hp.2⟩
-    simpa only [Function.comp_apply] using
-      h.jointSmooth.comp hmap.contMDiffOn hmaps
+    have hcomp := h.jointSmooth.comp hmap.contMDiffOn hmaps
+    convert hcomp using 1
+    funext p
+    rfl
   · have hmap : Continuous (fun p : Real × M => (p.1 - a, p.2)) :=
       (continuous_fst.sub continuous_const).prodMk continuous_snd
     have hmaps :
@@ -83,8 +85,10 @@ theorem heat_pot_add
           (D.carrier ×ˢ (Set.univ : Set M)) := by
       intro p hp
       exact ⟨by simpa [sub_eq_add_neg] using hp.1, hp.2⟩
-    simpa only [Function.comp_apply] using
-      h.jointCont.comp hmap.continuousOn hmaps
+    have hcomp := h.jointCont.comp hmap.continuousOn hmaps
+    convert hcomp using 1
+    funext p
+    rfl
   · intro r hr
     exact h.sliceSmooth (r - a) (by simpa [sub_eq_add_neg] using hr)
   · intro r hr x
@@ -100,7 +104,12 @@ theorem heat_pot_add
           (DifferentialGeometry.Geometry.Curvature.laplacianAt
               (I := I) (reverseFamily G T) (r - a) (u (r - a)) x +
             V (r - a) x * u (r - a) x) r := by
-      simpa only [Function.comp_apply, mul_one] using hcomp
+      convert hcomp using 1
+      · rfl
+      · rfl
+      · funext s
+        rfl
+      · simp
     convert hcomp' using 1
     all_goals
       simp only [reverseFamily,
@@ -122,10 +131,21 @@ theorem reverse_deriv
     deriv (fun r : Real => reverseHeat T u r x) s =
       -deriv (fun t : Real => u t x) (T - s) := by
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by
-    simpa using
+    have hsubRaw :=
       (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    convert hsubRaw using 1
+    · rfl
+    · rfl
+    · funext r
+      rfl
+    · norm_num
   have hcomp := hu.hasDerivAt.comp s hsub
-  simpa [reverseHeat] using hcomp.deriv
+  have hderiv := hcomp.deriv
+  convert hderiv using 1
+  · apply congrArg (fun f : Real → Real => deriv f s)
+    funext r
+    rfl
+  · ring
 
 theorem conj_heat_forward
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily
@@ -212,18 +232,28 @@ theorem heat_pot_to_conj
           (I := I) G t (reverseHeat T v t) x +
         scalar t x * reverseHeat T v t x) t := by
   have hsub : HasDerivAt (fun s : Real => T - s) (-1) t := by
-    simpa using
+    have hsubRaw :=
       (hasDerivAt_const (x := t) (c := T)).sub (hasDerivAt_id (x := t))
+    convert hsubRaw using 1
+    · rfl
+    · rfl
+    · funext s
+      rfl
+    · norm_num
   have hcomp := (h.equation (T - t) ht x).comp t hsub
   convert hcomp using 1
-  change
-    -DifferentialGeometry.Geometry.Curvature.laplacianAt
-          (I := I) G t (v (T - t)) x + scalar t x * v (T - t) x =
-      (DifferentialGeometry.Geometry.Curvature.laplacianAt
-          (I := I) G (T - (T - t)) (v (T - t)) x +
-        -scalar (T - (T - t)) x * v (T - t) x) * -1
-  rw [show T - (T - t) = t by ring]
-  ring
+  · rfl
+  · rfl
+  · funext s
+    rfl
+  · change
+      -DifferentialGeometry.Geometry.Curvature.laplacianAt
+            (I := I) G t (v (T - t)) x + scalar t x * v (T - t) x =
+        (DifferentialGeometry.Geometry.Curvature.laplacianAt
+            (I := I) G (T - (T - t)) (v (T - t)) x +
+          -scalar (T - (T - t)) x * v (T - t) x) * -1
+    rw [show T - (T - t) = t by ring]
+    ring
 
 theorem conj_heat_mass_deriv
     [I.Boundaryless] [T2Space M] [CompactSpace M]
@@ -253,7 +283,15 @@ theorem conj_heat_mass_deriv
   have hlap :
       ∫ x, Δ_g (I := I) (G.metric t) ⟨_, huSmooth⟩ x
         ∂(volumeMeasureFamily (I := I) (M := M) G t) = 0 := by
-    simpa only [one_mul, Δ_g_const, mul_zero, sub_zero] using hgreen
+    have hconst (x : M) :
+        Δ_g (I := I) (G.metric t) ⟨fun _ : M => (1 : Real), contMDiff_const⟩ x = 0 := by
+      convert Δ_g_const (I := I) (G.metric t) 1 x
+      rfl
+    simp only [one_mul, hconst, mul_zero, sub_zero] at hgreen
+    change
+      (∫ (x : M), Δ_g (I := I) (G.metric t) ⟨u t, huSmooth⟩ x
+        ∂(riemannianMeasureFamily (I := I) (M := M) (fun s => G.metric s) t)) = 0
+    exact hgreen
   have hmass :
       (∫ x, (deriv (fun s : Real => u s x) t - scalar t x * u t x)
         ∂(volumeMeasureFamily (I := I) (M := M) G t)) = 0 := by

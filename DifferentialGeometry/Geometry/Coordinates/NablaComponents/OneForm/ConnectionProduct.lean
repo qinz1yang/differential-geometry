@@ -31,7 +31,7 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx (𝕜 := 𝕜) E,
       dz j =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
           x₀ (X x₀))
@@ -63,15 +63,16 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
       MDiffAt (T% (term j)) x₀ := by
     intro j _
     exact (hdiff_z j).smul_section (hframe_diff j)
+  have hsum_eq : (fun y : M => ∑ j : CoordinateIdx (𝕜 := 𝕜) E, term j y) =
+      (Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E)).sum term := by
+    funext y
+    simp
   have hsum_diff :
       MDiffAt (T% ((Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E)).sum term)) x₀ := by
     classical
-    exact (by
-      have hterm_all : ∀ j : CoordinateIdx (𝕜 := 𝕜) E, MDiffAt (T% (term j)) x₀ := by
-        intro j
-        exact hterm_diff j (by simp)
-      simpa using MDifferentiableAt.sum_section
-        (s := (Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E))) (t := term) hterm_all)
+    rw [← hsum_eq]
+    exact MDifferentiableAt.sum_section
+      (s := (Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E))) (t := term) hterm_diff
   have hZ_ev : (fun y : M => Z y) =ᶠ[𝓝 x₀]
       (fun y : M => ∑ j : CoordinateIdx (𝕜 := 𝕜) E, term j y) := by
     exact hframe.eventually_eq_sum_coeff_smul (fun y => Z y)
@@ -82,7 +83,9 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
         cov ((Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E)).sum term) x₀ :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZ_diff hsum_diff
       (by simp)
-      (by simpa [term] using hZ_ev)
+      (by
+        rw [← hsum_eq]
+        exact hZ_ev)
   have hcov_sum :
       (cov (fun y : M => Z y) x₀) (X x₀) =
         ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
@@ -105,7 +108,7 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
             have hzj : zfun j x₀ = z j := by
               rw [hz j]
               exact oneForm_coordinateFrame_coeff_at_base_eq_coord (I := I) x₀ (Z x₀) j
-            have hdzj : extDerivFun (I := I) (zfun j) x₀ (X x₀) = dz j := by
+            have hdzj : mvfderiv (I := I) (zfun j) x₀ (X x₀) = dz j := by
               exact (hdz j).symm
             simpa [term, zfun, hzj, hdzj, add_comm] using hleib
   rw [hcov_sum]

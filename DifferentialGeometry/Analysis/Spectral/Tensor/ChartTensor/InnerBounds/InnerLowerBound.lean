@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Metric
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -226,7 +225,7 @@ theorem exists_chartTensorInnerPointwise_rs_model_lower_bound_on_compact
           ε ≤ chartTensorInnerPointwise_rs_model (I := I) (M := M)
             g r s α b T T := by
   classical
-  haveI : ProperSpace (TensorRSModel r s ℝ E) :=
+  have : ProperSpace (TensorRSModel r s ℝ E) :=
     FiniteDimensional.proper_real (TensorRSModel r s ℝ E)
   set S_T : Set (TensorRSModel r s ℝ E) := Metric.sphere (0 : TensorRSModel r s ℝ E) 1
     with hS_T_def

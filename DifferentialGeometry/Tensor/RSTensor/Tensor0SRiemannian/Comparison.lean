@@ -471,11 +471,11 @@ theorem exists_diagInv_of_equiv
       (forall i : Fin (Module.finrank Real (TangentSpace I x)), mu i <= C) := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let T : TangentSpace I x →ₗ[Real] TangentSpace I x :=
     ((tangentFlatEquiv_gen (I := I) g x).symm.toLinearMap).comp
@@ -511,8 +511,12 @@ theorem exists_diagInv_of_equiv
     have hinner :
         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
-    simpa [basis, MetricFiberData.inner, tangentMetricData_gen]
-      using hinner.symm.trans hij
+    change g.inner x (basis i) (basis j) = if i = j then 1 else 0
+    rw [← TangentMetricData_gen.inner_eq_gen (tangentMetricData_gen (I := I) g x)
+      (basis i) (basis j)]
+    change D.inner (ob i) (ob j) = if i = j then 1 else 0
+    rw [← hinner]
+    exact hij
   have hT_eig (i : Fin n) :
       T (basis i) = lam i • basis i := by
     simp [basis, lam, ob, hT.apply_eigenvectorBasis hn i]
@@ -705,11 +709,11 @@ private theorem exists_onFrame
           if i = j then (1 : Real) else 0 := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
       _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let basis := (stdOrthonormalBasis Real (TangentSpace I x)).toBasis
   refine ⟨basis, ?_⟩
@@ -750,7 +754,7 @@ theorem abs_apply_le_sqrt_normSq0S [Finite Idx]
       Real.sqrt (normSq0S (I := I) g x s T) *
         ∏ a : Fin s, Real.sqrt (g.inner x (v a) (v a)) := by
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   have hinv : MetricInverseInBasis_gen (I := I) g x basis
       (identityInvMetric (Idx := Idx)) := by
     intro i j
@@ -801,8 +805,8 @@ theorem abs_apply_le_sqrt_normSq0S [Finite Idx]
     conv_rhs =>
       rw [show v a = ∑ i : Idx, basis.repr (v a) i • basis i from
         (basis.sum_repr (v a)).symm]
-    simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum',
-      Finset.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul, hON,
+    simp only [map_sum, map_smul, FunLike.coe_sum,
+      Finset.sum_apply, smul_apply, smul_eq_mul, hON,
       mul_ite, mul_one, mul_zero, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => ?_

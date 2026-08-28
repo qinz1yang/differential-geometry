@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -366,7 +365,7 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
         ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
           (I := I) (M := M) g r s α b T T := by
   classical
-  haveI : ProperSpace (TensorRSModel r s ℝ E) :=
+  have : ProperSpace (TensorRSModel r s ℝ E) :=
     FiniteDimensional.proper_real (TensorRSModel r s ℝ E)
   set S_T : Set (TensorRSModel r s ℝ E) :=
     Metric.sphere (0 : TensorRSModel r s ℝ E) 1 with hS_T_def
@@ -438,7 +437,7 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
       rwa [zero_smul, zero_mul] at h
     rw [h_left, h_right, mul_zero]
   · have hT_pos : 0 < ‖T‖ := norm_pos_iff.mpr hT0
-    letI : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
+    let : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
       NormedSpace.toNormSMulClass
     set T' : TensorRSModel r s ℝ E := ‖T‖⁻¹ • T with hT'_def
     have hT'_norm : ‖T'‖ = 1 := by
@@ -1322,7 +1321,7 @@ private lemma chartPullCoeffCutoff_continuous
     Continuous (chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P) := by
   classical
   unfold chartPullCoeffCutoff
-  exact continuous_finset_sum _ (fun Q _ =>
+  exact continuous_finsetSum _ (fun Q _ =>
     chartPullCoeffCutoff_summand_continuous (I := I) (M := M) g r s α Sg P Q hSg)
 
 omit [CompleteSpace E] in
@@ -1365,7 +1364,7 @@ private lemma chartPullCoeffCutoff_memLp
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
     MemLp (chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P) 2
       (chartL2Measure (I := I) (M := M) α) := by
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure]; infer_instance
   exact (chartPullCoeffCutoff_continuous (I := I) (M := M) g r s α Sg P
       hSg).memLp_of_hasCompactSupport
@@ -1512,7 +1511,7 @@ private lemma cutoff_chartPull_integral_eq_sum_inner
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
     funext y
     exact cutoff_chartPull_integrand_eq_coeff_mul (I := I) (M := M) g r s α Sg u y]
-  rw [MeasureTheory.integral_finset_sum (Finset.univ : Finset (CompIdx E r s))
+  rw [MeasureTheory.integral_finsetSum (Finset.univ : Finset (CompIdx E r s))
     (fun P _ => cutoff_chartPull_summand_integrable
       (I := I) (M := M) g r s α Sg u P hSg)]
   refine Finset.sum_congr rfl (fun P _ => ?_)
@@ -1543,7 +1542,7 @@ private lemma continuous_cutoff_rhs
       ∑ P : CompIdx E r s,
         (⟪chartPullCoeffCutoffLp (I := I) (M := M) g r s α Sg P hSg,
             tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P⟫_ℝ : ℝ)) :=
-  continuous_finset_sum _ (fun P _ =>
+  continuous_finsetSum _ (fun P _ =>
     continuous_chartPullCoeffCutoff_pairing (I := I) (M := M) g r s α Sg P hSg)
 
 omit [CompleteSpace E] in

@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Matrix Set
@@ -27,32 +28,32 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private theorem clm_sum_apply
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {κ : Type*} [Fintype κ]
-    (B : F →L[ℝ] F →L[ℝ] ℝ) (v : κ → F) (w : F) :
+  (B : F →L[ℝ] F →L[ℝ] ℝ) (v : κ → F) (w : F) :
     B (∑ i, v i) w = ∑ i, B (v i) w := by
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, _root_.sum_apply]
 
 private theorem clm_smul_apply
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (B : F →L[ℝ] F →L[ℝ] ℝ) (c : ℝ) (v w : F) :
     B (c • v) w = c * B v w := by
   have h := congrArg (fun L : F →L[ℝ] ℝ => L w) (B.map_smul c v)
-  simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+  simpa only [_root_.smul_apply, smul_eq_mul] using h
 
 omit [FiniteDimensional ℝ E]
     [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem linIndep_of_ortho
     {κ : Type*} [Finite κ] [DecidableEq κ]
-    (g : SmoothRiemannianMetric I M) (x : M) (e : κ → E)
+    (g : SmoothRiemannianMetric I M) (x : M) (e : κ → TangentSpace I x)
     (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0) :
     LinearIndependent ℝ e := by
   classical
-  letI := Fintype.ofFinite κ
+  let _ := Fintype.ofFinite κ
   rw [Fintype.linearIndependent_iff]
   intro c hc j
-  have hpair := congrArg (fun z : E => g.inner x z (e j)) hc
+  have hpair := congrArg (fun z : TangentSpace I x => g.inner x z (e j)) hc
   change g.inner x (∑ i, c i • e i) (e j) = g.inner x 0 (e j) at hpair
-  rw [clm_sum_apply, map_zero, ContinuousLinearMap.zero_apply] at hpair
+  rw [clm_sum_apply, map_zero, _root_.zero_apply] at hpair
   rw [Finset.sum_eq_single j] at hpair
   · calc
       c j = c j * 1 := by rw [mul_one]
@@ -88,8 +89,8 @@ theorem curvTrace_eq_ricci
         curveCurvGram (I := I) g γ V t) =
       ricciTensor (I := I) g (γ t) u u := by
   classical
-  let φ : E →ₗ[ℝ] ℝ := (g.inner (γ t) u).toLinearMap
-  let W : Submodule ℝ E := LinearMap.ker φ
+  let φ : TangentSpace I (γ t) →ₗ[ℝ] ℝ := (g.inner (γ t) u).toLinearMap
+  let W : Submodule ℝ (TangentSpace I (γ t)) := LinearMap.ker φ
   have hφu : 0 < φ u := hu
   have hφsurj : Function.Surjective φ := by
     intro c
@@ -106,6 +107,8 @@ theorem curvTrace_eq_ricci
   have hfinrankW : Module.finrank ℝ ↥W = Module.finrank ℝ E - 1 := by
     have hsum := LinearMap.finrank_range_add_finrank_ker φ
     rw [hfrange] at hsum
+    have htangent : Module.finrank ℝ (TangentSpace I (γ t)) = Module.finrank ℝ E := rfl
+    rw [htangent] at hsum
     have : Module.finrank ℝ ↥W = Module.finrank ℝ ↥(LinearMap.ker φ) := rfl
     rw [this]
     omega
@@ -119,7 +122,7 @@ theorem curvTrace_eq_ricci
       rw [two_smul]
       exact hsum
     exact (smul_eq_zero.mp htwo).resolve_left (by norm_num)
-  have hRperp (z : E) :
+  have hRperp (z : TangentSpace I (γ t)) :
       g.inner (γ t) u (riemannOp (LeviCivita (I := I) g) (γ t) z u u) = 0 := by
     calc
       g.inner (γ t) u (riemannOp (LeviCivita (I := I) g) (γ t) z u u) =
@@ -131,26 +134,37 @@ theorem curvTrace_eq_ricci
       _ = 0 := by rw [hRuu, map_zero]
   let T : W →ₗ[ℝ] W :=
     { toFun := fun z =>
-        ⟨riemannOp (LeviCivita (I := I) g) (γ t) (z : E) u u, hRperp z⟩
+        ⟨riemannOp (LeviCivita (I := I) g) (γ t) (z : TangentSpace I (γ t)) u u,
+          hRperp z⟩
       map_add' := fun z w => by
         apply Subtype.ext
-        change (riemannOp (LeviCivita (I := I) g) (γ t) ((z : E) + (w : E)) u u) =
-          riemannOp (LeviCivita (I := I) g) (γ t) (z : E) u u +
-            riemannOp (LeviCivita (I := I) g) (γ t) (w : E) u u
-        have hadd := (riemannOp (LeviCivita (I := I) g) (γ t)).map_add (z : E) (w : E)
-        have happ := congrArg (fun L : E →L[ℝ] E →L[ℝ] E => L u u) hadd
-        simpa only [ContinuousLinearMap.add_apply] using happ
+        change (riemannOp (LeviCivita (I := I) g) (γ t)
+            ((z : TangentSpace I (γ t)) + (w : TangentSpace I (γ t))) u u) =
+          riemannOp (LeviCivita (I := I) g) (γ t) (z : TangentSpace I (γ t)) u u +
+            riemannOp (LeviCivita (I := I) g) (γ t) (w : TangentSpace I (γ t)) u u
+        have hadd := (riemannOp (LeviCivita (I := I) g) (γ t)).map_add
+          (z : TangentSpace I (γ t)) (w : TangentSpace I (γ t))
+        have happ := congrArg
+          (fun L : TangentSpace I (γ t) →L[ℝ] TangentSpace I (γ t) →L[ℝ]
+              TangentSpace I (γ t) => L u u) hadd
+        simpa only [_root_.add_apply] using happ
       map_smul' := fun c z => by
         apply Subtype.ext
-        change (riemannOp (LeviCivita (I := I) g) (γ t) (c • (z : E)) u u) =
-          c • riemannOp (LeviCivita (I := I) g) (γ t) (z : E) u u
-        have hsmul := (riemannOp (LeviCivita (I := I) g) (γ t)).map_smul c (z : E)
-        have happ := congrArg (fun L : E →L[ℝ] E →L[ℝ] E => L u u) hsmul
-        simpa only [ContinuousLinearMap.smul_apply] using happ }
+        change (riemannOp (LeviCivita (I := I) g) (γ t)
+            (c • (z : TangentSpace I (γ t))) u u) =
+          c • riemannOp (LeviCivita (I := I) g) (γ t)
+            (z : TangentSpace I (γ t)) u u
+        have hsmul := (riemannOp (LeviCivita (I := I) g) (γ t)).map_smul c
+          (z : TangentSpace I (γ t))
+        have happ := congrArg
+          (fun L : TangentSpace I (γ t) →L[ℝ] TangentSpace I (γ t) →L[ℝ]
+              TangentSpace I (γ t) => L u u) hsmul
+        simpa only [_root_.smul_apply] using happ }
   let vW : ι → W := fun i => ⟨V i t, hVperp i⟩
   have hLIW : LinearIndependent ℝ vW := by
     apply LinearIndependent.of_comp W.subtype
-    simpa only [Function.comp_apply, vW] using hLI
+    change LinearIndependent ℝ (fun i => V i t)
+    exact hLI
   have hcardW : Fintype.card ι = Module.finrank ℝ W :=
     hcard.trans hfinrankW.symm
   have hspanV : Submodule.span ℝ (Set.range vW) = ⊤ :=
@@ -163,10 +177,14 @@ theorem curvTrace_eq_ricci
       riemannOp (LeviCivita (I := I) g) (γ t) (V i t) u u =
         ∑ k, a i k • V k t := by
     have hsum := bV.sum_repr (T (bV i))
-    have hco := congrArg (fun z : W => (z : E)) hsum
+    have hco := congrArg (fun z : W => (z : TangentSpace I (γ t))) hsum
     symm at hco
-    simpa only [a, T, vW, hbV, Submodule.coe_sum,
-      Submodule.coe_smul_of_tower] using hco
+    calc
+      riemannOp (LeviCivita (I := I) g) (γ t) (V i t) u u =
+          (T (bV i) : TangentSpace I (γ t)) := by rw [hbV]; rfl
+      _ = ∑ k, bV.repr (T (bV i)) k • (bV k : TangentSpace I (γ t)) := by
+        simpa only [Submodule.coe_sum, Submodule.coe_smul_of_tower] using hco
+      _ = ∑ k, a i k • V k t := by simp only [a, hbV, vW]
   let G := curveGram (I := I) g γ V t
   have hC : curveCurvGram (I := I) g γ V t = a * G := by
     ext i j
@@ -178,7 +196,7 @@ theorem curvTrace_eq_ricci
     isUnit_iff_ne_zero.mpr (ne_of_gt (curveGram_det_pos (I := I) g γ V t hLI))
   have hmatV : LinearMap.toMatrix bV bV T = aᵀ := by
     ext i j
-    simp only [LinearMap.toMatrix_apply, a, Matrix.transpose_apply]
+    rw [LinearMap.toMatrix_apply, Matrix.transpose_apply]
   have htraceA : trace a = LinearMap.trace ℝ W T := by
     rw [LinearMap.trace_eq_matrix_trace ℝ bV T, hmatV, Matrix.trace_transpose]
   have hEperp' (i : Fin (Module.finrank ℝ E - 1)) : g.inner (γ t) u (e i) = 0 := by
@@ -188,7 +206,8 @@ theorem curvTrace_eq_ricci
   have hLIe : LinearIndependent ℝ e := linIndep_of_ortho (I := I) g (γ t) e hON
   have hLIeW : LinearIndependent ℝ eW := by
     apply LinearIndependent.of_comp W.subtype
-    simpa only [Function.comp_apply, eW] using hLIe
+    change LinearIndependent ℝ e
+    exact hLIe
   have hcardE : Fintype.card (Fin (Module.finrank ℝ E - 1)) =
       Module.finrank ℝ W := by
     rw [Fintype.card_fin, hfinrankW]
@@ -199,19 +218,22 @@ theorem curvTrace_eq_ricci
   have hbE (i : Fin (Module.finrank ℝ E - 1)) : bE i = eW i := by
     simp only [bE, Module.Basis.coe_mk]
   have hrepr (z : W) (i : Fin (Module.finrank ℝ E - 1)) :
-      bE.repr z i = g.inner (γ t) (z : E) (e i) := by
+      bE.repr z i = g.inner (γ t) (z : TangentSpace I (γ t)) (e i) := by
     have hsum := bE.sum_repr z
-    have hsumE := congrArg (fun q : W => (q : E)) hsum
-    have hsumE' : ∑ j, bE.repr z j • (bE j : E) = (z : E) := by
+    have hsumE := congrArg (fun q : W => (q : TangentSpace I (γ t))) hsum
+    have hsumE' : ∑ j, bE.repr z j • (bE j : TangentSpace I (γ t)) =
+        (z : TangentSpace I (γ t)) := by
       simpa only [Submodule.coe_sum, Submodule.coe_smul_of_tower] using hsumE
-    have hpair := congrArg (fun q : E => g.inner (γ t) q (e i)) hsumE'
-    change g.inner (γ t) (∑ j, bE.repr z j • (bE j : E)) (e i) =
-      g.inner (γ t) (z : E) (e i) at hpair
+    have hpair := congrArg
+      (fun q : TangentSpace I (γ t) => g.inner (γ t) q (e i)) hsumE'
+    change g.inner (γ t)
+        (∑ j, bE.repr z j • (bE j : TangentSpace I (γ t))) (e i) =
+      g.inner (γ t) (z : TangentSpace I (γ t)) (e i) at hpair
     rw [clm_sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
     · rw [hbE i] at hpair
       change g.inner (γ t) (bE.repr z i • e i) (e i) =
-        g.inner (γ t) (z : E) (e i) at hpair
+        g.inner (γ t) (z : TangentSpace I (γ t)) (e i) at hpair
       rw [clm_smul_apply (B := g.inner (γ t)), hON i i,
         if_pos rfl, mul_one] at hpair
       exact hpair
@@ -267,8 +289,8 @@ theorem mean_sq_le_shape
   obtain ⟨a, hDV⟩ := exists_deriv_coeff (I := I) g γ V t u hcard hu
     hVperp hDVperp hLI
   have hshape := shape_eq_coeff (I := I) g γ V t a hDV hLI hW
-  let φ : E →ₗ[ℝ] ℝ := (g.inner (γ t) u).toLinearMap
-  let W : Submodule ℝ E := LinearMap.ker φ
+  let φ : TangentSpace I (γ t) →ₗ[ℝ] ℝ := (g.inner (γ t) u).toLinearMap
+  let W : Submodule ℝ (TangentSpace I (γ t)) := LinearMap.ker φ
   have hφu : 0 < φ u := hu
   have hφsurj : Function.Surjective φ := by
     intro c
@@ -285,6 +307,8 @@ theorem mean_sq_le_shape
   have hfinrankW : Module.finrank ℝ W = Module.finrank ℝ E - 1 := by
     have hsum := LinearMap.finrank_range_add_finrank_ker φ
     rw [hfrange] at hsum
+    have htangent : Module.finrank ℝ (TangentSpace I (γ t)) = Module.finrank ℝ E := rfl
+    rw [htangent] at hsum
     have : Module.finrank ℝ W = Module.finrank ℝ (LinearMap.ker φ) := rfl
     rw [this]
     omega
@@ -293,7 +317,8 @@ theorem mean_sq_le_shape
     ⟨covDerivAlong (I := I) g γ (V i) t, hDVperp i⟩
   have hLIW : LinearIndependent ℝ vW := by
     apply LinearIndependent.of_comp W.subtype
-    simpa only [Function.comp_apply, vW] using hLI
+    change LinearIndependent ℝ (fun i => V i t)
+    exact hLI
   have hcardW : Fintype.card ι = Module.finrank ℝ W :=
     hcard.trans hfinrankW.symm
   have hspanV : Submodule.span ℝ (Set.range vW) = ⊤ :=
@@ -312,7 +337,7 @@ theorem mean_sq_le_shape
     ext i j
     rw [LinearMap.toMatrix_apply, hAbV, hdW]
     simp only [map_sum, map_smul, Module.Basis.repr_self, Matrix.transpose_apply]
-    rw [Finsupp.finset_sum_apply]
+    rw [Finsupp.finsetSum_apply]
     rw [Finset.sum_eq_single i]
     · change a j i * (Finsupp.single i (1 : ℝ)) i = a j i
       rw [Finsupp.single_eq_same, mul_one]
@@ -323,19 +348,35 @@ theorem mean_sq_le_shape
       exact absurd (Finset.mem_univ i) hi
   let q : W →ₗ[ℝ] W →ₗ[ℝ] ℝ :=
     { toFun := fun z =>
-        { toFun := fun w => g.inner (γ t) (z : E) (w : E)
-          map_add' := fun w w' => (g.inner (γ t) (z : E)).map_add (w : E) (w' : E)
-          map_smul' := fun c w => (g.inner (γ t) (z : E)).map_smul c (w : E) }
+        { toFun := fun w => g.inner (γ t) (z : TangentSpace I (γ t))
+            (w : TangentSpace I (γ t))
+          map_add' := fun w w' => (g.inner (γ t) (z : TangentSpace I (γ t))).map_add
+            (w : TangentSpace I (γ t)) (w' : TangentSpace I (γ t))
+          map_smul' := fun c w => (g.inner (γ t) (z : TangentSpace I (γ t))).map_smul c
+            (w : TangentSpace I (γ t)) }
       map_add' := fun z z' => by
         ext w
-        have hadd := (g.inner (γ t)).map_add (z : E) (z' : E)
-        have happ := congrArg (fun L : E →L[ℝ] ℝ => L (w : E)) hadd
-        simpa only [ContinuousLinearMap.add_apply] using happ
+        change g.inner (γ t)
+            ((z : TangentSpace I (γ t)) + (z' : TangentSpace I (γ t)))
+            (w : TangentSpace I (γ t)) =
+          g.inner (γ t) (z : TangentSpace I (γ t)) (w : TangentSpace I (γ t)) +
+            g.inner (γ t) (z' : TangentSpace I (γ t)) (w : TangentSpace I (γ t))
+        have hadd := (g.inner (γ t)).map_add
+          (z : TangentSpace I (γ t)) (z' : TangentSpace I (γ t))
+        have happ := congrArg
+          (fun L : TangentSpace I (γ t) →L[ℝ] ℝ => L (w : TangentSpace I (γ t))) hadd
+        simpa only [_root_.add_apply] using happ
       map_smul' := fun c z => by
         ext w
-        have hsmul := (g.inner (γ t)).map_smul c (z : E)
-        have happ := congrArg (fun L : E →L[ℝ] ℝ => L (w : E)) hsmul
-        simpa only [ContinuousLinearMap.smul_apply] using happ }
+        change g.inner (γ t) (c • (z : TangentSpace I (γ t)))
+            (w : TangentSpace I (γ t)) =
+          c • g.inner (γ t) (z : TangentSpace I (γ t)) (w : TangentSpace I (γ t))
+        have hsmul := (g.inner (γ t)).map_smul c (z : TangentSpace I (γ t))
+        have happ := congrArg
+          (fun L : TangentSpace I (γ t) →L[ℝ] ℝ => L (w : TangentSpace I (γ t))) hsmul
+        simpa only [_root_.smul_apply] using happ }
+  have hq (z w : W) : q z w =
+      g.inner (γ t) (z : TangentSpace I (γ t)) (w : TangentSpace I (γ t)) := rfl
   let qA : W →ₗ[ℝ] W →ₗ[ℝ] ℝ :=
     { toFun := fun z => (q z).comp A
       map_add' := fun z z' => by
@@ -351,7 +392,10 @@ theorem mean_sq_le_shape
     intro j
     change q (A (bV i)) (bV j) = q (bV i) (A (bV j))
     rw [hAbV i, hAbV j]
-    simpa only [q, dW, hbV, vW] using sub_eq_zero.mp (hW i j)
+    rw [hq, hq, hbV, hbV]
+    change g.inner (γ t) (covDerivAlong (I := I) g γ (V i) t) (V j t) =
+      g.inner (γ t) (V i t) (covDerivAlong (I := I) g γ (V j) t)
+    exact sub_eq_zero.mp (hW i j)
   have hsymm (z w : W) : q (A z) w = q z (A w) := by
     have h := congrArg (fun L : W →ₗ[ℝ] W →ₗ[ℝ] ℝ => L z w) hself
     exact h
@@ -363,7 +407,8 @@ theorem mean_sq_le_shape
   have hLIe : LinearIndependent ℝ e := linIndep_of_ortho (I := I) g (γ t) e hON
   have hLIeW : LinearIndependent ℝ eW := by
     apply LinearIndependent.of_comp W.subtype
-    simpa only [Function.comp_apply, eW] using hLIe
+    change LinearIndependent ℝ e
+    exact hLIe
   have hcardE : Fintype.card (Fin (Module.finrank ℝ E - 1)) =
       Module.finrank ℝ W := by
     rw [Fintype.card_fin, hfinrankW]
@@ -374,19 +419,22 @@ theorem mean_sq_le_shape
   have hbE (i : Fin (Module.finrank ℝ E - 1)) : bE i = eW i := by
     simp only [bE, Module.Basis.coe_mk]
   have hrepr (z : W) (i : Fin (Module.finrank ℝ E - 1)) :
-      bE.repr z i = g.inner (γ t) (z : E) (e i) := by
+      bE.repr z i = g.inner (γ t) (z : TangentSpace I (γ t)) (e i) := by
     have hsum := bE.sum_repr z
-    have hsumE := congrArg (fun w : W => (w : E)) hsum
-    have hsumE' : ∑ j, bE.repr z j • (bE j : E) = (z : E) := by
+    have hsumE := congrArg (fun w : W => (w : TangentSpace I (γ t))) hsum
+    have hsumE' : ∑ j, bE.repr z j • (bE j : TangentSpace I (γ t)) =
+        (z : TangentSpace I (γ t)) := by
       simpa only [Submodule.coe_sum, Submodule.coe_smul_of_tower] using hsumE
-    have hpair := congrArg (fun w : E => g.inner (γ t) w (e i)) hsumE'
-    change g.inner (γ t) (∑ j, bE.repr z j • (bE j : E)) (e i) =
-      g.inner (γ t) (z : E) (e i) at hpair
+    have hpair := congrArg
+      (fun w : TangentSpace I (γ t) => g.inner (γ t) w (e i)) hsumE'
+    change g.inner (γ t)
+        (∑ j, bE.repr z j • (bE j : TangentSpace I (γ t))) (e i) =
+      g.inner (γ t) (z : TangentSpace I (γ t)) (e i) at hpair
     rw [clm_sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
     · rw [hbE i] at hpair
       change g.inner (γ t) (bE.repr z i • e i) (e i) =
-        g.inner (γ t) (z : E) (e i) at hpair
+        g.inner (γ t) (z : TangentSpace I (γ t)) (e i) at hpair
       rw [clm_smul_apply (B := g.inner (γ t)), hON i i,
         if_pos rfl, mul_one] at hpair
       exact hpair
@@ -405,10 +453,17 @@ theorem mean_sq_le_shape
     simp only [B, LinearMap.toMatrix_apply]
     rw [hrepr, hrepr, hbE i, hbE j]
     calc
-      g.inner (γ t) (A (eW i) : E) (e j) =
-          g.inner (γ t) (e i) (A (eW j) : E) := by
-        simpa only [q, eW] using hsymm (eW i) (eW j)
-      _ = g.inner (γ t) (A (eW j) : E) (e i) := g.symm (γ t) _ _
+      g.inner (γ t) (A (eW i) : TangentSpace I (γ t)) (e j) =
+          g.inner (γ t) (e i) (A (eW j) : TangentSpace I (γ t)) := by
+        have h := hsymm (eW i) (eW j)
+        rw [hq, hq] at h
+        change g.inner (γ t) (A (eW i) : TangentSpace I (γ t))
+            (eW j : TangentSpace I (γ t)) =
+          g.inner (γ t) (eW i : TangentSpace I (γ t))
+            (A (eW j) : TangentSpace I (γ t)) at h
+        exact h
+      _ = g.inner (γ t) (A (eW j) : TangentSpace I (γ t)) (e i) :=
+        g.symm (γ t) _ _
   have hshapeM : curveShape (I := I) g γ V t = LinearMap.toMatrix bV bV A := by
     rw [hshape, hmatV]
   have hmean : curveMean (I := I) g γ V t = trace B := by

@@ -6,6 +6,8 @@ import DifferentialGeometry.Bundle.ClmSectionSmooth
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -111,8 +113,8 @@ omit [CompleteSpace E] in
 theorem exists_bump_one_on {K U : Set M} (hK : IsCompact K) (hU : IsOpen U) (hKU : K ⊆ U) :
     ∃ χ : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞) χ ∧ Set.EqOn χ 1 K ∧
       tsupport χ ⊆ U ∧ ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1 := by
-  haveI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
-  haveI : NormalSpace M := inferInstance
+  have : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  have : NormalSpace M := inferInstance
   obtain ⟨V, hVopen, hKV, hVU⟩ :=
     hK.exists_isOpen_closure_subset (hU.mem_nhdsSet.mpr hKU)
   obtain ⟨f, hf1, hf0, hf01⟩ :=
@@ -164,7 +166,7 @@ theorem exists_pullbackInner (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ
     have hval : ∀ x : M, (χ x • Q x) (Y x) (W x)
         = χ x * (h.inner (Φ x) (mfderiv I I Φ x (Y x)) (mfderiv I I Φ x (W x))) := by
       intro x
-      simp only [hQ, ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply,
+      simp only [hQ, smul_apply, ContinuousLinearMap.comp_apply,
         ContinuousLinearMap.precomp_apply, smul_eq_mul]
     have hstage : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
         (fun x => (χ x • Q x) (Y x) (W x)) x₀ := by
@@ -222,7 +224,7 @@ theorem exists_pullbackInner (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ
               (mfderiv I I (Φ : M → N) x (Y x))
               (mfderiv I I (Φ : M → N) x (W x))) x₀ := by
           rw [contMDiffAt_totalSpace] at h_total
-          convert h_total.2 using 1
+          simpa using h_total.2
         have hmul := (hχ.contMDiffAt (x := x₀)).mul h_scalar
         refine hmul.congr_of_eventuallyEq ?_
         filter_upwards with x
@@ -260,7 +262,9 @@ theorem pullInner_pos (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     exact mfderiv_id
   have happ : mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)
       (mfderiv I I (Φ : M → N) x v) = v := by
-    simpa using DFunLike.congr_fun hcomp v
+    have hv := DFunLike.congr_fun hcomp v
+    rw [ContinuousLinearMap.comp_apply] at hv
+    exact hv.trans (by rfl)
   rw [← happ, h0]
   exact (mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)).map_zero
 

@@ -37,8 +37,8 @@ private theorem frontier_closedBall_unit (n : ℕ) :
         exact False.elim hx
     rw [hball, hsphere]
     exact frontier_univ
-  · haveI : Nontrivial (EuclideanSpace ℝ (Fin n)) := by
-      haveI : Nonempty (Fin n) := ⟨⟨0, Nat.pos_of_ne_zero hn⟩⟩
+  · have : Nontrivial (EuclideanSpace ℝ (Fin n)) := by
+      have : Nonempty (Fin n) := ⟨⟨0, Nat.pos_of_ne_zero hn⟩⟩
       infer_instance
     exact frontier_closedBall' (0 : EuclideanSpace ℝ (Fin n)) 1
 

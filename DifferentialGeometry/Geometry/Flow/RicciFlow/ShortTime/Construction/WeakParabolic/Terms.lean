@@ -10,6 +10,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -257,9 +258,9 @@ theorem metricDiff_fam_jet
             (hbasecd.of_le (by exact_mod_cast le_top))]
           refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
           · rw [hcoord]
-            simpa only [gAll] using hGram m hm α hα (some k) x hx a c
+            with_unfolding_all exact hGram m hm α hα (some k) x hx a c
           · rw [hcoord]
-            simpa only [gAll] using hGram m hm α hα none x hx a c
+            with_unfolding_all exact hGram m hm α hα none x hx a c
         have hterm :
             ‖((toEuclidean (E := E)).symm : EuclN →L[ℝ] E)‖ ^ m *
                 ‖iteratedFDerivWithin ℝ m

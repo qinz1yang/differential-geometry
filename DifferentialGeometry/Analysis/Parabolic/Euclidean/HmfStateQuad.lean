@@ -67,7 +67,7 @@ theorem stateQuadSrc_sub
       Q z (p₁ z) (d₁ z - d₂ z) (d₁ z) +
         Q z (p₁ z) (d₂ z) (d₁ z - d₂ z) +
         (Q z (p₁ z) - Q z (p₂ z)) (d₂ z) (d₂ z) := by
-  simp only [hmfStateQuadSrc, map_sub, ContinuousLinearMap.sub_apply]
+  simp only [hmfStateQuadSrc, map_sub, sub_apply]
   abel
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]

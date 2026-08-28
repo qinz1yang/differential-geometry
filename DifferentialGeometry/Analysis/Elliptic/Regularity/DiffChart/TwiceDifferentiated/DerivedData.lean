@@ -265,7 +265,7 @@ private lemma chosenSecond_locallyIntegrableOn_of_memWkp_two
     exact Set.inter_eq_self_of_subset_left hB_subset
   rw [h_double_restrict] at h_restrict
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -338,7 +338,7 @@ theorem chosenWeakPartial'_swap_ae_of_memWkp_two
     have hK_meas : MeasurableSet K := (isClosed_tsupport ψ).measurableSet
     have hK_subset : K ⊆ Ω := hψ_supp
     have hK_finite : (volume : Measure EuclN) K < ⊤ := hK_compact.measure_lt_top
-    haveI hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := by
+    have hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hK_finite
@@ -627,7 +627,7 @@ private lemma chartTarget_diff_chartImagePOUTsupport_subset
     (chartTargetEuclid (I := I) (M := M) α) \
         chartImagePOUTsupport (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  Set.diff_subset
+  Set.sdiff_subset
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma weakPartial_ae_zero_off_inline
@@ -724,7 +724,7 @@ private lemma locallyIntegrableOn_of_memLp_two_chartTarget_inline
     exact Set.inter_eq_self_of_subset_left hB_subset_Ω
   rw [h_eq] at h_restrict
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite

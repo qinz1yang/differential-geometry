@@ -49,7 +49,6 @@ open CurvatureCoefficientDifferenceJetTower
 section TopOrderSeparatedRungSlotInsert
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -113,18 +112,21 @@ lemma cometricRaiseSlot0Field_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
         (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om) (DW - DW')) w
       = Tensor0SSpace.toModel (DW - DW')
-          (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-            (fun k => (show E from w k))) :=
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (inverseMetricSharpFib (I := I) g₀ x om)) w) :=
         interiorProduct_toModel_apply (I := I) (M := M) (s + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om) (DW - DW') w
     _ = Tensor0SSpace.toModel DW
-          (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-            (fun k => (show E from w k))) -
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (inverseMetricSharpFib (I := I) g₀ x om)) w) -
         Tensor0SSpace.toModel DW'
-          (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-            (fun k => (show E from w k))) := by
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (inverseMetricSharpFib (I := I) g₀ x om)) w) := by
         rw [Tensor0SSpace.toModel_sub]
-        simp only [ContinuousMultilinearMap.sub_apply]
+        simp only [sub_apply]
     _ = Tensor0SSpace.toModel
           (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) DW) w -
@@ -141,9 +143,9 @@ lemma cometricRaiseSlot0Field_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
           Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) DW') w := by
         rw [Tensor0SSpace.toModel_sub]
-        simp only [ContinuousMultilinearMap.sub_apply]
+        simp only [sub_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (W : SmoothCcTensor g₀ 0 (s + 2)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 1 (s + 1) x
@@ -153,7 +155,7 @@ lemma riemannianFiberNormSq_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianM
   rw [iteratedCovGrad_zero, iteratedCovGrad_zero] at h
   exact h
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma iteratedCovGrad_operatorFieldComposition_eq_coefficient_head_add_tail (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) (W : SmoothCcTensor g₀ a b) (j : ℕ) :
     iteratedCovGrad (I := I) g₀ a c j (ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W) =
@@ -179,7 +181,7 @@ lemma iteratedCovGrad_operatorFieldComposition_eq_coefficient_head_add_tail (g�
   rw [hf0]
   exact add_comm _ _
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_operatorFieldComposition_parallel_argument_head_le (g₀ : SmoothRiemannianMetric I M) (p a b : ℕ)
     (Φ : SmoothCcTensor g₀ a b) (i : ℕ) (HX : SmoothCcTensor g₀ p (a + i)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ p (b + i) x
@@ -189,6 +191,7 @@ lemma riemannianFiberNormSq_operatorFieldComposition_parallel_argument_head_le (
         riemannianFiberNormSq (I := I) (M := M) g₀ p (a + i) x (HX.toSection x) :=
   riemannianFiberNormSq_operatorFieldComposition_operatorFieldApplicationLeibnizPsi_diag_le (I := I) (M := M) g₀ p a b Φ i HX x
 
+omit [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_operatorFieldComposition_parallel_argument_residual_le (g₀ : SmoothRiemannianMetric I M) (p a b : ℕ)
     (Φ : SmoothCcTensor g₀ a b)
     (hΦ : covGrad (I := I) (M := M) g₀ a b Φ = 0)
@@ -810,7 +813,6 @@ end TopOrderSeparatedRungSlotInsert
 section TopOrderSeparatedRungLoweringSplit
 
 
-set_option backward.isDefEq.respectTransparency false
 
 theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_topOrderSeparated_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1160,7 +1162,6 @@ end TopOrderSeparatedRungLoweringSplit
 section TopOrderSeparatedRungCurvCoeff
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -1208,7 +1209,7 @@ lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
     · simp only [Fin.cons_succ]]
   rw [slotExtendFib_apply_eval]
   rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval,
-    TensorMultilinear.tensor0S_curry_apply_eval,
+    TensorMultilinear.tensor0S_curry_toModel_apply,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   have hswap_succ0 : (Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (0 : Fin (s + 1))) = 0 := by
     rw [show (Fin.succ (0 : Fin (s + 1)) : Fin (s + 1 + 1)) = 1 from rfl, Equiv.swap_apply_right]
@@ -1235,7 +1236,7 @@ lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
         m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (Fin.succ k₂)))
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_reindexCoeffGen_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g₀ r s) (σ' : Equiv.Perm (Fin r)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ r s x
@@ -1245,6 +1246,7 @@ lemma riemannianFiberNormSq_reindexCoeffGen_eq (g₀ : SmoothRiemannianMetric I 
   rw [iteratedCovGrad_zero, iteratedCovGrad_zero] at h
   exact h
 
+omit [SigmaCompactSpace M] in
 lemma exists_slotExtend_head_transport (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (V : SmoothCcTensor g₀ r s) (i : ℕ) (HV : SmoothCcTensor g₀ r (s + i)) :
     ∃ HW : SmoothCcTensor g₀ (r + 1) ((s + 1) + i),
@@ -1311,6 +1313,7 @@ lemma exists_slotExtend_head_transport (g₀ : SmoothRiemannianMetric I M) (r s 
       (by omega : (s + i) + 1 = (s + 1) + i) _ x]
     rw [riemannianFiberNormSq_slotExtend_eq (I := I) (M := M) g₀ r (s + i) _ x]
 
+omit [SigmaCompactSpace M] in
 lemma exists_rsDomDomCongrSection_head_transport (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : Equiv.Perm (Fin s)) (V : SmoothCcTensor g₀ r s) (i : ℕ)
     (HV : SmoothCcTensor g₀ r (s + i)) :
@@ -1523,7 +1526,6 @@ end TopOrderSeparatedRungCurvCoeff
 section TopOrderSeparatedRungRiemannCoeff
 
 
-set_option backward.isDefEq.respectTransparency false
 
 private lemma ts_two_mul_add_mul_factor (a b x : ℝ) :
     2 * (a * x) + 2 * (b * x) = (2 * a + 2 * b) * x := by
@@ -1566,6 +1568,7 @@ private lemma ts_nested_mul_assoc (c n d w : ℝ) :
     2 * (c * (n * (d * w))) = 2 * ((c * n) * (d * w)) := by
   ring
 
+omit [SigmaCompactSpace M] in
 private lemma ts_riemann_coeff_sub_head_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ)
     (Dpt phiDt : SmoothCcTensor g₀ 6 2) (WBig WVd : SmoothCcTensor g₀ 2 6)

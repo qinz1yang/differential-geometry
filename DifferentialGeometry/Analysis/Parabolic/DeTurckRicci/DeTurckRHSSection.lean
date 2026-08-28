@@ -9,7 +9,6 @@ open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Parabolic
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Manifold Topology ContDiff BigOperators
@@ -91,18 +90,18 @@ def bilinFormToModelₗᵢ (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F
 
 private def deTurckRHSModelFun (g_bg g : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x :=
-  Tensor0SSpace.ofModel
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
     (bilinFormToModel (TangentSpace I x) (deTurckRicciRHS (I := I) g_bg g x))
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem deTurckRHSModelFun_toModel_apply
+private theorem deTurckRHSModelFun_eval
     (g_bg g : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.toModel (deTurckRHSModelFun (I := I) g_bg g x) v =
+    Tensor0SSpace.eval (deTurckRHSModelFun (I := I) g_bg g x) v =
       deTurckRicciRHS (I := I) g_bg g x (v 0) (v 1) := by
   unfold deTurckRHSModelFun
-  rw [Tensor0SSpace.toModel_ofModel]
+  rw [Tensor0SSpace.eval_fiber_equiv_symm]
   exact bilinFormToModel_apply (TangentSpace I x) (deTurckRicciRHS (I := I) g_bg g x) v
 
 def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
@@ -132,19 +131,19 @@ def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
     filter_upwards [h_base_nhd] with x hx
     rw [continuousMultilinearMap_basis_repr]
-    change Tensor0SSpace.toModel (deTurckRHSModelFun (I := I) g_bg g x)
+    change Tensor0SSpace.eval (deTurckRHSModelFun (I := I) g_bg g x)
         (fun j => (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (b (σ j))) = _
-    rw [deTurckRHSModelFun_toModel_apply]
+    rw [deTurckRHSModelFun_eval]
     rfl⟩
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem deTurckRHSField_toModel_apply
+@[simp] theorem deTurckRHSField_eval
     (g_bg g : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.toModel (deTurckRHSField (I := I) g_bg g x) v =
+    Tensor0SSpace.eval (deTurckRHSField (I := I) g_bg g x) v =
       deTurckRicciRHS (I := I) g_bg g x (v 0) (v 1) :=
-  deTurckRHSModelFun_toModel_apply (I := I) g_bg g x v
+  deTurckRHSModelFun_eval (I := I) g_bg g x v
 
 def deTurckRHSMixedSection (g_bg g : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯ :=
@@ -165,23 +164,23 @@ omit [SigmaCompactSpace M] in
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem deTurckRHSSection_toModel_apply
+theorem deTurckRHSSection_eval
     (g_bg g : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((deTurckRHSSection (I := I) g_bg g).toSection x
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) v =
       deTurckRicciRHS (I := I) g_bg g x (v 0) (v 1) := by
   classical
   rw [deTurckRHSSection_toSection]
-  change Tensor0SSpace.toModel
+  change Tensor0SSpace.eval
       ((MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
           (deTurckRHSField (I := I) g_bg g x)
         (ContinuousMultilinearMap.constOfIsEmpty ℝ
           (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) v = _
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
     ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul,
-    deTurckRHSField_toModel_apply]
+    deTurckRHSField_eval]
 
 end RicciFlow
 end PDE

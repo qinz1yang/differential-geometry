@@ -35,7 +35,7 @@ lemma Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : Continuous f) (hcs : HasCompactSupport f) :
     Integrable f (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact hf.integrable_of_hasCompactSupport hcs
 
@@ -61,8 +61,8 @@ theorem tangentSectionAction_mul
   have hmfderiv_eq : fh' = f x • h' + h x • f' := hmul.mfderiv
   change fh' (X x) = f' (X x) * h x + f x * h' (X x)
   rw [hmfderiv_eq]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.smul_apply]
+  rw [add_apply, smul_apply,
+      smul_apply]
   rw [smul_eq_mul, smul_eq_mul]
   ring
 
@@ -82,10 +82,10 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence
       Function.support (X : ∀ x, TangentSpace I x) := by
     intro x hx
     by_contra hneX
-    rw [Function.notMem_support] at hneX
+    have hXx : X x = 0 := Function.notMem_support.mp hneX
     have hYx : (Y : ∀ x, TangentSpace I x) x = (0 : TangentSpace I x) := by
       change f x • X x = (0 : TangentSpace I x)
-      rw [hneX]
+      rw [hXx]
       exact smul_zero _
     exact hx hYx
   have hY_cs : HasCompactSupport Y := by

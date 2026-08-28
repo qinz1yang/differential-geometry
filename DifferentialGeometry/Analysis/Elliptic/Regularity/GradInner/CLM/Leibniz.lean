@@ -315,7 +315,7 @@ private lemma chartPushedRawLpFromLp_smoothMulLp_coeFn
         ((chartPushedRawLpFromLp (I := I) (M := M) g α F :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
-  letI := _h
+  let := _h
   classical
   have h_smoothMulLp_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α
     (smoothMulLp (I := I) (M := M) g φ F)
@@ -391,7 +391,7 @@ theorem chartPushedRawLpFromLp_gradInner_leibniz_H1Compl
           (H1ComplToLp (I := I) (M := M) g u_h) :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
-  letI := _h
+  let := _h
   classical
   have h_M_eq := gradInner_leibniz_H1Compl (I := I) (M := M) g ρα u_h
   rw [h_M_eq]
@@ -433,7 +433,7 @@ theorem chartPushedRawLpFromLp_gradInner_leibniz_smoothToH1Compl
           (smoothToLp (I := I) (M := M) g v) :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
-  letI := _h
+  let := _h
   classical
   have h_gen := chartPushedRawLpFromLp_gradInner_leibniz_H1Compl
     (I := I) (M := M) g inferInstance α ρα

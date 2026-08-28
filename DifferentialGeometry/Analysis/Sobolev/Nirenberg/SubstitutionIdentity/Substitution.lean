@@ -300,7 +300,7 @@ theorem integral_principalIntegrand_eq_sum_integral
         ∑ j : Fin d,
           B.a x i j * ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
             ((fderiv ℝ v x) (EuclideanSpace.single j 1))) volume :=
-    fun i => integrable_finset_sum _ (fun j _ => h_pair_int i j)
+    fun i => integrable_finsetSum _ (fun j _ => h_pair_int i j)
   rw [show (fun x : E =>
       ∑ i : Fin d, ∑ j : Fin d,
         B.a x i j * ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -310,7 +310,7 @@ theorem integral_principalIntegrand_eq_sum_integral
           ∑ j : Fin d,
             B.a y i j * ((fderiv ℝ u y) (EuclideanSpace.single i 1)) *
               ((fderiv ℝ v y) (EuclideanSpace.single j 1))) x from rfl]
-  rw [integral_finset_sum _ (fun i _ => h_inner_int i)]
+  rw [integral_finsetSum _ (fun i _ => h_inner_int i)]
   refine Finset.sum_congr rfl ?_
   intro i _
   rw [show (fun y : E =>
@@ -321,7 +321,7 @@ theorem integral_principalIntegrand_eq_sum_integral
         ∑ j : Fin d, (fun z : E =>
           B.a z i j * ((fderiv ℝ u z) (EuclideanSpace.single i 1)) *
             ((fderiv ℝ v z) (EuclideanSpace.single j 1))) y from rfl]
-  rw [integral_finset_sum _ (fun j _ => h_pair_int i j)]
+  rw [integral_finsetSum _ (fun j _ => h_pair_int i j)]
 
 theorem nirenberg_substitution_identity
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)

@@ -15,7 +15,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -37,7 +37,11 @@ import Mathlib.LinearAlgebra.Contraction
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Curry
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
@@ -89,7 +93,6 @@ variable {s q : Nat}
 variable (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_add_gen
     (A B : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (A + B) slots =
@@ -111,7 +114,6 @@ theorem component0S_sub_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_smul_gen
     (c : 𝕜) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (c • A) slots =

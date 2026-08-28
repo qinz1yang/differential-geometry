@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -57,7 +56,7 @@ theorem wkpNormChartRaw_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (T : SmoothCcTensor g r s) :
     0 ≤ chartComponentRawSobolevNorm (I := I) (M := M) g r s k T :=
-  zero_le _
+  zero_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChartRaw_zero_section

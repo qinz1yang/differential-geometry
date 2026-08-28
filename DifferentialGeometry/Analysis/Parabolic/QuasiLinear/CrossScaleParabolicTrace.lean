@@ -149,7 +149,7 @@ lemma crossPairing_eq_inner_rescale
           ((tensorHs.rescaleToL2 (I := I) (M := M) w : _ → ℝ) i) : ℝ) =
         (tensorHs.rescaleToL2 (I := I) (M := M) v : _ → ℝ) i *
           (tensorHs.rescaleToL2 (I := I) (M := M) w : _ → ℝ) i by
-      simp [real_inner_eq_re_inner, RCLike.inner_apply, mul_comm]]
+      simp [RCLike.inner_apply, mul_comm]]
   rw [tensorHs.rescaleToL2_apply, tensorHs.rescaleToL2_apply,
     tensorSobolevWeight_mid_eq_sqrt_mul_sqrt (I := I) (M := M) i a]
   ring
@@ -226,11 +226,12 @@ theorem sq_eq_base_add_integral_of_indefinite
     (hd : IntervalIntegrable d volume t₀ t)
     (hc : ∀ x ∈ uIcc t₀ t, c x - c t₀ = ∫ r in t₀..x, d r) :
     c t ^ 2 = c t₀ ^ 2 + ∫ s in t₀..t, 2 * c s * d s := by
-  set e : ℝ → ℝ := fun τ => c t₀ + ∫ r in t₀..τ, d r with he_def
+  set e : ℝ → ℝ := (fun _ : ℝ => c t₀) + fun τ => ∫ r in t₀..τ, d r with he_def
   have hce : ∀ x ∈ uIcc t₀ t, c x = e x := by
     intro x hx
     have := hc x hx
-    simp only [he_def]; linarith [this]
+    simp only [he_def, Pi.add_apply]
+    linarith [this]
   have h0mem : t₀ ∈ uIcc t₀ t := left_mem_uIcc
   have htmem : t ∈ uIcc t₀ t := right_mem_uIcc
   have hac_int : AbsolutelyContinuousOnInterval
@@ -240,7 +241,8 @@ theorem sq_eq_base_add_integral_of_indefinite
     (LipschitzWith.const (c t₀)).lipschitzOnWith.absolutelyContinuousOnInterval
   have hac_e : AbsolutelyContinuousOnInterval e t₀ t := by
     have := hac_const.add hac_int
-    simpa only [he_def, Pi.add_apply] using this
+    rw [he_def]
+    exact this
   have hprod := AbsolutelyContinuousOnInterval.integral_deriv_mul_eq_sub hac_e hac_e
   have hae_deriv : ∀ᵐ x, x ∈ uIcc t₀ t → deriv e x = d x := by
     filter_upwards [hd.ae_hasDerivAt_integral] with x hx hxmem
@@ -248,7 +250,8 @@ theorem sq_eq_base_add_integral_of_indefinite
       hx hxmem t₀ h0mem
     have hee : HasDerivAt e (d x) x := by
       have := (hasDerivAt_const x (c t₀)).add hxd
-      simpa only [he_def, zero_add] using this
+      rw [he_def]
+      simpa only [zero_add] using this
     exact hee.deriv
   have hcongr : (∫ x in t₀..t, deriv e x * e x + e x * deriv e x) =
       ∫ x in t₀..t, 2 * c x * d x := by
@@ -308,6 +311,7 @@ lemma continuousOn_coeffFun (i : TensorEigenIdx (I := I) (M := M) g r s) :
         (u.lo.toFun t)) (Icc (0 : ℝ) T) :=
     (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a)
       i).continuous.comp_continuousOn u.lo.continuousOn_toFun
+  change ContinuousOn (fun t => (u.lo.toFun t).coeff i) (Icc (0 : ℝ) T)
   simpa only [coeffCLM_apply] using hcomp
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -448,7 +452,7 @@ lemma exists_uniform_bound (hT : 0 < T) :
     ∃ B : ℝ, ∀ t ∈ Icc (0 : ℝ) T, ∀ S : Finset (TensorEigenIdx (I := I) (M := M) g r s),
       ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t) ^ 2 ≤ B := by
   have hμ_ne : timeMeasure T ≠ 0 := timeMeasure_ne_zero hT
-  haveI : (ae (timeMeasure T)).NeBot := MeasureTheory.ae_neBot.2 hμ_ne
+  have : (ae (timeMeasure T)).NeBot := MeasureTheory.ae_neBot.2 hμ_ne
   have hcombine : ∀ᵐ t₀ ∂(timeMeasure T), t₀ ∈ Icc (0 : ℝ) T ∧
       (∀ i : TensorEigenIdx (I := I) (M := M) g r s, u.coeffFun i t₀ = (u.hiL2 t₀).coeff i) := by
     filter_upwards [ae_restrict_mem (μ := volume) measurableSet_Icc, u.ae_coeffFun_eq_hiL2]
@@ -504,7 +508,7 @@ lemma exists_uniform_bound (hT : 0 < T) :
           ∫ τ in t₀..t, 2 * (u.coeffFun i τ) * (u.lo.deriv τ).coeff i =
         ∫ τ in t₀..t, G τ := by
       rw [hG_def,
-        intervalIntegral.integral_finset_sum (s := S) (fun i _ => (hintegrable i).const_mul _)]
+        intervalIntegral.integral_finsetSum (s := S) (fun i _ => (hintegrable i).const_mul _)]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [intervalIntegral.integral_const_mul]
     rw [hsum_int]
@@ -542,7 +546,7 @@ lemma exists_uniform_bound (hT : 0 < T) :
           exact abs_of_nonneg (setIntegral_nonneg measurableSet_uIoc (fun τ _ => hdom_nonneg τ))
       _ ≤ ∫ τ in Set.Icc (0 : ℝ) T, dom τ :=
           setIntegral_mono_set hdom_set_int (ae_of_all _ hdom_nonneg)
-            (HasSubset.Subset.eventuallyLE hsub)
+            (LE.le.eventuallyLE hsub)
       _ = C := by rw [hC_def, hdom_def, ← MeasureTheory.integral_const_mul]
   linarith [hterm0, hterm1]
 

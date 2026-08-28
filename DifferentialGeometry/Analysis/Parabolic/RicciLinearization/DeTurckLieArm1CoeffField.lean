@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -101,7 +100,6 @@ noncomputable def deTurckLieArm1Fib (g₀ g₁ g_bg : SmoothRiemannianMetric I M
         (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x)
     + deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieArm1KoszulZeroPerm x
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem tensor0SProd_section_contMDiff {p q : ℕ}
@@ -142,10 +140,11 @@ private theorem tensor0SProd_section_contMDiff {p q : ℕ}
   filter_upwards [Filter.univ_mem] with x _
   rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr,
     continuousMultilinearMap_basis_repr]
+  set symmL := (trivializationAt E (TangentSpace I) x₀).symmL ℝ x with hsymmL
   change (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
       (Tensor0SBundle.Tensor0SSpace.toModel (Y x)) (Tensor0SBundle.Tensor0SSpace.toModel (K x)))
-      (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-        ((Module.finBasis ℝ E) (τ j))) = _
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (symmL ((Module.finBasis ℝ E) (τ j)))) = _
   rw [Bundle.continuousMultilinearMap.modelProduct_apply]
   rfl
 
@@ -182,7 +181,6 @@ private theorem deTurckLiePairTraceFib_apply_section_contMDiff
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLiePairTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, tensor0SProdKappaFib_apply, domDomCongrFibRank_apply]
-  rfl
 
 
 omit [CompactSpace M] in
@@ -209,7 +207,6 @@ private theorem deTurckLieKoszulTraceFib_apply_section_contMDiff
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     domDomCongrFibRank_apply]
-  rfl
 
 
 omit [CompactSpace M] in
@@ -256,7 +253,7 @@ private theorem deTurckLieArm1CoreFib_apply_section_contMDiff
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLieArm1CoreFib]
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply]
+  simp only [sub_apply, ContinuousLinearMap.comp_apply]
   rw [domDomCongrFibRank_apply]
   rfl
 
@@ -290,7 +287,7 @@ theorem deTurckLieArm1Fib_contMDiff (g₀ g₁ g_bg : SmoothRiemannianMetric I M
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLieArm1Fib]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
+  simp only [add_apply, ContinuousLinearMap.comp_apply]
   rw [domDomCongrFibRank_apply]
   rfl
 

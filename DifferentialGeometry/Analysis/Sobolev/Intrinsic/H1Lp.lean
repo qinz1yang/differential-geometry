@@ -34,13 +34,13 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_zero_left
     (g : SmoothRiemannianMetric I M) (x : M) (y : TangentSpace I x) :
     g.inner x (0 : TangentSpace I x) y = 0 := by
-  rw [map_zero, ContinuousLinearMap.zero_apply]
+  rw [map_zero, zero_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_add_left
     (g : SmoothRiemannianMetric I M) (x : M) (v w y : TangentSpace I x) :
     g.inner x (v + w) y = g.inner x v y + g.inner x w y := by
-  rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+  rw [map_add (g.inner x), add_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_add_right
@@ -52,13 +52,13 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_smul_left
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ) (v y : TangentSpace I x) :
     g.inner x (c • v) y = c * g.inner x v y := by
-  rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul (g.inner x), smul_apply, smul_eq_mul]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_neg_left
     (g : SmoothRiemannianMetric I M) (x : M) (v y : TangentSpace I x) :
     g.inner x (-v) y = - g.inner x v y := by
-  rw [map_neg, ContinuousLinearMap.neg_apply]
+  rw [map_neg, neg_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_norm_const_smul
@@ -174,7 +174,7 @@ theorem hasWeakRiemannianGradLp_congr_ae
     HasWeakRiemannianGradLp (I := I) (M := M) g u' G' := by
   let _ := hcompact
   let _ := hboundaryless
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   refine ⟨?_, ?_⟩
@@ -350,7 +350,7 @@ theorem const_smul (g : SmoothRiemannianMetric I M) (c : ℝ)
     {u : Lp ℝ 2 (riemannianVolumeMeasure I M g)}
     (hu : MemH1Lp (I := I) (M := M) g u) :
     MemH1Lp (I := I) (M := M) g (c • u) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨G, hG_weak, hG_p, hG_pair⟩ := hu
@@ -414,7 +414,7 @@ theorem add (g : SmoothRiemannianMetric I M)
     (hu : MemH1Lp (I := I) (M := M) g u)
     (hv : MemH1Lp (I := I) (M := M) g v) :
     MemH1Lp (I := I) (M := M) g (u + v) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨G, hG_weak, hG_p, hG_pair⟩ := hu

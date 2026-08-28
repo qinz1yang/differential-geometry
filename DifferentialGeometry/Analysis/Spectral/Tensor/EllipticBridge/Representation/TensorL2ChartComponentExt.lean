@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -56,7 +55,8 @@ private def smoothFnSmul
       show TensorRSSpace.toModel (S.toSection x) = S.toFun x from rfl, hS_zero,
       smul_zero]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma smoothFnSmul_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (φ : M → ℝ) (hφ : ContMDiff I (𝓘(ℝ, ℝ)) ∞ φ)
@@ -87,7 +87,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma contMDiff_pouSq :
     ContMDiff I (𝓘(ℝ, ℝ)) ∞ (pouSq (I := I) (M := M)) := by
   classical
-  refine contMDiff_finset_sum (fun α _ => ?_)
+  refine contMDiff_finsetSum (fun α _ => ?_)
   exact ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff).mul
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff)
 

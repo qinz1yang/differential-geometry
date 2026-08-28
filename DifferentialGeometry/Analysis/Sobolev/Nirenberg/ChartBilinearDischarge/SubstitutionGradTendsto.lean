@@ -941,7 +941,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
       h_seq_tendsto ?_ ?_
     · refine Filter.Eventually.of_forall (fun n => ?_)
-      exact zero_le _
+      exact zero_le
     · refine Filter.Eventually.of_forall h_A_bound
   have h_B_tendsto :
       Tendsto (fun n => eLpNorm (TERM_B_n n) 2 (volume : Measure EuclN))
@@ -976,7 +976,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
       h_seq_tendsto ?_ ?_
     · refine Filter.Eventually.of_forall (fun n => ?_)
-      exact zero_le _
+      exact zero_le
     · refine Filter.Eventually.of_forall h_B_bound
   have h_AB_tendsto :
       Tendsto (fun n => eLpNorm (TERM_A_n n) 2 (volume : Measure EuclN) +
@@ -1000,7 +1000,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
       h_FB_seq_tendsto ?_ ?_
     · refine Filter.Eventually.of_forall (fun n => ?_)
-      exact zero_le _
+      exact zero_le
     · refine Filter.Eventually.of_forall (fun n => ?_)
       calc eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k (-h) (F_n n - B)) 2
@@ -1021,7 +1021,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
       h_outer_tendsto ?_ ?_
     · refine Filter.Eventually.of_forall (fun n => ?_)
-      exact zero_le _
+      exact zero_le
     · refine Filter.Eventually.of_forall (fun n => ?_)
       exact MeasureTheory.eLpNorm_mono_measure
         (DifferentialGeometry.Analysis.Sobolev.diffQuot

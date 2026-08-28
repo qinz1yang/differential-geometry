@@ -47,6 +47,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -223,7 +224,7 @@ theorem ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDi
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 1))
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))).const_mul (C i)
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 4 (2 + i)
@@ -237,7 +238,7 @@ theorem ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDi
   refine le_trans key (le_of_eq ?_)
   rw [MeasureTheory.integral_const_mul]
   congr 1
-  rw [MeasureTheory.integral_finset_sum (Finset.range (i + 1))
+  rw [MeasureTheory.integral_finsetSum (Finset.range (i + 1))
     (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
       (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))]
   refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -328,7 +329,6 @@ theorem ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jetL2_perOrder_b
       - ‖iteratedCovGrad (I := I) g₀ 4 2 i (A - B)‖),
     mul_le_mul htri htri hA_nn (add_nonneg hp_nn hq_nn)]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff
@@ -343,8 +343,8 @@ private theorem traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff
     traceHessianCoeff_toSection, traceHessianCoeff_toSection, reindexCoeffGen_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply,
-    deTurckPrincipalCometricCoeff_toSection_clm_eq, ContinuousLinearMap.sub_apply,
+  rw [sub_apply, reindexCoeffFibGen_apply,
+    deTurckPrincipalCometricCoeff_toSection_clm_eq, sub_apply,
     traceHessianFib, traceHessianFib, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
 
@@ -388,7 +388,7 @@ theorem traceHessianCoeff_sub_background_jetL2_le_inverseMetricDifferenceSlotCoe
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 1))
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))).const_mul (C i)
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 4 (2 + i)
@@ -402,7 +402,7 @@ theorem traceHessianCoeff_sub_background_jetL2_le_inverseMetricDifferenceSlotCoe
   refine le_trans key (le_of_eq ?_)
   rw [MeasureTheory.integral_const_mul]
   congr 1
-  rw [MeasureTheory.integral_finset_sum (Finset.range (i + 1))
+  rw [MeasureTheory.integral_finsetSum (Finset.range (i + 1))
     (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
       (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))]
   refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -750,6 +750,7 @@ private lemma tsmRiemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r 
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma tsmRiemannianFiberNormSq_order_congr (g : SmoothRiemannianMetric I M)
     (r s : ℕ) {n n' : ℕ} (h : n = n') (S : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + n) x
@@ -758,6 +759,7 @@ private lemma tsmRiemannianFiberNormSq_order_congr (g : SmoothRiemannianMetric I
         ((iteratedCovGrad (I := I) g r s n' S).toSection x) := by
   subst h; rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tsmOperatorFieldComposition_coeffCorner_split (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) (W : SmoothCcTensor g₀ a b) (j : ℕ) :
@@ -792,6 +794,7 @@ private lemma tsmNormSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [SmoothCcTensor.norm_def (I := I) (M := M) C,
     tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g r s C]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma tsmNormSq_covGrad_shift (g : SmoothRiemannianMetric I M) (r s n : ℕ)
     (Φ : SmoothCcTensor g r s) :
@@ -802,6 +805,7 @@ private lemma tsmNormSq_covGrad_shift (g : SmoothRiemannianMetric I M) (r s n : 
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   exact riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g r s n Φ x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ricciArmOrder1KoszulCoeff_topTerm_pointwise_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -893,6 +897,7 @@ private theorem ricciArmOrder1KoszulCoeff_topTerm_normSq_le
   rw [← tsmNormSq_eq_integral (I := I) (M := M) g₀ 0 (2 + (i + 1))
     (iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P)]
 
+omit [SigmaCompactSpace M] in
 private theorem ricciArmOrder1KoszulCoeff_lowerTerms_pointwise_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (hipos : 1 ≤ i)
     (K1 : SmoothCcTensor g₀ 1 2) (W1 : SmoothCcTensor g₀ 3 1)
@@ -1146,7 +1151,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic
               Kc i * (1 + ∑ j ∈ Finset.range (i + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨ΛA, FA, hΛA_nn, hFA_nn, hAfeed⟩ :=
     raisedKoszul_order0sup_jetL2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
@@ -1427,6 +1432,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic
       exact mul_le_mul_of_nonneg_left
         (le_add_of_nonneg_right hsum_nn) hKcC_nn
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma tsmConvex_jet_eq (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) (s : ℝ) (j : ℕ) :
@@ -1436,6 +1442,7 @@ lemma tsmConvex_jet_eq (g₀ : SmoothRiemannianMetric I M)
   rw [show convexPerturbation (I := I) g₀ T T' s = (1 - s) • T' + s • T from rfl,
     iteratedCovGrad_add, iteratedCovGrad_smul_real, iteratedCovGrad_smul_real]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma tsmConvex_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) (j : ℕ) (x : M) :
@@ -1471,6 +1478,7 @@ private lemma tsmConvex_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric 
     ((iteratedCovGrad (I := I) g₀ 0 2 j T').toSection x)
   nlinarith
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma tsmConvex_normSq_le (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) (j : ℕ) :

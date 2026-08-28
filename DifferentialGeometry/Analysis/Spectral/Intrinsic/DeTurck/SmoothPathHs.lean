@@ -6,7 +6,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set Filter MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators RealInnerProductSpace InnerProductSpace
 namespace DifferentialGeometry.Analysis.Spectral
@@ -28,19 +27,24 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 private theorem rankZero_one (x : M) (A : Tensor0SSpace 0 I x) :
-    tensor0SSpace_evalScalar x A •
+    tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x A •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x = A := by
   apply (tensor0SSpace_continuousLinearEquiv 0 x).injective
   apply ContinuousMultilinearMap.ext
   intro v
   change Tensor0SSpace.toModel
-      (tensor0SSpace_evalScalar x A •
+      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x A •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x) v = Tensor0SSpace.toModel A v
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SField.one0_apply, smul_eq_mul, mul_one,
+  rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
     Tensor0SSpace.evalScalar_apply]
+  have hone : Tensor0SSpace.toModel
+      (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
+        (I := I) (M := M) ∞ x) v = (1 : ℝ) :=
+    Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
+      (I := I) (M := M) ∞ x v
+  rw [hone, mul_one]
   exact congrArg (Tensor0SSpace.toModel A) (Subsingleton.elim Fin.elim0 v)
 
 private noncomputable def oneCc (g : SmoothRiemannianMetric I M) :

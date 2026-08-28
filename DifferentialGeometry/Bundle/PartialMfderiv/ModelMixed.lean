@@ -1,7 +1,6 @@
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Topology Manifold ContDiff
 
@@ -68,13 +67,15 @@ private theorem model_hasDerivAt_fixed_snd
   have hL : DifferentiableAt ℝ L t := by
     fun_prop
   have hcomp := (hA.hasFDerivAt.comp t hL.hasFDerivAt).hasDerivAt
-  have hLderiv : deriv L t = (1, 0) := by
-    rw [deriv]
+  have hLderiv : (fderiv ℝ L t) 1 = (1, 0) := by
     rw [DifferentiableAt.fderiv_prodMk]
     · simp
     · fun_prop
     · fun_prop
-  simpa [hLderiv] using hcomp
+  change HasDerivAt (A ∘ L)
+    ((fderiv ℝ A (t, x)) ((fderiv ℝ L t) 1)) t at hcomp
+  rw [hLderiv] at hcomp
+  exact hcomp
 
 theorem modelLine_fst_hasDerivAt
     {A : ℝ × ℝ -> ℝ} {s t : ℝ}
@@ -85,13 +86,15 @@ theorem modelLine_fst_hasDerivAt
   have hL : DifferentiableAt ℝ L s := by
     fun_prop
   have hcomp := (hA.hasFDerivAt.comp s hL.hasFDerivAt).hasDerivAt
-  have hLderiv : deriv L s = ((1 : ℝ), 0) := by
-    rw [deriv]
+  have hLderiv : (fderiv ℝ L s) 1 = ((1 : ℝ), 0) := by
     rw [DifferentiableAt.fderiv_prodMk]
     · simp
     · fun_prop
     · fun_prop
-  simpa [L, hLderiv] using hcomp
+  change HasDerivAt (A ∘ L)
+    ((fderiv ℝ A (s, t)) ((fderiv ℝ L s) 1)) s at hcomp
+  rw [hLderiv] at hcomp
+  exact hcomp
 
 theorem modelLine_snd_hasDerivAt
     {A : ℝ × ℝ -> ℝ} {s t : ℝ}
@@ -102,13 +105,15 @@ theorem modelLine_snd_hasDerivAt
   have hL : DifferentiableAt ℝ L t := by
     fun_prop
   have hcomp := (hA.hasFDerivAt.comp t hL.hasFDerivAt).hasDerivAt
-  have hLderiv : deriv L t = (0, (1 : ℝ)) := by
-    rw [deriv]
+  have hLderiv : (fderiv ℝ L t) 1 = (0, (1 : ℝ)) := by
     rw [DifferentiableAt.fderiv_prodMk]
     · simp
     · fun_prop
     · fun_prop
-  simpa [L, hLderiv] using hcomp
+  change HasDerivAt (A ∘ L)
+    ((fderiv ℝ A (s, t)) ((fderiv ℝ L t) 1)) t at hcomp
+  rw [hLderiv] at hcomp
+  exact hcomp
 
 theorem fixedBaseFDerivTimeDerivativeAt_of_contDiff
     (F : ℝ -> E -> ℝ)

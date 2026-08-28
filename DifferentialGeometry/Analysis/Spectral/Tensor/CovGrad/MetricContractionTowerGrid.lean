@@ -38,7 +38,7 @@ def fixedCoeffTowerOp (g : SmoothRiemannianMetric I M)
           (fixedCoeffTowerOp g Φ₀ p (r + 1) (covGrad (I := I) (M := M) g 0 r W))
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem fixedCoeffTower_covGrad_op (g : SmoothRiemannianMetric I M)
     (Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0))
     (p r : ℕ) (W : SmoothCcTensor g 0 r) :
@@ -56,7 +56,7 @@ theorem fixedCoeffTower_covGrad_op (g : SmoothRiemannianMetric I M)
   rw [sub_add_cancel]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem fixedCoeffTower_base_operatorFieldApply (g : SmoothRiemannianMetric I M)
     (Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0))
     (r : ℕ) (W : SmoothCcTensor g 0 r) :

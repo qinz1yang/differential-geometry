@@ -497,8 +497,8 @@ lemma eigenvectorCrossLeft_tendsto
                 g r s i α P :
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
               ∂(chartL2Measure (I := I) (M := M) α))) :=
-    tendsto_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r (s + 1)))
-      (fun P _ => tendsto_finset_sum
+    tendsto_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r (s + 1)))
+      (fun P _ => tendsto_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r (s + 1)))
         (fun Q _ => h_dir P Q))
   have h_cross_n : ∀ n : ℕ,
@@ -617,12 +617,12 @@ lemma eigenvectorCrossLeft_tendsto
         from funext (fun y => by
           rw [Finset.mul_sum]
           exact Finset.sum_congr rfl (fun P _ => Finset.mul_sum _ _ _))]
-    rw [MeasureTheory.integral_finset_sum _ (fun P _ =>
-        MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun P _ =>
+        MeasureTheory.integrable_finsetSum _ (fun Q _ =>
           crossLeftPairing_integrable (I := I) (M := M) g r s i
             α P₀ P Q hψ hψ_cs hψ_supp n))]
     refine Finset.sum_congr rfl (fun P _ => ?_)
-    rw [MeasureTheory.integral_finset_sum _ (fun Q _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossLeftPairing_integrable (I := I) (M := M) g r s i
           α P₀ P Q hψ hψ_cs hψ_supp n)]
     exact Finset.sum_congr rfl (fun Q _ => hpair P Q)
@@ -672,11 +672,11 @@ lemma eigenvectorCrossLeft_tendsto
     rw [Finset.sum_congr rfl (fun P _ => Finset.sum_congr rfl
       (fun Q _ => h_summand P Q))]
     rw [Finset.sum_congr rfl (fun P _ =>
-      (MeasureTheory.integral_finset_sum _ (fun Q _ =>
+      (MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossLeftLimitPairing_integrable (I := I) (M := M)
           g r s i α P₀ P Q hψ hψ_cs hψ_supp)).symm)]
-    rw [← MeasureTheory.integral_finset_sum _ (fun P _ =>
-      MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+    rw [← MeasureTheory.integral_finsetSum _ (fun P _ =>
+      MeasureTheory.integrable_finsetSum _ (fun Q _ =>
         crossLeftLimitPairing_integrable (I := I) (M := M)
           g r s i α P₀ P Q hψ hψ_cs hψ_supp))]
     refine MeasureTheory.setIntegral_congr_fun
@@ -876,8 +876,8 @@ lemma eigenvectorCrossRight_tendsto
                 g r s i α P :
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
               ∂(chartL2Measure (I := I) (M := M) α))) :=
-    tendsto_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => tendsto_finset_sum
+    tendsto_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+      (fun P _ => tendsto_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q _ => h_dir P Q))
   have h_value_n : ∀ n : ℕ,
@@ -958,12 +958,12 @@ lemma eigenvectorCrossRight_tendsto
               ψ y
         from funext (fun y => by
           simp only [Finset.sum_mul, Finset.mul_sum])]
-    rw [MeasureTheory.integral_finset_sum _ (fun P _ =>
-        MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun P _ =>
+        MeasureTheory.integrable_finsetSum _ (fun Q _ =>
           crossRightValuePairing_integrable (I := I) (M := M) g r s i
             α P₀ P Q hψ hψ_cs hψ_supp n))]
     refine Finset.sum_congr rfl (fun P _ => ?_)
-    rw [MeasureTheory.integral_finset_sum _ (fun Q _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossRightValuePairing_integrable (I := I) (M := M) g r s i
           α P₀ P Q hψ hψ_cs hψ_supp n)]
     exact Finset.sum_congr rfl (fun Q _ => hpair P Q)
@@ -1013,11 +1013,11 @@ lemma eigenvectorCrossRight_tendsto
     rw [Finset.sum_congr rfl (fun P _ => Finset.sum_congr rfl
       (fun Q _ => h_summand P Q))]
     rw [Finset.sum_congr rfl (fun P _ =>
-      (MeasureTheory.integral_finset_sum _ (fun Q _ =>
+      (MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossRightValueLimitPairing_integrable (I := I) (M := M)
           g r s i α P₀ P Q hψ hψ_cs hψ_supp)).symm)]
-    rw [← MeasureTheory.integral_finset_sum _ (fun P _ =>
-      MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+    rw [← MeasureTheory.integral_finsetSum _ (fun P _ =>
+      MeasureTheory.integrable_finsetSum _ (fun Q _ =>
         crossRightValueLimitPairing_integrable (I := I) (M := M)
           g r s i α P₀ P Q hψ hψ_cs hψ_supp))]
     refine MeasureTheory.setIntegral_congr_fun
@@ -1336,8 +1336,8 @@ private lemma density_crossRightValueSum_test_integrable
           ψ y)
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    MeasureTheory.integrable_finset_sum _ (fun P _ =>
-      MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+    MeasureTheory.integrable_finsetSum _ (fun P _ =>
+      MeasureTheory.integrable_finsetSum _ (fun Q _ =>
         crossRightValuePairing_integrable (I := I) (M := M) g r s i
           α P₀ P Q hψ hψ_cs hψ_supp n))
   refine h_sum_int.congr ?_
@@ -1599,12 +1599,12 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
   rw [MeasureTheory.integral_add
     (hvalueIntegrand_def ▸ density_crossRightValueSum_test_integrable
       (I := I) (M := M) g r s i α P₀ hψ hψ_cs hψ_supp n)
-    (hgradIntegrand_def ▸ MeasureTheory.integrable_finset_sum _
+    (hgradIntegrand_def ▸ MeasureTheory.integrable_finsetSum _
       (fun l _ => density_crossRightTestGradTerm_partialTest_integrable
         (I := I) (M := M) g r s i α P₀ l hψ hψ_cs hψ_supp n))]
   congr 1
   rw [hgradIntegrand_def]
-  exact MeasureTheory.integral_finset_sum _
+  exact MeasureTheory.integral_finsetSum _
     (fun l _ => density_crossRightTestGradTerm_partialTest_integrable
       (I := I) (M := M) g r s i α P₀ l hψ hψ_cs hψ_supp n)
 

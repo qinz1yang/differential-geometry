@@ -6,7 +6,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -44,9 +43,12 @@ theorem contDiffWithinAt_covariantDeriv_tensor0SModelWithin (s : ℕ)
   have hCorrOp :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
-    simpa using
-      hΓ.continuousLinearMap_comp
-        (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+    let h := hΓ.continuousLinearMap_comp
+      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+    exact h.congr_of_eventuallyEq
+      (Eventually.of_forall fun y ↦
+        (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX y)).symm)
+      (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX x)).symm
   have hCorr :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDeriv_correction (𝕜 := 𝕜) (E := E) s (ΓX y) (α y)) u x := by
@@ -74,15 +76,21 @@ theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
   have hCorrS :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
-    simpa using
-      hΓ.continuousLinearMap_comp
-        (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+    let h := hΓ.continuousLinearMap_comp
+      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+    exact h.congr_of_eventuallyEq
+      (Eventually.of_forall fun y ↦
+        (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX y)).symm)
+      (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX x)).symm
   have hCorrR :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r (ΓX y)) u x := by
-    simpa using
-      hΓ.continuousLinearMap_comp
-        (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) r)
+    let h := hΓ.continuousLinearMap_comp
+      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) r)
+    exact h.congr_of_eventuallyEq
+      (Eventually.of_forall fun y ↦
+        (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := r) (ΓX y)).symm)
+      (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := r) (ΓX x)).symm
   have hOut :
       ContDiffWithinAt 𝕜 m
         (fun y => (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)).comp (T y)) u x :=

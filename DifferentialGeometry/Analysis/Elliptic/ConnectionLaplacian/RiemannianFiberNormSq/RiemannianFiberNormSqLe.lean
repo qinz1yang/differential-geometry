@@ -7,7 +7,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Function
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -21,7 +20,7 @@ open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [Module.Finite ℝ E] [InnerProductSpace ℝ E]
+  [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
@@ -42,7 +41,6 @@ noncomputable def orthoBasisSumNormSq
   let e : OrthonormalBasis (Fin n) ℝ (TangentSpace I b) := stdOrthonormalBasis ℝ _
   exact ∑ i : Fin n, ‖e i‖ ^ 2
 
-omit [InnerProductSpace ℝ E] in
 lemma orthoBasisSumNormSq_nonneg
     (g : SmoothRiemannianMetric I M) (b : M) :
     0 ≤ orthoBasisSumNormSq (I := I) (M := M) g b := by
@@ -54,25 +52,22 @@ noncomputable def pointwiseBoundScalar
   1 + metricInnerOpNorm (I := I) (M := M) g b +
     orthoBasisSumNormSq (I := I) (M := M) g b
 
-omit [InnerProductSpace ℝ E] in
 lemma pointwiseBoundScalar_nonneg
     (g : SmoothRiemannianMetric I M) (b : M) :
     0 ≤ pointwiseBoundScalar (I := I) (M := M) g b := by
   unfold pointwiseBoundScalar
-  have h2 : 0 ≤ metricInnerOpNorm (I := I) (M := M) g b := norm_nonneg _
+  have h2 := metricInnerOpNorm_nonneg (I := I) (M := M) g b
   have h3 := orthoBasisSumNormSq_nonneg (I := I) (M := M) g b
   linarith
 
-omit [InnerProductSpace ℝ E] in
 lemma pointwiseBoundScalar_one_le
     (g : SmoothRiemannianMetric I M) (b : M) :
     1 ≤ pointwiseBoundScalar (I := I) (M := M) g b := by
   unfold pointwiseBoundScalar
-  have h2 : 0 ≤ metricInnerOpNorm (I := I) (M := M) g b := norm_nonneg _
+  have h2 := metricInnerOpNorm_nonneg (I := I) (M := M) g b
   have h3 := orthoBasisSumNormSq_nonneg (I := I) (M := M) g b
   linarith
 
-omit [InnerProductSpace ℝ E] in
 lemma metricInnerOpNorm_le_pointwiseBoundScalar
     (g : SmoothRiemannianMetric I M) (b : M) :
     metricInnerOpNorm (I := I) (M := M) g b ≤
@@ -81,23 +76,22 @@ lemma metricInnerOpNorm_le_pointwiseBoundScalar
   have h3 := orthoBasisSumNormSq_nonneg (I := I) (M := M) g b
   linarith
 
-omit [InnerProductSpace ℝ E] in
 lemma orthoBasisSumNormSq_le_pointwiseBoundScalar
     (g : SmoothRiemannianMetric I M) (b : M) :
     orthoBasisSumNormSq (I := I) (M := M) g b ≤
       pointwiseBoundScalar (I := I) (M := M) g b := by
   unfold pointwiseBoundScalar
-  have h2 : 0 ≤ metricInnerOpNorm (I := I) (M := M) g b := norm_nonneg _
+  have h2 := metricInnerOpNorm_nonneg (I := I) (M := M) g b
   linarith
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma metric_inner_apply_opNorm_le
     (g : SmoothRiemannianMetric I M) (b : M) (v : TangentSpace I b) :
     ‖g.inner b v‖ ≤ metricInnerOpNorm (I := I) (M := M) g b * ‖v‖ := by
   unfold metricInnerOpNorm
   exact (g.inner b).le_opNorm v
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma omegaK_opNorm_le
     (g : SmoothRiemannianMetric I M) (b : M) (r : ℕ) (n : ℕ)
     (e : Fin n → TangentSpace I b) (K : Fin r → Fin n) :
@@ -129,7 +123,6 @@ private lemma omegaK_opNorm_le
     rw [Finset.prod_mul_distrib]; simp [Finset.prod_const, Finset.card_univ]
   exact hprod_le.trans (le_of_eq hprod_eq)
 
-omit [InnerProductSpace ℝ E] in
 lemma fiberNormSqSummand_le_pointwise_bound
     (g : SmoothRiemannianMetric I M) (b : M) (r s : ℕ)
     (T : TensorRSSpace r s I b)
@@ -142,29 +135,29 @@ lemma fiberNormSqSummand_le_pointwise_bound
             ∏ k : Fin s, ‖e (J k)‖ ^ 2)) := by
   classical
   set omegaK : Tensor0SSpace r I b :=
-    ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-      (fun k => g.inner b (e (K k)))) with homega_def
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+        (fun k => g.inner b (e (K k)))) with homega_def
   set TomegaK : Tensor0SSpace s I b :=
     (T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) omegaK with hTomega_def
   set val : ℝ := TomegaK (fun k => e (J k)) with hval_def
   have h_eval : |val| ≤ ‖TomegaK‖ * ∏ k : Fin s, ‖e (J k)‖ := by
-    have h := (TomegaK :
-        ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ).le_opNorm
-        (fun k => e (J k))
-    have hnorm_eq : ‖TomegaK (fun k => e (J k))‖ = |TomegaK (fun k => e (J k))| := rfl
-    rw [hnorm_eq] at h
-    exact h
+    rw [hval_def]
+    change ‖TomegaK (fun k => e (J k))‖ ≤ ‖TomegaK‖ * ∏ k : Fin s, ‖e (J k)‖
+    exact (TomegaK :
+      ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ).le_opNorm
+      (fun k => e (J k))
   have h_T_apply : ‖TomegaK‖ ≤ ‖T‖ * ‖omegaK‖ := by
     have := tensorRSSpace_norm_apply_le (𝕜 := ℝ) (E := E) (I := I) (M := M)
       (r := r) (s := s) (b := b) T omegaK
     simpa [hTomega_def] using this
   have h_omega_le : ‖omegaK‖ ≤ metricInnerOpNorm (I := I) (M := M) g b ^ r *
       ∏ k : Fin r, ‖e (K k)‖ := by
-    simpa [homega_def] using
-      omegaK_opNorm_le (I := I) (M := M) g b r n e K
+    rw [homega_def]
+    exact omegaK_opNorm_le (I := I) (M := M) g b r n e K
   have hT_nn : 0 ≤ ‖T‖ := norm_nonneg _
   have h_inner_pow_nn : 0 ≤ metricInnerOpNorm (I := I) (M := M) g b ^ r :=
-    pow_nonneg (norm_nonneg _) r
+    pow_nonneg (metricInnerOpNorm_nonneg (I := I) (M := M) g b) r
   have h_prod_K_nn : 0 ≤ ∏ k : Fin r, ‖e (K k)‖ :=
     Finset.prod_nonneg (fun _ _ => norm_nonneg _)
   have h_prod_J_nn : 0 ≤ ∏ k : Fin s, ‖e (J k)‖ :=
@@ -218,7 +211,7 @@ lemma fiberNormSqSummand_le_pointwise_bound
     rw [h_expand, hpow2r, hprodK_sq, hprodJ_sq]; ring
   have h_target_eq : fiberNormSqSummand (I := I) (M := M) g b r s T n e K J = val ^ 2 := by
     unfold fiberNormSqSummand
-    simp [hval_def, hTomega_def, homega_def]
+    rw [Tensor0SSpace.eval_eq]
   rw [h_target_eq]
   exact h_sq.trans (le_of_eq hRHS_alg)
 
@@ -226,13 +219,13 @@ noncomputable def ambientFrameNormSq
     (b : M) (n : ℕ) (e : Fin n → TangentSpace I b) : ℝ :=
   ∑ i : Fin n, ‖e i‖ ^ 2
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma ambientFrameNormSq_nonneg
     (b : M) (n : ℕ) (e : Fin n → TangentSpace I b) :
     0 ≤ ambientFrameNormSq (I := I) (M := M) b n e :=
   Finset.sum_nonneg (fun _ _ => sq_nonneg _)
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma sum_prod_norm_sq_eq_pow
     {b : M} (n : ℕ) (e : Fin n → TangentSpace I b) (r : ℕ) :
     (∑ K : Fin r → Fin n, ∏ k : Fin r, ‖e (K k)‖ ^ 2) =
@@ -240,7 +233,6 @@ private lemma sum_prod_norm_sq_eq_pow
   classical
   rw [Fintype.sum_pow (f := fun (i : Fin n) => ‖e i‖ ^ 2) r]
 
-omit [InnerProductSpace ℝ E] in
 lemma riemannianFiberNormSq_sum_le_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b)
@@ -317,7 +309,6 @@ lemma riemannianFiberNormSq_sum_le_pointwise
   unfold ambientFrameNormSq
   rw [pow_add]
 
-omit [InnerProductSpace ℝ E] in
 lemma riemannianFiberNormSq_eq_sum_witness
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :
@@ -333,16 +324,15 @@ lemma riemannianFiberNormSq_eq_sum_witness
   have hb : Bornology.IsVonNBounded ℝ {v : TangentSpace I b |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded b
-  letI : NormedAddCommGroup (TangentSpace I b) :=
+  let : NormedAddCommGroup (TangentSpace I b) :=
     cd.toNormedAddCommGroupOfTopology hc hb
-  letI : InnerProductSpace ℝ (TangentSpace I b) :=
+  let : InnerProductSpace ℝ (TangentSpace I b) :=
     InnerProductSpace.ofCoreOfTopology cd hc hb
   let n : ℕ := Module.finrank ℝ (TangentSpace I b)
   let e : OrthonormalBasis (Fin n) ℝ (TangentSpace I b) := stdOrthonormalBasis ℝ _
   refine ⟨n, fun i => e i, rfl, ?_⟩
   rfl
 
-omit [InnerProductSpace ℝ E] in
 lemma riemannianFiberNormSq_le_pointwise_witness
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :

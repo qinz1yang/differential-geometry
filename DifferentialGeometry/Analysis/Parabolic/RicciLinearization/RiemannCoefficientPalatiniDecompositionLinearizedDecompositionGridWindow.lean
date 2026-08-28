@@ -25,7 +25,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -141,7 +140,7 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
       ‖(iteratedCovGrad (I := I) g₀ 0 2 k
           (convexPerturbation (I := I) g₀ T 0 1)).toSection x‖) := by
     intro k _
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
     exact norm_nonneg _
@@ -150,7 +149,7 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
   have hcp1 : convexPerturbation (I := I) g₀ T 0 1 = T := by
     rw [convexPerturbation, smul_zero, zero_add, one_smul]
   rw [hcp1, iteratedCovGrad_zero] at h0
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
   have h0' : ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ≤ Csob * R := h0
   have hb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (T.toSection x) =
@@ -191,7 +190,7 @@ theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetri
       ‖(iteratedCovGrad (I := I) g₀ 0 2 k
           (convexPerturbation (I := I) g₀ T 0 1)).toSection x‖) := by
     intro k _
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
     exact norm_nonneg _
@@ -200,7 +199,7 @@ theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetri
   have hcp1 : convexPerturbation (I := I) g₀ T 0 1 = T := by
     rw [convexPerturbation, smul_zero, zero_add, one_smul]
   rw [hcp1] at h1
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   have h1' : ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ ≤ Csob * R := h1

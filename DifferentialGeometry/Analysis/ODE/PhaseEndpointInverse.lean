@@ -5,6 +5,7 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
 noncomputable section
 
+
 open Set Metric
 open scoped ContDiff NNReal Topology
 
@@ -100,7 +101,7 @@ theorem invVel_approx
   calc
     ‖(F (x, y)).2 - (F (x', y)).2 -
         (-(ContinuousLinearMap.id Real E)) (x - x')‖ = ‖R.2‖ := by
-      simp only [R, z, z', Prod.snd_sub, ContinuousLinearMap.neg_apply,
+      simp only [R, z, z', Prod.snd_sub, neg_apply,
         ContinuousLinearMap.id_apply, hfree]
     _ ≤ ‖R‖ := norm_snd_le R
     _ ≤ (c : Real) * ‖z - z'‖ := hfull
@@ -239,10 +240,16 @@ theorem exists_quant_inv_bi [CompleteSpace E]
       e.target
       (‖((freeDiagCLE (E := E)).symm :
           (E × E) →L[Real] (E × E))‖₊ *
-        (‖((freeDiagCLE (E := E)).symm :
+      (‖((freeDiagCLE (E := E)).symm :
           (E × E) →L[Real] (E × E))‖₊⁻¹ - c)⁻¹ * c) := by
-    simpa only [e, s] using
-      (hfo.to_inv (f' := freeDiagCLE (E := E)) hc')
+    unfold e
+    change ApproximatesLinearOn
+      ((hfo.toPartialEquiv hc').symm : E × E → E × E)
+      ((freeDiagCLE (E := E)).symm : (E × E) →L[Real] (E × E))
+      (f '' s)
+      (‖((freeDiagCLE (E := E)).symm : (E × E) →L[Real] (E × E))‖₊ *
+        (‖((freeDiagCLE (E := E)).symm : (E × E) →L[Real] (E × E))‖₊⁻¹ - c)⁻¹ * c)
+    exact hfo.to_inv (f' := freeDiagCLE (E := E)) hc'
   refine ⟨e, δ, hδ, ?_, ?_, ?_, rfl, hinv⟩
   · rfl
   · rfl

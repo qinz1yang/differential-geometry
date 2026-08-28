@@ -122,7 +122,7 @@ private lemma gNorm_triangle
       g.inner x a a + 2 * g.inner x a b + g.inner x b b := by
     have h1 : g.inner x (a + b) (a + b) =
         g.inner x a (a + b) + g.inner x b (a + b) := by
-      rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+      rw [map_add (g.inner x), add_apply]
     have h2 : g.inner x a (a + b) = g.inner x a a + g.inner x a b :=
       map_add (g.inner x a) a b
     have h3 : g.inner x b (a + b) = g.inner x b a + g.inner x b b :=

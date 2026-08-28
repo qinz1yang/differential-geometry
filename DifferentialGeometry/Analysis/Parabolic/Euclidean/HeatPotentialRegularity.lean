@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelHigher
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Convolution
 
+
 noncomputable section
 
 open MeasureTheory Real Set Filter
@@ -32,8 +33,7 @@ theorem heatD1SmulRight_hasFDerivAt (t : Real) (x : V) (f : F) :
       (heatD2SmulRightMap t x f) x := by
   have h := ((ContinuousLinearMap.smulRightL Real V F).flip f).hasFDerivAt.comp
     x (heatD1Map_hasFDeriv t x)
-  simpa only [heatD2SmulRightMap,
-    ContinuousLinearMap.smulRightL_apply_apply] using h
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
 theorem heatD2SmulRightMap_norm_le {t : Real} (ht : 0 < t) (x : V) (f : F) :
@@ -77,9 +77,10 @@ private theorem heatD1LocalMajor_int {t : Real} (ht : 0 < t) (x : V) :
     rw [heq]
     exact h0.add h1
   have hs := (hg.comp_smul (inv_ne_zero (heatScale_pos ht).ne')).comp_sub_left x
-  simpa only [heatD1LocalMajor, g] using hs.const_mul
+  exact (hs.const_mul
     (((heatScale t) ^ Module.finrank Real V)⁻¹ * (heatScale t)⁻¹ *
-      (baseHeatMass V)⁻¹ * Real.exp (1 / 4 : Real))
+      (baseHeatMass V)⁻¹ * Real.exp (1 / 4 : Real))).congr
+        (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
 omit [FiniteDimensional ℝ V] in
@@ -204,9 +205,10 @@ private theorem heatD2LocalMajor_int {t : Real} (ht : 0 < t) (x : V) :
     rw [heq]
     exact h0.add h2
   have hs := (hg.comp_smul (inv_ne_zero (heatScale_pos ht).ne')).comp_sub_left x
-  simpa only [heatD2LocalMajor, g] using hs.const_mul
+  exact (hs.const_mul
     (((heatScale t) ^ Module.finrank Real V)⁻¹ * (heatScale t)⁻¹ *
-      (heatScale t)⁻¹ * (baseHeatMass V)⁻¹ * Real.exp (1 / 4 : Real))
+      (heatScale t)⁻¹ * (baseHeatMass V)⁻¹ * Real.exp (1 / 4 : Real))).congr
+        (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
 omit [FiniteDimensional ℝ V] in
@@ -391,7 +393,7 @@ theorem heatSupGradient_hasFDerivAt {t : Real} (ht : 0 < t)
   let DG : V → V → V →L[Real] (V →L[Real] F) := fun z y =>
     heatD2SmulRightMap t (z - y) (u y)
   let bound : V → Real := fun y => ‖u‖ * heatD2LocalMajor (V := V) t x y
-  letI : SecondCountableTopologyEither V (V →L[Real] (V →L[Real] F)) :=
+  let : SecondCountableTopologyEither V (V →L[Real] (V →L[Real] F)) :=
     secondCountableTopologyEither_of_left V _
   have hs : Metric.ball x (heatScale t) ∈ 𝓝 x :=
     Metric.ball_mem_nhds x (heatScale_pos ht)
@@ -447,12 +449,15 @@ theorem heatSupGradient_hasFDerivAt {t : Real} (ht : 0 < t)
     have hsub : HasFDerivAt (fun q : V => q - y)
         (ContinuousLinearMap.id Real V) z :=
       (hasFDerivAt_id z).sub_const y
-    unfold G DG
-    simpa using (heatD1SmulRight_hasFDerivAt t (z - y) (u y)).comp z hsub
+    change HasFDerivAt (fun q : V => (heatD1Map t (q - y)).smulRight (u y))
+      (heatD2SmulRightMap t (z - y) (u y)) z
+    have hcomp := (heatD1SmulRight_hasFDerivAt t (z - y) (u y)).comp z hsub
+    exact (hcomp.congr_fderiv (by ext; simp)).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have h := hasFDerivAt_integral_of_dominated_of_fderiv_le
     (F := G) (F' := DG) (bound := bound) hs hGmeas hGint hDGmeas
       hbound hboundInt hdiff
-  simpa only [G, DG, heatSupGradient, heatSupHessian] using h
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [CompleteSpace F] in
 theorem heatSup_iteratedFDeriv_two_apply {t : Real} (ht : 0 < t)
@@ -608,7 +613,7 @@ theorem heatSupHessian_apply {t : Real} (ht : 0 < t)
   have heval' : HasFDerivAt (heatD1Sup t v u)
       (L.comp (heatSupHessian t u x)) x := by
     rw [← hfun]
-    simpa only [Function.comp_apply] using heval
+    exact heval.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   have hraw := heatD1Sup_hasFDerivAt ht v u x
   have hmaps := heval'.unique hraw
   have happly := congrArg (fun A : V →L[Real] F => A w) hmaps

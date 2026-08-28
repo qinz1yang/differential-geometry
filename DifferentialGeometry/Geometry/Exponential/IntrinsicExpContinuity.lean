@@ -9,6 +9,7 @@ import Mathlib.Topology.Compactness.Compact
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Set Filter Topology Metric Bundle Manifold Function
@@ -120,7 +121,8 @@ theorem intrinsicGeodesic_arc_finite_chart_cover
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [NeZero (Module.finrank ℝ E)] in
 theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
     (g : SmoothRiemannianMetric I M)
     {γ : ℝ → M} (hγ : IsGeodesic (I := I) g γ) (hγ_cont : Continuous γ) (t : ℝ) :
@@ -255,7 +257,6 @@ omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem flowProj_continuousOn
-    [I.Boundaryless]
     {α : M} {Φ : (E × E) × ℝ → E × E} {z₀ : E × E} {ρ T : ℝ}
     {N : Type*} [TopologicalSpace N] {z : N → E × E} {S : Set N}
     (hΦ : ContinuousOn Φ ((Metric.ball z₀ ρ) ×ˢ Set.Ioo (-T) T))
@@ -393,7 +394,7 @@ private theorem dist_le_of_speed_bound_on_Icc
             continuousWithinAt_const
         have hφ_within : ContinuousWithinAt (fun r => dist (c r) z₀) (Set.Ico 0 t0) t0 := by
           simpa only [dist_eq_norm] using hsub_cwa.norm
-        haveI : (nhdsWithin t0 (Set.Ico (0:ℝ) t0)).NeBot := by
+        have : (nhdsWithin t0 (Set.Ico (0:ℝ) t0)).NeBot := by
           rw [← mem_closure_iff_nhdsWithin_neBot, closure_Ico (ne_of_lt h0)]
           exact ⟨ht0_nonneg, le_refl _⟩
         refine le_of_tendsto hφ_within.tendsto ?_
@@ -428,7 +429,7 @@ private theorem dist_le_of_speed_bound_on_Icc
           have h1 : t1 ≤ t0 + δ / 2 := min_le_left _ _
           linarith [hs.2]
         have hres := hδ_sub hs_time
-        rw [Set.mem_preimage, Set.mem_setOf_eq] at hres
+        rw [Set.mem_preimage, Set.mem_ofPred_eq] at hres
         exact le_of_lt hres
     exact absurd (le_csSup hG_bdd ht1_G) (not_le.mpr ht1_gt)
   intro s hs
@@ -495,7 +496,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem flowOrbit_speed_confined_uniform
     (g : SmoothRiemannianMetric I M) (α : M)
-    {N : Type*} [TopologicalSpace N]
+    {N : Type*}
     {Φ : (E × E) × ℝ → E × E} {z₀ : E × E} {z : N → E × E} {S : Set N}
     {R ρ Mb T_f : ℝ}
     (hMpos : 0 < Mb) (hRρ : ρ < R) (hT_f : 0 < T_f)
@@ -512,7 +513,7 @@ private theorem flowOrbit_speed_confined_uniform
   have hmin : min T_f ((R - ρ) / Mb) = (R - ρ) / Mb := min_eq_right (le_of_lt hdivlt)
   have hconf := orbit_speed_confined_fwd g α (c := fun τ => Φ (z v, τ)) (z₀ := z₀)
     (R := R) (ρ := ρ) (T_f := T_f) hMpos hRρ hT_f
-    (by change dist (Φ (z v, 0)) z₀ ≤ ρ; rw [hΦinit v hv]; exact hz_ball v hv)
+    (by rw [hΦinit v hv]; exact hz_ball v hv)
     (fun s' hs' => by
       rw [hmin] at hs'
       have hs'_Ioo : s' ∈ Set.Ioo (-T_f) T_f :=
@@ -608,7 +609,15 @@ private theorem flowOrbit_cutoff_confined_symm
       (fun u hu => by
         have hu_Ioo : -u ∈ Set.Ioo (-εPL) εPL :=
           ⟨by linarith [hu.2, hdivlt], by linarith [hu.1, hεPL]⟩
-        simpa using ((hderiv (-u) hu_Ioo).scomp u ((hasDerivAt_id u).neg)).hasDerivWithinAt)
+        change HasDerivWithinAt (orbit ∘ Neg.neg)
+          (-(chartPhaseVFTime (I := I) g α z₀ b (-u) (orbit (-u))))
+          (Set.Icc 0 T') u
+        have hwithin : HasDerivWithinAt (orbit ∘ Neg.neg)
+            ((-1 : ℝ) • chartPhaseVFTime (I := I) g α z₀ b (-u) (orbit (-u)))
+            (Set.Icc 0 T') u :=
+          ((hderiv (-u) hu_Ioo).scomp u
+            ((hasDerivAt_id u).neg)).hasDerivWithinAt
+        simpa only [neg_one_smul] using hwithin)
       (fun u _ hds => by
         have hin : orbit (-u) ∈ Metric.closedBall z₀ b.rIn := by
           rw [Metric.mem_closedBall]
@@ -712,7 +721,7 @@ omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem geodesic_chartPhaseVF_on_open
-    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless]
     {g : SmoothRiemannianMetric I M} {α : M} {γ : ℝ → M}
     (hγ : IsGeodesic (I := I) g γ) (hγ_cont : Continuous γ)
     {U : Set ℝ} (hU_open : IsOpen U)
@@ -994,7 +1003,6 @@ private theorem intrinsicGeodesic_window_of_junction_data
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p)
@@ -1291,7 +1299,6 @@ private theorem intrinsicVelocityLift_window_of_junction_data
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p)
@@ -1813,7 +1820,6 @@ private theorem intrinsicVelocityLift_continuousOn_step
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p) (τ : ℝ)
@@ -2165,7 +2171,9 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
       rw [hK_def, Set.mem_Ioo] at ht
       exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
     have hd := (hφ_phase (t - tₖ) hts).scomp t ((hasDerivAt_id t).sub_const tₖ)
-    simpa [hphiS_def] using hd
+    change HasDerivAt (φ ∘ fun x : ℝ => x - tₖ)
+      (chartPhaseVF (I := I) g α (φ (t - tₖ))) t
+    simpa [Function.comp_def] using hd
   have hphiS_tgt : ∀ t ∈ K, (phiS t).1 ∈ interior (extChartAt I α).target := by
     intro t ht
     have hts : t - tₖ ∈ Set.Ioo (-T') T' := by
@@ -2241,7 +2249,11 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
       obtain ⟨hderiv, htgt⟩ := hgeo (t₀ + r) hr
       refine ⟨?_, ?_, Set.mem_univ _⟩
       · have hsd : HasDerivAt (fun r : ℝ => t₀ + r) 1 r := (hasDerivAt_id r).const_add t₀
-        simpa [hc₁_def, hcγ_def, Function.comp, one_smul] using hderiv.scomp r hsd
+        change HasDerivAt (cγ ∘ fun s : ℝ => t₀ + s)
+          (chartPhaseVF (I := I) g α (cγ (t₀ + r))) r
+        simp only [hcγ_def]
+        with_unfolding_all
+          simpa only [Function.comp_def, one_smul] using hderiv.scomp r hsd
       · simpa [hc₁_def, hcγ_def] using htgt
     have hd2 : ∀ᶠ r in nhds (0:ℝ),
         HasDerivAt c₂ (chartPhaseVF (I := I) g α (c₂ r)) r ∧
@@ -2251,7 +2263,10 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
       filter_upwards [hr_K] with r hr
       refine ⟨?_, ?_, Set.mem_univ _⟩
       · have hsd : HasDerivAt (fun r : ℝ => t₀ + r) 1 r := (hasDerivAt_id r).const_add t₀
-        simpa [hc₂_def, Function.comp, one_smul] using (hphiS_phase (t₀ + r) hr).scomp r hsd
+        change HasDerivAt (phiS ∘ fun s : ℝ => t₀ + s)
+          (chartPhaseVF (I := I) g α (phiS (t₀ + r))) r
+        simpa [Function.comp_def, one_smul] using
+          (hphiS_phase (t₀ + r) hr).scomp r hsd
       · simpa [hc₂_def] using hphiS_tgt (t₀ + r) hr
     have huniq : c₁ =ᶠ[nhds (0:ℝ)] c₂ :=
       chartPhaseVF_orbit_uniqueness (I := I) hz₀_mem hc₁0 hc₂0 hd1 hd2
@@ -2371,7 +2386,6 @@ private theorem intrinsicVelocityLift_window_of_flow
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p)
@@ -2610,7 +2624,6 @@ private theorem intrinsicVelocityLift_window_base
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p) :
@@ -2751,7 +2764,6 @@ private theorem intrinsicVelocityLift_step_uniformWidth
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    [CompleteSpace E]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p) (α : M) (τ : ℝ)
@@ -2858,7 +2870,7 @@ theorem intrinsicGeodesic_jointContinuity
           intrinsicGeodesic (I := I) g hEnorm p vt.1 vt.2)
         ((Metric.ball v₀ ρ) ×ˢ Set.Icc (0 : ℝ) 1) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have key : ∀ t ∈ Set.Icc (0:ℝ) 1, ∃ r₀ a c : ℝ, 0 < r₀ ∧ t ∈ Set.Ioo a c ∧
       ContinuousOn (fun vs : TangentSpace I p × ℝ =>
         intrinsicVelocityLift (I := I) g hEnorm p vs.1 vs.2)
@@ -3145,20 +3157,20 @@ theorem expMapIntrinsic_continuous_of_complete_metric
     let hEnorm : IsMetricNorm (I := I) (M := M) g :=
       fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
     Continuous (fun v : TangentSpace I p => expMapIntrinsic (I := I) g hEnorm p v) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M :=
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
     (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
-  letI : CompleteSpace M := hcomplete.complete
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

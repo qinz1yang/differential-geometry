@@ -290,7 +290,7 @@ theorem gagliardoNirenbergTwoAnchor (g₀ : SmoothRiemannianMetric I M) (r s : �
         (s + (1 + d)) x ((iteratedCovGrad (I := I) g₀ r s (1 + d) Ψ).toSection x),
       ← SmoothCcTensor.toFun_apply (I := I) (M := M)
         (iteratedCovGrad (I := I) g₀ r s (1 + d) Ψ) x]
-  haveI : MeasureTheory.IsFiniteMeasureOnCompacts
+  have : MeasureTheory.IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g₀
   have hint : ∀ p : ℝ, 0 ≤ p → MeasureTheory.Integrable (fun x => F x ^ p)
@@ -444,7 +444,7 @@ theorem gnProdJet (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) :
   have hcfsum : ∑ j ∈ t, ((c j : ℝ)) = (m : ℝ) + 1 := by
     rw [← Nat.cast_sum, hsum]; push_cast; ring
   obtain ⟨θ, hθsum, hθband⟩ := gnFreeWt t (fun j => (c j : ℝ)) (m : ℝ) hmR1
-    (fun j hj => by change ((c j : ℕ) : ℝ) ≤ (m : ℝ); exact_mod_cast (hcltm j hj).le)
+    (fun j hj => by exact_mod_cast (hcltm j hj).le)
     (by exact_mod_cast hQ2) hcfsum
   have hθpos : ∀ j ∈ t, 0 < θ j := by
     intro j hj

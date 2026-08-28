@@ -3,6 +3,7 @@
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.PreEstimate
 import Mathlib.Topology.MetricSpace.Thickening
 
+
 /-!
 # Moser Iteration Layer
 
@@ -42,7 +43,7 @@ theorem C_Moser_le_C_weakHarnack0 :
       simpa [Real.norm_of_nonneg hq_nonneg] using hq_lt_one
     have hexp_nonneg :
         0 ≤ ∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n := by
-      exact tsum_nonneg fun n => mul_nonneg (by exact_mod_cast Nat.zero_le n)
+      exact tsum_nonneg fun n => mul_nonneg (Nat.cast_nonneg n)
                                    (pow_nonneg hq_nonneg n)
     have hbase_ge_one : 1 ≤ moserChi d ^ 2 := by
       exact one_le_pow₀ (one_le_moserChi (d := d) hd)

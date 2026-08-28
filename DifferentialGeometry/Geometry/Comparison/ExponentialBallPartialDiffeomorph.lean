@@ -106,13 +106,14 @@ theorem exists_exponential_ball_partial_diffeomorph
   exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on hloc Metric.isOpen_ball
     (injOn_expMap_ball_of_ofReal_lt_injRadius (I := I) g p hr)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exponential_map_is_local_diffeomorph_on_ball
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hr : r ≤ expMapC2Radius (I := I) g p) :
     IsLocalDiffeomorphOn 𝓘(ℝ, E) I 1
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (Metric.ball (0 : E) r) := by
-  haveI : IsManifold I 1 M := by
+  have : IsManifold I 1 M := by
     have h1 : (1 : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast (by decide : (1 : ℕ∞) ≤ ⊤)
     exact IsManifold.of_le h1
   rintro ⟨x, hx⟩
@@ -124,6 +125,7 @@ theorem exponential_map_is_local_diffeomorph_on_ball
   exact ⟨NormalCoordinates.expMapDiffeo (I := I) g p, hsrc,
     fun y hy => (NormalCoordinates.expMapDiffeo_apply_eq (I := I) g p hy).symm⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_exponential_ball_partial_diffeomorph_of_lt
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hrinj : ENNReal.ofReal r < injRadius (I := I) g p)
@@ -174,7 +176,7 @@ theorem framed_exponential_map_is_local_diffeomorph_on_ball
     IsLocalDiffeomorphOn 𝓘(ℝ, E) I 1
       (framedExpMap (I := I) g p)
       (Metric.ball (0 : E) r) := by
-  haveI : IsManifold I 1 M := by
+  have : IsManifold I 1 M := by
     have h1 : (1 : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast (by decide : (1 : ℕ∞) ≤ ⊤)
     exact IsManifold.of_le h1
   rintro ⟨x, hx⟩

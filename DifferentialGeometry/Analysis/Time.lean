@@ -88,7 +88,8 @@ theorem isSmoothFam_sum (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     td.isSmoothFam (∑ i ∈ s, f i) := by
   induction s using Finset.cons_induction with
   | empty =>
-      simpa using td.isSmoothFam_const (0 : R)
+      change td.isSmoothFam (fun _ => (0 : R))
+      exact td.isSmoothFam_const 0
   | cons a s' ha ih =>
       rw [Finset.sum_cons]
       exact td.isSmoothFam_add _ _

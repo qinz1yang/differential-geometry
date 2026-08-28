@@ -38,7 +38,7 @@ theorem klLatePiece_int {T R : ℝ} {A₁ A_q : ℝ≥0}
   have hf : MemLp f (ENNReal.ofReal (klQReal V)) μ := by
     simpa only [klQReal_ofReal] using
       (klPieceSrc_mem (V := V) h c hR hRT hS)
-  letI : ENNReal.HolderConjugate
+  let : ENNReal.HolderConjugate
       (ENNReal.ofReal (klQDual V)) (ENNReal.ofReal (klQReal V)) :=
     (klQ_holder (V := V)).ennrealOfReal
   exact memLp_one_iff_integrable.mp (hf.smul hk)
@@ -77,11 +77,11 @@ theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
         have hy₀' : y ∈ S ∧ y ∈ Metric.ball c R := by
           simpa only [S₀, Set.mem_inter_iff] using hy₀
         have hy₁' : y ∈ S ∧ y ∉ Metric.ball c R := by
-          simpa only [S₁, Set.mem_diff] using hy₁
+          simpa only [S₁, Set.mem_sdiff] using hy₁
         exact hy₁'.2 hy₀'.2
       have hsplit : S₀ ∪ S₁ = S := by
         ext y
-        simp only [S₀, S₁, Set.mem_union, Set.mem_inter_iff, Set.mem_diff]
+        simp only [S₀, S₁, Set.mem_union, Set.mem_inter_iff, Set.mem_sdiff]
         tauto
       have hS₀ball : S₀ ⊆ Metric.ball c R := by
         intro y hy
@@ -95,7 +95,7 @@ theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
       have hcover₁ : S₁ ⊆ ⋃ d ∈ s, Metric.ball d R := by
         intro y hy
         have hy' : y ∈ S ∧ y ∉ Metric.ball c R := by
-          simpa only [S₁, Set.mem_diff] using hy
+          simpa only [S₁, Set.mem_sdiff] using hy
         exact (hcover' hy'.1).resolve_left hy'.2
       have hfar₁ : ∀ y ∈ S₁, k * R ≤ ‖x - y‖ := by
         intro y hy

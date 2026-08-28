@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -38,6 +37,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [CompactSpace M] in
 theorem frame_offDiag_curvature_sum_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
@@ -90,6 +90,7 @@ theorem frame_offDiag_curvature_sum_fiberNormSq_le
         rw [hcard, hconst_sum]
     _ = (Module.finrank ℝ E : ℝ) ^ 2 * Cx * rS := by ring
 
+omit [CompactSpace M] in
 theorem exists_frame_offDiag_curvature_sum_fiberNormSq_bound
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M)
     (a : Fin (Module.finrank ℝ E)) :

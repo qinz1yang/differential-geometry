@@ -233,6 +233,7 @@ theorem tensorResolventEigenbasisVec_orthonormal
         (I := I) (M := M) h_compact μ).orthonormal
   have h_sig := h_fam.orthonormal_sigma_orthonormal h_each
   convert h_sig using 1
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma span_tensorResolventEigenbasisVec_le_iSup_eigenspace
@@ -263,7 +264,7 @@ private lemma tensorResolventEigenspace_le_span_tensorResolventEigenbasisVec
         (tensorResolventEigenbasisVec
           (I := I) (M := M) (g := g) (r := r) (s := s) h_compact)) := by
   intro x hx
-  letI : FiniteDimensional ℝ
+  let : FiniteDimensional ℝ
       (tensorResolventEigenspace (I := I) (M := M) g r s μ.val) :=
     μ.finiteDimensional_ofCompact h_compact
   set b := tensorResolventEigenspaceONB

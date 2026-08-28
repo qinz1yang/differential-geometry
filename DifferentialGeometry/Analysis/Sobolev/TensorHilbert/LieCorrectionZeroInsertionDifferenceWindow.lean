@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.TameArmJets
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -191,10 +190,10 @@ theorem lieCorrectionZeroInsDiffAntidiagonalTupleGridWindow
     intro om
     dsimp only [AD]
     rw [insAlphaDiff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
-      Pi.sub_apply, ContinuousLinearMap.sub_apply]
+      Pi.sub_apply, sub_apply]
     simp only [cometricRaiseSlot0Field_toSection]
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply]
+      sub_apply]
     rfl
   have hslot : endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 N =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 0 AD := by

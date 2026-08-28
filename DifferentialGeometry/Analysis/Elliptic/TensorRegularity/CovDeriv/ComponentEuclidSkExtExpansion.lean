@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -56,11 +55,11 @@ private theorem chartPushedRaw_eqOn_covDerivComponentEuclid_uniform
           (covDerivComponentEuclid (I := I) (M := M) g r s α T₀ k Idx Jdx)
           V := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
     tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
     tensorRSBundle_fiber r s
   obtain ⟨S_k_ext, U, hU_open, hb₀_U, hU_sub_good, hU_eq⟩ :=
@@ -129,8 +128,10 @@ private theorem chartPushedRaw_eqOn_covDerivComponentEuclid_uniform
         (LeviCivita (I := I) g)).toFun T₀.toSection b
         (chartBasisVecFiber (I := I) α k b) =
       tensorCovDerivAt (I := I) (M := M) g r s T₀ b
-        (chartBasisVecFiber (I := I) α k b) := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartBasisVecFiber (I := I) α k b)) := by
     rw [tensorCovDerivAt_def]
+    simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [hCovDerivAt]
   exact tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
     (I := I) (M := M) g r s T₀ α k (b := b) hb_good
@@ -451,7 +452,7 @@ theorem covDerivComponentEuclid_S_k_ext_eq_iteratedFDeriv_T₀_add_lowerOrder
                 (covDerivLowerOrderTerm (I := I) (M := M) g r s T₀ α k Idx Jdx) y := by
       rw [euclidPartial_def, euclidPartial_def, euclidPartial_def]
       rw [fderiv_fun_add h1_diff h2_diff]
-      rw [ContinuousLinearMap.add_apply]
+      rw [add_apply]
     rw [hSplit]
 
 end TensorRegularity

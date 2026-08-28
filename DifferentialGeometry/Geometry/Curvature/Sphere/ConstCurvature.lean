@@ -31,10 +31,10 @@ theorem metricRm04_round_invariant
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x W) := by
   by_cases hn : n = 0
   · subst n
-    letI : Subsingleton (TangentSpace (𝓡 0) x) := by
+    let : Subsingleton (TangentSpace (𝓡 0) x) := by
       change Subsingleton (EuclideanSpace ℝ (Fin 0))
       infer_instance
-    letI : Subsingleton (TangentSpace (𝓡 0) (sphereDiffeo (n := 0) e x)) := by
+    let : Subsingleton (TangentSpace (𝓡 0) (sphereDiffeo (n := 0) e x)) := by
       change Subsingleton (EuclideanSpace ℝ (Fin 0))
       infer_instance
     have hX : X = 0 := Subsingleton.elim _ _
@@ -61,13 +61,13 @@ theorem metricRm04_round_invariant
       (roundMetric (E := E) (n := 0)) x).map_coord_zero 0 rfl).trans
         ((metricRm04At (I := 𝓡 0) (M := sphere (0 : E) 1)
           (roundMetric (E := E) (n := 0)) (sphereDiffeo (n := 0) e x)).map_coord_zero 0 rfl).symm
-  · letI : NeZero n := ⟨hn⟩
-    haveI : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
+  · let : NeZero n := ⟨hn⟩
+    have : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
       rw [finrank_euclideanSpace_fin]
       infer_instance
-    haveI : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
+    have : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
-    haveI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
+    have : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
     have h := metricRm04Std_pullback (roundMetric (E := E) (n := n))
       (sphereDiffeo (n := n) e) x X Y Z W
@@ -80,7 +80,7 @@ theorem roundMetric_sec_value (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n
       = (roundMetric (E := E) (n := n)).inner x X X * (roundMetric (E := E) (n := n)).inner x Y Y
         - (roundMetric (E := E) (n := n)).inner x X Y * (roundMetric (E := E) (n := n)).inner x X
           Y := by
-  haveI : IsManifold (𝓡 n) ∞ (sphere (0 : E) 1) :=
+  have : IsManifold (𝓡 n) ∞ (sphere (0 : E) 1) :=
     EuclideanSpace.instIsManifoldSphere.of_le le_top
   obtain ⟨Xc, hXc, hXcx⟩ :=
     exists_contMDiffSection_eventuallyEq_tangentConstAt (I := 𝓡 n) x X
@@ -133,7 +133,7 @@ theorem round_riemann_one (x : sphere (0 : E) 1)
         (roundMetric (E := E) (n := n)).inner x X Z • Y := by
   by_cases hn : n = 0
   · subst n
-    letI : Subsingleton (TangentSpace (𝓡 0) x) := by
+    let : Subsingleton (TangentSpace (𝓡 0) x) := by
       change Subsingleton (EuclideanSpace ℝ (Fin 0))
       infer_instance
     have hX : X = 0 := Subsingleton.elim _ _
@@ -143,14 +143,14 @@ theorem round_riemann_one (x : sphere (0 : E) 1)
     subst Y
     subst Z
     simp
-  · letI : NeZero n := ⟨hn⟩
-    haveI : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
+  · let : NeZero n := ⟨hn⟩
+    have : IsManifold (𝓡 n) 1 (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
-    haveI : IsManifold (𝓡 n) 2 (sphere (0 : E) 1) :=
+    have : IsManifold (𝓡 n) 2 (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
-    haveI : IsManifold (𝓡 n) 3 (sphere (0 : E) 1) :=
+    have : IsManifold (𝓡 n) 3 (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
-    haveI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
+    have : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
     have hRm :
         ∀ A B C D : TangentSpace (𝓡 n) x,

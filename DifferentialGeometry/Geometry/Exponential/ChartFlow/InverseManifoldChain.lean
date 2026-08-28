@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowToTangentLift
+import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -25,7 +27,6 @@ section ChartPhaseAtZeroSection
 
 variable [I.Boundaryless]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem eventually_hasDerivAt_chartPhaseVF_at_zero_section
     {g : SmoothRiemannianMetric I M} {α : M} {s₀ : ℝ}
@@ -56,17 +57,32 @@ theorem eventually_hasDerivAt_chartPhaseVF_at_zero_section
     (mem_chartAt_modelProd_zero_source_iff (I := I) α (f s)).mpr hs_src
   have hf_extsrc : f s ∈ (extChartAt I.tangent q₀).source := by
     rw [extChartAt_source]; exact hf_chsrc
-  rw [hasDerivAt_iff_hasFDerivAt, ← hasMFDerivAt_iff_hasFDerivAt]
-  apply (HasMFDerivAt.comp s (hasMFDerivAt_extChartAt (I := I.tangent) hf_chsrc)
-    hHas).congr_mfderiv
-  rw [ContinuousLinearMap.ext_iff]
+  rw [hasDerivAt_iff_hasFDerivAt]
+  refine (DifferentialGeometry.HasMFDerivAt.hasFDerivAt_model
+    (HasMFDerivAt.comp s (hasMFDerivAt_extChartAt (I := I.tangent) hf_chsrc)
+      hHas)).congr_fderiv ?_
+  refine (tangentLinearMapToModel_comp _ _).trans ?_
+  apply ContinuousLinearMap.ext
   intro a
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply, map_smul,
-    ← ContinuousLinearMap.one_apply (R₁ := ℝ) a, ← ContinuousLinearMap.smulRight_apply,
-    mfderiv_chartAt_eq_tangentCoordChange hf_chsrc]
-  rw [hq₀_def]
-  simp only [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.one_apply]
+  change tangentLinearMapToModel (I := I.tangent) (I' := I.tangent)
+      (mfderiv I.tangent I.tangent (chartAt (ModelProd H E) q₀) (f s)) _ = _
+  change tangentLinearMapToModel (I := I.tangent) (I' := I.tangent)
+      (mfderiv I.tangent I.tangent (chartAt (ModelProd H E) q₀) (f s))
+        (a • tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f s)
+          (geodesicVectorFieldChart (I := I) g α (f s))) = _
+  have hchartMap :
+      tangentLinearMapToModel (I := I.tangent) (I' := I.tangent)
+          (mfderiv I.tangent I.tangent (chartAt (ModelProd H E) q₀) (f s)) =
+        tangentCoordChange I.tangent (f s) q₀ (f s) := by
+    apply ContinuousLinearMap.ext
+    intro z
+    rw [tangentLinearMapToModel_apply,
+      mfderiv_chartAt_eq_tangentCoordChange hf_chsrc]
+    rfl
+  rw [hchartMap, map_smul, ContinuousLinearMap.toSpanSingleton_apply]
   congr 1
+  rw [tangentSpaceModelContinuousLinearEquiv_apply]
+  rw [hq₀_def]
   trans (geodesicVectorFieldChartFiber (I := I) g α (f s))
   · exact tangentCoordChange_tangent_geodesicVF (I := I) g α (f s) hs_src
   · symm
@@ -165,7 +181,13 @@ private lemma local_lift_eventuallyEq_chartFlowOrbitLift
       simpa using (hasDerivAt_id τ).const_add s₀
     have hcomp := hτD.scomp τ h_shift
     simp only [one_smul] at hcomp
-    convert hcomp using 1
+    rw [hc₂_def]
+    change HasDerivAt
+      ((fun s' : ℝ => Φ (((extChartAt I p p, v) : E × E), s')) ∘
+        fun τ : ℝ => s₀ + τ)
+      (chartPhaseVF (I := I) g p
+        (Φ (((extChartAt I p p, v) : E × E), s₀ + τ))) τ
+    exact hcomp
   have hd_c₁ : ∀ᶠ τ in 𝓝 (0 : ℝ),
       HasDerivAt c₁ (chartPhaseVF (I := I) g p (c₁ τ)) τ ∧
       c₁ τ ∈ (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
@@ -220,7 +242,15 @@ private lemma local_lift_eventuallyEq_chartFlowOrbitLift
       simpa using (hasDerivAt_id τ).const_add s₀
     have hcomp := hτD.scomp τ h_shift
     simp only [one_smul] at hcomp
-    convert hcomp using 1
+    rw [hc₁_def]
+    change HasDerivAt
+      ((fun s' : ℝ => extChartAt I.tangent
+        (⟨p, (0 : E)⟩ : TangentBundle I M) (g_loc s')) ∘
+          fun τ : ℝ => s₀ + τ)
+      (chartPhaseVF (I := I) g p
+        (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)
+          (g_loc (s₀ + τ)))) τ
+    exact hcomp
   have hc_eq : c₁ =ᶠ[𝓝 (0 : ℝ)] c₂ :=
     chartPhaseVF_orbit_uniqueness (I := I) (g := g) (α := p)
       (c₁ := c₁) (c₂ := c₂) (z₀ := z₀) hz₀_interior hc₁_zero hc₂_zero hd_c₁ hd_c₂

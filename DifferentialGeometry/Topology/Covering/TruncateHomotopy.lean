@@ -108,10 +108,10 @@ lemma truncateOfLE_homotopic_subpath
     change γ.extend (linParam t₀ t₁ s) = ((γ.subpath ⟨t₀, ht₀⟩ ⟨t₁, ht₁⟩).cast _ _) s
     rw [_root_.Path.cast_coe]
     change γ.extend (linParam t₀ t₁ s)
-        = γ (Icc.convexCombo (⟨t₀, ht₀⟩ : I) ⟨t₁, ht₁⟩ s)
+        = γ (Icc.convexComb (⟨t₀, ht₀⟩ : I) ⟨t₁, ht₁⟩ s)
     unfold linParam
     have hmem : ((1 - (s : ℝ)) * t₀ + (s : ℝ) * t₁) ∈ (Icc 0 1 : Set ℝ) :=
-      (Icc.convexCombo (⟨t₀, ht₀⟩ : I) ⟨t₁, ht₁⟩ s).2
+      (Icc.convexComb (⟨t₀, ht₀⟩ : I) ⟨t₁, ht₁⟩ s).2
     rw [_root_.Path.extend_apply _ hmem]
     congr
   case prop =>
@@ -219,12 +219,12 @@ lemma Path.trans_truncate_homotopic
       (p := fun i => γ (t i : I))
       (p' := fun i => γ.extend ((t i : I) : ℝ))
       hpEq' G
-    convert this using 1
+    simpa only [concatTrans, hG'def] using this
   have hConcat_G_subpath :
       (_root_.Path.concat (fun i => γ (t i : I)) G).Homotopic
         (γ.subpath (t 0) (t (Fin.last k))) := by
     have := _root_.Path.Homotopic.concat_subpath γ t
-    convert this using 1
+    simpa only [hGdef, Function.comp_def] using this
   have h0 : a = γ.extend ((t 0 : I) : ℝ) := by rw [ht0]; simp
   have hk : b = γ.extend ((t (Fin.last k) : I) : ℝ) := by rw [htlast]; simp
   have h0' : a = γ (t 0 : I) := by rw [ht0]; simp
@@ -234,7 +234,7 @@ lemma Path.trans_truncate_homotopic
     apply _root_.Path.ext
     ext s
     rw [_root_.Path.cast_coe]
-    change γ (Icc.convexCombo (t 0 : I) (t (Fin.last k) : I) s) = γ s
+    change γ (Icc.convexComb (t 0 : I) (t (Fin.last k) : I) s) = γ s
     congr 1
     apply Subtype.ext
     simp [ht0, htlast]

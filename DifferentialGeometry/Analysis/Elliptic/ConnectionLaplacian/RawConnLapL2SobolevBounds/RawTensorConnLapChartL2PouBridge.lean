@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open MeasureTheory
@@ -499,7 +498,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   ‖rawTensorConnLap (I := I) g r s T₀ x‖ ^ 2)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
             congr 1
-            exact lintegral_finset_sum _ (fun α _ => by
+            exact lintegral_finsetSum _ (fun α _ => by
               have hρ_cont :
                   Continuous (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) :=
                 ((chartAtlasPOU I M α)).contMDiff.continuous

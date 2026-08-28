@@ -146,7 +146,7 @@ private lemma eLpNorm_finsetSum_le_const_mul_atomSum
       (f := fun p => eLpNorm (atom p) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)))
-      (fun p _ => zero_le _) (hproj j hj)
+      (fun p _ => zero_le) (hproj j hj)
   have h_const : ∑ _j ∈ s, ENNReal.ofReal C
         * ∑ p ∈ t, eLpNorm (atom p) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -317,7 +317,7 @@ private lemma partialLpLimit_ae_zero_off_chartPouKernel_weighted
         chartTargetEuclid (I := I) (M := M) α =
         chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α := by
-      rw [Set.diff_eq, Set.inter_comm]
+      rw [Set.sdiff_eq, Set.inter_comm]
     rw [h_inter]
     filter_upwards [h_weak_sdiff] with y hy using hy
   have h_weak_w : ∀ᵐ y ∂((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -381,7 +381,7 @@ private lemma partialLpLimit_memLp_weighted
         chartTargetEuclid (I := I) (M := M) α =
         chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α := by
-      rw [Set.diff_eq, Set.inter_comm]
+      rw [Set.sdiff_eq, Set.inter_comm]
     rw [h_inter]
     filter_upwards [h_weak_sdiff] with y hy using hy
   have h_atom_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),

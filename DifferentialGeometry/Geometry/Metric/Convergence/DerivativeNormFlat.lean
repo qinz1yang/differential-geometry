@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestrictio
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Topology.SigmaCompactOpen
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -34,6 +36,8 @@ private theorem codRestr_mdiffAt
   refine ⟨Topology.IsInducing.subtypeVal.continuousAt_iff.mpr
     (by simpa [Function.comp_def] using hcont), ?_⟩
   convert hdiff using 2
+  funext y
+  rfl
 
 def nestedOpen {U V : Opens M} : Opens U :=
   ⟨Subtype.val ⁻¹' (V : Set M), V.isOpen.preimage continuous_subtype_val⟩
@@ -83,7 +87,10 @@ private theorem flatNested_mfderiv {U V : Opens M} (hVU : V ≤ U) (x : V) :
       (mfderiv I I (F : V → nestedOpen (M := M) (U := U) (V := V)) x) at hcomp
   rw [mfderiv_opens_incl (I := I) hVU x,
     mfderiv_subtype_val (I := I) (nestedOpen (M := M) (U := U) (V := V)) (F x)] at hcomp
-  simpa [F] using hcomp.symm
+  ext v
+  have hv := DFunLike.congr_fun hcomp v
+  change v = mfderiv I I (F : V → nestedOpen (M := M) (U := U) (V := V)) x v at hv
+  exact hv.symm
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [SigmaCompactSpace M] in
@@ -124,8 +131,8 @@ private theorem norm_eq_of_pull
     {P Q : Type*} [TopologicalSpace P] [ChartedSpace H P]
     [TopologicalSpace Q] [ChartedSpace H Q]
     [IsManifold I ∞ P] [IsManifold I ∞ Q]
-    [SigmaCompactSpace P] [T2Space P] [BoundarylessManifold I P]
-    [SigmaCompactSpace Q] [T2Space Q] [BoundarylessManifold I Q]
+    [T2Space P]
+    [T2Space Q]
     [IsManifold I 1 P] [IsManifold I 2 P]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) P]
     [IsManifold I 1 Q] [IsManifold I 2 Q]
@@ -148,9 +155,9 @@ private theorem norm_eq_of_pull
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricDerivNorm_flat
-    [I.Boundaryless] {U V : Opens M} (hVU : V ≤ U)
+    {U V : Opens M} (hVU : V ≤ U)
     [SigmaCompactSpace U] [T2Space U]
-    [SigmaCompactSpace V] [T2Space V]
+    [T2Space V]
     (gk gInf gRef : SmoothRiemannianMetric I U) (a : Nat) (x : V) :
     metricDerivNorm (I := I) a
         (gk.restrictOpenOfSubset (I := I) hVU)
@@ -158,20 +165,20 @@ theorem metricDerivNorm_flat
         (gRef.restrictOpenOfSubset (I := I) hVU) x =
       metricDerivNorm (I := I) a gk gInf gRef (Opens.inclusion hVU x) := by
   let W := nestedOpen (M := M) (U := U) (V := V)
-  letI : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
-  letI : IsManifold I 1 V :=
+  let : IsManifold I 1 V :=
     IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
-  letI : IsManifold I 2 V :=
+  let : IsManifold I 2 V :=
     IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) V := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) V := by
     change IsManifold I ∞ V
     infer_instance
-  letI : IsManifold I 1 W :=
+  let : IsManifold I 1 W :=
     IsManifold.of_le (I := I) (M := W) (n := ∞) (by decide)
-  letI : IsManifold I 2 W :=
+  let : IsManifold I 2 W :=
     IsManifold.of_le (I := I) (M := W) (n := ∞) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) W := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) W := by
     change IsManifold I ∞ W
     infer_instance
   let F := flatNestedDiffeo (H := H) (I := I) (M := M) hVU

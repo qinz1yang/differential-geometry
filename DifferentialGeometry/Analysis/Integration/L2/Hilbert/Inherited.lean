@@ -7,7 +7,6 @@ import Mathlib.Analysis.InnerProductSpace.Completion
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix

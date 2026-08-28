@@ -48,7 +48,6 @@ open CurvatureCoefficientDifferenceJetTower
 section TopOrderSeparatedResidualIntegrator
 
 
-set_option backward.isDefEq.respectTransparency false
 
 theorem atgGridIntRs
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
@@ -71,7 +70,7 @@ theorem atgGridIntRs
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
               K i * (1 + ‖iteratedCovGrad (I := I) g₀ r s i P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set Cgn : ℕ → ℝ := fun k =>
     if h : 1 ≤ k then
@@ -171,14 +170,14 @@ theorem atgGridIntRs
           riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
             ((iteratedCovGrad (I := I) g₀ r s (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro n hn
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro e he
       exact (hPT n hn e he).1
     refine ⟨hgrid_int, ?_⟩
-    rw [MeasureTheory.integral_finset_sum _
-      (fun n hn => MeasureTheory.integrable_finset_sum _ (fun e he => (hPT n hn e he).1))]
+    rw [MeasureTheory.integral_finsetSum _
+      (fun n hn => MeasureTheory.integrable_finsetSum _ (fun e he => (hPT n hn e he).1))]
     have hinner : ∀ n ∈ Finset.range (i + 1),
         (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n i, ∏ m : Fin n,
             riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
@@ -189,7 +188,7 @@ theorem atgGridIntRs
               ((iteratedCovGrad (I := I) g₀ r s (e m) P).toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀) := by
       intro n hn
-      exact MeasureTheory.integral_finset_sum _ (fun e he => (hPT n hn e he).1)
+      exact MeasureTheory.integral_finsetSum _ (fun e he => (hPT n hn e he).1)
     rw [Finset.sum_congr rfl hinner]
     have hle1 : ∑ n ∈ Finset.range (i + 1), ∑ e ∈ Finset.Nat.antidiagonalTuple n i,
           (∫ x, ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
@@ -267,11 +266,11 @@ theorem bfGridWinIntRs
                 ‖iteratedCovGrad (I := I) g₀ r s j P‖ ^ 2) +
                 Ktop i * ‖iteratedCovGrad (I := I) g₀ r s (i + 2) P‖ ^ 2 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kt, hKt_nn, hKt⟩ := atgGridIntRs (I := I) (M := M) g₀ r s hΛ₀0
   refine ⟨fun i => ∑ k ∈ Finset.range (i + 3), Kt k,
@@ -299,10 +298,10 @@ theorem bfGridWinIntRs
   have hWcont : Continuous (fun x =>
       Combinatorics.boundedFactorGridWindow (b x) (i + 1) (i + 3)) := by
     simp only [Combinatorics.boundedFactorGridWindow, Combinatorics.boundedFactorGrid]
-    refine continuous_finset_sum _ (fun k _ => ?_)
-    refine continuous_finset_sum _ (fun n _ => ?_)
-    refine continuous_finset_sum _ (fun e _ => ?_)
-    exact continuous_finset_prod _ (fun m _ => hcont (e m))
+    refine continuous_finsetSum _ (fun k _ => ?_)
+    refine continuous_finsetSum _ (fun n _ => ?_)
+    refine continuous_finsetSum _ (fun e _ => ?_)
+    exact continuous_finsetProd _ (fun m _ => hcont (e m))
   have hint : MeasureTheory.Integrable
       (fun x => Combinatorics.boundedFactorGridWindow (b x) (i + 1) (i + 3))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
@@ -320,7 +319,7 @@ theorem bfGridWinIntRs
   have hmaj_int : MeasureTheory.Integrable
       (fun x => ∑ k ∈ Finset.range (i + 3), Combinatorics.antidiagonalTupleGrid (b x) k)
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    MeasureTheory.integrable_finset_sum _ (fun k _ => hint_k k)
+    MeasureTheory.integrable_finsetSum _ (fun k _ => hint_k k)
   have hmono : ∀ x : M,
       Combinatorics.boundedFactorGridWindow (b x) (i + 1) (i + 3) ≤
         ∑ k ∈ Finset.range (i + 3), Combinatorics.antidiagonalTupleGrid (b x) k := by
@@ -329,7 +328,7 @@ theorem bfGridWinIntRs
     exact Finset.sum_le_sum (fun k _ =>
       Combinatorics.boundedFactorGrid_le_antidiagonalTupleGrid (b x) (hb x) (i + 1) k)
   refine le_trans (MeasureTheory.integral_mono hint hmaj_int hmono) ?_
-  rw [MeasureTheory.integral_finset_sum _ (fun k _ => hint_k k)]
+  rw [MeasureTheory.integral_finsetSum _ (fun k _ => hint_k k)]
   have hstep1 : (∑ k ∈ Finset.range (i + 3),
         ∫ x, Combinatorics.antidiagonalTupleGrid (b x) k
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤

@@ -39,8 +39,8 @@ theorem sobolev_intrinsic
                     (gradFun (I := I) g u x)))
                 (ENNReal.ofReal p) (riemannianVolumeMeasure I M g)) := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  let _ : BorelSpace M := ⟨rfl⟩
   have hp_enn : (1 : ENNReal) ≤ ENNReal.ofReal p := by
     rw [← ENNReal.ofReal_one]
     exact ENNReal.ofReal_le_ofReal hp_one
@@ -106,10 +106,10 @@ theorem sobolev_lpNorm
                     (gradFun (I := I) g u x)))
                 (ENNReal.ofReal p) (riemannianVolumeMeasure I M g)) := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  let _ : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure I M g
-  letI : IsFiniteMeasure μ := by
+  let _ : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -127,8 +127,10 @@ theorem sobolev_lpNorm
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
       (grad_g (I := I) g ⟨_, hu⟩) (grad_g (I := I) g ⟨_, hu⟩)
-    exact Real.continuous_sqrt.comp (by
-      simpa only [gradNorm, grad_g_apply] using hinner)
+    have hinner' : Continuous (fun x ↦
+        g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g u x)) :=
+      hinner.congr (fun _ ↦ rfl)
+    exact Real.continuous_sqrt.comp hinner'
   have hu_mem : MemLp u (ENNReal.ofReal p) μ := by
     exact hu.continuous.memLp_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
@@ -171,7 +173,7 @@ theorem sobolev_two_lpNorm
                     (gradFun (I := I) g u x)
                     (gradFun (I := I) g u x)))
                 2 (riemannianVolumeMeasure I M g)) := by
-  letI : NeZero (Module.finrank Real E) := ⟨by
+  let _ : NeZero (Module.finrank Real E) := ⟨by
     intro hzero
     simp only [hzero, Nat.cast_zero] at hdim
     linarith⟩
@@ -251,8 +253,8 @@ theorem sobolev_two_integral
                   (gradFun (I := I) g u x)
                 ∂(riemannianVolumeMeasure I M g)) := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  let _ : BorelSpace M := ⟨rfl⟩
   obtain ⟨C, hC, hSob⟩ := sq_sobolev_two_lpNorm (I := I) (M := M) g hdim
   refine ⟨C, hC, ?_⟩
   intro u hu
@@ -268,8 +270,10 @@ theorem sobolev_two_integral
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
       (grad_g (I := I) g ⟨u, hu⟩) (grad_g (I := I) g ⟨u, hu⟩)
-    exact Real.continuous_sqrt.comp (by
-      simpa only [gradNorm, grad_g_apply] using hinner)
+    have hinner' : Continuous (fun x ↦
+        g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g u x)) :=
+      hinner.congr (fun _ ↦ rfl)
+    exact Real.continuous_sqrt.comp hinner'
   have hgrad_l2 : lpNorm gradNorm 2 μ ^ 2 =
       ∫ x, g.inner x
           (gradFun (I := I) g u x)

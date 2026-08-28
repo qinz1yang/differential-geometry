@@ -136,7 +136,7 @@ theorem iterCovComp_eq_iterCov
               (frameComp0S (I := I) (iterCov (I := I) gRef r T a) frame) x := by
         funext m d
         simp only [frameExtData]
-        refine extDerivFun_eventuallyEq_congr (I := I) _ ?_
+        refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevela.mono fun y hy => congrFun hy m
       have hbase :
           iterCovComp (I := I) frame

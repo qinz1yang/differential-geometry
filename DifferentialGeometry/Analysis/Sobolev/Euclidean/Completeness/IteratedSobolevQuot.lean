@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.Iter
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology
 open scoped ENNReal NNReal
@@ -95,6 +94,13 @@ def EuclidWkpQ
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] : Type _ :=
   Quotient (euclidWkpSetoid (d := d) k p hp Ω)
 
+def emk
+    (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)]
+    (u : EuclidWkp (d := d) k p hp Ω) :
+    EuclidWkpQ (d := d) k p hp Ω :=
+  Quotient.mk (euclidWkpSetoid (d := d) k p hp Ω) u
+
 def ezero
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] :
@@ -147,8 +153,7 @@ theorem emk_erep
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)]
     (a : EuclidWkpQ (d := d) k p hp Ω) :
-    Quotient.mk (euclidWkpSetoid (d := d) k p hp Ω)
-        (erep (d := d) k p hp Ω a) = a :=
+    emk (d := d) k p hp Ω (erep (d := d) k p hp Ω a) = a :=
   Quotient.out_eq a
 
 private theorem eadd_zero
@@ -395,7 +400,7 @@ private theorem enorm_eq_zero
     change iteratedWeakSobolevNorm (d := d) k p u.1 Ω = 0 at hzero
     rw [hzero] at heLp_le
     have heLp : eLpNorm u.1 p (volume.restrict Ω) = 0 :=
-      le_antisymm heLp_le (zero_le _)
+      le_antisymm heLp_le (zero_le)
     have hp_zero : p ≠ 0 := ne_of_gt (lt_of_lt_of_le (by norm_num) hp)
     have hae : u.1 =ᵐ[volume.restrict Ω] 0 :=
       (eLpNorm_eq_zero_iff u.2.memLp.aestronglyMeasurable hp_zero).mp heLp
@@ -416,7 +421,7 @@ private theorem enorm_eq_zero
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] :
     Norm (EuclidWkpQ (d := d) k p hp Ω) :=
   ewkpNormInst (d := d) k p hp Ω
-private noncomputable def ewkpCore
+private theorem ewkpCore
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] :
     @NormedSpace.Core ℝ (EuclidWkpQ (d := d) k p hp Ω)
@@ -479,14 +484,13 @@ def ewkpDist
   (ewkpNorm (d := d) k p hp Ω (esub k p hp Ω a b)).toReal
 
 theorem ewkpComplete
-    [NeZero d]
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] :
     @CompleteSpace (EuclidWkpQ (d := d) k p hp Ω)
       (ewkpNormedGroup (d := d) k p hp Ω).toUniformSpace := by
-  letI : NormedAddCommGroup (EuclidWkpQ (d := d) k p hp Ω) :=
+  let : NormedAddCommGroup (EuclidWkpQ (d := d) k p hp Ω) :=
     ewkpNormedGroup (d := d) k p hp Ω
-  letI : NormedSpace ℝ (EuclidWkpQ (d := d) k p hp Ω) :=
+  let : NormedSpace ℝ (EuclidWkpQ (d := d) k p hp Ω) :=
     ewkpNormedSpace (d := d) k p hp Ω
   let rep : ℕ → EuclidWkpQ (d := d) k p hp Ω →
       EuclidWkp (d := d) k p hp Ω := fun _ => erep (d := d) k p hp Ω
@@ -519,7 +523,7 @@ theorem ewkpComplete
     (u := fun n => (rep n (u n)).1)
     (fun n => (rep n (u n)).2) hrep_cauchy
   let vq : EuclidWkpQ (d := d) k p hp Ω :=
-    Quotient.mk (euclidWkpSetoid (d := d) k p hp Ω) ⟨v, hv_mem⟩
+    emk (d := d) k p hp Ω ⟨v, hv_mem⟩
   refine ⟨vq, ?_⟩
   apply tendsto_iff_dist_tendsto_zero.mpr
   have hreal := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hv
@@ -529,7 +533,7 @@ theorem ewkpComplete
     funext n
     have hu := emk_erep (d := d) k p hp Ω (u n)
     let qrep : EuclidWkpQ (d := d) k p hp Ω :=
-      Quotient.mk (euclidWkpSetoid (d := d) k p hp Ω) (rep n (u n))
+      emk (d := d) k p hp Ω (rep n (u n))
     rw [dist_eq_norm]
     calc
       ‖u n - vq‖ = ‖qrep - vq‖ :=

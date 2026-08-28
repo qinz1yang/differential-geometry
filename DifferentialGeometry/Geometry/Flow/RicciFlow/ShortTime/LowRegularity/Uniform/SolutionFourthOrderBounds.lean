@@ -192,14 +192,46 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_fo
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
       hK.hreal hK.core_cont hK.htame hG3
-      (by simpa only [R, hreal] using hpair3'') fseq
+      (by
+        intro F c hc
+        have hc' : ‖galLowView (I := I) (M := M) g 1
+            (finiteEigenComboHs (I := I) (M := M) g F c
+              (((1 : ℕ) : ℝ) + 2))‖ ≤ R := by
+          exact hc
+        have haction :
+            galerkinActionVectorBackground (I := I) (M := M) g gBase
+                (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
+                  K.outer_pos K.realize_pos).le K.threshold_lt
+                (lowRegularityMetricRealization (I := I) (M := M) g
+                  K.realize_pos.le hK.hreal) F c =
+              galerkinActionVectorBackground (I := I) (M := M) g gBase hR
+                K.threshold_lt hreal F c := by
+          rfl
+        rw [haction]
+        exact hpair3'' F c hc') fseq
       (fun N => (hpack N).2.1) (fun N => (hpack N).2.2.1) hL2H3
   obtain ⟨Φ4, Φ5, hΦ4, hΦ5⟩ :=
     exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background_of_pairing_bound (I := I) (M := M) g gBase hT
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
       hK.hreal hK.core_cont hK.htame hG4
-      (by simpa only [R, hreal] using hpair4'') fseq
+      (by
+        intro F c hc
+        have hc' : ‖galLowView (I := I) (M := M) g 1
+            (finiteEigenComboHs (I := I) (M := M) g F c
+              (((1 : ℕ) : ℝ) + 2))‖ ≤ R := by
+          exact hc
+        have haction :
+            galerkinActionVectorBackground (I := I) (M := M) g gBase
+                (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
+                  K.outer_pos K.realize_pos).le K.threshold_lt
+                (lowRegularityMetricRealization (I := I) (M := M) g
+                  K.realize_pos.le hK.hreal) F c =
+              galerkinActionVectorBackground (I := I) (M := M) g gBase hR
+                K.threshold_lt hreal F c := by
+          rfl
+        rw [haction]
+        exact hpair4'' F c hc') fseq
       (fun N => (hpack N).2.1) (fun N => (hpack N).2.2.1) hΦ3 hΦD4
   let U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ :=
     galerkinSolutionMode (I := I) (M := M) g fseq

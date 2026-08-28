@@ -50,21 +50,33 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
     have h' : -(S.base.rm04 t x) (vec4 (basis 0) (basis 1) (basis 0) (basis 1)) =
         (S.base.rm04 t x) (vec4 (basis 0) (basis 1) (basis 1) (basis 0)) := by
       simpa using (hcurv.anti_last 0 1 0 1).symm
-    simpa [vec4, tensor04StdAt] using congrArg Neg.neg h'
+    rw [show (fun a : Fin 4 => basis (slots4 0 1 0 1 a)) =
+      vec4 (basis 0) (basis 1) (basis 0) (basis 1) by
+        funext a
+        fin_cases a <;> simp [slots4, vec4]]
+    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg h'
   have h02 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 0 2 0 2 a)) =
       -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 2) (basis 2) (basis 0) := by
     have h' : -(S.base.rm04 t x) (vec4 (basis 0) (basis 2) (basis 0) (basis 2)) =
         (S.base.rm04 t x) (vec4 (basis 0) (basis 2) (basis 2) (basis 0)) := by
       simpa using (hcurv.anti_last 0 2 0 2).symm
-    simpa [vec4, tensor04StdAt] using congrArg Neg.neg h'
+    rw [show (fun a : Fin 4 => basis (slots4 0 2 0 2 a)) =
+      vec4 (basis 0) (basis 2) (basis 0) (basis 2) by
+        funext a
+        fin_cases a <;> simp [slots4, vec4]]
+    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg h'
   have h12 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 1 2 1 2 a)) =
       -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 1) (basis 2) (basis 2) (basis 1) := by
     have h' : -(S.base.rm04 t x) (vec4 (basis 1) (basis 2) (basis 1) (basis 2)) =
         (S.base.rm04 t x) (vec4 (basis 1) (basis 2) (basis 2) (basis 1)) := by
       simpa using (hcurv.anti_last 1 2 1 2).symm
-    simpa [vec4, tensor04StdAt] using congrArg Neg.neg h'
+    rw [show (fun a : Fin 4 => basis (slots4 1 2 1 2 a)) =
+      vec4 (basis 1) (basis 2) (basis 1) (basis 2) by
+        funext a
+        fin_cases a <;> simp [slots4, vec4]]
+    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg h'
   have h10' : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 1 0 1 0 a)) =
       -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 1) (basis 1) (basis 0) := by
@@ -74,7 +86,11 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
     have hswap : (S.base.rm04 t x) (vec4 (basis 1) (basis 0) (basis 0) (basis 1)) =
         (S.base.rm04 t x) (vec4 (basis 0) (basis 1) (basis 1) (basis 0)) := by
       simpa using (hcurv.block_symm 1 0 0 1).symm
-    simpa [vec4, tensor04StdAt] using congrArg Neg.neg (hlast.trans hswap)
+    rw [show (fun a : Fin 4 => basis (slots4 1 0 1 0 a)) =
+      vec4 (basis 1) (basis 0) (basis 1) (basis 0) by
+        funext a
+        fin_cases a <;> simp [slots4, vec4]]
+    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
   have h20' : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 2 0 2 0 a)) =
       -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 2) (basis 2) (basis 0) := by
@@ -84,7 +100,11 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
     have hswap : (S.base.rm04 t x) (vec4 (basis 2) (basis 0) (basis 0) (basis 2)) =
         (S.base.rm04 t x) (vec4 (basis 0) (basis 2) (basis 2) (basis 0)) := by
       simpa using (hcurv.block_symm 2 0 0 2).symm
-    simpa [vec4, tensor04StdAt] using congrArg Neg.neg (hlast.trans hswap)
+    rw [show (fun a : Fin 4 => basis (slots4 2 0 2 0 a)) =
+      vec4 (basis 2) (basis 0) (basis 2) (basis 0) by
+        funext a
+        fin_cases a <;> simp [slots4, vec4]]
+    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
   have h21' : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 2 1 2 1 a)) =
       -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 1) (basis 2) (basis 2) (basis 1) := by
@@ -94,7 +114,11 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
     have hswap : (S.base.rm04 t x) (vec4 (basis 2) (basis 1) (basis 1) (basis 2)) =
         (S.base.rm04 t x) (vec4 (basis 1) (basis 2) (basis 2) (basis 1)) := by
       simpa using (hcurv.block_symm 2 1 1 2).symm
-    simpa [vec4, tensor04StdAt] using congrArg Neg.neg (hlast.trans hswap)
+    rw [show (fun a : Fin 4 => basis (slots4 2 1 2 1 a)) =
+      vec4 (basis 2) (basis 1) (basis 2) (basis 1) by
+        funext a
+        fin_cases a <;> simp [slots4, vec4]]
+    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
   have hdiag0 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 0 0 0 0 a)) = 0 := by
     have h : standardRmCompAt (I := I) basis (S.base.rm04 t x) 0 0 0 0 =
         -standardRmCompAt (I := I) basis (S.base.rm04 t x) 0 0 0 0 :=
@@ -151,12 +175,8 @@ theorem scalar_eq_two_mul_sum_orderedSectionalCurvaturesAt
             (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues i := by
       unfold orderedSectionalCurvaturesAt Matrix.IsHermitian.eigenvalues
       let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
-      have hsum := Fintype.sum_equiv e.symm
-        (f := fun i => (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀
-          (e.symm i))
-        (g := fun i => (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀ i)
-        (by intro i; rfl)
-      simpa [e, Matrix.IsHermitian.eigenvalues] using hsum.symm
+      exact (e.symm.sum_comp
+        (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀).symm
     rw [hperm]
     simpa [A, orderedSectionalCurvaturesAt] using
       (curvatureOperatorMatrixAt_eigenvalues_trace_eq_sectionalSum
@@ -211,6 +231,10 @@ theorem curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
   have hM : M.IsHermitian := by
     dsimp [M]
     exact curvatureOperatorMatrixAt_isHermitian (I := I) x basis A
+  have hM_canonical :
+      hM = (show M.IsHermitian from
+        curvatureOperatorMatrixAt_isHermitian (I := I) x basis A) :=
+    Subsingleton.elim _ _
   have hmin : -K ≤ orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
     have hiff := (curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
       (I := I) (S.base.metric t0) x basis horth A K).mp hinit
@@ -226,10 +250,17 @@ theorem curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
     (I := I) x basis A
   refine ⟨hM, ?_⟩
   · rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hM]
+    rw [hM_canonical]
     dsimp [M]
     rw [htrace]
-    simpa [A, M, orderedSectionalCurvaturesAt, pinchHeight3, sectionalSum3,
-      Fin.sum_univ_three] using hbar
+    rw [Fin.sum_univ_three]
+    change hamiltonIveyConvexBarrier K 0
+        (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
+      sectionalSum3
+        (orderedSectionalCurvaturesAt (I := I) x basis A 0)
+        (orderedSectionalCurvaturesAt (I := I) x basis A 1)
+        (orderedSectionalCurvaturesAt (I := I) x basis A 2)
+    exact hbar
 
 omit [SigmaCompactSpace M] in
 theorem scalar_ge_two_mul_negative_sectional_barrier
@@ -406,7 +437,13 @@ private theorem canonicalScalarRegularOn_timeShift
         ((D.timeShift t0).carrier ×ˢ (Set.univ : Set M)) := by
       fun_prop
     have hcomp := hreg.scalar_continuousOn.comp hcont hmaps
-    simpa [SolutionOn.timeShift_scalar] using hcomp
+    have hfun :
+        ((fun q : Real × M => S.scalar q.1 q.2) ∘ fun q => (q.1 + t0, q.2)) =
+          fun q : Real × M => (S.timeShift t0).scalar q.1 q.2 := by
+      funext q
+      exact congrFun (SolutionOn.timeShift_scalar S t0 q.1).symm q.2
+    rw [hfun] at hcomp
+    exact hcomp
   scalar_time_within := by
     intro K t ht hsub x
     have htcar : t + t0 ∈ D.carrier := by
@@ -424,7 +461,13 @@ private theorem canonicalScalarRegularOn_timeShift
       simpa [RealTimeInterval.timeShift_carrier] using hs'
     have hcomp := HasDerivWithinAt.comp (h₂ := fun r : Real => S.scalar r x)
       (h := fun s : Real => s + t0) (x := t) hf hg hmaps
-    simpa [SolutionOn.timeShift_scalar, Function.comp_apply] using hcomp.differentiableWithinAt
+    have hfun :
+        ((fun r : Real => S.scalar r x) ∘ fun s => s + t0) =
+          fun s => (S.timeShift t0).scalar s x := by
+      funext s
+      exact congrFun (SolutionOn.timeShift_scalar S t0 s).symm x
+    rw [hfun] at hcomp
+    exact hcomp.differentiableWithinAt
   scalar_space := by
     intro t ht x
     have ht' : t + t0 ∈ D.carrier := by
@@ -490,7 +533,7 @@ private theorem scalarEvolutionEquationOn_timeShift
   intro t x
   have htreg : (t : Real) + t0 ∈ D.regular := by
     have ht' : (t : Real) ∈ (D.timeShift t0).regular := t.property
-    simpa only [RealTimeInterval.timeShift_regular, Set.mem_setOf_eq] using ht'
+    simpa only [RealTimeInterval.timeShift_regular, Set.mem_ofPred_eq] using ht'
   have hevol := hS.scalarEvolution (flowG (I := I) S) (by intro u; rfl) (by intro u; rfl)
     ⟨(t : Real) + t0, htreg⟩ x
   have hg : HasDerivWithinAt (fun s : Real => s + t0) 1 (D.timeShift t0).carrier (t : Real) := by
@@ -518,7 +561,13 @@ private theorem scalarEvolutionEquationOn_timeShift
       SolutionOn.family
     rfl
   rw [hlap_eq, hnorm_eq] at hcomp
-  simpa [SolutionOn.timeShift_scalar, Function.comp_apply] using hcomp
+  have hfun :
+      ((fun r : Real => S.scalar r x) ∘ fun s => s + t0) =
+        fun s => (S.timeShift t0).scalar s x := by
+    funext s
+    exact congrFun (SolutionOn.timeShift_scalar S t0 s).symm x
+  rw [hfun] at hcomp
+  exact hcomp
 
 omit [SigmaCompactSpace M] in
 private theorem scalarLowerBoundWMPRegularity_timeShift
@@ -564,7 +613,14 @@ private theorem scalarLowerBoundWMPRegularity_timeShift
         (fun _p : Real × M => c0)
         (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
       exact continuous_const.continuousOn
-    simpa [scalarLowerBarrier] using hconst.div hden_cont hden_ne
+    have hdiv := hconst.div hden_cont hden_ne
+    have hfun :
+        (fun p : Real × M => scalarLowerBarrier n c0 p.1) =
+          (fun _p : Real × M => c0) / fun p => 1 - (2 / n) * c0 * p.1 := by
+      funext p
+      rfl
+    rw [hfun]
+    exact hdiv
   refine
     { weighted_cont := ?_
       weighted_mdiff := ?_
@@ -579,15 +635,35 @@ private theorem scalarLowerBoundWMPRegularity_timeShift
       have hlin : Continuous
           (fun p : Real × M => -((K : Real) * p.1)) :=
         (continuous_const.mul continuous_fst).neg
-      simpa using (Real.continuous_exp.comp hlin).continuousOn
+      have hcomp : ContinuousOn
+          (Real.exp ∘ fun p : Real × M => -((K : Real) * p.1))
+          (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) :=
+        (Real.continuous_exp.comp hlin).continuousOn
+      have hfun :
+          (Real.exp ∘ fun p : Real × M => -((K : Real) * p.1)) =
+            fun p => Real.exp (-(K : Real) * p.1) := by
+        funext p
+        rw [Function.comp_apply]
+        congr 1
+        ring
+      rw [← hfun]
+      exact hcomp
     exact hexp_cont.mul (hscalar_cont.sub hbar_cont)
   · intro t ht x
     have hdiff :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => (S.timeShift t0).scalar t y - scalarLowerBarrier n c0 t) x :=
       (hreg.scalar_space t (hsubset t ht) x).sub mdifferentiableAt_const
-    simpa [smul_eq_mul] using
-      (hdiff.const_smul (Real.exp (-(K : Real) * t)))
+    have hsmul := hdiff.const_smul (Real.exp (-(K : Real) * t))
+    have hfun :
+        (Real.exp (-(K : Real) * t) •
+            fun y : M => (S.timeShift t0).scalar t y - scalarLowerBarrier n c0 t) =
+          fun y => Real.exp (-(K : Real) * t) *
+            ((S.timeShift t0).scalar t y - scalarLowerBarrier n c0 t) := by
+      funext y
+      rfl
+    rw [hfun] at hsmul
+    exact hsmul
   · intro t ht x
     rw [hmetric t ht]
     exact hreg.scalar_grad_const_mul_sub_const t (hsubset t ht)
@@ -612,7 +688,11 @@ private theorem initialScalarLowerBound_shifted
         (I := I) (S.family.metric t0) x⟩ K) :
     InitialScalarLowerBound (M := M) (fun t x => S.scalar (t + t0) x) (-6 * K) := by
   intro x
-  have h := scalar_initial_lower (I := I) (M := M) S (by simpa using hdim)
+  have hdimT : Module.finrank Real (TangentSpace I x) = 3 :=
+    calc
+      Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
+      _ = 3 := hdim
+  have h := scalar_initial_lower (I := I) (M := M) S hdimT
     (by simpa [SolutionOn.family_metric] using hinit x)
   have hsc : -6 * K ≤ S.scalar t0 x := by
     simpa using h
@@ -689,8 +769,13 @@ private theorem scalarLowerBarrier_le_shifted_scalar
       (scalarLowerBoundWMPRegularity_timeShift (I := I) (M := M) S hS t0 T 3 (-6 * K) K'
         hslab' hden_ne')
   have hevol' : ScalarEvolutionEquationOn (D := D.timeShift t0) scalar' scalarLap' ricciNormSq' := by
-    simpa [scalar', scalarLap', ricciNormSq', G', S'] using
-      scalarEvolutionEquationOn_timeShift (I := I) (M := M) S hS t0
+    change ScalarEvolutionEquationOn (D := D.timeShift t0)
+      (S.timeShift t0).scalar
+      (fun t x => DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I)
+        (flowG (I := I) (S.timeShift t0)) t ((S.timeShift t0).scalar t) x)
+      (fun t x => normSq0S (I := I) ((S.timeShift t0).family.metric t) x 2
+        ((S.timeShift t0).ricci t x))
+    exact scalarEvolutionEquationOn_timeShift (I := I) (M := M) S hS t0
   have hlap' : ScalarLaplacianRealizesHeatOperatorOn (I := I) G' T scalar' scalarLap' :=
     ScalarLaplacianRealizesHeatOperatorOn.of_laplacianAt
       (I := I) (G := G') (T := T) (scalar := scalar') (scalarLap := scalarLap')
@@ -701,7 +786,7 @@ private theorem scalarLowerBarrier_le_shifted_scalar
       (1 / 3 : Real) * (scalar' t x) ^ 2 <= ricciNormSq' t x := by
     intro t _ht x
     classical
-    letI : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
+    let _ : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
       ⟨⟨0, by simp [hdim]⟩⟩
     let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
       Real
@@ -714,7 +799,7 @@ private theorem scalarLowerBarrier_le_shifted_scalar
         DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
           (I := I) (S'.family.metric t) x k l (extChartAt I x x)
     have hinv :
-        Tensor0SBundle.MetricInverseInBasis (I := I) (S'.family.metric t) x
+        Tensor0SBundle.MetricInverseInBasis_gen (I := I) (S'.family.metric t) x
           basis gInv := by
       simpa [basis, gInv] using
         Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -730,12 +815,17 @@ private theorem scalarLowerBarrier_le_shifted_scalar
       simp [DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hdim]
     have hcoef : ((Module.finrank Real E : Real)⁻¹) = (3⁻¹ : Real) := by
       simp [hdim]
-    simpa [scalar', ricciNormSq', S', SolutionOn.scalar_eq_metricTrace,
+    have hricci : S'.ricci t x = S'.ricciAt t x := rfl
+    simpa only [scalar', ricciNormSq', SolutionOn.scalar_eq_metricTrace,
+      hricci,
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hcard, hcoef]
       using h
   have hinit' : InitialScalarLowerBound (M := M) scalar' (-6 * K) := by
-    simpa [scalar', S', SolutionOn.timeShift_scalar] using
-      (initialScalarLowerBound_shifted (I := I) (M := M) S hdim hinit)
+    have hscalar' : scalar' = fun t x => S.scalar (t + t0) x := by
+      funext t x
+      exact congrFun (SolutionOn.timeShift_scalar S t0 t) x
+    rw [hscalar']
+    exact initialScalarLowerBound_shifted (I := I) (M := M) S hdim hinit
   have hmain : ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M,
       scalarLowerBarrier 3 (-6 * K) t <= scalar' t x :=
     scalar_curvature_lower_bound_of_scalarEvolution_of_regularity
@@ -744,7 +834,9 @@ private theorem scalarLowerBarrier_le_shifted_scalar
       scalar' scalarLap' ricciNormSq' K'
       hslab' hregular' hden'
       hreg' hevol' hlap' hricci' hinit' hK'
-  simpa [scalar', S'] using hmain
+  change ∀ s : Real, s ∈ Set.Icc 0 T → ∀ x : M,
+    scalarLowerBarrier 3 (-6 * K) s ≤ scalar' s x
+  exact hmain
 
 omit [SigmaCompactSpace M] in
 theorem scalar_curvature_lower_bound_of_curvature_operator_lower_bound
@@ -788,7 +880,11 @@ theorem scalar_curvature_initial_lower_bound
         (I := I) (S.family.metric t0) x⟩ K) :
     ∀ x : M, -6 * K ≤ S.scalar t0 x := by
   intro x
-  have h := scalar_initial_lower (I := I) (M := M) S (by simpa using hdim)
+  have hdimT : Module.finrank Real (TangentSpace I x) = 3 :=
+    calc
+      Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
+      _ = 3 := hdim
+  have h := scalar_initial_lower (I := I) (M := M) S hdimT
     (by simpa [SolutionOn.family_metric] using hinit x)
   simpa using h
 
@@ -906,7 +1002,9 @@ theorem curvatureOperatorRegionPropagationOn_initial
     nlinarith [ht.1, ht.2]
   subst t
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    calc
+      Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
+      _ = 3 := hdim
   obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) (S.base.metric t0) x hdimT
   refine ⟨basis, horth, ?_⟩
   simpa using curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
@@ -950,7 +1048,12 @@ theorem scalar_curvature_lower_and_negative_barrier_of_curvatureOperatorRegionPr
       have hbar_trace : hamiltonIveyConvexBarrier K (t - t0)
           (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
           (curvatureOperatorMatrixAt (I := I) x basis A).trace := by
-        simpa [A, pinchHeight3] using hbar
+        have heigen : hM.eigenvalues₀ 2 =
+            orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
+          unfold orderedSectionalCurvaturesAt A
+          rfl
+        rw [heigen] at hbar
+        simpa only [A, pinchHeight3] using hbar
       have hbar_sum : hamiltonIveyConvexBarrier K (t - t0)
           (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
           ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i := by
@@ -984,7 +1087,12 @@ theorem scalar_curvature_lower_and_negative_barrier_of_curvatureOperatorRegionPr
       have hbar_ordered : hamiltonIveyConvexBarrier K (t - t0)
           (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
           (curvatureOperatorMatrixAt (I := I) x basis A).trace := by
-        simpa [A, pinchHeight3] using hbar
+        have heigen : hM.eigenvalues₀ 2 =
+            orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
+          unfold orderedSectionalCurvaturesAt A
+          rfl
+        rw [heigen] at hbar
+        simpa only [A, pinchHeight3] using hbar
       have hbar_trace : hamiltonIveyConvexBarrier K (t - t0)
           (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
           ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i := by
@@ -1049,7 +1157,12 @@ theorem hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagationO
   have hbar_ordered : hamiltonIveyConvexBarrier K (t - t0)
       (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
       (curvatureOperatorMatrixAt (I := I) x basis A).trace := by
-    simpa [A, pinchHeight3] using hbar
+    have heigen : hM.eigenvalues₀ 2 =
+        orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
+      unfold orderedSectionalCurvaturesAt A
+      rfl
+    rw [heigen] at hbar
+    simpa only [A, pinchHeight3] using hbar
   have hbar_trace : hamiltonIveyConvexBarrier K (t - t0)
       (pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis A 2)) ≤
       ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i := by

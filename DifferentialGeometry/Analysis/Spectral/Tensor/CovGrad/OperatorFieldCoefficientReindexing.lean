@@ -3,7 +3,6 @@ import DifferentialGeometry.Tensor.Multilinear.Basis
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
@@ -83,8 +82,9 @@ theorem reindexCoeffFibGen_contMDiff (g₀ : SmoothRiemannianMetric I M) (r s : 
     rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
     change (ContinuousMultilinearMap.domDomCongr σ'
         (Tensor0SSpace.toModel (Y x)))
-        (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-          ((Module.finBasis ℝ E) (τ j))) = _
+        (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
+            ((Module.finBasis ℝ E) (τ j)))) = _
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     rfl
   have hRY := ContMDiff.clm_bundle_apply (b := id) R.toSection.contMDiff hYσ

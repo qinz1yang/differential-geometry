@@ -262,7 +262,13 @@ private lemma transportFromUnitBall_memLp
   let h : E ≃ₜ E := (Homeomorph.addRight (-x₀)).trans
     (Homeomorph.smulOfNeZero R⁻¹ (inv_ne_zero hR.ne'))
   have hS_emb : MeasurableEmbedding S := by
-    convert h.toMeasurableEquiv.measurableEmbedding using 1
+    have hS : S = h := by
+      funext x
+      ext i
+      simp [S, h, Homeomorph.addRight, Homeomorph.smulOfNeZero,
+        sub_eq_add_neg, smul_add]
+    rw [hS]
+    exact h.toMeasurableEquiv.measurableEmbedding
   have hmap :
       Measure.map S (volume.restrict (Metric.ball x₀ R)) =
         ENNReal.ofReal (|R⁻¹ ^ Module.finrank ℝ E|⁻¹) •
@@ -307,12 +313,14 @@ private lemma fderiv_transportFromUnitBall_apply
     have h := (hasFDerivAt_id (𝕜 := ℝ) x).sub
       (hasFDerivAt_const (𝕜 := ℝ) x₀ x)
     simp only [sub_zero] at h
-    simpa [S] using h.const_smul R⁻¹
+    let h' : HasFDerivAt S (R⁻¹ • ContinuousLinearMap.id ℝ E) x :=
+      h.const_smul R⁻¹
+    exact h'
   have hu_at : HasFDerivAt u (fderiv ℝ u (S x)) (S x) :=
     ((hu.differentiable (by simp)).differentiableAt (x := S x)).hasFDerivAt
   have hcomp := hu_at.comp x hS_fd
   rw [show transportFromUnitBall (d := d) (x₀ := x₀) (R := R) u = u ∘ S from rfl, hcomp.fderiv]
-  simp [S, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp [S, smul_apply, smul_eq_mul]
 
 omit [NeZero d] in
 private lemma weakPartialDeriv_transportFromUnitBall
@@ -326,8 +334,9 @@ private lemma weakPartialDeriv_transportFromUnitBall
   intro φ hφ_smooth hφ_supp hφ_sub
   set ψ : E → ℝ := fun z => φ (x₀ + R • z)
   have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ := by
-    simpa [ψ] using
+    let h : ContDiff ℝ (⊤ : ℕ∞) ψ :=
       hφ_smooth.comp (contDiff_const.add (contDiff_const_smul R))
+    exact h
   have hψ_supp : HasCompactSupport ψ := by
     set h : E ≃ₜ E := (Homeomorph.smulOfNeZero R hR.ne').trans (Homeomorph.addLeft x₀)
     exact (show ψ = φ ∘ h from by
@@ -357,7 +366,7 @@ private lemma weakPartialDeriv_transportFromUnitBall
       ((hφ_smooth.differentiable (by simp)).differentiableAt (x := x₀ + R • z)).hasFDerivAt
     have hcomp := hφ_at.comp z hS_fd
     rw [show ψ = φ ∘ (fun y : E => x₀ + R • y) from rfl, hcomp.fderiv]
-    simp [ei, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp [ei, smul_apply, smul_eq_mul]
   set Aint : ℝ := ∫ x in Metric.ball x₀ R,
       transportFromUnitBall (d := d) (x₀ := x₀) (R := R) u x * (fderiv ℝ φ x) ei
   set Bint : ℝ := ∫ x in Metric.ball x₀ R,
@@ -448,7 +457,13 @@ private theorem eLpNorm_transportFromUnitBall
   let h : E ≃ₜ E := (Homeomorph.addRight (-x₀)).trans
     (Homeomorph.smulOfNeZero R⁻¹ (inv_ne_zero hR.ne'))
   have hS_emb : MeasurableEmbedding S := by
-    convert h.toMeasurableEquiv.measurableEmbedding using 1
+    have hS : S = h := by
+      funext x
+      ext i
+      simp [S, h, Homeomorph.addRight, Homeomorph.smulOfNeZero,
+        sub_eq_add_neg, smul_add]
+    rw [hS]
+    exact h.toMeasurableEquiv.measurableEmbedding
   rw [show DeGiorgi.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) f = f ∘ S from rfl,
     ← hS_emb.eLpNorm_map_measure]
   rw [inverse_affine_map_restrict_ball (d := d) (x₀ := x₀) hR,
@@ -487,8 +502,10 @@ private theorem MemW01p.transportFromUnitBall
   refine ⟨(hw.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR).memW1p,
     hw.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR, ψ, ?_, ?_, ?_, ?_, ?_⟩
   · intro n
-    simpa [ψ] using
-      (hφ_smooth n).comp ((contDiff_const_smul R⁻¹).comp (contDiff_id.sub contDiff_const))
+    let h : ContDiff ℝ (⊤ : ℕ∞) (ψ n) :=
+      (hφ_smooth n).comp
+        ((contDiff_const_smul R⁻¹).comp (contDiff_id.sub contDiff_const))
+    exact h
   · intro n
     let h : E ≃ₜ E := (Homeomorph.addRight (-x₀)).trans
       (Homeomorph.smulOfNeZero R⁻¹ (inv_ne_zero hR.ne'))

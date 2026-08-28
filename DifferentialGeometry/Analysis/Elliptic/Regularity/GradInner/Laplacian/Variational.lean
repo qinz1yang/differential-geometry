@@ -378,13 +378,13 @@ theorem g_inner_polar
   have hp1 : g.inner b (u + w) (u + w) =
       g.inner b u u + g.inner b u w + g.inner b w u + g.inner b w w := by
     rw [ContinuousLinearMap.map_add (g.inner b) u w]
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [(g.inner b u).map_add, (g.inner b w).map_add]
     ring
   have hp2 : g.inner b (u - w) (u - w) =
       g.inner b u u - g.inner b u w - g.inner b w u + g.inner b w w := by
     rw [ContinuousLinearMap.map_sub (g.inner b) u w]
-    rw [ContinuousLinearMap.sub_apply]
+    rw [sub_apply]
     rw [(g.inner b u).map_sub, (g.inner b w).map_sub]
     ring
   rw [hp1, hp2, h_inner_sym]
@@ -406,7 +406,7 @@ theorem ricciTensor_polar
       ricciTensor (I := I) g b u u + ricciTensor (I := I) g b u w +
         ricciTensor (I := I) g b w u + ricciTensor (I := I) g b w w := by
     rw [ContinuousLinearMap.map_add (ricciTensor (I := I) g b) u w]
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [(ricciTensor (I := I) g b u).map_add,
       (ricciTensor (I := I) g b w).map_add]
     ring
@@ -414,7 +414,7 @@ theorem ricciTensor_polar
       ricciTensor (I := I) g b u u - ricciTensor (I := I) g b u w -
         ricciTensor (I := I) g b w u + ricciTensor (I := I) g b w w := by
     rw [ContinuousLinearMap.map_sub (ricciTensor (I := I) g b) u w]
-    rw [ContinuousLinearMap.sub_apply]
+    rw [sub_apply]
     rw [(ricciTensor (I := I) g b u).map_sub,
       (ricciTensor (I := I) g b w).map_sub]
     ring

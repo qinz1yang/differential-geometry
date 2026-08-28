@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) {b u v : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1)
@@ -70,7 +70,6 @@ private lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
 
 private lemma per_chart_mul_smooth_bound
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (α : M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     ∃ K_α : ℝ, 0 ≤ K_α ∧
@@ -158,10 +157,10 @@ theorem mul_smooth_chart_bound_C1
             ENNReal.ofReal Cu *
               wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   intro u hu
   have hp_pos : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg _) hp
   have hp_one : (1 : ℝ) ≤ p := by
@@ -285,7 +284,7 @@ private lemma eLpNorm_restrict_le_ofReal_mul_volume_pow
   · exact ENNReal.rpow_le_rpow h_meas_le (by positivity)
 
 private lemma eLpNorm_Eu_dR_Ev_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (α : M) {b u v : M → ℝ}
     (hb_le_one : ∀ x : M, 0 ≤ b x ∧ b x ≤ 1)
     {uMax vMax : ℝ}
@@ -362,7 +361,6 @@ private lemma eLpNorm_Eu_dR_Ev_bound
 
 private lemma per_chart_bilinear_bound
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ (⊤ : ℝ≥0∞)) (α : M) :
     ∃ Bα : ℝ, 0 ≤ Bα ∧
       ∀ {u v : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u → ContMDiff I 𝓘(ℝ, ℝ) ∞ v →
@@ -437,7 +435,6 @@ private lemma per_chart_bilinear_bound
         (fun x => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) x * u x * v x) y = Pu y * Ev y := by
       have hh := congrFun h2 y
-      simp only at hh
       exact hh.symm
     exact h1.trans h2'
   have h_chartPushed_u_eq_Pu : (fun y : EuclN => chartPushed (I := I) (M := M)
@@ -474,7 +471,7 @@ private lemma per_chart_bilinear_bound
       (d := d) hp_one hΩ_open h_chartPushed_u_eq_Pu,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_congr_ae
       (d := d) hp_one hΩ_open h_chartPushed_v_eq_Pv]
-  letI : NeZero (1 : ℕ) := ⟨one_ne_zero⟩
+  let : NeZero (1 : ℕ) := ⟨one_ne_zero⟩
   rw [DifferentialGeometry.Analysis.Sobolev.Chart.EuclideanIterated.wkpNorm_succ_eq
         (d := d) 0 p (fun y => Pu y * Ev y) Ω,
       DifferentialGeometry.Analysis.Sobolev.Chart.EuclideanIterated.wkpNorm_succ_eq
@@ -791,10 +788,10 @@ private lemma mul_smooth_chart_bound_explicit_form
               wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v +
             ENNReal.ofReal (B * uMax * vMax) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hp_pos : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg _) hp
   have hp_one : (1 : ℝ) ≤ p := by
     have hd_one_le : (1 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by
@@ -920,10 +917,10 @@ theorem mul_smooth_chart_bound
             wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u *
             wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) v := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨B, hB_nn, hB_bound⟩ :=
     mul_smooth_chart_bound_explicit_form (I := I) (M := M) hp
   obtain ⟨M_M, hM_M_nn, hM_M_bound⟩ :=

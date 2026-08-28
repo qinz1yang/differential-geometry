@@ -81,13 +81,14 @@ theorem galVel_lift_on
     simpa only [K] using isCompact_Icc
   have hKR : K ⊆ R := by
     intro s hs
-    simpa only [K, R] using hreg s hs
+    change (T : Real) - s ∈ D.regular
+    exact hreg s hs
   have hzeta : ContMDiffOn (I.prod (modelWithCornersSelf Real Real))
       (modelWithCornersSelf Real Real) ∞
       (fun p : M × Real => (zeta p.2 : M → Real) p.1)
       ((Set.univ : Set M) ×ˢ R) := by
-    simpa only [zeta, R, conjCoeffRev] using
-      conjCoeff_rev (I := I) S hS T
+    with_unfolding_all
+      exact conjCoeff_rev (I := I) S hS T
   intro m
   obtain ⟨B, hB⟩ := hlim.lim_mass (m + 1 + 2)
   obtain ⟨C₂, hC₂_nn, hC₂⟩ := hnorm (m + 1)
@@ -337,7 +338,7 @@ theorem galVel_lift_on
       galLimVel hτ.le hlim t
     rw [map_add, map_add, hLap, hDiff, hPot]
     simp only [galLimVel, scalarGalPert, conjA1, zeta, q,
-      ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
+      add_apply, ContinuousLinearMap.comp_apply]
     rw [add_assoc]
   have hm : (m : Real) < ((m + 1 : Nat) : Real) := by
     exact_mod_cast Nat.lt_succ_self m
@@ -353,7 +354,7 @@ theorem galVel_lift_on
       (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       Continuous (fun t : Icc (0 : Real) tau =>
         (galLimVel hτ.le hlim (t : Real)).coeff i) :=
-    (hvelCoeffOn i).restrict
+    (hvelCoeffOn i).domRestrict
   have hcoeff
       (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       Continuous (fun t : Icc (0 : Real) tau => (W t).coeff i) := by
@@ -556,8 +557,8 @@ theorem galExt_smooth_on
   have hzeta : ContMDiffOn (I.prod 𝓘(Real, Real)) 𝓘(Real, Real) ∞
       (fun p : M × Real => (zeta p.2 : M → Real) p.1)
       ((Set.univ : Set M) ×ˢ Ioo (0 : Real) tau) := by
-    simpa only [zeta, conjCoeffRev] using
-      (conjCoeff_rev (I := I) S hS T).mono
+    with_unfolding_all
+      exact (conjCoeff_rev (I := I) S hS T).mono
         (Set.prod_mono Set.Subset.rfl hback)
   have hfin : ∀ k : Nat, ∀ m : Nat, ContDiffOn Real k
       (galLimExt hτ.le hlim m) (Ioo (0 : Real) tau) := by
@@ -578,7 +579,7 @@ theorem galExt_smooth_on
               (((m + 1 : Nat) : Real) + 2) := fun t =>
             e (galLimExt hτ.le hlim ((m + 1) + 2) t)
           have hU : ContDiffOn Real k U (Ioo (0 : Real) tau) := by
-            simpa only [U, Function.comp_apply] using
+            simpa only [U, Function.comp_def] using
               e.contDiff.comp_contDiffOn (ih ((m + 1) + 2))
           let Jm := tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0)
@@ -587,13 +588,13 @@ theorem galExt_smooth_on
           let Um : Real → tensorHs (I := I) (M := M) q 0 0
               ((m + 1 : Nat) : Real) := fun t => Jm (U t)
           have hUm : ContDiffOn Real k Um (Ioo (0 : Real) tau) := by
-            simpa only [Um, Function.comp_apply] using
+            simpa only [Um, Function.comp_def] using
               Jm.contDiff.comp_contDiffOn hU
           have hfixed : ContDiffOn Real k
               (fun t => tensorScaleLaplacian (I := I) (M := M)
                 (g := q) (r := 0) (s := 0) ((m + 1 : Nat) : Real) (U t))
               (Ioo (0 : Real) tau) := by
-            simpa only [Function.comp_apply] using
+            simpa only [Function.comp_def] using
               (tensorScaleLaplacian (I := I) (M := M)
                 (g := q) (r := 0) (s := 0)
                 ((m + 1 : Nat) : Real)).contDiff.comp_contDiffOn hU
@@ -612,8 +613,8 @@ theorem galExt_smooth_on
               (m + 1) k Um hUm
           have hvhs : ContDiffOn Real k
               (galLimVelHs hτ.le hlim (m + 1)) (Ioo (0 : Real) tau) := by
-            simpa only [galLimVelHs, q, e, U, Jm, Um, zeta] using
-              (hfixed.add hdiff).add hpot
+            with_unfolding_all
+              exact (hfixed.add hdiff).add hpot
           let Jvel := tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0)
             (by exact_mod_cast Nat.le_succ m :
@@ -621,9 +622,10 @@ theorem galExt_smooth_on
           have hcan : ContDiffOn Real k
               (fun t => Jvel (galLimVelHs hτ.le hlim (m + 1) t))
               (Ioo (0 : Real) tau) := by
-            simpa only [Function.comp_apply] using
+            simpa only [Function.comp_def] using
               Jvel.contDiff.comp_contDiffOn hvhs
-          simpa only [galLimVelCan, q, Jvel] using hcan
+          with_unfolding_all
+            exact hcan
         intro m
         have hdiff : DifferentiableOn Real (galLimExt hτ.le hlim m)
             (Ioo (0 : Real) tau) := by
@@ -694,7 +696,7 @@ theorem galJet_mass_on
     have hcomp : ContDiffOn Real ∞
         (fun t => L (galLimExt hτ.le hlim 0 t))
         (Ioo (0 : Real) tau) := by
-      simpa only [Function.comp_apply] using
+      simpa only [Function.comp_def] using
         L.contDiff.comp_contDiffOn (hsmooth 0)
     have hcoeff_open : ContDiffOn Real ∞
         (fun t => ulim t i) (Ioo (0 : Real) tau) := by
@@ -714,7 +716,7 @@ theorem galJet_mass_on
   let U : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => J (galLimExt hτ.le hlim (m + k) t)
   have hU : ContDiffOn Real ∞ U (Ioo (0 : Real) tau) := by
-    simpa only [U, Function.comp_apply] using
+    simpa only [U, Function.comp_def] using
       J.contDiff.comp_contDiffOn (hsmooth (m + k))
   let W : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => iteratedDeriv j U t
@@ -1151,7 +1153,7 @@ theorem galPde_on
   have hlap :
       laplacianAt (I := I) (flowG (I := I) S) ((T : Real) - t) f x =
         Δ_g (I := I) h ⟨_, hf⟩ x := by
-    simpa only [h] using
+    simpa only [h, flowG, SolutionOn.family] using
       (laplacianAt_eq_delta (I := I) (M := M)
         (flowG (I := I) S) ((T : Real) - t) hf (by rfl) x)
   refine htime.congr_deriv ?_
@@ -1207,7 +1209,7 @@ theorem gallim_on
       (n := (∞ : WithTop ℕ∞)) U.toSection
   · intro s hs x
     change s ∈ Ioo (0 : Real) tau at hs
-    simpa only [reverseFamily] using hpde s hs x
+    simpa only [laplacianAt, reverseFamily] using hpde s hs x
 
 theorem gallim_pos_on
     {D : RealTimeInterval}

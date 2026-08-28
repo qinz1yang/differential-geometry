@@ -276,7 +276,7 @@ private lemma wkpNorm_one_le_eigenvectorIteratedW1Aggregate
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ j' idx)
         (chartTargetEuclid (I := I) (M := M) α))
-    (s := Finset.range (m + 1)) (fun _ _ => zero_le _) hj_mem)
+    (s := Finset.range (m + 1)) (fun _ _ => zero_le) hj_mem)
   exact Finset.single_le_sum
     (f := fun idx : Fin j → Fin (Module.finrank ℝ E) =>
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -284,7 +284,7 @@ private lemma wkpNorm_one_le_eigenvectorIteratedW1Aggregate
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ j idx)
         (chartTargetEuclid (I := I) (M := M) α))
-    (s := Finset.univ) (fun _ _ => zero_le _) (Finset.mem_univ dirs)
+    (s := Finset.univ) (fun _ _ => zero_le) (Finset.mem_univ dirs)
 
 omit [CompleteSpace E] in
 private lemma wkpNorm_two_le_eigenvectorIteratedW2Aggregate
@@ -308,7 +308,7 @@ private lemma wkpNorm_two_le_eigenvectorIteratedW2Aggregate
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ m idx)
         (chartTargetEuclid (I := I) (M := M) α))
-    (fun _ _ => zero_le _) (Finset.mem_univ dirs)
+    (fun _ _ => zero_le) (Finset.mem_univ dirs)
 
 omit [CompleteSpace E] in
 private theorem eigenvectorIteratedPartial_wkpNorm_gapInduction
@@ -432,8 +432,8 @@ private theorem eigenvectorIteratedPartial_wkpNorm_gapInduction
           wkpNorm_one_le_eigenvectorIteratedW1Aggregate
             (I := I) (M := M) g r s i α P₀ hj_le dirs
         refine h_single.trans (le_trans (le_self_add (a := W1) (b := W2)) ?_)
-        refine le_mul_of_one_le_left (zero_le _) ?_
-        exact one_le_pow₀ (le_add_of_nonneg_left (zero_le _))
+        refine le_mul_of_one_le_left (zero_le) ?_
+        exact one_le_pow₀ (le_add_of_nonneg_left (zero_le))
       have h_snoc_term : ∀ a : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) (gap + 1 + 1) 2

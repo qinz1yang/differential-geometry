@@ -187,7 +187,11 @@ private theorem tensor0S_one_eval_finset_sum
     _ = t.sum (fun i =>
           αx (Function.update (fun _ : Fin 1 => t.sum V) (0 : Fin 1)
             (V i))) := by
-          simpa using hmap
+          change αx.toMultilinearMap
+              (Function.update (fun _ : Fin 1 => t.sum V) (0 : Fin 1) (t.sum V)) =
+            t.sum (fun i => αx.toMultilinearMap
+              (Function.update (fun _ : Fin 1 => t.sum V) (0 : Fin 1) (V i)))
+          exact hmap
     _ = t.sum (fun i => αx (fun _ : Fin 1 => V i)) := by
           refine Finset.sum_congr rfl fun i _ => ?_
           rw [hupdate]
@@ -201,8 +205,9 @@ private theorem mdifferentiableAt_finset_sum
   classical
   induction t using Finset.induction_on with
   | empty =>
-      simpa using (mdifferentiableAt_const
-        (I := I) (I' := 𝓘(Real, Real)) (c := (0 : Real)) (x := x))
+      change MDifferentiableAt I 𝓘(Real, Real) (fun _ : M => (0 : Real)) x
+      exact mdifferentiableAt_const
+        (I := I) (I' := 𝓘(Real, Real)) (c := (0 : Real)) (x := x)
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x := hf i (by simp [hit])
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x := by
@@ -214,12 +219,12 @@ private theorem mdifferentiableAt_finset_sum
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [CompleteSpace Real] in
-private theorem extDerivFun_finset_sum
+private theorem mvfderiv_finset_sum
     {ι : Type*} (t : Finset ι) (f : ι -> M -> Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    extDerivFun (I := I) (t.sum f) x v =
-      t.sum (fun i => extDerivFun (I := I) (f i) x v) := by
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
   classical
   induction t using Finset.induction_on with
   | empty =>
@@ -232,36 +237,33 @@ private theorem extDerivFun_finset_sum
       have hsum : MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x := by
         exact mdifferentiableAt_finset_sum (I := I) t f hft
       calc
-        extDerivFun (I := I) ((insert i t).sum f) x v
-            = extDerivFun (I := I)
+        mvfderiv (I := I) ((insert i t).sum f) x v
+            = mvfderiv (I := I)
                 (f i + t.sum f) x v := by
               simp [Finset.sum_insert, hit]
-        _ = extDerivFun (I := I) (f i) x v +
-              extDerivFun (I := I) (t.sum f) x v := by
-              have hadd := congr($(extDerivFun_add
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
                 (I := I) (g := f i) (g' := t.sum f)
                 (x := x) hfi hsum) v)
               simpa [Pi.add_apply] using hadd
-        _ = (insert i t).sum (fun j => extDerivFun (I := I) (f j) x v) := by
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [CompleteSpace Real] in
-private theorem extDerivFun_mul
+private theorem mvfderiv_mul
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
-    extDerivFun (I := I) (fun y : M => f y * g y) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x := by
-  change extDerivFun (I := I) (f • g) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := g) hf hg v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc]
-    using hprod
+    mvfderiv (I := I) (fun y : M => f y * g y) x v =
+      f x * mvfderiv (I := I) g x v +
+        mvfderiv (I := I) f x v * g x := by
+  change mvfderiv (I := I) (f • g) x v =
+    f x * mvfderiv (I := I) g x v + mvfderiv (I := I) f x v * g x
+  have hprod := congr($(_root_.mvfderiv_smul (I := I) hf hg) v)
+  simpa [Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc] using hprod
 
 omit [FiniteDimensional Real E] [IsManifold I 2 M] [IsManifold I ∞ M]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [CompleteSpace Real] in
@@ -278,7 +280,8 @@ theorem covariantDerivative_finset_sum
   | insert i t hit ih =>
       have hσi : MDiffAt (T% (σ i)) x := hσ i
       have hsum : MDiffAt (T% (t.sum σ)) x := by
-        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ) hσ
+        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ)
+          (fun i _ => hσ i)
         simpa using hsum_raw
       calc
         (cov ((insert i t).sum σ) x) v
@@ -311,13 +314,13 @@ private theorem coordinateFrame_coeff_at_base_eq_coord
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [CompleteSpace Real] in
-private theorem extDerivFun_congr_eventually
+private theorem mvfderiv_congr_eventually
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (h : f =ᶠ[𝓝 x] g) :
-    extDerivFun (I := I) f x v = extDerivFun (I := I) g x v := by
+    mvfderiv (I := I) f x v = mvfderiv (I := I) g x v := by
   have hmf := Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real)) h
   have hx : f x = g x := h.eq_of_nhds
-  unfold extDerivFun
+  unfold mvfderiv
   rw [hmf, hx]
 
 omit [IsManifold I (⊤ : WithTop ℕ∞) M] [CompleteSpace Real] in
@@ -415,7 +418,7 @@ theorem oneForm_pair_coordFrame_product_rule
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
           x₀ (X x₀))
@@ -426,7 +429,7 @@ theorem oneForm_pair_coordFrame_product_rule
     (hdiff_α : ∀ j : CoordinateIdx E,
       MDifferentiableAt I 𝓘(Real, Real)
         (fun y : M => α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)) x₀) :
-    extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
+    mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
       ∑ j : CoordinateIdx E,
         (dz j * coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => j) +
           z j *
@@ -440,10 +443,10 @@ theorem oneForm_pair_coordFrame_product_rule
     fun j y => α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)
   have hpair_ev := oneForm_pair_coordFrame_eventually (I := I) Z α x₀
   have hderiv_congr :
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
-        extDerivFun (I := I)
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
+        mvfderiv (I := I)
           (fun y : M => ∑ j : CoordinateIdx E, zfun j y * afun j y) x₀ (X x₀) := by
-    exact extDerivFun_congr_eventually (I := I) (X x₀) (by
+    exact mvfderiv_congr_eventually (I := I) (X x₀) (by
       simpa [zfun, afun] using hpair_ev)
   rw [hderiv_congr]
   have hsum_fun :
@@ -453,26 +456,23 @@ theorem oneForm_pair_coordFrame_product_rule
     funext y
     simp
   rw [hsum_fun]
-  rw [extDerivFun_finset_sum (I := I) (t := Finset.univ)
+  rw [mvfderiv_finset_sum (I := I) (t := Finset.univ)
     (f := fun j y => zfun j y * afun j y) (x := x₀) (v := X x₀)]
   · refine Finset.sum_congr rfl fun j _ => ?_
-    rw [extDerivFun_mul (I := I) (f := zfun j) (g := afun j) (x := x₀)
+    rw [mvfderiv_mul (I := I) (f := zfun j) (g := afun j) (x := x₀)
       (v := X x₀) (hdiff_z j) (hdiff_α j)]
     have hzj : zfun j x₀ = z j := by
       rw [hz j]
       exact coordinateFrame_coeff_at_base_eq_coord (I := I) x₀ (Z x₀) j
-    have hdzj : extDerivFun (I := I) (zfun j) x₀ (X x₀) = dz j := by
+    have hdzj : mvfderiv (I := I) (zfun j) x₀ (X x₀) = dz j := by
       exact (hdz j).symm
     have haj :
         afun j x₀ = coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => j) := by
       simp [afun, coordComponent0SAt, component0S]
     have hdaj :
-        extDerivFun (I := I) (afun j) x₀ (X x₀) =
+        mvfderiv (I := I) (afun j) x₀ (X x₀) =
           coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => α x)
             (fun _ : Fin 1 => j) := by
-      change (mfderiv I 𝓘(Real, Real) (afun j) x₀) (X x₀) =
-          coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => α x)
-            (fun _ : Fin 1 => j)
       simp [afun, coordDeriv0SAt]
     rw [hzj, hdzj, haj, hdaj]
     ring
@@ -491,7 +491,7 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
           x₀ (X x₀))
@@ -525,12 +525,12 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
   have hsum_diff :
       MDiffAt (T% ((Finset.univ : Finset (CoordinateIdx E)).sum term)) x₀ := by
     classical
-    exact (by
-      have hterm_all : ∀ j : CoordinateIdx E, MDiffAt (T% (term j)) x₀ := by
-        intro j
-        exact hterm_diff j (by simp)
-      simpa using MDifferentiableAt.sum_section
-        (s := (Finset.univ : Finset (CoordinateIdx E))) (t := term) hterm_all)
+    have hsum_raw := MDifferentiableAt.sum_section
+      (s := (Finset.univ : Finset (CoordinateIdx E))) (t := term) hterm_diff
+    refine hsum_raw.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => ?_)
+    exact congrArg (fun v : TangentSpace I y =>
+      (⟨y, v⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      (Finset.sum_apply y Finset.univ term)
   have hZ_diff : MDiffAt (T% (fun y : M => Z y)) x₀ :=
     Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hZ_ev : (fun y : M => Z y) =ᶠ[𝓝 x₀]
@@ -543,7 +543,9 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
         cov ((Finset.univ : Finset (CoordinateIdx E)).sum term) x₀ :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hZ_diff hsum_diff
       (by simp)
-      (by simpa [term] using hZ_ev)
+      (by
+        filter_upwards [hZ_ev] with y hy
+        exact hy.trans (Finset.sum_apply y Finset.univ term).symm)
   have hcov_sum :
       (cov (fun y : M => Z y) x₀) (X x₀) =
         ∑ j : CoordinateIdx E,
@@ -566,7 +568,7 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
             have hzj : zfun j x₀ = z j := by
               rw [hz j]
               exact coordinateFrame_coeff_at_base_eq_coord (I := I) x₀ (Z x₀) j
-            have hdzj : extDerivFun (I := I) (zfun j) x₀ (X x₀) = dz j := by
+            have hdzj : mvfderiv (I := I) (zfun j) x₀ (X x₀) = dz j := by
               exact (hdz j).symm
             simpa [term, zfun, hzj, hdzj, add_comm] using hleib
   rw [hcov_sum]
@@ -752,7 +754,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product
     (hz : ∀ j : CoordinateIdx E,
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hpair :
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
         ∑ j : CoordinateIdx E,
           (dz j * coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => j) +
             z j *
@@ -770,7 +772,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product
                   coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => k)))) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
   classical
   rw [nabla0SFun_one_eval_coordFrame_expanded (I := I) cov X α x₀ hderiv (Z x₀)]
@@ -793,7 +795,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rule
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
           x₀ (X x₀))
@@ -816,7 +818,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rule
                   coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => k)))) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
   exact nabla0SFun_one_eval_of_coordFrame_product
     (I := I) cov X Z α x₀ hderiv z dz hz
@@ -836,7 +838,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rules
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
           x₀ (X x₀))
@@ -849,7 +851,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rules
         (fun y : M => α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)) x₀) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
   exact nabla0SFun_one_eval_of_coordFrame_product_rule
     (I := I) cov X Z α x₀ hderiv z dz hz hdz hdiff_z hdiff_α
@@ -872,13 +874,13 @@ theorem nabla0SFun_one_eval_coordFrame_moving
         (fun y : M => α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)) x₀) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
   let z : CoordinateIdx E -> Real :=
     fun j => (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀)
   let dz : CoordinateIdx E -> Real :=
     fun j =>
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
         x₀ (X x₀)

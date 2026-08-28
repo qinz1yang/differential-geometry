@@ -9,6 +9,7 @@ import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -193,7 +194,14 @@ private lemma hasDerivAt_barrier_comp
       (X + t * X') * (Real.log ((X + t * X') / K) + Real.log (1 + 2 * K * (τ + t)) - 3))
       (X' * (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 3) +
         X * (X' / X + 2 * K / (1 + 2 * K * τ))) 0 := by
-    simpa using hlin2.mul hsum
+    rw [show (fun t : Real =>
+        (X + t * X') *
+          (Real.log ((X + t * X') / K) + Real.log (1 + 2 * K * (τ + t)) - 3)) =
+        (fun t : Real => X + t * X') * fun t : Real =>
+          Real.log ((X + t * X') / K) + Real.log (1 + 2 * K * (τ + t)) - 3 by
+      funext t
+      rfl]
+    exact (hlin2.mul hsum).congr_deriv (by ring_nf)
   unfold hamiltonIveyBarrier
   exact hB.congr_deriv (by
     field_simp [hX.ne', hdenpos.ne']
@@ -1715,7 +1723,7 @@ private lemma supportFunction_rotate_diag
   rcases hermitian_orthogonal_diagonalization (euclideanMatrixSymmetrization_isHermitian v) with ⟨O, hOorth, hdiag⟩
   have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
   have hdiag' : O.transpose * S * O = Matrix.diagonal nv := by
-    simpa [S, nv] using hdiag
+    exact hdiag
   let φ : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
     fun A => matrixToEuclidean (O.transpose * euclideanToMatrix A * O)
   have hφ_mem : ∀ A, A ∈ hamiltonIveyConvexMatrixRegionEuclidean K τ →
@@ -1793,7 +1801,7 @@ theorem hamiltonIveyConvexMatrixRegionSupportEuclidean_eq_supportFunction
     dsimp [nv]
     exact (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀_antitone
   have hnv0 : nv 0 < 0 := by
-    simpa [nv] using hv
+    exact hv
   have hdef : hamiltonIveyConvexMatrixRegionSupportEuclidean K τ v =
       hamiltonIveyConvexMatrixRegionSupportEuclidean K τ (matrixToEuclidean (Matrix.diagonal nv)) := by
     unfold hamiltonIveyConvexMatrixRegionSupportEuclidean
@@ -1842,7 +1850,7 @@ private lemma exists_rotate_diag_of_mem_region
       rw [hconj]
       have hdiag' : O.transpose * euclideanMatrixSymmetrization v * O =
           Matrix.diagonal (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ := by
-        simpa using hdiag
+        exact hdiag
       rw [hdiag']
       rfl
     rw [hsymm]
@@ -1875,7 +1883,7 @@ private lemma inner_le_supportFunction_of_mem_region
     dsimp [nv]
     exact (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀_antitone
   have hnv0 : nv 0 < 0 := by
-    simpa [nv] using hv
+    exact hv
   have hBle : inner ℝ (matrixToEuclidean (Matrix.diagonal nv)) B ≤
       hamiltonIveyConvexMatrixRegionSupportEuclidean K τ (matrixToEuclidean (Matrix.diagonal nv)) := by
     have hBm : euclideanToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ :=
@@ -1893,7 +1901,7 @@ private lemma inner_le_supportFunction_of_mem_region
       exact hFle
     exact le_trans hle1 hle2
   have hinner' : inner ℝ v A = inner ℝ (matrixToEuclidean (Matrix.diagonal nv)) B := by
-    simpa [nv] using hinner
+    exact hinner
   rw [hamiltonIveyConvexMatrixRegionSupportEuclidean_rotate_diag]
   rw [hinner']
   exact hBle
@@ -1922,15 +1930,12 @@ private lemma support_formula_unbounded_of_nonneg_top
         nlinarith [hν0, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (0 : Fin 3) ≤ 2)]
       · change ν 1 = 0
         have hν0eq : ν 0 = 0 := by
-          change ν 0 = 0
           nlinarith [hν0, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (0 : Fin 3) ≤ 2)]
         nlinarith [hν0eq, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (1 : Fin 3) ≤ 2)]
       · change ν 2 = 0
         have hν0eq : ν 0 = 0 := by
-          change ν 0 = 0
           nlinarith [hν0, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (0 : Fin 3) ≤ 2)]
         have hν1eq : ν 1 = 0 := by
-          change ν 1 = 0
           nlinarith [hν0eq, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (1 : Fin 3) ≤ 2)]
         nlinarith [hν0eq, hν1eq, hν (by decide : (1 : Fin 3) ≤ 2)]
   let X₀ : ℝ := K / (1 + 4 * K * τ)
@@ -2043,7 +2048,7 @@ private lemma exists_rotate_preimage_of_mem_region
     have hconj := inner_matrixToEuclidean_orthogonal_conj (euclideanMatrixSymmetrization v) (euclideanToMatrix A) O hOorth
     have hdiag' : O.transpose * euclideanMatrixSymmetrization v * O =
         Matrix.diagonal (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ := by
-      simpa using hdiag
+      exact hdiag
     calc
       inner ℝ v A = inner ℝ (matrixToEuclidean (euclideanMatrixSymmetrization v)) (matrixToEuclidean (euclideanToMatrix A)) := hsymm
       _ = inner ℝ (matrixToEuclidean (O.transpose * euclideanMatrixSymmetrization v * O))
@@ -2091,13 +2096,14 @@ lemma mem_finiteSupportDirections_hamiltonIvey_region_iff
       rcases hermitian_orthogonal_diagonalization (euclideanMatrixSymmetrization_isHermitian v) with ⟨O, hOorth, hdiag⟩
       have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
       have hnv0' : (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ = 0 := by
-        simpa [nv] using hnv0
+        exact hnv0
       have hd : Matrix.diagonal (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ = 0 := by
         rw [hnv0']
         ext i j
         simp [Matrix.diagonal]
       have hdiag0 : O.transpose * euclideanMatrixSymmetrization v * O = 0 := by
-        simpa [hd] using hdiag
+        rw [hdiag, hd]
+        rfl
       calc
         euclideanMatrixSymmetrization v = O * (O.transpose * euclideanMatrixSymmetrization v * O) * O.transpose := by
           simp only [Matrix.mul_assoc]
@@ -2116,7 +2122,7 @@ lemma mem_finiteSupportDirections_hamiltonIvey_region_iff
       rintro x ⟨B, hB, rfl⟩
       rcases exists_rotate_preimage_of_mem_region v B hB with ⟨A, hA, hinner⟩
       have hinner' : inner ℝ v A = inner ℝ (matrixToEuclidean (Matrix.diagonal nv)) B := by
-        simpa [nv] using hinner
+        exact hinner
       have hle : inner ℝ v A ≤ C := hC ⟨A, hA, rfl⟩
       rwa [hinner'] at hle
     have hFsubset : {x : ℝ | ∃ X : ℝ, K / (1 + 4 * K * τ) ≤ X ∧
@@ -2258,7 +2264,11 @@ private lemma support_formula_continuousOn
         (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := hBcont.mul continuousOn_const
     have hXc : ContinuousOn (fun p : ℝ × ℝ => p.2 * (2 * ν 0 - ν 1 - ν 2))
         (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := by
-      simpa [mul_comm] using (continuousOn_snd.mul (continuousOn_const (s := Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) (c := (2 * ν 0 - ν 1 - ν 2))))
+      rw [show (fun p : ℝ × ℝ => p.2 * (2 * ν 0 - ν 1 - ν 2)) =
+          Prod.snd * fun _ : ℝ × ℝ => 2 * ν 0 - ν 1 - ν 2 by
+        funext p
+        rfl]
+      exact continuousOn_snd.mul continuousOn_const
     exact hBν.add hXc
   have htail0 : ∀ τ : ℝ, τ ∈ Set.Icc 0 T → ∀ X : ℝ, Xmax ≤ X → F τ X ≤ 0 := by
     intro τ hτ X hX
@@ -2369,16 +2379,18 @@ theorem hamiltonIveyConvexMatrixRegionSupportEuclidean_continuousOn
     ContinuousOn (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclidean K τ v) (Set.Icc 0 T) := by
   let nv : Fin 3 → ℝ := (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀
   have hnv0 : nv 0 < 0 := by
-    simpa [nv] using hv
+    exact hv
   have hmain := support_formula_continuousOn (K := K) (T := T) hK (ν := nv) hnv0
   have hdef : ∀ τ : ℝ, hamiltonIveyConvexMatrixRegionSupportEuclidean K τ v =
       sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
         x = hamiltonIveyConvexBarrier K τ X * nv 0 + X * (2 * nv 0 - nv 1 - nv 2)} := by
     intro τ
     unfold hamiltonIveyConvexMatrixRegionSupportEuclidean
-    dsimp [nv]
-    rw [if_pos hv]
-    rfl
+    change (if nv 0 < 0 then
+      sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+        x = hamiltonIveyConvexBarrier K τ X * nv 0 +
+          X * (2 * nv 0 - nv 1 - nv 2)} else 0) = _
+    rw [if_pos hnv0]
   exact hmain.congr (fun τ hτ => hdef τ)
 
 private lemma support_formula_min_branch
@@ -2532,7 +2544,16 @@ private lemma hasDerivAt_candidate_A
       (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * (2 * ν 0 - ν 1 - ν 2))
       ((-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)) *
         (2 * ν 0 - ν 1 - ν 2)) τ₀ := h2.mul_const (2 * ν 0 - ν 1 - ν 2)
-  simpa [mul_comm, mul_left_comm, mul_assoc] using h1'.add h2'
+  rw [show (fun τ : ℝ =>
+      scalarSectionalLowerBarrier3 K τ * ν 0 +
+        (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) *
+          (2 * ν 0 - ν 1 - ν 2)) =
+      (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ * ν 0) + fun τ : ℝ =>
+        (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) *
+          (2 * ν 0 - ν 1 - ν 2) by
+    funext τ
+    rfl]
+  exact h1'.add h2'
 
 private lemma hasDerivAt_candidate_B
     {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
@@ -2560,10 +2581,17 @@ private lemma hasDerivAt_hamiltonIveyBarrier_x
       (Real.log (1 + 2 * K * τ) - 3 - Real.log K) X := by
     simpa [mul_comm] using ((hasDerivAt_id X).mul_const (Real.log (1 + 2 * K * τ) - 3 - Real.log K))
   have hsum := h1.add h2
-  convert hsum using 1
   have hlog : Real.log X - Real.log K = Real.log (X / K) := by
     rw [Real.log_div hX.ne' hK.ne']
-  linarith
+  rw [show (fun Y : ℝ =>
+      Y * Real.log Y + Y * (Real.log (1 + 2 * K * τ) - 3 - Real.log K)) =
+      (fun Y : ℝ => Y * Real.log Y) + fun Y : ℝ =>
+        Y * (Real.log (1 + 2 * K * τ) - 3 - Real.log K) by
+    funext Y
+    rfl]
+  exact hsum.congr_deriv (by
+    rw [← hlog]
+    ring)
 
 private lemma deriv_hamiltonIveyBarrier_x
     {K τ X : ℝ} (hK : 0 < K) (hX : 0 < X) :
@@ -2599,7 +2627,11 @@ private lemma monotoneOn_Fh_left
     have hBν : ContinuousOn (fun X : ℝ => hamiltonIveyBarrier K τ X * ν 0) (Set.Icc 0 Xs) :=
       hB.mul continuousOn_const
     have hXc : ContinuousOn (fun X : ℝ => X * (2 * ν 0 - ν 1 - ν 2)) (Set.Icc 0 Xs) := by
-      simpa [mul_comm] using (continuousOn_id.mul (continuousOn_const (s := Set.Icc 0 Xs) (c := (2 * ν 0 - ν 1 - ν 2))))
+      rw [show (fun X : ℝ => X * (2 * ν 0 - ν 1 - ν 2)) =
+          id * fun _ : ℝ => 2 * ν 0 - ν 1 - ν 2 by
+        funext X
+        rfl]
+      exact continuousOn_id.mul continuousOn_const
     exact hBν.add hXc
   have hFh_diff : DifferentiableOn ℝ Fh (interior (Set.Icc 0 Xs)) := by
     intro X hX
@@ -2721,7 +2753,11 @@ private lemma antitoneOn_Fh_right
     have hBν : ContinuousOn (fun X : ℝ => hamiltonIveyBarrier K τ X * ν 0) (Set.Ici Xs) :=
       hB.mul continuousOn_const
     have hXc : ContinuousOn (fun X : ℝ => X * (2 * ν 0 - ν 1 - ν 2)) (Set.Ici Xs) := by
-      simpa [mul_comm] using (continuousOn_id.mul (continuousOn_const (s := Set.Ici Xs) (c := (2 * ν 0 - ν 1 - ν 2))))
+      rw [show (fun X : ℝ => X * (2 * ν 0 - ν 1 - ν 2)) =
+          id * fun _ : ℝ => 2 * ν 0 - ν 1 - ν 2 by
+        funext X
+        rfl]
+      exact continuousOn_id.mul continuousOn_const
     exact hBν.add hXc
   have hFh_diff : DifferentiableOn ℝ Fh (interior (Set.Ici Xs)) := by
     intro X hX
@@ -3095,23 +3131,20 @@ private lemma hasDerivAt_hamiltonIveyBarrier_tau
     have h1 : HasDerivAt (fun τ : ℝ => (2 * K) * τ) (2 * K) τ₀ := by
       simpa [mul_one] using (hasDerivAt_id τ₀).const_mul (2 * K)
     simpa [add_comm, mul_comm] using (h1.add_const 1)
-  have hlog : HasDerivAt (fun τ : ℝ => Real.log (1 + 2 * K * τ)) ((2 * K) / (1 + 2 * K * τ₀)) τ₀ := by
-    have hlog' : HasDerivAt Real.log ((1 : ℝ) / (1 + 2 * K * τ₀)) (1 + 2 * K * τ₀) := by
-      simpa [one_div] using (Real.hasDerivAt_log (show 1 + 2 * K * τ₀ ≠ 0 from ne_of_gt hden))
-    have hcomp := hlog'.comp τ₀ hlin
-    convert hcomp using 1
-    ring
+  have hlog : HasDerivAt (fun τ : ℝ => Real.log (1 + 2 * K * τ))
+      ((2 * K) / (1 + 2 * K * τ₀)) τ₀ :=
+    hlin.log hden.ne'
   have hmul : HasDerivAt (fun τ : ℝ => X * Real.log (1 + 2 * K * τ))
       (X * ((2 * K) / (1 + 2 * K * τ₀))) τ₀ := by
     simpa [mul_comm] using hlog.const_mul X
-  have hconst : HasDerivAt (fun τ : ℝ => X * Real.log X + X * (-3 - Real.log K)) 0 τ₀ := by
-    simpa using (hasDerivAt_const (x := τ₀) (c := (X * Real.log X + X * (-3 - Real.log K) : ℝ)))
-  have hsum := hmul.add hconst
-  convert hsum using 1
-  · funext τ
-    dsimp
-    ring_nf
-  · ring
+  have hshift := hmul.add_const (X * Real.log X + X * (-3 - Real.log K))
+  rw [show (fun τ : ℝ =>
+      X * Real.log X + X * (Real.log (1 + 2 * K * τ) - 3 - Real.log K)) =
+      fun τ : ℝ => X * Real.log (1 + 2 * K * τ) +
+        (X * Real.log X + X * (-3 - Real.log K)) by
+    funext τ
+    ring]
+  exact hshift.congr_deriv (by ring)
 
 private lemma continuousAt_hamiltonIveyBarrier_tau
     {K τ₀ X : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) :
@@ -4156,7 +4189,14 @@ private lemma hasDerivAt_hamiltonIveyKinkBranchSupportFunction
         hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
         (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
           (2 * ν 0 - ν 1 - ν 2)) τ₀ := h2.mul_const (2 * ν 0 - ν 1 - ν 2)
-  simpa [mul_assoc] using h1'.add h2'
+  rw [show (fun τ : ℝ =>
+      scalarSectionalLowerBarrier3 K τ * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2)) =
+      (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ * ν 0) + fun τ : ℝ =>
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) by
+    funext τ
+    rfl]
+  exact h1'.add h2'
 
 private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
     {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀)
@@ -4459,10 +4499,24 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_hasDerivAt
               (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
                 (2 * nv 0 - nv 1 - nv 2)) τ₀ :=
       hdiag.congr_of_eventuallyEq (Filter.Eventually.of_forall (fun τ => hrot τ))
-    have hv' : (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ 0 < 0 := by simpa [nv] using hv
     exact hmain.congr_deriv (by
-      simp [hamiltonIveyConvexMatrixRegionSupportDeriv, nv, hv']
-      rfl)
+      unfold hamiltonIveyConvexMatrixRegionSupportDeriv
+      let d : ℝ :=
+        if hamiltonIveyKinkPoint hK τ₀ ≤
+            K * Real.exp ((nv 1 + nv 2) / nv 0) / (1 + 2 * K * τ₀) then
+          -(nv 0 *
+            (-2 * K *
+              (K * Real.exp ((nv 1 + nv 2) / nv 0) /
+                (1 + 2 * K * τ₀) ^ 2)))
+        else
+          12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * nv 0 +
+            ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+              hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+              (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) +
+                Real.log (1 + 2 * K * τ₀) - 2)) *
+              (2 * nv 0 - nv 1 - nv 2)
+      change d = if nv 0 < 0 then d else 0
+      rw [if_pos hv])
   · have hnot : ¬ (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ 0 < 0 := by
       dsimp [nv] at hv
       exact hv
@@ -4472,9 +4526,24 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_hasDerivAt
       rw [if_neg hnot]
     have hzero : HasDerivAt (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclidean K τ v) 0 τ₀ := by
       simpa [hconst] using (hasDerivAt_const (x := τ₀) (c := (0 : ℝ)))
-    have hv' : ¬ (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ 0 < 0 := by simpa [nv] using hv
     exact hzero.congr_deriv (by
-      simp [hamiltonIveyConvexMatrixRegionSupportDeriv, hv'])
+      unfold hamiltonIveyConvexMatrixRegionSupportDeriv
+      let d : ℝ :=
+        if hamiltonIveyKinkPoint hK τ₀ ≤
+            K * Real.exp ((nv 1 + nv 2) / nv 0) / (1 + 2 * K * τ₀) then
+          -(nv 0 *
+            (-2 * K *
+              (K * Real.exp ((nv 1 + nv 2) / nv 0) /
+                (1 + 2 * K * τ₀) ^ 2)))
+        else
+          12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * nv 0 +
+            ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+              hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+              (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) +
+                Real.log (1 + 2 * K * τ₀) - 2)) *
+              (2 * nv 0 - nv 1 - nv 2)
+      change 0 = if nv 0 < 0 then d else 0
+      rw [if_neg hv])
 
 lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_reaction_le_deriv
     {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)

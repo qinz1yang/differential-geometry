@@ -735,9 +735,9 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
             chosenSecondPartialChartPushedU
               (I := I) (M := M) g α u_h i l₁ y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termA1_pair_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h i j
   have hA2 : MemLp (fun y => (∑ i : Fin (Module.finrank ℝ E),
@@ -746,9 +746,9 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
             chosenThirdMixedPartialChartPushedU
               (I := I) (M := M) g α u_h i l₁ j y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termA2_pair_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h i j
   have hA3 := termA3_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h
@@ -763,9 +763,9 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
               (laplacianDomainPow_succ_subset_laplacianDomain
                 (I := I) (M := M) g 1 hu_h)).weak_partial i y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termC1_pair_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h i j
   have hC2 : MemLp (fun y => (∑ i : Fin (Module.finrank ℝ E),
@@ -774,9 +774,9 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
             chosenSecondPartialChartPushedU
               (I := I) (M := M) g α u_h i j y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termC2_pair_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h i j
   have hC3 : MemLp (fun y => (∑ i : Fin (Module.finrank ℝ E),
@@ -786,9 +786,9 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
             chosenSecondPartialChartPushedU
               (I := I) (M := M) g α u_h i l₂ y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termC3_pair_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h i j
   have hC4 : MemLp (fun y => (∑ i : Fin (Module.finrank ℝ E),
@@ -797,9 +797,9 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
             chosenThirdMixedPartialChartPushedU
               (I := I) (M := M) g α u_h i l₂ j y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termC4_pair_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h i j
   have hD1 := termD1_memLp_vol_K (I := I) (M := M) g α l₁ l₂ hu_h
@@ -820,6 +820,7 @@ private lemma fChartEffTwiceNumerator_memLp_vol_K
   have h_step12 := h_step11.add hE2
   unfold effectiveSourceChartSecondOrderNumerator
   convert h_step12 using 2 with y
+  simp only [Pi.add_apply, Pi.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

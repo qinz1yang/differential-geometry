@@ -7,7 +7,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -185,7 +184,7 @@ theorem covariantDeriv_tensor0SModelAt_apply_basis_slots {s : ℕ}
   classical
   unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
     connectionEndomorphismCoeff
-  simp only [ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.sum_apply,
+  simp only [sub_apply, sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -233,7 +232,7 @@ theorem covariantDeriv_tensor0SModelAt_one_apply_basis
           α (fun _ : Fin 1 => basis k) := by
   unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
     connectionEndomorphismCoeff
-  simp only [ContinuousMultilinearMap.sub_apply,
+  simp only [sub_apply,
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   have hcorr :
@@ -263,7 +262,7 @@ theorem covariantDeriv_tensor0SModelAt_two_apply_basis
           A (fun q : Fin 2 => if q = 0 then basis j else basis k) := by
   unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
     connectionEndomorphismCoeff
-  simp only [ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.sum_apply,
+  simp only [sub_apply, sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   have hfin :
       (∑ i : Fin 2,
@@ -567,7 +566,7 @@ noncomputable def tensor0SModelAt (s : ℕ) (x₀ x : M)
     (A : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
   ((trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
-      (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M → Type _)) x₀)
+      (fun p : M => Tensor0SSpace s I p) x₀)
     ⟨x, A⟩).2
 
 omit [CompleteSpace 𝕜] in
@@ -576,14 +575,14 @@ theorem tensor0SModelAt_trivializationAt_symm (s : ℕ) (x₀ : M)
     tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s x₀ x₀
         ((trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
-          (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M → Type _)) x₀).symm
+          (fun p : M => Tensor0SSpace s I p) x₀).symm
           x₀ T) = T := by
   unfold tensor0SModelAt
   exact congrArg Prod.snd
     ((trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
-      (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M → Type _)) x₀).apply_mk_symm
+      (fun p : M => Tensor0SSpace s I p) x₀).apply_mk_symm
         (mem_baseSet_trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
-          (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M → Type _)) x₀)
+          (fun p : M => Tensor0SSpace s I p) x₀)
         T)
 
 noncomputable def tensor0SModelInChart (s : ℕ) (x₀ : M)
@@ -592,6 +591,12 @@ noncomputable def tensor0SModelInChart (s : ℕ) (x₀ : M)
     (y : E) : Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
   tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     s x₀ ((extChartAt I x₀).symm y) (A ((extChartAt I x₀).symm y))
+
+private noncomputable def vectorFieldModelInChart (x₀ : M)
+    (X : ContMDiffSection I E n (TangentSpace I : M → Type _)) (y : E) : E :=
+  tangentSpaceModelContinuousLinearEquiv (I := 𝓘(𝕜, E)) y
+    (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+      X (range I) y)
 
 omit [IsManifold I n M] [CompleteSpace 𝕜] [IsManifold I (n + 1) M] in
 theorem tensor0SModelInChart_contMDiffWithinAt (s : ℕ) (x₀ : M)
@@ -610,7 +615,10 @@ theorem tensor0SModelInChart_contMDiffWithinAt (s : ℕ) (x₀ : M)
             s x₀ x (α x)) x₀ := by
     have h := α.contMDiff x₀
     rw [contMDiffAt_section] at h
-    simpa [tensor0SModelAt] using h
+    change ContMDiffAt I 𝓘(𝕜, Tensor0SModel (𝕜 := 𝕜) (E := E) s) n
+      (fun x : M => tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) s x₀ x (α x)) x₀ at h
+    exact h
   have hsymm :
       ContMDiffWithinAt 𝓘(𝕜, E) I n (extChartAt I x₀).symm S
         (extChartAt I x₀ x₀) := by
@@ -627,20 +635,26 @@ theorem tensor0SModelInChart_contMDiffWithinAt (s : ℕ) (x₀ : M)
     (I := 𝓘(𝕜, E)) (I' := I)
     (I'' := 𝓘(𝕜, Tensor0SModel (𝕜 := 𝕜) (E := E) s))
     (x := extChartAt I x₀ x₀) hα_model_center hsymm
-  simpa [S, tensor0SModelInChart, Function.comp] using hcomp
+  change ContMDiffWithinAt 𝓘(𝕜, E)
+    𝓘(𝕜, Tensor0SModel (𝕜 := 𝕜) (E := E) s) n
+    ((fun x : M => tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) s x₀ x (α x)) ∘ (extChartAt I x₀).symm)
+    (((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ Set.range I)
+    (extChartAt I x₀ x₀)
+  exact hcomp
 
 noncomputable def mcovariantDeriv_tensor0SWithin (s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (ΓX : E → E →L[𝕜] E)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) s)
     (u : Set M) (x₀ : M) : Tensor0SSpace s I x₀ := by
-  let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
+  let X' : E → E := vectorFieldModelInChart (I := I) (n := n) x₀ X
   let α' : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
     tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       s x₀ (fun x => α x)
   exact
     (trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
-      (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M → Type _)) x₀).symm
+      (fun p : M => Tensor0SSpace s I p) x₀).symm
         x₀
       (covariantDeriv_tensor0SModelWithin s X' ΓX α'
         ((extChartAt I x₀).symm ⁻¹' u ∩ range I)
@@ -666,8 +680,9 @@ theorem mcovariantDeriv_tensor0SWithin_one_apply_basis
               (I := I) (M := M) 1 x₀ (fun x => α x) y)
           (((extChartAt I x₀).symm ⁻¹' u) ∩ range I)
           (extChartAt I x₀ x₀)
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            X (range I) (extChartAt I x₀ x₀))
+          (tangentSpaceModelContinuousLinearEquiv (extChartAt I x₀ x₀)
+            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+              X (range I) (extChartAt I x₀ x₀)))
           (fun _ : Fin 1 => basis j) -
         ∑ k : Idx,
           connectionEndomorphismCoeff basis (ΓX (extChartAt I x₀ x₀)) j k *
@@ -676,7 +691,7 @@ theorem mcovariantDeriv_tensor0SWithin_one_apply_basis
   classical
   unfold mcovariantDeriv_tensor0SWithin
   rw [tensor0SModelAt_trivializationAt_symm]
-  rw [covariantDeriv_tensor0SModelWithin_one_apply_basis_clm (basis := basis)]
+  rw [covariantDeriv_tensor0SModelWithin_one_apply_basis (basis := basis)]
   simp only [tensor0SModelInChart]
   rw [extChartAt_to_inv]
   rfl
@@ -701,8 +716,9 @@ theorem mcovariantDeriv_tensor0SWithin_two_apply_basis
               (I := I) (M := M) 2 x₀ (fun x => A x) y)
           (((extChartAt I x₀).symm ⁻¹' u) ∩ range I)
           (extChartAt I x₀ x₀)
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            X (range I) (extChartAt I x₀ x₀))
+          (tangentSpaceModelContinuousLinearEquiv (extChartAt I x₀ x₀)
+            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+              X (range I) (extChartAt I x₀ x₀)))
           (fun q : Fin 2 => if q = 0 then basis j else basis l) -
         ∑ k : Idx,
           connectionEndomorphismCoeff basis (ΓX (extChartAt I x₀ x₀)) j k *
@@ -715,7 +731,7 @@ theorem mcovariantDeriv_tensor0SWithin_two_apply_basis
   classical
   unfold mcovariantDeriv_tensor0SWithin
   rw [tensor0SModelAt_trivializationAt_symm]
-  rw [covariantDeriv_tensor0SModelWithin_two_apply_basis_clm (basis := basis)]
+  rw [covariantDeriv_tensor0SModelWithin_two_apply_basis (basis := basis)]
   simp only [tensor0SModelInChart]
   rw [extChartAt_to_inv]
   rfl
@@ -740,8 +756,9 @@ theorem mcovariantDeriv_tensor0SWithin_apply_basis_slots
               (I := I) (M := M) s x₀ (fun x => α x) y)
           (((extChartAt I x₀).symm ⁻¹' u) ∩ range I)
           (extChartAt I x₀ x₀)
-          (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-            X (range I) (extChartAt I x₀ x₀))
+          (tangentSpaceModelContinuousLinearEquiv (extChartAt I x₀ x₀)
+            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+              X (range I) (extChartAt I x₀ x₀)))
           (fun a : Fin s => basis (slots a)) -
         ∑ a : Fin s, ∑ k : Idx,
           connectionEndomorphismCoeff basis (ΓX (extChartAt I x₀ x₀)) (slots a) k *
@@ -769,7 +786,7 @@ noncomputable def mcovariantDeriv_tensorRSWithin (r s : ℕ)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ := by
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
-  let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
+  let X' : E → E := vectorFieldModelInChart (I := I) (n := n) x₀ X
   let T' : E → TensorRSModel r s 𝕜 E :=
     fun y =>
       ((trivializationAt (TensorRSModel r s 𝕜 E)
@@ -835,7 +852,6 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Function
     DifferentialGeometry.TensorLieDeriv

@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -203,7 +202,8 @@ theorem qzero_smul
     Norm (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
   tensorQNorm (I := I) (M := M) r s k p hp
 
-@[reducible] private noncomputable def tensorQCore
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem tensorQCore
     (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
     @NormedSpace.Core ℝ
@@ -279,10 +279,10 @@ theorem tensorQComplete
     @CompleteSpace
       (WkpTensorQuot (I := I) (M := M) r s k p hp)
       (tensorQNormedGroup (I := I) (M := M) r s k p hp).toUniformSpace := by
-  letI : NormedAddCommGroup
+  let : NormedAddCommGroup
       (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
     tensorQNormedGroup (I := I) (M := M) r s k p hp
-  letI : NormedSpace ℝ
+  let : NormedSpace ℝ
       (WkpTensorQuot (I := I) (M := M) r s k p hp) :=
     tensorQNormedSpace (I := I) (M := M) r s k p hp
   have hnorm (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
@@ -341,24 +341,24 @@ abbrev FineWkpArray (ι : Type*) (r s k : ℕ) (p : ℝ≥0∞)
     @ewkpNormedSpace (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   infer_instance
 
-omit [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem fineWkpComplete
     (ι : Type*) [Fintype ι] (r s k : ℕ) {p : ℝ≥0∞}
     (hp : 1 ≤ p) :
     @CompleteSpace (FineWkpArray (E := E) ι r s k p hp)
       (fineWkpGroup (E := E) ι r s k p hp).toUniformSpace := by
-  letI : NormedAddCommGroup
+  let : NormedAddCommGroup
       (FullWkpQ (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedGroup (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
-  letI : NormedSpace ℝ
+  let : NormedSpace ℝ
       (FullWkpQ (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedSpace (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
-  letI : CompleteSpace
+  let : CompleteSpace
       (FullWkpQ (Module.finrank ℝ E) k p hp) :=
-    @ewkpComplete (Module.finrank ℝ E) _ k p hp Set.univ ⟨isOpen_univ⟩
-  letI : NormedAddCommGroup (FineWkpArray (E := E) ι r s k p hp) :=
+    @ewkpComplete (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
+  let : NormedAddCommGroup (FineWkpArray (E := E) ι r s k p hp) :=
     fineWkpGroup (E := E) ι r s k p hp
-  letI : NormedSpace ℝ (FineWkpArray (E := E) ι r s k p hp) :=
+  let : NormedSpace ℝ (FineWkpArray (E := E) ι r s k p hp) :=
     fineWkpSpace (E := E) ι r s k p hp
   infer_instance
 
@@ -570,10 +570,14 @@ private theorem secComp_target_ae
         (Chart.chartTargetEuclid (I := I) (M := M) α)]
       Chart.chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         (secCompRaw (I := I) (M := M) r s S α P.1 P.2) := by
-  simpa only [secChartComp, secCompPou] using
-    (Chart.chartPushedRaw_pou_mul_ae_eq_chartPushed_on_target
-      (I := I) (M := M) (chartAtlasPOU I M) α
-      (secCompRaw (I := I) (M := M) r s S α P.1 P.2))
+  have h := Chart.chartPushedRaw_pou_mul_ae_eq_chartPushed_on_target
+    (I := I) (M := M) (chartAtlasPOU I M) α
+    (secCompRaw (I := I) (M := M) r s S α P.1 P.2)
+  change secChartComp (I := I) (M := M) r s S α P.1 P.2 =ᵐ[
+      volume.restrict (Chart.chartTargetEuclid (I := I) (M := M) α)]
+    Chart.chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
+      (secCompRaw (I := I) (M := M) r s S α P.1 P.2) at h
+  exact h
 
 theorem fineLoc_joint
     (r s k : ℕ)

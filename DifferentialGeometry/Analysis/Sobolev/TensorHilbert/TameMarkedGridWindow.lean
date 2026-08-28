@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GagliardoNirenbergTwo
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -36,18 +35,21 @@ def HasMarkedGridWindow (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor 
         ((iteratedCovGrad (I := I) g₀ r c i X).toSection x) ≤
       K i * Combinatorics.markGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) u i
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma mkWnn (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) (u i : ℕ) :
     (0 : ℝ) ≤ Combinatorics.markGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) u i :=
   Combinatorics.markGrid_nn _ (covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P x) u i
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma mkW1 (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) (i : ℕ) :
     (1 : ℝ) ≤ Combinatorics.markGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) 0 i :=
   Combinatorics.one_le_markGrid0 _ (covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P x) i
 
+omit [SigmaCompactSpace M] in
 theorem markedGridWindow_operatorFieldComposition_bound (g₀ : SmoothRiemannianMetric I M) {p a b : ℕ} (u v : ℕ)
     (Φ : SmoothCcTensor g₀ a b) (W : SmoothCcTensor g₀ p a)
     (P : SmoothCcTensor g₀ 0 2) {KΦ KW : ℕ → ℝ}
@@ -148,6 +150,7 @@ theorem markedGridWindow_operatorFieldComposition_bound (g₀ : SmoothRiemannian
         rw [Finset.sum_mul]
         exact Finset.sum_congr rfl (fun i' _ => by rw [Finset.sum_mul])
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_of_pointwise_bound (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} (X : SmoothCcTensor g₀ r c) {S : ℕ → ℝ} (hS : ∀ i, 0 ≤ S i)
@@ -159,7 +162,7 @@ theorem hasMarkedGridWindow_of_pointwise_bound (g₀ : SmoothRiemannianMetric I 
   exact le_trans (hX i x)
     (le_mul_of_one_le_right (hS i) (mkW1 (I := I) (M := M) g₀ P x i))
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasMarkedGridWindow_of_antidiagonalTupleGridWindow_bound (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} (X : SmoothCcTensor g₀ r c) {K : ℕ → ℝ}
@@ -170,6 +173,7 @@ theorem hasMarkedGridWindow_of_antidiagonalTupleGridWindow_bound (g₀ : SmoothR
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (i + 1)) :
     HasMarkedGridWindow (I := I) (M := M) g₀ P X 0 K := hX
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasMarkedGridWindow_base (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -193,6 +197,7 @@ theorem hasMarkedGridWindow_base (g₀ : SmoothRiemannianMetric I M) (P : Smooth
   rw [one_mul]
   exact hgoal
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_covariantDerivative_base (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2) :
     HasMarkedGridWindow (I := I) (M := M) g₀ P (covGrad (I := I) (M := M) g₀ 0 2 P) 1
@@ -204,6 +209,7 @@ theorem hasMarkedGridWindow_covariantDerivative_base (g₀ : SmoothRiemannianMet
   have h := Combinatorics.markOne_of_term b hb (j := i) (c := i) (k := 0) (by omega)
   rwa [Combinatorics.antidiagonalTupleGrid_zero, mul_one] at h
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasMarkedGridWindow_of_top_order_decomposition (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -248,6 +254,7 @@ theorem hasMarkedGridWindow_of_top_order_decomposition (g₀ : SmoothRiemannianM
   have hgoal : Ktop * W + Kc i * ((i : ℝ) * W) = (Ktop + Kc i * i) * W := by ring
   linarith only [h1, h2, hgoal.le, hgoal.ge]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasMarkedGridWindow_of_antidiagonalTupleGrid_bound (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -271,6 +278,7 @@ theorem hasMarkedGridWindow_of_antidiagonalTupleGrid_bound (g₀ : SmoothRiemann
     _ = (K i * Combinatorics.antidiagonalTupleGridCount (i + 1)) *
           Combinatorics.markGrid b 1 i := by ring
 
+omit [SigmaCompactSpace M] in
 theorem hasMarkedGridWindow_operatorFieldComp (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {p a b : ℕ} (Φ : SmoothCcTensor g₀ a b) (W : SmoothCcTensor g₀ p a)
     {u v : ℕ} {KΦ KW : ℕ → ℝ} (hKΦ : ∀ i, 0 ≤ KΦ i) (hKW : ∀ l, 0 ≤ KW l)
@@ -281,6 +289,7 @@ theorem hasMarkedGridWindow_operatorFieldComp (g₀ : SmoothRiemannianMetric I M
   intro n x
   exact markedGridWindow_operatorFieldComposition_bound (I := I) (M := M) g₀ u v Φ W P hKΦ hKW hΦ hW n x
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_mono (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K K' : ℕ → ℝ}
@@ -290,13 +299,15 @@ theorem hasMarkedGridWindow_mono (g₀ : SmoothRiemannianMetric I M) (P : Smooth
   exact le_trans (hX i x)
     (mul_le_mul_of_nonneg_right (hKK i) (mkWnn (I := I) (M := M) g₀ P x u i))
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M]
+    [SigmaCompactSpace M] in
 theorem hasMarkedGridWindow_congr (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X Y : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (hXY : Y = X)
     (hX : HasMarkedGridWindow (I := I) (M := M) g₀ P X u K) :
     HasMarkedGridWindow (I := I) (M := M) g₀ P Y u K := by
   rw [hXY]; exact hX
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_add (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X Y : SmoothCcTensor g₀ r c} {KX KY : ℕ → ℝ}
@@ -318,6 +329,7 @@ theorem hasMarkedGridWindow_add (g₀ : SmoothRiemannianMetric I M) (P : SmoothC
   have h2 := hY i x
   nlinarith [h1, h2, mkWnn (I := I) (M := M) g₀ P x u i]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_smul (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (t : ℝ)
@@ -335,6 +347,7 @@ theorem hasMarkedGridWindow_smul (g₀ : SmoothRiemannianMetric I M) (P : Smooth
   rw [heq, mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) (sq_nonneg t)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_neg (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ}
@@ -346,6 +359,7 @@ theorem hasMarkedGridWindow_neg (g₀ : SmoothRiemannianMetric I M) (P : SmoothC
     (hasMarkedGridWindow_smul (I := I) (M := M) g₀ P (-1 : ℝ) hX)
   norm_num
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hasMarkedGridWindow_sub (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X Y : SmoothCcTensor g₀ r c} {KX KY : ℕ → ℝ}
@@ -355,6 +369,7 @@ theorem hasMarkedGridWindow_sub (g₀ : SmoothRiemannianMetric I M) (P : SmoothC
   have h := hasMarkedGridWindow_add (I := I) (M := M) g₀ P hX (hasMarkedGridWindow_neg (I := I) (M := M) g₀ P hY)
   rwa [← sub_eq_add_neg] at h
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasMarkedGridWindow_reindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (ρ : Equiv.Perm (Fin r))
@@ -365,6 +380,7 @@ theorem hasMarkedGridWindow_reindex (g₀ : SmoothRiemannianMetric I M) (P : Smo
   rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r c X ρ i x]
   exact hX i x
 
+omit [SigmaCompactSpace M] in
 theorem hasMarkedGridWindow_domainReindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (σ : Equiv.Perm (Fin c))
     (hX : HasMarkedGridWindow (I := I) (M := M) g₀ P X u K) :
@@ -376,7 +392,7 @@ theorem hasMarkedGridWindow_domainReindex (g₀ : SmoothRiemannianMetric I M) (P
     (fun y d => by rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x]
   exact hX i x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem hasMarkedGridWindow_covariantDomainReindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {c u : ℕ} {X : SmoothCcTensor g₀ 0 c} {K : ℕ → ℝ} (σ : Equiv.Perm (Fin c))
     (hX : HasMarkedGridWindow (I := I) (M := M) g₀ P X u K) :
@@ -385,6 +401,7 @@ theorem hasMarkedGridWindow_covariantDomainReindex (g₀ : SmoothRiemannianMetri
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀ σ X i x]
   exact hX i x
 
+omit [SigmaCompactSpace M] in
 theorem hasMarkedGridWindow_slotExtend (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ}
     (hX : HasMarkedGridWindow (I := I) (M := M) g₀ P X u K) :
@@ -396,13 +413,18 @@ theorem hasMarkedGridWindow_slotExtend (g₀ : SmoothRiemannianMetric I M) (P : 
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) hfr
 
+omit [SigmaCompactSpace M] in
 theorem hasMarkedGridWindow_slotExtendIter (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (w : ℕ)
     (hX : HasMarkedGridWindow (I := I) (M := M) g₀ P X u K) :
     HasMarkedGridWindow (I := I) (M := M) g₀ P (slotExtendIter (I := I) (M := M) g₀ r c w X) u
       (fun i => (Module.finrank ℝ E : ℝ) ^ w * K i) := by
   induction w with
-  | zero => simpa using hX
+  | zero =>
+      have hzero : slotExtendIter (I := I) (M := M) g₀ r c 0 X = X := by
+        rfl
+      rw [hzero]
+      simpa only [pow_zero, one_mul] using hX
   | succ w ih =>
       have hrec : slotExtendIter (I := I) (M := M) g₀ r c (w + 1) X =
           slotExtend (I := I) (M := M) g₀ (r + w) (c + w)
@@ -702,7 +724,8 @@ theorem markedGridWindow_monomial_bound (g₀ : SmoothRiemannianMetric I M) :
               have := hKP_nn m; have := hKG_nn m; simp only [hKmon_def]; linarith
             nlinarith [hKH, hKH_nn m, hKmon_nn, sq_nonneg Λ₁]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M]
+    [SigmaCompactSpace M] in
 private lemma contGB (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (j : ℕ) : Continuous (fun x : M => covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x j) := by
   have hc : Continuous (fun x : M =>
@@ -717,7 +740,8 @@ private lemma contGB (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g�
         (iteratedCovGrad (I := I) g₀ 0 2 j P) x]
   exact hc
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M]
+    [SigmaCompactSpace M] in
 private lemma contGrid (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (k : ℕ) : Continuous (fun x : M =>
       Combinatorics.antidiagonalTupleGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) k) := by
@@ -728,10 +752,11 @@ private lemma contGrid (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g
           ∑ e ∈ Finset.Nat.antidiagonalTuple n' k,
             ∏ q : Fin n', covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x (e q) := rfl
   rw [heq]
-  exact continuous_finset_sum _ (fun n' _ => continuous_finset_sum _ (fun e _ =>
-    continuous_finset_prod _ (fun q _ => contGB (I := I) (M := M) g₀ P (e q))))
+  exact continuous_finsetSum _ (fun n' _ => continuous_finsetSum _ (fun e _ =>
+    continuous_finsetProd _ (fun q _ => contGB (I := I) (M := M) g₀ P (e q))))
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M]
+    [SigmaCompactSpace M] in
 private lemma contMk (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (u w : ℕ) : Continuous (fun x : M =>
       Combinatorics.markGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) u w) := by
@@ -744,7 +769,7 @@ private lemma contMk (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g�
               Combinatorics.antidiagonalTupleGrid
                 (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) k := rfl
       rw [heq]
-      exact continuous_finset_sum _ (fun k _ => contGrid (I := I) (M := M) g₀ P k)
+      exact continuous_finsetSum _ (fun k _ => contGrid (I := I) (M := M) g₀ P k)
   | succ u ih =>
       have heq : (fun x : M =>
             Combinatorics.markGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (u + 1) w)
@@ -752,7 +777,7 @@ private lemma contMk (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g�
               covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x (c + 1) *
                 Combinatorics.markGrid (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) u (w - c) := rfl
       rw [heq]
-      exact continuous_finset_sum _ (fun c _ =>
+      exact continuous_finsetSum _ (fun c _ =>
         (contGB (I := I) (M := M) g₀ P (c + 1)).mul (ih (w - c)))
 
 theorem markedGridWindow_zeroOrder_jet_bound (g₀ : SmoothRiemannianMetric I M) :
@@ -813,14 +838,14 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
   refine ⟨fun n => ((n : ℝ) + 1) * (((n : ℝ) + 1) * (CT n * Kmon (n + 1))), fun n => by
     have := hCT_nn n; have := hKmon_nn (n + 1); positivity, ?_⟩
   intro P Λ₀ Λ₁ hΛ₀0 hΛ₀1 hΛ₁0 hsup hcap r c X K hK hX n
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   set b : M → ℕ → ℝ := fun x => covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x with hb_def
   set JS : ℝ := 1 + ∑ j ∈ Finset.range (n + 2),
     ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 with hJS_def
@@ -858,11 +883,11 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
         (fun x : M => ∑ e ∈ Finset.Nat.antidiagonalTuple n' k,
           b x (cc + 1) * b x (dd + 1) * ∏ q : Fin n', b x (e q)) μ := by
       intro n' _
-      refine hint _ (continuous_finset_sum _ (fun e _ => ?_))
+      refine hint _ (continuous_finsetSum _ (fun e _ => ?_))
       exact ((contGB (I := I) (M := M) g₀ P (cc + 1)).mul
         (contGB (I := I) (M := M) g₀ P (dd + 1))).mul
-        (continuous_finset_prod _ (fun q _ => contGB (I := I) (M := M) g₀ P (e q)))
-    rw [hexp, MeasureTheory.integral_finset_sum _ hIT]
+        (continuous_finsetProd _ (fun q _ => contGB (I := I) (M := M) g₀ P (e q)))
+    rw [hexp, MeasureTheory.integral_finsetSum _ hIT]
     have hstep : ∀ n' ∈ Finset.range (k + 1),
         (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n' k,
             b x (cc + 1) * b x (dd + 1) * ∏ q : Fin n', b x (e q) ∂μ) ≤
@@ -875,8 +900,8 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
         refine hint _ ?_
         exact ((contGB (I := I) (M := M) g₀ P (cc + 1)).mul
           (contGB (I := I) (M := M) g₀ P (dd + 1))).mul
-          (continuous_finset_prod _ (fun q _ => contGB (I := I) (M := M) g₀ P (e q)))
-      rw [MeasureTheory.integral_finset_sum _ hIT2]
+          (continuous_finsetProd _ (fun q _ => contGB (I := I) (M := M) g₀ P (e q)))
+      rw [MeasureTheory.integral_finsetSum _ hIT2]
       calc (∑ e ∈ Finset.Nat.antidiagonalTuple n' k,
             ∫ x, b x (cc + 1) * b x (dd + 1) * ∏ q : Fin n', b x (e q) ∂μ)
           ≤ ∑ _e ∈ Finset.Nat.antidiagonalTuple n' k, Cmon := by
@@ -907,7 +932,7 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
       exact ((contGB (I := I) (M := M) g₀ P (cc + 1)).mul
         (contGB (I := I) (M := M) g₀ P (dd + 1))).mul
         (contGrid (I := I) (M := M) g₀ P k)
-    rw [hexp, MeasureTheory.integral_finset_sum _ hIT]
+    rw [hexp, MeasureTheory.integral_finsetSum _ hIT]
     calc (∑ k ∈ Finset.range w, ∫ x, b x (cc + 1) * b x (dd + 1) *
             Combinatorics.antidiagonalTupleGrid (b x) k ∂μ)
         ≤ ∑ k ∈ Finset.range w,
@@ -934,7 +959,7 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
           = fun x : M => ∑ k ∈ Finset.range v,
               Combinatorics.antidiagonalTupleGrid (b x) k := rfl
       rw [heq]
-      exact continuous_finset_sum _ (fun k _ => contGrid (I := I) (M := M) g₀ P k)
+      exact continuous_finsetSum _ (fun k _ => contGrid (I := I) (M := M) g₀ P k)
     have hexp : (fun x : M => b x (cc + 1) * Combinatorics.markGrid (b x) 1 w)
         = fun x : M => ∑ d ∈ Finset.range (w + 1),
             b x (cc + 1) * b x (d + 1) *
@@ -950,7 +975,7 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
       refine hint _ ?_
       exact ((contGB (I := I) (M := M) g₀ P (cc + 1)).mul
         (contGB (I := I) (M := M) g₀ P (d + 1))).mul (hcwin (w - d + 1))
-    rw [hexp, MeasureTheory.integral_finset_sum _ hIT]
+    rw [hexp, MeasureTheory.integral_finsetSum _ hIT]
     calc (∑ d ∈ Finset.range (w + 1), ∫ x, b x (cc + 1) * b x (d + 1) *
             Combinatorics.antidiagonalTupleGridWindow (b x) (w - d + 1) ∂μ)
         ≤ ∑ _d ∈ Finset.range (w + 1), CT n * Cmon := by
@@ -977,7 +1002,7 @@ theorem markedGridWindow_jet_bound (g₀ : SmoothRiemannianMetric I M) :
       refine hint _ ?_
       exact (contGB (I := I) (M := M) g₀ P (cc + 1)).mul
         (contMk (I := I) (M := M) g₀ P 1 (n - cc))
-    rw [hexp, MeasureTheory.integral_finset_sum _ hIT]
+    rw [hexp, MeasureTheory.integral_finsetSum _ hIT]
     calc (∑ cc ∈ Finset.range (n + 1),
           ∫ x, b x (cc + 1) * Combinatorics.markGrid (b x) 1 (n - cc) ∂μ)
         ≤ ∑ _cc ∈ Finset.range (n + 1), ((n : ℝ) + 1) * (CT n * Cmon) := by

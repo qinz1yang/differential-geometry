@@ -82,7 +82,7 @@ theorem pathLength_timeDeriv_of_ricciFlow
     simpa only [v, tangentMap] using h
   have hGcontOn :
       ContinuousOn (fun p : Real × Real => G p.1 p.2) Kset := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have htime : Continuous (fun q : ↥Kset => ((q : Real × Real).1)) :=
       continuous_fst.comp continuous_subtype_val
     have hparam : Continuous (fun q : ↥Kset => ((q : Real × Real).2)) :=
@@ -111,7 +111,7 @@ theorem pathLength_timeDeriv_of_ricciFlow
         (fun p : Real × Real =>
           S.ricciAt p.1 (γ p.2) (vec2 (I := I) (v p.2) (v p.2)))
         Kset := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have htime : Continuous (fun q : ↥Kset => ((q : Real × Real).1)) :=
       continuous_fst.comp continuous_subtype_val
     have hparam : Continuous (fun q : ↥Kset => ((q : Real × Real).2)) :=
@@ -172,14 +172,14 @@ theorem pathLength_timeDeriv_of_ricciFlow
     have hcomp := hFcontOn.comp
       (continuous_const.prodMk continuous_id).continuousOn
       (fun u hu => ⟨hs, hu⟩)
-    simpa only [Prod.fst, Prod.snd] using hcomp
+    with_unfolding_all exact hcomp
   have hF'slice : ∀ s ∈ Set.Icc α β,
       ContinuousOn (F' s) (Set.Icc a b) := by
     intro s hs
     have hcomp := hF'contOn.comp
       (continuous_const.prodMk continuous_id).continuousOn
       (fun u hu => ⟨hs, hu⟩)
-    simpa only [Prod.fst, Prod.snd] using hcomp
+    with_unfolding_all exact hcomp
   have hpoint : ∀ s ∈ Set.Ioo α β, ∀ u ∈ Set.Icc a b,
       HasDerivAt (fun r => F r u) (F' s u) s := by
     intro s hs u hu
@@ -194,7 +194,7 @@ theorem pathLength_timeDeriv_of_ricciFlow
     rw [hbridge] at hmetric
     have hGne : G s u ≠ 0 := ne_of_gt
       ((S.base.metric s).pos (γ u) (v u) (hvel u hu))
-    simpa only [F, F', G] using hmetric.sqrt hGne
+    with_unfolding_all exact hmetric.sqrt hGne
   have hKcompact : IsCompact Kset := isCompact_Icc.prod isCompact_Icc
   obtain ⟨C, hC⟩ :=
     hKcompact.exists_bound_of_continuousOn hF'contOn
@@ -289,7 +289,7 @@ theorem pathLength_deriv_ge
         (I := I) (M := M) (γ := γ) (by norm_num) hγ
     simpa only [v, tangentMap] using h
   have hGcont : ContinuousOn G (Set.Icc a b) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hbase : Continuous (fun u : ↥(Set.Icc a b) => γ (u : Real)) :=
       hγ.continuous.comp continuous_subtype_val
     have hvec : ∀ _i : Fin 2, Continuous (fun u : ↥(Set.Icc a b) =>
@@ -314,7 +314,7 @@ theorem pathLength_deriv_ge
         (fun u =>
           S.ricciAt t (γ u) (vec2 (I := I) (v u) (v u)))
         (Set.Icc a b) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hbase : Continuous (fun u : ↥(Set.Icc a b) => γ (u : Real)) :=
       hγ.continuous.comp continuous_subtype_val
     have hvec : ∀ _i : Fin 2, Continuous (fun u : ↥(Set.Icc a b) =>
@@ -684,7 +684,8 @@ private theorem calabi_core_of_solution
     intrinsicGeodesic (I := I) (S.base.metric t) hEnorm O vLeft
   let δ : M → Real → M := fun y =>
     intrinsicGeodesic (I := I) (S.base.metric t) hEnorm tail.p
-      (show TangentSpace I tail.p from tail.branch.inv y)
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+        (tail.branch.inv y))
   let L₁ : Real → Real := fun s =>
     Geometry.Riemannian.Variation.arcLength
       (I := I) (S.base.metric s) γ 0 1
@@ -701,7 +702,8 @@ private theorem calabi_core_of_solution
     exact contMDiffOn_univ.mp
       (intrinsicGeodesic_contMDiffOn
         (I := I) (S.base.metric t) hEnorm tail.p
-          (show TangentSpace I tail.p from tail.branch.inv y))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+            (tail.branch.inv y)))
   have hγ_zero : γ 0 = O := by
     exact intrinsicGeodesic_zero
       (I := I) (S.base.metric t) hEnorm O vLeft
@@ -711,7 +713,8 @@ private theorem calabi_core_of_solution
     intro y
     exact intrinsicGeodesic_zero
       (I := I) (S.base.metric t) hEnorm tail.p
-        (show TangentSpace I tail.p from tail.branch.inv y)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+          (tail.branch.inv y))
   have hδ_one : ∀ y ∈ tail.branch.dom, δ y 1 = y := by
     intro y hy
     simpa only [δ, expMapIntrinsic_def] using
@@ -733,7 +736,8 @@ private theorem calabi_core_of_solution
           (I := I) (S.base.metric t)
           (intrinsicGeodesic
             (I := I) (S.base.metric t) hEnorm tail.p
-              (show TangentSpace I tail.p from tail.branch.inv y)) 0 1 by
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+                (tail.branch.inv y))) 0 1 by
       rfl]
     rw [arcLength_radial, sub_zero, one_mul]
     rfl
@@ -795,7 +799,12 @@ private theorem calabi_core_of_solution
         (I := I) (S.base.metric t) hEnorm O vLeft hvLeft_pos u
   have hinv_x : tail.branch.inv x = (tail.u : E) := by
     have hleft := tail.branch.left_inv tail.source_mem
-    rw [tail.exp_eq] at hleft
+    have hexp :
+        expMapIntrinsic (I := I) (S.base.metric t) hEnorm tail.p
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+            (tail.u : E)) = x := by
+      convert! tail.exp_eq using 1
+    rw [hexp] at hleft
     exact hleft
   have hu_pos :
       0 < (S.base.metric t).inner tail.p tail.u tail.u := by
@@ -804,16 +813,27 @@ private theorem calabi_core_of_solution
     exact tail.ell_pos
   have hinv_pos :
       0 < (S.base.metric t).inner tail.p
-        (show TangentSpace I tail.p from tail.branch.inv x)
-        (show TangentSpace I tail.p from tail.branch.inv x) := by
-    simpa only [hinv_x] using hu_pos
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+          (tail.branch.inv x))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+          (tail.branch.inv x)) := by
+    rw [hinv_x]
+    have hu_round :
+        (tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+          (tail.u : E) = tail.u := by
+      with_unfolding_all
+        exact (tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm_apply_apply
+          tail.u
+    rw [hu_round]
+    exact hu_pos
   have hδx_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [δ] using
       intrGeo_vel_ne
         (I := I) (S.base.metric t) hEnorm tail.p
-          (show TangentSpace I tail.p from tail.branch.inv x)
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+            (tail.branch.inv x))
           hinv_pos u
   have hL₁_deriv :=
     pathLength_timeDeriv_of_ricciFlow
@@ -851,7 +871,7 @@ private theorem calabi_core_of_solution
     have hderiv_add :
         deriv (fun s => L₁ s + L₂ s x) t =
           deriv L₁ t + deriv (fun s => L₂ s x) t := by
-      simpa only [Pi.add_apply] using deriv_add hL₁_diff hL₂_diff
+      with_unfolding_all exact deriv_add hL₁_diff hL₂_diff
     rw [hderiv_add]
     linarith
   have hrho0_ev' :
@@ -895,7 +915,6 @@ private theorem calabi_core_of_solution
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I 2 M]
   [SigmaCompactSpace M] [T2Space M] in
 private theorem CalabiFlowCore.scale
-    [RiemannianBundle (fun y : M => TangentSpace I y)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -1101,24 +1120,24 @@ private theorem scaled_of_quad
     dsimp only [d, n, nNat]
     rw [Nat.cast_sub hdNat_one]
     norm_num
-  letI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun y : M => TangentSpace I y) :=
     ⟨(S.base.metric t).toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : M => TangentSpace I y) :=
     ⟨⟨(S.base.metric t).inner,
       (S.base.metric t).contMDiff.continuous,
       by intro y v w; rfl⟩⟩
-  letI : PseudoEMetricSpace M :=
+  let : PseudoEMetricSpace M :=
     PseudoEMetricSpace.ofRiemannianMetric I M
-  letI : CompleteSpace M := hcomplete_t.complete
+  let : CompleteSpace M := hcomplete_t.complete
   have hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ =
         ENNReal.ofReal
           (Real.sqrt ((S.base.metric t).inner y w w)) := by
     intro y w
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     congr 2
   have hfinite' :
       Manifold.riemannianEDist I O x ≠ (⊤ : ENNReal) := by

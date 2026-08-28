@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M] in
 private theorem grid_h1_low
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (P : SmoothCcTensor g 0 2)
     (K C : ℕ → ℝ)
@@ -55,7 +55,7 @@ private theorem grid_h1_low
       (fun x => ∑ k ∈ Finset.range (i + 2),
         lowJetGrid (I := I) (M := M) g P k x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro k hk
     exact (hgrid k (by have := Finset.mem_range.mp hk; omega)).1
   have hscaled : MeasureTheory.Integrable
@@ -72,7 +72,7 @@ private theorem grid_h1_low
   refine hnorm.trans ?_
   rw [MeasureTheory.integral_const_mul]
   refine mul_le_mul_of_nonneg_left ?_ (hC i)
-  rw [MeasureTheory.integral_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
     (fun k hk => (hgrid k (by have := Finset.mem_range.mp hk; omega)).1)]
   exact Finset.sum_le_sum fun k hk =>
     (hgrid k (by have := Finset.mem_range.mp hk; omega)).2
@@ -125,7 +125,14 @@ theorem h1_low_uniform
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K R k := by
     intro k hk
-    simpa only [lowJetGrid, K] using hgrid k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k = fun x =>
+        ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m, riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+              ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    simpa only [K] using hgrid k hk
   have hle := grid_h1_low (I := I) (M := M) g P (K R) C
     hgr hC Φ hΦ
   change _ ≤ (B R) ^ 2

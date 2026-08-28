@@ -15,7 +15,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -78,20 +77,27 @@ theorem separableFormAt_chartBasisFibers_eval_continuousOn
     ContinuousOn
       (fun b : M =>
         separableFormAt (I := I) (M := M) g b r
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b)
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Jdx k) b))
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Idx k) b))
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Jdx k) b)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have heq : ∀ b : M,
       separableFormAt (I := I) (M := M) g b r
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b)
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Jdx k) b) =
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Idx k) b))
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Jdx k) b)) =
         ∏ k : Fin r, g.inner b
           (chartBasisVecFiber (I := I) α (Idx k) b)
           (chartBasisVecFiber (I := I) α (Jdx k) b) := by
     intro b
     rw [separableFormAt_apply]
+    apply Finset.prod_congr rfl
+    intro k _
+    simp
   refine ContinuousOn.congr ?_ (fun b _ => heq b)
-  refine continuousOn_finset_prod _ (fun k _ => ?_)
+  refine continuousOn_finsetProd _ (fun k _ => ?_)
   exact metric_inner_chartBasisFibers_continuousOn (I := I) (M := M) g α
     (Idx k) (Jdx k)
 
@@ -123,8 +129,16 @@ theorem chartBasisVec_continuousOn_baseSet
     ContinuousOn (chartBasisVec (I := I) α k)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   unfold chartBasisVec chartBasisVecFiber
-  exact triv_symm_apply_const_continuousOn_baseSet (I := I) (M := M) α
-    ((chartModelBasis E) k)
+  refine ContinuousOn.congr
+    (triv_symm_apply_const_continuousOn_baseSet (I := I) (M := M) α
+      ((chartModelBasis E) k)) ?_
+  intro x hx
+  change TotalSpace.mk' E x
+      ((Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) α) x)
+        ((chartModelBasis E) k)) =
+    TotalSpace.mk' E x
+      ((trivializationAt E (TangentSpace I) α).symm x ((chartModelBasis E) k))
+  rw [Trivialization.symmL_apply _ hx]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -137,9 +151,9 @@ private lemma continuousOn_g_inner_aux
     (hw : ContinuousOn (fun x : M => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) x (w x)) s) :
     ContinuousOn (fun b : M => g.inner b (v b) (w b)) s := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := ContinuousOn.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := fun x => x) (v := v) (w := w)
@@ -272,7 +286,7 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
     rw [h_left, h_right, mul_zero]
   · have hT_ne : ‖T‖ ≠ 0 := norm_ne_zero_iff.mpr hT0
     have hT_pos : 0 < ‖T‖ := (norm_pos_iff).mpr hT0
-    letI : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
+    let _ : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
       NormedSpace.toNormSMulClass
     set T' : TensorRSModel r s ℝ E := ‖T‖⁻¹ • T with hT'_def
     have hT'_norm : ‖T'‖ = 1 := by

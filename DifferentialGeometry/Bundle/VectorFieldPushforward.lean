@@ -56,7 +56,7 @@ theorem Diffeomorph.mfderiv_symm_self
   have happ := congrArg
     (fun A : TangentSpace I x →L[ℝ] TangentSpace I x => A v) hchain.symm
   simpa only [ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.id_apply] using happ
+    ContinuousLinearMap.id_apply] using! happ
 
 theorem Diffeomorph.mfderiv_self_symm
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -85,7 +85,7 @@ theorem Diffeomorph.mfderiv_self_symm
     (fun A : TangentSpace I (Φ x) →L[ℝ] TangentSpace I (Φ x) => A w)
     hchain.symm
   simpa only [ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.id_apply] using happ
+    ContinuousLinearMap.id_apply] using! happ
 
 @[simp] theorem Diffeomorph.pushforward_refl
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -94,7 +94,7 @@ theorem Diffeomorph.mfderiv_self_symm
     (W : ∀ x : M, TangentSpace I x) (x : M) :
     Diffeomorph.pushforward (Diffeomorph.refl I M ∞) W x = W x := by
   simpa only [Diffeomorph.coe_refl, id_eq, mfderiv_id,
-    ContinuousLinearMap.id_apply] using
+    ContinuousLinearMap.id_apply] using!
     (Diffeomorph.pushforward_image (I := I)
       (Diffeomorph.refl I M ∞) W x)
 
@@ -149,7 +149,7 @@ theorem Diffeomorph.pushforward_contMDiff
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (T% (Diffeomorph.pushforward Φ Y)) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   rw [Diffeomorph.pushforward_eq_mpullback_symm (I := I) Φ Y]
   have hinv : ∀ x, (mfderiv I I (⇑Φ.symm) x).IsInvertible := by
     intro x

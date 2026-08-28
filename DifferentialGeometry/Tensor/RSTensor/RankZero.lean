@@ -5,7 +5,6 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff
@@ -37,7 +36,7 @@ theorem TensorRSField.rs0_apply {s : ℕ}
 omit [IsManifold I (n + 1) M] in
 private theorem rankZero_eq_smul_one
     (x : M) (c : Tensor0SSpace 0 I x) :
-    c = tensor0SSpace_evalScalar x c •
+    c = tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
       Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
         (I := I) (M := M) n x := by
   apply (tensor0SSpace_continuousLinearEquiv 0 x).injective
@@ -45,12 +44,17 @@ private theorem rankZero_eq_smul_one
   intro v
   change Tensor0SSpace.toModel c v =
     Tensor0SSpace.toModel
-      (tensor0SSpace_evalScalar x c •
+      (tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
         Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) n x) v
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SField.one0_apply, smul_eq_mul, mul_one,
+  rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
     Tensor0SSpace.evalScalar_apply]
+  have hone : Tensor0SSpace.toModel
+      (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) n x) v = (1 : 𝕜) :=
+    Tensor0SField.one0_apply (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) n x v
+  rw [hone, mul_one]
   exact congrArg (Tensor0SSpace.toModel c) (Subsingleton.elim v Fin.elim0)
 
 omit [IsManifold I (n + 1) M] in
@@ -63,10 +67,10 @@ theorem TensorRSField.toRS0_rs0 {s : ℕ}
   intro c
   rw [Tensor0SField.toRS0_apply, TensorRSField.rs0_apply]
   calc
-    tensor0SSpace_evalScalar x c •
+    tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
           T x (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) n x) =
-        T x (tensor0SSpace_evalScalar x c •
+        T x (tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
           Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) n x) := by
           rw [map_smul]
@@ -79,7 +83,7 @@ theorem TensorRSField.rs0_toRS0 {s : ℕ}
   apply ContMDiffSection.ext
   intro x
   rw [TensorRSField.rs0_apply, Tensor0SField.toRS0_apply]
-  have hone : tensor0SSpace_evalScalar x
+  have hone : tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x
       (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
         (I := I) (M := M) n x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply]
@@ -106,8 +110,7 @@ theorem TensorRSField.scalar0_zero :
   funext x
   simp only [TensorRSField.scalar0, Tensor0SField.toScalarField,
     TensorRSField.rs0_apply, ContMDiffSection.coe_zero, Pi.zero_apply]
-  rw [ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero,
-    ContinuousMultilinearMap.zero_apply]
+  rw [TensorRSSpace.zero_apply, Tensor0SSpace.toModel_zero, _root_.zero_apply]
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
@@ -118,8 +121,7 @@ theorem TensorRSField.scalar0_add
   funext x
   simp only [TensorRSField.scalar0, Tensor0SField.toScalarField,
     TensorRSField.rs0_apply, ContMDiffSection.coe_add, Pi.add_apply]
-  rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+  rw [TensorRSSpace.add_apply, Tensor0SSpace.toModel_add, _root_.add_apply]
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
@@ -131,8 +133,8 @@ theorem TensorRSField.scalar0_smul
   funext x
   simp only [TensorRSField.scalar0, Tensor0SField.toScalarField,
     TensorRSField.rs0_apply, ContMDiffSection.coe_smul, Pi.smul_apply, smul_eq_mul]
-  rw [ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [TensorRSSpace.smul_apply, Tensor0SSpace.toModel_smul,
+    _root_.smul_apply, smul_eq_mul]
 
 omit [IsManifold I (n + 1) M] in
 @[simp]

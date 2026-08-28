@@ -16,7 +16,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Finset DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -424,9 +423,9 @@ theorem chartLeviCivitaParallelCLM_chartBasisVec_opNorm_isBounded_on_pouTsupport
           ‖chartLeviCivitaParallelCLM (I := I) g α b
               (chartBasisVecFiber (I := I) α j)‖ ≤ C := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   set K : Set M := pouTsupportSet (I := I) (M := M) α with hK_def
   have hK_compact : IsCompact K := pouTsupportSet_isCompact (I := I) (M := M) α

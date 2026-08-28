@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -59,14 +58,16 @@ noncomputable def contractCcTensor (g : SmoothRiemannianMetric I M) (r s : ℕ) 
               (T.toSection x)) = 0
         rw [hxz, map_zero, TensorRSSpace.toModel_zero] }
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 theorem contractCcTensor_toSection_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g (1 + r) (s + 1)) (x : M) :
     (contractCcTensor (I := I) (M := M) g r s T).toSection x =
       Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s x
         (T.toSection x) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 @[simp] theorem contractCcTensor_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     contractCcTensor (I := I) (M := M) g r s (0 : SmoothCcTensor g (1 + r) (s + 1)) = 0 := by
   apply SmoothCcTensor.ext
@@ -79,7 +80,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   rw [show ((0 : SmoothCcTensor g r s).toSection x) = 0 from by
     rw [SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]; rfl]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 theorem contractCcTensor_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₁ T₂ : SmoothCcTensor g (1 + r) (s + 1)) :
     contractCcTensor (I := I) (M := M) g r s (T₁ + T₂) =
@@ -99,7 +101,8 @@ theorem contractCcTensor_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add]; rfl]
   rw [map_add]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 theorem contractCcTensor_smul (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (T : SmoothCcTensor g (1 + r) (s + 1)) :
     contractCcTensor (I := I) (M := M) g r s (c • T) =
@@ -126,7 +129,7 @@ private lemma riemannianFiberNormSq_eq_bundle_norm_sq_gen
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
     riemannianFiberNormSq (I := I) (M := M) g r s x z = ‖z‖ ^ 2 := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   have h_inner :
       (DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM
@@ -150,9 +153,9 @@ theorem riemannianFiberNormSq_tensorRS_clm_apply_le
     ∃ Cφ : ℝ, 0 ≤ Cφ ∧ ∀ v : TensorRSSpace r₁ s₁ I x,
       riemannianFiberNormSq (I := I) (M := M) g r₂ s₂ x (φ v) ≤
         Cφ * riemannianFiberNormSq (I := I) (M := M) g r₁ s₁ x v := by
-  letI instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₁ s₁ I b) :=
+  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₁ s₁ I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r₁ s₁
-  letI instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₂ s₂ I b) :=
+  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₂ s₂ I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r₂ s₂
   let φg : TensorRSSpace r₁ s₁ I x →L[ℝ] TensorRSSpace r₂ s₂ I x :=
     LinearMap.toContinuousLinearMap (φ.toLinearMap)
@@ -179,7 +182,8 @@ theorem riemannianFiberNormSq_contract_trace_le
   riemannianFiberNormSq_tensorRS_clm_apply_le (I := I) (M := M) g (1 + r) (s + 1) r s x
     (Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s x)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 theorem riemannianFiberNormSq_contractCcTensor_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :

@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -74,17 +73,17 @@ private lemma coordChangeL_apply_eq_clmAt_symmL
         (rsTriv (E := E) (I := I) (M := M) r s α) x) w =
       (rsTriv (E := E) (I := I) (M := M) r s α).continuousLinearMapAt ℝ x
         ((rsTriv (E := E) (I := I) (M := M) r s γ).symmL ℝ x w) := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
+  let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
     tensorRSBundle_topology r s
-  letI : FiberBundle (TensorRSModel r s ℝ E)
+  let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_fiber r s
-  letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
+  let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   have hxγ' : x ∈ (rsTriv (E := E) (I := I) (M := M) r s γ).baseSet := by
@@ -94,7 +93,7 @@ private lemma coordChangeL_apply_eq_clmAt_symmL
   rw [Bundle.Trivialization.coordChangeL_apply _ _ ⟨hxγ', hxα'⟩,
     Bundle.Trivialization.continuousLinearMapAt_apply,
     Bundle.Trivialization.coe_linearMapAt_of_mem _ hxα',
-    Bundle.Trivialization.symmL_apply]
+    Bundle.Trivialization.symmL_apply _ hxγ' w]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -106,17 +105,17 @@ private lemma tensorTrivProj_chartTransition
       ((rsTriv (E := E) (I := I) (M := M) r s γ).coordChangeL ℝ
           (rsTriv (E := E) (I := I) (M := M) r s α) x)
         (tensorTrivProj (I := I) (M := M) g r s S γ x) := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
+  let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
     tensorRSBundle_topology r s
-  letI : FiberBundle (TensorRSModel r s ℝ E)
+  let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_fiber r s
-  letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
+  let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   have hxγ' : x ∈ (rsTriv (E := E) (I := I) (M := M) r s γ).baseSet := by
@@ -130,17 +129,17 @@ private lemma tensorTrivProj_chartTransition
 def transitionCoeff
     (r s : ℕ) (γ α : M)
     (P₀ Q : TensorCompIdx (E := E) r s) (x : M) : ℝ :=
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
+  let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
     tensorRSBundle_topology r s
-  letI : FiberBundle (TensorRSModel r s ℝ E)
+  let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_fiber r s
-  letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
+  let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   tensorChartComponentProjection (E := E) r s P₀.1 P₀.2
@@ -158,20 +157,20 @@ private lemma contMDiffOn_rsCoordChangeL (r s : ℕ) (γ α : M) :
           (rsTriv (E := E) (I := I) (M := M) r s α) x :
           TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E))
       ((chartAt H γ).source ∩ (chartAt H α).source) := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
+  let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
     tensorRSBundle_topology r s
-  letI : FiberBundle (TensorRSModel r s ℝ E)
+  let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_fiber r s
-  letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
+  let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r s ℝ E)
+  let _ : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) I :=
     tensorRSBundle_smooth ∞ r s
   have h := contMDiffOn_coordChangeL (n := (∞ : WithTop ℕ∞)) (IB := I)
@@ -188,9 +187,9 @@ lemma contMDiffOn_transitionCoeff
     ContMDiffOn I (modelWithCornersSelf ℝ ℝ) ∞
       (transitionCoeff (E := E) (I := I) (M := M) r s γ α P₀ Q)
       ((chartAt H γ).source ∩ (chartAt H α).source) := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
   have hcoord := contMDiffOn_rsCoordChangeL (E := E) (I := I) (M := M) r s γ α
   have hcoord_app : ContMDiffOn I
@@ -221,9 +220,9 @@ theorem tensorChartComponentRaw_eq_transitionCoeff_sum
         transitionCoeff (E := E) (I := I) (M := M) r s γ α P₀ Q x *
           tensorChartComponentRaw (I := I) (M := M) g r s S γ Q.1 Q.2 x := by
   classical
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
   obtain ⟨hxγ, hxα⟩ := hx
   rw [tensorChartComponentRaw_def (I := I) (M := M) g r s S α P₀.1 P₀.2]

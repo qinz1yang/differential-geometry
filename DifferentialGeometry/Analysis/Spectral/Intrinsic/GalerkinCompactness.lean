@@ -27,7 +27,7 @@ theorem fatou_sq_mass {ι : Type*} (S : ℕ → Finset ι)
     intro K
     have hlim : Tendsto (fun N => ∑ i ∈ K, w i * (v N i) ^ 2) atTop
         (𝓝 (∑ i ∈ K, w i * (vlim i) ^ 2)) := by
-      refine tendsto_finset_sum K (fun i _ => ?_)
+      refine tendsto_finsetSum K (fun i _ => ?_)
       exact ((hconv i).pow 2).const_mul (w i)
     have hev : ∀ᶠ N in atTop, ∑ i ∈ K, w i * (v N i) ^ 2 ≤ B := by
       have hsub : ∀ᶠ N in atTop, K ≤ S N := hS.eventually_ge_atTop K
@@ -87,19 +87,20 @@ theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
             (fun t => ulim t i) atTop (Icc (0 : ℝ) τ) := by
   classical
   let J : Set ℝ := Icc (0 : ℝ) τ
-  letI : CompactSpace J := isCompact_iff_compactSpace.mp (by
+  let : CompactSpace J := isCompact_iff_compactSpace.mp (by
     simpa only [J] using (isCompact_Icc : IsCompact (Icc (0 : ℝ) τ)))
   let f : ι → ℕ → (J →ᵇ ℝ) := fun i N =>
     BoundedContinuousFunction.mkOfCompact
       ⟨fun t : J => u N t i, by
-        simpa only [J] using (hlip N i).to_restrict.continuous⟩
+        change Continuous ((Icc (0 : ℝ) τ).domRestrict fun t => u N t i)
+        exact (hlip N i).to_restrict.continuous⟩
   have hvalues (i : ι) : ∀ (g : J →ᵇ ℝ) (t : J),
       g ∈ range (f i) → g t ∈ Icc (-C i) (C i) := by
     rintro g t ⟨N, rfl⟩
     have hu := hbd N (t : ℝ) (by simpa only [J] using t.2) i
     have hu' : |u N (t : ℝ) i| ≤ max (C i) 0 := hu.trans (le_max_left _ _)
-    simpa only [f, BoundedContinuousFunction.mkOfCompact_apply,
-      max_eq_left (hC i)] using abs_le.mp hu'
+    change -C i ≤ u N (t : ℝ) i ∧ u N (t : ℝ) i ≤ C i
+    simpa only [max_eq_left (hC i)] using abs_le.mp hu'
   have hequicont (i : ι) :
       Equicontinuous ((↑) : (range (f i)) → J → ℝ) := by
     refine Metric.equicontinuous_of_continuity_modulus
@@ -110,8 +111,9 @@ theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
     · rintro x y ⟨g, hg⟩
       rcases hg with ⟨N, rfl⟩
       have hdist := (hlip N i).to_restrict.dist_le_mul x y
-      simpa only [f, BoundedContinuousFunction.mkOfCompact_apply,
-        Set.restrict_apply] using hdist
+      change dist (u N (x : ℝ) i) (u N (y : ℝ) i) ≤
+        (L i : ℝ) * dist x y
+      exact hdist
   let K : ι → Set (J →ᵇ ℝ) := fun i => closure (range (f i))
   have hK (i : ι) : IsCompact (K i) := by
     simpa only [K] using
@@ -135,12 +137,16 @@ theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
     have hunif : TendstoUniformly (fun (n : ℕ) (t : J) => u (φ n) t i)
         (fun t : J => g i t) atTop := by
       have h := BoundedContinuousFunction.tendsto_iff_tendstoUniformly.mp hcoord
-      simpa only [f, BoundedContinuousFunction.mkOfCompact_apply] using h
+      change TendstoUniformly (fun (n : ℕ) (t : J) => u (φ n) t i)
+        (fun t : J => g i t) atTop at h
+      exact h
     rw [tendstoUniformlyOn_iff_restrict]
-    convert hunif using 1
-    funext t
-    change ulim (t : ℝ) i = g i t
-    exact IccExtend_val hτ (fun x : J => g i x) t
+    have hlim : J.domRestrict (fun t => ulim t i) = fun t : J => g i t := by
+      funext t
+      change ulim (t : ℝ) i = g i t
+      exact IccExtend_val hτ (fun x : J => g i x) t
+    rw [hlim]
+    exact hunif
 
 end Spectral
 end Analysis

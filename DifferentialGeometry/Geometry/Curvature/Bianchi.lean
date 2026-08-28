@@ -41,7 +41,8 @@ private theorem mdifferentiableAt_tangentConstAt_of_mem
         (q : M) -> TangentSpace I q)) p := by
   unfold DifferentialGeometry.Geometry.Connection.tangentConstAt
   exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-    (𝕜 := Real) (I := I) (x₀ := x₀) (p := p) v hp
+    (𝕜 := Real) (I := I) (x₀ := x₀) (p := p)
+    ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt Real x₀ v) hp
 
 omit [FiniteDimensional ℝ E] in
 private theorem contMDiffAt_tangentConstAt_self_minTwo
@@ -52,11 +53,11 @@ private theorem contMDiffAt_tangentConstAt_self_minTwo
   let e := trivializationAt E (TangentSpace I) x₀
   have hx : x₀ ∈ e.baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) x₀
-  haveI : IsManifold I ((minSmoothness Real 2) + 1) M := by
+  have : IsManifold I ((minSmoothness Real 2) + 1) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     norm_num
     exact (inferInstance : IsManifold I 3 M)
-  haveI : IsManifold I (((2 : ℕ∞) : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I (((2 : ℕ∞) : WithTop ℕ∞) + 1) M := by
     change IsManifold I (3 : WithTop ℕ∞) M
     exact (inferInstance : IsManifold I 3 M)
   have h_on :
@@ -66,7 +67,8 @@ private theorem contMDiffAt_tangentConstAt_self_minTwo
     simpa [e, DifferentialGeometry.Geometry.Connection.tangentConstAt] using
       (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
         (𝕜 := Real) (I := I) (M := M)
-        (n := (2 : ℕ∞)) x₀ v)
+        (n := (2 : ℕ∞)) x₀
+        ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt Real x₀ v))
   exact (h_on x₀ hx).contMDiffAt (e.open_baseSet.mem_nhds hx)
 
 private theorem contMDiffAt_tangentConstAt_mlieBracket_self_one
@@ -83,10 +85,10 @@ private theorem contMDiffAt_tangentConstAt_mlieBracket_self_one
       (T% (DifferentialGeometry.Geometry.Connection.tangentConstAt (I := I) x₀ w :
         (p : M) -> TangentSpace I p)) x₀ :=
     contMDiffAt_tangentConstAt_self_minTwo (I := I) x₀ w
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  have : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 2 M)
-  haveI : IsManifold I (((2 : ℕ∞) : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I (((2 : ℕ∞) : WithTop ℕ∞) + 1) M := by
     change IsManifold I (3 : WithTop ℕ∞) M
     exact (inferInstance : IsManifold I 3 M)
   exact
@@ -131,13 +133,15 @@ private theorem tangentConst_torsion_derivative_eq_add
   let BAc : (p : M) -> TangentSpace I p := fun p => (cov Ac p) (Bc p)
   let BrAB : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Ac Bc
   have hAB : MDiffAt (T% ABc) x := by
-    simpa [ABc, Ac, Bc, DifferentialGeometry.Geometry.Connection.tangentConstAt] using
-      CovariantDerivative.tangentConst_cov_mdiffAt
-        (𝕜 := Real) (I := I) cov hcov (x := x) (v := A) (w := B)
+    have h := CovariantDerivative.tangentConst_cov_mdiffAt
+      (𝕜 := Real) (I := I) cov hcov (x := x) (v := A) (w := B)
+    change MDiffAt (T% ABc) x at h
+    exact h
   have hBA : MDiffAt (T% BAc) x := by
-    simpa [BAc, Ac, Bc, DifferentialGeometry.Geometry.Connection.tangentConstAt] using
-      CovariantDerivative.tangentConst_cov_mdiffAt
-        (𝕜 := Real) (I := I) cov hcov (x := x) (v := B) (w := A)
+    have h := CovariantDerivative.tangentConst_cov_mdiffAt
+      (𝕜 := Real) (I := I) cov hcov (x := x) (v := B) (w := A)
+    change MDiffAt (T% BAc) x at h
+    exact h
   have hBr : MDiffAt (T% BrAB) x := by
     simpa [BrAB, Ac, Bc] using
       mdifferentiableAt_tangentConstAt_mlieBracket_self (I := I) x A B
@@ -240,7 +244,7 @@ private theorem tangentConst_mlieBracket_jacobi_cyclic
   let BrYZ : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Yc Zc
   let BrZX : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Zc Xc
   let BrXY : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Xc Yc
-  haveI : IsManifold I (minSmoothness Real 3) M := by
+  have : IsManifold I (minSmoothness Real 3) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 3 M)
   have h0 :
@@ -296,10 +300,10 @@ private theorem mlieBracket_jacobi_cyclic
   let BrYZ : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Yf Zf
   let BrZX : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Zf Xf
   let BrXY : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Xf Yf
-  haveI : IsManifold I (minSmoothness Real 3) M := by
+  have : IsManifold I (minSmoothness Real 3) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 3 M)
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  have : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 2 M)
   have h0 :
@@ -320,7 +324,7 @@ private theorem mlieBracket_jacobi_cyclic
           exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))))
   rw [VectorField.mlieBracket_swap_apply (I := I) (V := BrXY) (W := Zf) (x := x)] at h0
   have hZX_mdiff : MDiffAt (T% BrZX) x := by
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       simpa using (inferInstance : IsManifold I ∞ M)
     have hZX :
         ContMDiffAt I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞) (T% BrZX) x := by
@@ -506,11 +510,11 @@ private theorem curvBracket_mid
   have hDdiff : MDiffAt (T% Ddiff) x := by
     simpa [Ddiff] using mdifferentiableAt_add_section hDYZ hneg
   have hBr : MDiffAt (T% Br) x := by
-    haveI : IsManifold I (minSmoothness Real 2) M := by
+    have : IsManifold I (minSmoothness Real 2) M := by
       rw [minSmoothness_of_isRCLikeNormedField]
       exact IsManifold.of_le (I := I) (M := M) (n := ∞)
         (by exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       simpa using (inferInstance : IsManifold I ∞ M)
     have hBrC :
         ContMDiffAt I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞) (T% Br) x := by
@@ -667,10 +671,10 @@ private theorem covCurvExpand
   let BrYZ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     ⟨fun p : M => VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p, by
       intro p
-      haveI : IsManifold I (minSmoothness Real 2) M := by
+      have : IsManifold I (minSmoothness Real 2) M := by
         rw [minSmoothness_of_isRCLikeNormedField]
         exact (inferInstance : IsManifold I 2 M)
-      haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+      have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
         simpa using (inferInstance : IsManifold I ∞ M)
       exact
         ContMDiffAt.mlieBracket_vectorField (I := I)
@@ -683,6 +687,60 @@ private theorem covCurvExpand
     fun p => (cov (fun q : M => YW q) p) (Z p)
   let C : (p : M) -> TangentSpace I p :=
     fun p => (cov (fun q : M => W q) p) (BrYZ p)
+  have hZW_fun :
+      (fun p : M => ZW p) =
+        fun p : M => (cov (fun q : M => W q) p) (Z p) := by
+    funext p
+    rfl
+  have hYW_fun :
+      (fun p : M => YW p) =
+        fun p : M => (cov (fun q : M => W q) p) (Y p) := by
+    funext p
+    rfl
+  have hBrYZ_fun :
+      (fun p : M => BrYZ p) =
+        fun p : M => VectorField.mlieBracket I
+          (fun q : M => Y q) (fun q : M => Z q) p := by
+    funext p
+    rfl
+  have hA_fun :
+      A = fun p : M =>
+        (cov (fun q : M => (cov (fun r : M => W r) q) (Z q)) p) (Y p) := by
+    funext p
+    dsimp [A]
+    rw [hZW_fun]
+  have hB_fun :
+      B = fun p : M =>
+        (cov (fun q : M => (cov (fun r : M => W r) q) (Y q)) p) (Z p) := by
+    funext p
+    dsimp [B]
+    rw [hYW_fun]
+  have hC_fun :
+      C = fun p : M =>
+        (cov (fun q : M => W q) p)
+          (VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p) := by
+    funext p
+    dsimp [C]
+    exact congrArg
+      (fun v : TangentSpace I p => (cov (fun q : M => W q) p) v)
+      (congrFun hBrYZ_fun p)
+  have hR_fun :
+      (fun p : M => connectionRiemannCurvatureField (I := I) cov
+        (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p) =
+        fun p : M => A p - B p - C p := by
+    funext p
+    rw [hA_fun, hB_fun, hC_fun]
+    rfl
+  have hR_total :
+      (fun p : M => TotalSpace.mk' E (E := TangentSpace I) p
+        (connectionRiemannCurvatureField (I := I) cov
+          (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p)) =
+        fun p : M => TotalSpace.mk' E (E := TangentSpace I) p
+          (A p - B p - C p) := by
+    funext p
+    exact congrArg
+      (fun v : TangentSpace I p => TotalSpace.mk' E (E := TangentSpace I) p v)
+      (congrFun hR_fun p)
   let negB : (p : M) -> TangentSpace I p := -B
   let negC : (p : M) -> TangentSpace I p := -C
   have hA : MDiffAt (T% A) x := by
@@ -708,10 +766,11 @@ private theorem covCurvExpand
         (T% (fun p : M =>
           connectionRiemannCurvatureField (I := I) cov
             (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p)) x := by
-    simpa [DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField,
-      DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField, A, B, C, ZW, YW,
-        BrYZ] using
-      mdifferentiableAt_sub_section (mdifferentiableAt_sub_section hA hB) hC
+    have hsub := mdifferentiableAt_sub_section
+      (mdifferentiableAt_sub_section hA hB) hC
+    change MDiffAt (T% (fun p : M => A p - B p - C p)) x at hsub
+    rw [hR_total]
+    exact hsub
   have heq :
       (fun p : M =>
           connectionRiemannCurvatureField (I := I) cov
@@ -719,9 +778,12 @@ private theorem covCurvExpand
         =ᶠ[𝓝 x] ((A + negB) + negC) := by
     refine Filter.Eventually.of_forall ?_
     intro p
-    simp [DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField,
-      DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField, A, B, C, negB, negC,
-      ZW, YW, BrYZ, Pi.add_apply, sub_eq_add_neg, add_assoc]
+    calc
+      connectionRiemannCurvatureField (I := I) cov
+          (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p =
+        A p - B p - C p := congrFun hR_fun p
+      _ = ((A + negB) + negC) p := by
+        simp only [Pi.add_apply, negB, negC, Pi.neg_apply, sub_eq_add_neg, add_assoc]
   have hcongr :
       cov (fun p : M =>
           connectionRiemannCurvatureField (I := I) cov
@@ -742,7 +804,8 @@ private theorem covCurvExpand
     simpa [negC] using
       cov.isCovariantDerivativeOnUniv.smul_const (-1 : Real) hC
   rw [hnegB_cov, hnegC_cov] at happly
-  simpa [A, B, C, negB, negC, ZW, YW, BrYZ, sub_eq_add_neg, add_assoc] using happly
+  rw [hA_fun, hB_fun, hC_fun] at happly
+  simpa [negB, negC, sub_eq_add_neg, add_assoc] using happly
 
 private theorem curvJacobiAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -786,7 +849,6 @@ private theorem curvJacobiAt
         0 := by
     have h :=
       congrArg (fun V : TangentSpace I x => (cov (fun p : M => W p) x) V) hJac
-    dsimp only at h
     simpa using h
   unfold curvCommAt
   rw [covCurvExpand (I := I) cov hcov X Y Z W x]

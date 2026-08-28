@@ -1,6 +1,10 @@
 import Mathlib.Topology.MetricSpace.Contracting
 import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 
 open Filter Topology
 open scoped NNReal

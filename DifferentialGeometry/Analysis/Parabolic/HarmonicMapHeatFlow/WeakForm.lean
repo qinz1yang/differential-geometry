@@ -22,7 +22,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped ENNReal Manifold Topology ContDiff
@@ -68,8 +67,17 @@ theorem connAddTarget_fd
       ((ContinuousLinearMap.snd ℝ E E).comp
         (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
       (connAddZeroCoord (I := I) p) := by
-  simpa only [connAddTarget, connAddZeroCoord] using
-    (connAdd_fderiv (I := I) g p n hn).snd
+  let : NormedAddCommGroup (E × E) := Prod.normedAddCommGroup
+  let : NormedSpace ℝ (E × E) := Prod.normedSpace
+  change HasFDerivAt (fun z : E × E => (connAddChart (I := I) g p z).2)
+    ((ContinuousLinearMap.snd ℝ E E).comp
+      (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
+    (extChartAt I.tangent
+      (⟨connCompPt (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connCompOpen (I := I) p))
+      (⟨connCompPt (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connCompOpen (I := I) p)))
+  exact (connAdd_fderiv (I := I) g p n hn).snd
 
 omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
 theorem connAdd_vert
@@ -165,8 +173,13 @@ theorem hmfPrincipal_eq
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfPrincipal (I := I) g₀ S x =
       connLaplacian_vector (I := I) g₀ (hmfUnknown (I := I) g₀ S) x := by
-  simpa only [hmfPrincipal, hmfUnknown] using
-    (sharp_connLap (I := I) (M := M) g₀ S x).symm
+  change inverseMetricSharpFib (I := I) g₀ x
+      ((connLaplacianMixed (I := I) (M := M) g₀ 0 1 S.toSection x)
+        (unitZeroSec (I := I) (M := M) x)) =
+    connLaplacian_vector (I := I) g₀
+      (fun y => inverseMetricSharpFib (I := I) g₀ y
+        (unitEvalSection (I := I) (M := M) g₀ 1 S y)) x
+  exact (sharp_connLap (I := I) (M := M) g₀ S x).symm
 
 noncomputable def hmfDiff
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
@@ -181,8 +194,7 @@ noncomputable def hmfFlux
     SmoothCcTensor q 0 2 :=
   covGrad (I := I) (M := M) q 0 1 S + hmfDiff (I := I) (M := M) q h S
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_apply
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1)
     (x : M) (m : Fin 2 → E) :
@@ -203,23 +215,32 @@ theorem hmfFlux_apply
         D + slotInsertEndoFib (I := I) (M := M) 2 0 x
           (metricComparisonDifferenceEndomorphism (I := I) q h x) D := by
     rw [hmfFlux, hmfDiff, unitEvalSection_apply, SmoothCcTensor.toSection_add,
-      ContMDiffSection.coe_add, Pi.add_apply, ContinuousLinearMap.add_apply]
+      ContMDiffSection.coe_add, Pi.add_apply, add_apply]
     rw [operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
       slotInsertEndoCc_toSection]
     rfl
   rw [hflux, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply, slotInsertEndoFib_apply_eval]
+    add_apply, slotInsertEndoFib_apply_eval]
   change Tensor0SSpace.toModel D m +
       Tensor0SSpace.toModel D
         (Function.update m 0
-          (metricComparisonDifferenceEndomorphism (I := I) q h x (m 0))) =
+          (tangentLinearMapToModel
+            (metricComparisonDifferenceEndomorphism (I := I) q h x) (m 0))) =
     Tensor0SSpace.toModel D
-      (Function.update m 0 (metricComparisonEndomorphism (I := I) q h x (m 0)))
-  rw [metricComparisonEndomorphism_eq_diff_add_id,
-    ContinuousMultilinearMap.map_update_add, Function.update_eq_self]
+      (Function.update m 0
+        (tangentLinearMapToModel (metricComparisonEndomorphism (I := I) q h x) (m 0)))
+  have hmodel :
+      tangentLinearMapToModel (metricComparisonEndomorphism (I := I) q h x) (m 0) =
+        tangentLinearMapToModel
+            (metricComparisonDifferenceEndomorphism (I := I) q h x) (m 0) + m 0 := by
+    simpa only [tangentLinearMapToModel_apply, map_add,
+      ContinuousLinearEquiv.apply_symm_apply] using
+        congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+          (metricComparisonEndomorphism_eq_diff_add_id (I := I) q h x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)))
+  rw [hmodel, ContinuousMultilinearMap.map_update_add, Function.update_eq_self]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -238,7 +259,7 @@ private theorem hmfRaised_split
           rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show metricComparisonDifferenceEndomorphismField (I := I) q h x =
       metricComparisonDifferenceEndomorphism (I := I) q h x from rfl]
   rw [metricComparisonEndomorphismField_apply,
@@ -246,7 +267,6 @@ private theorem hmfRaised_split
   rw [show metricComparisonEndomorphism (I := I) q q x v = v from by
     rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
 private theorem hmfSlot_add
@@ -267,14 +287,13 @@ private theorem hmfSlot_add
         (endoSlotZeroCcTensor (I := I) (M := M) q s B).toSection x from by
           rw [SmoothCcTensor.toSection_add]
           rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -295,11 +314,13 @@ private theorem hmfSlot_self_app
   rw [operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
     slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval,
     metricComparisonEndomorphismField_apply]
-  rw [show metricComparisonEndomorphism (I := I) q q x (m 0) = m 0 from by
-    rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
+  rw [show tangentLinearMapToModel (metricComparisonEndomorphism (I := I) q q x) (m 0) =
+      m 0 from by
+    rw [tangentLinearMapToModel_apply, metricComparisonEndomorphism_apply,
+      inverseMetricSharpFib_g0FlatCLM, ContinuousLinearEquiv.apply_symm_apply]]
   rw [Function.update_eq_self]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_eq_full
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q h S =
@@ -312,14 +333,14 @@ theorem hmfFlux_eq_full
     hmfSlot_self_app]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_self
     (q : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q q S =
       covGrad (I := I) (M := M) q 0 1 S := by
   rw [hmfFlux_eq_full, hmfSlot_self_app]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfDiff_add
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfDiff (I := I) (M := M) q h (S + T) =
@@ -328,7 +349,7 @@ theorem hmfDiff_add
   unfold hmfDiff
   rw [covGrad_add, operatorFieldApplication_add_right]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfDiff_smul
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor q 0 1) :
     hmfDiff (I := I) (M := M) q h (c • S) =
@@ -336,7 +357,7 @@ theorem hmfDiff_smul
   unfold hmfDiff
   rw [covGrad_smul, operatorFieldApplication_smul_right]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_add
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q h (S + T) =
@@ -346,7 +367,7 @@ theorem hmfFlux_add
   rw [covGrad_add, hmfDiff_add]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_smul
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q h (c • S) =
@@ -435,7 +456,7 @@ private lemma hmf_inner_int
       (fun x => tensorInnerPointwise (I := I) (M := M) q r s x
         (S.toFun x) (T.toFun x))
       (riemannianVolumeMeasure (I := I) (M := M) h) := by
-  letI : IsFiniteMeasureOnCompacts
+  let : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) h) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) h
   exact (SmoothCcTensor.continuous_inner_cross (I := I)
@@ -524,7 +545,7 @@ theorem hmfWeak_smul_left
   simp only [Pi.smul_apply, tensorInnerPointwise_smul_left,
     MeasureTheory.integral_const_mul]
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem hmfDiff_pair_symm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) (x : M) :
     tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -535,6 +556,9 @@ private theorem hmfDiff_pair_symm
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) := by
   obtain ⟨e, bse, hbse, horth⟩ :=
     exists_orthoFrame_basis_E (I := I) (M := M) q x
+  have hfield :
+      metricComparisonDifferenceEndomorphismField (I := I) q h x =
+        metricComparisonDifferenceEndomorphism (I := I) q h x := rfl
   have hslot := tensorInnerPointwise_slotΛ_self_adjoint
     (I := I) (M := M) q 1 x
     (metricComparisonDifferenceEndomorphism (I := I) q h x)
@@ -549,7 +573,10 @@ private theorem hmfDiff_pair_symm
       tensorInnerPointwise (I := I) (M := M) q 0 2 x
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
         ((hmfDiff (I := I) (M := M) q h T).toFun x) := by
-          simpa only [hmfDiff, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply] using hslot
+          simpa only [SmoothCcTensor.toFun_apply, hmfDiff,
+            operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
+            slotInsertEndoCc_toSection, hfield,
+            TensorRSSpace.ofCLM] using hslot
     _ = _ := tensorInnerPointwise_symm (I := I) (M := M) q 0 2 x _ _
 
 omit [BoundarylessManifold I M] in
@@ -652,7 +679,7 @@ private lemma hmf_integral_le
     _ = C.toReal * ∫ x, f x ∂ν := by
       rw [MeasureTheory.integral_smul_measure, smul_eq_mul]
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem hmfDiff_self_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -668,15 +695,21 @@ private theorem hmfDiff_self_le
         tensorInnerPointwise (I := I) (M := M) q 0 2 x
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x) := by
+  have hfield :
+      metricComparisonDifferenceEndomorphismField (I := I) q h x =
+        metricComparisonDifferenceEndomorphism (I := I) q h x := rfl
   rw [tensorInnerPointwise_symm (I := I) (M := M) q 0 2 x
     ((hmfDiff (I := I) (M := M) q h S).toFun x)
     ((covGrad (I := I) (M := M) q 0 1 S).toFun x)]
-  simpa only [hmfDiff, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply] using
+  simpa only [SmoothCcTensor.toFun_apply, hmfDiff,
+    operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
+    slotInsertEndoCc_toSection, hfield,
+    TensorRSSpace.ofCLM, gInvDiffSlotApplied] using
     (tensorInnerPointwise_gInvDiffSlot_le (I := I) (M := M)
       q h k htie hδ_lt hδ_nn hδ 1 x
       ((covGrad (I := I) (M := M) q 0 1 S).toSection x))
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem hmfNegDiff_self_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -692,6 +725,9 @@ private theorem hmfNegDiff_self_le
         tensorInnerPointwise (I := I) (M := M) q 0 2 x
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x) := by
+  have hfield :
+      metricComparisonDifferenceEndomorphismField (I := I) q h x =
+        metricComparisonDifferenceEndomorphism (I := I) q h x := rfl
   have hneg := negDiffSlot_point_le (I := I) (M := M)
     q h k htie hδ_lt hδ_nn hδ 1 x
     ((covGrad (I := I) (M := M) q 0 1 S).toSection x)
@@ -713,9 +749,12 @@ private theorem hmfNegDiff_self_le
         ((hmfDiff (I := I) (M := M) q h S).toFun x)
       simpa only [neg_one_smul, neg_one_mul] using hsmul.symm
     _ ≤ _ := by
-      simpa only [hmfDiff, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply] using hneg
+      simpa only [SmoothCcTensor.toFun_apply, hmfDiff,
+        operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
+        slotInsertEndoCc_toSection, hfield,
+        TensorRSSpace.ofCLM, gInvDiffSlotApplied] using hneg
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_diag_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -736,7 +775,7 @@ theorem hmfFlux_diag_le
   linarith [hmfDiff_self_le (I := I) (M := M)
     q h k htie hδ_lt hδ_nn hδ S x]
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfFlux_diag_ge
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)

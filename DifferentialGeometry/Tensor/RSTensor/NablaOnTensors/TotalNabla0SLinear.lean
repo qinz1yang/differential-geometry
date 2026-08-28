@@ -1,7 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -126,20 +125,50 @@ theorem insert_base (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     simpa using congrArg
       (fun A : TangentSpace I x →L[ℝ] TangentSpace I x => A v)
       (nEndo_base (I := I) (M := M) g₀ g₁ x)
+  have hN0Model : ∀ v : E,
+      tangentLinearMapToModel
+          (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x) v =
+        -(tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism
+            (I := I) g₁ g₀ x) v) := by
+    intro v
+    simpa only [tangentLinearMapToModel_apply, map_neg] using congrArg
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+      (hN0 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))
   have e0 : Tensor0SSpace.toModel D
-      (Function.update m 0 (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x (m 0))) =
+      (Function.update m 0
+        (tangentLinearMapToModel
+          (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x) (m 0))) =
       -(Tensor0SSpace.toModel D
-        (Function.update m 0 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 0)))) := by
-    rw [hN0 (m 0), show (-(deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 0))) =
-        ((-1 : ℝ) • (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 0))) from
+        (Function.update m 0
+          (tangentLinearMapToModel
+            (deTurckVectorFieldCovariantDerivativeEndomorphism
+              (I := I) g₁ g₀ x) (m 0)))) := by
+    rw [hN0Model (m 0), show
+        (-(tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism
+            (I := I) g₁ g₀ x) (m 0))) =
+        ((-1 : ℝ) • (tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism
+            (I := I) g₁ g₀ x) (m 0))) from
           (neg_one_smul ℝ _).symm]
     rw [ContinuousMultilinearMap.map_update_smul, neg_one_smul]
   have e1 : Tensor0SSpace.toModel D
-      (Function.update m 1 (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x (m 1))) =
+      (Function.update m 1
+        (tangentLinearMapToModel
+          (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x) (m 1))) =
       -(Tensor0SSpace.toModel D
-        (Function.update m 1 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 1)))) := by
-    rw [hN0 (m 1), show (-(deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 1))) =
-        ((-1 : ℝ) • (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 1))) from
+        (Function.update m 1
+          (tangentLinearMapToModel
+            (deTurckVectorFieldCovariantDerivativeEndomorphism
+              (I := I) g₁ g₀ x) (m 1)))) := by
+    rw [hN0Model (m 1), show
+        (-(tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism
+            (I := I) g₁ g₀ x) (m 1))) =
+        ((-1 : ℝ) • (tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism
+            (I := I) g₁ g₀ x) (m 1))) from
           (neg_one_smul ℝ _).symm]
     rw [ContinuousMultilinearMap.map_update_smul, neg_one_smul]
   rw [e0, e1]
@@ -162,6 +191,7 @@ theorem lieCorrectionZero_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   rw [lieCorrectionZeroTotalFib]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem tail_base_split (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :

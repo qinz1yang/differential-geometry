@@ -19,7 +19,6 @@ open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -39,7 +38,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def differential1FormFun (u : M -> Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangent_gen (I := I) (mfderiv I 𝓘(Real, Real) u x).toLinearMap
+  dualToCotangent_gen (I := I) (mvfderiv (I := I) u x).toLinearMap
 
 def duField (u : M -> Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
@@ -63,9 +62,9 @@ private theorem duFun_contMDiff
           TotalSpace (Tensor0SModel 1 Real E)
             (fun p : M => Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
               (I := I) (M := M) 1 p))) := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let _ := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1
-  letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M)
+  let _ := TangentBundle.contMDiffVectorBundle (I := I) (M := M)
     (n := (∞ : WithTop ℕ∞))
   let d := Module.finrank Real E
   let b : Module.Basis (Fin d) Real E := Module.finBasis Real E
@@ -87,8 +86,8 @@ private theorem duFun_contMDiff
   have hderiv :
       ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun p : M =>
-          extDerivFun (I := I) u p (coordinateFrameAt (I := I) x₀ j p)) x₀ :=
-    extDerivFun_apply_contMDiffAt_of_section (I := I)
+          mvfderiv (I := I) u p (coordinateFrameAt (I := I) x₀ j p)) x₀ :=
+    mvfderiv_apply_contMDiffAt_of_section (I := I)
       (f := u) (X := coordinateFrameAt (I := I) x₀ j)
       hu.contMDiffAt hframe
   refine hderiv.congr_of_eventuallyEq ?_
@@ -105,23 +104,24 @@ private theorem duFun_contMDiff
     have hp_src : p ∈ (chartAt H x₀).source := by
       simpa [coordinateFrameSet, coordinateTrivializationAt] using hp
     rw [coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := p) hp j]
-    simpa [j, b] using
-      congrArg
-        (fun L : E →L[Real] TangentSpace I p => L (b j))
-        (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hp_src)
+    convert congrArg
+      (fun L : E →L[Real] TangentSpace I p => L (b j))
+      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hp_src) using 1
+    all_goals rfl
   rw [continuousMultilinearMap_basis_repr]
   change ((trivializationAt (Tensor0SModel 1 Real E)
       (Bundle.continuousMultilinearMap Real 1 E (TangentSpace I : M -> Type _)) x₀
       ⟨p, F p⟩).2)
       (fun a : Fin 1 => b (σ a)) =
-    extDerivFun (I := I) u p (coordinateFrameAt (I := I) x₀ j p)
-  change (F p).compContinuousLinearMap
+    mvfderiv (I := I) u p (coordinateFrameAt (I := I) x₀ j p)
+  change (tensor0SSpaceFiberContinuousLinearEquiv
+      (I := I) (M := M) 1 p (F p)).compContinuousLinearMap
       (fun _ : Fin 1 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real p)
       (fun a : Fin 1 => b (σ a)) =
-    extDerivFun (I := I) u p (coordinateFrameAt (I := I) x₀ j p)
+    mvfderiv (I := I) u p (coordinateFrameAt (I := I) x₀ j p)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply, hslot]
-  simp [F, differential1FormFun, extDerivFun, NormedSpace.fromTangentSpace]
+  simp [F, differential1FormFun, mvfderiv, NormedSpace.fromTangentSpace]
   rfl
 
 noncomputable def duSec
@@ -146,18 +146,18 @@ theorem duSec_realizes
   intro x
   simp [duField]
 
-theorem differential1FormFun_apply_eq_extDerivFun
+theorem differential1FormFun_apply_eq_mvfderiv
     (u : M -> Real) (x : M) (v : TangentSpace I x) :
     differential1FormFun (I := I) u x (fun _ : Fin 1 => v) =
-      extDerivFun (I := I) u x v := by
-  simp [differential1FormFun, extDerivFun, NormedSpace.fromTangentSpace]
+      mvfderiv (I := I) u x v := by
+  simp [differential1FormFun, mvfderiv, NormedSpace.fromTangentSpace]
   rfl
 
 theorem dphi_apply_smooth
     (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
     ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-      (fun p : M => extDerivFun (I := I) u p (Y p)) := by
+      (fun p : M => mvfderiv (I := I) u p (Y p)) := by
   let du : OneFormSection (I := I) (M := M) := duSec (I := I) u hu
   let Slots : Fin 1 ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -166,10 +166,10 @@ theorem dphi_apply_smooth
     TensorMultilinear.contMDiff_tensor0SField_apply (I := I) (M := M) du Slots
   have hfun :
       (fun p : M => du p (fun i : Fin 1 => Slots i p)) =
-        fun p : M => extDerivFun (I := I) u p (Y p) := by
+        fun p : M => mvfderiv (I := I) u p (Y p) := by
     funext p
     rw [duSec_apply]
-    exact differential1FormFun_apply_eq_extDerivFun (I := I) u p (Y p)
+    exact differential1FormFun_apply_eq_mvfderiv (I := I) u p (Y p)
   simpa [hfun] using hraw
 
 theorem dphi_apply_mdiffAt
@@ -177,7 +177,7 @@ theorem dphi_apply_mdiffAt
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
     MDifferentiableAt I 𝓘(Real, Real)
-      (fun p : M => extDerivFun (I := I) u p (Y p)) x :=
+      (fun p : M => mvfderiv (I := I) u p (Y p)) x :=
   (dphi_apply_smooth (I := I) u hu Y).contMDiffAt.mdifferentiableAt (by simp)
 
 
@@ -186,15 +186,8 @@ theorem differential1FormFun_apply_eq_inner_gradientFun
     (x : M) (v : TangentSpace I x) :
     differential1FormFun (I := I) u x (fun _ : Fin 1 => v) =
       g.inner x (gradientFun (I := I) g u x) v := by
-  simpa [differential1FormFun] using
-    (inner_gradientFun (I := I) g u x v).symm
-
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private theorem extDerivFun_real_eq_mfderiv
-    (u : M -> Real) (x : M) (v : TangentSpace I x) :
-    extDerivFun (I := I) u x v =
-      mfderiv I 𝓘(Real, Real) u x v := by
-  simp [extDerivFun, NormedSpace.fromTangentSpace]
+  rw [differential1FormFun_apply_eq_mvfderiv]
+  exact (inner_gradientFun (I := I) g u x v).symm
 
 noncomputable def nablaDuAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -345,13 +338,25 @@ theorem hess_sub_conn
   change
     hessianSec (I := I) cov hcov u hu x (vec2 (I := I) (X x) (Y x)) -
         hessianSec (I := I) cov' hcov' u hu x (vec2 (I := I) (X x) (Y x)) =
-      -(connectionDifferenceOutput (I := I)
-        (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x)
-          (vec2 (I := I) (X x) (Y x)))
+      -Tensor0SSpace.eval
+        (connectionDifferenceOutput (I := I)
+          (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x))
+        (vec2 (I := I) (X x) (Y x))
   rw [(hessianSec_nabla (I := I) cov hcov u hu) x X (Y x),
     (hessianSec_nabla (I := I) cov' hcov' u hu) x X (Y x)]
   rw [connectionDifferenceOutput_apply]
-  simpa [vec2] using hdiff
+  have hupdate :
+      Function.update (fun _ : Fin 1 => Y x) 0
+          (((CovariantDerivative.difference cov cov' x) (Y x)) (X x)) =
+        fun _ : Fin 1 =>
+          ((CovariantDerivative.difference cov cov' x) (Y x)) (X x) := by
+    funext a
+    fin_cases a
+    simp
+  convert hdiff using 1
+  · exact (Tensor0SSpace.sub_apply (I := I) 1 x _ _
+      (fun _ : Fin 1 => Y x)).symm
+  · simp [vec2, hupdate, Tensor0SSpace.eval_eq]
 
 
 theorem hessianSec_realizesAt
@@ -404,15 +409,14 @@ theorem hessSec_inner_cov
   have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
     (I := I) hmc (fun y : M => X y) G (fun y : M => Y y) hXm hGm hYm
   have hmetric_ext :
-      extDerivFun (I := I) (fun y : M => g.inner y (G y) (Y y)) x (X x) =
+      mvfderiv (I := I) (fun y : M => g.inner y (G y) (Y y)) x (X x) =
         g.inner x (cov G x (X x)) (Y x) +
           g.inner x (G x) (cov (fun y : M => Y y) x (X x)) := by
-    rw [extDerivFun_real_eq_mfderiv]
     exact hmetric
   have hnabla_eval :
       nablaDuAt (I := I) cov X (duSec (I := I) f hf) x
           (fun _ : Fin 1 => Y x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun y : M => duSec (I := I) f hf y (fun _ : Fin 1 => Y y)) x
             (X x) -
           duSec (I := I) f hf x
@@ -440,12 +444,12 @@ theorem hessSec_inner_cov
     _ = nablaDuAt (I := I) cov X (duSec (I := I) f hf) x
           (fun _ : Fin 1 => Y x) :=
       (hessianSec_nabla (I := I) cov hcov f hf) x X (Y x)
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun y : M => duSec (I := I) f hf y (fun _ : Fin 1 => Y y)) x
           (X x) -
         duSec (I := I) f hf x
           (fun _ : Fin 1 => (cov (fun y : M => Y y) x) (X x)) := hnabla_eval
-    _ = extDerivFun (I := I) (fun y : M => g.inner y (G y) (Y y)) x (X x) -
+    _ = mvfderiv (I := I) (fun y : M => g.inner y (G y) (Y y)) x (X x) -
         g.inner x (G x) (cov (fun y : M => Y y) x (X x)) := by
       rw [hdu, hcorr]
     _ = g.inner x (cov G x (X x)) (Y x) := by
@@ -730,14 +734,13 @@ private theorem hessian_component_eq_inner_cov_gradient
   have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
     (I := I) hmc (fun y : M => X i y) G (fun y : M => X j y) hXi hgrad hXj
   have hmetric_ext :
-      extDerivFun (I := I) (fun y : M => g.inner y (G y) (X j y)) x (X i x) =
+      mvfderiv (I := I) (fun y : M => g.inner y (G y) (X j y)) x (X i x) =
         g.inner x (cov G x (X i x)) (X j x) +
           g.inner x (G x) (cov (fun y : M => X j y) x (X i x)) := by
-    rw [extDerivFun_real_eq_mfderiv]
     exact hmetric
   have hnabla_eval :
       nablaDuAt (I := I) cov (X i) duSec x (fun _ : Fin 1 => X j x) =
-        extDerivFun (I := I) (fun y : M => duSec y (fun _ : Fin 1 => X j y)) x
+        mvfderiv (I := I) (fun y : M => duSec y (fun _ : Fin 1 => X j y)) x
             (X i x) -
           duSec x (fun _ : Fin 1 => (cov (fun y : M => X j y) x) (X i x)) := by
     simpa [nablaDuAt] using
@@ -754,11 +757,11 @@ private theorem hessian_component_eq_inner_cov_gradient
             rw [hfields i, hfields j]
     _ = nablaDuAt (I := I) cov (X i) duSec x (fun _ : Fin 1 => X j x) := by
             exact hHess (X i) (X j x)
-    _ = extDerivFun (I := I) (fun y : M => duSec y (fun _ : Fin 1 => X j y)) x
+    _ = mvfderiv (I := I) (fun y : M => duSec y (fun _ : Fin 1 => X j y)) x
             (X i x) -
           duSec x (fun _ : Fin 1 => (cov (fun y : M => X j y) x) (X i x)) := by
             exact hnabla_eval
-    _ = extDerivFun (I := I) (fun y : M => g.inner y (G y) (X j y)) x
+    _ = mvfderiv (I := I) (fun y : M => g.inner y (G y) (X j y)) x
             (X i x) -
           g.inner x (G x) (cov (fun y : M => X j y) x (X i x)) := by
             rw [hfun, hcorr]

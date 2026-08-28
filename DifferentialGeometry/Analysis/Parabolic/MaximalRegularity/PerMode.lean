@@ -5,6 +5,7 @@ import Mathlib.MeasureTheory.Integral.Prod
 
 noncomputable section
 
+
 open Set MeasureTheory Filter intervalIntegral
 open scoped Topology ContDiff
 
@@ -102,7 +103,9 @@ theorem kernelIntegral_time (lam s T : ℝ) :
     have hexp' : HasDerivAt (fun t => Real.exp (-(lam * (t - s))))
         (-(lam * Real.exp (-(lam * (t - s))))) t := by
       simpa [mul_comm, neg_mul] using hexp
-    simpa using hexp'.neg
+    change HasDerivAt (-fun t => Real.exp (-(lam * (t - s))))
+      (lam * Real.exp (-(lam * (t - s)))) t
+    simpa only [neg_neg] using hexp'.neg
   have hint : IntervalIntegrable
       (fun t => lam * Real.exp (-(lam * (t - s)))) volume s T := by
     apply Continuous.intervalIntegrable
@@ -307,8 +310,8 @@ private theorem integrable_uncurry_schurIntegrand (lam : ℝ) (hlam : 0 ≤ lam)
     (f : ℝ → ℝ) (hf : Continuous f) (T : ℝ) :
     Integrable (Function.uncurry (schurIntegrand lam f))
       ((TimeSobolev.timeMeasure T).prod (TimeSobolev.timeMeasure T)) := by
-  letI : MeasurableSpace ℝ := borel ℝ
-  haveI : BorelSpace ℝ := ⟨rfl⟩
+  let : MeasurableSpace ℝ := borel ℝ
+  have : BorelSpace ℝ := ⟨rfl⟩
   rcases le_or_gt 0 T with hT | hT
   swap
   · have hzero : TimeSobolev.timeMeasure T = 0 :=
@@ -374,8 +377,8 @@ theorem perModeConv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
     (hf : Continuous f) {T : ℝ} (hT : 0 ≤ T) :
     ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T, f t ^ 2 := by
-  letI : MeasurableSpace ℝ := borel ℝ
-  haveI : BorelSpace ℝ := ⟨rfl⟩
+  let : MeasurableSpace ℝ := borel ℝ
+  have : BorelSpace ℝ := ⟨rfl⟩
   have hstep1 : ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T,
           ∫ s in (0 : ℝ)..t, lam * Real.exp (-(lam * (t - s))) * f s ^ 2 := by
@@ -475,7 +478,8 @@ theorem perModeConv_hasDerivAt (lam : ℝ) (hf : Continuous f) (t : ℝ) :
     have hbase : HasDerivAt (fun t : ℝ => -(lam * t)) (-lam) t := by
       have h1 : HasDerivAt (fun t : ℝ => lam * t) lam t := by
         simpa using (hasDerivAt_id t).const_mul lam
-      simpa using h1.neg
+      change HasDerivAt (-fun t : ℝ => lam * t) (-lam) t
+      exact h1.neg
     have hexp := hbase.exp
     simpa [mul_comm] using hexp
   have hprod : HasDerivAt (fun t => Real.exp (-(lam * t)) * ψ t)

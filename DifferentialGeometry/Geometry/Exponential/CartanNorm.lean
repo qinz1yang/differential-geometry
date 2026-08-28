@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -98,7 +99,7 @@ theorem expDiff_sq_xfer
             (show TangentSpace I p from v))
           u w) := by
   classical
-  letI : Nonempty (Fin (Module.finrank ℝ (TangentSpace I p))) :=
+  let _ : Nonempty (Fin (Module.finrank ℝ (TangentSpace I p))) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   let Fvar : ℝ → ℝ → M := fun s =>
     intrinsicGeodesic (I := I) g hEnorm p
@@ -175,8 +176,9 @@ theorem expDiff_sq_xfer
       g'.inner (γ' 0) (i (basis a)) (i (basis b)) =
         if a = b then (1 : ℝ) else 0 := by
     intro a b
-    rw [hγ0', hi]
-    exact hbasis a b
+    rw [hγ0']
+    with_unfolding_all
+      exact (hi (basis a) (basis b)).trans (hbasis a b)
   have hγ2 : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ :=
     hγ.of_le (by norm_num)
   have hγ2' : ContMDiff 𝓘(ℝ, ℝ) I' (2 : ℕ∞) γ' :=
@@ -250,16 +252,37 @@ theorem expDiff_sq_xfer
   have hspeed : ∀ t : ℝ,
       g.inner (γ t) (V t) (V t) = g.inner p u u := by
     intro t
-    simpa only [γ, V] using
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
-        (show TangentSpace I p from u) t
+    change g.inner
+        (intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from u) t)
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (intrinsicGeodesic (I := I) g hEnorm p
+            (show TangentSpace I p from u)) t (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (intrinsicGeodesic (I := I) g hEnorm p
+            (show TangentSpace I p from u)) t (1 : ℝ)) =
+      g.inner p (show TangentSpace I p from u)
+        (show TangentSpace I p from u)
+    exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
+      (show TangentSpace I p from u) t
   have hspeed' : ∀ t : ℝ,
       g'.inner (γ' t) (V' t) (V' t) = g.inner p u u := by
     intro t
     have hs :=
       intrinsicGeodesic_speedSq_eq (I := I') g' hEnorm' p'
         (show TangentSpace I' p' from i u) t
-    simpa only [γ', V', hi u u] using hs
+    change g'.inner
+        (intrinsicGeodesic (I := I') g' hEnorm' p'
+          (show TangentSpace I' p' from i u) t)
+        (mfderiv 𝓘(ℝ, ℝ) I'
+          (intrinsicGeodesic (I := I') g' hEnorm' p'
+            (show TangentSpace I' p' from i u)) t (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I'
+          (intrinsicGeodesic (I := I') g' hEnorm' p'
+            (show TangentSpace I' p' from i u)) t (1 : ℝ)) =
+      g.inner p (show TangentSpace I p from u)
+        (show TangentSpace I p from u)
+    exact hs.trans (hi u u)
   let a0 : Fin (Module.finrank ℝ (TangentSpace I p)) →
       Fin (Module.finrank ℝ (TangentSpace I p)) → ℝ := fun a b =>
     g.inner p u u * (if a = b then 1 else 0) -
@@ -317,14 +340,16 @@ theorem expDiff_sq_xfer
     have h :=
       variationField_chartRep_differentiableAt (I := I) Fvar hFvar t
     rw [hcentral] at h
-    simpa only [Y] using h
+    change DifferentiableAt ℝ (chartRepAt (I := I) γ Y t) t at h
+    exact h
   have hYdiff' : ∀ t ∈ Icc (0 : ℝ) 1,
       DifferentiableAt ℝ (chartRepAt (I := I') γ' Y' t) t := by
     intro t _ht
     have h :=
       variationField_chartRep_differentiableAt (I := I') Fvar' hFvar' t
     rw [hcentral'] at h
-    simpa only [Y'] using h
+    change DifferentiableAt ℝ (chartRepAt (I := I') γ' Y' t) t at h
+    exact h
   have hDYdiff : ∀ t ∈ Icc (0 : ℝ) 1,
       DifferentiableAt ℝ (chartRepAt (I := I) γ
         (fun s => covDerivAlong (I := I) g γ Y s) t) t := by
@@ -332,7 +357,9 @@ theorem expDiff_sq_xfer
     have h := variationField_covDeriv_chartRep_differentiableAt
       (I := I) g Fvar hFvar t
     rw [hcentral] at h
-    simpa only [Y] using h
+    change DifferentiableAt ℝ (chartRepAt (I := I) γ
+      (fun s => covDerivAlong (I := I) g γ Y s) t) t at h
+    exact h
   have hDYdiff' : ∀ t ∈ Icc (0 : ℝ) 1,
       DifferentiableAt ℝ (chartRepAt (I := I') γ'
         (fun s => covDerivAlong (I := I') g' γ' Y' s) t) t := by
@@ -340,7 +367,9 @@ theorem expDiff_sq_xfer
     have h := variationField_covDeriv_chartRep_differentiableAt
       (I := I') g' Fvar' hFvar' t
     rw [hcentral'] at h
-    simpa only [Y'] using h
+    change DifferentiableAt ℝ (chartRepAt (I := I') γ'
+      (fun s => covDerivAlong (I := I') g' γ' Y' s) t) t at h
+    exact h
   have hJ : ∀ t ∈ Icc (0 : ℝ) 1, IsJacobiAt (I := I) g γ Y t := by
     intro t _ht
     simpa only [γ, Y, Fvar, zero_smul, add_zero] using
@@ -389,7 +418,9 @@ theorem expDiff_sq_xfer
     · intro a
       rw [show covDerivAlong (I := I) g γ Y 0 = w from hD0,
         show covDerivAlong (I := I') g' γ' Y' 0 = i w from hD0',
-        hframe0 a, hframe0' a, hγ0, hγ0', hi]
+        hframe0 a, hframe0' a, hγ0, hγ0']
+      with_unfolding_all
+        exact (hi (basis a) w).symm
   have hnormY :
       g'.inner (γ' 1) (Y' 1) (Y' 1) =
         g.inner (γ 1) (Y 1) (Y 1) := by
@@ -401,23 +432,13 @@ theorem expDiff_sq_xfer
         (fun a => frame a 1) (hframeON 1 (by norm_num))]
     exact Finset.sum_congr rfl fun a _ => by
       rw [hcoord 1 (by norm_num) a]
-  have hYone :
-      Y 1 =
-        mfderiv 𝓘(ℝ, E) I
-          (fun v : E => expMapIntrinsic (I := I) g hEnorm p
-            (show TangentSpace I p from v))
-          u w := by
-    simpa only [Y, Fvar] using
-      intrinsic_jacobi_one (I := I) g hEnorm p u w
-  have hYone' :
-      Y' 1 =
-        mfderiv 𝓘(ℝ, E) I'
-          (fun v : E => expMapIntrinsic (I := I') g' hEnorm' p'
-            (show TangentSpace I' p' from v))
-          (i u) (i w) := by
-    simpa only [Y', Fvar'] using
-      intrinsic_jacobi_one (I := I') g' hEnorm' p' (i u) (i w)
-  simpa only [γ, γ', expMapIntrinsic, hYone, hYone'] using hnormY
+  have hYone := intrinsic_jacobi_one (I := I) g hEnorm p u w
+  have hYone' :=
+    intrinsic_jacobi_one (I := I') g' hEnorm' p' (i u) (i w)
+  dsimp only [Y, Y', Fvar, Fvar'] at hnormY
+  rw [hYone, hYone'] at hnormY
+  dsimp only [γ, γ', expMapIntrinsic] at hnormY
+  exact hnormY
 
 end Exponential
 end Riemannian

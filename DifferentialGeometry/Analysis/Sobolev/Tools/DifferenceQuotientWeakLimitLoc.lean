@@ -165,7 +165,7 @@ lemma denseRange_smoothCSSupportedInToLp
     DenseRange (smoothCSSupportedInToLp (d := d) Ω'') := by
   classical
   have hΩ''_meas : MeasurableSet Ω'' := hΩ''_open.measurableSet
-  haveI : IsFiniteMeasure ((volume : Measure E).restrict Ω'') := by
+  have : IsFiniteMeasure ((volume : Measure E).restrict Ω'') := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact lt_of_le_of_lt (measure_mono subset_closure)
@@ -210,7 +210,7 @@ lemma denseRange_smoothCSSupportedInToLp
     have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
     have h_diff_meas : MeasurableSet (Ω'' \ K) := hΩ''_meas.diff hK_meas
     have h_disj : Disjoint K (Ω'' \ K) := disjoint_sdiff_self_right
-    have h_union : Ω'' = K ∪ (Ω'' \ K) := (Set.union_diff_cancel hK_sub).symm
+    have h_union : Ω'' = K ∪ (Ω'' \ K) := (Set.union_sdiff_cancel hK_sub).symm
     have h_meas_split :
         ((volume : Measure E).restrict Ω'') Ω'' =
           ((volume : Measure E).restrict Ω'') K +
@@ -750,14 +750,14 @@ private lemma abs_integral_mul_le_eLpNorm_two_loc
     have hint : ‖∫ x, f x * g x ∂μ‖ₑ ≤ ∫⁻ x, ‖f x * g x‖ₑ ∂μ :=
       enorm_integral_le_lintegral_enorm _
     have hofreal : ENNReal.ofReal ‖∫ x, f x * g x ∂μ‖ = ‖∫ x, f x * g x ∂μ‖ₑ :=
-      ofReal_norm_eq_enorm _
+      ofReal_norm _
     rw [hofreal]; exact hint
   have h_lintegral_eq :
       ∫⁻ x, ‖f x * g x‖ₑ ∂μ = eLpNorm (fun x => g x * f x) 1 μ := by
     rw [eLpNorm_one_eq_lintegral_enorm]
     refine lintegral_congr (fun x => ?_)
     simp [enorm_mul, mul_comm]
-  haveI : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
+  have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
     constructor
     rw [show (1 : ℝ≥0∞)⁻¹ = 1 from inv_one]
     rw [ENNReal.inv_two_add_inv_two]
@@ -767,7 +767,7 @@ private lemma abs_integral_mul_le_eLpNorm_two_loc
         (fun x => g x * f x) = (g : E → ℝ) • (f : E → ℝ) := by
       funext x; simp [smul_eq_mul]
     rw [h_mul_eq]
-    haveI : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := inferInstance
+    have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := inferInstance
     exact eLpNorm_smul_le_mul_eLpNorm hf.aestronglyMeasurable hg.aestronglyMeasurable
   calc
     ENNReal.ofReal |∫ x, f x * g x ∂μ|
@@ -822,7 +822,7 @@ private lemma abs_smoothTestFunctional_loc_le
   have hₙ_bd : ∀ n, |hₙ n| ≤ h₀ := fun n => by
     rw [abs_of_pos (hₙ_pos n)]
     have h1 : (1 : ℝ) ≤ n + 1 := by
-      have h0 : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le n
+      have h0 : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le (n := n)
       linarith
     rw [div_le_iff₀ (by exact_mod_cast Nat.zero_lt_succ n : (0 : ℝ) < n + 1)]
     have : h₀ ≤ h₀ * (n + 1) := by nlinarith [hh₀.le]
@@ -1344,7 +1344,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
     have h_g_lp_nn : 0 ≤ ‖g_lp‖ := norm_nonneg _
     have h_enorm_le : (‖g_lp‖ₑ : ℝ≥0∞) ≤ ENNReal.ofReal M := by
       have hofreal : (‖g_lp‖ₑ : ℝ≥0∞) = ENNReal.ofReal ‖g_lp‖ :=
-        (ofReal_norm_eq_enorm _).symm
+        (ofReal_norm _).symm
       rw [hofreal]
       exact ENNReal.ofReal_le_ofReal h_g_lp_le
     have h_enorm_eq : ‖g_lp‖ₑ =

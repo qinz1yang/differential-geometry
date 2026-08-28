@@ -244,7 +244,7 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
     weakHarnackForwardUpgradeLHS (d := d) A u p q p₀ ≤
       weakHarnackForwardUpgradeRHS (d := d) hd A u p q := by
   let μ : Measure E := volume.restrict (Metric.ball (0 : E) 1)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall

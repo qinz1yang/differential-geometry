@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
@@ -88,9 +87,24 @@ lemma cometricFinBasisTrace_eq_chartInvGram_bilin
   refine Finset.sum_congr rfl (fun k₁ _ => ?_)
   rw [hFapp ((chartModelBasis E).cDualBasis k₁) (chartModelBasis E k₁)]
   rw [cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum (I := I) g₁ x k₁]
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  change F (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (∑ l : Fin (Module.finrank ℝ E),
+        chartInvGramMatrix (I := I) g₁ x x k₁ l • centeredChartTangentBasis (I := I) x l))
+      (chartModelBasis E k₁) = _
+  rw [map_sum, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun l _ => ?_)
-  rw [map_smul, ContinuousLinearMap.smul_apply]
+  rw [map_smul]
+  have hbasis : tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (centeredChartTangentBasis (I := I) x l) = chartModelBasis E l := by
+    calc
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (centeredChartTangentBasis (I := I) x l) =
+        centeredChartTangentEquiv (I := I) x
+          (centeredChartTangentBasis (I := I) x l) :=
+            (centeredChartTangentEquiv_apply (I := I) x _).symm
+      _ = chartModelBasis E l := by
+        rw [centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
+  rw [hbasis, map_smul, smul_apply]
 
 def quadrilinearMapSlotBilinearAt
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
@@ -594,8 +608,6 @@ lemma covDerivLowerOrderTerm02_center_eq
     rw [TangentBundle.trivializationAt_baseSet]; exact hmemsrc
   rw [covDerivLowerOrderTerm_def]
   rw [hround]
-  haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
-    ⟨⟨![]⟩, fun f => by funext j; exact absurd j.2 (by simp)⟩
   rw [Fintype.sum_prod_type]
   rw [Finset.sum_eq_single (![] : Fin 0 → Fin (Module.finrank ℝ E))]
   · simp only [covDerivLowerOrderCoeff_def]
@@ -619,6 +631,7 @@ lemma covDerivLowerOrderTerm02_center_eq
       have herase1 : (Finset.univ.erase (1 : Fin 2)) = {(0 : Fin 2)} := by decide
       rw [herase0, herase1]
       simp only [Finset.prod_singleton, Matrix.cons_val_zero, Matrix.cons_val_one]
+      rfl
     rw [Finset.sum_congr rfl (fun J' _ => by rw [hout J'] :
       ∀ J' ∈ Finset.univ,
         (-∑ x_2, outputSlotCoeff (I := I) (M := M) g₀ 2 x m x_2 ![p, q] J'
@@ -737,6 +750,7 @@ lemma covDerivLowerOrderTerm03_center_hout
   rw [chartChristoffel_symm (I := I) g₀ x b m (J' 0) (extChartAt I x x),
     chartChristoffel_symm (I := I) g₀ x c m (J' 1) (extChartAt I x x),
     chartChristoffel_symm (I := I) g₀ x d m (J' 2) (extChartAt I x x)]
+  rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma sum_fin3_collapse_gen
@@ -781,8 +795,6 @@ lemma covDerivLowerOrderTerm03_center_eq
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x hmemsrc
   rw [covDerivLowerOrderTerm_def]
   rw [hround]
-  haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
-    ⟨⟨![]⟩, fun f => by funext j; exact absurd j.2 (by simp)⟩
   rw [Fintype.sum_prod_type]
   rw [Finset.sum_eq_single (![] : Fin 0 → Fin (Module.finrank ℝ E))]
   · simp only [covDerivLowerOrderCoeff_def]

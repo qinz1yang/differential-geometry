@@ -12,7 +12,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -37,19 +36,24 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem rank_zero_one (x : M) (c : Tensor0SSpace 0 I x) :
-    tensor0SSpace_evalScalar x c •
+    tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x = c := by
   apply (tensor0SSpace_continuousLinearEquiv 0 x).injective
   apply ContinuousMultilinearMap.ext
   intro v
   change Tensor0SSpace.toModel
-      (tensor0SSpace_evalScalar x c •
+      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x) v = Tensor0SSpace.toModel c v
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SField.one0_apply, smul_eq_mul, mul_one,
+  rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
     Tensor0SSpace.evalScalar_apply]
+  have hone : Tensor0SSpace.toModel
+      (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
+        (I := I) (M := M) ∞ x) v = (1 : ℝ) :=
+    Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
+      (I := I) (M := M) ∞ x v
+  rw [hone, mul_one]
   exact congrArg (Tensor0SSpace.toModel c) (Subsingleton.elim Fin.elim0 v)
 
 
@@ -77,10 +81,15 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
         (I := I) (M := M) ∞).toTensorRSField ∞ x))
       (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
         (I := I) (M := M) ∞ x)) Fin.elim0 = (zeta : M → ℝ) x
-  rw [ContinuousLinearMap.smul_apply, Tensor0SField.toRS0_apply,
+  rw [smul_apply, Tensor0SField.toRS0_apply,
     rank_zero_one, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, Tensor0SField.one0_apply,
-    smul_eq_mul, mul_one]
+    smul_apply]
+  have hone : Tensor0SSpace.toModel
+      (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
+        (I := I) (M := M) ∞ x) Fin.elim0 = (1 : ℝ) :=
+    Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
+      (I := I) (M := M) ∞ x Fin.elim0
+  rw [hone, smul_eq_mul, mul_one]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
@@ -98,12 +107,12 @@ theorem unit_init_or_empty (g : SmoothRiemannianMetric I M) :
   classical
   rcases isEmpty_or_nonempty M with hM | hM
   · exact Or.inl hM
-  · letI : Nonempty M := hM
+  · let : Nonempty M := hM
     let μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g
-    letI : IsFiniteMeasure μ :=
+    let : IsFiniteMeasure μ :=
       DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
         (I := I) (M := M) g
-    letI : μ.IsOpenPosMeasure :=
+    let : μ.IsOpenPosMeasure :=
       DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isOpenPosMeasure
         (I := I) (M := M) g
     let vol : ℝ := (μ Set.univ).toReal
@@ -125,6 +134,7 @@ theorem unit_init_or_empty (g : SmoothRiemannianMetric I M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem app_scalarCc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) (U : SmoothCcTensor g 0 0) :
     operatorFieldApply (I := I) (M := M) g 0 0 (scalarCc (I := I) (M := M) g zeta) U =
@@ -140,11 +150,12 @@ theorem app_scalarCc (g : SmoothRiemannianMetric I M)
       ((Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
         (I := I) (M := M) ∞).toTensorRSField ∞ x))
         (U.toSection x c) = ((zeta : M → ℝ) x) • U.toSection x c
-  rw [ContinuousLinearMap.smul_apply, Tensor0SField.toRS0_apply,
+  rw [smul_apply, Tensor0SField.toRS0_apply,
     rank_zero_one]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem scalar0_smul_cc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) (U : SmoothCcTensor g 0 0) (x : M) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
@@ -154,8 +165,8 @@ theorem scalar0_smul_cc (g : SmoothRiemannianMetric I M)
   simp only [TensorRSField.scalar0, Tensor0SField.toScalarField,
     TensorRSField.rs0_apply]
   change ((((zeta : M → ℝ) x) • U.toSection x) _).toModel Fin.elim0 = _
-  rw [ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, Tensor0SSpace.toModel_smul,
+    smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -174,7 +185,7 @@ private theorem joint_rs_smul {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun x : M => TensorRSSpace r s I x) p.1 (f p • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]

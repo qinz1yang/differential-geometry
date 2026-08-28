@@ -6,7 +6,7 @@ open Manifold
 open DifferentialGeometry.Topology.Handle
 open DifferentialGeometry.Topology.Homotopy
 open DifferentialGeometry.Analysis.ODE
-open scoped Topology Manifold ContDiff
+open scoped _root_.Topology Manifold ContDiff
 
 noncomputable section
 
@@ -282,8 +282,6 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
           hlow.invFun (hcast.symm (hAdj z)) := by
         apply Subtype.ext
         dsimp [flowRetract, intoUpper]
-        change curveAt v hcomplete ((hlow.invFun (hcast.symm (hAdj z))).1)
-            (T ((hlow.invFun (hcast.symm (hAdj z))).1)) = (hlow.invFun (hcast.symm (hAdj z))).1
         rw [hT_zero ((hlow.invFun (hcast.symm (hAdj z))).1) (hunion_sub ((hlow.invFun (hcast.symm (hAdj z))).1) (by
           rw [hlow_invFun_val (hcast.symm (hAdj z))]
           exact (hcast.symm (hAdj z)).2)),
@@ -323,8 +321,6 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
           hlow.invFun (hcast.symm (hAdj (j x))) := by
         apply Subtype.ext
         dsimp [flowRetract, intoUpper]
-        change curveAt v hcomplete ((hlow.invFun (hcast.symm (hAdj (j x)))).1)
-            (T ((hlow.invFun (hcast.symm (hAdj (j x)))).1)) = (hlow.invFun (hcast.symm (hAdj (j x)))).1
         rw [hT_zero ((hlow.invFun (hcast.symm (hAdj (j x)))).1) (hunion_sub ((hlow.invFun (hcast.symm (hAdj (j x)))).1) (by
           rw [hlow_invFun_val (hcast.symm (hAdj (j x)))]
           exact (hcast.symm (hAdj (j x))).2)),
@@ -694,8 +690,8 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       intro p
       exact le_of_eq (cocoreAttachingEmbedding_value hk c ε₀ r₀ data hε₀ hεr₀ p))
   have hφ_closed : Topology.IsClosedEmbedding φ := by
-    letI : CompactSpace (AttachingRegion k (m + 1 - k)) := inferInstance
-    letI : T2Space (SublevelSpace f (c - ε₀)) := inferInstance
+    let : CompactSpace (AttachingRegion k (m + 1 - k)) := inferInstance
+    let : T2Space (SublevelSpace f (c - ε₀)) := inferInstance
     exact hφ_cont.isClosedEmbedding hφ_inj
   let Ψ : @Diffeomorph ℝ _ (MorseModel (m + 1)) _ _ (MorseModel (m + 1)) _ _
       (MorseHalfSpace m) _ (MorseHalfSpace m) _ (morseModelWithCornersHalfSpace m)
@@ -776,7 +772,6 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
   have hunion_sub : ∀ x : M, x ∈ sublevel f (c - ε₀) ∪ χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε₀)) (z : EuclideanSpace ℝ (Fin k)))) → g x ≤ c - ε₀ := by
     intro x hx
-    change g x ≤ c - ε₀
     dsimp [g]
     exact lowerUnionCellImage_subset_modifiedSublevel (M := M) hk c ε₀ δ₀ R hε₀ hδ₀ hεR
       χ f hnorm hχsrc hx
@@ -798,8 +793,8 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
     r₀, hr₀, hr₀sq, δ₁, hδ₁₀, hδ₁r, φ, hφ_boundary, hφ_inj, hφ_closed,
     (by
       intro hk0 hl0
-      letI := hk0
-      letI := hl0
+      let := hk0
+      let := hl0
       have hεr₀' : Real.sqrt (2 * ε₀ + 2 * r₀ ^ 2) < data.R' := by
         rw [hr₀sq]
         have hsix : 2 * ε₀ + 2 * (2 * ε₀) = 6 * ε₀ := by ring

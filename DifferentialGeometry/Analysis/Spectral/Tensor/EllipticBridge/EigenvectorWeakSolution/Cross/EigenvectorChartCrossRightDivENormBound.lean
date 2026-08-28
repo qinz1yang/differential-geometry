@@ -91,7 +91,9 @@ private lemma eLpNorm_indicatorPou_mul_le
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
     have h := eLpNorm_const_smul (μ := μw) (p := 2) (C : ℝ) w
     rw [Real.enorm_of_nonneg hC_nn] at h
-    simpa only [Pi.smul_apply] using h
+    change eLpNorm (fun y => (C : ℝ) • w y) 2 μw =
+      ENNReal.ofReal C * eLpNorm w 2 μw at h
+    exact h
   calc
     eLpNorm
         (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
@@ -152,7 +154,9 @@ private lemma eLpNorm_indicatorPou_mul_le_uniform
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
     have h := eLpNorm_const_smul (μ := μw) (p := 2) (C : ℝ) w
     rw [Real.enorm_of_nonneg hC_nn] at h
-    simpa only [Pi.smul_apply] using h
+    change eLpNorm (fun y => (C : ℝ) • w y) 2 μw =
+      ENNReal.ofReal C * eLpNorm w 2 μw at h
+    exact h
   calc
     eLpNorm
         (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
@@ -191,7 +195,7 @@ private lemma exists_uniform_eLpNorm_bound
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ j : ι, eLpNorm (f j) 2 μ ≤ ENNReal.ofReal C * a j := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   choose Cf hCf_nn hCf using h
   refine ⟨∑ j : ι, Cf j, Finset.sum_nonneg (fun j _ => hCf_nn j), fun j => ?_⟩
   refine (hCf j).trans (mul_le_mul_left ?_ (a j))
@@ -399,7 +403,7 @@ theorem eLpNorm_crossRightGradCoeffDivLimit_le_uniform
       refine (hCcomp j).trans (mul_le_mul_right ?_ (ENNReal.ofReal Ccomp))
       rw [hSumcomp_def]
       exact Finset.single_le_sum (f := fun P => eLpNorm (Acomp P) 2 μw)
-        (fun P _ => zero_le _) (Finset.mem_univ j.2.1)
+        (fun P _ => zero_le) (Finset.mem_univ j.2.1)
     refine le_trans (Finset.sum_le_sum (fun j _ => h_each j)) ?_
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast, mul_assoc]
@@ -414,9 +418,9 @@ theorem eLpNorm_crossRightGradCoeffDivLimit_le_uniform
       refine le_trans ?_
         (Finset.single_le_sum (f := fun P => ∑ l : Fin (Module.finrank ℝ E),
           eLpNorm (Apart P l) 2 μw)
-          (fun P _ => zero_le _) (Finset.mem_univ j.2.1))
+          (fun P _ => zero_le) (Finset.mem_univ j.2.1))
       exact Finset.single_le_sum (f := fun l => eLpNorm (Apart j.2.1 l) 2 μw)
-        (fun l _ => zero_le _) (Finset.mem_univ j.1)
+        (fun l _ => zero_le) (Finset.mem_univ j.1)
     refine le_trans (Finset.sum_le_sum (fun j _ => h_each j)) ?_
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast, mul_assoc]

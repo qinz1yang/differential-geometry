@@ -34,8 +34,8 @@ noncomputable def seqCenter (hd : InjRadiusDecayInput (I := I) X) (D : Real)
 @[simp] theorem seqCenter_zero (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (k : Nat) :
     seqCenter hd D P k 0 = some (X.obj k).basepoint := by
-  letI : MetricSpace (X.obj k).M := (P k).ms
-  haveI : ProperSpace (X.obj k).M := (P k).proper
+  let : MetricSpace (X.obj k).M := (P k).ms
+  have : ProperSpace (X.obj k).M := (P k).proper
   exact OrderedNet.netCenter_zero _ _ _
 
 
@@ -44,8 +44,8 @@ theorem seqCenter_dist_ge (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD :
     (hα : α ≠ 0) {c : (X.obj k).M} (hc : seqCenter hd D P k α = some c) :
     letI : MetricSpace (X.obj k).M := (P k).ms
     hd.lambda D 0 ≤ dist c (X.obj k).basepoint := by
-  letI : MetricSpace (X.obj k).M := (P k).ms
-  haveI : ProperSpace (X.obj k).M := (P k).proper
+  let : MetricSpace (X.obj k).M := (P k).ms
+  have : ProperSpace (X.obj k).M := (P k).proper
   have hc' : OrderedNet.netCenter (X.obj k).basepoint (hd.lambda D)
       (hd.lambda_continuous D) α = some c := hc
   have hcO : c ≠ (X.obj k).basepoint :=
@@ -64,8 +64,8 @@ theorem seqCenter_edist_ge (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD 
     (hα : α ≠ 0) {c : (X.obj k).M} (hc : seqCenter hd D P k α = some c) :
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
     ENNReal.ofReal (hd.lambda D 0) ≤ edist c (X.obj k).basepoint := by
-  letI : MetricSpace (X.obj k).M := (P k).ms
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : MetricSpace (X.obj k).M := (P k).ms
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   rw [(P k).realizes c (X.obj k).basepoint]
   exact ENNReal.ofReal_le_ofReal (seqCenter_dist_ge hd hD P k hα hc)
 
@@ -80,8 +80,8 @@ theorem seqRadius_mem (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 <
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (k α : Nat) :
     seqRadius hd D P k α ∈ Set.Icc (0 : Real) (2 * hd.lambda D 0 * (α : Real)) := by
   unfold seqRadius
-  letI : MetricSpace (X.obj k).M := (P k).ms
-  haveI : ProperSpace (X.obj k).M := (P k).proper
+  let : MetricSpace (X.obj k).M := (P k).ms
+  have : ProperSpace (X.obj k).M := (P k).proper
   exact OrderedNet.netRadius_mem (X.obj k).basepoint (hd.lambda_continuous D)
     (hd.lambda_antitone hD) (fun s => hd.lambda_pos hD s) (P k).hint α
 
@@ -93,8 +93,8 @@ theorem seqCenter_mu_hasInj (hd : InjRadiusDecayInput (I := I) X)
     (hc : seqCenter hd D P k α = some c) :
     HasInjRadiusAt (I := I) (X.obj k) c
       (hd.mu (2 * hd.lambda D 0 * (α : Real))) := by
-  letI : MetricSpace (X.obj k).M := (P k).ms
-  haveI : ProperSpace (X.obj k).M := (P k).proper
+  let : MetricSpace (X.obj k).M := (P k).ms
+  have : ProperSpace (X.obj k).M := (P k).proper
   apply hd.mu_hasInj_of_le
   rw [← ProperMetricOn.dist_eq hd hre P k]
   have hr : seqRadius hd D P k α = dist c (X.obj k).basepoint := by
@@ -131,7 +131,9 @@ def subseq {hd : InjRadiusDecayInput (I := I) X} {D : Real}
   rInf_mem := L.rInf_mem
   tendsto := by
     intro α
-    simpa [Function.comp_apply] using (L.tendsto α).comp hψ.tendsto_atTop
+    change Tendsto ((fun k => seqRadius hd D P (L.φ k) α) ∘ ψ)
+      atTop (nhds (L.rInf α))
+    exact (L.tendsto α).comp hψ.tendsto_atTop
 
 
 @[simp] theorem subseq_phi {hd : InjRadiusDecayInput (I := I) X} {D : Real}
@@ -156,7 +158,9 @@ theorem exists_netLimitData (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   refine ⟨⟨φ₁ ∘ φ₂, hφ₁.comp hφ₂, alive, fun α => ?_, rInf, hrInfmem, fun α => ?_⟩⟩
   · simpa [Function.comp] using halive α
   · have h := (hrInftendsto α).comp hφ₂.tendsto_atTop
-    simpa [Function.comp] using h
+    change Tendsto ((fun k => seqRadius hd D P (φ₁ k) α) ∘ φ₂)
+      atTop (nhds (rInf α))
+    exact h
 
 
 theorem NetLimitData.lambda_window (hd : InjRadiusDecayInput (I := I) X) {D : Real}
@@ -197,8 +201,8 @@ theorem NetLimitData.tilde_disjoint (hd : InjRadiusDecayInput (I := I) X) {D : R
          Disjoint (Metric.ball x (L.lamInf α / 2)) (Metric.ball y (L.lamInf β / 2))) := by
   filter_upwards [L.lambda_window hd hD P α, L.lambda_window hd hD P β] with k hkα hkβ
   intro x y hx hy
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   have hx' : OrderedNet.netCenter (X.obj (L.φ k)).basepoint (hd.lambda D)
       (hd.lambda_continuous D) α = some x := hx
   have hy' : OrderedNet.netCenter (X.obj (L.φ k)).basepoint (hd.lambda D)
@@ -245,8 +249,8 @@ theorem NetLimitData.scaled_cover (hd : InjRadiusDecayInput (I := I) X) {D : Rea
       exact hcont.eventually (Iio_mem_nhds (by nlinarith))
   filter_upwards [hwin] with k hk
   intro p hp
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   have hpack := packingBound_pack hd hre pb P (L.φ k)
   obtain ⟨m, hm⟩ := OrderedNet.netList_passes (X.obj (L.φ k)).basepoint
     (hd.lambda_continuous D) (hd.lambda_antitone hD) (fun s => hd.lambda_pos hD s)
@@ -371,7 +375,9 @@ theorem exists_stableNet (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   · have h := hψ.tendsto_atTop.eventually (L.alive_eventually α)
     simpa [Function.comp] using h
   · have h := (L.tendsto α).comp hψ.tendsto_atTop
-    simpa [Function.comp] using h
+    change Tendsto ((fun k => seqRadius hd D P (L.φ k) α) ∘ ψ)
+      atTop (nhds (L.rInf α))
+    exact h
   · obtain ⟨v, hv⟩ := hstab (α, β)
     cases v with
     | true => exact Or.inl (hv.mono fun k hk => of_decide_eq_true hk)
@@ -393,11 +399,11 @@ theorem NetLimitData.stable_subseq (hd : InjRadiusDecayInput (I := I) X) {D : Re
   intro α β
   rcases hstab α β with h | h
   · exact Or.inl (by
-      simpa [NetLimitData.subseq, Function.comp_apply] using
-        hψ.tendsto_atTop.eventually h)
+      change ∀ᶠ k in atTop, BInter hd D P L.lamInf α β (L.φ (ψ k))
+      exact hψ.tendsto_atTop.eventually h)
   · exact Or.inr (by
-      simpa [NetLimitData.subseq, Function.comp_apply] using
-        hψ.tendsto_atTop.eventually h)
+      change ∀ᶠ k in atTop, ¬ BInter hd D P L.lamInf α β (L.φ (ψ k))
+      exact hψ.tendsto_atTop.eventually h)
 
 
 theorem NetLimitData.rInf_close (hd : InjRadiusDecayInput (I := I) X) {D : Real}
@@ -406,14 +412,14 @@ theorem NetLimitData.rInf_close (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hfreq : ∃ᶠ k in atTop, BInter hd D P L.lamInf α β (L.φ k)) :
     L.rInf β ≤ L.rInf α + (5 * L.lamInf α + 5 * L.lamInf β) := by
   set l := atTop ⊓ Filter.principal {k : Nat | BInter hd D P L.lamInf α β (L.φ k)} with hl
-  haveI hne : l.NeBot := Filter.frequently_iff_neBot.mp hfreq
+  have hne : l.NeBot := Filter.frequently_iff_neBot.mp hfreq
   have hev : ∀ᶠ k in l, seqRadius hd D P (L.φ k) β ≤
       seqRadius hd D P (L.φ k) α + (5 * L.lamInf α + 5 * L.lamInf β) := by
     rw [hl, Filter.eventually_inf_principal]
     filter_upwards with k hk
     obtain ⟨x, y, hx, hy, hmeet⟩ := hk
-    letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-    haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+    let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+    have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
     obtain ⟨w, hwx, hwy⟩ := Set.not_disjoint_iff.mp hmeet
     rw [Metric.mem_ball] at hwx hwy
     have hx' : OrderedNet.netCenter (X.obj (L.φ k)).basepoint (hd.lambda D)
@@ -448,8 +454,8 @@ theorem NetLimitData.nesting (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       Metric.ball y (45 * Real.exp (hd.C * (10 * hd.lambda D 0)) * L.lamInf β) ∧
     Metric.ball x (45 * Real.exp (hd.C * (10 * hd.lambda D 0)) * L.lamInf α) ⊆
       Metric.ball y (205 * Real.exp (hd.C * (20 * hd.lambda D 0)) * L.lamInf β) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   obtain ⟨x', y', hx', hy', hmeet⟩ := hk
   have hxx : x' = x := Option.some.inj (hx'.symm.trans hx)
   have hyy : y' = y := Option.some.inj (hy'.symm.trans hy)
@@ -516,8 +522,8 @@ theorem NetLimitData.inter_count (hd : InjRadiusDecayInput (I := I) X) {D : Real
     (Filter.eventually_all_finset _).mpr fun β _ => L.lambda_window hd hD P β
   filter_upwards [hwall, L.lambda_window hd hD P α] with k hkall hkα
   intro xα hxα J hJ
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   have hxα' : OrderedNet.netCenter (X.obj (L.φ k)).basepoint (hd.lambda D)
       (hd.lambda_continuous D) α = some xα := hxα
   have hpack := packingBound_pack hd hre pb P (L.φ k)
@@ -544,7 +550,7 @@ theorem NetLimitData.inter_count (hd : InjRadiusDecayInput (I := I) X) {D : Real
     have ht := dist_triangle y' w xα
     rw [dist_comm w y'] at hwy
     linarith
-  haveI : Nonempty ((X.obj (L.φ k)).M) := ⟨(X.obj (L.φ k)).basepoint⟩
+  have : Nonempty ((X.obj (L.φ k)).M) := ⟨(X.obj (L.φ k)).basepoint⟩
   choose! yf hyf hyd using hJdata
   have hα0 : L.lamInf α ≤ lam0 := hd.lambda_antitone hD (L.rInf_mem α).1
   have hrxα : seqRadius hd D P (L.φ k) α = dist xα (X.obj (L.φ k)).basepoint := by

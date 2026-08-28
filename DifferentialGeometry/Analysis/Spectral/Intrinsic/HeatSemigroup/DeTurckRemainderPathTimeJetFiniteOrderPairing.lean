@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
@@ -57,7 +56,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder {N : WithTop ℕ�
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p.1
         (tensor0S_curry (I := I) (M := M) n p.1 (T p))) s p₀ := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
       (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y)) :=
     tensor0SBundle_topology (n + 1)
   rw [Bundle.contMDiffWithinAt_totalSpace
@@ -117,7 +116,8 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞
     (_hv : ∀ i, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) N
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1 (v i p)) s p₀),
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
-      (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.toModel (T p) (fun i => v i p)) s p₀
+      (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.toModel (T p)
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1 (v i p))) s p₀
   | 0, s, p₀, T, hT, v, _hv => by
     have hT_at := (Bundle.contMDiffWithinAt_totalSpace
       (F := Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -144,7 +144,9 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞
           (fun _ : Fin 0 => E) ((T p) 0)) 0 = (T p) 0
         rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
       rw [hev]
-      have huniq : (fun i : Fin 0 => v i p) = (0 : Fin 0 → E) := Subsingleton.elim _ _
+      have huniq :
+          (fun i : Fin 0 => tangentSpaceModelContinuousLinearEquiv (I := I) p.1 (v i p)) =
+            (0 : Fin 0 → E) := Subsingleton.elim _ _
       rw [huniq]
       rfl
     · rw [trivializationAt_tensor0SBundle_zero_fibre (I := I) (M := M) (fun _ : M => T p₀) p₀.1
@@ -156,7 +158,9 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞
           (fun _ : Fin 0 => E) ((T p₀) 0)) 0 = (T p₀) 0
         rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
       rw [hev]
-      have huniq : (fun i : Fin 0 => v i p₀) = (0 : Fin 0 → E) := Subsingleton.elim _ _
+      have huniq :
+          (fun i : Fin 0 => tangentSpaceModelContinuousLinearEquiv (I := I) p₀.1 (v i p₀)) =
+            (0 : Fin 0 → E) := Subsingleton.elim _ _
       rw [huniq]
       rfl
   | n + 1, s, p₀, T, hT, v, hv => by
@@ -183,18 +187,14 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞
       (fun i => hv i.succ)
     refine hRec.congr_of_eventuallyEq ?_ ?_
     · filter_upwards with p
-      rw [tensor0S_curry_apply_eval]
+      rw [tensor0S_curry_toModel_apply_tangent]
       refine Eq.symm ?_
       congr 1
       funext j
       refine Fin.cases ?_ ?_ j
       · simp [Fin.cons_zero]
       · intro k; simp [Fin.cons_succ]
-    · change Tensor0SBundle.Tensor0SSpace.toModel (T p₀) (fun i : Fin (n + 1) => v i p₀) =
-        Tensor0SBundle.Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) n p₀.1 (T p₀)) (v 0 p₀))
-          (fun i : Fin n => v i.succ p₀)
-      rw [tensor0S_curry_apply_eval]
+    · rw [tensor0S_curry_toModel_apply_tangent]
       refine Eq.symm ?_
       congr 1
       funext j
@@ -271,8 +271,8 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder
         funext p
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun i _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · have hinv := chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
         have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=

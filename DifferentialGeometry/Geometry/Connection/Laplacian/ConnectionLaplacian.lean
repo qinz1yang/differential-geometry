@@ -201,7 +201,7 @@ theorem connLaplacian_grad_iff_inner_form [I.Boundaryless]
           ricciSharp (I := I) g x (gradFun (I := I) g f x)) w =
         g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w from
-      by rw [map_add, ContinuousLinearMap.add_apply]]
+      by rw [map_add, add_apply]]
   · exact connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner
       (I := I) g hf x h
 
@@ -328,18 +328,18 @@ theorem connLaplacian_inner_self_of_trace [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma extDerivFun_inner_self
+lemma mvfderiv_inner_self
     (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V)) (x : M)
     (X : TangentSpace I x) :
-    extDerivFun (I := I) (fun b => g.inner b (V b) (V b)) x X =
+    mvfderiv (I := I) (fun b => g.inner b (V b) (V b)) x X =
       2 * g.inner x ((LeviCivita (I := I) g).toFun V x X) (V x) := by
   classical
   have hV_at : MDiffAt (T% V) x := (hV x).mdifferentiableAt (by simp)
   have hmc :=
     (LeviCivita_isMetricCompatible (I := I) g).apply hV_at hV_at X
-  have hext_eq : extDerivFun (I := I) (fun b => g.inner b (V b) (V b)) x X =
+  have hext_eq : mvfderiv (I := I) (fun b => g.inner b (V b) (V b)) x X =
       (mfderiv I 𝓘(ℝ) (fun b : M => g.inner b (V b) (V b)) x) X := rfl
   rw [hext_eq, hmc]
   rw [g.symm x (V x) ((LeviCivita (I := I) g).toFun V x X)]
@@ -347,16 +347,16 @@ lemma extDerivFun_inner_self
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma extDerivFun_inner_self_eq_globally (g : SmoothRiemannianMetric I M)
+lemma mvfderiv_inner_self_eq_globally (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b}
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V))
     (X : Π b : M, TangentSpace I b) :
-    (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (V b') (V b')) b
+    (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (V b') (V b')) b
         (X b)) =
       (fun b : M => 2 * g.inner b
         ((LeviCivita (I := I) g).toFun V b (X b)) (V b)) := by
   funext b
-  exact extDerivFun_inner_self (I := I) g hV b (X b)
+  exact mvfderiv_inner_self (I := I) g hV b (X b)
 
 end Connection
 end Geometry

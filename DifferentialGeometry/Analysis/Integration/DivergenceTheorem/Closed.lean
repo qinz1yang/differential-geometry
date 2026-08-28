@@ -117,7 +117,6 @@ lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
     refine chartLocalMeasure_integral_eq_of_support_in_overlap (I := I) g α α₀
       (fun x => f x * ρ α x) ?_
     intro x hx
-    simp only
     by_cases hxα : x ∈ (chartAt H α).source
     · have hxα₀ : x ∉ (chartAt H α₀).source := fun hxα₀' => hx ⟨hxα, hxα₀'⟩
       have hxnotin : x ∉ tsupport f := fun h => hxα₀ (hf_supp h)
@@ -149,7 +148,7 @@ lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
       hcont (hsupp_sub.trans hf_supp)
   rw [show (∑ α ∈ S, ∫ x, f x * ρ α x ∂(chartLocalMeasure (I := I) g α₀))
       = ∫ x, ∑ α ∈ S, f x * ρ α x ∂(chartLocalMeasure (I := I) g α₀) from
-        (integral_finset_sum (μ := chartLocalMeasure (I := I) g α₀) S h_each_int).symm]
+        (integral_finsetSum (μ := chartLocalMeasure (I := I) g α₀) S h_each_int).symm]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   simp only
   rw [← Finset.mul_sum]
@@ -251,7 +250,7 @@ theorem integral_divergence_eq_zero_of_compact
     exact (integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
       (I := I) g α (hAct_cont α) (hAct_supp α)).symm
   rw [Finset.sum_congr rfl h_step_d]
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have h_each_int : ∀ α ∈ S, Integrable
       (fun x : M => tangentSectionAction (I := I) X (ρ α : M → ℝ) x)
@@ -267,7 +266,7 @@ theorem integral_divergence_eq_zero_of_compact
             ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       = ∫ x, ∑ α ∈ S, tangentSectionAction (I := I) X (ρ α : M → ℝ) x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) from
-        (integral_finset_sum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
+        (integral_finsetSum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
           S h_each_int).symm]
   have h_pt : ∀ x : M,
       ∑ α ∈ S, tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 := by

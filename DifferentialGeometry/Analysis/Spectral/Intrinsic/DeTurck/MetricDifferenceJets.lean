@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSPointwiseBundleModels
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -90,7 +92,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
       g₁.inner b v w - g₂.inner b v w := by
   change (metricTensor02 (I := I) g₁ b - metricTensor02 (I := I) g₂ b) v w =
     g₁.inner b v w - g₂.inner b v w
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, sub_apply]
   rfl
 
 def metricDiff02Cov (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :
@@ -160,7 +162,7 @@ theorem metricTensor02Cov_mdiffAtTensor03
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun (x : M) => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b
         (metricTensor02 (I := I) g b)) := g.contMDiff
-  haveI hcov : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivative
       (tensor02Cov (LeviCivita (I := I) g₀)) ∞ :=
     tensor02Cov_isContMDiff (LeviCivita (I := I) g₀)
   have h_le : (∞ : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) + 1 := by rw [ENat.coe_top_add_one]

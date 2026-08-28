@@ -42,7 +42,7 @@ theorem l2_bdd_of_raw {ι : Type*}
   let μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
   let R : ℝ≥0∞ := μ Set.univ ^ ((2 : ℝ≥0∞).toReal⁻¹) * ENNReal.ofReal B
   let A : ℝ := R.toReal
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -119,6 +119,7 @@ theorem l2_bdd_of_raw {ι : Type*}
   refine Finset.sum_le_sum fun Idx _ => ?_
   exact Finset.sum_le_sum fun Jdx _ => hcomponent α hα k Idx Jdx
 
+omit [I.Boundaryless] in
 theorem l2_le_of_raw_sum
     (g : SmoothRiemannianMetric I M) (c N : ℕ) (v : ℕ → ℕ)
     (B : ℝ) (hB : 0 ≤ B) :

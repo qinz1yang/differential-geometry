@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 open DifferentialGeometry.PDE.RicciFlow
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -282,7 +281,6 @@ theorem certSlab_of_reg
 theorem strictCert_sec
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}

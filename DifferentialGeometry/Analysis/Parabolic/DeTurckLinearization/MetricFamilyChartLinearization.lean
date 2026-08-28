@@ -525,13 +525,19 @@ private lemma hasDerivAt_chartInvGramOnE
         hasDerivAt_const 0 _
       have hg := hasDerivAt_chartGramOnE (I := I) hfam p q hy
       have := hconstB.sub hg
-      simpa [hB] using this
+      refine (this.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun s => by
+          rw [hB]
+          simp only [Pi.sub_apply])).congr_deriv ?_
+      ring
     have hB0 : B 0 = 0 := by simp [hB, hg0]
     have hAB : HasDerivAt (fun s => A s * B s)
         (chartInvGramOnE (I := I) g₀ α k p y * (-(h p q y))) 0 := by
       have := hA_diff.hasDerivAt.mul hB_deriv
       rw [hA0, hB0] at this
-      simpa using this
+      refine (this.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+      ring
     have hABC := hAB.mul_const (chartInvGramOnE (I := I) g₀ α q l y)
     have hgoal_eq : (fun s : ℝ =>
           chartInvGramOnE (I := I) (gfam s) α k p y *

@@ -50,7 +50,6 @@ open CurvatureCoefficientDifferenceJetTower
 
 section TopOrderSeparatedTransportMirrors
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -58,7 +57,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma castCcTensorRank_refl (g₀ : SmoothRiemannianMetric I M) (r : ℕ) {a : ℕ} (h : a = a)
     (W : SmoothCcTensor g₀ r a) : castCcTensorRank g₀ r h W = W := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 lemma covGrad_castCcTensorRank (g₀ : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) (W : SmoothCcTensor g₀ r a) :
     covGrad (I := I) (M := M) g₀ r b (castCcTensorRank g₀ r h W) =
@@ -85,7 +85,7 @@ lemma castCcTensorRank_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ) {a b : 
     castCcTensorRank g₀ r h (W + W') = castCcTensorRank g₀ r h W + castCcTensorRank g₀ r h W' := by
   subst h; rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma exists_iteratedCovGrad_domDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M)
     {s : ℕ} (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g₀ 0 s) (i : ℕ) :
     ∃ σ' : Equiv.Perm (Fin (s + i)),
@@ -99,7 +99,7 @@ lemma exists_iteratedCovGrad_domDomCongrSection_eq (g₀ : SmoothRiemannianMetri
   intro x
   rw [hσ' x, domDomCongrSection_unitModel]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma exists_covGrad_domDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M)
     {s : ℕ} (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g₀ 0 s) :
     ∃ σ' : Equiv.Perm (Fin (s + 1)),
@@ -153,14 +153,15 @@ lemma domDomCongrSection_add (g₀ : SmoothRiemannianMetric I M) {s : ℕ}
     simp only [unitModel]
     rw [show ((A + B).toSection y) = A.toSection y + B.toSection y from by
       rw [SmoothCcTensor.toSection_add]; rfl]
-    rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
+    rw [add_apply, Tensor0SSpace.toModel_add]
   rw [hadd, domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel, hadd S S' x]
   apply ContinuousMultilinearMap.ext
   intro v
-  simp only [ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.domDomCongr_apply]
+  simp only [add_apply, ContinuousMultilinearMap.domDomCongr_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 lemma iteratedCovGrad_covGrad_eq_castCcTensorRank (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g₀ r s) (i : ℕ) :
     iteratedCovGrad (I := I) g₀ r (s + 1) i (covGrad (I := I) (M := M) g₀ r s W) =
@@ -179,7 +180,7 @@ lemma iteratedCovGrad_covGrad_eq_castCcTensorRank (g₀ : SmoothRiemannianMetric
             (iteratedCovGrad (I := I) g₀ r s (i + 1) W) from by
         rw [iteratedCovGrad_succ]]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma exists_iteratedCovGrad_rsDomDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M)
     (r s : ℕ) (σ : Equiv.Perm (Fin s)) (Z : SmoothCcTensor g₀ r s) (i : ℕ) :
     ∃ σ' : Equiv.Perm (Fin (s + i)),
@@ -221,7 +222,6 @@ end CurvatureCoefficientDifferenceJetTower
 section MetricLowering
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -235,7 +235,7 @@ def riemannianMetricCovariantTensor (g₀ : SmoothRiemannianMetric I M) (x : M) 
         fin_cases i <;>
           simp only [Fin.reduceFinMk, Fin.isValue, Function.update_self, ne_eq,
             Function.update_of_ne, h01, h10, not_false_eq_true, map_add,
-            ContinuousLinearMap.add_apply]
+            add_apply]
       map_update_smul' := by
         have h01 : (0 : Fin 2) ≠ 1 := by decide
         have h10 : (1 : Fin 2) ≠ 0 := by decide
@@ -243,7 +243,7 @@ def riemannianMetricCovariantTensor (g₀ : SmoothRiemannianMetric I M) (x : M) 
         fin_cases i <;>
           simp only [Fin.reduceFinMk, Fin.isValue, Function.update_self, ne_eq,
             Function.update_of_ne, h01, h10, not_false_eq_true, map_smul,
-            ContinuousLinearMap.smul_apply]
+            smul_apply]
       cont := ((g₀.inner x).continuous.comp (continuous_apply 0)).clm_apply
         (continuous_apply 1) }
     : Tensor0SSpace 2 I x)
@@ -253,14 +253,12 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     (m : Fin 2 → TangentSpace I x) :
     riemannianMetricCovariantTensor (I := I) g₀ x m = g₀.inner x (m 0) (m 1) := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem riemannianMetricCovariantTensor_contMDiff (g₀ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x (riemannianMetricCovariantTensor (I := I) g₀ x)) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (riemannianMetricCovariantTensor (I := I) g₀ x :
@@ -281,7 +279,7 @@ theorem riemannianMetricCovariantTensor_contMDiff (g₀ : SmoothRiemannianMetric
   have hframeEq : ∀ k : Fin 2, e₁.symmL ℝ x (b (σ k)) = (Y (σ k)) x := by
     intro k
     rw [hYx (σ k), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    exact e₁.symmL_apply hx₁ (b (σ k))
   change g₀.inner x (e₁.symmL ℝ x (b (σ 0))) (e₁.symmL ℝ x (b (σ 1))) = _
   rw [hframeEq 0, hframeEq 1]
 
@@ -296,7 +294,6 @@ def riemannianMetricCcTensor (g₀ : SmoothRiemannianMetric I M) : SmoothCcTenso
       (E := (TangentSpace I : M → Type _)) ∞ (riemannianMetricCovariantTensorField (I := I) g₀)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 lemma riemannianMetricCcTensor_unitModel (g₀ : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 2 (riemannianMetricCcTensor (I := I) (M := M) g₀) x =
@@ -314,10 +311,11 @@ lemma riemannianMetricCcTensor_unitModel (g₀ : SmoothRiemannianMetric I M) (x 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma toModel_covector_apply (x : M) (om : Tensor0SSpace 1 I x)
-    (m : Fin 1 → TangentSpace I x) :
-    Tensor0SSpace.toModel om (fun k => (m k : E)) =
-      cotangentToDual (I := I) (x := x) om (m 0) := by
-  rw [show (fun k : Fin 1 => (m k : E)) = (fun _ : Fin 1 => (m 0 : E)) from by
+    (m : Fin 1 → E) :
+    Tensor0SSpace.toModel om m =
+      cotangentToDual (I := I) (x := x) om
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
+  rw [show m = (fun _ : Fin 1 => m 0) from by
     funext k; fin_cases k; rfl]
   rw [cotangentToDual_apply]
   rfl
@@ -327,18 +325,8 @@ lemma riemannianMetricCovariantTensor_curry_eq_flat (g₀ : SmoothRiemannianMetr
     (v : TangentSpace I x) :
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (riemannianMetricCovariantTensor (I := I) g₀ x) v =
       g0FlatCLM (I := I) g₀ x v := by
-  apply Tensor0SSpace.toModel_injective
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext (𝕜 := ℝ) 1 x
   intro w
-  have h1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
-    (T := riemannianMetricCovariantTensor (I := I) g₀ x) (v0 := v) (vs := fun k => w k)
-  rw [show (Tensor0SSpace.toModel
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
-          (riemannianMetricCovariantTensor (I := I) g₀ x) v)) w =
-      Tensor0SSpace.toModel (riemannianMetricCovariantTensor (I := I) g₀ x)
-        (Fin.cons v (fun k => w k)) from h1]
-  rw [toModel_covector_apply (I := I) (M := M) x (g0FlatCLM (I := I) g₀ x v) w]
-  rw [cotangentToDual_g0FlatCLM]
   rfl
 
 noncomputable def lowerContravariantSlot (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -358,11 +346,12 @@ lemma riemannianMetricCcTensor_toSection_unitTensor (g₀ : SmoothRiemannianMetr
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 lemma lowerContravariantSlot_unitModel_apply (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
-    (Z : SmoothCcTensor g₀ 1 (s + 1)) (x : M) (m : Fin (s + 2) → TangentSpace I x) :
+    (Z : SmoothCcTensor g₀ 1 (s + 1)) (x : M) (m : Fin (s + 2) → E) :
     unitModel (I := I) (M := M) g₀ (s + 2) (lowerContravariantSlot (I := I) (M := M) g₀ s Z) x m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Z.toSection x)
-          (g0FlatCLM (I := I) g₀ x (m 0)))
+          (g0FlatCLM (I := I) g₀ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))))
         (Matrix.vecTail m) := by
   classical
   rw [unitModel]
@@ -384,36 +373,30 @@ lemma lowerContravariantSlot_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
   rw [show m = Fin.cons (m 0) (Matrix.vecTail m) from by
     funext k
     refine Fin.cases rfl (fun j => rfl) k]
-  have hkey := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s + 1)
+  rw [← TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := s + 1)
     (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Z.toSection x).comp
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (riemannianMetricCovariantTensor (I := I) g₀ x))))
-    (v0 := m 0) (vs := Matrix.vecTail (Fin.cons (m 0) (Matrix.vecTail m)))
-  rw [ContinuousLinearEquiv.apply_symm_apply] at hkey
-  rw [show (Fin.cons (m 0) (Matrix.vecTail (Fin.cons (m 0) (Matrix.vecTail m)))
-        : Fin (s + 2) → TangentSpace I x) =
-      Fin.cons (m 0) (Matrix.vecTail m) from by
+        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+          (riemannianMetricCovariantTensor (I := I) g₀ x))))]
+  simp only [ContinuousLinearEquiv.apply_symm_apply, ContinuousLinearMap.comp_apply]
+  rw [riemannianMetricCovariantTensor_curry_eq_flat (I := I) (M := M) g₀ x
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
+  simp only [Fin.cons_zero, Matrix.vecTail]
+  rw [show Fin.cons (m 0) (m ∘ Fin.succ) ∘ Fin.succ = m ∘ Fin.succ from by
     funext k
-    refine Fin.cases rfl (fun j => rfl) k] at hkey
-  rw [← hkey]
-  rw [ContinuousLinearMap.comp_apply]
-  rw [riemannianMetricCovariantTensor_curry_eq_flat (I := I) (M := M) g₀ x (m 0)]
-  rw [show (Matrix.vecTail (Fin.cons (m 0) (Matrix.vecTail m))
-        : Fin (s + 1) → TangentSpace I x) = Matrix.vecTail m from by
-    funext k
-    rfl]
-  rfl
+    simp only [Function.comp_apply, Fin.cons_succ]]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma interiorProduct_toModel_apply (s : ℕ) (x : M) (vv : TangentSpace I x)
-    (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
+    (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
         (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x vv D) w =
-      Tensor0SSpace.toModel D (Fin.cons (show E from vv) (fun k => (show E from w k))) := by
+      Tensor0SSpace.toModel D
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x vv) w) := by
   have h1 : Tensor0SSpace.toModel
       (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x vv D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s (show E from vv)
-        (Tensor0SSpace.toModel D) := rfl
+      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x vv) (Tensor0SSpace.toModel D) := rfl
   rw [h1]
   rfl
 
@@ -434,18 +417,22 @@ theorem lowerContravariantSlot_cometricRaiseSlot0Field (g₀ : SmoothRiemannianM
   rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ s x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 2) I x from W.toSection x)
       (unitTensor (I := I) (M := M) x))
-    (g0FlatCLM (I := I) g₀ x (m 0))]
+    (g0FlatCLM (I := I) g₀ x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)))]
   rw [interiorProduct_toModel_apply (I := I) (M := M) (s + 1) x
-    (inverseMetricSharpFib (I := I) g₀ x (g0FlatCLM (I := I) g₀ x (m 0)))
+    (inverseMetricSharpFib (I := I) g₀ x
+      (g0FlatCLM (I := I) g₀ x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))))
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 2) I x from W.toSection x)
       (unitTensor (I := I) (M := M) x)) (Matrix.vecTail m)]
   rw [inverseMetricSharpFib_g0FlatCLM]
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
   rw [unitModel]
   refine congrArg _ ?_
   funext k
   refine Fin.cases rfl (fun j => rfl) k
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma exists_iteratedCovGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M)
     (s : ℕ) (W : SmoothCcTensor g₀ 0 (s + 2)) (i : ℕ) :
     ∃ σ : Equiv.Perm (Fin ((s + i) + 2)),
@@ -488,11 +475,10 @@ end MetricLowering
 section HeadTransport
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_domDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M) {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g₀ 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x
@@ -511,7 +497,8 @@ lemma riemannianFiberNormSq_castCcTensorRank_eq (g₀ : SmoothRiemannianMetric I
       riemannianFiberNormSq (I := I) (M := M) g₀ r a x (W.toSection x) := by
   subst h; rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma tensorRS_domDomCongr_sub {r s : ℕ} {x : M} (σ : Equiv.Perm (Fin s))
     (T T' : TensorRSSpace r s I x) :
     rsDomDomCongr (I := I) (M := M) σ (T - T') =
@@ -569,7 +556,7 @@ lemma tensorRS_domDomCongr_sub {r s : ℕ} {x : M} (σ : Equiv.Perm (Fin s))
           ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from T') d)
           (fun k => v (σ k)) := by
         rw [Tensor0SSpace.toModel_sub]
-        simp only [ContinuousMultilinearMap.sub_apply]
+        simp only [sub_apply]
     _ = Tensor0SSpace.toModel
           ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
             rsDomDomCongr (I := I) (M := M) σ T) d) v -
@@ -581,8 +568,9 @@ lemma tensorRS_domDomCongr_sub {r s : ℕ} {x : M} (σ : Equiv.Perm (Fin s))
             rsDomDomCongr (I := I) (M := M) σ T -
               rsDomDomCongr (I := I) (M := M) σ T') d) v := by
         rw [e2, Tensor0SSpace.toModel_sub]
-        simp only [ContinuousMultilinearMap.sub_apply]
+        simp only [sub_apply]
 
+omit [SigmaCompactSpace M] in
 lemma exists_lowerContravariantSlot_head_transport (g₀ : SmoothRiemannianMetric I M)
     (σ₀ : Equiv.Perm (Fin (2 + 2)))
     (Y : SmoothCcTensor g₀ 1 (2 + 1)) (i : ℕ) (HY : SmoothCcTensor g₀ 1 ((2 + 1) + i)) :
@@ -852,11 +840,10 @@ end HeadTransport
 
 section ConnectionDifferenceCarrierSplit
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma iteratedCovGrad_connectionDifferenceSection_eq_head_add_tail (g₀ g₁ : SmoothRiemannianMetric I M) (j : ℕ) :
     iteratedCovGrad (I := I) g₀ 1 2 j (connectionDifferenceSection (I := I) g₁ g₀) =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 (2 + j)
@@ -904,7 +891,6 @@ end TopOrderSeparatedTransportMirrors
 section TopOrderSeparatedRungRLD
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -940,6 +926,7 @@ lemma connectionDifferenceResidualGridSum_le_boundedFactorGridWindow (b : ℕ �
     _ = (j : ℝ) * Combinatorics.boundedFactorGridWindow b j (j + 2) := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
+omit [SigmaCompactSpace M] in
 theorem exists_quadraticConnectionDifferenceCc_iteratedCovGrad_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) :
     ∃ KQ : ℕ → ℝ, (∀ m, 0 ≤ KQ m) ∧
@@ -1080,6 +1067,7 @@ theorem exists_quadraticConnectionDifferenceCc_iteratedCovGrad_riemannianFiberNo
   refine mul_le_mul_of_nonneg_left ?_ (operatorFieldApplicationGdiag_nonneg (E := E) m)
   exact Finset.sum_le_sum hterm
 
+omit [SigmaCompactSpace M] in
 theorem exists_palatiniConnectionDifferencePair_iteratedCovGrad_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) :
     ∃ KP : ℕ → ℝ, (∀ m, 0 ≤ KP m) ∧

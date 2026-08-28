@@ -97,7 +97,7 @@ theorem deTurckRHS_diff_frame_component_apply
           (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
       - deTurckRicciRHS (I := I) g_bg g₂ x
           (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) := by
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, sub_apply]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -150,7 +150,7 @@ private lemma wkpNorm_coef_mul_factor_le
         (fun y => coef y * factor y) := by
       have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
           (volume : Measure EuclN).restrict Ω :=
-        Measure.restrict_mono Set.diff_subset le_rfl
+        Measure.restrict_mono Set.sdiff_subset le_rfl
       have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
           factor y = 0 := by
         have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
@@ -281,7 +281,7 @@ private lemma wkpNorm_coef_mul_factor_le_uniform
         (fun y => coef y * factor y) := by
       have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
           (volume : Measure EuclN).restrict Ω :=
-        Measure.restrict_mono Set.diff_subset le_rfl
+        Measure.restrict_mono Set.sdiff_subset le_rfl
       have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
           factor y = 0 := by
         have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
@@ -446,20 +446,20 @@ lemma covGradChristoffelLimit_memWkp_and_wkpNorm_le
                     β p : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β)) :=
-        mul_le_mul_of_nonneg_left hfactor_norm (zero_le _)
+        mul_le_mul_of_nonneg_left hfactor_norm (zero_le)
       _ ≤ ENNReal.ofReal Ccoef *
             (ENNReal.ofReal ‖(i.fst.val)⁻¹‖ *
               chartCompNorm (I := I) (M := M) g r s i K β p) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
             (wkpNorm_mono_order (d := Module.finrank ℝ E)
-              (Nat.le_succ K) _ _) (zero_le _)) (zero_le _)
+              (Nat.le_succ K) _ _) (zero_le)) (zero_le)
       _ ≤ ENNReal.ofReal Ccoef *
             (ENNReal.ofReal ‖(i.fst.val)⁻¹‖ * Saggr) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
             (chartCompNorm_center_le_covGradAggregate (I := I)
-              (M := M) g r s i K β p) (zero_le _)) (zero_le _)
+              (M := M) g r s i K β p) (zero_le)) (zero_le)
       _ = ENNReal.ofReal (Ccoef * ‖(i.fst.val)⁻¹‖) * Saggr := by
         rw [ENNReal.ofReal_mul hCcoef_nn]; ring
   have h_sum_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
@@ -641,20 +641,20 @@ lemma covGradChristoffelLimit_wkpNorm_le_uniform
                     β p : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β)) :=
-        mul_le_mul_of_nonneg_left hfactor_norm (zero_le _)
+        mul_le_mul_of_nonneg_left hfactor_norm (zero_le)
       _ ≤ ENNReal.ofReal (Ccoef p) *
             (ENNReal.ofReal ‖(i.fst.val)⁻¹‖ *
               chartCompNorm (I := I) (M := M) g r s i K β p) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
             (wkpNorm_mono_order (d := Module.finrank ℝ E)
-              (Nat.le_succ K) _ _) (zero_le _)) (zero_le _)
+              (Nat.le_succ K) _ _) (zero_le)) (zero_le)
       _ ≤ ENNReal.ofReal (Ccoef p) *
             (ENNReal.ofReal ‖(i.fst.val)⁻¹‖ * Saggr) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
             (chartCompNorm_center_le_covGradAggregate (I := I)
-              (M := M) g r s i K β p) (zero_le _)) (zero_le _)
+              (M := M) g r s i K β p) (zero_le)) (zero_le)
       _ = ENNReal.ofReal (Ccoef p * ‖(i.fst.val)⁻¹‖) * Saggr := by
         rw [ENNReal.ofReal_mul (hCcoef_nn p)]; ring
   have h_sum_memWkp : MemWkp (d := Module.finrank ℝ E) K 2

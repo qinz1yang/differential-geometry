@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -116,25 +117,10 @@ private theorem hessianH1_core
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U) =
       ccTensorToHs (I := I) (M := M) g 4 ((1 : ℕ) : ℝ)
         (iteratedCovGrad (I := I) g 0 2 2 U) := by
-  have hcast :
-      (ContinuousLinearEquiv.toContinuousLinearMap
-        (tensorHs.castEquiv (I := I) (M := M)
-          (by norm_num : (3 : ℝ) =
-            ((1 : ℕ) : ℝ) + (2 : ℝ))).toContinuousLinearEquiv)
-          (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U) =
-        ccTensorToHs (I := I) (M := M) g 2
-          (((1 : ℕ) : ℝ) + (2 : ℝ)) U := by
-    change
-      tensorHs.castEquiv (I := I) (M := M)
-          (by norm_num : (3 : ℝ) =
-            ((1 : ℕ) : ℝ) + (2 : ℝ))
-          (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U) =
-        ccTensorToHs (I := I) (M := M) g 2
-          (((1 : ℕ) : ℝ) + (2 : ℝ)) U
-    ext i
-    simp only [tensorHs.castEquiv_coeff, ccTensorToHs_coeff]
-  rw [secondCovariantDerivativeH3ToH1, ContinuousLinearMap.comp_apply, hcast]
-  exact iterCovGradHs_core (I := I) (M := M) g 2 2 1 U
+  unfold secondCovariantDerivativeH3ToH1
+  rw [ContinuousLinearMap.comp_apply]
+  convert iterCovGradHs_core (I := I) (M := M) g 2 2 1 U using 1
+  congr 1
 
 private theorem traceH1_core
     (g : SmoothRiemannianMetric I M) (V : SmoothCcTensor g 0 4) :
@@ -371,7 +357,10 @@ private theorem pcoeff1_bound
   have hTsum :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ≤ CinT * NT := by
-    simpa only [NT, Nat.reduceAdd] using hinT T
+    change ∑ j ∈ Finset.range 3,
+        ‖iteratedCovGrad (I := I) g 0 2 j T‖ ≤
+      CinT * ‖ccTensorToHs (I := I) (M := M) g 2 ((2 : ℕ) : ℝ) T‖
+    exact hinT T
   have hΦsum :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 4 4 j Φ‖ ≤ A := by
@@ -462,7 +451,7 @@ private theorem pcoeff1_bound
       linarith
     _ ≤ Cout * (2 * (Cmul * A * B)) := by
       gcongr
-      simpa only [Y, Φ] using hprod
+      convert hprod using 1 <;> rfl
     _ = (C * NT) * NW := by
       dsimp only [C, A, B]
       ring
@@ -496,11 +485,11 @@ private noncomputable def perturbCcLin1
   map_add' := fun T U => by
     apply ContinuousLinearMap.ext
     intro V
-    rw [pcoeff_add, appHs_add, ContinuousLinearMap.add_apply]
+    rw [pcoeff_add, appHs_add, add_apply]
   map_smul' := fun a T => by
     apply ContinuousLinearMap.ext
     intro V
-    simpa only [RingHom.id_apply, ContinuousLinearMap.smul_apply,
+    simpa only [RingHom.id_apply, smul_apply,
       pcoeff_smul] using
       appHs_smul (I := I) (M := M) g 4 4 1 a
         (metricPerturbationCoefficientH2 (I := I) (M := M) g T) V
@@ -883,13 +872,26 @@ private theorem perturb_comm
             ContinuousLinearMap.flip_apply]
           rw [metricPerturbationOperatorH2_apply_smoothCore (I := I) (M := M) hDim g S₀,
             perturbH1_core (I := I) (M := M) hDim g S₀,
-            happ2,
             incl_core (I := I) (M := M) g
-              (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)),
-            incl_core (I := I) (M := M) g
-              (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)),
-            appHs_core (I := I) (M := M) g 4 4 1
-              (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W])
+              (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)) W]
+          calc
+            _ = tensorHsInclusion (I := I) (M := M) (g := g)
+                (r := 0) (s := 4)
+                (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ))
+                (ccTensorToHs (I := I) (M := M) g 4 (2 : ℝ)
+                  (operatorFieldApply (I := I) (M := M) g 4 4
+                    (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W)) :=
+              congrArg
+                (tensorHsInclusion (I := I) (M := M) (g := g)
+                  (r := 0) (s := 4)
+                  (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ))) happ2
+            _ = ccTensorToHs (I := I) (M := M) g 4 ((1 : ℕ) : ℝ)
+                (operatorFieldApply (I := I) (M := M) g 4 4
+                  (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W) :=
+              incl_core (I := I) (M := M) g
+                (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)) _
+            _ = _ := (appHs_core (I := I) (M := M) g 4 4 1
+              (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W).symm)
       exact congrFun hV V)
     exact congrFun hfun S
   have hpoint := congrArg (fun Q => Q T) hLR
@@ -914,17 +916,18 @@ private theorem inv_intertwine
   calc
     Ring.inverse B (J x) =
         Ring.inverse B (J ((A * Ring.inverse A) x)) := by
-      rw [hAinv, ContinuousLinearMap.one_apply]
+      rw [hAinv, one_apply_eq_self]
     _ = Ring.inverse B
         (B (J (Ring.inverse A x))) := by
       congr 1
       have hx := congrArg
         (fun Q => Q (Ring.inverse A x)) hBA
-      simpa only [ContinuousLinearMap.comp_apply] using hx.symm
+      change J (A (Ring.inverse A x)) = B (J (Ring.inverse A x))
+      exact hx.symm
     _ = J (Ring.inverse A x) := by
       change (Ring.inverse B * B) (J (Ring.inverse A x)) =
         J (Ring.inverse A x)
-      rw [hBinv, ContinuousLinearMap.one_apply]
+      rw [hBinv, one_apply_eq_self]
 
 private theorem inverse_comm
     (hDim : Module.finrank ℝ E = 3)
@@ -955,7 +958,7 @@ private theorem inverse_comm
     have hp := congrArg (fun Q => Q V)
       (perturb_comm (I := I) (M := M) hDim g T)
     simp only [A, B, J, ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.add_apply, ContinuousLinearMap.one_apply,
+      add_apply, one_apply_eq_self,
       map_add]
     congr 1
     simpa only [ContinuousLinearMap.comp_apply] using hp.symm
@@ -965,8 +968,8 @@ private theorem inverse_comm
   have hp := congrArg (fun Q => Q V) hi
   simp only [ContinuousLinearMap.comp_apply, A, B, J] at hp
   simp only [inverseMetricPerturbationCorrectionH2, invPerturbH1,
-    ContinuousLinearMap.comp_apply, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply, map_sub]
+    ContinuousLinearMap.comp_apply, sub_apply,
+    one_apply_eq_self, map_sub]
   rw [hp]
 
 private theorem principal_comm_small

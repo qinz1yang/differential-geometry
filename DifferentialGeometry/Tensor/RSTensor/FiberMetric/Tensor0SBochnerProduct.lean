@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry
@@ -79,7 +78,7 @@ theorem inner0S_mdiff {s : ℕ}
     fun y J0 => B y (fun a => frame (J0 a) y) with hcBdef
   have hx : x ∈ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x :=
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := inferInstance
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := inferInstance
   have hUmdiff : ∀ i j : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x := by
     intro i j
@@ -207,7 +206,7 @@ theorem nabla_partialEval0S {s : ℕ}
   have htot_raw :=
     TotalNabla0SRealizes.eval_smooth_slots (I := I) h2 X V3 x
   set D : Real :=
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun p : M => nablaT p (fun a : Fin (s + 1) => V3 a p)) x (X x) with hDdef
   have hV30 : ∀ p : M, V3 0 p = Y p := fun p => by
     simp only [V3, Fin.cons_zero]
@@ -219,7 +218,7 @@ theorem nabla_partialEval0S {s : ℕ}
     rw [hBdef, partialEval0SField_apply]
     exact tensor0S_curry_apply_cons (I := I) s (nablaT p) (Y p) w
   have hDfree :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => B p (fun a : Fin s => V a p)) x (X x) = D := by
     rw [hDdef]
     refine DifferentialGeometry.Tensor.Coordinates.deriv_congr_nhds
@@ -292,7 +291,7 @@ theorem nabla_partialEval0S {s : ℕ}
     (freezeFirstTwoArgs0S (I := I) (nabla2T x) (X x) (Y x) +
         tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
           ((cov (fun y : M => Y y) x) (X x))) v
-  rw [ContinuousMultilinearMap.add_apply]
+  rw [Tensor0SSpace.add_apply (I := I) s x]
   rw [hLHS, hfreeze, hcurry, hRHStot]
   ring
 
@@ -313,7 +312,7 @@ theorem freeze0S_deriv {s : ℕ}
       (s + 1) cov nablaT nabla2T)
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           2 * inner0S (I := I) g y s (partialEval0SField (I := I) nablaT Y y) (T y))
         x (X x) =
@@ -332,7 +331,7 @@ theorem freeze0S_deriv {s : ℕ}
       (fun y : M => inner0S (I := I) g y s (B y) (T y)) x :=
     inner0S_mdiff (I := I) g B T x
   have hscale := congrArg (fun L => L (X x))
-    (DifferentialGeometry.extDerivFun_const_mul I (2 : Real) hf)
+    (DifferentialGeometry.mvfderiv_const_mul I (2 : Real) hf)
   have hinner := inner0S_nabla (I := I) cov g hmc B T X x
   have hAderiv :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -349,11 +348,11 @@ theorem freeze0S_deriv {s : ℕ}
     intro P Q R
     simp only [inner0S, MetricFiberData.inner, map_add, LinearMap.add_apply]
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           2 * inner0S (I := I) g y s (B y) (T y)) x (X x)
         =
-      2 * extDerivFun (I := I)
+      2 * mvfderiv (I := I)
         (fun y : M => inner0S (I := I) g y s (B y) (T y)) x (X x) := by
         simpa [Pi.smul_apply, smul_eq_mul] using hscale
     _ =
@@ -411,11 +410,11 @@ theorem du_norm0S {s : ℕ}
         = differential1FormFun (I := I)
             (fun y : M => normSq0S (I := I) g y s (T y)) x (fun _ : Fin 1 => W) := by
           rw [hdu x]; rfl
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun y : M => normSq0S (I := I) g y s (T y)) x W :=
-          differential1FormFun_apply_eq_extDerivFun
+          differential1FormFun_apply_eq_mvfderiv
             (I := I) (fun y : M => normSq0S (I := I) g y s (T y)) x W
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun y : M => normSq0S (I := I) g y s (T y)) x (Wsec x) := by
           rw [hWsec]
     _ = 2 * inner0S (I := I) g x s
@@ -541,7 +540,7 @@ theorem hess_norm0S {s : ℕ}
     rw [partialEval0SField_apply]
   have hnablaDu :
       nablaDuAt (I := I) cov (Xb i) du x (fun _ : Fin 1 => basis j) =
-        extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => Xb j y))
+        mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => Xb j y))
           x (Xb i x) -
         du x (fun _ : Fin 1 => (cov (fun y : M => Xb j y) x) (Xb i x)) := by
     have h := DifferentialGeometry.Tensor.Coordinates.nabla0SFun_one_eval_smooth_slots
@@ -567,11 +566,11 @@ theorem hess_norm0S {s : ℕ}
       _ = nablaDuAt (I := I) cov (Xb i) du x (fun _ : Fin 1 => basis j) :=
               hHess (Xb i) (basis j)
       _ =
-          extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => Xb j y))
+          mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => Xb j y))
             x (Xb i x) -
           du x (fun _ : Fin 1 => (cov (fun y : M => Xb j y) x) (Xb i x)) := hnablaDu
       _ =
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M =>
               2 * inner0S (I := I) g y s
                 (partialEval0SField (I := I) nablaT (Xb j) y) (T y))

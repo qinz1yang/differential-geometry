@@ -91,7 +91,12 @@ theorem w_span_uniform
       · exact htheta
       · linarith
     have hbound := hL hthetaMax hv hpos hmass
-    simpa only [flowW, hDim, SolutionOn.scalar, SolutionFamily.scalar] using hbound
+    have hscalarA : S.scalar a =
+        fun x => metricScalarAt (I := I) (M := M) (S.family.metric a) x := by
+      funext x
+      rw [SolutionOn.scalar_eq_metricTrace]
+      rfl
+    simpa only [flowW, hDim, hscalarA] using hbound
   have hstep (s t : Real) (hs : s ∈ Set.Icc a b)
       (ht : t ∈ Set.Icc a b) (hst : s ≤ t)
       (hgap : t - s ≤ delta) (hgood : Good s) : Good t := by
@@ -113,9 +118,11 @@ theorem w_span_uniform
       scalarCc (I := I) (M := M) (S.family.metric (T : Real)) zeta
     have hu₀ :
         TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u₀.toSection = v := by
-      simpa only [u₀, zeta] using
-        scalar0_scalarCc (I := I) (M := M)
-          (S.family.metric (T : Real)) zeta
+      change TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
+          (scalarCc (I := I) (M := M) (S.family.metric (T : Real)) zeta).toSection =
+        (zeta : M → Real)
+      exact scalar0_scalarCc (I := I) (M := M)
+        (S.family.metric (T : Real)) zeta
     obtain ⟨V, phi, ulim, hlim, hpot⟩ :=
       hspan T hT r hr hr_rho hleft u₀
     let u : Real → M → Real := fun q x =>
@@ -158,13 +165,15 @@ theorem w_span_uniform
             (flowG (I := I) S) (T : Real)) 0)) = 1 := by
       rw [hu0eq]
       simpa only [volumeMeasureFamily, metricFamilyForMeasure,
-        riemannianMeasureFamily, reverseFamily, flowG, sub_zero] using hmass
+        riemannianMeasureFamily, reverseFamily, flowG, sub_zero,
+        SolutionOn.family_metric] using hmass
     have hmassq :
         (∫ x, u q x ∂(riemannianVolumeMeasure (I := I) (M := M)
           (S.family.metric s))) = 1 := by
       have hm := (hmassPath q hqIcc).trans hmass0
       simpa only [volumeMeasureFamily, metricFamilyForMeasure,
-        riemannianMeasureFamily, reverseFamily, flowG, htq] using hm
+        riemannianMeasureFamily, reverseFamily, flowG, htq,
+        SolutionOn.family_metric] using hm
     have hsmoothq : ContMDiff I 𝓘(Real) ∞ (u q) := by
       exact hpot.sliceSmooth q hqIcc
     have hposq : ∀ x : M, 0 < u q x := hposPath q hqIcc
@@ -180,9 +189,22 @@ theorem w_span_uniform
     have hWflow :
         flowW (I := I) (M := M) S s (theta + q) (u q) ≤
           flowW (I := I) (M := M) S t theta v := by
-      simpa [flowW, u, hu0eq, htq, hDim, volumeMeasureFamily,
-        metricFamilyForMeasure, riemannianMeasureFamily, reverseFamily,
-        flowG] using hW
+      let G := reverseFamily (I := I) (M := M) (flowG (I := I) S) (T : Real)
+      have hGq : G.metric q = S.family.metric s := by
+        change S.family.metric ((T : Real) - q) = S.family.metric s
+        rw [htq]
+      have hG0 : G.metric 0 = S.family.metric t := by
+        change S.family.metric ((T : Real) - 0) = S.family.metric t
+        rw [sub_zero, show (T : Real) = t from rfl]
+      have hscalar0 : (fun x => S.scalar (T : Real) x) = S.scalar t := by
+        rw [show (T : Real) = t from rfl]
+      have hu0fun :
+          (fun x => scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
+            (fun i z => ulim z i) 0 x) = v := hu0eq
+      dsimp only [flowW, u]
+      rw [hDim] at hW ⊢
+      simpa only [G, hGq, hG0, volumeMeasureFamily, metricFamilyForMeasure,
+        riemannianMeasureFamily, add_zero, sub_zero, htq, hscalar0, hu0fun] using hW
     exact hlower.trans hWflow
   have hgrid : ∀ n : Nat, ∀ t ∈ Set.Icc a b,
       t ≤ a + (n : Real) * delta → Good t := by

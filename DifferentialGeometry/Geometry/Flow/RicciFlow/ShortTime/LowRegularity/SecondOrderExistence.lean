@@ -313,7 +313,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       (p := 2) (μ := timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
         (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)] with t ht
-    simpa only [tensorHsCongrL_apply] using ht
+    simpa only [stateField, tensorHsCongrL_apply] using ht
   have hballU : ∀ᵐ t ∂timeMeasure T, ‖u.lo.toFun t‖ ≤ R := by
     filter_upwards [hreprae, hsf, hball,
       ae_restrict_mem (measurableSet_Icc (a := (0 : ℝ)) (b := T))]

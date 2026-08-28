@@ -74,10 +74,10 @@ theorem perChartAeTransferable_smoothCase
   rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   by_cases hx_src : x ∈ (chartAt H α).source
   · refine ⟨hx_src, ?_⟩
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     by_contra h_not_in_N
     have h_y_in_target :
         (toEuclidean (E := E)) ((extChartAt I α) x) ∈
@@ -184,7 +184,7 @@ theorem hessPairingMOnLapDom_aeEq_pou_weighted_euclid_pairing_smoothCase_of_tran
     rw [MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_union_null
     intro x hx
-    simp only [Set.mem_setOf_eq, not_forall] at hx
+    simp only [Set.mem_ofPred_eq, not_forall] at hx
     obtain ⟨α, hα_in_finset, hα_ne⟩ := hx
     simp only [Set.mem_iUnion]
     exact ⟨α, hα_in_finset, hα_ne⟩

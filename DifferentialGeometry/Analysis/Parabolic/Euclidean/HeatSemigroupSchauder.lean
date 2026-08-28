@@ -145,8 +145,8 @@ theorem heatD3_path_integrable_of_bounded {t : Real} (ht : 0 < t)
         (heatC3_nonneg (V := V)))
   have houter : Integrable (fun s : Real ↦ ∫ y : V, ‖G (s, y)‖) μ := by
     have hconst : Integrable (fun _ : Real ↦ C) μ := by
-      simpa only [μ] using
-        (integrableOn_const (C := C) (measure_Ioc_lt_top.ne))
+      change IntegrableOn (fun _ : Real ↦ C) (Ioc 0 1) volume
+      exact integrableOn_const (C := C) measure_Ioc_lt_top.ne
     refine hconst.mono hGmeas.norm.integral_prod_right' ?_
     filter_upwards with s
     rw [Real.norm_eq_abs,
@@ -212,7 +212,8 @@ theorem heatD2Conv_space_sub_eq_integral_heatD3Conv_of_bounded
       have huncurry : Integrable
           (Function.uncurry (fun s : Real ↦ fun z : V ↦ G (s, z)))
           (μ.prod (volume : Measure V)) := by
-        simpa only [Function.uncurry_apply_pair] using hGint
+        change Integrable G (μ.prod (volume : Measure V))
+        exact hGint
       have hswap :
           (∫ s : Real, (∫ z : V, G (s, z)) ∂μ) =
             ∫ z : V, (∫ s : Real, G (s, z) ∂μ) :=
@@ -243,8 +244,12 @@ theorem heatD3Conv_path_intervalIntegrable_of_bounded
       (fun s : Real ↦ heatD3Conv t h v w u (x - s • h)) μ := by
     refine hneg.neg.congr (Eventually.of_forall fun s ↦ ?_)
     simp
-  simpa only [μ, intervalIntegrable_iff,
-    uIoc_of_le (by norm_num : (0 : Real) ≤ 1)] using hconv
+  rw [intervalIntegrable_iff,
+    uIoc_of_le (by norm_num : (0 : Real) ≤ 1)]
+  change Integrable
+    (fun s : Real ↦ heatD3Conv t h v w u (x - s • h))
+    (volume.restrict (Ioc 0 1)) at hconv
+  exact hconv
 
 theorem heatD2Conv_space_sub_norm_le_of_bounded
     {t : Real} (ht : 0 < t) (h v w : V)
@@ -354,7 +359,7 @@ theorem heatD2Conv_holder_of_norm_le_one
       exact Real.le_coe_toNNReal _))
   have hone : HolderWith B₁ 1
       (fun x ↦ heatD2Conv t v w u x) := hlip.holderWith
-  have hinterp := hzero.of_le_of_le hone (zero_le alpha) halpha
+  have hinterp := hzero.of_le_of_le hone bot_le halpha
   simpa only [heatD2SupHolderConst, B₀, B₁] using hinterp
 
 def heatSupSpatialJetConst (t : Real)
@@ -385,9 +390,11 @@ theorem heatSup_spatialJet_norm_le
     {j : Nat} (hj : j ≤ 2) (x : V) :
     ‖iteratedFDeriv Real j (fun z : V ↦ heatSup t u z) x‖ ≤
       heatSupSpatialJetConst (V := V) t u j := by
-  interval_cases j
+  have hcases : j = 0 ∨ j = 1 ∨ j = 2 := by omega
+  obtain rfl | rfl | rfl := hcases
   · rw [norm_iteratedFDeriv_zero]
-    simpa only [heatSupSpatialJetConst] using heatSup_contract ht u x
+    change ‖heatSup t u x‖ ≤ ‖u‖
+    exact heatSup_contract ht u x
   · rw [norm_iteratedFDeriv_one, (heatSup_hasFDerivAt ht u x).fderiv]
     change ‖heatSupGradient t u x‖ ≤
       Real.toNNReal ((heatScale t)⁻¹ * heatC1 V * ‖u‖)
@@ -425,7 +432,8 @@ theorem heatSup_spatialJet_norm_le
           ring
         _ = (heatSupSpatialJetConst (V := V) t u 2 : Real) *
             ∏ i, ‖m i‖ := by
-          simp only [heatSupSpatialJetConst]
+          change (t⁻¹ * heatC2 V * ‖u‖) * ∏ i, ‖m i‖ =
+            (Real.toNNReal (t⁻¹ * heatC2 V * ‖u‖) : Real) * ∏ i, ‖m i‖
           rw [Real.coe_toNNReal _ hnonneg]
 
 theorem heatSup_iteratedFDeriv_two_holder
@@ -483,7 +491,7 @@ theorem heatSup_schauder_estimate
     ((heatSup_iteratedFDeriv_two_holder halpha ht u).holderOnWith
       Set.univ).holderWith
   simpa only [heatSupSchauderConst, ENNReal.coe_add,
-    ENNReal.coe_finset_sum] using h
+    ENNReal.ofNNReal_finsetSum] using h
 
 omit [CompleteSpace F] in
 theorem heatScaled_integrable (t : Real)
@@ -700,7 +708,7 @@ theorem heatScaled_parabolic_holder
     {alpha K : NNReal} (halpha : alpha ≤ 1)
     (u : BoundedContinuousFunction V F) (hu : HolderWith K alpha u) :
     HolderWith (heatScaledParabolicHolderConst (V := V) alpha K) alpha
-      ((parabolicCylinder (Ici (0 : Real)) Set.univ).restrict
+      ((parabolicCylinder (Ici (0 : Real)) Set.univ).domRestrict
         (fun p ↦ heatScaled p.time u p.space)) := by
   intro p q
   rw [edist_dist, edist_dist]
@@ -720,7 +728,7 @@ theorem heatSup_parabolic_holder
     {alpha K : NNReal} (halpha : alpha ≤ 1)
     (u : BoundedContinuousFunction V F) (hu : HolderWith K alpha u) :
     HolderWith (heatScaledParabolicHolderConst (V := V) alpha K) alpha
-      ((parabolicCylinder (Ioi (0 : Real)) Set.univ).restrict
+      ((parabolicCylinder (Ioi (0 : Real)) Set.univ).domRestrict
         (fun p ↦ heatSup p.time u p.space)) := by
   have hscaled := heatScaled_parabolic_holder (V := V) halpha u hu
   rw [HolderWith.restrict_iff] at hscaled ⊢
@@ -855,7 +863,7 @@ theorem heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun q ↦ f q.time q.space))) :
     parabolicTimeDerivative (fun t x ↦ heatDuh t f x) p =
       f p.time p.space + parabolicLaplacian (fun t x ↦ heatDuh t f x) p := by
@@ -864,7 +872,7 @@ theorem heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
     fun r hr ↦ holderWith_slice_of_parabolicCylinder
       (f := fun s x ↦ f s x) hsource hr
   have hsource' : HolderWith K alpha
-      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).domRestrict
         (fun q ↦ f q.time q.space)) := by
     rw [HolderWith.restrict_iff] at hsource ⊢
     exact hsource.mono fun q hq ↦ ⟨⟨hq.1.1.le, hq.1.2⟩, hq.2⟩
@@ -968,25 +976,25 @@ theorem heatSup_parabolic_schauder_estimate
         simp only [NNReal.coe_mul, NNReal.coe_natCast]
   have hspatialHolder : HolderWith
       (heatScaledParabolicHolderConst (V := V) alpha K2) alpha
-      (Q.restrict (parabolicSpatialJet 2 w)) := by
+      (Q.domRestrict (parabolicSpatialJet 2 w)) := by
     have hraw := heatSup_parabolic_holder (V := V) halpha d2u hK2
     have hcomp := (hessianCurryEquiv V F).symm.lipschitz.holderWith.comp hraw
     have hcomp' : HolderWith
         (heatScaledParabolicHolderConst (V := V) alpha K2) alpha
         ((hessianCurryEquiv V F).symm ∘
-          Q.restrict (fun p ↦ heatSup p.time d2u p.space)) := by
+          Q.domRestrict (fun p ↦ heatSup p.time d2u p.space)) := by
       simpa only [Q, NNReal.coe_one, NNReal.rpow_one, one_mul] using hcomp
     convert hcomp' using 1
     funext p
     apply (hessianCurryEquiv V F).injective
-    simp only [Function.comp_apply, Set.restrict_apply,
+    simp only [Function.comp_apply, Set.domRestrict_apply,
       LinearIsometryEquiv.apply_symm_apply]
     exact heatSup_hessianCurryEquiv_iteratedFDeriv_two p.2.1
       u du d2u hu hdu p.1.space
   have htimeHolder : HolderWith
       (heatScaledParabolicHolderConst (V := V) alpha
         (Module.finrank Real V * K2)) alpha
-      (Q.restrict (parabolicTimeDerivative w)) := by
+      (Q.domRestrict (parabolicTimeDerivative w)) := by
     have hlap := coreLap_holder d2u hK2
     have hraw := heatSup_parabolic_holder (V := V) halpha (coreLap d2u) hlap
     convert hraw using 1
@@ -1041,7 +1049,7 @@ theorem heatSolution_parabolicTimeDerivative_eq_source_add_laplacian
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun q ↦ f q.time q.space))) :
     parabolicTimeDerivative (heatSolution u0 f) p =
       f p.time p.space + parabolicLaplacian (heatSolution u0 f) p := by
@@ -1082,7 +1090,7 @@ theorem heatSolution_parabolicTimeDerivative_sub_laplacian
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun q ↦ f q.time q.space))) :
     parabolicTimeDerivative (heatSolution u0 f) p -
         parabolicLaplacian (heatSolution u0 f) p =
@@ -1111,7 +1119,7 @@ theorem heatSolution_parabolic_schauder_estimate
     (f : Real → BoundedContinuousFunction V F)
     (hBf : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ Bf)
     (hKf : HolderWith Kf alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ f p.time p.space))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)

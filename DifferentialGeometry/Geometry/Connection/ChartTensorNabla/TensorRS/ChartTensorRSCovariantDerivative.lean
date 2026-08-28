@@ -6,7 +6,6 @@ import DifferentialGeometry.Tensor.RSTensor.Defs
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators
@@ -132,11 +131,11 @@ lemma tensorRSIntrinsicChartCLM_add_section (r s : ℕ) (α : M)
   unfold tensorRSIntrinsicChartCLM
   rw [hfd]
   ext v
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [ContinuousLinearMap.add_apply, map_add]
+  rw [add_apply, map_add]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma tensorRSIntrinsicChartCLM_smul_section (r s : ℕ) (α : M)
@@ -166,10 +165,10 @@ lemma tensorRSIntrinsicChartCLM_smul_section (r s : ℕ) (α : M)
   unfold tensorRSIntrinsicChartCLM
   rw [hfd]
   ext v
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [ContinuousLinearMap.smul_apply, map_smul]
+  rw [smul_apply, map_smul]
 
 def tangentSlotCLM (n : ℕ) {b : M}
     (k : Fin n) (Φ : TangentSpace I b →L[ℝ] TangentSpace I b)
@@ -216,12 +215,8 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 lemma tensorSlotSubstCLM_apply (n : ℕ) (b : M)
     (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b))
     (τ : Tensor0SSpace n I b) (m : Fin n → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin n => TangentSpace I b) ℝ from
-      tensorSlotSubstCLM (I := I) n b Φ τ) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin n => TangentSpace I b) ℝ from τ)
-        (fun i => Φ i (m i)) := by
+    Tensor0SSpace.eval (tensorSlotSubstCLM (I := I) n b Φ τ) m =
+      Tensor0SSpace.eval τ (fun i => Φ i (m i)) := by
   classical
   unfold tensorSlotSubstCLM tangentCompCLML_E
   rfl
@@ -242,17 +237,12 @@ lemma chartTensorRSInputSlotCorrection_apply (r s : ℕ)
     (T : Π b' : M, TensorRSSpace r s I b')
     (X : Π b' : M, TangentSpace I b') (b : M) (k : Fin r)
     (α_input : Tensor0SSpace r I b) (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-      (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-        chartTensorRSInputSlotCorrection (I := I) r s g α T X b k)
-        α_input) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from T b)
-          (tensorSlotSubstCLM (I := I) r b
-            (tangentSlotCLM (I := I) r k
-              (chartLeviCivitaParallelCLM (I := I) g α b X)) α_input)) m := by
+    Tensor0SSpace.eval
+        (chartTensorRSInputSlotCorrection (I := I) r s g α T X b k α_input) m =
+      Tensor0SSpace.eval
+        (T b (tensorSlotSubstCLM (I := I) r b
+          (tangentSlotCLM (I := I) r k
+            (chartLeviCivitaParallelCLM (I := I) g α b X)) α_input)) m := by
   classical
   unfold chartTensorRSInputSlotCorrection
   rfl
@@ -305,17 +295,11 @@ lemma chartTensorRSOutputSlotCorrection_apply (r s : ℕ)
     (T : Π b' : M, TensorRSSpace r s I b')
     (X : Π b' : M, TangentSpace I b') (b : M) (l : Fin s)
     (α_input : Tensor0SSpace r I b) (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-      (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-        chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l)
-        α_input) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from T b) α_input)
-        (fun i =>
-          tangentSlotCLM (I := I) s l
-            (chartLeviCivitaParallelCLM (I := I) g α b X) i (m i)) := by
+    Tensor0SSpace.eval
+        (chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l α_input) m =
+      Tensor0SSpace.eval (T b α_input) (fun i =>
+        tangentSlotCLM (I := I) s l
+          (chartLeviCivitaParallelCLM (I := I) g α b X) i (m i)) := by
   classical
   unfold chartTensorRSOutputSlotCorrection
   rw [ContinuousLinearMap.comp_apply]
@@ -384,28 +368,16 @@ lemma chartTensorRSCovariantDerivative_apply (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (α_input : Tensor0SSpace r I b) (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-      (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-        chartTensorRSCovariantDerivative (I := I) r s g α T X b)
-        α_input) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-          tensorRSIntrinsicChartCLM (I := I) r s α T b (X b))
-          α_input) m
+    Tensor0SSpace.eval
+        (chartTensorRSCovariantDerivative (I := I) r s g α T X b α_input) m =
+      Tensor0SSpace.eval
+        (tensorRSIntrinsicChartCLM (I := I) r s α T b (X b) α_input) m
       + ∑ k : Fin r,
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin s => TangentSpace I b) ℝ from
-            (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-              chartTensorRSInputSlotCorrection (I := I) r s g α T X b k)
-              α_input) m
+          Tensor0SSpace.eval
+            (chartTensorRSInputSlotCorrection (I := I) r s g α T X b k α_input) m
       - ∑ l : Fin s,
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin s => TangentSpace I b) ℝ from
-            (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-              chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l)
-              α_input) m := by
+          Tensor0SSpace.eval
+            (chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l α_input) m := by
   classical
   rw [chartTensorRSCovariantDerivative_def]
   set Bsum : TensorRSSpace r s I b :=
@@ -415,48 +387,30 @@ lemma chartTensorRSCovariantDerivative_apply (r s : ℕ)
       ∑ l : Fin s,
         chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l with hCdef
   have hstep1 :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-          tensorRSIntrinsicChartCLM (I := I) r s α T b (X b) + Bsum - Csum)
-          α_input) m =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin s => TangentSpace I b) ℝ from
-          (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-            tensorRSIntrinsicChartCLM (I := I) r s α T b (X b))
-            α_input) m
-        + (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin s => TangentSpace I b) ℝ from
-            (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from Bsum) α_input) m
-        - (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin s => TangentSpace I b) ℝ from
-            (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from Csum) α_input) m :=
+      Tensor0SSpace.eval
+          ((tensorRSIntrinsicChartCLM (I := I) r s α T b (X b) + Bsum - Csum) α_input) m =
+        Tensor0SSpace.eval
+            (tensorRSIntrinsicChartCLM (I := I) r s α T b (X b) α_input) m
+        + Tensor0SSpace.eval (Bsum α_input) m
+        - Tensor0SSpace.eval (Csum α_input) m :=
     rfl
   rw [hstep1]
   have hBeval :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from Bsum) α_input) m =
+      Tensor0SSpace.eval (Bsum α_input) m =
       ∑ k : Fin r,
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin s => TangentSpace I b) ℝ from
-            (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-              chartTensorRSInputSlotCorrection (I := I) r s g α T X b k)
-              α_input) m := by
-    rw [hBdef]
-    rw [ContinuousLinearMap.sum_apply, ContinuousMultilinearMap.sum_apply]
+          Tensor0SSpace.eval
+            (chartTensorRSInputSlotCorrection (I := I) r s g α T X b k α_input) m := by
+    rw [hBdef, sum_apply]
+    unfold Tensor0SSpace.eval
+    rw [map_sum, sum_apply]
   have hCeval :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from
-        (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from Csum) α_input) m =
+      Tensor0SSpace.eval (Csum α_input) m =
       ∑ l : Fin s,
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin s => TangentSpace I b) ℝ from
-            (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
-              chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l)
-              α_input) m := by
-    rw [hCdef]
-    rw [ContinuousLinearMap.sum_apply, ContinuousMultilinearMap.sum_apply]
+          Tensor0SSpace.eval
+            (chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l α_input) m := by
+    rw [hCdef, sum_apply]
+    unfold Tensor0SSpace.eval
+    rw [map_sum, sum_apply]
   rw [hBeval, hCeval]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in

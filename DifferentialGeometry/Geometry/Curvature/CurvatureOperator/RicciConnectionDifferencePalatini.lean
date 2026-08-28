@@ -43,23 +43,25 @@ theorem ricciTensor_sub_eq_connectionDifference_palatini (g₀ g₁ : SmoothRiem
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g₁ x v w - ricciTensor (I := I) g₀ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (centeredChartTangentBasis (I := I) x).repr
           ((covDerivConnectionDifference (I := I) g₀ g₁
-                (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                (smoothExtensionTangent (I := I) x ((centeredChartTangentBasis (I := I) x) i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x
               - covDerivConnectionDifference (I := I) g₀ g₁
                 (smoothExtensionTangent (I := I) x v)
-                (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                (smoothExtensionTangent (I := I) x ((centeredChartTangentBasis (I := I) x) i))
                 (smoothExtensionTangent (I := I) x w) x)
             + (connectionDifference (I := I) g₁ g₀ x
                   (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                     (smoothExtensionTangent (I := I) x v)
                     (smoothExtensionTangent (I := I) x w) x)
-                  (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x)
+                  (smoothExtensionTangent (I := I) x
+                    ((centeredChartTangentBasis (I := I) x) i) x)
                 - connectionDifference (I := I) g₁ g₀ x
                   (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
-                    (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+                    (smoothExtensionTangent (I := I) x
+                      ((centeredChartTangentBasis (I := I) x) i))
                     (smoothExtensionTangent (I := I) x w) x)
                   (smoothExtensionTangent (I := I) x v x))) i :=
   ricciTensor_sub_eq_basisSum_difference (I := I) g₀ g₁ x v w

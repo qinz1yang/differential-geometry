@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Bundle Set
@@ -164,7 +165,8 @@ theorem intrFrame_deriv_zero
   have hchain' : mfderiv (modelWithCornersSelf Real E) I
       (F ∘ fun z : E => L z) 0 = L :=
     hchain.trans (ContinuousLinearMap.id_comp L)
-  simpa only [intrinsicFramedExp, F, L, Function.comp_apply] using hchain'
+  rw [show intrinsicFramedExp (I := I) g hEnorm p = F ∘ fun z : E => L z by rfl]
+  exact hchain'
 
 omit [CompleteSpace E]
   [ConnectedSpace M] [T2Space (TangentBundle I M)] in
@@ -205,9 +207,12 @@ theorem intrFrame_mfderiv
   have happ := congrArg (fun D => D v) hchain
   have hjac :=
     intrinsic_jacobi_one (I := I) g hEnorm p (L z) (L v)
-  simpa only [intrinsicFramedExp, F, L, Function.comp_apply,
-    ContinuousLinearMap.comp_apply, intrFrameCLM_apply] using
-      happ.trans hjac.symm
+  rw [show intrinsicFramedExp (I := I) g hEnorm p = F ∘ (L : E → E) by rfl]
+  change mfderiv (modelWithCornersSelf Real E) I (F ∘ (L : E → E)) z v =
+    mfderiv (modelWithCornersSelf Real Real) I
+      (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
+        (L z + s • L v) 1) 0 1
+  exact happ.trans hjac.symm
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
@@ -381,7 +386,7 @@ omit [ConnectedSpace M] in
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (q : M) :
-    (intrFrameDiffeo (I := I) g hEnorm p).symm q =
+    (intrFrameDiffeo (I := I) g hEnorm p).toPartialEquiv.symm q =
       framedChartAt (I := I) g p q := by
   rfl
 
@@ -435,8 +440,7 @@ theorem intrFrameMetric_apply
           (intrinsicFramedExp (I := I) g hEnorm p) z v)
         (mfderiv (modelWithCornersSelf Real E) I
           (intrinsicFramedExp (I := I) g hEnorm p) z w) := by
-  simp only [intrFrameMetric, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.precomp_apply]
+  simp only [intrFrameMetric, ContinuousLinearMap.comp_apply]
   rfl
 
 omit [ConnectedSpace M] in

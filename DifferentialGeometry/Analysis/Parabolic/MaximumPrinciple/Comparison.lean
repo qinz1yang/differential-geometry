@@ -21,7 +21,7 @@ variable [IsManifold I ∞ M]
 
 omit [CompleteSpace E] in
 theorem heat_pot_comparison
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (V u v : Real → M → Real)
@@ -42,7 +42,7 @@ theorem heat_pot_comparison
 
 omit [CompleteSpace E] in
 theorem heat_pot_eq_of_initial_eq
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (V u v : Real → M → Real)
@@ -63,7 +63,7 @@ theorem heat_pot_eq_of_initial_eq
 
 omit [CompleteSpace E] in
 theorem heat_comparison
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (u v : Real → M → Real)
@@ -77,7 +77,7 @@ theorem heat_comparison
 
 omit [CompleteSpace E] in
 theorem heat_subsolution_comparison
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (u v : Real → M → Real)
@@ -90,7 +90,7 @@ theorem heat_subsolution_comparison
 
 omit [CompleteSpace E] in
 theorem heat_eq_of_initial_eq
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (u v : Real → M → Real)
@@ -124,7 +124,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
 theorem scalar_strong_comparison_time_dependent_metric_with_drift_and_potential
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -226,7 +226,7 @@ theorem scalar_strong_comparison_time_dependent_metric_with_drift_and_potential
   linarith
 
 theorem scalar_strong_minimum_principle_time_dependent_metric_with_drift_and_potential
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -313,7 +313,7 @@ theorem scalar_strong_minimum_principle_time_dependent_metric_with_drift_and_pot
   linarith
 
 theorem scalar_strong_minimum_principle_time_dependent_metric_with_drift_and_potential_negative
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -381,8 +381,9 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
+omit [CompleteSpace E] in
 theorem heat_pot_strict_comparison_of_initial_lt_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -417,8 +418,9 @@ theorem heat_pot_strict_comparison_of_initial_lt_of_metricFamilySmoothOn
   dsimp only [w] at hwpos
   linarith
 
+omit [CompleteSpace E] in
 theorem heat_strict_comparison_of_initial_lt_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

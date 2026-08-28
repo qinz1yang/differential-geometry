@@ -167,11 +167,11 @@ theorem christoffel_Ck_bound_from_metric_Ck1 [I.Boundaryless]
         s • ((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
               ((chartModelBasis E) κ) := by
       ext w
-      simp [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply,
+      simp [ContinuousLinearMap.smulRight_apply, smul_apply,
         smul_smul, mul_comm]
     rw [h_inner]
     ext v w
-    simp [N, ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply,
+    simp [N, ContinuousLinearMap.smulRight_apply, smul_apply,
       smul_smul, mul_comm]
   have hΨ_contDiffOn : ContDiffOn ℝ ∞ Ψ U := by
     refine ContDiffOn.sum (fun i _ => ?_)

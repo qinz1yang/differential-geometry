@@ -123,17 +123,17 @@ theorem covDerivConnectionDifference_congr
     covDerivConnectionDifference (I := I) g₂ g₁ W X Y x =
       covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   have hpair : ∀ Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _),

@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricCongr
 import DifferentialGeometry.Tensor.RSTensor.NormSqProduct
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -36,11 +37,11 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 private theorem traceInput_domDomCongr {x : M}
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y : TangentSpace I x) (tail : Fin 2 -> TangentSpace I x) :
-    (ContinuousMultilinearMap.domDomCongr rm04TraceSlots Rm04)
+    Rm04.domDomCongr rm04TraceSlots
         (metricTraceInput (I := I) X Y tail) =
       Rm04 (vec4 (I := I) X (tail 0) (tail 1) Y) := by
   have h :
-      (ContinuousMultilinearMap.domDomCongr rm04TraceSlots Rm04)
+      Rm04.domDomCongr rm04TraceSlots
           (metricTraceInput (I := I) X Y tail) =
         Rm04 (fun m => metricTraceInput (I := I) X Y tail (rm04TraceSlots m)) := rfl
   rw [h]
@@ -51,21 +52,16 @@ private theorem traceInput_domDomCongr {x : M}
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 theorem domDomCongr_sub {x : M} {s s' : Nat} (e : Fin s ≃ Fin s')
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
-    ContinuousMultilinearMap.domDomCongr e (A - B) =
-      ContinuousMultilinearMap.domDomCongr e A -
-        ContinuousMultilinearMap.domDomCongr e B := by
+    (A - B).domDomCongr e = A.domDomCongr e - B.domDomCongr e := by
   refine tensor0SSpace_ext (𝕜 := Real) s' x fun v => ?_
   have hD := Tensor0SSpace.sub_apply (I := I) s' x
-    (ContinuousMultilinearMap.domDomCongr e A)
-    (ContinuousMultilinearMap.domDomCongr e B) v
+    (A.domDomCongr e) (B.domDomCongr e) v
   have hE := Tensor0SSpace.sub_apply (I := I) s x A B (fun i => v (e i))
-  calc (ContinuousMultilinearMap.domDomCongr e (A - B)) v
+  calc (A - B).domDomCongr e v
       = (A - B) (fun i => v (e i)) := rfl
     _ = A (fun i => v (e i)) - B (fun i => v (e i)) := hE
-    _ = (ContinuousMultilinearMap.domDomCongr e A) v -
-        (ContinuousMultilinearMap.domDomCongr e B) v := rfl
-    _ = (ContinuousMultilinearMap.domDomCongr e A -
-        ContinuousMultilinearMap.domDomCongr e B) v := hD.symm
+    _ = A.domDomCongr e v - B.domDomCongr e v := rfl
+    _ = (A.domDomCongr e - B.domDomCongr e) v := hD.symm
 
 end TraceSlots
 
@@ -78,7 +74,7 @@ theorem ricci_eq_trace_rm04 (g : SmoothRiemannianMetric I M) {x : M}
     (hLower : Rm04LowersRm13At (I := I) g x Rm13 Rm04) :
     ricciFromRm13At (I := I) (M := M) Rm13 =
       metricTraceFirstTwo0STensor (I := I) g
-        (ContinuousMultilinearMap.domDomCongr rm04TraceSlots Rm04) := by
+        (Rm04.domDomCongr rm04TraceSlots) := by
   classical
   set basis := Module.finBasis Real (TangentSpace I x) with hbasisdef
   set gInv := basisInvMetric (I := I) g x basis with hgInvdef
@@ -89,7 +85,7 @@ theorem ricci_eq_trace_rm04 (g : SmoothRiemannianMetric I M) {x : M}
     ricciFromRm13At (I := I) (M := M) Rm13 with hLdef
   set R : ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real :=
     metricTraceFirstTwo0STensor (I := I) g
-      (ContinuousMultilinearMap.domDomCongr rm04TraceSlots Rm04) with hRdef
+      (Rm04.domDomCongr rm04TraceSlots) with hRdef
   suffices h : L.toMultilinearMap = R.toMultilinearMap by
     exact congrArg
       (fun T : MultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real => T u) h
@@ -108,7 +104,7 @@ theorem ricci_eq_trace_rm04 (g : SmoothRiemannianMetric I M) {x : M}
           gInv a k * rm04CompAt (I := I) basis Rm04 a (v 0) (v 1) k := by
     rw [hRdef]
     change metricTraceFirstTwo0STensor (I := I) g
-      (ContinuousMultilinearMap.domDomCongr rm04TraceSlots Rm04)
+      (Rm04.domDomCongr rm04TraceSlots)
         (fun i => basis (v i)) = _
     rw [metricTraceFirstTwo0STensor_apply,
       ← metricTrace0S2InBasis_eq_metricTrace (I := I) g basis gInv hinv]
@@ -124,8 +120,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricRicci_eq_trace (g : SmoothRiemannianMetric I M) (x : M) :
     metricRicciAt (I := I) g x =
       metricTraceFirstTwo0STensor (I := I) g
-        (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-          (metricRm04At (I := I) g x)) :=
+        ((metricRm04At (I := I) g x).domDomCongr rm04TraceSlots) :=
   ricci_eq_trace_rm04 (I := I) g (metricRm13At (I := I) g x) (metricRm04At (I := I) g x)
     (fun X Y Z W =>
       CovariantDerivative.riemannCurvature04At_eq_lower_riemannCurvatureAt
@@ -135,9 +130,9 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricRicci_eq_trace_cross (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     metricRicciAt (I := I) g₂ x =
       metricTraceFirstTwo0STensor (I := I) g₁
-        (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-          (CovariantDerivative.riemannCurvature04At (I := I) g₁
-            (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x)) :=
+        ((CovariantDerivative.riemannCurvature04At (I := I) g₁
+          (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x).domDomCongr
+            rm04TraceSlots) :=
   ricci_eq_trace_rm04 (I := I) g₁ (metricRm13At (I := I) g₂ x) _
     (fun X Y Z W =>
       CovariantDerivative.riemannCurvature04At_eq_lower_riemannCurvatureAt
@@ -200,8 +195,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciDiff_eq_trace (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     metricRicciAt (I := I) g₁ x - metricRicciAt (I := I) g₂ x =
       metricTraceFirstTwo0STensor (I := I) g₁
-        (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-          (rmDiffLowAt (I := I) g₁ g₂ x)) := by
+        ((rmDiffLowAt (I := I) g₁ g₂ x).domDomCongr rm04TraceSlots) := by
   have h₁ := metricRicci_eq_trace (I := I) g₁ x
   have h₂ := metricRicci_eq_trace_cross (I := I) g₁ g₂ x
   have h₃ := domDomCongr_sub (I := I) (x := x) rm04TraceSlots
@@ -209,28 +203,24 @@ theorem ricciDiff_eq_trace (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     (CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
       (metricCov_smooth (I := I) g₂) x)
   have h₄ := trace_sub (I := I) (s := 2) g₁
-    (ContinuousMultilinearMap.domDomCongr rm04TraceSlots (metricRm04At (I := I) g₁ x))
-    (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-      (CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
-        (metricCov_smooth (I := I) g₂) x))
+    ((metricRm04At (I := I) g₁ x).domDomCongr rm04TraceSlots)
+    ((CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
+      (metricCov_smooth (I := I) g₂) x).domDomCongr rm04TraceSlots)
   calc metricRicciAt (I := I) g₁ x - metricRicciAt (I := I) g₂ x
       = metricTraceFirstTwo0STensor (I := I) g₁
-            (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-              (metricRm04At (I := I) g₁ x)) -
+            ((metricRm04At (I := I) g₁ x).domDomCongr rm04TraceSlots) -
           metricTraceFirstTwo0STensor (I := I) g₁
-            (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-              (CovariantDerivative.riemannCurvature04At (I := I) g₁
-                (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x)) := by
+            ((CovariantDerivative.riemannCurvature04At (I := I) g₁
+              (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x).domDomCongr
+                rm04TraceSlots) := by
         rw [h₁, h₂]
     _ = metricTraceFirstTwo0STensor (I := I) g₁
-          (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-              (metricRm04At (I := I) g₁ x) -
-            ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-              (CovariantDerivative.riemannCurvature04At (I := I) g₁
-                (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x)) := h₄
+          ((metricRm04At (I := I) g₁ x).domDomCongr rm04TraceSlots -
+            (CovariantDerivative.riemannCurvature04At (I := I) g₁
+              (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x).domDomCongr
+                rm04TraceSlots) := h₄
     _ = metricTraceFirstTwo0STensor (I := I) g₁
-          (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-            (rmDiffLowAt (I := I) g₁ g₂ x)) :=
+          ((rmDiffLowAt (I := I) g₁ g₂ x).domDomCongr rm04TraceSlots) :=
         congrArg (metricTraceFirstTwo0STensor (I := I) g₁) h₃.symm
 
 end RicciTrace
@@ -244,10 +234,10 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let _ : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -273,8 +263,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem normSq_ricciTraceRep (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     normSq0S (I := I) g₁ x 4
-        (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-          (rmDiffLowAt (I := I) g₁ g₂ x)) =
+        ((rmDiffLowAt (I := I) g₁ g₂ x).domDomCongr rm04TraceSlots) =
       rmDiffSq (I := I) g₁ g₂ x := by
   classical
   obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x

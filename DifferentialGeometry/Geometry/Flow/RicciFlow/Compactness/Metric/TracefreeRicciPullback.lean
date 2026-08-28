@@ -26,9 +26,9 @@ omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
 theorem trace_free_ricci_norm_sq_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M]
+    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M) :
     DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAtOf
         (metricScalarAt (I := I)

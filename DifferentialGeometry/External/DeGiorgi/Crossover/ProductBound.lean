@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-23: migrated the Fatou lemma call to the Mathlib 4.33 API
 import DifferentialGeometry.External.DeGiorgi.Crossover.ExponentialIntegrability
 
 /-!
@@ -218,7 +219,7 @@ theorem crossover_product_bound_exists :
   let εn : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1)
   let g : ℕ → E → ℝ := fun n x => |(u x + εn n)⁻¹| ^ p
   let g0 : E → ℝ := fun x => |(u x)⁻¹| ^ p
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     refine ⟨by
       simpa [μ, Bhalf] using
         (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := (1 / 2 : ℝ)))⟩
@@ -519,7 +520,8 @@ theorem crossover_product_bound_exists :
         ∀ n, AEMeasurable (fun x => ENNReal.ofReal (g n x)) μ := by
       intro n
       exact (hg_meas n).aemeasurable.ennreal_ofReal
-    have hleft := MeasureTheory.lintegral_liminf_le' (μ := μ) hmeas
+    have hleft := MeasureTheory.lintegral_liminf_le'
+      (μ := μ) (u := atTop) (f := fun n x => ENNReal.ofReal (g n x)) hmeas
     have hlim :
         (fun x => Filter.liminf (fun n => ENNReal.ofReal (g n x)) atTop) =ᵐ[μ]
           fun x => ENNReal.ofReal (g0 x) := by

@@ -15,6 +15,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
 import Mathlib.Geometry.Manifold.BumpFunction
 
+
 noncomputable section
 
 open Set Function Filter Metric Bundle Manifold
@@ -44,6 +45,7 @@ open DifferentialGeometry.Geometry.Operator
 
 section RadialCurve
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialCurve_contMDiffOn_two (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) :
     ContMDiffOn 𝓘(ℝ, ℝ) I 2
@@ -53,6 +55,7 @@ theorem radialCurve_contMDiffOn_two (g : SmoothRiemannianMetric I M) (p : M)
   intro t₀ ht₀
   exact (radialCurve_contMDiffAt2 (I := I) g p (v : E) t₀ ht₀).contMDiffWithinAt
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialCurve_contMDiffOn_two_Icc (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) (hv : ‖(v : E)‖ < expMapC2Radius (I := I) g p) :
     ContMDiffOn 𝓘(ℝ, ℝ) I 2
@@ -71,25 +74,36 @@ theorem radialCurve_zero (g : SmoothRiemannianMetric I M) (p : M)
     expMap (I := I) g p ((0 : ℝ) • v) = p := by
   simpa using expMap_zero (I := I) g p
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialCurve_velocity (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) :
     mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => (expMap (I := I) g p (s • v) : M)) 0 (1 : ℝ) = v := by
-  simpa using radialCurve_launch_velocity (I := I) g p (v : E)
+  change mfderiv 𝓘(ℝ, ℝ) I
+      (fun u : ℝ => expMap (I := I) g p
+        (show TangentSpace I p from u • (v : E))) 0 (1 : ℝ) =
+    (show TangentSpace I p from (v : E))
+  exact radialCurve_launch_velocity (I := I) g p (v : E)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radial_curve_hasGeodesicEquationAt (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) (hv : ‖(v : E)‖ < expMapC2Radius (I := I) g p)
     {t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) 1) :
     HasGeodesicEquationAt (I := I) g (fun s : ℝ => (expMap (I := I) g p (s • v) : M)) t := by
-  simpa using radial_geo_at (I := I) g p (v : E) hv t ht
+  change HasGeodesicEquationAt (I := I) g
+    (fun u : ℝ => expMap (I := I) g p
+      (show TangentSpace I p from u • (v : E))) t
+  exact radial_geo_at (I := I) g p (v : E) hv t ht
 
 def radialRadius (g : SmoothRiemannianMetric I M) (p : M) : ℝ :=
   expMapC2Radius (I := I) g p / 2
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialRadius_pos (g : SmoothRiemannianMetric I M) (p : M) :
     0 < radialRadius (I := I) g p := by
   rw [radialRadius]
   exact div_pos (expMapC2Radius_pos (I := I) g p) (by norm_num)
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_smul_lt_expMapC2Radius_of_lt_radialRadius (g : SmoothRiemannianMetric I M)
     (p : M) {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     {s : ℝ} (hs : s ∈ Set.Icc (-1 : ℝ) 2) :
@@ -105,6 +119,7 @@ lemma norm_smul_lt_expMapC2Radius_of_lt_radialRadius (g : SmoothRiemannianMetric
     linarith
   exact lt_of_le_of_lt hnorm hlt
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialCurve_mem_chartAt_source_of_lt_radialRadius (g : SmoothRiemannianMetric I M)
     (p : M) {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     {s : ℝ} (hs : s ∈ Set.Icc (-1 : ℝ) 2) :
@@ -119,6 +134,7 @@ lemma radialCurve_mem_chartAt_source_of_lt_radialRadius (g : SmoothRiemannianMet
     rwa [expMapDiffeo_apply_eq (I := I) g p hsrcE] at hmap
   exact exp_target_sub_chart (I := I) g p hmem
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialCurve_mem_chartAt_source_of_norm_lt (g : SmoothRiemannianMetric I M) (p : M)
     {v : TangentSpace I p} {s : ℝ}
     (hs : ‖s • (v : E)‖ < expMapC2Radius (I := I) g p) :
@@ -131,6 +147,7 @@ lemma radialCurve_mem_chartAt_source_of_norm_lt (g : SmoothRiemannianMetric I M)
     rwa [expMapDiffeo_apply_eq (I := I) g p hsrcE] at hmap
   exact exp_target_sub_chart (I := I) g p hmem
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialCurve_chartCurve_contDiffOn (g : SmoothRiemannianMetric I M) (p : M)
     {v : TangentSpace I p} :
     ContDiffOn ℝ 2 (chartCurve (I := I) p (fun s : ℝ => expMap (I := I) g p (s • v)))
@@ -154,6 +171,7 @@ end RadialCurve
 
 section ParallelTransportOnCurve
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem parallel_chart_overlap_consistency_contMDiffOn [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α β : M) (γ : ℝ → M)
@@ -199,7 +217,7 @@ theorem parallel_chart_overlap_consistency_contMDiffOn [I.Boundaryless]
         (fun s => chartTransitionMap (I := I) α β (chartCurve (I := I) α γ s))
         (chartTransitionAt (I := I) α β (chartCurve (I := I) α γ t) (uPrimeα t)) t := by
       have := hTdiff.hasFDerivAt.comp_hasDerivAt t huα
-      simpa [chartTransitionAt_def] using this
+      convert! this using 1
     exact (hcomp.congr_of_eventuallyEq hcurve_eq)
   · intro t ht
     obtain ⟨htα, htβ⟩ := hαβ t ht
@@ -281,6 +299,7 @@ theorem parallel_chart_overlap_consistency_contMDiffOn [I.Boundaryless]
       simpa using hYβd
     exact hgoal
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem exists_parallel_transport_on_Ioo_contMDiffOn [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M)
@@ -472,6 +491,7 @@ end ParallelTransportOnCurve
 
 section RadialParallelTransport
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem parallelTransport_radial {g : SmoothRiemannianMetric I M} {p : M}
     {v : TangentSpace I p}
@@ -488,6 +508,7 @@ theorem parallelTransport_radial {g : SmoothRiemannianMetric I M} {p : M}
       (N := 2) le_rfl hγ hL η₀
   exact ⟨V, hV0, hVdiff, hVpar⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma rescaleNormLt (g : SmoothRiemannianMetric I M) (p : M) {v : TangentSpace I p}
     (hv : ‖(v : E)‖ < radialRadius (I := I) g p) {c : ℝ} (hc : c ∈ Set.Ioo (-1 : ℝ) 1) :
     ‖(c • v : E)‖ < radialRadius (I := I) g p := by
@@ -499,11 +520,13 @@ private lemma rescaleNormLt (g : SmoothRiemannianMetric I M) (p : M) {v : Tangen
     exact (mul_le_mul_of_nonneg_right habs (norm_nonneg (v : E))).trans_eq (one_mul _)
   exact lt_of_le_of_lt hnorm hv
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma radialCurve_domain_isOpen (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) :
     IsOpen {s : ℝ | ‖s • (v : E)‖ < expMapC2Radius (I := I) g p} :=
   (isOpen_Iio.preimage (continuous_norm.comp (continuous_id.smul continuous_const)))
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem radialParallelTransportData (g : SmoothRiemannianMetric I M) (p : M)
     {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     (η₀ : TangentSpace I p) :
@@ -534,12 +557,14 @@ noncomputable def radialParallelTransportSection (g : SmoothRiemannianMetric I M
     (η₀ : TangentSpace I p) : ∀ t : ℝ, TangentSpace I (expMap (I := I) g p (t • v)) :=
   Classical.choose (radialParallelTransportData (I := I) g p hv η₀)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialParallelTransportSection_initial (g : SmoothRiemannianMetric I M) (p : M)
     {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     (η₀ : TangentSpace I p) :
     radialParallelTransportSection (I := I) g p hv η₀ 0 = η₀ :=
   (Classical.choose_spec (radialParallelTransportData (I := I) g p hv η₀)).1
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialParallelTransportSection_differentiableAt (g : SmoothRiemannianMetric I M)
     (p : M) {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     (η₀ : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Ioo (-1 : ℝ) 2) :
@@ -548,6 +573,7 @@ theorem radialParallelTransportSection_differentiableAt (g : SmoothRiemannianMet
         (radialParallelTransportSection (I := I) g p hv η₀) t) t :=
   (Classical.choose_spec (radialParallelTransportData (I := I) g p hv η₀)).2.1 t ht
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialParallelTransportSection_covDerivAlong (g : SmoothRiemannianMetric I M)
     (p : M) {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     (η₀ : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Ioo (-1 : ℝ) 2) :
@@ -555,6 +581,7 @@ theorem radialParallelTransportSection_covDerivAlong (g : SmoothRiemannianMetric
       (radialParallelTransportSection (I := I) g p hv η₀) t = 0 :=
   (Classical.choose_spec (radialParallelTransportData (I := I) g p hv η₀)).2.2.1 t ht
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialParallelTransportSection_ode (g : SmoothRiemannianMetric I M) (p : M)
     {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     (η₀ : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (-1 : ℝ) 2) :
@@ -598,6 +625,7 @@ private lemma smul_mem_Ioo_neg_one_two {c t : ℝ} (hc : c ∈ Set.Ioo (-1 : ℝ
     · have hneg : c • t ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (le_of_not_ge hc0) ht.1
       linarith
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialParallelTransportSection_rescale (g : SmoothRiemannianMetric I M) (p : M)
     {v : TangentSpace I p} (hv : ‖(v : E)‖ < radialRadius (I := I) g p)
     (η₀ : TangentSpace I p) {c : ℝ} (hc : c ∈ Set.Ioo (-1 : ℝ) 1)
@@ -686,7 +714,7 @@ theorem radialParallelTransportSection_rescale (g : SmoothRiemannianMetric I M) 
       have h := (hasDerivAt_id τ).const_mul c
       simpa [smul_eq_mul] using h
     have hcomp : HasDerivAt (fun s => Yv (c • s)) (c • d) τ := by
-      simpa using hYv_at.scomp τ hinner
+      convert! hYv_at.scomp τ hinner using 1
     have hderiv_γ : deriv (chartCurve (I := I) p γcv) τ =
         c • deriv (chartCurve (I := I) p γv) (c • τ) := by
       rw [hfcv_eq]
@@ -737,7 +765,9 @@ theorem radialParallelTransportSection_rescale (g : SmoothRiemannianMetric I M) 
       hu hγc hsrc01 hYcv_ode hY2_ode (hYcv0.trans hY2_0.symm)
   have hEq_t : Ycv t = Yv (c • t) := hEq01 ht
   have hchart : chartRepAt (I := I) γcv Pcv 0 t = chartRepAt (I := I) γv Pv 0 (c • t) := by
-    simpa using hEq_t
+    change chartRepAt (I := I) γcv Pcv 0 t =
+      chartRepAt (I := I) γv Pv 0 (c • t) at hEq_t
+    exact hEq_t
   have hmem : γv (c • t) ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]
     have hct_mem : c • t ∈ Set.Ioo (-1 : ℝ) 2 := smul_mem_Ioo_neg_one_two hc ht
@@ -760,7 +790,8 @@ theorem radialParallelTransportSection_rescale (g : SmoothRiemannianMetric I M) 
     exact hround_l.symm.trans
       ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γv (c • t))) hchart).trans
         hround_r)
-  simpa using hsec
+  change Pcv t = Pv (c • t)
+  exact hsec
 
 end RadialParallelTransport
 
@@ -769,15 +800,32 @@ section RadialTransportSection
 
 variable [T2Space M]
 
+omit [IsManifold I ∞ M] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M] [T2Space (TangentBundle I M)] in
+private lemma tangentModelSymm_coe_norm (p : M) (v : E) :
+    ‖(((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm v : TangentSpace I p) : E)‖ =
+      ‖v‖ := by
+  rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+  rfl
+
 noncomputable def radialTransportSection (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p) : ∀ y : M, TangentSpace I y := by
   classical
   exact fun y =>
     if h : y ∈ (normalChartAt (I := I) g p).source ∧
         ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p then
-      (radialParallelTransportSection g p h.2 η₀ 1 : TangentSpace I y)
+      let v : TangentSpace I p := (tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
+        (normalChartAt (I := I) g p y)
+      let hv : ‖(v : E)‖ < radialRadius (I := I) g p := by
+        rw [tangentModelSymm_coe_norm (I := I)]
+        exact h.2
+      (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+        (tangentSpaceModelContinuousLinearEquiv (I := I)
+          (expMap (I := I) g p ((1 : ℝ) • v))
+          (radialParallelTransportSection g p hv η₀ 1))
     else 0
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 lemma expMap_mem_normalChartAt_source_of_norm_lt_radialRadius (g : SmoothRiemannianMetric I M)
     (p : M) {X : TangentSpace I p} {s : ℝ}
@@ -791,6 +839,7 @@ lemma expMap_mem_normalChartAt_source_of_norm_lt_radialRadius (g : SmoothRiemann
     rwa [expMapDiffeo_apply_eq (I := I) g p hsrcE] at hmap
   rwa [normalChartAt_source_eq (I := I) g p]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma radialParallelTransportSection_congr_initial_vector (g : SmoothRiemannianMetric I M)
     (p : M) (η₀ : TangentSpace I p) {a b : TangentSpace I p}
@@ -800,6 +849,7 @@ private lemma radialParallelTransportSection_congr_initial_vector (g : SmoothRie
   subst b
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 theorem radialTransportSection_pullback_eq (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p) {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
@@ -807,7 +857,6 @@ theorem radialTransportSection_pullback_eq (g : SmoothRiemannianMetric I M) (p :
     radialTransportSection g p η₀ (expMap (I := I) g p (s • X)) =
       radialParallelTransportSection g p hX η₀ s := by
   classical
-  rw [radialTransportSection]
   have hs_norm : ‖s • (X : E)‖ < expMapC2Radius (I := I) g p :=
     norm_smul_lt_expMapC2Radius_of_lt_radialRadius (I := I) g p hX
       ⟨by linarith [hs.1], by linarith [hs.2]⟩
@@ -828,20 +877,37 @@ theorem radialTransportSection_pullback_eq (g : SmoothRiemannianMetric I M) (p :
     · exact expMap_mem_normalChartAt_source_of_norm_lt_radialRadius (I := I) g p hs_norm
     · rw [hv]
       exact hs_norm_radius
-  rw [dif_pos hcond]
-  change radialParallelTransportSection (I := I) g p
-      (v := normalChartAt (I := I) g p (expMap (I := I) g p (s • X))) hcond.2 η₀ 1 =
-    radialParallelTransportSection (I := I) g p hX η₀ s
+  have hcond_model :
+      ‖(((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
+        (normalChartAt (I := I) g p (expMap (I := I) g p (s • X))) :
+          TangentSpace I p) : E)‖ < radialRadius (I := I) g p := by
+    rw [tangentModelSymm_coe_norm (I := I)]
+    exact hcond.2
+  apply (tangentSpaceModelContinuousLinearEquiv (I := I)
+    (expMap (I := I) g p (s • X))).injective
+  rw [radialTransportSection, dif_pos hcond]
+  dsimp only
+  rw [ContinuousLinearEquiv.apply_symm_apply]
   have hEq : radialParallelTransportSection (I := I) g p
-      (v := normalChartAt (I := I) g p (expMap (I := I) g p (s • X))) hcond.2 η₀ 1 =
+      (v := (tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
+        (normalChartAt (I := I) g p (expMap (I := I) g p (s • X))))
+      hcond_model η₀ 1 =
     radialParallelTransportSection (I := I) g p (v := s • X) hs_norm_radius η₀ 1 := by
-    exact radialParallelTransportSection_congr_initial_vector (I := I) g p η₀ hcond.2 hs_norm_radius
-      (by simpa using hv) 1
-  rw [hEq]
-  rw [radialParallelTransportSection_rescale (I := I) g p hX η₀ (hc := hs) (t := 1)
-    ⟨by norm_num, le_rfl⟩]
-  rw [smul_eq_mul, mul_one]
+    exact radialParallelTransportSection_congr_initial_vector (I := I) g p η₀
+      hcond_model
+      hs_norm_radius
+      (by
+        apply (tangentSpaceModelContinuousLinearEquiv (I := I) p).injective
+        rw [ContinuousLinearEquiv.apply_symm_apply]
+        simpa only [tangentSpaceModelContinuousLinearEquiv_apply] using hv)
+      1
+  have hscale := radialParallelTransportSection_rescale (I := I) g p hX η₀
+    (hc := hs) (t := 1) ⟨by norm_num, le_rfl⟩
+  rw [smul_eq_mul, mul_one] at hscale
+  simpa only [tangentSpaceModelContinuousLinearEquiv_apply] using
+    congrArg (fun z => (z : E)) (hEq.trans hscale)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 theorem radialTransportSection_center (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p) (X : TangentSpace I p) (hX : ‖(X : E)‖ < radialRadius (I := I) g p) :
@@ -851,6 +917,7 @@ theorem radialTransportSection_center (g : SmoothRiemannianMetric I M) (p : M)
   rw [radialParallelTransportSection_initial (I := I) g p hX η₀] at h
   exact h
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem radialTransportSection_nabla_center_zero_of_norm_lt
     (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p) {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
@@ -881,7 +948,8 @@ private theorem radialTransportSection_nabla_center_zero_of_norm_lt
       have h0 : (0 : ℝ) ∈ Set.Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
       filter_upwards [isOpen_Ioo.mem_nhds h0] with s hs
       have hp := radialTransportSection_pullback_eq (I := I) g p η₀ hX hs
-      simpa [hσ, hγ] using hp
+      rw [hσ, hγ]
+      exact hp
     rw [covDerivAlong_congr_of_eventuallyEq (I := I) g γ heq]
     exact radialParallelTransportSection_covDerivAlong (I := I) g p hX η₀ ⟨by norm_num, by norm_num⟩
   have hbridge := covDerivAlong_eq_leviCivita_of_eventuallyEq (I := I) g γ 0
@@ -895,6 +963,7 @@ private theorem radialTransportSection_nabla_center_zero_of_norm_lt
     exact hmain
   exact hfinal
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialTransportSection_nabla_center_zero (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ X : TangentSpace I p)
     (hη : MDiffAt (T% (radialTransportSection g p η₀)) p) :
@@ -963,6 +1032,7 @@ private lemma chartBasisVecFiber_self_coe (p : M) (a : Fin (Module.finrank ℝ E
   exact chartBasisVecFiber_trivToE (I := I) p a
     (by rw [TangentBundle.trivializationAt_baseSet]; exact mem_chart_source H p)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 theorem radialTransportSection_covDerivAlong_center_zero (g : SmoothRiemannianMetric I M)
     (p : M) {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
@@ -982,6 +1052,7 @@ theorem radialTransportSection_covDerivAlong_center_zero (g : SmoothRiemannianMe
   exact radialParallelTransportSection_covDerivAlong (I := I) g p hX η₀
     ⟨by linarith [ht.1], by linarith [ht.2]⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private theorem radialTransportSection_hasDerivAt_chartCurve
     (g : SmoothRiemannianMetric I M) (p : M) {X : TangentSpace I p}
@@ -1026,8 +1097,9 @@ private theorem radialTransportSection_hasDerivAt_chartCurve
           (chartCurve (I := I) p γ t)) t :=
     hODE_at.congr_of_eventuallyEq hfun_eq
   rw [← hval_eq] at hres
-  simpa [hγ, hσ] using hres
+  convert! hres using 1
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma radialCurve_chartCurve_deriv_zero (g : SmoothRiemannianMetric I M) (p : M)
     (X : TangentSpace I p) :
@@ -1051,13 +1123,16 @@ private lemma radialCurve_chartCurve_deriv_zero (g : SmoothRiemannianMetric I M)
     (I := I) (M := M) (hγ2.mdifferentiableAt (by decide)) p hsrc
   have hchart : trivToE (I := I) p (γ 0) (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) =
       deriv (chartCurve (I := I) p γ) 0 := by
-    simpa [chartCurve] using hbridge
+    change trivToE (I := I) p (γ 0) (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) =
+      deriv (chartCurve (I := I) p γ) 0 at hbridge
+    exact hbridge
   rw [hγ]
   rw [← hchart]
   rw [hvel]
   rw [hγ0]
   exact trivToE_self_eq (I := I) p X
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private theorem radialTransportSection_chartRep_hasDerivAt
     (g : SmoothRiemannianMetric I M) (p : M) {X : TangentSpace I p}
@@ -1076,8 +1151,9 @@ private theorem radialTransportSection_chartRep_hasDerivAt
   set γ : ℝ → M := fun s => expMap (I := I) g p (s • X) with hγ
   set σ : Π y : M, TangentSpace I y := radialTransportSection (I := I) g p η₀ with hσ
   have hB1 := radialTransportSection_hasDerivAt_chartCurve (I := I) g p hX η₀ ht
-  simpa [hγ, hσ] using hB1
+  simpa only [hγ, hσ, chartE_section_repr_eq_trivToE] using hB1
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma radialTransportSection_chartE_firstOrder
     (g : SmoothRiemannianMetric I M) (p : M) (η₀ : TangentSpace I p)
     (hη : MDiffAt (T% (radialTransportSection (I := I) g p η₀)) p)
@@ -1396,7 +1472,9 @@ private lemma deriv_chartContraction_full_along (g : SmoothRiemannianMetric I M)
     rw [hfc]
     rw [ContinuousLinearMap.comp_apply]
     have hιd : fderiv ℝ (fun y : E => (y, (u0, s 0))) x₀ xu = (xu, (0, 0)) := by
-      simpa using congrArg (fun L : E →L[ℝ] E × (E × E) => L xu) hι.fderiv
+      have h := congrArg (fun L : E →L[ℝ] E × (E × E) => L xu) hι.fderiv
+      change fderiv ℝ (fun y : E => (y, (u0, s 0))) x₀ xu = (xu, (0, 0)) at h
+      exact h
     rw [hιd]
   have hs2slice : (fderiv ℝ H P) (0, xuu, 0) =
       fderiv ℝ (fun v : E => H (x₀, (v, s 0))) u0 xuu := by
@@ -1484,6 +1562,7 @@ private lemma deriv_chartContraction_full_along (g : SmoothRiemannianMetric I M)
     rw [map_add, map_add]
   rw [hsplit, hs1, hs2, hs3]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma radialTransportSection_chartE_contDiffOn2 (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p)
@@ -1552,13 +1631,15 @@ private lemma deriv_fderiv_apply_along {f : E → E} {x : ℝ → E} {e xu : E} 
   have hg' : HasFDerivAt (fun y : E => fderiv ℝ f y e)
       ((fderiv ℝ (fun y : E => fderiv ℝ f y) x₀).flip e) (x 0) := by
     simpa [hx₀] using hg
-  have hdc : HasDerivAt (fun t : ℝ => fderiv ℝ f (x t) e)
-      (((fderiv ℝ (fun y : E => fderiv ℝ f y) x₀).flip e) xu) 0 := by
-    have h := hg'.comp 0 hx.hasFDerivAt
-    simpa using h.hasDerivAt
-  rw [hdc.deriv]
+  have hd := (hg'.comp 0 hx.hasFDerivAt).hasDerivAt
+  have hfun : (fun t : ℝ => fderiv ℝ f (x t) e) =
+      (fun y : E => fderiv ℝ f y e) ∘ x := by
+    funext t
+    rfl
+  rw [hfun, hd.deriv]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
     (g : SmoothRiemannianMetric I M) (p : M) (η₀ : TangentSpace I p)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
@@ -1581,7 +1662,9 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
   set x₀ : E := xcrv 0 with hx₀_def
   set v : E := (X : E) with hv_def
   have hxcrv0 : xcrv 0 = x₀ := rfl
-  have hγ0 : γ 0 = p := by simpa [hγ] using (radialCurve_zero (I := I) g p X)
+  have hγ0 : γ 0 = p := by
+    rw [hγ]
+    exact radialCurve_zero (I := I) g p X
   have hx₀_eq : x₀ = extChartAt I p p := by
     rw [hx₀_def, hxcrv_def]
     change chartCurve (I := I) p γ 0 = extChartAt I p p
@@ -1591,7 +1674,8 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) p
       ((extChartAt I p).map_source (by rw [extChartAt_source]; exact mem_chart_source H p))
   have hxcd : ContDiffOn ℝ 2 xcrv {s : ℝ | ‖s • (X : E)‖ < expMapC2Radius (I := I) g p} := by
-    simpa [xcrv, hγ] using (radialCurve_chartCurve_contDiffOn (I := I) g p (v := X))
+    rw [hxcrv_def, hγ]
+    exact radialCurve_chartCurve_contDiffOn (I := I) g p (v := X)
   have hdom_nhd : {s : ℝ | ‖s • (X : E)‖ < expMapC2Radius (I := I) g p} ∈ 𝓝 0 := by
     have h0 : ‖(0 : ℝ) • (X : E)‖ < expMapC2Radius (I := I) g p := by
       rw [zero_smul, norm_zero]
@@ -1600,7 +1684,8 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
   have hxcdAt : ContDiffAt ℝ 2 xcrv 0 := hxcd.contDiffAt hdom_nhd
   have hx' : HasDerivAt xcrv v 0 := by
     have hd : deriv xcrv 0 = v := by
-      simpa [xcrv, hγ, hv_def] using (radialCurve_chartCurve_deriv_zero (I := I) g p X)
+      rw [hxcrv_def, hγ, hv_def]
+      exact radialCurve_chartCurve_deriv_zero (I := I) g p X
     have hdx : HasDerivAt xcrv (deriv xcrv 0) 0 :=
       (hxcdAt.differentiableAt (by norm_num : (2 : WithTop ℕ∞) ≠ 0)).hasDerivAt
     simpa [hd] using hdx
@@ -1661,7 +1746,8 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
         hODE_t.congr_of_eventuallyEq hfun.symm
       rw [hval] at h1
       exact h1
-    simpa [hxcrv_def] using hODE_t'
+    rw [hxcrv_def]
+    exact hODE_t'
   have hODE_at0 : HasDerivAt sec (- chartChristoffelContraction (I := I) g p v (sec 0) x₀) 0 := by
     have h' := hODE.self_of_nhds
     rw [hx'.deriv] at h'
@@ -1674,7 +1760,8 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
     have h1 : DifferentiableAt ℝ (fun y : E => fderiv ℝ f y) x₀ := hfdAt
     have h2 : DifferentiableAt ℝ xcrv 0 := hx'.differentiableAt
     have h := h1.comp 0 h2
-    simpa using h
+    change DifferentiableAt ℝ (fun t : ℝ => fderiv ℝ f (xcrv t)) 0 at h
+    exact h
   have hAv : DifferentiableAt ℝ (fun t : ℝ => fderiv ℝ f (xcrv t) v) 0 :=
     (hL.clm_apply (differentiableAt_const (x := 0) (c := v)))
   have hA' : deriv (fun t : ℝ => fderiv ℝ f (xcrv t) v) 0 =
@@ -1732,7 +1819,9 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
     have hxy : DifferentiableAt ℝ (fun t : ℝ => (xcrv t, sec t)) 0 :=
       (hx'.differentiableAt.prodMk (hODE_at0.differentiableAt))
     have hc := hHd.comp 0 hxy
-    convert hc using 1
+    change DifferentiableAt ℝ
+      (fun t : ℝ => chartChristoffelContraction (I := I) g p v (sec t) (xcrv t)) 0 at hc
+    exact hc
   have hLd : DifferentiableAt ℝ (fun t : ℝ => chartChristoffelContraction (I := I) g p (u t) (sec t) (xcrv t)) 0 := by
     have hcd : ContDiffOn ℝ 1
         (fun z : E × E × E => chartChristoffelContraction (I := I) g p z.2.1 z.2.2 z.1)
@@ -1756,7 +1845,9 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
     have hxyu : DifferentiableAt ℝ (fun t : ℝ => (xcrv t, (u t, sec t))) 0 :=
       (hx'.differentiableAt.prodMk (hu'.differentiableAt.prodMk (hODE_at0.differentiableAt)))
     have hc := hHd.comp 0 hxyu
-    convert hc using 1
+    change DifferentiableAt ℝ
+      (fun t : ℝ => chartChristoffelContraction (I := I) g p (u t) (sec t) (xcrv t)) 0 at hc
+    exact hc
   have hCsplit : deriv (fun t : ℝ => chartChristoffelContraction (I := I) g p (deriv xcrv t) (sec t) (xcrv t)) 0 =
       deriv (fun t : ℝ => chartChristoffelContraction (I := I) g p v (sec t) (xcrv t)) 0 +
         deriv (fun t : ℝ => chartChristoffelContraction (I := I) g p (u t) (sec t) (xcrv t)) 0 := by
@@ -1851,6 +1942,7 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
       change chartE_section_repr (I := I) p σ ((extChartAt I p).symm ((extChartAt I p) p)) =
         chartE_section_repr (I := I) p σ p
       rw [(extChartAt I p).left_inv (by rw [extChartAt_source]; exact mem_chart_source H p)]
+    rw [hf]
     simpa [hx₀_eq, hs0_eq, hσ] using hfo
   have hML : deriv (fun t : ℝ => fderiv ℝ f (xcrv t) (u t)) 0 +
       deriv (fun t : ℝ => chartChristoffelContraction (I := I) g p (u t) (sec t) (xcrv t)) 0 = 0 := by
@@ -1934,6 +2026,7 @@ private lemma chartE_covDerivAt (g : SmoothRiemannianMetric I M) (p : M)
   rw [hc]
   rw [trivToE_trivFromE (I := I) p (chartLeviCivitaGoodSet_mem_baseSet (I := I) hy)]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialTransportSection_nabla2_center_zero
     (g : SmoothRiemannianMetric I M) (p : M) (η₀ w : TangentSpace I p)
     (hη : ContMDiffAt I I.tangent (∞ : WithTop ℕ∞)
@@ -1955,7 +2048,8 @@ theorem radialTransportSection_nabla2_center_zero
       chartChristoffelContraction (I := I) g p v₀ (f (chartCurve (I := I) p γ t))
         (chartCurve (I := I) p γ t) with hN_def
   have hwE : (w : E) = v₀ := by
-    simpa [hv₀, tangentCoord] using (trivToE_self_eq (I := I) p w).symm
+    rw [hv₀, tangentCoord]
+    exact (trivToE_self_eq (I := I) p w).symm
   have hc_pos : 0 < c := by
     unfold c
     exact div_pos (radialRadius_pos (I := I) g p) (by positivity)
@@ -2117,7 +2211,9 @@ theorem radialTransportSection_nabla2_center_zero
       (coordExtensionTangent (I := I) p w p)
     rw [hchartp]
     have hdir : trivToE (I := I) p p (coordExtensionTangent (I := I) p w p) = v₀ := by
-      simp [hv₀]
+      simpa [hv₀] using chartE_section_repr_coordExtensionTangent_eq
+        (I := I) p w (chartLeviCivitaGoodSet_mem_baseSet (I := I)
+          (self_mem_chartLeviCivitaGoodSet (I := I) p))
     rw [hdir]
     have hfo := radialTransportSection_chartE_firstOrder (I := I) g p η₀ hσmd (v := v₀)
     rw [← hσ, ← hf] at hfo
@@ -2156,8 +2252,6 @@ theorem radialTransportSection_nabla2_center_zero
     exact hpar
   have hlin : (LeviCivita (I := I) g).toFun W' p (c • w) =
       c • (LeviCivita (I := I) g).toFun W' p w := by
-    change ((LeviCivita (I := I) g).toFun W' p : TangentSpace I p →L[ℝ] TangentSpace I p) (c • w) =
-      c • ((LeviCivita (I := I) g).toFun W' p : TangentSpace I p →L[ℝ] TangentSpace I p) w
     exact map_smul _ c w
   have hc0 : c • (LeviCivita (I := I) g).toFun W' p w = 0 := by
     rw [← hlin]
@@ -2236,6 +2330,7 @@ private lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiema
     contDiffOn_const
   exact hscalar.smul hconstk
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
@@ -2286,7 +2381,7 @@ private lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) 
       linarith)
     exact lt_of_le_of_lt hnorm hlt
   have hsrc : expMap (I := I) g p (show TangentSpace I p from t • x) ∈ (chartAt H p).source := by
-    simpa using (radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p hw2)
+    exact radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p hw2
   have hext : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I p)
       (expMap (I := I) g p (show TangentSpace I p from t • x)) :=
     contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := expMap (I := I) g p (show TangentSpace I p from t • x)) hsrc
@@ -2304,6 +2399,7 @@ private lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) 
   rw [hfun]
   exact contMDiffAt_iff_contDiffAt.mp hfull
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma chartCurveDirDeriv_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
@@ -2354,7 +2450,8 @@ private lemma chartCurveDirDeriv_contDiffOn (g : SmoothRiemannianMetric I M) (p 
           ((ContinuousLinearMap.id ℝ ℝ).prod (0 : ℝ →L[ℝ] E)) q.1 := h1.prodMk h2
       have hval : fderiv ℝ (fun s : ℝ => (s, q.2)) q.1 =
           (ContinuousLinearMap.id ℝ ℝ).prod (0 : ℝ →L[ℝ] E) := hιF.fderiv
-      simpa using hval
+      rw [hval]
+      rfl
     have hderiv_eq : deriv (fun s : ℝ => F (s, q.2)) q.1 =
         (fderiv ℝ (fun s : ℝ => F (s, q.2)) q.1) (1 : ℝ) := rfl
     rw [hderiv_eq, hchain, hιd]
@@ -2373,6 +2470,7 @@ omit [T2Space M] in
 private def radialContractionFun (g : SmoothRiemannianMetric I M) (p : M) : E × E × E → E :=
   fun z => chartChristoffelContraction (I := I) g p z.2.1 z.2.2 z.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
@@ -2464,9 +2562,15 @@ private lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p 
     have hlt : ‖q.1 • q.2.1‖ < expMapC2Radius (I := I) g p := by
       have : ‖q.2.1‖ < expMapC2Radius (I := I) g p := lt_of_le_of_lt (le_of_lt hxρ) (by linarith)
       exact lt_of_le_of_lt hnorm this
-    simpa [one_smul] using
-      (radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p
-        (s := 1) (v := (q.1 • q.2.1 : TangentSpace I p)) (by simpa using hlt))
+    have hlt_one : ‖(1 : ℝ) • (q.1 • q.2.1)‖ < expMapC2Radius (I := I) g p := by
+      rw [one_smul]
+      exact hlt
+    have hsrc_one := radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p
+      (s := 1) (v := (q.1 • q.2.1 : TangentSpace I p)) hlt_one
+    have harg : (1 : ℝ) • (q.1 • q.2.1 : TangentSpace I p) = q.1 • q.2.1 :=
+      one_smul ℝ (q.1 • q.2.1 : TangentSpace I p)
+    exact (congrArg (fun z : M => z ∈ (chartAt H p).source)
+      (congrArg (expMap (I := I) g p) harg)).mp hsrc_one
   have hmapsto : MapsTo (fun q : ℝ × E × E => (ccrv q, (cdrv q, q.2.2))) U
       ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
     intro q hq
@@ -2500,6 +2604,7 @@ private noncomputable def radialTransportODEValue (g : SmoothRiemannianMetric I 
     (chartCurve (I := I) p
       (fun s : ℝ => expMap (I := I) g p (show TangentSpace I p from s • x)) t)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma radialTransportODEValue_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
@@ -2508,9 +2613,6 @@ private lemma radialTransportODEValue_contDiffOn (g : SmoothRiemannianMetric I M
         ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E)) := by
   obtain ⟨ρ, hρ_pos, hρ_le, hcd⟩ := radialTransportODE_contDiffOn (I := I) g p
   refine ⟨ρ, hρ_pos, hρ_le, ?_⟩
-  change ContDiffOn ℝ ∞
-      (fun q : ℝ × E × E => radialTransportODEValue g p q.1 q.2.1 q.2.2)
-      ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E))
   exact hcd
 
 omit [T2Space M] in
@@ -2519,6 +2621,7 @@ private noncomputable def radialTransportChartRep (g : SmoothRiemannianMetric I 
   chartE_section_repr (I := I) p (radialTransportSection (I := I) g p η₀)
     (expMap (I := I) g p (show TangentSpace I p from t • x))
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private theorem radialTransportSection_chartE_value_contDiffOn (g : SmoothRiemannianMetric I M)
     (p : M) (η₀ : TangentSpace I p) :
@@ -2563,7 +2666,16 @@ private theorem radialTransportSection_chartE_value_contDiffOn (g : SmoothRieman
       rw [radialRadius]
       exact hlt
     have hraw := radialTransportSection_chartRep_hasDerivAt (I := I) g p hX η₀ ht
-    simpa [radialTransportChartRep, radialTransportODEValue, hσ] using hraw
+    have hcurve :
+        (fun s : ℝ => expMap (I := I) g p
+          (show TangentSpace I p from s • x)) =
+        (fun s : ℝ => expMap (I := I) g p
+          (s • (show TangentSpace I p from x))) := by
+      funext s
+      congr 1
+    have hcurve_apply (s : ℝ) := congrFun hcurve s
+    unfold radialTransportChartRep radialTransportODEValue
+    simpa only [hcurve_apply] using hraw
   have hγ_ode : ∀ x ∈ ball (0 : E) ρ,
       γ x 0 = a₀ x ∧ IsIntegralCurveOn (γ x) v (Set.Icc (0 : ℝ) (1 / 2)) := by
     intro x hx
@@ -2655,12 +2767,14 @@ private lemma chartExpCoord_contDiffAt (g : SmoothRiemannianMetric I M) (p : M) 
     contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := p) hsrc
   have hφAt : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I p) (expMapE g p 0) := by
     convert hφ using 1
-    simpa [expMapE] using (expMap_zero (I := I) g p)
+    change expMap (I := I) g p (0 : TangentSpace I p) = p
+    exact expMap_zero (I := I) g p
   have hcomp : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
       ((extChartAt I p) ∘ fun x : E => expMapE g p x) 0 :=
     hφAt.comp 0 hexp
   exact contMDiffAt_iff_contDiffAt.mp hcomp
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma chartExpCoord_fderiv_zero (g : SmoothRiemannianMetric I M) (p : M) :
     fderiv ℝ (fun x : E => extChartAt I p (expMapE g p x)) 0 =
@@ -2706,10 +2820,12 @@ private lemma chartExpCoord_fderiv_zero (g : SmoothRiemannianMetric I M) (p : M)
       funext t
       simp [z, expMapE]
     rw [hzv]
-    simpa using (radialCurve_chartCurve_deriv_zero (I := I) g p (show TangentSpace I p from v))
+    exact radialCurve_chartCurve_deriv_zero (I := I) g p
+      (show TangentSpace I p from v)
   rw [hdir]
   exact hderiv
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma chartExpCoord_hasFDerivAt_zero (g : SmoothRiemannianMetric I M) (p : M) :
     HasFDerivAt (fun x : E => extChartAt I p (expMapE g p x))
@@ -2728,6 +2844,7 @@ noncomputable def radialTransportSectionDomain (g : SmoothRiemannianMetric I M) 
   {y : M | y ∈ (normalChartAt (I := I) g p).source ∧
     ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p}
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 lemma radialTransportSectionDomain_isOpen (g : SmoothRiemannianMetric I M) (p : M) :
     IsOpen (radialTransportSectionDomain (I := I) g p) := by
@@ -2742,6 +2859,7 @@ lemma radialTransportSectionDomain_isOpen (g : SmoothRiemannianMetric I M) (p : 
   ext y
   simp [mem_ball, dist_zero_right]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 lemma mem_radialTransportSectionDomain_self (g : SmoothRiemannianMetric I M) (p : M) :
     p ∈ radialTransportSectionDomain (I := I) g p := by
@@ -2751,6 +2869,7 @@ lemma mem_radialTransportSectionDomain_self (g : SmoothRiemannianMetric I M) (p 
   rw [normalChartAt_centre (I := I) g p]
   simpa using (radialRadius_pos (I := I) g p)
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma chartExpCoord_localInverse (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ W : Set E, IsOpen W ∧ extChartAt I p p ∈ W ∧
@@ -2775,7 +2894,9 @@ private lemma chartExpCoord_localInverse (g : SmoothRiemannianMetric I M) (p : M
   let ψ : E → E := hcd.localInverse hfd' hn
   have hψ0 : ψ (Φ 0) = 0 := hcd.localInverse_apply_image hfd' hn
   have hleft : ∀ᶠ x in 𝓝 (0 : E), ψ (Φ x) = x := by
-    simpa [ψ] using (hcd.hasStrictFDerivAt' hfd' hn).eventually_left_inverse
+    have h := (hcd.hasStrictFDerivAt' hfd' hn).eventually_left_inverse
+    change ∀ᶠ x in 𝓝 (0 : E), ψ (Φ x) = x at h
+    exact h
   have hψ_cont0 : ContinuousAt ψ (Φ 0) := by
     simpa [ψ] using (hcd.to_localInverse hfd' hn).continuousAt
   have hcd1 : ContDiffAt ℝ 1 Φ 0 := hcd.of_le (by simp)
@@ -2835,9 +2956,15 @@ private lemma chartExpCoord_localInverse (g : SmoothRiemannianMetric I M) (p : M
     have hunit_x : IsUnit (A x) := hδA_ball hx_ball_A
     have hsrc_exp : expMap (I := I) g p (show TangentSpace I p from x) ∈ (chartAt H p).source := by
       have hnorm : ‖(1 : ℝ) • (show TangentSpace I p from x : E)‖ < expMapC2Radius (I := I) g p := by
-        simpa [one_smul] using hx_c2
-      simpa [one_smul] using
-        (radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p (v := show TangentSpace I p from x) (s := 1) hnorm)
+        change ‖(1 : ℝ) • x‖ < expMapC2Radius (I := I) g p
+        rw [one_smul]
+        exact hx_c2
+      have hsrc_one := radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p
+        (v := show TangentSpace I p from x) (s := 1) hnorm
+      have harg : (1 : ℝ) • (show TangentSpace I p from x) =
+          (show TangentSpace I p from x) := one_smul ℝ _
+      exact (congrArg (fun z : M => z ∈ (chartAt H p).source)
+        (congrArg (expMap (I := I) g p) harg)).mp hsrc_one
     have hmd_exp : ContMDiffAt 𝓘(ℝ, E) I ∞
         (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M)) x :=
       hδ x hx_δ
@@ -2866,7 +2993,8 @@ private lemma chartExpCoord_localInverse (g : SmoothRiemannianMetric I M) (p : M
       simpa [hL] using hf'
     have hψ_cdξ : ContDiffAt ℝ ∞ ψ ξ := by
       have h := e.contDiffAt_symm (a := ξ) (f₀' := L) hξ_target hf'' hcdΦx
-      simpa [ψ] using h
+      change ContDiffAt ℝ ∞ ψ ξ at h
+      exact h
     exact hψ_cdξ
   have hψ_cdOn : ContDiffOn ℝ ∞ ψ W := (IsOpen.contDiffOn_iff hW_open).2 hψ_cdAt
   refine ⟨W, hW_open, ?_, ψ, ?_, hψ_cdOn, ?_⟩
@@ -2876,6 +3004,7 @@ private lemma chartExpCoord_localInverse (g : SmoothRiemannianMetric I M) (p : M
     exact hψ0
   · simpa [hΦ] using hleft
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 private lemma radialTransportSection_chartE_repr_eq (g : SmoothRiemannianMetric I M)
     (p : M) (η₀ : TangentSpace I p) {ψ : E → E} {y : M}
@@ -2909,6 +3038,7 @@ private lemma radialTransportSection_chartE_repr_eq (g : SmoothRiemannianMetric 
     _ = radialTransportChartRep g p η₀ (ψ (extChartAt I p y)) 1 := by
       rw [← hx]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in
 theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p) :
@@ -2999,7 +3129,8 @@ theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p :
         _ = φ y := by rw [← hy_exp]
     have hx_eq : ψ (φ y) = x := by
       rw [← hΦx]
-      simpa [hΦ] using hψΦx
+      change ψ (Φ x) = x at hψΦx
+      exact hψΦx
     refine ⟨?_, ?_⟩
     · simpa [hx] using hx_eq
     · exact radialTransportSection_chartE_repr_eq (I := I) g p η₀ hy_nc hx_eq
@@ -3051,6 +3182,7 @@ theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p :
       (contMDiffAt_section_iff_chartE I p σ hy_base).mpr hchart_y
     exact hsec.contMDiffWithinAt
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_localized_radial_transport_sections
     {ι : Type*} [Finite ι]
     (g : SmoothRiemannianMetric I M) (p : M) (v : ι → TangentSpace I p) :

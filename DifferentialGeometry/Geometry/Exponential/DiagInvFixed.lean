@@ -112,7 +112,10 @@ theorem fixedPD_symm_center
       expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from (0 : E)) = p :=
     expMapIntrinsic_zero (I := I) g hEnorm p
-  simpa only [fixedPD_apply, hzero] using hleft
+  change B.fixedPD.symm.toPartialEquiv p = (0 : E)
+  change B.fixedPD.symm.toPartialEquiv (B.fixedPD (0 : E)) = (0 : E) at hleft
+  rw [show B.fixedPD (0 : E) = p by simpa only [fixedPD_apply] using hzero] at hleft
+  exact hleft
 
 end DiagInvBranch
 end Exponential

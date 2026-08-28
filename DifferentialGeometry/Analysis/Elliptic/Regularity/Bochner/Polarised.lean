@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.VariationalIdentity
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -259,13 +260,13 @@ lemma g_inner_grad_lap_polar
   have hp1 : g.inner x (u + w) (p + q) =
       g.inner x u p + g.inner x u q + g.inner x w p + g.inner x w q := by
     rw [ContinuousLinearMap.map_add (g.inner x) u w]
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [(g.inner x u).map_add, (g.inner x w).map_add]
     ring
   have hp2 : g.inner x (u - w) (p - q) =
       g.inner x u p - g.inner x u q - g.inner x w p + g.inner x w q := by
     rw [ContinuousLinearMap.map_sub (g.inner x) u w]
-    rw [ContinuousLinearMap.sub_apply]
+    rw [sub_apply]
     rw [(g.inner x u).map_sub, (g.inner x w).map_sub]
     ring
   rw [hp1, hp2]
@@ -329,21 +330,15 @@ theorem bochner_polarised_pointwise_of_smoothness
   have h_Δ_N_sub_eq_Δ_4ginner :
       Δ_g (I := I) g ⟨_, hN_sub_smooth⟩ x =
       Δ_g (I := I) g ⟨_, h_4gphi_smooth⟩ x := by
-    rw [Δ_g_def, Δ_g_def]
-    have h_grad_eq :
-        (grad_g (I := I) g ⟨_, hN_sub_smooth⟩ :
-            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-        (grad_g (I := I) g ⟨_, h_4gphi_smooth⟩ :
-            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
-      apply ContMDiffSection.coe_inj
-      funext y
-      simp only [grad_g_apply]
-      change gradFun (I := I) g (fun z : M => N1 z - N2 z) y =
-        gradFun (I := I) g (fun z : M => 4 * g.inner z
-          (gradFun (I := I) g (φ : M → ℝ) z)
-          (gradFun (I := I) g (v : M → ℝ) z)) y
-      rw [hN_eq_4ginner]
-    rw [h_grad_eq]
+    let F : C^∞⟮I, M; ℝ⟯ := ⟨fun y : M => N1 y - N2 y, hN_sub_smooth⟩
+    let G : C^∞⟮I, M; ℝ⟯ := ⟨fun y : M => 4 * g.inner y
+      (gradFun (I := I) g (φ : M → ℝ) y)
+      (gradFun (I := I) g (v : M → ℝ) y), h_4gphi_smooth⟩
+    have hFG : F = G := by
+      ext y
+      exact hN_sub_eq y
+    change Δ_g (I := I) g F x = Δ_g (I := I) g G x
+    rw [hFG]
   have h_const_smul_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (4 : ℝ)) := contMDiff_const
   have h_Δ_4ginner_eq :
       Δ_g (I := I) g ⟨_, h_4gphi_smooth⟩ x = 4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x := by
@@ -372,7 +367,7 @@ theorem bochner_polarised_pointwise_of_smoothness
       rw [h_witness]
       exact Δ_g_const (I := I) g (4 : ℝ) x
     rw [hΔ_const_4]
-    simp only [ContinuousLinearMap.zero_apply, mul_zero, add_zero]
+    simp only [zero_apply, mul_zero, add_zero]
   have h_Δ_4ginner_eq_sub :
       4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
       Δ_g (I := I) g ⟨_, hN1_smooth⟩ x - Δ_g (I := I) g ⟨_, hN2_smooth⟩ x := by

@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -27,7 +28,6 @@ variable [I.Boundaryless] [T2Space M]
 
 omit [T2Space M] in
 private theorem chartLaplacianValue_jointContDiffAt
-    [SigmaCompactSpace M]
     {D : RealTimeInterval}
     (g : SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ)
@@ -68,9 +68,12 @@ private theorem chartLaplacianValue_jointContDiffAt
     have hfd := ContDiffAt.fderiv
       (f := fun (p : ℝ × E) => fun (z : E) => scalarOnE (I := I) α (f p.1) z)
       (g := fun p : ℝ × E => p.2) hf' hg (by simp)
-    simpa [partialDeriv] using
-      ((ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
-        (t₀, y) hfd)
+    have hcomp :=
+      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
+        (t₀, y) hfd
+    unfold partialDeriv
+    refine hcomp.congr_of_eventuallyEq ?_
+    exact Filter.Eventually.of_forall fun _ => rfl
   have hgram : ∀ (i j : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞ (fun p : ℝ × E => chartInvGramOnE (I := I) g α i j p.2) (t₀, y) := by
@@ -92,7 +95,12 @@ private theorem chartLaplacianValue_jointContDiffAt
             partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, y) := by
       exact ContDiffAt.sum (s := Finset.univ) (fun j _ => (hgram i j y hy).mul (hpd j y hy))
-    simpa [gradChartCoeffOnE_def] using hsum_cd
+    refine hsum_cd.congr_of_eventuallyEq ?_
+    exact Filter.Eventually.of_forall fun p => by
+      change gradChartCoeffOnE (I := I) g α (f p.1) i p.2 =
+        ∑ j, chartInvGramOnE (I := I) g α i j p.2 *
+          partialDeriv (E := E) j (scalarOnE (I := I) α (f p.1)) p.2
+      exact gradChartCoeffOnE_def (I := I) g α (f p.1) i p.2
   have hρ : ∀ y : E, y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞ (fun p : ℝ × E => chartDensityOnE (I := I) g α p.2) (t₀, y) := by
     intro y hy
@@ -124,9 +132,12 @@ private theorem chartLaplacianValue_jointContDiffAt
     have hfd := ContDiffAt.fderiv
       (f := fun (p : ℝ × E) => fun (z : E) => chartVossWeylIntegrand (I := I) g α (f p.1) i z)
       (g := fun p : ℝ × E => p.2) hf' hg (by simp)
-    simpa [partialDeriv] using
-      ((ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
-        (t₀, y) hfd)
+    have hcomp :=
+      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
+        (t₀, y) hfd
+    unfold partialDeriv
+    refine hcomp.congr_of_eventuallyEq ?_
+    exact Filter.Eventually.of_forall fun _ => rfl
   have hsum : ContDiffAt ℝ ∞
       (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
@@ -154,7 +165,6 @@ private theorem chartLaplacianValue_jointContDiffAt
   exact hsum
 
 private theorem laplacianAt_time_contDiffAt_on
-    [SigmaCompactSpace M]
     {D : RealTimeInterval}
     (g : SmoothRiemannianMetric I M)
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -218,7 +228,6 @@ private theorem laplacianAt_time_contDiffAt_on
 theorem heat_solution_one_point_harnack_of_nonnegative_ricci_on
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
@@ -343,7 +352,6 @@ theorem heat_solution_one_point_harnack_of_nonnegative_ricci_on
 theorem heat_solution_one_point_harnack_of_nonnegative_ricci
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
@@ -378,8 +386,8 @@ theorem heat_solution_one_point_harnack_of_nonnegative_ricci
         rfl
       have hderiv : deriv (fun s => u s x) τ = laplacianAt (I := I) G τ (u τ) x := by
         rw [hpde τ x, ← hlap]
-      convert hder.congr_deriv hderiv using 1
-      simp
+      refine hder.congr_deriv ?_
+      rw [hderiv, zero_mul, add_zero]
   simpa [D] using heat_solution_one_point_harnack_of_nonnegative_ricci_on
     (I := I) (M := M) g hRic D u huOn (by simpa [D] using hu.contMDiffOn)
     (fun τ hτ x => hpos τ x)
@@ -412,7 +420,7 @@ theorem metric_inner_add_inner_ge_neg_quarter
       exact ((g.inner x) p).map_smul (1 / 2 : ℝ) v
     have hb : (((1 / 2 : ℝ)) • g.inner x v) (p + ((1 / 2 : ℝ)) • v) =
         (1 / 2) * g.inner x v p + (1 / 4) * g.inner x v v := by
-      rw [ContinuousLinearMap.smul_apply]
+      rw [smul_apply]
       rw [(g.inner x v).map_add]
       rw [smul_eq_mul, mul_add]
       congr 1
@@ -440,14 +448,12 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := I) (M := M) g)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
     (D : RealTimeInterval)
     (u : ℝ → M → ℝ)
@@ -491,7 +497,7 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
     have huu : g.inner x uvec uvec = 1 := by
       have hbil : g.inner x uvec uvec = d⁻¹ * (d⁻¹ * g.inner x v v) := by
         dsimp [uvec]
-        simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        simp only [map_smul, smul_apply, smul_eq_mul]
       rw [hbil, hvv_sq]
       field_simp [hd0]
     have hdu : d • uvec = v := by
@@ -515,21 +521,30 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
           (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ)) = 1 := by
       intro s
       have hsp := intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x uvec s
-      simpa [γ] using hsp.trans huu
+      dsimp only [γ]
+      with_unfolding_all exact hsp.trans huu
     let τ : ℝ → M := fun t => γ ((t - a) / (b - a) * d)
     have hba_pos : 0 < b - a := sub_pos.mpr hab
     have hs_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
         (fun t : ℝ => (t - a) / (b - a) * d) := by
       have hs1 : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
           (fun t : ℝ => (t - a) * (1 / (b - a)) * d) := by
-        simpa [mul_assoc] using
-          ((contMDiff_id.sub contMDiff_const).mul (contMDiff_const (c := 1 / (b - a)))).mul
-            (contMDiff_const (c := d))
+        have hsub : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
+            (fun t : ℝ => t - a) := contMDiff_id.sub contMDiff_const
+        have hinv : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
+            (fun _ : ℝ => 1 / (b - a)) := contMDiff_const
+        have hd : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
+            (fun _ : ℝ => d) := contMDiff_const
+        have hsraw := (hsub.mul hinv).mul hd
+        refine hsraw.congr ?_
+        exact fun _ => rfl
       refine ContMDiff.congr hs1 ?_
       intro t
       simp [div_eq_mul_inv]
     have hτ_smooth : ContMDiff 𝓘(ℝ, ℝ) I ∞ τ := by
-      simpa [τ] using hγ_smooth.comp hs_smooth
+      unfold τ
+      refine (hγ_smooth.comp hs_smooth).congr ?_
+      exact fun _ => rfl
     have hτa : τ a = x := by
       simp [τ, hγ0]
     have hτb : τ b = y := by
@@ -548,10 +563,16 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
             simpa using (hasDerivAt_id t).sub_const a
           have h2 : HasDerivAt (fun t : ℝ => (t - a) * (1 / (b - a)))
               (1 * (1 / (b - a))) t := by
-            simpa using (h1.mul (hasDerivAt_const t (1 / (b - a))))
+            have hraw := h1.mul (hasDerivAt_const t (1 / (b - a)))
+            refine (hraw.congr_of_eventuallyEq
+              (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+            ring
           have h3 : HasDerivAt (fun t : ℝ => (t - a) * (1 / (b - a)) * d)
               ((1 * (1 / (b - a))) * d) t := by
-            simpa using h2.mul (hasDerivAt_const t d)
+            have hraw := h2.mul (hasDerivAt_const t d)
+            refine (hraw.congr_of_eventuallyEq
+              (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+            ring
           have h4 : HasDerivAt (fun t : ℝ => (t - a) / (b - a) * d) (d / (b - a)) t := by
             simpa [div_eq_mul_inv, mul_assoc, mul_comm] using h3
           exact h4.deriv
@@ -603,7 +624,7 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
             c • g.inner (τ t) w (c • w) := by
           have hms := (g.inner (τ t)).map_smul c w
           have happ := congrArg (fun L : TangentSpace I (τ t) →L[ℝ] ℝ => L (c • w)) hms
-          simp [ContinuousLinearMap.smul_apply, smul_eq_mul]
+          simp [smul_apply, smul_eq_mul]
         have hms2 : g.inner (τ t) w (c • w) = c • g.inner (τ t) w w := by
           have hms := ((g.inner (τ t)) w).map_smul c w
           simp [smul_eq_mul]
@@ -691,11 +712,17 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
       have ht_pos : 0 < t := lt_of_lt_of_le ha ht.1
       have hlog_curve := deriv_along_curve_eq_on (I := I) (M := M) (D := D) g
         (F := f) hf_log hτ_smooth (hreg ⟨ht.1, ht.2⟩)
+      have hone : realTangentOne t = (1 : TangentSpace 𝓘(ℝ, ℝ) t) := by
+        apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).injective
+        rw [fromTangentSpace_realTangentOne]
+        rfl
+      rw [hone] at hlog_curve
       have hlog_deriv_curve : deriv (fun s => Real.log (u s (τ s))) t =
           deriv (fun s => Real.log (u s (τ t))) t +
             g.inner (τ t) (gradientFun (I := I) g (f t) (τ t))
               (mfderiv 𝓘(ℝ, ℝ) I τ t (1 : ℝ)) := by
-        simpa [f] using hlog_curve
+        dsimp only [f]
+        with_unfolding_all exact hlog_curve
       have hlog_ratio : deriv (fun s => Real.log (u s (τ s))) t =
           derivative t / u t (τ t) := by
         have hd : HasDerivAt (fun s => u s (τ s)) (derivative t) t := hderiv t ht
@@ -757,14 +784,12 @@ theorem heat_solution_harnack_of_nonnegative_ricci
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := I) (M := M) g)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
     (u : ℝ → M → ℝ)
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => u p.1 p.2))
@@ -798,8 +823,8 @@ theorem heat_solution_harnack_of_nonnegative_ricci
         rfl
       have hderiv : deriv (fun s => u s x) τ = laplacianAt (I := I) G τ (u τ) x := by
         rw [hpde τ x, ← hlap]
-      convert hder.congr_deriv hderiv using 1
-      simp
+      refine hder.congr_deriv ?_
+      rw [hderiv, zero_mul, add_zero]
   simpa [D] using heat_solution_harnack_of_nonnegative_ricci_on
     (I := I) (M := M) g hEnorm hRic D u huOn (by simpa [D] using hu.contMDiffOn)
     (fun τ hτ x => hpos τ x)
@@ -811,14 +836,12 @@ theorem heat_solution_harnack_uniform_upper_bound_of_nonnegative_ricci_on
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := I) (M := M) g)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
     (D : RealTimeInterval)
     (u : ℝ → M → ℝ)
@@ -888,14 +911,12 @@ theorem heat_solution_harnack_uniform_upper_bound_of_nonnegative_ricci
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := I) (M := M) g)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
     (u : ℝ → M → ℝ)
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => u p.1 p.2))

@@ -17,6 +17,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Analysis.ODE.RadialSeminormFencing
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -133,6 +135,7 @@ section RadialUniqueMinimizer
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem radialDist_endpoint_le_pathELength
     (g : SmoothRiemannianMetric I M) (p : M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -231,7 +234,9 @@ private theorem radialDist_endpoint_le_pathELength
       have hmf : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c (Set.Icc a b) x
           (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c (Set.Icc a b) x) := hcomp.hasMFDerivWithinAt
       rw [hasMFDerivWithinAt_iff_hasFDerivWithinAt] at hmf
-      have hHDW : HasDerivWithinAt c cv (Set.Icc a b) x := hmf.hasDerivWithinAt
+      have hHDW : HasDerivWithinAt c cv (Set.Icc a b) x :=
+        @HasFDerivWithinAt.hasDerivWithinAt ℝ _ E _ _ _ c x (Set.Icc a b)
+          IsBoundedSMul.continuousSMul _ hmf
       refine hHDW.mono_of_mem_nhdsWithin ?_
       rw [mem_nhdsWithin]
       exact ⟨Set.Iio b, isOpen_Iio, hx.2, by
@@ -244,7 +249,7 @@ private theorem radialDist_endpoint_le_pathELength
           have h0 := hcderiv.mono (Set.Ioi_subset_Ici_self)
           rw [hasDerivWithinAt_iff_tendsto_slope] at h0
           have hset : Set.Ioi x \ {x} = Set.Ioi x := by
-            ext z; simp only [Set.mem_diff, Set.mem_Ioi, Set.mem_singleton_iff]
+            ext z; simp only [Set.mem_sdiff, Set.mem_Ioi, Set.mem_singleton_iff]
             exact ⟨fun h => h.1, fun h => ⟨h, ne_of_gt h⟩⟩
           rw [hset] at h0
           refine (Filter.tendsto_congr' ?_).mp h0
@@ -258,7 +263,7 @@ private theorem radialDist_endpoint_le_pathELength
             = Real.sqrt (B ((z - x)⁻¹ • c z) ((z - x)⁻¹ • c z)) := by
           rw [hρ_def, slope_def_module, hcx]
           simp only [map_zero, Real.sqrt_zero, sub_zero, smul_eq_mul, map_smul,
-            ContinuousLinearMap.smul_apply]
+            smul_apply]
           rw [show (z - x)⁻¹ * ((z - x)⁻¹ * B (c z) (c z))
               = ((z - x)⁻¹) ^ 2 * B (c z) (c z) by ring,
             Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity), mul_comm]
@@ -313,7 +318,8 @@ private theorem radialDist_endpoint_le_pathELength
         have hmf : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c x (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c x) :=
           hcdiff.hasMFDerivAt
         rw [hasMFDerivAt_iff_hasFDerivAt] at hmf
-        exact hmf.hasDerivAt
+        exact @HasFDerivAt.hasDerivAt ℝ _ E _ _ _ c x
+          IsBoundedSMul.continuousSMul _ hmf
       have hpos : 0 < B (c x) (c x) := by rw [hB_def]; exact g.pos p (c x) hcx
       have hρderiv : HasDerivAt ρ (B (c x) cv₂ / Real.sqrt (B (c x) (c x))) x :=
         radialDist_hasDerivAt B hBsym c cv₂ hcHDA hpos
@@ -361,6 +367,7 @@ private theorem radialDist_endpoint_le_pathELength
         ≤ ENNReal.ofReal (∫ t in a..b, φ t) := ENNReal.ofReal_le_ofReal hftc
     _ ≤ pathELength I γ a b := hpath
 
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] [NeZero (Module.finrank ℝ E)] in
 private theorem mfderiv_expMap_injective_of_norm_lt_radius
     (g : SmoothRiemannianMetric I M) (p : M) {u : E}
     (hu : ‖u‖ < expMapC2Radius (I := I) g p) :
@@ -409,10 +416,11 @@ private theorem mfderiv_expMap_injective_of_norm_lt_radius
       (mfderiv I 𝓘(ℝ, E) ψ (Φ u)) (mfderiv 𝓘(ℝ, E) I Φ u) := by
     intro x
     have hidx := congrArg (fun (T : E →L[ℝ] E) => T x) hid
-    simp only at hidx
     rw [hchain] at hidx
     rw [mfderiv_id] at hidx
-    simpa using hidx
+    change (mfderiv I 𝓘(ℝ, E) ψ (Φ u))
+      (mfderiv 𝓘(ℝ, E) I Φ u x) = x at hidx
+    exact hidx
   have hΦinj : Function.Injective (mfderiv 𝓘(ℝ, E) I Φ u) := hleft.injective
   rw [hA_eq]
   exact hΦinj
@@ -492,7 +500,7 @@ theorem normalBall_radial_length_le_riemannianEDist
         _ ≤ δ ^ 2 := hg_le
     exact (sq_le_sq₀ (norm_nonneg x) hcδ_nn).mp hsq
   have hD_compact : IsCompact D := by
-    haveI : ProperSpace E := FiniteDimensional.proper_rclike (K := ℝ) (E := E)
+    have : ProperSpace E := FiniteDimensional.proper_rclike (K := ℝ) (E := E)
     have hD_closed : IsClosed D := isClosed_le hnE_cont continuous_const
     have hD_bdd : Bornology.IsBounded D := by
       apply Metric.isBounded_iff.mpr
@@ -507,7 +515,7 @@ theorem normalBall_radial_length_le_riemannianEDist
   set K : Set M := ψ.symm '' D with hK_def
   have hK_compact : IsCompact K :=
     hD_compact.image_of_continuousOn (hψsymm_cont.mono hD_sub_target)
-  haveI : T2Space M := gauss_t2Space_base (I := I) (M := M)
+  have : T2Space M := gauss_t2Space_base (I := I) (M := M)
   have hK_closed : IsClosed K := hK_compact.isClosed
   have hmem_K_of_src : ∀ {x : M}, x ∈ ψ.source → ψ x ∈ D → x ∈ K := by
     intro x hxsrc hxD
@@ -515,7 +523,7 @@ theorem normalBall_radial_length_le_riemannianEDist
     exact ψ.left_inv hxsrc
   have hK_src : ∀ {x : M}, x ∈ K → x ∈ ψ.source := by
     rintro x ⟨w, hwD, rfl⟩
-    exact ψ.symm_mapsTo (hD_sub_target hwD)
+    exact ψ.mapsTo_symm (hD_sub_target hwD)
   have hK_chart : ∀ {x : M}, x ∈ K → ψ x ∈ D := by
     rintro x ⟨w, hwD, rfl⟩
     have : ψ (ψ.symm w) = w := ψ.right_inv (hD_sub_target hwD)
@@ -523,7 +531,7 @@ theorem normalBall_radial_length_le_riemannianEDist
   have hpK : p ∈ K := hmem_K_of_src hpsrc (by
     change nE (ψ p) ≤ δ; rw [hψp, hnE_def]; simp only [map_zero, Real.sqrt_zero]; exact hδ_pos.le)
   have hqsrc : q ∈ ψ.source := by
-    have hsymm_src : ψ.symm v ∈ ψ.source := ψ.symm_mapsTo hball
+    have hsymm_src : ψ.symm v ∈ ψ.source := ψ.mapsTo_symm hball
     have hqeq : ψ.symm v = q := by
       rw [hq_def, hψ_def]
       exact NormalCoordinates.normalChartAt_symm_apply (I := I) g p hball
@@ -578,7 +586,7 @@ theorem normalBall_radial_length_le_riemannianEDist
             exact ⟨Set.Ioi 0, isOpen_Ioi, h0, by
               intro z hz; exact ⟨hz.1, hz.2⟩⟩
           filter_upwards [hpos] with s hs using hpre_K s hs.1.le hs.2
-        haveI hne : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := nhdsLT_neBot t₀
+        have hne : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := nhdsLT_neBot t₀
         exact hK_closed.mem_of_tendsto htend hev
     have hall_K_prefix : ∀ s ∈ Set.Icc (0 : ℝ) t₀, γ s ∈ K := by
       intro s hs
@@ -739,7 +747,7 @@ private theorem minimizer_confined_to_C2_ball
   have hρt₀_ge : δ ≤ ρ t₀ := by
     have hZclosed : IsClosed Z := by
       have h2 : Z = Set.Icc a b ∩ ρ ⁻¹' (Set.Ici δ) := by
-        ext t; simp only [hZ_def, Set.mem_setOf_eq, Set.mem_inter_iff,
+        ext t; simp only [hZ_def, Set.mem_ofPred_eq, Set.mem_inter_iff,
           Set.mem_preimage, Set.mem_Ici]
       rw [h2]
       exact hρc.preimage_isClosed_of_isClosed isClosed_Icc isClosed_Ici
@@ -765,7 +773,7 @@ private theorem minimizer_confined_to_C2_ball
           exact ⟨Set.Ioi a, isOpen_Ioi, h0, by intro z hz; exact ⟨hz.1, hz.2⟩⟩
         filter_upwards [hpos] with s hs
         exact (hpre s ⟨hs.1.le, le_trans hs.2.le ht₀_ub⟩ hs.2).le
-      haveI : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := nhdsLT_neBot t₀
+      have : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := nhdsLT_neBot t₀
       exact le_of_tendsto htend hev
   have ht₀_eq : ρ t₀ = δ := le_antisymm hρt₀_le hρt₀_ge
   have hpref_le : ∀ s ∈ Set.Icc a t₀, ρ s ≤ δ := by
@@ -800,6 +808,7 @@ private theorem minimizer_confined_to_C2_ball
   have hδS' : δ ≤ S := (ENNReal.ofReal_le_ofReal_iff hS_nn).mp hδS
   exact absurd hδS' (not_le.mpr hSδ)
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem radial_minimizer_radiality
     (g : SmoothRiemannianMetric I M) (p : M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -913,7 +922,9 @@ private theorem radial_minimizer_radiality
       have hmf : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c (Set.Icc a b) x
           (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c (Set.Icc a b) x) := hcomp.hasMFDerivWithinAt
       rw [hasMFDerivWithinAt_iff_hasFDerivWithinAt] at hmf
-      have hHDW : HasDerivWithinAt c cv (Set.Icc a b) x := hmf.hasDerivWithinAt
+      have hHDW : HasDerivWithinAt c cv (Set.Icc a b) x :=
+        @HasFDerivWithinAt.hasDerivWithinAt ℝ _ E _ _ _ c x (Set.Icc a b)
+          IsBoundedSMul.continuousSMul _ hmf
       refine hHDW.mono_of_mem_nhdsWithin ?_
       rw [mem_nhdsWithin]
       exact ⟨Set.Iio b, isOpen_Iio, hx.2, by
@@ -926,7 +937,7 @@ private theorem radial_minimizer_radiality
           have h0 := hcderiv.mono (Set.Ioi_subset_Ici_self)
           rw [hasDerivWithinAt_iff_tendsto_slope] at h0
           have hset : Set.Ioi x \ {x} = Set.Ioi x := by
-            ext z; simp only [Set.mem_diff, Set.mem_Ioi, Set.mem_singleton_iff]
+            ext z; simp only [Set.mem_sdiff, Set.mem_Ioi, Set.mem_singleton_iff]
             exact ⟨fun h => h.1, fun h => ⟨h, ne_of_gt h⟩⟩
           rw [hset] at h0
           refine (Filter.tendsto_congr' ?_).mp h0
@@ -940,7 +951,7 @@ private theorem radial_minimizer_radiality
             = Real.sqrt (B ((z - x)⁻¹ • c z) ((z - x)⁻¹ • c z)) := by
           rw [hρ_def, slope_def_module, hcx]
           simp only [map_zero, Real.sqrt_zero, sub_zero, smul_eq_mul, map_smul,
-            ContinuousLinearMap.smul_apply]
+            smul_apply]
           rw [show (z - x)⁻¹ * ((z - x)⁻¹ * B (c z) (c z))
               = ((z - x)⁻¹) ^ 2 * B (c z) (c z) by ring,
             Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity), mul_comm]
@@ -995,7 +1006,8 @@ private theorem radial_minimizer_radiality
         have hmf : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c x (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c x) :=
           hcdiff.hasMFDerivAt
         rw [hasMFDerivAt_iff_hasFDerivAt] at hmf
-        exact hmf.hasDerivAt
+        exact @HasFDerivAt.hasDerivAt ℝ _ E _ _ _ c x
+          IsBoundedSMul.continuousSMul _ hmf
       have hpos : 0 < B (c x) (c x) := by rw [hB_def]; exact g.pos p (c x) hcx
       have hρderiv : HasDerivAt ρ (B (c x) cv₂ / Real.sqrt (B (c x) (c x))) x :=
         radialDist_hasDerivAt B hBsym c cv₂ hcHDA hpos
@@ -1134,7 +1146,8 @@ private theorem radial_minimizer_radiality
       have hmf : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c t (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c t) :=
         hcdiff.hasMFDerivAt
       rw [hasMFDerivAt_iff_hasFDerivAt] at hmf
-      exact hmf.hasDerivAt
+      exact @HasFDerivAt.hasDerivAt ℝ _ E _ _ _ c t
+        IsBoundedSMul.continuousSMul _ hmf
     have hcx_ne : c t ≠ 0 := hne
     have hpos : 0 < B (c t) (c t) := by rw [hB_def]; exact g.pos p (c t) hcx_ne
     have hρderiv1 : HasDerivAt ρ (B (c t) cv₂ / Real.sqrt (B (c t) (c t))) t :=
@@ -1288,7 +1301,6 @@ theorem normalBall_radial_minimizer_equality
     · intro s hs t ht hst
       simp only
       gcongr
-      linarith
     · simp only [sub_self, zero_div]
     · simp only; rw [div_self (by linarith : b - a ≠ 0)]
     · intro t ht
@@ -1322,7 +1334,8 @@ theorem normalBall_radial_minimizer_equality
       have hmf : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c t (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c t) :=
         hcdiff.hasMFDerivAt
       rw [hasMFDerivAt_iff_hasFDerivAt] at hmf
-      exact hmf.hasDerivAt
+      exact @HasFDerivAt.hasDerivAt ℝ _ E _ _ _ c t
+        IsBoundedSMul.continuousSMul _ hmf
     have hccont : ContinuousOn c (Set.Icc a b) :=
       ((NormalCoordinates.normalChartAt_contMDiffOn (I := I) g p).continuousOn).comp
         hγ.continuousOn hγ_inBall
@@ -1425,7 +1438,7 @@ section LocalRadialIdentification
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 
-omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] [NeZero (Module.finrank ℝ E)] in
 private lemma radialCurve_contMDiffOn_Icc
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
     (ha : ‖a‖ < expMapC2Radius (I := I) g p) :
@@ -1442,6 +1455,7 @@ private lemma radialCurve_contMDiffOn_Icc
   exact ((radialCurve_contMDiffAt2 (I := I) g p a t hnorm).of_le
     (by norm_num)).contMDiffWithinAt
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma radialCurve_pathELength_eq
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1465,6 +1479,7 @@ private lemma radialCurve_pathELength_eq
   rw [MeasureTheory.setLIntegral_const, Real.volume_Ioo, sub_zero,
     ENNReal.ofReal_one, mul_one]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem edist_exp_le_radius
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1491,14 +1506,14 @@ theorem edist_exp_le_radius
     radialCurve_pathELength_eq (I := I) g p a hEnorm ha] at hdist
   exact hdist
 
-omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] [NeZero (Module.finrank ℝ E)] in
 theorem edist_exp_le_radius_of_metric
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
     (ha : ‖a‖ < expMapC2Radius (I := I) g p) :
     riemannianEDistOf (I := I) g p
         (expMap (I := I) g p (show TangentSpace I p from a)) ≤
       ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
@@ -1555,7 +1570,7 @@ theorem edist_exp_eq_radius_of_metric
     (ha_small : Real.sqrt (g.inner p a a) < expRadiusGp (I := I) g p) :
     riemannianEDistOf (I := I) g p (expMap (I := I) g p (show TangentSpace I p from a))
       = ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
@@ -1755,8 +1770,8 @@ private theorem path_confined_to_normalBall
           (NormalCoordinates.normalChartAt (I := I) g c (γ t)))
         < expRadiusGp (I := I) g c := by
   classical
-  haveI : T2Space M := gauss_t2Space_base (I := I) (M := M)
-  haveI : ProperSpace E := FiniteDimensional.proper_rclike (K := ℝ) (E := E)
+  have : T2Space M := gauss_t2Space_base (I := I) (M := M)
+  have : ProperSpace E := FiniteDimensional.proper_rclike (K := ℝ) (E := E)
   set R : ℝ := expRadiusGp (I := I) g c with hR_def
   have hR_pos : 0 < R := expRadiusGp_pos (I := I) g c
   set ψ := NormalCoordinates.normalChartAt (I := I) g c with hψ_def
@@ -1902,7 +1917,7 @@ private theorem path_confined_to_normalBall
             exact ⟨Set.Ioi 0, isOpen_Ioi, ht₀0, by intro z hz; exact ⟨hz.1, hz.2⟩⟩
           filter_upwards [hpos] with s hs
           exact hγs_in_K s ⟨hs.1.le, hs.2.le⟩ hs.2
-        haveI : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := nhdsLT_neBot t₀
+        have : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := nhdsLT_neBot t₀
         exact hKsub (hKclosed.mem_of_tendsto htend hev)
     refine fun s hs => ?_
     rcases eq_or_lt_of_le hs.2 with hst₀ | hst₀
@@ -1930,7 +1945,7 @@ private theorem path_confined_to_normalBall
           have hself : Set.Ioo 0 t₀ ∈ nhdsWithin t₀ (Set.Ioo 0 t₀) := self_mem_nhdsWithin
           filter_upwards [hself] with s hs
           exact (hpre s ⟨hs.1.le, hs.2.le⟩ hs.2).2
-        haveI : (nhdsWithin t₀ (Set.Ioo 0 t₀)).NeBot := by
+        have : (nhdsWithin t₀ (Set.Ioo 0 t₀)).NeBot := by
           refine mem_closure_iff_nhdsWithin_neBot.mp ?_
           rw [closure_Ioo (ne_of_lt ht₀0)]
           exact Set.right_mem_Icc.mpr ht₀0.le
@@ -2052,7 +2067,7 @@ theorem metricBall_subset_normalBall_of_metric
         Real.sqrt (g.inner c (show TangentSpace I c from v) (show TangentSpace I c from v))
           = (riemannianEDistOf (I := I) g c y).toReal ∧
         y = expMap (I := I) g c v := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
@@ -2091,7 +2106,7 @@ theorem memNChartSrcOfDist_of_metric
     {y : M} (hfin : riemannianEDistOf (I := I) g c y ≠ ⊤)
     (hy : (riemannianEDistOf (I := I) g c y).toReal < expRadiusGp (I := I) g c) :
     y ∈ (NormalCoordinates.normalChartAt (I := I) g c).source := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v

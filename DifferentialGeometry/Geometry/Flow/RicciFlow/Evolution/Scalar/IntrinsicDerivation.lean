@@ -298,7 +298,7 @@ theorem coordNab2Ric_eq_nabla2RicField
   unfold DifferentialGeometry.PDE.RicciFlow.ricciSecondCovDerivCompInFrame
   ring
 
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem scalarLaplacianTraceInFrame_coord_eq_laplacianAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -601,6 +601,7 @@ private theorem coordScalarTraceDerivRHS_center
   rw [hsplit, hdt, hrm, hquad]
   ring
 
+omit [SigmaCompactSpace M] in
 private theorem coordScalarTrace_hasDerivWithinAt_center
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -677,6 +678,7 @@ private theorem coordScalarTrace_hasDerivWithinAt_center
   refine hbase.congr_deriv ?_
   exact coordScalarTraceDerivRHS_center (I := I) S x₀ t
 
+omit [SigmaCompactSpace M] in
 theorem scalarEvolution_of_isSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -730,6 +732,7 @@ theorem scalarEvolution_of_isSolution
   rw [hGcong]
   exact hderiv
 
+omit [SigmaCompactSpace M] in
 theorem scalar_curvature_evolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

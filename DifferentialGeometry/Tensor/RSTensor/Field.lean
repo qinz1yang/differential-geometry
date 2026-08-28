@@ -18,7 +18,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -39,7 +39,11 @@ import Mathlib.LinearAlgebra.Contraction
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Multilinear.Flip
@@ -74,7 +78,6 @@ namespace DifferentialGeometry
 namespace Tensor0SBundle
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 
@@ -119,9 +122,9 @@ theorem tensor0SModelAt_applyInput_eq
           (fun x => TensorRSSpace r s I x) x₀) ⟨x, T⟩).2)
         (((trivializationAt (Tensor0SModel r 𝕜 E)
           (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ⟩).2) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ext v
   rw [Tensor0SSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
     (x₀ := x₀) (x := x) s]
@@ -196,7 +199,9 @@ theorem tensorRSField_applyInput_apply
     (x : M) :
     tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H)
       (I := I) (M := M) n T θ x = T x (θ x) := by
-  simp [tensorRSField_applyInput, tensorRSField_applyInput_fun]
+  unfold tensorRSField_applyInput
+  change tensorRSField_applyInput_fun (fun x => T x) (fun x => θ x) x = T x (θ x)
+  rfl
 
 end ApplyInput
 
@@ -213,9 +218,9 @@ noncomputable def Tensor0SField.one0 [CompleteSpace 𝕜] :
 omit [IsManifold I (n + 1) M] in
 @[simp]
 theorem Tensor0SField.one0_apply [CompleteSpace 𝕜]
-    (x : M) (v : Fin 0 → TangentSpace I x) :
-    Tensor0SSpace.toModel (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
-      (I := I) (M := M) n x) v = (1 : 𝕜) := by
+    (x : M) (v : Fin 0 → E) :
+    Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) n x v = (1 : 𝕜) := by
   exact Tensor0SField.fromScalarField_apply n (fun _ : M => (1 : 𝕜))
     contMDiff_const x v
 
@@ -225,7 +230,6 @@ end Tensor0SBundle
 namespace Tensor0SBundle
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 

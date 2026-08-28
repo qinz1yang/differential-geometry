@@ -113,7 +113,6 @@ lemma fun_eq_finset_sum_chartPullback_chartPushed
 
 private lemma exists_strict_strong_support_approx_with_compact_neighborhood
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u)
     (α : M) :
@@ -282,7 +281,7 @@ lemma tightenedChartPushed_eq_chartPushed_on_target
     rw [hηE_y]; ring
 
 private lemma tightenedChartPushed_memWkp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) 1 p u) (α : M)
     {η_M : M → ℝ}
@@ -340,7 +339,7 @@ private lemma tightenedChartPushed_memWkp
     hηE_smooth hC_norm_target hC_grad_target
 
 private lemma wkpNorm_tightenedChartPushed_sub_eq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
@@ -1092,7 +1091,7 @@ theorem contMDiff_dense_in_WkpChart
   set v : M → ℝ := fun x =>
     ∑ α ∈ S.attach, chartPullback I (α : M) (χ α) x with hv_def
   have hv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ v := by
-    refine contMDiff_finset_sum_chartPullback (I := I) (M := M)
+    refine contMDiff_finsetSum_chartPullback (I := I) (M := M)
       (S := S.attach) (α := fun α : S => (α : M)) (ψ := fun α => χ α) ?_ ?_ ?_
     · intro α _; exact hχ_smooth α
     · intro α _; exact hχ_cpt α
@@ -1136,7 +1135,6 @@ theorem contMDiff_dense_in_WkpChart
                 χ α y) x := by
       funext x
       have h1 := congrFun h_u_decomp x
-      simp only at h1
       change u x - v x = _
       rw [hv_def]
       simp only
@@ -1249,7 +1247,7 @@ theorem contMDiff_dense_in_WkpChart
           (hη_one_on_tsupport α) u (χ α)]
         exact hχ_close α
       refine h_bd.trans ?_
-      exact mul_le_mul_of_nonneg_left h_diff_close (zero_le _)
+      exact mul_le_mul_of_nonneg_left h_diff_close (zero_le)
     have h_summand_mem : ∀ α ∈ S.attach,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) 1 p

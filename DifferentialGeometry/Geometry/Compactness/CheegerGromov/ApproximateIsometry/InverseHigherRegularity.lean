@@ -201,19 +201,19 @@ theorem BoundedGeometryNormalData.inv_chart_conv
     have hnlInj : Ninj ≤ ln n := (le_max_right _ _).trans hnl
     let Yk := X.obj (Lphi.φ (kn n))
     let Yl := X.obj (Lphi.φ (ln n))
-    letI : TopologicalSpace Yk.M := Yk.topology
-    letI : ChartedSpace H Yk.M := Yk.charted
-    letI : IsManifold I ∞ Yk.M := Yk.smooth
-    letI : T2Space Yk.M := Yk.t2
-    letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-    letI : TopologicalSpace Yl.M := Yl.topology
-    letI : ChartedSpace H Yl.M := Yl.charted
-    letI : IsManifold I ∞ Yl.M := Yl.smooth
-    letI : T2Space Yl.M := Yl.t2
-    letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-    letI : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
-    letI : MetricSpace Yl.M := (P (Lphi.φ (ln n))).ms
-    letI : Nonempty Yk.M := ⟨Yk.basepoint⟩
+    let : TopologicalSpace Yk.M := Yk.topology
+    let : ChartedSpace H Yk.M := Yk.charted
+    let : IsManifold I ∞ Yk.M := Yk.smooth
+    let : T2Space Yk.M := Yk.t2
+    let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+    let : TopologicalSpace Yl.M := Yl.topology
+    let : ChartedSpace H Yl.M := Yl.charted
+    let : IsManifold I ∞ Yl.M := Yl.smooth
+    let : T2Space Yl.M := Yl.t2
+    let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+    let : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
+    let : MetricSpace Yl.M := (P (Lphi.φ (ln n))).ms
+    let : Nonempty Yk.M := ⟨Yk.basepoint⟩
     let F := stageComparisonMap inp P Lphi r hr
       (kn n) (ln n) (chart := d.chart)
     let ck := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
@@ -257,9 +257,10 @@ theorem BoundedGeometryNormalData.inv_chart_conv
       exact chiK.ball_subset (hRad hz)
     have hdecode (q : Yl.M) (hq : q ∈ chiL.restrictBall.target) :
         chiL.hom (chiL.inv q) = q := by
-      simpa only [
-        DifferentialGeometry.Geometry.Riemannian.NormalCoordinates.NormalBallChart.restrictBall_apply]
-        using chiL.restrictBall.right_inv hq
+      change chiL.hom (chiL.hom.symm q) = q
+      apply chiL.hom.toPartialEquiv.right_inv
+      rcases hq with ⟨z, hz, rfl⟩
+      exact chiL.hom.map_source (chiL.ball_subset hz)
     have hAinj : Set.InjOn (A n) W := by
       intro z hz w hw hzw
       have hzU : z ∈ U alpha := hIntU (hWint hz)
@@ -301,7 +302,8 @@ theorem BoundedGeometryNormalData.inv_chart_conv
       have hzBall : chiK.hom z ∈ Metric.ball Yk.basepoint T := by
         rw [Metric.mem_ball]
         have hzLe : dist (chiK.hom z) Yk.basepoint ≤ S := by
-          simpa only [NetLimitData.hatSourceBall, Yk] using hzClosed
+          change dist (chiK.hom z) Yk.basepoint ≤ S at hzClosed
+          exact hzClosed
         exact hzLe.trans_lt hST
       have hFzT : F (chiK.hom z) ∈ chiL.restrictBall.target :=
         (hjet z hz).1

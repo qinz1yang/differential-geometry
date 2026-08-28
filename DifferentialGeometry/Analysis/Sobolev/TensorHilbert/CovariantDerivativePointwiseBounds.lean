@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinear
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -30,6 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem iteratedCovGrad_norm_comp (g₀ : SmoothRiemannianMetric I M) (r s l m : ℕ)
     (Ψ : SmoothCcTensor g₀ r s) :
@@ -52,6 +52,7 @@ theorem iteratedCovGrad_norm_comp (g₀ : SmoothRiemannianMetric I M) (r s l m :
     sq_nonneg (‖iteratedCovGrad (I := I) g₀ r (s + l) m (iteratedCovGrad (I := I) g₀ r s l Ψ)‖ -
       ‖iteratedCovGrad (I := I) g₀ r s (l + m) Ψ‖)]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantDerivative_grid_eq (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ}
     (P : SmoothCcTensor g₀ rb sb) (x : M) (j : ℕ) :
@@ -326,6 +327,7 @@ theorem antidiagonalTupleGridWindow_bound_to_jet_bound (g₀ : SmoothRiemannianM
       (fun j _ _ => sq_nonneg _)
   linarith only [hstep]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantDerivative_grid (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ}
     (P : SmoothCcTensor g₀ rb sb) (x : M) :
@@ -334,6 +336,7 @@ theorem covariantDerivative_grid (g₀ : SmoothRiemannianMetric I M) {rb sb : �
   funext j
   rw [covariantDerivative_grid_eq (I := I) (M := M) g₀ P x j, Nat.add_comm 1 j]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem antidiagonalTupleGridWindow_covariantDerivative_shift (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ}
     (P : SmoothCcTensor g₀ rb sb) {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
@@ -358,6 +361,7 @@ theorem antidiagonalTupleGridWindow_covariantDerivative_shift (g₀ : SmoothRiem
   rw [← covariantDerivative_grid (I := I) (M := M) g₀ P x, mul_assoc]
   exact mul_le_mul_of_nonneg_left hshift (hKX i)
 
+omit [SigmaCompactSpace M] in
 theorem antidiagonalTupleGridWindow_covariantDerivative_bound (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
     (hP0 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 0 ≤ Λ)

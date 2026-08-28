@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -44,15 +43,16 @@ abbrev ScalarH2Core (g : SmoothRiemannianMetric I M) :=
   tensorHs.finiteSupportSubmodule
     (I := I) (M := M) (g := g) (r := 0) (s := 0) 2
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem toRS0_sub {x : M} (A B : Tensor0SSpace 0 I x) :
     Tensor0SSpace.toRS0 (A - B) =
       Tensor0SSpace.toRS0 A - Tensor0SSpace.toRS0 B := by
   apply ContinuousLinearMap.ext
   intro c
-  change tensor0SSpace_evalScalar x c • (A - B) =
-    tensor0SSpace_evalScalar x c • A - tensor0SSpace_evalScalar x c • B
+  change (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • (A - B) =
+    (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
+      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
   exact smul_sub _ _ _
 
 
@@ -128,7 +128,7 @@ theorem lapDiffCore_pair
   rw [hrepr_x, Tensor0SField.toRS0_eq,
     inner_toRS0_zero (I := I) (M := M) q x]
   have hlap :
-      tensor0SSpace_evalScalar x
+      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x)
         ((Tensor0SNabla.tensor0Iso I M x).symm
           (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
             Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) =
@@ -137,8 +137,9 @@ theorem lapDiffCore_pair
     change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm _) = _
     rw [ContinuousLinearEquiv.apply_symm_apply]
+    rfl
   have hrepr :
-      tensor0SSpace_evalScalar x
+      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x)
         (Tensor0SField.fromScalarField ∞
           (reprScalar0 (I := I) (M := M) w.1 w.2)
           (reprScalar0_smooth (I := I) (M := M) w.1 w.2) x) =
@@ -194,7 +195,7 @@ theorem lapDiffCore_norm
       ‖lapDiffCore (I := I) (M := M) g h v‖ ^ 2 <=
         C * rho ^ 2 * ‖v‖ ^ 2 := by
     rw [lapDiffCore_sq (I := I) (M := M) g h v]
-    simpa only [rho] using henergy h v.1 v.2 hsmall
+    simpa only [rho, Submodule.norm_coe] using henergy h v.1 v.2 hsmall
   have hrhs :
       (Real.sqrt C * |rho| * ‖v‖) ^ 2 =
         C * rho ^ 2 * ‖v‖ ^ 2 := by
@@ -229,7 +230,7 @@ theorem lapDiffOp_core
   apply LinearMap.extendOfNorm_eq hdense
   refine ⟨B, ?_⟩
   intro w
-  simpa only [B, Submodule.coe_subtype] using hbound h w hsmall
+  simpa only [B, Submodule.coe_subtype, Submodule.norm_coe] using hbound h w hsmall
 
 theorem lapDiffOp_norm
     (g : SmoothRiemannianMetric I M) :
@@ -255,7 +256,7 @@ theorem lapDiffOp_norm
       (I := I) (M := M) (g := g) (r := 0) (s := 0) (σ := 2)).denseRange_val
   apply LinearMap.opNorm_extendOfNorm_le hdense hB
   intro w
-  simpa only [B, Submodule.coe_subtype] using hbound h w hsmall
+  simpa only [B, Submodule.coe_subtype, Submodule.norm_coe] using hbound h w hsmall
 
 end Spectral
 end Analysis

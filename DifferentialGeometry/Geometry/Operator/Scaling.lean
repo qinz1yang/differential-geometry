@@ -43,7 +43,7 @@ private theorem metricSharp_scaleMetric
                 c * (c⁻¹ *
                   ((g.inner x) (metricSharp (I := I) g x alpha)) w) := by
                   rw [scaleMetric_inner]
-                  simp only [metricSharp, map_smul, ContinuousLinearMap.coe_smul',
+                  simp only [metricSharp, map_smul, FunLike.coe_smul,
                     Pi.smul_apply, smul_eq_mul]
             _ = c * (c⁻¹ * alpha w) :=
                 congrArg (fun z : Real => c * (c⁻¹ * z)) hinner
@@ -56,9 +56,11 @@ theorem gradientFun_scale
     (f : M -> Real) (x : M) :
     gradientFun (I := I) (scaleMetric (I := I) c hc g) f x =
       c⁻¹ • gradientFun (I := I) g f x := by
-  simpa [gradientFun] using
-    metricSharp_scaleMetric (I := I) c hc g x
-      (mfderiv I 𝓘(Real, Real) f x).toLinearMap
+  change metricSharp (I := I) (scaleMetric (I := I) c hc g) x
+      (mvfderiv (I := I) f x).toLinearMap =
+    c⁻¹ • metricSharp (I := I) g x (mvfderiv (I := I) f x).toLinearMap
+  exact metricSharp_scaleMetric (I := I) c hc g x
+    (mvfderiv (I := I) f x).toLinearMap
 
 theorem laplacian_scaleMetric
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -110,10 +112,6 @@ theorem laplacian_scaleMetric_const_smul
           gradientFun (I := I) (scaleMetric (I := I) c hc g) f y) =
           (T% fun y : M => c⁻¹ • gradientFun (I := I) g f y) := by
       funext y
-      change
-          TotalSpace.mk' E y
-              (gradientFun (I := I) (scaleMetric (I := I) c hc g) f y) =
-            TotalSpace.mk' E y (c⁻¹ • gradientFun (I := I) g f y)
       rw [hpt y]
     rw [htotal]
     exact hscale

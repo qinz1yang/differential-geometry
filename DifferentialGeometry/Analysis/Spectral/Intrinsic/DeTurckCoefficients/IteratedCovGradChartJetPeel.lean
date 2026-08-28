@@ -448,7 +448,7 @@ theorem bareJet_le_fiber
     refine ⟨Ci, hCi_nn, fun D {z} hz => ?_⟩
     refine (hCi (iteratedCovGrad (I := I) g r s i D) hz).trans ?_
     refine mul_le_mul_of_nonneg_left (le_of_eq ?_) hCi_nn
-    letI : Bundle.RiemannianBundle (fun w : M => TensorRSSpace r (s + i) I w) :=
+    let : Bundle.RiemannianBundle (fun w : M => TensorRSSpace r (s + i) I w) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
     rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r (s + i)
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))

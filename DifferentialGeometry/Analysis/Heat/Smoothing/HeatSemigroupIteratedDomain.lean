@@ -22,7 +22,7 @@ private lemma one_add_pow_mul_resolvent_pow_cancel
     _ = x := by rw [hpow, one_mul]
 
 private theorem map_eq_of_hilbertBasis_diagonal
-    {ι X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
+    {ι X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     (b : HilbertBasis ι ℝ X) (T : X →L[ℝ] X) (d : ι → ℝ) (u v : X)
     (hbasis : ∀ i, T (b i) = d i • b i)
     (hcoeff : ∀ i, (b.repr v) i * d i = (b.repr u) i) :
@@ -183,10 +183,10 @@ lemma oneMinusLapHeat_apply (g : SmoothRiemannianMetric I M) (k : ℕ) (t : ℝ)
       ∑ j ∈ Finset.range (k + 1),
         (k.choose j : ℝ) • heatPower (I := I) (M := M) g j t u := by
   unfold oneMinusLapHeat
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   apply Finset.sum_congr rfl
   intro j _
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
 
 private lemma oneMinusLapHeat_apply_basis
     (g : SmoothRiemannianMetric I M) (k : ℕ) {t : ℝ} (ht : 0 < t)
@@ -264,7 +264,7 @@ private lemma iteratedResolventL2_oneMinusLapHeat_basis
 
 
 private lemma hasSum_repr_smul_mapL {ι : Type*} {X Y : Type*}
-    [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
+    [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     (b : HilbertBasis ι ℝ X) (u : X) (T : X →L[ℝ] Y) :
     HasSum (fun i => b.repr u i • T (b i)) (T u) := by

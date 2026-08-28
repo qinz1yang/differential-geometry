@@ -8,7 +8,6 @@ import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleL
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -65,19 +64,21 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
     cometricLmodel (I := I) g₁ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
         ((chartModelBasis E).cDualBasis k)) =
       ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g₁ x x k l • (chartModelBasis E l : TangentSpace I x) := by
+        chartInvGramMatrix (I := I) g₁ x x k l • centeredChartTangentBasis (I := I) x l := by
   classical
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   have hself : ∀ t : Fin (Module.finrank ℝ E),
       chartBasisVecFiber (I := I) x t x = chartModelBasis E t := fun t =>
-    chartBasisVecFiber_self (I := I) x t
+    by
+      rw [chartBasisVecFiber_self (I := I) x t, centeredChartTangentBasis_apply,
+        centeredChartTangentEquiv_symm_apply]
   apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective (I := I) g₁ x
   ext u
   change g₁.inner x (cometricLmodel (I := I) g₁ x
       (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) ((chartModelBasis E).cDualBasis k))) u =
     g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
-      chartInvGramMatrix (I := I) g₁ x x k l • (chartModelBasis E l : TangentSpace I x)) u
+      chartInvGramMatrix (I := I) g₁ x x k l • centeredChartTangentBasis (I := I) x l) u
   rw [cometricLmodel_covectorOfCLM_inner (I := I) g₁ x ((chartModelBasis E).cDualBasis k) u]
   have hu : u = ∑ m : Fin (Module.finrank ℝ E),
       ((chartModelBasis E).repr
@@ -89,39 +90,39 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
         ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x u)) m with hc_def
   have hRHS_inner :
       g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g₁ x x k l • (chartModelBasis E l : TangentSpace I x)) u =
+          chartInvGramMatrix (I := I) g₁ x x k l • centeredChartTangentBasis (I := I) x l) u =
         ∑ m : Fin (Module.finrank ℝ E),
           c m * (if k = m then (1 : ℝ) else 0) := by
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum (g₁.inner x), sum_apply]
     rw [show ∑ l : Fin (Module.finrank ℝ E),
             (g₁.inner x (chartInvGramMatrix (I := I) g₁ x x k l •
-                (chartModelBasis E l : TangentSpace I x))) u =
+                centeredChartTangentBasis (I := I) x l)) u =
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (chartModelBasis E l : TangentSpace I x) u from ?_]
+              g₁.inner x (centeredChartTangentBasis (I := I) x l) u from ?_]
     swap
     · refine Finset.sum_congr rfl (fun l _ => ?_)
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [map_smul, smul_apply, smul_eq_mul]
     rw [show ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (chartModelBasis E l : TangentSpace I x) u =
+              g₁.inner x (centeredChartTangentBasis (I := I) x l) u =
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (chartModelBasis E l : TangentSpace I x)
+              g₁.inner x (centeredChartTangentBasis (I := I) x l)
                 (∑ m : Fin (Module.finrank ℝ E), c m • chartBasisVecFiber (I := I) x m x) from ?_]
     swap
     · refine Finset.sum_congr rfl (fun l _ => ?_)
       refine congrArg (fun t : TangentSpace I x => chartInvGramMatrix (I := I) g₁ x x k l *
-        g₁.inner x (chartModelBasis E l : TangentSpace I x) t) ?_
+        g₁.inner x (centeredChartTangentBasis (I := I) x l) t) ?_
       exact hu
     rw [show ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (chartModelBasis E l : TangentSpace I x)
+              g₁.inner x (centeredChartTangentBasis (I := I) x l)
                 (∑ m : Fin (Module.finrank ℝ E), c m • chartBasisVecFiber (I := I) x m x) =
           ∑ l : Fin (Module.finrank ℝ E),
             (∑ m : Fin (Module.finrank ℝ E),
               chartInvGramMatrix (I := I) g₁ x x k l * (c m *
-                g₁.inner x (chartModelBasis E l : TangentSpace I x)
+                g₁.inner x (centeredChartTangentBasis (I := I) x l)
                   (chartBasisVecFiber (I := I) x m x))) from ?_]
     swap
     · refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -132,7 +133,7 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
     rw [show ∑ m : Fin (Module.finrank ℝ E),
             (∑ l : Fin (Module.finrank ℝ E),
               chartInvGramMatrix (I := I) g₁ x x k l * (c m *
-                g₁.inner x (chartModelBasis E l : TangentSpace I x)
+                g₁.inner x (centeredChartTangentBasis (I := I) x l)
                   (chartBasisVecFiber (I := I) x m x))) =
           ∑ m : Fin (Module.finrank ℝ E), c m *
             (∑ l : Fin (Module.finrank ℝ E),
@@ -142,12 +143,12 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
     · refine Finset.sum_congr rfl (fun m _ => ?_)
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl (fun l _ => ?_)
-      rw [show g₁.inner x (chartModelBasis E l : TangentSpace I x)
+      rw [show g₁.inner x (centeredChartTangentBasis (I := I) x l)
               (chartBasisVecFiber (I := I) x m x) =
             chartGramMatrix (I := I) g₁ x x l m from ?_]
       · ring
-      · rw [show (chartModelBasis E l : TangentSpace I x) =
-            chartBasisVecFiber (I := I) x l x from (hself l).symm]
+      · rw [show centeredChartTangentBasis (I := I) x l =
+            chartBasisVecFiber (I := I) x l x from (chartBasisVecFiber_self (I := I) x l).symm]
         rw [g_inner_eq_chartGramMatrix_basis (I := I) g₁ x x l m]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     refine congrArg (fun t : ℝ => c m * t) ?_
@@ -158,25 +159,25 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
       rw [Matrix.mul_apply]
     rw [hkron, chartInvGramMatrix_mul_chartGramMatrix (I := I) g₁ x hxbase, Matrix.one_apply]
   rw [hRHS_inner]
-  rw [show (chartModelBasis E).cDualBasis k (u : E) =
-        ∑ m : Fin (Module.finrank ℝ E), c m *
-          (chartModelBasis E).cDualBasis k (chartBasisVecFiber (I := I) x m x : E) from ?_]
-  · refine Finset.sum_congr rfl (fun m _ => ?_)
-    refine congrArg (fun t : ℝ => c m * t) ?_
-    rw [show (chartBasisVecFiber (I := I) x m x : E) = (chartModelBasis E m : E) from
-        congrArg (fun v : TangentSpace I x => (v : E)) (hself m)]
-    rw [Module.Basis.cDualBasis_apply_self (chartModelBasis E) k m]
-  · conv_lhs => rw [show (u : E) = ((∑ m : Fin (Module.finrank ℝ E),
-          c m • chartBasisVecFiber (I := I) x m x : TangentSpace I x) : E) from
-        congrArg (fun v : TangentSpace I x => (v : E)) hu]
-    rw [show ((∑ m : Fin (Module.finrank ℝ E),
-            c m • chartBasisVecFiber (I := I) x m x : TangentSpace I x) : E) =
-          ∑ m : Fin (Module.finrank ℝ E),
-            c m • (chartBasisVecFiber (I := I) x m x : E) from ?_]
-    · rw [map_sum]
-      refine Finset.sum_congr rfl (fun m _ => ?_)
-      rw [map_smul, smul_eq_mul]
-    · rfl
+  rw [Module.Basis.cDualBasis, Module.Basis.map_apply]
+  rw [show (chartModelBasis E).dualBasis k = (chartModelBasis E).coord k from
+    congrFun (Module.Basis.coe_dualBasis (chartModelBasis E)) k]
+  change ((chartModelBasis E).repr
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x u)) k =
+    ∑ m : Fin (Module.finrank ℝ E), c m * (if k = m then (1 : ℝ) else 0)
+  have hc : ((chartModelBasis E).repr
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x u)) k = c k := by
+    rw [hc_def, ← centeredChartTangentEquiv_apply (I := I) x u]
+    rw [show centeredChartTangentEquiv (I := I) x u =
+        (trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x u from
+      congrFun ((trivializationAt E (TangentSpace I) x).coe_continuousLinearEquivAt_eq
+        (R := ℝ) hxbase) u]
+  rw [hc]
+  rw [Finset.sum_eq_single k]
+  · simp only [if_pos, mul_one]
+  · intro m _ hmk
+    rw [if_neg hmk.symm, mul_zero]
+  · simp only [Finset.mem_univ, not_true_eq_false, IsEmpty.forall_iff]
 
 end TensorSpectral
 end Parabolic

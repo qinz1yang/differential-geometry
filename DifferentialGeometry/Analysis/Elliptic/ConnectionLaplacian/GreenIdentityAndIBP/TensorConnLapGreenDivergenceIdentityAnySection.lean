@@ -22,7 +22,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -552,25 +551,36 @@ private lemma tensorCovDerivPointwiseInnerGen_eq_smoothOrthoFrame_diag
       exact h_zero
     · intro j _ hjk
       rw [if_neg (fun h => hjk h.symm), mul_zero]
-  have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E := by
+  have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
+      Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]
-  set frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
+    rfl
+  set tangentFrame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I b) :=
     basisOfLinearIndependentOfCardEqFinrank hB_li hcard with hframe_def
-  have hframe_eq : ∀ i, frame i = smoothOrthoFrame (I := I) g b i b := by
+  set frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
+    tangentFrame.map
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).toLinearEquiv with hframe_model_def
+  have hframe_eq : ∀ i, frame i =
+      tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (smoothOrthoFrame (I := I) g b i b) := by
     intro i
-    rw [hframe_def]
-    change (basisOfLinearIndependentOfCardEqFinrank hB_li hcard :
-        Fin (Module.finrank ℝ E) → E) i = smoothOrthoFrame (I := I) g b i b
+    rw [hframe_model_def, Module.Basis.map_apply, hframe_def]
+    change tangentSpaceModelContinuousLinearEquiv (I := I) b
+        ((basisOfLinearIndependentOfCardEqFinrank hB_li hcard :
+          Fin (Module.finrank ℝ E) → TangentSpace I b) i) = _
     rw [coe_basisOfLinearIndependentOfCardEqFinrank]
   have hframe_orth : ∀ i j,
-      g.inner b (frame i) (frame j) = if i = j then (1 : ℝ) else 0 := by
+      modelInnerAt (I := I) (M := M) g b (frame i) (frame j) =
+        if i = j then (1 : ℝ) else 0 := by
     intro i j
-    rw [hframe_eq i, hframe_eq j]
+    rw [hframe_eq i, hframe_eq j, modelInnerAt_apply,
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply,
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]
     exact hB_orth i j
   rw [tensorCovDerivPointwiseInner_eq_orthoFrame_diag_sum
     (I := I) (M := M) g 0 s T v b frame hframe_orth]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [hframe_eq i]
+  rw [hframe_eq i, tangentSpaceModelContinuousLinearEquiv_apply]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma divergence_dirichletVFGen_eq

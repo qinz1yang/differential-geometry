@@ -332,10 +332,11 @@ theorem mfderiv_scalar_eq_chart_fderiv
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E))
     (hf : MDiffAt f x)
     (v : TangentSpace I x) :
-    (mfderiv I 𝓘(ℝ) f x) v =
+    mvfderiv (I := I) f x v =
       fderiv ℝ (f ∘ (extChartAt I α).symm) (extChartAt I α x)
         (trivToE (I := I) α x v) := by
   classical
+  rw [mvfderiv, ContinuousLinearMap.comp_apply]
   set φ := extChartAt I α
   set g : E → ℝ := f ∘ φ.symm
   have hf_eqOn : ∀ y, y ∈ φ.source → f y = g (φ y) := by

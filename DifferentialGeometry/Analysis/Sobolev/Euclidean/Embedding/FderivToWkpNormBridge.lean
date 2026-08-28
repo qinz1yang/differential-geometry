@@ -237,11 +237,11 @@ private lemma sum_eLpNorm_chosenWeakPartial_le_wkpNorm_two
   have hJ0_nonneg :
       0 ≤ (∑ β : Fin 0 → Fin d,
           eLpNorm (iterWeakPartial (d := d) (2 : ℝ≥0∞) 0 β ψ Ω) 2
-            (volume.restrict Ω)) := zero_le _
+            (volume.restrict Ω)) := zero_le
   have hJ2_nonneg :
       0 ≤ (∑ β : Fin 2 → Fin d,
           eLpNorm (iterWeakPartial (d := d) (2 : ℝ≥0∞) 2 β ψ Ω) 2
-            (volume.restrict Ω)) := zero_le _
+            (volume.restrict Ω)) := zero_le
   calc (∑ β : Fin 1 → Fin d,
             eLpNorm (iterWeakPartial (d := d) (2 : ℝ≥0∞) 1 β ψ Ω) 2
               (volume.restrict Ω))
@@ -331,7 +331,7 @@ private lemma sum_eLpNorm_chosenWeakPartial_le_wkpNorm_one_two
   have hJ0_nonneg :
       0 ≤ (∑ β : Fin 0 → Fin d,
           eLpNorm (iterWeakPartial (d := d) (2 : ℝ≥0∞) 0 β ψ Ω) 2
-            (volume.restrict Ω)) := zero_le _
+            (volume.restrict Ω)) := zero_le
   exact le_add_of_nonneg_left hJ0_nonneg
 
 omit [NeZero d] in

@@ -38,6 +38,20 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
+local instance dualNormedAddCommGroup : NormedAddCommGroup (E →L[Real] Real) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+local instance dualNormedSpace : NormedSpace Real (E →L[Real] Real) :=
+  ContinuousLinearMap.toNormedSpace
+
+local instance bilinearNormedAddCommGroup :
+    NormedAddCommGroup (E →L[Real] E →L[Real] Real) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+local instance bilinearNormedSpace :
+    NormedSpace Real (E →L[Real] E →L[Real] Real) :=
+  ContinuousLinearMap.toNormedSpace
+
 private noncomputable def constTangentSection (v : E) :
     ContMDiffSection 𝓘(Real, E) E (∞ : WithTop ℕ∞)
       (TangentSpace 𝓘(Real, E) : E → Type _) where
@@ -47,7 +61,7 @@ private noncomputable def constTangentSection (v : E) :
 omit [NeZero (Module.finrank Real E)] [FiniteDimensional ℝ E] in
 private theorem constBasis_isLocalFrame_open
     {Idx : Type*}
-    (U : TopologicalSpace.Opens E) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens E)
     (e : Module.Basis Idx Real E) :
     IsLocalFrameOn 𝓘(Real, E) E (1 : WithTop ℕ∞)
       (fun i (x : U) => (show TangentSpace 𝓘(Real, E) x from e i)) Set.univ := by
@@ -71,12 +85,17 @@ private theorem constBasis_isLocalFrame_open
         (T% (fun y : U => (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
           (I := 𝓘(Real, E)) U (constTangentSection (E := E) (e i))) y))
         Set.univ := hsmooth.contMDiffOn
-    simpa only [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply,
-      constTangentSection] using hsec
+    refine hsec.congr ?_
+    intro y _hy
+    refine TotalSpace.ext rfl ?_
+    apply heq_of_eq
+    rw [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply]
+    with_unfolding_all
+      rfl
 
 omit [NeZero (Module.finrank Real E)] in
 private theorem metricNorm_le_basis_comp
-    (V : TopologicalSpace.Opens E) [SigmaCompactSpace V] [T2Space V]
+    (V : TopologicalSpace.Opens E) [T2Space V]
     (G g : SmoothRiemannianMetric 𝓘(Real, E) V) (a : Nat) (z : V)
     (e : Module.Basis (Fin (Module.finrank Real E)) Real E)
     {B : Real} (hB : 0 ≤ B)
@@ -121,14 +140,22 @@ private theorem metricNorm_le_basis_comp
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
-    simpa [Tensor0SBundle.identityInvMetric,
-      Tensor0SBundle.diagonalInvMetric] using h
+    with_unfolding_all
+      change Tensor0SBundle.MetricInverseInBasis_gen
+        (I := modelWithCornersSelf Real E) g z b
+          (fun a k => if a = k then 1 else 0)
+    exact h
   rw [metricDerivNorm_eq_iterCov (I := 𝓘(Real, E)) G g g a b hbinv]
   apply sqrt_norm_le_basis_comp_of_coercive
     (I := 𝓘(Real, E)) g z (2 + a) e
       (c := (1 / 2 : Real)) (B := B) (by norm_num) hlow _ hB
   intro slots
-  rw [Tensor0SBundle.component0S_apply]
+  with_unfolding_all
+    change
+      |iterCov (I := modelWithCornersSelf Real E) g 2
+        (Tensor0SBundle.metricTensorField (I := modelWithCornersSelf Real E) G -
+          Tensor0SBundle.metricTensorField (I := modelWithCornersSelf Real E) g)
+        a z (fun q ↦ e (slots q))| ≤ B
   have ht := iterCovComp_eq_iterCov (I := 𝓘(Real, E)) g
     (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
       Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) g)
@@ -146,7 +173,13 @@ private theorem metricNorm_le_basis_comp
           (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
             Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) g)
           a z (fun q ↦ e (slots q)) := by
-    simpa only [frameTuple, frame] using ht
+    have htuple : frameTuple (I := modelWithCornersSelf Real E) frame z slots =
+        fun q ↦ e (slots q) := by
+      funext q
+      with_unfolding_all
+        rfl
+    rw [htuple] at ht
+    exact ht
   calc
     |iterCov (I := 𝓘(Real, E)) g 2
         (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
@@ -191,6 +224,7 @@ private noncomputable def quarterPull
     (G.restrictOpen (I := I) (normalQuarterImage (I := I) Y x))
     (normalQuarterDiffeo (I := I) Y x)
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem quarterPull_inner
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -211,21 +245,53 @@ private theorem quarterPull_inner
             (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) v)
           (mfderiv 𝓘(Real, E) I
             (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) w) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
     normalQuarterImageSigma (I := I) Y x
   intro G z v w
-  rw [quarterPull, Diffeomorph.pullbackMetricCross_inner,
-    SmoothRiemannianMetric.restrictOpen_inner]
-  rw [quarterDiffeo_apply, quarterDiffeo_mfd, quarterDiffeo_mfd]
+  have hv :
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm v =
+        (show TangentSpace (modelWithCornersSelf Real E) z from v) := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) z).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    with_unfolding_all
+      rfl
+  have hw :
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm w =
+        (show TangentSpace (modelWithCornersSelf Real E) z from w) := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) z).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    with_unfolding_all
+      rfl
+  have hbase := quarterDiffeo_apply (I := I) Y x z
+  have hderivV := quarterDiffeo_mfd (I := I) Y x z v
+  have hderivW := quarterDiffeo_mfd (I := I) Y x z w
+  rw [hv] at hderivV
+  rw [hw] at hderivW
+  have hpull := Diffeomorph.pullbackMetricCross_inner
+    (G.restrictOpen (I := I) (normalQuarterImage (I := I) Y x))
+    (normalQuarterDiffeo (I := I) Y x) z
+    (show TangentSpace (modelWithCornersSelf Real E) z from v)
+    (show TangentSpace (modelWithCornersSelf Real E) z from w)
+  change (Diffeomorph.pullbackMetricCross
+      (G.restrictOpen (I := I) (normalQuarterImage (I := I) Y x))
+      (normalQuarterDiffeo (I := I) Y x)).inner z v w = _
+  rw [SmoothRiemannianMetric.restrictOpen_inner] at hpull
+  rw [hbase, hderivV, hderivW] at hpull
+  exact hpull
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem quarter_norm_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -248,15 +314,15 @@ private theorem quarter_norm_eq
             (I := 𝓘(Real, E)) (normalQuarter (I := I) Y x)) z =
         metricDerivNorm (I := I) a G Y.metric Y.metric
           (expMapDiffeo (I := I) Y.metric x (z : E)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
     normalQuarterImageSigma (I := I) Y x
   intro G a z
   rw [quarterPull, normalTotal_quarter (I := I) Y x]
@@ -264,6 +330,7 @@ private theorem quarter_norm_eq
   rw [metricDerivNorm_restrictOpen (I := I) G Y.metric Y.metric]
   rw [quarterDiffeo_apply]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem normal_christoffel
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -287,12 +354,12 @@ private theorem normal_christoffel
             (fderiv Real (normalCoordMetric (I := I) Y x) (z : E))
             (e i) (e j)) := by
   classical
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   dsimp only
   intro V _ _ hVQ e z hco i j m
   let frame : Fin (Module.finrank Real E) →
@@ -304,10 +371,9 @@ private theorem normal_christoffel
       (fun y : E => (constTangentSection (E := E) (e j)) y) =
         fun y : V => (show TangentSpace 𝓘(Real, E) y from e j) := by
     funext y
-    simpa only [constTangentSection] using
-      (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField_apply
-        (I := 𝓘(Real, E)) V
-        (fun y : E => (constTangentSection (E := E) (e j)) y) y)
+    rw [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField_apply]
+    with_unfolding_all
+      rfl
   have hres := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
     (I := 𝓘(Real, E)) (normalTotal (I := I) Y x) V
     (constTangentSection (E := E) (e j)) z (e i)
@@ -318,8 +384,13 @@ private theorem normal_christoffel
           (frame j) z) (e i)) =
         ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
           (normalTotal (I := I) Y x) (fun _ : E => e j) (z : E)) (e i)) := by
-    simpa only [DifferentialGeometry.Geometry.Curvature.metricCov, frame,
-      constTangentSection] using hres
+    have hconst : (fun y : E => (constTangentSection (E := E) (e j)) y) =
+        fun _ : E => e j := by
+      funext y
+      with_unfolding_all
+        rfl
+    rw [hconst] at hres
+    simpa only [DifferentialGeometry.Geometry.Curvature.metricCov, frame] using hres
   have hcov :
       ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
           ((normalTotal (I := I) Y x).restrictOpen (I := 𝓘(Real, E)) V)
@@ -331,13 +402,15 @@ private theorem normal_christoffel
     exact normal_cov_eq (I := I) Y x (z : E) (hVQ z.2) hco (e i) (e j)
   have hbasis : hframe.toBasisAt (Set.mem_univ z) = e := by
     ext q
-    simp only [IsLocalFrameOn.toBasisAt_coe, frame]
-    rfl
+    rw [hframe.toBasisAt_coe]
+    with_unfolding_all
+      rfl
   change hframe.coeff m z _ = _
   rw [hcov]
   simp only [IsLocalFrameOn.coeff, Set.mem_univ, dite_true, hbasis]
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem stagePull_coeff
     (Yk Yl : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (ck : Yk.M) (cl : Yl.M) :
@@ -378,18 +451,18 @@ private theorem stagePull_coeff
             (normalCoordMetric (I := I) Yl cl (A (z : E)),
               fderiv Real A (z : E)) u v := by
   classical
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : SigmaCompactSpace Yk.M := Yk.sigmaCompact
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Yk ck) :=
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : SigmaCompactSpace Yk.M := Yk.sigmaCompact
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Yk ck) :=
     normalQuarterSigma (I := I) Yk ck
   intro F G z htarget hF hG u v
   dsimp only
@@ -416,7 +489,8 @@ private theorem stagePull_coeff
     ((chiL.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ htarget).mdifferentiableAt
       (chiL.open_source.mem_nhds htarget))
   have hA : MDifferentiableAt 𝓘(Real, E) 𝓘(Real, E) A (z : E) := by
-    simpa only [A, Function.comp_apply] using hchi.comp (z : E) hFK
+    exact (hchi.comp (z : E) hFK).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun q => rfl)
   have hzL : A (z : E) ∈ eL.source := by
     change chiL (F (eK (z : E))) ∈ chiL.target
     exact chiL.map_source htarget
@@ -438,7 +512,7 @@ private theorem stagePull_coeff
       (I := 𝓘(Real, E)) (I' := I) heq
     rw [mfderiv_comp (z : E) hL hA, mfderiv_comp (z : E) hF hK] at hderiv
     rw [mfderiv_eq_fderiv] at hderiv
-    simpa only [A] using hderiv
+    convert hderiv using 1 ; with_unfolding_all rfl
   have hbase : eL (A (z : E)) = F (eK (z : E)) := heq.self_of_nhds
   have hu := DFunLike.congr_fun hcomp u
   have hv := DFunLike.congr_fun hcomp v
@@ -449,6 +523,55 @@ private theorem stagePull_coeff
   exact congrArg₂
     (fun a b => Yl.metric.inner (F (eK (z : E))) a b) hu.symm hv.symm
 
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem normalTotal_restrictOpen_inner_model
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
+    letI : TopologicalSpace Y.M := Y.topology
+    letI : ChartedSpace H Y.M := Y.charted
+    letI : IsManifold I ∞ Y.M := Y.smooth
+    letI : SigmaCompactSpace Y.M := Y.sigmaCompact
+    letI : T2Space Y.M := Y.t2
+    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    ∀ (V : TopologicalSpace.Opens E) [T2Space V],
+      V ≤ normalQuarter (I := I) Y x → ∀ (z : V) (v w : E),
+      ((normalTotal (I := I) Y x).restrictOpen (I := 𝓘(Real, E)) V).inner z
+          (show TangentSpace (modelWithCornersSelf Real E) z from v)
+          (show TangentSpace (modelWithCornersSelf Real E) z from w) =
+        normalCoordMetric (I := I) Y x (z : E) v w := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  intro V _ hVQ z v w
+  have hv :
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) (z : E)).symm v =
+        (show TangentSpace (modelWithCornersSelf Real E) (z : E) from v) := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) (z : E)).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    with_unfolding_all
+      rfl
+  have hw :
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) (z : E)).symm w =
+        (show TangentSpace (modelWithCornersSelf Real E) (z : E) from w) := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) (z : E)).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    with_unfolding_all
+      rfl
+  have hopen := SmoothRiemannianMetric.restrictOpen_inner
+    (I := modelWithCornersSelf Real E) (normalTotal (I := I) Y x) V z
+    (show TangentSpace (modelWithCornersSelf Real E) z from v)
+    (show TangentSpace (modelWithCornersSelf Real E) z from w)
+  have hnormal := normalTotal_inner (I := I) Y x (z : E) (hVQ z.2) v w
+  rw [hv, hw] at hnormal
+  exact hopen.trans hnormal
+
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem local_norm_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -515,13 +638,13 @@ private theorem local_norm_le
             (Fintype.card
               (Fin (2 + a) → Fin (Module.finrank Real E)) : Real) * bnd) := by
   classical
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
   intro V _ _ hVQ e G Q a z bnd hbnd hQ hco hlow hdiff hcomp
   let B := normalCoordMetric (I := I) Y x
@@ -540,8 +663,7 @@ private theorem local_norm_le
   have hlowV : ∀ v : E,
       (1 / 2 : Real) * ‖v‖ * ‖v‖ ≤ gv.inner z v v := by
     intro v
-    rw [hgv, SmoothRiemannianMetric.restrictOpen_inner,
-      normalTotal_inner (I := I) Y x (z : E) (hVQ z.2) v v]
+    rw [hgv, normalTotal_restrictOpen_inner_model (I := I) Y x V hVQ z v v]
     exact hlow v
   apply metricNorm_le_basis_comp V Gv gv a z e hbnd hlowV
   intro slots
@@ -574,10 +696,10 @@ private theorem local_norm_le
     rw [show Gv.inner w (e (s 0)) (e (s 1)) =
         Q (w : E) (e (s 0)) (e (s 1)) by
       exact hQ w (e (s 0)) (e (s 1))]
-    rw [hgv, SmoothRiemannianMetric.restrictOpen_inner,
-      normalTotal_inner (I := I) Y x (w : E) (hVQ w.2)
-        (e (s 0)) (e (s 1))]
-    rfl
+    rw [hgv, normalTotal_restrictOpen_inner_model (I := I) Y x V hVQ w
+      (e (s 0)) (e (s 1))]
+    with_unfolding_all
+      rfl
   have hres := DifferentialGeometry.PDE.RicciFlow.iterCovComp_restrict
     V (fun i ↦ e i) Gamma base hdiff a z slots
   calc
@@ -620,10 +742,16 @@ private theorem metricTower_mdiff
           (fun y : E ↦ iterCovComp (I := 𝓘(Real, E))
             (fun i _ ↦ e i) Gamma base q y slots) (z : E) := by
   dsimp only
+  let : NormedAddCommGroup (E →L[Real] E →L[Real] E) :=
+    MetricKoszul.sprayVecBilinNormedGroup
+  let : NormedSpace Real (E →L[Real] E →L[Real] E) :=
+    MetricKoszul.sprayVecBilinNormedSpace
   let raised : E → E →L[Real] E →L[Real] E := fun z =>
     MetricKoszul.raisedKoszulOp (B z) (fderiv Real B z)
   have hraised : ContDiffOn Real (∞ : WithTop ℕ∞) raised V := by
-    simpa only [raised] using MetricKoszul.raisedOp_smooth V.2 hBcd hBco
+    have hraw := MetricKoszul.raisedOp_smooth V.2 hBcd hBco
+    with_unfolding_all
+      exact hraw
   have hchr : ∀ d i j : Fin (Module.finrank Real E),
       ContMDiffOn 𝓘(Real, E) 𝓘(Real, Real) ∞
         (fun z => e.coord j (raised z (e d) (e i))) V := by
@@ -729,14 +857,6 @@ theorem HasStageJetData.cov_comp_tail
             ∀ a ≤ p, ∀ slots : Fin (2 + a) → Fin (Module.finrank Real E),
               |tower alpha k l a z slots| < eps := by
   classical
-  letI : NormedAddCommGroup (E →L[Real] Real) :=
-    ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] Real) :=
-    ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[Real] E →L[Real] Real) :=
-    ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] E →L[Real] Real) :=
-    ContinuousLinearMap.toNormedSpace
   dsimp only
   let Lphi := L.subseq hphi
   let A : LiveSlot L inp.pack r → Nat → Nat → E → E :=
@@ -854,7 +974,8 @@ theorem HasStageJetData.cov_comp_tail
     have hln : Tendsto ln atTop atTop :=
       (tendsto_atTop_mono hl tendsto_id).comp hψ.tendsto_atTop
     have hzn : Tendsto zn atTop (𝓝 zInf) := by
-      simpa only [zn] using hzconv
+      change Tendsto (Function.comp z ψ) atTop (𝓝 zInf)
+      exact hzconv
     have hbuffer' : ∀ n, Metric.closedBall (zn n) (eta alpha) ⊆
         interior (C0 alpha) := fun n => hbuffer (ψ n)
     have hsource' : ∀ n,
@@ -976,7 +1097,8 @@ theorem HasStageJetData.cov_comp_tail
         have hjet := hNjet (kn n) hnk (ln n) hnl alpha z
           (interior_subset hzInt)
         have hsrcz := hsrc hzW
-        simpa only [A, Lphi] using (hjet hzInt hsrcz).2.1.contDiffWithinAt
+        convert (hjet hzInt hsrcz).2.1.contDiffWithinAt using 1 ;
+          with_unfolding_all rfl
       have hAmap : Set.MapsTo (A alpha (kn n) (ln n)) V D := by
         intro z hzV
         have hzClosure : z ∈ closure V := subset_closure hzV
@@ -991,11 +1113,11 @@ theorem HasStageJetData.cov_comp_tail
       have hBtarget : ContDiffOn Real (∞ : WithTop ℕ∞)
           (B alpha (ln n)) D := by
         let Yl := X.obj (Lphi.φ (ln n))
-        letI : TopologicalSpace Yl.M := Yl.topology
-        letI : ChartedSpace H Yl.M := Yl.charted
-        letI : IsManifold I ∞ Yl.M := Yl.smooth
-        letI : T2Space Yl.M := Yl.t2
-        letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+        let : TopologicalSpace Yl.M := Yl.topology
+        let : ChartedSpace H Yl.M := Yl.charted
+        let : IsManifold I ∞ Yl.M := Yl.smooth
+        let : T2Space Yl.M := Yl.t2
+        let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
         let cl := seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat)
         have hquarter := inp.normalRadius.phaseRadius_exp hcenter.le
         have hDexp : D ⊆ Metric.ball (0 : E)
@@ -1023,7 +1145,8 @@ theorem HasStageJetData.cov_comp_tail
           (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
       have hpull := (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBAc.prodMk hDAc)
-      simpa only [Q] using hpull
+      with_unfolding_all
+        exact hpull
     let Qp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n =>
       if Nsm ≤ n then Q alpha (kn n) (ln n) else gInf alpha
     have hQpconv : MapCInfConvOnCompacts V Qp (gInf alpha) := by
@@ -1096,18 +1219,18 @@ theorem HasStageJetData.cov_comp_tail
       simpa only [kn, ln, zn, slotn] using hbadn
     exact (not_lt_of_ge hbadn') hsmall
   choose Naa hNaa using hlocal
-  letI := Fintype.ofFinite (LiveSlot L inp.pack r)
+  let := Fintype.ofFinite (LiveSlot L inp.pack r)
   let Nalpha : LiveSlot L inp.pack r → Nat := fun alpha =>
     Finset.univ.sup (fun a : Fin (p + 1) => Naa alpha a)
   refine ⟨eta, heta, Finset.univ.sup Nalpha, ?_⟩
   intro k hk l hl
   let Yk := X.obj (Lphi.φ k)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
   intro y hy
   have hyBig : y ∈ Lphi.hatSourceBall inp.decay P r k :=
     cball_subset_of_le (hRS.trans hSr).le hy
@@ -1115,7 +1238,13 @@ theorem HasStageJetData.cov_comp_tail
   let chiK := NormalCoordinates.normalChartAt (I := I) Yk.metric
     (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
   have hzy' : chiK.symm z = y := by
-    simpa only [chiK, Yk, Lphi] using hzy
+    have hchart : chiK.symm z =
+        expMapDiffeo (I := I) Yk.metric
+          (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) z := by
+      with_unfolding_all
+        rfl
+    rw [hchart]
+    simpa only [Yk, Lphi] using hzy
   have hzSource : chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R k := by
     simpa only [hzy'] using hy
   have hAlpha : Nalpha alpha ≤ Finset.univ.sup Nalpha :=
@@ -1225,19 +1354,19 @@ theorem HasStageJetData.fwd_norm_tail
   let Lphi := L.subseq hphi
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : SigmaCompactSpace Yk.M := Yk.sigmaCompact
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : SigmaCompactSpace Yk.M := Yk.sigmaCompact
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : SigmaCompactSpace Yl.M := Yl.sigmaCompact
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   let F := stageComparisonMap inp P Lphi r hr k l
   have hkComp : Ncomp ≤ k := (Nat.le_max_left _ _).trans hk
   have hlComp : Ncomp ≤ l := (Nat.le_max_left _ _).trans hl
@@ -1292,7 +1421,7 @@ theorem HasStageJetData.fwd_norm_tail
       (chiK.toOpenPartialHomeomorph.continuousOn_invFun.isOpen_inter_preimage
         chiK.open_target hBopen)
   let V : TopologicalSpace.Opens E := ⟨Vset, hVopen⟩
-  letI : SigmaCompactSpace V :=
+  let : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen 𝓘(Real, E) V.isOpen)
   have hzV : z ∈ V := by
@@ -1308,8 +1437,10 @@ theorem HasStageJetData.fwd_norm_tail
     have hgeomK :=
       hdata.geom_on inp P L r hr U C0 C1 aInf Jinf Jbarinf k alpha
     have hzNorm : ‖z‖ < expMapC2Radius (I := I) Yk.metric ck := by
-      simpa only [Metric.mem_ball, dist_zero_right, Yk, ck, Lphi] using
-        hgeomK.2.1 hzU
+      simpa only [Metric.mem_ball, dist_zero_right, Yk, ck, Lphi,
+        NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
+        NormalChartFamily.radius, legacyChartFamily, legacyBallChart_radius] using
+          hgeomK.2.1 hzU
     refine ⟨?_, ?_⟩
     · exact mem_expMapDiffeo_source_of_norm_lt_radius
         (I := I) Yk.metric ck hzNorm
@@ -1322,14 +1453,18 @@ theorem HasStageJetData.fwd_norm_tail
     have hwD : (w : E) ∈ D := hC1D (interior_subset (hC01 hwC0))
     have hquarter := inp.normalRadius.phaseRadius_exp
       (hcenter k hkCenter alpha).le
-    simpa only [V, D, Ralpha, normalQuarter, Yk, ck, Lphi] using hquarter hwD
+    change (w : E) ∈ Metric.ball (0 : E)
+      (expMapC2Radius (I := I) Yk.metric ck / 4)
+    simpa only [D, Ralpha, Yk, ck, Lphi] using hquarter hwD
   have hjetAt (w : V) :
       F (chiK.symm (w : E)) ∈ (normalExpPD (I := I) Yl cl).target ∧
         ContDiffAt Real ∞ A (w : E) := by
     have hwS : chiK.symm (w : E) ∈
         Lphi.hatSourceBall inp.decay P S k := by
+      have hwBmid := w.2.2.2
+      change chiK.symm (w : E) ∈ Bmid at hwBmid
       exact Metric.ball_subset_closedBall
-        (by simpa only [V, Vset, Bmid] using w.2.2.2)
+        (by simpa only [Bmid] using hwBmid)
     have hout := hjetKL alpha (w : E) (interior_subset w.2.1)
       w.2.1 hwS
     simpa only [A, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using
@@ -1347,11 +1482,14 @@ theorem HasStageJetData.fwd_norm_tail
       mem_expMapDiffeo_source_of_norm_lt_radius (I := I) Yl.metric cl hvNorm
     have hmap :=
       (expMapDiffeo (I := I) Yl.metric cl).map_source hvSource
-    simpa only [normalExpPD, chiL] using hmap
+    rw [NormalCoordinates.normalChartAt_source_eq]
+    exact hmap
   have hsourceS (w : V) : chiK.symm (w : E) ∈
       Lphi.hatSourceBall inp.decay P S k := by
+    have hwBmid := w.2.2.2
+    change chiK.symm (w : E) ∈ Bmid at hwBmid
     exact Metric.ball_subset_closedBall
-      (by simpa only [V, Vset, Bmid] using w.2.2.2)
+      (by simpa only [Bmid] using hwBmid)
   have hQcoeff : ∀ (w : V) (u v : E),
       (quarterPull (I := I) Yk ck G).inner
           (TopologicalSpace.Opens.inclusion hVQ w) u v =
@@ -1365,11 +1503,16 @@ theorem HasStageJetData.fwd_norm_tail
             (mfderiv I I F (chiK.symm (w : E)) v')
             (mfderiv I I F (chiK.symm (w : E)) w') :=
       hG _ (hsourceS w)
+    have hchartK : chiK.symm (w : E) =
+        expMapDiffeo (I := I) Yk.metric ck (w : E) := by
+      with_unfolding_all
+        rfl
+    rw [hchartK] at hFdiff hmetricEq
     have hout := stagePull_coeff (I := I) Yk Yl ck cl F G
       (TopologicalSpace.Opens.inclusion hVQ w)
-      (hsmallTarget _ (hjetAt w).1) hFdiff (by
-        simpa only [chiK] using hmetricEq) u v
-    simpa only [Q, A, chiK] using hout
+      (hsmallTarget _ (hjetAt w).1) hFdiff hmetricEq u v
+    with_unfolding_all
+      exact hout
   have hVU : ∀ w : V, (w : E) ∈ U alpha := by
     intro w
     exact hC1U (interior_subset (hC01 (interior_subset w.2.1)))
@@ -1395,8 +1538,10 @@ theorem HasStageJetData.fwd_norm_tail
       have hwq := hVQ hw
       exact Metric.ball_subset_ball (by
         nlinarith [expMapC2Radius_pos (I := I) Yk.metric ck]) hwq
-    simpa only [B] using
+    have hraw :=
       (normalCoordMetric_contDiffOn_expBall (I := I) Yk ck).mono hVexp
+    with_unfolding_all
+      exact hraw
   have hAcd : ContDiffOn Real (∞ : WithTop ℕ∞) A V := by
     intro w hw
     exact (hjetAt ⟨w, hw⟩).2.contDiffWithinAt
@@ -1404,13 +1549,17 @@ theorem HasStageJetData.fwd_norm_tail
     intro w hw
     have hout := (normalExpPD (I := I) Yl cl).map_target
       (hjetAt ⟨w, hw⟩).1
-    simpa only [A, chiL, normalExpPD_source] using hout
+    with_unfolding_all
+      change chiL (F (chiK.symm w)) ∈ normalBall (I := I) Yl cl at hout
+    change chiL (F (chiK.symm w)) ∈ normalBall (I := I) Yl cl
+    exact hout
   have hBAcd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun w => normalCoordMetric (I := I) Yl cl (A w)) V := by
     have htarget : ContDiffOn Real (∞ : WithTop ℕ∞)
         (normalCoordMetric (I := I) Yl cl) (normalBall (I := I) Yl cl) := by
-      simpa only [normalBall] using
-        normalCoordMetric_contDiffOn_expBall (I := I) Yl cl
+      have hraw := normalCoordMetric_contDiffOn_expBall (I := I) Yl cl
+      with_unfolding_all
+        exact hraw
     simpa only [Function.comp_def] using htarget.comp hAcd hAmap
   have hDAcd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun w => fderiv Real A w) V := by
@@ -1421,7 +1570,8 @@ theorem HasStageJetData.fwd_norm_tail
     have hpull :=
       (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBAcd.prodMk hDAcd)
-    simpa only [Q] using hpull
+    with_unfolding_all
+      exact hpull
   let Gamma := fun w i j m ↦ e.coord m
     (MetricKoszul.raisedKoszulOp (B w) (fderiv Real B w)
       (e i) (e j))
@@ -1442,7 +1592,7 @@ theorem HasStageJetData.fwd_norm_tail
     simpa only [Gamma, base, B, Q, A, chiK, chiL, F, ck, cl, Yk, Yl,
       Lphi] using hraw
   let zV : V := ⟨z, hzV⟩
-  letI : SigmaCompactSpace (normalQuarter (I := I) Yk ck) :=
+  let : SigmaCompactSpace (normalQuarter (I := I) Yk ck) :=
     normalQuarterSigma (I := I) Yk ck
   let gQ := (normalTotal (I := I) Yk ck).restrictOpen
     (I := 𝓘(Real, E)) (normalQuarter (I := I) Yk ck)
@@ -1585,7 +1735,7 @@ theorem HasStageJetData.inv_norm_tail
     exact hstage.2.2.1 S hSr 0 (eta alpha / 2)
       (div_pos (heta alpha) (by norm_num))
   choose Nmove hNmove using hmove
-  letI := Fintype.ofFinite (LiveSlot L inp.pack r)
+  let := Fintype.ofFinite (LiveSlot L inp.pack r)
   let NmoveAll : Nat := Finset.univ.sup Nmove
   obtain ⟨Nloc, hloc⟩ :=
     hstage.hloc_tail inp P L hr phi hphi U C0 C1 aInf
@@ -1602,21 +1752,21 @@ theorem HasStageJetData.inv_norm_tail
   let Lphi := L.subseq hphi
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : SigmaCompactSpace Yk.M := Yk.sigmaCompact
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-  letI : Nonempty Yk.M := ⟨Yk.basepoint⟩
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : SigmaCompactSpace Yk.M := Yk.sigmaCompact
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : Nonempty Yk.M := ⟨Yk.basepoint⟩
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : SigmaCompactSpace Yl.M := Yl.sigmaCompact
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : MetricSpace Yl.M := (P (Lphi.φ l)).ms
   let F := stageComparisonMap inp P Lphi r hr k l
   let Hinv := Function.invFunOn F (Metric.ball Yk.basepoint T)
   have hkComp : Ncomp ≤ k := by dsimp only [N] at hk; omega
@@ -1665,7 +1815,8 @@ theorem HasStageJetData.inv_norm_tail
       F (chiK.symm z) ∈ (normalExpPD (I := I) Yl cl).target ∧
         ContDiffAt Real ∞ A z ∧
         ∀ j ≤ 0, mapDerivNorm j A id z ≤ eta alpha / 2 := by
-    simpa only [A, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using hjetZraw
+    with_unfolding_all
+      exact hjetZraw
   have hAzDist : dist (A z) z ≤ eta alpha / 2 := by
     have hraw := hjetZ.2.2 0 le_rfl
     simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
@@ -1685,19 +1836,28 @@ theorem HasStageJetData.inv_norm_tail
   have hAzQ : A z ∈ normalQuarter (I := I) Yl cl := by
     have hquarter := inp.normalRadius.phaseRadius_exp
       (hcenter l hlCenter alpha).le
-    simpa only [D, Ralpha, normalQuarter, Yl, cl, Lphi] using hquarter hAzD
+    change A z ∈ Metric.ball (0 : E)
+      (expMapC2Radius (I := I) Yl.metric cl / 4)
+    simpa only [D, Ralpha, Yl, cl, Lphi] using hquarter hAzD
   have hgeomK :=
     hdata.geom_on inp P L r hr U C0 C1 aInf Jinf Jbarinf k alpha
   have hzU : z ∈ U alpha :=
     hC1U (interior_subset (hC01 (interior_subset hzInt)))
   have hzNormal : z ∈ normalBall (I := I) Yk ck := by
-    simpa only [normalBall, Yk, ck, Lphi] using hgeomK.2.1 hzU
+    change z ∈ Metric.ball (0 : E)
+      (expMapC2Radius (I := I) Yk.metric ck)
+    simpa only [Metric.mem_ball, dist_zero_right, Yk, ck, Lphi,
+      NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
+      NormalChartFamily.radius, legacyChartFamily, legacyBallChart_radius] using
+        hgeomK.2.1 hzU
   let dK := normalExpPD (I := I) Yk ck
   let dL := normalExpPD (I := I) Yl cl
   have hyDK : y ∈ dK.target := by
     refine ⟨z, ?_, ?_⟩
-    · simpa only [dK, normalExpPD_source] using hzNormal
-    · simpa only [dK, normalExpPD, chiK, ck, Yk, Lphi] using hzy
+    · change z ∈ normalBall (I := I) Yk ck
+      exact hzNormal
+    · with_unfolding_all
+        exact hzy
   have hBallOpen : IsOpen (Metric.ball Yk.basepoint T) := by
     have hb :
         @IsOpen Yk.M
@@ -1754,12 +1914,12 @@ theorem HasStageJetData.inv_norm_tail
   let Vset : Set E := interior (C0 alpha) ∩ Wcoord
   have hVopen : IsOpen Vset := isOpen_interior.inter hWcoordOpen
   let V : TopologicalSpace.Opens E := ⟨Vset, hVopen⟩
-  letI : SigmaCompactSpace V :=
+  let : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen 𝓘(Real, E) V.isOpen)
   have hySopen : y ∈ Metric.ball Yk.basepoint S := by
     have hyR : dist y Yk.basepoint ≤ R := by
-      simpa only [NetLimitData.hatSourceBall, Yk] using hy
+      simpa only [NetLimitData.hatSourceBall, Metric.mem_closedBall, Yk] using hy
     rw [Metric.mem_ball]
     exact hyR.trans_lt hRS
   have hPhiY : (Phi : Yk.M → Yl.M) y = F y :=
@@ -1780,20 +1940,24 @@ theorem HasStageJetData.inv_norm_tail
       mem_expMapDiffeo_source_of_norm_lt_radius (I := I) Yl.metric cl hvNorm
     have hmap :=
       (expMapDiffeo (I := I) Yl.metric cl).map_source hvSource
-    simpa only [dL, normalExpPD, chiL] using hmap
+    rw [NormalCoordinates.normalChartAt_source_eq]
+    exact hmap
   have hdecode : chiL.symm (A z) = F y := by
     have hzy' : chiK.symm z = y := by
       simpa only [chiK, ck, Yk, Lphi] using hzy
     have hsrc : F y ∈ chiL.source := by
       exact hsmallTarget _ (by simpa only [hzy'] using hjetZ.1)
-    simpa only [A, hzy'] using chiL.left_inv hsrc
+    change chiL.symm (chiL (F (chiK.symm z))) = F y
+    rw [hzy']
+    exact chiL.left_inv hsrc
   have hAzV : A z ∈ V := by
     refine ⟨hAzInt, ?_⟩
     have hAzSrc : A z ∈ dL.source :=
       normalQuarter_sub (I := I) Yl cl hAzQ
     refine ⟨hAzSrc, ?_⟩
     have hdLA : dL (A z) = F y := by
-      simpa only [dL, normalExpPD, chiL] using hdecode
+      with_unfolding_all
+        exact hdecode
     change dL (A z) ∈ Wphi
     rw [hdLA]
     refine ⟨⟨y, hySopen, hPhiY⟩, ?_, ?_⟩
@@ -1808,8 +1972,9 @@ theorem HasStageJetData.inv_norm_tail
       hC1D (interior_subset (hC01 (interior_subset hw.1)))
     have hquarter := inp.normalRadius.phaseRadius_exp
       (hcenter l hlCenter alpha).le
-    simpa only [V, Vset, D, Ralpha, normalQuarter, Yl, cl, Lphi] using
-      hquarter hwD
+    change (w : E) ∈ Metric.ball (0 : E)
+      (expMapC2Radius (I := I) Yl.metric cl / 4)
+    simpa only [D, Ralpha, Yl, cl, Lphi] using hquarter hwD
   have hImageEq : (Phi : Yk.M → Yl.M) '' Metric.ball Yk.basepoint S =
       F '' Metric.ball Yk.basepoint S :=
     Set.EqOn.image_eq (fun x hx =>
@@ -1825,20 +1990,23 @@ theorem HasStageJetData.inv_norm_tail
       (fun (w : E) (hw : w ∈ (V : Set E)) => hw.2.2.2.1)
     have h3 := dK.symm.contMDiffOn_toFun.comp h2
       (fun (w : E) (hw : w ∈ (V : Set E)) => hw.2.2.2.2)
-    simpa only [Gaux] using h3
+    with_unfolding_all
+      exact h3
   have hauxEq : Set.EqOn Gaux Grev V := by
     intro w hw
     have heq := hsymmEq hw.2.2.2.1
-    simpa only [Gaux, Grev, dK, dL, normalExpPD, chiK, chiL] using
-      congrArg (fun q => chiK q) heq
+    have hpoint := congrArg (fun q => chiK q) heq
+    with_unfolding_all
+      exact hpoint
   have hGrevcd : ContDiffOn Real (∞ : WithTop ℕ∞) Grev V := by
     rw [← contMDiffOn_iff_contDiffOn]
     exact hauxMD.congr (fun w hw => (hauxEq hw).symm)
   have hGrevMap : Set.MapsTo Grev V (normalBall (I := I) Yk ck) := by
     intro w hw
     rw [← hauxEq hw]
-    simpa only [Gaux, dK, normalExpPD_source] using
-      dK.map_target hw.2.2.2.2
+    have hraw := dK.map_target hw.2.2.2.2
+    with_unfolding_all
+      exact hraw
   have hsmallSource : ∀ q : Yk.M,
       q ∈ dK.target → q ∈ chiK.source := by
     intro q hq
@@ -1852,29 +2020,44 @@ theorem HasStageJetData.inv_norm_tail
       mem_expMapDiffeo_source_of_norm_lt_radius (I := I) Yk.metric ck hvNorm
     have hmap :=
       (expMapDiffeo (I := I) Yk.metric ck).map_source hvSource
-    simpa only [dK, normalExpPD, chiK] using hmap
+    rw [NormalCoordinates.normalChartAt_source_eq]
+    exact hmap
   have hQcoeff : ∀ (w : V) (u v : E),
       (quarterPull (I := I) Yl cl G).inner
           (TopologicalSpace.Opens.inclusion hVQ w) u v =
         Q (w : E) u v := by
     intro w u v
+    have hchartL : chiL.symm (w : E) =
+        expMapDiffeo (I := I) Yl.metric cl (w : E) := by
+      with_unfolding_all
+        rfl
+    have hdL : dL (w : E) =
+        expMapDiffeo (I := I) Yl.metric cl (w : E) := by
+      with_unfolding_all
+        rfl
     have hPhiTarget : dL (w : E) ∈ Phi.target := w.2.2.2.2.1
     have hInvTarget : Hinv (chiL.symm (w : E)) ∈ dK.target := by
       have hmem := w.2.2.2.2.2
       change Phi.symm (dL (w : E)) ∈ dK.target at hmem
       rw [hsymmEq hPhiTarget] at hmem
-      simpa only [dL, normalExpPD, chiL] using hmem
+      rw [hdL] at hmem
+      rw [hchartL]
+      exact hmem
     have hInvSource : Hinv (chiL.symm (w : E)) ∈ chiK.source :=
       hsmallSource _ hInvTarget
     have hHdiff : MDifferentiableAt I I Hinv (chiL.symm (w : E)) := by
       have hraw := (hHcdOn.contMDiffAt
         (Phi.open_target.mem_nhds hPhiTarget)).mdifferentiableAt (by simp)
-      simpa only [dL, normalExpPD, chiL] using hraw
+      rw [hdL] at hraw
+      rw [hchartL]
+      exact hraw
     have hstageBall : chiL.symm (w : E) ∈
         F '' Metric.ball Yk.basepoint S := by
       have hraw := w.2.2.2.1
       rw [hImageEq] at hraw
-      simpa only [dL, normalExpPD, chiL] using hraw
+      rw [hdL] at hraw
+      rw [hchartL]
+      exact hraw
     have hstageClosed : chiL.symm (w : E) ∈
         F '' Lphi.hatSourceBall inp.decay P S k := by
       apply Set.image_mono _ hstageBall
@@ -1888,10 +2071,12 @@ theorem HasStageJetData.inv_norm_tail
               (mfderiv I I Hinv (chiL.symm (w : E)) v')
               (mfderiv I I Hinv (chiL.symm (w : E)) w') :=
       hG _ hstageClosed
+    rw [hchartL] at hmetricEq hHdiff hInvSource
     have hout := stagePull_coeff (I := I) Yl Yk cl ck Hinv G
       (TopologicalSpace.Opens.inclusion hVQ w) hInvSource hHdiff (by
-        simpa only [chiL] using hmetricEq) u v
-    simpa only [Q, Grev, chiL] using hout
+        exact hmetricEq) u v
+    with_unfolding_all
+      exact hout
   have hVU : ∀ w : V, (w : E) ∈ U alpha := by
     intro w
     exact hC1U (interior_subset (hC01 (interior_subset w.2.1)))
@@ -1911,15 +2096,17 @@ theorem HasStageJetData.inv_norm_tail
       (hgeomL.1 (hVU ⟨A z, hAzV⟩)) v
     simpa only [BL] using hraw
   have hBLcd : ContDiffOn Real (∞ : WithTop ℕ∞) BL V := by
-    simpa only [BL] using
-      (normalCoordMetric_contDiffOn_expBall (I := I) Yl cl).mono
-        (fun w hw => hgeomL.2.1 (hVU ⟨w, hw⟩))
+    have hraw := (normalCoordMetric_contDiffOn_expBall (I := I) Yl cl).mono
+      (fun w hw => hgeomL.2.1 (hVU ⟨w, hw⟩))
+    with_unfolding_all
+      exact hraw
   have hBKcd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun w => BK (Grev w)) V := by
     have hsource : ContDiffOn Real (∞ : WithTop ℕ∞) BK
         (normalBall (I := I) Yk ck) := by
-      simpa only [BK, normalBall] using
-        normalCoordMetric_contDiffOn_expBall (I := I) Yk ck
+      have hraw := normalCoordMetric_contDiffOn_expBall (I := I) Yk ck
+      with_unfolding_all
+        exact hraw
     simpa only [Function.comp_def] using hsource.comp hGrevcd hGrevMap
   have hDGrev : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun w => fderiv Real Grev w) V := by
@@ -1930,7 +2117,8 @@ theorem HasStageJetData.inv_norm_tail
     have hpull :=
       (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBKcd.prodMk hDGrev)
-    simpa only [Q] using hpull
+    with_unfolding_all
+      exact hpull
   let Gamma := fun w i j m ↦ e.coord m
     (MetricKoszul.raisedKoszulOp (BL w) (fderiv Real BL w)
       (e i) (e j))
@@ -1951,7 +2139,7 @@ theorem HasStageJetData.inv_norm_tail
     simpa only [Gamma, base, BL, BK, Q, Grev, A, F, Hinv, chiK, chiL,
       ck, cl, Yk, Yl, Lphi] using hraw
   let wV : V := ⟨A z, hAzV⟩
-  letI : SigmaCompactSpace (normalQuarter (I := I) Yl cl) :=
+  let : SigmaCompactSpace (normalQuarter (I := I) Yl cl) :=
     normalQuarterSigma (I := I) Yl cl
   let gQ := (normalTotal (I := I) Yl cl).restrictOpen
     (I := 𝓘(Real, E)) (normalQuarter (I := I) Yl cl)
@@ -2001,7 +2189,7 @@ noncomputable def constTangentField (v : E) :
 omit [NeZero (Module.finrank Real E)] [FiniteDimensional Real E] in
 theorem constBasis_frame
     {Idx : Type*}
-    (U : TopologicalSpace.Opens E) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens E)
     (e : Module.Basis Idx Real E) :
     IsLocalFrameOn 𝓘(Real, E) E (1 : WithTop ℕ∞)
       (fun i (x : U) => (show TangentSpace 𝓘(Real, E) x from e i)) Set.univ :=
@@ -2017,7 +2205,7 @@ private noncomputable def flatModelMetricB1 :
 
 omit [NeZero (Module.finrank Real E)] in
 theorem metric_norm_le_comp
-    (V : TopologicalSpace.Opens E) [SigmaCompactSpace V] [T2Space V]
+    (V : TopologicalSpace.Opens E) [T2Space V]
     (G g : SmoothRiemannianMetric 𝓘(Real, E) V) (a : Nat) (z : V)
     {B : Real} (hB : 0 ≤ B)
     (hequiv : ∀ v : E,
@@ -2053,26 +2241,29 @@ theorem metric_norm_le_comp
   have hON0 : ∀ i j : Fin (Module.finrank Real E),
       g0.inner z (e i) (e j) = if i = j then (1 : Real) else 0 := by
     intro i j
-    simpa only [g0, SmoothRiemannianMetric.restrictOpen_inner,
-      flatModelMetricB1, riemannianMetricVectorSpace] using
-        (stdOrthonormalBasis Real E).inner_eq_ite i j
+    have h := (stdOrthonormalBasis Real E).inner_eq_ite i j
+    with_unfolding_all
+      exact h
   have hinv0 : Tensor0SBundle.MetricInverseInBasis_gen
       (I := 𝓘(Real, E)) g0 z e
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real E))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g0 e hON0
-    simpa [Tensor0SBundle.identityInvMetric,
-      Tensor0SBundle.diagonalInvMetric] using h
+    with_unfolding_all
+      change Tensor0SBundle.MetricInverseInBasis_gen
+        (I := modelWithCornersSelf Real E) g0 z e
+          (fun i j => if i = j then 1 else 0)
+    exact h
   have hequiv' : ∀ v : TangentSpace 𝓘(Real, E) z,
       (2 : Real)⁻¹ * g0.inner z v v ≤ g.inner z v v ∧
         g.inner z v v ≤ 2 * g0.inner z v v := by
     intro v
     change E at v
     have hg0 : g0.inner z v v = ‖v‖ ^ 2 := by
-      simpa only [g0, SmoothRiemannianMetric.restrictOpen_inner,
-        flatModelMetricB1, riemannianMetricVectorSpace] using
-          real_inner_self_eq_norm_sq v
+      have h := real_inner_self_eq_norm_sq v
+      with_unfolding_all
+        exact h
     rw [hg0]
     simpa only [one_div] using hequiv v
   obtain ⟨b, hbON⟩ :=
@@ -2084,13 +2275,21 @@ theorem metric_norm_le_comp
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
-    simpa [Tensor0SBundle.identityInvMetric,
-      Tensor0SBundle.diagonalInvMetric] using h
+    with_unfolding_all
+      change Tensor0SBundle.MetricInverseInBasis_gen
+        (I := modelWithCornersSelf Real E) g z b
+          (fun i j => if i = j then 1 else 0)
+    exact h
   rw [metricDerivNorm_eq_iterCov (I := 𝓘(Real, E)) G g g a b hbinv]
   apply sqrt_norm_le_comp (I := 𝓘(Real, E)) g0 g z (2 + a) e hinv0
     (C := 2) (B := B) (by norm_num) hequiv' _ hB
   intro slots
-  rw [Tensor0SBundle.component0S_apply]
+  with_unfolding_all
+    change
+      |iterCov (I := modelWithCornersSelf Real E) g 2
+        (Tensor0SBundle.metricTensorField (I := modelWithCornersSelf Real E) G -
+          Tensor0SBundle.metricTensorField (I := modelWithCornersSelf Real E) g)
+        a z (fun q ↦ e (slots q))| ≤ B
   have ht := iterCovComp_eq_iterCov (I := 𝓘(Real, E)) g
     (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
       Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) g)
@@ -2108,7 +2307,13 @@ theorem metric_norm_le_comp
           (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
             Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) g)
           a z (fun q ↦ e (slots q)) := by
-    simpa only [frameTuple, frame] using ht
+    have htuple : frameTuple (I := modelWithCornersSelf Real E) frame z slots =
+        fun q ↦ e (slots q) := by
+      funext q
+      with_unfolding_all
+        rfl
+    rw [htuple] at ht
+    exact ht
   calc
     |iterCov (I := 𝓘(Real, E)) g 2
         (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -

@@ -87,10 +87,10 @@ theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish
         have hιmaps : Set.MapsTo ι V S := fun v hv => by
           rw [hS_def, hι_def]; exact ⟨Set.self_mem_Ici, hv⟩
         have hιfd : HasFDerivWithinAt ι (ContinuousLinearMap.inr ℝ ℝ E) V z := by
-          simpa [hι_def] using (ContinuousLinearMap.inr ℝ ℝ E).hasFDerivWithinAt
+          simpa [hι_def] using! (ContinuousLinearMap.inr ℝ ℝ E).hasFDerivWithinAt
         have hιdiff : DifferentiableWithinAt ℝ ι V z := hιfd.differentiableWithinAt
         have hgdiff : DifferentiableWithinAt ℝ g S (0, z) :=
-          (hD.differentiableOn_iteratedFDerivWithin (by exact_mod_cast ENat.coe_lt_top n) hUD)
+          (hD.differentiableOn_iteratedFDerivWithin (by exact_mod_cast ENat.natCast_lt_top n) hUD)
             (0, z) hmem
         have hcompzero : fderivWithin ℝ (g ∘ ι) V z = 0 := by
           have hEq : Set.EqOn (g ∘ ι) (fun _ => 0) V := by

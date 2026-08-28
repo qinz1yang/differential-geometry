@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
@@ -44,7 +44,7 @@ lemma posDef_bilin_unit_ball_isBounded
     (hBilin_smul_left : ∀ (c : ℝ) (v w : F), B (c • v) w = c * B v w)
     (hBilin_smul_right : ∀ (c : ℝ) (v w : F), B v (c • w) = c * B v w) :
     Bornology.IsBounded {v : F | B v v < 1} := by
-  haveI : ProperSpace F := FiniteDimensional.proper ℝ _
+  have : ProperSpace F := FiniteDimensional.proper ℝ _
   classical
   set Q : F → ℝ := fun v => B v v with hQ_def
   have hQ_cont : Continuous Q :=
@@ -95,7 +95,7 @@ lemma posDef_bilin_unit_ball_isBounded
       exact hineq
   refine (Metric.isBounded_iff_subset_ball 0).mpr ?_
   refine ⟨1 / Real.sqrt c + 1, fun v hv => ?_⟩
-  rw [Set.mem_setOf_eq] at hv
+  rw [Set.mem_ofPred_eq] at hv
   have h1 : c * ‖v‖ ^ 2 < 1 := lt_of_le_of_lt (hQ_lower v) hv
   have h2 : ‖v‖ ^ 2 < c⁻¹ := by
     have hh : ‖v‖ ^ 2 < 1 / c := by rwa [lt_div_iff₀ hc_pos, mul_comm]

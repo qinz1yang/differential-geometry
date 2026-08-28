@@ -55,9 +55,9 @@ theorem volumeReal_cross
   let μBase := riemannianVolumeMeasure (I := I) (M := M) gBase
   let μg := riemannianVolumeMeasure (I := I) (M := M) g
   let L : ℝ := volCompareC (E := E) Λ
-  haveI : IsFiniteMeasure μBase :=
+  have : IsFiniteMeasure μBase :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) gBase
-  haveI : IsFiniteMeasure μg :=
+  have : IsFiniteMeasure μg :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hmeas := volumeMeasure_cross_le (I := I) (M := M) gBase g hEq
   constructor
@@ -287,7 +287,7 @@ theorem rank_two_grid_uniform
             rankTwoGridC (E := E) (I := I) (M := M) gBase Λ k R * A ^ 2 := by
   classical
   intro g hEq hjet1 hjet2 P R A hR hA hP2 htop
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   have hdim : Module.finrank ℝ E / 2 + 2 = 3 := by
     rw [hDim]
@@ -364,14 +364,14 @@ theorem rank_two_grid_uniform
             riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
               ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro n hn
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro e he
     exact (hterm n hn e he).1
   refine ⟨hint, ?_⟩
-  rw [MeasureTheory.integral_finset_sum _
-    (fun n hn => MeasureTheory.integrable_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
+    (fun n hn => MeasureTheory.integrable_finsetSum _
       (fun e he => (hterm n hn e he).1))]
   have hinner : ∀ n ∈ Finset.range (k + 1),
       (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -385,7 +385,7 @@ theorem rank_two_grid_uniform
             ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     intro n hn
-    exact MeasureTheory.integral_finset_sum _ (fun e he => (hterm n hn e he).1)
+    exact MeasureTheory.integral_finsetSum _ (fun e he => (hterm n hn e he).1)
   rw [Finset.sum_congr rfl hinner]
   calc
     ∑ n ∈ Finset.range (k + 1),
@@ -457,7 +457,7 @@ theorem h2_grid_uniform
               h2GridC (E := E) (I := I) (M := M) gBase Λ R k := by
   classical
   intro g hEq hjet1 hjet2 P R hR hP2 k hk2
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   by_cases hk0 : k = 0
   · subst k
@@ -475,8 +475,10 @@ theorem h2_grid_uniform
       exact MeasureTheory.integrable_const 1
     · rw [hgrid, MeasureTheory.integral_const, smul_eq_mul, mul_one,
         MeasureTheory.measureReal_def]
-      simpa only [h2GridC, if_pos rfl] using
-        (volumeReal_cross (I := I) (M := M) gBase g hEq).1
+      change ((riemannianVolumeMeasure (I := I) (M := M) g) Set.univ).toReal ≤
+        volCompareC (E := E) Λ *
+          ((riemannianVolumeMeasure (I := I) (M := M) gBase) Set.univ).toReal
+      exact (volumeReal_cross (I := I) (M := M) gBase g hEq).1
   · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
     have hmem : k ∈ Finset.range 3 := Finset.mem_range.mpr (by omega)
     have hsingle : ‖iteratedCovGrad (I := I) g 0 2 k P‖ ^ 2 ≤ R ^ 2 :=

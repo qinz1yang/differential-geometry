@@ -61,7 +61,7 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRi
     rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
     exact h
   rw [hframe]
-  have hmodel := deTurckRHSSection_toModel_apply (I := I) g_bg g₁ b
+  have hmodel := deTurckRHSSection_eval (I := I) g_bg g₁ b
     (fun k : Fin 2 => chartBasisVecFiber (I := I) α (Jdx k) b)
   rw [show (deTurckRHSSectionBackground (I := I) g_bg g₁).toSection b =
       (deTurckRHSSection (I := I) g_bg g₁).toSection b from rfl]
@@ -71,7 +71,7 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRi
             (fun _ : Fin 0 => TangentSpace I b) (1 : ℝ)) :
         ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I b) ℝ)
         (fun k : Fin 2 => chartBasisVecFiber (I := I) α (Jdx k) b) =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((deTurckRHSSection (I := I) g_bg g₁).toSection b
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I b) (1 : ℝ)))
@@ -98,8 +98,8 @@ theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_chartRicciLie
       hb_src Idx Jdx]
   rw [show chartBasisVecFiber (I := I) α (Jdx 0) b = v₀ from rfl,
     show chartBasisVecFiber (I := I) α (Jdx 1) b = v₁ from rfl]
-  rw [deTurckRicciRHS, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [deTurckRicciRHS, add_apply, add_apply,
+    smul_apply, smul_apply, smul_eq_mul]
   have hRic :
       ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g₁) b v₀ v₁ =
         chartRicciTensor (I := I) g₁ α (Jdx 0) (Jdx 1) (extChartAt I α b) := by

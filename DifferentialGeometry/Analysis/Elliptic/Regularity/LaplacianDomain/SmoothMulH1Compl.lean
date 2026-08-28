@@ -203,7 +203,7 @@ private lemma inner_grad_phi_mul_v_le
       ((φ : M → ℝ) x) ^ 2 *
         g.inner x (gradFun (I := I) g v.toFun x)
           (gradFun (I := I) g v.toFun x)
-    rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+    rw [(g.inner x).map_smul, smul_apply,
       (g.inner x _).map_smul]
     change (φ : M → ℝ) x • (φ : M → ℝ) x •
         g.inner x (gradFun (I := I) g v.toFun x)
@@ -222,7 +222,7 @@ private lemma inner_grad_phi_mul_v_le
       (v.toFun x) ^ 2 *
         g.inner x (gradFun (I := I) g (φ : M → ℝ) x)
           (gradFun (I := I) g (φ : M → ℝ) x)
-    rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+    rw [(g.inner x).map_smul, smul_apply,
       (g.inner x _).map_smul]
     change v.toFun x • v.toFun x •
         g.inner x (gradFun (I := I) g (φ : M → ℝ) x)
@@ -243,7 +243,7 @@ private lemma integral_sq_phi_mul_v_le
       phiSupBound (I := I) (M := M) g φ ^ 2 *
         (∫ x, v.toFun x ^ 2
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have h_phi_cont : Continuous (φ : M → ℝ) := φ.contMDiff.continuous
   have h_v_cont : Continuous v.toFun := v.smooth.continuous
@@ -282,7 +282,7 @@ private lemma integral_inner_grad_phi_mul_v_le
       2 * gradSupBound (I := I) (M := M) g φ ^ 2 *
         (∫ x, v.toFun x ^ 2
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have h_phi_cont : Continuous (φ : M → ℝ) := φ.contMDiff.continuous
   have h_v_cont : Continuous v.toFun := v.smooth.continuous
@@ -1234,11 +1234,6 @@ theorem smoothMulH1Compl_eq_resolvent_fHLeibnizGeneral
         (resolvent (I := I) (M := M) g
           (leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ u_h hu_h)))
   · intro vT
-    change ⟪smoothToH1Compl (I := I) (M := M) g vT,
-        smoothMulH1Compl (I := I) (M := M) g φ u_h⟫_ℝ =
-      ⟪smoothToH1Compl (I := I) (M := M) g vT,
-        resolvent (I := I) (M := M) g
-          (leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ u_h hu_h)⟫_ℝ
     rw [real_inner_comm (smoothMulH1Compl (I := I) (M := M) g φ u_h)
       (smoothToH1Compl (I := I) (M := M) g vT)]
     rw [real_inner_comm

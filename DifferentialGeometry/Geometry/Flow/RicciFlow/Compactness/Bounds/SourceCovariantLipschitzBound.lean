@@ -12,7 +12,7 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
-  [Module.Finite Real E] [FiniteDimensional Real E] [CompleteSpace E]
+  [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
@@ -69,7 +69,7 @@ noncomputable def convOut_of_src
           letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
               sourceDomCharted (I := I) Φ k
           TangentSpace I y),
-        cLow * R.inner (y : P.M) v v ≤
+        cLow * (refRes (I := I) Φ R k).inner y v v ≤
           letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
           letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=

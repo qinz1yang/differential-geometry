@@ -144,7 +144,7 @@ private theorem inclEuclideanCLM_apply_coord (n : ℕ) [NeZero n]
           ((consZeroCLM n).comp
             (EuclideanSpace.equiv (Fin (n - 1)) ℝ).toContinuousLinearMap)) x) i
         = consZeroFun n x i
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe]
   rw [consZeroCLM_apply]
   rfl
@@ -156,7 +156,7 @@ private theorem projEuclideanCLM_apply_coord (n : ℕ) [NeZero n]
           ((tailCLM n).comp
             (EuclideanSpace.equiv (Fin n) ℝ).toContinuousLinearMap)) y) j
         = tailFun n y j
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe]
   rw [tailCLM_apply]
   rfl
@@ -205,7 +205,7 @@ theorem range_inclEuclidean (n : ℕ) [NeZero n] :
     Set.range (inclEuclidean n) =
       {y : EuclideanSpace ℝ (Fin n) | y 0 = 0} := by
   ext y
-  simp only [mem_range, mem_setOf_eq]
+  simp only [mem_range, mem_ofPred_eq]
   refine ⟨?_, ?_⟩
   · rintro ⟨x, rfl⟩
     exact inclEuclidean_zero_coord n x
@@ -274,7 +274,7 @@ theorem range_modelWithCorners_comp_inclH (n : ℕ) [NeZero n] :
     Set.range (modelWithCornersEuclideanHalfSpace n ∘ inclH n) =
       {y : EuclideanSpace ℝ (Fin n) | y 0 = 0} := by
   ext y
-  simp only [mem_range, Function.comp_apply, mem_setOf_eq]
+  simp only [mem_range, Function.comp_apply, mem_ofPred_eq]
   refine ⟨?_, ?_⟩
   · rintro ⟨x, rfl⟩
     change inclEuclidean n x 0 = 0
@@ -349,8 +349,8 @@ private theorem hyperplane_basisAddHaar_zero (n : ℕ) [NeZero n] :
     ((Module.finBasis ℝ (EuclideanSpace ℝ (Fin n))).addHaar :
         MeasureTheory.Measure (EuclideanSpace ℝ (Fin n)))
       {y : EuclideanSpace ℝ (Fin n) | y 0 = 0} = 0 := by
-  letI : MeasurableSpace (EuclideanSpace ℝ (Fin n)) := borel _
-  haveI : BorelSpace (EuclideanSpace ℝ (Fin n)) := ⟨rfl⟩
+  let : MeasurableSpace (EuclideanSpace ℝ (Fin n)) := borel _
+  have : BorelSpace (EuclideanSpace ℝ (Fin n)) := ⟨rfl⟩
   set ker : Submodule ℝ (EuclideanSpace ℝ (Fin n)) :=
     (EuclideanSpace.proj 0 :
       EuclideanSpace ℝ (Fin n) →L[ℝ] ℝ).toLinearMap.ker with hker_def
@@ -385,8 +385,8 @@ private theorem frontier_range_modelWithCorners_basisAddHaar_zero
     ((Module.finBasis ℝ (EuclideanSpace ℝ (Fin n))).addHaar :
         MeasureTheory.Measure (EuclideanSpace ℝ (Fin n)))
       (frontier (Set.range (modelWithCornersEuclideanHalfSpace n))) = 0 := by
-  letI : MeasurableSpace (EuclideanSpace ℝ (Fin n)) := borel _
-  haveI : BorelSpace (EuclideanSpace ℝ (Fin n)) := ⟨rfl⟩
+  let : MeasurableSpace (EuclideanSpace ℝ (Fin n)) := borel _
+  have : BorelSpace (EuclideanSpace ℝ (Fin n)) := ⟨rfl⟩
   rw [frontier_range_modelWithCornersEuclideanHalfSpace_eq]
   exact hyperplane_basisAddHaar_zero n
 
@@ -497,7 +497,11 @@ private theorem inwardCoordAt_self_charted_eq
         ((trivializationAt (EuclideanSpace ℝ (Fin n))
             (TangentSpace (modelWithCornersEuclideanHalfSpace n))
             (α : EuclideanHalfSpace n)).symmL ℝ (y : EuclideanHalfSpace n))
-              (instHasSmoothBoundary n).inwardCoordE := rfl
+              (instHasSmoothBoundary n).inwardCoordE :=
+    ((trivializationAt (EuclideanSpace ℝ (Fin n))
+      (TangentSpace (modelWithCornersEuclideanHalfSpace n))
+      (α : EuclideanHalfSpace n)).symmL_apply hy
+        (instHasSmoothBoundary n).inwardCoordE).symm
   rw [h_symm_to_symmL, h_symmL]
   rw [tangentBundleCore_coordChange_achart]
   set z₀ : EuclideanSpace ℝ (Fin n) := extChartAt (modelWithCornersEuclideanHalfSpace n)
@@ -507,7 +511,6 @@ private theorem inwardCoordAt_self_charted_eq
                         EuclideanHalfSpace n → EuclideanSpace ℝ (Fin n)) := by
     show z₀ ∈ Set.range (modelWithCornersEuclideanHalfSpace n)
     refine ⟨(y : EuclideanHalfSpace n), ?_⟩
-    change (modelWithCornersEuclideanHalfSpace n) (y : EuclideanHalfSpace n) = z₀
     change (modelWithCornersEuclideanHalfSpace n) (y : EuclideanHalfSpace n) =
         extChartAt (modelWithCornersEuclideanHalfSpace n) (α : EuclideanHalfSpace n)
           (y : EuclideanHalfSpace n)
@@ -559,8 +562,11 @@ instance instHasOrientableBoundary_self_EuclideanHalfSpace
     have h₀ := inwardCoordAt_self_charted_eq n α₀ y hα₀
     have h₁ := inwardCoordAt_self_charted_eq n α₁ y hα₁
     rw [h₀, h₁]
-    simp only [one_smul, sub_self]
-    exact ⟨0, map_zero _⟩
+    refine ⟨0, ?_⟩
+    rw [map_zero]
+    let w := (instHasSmoothBoundary n).inwardCoordE
+    change 0 = w - (1 : ℝ) • w
+    rw [one_smul, sub_self]
 
 end EuclideanHalfSpaceInstance
 

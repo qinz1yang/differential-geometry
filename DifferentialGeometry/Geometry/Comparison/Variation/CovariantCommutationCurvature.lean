@@ -20,6 +20,7 @@ import Mathlib.Topology.Compactness.Compact
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
 import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -46,6 +47,7 @@ open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 private lemma chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase
     {n : WithTop ℕ∞} [ENat.LEInfty n] (hn : n ≠ 0)
@@ -199,7 +201,7 @@ private lemma chartCoord_longitudinalVelocity_contDiffAt
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
   DifferentialGeometry.Integral.DivergenceTheorem in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma slice_secondCovDeriv_chartRep_differentiableAt
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t : ℝ) :
@@ -218,7 +220,7 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
     have hincl : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ) (fun s : ℝ => (s, t)) :=
       contMDiff_id.prodMk contMDiff_const
     exact (hf : ContMDiff _ _ _ _).comp hincl
-  set velT : ℝ → ℝ → E :=
+  set velT : (s v : ℝ) → TangentSpace I (f s v) :=
     fun s v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) v (1 : ℝ) with hvelT
   set Y : ℝ → E := fun s : ℝ =>
     (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f s t) (velT s t) with hY
@@ -485,7 +487,7 @@ private lemma slice_transverseVelocity_chartRep_differentiableAt
   exact (heq.differentiableAt_iff).mpr (hsec_cdiff.differentiableAt (by simp))
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem commute_ds_dt_curvature_innerS
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t : ℝ)
@@ -520,7 +522,7 @@ theorem commute_ds_dt_curvature_innerS
     exact (hf : ContMDiff _ _ _ _).comp hincl
   have htransverse : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun s : ℝ => f s t) := hslice_v t
   have hcentral : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun v : ℝ => f 0 v) := hslice_u 0
-  set velS : ℝ → ℝ → E :=
+  set velS : (s v : ℝ) → TangentSpace I (f s v) :=
     fun s v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) s (1 : ℝ) with hvelS
   set Y : ℝ → ℝ → E := fun u v =>
     (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velS u v) with hY
@@ -653,7 +655,7 @@ theorem commute_ds_dt_curvature_innerS
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun u : ℝ => f u t) ((hslice_v t).mdifferentiableAt (by norm_num))
         (f 0 t)
-      (by change f 0 t ∈ (chartAt H (f 0 t)).source; exact hfoot_src)
+      hfoot_src
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun u : ℝ => f u t))
         = (fun u : ℝ => extChartAt I (f 0 t) (f u t)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
@@ -663,7 +665,7 @@ theorem commute_ds_dt_curvature_innerS
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun w : ℝ => f 0 w) ((hslice_u 0).mdifferentiableAt (by norm_num))
         (f 0 t)
-      (by change f 0 t ∈ (chartAt H (f 0 t)).source; exact hfoot_src)
+      hfoot_src
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun w : ℝ => f 0 w))
         = (fun w : ℝ => extChartAt I (f 0 t) (f 0 w)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
@@ -676,10 +678,19 @@ theorem commute_ds_dt_curvature_innerS
   rw [hslotS, hslotT, hYft]
   rw [show (trivializationAt E (TangentSpace I) β).symmL ℝ β
         = (trivializationAt E (TangentSpace I) (f 0 t)).symmL ℝ (f 0 t) from by rw [hβ]]
-  rw [hfoot_symmL]
+  simp only [centeredChartTangentEquiv_apply, tangentSpaceModelContinuousLinearEquiv_apply]
+  rw [hfoot_symmL, hβ]
+  let S : E := mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)
+  let T : E := mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ)
+  change riemannOp (Connection.LeviCivita (I := I) g) (f 0 t)
+      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm S)
+      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm T)
+      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm S) =
+    riemannOp (Connection.LeviCivita (I := I) g) (f 0 t) S T S
+  rw [centeredChartTangentEquiv_symm_apply, centeredChartTangentEquiv_symm_apply]
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem commute_ds_dt_curvature
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t : ℝ)
@@ -714,7 +725,7 @@ theorem commute_ds_dt_curvature
     exact (hf : ContMDiff _ _ _ _).comp hincl
   have htransverse : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun s : ℝ => f s t) := hslice_v t
   have hcentral : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun v : ℝ => f 0 v) := hslice_u 0
-  set velT : ℝ → ℝ → E :=
+  set velT : (s v : ℝ) → TangentSpace I (f s v) :=
     fun s v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) v (1 : ℝ) with hvelT
   set Y : ℝ → ℝ → E := fun u v =>
     (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velT u v) with hY
@@ -844,7 +855,7 @@ theorem commute_ds_dt_curvature
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun u : ℝ => f u t) ((hslice_v t).mdifferentiableAt (by norm_num))
         (f 0 t)
-      (by change f 0 t ∈ (chartAt H (f 0 t)).source; exact hfoot_src)
+      hfoot_src
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun u : ℝ => f u t))
         = (fun u : ℝ => extChartAt I (f 0 t) (f u t)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
@@ -854,7 +865,7 @@ theorem commute_ds_dt_curvature
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun w : ℝ => f 0 w) ((hslice_u 0).mdifferentiableAt (by norm_num))
         (f 0 t)
-      (by change f 0 t ∈ (chartAt H (f 0 t)).source; exact hfoot_src)
+      hfoot_src
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun w : ℝ => f 0 w))
         = (fun w : ℝ => extChartAt I (f 0 t) (f 0 w)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
@@ -867,7 +878,16 @@ theorem commute_ds_dt_curvature
   rw [hslotS, hslotT, hYft]
   rw [show (trivializationAt E (TangentSpace I) β).symmL ℝ β
         = (trivializationAt E (TangentSpace I) (f 0 t)).symmL ℝ (f 0 t) from by rw [hβ]]
-  rw [hfoot_symmL]
+  simp only [centeredChartTangentEquiv_apply, tangentSpaceModelContinuousLinearEquiv_apply]
+  rw [hfoot_symmL, hβ]
+  let S : E := mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)
+  let T : E := mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ)
+  change riemannOp (Connection.LeviCivita (I := I) g) (f 0 t)
+      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm S)
+      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm T)
+      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm T) =
+    riemannOp (Connection.LeviCivita (I := I) g) (f 0 t) S T T
+  rw [centeredChartTangentEquiv_symm_apply, centeredChartTangentEquiv_symm_apply]
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -955,10 +975,9 @@ lemma commute_ds_dt_intrinsic_shifted
       rw [heq]
       change deriv (fun u : ℝ => s + u) 0 = (1 : ℝ)
       exact hderiv.deriv
-    rw [ContinuousLinearMap.comp_apply]
-    rw [show (mfderiv (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ)) (fun u : ℝ => s + u) 0) (1 : ℝ) = (1 : ℝ) from hψfd]
-    change mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) (s + 0) (1 : ℝ)
-      = mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) s (1 : ℝ)
+    change mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) (s + 0)
+        (mfderiv (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ)) (fun u : ℝ => s + u) 0 (1 : ℝ)) = _
+    rw [hψfd]
     rw [add_zero]
   have hRHS : covDerivAlong (I := I) g (fun v : ℝ => fsh 0 v)
         (fun v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => fsh u v) 0 (1 : ℝ)) t
@@ -972,7 +991,7 @@ lemma commute_ds_dt_intrinsic_shifted
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
   DifferentialGeometry.Integral.DivergenceTheorem in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma slice_secondCovDeriv_central_chartRep_differentiableAt
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t : ℝ) :
@@ -991,7 +1010,7 @@ lemma slice_secondCovDeriv_central_chartRep_differentiableAt
     have hincl : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ) (fun v : ℝ => ((0 : ℝ), v)) :=
       contMDiff_const.prodMk contMDiff_id
     exact (hf : ContMDiff _ _ _ _).comp hincl
-  set velS : ℝ → ℝ → E :=
+  set velS : (s v : ℝ) → TangentSpace I (f s v) :=
     fun u v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) u (1 : ℝ) with hvelS
   set Y : ℝ → ℝ → E := fun u v =>
     (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velS u v) with hY
@@ -1076,7 +1095,7 @@ lemma slice_secondCovDeriv_central_chartRep_differentiableAt
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
   DifferentialGeometry.Integral.DivergenceTheorem in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma variationField_covDeriv_chartRep_differentiableAt
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t : ℝ) :

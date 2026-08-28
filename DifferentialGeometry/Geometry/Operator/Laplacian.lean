@@ -59,8 +59,8 @@ lemma gradFun_add
     rw [hd_def]
     exact hAddDeriv.mfderiv
   change d v = g.inner x (gradFun (I := I) g f x + gradFun (I := I) g h x) v
-  rw [hsum, ContinuousLinearMap.add_apply]
-  rw [map_add, ContinuousLinearMap.add_apply]
+  rw [hsum, add_apply]
+  rw [map_add, add_apply]
   congr 1
   · rw [hd_f_def]; exact (inner_gradFun (I := I) g f x v).symm
   · rw [hd_h_def]; exact (inner_gradFun (I := I) g h x v).symm
@@ -104,10 +104,11 @@ lemma gradFun_const
   exact mfderiv_const
 
 theorem Δ_g_const [I.Boundaryless] (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
-    Δ_g (I := I) g (⟨fun _ : M => c, contMDiff_const⟩ : C^∞⟮I, M; ℝ⟯) x = 0 := by
+    Δ_g (I := I) g
+      (ContMDiffMap.const (I := I) (I' := 𝓘(ℝ, ℝ)) (M := M) c) x = 0 := by
   classical
   have hsection_eq : (grad_g (I := I) g
-      (⟨fun _ : M => c, contMDiff_const⟩ : C^∞⟮I, M; ℝ⟯) :
+      (ContMDiffMap.const (I := I) (I' := 𝓘(ℝ, ℝ)) (M := M) c) :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
     ext y

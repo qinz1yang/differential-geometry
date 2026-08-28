@@ -116,9 +116,9 @@ theorem tensorRSSpace_norm_apply_le {b : M} (T : TensorRSSpace r s I b)
       e_r.arrowCongr e_s
           (T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) (e_r x)
         = e_s ((T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) x) := by
-    rw [ContinuousLinearEquiv.arrowCongr_apply,
-        ContinuousLinearEquiv.symm_apply_apply]
-    rfl
+    change e_s ((T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b)
+      (e_r.symm (e_r x))) = _
+    rw [e_r.symm_apply_apply]
   have hLHS :
       ‖e_s ((T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) x)‖
         = ‖(T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) x‖ :=

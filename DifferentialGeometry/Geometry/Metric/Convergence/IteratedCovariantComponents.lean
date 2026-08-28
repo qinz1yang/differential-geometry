@@ -12,6 +12,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -146,19 +147,26 @@ private theorem slotId2 {p q : ℕ} (d : Idx) (aPart : Fin p → Idx) (bPart : F
       show rotEquiv p q (Fin.castAdd (q + 1) i') = (Fin.castAdd q i').succ by
         apply Fin.ext
         simp only [rotEquiv, Equiv.trans_apply, Fin.val_succ, Fin.val_castAdd]
-        rw [Fin.coe_cycleRange_of_lt (by rw [Fin.lt_def]; simp)]
-        simp,
+        rw [Fin.coe_cycleRange_of_lt (by
+          change (i' : ℕ) < p
+          exact i'.isLt)]
+        rw [finCongr_apply_coe, Fin.val_castAdd],
       Fin.cons_succ, Fin.append_left]
   · refine Fin.cases ?_ (fun j => ?_) k
     · rw [Fin.append_right, Fin.cons_zero,
         show rotEquiv p q (Fin.natAdd p (0 : Fin (q + 1))) = 0 by
           simp only [rotEquiv, Equiv.trans_apply]
-          rw [Fin.cycleRange_of_eq (by apply Fin.ext; simp)],
+          rw [Fin.cycleRange_of_eq (by
+            apply Fin.ext
+            change p = p
+            rfl)],
         Fin.cons_zero]
     · rw [Fin.append_right, Fin.cons_succ,
         show rotEquiv p q (Fin.natAdd p j.succ) = (Fin.natAdd p j).succ by
           simp only [rotEquiv, Equiv.trans_apply]
-          rw [Fin.cycleRange_of_gt (by rw [Fin.lt_def]; simp)]
+          rw [Fin.cycleRange_of_gt (by
+            change p < p + (j : ℕ) + 1
+            omega)]
           apply Fin.ext
           simp only [finCongr_apply_coe, Fin.val_natAdd, Fin.val_succ]
           omega,
@@ -372,7 +380,7 @@ theorem frameExtData_contrTail {p q : ℕ}
         A y (Fin.snoc (fun i : Fin p => idx (Fin.castAdd q i)) c) *
           B y (Fin.snoc (fun j : Fin q => idx (Fin.natAdd p j)) c)) from by
     funext y; rw [contrTail_apply]]
-  rw [extDerivFun_finset_sum_mul_at (I := I) Finset.univ
+  rw [mvfderiv_finset_sum_mul_at (I := I) Finset.univ
     (fun c y => A y (Fin.snoc (fun i : Fin p => idx (Fin.castAdd q i)) c))
     (fun c y => B y (Fin.snoc (fun j : Fin q => idx (Fin.natAdd p j)) c))
     (frame d x)
@@ -392,10 +400,10 @@ theorem frameExtData_add {r : ℕ}
     frameExtData (I := I) frame (fun y k => f₁ y k + f₂ y k) x m d =
       frameExtData (I := I) frame f₁ x m d + frameExtData (I := I) frame f₂ x m d := by
   unfold frameExtData
-  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv I (fun y : M => f₁ y m + f₂ y m) x
+  rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f₁ y m + f₂ y m) x
       (frame d x),
-    DifferentialGeometry.extDerivFun_real_eq_mfderiv I (fun y : M => f₁ y m) x (frame d x),
-    DifferentialGeometry.extDerivFun_real_eq_mfderiv I (fun y : M => f₂ y m) x (frame d x),
+    DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f₁ y m) x (frame d x),
+    DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f₂ y m) x (frame d x),
     show (fun y : M => f₁ y m + f₂ y m) = (fun y : M => f₁ y m) + (fun y : M => f₂ y m) from rfl,
     mfderiv_add (hf₁ m) (hf₂ m)]
   rfl
@@ -411,8 +419,8 @@ theorem frameExtData_smul {r : ℕ}
     frameExtData (I := I) frame (fun y k => c * f y k) x m d =
       c * frameExtData (I := I) frame f x m d := by
   unfold frameExtData
-  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv I (fun y : M => c * f y m) x (frame d x),
-    DifferentialGeometry.extDerivFun_real_eq_mfderiv I (fun y : M => f y m) x (frame d x),
+  rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => c * f y m) x (frame d x),
+    DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f y m) x (frame d x),
     show (fun y : M => c * f y m) = c • (fun y : M => f y m) from rfl,
     const_smul_mfderiv (hf m) c]
   rfl
@@ -452,7 +460,7 @@ theorem iterCovComp_contMDiffOn {r : ℕ} {u : Set M} (hu : IsOpen u)
     intro n
     have hstep : (fun y => iterCovComp (I := I) frame chr base (a + 1) y n) =
         fun y =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun z => iterCovComp (I := I) frame chr base a z (Fin.tail n)) y
               (frame (n 0) y) -
             ∑ s : Fin (r + a), ∑ p : Idx,
@@ -465,7 +473,7 @@ theorem iterCovComp_contMDiffOn {r : ℕ} {u : Set M} (hu : IsOpen u)
     rw [hstep]
     refine ContMDiffOn.sub ?_ ?_
     · intro z hz
-      exact (contMDiffAt_extDerivFun_apply hu hz (ih (Fin.tail n))
+      exact (contMDiffAt_mvfderiv_apply hu hz (ih (Fin.tail n))
         (hframe (n 0))).contMDiffWithinAt
     · refine contMDiffOn_finsetSum _ _ fun s _ => ?_
       refine contMDiffOn_finsetSum _ _ fun p _ => ?_
@@ -491,7 +499,7 @@ theorem iterCovCompU_contMDiffOn {r : ℕ} {u : Set M} (hu : IsOpen u)
     intro n
     have hstep : (fun y => iterCovCompU (I := I) frame chr base (a + 1) y n) =
         fun y =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun z => iterCovCompU (I := I) frame chr base a z (Fin.tail n)) y
               (frame (n 0) y) -
             ∑ j : Fin (r + a), ∑ c : Idx,
@@ -508,7 +516,7 @@ theorem iterCovCompU_contMDiffOn {r : ℕ} {u : Set M} (hu : IsOpen u)
     rw [hstep]
     refine ContMDiffOn.add (ContMDiffOn.sub ?_ ?_) ?_
     · intro z hz
-      exact (contMDiffAt_extDerivFun_apply hu hz (ih (Fin.tail n))
+      exact (contMDiffAt_mvfderiv_apply hu hz (ih (Fin.tail n))
         (hframe (n 0))).contMDiffWithinAt
     · refine contMDiffOn_finsetSum _ _ fun j _ => ?_
       refine contMDiffOn_finsetSum _ _ fun c _ => ?_
@@ -557,7 +565,7 @@ private theorem frameExtData_congr_nhds {r : ℕ}
     (h : ∀ᶠ z in nhds y, F₁ z = F₂ z) :
     frameExtData (I := I) frame F₁ y = frameExtData (I := I) frame F₂ y := by
   funext m d
-  refine extDerivFun_eventuallyEq_congr (I := I) (frame d y) ?_
+  refine mvfderiv_eventuallyEq_congr (I := I) (frame d y) ?_
   filter_upwards [h] with z hz
   rw [hz]
 
@@ -1222,17 +1230,18 @@ theorem compL2_le_contrTail_inv {P : ℕ}
     _ ≤ compL2 (contrTail T G) * compL2 Ginv := compL2_contrTail_le _ _
 
 noncomputable def inverseContractionAffineRecurrenceConstant (C0 KR K : Real) (m : ℕ) : Real :=
-  Nat.strongRecOn' m fun n C =>
+  (Nat.strongRec (motive := fun _ => Real) fun n C =>
     max C0 0 * (max KR 0 +
       ∑ c : Fin n, (n.choose c : Real) *
-        (C c c.isLt * (1 + max K 0)) * max K 0)
+        (C c c.isLt * (1 + max K 0)) * max K 0)) m
 
 theorem inverse_contraction_affine_recurrence_constant_eq (C0 KR K : Real) (m : ℕ) :
     inverseContractionAffineRecurrenceConstant C0 KR K m =
       max C0 0 * (max KR 0 +
         ∑ c ∈ Finset.range m, (m.choose c : Real) *
           (inverseContractionAffineRecurrenceConstant C0 KR K c * (1 + max K 0)) * max K 0) := by
-  rw [inverseContractionAffineRecurrenceConstant, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
+  rw [inverseContractionAffineRecurrenceConstant, Nat.strongRec_eq,
+    ← Fin.sum_univ_eq_sum_range]
   rfl
 
 theorem inverse_contraction_affine_recurrence_constant_nonneg (C0 KR K : Real) (m : ℕ) :

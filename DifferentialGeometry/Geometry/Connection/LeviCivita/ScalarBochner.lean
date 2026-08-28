@@ -97,7 +97,7 @@ omit [IsManifold I ∞ M] in
 theorem fundamental_bochner_of_leviCivita_terms
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -170,7 +170,7 @@ omit [IsManifold I ∞ M] in
 theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -253,7 +253,7 @@ omit [IsManifold I ∞ M] in
 theorem lc_bochner_dlap
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -341,7 +341,7 @@ omit [IsManifold I ∞ M] in
 theorem lc_bochner_norm
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -438,7 +438,7 @@ omit [IsManifold I ∞ M] in
 theorem lc_bochner_rm04
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))

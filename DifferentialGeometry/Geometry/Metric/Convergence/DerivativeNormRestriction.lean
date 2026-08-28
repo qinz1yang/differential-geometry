@@ -6,6 +6,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeCompo
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -37,6 +39,7 @@ theorem metricCovDeriv_zero_restrictOpen_apply
         (gRef.restrictOpen (I := I) U) 0 x slots =
       metricCovDeriv (I := I) g gRef 0 (x : M) slots := by
   simp [metricCovDeriv, Tensor0SBundle.metricTensorField]
+  rfl
 
 omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_restrictOpen_apply
@@ -88,10 +91,10 @@ theorem metricCovDeriv_restrictOpen_apply
             (I := I) (M := M) h gRef a X V (x : M)
         rw [hleft, hright]
         have hderiv :
-            extDerivFun (I := I)
+            mvfderiv (I := I)
                 (fun y : U => metricCovDeriv (I := I) hU refU a y
                   (fun q : Fin (a + 2) => VU q y)) x (XU x) =
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun y : M => metricCovDeriv (I := I) h gRef a y
                   (fun q : Fin (a + 2) => V q y)) (x : M) (X (x : M)) := by
           have hscalar :
@@ -110,7 +113,7 @@ theorem metricCovDeriv_restrictOpen_apply
               (by simp)
           rw [hscalar]
           simpa [XU] using
-            DifferentialGeometry.Geometry.Curvature.extDerivFun_restrictOpen
+            DifferentialGeometry.Geometry.Curvature.mvfderiv_restrictOpen
               (I := I) U
               (fun y : M => metricCovDeriv (I := I) h gRef a y
                 (fun q : Fin (a + 2) => V q y)) x (X (x : M)) hf
@@ -127,36 +130,32 @@ theorem metricCovDeriv_restrictOpen_apply
                         (fun y : M => V p y) (x : M)) (X (x : M)))) := by
           apply Finset.sum_congr rfl
           intro p _
-          let covU : TangentSpace I x :=
+          set covU : TangentSpace I x :=
             ((leviCivitaConnectionOfMetric (I := I) refU)
-              (fun y : U => VU p y) x) (XU x)
-          let covM : TangentSpace I (x : M) :=
+              (fun y : U => VU p y) x) (XU x) with hcovU_def
+          set covM : TangentSpace I (x : M) :=
             ((leviCivitaConnectionOfMetric (I := I) gRef)
-              (fun y : M => V p y) (x : M)) (X (x : M))
+              (fun y : M => V p y) (x : M)) (X (x : M)) with hcovM_def
           have hcov : covU = covM := by
             have hcov' :=
-              metricCov_restrictOpen_globalSection (I := I) gRef U (V p) x (XU x)
-            calc
-              covU =
-                  (metricCov (I := I) (M := U) refU
-                    (restrictOpenTangentField (I := I) U (fun y : M => V p y)) x)
-                    (XU x) := rfl
-              _ =
-                  (metricCov (I := I) (M := M) gRef (fun y : M => V p y) (x : M))
-                    (XU x) := by
-                    simpa [refU, metricCov, VU] using hcov'
-              _ = covM := by
-                    simp [covM, XU, metricCov]
+              metricCov_restrictOpen_globalSection (I := I) gRef U (V p) x (X (x : M))
+            rw [hcovU_def, hcovM_def]
+            have hXU : XU x = X (x : M) :=
+              restrictOpenTangentSection_apply (I := I) U X x
+            rw [hXU]
+            exact hcov'
           have hVU : ∀ q : Fin (a + 2), VU q x = V q (x : M) := by
             intro q
-            simp [VU]
+            simp only [VU, restrictOpenTangentSection_apply]
+            rfl
           have hslots :
               Function.update (fun q : Fin (a + 2) => VU q x) p covU =
                 Function.update (fun q : Fin (a + 2) => V q (x : M)) p covM := by
             funext q
             by_cases hqp : q = p
             · subst q
-              simp [Function.update, hcov]
+              simp only [Function.update_self]
+              exact hcov
             · rw [Function.update_of_ne hqp, Function.update_of_ne hqp]
               exact hVU q
           calc
@@ -196,8 +195,10 @@ theorem metricCovDeriv_restrictOpen_apply
               Fin (a + 1 + 2) -> TangentSpace I (x : M)) := by
         funext q
         refine Fin.cases ?_ (fun p => ?_) q
-        · rw [Fin.cons_zero, Fin.cons_zero, hX]
-        · rw [Fin.cons_succ, Fin.cons_succ, hV p]
+        · change X (x : M) = slots 0
+          exact hX
+        · change V p (x : M) = slots p.succ
+          exact hV p
       calc
         metricCovDeriv (I := I) (h.restrictOpen (I := I) U)
             (gRef.restrictOpen (I := I) U) (a + 1) x
@@ -259,7 +260,7 @@ theorem normSq0S_restrictOpen_apply
         (g.restrictOpen (I := I) U).inner x (basis i) (basis j) =
           if i = j then (1 : Real) else 0 := by
     intro i j
-    simpa using hON i j
+    exact hON i j
   have hinvU :
       Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := U)
         (g.restrictOpen (I := I) U) x basis
@@ -268,16 +269,19 @@ theorem normSq0S_restrictOpen_apply
     have h' :=
       metricInverseInBasis_of_orthonormal
         (I := I) (M := U) (g.restrictOpen (I := I) U) basis hONU
-    simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric]
-      using h'
+    change Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := U)
+      (g.restrictOpen (I := I) U) x basis
+        (fun a k => if a = k then (1 : Real) else 0)
+    exact h'
   have hinvM :
       Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
         g (x : M) basis
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
-    simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric]
-      using h'
+    change Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
+      g (x : M) basis (fun a k => if a = k then (1 : Real) else 0)
+    exact h'
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq
       (I := I) (M := U) (g.restrictOpen (I := I) U) x s basis hinvU A,
     Tensor0SBundle.normSq0S_identity_eq_sum_sq
@@ -294,7 +298,8 @@ theorem metricDerivNorm_restrictOpen
   rw [metricDerivNorm]
   rw [metricDerivNorm]
   rw [metricDiffCovDerivAt_restrictOpen_apply]
-  rw [normSq0S_restrictOpen_apply]
+  apply congrArg Real.sqrt
+  exact normSq0S_restrictOpen_apply (I := I) gRef U (a + 2) x _
 
 omit [SigmaCompactSpace M] in
 theorem metricDerivNormSupOn_restrictOpen
@@ -306,7 +311,7 @@ theorem metricDerivNormSupOn_restrictOpen
   unfold metricDerivNormSupOn
   congr 1
   ext r
-  simp only [Set.mem_setOf_eq, Set.mem_image]
+  simp only [Set.mem_ofPred_eq, Set.mem_image]
   constructor
   · rintro ⟨a, ha, x, hxK, hr⟩
     exact ⟨a, ha, (x : M), ⟨x, hxK, rfl⟩, by
@@ -351,13 +356,19 @@ theorem iterCovComp_restrict {r : Nat} (U : TopologicalSpace.Opens E)
     (hdiff : ∀ (a : Nat) (x : U) (n : Fin (r + a) → Idx),
       MDifferentiableAt 𝓘(Real, E) 𝓘(Real, Real)
         (fun y : E ↦ iterCovComp (I := 𝓘(Real, E))
-          (fun i _ ↦ e i) chr base a y n) (x : E)) :
+          (fun i z ↦
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm (e i))
+          chr base a y n) (x : E)) :
     ∀ (a : Nat) (x : U) (n : Fin (r + a) → Idx),
       iterCovComp (I := 𝓘(Real, E)) (M := U)
-          (fun i _ ↦ e i) (fun z ↦ chr (z : E))
+          (fun i z ↦
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm (e i))
+          (fun z ↦ chr (z : E))
           (fun z ↦ base (z : E)) a x n =
         iterCovComp (I := 𝓘(Real, E))
-          (fun i _ ↦ e i) chr base a (x : E) n := by
+          (fun i z ↦
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm (e i))
+          chr base a (x : E) n := by
   classical
   intro a
   induction a with
@@ -371,18 +382,25 @@ theorem iterCovComp_restrict {r : Nat} (U : TopologicalSpace.Opens E)
       have hscalar :
           (fun y : U ↦
             iterCovComp (I := 𝓘(Real, E)) (M := U)
-              (fun i _ ↦ e i) (fun z ↦ chr (z : E))
+              (fun i z ↦
+                (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm (e i))
+              (fun z ↦ chr (z : E))
               (fun z ↦ base (z : E)) a y (Fin.tail n)) =
             fun y : U ↦
               iterCovComp (I := 𝓘(Real, E))
-                (fun i _ ↦ e i) chr base a (y : E) (Fin.tail n) := by
+                (fun i z ↦
+                  (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm (e i))
+                chr base a (y : E) (Fin.tail n) := by
         funext y
         exact ih y (Fin.tail n)
       rw [hscalar]
-      rw [extDerivFun_restrictOpen U
+      rw [mvfderiv_restrictOpen U
         (fun y : E ↦ iterCovComp (I := 𝓘(Real, E))
-          (fun i _ ↦ e i) chr base a y (Fin.tail n))
-        x (e (n 0)) (hdiff a x (Fin.tail n))]
-      simp_rw [ih]
+          (fun i z ↦
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm (e i))
+          chr base a y (Fin.tail n))
+        x ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) x).symm (e (n 0)))
+        (hdiff a x (Fin.tail n))]
+      simp_rw [ih, tangentSpaceModelContinuousLinearEquiv_symm_apply]
 
 end DifferentialGeometry.PDE.RicciFlow

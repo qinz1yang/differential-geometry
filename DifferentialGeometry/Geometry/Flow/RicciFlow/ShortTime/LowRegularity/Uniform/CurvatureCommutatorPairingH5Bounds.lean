@@ -16,7 +16,8 @@ open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Sobolev (iteratedCovGrad iteratedCovGrad_zero)
+open DifferentialGeometry.Analysis.Sobolev
+  (iteratedCovGrad iteratedCovGrad_succ iteratedCovGrad_zero)
 open DifferentialGeometry.Analysis.Elliptic
   (exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le)
 open DifferentialGeometry.Analysis.Spectral
@@ -74,22 +75,30 @@ private theorem defect_arg_h1_fixed
   let S : ℝ := ∑ j ∈ Finset.range 4,
     ‖iteratedCovGrad (I := I) g 0 2 j T‖
   let y : ℝ := ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖
-  have hS : S ≤ CJ * y := by simpa only [S, y] using hjet3 T
+  have hS : S ≤ CJ * y := by
+    have h := hjet3 T
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [hthree] at h
+    simpa only [S, y] using h
   have hS3 :
       (∑ j ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g 0 2 j T‖) ≤ S := by
     dsimp only [S]
     simp only [Finset.sum_range_succ]
     exact le_add_of_nonneg_right (norm_nonneg _)
+  have hDT_eq : DT = iteratedCovGrad (I := I) g 0 2 1 T := by
+    simp only [DT, iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero]
   have hDT0 :
       ‖iteratedCovGrad (I := I) g 0 3 0 DT‖ =
         ‖iteratedCovGrad (I := I) g 0 2 1 T‖ := by
-    simpa only [DT, Nat.add_zero] using
+    rw [hDT_eq]
+    simpa only [Nat.reduceAdd] using
       (iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 0 T)
   have hDT1 :
       ‖iteratedCovGrad (I := I) g 0 3 1 DT‖ =
         ‖iteratedCovGrad (I := I) g 0 2 2 T‖ := by
-    simpa only [DT] using
+    rw [hDT_eq]
+    simpa only [Nat.reduceAdd] using
       (iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 1 T)
   have hDT0' : ‖DT‖ =
       ‖iteratedCovGrad (I := I) g 0 2 1 T‖ := by
@@ -97,7 +106,8 @@ private theorem defect_arg_h1_fixed
   have hDT2' :
       ‖iteratedCovGrad (I := I) g 0 3 2 DT‖ =
         ‖iteratedCovGrad (I := I) g 0 2 3 T‖ := by
-    simpa only [DT] using
+    rw [hDT_eq]
+    simpa only [Nat.reduceAdd] using
       (iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 2 T)
   have hDT2 :
       (∑ j ∈ Finset.range 2,
@@ -117,30 +127,43 @@ private theorem defect_arg_h1_fixed
     rw [hDT0', hDT1, hDT2']
     nlinarith [norm_nonneg T]
   have hA0 : ‖A‖ ≤ K2 1 * S := by
+    have hAeq : A = iteratedCovGrad (I := I) g 0 3 1 R2 := by
+      simp only [A, iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero]
     calc
       _ ≤ K2 1 * ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ := by
-        simpa only [A, R2] using hcurv2 1 T
+        rw [hAeq]
+        simpa only [R2, Nat.reduceAdd] using hcurv2 1 T
       _ ≤ K2 1 * S := mul_le_mul_of_nonneg_left hS3 (hK2 1)
   have hA1 :
       ‖covGrad (I := I) (M := M) g 0 4 A‖ ≤ K2 2 * S := by
+    have hAeq : A = iteratedCovGrad (I := I) g 0 3 1 R2 := by
+      simp only [A, iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero]
+    have houter : covGrad (I := I) (M := M) g 0 4 A =
+        iteratedCovGrad (I := I) g 0 4 1 A := by
+      simp only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero]
     calc
       _ = ‖iteratedCovGrad (I := I) g 0 3 2 R2‖ := by
-        simpa only [A] using iteratedCovGrad_comp_norm
+        rw [houter, hAeq]
+        simpa only [Nat.reduceAdd] using iteratedCovGrad_comp_norm
           (I := I) (M := M) g 3 1 1 R2
       _ ≤ K2 2 * S := by simpa only [R2] using hcurv2 2 T
   have hB0 : ‖B‖ ≤ K3 0 * S := by
     calc
       _ ≤ K3 0 * ∑ j ∈ Finset.range 2,
           ‖iteratedCovGrad (I := I) g 0 3 j DT‖ := by
-        simpa only [B] using hcurv3 0 DT
+        simpa only [B, iteratedCovGrad_zero, Nat.reduceAdd] using hcurv3 0 DT
       _ ≤ K3 0 * S := mul_le_mul_of_nonneg_left hDT2 (hK3 0)
   have hB1 :
       ‖covGrad (I := I) (M := M) g 0 4 B‖ ≤ K3 1 * S := by
+    have houter : covGrad (I := I) (M := M) g 0 4 B =
+        iteratedCovGrad (I := I) g 0 4 1 B := by
+      simp only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero]
     calc
       _ ≤ K3 1 * ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 3 j DT‖ := by
-        simpa only [B] using hcurv3 1 DT
+        rw [houter]
+        simpa only [B, Nat.reduceAdd] using hcurv3 1 DT
       _ ≤ K3 1 * S := mul_le_mul_of_nonneg_left hDT3 (hK3 1)
   have hGT0 : ‖GT‖ ≤ (K2 1 + K3 0) * S := by
     calc
@@ -266,7 +289,8 @@ theorem curvature_commutator_pairing_h5_uniform_bound
     calc
       _ = ‖(⟨GT⟩ : SmoothCcTensorH1 g 0 4)‖ ^ 2 := by
         simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-          iteratedCovGrad_zero] using
+          iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add,
+          Nat.add_zero] using
             (smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g 0 4 GT).symm
       _ ≤ (Cg * y) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hGTh1 2
   have hjet1 := hjet 1 (by norm_num)
@@ -289,9 +313,12 @@ theorem curvature_commutator_pairing_h5_uniform_bound
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W‖ = z := by
     dsimp only [z]
     rw [norm_ccHs_eq_smoothHs, norm_ccHs_eq_smoothHs]
-    simpa only [W] using
-      (smoothCcToTensorHs_add_two_norm_eq_oneMinusConnLap
-        (I := I) (M := M) g 3 T).symm
+    have h := (smoothCcToTensorHs_add_two_norm_eq_oneMinusConnLap
+      (I := I) (M := M) g 3 T).symm
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    have hfive : (((3 + 2 : ℕ) : ℝ)) = (5 : ℝ) := by norm_num
+    rw [hthree, hfive] at h
+    simpa only [W] using h
   have hpair := one_minus_connection_laplacian_squared_pairing_h3_h1_bound
     (I := I) (M := M) g W Y
   change

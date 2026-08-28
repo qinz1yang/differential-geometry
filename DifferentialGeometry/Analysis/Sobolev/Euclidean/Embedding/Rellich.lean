@@ -516,7 +516,7 @@ theorem eLpNorm_translate_sub_le_of_memW01p
     have hsum_zero :
         Tendsto Dseq atTop (nhds (∑ _i : Fin d, (0 : ℝ≥0∞))) := by
       rw [hDseq_def]
-      exact tendsto_finset_sum (Finset.univ : Finset (Fin d)) (fun i _ => hφ_grad i)
+      exact tendsto_finsetSum (Finset.univ : Finset (Fin d)) (fun i _ => hφ_grad i)
     simpa using hsum_zero
   have h_mul_tendsto :
       Tendsto (fun n => ENNReal.ofReal ‖h‖ * (Dseq n + S))

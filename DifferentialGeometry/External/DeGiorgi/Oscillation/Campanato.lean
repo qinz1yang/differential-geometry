@@ -11,6 +11,7 @@ Holder regularity.
 
 noncomputable section
 
+
 open MeasureTheory Metric Filter Topology
 open scoped ENNReal NNReal
 
@@ -130,7 +131,7 @@ lemma closedBall_ae_eq_ball_of_pos (x : E) {r : ℝ} (hr : 0 < r) :
       simp [Metric.mem_closedBall, hyx, hr.le]
     simp [hball, hclosed]
   · have hdpos : 0 < d := Nat.pos_of_ne_zero hd
-    haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
+    have : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
       simpa [finrank_euclideanSpace] using hdpos
     refine (ae_eq_of_subset_of_measure_ge Metric.ball_subset_closedBall ?_
       measurableSet_ball.nullMeasurableSet measure_closedBall_lt_top.ne).symm
@@ -237,7 +238,8 @@ lemma abs_ballAverage_half_sub_ballAverage_le
   have hsub_int : IntegrableOn (fun z => u z - avg) S volume :=
     huS_int.sub (integrableOn_const hSfin)
   have habsB_int : IntegrableOn (fun z => |u z - avg|) B volume := by
-    simpa [Real.norm_eq_abs, avg] using (hu_int.sub (integrableOn_const hBfin)).norm
+    change Integrable (fun z => ‖u z - avg‖) (volume.restrict B)
+    exact (hu_int.sub (integrableOn_const hBfin)).norm
   have hdiff :
       (⨍ z in S, u z ∂volume) - avg = ⨍ z in S, (u z - avg) ∂volume := by
     rw [MeasureTheory.setAverage_eq (μ := volume) (f := u) (s := S),
@@ -336,7 +338,8 @@ lemma abs_halfSubballAverage_sub_ballAverage_le
       _ = ⨍ z in S, |u z - avg| ∂volume := by
             rw [MeasureTheory.setAverage_eq, smul_eq_mul]
   have habsB_int : IntegrableOn (fun z => |u z - avg|) B volume := by
-    simpa [Real.norm_eq_abs, avg] using (hu_int.sub (integrableOn_const hBfin)).norm
+    change Integrable (fun z => ‖u z - avg‖) (volume.restrict B)
+    exact (hu_int.sub (integrableOn_const hBfin)).norm
   have hmono :
       ∫ z in S, |u z - avg| ∂volume ≤ ∫ z in B, |u z - avg| ∂volume := by
     exact MeasureTheory.setIntegral_mono_set habsB_int
@@ -1139,7 +1142,8 @@ lemma holder_hasCampanatoBound
   have hholderB : HolderOnWith Chold αnn u B := by
     intro x hx z hz
     have hChold : ENNReal.ofReal C_hold = (Chold : ℝ≥0∞) := by
-      simpa [Chold] using (ENNReal.ofReal_eq_coe_nnreal hC_hold)
+      unfold Chold
+      exact ENNReal.ofReal_eq_coe_nnreal hC_hold
     have hdist0 : ENNReal.ofReal (dist (u x) (u z)) ≤
         ENNReal.ofReal C_hold * ENNReal.ofReal (dist x z) ^ α := by
       rw [ENNReal.ofReal_rpow_of_nonneg dist_nonneg hα.le,
@@ -1152,7 +1156,9 @@ lemma holder_hasCampanatoBound
         ENNReal.ofReal (dist (u x) (u z))
             ≤ ENNReal.ofReal C_hold * ENNReal.ofReal (dist x z) ^ α := hdist0
         _ = (Chold : ℝ≥0∞) * ENNReal.ofReal (dist x z) ^ α := by rw [hChold]
-    simpa [αnn, edist_dist] using hdist
+    rw [edist_dist, edist_dist]
+    rw [show (αnn : ℝ) = α by rfl]
+    exact hdist
   have hcontB : ContinuousOn u B := hholderB.continuousOn (show 0 < αnn by exact hα)
   have hu_int : IntegrableOn u B volume := by
     have hBfin_lt : volume B < ∞ := lt_top_iff_ne_top.2 hBfin
@@ -1166,7 +1172,8 @@ lemma holder_hasCampanatoBound
     have hdiff : |u z - u y| ≤ C_hold * r ^ α := by
       calc
         |u z - u y| ≤ C_hold * dist z y ^ α := by
-          simpa [Real.dist_eq] using hhold z hzR y hyR
+          change |u z - u y| ≤ C_hold * ‖z - y‖ ^ α
+          exact hhold z hzR y hyR
         _ ≤ C_hold * r ^ α := by
           exact mul_le_mul_of_nonneg_left hrpow_le hC_hold
     calc
@@ -1194,13 +1201,15 @@ lemma holder_hasCampanatoBound
         change |u x - (⨍ z in B, u z ∂volume)| = |u x - u c|
         rw [← havg]
       _ ≤ C_hold * dist x c ^ α := by
-          simpa [Real.dist_eq] using hhold x hxR c hcR
+          change |u x - u c| ≤ C_hold * ‖x - c‖ ^ α
+          exact hhold x hxR c hcR
       _ ≤ C_hold * (2 * r) ^ α := by
           exact mul_le_mul_of_nonneg_left
             (Real.rpow_le_rpow dist_nonneg hdist_le hα.le) hC_hold
   have hAvgBound : (⨍ x in B, |u x - avg| ∂volume) ≤ C_hold * (2 * r) ^ α := by
     have hg_int : IntegrableOn (fun x => |u x - avg|) B volume := by
-      simpa [Real.norm_eq_abs, avg] using (hu_int.sub (integrableOn_const hBfin)).norm
+      change Integrable (fun x => ‖u x - avg‖) (volume.restrict B)
+      exact (hu_int.sub (integrableOn_const hBfin)).norm
     obtain ⟨x', hx'B, hAvgLe⟩ := MeasureTheory.exists_setAverage_le
         (μ := volume) (s := B) (f := fun x => |u x - avg|) hB0 hBfin hg_int
     exact hAvgLe.trans (hpoint x' hx'B)

@@ -149,11 +149,11 @@ lemma christoffelCorrection_apply
               (chartModelBasis E) k := by
   classical
   unfold christoffelCorrection
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [ContinuousLinearMap.smulRight_apply]
   rw [ContinuousLinearMap.comp_apply]
@@ -237,7 +237,7 @@ lemma chartLeviCivitaInnerCLM_apply
           (chartE_section_repr (I := I) α σ x) v := by
   classical
   unfold chartLeviCivitaInnerCLM
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
+  rw [add_apply, ContinuousLinearMap.comp_apply]
 
 open scoped Classical in
 def chartLeviCivita (g : SmoothRiemannianMetric I M) (α : M) :
@@ -295,7 +295,7 @@ lemma chartLeviCivita_add (g : SmoothRiemannianMetric I M) (α : M)
   apply ContinuousLinearMap.ext
   intro v
   rw [chartLeviCivita_apply (I := I) g α (σ + σ') hx v]
-  rw [ContinuousLinearMap.add_apply,
+  rw [add_apply,
       chartLeviCivita_apply (I := I) g α σ hx v,
       chartLeviCivita_apply (I := I) g α σ' hx v]
   rw [← map_add]
@@ -339,7 +339,7 @@ lemma chartLeviCivita_add (g : SmoothRiemannianMetric I M) (α : M)
   rw [christoffelCorrection_add (I := I) g α x
         (chartE_section_repr (I := I) α σ x)
         (chartE_section_repr (I := I) α σ' x) v]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   abel
 
 lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
@@ -348,12 +348,12 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     chartLeviCivita (I := I) g α (f • σ) x =
       f x • chartLeviCivita (I := I) g α σ x +
-        (extDerivFun f x).smulRight (σ x) := by
+        (mvfderiv (I := I) f x).smulRight (σ x) := by
   classical
   apply ContinuousLinearMap.ext
   intro v
   rw [chartLeviCivita_apply (I := I) g α (f • σ) hx v]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  rw [add_apply, smul_apply,
       chartLeviCivita_apply (I := I) g α σ hx v,
       ContinuousLinearMap.smulRight_apply]
   have hsmul_pull :
@@ -454,7 +454,7 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
               (trivToE (I := I) α x v) •
             chartE_section_repr (I := I) α σ x := by
     rw [hfderiv_split]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
   have hsec_smul :
       chartE_section_repr (I := I) α (f • σ) x =
@@ -477,7 +477,7 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
           (trivToE (I := I) α x v) :=
     mfderiv_scalar_eq_chart_fderiv (I := I) α f hxsrc_chart hxint hf v
   have hextDeriv :
-      extDerivFun (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
+      mvfderiv (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
   rw [hLfd_apply, hChristoffel_lhs]
   have hreorg :
       (f x • fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)

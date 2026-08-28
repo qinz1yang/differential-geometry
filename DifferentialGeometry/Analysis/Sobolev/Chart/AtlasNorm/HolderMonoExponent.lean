@@ -72,7 +72,7 @@ private lemma fRaw_tsupport_subset_K [CompactSpace M] (α : M) (u : M → ℝ) :
   ChartTower.tsupport_chartPushedRaw_pou_mul_subset (I := I) (M := M) α u
 
 omit [I.Boundaryless] in
-private lemma chartPushed_ae_eq_fRaw [CompactSpace M] (α : M) (u : M → ℝ) :
+private lemma chartPushed_ae_eq_fRaw (α : M) (u : M → ℝ) :
     chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u
       =ᵐ[(MeasureTheory.volume :
@@ -84,7 +84,7 @@ private lemma chartPushed_ae_eq_fRaw [CompactSpace M] (α : M) (u : M → ℝ) :
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u
 
 private lemma iterWeakPartial_cross_exponent_ae_eq
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p p' : ℝ≥0∞} (hp_one : 1 ≤ p) (hp'_one : 1 ≤ p')
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {j : ℕ} {f : EuclideanSpace ℝ (Fin d) → ℝ}
@@ -132,7 +132,7 @@ private lemma iterWeakPartial_cross_exponent_ae_eq
       exact h_bridge1.trans h_bridge2
 
 private lemma iterWeakPartial_ae_zero_on_sdiff_K
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {K : Set (EuclideanSpace ℝ (Fin d))} (hK_closed : IsClosed K)
@@ -238,11 +238,11 @@ private lemma iterWeakPartial_ae_zero_on_sdiff_K
                   (EuclideanSpace ℝ (Fin d))).restrict (Ω \ K)]
           iterWeakPartial (d := d) p j (fun i : Fin j => β i.succ) gK Ω :=
         MeasureTheory.ae_restrict_of_ae_restrict_of_subset
-          (s := Ω \ K) (t := Ω) (Set.diff_subset) h_iter_g_vs_gK_onΩ
+          (s := Ω \ K) (t := Ω) (Set.sdiff_subset) h_iter_g_vs_gK_onΩ
       exact h_iter_g_vs_gK_onΩK.trans h_iter_gK
 
 private lemma iterWeakPartial_ae_eq_indicator
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {K : Set (EuclideanSpace ℝ (Fin d))} (hK_closed : IsClosed K)
@@ -277,7 +277,7 @@ private lemma iterWeakPartial_ae_eq_indicator
     simp [Set.indicator_of_notMem h_in_K, hfx]
 
 private lemma eLpNorm_iterWeakPartial_mono_exponent
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {K : Set (EuclideanSpace ℝ (Fin d))} (hK_closed : IsClosed K)
     (hK_subset : K ⊆ Ω)
@@ -418,7 +418,7 @@ private lemma exponent_nonneg
   linarith
 
 theorem wkpNorm_chartPushed_mono_exponent_holder
-    [CompactSpace M] [NeZero (Module.finrank ℝ E)]
+    [CompactSpace M]
     (k : ℕ) (α : M)
     {p p' : ℝ≥0∞} (hp_one : 1 ≤ p) (hp'_one : 1 ≤ p')
     (hp'_le_p : p' ≤ p) (hp_top : p ≠ ⊤) :

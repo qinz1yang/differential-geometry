@@ -19,7 +19,6 @@ variable {R : Type*} [NormedRing R] [NormedAlgebra 𝕜 R] [HasSummableGeomSerie
 theorem contDiffOn_ringInverse (n : WithTop ℕ∞) :
     ContDiffOn 𝕜 n Ring.inverse {y : R | IsUnit y} := by
   intro y hy
-  simp only [Set.mem_setOf_eq] at hy
   obtain ⟨u, rfl⟩ := hy
   exact (contDiffAt_ringInverse 𝕜 u).contDiffWithinAt
 
@@ -45,11 +44,11 @@ theorem norm_iteratedFDerivWithin_ringInverse_le : ∀ (i : ℕ) (x : Rˣ),
         (fun y => (-mulLeftRight 𝕜 R) (Ring.inverse y) (Ring.inverse y)) := by
       filter_upwards [self_mem_nhdsWithin] with y hy
       rw [fderivWithin_of_isOpen hSopen hy]
-      simp only [hSdef, Set.mem_setOf_eq] at hy
+      simp only [hSdef] at hy
       obtain ⟨u, rfl⟩ := hy
       rw [fderiv_inverse, Ring.inverse_unit]
       ext v
-      simp [ContinuousLinearMap.neg_apply, mulLeftRight_apply]
+      simp [mulLeftRight_apply]
     rw [heq.iteratedFDerivWithin_eq (heq.self_of_nhdsWithin hxS) m]
     have hcd : ContDiffOn 𝕜 (⊤ : WithTop ℕ∞) Ring.inverse S :=
       contDiffOn_ringInverse ⊤
@@ -123,7 +122,7 @@ theorem norm_iteratedFDeriv_invComp_le
     hAu.mono (Set.inter_subset_left.trans interior_subset)
   have hmaps : Set.MapsTo A s {y : E →L[ℝ] E | IsUnit y} := fun p hp => by
     have h : p ∈ {q : P | IsUnit (A q)} := interior_subset hp.2
-    simpa only [Set.mem_setOf_eq] using h
+    exact h
   obtain ⟨w, hw⟩ := hunit.self_of_nhds
   have hwinv : ‖((↑w⁻¹ : E →L[ℝ] E))‖ ≤ max Lambda 1 := by
     have h : Ring.inverse (A x) = (↑w⁻¹ : E →L[ℝ] E) := by

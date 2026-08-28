@@ -26,6 +26,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 private theorem rawConnLap_symmS
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
     rawTensorConnLapSmooth (I := I) g₀ 0 2 (symmS (I := I) (M := M) g₀ S) =
@@ -102,9 +103,9 @@ private theorem bilinSymm_add
               Tensor0SBundle.Tensor0SSpace 2 I x) := by
         rw [ccTensorMultilinear_apply, ccTensorMultilinear_apply,
           ccTensorMultilinear_apply, SmoothCcTensor.toSection_add]
-        exact ContinuousLinearMap.add_apply _ _ _
+        exact add_apply _ _ _
       rw [hmul, Tensor0SBundle.Tensor0SSpace.toModel_add]
-    rw [hmodel, ContinuousMultilinearMap.add_apply]
+    rw [hmodel, add_apply]
   rw [hbilin v w, hbilin w v]
   ring
 
@@ -127,6 +128,7 @@ private theorem bilinSymm_sec_congr
     ccTensorBilin_apply, ccTensorBilin_apply, ccTensorBilin_apply,
     ccTensorBilin_apply, hmodel v w, hmodel w v]
 
+omit [SigmaCompactSpace M] in
 theorem deTurck_rem_repr
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) {δ : ℝ}

@@ -38,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma memWkp_finsetSum
-    {d : ℕ} [NeZero d] {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
+    {d k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ : IsOpen Ω)
     {ι : Type*} (T : Finset ι)
     (F : ι → EuclideanSpace ℝ (Fin d) → ℝ)
@@ -134,7 +134,7 @@ private lemma memWkp_smoothCoef_mul_aeZeroFactor
       (fun y => coef y * factor y) := by
     have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
         (volume : Measure EuclN).restrict Ω :=
-      Measure.restrict_mono Set.diff_subset le_rfl
+      Measure.restrict_mono Set.sdiff_subset le_rfl
     have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
         factor y = 0 := by
       have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
@@ -217,7 +217,7 @@ private lemma hasWeakPartialDeriv_ae_zero_off_of_ae_zero_off
   classical
   set V : Set EuclN := Ω \ Kc with hV_def
   have hV_open : IsOpen V := hΩ_open.sdiff hKc_closed
-  have hV_sub : V ⊆ Ω := Set.diff_subset
+  have hV_sub : V ⊆ Ω := Set.sdiff_subset
   have hV_meas : MeasurableSet V := hV_open.measurableSet
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hu_zero_V : u =ᵐ[(volume : Measure EuclN).restrict V]

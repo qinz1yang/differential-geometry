@@ -18,6 +18,8 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Topology.Compactness.Compact
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -186,7 +188,7 @@ theorem speedSq_hasDerivAt
           = chartCoord (E := E) j (V s) from by rw [hVcoord]; rfl]
     ring
   have hderiv := hbase.congr_of_eventuallyEq hspeed_eq
-  convert hderiv using 1
+  refine hderiv.congr_deriv ?_
   set u0 : E := AlongCurve.chartCurve (I := I) α γ 0 with hu0
   set DV : E :=
     fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)))
@@ -271,7 +273,6 @@ theorem speedSq_hasDerivAt
       AlongCurve.inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) g α DV (V 0)]
     refine Finset.sum_congr rfl (fun l _ => Finset.sum_congr rfl (fun j _ => ?_))
     rw [hGram_eq l j]
-  rw [hinner_sum]
   have hT2 :
       (∑ i : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i l u0 *
@@ -285,15 +286,20 @@ theorem speedSq_hasDerivAt
     refine Finset.sum_congr rfl (fun l _ => Finset.sum_congr rfl (fun i _ => ?_))
     rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) g α i l u0]
     ring
-  change (2 : ℝ) * (∑ l, ∑ j, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
-    g α l j u0
-        * chartCoord (E := E) l DV * chartCoord (E := E) j (V 0))
-      = (∑ l, ∑ j, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0
-          * chartCoord (E := E) l DV * chartCoord (E := E) j (V 0))
-        + (∑ i, ∑ l, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i l
-          u0
-            * chartCoord (E := E) i (V 0) * chartCoord (E := E) l DV)
-  rw [hT2]; ring
+  symm
+  calc
+    (2 : ℝ) * g.inner α
+          (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+            (I := I) g γ Vsec 0) (Vsec 0) =
+        2 * (∑ l, ∑ j, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
+          g α l j u0 * chartCoord (E := E) l DV * chartCoord (E := E) j (V 0)) :=
+      congrArg (fun z : ℝ => 2 * z) hinner_sum
+    _ = (∑ l, ∑ j, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
+          g α l j u0 * chartCoord (E := E) l DV * chartCoord (E := E) j (V 0))
+        + (∑ i, ∑ l, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
+          g α i l u0 * chartCoord (E := E) i (V 0) * chartCoord (E := E) l DV) := by
+      rw [hT2]
+      ring
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -304,7 +310,7 @@ lemma speedSq_contDiff
     (hf : IsSmoothVariation (I := I) f) :
     ContDiff ℝ (7 : ℕ) (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2) := by
   have hvel := velocity_totalSpace_contMDiff (I := I) (M := M) f hf
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   have hinner := ContMDiff.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _))

@@ -272,7 +272,7 @@ private lemma tsupport_pou_mul_subset_chart_source
   exact h1.trans (hρ α)
 
 private lemma contDiff_chartSmoothExt_pou_mul
-    [CompactSpace M] [T2Space M]
+    [CompactSpace M]
     (α : M) (ρ : SmoothPartitionOfUnity M I_hs M Set.univ)
     (hρ : ρ.IsSubordinate (fun β : M => (chartAt (EuclideanHalfSpace n) β).source))
     {u : M → ℝ} (hu : ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u)
@@ -289,7 +289,7 @@ private lemma contDiff_chartSmoothExt_pou_mul
 
 omit [IsManifold (𝓡∂ n) ∞ M] in
 private lemma hasCompactSupport_chartSmoothExt_pou_mul
-    [CompactSpace M] [T2Space M]
+    [CompactSpace M]
     (α : M) (ρ : SmoothPartitionOfUnity M I_hs M Set.univ)
     (hρ : ρ.IsSubordinate (fun β : M => (chartAt (EuclideanHalfSpace n) β).source))
     (u : M → ℝ) :
@@ -783,7 +783,7 @@ private lemma eLpNorm_chartSmoothExt_ball_le_wkpNormChart
     rw [show Finset.range 2 = {0, 1} from rfl]
     rw [Finset.sum_insert (by simp), Finset.sum_singleton]
     refine le_add_of_nonneg_right ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_succ.trans ?_
   let _ := g
   unfold wkpNormChart
@@ -1027,7 +1027,7 @@ private lemma eLpNorm_norm_fderiv_le_n_mul_wkpNorm
           (d := n) 1 q f Ω := by
     rw [hWkpEq, Finset.sum_range_succ, Finset.sum_range_one, ← h_j1_term]
     refine le_add_of_nonneg_left ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_wkp.trans ?_
   have hd_pos : 0 < n := NeZero.pos _
   have hd_one_le : (1 : ℝ≥0∞) ≤ ((n : ℕ) : ℝ≥0∞) := by

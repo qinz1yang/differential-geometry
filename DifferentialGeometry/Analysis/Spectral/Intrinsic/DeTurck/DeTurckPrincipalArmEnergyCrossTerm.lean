@@ -68,7 +68,7 @@ private lemma cometricDoubleTraceField_iteratedCovGrad_norm_le
         (DeTurck.cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ 2) k
     rw [if_neg (Nat.succ_ne_zero k), hzero, norm_zero, zero_mul]
 
-private theorem arm_commutator_Hs_family_tame [Nonempty M]
+private theorem arm_commutator_Hs_family_tame
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -411,9 +411,9 @@ private theorem arm_covGrad_coeffLower_l2_tame [Nonempty M]
             (iteratedCovGrad (I := I) g₀ 0 2 2 S)‖ ≤
           Cgrad * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S‖ := by
   classical
-  letI inst03 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
+  let inst03 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
-  letI inst23 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 2 3 I b) :=
+  let inst23 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 2 3 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 3
   obtain ⟨Cpo, hCpo_nn, hCpo⟩ :=
     deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
@@ -515,6 +515,7 @@ private theorem arm_covGrad_coeffLower_l2_tame [Nonempty M]
         mul_le_mul_of_nonneg_left h2jet hB_nn
     _ = B * (1 + Cj0) * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S‖ := by ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W₁ W₂ : SmoothCcTensor g 0 r) :
@@ -529,6 +530,7 @@ private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M
     abel
   exact eq_sub_of_add_eq h
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma deTurckPrincipalCometricArm_sub (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -548,6 +550,7 @@ private lemma smoothCcToTensorHs_subCross (g₀ : SmoothRiemannianMetric I M) (�
   simp only [sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff, smoothCcToTensorHs_coeff,
     map_add, map_neg, tensorL2Coeff_eq_inner, inner_add_right, inner_neg_right]
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma rawConnLap_oneMinusConnLap_comm (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :

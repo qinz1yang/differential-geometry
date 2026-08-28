@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -46,6 +45,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M]
 
+omit [CompactSpace M] in
 theorem covGradRoughLapCurv_toSection_eq_sub
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     (covGradRoughLapCurv (I := I) (M := M) g T₀).toSection x =
@@ -57,6 +57,7 @@ theorem covGradRoughLapCurv_toSection_eq_sub
   rw [SmoothCcTensor.toSection_sub]
   rfl
 
+omit [CompactSpace M] in
 theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     (rawTensorConnLapSmooth (I := I) g 0 3
@@ -69,7 +70,7 @@ theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace
   exact rawTensorConnLap_eq_frame_trace_secondCovDeriv (I := I) g 0 3
     (fun y : M => (covGrad (I := I) (M := M) g 0 2 T₀).toSection y) x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem secondCovDeriv_gradTensor_antisymm_eq_riemannOp
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X Y : Π b : M, TangentSpace I b} {x : M}
@@ -87,7 +88,7 @@ theorem secondCovDeriv_gradTensor_antisymm_eq_riemannOp
 
 end DifferentialIdentities
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem riemannOp_gradTensor_offDiag_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     ∃ Cx : ℝ, 0 ≤ Cx ∧
@@ -103,6 +104,7 @@ theorem riemannOp_gradTensor_offDiag_fiberNormSq_le
   refine ⟨Cx, hCx_nonneg, fun v w => ?_⟩
   exact hbound v w ((covGrad (I := I) (M := M) g 0 2 T₀).toSection x)
 
+omit [CompactSpace M] in
 theorem riemannOp_gradTensor_offDiag_frame_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     ∃ Cx : ℝ, 0 ≤ Cx ∧

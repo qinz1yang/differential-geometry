@@ -252,7 +252,7 @@ theorem eigenvectorChartRHS_memLp_weighted
             g r s i α P₀ l y) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) :=
-      memLp_finset_sum (μ := (chartPulledWeightedMeasure (I := I) g α).restrict
+      memLp_finsetSum (μ := (chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l _ => weightedGradCoeffDivLimit_memLp_weighted
@@ -305,9 +305,9 @@ theorem eigenvectorChartRHS_memLp_weighted
               g r s i α P :
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
       2 μw :=
-    memLp_finset_sum (μ := μw)
+    memLp_finsetSum (μ := μw)
       (Finset.univ : Finset (TensorCompIdx (E := E) r (s + 1)))
-      (fun P _ => memLp_finset_sum (μ := μw)
+      (fun P _ => memLp_finsetSum (μ := μw)
         (Finset.univ : Finset (TensorCompIdx (E := E) r (s + 1)))
         (fun Q _ => h_crossLeft P Q))
   have h_crossRight_sum : MemLp
@@ -319,9 +319,9 @@ theorem eigenvectorChartRHS_memLp_weighted
               g r s i α P :
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
       2 μw :=
-    memLp_finset_sum (μ := μw)
+    memLp_finsetSum (μ := μw)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum (μ := μw)
+      (fun P _ => memLp_finsetSum (μ := μw)
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q _ => h_crossRight P Q))
   have h_total :

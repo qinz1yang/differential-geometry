@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.TameLieCorrJets
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -52,7 +51,8 @@ private lemma half_sq_three_term_le
     (1 / 2 : ℝ) ^ 2 * x ≤ 3 * q := by
   nlinarith
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private lemma sieSplit (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     slotInsertEndoCc (I := I) (M := M) g₀ s
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁) =
@@ -523,7 +523,7 @@ private theorem pairCap (g₀ : SmoothRiemannianMetric I M)
   exact capCongr (I := I) (M := M) g₀ P hpair
     (capApp (I := I) (M := M) g₀ P _ _ hK2_nn hK4_nn hP2 hP4)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma curvSmul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (t : ℝ) :
     riemannCurvatureCoefficientField (I := I) (M := M) g₀ (t • T) = t • riemannCurvatureCoefficientField (I := I) (M := M) g₀ T := by
@@ -911,9 +911,15 @@ theorem pairMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ�
   have hP4 : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (pureTrace (I := I) (M := M) g₀ g₁ 4) 0 C4 :=
     hasMarkedGridWindow_of_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ P _ (fun i x => h4 g₁ P htie hδ_le hδ0 hδ i x)
-  refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P
-    (rfl : cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁ = _) ?_
-  simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hC2_nn hC4_nn hP2 hP4
+  have hpair : cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁ =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 6 4 2
+        (pureTrace (I := I) (M := M) g₀ g₁ 2)
+        (pureTrace (I := I) (M := M) g₀ g₁ 4) := by
+    unfold cometricDoublePairTraceCoefficient
+    rfl
+  refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P hpair ?_
+  exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
+    hC2_nn hC4_nn hP2 hP4
 
 theorem curvMark (g₀ : SmoothRiemannianMetric I M) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -946,9 +952,16 @@ theorem curvMark (g₀ : SmoothRiemannianMetric I M) :
     hS1_nn (fun _ => zero_le_one) hW1 hPw
   have h2 := hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P (riemannLoweredContractionB (I := I) (M := M) g₀) P
     hS2_nn (fun _ => zero_le_one) hW2 hPw
-  refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P
-    (rfl : riemannCurvatureCoefficientField (I := I) (M := M) g₀ P = _) ?_
-  simpa using hasMarkedGridWindow_add (I := I) (M := M) g₀ P h1 h2
+  have hcurv : riemannCurvatureCoefficientField (I := I) (M := M) g₀ P =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4
+          (riemannLoweredContractionA (I := I) (M := M) g₀) P +
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4
+          (riemannLoweredContractionB (I := I) (M := M) g₀) P := by
+    unfold riemannCurvatureCoefficientField
+    rfl
+  refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P hcurv ?_
+  rw [hF1_def, hF2_def]
+  exact hasMarkedGridWindow_add (I := I) (M := M) g₀ P h1 h2
 
 theorem omegaMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -973,9 +986,17 @@ theorem omegaMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ
     intro i y
     rw [metricLoweredConnectionDifferenceCoefficient_fiber_norm_sq_eq (I := I) (M := M) g₀ g₁ i y]
     exact hcd g₁ P htie hδ_le hδ0 hδ i y
-  refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P
-    (rfl : connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ g₁ = _) ?_
-  simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hCe_nn hKcd_nn hEndo
+  have homega : connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ g₁ =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 3
+        (slotInsertEndoCc (I := I) (M := M) g₀ 2
+          (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀))
+        (domDomCongrSection (I := I) (M := M) g₀ (finRotate 3)
+          (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) := by
+    unfold connectionDifferenceMetricLoweredTensor endoSlotZeroCcTensor
+    rfl
+  refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P homega ?_
+  exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
+    hCe_nn hKcd_nn hEndo
     (hasMarkedGridWindow_covariantDomainReindex (I := I) (M := M) g₀ P (finRotate 3) hCL)
 
 theorem lrQuadMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1007,11 +1028,29 @@ theorem lrQuadMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : �
     exact mul_le_mul_of_nonneg_left (hcd g₁ P htie hδ_le hδ0 hδ i y) (pow_nonneg hfr_nn 2)
   have hOm := wom g₁ P htie hδ_le hδ0 hδ
   have hQB : HasMarkedGridWindow (I := I) (M := M) g₀ P (connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁) 2 KJ := by
-    refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P (rfl : connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁ = _) ?_
-    simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hArm hOm
+    have hpaired : connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁ =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 4
+          (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g₀ g₁)
+          (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ g₁) := by
+      unfold connectionDifferenceQuadraticPairedTensor
+        deTurckLieCovariantDerivativeArmTwoCoefficient
+      rfl
+    refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P hpaired ?_
+    rw [hKJ_def]
+    exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
+      hKA_nn hKom_nn hArm hOm
   have hQA : HasMarkedGridWindow (I := I) (M := M) g₀ P (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁) 2 KJ := by
-    refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P (rfl : connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁ = _) ?_
-    simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hArm
+    have hcomposed : connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁ =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 4
+          (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g₀ g₁)
+          (domDomCongrSection (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 3) 1)
+            (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ g₁)) := by
+      unfold connectionDifferenceQuadraticComposedTensor
+        deTurckLieCovariantDerivativeArmTwoCoefficient
+      rfl
+    refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P hcomposed ?_
+    rw [hKJ_def]
+    exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hArm
       (hasMarkedGridWindow_covariantDomainReindex (I := I) (M := M) g₀ P (Equiv.swap (0 : Fin 3) 1) hOm)
   have hsum := hasMarkedGridWindow_add (I := I) (M := M) g₀ P
     (hasMarkedGridWindow_add (I := I) (M := M) g₀ P
@@ -1295,9 +1334,8 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
         2 * (KBr i * K0B i) * cg * H3) * JS := by ring
   linarith [hAfin, hBfin, hgoal.le, hgoal.ge]
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sieZero (g₀ : SmoothRiemannianMetric I M) (s : ℕ) :
     covGrad (I := I) (M := M) g₀ (s + 1) (s + 1)
         (slotInsertEndoCc (I := I) (M := M) g₀ s
@@ -1315,15 +1353,17 @@ private lemma sieZero (g₀ : SmoothRiemannianMetric I M) (s : ℕ) :
   rw [tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g₀ s
     (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x (m 0)]
   rw [show ((endoCovariantDerivative (I := I) (M := M) g₀)
-        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x (m 0)) =
+        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))) =
       (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from by
     apply ContinuousLinearMap.ext
     intro w
-    rw [ContinuousLinearMap.zero_apply]
+    rw [zero_apply]
     obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at (I := I)
       (F := E) (V := fun y : M => TangentSpace I y) (n := (⊤ : ℕ∞)) x w
     rw [← hY]
-    exact endoCovariantDerivative_fullRaised_id_eq_zero (I := I) (M := M) g₀ Y x (m 0)]
+    exact endoCovariantDerivative_fullRaised_id_eq_zero (I := I) (M := M) g₀ Y x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
   rw [show slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[ℝ] TangentSpace I x) =
@@ -1360,6 +1400,7 @@ private lemma clZ (g₀ g₁ : SmoothRiemannianMetric I M) :
               permCoeff (I := I) (M := M) g₀ (finRotate 3) -
               permCoeff (I := I) (M := M) g₀ (Equiv.swap (1 : Fin 3) 2)))) := rfl
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma iteratedCovGradSm (g₀ : SmoothRiemannianMetric I M) (r c j : ℕ) (k : ℝ)
     (X : SmoothCcTensor g₀ r c) :
@@ -1370,6 +1411,7 @@ private lemma iteratedCovGradSm (g₀ : SmoothRiemannianMetric I M) (r c j : ℕ
   | succ j ih => rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih, covGrad_smul]
 
 open DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower in
+omit [SigmaCompactSpace M] in
 private theorem clExact (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1500,6 +1542,7 @@ private theorem clExact (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ�
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (i + 1) := by
       simp only [mul_assoc]
 
+omit [SigmaCompactSpace M] in
 private theorem clCovMk (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)

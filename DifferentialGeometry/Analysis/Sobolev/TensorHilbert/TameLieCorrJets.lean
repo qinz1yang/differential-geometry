@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroVect
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -31,6 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 theorem exists_metricLoweredConnectionDifference_markWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ j, 0 ≤ K j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -48,6 +48,7 @@ theorem exists_metricLoweredConnectionDifference_markWindow (g₀ : SmoothRieman
   rw [metricLoweredConnectionDifferenceCoefficient_fiber_norm_sq_eq (I := I) (M := M) g₀ g₁ i x]
   exact hcd g₁ P htie hδ_le hδ0 hδ i x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem mcd_corr_sub (g₀ : SmoothRiemannianMetric I M)
     (ΦA ΦB : SmoothCcTensor g₀ 3 3) (W₁ W₂ : SmoothCcTensor g₀ 0 3) :
@@ -525,7 +526,8 @@ theorem lieCorrectionZeroMixedConnectionMark (g₀ : SmoothRiemannianMetric I M)
     have htr4' := hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
       (reindexedPureTrace (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) _
       hCtr4_nn hKmid_nn hT4 hmid
-    simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
+    simpa only [lieCorrectionZeroMixedConnectionHalfExpansion, hKhalf_def] using
+      hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
       (reindexedPureTrace (I := I) (M := M) g₀ g₁ 2 σ) _ hCtr2_nn hKtr4_nn (hT2 σ) htr4'
   refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P
     (lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g₀ g₁ g₀) ?_
@@ -642,7 +644,9 @@ theorem amixBackgroundAntidiagonalTupleGridWindow (g₀ gB : SmoothRiemannianMet
     have htr4' := hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
       (reindexedPureTrace (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) _
       hCtr4_nn hKmid_nn hT4 hmid
-    simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
+    simpa only [lieCorrectionZeroMixedConnectionBackgroundDifferenceHalfExpansion,
+      hKhalf_def] using
+      hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
       (reindexedPureTrace (I := I) (M := M) g₀ g₁ 2 σ) _
       hCtr2_nn hKtr4_nn (hT2 σ) htr4'
   have hmark : HasMarkedGridWindow (I := I) (M := M) g₀ P

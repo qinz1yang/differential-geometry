@@ -63,7 +63,7 @@ theorem continuousMultilinearMapBasisElem_linearIndependent [Finite Idx]
     (basis : Module.Basis Idx 𝕜 V) (s : Nat) :
     LinearIndependent 𝕜 (continuousMultilinearMapBasisElem basis s) := by
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   rw [Fintype.linearIndependent_iff]
   intro c hc slots'
   have h1 : (∑ slots : Fin s -> Idx,
@@ -71,7 +71,7 @@ theorem continuousMultilinearMapBasisElem_linearIndependent [Finite Idx]
       (fun a => basis (slots' a)) = 0 := by
     rw [hc]
     rfl
-  simp only [ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.smul_apply,
+  simp only [sum_apply, smul_apply,
     continuousMultilinearMapBasisElem_apply] at h1
   simp only [smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
   rwa [smul_eq_mul, mul_one] at h1
@@ -107,7 +107,7 @@ theorem continuousMultilinearMapBasis_repr
       A (fun a => basis (slots a)) := by
   classical
   conv_rhs => rw [← (continuousMultilinearMapBasis basis s).sum_repr A]
-  simp only [ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.smul_apply,
+  simp only [sum_apply, smul_apply,
     smul_eq_mul, continuousMultilinearMapBasis_apply,
     continuousMultilinearMapBasisElem_apply, mul_ite, mul_one, mul_zero,
     Finset.sum_ite_eq', Finset.mem_univ, ite_true]
@@ -201,7 +201,7 @@ theorem ext0S_basis [Finite Idx]
       component0S (I := I) basis A slots = component0S (I := I) basis B slots) :
     A = B := by
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   apply (coordEquiv0S (I := I) basis s).injective
   ext slots
   simpa using h slots

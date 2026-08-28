@@ -17,7 +17,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -63,6 +62,7 @@ private lemma vec3_upd_two {F : Type*} (a b c z : F) :
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma linearizedKoszulCovec_add_fst (g' : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g' 0 2) (x : M) (u u' ζ : TangentSpace I x) :
     linearizedKoszulCovec (I := I) g' S x (u + u') ζ =
@@ -73,21 +73,24 @@ lemma linearizedKoszulCovec_add_fst (g' : SmoothRiemannianMetric I M)
   rw [LinearMap.add_apply, linearizedKoszulCovec_apply, linearizedKoszulCovec_apply,
     linearizedKoszulCovec_apply]
   set G := unitModel (I := I) (M := M) g' 3 (covGrad (I := I) (M := M) g' 0 2 S) x with hG
-  have h1 : G ![ζ, u + u', z] = G ![ζ, u, z] + G ![ζ, u', z] := by
-    have h := G.map_update_add ![ζ, u, z] 1 u u'
-    rwa [vec3_upd_one, vec3_upd_one, vec3_upd_one] at h
-  have h2 : G ![u + u', ζ, z] = G ![u, ζ, z] + G ![u', ζ, z] := by
-    have h := G.map_update_add ![u, ζ, z] 0 u u'
-    rwa [vec3_upd_zero, vec3_upd_zero, vec3_upd_zero] at h
-  have h3 : G ![z, ζ, u + u'] = G ![z, ζ, u] + G ![z, ζ, u'] := by
-    have h := G.map_update_add ![z, ζ, u] 2 u u'
-    rwa [vec3_upd_two, vec3_upd_two, vec3_upd_two] at h
+  let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
+  have h1 : G ![e ζ, e (u + u'), e z] = G ![e ζ, e u, e z] + G ![e ζ, e u', e z] := by
+    have h := G.map_update_add ![e ζ, e u, e z] 1 (e u) (e u')
+    simpa only [vec3_upd_one, map_add] using h
+  have h2 : G ![e (u + u'), e ζ, e z] = G ![e u, e ζ, e z] + G ![e u', e ζ, e z] := by
+    have h := G.map_update_add ![e u, e ζ, e z] 0 (e u) (e u')
+    simpa only [vec3_upd_zero, map_add] using h
+  have h3 : G ![e z, e ζ, e (u + u')] = G ![e z, e ζ, e u] + G ![e z, e ζ, e u'] := by
+    have h := G.map_update_add ![e z, e ζ, e u] 2 (e u) (e u')
+    simpa only [vec3_upd_two, map_add] using h
+  dsimp only [e] at h1 h2 h3
   rw [h1, h2, h3]
   ring
 
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma linearizedKoszulCovec_smul_fst (g' : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g' 0 2) (x : M) (c : ℝ) (u ζ : TangentSpace I x) :
     linearizedKoszulCovec (I := I) g' S x (c • u) ζ =
@@ -96,15 +99,17 @@ lemma linearizedKoszulCovec_smul_fst (g' : SmoothRiemannianMetric I M)
   intro z
   rw [LinearMap.smul_apply, linearizedKoszulCovec_apply, linearizedKoszulCovec_apply]
   set G := unitModel (I := I) (M := M) g' 3 (covGrad (I := I) (M := M) g' 0 2 S) x with hG
-  have h1 : G ![ζ, c • u, z] = c • G ![ζ, u, z] := by
-    have h := G.map_update_smul ![ζ, u, z] 1 c u
-    rwa [vec3_upd_one, vec3_upd_one] at h
-  have h2 : G ![c • u, ζ, z] = c • G ![u, ζ, z] := by
-    have h := G.map_update_smul ![u, ζ, z] 0 c u
-    rwa [vec3_upd_zero, vec3_upd_zero] at h
-  have h3 : G ![z, ζ, c • u] = c • G ![z, ζ, u] := by
-    have h := G.map_update_smul ![z, ζ, u] 2 c u
-    rwa [vec3_upd_two, vec3_upd_two] at h
+  let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
+  have h1 : G ![e ζ, e (c • u), e z] = c • G ![e ζ, e u, e z] := by
+    have h := G.map_update_smul ![e ζ, e u, e z] 1 c (e u)
+    simpa only [vec3_upd_one, map_smul] using h
+  have h2 : G ![e (c • u), e ζ, e z] = c • G ![e u, e ζ, e z] := by
+    have h := G.map_update_smul ![e u, e ζ, e z] 0 c (e u)
+    simpa only [vec3_upd_zero, map_smul] using h
+  have h3 : G ![e z, e ζ, e (c • u)] = c • G ![e z, e ζ, e u] := by
+    have h := G.map_update_smul ![e z, e ζ, e u] 2 c (e u)
+    simpa only [vec3_upd_two, map_smul] using h
+  dsimp only [e] at h1 h2 h3
   rw [h1, h2, h3]
   simp only [smul_eq_mul]
   ring
@@ -112,6 +117,7 @@ lemma linearizedKoszulCovec_smul_fst (g' : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma linearizedKoszulCovec_add_snd (g' : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g' 0 2) (x : M) (u ζ ζ' : TangentSpace I x) :
     linearizedKoszulCovec (I := I) g' S x u (ζ + ζ') =
@@ -122,21 +128,24 @@ lemma linearizedKoszulCovec_add_snd (g' : SmoothRiemannianMetric I M)
   rw [LinearMap.add_apply, linearizedKoszulCovec_apply, linearizedKoszulCovec_apply,
     linearizedKoszulCovec_apply]
   set G := unitModel (I := I) (M := M) g' 3 (covGrad (I := I) (M := M) g' 0 2 S) x with hG
-  have h1 : G ![ζ + ζ', u, z] = G ![ζ, u, z] + G ![ζ', u, z] := by
-    have h := G.map_update_add ![ζ, u, z] 0 ζ ζ'
-    rwa [vec3_upd_zero, vec3_upd_zero, vec3_upd_zero] at h
-  have h2 : G ![u, ζ + ζ', z] = G ![u, ζ, z] + G ![u, ζ', z] := by
-    have h := G.map_update_add ![u, ζ, z] 1 ζ ζ'
-    rwa [vec3_upd_one, vec3_upd_one, vec3_upd_one] at h
-  have h3 : G ![z, ζ + ζ', u] = G ![z, ζ, u] + G ![z, ζ', u] := by
-    have h := G.map_update_add ![z, ζ, u] 1 ζ ζ'
-    rwa [vec3_upd_one, vec3_upd_one, vec3_upd_one] at h
+  let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
+  have h1 : G ![e (ζ + ζ'), e u, e z] = G ![e ζ, e u, e z] + G ![e ζ', e u, e z] := by
+    have h := G.map_update_add ![e ζ, e u, e z] 0 (e ζ) (e ζ')
+    simpa only [vec3_upd_zero, map_add] using h
+  have h2 : G ![e u, e (ζ + ζ'), e z] = G ![e u, e ζ, e z] + G ![e u, e ζ', e z] := by
+    have h := G.map_update_add ![e u, e ζ, e z] 1 (e ζ) (e ζ')
+    simpa only [vec3_upd_one, map_add] using h
+  have h3 : G ![e z, e (ζ + ζ'), e u] = G ![e z, e ζ, e u] + G ![e z, e ζ', e u] := by
+    have h := G.map_update_add ![e z, e ζ, e u] 1 (e ζ) (e ζ')
+    simpa only [vec3_upd_one, map_add] using h
+  dsimp only [e] at h1 h2 h3
   rw [h1, h2, h3]
   ring
 
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma linearizedKoszulCovec_smul_snd (g' : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g' 0 2) (x : M) (c : ℝ) (u ζ : TangentSpace I x) :
     linearizedKoszulCovec (I := I) g' S x u (c • ζ) =
@@ -145,15 +154,17 @@ lemma linearizedKoszulCovec_smul_snd (g' : SmoothRiemannianMetric I M)
   intro z
   rw [LinearMap.smul_apply, linearizedKoszulCovec_apply, linearizedKoszulCovec_apply]
   set G := unitModel (I := I) (M := M) g' 3 (covGrad (I := I) (M := M) g' 0 2 S) x with hG
-  have h1 : G ![c • ζ, u, z] = c • G ![ζ, u, z] := by
-    have h := G.map_update_smul ![ζ, u, z] 0 c ζ
-    rwa [vec3_upd_zero, vec3_upd_zero] at h
-  have h2 : G ![u, c • ζ, z] = c • G ![u, ζ, z] := by
-    have h := G.map_update_smul ![u, ζ, z] 1 c ζ
-    rwa [vec3_upd_one, vec3_upd_one] at h
-  have h3 : G ![z, c • ζ, u] = c • G ![z, ζ, u] := by
-    have h := G.map_update_smul ![z, ζ, u] 1 c ζ
-    rwa [vec3_upd_one, vec3_upd_one] at h
+  let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
+  have h1 : G ![e (c • ζ), e u, e z] = c • G ![e ζ, e u, e z] := by
+    have h := G.map_update_smul ![e ζ, e u, e z] 0 c (e ζ)
+    simpa only [vec3_upd_zero, map_smul] using h
+  have h2 : G ![e u, e (c • ζ), e z] = c • G ![e u, e ζ, e z] := by
+    have h := G.map_update_smul ![e u, e ζ, e z] 1 c (e ζ)
+    simpa only [vec3_upd_one, map_smul] using h
+  have h3 : G ![e z, e (c • ζ), e u] = c • G ![e z, e ζ, e u] := by
+    have h := G.map_update_smul ![e z, e ζ, e u] 1 c (e ζ)
+    simpa only [vec3_upd_one, map_smul] using h
+  dsimp only [e] at h1 h2 h3
   rw [h1, h2, h3]
   simp only [smul_eq_mul]
   ring
@@ -161,6 +172,7 @@ lemma linearizedKoszulCovec_smul_snd (g' : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma linearizedKoszulCovec_zero_weight (g' : SmoothRiemannianMetric I M) (x : M)
     (u ζ : TangentSpace I x) :
     linearizedKoszulCovec (I := I) g' (0 : SmoothCcTensor g' 0 2) x u ζ = 0 := by
@@ -170,15 +182,15 @@ lemma linearizedKoszulCovec_zero_weight (g' : SmoothRiemannianMetric I M) (x : M
   have hzero : covGrad (I := I) (M := M) g' 0 2 (0 : SmoothCcTensor g' 0 2) = 0 :=
     covGrad_zero (I := I) (M := M) g' 0 2
   rw [hzero]
-  have hunit : ∀ v : Fin 3 → TangentSpace I x,
+  have hunit : ∀ v : Fin 3 → E,
       unitModel (I := I) (M := M) g' 3 (0 : SmoothCcTensor g' 0 3) x v = 0 := by
     intro v
     rw [unitModel]
     have h0 : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (0 : SmoothCcTensor g' 0 3).toSection x) = 0 := rfl
-    rw [h0, ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero]
+    rw [h0, zero_apply, Tensor0SSpace.toModel_zero]
     rfl
-  rw [hunit ![ζ, u, z], hunit ![u, ζ, z], hunit ![z, ζ, u]]
+  simp only [hunit]
   ring
 
 def sharpRaisedKoszulVec (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
@@ -188,6 +200,7 @@ def sharpRaisedKoszulVec (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcT
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpRaisedKoszulVec_add_fst (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (u u' ζ : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ S x (u + u') ζ =
@@ -201,6 +214,7 @@ lemma sharpRaisedKoszulVec_add_fst (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpRaisedKoszulVec_smul_fst (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (c : ℝ) (u ζ : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ S x (c • u) ζ =
@@ -211,6 +225,7 @@ lemma sharpRaisedKoszulVec_smul_fst (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpRaisedKoszulVec_add_snd (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (u ζ ζ' : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ S x u (ζ + ζ') =
@@ -224,6 +239,7 @@ lemma sharpRaisedKoszulVec_add_snd (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpRaisedKoszulVec_smul_snd (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (c : ℝ) (u ζ : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ S x u (c • ζ) =
@@ -234,6 +250,7 @@ lemma sharpRaisedKoszulVec_smul_snd (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpRaisedKoszulVec_zero_weight (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (u ζ : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ (0 : SmoothCcTensor g₀ 0 2) x u ζ = 0 := by
@@ -261,7 +278,7 @@ def sharpGradKoszulKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M)
             PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 +
               PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0' from
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_add v0 v0',
-          ContinuousLinearMap.add_apply, map_add, ContinuousLinearMap.comp_add]
+          add_apply, map_add, ContinuousLinearMap.comp_add]
         abel
       map_smul' := fun c v0 => by
         rw [RingHom.id_apply, sharpRaisedKoszulVec_smul_snd, map_smul, map_smul, map_smul,
@@ -269,11 +286,12 @@ def sharpGradKoszulKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M)
           show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (c • v0) =
             c • PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 from
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_smul c v0,
-          ContinuousLinearMap.smul_apply, map_smul, ContinuousLinearMap.comp_smul]
+          smul_apply, map_smul, ContinuousLinearMap.comp_smul]
         rw [smul_sub, smul_add, smul_add] }
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma sharpGradKoszulKernelBilin_apply (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (p q v0 v1 : TangentSpace I x) :
     sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x p q v0 v1 =
@@ -286,8 +304,8 @@ omit [NeZero (Module.finrank ℝ E)] in
         + g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 v1)) := by
   rw [sharpGradKoszulKernelBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+    AddHom.coe_mk, sub_apply, add_apply,
+    add_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply]
 
 def frameSharpGradKoszulKernel (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -304,18 +322,18 @@ def frameSharpGradKoszulKernel (g₀ g₁ : SmoothRiemannianMetric I M)
               rw [sharpGradKoszulKernelBilin_apply, sharpGradKoszulKernelBilin_apply,
                 sharpGradKoszulKernelBilin_apply, sharpRaisedKoszulVec_add_fst,
                 sharpRaisedKoszulVec_add_fst]
-              simp only [map_add, ContinuousLinearMap.add_apply]
+              simp only [map_add, add_apply]
               ring
             map_smul' := fun c q => by
               rw [RingHom.id_apply, sharpGradKoszulKernelBilin_apply,
                 sharpGradKoszulKernelBilin_apply, sharpRaisedKoszulVec_smul_fst,
                 sharpRaisedKoszulVec_smul_fst]
-              simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+              simp only [map_smul, smul_apply, smul_eq_mul]
               ring }
       map_add' := fun p p' => by
         apply ContinuousLinearMap.ext
         intro q
-        simp only [ContinuousLinearMap.add_apply, LinearMap.coe_toContinuousLinearMap']
+        simp only [add_apply, LinearMap.coe_toContinuousLinearMap']
         simp only [LinearMap.coe_mk, AddHom.coe_mk]
         rw [sharpGradKoszulKernelBilin_apply, sharpGradKoszulKernelBilin_apply,
           sharpGradKoszulKernelBilin_apply, sharpRaisedKoszulVec_add_snd,
@@ -323,24 +341,25 @@ def frameSharpGradKoszulKernel (g₀ g₁ : SmoothRiemannianMetric I M)
             PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p +
               PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p' from
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_add p p']
-        simp only [map_add, ContinuousLinearMap.add_apply]
+        simp only [map_add, add_apply]
         ring
       map_smul' := fun c p => by
         rw [RingHom.id_apply]
         apply ContinuousLinearMap.ext
         intro q
-        simp only [ContinuousLinearMap.smul_apply, LinearMap.coe_toContinuousLinearMap']
+        simp only [smul_apply, LinearMap.coe_toContinuousLinearMap']
         simp only [LinearMap.coe_mk, AddHom.coe_mk]
         rw [sharpGradKoszulKernelBilin_apply, sharpGradKoszulKernelBilin_apply,
           sharpRaisedKoszulVec_smul_snd,
           show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (c • p) =
             c • PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p from
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_smul c p]
-        simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        simp only [map_smul, smul_apply, smul_eq_mul]
         ring }
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma frameSharpGradKoszulKernel_apply (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (v0 v1 p q : TangentSpace I x) :
     frameSharpGradKoszulKernel (I := I) g₀ g₁ S x v0 v1 p q =
@@ -358,23 +377,25 @@ def sharpGradKoszulSummandFib (g₀ g₁ : SmoothRiemannianMetric I M)
           Tensor0SSpace.ofModel (I := I) (x := x)
             (bilinFormToModel E (sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x p q))
       map_add' := fun D D' => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, add_smul]
+        rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
-        rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+        rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
           RingHom.id_apply, mul_smul] }
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma sharpGradKoszulSummandFib_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (p q : TangentSpace I x)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (sharpGradKoszulSummandFib (I := I) g₀ g₁ S x p q D) v =
       (Tensor0SSpace.toModel D ![(p : E), (q : E)]) *
         sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x p q (v 0) (v 1) := by
-  rw [sharpGradKoszulSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply, smul_eq_mul]
-  rfl
+  with_unfolding_all
+    rw [sharpGradKoszulSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
+      AddHom.coe_mk, Tensor0SSpace.toModel_smul, smul_apply,
+      Tensor0SSpace.toModel_ofModel, smul_eq_mul]
+    rfl
 
 def sharpGradKoszulBiContrFibFixedFrame (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
@@ -385,6 +406,7 @@ def sharpGradKoszulBiContrFibFixedFrame (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpGradKoszulBiContrFibFixedFrame_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
@@ -395,19 +417,19 @@ lemma sharpGradKoszulBiContrFibFixedFrame_toModel (g₀ g₁ : SmoothRiemannianM
         (Tensor0SSpace.toModel D ![(B a x : E), (B b x : E)]) *
           sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x (B a x) (B b x) (v 0) (v 1) := by
   classical
-  rw [sharpGradKoszulBiContrFibFixedFrame, ContinuousLinearMap.smul_apply,
-    Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [sharpGradKoszulBiContrFibFixedFrame, smul_apply,
+    Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   congr 1
-  rw [ContinuousLinearMap.sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum,
-    ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, Tensor0SSpace.toModelL_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.toModelL_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, sharpGradKoszulSummandFib_toModel]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma unitValueCovGrad3_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 3 ℝ E)) ∞
@@ -430,6 +452,7 @@ private lemma unitValueCovGrad3_contMDiff (g₀ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -462,7 +485,7 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
   have hEval : ∀ (v : Fin 3 → ∀ y : M, TangentSpace I y)
       (_ : ∀ i, ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞ (T% (v i)) b),
       ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-        (fun y : M => Tensor0SSpace.toModel (W₃ y) (fun i : Fin 3 => v i y)) b :=
+        (fun y : M => W₃ y (fun i : Fin 3 => v i y)) b :=
     fun v hv => TensorMultilinear.contMDiffAt_section_apply (n := 3) W₃
       (hW₃.contMDiffAt) v hv
   have h1 := hEval ![fun y => Y y, fun y => Z y, fun y => chartBasisVecFiber (I := I) α j y]
@@ -488,15 +511,15 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
       · exact Z.contMDiff.contMDiffAt)
   have hcomb : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun y : M => (1 / 2 : ℝ) *
-        (Tensor0SSpace.toModel (W₃ y)
+        (W₃ y
             (fun i : Fin 3 => (![fun y' => Y y', fun y' => Z y',
               fun y' => chartBasisVecFiber (I := I) α j y'] : Fin 3 → ∀ y' : M,
                 TangentSpace I y') i y)
-          + Tensor0SSpace.toModel (W₃ y)
+          + W₃ y
               (fun i : Fin 3 => (![fun y' => Z y', fun y' => Y y',
                 fun y' => chartBasisVecFiber (I := I) α j y'] : Fin 3 → ∀ y' : M,
                   TangentSpace I y') i y)
-          - Tensor0SSpace.toModel (W₃ y)
+          - W₃ y
               (fun i : Fin 3 => (![fun y' => chartBasisVecFiber (I := I) α j y',
                 fun y' => Y y', fun y' => Z y'] : Fin 3 → ∀ y' : M,
                   TangentSpace I y') i y))) b :=
@@ -505,9 +528,58 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
   filter_upwards with y
   rw [linearizedKoszulCovec_apply]
   have hUM : ∀ v : Fin 3 → TangentSpace I y,
-      unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 S) y v =
-        Tensor0SSpace.toModel (W₃ y) v := fun _ => rfl
-  rw [hUM, hUM, hUM]
+      unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 S) y
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y (v i)) =
+        W₃ y v := fun _ => rfl
+  have hUM1 : unitModel (I := I) (M := M) g₀ 3
+      (covGrad (I := I) (M := M) g₀ 0 2 S) y
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y
+            (chartBasisVecFiber (I := I) α j y)] =
+      W₃ y ![Y y, Z y, chartBasisVecFiber (I := I) α j y] := by
+    rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
+        tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
+        tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (chartBasisVecFiber (I := I) α j y)] =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (![Y y, Z y, chartBasisVecFiber (I := I) α j y] i)) by
+      funext i
+      fin_cases i <;> rfl]
+    exact hUM ![Y y, Z y, chartBasisVecFiber (I := I) α j y]
+  have hUM2 : unitModel (I := I) (M := M) g₀ 3
+      (covGrad (I := I) (M := M) g₀ 0 2 S) y
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y
+            (chartBasisVecFiber (I := I) α j y)] =
+      W₃ y ![Z y, Y y, chartBasisVecFiber (I := I) α j y] := by
+    rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
+        tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
+        tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (chartBasisVecFiber (I := I) α j y)] =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (![Z y, Y y, chartBasisVecFiber (I := I) α j y] i)) by
+      funext i
+      fin_cases i <;> rfl]
+    exact hUM ![Z y, Y y, chartBasisVecFiber (I := I) α j y]
+  have hUM3 : unitModel (I := I) (M := M) g₀ 3
+      (covGrad (I := I) (M := M) g₀ 0 2 S) y
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+            (chartBasisVecFiber (I := I) α j y),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
+          tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y)] =
+      W₃ y ![chartBasisVecFiber (I := I) α j y, Y y, Z y] := by
+    rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (chartBasisVecFiber (I := I) α j y),
+        tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
+        tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y)] =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (![chartBasisVecFiber (I := I) α j y, Y y, Z y] i)) by
+      funext i
+      fin_cases i <;> rfl]
+    exact hUM ![chartBasisVecFiber (I := I) α j y, Y y, Z y]
+  rw [hUM1, hUM2, hUM3]
   congr 1
   congr 1
   · congr 1
@@ -524,6 +596,7 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma sharpRaisedKoszulVec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (U Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -536,6 +609,7 @@ lemma sharpRaisedKoszulVec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric
   exact linearizedKoszulCovec_basis_contMDiffOn_generic (I := I) (M := M) g₀ S Z U α j
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharpGradKoszulKernelBilin_homSection_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     {p q : Π b : M, TangentSpace I b}
@@ -624,6 +698,7 @@ theorem sharpGradKoszulKernelBilin_homSection_contMDiff
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharpGradKoszulBiContrFibFixedFrame_apply_section_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -704,15 +779,16 @@ theorem sharpGradKoszulBiContrFibFixedFrame_apply_section_contMDiff
     rfl
   have hgoal : sharpGradKoszulBiContrFibFixedFrame (I := I) g₀ g₁ S B x (Y x) =
       (2 : ℝ) • Stot x := by
-    rw [hval, sharpGradKoszulBiContrFibFixedFrame, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.sum_apply]
+    rw [hval, sharpGradKoszulBiContrFibFixedFrame, smul_apply,
+      sum_apply]
     congr 1
     refine Finset.sum_congr rfl (fun a _ => ?_)
-    exact ContinuousLinearMap.sum_apply _ _ _
+    exact sum_apply _ _ _
   rw [hgoal]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharpGradKoszulBiContrFibFixedFrame_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -736,6 +812,7 @@ def sharpGradKoszulBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M)
   sharpGradKoszulBiContrFibFixedFrame (I := I) g₀ g₁ S (smoothOrthoFrame (I := I) g₁ x) x
 
 omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharpGradKoszulBiContrFib_eq_fixedFrame_on_nbhd
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
@@ -751,30 +828,65 @@ theorem sharpGradKoszulBiContrFib_eq_fixedFrame_on_nbhd
   rw [sharpGradKoszulBiContrFib, sharpGradKoszulBiContrFibFixedFrame_toModel,
     sharpGradKoszulBiContrFibFixedFrame_toModel]
   congr 1
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
+  let e := (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap
+  let vt : Fin 2 → TangentSpace I y := fun i =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i)
+  let Dmodel : E →L[ℝ] E →L[ℝ] ℝ :=
+    (bilinFormToModel E).symm (Tensor0SSpace.toModel D)
+  let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
+    (((Dmodel.comp e).flip.comp e).flip)
+  with_unfolding_all
+    change (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ y a y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ y b y)]) *
+          sharpGradKoszulKernelBilin (I := I) g₀ g₁ S y
+            (smoothOrthoFrame (I := I) g₁ y a y) (smoothOrthoFrame (I := I) g₁ y b y)
+            (vt 0) (vt 1)) =
+      ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ x₀ a y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ x₀ b y)]) *
+          sharpGradKoszulKernelBilin (I := I) g₀ g₁ S y
+            (smoothOrthoFrame (I := I) g₁ x₀ a y) (smoothOrthoFrame (I := I) g₁ x₀ b y)
+            (vt 0) (vt 1)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        (Tensor0SSpace.toModel D ![(Bf a : E), (Bf b : E)]) *
-          sharpGradKoszulKernelBilin (I := I) g₀ g₁ S y (Bf a) (Bf b) (v 0) (v 1) =
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf a),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)]) *
+          sharpGradKoszulKernelBilin (I := I) g₀ g₁ S y
+            (Bf a) (Bf b) (vt 0) (vt 1) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        frameSharpGradKoszulKernel (I := I) g₀ g₁ S y (v 0) (v 1) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D) (Bf a) (Bf b) := by
+        frameSharpGradKoszulKernel (I := I) g₀ g₁ S y
+            (vt 0) (vt 1) (Bf a) (Bf b) *
+          Dd (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [frameSharpGradKoszulKernel_apply,
-      bilinFormToModel_symm_apply (TangentSpace I y) (Tensor0SSpace.toModel D) (Bf a) (Bf b)]
+    rw [frameSharpGradKoszulKernel_apply]
+    dsimp only [Dd, Dmodel, e]
+    rw [ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      bilinFormToModel_symm_apply]
     rw [mul_comm]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)]
   exact double_frame_bilin_trace_indep (I := I) g₁ y
-    (frameSharpGradKoszulKernel (I := I) g₀ g₁ S y (v 0) (v 1))
-    ((bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D))
+    (frameSharpGradKoszulKernel (I := I) g₀ g₁ S y (vt 0) (vt 1)) Dd
     (fun a => smoothOrthoFrame (I := I) g₁ y a y)
     (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharpGradKoszulBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -807,6 +919,7 @@ def ricciArmSharpGradKoszulResidualField (g₀ g₁ : SmoothRiemannianMetric I M
       contMDiff_toFun := sharpGradKoszulBiContrFib_contMDiff (I := I) g₀ g₁ S }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
+omit [SigmaCompactSpace M] in
 @[simp] theorem ricciArmSharpGradKoszulResidualField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M) :
     (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S).toSection x =
@@ -814,6 +927,7 @@ def ricciArmSharpGradKoszulResidualField (g₀ g₁ : SmoothRiemannianMetric I M
         TensorRSSpace.ofCLM (sharpGradKoszulBiContrFib (I := I) g₀ g₁ S x)) := rfl
 
 
+omit [SigmaCompactSpace M] in
 theorem ricciArmSharpGradKoszulResidualField_zero_weight
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
@@ -829,13 +943,17 @@ theorem ricciArmSharpGradKoszulResidualField_zero_weight
     apply ContinuousMultilinearMap.ext
     intro v
     rw [sharpGradKoszulBiContrFib, sharpGradKoszulBiContrFibFixedFrame_toModel]
+    let v0 : TangentSpace I x :=
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)
+    let v1 : TangentSpace I x :=
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)
     have hker : ∀ p q : TangentSpace I x,
         sharpGradKoszulKernelBilin (I := I) g₀ g₁ (0 : SmoothCcTensor g₀ 0 2) x p q
-          (v 0) (v 1) = 0 := by
+          v0 v1 = 0 := by
       intro p q
       rw [sharpGradKoszulKernelBilin_apply, sharpRaisedKoszulVec_zero_weight,
         sharpRaisedKoszulVec_zero_weight]
-      simp only [map_zero, ContinuousLinearMap.zero_apply]
+      simp only [map_zero, zero_apply]
       ring
     rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         (Tensor0SSpace.toModel D
@@ -844,11 +962,17 @@ theorem ricciArmSharpGradKoszulResidualField_zero_weight
             (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
             (v 0) (v 1)) = 0 from
       Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by
-        rw [hker]
-        ring))]
+        let p : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x a x
+        let q : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x b x
+        with_unfolding_all
+          change (Tensor0SSpace.toModel D
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+                tangentSpaceModelContinuousLinearEquiv (I := I) x q]) *
+              sharpGradKoszulKernelBilin (I := I) g₀ g₁
+                (0 : SmoothCcTensor g₀ 0 2) x p q v0 v1 = 0
+        rw [hker, mul_zero]))]
     rw [mul_zero]
-    simp only [ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero,
-      ContinuousMultilinearMap.zero_apply]
+    simp only [zero_apply, Tensor0SSpace.toModel_zero]
   rw [hzero]
   rfl
 

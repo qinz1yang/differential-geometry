@@ -167,7 +167,12 @@ theorem dampHeat_int {δ : ℝ} (hδ : 0 < δ) :
         if 0 < t then Real.exp (-δ * t) else 0) := by
       have hi := integrableOn_exp_mul_Ioi (a := -δ) (by linarith) 0
       have hi' := hi.integrable_indicator measurableSet_Ioi
-      simpa [Set.indicator, Set.mem_Ioi] using hi'
+      have hfun : (fun t : ℝ => if 0 < t then Real.exp (-δ * t) else 0) =
+          Set.indicator (Ioi (0 : ℝ)) (fun t => Real.exp (-δ * t)) := by
+        funext t
+        simp only [Set.indicator, Set.mem_Ioi]
+      rw [hfun]
+      exact hi'
     convert hout using 1
     funext t
     by_cases ht : 0 < t
@@ -200,14 +205,19 @@ theorem dampHeat_fourier {δ : ℝ} (hδ : 0 < δ)
     have h := (Real.fourierIntegral_convergent_iff
       (μ := (volume : Measure (WithLp 2 (ℝ × V))))
       (f := dampHeat (V := V) δ) q).2 (dampHeat_int (V := V) hδ)
+    change Integrable (fun z : WithLp 2 (ℝ × V) =>
+      Complex.exp (((-2 * π * inner ℝ z q : ℝ) : ℂ) * I) •
+        dampHeat (V := V) δ z)
     simpa only [Circle.smul_def, Real.fourierChar_apply, mul_neg, neg_mul] using h
   have hraw : Integrable raw
       ((volume : Measure ℝ).prod (volume : Measure V)) := by
-    have h := hsp
-    rw [← (WithLp.volume_preserving_toLp (U := ℝ) (V := V)).integrable_comp_emb
-      (MeasurableEquiv.toLp 2 (ℝ × V)).measurableEmbedding,
-      Measure.volume_eq_prod] at h
-    simpa only [raw, Function.comp_apply] using h
+    rw [← Measure.volume_eq_prod]
+    change Integrable
+      ((fun z : WithLp 2 (ℝ × V) =>
+        Complex.exp (((-2 * π * inner ℝ z q : ℝ) : ℂ) * I) *
+          dampHeat (V := V) δ z) ∘ WithLp.toLp 2)
+    exact ((WithLp.volume_preserving_toLp (U := ℝ) (V := V)).integrable_comp_emb
+      (MeasurableEquiv.toLp 2 (ℝ × V)).measurableEmbedding).2 hsp
   have hEq (z : ℝ × V) : raw z = G z := by
     by_cases ht : 0 < z.fst
     · simp only [raw, G, dampHeat, ht, ↓reduceIte, WithLp.toLp_fst,
@@ -289,7 +299,8 @@ theorem dampHeat_fourier {δ : ℝ} (hδ : 0 < δ)
   have ha : a.re < 0 := by
     have hnon : 0 ≤ 4 * π ^ 2 * ‖q.snd‖ ^ 2 := by positivity
     dsimp [a, d]
-    simp only [mul_zero, zero_mul, sub_zero, add_zero]
+    simp only [Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+      Complex.I_im, Complex.ofReal_im, mul_zero, mul_one, sub_self]
     linarith
   have htime (t : ℝ) :
       (if 0 < t then

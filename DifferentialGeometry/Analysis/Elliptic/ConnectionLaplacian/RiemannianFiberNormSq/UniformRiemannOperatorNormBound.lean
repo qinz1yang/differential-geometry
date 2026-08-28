@@ -103,8 +103,8 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
   have hQ_cont : ContinuousOn Q
       ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ
         (Set.univ : Set (Fin (Module.finrank ℝ E) → ℝ))) := by
-    refine continuousOn_finset_sum _ (fun i _ => ?_)
-    refine continuousOn_finset_sum _ (fun j _ => ?_)
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
       · have hentry := (chartGramMatrix_entry_contMDiffOn
@@ -118,7 +118,7 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
     have hcont : Continuous
         (fun ξ : Fin (Module.finrank ℝ E) → ℝ =>
           ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) :=
-      continuous_finset_sum _ (fun i _ => (continuous_apply i).pow 2)
+      continuous_finsetSum _ (fun i _ => (continuous_apply i).pow 2)
     have hclosed : IsClosed Sph := isClosed_eq hcont continuous_const
     have hbdd : Bornology.IsBounded Sph := by
       refine (Metric.isBounded_iff_subset_closedBall (0 : _)).mpr ⟨1, ?_⟩
@@ -320,8 +320,8 @@ private lemma riemannOp_LeviCivita_chartAlpha_frame_expand
       ∑ i, ∑ k, ∑ j, (c i * (b k * a j)) •
         riemannOp (cov := LeviCivita (I := I) g) x (eα j) (eα k) (eα i) := by
     conv_lhs => rw [hv, hw, hu]
-    simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
-      ContinuousLinearMap.smul_apply, Finset.smul_sum, smul_smul]
+    simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
+      smul_apply, Finset.smul_sum, smul_smul]
   rw [htri]
   have hexpand : (∑ i, ∑ k, ∑ j, (c i * (b k * a j)) •
         riemannOp (cov := LeviCivita (I := I) g) x (eα j) (eα k) (eα i)) =

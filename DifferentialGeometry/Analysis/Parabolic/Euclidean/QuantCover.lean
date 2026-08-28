@@ -20,7 +20,7 @@ theorem exists_ball_cover {x : V} {r rho : ℝ} (hr : 0 < r)
       s.card ≤ Nat.ceil ((4 * r / rho + 1) ^ Module.finrank ℝ V) ∧
       Metric.closedBall x r ⊆ ⋃ c ∈ s, Metric.ball c rho := by
   classical
-  letI : NeZero (Module.finrank ℝ V) :=
+  let : NeZero (Module.finrank ℝ V) :=
     ⟨(Module.finrank_pos (R := ℝ) (M := V)).ne'⟩
   let e := (stdOrthonormalBasis ℝ V).repr
   obtain ⟨t, htcard, _, htcover, _⟩ :=

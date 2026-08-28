@@ -63,12 +63,19 @@ theorem gradientFun_sum
           (fun z : M => ∑ i ∈ s, c i * f i z) x :=
         mdifferentiableAt_finset_sum_smul (I := I) s f c x
           (fun i hi => hf i (by simp [hi]))
+      have hhead_eq : (fun z : M => c a * f a z) = c a • f a := by
+        funext z
+        simp [smul_eq_mul]
+      have hhead_diff : MDifferentiableAt I 𝓘(Real, Real)
+          (fun z : M => c a * f a z) x := by
+        rw [hhead_eq]
+        exact hfa.const_smul (c a)
       rw [show (fun z : M => ∑ i ∈ insert a s, c i * f i z) =
             (fun z : M => c a * f a z + ∑ i ∈ s, c i * f i z) from by
         funext z
         rw [Finset.sum_insert has]]
       rw [DifferentialGeometry.Geometry.Operator.gradientFun_add
-        (I := I) (G.metric t) (by simpa [smul_eq_mul] using hfa.const_smul (c a)) htail_diff]
+        (I := I) (G.metric t) hhead_diff htail_diff]
       rw [show (fun z : M => c a * f a z) = (c a • f a) from by
         funext z
         simp [smul_eq_mul]]
@@ -240,7 +247,7 @@ def towerBeta (c α : Real) (C : ℕ -> Real) (m : ℕ) : Real :=
   towerBarTop c C m * α + (m : Real)
 
 noncomputable def towerConstSq (c α : Real) (m : ℕ) : Real :=
-  Nat.strongRecOn' m fun n ih =>
+  Nat.strongRec (fun n ih =>
     if n = 0 then 1
     else
       let C : ℕ -> Real := fun j =>
@@ -248,13 +255,13 @@ noncomputable def towerConstSq (c α : Real) (m : ℕ) : Real :=
       towerBeta c α C n * (Nat.factorial (n - 1) : Real) +
         (towerBarTop c C n +
           towerBeta c α C n *
-            ∑ i ∈ Finset.range n, towerFactCoeff n i * towerBarGood c C i) * α
+            ∑ i ∈ Finset.range n, towerFactCoeff n i * towerBarGood c C i) * α) m
 
 noncomputable def towerConst (c α : Real) (m : ℕ) : Real :=
   Real.sqrt (towerConstSq c α m)
 
 @[simp] theorem towerConstSq_zero (c α : Real) : towerConstSq c α 0 = 1 := by
-  rw [towerConstSq, Nat.strongRecOn'_beta]
+  rw [towerConstSq, Nat.strongRec_eq]
   simp
 
 @[simp] theorem towerConst_zero (c α : Real) : towerConst c α 0 = 1 := by
@@ -312,7 +319,7 @@ theorem towerConstSq_pos (c α : Real) {n : ℕ} (hn : 0 < n) :
         (towerBarTop c Cloc n +
           towerBeta c α Cloc n *
             ∑ i ∈ Finset.range n, towerFactCoeff n i * towerBarGood c Cloc i) * α := by
-    conv_lhs => rw [towerConstSq, Nat.strongRecOn'_beta]
+    conv_lhs => rw [towerConstSq, Nat.strongRec_eq]
     rw [if_neg (by omega : ¬ n = 0)]
     rfl
   have hgoodsum :
@@ -750,7 +757,12 @@ theorem Gfun_hasDerivWithin (B : BernsteinTower (I := I) G) (m : ℕ)
   intro i hi
   have hpow : HasDerivWithinAt (fun s : Real => s ^ i) ((i : Real) * t ^ (i - 1)) (Set.Icc 0 B.T)
     t := by
-    simpa using (hasDerivWithinAt_id t (Set.Icc 0 B.T)).pow i
+    have h := (hasDerivWithinAt_id t (Set.Icc 0 B.T)).pow i
+    have hfun : id ^ i = fun s : Real => s ^ i := by
+      funext s
+      rfl
+    rw [hfun] at h
+    simpa only [id_eq, mul_one] using h
   have hprod : HasDerivWithinAt (fun s : Real => s ^ i * B.w i s x)
       ((i : Real) * t ^ (i - 1) * B.w i t x + t ^ i * dvec i) (Set.Icc 0 B.T) t :=
     hpow.mul (hd i hi)
@@ -1151,7 +1163,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
                   Gcoef (I := I) B m i * p.1 ^ i * B.w i p.1 p.2) := by
             funext p; rw [Gfun]
           rw [heq]
-          apply continuousOn_finset_sum
+          apply continuousOn_finsetSum
           intro i _
           apply ContinuousOn.mul
           · exact ((continuous_const.mul (continuous_fst.pow i)).continuousOn)

@@ -52,14 +52,14 @@ theorem grid_prod_int_le
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
         (i : ℝ) * (max Λ (max C 1)) ^ (7 * i) * R ^ 2 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   have hi_pos : 0 < i := hi1
   have hiR_pos : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi_pos
   have hiR_ne : (i : ℝ) ≠ 0 := ne_of_gt hiR_pos
@@ -98,7 +98,7 @@ theorem grid_prod_int_le
     have hcp : Continuous (fun x => ∏ m : Fin n,
         riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
           ((iteratedCovGrad (I := I) g₀ r s (e m) P).toSection x)) :=
-      continuous_finset_prod Finset.univ (fun m _ => hcont (e m))
+      continuous_finsetProd Finset.univ (fun m _ => hcont (e m))
     exact hcp.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   refine ⟨hint_prod, ?_⟩
   set Mbar : ℝ := max Λ (max C 1) with hMbar
@@ -377,7 +377,7 @@ theorem grid_prod_int_le
         (fun x => ∑ m ∈ Sset, ((e m : ℝ) / i) *
           (riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
             ((iteratedCovGrad (I := I) g₀ r s (e m) P).toSection x)) ^ ((i : ℝ) / (e m : ℝ))) μ := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro m _
       exact (hint_rpow (e m) ((i : ℝ) / (e m : ℝ)) (by positivity)).const_mul _
     have hint_eq : (∫ x, ∑ m ∈ Sset, ((e m : ℝ) / i) *
@@ -386,7 +386,7 @@ theorem grid_prod_int_le
         ∑ m ∈ Sset, ((e m : ℝ) / i) *
           (∫ x, (riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
             ((iteratedCovGrad (I := I) g₀ r s (e m) P).toSection x)) ^ ((i : ℝ) / (e m : ℝ)) ∂μ) := by
-      rw [MeasureTheory.integral_finset_sum]
+      rw [MeasureTheory.integral_finsetSum]
       · apply Finset.sum_congr rfl
         intro m _; rw [MeasureTheory.integral_const_mul]
       · intro m _

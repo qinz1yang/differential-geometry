@@ -197,7 +197,6 @@ theorem succMap_contMDiff (f : ∀ k, A k → A (k + 1))
     ContMDiff I I ∞ (SeqSystem.succMap f h) := by
   induction ℓ, h using Nat.le_induction with
   | base =>
-      change ContMDiff I I ∞ (SeqSystem.succMap f (Nat.le_refl k))
       have hfun : SeqSystem.succMap f (Nat.le_refl k) = id := by
         funext x
         exact Nat.leRecOn_self x
@@ -220,9 +219,6 @@ theorem succMap_inv_mdiff (f : ∀ k, A k → A (k + 1))
       (Set.range (SeqSystem.succMap f h)) := by
   induction ℓ, h using Nat.le_induction with
   | base =>
-      change ContMDiffOn I I ∞
-        (Function.invFun (SeqSystem.succMap f (Nat.le_refl k)))
-        (Set.range (SeqSystem.succMap f (Nat.le_refl k)))
       have hfun : SeqSystem.succMap f (Nat.le_refl k) = id := by
         funext x
         exact Nat.leRecOn_self x
@@ -314,7 +310,7 @@ theorem transitionHomeo_contMDiffOn (k ℓ : ℕ) :
   exact (S.contMDiffOn_invFun_F hℓm).comp ((S.contMDiff_F hkm).contMDiffOn) hrange
 
 instance instIsManifoldLim : IsManifold I ∞ S.toSeqSystem.Lim := by
-  haveI : Nonempty H :=
+  have : Nonempty H :=
     ⟨chartAt H (Classical.arbitrary (A 0)) (Classical.arbitrary (A 0))⟩
   apply isManifold_of_contDiffOn I ∞ S.toSeqSystem.Lim
   intro e₁ e₂ h₁ h₂
@@ -436,7 +432,7 @@ theorem invIncl_incl_le {j k : ℕ} (hjk : j ≤ k) (a : A j) :
 
 instance instT2SpaceTangentBundleLim [∀ k, T2Space (A k)] :
     T2Space (TangentBundle I S.toSeqSystem.Lim) := by
-  haveI : IsManifold I 1 S.toSeqSystem.Lim :=
+  have : IsManifold I 1 S.toSeqSystem.Lim :=
     IsManifold.of_le (by decide : (1 : WithTop ℕ∞) ≤ ∞)
   infer_instance
 

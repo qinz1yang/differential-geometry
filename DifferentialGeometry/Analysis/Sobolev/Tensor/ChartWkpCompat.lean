@@ -3,7 +3,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -147,6 +146,7 @@ theorem repCoeffEq
   rw [transportCoeffManifold_apply, hχα, hχβ]
   ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secPullLimitEq
     (r s k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)

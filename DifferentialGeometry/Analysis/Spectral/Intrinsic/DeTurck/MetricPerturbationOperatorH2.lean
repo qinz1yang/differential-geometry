@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmRaiseEndoField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -296,7 +297,9 @@ private theorem perturbCc_bound
         rw [Finset.mul_sum]
       _ ≤ 27 * (Cin * N) :=
         mul_le_mul_of_nonneg_left (by
-          simpa only [N, Nat.reduceAdd] using hin T) (by norm_num)
+          have h := hin T
+          rw [show (((2 : ℕ) : ℝ)) = 2 by norm_num] at h
+          simpa only [N, Nat.reduceAdd] using h) (by norm_num)
       _ = A := rfl
   have hsq :
       (∑ j ∈ Finset.range 3,
@@ -328,11 +331,11 @@ private noncomputable def perturbCcLin
   map_add' := fun T U => by
     apply ContinuousLinearMap.ext
     intro V
-    rw [perturbCoeff4_add, appHs_add, ContinuousLinearMap.add_apply]
+    rw [perturbCoeff4_add, appHs_add, add_apply]
   map_smul' := fun a T => by
     apply ContinuousLinearMap.ext
     intro V
-    simpa only [RingHom.id_apply, ContinuousLinearMap.smul_apply,
+    simpa only [RingHom.id_apply, smul_apply,
       perturbCoeff4_smul] using
       appHs_smul (I := I) (M := M) g 4 4 2 a
         (metricPerturbationCoefficientH2 (I := I) (M := M) g T) V

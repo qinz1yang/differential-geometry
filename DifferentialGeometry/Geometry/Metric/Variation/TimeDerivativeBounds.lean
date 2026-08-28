@@ -225,7 +225,7 @@ theorem hasDerivAt_componentVec3
     HasDerivAt (fun s : Real => componentVec3 (A s))
       (componentVec3 (A' t)) t := by
   classical
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   let L :
       (((Idx × Idx × Idx) → Real) →L[Real]
         EuclideanSpace Real (Idx × Idx × Idx)) :=
@@ -261,7 +261,7 @@ theorem hasDerivWithinAt_componentVec3
     HasDerivWithinAt (fun r : Real => componentVec3 (A r))
       (componentVec3 (A' t)) s t := by
   classical
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   let L :
       (((Idx × Idx × Idx) -> Real) →L[Real]
         EuclideanSpace Real (Idx × Idx × Idx)) :=

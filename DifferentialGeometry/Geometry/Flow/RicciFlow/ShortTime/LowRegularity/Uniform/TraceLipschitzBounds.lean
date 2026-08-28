@@ -97,6 +97,7 @@ private theorem endoSlotZero_succ_eq_reindex_slotExtend
       (Equiv.swap (0 : Fin (q + 1 + 1)) 1)
   exact slotInsertEndoCc_succ_eq_reindex_slotExtend (I := I) (M := M) g q P
 
+omit [SigmaCompactSpace M] in
 private theorem insSuccPt (g : SmoothRiemannianMetric I M) (q : ℕ)
     (P : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -529,6 +530,7 @@ private theorem ptDiag (gBase g : SmoothRiemannianMetric I M) {Λ : ℝ}
     (volumeReal_cross (I := I) (M := M) gBase g hEq).1
     (pow_nonneg (Nat.cast_nonneg _) (p + 6))
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGradNormSq_add_le (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (A B : SmoothCcTensor g r s) :
@@ -564,6 +566,7 @@ private theorem iteratedCovGradNormSq_add_le (g : SmoothRiemannianMetric I M) {r
           ‖iteratedCovGrad (I := I) g r s j B‖ ^ 2) := by
       simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jetAbs (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (A B : SmoothCcTensor g r s) {d b : ℝ}
@@ -588,6 +591,7 @@ private theorem jetAbs (g : SmoothRiemannianMetric I M) {r s : ℕ}
     _ ≤ 2 * (d + b) :=
       mul_le_mul_of_nonneg_left (add_le_add hd hb) (by norm_num)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 private theorem pairSplit (g gT gU : SmoothRiemannianMetric I M) :
@@ -889,6 +893,7 @@ theorem pair_trace_sobolev_two_uniform_bound
   dsimp only [B]
   exact happ g hEq hjet1 hjet2 _ _ B₂ B₄ hB₂ hB₄ hT₂ hT₄
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 private theorem monoSplit (g gT gU : SmoothRiemannianMetric I M)

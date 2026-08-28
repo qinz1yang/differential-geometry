@@ -785,7 +785,7 @@ theorem galTamePerMode (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
   have hfForce_cont : Continuous fForce := by
     refine Continuous.Icc_extend' ?_
     exact (galTameForce_contOn (I := I) (M := M) g₀ a hR Nfun S hκ0 hκ hK c
-      hcont i).restrict
+      hcont i).domRestrict
   have hfForce_mem : ∀ {x : ℝ}, x ∈ Set.Icc (0 : ℝ) T →
       fForce x = galTameForce (I := I) (M := M) g₀ a hR Nfun S (c x) i := by
     intro x hx
@@ -801,7 +801,8 @@ theorem galTamePerMode (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
       have heq : -lam * y₁ + fForce s - (-lam * y₂ + fForce s) =
           -lam * (y₁ - y₂) := by ring
       rw [heq, abs_mul, abs_neg]
-      simp only [NNReal.coe_mk, le_refl]
+      change |lam| * |y₁ - y₂| ≤ |lam| * |y₁ - y₂|
+      exact le_rfl
     exact hlip.lipschitzOnWith
   set gG : ℝ → ℝ := fun s => c s i with hgG_def
   set gP : ℝ → ℝ := fun s => perModeConv lam fForce s with hgP_def

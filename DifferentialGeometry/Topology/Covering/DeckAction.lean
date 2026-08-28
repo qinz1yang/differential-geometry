@@ -26,49 +26,35 @@ theorem loopShift_preim
     (U : Set X) :
     loopShift g ⁻¹' basicOpen p U =
       basicOpen (loopShift g.symm p) U := by
+  rcases p with ⟨px, pp⟩
   ext q
+  rcases q with ⟨qx, qp⟩
   constructor
   · rintro ⟨η, hη, hq⟩
-    change g.trans q.2 =
-      p.2.trans (Path.Homotopic.Quotient.mk η) at hq
+    change Path px qx at η
+    change g.trans qp =
+      pp.trans (Path.Homotopic.Quotient.mk η) at hq
     refine ⟨η, hη, ?_⟩
-    change q.2 =
-      (g.symm.trans p.2).trans (Path.Homotopic.Quotient.mk η)
-    calc
-      q.2 = (Path.Homotopic.Quotient.refl default).trans q.2 :=
-        (Path.Homotopic.Quotient.refl_trans q.2).symm
-      _ = (g.symm.trans g).trans q.2 := by
-        rw [Path.Homotopic.Quotient.symm_trans]
-      _ = g.symm.trans (g.trans q.2) :=
-        Path.Homotopic.Quotient.trans_assoc g.symm g q.2
-      _ = g.symm.trans
-          (p.2.trans (Path.Homotopic.Quotient.mk η)) :=
-        congrArg (fun z => g.symm.trans z) hq
-      _ = (g.symm.trans p.2).trans
-          (Path.Homotopic.Quotient.mk η) :=
-        (Path.Homotopic.Quotient.trans_assoc g.symm p.2 _).symm
+    change qp =
+      (g.symm.trans pp).trans (Path.Homotopic.Quotient.mk η)
+    rw [Path.Homotopic.Quotient.trans_assoc, ← hq,
+      ← Path.Homotopic.Quotient.trans_assoc,
+      Path.Homotopic.Quotient.symm_trans,
+      Path.Homotopic.Quotient.refl_trans]
   · rintro ⟨η, hη, hq⟩
-    change q.2 =
-      (g.symm.trans p.2).trans (Path.Homotopic.Quotient.mk η) at hq
+    change Path px qx at η
+    change qp =
+      (g.symm.trans pp).trans (Path.Homotopic.Quotient.mk η) at hq
     refine ⟨η, hη, ?_⟩
-    change g.trans q.2 =
-      p.2.trans (Path.Homotopic.Quotient.mk η)
-    calc
-      g.trans q.2 =
-          g.trans ((g.symm.trans p.2).trans
-            (Path.Homotopic.Quotient.mk η)) := by rw [hq]
-      _ = (g.trans (g.symm.trans p.2)).trans
-          (Path.Homotopic.Quotient.mk η) :=
-        (Path.Homotopic.Quotient.trans_assoc g _ _).symm
-      _ = ((g.trans g.symm).trans p.2).trans
-          (Path.Homotopic.Quotient.mk η) := by
-        rw [← Path.Homotopic.Quotient.trans_assoc]
-      _ = p.2.trans (Path.Homotopic.Quotient.mk η) := by
-        rw [Path.Homotopic.Quotient.trans_symm,
-          Path.Homotopic.Quotient.refl_trans]
+    change g.trans qp =
+      pp.trans (Path.Homotopic.Quotient.mk η)
+    rw [hq, ← Path.Homotopic.Quotient.trans_assoc,
+      ← Path.Homotopic.Quotient.trans_assoc,
+      Path.Homotopic.Quotient.trans_symm,
+      Path.Homotopic.Quotient.refl_trans]
 
 theorem loopShift_cont
-    [LocPathConnectedSpace X]
+    [LocallyPathConnectedSpace X]
     (g : Path.Homotopic.Quotient (default : X) default) :
     Continuous (loopShift g) := by
   rw [(basis_assemble (X := X)).continuous_iff]
@@ -138,7 +124,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
-  [ConnectedSpace M] [LocPathConnectedSpace M]
+  [ConnectedSpace M] [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M]
 

@@ -19,7 +19,7 @@ namespace Geometry
 namespace Riemannian
 namespace NormalCoordinates
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
@@ -103,9 +103,13 @@ noncomputable def restrictBall {p : M}
       open_source := U.2
       open_target := image_opens_isOpen Φ hU
       contMDiffOn_toFun := by
-        simpa only [Φ, U] using c.smooth_to
+        change ContMDiffOn (modelWithCornersSelf Real E) I ∞ Φ
+          (Metric.ball (0 : E) c.radius)
+        exact c.smooth_to
       contMDiffOn_invFun := by
-        simpa only [Φ, U] using c.smooth_inv }
+        change ContMDiffOn I (modelWithCornersSelf Real E) ∞ Φ.symm
+          (Φ '' Metric.ball (0 : E) c.radius)
+        exact c.smooth_inv }
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
 @[simp] theorem restrictBall_source {p : M}
@@ -192,8 +196,10 @@ theorem transition_smooth {p q : M}
   have hmap : MapsTo c.hom U
       (d.hom '' Metric.ball (0 : E) d.radius) :=
     fun z hz => (hovl z hz).2
-  simpa only [transition, inv, Function.comp_def] using
-    d.smooth_inv.comp hc hmap
+  have hcomp := d.smooth_inv.comp hc hmap
+  change ContMDiffOn (modelWithCornersSelf Real E)
+    (modelWithCornersSelf Real E) ∞ (c.transition d) U at hcomp
+  exact hcomp
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
 theorem transition_cancel {p q : M}
@@ -244,7 +250,7 @@ theorem metric_apply (g : SmoothRiemannianMetric I M) {p : M}
         (mfderiv (modelWithCornersSelf Real E) I c.hom z v)
         (mfderiv (modelWithCornersSelf Real E) I c.hom z w) := by
   simp only [metric, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.precomp_apply]
+    ]
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space (TangentBundle I M)] in
@@ -270,8 +276,10 @@ theorem transition_isom (g : SmoothRiemannianMetric I M) {p q : M}
         (d.hom.open_target.mem_nhds htarget))
   have htransDiff : MDifferentiableAt (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (c.transition d) z := by
-    simpa only [transition, inv, Function.comp_def] using
-      hdInvDiff.comp z hcDiff
+    have hcomp := hdInvDiff.comp z hcDiff
+    change MDifferentiableAt (modelWithCornersSelf Real E)
+      (modelWithCornersSelf Real E) (c.transition d) z at hcomp
+    exact hcomp
   have hdDiff : MDifferentiableAt (modelWithCornersSelf Real E) I
       d.hom (c.transition d z) :=
     ((d.hom.contMDiffOn_toFun.mdifferentiableOn one_ne_zero
@@ -470,7 +478,7 @@ theorem abs_apply_le (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} {U : Set E}
     (h : c.MetricEquivOn g U) {z : E} (hz : z ∈ U) (v w : E) :
     |c.metric g z v w| ≤ 2 * ‖v‖ * ‖w‖ := by
-  letI : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
+  let : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
     ⟨g.toRiemannianMetric⟩
   let dHom : E →L[Real] TangentSpace I (c.hom z) :=
     mfderiv (modelWithCornersSelf Real E) I c.hom z
@@ -479,10 +487,14 @@ theorem abs_apply_le (g : SmoothRiemannianMetric I M) {p : M}
     exact abs_real_inner_le_norm (dHom v) (dHom w)
   have hvSq : ‖dHom v‖ ^ 2 ≤ 2 * ‖v‖ ^ 2 := by
     rw [← real_inner_self_eq_norm_sq]
-    simpa only [c.metric_apply] using (h z hz v).2
+    have hv := (h z hz v).2
+    change inner Real (dHom v) (dHom v) ≤ 2 * ‖v‖ ^ 2 at hv
+    exact hv
   have hwSq : ‖dHom w‖ ^ 2 ≤ 2 * ‖w‖ ^ 2 := by
     rw [← real_inner_self_eq_norm_sq]
-    simpa only [c.metric_apply] using (h z hz w).2
+    have hw := (h z hz w).2
+    change inner Real (dHom w) (dHom w) ≤ 2 * ‖w‖ ^ 2 at hw
+    exact hw
   have hprodSq :
       (‖dHom v‖ * ‖dHom w‖) ^ 2 ≤ (2 * ‖v‖ * ‖w‖) ^ 2 := by
     have hmul := mul_le_mul hvSq hwSq (sq_nonneg ‖dHom w‖)
@@ -602,13 +614,13 @@ private theorem fderiv_eval3
     (d u v w : E) :
     fderiv Real (fun x ↦ fderiv Real G x u v w) q d =
       fderiv Real (fderiv Real G) q d u v w := by
-  letI : NormedAddCommGroup (E →L[Real] Real) :=
+  let : NormedAddCommGroup (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] Real) :=
+  let : NormedSpace Real (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[Real] (E →L[Real] Real)) :=
+  let : NormedAddCommGroup (E →L[Real] (E →L[Real] Real)) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] (E →L[Real] Real)) :=
+  let : NormedSpace Real (E →L[Real] (E →L[Real] Real)) :=
     ContinuousLinearMap.toNormedSpace
   have hu : HasFDerivAt (fun _ : E ↦ u) 0 q :=
     hasFDerivAt_const (𝕜 := Real) (x := q) u
@@ -636,13 +648,13 @@ theorem koszulVec_lip_on (g : SmoothRiemannianMetric I M) {p : M}
           (fderiv Real (c.metric g) y) v w‖ ≤
       (6 * (h.C 1) ^ 2 + 3 * h.C 2) *
         ‖z - y‖ * ‖v‖ * ‖w‖ := by
-  letI : NormedAddCommGroup (E →L[Real] Real) :=
+  let : NormedAddCommGroup (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] Real) :=
+  let : NormedSpace Real (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[Real] (E →L[Real] Real)) :=
+  let : NormedAddCommGroup (E →L[Real] (E →L[Real] Real)) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] (E →L[Real] Real)) :=
+  let : NormedSpace Real (E →L[Real] (E →L[Real] Real)) :=
     ContinuousLinearMap.toNormedSpace
   let G := c.metric g
   let U := Metric.ball (0 : E) r
@@ -723,7 +735,7 @@ theorem koszulVec_lip_on (g : SmoothRiemannianMetric I M) {p : M}
     calc
       ‖(fderiv Real G z - fderiv Real G y) u a b‖ =
           ‖F z - F y‖ := by
-        simp only [F, ContinuousLinearMap.sub_apply]
+        simp only [F, sub_apply]
       _ = ‖F y - F z‖ := norm_sub_rev _ _
       _ ≤ C * ‖y - z‖ := hmean
       _ = (h.C 2 * ‖z - y‖) * ‖u‖ * ‖a‖ * ‖b‖ := by

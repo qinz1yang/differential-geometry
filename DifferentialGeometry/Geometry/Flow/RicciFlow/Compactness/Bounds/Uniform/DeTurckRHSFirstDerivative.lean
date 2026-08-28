@@ -88,8 +88,9 @@ private theorem centeredBasis
       rw [if_neg (fun h => hjk h.symm), mul_zero]
   have hcard :
       Fintype.card (Fin (Module.finrank ℝ E)) =
-        Module.finrank ℝ E := by
+        Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]
+    rfl
   let basis := basisOfLinearIndependentOfCardEqFinrank hli hcard
   refine ⟨basis, ?_, ?_⟩
   · intro i
@@ -114,8 +115,9 @@ private theorem cometricTrace_eq
   obtain ⟨basis, hbasis, horth⟩ := centeredBasis (I := I) g x
   have hinv : MetricInverseInBasis_gen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
+    intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g basis horth
+      metricInverseInBasis_of_orthonormal (I := I) g basis horth i j
   apply tensor0SSpace_ext (𝕜 := ℝ) p x
   intro tail
   rw [cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g p x
@@ -129,8 +131,8 @@ private theorem cometricTrace_eq
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem exists_trace31
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -139,8 +141,8 @@ private theorem exists_trace31
       iterCov (I := I) g 1
           (metricTraceFirstTwoField (I := I) (M := M) g A) k =
         metricTraceFirstTwoField (I := I) (M := M) g
-          (MultilinearSection.domDomCongr (𝕜 := ℝ) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) e
+          (Tensor0SField.domDomCongr (𝕜 := ℝ) (I := I)
+            (∞ : WithTop ℕ∞) e
             (iterCov (I := I) g 3 A k)) := by
   classical
   induction k with
@@ -148,9 +150,9 @@ private theorem exists_trace31
       refine ⟨Equiv.refl _, ?_⟩
       change metricTraceFirstTwoField (I := I) (M := M) g A =
         metricTraceFirstTwoField (I := I) (M := M) g
-          (MultilinearSection.domDomCongr (𝕜 := ℝ) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) (Equiv.refl (Fin 3)) A)
-      rw [MultilinearSection.domDomCongr_refl]
+          (Tensor0SField.domDomCongr (𝕜 := ℝ) (I := I)
+            (∞ : WithTop ℕ∞) (Equiv.refl (Fin 3)) A)
+      rw [Tensor0SField.domDomCongr_refl]
   | succ k ih =>
       obtain ⟨e, he⟩ := ih
       let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -165,10 +167,11 @@ private theorem exists_trace31
         (metricTraceFirstTwoField (I := I) (M := M) g A) k
       have hout := Tensor0SBundle.totalNabla0SRealizes_unique (I := I) hout₀ htrace
       refine ⟨(frontExtendEquiv e).trans (traceNablaShuffle (1 + k)), ?_⟩
-      rw [← MultilinearSection.domDomCongr_trans]
+      rw [← Tensor0SField.domDomCongr_trans]
       exact hout
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem trace31_norm_le
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -183,10 +186,10 @@ private theorem trace31_norm_le
   obtain ⟨e, he⟩ := exists_trace31 (I := I) g A k
   rw [he]
   have htrace := trace_normSq_rank_le (I := I) g
-    ((MultilinearSection.domDomCongr (𝕜 := ℝ) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) e
+    ((Tensor0SField.domDomCongr (𝕜 := ℝ) (I := I)
+      (∞ : WithTop ℕ∞) e
       (iterCov (I := I) g 3 A k)) x)
-  rw [MultilinearSection.domDomCongr_apply] at htrace
+  rw [Tensor0SField.domDomCongr_apply] at htrace
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   have hinv : MetricInverseInBasis_gen (I := I) g x basis
       (identityInvMetric
@@ -316,7 +319,7 @@ private theorem connLowOne_eval
     funext p
     rfl
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             metricLoweredConnectionDifferenceField (I := I) g₀ gBase p
               (fun q : Fin 3 => slots q p))
@@ -355,7 +358,7 @@ private theorem connLowOne_eval
     dsimp only [A, DY, DZ, cov]
     rfl
   rw [hvalue]
-  simp only [map_sub, ContinuousLinearMap.sub_apply]
+  simp only [map_sub, sub_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -435,7 +438,7 @@ private theorem connLowTwo_eval
     funext p
     rfl
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             covStep (I := I) g₀ 3
               (metricLoweredConnectionDifferenceField (I := I) g₀ gBase) p
@@ -461,6 +464,7 @@ private theorem connLowTwo_eval
           vec4 (I := I) (DX x) (Y x) (Z x) (W x) := by
       funext q
       fin_cases q <;> simp [slots, DX, vec4]
+      rfl
     rw [ht]
     exact connLowOne_eval (I := I) gBase g₀ DX Y Z W x
   have hcorr1 :
@@ -475,6 +479,7 @@ private theorem connLowTwo_eval
           vec4 (I := I) (X x) (DY x) (Z x) (W x) := by
       funext q
       fin_cases q <;> simp [slots, DY, vec4]
+      rfl
     rw [ht]
     exact connLowOne_eval (I := I) gBase g₀ X DY Z W x
   have hcorr2 :
@@ -489,6 +494,7 @@ private theorem connLowTwo_eval
           vec4 (I := I) (X x) (Y x) (DZ x) (W x) := by
       funext q
       fin_cases q <;> simp [slots, DZ, vec4]
+      rfl
     rw [ht]
     exact connLowOne_eval (I := I) gBase g₀ X Y DZ W x
   have hcorr3 :
@@ -502,6 +508,7 @@ private theorem connLowTwo_eval
           vec4 (I := I) (X x) (Y x) (Z x) (DW x) := by
       funext q
       fin_cases q <;> simp [slots, DW, vec4]
+      rfl
     rw [ht]
     exact connLowOne_eval (I := I) gBase g₀ X Y Z DW x
   have hcorr :
@@ -535,7 +542,7 @@ private theorem connLowTwo_eval
     dsimp only [R, DX, DY, DZ, cov]
     rfl
   rw [hvalue]
-  simp only [map_sub, ContinuousLinearMap.sub_apply]
+  simp only [map_sub, sub_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -554,6 +561,7 @@ noncomputable def connectionDifferenceZeroSqC (Λ : ℝ) : ℝ :=
   (Module.finrank ℝ E : ℝ) ^ 3 * C ^ 2
 
 
+omit [SigmaCompactSpace M] in
 theorem uniformConnectionDifferenceZero
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -587,8 +595,9 @@ theorem uniformConnectionDifferenceZero
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
   have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
+    intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth
+      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
   have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
     intro i
     rw [horth i i]
@@ -605,7 +614,8 @@ theorem uniformConnectionDifferenceZero
       have h := connectionDifference_gJet_le (I := I) hEq' hrev1 (Set.mem_univ x)
         (basis (slots 1)) (basis (slots 0))
       rw [hunit (slots 1), hunit (slots 0)] at h
-      simpa [C, N, PDE.DeTurck.connectionDifference] using h
+      simpa [C, C₁, N, PDE.DeTurck.connectionDifference,
+        LeviCivita_eq_leviCivitaConnectionOfMetric] using h
     have hval :
         component0S (I := I) basis T slots =
           g₀.inner x N (basis (slots 2)) := by
@@ -654,6 +664,7 @@ noncomputable def connectionDifferenceOneSqC (Λ : ℝ) : ℝ :=
   (Module.finrank ℝ E : ℝ) ^ 4 * C ^ 2
 
 
+omit [SigmaCompactSpace M] in
 theorem uniformConnectionDifferenceOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -693,8 +704,9 @@ theorem uniformConnectionDifferenceOne
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
   have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
+    intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth
+      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
   have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
     intro i
     rw [horth i i]
@@ -799,6 +811,7 @@ noncomputable def connectionDifferenceTwoC (Λ : ℝ) : ℝ :=
   (Module.finrank ℝ E : ℝ) ^ 5 * C ^ 2
 
 
+omit [SigmaCompactSpace M] in
 theorem uniformConnectionDifferenceTwo
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -848,8 +861,9 @@ theorem uniformConnectionDifferenceTwo
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
   have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
+    intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth
+      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
   have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
     intro i
     rw [horth i i]
@@ -915,7 +929,11 @@ theorem uniformConnectionDifferenceTwo
         (basis (slots 3)) (basis (slots 2))
       rw [hunit (slots 0), hunit (slots 1),
         hunit (slots 3), hunit (slots 2)] at h
-      simpa [C, N, D, X, Y, Z] using h
+      norm_num at h
+      have hN : N = HCGCompactness.covDerivConnectionDifference2 (I := I)
+          g₀ gBase D X Z Y x := rfl
+      rw [hN]
+      simpa [C, C₁, C₂, C₃, D, X, Y, Z] using h
     rw [hval]
     change |g₀.inner x N (W x)| ≤ C
     calc
@@ -963,11 +981,16 @@ private theorem connLow_self_zero
   intro m
   change unitModel (I := I) (M := M) g 3
       (metricLoweredConnectionDifferenceCoefficient (I := I) g g) x m = 0
+  have hm : m = fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) := by
+    funext i
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+  rw [hm]
   rw [connectionDifferenceLoweredCc_unitModel_apply']
   rw [PDE.DeTurck.connectionDifference_self]
   simp
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem wXi_base_eq
     (gBase g₀ : SmoothRiemannianMetric I M) :
     metricLoweredConnectionDifference (I := I) (M := M) g₀ g₀ gBase =
@@ -984,7 +1007,7 @@ private theorem cometricCast_self
   apply SmoothCcTensor.ext
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem wOmega_base_eq
     (gBase g₀ : SmoothRiemannianMetric I M) :
@@ -995,7 +1018,7 @@ private theorem wOmega_base_eq
   unfold deTurckVectorFieldCovector
   rw [wXi_base_eq (I := I) gBase g₀, cometricCast_self (I := I) g₀]
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem wOmega_trace
     (gBase g₀ : SmoothRiemannianMetric I M) :
     ccUnitField (I := I) g₀ 1
@@ -1013,6 +1036,7 @@ private theorem wOmega_trace
       (-metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gBase).toSection x)
       (unitZeroSec (I := I) (M := M) x))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem wAlphaA_shift
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
@@ -1060,6 +1084,7 @@ private theorem riemannianFiberNormSq_neg
     tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem riemannianFiberNormSq_iter_neg
     (g : SmoothRiemannianMetric I M) (r s j : ℕ)
@@ -1080,6 +1105,7 @@ private theorem riemannianFiberNormSq_iter_neg
 noncomputable def alphaOneC (Λ : ℝ) : ℝ :=
   Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5 * connectionDifferenceTwoC (E := E) Λ)
 
+omit [SigmaCompactSpace M] in
 private theorem uniformOmegaTwo_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -1147,6 +1173,7 @@ private theorem uniformOmegaTwo_of
       change d ^ 5 * KC = (Real.sqrt (d ^ 5 * KC)) ^ 2
       rw [Real.sq_sqrt (mul_nonneg (pow_nonneg hd0 5) hKC0)]
 
+omit [SigmaCompactSpace M] in
 private theorem uniformOmegaTwo
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -1163,6 +1190,7 @@ private theorem uniformOmegaTwo
   exact ⟨alphaOneC (E := E) Λ, Real.sqrt_nonneg _,
     uniformOmegaTwo_of (I := I) gBase g₀ hΛ hcomp hjet1 hjet2 hjet3⟩
 
+omit [SigmaCompactSpace M] in
 private theorem uniformAlphaOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -1183,6 +1211,7 @@ private theorem uniformAlphaOne_of
   rw [wAlphaA_shift (I := I) g₀ g₀ gBase 1 x]
   simpa using hK x
 
+omit [SigmaCompactSpace M] in
 private theorem uniformAlphaOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -1204,7 +1233,7 @@ noncomputable def ricciOneC (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
   Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5 *
     rmOneC (E := E) Λ Kb₀ Kb₁ ^ 2)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem uniformRicOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -1324,11 +1353,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma unit_add2_apply
     (g : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensor g 0 2) (x : M)
-    (v : Fin 2 → TangentSpace I x) :
+    (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (S + T) x v =
       unitModel (I := I) (M := M) g 2 S x v +
         unitModel (I := I) (M := M) g 2 T x v := by
-  rw [unit_add2, ContinuousMultilinearMap.add_apply]
+  rw [unit_add2, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma unit_smul2
@@ -1353,41 +1382,55 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma unit_smul2_apply
     (g : SmoothRiemannianMetric I M)
     (c : ℝ) (T : SmoothCcTensor g 0 2) (x : M)
-    (v : Fin 2 → TangentSpace I x) :
+    (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (c • T) x v =
       c * unitModel (I := I) (M := M) g 2 T x v := by
-  rw [unit_smul2, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [unit_smul2, smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem rhs_unit
     (gBase g : SmoothRiemannianMetric I M) (x : M)
-    (v : Fin 2 → TangentSpace I x) :
+    (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
         (deTurckRHSSection (I := I) gBase g) x v =
-      deTurckRicciRHS (I := I) gBase g x (v 0) (v 1) := by
+      deTurckRicciRHS (I := I) gBase g x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [unitModel]
-  exact deTurckRHSSection_toModel_apply (I := I) gBase g x v
+  rw [Tensor0SSpace.toModel_apply_model_vector]
+  exact deTurckRHSSection_eval (I := I) gBase g x
+    (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem ricci_unit
     (g : SmoothRiemannianMetric I M) (x : M)
-    (v : Fin 2 → TangentSpace I x) :
+    (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
         (ricciCc (I := I) (M := M) g) x v =
-      ricciTensor (I := I) g x (v 0) (v 1) := by
+      ricciTensor (I := I) g x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [unitModel]
-  change Tensor0SSpace.toModel
-    (ccUnitField (I := I) g 2 (ricciCc (I := I) (M := M) g) x) v = _
+  rw [Tensor0SSpace.toModel_apply_model_vector]
+  change Tensor0SSpace.eval
+    (ccUnitField (I := I) g 2 (ricciCc (I := I) (M := M) g) x)
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
   rw [ricciCc, ccOfField_unit]
-  change metricRicci (I := I) (M := M) g x v = _
-  have hcmm : metricRicciAt (I := I) (M := M) g x v =
-      metricRicciAt (I := I) (M := M) g x (vec2 (v 0) (v 1)) :=
+  rw [Tensor0SSpace.eval_eq]
+  have hcmm : metricRicciAt (I := I) (M := M) g x
+        (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) =
+      metricRicciAt (I := I) (M := M) g x
+        (vec2 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))) :=
     congrArg _ (by
       funext i
       fin_cases i <;> rfl)
   rw [metricRicci_apply, hcmm]
-  exact metricRicciAt_apply_eq_ricciTensor (I := I) g x (v 0) (v 1)
+  exact metricRicciAt_apply_eq_ricciTensor (I := I) g x
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
 
+omit [SigmaCompactSpace M] in
 private theorem rhs_split
     (gBase g : SmoothRiemannianMetric I M) :
     deTurckRHSSection (I := I) gBase g =
@@ -1398,13 +1441,20 @@ private theorem rhs_split
   classical
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun v => ?_)
-  have hv : v = ![v 0, v 1] := by
+  have hv : v = fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((![((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)),
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))] :
+        Fin 2 → TangentSpace I x) i) := by
     funext i
-    fin_cases i <;> rfl
+    fin_cases i <;> simp
   have hswap :
-      (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
+      (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) =
+        fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((![((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)),
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))] :
+            Fin 2 → TangentSpace I x) i) := by
     funext i
-    fin_cases i <;> rfl
+    fin_cases i <;> simp
   rw [rhs_unit, unit_add2_apply, unit_add2_apply,
     unit_smul2_apply, ricci_unit]
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
@@ -1413,10 +1463,12 @@ private theorem rhs_split
   rw [deTurckVectorFieldCovariantDerivativeLoweredBase_unitModel_apply, deTurckVectorFieldCovariantDerivativeLoweredBase_unitModel_apply,
     deTurckRicciRHS_apply,
     DifferentialGeometry.PDE.RicciFlow.Pullback.cartan_formula_for_lie_deriv_metric]
-  rw [g.symm x (v 0)]
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
+  rw [g.symm x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))]
   unfold deTurckVectorFieldSection
   ring
 
+omit [SigmaCompactSpace M] in
 private theorem rhs_one_split
     (gBase g : SmoothRiemannianMetric I M) :
     iteratedCovGrad (I := I) g 0 2 1
@@ -1436,6 +1488,7 @@ noncomputable def ksupOneC (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
   4 * (ricciOneC (E := E) Λ Kb₀ Kb₁ + alphaOneC (E := E) Λ)
 
 
+omit [SigmaCompactSpace M] in
 theorem uniformKsupOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)

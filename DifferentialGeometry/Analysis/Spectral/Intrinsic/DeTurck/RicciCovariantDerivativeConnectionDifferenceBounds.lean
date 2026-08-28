@@ -89,6 +89,7 @@ private lemma ric_app_le (g : SmoothRiemannianMetric I M)
   exact riemannianFiberNormSq_compRS_le_mul
     (I := I) (M := M) g 0 r s x (Phi.toSection x) (W.toSection x)
 
+omit [SigmaCompactSpace M] in
 private lemma ric_extend2_one (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 2 5 x
@@ -107,6 +108,7 @@ private lemma ric_extend2_one (g : SmoothRiemannianMetric I M)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma ric_perm_riemannianFiberNormSq (g : SmoothRiemannianMetric I M)
     {s : Nat} (Q : SmoothCcTensor g 0 s) (sigma : Equiv.Perm (Fin s))
     (j : Nat) (x : M) :
@@ -168,6 +170,7 @@ private theorem ric_perm_norm_le
         (ric_perm_riemannianFiberNormSq (I := I) (M := M) g Q sigma j x).le)
   simpa only [one_mul] using h
 
+omit [SigmaCompactSpace M] in
 theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
     ∃ C0 C1 : Real, 0 ≤ C0 ∧ 0 ≤ C1 ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -377,6 +380,11 @@ theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
         add_le_add (mul_le_mul_of_nonneg_left hU (by norm_num))
           (mul_le_mul_of_nonneg_left hV (by norm_num))
       _ = 2 * d ^ 4 * (D0 + F) * delta ^ 2 * W1 := by ring
+  have hQpair :
+      pairProd4 (I := I) (M := M) g W
+          (pairSlot2 (I := I) (M := M) g
+            (metricComparisonEndomorphismField (I := I) (M := M) g gm) 0 W) = Q := by
+    rfl
   have hFlux0 : riemannianFiberNormSq (I := I) (M := M) g 0 4 x
       ((ricciCovariantDerivativeConnectionDifferenceFlux (I := I) (M := M) g gm W).toSection x) ≤
         C0 * delta ^ 2 * W0 := by
@@ -385,7 +393,7 @@ theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
     have hq := mul_le_mul_of_nonneg_left hQ0 (by norm_num : (0 : Real) ≤ 4)
     calc
       _ ≤ 4 * riemannianFiberNormSq (I := I) (M := M) g 0 4 x
-          (Q.toSection x) := by simpa only [Q, WR] using hsub
+          (Q.toSection x) := by simpa only [hQpair, Nat.reduceAdd] using hsub
       _ ≤ 4 * (d ^ 4 * F * delta ^ 2 * W0) := hq
       _ = C0 * delta ^ 2 * W0 := by simp only [C0]; ring
   have hFlux1 : riemannianFiberNormSq (I := I) (M := M) g 0 5 x
@@ -398,7 +406,7 @@ theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
     calc
       _ ≤ 4 * riemannianFiberNormSq (I := I) (M := M) g 0 5 x
           ((covGrad (I := I) (M := M) g 0 4 Q).toSection x) := by
-        simpa only [Q, WR] using hsub
+        simpa only [hQpair, Nat.reduceAdd] using hsub
       _ ≤ 4 * (2 * d ^ 4 * (D0 + F) * delta ^ 2 * W1) := hq
       _ = C1 * delta ^ 2 * W1 := by simp only [C1]; ring
   constructor
@@ -447,7 +455,7 @@ theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
     (ricciConnectionDifferenceLoweredReindex (I := I) (M := M) g gm)
     (iteratedCovGrad (I := I) g 0 2 1 P) hC0
   intro x
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun y : M => TensorRSSpace 0 3 I y) :=
     tensorRS_riemannianBundle (I := I) (M := M) g 0 3
   have hraw := hconn gm P hdelta hdelta0 htie hPbound x

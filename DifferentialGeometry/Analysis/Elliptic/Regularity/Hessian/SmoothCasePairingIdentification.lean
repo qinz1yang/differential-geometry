@@ -426,7 +426,7 @@ theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_per_chart_ae
     rw [MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_union_null
     intro x hx
-    simp only [Set.mem_setOf_eq, not_forall] at hx
+    simp only [Set.mem_ofPred_eq, not_forall] at hx
     obtain ⟨α, hα_in_finset, hα_ne⟩ := hx
     simp only [Set.mem_iUnion]
     exact ⟨α, hα_in_finset, hα_ne⟩

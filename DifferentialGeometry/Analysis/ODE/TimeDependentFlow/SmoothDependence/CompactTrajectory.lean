@@ -147,15 +147,17 @@ theorem flow_slice_smooth [CompleteSpace E] [I.Boundaryless]
         have houter := hPhi_bare (F y s₀) hyState (t - s₀) httau'
         have hshift : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
             (fun u : ℝ => u - s₀) t (1 : ℝ →L[ℝ] ℝ) := by
-          rw [hasMFDerivAt_iff_hasFDerivAt]
           have hfd := ((hasDerivAt_id t).sub_const s₀).hasFDerivAt
           have hid : ContinuousLinearMap.toSpanSingleton ℝ (1 : ℝ) =
               (1 : ℝ →L[ℝ] ℝ) := by
             ext1
             simp
-          rwa [hid] at hfd
+          rw [hid] at hfd
+          exact hfd.hasMFDerivAt
         have hcomp := houter.comp t hshift
-        simpa only [left, X] using hcomp
+        let h : HasMFDerivAt 𝓘(ℝ, ℝ) I left t
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (v (left t))) := hcomp
+        exact h
       have hright : ∀ t ∈ Ioo lo hi,
           HasMFDerivAt 𝓘(ℝ, ℝ) I (F y) t
             ((1 : ℝ →L[ℝ] ℝ).smulRight (v (F y t))) := by

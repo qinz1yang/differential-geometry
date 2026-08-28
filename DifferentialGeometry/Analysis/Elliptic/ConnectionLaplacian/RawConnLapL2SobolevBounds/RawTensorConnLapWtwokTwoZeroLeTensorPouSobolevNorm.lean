@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter MeasureTheory
 open scoped Manifold Topology Bundle ContDiff BigOperators ENNReal NNReal
@@ -171,7 +170,7 @@ private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
       ENNReal.rpow_natCast]
     rw [show ((f x) ^ 2 : ℝ) = ‖f x‖ ^ 2 from by
       rw [Real.norm_eq_abs, sq_abs]]
-    rw [← ofReal_norm_eq_enorm]
+    rw [← ofReal_norm]
     rw [ENNReal.ofReal_pow (norm_nonneg _) 2]
   have h_step1 : (I ^ ((1 : ℝ) / 2)) ^ 2 = (I ^ ((1 : ℝ) / 2)) ^ ((2 : ℕ) : ℝ) := by
     rw [ENNReal.rpow_natCast]
@@ -1328,7 +1327,7 @@ private lemma sq_eLpNorm_tensorChartComp_le_pou_summand
                       ((tensorChartComponentRaw (I := I) (M := M) g r s T α IJ'.1 IJ'.2)
                         ∘ (extChartAt I α).symm)
                       ((toEuclidean (E := E)).symm y)‖ ^ 2) ∂μ := by
-    refine lintegral_finset_sum' _ (fun IJ' _ => ?_)
+    refine lintegral_finsetSum' _ (fun IJ' _ => ?_)
     refine Finset.aemeasurable_fun_sum _ (fun j _ => ?_)
     exact pouWeightedSummand_aemeasurable_on_chartTarget
       (I := I) (M := M) g r s T α IJ' j
@@ -1351,7 +1350,7 @@ private lemma sq_eLpNorm_tensorChartComp_le_pou_summand
                     ((tensorChartComponentRaw (I := I) (M := M) g r s T α IJ'.1 IJ'.2)
                       ∘ (extChartAt I α).symm)
                     ((toEuclidean (E := E)).symm y)‖ ^ 2) ∂μ := by
-    refine lintegral_finset_sum' _ (fun j _ => ?_)
+    refine lintegral_finsetSum' _ (fun j _ => ?_)
     exact pouWeightedSummand_aemeasurable_on_chartTarget
       (I := I) (M := M) g r s T α IJ' j
   rw [h_swap_j]

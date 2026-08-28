@@ -219,7 +219,7 @@ private lemma chartTarget_diff_chartImagePOUTsupport_subset_aux (α : M) :
     (chartTargetEuclid (I := I) (M := M) α) \
         chartImagePOUTsupport (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  Set.diff_subset
+  Set.sdiff_subset
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushed_ae_zero_off_chartImagePOUTsupport_aux
@@ -279,7 +279,7 @@ private lemma locallyIntegrableOn_of_memLp_two_chartTarget_aux
     exact Set.inter_eq_self_of_subset_left hB_subset_Ω
   rw [h_eq] at h_restrict
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite

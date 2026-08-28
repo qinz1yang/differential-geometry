@@ -58,7 +58,9 @@ theorem exists_inv_seq
   let eInf : OpenPartialHomeomorph E E := OpenPartialHomeomorph.refl E
   have heq : ∀ n, N ≤ n → Set.EqOn (e n) (A n) W := by
     intro n hn
-    simpa only [e, dif_pos hn] using (Classical.choose_spec (hex n hn)).2.2
+    rw [show e n = (Φ n hn).toOpenPartialHomeomorph by simp [e, hn]]
+    rw [← OpenPartialHomeomorph.coe_toPartialEquiv]
+    exact (Classical.choose_spec (hex n hn)).2.2
   have hsource : ∀ n, closure Q ⊆ (e n).source := by
     intro n
     by_cases hn : N ≤ n
@@ -82,7 +84,9 @@ theorem exists_inv_seq
       have hcd' : ContDiffOn Real (∞ : WithTop ℕ∞)
           (Φ n hn : E → E) W := by
         simpa only [contMDiffOn_iff_contDiffOn] using hcd
-      simpa only [e, dif_pos hn] using hcd'.mono (subset_closure.trans hQW)
+      rw [show e n = (Φ n hn).toOpenPartialHomeomorph by simp [e, hn]]
+      rw [← OpenPartialHomeomorph.coe_toPartialEquiv]
+      exact hcd'.mono (subset_closure.trans hQW)
     · simpa only [e, dif_neg hn, OpenPartialHomeomorph.refl_apply,
         id_eq] using
         (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
@@ -145,8 +149,11 @@ theorem exists_inv_seq
       have hsub : V ⊆ (Φ n hn).target := by
         intro w hw
         have hw' : w ∈ (e n).target := hstageN.1 (subset_closure hw)
-        simpa only [e, dif_pos hn] using hw'
-      simpa only [e, dif_pos hn] using hraw'.mono hsub
+        rw [show e n = (Φ n hn).toOpenPartialHomeomorph by simp [e, hn]] at hw'
+        exact hw'
+      rw [show e n = (Φ n hn).toOpenPartialHomeomorph by simp [e, hn]]
+      rw [← OpenPartialHomeomorph.coe_toPartialEquiv_symm]
+      exact hraw'.mono hsub
     exact hsymm.congr fun _w hw ↦ heqN hw
   exact ⟨V, hV, hVcompact, hKV, hGconv, hGcd⟩
 
@@ -339,19 +346,19 @@ theorem HasStageJetData.inv_chart_conv
     have hnlInj : Ninj ≤ ln n := (le_max_right _ _).trans hnl
     let Yk := X.obj (Lphi.φ (kn n))
     let Yl := X.obj (Lphi.φ (ln n))
-    letI : TopologicalSpace Yk.M := Yk.topology
-    letI : ChartedSpace H Yk.M := Yk.charted
-    letI : IsManifold I ∞ Yk.M := Yk.smooth
-    letI : T2Space Yk.M := Yk.t2
-    letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-    letI : TopologicalSpace Yl.M := Yl.topology
-    letI : ChartedSpace H Yl.M := Yl.charted
-    letI : IsManifold I ∞ Yl.M := Yl.smooth
-    letI : T2Space Yl.M := Yl.t2
-    letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-    letI : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
-    letI : MetricSpace Yl.M := (P (Lphi.φ (ln n))).ms
-    letI : Nonempty Yk.M := ⟨Yk.basepoint⟩
+    let : TopologicalSpace Yk.M := Yk.topology
+    let : ChartedSpace H Yk.M := Yk.charted
+    let : IsManifold I ∞ Yk.M := Yk.smooth
+    let : T2Space Yk.M := Yk.t2
+    let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+    let : TopologicalSpace Yl.M := Yl.topology
+    let : ChartedSpace H Yl.M := Yl.charted
+    let : IsManifold I ∞ Yl.M := Yl.smooth
+    let : T2Space Yl.M := Yl.t2
+    let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+    let : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
+    let : MetricSpace Yl.M := (P (Lphi.φ (ln n))).ms
+    let : Nonempty Yk.M := ⟨Yk.basepoint⟩
     let F : Yk.M → Yl.M :=
       stageComparisonMap (I := I) (X := X) inp P Lphi r hr
         (kn n) (ln n)
@@ -365,8 +372,8 @@ theorem HasStageJetData.inv_chart_conv
           ∀ j ≤ 1, mapDerivNorm j (A n) id z ≤ (1 / 2 : Real) := by
       have hzInt : z ∈ interior (C0 alpha) := hWint hz
       have hzSrc := hsrc hz
-      simpa only [A, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using
-        hNjet (kn n) hnkJet (ln n) hnlJet alpha z
+      with_unfolding_all
+        exact hNjet (kn n) hnkJet (ln n) hnlJet alpha z
           (interior_subset hzInt) hzInt hzSrc
     have hAcd : ContDiffOn Real ∞ (A n) W := fun z hz ↦
       (hjet z hz).2.1.contDiffWithinAt
@@ -436,13 +443,14 @@ theorem HasStageJetData.inv_chart_conv
       have hzBall : chiK.symm z ∈ Metric.ball Yk.basepoint T := by
         rw [Metric.mem_ball]
         have hzLe : dist (chiK.symm z) Yk.basepoint ≤ S := by
-          simpa only [NetLimitData.hatSourceBall, Yk] using hzClosed
+          change dist (chiK.symm z) Yk.basepoint ≤ S at hzClosed
+          exact hzClosed
         exact hzLe.trans_lt hST
       have hFzSrc : F (chiK.symm z) ∈ chiL.source := by
         exact hsmallTarget _ (hjet z hz).1
       have hdecode : chiL.symm (A n z) = F (chiK.symm z) := by
-        simpa only [A, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using
-          chiL.left_inv hFzSrc
+        with_unfolding_all
+          exact chiL.left_inv hFzSrc
       have hFInjBall : Set.InjOn F (Metric.ball Yk.basepoint T) := by
         exact hFInj.mono Metric.ball_subset_closedBall
       have hinv : Function.invFunOn F (Metric.ball Yk.basepoint T)

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.EvolvingCaccioppoli
 import DifferentialGeometry.Analysis.Parabolic.Moser.Oscillation
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -86,7 +87,7 @@ theorem hasEvolvingLocalizedPoincare_iff
       evolvingLocalizedL2Oscillation, evolvingLocalizedL2Deviation,
       evolvingLocalizedAverage, evolvingCutoffMass, evolvingLocalizedIntegral,
       evolvingLocalizedDirichletEnergy, riemannianMeasureFamily, mul_one,
-      grad_g_apply] using h t ht u
+      grad_g_apply, gradient_eq_gradFun] using h t ht u
   · intro h t ht u
     simpa only [HasLocalizedPoincare, localizedL2Oscillation,
       localizedL2Deviation, localizedAverage, localizedIntegral, cutoffMass,
@@ -94,7 +95,7 @@ theorem hasEvolvingLocalizedPoincare_iff
       evolvingLocalizedL2Oscillation, evolvingLocalizedL2Deviation,
       evolvingLocalizedAverage, evolvingCutoffMass, evolvingLocalizedIntegral,
       evolvingLocalizedDirichletEnergy, riemannianMeasureFamily, mul_one,
-      grad_g_apply] using h t ht u
+      grad_g_apply, gradient_eq_gradFun] using h t ht u
 
 omit [CompactSpace M] in
 theorem hasEvolvingLocalizedPoincareAtAverage_iff
@@ -116,7 +117,7 @@ theorem hasEvolvingLocalizedPoincareAtAverage_iff
       evolvingLocalizedL2Deviation, evolvingLocalizedAverage,
       evolvingCutoffMass, evolvingLocalizedIntegral,
       evolvingLocalizedDirichletEnergy, riemannianMeasureFamily, mul_one,
-      grad_g_apply] using h t ht u
+      grad_g_apply, gradient_eq_gradFun] using h t ht u
   · intro h t ht u
     simpa only [HasLocalizedPoincareAtAverage, localizedL2Deviation,
       localizedAverage, localizedIntegral, cutoffMass,
@@ -124,7 +125,7 @@ theorem hasEvolvingLocalizedPoincareAtAverage_iff
       evolvingLocalizedL2Deviation, evolvingLocalizedAverage,
       evolvingCutoffMass, evolvingLocalizedIntegral,
       evolvingLocalizedDirichletEnergy, riemannianMeasureFamily, mul_one,
-      grad_g_apply] using h t ht u
+      grad_g_apply, gradient_eq_gradFun] using h t ht u
 
 omit [CompactSpace M] in
 theorem evolvingCutoffMass_nonneg
@@ -138,11 +139,11 @@ theorem evolvingCutoffMass_pos
     (hcutoff : Continuous cutoff) (hne : ∃ x, cutoff x ≠ 0) :
     0 < evolvingCutoffMass (I := I) (M := M) g cutoff t := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
-  letI : μ.IsOpenPosMeasure := by
+  let : μ.IsOpenPosMeasure := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) (g t)
   obtain ⟨x, hx⟩ := hne
@@ -161,7 +162,9 @@ theorem evolvingCutoffMass_continuous
     Continuous (evolvingCutoffMass (I := I) (M := M) g cutoff) := by
   have h := evolvingLocalizedIntegral_continuous
     (I := I) (M := M) g cutoff (fun _ _ => 1) hg hcutoff continuous_const
-  simpa only [evolvingCutoffMass] using h
+  change Continuous
+    (evolvingLocalizedIntegral (I := I) (M := M) g cutoff (fun _ _ => 1))
+  exact h
 
 theorem evolvingLocalizedAverage_continuous
     (g : ℝ → SmoothRiemannianMetric I M) (cutoff : M → ℝ)
@@ -198,8 +201,9 @@ theorem hasDerivAt_evolvingCutoffMass
         ∂(riemannianMeasureFamily (I := I) (M := M) g t)) t := by
   have h := hasDerivAt_evolvingLocalizedIntegral
     (I := I) (M := M) g cutoff (fun _ _ => 1) t hg hcutoff contMDiff_const
-  simpa only [evolvingCutoffMass, evolvingLocalizedIntegral, deriv_const,
-    zero_add, mul_one] using h
+  change HasDerivAt
+    (evolvingLocalizedIntegral (I := I) (M := M) g cutoff (fun _ _ => 1)) _ t
+  simpa only [deriv_const, zero_add, mul_one] using h
 
 theorem hasDerivAt_evolvingLocalizedAverage
     (g : ℝ → SmoothRiemannianMetric I M) (cutoff : M → ℝ)
@@ -226,7 +230,10 @@ theorem hasDerivAt_evolvingLocalizedAverage
     (I := I) (M := M) g cutoff u t hg hcutoff hu
   have hden := hasDerivAt_evolvingCutoffMass
     (I := I) (M := M) g cutoff t hg hcutoff
-  simpa only [evolvingLocalizedAverage] using hnum.div hden hmass
+  change HasDerivAt
+    (evolvingLocalizedIntegral (I := I) (M := M) g cutoff u /
+      evolvingCutoffMass (I := I) (M := M) g cutoff) _ t
+  exact hnum.div hden hmass
 
 theorem deriv_evolvingLocalizedAverage_eq_integral_centered
     (g : ℝ → SmoothRiemannianMetric I M) (cutoff : M → ℝ)
@@ -251,7 +258,7 @@ theorem deriv_evolvingLocalizedAverage_eq_integral_centered
   let trace : M → ℝ := fun x =>
     (1 / 2) * traceTimeDerivMetric (I := I) g t x
   let timeDeriv : M → ℝ := fun x => deriv (fun s => u s x) t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -288,7 +295,8 @@ theorem deriv_evolvingLocalizedAverage_eq_integral_centered
     have hsum_int : Integrable
         (fun x : M => cutoff x ^ 2 *
           (timeDeriv x + trace x * u t x)) μ := by
-      simpa only [mul_add, mul_assoc] using htime_int.add htrace_u_int
+      refine (htime_int.add htrace_u_int).congr (ae_of_all μ fun x => ?_)
+      simp only [Pi.add_apply, mul_add, mul_assoc]
     calc
       _ = ∫ x,
           cutoff x ^ 2 * (timeDeriv x + trace x * u t x) -
@@ -354,7 +362,10 @@ private theorem quarter_dirichlet_le_covariance_cost
       oscillation ≤ K * dirichlet := hbound
       _ = dirichlet / 4 * (4 * K) := by ring
   have hneg := neg_le_neg hfrac
-  convert hneg using 1 <;> field_simp [hK.ne']
+  calc
+    -(1 / 4) * dirichlet = -(dirichlet / 4) := by ring
+    _ ≤ -(oscillation / (4 * K)) := hneg
+    _ = -(1 / (4 * K)) * oscillation := by ring
 
 omit [CompactSpace M] in
 theorem evolving_volume_covariance_lower_bound
@@ -382,7 +393,7 @@ theorem evolving_volume_covariance_lower_bound
   let h : M → ℝ := fun x =>
     (1 / 2) * traceTimeDerivMetric (I := I) g t x
   let dev : M → ℝ := fun x => u t x - center
-  letI : IsFiniteMeasureOnCompacts μ := by
+  let : IsFiniteMeasureOnCompacts μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasureOnCompacts
       (I := I) (M := M) (g t)
@@ -393,8 +404,10 @@ theorem evolving_volume_covariance_lower_bound
       (traceTimeDerivMetric_continuous (I := I) (M := M) hg)
   have hdev : Continuous dev := hu_t.sub continuous_const
   have hweight_support : HasCompactSupport (fun x : M => cutoff x ^ 2) := by
-    simpa only [pow_two] using
-      (hcutoff_compact.mul_left : HasCompactSupport (cutoff * cutoff))
+    rw [show (fun x : M => cutoff x ^ 2) = cutoff * cutoff by
+      funext x
+      simp only [Pi.mul_apply, pow_two]]
+    exact hcutoff_compact.mul_left
   have hweight : Integrable (fun x : M => cutoff x ^ 2) μ :=
     (hcutoff.continuous.pow 2).integrable_of_hasCompactSupport
       hweight_support
@@ -420,8 +433,10 @@ theorem evolving_volume_covariance_lower_bound
     intro x
     have hyoung := covariance_young_lower (d := dev x) (h := h x) hK (htrace x)
     have hmul := mul_le_mul_of_nonneg_left hyoung (sq_nonneg (cutoff x))
-    convert hmul using 1
-    all_goals ring
+    calc
+      cutoff x ^ 2 * (-(1 / (4 * K)) * dev x ^ 2 - K * H ^ 2) ≤
+          cutoff x ^ 2 * (h x * dev x) := hmul
+      _ = cutoff x ^ 2 * h x * dev x := by ring
   have hintegral := integral_mono hleft hright hpointwise
   have hleft_eq :
       (∫ x, cutoff x ^ 2 *
@@ -479,8 +494,9 @@ theorem evolving_volume_covariance_lower_bound_of_poincare
     evolvingLocalizedDirichletEnergy_nonneg
       (I := I) (M := M) g energyCutoff u t
   have hoscillation : oscillation ≤ C * dirichlet := by
-    simpa only [oscillation, dirichlet, smoothScalarSlice_toFun] using
-      hP t ht (smoothScalarSlice (I := I) (g t) u hu t)
+    have hPt := hP t ht (smoothScalarSlice (I := I) (g t) u hu t)
+    change oscillation ≤ C * dirichlet at hPt
+    exact hPt
   have hoscillationK : oscillation ≤ K * dirichlet :=
     hoscillation.trans
       (mul_le_mul_of_nonneg_right (le_max_right 1 C) hdirichlet)

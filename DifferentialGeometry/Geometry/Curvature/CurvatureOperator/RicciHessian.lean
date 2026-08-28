@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -103,7 +102,7 @@ theorem ricHess_eq_inner
     unfold vec2
     rw [← tensor0S_curry_one_apply (I := I) Ric (D (basis i)) (basis i)]
     conv_lhs => rw [hD i]
-    rw [map_sum, ContinuousMultilinearMap.sum_apply]
+    rw [map_sum, Tensor0SSpace.sum_apply]
     simp only [map_smul]
     apply Finset.sum_congr rfl
     intro j _

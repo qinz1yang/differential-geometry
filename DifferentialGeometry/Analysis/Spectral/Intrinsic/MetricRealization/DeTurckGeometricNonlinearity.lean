@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -72,7 +71,12 @@ theorem realizeMetricAt_inner_of_realizable (g_bg : SmoothRiemannianMetric I M)
       g_bg.inner x v w + tensorHsBilinFormSymm (I := I) g_bg u hu_fs x v w := by
   classical
   have hex : isRealizableMetricPerturbationAt (I := I) g_bg u := ⟨hu_fs, δ', hδ'_lt, hδ'⟩
-  rw [realizeMetricAt, dif_pos hex, tensorSectionRealizeMetric_inner]
+  rw [realizeMetricAt, dif_pos hex]
+  unfold tensorSectionRealizeMetric
+  change g_bg.inner x v w +
+      ccTensorBilinSymm (I := I) g_bg
+        (Analysis.Parabolic.TensorSpectral.tensorHsSmoothRepr
+          (I := I) (M := M) u hu_fs) x v w = _
   rfl
 
 
@@ -153,7 +157,7 @@ private lemma chartFrameVec_eq_chartBasisVecFiber_helper (α : M)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
     (trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i)
       = chartBasisVecFiber (I := I) α i x := by
-  rw [chartBasisVecFiber, Trivialization.symmL_apply]
+  rw [chartBasisVecFiber]
 
 
 omit [BoundarylessManifold I M] in
@@ -211,7 +215,7 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   refine contMDiffOn_of_locally_contMDiffOn ?_
   rintro ⟨x₀, s₀⟩ ⟨_, hs₀⟩
   refine ⟨(chartAt H x₀).source ×ˢ (Set.univ : Set ℝ),
@@ -263,11 +267,11 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       rw [continuousMultilinearMap_basis_repr]
       rw [trivializationAt_tensor0SBundle_succ_fibre]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-      change Tensor0SBundle.Tensor0SSpace.toModel
+      change Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p.1
             ((chartModelBasis E) (σ i))) = _
-      rw [deTurckRHSField_toModel_apply]
+      rw [deTurckRHSField_eval]
       rw [chartFrameVec_eq_chartBasisVecFiber_helper,
         chartFrameVec_eq_chartBasisVecFiber_helper]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
@@ -278,11 +282,11 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       rw [continuousMultilinearMap_basis_repr]
       rw [trivializationAt_tensor0SBundle_succ_fibre]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-      change Tensor0SBundle.Tensor0SSpace.toModel
+      change Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.1
             ((chartModelBasis E) (σ i))) = _
-      rw [deTurckRHSField_toModel_apply]
+      rw [deTurckRHSField_eval]
       rw [chartFrameVec_eq_chartBasisVecFiber_helper,
         chartFrameVec_eq_chartBasisVecFiber_helper]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)

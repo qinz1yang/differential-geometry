@@ -93,15 +93,19 @@ private lemma recipApprox_deriv_bounded {ε : ℝ} (hε : 0 < ε) :
   have hsqrt_pos : 0 < Real.sqrt (t ^ 2 + ε ^ 2) := Real.sqrt_pos.mpr hpos
   have hsqrt_ne : Real.sqrt (t ^ 2 + ε ^ 2) ≠ 0 := ne_of_gt hsqrt_pos
   have hd_sum : HasDerivAt (fun t => t ^ 2 + ε ^ 2) (2 * t) t := by
-    convert (hasDerivAt_pow 2 t).add (hasDerivAt_const t (ε ^ 2)) using 1; ring
+    have hd := (hasDerivAt_pow 2 t).add (hasDerivAt_const t (ε ^ 2))
+    exact (hd.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (by
+      ring)
   have hd_sqrt : HasDerivAt (fun t => Real.sqrt (t ^ 2 + ε ^ 2))
       (t / Real.sqrt (t ^ 2 + ε ^ 2)) t := by
     have := hd_sum.sqrt (ne_of_gt hpos)
     convert this using 1; field_simp
   have hd_inv : HasDerivAt (fun t => 1 / Real.sqrt (t ^ 2 + ε ^ 2))
       (-(t / Real.sqrt (t ^ 2 + ε ^ 2)) / (Real.sqrt (t ^ 2 + ε ^ 2)) ^ 2) t := by
-    have := (hasDerivAt_const t 1).div hd_sqrt hsqrt_ne
-    convert this using 1; ring
+    have hc : HasDerivAt (fun _ : ℝ => (1 : ℝ)) 0 t := hasDerivAt_const t 1
+    have hd := hc.div hd_sqrt hsqrt_ne
+    exact (hd.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (by
+      simp only [zero_mul, zero_sub, one_mul])
   have hd_recip : HasDerivAt (recipApprox ε)
       (-(t / Real.sqrt (t ^ 2 + ε ^ 2)) / (Real.sqrt (t ^ 2 + ε ^ 2)) ^ 2) t := by
     have := hd_inv.sub (hasDerivAt_const t (1 / ε))
@@ -159,7 +163,9 @@ private lemma exists_smooth_logApprox {ε : ℝ} (hε : 0 < ε) :
   have hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ := by
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => 1 + (2 / ε) * t) :=
       contDiff_const.add (contDiff_const.mul contDiff_id)
-    simpa [χ] using Real.smoothTransition.contDiff.comp hlin
+    change ContDiff ℝ (⊤ : ℕ∞)
+      (Real.smoothTransition ∘ fun t : ℝ => 1 + (2 / ε) * t)
+    exact Real.smoothTransition.contDiff.comp hlin
   have hΨ0 : Ψ 0 = 0 := by
     simp [Ψ, g, h, hχ_one 0 le_rfl]
   have hΨ_smooth : ContDiff ℝ (⊤ : ℕ∞) Ψ := by
@@ -198,7 +204,8 @@ private lemma exists_smooth_logApprox {ε : ℝ} (hε : 0 < ε) :
         have hlog0 : ContDiffAt ℝ (⊤ : ℕ∞) Real.log (t + ε) :=
           (Real.contDiffAt_log).2 (by simpa using ne_of_gt htε_pos)
         have hlog : ContDiffAt ℝ (⊤ : ℕ∞) (fun s : ℝ => Real.log (s + ε)) t :=
-          by simpa [Function.comp] using hlog0.comp t harg
+          (hlog0.comp t harg).congr_of_eventuallyEq
+            (Filter.Eventually.of_forall fun _ => rfl)
         simpa [g] using hlog.neg.add contDiffAt_const
       have hh_at : ContDiffAt ℝ (⊤ : ℕ∞) h t := by
         have hh_smooth : ContDiff ℝ (⊤ : ℕ∞) h := by
@@ -217,16 +224,19 @@ private lemma exists_smooth_logApprox {ε : ℝ} (hε : 0 < ε) :
       simp [Ψ, g, hχ_one s (le_of_lt hs), h]
     rw [Filter.EventuallyEq.deriv_eq hev]
     have h1 : HasDerivAt (fun s : ℝ => ε + s) 1 t := by
-      convert ((hasDerivAt_const t ε).add (hasDerivAt_id t)) using 1
-      ring
+      have hc : HasDerivAt (fun _ : ℝ => ε) 0 t := hasDerivAt_const t ε
+      have hi : HasDerivAt (fun s : ℝ => s) 1 t := hasDerivAt_id t
+      have hd := hc.add hi
+      exact (hd.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv
+        (zero_add 1)
     have hlog : HasDerivAt (fun s : ℝ => Real.log (ε + s)) ((ε + t)⁻¹) t := by
       simpa [one_div, add_comm] using h1.log
         (by simpa [add_comm] using ne_of_gt (by linarith : 0 < ε + t))
     have hg : HasDerivAt g (-(1 / (t + ε))) t := by
-      convert (hlog.neg.add (hasDerivAt_const t (Real.log ε))) using 1
-      · ext s
-        simp [g, add_comm]
-      · ring
+      have h := hlog.neg.add (hasDerivAt_const t (Real.log ε))
+      exact (h.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun s => by simp [g, add_comm])).congr_deriv (by
+          simp [one_div, add_comm])
     exact hg.deriv
   have hΨ_bdd : ∃ M, ∀ t, |deriv Ψ t| ≤ M := by
     have hderiv_cont : Continuous (deriv Ψ) := by
@@ -346,7 +356,9 @@ private lemma exists_smooth_recipApprox {ε : ℝ} (hε : 0 < ε) :
   have hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ := by
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => 1 + (2 / ε) * t) :=
       contDiff_const.add (contDiff_const.mul contDiff_id)
-    simpa [χ] using Real.smoothTransition.contDiff.comp hlin
+    change ContDiff ℝ (⊤ : ℕ∞)
+      (Real.smoothTransition ∘ fun t : ℝ => 1 + (2 / ε) * t)
+    exact Real.smoothTransition.contDiff.comp hlin
   have hΦ0 : Φ 0 = 0 := by
     simp [Φ, g, hχ_one 0 le_rfl]
   have hΦ_smooth : ContDiff ℝ (⊤ : ℕ∞) Φ := by
@@ -392,17 +404,22 @@ private lemma exists_smooth_recipApprox {ε : ℝ} (hε : 0 < ε) :
       simp [Φ, hχ_one s (le_of_lt hs)]
     rw [Filter.EventuallyEq.deriv_eq hev]
     have h1 : HasDerivAt (fun s : ℝ => ε + s) 1 t := by
-      convert ((hasDerivAt_const t ε).add (hasDerivAt_id t)) using 1
-      ring
+      have hc : HasDerivAt (fun _ : ℝ => ε) 0 t := hasDerivAt_const t ε
+      have hi : HasDerivAt (fun s : ℝ => s) 1 t := hasDerivAt_id t
+      have hd := hc.add hi
+      exact (hd.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv
+        (zero_add 1)
     have h2 : HasDerivAt (fun s : ℝ => (ε + s)⁻¹) (-1 / (ε + t) ^ 2) t := by
       exact h1.inv (by simpa [add_comm] using htε)
     have hsub : HasDerivAt g (-1 / (ε + t) ^ 2) t := by
-      convert (h2.sub (hasDerivAt_const t (1 / ε))) using 1
-      · ext s
-        simp [g, one_div, add_comm]
-      · ring
-    convert hsub.deriv using 1
-    ring
+      have hd := h2.sub (hasDerivAt_const t (1 / ε))
+      have heq : ((fun s : ℝ => (ε + s)⁻¹) - fun _ => 1 / ε) = g := by
+        funext s
+        simp only [Pi.sub_apply, g, one_div, add_comm]
+      rw [← heq]
+      exact hd.congr_deriv (sub_zero _)
+    rw [hsub.deriv]
+    simp only [neg_div, one_div, add_comm]
   have hΦ_bdd : ∃ M, ∀ t, |deriv Φ t| ≤ M := by
     have hderiv_cont : Continuous (deriv Φ) := by
       exact hΦ_smooth.continuous_deriv (by simp)
@@ -467,13 +484,15 @@ private noncomputable def comp_smooth_bounded_witness
   let M : ℝ := Classical.choose hΦ'_bdd
   have hM : ∀ t, |deriv Φ t| ≤ M := Classical.choose_spec hΦ'_bdd
   have hM_nonneg : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
-  have hΦ_lip : LipschitzWith ⟨M, hM_nonneg⟩ Φ :=
+  have hΦ_lip : LipschitzWith (NNReal.mk M hM_nonneg) Φ :=
     lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
       simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
       exact (Real.norm_eq_abs _).symm ▸ hM t)
   have hΦ_abs_le : ∀ t, |Φ t| ≤ M * |t| := by
-    intro t; have ht := hΦ_lip.dist_le_mul t 0
-    simpa [Real.dist_eq, hΦ0, Real.norm_eq_abs] using ht
+    intro t
+    have ht := hΦ_lip.dist_le_mul t 0
+    change |Φ t - Φ 0| ≤ M * |t - 0| at ht
+    simpa [hΦ0] using ht
   exact
     { memLp := by
         refine MemLp.of_le_mul (g := u) (c := M) hu.memLp ?_ ?_
@@ -674,8 +693,12 @@ private theorem build_test_function_eps
   let hw_f : MemW1pWitness 2 f_scaled Ω :=
     hw_f_univ.restrict hΩ (by intro x hx; simp)
   have hprod_cs : HasCompactSupport (fun x => φ x ^ 2 * Φ (u x)) := by
-    simpa [pow_two, mul_assoc] using
-      hφ_cs.mul_right (f' := fun x => φ x * Φ (u x))
+    have heq : (fun x => φ x ^ 2 * Φ (u x)) =
+        fun x => φ x * (φ x * Φ (u x)) := by
+      funext x
+      ring
+    rw [heq]
+    exact hφ_cs.mul_right (f' := fun x => φ x * Φ (u x))
   have hprod_sub : tsupport (fun x => φ x ^ 2 * Φ (u x)) ⊆ Ω := by
     exact (tsupport_mul_subset_left :
       tsupport (fun x => φ x ^ 2 * Φ (u x)) ⊆ tsupport (fun x => φ x ^ 2)).trans hφsq_sub
@@ -705,7 +728,7 @@ private theorem build_test_function_eps
       ext y
       ring
     rw [hEq, hfd_mul.fderiv]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp [add_apply, smul_apply, smul_eq_mul]
     ring
   refine ⟨ψ, hw_ψ, hψ_memH01, hψ_nn, ?_⟩
   filter_upwards [ae_restrict_mem hΩ.measurableSet] with x hxΩ
@@ -733,7 +756,8 @@ private theorem build_test_function_eps
     have hfd_scaled :
         HasFDerivAt f_scaled
           ((1 / ε) • fderiv ℝ (fun y => φ y ^ 2) x) x := by
-      simpa [f_scaled] using (hasFDerivAt_const (1 / ε) x).mul hfd_sq
+      exact (hfd_sq.const_mul (1 / ε)).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
     rw [hfd_scaled.fderiv]
     simp [smul_eq_mul]
   calc
@@ -1276,7 +1300,7 @@ theorem log_gradient_bound_of_supersolution
           ∀ n, AEMeasurable (fun x => ENNReal.ofReal (g n x)) μ := by
         intro n
         exact (hg_meas n).ennreal_ofReal
-      have hleft := MeasureTheory.lintegral_liminf_le' (μ := μ) hmeas
+      have hleft := MeasureTheory.lintegral_liminf_le' (μ := μ) (u := Filter.atTop) hmeas
       have hlim :
           (fun x =>
             Filter.liminf (fun n => ENNReal.ofReal (g n x)) atTop) =ᵐ[μ]

@@ -118,7 +118,8 @@ theorem HasSuppCmFin.subseq
   let radSeq' := fun alpha a b x ↦ radSeq alpha (ψ a) (ψ b) x
   refine ⟨radSeq', hcover, ?_, hweight, ?_, ?_, ?_, N, ?_⟩
   · intro alpha
-    simpa only [NetLimitData.hatBall_subseq] using hhat alpha
+    rw [NetLimitData.hatBall_subseq]
+    exact hhat alpha
   · intro alpha a b x hx
     exact hpos alpha (ψ a) (ψ b) x hx
   · intro alpha a b x hx gamma hgamma
@@ -131,8 +132,7 @@ theorem HasSuppCmFin.subseq
   · intro a ha b hb alpha x hx
     have hout := hN (ψ a) (ha.trans (hψ.id_le a))
       (ψ b) (hb.trans (hψ.id_le b)) alpha x hx
-    simpa only [radSeq', NetLimitData.subseq_phi,
-      Function.comp_apply] using hout
+    with_unfolding_all exact hout
 
 def HasSuppCmData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -227,11 +227,9 @@ theorem HasSuppCmData.subseq
   dsimp only [HasSuppCmData] at h ⊢
   rcases h with ⟨hcover, hcm⟩
   refine ⟨?_, ?_⟩
-  · simpa only [NetLimitData.subseq_phi, Function.comp_apply,
-      seqCenterD_subseq, NetLimitData.hatSourceBall_subseq] using hcover
+  · with_unfolding_all exact hcover
   · have hsub := hcm.subseq hψ
-    simpa only [NetLimitData.subseq, Function.comp_apply,
-      seqCenterD_subseq, NetLimitData.hatSourceBall_subseq, totalPts] using hsub
+    with_unfolding_all exact hsub
 
 def HasSourceCmFin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -495,11 +493,11 @@ theorem MetricCompactBase.exists_supp_cm_fin
       let rhoMin := aMin * inp.decay.mu Rgamma
       0 < q gamma ∧ 0 < δ gamma ∧ 0 < rhoMin ∧
         2 * rhoMin < (q gamma : Real) := by
-    simpa only [Lphi, NetLimitData.subseq] using hqdata
+    with_unfolding_all exact hqdata
   have hqWide0 : ∀ gamma : LiveSlot L inp.pack r,
       6 * (q gamma : Real) < inp.normalRadius.phaseRadius
         (L.rInf (gamma.1 : Nat) + 1) := by
-    simpa only [Lphi, NetLimitData.subseq] using hqWide
+    with_unfolding_all exact hqWide
   have hqAcc0 := hqAcc
   have herr0 := herr
   have hinvErr0 := hinvErr
@@ -520,28 +518,28 @@ theorem MetricCompactBase.exists_supp_cm_fin
     linarith [hqGamma.2.2.2]
   · filter_upwards [hptsTail, hreadTail] with n hn hreadN
     let Y := X.obj (Lphi.φ n)
-    letI : TopologicalSpace Y.M := Y.topology
-    letI : ChartedSpace H Y.M := Y.charted
-    letI : IsManifold I ∞ Y.M := Y.smooth
-    letI : IsManifold I 1 Y.M := IsManifold.of_le
+    let : TopologicalSpace Y.M := Y.topology
+    let : ChartedSpace H Y.M := Y.charted
+    let : IsManifold I ∞ Y.M := Y.smooth
+    let : IsManifold I 1 Y.M := IsManifold.of_le
       (I := I) (M := Y.M) (n := ∞) (by decide)
-    letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-    letI : T2Space Y.M := Y.t2
-    letI : ConnectedSpace Y.M := hconn (Lphi.φ n)
-    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    letI : TopologicalSpace.MetrizableSpace Y.M :=
+    let : SigmaCompactSpace Y.M := Y.sigmaCompact
+    let : T2Space Y.M := Y.t2
+    let : ConnectedSpace Y.M := hconn (Lphi.φ n)
+    let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    let : TopologicalSpace.MetrizableSpace Y.M :=
       Manifold.metrizableSpace I Y.M
-    letI : T3Space Y.M := inferInstance
-    letI : RiemannianBundle (fun z : Y.M => TangentSpace I z) :=
+    let : T3Space Y.M := inferInstance
+    let : RiemannianBundle (fun z : Y.M => TangentSpace I z) :=
       Y.riemBundle (I := I)
-    letI : (z : Y.M) → InnerProductSpace Real (TangentSpace I z) :=
+    let : (z : Y.M) → InnerProductSpace Real (TangentSpace I z) :=
       Y.riemInner (I := I)
-    letI : IsContinuousRiemannianBundle E
+    let : IsContinuousRiemannianBundle E
         (fun z : Y.M => TangentSpace I z) := Y.riemBundle_cont (I := I)
-    letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
-    letI : CompleteSpace Y.M :=
+    let : EMetricSpace Y.M := Y.emetricSpace (I := I)
+    let : CompleteSpace Y.M :=
       MetricComplete.complete (I := I) Y (hcomplete.complete (Lphi.φ n))
-    letI : MetricSpace Y.M :=
+    let : MetricSpace Y.M :=
       HopfRinow.riemMetricSpace (I := I) (M := Y.M)
     let beta := fun (k : Nat) (alpha : LiveSlot L inp.pack r) =>
       seqCenterD inp.decay P Lphi k (alpha.1 : Nat)
@@ -577,16 +575,19 @@ theorem MetricCompactBase.exists_supp_cm_fin
         hcomplete hconn q δ sourceBall sourcePatch localWeight pts
     refine ⟨hcompact, ?_⟩
     · dsimp only [HasSuppCmFin]
+      let liveFinite : Finite (LiveSlot Lphi inp.pack r) :=
+        Finite.of_injective (fun gamma : LiveSlot Lphi inp.pack r => gamma.1)
+          Subtype.val_injective
       have hlocal := fun alpha =>
         hreadN.2 alpha (sourcePatch alpha) (hhat alpha)
           (localWeight alpha) (hweight alpha) (pts alpha) (hpts alpha)
       choose radSeq hpos hactive hsmall hcap using hlocal
       refine ⟨radSeq, hcover, hhat, hweight, hpos, hactive, ?_, ?_⟩
       · intro epsilon hepsilon
-        exact finite_cover_two_tail
+        exact @finite_cover_two_tail (LiveSlot Lphi inp.pack r) Y.M liveFinite sourcePatch
           (fun alpha a b x => radSeq alpha a b x < epsilon)
           (fun alpha => hsmall alpha epsilon hepsilon)
-      · exact finite_cover_two_tail _ hcap
+      · exact @finite_cover_two_tail (LiveSlot Lphi inp.pack r) Y.M liveFinite sourcePatch _ hcap
 
 theorem MetricCompactBase.exists_supp_diag_fin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -771,8 +772,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         (X.obj (Ltheta.φ n)).basepoint ≤
           L.rInf (alpha.1 : Nat) + 1 := by
     intro n alpha
-    simpa only [Lphi, Ltheta, theta, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hcenter0 n alpha
+    with_unfolding_all exact hcenter0 n alpha
   have hmetric : ∀ alpha : LiveSlot L inp.pack r,
       let Ralpha := L.rInf (alpha.1 : Nat) + 1
       let Ualpha := Metric.ball (0 : E)
@@ -787,14 +787,12 @@ theorem MetricCompactBase.exists_supp_diag_fin
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v ∧
           gInf alpha z v v ≤ 2 * ‖v‖ ^ 2 := by
     intro alpha
-    simpa only [Lphi, Ltheta, theta, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hmetric0 alpha
+    with_unfolding_all exact hmetric0 alpha
   have hbranchTheta : ∀ n,
       HasLiveBrFull (I := I) P Ltheta inp.pack r n
         hcomplete hconn aMin q δ := by
     intro n
-    simpa only [Lphi, Ltheta, theta, HasLiveBrFull, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hbranchAll n
+    with_unfolding_all exact hbranchAll n
   have hscaleAll : ∀ n (gamma : LiveSlot L inp.pack r),
       let Rgamma := Ltheta.rInf (gamma.1 : Nat) + 1
       let rho := aMin * inp.decay.mu Rgamma
@@ -815,8 +813,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
     intro n gamma
     have hn := hQAll n
     dsimp only [Q] at hn
-    simpa only [ScaleAt, Lphi, Ltheta, theta, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hn.2 gamma
+    with_unfolding_all exact hn.2 gamma
   let index : Nat → Nat := fun n ↦ Ltheta.φ n
   let Xtheta : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
   let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xtheta.obj n).M :=
@@ -829,9 +826,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         ∀ n, NormalDiagFence (I := I) (Xtheta.obj n)
           (c alpha n) (q alpha) (e alpha n) := by
     intro alpha
-    simpa only [index, Xtheta, c, Lphi, Ltheta, theta,
-      PointedRiemannianSeq.subseq, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hpair0 alpha
+    with_unfolding_all exact hpair0 alpha
   have hcapAll : ∀ n,
       HasSuppCmData (I := I) inp P L r hr theta htheta n
         hcomplete hconn U aInf q δ := by

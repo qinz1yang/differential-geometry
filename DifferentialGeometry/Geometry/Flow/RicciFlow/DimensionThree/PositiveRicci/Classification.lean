@@ -56,14 +56,16 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
     change MetricComplete (I := I) ((X.term k).atTime (I := I) 0)
     dsimp only [MetricComplete, PointedFlowData.atTime]
     refine @complete_of_compact (X.term k).M ?_ ?_
-    simpa only [X, hamiltonSourceSequence] using hM.1
+    with_unfolding_all
+      exact hM.1
   have hconn : forall k : Nat,
       letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
         ((X.atZero (I := I)).obj k).topology
       ConnectedSpace ((X.atZero (I := I)).obj k).M := by
     intro k
     change @ConnectedSpace (X.term k).M (X.term k).topology
-    simpa only [X, hamiltonSourceSequence] using hM.2.1
+    with_unfolding_all
+      exact hM.2.1
   let hderiv : FlowDerivativeInput (I := I) X :=
     hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
@@ -125,14 +127,16 @@ theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
     change MetricComplete (I := I) ((X.term k).atTime (I := I) 0)
     dsimp only [MetricComplete, PointedFlowData.atTime]
     refine @complete_of_compact (X.term k).M ?_ ?_
-    simpa only [X, hamiltonSourceSequence] using hM.1
+    with_unfolding_all
+      exact hM.1
   have hconn : forall k : Nat,
       letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
         ((X.atZero (I := I)).obj k).topology
       ConnectedSpace ((X.atZero (I := I)).obj k).M := by
     intro k
     change @ConnectedSpace (X.term k).M (X.term k).topology
-    simpa only [X, hamiltonSourceSequence] using hM.2.1
+    with_unfolding_all
+      exact hM.2.1
   let hderiv : FlowDerivativeInput (I := I) X :=
     hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   have hinj : FlowerScaleInjBound (I := I) X :=
@@ -168,11 +172,11 @@ theorem hamilton_admits_constant_positive_sectional_curvature
     (hM : isClosedThreeManifold (I := I) (M := M))
     (hpos : admitsPositiveRicci (I := I) (M := M)) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) := by
-  letI : I.Boundaryless := hM.2.2.1
-  letI : NeZero (Module.finrank Real E) := ⟨by
+  let : I.Boundaryless := hM.2.2.1
+  let : NeZero (Module.finrank Real E) := ⟨by
     rw [hM.2.2.2]; norm_num⟩
   rcases hpos with ⟨g0, hg0⟩
-  letI : CompactSpace M := hM.1
+  let : CompactSpace M := hM.1
   rcases hamilton_finite_time_flow_exists_on_closed_open
       (I := I) (M := M) hM g0 hg0 with
     ⟨omega, h0omega, P, hD⟩

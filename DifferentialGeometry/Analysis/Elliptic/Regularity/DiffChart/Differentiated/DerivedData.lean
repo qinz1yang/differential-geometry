@@ -263,7 +263,7 @@ private lemma chosenSecondPartialChartPushedU_locallyIntegrableOn
     chosenSecondPartialChartPushedU_locally_memLp
       (I := I) (M := M) g α hu_h i l hB_compact hB_subset
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -333,7 +333,7 @@ theorem chosenSecondPartialChartPushedU_swap_ae
     have hK_compact : IsCompact (tsupport ψ) := hψ_cs
     have hK_meas : MeasurableSet (tsupport ψ) := (isClosed_tsupport ψ).measurableSet
     have hK_finite : (volume : Measure EuclN) (tsupport ψ) < ⊤ := hK_compact.measure_lt_top
-    haveI hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict (tsupport ψ)) := by
+    have hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict (tsupport ψ)) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hK_finite

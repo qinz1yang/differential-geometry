@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -55,7 +54,7 @@ theorem domDomCongrFibRank_apply (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M)
         (ContinuousMultilinearMap.domDomCongr σ
           (Tensor0SBundle.Tensor0SSpace.toModel D)) := by
   rw [domDomCongrFibRank]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
   rfl
 
@@ -70,19 +69,19 @@ noncomputable def modelProdCLM (p q : ℕ) :
             map_add' := fun B B' => by
               apply ContinuousMultilinearMap.ext
               intro v
-              rw [ContinuousMultilinearMap.add_apply,
+              rw [add_apply,
                 Bundle.continuousMultilinearMap.modelProduct_apply,
                 Bundle.continuousMultilinearMap.modelProduct_apply,
                 Bundle.continuousMultilinearMap.modelProduct_apply,
-                ContinuousMultilinearMap.add_apply]
+                add_apply]
               ring
             map_smul' := fun c B => by
               apply ContinuousMultilinearMap.ext
               intro v
-              rw [RingHom.id_apply, ContinuousMultilinearMap.smul_apply,
+              rw [RingHom.id_apply, smul_apply,
                 Bundle.continuousMultilinearMap.modelProduct_apply,
                 Bundle.continuousMultilinearMap.modelProduct_apply,
-                ContinuousMultilinearMap.smul_apply]
+                smul_apply]
               simp only [smul_eq_mul]
               ring }
       map_add' := fun A A' => by
@@ -91,11 +90,11 @@ noncomputable def modelProdCLM (p q : ℕ) :
         apply ContinuousMultilinearMap.ext
         intro v
         simp only [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-          ContinuousLinearMap.add_apply, ContinuousMultilinearMap.add_apply]
+          add_apply, add_apply]
         rw [Bundle.continuousMultilinearMap.modelProduct_apply,
           Bundle.continuousMultilinearMap.modelProduct_apply,
           Bundle.continuousMultilinearMap.modelProduct_apply,
-          ContinuousMultilinearMap.add_apply]
+          add_apply]
         ring
       map_smul' := fun c A => by
         apply ContinuousLinearMap.ext
@@ -103,10 +102,10 @@ noncomputable def modelProdCLM (p q : ℕ) :
         apply ContinuousMultilinearMap.ext
         intro v
         simp only [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-          RingHom.id_apply, ContinuousLinearMap.smul_apply, ContinuousMultilinearMap.smul_apply]
+          RingHom.id_apply, smul_apply, smul_apply]
         rw [Bundle.continuousMultilinearMap.modelProduct_apply,
           Bundle.continuousMultilinearMap.modelProduct_apply,
-          ContinuousMultilinearMap.smul_apply]
+          smul_apply]
         simp only [smul_eq_mul]
         ring }
 
@@ -138,23 +137,40 @@ theorem tensor0SProdKappaFib_apply {p q : ℕ} (x : M)
         (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
           (Tensor0SBundle.Tensor0SSpace.toModel D) (Tensor0SBundle.Tensor0SSpace.toModel κ)) := by
   rw [tensor0SProdKappaFib]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, ContinuousLinearMap.flip_apply]
   rw [modelProdCLM_apply]
   rfl
 
 private noncomputable def trilinFormToModel (F : Type*) [NormedAddCommGroup F]
-    [NormedSpace ℝ F] :
-    (F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) ≃ₗ[ℝ]
-      ContinuousMultilinearMap ℝ (fun _ : Fin 3 => F) ℝ :=
-  ((ContinuousLinearEquiv.refl ℝ F).arrowCongr
-      (bilinFormToModelₗᵢ F).toContinuousLinearEquiv).toLinearEquiv.trans
-    (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 3 => F) ℝ).symm.toLinearEquiv
+    [NormedSpace ℝ F] (B : F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :
+    ContinuousMultilinearMap ℝ (fun _ : Fin 3 => F) ℝ := by
+  letI : NormedAddCommGroup (F →L[ℝ] ℝ) := ContinuousLinearMap.toNormedAddCommGroup
+  letI : NormedSpace ℝ (F →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace
+  letI : NormedAddCommGroup (F →L[ℝ] F →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  letI : NormedSpace ℝ (F →L[ℝ] F →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace
+  letI : NormedAddCommGroup (F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  letI : NormedSpace ℝ (F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  exact (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 3 => F) ℝ).symm
+    (((ContinuousLinearEquiv.refl ℝ F).arrowCongr
+      (bilinFormToModelₗᵢ F).toContinuousLinearEquiv) B)
 
 private theorem trilinFormToModel_apply (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F]
     (B : F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) (v : Fin 3 → F) :
     trilinFormToModel F B v = B (v 0) (v 1) (v 2) := by
   classical
+  let : NormedAddCommGroup (F →L[ℝ] ℝ) := ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (F →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (F →L[ℝ] F →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (F →L[ℝ] F →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   change (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 3 => F) ℝ).symm
       (((ContinuousLinearEquiv.refl ℝ F).arrowCongr
           (bilinFormToModelₗᵢ F).toContinuousLinearEquiv) B) v =
@@ -188,7 +204,8 @@ theorem metricConnectionDifferenceLoweredTrilin_apply (gm gA gB : SmoothRiemanni
 
 noncomputable def metricConnectionDifferenceLoweredFib (gm gA gB : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x :=
-  Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
+  (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+    (I := I) 3 x).symm
     (trilinFormToModel (TangentSpace I x) (metricConnectionDifferenceLoweredTrilin (I := I) gm gA gB x))
 
 
@@ -196,12 +213,18 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem metricConnectionDifferenceLoweredFib_toModel (gm gA gB : SmoothRiemannianMetric I M) (x : M)
-    (v : Fin 3 → TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) gm gA gB x) v =
-      gm.inner x (PDE.DeTurck.connectionDifference (I := I) gA gB x (v 0) (v 1)) (v 2) := by
-  rw [metricConnectionDifferenceLoweredFib, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
+    (v : Fin 3 → E) :
+    Tensor0SBundle.Tensor0SSpace.toModel
+        (metricConnectionDifferenceLoweredFib (I := I) gm gA gB x) v =
+      gm.inner x (PDE.DeTurck.connectionDifference (I := I) gA gB x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2)) := by
+  rw [metricConnectionDifferenceLoweredFib,
+    Tensor0SBundle.Tensor0SSpace.toModel_apply_model_vector]
   change (trilinFormToModel (TangentSpace I x))
-      (metricConnectionDifferenceLoweredTrilin (I := I) gm gA gB x) v = _
+      (metricConnectionDifferenceLoweredTrilin (I := I) gm gA gB x)
+        (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
   rw [trilinFormToModel_apply, metricConnectionDifferenceLoweredTrilin_apply]
 
 noncomputable def ccBilinConnectionDifferenceLoweredTrilin (g₀ : SmoothRiemannianMetric I M)
@@ -226,7 +249,8 @@ theorem ccBilinConnectionDifferenceLoweredTrilin_apply (g₀ : SmoothRiemannianM
 noncomputable def ccBilinConnectionDifferenceLoweredFib (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x :=
-  Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
+  (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+    (I := I) 3 x).symm
     (trilinFormToModel (TangentSpace I x) (ccBilinConnectionDifferenceLoweredTrilin (I := I) g₀ V gA gB x))
 
 
@@ -235,17 +259,21 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem ccBilinConnectionDifferenceLoweredFib_toModel (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) (x : M)
-    (v : Fin 3 → TangentSpace I x) :
+    (v : Fin 3 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (ccBilinConnectionDifferenceLoweredFib (I := I) g₀ V gA gB x) v =
       ccTensorBilinSymm (I := I) g₀ V x
-        (PDE.DeTurck.connectionDifference (I := I) gA gB x (v 0) (v 1)) (v 2) := by
-  rw [ccBilinConnectionDifferenceLoweredFib, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
+        (PDE.DeTurck.connectionDifference (I := I) gA gB x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2)) := by
+  rw [ccBilinConnectionDifferenceLoweredFib,
+    Tensor0SBundle.Tensor0SSpace.toModel_apply_model_vector]
   change (trilinFormToModel (TangentSpace I x))
-      (ccBilinConnectionDifferenceLoweredTrilin (I := I) g₀ V gA gB x) v = _
+      (ccBilinConnectionDifferenceLoweredTrilin (I := I) g₀ V gA gB x)
+        (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
   rw [trilinFormToModel_apply, ccBilinConnectionDifferenceLoweredTrilin_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem trilinKernel_section_contMDiff
@@ -255,13 +283,14 @@ private theorem trilinKernel_section_contMDiff
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) x
-        (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
+        ((Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+          (I := I) 3 x).symm
           (trilinFormToModel (TangentSpace I x) (K x)))) := by
   classical
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
     (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
-    (fun x : M => (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-        (trilinFormToModel (TangentSpace I x) (K x)) :
+    (fun x : M => ((Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+        (I := I) 3 x).symm (trilinFormToModel (TangentSpace I x) (K x)) :
           Tensor0SBundle.Tensor0SSpace 3 I x))).mpr ?_
   intro σ x₀
   set b := Module.finBasis ℝ E with hb
@@ -275,13 +304,16 @@ private theorem trilinKernel_section_contMDiff
   rw [continuousMultilinearMap_basis_repr]
   have hframe0 : e₁.symmL ℝ x (b (σ 0)) = (Y (σ 0)) x := by
     rw [hYx (σ 0), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    rw [Trivialization.basisAt, Module.Basis.map_apply, e₁.symmL_apply hx₁]
+    rfl
   have hframe1 : e₁.symmL ℝ x (b (σ 1)) = (Y (σ 1)) x := by
     rw [hYx (σ 1), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    rw [Trivialization.basisAt, Module.Basis.map_apply, e₁.symmL_apply hx₁]
+    rfl
   have hframe2 : e₁.symmL ℝ x (b (σ 2)) = (Y (σ 2)) x := by
     rw [hYx (σ 2), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    rw [Trivialization.basisAt, Module.Basis.map_apply, e₁.symmL_apply hx₁]
+    rfl
   change (trilinFormToModel (TangentSpace I x) (K x))
       (fun j : Fin 3 => e₁.symmL ℝ x (b (σ j))) = _
   rw [trilinFormToModel_apply]

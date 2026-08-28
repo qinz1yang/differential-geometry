@@ -55,7 +55,6 @@ theorem tensorProduct_basis_repr_tmul {d₁ d₂ : ℕ}
 
 section smooth
 
-set_option backward.isDefEq.respectTransparency false
 
 open _root_.Bundle Set
 
@@ -97,10 +96,10 @@ theorem contMDiff_tensorProductSection_iff_coord
         (fun x => (tensorProduct_basis b₁ b₂).repr
           (trivializationAt (F₁ ⊗[𝕜] F₂)
             (fun x => E₁ x ⊗[𝕜] E₂ x) x₀ ⟨x, f x⟩).2 p) x₀ := by
-  letI := _root_.Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂
-  letI := _root_.Bundle.TensorProduct.fiberBundle
+  let := _root_.Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂
+  let := _root_.Bundle.TensorProduct.fiberBundle
     (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂)
-  letI : ChartedSpace (ModelProd HB (F₁ ⊗[𝕜] F₂))
+  let : ChartedSpace (ModelProd HB (F₁ ⊗[𝕜] F₂))
       (TotalSpace (F₁ ⊗[𝕜] F₂) (fun x => E₁ x ⊗[𝕜] E₂ x)) :=
     FiberBundle.chartedSpace
   set Bb := tensorProduct_basis b₁ b₂

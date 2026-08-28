@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -77,7 +76,7 @@ theorem tensorPointwiseNorm_smul
     (a : ℝ) (S : TensorRSModel r s ℝ E) :
     tensorPointwiseNorm (I := I) (M := M) g r s x (a • S) =
       |a| * tensorPointwiseNorm (I := I) (M := M) g r s x S := by
-  haveI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  have : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     Tensor0SBundle.tensorRSModel_normedSpace r s
   unfold tensorPointwiseNorm
   rw [tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
@@ -114,14 +113,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 theorem tensorPointwiseNorm_continuous
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     Continuous (tensorPointwiseNorm (I := I) (M := M) g r s x) := by
-  haveI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  have : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     Tensor0SBundle.tensorRSModel_normedSpace r s
-  haveI : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
+  have : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
     Tensor0SBundle.tensorRSModel_finiteDimensional r s
   set b : TensorRSModel r s ℝ E → TensorRSModel r s ℝ E → ℝ :=
     fun S T => tensorInnerPointwise (I := I) (M := M) g r s x S T with hb
-  haveI : IsModuleTopology ℝ (TensorRSModel r s ℝ E) := isModuleTopologyOfFiniteDimensional
-  haveI : IsModuleTopology ℝ ℝ := isModuleTopologyOfFiniteDimensional
+  have : IsModuleTopology ℝ (TensorRSModel r s ℝ E) := isModuleTopologyOfFiniteDimensional
+  have : IsModuleTopology ℝ ℝ := isModuleTopologyOfFiniteDimensional
   let bl : TensorRSModel r s ℝ E →ₗ[ℝ] TensorRSModel r s ℝ E →ₗ[ℝ] ℝ :=
     LinearMap.mk₂ ℝ b
       (fun S₁ S₂ T => tensorInnerPointwise_add_left (I := I) (M := M) g r s x S₁ S₂ T)
@@ -157,7 +156,7 @@ theorem tensorPointwiseNorm_intervalIntegral_le
     have hpeq : (p : TensorRSModel r s ℝ E → ℝ) =
         tensorPointwiseNorm (I := I) (M := M) g r s x := rfl
     rw [hpeq]; exact tensorPointwiseNorm_continuous (I := I) (M := M) g r s x
-  haveI hprob : IsProbabilityMeasure (volume.restrict (Set.Ioc (0:ℝ) 1)) := by
+  have hprob : IsProbabilityMeasure (volume.restrict (Set.Ioc (0:ℝ) 1)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter, Real.volume_Ioc]
     norm_num
@@ -231,7 +230,7 @@ private theorem sq_intervalIntegral_le_intervalIntegral_sq
     (h : ℝ → ℝ) (hcont : ContinuousOn h (Set.Icc (0 : ℝ) 1)) :
     (∫ t in (0 : ℝ)..1, h t) ^ 2 ≤ ∫ t in (0 : ℝ)..1, (h t) ^ 2 := by
   classical
-  haveI hprob : IsProbabilityMeasure (volume.restrict (Set.Ioc (0:ℝ) 1)) := by
+  have hprob : IsProbabilityMeasure (volume.restrict (Set.Ioc (0:ℝ) 1)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter, Real.volume_Ioc]
     norm_num
@@ -337,12 +336,12 @@ theorem tensorL2NormSq_pathIntegralCoeffField_le_intervalIntegral_normSq
     ‖pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint‖ ^ 2 ≤
       ∫ t in (0 : ℝ)..1, ‖Φ t‖ ^ 2 := by
   classical
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  letI : MeasurableSpace ℝ := borel ℝ
-  haveI : BorelSpace ℝ := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace ℝ := borel ℝ
+  have : BorelSpace ℝ := ⟨rfl⟩
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g₀
   set Ξ := pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint with hΞ
   set F : ℝ → M → ℝ :=
@@ -374,11 +373,11 @@ theorem tensorL2NormSq_pathIntegralCoeffField_le_intervalIntegral_normSq
     isCompact_Icc.prod isCompact_univ
   obtain ⟨Cb, hCb⟩ := (hcompact.image_of_continuousOn hFcont.norm).bddAbove
   have huIoc : Set.uIoc (0:ℝ) 1 = Set.Ioc (0:ℝ) 1 := Set.uIoc_of_le (by norm_num)
-  haveI hfintime : IsFiniteMeasure (volume.restrict (Set.uIoc (0:ℝ) 1)) := by
+  have hfintime : IsFiniteMeasure (volume.restrict (Set.uIoc (0:ℝ) 1)) := by
     constructor
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter, huIoc, Real.volume_Ioc]
     simp
-  haveI hfinprod : IsFiniteMeasure ((volume.restrict (Set.uIoc (0:ℝ) 1)).prod μ) :=
+  have hfinprod : IsFiniteMeasure ((volume.restrict (Set.uIoc (0:ℝ) 1)).prod μ) :=
     inferInstance
   have hprod_eq :
       (volume.restrict (Set.uIoc (0:ℝ) 1)).prod μ
@@ -498,7 +497,7 @@ theorem iteratedCovGrad_pathIntegralCoeffField_jetL2_le
         ∫ t in (0 : ℝ)..1, ‖iteratedCovGrad g₀ r sIdx i (Φ t)‖ ^ 2) =
       ∫ t in (0 : ℝ)..1,
         ∑ i ∈ Finset.range (a+1), ‖iteratedCovGrad g₀ r sIdx i (Φ t)‖ ^ 2 :=
-    (intervalIntegral.integral_finset_sum (s := Finset.range (a+1)) hii).symm
+    (intervalIntegral.integral_finsetSum (s := Finset.range (a+1)) hii).symm
   have hintsumle :
       (∫ t in (0 : ℝ)..1,
         ∑ i ∈ Finset.range (a+1), ‖iteratedCovGrad g₀ r sIdx i (Φ t)‖ ^ 2) ≤

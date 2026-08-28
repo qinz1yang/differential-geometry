@@ -149,8 +149,8 @@ theorem lieDerivMetric_pairing_contMDiff
                   (chartFrameVec (I := I) b₀ i b)
                   (chartFrameVec (I := I) b₀ j b))
         (chartAt H b₀).source := by
-    refine contMDiffOn_finset_sum (fun i _ => ?_)
-    exact contMDiffOn_finset_sum (fun j _ => h_summand_smooth i j)
+    refine contMDiffOn_finsetSum (fun i _ => ?_)
+    exact contMDiffOn_finsetSum (fun j _ => h_summand_smooth i j)
   have h_pair_on_chart :
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞
         (fun b : M => lieDerivMetric (I := I) g W b (Y b) (Z b))

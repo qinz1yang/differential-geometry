@@ -406,7 +406,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
               deGiorgiEnergySeq u (0 : E) lamStar n ^ (1 + 2 / (d : ℝ))) := by
   let hu1 : MemW1pWitness 2 u (Metric.ball (0 : E) 1) :=
     DeGiorgi.MemW1p.someWitness (isSubsolution_memW1p hsub)
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   have happroxUnit :
@@ -469,6 +469,8 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     have hStarInt1 :
         IntegrableOn (fun x => |positivePartSub u lamStar x| ^ 2)
           (Metric.ball (0 : E) 1) volume := by
+      change Integrable (fun x => |positivePartSub u lamStar x| ^ 2)
+        (volume.restrict (Metric.ball (0 : E) 1))
       simpa [pow_two] using hwStar1.memLp.integrable_sq
     exact hStarInt1.mono_set (Metric.ball_subset_ball (by norm_num : (1 / 2 : ℝ) ≤ 1))
   have hAint :
@@ -483,6 +485,8 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     have hθInt1 :
         IntegrableOn (fun x => |positivePartSub u θ x| ^ 2)
           (Metric.ball (0 : E) 1) volume := by
+      change Integrable (fun x => |positivePartSub u θ x| ^ 2)
+        (volume.restrict (Metric.ball (0 : E) 1))
       simpa [θ, pow_two] using hwθ1.memLp.integrable_sq
     exact hθInt1.mono_set (Metric.ball_subset_ball (le_of_lt (deGiorgiRadius_lt_one n)))
   have hpre :
@@ -560,7 +564,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
                 (fun x =>
                   (fderiv ℝ (ψ m) x) (EuclideanSpace.single i 1) - hu1.weakGrad x i)
                 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
-          simpa [huS] using
+          simpa [huS, MemW1pWitness.restrict] using
             (eLpNorm_mono_measure
               (fun x =>
                 (fderiv ℝ (ψ m) x) (EuclideanSpace.single i 1) - hu1.weakGrad x i)
@@ -753,7 +757,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
       exact mul_nonneg
         (mul_nonneg (by norm_num) (add_nonneg A.ellipticityRatio_nonneg zero_le_one))
         (sq_nonneg Cη)
-    haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) s)) := by
+    have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) s)) := by
       rw [isFiniteMeasure_restrict]
       exact measure_ball_lt_top.ne
     have hpre_raw :

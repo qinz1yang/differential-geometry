@@ -27,7 +27,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -273,7 +272,7 @@ theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_l2JetWindow
     rw [MeasureTheory.integral_const_mul]
     refine le_trans (mul_le_mul_of_nonneg_left hWbound (hC_nn i)) (le_of_eq ?_)
     ring
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))‖ = 0 :=
@@ -395,7 +394,7 @@ theorem exists_ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_ba
     refine le_trans key ?_
     rw [MeasureTheory.integral_const_mul]
     refine le_trans (mul_le_mul_of_nonneg_left hWbound (hC_nn i)) (le_of_eq (by ring))
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -435,6 +434,7 @@ private lemma bdPairCell_le_boundedWindow (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b
   refine le_trans hle ?_
   exact Combinatorics.boundedFactorGrid_le_boundedFactorGridWindow b hb (by omega)
 
+omit [SigmaCompactSpace M] in
 private lemma sharpGradKoszulRaw_gridWindow (g₀ : SmoothRiemannianMetric I M) :
     ∃ CZ : ℕ → ℝ, (∀ w, 0 ≤ CZ w) ∧
       ∀ (τ : Equiv.Perm (Fin 6)) (T : SmoothCcTensor g₀ 0 2) (w K : ℕ), w + 1 ≤ K →
@@ -1176,7 +1176,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_l2Jet
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau4 T T)))))‖,
       sq_abs ((2 : ℝ) * (s * s)),
       mul_nonneg (hC_nn i) (mul_nonneg (hKflat_nn i) hwin_nn)]
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))‖ = 0 :=
@@ -1765,7 +1765,7 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_l2JetWindo
             (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
               palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))))‖,
       sq_abs ((-(1 / 2) : ℝ) * s)]
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))‖ = 0 :=

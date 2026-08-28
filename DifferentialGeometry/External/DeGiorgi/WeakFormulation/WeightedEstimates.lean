@@ -204,8 +204,13 @@ private theorem memLp_abs_mul_norm_matMulE
     rw [Real.norm_of_nonneg (mul_nonneg (abs_nonneg _) (norm_nonneg _))]
     have h2 : ENNReal.toReal 2 = (2 : ℝ) := by norm_num
     rw [h2, show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, Real.rpow_natCast, mul_pow, sq_abs]
-  -- Use convert to handle MeasurableSpace instance diamond
-  convert (integrable_norm_rpow_iff hg_meas two_ne_zero ENNReal.ofNat_ne_top).mp hint'
+  have hg_meas' : AEStronglyMeasurable
+      (fun x => |f x| * ‖matMulE (A.a x) (hu.weakGrad x)‖) (volume.restrict Ω) := by
+    refine hg_meas.congr (Filter.Eventually.of_forall fun x => ?_)
+    change |f x| * ‖matMulE (A.a x) (hu.weakGrad x)‖ =
+      |f x| * ‖matMulE (A.a x) (hu.weakGrad x)‖
+    rfl
+  exact (integrable_norm_rpow_iff hg_meas' two_ne_zero ENNReal.ofNat_ne_top).mp hint'
 
 /-- Weighted Cauchy-Schwarz inequality for the bilinear form.
 

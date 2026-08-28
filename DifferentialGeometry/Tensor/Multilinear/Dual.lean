@@ -48,12 +48,12 @@ noncomputable def dualMultilinearLinearMap (r : ℕ) :
   map_add' φ ψ := by
     ext α
     simp only [ContinuousLinearMap.compContinuousMultilinearMap_coe,
-      ContinuousLinearMap.add_apply, ContinuousMultilinearMap.add_apply,
+      add_apply, add_apply,
       Function.comp_apply]
   map_smul' c φ := by
     ext α
     simp only [ContinuousLinearMap.compContinuousMultilinearMap_coe,
-      ContinuousLinearMap.smul_apply, ContinuousMultilinearMap.smul_apply,
+      smul_apply, smul_apply,
       Function.comp_apply, RingHom.id_apply]
 
 variable {𝕜 F}
@@ -101,7 +101,7 @@ private theorem dualMultilinearInverseAux_basisElem (r : ℕ)
         (continuousMultilinearMap_basisElem (𝕜 := 𝕜) (F := F) (Module.finBasis 𝕜 F) r σ) =
       Ψ (fun i =>
         LinearMap.toContinuousLinearMap ((Module.finBasis 𝕜 F).coord (σ i))) := by
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional r
   let b := Module.finBasis 𝕜 F
   let bMLF := continuousMultilinearMap_basis (𝕜 := 𝕜) (F := F) b r
@@ -122,7 +122,7 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
     ((ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) →L[𝕜] 𝕜) where
   toFun := dualMultilinearInverseAux 𝕜 F r
   map_add' Ψ₁ Ψ₂ := by
-    haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+    have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
       continuousMultilinearMap_finiteDimensional r
     apply ContinuousLinearMap.ext
     intro x
@@ -137,7 +137,7 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
           continuousMultilinearMap_basisElem b r σ :=
         congr_fun (Module.Basis.coe_mk
           (continuousMultilinearMap_basisElem_linearIndependent b r) _) σ
-      rw [hb_eq, ContinuousLinearMap.add_apply,
+      rw [hb_eq, add_apply,
         dualMultilinearInverseAux_basisElem,
         dualMultilinearInverseAux_basisElem,
         dualMultilinearInverseAux_basisElem]
@@ -151,7 +151,7 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
       exact congrFun (congrArg DFunLike.coe this) x
     exact hLHS x
   map_smul' c Ψ := by
-    haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+    have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
       continuousMultilinearMap_finiteDimensional r
     apply ContinuousLinearMap.ext
     intro x
@@ -165,7 +165,7 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
           continuousMultilinearMap_basisElem b r σ :=
         congr_fun (Module.Basis.coe_mk
           (continuousMultilinearMap_basisElem_linearIndependent b r) _) σ
-      rw [hb_eq, ContinuousLinearMap.smul_apply,
+      rw [hb_eq, smul_apply,
         dualMultilinearInverseAux_basisElem,
         dualMultilinearInverseAux_basisElem]
       rfl
@@ -193,7 +193,7 @@ variable (𝕜 F)
 theorem dualMultilinearInverseMap_dualMultilinearLinearMap (r : ℕ) :
     (dualMultilinearInverseMap 𝕜 F r).comp (dualMultilinearLinearMap 𝕜 F r) =
       LinearMap.id := by
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional r
   apply LinearMap.ext
   intro φ
@@ -230,7 +230,7 @@ theorem dualMultilinearInverseMap_dualMultilinearLinearMap (r : ℕ) :
 theorem dualMultilinearLinearMap_dualMultilinearInverseMap (r : ℕ) :
     (dualMultilinearLinearMap 𝕜 F r).comp (dualMultilinearInverseMap 𝕜 F r) =
       LinearMap.id := by
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional r
   apply LinearMap.ext
   intro Ψ
@@ -270,7 +270,7 @@ theorem dualMultilinearLinearMap_dualMultilinearInverseMap (r : ℕ) :
 noncomputable def dualMultilinearEquivMultilinearOfDual (r : ℕ) :
     ((ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) →L[𝕜] 𝕜) ≃ₗ[𝕜]
     ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 :=
-  LinearEquiv.ofLinear
+  LinearEquiv.ofLinearMap
     (dualMultilinearLinearMap 𝕜 F r)
     (dualMultilinearInverseMap 𝕜 F r)
     (dualMultilinearLinearMap_dualMultilinearInverseMap 𝕜 F r)
@@ -303,7 +303,6 @@ theorem dualMultilinearLinearEquivAt_apply (r : ℕ) (x : B)
 
 end Bundle.continuousMultilinearMap
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set ContinuousLinearMap
 
@@ -422,7 +421,7 @@ theorem dualBundle_triv_symmL_eq_comp (x₀ x : B)
     rw [hom_trivializationAt_baseSet]
     exact ⟨hx, by simp [trivializationAt, FiberBundle.trivializationAt']⟩
   have hsymmL : (e.symmL 𝕜 x ζ : Bundle.dual 𝕜 E x) = e.symm x ζ := by
-    simp [Trivialization.symmL_apply]
+    exact Trivialization.symmL_apply e hbase ζ
   rw [hsymmL]
   have h_rt : (e ⟨x, e.symm x ζ⟩ : B × _) = (x, ζ) := e.apply_mk_symm hbase ζ
   have h_snd : (e ⟨x, e.symm x ζ⟩ : B × _).2 = ζ := congrArg Prod.snd h_rt
@@ -444,12 +443,13 @@ theorem dualBundle_triv_symmL_eq_comp (x₀ x : B)
     (trivializationAt 𝕜 (Trivial B 𝕜) x₀) x hxTriv) _ = _ from h_triv _]
   conv_lhs => rw [show v = ((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).symm
     ((trivializationAt F E x₀).continuousLinearMapAt 𝕜 x v) from
-    ((trivializationAt F E x₀).symmL_continuousLinearMapAt hx v).symm]
+    by
+      rw [← (trivializationAt F E x₀).coe_continuousLinearEquivAt_eq' hx]
+      exact (((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).symm_apply_apply v).symm]
   exact h_fwd.symm
 
 end Bundle.continuousMultilinearMap
 
-set_option backward.isDefEq.respectTransparency false
 
 
 
@@ -591,7 +591,7 @@ theorem dualLiftFiber_triv_eq {r : ℕ} (x₀ x : B)
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x) x₀
         ⟨x, a⟩).2) := by
-  haveI : FiniteDimensional 𝕜 (E x) := VectorBundle.finiteDimensional 𝕜 F E x
+  have : FiniteDimensional 𝕜 (E x) := VectorBundle.finiteDimensional 𝕜 F E x
   apply (ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual
     (𝕜 := 𝕜) (F := F) r).injective
   rw [show (ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual (𝕜 := 𝕜) (F := F) r)
@@ -627,6 +627,7 @@ theorem dualLiftFiber_triv_eq {r : ℕ} (x₀ x : B)
         (trivializationAt 𝕜 (Trivial B 𝕜) x₀) x hxTriv : 𝕜 →L[𝕜] 𝕜) : 𝕜 → 𝕜) z = z := by
     intro z; rfl
   rw [h_cle_triv]
+  rw [Trivialization.symm_continuousLinearEquivAt_eq']
   change (Bundle.continuousMultilinearMap.dualLiftFiber (F := F) r x a)
     ((trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜)
       (Bundle.continuousMultilinearMap 𝕜 r F E) x₀).symmL 𝕜 x
@@ -696,7 +697,7 @@ noncomputable def Bundle.continuousMultilinearMap.modelDualFwdCLM (𝕜 : Type*)
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜) := inferInstance
   haveI : FiniteDimensional 𝕜
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜) := by
-    haveI : FiniteDimensional 𝕜
+    have : FiniteDimensional 𝕜
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
       continuousMultilinearMap_finiteDimensional (𝕜 := 𝕜) (F := F →L[𝕜] 𝕜) r
     exact (ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual
@@ -793,7 +794,7 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r
               (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x))) := by
   let _ := hE
-  letI := dualBundleSmoothVectorBundle (𝕜 := 𝕜) (B := B) (F := F) (E := E) IB n r
+  let := dualBundleSmoothVectorBundle (𝕜 := 𝕜) (B := B) (F := F) (E := E) IB n r
   intro p₀
   rw [contMDiffAt_totalSpace]
   refine ⟨?_, ?_⟩
@@ -833,9 +834,9 @@ theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜] 𝕜))) := by
   let _ := hE
-  haveI : ContMDiffVectorBundle n (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) IB :=
+  have : ContMDiffVectorBundle n (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) IB :=
     ContMDiffVectorBundle.continuousLinearMap
-  haveI : ContMDiffVectorBundle n
+  have : ContMDiffVectorBundle n
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
       (Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E)) IB :=
     SmoothVectorBundle.continuousMultilinearMap

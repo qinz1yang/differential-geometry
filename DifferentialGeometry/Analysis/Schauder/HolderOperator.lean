@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Schauder.Interpolation
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Topology.ContinuousMap.Bounded.Normed
 
+
 noncomputable section
 
 open Set
@@ -27,7 +28,7 @@ theorem eSupNormOn_comp_continuousLinearMap_le
     ENNReal.ofReal ‖L (f x)‖ ≤ ENNReal.ofReal (‖L‖ * ‖f x‖) :=
       ENNReal.ofReal_le_ofReal (L.le_opNorm (f x))
     _ = (‖L‖₊ : ENNReal) * ENNReal.ofReal ‖f x‖ := by
-      rw [ENNReal.ofReal_mul (norm_nonneg L), ofReal_norm_eq_enorm,
+      rw [ENNReal.ofReal_mul (norm_nonneg L), ofReal_norm,
         enorm_eq_nnnorm]
     _ ≤ (‖L‖₊ : ENNReal) * eSupNormOn Set.univ f :=
       mul_le_mul_right
@@ -42,6 +43,7 @@ theorem eHolderNorm_comp_continuousLinearMap_le
   calc
     eHolderNorm alpha (fun x ↦ L (f x)) ≤
         ((‖L‖₊ * nnHolderNorm alpha f : NNReal) : ENNReal) := by
+      change eHolderNorm alpha (⇑L ∘ f) ≤ _
       simpa only [Function.comp_apply, NNReal.coe_one, NNReal.rpow_one,
         mul_one, one_mul] using hcomp.eHolderNorm_le
     _ = (‖L‖₊ : ENNReal) * (nnHolderNorm alpha f : ENNReal) := by
@@ -91,7 +93,12 @@ private theorem norm_boundedHolderSpaceMapLinearMap_le
   have hreal := ENNReal.toReal_mono
     (ENNReal.mul_ne_top ENNReal.coe_ne_top f.2)
     (eHolderGauge_comp_continuousLinearMap_le L f.2)
-  simpa only [ENNReal.toReal_mul, ofReal_norm_eq_enorm, enorm_eq_nnnorm]
+  change (eHolderGauge alpha (fun x => L (boundedHolderSpaceFun f x))).toReal ≤
+    ((‖L‖₊ : ENNReal) * eHolderGauge alpha (boundedHolderSpaceFun f)).toReal at hreal
+  change (eHolderGauge alpha (fun x => L (f x))).toReal ≤
+    ‖L‖ * (eHolderGauge alpha (fun x => f x)).toReal
+  simpa only [ENNReal.toReal_mul, ENNReal.coe_toReal, coe_nnnorm,
+    ofReal_norm, enorm_eq_nnnorm]
     using hreal
 
 def boundedHolderSpaceMap (alpha : NNReal) (L : F →L[Real] G) :
@@ -351,8 +358,11 @@ theorem contDiffHolderSpaceFDeriv_hasFDerivAt
     intro y
     exact (f.2.1.1 y (Set.mem_univ y)).of_le (by exact_mod_cast hk)
   have hfd : ContDiff Real 1 (fderiv Real (contDiffHolderSpaceFun f)) := by
+    have hf' : ContDiff Real ((1 : WithTop ℕ∞) + 1) (contDiffHolderSpaceFun f) := by
+      convert hf using 1
+      norm_num
     exact ((contDiff_succ_iff_fderiv (n := 1)).mp
-      (by simpa using hf)).2.2
+      hf').2.2
   have heq :
       (contDiffHolderSpaceFDeriv k alpha ((by omega : 1 ≤ 2).trans hk) f :
         V → V →L[Real] F) = fderiv Real (contDiffHolderSpaceFun f) := by
@@ -426,8 +436,12 @@ private theorem norm_contDiffHolderSpaceValueHolderLinearMap_le
   rw [norm_boundedHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top
     (eHolderGauge_contDiffHolderSpaceFun_le hk halpha f)
-  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul,
-    ENNReal.coe_toReal, norm_contDiffHolderSpace_eq] using hreal
+  change (eHolderGauge alpha (contDiffHolderSpaceFun f)).toReal ≤
+    3 * (eContDiffHolderGaugeOn k alpha Set.univ (contDiffHolderSpaceFun f)).toReal
+  simp only [ENNReal.coe_mul, ENNReal.toReal_mul,
+    ENNReal.coe_toReal, coe_nnnorm, norm_contDiffHolderSpace_eq] at hreal
+  norm_num at hreal
+  exact hreal
 
 def contDiffHolderSpaceValueHolder
     (k : Nat) (alpha : NNReal) (hk : 1 ≤ k) (halpha : alpha ≤ 1) :
@@ -539,8 +553,13 @@ private theorem norm_contDiffHolderSpaceFDerivHolderLinearMap_le
   rw [norm_boundedHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top
     (eHolderGauge_contDiffHolderSpaceFDeriv_le hk halpha f)
-  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul,
-    ENNReal.coe_toReal, norm_contDiffHolderSpace_eq] using hreal
+  change (eHolderGauge alpha (contDiffHolderSpaceFDeriv k alpha
+    ((by omega : 1 ≤ 2).trans hk) f)).toReal ≤
+      3 * (eContDiffHolderGaugeOn k alpha Set.univ (contDiffHolderSpaceFun f)).toReal
+  simp only [ENNReal.coe_mul, ENNReal.toReal_mul,
+    ENNReal.coe_toReal, coe_nnnorm, norm_contDiffHolderSpace_eq] at hreal
+  norm_num at hreal
+  exact hreal
 
 def contDiffHolderSpaceFDerivHolder
     (k : Nat) (alpha : NNReal) (hk : 2 ≤ k) (halpha : alpha ≤ 1) :
@@ -575,10 +594,10 @@ variable {X F : Type*} [MetricSpace X]
 
 theorem eHolderNorm_le_eHolderSeminormOn_univ
     {alpha : NNReal} {f : X → F}
-    (hf : MemHolder alpha (Set.univ.restrict f)) :
+    (hf : MemHolder alpha (Set.univ.domRestrict f)) :
     eHolderNorm alpha f ≤ eHolderSeminormOn alpha Set.univ f := by
   have hglobal : HolderWith
-      (nnHolderNorm alpha (Set.univ.restrict f)) alpha f := by
+      (nnHolderNorm alpha (Set.univ.domRestrict f)) alpha f := by
     intro x y
     exact hf.holderWith ⟨x, Set.mem_univ x⟩ ⟨y, Set.mem_univ y⟩
   exact hglobal.eHolderNorm_le.trans coe_nnHolderNorm_le_eHolderNorm
@@ -603,7 +622,7 @@ theorem eHolderGauge_iteratedFDeriv_le
         eSupNormOn Set.univ
           (iteratedFDeriv Real j (contDiffHolderSpaceFun f)) :=
     Finset.single_le_sum
-      (fun j _ ↦ zero_le (eSupNormOn Set.univ
+      (fun j _ ↦ (bot_le : (0 : ENNReal) ≤ eSupNormOn Set.univ
         (iteratedFDeriv Real j (contDiffHolderSpaceFun f))))
       (Finset.mem_range.mpr (Nat.lt_succ_self k))
   have hholder : eHolderNorm alpha
@@ -696,9 +715,9 @@ theorem eHolderGauge_parabolicSpatialHessian_le
         eSupNormOn Set.univ
           (parabolicSpatialJet j (parabolicC2HolderSpaceFun u)) :=
     Finset.single_le_sum
-      (fun j _ ↦ zero_le (eSupNormOn Set.univ
+      (fun j _ ↦ (bot_le : (0 : ENNReal) ≤ eSupNormOn Set.univ
         (parabolicSpatialJet j (parabolicC2HolderSpaceFun u))))
-      (Finset.mem_range.mpr (by omega))
+      (Finset.mem_range.mpr (show 2 < 3 by norm_num))
   have hholder : eHolderNorm alpha
       (parabolicSpatialJet 2 (parabolicC2HolderSpaceFun u)) ≤
       eHolderSeminormOn alpha Set.univ
@@ -912,7 +931,7 @@ theorem eHolderGauge_parabolicC2HolderSpaceValue_le
   have hgauge : eParabolicC2HolderGaugeOn alpha Set.univ
       (parabolicC2HolderSpaceFun u) ≤ (‖u‖₊ : ENNReal) := by
     rw [eParabolicC2HolderGaugeOn_eq_ofReal_norm]
-    simp only [ofReal_norm_eq_enorm, enorm_eq_nnnorm]
+    simp only [ofReal_norm, enorm_eq_nnnorm]
     exact le_rfl
   have hsup : eSupNormOn Set.univ
       (fun p : ParabolicPoint V ↦ u p.time p.space) ≤
@@ -957,8 +976,10 @@ private theorem norm_parabolicC2HolderSpaceValueLinearMap_le
   rw [norm_boundedHolderSpace_eq, norm_parabolicC2HolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top
     (eHolderGauge_parabolicC2HolderSpaceValue_le halpha u)
-  simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofNat,
-    ENNReal.coe_toReal] using hreal
+  simp only [ENNReal.coe_mul, ENNReal.toReal_mul,
+    ENNReal.coe_toReal, coe_nnnorm, norm_parabolicC2HolderSpace_eq] at hreal
+  norm_num at hreal
+  exact hreal
 
 def parabolicC2HolderSpaceValue
     (alpha : NNReal) (halpha : alpha ≤ 1) :
@@ -991,7 +1012,7 @@ theorem eHolderGauge_parabolicSpatialJet_one_le
   have hgauge : eParabolicC2HolderGaugeOn alpha Set.univ
       (parabolicC2HolderSpaceFun u) ≤ (‖u‖₊ : ENNReal) := by
     rw [eParabolicC2HolderGaugeOn_eq_ofReal_norm]
-    simp only [ofReal_norm_eq_enorm, enorm_eq_nnnorm]
+    simp only [ofReal_norm, enorm_eq_nnnorm]
     exact le_rfl
   have hsup : eSupNormOn Set.univ
       (parabolicSpatialJet 1 (parabolicC2HolderSpaceFun u)) ≤
@@ -1037,11 +1058,16 @@ private theorem norm_parabolicC2HolderSpaceSpatialJetOneLinearMap_le
     (u : ParabolicC2HolderSpace (V := V) (F := F) alpha) :
     ‖parabolicC2HolderSpaceSpatialJetOneLinearMap alpha halpha u‖ ≤
       6 * ‖u‖ := by
-  rw [norm_boundedHolderSpace_eq, norm_parabolicC2HolderSpace_eq]
+  change (eHolderGauge alpha
+    (parabolicSpatialJet 1 (parabolicC2HolderSpaceFun u))).toReal ≤
+      6 * (eParabolicC2HolderGaugeOn alpha Set.univ
+        (parabolicC2HolderSpaceFun u)).toReal
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top
     (eHolderGauge_parabolicSpatialJet_one_le halpha u)
-  simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofNat,
-    ENNReal.coe_toReal] using hreal
+  simp only [ENNReal.coe_mul, ENNReal.toReal_mul,
+    ENNReal.coe_toReal, coe_nnnorm, norm_parabolicC2HolderSpace_eq] at hreal
+  norm_num at hreal
+  exact hreal
 
 private def parabolicC2HolderSpaceSpatialJetOne
     (alpha : NNReal) (halpha : alpha ≤ 1) :
@@ -1081,6 +1107,10 @@ theorem norm_parabolicC2HolderSpaceSpatialGradient_le
       (V := V) (F := F) alpha halpha‖ ≤ 6 := by
   let L :=
     (continuousMultilinearCurryFin1 Real V F).toLinearIsometry.toContinuousLinearMap
+  have hjet :
+      ‖parabolicC2HolderSpaceSpatialJetOne (V := V) (F := F) alpha halpha‖ ≤ 6 :=
+    ContinuousLinearMap.opNorm_le_bound _ (by norm_num)
+      (fun u => norm_parabolicC2HolderSpaceSpatialJetOneLinearMap_le halpha u)
   calc
     ‖parabolicC2HolderSpaceSpatialGradient
         (V := V) (F := F) alpha halpha‖ ≤
@@ -1091,8 +1121,7 @@ theorem norm_parabolicC2HolderSpaceSpatialGradient_le
     _ ≤ 1 * 6 := mul_le_mul
       ((norm_boundedHolderSpaceMap_le alpha L).trans
         (continuousMultilinearCurryFin1 Real V F).toLinearIsometry.norm_toContinuousLinearMap_le)
-      (LinearMap.mkContinuous_norm_le _ (by norm_num)
-        (norm_parabolicC2HolderSpaceSpatialJetOneLinearMap_le halpha))
+      hjet
       (norm_nonneg _) zero_le_one
     _ = 6 := by norm_num
 

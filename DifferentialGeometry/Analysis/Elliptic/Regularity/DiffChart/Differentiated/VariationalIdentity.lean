@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.Residual
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CrossTermIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -425,7 +426,7 @@ private lemma weightedInvGram_ibp_double_sum
   have hvolK_finite' : (volume.restrict K : Measure EuclN) Set.univ < (⊤ : ℝ≥0∞) := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hvolK_finite
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
   have hψ_cont : Continuous ψ := hψ_smooth.continuous
   have hψl_smooth : ContDiff ℝ (⊤ : ℕ∞) ψl :=
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth l
@@ -573,11 +574,11 @@ private lemma weightedInvGram_ibp_double_sum
             ∑ j : Fin (Module.finrank ℝ E),
               ∫ y in Ω, F i j y ∂(volume : Measure EuclN) := by
     intro F hF_int
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => hF_int i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => hF_int i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => hF_int i j)]
+    rw [integral_finsetSum _ (fun j _ => hF_int i j)]
   have hLHS_sum_swap := sum_swap (F := fun i j y => A i j y * v i y *
     (fderiv ℝ ψl y) (EuclideanSpace.single j 1)) h_int_LHS_pair
   have hRHS1_sum_swap := sum_swap (F := fun i j y => dA i j y * v i y *
@@ -845,10 +846,9 @@ private lemma density_f_chart_ibp
     have h_global :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
         h_base_f_chart_memW1p l'
-    have h_unfold : (fun l' => chosenFChartDeriv (I := I) (M := M) g α hu_h l') l' =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l' D_base.f_chart Ω := rfl
-    rw [h_unfold]
+    change MemLp
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (d := Module.finrank ℝ E) 2 l' D_base.f_chart Ω) 2 (volume.restrict K')
     have h_K'_meas : MeasurableSet K' := hK'_compact.isClosed.measurableSet
     have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K' =
         (volume : Measure EuclN).restrict K' := by

@@ -254,7 +254,8 @@ theorem shuffleLeftBwd_restrictComplement
   have h_round : (Equiv.removeNone
       (Equiv.permCongr finSuccSumOptionEquiv σ)).optionCongr =
       Equiv.permCongr finSuccSumOptionEquiv σ := by
-    rw [map_equiv_removeNone, h_fixes_none]; simp
+    rw [map_equiv_removeNone, h_fixes_none]
+    rw [Equiv.swap_self, ← Equiv.Perm.one_def, one_mul]
   ext x; simp [Equiv.permCongr_apply, h_round]
 
 noncomputable def liftPermSucc (τ : Equiv.Perm (Fin m)) :
@@ -744,9 +745,6 @@ theorem shuffleRightBwd_wd
   refine ⟨(tl, liftPermSuccR tr), ?_⟩
   simp only [Equiv.Perm.sumCongrHom_apply]
   ext x
-  change Equiv.Perm.sumCongr tl (liftPermSuccR tr) x =
-    finSumSuccOptionEquiv.symm.permCongr
-      (Equiv.Perm.sumCongr tl tr).optionCongr x
   rw [Equiv.permCongr_apply]
   cases x with
   | inl a =>
@@ -836,7 +834,8 @@ theorem shuffleRightBwd_restrictComplementRight
   have h_round : (Equiv.removeNone
       (Equiv.permCongr finSumSuccOptionEquiv σ)).optionCongr =
       Equiv.permCongr finSumSuccOptionEquiv σ := by
-    rw [map_equiv_removeNone, h_fixes_none]; simp
+    rw [map_equiv_removeNone, h_fixes_none]
+    rw [Equiv.swap_self, ← Equiv.Perm.one_def, one_mul]
   rw [h_round]
   have h_cancel : Equiv.permCongr finSumSuccOptionEquiv.symm
       (Equiv.permCongr finSumSuccOptionEquiv σ) = σ := by

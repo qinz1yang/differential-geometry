@@ -7,6 +7,8 @@ import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 import DifferentialGeometry.Geometry.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -69,29 +71,42 @@ omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma tangentCoordChange_tangent_eq_triv
     (α : M) (q : TangentBundle I M)
     (hq : q.proj ∈ (chartAt H α).source) (V : E × E) :
-    tangentCoordChange I.tangent q (⟨α, (0 : E)⟩ : TangentBundle I M) q V =
+    tangentCoordChange I.tangent q
+        (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) q V =
       (trivializationAt (E × E) (TangentSpace I.tangent)
-        (⟨α, (0 : E)⟩ : TangentBundle I M)).continuousLinearMapAt ℝ q V := by
-  rw [trivializationAt_tangent_continuousLinearMapAt_eq_core (I := I) α q hq]
-  rfl
+        (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).continuousLinearMapAt ℝ q
+          ((tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q).symm V) := by
+  have hcore :=
+    trivializationAt_tangent_continuousLinearMapAt_eq_core (I := I) α q hq
+  have h_at := DFunLike.congr_fun hcore
+    ((tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q).symm V)
+  change (trivializationAt (E × E) (TangentSpace I.tangent)
+      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).continuousLinearMapAt ℝ q
+        ((tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q).symm V) =
+    tangentCoordChange I.tangent q
+      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) q V at h_at
+  exact h_at.symm
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma tangentCoordChange_tangent_symm_apply
     (α : M) (q : TangentBundle I M)
     (hq : q.proj ∈ (chartAt H α).source) (v_fiber : E × E) :
-    tangentCoordChange I.tangent q (⟨α, (0 : E)⟩ : TangentBundle I M) q
-      ((trivializationAt (E × E) (TangentSpace I.tangent)
-        (⟨α, (0 : E)⟩ : TangentBundle I M)).symm q v_fiber) = v_fiber := by
+    tangentCoordChange I.tangent q
+        (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) q
+      (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q
+        ((trivializationAt (E × E) (TangentSpace I.tangent)
+          (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).symm q v_fiber)) = v_fiber := by
   classical
   have hq_base : q ∈ (trivializationAt (E × E) (TangentSpace I.tangent)
-      (⟨α, (0 : E)⟩ : TangentBundle I M)).baseSet := by
+      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]
     exact (mem_chartAt_modelProd_zero_source_iff (I := I) α q).mpr hq
   rw [tangentCoordChange_tangent_eq_triv (I := I) α q hq]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
   set e := trivializationAt (E × E) (TangentSpace I.tangent)
-    (⟨α, (0 : E)⟩ : TangentBundle I M)
+    (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)
   have hsymm : e.symm q v_fiber = e.symmL ℝ q v_fiber := by
-    rfl
+    exact (e.symmL_apply hq_base v_fiber).symm
   rw [hsymm]
   exact e.continuousLinearMapAt_symmL hq_base v_fiber
 
@@ -99,10 +114,24 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma tangentCoordChange_tangent_geodesicVF
     (g : SmoothRiemannianMetric I M) (α : M) (q : TangentBundle I M)
     (hq : q.proj ∈ (chartAt H α).source) :
-    tangentCoordChange I.tangent q (⟨α, (0 : E)⟩ : TangentBundle I M) q
-      (geodesicVectorFieldChart (I := I) g α q) =
+    tangentCoordChange I.tangent q
+        (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) q
+      (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q
+        (geodesicVectorFieldChart (I := I) g α q)) =
         geodesicVectorFieldChartFiber (I := I) g α q := by
   unfold geodesicVectorFieldChart
+  have hq_base : q ∈ (trivializationAt (E × E) (TangentSpace I.tangent)
+      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet]
+    exact (mem_chartAt_modelProd_zero_source_iff (I := I) α q).mpr hq
+  change tangentCoordChange I.tangent q
+      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) q
+      (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q
+        ((trivializationAt (E × E) (TangentSpace I.tangent)
+          (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).symmL ℝ q
+            (geodesicVectorFieldChartFiber (I := I) g α q))) =
+    geodesicVectorFieldChartFiber (I := I) g α q
+  rw [Trivialization.symmL_apply _ hq_base]
   exact tangentCoordChange_tangent_symm_apply (I := I) α q hq
     (geodesicVectorFieldChartFiber (I := I) g α q)
 

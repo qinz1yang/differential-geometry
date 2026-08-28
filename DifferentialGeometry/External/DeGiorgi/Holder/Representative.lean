@@ -24,7 +24,7 @@ theorem solution_integrableOn_unitBall
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} (hsol : IsSolution A.1 u) :
     IntegrableOn u (Metric.ball (0 : E) 1) volume := by
-  letI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  let : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     refine ⟨?_⟩
     simpa [Measure.restrict_apply, measurableSet_ball] using
       (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := (1 : ℝ)))

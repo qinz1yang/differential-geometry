@@ -18,6 +18,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFr
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -231,8 +233,8 @@ private lemma partialDeriv_chartInvGramOnE_continuous_of_hC2
     exact partialDeriv_chartInvGramOnE_eq (I := I) (g_DT t) α y m k l hy
   refine ContinuousOn.congr ?_ heq
   refine ContinuousOn.neg ?_
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) ?_
   · exact chartInvGramOnE_continuous_in_metric_at (I := I) g_DT α y s hentry hx k a
   · exact chartInvGramOnE_continuous_in_metric_at (I := I) g_DT α y s hentry hx b l
@@ -273,7 +275,7 @@ private lemma partialDeriv_chartChristoffel_continuous_of_hC2
     exact partialDeriv_chartChristoffel_eq (I := I) (g_DT t) α m i j k hy
   refine ContinuousOn.congr ?_ heq
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_sum _ (fun l _ => ?_)
+  refine continuousOn_finsetSum _ (fun l _ => ?_)
   refine ContinuousOn.add (ContinuousOn.mul ?_ ?_) (ContinuousOn.mul ?_ ?_)
   · exact partialDeriv_chartInvGramOnE_continuous_of_hC2
       (I := I) g_DT α m k l hy s hx h0 h1
@@ -318,7 +320,7 @@ private lemma chartRiemannTensor_continuous_of_hC2
       (I := I) g_DT α j i k r hy s hx h0 h1 h2
   · exact partialDeriv_chartChristoffel_continuous_of_hC2
       (I := I) g_DT α k i j r hy s hx h0 h1 h2
-  · refine continuousOn_finset_sum _ (fun n _ => ?_)
+  · refine continuousOn_finsetSum _ (fun n _ => ?_)
     have hΓ : ∀ a b c : Fin (Module.finrank ℝ E),
         ContinuousOn (fun t : ℝ => chartChristoffel (I := I) (g_DT t) α a b c y) s := by
       intro a b c
@@ -355,7 +357,7 @@ private lemma chartRicciTensor_continuous_of_hC2
           chartRiemannTensor (I := I) (g_DT t) α i j k j y := by
     funext t; rw [chartRicciTensor_def]
   rw [heq]
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   exact chartRiemannTensor_continuous_of_hC2 (I := I) g_DT α i j k j hy s hx h0 h1 h2
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
@@ -431,8 +433,8 @@ private lemma partialDeriv_chartDeTurckVFComp_continuous_of_hC2
     intro t _
     exact partialDeriv_chartDeTurckVFComp_eq (I := I) (g_DT t) g_bg α m k hy
   refine ContinuousOn.congr ?_ heq
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   refine ContinuousOn.add (ContinuousOn.mul ?_ ?_) (ContinuousOn.mul ?_ ?_)
   · exact partialDeriv_chartInvGramOnE_continuous_of_hC2 (I := I) g_DT α m a b hy s hx h0 h1
   · exact (hΓ a b k).sub continuousOn_const
@@ -494,9 +496,9 @@ private lemma chartLieDeTurckComp_continuous_of_hC2
     funext t; rw [chartLieDeTurckComp_def]
   rw [heq]
   refine ContinuousOn.add (ContinuousOn.add ?_ ?_) ?_
-  · exact continuousOn_finset_sum _ (fun k _ => (hVF k).mul (hgp k i j))
-  · exact continuousOn_finset_sum _ (fun k _ => (hgram k j).mul (hVFp i k))
-  · exact continuousOn_finset_sum _ (fun k _ => (hgram i k).mul (hVFp j k))
+  · exact continuousOn_finsetSum _ (fun k _ => (hVF k).mul (hgp k i j))
+  · exact continuousOn_finsetSum _ (fun k _ => (hgram k j).mul (hVFp i k))
+  · exact continuousOn_finsetSum _ (fun k _ => (hgram i k).mul (hVFp j k))
 
 end RicciContInMetricAux
 
@@ -578,9 +580,9 @@ private lemma jointDet_continuousOn
               chartGramOnE (I := I) (g_DT q.1) α (σ k) k (extChartAt I α q.2) := by
     funext q; rw [Matrix.det_apply]; simp [Units.smul_def]
   rw [hrewrite]
-  refine continuousOn_finset_sum _ (fun σ _ => ?_)
+  refine continuousOn_finsetSum _ (fun σ _ => ?_)
   refine ContinuousOn.mul continuousOn_const ?_
-  exact continuousOn_finset_prod _ (fun k _ => hentry (σ k) k)
+  exact continuousOn_finsetProd _ (fun k _ => hentry (σ k) k)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -602,9 +604,9 @@ private lemma jointAdjugate_continuousOn
                 (extChartAt I α q.2)).updateRow j (Pi.single i (1 : ℝ))) (σ k) k := by
     funext q; rw [Matrix.adjugate_apply, Matrix.det_apply]; simp [Units.smul_def]
   rw [hrewrite]
-  refine continuousOn_finset_sum _ (fun σ _ => ?_)
+  refine continuousOn_finsetSum _ (fun σ _ => ?_)
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_prod _ (fun k _ => ?_)
+  refine continuousOn_finsetProd _ (fun k _ => ?_)
   by_cases hσk : σ k = j
   · have heq : (fun q : ℝ × M =>
         ((Matrix.of fun a b => chartGramOnE (I := I) (g_DT q.1) α a b
@@ -750,8 +752,8 @@ private lemma jointInvGramPartial_continuousOn
       (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) (hgood q hq))
   refine ContinuousOn.congr ?_ heq
   refine ContinuousOn.neg ?_
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   exact ((jointInvGram_continuousOn g_DT α Sp hgood hentry k a).mul
     (jointInvGram_continuousOn g_DT α Sp hgood hentry b l)).mul
     (jointGramPartial_continuousOn g_DT α Sp h1 m a b)
@@ -788,7 +790,7 @@ private lemma jointChristoffel_continuousOn
     funext q; rw [chartChristoffel_def]
   rw [heq]
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_sum _ (fun l _ => ?_)
+  refine continuousOn_finsetSum _ (fun l _ => ?_)
   refine ContinuousOn.mul ?_ ?_
   · have hcongr : (fun q : ℝ × M => chartInvGramMatrix (I := I) (g_DT q.1) α
           ((extChartAt I α).symm (extChartAt I α q.2)) k l)
@@ -831,7 +833,7 @@ private lemma jointChristoffelPartial_continuousOn
       (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) (hgood q hq))
   refine ContinuousOn.congr ?_ heq
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_sum _ (fun l _ => ?_)
+  refine continuousOn_finsetSum _ (fun l _ => ?_)
   have hentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => chartGramOnE (I := I) (g_DT q.1) α a b
         (extChartAt I α q.2)) Sp :=
@@ -876,7 +878,7 @@ private lemma jointRiemann_continuousOn
   refine ContinuousOn.add (ContinuousOn.sub ?_ ?_) ?_
   · exact jointChristoffelPartial_continuousOn g_DT α Sp hgood h0 h1 h2 j i k r
   · exact jointChristoffelPartial_continuousOn g_DT α Sp hgood h0 h1 h2 k i j r
-  · refine continuousOn_finset_sum _ (fun n _ => ?_)
+  · refine continuousOn_finsetSum _ (fun n _ => ?_)
     have hΓ : ∀ a b c : Fin (Module.finrank ℝ E),
         ContinuousOn (fun q : ℝ × M => chartChristoffel (I := I) (g_DT q.1) α a b c
           (extChartAt I α q.2)) Sp :=
@@ -905,7 +907,7 @@ private lemma jointRicci_continuousOn
           chartRiemannTensor (I := I) (g_DT q.1) α i j k j (extChartAt I α q.2) := by
     funext q; rw [chartRicciTensor_def]
   rw [heq]
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   exact jointRiemann_continuousOn g_DT α Sp hgood h0 h1 h2 i j k j
 
 end RicciContJointAux
@@ -1044,9 +1046,9 @@ private lemma ricci_moving_chart_sum
   have hwy : wy = ∑ q : Fin (Module.finrank ℝ E), bw q • chartBasisVecFiber (I := I) α q y :=
     chartBasisVecFiber_recompose (I := I) α hbase wy
   conv_lhs => rw [hvy, hwy]
-  rw [map_sum (ricciTensor (I := I) g y), ContinuousLinearMap.sum_apply]
+  rw [map_sum (ricciTensor (I := I) g y), sum_apply]
   refine Finset.sum_congr rfl (fun p _ => ?_)
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
   rw [map_sum (ricciTensor (I := I) g y (chartBasisVecFiber (I := I) α p y)), Finset.mul_sum]
   refine Finset.sum_congr rfl (fun q _ => ?_)
   rw [map_smul, smul_eq_mul]
@@ -1337,8 +1339,8 @@ theorem ricci_continuous_in_metric_time
       ricciTensor (I := I) (g_DT t) x v w =
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr v) k *
-              ((chartModelBasis E).repr w) i *
+            ((centeredChartTangentBasis (I := I) x).repr v) k *
+              ((centeredChartTangentBasis (I := I) x).repr w) i *
               chartRicciTensor (I := I) (g_DT t) x i k (extChartAt I x x) := by
     intro t
     exact ricciTensor_eq_chartRicciSwap_of_basis_identity (I := I) (g_DT t) x
@@ -1346,12 +1348,12 @@ theorem ricci_continuous_in_metric_time
   rw [show (fun s : ℝ => ricciTensor (I := I) (g_DT s) x v w)
         = fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr v) k *
-                ((chartModelBasis E).repr w) i *
+              ((centeredChartTangentBasis (I := I) x).repr v) k *
+                ((centeredChartTangentBasis (I := I) x).repr w) i *
                 chartRicciTensor (I := I) (g_DT s) x i k (extChartAt I x x) from by
     funext s; exact hbridge s]
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
-  refine continuousOn_finset_sum _ (fun k _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun k _ => ?_)
   refine ContinuousOn.mul continuousOn_const ?_
   exact chartRicciTensor_continuous_of_hC2 (I := I) g_DT x i k hx_int (Set.Icc 0 T)
     hx_base h0 h1 h2
@@ -1439,7 +1441,7 @@ theorem chartScalar_jointContinuousOn [I.Boundaryless]
             (chartBasisVecFiber (I := I) α i q.2)
             (chartBasisVecFiber (I := I) α j q.2)) Sp).congr
     (fun q hq => metricScalar_chartTrace_eq (I := I) (g_DT q.1) α (hgood q hq))
-  refine continuousOn_finset_sum _ (fun i _ => continuousOn_finset_sum _ (fun j _ => ?_))
+  refine continuousOn_finsetSum _ (fun i _ => continuousOn_finsetSum _ (fun j _ => ?_))
   exact (RicciContJointAux.jointInvGram_continuousOn g_DT α Sp hgood
       (fun a b => RicciContJointAux.jointGram_continuousOn g_DT α Sp h0 a b) i j).mul
     (ricciChartFrameComp_jointContinuousOn (I := I) g_DT α Sp hgood h0 h1 h2 i j)
@@ -1491,8 +1493,8 @@ theorem lieDeriv_deTurckVF_continuous_in_metric_time
           (deTurckVF (I := I) (g_DT t) g_bg) x v w =
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr v) i *
-              ((chartModelBasis E).repr w) j *
+            ((centeredChartTangentBasis (I := I) x).repr v) i *
+              ((centeredChartTangentBasis (I := I) x).repr w) j *
               chartLieDeTurckComp (I := I) (g_DT t) g_bg x i j (extChartAt I x x) := by
     intro t
     rw [lieDerivMetric_apply]
@@ -1505,12 +1507,12 @@ theorem lieDeriv_deTurckVF_continuous_in_metric_time
           (deTurckVF (I := I) (g_DT s) g_bg) x v w)
         = fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr v) i *
-                ((chartModelBasis E).repr w) j *
+              ((centeredChartTangentBasis (I := I) x).repr v) i *
+                ((centeredChartTangentBasis (I := I) x).repr w) j *
                 chartLieDeTurckComp (I := I) (g_DT s) g_bg x i j (extChartAt I x x) from by
     funext s; exact hbridge s]
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine ContinuousOn.mul continuousOn_const ?_
   exact chartLieDeTurckComp_continuous_of_hC2 (I := I) g_DT g_bg x i j hx_int (Set.Icc 0 T)
     hx_base h0 h1 h2

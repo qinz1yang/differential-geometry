@@ -76,11 +76,11 @@ theorem gInf_pde
     letI : SigmaCompactSpace P.M := P.sigmaCompact
     HasDerivAt (fun s : Real => (co.gInf s).inner x v w)
       ((-2 : Real) * ricciTensor (I := I) (co.gInf t) x v w) t := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   have htOpen : t ∈ Set.Ioo a b := by
     simpa only [hD, RealTimeInterval.openInterval] using ht
   obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_nhds ht₀ htOpen

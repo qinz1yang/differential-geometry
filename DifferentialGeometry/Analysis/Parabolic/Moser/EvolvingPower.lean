@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingSobolev
 import DifferentialGeometry.Analysis.Parabolic.Moser.Power
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -90,10 +91,11 @@ theorem caccioppoli_evolving_positive_rpow_of_supersolution
         timeIntegral + (2 * q / (1 - q)) *
           evolvingCutoffGradientError
             (I := I) (M := M) g cutoff w t := by
-    simpa only [w, uq, huHalf, cutoff_t, timeIntegral,
+    simp only [w, uq, timeIntegral,
       evolvingLocalizedDirichletEnergy, localizedDirichletEnergy,
       evolvingCutoffGradientError, cutoffGradientError,
-      riemannianMeasureFamily_def] using hfixed
+      riemannianMeasureFamily_def] at hfixed ⊢
+    convert hfixed using 1 <;> congr 1
   have hmass_eq : mass =
       evolvingLocalizedIntegral (I := I) (M := M) g cutoff uq := by
     funext s
@@ -113,7 +115,7 @@ theorem caccioppoli_evolving_positive_rpow_of_supersolution
       (fun x : M => traceTimeDerivMetric (I := I) g t x) :=
     traceTimeDerivMetric_continuous (I := I) (M := M) hg
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -260,7 +262,9 @@ theorem weighted_caccioppoli_evolving_positive_rpow_of_supersolution
         (I := I) (M := M) g cutoff w t (hg.at_any t) hcutoff huHalf
       have hmass_at : HasDerivAt mass (deriv mass t) t := by
         simpa only [mass] using hraw.congr_deriv hraw.deriv.symm
-      simpa only [negMass] using hmass_at.neg.deriv
+      have hneg_at : HasDerivAt (fun s => -mass s) (-deriv mass t) t :=
+        hmass_at.neg.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
+      exact hneg_at.deriv
     rw [heq]
     exact hdmass_cont.neg
   have hdirichlet : ContinuousOn dirichlet (Icc a b) := by
@@ -290,7 +294,10 @@ theorem weighted_caccioppoli_evolving_positive_rpow_of_supersolution
       (I := I) (M := M) g cutoff u hu hpos hq_pos hq_one t B
         (hg.at_any t) hcutoff (htrace t ht) (hpde t ht)
     have hneg_deriv : deriv negMass t = -deriv mass t := by
-      simpa only [negMass] using (hmass_deriv t ht).neg.deriv
+      have hneg_at : HasDerivAt (fun s => -mass s) (-deriv mass t) t :=
+        (hmass_deriv t ht).neg.congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ => rfl)
+      exact hneg_at.deriv
     have hbase : deriv negMass t + c * dirichlet t ≤
         e * error t + v * mass t := by
       rw [hneg_deriv]

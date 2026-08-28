@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.PartialForcingFixedPoint
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocalNemytskii
 import Mathlib.Topology.UniformSpace.CompleteSeparated
+
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Geometry.Curvature
@@ -38,7 +40,11 @@ theorem dense_cont_on_balls
     rw [le_principal_iff]
     have hpre : ((↑) : D → X) ⁻¹' Metric.closedBall x₀ R ∈ l :=
       preimage_mem_comap hclosed
-    simpa only [S, Metric.mem_closedBall, Set.mem_setOf_eq] using hpre
+    have heq : ((↑) : D → X) ⁻¹' Metric.closedBall x₀ R = S := by
+      ext d
+      simp only [S, Set.mem_preimage, Metric.mem_closedBall, Set.mem_ofPred_eq]
+    rw [← heq]
+    exact hpre
   exact hl.map_of_le hK.uniformContinuousOn hlS
 
 theorem tame_lip_balls
@@ -164,7 +170,12 @@ theorem dense_tame_extend
       change dist (d : X) x₀ ≤ dist (d : X) x₀ + 1
       linarith
     apply (hK.continuousOn d hd).continuousAt
-    simpa only [Metric.mem_closedBall, Set.mem_setOf_eq] using hpre
+    have heq : ((↑) : D → X) ⁻¹' Metric.closedBall x₀ r =
+        {x : D | dist (x : X) x₀ ≤ r} := by
+      ext x
+      simp only [Set.mem_preimage, Metric.mem_closedBall, Set.mem_ofPred_eq]
+    rw [← heq]
+    exact hpre
   have hext_cont : Continuous (Dense.extend hD F) :=
     dense_cont_on_balls hD F x₀ hball
   have hext_eq : ∀ d : D, Dense.extend hD F (d : X) = F d := by
@@ -217,7 +228,7 @@ theorem dense_tame_extend
   have hmem : (u, v) ∈ {p | lhs p ≤ rhs p} := by
     rw [huniv]
     trivial
-  rw [Set.mem_setOf_eq, hlhs_def, hrhs_def] at hmem
+  rw [Set.mem_ofPred_eq, hlhs_def, hrhs_def] at hmem
   exact hmem
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -261,7 +272,11 @@ def nemytskiiTame (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 
   nemytskiiTameOn (zero_mem_lowerState (I := I) (M := M) g₀ a hR) hR
     (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith))
-    (fun u => by simpa only [lowerState, lowerBall] using u.property)
+    (fun u => by
+      have hu := u.property
+      change ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+        (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (u : _)‖ ≤ R at hu
+      exact hu)
     hcont hsingle f hf
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -293,11 +308,8 @@ theorem nemytskiiTame_coeFn (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : �
 
 private theorem l2_four
     {T : ℝ} {X Y Z W V : Type*}
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
-    [NormedAddCommGroup Z] [NormedSpace ℝ Z] [CompleteSpace Z]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V]
+    [NormedAddCommGroup X] [NormedAddCommGroup Y] [NormedAddCommGroup Z]
+    [NormedAddCommGroup W] [NormedAddCommGroup V]
     (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T)
     (r : timeL2 W T) (s : timeL2 V T) {A B C D : ℝ}
     (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C) (hD : 0 ≤ D)
@@ -407,8 +419,8 @@ private theorem l2_four
 
 private theorem memLp_tame
     {T R : ℝ} {X Y Z : Type*}
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y]
     [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     {S : Set X} (hzero : (0 : X) ∈ S) (hR : 0 ≤ R)
     (J : X →L[ℝ] Z) (hstate : ∀ u : S, ‖J (u : X)‖ ≤ R)
@@ -436,7 +448,8 @@ private theorem memLp_tame
     have hscaled : MemLp (K • fun t => ‖f t‖) 2 (timeMeasure T) := hnorm.const_smul K
     have hconst : MemLp (fun _ : ℝ => Q) 2 (timeMeasure T) := memLp_const Q
     have hadd := hscaled.add hconst
-    simpa only [major, Pi.add_apply, Pi.smul_apply, smul_eq_mul] using hadd
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ => by
+      simp only [major, Pi.add_apply, Pi.smul_apply, smul_eq_mul]) hadd
   refine hmajor.of_le hmeas ?_
   filter_upwards [hf] with t ht
   let u : S := ⟨f t, ht⟩
@@ -524,7 +537,10 @@ theorem partial_sol_tame
   let hz := zero_mem_lowerState (I := I) (M := M) g₀ a hR.le
   have hstateJ : ∀ u : lowerState (I := I) (M := M) g₀ a R, ‖J (u : _)‖ ≤ R := by
     intro u
-    simpa only [lowerState, lowerBall, J] using u.property
+    have hu := u.property
+    change ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2) ha12
+      (u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ ≤ R at hu
+    exact hu
   set ρ : ℝ := R / 4 with hρdef
   have hρ : 0 < ρ := by rw [hρdef]; positivity
   have h2ρR : 2 * ρ ≤ R := by rw [hρdef]; nlinarith [hR]
@@ -711,10 +727,9 @@ theorem partial_sol_tame
           ha12 (field F - field F'))
           =ᵐ[timeMeasure T]
         fun t => J ((field F - field F') t) := by
-      simpa only [J] using
-        (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
-          ha12).coeFn_compLpL
-          (p := 2) (μ := timeMeasure T) (field F - field F')
+      rw [timeL2Inclusion]
+      exact (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+        ha12).coeFn_compLpL (p := 2) (μ := timeMeasure T) (field F - field F')
     have hbound : ∀ᵐ t ∂(timeMeasure T),
         ‖(Ψ F - Ψ F') t‖ ≤
           (A : ℝ) * R * ‖(field F - field F') t‖ +

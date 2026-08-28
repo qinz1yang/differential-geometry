@@ -71,7 +71,7 @@ theorem chartTrivRepr_fderiv_eq
     funext (fun z => chartTrivRepr_eq_movingTriv_rawRepr (I := I) α X z)
   rw [hTeq]
   rw [fderiv_clm_apply hC hR]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+  rw [add_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply]
   rw [chartMovingTriv_basepoint (I := I) α (fderiv ℝ (chartRawRepr (I := I) α X) z₀ h)]
 

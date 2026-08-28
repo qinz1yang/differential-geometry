@@ -43,6 +43,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem ricciJetC_nonneg (i : ℕ) : 0 ≤ ricciJetC (E := E) i := by
   exact mul_nonneg (by norm_num) (pccJetC_nonneg (E := E) i)
 
+omit [SigmaCompactSpace M] in
 theorem pcc_riemannianFiberNormSq_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -59,6 +60,7 @@ theorem pcc_riemannianFiberNormSq_le
   simp only [pccJetC]
   ring
 
+omit [SigmaCompactSpace M] in
 theorem ricci_riemannianFiberNormSq_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -84,7 +86,6 @@ theorem ricci_riemannianFiberNormSq_le
       simp only [ricciJetC]
       ring
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem traceCoeff_sub_eq
@@ -102,12 +103,13 @@ theorem traceCoeff_sub_eq
     reindexCoeffGen_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoeffFibGen_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq,
-    ContinuousLinearMap.sub_apply, traceHessianFib, traceHessianFib,
+    sub_apply, traceHessianFib, traceHessianFib,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     domDomCongrFib_apply]
 
+omit [SigmaCompactSpace M] in
 theorem trace_riemannianFiberNormSq_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -125,6 +127,7 @@ theorem trace_riemannianFiberNormSq_le
   exact pcc_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ i x
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [CompactSpace M] in
 private theorem jetL2_of_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (A : SmoothCcTensor g 4 2)
     (B : SmoothCcTensor g 2 2) (C : ℝ) (i : ℕ)
@@ -142,7 +145,7 @@ private theorem jetL2_of_riemannianFiberNormSq
         riemannianFiberNormSq (I := I) (M := M) g 2 (2 + j) x
           ((iteratedCovGrad (I := I) g 2 2 j B).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 1))
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection
         (I := I) (M := M) g 2 (2 + j)
         (iteratedCovGrad (I := I) g 2 2 j B))).const_mul C
@@ -154,7 +157,7 @@ private theorem jetL2_of_riemannianFiberNormSq
   refine le_trans key (le_of_eq ?_)
   rw [MeasureTheory.integral_const_mul]
   congr 1
-  rw [MeasureTheory.integral_finset_sum (Finset.range (i + 1))
+  rw [MeasureTheory.integral_finsetSum (Finset.range (i + 1))
     (fun j _ => integrable_riemannianFiberNormSq_toSection
       (I := I) (M := M) g 2 (2 + j)
       (iteratedCovGrad (I := I) g 2 2 j B))]

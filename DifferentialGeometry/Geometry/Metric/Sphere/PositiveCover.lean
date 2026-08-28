@@ -27,7 +27,7 @@ variable {Q : Type u} [TopologicalSpace Q]
   [IsManifold (𝓡 n) ∞ Q]
   [T2Space Q] [SigmaCompactSpace Q]
   [CompactSpace Q] [ConnectedSpace Q] [Inhabited Q]
-  [LocPathConnectedSpace Q]
+  [LocallyPathConnectedSpace Q]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace Q]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -63,45 +63,45 @@ theorem sphereCover_one
   let g₁ : SmoothRiemannianMetric (𝓡 n) Q :=
     DifferentialGeometry.scaleMetric
       (I := 𝓡 n) c hc g
-  haveI : LocallyCompactSpace Q :=
+  have : LocallyCompactSpace Q :=
     Manifold.locallyCompact_of_finiteDimensional (M := Q) (𝓡 n)
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun x : Q => TangentSpace (𝓡 n) x) :=
     ⟨g₁.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
+  let : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
       (fun x : Q => TangentSpace (𝓡 n) x) :=
     ⟨g₁.inner, g₁.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace Q :=
+  let : PseudoEMetricSpace Q :=
     PseudoEMetricSpace.ofRiemannianMetric (𝓡 n) Q
-  letI : IsRiemannianManifold (𝓡 n) Q :=
+  let : IsRiemannianManifold (𝓡 n) Q :=
     ⟨fun _ _ => rfl⟩
-  letI : CompleteSpace Q := inferInstance
+  let : CompleteSpace Q := inferInstance
   let gUC :
       SmoothRiemannianMetric (𝓡 n)
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.liftedMetric
       (I := 𝓡 n) g₁
-  haveI :
+  have :
       RegularSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_regularSpace
       (𝓡 n)
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun x :
           DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q =>
         TangentSpace (𝓡 n) x) :=
     ⟨gUC.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
+  let : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
       (fun x :
           DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q =>
         TangentSpace (𝓡 n) x) :=
     ⟨gUC.inner, gUC.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI :
+  let :
       PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_pseudoEMetricSpace
       (I := 𝓡 n) (M := Q) gUC
-  letI :
+  let :
       IsRiemannianManifold (𝓡 n)
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.isRiemannianManifold
@@ -110,7 +110,7 @@ theorem sphereCover_one
       ∀ (x : Q) (v : TangentSpace (𝓡 n) x),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g₁.inner x v v)) := by
     intro x v
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
   have hEnormCover :
       ∀ (x :
@@ -118,32 +118,32 @@ theorem sphereCover_one
         (v : TangentSpace (𝓡 n) x),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gUC.inner x v v)) := by
     intro x v
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
-  letI :
+  let :
       CompleteSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.completeSpace_of_complete
       (I := 𝓡 n) (M := Q) g₁ hEnormBase hEnormCover
-  letI :
-      LocPathConnectedSpace
+  let :
+      LocallyPathConnectedSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
-    ChartedSpace.locPathConnectedSpace
+    ChartedSpace.locallyPathConnectedSpace
       (EuclideanSpace ℝ (Fin n))
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q)
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun x : sphere (0 : A) 1 => TangentSpace (𝓡 n) x) :=
     roundBundle (A := A) (n := n)
-  letI : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
+  let : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
       (fun x : sphere (0 : A) 1 => TangentSpace (𝓡 n) x) :=
     ⟨(roundMetric (E := A) (n := n)).inner,
       (roundMetric (E := A) (n := n)).contMDiff.continuous,
       fun _ _ _ => rfl⟩
-  letI spherePseudo : PseudoEMetricSpace (sphere (0 : A) 1) :=
+  let spherePseudo : PseudoEMetricSpace (sphere (0 : A) 1) :=
     PseudoEMetricSpace.ofRiemannianMetric (𝓡 n) (sphere (0 : A) 1)
-  letI : IsRiemannianManifold (𝓡 n) (sphere (0 : A) 1) :=
+  let : IsRiemannianManifold (𝓡 n) (sphere (0 : A) 1) :=
     ⟨fun _ _ => rfl⟩
-  letI : @CompleteSpace (sphere (0 : A) 1)
+  let : @CompleteSpace (sphere (0 : A) 1)
       (@PseudoEMetricSpace.toUniformSpace _ spherePseudo) :=
     @complete_of_compact (sphere (0 : A) 1)
       (@PseudoEMetricSpace.toUniformSpace _ spherePseudo) (by
@@ -157,11 +157,15 @@ theorem sphereCover_one
     (A := A) (n := n) (J := 𝓡 n)
     (N := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q)
     hn hRound gUC hEnormCover ?_ p q hpq hqneg
-    (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.basePoint
+      (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.basePoint
       (X := Q))
-  simpa only [gUC, g₁] using
+  change ∀ (x' :
+      DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q)
+      (X Y Z : EuclideanSpace ℝ (Fin n)), _
+  intro x' X Y Z
+  exact
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.riemannOp_lift_one
-      (I := 𝓡 n) (M := Q) g c hc hsec
+      (I := 𝓡 n) (M := Q) g c hc hsec x' X Y Z
 
 end Geometry
 end DifferentialGeometry

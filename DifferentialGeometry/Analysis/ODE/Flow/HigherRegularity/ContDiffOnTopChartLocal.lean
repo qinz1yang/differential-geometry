@@ -150,7 +150,7 @@ theorem exists_fderiv_bound_on_flow_tube_local
         ‖fderiv ℝ (f τ) (Φ (x, τ))‖ ≤ M := by
   let K : Set (E × ℝ) := closedBall x₀ ρ ×ˢ Icc (t₀ - T) (t₀ + T)
   let G : E × ℝ → E →L[ℝ] E := fun q => fderiv ℝ (f q.2) (Φ q)
-  haveI : ProperSpace E := FiniteDimensional.proper ℝ E
+  have : ProperSpace E := FiniteDimensional.proper ℝ E
   have hK : IsCompact K := (isCompact_closedBall x₀ ρ).prod isCompact_Icc
   have hK_sub : K ⊆ closedBall x₀ (r : ℝ) ×ˢ Icc tmin tmax := by
     intro q hq
@@ -395,8 +395,7 @@ private theorem hasFDerivAt_flow_at_initial_local
     have h_norm_le : ‖z - Φ ⟨x₀, τ⟩‖ ≤ δ_K_strict := by
       have := Metric.mem_closedBall.mp hz
       rw [dist_eq_norm] at this; exact this
-    change (‖fderiv ℝ (f τ) z‖₊ : ℝ≥0) ≤ ⟨K_lip, hK_lip_nn⟩
-    rw [← NNReal.coe_le_coe]
+    apply NNReal.coe_le_coe.mp
     exact hK_bd τ hτ z h_norm_le
   rw [hasFDerivAt_iff_isLittleO_nhds_zero]
   rw [Asymptotics.isLittleO_iff]
@@ -655,7 +654,9 @@ private theorem hasFDerivAt_flow_at_initial_local
       refine ⟨by linarith [hs.2], by linarith [hs.1, hT.le]⟩
     have hψ_deriv : ∀ s, HasDerivAt ψ (-1 : ℝ) s := fun s => by
       have h1 : HasDerivAt (fun s => 2 * t₀ - s) (-1 : ℝ) s := by
-        simpa using (hasDerivAt_const s (2 * t₀)).sub (hasDerivAt_id s)
+        change HasDerivAt ((fun _ : ℝ => 2 * t₀) - id) (-1 : ℝ) s
+        simpa only [zero_sub] using
+          (hasDerivAt_const s (2 * t₀)).sub (hasDerivAt_id s)
       exact h1
     have h_neg_lip_one : LipschitzWith 1 (Neg.neg : E → E) := LipschitzWith.id.neg
     have hvR_lip : ∀ τ' ∈ Ico t₀ (t₀ + T),

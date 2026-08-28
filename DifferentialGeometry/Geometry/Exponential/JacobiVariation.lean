@@ -81,13 +81,16 @@ omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma riemannOp_congr_point (g : SmoothRiemannianMetric I M)
-    {x y : M} (h : x = y) (A B C : E) :
+    {x y : M} (h : x = y)
+    (A B C : TangentSpace I x) (A' B' C' : TangentSpace I y)
+    (hA : (A : E) = (A' : E)) (hB : (B : E) = (B' : E))
+    (hC : (C : E) = (C' : E)) :
     ((DifferentialGeometry.Geometry.Curvature.riemannOp
       (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x) A B C : E)
     = ((DifferentialGeometry.Geometry.Curvature.riemannOp
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) y) A B C : E) := by
-  subst h
-  rfl
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) y) A' B' C' : E) := by
+  subst y
+  rw [show A = A' from hA, show B = B' from hB, show C = C' from hC]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] [CompleteSpace E] in
@@ -254,10 +257,20 @@ theorem intrinsic_jacobi_one
     rw [mfderiv_eq_fderiv]
     have h : HasFDerivAt line
         (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w) 0 := by
-      simpa only [line] using ((hasFDerivAt_id (0 : ℝ)).smul_const w).const_add x
+      have hadd : HasFDerivAt line
+          ((0 : ℝ →L[ℝ] E) + (1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
+        change HasFDerivAt (fun s : ℝ => x + s • w)
+          ((0 : ℝ →L[ℝ] E) + (1 : ℝ →L[ℝ] ℝ).smulRight w) 0
+        refine HasFDerivAt.add (hasFDerivAt_const (x := (0 : ℝ)) x) ?_
+        refine (((1 : ℝ →L[ℝ] ℝ).smulRight w).hasFDerivAt
+          (x := (0 : ℝ))).congr_of_eventuallyEq ?_
+        filter_upwards with r
+        simp only [ContinuousLinearMap.smulRight_apply, one_apply_eq_self]
+      rw [zero_add] at hadd
+      exact hadd
     rw [h.fderiv]
     change (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w) (1 : ℝ) = w
-    rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.one_apply, one_smul]
+    rw [ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul]
   have hfootCLM : (mfderiv 𝓘(ℝ, E) I exp (line 0) : E →L[ℝ] E) =
       (mfderiv 𝓘(ℝ, E) I exp x : E →L[ℝ] E) := by
     rw [hfoot]
@@ -399,7 +412,7 @@ theorem intrinsic_jacobi_d0
     hcentral_ev hfield_ev
   exact hRHS.symm.trans hfinal
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 private lemma clamped_slice_covDeriv_velocity_zero
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
     (ha : ‖a‖ < expMapC2Radius (I := I) g p)
@@ -411,7 +424,7 @@ private lemma clamped_slice_covDeriv_velocity_zero
         (fun u : ℝ => (expMap (I := I) g p (show TangentSpace I p from (ψ u • a)) : M)) v (1 : ℝ))
       t₀ = 0 := by
   classical
-  haveI : T2Space M := gauss_t2Space_base (I := I)
+  have : T2Space M := gauss_t2Space_base (I := I)
   have ht₀win : t₀ ∈ Set.Icc (-1 : ℝ) 2 := ⟨by linarith [ht₀.1], by linarith [ht₀.2]⟩
   have hψt₀ : ψ t₀ = t₀ := hψid t₀ ht₀win
   have hnorm_t₀ : ‖ψ t₀ • a‖ < expMapC2Radius (I := I) g p := by
@@ -515,6 +528,15 @@ private lemma clamped_slice_covDeriv_velocity_zero_at_zero
     hcurve hvel
   have hzero := Exponential.exp_radial_d2_zero
     (I := I) g hEnorm p (show TangentSpace I p from a)
+  have hzero_model :
+      ((covDerivAlong (I := I) g
+        (fun v : ℝ => (expMap (I := I) g p
+          (show TangentSpace I p from (v • a)) : M))
+        (fun v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I
+          (fun u : ℝ => (expMap (I := I) g p
+            (show TangentSpace I p from (u • a)) : M)) v (1 : ℝ))
+        0 : TangentSpace I _) : E) = (0 : E) := by
+    exact congrArg (fun v => (v : E)) hzero
   change ((covDerivAlong (I := I) g
       (fun v : ℝ => (expMap (I := I) g p
         (show TangentSpace I p from (ψ v • a)) : M))
@@ -522,18 +544,18 @@ private lemma clamped_slice_covDeriv_velocity_zero_at_zero
         (fun u : ℝ => (expMap (I := I) g p
           (show TangentSpace I p from (ψ u • a)) : M)) v (1 : ℝ))
       0 : TangentSpace I _) : E) = (0 : E)
-  exact hcongr.trans (by simpa using hzero)
+  exact hcongr.trans hzero_model
 
 open DifferentialGeometry.Geometry.Riemannian.Exponential in
 def jacobiVarRadius (g : SmoothRiemannianMetric I M) (p : M) : ℝ :=
   expMapC2Radius (I := I) g p / 26
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma jacobiVarRadius_pos (g : SmoothRiemannianMetric I M) (p : M) :
     0 < jacobiVarRadius (I := I) g p := by
   exact div_pos (expMapC2Radius_pos (I := I) g p) (by norm_num)
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem radial_jacobi_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     {x w : E} (hx : ‖x‖ < jacobiVarRadius (I := I) g p)
     (hw : ‖w‖ < jacobiVarRadius (I := I) g p) :
@@ -546,7 +568,7 @@ theorem radial_jacobi_of_lt (g : SmoothRiemannianMetric I M) (p : M)
             (expMap (I := I) g p (show TangentSpace I p from (v • (x + s • w))) : M)) 0 (1 : ℝ))
         t₀ := by
   classical
-  haveI : T2Space M := gauss_t2Space_base (I := I)
+  have : T2Space M := gauss_t2Space_base (I := I)
   obtain ⟨ψ, hψS, hψid, hψbd⟩ := exists_smooth_clamp (-1) 2 (by norm_num) (by norm_num)
   obtain ⟨φ, hφS, hφid, hφbd⟩ := exists_smooth_clamp (-1) 1 (by norm_num) (by norm_num)
   have hψbd5 : ∀ u : ℝ, |ψ u| ≤ 5 := fun u => (hψbd u).trans (by norm_num)
@@ -712,6 +734,16 @@ theorem radial_jacobi_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     rw [show curveVelocity (I := I) γ t₀ = mfderiv (𝓘(ℝ, ℝ)) I γ t₀ (1 : ℝ) from rfl]
     rw [hmf]
     rfl
+  have hcurv :
+      ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (F 0 t₀))
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F u t₀) 0 (1 : ℝ))
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F 0 u) t₀ (1 : ℝ))
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F 0 u) t₀ (1 : ℝ)) : E) =
+      ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t₀))
+        (J t₀) (curveVelocity (I := I) γ t₀) (curveVelocity (I := I) γ t₀) : E) :=
+    riemannOp_congr_point (I := I) g hfoot0 _ _ _ _ _ _ hS_eq hT_eq hT_eq
   change covDerivAlong (I := I) g γ (fun v : ℝ => covDerivAlong (I := I) g γ J v) t₀
       + (DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t₀))
@@ -722,12 +754,10 @@ theorem radial_jacobi_of_lt (g : SmoothRiemannianMetric I M) (p : M)
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t₀))
           (J t₀) (curveVelocity (I := I) γ t₀) (curveVelocity (I := I) γ t₀) : E) := by
     rw [← houter_eq, hcomm]
-    rw [hS_eq, hT_eq]
-    rw [riemannOp_congr_point (I := I) g hfoot0]
-    rfl
+    exact congrArg Neg.neg hcurv
   linear_combination (norm := module) hfinal
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_radial_jacobi_radius (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r → ∀ t₀ ∈ Set.Ioo (0 : ℝ) 1,
       IsJacobiAt (I := I) g
@@ -742,7 +772,7 @@ theorem exists_radial_jacobi_radius (g : SmoothRiemannianMetric I M) (p : M) :
   exact radial_jacobi_of_lt (I := I) g p hx hw
 
 open DifferentialGeometry.Geometry.Riemannian.Exponential in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem jacobi_diff_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     {x w : E} (hx : ‖x‖ < jacobiVarRadius (I := I) g p)
     (hw : ‖w‖ < jacobiVarRadius (I := I) g p) :
@@ -771,7 +801,7 @@ theorem jacobi_diff_of_lt (g : SmoothRiemannianMetric I M) (p : M)
                         (show TangentSpace I p from (u • (x + s • w))) : M)) 0 (1 : ℝ)) v) t)
                           t) := by
   classical
-  haveI : T2Space M := gauss_t2Space_base (I := I)
+  have : T2Space M := gauss_t2Space_base (I := I)
   obtain ⟨ψ, hψS, hψid, hψbd⟩ := exists_smooth_clamp (-1) 2 (by norm_num) (by norm_num)
   obtain ⟨φ, hφS, hφid, hφbd⟩ := exists_smooth_clamp (-1) 1 (by norm_num) (by norm_num)
   have hψbd5 : ∀ u : ℝ, |ψ u| ≤ 5 := fun u => (hψbd u).trans (by norm_num)
@@ -900,7 +930,7 @@ theorem jacobi_diff_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     change DifferentiableAt ℝ (chartRepAt (I := I) γ D t) t
     exact hrep.differentiableAt_iff.mp hclamped
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_jacobi_diff (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r → ∀ {b : ℝ}, b ≤ 1 →
       (∀ t ∈ Set.Icc (0 : ℝ) b,
@@ -946,7 +976,7 @@ theorem radial_jacobi_zero (g : SmoothRiemannianMetric I M) (p : M) (x w : E) :
   rw [hconst, mfderiv_const]
   rfl
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem radial_jacobi_one (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
     mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ =>
@@ -977,10 +1007,18 @@ theorem radial_jacobi_one (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     rw [mfderiv_eq_fderiv]
     have h : HasFDerivAt (fun s : ℝ => x + s • w)
         (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w) 0 := by
-      simpa using ((hasFDerivAt_id (0 : ℝ)).smul_const w).const_add x
+      have hadd : HasFDerivAt (fun s : ℝ => x + s • w)
+          ((0 : ℝ →L[ℝ] E) + (1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
+        refine HasFDerivAt.add (hasFDerivAt_const (x := (0 : ℝ)) x) ?_
+        refine (((1 : ℝ →L[ℝ] ℝ).smulRight w).hasFDerivAt
+          (x := (0 : ℝ))).congr_of_eventuallyEq ?_
+        filter_upwards with r
+        simp only [ContinuousLinearMap.smulRight_apply, one_apply_eq_self]
+      rw [zero_add] at hadd
+      exact hadd
     rw [h.fderiv]
     change (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w) (1 : ℝ) = w
-    rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.one_apply, one_smul]
+    rw [ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul]
   have hfootCLM : (mfderiv (𝓘(ℝ, E)) I
       (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
       ((fun s : ℝ => x + s • w) 0) : E →L[ℝ] E)
@@ -1001,7 +1039,7 @@ theorem radial_jacobi_one (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
   exact hstep.trans hgoal
 
 open DifferentialGeometry.Geometry.Riemannian.Exponential in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem radial_deriv_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     {x w : E} (hx : ‖x‖ < jacobiVarRadius (I := I) g p)
     (hw : ‖w‖ < jacobiVarRadius (I := I) g p) :
@@ -1013,7 +1051,7 @@ theorem radial_deriv_of_lt (g : SmoothRiemannianMetric I M) (p : M)
             (expMap (I := I) g p (show TangentSpace I p from (v • (x + s • w))) : M)) 0 (1 : ℝ))
         0 : E) = w := by
   classical
-  haveI : T2Space M := gauss_t2Space_base (I := I)
+  have : T2Space M := gauss_t2Space_base (I := I)
   obtain ⟨ψ, hψS, hψid, hψbd⟩ := exists_smooth_clamp (-1) 2 (by norm_num) (by norm_num)
   obtain ⟨φ, hφS, hφid, hφbd⟩ := exists_smooth_clamp (-1) 1 (by norm_num) (by norm_num)
   have hψbd5 : ∀ u : ℝ, |ψ u| ≤ 5 := fun u => (hψbd u).trans (by norm_num)
@@ -1153,7 +1191,7 @@ theorem radial_deriv_of_lt (g : SmoothRiemannianMetric I M) (p : M)
     rw [hcomm]
   exact hRHS.symm.trans (hcomm_E.symm.trans (hLHS.trans (hconst.trans hderiv)))
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_radial_jacobi_deriv_radius (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       (covDerivAlong (I := I) g
@@ -1187,7 +1225,7 @@ theorem jacobi_zero_of_lt
               (1 : ℝ))
         0 := by
   classical
-  haveI : T2Space M := gauss_t2Space_base (I := I)
+  have : T2Space M := gauss_t2Space_base (I := I)
   obtain ⟨ψ, hψS, hψid, hψbd⟩ := exists_smooth_clamp (-1) 2 (by norm_num) (by norm_num)
   obtain ⟨φ, hφS, hφid, hφbd⟩ := exists_smooth_clamp (-1) 1 (by norm_num) (by norm_num)
   have hψbd5 : ∀ u : ℝ, |ψ u| ≤ 5 := fun u => (hψbd u).trans (by norm_num)
@@ -1346,6 +1384,16 @@ theorem jacobi_zero_of_lt
     rw [show curveVelocity (I := I) γ 0 = mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ) from rfl]
     rw [hmf]
     rfl
+  have hcurv :
+      ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (F 0 0))
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F u 0) 0 (1 : ℝ))
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F 0 u) 0 (1 : ℝ))
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F 0 u) 0 (1 : ℝ)) : E) =
+      ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ 0))
+        (J 0) (curveVelocity (I := I) γ 0) (curveVelocity (I := I) γ 0) : E) :=
+    riemannOp_congr_point (I := I) g hfoot0 _ _ _ _ _ _ hS_eq hT_eq hT_eq
   change covDerivAlong (I := I) g γ (fun v : ℝ => covDerivAlong (I := I) g γ J v) 0
       + (DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ 0))
@@ -1356,9 +1404,7 @@ theorem jacobi_zero_of_lt
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ 0))
           (J 0) (curveVelocity (I := I) γ 0) (curveVelocity (I := I) γ 0) : E) := by
     rw [← houter_eq, hcomm]
-    rw [hS_eq, hT_eq]
-    rw [riemannOp_congr_point (I := I) g hfoot0]
-    rfl
+    exact congrArg Neg.neg hcurv
   linear_combination (norm := module) hfinal
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup

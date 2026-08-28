@@ -46,7 +46,7 @@ theorem metricCovDeriv_succ_eval_smooth_slots
     (x : M) :
     metricCovDeriv (I := I) h gRef (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCovDeriv (I := I) h gRef a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),

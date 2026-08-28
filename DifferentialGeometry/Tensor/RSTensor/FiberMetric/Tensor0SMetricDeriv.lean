@@ -91,7 +91,7 @@ theorem hasDerivWithinAt_coordContract {s : Nat}
             gInvDt (I0 b) (J0 b))
         u t := by
     have h :=
-      HasDerivWithinAt.fun_finset_prod
+      HasDerivWithinAt.fun_finsetProd
         (u := (Finset.univ : Finset (Fin s)))
         (f := fun a r => gInv r (I0 a) (J0 a))
         (f' := fun a => gInvDt (I0 a) (J0 a))
@@ -202,13 +202,24 @@ private theorem eval2_sum_left {Idx : Type*} [Fintype Idx] {x : M}
         fun q : Fin 2 => if q = 0 then Z else Y := by
     funext q
     fin_cases q <;> simp [base]
-  have hsum := Q.toMultilinearMap.map_update_sum
+  let Q' := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Q
+  have hsum := Q'.toMultilinearMap.map_update_sum
     (Finset.univ : Finset Idx) (0 : Fin 2)
     (fun i : Idx => c i • basis i) base
+  have hsumModel :
+      Q' (Function.update base (0 : Fin 2) (∑ i : Idx, c i • basis i)) =
+        ∑ i : Idx, c i * Q' (Function.update base (0 : Fin 2) (basis i)) := by
+    calc
+      Q' (Function.update base (0 : Fin 2) (∑ i : Idx, c i • basis i)) =
+          ∑ i : Idx, Q' (Function.update base (0 : Fin 2) (c i • basis i)) := hsum
+      _ = ∑ i : Idx, c i * Q' (Function.update base (0 : Fin 2) (basis i)) := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        simpa only [smul_eq_mul] using
+          (ContinuousMultilinearMap.map_update_smul Q' base (0 : Fin 2) (c i) (basis i))
   have hsum' :
       Q (Function.update base (0 : Fin 2) (∑ i : Idx, c i • basis i)) =
         ∑ i : Idx, c i * Q (Function.update base (0 : Fin 2) (basis i)) := by
-    simpa using hsum
+    simpa only [Q', tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hsumModel
   change Q base = _
   rw [← hbase]
   calc
@@ -240,13 +251,24 @@ private theorem eval2_sum_right {Idx : Type*} [Fintype Idx] {x : M}
         fun q : Fin 2 => if q = 0 then X else Z := by
     funext q
     fin_cases q <;> simp [base]
-  have hsum := Q.toMultilinearMap.map_update_sum
+  let Q' := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Q
+  have hsum := Q'.toMultilinearMap.map_update_sum
     (Finset.univ : Finset Idx) (1 : Fin 2)
     (fun i : Idx => c i • basis i) base
+  have hsumModel :
+      Q' (Function.update base (1 : Fin 2) (∑ i : Idx, c i • basis i)) =
+        ∑ i : Idx, c i * Q' (Function.update base (1 : Fin 2) (basis i)) := by
+    calc
+      Q' (Function.update base (1 : Fin 2) (∑ i : Idx, c i • basis i)) =
+          ∑ i : Idx, Q' (Function.update base (1 : Fin 2) (c i • basis i)) := hsum
+      _ = ∑ i : Idx, c i * Q' (Function.update base (1 : Fin 2) (basis i)) := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        simpa only [smul_eq_mul] using
+          (ContinuousMultilinearMap.map_update_smul Q' base (1 : Fin 2) (c i) (basis i))
   have hsum' :
       Q (Function.update base (1 : Fin 2) (∑ i : Idx, c i • basis i)) =
         ∑ i : Idx, c i * Q (Function.update base (1 : Fin 2) (basis i)) := by
-    simpa using hsum
+    simpa only [Q', tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hsumModel
   change Q base = _
   rw [← hbase]
   calc
@@ -292,14 +314,16 @@ theorem ricReact_one {x : M}
   have hsharpA :
       cotangentSharp (I := I) g x A =
         ∑ p : Idx, (∑ i : Idx, gInv p i * a i) • basis p := by
+    change cotangentSharp_gen (I := I) g x A = _
     simpa [gInv, a] using
-      (cotangentSharp_eq_sum_inv (I := I) g x basis gInv
-        (by simpa [gInv] using basisInvMetric_real (I := I) g x basis) A)
+      (cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv
+      (by simpa [gInv] using basisInvMetric_real (I := I) g x basis) A)
   have hsharpB :
       cotangentSharp (I := I) g x B =
         ∑ r : Idx, (∑ j : Idx, gInv r j * b j) • basis r := by
+    change cotangentSharp_gen (I := I) g x B = _
     simpa [gInv, b] using
-      (cotangentSharp_eq_sum_inv (I := I) g x basis gInv
+      (cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv
         (by simpa [gInv] using basisInvMetric_real (I := I) g x basis) B)
   have hswap
       (F : Idx -> Idx -> Idx -> Idx -> Real) :
@@ -438,7 +462,7 @@ theorem basisInv_time {x : M} {t : Real}
       bmat (G r) ∘L bmat (B r) =
         ContinuousLinearMap.id Real (Idx → Real) := by
     ext v a
-    simp only [ContinuousLinearMap.comp_apply, bmat_apply,
+    simp only [ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.id_apply]
     calc
       (∑ k : Idx, G r a k * ∑ b : Idx, B r k b * v b) =
@@ -463,7 +487,7 @@ theorem basisInv_time {x : M} {t : Real}
       bmat (B r) ∘L bmat (G r) =
         ContinuousLinearMap.id Real (Idx → Real) := by
     ext v a
-    simp only [ContinuousLinearMap.comp_apply, bmat_apply,
+    simp only [ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.id_apply]
     calc
       (∑ k : Idx, B r a k * ∑ b : Idx, G r k b * v b) =
@@ -538,7 +562,16 @@ theorem basisInv_time {x : M} {t : Real}
     exact hentry'.congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun r => (bmat_single (B r) i j).symm)
   rw [hInvEq t] at hcanon
-  simpa [B, ContinuousLinearMap.mulLeftRight_apply, bmat_inv_entry] using hcanon
+  have hcoeff :
+      (((-(ContinuousLinearMap.mulLeftRight Real
+        ((Idx → Real) →L[Real] (Idx → Real))
+        (bmat (B t)) (bmat (B t)))) (bmat gdot))
+          (Pi.single j (1 : Real)) i) =
+        -(∑ a : Idx, ∑ b : Idx, B t i a * gdot a b * B t b j) := by
+    change -(bmat (B t) (bmat gdot (bmat (B t) (Pi.single j (1 : Real)))) i) = _
+    exact bmat_inv_entry (A := B t) (D := gdot) i j
+  rw [hcoeff] at hcanon
+  simpa only [B] using hcanon
 
 theorem hasDerivWithinAt_normSq0S_coord {s : Nat} {x : M}
     {u : Set Real} {t : Real}
@@ -548,7 +581,7 @@ theorem hasDerivWithinAt_normSq0S_coord {s : Nat} {x : M}
     (T : Real -> Tensor0SSpace s I x)
     (Tdt : (Fin s -> Idx) -> Real)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinvAll : ∀ r : Real, MetricInverseInBasis (I := I) (g r) x basis (gInv r))
+    (hinvAll : ∀ r : Real, MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r))
     (hgInv : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
     (hT : ∀ I0 : Fin s -> Idx,
@@ -594,7 +627,7 @@ theorem hasDerivWithinAt_normSq0S {s : Nat} {x : M}
     (Tdt : (Fin s -> Idx) -> Real)
     (Tdot : Tensor0SSpace s I x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinvAll : ∀ r : Real, MetricInverseInBasis (I := I) (g r) x basis (gInv r))
+    (hinvAll : ∀ r : Real, MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r))
     (hgInv : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
     (hT : ∀ I0 : Fin s -> Idx,
@@ -649,7 +682,7 @@ theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
     (Tdt : (Fin s -> Idx) -> Real)
     (Tdot : Tensor0SSpace s I x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinvAll : ∀ r : Real, MetricInverseInBasis (I := I) (g r) x basis (gInv r))
+    (hinvAll : ∀ r : Real, MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r))
     (hgInv : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
     (hT : ∀ I0 : Fin s -> Idx,
@@ -717,7 +750,7 @@ theorem normSq_one_time {x : M} {t : Real}
       (Fin 1 -> Fin (Module.finrank Real (TangentSpace I x))) -> Real := fun I0 =>
     tensor0SComponent (I := I) Adot (fun i => basis i) I0
   have hinvAll (r : Real) :
-      MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
+      MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r) := by
     simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by

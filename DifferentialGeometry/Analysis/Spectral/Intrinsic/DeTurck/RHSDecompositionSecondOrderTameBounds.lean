@@ -94,7 +94,7 @@ private theorem decompositionMono_smul
         a * Tensor0SSpace.toModel
           ((G.toSection x) (unitZeroSec (I := I) (M := M) x)) w := by
     rw [hGsmul, Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _
@@ -144,8 +144,9 @@ private theorem bilin_smul
     ccTensorBilin (I := I) g (a • A) x v w =
       a * ccTensorBilin (I := I) g A x v w := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2_add_le
     (g : SmoothRiemannianMetric I M) {r s : Nat}
@@ -189,6 +190,7 @@ private theorem h2_add_le
           norm (iteratedCovGrad (I := I) g r s i B) ^ 2) := by
       rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2_smul_le
     (g : SmoothRiemannianMetric I M) {r s : Nat}
@@ -210,6 +212,7 @@ private theorem h2_smul_le
       mul_le_mul_of_nonneg_right ha_sq (sq_nonneg _)
     _ = norm (iteratedCovGrad (I := I) g r s i A) ^ 2 := one_mul _
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2_smul_eq
     (g : SmoothRiemannianMetric I M) {r s : Nat}
@@ -230,6 +233,7 @@ private theorem h2_smul_eq
         norm (iteratedCovGrad (I := I) g r s i A) ^ 2) := by
       rw [Finset.mul_sum]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2_six_le
     (g : SmoothRiemannianMetric I M) {r s : Nat}
@@ -292,6 +296,7 @@ private theorem h2_six_le
     _ <= 8 * (h2 A + h2 B + h2 C + h2 D + h2 F + h2 G) := by
       nlinarith [h2_nonneg F, h2_nonneg G]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 private theorem edgeLie_eq_sum
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)

@@ -154,7 +154,7 @@ theorem holder_integral_prod_riemannianFiberNormSq_le
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ θ m := by
   classical
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hcont : ∀ m : ι, Continuous (fun x : M =>
       riemannianFiberNormSq (I := I) (M := M) g (r m) (s m) x ((S m).toSection x)) := by
@@ -222,7 +222,7 @@ theorem holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound
             ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ θ m := by
   classical
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hcont : ∀ m : ι, Continuous (fun x : M =>
       riemannianFiberNormSq (I := I) (M := M) g (r m) (s m) x ((S m).toSection x)) := by
@@ -237,7 +237,7 @@ theorem holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound
     fun m x => riemannianFiberNormSq_nonneg (I := I) (M := M) g (r m) (s m) x _
   have hmaj_cont : Continuous (fun x : M => (∏ m ∈ t₀, Λ m) * ∏ m ∈ t \ t₀,
       riemannianFiberNormSq (I := I) (M := M) g (r m) (s m) x ((S m).toSection x)) :=
-    continuous_const.mul (continuous_finset_prod _ fun m _ => hcont m)
+    continuous_const.mul (continuous_finsetProd _ fun m _ => hcont m)
   have hmaj_int : MeasureTheory.Integrable (fun x : M => (∏ m ∈ t₀, Λ m) * ∏ m ∈ t \ t₀,
       riemannianFiberNormSq (I := I) (M := M) g (r m) (s m) x ((S m).toSection x)) μ :=
     (hmaj_cont.memLp_of_hasCompactSupport

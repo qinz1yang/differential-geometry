@@ -30,13 +30,19 @@ theorem integral_heatD2_zero {t : ℝ} (ht : 0 < t) (v w : V) :
       (μ := (volume : Measure V))
       (f := fun _ : V => (1 : ℝ)) (g := heatD1 t v) (v := w)
       (by
-        simpa only [fderiv_const_apply, ContinuousLinearMap.zero_apply, zero_mul] using
-          (integrable_zero V ℝ (volume : Measure V)))
+        have hzero :
+            (fun x : V => (fderiv ℝ (fun _ : V => (1 : ℝ)) x) w *
+              heatD1 t v x) = 0 := by
+          funext x
+          rw [fderiv_const_apply, zero_apply, zero_mul]
+          rfl
+        rw [hzero]
+        exact integrable_zero V ℝ (volume : Measure V))
       (by simpa only [one_mul, hder] using heatD2_int ht v w)
       (by simpa only [one_mul] using heatD1_int ht v)
       (fun x _ => differentiableAt_const (𝕜 := ℝ) (x := x) (1 : ℝ))
       (fun x _ => (heatD1_hasFDeriv v x).differentiableAt)
-  simpa only [one_mul, hder, fderiv_const_apply, ContinuousLinearMap.zero_apply,
+  simpa only [one_mul, hder, fderiv_const_apply, zero_apply,
     zero_mul, integral_zero, neg_zero] using hparts
 
 end ZeroMean

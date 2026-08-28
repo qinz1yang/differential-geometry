@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -50,7 +49,7 @@ noncomputable def unitGradAbstractRoughLap
           (smoothOrthoFrame (I := I) g x i) x
           (smoothOrthoFrame (I := I) g x i x)))
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma unitGradAbstractRoughLap_def
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     unitGradAbstractRoughLap (I := I) (M := M) g T₀ x =
@@ -65,6 +64,7 @@ lemma unitGradAbstractRoughLap_def
               (smoothOrthoFrame (I := I) g x i) x
               (smoothOrthoFrame (I := I) g x i x))) := rfl
 
+omit [CompactSpace M] in
 theorem rawTensorConnLap_covGrad_unit_eval_eq_abstract_roughLap
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -88,7 +88,7 @@ theorem rawTensorConnLap_covGrad_unit_eval_eq_abstract_roughLap
               (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
               (fun y : M => (covGrad (I := I) (M := M) g 0 2 T₀).toSection y) x)
             (unitZeroSec (I := I) (M := M) x) from by
-        rw [ContinuousLinearMap.sum_apply]]
+        rw [sum_apply]]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothOrthoFrame (I := I) g x i)) :=
     smoothOrthoFrame_smooth (I := I) g x i

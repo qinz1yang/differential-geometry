@@ -9,7 +9,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Window
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -114,14 +113,14 @@ private structure ConvergentMetricChain
           (mfderiv I I F x v) (mfderiv I I F x w)
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem ConvergentMetricChain.tail_metric_derivatives_converge
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
-    (D : ConvergentMetricChain (I := I) b Ψ g)
-    [∀ n, SigmaCompactSpace (tailBallOpen b D.start n)] :
+    (D : ConvergentMetricChain (I := I) b Ψ g) :
     ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ n₀ : ℕ,
       ∀ n, n₀ ≤ n → ∀ q, q ≤ p → ∀ x : tailBallOpen b D.start n,
         metricDerivNorm (I := I) q
@@ -133,9 +132,9 @@ private theorem ConvergentMetricChain.tail_metric_derivatives_converge
   refine ⟨n₀, fun n hn q hqp x => ?_⟩
   let U := ballOpen b (fun s => (2 : ℝ) ^ s) (D.start + n)
   let V := tailBallOpen b D.start n
-  letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  letI : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I V.isOpen)
   let inc : V → U := TopologicalSpace.Opens.inclusion
     (tailBall_le_large b D.start n)
@@ -175,7 +174,7 @@ private theorem tailCollar_compact
     ext y
     constructor
     · rintro ⟨x, hx, rfl⟩
-      simpa only [tailCollar, Set.mem_setOf_eq, Metric.mem_closedBall, dist_comm] using hx
+      simpa only [tailCollar, Set.mem_ofPred_eq, Metric.mem_closedBall, dist_comm] using hx
     · intro hy
       have hy' : dist y (b (j₀ + n)) ≤ (2 : ℝ) ^ n := by
         simpa only [Metric.mem_closedBall, dist_comm] using hy
@@ -200,8 +199,7 @@ private def HasUniformMetricChainBounds
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
-    (D : ConvergentMetricChain (I := I) b Ψ g)
-    [∀ n, SigmaCompactSpace (tailBallOpen b D.start n)] : Prop :=
+    (D : ConvergentMetricChain (I := I) b Ψ g) : Prop :=
   (∃ Crel : ℝ, 1 ≤ Crel ∧ ∀ n : ℕ,
     MetricUniformEquivalentOn (I := I)
       (Set.univ : Set (tailBallOpen b D.start n))
@@ -229,8 +227,8 @@ private theorem alignedProper
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : MetricSpace (X.obj k).M := alignedMetric (I := I) k P
     ProperSpace (X.obj k).M := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : MetricSpace (X.obj k).M := alignedMetric (I := I) k P
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : MetricSpace (X.obj k).M := alignedMetric (I := I) k P
   constructor
   intro x r
   have hcompact :
@@ -238,8 +236,8 @@ private theorem alignedProper
         P.ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
         (letI : MetricSpace (X.obj k).M := P.ms
          Metric.closedBall x r) := by
-    letI : MetricSpace (X.obj k).M := P.ms
-    letI : ProperSpace (X.obj k).M := P.proper
+    let : MetricSpace (X.obj k).M := P.ms
+    let : ProperSpace (X.obj k).M := P.proper
     exact isCompact_closedBall x r
   rw [ProperMetricOn.top_eq (X.obj k) P] at hcompact
   exact hcompact
@@ -282,7 +280,7 @@ noncomputable def tailMemberMaps
       letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tailBall_nonempty b j₀ n
       let S := tailBallSystem (I := I) b Ψ hbase g (by
         intro j x v
-        simpa using
+        with_unfolding_all exact
           (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) (g j) x v)) j₀ D₀
       letI : ∀ n, SigmaCompactSpace (tailBallOpen b j₀ n) := fun n =>
@@ -317,7 +315,7 @@ noncomputable def tailMemberMaps
   letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tailBall_nonempty b j₀ n
   let S := tailBallSystem (I := I) b Ψ hbase g (by
     intro j x v
-    simpa using
+    with_unfolding_all exact
       (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) (g j) x v)) j₀ D₀
   letI : ∀ n, SigmaCompactSpace (tailBallOpen b j₀ n) := fun n =>
@@ -349,7 +347,7 @@ noncomputable def tailMemberMaps
         exact congrArg Subtype.val
           (tailCenter_map (I := I) b Ψ hbase g (by
             intro j x v
-            simpa using
+            with_unfolding_all exact
               (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
                 (I := I) (g j) x v)) j₀ D₀ n)
 
@@ -391,7 +389,7 @@ noncomputable def tailMemberConv
       letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tailBall_nonempty b j₀ n
       let S := tailBallSystem (I := I) b Ψ hbase g (by
         intro j x v
-        simpa using
+        with_unfolding_all exact
           (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) (g j) x v)) j₀ D₀
       letI : ∀ n, SigmaCompactSpace (tailBallOpen b j₀ n) := fun n =>
@@ -433,7 +431,7 @@ noncomputable def tailMemberConv
   letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tailBall_nonempty b j₀ n
   let S := tailBallSystem (I := I) b Ψ hbase g (by
     intro j x v
-    simpa using
+    with_unfolding_all exact
       (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) (g j) x v)) j₀ D₀
   letI : ∀ n, SigmaCompactSpace (tailBallOpen b j₀ n) := fun n =>
@@ -459,19 +457,22 @@ noncomputable def tailMemberConv
       letI : ChartedSpace H (XTail.obj (id n)).M := (XTail.obj (id n)).charted
       Φr.partialDiffeomorph n L.basepoint = (XTail.obj (id n)).basepoint := by
     intro n
-    calc
-      Φr.partialDiffeomorph n (S.toSeqSystem.incl 0 (tailCenter b j₀ 0)) =
-          (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0) :
-            (X.obj (σ (j₀ + n))).M) :=
-        congrArg Subtype.val
-          (S.invIncl_incl_le (Nat.zero_le n) (tailCenter b j₀ 0))
-      _ = (X.obj (σ (j₀ + n))).basepoint := by
-        exact congrArg Subtype.val
-          (tailCenter_map (I := I) b Ψ hbase g (by
-            intro j x v
-            simpa using
-              (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-                (I := I) (g j) x v)) j₀ D₀ n)
+    with_unfolding_all
+      change ((Function.invFun (S.toSeqSystem.incl n)
+          (S.toSeqSystem.incl 0 (tailCenter b j₀ 0)) :
+            tailBallOpen b j₀ n) :
+          (X.obj (σ (j₀ + n))).M) =
+        (X.obj (σ (j₀ + n))).basepoint
+    have hfirst :=
+      congrArg Subtype.val
+        (S.invIncl_incl_le (Nat.zero_le n) (tailCenter b j₀ 0))
+    with_unfolding_all rw [hfirst]
+    exact congrArg Subtype.val
+      (tailCenter_map (I := I) b Ψ hbase g (by
+        intro j x v
+        with_unfolding_all exact
+          (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) (g j) x v)) j₀ D₀ n)
   have Cr : PointedRiemannianCGConverges (I := I) (XTail.repoint bTail) L id Φr := by
     change PointedRiemannianCGConverges (I := I)
       (chainAmbientSeq (I := I) j₀ (tailBallOpen b j₀) S
@@ -492,9 +493,9 @@ theorem canonicalSourceSigmaCompact
     (Phi : PointedRiemannianCGMaps (I := I) X L subseq) (k : Nat) :
     letI : TopologicalSpace L.M := L.topology
     IsSigmaCompact (Phi.source k) := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : ChartedSpace H L.M := L.charted
-  letI : SigmaCompactSpace L.M := L.sigmaCompact
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : SigmaCompactSpace L.M := L.sigmaCompact
   exact Geometry.isSigmaCompact_of_isOpen I (Phi.source_open k)
 
 omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
@@ -505,9 +506,9 @@ theorem canonicalTargetSigmaCompact
     (Phi : PointedRiemannianCGMaps (I := I) X L subseq) (k : Nat) :
     letI : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
     IsSigmaCompact (Phi.target k) := by
-  letI : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
-  letI : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
-  letI : SigmaCompactSpace (X.obj (subseq k)).M := (X.obj (subseq k)).sigmaCompact
+  let : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
+  let : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
+  let : SigmaCompactSpace (X.obj (subseq k)).M := (X.obj (subseq k)).sigmaCompact
   exact Geometry.isSigmaCompact_of_isOpen I (Phi.target_open k)
 
 noncomputable def canonicalReferenceMetric
@@ -575,30 +576,30 @@ private theorem chain_limit_metric_eq_pullback
       (metricSourceTargetDiff (I := I) Φ k) := by
   let Φ := chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf
   let D := CanonicalMetricCompactness.canonicalSourceData (I := I) Φ k
-  letI : TopologicalSpace (limitPointedCoc S O₀ gInf hgInf).M :=
+  let : TopologicalSpace (limitPointedCoc S O₀ gInf hgInf).M :=
     (limitPointedCoc S O₀ gInf hgInf).topology
-  letI : ChartedSpace H (limitPointedCoc S O₀ gInf hgInf).M :=
+  let : ChartedSpace H (limitPointedCoc S O₀ gInf hgInf).M :=
     (limitPointedCoc S O₀ gInf hgInf).charted
-  letI : TopologicalSpace
+  let : TopologicalSpace
       ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).M :=
     ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).topology
-  letI : ChartedSpace H
+  let : ChartedSpace H
       ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).M :=
     ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).charted
-  letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) := D.topology
-  letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) := D.charted
-  letI : T2Space (MetricSourceDomain (I := I) Φ k) := D.t2
-  letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) := D.smooth
-  letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) := D.sigmaCompact
-  letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
+  let : TopologicalSpace (MetricSourceDomain (I := I) Φ k) := D.topology
+  let : ChartedSpace H (MetricSourceDomain (I := I) Φ k) := D.charted
+  let : T2Space (MetricSourceDomain (I := I) Φ k) := D.t2
+  let : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) := D.smooth
+  let : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) := D.sigmaCompact
+  let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomTop (I := I) Φ k
-  letI : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
+  let : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomCharted (I := I) Φ k
-  letI : T2Space (MetricTargetDomain (I := I) Φ k) :=
+  let : T2Space (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
+  let : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
+  let : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomSigmaOf (I := I) Φ k (CanonicalMetricCompactness.canonicalTargetSigmaCompact (I := I) Φ k)
   let F := metricSourceTargetDiff (I := I) Φ k
   have metric_ext : ∀ (g₁ g₂ : SmoothRiemannianMetric I
@@ -614,14 +615,31 @@ private theorem chain_limit_metric_eq_pullback
     rfl
   apply metric_ext
   intro x v w
-  change (S.limitMetric gInf hgInf).inner
-      (x : (limitPointedCoc S O₀ gInf hgInf).M) v w =
+  let z : (limitPointedCoc S O₀ gInf hgInf).M := x
+  with_unfolding_all
+    change (S.limitMetric gInf hgInf).inner
+      z v w =
     (gInf k).inner (F x : U k)
       (mfderiv I I F x v) (mfderiv I I F x w)
-  rw [S.limitMetric_of_mem gInf hgInf k x.2]
-  rw [metricSourceTargetDiff_mfderiv (I := I) Φ k x v,
-    metricSourceTargetDiff_mfderiv (I := I) Φ k x w]
-  let z : (limitPointedCoc S O₀ gInf hgInf).M := x
+  have hz : z ∈ Set.range (S.toSeqSystem.incl k) := x.2
+  rw [S.limitMetric_of_mem gInf hgInf k hz v w]
+  with_unfolding_all
+    change (gInf k).inner (Function.invFun (S.toSeqSystem.incl k) z)
+        (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z v)
+        (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z w) =
+      (gInf k).inner
+        (metricSourceTargetDiff (I := I) Φ k x : U k)
+        (mfderiv I I (metricSourceTargetDiff (I := I) Φ k) x v)
+        (mfderiv I I (metricSourceTargetDiff (I := I) Φ k) x w)
+  have hFv :
+      mfderiv I I (metricSourceTargetDiff (I := I) Φ k) x v =
+        mfderiv I I (Φ.map k) z v := by
+    convert! metricSourceTargetDiff_mfderiv (I := I) Φ k x v using 1
+  have hFw :
+      mfderiv I I (metricSourceTargetDiff (I := I) Φ k) x w =
+        mfderiv I I (Φ.map k) z w := by
+    convert! metricSourceTargetDiff_mfderiv (I := I) Φ k x w using 1
+  rw [hFv, hFw]
   have hxSource : z ∈ (S.inclPartialDiffeo k).source := by
     change z ∈ Set.range (S.toSeqSystem.incl k)
     exact x.2
@@ -653,12 +671,11 @@ private theorem chain_limit_metric_eq_pullback
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem covFlat_eq
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     {U V : TopologicalSpace.Opens M} (hVU : V ≤ U)
-    [SigmaCompactSpace U] [T2Space U] [SigmaCompactSpace V] [T2Space V]
+    [SigmaCompactSpace U] [T2Space U] [T2Space V]
     (h gRef : SmoothRiemannianMetric I U) (a : ℕ) (x : V) :
     metricCovDerivNorm (I := I) a
         (h.restrictOpenOfSubset (I := I) hVU)
@@ -666,16 +683,16 @@ private theorem covFlat_eq
       metricCovDerivNorm (I := I) a h gRef
         (TopologicalSpace.Opens.inclusion hVU x) := by
   let W := nestedOpen (M := M) (U := U) (V := V)
-  letI : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
-  letI : IsManifold I 1 V := IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
-  letI : IsManifold I 2 V := IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) V := by
+  let : IsManifold I 1 V := IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
+  let : IsManifold I 2 V := IsManifold.of_le (I := I) (M := V) (n := ∞) (by decide)
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) V := by
     change IsManifold I ∞ V
     infer_instance
-  letI : IsManifold I 1 W := IsManifold.of_le (I := I) (M := W) (n := ∞) (by decide)
-  letI : IsManifold I 2 W := IsManifold.of_le (I := I) (M := W) (n := ∞) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) W := by
+  let : IsManifold I 1 W := IsManifold.of_le (I := I) (M := W) (n := ∞) (by decide)
+  let : IsManifold I 2 W := IsManifold.of_le (I := I) (M := W) (n := ∞) (by decide)
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) W := by
     change IsManifold I ∞ W
     infer_instance
   let F := flatNestedDiffeo (H := H) (I := I) (M := M) hVU
@@ -696,6 +713,7 @@ private theorem covFlat_eq
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem ConvergentMetricChain.uniform_metric_bounds
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
@@ -703,8 +721,7 @@ private theorem ConvergentMetricChain.uniform_metric_bounds
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
-    (D : ConvergentMetricChain (I := I) b Ψ g)
-    [∀ n, SigmaCompactSpace (tailBallOpen b D.start n)] :
+    (D : ConvergentMetricChain (I := I) b Ψ g) :
     HasUniformMetricChainBounds (I := I) b Ψ g D := by
   classical
   constructor
@@ -747,7 +764,7 @@ private theorem ConvergentMetricChain.uniform_metric_bounds
       intro n
       let U := ballOpen b (fun s => (2 : ℝ) ^ s) (D.start + n)
       let V := tailBallOpen b D.start n
-      letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
+      let : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
         (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
       let inc : V → U := TopologicalSpace.Opens.inclusion
         (tailBall_le_large b D.start n)
@@ -756,9 +773,7 @@ private theorem ConvergentMetricChain.uniform_metric_bounds
         (D.limitMetric n) ((g (D.start + n)).restrictOpen (I := I) U)
       refine ⟨Cn, hCn.1, fun x _ v => ?_⟩
       have hx := hCn.2 (inc x) (tailBall_mem b D.start n x) v
-      simpa only [U, V, inc, tailMetric,
-        SmoothRiemannianMetric.restrictSubset_inner,
-        SmoothRiemannianMetric.restrictOpen_inner] using hx
+      with_unfolding_all exact hx
     choose Chead hChead using hhead
     have hChead0 : ∀ n, 0 ≤ Chead n := fun n =>
       le_trans zero_le_one (hChead n).1
@@ -818,7 +833,7 @@ private theorem ConvergentMetricChain.uniform_metric_bounds
       intro n
       let U := ballOpen b (fun s => (2 : ℝ) ^ s) (D.start + n)
       let V := tailBallOpen b D.start n
-      letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
+      let : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
         (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
       let inc : V → U := TopologicalSpace.Opens.inclusion
         (tailBall_le_large b D.start n)
@@ -905,25 +920,16 @@ def ofSubsequence
     rfl
   reference_eq_limit := by
     intro k
-    simpa only [MetricCompactnessConclusion.ofSeqSubseq,
-      PointedRiemannianCGConverges.ofSeqSubseq,
-      MetricCGConvergenceData.ofSeqSubseq,
-      MetricSourceData.ofSeqSubseq] using D.reference_eq_limit k
+    with_unfolding_all exact D.reference_eq_limit k
   uniformly_equivalent := by
     obtain ⟨Crel, hCrel, hrel⟩ := D.uniformly_equivalent
     refine ⟨Crel, hCrel, fun k => ?_⟩
-    simpa only [MetricCompactnessConclusion.ofSeqSubseq,
-      PointedRiemannianCGConverges.ofSeqSubseq,
-      MetricCGConvergenceData.ofSeqSubseq,
-      MetricSourceData.ofSeqSubseq] using hrel k
+    with_unfolding_all exact hrel k
   covariant_derivatives_bounded := by
     intro q
     obtain ⟨Cq, hCq, hcov⟩ := D.covariant_derivatives_bounded q
     refine ⟨Cq, hCq, fun k x => ?_⟩
-    simpa only [MetricCompactnessConclusion.ofSeqSubseq,
-      PointedRiemannianCGConverges.ofSeqSubseq,
-      MetricCGConvergenceData.ofSeqSubseq,
-      MetricSourceData.ofSeqSubseq] using hcov k x
+    with_unfolding_all exact hcov k x
 
 end CanonicalMetricCompactness
 
@@ -979,7 +985,7 @@ private opaque connectedCanonicalMetricCompactness
     obtain ⟨j₀, hj₀, D₀, hU, hmap, _φ, _hφ, gInf, _hconv, hclose, hstep⟩ :=
       exists_limits_close (I := I) b Ψ hbase g (by
         intro j x v
-        simpa using
+        with_unfolding_all exact
           (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) (g j) x v)) hdata
     exact ⟨
@@ -1006,14 +1012,14 @@ private opaque connectedCanonicalMetricCompactness
       (Geometry.isSigmaCompact_of_isOpen I (tailBallOpen b j₀ n).isOpen)
   let S := tailBallSystem (I := I) b Ψ hbase g (by
     intro j x v
-    simpa using
+    with_unfolding_all exact
       (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) (g j) x v)) j₀ D₀
   let gTail := tailMetric (I := I) b j₀ gInf
   let hgTail : S.MetricCocycle gTail :=
     tailMetricCocycle (I := I) b Ψ hbase g (by
       intro j x v
-      simpa using
+      with_unfolding_all exact
         (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (g j) x v)) j₀ D₀ hU hmap gInf hstep
   let L := limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail
@@ -1021,13 +1027,13 @@ private opaque connectedCanonicalMetricCompactness
   have hcomplete : MetricComplete (I := I) L := by
     exact tailLimitComplete (I := I) b Ψ hbase g (by
       intro j x v
-      simpa using
+      with_unfolding_all exact
         (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (g j) x v)) j₀ hj₀ D₀
       hU hmap gInf hstep hclose
   let hchain := tailAmbientConv (I := I) b Ψ hbase g (by
     intro j x v
-    simpa using
+    with_unfolding_all exact
       (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) (g j) x v)) j₀ D₀
     hU hmap gInf hstep hclose
@@ -1039,6 +1045,7 @@ private opaque connectedCanonicalMetricCompactness
       MetricCGConvergenceData.of_derivNormSupOn,
       MetricSourceData.ofRestrictPullback, MetricSourceData.ofCanonical,
       limitPointedCoc, limitPointed]
+    with_unfolding_all rfl
   have hchain_domain : forall k : Nat,
       hchain.metrics.domain k =
         CanonicalMetricCompactness.canonicalSourceData (I := I)
@@ -1066,20 +1073,20 @@ private opaque connectedCanonicalMetricCompactness
       let Φc := chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail
       let Dc := CanonicalMetricCompactness.canonicalSourceData (I := I) Φc k
-      letI : TopologicalSpace (MetricSourceDomain (I := I) Φc k) := Dc.topology
-      letI : ChartedSpace H (MetricSourceDomain (I := I) Φc k) := Dc.charted
-      letI : T2Space (MetricSourceDomain (I := I) Φc k) := Dc.t2
-      letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φc k) := Dc.smooth
-      letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) := Dc.sigmaCompact
-      letI : TopologicalSpace (MetricTargetDomain (I := I) Φc k) :=
+      let : TopologicalSpace (MetricSourceDomain (I := I) Φc k) := Dc.topology
+      let : ChartedSpace H (MetricSourceDomain (I := I) Φc k) := Dc.charted
+      let : T2Space (MetricSourceDomain (I := I) Φc k) := Dc.t2
+      let : IsManifold I ∞ (MetricSourceDomain (I := I) Φc k) := Dc.smooth
+      let : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) := Dc.sigmaCompact
+      let : TopologicalSpace (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomTop (I := I) Φc k
-      letI : ChartedSpace H (MetricTargetDomain (I := I) Φc k) :=
+      let : ChartedSpace H (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomCharted (I := I) Φc k
-      letI : T2Space (MetricTargetDomain (I := I) Φc k) :=
+      let : T2Space (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomT2 (I := I) Φc k
-      letI : IsManifold I ∞ (MetricTargetDomain (I := I) Φc k) :=
+      let : IsManifold I ∞ (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomSmooth (I := I) Φc k
-      letI : SigmaCompactSpace (MetricTargetDomain (I := I) Φc k) :=
+      let : SigmaCompactSpace (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomSigmaOf (I := I) Φc k
           (CanonicalMetricCompactness.canonicalTargetSigmaCompact (I := I) Φc k)
       let F := metricSourceTargetDiff (I := I) Φc k
@@ -1106,20 +1113,20 @@ private opaque connectedCanonicalMetricCompactness
       let Φc := chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail
       let Dc := CanonicalMetricCompactness.canonicalSourceData (I := I) Φc k
-      letI : TopologicalSpace (MetricSourceDomain (I := I) Φc k) := Dc.topology
-      letI : ChartedSpace H (MetricSourceDomain (I := I) Φc k) := Dc.charted
-      letI : T2Space (MetricSourceDomain (I := I) Φc k) := Dc.t2
-      letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φc k) := Dc.smooth
-      letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) := Dc.sigmaCompact
-      letI : TopologicalSpace (MetricTargetDomain (I := I) Φc k) :=
+      let : TopologicalSpace (MetricSourceDomain (I := I) Φc k) := Dc.topology
+      let : ChartedSpace H (MetricSourceDomain (I := I) Φc k) := Dc.charted
+      let : T2Space (MetricSourceDomain (I := I) Φc k) := Dc.t2
+      let : IsManifold I ∞ (MetricSourceDomain (I := I) Φc k) := Dc.smooth
+      let : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) := Dc.sigmaCompact
+      let : TopologicalSpace (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomTop (I := I) Φc k
-      letI : ChartedSpace H (MetricTargetDomain (I := I) Φc k) :=
+      let : ChartedSpace H (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomCharted (I := I) Φc k
-      letI : T2Space (MetricTargetDomain (I := I) Φc k) :=
+      let : T2Space (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomT2 (I := I) Φc k
-      letI : IsManifold I ∞ (MetricTargetDomain (I := I) Φc k) :=
+      let : IsManifold I ∞ (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomSmooth (I := I) Φc k
-      letI : SigmaCompactSpace (MetricTargetDomain (I := I) Φc k) :=
+      let : SigmaCompactSpace (MetricTargetDomain (I := I) Φc k) :=
         metricTargetDomSigmaOf (I := I) Φc k
           (CanonicalMetricCompactness.canonicalTargetSigmaCompact (I := I) Φc k)
       let F := metricSourceTargetDiff (I := I) Φc k
@@ -1131,9 +1138,31 @@ private opaque connectedCanonicalMetricCompactness
         (Diffeomorph.pullbackMetric (I := I)
           ((g (j₀ + k)).restrictOpen (I := I) (tailBallOpen b j₀ k)) F)
         (Diffeomorph.pullbackMetric (I := I) (gTail k) F) x ≤ Cq
-      rw [metricCovDerivNorm_pullback (I := I) q
-        ((g (j₀ + k)).restrictOpen (I := I) (tailBallOpen b j₀ k))
-        (gTail k) F x]
+      have hpull :
+          metricCovDerivNorm (I := I) q
+            (Diffeomorph.pullbackMetric (I := I)
+              ((g (j₀ + k)).restrictOpen (I := I) (tailBallOpen b j₀ k)) F)
+            (Diffeomorph.pullbackMetric (I := I) (gTail k) F) x =
+          metricCovDerivNorm (I := I) q
+            ((g (j₀ + k)).restrictOpen (I := I) (tailBallOpen b j₀ k))
+            (gTail k) (F x) := by
+        let : TopologicalSpace (MetricSourceDomain (I := I) Φc k) :=
+          metricSourceDomTop (I := I) Φc k
+        let : ChartedSpace H (MetricSourceDomain (I := I) Φc k) :=
+          metricSourceDomCharted (I := I) Φc k
+        let : T2Space (MetricSourceDomain (I := I) Φc k) :=
+          metricSourceDomT2 (I := I) Φc k
+        let : IsManifold I ∞ (MetricSourceDomain (I := I) Φc k) :=
+          metricSourceDomSmooth (I := I) Φc k
+        let : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) :=
+          metricSourceDomSigmaOf (I := I) Φc k
+            (CanonicalMetricCompactness.canonicalSourceSigmaCompact
+              (I := I) Φc k)
+        with_unfolding_all
+          convert metricCovDerivNorm_pullback (I := I) q
+            ((g (j₀ + k)).restrictOpen (I := I) (tailBallOpen b j₀ k))
+            (gTail k) F x using 1 ; rfl
+      rw [hpull]
       exact hcov k (F x)
   let XTail := X.subseq (fun n => σ (j₀ + n))
   let bTail : forall n, (XTail.obj n).M := fun n =>
@@ -1152,31 +1181,28 @@ private opaque connectedCanonicalMetricCompactness
       letI : ChartedSpace H (XTail.obj (id n)).M := (XTail.obj (id n)).charted
       Φr.partialDiffeomorph n L.basepoint = (XTail.obj (id n)).basepoint := by
     intro n
-    calc
-      Φr.partialDiffeomorph n (S.toSeqSystem.incl 0 (tailCenter b j₀ 0)) =
-          (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0) :
-            (X.obj (σ (j₀ + n))).M) :=
-        congrArg Subtype.val
-          (S.invIncl_incl_le (Nat.zero_le n) (tailCenter b j₀ 0))
-      _ = (X.obj (σ (j₀ + n))).basepoint := by
-        exact congrArg Subtype.val
-          (tailCenter_map (I := I) b Ψ hbase g (by
-            intro j x v
-            simpa using
-              (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-                (I := I) (g j) x v)) j₀ D₀ n)
+    with_unfolding_all
+      change ((Function.invFun (S.toSeqSystem.incl n)
+          (S.toSeqSystem.incl 0 (tailCenter b j₀ 0)) :
+            tailBallOpen b j₀ n) :
+          (X.obj (σ (j₀ + n))).M) =
+        (X.obj (σ (j₀ + n))).basepoint
+    have hfirst :=
+      congrArg Subtype.val
+        (S.invIncl_incl_le (Nat.zero_le n) (tailCenter b j₀ 0))
+    with_unfolding_all rw [hfirst]
+    exact congrArg Subtype.val
+      (tailCenter_map (I := I) b Ψ hbase g (by
+        intro j x v
+        with_unfolding_all exact
+          (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) (g j) x v)) j₀ D₀ n)
   let hconverges : PointedRiemannianCGConverges (I := I) X L
       (fun n => σ (j₀ + n)) maps :=
     tailMemberConv (I := I) P σ Ψ hbase j₀ D₀ gTail hgTail hchain
   have hconverges_ref : HasLimitReferenceMetric (I := I) hconverges := by
     intro k
-    simpa only [hconverges, tailMemberConv,
-      PointedRiemannianCGConverges.unrepoint,
-      MetricCGConvergenceData.unrepoint,
-      PointedRiemannianCGConverges.ofSubseq,
-      PointedRiemannianCGConverges.ofSeqSubseq,
-      MetricCGConvergenceData.ofSubseq,
-      MetricCGConvergenceData.ofSeqSubseq] using hchain_ref k
+    with_unfolding_all exact hchain_ref k
   have hconverges_domain : forall k : Nat,
       hconverges.metrics.domain k =
         CanonicalMetricCompactness.canonicalSourceData (I := I) maps k := by
@@ -1195,16 +1221,7 @@ private opaque connectedCanonicalMetricCompactness
       maps := maps
       convergence := hconverges }
   have hbounds : HasUniformPullbackMetricBounds (I := I) hconverges := by
-    simpa only [hconverges, tailMemberConv,
-      PointedRiemannianCGConverges.unrepoint,
-      MetricCGConvergenceData.unrepoint,
-      MetricSourceData.unrepoint,
-      PointedRiemannianCGConverges.ofSubseq,
-      PointedRiemannianCGConverges.ofSeqSubseq,
-      MetricCGConvergenceData.ofSubseq,
-      MetricCGConvergenceData.ofSeqSubseq,
-      MetricSourceData.ofSubseq,
-      MetricSourceData.ofSeqSubseq] using hchain_bounds
+    with_unfolding_all exact hchain_bounds
   let C : CanonicalMetricCompactness (I := I) X :=
     { compactness := mc
       domain_eq_canonical := by
@@ -1218,7 +1235,7 @@ private opaque connectedCanonicalMetricCompactness
       covariant_derivatives_bounded := by
         simpa only [mc] using hbounds.2 }
   refine ⟨C, ?_⟩
-  letI : ∀ n, PreconnectedSpace (tailBallOpen b j₀ n) := fun n =>
+  let : ∀ n, PreconnectedSpace (tailBallOpen b j₀ n) := fun n =>
     tailBall_preconn (I := I) b j₀ n
   change ConnectedSpace S.toSeqSystem.Lim
   infer_instance
@@ -1238,7 +1255,7 @@ theorem canonical_metric_compactness_connected
     let C := canonicalMetricCompactness (I := I) P B
     letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
     ConnectedSpace C.compactness.limit.M := by
-  simpa only [canonicalMetricCompactness] using
+  with_unfolding_all exact
     (connectedCanonicalMetricCompactness (I := I) P B).connected
 
 noncomputable def metricCompactnessOfPairwiseApproximateIsometries

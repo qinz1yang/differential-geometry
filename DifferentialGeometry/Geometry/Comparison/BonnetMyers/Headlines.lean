@@ -15,7 +15,7 @@ import Mathlib.Topology.EMetricSpace.Diam
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.MetricSpace.ProperSpace
 import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Topology.Connected.LocPathConnected
+import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Data.Finite.Defs
@@ -51,7 +51,7 @@ theorem tangent_closedBall_isCompact
     [TopologicalSpace M] [ChartedSpace H M]
     (p : M) {R : ℝ} :
     IsCompact (Metric.closedBall (0 : TangentSpace I p) R) := by
-  haveI : ProperSpace E := FiniteDimensional.proper_real E
+  have : ProperSpace E := FiniteDimensional.proper_real E
   exact isCompact_closedBall (0 : TangentSpace I p) R
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -74,7 +74,7 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
     (x y : M) :
     edist x y ≤ ENNReal.ofReal (Real.pi / Real.sqrt K) := by
   classical
-  haveI hCE : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hCE : CompleteSpace E := FiniteDimensional.complete ℝ E
   rw [IsRiemannianManifold.out (I := I) x y]
   have hne_top : Manifold.riemannianEDist I x y ≠ (⊤ : ℝ≥0∞) :=
     DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
@@ -112,7 +112,7 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
   have hu_unit : g.inner x u u = 1 := by
     have hbil : g.inner x u u = L⁻¹ * (L⁻¹ * g.inner x v v) := by
       rw [hu_def]
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
     rw [hbil, hvv_sq]
     field_simp
   have hγ0 : γ 0 = x :=
@@ -572,19 +572,19 @@ theorem bonnet_myers_pairwise_edist_le_of_complete_metric
     letI : PseudoEMetricSpace M := inferInstance
     letI : CompleteSpace M := hcomplete.complete
     edist x y ≤ ENNReal.ofReal (Real.pi / Real.sqrt K) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -619,19 +619,19 @@ theorem bonnet_myers_diameter_le_of_complete_metric
     letI : CompleteSpace M := hcomplete.complete
     Metric.ediam (Set.univ : Set M) ≤
       ENNReal.ofReal (Real.pi / Real.sqrt K) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -654,8 +654,8 @@ theorem isCompact_image_closedBall_under_expMapIntrinsic
     (p : M) {R : ℝ} :
     IsCompact ((fun v => expMapIntrinsic (I := I) g hEnorm p v) ''
       Metric.closedBall (0 : TangentSpace I p) R) := by
-  haveI : FiniteDimensional ℝ (TangentSpace I p) := inferInstanceAs (FiniteDimensional ℝ E)
-  haveI : ProperSpace (TangentSpace I p) := FiniteDimensional.proper_real (TangentSpace I p)
+  have : FiniteDimensional ℝ (TangentSpace I p) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : ProperSpace (TangentSpace I p) := FiniteDimensional.proper_real (TangentSpace I p)
   have hcompact : IsCompact (Metric.closedBall (0 : TangentSpace I p) R) :=
     isCompact_closedBall (0 : TangentSpace I p) R
   exact hcompact.image (expMapIntrinsic_continuous (I := I) g hEnorm p)
@@ -684,7 +684,7 @@ theorem expMapIntrinsic_surjective_on_closedBall_of_ediam_le
   rw [Metric.mem_closedBall, dist_zero_right]
   have hnorm : ‖v‖ = Real.sqrt (g.inner p v v) := by
     have hz := hEnorm p v
-    rw [← ofReal_norm_eq_enorm] at hz
+    rw [← ofReal_norm] at hz
     exact (ENNReal.ofReal_eq_ofReal_iff (norm_nonneg v) (Real.sqrt_nonneg _)).mp hz
   have hedist : edist p y ≤ ENNReal.ofReal R :=
     le_trans (Metric.edist_le_ediam_of_mem (Set.mem_univ p) (Set.mem_univ y)) hdiam
@@ -753,7 +753,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-    [LocPathConnectedSpace M]
+    [LocallyPathConnectedSpace M]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
     [PseudoEMetricSpace M] [Inhabited M]
     [T2Space (TangentBundle I
@@ -777,22 +777,22 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.proj :
           DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M → M) :=
     Geometry.Riemannian.Topology.UniversalCover.proj_isCoveringMap
-  haveI hpcM : PathConnectedSpace M :=
-    PathConnectedSpace.of_locPathConnectedSpace
+  have hpcM : PathConnectedSpace M :=
+    PathConnectedSpace.of_locallyPathConnectedSpace
   let gLift :
       SmoothRiemannianMetric I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.liftedMetric
       (I := I) g
-  letI hRB :
+  let hRB :
       Bundle.RiemannianBundle
         (fun (xt :
             DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) ↦
           TangentSpace I xt) :=
     ⟨gLift.toRiemannianMetric⟩
-  haveI hSCH : SecondCountableTopology H :=
+  have hSCH : SecondCountableTopology H :=
     ModelWithCorners.secondCountableTopology I
-  haveI hSCM : SecondCountableTopology M :=
+  have hSCM : SecondCountableTopology M :=
     ChartedSpace.secondCountable_of_sigmaCompact H M
   have hBasisLift : ∀ x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M,
       DifferentialGeometry.Geometry.Connection.chartRiemannBasisIdentity
@@ -810,7 +810,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
       RicciBoundedBelow (I := I) gLift (((Module.finrank ℝ E : ℝ) - 1) * K) :=
     Geometry.Riemannian.Topology.UniversalCover.ricciBoundedBelow_liftedMetric_of_base
       (I := I) (g := g) hRic hBasisLift hBasisBase
-  haveI hRegUC :
+  have hRegUC :
       RegularSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_regularSpace
@@ -820,39 +820,39 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
         (v : TangentSpace I x'),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gLift.inner x' v v)) := by
     intro x' v
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     have hinner : (inner ℝ v v : ℝ) = gLift.inner x' v v := rfl
     rw [hinner]
-  letI hUCem :
+  let hUCem :
       PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_pseudoEMetricSpace
       (I := I) (M := M) gLift
-  haveI hRiemUC :
+  have hRiemUC :
       IsRiemannianManifold I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.isRiemannianManifold
       (I := I) (M := M) gLift
-  haveI hCompUC :
+  have hCompUC :
       CompleteSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.completeSpace_of_complete
       (I := I) (M := M) g hEnormBase hEnormCover
-  haveI hCRBcover :
+  have hCRBcover :
       IsContinuousRiemannianBundle E
         (fun (x' :
             DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) ↦
           TangentSpace I x') :=
     ⟨gLift.inner, gLift.contMDiff.continuous, fun _ _ _ => rfl⟩
-  haveI hT2TanCover :
+  have hT2TanCover :
       T2Space (TangentBundle I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)) :=
     inferInstance
-  haveI hCompactUC :
+  have hCompactUC :
       CompactSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     bonnet_myers_compactSpace_of_ricci_bound (E := E) gLift hdim hK hRicLift hEnormCover
-  haveI hFinFibre :
+  have hFinFibre :
       Finite
         ((DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.proj :
             DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M → M)
@@ -896,19 +896,19 @@ theorem bonnet_myers_compactSpace_of_complete_metric
     {K : ℝ} (hK : 0 < K)
     (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K)) :
     CompactSpace M := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -922,7 +922,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_complete_metric
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-    [LocPathConnectedSpace M]
+    [LocallyPathConnectedSpace M]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
     [Inhabited M]
     [T2Space (TangentBundle I
@@ -934,19 +934,19 @@ theorem bonnet_myers_finite_fundamentalGroup_of_complete_metric
     (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (x : M) :
     Finite (FundamentalGroup M x) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

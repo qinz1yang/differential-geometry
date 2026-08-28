@@ -67,8 +67,7 @@ theorem ambient_iso_of_tan
   let e₀ : E ≃ₗᵢ[ℝ] E := LinearIsometryEquiv.ofSurjective F hFsurj
   have he₀_perp (v : P) : e₀ (v : E) = (T v : Q) := by
     change F (v : E) = (T v : Q)
-    simpa only [F, T₀, LinearIsometry.coe_comp, Function.comp_apply,
-      Submodule.coe_subtypeₗᵢ] using LinearIsometry.extend_apply T₀ v
+    exact LinearIsometry.extend_apply T₀ v
   have he₀_span : e₀ (p : E) ∈ ℝ ∙ (q : E) := by
     rw [← Submodule.orthogonal_orthogonal (ℝ ∙ (q : E)),
       Submodule.mem_orthogonal']
@@ -111,7 +110,7 @@ theorem ambient_iso_of_tan
     have hφ : sphereDiffeo (n := n) e₀ p = q := by
       apply Subtype.ext
       simpa only [sphereDiffeo_coe] using he₀p
-    apply mfderiv_coe_sphere_injective q
+    apply injective_mvfderiv_subtypeVal_sphere q
     change dIncl (n := n) q
       (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e₀) p v) =
         dIncl (n := n) q (L v)
@@ -136,7 +135,7 @@ theorem ambient_iso_of_tan
     have hφ : sphereDiffeo (n := n) e p = q := by
       apply Subtype.ext
       simpa only [sphereDiffeo_coe] using hep
-    apply mfderiv_coe_sphere_injective q
+    apply injective_mvfderiv_subtypeVal_sphere q
     change dIncl (n := n) q
       (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) p v) =
         dIncl (n := n) q (L v)

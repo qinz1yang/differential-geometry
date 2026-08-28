@@ -204,18 +204,13 @@ theorem ricciPair04_apply {x : M}
       Ric (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (v 0) (v 2)) *
         Ric (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (v 1) (v 3)) := by
   unfold ricciPair04
-  have hdom :
-      (ContinuousMultilinearMap.domDomCongr (Equiv.swap (1 : Fin 4) (2 : Fin 4))
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
-          (s := 2) (q := 2) (x := x) Ric Ric)) v =
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
-          (s := 2) (q := 2) (x := x) Ric Ric)
-          (fun i => v ((Equiv.swap (1 : Fin 4) (2 : Fin 4)) i)) := by
-    with_unfolding_all rfl
-  refine hdom.trans ?_
+  change (ContinuousMultilinearMap.domDomCongr (Equiv.swap (1 : Fin 4) (2 : Fin 4))
+      (Bundle.continuousMultilinearMap.product_fun
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric))) v = _
+  rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
+  simp only [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
   have hswap0 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 0 = 0 := by decide
   have hswap1 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 1 = 2 := by decide
   have hswap2 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 2 = 1 := by decide

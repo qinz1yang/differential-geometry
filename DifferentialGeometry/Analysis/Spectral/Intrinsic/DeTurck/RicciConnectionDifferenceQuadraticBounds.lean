@@ -189,6 +189,7 @@ private theorem aaKer_split (g gm : SmoothRiemannianMetric I M) :
         aaQuad4 (I := I) (M := M) g gm +
         aaQuad5 (I := I) (M := M) g gm := rfl
 
+omit [SigmaCompactSpace M] in
 private theorem aa_out_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) {r d : Nat}
     (rho : Equiv.Perm (Fin d)) (Q : SmoothCcTensor g r d) (x : M) :
@@ -211,6 +212,7 @@ private theorem aa_out_riemannianFiberNormSq
       rw [hy, slotPermCLM_apply, Tensor0SSpace.toModel_ofModel]) 0 x
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem aa_in_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) {r s : Nat}
@@ -223,6 +225,7 @@ private theorem aa_in_riemannianFiberNormSq
     riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
       (I := I) (M := M) g r s Q rho 0 x
 
+omit [SigmaCompactSpace M] in
 private theorem aa_inner_le
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 2 3 x
@@ -245,6 +248,7 @@ private theorem aa_inner_le
     riemannianFiberNormSq_iteratedCovGrad_slotExtend_le
       (I := I) (M := M) g 1 2 A 0 x
 
+omit [SigmaCompactSpace M] in
 private theorem aa_outer_le
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 4 x
@@ -285,6 +289,7 @@ private theorem aa_outer_le
       simp only [A]
       ring
 
+omit [SigmaCompactSpace M] in
 private theorem aa_mid_le
     (g gm : SmoothRiemannianMetric I M)
     (Q : SmoothCcTensor g 2 3)
@@ -331,6 +336,7 @@ private theorem aa_mid_le
       simp only [d, A]
       ring
 
+omit [SigmaCompactSpace M] in
 private theorem aa_quad_le
     (g gm : SmoothRiemannianMetric I M)
     (rho : Equiv.Perm (Fin 3)) (x : M) :
@@ -349,6 +355,7 @@ private theorem aa_quad_le
     (connectionDifferenceContrInsertionInnerField (I := I) g gm) y]
   exact aa_inner_le (I := I) (M := M) g gm y
 
+omit [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceQuadraticKernel_fiberNormSq_le
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 2 4 x
@@ -494,7 +501,7 @@ theorem ricciConnectionDifferenceQuadraticCoefficient_fiberNormSq_le (g : Smooth
     exact mul_nonneg (hCt0 0) (by positivity)
   refine ⟨Real.sqrt K, Real.sqrt_nonneg _, ?_⟩
   intro gm P htie delta hdelta hdelta0 hPbound x
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun y : M => TensorRSSpace 0 3 I y) :=
     tensorRS_riemannianBundle (I := I) (M := M) g 0 3
   let P1 : Real := riemannianFiberNormSq (I := I) (M := M) g 0 3 x
@@ -553,6 +560,7 @@ theorem ricciConnectionDifferenceQuadraticCoefficient_fiberNormSq_le (g : Smooth
       ring
     _ = (Real.sqrt K) ^ 2 * P1 ^ 2 := by rw [Real.sq_sqrt hK0]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 private theorem aa_pair_point
     (g : SmoothRiemannianMetric I M)

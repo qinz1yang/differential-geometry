@@ -226,20 +226,20 @@ private theorem bilin_deriv_basis
     (v w : V) :
     HasDerivAt (fun r : ℝ => F r v w) (F' v w) t := by
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   have hexp : ∀ r : ℝ, F r v w =
       ∑ j, ∑ i, (b.repr w j * b.repr v i) • F r (b i) (b j) := by
     intro r
     conv_lhs =>
       rw [← b.sum_repr v, ← b.sum_repr w]
-    simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply, Finset.smul_sum, smul_smul]
+    simp only [map_sum, map_smul, sum_apply,
+      smul_apply, Finset.smul_sum, smul_smul]
   have htgt : F' v w =
       ∑ j, ∑ i, (b.repr w j * b.repr v i) • F' (b i) (b j) := by
     conv_lhs =>
       rw [← b.sum_repr v, ← b.sum_repr w]
-    simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply, Finset.smul_sum, smul_smul]
+    simp only [map_sum, map_smul, sum_apply,
+      smul_apply, Finset.smul_sum, smul_smul]
   rw [htgt]
   have hstep : HasDerivAt
       (fun r : ℝ =>
@@ -247,8 +247,7 @@ private theorem bilin_deriv_basis
       (∑ j, ∑ i, (b.repr w j * b.repr v i) • F' (b i) (b j)) t :=
     HasDerivAt.fun_sum fun j _ =>
       HasDerivAt.fun_sum fun i _ => by
-        simpa only [Pi.smul_apply] using
-          (hbasis i j).const_smul (b.repr w j * b.repr v i)
+        convert (hbasis i j).const_smul (b.repr w j * b.repr v i) using 1 ; rfl
   simpa only [← hexp] using hstep
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -278,14 +277,16 @@ theorem metricPDE_of_gram [I.Boundaryless] [T2Space M]
   have hbasis (i j : Fin (Module.finrank ℝ E)) :
       HasDerivAt (fun s => F s (b i) (b j)) (F' (b i) (b j)) t := by
     have hric :
-        ricciTensor (I := I) (g t) x (b i) (b j) =
+        ricciTensor (I := I) (g t) x
+            (chartBasisVecFiber (I := I) x i x)
+            (chartBasisVecFiber (I := I) x j x) =
           chartRicciTensor (I := I) (g t) x i j (extChartAt I x x) := by
-      rw [show b i = chartBasisVecFiber (I := I) x i x by
-        exact chartBasisFamily_apply (I := I) x hxbase i,
-        show b j = chartBasisVecFiber (I := I) x j x by
-          exact chartBasisFamily_apply (I := I) x hxbase j,
-        ricciTensor_chartBasisVec_alpha_eq (I := I) (g t) x i j hxgood]
-    simpa only [F, F', ContinuousLinearMap.smul_apply, smul_eq_mul,
+      exact ricciTensor_chartBasisVec_alpha_eq (I := I) (g t) x i j hxgood
+    rw [show b i = chartBasisVecFiber (I := I) x i x by
+      exact chartBasisFamily_apply (I := I) x hxbase i,
+      show b j = chartBasisVecFiber (I := I) x j x by
+        exact chartBasisFamily_apply (I := I) x hxbase j]
+    simpa only [F, F', smul_apply, smul_eq_mul,
       chartGramOnE_def, hinv, chartGramMatrix_apply, hric] using hpde i j
   exact bilin_deriv_basis F F' b hbasis v w
 

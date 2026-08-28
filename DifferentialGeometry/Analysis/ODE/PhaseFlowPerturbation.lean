@@ -77,8 +77,8 @@ theorem phaseField_lip
     {a : E × E → E} {s : Set (E × E)} {κ : ℝ≥0}
     (ha : LipschitzOnWith κ a s) :
     LipschitzOnWith (max 1 κ) (phaseField a) s := by
-  simpa only [phaseField] using
-    (LipschitzWith.prod_snd.lipschitzOnWith.prodMk ha)
+  change LipschitzOnWith (max 1 κ) (fun x => (x.2, a x)) s
+  exact LipschitzWith.prod_snd.lipschitzOnWith.prodMk ha
 
 theorem phase_pos_res_le
     {a : E × E → E} {s : Set (E × E)} {κ : ℝ≥0}
@@ -164,7 +164,9 @@ theorem phase_pos_res_le
         ContinuousLinearMap.coe_fst', ContinuousLinearMap.toSpanSingleton_apply,
         one_smul] using
         ((hWd t ht).hasFDerivWithinAt.fst).hasDerivWithinAt
-    simpa only [Y, V] using hZfst.sub hWfst
+    change HasDerivWithinAt ((fun x => (Z x).1) - fun x => (W x).1)
+      ((Z t).2 - (W t).2) (Ici t) t
+    exact hZfst.sub hWfst
   have hVd : ∀ t ∈ Ico (0 : ℝ) 1,
       HasDerivWithinAt V (A t) (Ici t) t := by
     intro t ht
@@ -178,7 +180,9 @@ theorem phase_pos_res_le
         ContinuousLinearMap.coe_snd', ContinuousLinearMap.toSpanSingleton_apply,
         one_smul] using
         ((hWd t ht).hasFDerivWithinAt.snd).hasDerivWithinAt
-    simpa only [V, A] using hZsnd.sub hWsnd
+    change HasDerivWithinAt ((fun x => (Z x).2) - fun x => (W x).2)
+      (a (Z t) - a (W t)) (Ici t) t
+    exact hZsnd.sub hWsnd
   have hlin : ∀ (t : ℝ) (u : Set ℝ),
       HasDerivWithinAt (fun x : ℝ => x • V 0) (V 0) u t := by
     intro t u
@@ -214,7 +218,9 @@ theorem phase_pos_res_le
       (phaseErr κ : ℝ) * dist (Z 0) (W 0) := by
     rw [max_eq_right zero_le_one, gronwallBound_of_K_ne_0 one_ne_zero]
     simp only [zero_mul, zero_add, div_one, one_mul]
-    dsimp [eps, phaseErr]
+    rw [show (phaseErr κ : ℝ) =
+      κ * Real.exp (1 + κ) * (Real.exp 1 - 1) from rfl]
+    dsimp only [eps]
     ring
   rwa [hgb] at hmain
 
@@ -232,7 +238,7 @@ theorem phase_pos_approx
   have hres := phase_pos_res_le ha (hcont x hx) (hcont y hy)
     (hderiv x hx) (hderiv y hy) (hmem x hx) (hmem y hy)
   rw [hinit x hx, hinit y hy] at hres
-  simpa only [freeEnd, ContinuousLinearMap.add_apply,
+  simpa only [freeEnd, add_apply,
     ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd',
     Prod.fst_sub, Prod.snd_sub, dist_eq_norm] using hres
 
@@ -248,7 +254,7 @@ theorem phase_diag_approx
     ApproximatesLinearOn (fun z ↦ (z.1, (Φ z 1).1)) freeDiag u (phaseErr κ) := by
   intro x hx y hy
   have hpos := phase_pos_approx ha hinit hcont hderiv hmem x hx y hy
-  simpa only [freeDiag_apply, freeEnd, ContinuousLinearMap.add_apply,
+  simpa only [freeDiag_apply, freeEnd, add_apply,
     ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd',
     Prod.fst_sub, Prod.snd_sub, Prod.norm_def, sub_self, norm_zero,
     max_eq_right (norm_nonneg _)] using hpos

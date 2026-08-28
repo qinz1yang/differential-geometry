@@ -16,7 +16,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
@@ -56,8 +56,11 @@ private lemma hasMFDerivAt_rexp
     (hf : HasMFDerivAt I 𝓘(ℝ, ℝ) f x f') :
     HasMFDerivAt I 𝓘(ℝ, ℝ) (fun y : M => Real.exp (f y)) x
       (Real.exp (f x) • f') := by
-  refine ⟨Real.continuous_exp.continuousAt.comp hf.1, ?_⟩
-  simpa [writtenInExtChartAt, Function.comp_def] using hf.2.exp
+  have hexp := (Real.hasDerivAt_exp (f x)).hasFDerivAt.hasMFDerivAt
+  refine (hexp.comp x hf).congr_mfderiv ?_
+  ext v
+  change f' v * Real.exp (f x) = Real.exp (f x) * f' v
+  exact mul_comm _ _
 
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
@@ -67,14 +70,15 @@ lemma mfderiv_exp_neg_toLinearMap
     (mfderiv I 𝓘(ℝ, ℝ) (fun y : M => Real.exp (-(f y))) x).toLinearMap =
       (-Real.exp (-(f x))) •
         (mfderiv I 𝓘(ℝ, ℝ) f x).toLinearMap := by
-  have hmf :
-      mfderiv I 𝓘(ℝ, ℝ) (fun y : M => Real.exp (-(f y))) x =
-        (-Real.exp (-(f x))) • mfderiv I 𝓘(ℝ, ℝ) f x := by
-    simpa [Pi.neg_apply, neg_smul] using
-      (hasMFDerivAt_rexp (I := I) hf.hasMFDerivAt.neg).mfderiv
-  rw [hmf]
   ext v
-  rfl
+  have hv := congrArg (fun L => L v)
+    (hasMFDerivAt_rexp (I := I) hf.hasMFDerivAt.neg).mfderiv
+  apply hv.trans
+  change Real.exp (-(f x)) *
+      (-(show ℝ from mfderiv I 𝓘(ℝ, ℝ) f x v)) =
+    -Real.exp (-(f x)) *
+      (show ℝ from mfderiv I 𝓘(ℝ, ℝ) f x v)
+  ring
 
 
 lemma gradFun_exp_neg
@@ -131,7 +135,8 @@ private lemma hasDerivAt_line_of_differentiableAt
     simpa using hsum
   have hcomp :=
     hF.hasFDerivAt.comp_hasDerivAt_of_eq (x := (0 : ℝ)) hline (by simp)
-  simpa [Function.comp] using hcomp
+  exact hcomp.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun t => by rfl)
 
 lemma chartInvGramMatrix_symm
     (g : SmoothRiemannianMetric I M) (α x : M)
@@ -324,7 +329,7 @@ private lemma gradChartCoeff_contMDiffOn
       ((extChartAt I α).source ∩
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) := by
   classical
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   refine ContMDiffOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞
         (fun x => chartInvGramMatrix (I := I) g α x i j)
@@ -433,10 +438,7 @@ theorem tangentSectionAction_grad_g_eq_inner [I.Boundaryless]
     tangentSectionAction (I := I) X f x =
       g.inner x (X x)
         ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
-  rw [grad_g_apply]
-  change tangentSectionAction (I := I) X f x =
-    g.inner x (X x) (gradFun (I := I) g f x)
-  rw [inner_gradFun_right (I := I) g f x (X x)]
-  rfl
+  exact tangentSectionAction_eq_inner_grad_g (I := I) g
+    (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) X x
 
 end DifferentialGeometry.Integral.DivergenceTheorem

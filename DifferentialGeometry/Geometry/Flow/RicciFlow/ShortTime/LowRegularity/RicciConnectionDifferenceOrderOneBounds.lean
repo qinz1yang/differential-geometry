@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -40,6 +39,7 @@ open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_smul_real
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
@@ -270,6 +270,7 @@ private theorem kernel_split
               (slotPermutationCoefficient (I := I) (M := M) g₀ ko1203)
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ki120) := rfl
 
+omit [SigmaCompactSpace M] in
 private theorem arm_riemannianFiberNormSq
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) (x : M) :
@@ -300,6 +301,7 @@ private theorem arm_riemannianFiberNormSq
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection y) d) := rfl
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
+omit [SigmaCompactSpace M] in
 private theorem fullArm_riemannianFiberNormSq
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
@@ -612,7 +614,7 @@ theorem exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_co
               (linearizedRicciConnectionDifferenceOrder1CoeffField
                 (I := IU) (M := MU) g₀ g₁)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
-  letI : CompleteSpace EU := FiniteDimensional.complete ℝ EU
+  let : CompleteSpace EU := FiniteDimensional.complete ℝ EU
   classical
   have hΛ0 : 0 ≤ Λ := le_trans (by norm_num) hΛ
   obtain ⟨Capp, hCapp, happ⟩ :=

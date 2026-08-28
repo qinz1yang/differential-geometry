@@ -268,13 +268,14 @@ theorem quasilinearDuhamelMapHa1_contracting (hT : 0 < T)
       tensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N) :
     ContractingWith
-      ⟨(L : ℝ) * (2 * Real.sqrt T),
-        mul_nonneg L.coe_nonneg (by positivity)⟩
+      (NNReal.mk ((L : ℝ) * (2 * Real.sqrt T))
+        (mul_nonneg L.coe_nonneg (by positivity)))
       (quasilinearDuhamelMapHa1 (I := I) (M := M) a hT
         u₀ hN) := by
   refine ⟨?_, ?_⟩
-  · rw [← NNReal.coe_lt_coe]
-    simpa using smallTime_contraction_const_lt_one (L := L) (T := T) hTL
+  · exact NNReal.coe_lt_coe.mp (by
+      simpa only [NNReal.coe_mk, NNReal.coe_one] using
+        smallTime_contraction_const_lt_one (L := L) (T := T) hTL)
   · refine LipschitzWith.of_dist_le_mul (fun gforce gforce' => ?_)
     have h := quasilinearDuhamelMapHa1_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT

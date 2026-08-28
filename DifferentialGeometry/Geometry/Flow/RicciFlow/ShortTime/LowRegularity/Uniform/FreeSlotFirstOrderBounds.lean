@@ -82,16 +82,15 @@ theorem sfOne_grid_uniform
         gBase g hΛ hKb₀_nonneg hKb₀ hcomp hjet₁ hjet₂
       have hz := sfOne_riemannianFiberNormSq_zero (I := I) (M := M) g hC₀ hR₀ x
       rw [hDim] at hz
-      simpa only [C, sfOneGridC, if_pos, iteratedCovGrad_zero,
-        Nat.add_zero] using hz
+      with_unfolding_all
+        exact hz
     · have hR₁ := uniformRmOpOne_of (I := I) (M := M)
         gBase g hΛ hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁'
           hcomp hjet₁ hjet₂ hjet₃
       have ho := sfOne_riemannianFiberNormSq_one (I := I) (M := M) g hC₁ hR₁ x
       rw [hDim] at ho
-      simpa only [C, sfOneGridC, if_neg (by norm_num : (1 : ℕ) ≠ 0),
-        iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero,
-        Nat.reduceAdd] using ho
+      with_unfolding_all
+        exact ho
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

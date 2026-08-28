@@ -14,6 +14,8 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -292,7 +294,9 @@ theorem timeShift_initial_metric {D : DifferentialGeometry.Geometry.Curvature.Re
     (S : SolutionOn (I := I) (M := M) D) (τ : Real) :
     (S.timeShift τ).family.metric ((D.timeShift τ).initial) =
       S.family.metric D.initial := by
-  simp [DifferentialGeometry.Geometry.Curvature.RealTimeInterval.timeShift, sub_add_cancel]
+  rw [timeShift_family_metric]
+  change S.family.metric (D.initial - τ + τ) = S.family.metric D.initial
+  rw [sub_add_cancel]
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem timeShift_self_initial_metric
@@ -355,7 +359,6 @@ def flowG
 
 def ricciNormLap
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     Real -> M -> Real :=
   fun t x =>
@@ -365,14 +368,19 @@ def ricciNormLap
 def ricciPair04 {x : M}
     (Ric : DifferentialGeometry.Geometry.Curvature.Tensor02At (I := I) (M := M) x) :
     DifferentialGeometry.Geometry.Curvature.Tensor04At (I := I) (M := M) x :=
-  (Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
-      (s := 2) (q := 2) (x := x) Ric Ric).domDomCongr
-    (Equiv.swap (1 : Fin 4) (2 : Fin 4))
+  (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+      (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x).symm
+    ((Bundle.continuousMultilinearMap.product_fun
+        (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+        (s := 2) (q := 2) (x := x)
+        (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+          (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x Ric)
+        (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+          (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x Ric)).domDomCongr
+      (Equiv.swap (1 : Fin 4) (2 : Fin 4)))
 
 def ricciReact
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) : Real -> M -> Real :=
   fun t x =>
     -inner0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x)
@@ -669,9 +677,16 @@ theorem isSolutionOn_timeShift
         Set.MapsTo (fun s : Real => s + τ) (D.timeShift τ).carrier D.carrier := by
       intro s hs
       exact hs
-    have hcomp := hOld.comp (x := (t : Real)) hshift hmaps
-    simpa [MetricVariationEquationOn, SolutionOn.family, SolutionOn.timeShift,
-      SolutionFamily.timeShift, RicciAtFamily.toTensorField, Function.comp_def] using hcomp
+    have hcomp := hOld.scomp (x := (t : Real)) hshift hmaps
+    have hcomp' : HasDerivWithinAt
+        (fun s : Real => ((S.timeShift τ).family.metric s).inner x X Y)
+        ((1 : Real) • ((-2 : Real) * S.ricciAt (t' : Real) x
+          (DifferentialGeometry.Geometry.Curvature.vec2 X Y)))
+        (D.timeShift τ).carrier (t : Real) :=
+      hcomp.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl) rfl
+    exact hcomp'.congr_deriv (by
+      simp only [one_smul]
+      rfl)
   scalarCont := by
     have hmap : Continuous (fun q : Real × M => (q.1 + τ, q.2)) :=
       (continuous_fst.add continuous_const).prodMk continuous_snd
@@ -697,7 +712,7 @@ theorem isSolutionOn_timeShift
     have hOld := hS.scalarTime (K := shift '' K) (t := shift t) ht' hK' x
     have hshift : DifferentiableWithinAt Real shift K t := by
       simpa [shift] using
-        ((differentiableWithinAt_id' (𝕜 := Real) (s := K) (x := t)).add_const τ)
+        ((differentiableWithinAt_fun_id (𝕜 := Real) (s := K) (x := t)).add_const τ)
     have hmaps : Set.MapsTo shift K (shift '' K) := by
       intro s hs
       exact ⟨s, hs, rfl⟩
@@ -714,7 +729,10 @@ theorem isSolutionOn_timeShift
       DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.ricciCont htime hmaps
-    simpa [SolutionOn.ricci, SolutionOn.timeShift, SolutionFamily.timeShift] using hcont
+    refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
+      hcont ?_
+    intro s _ x
+    rfl
   rm04Cont := by
     have hmaps :
         Set.MapsTo (fun s : Real => s + τ) (D.timeShift τ).carrier D.carrier := by
@@ -726,17 +744,18 @@ theorem isSolutionOn_timeShift
       DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.rm04Cont htime hmaps
-    simpa [SolutionOn.timeShift, SolutionFamily.timeShift] using hcont
+    refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
+      hcont ?_
+    intro s _ x
+    rfl
   ricciNormSpace := by
     intro t ht x
     have h := hS.ricciNormSpace (t + τ) ht x
-    simpa [ricciNorm, SolutionOn.family, SolutionOn.ricci, SolutionOn.timeShift,
-      SolutionFamily.timeShift] using h
+    exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   ricciNormGrad := by
     intro t ht x
     have h := hS.ricciNormGrad (t + τ) ht x
-    simpa [ricciNorm, SolutionOn.family, SolutionOn.ricci, SolutionOn.timeShift,
-      SolutionFamily.timeShift] using h
+    exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [SigmaCompactSpace M] in
 theorem isRicciFlowCandidateOn_of_isSolutionOn

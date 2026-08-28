@@ -1128,7 +1128,7 @@ theorem chartLie_pou_lip
     (1 * V + Q₀ * Cdw) + (1 * V + Q₀ * Cdw)) + 1
   have hn_nn : 0 ≤ n := by
     dsimp [n]
-    exact_mod_cast Nat.zero_le (Module.finrank ℝ E)
+    exact_mod_cast Nat.zero_le (n := Module.finrank ℝ E)
   have hP_nn : 0 ≤ P := add_nonneg hMΓ_nn hMΓb_nn
   have hR_nn : 0 ≤ R := add_nonneg hMdΓ_nn hMdΓb_nn
   have hD_nn : 0 ≤ D := mul_nonneg (mul_nonneg (sq_nonneg n) (sq_nonneg M_b)) hQ₁_nn

@@ -77,7 +77,6 @@ private lemma exists_bound_partial_eta
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_bound_weightedInvGram
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK : IsCompact K)
@@ -593,14 +592,14 @@ theorem chartBilinear_factor_integrable
         (d := Module.finrank ℝ E) k (-h)
         (testFactor (I := I) (M := M) D η k h j) y)
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
-    haveI : ENNReal.HolderTriple (2 : ℝ≥0∞) 2 1 := by
+    let _ : ENNReal.HolderTriple (2 : ℝ≥0∞) 2 1 := by
       constructor
       rw [show (1 : ℝ≥0∞)⁻¹ = 1 from inv_one]
       rw [ENNReal.inv_two_add_inv_two]
     have h := MemLp.integrable_mul (μ :=
       (volume : Measure EuclN).restrict (Metric.cthickening |h| K_0))
       (p := (2 : ℝ≥0∞)) (q := (2 : ℝ≥0∞)) hF_lp h_dq_test_lp_restrict
-    simpa using h
+    exact h.congr (Filter.Eventually.of_forall fun _ ↦ rfl)
   have h_assoc : (fun y =>
       weightedInvGramOnEuclid (I := I) g α i j y *
         D.weak_partial i y *

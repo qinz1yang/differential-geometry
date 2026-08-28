@@ -75,7 +75,7 @@ theorem aestronglyMeasurable_bilinFormIntegrandOfCoeff
   refine hF_aemeas.aestronglyMeasurable.congr ?_
   filter_upwards with x
   simp [bilinFormIntegrandOfCoeff, PiLp.inner_apply, matMulE_apply, Matrix.mulVec,
-    dotProduct, hscalar]
+    dotProduct, mul_comm]
 
 /-- The bilinear-form integrand is integrable on `Ω`. -/
 theorem integrable_bilinFormIntegrandOfCoeff
@@ -86,7 +86,8 @@ theorem integrable_bilinFormIntegrandOfCoeff
   let μ : Measure E := volume.restrict Ω
   have hprod_memLp :
       MemLp (fun x => ‖hu.weakGrad x‖ * ‖hv.weakGrad x‖) 1 μ := by
-    simpa using (hv.weakGrad_memLp.norm.mul hu.weakGrad_memLp.norm)
+    exact (hv.weakGrad_memLp.norm.mul hu.weakGrad_memLp.norm).ae_eq <|
+      Filter.Eventually.of_forall fun _ => rfl
   have hdom_int :
       Integrable (fun x => A.Λ * (‖hu.weakGrad x‖ * ‖hv.weakGrad x‖)) μ := by
     rw [← memLp_one_iff_integrable]
@@ -117,7 +118,8 @@ theorem bilinForm_bound
     rw [← memLp_one_iff_integrable]
     have hprod_memLp :
         MemLp (fun x => ‖hu.weakGrad x‖ * ‖hv.weakGrad x‖) 1 μ := by
-      simpa using (hv.weakGrad_memLp.norm.mul hu.weakGrad_memLp.norm)
+      exact (hv.weakGrad_memLp.norm.mul hu.weakGrad_memLp.norm).ae_eq <|
+        Filter.Eventually.of_forall fun _ => rfl
     exact hprod_memLp.const_mul A.Λ
   have hpointwise :
       ∀ᵐ x ∂μ, ‖bilinFormIntegrandOfCoeff A hu hv x‖ ≤
@@ -370,7 +372,7 @@ theorem aestronglyMeasurable_divergenceRHSIntegrandOfField
     simpa using (RCLike.inner_apply' a b)
   refine hsum.aestronglyMeasurable.congr ?_
   filter_upwards with x
-  simp [divergenceRHSIntegrandOfField, PiLp.inner_apply, hscalar]
+  simp [divergenceRHSIntegrandOfField, PiLp.inner_apply, mul_comm]
 
 /-- The divergence-form RHS integrand is integrable on `Ω`. -/
 theorem integrable_divergenceRHSIntegrandOfField
@@ -381,7 +383,8 @@ theorem integrable_divergenceRHSIntegrandOfField
   let μ : Measure E := volume.restrict Ω
   have hdom_int :
       Integrable (fun x => ‖F x‖ * ‖hv.weakGrad x‖) μ := by
-    simpa [mul_comm] using (hv.weakGrad_memLp.norm.integrable_mul hF.norm)
+    exact (hv.weakGrad_memLp.norm.integrable_mul hF.norm).congr <|
+      Filter.Eventually.of_forall fun _ => mul_comm _ _
   have hbound :
       ∀ᵐ x ∂μ, ‖divergenceRHSIntegrandOfField F hv x‖ ≤ ‖F x‖ * ‖hv.weakGrad x‖ := by
     filter_upwards with x
@@ -408,7 +411,8 @@ theorem divergenceRHSOfField_bound
       ∫ x, ‖divergenceRHSIntegrandOfField F hv x‖ ∂μ ≤
         ∫ x, ‖F x‖ * ‖hv.weakGrad x‖ ∂μ := by
     have hdom_int : Integrable (fun x => ‖F x‖ * ‖hv.weakGrad x‖) μ := by
-      simpa [mul_comm] using (hv.weakGrad_memLp.norm.integrable_mul hF.norm)
+      exact (hv.weakGrad_memLp.norm.integrable_mul hF.norm).congr <|
+        Filter.Eventually.of_forall fun _ => mul_comm _ _
     exact integral_mono_ae hint_int.norm hdom_int hpointwise
   have hF_memLp : MemLp F (ENNReal.ofReal (2 : ℝ)) μ := by
     simpa using hF

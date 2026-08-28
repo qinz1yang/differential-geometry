@@ -162,7 +162,7 @@ theorem nablaRicChartComp
     simp only [scalarOnE_def]
     rw [hy, (extChartAt I α).right_inv hyTarget]
   have hderiv :
-      extDerivFun (I := I) f x
+      mvfderiv (I := I) f x
           (chartBasisVecFiber (I := I) α (K 0) x) =
         partialDeriv (E := E) (K 0) gE y₀ := by
     change
@@ -177,7 +177,7 @@ theorem nablaRicChartComp
         (fderiv Real gE y₀) ((chartModelBasis E) (K 0))
     rw [hscalar.fderiv_eq (𝕜 := Real)]
   have hderivX :
-      extDerivFun (I := I) f x (X x) =
+      mvfderiv (I := I) f x (X x) =
         partialDeriv (E := E) (K 0) gE y₀ := by
     rw [hXx, hderiv]
   have hcov : ∀ q : Fin 2,
@@ -246,7 +246,7 @@ theorem nablaRicChartComp
         (if q = 0 then m else K 1) (if q = 1 then m else K 2) hx,
       smul_eq_mul]
   rw [hleft, hraw]
-  change extDerivFun (I := I) f x (X x) -
+  change mvfderiv (I := I) f x (X x) -
       (∑ q : Fin 2,
         Ric x
           (Function.update (fun r : Fin 2 => V r x) q

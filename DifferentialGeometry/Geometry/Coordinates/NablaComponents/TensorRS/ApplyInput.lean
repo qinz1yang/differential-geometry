@@ -161,7 +161,6 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
             (I := I) (M := M) (r := r) x₀ hy upper
           simp [basis, component0S_apply, componentRS_apply_gen, hconst]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [IsManifold I 2 M] in
 theorem tensorRS_eval_constInChart_coordinateFrame_contMDiffAt {r s : ℕ}
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -252,7 +251,7 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
   have hev := applyInput_coordFrame_eventually (I := I) T θ x₀ lower
   unfold coordDeriv0SAt
   change
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun y : M =>
         (tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
           (M := M) (∞ : WithTop ℕ∞) T θ y)
@@ -265,17 +264,17 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
         coordComponent0SAt (I := I) (θ x₀) upper *
           coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower)
   have hderiv_congr :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           (tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
             (M := M) (∞ : WithTop ℕ∞) T θ y)
             (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y))
         x₀ (X x₀) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
             θfun upper y * βfun upper y) x₀ (X x₀) := by
-    exact extDerivFun_congr_eventually (I := I) (X x₀) (by
+    exact mvfderiv_congr_eventually (I := I) (X x₀) (by
       simpa [θfun, βfun, tensorRSField_applyInput_apply] using hev)
   rw [hderiv_congr]
   have hsum_fun :
@@ -287,11 +286,11 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
     funext y
     simp
   rw [hsum_fun]
-  rw [extDerivFun_finset_sum (I := I) (t := Finset.univ)
+  rw [mvfderiv_finset_sum (I := I) (t := Finset.univ)
     (f := fun upper y => θfun upper y * βfun upper y) (x := x₀) (v := X x₀)]
   · calc
       (∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
-          extDerivFun (I := I) (fun y : M => θfun upper y * βfun upper y)
+          mvfderiv (I := I) (fun y : M => θfun upper y * βfun upper y)
             x₀ (X x₀))
           =
         ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
@@ -300,7 +299,7 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
           coordComponent0SAt (I := I) (θ x₀) upper *
             coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower) := by
           refine Finset.sum_congr rfl fun upper _ => ?_
-          rw [extDerivFun_mul (I := I) (f := θfun upper) (g := βfun upper)
+          rw [mvfderiv_mul (I := I) (f := θfun upper) (g := βfun upper)
         (x := x₀) (v := X x₀)]
           · have hθ0 :
             θfun upper x₀ =
@@ -326,16 +325,12 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
               exact hlocal.trans
                 (coordFrameRSComp_at (I := I) T x₀ upper lower)
             have hdθ :
-            extDerivFun (I := I) (θfun upper) x₀ (X x₀) =
+            mvfderiv (I := I) (θfun upper) x₀ (X x₀) =
               coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => θ x) upper := by
-              change (mfderiv I 𝓘(𝕜, 𝕜) (θfun upper) x₀) (X x₀) =
-                coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => θ x) upper
               simp [θfun, coordDeriv0SAt]
             have hdβ :
-            extDerivFun (I := I) (βfun upper) x₀ (X x₀) =
+            mvfderiv (I := I) (βfun upper) x₀ (X x₀) =
               coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower := by
-              change (mfderiv I 𝓘(𝕜, 𝕜) (βfun upper) x₀) (X x₀) =
-                coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower
               simp [βfun, coordDerivRSAt]
             rw [hθ0, hβ0, hdθ, hdβ]
             ring

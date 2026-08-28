@@ -24,6 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem nabla_roughLap0S_nablaKRm
@@ -54,6 +55,7 @@ theorem nabla_roughLap0S_nablaKRm
   refine Finset.sum_congr rfl fun j _ => ?_
   congr 1
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem spatialComm_nablaKRm_traceDiff
@@ -90,6 +92,7 @@ theorem spatialComm_nablaKRm_traceDiff
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_sub]
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem spatialComm_nablaKRm_split

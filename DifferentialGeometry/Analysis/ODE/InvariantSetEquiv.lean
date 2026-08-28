@@ -45,7 +45,8 @@ theorem ContinuousLinearEquiv.mapsTo_posTangentConeAt
   intro v hv
   rcases exists_fun_of_mem_tangentConeAt hv with ⟨ι, l, hl, c, d, hd₀, hdC, hcd⟩
   refine mem_tangentConeAt_of_seq l c (fun n ↦ e (d n)) ?_ ?_ ?_
-  · simpa using e.continuous.continuousAt.tendsto.comp hd₀
+  · change Tendsto (e ∘ d) l (𝓝 0)
+    simpa only [map_zero] using e.continuous.continuousAt.tendsto.comp hd₀
   · filter_upwards [hdC] with n hn
     refine ⟨x + d n, hn, ?_⟩
     simp

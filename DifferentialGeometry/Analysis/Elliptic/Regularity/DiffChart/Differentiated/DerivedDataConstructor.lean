@@ -246,7 +246,7 @@ private lemma locallyIntegrableOn_of_memLp_two_global
   have h_memLp_B : MemLp f 2 ((volume : Measure EuclN).restrict B) := by
     rw [← h_restrict_eq]; exact hf.restrict B
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -282,7 +282,7 @@ private lemma locallyIntegrableOn_of_locally_memLp_two
     fun y hy => (hB_subset hy).1
   have h_memLp := hf B hB_compact hB_subset_chart
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -517,7 +517,7 @@ lemma base_f_chart_ae_zero_off_K_α
         D.f_chart y) 2 ((volume : Measure EuclN).restrict B) :=
       MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fchart_K_memLp h_density_memLp_top
     have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-    haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+    have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hB_finite
@@ -914,7 +914,7 @@ theorem derived_variational_identity_holds
       ring
     rw [h_integrand_eq]
     have hK_finite : (volume : Measure EuclN) K < ⊤ := hK_compact.measure_lt_top
-    haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := by
+    have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hK_finite
@@ -1011,8 +1011,8 @@ theorem derived_variational_identity_holds
               (EuclideanSpace.single j 1) *
             D_base.weak_partial i y * ψ y)
             ((volume : Measure EuclN).restrict Ω) :=
-        fun i => integrable_finset_sum _ (fun j _ => h_pair_int i j)
-      exact integrable_finset_sum _ (fun i _ => h_inner i)
+        fun i => integrable_finsetSum _ (fun j _ => h_pair_int i j)
+      exact integrable_finsetSum _ (fun i _ => h_inner i)
     have h_cspu_int : Integrable (fun y => (∑ i, ∑ j,
           weightedInvGramDerivOnEuclid (I := I) g α i j l y *
           chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i j y * ψ y))
@@ -1035,8 +1035,8 @@ theorem derived_variational_identity_holds
             weightedInvGramDerivOnEuclid (I := I) g α i j l y *
             chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i j y * ψ y)
             ((volume : Measure EuclN).restrict Ω) :=
-        fun i => integrable_finset_sum _ (fun j _ => h_pair_int i j)
-      exact integrable_finset_sum _ (fun i _ => h_inner i)
+        fun i => integrable_finsetSum _ (fun j _ => h_pair_int i j)
+      exact integrable_finsetSum _ (fun i _ => h_inner i)
     have h_A2_int : Integrable (fun y => densityDerivOnEuclid (I := I) g α l y *
         D_base.u_chart y * ψ y) ((volume : Measure EuclN).restrict Ω) := by
       apply integrable_mul_compact_loc

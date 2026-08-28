@@ -54,7 +54,7 @@ theorem lcChrist_e_mdiffOn [Finite Idx]
     simp [IsLocalFrameOn.toBasisAt, Bundle.Trivialization.localFrame,
       Bundle.Trivialization.basisAt, hz]
   simp [christoffelSymbolInFrame, IsLocalFrameOn.coeff, hz,
-    Bundle.Trivialization.localFrame_coeff, hbasis]
+    Bundle.Trivialization.localFrameCoeff, hbasis]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -68,7 +68,6 @@ theorem frame_e_mdiffOn
       e₀.baseSet :=
   (e₀.isLocalFrameOn_localFrame_baseSet I ∞ basisE).contMDiffOn d
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] [Fintype Idx] [DecidableEq Idx] in
@@ -122,7 +121,6 @@ theorem akCompField_mdiffOn [Finite Idx]
   exact (lcChrist_e_mdiffOn e₀ gK basisE (k 0) (k 1) (k 2)).sub
     (lcChrist_e_mdiffOn e₀ gRef basisE (k 0) (k 1) (k 2))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] [Fintype Idx] [DecidableEq Idx] in
@@ -187,9 +185,9 @@ theorem gramE_dotVec
         ∑ i, c i • g.inner y (e₀.localFrame basisE i y) := by
       rw [map_sum]
       exact Finset.sum_congr rfl fun i _ => ContinuousLinearMap.map_smul _ _ _
-    rw [hL, ContinuousLinearMap.sum_apply]
+    rw [hL, sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [ContinuousLinearMap.smul_apply, map_sum, smul_eq_mul, Finset.mul_sum]
+    rw [smul_apply, map_sum, smul_eq_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
     ring
@@ -208,7 +206,7 @@ theorem gramE_posDef [Finite Idx]
     (g : SmoothRiemannianMetric I M) (basisE : Module.Basis Idx Real E)
     {y : M} (hy : y ∈ e₀.baseSet) :
     (gramE (I := I) e₀ g basisE y).PosDef := by
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   refine Matrix.PosDef.of_dotProduct_mulVec_pos (gramE_herm (I := I) e₀ g basisE y) ?_
   intro c hc
   rw [show (star c : Idx → Real) = c from funext fun i => star_trivial _, gramE_dotVec]
@@ -276,7 +274,6 @@ private theorem chr_eq_chartChr {u : Set M}
     christoffelSymbolInFrame cov frame hframe x i j k =
       DifferentialGeometry.Coordinates.christoffelSymbolInFrame cov frame hframe x i j k := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
@@ -451,13 +448,13 @@ theorem koszulComp_at
         frame hframe hu 1 hy w]
   have hb1 := hbr X (idx 0) (idx 1) (idx 2) (fun j => idx (Equiv.refl (Fin 3) j)) hX rfl rfl rfl
   have hb2 := hbr Y (idx 1) (idx 0) (idx 2) (fun j => idx (Equiv.swap (0 : Fin 3) 1 j)) hY
-    (by change idx (Equiv.swap (0 : Fin 3) 1 0) = idx 1; congr 1)
-    (by change idx (Equiv.swap (0 : Fin 3) 1 1) = idx 0; congr 1)
-    (by change idx (Equiv.swap (0 : Fin 3) 1 2) = idx 2; congr 1)
+    (by congr 1)
+    (by congr 1)
+    (by congr 1)
   have hb3 := hbr Z (idx 2) (idx 0) (idx 1) (fun j => idx ((finRotate 3).symm j)) hZ
-    (by change idx ((finRotate 3).symm 0) = idx 2; congr 1)
-    (by change idx ((finRotate 3).symm 1) = idx 0; congr 1)
-    (by change idx ((finRotate 3).symm 2) = idx 1; congr 1)
+    (by congr 1)
+    (by congr 1)
+    (by congr 1)
   rw [hLHS, hkos, hb1, hb2, hb3]
   ring
 
@@ -574,7 +571,6 @@ theorem compL2_tower_eq
   rw [IsLocalFrameOn.toBasisAt_coe]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

@@ -103,7 +103,7 @@ theorem nabla3Rm04Field_eval_expand
     (a d₁ d₂ : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     nabla3Rm04Field (I := I) S t x₀
         (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ a d₁ d₂ m) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             nabla2Rm04Field (I := I) S t p
               (fun q : Fin 6 => nabla3SlotFields (I := I) (coordinateFrameAt (I := I) x₀) d₁ d₂ m q
@@ -325,7 +325,7 @@ theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
         (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ a b c m) -
       nabla3Rm04Field (I := I) S (t : Real) x₀
         (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ a c b m) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M =>
             curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
               (S.base.rm04 (t : Real) p)
@@ -348,7 +348,7 @@ theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
     ∀ Ebc Ecb Cbc Ccb : Real, (Ebc - Cbc) - (Ecb - Ccb) = (Ebc - Ecb) - (Cbc - Ccb)
     from fun _ _ _ _ => by ring]
   congr 1
-  · rw [← extDerivFun_sub_at (I := I) (frame a x₀)
+  · rw [← mvfderiv_sub_at (I := I) (frame a x₀)
       (nabla2Rm04Field_slotFields_mdifferentiableAt (I := I) S (t : Real) x₀ b c m)
       (nabla2Rm04Field_slotFields_mdifferentiableAt (I := I) S (t : Real) x₀ c b m)]
     rw [nabla2Rm04Field_antisym_eq_curvatureAction_field (I := I) S t x₀ b c m]
@@ -387,7 +387,7 @@ theorem nablaLapCommReactionTerm_eq_covDeriv_curvatureAction_add_curvatureAction
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     nablaLapCommReactionTerm (I := I) S (t : Real) x₀ a b c m =
-      (extDerivFun (I := I)
+      (mvfderiv (I := I)
             (fun p : M =>
               curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
                 (S.base.rm04 (t : Real) p)

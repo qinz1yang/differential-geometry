@@ -47,7 +47,6 @@ open CurvatureCoefficientDifferenceJetTower
 section RiemannLoweredDifference
 
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
@@ -57,16 +56,18 @@ def quadraticConnectionDifferenceCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
     (connectionDifferenceSection (I := I) g₁ g₀)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
-    (om : Tensor0SSpace 1 I x) (w : Fin 3 → TangentSpace I x) :
+    (om : Tensor0SSpace 1 I x) (w : Fin 3 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) w =
       cotangentToDual (I := I) (x := x) om
         (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2)) (w 0)) := by
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 2)))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))) := by
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -79,20 +80,24 @@ lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetri
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g₁ g₀).toSection x) om) =
       connectionDifferencePairing (I := I) g₁ g₀ x om from rfl]
-  have hchg : Tensor0SSpace.toModel (connectionDifferencePairing (I := I) g₁ g₀ x om)
-      (fun j : Fin 2 => if j = 0 then
-        connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) =
-      connectionDifferencePairing (I := I) g₁ g₀ x om
-        (fun j : Fin 2 => if j = 0 then
-          connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) := rfl
-  rw [hchg]
-  rw [show (fun j : Fin 2 => if j = 0 then
-        connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) =
-      (Fin.cons (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2))
-        (fun _ : Fin 1 => w 0) : Fin 2 → TangentSpace I x) from by
+  rw [Tensor0SSpace.toModel_apply_model_vector]
+  rw [show (fun j : Fin 2 =>
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          (if j = 0 then
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 2)))
+          else w 0)) =
+      (Fin.cons (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 2)))
+        (fun _ : Fin 1 =>
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0)) :
+        Fin 2 → TangentSpace I x) from by
     funext j
     refine Fin.cases ?_ ?_ j
-    · rw [if_pos rfl]
+    · rw [if_pos rfl, ContinuousLinearEquiv.symm_apply_apply]
       rfl
     · intro i
       rw [if_neg (Fin.succ_ne_zero i)]
@@ -101,7 +106,6 @@ lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetri
   rw [cotangentToDual_apply]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 def covectorExtensionSection (g₀ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) :
     Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun y : M => Tensor0SSpace 1 I y)⟯ :=
@@ -124,8 +128,7 @@ lemma covectorExtensionSection_self (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [smoothExtensionTangent_eq (I := I) x (inverseMetricSharpFib (I := I) g₀ x om)]
   exact g0FlatCLM_inverseMetricSharpFib (I := I) g₀ x om
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannLoweredBackgroundDifference_palatini_repr
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
@@ -146,15 +149,17 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro v
+  let vt : Fin 3 → TangentSpace I x :=
+    fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
   set X0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    smoothExtensionTangentSection (I := I) (M := M) x (v 0) with hX0_def
+    smoothExtensionTangentSection (I := I) (M := M) x (vt 0) with hX0_def
   set X1 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    smoothExtensionTangentSection (I := I) (M := M) x (v 1) with hX1_def
+    smoothExtensionTangentSection (I := I) (M := M) x (vt 1) with hX1_def
   set X2 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    smoothExtensionTangentSection (I := I) (M := M) x (v 2) with hX2_def
-  have hX0x : X0 x = v 0 := smoothExtensionTangent_eq (I := I) x (v 0)
-  have hX1x : X1 x = v 1 := smoothExtensionTangent_eq (I := I) x (v 1)
-  have hX2x : X2 x = v 2 := smoothExtensionTangent_eq (I := I) x (v 2)
+    smoothExtensionTangentSection (I := I) (M := M) x (vt 2) with hX2_def
+  have hX0x : X0 x = vt 0 := smoothExtensionTangent_eq (I := I) x (vt 0)
+  have hX1x : X1 x = vt 1 := smoothExtensionTangent_eq (I := I) x (vt 1)
+  have hX2x : X2 x = vt 2 := smoothExtensionTangent_eq (I := I) x (vt 2)
   set omSec : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun y : M => Tensor0SSpace 1 I y)⟯ :=
     covectorExtensionSection (I := I) (M := M) g₀ x om with homSec_def
   have homx : omSec x = om := covectorExtensionSection_self (I := I) (M := M) g₀ x om
@@ -172,7 +177,9 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
             quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om)
-        (Fin.cons (X x) (Fin.cons (Y x) ![Z x])) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)])) =
       cotangentToDual (I := I) (x := x) om
           (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) +
         cotangentToDual (I := I) (x := x) om
@@ -188,11 +195,13 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
           (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) := by
       rw [SmoothCcTensor.toSection_add]
       rfl
-    rw [hsplit, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+    rw [hsplit, Tensor0SSpace.toModel_add, add_apply]
     have hbridge : Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) om)
-        (Fin.cons (X x) (Fin.cons (Y x) ![Z x])) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)])) =
         cotangentToDual (I := I) (x := x) om
           (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) := by
       rw [← homx]
@@ -200,18 +209,20 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
       rw [cotangentToDual_apply]
     rw [hbridge]
     rw [quadraticConnectionDifferenceCc_toModel (I := I) (M := M) g₀ g₁ x om
-      (Fin.cons (X x) (Fin.cons (Y x) ![Z x]))]
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]))]
     rfl
   have htor : (LeviCivita (I := I) g₀).torsion = 0 := LeviCivita_torsion_eq_zero (I := I) g₀
   have hpal := riemannSec_difference (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
     (X := fun b => X0 b) (Y := fun b => X1 b) (Z := fun b => X2 b)
     X0.contMDiff X1.contMDiff X2.contMDiff htor x
-  have hop1 : riemannOp (LeviCivita (I := I) g₁) x (v 0) (v 1) (v 2) =
+  have hop1 : riemannOp (LeviCivita (I := I) g₁) x (vt 0) (vt 1) (vt 2) =
       riemannSec (LeviCivita (I := I) g₁) (fun b => X0 b) (fun b => X1 b) (fun b => X2 b) x := by
     rw [← hX0x, ← hX1x, ← hX2x]
     exact riemannOp_apply_smooth (cov := LeviCivita (I := I) g₁)
       X0.contMDiff X1.contMDiff X2.contMDiff
-  have hop0 : riemannOp (LeviCivita (I := I) g₀) x (v 0) (v 1) (v 2) =
+  have hop0 : riemannOp (LeviCivita (I := I) g₀) x (vt 0) (vt 1) (vt 2) =
       riemannSec (LeviCivita (I := I) g₀) (fun b => X0 b) (fun b => X1 b) (fun b => X2 b) x := by
     rw [← hX0x, ← hX1x, ← hX2x]
     exact riemannOp_apply_smooth (cov := LeviCivita (I := I) g₀)
@@ -221,8 +232,8 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
             (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))).toSection x) om) v =
-      g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x (v 0) (v 1) (v 2)) u -
-        g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (v 0) (v 1) (v 2)) u := by
+      g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x (vt 0) (vt 1) (vt 2)) u -
+        g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (vt 0) (vt 1) (vt 2)) u := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
             (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
@@ -252,13 +263,14 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
       (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     rw [show (fun i : Fin 4 =>
-        (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-          (fun k => (show E from v k)) : Fin 4 → E) ((Equiv.swap (0 : Fin 4) 1) i)) =
-      (![v 0, (show E from u), v 1, v 2] : Fin 4 → E) from by
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)) v : Fin 4 → E)
+          ((Equiv.swap (0 : Fin 4) 1) i)) =
+      (![v 0, tangentSpaceModelContinuousLinearEquiv (I := I) x u, v 1, v 2] : Fin 4 → E) from by
       funext i
       fin_cases i <;> rfl]
     rw [riemannLoweredBackgroundDifference_unitModel_apply (I := I) (M := M) g₀ g₁ x
-      (![v 0, (show E from u), v 1, v 2] : Fin 4 → TangentSpace I x)]
+      (![v 0, tangentSpaceModelContinuousLinearEquiv (I := I) x u, v 1, v 2] : Fin 4 → E)]
     rfl
   rw [hLHS]
   have hRHSsub : Tensor0SSpace.toModel
@@ -296,10 +308,13 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
               quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) from by
       rw [SmoothCcTensor.toSection_sub]
       rfl]
-    rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+    rw [Tensor0SSpace.toModel_sub, sub_apply]
   rw [hRHSsub]
   have hterm : ∀ (σ : Equiv.Perm (Fin 3)) (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
-      ((fun i => v (σ i)) : Fin 3 → E) = Fin.cons (X x) (Fin.cons (Y x) ![Z x]) →
+      ((fun i => v (σ i)) : Fin 3 → E) =
+        Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) →
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 σ
@@ -327,51 +342,55 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
     rw [htup]
     exact hDQ X Y Z
   have htup1 : ((fun i => v ((Equiv.swap (1 : Fin 3) 2) i)) : Fin 3 → E) =
-      Fin.cons (X0 x) (Fin.cons (X2 x) ![X1 x]) := by
+      Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X0 x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X2 x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (X1 x)]) := by
     funext k
-    refine Fin.cases ?_ ?_ k
-    · rw [show ((Equiv.swap (1 : Fin 3) 2) 0) = (0 : Fin 3) from by decide]
-      rw [show (Fin.cons (X0 x) (Fin.cons (X2 x) ![X1 x]) : Fin 3 → E) 0 = X0 x from rfl]
-      rw [hX0x]
-    · intro j
-      refine Fin.cases ?_ ?_ j
-      · rw [show (Fin.succ (0 : Fin 2)) = (1 : Fin 3) from rfl]
-        rw [show ((Equiv.swap (1 : Fin 3) 2) 1) = (2 : Fin 3) from by decide]
-        rw [show (Fin.cons (X0 x) (Fin.cons (X2 x) ![X1 x]) : Fin 3 → E) 1 = X2 x from rfl]
-        rw [hX2x]
-      · intro j2
-        refine Fin.cases ?_ (fun j3 => j3.elim0) j2
-        rw [show (Fin.succ (Fin.succ (0 : Fin 1))) = (2 : Fin 3) from rfl]
-        rw [show ((Equiv.swap (1 : Fin 3) 2) 2) = (1 : Fin 3) from by decide]
-        rw [show (Fin.cons (X0 x) (Fin.cons (X2 x) ![X1 x]) : Fin 3 → E) 2 = X1 x from rfl]
-        rw [hX1x]
+    fin_cases k
+    · simp only [Fin.isValue, Fin.zero_eta, Nat.reduceAdd, Matrix.Fin.cons_vecCons,
+        Nat.succ_eq_add_one, Fin.cons_zero, hX0x, vt,
+        ContinuousLinearEquiv.apply_symm_apply]
+      apply congrArg v
+      decide
+    · simp only [Fin.isValue, Fin.mk_one, Nat.reduceAdd, Matrix.Fin.cons_vecCons,
+        Nat.succ_eq_add_one, Fin.cons_one, Matrix.cons_val_zero, hX2x, vt,
+        ContinuousLinearEquiv.apply_symm_apply]
+      apply congrArg v
+      decide
+    · simp only [Fin.isValue, Fin.reduceFinMk, Nat.reduceAdd, Matrix.Fin.cons_vecCons,
+        Nat.succ_eq_add_one, Matrix.cons_val, hX1x, vt,
+        ContinuousLinearEquiv.apply_symm_apply]
+      apply congrArg v
+      decide
   have htup2 : ((fun i => v ((finRotate 3) i)) : Fin 3 → E) =
-      Fin.cons (X1 x) (Fin.cons (X2 x) ![X0 x]) := by
+      Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X1 x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X2 x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (X0 x)]) := by
     funext k
-    refine Fin.cases ?_ ?_ k
-    · rw [show ((finRotate 3) 0) = (1 : Fin 3) from by decide]
-      rw [show (Fin.cons (X1 x) (Fin.cons (X2 x) ![X0 x]) : Fin 3 → E) 0 = X1 x from rfl]
-      rw [hX1x]
-    · intro j
-      refine Fin.cases ?_ ?_ j
-      · rw [show (Fin.succ (0 : Fin 2)) = (1 : Fin 3) from rfl]
-        rw [show ((finRotate 3) 1) = (2 : Fin 3) from by decide]
-        rw [show (Fin.cons (X1 x) (Fin.cons (X2 x) ![X0 x]) : Fin 3 → E) 1 = X2 x from rfl]
-        rw [hX2x]
-      · intro j2
-        refine Fin.cases ?_ (fun j3 => j3.elim0) j2
-        rw [show (Fin.succ (Fin.succ (0 : Fin 1))) = (2 : Fin 3) from rfl]
-        rw [show ((finRotate 3) 2) = (0 : Fin 3) from by decide]
-        rw [show (Fin.cons (X1 x) (Fin.cons (X2 x) ![X0 x]) : Fin 3 → E) 2 = X0 x from rfl]
-        rw [hX0x]
+    fin_cases k
+    · simp only [Fin.zero_eta, Fin.isValue, Nat.reduceAdd, Matrix.Fin.cons_vecCons,
+        Nat.succ_eq_add_one, Fin.cons_zero, hX1x, vt,
+        ContinuousLinearEquiv.apply_symm_apply]
+      apply congrArg v
+      decide
+    · simp only [Fin.mk_one, Fin.isValue, Nat.reduceAdd, Matrix.Fin.cons_vecCons,
+        Nat.succ_eq_add_one, Fin.cons_one, Matrix.cons_val_zero, hX2x, vt,
+        ContinuousLinearEquiv.apply_symm_apply]
+      apply congrArg v
+      decide
+    · simp only [Fin.reduceFinMk, Fin.isValue, Nat.reduceAdd, Matrix.Fin.cons_vecCons,
+        Nat.succ_eq_add_one, Matrix.cons_val, hX0x, vt,
+        ContinuousLinearEquiv.apply_symm_apply]
+      apply congrArg v
+      decide
   rw [hterm (Equiv.swap (1 : Fin 3) 2) X0 X2 X1 htup1]
   rw [hterm (finRotate 3) X1 X2 X0 htup2]
   rw [hop1, hop0]
   rw [hpal]
-  rw [map_add (g₀.inner x), ContinuousLinearMap.add_apply]
-  rw [map_add (g₀.inner x), ContinuousLinearMap.add_apply]
-  rw [map_sub (g₀.inner x), ContinuousLinearMap.sub_apply]
-  rw [map_sub (g₀.inner x), ContinuousLinearMap.sub_apply]
+  rw [map_add (g₀.inner x), add_apply]
+  rw [map_add (g₀.inner x), add_apply]
+  rw [map_sub (g₀.inner x), sub_apply]
+  rw [map_sub (g₀.inner x), sub_apply]
   simp only [hpair]
   have hc1 : covDerivConnectionDifference (I := I) g₀ g₁
       (fun b => X0 b) (fun b => X1 b) (fun b => X2 b) x =
@@ -432,7 +451,6 @@ lemma gridSum_mul_gridSum_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (m1 m2 m3
           (∑ k ∈ Finset.range m3, Combinatorics.antidiagonalTupleGrid b k) := by
         rw [Finset.sum_mul]
 
-set_option backward.isDefEq.respectTransparency false in
 def perturbationSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=
@@ -480,7 +498,6 @@ lemma inner_perturbationSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
   exact inner_metricSharp (I := I) g₀ x
     (ccTensorBilinSymm (I := I) g₀ T x v).toLinearMap w
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem perturbationSharpEndoFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
@@ -552,7 +569,6 @@ lemma unitModel_eq_ccTensorBilin_pt (g₀ : SmoothRiemannianMetric I M)
   funext k
   fin_cases k <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric I M)
@@ -575,7 +591,8 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (perturbationSharpEndoField (I := I) (M := M) g₀ T)).toSection x) om) w =
-      ccTensorBilinSymm (I := I) g₀ T x (w 0)
+      ccTensorBilinSymm (I := I) g₀ T x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
         (inverseMetricSharpFib (I := I) g₀ x om) := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -584,12 +601,16 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
           (perturbationSharpEndoField (I := I) (M := M) g₀ T x) om from rfl]
     rw [slotInsertEndoFib_apply_eval]
     rw [toModel_om_single_eq_cotangentToDual (I := I) (M := M) x om
-      (Function.update w 0 (perturbationSharpEndoField (I := I) (M := M) g₀ T x (w 0)))]
-    rw [Function.update_self]
+      (Function.update w 0
+        (tangentLinearMapToModel
+          (perturbationSharpEndoField (I := I) (M := M) g₀ T x) (w 0)))]
+    rw [Function.update_self, tangentLinearMapToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply]
     rw [show (perturbationSharpEndoField (I := I) (M := M) g₀ T x) =
         perturbationSharpEndoFib (I := I) (M := M) g₀ T x from rfl]
     rw [cotangentToDual_eq_inner_sharp (I := I) (M := M) g₀ x om
-      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x (w 0))]
+      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0)))]
     rw [inner_perturbationSharpEndoFib]
   rw [hLHS]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -617,16 +638,30 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
     (symmS (I := I) (M := M) g₀ T) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
-      (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-        (fun k => (show E from w k)) : Fin 2 → E) ((Equiv.swap (0 : Fin 2) 1) i)) =
-      (![(w 0 : E), (show E from inverseMetricSharpFib (I := I) g₀ x om)] : Fin 2 → E) from by
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)) w : Fin 2 → E)
+        ((Equiv.swap (0 : Fin 2) 1) i)) =
+      (![w 0, tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)] : Fin 2 → E) from by
     funext i
     fin_cases i <;> rfl]
-  rw [unitModel_eq_ccTensorBilin_pt (I := I) (M := M) g₀ (symmS (I := I) (M := M) g₀ T) x
-    (w 0) (inverseMetricSharpFib (I := I) g₀ x om)]
+  have hunit : unitModel (I := I) (M := M) g₀ 2
+      (symmS (I := I) (M := M) g₀ T) x
+      (![w 0, tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (inverseMetricSharpFib (I := I) g₀ x om)] : Fin 2 → E) =
+      ccTensorBilin (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
+        (inverseMetricSharpFib (I := I) g₀ x om) := by
+    rw [ccTensorBilin_apply, ccTensorModel]
+    rw [show ccTensorMultilinear (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x =
+        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+          (symmS (I := I) (M := M) g₀ T).toSection x)
+          (unitZeroSec (I := I) (M := M) x) from rfl]
+    rw [unitModel]
+    rfl
+  rw [hunit]
   rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -645,11 +680,13 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
   intro x
   apply ContinuousMultilinearMap.ext
   intro m
+  let mt : Fin 4 → TangentSpace I x :=
+    fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)
   have hLHS : unitModel (I := I) (M := M) g₀ 4
       (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁ -
         riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁) x m =
       ccTensorBilinSymm (I := I) g₀ T x
-        (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3)) (m 1) := by
+        (riemannOp (LeviCivita (I := I) g₁) x (mt 0) (mt 2) (mt 3)) (mt 1) := by
     have hsub : unitModel (I := I) (M := M) g₀ 4
         (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁ -
           riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁) x m =
@@ -663,12 +700,12 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
           (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁).toSection x -
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁).toSection x from by
         rw [SmoothCcTensor.toSection_sub]; rfl]
-      rw [ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-        ContinuousMultilinearMap.sub_apply]
+      rw [sub_apply, Tensor0SSpace.toModel_sub,
+        sub_apply]
     rw [hsub]
     rw [riemannLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₁ g₁ x m]
     rw [riemannLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₀ g₁ x m]
-    rw [htie x (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3)) (m 1)]
+    rw [htie x (riemannOp (LeviCivita (I := I) g₁) x (mt 0) (mt 2) (mt 3)) (mt 1)]
     ring
   rw [hLHS]
   rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
@@ -689,7 +726,8 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁)) x
         (Function.update (fun i => m ((Equiv.swap (0 : Fin 4) 1) i)) 0
-          (perturbationSharpEndoField (I := I) (M := M) g₀ T x
+          (tangentLinearMapToModel
+            (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
             ((fun i => m ((Equiv.swap (0 : Fin 4) 1) i)) 0))) := by
     rw [unitModel, unitModel]
     rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 4
@@ -713,60 +751,67 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 4 =>
       (Function.update (fun i' => m ((Equiv.swap (0 : Fin 4) 1) i')) 0
-        (perturbationSharpEndoField (I := I) (M := M) g₀ T x
+        (tangentLinearMapToModel
+          (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
           ((fun i' => m ((Equiv.swap (0 : Fin 4) 1) i')) 0)))
         ((Equiv.swap (0 : Fin 4) 1) i)) =
-      (![(m 0 : E),
-        (show E from perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1)),
-        (m 2 : E), (m 3 : E)] : Fin 4 → E) from by
+      (![m 0, tangentLinearMapToModel
+          (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1),
+        m 2, m 3] : Fin 4 → E) from by
     funext i
     fin_cases i
     · change (Function.update (fun i' => m ((Equiv.swap (0 : Fin 4) 1) i')) 0
-          (perturbationSharpEndoField (I := I) (M := M) g₀ T x
+          (tangentLinearMapToModel
+            (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
             (m ((Equiv.swap (0 : Fin 4) 1) 0)))) ((Equiv.swap (0 : Fin 4) 1) 0) = m 0
       rw [show ((Equiv.swap (0 : Fin 4) 1) 0) = (1 : Fin 4) from by decide]
       rw [Function.update_of_ne (by decide : (1 : Fin 4) ≠ 0)]
       rw [show ((Equiv.swap (0 : Fin 4) 1) 1) = (0 : Fin 4) from by decide]
     · change (Function.update (fun i' => m ((Equiv.swap (0 : Fin 4) 1) i')) 0
-          (perturbationSharpEndoField (I := I) (M := M) g₀ T x
+          (tangentLinearMapToModel
+            (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
             (m ((Equiv.swap (0 : Fin 4) 1) 0)))) ((Equiv.swap (0 : Fin 4) 1) 1) =
-        (show E from perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1))
+        tangentLinearMapToModel
+          (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1)
       rw [show ((Equiv.swap (0 : Fin 4) 1) 1) = (0 : Fin 4) from by decide]
       rw [Function.update_self]
       rw [show ((Equiv.swap (0 : Fin 4) 1) 0) = (1 : Fin 4) from by decide]
       rfl
     · change (Function.update (fun i' => m ((Equiv.swap (0 : Fin 4) 1) i')) 0
-          (perturbationSharpEndoField (I := I) (M := M) g₀ T x
+          (tangentLinearMapToModel
+            (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
             (m ((Equiv.swap (0 : Fin 4) 1) 0)))) ((Equiv.swap (0 : Fin 4) 1) 2) = m 2
       rw [show ((Equiv.swap (0 : Fin 4) 1) 2) = (2 : Fin 4) from by decide]
       rw [Function.update_of_ne (by decide : (2 : Fin 4) ≠ 0)]
       rw [show ((Equiv.swap (0 : Fin 4) 1) 2) = (2 : Fin 4) from by decide]
     · change (Function.update (fun i' => m ((Equiv.swap (0 : Fin 4) 1) i')) 0
-          (perturbationSharpEndoField (I := I) (M := M) g₀ T x
+          (tangentLinearMapToModel
+            (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
             (m ((Equiv.swap (0 : Fin 4) 1) 0)))) ((Equiv.swap (0 : Fin 4) 1) 3) = m 3
       rw [show ((Equiv.swap (0 : Fin 4) 1) 3) = (3 : Fin 4) from by decide]
       rw [Function.update_of_ne (by decide : (3 : Fin 4) ≠ 0)]
       rw [show ((Equiv.swap (0 : Fin 4) 1) 3) = (3 : Fin 4) from by decide]]
   rw [riemannLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₀ g₁ x]
-  rw [show (![(m 0 : E),
-      (show E from perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1)),
-      (m 2 : E), (m 3 : E)] : Fin 4 → TangentSpace I x) 0 = m 0 from rfl]
-  rw [show (![(m 0 : E),
-      (show E from perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1)),
-      (m 2 : E), (m 3 : E)] : Fin 4 → TangentSpace I x) 1 =
-    perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1) from rfl]
-  rw [show (![(m 0 : E),
-      (show E from perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1)),
-      (m 2 : E), (m 3 : E)] : Fin 4 → TangentSpace I x) 2 = m 2 from rfl]
-  rw [show (![(m 0 : E),
-      (show E from perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1)),
-      (m 2 : E), (m 3 : E)] : Fin 4 → TangentSpace I x) 3 = m 3 from rfl]
-  rw [g₀.symm x (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3))
-    (perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1))]
-  rw [inner_perturbationSharpEndoFib (I := I) (M := M) g₀ T x (m 1)
-    (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3))]
-  rw [ccTensorBilinSymm_symm (I := I) g₀ T x (m 1)
-    (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3))]
+  rw [show (![m 0, tangentLinearMapToModel
+      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1),
+    m 2, m 3] : Fin 4 → E) 0 = m 0 from rfl]
+  rw [show (![m 0, tangentLinearMapToModel
+      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1),
+    m 2, m 3] : Fin 4 → E) 1 = tangentLinearMapToModel
+      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1) from rfl]
+  rw [show (![m 0, tangentLinearMapToModel
+      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1),
+    m 2, m 3] : Fin 4 → E) 2 = m 2 from rfl]
+  rw [show (![m 0, tangentLinearMapToModel
+      (perturbationSharpEndoFib (I := I) (M := M) g₀ T x) (m 1),
+    m 2, m 3] : Fin 4 → E) 3 = m 3 from rfl]
+  simp only [tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply]
+  rw [g₀.symm x (riemannOp (LeviCivita (I := I) g₁) x (mt 0) (mt 2) (mt 3))
+    (perturbationSharpEndoFib (I := I) (M := M) g₀ T x (mt 1))]
+  rw [inner_perturbationSharpEndoFib (I := I) (M := M) g₀ T x (mt 1)
+    (riemannOp (LeviCivita (I := I) g₁) x (mt 0) (mt 2) (mt 3))]
+  rw [ccTensorBilinSymm_symm (I := I) g₀ T x (mt 1)
+    (riemannOp (LeviCivita (I := I) g₁) x (mt 0) (mt 2) (mt 3))]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt
@@ -777,7 +822,7 @@ lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt
       ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x r s S n e K J) ^ 2 := by
   classical
-  haveI : Nonempty (Fin n) := by
+  have : Nonempty (Fin n) := by
     rw [hn]
     exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
@@ -881,6 +926,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric
           ring
         rw [hc0, hc2, one_mul, hnE]
 
+omit [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + j) x
@@ -902,6 +948,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le
 
 end CurvatureCoefficientDifferenceJetTower
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -1202,8 +1249,8 @@ lemma linearMap_trace_eq_orthoFrame_inner_sum (g₀ : SmoothRiemannianMetric I M
         g₀.inner x (G (smoothOrthoFrame (I := I) g₀ x i x))
           (smoothOrthoFrame (I := I) g₀ x i x) := by
   classical
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   set B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun i => smoothOrthoFrame (I := I) g₀ x i x with hB_def
@@ -1215,10 +1262,10 @@ lemma linearMap_trace_eq_orthoFrame_inner_sum (g₀ : SmoothRiemannianMetric I M
     have hpair : g₀.inner x (∑ i, c i • B i) (B j) = 0 := by
       rw [hc]
       simp
-    rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+    rw [map_sum, sum_apply] at hpair
     have hsimp : ∀ i, g₀.inner x (c i • B i) (B j) = c i * (if i = j then (1 : ℝ) else 0) := by
       intro i
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul, horth i j]
+      rw [map_smul, smul_apply, smul_eq_mul, horth i j]
     rw [Finset.sum_congr rfl (fun i _ => hsimp i)] at hpair
     have hcol : (∑ i, c i * (if i = j then (1 : ℝ) else 0)) = c j := by simp
     rw [hcol] at hpair
@@ -1239,11 +1286,11 @@ lemma linearMap_trace_eq_orthoFrame_inner_sum (g₀ : SmoothRiemannianMetric I M
       bB.repr v j = g₀.inner x v (B j) := by
     intro v j
     conv_rhs => rw [← bB.sum_repr v]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     have hsimp : ∀ i, g₀.inner x (bB.repr v i • bB i) (B j) =
         bB.repr v i * (if i = j then (1 : ℝ) else 0) := by
       intro i
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul, hbB_coe i, horth i j]
+      rw [map_smul, smul_apply, smul_eq_mul, hbB_coe i, horth i j]
     rw [Finset.sum_congr rfl (fun i _ => hsimp i)]
     simp
   rw [LinearMap.trace_eq_matrix_trace ℝ bB G]
@@ -1255,27 +1302,29 @@ lemma linearMap_trace_eq_orthoFrame_inner_sum (g₀ : SmoothRiemannianMetric I M
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma interiorProduct_toModel_eval_lc (s : ℕ) (x : M) (v : TangentSpace I x)
-    (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
+    (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
         (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
-      Tensor0SSpace.toModel D (Fin.cons (show E from v) (fun k => (show E from w k))) := by
+      Tensor0SSpace.toModel D
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   have h1 : Tensor0SSpace.toModel
       (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s (show E from v)
+      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma toModel_om_eval_lc (x : M) (om : Tensor0SSpace 1 I x) (V : TangentSpace I x) :
-    Tensor0SSpace.toModel om (fun _ : Fin 1 => (V : E)) =
-      cotangentToDual (I := I) om V := by
+lemma toModel_om_eval_lc (x : M) (om : Tensor0SSpace 1 I x) (V : E) :
+    Tensor0SSpace.toModel om (fun _ : Fin 1 => V) =
+      cotangentToDual (I := I) om
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm V) := by
   rw [cotangentToDual_apply]
   rfl
 
 end CurvatureCoefficientDifferenceJetTower
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -1291,10 +1340,17 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
     ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 2
       (cometricDoubleTraceField (I := I) g₀ 2)
       (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) with hW2_def
-  have hW2unitModel : ∀ (x : M) (mm : Fin 2 → TangentSpace I x),
+  have hW2unitModel : ∀ (x : M) (mm : Fin 2 → E),
       unitModel (I := I) (M := M) g₀ 2 W2 x mm =
-        ricciTensor (I := I) g₁ x (mm 0) (mm 1) - ricciTensor (I := I) g₀ x (mm 0) (mm 1) := by
+        ricciTensor (I := I) g₁ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (mm 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (mm 1)) -
+          ricciTensor (I := I) g₀ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (mm 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (mm 1)) := by
     intro x mm
+    let mmt : Fin 2 → TangentSpace I x :=
+      fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (mm i)
     have hsec : (W2.toSection x) =
         (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
             cometricDoubleTraceFib (I := I) g₀ 2 x).comp
@@ -1320,40 +1376,53 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
       (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
       (unitModel (I := I) (M := M) g₀ 4
         (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x)
-      (fun j => (mm j : E))]
+      mm]
     have hker : ∀ i : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4
           (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-              (fun j => (mm j : E)))) =
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x)) mm)) =
         g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x
-            (smoothOrthoFrame (I := I) g₀ x i x) (mm 0) (mm 1))
+            (smoothOrthoFrame (I := I) g₀ x i x) (mmt 0) (mmt 1))
             (smoothOrthoFrame (I := I) g₀ x i x) -
           g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x
-              (smoothOrthoFrame (I := I) g₀ x i x) (mm 0) (mm 1))
+              (smoothOrthoFrame (I := I) g₀ x i x) (mmt 0) (mmt 1))
               (smoothOrthoFrame (I := I) g₀ x i x) := by
       intro i
       rw [riemannLoweredBackgroundDifference_unitModel_apply]
-      rfl
+      rw [show (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x)) mm) : Fin 4 → E) 2 = mm 0 from rfl,
+        show (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x)) mm) : Fin 4 → E) 3 = mm 1 from rfl]
+      simp [mmt]
     rw [Finset.sum_congr rfl (fun i _ => hker i), Finset.sum_sub_distrib]
     have htr1 : (∑ i : Fin (Module.finrank ℝ E),
         g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x
-            (smoothOrthoFrame (I := I) g₀ x i x) (mm 0) (mm 1))
+            (smoothOrthoFrame (I := I) g₀ x i x) (mmt 0) (mmt 1))
             (smoothOrthoFrame (I := I) g₀ x i x)) =
-        ricciTensor (I := I) g₁ x (mm 0) (mm 1) := by
-      rw [ricciTensor_apply (I := I) g₁ x (mm 0) (mm 1),
+        ricciTensor (I := I) g₁ x (mmt 0) (mmt 1) := by
+      rw [ricciTensor_apply (I := I) g₁ x (mmt 0) (mmt 1),
         linearMap_trace_eq_orthoFrame_inner_sum (I := I) (M := M) g₀ x
-          (ricciEndo (I := I) g₁ x (mm 0) (mm 1))]
+          (ricciEndo (I := I) g₁ x (mmt 0) (mmt 1))]
       rfl
     have htr0 : (∑ i : Fin (Module.finrank ℝ E),
         g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x
-            (smoothOrthoFrame (I := I) g₀ x i x) (mm 0) (mm 1))
+            (smoothOrthoFrame (I := I) g₀ x i x) (mmt 0) (mmt 1))
             (smoothOrthoFrame (I := I) g₀ x i x)) =
-        ricciTensor (I := I) g₀ x (mm 0) (mm 1) := by
-      rw [ricciTensor_apply (I := I) g₀ x (mm 0) (mm 1),
+        ricciTensor (I := I) g₀ x (mmt 0) (mmt 1) := by
+      rw [ricciTensor_apply (I := I) g₀ x (mmt 0) (mmt 1),
         linearMap_trace_eq_orthoFrame_inner_sum (I := I) (M := M) g₀ x
-          (ricciEndo (I := I) g₀ x (mm 0) (mm 1))]
+          (ricciEndo (I := I) g₀ x (mmt 0) (mmt 1))]
       rfl
     rw [htr1, htr0]
   apply SmoothCcTensor.ext
@@ -1370,12 +1439,12 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro om
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
   beta_reduce
-  rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [Tensor0SSpace.toModel_sub, sub_apply]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
@@ -1386,11 +1455,12 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
   rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
   set u : TangentSpace I x := inverseMetricSharpFib (I := I) g₀ x om with hu_def
   have hupd : ∀ V : TangentSpace I x,
-      (Function.update m 0 (show E from V)) = fun _ : Fin 1 => (V : E) := by
+      Function.update m 0 (tangentSpaceModelContinuousLinearEquiv (I := I) x V) =
+        fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x V := by
     intro V
     funext j
     fin_cases j
-    simp [Function.update]
+    rfl
   have hsharp_pair : ∀ α : TangentSpace I x →ₗ[ℝ] ℝ,
       cotangentToDual (I := I) om (metricSharp (I := I) g₀ x α) = α u := by
     intro α
@@ -1399,21 +1469,23 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
     rw [← inverseMetricSharpFib_inner (I := I) g₀ x om (metricSharp (I := I) g₀ x α), ← hu_def]
     exact inner_metricSharp_right (I := I) g₀ x α u
   have hLmix : Tensor0SSpace.toModel om
-      (Function.update m 0 (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x (m 0))) =
-      (ricciTensor (I := I) g₁ x (m 0)).toLinearMap u := by
-    rw [show (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x (m 0)) =
-        (show E from metricSharp (I := I) g₀ x
-          (ricciTensor (I := I) g₁ x (m 0)).toLinearMap) from
-      ricMixedSharpEndoFib_apply (I := I) (M := M) g₀ g₁ x (m 0)]
-    rw [hupd, toModel_om_eval_lc, hsharp_pair]
+      (Function.update m 0
+        (tangentLinearMapToModel (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x) (m 0))) =
+      (ricciTensor (I := I) g₁ x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))).toLinearMap u := by
+    rw [tangentLinearMapToModel_apply]
+    rw [ricMixedSharpEndoFib_apply (I := I) (M := M) g₀ g₁ x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
+    rw [hupd, toModel_om_eval_lc, ContinuousLinearEquiv.symm_apply_apply, hsharp_pair]
   have hLraised : Tensor0SSpace.toModel om
-      (Function.update m 0 (ricEndoRaisedFib (I := I) g₀ x (m 0))) =
-      (ricciTensor (I := I) g₀ x (m 0)).toLinearMap u := by
-    rw [show (ricEndoRaisedFib (I := I) g₀ x (m 0)) =
-        (show E from metricSharp (I := I) g₀ x
-          (ricciTensor (I := I) g₀ x (m 0)).toLinearMap) from
-      ricEndoRaisedFib_apply (I := I) g₀ x (m 0)]
-    rw [hupd, toModel_om_eval_lc, hsharp_pair]
+      (Function.update m 0
+        (tangentLinearMapToModel (ricEndoRaisedFib (I := I) g₀ x) (m 0))) =
+      (ricciTensor (I := I) g₀ x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))).toLinearMap u := by
+    rw [tangentLinearMapToModel_apply]
+    rw [ricEndoRaisedFib_apply (I := I) g₀ x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
+    rw [hupd, toModel_om_eval_lc, ContinuousLinearEquiv.symm_apply_apply, hsharp_pair]
   rw [hLmix, hLraised]
   rw [cometricRaiseSlot0Field_toSection]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -1437,10 +1509,10 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) W2) x from rfl]
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
-        (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-          (fun k : Fin 1 => (show E from m k)) : Fin 2 → TangentSpace I x)
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (inverseMetricSharpFib (I := I) g₀ x om)) m : Fin 2 → E)
           ((Equiv.swap (0 : Fin 2) 1) i)) =
-      (![(m 0 : TangentSpace I x), u] : Fin 2 → TangentSpace I x) from by
+      (![m 0, tangentSpaceModelContinuousLinearEquiv (I := I) x u] : Fin 2 → E) from by
     funext i
     fin_cases i <;>
       simp [hu_def]]
@@ -1885,7 +1957,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackg
 
 section RiemannMixedBiContr
 
-set_option backward.isDefEq.respectTransparency false
 
 
 def riemannMixedKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
@@ -1896,10 +1967,10 @@ def riemannMixedKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     { toFun := fun v0 => (g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x v0 p q))
       map_add' := fun v0 v0' => by
         rw [(riemannOp (LeviCivita (I := I) g₁) x).map_add v0 v0',
-          ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply, map_add]
+          add_apply, add_apply, map_add]
       map_smul' := fun c v0 => by
         rw [(riemannOp (LeviCivita (I := I) g₁) x).map_smul c v0,
-          ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, map_smul,
+          smul_apply, smul_apply, map_smul,
           RingHom.id_apply] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -1916,25 +1987,33 @@ def riemannMixedSummandFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
   haveI : FiniteDimensional ℝ (Tensor0SSpace 2 I x) := inferInstance
   LinearMap.toContinuousLinearMap
     { toFun := fun D =>
-        (Tensor0SSpace.toModel D ![(p : E), (q : E)]) •
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q]) •
           Tensor0SSpace.ofModel (I := I) (x := x)
-            (bilinFormToModel E (riemannMixedKernelBilin (I := I) g₀ g₁ x p q))
+            (bilinFormToModel E
+              (tangentBilinearFormToModel (I := I) x
+                (riemannMixedKernelBilin (I := I) g₀ g₁ x p q)))
       map_add' := fun D D' => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, add_smul]
+        rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
-        rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+        rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
           RingHom.id_apply, mul_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem riemannMixedSummandFib_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (p q : TangentSpace I x) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (riemannMixedSummandFib (I := I) g₀ g₁ x p q D) v =
-      (Tensor0SSpace.toModel D ![(p : E), (q : E)]) *
-        g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x (v 0) p q) (v 1) := by
+      (Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q]) *
+        g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) p q)
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [riemannMixedSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply, smul_eq_mul]
-  rfl
+    AddHom.coe_mk, Tensor0SSpace.toModel_smul, smul_apply,
+    Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply,
+    tangentBilinearFormToModel_apply, smul_eq_mul, riemannMixedKernelBilin_apply]
 
 def riemannMixedBiContrFibFixedFrame (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M) :
@@ -1948,17 +2027,22 @@ theorem riemannMixedBiContrFibFixedFrame_toModel (g₀ g₁ : SmoothRiemannianMe
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (riemannMixedBiContrFibFixedFrame (I := I) g₀ g₁ B x D) v =
       2 * ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x (v 0) (B a x) (B b x)) (v 1) *
-          Tensor0SSpace.toModel D ![(B a x : E), (B b x : E)] := by
+        g₀.inner x (riemannOp (LeviCivita (I := I) g₁) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          (B a x) (B b x))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) *
+          Tensor0SSpace.toModel D
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (B a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (B b x)] := by
   classical
-  rw [riemannMixedBiContrFibFixedFrame, ContinuousLinearMap.smul_apply,
-    Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [riemannMixedBiContrFibFixedFrame, smul_apply,
+    Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   congr 1
-  rw [ContinuousLinearMap.sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum,
-    ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum,
+    sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, Tensor0SSpace.toModelL_apply, ← Tensor0SSpace.toModelL_apply,
-    map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.toModelL_apply, ← Tensor0SSpace.toModelL_apply,
+    map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, riemannMixedSummandFib_toModel]
   ring
@@ -2099,10 +2183,10 @@ theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff
     rw [hcoeOuter, Finset.sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [hcoeInner a, Finset.sum_apply]
-  rw [hsum, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sum_apply]
+  rw [hsum, smul_apply, sum_apply]
   congr 1
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -2131,11 +2215,11 @@ def frameRiemannMixedKernel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
         ((riemannOp (LeviCivita (I := I) g₁) x v0 p))
       map_add' := fun p p' => by
         ext q
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
+        simp only [ContinuousLinearMap.comp_apply, add_apply,
           (riemannOp (LeviCivita (I := I) g₁) x v0).map_add p p', map_add]
       map_smul' := fun c p => by
         ext q
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           RingHom.id_apply, (riemannOp (LeviCivita (I := I) g₁) x v0).map_smul c p, map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -2164,24 +2248,35 @@ theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemanni
   rw [riemannMixedBiContrFib, riemannMixedBiContrFibFixedFrame_toModel,
     riemannMixedBiContrFibFixedFrame_toModel]
   apply congrArg (fun z : ℝ => 2 * z)
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let vt : Fin 2 → TangentSpace I y :=
+    fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i)
+  let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
+    (bilinFormToModel (TangentSpace I y)).symm
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 y D)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        g₀.inner y (riemannOp (LeviCivita (I := I) g₁) y (v 0) (Bf a) (Bf b)) (v 1) *
-          Tensor0SSpace.toModel D ![(Bf a : E), (Bf b : E)] =
+        g₀.inner y (riemannOp (LeviCivita (I := I) g₁) y (vt 0) (Bf a) (Bf b)) (vt 1) *
+          Tensor0SSpace.toModel D
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf a),
+              tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)] =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        frameRiemannMixedKernel (I := I) g₀ g₁ y (v 0) (v 1) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D) (Bf a) (Bf b) := by
+        frameRiemannMixedKernel (I := I) g₀ g₁ y (vt 0) (vt 1) (Bf a) (Bf b) *
+          Dd (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [frameRiemannMixedKernel_apply (I := I) g₀ g₁ y (v 0) (v 1) (Bf a) (Bf b),
-      bilinFormToModel_symm_apply (TangentSpace I y) (Tensor0SSpace.toModel D) (Bf a) (Bf b)]
+    rw [frameRiemannMixedKernel_apply (I := I) g₀ g₁ y (vt 0) (vt 1) (Bf a) (Bf b)]
+    dsimp only [Dd]
+    rw [bilinFormToModel_symm_apply]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₀ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₀ x₀ a y)]
   exact double_frame_bilin_trace_indep (I := I) g₀ y
-    (frameRiemannMixedKernel (I := I) g₀ g₁ y (v 0) (v 1))
-    ((bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D))
+    (frameRiemannMixedKernel (I := I) g₀ g₁ y (vt 0) (vt 1))
+    Dd
     (fun a => smoothOrthoFrame (I := I) g₀ y a y)
     (fun a => smoothOrthoFrame (I := I) g₀ x₀ a y)
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₀ y i j)
@@ -2226,7 +2321,6 @@ theorem ricciArmOrder0RiemannMixedCoeff_toSection (g₀ g₁ : SmoothRiemannianM
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ x)) := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem ricciArmOrder0RiemannMixedCoeff_self (g₀ : SmoothRiemannianMetric I M) :

@@ -95,6 +95,7 @@ private theorem insOneICG
         ‖iteratedCovGrad (I := I) g 1 1 i
           (slotInsertEndoCc (I := I) (M := M) g 0 Λ)‖]
 
+omit [SigmaCompactSpace M] in
 private theorem idSlotPt
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -168,6 +169,7 @@ private theorem fullSlotSplit (g gm : SmoothRiemannianMetric I M) :
     slotInsertEndoCc_add,
     inverseMetricDifferenceSlotCoefficient_eq_slotInsertEndoCc (I := I) g gm]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGradNormSq_add_le (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (A B : SmoothCcTensor g r s) :
@@ -268,7 +270,7 @@ theorem fullRaised_h3_uniform
   constructor
   · intro x
     rw [fullSlotSplit (I := I) (M := M) g gm,
-      SmoothCcTensor.toSection_add]
+      SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
     calc
       _ ≤ 2 * (riemannianFiberNormSq (I := I) (M := M) g 2 2 x
             ((inverseMetricDifferenceSlotCoefficient (I := I) g gm).toSection x) +
@@ -276,7 +278,7 @@ theorem fullRaised_h3_uniform
             ((slotInsertEndoCc (I := I) (M := M) g 1
               (metricComparisonEndomorphismField (I := I) (M := M) g g)).toSection x)) :=
         by
-          simpa only [Pi.add_apply, mul_add] using
+          simpa only [mul_add] using
             (riemannianFiberNormSq_add_le (I := I) (M := M) g 2 2 x
               ((inverseMetricDifferenceSlotCoefficient (I := I) g gm).toSection x)
               ((slotInsertEndoCc (I := I) (M := M) g 1

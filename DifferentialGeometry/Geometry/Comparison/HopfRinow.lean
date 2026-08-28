@@ -55,7 +55,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -78,11 +78,11 @@ private theorem hasGeodesicEquationAt_congr_of_eventuallyEq
     {g : SmoothRiemannianMetric I M} {γ γ' : ℝ → M} {t : ℝ}
     (heq : γ =ᶠ[nhds t] γ') (h : HasGeodesicEquationAt (I := I) g γ' t) :
     HasGeodesicEquationAt (I := I) g γ t := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   exact HasGeodesicEquationAt.congr_of_eventuallyEq_at (I := I) (g := g)
     (heq.eq_of_nhds) heq h
 
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -97,7 +97,7 @@ theorem isGeodesicOn_Ici_of_endpointContinuation
       IsGeodesicOn (I := I) g γ (Set.Ici (0 : ℝ)) ∧
       (∀ t, t < b₀ → γ t = γ₀ t) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   let Good : (ℝ × (ℝ → M)) → Prop := fun br =>
     b₀ ≤ br.1 ∧ IsGeodesicOn (I := I) g br.2 (Set.Iio br.1) ∧
       (∀ t < b₀, br.2 t = γ₀ t)
@@ -193,7 +193,7 @@ theorem isGeodesicOn_Ici_of_endpointContinuation
     obtain ⟨a, ha, hab⟩ := hbS
     exact hΓ_geo_at a ha t (lt_of_lt_of_eq htb hab.symm)
 
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem chartCurve_contDiffAt_one_of_isGeodesicOn
@@ -251,7 +251,7 @@ theorem chartCurve_contDiffAt_one_of_isGeodesicOn
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem isGeodesicOn_contMDiffAt_one
@@ -300,7 +300,7 @@ theorem isGeodesicOn_contMDiffAt_one
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem isGeodesicOn_contMDiffOn_one
@@ -350,7 +350,7 @@ theorem isGeodesicOn_Ioo_extend
       IsGeodesicOn (I := I) g γ' (Set.Ioo a₀ b') ∧
       ContinuousOn γ' (Set.Ioo a₀ b') ∧
       (∀ t < b, γ' t = γ t) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨η, δ, hδ, hη, hη_mdiff, hmatch⟩ := hcont
   set G : ℝ → M := fun t => if t < b then γ t else η (t - b) with hG_def
   have hη_cont : ContinuousOn η (Set.Ioo (-δ) δ) :=
@@ -429,7 +429,7 @@ theorem isGeodesicOn_Ioi_of_endpointContinuation
       ContinuousOn γ (Set.Ioi a₀) ∧
       (∀ t, t < b₀ → γ t = γ₀ t) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have ha₀b₀ : a₀ < b₀ := lt_trans ha₀ hb₀
   let Good : (ℝ × (ℝ → M)) → Prop := fun br =>
     b₀ ≤ br.1 ∧ IsGeodesicOn (I := I) g br.2 (Set.Ioo a₀ br.1) ∧

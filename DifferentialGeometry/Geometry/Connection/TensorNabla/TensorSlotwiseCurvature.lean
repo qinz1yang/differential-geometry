@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -37,7 +36,7 @@ private lemma scalarFn_covApply_tensor0SCov_zero
     (g : SmoothRiemannianMetric I M) (A : Π b : M, Tensor0SSpace 0 I b)
     (W : Π b : M, TangentSpace I b) (b : M) :
     scalarFn I M (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)) W A) b =
-      extDerivFun (I := I) (scalarFn I M A) b (W b) := by
+      mvfderiv (I := I) (scalarFn I M A) b (W b) := by
   rw [scalarFn_apply, covApply_apply, tensor0SCovariantDerivative_apply_zero]
   exact (tensor0Iso I M b).apply_symm_apply _
 
@@ -79,7 +78,7 @@ theorem riemannSec_tensor0SCov_zero_eq_zero
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hWm : MDiffAt (T% fun b => W b) x :=
     W.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  have hschwarz := extDerivFun_apply_mlieBracket (I := I) (x := x)
+  have hschwarz := mvfderiv_apply_mlieBracket (I := I) (x := x)
     (X := fun b => X b) (Y := fun b => W b) hXm hWm
     (f := scalarFn I M A) hf hint
   rw [scalarFn_apply, riemannSec_def, map_sub, map_sub]
@@ -87,7 +86,7 @@ theorem riemannSec_tensor0SCov_zero_eq_zero
         ((tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)).toFun
           (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
             (fun b => W b) A) x (X x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (scalarFn I M (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
           (fun b => W b) A)) x (X x) from by
     rw [tensor0SCovariantDerivative_apply_zero]
@@ -96,7 +95,7 @@ theorem riemannSec_tensor0SCov_zero_eq_zero
         ((tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)).toFun
           (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
             (fun b => X b) A) x (W x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (scalarFn I M (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
           (fun b => X b) A)) x (W x) from by
     rw [tensor0SCovariantDerivative_apply_zero]
@@ -104,17 +103,17 @@ theorem riemannSec_tensor0SCov_zero_eq_zero
   rw [show (tensor0Iso I M x)
         ((tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)).toFun
           A x (VectorField.mlieBracket I (fun b => X b) (fun b => W b) x)) =
-      extDerivFun (I := I) (scalarFn I M A) x
+      mvfderiv (I := I) (scalarFn I M A) x
         (VectorField.mlieBracket I (fun b => X b) (fun b => W b) x) from by
     rw [tensor0SCovariantDerivative_apply_zero]
     exact (tensor0Iso I M x).apply_symm_apply _]
   have hW_eq : scalarFn I M (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
         (fun b => W b) A) =
-      fun b => extDerivFun (I := I) (scalarFn I M A) b (W b) :=
+      fun b => mvfderiv (I := I) (scalarFn I M A) b (W b) :=
     funext (fun b => scalarFn_covApply_tensor0SCov_zero (I := I) g A (fun b => W b) b)
   have hX_eq : scalarFn I M (covApply (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
         (fun b => X b) A) =
-      fun b => extDerivFun (I := I) (scalarFn I M A) b (X b) :=
+      fun b => mvfderiv (I := I) (scalarFn I M A) b (X b) :=
     funext (fun b => scalarFn_covApply_tensor0SCov_zero (I := I) g A (fun b => X b) b)
   rw [hW_eq, hX_eq, hschwarz]
   ring
@@ -244,15 +243,15 @@ theorem riemannSec_tensor0SCov_succ_consEval
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (A : Π b : M, Tensor0SSpace (s + 1) I b) (hA : TensorSmooth (I := I) (s + 1) A)
     (x : M) (u₀ : TangentSpace I x) (u' : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         (riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
           (fun b => X b) (fun b => W b) A x) (Fin.cons u₀ u') =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
           (riemannSec (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
             (fun b => X b) (fun b => W b)
             (fun b => curriedSection I M A b
               (smoothExtensionTangent (I := I) x u₀ b)) x) u' -
-        Tensor0SSpace.toModel (A x)
+        Tensor0SSpace.eval (A x)
           (Fin.cons (baseSlotCurv (I := I) g X W x u₀) u') := by
   classical
   set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
@@ -282,7 +281,7 @@ theorem riemannSec_tensor0SCov_succ_consEval
     (LeviCivita (I := I) g)
     (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) X W
     Acurry Y x]
-  rw [Tensor0SBundle.Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [Tensor0SSpace.eval_sub]
   rw [hYx]
   congr 1
 
@@ -293,11 +292,11 @@ theorem riemannSec_tensor0SCov_apply_eval
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ (A : Π b : M, Tensor0SSpace t I b), TensorSmooth (I := I) t A →
       ∀ (x : M) (u : Fin t → TangentSpace I x),
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
           (riemannSec (tensor0SCovariantDerivative I M t (LeviCivita (I := I) g))
             (fun b => X b) (fun b => W b) A x) u =
         - ∑ k : Fin t,
-            Tensor0SSpace.toModel (A x)
+            Tensor0SSpace.eval (A x)
               (Function.update u k (baseSlotCurv (I := I) g X W x (u k))) := by
   induction t with
   | zero =>
@@ -312,15 +311,17 @@ theorem riemannSec_tensor0SCov_apply_eval
         ContMDiff.clm_bundle_apply (b := id)
           ((contMDiff_curriedSection_iff_section I M A).mp hA)
           (smoothExtensionTangent_contMDiff (I := I) x (u 0))
-      rw [show u = Fin.cons (u 0) (Fin.tail u) from (Fin.cons_self_tail u).symm,
-        riemannSec_tensor0SCov_succ_consEval (I := I) g s X W A hA x (u 0) (Fin.tail u)]
+      rw [show u = Fin.cons (u 0) (Fin.tail u) from (Fin.cons_self_tail u).symm]
+      have hsucc :=
+        riemannSec_tensor0SCov_succ_consEval (I := I) g s X W A hA x (u 0) (Fin.tail u)
+      rw [hsucc]
       have hih := ih (fun b => curriedSection I M A b (smoothExtensionTangent (I := I) x (u 0) b))
         hpaired_smooth x (Fin.tail u)
       rw [hih]
       have hpx : ∀ v : Fin s → TangentSpace I x,
-          Tensor0SSpace.toModel
+          Tensor0SSpace.eval
               (curriedSection I M A x (smoothExtensionTangent (I := I) x (u 0) x)) v =
-            Tensor0SSpace.toModel (A x) (Fin.cons (u 0) v) := by
+            Tensor0SSpace.eval (A x) (Fin.cons (u 0) v) := by
         intro v
         rw [curriedSection_apply, smoothExtensionTangent_eq (I := I) x (u 0),
           TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -342,20 +343,20 @@ theorem riemannSec_tensor0SCov_apply_eval
           (y := baseSlotCurv (I := I) g X W x (u k.succ)), Fin.cons_self_tail]
       rw [Finset.sum_congr rfl (fun k _ => by rw [hcons_succ k]), hcons_lead]
       rw [show (- ∑ k : Fin s,
-            Tensor0SSpace.toModel (A x)
+            Tensor0SSpace.eval (A x)
               (Function.update u k.succ (baseSlotCurv (I := I) g X W x (u k.succ)))) -
-          Tensor0SSpace.toModel (A x) (Function.update u 0 (baseSlotCurv (I := I) g X W x (u 0))) =
-          - (Tensor0SSpace.toModel (A x) (Function.update u 0 (baseSlotCurv (I := I) g X W x (u 0)))
+          Tensor0SSpace.eval (A x) (Function.update u 0 (baseSlotCurv (I := I) g X W x (u 0))) =
+          - (Tensor0SSpace.eval (A x) (Function.update u 0 (baseSlotCurv (I := I) g X W x (u 0)))
             +
               ∑ k : Fin s,
-                Tensor0SSpace.toModel (A x)
+                Tensor0SSpace.eval (A x)
                   (Function.update u k.succ (baseSlotCurv (I := I) g X W x (u k.succ)))) from by
         ring]
       rw [Fin.cons_self_tail]
       congr 1
       rw [Fin.sum_univ_succ
         (f := fun k : Fin (s + 1) =>
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u k (baseSlotCurv (I := I) g X W x (u k))))]
 
 end Connection

@@ -78,9 +78,9 @@ theorem gOpBound_unitQuad
   have hQeval (z₁ z₂ : TangentSpace I x) :
       Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂ := by
     change Tensor0SSpace.toModel Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂
-    rw [Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply]
-    simp [vec2]
-    rfl
+    with_unfolding_all
+      rw [Tensor0SSpace.toModel_ofModel]
+      rfl
   have hdiag (z : TangentSpace I x) :
       |A x z z| ≤ δ * q.inner x z z := by
     rw [← hQeval z z]
@@ -94,8 +94,8 @@ theorem gOpBound_unitQuad
     have hpolar :
         (4 : Real) * A x u z =
           A x (u + z) (u + z) - A x (u - z) (u - z) := by
-      simp only [map_add, map_sub, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.sub_apply]
+      simp only [map_add, map_sub, add_apply,
+        sub_apply]
       rw [hsymm x z u]
       ring
     have habs :
@@ -106,8 +106,8 @@ theorem gOpBound_unitQuad
     have hsum := add_le_add (hdiag (u + z)) (hdiag (u - z))
     have hmetric :
         q.inner x (u + z) (u + z) + q.inner x (u - z) (u - z) = 4 := by
-      simp only [map_add, map_sub, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.sub_apply]
+      simp only [map_add, map_sub, add_apply,
+        sub_apply]
       rw [q.symm x z u, hu, hz]
       ring
     calc
@@ -196,11 +196,11 @@ theorem metricDiff_smallC0
           p.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} :=
       (hcont x₀ i j).comp hincl.continuousOn
         (fun p hp => ⟨p.1.2, hp⟩)
-    simpa only [Function.comp_apply, K] using hc
+    exact hc.congr fun _ _ => rfl
   let X := MetricUnitTangent (I := I) (M := M) q
   have hXcompact : IsCompact (Set.univ : Set X) :=
     metricUnit_compact (I := I) (M := M) q
-  letI : CompactSpace X := ⟨hXcompact⟩
+  let : CompactSpace X := ⟨hXcompact⟩
   let bfun : ({t : Real // t ∈ K} × X) → M :=
     fun p => MetricUnitTangent.base (I := I) (M := M) p.2
   let vfun : Fin 2 → (p : {t : Real // t ∈ K} × X) →
@@ -215,10 +215,9 @@ theorem metricDiff_smallC0
         TotalSpace.mk' E (E := fun x : M => TangentSpace I x)
           (bfun p) (vfun i p)) := by
     intro i
-    simpa [bfun, vfun, MetricUnitTangent.base, MetricUnitTangent.vec] using
-      (continuous_subtype_val.comp continuous_snd :
-        Continuous (fun p : {t : Real // t ∈ K} × X =>
-          (p.2.1 : TangentBundle I M)))
+    exact (continuous_subtype_val.comp continuous_snd :
+      Continuous (fun p : {t : Real // t ∈ K} × X =>
+        (p.2.1 : TangentBundle I M))).congr fun _ => rfl
   have hEval : Continuous
       (fun p : {t : Real // t ∈ K} × X =>
         (g p.1.1).inner (bfun p) (vfun 0 p) (vfun 1 p)) := by
@@ -280,7 +279,8 @@ theorem metricDiff_smallC0
     let p : X := ⟨(⟨x, u⟩ : TangentBundle I M), hu⟩
     have hs := (hball htsBall) p
     rw [metricDiff_symVal]
-    simpa [f, ts, p, hu] using hs.le
+    dsimp only [f, ts, p, MetricUnitTangent.base, MetricUnitTangent.vec] at hs
+    exact @le_of_lt ℝ Real.partialOrder.toPreorder _ _ hs
   apply gOpBound_unitQuad q
     (ccTensorBilinSymm (I := I) q
       (metricDifferenceCcTensor (I := I) (M := M) q (g t)))

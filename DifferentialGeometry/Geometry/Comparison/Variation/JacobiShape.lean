@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -60,7 +62,8 @@ theorem mixedDeriv_eq
   rw [curveMixedDeriv, curveCurvGram, curveDerivGram]
   simp only [Matrix.of_apply, Matrix.neg_apply, Matrix.add_apply]
   rw [jacobi_d2_eq (I := I) g γ (V i) (hJ i)]
-  simp only [map_neg, ContinuousLinearMap.neg_apply]
+  simp only [map_neg]
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
@@ -176,7 +179,8 @@ theorem exists_perp_coeff
   let zW : ι → W := fun i => ⟨Z i, hZperp i⟩
   have hLIW : LinearIndependent ℝ vW := by
     apply LinearIndependent.of_comp W.subtype
-    simpa only [Function.comp_apply, vW] using hLI
+    change LinearIndependent ℝ (fun i => V i t)
+    exact hLI
   have hcardW : Fintype.card ι = Module.finrank ℝ W :=
     hcard.trans hfinrankW.symm
   have hspan : Submodule.span ℝ (Set.range vW) = ⊤ :=
@@ -190,7 +194,9 @@ theorem exists_perp_coeff
   have hsum := bW.sum_repr (zW i)
   have hco := congrArg (fun z : W => (z : E)) hsum
   symm at hco
-  simpa only [a, zW, vW, hbW, Submodule.coe_sum, Submodule.coe_smul_of_tower] using hco
+  apply (tangentSpaceModelContinuousLinearEquiv (I := I) (γ t)).injective
+  simpa only [map_sum, map_smul, tangentSpaceModelContinuousLinearEquiv_apply,
+    a, zW, vW, hbW, Submodule.coe_sum, Submodule.coe_smul_of_tower] using hco
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
@@ -257,7 +263,14 @@ theorem hasDerivAt_mean
     (fun s => curveGram (I := I) g γ V s)
     (fun s => curveMixedGram (I := I) g γ V s)
     (-curveCurvGram (I := I) g γ V t) t hGram hMixed hunit
-  simpa only [curveMean, curveShape, Matrix.mul_neg, Matrix.trace_neg] using hric
+  change HasDerivAt
+    (fun s => ((curveGram (I := I) g γ V s)⁻¹ *
+      curveMixedGram (I := I) g γ V s).trace)
+    (-((curveGram (I := I) g γ V t)⁻¹ *
+        curveCurvGram (I := I) g γ V t).trace -
+      (((curveGram (I := I) g γ V t)⁻¹ *
+        curveMixedGram (I := I) g γ V t) ^ 2).trace) t
+  exact hric.congr_deriv (by rw [Matrix.mul_neg, Matrix.trace_neg])
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in

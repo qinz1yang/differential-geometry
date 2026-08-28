@@ -96,7 +96,7 @@ theorem exists_lift_family
       continuous_toFun := by
         have hcont :
             Continuous (fun s : unitInterval => (lift t).toFun s) := by
-          exact continuousOn_iff_continuous_restrict.mp
+          exact continuousOn_iff_continuous_domRestrict.mp
             (lift t).contDiff.continuousOn
         exact hcont.subtype_mk _ }
   have hlifts (t s : unitInterval) :

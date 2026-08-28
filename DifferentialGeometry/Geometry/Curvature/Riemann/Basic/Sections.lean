@@ -27,37 +27,38 @@ theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
   classical
   let e := trivializationAt E (TangentSpace I) x
   let b := Module.finBasis Real E
+  let vModel : E := e.continuousLinearMapAt Real x v
   have he : x ∈ e.baseSet := by
     simp [e]
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
   obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
   let V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    ∑ i, (b.repr v i) • s' i
+    ∑ i, (b.repr vModel i) • s' i
   have hV : (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v := by
     filter_upwards [hs', e.open_baseSet.mem_nhds he] with p hs'p hp
     have hbasis :
-        (∑ i, (b.repr v i) • e.localFrame b i p) =
+        (∑ i, (b.repr vModel i) • e.localFrame b i p) =
           tangentConstAt (I := I) x v p := by
       have hx_src : p ∈ (chartAt H x).source := by
         simpa [e, TangentBundle.trivializationAt_baseSet] using hp
       have hframe_apply (i) :
           e.localFrame b i p = e.symmL Real p (b i) := by
         rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet (e := e) (b := b) (i := i) hp]
-        simp [e, Bundle.Trivialization.basisAt, Trivialization.symmL_apply]
+        exact (Bundle.Trivialization.symmL_apply (R := Real) e hp (b i)).symm
       calc
-        (∑ i, (b.repr v i) • e.localFrame b i p)
-            = ∑ i, (b.repr v i) • e.symmL Real p (b i) := by
+        (∑ i, (b.repr vModel i) • e.localFrame b i p)
+            = ∑ i, (b.repr vModel i) • e.symmL Real p (b i) := by
               exact Finset.sum_congr rfl (fun i _ => by rw [hframe_apply i])
-        _ = e.symmL Real p (∑ i, (b.repr v i) • b i) := by
+        _ = e.symmL Real p (∑ i, (b.repr vModel i) • b i) := by
               rw [map_sum]
               simp
         _ = tangentConstAt (I := I) x v p := by
               rw [b.sum_repr]
               rfl
     calc
-      V p = ∑ i, (b.repr v i) • s' i p := by
+      V p = ∑ i, (b.repr vModel i) • s' i p := by
         simp [V, ContMDiffSection.finset_sum_apply_gen]
-      _ = ∑ i, (b.repr v i) • e.localFrame b i p := by
+      _ = ∑ i, (b.repr vModel i) • e.localFrame b i p := by
         apply Finset.sum_congr rfl
         intro i hi
         rw [hs'p i]
@@ -117,7 +118,9 @@ theorem connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
     have hZc_md : MDiffAt (T% Zc) p := by
       unfold Zc tangentConstAt
       exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-        (𝕜 := Real) (I := I) (x₀ := x) (p := p) Z (by simpa [e] using hpE)
+        (𝕜 := Real) (I := I) (x₀ := x) (p := p)
+        ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x Z)
+        (by simpa [e] using hpE)
     have hcovp :
         cov Zc p = cov (fun q : M => Zs q) p := by
       exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
@@ -136,7 +139,9 @@ theorem connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
     have hZc_md : MDiffAt (T% Zc) p := by
       unfold Zc tangentConstAt
       exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-        (𝕜 := Real) (I := I) (x₀ := x) (p := p) Z (by simpa [e] using hpE)
+        (𝕜 := Real) (I := I) (x₀ := x) (p := p)
+        ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x Z)
+        (by simpa [e] using hpE)
     have hcovp :
         cov Zc p = cov (fun q : M => Zs q) p := by
       exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
@@ -224,11 +229,10 @@ theorem riemannCurvature04At_apply_smooth
   rw [riemannCurvature04At_eq_lower_riemannCurvatureAt]
   simpa [tangentFlatLinear_apply_gen] using h13
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem riemannCurvatureAt_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
-    [T2Space M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] :
+    [T2Space M] :
     letI := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) 1 3
     letI := tensorRSBundle_fiber (𝕜 := Real) (E := E) (H := H) (I := I)
@@ -244,17 +248,17 @@ private theorem riemannCurvatureAt_contMDiff
             (fun x : M =>
               TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 3 x))) := by
   classical
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  letI := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1 3
-  letI := tensorRSBundle_fiber (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_fiber (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1 3
-  letI := tensorRSBundle_vector (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_vector (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1 3
-  letI := tensorRSBundle_smooth (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_smooth (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) (n := (∞ : WithTop ℕ∞)) 1 3
-  letI : FiniteDimensional Real (TensorRSModel 1 3 Real E) := inferInstance
+  let : FiniteDimensional Real (TensorRSModel 1 3 Real E) := inferInstance
   intro x₀
   rw [contMDiffAt_section]
   let e := trivializationAt (TensorRSModel 1 3 Real E)
@@ -315,13 +319,15 @@ private theorem riemannCurvatureAt_contMDiff
         (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := 1) (x₀ := x₀) (T := βsec) hβ
         (v := fun _ : Fin 1 => Rsec) (fun _ => hR)
-      simpa [cotangentToDual_apply_gen] using hEval
+      change ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+        (fun p : M => (βsec p).toModel (fun _ : Fin 1 => Rsec p)) x₀
+      exact hEval
     refine hscalar.congr_of_eventuallyEq ?_
     filter_upwards [eTan.open_baseSet.mem_nhds hx₀Tan, hs'] with p hpTan hs'p
     have hbasis : ∀ i : Fin d,
         eTan.symmL Real p (bE i) = eTan.basisAt bE hpTan i := by
       intro i
-      simp [Bundle.Trivialization.basisAt, Trivialization.symmL_apply]
+      exact Bundle.Trivialization.symmL_apply (R := Real) eTan hpTan (bE i)
     have hslots :
         (fun a : Fin 3 => eTan.symmL Real p (vσ a)) =
           vec3 (I := I) (Xs p) (Ys p) (Zs p) := by
@@ -349,7 +355,8 @@ private theorem riemannCurvatureAt_contMDiff
           =
         (riemannCurvatureAt (I := I) cov hcov p (βsec p))
           (fun a : Fin 3 => eTan.symmL Real p (vσ a)) := by
-          simpa [G, e, eTan, βρ, βsec, vσ] using hcoord
+          dsimp [G, e, eTan, βρ, βsec, vσ, Tensor0SSpace.constInChart]
+          exact hcoord
       _ = riemannCurvatureAt (I := I) cov hcov p (βsec p)
           (vec3 (I := I) (Xs p) (Ys p) (Zs p)) := by
           rw [hslots]
@@ -357,7 +364,6 @@ private theorem riemannCurvatureAt_contMDiff
           simpa [Rsec] using hsmooth
   simpa [G, e] using hG
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def rm13Section
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
@@ -410,7 +416,6 @@ theorem rm13Section_apply_smooth
   rw [rm13Section_apply]
   exact riemannCurvatureAt_apply_smooth (I := I) cov hcov X Y Z α
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem riemannCurvature04At_contMDiff
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -425,11 +430,11 @@ private theorem riemannCurvature04At_contMDiff
             (fun x : M =>
           Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x))) := by
   classical
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 4
-  letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M)
+  let := TangentBundle.contMDiffVectorBundle (I := I) (M := M)
     (n := (∞ : WithTop ℕ∞))
   let d := Module.finrank Real E
   let b : Module.Basis (Fin d) Real E := Module.finBasis Real E
@@ -471,7 +476,7 @@ private theorem riemannCurvature04At_contMDiff
   have hbasis : ∀ i : Fin d,
       eTan.symmL Real p (b i) = eTan.basisAt b hpTan i := by
     intro i
-    simp [Bundle.Trivialization.basisAt, Trivialization.symmL_apply]
+    exact Bundle.Trivialization.symmL_apply (R := Real) eTan hpTan (b i)
   have hslots :
       (fun a : Fin 4 => eTan.symmL Real p (b (σ a))) =
         vec4 (I := I) (Xs p) (Ys p) (Zs p) (Ws p) := by
@@ -493,16 +498,18 @@ private theorem riemannCurvature04At_contMDiff
       ⟨p, F p⟩).2)
       (fun a : Fin 4 => b (σ a)) =
     g.inner p (Ws p) (Rsec p)
-  change (F p).compContinuousLinearMap
+  change (tensor0SSpaceFiberContinuousLinearEquiv
+      (I := I) (M := M) 4 p (F p)).compContinuousLinearMap
       (fun _ : Fin 4 =>
         (trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real p)
       (fun a : Fin 4 => b (σ a)) =
     g.inner p (Ws p) (Rsec p)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply, hslots]
-  simpa [F, Rsec] using
-    riemannCurvature04At_apply_smooth (I := I) g cov hcov Xs Ys Zs Ws p
+  change riemannCurvature04At g cov hcov p
+    (vec4 (I := I) (Xs p) (Ys p) (Zs p) (Ws p)) =
+      g.inner p (Ws p) (Rsec p)
+  exact riemannCurvature04At_apply_smooth (I := I) g cov hcov Xs Ys Zs Ws p
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def rm04Section
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -555,7 +562,6 @@ theorem rm04Section_apply_smooth
   rw [rm04Section_apply]
   exact riemannCurvature04At_apply_smooth (I := I) g cov hcov X Y Z W x
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def ricciSection
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
@@ -577,18 +583,12 @@ theorem ricciSection_apply
     (x : M) :
     ricciSection (I := I) (M := M) cov hcov x =
       ricciCurvatureAt cov hcov x := by
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
   have hone :
       Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ x =
         scalarOne0S (I := I) x := by
-    apply Tensor0SSpace.toModel_injective
-    refine ContinuousMultilinearMap.ext fun v => ?_
-    rw [Tensor0SField.one0_apply (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := ∞) x v]
-    change (1 : Real) =
-      (ContinuousMultilinearMap.constOfIsEmpty Real (fun _ : Fin 0 => E) 1) v
-    simp
+    rfl
   simp [ricciSection, ricciCurvatureAt, ricciFromRm13At, contract_TensorRSField,
     contract_TensorRSField_fun, hone]
 

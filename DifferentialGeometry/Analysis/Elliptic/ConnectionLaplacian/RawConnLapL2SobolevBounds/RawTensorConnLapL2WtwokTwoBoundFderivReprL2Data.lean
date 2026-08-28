@@ -18,7 +18,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -143,7 +142,7 @@ private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
   refine lintegral_congr ?_
   intro x
   rw [show ((f x) ^ 2 : ℝ) = ‖f x‖ ^ 2 from by rw [Real.norm_eq_abs, sq_abs],
-    ENNReal.ofReal_pow (norm_nonneg _) 2, ofReal_norm_eq_enorm]
+    ENNReal.ofReal_pow (norm_nonneg _) 2, ofReal_norm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
@@ -1227,11 +1226,11 @@ theorem chartTargetPouWeightedL2NormSq_fderiv_repr_le_sum_chartComp_data
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 fIntegrand Idx Jdx y ∂(volume : Measure EuclN) := by
-    rw [lintegral_finset_sum _ (fun Idx _ => by
+    rw [lintegral_finsetSum _ (fun Idx _ => by
       refine Finset.measurable_sum _ (fun Jdx _ => ?_)
       exact h_fInt_meas Idx Jdx)]
     refine Finset.sum_congr rfl (fun Idx _ => ?_)
-    exact lintegral_finset_sum _ (fun Jdx _ => h_fInt_meas Idx Jdx)
+    exact lintegral_finsetSum _ (fun Jdx _ => h_fInt_meas Idx Jdx)
   have h_dist_r :
       ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -1264,9 +1263,9 @@ theorem chartTargetPouWeightedL2NormSq_fderiv_repr_le_sum_chartComp_data
         funext y
         simp [Finset.sum_apply]
       rwa [h_eq] at h_funsum_ae
-    rw [lintegral_finset_sum' _ (fun Idx _ => h_inner_ae Idx)]
+    rw [lintegral_finsetSum' _ (fun Idx _ => h_inner_ae Idx)]
     refine Finset.sum_congr rfl (fun Idx _ => ?_)
-    exact lintegral_finset_sum' _ (fun Jdx _ => h_rInt_aeMeas Idx Jdx)
+    exact lintegral_finsetSum' _ (fun Jdx _ => h_rInt_aeMeas Idx Jdx)
   rw [h_dist_f, h_dist_r] at h_int_mono
   have h_per_f : ∀ Idx Jdx,
       ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,

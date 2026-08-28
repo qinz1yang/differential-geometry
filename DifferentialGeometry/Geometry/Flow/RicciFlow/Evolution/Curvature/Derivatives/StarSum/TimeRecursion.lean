@@ -40,7 +40,7 @@ theorem nablaRicReal_frame
       b := by
   let _ := (inferInstance : (Finite Idx))
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection t) (∞ : WithTop ℕ∞) := by
@@ -144,6 +144,7 @@ theorem nablaRicReal_frame
   simpa [ricciCovDerivCompInFrame, sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
     using heval
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem ricciCovDeriv_trace_nablaRm
@@ -225,7 +226,6 @@ private theorem traceOrthoEq
   exact metricTrace0S2InBasis_eq_metricTrace (I := I) g basis (identityInvMetric (Idx := Idx))
     (metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth) T tail
 
-set_option backward.isDefEq.respectTransparency false in
 
 def gammaStarCost (k : ℕ) : Real :=
   9 * (12 + 3 * k)
@@ -287,6 +287,7 @@ theorem gammaStarField_cost
   push_cast
   ring
 
+omit [I.Boundaryless] in
 omit [FiniteDimensional Real E] in
 omit [SigmaCompactSpace M] in
 private theorem gammaStarU
@@ -453,7 +454,7 @@ private theorem frameExtGerm {Idx : Type*} {r : ℕ}
     frameExtData (I := I) frame A1 y = frameExtData (I := I) frame A2 y := by
   funext m d
   simp only [frameExtData]
-  exact extDerivFun_eventuallyEq_congr (I := I) (frame d y) (hfield.mono fun z hz => congrFun hz m)
+  exact mvfderiv_eventuallyEq_congr (I := I) (frame d y) (hfield.mono fun z hz => congrFun hz m)
 
 def resStarNext
     (S : SolutionOn (I := I) (M := M) D)
@@ -466,6 +467,7 @@ def resStarNext
     (-1 : Real) • commStarField (I := I) S t k +
     (-1 : Real) • gammaStarField (I := I) S (t : Real) k
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem resStarNext_cost
     (S : SolutionOn (I := I) (M := M) D)
@@ -485,8 +487,8 @@ theorem resStarNext_cost
   convert ((hTk.nabla).add (hcomm.smul (-1))).add (hgamma.smul (-1)) using 1
   simp only [abs_neg, abs_one, one_mul, rmResidualCost]
 
-set_option backward.isDefEq.respectTransparency false in
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem resStarNext_spec
     (S : SolutionOn (I := I) (M := M) D)
@@ -514,11 +516,11 @@ theorem resStarNext_spec
     (hswap : ∀ (y : M), y ∈ u → ∀ (k' : ℕ) (d : Idx) (m : Fin (4 + k') → Idx),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun z : M =>
               iteratedRmComp (I := I) frame (lfChr (I := I) S frame hframe)
                 (lfBase (I := I) S frame) k' s z m) y (frame d y))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun z : M =>
             iteratedRmCompDt (I := I) frame (lfChr (I := I) S frame hframe) chrDt
               (lfBase (I := I) S frame) baseDt k' (t : Real) z m) y (frame d y))
@@ -635,7 +637,6 @@ theorem resStarNext_spec
           ContMDiffSection.coe_add, Pi.add_apply, metricTraceFirstTwoField_apply]
         rw [traceOrthoEq (I := I) (S.base.metric (t : Real)) (hframe.toBasisAt hz) horth_z
           (nablaKRm04Field (I := I) S (t : Real) (k + 2) z) (fun a => frame (m a) z)]
-        rfl
       have horth_y : ∀ i j : Idx,
           (S.base.metric (t : Real)).inner y ((hframe.toBasisAt hy) i) ((hframe.toBasisAt hy) j)
             = if i = j then (1 : Real) else 0 := by
@@ -757,6 +758,7 @@ theorem resStarNext_spec
     unfold resStarNext
     exact hderiv.congr_deriv hval.symm
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem resStarSucc
     (S : SolutionOn (I := I) (M := M) D)
@@ -786,11 +788,11 @@ theorem resStarSucc
         (m : Fin (4 + k') → Idx),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun z : M =>
               iteratedRmComp (I := I) frame (lfChr (I := I) S frame hframe)
                 (lfBase (I := I) S frame) k' s z m) y (frame d y))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun z : M =>
             iteratedRmCompDt (I := I) frame (lfChr (I := I) S frame hframe) chrDt
               (lfBase (I := I) S frame) baseDt k' (t : Real) z m) y (frame d y))
@@ -829,7 +831,6 @@ theorem resStarSucc
   exact resStarNext_spec (I := I) S k t frame hframe hu horthU
     baseDt chrDt hrm hchr hchrId hswap Tk hTk hIH
 
-set_option backward.isDefEq.respectTransparency false in
 
 def resStarCost : ℕ → Real
   | 0 => 108
@@ -848,6 +849,7 @@ private theorem resCost_eq (k : ℕ) :
       rw [ih, gammaCost_eq]
 
 open DifferentialGeometry.Dim3Reaction in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem resStarLFU
@@ -897,12 +899,12 @@ theorem resStarLFU
     (hswap : ∀ (y : M), y ∈ u → ∀ (k' : ℕ) (d : Fin 3) (m : Fin (4 + k') → Fin 3),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun z : M =>
               iteratedRmComp (I := I) frame (lfChr (I := I) S frame hframe)
                 (lfBase (I := I) S frame)
                 k' s z m) y (frame d y))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun z : M =>
             iteratedRmCompDt (I := I) frame (lfChr (I := I) S frame hframe) chrDt
               (lfBase (I := I) S frame) baseDt k' (t : Real) z m) y (frame d y))

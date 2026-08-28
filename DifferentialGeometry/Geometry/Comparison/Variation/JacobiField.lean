@@ -122,7 +122,7 @@ theorem wronskian_deriv_at
     (I := I) g (γ t) (curveVelocity (I := I) γ t) (J t) (K t)
   refine (hsub.congr_deriv ?_)
   rw [hJ2, hK2]
-  simp only [map_neg, ContinuousLinearMap.neg_apply]
+  simp only [map_neg, neg_apply]
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -179,7 +179,7 @@ theorem wronskian_zero_on
     (hderiv t ⟨ht.1, ht.2.le⟩).hasDerivWithinAt)
   have hzero : jacobiWronskian (I := I) g γ J K 0 = 0 := by
     simp only [jacobiWronskian, hJ0, hK0, map_zero,
-      ContinuousLinearMap.zero_apply, sub_self]
+      zero_apply, sub_self]
   intro t ht
   rw [hconst t ht, hzero]
 

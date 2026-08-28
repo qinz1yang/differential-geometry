@@ -80,9 +80,9 @@ theorem trace_eq_line_add
     exact congrFun
       (coe_basisOfLinearIndependentOfCardEqFinrank hWLI hcardW) o
   have hb0 : b none = Z := by
-    simpa only [W] using hb none
+    exact (hb none).trans (by rfl)
   have hbs (i : ι) : b (some i) = V i := by
-    simpa only [W] using hb (some i)
+    exact (hb (some i)).trans (by rfl)
   let q : Option ι → Option ι → Real :=
     basisInvMetric (I := I) g x b
   have hq :
@@ -113,10 +113,11 @@ theorem trace_eq_line_add
   let Q : Matrix ι ι Real := fun i j => q (some i) (some j)
   have hQG : Q * G = 1 := by
     ext i j
+    change (∑ k, Q i k * G k j) = if i = j then 1 else 0
     have h := (hq (some i) (some j)).1
-    simpa only [Matrix.mul_apply, Q, G, Matrix.of_apply,
+    simpa only [Q, G, Matrix.of_apply,
       Fintype.sum_option, hb0, hbs, hperp, mul_zero, zero_add,
-      Matrix.one_apply, Option.some.injEq] using h
+      Option.some.injEq] using h
   have hGinv : G⁻¹ = Q :=
     Matrix.inv_eq_left_inv hQG
   have hqss (i j : ι) : q (some i) (some j) = G⁻¹ i j := by

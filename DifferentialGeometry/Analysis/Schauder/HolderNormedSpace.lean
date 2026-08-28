@@ -160,8 +160,11 @@ theorem norm_boundedHolderSpace_apply_le {alpha : NNReal}
     unfold eHolderGauge
     exact le_add_right le_rfl
   have hreal := ENNReal.toReal_mono f.2 (hx.trans hsup)
-  simpa only [ofReal_norm_eq_enorm, enorm_eq_nnnorm,
-    ENNReal.coe_toReal, norm_boundedHolderSpace_eq] using hreal
+  rw [ENNReal.toReal_ofReal (norm_nonneg _)] at hreal
+  change ‖boundedHolderSpaceFun f x‖ ≤
+    (eHolderGauge alpha (boundedHolderSpaceFun f)).toReal at hreal
+  rw [norm_boundedHolderSpace_eq]
+  exact hreal
 
 theorem boundedHolderSpace_holderWith {alpha : NNReal}
     (f : BoundedHolderSpace (X := X) (F := F) alpha) :
@@ -177,7 +180,7 @@ theorem boundedHolderSpace_holderWith {alpha : NNReal}
         exact le_add_left le_rfl
       _ = (‖f‖₊ : ENNReal) := by
         rw [eHolderGauge_eq_ofReal_norm]
-        simp only [ofReal_norm_eq_enorm, enorm_eq_nnnorm]
+        simp only [ofReal_norm, enorm_eq_nnnorm]
   exact f.2.memHolder.holderWith.mono (ENNReal.coe_le_coe.mp hle)
 
 def boundedHolderSpaceHolderConst {alpha : NNReal}
@@ -363,6 +366,7 @@ theorem contDiffHolderSpace_normedSpaceCore (k : Nat) (alpha : NNReal) :
         apply le_antisymm
         · exact ENNReal.ofReal_eq_zero.mp (nonpos_iff_eq_zero.mp hx)
         · exact norm_nonneg _
+      change ‖contDiffHolderSpaceFun f x‖ = 0
       simpa only [norm_iteratedFDeriv_zero] using hzero
     · intro hf
       rw [hf]
@@ -402,8 +406,11 @@ theorem contDiffHolderSpace_iteratedFDeriv_norm_le
   have hle := spatialJet_le_eContDiffHolderGaugeOn k alpha Set.univ
     (contDiffHolderSpaceFun f) (j := j) hj x (Set.mem_univ x)
   have hreal := ENNReal.toReal_mono f.2.2 hle
-  simpa only [ofReal_norm_eq_enorm, enorm_eq_nnnorm, ENNReal.coe_toReal,
-    norm_contDiffHolderSpace_eq] using hreal
+  rw [ENNReal.toReal_ofReal (norm_nonneg _)] at hreal
+  change ‖iteratedFDeriv Real j (contDiffHolderSpaceFun f) x‖ ≤
+    (eContDiffHolderGaugeOn k alpha Set.univ (contDiffHolderSpaceFun f)).toReal at hreal
+  rw [norm_contDiffHolderSpace_eq]
+  exact hreal
 
 theorem norm_contDiffHolderSpace_apply_le {k : Nat} {alpha : NNReal}
     (f : ContDiffHolderSpace (V := V) (F := F) k alpha) (x : V) :
@@ -549,6 +556,7 @@ theorem parabolicC2HolderSpace_normedSpaceCore (alpha : NNReal) :
         apply le_antisymm
         · exact ENNReal.ofReal_eq_zero.mp (nonpos_iff_eq_zero.mp hjet)
         · exact norm_nonneg _
+      change ‖parabolicC2HolderSpaceFun u t x‖ = 0
       simpa only [parabolicSpatialJet, parabolicPoint_time,
         parabolicPoint_space, norm_iteratedFDeriv_zero] using hzero
     · intro hu
@@ -589,8 +597,11 @@ theorem parabolicC2HolderSpace_spatialJet_norm_le {alpha : NNReal}
   have hle := parabolicSpatialJet_le alpha Set.univ
     (parabolicC2HolderSpaceFun u) (j := j) (by omega) p (Set.mem_univ _)
   have hreal := ENNReal.toReal_mono u.2.2 hle
-  simpa only [ofReal_norm_eq_enorm, enorm_eq_nnnorm, ENNReal.coe_toReal,
-    norm_parabolicC2HolderSpace_eq] using hreal
+  rw [ENNReal.toReal_ofReal (norm_nonneg _)] at hreal
+  change ‖parabolicSpatialJet j (parabolicC2HolderSpaceFun u) p‖ ≤
+    (eParabolicC2HolderGaugeOn alpha Set.univ (parabolicC2HolderSpaceFun u)).toReal at hreal
+  rw [norm_parabolicC2HolderSpace_eq]
+  exact hreal
 
 theorem parabolicC2HolderSpace_timeDerivative_norm_le {alpha : NNReal}
     (u : ParabolicC2HolderSpace (V := V) (F := F) alpha)
@@ -599,8 +610,11 @@ theorem parabolicC2HolderSpace_timeDerivative_norm_le {alpha : NNReal}
   have hle := parabolicTimeDerivative_le alpha Set.univ
     (parabolicC2HolderSpaceFun u) p (Set.mem_univ _)
   have hreal := ENNReal.toReal_mono u.2.2 hle
-  simpa only [ofReal_norm_eq_enorm, enorm_eq_nnnorm, ENNReal.coe_toReal,
-    norm_parabolicC2HolderSpace_eq] using hreal
+  rw [ENNReal.toReal_ofReal (norm_nonneg _)] at hreal
+  change ‖parabolicTimeDerivative (parabolicC2HolderSpaceFun u) p‖ ≤
+    (eParabolicC2HolderGaugeOn alpha Set.univ (parabolicC2HolderSpaceFun u)).toReal at hreal
+  rw [norm_parabolicC2HolderSpace_eq]
+  exact hreal
 
 theorem norm_parabolicC2HolderSpace_apply_le {alpha : NNReal}
     (u : ParabolicC2HolderSpace (V := V) (F := F) alpha)

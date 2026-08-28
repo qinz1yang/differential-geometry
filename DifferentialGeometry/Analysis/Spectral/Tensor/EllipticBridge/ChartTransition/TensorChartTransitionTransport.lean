@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -361,8 +360,8 @@ private lemma continuous_transport_sum
           chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s u β Q)) := by
   classical
-  refine continuous_finset_sum _ (fun β _ => ?_)
-  refine continuous_finset_sum _ (fun Q _ => ?_)
+  refine continuous_finsetSum _ (fun β _ => ?_)
+  refine continuous_finsetSum _ (fun Q _ => ?_)
   exact (chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q).continuous.comp
     (continuous_tensorL2ChartComponent (I := I) (M := M) g r s β Q)
 

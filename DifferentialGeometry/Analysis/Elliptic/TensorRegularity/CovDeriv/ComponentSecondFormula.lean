@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -496,7 +495,7 @@ private lemma euclidPartial_sum_split
     exact (hd.differentiableAt (hopen.mem_nhds hy))
   rw [euclidPartial_def, euclidPartial_def, euclidPartial_def]
   rw [fderiv_fun_add h1_diff h2_diff]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
 
 omit [CompleteSpace E] in
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -565,7 +564,7 @@ private lemma euclidPartial_covDerivLowerOrderTerm_eq_sum
             (Fin s → Fin (Module.finrank ℝ E)),
         fderiv ℝ (lowerOrderSummand (I := I) (M := M) g r s α S m Idx Jdx p) y
           (EuclideanSpace.single n 1) by
-    rw [ContinuousLinearMap.sum_apply]]
+    rw [sum_apply]]
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]

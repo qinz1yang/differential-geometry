@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff Matrix
@@ -111,7 +110,9 @@ private theorem lieCorrectionZero_jhom_smulConst_local {S : Set ℝ} (c : ℝ)
     (fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z) x₀ with he
   have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := E →L[ℝ] E)
     (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z)).mp (hA p₀ hp₀)
-  refine ((contMDiffWithinAt_const (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  refine ((contMDiffWithinAt_const
+    (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+    (M := M × ℝ) (M' := ℝ) (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
       (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
         (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
@@ -134,7 +135,7 @@ private theorem lieCorrectionZero_j0S_add_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -165,7 +166,7 @@ private theorem lieCorrectionZero_j0S_smulConst_local {d : ℕ} {S : Set ℝ} (c
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (c • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -174,7 +175,9 @@ private theorem lieCorrectionZero_j0S_smulConst_local {d : ℕ} {S : Set ℝ} (c
     (fun z : M => Tensor0SSpace d I z) x₀ with he
   have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel d ℝ E)
     (E := fun z : M => Tensor0SSpace d I z)).mp (hA p₀ hp₀)
-  refine ((contMDiffWithinAt_const (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  refine ((contMDiffWithinAt_const
+    (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+    (M := M × ℝ) (M' := ℝ) (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
       (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
         (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
@@ -204,6 +207,7 @@ private theorem lieCorrectionZero_toModel_g0Flat (g : SmoothRiemannianMetric I M
   exact DifferentialGeometry.Analysis.Sobolev.TensorHilbert.cotangentToDual_g0FlatCLM
     (I := I) g x w t
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZero_connectionDifferenceVF_apply_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -310,6 +314,7 @@ private theorem lieCorrectionZero_connectionDifferenceVF_apply_jointContMDiffOn
     exact e1.trans e2.symm
   rw [hform, DifferentialGeometry.Analysis.Sobolev.TensorHilbert.inverseMetricSharpFib_g0FlatCLM]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZero_connectionDifferenceVFEndo_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -335,6 +340,7 @@ private theorem lieCorrectionZero_connectionDifferenceVFEndo_jointContMDiffOn
   intro Z
   exact lieCorrectionZero_connectionDifferenceVF_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' gP Z
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroNEndo_metricPerturbationPath_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -413,6 +419,7 @@ private theorem lieCorrectionZeroTraceStepFixed_jointContMDiffOn (g : SmoothRiem
     (E := fun z : M => Tensor0SSpace p I z) pp.1 t) ?_
   rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroInsertionFib_apply_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -447,8 +454,9 @@ private theorem lieCorrectionZeroInsertionFib_apply_jointContMDiffOn
   refine hsum.congr (fun pp _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SSpace 2 I z) pp.1 t) ?_
-  rw [lieCorrectionZeroInsertionFib, ContinuousLinearMap.add_apply]
+  rw [lieCorrectionZeroInsertionFib, add_apply]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroVBFib_apply_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -508,6 +516,7 @@ private theorem lieCorrectionZeroVBFib_apply_jointContMDiffOn
   rw [lieCorrectionZeroVBFib]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroMixedConnectionHalfFib_apply_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -587,8 +596,10 @@ private theorem lieCorrectionZeroMixedConnectionHalfFib_apply_jointContMDiffOn
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SSpace 2 I z) pp.1 t) ?_
   rw [lieCorrectionZeroMixedConnectionHalfFib]
-  rfl
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroMixedConnectionFib_apply_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -677,6 +688,7 @@ private theorem lieCorrectionZeroRiemFib_apply_jointContMDiffOn
   rw [lieCorrectionZeroRiemFib]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroTotalFib_apply_jointContMDiffOn
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -705,6 +717,58 @@ private theorem lieCorrectionZeroTotalFib_apply_jointContMDiffOn
   rw [lieCorrectionZeroTotalFib]
   rfl
 
+private noncomputable def lieCorrectionZeroPathTotalFib
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (g_bg : SmoothRiemannianMetric I M) (pp : M × ℝ) :
+    Tensor0SSpace 2 I pp.1 →L[ℝ] Tensor0SSpace 2 I pp.1 :=
+  lieCorrectionZeroTotalFib (I := I) g₀
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g_bg pp.1
+
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem lieCorrectionZeroPathTotalFib_apply_jointContMDiffOn
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (g_bg : SmoothRiemannianMetric I M)
+    (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+      (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+        (E := fun z : M => Tensor0SSpace 2 I z) pp.1
+        (lieCorrectionZeroPathTotalFib (I := I) g₀ T T' hδ hδ' g_bg pp (Y pp.1)))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  simpa only [lieCorrectionZeroPathTotalFib] using
+    lieCorrectionZeroTotalFib_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Y
+
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem lieCorrectionZeroPathTotalFib_jointContMDiffOn
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (g_bg : SmoothRiemannianMetric I M) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E →L[ℝ] Tensor0SModel 2 ℝ E)) ∞
+      (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E →L[ℝ] Tensor0SModel 2 ℝ E)
+        (E := fun z : M => Tensor0SSpace 2 I z →L[ℝ] Tensor0SSpace 2 I z) pp.1
+        (lieCorrectionZeroPathTotalFib (I := I) g₀ T T' hδ hδ' g_bg pp))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+    (F₁ := Tensor0SModel 2 ℝ E)
+    (V₁ := fun x : M => Tensor0SSpace 2 I x)
+    (F₂ := Tensor0SModel 2 ℝ E)
+    (V₂ := fun x : M => Tensor0SSpace 2 I x)
+    (φ := lieCorrectionZeroPathTotalFib (I := I) g₀ T T' hδ hδ' g_bg)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+  intro Y
+  have hY := lieCorrectionZeroPathTotalFib_apply_jointContMDiffOn
+    (E := E) (H := H) (I := I) (M := M) (δ := δ) (δ' := δ')
+    g₀ T T' hδ hδ' g_bg Y
+  refine hY.congr (fun pp _ => ?_)
+  refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+    (E := fun z : M => Tensor0SSpace 2 I z) pp.1 t) ?_
+  congr 1
+
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionZero_path_joint
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -714,20 +778,13 @@ theorem lieCorrectionZero_path_joint
       (fun s => lieCorrectionZeroField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint]
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
-    (F₁ := Tensor0SModel 2 ℝ E)
-    (V₁ := fun x : M => Tensor0SSpace 2 I x)
-    (F₂ := Tensor0SModel 2 ℝ E)
-    (V₂ := fun x : M => Tensor0SSpace 2 I x)
-    (φ := fun pp : M × ℝ =>
-      lieCorrectionZeroTotalFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g_bg pp.1)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun Y => lieCorrectionZeroTotalFib_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg Y)
+  have hCLM := lieCorrectionZeroPathTotalFib_jointContMDiffOn (I := I) g₀ T T'
+    hδ hδ' g_bg
   refine hCLM.congr (fun pp _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) pp.1 t) ?_
   rw [lieCorrectionZeroField_apply]
-  rfl
+  exact rfl
 
 end LieCorrectionZeroJoint
 

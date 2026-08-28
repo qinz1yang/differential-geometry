@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
@@ -167,18 +166,15 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2
 private lemma chartTensor0SParallelExtend_zero_scalar_mfderiv_eq_zero
     (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (T₀ : Tensor0SSpace 0 I b) (v : TangentSpace I b) :
-    mfderiv I 𝓘(ℝ)
-      (fun b' : M =>
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b') ℝ from
-          chartTensor0SParallelExtend (I := I) 0 α b T₀ b')
-          (fun i : Fin 0 => Fin.elim0 i)) b v = 0 := by
+    mvfderiv (I := I) (fun b' : M =>
+      Tensor0SSpace.eval
+        (chartTensor0SParallelExtend (I := I) 0 α b T₀ b')
+        (fun i : Fin 0 => Fin.elim0 i)) b v = 0 := by
   classical
   set φ := extChartAt I α
   set scalarFn : M → ℝ := fun b' : M =>
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b') ℝ from
-      chartTensor0SParallelExtend (I := I) 0 α b T₀ b')
+    Tensor0SSpace.eval
+      (chartTensor0SParallelExtend (I := I) 0 α b T₀ b')
       (fun i : Fin 0 => Fin.elim0 i)
   have hev : scalarFn ∘ φ.symm =ᶠ[𝓝 (φ b)]
       (fun _ : E =>
@@ -222,17 +218,19 @@ theorem chartTensor0SCovariantDerivative_chartTensor0SParallelExtend_zero
       (0 : Tensor0SSpace 0 I b) := by
     apply Finset.sum_of_isEmpty
   rw [hRHS_zero, neg_zero]
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext
   intro m
+  change Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) 0 g α
+        (chartTensor0SParallelExtend (I := I) 0 α b T₀) X b) m =
+    Tensor0SSpace.eval (0 : Tensor0SSpace 0 I b) m
   have hm : m = (fun i : Fin 0 => Fin.elim0 i) := by
     funext i; exact i.elim0
   rw [hm]
   rw [chartTensor0SCovariantDerivative_zero_apply (I := I) g α
       (chartTensor0SParallelExtend (I := I) 0 α b T₀) X b
       (fun i : Fin 0 => Fin.elim0 i)]
-  change mfderiv I 𝓘(ℝ) _ b (X b) = (0 : Tensor0SSpace 0 I b)
-      (fun i : Fin 0 => Fin.elim0 i)
-  rw [ContinuousMultilinearMap.zero_apply]
+  rw [Tensor0SSpace.eval_zero]
   exact chartTensor0SParallelExtend_zero_scalar_mfderiv_eq_zero
     (I := I) α hb T₀ (X b)
 

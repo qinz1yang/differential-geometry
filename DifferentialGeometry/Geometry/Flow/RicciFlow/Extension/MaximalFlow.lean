@@ -156,6 +156,7 @@ theorem flow_to_extend
           ⟨le_of_lt ht_pos, ht.2⟩ x v w
   refine ⟨eps, heps, ⟨⟨hwide, Shat, hShat, hstart, hjoint, hpde⟩⟩⟩
 
+omit [SigmaCompactSpace M] in
 theorem exists_max_flow
     [Nonempty M]
     (g0 : SmoothRiemannianMetric I M)

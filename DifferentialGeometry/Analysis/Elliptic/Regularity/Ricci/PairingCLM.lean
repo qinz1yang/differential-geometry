@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Candidate
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Ricci.DualNorm
 import Mathlib.Analysis.Normed.Operator.Extend
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -96,7 +98,8 @@ lemma ricciPairingSmooth_pt_smul
   have hgrad_smul : gradFun (I := I) g (c • v).toFun b =
       c • gradFun (I := I) g v.toFun b := by
     have h := SmoothScalar.grad_g_smul_apply (I := I) (g := g) c v b
-    rw [grad_g_apply, grad_g_apply] at h
+    change gradFun (I := I) g (c • v).toFun b =
+      c • gradFun (I := I) g v.toFun b at h
     exact h
   rw [hgrad_smul]
   rw [ContinuousLinearMap.map_smul, smul_eq_mul]
@@ -311,7 +314,7 @@ lemma ricciPairingSmooth_norm_sq_le
         C * g.inner b (gradFun (I := I) g v.toFun b)
             (gradFun (I := I) g v.toFun b) := fun b =>
     ricciPairing_sq_le_C_mul_grad (I := I) (M := M) g φ hC_bound v b
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hLHS_cont : Continuous (fun b : M =>
       (ricciTensor (I := I) g b (gradFun (I := I) g φ b)

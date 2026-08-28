@@ -49,7 +49,7 @@ theorem fderiv_spatialSlice_initial_eq_id
     fun y hy => hΦ.apply_initial y (Metric.ball_subset_closedBall hy)
   have heq : (fun y => Φ (y, t₀)) =ᶠ[𝓝 x] (fun y => y) :=
     Filter.eventuallyEq_of_mem hball heqon
-  rw [heq.fderiv_eq, fderiv_id']
+  rw [heq.fderiv_eq, fderiv_fun_id]
 
 theorem variationalEquation_spatialDerivative_of_contDiff
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

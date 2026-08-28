@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -105,7 +104,7 @@ private lemma tensor0S_zero_span (x : M) (τ : Tensor0SSpace 0 I x) :
   apply tensor0S_eq_of_toModel_eq (I := I) (M := M)
   intro v
   rw [show v = (fun k : Fin 0 => k.elim0) from funext (fun k => k.elim0)]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+  rw [Tensor0SSpace.toModel_smul, smul_apply]
   rw [show Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x)
       (fun k : Fin 0 => k.elim0) = 1 from by
     rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel,
@@ -155,14 +154,14 @@ private lemma tensor0SAsRS_sub (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     intro v
     rw [Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_sub,
       Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.sub_apply,
+    simp only [smul_apply, sub_apply,
       smul_eq_mul]
     ring
   exact h
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma rs_sub_apply' {t : ℕ} {x : M} (A B : TensorRSSpace 0 t I x)
     (τ : Tensor0SSpace 0 I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace t I x from A - B) τ =
@@ -206,7 +205,7 @@ private lemma tensorCov_toFun_sub (g : SmoothRiemannianMetric I M) (k : ℕ)
   exact eq_sub_of_add_eq hadd.symm
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma curry_covGrad_unit_read (g : SmoothRiemannianMetric I M) (k : ℕ)
     (P : SmoothCcTensor g 0 k) (y : M) (w : TangentSpace I y) :
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) k y
@@ -219,7 +218,7 @@ private lemma curry_covGrad_unit_read (g : SmoothRiemannianMetric I M) (k : ℕ)
   curry_unitGradFieldGen_eq (I := I) (M := M) g k P y w
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma slotRead_covGrad_dir (g : SmoothRiemannianMetric I M) (k : ℕ)
     (P : SmoothCcTensor g 0 k) (y : M) (w : TangentSpace I y) :
     tensor0SToTensorRS (I := I) (M := M) y
@@ -232,7 +231,7 @@ private lemma slotRead_covGrad_dir (g : SmoothRiemannianMetric I M) (k : ℕ)
   exact tensor0SAsRS_rs_unit (I := I) (M := M) k y _
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma slotRead_covGrad_section (g : SmoothRiemannianMetric I M) (k : ℕ)
     (P : SmoothCcTensor g 0 k) (B : Π b : M, TangentSpace I b) :
     (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
@@ -284,7 +283,7 @@ private lemma covApply_covApplyCovGradCc_slot_read
           (covApply (tensorCov (I := I) g 0 s) (covApply (LeviCivita (I := I) g) V X)
             (fun z : M => S.toSection z)) x (V x))
         (unitZeroSec (I := I) (M := M) x) := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   have hSAt := S.toSection.contMDiff
@@ -369,7 +368,7 @@ private lemma covApplyCovGradCc_connection_slot_read
           ((LeviCivita (I := I) g).toFun (covApply (LeviCivita (I := I) g) V X) x
             (V x)))
         (unitZeroSec (I := I) (M := M) x) := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   have hXV := covApply_contMDiff (cov := LeviCivita (I := I) g) hVs hXs
@@ -430,7 +429,7 @@ private lemma riemannOp_self_eq_connection_covApply
       (LeviCivita (I := I) g).toFun (covApply (LeviCivita (I := I) g) V V) x (X x) -
       ((LeviCivita (I := I) g).toFun V x (covApply (LeviCivita (I := I) g) V X x) -
         (LeviCivita (I := I) g).toFun V x (covApply (LeviCivita (I := I) g) X V x)) := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   have hbrx : VectorField.mlieBracket I V X x =
@@ -502,7 +501,7 @@ private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_expansion
             (covApply (tensorCov (I := I) g 0 s) (covApply (LeviCivita (I := I) g) V V)
               (fun z : M => S.toSection z)) x (X x))
           (unitZeroSec (I := I) (M := M) x)) := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   have hSAt := S.toSection.contMDiff
@@ -580,10 +579,10 @@ private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_expansion
     (I := I) (M := M) g s S hVs hXs x
   have hq4 := curry_covGrad_unit_read (I := I) (M := M) g s S x
     ((LeviCivita (I := I) g).toFun X x (covApply (LeviCivita (I := I) g) V V x))
-  rw [hD2split, rs_sub_apply', map_sub, ContinuousLinearMap.sub_apply]
+  rw [hD2split, rs_sub_apply', map_sub, sub_apply]
   rw [hM3a, hM3b]
   rw [hT1, hT3, hq2, hq4]
-  rw [hL2a, hL2b, ContinuousLinearMap.sub_apply, rs_sub_apply']
+  rw [hL2a, hL2b, sub_apply, rs_sub_apply']
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_curvature
@@ -668,7 +667,7 @@ private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_curvature
             (fun y : M => S.toSection y) x)
           (unitZeroSec (I := I) (M := M) x) := by
   classical
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   have hSAt := S.toSection.contMDiff
@@ -847,7 +846,7 @@ theorem secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_eq
         (I := I) (M := M) g s S hVs hXs x)
   have h := congrArg (fun t : Tensor0SSpace s I x => Tensor0SSpace.toModel t m)
     hfiber
-  simp only [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply] at h
+  simp only [Tensor0SSpace.toModel_sub, sub_apply] at h
   exact h
 
 end Curvature

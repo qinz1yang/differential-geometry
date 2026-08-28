@@ -48,7 +48,7 @@ def duhamelCM (S : BoundedC0Semigroup X) (u₀ : X) {N : X → X} {L : ℝ≥0}
           nlDuhamel_continuousOn S u₀ hN (continuous_pathOfCM hT0 u)
         have h_sub : Set.Icc (0 : ℝ) T ⊆ Set.Ici (0 : ℝ) :=
           Set.Icc_subset_Ici_self
-        exact (h_on.mono h_sub).restrict⟩
+        exact (h_on.mono h_sub).domRestrict⟩
 
 omit [CompleteSpace X] in
 @[simp]
@@ -115,13 +115,17 @@ theorem duhamelCM_contractingWith (S : BoundedC0Semigroup X) (u₀ : X)
     ContractingWith ⟨(L : ℝ) * T, mul_nonneg L.coe_nonneg hT0⟩
       (duhamelCM S u₀ hN hT0) := by
   have hTL_nn : (0 : ℝ) ≤ (L : ℝ) * T := mul_nonneg L.coe_nonneg hT0
+  let q : ℝ≥0 := ⟨(L : ℝ) * T, hTL_nn⟩
+  change ContractingWith q (duhamelCM S u₀ hN hT0)
   refine ⟨?_, ?_⟩
-  · rw [← NNReal.coe_lt_coe]
-    simpa using hTL
+  · change (q : ℝ) < 1
+    exact hTL
   · refine LipschitzWith.of_dist_le_mul ?_
     intro u v
     have h := duhamelCM_dist_le S u₀ hN hT0 hTL_nn u v
-    simpa using h
+    change dist (duhamelCM S u₀ hN hT0 u) (duhamelCM S u₀ hN hT0 v) ≤
+      (q : ℝ) * dist u v
+    exact h
 
 theorem semilinear_mild_solution_existence (S : BoundedC0Semigroup X)
     (u₀ : X) {N : X → X} {L : ℝ≥0} (hN : LipschitzWith L N) :
@@ -141,7 +145,7 @@ theorem semilinear_mild_solution_existence (S : BoundedC0Semigroup X)
     rw [hT_def, mul_one_div, div_lt_one hLp1_pos]
     linarith
   have h_contr := duhamelCM_contractingWith S u₀ hN hT0 hTL
-  haveI : Nonempty (↑(Set.Icc (0 : ℝ) T)) :=
+  have : Nonempty (↑(Set.Icc (0 : ℝ) T)) :=
     ⟨⟨0, Set.left_mem_Icc.mpr hT0⟩⟩
   set uStar : C(↑(Set.Icc (0 : ℝ) T), X) :=
     ContractingWith.fixedPoint (duhamelCM S u₀ hN hT0) h_contr
@@ -199,11 +203,11 @@ private theorem isFixedPt_of_duhamel_solution (S : BoundedC0Semigroup X)
     (hu : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = S t u₀ + ∫ τ in (0 : ℝ)..t, S (t - τ) (N (u τ))) :
-    duhamelCM S u₀ hN hT0 ⟨_, hu.restrict⟩ = ⟨_, hu.restrict⟩ := by
+    duhamelCM S u₀ hN hT0 ⟨_, hu.domRestrict⟩ = ⟨_, hu.domRestrict⟩ := by
   ext t
   obtain ⟨t, ht⟩ := t
   have h_eqOn : Set.EqOn
-      (pathOfCM hT0 (⟨_, hu.restrict⟩ : C(↑(Set.Icc (0 : ℝ) T), X)))
+      (pathOfCM hT0 (⟨_, hu.domRestrict⟩ : C(↑(Set.Icc (0 : ℝ) T), X)))
       u (Set.Icc 0 t) := by
     intro τ hτ
     have hτT : τ ∈ Set.Icc (0 : ℝ) T :=
@@ -213,7 +217,7 @@ private theorem isFixedPt_of_duhamel_solution (S : BoundedC0Semigroup X)
   rw [duhamelCM_apply]
   have h_congr :
       nlDuhamel S u₀ N
-          (pathOfCM hT0 (⟨_, hu.restrict⟩ : C(↑(Set.Icc (0 : ℝ) T), X)))
+          (pathOfCM hT0 (⟨_, hu.domRestrict⟩ : C(↑(Set.Icc (0 : ℝ) T), X)))
           t =
         nlDuhamel S u₀ N u t :=
     nlDuhamel_congr S u₀ N ht.1 h_eqOn
@@ -233,17 +237,17 @@ theorem semilinear_mild_solution_unique (S : BoundedC0Semigroup X) (u₀ : X)
     Set.EqOn u v (Set.Icc 0 T) := by
   have hT0 : (0 : ℝ) ≤ T := le_of_lt hT
   have h_contr := duhamelCM_contractingWith S u₀ hN hT0 hTL
-  haveI : Nonempty (↑(Set.Icc (0 : ℝ) T)) :=
+  have : Nonempty (↑(Set.Icc (0 : ℝ) T)) :=
     ⟨⟨0, Set.left_mem_Icc.mpr hT0⟩⟩
   have hu_fix :
-      duhamelCM S u₀ hN hT0 ⟨_, hu.restrict⟩ = ⟨_, hu.restrict⟩ :=
+      duhamelCM S u₀ hN hT0 ⟨_, hu.domRestrict⟩ = ⟨_, hu.domRestrict⟩ :=
     isFixedPt_of_duhamel_solution S u₀ hN hT0 hu hu_eq
   have hv_fix :
-      duhamelCM S u₀ hN hT0 ⟨_, hv.restrict⟩ = ⟨_, hv.restrict⟩ :=
+      duhamelCM S u₀ hN hT0 ⟨_, hv.domRestrict⟩ = ⟨_, hv.domRestrict⟩ :=
     isFixedPt_of_duhamel_solution S u₀ hN hT0 hv hv_eq
   have h_eq :
-      (⟨_, hu.restrict⟩ : C(↑(Set.Icc (0 : ℝ) T), X)) =
-        ⟨_, hv.restrict⟩ := by
+      (⟨_, hu.domRestrict⟩ : C(↑(Set.Icc (0 : ℝ) T), X)) =
+        ⟨_, hv.domRestrict⟩ := by
     rw [ContractingWith.fixedPoint_unique h_contr hu_fix,
       ContractingWith.fixedPoint_unique h_contr hv_fix]
   intro t ht

@@ -47,7 +47,7 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_add_left
     (g : SmoothRiemannianMetric I M) (x : M) (v w y : TangentSpace I x) :
     g.inner x (v + w) y = g.inner x v y + g.inner x w y := by
-  rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+  rw [map_add (g.inner x), add_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_add_right
@@ -59,7 +59,7 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_smul_left
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ) (v y : TangentSpace I x) :
     g.inner x (c • v) y = c * g.inner x v y := by
-  rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul (g.inner x), smul_apply, smul_eq_mul]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_smul_right
@@ -72,13 +72,13 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_zero_left
     (g : SmoothRiemannianMetric I M) (x : M) (y : TangentSpace I x) :
     g.inner x (0 : TangentSpace I x) y = 0 := by
-  rw [map_zero, ContinuousLinearMap.zero_apply]
+  rw [map_zero, zero_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_neg_left
     (g : SmoothRiemannianMetric I M) (x : M) (v y : TangentSpace I x) :
     g.inner x (-v) y = - g.inner x v y := by
-  rw [map_neg, ContinuousLinearMap.neg_apply]
+  rw [map_neg, neg_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_neg_right
@@ -381,7 +381,7 @@ theorem HasWeakRiemannianGradLp.add
       (riemannianVolumeMeasure I M g)) :
     HasWeakRiemannianGradLp (I := I) (M := M) g
       (fun x => u x + v x) (fun x : M => G x + G' x) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   refine ⟨?_, ?_⟩
@@ -509,7 +509,7 @@ theorem MemW1pIntrinsicLp.add_of_aestronglyMeasurable_norm
               ((fun y : M => G y + G' y) x)))
           (riemannianVolumeMeasure I M g)) :
     MemW1pIntrinsicLp (I := I) (M := M) g p (fun x => u x + v x) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨hu_p, G, hG_weak, hG_p⟩ := hu
@@ -542,7 +542,7 @@ theorem HasWeakRiemannianGradLp.const_smul
     (hu : MemLp u p (riemannianVolumeMeasure I M g)) :
     HasWeakRiemannianGradLp (I := I) (M := M) g (fun x => c * u x)
       (fun x : M => c • G x) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   refine ⟨?_, ?_⟩
@@ -728,21 +728,21 @@ def w1pNormIntrinsicLp
         (riemannianVolumeMeasure I M g)
 
 private def gradInfimumLp
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) : ℝ≥0∞ :=
   ⨅ (G : M → E) (_ : HasWeakRiemannianGradLp (I := I) (M := M) g u G),
     eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
       (riemannianVolumeMeasure I M g)
 
 private lemma w1pNormIntrinsicLp_def
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) :
     w1pNormIntrinsicLp (I := I) (M := M) g p u =
       eLpNorm u p (riemannianVolumeMeasure I M g) +
         gradInfimumLp (I := I) (M := M) g p u := rfl
 
 theorem w1pNormIntrinsicLp_zero
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
     w1pNormIntrinsicLp (I := I) (M := M) g p (fun _ : M => (0 : ℝ)) = 0 := by
   rw [w1pNormIntrinsicLp_def]
@@ -772,7 +772,7 @@ theorem w1pNormIntrinsicLp_zero
     refine le_trans ?_ (le_of_eq h_zero_norm)
     unfold gradInfimumLp
     exact iInf_le_of_le (fun _ : M => (0 : E)) (iInf_le _ hzero_grad)
-  · exact zero_le _
+  · exact bot_le
 
 theorem HasWeakRiemannianGradLp.pairing_inner_eq
     [T2Space M] [SigmaCompactSpace M]
@@ -800,7 +800,7 @@ theorem HasWeakRiemannianGradLp.pairing_inner_diff_eq_zero
     (hX : HasCompactSupport (fun x : M => (X x : E))) :
     ∫ x, (g.inner x (G x) (X x) - g.inner x (G' x) (X x))
         ∂(riemannianVolumeMeasure I M g) = 0 := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have hX_norm_cont : Continuous (fun x : M =>
@@ -869,7 +869,7 @@ theorem HasWeakRiemannianGradLp.pairing_diff_smooth_aeEq_zero
     (σ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     (fun x : M => g.inner x (G x) (σ x) - g.inner x (G' x) (σ x))
       =ᵐ[riemannianVolumeMeasure I M g] (fun _ => 0) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have hf_aem : AEStronglyMeasurable

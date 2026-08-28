@@ -1,7 +1,7 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Measure.Restrict
 import Mathlib.Data.ENNReal.Real
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Basic
+import Mathlib.Algebra.Order.GroupWithZero.Basic
 import Mathlib.Order.Interval.Set.LinearOrder
 import Mathlib.Order.Interval.Set.Disjoint
 
@@ -132,6 +132,6 @@ theorem crossAnti_indicator (h : CrossAnti R f g) (τ : ℝ) :
     rw [Set.indicator_of_mem hbτ, Set.indicator_of_mem haτ]
     exact h a b ha hab hbR
   · rw [Set.indicator_of_notMem hbτ, zero_mul]
-    exact zero_le _
+    exact zero_le
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

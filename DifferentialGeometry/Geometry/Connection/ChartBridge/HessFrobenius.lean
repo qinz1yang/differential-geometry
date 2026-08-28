@@ -41,7 +41,6 @@ noncomputable def leviHessSec
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem hessSec_abs
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M -> Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
     (x : M) (v w : TangentSpace I x) :
@@ -66,28 +65,28 @@ private theorem hessSec_abs
   have hsec := (hessianSec_nabla (I := I) cov hcov f hf) x X (Y x)
   have heval := nabla0SFun_one_eval_smooth_slots
     (I := I) cov X Y (duSec (I := I) f hf) x
-  have htheta : MDiffAtCotangent (extDerivFun (I := I) f) x :=
-    ((cotangentCov_extDerivFun_smooth (I := I) hf) x).mdifferentiableAt (by simp)
+  have htheta : MDiffAtCotangent (mvfderiv (I := I) f) x :=
+    ((cotangentCov_mvfderiv_smooth (I := I) hf) x).mdifferentiableAt (by simp)
   have hYmd : MDiffAt (T% (fun p : M => Y p)) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hpair := cotangentCov_dualPairing cov htheta hYmd (X x)
   have hdufun :
       (fun p : M => duSec (I := I) f hf p (fun _ : Fin 1 => Y p)) =
-        fun p : M => extDerivFun (I := I) f p (Y p) := by
+        fun p : M => mvfderiv (I := I) f p (Y p) := by
     funext p
     rw [duSec_apply]
-    exact differential1FormFun_apply_eq_extDerivFun (I := I) f p (Y p)
+    exact differential1FormFun_apply_eq_mvfderiv (I := I) f p (Y p)
   rw [← hX, ← hY]
   rw [hsec]
   change
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X (duSec (I := I) f hf) x) (fun _ : Fin 1 => Y x) = _
   rw [heval, hdufun, duSec_apply,
-    differential1FormFun_apply_eq_extDerivFun]
+    differential1FormFun_apply_eq_mvfderiv]
   change
-    extDerivFun (I := I) (fun p : M => extDerivFun (I := I) f p (Y p)) x (X x) -
-        extDerivFun (I := I) f x ((cov (fun p : M => Y p) x) (X x)) =
-      ((cotangentCov cov).toFun (extDerivFun (I := I) f) x (X x)) (Y x)
+    mvfderiv (I := I) (fun p : M => mvfderiv (I := I) f p (Y p)) x (X x) -
+        mvfderiv (I := I) f x ((cov (fun p : M => Y p) x) (X x)) =
+      ((cotangentCov cov).toFun (mvfderiv (I := I) f) x (X x)) (Y x)
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -112,9 +111,11 @@ private theorem hessSec_chart_comp
     funext a
     fin_cases a <;> simp [vec2]
   rw [hslots, hessSec_abs (I := I) g hf]
-  rw [show chartBasisFamily (I := I) x hx i = (chartModelBasis E) i by
+  rw [show chartBasisFamily (I := I) x hx i =
+        centeredChartTangentBasis (I := I) x i by
       simp only [chartBasisFamily_apply, chartBasisVecFiber_self],
-    show chartBasisFamily (I := I) x hx j = (chartModelBasis E) j by
+    show chartBasisFamily (I := I) x hx j =
+        centeredChartTangentBasis (I := I) x j by
       simp only [chartBasisFamily_apply, chartBasisVecFiber_self]]
   exact chartHessianMatrixIdentity_holds (I := I) g hf x i j
 

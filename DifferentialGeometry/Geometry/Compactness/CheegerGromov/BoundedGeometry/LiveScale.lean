@@ -145,12 +145,12 @@ theorem exists_live_scale
     refine ⟨hq, hδ, mul_pos haMin (hd.mu_pos Rgamma), hqMin,
       hqWide, hqAcc, herr, hinvErr, ?_⟩
     intro k x hx
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-    letI : T2Space (X.obj k).M := (X.obj k).t2
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+    let : T2Space (X.obj k).M := (X.obj k).t2
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     obtain ⟨e, he, hf, happrox, _hradius⟩ := hbranch k x hx
     have hphase :

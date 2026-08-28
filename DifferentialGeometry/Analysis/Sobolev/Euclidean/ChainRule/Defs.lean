@@ -68,14 +68,14 @@ lemma toFun_lipschitz :
     LipschitzWith ⟨Φ.deriv_bound, le_of_lt Φ.deriv_bound_pos⟩ Φ.toFun := by
   apply lipschitzWith_of_nnnorm_fderiv_le Φ.differentiable_toFun
   intro x
-  simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
+  change ‖fderiv ℝ Φ.toFun x‖ ≤ Φ.deriv_bound
   exact Φ.fderiv_toFun_bound x
 
 lemma invFun_lipschitz :
     LipschitzWith ⟨Φ.deriv_bound, le_of_lt Φ.deriv_bound_pos⟩ Φ.invFun := by
   apply lipschitzWith_of_nnnorm_fderiv_le Φ.differentiable_invFun
   intro x
-  simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
+  change ‖fderiv ℝ Φ.invFun x‖ ≤ Φ.deriv_bound
   exact Φ.fderiv_invFun_bound x
 
 lemma toFun_preimage_inter_eq_invFun_image
@@ -165,7 +165,7 @@ theorem MemLp.comp_smoothDiffeoBounded
     intro x hx
     have h_le : ENNReal.ofReal jLB ≤ ENNReal.ofReal |(fderiv ℝ Φ.toFun x).det| :=
       ENNReal.ofReal_le_ofReal (Φ.jacobian_lower x hx)
-    exact mul_le_mul_of_nonneg_right h_le (zero_le _)
+    exact mul_le_mul_of_nonneg_right h_le bot_le
   have hint_le :
       ENNReal.ofReal jLB * ∫⁻ x, ‖u (Φ.toFun x)‖ₑ ^ q ∂(volume.restrict Ω) ≤
         ∫⁻ x,

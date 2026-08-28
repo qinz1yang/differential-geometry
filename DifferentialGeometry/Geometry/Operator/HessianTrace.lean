@@ -170,7 +170,7 @@ lemma chartVossWeylLaplacian_expand_hypBearing
             (gradChartCoeffOnE (I := I) g α f i) (extChartAt I α x)
     unfold partialDeriv
     rw [fderiv_fun_mul (𝕜 := ℝ) hu hv]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
       smul_eq_mul]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
             partialDeriv (E := E) i
@@ -374,7 +374,7 @@ theorem chartHessTrace_eq_laplacian
     intro k l
     unfold partialDeriv
     rw [fderiv_fun_mul (𝕜 := ℝ) hDens_diffAt (hG_diffAt k l)]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       smul_eq_mul]
     ring
   rw [show (∑ k : Fin (Module.finrank ℝ E),
@@ -796,7 +796,6 @@ theorem chartContractedChristoffel_holds
               GU i k * GU j l * dGD i l k) from Finset.sum_comm]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    change GU k i * GU j l * dGD k l i = GU i k * GU j l * dGD k l i
     have hGUki : GU k i = GU i k := by
       change chartInvGramOnE (I := I) g α k i y₀ = chartInvGramOnE (I := I) g α i k y₀
       exact chartInvGramOnE_symm_pointwise (I := I) g α k i y₀
@@ -1068,7 +1067,7 @@ theorem chartContractedChristoffel_holds
             partialDeriv (E := E) l (chartInvGramOnE (I := I) g α j l) y₀ := by
       unfold partialDeriv
       rw [fderiv_fun_mul (𝕜 := ℝ) hdens_diff hG_diff]
-      simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [add_apply, smul_apply, smul_eq_mul]
       ring
     rw [hLeibniz]
     change (1 / chartDensityOnE (I := I) g α y₀) *
@@ -1352,7 +1351,7 @@ theorem chartHessTrace_eq_laplacian_pointwise
     intro k l
     unfold partialDeriv
     rw [fderiv_fun_mul (𝕜 := ℝ) hDens_diffAt (hG_diffAt k l)]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       smul_eq_mul]
     ring
   rw [show (∑ k : Fin (Module.finrank ℝ E),

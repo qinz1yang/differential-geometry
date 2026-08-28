@@ -42,7 +42,7 @@ theorem chartTarget_iteratedFDeriv_two_eLpNorm_le_wkpNorm_two
       (f := fun n : ℕ =>
         eLpNorm (fun y : EuclN => ‖iteratedFDeriv ℝ n u y‖) 2
           (volume.restrict Ω))
-      (fun _ _ => zero_le _) h2_mem
+      (fun _ _ => zero_le) h2_mem
   exact h_single.trans h_sum_le
 
 end Euclidean

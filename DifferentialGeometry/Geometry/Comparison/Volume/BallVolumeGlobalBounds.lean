@@ -672,10 +672,10 @@ theorem exists_vol_rm04_pkg
   obtain ⟨ρ, hρ, hvol⟩ := exists_vol_two_rm04_at (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρ, ?_⟩
   intro a K Rm Vb b A B R s D H
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  letI : Fintype D.ι := D.fintype
-  letI : DecidableEq D.ι := D.decidableEq
-  letI : Nonempty D.ι := D.nonempty
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : Fintype D.ι := D.fintype
+  let : DecidableEq D.ι := D.decidableEq
+  let : Nonempty D.ι := D.nonempty
   exact hvol H.hBnn H.ha H.hK H.hRm_nonneg H.hVb H.hb0 H.hb1 H.h1b
     H.hRpos H.hRρ H.hRC2 H.hρball H.hgs H.hsR H.hsρ H.hsdiv
     H.hsmallBasis H.hsmallDir H.hlaunch H.hKbound H.hRm H.hγ
@@ -1318,7 +1318,7 @@ theorem exists_metricBall_vol_two_local
   refine ⟨min ρlo ρup, lt_min hρlo_pos hρup_pos, ?_⟩
   intro c B Rlo Rup s hB hRlo_pos hRup_pos hRlo hρlo_ball hgs hdens
     hsRup hsρ hs_div_Rup hRup hmeas hJ
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hρlo_ball' : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρlo :=
     fun w hw => lt_of_lt_of_le (hρlo_ball w hw) (min_le_left _ _)
@@ -1450,6 +1450,7 @@ theorem metricBall_vol_ge_sc [PseudoMetricSpace M]
   simpa [modelHaar_ball (E := E) hRpos] using
     metricBall_vol_ge (I := I) g p hball_target hcoord_subset hdens
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricBall_vol_ge_sc_c2 [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)
     {c R s : ℝ} (hRpos : 0 < R)

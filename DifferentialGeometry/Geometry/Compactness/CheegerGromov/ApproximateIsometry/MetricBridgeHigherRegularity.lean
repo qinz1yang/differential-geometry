@@ -158,13 +158,13 @@ theorem HasStageJetDataOn.pb_conv
         (B n (A n z), fderiv Real (A n) z))
       (gInf alpha) := by
   classical
-  letI : NormedAddCommGroup (E →L[Real] Real) :=
+  let : NormedAddCommGroup (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] Real) :=
+  let : NormedSpace Real (E →L[Real] Real) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[Real] (E →L[Real] Real)) :=
+  let : NormedAddCommGroup (E →L[Real] (E →L[Real] Real)) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real (E →L[Real] (E →L[Real] Real)) :=
+  let : NormedSpace Real (E →L[Real] (E →L[Real] Real)) :=
     ContinuousLinearMap.toNormedSpace
   dsimp only
   let Lphi := L.subseq hphi
@@ -247,11 +247,11 @@ theorem HasStageJetDataOn.pb_conv
         (A n z) z rho (closure V) hzClosure hdistRho.le)
     have hBcd : ContDiffOn Real (∞ : WithTop ℕ∞) (B n) D := by
       let Yl := X.obj (Lphi.φ (ln n))
-      letI : TopologicalSpace Yl.M := Yl.topology
-      letI : ChartedSpace H Yl.M := Yl.charted
-      letI : IsManifold I ∞ Yl.M := Yl.smooth
-      letI : T2Space Yl.M := Yl.t2
-      letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+      let : TopologicalSpace Yl.M := Yl.topology
+      let : ChartedSpace H Yl.M := Yl.charted
+      let : IsManifold I ∞ Yl.M := Yl.smooth
+      let : T2Space Yl.M := Yl.t2
+      let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
       let cl := seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat)
       let chiL := chart (Lphi.φ (ln n)) cl
       obtain ⟨hRad, _hmap⟩ :=
@@ -296,7 +296,8 @@ theorem HasStageJetDataOn.pb_conv
     intro n
     by_cases hn : N ≤ n
     · simpa only [Ap, if_pos hn] using (hN n hn).2.1
-    · simpa only [Ap, if_neg hn] using hVD
+    · intro z hz
+      simpa only [Ap, if_neg hn, id_eq] using hVD hz
   have hpb := MapCInfConvOnCompacts.pullbackAlong
     (V := E) (W := E) hVopen hDopen
       hApconv hBpconv hApc

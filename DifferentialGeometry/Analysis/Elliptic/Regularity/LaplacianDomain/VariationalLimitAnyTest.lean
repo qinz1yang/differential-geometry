@@ -71,8 +71,8 @@ theorem gradFun_smul_smooth_eq_pointwise
     rw [hAt.mfderiv]
     change ((φ x • d_v + v x • d_φ : TangentSpace I x →L[ℝ] ℝ)) w =
         φ x * d_v w + v x * d_φ w
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-        ContinuousLinearMap.smul_apply]
+    rw [add_apply, smul_apply,
+        smul_apply]
     simp [smul_eq_mul]
   rw [h_mfderiv_mul]
   symm
@@ -110,23 +110,38 @@ private lemma grad_g_smul_smooth_section_eq
     {φ v : M → ℝ}
     (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) :
-    (grad_g (I := I) g ⟨φ * v, hφ.mul hv⟩ :
+    (grad_g (I := I) g
+        (⟨φ * v, hφ.mul hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
       smoothSmul (I := I) φ hφ
-          (grad_g (I := I) g ⟨_, hv⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
+          (grad_g (I := I) g (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
+            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
         smoothSmul (I := I) v hv
-          (grad_g (I := I) g ⟨_, hφ⟩ :
+          (grad_g (I := I) g (⟨φ, hφ⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
+  let φvMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ * v, hφ.mul hv⟩
+  let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v, hv⟩
+  let φMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ, hφ⟩
+  change (grad_g (I := I) g φvMap :
+      Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
+    smoothSmul (I := I) φ hφ
+        (grad_g (I := I) g vMap :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
+      smoothSmul (I := I) v hv
+        (grad_g (I := I) g φMap :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
   ext x
   rw [ContMDiffSection.coe_add]
   rw [grad_g_apply]
   change gradFun (I := I) g (fun y : M => φ y * v y) x =
     (smoothSmul (I := I) φ hφ
-        (grad_g (I := I) g ⟨_, hv⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x +
+        (grad_g (I := I) g vMap :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x +
       (smoothSmul (I := I) v hv
-        (grad_g (I := I) g ⟨_, hφ⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x
+        (grad_g (I := I) g φMap :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x
   rw [smoothSmul_apply, smoothSmul_apply]
-  simp only [grad_g_apply, ContMDiffMap.coeFn_mk]
+  simp only [grad_g_apply]
   exact gradFun_smul_smooth_eq_pointwise (I := I) (M := M) g hφ hv x
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
@@ -136,13 +151,18 @@ private lemma tangentSectionAction_grad_g_eq_inner_grad
     (_hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) (x : M) :
     tangentSectionAction (I := I)
-        (grad_g (I := I) g ⟨_, hv⟩ :
+        (grad_g (I := I) g (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) φ x =
       g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) := by
+  let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v, hv⟩
+  change tangentSectionAction (I := I)
+      (grad_g (I := I) g vMap :
+        Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) φ x = _
   unfold tangentSectionAction
-  rw [show ((grad_g (I := I) g ⟨_, hv⟩ :
+  rw [show ((grad_g (I := I) g vMap :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-        gradFun (I := I) g v x from grad_g_apply (I := I) g ⟨_, hv⟩ x]
+        gradFun (I := I) g v x from
+      grad_g_apply (I := I) g vMap x]
   exact (inner_gradFun (I := I) g φ x _).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
@@ -152,11 +172,21 @@ theorem Δ_g_smul_eq
     {φ v : M → ℝ}
     (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) (x : M) :
-    Δ_g (I := I) g ⟨φ * v, hφ.mul hv⟩ x =
-      φ x * Δ_g (I := I) g ⟨_, hv⟩ x +
+    Δ_g (I := I) g
+        (⟨φ * v, hφ.mul hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) x =
+      φ x * Δ_g (I := I) g
+        (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) x +
         2 * g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) +
-        v x * Δ_g (I := I) g ⟨_, hφ⟩ x := by
+        v x * Δ_g (I := I) g
+          (⟨φ, hφ⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) x := by
   classical
+  let φvMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ * v, hφ.mul hv⟩
+  let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v, hv⟩
+  let φMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ, hφ⟩
+  change Δ_g (I := I) g φvMap x =
+    φ x * Δ_g (I := I) g vMap x +
+      2 * g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) +
+      v x * Δ_g (I := I) g φMap x
   rw [Δ_g_def]
   rw [grad_g_smul_smooth_section_eq (I := I) (M := M) g hφ hv]
   rw [divergence_g_add (I := I) g]
@@ -164,10 +194,14 @@ theorem Δ_g_smul_eq
   rw [divergence_g_smoothSmul (I := I) g v hv _ x]
   rw [tangentSectionAction_grad_g_eq_inner_grad (I := I) (M := M) g hφ hv x]
   rw [tangentSectionAction_grad_g_eq_inner_grad (I := I) (M := M) g hv hφ x]
-  rw [show divergence_g (I := I) g (grad_g (I := I) g ⟨_, hv⟩) x =
-        Δ_g (I := I) g ⟨_, hv⟩ x from (Δ_g_def (I := I) g ⟨_, hv⟩ x).symm,
-      show divergence_g (I := I) g (grad_g (I := I) g ⟨_, hφ⟩) x =
-        Δ_g (I := I) g ⟨_, hφ⟩ x from (Δ_g_def (I := I) g ⟨_, hφ⟩ x).symm]
+  rw [show divergence_g (I := I) g
+          (grad_g (I := I) g vMap) x =
+        Δ_g (I := I) g vMap x from
+      (Δ_g_def (I := I) g vMap x).symm,
+      show divergence_g (I := I) g
+          (grad_g (I := I) g φMap) x =
+        Δ_g (I := I) g φMap x from
+      (Δ_g_def (I := I) g φMap x).symm]
   have h_symm : g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g φ x) =
       g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) :=
     g.symm x _ _

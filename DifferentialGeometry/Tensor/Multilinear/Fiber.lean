@@ -7,7 +7,6 @@ open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 
@@ -27,7 +26,6 @@ instance instFunLike (s : ℕ) (x : B) :
     FunLike (Bundle.continuousMultilinearMap 𝕜 s F E x) (Fin s → E x) 𝕜 :=
   ContinuousMultilinearMap.funLike
 
-set_option backward.isDefEq.respectTransparency false in
 theorem topology_eq (s : ℕ) (x : B) :
     (inferInstance : TopologicalSpace (Bundle.continuousMultilinearMap 𝕜 s F E x)) =
     (inferInstanceAs (TopologicalSpace
@@ -46,11 +44,21 @@ theorem topology_eq (s : ℕ) (x : B) :
     (fun _ => e.continuousLinearMapAt 𝕜 x) with hg'_def
   have hx : x ∈ e.baseSet := mem_baseSet_trivializationAt F E x
   have hleft : Function.LeftInverse g' g := by
-    intro L; ext v; dsimp [g, g']
-    congr 1; funext i; exact e.symmₗ_linearMapAt hx (v i)
+    intro L
+    apply ContinuousMultilinearMap.ext
+    intro v
+    dsimp [g, g']
+    apply congrArg L
+    funext i
+    exact e.symmₗ_linearMapAt hx (v i)
   have hright : Function.RightInverse g' g := by
-    intro M; ext v; dsimp [g, g']
-    congr 1; funext i; exact e.linearMapAt_symmₗ hx (v i)
+    intro M
+    apply ContinuousMultilinearMap.ext
+    intro v
+    dsimp [g, g']
+    apply congrArg M
+    funext i
+    exact e.linearMapAt_symmₗ hx (v i)
   exact (Homeomorph.mk ⟨g, g', hleft, hright⟩
     g.continuous g'.continuous).isInducing.eq_induced.symm
 
@@ -148,7 +156,7 @@ theorem triv_zero_symmL_apply_elim0 (x₀ x : B)
   have hbase : x ∈ e.baseSet := hx
   have hsymmL : (e.symmL 𝕜 x ω₀ : Bundle.continuousMultilinearMap 𝕜 0 F E x) =
       e.symm x ω₀ := by
-    simp [Trivialization.symmL_apply]
+    exact e.symmL_apply hbase ω₀
   rw [hsymmL]
   have h1 := triv_zero_apply_eq (F := F) (E := E) x₀ x (e.symm x ω₀) 0
   have h2 : (e ⟨x, e.symm x ω₀⟩ : B × _) = (x, ω₀) :=
@@ -169,7 +177,7 @@ theorem triv_symmL_eq_compContinuousLinearMap {s : ℕ} (x₀ x : B)
   have hbase : x ∈ e.baseSet := hx
   have hsymmL : (e.symmL 𝕜 x T : Bundle.continuousMultilinearMap 𝕜 s F E x) =
       e.symm x T := by
-    simp [Trivialization.symmL_apply]
+    exact e.symmL_apply hbase T
   rw [hsymmL]
   apply Bundle.continuousMultilinearMap.ext
   intro v
@@ -281,7 +289,7 @@ variable [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F]
 
 noncomputable instance instFiniteDimensional (s : ℕ) (x : B) :
     FiniteDimensional 𝕜 (Bundle.continuousMultilinearMap 𝕜 s F E x) := by
-  haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
+  have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
     continuousMultilinearMap_finiteDimensional s
   exact (continuousLinearEquivAt (F := F) (E := E) s x).symm.toLinearEquiv.finiteDimensional
 

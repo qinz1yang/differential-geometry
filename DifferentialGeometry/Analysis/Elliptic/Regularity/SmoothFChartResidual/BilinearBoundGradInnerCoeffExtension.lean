@@ -94,7 +94,7 @@ lemma gradInnerCoefI_M_smooth
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i)
         (trivializationAt E (TangentSpace I) α).baseSet := by
       unfold gradChartCoeff
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · exact chartInvGramMatrix_entry_contMDiffOn (I := I) g α i j
       · have h_extChartOn_M : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α)

@@ -94,7 +94,8 @@ lemma exists_isPicardLindelof_of_contDiffOn_univ
     intro t ht x hx
     have hx' : dist x x₀ ≤ a₀ := by
       have : dist x x₀ ≤ (aN : ℝ) := mem_closedBall.mp hx
-      simpa [aN] using this
+      change dist x x₀ ≤ a₀ at this
+      exact this
     have h_dist : dist ((t, x) : ℝ × E) (t₀, x₀) ≤ ρ / 2 := hpair_in_iff t x ht hx'
     exact hb_uncurry (t, x) h_dist
   have hLip : ∀ t ∈ Icc (t₀ - a₀) (t₀ + a₀),
@@ -104,10 +105,12 @@ lemma exists_isPicardLindelof_of_contDiffOn_univ
     intro x hx y hy
     have hxd : dist x x₀ ≤ a₀ := by
       have : dist x x₀ ≤ (aN : ℝ) := mem_closedBall.mp hx
-      simpa [aN] using this
+      change dist x x₀ ≤ a₀ at this
+      exact this
     have hyd : dist y x₀ ≤ a₀ := by
       have : dist y x₀ ≤ (aN : ℝ) := mem_closedBall.mp hy
-      simpa [aN] using this
+      change dist y x₀ ≤ a₀ at this
+      exact this
     have hpx_d : dist ((t, x) : ℝ × E) (t₀, x₀) ≤ ρ / 2 := hpair_in_iff t x ht hxd
     have hpy_d : dist ((t, y) : ℝ × E) (t₀, x₀) ≤ ρ / 2 := hpair_in_iff t y ht hyd
     have hpx_in : ((t, x) : ℝ × E) ∈ sNhd := hpair_in_sNhd _ hpx_d
@@ -124,7 +127,8 @@ lemma exists_isPicardLindelof_of_contDiffOn_univ
     intro x hx
     have hxd : dist x x₀ ≤ a₀ := by
       have : dist x x₀ ≤ (aN : ℝ) := mem_closedBall.mp hx
-      simpa [aN] using this
+      change dist x x₀ ≤ a₀ at this
+      exact this
     have h_cont : ContinuousOn (uncurry f) (Set.univ : Set (ℝ × E)) := hf.continuousOn
     have hcomp : ContinuousOn (fun t : ℝ => (t, x)) (Icc (t₀ - a₀) (t₀ + a₀)) :=
       continuousOn_id.prodMk continuousOn_const

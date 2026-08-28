@@ -56,7 +56,7 @@ def inverseMetricCovDerivForMetricCompInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M) (d k l : Idx) : Real :=
-  extDerivFun (I := I) (fun y : M => gInv y k l) x (frame d x) +
+  mvfderiv (I := I) (fun y : M => gInv y k l) x (frame d x) +
     (∑ a : Idx,
       christoffelSymbolInFrame cov frame hframe x d a k * gInv x a l) +
     (∑ a : Idx,
@@ -68,7 +68,7 @@ def inverseMetricCovDerivForMetricCompAlongInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M) (X : TangentSpace I x) (k l : Idx) : Real :=
-  extDerivFun (I := I) (fun y : M => gInv y k l) x X +
+  mvfderiv (I := I) (fun y : M => gInv y k l) x X +
     (∑ a : Idx,
       christoffelAlongInFrame cov frame hframe x X a k * gInv x a l) +
     (∑ a : Idx,
@@ -112,7 +112,7 @@ theorem metricComp_mdiffAt
   simpa [metricCompForMetricInFrame] using htotal.2
 
 omit [FiniteDimensional ℝ E] in
-theorem metricCompForMetricInFrame_extDerivFun_eq_christoffel
+theorem metricCompForMetricInFrame_mvfderiv_eq_christoffel
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
@@ -120,7 +120,7 @@ theorem metricCompForMetricInFrame_extDerivFun_eq_christoffel
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (d a b : Idx) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
         x (frame d x) =
       (∑ p : Idx,
@@ -137,12 +137,12 @@ theorem metricCompForMetricInFrame_extDerivFun_eq_christoffel
     DifferentialGeometry.Geometry.Connection.metric_compatible_apply
       (I := I) hmc (frame d) (frame a) (frame b) hd ha hb
   have hmetric' :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
           x (frame d x) =
         g.inner x ((cov (frame a) x) (frame d x)) (frame b x) +
           g.inner x (frame a x) ((cov (frame b) x) (frame d x)) := by
-    simpa [extDerivFun, metricCompForMetricInFrame] using hmetric
+    simpa [metricCompForMetricInFrame] using hmetric
   rw [hmetric']
   rw [covariantDerivative_eq_sum_christoffel (I := I) cov frame hframe hx d a]
   rw [covariantDerivative_eq_sum_christoffel (I := I) cov frame hframe hx d b]
@@ -157,7 +157,7 @@ theorem metricComp_extDeriv_tangent
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (X : TangentSpace I x) (a b : Idx) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
         x X =
       (∑ p : Idx,
@@ -176,13 +176,13 @@ theorem metricComp_extDeriv_tangent
     simpa [c, IsLocalFrameOn.coeff, hx, IsLocalFrameOn.toBasisAt_coe] using
       ((hframe.toBasisAt hx).sum_repr X).symm
   have hbasis (d : Idx) :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
           x (frame d x) =
         (∑ p : Idx, Γ d a p * G p b) +
           (∑ p : Idx, Γ d b p * G a p) := by
     simpa [Γ, G] using
-      metricCompForMetricInFrame_extDerivFun_eq_christoffel
+      metricCompForMetricInFrame_mvfderiv_eq_christoffel
         (I := I) g cov hmc frame hframe hu hx d a b
   have hAlongA (p : Idx) :
       christoffelAlongInFrame cov frame hframe x X a p =
@@ -227,17 +227,17 @@ theorem metricComp_extDeriv_tangent
               refine Finset.sum_congr rfl fun d _ => ?_
               ring
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
         x X
         =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
         x (∑ d : Idx, c d • frame d x) := by
           rw [hX]
     _ = ∑ d : Idx,
           c d *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
               x (frame d x) := by
           simp [map_sum, map_smul]
@@ -265,7 +265,7 @@ theorem metricComp_extDeriv_tangent
             rw [hAlongB p]
 
 omit [FiniteDimensional ℝ E] in
-theorem metricCompForMetricInFrame_extDerivFun_eq_christoffelAlong
+theorem metricCompForMetricInFrame_mvfderiv_eq_christoffelAlong
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
@@ -274,7 +274,7 @@ theorem metricCompForMetricInFrame_extDerivFun_eq_christoffelAlong
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (a b : Idx) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
         x (X x) =
       (∑ p : Idx,
@@ -292,12 +292,12 @@ theorem metricCompForMetricInFrame_extDerivFun_eq_christoffelAlong
     DifferentialGeometry.Geometry.Connection.metric_compatible_apply
       (I := I) hmc (fun y : M => X y) (frame a) (frame b) hX ha hb
   have hmetric' :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
           x (X x) =
         g.inner x ((cov (frame a) x) (X x)) (frame b x) +
           g.inner x (frame a x) ((cov (frame b) x) (X x)) := by
-    simpa [extDerivFun, metricCompForMetricInFrame] using hmetric
+    simpa [metricCompForMetricInFrame] using hmetric
   rw [hmetric']
   have hcov_a :
       (cov (frame a) x) (X x) =
@@ -319,8 +319,12 @@ theorem mdiffAt_finset_sum_real
   classical
   induction t using Finset.induction_on with
   | empty =>
-      simpa using (mdifferentiableAt_const
+      have hconst := (mdifferentiableAt_const
         (I := I) (I' := 𝓘(Real, Real)) (c := (0 : Real)) (x := x))
+      refine hconst.congr_of_eventuallyEq ?_
+      exact Filter.Eventually.of_forall fun y => by
+        change (0 : M → Real) y = 0
+        exact Pi.zero_apply y
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x := hf i (by simp [hit])
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x := by
@@ -332,12 +336,12 @@ theorem mdiffAt_finset_sum_real
 
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_finset_sum_real
+theorem mvfderiv_finset_sum_real
     {ι : Type*} (t : Finset ι) (f : ι -> M -> Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    extDerivFun (I := I) (t.sum f) x v =
-      t.sum (fun i => extDerivFun (I := I) (f i) x v) := by
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
   classical
   induction t using Finset.induction_on with
   | empty =>
@@ -350,44 +354,43 @@ theorem extDerivFun_finset_sum_real
       have hsum : MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x := by
         exact mdiffAt_finset_sum_real (I := I) t f hft
       calc
-        extDerivFun (I := I) ((insert i t).sum f) x v
-            = extDerivFun (I := I) (f i + t.sum f) x v := by
+        mvfderiv (I := I) ((insert i t).sum f) x v
+            = mvfderiv (I := I) (f i + t.sum f) x v := by
               simp [Finset.sum_insert, hit]
-        _ = extDerivFun (I := I) (f i) x v +
-              extDerivFun (I := I) (t.sum f) x v := by
-              have hadd := congr($(extDerivFun_add
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
                 (I := I) (g := f i) (g' := t.sum f)
                 (x := x) hfi hsum) v)
               simpa [Pi.add_apply] using hadd
-        _ = (insert i t).sum (fun j => extDerivFun (I := I) (f j) x v) := by
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_mul_real
+theorem mvfderiv_mul_real
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
-    extDerivFun (I := I) (fun y : M => f y * g y) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x := by
-  change extDerivFun (I := I) (f • g) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := g) hf hg v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc]
-    using hprod
+    mvfderiv (I := I) (fun y : M => f y * g y) x v =
+      f x * mvfderiv (I := I) g x v +
+        mvfderiv (I := I) f x v * g x := by
+  have hfun : (fun y : M => f y * g y) = f * g := by
+    funext y
+    change f y * g y = f y * g y
+    rfl
+  rw [hfun, mvfderiv_mul hf hg, add_apply, smul_apply, smul_apply, smul_eq_mul]
+  ring
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem deriv_congr_nhds
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (h : f =ᶠ[𝓝 x] g) :
-    extDerivFun (I := I) f x v = extDerivFun (I := I) g x v := by
+    mvfderiv (I := I) f x v = mvfderiv (I := I) g x v := by
   have hmf := Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real)) h
   have hx : f x = g x := h.eq_of_nhds
-  unfold extDerivFun
+  unfold mvfderiv
   rw [hmf, hx]
 
 theorem inverseMetric_derivative_solve
@@ -412,13 +415,16 @@ theorem inverseMetric_derivative_solve
     let G : Matrix Idx Idx Real := fun i j => metric i j
     have hAG : A * G = 1 := by
       ext p q
-      simpa [A, G, Matrix.mul_apply] using hleft p q
+      change (∑ k : Idx, gInv p k * metric k q) = if p = q then 1 else 0
+      exact hleft p q
     have hGA : G * A = 1 := by
       ext p q
-      simpa [A, G, Matrix.mul_apply] using hright p q
+      change (∑ k : Idx, metric p k * gInv k q) = if p = q then 1 else 0
+      exact hright p q
     have hGt : Matrix.transpose G = G := by
       ext p q
-      simpa [G] using hmetric_symm q p
+      change metric q p = metric p q
+      exact hmetric_symm q p
     have hAtG : Matrix.transpose A * G = 1 := by
       calc
         Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
@@ -432,7 +438,8 @@ theorem inverseMetric_derivative_solve
         _ = 1 * A := by rw [hAtG]
         _ = A := by simp
     have hentry := congrArg (fun B : Matrix Idx Idx Real => B b a) hAt
-    simpa [A] using hentry
+    change gInv a b = gInv b a at hentry
+    exact hentry
   have hrow' : forall m : Idx,
       (∑ a : Idx, gInvDt i a * metric a m) =
         2 * (∑ a : Idx, gInv i a * ric a m) := by
@@ -522,11 +529,11 @@ theorem inverseMetricCovDerivForMetricCompInFrame_eq_zero
     metricCompForMetricInFrame (I := I) g frame x a b
   let U : Idx -> Idx -> Real := fun a b => gInv x a b
   let DG : Idx -> Idx -> Real := fun a b =>
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
       x (frame d x)
   let DU : Idx -> Idx -> Real := fun a b =>
-    extDerivFun (I := I) (fun y : M => gInv y a b) x (frame d x)
+    mvfderiv (I := I) (fun y : M => gInv y a b) x (frame d x)
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelSymbolInFrame cov frame hframe x d a b
   have hsymm : forall x i j, gInv x i j = gInv x j i :=
@@ -537,7 +544,7 @@ theorem inverseMetricCovDerivForMetricCompInFrame_eq_zero
           (∑ p : Idx, Γ b p * G a p) := by
     intro a b
     simpa [DG, G, Γ] using
-      metricCompForMetricInFrame_extDerivFun_eq_christoffel
+      metricCompForMetricInFrame_mvfderiv_eq_christoffel
         (I := I) g cov hmc frame hframe hu hx d a b
   have hrow : ∀ m : Idx,
       (∑ a : Idx, (DU k a * G a m + U k a * DG a m)) = 0 := by
@@ -549,16 +556,16 @@ theorem inverseMetricCovDerivForMetricCompInFrame_eq_zero
       intro a _ha
       exact (hginv_mdiff k a).mul (hmetric_mdiff a m)
     have hsum :
-        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) =
-          ∑ a : Idx, extDerivFun (I := I) (F a) x (frame d x) := by
-      simpa using extDerivFun_finset_sum_real
+        mvfderiv (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) =
+          ∑ a : Idx, mvfderiv (I := I) (F a) x (frame d x) := by
+      simpa using mvfderiv_finset_sum_real
         (I := I) (t := (Finset.univ : Finset Idx)) F (frame d x) hF_mdiff
     have hprod : ∀ a : Idx,
-        extDerivFun (I := I) (F a) x (frame d x) =
+        mvfderiv (I := I) (F a) x (frame d x) =
           gInv x k a * DG a m + DU k a * G a m := by
       intro a
       simpa [F, DG, DU, G, mul_comm, mul_left_comm, mul_assoc] using
-        extDerivFun_mul_real (I := I) (x := x) (frame d x)
+        mvfderiv_mul_real (I := I) (x := x) (frame d x)
           (hginv_mdiff k a) (hmetric_mdiff a m)
     have hconst :
         (fun y : M => ∑ a : Idx,
@@ -567,13 +574,15 @@ theorem inverseMetricCovDerivForMetricCompInFrame_eq_zero
       funext y
       exact (hinv y k m).1
     have hderiv :=
-      congrArg (fun F : M -> Real => extDerivFun (I := I) F x (frame d x)) hconst
+      congrArg (fun F : M -> Real => mvfderiv (I := I) F x (frame d x)) hconst
     have hzero_raw :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M => ∑ a : Idx,
             gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m)
           x (frame d x) = 0 := by
-      simpa using hderiv
+      exact hderiv.trans <| by
+        rw [mvfderiv_const]
+        rfl
     have hF_eq :
         ((Finset.univ : Finset Idx).sum F) =
           (fun y : M => ∑ a : Idx,
@@ -581,17 +590,17 @@ theorem inverseMetricCovDerivForMetricCompInFrame_eq_zero
       funext y
       simp [F]
     have hzero :
-        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) = 0 := by
+        mvfderiv (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) = 0 := by
       rw [hF_eq]
       exact hzero_raw
     calc
       (∑ a : Idx, (DU k a * G a m + U k a * DG a m))
           = ∑ a : Idx, (gInv x k a * DG a m + DU k a * G a m) := by
               simp [U, add_comm]
-      _ = ∑ a : Idx, extDerivFun (I := I) (F a) x (frame d x) := by
+      _ = ∑ a : Idx, mvfderiv (I := I) (F a) x (frame d x) := by
               refine Finset.sum_congr rfl fun a _ha => ?_
               rw [hprod a]
-      _ = extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) := hsum.symm
+      _ = mvfderiv (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) := hsum.symm
       _ = 0 := hzero
   have hsolve := inverseMetric_derivative_solve
     (metric := G)
@@ -806,11 +815,11 @@ theorem inverseMetricCovDerivForMetricCompAlongInFrame_eq_zero
     metricCompForMetricInFrame (I := I) g frame x a b
   let U : Idx -> Idx -> Real := fun a b => gInv x a b
   let DG : Idx -> Idx -> Real := fun a b =>
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
       x (X x)
   let DU : Idx -> Idx -> Real := fun a b =>
-    extDerivFun (I := I) (fun y : M => gInv y a b) x (X x)
+    mvfderiv (I := I) (fun y : M => gInv y a b) x (X x)
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelAlongInFrame cov frame hframe x (X x) a b
   have hsymm : forall x i j, gInv x i j = gInv x j i :=
@@ -821,7 +830,7 @@ theorem inverseMetricCovDerivForMetricCompAlongInFrame_eq_zero
           (∑ p : Idx, Γ b p * G a p) := by
     intro a b
     simpa [DG, G, Γ] using
-      metricCompForMetricInFrame_extDerivFun_eq_christoffelAlong
+      metricCompForMetricInFrame_mvfderiv_eq_christoffelAlong
         (I := I) g cov hmc X frame hframe hu hx a b
   have hrow : ∀ m : Idx,
       (∑ a : Idx, (DU k a * G a m + U k a * DG a m)) = 0 := by
@@ -833,16 +842,16 @@ theorem inverseMetricCovDerivForMetricCompAlongInFrame_eq_zero
       intro a _ha
       exact (hginv_mdiff k a).mul (hmetric_mdiff a m)
     have hsum :
-        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (X x) =
-          ∑ a : Idx, extDerivFun (I := I) (F a) x (X x) := by
-      simpa using extDerivFun_finset_sum_real
+        mvfderiv (I := I) ((Finset.univ : Finset Idx).sum F) x (X x) =
+          ∑ a : Idx, mvfderiv (I := I) (F a) x (X x) := by
+      simpa using mvfderiv_finset_sum_real
         (I := I) (t := (Finset.univ : Finset Idx)) F (X x) hF_mdiff
     have hprod : ∀ a : Idx,
-        extDerivFun (I := I) (F a) x (X x) =
+        mvfderiv (I := I) (F a) x (X x) =
           gInv x k a * DG a m + DU k a * G a m := by
       intro a
       simpa [F, DG, DU, G, mul_comm, mul_left_comm, mul_assoc] using
-        extDerivFun_mul_real (I := I) (x := x) (X x)
+        mvfderiv_mul_real (I := I) (x := x) (X x)
           (hginv_mdiff k a) (hmetric_mdiff a m)
     have hconst :
         (fun y : M => ∑ a : Idx,
@@ -851,13 +860,15 @@ theorem inverseMetricCovDerivForMetricCompAlongInFrame_eq_zero
       funext y
       exact (hinv y k m).1
     have hderiv :=
-      congrArg (fun F : M -> Real => extDerivFun (I := I) F x (X x)) hconst
+      congrArg (fun F : M -> Real => mvfderiv (I := I) F x (X x)) hconst
     have hzero_raw :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M => ∑ a : Idx,
             gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m)
           x (X x) = 0 := by
-      simpa using hderiv
+      exact hderiv.trans <| by
+        rw [mvfderiv_const]
+        rfl
     have hF_eq :
         ((Finset.univ : Finset Idx).sum F) =
           (fun y : M => ∑ a : Idx,
@@ -865,17 +876,17 @@ theorem inverseMetricCovDerivForMetricCompAlongInFrame_eq_zero
       funext y
       simp [F]
     have hzero :
-        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (X x) = 0 := by
+        mvfderiv (I := I) ((Finset.univ : Finset Idx).sum F) x (X x) = 0 := by
       rw [hF_eq]
       exact hzero_raw
     calc
       (∑ a : Idx, (DU k a * G a m + U k a * DG a m))
           = ∑ a : Idx, (gInv x k a * DG a m + DU k a * G a m) := by
               simp [U, add_comm]
-      _ = ∑ a : Idx, extDerivFun (I := I) (F a) x (X x) := by
+      _ = ∑ a : Idx, mvfderiv (I := I) (F a) x (X x) := by
               refine Finset.sum_congr rfl fun a _ha => ?_
               rw [hprod a]
-      _ = extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (X x) := hsum.symm
+      _ = mvfderiv (I := I) ((Finset.univ : Finset Idx).sum F) x (X x) := hsum.symm
       _ = 0 := hzero
   have hsolve := inverseMetric_derivative_solve
     (metric := G)

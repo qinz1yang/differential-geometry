@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingSmallExponentLocalB
 import DifferentialGeometry.Analysis.Calculus.SmoothClamp
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -169,7 +170,9 @@ theorem evolving_harnack_on_separated_cylinders
   have hv : ContMDiff ((modelWithCornersSelf ℝ ℝ).prod I)
       (modelWithCornersSelf ℝ ℝ) ∞
       (fun z : ℝ × M => v z.1 z.2) := by
-    simpa only [v, U, Function.comp_apply] using hclamp.contMDiff.comp hu
+    change ContMDiff ((modelWithCornersSelf ℝ ℝ).prod I)
+      (modelWithCornersSelf ℝ ℝ) ∞ (clamp ∘ U)
+    exact hclamp.contMDiff.comp hu
   have hvpos : ∀ t x, 0 < v t x := fun t x => hclamp_pos (u t x)
   have hv_eq_u : ∀ t ∈ Icc A D, ∀ x, v t x = u t x := by
     intro t ht x
@@ -183,12 +186,14 @@ theorem evolving_harnack_on_separated_cylinders
     have hjoint := hclamp_eq (t, x) ⟨ht, Set.mem_univ x⟩
     have htime :
         (fun s : ℝ => v s x) =ᶠ[nhds t] (fun s : ℝ => u s x) := by
-      simpa only [v, U, Function.comp_apply] using
-        hjoint.comp_tendsto (continuousAt_id.prodMk continuousAt_const)
+      have h := hjoint.comp_tendsto (continuousAt_id.prodMk continuousAt_const)
+      change (fun s : ℝ => v s x) =ᶠ[nhds t] (fun s : ℝ => u s x) at h
+      exact h
     have hspace :
         (fun y : M => v t y) =ᶠ[nhds x] (fun y : M => u t y) := by
-      simpa only [v, U, Function.comp_apply] using
-        hjoint.comp_tendsto (continuousAt_const.prodMk continuousAt_id)
+      have h := hjoint.comp_tendsto (continuousAt_const.prodMk continuousAt_id)
+      change (fun y : M => v t y) =ᶠ[nhds x] (fun y : M => u t y) at h
+      exact h
     calc
       deriv (fun s => v s x) t = deriv (fun s => u s x) t := htime.deriv_eq
       _ = Δ_g (I := I) (g t)

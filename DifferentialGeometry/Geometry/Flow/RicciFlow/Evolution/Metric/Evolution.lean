@@ -167,7 +167,10 @@ theorem coordInvEvol
       (hasFDerivAt_clmInv
         (G (t : Real)) hGinv).comp_hasFDerivWithinAt
         (t : Real) hG.hasFDerivWithinAt
-    simpa [dInv, InvG, ContinuousLinearMap.mulLeftRight_apply] using hF.hasDerivWithinAt
+    have hderiv := hF.hasDerivWithinAt
+    rw [show (ContinuousLinearMap.inverse ∘ G) =
+      (fun s : Real => ContinuousLinearMap.inverse (G s)) by rfl] at hderiv
+    simpa [dInv, InvG, ContinuousLinearMap.mulLeftRight_apply] using hderiv
   have hApp :
       HasDerivWithinAt
         (fun s : Real =>

@@ -285,14 +285,14 @@ theorem parabolicBallCutoff_holderWith_restrict
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     {alpha : NNReal} (halpha1 : alpha ≤ 1) (J : Set Real) :
     HolderWith (parabolicBallCutoffHolderConst a t₀ t₁ b r R) alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoff
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
   have htime := intervalCutoffBcf_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoff_holderWith (V := V) (center := center)
-    hr hrR (zero_le alpha) halpha1
+    hr hrR bot_le halpha1
   have h := separableBcfPath_holderWith_restrict
     (Meta := 1) (Mv := 1) (J := J)
     (intervalCutoffBcf a t₀ t₁ b ha ht hb)
@@ -311,14 +311,14 @@ theorem parabolicBallCutoffTimeDerivative_holderWith_restrict
     {alpha : NNReal} (halpha1 : alpha ≤ 1) (J : Set Real) :
     HolderWith
       (parabolicBallCutoffTimeDerivativeHolderConst a t₀ t₁ b r R)
-      alpha ((parabolicCylinder J Set.univ).restrict
+      alpha ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoffTimeDerivative
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
   have htime := intervalCutoffDerivBcf_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoff_holderWith (V := V) (center := center)
-    hr hrR (zero_le alpha) halpha1
+    hr hrR bot_le halpha1
   have h := separableBcfPath_holderWith_restrict
     (Meta := intervalCutoffDerivSupConst a t₀ t₁ b) (Mv := 1) (J := J)
     (intervalCutoffDerivBcf a t₀ t₁ b ha ht hb)
@@ -337,14 +337,14 @@ theorem parabolicBallCutoffSpatialFDeriv_holderWith_restrict
     {alpha : NNReal} (halpha1 : alpha ≤ 1) (J : Set Real) :
     HolderWith
       (parabolicBallCutoffSpatialFDerivHolderConst a t₀ t₁ b r R)
-      alpha ((parabolicCylinder J Set.univ).restrict
+      alpha ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoffSpatialFDeriv
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
   have htime := intervalCutoffBcf_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoffFDeriv_holderWith (V := V) (center := center)
-    hr hrR (zero_le alpha) halpha1
+    hr hrR bot_le halpha1
   have hbound := ballCutoffFDerivBound_nonneg hr hrR
   have h := separableBcfPath_holderWith_restrict
     (V := V) (F := V →L[Real] Real)
@@ -371,14 +371,14 @@ theorem parabolicBallCutoffSpatialFDeriv2_holderWith_restrict
     HolderWith
       (parabolicBallCutoffSpatialFDeriv2HolderConst
         a t₀ t₁ b center hr hrR)
-      alpha ((parabolicCylinder J Set.univ).restrict
+      alpha ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoffSpatialFDeriv2
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
   have htime := intervalCutoffBcf_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoffFDeriv2_holderWith (V := V) (center := center)
-    hr hrR (zero_le alpha) halpha1
+    hr hrR bot_le halpha1
   have hbound := ballCutoffFDeriv2Bound_nonneg hr hrR
   have h := separableBcfPath_holderWith_restrict
     (V := V) (F := V →L[Real] V →L[Real] Real)

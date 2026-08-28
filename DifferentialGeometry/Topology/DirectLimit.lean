@@ -34,7 +34,6 @@ theorem succMap_isOpenEmb (f : ∀ k, A k → A (k + 1))
     IsOpenEmbedding (succMap f h) := by
   induction ℓ, h using Nat.le_induction with
   | base =>
-      change IsOpenEmbedding (succMap f (Nat.le_refl k))
       have hfun : succMap f (Nat.le_refl k) = id := by
         funext x
         exact Nat.leRecOn_self x
@@ -167,7 +166,8 @@ theorem isOpen_iff_incl {U : Set S.Lim} :
     apply isOpen_coinduced.mpr
     rw [isOpen_sigma_iff]
     intro k
-    simpa [incl] using hU k
+    change IsOpen (S.incl k ⁻¹' U)
+    exact hU k
 
 theorem isCompact_exists {K : Set S.Lim} (hK : IsCompact K) :
     ∃ (k : ℕ) (Kk : Set (A k)), IsCompact Kk ∧ K = S.incl k '' Kk := by
@@ -258,7 +258,8 @@ theorem continuous_iff_incl {X : Type*} [TopologicalSpace X] {f : S.Lim → X} :
     intro U hU
     rw [S.isOpen_iff_incl]
     intro k
-    simpa [Function.comp_def] using (hf k).isOpen_preimage U hU
+    change IsOpen ((f ∘ S.incl k) ⁻¹' U)
+    exact (hf k).isOpen_preimage U hU
 
 end SeqSystem
 

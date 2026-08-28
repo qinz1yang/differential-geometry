@@ -24,7 +24,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -236,7 +235,7 @@ theorem exists_ricciArmOrder0RiemannCoeff_metricPerturbationPath_riemannianFiber
       ‖(iteratedCovGrad (I := I) g₀ 0 2 j
           (convexPerturbation (I := I) g₀ T 0 s)).toSection x‖) := by
     intro j _
-    letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
+    let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
     exact norm_nonneg _
   have hcell : ∀ j : ℕ, j < 3 →
@@ -245,7 +244,7 @@ theorem exists_ricciArmOrder0RiemannCoeff_metricPerturbationPath_riemannianFiber
             (convexPerturbation (I := I) g₀ T 0 s)).toSection x) ≤
         1 + (Csob * R) ^ 2 := by
     intro j hj
-    letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
+    let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
     have hbridge := norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M)
       g₀ 0 (2 + j) x
@@ -358,7 +357,7 @@ theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -394,7 +393,7 @@ theorem jointTotalSpaceRS_sub_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -426,7 +425,7 @@ theorem jointTotalSpaceRS_const_smul_local {r s : ℕ} {S : Set ℝ} (a : ℝ)
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (a • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -435,7 +434,10 @@ theorem jointTotalSpaceRS_const_smul_local {r s : ℕ} {S : Set ℝ} (a : ℝ)
     (fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x₀ with he
   have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hA p₀ hp₀)
-  refine ((contMDiffWithinAt_const (c := a)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  have ha : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun _ : M × ℝ ↦ a) ((Set.univ : Set M) ×ˢ S) p₀ :=
+    contMDiffWithinAt_const
+  refine (ha.smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
       (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
         (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
@@ -457,7 +459,7 @@ theorem jointTotalSpaceRS_smulFun_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (f p.2 • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -490,8 +492,8 @@ private noncomputable def outerPairBilinChartα (g : SmoothRiemannianMetric I M)
           (ContinuousLinearMap.flip Dd (chartBasisVecFiber (I := I) α l x))
       map_add' := fun X X' => by
         ext Y'
-        simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [add_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_add, smul_eq_mul]
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -500,8 +502,8 @@ private noncomputable def outerPairBilinChartα (g : SmoothRiemannianMetric I M)
         ring
       map_smul' := fun c X => by
         ext Y'
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [smul_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul, RingHom.id_apply]
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -519,7 +521,7 @@ private lemma outerPairBilinChartα_apply (g : SmoothRiemannianMetric I M) (α :
           (K X (chartBasisVecFiber (I := I) α k x) *
             Dd X' (chartBasisVecFiber (I := I) α l x)) := by
   rw [outerPairBilinChartα, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
+  simp only [sum_apply, smul_apply, smul_eq_mul,
     ContinuousLinearMap.flip_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -562,7 +564,7 @@ private def toModelEvalCLM (s : ℕ) (x : M) (v : Fin s → E) :
   LinearMap.toContinuousLinearMap
     { toFun := fun D => Tensor0SSpace.toModel (𝕜 := ℝ) D v
       map_add' := fun D₁ D₂ => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+        rw [Tensor0SSpace.toModel_add, add_apply]
       map_smul' := fun c D => by
         rw [Tensor0SSpace.toModel_smul]
         rfl }
@@ -585,7 +587,7 @@ private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
       map_smul' := fun c p => by
         rw [map_smul, map_smul, RingHom.id_apply]
         ext q
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -593,13 +595,25 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma pairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) (p q : TangentSpace I x) :
     pairFeedScalarCLM (I := I) (M := M) s x G v p q =
-      Tensor0SSpace.toModel (𝕜 := ℝ) G (Fin.cons (p : E) (Fin.cons (q : E) v)) := by
+      Tensor0SSpace.toModel (𝕜 := ℝ) G
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
   rw [pairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, toModelEvalCLM_apply,
+    Tensor0SSpace.toModel_apply_model_vector]
+  change Tensor0SSpace.eval
+      ((tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x
+        ((tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p)) q)
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
+  rw [
     TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
+      (T := (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q)
+      (vs := fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)),
     TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := G) (v0 := p) (vs := Fin.cons (q : E) v)]
+      (T := G) (v0 := p)
+      (vs := Fin.cons q (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)))]
+  rw [← Tensor0SSpace.toModel_apply_tangent]
+  congr 1
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
@@ -613,11 +627,17 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g α x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g α x k l *
           (Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
-              ![(chartBasisVecFiber (I := I) α m x : E),
-                (chartBasisVecFiber (I := I) α k x : E)] *
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (chartBasisVecFiber (I := I) α m x),
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (chartBasisVecFiber (I := I) α k x)] *
             Tensor0SSpace.toModel (𝕜 := ℝ) G
-              (fun i => (Fin.cons ((chartBasisVecFiber (I := I) α n x : E))
-                (Fin.cons ((chartBasisVecFiber (I := I) α l x : E)) v) : Fin 4 → E)
+              (fun i => (Fin.cons
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (chartBasisVecFiber (I := I) α n x))
+                (Fin.cons
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                    (chartBasisVecFiber (I := I) α l x)) v) : Fin 4 → E)
                 (σp i)))) := by
   classical
   have hBf_on : ∀ i j : Fin (Module.finrank ℝ E),
@@ -629,11 +649,14 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
         (smoothOrthoFrame (I := I) g x) x from rfl,
     curvatureDecompositionMonomialFibFixedFrame_toModel]
   have hsummand : ∀ a b : Fin (Module.finrank ℝ E),
-      Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
-          ![(smoothOrthoFrame (I := I) g x a x : E), (smoothOrthoFrame (I := I) g x b x : E)] *
+      Tensor0SSpace.eval (W x)
+          ![smoothOrthoFrame (I := I) g x a x, smoothOrthoFrame (I := I) g x b x] *
         Tensor0SSpace.toModel (𝕜 := ℝ) G
-          (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g x a x : E))
-            (Fin.cons ((smoothOrthoFrame (I := I) g x b x : E)) v) : Fin 4 → E) (σp i)) =
+          (fun i => (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g x a x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g x b x)) v) :
+              Fin 4 → E) (σp i)) =
       pairFeedScalarCLM (I := I) (M := M) 0 x (W x) ![]
           (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x b x) *
         pairFeedScalarCLM (I := I) (M := M) 2 x
@@ -642,7 +665,8 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
     intro a b
     rw [pairFeedScalarCLM_apply, pairFeedScalarCLM_apply, slotPerm4Fib_toModel,
       ContinuousMultilinearMap.domDomCongr_apply]
-    rfl
+    rw [← Tensor0SSpace.toModel_apply_tangent]
+    congr 2
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsummand a b))]
   rw [double_frame_bilin_trace_chartα (I := I) g α hxbase
     (pairFeedScalarCLM (I := I) (M := M) 0 x (W x) ![])
@@ -656,7 +680,7 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
   refine congrArg (fun t => chartInvGramMatrix (I := I) g α x k l * t) ?_
   rw [pairFeedScalarCLM_apply, pairFeedScalarCLM_apply, slotPerm4Fib_toModel,
     ContinuousMultilinearMap.domDomCongr_apply]
-  rfl
+  congr 2
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
@@ -678,24 +702,30 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
       (fun p : M × ℝ => Tensor0SSpace.toModel
         (curvatureActionMonomialTrace (I := I) (M := M)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) W σp p.1 (Y p.1))
-        ![(chartBasisVecFiber (I := I) α (σc 0) p.1 : E),
-          (chartBasisVecFiber (I := I) α (σc 1) p.1 : E)])
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+          ((![chartBasisVecFiber (I := I) α (σc 0) p.1,
+            chartBasisVecFiber (I := I) α (σc 1) p.1] : Fin 2 → TangentSpace I p.1) i)))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
   classical
   have htuple : ∀ (y : M) (n l : Fin (Module.finrank ℝ E)) (j : Fin 4),
-      (Fin.cons ((chartBasisVecFiber (I := I) α n y : E))
-        (Fin.cons ((chartBasisVecFiber (I := I) α l y : E))
-          ![(chartBasisVecFiber (I := I) α (σc 0) y : E),
-            (chartBasisVecFiber (I := I) α (σc 1) y : E)]) : Fin 4 → E) j =
-      ((chartBasisVecFiber (I := I) α
-        ((Fin.cons n (Fin.cons l ![σc 0, σc 1]) : Fin 4 → Fin (Module.finrank ℝ E)) j)
-        y : E)) := by
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+          (chartBasisVecFiber (I := I) α n y))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
+            (chartBasisVecFiber (I := I) α l y))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (chartBasisVecFiber (I := I) α (σc 0) y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (chartBasisVecFiber (I := I) α (σc 1) y)]) : Fin 4 → E) j =
+      tangentSpaceModelContinuousLinearEquiv (I := I) y
+        (chartBasisVecFiber (I := I) α
+          ((Fin.cons n (Fin.cons l ![σc 0, σc 1]) : Fin 4 → Fin (Module.finrank ℝ E)) j) y) := by
     intro y n l j
     fin_cases j <;> rfl
   have hYtuple : ∀ w : Fin 4 → Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Tensor0SSpace.toModel (𝕜 := ℝ) (Y p.1)
-          (fun i => (chartBasisVecFiber (I := I) α (w i) p.1 : E)))
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+            (chartBasisVecFiber (I := I) α (w i) p.1)))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
     intro w p₀ hp₀
     have hYon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
@@ -715,8 +745,10 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
   have hWpair : ∀ m k : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Tensor0SSpace.toModel (𝕜 := ℝ) (W p.1)
-          ![(chartBasisVecFiber (I := I) α m p.1 : E),
-            (chartBasisVecFiber (I := I) α k p.1 : E)])
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+              (chartBasisVecFiber (I := I) α m p.1),
+            tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+              (chartBasisVecFiber (I := I) α k p.1)])
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
     intro m k p₀ hp₀
     have hWon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
@@ -750,19 +782,27 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
         (∑ k, ∑ l, chartInvGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) α p.1 k l *
           (Tensor0SSpace.toModel (𝕜 := ℝ) (W p.1)
-              ![(chartBasisVecFiber (I := I) α m p.1 : E),
-                (chartBasisVecFiber (I := I) α k p.1 : E)] *
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+                  (chartBasisVecFiber (I := I) α m p.1),
+                tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+                  (chartBasisVecFiber (I := I) α k p.1)] *
             Tensor0SSpace.toModel (𝕜 := ℝ) (Y p.1)
-              (fun i => (Fin.cons ((chartBasisVecFiber (I := I) α n p.1 : E))
-                (Fin.cons ((chartBasisVecFiber (I := I) α l p.1 : E))
-                  ![(chartBasisVecFiber (I := I) α (σc 0) p.1 : E),
-                    (chartBasisVecFiber (I := I) α (σc 1) p.1 : E)]) : Fin 4 → E)
+              (fun i => (Fin.cons
+                (tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+                  (chartBasisVecFiber (I := I) α n p.1))
+                (Fin.cons
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+                    (chartBasisVecFiber (I := I) α l p.1))
+                  ![tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+                      (chartBasisVecFiber (I := I) α (σc 0) p.1),
+                    tangentSpaceModelContinuousLinearEquiv (I := I) p.1
+                      (chartBasisVecFiber (I := I) α (σc 1) p.1)]) : Fin 4 → E)
                 (σp i)))))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
-    refine contMDiffOn_finset_sum (fun m _ => contMDiffOn_finset_sum (fun n _ => ?_))
+    refine contMDiffOn_finsetSum (fun m _ => contMDiffOn_finsetSum (fun n _ => ?_))
     refine (metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T 0
       hδ hδZ α m n).mul ?_
-    refine contMDiffOn_finset_sum (fun k _ => contMDiffOn_finset_sum (fun l _ => ?_))
+    refine contMDiffOn_finsetSum (fun k _ => contMDiffOn_finsetSum (fun l _ => ?_))
     refine (metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T 0
       hδ hδZ α k l).mul ?_
     refine (hWpair m k).mul ?_
@@ -777,6 +817,15 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
     exact hp.1
   rw [curvatureDecompositionMonomialBiContrFib_toModel_chartα (I := I) (M := M)
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) W σp α hxbase]
+  refine Finset.sum_congr rfl (fun m _ => ?_)
+  refine Finset.sum_congr rfl (fun n _ => ?_)
+  refine congrArg (fun z => chartInvGramMatrix (I := I)
+    (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) α p.1 m n * z) ?_
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  refine Finset.sum_congr rfl (fun l _ => ?_)
+  refine congrArg (fun z => chartInvGramMatrix (I := I)
+    (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) α p.1 k l * z) ?_
+  congr 2
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -799,7 +848,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) W σp p.1 (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   set gfam : ℝ → SmoothRiemannianMetric I M :=
     fun s => metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s with hgfam
   set S := metricPerturbationPathDomain (δ := δ) (δ' := δ) with hS
@@ -831,8 +880,10 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
             (gfam q.2) W σp q.1 (Y q.1)⟩).2 σc =
           Tensor0SSpace.toModel (curvatureActionMonomialTrace (I := I) (M := M)
               (gfam q.2) W σp q.1 (Y q.1))
-            ![(chartBasisVecFiber (I := I) α (σc 0) q.1 : E),
-              (chartBasisVecFiber (I := I) α (σc 1) q.1 : E)] := by
+            (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) q.1
+              ((![chartBasisVecFiber (I := I) α (σc 0) q.1,
+                chartBasisVecFiber (I := I) α (σc 1) q.1] :
+                  Fin 2 → TangentSpace I q.1) i)) := by
       intro q hqbase
       rw [continuousMultilinearMap_basis_repr]
       have hcoe : (e ⟨q.1, curvatureActionMonomialTrace (I := I) (M := M)
@@ -843,14 +894,17 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
       rw [hcoe]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1
         hqbase
-        (curvatureActionMonomialTrace (I := I) (M := M) (gfam q.2) W σp q.1 (Y q.1))
+        (Tensor0SSpace.toModel
+          (curvatureActionMonomialTrace (I := I) (M := M) (gfam q.2) W σp q.1 (Y q.1)))
         (fun j => (chartModelBasis E) (σc j))
-      rw [tensor0SSpace_continuousLinearEquiv_symm_apply] at happly
+      rw [Tensor0SSpace.toModel,
+        (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
       rw [happly]
       change Tensor0SSpace.toModel (curvatureActionMonomialTrace (I := I) (M := M)
           (gfam q.2) W σp q.1 (Y q.1))
-          (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
-            ((chartModelBasis E) (σc j))) = _
+          (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) q.1
+            ((trivializationAt E (TangentSpace I) α).symmL ℝ q.1
+              ((chartModelBasis E) (σc j)))) = _
       congr 1
       funext j
       fin_cases j <;> rfl

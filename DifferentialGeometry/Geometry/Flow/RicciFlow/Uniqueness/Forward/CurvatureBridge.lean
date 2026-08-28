@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureTimeDerivative
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -103,7 +102,7 @@ private theorem mulVanish_deriv {f A : Real -> Real} {A' : Real} {s : Set Real} 
     simp only [slope_def_field, hA0]
     ring
   refine Filter.Tendsto.congr (fun r => (hslope r).symm) ?_
-  exact Filter.Tendsto.mul (hf.mono Set.diff_subset) hA
+  exact Filter.Tendsto.mul (hf.mono Set.sdiff_subset) hA
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem vecCurve_deriv
@@ -380,8 +379,10 @@ theorem metricNabla0S_self (g : SmoothRiemannianMetric I M) :
       (Fin.tail v)
     rw [hv] at hsec
     have hzero := nabla_metric_zero (I := I) (metricCov (I := I) g) g hmc Xsec x
-    rw [metricNabla0S_apply, hsec, hzero]
-    simp
+    rw [metricNabla0S_apply]
+    exact hsec.trans (by
+      rw [hzero]
+      rfl)
   rw [hfib]
   rfl
 

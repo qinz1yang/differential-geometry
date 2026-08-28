@@ -120,7 +120,16 @@ theorem hmfSpecSlice_cd
       (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) (n : ℕ∞)
       (fun y : M ↦ (u, y)) x :=
     contMDiffAt_const.prodMk contMDiffAt_id
-  simpa only [hmfSpecMap_apply] using hP.comp x hin
+  have hc := hP.comp x hin
+  have hfun :
+      ((fun p => hmfSpecMap (I := I) (M := M) q S p.2 p.1) ∘
+        Prod.mk u) =
+        hmfAdd (I := I) (M := M) q
+          (hmfSpecIncl (I := I) (M := M) q S u) := by
+    funext y
+    exact hmfSpecMap_apply (I := I) (M := M) q S y u
+  rw [hfun] at hc
+  exact hc
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in

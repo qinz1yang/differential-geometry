@@ -4,7 +4,6 @@ import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle
@@ -170,7 +169,7 @@ theorem contMDiff_tensor0SPartialEval_of_smoothSections {s : ℕ}
       (fun b : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun x : M => Tensor0SSpace s I x) b
         (tensor0SPartialEval I M (fun b => T b) (fun b => Y b) b)) := by
-  letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x)) :=
     tensor0SBundle_topology (s + 1)
   exact contMDiff_tensor0SPartialEval (I := I) (M := M) (s := s)

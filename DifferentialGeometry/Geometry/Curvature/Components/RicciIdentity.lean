@@ -56,7 +56,7 @@ theorem curvatureAction0SAt_coordFrame_of_christoffelCurv
         -∑ q : Fin s, ∑ m : CoordinateIdx (𝕜 := Real) E,
           christoffelCurvCoeffAt (I := I) cov x0 i j (ks q) m *
             coordComponent0SAt (I := I) alpha (Function.update ks q m) := by
-  letI := _h
+  let := _h
   classical
   let slots : Fin s -> TangentSpace I x0 :=
     fun q => coordinateFrameAt (I := I) x0 (ks q) x0
@@ -115,7 +115,7 @@ theorem tensor0S_ricciIdentity_coordFrame_of_christoffelCurv
         -∑ q : Fin s, ∑ m : CoordinateIdx (𝕜 := Real) E,
           christoffelCurvCoeffAt (I := I) cov x0 i j (ks q) m *
             coordComponent0SAt (I := I) alpha (Function.update ks q m) := by
-  letI := _h
+  let := _h
   classical
   let slots : Fin s -> TangentSpace I x0 :=
     fun q => coordinateFrameAt (I := I) x0 (ks q) x0
@@ -211,7 +211,7 @@ theorem one_form_third_comm_coord_of_christoffelCurv
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x₀)
     (hcoord : OneFormThirdCommChristoffelCoordAt (I := I) cov x₀ alpha nabla2Alpha) :
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha := by
-  letI := _h
+  let := _h
   refine one_form_third_comm_of_coord_ijk (I := I) Rm13 alpha
     (coordinateFrameAt_toBasis (I := I) x₀) nabla2Alpha ?_
   intro i k j

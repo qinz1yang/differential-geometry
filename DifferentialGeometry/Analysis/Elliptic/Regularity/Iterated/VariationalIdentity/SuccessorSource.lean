@@ -749,9 +749,9 @@ private lemma fChartEffStepNumerator_memLp_vol_K
             chosenMthMixedPartialChartPushedU
               (I := I) (M := M) g α u_h (m + 1) (Fin.cons i dirs) y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termA_pair_memLp_vol_K (I := I) (M := M) g α m dirs
       h_chart_regularity_1 l i j
@@ -762,9 +762,9 @@ private lemma fChartEffStepNumerator_memLp_vol_K
               (I := I) (M := M) g α u_h (m + 2)
               (Fin.cons i (Fin.snoc dirs j)) y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact termB_pair_memLp_vol_K (I := I) (M := M) g α m dirs
       h_chart_regularity_2 l i j
@@ -780,6 +780,7 @@ private lemma fChartEffStepNumerator_memLp_vol_K
   have h_step4 := h_step3.add hE
   unfold fChartEffStepNumerator
   convert h_step4 using 2 with y
+  simp only [Pi.add_apply, Pi.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

@@ -19,7 +19,7 @@ namespace TwoShuffle
 
 variable {k n : ℕ}
 
-private def card_compl (S : Finset (Fin (k + n))) (hS : S.card = k) :
+private theorem card_compl (S : Finset (Fin (k + n))) (hS : S.card = k) :
     (Sᶜ : Finset (Fin (k + n))).card = n := by
   rw [Finset.card_compl, hS, Fintype.card_fin]
   omega
@@ -345,7 +345,6 @@ noncomputable def modSumCongrTwoShuffle (k n : ℕ) :
     rw [← Quotient.out_eq q]
     change Quotient.mk'' (S.toPerm) = Quotient.mk'' (Quot.out q)
     apply TwoShuffle.quotient_eq_of_ofPerm_eq
-    change TwoShuffle.ofPerm (S.toPerm) = TwoShuffle.ofPerm (Quot.out q)
     rw [TwoShuffle.ofPerm_toPerm S]
   right_inv := by
     intro S

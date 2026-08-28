@@ -11,6 +11,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 namespace DifferentialGeometry.Tensor.Coordinates
 
 open Set Bundle DifferentialGeometry.Tensor0SBundle Filter
@@ -234,7 +235,7 @@ def toFrame {x₀ : M} (C : LocalChartAt (I := I) x₀) : C.Frame where
     haveI : MemTrivializationAtlas C.triv := C.triv_mem
     exact C.triv.localFrame (Module.finBasis 𝕜 E)
   hframe := by
-    haveI : MemTrivializationAtlas C.triv := C.triv_mem
+    have : MemTrivializationAtlas C.triv := C.triv_mem
     exact C.triv.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) (Module.finBasis 𝕜 E)
   isOpen_domain := C.triv.open_baseSet
   mem_base := by
@@ -355,9 +356,12 @@ theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
   rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
     (e := trivializationAt E (TangentSpace I : M -> Type _) x₀)
     (b := Module.finBasis 𝕜 E) (i := i) hx_triv]
-  simpa [Bundle.Trivialization.basisAt, Trivialization.symmL_apply, extChartAt] using
-    congrArg (fun L : E →L[𝕜] TangentSpace I x => L ((Module.finBasis 𝕜 E) i))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src)
+  rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
+    Trivialization.linearEquivAt_symm_apply]
+  rw [← Trivialization.symmL_apply (R := 𝕜)
+    (trivializationAt E (TangentSpace I : M → Type _) x₀) hx_triv]
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+  rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 theorem LocalChartAt.default_source (x₀ : M) :
@@ -476,9 +480,10 @@ def modelSymmDiffeomorph [I.Boundaryless] :
   toEquiv := I.toHomeomorph.symm.toEquiv
   contMDiff_toFun := by
     rw [← contMDiffOn_univ]
-    simpa [ModelWithCorners.range_eq_univ (I := I)] using
-      (contMDiffOn_model_symm (I := I) (n := (∞ : WithTop ℕ∞)))
-  contMDiff_invFun := contMDiff_model (I := I)
+    have h := I.contMDiffOn_symm (n := (∞ : WithTop ℕ∞))
+    rw [ModelWithCorners.range_eq_univ (I := I)] at h
+    exact h.congr fun _ _ => rfl
+  contMDiff_invFun := I.contMDiff
 
 def normalHCoordDiffeomorph [I.Boundaryless] (x : M) :
     TangentSpace I x ≃ₘ^(∞ : WithTop ℕ∞)⟮𝓘(𝕜, TangentSpace I x), I⟯ H :=
@@ -538,7 +543,7 @@ private theorem coordinateFrame_pullback_eq_const (x₀ : M) (i : CoordinateIdx 
         (coordinateFrameAt (I := I) x₀ i) (Set.range I)
       =ᶠ[𝓝[Set.range I] (extChartAt I x₀ x₀)]
         fun _ : E => (Module.finBasis 𝕜 E i : E) := by
-  haveI : IsManifold I (1 : WithTop ℕ∞) M :=
+  have : IsManifold I (1 : WithTop ℕ∞) M :=
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   filter_upwards [extChartAt_target_mem_nhdsWithin (I := I) x₀] with y hy
   simp only [VectorField.mpullbackWithin_apply]
@@ -564,7 +569,7 @@ private theorem coordinateFrame_pullback_eq_const_of_mem {x₀ x : M}
         (coordinateFrameAt (I := I) x₀ i) (Set.range I)
       =ᶠ[𝓝[Set.range I] (extChartAt I x₀ x)]
         fun _ : E => (Module.finBasis 𝕜 E i : E) := by
-  haveI : IsManifold I (1 : WithTop ℕ∞) M :=
+  have : IsManifold I (1 : WithTop ℕ∞) M :=
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   have hx_src : x ∈ (extChartAt I x₀).source := by
     have hx_chart : x ∈ (chartAt H x₀).source := by
@@ -626,12 +631,12 @@ theorem coordinateFrameAt_bracket_zero_of_mem [IsRCLikeNormedField 𝕜] {x₀ x
     VectorField.mlieBracket I
       (coordinateFrameAt (I := I) x₀ i)
       (coordinateFrameAt (I := I) x₀ j) x = 0 := by
-  haveI : IsManifold I (minSmoothness 𝕜 2) M :=
+  have : IsManifold I (minSmoothness 𝕜 2) M :=
     by
       rw [minSmoothness_of_isRCLikeNormedField]
       exact IsManifold.of_le (I := I) (M := M) (n := ∞) (by
         exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
-  haveI : CompleteSpace E := FiniteDimensional.complete 𝕜 E
+  have : CompleteSpace E := FiniteDimensional.complete 𝕜 E
   let V : (x : M) → TangentSpace I x := coordinateFrameAt (I := I) x₀ i
   let W : (x : M) → TangentSpace I x := coordinateFrameAt (I := I) x₀ j
   let z : E := extChartAt I x₀ x
@@ -693,7 +698,8 @@ theorem coordinateFrameAt_bracket_zero_of_mem [IsRCLikeNormedField 𝕜] {x₀ x
           (Set.range I) z = 0 := by
     rw [VectorField.mlieBracketWithin_eq_lieBracketWithin]
     rw [Filter.EventuallyEq.lieBracketWithin_vectorField_eq_of_mem hleft hright hz_range]
-    exact lieBracketWithin_const_const
+    rw [lieBracketWithin_const_const]
+    rfl
   rw [hrhs] at hpb
   rw [VectorField.mlieBracketWithin_univ] at hpb
   simp only [VectorField.mpullbackWithin_apply] at hpb

@@ -75,10 +75,10 @@ theorem PointedRiemannianManifold.riemBundle_cont
     letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
       Y.riemBundle (I := I)
     IsContinuousRiemannianBundle E (fun x : Y.M => TangentSpace I x) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
     Y.riemBundle (I := I)
   exact ⟨⟨Y.metric.inner, Y.metric.contMDiff.continuous, by intro x v w; rfl⟩⟩
 

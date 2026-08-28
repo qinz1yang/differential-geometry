@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Exponential.CartanNorm
 import DifferentialGeometry.Geometry.Metric.Polarization
 import DifferentialGeometry.Geometry.Metric.Sphere.RadialLog
 import Mathlib.Analysis.Normed.Module.Connected
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -112,8 +114,13 @@ theorem punctCartan_smooth
           expMapIntrinsic (I := J) g hEnorm p'
             (show TangentSpace J p' from u)) :=
     intrinsicFiber_smooth (I := J) g hEnorm p'
-  simpa only [punctCartan, Function.comp_apply] using
-    hexp.comp_contMDiffOn hmid
+  change ContMDiffOn (𝓡 n) J ∞
+    ((fun u : EuclideanSpace ℝ (Fin n) =>
+        expMapIntrinsic (I := J) g hEnorm p'
+          (show TangentSpace J p' from u)) ∘
+      (fun u : EuclideanSpace ℝ (Fin n) => i u) ∘
+        roundLog (n := n) p) {x | x ≠ -p}
+  exact hexp.comp_contMDiffOn hmid
 
 omit [T2Space (TangentBundle J N)] [ConnectedSpace N] in
 theorem punctCartan_mfd
@@ -135,6 +142,8 @@ theorem punctCartan_mfd
   let expf : EuclideanSpace ℝ (Fin n) → N := fun u =>
     expMapIntrinsic (I := J) g hEnorm p'
       (show TangentSpace J p' from u)
+  have hmidEq : midf = (fun u : EuclideanSpace ℝ (Fin n) => i u) ∘ logf := rfl
+  have hpunctEq : punctCartan g hEnorm p' i p = expf ∘ midf := rfl
   have hpneg : p ≠ -p := ne_neg_of_mem_unit_sphere ℝ p
   have hUopen : IsOpen {x : sphere (0 : A) 1 | x ≠ -p} := by
     change IsOpen (({-p} : Set (sphere (0 : A) 1))ᶜ)
@@ -150,7 +159,8 @@ theorem punctCartan_mfd
     i.mdifferentiableAt
   have hmid :
       MDifferentiableAt (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) midf p := by
-    simpa only [midf, Function.comp_apply] using hiDiff.comp p hlog
+    rw [hmidEq]
+    exact hiDiff.comp p hlog
   have hexp :
       MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) J expf (midf p) :=
     (intrinsicFiber_smooth (I := J) g hEnorm p').contMDiffAt.mdifferentiableAt
@@ -159,16 +169,14 @@ theorem punctCartan_mfd
       mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) midf p =
         (i : EuclideanSpace ℝ (Fin n) →L[ℝ]
           EuclideanSpace ℝ (Fin n)) := by
+    rw [hmidEq]
     have hchain :=
       mfderiv_comp
         (I := 𝓡 n) (I' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
         (I'' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) p hiDiff hlog
     rw [ContinuousLinearEquiv.mfderiv_eq,
       roundLog_mfd_self hRound p] at hchain
-    ext v
-    have hv := DFunLike.congr_fun hchain v
-    simpa only [midf, logf, Function.comp_apply,
-      ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using hv
+    exact hchain
   have hmid0 : midf p = 0 := by
     simp only [midf, logf, roundLog_self, map_zero]
   have hexp0 :
@@ -181,10 +189,10 @@ theorem punctCartan_mfd
       (I := 𝓡 n) (I' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
       (I'' := J) p hexp hmid
   rw [hmid0, hexp0, hmidDeriv] at hchain
-  ext v
-  have hv := DFunLike.congr_fun hchain v
-  simpa only [punctCartan, expf, midf, logf, Function.comp_apply,
-    ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using hv
+  rw [hpunctEq]
+  apply tangentLinearMapToModel_injective
+  rw [hchain]
+  rfl
 
 omit [T2Space (TangentBundle J N)]
   [ConnectedSpace N] in
@@ -213,7 +221,7 @@ theorem punctCartan_sq
   have hfr : 1 < Module.finrank ℝ A := by
     rw [show Module.finrank ℝ A = n + 1 from Fact.out]
     exact Nat.succ_lt_succ (Nat.pos_of_ne_zero (NeZero.ne n))
-  letI : ConnectedSpace (sphere (0 : A) 1) :=
+  let : ConnectedSpace (sphere (0 : A) 1) :=
     { toPreconnectedSpace :=
         Subtype.preconnectedSpace
           (isPreconnected_sphere
@@ -229,6 +237,8 @@ theorem punctCartan_sq
   let expf' : EuclideanSpace ℝ (Fin n) → N := fun u =>
     expMapIntrinsic (I := J) g hEnorm p'
       (show TangentSpace J p' from u)
+  have hmidEq : midf = (fun z : EuclideanSpace ℝ (Fin n) => i z) ∘ logf := rfl
+  have hpunctEq : punctCartan g hEnorm p' i p = expf' ∘ midf := rfl
   let u : EuclideanSpace ℝ (Fin n) := logf x
   let w : EuclideanSpace ℝ (Fin n) :=
     mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) logf x Y
@@ -251,7 +261,8 @@ theorem punctCartan_sq
     i.mdifferentiableAt
   have hmid :
       MDifferentiableAt (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) midf x := by
-    simpa only [midf, Function.comp_apply] using hiDiff.comp x hlog
+    rw [hmidEq]
+    exact hiDiff.comp x hlog
   have hexpInf :
       ContMDiffAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) J ∞ expf' (midf x) :=
     (intrinsicFiber_smooth (I := J) g hEnorm p').contMDiffAt
@@ -261,6 +272,7 @@ theorem punctCartan_sq
   have hmidDeriv :
       mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) midf x Y =
         i w := by
+    rw [hmidEq]
     have hchain :=
       mfderiv_comp_apply
         (I := 𝓡 n) (I' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
@@ -268,19 +280,19 @@ theorem punctCartan_sq
         (g := fun z : EuclideanSpace ℝ (Fin n) => i z)
         (f := logf) (x := x) hiDiff hlog Y
     rw [ContinuousLinearEquiv.mfderiv_eq] at hchain
-    simpa only [midf, w, Function.comp_apply] using hchain
+    exact hchain
   have hmapDeriv :
       mfderiv (𝓡 n) J (punctCartan g hEnorm p' i p) x Y =
         mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) J expf'
           (i u) (i w) := by
+    rw [hpunctEq]
     have hchain :=
       mfderiv_comp_apply
         (I := 𝓡 n) (I' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
         (I'' := J) (g := expf') (f := midf) (x := x)
         hexp' hmid Y
     rw [hmidDeriv] at hchain
-    simpa only [punctCartan, expf', midf, logf, u,
-      Function.comp_apply] using hchain
+    exact hchain
   have hexp0Inf :
       ContMDiffAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (𝓡 n) ∞ expf u :=
     (intrinsicFiber_smooth (I := 𝓡 n)
@@ -303,7 +315,8 @@ theorem punctCartan_sq
         (I'' := 𝓡 n) (g := expf) (f := logf) (x := x)
         hexp0 hlog Y
     rw [hident.mfderiv_eq, mfderiv_id] at hchain
-    simpa only [expf, logf, u, w] using hchain.symm
+    change _ = (ContinuousLinearMap.id ℝ (TangentSpace (𝓡 n) x)) Y
+    exact hchain.symm
   have hbase : expf u = x := by
     simpa only [expf, u, logf] using round_exp_log_ne hRound p x hx
   have htransfer :=

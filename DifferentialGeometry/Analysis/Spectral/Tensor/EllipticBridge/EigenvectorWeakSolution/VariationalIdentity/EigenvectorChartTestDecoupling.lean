@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -42,12 +41,11 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private lemma extDerivFun_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
-    extDerivFun (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply,
+private lemma mvfderiv_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
+    mvfderiv (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
+  simp only [mvfderiv, ContinuousLinearMap.comp_apply,
     ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-    LinearEquiv.coe_mk]
+  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -63,7 +61,7 @@ private lemma covGradBundle_trivFibre_eq
         (Φ.comp ((trivializationAt E (TangentSpace I) α).symmL ℝ b)) :=
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem tensorChartComponentRaw_prependCovGradSlot
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (α : M)
@@ -72,22 +70,22 @@ theorem tensorChartComponentRaw_prependCovGradSlot
     {b : M} (hb : b ∈ (chartAt H α).source) :
     tensorChartComponentRaw (I := I) (M := M) g r (s + 1)
         (prependCovGradSlot (I := I) (M := M) g r s ζ S) α Idx Jdx b =
-      extDerivFun (I := I) (ζ : M → ℝ) b
+      mvfderiv (I := I) (ζ : M → ℝ) b
           (chartBasisVecFiber (I := I) α (Jdx 0) b) *
         tensorChartComponentRaw (I := I) (M := M) g r s S α Idx
           (Matrix.vecTail Jdx) b := by
   classical
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
       (fun y : M => Tensor0SSpace r I y)) := tensor0SBundle_topology r
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun y : M => Tensor0SSpace (s + 1) I y)) := tensor0SBundle_topology (s + 1)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y)) :=
     tensorRSBundle_topology r (s + 1)
-  letI : FiberBundle (TensorRSModel r (s + 1) ℝ E)
+  let : FiberBundle (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
     tensorRSBundle_fiber r (s + 1)
-  letI : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
+  let : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
     tensorRSBundle_vector r (s + 1)
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
@@ -101,11 +99,11 @@ theorem tensorChartComponentRaw_prependCovGradSlot
         (fun y : M => Tensor0SSpace (s + 1) I y) α).baseSet)
     exact ⟨hb_base, hb_base⟩
   set Φ : TangentSpace I b →L[ℝ] TensorRSSpace r s I b :=
-    (extDerivFun (I := I) (ζ : M → ℝ) b).smulRight (S.toSection b) with hΦ_def
+    (mvfderiv (I := I) (ζ : M → ℝ) b).smulRight (S.toSection b) with hΦ_def
   rw [tensorChartComponentRaw_def]
   unfold tensorTrivProj
   rw [prependCovGradSlot_toSection_apply (I := I) (M := M) g r s ζ S b]
-  rw [show ((extDerivFun (I := I) (ζ : M → ℝ) b).smulRight (S.toSection b)) = Φ
+  rw [show ((mvfderiv (I := I) (ζ : M → ℝ) b).smulRight (S.toSection b)) = Φ
     from rfl]
   rw [Bundle.Trivialization.continuousLinearMapAt_apply,
     (trivializationAt (TensorRSModel r (s + 1) ℝ E)
@@ -122,8 +120,8 @@ theorem tensorChartComponentRaw_prependCovGradSlot
       chartBasisVecFiber (I := I) α (Jdx 0) b := rfl
   rw [hsymmL]
   rw [hΦ_def, ContinuousLinearMap.smulRight_apply]
-  rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [ContinuousLinearMap.map_smul, smul_apply,
+    smul_apply, smul_eq_mul]
   congr 1
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
@@ -161,11 +159,11 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial
+private lemma mvfderiv_chartBasisVecFiber_eq_euclidPartial
     (ζ : C^∞⟮I, M; ℝ⟯) (α : M)
     (m : Fin (Module.finrank ℝ E))
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    extDerivFun (I := I) (ζ : M → ℝ)
+    mvfderiv (I := I) (ζ : M → ℝ)
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (chartBasisVecFiber (I := I) α m
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
@@ -183,7 +181,7 @@ private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial
       extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) := by
     rw [hphi_b, (isOpen_extChartAt_target (I := I) α).interior_eq]
     exact hy_pre
-  rw [extDerivFun_apply_scalar (I := I) (ζ : M → ℝ) b
+  rw [mvfderiv_apply_scalar (I := I) (ζ : M → ℝ) b
     (chartBasisVecFiber (I := I) α m b)]
   rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt (I := I) α
     (ζ.contMDiff.mdifferentiable (by norm_num)).mdifferentiableAt
@@ -202,14 +200,7 @@ private lemma tensorCovDerivAt_sum_smul_dir
       ∑ m : Fin (Module.finrank ℝ E),
         c m • tensorCovDerivAt (I := I) (M := M) g r s S b (v m) := by
   classical
-  rw [tensorCovDerivAt_def]
-  rw [show (∑ m : Fin (Module.finrank ℝ E), c m • v m) =
-      (∑ m : Fin (Module.finrank ℝ E), c m • v m :
-        TangentSpace I b) from rfl]
-  rw [map_sum]
-  refine Finset.sum_congr rfl (fun m _ => ?_)
-  rw [ContinuousLinearMap.map_smul]
-  rfl
+  simp only [tensorCovDerivAt_def, map_sum, map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 private lemma symm_mem_chartLeviCivitaGoodSet
@@ -261,7 +252,7 @@ private lemma tensorChartComponentProjection_sum (r s : ℕ)
   | insert i A hi ih =>
       rw [Finset.sum_insert hi, Finset.sum_insert hi, ContinuousLinearMap.map_add, ih]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem tensorChartComponentRaw_covDerivAlongGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (α : M)
@@ -307,10 +298,21 @@ theorem tensorChartComponentRaw_covDerivAlongGrad
       (ζ.contMDiff.mdifferentiable (by norm_num)).mdifferentiableAt
       hb_base hb_int]
     rfl
-  rw [hgrad]
+  have hgradModel :
+      tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (gradFun (I := I) g (ζ : M → ℝ) b) =
+        ∑ m : Fin (Module.finrank ℝ E),
+          gradChartCoeff (I := I) g α (ζ : M → ℝ) m b •
+            tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (chartBasisVecFiber (I := I) α m b) := by
+    rw [hgrad, map_sum]
+    refine Finset.sum_congr rfl (fun m _ => ?_)
+    rw [map_smul]
+  rw [hgradModel]
   rw [tensorCovDerivAt_sum_smul_dir (I := I) (M := M) g r s S b
     (fun m => gradChartCoeff (I := I) g α (ζ : M → ℝ) m b)
-    (fun m => chartBasisVecFiber (I := I) α m b)]
+    (fun m => tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (chartBasisVecFiber (I := I) α m b))]
   rw [tensorTrivCLM_sum (I := I) (M := M), tensorChartComponentProjection_sum (E := E)]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul, smul_eq_mul]
@@ -399,7 +401,7 @@ theorem tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_eqOn
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) from rfl]
   rw [rotatedTestSection_chartComp (I := I) (M := M) g r s α P₀ hχs hχt
     (Q.1, Matrix.vecTail Q.2) hy]
-  rw [extDerivFun_chartBasisVecFiber_eq_euclidPartial (I := I) (M := M)
+  rw [mvfderiv_chartBasisVecFiber_eq_euclidPartial (I := I) (M := M)
     (chartAtlasPOU I M α) α (Q.2 0) hy]
   simp only [crossLeftTestCoeff_def]
   ring
@@ -690,7 +692,7 @@ example (Idx : Fin r → Fin (Module.finrank ℝ E))
     {b : M} (hb : b ∈ (chartAt H α).source) :
     tensorChartComponentRaw (I := I) (M := M) g r (s + 1)
         (prependCovGradSlot (I := I) (M := M) g r s ζ S) α Idx Jdx b =
-      extDerivFun (I := I) (ζ : M → ℝ) b
+      mvfderiv (I := I) (ζ : M → ℝ) b
           (chartBasisVecFiber (I := I) α (Jdx 0) b) *
         tensorChartComponentRaw (I := I) (M := M) g r s S α Idx
           (Matrix.vecTail Jdx) b :=

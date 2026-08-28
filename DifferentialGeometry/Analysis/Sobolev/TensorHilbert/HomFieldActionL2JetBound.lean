@@ -81,7 +81,7 @@ theorem exists_appFullSec_iteratedCovGrad_l2_window_bound
           ((iteratedCovGrad g r m i W).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine MeasureTheory.Integrable.const_mul ?_ (cp k)
-    refine MeasureTheory.integrable_finset_sum _ (fun i _ => ?_)
+    refine MeasureTheory.integrable_finsetSum _ (fun i _ => ?_)
     exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g r (m + i)
       (iteratedCovGrad g r m i W)
   have hmono : ‖Z‖ ^ 2 ≤ cp k * ∑ i ∈ Finset.range (k + 1),
@@ -95,7 +95,7 @@ theorem exists_appFullSec_iteratedCovGrad_l2_window_bound
     refine le_trans hle (le_of_eq ?_)
     rw [MeasureTheory.integral_const_mul]
     congr 1
-    rw [MeasureTheory.integral_finset_sum]
+    rw [MeasureTheory.integral_finsetSum]
     · exact Finset.sum_congr rfl (fun i _ => (hWi_sq i).symm)
     · intro i _
       exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g r (m + i)
@@ -120,6 +120,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_operatorFieldComposition_l2_norm_le (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) :

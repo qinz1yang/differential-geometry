@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -128,7 +127,7 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
                   (chartBasisVecFiber (I := I) α k) b‖ ^ 2))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   set ρ : M → ℝ := fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x with hρ_def
@@ -167,7 +166,7 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
               (fun b' => S.toCcTensor.toSection b')
               (chartBasisVecFiber (I := I) α k) b‖ ^ 2)
       (chartAt H α).source := by
-    refine continuousOn_finset_sum _ (fun k _ => ?_)
+    refine continuousOn_finsetSum _ (fun k _ => ?_)
     have h_inner : ContinuousOn
         (fun b : M =>
           (⟪chartTensorRSCovariantDerivative (I := I) r s g α
@@ -223,9 +222,9 @@ private lemma chartTensorRSSlotCorrection_norm_sq_le
                 (fun b' => S.toCcTensor.toSection b')
                 (chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  letI : NormedAddCommGroup (TensorRSSpace r s I b) :=
+  let : NormedAddCommGroup (TensorRSSpace r s I b) :=
     tensorRSRiemannianNormedAddCommGroup r s b
   set a : Fin r → TensorRSSpace r s I b := fun i =>
     chartTensorRSInputSlotCorrection (I := I) r s g α

@@ -115,6 +115,7 @@ lemma exists_christoffel_bound_valence_range_on_compact
     exact (hΓf p m Idx Jdx' q l hl y hy).trans
       (Finset.le_sup' Γf (Finset.mem_range.mpr (by omega)))
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 lemma iteratedFDeriv_rawPullR_le_zeroContent_sum_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -329,9 +330,9 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
             (toEuclidean (E := E) (extChartAt I α b)) ≤
           C * ‖S.toSection b‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
+  let : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b =>
       instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
         (E := fun z : M => TensorRSSpace r s I z) b
@@ -454,11 +455,11 @@ private lemma zeroContent_sum_le_sobolev_norm
     refine Finset.sum_le_sum (fun i hi => ?_)
     rw [Nat.zero_add]
     refine (hCzf i S hb).trans ?_
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun z : M => TensorRSSpace r (s + i) I z) :=
       Tensor0SBundle.tensorRS_riemannianBundle
         (I := I) (M := M) g r (s + i)
-    letI : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
+    let : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
       fun z =>
         instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
           (E := fun w : M => TensorRSSpace r (s + i) I w) z

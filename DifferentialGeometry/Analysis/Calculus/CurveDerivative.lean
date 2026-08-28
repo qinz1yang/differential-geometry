@@ -15,6 +15,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+def realTangentOne (t : ℝ) : TangentSpace 𝓘(ℝ, ℝ) t :=
+  (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm 1
+
+@[simp] lemma fromTangentSpace_realTangentOne (t : ℝ) :
+    NormedSpace.fromTangentSpace (𝕜 := ℝ) t (realTangentOne t) = 1 :=
+  (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).apply_symm_apply 1
+
 omit [FiniteDimensional ℝ E] in
 theorem hasDerivAt_comp_mfderiv_along
     (I : ModelWithCorners ℝ E H) (f : M → ℝ) (gamma : ℝ → M) (t : ℝ)
@@ -23,16 +30,25 @@ theorem hasDerivAt_comp_mfderiv_along
     HasDerivAt (fun s => f (gamma s))
       (NormedSpace.fromTangentSpace (f (gamma t))
         (mfderiv I 𝓘(ℝ, ℝ) f (gamma t)
-          (mfderiv 𝓘(ℝ, ℝ) I gamma t (1 : ℝ)))) t := by
-  rw [hasDerivAt_iff_hasFDerivAt]
-  have hcomp := hf.hasMFDerivAt.comp t hgamma.hasMFDerivAt
-  have hcomp' := hcomp.hasFDerivAt
-  convert hcomp' using 1
-  change ContinuousLinearMap.toSpanSingleton Real
-      (((mfderiv I 𝓘(ℝ, ℝ) f (gamma t)).comp
-        (mfderiv 𝓘(ℝ, ℝ) I gamma t)) (1 : ℝ)) = _
-  exact ContinuousLinearMap.toSpanSingleton_apply_map_one
-    (R₁ := Real) (M₂ := Real) _
+          (mfderiv 𝓘(ℝ, ℝ) I gamma t (realTangentOne t)))) t := by
+  have hmd : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (f ∘ gamma) t :=
+    hf.comp t hgamma
+  refine hmd.differentiableAt.hasDerivAt.congr_deriv ?_
+  calc
+    deriv (f ∘ gamma) t =
+        mvfderiv (I := 𝓘(ℝ, ℝ)) (f ∘ gamma) t (realTangentOne t) := by
+      unfold mvfderiv
+      rw [mfderiv_eq_fderiv]
+      change deriv (f ∘ gamma) t =
+        fderiv ℝ (f ∘ gamma) t
+          (NormedSpace.fromTangentSpace (𝕜 := ℝ) t (realTangentOne t))
+      rw [fromTangentSpace_realTangentOne, fderiv_apply_one_eq_deriv]
+    _ = mvfderiv (I := I) f (gamma t)
+        (mfderiv 𝓘(ℝ, ℝ) I gamma t (realTangentOne t)) :=
+      _root_.mvfderiv_comp_apply t hf hgamma (realTangentOne t)
+    _ = NormedSpace.fromTangentSpace (f (gamma t))
+        (mfderiv I 𝓘(ℝ, ℝ) f (gamma t)
+          (mfderiv 𝓘(ℝ, ℝ) I gamma t (realTangentOne t))) := rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem deriv_comp_mfderiv_along
@@ -42,7 +58,7 @@ theorem deriv_comp_mfderiv_along
     deriv (fun s => f (gamma s)) t =
       NormedSpace.fromTangentSpace (f (gamma t))
         (mfderiv I 𝓘(ℝ, ℝ) f (gamma t)
-          (mfderiv 𝓘(ℝ, ℝ) I gamma t (1 : ℝ))) :=
+          (mfderiv 𝓘(ℝ, ℝ) I gamma t (realTangentOne t))) :=
   (hasDerivAt_comp_mfderiv_along I f gamma t hf hgamma).deriv
 
 theorem deriv_along_curve_eq
@@ -54,7 +70,7 @@ theorem deriv_along_curve_eq
     deriv (fun s => F s (γ s)) t =
       deriv (fun s => F s (γ t)) t +
         g.inner (γ t) (gradientFun (I := I) g (F t) (γ t))
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
+          (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)) := by
   classical
   have hJ : ContMDiff 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) ∞ (fun s : ℝ => (s, γ s)) :=
     contMDiff_id.prodMk hγ
@@ -64,8 +80,9 @@ theorem deriv_along_curve_eq
   have hJmd : MDifferentiableAt 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I)
       (fun s : ℝ => (s, γ s)) t :=
     hJ.mdifferentiableAt (x := t) (by norm_num)
-  have hJderiv0 : (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) (fun s : ℝ => (s, γ s)) t) (1 : ℝ) =
-      ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
+  have hJderiv0 : (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I)
+      (fun s : ℝ => (s, γ s)) t) (realTangentOne t) =
+      (realTangentOne t, mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)) := by
     have hid : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => s) t :=
       (contMDiff_id (n := ∞) : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => s)).mdifferentiableAt
         (by norm_num)
@@ -83,44 +100,45 @@ theorem deriv_along_curve_eq
       (NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
           (fun p : ℝ × M => F p.1 p.2) (t, γ t)
-          (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) (fun s : ℝ => (s, γ s)) t (1 : ℝ)))) t := by
-    rw [hasDerivAt_iff_hasFDerivAt]
-    have hcomp := hFmd.hasMFDerivAt.comp t hJmd.hasMFDerivAt
-    have hcomp' := hcomp.hasFDerivAt
-    convert hcomp' using 1
-    change ContinuousLinearMap.toSpanSingleton Real
-        (((mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
-          (fun p : ℝ × M => F p.1 p.2) (t, γ t)).comp
-          (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) (fun s : ℝ => (s, γ s)) t)) (1 : ℝ)) = _
-    exact ContinuousLinearMap.toSpanSingleton_apply_map_one (R₁ := Real) (M₂ := Real) _
+          (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I)
+            (fun s : ℝ => (s, γ s)) t (realTangentOne t)))) t := by
+    exact hasDerivAt_comp_mfderiv_along ((𝓘(ℝ, ℝ)).prod I)
+      (fun p : ℝ × M => F p.1 p.2) (fun s : ℝ => (s, γ s)) t hFmd hJmd
   have hcurve : HasDerivAt (fun s => F s (γ s))
       (NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
           (fun p : ℝ × M => F p.1 p.2) (t, γ t)
-          ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))) t := by
-    simpa [hJderiv0] using hcurve0
+          (realTangentOne t,
+            mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)))) t := by
+    convert hcurve0 using 1
+    rw [hJderiv0]
+    rfl
   have hmain' : deriv (fun s => F s (γ s)) t =
       NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
           (fun p : ℝ × M => F p.1 p.2) (t, γ t)
-          ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) :=
+          (realTangentOne t,
+            mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))) :=
     hcurve.deriv
   rw [hmain']
   have hdec := mfderiv_prod_eq_add_apply
     (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := 𝓘(ℝ, ℝ))
     (f := fun p : ℝ × M => F p.1 p.2) (p := (t, γ t))
-    (v := ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
+    (v := (realTangentOne t,
+      mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)))
     (hF.mdifferentiableAt (x := (t, γ t)) (by simp))
   rw [hdec]
   have hlin : NormedSpace.fromTangentSpace (F t (γ t))
-        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t (1 : ℝ) +
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t
+            (realTangentOne t) +
           mfderiv I 𝓘(ℝ, ℝ) (F t) (γ t)
-            (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) =
+            (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))) =
       NormedSpace.fromTangentSpace (F t (γ t))
-        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t (1 : ℝ)) +
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t
+          (realTangentOne t)) +
       NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv I 𝓘(ℝ, ℝ) (F t) (γ t)
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) := by
+          (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))) := by
     simp [NormedSpace.fromTangentSpace, map_add]
   rw [hlin]
   congr 1
@@ -129,14 +147,15 @@ theorem deriv_along_curve_eq
         (x := t) (by norm_num)
     have hd : deriv (fun s : ℝ => F s (γ t)) t =
         NormedSpace.fromTangentSpace (F t (γ t))
-          (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t (1 : ℝ)) := by
+          (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t
+            (realTangentOne t)) := by
       rw [mfderiv_eq_fderiv]
       change deriv (fun s : ℝ => F s (γ t)) t =
         (fderiv ℝ (fun s : ℝ => F s (γ t)) t) (1 : ℝ)
       rw [fderiv_apply_one_eq_deriv (f := fun s : ℝ => F s (γ t)) (x := t)]
     exact hd.symm
   · have hinner := inner_gradientFun (I := I) g (F t) (γ t)
-      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+      (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))
     symm
     exact hinner
 
@@ -151,7 +170,7 @@ theorem deriv_along_curve_eq_on
     deriv (fun s => F s (γ s)) t =
       deriv (fun s => F s (γ t)) t +
         g.inner (γ t) (gradientFun (I := I) g (F t) (γ t))
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
+          (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)) := by
   classical
   have hJ : ContMDiff 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) ∞ (fun s : ℝ => (s, γ s)) :=
     contMDiff_id.prodMk hγ
@@ -163,8 +182,9 @@ theorem deriv_along_curve_eq_on
   have hJmd : MDifferentiableAt 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I)
       (fun s : ℝ => (s, γ s)) t :=
     hJ.mdifferentiableAt (x := t) (by norm_num)
-  have hJderiv0 : (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) (fun s : ℝ => (s, γ s)) t) (1 : ℝ) =
-      ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
+  have hJderiv0 : (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I)
+      (fun s : ℝ => (s, γ s)) t) (realTangentOne t) =
+      (realTangentOne t, mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)) := by
     have hid : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => s) t :=
       (contMDiff_id (n := ∞) : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => s)).mdifferentiableAt
         (by norm_num)
@@ -182,44 +202,45 @@ theorem deriv_along_curve_eq_on
       (NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
           (fun p : ℝ × M => F p.1 p.2) (t, γ t)
-          (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) (fun s : ℝ => (s, γ s)) t (1 : ℝ)))) t := by
-    rw [hasDerivAt_iff_hasFDerivAt]
-    have hcomp := hFmd.hasMFDerivAt.comp t hJmd.hasMFDerivAt
-    have hcomp' := hcomp.hasFDerivAt
-    convert hcomp' using 1
-    change ContinuousLinearMap.toSpanSingleton Real
-        (((mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
-          (fun p : ℝ × M => F p.1 p.2) (t, γ t)).comp
-          (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) (fun s : ℝ => (s, γ s)) t)) (1 : ℝ)) = _
-    exact ContinuousLinearMap.toSpanSingleton_apply_map_one (R₁ := Real) (M₂ := Real) _
+          (mfderiv 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I)
+            (fun s : ℝ => (s, γ s)) t (realTangentOne t)))) t := by
+    exact hasDerivAt_comp_mfderiv_along ((𝓘(ℝ, ℝ)).prod I)
+      (fun p : ℝ × M => F p.1 p.2) (fun s : ℝ => (s, γ s)) t hFmd hJmd
   have hcurve : HasDerivAt (fun s => F s (γ s))
       (NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
           (fun p : ℝ × M => F p.1 p.2) (t, γ t)
-          ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))) t := by
-    simpa [hJderiv0] using hcurve0
+          (realTangentOne t,
+            mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)))) t := by
+    convert hcurve0 using 1
+    rw [hJderiv0]
+    rfl
   have hmain' : deriv (fun s => F s (γ s)) t =
       NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv ((𝓘(ℝ, ℝ)).prod I) 𝓘(ℝ, ℝ)
           (fun p : ℝ × M => F p.1 p.2) (t, γ t)
-          ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) :=
+          (realTangentOne t,
+            mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))) :=
     hcurve.deriv
   rw [hmain']
   have hdec := mfderiv_prod_eq_add_apply
     (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := 𝓘(ℝ, ℝ))
     (f := fun p : ℝ × M => F p.1 p.2) (p := (t, γ t))
-    (v := ((1 : ℝ), mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
+    (v := (realTangentOne t,
+      mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t)))
     hFmd
   rw [hdec]
   have hlin : NormedSpace.fromTangentSpace (F t (γ t))
-        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t (1 : ℝ) +
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t
+            (realTangentOne t) +
           mfderiv I 𝓘(ℝ, ℝ) (F t) (γ t)
-            (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) =
+            (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))) =
       NormedSpace.fromTangentSpace (F t (γ t))
-        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t (1 : ℝ)) +
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t
+          (realTangentOne t)) +
       NormedSpace.fromTangentSpace (F t (γ t))
         (mfderiv I 𝓘(ℝ, ℝ) (F t) (γ t)
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) := by
+          (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))) := by
     simp [NormedSpace.fromTangentSpace, map_add]
   rw [hlin]
   congr 1
@@ -233,14 +254,15 @@ theorem deriv_along_curve_eq_on
       exact ContMDiffAt.mdifferentiableAt hsliceAt (by norm_num)
     have hd : deriv (fun s : ℝ => F s (γ t)) t =
         NormedSpace.fromTangentSpace (F t (γ t))
-          (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t (1 : ℝ)) := by
+          (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => F s (γ t)) t
+            (realTangentOne t)) := by
       rw [mfderiv_eq_fderiv]
       change deriv (fun s : ℝ => F s (γ t)) t =
         (fderiv ℝ (fun s : ℝ => F s (γ t)) t) (1 : ℝ)
       rw [fderiv_apply_one_eq_deriv (f := fun s : ℝ => F s (γ t)) (x := t)]
     exact hd.symm
   · have hinner := inner_gradientFun (I := I) g (F t) (γ t)
-      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+      (mfderiv 𝓘(ℝ, ℝ) I γ t (realTangentOne t))
     symm
     exact hinner
 

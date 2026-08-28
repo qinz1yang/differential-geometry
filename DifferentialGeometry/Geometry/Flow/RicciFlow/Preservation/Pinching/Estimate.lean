@@ -88,7 +88,7 @@ theorem pinchEstimateOn_of_pinchQuotient_bound
   have hneg2 :
       scalar t x ^ (-(2 : Real)) =
         (scalar t x ^ (2 : Real))⁻¹ := by
-    simpa using Real.rpow_neg hR.le (2 : Real)
+    exact Real.rpow_neg hR.le (2 : Real)
   have hquot :
       quotField (M := M) tracefreeRicciNormSq scalar
           (1 : Real) (2 - epsilon) t x *
@@ -97,7 +97,9 @@ theorem pinchEstimateOn_of_pinchQuotient_bound
     unfold quotField
     rw [Real.rpow_one, mul_assoc, hpow, hneg2]
     simp [div_eq_mul_inv]
-  simpa [PinchEstimateOn, pinchWeight, hquot] using hmul
+  rw [hquot] at hmul
+  unfold pinchWeight
+  exact hmul
 
 omit [TopologicalSpace M] in
 theorem pinchSquareTerm_nonpos
@@ -385,12 +387,16 @@ theorem pinchQuotient_initial_continuous
     (hS.scalarRegular.scalar_space 0 h0D x).continuousAt
   have htf : ContinuousAt
       (fun y : M => traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) 0 y) x := by
-    simpa [traceFreeRicciNormSq, traceFreeRicciNormSqOf, traceFreeRicciNormSqAtOf,
-      div_eq_mul_inv] using
-      hnorm.sub ((hscalarAt.pow 2).mul continuousAt_const)
+    unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+    change ContinuousAt ((fun y : M => ricciNorm (I := I) S 0 y) -
+      (fun y : M => S.scalar 0 y) ^ 2 * fun _ : M => (3 : ℝ)⁻¹) x
+    exact hnorm.sub ((hscalarAt.pow 2).mul continuousAt_const)
   have hpow : ContinuousAt (fun y : M => S.scalar 0 y ^ (-(2 - epsilon))) x :=
     hscalarAt.rpow_const (Or.inl (ne_of_gt (hscalar0 x)))
-  simpa [pinchQuotient, quotField] using htf.mul hpow
+  unfold pinchQuotient quotField
+  simp only [Real.rpow_one]
+  refine (htf.mul hpow).congr ?_
+  exact Filter.Eventually.of_forall fun _ => rfl
 
 theorem compact_nonneg_upper_bound
     [CompactSpace M] (f : M -> Real) (hf : Continuous f) :
@@ -430,16 +436,16 @@ theorem pinchQuotient_initial_bound
 private theorem continuousOn_of_restrict
     {α β : Type*} [TopologicalSpace α] [TopologicalSpace β]
     {s : Set α} {f : α -> β}
-    (h : Continuous (s.restrict f)) :
+    (h : Continuous (s.domRestrict f)) :
     ContinuousOn f s := by
   intro x hx
-  exact (continuousWithinAt_iff_continuousAt_restrict f hx).mpr h.continuousAt
+  exact (continuousWithinAt_iff_continuousAt_domRestrict f hx).mpr h.continuousAt
 
 omit [Module.Finite ℝ E] in
 private theorem ricciComp_coordCont
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (x0 : M) (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
@@ -491,7 +497,10 @@ private theorem ricciComp_coordCont
         fin_cases a
         · simpa using hframe_i
         · simpa using hframe_j)
-    simpa [ricciCompInFrame, frame, DifferentialGeometry.Geometry.Curvature.vec2] using heval
+    change Continuous (fun q : P =>
+      S.base.ricciAt q.1.1 q.1.2 (fun a : Fin 2 =>
+        if a = 0 then frame i q.1.2 else frame j q.1.2))
+    exact heval
   simpa [K, u, P, frame] using
     continuousOn_of_restrict
       (s := D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0)
@@ -504,7 +513,7 @@ omit [Module.Finite ℝ E] in
 private theorem ricciNorm_coordCont
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (x0 : M) :
@@ -531,14 +540,14 @@ private theorem ricciNorm_coordCont
         raisedRicciCompInFrame (I := I) S gInv frame p.1 p.2 i j) U := by
     intro i j
     simp only [raisedRicciCompInFrame_apply]
-    refine continuousOn_finset_sum _ (fun a _ => ?_)
-    refine continuousOn_finset_sum _ (fun b _ => ?_)
+    refine continuousOn_finsetSum _ (fun a _ => ?_)
+    refine continuousOn_finsetSum _ (fun b _ => ?_)
     exact ((hInv i a).mul (hInv j b)).mul (hRic a b)
   have hFrameNorm : ContinuousOn (fun p : Real × M =>
       ricciNormSqInFrame (I := I) S gInv frame p.1 p.2) U := by
     simp only [ricciNormSqInFrame_apply]
-    refine continuousOn_finset_sum _ (fun i _ => ?_)
-    refine continuousOn_finset_sum _ (fun j _ => ?_)
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    refine continuousOn_finsetSum _ (fun j _ => ?_)
     exact (hRic i j).mul (hRaised i j)
   refine hFrameNorm.congr ?_
   intro p hp
@@ -563,7 +572,7 @@ omit [Module.Finite ℝ E] in
 private theorem ricciNorm_slabCont
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {omega T : Real} (h0ω : 0 < omega)
@@ -612,13 +621,13 @@ theorem pinchQuotient_slab_continuous_of_ricciNorm
   let _ := hVectorBundle
   have hscalar_cont : ContinuousOn (fun p : Real × M => S.scalar p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
-    simpa [DifferentialGeometry.Analysis.Parabolic.spacetimeSlab] using
-      (SolutionOn.scalar_continuousOn (I := I) (M := M) S
-        hS.scalarSTCont T
-        (by
-          intro t ht
-          rw [hD]
-          exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩))
+    unfold DifferentialGeometry.Analysis.Parabolic.spacetimeSlab
+    exact SolutionOn.scalar_continuousOn (I := I) (M := M) S
+      hS.scalarSTCont T
+      (by
+        intro t ht
+        rw [hD]
+        exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩)
   have hscalar_ne : ∀ p : Real × M, p ∈ DifferentialGeometry.Analysis.Parabolic.spacetimeSlab
     (M := M) T ->
       S.scalar p.1 p.2 ≠ 0 ∨ 0 ≤ -(2 - epsilon) := by
@@ -633,9 +642,12 @@ theorem pinchQuotient_slab_continuous_of_ricciNorm
       (fun p : Real × M =>
         traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
-    simpa [traceFreeRicciNormSq, traceFreeRicciNormSqOf,
-      traceFreeRicciNormSqAtOf, div_eq_mul_inv] using
-      hricciNorm_cont.sub ((hscalar_cont.pow 2).mul continuousOn_const)
+    unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+    change ContinuousOn ((fun p : Real × M => ricciNorm (I := I) S p.1 p.2) -
+      (fun p : Real × M => S.scalar p.1 p.2) ^ 2 *
+        fun _ : Real × M => (3 : ℝ)⁻¹)
+      (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T)
+    exact hricciNorm_cont.sub ((hscalar_cont.pow 2).mul continuousOn_const)
   have hpow_cont : ContinuousOn
       (fun p : Real × M => S.scalar p.1 p.2 ^ (-(2 - epsilon)))
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) :=
@@ -643,14 +655,17 @@ theorem pinchQuotient_slab_continuous_of_ricciNorm
   have hquot_cont : ContinuousOn
       (fun p : Real × M => pinchQuotient (I := I) S epsilon p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
-    simpa [pinchQuotient, quotField] using htf_cont.mul hpow_cont
+    unfold pinchQuotient quotField
+    simp only [Real.rpow_one]
+    refine (htf_cont.mul hpow_cont).congr ?_
+    exact fun _ _ => rfl
   exact continuousOn_const.sub hquot_cont
 
 omit [Module.Finite ℝ E] in
 theorem pinchQuotient_space_pos
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -685,7 +700,7 @@ omit [Module.Finite ℝ E] in
 theorem pinchQuotient_grad_pos
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
@@ -832,7 +847,9 @@ theorem pinchQuot_slab_bound
     have hP :=
       pinchQuotient_space_pos (I := I) S hS epsilon
         (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
-    simpa [τ] using mdifferentiableAt_const.sub hP
+    change MDifferentiableAt I 𝓘(Real, Real)
+      ((fun _ : M => C) - pinchQuotient (I := I) S epsilon t) x
+    simpa only [τ] using mdifferentiableAt_const.sub hP
   have hw_grad : ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
       ∀ x : M, MDiffAt (T% fun y : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I) ((flowG (I := I) S).metric t)

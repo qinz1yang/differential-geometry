@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Interval
@@ -47,7 +46,7 @@ private theorem intervalIntegrable_continuousLinearMap_apply_local
   ((ContinuousLinearMap.apply ℝ W v).continuous.comp_continuousOn hf).intervalIntegrable
 
 private theorem intervalIntegrable_finset_sum_local
-    {ι V : Type*} [Fintype ι] [NormedAddCommGroup V] [NormedSpace ℝ V]
+    {ι V : Type*} [Fintype ι] [NormedAddCommGroup V]
     (f : ι → ℝ → V) (hf : ∀ i, IntervalIntegrable (f i) volume 0 1) :
     IntervalIntegrable (fun t : ℝ => ∑ i, f i t) volume 0 1 := by
   have hsum := IntervalIntegrable.sum (Finset.univ : Finset ι) (fun i _ => hf i)
@@ -63,7 +62,7 @@ private theorem finset_sum_eq_intervalIntegral_sum_local
     (hcomm : ∀ i, a i = ∫ t in (0 : ℝ)..1, f i t)
     (hf : ∀ i, IntervalIntegrable (f i) volume 0 1) :
     (∑ i, a i) = ∫ t in (0 : ℝ)..1, ∑ i, f i t := by
-  rw [intervalIntegral.integral_finset_sum]
+  rw [intervalIntegral.integral_finsetSum]
   · exact Finset.sum_congr rfl (fun i _ => hcomm i)
   · exact fun i _ => hf i
 
@@ -996,7 +995,7 @@ private theorem covGradParametric_tcd_toModel_continuousOn
   rfl
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem toModel_covGrad_pathIntegralCoeffField_eq
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S)
@@ -1090,7 +1089,7 @@ private theorem toModel_covGrad_pathIntegralCoeffField_eq
   exact (hkeyΦ t).symm
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S)
@@ -1129,4 +1128,3 @@ end Analysis
 end DifferentialGeometry
 
 end
-

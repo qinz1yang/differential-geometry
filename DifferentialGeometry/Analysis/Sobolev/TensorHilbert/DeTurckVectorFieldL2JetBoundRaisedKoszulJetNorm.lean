@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -38,6 +37,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -188,7 +188,7 @@ theorem raisedKoszul_order0sup_jetL2_succ_generic
   refine ⟨?_, ?_⟩
   · intro x
     obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x, v ≠ 0 := by
-      haveI : Nontrivial (TangentSpace I x) := by
+      have : Nontrivial (TangentSpace I x) := by
         have hfr : 0 < Module.finrank ℝ (TangentSpace I x) := by
           have heq : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
           rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -208,7 +208,7 @@ theorem raisedKoszul_order0sup_jetL2_succ_generic
     have hriemannianFiberNormSq := hC g₁ P htie (le_trans hδ_le (le_max_left δ₀ 0)) hδ0 hδ x
     have henv := hCsob P P hR hPball hPball 0 (Set.mem_Icc.mpr ⟨le_refl 0, zero_le_one⟩) x
     simp only [DifferentialGeometry.PDE.DeTurck.RicciLinearization.convexPerturbation_zero] at henv
-    letI instTens12 : Bundle.RiemannianBundle
+    let instTens12 : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
     set N : ℝ := ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖ with hN_def

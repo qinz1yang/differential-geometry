@@ -30,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [CompleteSpace E]
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_finset_sum {ι : Type*} (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (t : Finset ι) (F : ι → SmoothCcTensor g r s) :
@@ -71,7 +71,7 @@ theorem operatorFieldApplication_castCcTensorRank {a a' b b' : ℕ} (g : SmoothR
         (castCcTensorRank (g := g) 0 ha V) := by
   subst ha; subst hb; rfl
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_heq_congr' (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b} (hYZ : HEq Y Z) :
@@ -79,7 +79,7 @@ theorem covGrad_heq_congr' (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ
   subst h; rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_covGrad_comm_heq' (g : SmoothRiemannianMetric I M) (r s m : ℕ)
     (X : SmoothCcTensor g r s) :
     HEq (iteratedCovGrad g r (s + 1) m (covGrad g r s X))
@@ -91,7 +91,8 @@ theorem iteratedCovGrad_covGrad_comm_heq' (g : SmoothRiemannianMetric I M) (r s 
       rw [iteratedCovGrad_succ (g := g) (r := r) (s := s) (j := k + 1) X]
       exact covGrad_heq_congr' g r (by omega : (s + 1) + k = s + (k + 1)) ih
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
 theorem operatorFieldApplication_zero_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) (g := g) r s (0 : SmoothCcTensor g r s) W = 0 := by
@@ -103,7 +104,8 @@ theorem operatorFieldApplication_zero_left (g : SmoothRiemannianMetric I M) (r s
     nth_rewrite 1 [h]; abel
   rwa [sub_self] at h2
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
 theorem operatorFieldApplication_neg_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) (g := g) r s (-Φ) W = -operatorFieldApply (I := I) (M := M)
@@ -112,7 +114,8 @@ theorem operatorFieldApplication_neg_left (g : SmoothRiemannianMetric I M) (r s 
   rw [add_neg_cancel, operatorFieldApplication_zero_left] at h
   exact (neg_eq_of_add_eq_zero_right h.symm).symm
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
 theorem operatorFieldApplication_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) (g := g) r s (Φ₁ - Φ₂) W =
@@ -131,7 +134,7 @@ def IsIteratedCovGradNormalForm (g : SmoothRiemannianMetric I M)
             (iteratedCovGrad g 0 r k W)
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_normalForm_sum (g : SmoothRiemannianMetric I M) (p r : ℕ)
     (Ψ : (k : ℕ) → SmoothCcTensor g (r + k) (r + p)) (W : SmoothCcTensor g 0 r) :
     covGrad (I := I) (M := M) g 0 (r + p)
@@ -153,7 +156,7 @@ theorem covGrad_normalForm_sum (g : SmoothRiemannianMetric I M) (p r : ℕ)
   rfl
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem operatorFieldApplication_iteratedCovGrad_succ_of_covGrad (g : SmoothRiemannianMetric I M) (p r k : ℕ)
     (Ψ : SmoothCcTensor g ((r + 1) + k) ((r + 1) + p)) (W : SmoothCcTensor g 0 r) :
     castCcTensorRank (g := g) 0 (by omega : (r + 1) + p = r + (p + 1))
@@ -172,7 +175,7 @@ theorem operatorFieldApplication_iteratedCovGrad_succ_of_covGrad (g : SmoothRiem
     (iteratedCovGrad g 0 (r + 1) k (covGrad g 0 r W))
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem isIteratedCovGradNormalForm_succ (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (covGrad_op : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
@@ -276,7 +279,7 @@ theorem isIteratedCovGradNormalForm_succ (g : SmoothRiemannianMetric I M)
       (covGrad (I := I) (M := M) g (r + k) (r + p) (Ψr k)) (iteratedCovGrad g 0 r k W)) p]
   abel
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalForm_zero (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
@@ -289,7 +292,7 @@ theorem normalForm_zero (g : SmoothRiemannianMetric I M)
   rfl
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem normalForm_of_base (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (covGrad_op : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),

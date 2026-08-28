@@ -4,7 +4,6 @@ import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
-
 noncomputable section
 
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -73,43 +72,47 @@ def IsPointwiseSymm (B : pointwiseBilin (M := M) I) : Prop :=
 def frobeniusSqFun (B : pointwiseBilin (M := M) I) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
-      (B x ((chartModelBasis E) i) ((chartModelBasis E) j))^2
+      (B x (centeredChartTangentBasis (I := I) x i)
+        (centeredChartTangentBasis (I := I) x j))^2
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma frobeniusSqFun_def (B : pointwiseBilin (M := M) I) (x : M) :
     frobeniusSqFun (I := I) (M := M) B x =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          (B x ((chartModelBasis E) i) ((chartModelBasis E) j))^2 := rfl
+          (B x (centeredChartTangentBasis (I := I) x i)
+            (centeredChartTangentBasis (I := I) x j))^2 := rfl
 
 def traceFun (B : pointwiseBilin (M := M) I) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
-    B x ((chartModelBasis E) i) ((chartModelBasis E) i)
+    B x (centeredChartTangentBasis (I := I) x i)
+      (centeredChartTangentBasis (I := I) x i)
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma traceFun_def (B : pointwiseBilin (M := M) I) (x : M) :
     traceFun (I := I) (M := M) B x =
       ∑ i : Fin (Module.finrank ℝ E),
-        B x ((chartModelBasis E) i) ((chartModelBasis E) i) := rfl
+        B x (centeredChartTangentBasis (I := I) x i)
+          (centeredChartTangentBasis (I := I) x i) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma frobeniusSqFun_nonneg (B : pointwiseBilin (M := M) I) (x : M) :
     0 ≤ frobeniusSqFun (I := I) (M := M) B x := by
   unfold frobeniusSqFun
   exact Finset.sum_nonneg
     (fun i _ => Finset.sum_nonneg (fun j _ => sq_nonneg _))
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem traceFun_sq_le_dim_mul_frobeniusSqFun
     (B : pointwiseBilin (M := M) I) (x : M) :
     (traceFun (I := I) (M := M) B x)^2 ≤
       (Module.finrank ℝ E : ℝ) * frobeniusSqFun (I := I) (M := M) B x := by
   have h := bilinForm_trace_sq_le_dim_mul_frobenius_sq
-    (V := TangentSpace I x) (B := B x) (b := chartModelBasis E)
+    (V := TangentSpace I x) (B := B x)
+      (b := centeredChartTangentBasis (I := I) x)
   simp only [traceFun_def, frobeniusSqFun_def]
   exact h
 
-omit [IsManifold I ∞ M] in
 theorem traceFun_sq_div_dim_le_frobeniusSqFun
     (B : pointwiseBilin (M := M) I) (x : M) :
     (traceFun (I := I) (M := M) B x)^2 / (Module.finrank ℝ E : ℝ) ≤
@@ -296,14 +299,14 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
     (fun v w =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) i *
-            ((chartModelBasis E).repr w) j *
+          ((centeredChartTangentBasis (I := I) x).repr v) i *
+            ((centeredChartTangentBasis (I := I) x).repr w) j *
             chartHessianTensor (I := I) g x f i j x)
     (fun v₁ v₂ w => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (v₁ + v₂) =
-          (chartModelBasis E).repr v₁ + (chartModelBasis E).repr v₂ := map_add _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
+          (centeredChartTangentBasis (I := I) x).repr v₁ +
+            (centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl ?_
@@ -315,9 +318,8 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
       ring)
     (fun c v w => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (c • v) =
-          c • (chartModelBasis E).repr v := map_smul _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • v) =
+          c • (centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -329,9 +331,9 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
       ring)
     (fun v w₁ w₂ => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (w₁ + w₂) =
-          (chartModelBasis E).repr w₁ + (chartModelBasis E).repr w₂ := map_add _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
+          (centeredChartTangentBasis (I := I) x).repr w₁ +
+            (centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl ?_
@@ -343,9 +345,8 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
       ring)
     (fun c v w => by
       classical
-      dsimp only
-      have hrepr : (chartModelBasis E).repr (c • w) =
-          c • (chartModelBasis E).repr w := map_smul _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • w) =
+          c • (centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -363,8 +364,8 @@ lemma hessFun_apply (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M)
     hessFun (I := I) g f x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) i *
-            ((chartModelBasis E).repr w) j *
+          ((centeredChartTangentBasis (I := I) x).repr v) i *
+            ((centeredChartTangentBasis (I := I) x).repr w) j *
             chartHessianTensor (I := I) g x f i j x := by
   rfl
 
@@ -432,15 +433,18 @@ lemma hessFun_basis_apply
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     hessFun (I := I) g f x
-        ((chartModelBasis E) i) ((chartModelBasis E) j) =
+        (centeredChartTangentBasis (I := I) x i)
+        (centeredChartTangentBasis (I := I) x j) =
       chartHessianTensor (I := I) g x f i j x := by
   classical
   rw [hessFun_apply]
   conv_lhs => rw [show
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr ((chartModelBasis E) i)) i' *
-            ((chartModelBasis E).repr ((chartModelBasis E) j)) j' *
+          ((centeredChartTangentBasis (I := I) x).repr
+            (centeredChartTangentBasis (I := I) x i)) i' *
+            ((centeredChartTangentBasis (I := I) x).repr
+              (centeredChartTangentBasis (I := I) x j)) j' *
             chartHessianTensor (I := I) g x f i' j' x) =
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),

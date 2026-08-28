@@ -4,6 +4,7 @@ import Mathlib.Analysis.Normed.Operator.Bilinear
 
 noncomputable section
 
+
 open scoped ENNReal NNReal
 
 namespace DifferentialGeometry.Analysis.Schauder
@@ -56,7 +57,7 @@ theorem holderWith_bilinear_of_norm_le
       ‖L (f x) (g x) - L (f y) (g y)‖ =
           ‖L (f x) (g x - g y) + L (f x - f y) (g y)‖ := by
         congr 1
-        simp only [map_sub, ContinuousLinearMap.sub_apply]
+        simp only [map_sub, sub_apply]
         abel
       _ ≤ ‖L (f x) (g x - g y)‖ +
           ‖L (f x - f y) (g y)‖ := norm_add_le _ _
@@ -86,15 +87,15 @@ theorem holderWith_bilinear_of_restrict_of_support
     (L : A →L[Real] B →L[Real] C)
     (hL : ∀ a b, ‖L a b‖ ≤ ‖a‖ * ‖b‖)
     {f : X → A} {g : X → B}
-    (hf : HolderWith Kf alpha (s.restrict f))
+    (hf : HolderWith Kf alpha (s.domRestrict f))
     (hg : HolderWith Kg alpha g)
     (hfnorm : ∀ x ∈ s, ‖f x‖ ≤ Mf)
     (hgnorm : ∀ x, ‖g x‖ ≤ Mg)
     (hgsupport : ∀ x, x ∉ s → g x = 0) :
     HolderWith (Mf * Kg + Mg * Kf) alpha (fun x ↦ L (f x) (g x)) := by
   have hlocal : HolderWith (Mf * Kg + Mg * Kf) alpha
-      (s.restrict fun x ↦ L (f x) (g x)) := by
-    have hgrestrict : HolderWith Kg alpha (s.restrict g) :=
+      (s.domRestrict fun x ↦ L (f x) (g x)) := by
+    have hgrestrict : HolderWith Kg alpha (s.domRestrict g) :=
       (hg.holderOnWith s).holderWith
     exact holderWith_bilinear_of_norm_le L hL hf hgrestrict
       (fun x ↦ hfnorm x x.2) (fun x ↦ hgnorm x)
@@ -105,7 +106,7 @@ theorem holderWith_bilinear_of_restrict_of_support
         dist x y ^ (alpha : Real) := by
     by_cases hx : x ∈ s
     · by_cases hy : y ∈ s
-      · simpa only [Set.restrict_apply, Subtype.dist_eq] using
+      · simpa only [Set.domRestrict_apply, Subtype.dist_eq] using
           hlocal.dist_le (⟨x, hx⟩ : s) (⟨y, hy⟩ : s)
       · rw [hgsupport y hy, map_zero, dist_zero_right]
         calc
@@ -174,22 +175,23 @@ theorem holderWith_bilinear_of_eq_zero_outside
     (L : A →L[Real] B →L[Real] C)
     (hL : ∀ a b, ‖L a b‖ ≤ ‖a‖ * ‖b‖)
     (f : X → A) (g : X → B)
-    (hf : HolderWith Kf alpha (Q.restrict f))
-    (hg : HolderWith Kg alpha ((Q ∩ U).restrict g))
+    (hf : HolderWith Kf alpha (Q.domRestrict f))
+    (hg : HolderWith Kg alpha ((Q ∩ U).domRestrict g))
     (hfNorm : ∀ x, x ∈ Q → x ∈ U → ‖f x‖ ≤ Mf)
     (hgNorm : ∀ x, x ∈ Q → x ∈ U → ‖g x‖ ≤ Mg)
     (hfZero : ∀ x, x ∈ Q → x ∉ U → f x = 0) :
     HolderWith (Mf * Kg + Mg * Kf) alpha
-      (Q.restrict (fun x ↦ L (f x) (g x))) := by
+      (Q.domRestrict (fun x ↦ L (f x) (g x))) := by
   let s : Set Q := {x | x.1 ∈ U}
   have hg' : HolderWith Kg alpha
-      (s.restrict (fun x : Q ↦ g x.1)) := by
+      (s.domRestrict (fun x : Q ↦ g x.1)) := by
     intro x y
-    simpa only [s, Set.mem_setOf_eq, Set.restrict_apply, Subtype.dist_eq] using
+    simpa only [s, Set.mem_ofPred_eq, Set.domRestrict_apply, Subtype.edist_eq] using
       hg (⟨x.1.1, ⟨x.1.2, x.2⟩⟩ : (Q ∩ U : Set X))
         (⟨y.1.1, ⟨y.1.2, y.2⟩⟩ : (Q ∩ U : Set X))
   have hf' : HolderWith Kf alpha (fun x : Q ↦ f x.1) := by
-    simpa only [Set.restrict_apply] using hf
+    intro x y
+    simpa only [Set.domRestrict_apply] using hf x y
   have hgNorm' : ∀ x ∈ s, ‖g x.1‖ ≤ Mg := by
     intro x hx
     exact hgNorm x.1 x.2 hx
@@ -198,20 +200,21 @@ theorem holderWith_bilinear_of_eq_zero_outside
     by_cases hx : x.1 ∈ U
     · exact hfNorm x.1 x.2 hx
     · rw [hfZero x.1 x.2 hx, norm_zero]
-      exact zero_le Mf
+      exact Mf.coe_nonneg
   have hfSupport' : ∀ x : Q, x ∉ s → f x.1 = 0 := by
     intro x hx
-    exact hfZero x.1 x.2 (by simpa only [s, Set.mem_setOf_eq] using hx)
+    exact hfZero x.1 x.2 (by simpa only [s, Set.mem_ofPred_eq] using hx)
   have hresult := holderWith_bilinear_of_restrict_of_support
     L.flip (fun b a ↦ by
       simpa only [ContinuousLinearMap.flip_apply, mul_comm] using hL a b)
     hg' hf' hgNorm' hfNorm' hfSupport'
-  simpa only [Set.restrict_apply, ContinuousLinearMap.flip_apply, add_comm] using hresult
+  intro x y
+  simpa only [Set.domRestrict_apply, ContinuousLinearMap.flip_apply, add_comm] using hresult x y
 
 theorem holderWith_smul_of_restrict_of_support
     {s : Set X} {alpha Kf Kg Mf Mg : NNReal}
     {f : X → Real} {g : X → C}
-    (hf : HolderWith Kf alpha (s.restrict f))
+    (hf : HolderWith Kf alpha (s.domRestrict f))
     (hg : HolderWith Kg alpha g)
     (hfnorm : ∀ x ∈ s, ‖f x‖ ≤ Mf)
     (hgnorm : ∀ x, ‖g x‖ ≤ Mg)
@@ -221,7 +224,8 @@ theorem holderWith_smul_of_restrict_of_support
     (ContinuousLinearMap.lsmul Real Real : Real →L[Real] C →L[Real] C)
     (fun c v ↦ by rw [ContinuousLinearMap.lsmul_apply, norm_smul,
       Real.norm_eq_abs]) hf hg hfnorm hgnorm hgsupport
-  simpa only [Pi.smul_apply, ContinuousLinearMap.lsmul_apply] using h
+  change HolderWith (Mf * Kg + Mg * Kf) alpha (fun x ↦ f x • g x)
+  exact h
 
 theorem holderWith_bilinear_of_opNorm_le_one
     {alpha Kf Kg Mf Mg : NNReal}
@@ -246,13 +250,13 @@ theorem holderWith_bilinear_of_opNorm_le_one_of_eq_zero_outside
     {Q U : Set X} {alpha Kf Kg Mf Mg : NNReal}
     (L : A →L[Real] B →L[Real] C) (hL : ‖L‖ ≤ 1)
     (f : X → A) (g : X → B)
-    (hf : HolderWith Kf alpha (Q.restrict f))
-    (hg : HolderWith Kg alpha ((Q ∩ U).restrict g))
+    (hf : HolderWith Kf alpha (Q.domRestrict f))
+    (hg : HolderWith Kg alpha ((Q ∩ U).domRestrict g))
     (hfNorm : ∀ x, x ∈ Q → x ∈ U → ‖f x‖ ≤ Mf)
     (hgNorm : ∀ x, x ∈ Q → x ∈ U → ‖g x‖ ≤ Mg)
     (hfZero : ∀ x, x ∈ Q → x ∉ U → f x = 0) :
     HolderWith (Mf * Kg + Mg * Kf) alpha
-      (Q.restrict (fun x ↦ L (f x) (g x))) := by
+      (Q.domRestrict (fun x ↦ L (f x) (g x))) := by
   apply holderWith_bilinear_of_eq_zero_outside L
   · intro a b
     have hLa : ‖L‖ * ‖a‖ ≤ ‖a‖ := by
@@ -345,8 +349,17 @@ private theorem norm_boundedHolderSpaceSmuLinearMap_le
   rw [norm_boundedHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top
     (eHolderGauge_boundedHolderSpace_smul_le f g)
-  simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul,
-    ENNReal.coe_toReal, norm_boundedHolderSpace_eq] using hreal
+  change (eHolderGauge alpha (boundedHolderSpaceFun f • boundedHolderSpaceFun g)).toReal ≤
+    3 * (eHolderGauge alpha (boundedHolderSpaceFun f)).toReal *
+      (eHolderGauge alpha (boundedHolderSpaceFun g)).toReal
+  calc
+    (eHolderGauge alpha (boundedHolderSpaceFun f • boundedHolderSpaceFun g)).toReal ≤
+        ((3 * ‖f‖₊ * ‖g‖₊ : NNReal) : Real) := by
+      simpa only [ENNReal.toReal_ofNat, ENNReal.toReal_mul, ENNReal.coe_toReal] using hreal
+    _ = 3 * (eHolderGauge alpha (boundedHolderSpaceFun f)).toReal *
+        (eHolderGauge alpha (boundedHolderSpaceFun g)).toReal := by
+      push_cast
+      rw [norm_boundedHolderSpace_eq, norm_boundedHolderSpace_eq]
 
 def boundedHolderSpaceSmu (alpha : NNReal) :
     BoundedHolderSpace (X := X) (F := Real) alpha →L[Real]

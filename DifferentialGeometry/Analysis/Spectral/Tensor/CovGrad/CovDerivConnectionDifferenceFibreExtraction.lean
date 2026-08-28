@@ -72,7 +72,7 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
         Real.sqrt (g₀.inner x a a) * Real.sqrt (g₀.inner x b b) *
           Real.sqrt (g₀.inner x c c) := by
   classical
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr, _hsum⟩ :=
@@ -133,17 +133,24 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
       rw [← Tensor0SSpace.toModelL_apply, map_sum]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [map_smul, Tensor0SSpace.toModelL_apply]]
-    rw [ContinuousMultilinearMap.sum_apply]
+    change
+      (∑ k : Fin n, g₀.inner x (e k) d •
+          Tensor0SSpace.toModel
+            ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from W)
+              (g0FlatCLM (I := I) g₀ x (e k))))
+          (fun i : Fin 3 => (show E from vec i)) = _
+    rw [sum_apply]
     have hterm : ∀ k : Fin n,
         (g₀.inner x (e k) d •
           Tensor0SSpace.toModel
             ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from W)
-              (g0FlatCLM (I := I) g₀ x (e k)))) vec =
+              (g0FlatCLM (I := I) g₀ x (e k))))
+            (fun i : Fin 3 => (show E from vec i)) =
         ∑ J : Fin 3 → Fin n,
           (g₀.inner x (e k) d * ∏ i : Fin 3, g₀.inner x (e (J i)) (vec i)) *
             fiberNormSqComponent (I := I) (M := M) g₀ x 1 3 W n e (fun _ => k) J := by
       intro k
-      rw [ContinuousMultilinearMap.smul_apply]
+      rw [smul_apply]
       set B3 : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => E) ℝ :=
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from W)
@@ -155,8 +162,9 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
       have hexp' : ∀ i : Fin 3, (show E from vec i) =
           ∑ j : Fin n, g₀.inner x (e j) (vec i) • (show E from e j) :=
         fun i => hexp i
-      have hB3val : B3 vec = ∑ J : Fin 3 → Fin n, coefJ J * compJ J := by
-        have hrw : B3 vec = B3 (fun i : Fin 3 =>
+      have hB3val : B3 (fun i : Fin 3 => (show E from vec i)) =
+          ∑ J : Fin 3 → Fin n, coefJ J * compJ J := by
+        have hrw : B3 (fun i : Fin 3 => (show E from vec i)) = B3 (fun i : Fin 3 =>
             ∑ j : Fin n, g₀.inner x (e j) (vec i) • (show E from e j)) := by
           congr 1
           funext i

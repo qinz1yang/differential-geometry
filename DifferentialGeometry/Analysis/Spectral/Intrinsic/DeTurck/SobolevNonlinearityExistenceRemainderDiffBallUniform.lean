@@ -110,7 +110,7 @@ theorem ccTensorBilinSymm_metricCauchySchwarzBound_le_sobolevHsNorm_lossy_order
   obtain ⟨C₂, hC₂_nn, hC₂⟩ :=
     tensorPouSobolevHsNorm_le_ccSpectralEmbed (I := I) (M := M) g₀ (2 * kE)
   refine ⟨C₁ * (C₂ + 1), by positivity, fun T => ?_⟩
-  letI : Bundle.RiemannianBundle
+  let : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
   have hupper : C₁ * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
@@ -669,7 +669,7 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
     by_cases hM : Nonempty M
     · obtain ⟨x₀⟩ := hM
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [this]; exact Nat.pos_of_ne_zero (NeZero.ne _)

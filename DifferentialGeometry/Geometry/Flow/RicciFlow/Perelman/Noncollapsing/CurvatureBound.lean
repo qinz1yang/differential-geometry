@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 import DifferentialGeometry.Geometry.Curvature.ScalarNormBound
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -45,7 +47,13 @@ theorem scalar_le_of_rm
           (I := I) (M := M) (S.base.metric t) x| ≤
         (Module.finrank ℝ (TangentSpace I x) : ℝ) ^ 2 *
           Real.sqrt (FlowMetricBall.rmNormSq S t x) := by
-    simpa only [FlowMetricBall.rmNormSq, SolutionFamily.rm04] using hscalar
+    change |DifferentialGeometry.Geometry.Curvature.metricScalarAt
+        (I := I) (M := M) (S.base.metric t) x| ≤
+      (Module.finrank ℝ (TangentSpace I x) : ℝ) ^ 2 *
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
+            (I := I) (M := M) (S.base.metric t) x))
+    exact hscalar
   calc
     DifferentialGeometry.Geometry.Curvature.metricScalarAt
         (I := I) (M := M) (S.base.metric t) x ≤

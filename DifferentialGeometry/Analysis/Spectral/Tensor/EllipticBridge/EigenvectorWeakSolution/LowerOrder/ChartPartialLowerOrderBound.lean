@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -398,10 +397,10 @@ theorem exists_const_sum_eLpNorm_pou_covDerivLowerOrderTerm_le_uniform
       rw [hμ_def]
       have hb := hCcomp S.toCcTensor p.1 p.2
       rw [chartL2Measure] at hb
-      refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le _))
+      refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le))
       rw [show ((‖S‖₊ : ℝ≥0∞)) = ENNReal.ofReal ‖S‖ from by
         rw [show ((‖S‖₊ : ℝ≥0∞)) = ‖S‖ₑ from (enorm_eq_nnnorm S).symm,
-          ← ofReal_norm_eq_enorm S]]
+          ← ofReal_norm S]]
       exact ENNReal.ofReal_le_ofReal
         (SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) S)
     have hsummand : ∀ p : (Fin r → Fin n) × (Fin s → Fin n),
@@ -428,7 +427,7 @@ theorem exists_const_sum_eLpNorm_pou_covDerivLowerOrderTerm_le_uniform
           S.toCcTensor α m Idx p.1 Jdx p.2 hCcoeff_nn
           (fun {y} hy hb => hCcoeff m Idx p.1 Jdx p.2 hy hb)
       refine (h1.trans
-        (mul_le_mul_of_nonneg_left (hcomp_h1 p) (zero_le _))).trans_eq ?_
+        (mul_le_mul_of_nonneg_left (hcomp_h1 p) (zero_le))).trans_eq ?_
       rw [ENNReal.ofReal_mul hCcoeff_nn, mul_assoc]
     refine (eLpNorm_sum_le (fun p _ => hmeas p) (by norm_num)).trans ?_
     refine (Finset.sum_le_sum (fun p _ => hsummand p)).trans ?_

@@ -169,16 +169,24 @@ private theorem homotopyRep_rel (k l : ℕ) {X : Type u} (psi : CellBoundary k �
     subst a
     subst b
     rcases x with ⟨s, y⟩
-    simpa [homotopyRep, homotopyCellMap, homotopyLowerMap] using
-      (DifferentialGeometry.Topology.adjunction_coherence (attachingInclusion k l)
-        (coreProjectionAttachingMap k l psi) (s, radialStep l t y))
+    change DifferentialGeometry.Topology.adjunctionCell (attachingInclusion k l)
+      (coreProjectionAttachingMap k l psi)
+        (attachingInclusion k l (s, radialStep l t y)) =
+      DifferentialGeometry.Topology.adjunctionLower (i := attachingInclusion k l)
+        (coreProjectionAttachingMap k l psi) (psi s)
+    exact DifferentialGeometry.Topology.adjunction_coherence (attachingInclusion k l)
+      (coreProjectionAttachingMap k l psi) (s, radialStep l t y)
   · rcases hx with ⟨hb, ha⟩
     subst a
     subst b
     rcases x with ⟨s, y⟩
-    simpa [homotopyRep, homotopyCellMap, homotopyLowerMap] using
-      (DifferentialGeometry.Topology.adjunction_coherence (attachingInclusion k l)
-        (coreProjectionAttachingMap k l psi) (s, radialStep l t y)).symm
+    change DifferentialGeometry.Topology.adjunctionLower (i := attachingInclusion k l)
+      (coreProjectionAttachingMap k l psi) (psi s) =
+      DifferentialGeometry.Topology.adjunctionCell (attachingInclusion k l)
+        (coreProjectionAttachingMap k l psi)
+          (attachingInclusion k l (s, radialStep l t y))
+    exact (DifferentialGeometry.Topology.adjunction_coherence (attachingInclusion k l)
+      (coreProjectionAttachingMap k l psi) (s, radialStep l t y)).symm
 
 noncomputable def thickenCollapseHomotopy (k l : ℕ) {X : Type u} [TopologicalSpace X]
     (psi : CellBoundary k → X) :
@@ -190,13 +198,17 @@ noncomputable def thickenCollapseHomotopy (k l : ℕ) {X : Type u} [TopologicalS
       Quot.lift (fun z : StandardHandle k l ⊕ X => homotopyRep k l psi p.1 z)
         (homotopyRep_rel k l psi p.1) p.2, by
           have hCell : Continuous (homotopyCellMap k l psi) := by
-            dsimp [homotopyCellMap]
+            change Continuous (fun p : I × StandardHandle k l =>
+              DifferentialGeometry.Topology.adjunctionCell (attachingInclusion k l)
+                (coreProjectionAttachingMap k l psi) (p.2.1, radialStep l p.1 p.2.2))
             exact (continuous_adjunctionCell (attachingInclusion k l) (coreProjectionAttachingMap k l psi)).comp
               ((continuous_fst.comp continuous_snd).prodMk
                 ((continuous_radialStep l).comp (continuous_fst.prodMk
                   (continuous_snd.comp continuous_snd))))
           have hLower : Continuous (homotopyLowerMap k l psi) := by
-            dsimp [homotopyLowerMap]
+            change Continuous (fun p : I × X =>
+              DifferentialGeometry.Topology.adjunctionLower (i := attachingInclusion k l)
+                (coreProjectionAttachingMap k l psi) p.2)
             exact (continuous_adjunctionLower (i := attachingInclusion k l)
               (coreProjectionAttachingMap k l psi)).comp continuous_snd
           have hf_eq : (fun p : I × (StandardHandle k l ⊕ X) => homotopyRep k l psi p.1 p.2) =
@@ -206,11 +218,11 @@ noncomputable def thickenCollapseHomotopy (k l : ℕ) {X : Type u} [TopologicalS
             rcases p with ⟨t, z⟩
             cases z with
             | inl q =>
-              simp [homotopyRep, Homeomorph.prodSumDistrib, Homeomorph.sumProdDistrib,
-                Homeomorph.prodComm, Homeomorph.sumCongr]
+              change homotopyCellMap k l psi (t, q) = homotopyCellMap k l psi (t, q)
+              rfl
             | inr x =>
-              simp [homotopyRep, Homeomorph.prodSumDistrib, Homeomorph.sumProdDistrib,
-                Homeomorph.prodComm, Homeomorph.sumCongr]
+              change homotopyLowerMap k l psi (t, x) = homotopyLowerMap k l psi (t, x)
+              rfl
           have hcont_f : Continuous
               (fun p : I × (StandardHandle k l ⊕ X) => homotopyRep k l psi p.1 p.2) := by
             rw [hf_eq]

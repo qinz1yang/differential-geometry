@@ -22,7 +22,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -353,8 +352,8 @@ theorem eigenvectorChartVariationalIdentity
             ψ y)
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) :=
-        MeasureTheory.integrable_finset_sum _ (fun P' _ =>
-          MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+        MeasureTheory.integrable_finsetSum _ (fun P' _ =>
+          MeasureTheory.integrable_finsetSum _ (fun Q _ =>
             crossLeftLimitPairing_integrable (I := I) (M := M) g r s i
               α P₀ P' Q hψ hψ_cs hψ_supp))
       refine h_sum.congr (Filter.Eventually.of_forall (fun y => ?_))
@@ -381,8 +380,8 @@ theorem eigenvectorChartVariationalIdentity
             ψ y)
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) :=
-        MeasureTheory.integrable_finset_sum _ (fun P' _ =>
-          MeasureTheory.integrable_finset_sum _ (fun Q _ =>
+        MeasureTheory.integrable_finsetSum _ (fun P' _ =>
+          MeasureTheory.integrable_finsetSum _ (fun Q _ =>
             crossRightValueLimitPairing_integrable (I := I) (M := M)
               g r s i α P₀ P' Q hψ hψ_cs hψ_supp))
       refine h_sum.congr (Filter.Eventually.of_forall (fun y => ?_))
@@ -414,7 +413,7 @@ theorem eigenvectorChartVariationalIdentity
           (chartTargetEuclid (I := I) (M := M) α)) :=
       density_coeff_memLp2_test_integrable (I := I) (M := M) g α
         h_one_div_density
-        (memLp_finset_sum (μ := (volume : Measure EuclN).restrict
+        (memLp_finsetSum (μ := (volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α))
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
           (fun l _ => weightedGradCoeffDivLimit_memLp (I := I) (M := M)

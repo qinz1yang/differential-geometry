@@ -75,7 +75,7 @@ private theorem addCases_succAbove_castAdd_assoc {α : Type*} {m' n' : ℕ}
       have hlt : (Fin.cast (show m' + (n' + 1) = m' + 1 + n' from by omega)
           (Fin.castAdd (n' + 1) a)).castSucc < Fin.castAdd (n' + 1) i := by
         apply Fin.lt_def.mpr
-        simpa [Fin.val_castAdd, Fin.val_cast, Fin.val_castSucc] using h
+        simpa [Fin.val_castAdd, Fin.val_cast, Fin.val_castSucc] using! h
       rw [Fin.succAbove_of_castSucc_lt _ _ hlt]
       rw [show (Fin.cast (show m' + (n' + 1) = m' + 1 + n' from by omega)
           (Fin.castAdd (n' + 1) a)).castSucc = Fin.castAdd (n' + 1) a.castSucc by
@@ -131,7 +131,7 @@ theorem addCases_succAbove_castAdd {α : Type*} {m' n' : ℕ}
       ((Fin.castAdd (n' + 1) i).succAbove
         (Fin.cast (show m' + n' + 1 = m' + 1 + n' from by omega) k)) =
     (Fin.addCases (f ∘ i.succAbove) g : Fin (m' + (n' + 1)) → α) k := by
-  simpa using addCases_succAbove_castAdd_assoc (m' := m') (n' := n') f g i k
+  simpa using! addCases_succAbove_castAdd_assoc (m' := m') (n' := n') f g i k
 
 theorem addCases_succAbove_natAdd {α : Type*} {m' n' : ℕ}
     (f : Fin (m' + 1) → α) (g : Fin (n' + 1) → α) (j : Fin (n' + 1))
@@ -166,7 +166,7 @@ theorem addCases_succAbove_natAdd {α : Type*} {m' n' : ℕ}
       rw [Fin.succAbove_of_castSucc_lt]
       case h =>
         apply Fin.lt_def.mpr
-        simpa [Fin.val_natAdd, Fin.val_castSucc] using h
+        simpa [Fin.val_natAdd, Fin.val_castSucc] using! h
       rw [show (Fin.natAdd (m' + 1) b).castSucc =
           Fin.natAdd (m' + 1) b.castSucc by
         ext

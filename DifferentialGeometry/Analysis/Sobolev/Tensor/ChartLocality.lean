@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.NormBasics
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -212,7 +211,7 @@ theorem wtwokTwoChartTerm_le_wtwokTwoNorm
   rw [wtwokTwoNorm_eq_finset_sum_chartTerm (I := I) (M := M) g k T]
   exact Finset.single_le_sum
     (f := fun α => wtwokTwoChartTerm (I := I) (M := M) g k T α)
-    (fun α _ => zero_le _) hα
+    (fun α _ => zero_le) hα
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNorm_tensorChartComp_le_wtwokTwoNorm
@@ -232,12 +231,12 @@ theorem wkpNorm_tensorChartComp_le_wtwokTwoNorm
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
         (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α))
-    (fun Idx _ => zero_le _) (Finset.mem_univ Idx))
+    (fun Idx _ => zero_le) (Finset.mem_univ Idx))
   exact Finset.single_le_sum
     (f := fun Jdx => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
       (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)
       (chartTargetEuclid (I := I) (M := M) α))
-    (fun Jdx _ => zero_le _) (Finset.mem_univ Jdx)
+    (fun Jdx _ => zero_le) (Finset.mem_univ Jdx)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem tensorChartComp_reconstruct

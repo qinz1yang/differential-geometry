@@ -112,7 +112,7 @@ theorem MemW1p.mul_smooth_bounded
               _ ≤ C * ‖u x‖ := by
                     gcongr
                     exact hη_grad_bound x hx
-      simpa using h1.add h2
+      exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ ↦ rfl) (h1.add h2)
     · have hu_loc : LocallyIntegrable u (volume.restrict Ω) :=
         hu.1.locallyIntegrable hp
       have hg_loc : LocallyIntegrable g (volume.restrict Ω) :=

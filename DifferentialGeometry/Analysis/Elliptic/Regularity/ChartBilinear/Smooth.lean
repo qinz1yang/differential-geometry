@@ -348,7 +348,7 @@ private lemma fderiv_chartPullback_eq_partialDeriv_scalarOnE
     funext z; rfl
   rw [h_eq_compose]
   rw [(toEuclidean (E := E)).symm.comp_right_fderiv]
-  rw [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rw [ContinuousLinearMap.coe_comp, Function.comp_apply]
   have h_iso_apply :
       ((toEuclidean (E := E)).symm : EuclN →L[ℝ] E)
         (EuclideanSpace.single i (1 : ℝ)) = (chartModelBasis E) i := by
@@ -529,13 +529,18 @@ private theorem bilinear_identity_of_supp_in_chartTarget
       funext x
       rw [hu_def]
       change g.inner x
-        ((grad_g (I := I) g ⟨f, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨chartTestPullback α ψ, hψM⟩ : Cₛ^∞⟮I; E,
+        ((grad_g (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((grad_g (I := I) g
+          (⟨chartTestPullback α ψ, hψM⟩ : C^∞⟮I, M; ℝ⟯) : Cₛ^∞⟮I; E,
           (TangentSpace I : M → Type _)⟯) x) =
         mfderiv I 𝓘(ℝ, ℝ) f x
-          ((grad_g (I := I) g ⟨chartTestPullback α ψ, hψM⟩ :
+          ((grad_g (I := I) g
+            (⟨chartTestPullback α ψ, hψM⟩ : C^∞⟮I, M; ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      simp only [grad_g_apply]
+      rw [grad_g_apply (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) x]
+      rw [grad_g_apply (I := I) g
+        (⟨chartTestPullback α ψ, hψM⟩ : C^∞⟮I, M; ℝ⟯) x]
       change g.inner x (gradFun (I := I) g f x)
           (gradFun (I := I) g (chartTestPullback (I := I) (M := M) α ψ) x) =
         mfderiv I 𝓘(ℝ, ℝ) f x (gradFun (I := I) g (chartTestPullback (I := I) (M := M) α ψ) x)
@@ -551,7 +556,9 @@ private theorem bilinear_identity_of_supp_in_chartTarget
           (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) := by
       intro x hx
-      rw [Function.mem_support] at hx ⊢
+      change u x ≠ 0 at hx
+      change ((grad_g (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) :
+        Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) ≠ 0
       intro hx_zero
       apply hx
       rw [hu_def]
@@ -559,9 +566,6 @@ private theorem bilinear_identity_of_supp_in_chartTarget
         ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ((grad_g (I := I) g ⟨_, hψM⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = 0
       rw [hx_zero]
-      change (g.inner x (0 : TangentSpace I x))
-          ((grad_g (I := I) g ⟨_, hψM⟩ :
-            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = 0
       rw [ContinuousLinearMap.map_zero]
       rfl
     have h_grad_f_supp_sub : Function.support
@@ -656,7 +660,7 @@ private theorem bilinear_identity_of_supp_in_chartTarget
         rw [h_fderiv_zero]
         change B.a y i j * (0 : EuclN →L[ℝ] ℝ) (EuclideanSpace.single i 1) *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0
-        rw [ContinuousLinearMap.zero_apply]; ring
+        rw [zero_apply]; ring
       rw [h_u_zero, mul_zero, h_principal_zero]
   have h_LHS_setInt_eq :
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -768,7 +772,7 @@ private theorem bilinear_identity_of_supp_in_chartTarget
     rw [h_fderiv_zero]
     change B.a y i j * (0 : EuclN →L[ℝ] ℝ) (EuclideanSpace.single i 1) *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0
-    rw [ContinuousLinearMap.zero_apply]; ring
+    rw [zero_apply]; ring
   have h_LHS_setInt_to_int :
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
         B.principalIntegrand (chartPullback (I := I) α f) ψ y ∂volume =
@@ -828,7 +832,7 @@ private theorem bilinear_identity_of_supp_in_chartTarget
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma negDensityLaplacianPullback_support_subset
-    [I.Boundaryless] [T2Space M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     Function.support (negDensityLaplacianPullback (I := I) g hf α) ⊆
@@ -917,7 +921,7 @@ private lemma principalIntegrand_cutoff_eq
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1) =
       B.a y i j * (0 : EuclN →L[ℝ] ℝ) (EuclideanSpace.single i 1) *
         (fderiv ℝ (fun z : EuclN => ρ z * ψ z) y) (EuclideanSpace.single j 1)
-    rw [ContinuousLinearMap.zero_apply]; ring
+    rw [zero_apply]; ring
 
 private theorem bilinear_identity_of_smooth
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]

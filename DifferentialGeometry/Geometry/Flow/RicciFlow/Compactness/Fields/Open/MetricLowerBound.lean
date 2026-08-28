@@ -51,11 +51,11 @@ theorem metric_lower
     ∃ c₀ : Real, 0 < c₀ ∧
       ∀ (x : P.M) (v : TangentSpace I x),
         c₀ * R.inner x v v ≤ (co.gInf t).inner x v v := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨n, htn⟩ := RealTimeInterval.mem_openWindow (t₀ := t₀) ht
   refine ⟨c n, hc n, ?_⟩
   exact ConvOut.lower_of (I := I) (Φ := Φ) (OpenConvOut.at_window Φ co n)

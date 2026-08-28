@@ -373,7 +373,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_ballUnifor
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -401,7 +401,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_ballUnifor
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-      (MeasureTheory.integrable_finset_sum _
+      (MeasureTheory.integrable_finsetSum _
         (fun k hk => (hKg P hPball k (hkle k hk)).1)).const_mul (C i)
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 1 (1 + i)
       (iteratedCovGrad (I := I) g₀ 1 1 i
@@ -417,10 +417,10 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_ballUnifor
       (fun x => hgrid g₁ P htie hδ_le hδ0 hδ i x)
     refine le_trans key ?_
     rw [MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum _ (fun k hk => (hKg P hPball k (hkle k hk)).1)]
+      MeasureTheory.integral_finsetSum _ (fun k hk => (hKg P hPball k (hkle k hk)).1)]
     exact mul_le_mul_of_nonneg_left
       (Finset.sum_le_sum (fun k hk => (hKg P hPball k (hkle k hk)).2)) (hC_nn i)
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 1 1 i
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))‖ = 0 := by
@@ -456,7 +456,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -484,7 +484,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-      (MeasureTheory.integrable_finset_sum _
+      (MeasureTheory.integrable_finsetSum _
         (fun k hk => (hKg P hPball k (hkle k hk)).1)).const_mul (C i)
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
       (iteratedCovGrad (I := I) g₀ 2 2 i
@@ -500,10 +500,10 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
       (fun x => hgrid g₁ P htie hδ_le hδ0 hδ i x)
     refine le_trans key ?_
     rw [MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum _ (fun k hk => (hKg P hPball k (hkle k hk)).1)]
+      MeasureTheory.integral_finsetSum _ (fun k hk => (hKg P hPball k (hkle k hk)).1)]
     exact mul_le_mul_of_nonneg_left
       (Finset.sum_le_sum (fun k hk => (hKg P hPball k (hkle k hk)).2)) (hC_nn i)
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
           ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ = 0 := by
@@ -653,7 +653,7 @@ theorem antidiagonalTupleGrid_integral_ballUniform_tameWindow
               K i * (1 + ∑ j ∈ Finset.range (i + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cemb, hCemb_nn, hCemb⟩ :=
     DifferentialGeometry.Analysis.Spectral.deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
@@ -796,14 +796,14 @@ theorem antidiagonalTupleGrid_integral_ballUniform_tameWindow
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro n hn
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro e he
       exact (hPT n hn e he).1
     refine ⟨hgrid_int, ?_⟩
-    rw [MeasureTheory.integral_finset_sum _
-      (fun n hn => MeasureTheory.integrable_finset_sum _ (fun e he => (hPT n hn e he).1))]
+    rw [MeasureTheory.integral_finsetSum _
+      (fun n hn => MeasureTheory.integrable_finsetSum _ (fun e he => (hPT n hn e he).1))]
     have hinner : ∀ n ∈ Finset.range (i + 1),
         (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n i, ∏ m : Fin n,
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -814,7 +814,7 @@ theorem antidiagonalTupleGrid_integral_ballUniform_tameWindow
               ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀) := by
       intro n hn
-      exact MeasureTheory.integral_finset_sum _ (fun e he => (hPT n hn e he).1)
+      exact MeasureTheory.integral_finsetSum _ (fun e he => (hPT n hn e he).1)
     rw [Finset.sum_congr rfl hinner]
     have hle1 : ∑ n ∈ Finset.range (i + 1), ∑ e ∈ Finset.Nat.antidiagonalTuple n i,
           (∫ x, ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -933,7 +933,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_tameEnvelo
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -957,7 +957,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_tameEnvelo
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-      (MeasureTheory.integrable_finset_sum _
+      (MeasureTheory.integrable_finsetSum _
         (fun k hk => (hKg P hPball k).1)).const_mul (C i)
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 1 (1 + i)
       (iteratedCovGrad (I := I) g₀ 1 1 i
@@ -973,7 +973,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_tameEnvelo
       (fun x => hgrid g₁ P htie hδ_le hδ0 hδ i x)
     refine le_trans key ?_
     rw [MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum _ (fun k hk => (hKg P hPball k).1)]
+      MeasureTheory.integral_finsetSum _ (fun k hk => (hKg P hPball k).1)]
     have hsum_le : ∑ k ∈ Finset.range (i + 3),
           (∫ x, ∑ n ∈ Finset.range (k + 1),
               ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -1007,7 +1007,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_tameEnvelo
       _ = (C i * ∑ k ∈ Finset.range (i + 3), Kg k) *
             (1 + ∑ j ∈ Finset.range (i + 3), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
           ring
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 1 1 i
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))‖ = 0 := by
@@ -1050,7 +1050,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_tameEnvelope
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -1074,7 +1074,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_tameEnvelope
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-      (MeasureTheory.integrable_finset_sum _
+      (MeasureTheory.integrable_finsetSum _
         (fun k hk => (hKg P hPball k).1)).const_mul (C i)
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
       (iteratedCovGrad (I := I) g₀ 2 2 i
@@ -1090,7 +1090,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_tameEnvelope
       (fun x => hgrid g₁ P htie hδ_le hδ0 hδ i x)
     refine le_trans key ?_
     rw [MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum _ (fun k hk => (hKg P hPball k).1)]
+      MeasureTheory.integral_finsetSum _ (fun k hk => (hKg P hPball k).1)]
     have hsum_le : ∑ k ∈ Finset.range (i + 3),
           (∫ x, ∑ n ∈ Finset.range (k + 1),
               ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -1124,7 +1124,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_tameEnvelope
       _ = (C i * ∑ k ∈ Finset.range (i + 3), Kg k) *
             (1 + ∑ j ∈ Finset.range (i + 3), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
           ring
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
           ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ = 0 := by

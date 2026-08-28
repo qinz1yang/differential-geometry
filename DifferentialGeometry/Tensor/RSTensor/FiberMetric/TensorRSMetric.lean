@@ -7,6 +7,7 @@ namespace Tensor0SBundle
 
 noncomputable section
 
+
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -30,11 +31,14 @@ theorem adjointRS_inner
     (Y : Tensor0SSpace s I x) (X : Tensor0SSpace r I x) :
     inner0S (I := I) g x r (adjointRS (I := I) (g := g) (x := x) r s A Y) X =
       inner0S (I := I) g x s Y (A X) := by
-  simpa [adjointRS, inner0S] using
-    MetricFiberData.adjoint_inner
-      (tensor0SMetricData (I := I) g x r)
-      (tensor0SMetricData (I := I) g x s)
-      A.toLinearMap Y X
+  change (tensor0SMetricData (I := I) g x r).flat
+      (((tensor0SMetricData (I := I) g x r).adjoint
+        (tensor0SMetricData (I := I) g x s) A.toLinearMap) Y) X =
+    (tensor0SMetricData (I := I) g x s).flat Y (A.toLinearMap X)
+  exact MetricFiberData.adjoint_inner
+    (tensor0SMetricData (I := I) g x r)
+    (tensor0SMetricData (I := I) g x s)
+    A.toLinearMap Y X
 
 def innerRS
     {g : SmoothMetric I M} {x : M}

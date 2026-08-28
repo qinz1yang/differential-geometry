@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -42,16 +41,20 @@ private lemma fiberNormSqComponent_covGradBundleEquivSymm_slice_eq
         ((covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a)) n e K J =
       fiberNormSqComponent (I := I) (M := M) g x r (s + 1) T n e K (Fin.cons a J) := by
   unfold fiberNormSqComponent
-  set ωK : Tensor0SSpace r I x :=
+  set ωK : ContinuousMultilinearMap ℝ (fun _ : Fin r => TangentSpace I x) ℝ :=
     (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
       (fun k => g.inner x (e (K k))) with hωK
-  rw [show (((covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a)) ωK
-        (fun k => e (J k)) : ℝ) =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-          ((covGradBundleEquiv (I := I) (M := M) r s x).symm T) (e a)) ωK)
-        (fun k => e (J k)) from rfl]
-  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a) ωK (fun k => e (J k))]
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+        ((covGradBundleEquiv (I := I) (M := M) r s x).symm T) (e a))
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm ωK))
+        (fun k => e (J k)) =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm ωK))
+      (fun k => e ((Fin.cons a J : Fin (s + 1) → Fin n) k))
+  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a)
+    ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm ωK) (fun k => e (J k))]
   congr 1
   exact (Fin.comp_cons e a J).symm
 
@@ -87,7 +90,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
   set eC : Fin (Module.finrank ℝ E) → TangentSpace I x := fun j => B j x with heC_def
   have horthC : ∀ a b : Fin (Module.finrank ℝ E),
       g.inner x (eC a) (eC b) = if a = b then (1 : ℝ) else 0 := fun a b => hBorth a b
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ eC := by
     rw [linearIndependent_iff']

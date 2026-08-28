@@ -121,19 +121,26 @@ omit [CompleteSpace X] in
 theorem duh_contracting :
     ContractingWith ⟨hmfRate eps K R, rate_nonneg D⟩ D.duhBall := by
   refine ⟨?_, ?_⟩
-  · rw [← NNReal.coe_lt_coe]
-    simpa using D.rate_lt_one
+  · change (⟨hmfRate eps K R, rate_nonneg D⟩ : NNReal) < 1
+    exact NNReal.coe_lt_coe.mp D.rate_lt_one
   · refine LipschitzWith.of_dist_le_mul ?_
     intro u v
-    simpa only [Subtype.dist_eq, dist_eq_norm] using D.duh_diff u.property v.property
+    rw [Subtype.dist_eq, Subtype.dist_eq, dist_eq_norm]
+    have hu : (D.duhBall u : X) = hmfDuh D (u : X) := rfl
+    have hv : (D.duhBall v : X) = hmfDuh D (v : X) := rfl
+    rw [hu, hv]
+    change ‖hmfDuh D (u : X) - hmfDuh D (v : X)‖ ≤
+      hmfRate eps K R * dist (u : X) (v : X)
+    rw [dist_eq_norm]
+    exact D.duh_diff u.property v.property
 theorem rough_fixed :
     ∃! u : X,
       u ∈ Metric.closedBall (0 : X) R ∧
       tr u = 0 ∧
       hmfDuh D u = u := by
   let zeroBall : HmfBall R X := ⟨0, zero_mem D⟩
-  letI : Nonempty (HmfBall R X) := ⟨zeroBall⟩
-  letI : CompleteSpace (HmfBall R X) := Metric.isClosed_closedBall.completeSpace_coe
+  let : Nonempty (HmfBall R X) := ⟨zeroBall⟩
+  let : CompleteSpace (HmfBall R X) := Metric.isClosed_closedBall.completeSpace_coe
   let Φ : HmfBall R X → HmfBall R X := D.duhBall
   have hcontr : ContractingWith ⟨hmfRate eps K R, rate_nonneg D⟩ Φ :=
     D.duh_contracting

@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -48,7 +47,7 @@ theorem joint_rs_sub {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -83,7 +82,7 @@ theorem joint_rs_add {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -188,6 +187,7 @@ private theorem path_field_congr
   intro x
   rfl
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_joint_smooth
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -207,6 +207,7 @@ private theorem iteratedCovGrad_joint_smooth
     exact covGrad_step_jointContMDiffOn (I := I) (M := M) g₀ r (s + j)
       (fun t => iteratedCovGrad (I := I) g₀ r s j (Φ t)) S ih
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_riemannianFiberNormSq_cont
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -237,12 +238,12 @@ private theorem iteratedCovGrad_norm_sq_int
     IntervalIntegrable
       (fun t : ℝ => ‖iteratedCovGrad (I := I) g₀ r s i (Φ t)‖ ^ 2) volume 0 1 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set F : ℝ × M → ℝ := fun p : ℝ × M =>
     riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) p.2
@@ -270,6 +271,7 @@ private theorem iteratedCovGrad_norm_sq_int
   rw [heq]
   exact hcontInt.intervalIntegrable_of_Icc (by norm_num)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem iteratedCovGrad_path_comm
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)

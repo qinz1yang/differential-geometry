@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -102,7 +101,8 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
     |Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
           (g0FlatCLM (I := I) g₀ x d))
-        (Fin.cons a ![b])| ≤
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b]| ≤
       Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x W) *
         Real.sqrt (g₀.inner x d d) *
         Real.sqrt (g₀.inner x a a) * Real.sqrt (g₀.inner x b b) := by
@@ -120,13 +120,13 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
             (g0FlatCLM (I := I) g₀ x (e (K 0))))
-          (fun i : Fin 2 => e (J i)) := by
+          (fun i : Fin 2 => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J i))) := by
     intro K J
     rw [show fiberNormSqComponent (I := I) (M := M) g₀ x 1 2 W n e K J =
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
             (coframeS (I := I) (M := M) g₀ x 1 e K))
-          (fun i : Fin 2 => e (J i)) from rfl]
+          (fun i : Fin 2 => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J i))) from rfl]
     rw [coframeS_one_eq_g0FlatCLM_local (I := I) (M := M) g₀ x e K]
   have hWd : (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
         (g0FlatCLM (I := I) g₀ x d) =
@@ -147,11 +147,13 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
   have hvalue : Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
           (g0FlatCLM (I := I) g₀ x d))
-        (Fin.cons a ![b]) =
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       ∑ p : (Fin 1 → Fin n) × (Fin 2 → Fin n), coef p * comp p := by
     change Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
-          (g0FlatCLM (I := I) g₀ x d)) vec =
+          (g0FlatCLM (I := I) g₀ x d))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i)) =
         ∑ p : (Fin 1 → Fin n) × (Fin 2 → Fin n), coef p * comp p
     rw [hWd]
     rw [show Tensor0SSpace.toModel
@@ -165,17 +167,18 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
       rw [← Tensor0SSpace.toModelL_apply, map_sum]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [map_smul, Tensor0SSpace.toModelL_apply]]
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [sum_apply]
     have hterm : ∀ k : Fin n,
         (g₀.inner x (e k) d •
           Tensor0SSpace.toModel
             ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
-              (g0FlatCLM (I := I) g₀ x (e k)))) vec =
+              (g0FlatCLM (I := I) g₀ x (e k))))
+            (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i)) =
         ∑ J : Fin 2 → Fin n,
           (g₀.inner x (e k) d * ∏ i : Fin 2, g₀.inner x (e (J i)) (vec i)) *
             fiberNormSqComponent (I := I) (M := M) g₀ x 1 2 W n e (fun _ => k) J := by
       intro k
-      rw [ContinuousMultilinearMap.smul_apply]
+      rw [smul_apply]
       set B2 : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => E) ℝ :=
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
@@ -183,13 +186,20 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
       set coefJ : (Fin 2 → Fin n) → ℝ :=
         fun J => ∏ i : Fin 2, g₀.inner x (e (J i)) (vec i) with hcoefJ_def
       set compJ : (Fin 2 → Fin n) → ℝ :=
-        fun J => B2 (fun i : Fin 2 => (show E from e (J i))) with hcompJ_def
-      have hexp' : ∀ i : Fin 2, (show E from vec i) =
-          ∑ j : Fin n, g₀.inner x (e j) (vec i) • (show E from e j) :=
-        fun i => hexp i
-      have hB2val : B2 vec = ∑ J : Fin 2 → Fin n, coefJ J * compJ J := by
-        have hrw : B2 vec = B2 (fun i : Fin 2 =>
-            ∑ j : Fin n, g₀.inner x (e j) (vec i) • (show E from e j)) := by
+        fun J => B2 (fun i : Fin 2 =>
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J i))) with hcompJ_def
+      have hexp' : ∀ i : Fin 2,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i) =
+            ∑ j : Fin n, g₀.inner x (e j) (vec i) •
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (e j) := by
+        intro i
+        simpa only [map_sum, map_smul] using
+          congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) (hexp i)
+      have hB2val : B2 (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i)) =
+          ∑ J : Fin 2 → Fin n, coefJ J * compJ J := by
+        have hrw : B2 (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i)) =
+            B2 (fun i : Fin 2 => ∑ j : Fin n, g₀.inner x (e j) (vec i) •
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (e j)) := by
           congr 1
           funext i
           exact hexp' i
@@ -287,6 +297,7 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
     ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem exists_fixed_connectionDifference_sqrt_bound (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (x : M) (v w : TangentSpace I x),
       Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x v w)
@@ -301,12 +312,18 @@ theorem exists_fixed_connectionDifference_sqrt_bound (g₀ g_bg : SmoothRiemanni
   set W : TensorRSSpace 1 2 I x := connectionDifferenceFib (I := I) g_bg g₀ x with hW_def
   have hval : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
-        (g0FlatCLM (I := I) g₀ x cd)) (Fin.cons (v : E) ![(w : E)]) = g₀.inner x cd cd := by
-    rw [show Tensor0SSpace.toModel ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
-          (g0FlatCLM (I := I) g₀ x cd)) (Fin.cons (v : E) ![(w : E)]) =
-        ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-            connectionDifferenceFib (I := I) g_bg g₀ x)
-          (g0FlatCLM (I := I) g₀ x cd)) ![v, w] from rfl]
+        (g0FlatCLM (I := I) g₀ x cd))
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w] = g₀.inner x cd cd := by
+    rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w] =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] i)) from by
+      funext i
+      fin_cases i <;> rfl]
+    rw [Tensor0SSpace.toModel_apply_tangent]
+    change ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        connectionDifferenceFib (I := I) g_bg g₀ x)
+      (g0FlatCLM (I := I) g₀ x cd)) ![v, w] = g₀.inner x cd cd
     rw [connectionDifferenceFib_apply_eval (I := I) g_bg g₀ x (g0FlatCLM (I := I) g₀ x cd) ![v, w]]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
     rw [show (g0FlatCLM (I := I) g₀ x cd)
@@ -355,6 +372,7 @@ theorem exists_fixed_connectionDifference_sqrt_bound (g₀ g_bg : SmoothRiemanni
         nlinarith only [hWnorm, hprod_nn, hSv_nn, hSw_nn, hNW_nn]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner_local
     (g₀ g_c : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -431,7 +449,7 @@ theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
     g₀ 1 3 (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀))
   refine ⟨Real.sqrt K, Real.sqrt_nonneg _, ?_⟩
   intro x v w u
-  letI instW : Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
+  let instW : Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
   set W : Tensor0SBundle.TensorRSSpace 1 3 I x :=
     (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀)).toSection x

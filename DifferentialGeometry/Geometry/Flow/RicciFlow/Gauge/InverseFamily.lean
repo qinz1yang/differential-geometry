@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.Pushforwar
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
@@ -135,7 +136,9 @@ theorem joint_symm_smoothOn
     hlocal_smooth.congr_of_eventuallyEq hG_event
   have hsnd : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞ (Prod.snd ∘ G) q :=
     contMDiffAt_snd.comp q hG_at
-  simpa only [Function.comp_apply, G] using hsnd.contMDiffWithinAt
+  apply hsnd.contMDiffWithinAt.congr_of_eventuallyEq
+  · exact Filter.Eventually.of_forall fun _ => rfl
+  · simp only [G, Function.comp_apply]
 
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)]
@@ -191,13 +194,19 @@ theorem symm_gauge_vel
   have hP_diff : MDifferentiableAt (𝓘(ℝ, ℝ).prod I) I P (t, y) :=
     hP_at.mdifferentiableAt (by simp)
   have hC_diff : MDifferentiableAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) C t := by
-    simpa only [C] using mdifferentiableAt_id.prodMk hsymm_diff
+    apply (mdifferentiableAt_id.prodMk hsymm_diff).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun _ => rfl
   have hC_val : mfderiv 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) C t (1 : ℝ) =
       ((1 : ℝ), vΦ) := by
-    have hprod := mfderiv_prodMk mdifferentiableAt_id hsymm_diff
-    have happ := congrArg (fun A => A (1 : ℝ)) hprod
-    simpa only [C, id_eq, ContinuousLinearMap.prod_apply, mfderiv_id,
-      ContinuousLinearMap.id_apply, vΦ] using happ
+    change mfderiv 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I)
+      (fun s : ℝ => (id s, ((Ψ_fam s).symm : M → M) x)) t (1 : ℝ) =
+        ((1 : ℝ), vΦ)
+    rw [mfderiv_prodMk mdifferentiableAt_id hsymm_diff]
+    change ((mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) id t) (1 : ℝ),
+      (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => ((Ψ_fam s).symm : M → M) x) t) (1 : ℝ)) =
+        ((1 : ℝ), vΦ)
+    rw [mfderiv_id]
+    rfl
   have hPC : P ∘ C = (fun _ : ℝ => x) := by
     funext s
     exact (Ψ_fam s).apply_symm_apply x
@@ -214,7 +223,9 @@ theorem symm_gauge_vel
       mfderiv (𝓘(ℝ, ℝ).prod I) I P (t, y) ((1 : ℝ), vΦ) =
           mfderiv 𝓘(ℝ, ℝ) I (P ∘ C) t (1 : ℝ) := hchain'.symm
       _ = 0 := by
-        rw [hPC, mfderiv_const, ContinuousLinearMap.zero_apply]
+        rw [hPC, mfderiv_const]
+        change (0 : ℝ →L[ℝ] TangentSpace I x) 1 = 0
+        rfl
   have htime_has :=
     (hΨode y t ht).hasMFDerivAt (Ici_mem_nhds ht.1)
   have htime :
@@ -235,21 +246,23 @@ theorem symm_gauge_vel
         -(W t ((Ψ_fam t : M → M) y)) := by
     simpa only [P] using htime
   rw [htime'] at hsum
+  have hsum' :
+      -(W t ((Ψ_fam t : M → M) y)) +
+          mfderiv I I (Ψ_fam t : M → M) y vΦ = 0 := by
+    change -(W t ((Ψ_fam t : M → M) y)) +
+        mfderiv I I (fun z : M => (Ψ_fam t : M → M) z) y vΦ = 0
+    exact hsum
   have hspace :
       mfderiv I I (Ψ_fam t : M → M) y vΦ =
         W t ((Ψ_fam t : M → M) y) := by
     apply sub_eq_zero.mp
-    simpa only [sub_eq_add_neg, add_comm] using hsum
+    simpa only [sub_eq_add_neg, add_comm] using hsum'
   have hinv := Diffeomorph.mfderiv_symm_self (Ψ_fam t) y vΦ
   have hvΦ0 :
       vΦ = mfderiv I I ((Ψ_fam t).symm : M → M) ((Ψ_fam t : M → M) y)
         (W t ((Ψ_fam t : M → M) y)) := by
-    calc
-      vΦ = mfderiv I I ((Ψ_fam t).symm : M → M) ((Ψ_fam t : M → M) y)
-          (mfderiv I I (Ψ_fam t : M → M) y vΦ) := hinv.symm
-      _ = mfderiv I I ((Ψ_fam t).symm : M → M) ((Ψ_fam t : M → M) y)
-          (W t ((Ψ_fam t : M → M) y)) := by
-        rw [hspace]
+    rw [← hspace]
+    exact hinv.symm
   have hvΦ := hvΦ0
   rw [hΨy] at hvΦ
   have hvPush : vΦ = Diffeomorph.pushforward (Ψ_fam t).symm (W t)
@@ -285,6 +298,7 @@ theorem gauge_vel_refl
       deTurckVF (I := I) g g_bg x := by
   rw [Diffeomorph.pullbackMetric_refl, Diffeomorph.pushforward_refl]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem ricci_pullback_DT
     (g_RF : ℝ → SmoothRiemannianMetric I M)
@@ -353,9 +367,15 @@ theorem ricci_pullback_DT
         lieDerivMetric (I := I) (g_RF t) (Y t) ((Φ_fam t : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v)
           (mfderiv I I (Φ_fam t : M → M) x w) := by
-    simpa [Y] using
-      (lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
-        (I := I) (g_RF t) (Φ_fam t) (W t) (W t).contMDiff (hPush t) x v w)
+    have h := lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
+      (I := I) (g_RF t) (Φ_fam t) (W t) (W t).contMDiff (hPush t) x v w
+    have hW :
+        ({ toFun := (W t : ∀ x : M, TangentSpace I x)
+           contMDiff_toFun := (W t).contMDiff } :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) = W t :=
+      ContMDiffSection.coe_inj rfl
+    rw [hW] at h
+    simpa [Y] using h
   have h_value :
       ((-2 : ℝ) * ricciTensor (I := I) (g_RF t) ((Φ_fam t : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v)

@@ -8,7 +8,6 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff BigOperators
 
@@ -42,12 +41,16 @@ theorem difference_symm_at
       = (cov (fun p : M => Y p) x) (X x) - (cov' (fun p : M => Y p) x) (X x) := by
     have h := congrArg
       (fun L : TangentSpace I x →L[Real] TangentSpace I x => L (X x)) hdY
-    simpa using h
+    change ((cov.isCovariantDerivativeOnUniv.difference
+      cov'.isCovariantDerivativeOnUniv x) (Y x)) (X x) = _
+    exact h
   have h2 : ((CovariantDerivative.difference cov cov' x) (X x)) (Y x)
       = (cov (fun p : M => X p) x) (Y x) - (cov' (fun p : M => X p) x) (Y x) := by
     have h := congrArg
       (fun L : TangentSpace I x →L[Real] TangentSpace I x => L (Y x)) hdX
-    simpa using h
+    change ((cov.isCovariantDerivativeOnUniv.difference
+      cov'.isCovariantDerivativeOnUniv x) (X x)) (Y x) = _
+    exact h
   have ht := cov.torsion_apply
     (x := x) (X := fun p : M => X p) (Y := fun p : M => Y p)
     (X.contMDiff.contMDiffAt.mdifferentiableAt (by simp))

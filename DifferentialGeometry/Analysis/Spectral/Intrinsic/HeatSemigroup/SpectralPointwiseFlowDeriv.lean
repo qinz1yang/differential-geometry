@@ -250,7 +250,7 @@ theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
     funext n
     exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_src v w
   rw [hrw]
-  refine tendsto_finset_sum _ (fun Q _ => ?_)
+  refine tendsto_finsetSum _ (fun Q _ => ?_)
   exact (hraw_tendsto Q).mul_const _
 
 theorem ccTensorBilinSymm_eigenSeries_eq

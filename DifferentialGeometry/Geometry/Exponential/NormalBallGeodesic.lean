@@ -33,26 +33,35 @@ def inner {p : M} (c : NormalBallChart (I := I) p) : Opens E :=
 def innerImage {p : M} (c : NormalBallChart (I := I) p) : Opens M :=
   ⟨c.restrictBall '' (c.inner : Set E), image_opens_isOpen c.restrictBall
     (by
-      simpa only [restrictBall_source] using c.inner_subset)⟩
+      convert! c.inner_subset using 1)⟩
 
 noncomputable def innerDiffeo {p : M}
     (c : NormalBallChart (I := I) p) :
     Diffeomorph (modelWithCornersSelf Real E) I c.inner c.innerImage ∞ := by
-  simpa only [inner, innerImage] using
-    PartialDiffeomorph.toOpensDiffeoCross c.restrictBall
-      (by
-        simpa only [restrictBall_source] using c.inner_subset)
+  have hsub : (c.inner : Set E) ⊆ c.restrictBall.source := by
+    convert! c.inner_subset using 1
+  let V : Opens M :=
+    ⟨c.restrictBall '' (c.inner : Set E), image_opens_isOpen c.restrictBall hsub⟩
+  have hV : V = c.innerImage := by
+    apply Opens.ext
+    rfl
+  rw [← hV]
+  exact PartialDiffeomorph.toOpensDiffeoCross c.restrictBall hsub
 
-@[implicit_reducible] private noncomputable def innerSigma {p : M}
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+  [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+private theorem innerSigma {p : M}
     (c : NormalBallChart (I := I) p) :
     SigmaCompactSpace c.inner := by
-  letI : LocallyCompactSpace c.inner := c.inner.2.locallyCompactSpace
+  let : LocallyCompactSpace c.inner := c.inner.2.locallyCompactSpace
   infer_instance
 
-@[implicit_reducible] private noncomputable def innerImageSigma {p : M}
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+  [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+private theorem innerImageSigma {p : M}
     (c : NormalBallChart (I := I) p) :
     SigmaCompactSpace c.innerImage := by
-  letI : SigmaCompactSpace c.inner := c.innerSigma
+  let : SigmaCompactSpace c.inner := c.innerSigma
   apply isSigmaCompact_univ_iff.mp
   have hrange : Set.range (c.innerDiffeo : c.inner → c.innerImage) = Set.univ :=
     Set.range_eq_univ.mpr c.innerDiffeo.surjective
@@ -75,8 +84,8 @@ private theorem innerDiffeo_mfd {p : M}
         (fun u : E => c.hom u) (z : E) v := by
   have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross c.restrictBall
     (by
-      simpa only [restrictBall_source] using c.inner_subset) z v
-  simpa only [innerDiffeo, restrictBall_apply] using h
+      convert! c.inner_subset using 1) z v
+  convert! h using 1
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private theorem metric_ext
@@ -104,17 +113,62 @@ theorem totalMetric_inner_eq
         (I := modelWithCornersSelf Real E) c.inner =
       Diffeomorph.pullbackMetricCross
         (g.restrictOpen (I := I) c.innerImage) c.innerDiffeo := by
-  letI : SigmaCompactSpace c.inner := c.innerSigma
-  letI : SigmaCompactSpace c.innerImage := c.innerImageSigma
+  let : SigmaCompactSpace c.inner := c.innerSigma
+  let : SigmaCompactSpace c.innerImage := c.innerImageSigma
   apply metric_ext
   intro z v w
-  rw [SmoothRiemannianMetric.restrictOpen_inner,
-    Diffeomorph.pullbackMetricCross_inner,
-    SmoothRiemannianMetric.restrictOpen_inner]
-  rw [innerDiffeo_apply, innerDiffeo_mfd, innerDiffeo_mfd]
-  rw [c.totalMetric_inner g (z : E) z.2 v w]
-  exact c.metric_apply g (z : E) v w
+  let vE := tangentSpaceModelContinuousLinearEquiv
+    (I := modelWithCornersSelf Real E) z v
+  let wE := tangentSpaceModelContinuousLinearEquiv
+    (I := modelWithCornersSelf Real E) z w
+  have hv : (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) z).symm vE = v := by
+    exact ContinuousLinearEquiv.symm_apply_apply _ v
+  have hw : (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) z).symm wE = w := by
+    exact ContinuousLinearEquiv.symm_apply_apply _ w
+  rw [← hv, ← hw]
+  have hleft :
+      ((c.totalMetric g).restrictOpen
+        (I := modelWithCornersSelf Real E) c.inner).inner z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm vE)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm wE) =
+        c.metric g (z : E) vE wE := by
+    rw [SmoothRiemannianMetric.restrictOpen_inner]
+    simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+      c.totalMetric_inner g (z : E) z.2 vE wE
+  have hright :
+      (Diffeomorph.pullbackMetricCross
+        (g.restrictOpen (I := I) c.innerImage) c.innerDiffeo).inner z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm vE)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm wE) =
+        c.metric g (z : E) vE wE := by
+    rw [Diffeomorph.pullbackMetricCross_inner,
+      SmoothRiemannianMetric.restrictOpen_inner, innerDiffeo_apply]
+    rw [show mfderiv (modelWithCornersSelf Real E) I
+        (c.innerDiffeo : c.inner → c.innerImage) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm vE) =
+        mfderiv (modelWithCornersSelf Real E) I
+          (fun u : E => c.hom u) (z : E) vE by
+      simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+        c.innerDiffeo_mfd z vE]
+    rw [show mfderiv (modelWithCornersSelf Real E) I
+        (c.innerDiffeo : c.inner → c.innerImage) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm wE) =
+        mfderiv (modelWithCornersSelf Real E) I
+          (fun u : E => c.hom u) (z : E) wE by
+      simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+        c.innerDiffeo_mfd z wE]
+    exact c.metric_apply g (z : E) vE wE
+  exact hleft.trans hright.symm
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem cov_map_germ
     (g : SmoothRiemannianMetric I M) {p : M}
@@ -137,8 +191,8 @@ theorem cov_map_germ
         (fun y : M => Z y) (c.hom (z : E)))
         (mfderiv (modelWithCornersSelf Real E) I c.hom (z : E) v) := by
   classical
-  letI : SigmaCompactSpace c.inner := c.innerSigma
-  letI : SigmaCompactSpace c.innerImage := c.innerImageSigma
+  let : SigmaCompactSpace c.inner := c.innerSigma
+  let : SigmaCompactSpace c.innerImage := c.innerImageSigma
   let U := c.inner
   let W := c.innerImage
   let Phi := c.innerDiffeo
@@ -188,7 +242,7 @@ theorem cov_map_germ
       (I := I) (M := W) (g.restrictOpen (I := I) W)
       (Geometry.Curvature.mdiffAt_restrictOpen_section (I := I) W Z (Phi z))
       (PW.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
-    simpa only [Geometry.Curvature.restrictOpenTangentSection] using hEqOpen
+    convert! hEqOpen using 1
   have htgt := Geometry.Curvature.metricCov_restrictOpen_globalSection
     (I := I) g W Z (Phi z)
       (mfderiv (modelWithCornersSelf Real E) I (Phi : U → W) z v)
@@ -224,8 +278,8 @@ theorem geo_map (g : SmoothRiemannianMetric I M) {p : M}
       (c.totalMetric g) gamma s) :
     Geodesic.IsGeodesicOn (I := I) g (fun t ↦ c.hom (gamma t)) s := by
   classical
-  letI : SigmaCompactSpace c.inner := c.innerSigma
-  letI : SigmaCompactSpace c.innerImage := c.innerImageSigma
+  let : SigmaCompactSpace c.inner := c.innerSigma
+  let : SigmaCompactSpace c.innerImage := c.innerImageSigma
   let z0 : c.inner := ⟨0, by
     change (0 : E) ∈ Metric.ball (0 : E) (c.radius / 4)
     rw [Metric.mem_ball, dist_self]

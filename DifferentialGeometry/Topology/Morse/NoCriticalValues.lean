@@ -6,7 +6,7 @@ import Mathlib.Geometry.Manifold.Diffeomorph
 namespace DifferentialGeometry.Topology.Morse
 
 open Manifold Set
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 open DifferentialGeometry.Analysis.ODE
 
 noncomputable section
@@ -213,15 +213,20 @@ theorem reverseFlow_value_on_levelSet {n : ℕ} {H : Type} [TopologicalSpace H] 
     exists_globalIntegralCurve_of_compactSupport v hv hsupp
   have hγ : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
     have hc := IsMIntegralCurve.comp_mul (curveAt_integralCurve v hcomplete x) (-1)
+    have hcurve : (fun s : ℝ => curveAt v hcomplete x (-s)) =
+        curveAt v hcomplete x ∘ fun s : ℝ => s * (-1) := by
+      funext s
+      congr 1
+      ring
+    rw [hcurve]
     simpa [Pi.smul_apply] using hc
   have hdneg : ∀ y : M,
       (NormedSpace.fromTangentSpace (-f y)) ((mfderiv I 𝓘(ℝ, ℝ) (-f) y) ((-v) y)) =
         (NormedSpace.fromTangentSpace (f y)) ((mfderiv I 𝓘(ℝ, ℝ) f y) (v y)) := by
     intro y
-    rw [mfderiv_neg]
-    simp only [NormedSpace.fromTangentSpace, Pi.neg_apply, map_neg,
-      ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk]
-    exact neg_neg ((mfderiv I 𝓘(ℝ, ℝ) f y) (v y))
+    change mvfderiv (I := I) (-f) y ((-v) y) = mvfderiv (I := I) f y (v y)
+    rw [_root_.mvfderiv_neg]
+    simp
   have hdfneg : ∀ y ∈ (-f) ⁻¹' Set.Icc (-b) (-a),
       (NormedSpace.fromTangentSpace (-f y)) ((mfderiv I 𝓘(ℝ, ℝ) (-f) y) ((-v) y)) = -1 := by
     intro y hy
@@ -292,7 +297,9 @@ noncomputable def no_critical_value_sublevelHomeomorph [I.Boundaryless] [IsManif
           rw [← hzΦ]
           exact Φ.toEquiv.left_inv z
         change f (Φ.toEquiv.symm y.1) ≤ a
-        simpa [hz'] using hz⟩
+        rw [hz']
+        change f z ≤ a at hz
+        exact hz⟩
       left_inv := by
         intro x
         apply Subtype.ext
@@ -322,7 +329,9 @@ noncomputable def no_critical_value_sublevelHomeomorph [I.Boundaryless] [IsManif
             rw [← hzΦ]
             exact Φ.toEquiv.left_inv z
           change f (Φ.toEquiv.symm y.1) ≤ a
-          simpa [hz'] using hz) }
+          rw [hz']
+          change f z ≤ a at hz
+          exact hz) }
 
 noncomputable def levelSetTransportHomeomorph {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -557,7 +566,11 @@ noncomputable def levelSetCollarHomeomorph {n : ℕ} {H : Type} [TopologicalSpac
           have hle : a ≤ f z.1 - s := by linarith [hs.2]
           exact le_trans hle (by simpa [curveAt_zero v hcomplete z.1] using hrb.1)
         · change f (curveAt v hcomplete z.1 s) ≤ b
-          exact le_trans hrb.2 (by simpa [curveAt_zero v hcomplete z.1] using z.2.1)
+          exact le_trans hrb.2 (by
+            rw [curveAt_zero v hcomplete z.1]
+            have hzle := z.2.1
+            change f z.1 ≤ b at hzle
+            exact hzle)
       have heq := f_eq_sub_of_integralCurve_on_strip (a := a) (b := b) f hf v hdfOn
         (hγ := curveAt_integralCurve v hcomplete z.1) (t := f z.1 - a) (by linarith [z.2.2]) hstay
       have hmain : f (curveAt v hcomplete z.1 (f z.1 - a)) = f z.1 - (f z.1 - a) := by
@@ -650,7 +663,11 @@ noncomputable def levelSetCollarHomeomorph {n : ℕ} {H : Type} [TopologicalSpac
                   have hle : a ≤ f z.1 - s := by linarith [hs.2]
                   exact le_trans hle (by simpa [curveAt_zero v hcomplete z.1] using hrb.1)
                 · change f (curveAt v hcomplete z.1 s) ≤ b
-                  exact le_trans hrb.2 (by simpa [curveAt_zero v hcomplete z.1] using z.2.1)
+                  exact le_trans hrb.2 (by
+                    rw [curveAt_zero v hcomplete z.1]
+                    have hzle := z.2.1
+                    change f z.1 ≤ b at hzle
+                    exact hzle)
               have heq := f_eq_sub_of_integralCurve_on_strip (a := a) (b := b) f hf v hdfOn
                 (hγ := curveAt_integralCurve v hcomplete z.1) (t := f z.1 - a) (by linarith [z.2.2]) hstay
               have hmain' : f (curveAt v hcomplete z.1 (f z.1 - a)) = f z.1 - (f z.1 - a) := by
@@ -670,7 +687,11 @@ noncomputable def levelSetCollarHomeomorph {n : ℕ} {H : Type} [TopologicalSpac
                 have hle : a ≤ f z.1 - s := by linarith [hs.2]
                 exact le_trans hle (by simpa [curveAt_zero v hcomplete z.1] using hrb.1)
               · change f (curveAt v hcomplete z.1 s) ≤ b
-                exact le_trans hrb.2 (by simpa [curveAt_zero v hcomplete z.1] using z.2.1)
+                exact le_trans hrb.2 (by
+                  rw [curveAt_zero v hcomplete z.1]
+                  have hzle := z.2.1
+                  change f z.1 ≤ b at hzle
+                  exact hzle)
             have heq := f_eq_sub_of_integralCurve_on_strip (a := a) (b := b) f hf v hdfOn
               (hγ := curveAt_integralCurve v hcomplete z.1) (t := f z.1 - a) (by linarith [z.2.2]) hstay
             have hmain' : f (curveAt v hcomplete z.1 (f z.1 - a)) = f z.1 - (f z.1 - a) := by

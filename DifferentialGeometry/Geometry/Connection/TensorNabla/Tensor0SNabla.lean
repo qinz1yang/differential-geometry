@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection.Realization
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
@@ -25,13 +24,13 @@ noncomputable def tensor0SCovariantDerivative_zero_fun
     (T : Π x : M, Tensor0SSpace 0 I x) (x : M) :
     TangentSpace I x →L[ℝ] Tensor0SSpace 0 I x :=
   ((tensor0Iso I M x).symm.toContinuousLinearMap).comp
-    (extDerivFun (I := I) (scalarFn I M T) x)
+    (mvfderiv (I := I) (scalarFn I M T) x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem tensor0SCovariantDerivative_zero_fun_apply
     (T : Π x : M, Tensor0SSpace 0 I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivative_zero_fun I M T x v =
-      (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v) := rfl
+      (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M T) x v) := rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem tensor0SCovariantDerivative_zero_fun_add_section
@@ -43,13 +42,13 @@ theorem tensor0SCovariantDerivative_zero_fun_add_section
       tensor0SCovariantDerivative_zero_fun I M T₁ x +
       tensor0SCovariantDerivative_zero_fun I M T₂ x := by
   refine ContinuousLinearMap.ext (fun v => ?_)
-  change (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M (T₁ + T₂)) x v) =
-    (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T₁) x v) +
-    (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T₂) x v)
-  rw [scalarFn_add I M T₁ T₂, extDerivFun_add h₁ h₂]
+  change (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M (T₁ + T₂)) x v) =
+    (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M T₁) x v) +
+    (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M T₂) x v)
+  rw [scalarFn_add I M T₁ T₂, mvfderiv_add h₁ h₂]
   change (tensor0Iso I M x).symm
-    ((extDerivFun (I := I) (scalarFn I M T₁) x v +
-     extDerivFun (I := I) (scalarFn I M T₂) x v : ℝ)) = _
+    ((mvfderiv (I := I) (scalarFn I M T₁) x v +
+     mvfderiv (I := I) (scalarFn I M T₂) x v : ℝ)) = _
   exact map_add (tensor0Iso I M x).symm _ _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -59,48 +58,16 @@ theorem tensor0SCovariantDerivative_zero_fun_leibniz_section
     (hg : MDifferentiableAt I 𝓘(ℝ, ℝ) g x) :
     tensor0SCovariantDerivative_zero_fun I M (g • T) x =
       g x • tensor0SCovariantDerivative_zero_fun I M T x +
-      (extDerivFun (I := I) g x).smulRight (T x) := by
+      (mvfderiv (I := I) g x).smulRight (T x) := by
   refine ContinuousLinearMap.ext (fun v => ?_)
-  change (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M (g • T)) x v) =
+  change (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M (g • T)) x v) =
     (g x • tensor0SCovariantDerivative_zero_fun I M T x +
-      (extDerivFun (I := I) g x).smulRight (T x)) v
+      (mvfderiv (I := I) g x).smulRight (T x)) v
   rw [scalarFn_smul]
-  have h_extDeriv_eq : ∀ (h : M → ℝ) (v : TangentSpace I x),
-      extDerivFun (I := I) h x v =
-      NormedSpace.fromTangentSpace (h x) ((mfderiv I 𝓘(ℝ, ℝ) h x) v) := by
-    intro h v
-    simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  rw [h_extDeriv_eq _ v]
-  have h_prod := fromTangentSpace_mfderiv_smul_apply (I := I) hg hT v
-  change (tensor0Iso I M x).symm
-      (NormedSpace.fromTangentSpace ((g • scalarFn I M T) x)
-        ((mfderiv I 𝓘(ℝ, ℝ) (g • scalarFn I M T) x) v)) = _
-  rw [h_prod]
-  rw [map_add]
-  have h_eq1 : (NormedSpace.fromTangentSpace (scalarFn I M T x))
-      (((mfderiv I 𝓘(ℝ, ℝ) (scalarFn I M T)) x) v) =
-      (extDerivFun (I := I) (scalarFn I M T) x) v :=
-    (h_extDeriv_eq (scalarFn I M T) v).symm
-  have h_eq2 : (NormedSpace.fromTangentSpace (g x))
-      (((mfderiv I 𝓘(ℝ, ℝ) g) x) v) =
-      (extDerivFun (I := I) g x) v :=
-    (h_extDeriv_eq g v).symm
-  rw [show ((g x) • NormedSpace.fromTangentSpace (scalarFn I M T x)
-      (((mfderiv I 𝓘(ℝ, ℝ) (scalarFn I M T)) x) v) : ℝ) =
-      g x • (extDerivFun (I := I) (scalarFn I M T) x) v from by rw [h_eq1]]
-  rw [show ((NormedSpace.fromTangentSpace (g x)) (((mfderiv I 𝓘(ℝ, ℝ) g) x) v)
-      • scalarFn I M T x : ℝ) =
-      (extDerivFun (I := I) g x) v • scalarFn I M T x from by rw [h_eq2]]
-  rw [map_smul]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smulRight_apply, smul_eq_mul]
-  change g x • (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v) +
-    (tensor0Iso I M x).symm ((extDerivFun (I := I) g x v) • scalarFn I M T x) =
-    g x • (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v) +
-    (extDerivFun (I := I) g x v) • T x
-  congr 1
-  rw [map_smul]
-  rw [tensor0Iso_symm_scalarFn]
+  rw [mvfderiv_smul hg hT]
+  simp only [add_apply, smul_apply, ContinuousLinearMap.smulRight_apply]
+  rw [map_add, map_smul, map_smul, tensor0Iso_symm_scalarFn]
+  rfl
 noncomputable def tensor0SCovariantDerivative_succ_fun {s : ℕ}
     (cov_TM : CovariantDerivative I E (TangentSpace I : M → Type _))
     (cov_s : CovariantDerivative I (Tensor0SModel s ℝ E)
@@ -150,7 +117,7 @@ private theorem tensor0SCov_zero_scalar_at_Y
         (E := fun x : M => Tensor0SSpace 0 I x) y (T y)))
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x => extDerivFun (I := I) (scalarFn I M T) x (Y x)) := by
+      (fun x => mvfderiv (I := I) (scalarFn I M T) x (Y x)) := by
   have hscalar : ContMDiff I 𝓘(ℝ, ℝ) ∞ (scalarFn I M T) :=
     (contMDiff_scalarFn_iff_section I M T).mpr hT
   let fscalar : C^∞⟮I, M; ℝ⟯ := ⟨scalarFn I M T, fun x => hscalar.contMDiffAt⟩
@@ -158,10 +125,10 @@ private theorem tensor0SCov_zero_scalar_at_Y
       ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] ℝ)
         (E := fun x : M => (TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x))
-        x (extDerivFun (I := I) fscalar x)) :=
-    contMDiff_extDerivFun_section I M fscalar
+        x (mvfderiv (I := I) fscalar x)) :=
+    contMDiff_mvfderiv_section I M fscalar
   let d_fscalar : Cₛ^∞⟮I; E →L[ℝ] ℝ, (Bundle.dual ℝ (TangentSpace I : M → Type _))⟯ :=
-    ⟨fun x => extDerivFun (I := I) (scalarFn I M T) x, h_extDeriv_section⟩
+    ⟨fun x => mvfderiv (I := I) (scalarFn I M T) x, h_extDeriv_section⟩
   have := contMDiff_dual_apply_section I M d_fscalar Y
   simpa [d_fscalar] using this
 
@@ -184,7 +151,7 @@ noncomputable instance tensor0SCovariantDerivative_zero_contMDiff
       intro Y
       have h_scalar_at_Y := tensor0SCov_zero_scalar_at_Y I M T hT_smooth Y
       let f : C^∞⟮I, M; ℝ⟯ :=
-        ⟨fun x => extDerivFun (I := I) (scalarFn I M T) x (Y x),
+        ⟨fun x => mvfderiv (I := I) (scalarFn I M T) x (Y x),
          fun x => h_scalar_at_Y.contMDiffAt⟩
       have h_iso_scalar : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 0 ℝ E)) ∞
           (fun x => TotalSpace.mk' (Tensor0SModel 0 ℝ E)
@@ -195,9 +162,9 @@ noncomputable instance tensor0SCovariantDerivative_zero_contMDiff
         have h_scalarFn_eq : scalarFn I M S = (f : M → ℝ) := by
           funext x
           change tensor0Iso I M x ((tensor0Iso I M x).symm
-            (extDerivFun (I := I) (scalarFn I M T) x (Y x))) = _
+            (mvfderiv (I := I) (scalarFn I M T) x (Y x))) = _
           exact (tensor0Iso I M x).apply_symm_apply
-            (extDerivFun (I := I) (scalarFn I M T) x (Y x))
+            (mvfderiv (I := I) (scalarFn I M T) x (Y x))
         have h_scalarFn_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (scalarFn I M S) := by
           rw [h_scalarFn_eq]; exact f.contMDiff
         exact (contMDiff_scalarFn_iff_section (I := I) (M := M) S).mp h_scalarFn_smooth
@@ -230,7 +197,7 @@ noncomputable def tensor0SCovariantDerivative_succ {s : ℕ}
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
         cov_TM cov_s).isCovariantDerivativeOnUniv.add hC₁ hC₂
       refine ContinuousLinearMap.ext (fun v => ?_)
-      simp only [tensor0SCovariantDerivative_succ_fun_apply, ContinuousLinearMap.add_apply]
+      simp only [tensor0SCovariantDerivative_succ_fun_apply, add_apply]
       rw [h_curried_add]
       have h_hom_add_apply :
           HomConnection.homBundleCovariantDerivativeFun I M
@@ -243,7 +210,7 @@ noncomputable def tensor0SCovariantDerivative_succ {s : ℕ}
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T₂) x := h_homAdd
       rw [h_hom_add_apply]
-      rw [ContinuousLinearMap.add_apply]
+      rw [add_apply]
       exact map_add (tensor0S_curry (I := I) (M := M) s x).symm _ _
     leibniz := by
       intro T g x hT hg _hx
@@ -263,12 +230,12 @@ noncomputable def tensor0SCovariantDerivative_succ {s : ℕ}
           g x • HomConnection.homBundleCovariantDerivativeFun I M
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T) x +
-          (extDerivFun (I := I) g x).smulRight (curriedSection I M T x) := h_homLeib
+          (mvfderiv (I := I) g x).smulRight (curriedSection I M T x) := h_homLeib
       rw [h_hom_leib_apply]
-      rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+      rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
       rw [map_add, map_smul]
-      rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+      rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
       congr 1
       rw [map_smul]
@@ -315,7 +282,7 @@ private theorem contMDiff_tensor0SCov_succ_section {s : ℕ}
           x (τ_section x)) := by
       rw [show (∞ : WithTop ℕ∞) + 1 = ∞ from by simp]
       exact τ_section.contMDiff
-    haveI : ContMDiffCovariantDerivative
+    have : ContMDiffCovariantDerivative
       (HomConnection.homBundleCovariantDerivative I M
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
         cov_TM cov_s) ∞ :=
@@ -448,7 +415,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem tensor0SCovariantDerivative_zero_apply
     (T : Π x : M, Tensor0SSpace 0 I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivative_zero I M T x v =
-      (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v) := rfl
+      (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M T) x v) := rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_succ_apply {s : ℕ}
@@ -468,7 +435,7 @@ theorem tensor0SCovariantDerivative_apply_zero
     [ContMDiffCovariantDerivative cov ∞]
     (T : Π x : M, Tensor0SSpace 0 I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivative I M 0 cov T x v =
-      (tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v) := by
+      (tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M T) x v) := by
   rw [tensor0SCovariantDerivative_zero_eq]
   rfl
 
@@ -500,8 +467,8 @@ theorem tensor0SCovariantDerivative_unitZero_eq_zero
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)))
         x v = 0 := by
   rw [tensor0SCovariantDerivative_apply_zero, scalarFn_unitZero]
-  have hext : extDerivFun (I := I) (fun _ : M => (1 : ℝ)) x = 0 := by
-    unfold extDerivFun
+  have hext : mvfderiv (I := I) (fun _ : M => (1 : ℝ)) x = 0 := by
+    unfold mvfderiv
     simp [mfderiv_const]
   rw [hext]
   simp

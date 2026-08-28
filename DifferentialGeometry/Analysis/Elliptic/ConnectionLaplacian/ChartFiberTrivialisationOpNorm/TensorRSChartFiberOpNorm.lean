@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -98,7 +97,8 @@ private lemma chartFiberFromModel_norm_le_coordChangeL_norm_on_locality
     rw [Trivialization.coordChangeL_apply _ _ ⟨hb_α', hb_b₀'⟩]
     rw [Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_b₀',
-        Bundle.Trivialization.symmL_apply]
+        (trivializationAt (TensorRSModel r s ℝ E)
+          (fun y : M => TensorRSSpace r s I y) α).symmL_apply hb_α' D]
   have h_locality_clm := tensorRS_trivAt_clmAt_eq_CLE_on_locality (I := I)
     (M := M) (r := r) (s := s) (b₀ := b₀) (b := b)
     (h_chart := h_chart) (h_src := hb_b₀)

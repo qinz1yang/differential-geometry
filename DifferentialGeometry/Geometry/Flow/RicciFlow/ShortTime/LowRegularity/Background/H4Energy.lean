@@ -617,7 +617,8 @@ private theorem exists_galerkin_energy_four_bound_of_three_bound_parameters_raw_
       rw [galForceArmBackground (I := I) (M := M) g₀ g_bg hδ hδ0 hδ3
         hCtop hB1 hρ hP hreal hcore
         (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
-      exact add_comm _ _
+      simp only [galerkinActionVectorBackground]
+      module
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         tensorSobolevWeight (I := I) (M := M) i 4 *
           ((boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg
@@ -625,7 +626,7 @@ private theorem exists_galerkin_energy_four_bound_of_three_bound_parameters_raw_
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i) ^ 2
           ≤ Cseed 4 ^ 2 := by
       have h := hseed 4 (eigenIdxFinset (I := I) (M := M) g₀ N)
-      simpa only [Nat.cast_ofNat] using h
+      simpa only [boundedDeTurckRemainderOnLowerState, Nat.cast_ofNat] using h
     have hladder :
         Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
             tensorSobolevWeight (I := I) (M := M) i (4 - 1) *

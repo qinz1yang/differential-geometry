@@ -28,23 +28,15 @@ namespace CovariantDerivative
 
 noncomputable def tangentConstAt (x : M) (v : TangentSpace I x) (p : M) :
     TangentSpace I p :=
-  TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p
+  TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x
+    ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v) p
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 @[simp] theorem tangentConstAt_self (x : M) (v : TangentSpace I x) :
     tangentConstAt (I := I) x v x = v := by
   unfold tangentConstAt
-  rw [TensorLieDeriv.tangentConstInChart_apply]
-  have hL :
-      (trivializationAt E (TangentSpace I) x).symmL Real x =
-        (1 : E →L[Real] E) := by
-    rw [TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x) (b := x) (mem_chart_source H x)]
-    ext w
-    exact (tangentBundleCore I M).coordChange_self (achart H x) x
-      (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H x) w
-  rw [hL]
-  rfl
+  exact TensorLieDeriv.tangentConstInChart_self_continuousLinearMapAt
+    (𝕜 := Real) (I := I) x v
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem mdifferentiableAt_tangentConstAt_self
@@ -52,7 +44,8 @@ theorem mdifferentiableAt_tangentConstAt_self
     MDiffAt (T% (tangentConstAt (I := I) x v : (p : M) → TangentSpace I p)) x := by
   unfold tangentConstAt
   exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-    (𝕜 := Real) (I := I) (x₀ := x) (p := x) v
+    (𝕜 := Real) (I := I) (x₀ := x) (p := x)
+    ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v)
     (mem_baseSet_trivializationAt E (TangentSpace I) x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
@@ -61,14 +54,16 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] in
       (tangentConstAt (I := I) x v : (p : M) → TangentSpace I p) +
         tangentConstAt (I := I) x w := by
   unfold tangentConstAt
-  exact TensorLieDeriv.tangentConstInChart_add (𝕜 := Real) (I := I) x v w
+  rw [map_add]
+  exact TensorLieDeriv.tangentConstInChart_add (𝕜 := Real) (I := I) x _ _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 @[simp] theorem tangentConstAt_smul (x : M) (a : Real) (v : TangentSpace I x) :
     (tangentConstAt (I := I) x (a • v) : (p : M) → TangentSpace I p) =
       a • (tangentConstAt (I := I) x v : (p : M) → TangentSpace I p) := by
   unfold tangentConstAt
-  exact TensorLieDeriv.tangentConstInChart_smul (𝕜 := Real) (I := I) x a v
+  rw [map_smul]
+  exact TensorLieDeriv.tangentConstInChart_smul (𝕜 := Real) (I := I) x a _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem cov_tangentConst_apply_mdiffAt_self
@@ -78,47 +73,52 @@ theorem cov_tangentConst_apply_mdiffAt_self
     MDiffAt
       (T% (fun p : M => (cov (tangentConstAt (I := I) x v) p)
         (tangentConstAt (I := I) x w p))) x := by
-  unfold tangentConstAt
   let e := trivializationAt E (TangentSpace I) x
+  let vModel : E := e.continuousLinearMapAt Real x v
+  let wModel : E := e.continuousLinearMapAt Real x w
+  change MDiffAt
+    (T% (fun p : M =>
+      (cov (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x vModel) p)
+        (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x wModel p))) x
   have hx : x ∈ e.baseSet := by
     simp [e]
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  haveI : IsManifold I (((∞ : WithTop ℕ∞) + 1) + 1) M := by
+  have : IsManifold I (((∞ : WithTop ℕ∞) + 1) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
   have h_on :
       CMDiff[e.baseSet] ∞
         (T% (fun p : M =>
-          (cov (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v) p)
-            (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x w p))) := by
+          (cov (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x vModel) p)
+            (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x wModel p))) := by
     have hσ :
         CMDiff[e.baseSet] (∞ + 1)
-          (T% (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v :
+          (T% (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x vModel :
             (p : M) → TangentSpace I p)) := by
       simpa [e] using
         (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
-          (𝕜 := Real) (I := I) (M := M) (n := (∞ : WithTop ℕ∞) + 1) x v)
+          (𝕜 := Real) (I := I) (M := M) (n := (∞ : WithTop ℕ∞) + 1) x vModel)
     have hcovσ :
         ContMDiffOn I (I.prod 𝓘(Real, E →L[Real] E)) ∞
           (fun p : M =>
             (⟨p, cov
-              (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v) p⟩ :
+              (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x vModel) p⟩ :
               TotalSpace (E →L[Real] E)
                 (fun p : M => TangentSpace I p →L[Real] TangentSpace I p)))
           e.baseSet := by
       exact (hcov e.open_baseSet).contMDiff hσ
     have hX :
         CMDiff[e.baseSet] ∞
-          (T% (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x w :
+          (T% (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x wModel :
             (p : M) → TangentSpace I p)) := by
       simpa [e] using
         (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
-          (𝕜 := Real) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) x w)
+          (𝕜 := Real) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) x wModel)
     simpa [e] using hcovσ.clm_bundle_apply hX
   have h_at : CMDiffAt ∞
       (T% (fun p : M =>
-        (cov (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v) p)
-          (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x w p))) x :=
+        (cov (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x vModel) p)
+          (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x wModel p))) x :=
     (h_on x hx).contMDiffAt (e.open_baseSet.mem_nhds hx)
   exact h_at.mdifferentiableAt (by simp)
 
@@ -134,7 +134,7 @@ theorem cov_smooth_apply_mdiffAt
   let e := trivializationAt E (TangentSpace I) x
   have hx : x ∈ e.baseSet := by
     simp [e]
-  haveI : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
+  have : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
     exact IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by
         exact WithTop.coe_le_coe.2 (le_top : (3 : ℕ∞) ≤ (⊤ : ℕ∞)))
@@ -176,9 +176,9 @@ theorem cov_smooth_apply_contMDiffAt
   let e := trivializationAt E (TangentSpace I) x
   have hx : x ∈ e.baseSet := by
     simp [e]
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  haveI : IsManifold I (((∞ : WithTop ℕ∞) + 1) + 1) M := by
+  have : IsManifold I (((∞ : WithTop ℕ∞) + 1) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
   have h_on :
       CMDiff[e.baseSet] (∞ : WithTop ℕ∞)
@@ -216,7 +216,7 @@ theorem cov_smooth_apply_raw_mdiffAt
   let e := trivializationAt E (TangentSpace I) x
   have hx : x ∈ e.baseSet := by
     simp [e]
-  haveI : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
+  have : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
     exact IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by
         exact WithTop.coe_le_coe.2 (le_top : (3 : ℕ∞) ≤ (⊤ : ℕ∞)))
@@ -254,9 +254,9 @@ theorem curvField_contMDiffAt
       (T% (fun p : M =>
         connectionRiemannCurvatureField cov
           (fun q : M => X q) (fun q : M => Y q) (fun q : M => Z q) p)) x := by
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  have : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))
@@ -291,8 +291,12 @@ theorem curvField_contMDiffAt
       ContMDiffAt I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞)
         (T% (fun p : M => (cov (fun q : M => Z q) p) (B p))) x :=
     cov_smooth_apply_contMDiffAt (I := I) cov hcov B Z x
-  simpa [DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField, YZ, XZ, B] using
+  let h : ContMDiffAt I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞)
+      (T% (fun p : M =>
+        connectionRiemannCurvatureField cov
+          (fun q : M => X q) (fun q : M => Y q) (fun q : M => Z q) p)) x :=
     (h1.sub_section h2).sub_section h3
+  exact h
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem metric_inner_contMDiffAt
@@ -350,12 +354,11 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem cov_tangentConst_add_apply_eventuallyEq
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (x : M) (v₁ v₂ w : TangentSpace I x) :
-    (fun p : M => (cov (tangentConstAt (I := I) x (v₁ + v₂)) p)
-        (tangentConstAt (I := I) x w p))
-      =ᶠ[𝓝 x]
-    (fun p : M =>
+    ∀ᶠ p in 𝓝 x,
+      (cov (tangentConstAt (I := I) x (v₁ + v₂)) p)
+          (tangentConstAt (I := I) x w p) =
       (cov (tangentConstAt (I := I) x v₁) p) (tangentConstAt (I := I) x w p) +
-        (cov (tangentConstAt (I := I) x v₂) p) (tangentConstAt (I := I) x w p)) := by
+        (cov (tangentConstAt (I := I) x v₂) p) (tangentConstAt (I := I) x w p) := by
   let e := trivializationAt E (TangentSpace I) x
   have hx : x ∈ e.baseSet := by
     simp [e]
@@ -363,24 +366,27 @@ theorem cov_tangentConst_add_apply_eventuallyEq
   have hv₁ : MDiffAt (T% (tangentConstAt (I := I) x v₁ : (p : M) → TangentSpace I p)) p := by
     unfold tangentConstAt
     exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-      (𝕜 := Real) (I := I) (x₀ := x) (p := p) v₁ (by simpa [e] using hp)
+      (𝕜 := Real) (I := I) (x₀ := x) (p := p)
+      ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v₁)
+      (by simpa [e] using hp)
   have hv₂ : MDiffAt (T% (tangentConstAt (I := I) x v₂ : (p : M) → TangentSpace I p)) p := by
     unfold tangentConstAt
     exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-      (𝕜 := Real) (I := I) (x₀ := x) (p := p) v₂ (by simpa [e] using hp)
+      (𝕜 := Real) (I := I) (x₀ := x) (p := p)
+      ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v₂)
+      (by simpa [e] using hp)
   rw [tangentConstAt_add]
   rw [cov.isCovariantDerivativeOnUniv.add hv₁ hv₂]
-  simp
+  rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem cov_tangentConst_smul_apply_eventuallyEq
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (x : M) (a : Real) (v w : TangentSpace I x) :
-    (fun p : M => (cov (tangentConstAt (I := I) x (a • v)) p)
-        (tangentConstAt (I := I) x w p))
-      =ᶠ[𝓝 x]
-    (fun p : M =>
-      a • (cov (tangentConstAt (I := I) x v) p) (tangentConstAt (I := I) x w p)) := by
+    ∀ᶠ p in 𝓝 x,
+      (cov (tangentConstAt (I := I) x (a • v)) p)
+          (tangentConstAt (I := I) x w p) =
+        a • (cov (tangentConstAt (I := I) x v) p) (tangentConstAt (I := I) x w p) := by
   let e := trivializationAt E (TangentSpace I) x
   have hx : x ∈ e.baseSet := by
     simp [e]
@@ -388,10 +394,12 @@ theorem cov_tangentConst_smul_apply_eventuallyEq
   have hv : MDiffAt (T% (tangentConstAt (I := I) x v : (p : M) → TangentSpace I p)) p := by
     unfold tangentConstAt
     exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-      (𝕜 := Real) (I := I) (x₀ := x) (p := p) v (by simpa [e] using hp)
+      (𝕜 := Real) (I := I) (x₀ := x) (p := p)
+      ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v)
+      (by simpa [e] using hp)
   rw [tangentConstAt_smul]
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hv]
-  simp [Pi.smul_apply]
+  rfl
 
 def riemannCurvatureAux
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -614,6 +622,7 @@ theorem connectionRiemannCurvatureField_congr_first_two_point
           (connectionRiemannCurvatureField_tensorial_middle
             (I := I) cov hcov X' Z x).pointwise hYmd hY'md hY
 
+omit [FiniteDimensional ℝ E] in
 private theorem connectionRiemannCurvatureField_smul_right_smooth
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -629,8 +638,8 @@ private theorem connectionRiemannCurvatureField_smul_right_smooth
       f x • connectionRiemannCurvatureField cov
         (fun p : M => X p) (fun p : M => Y p)
         (fun p : M => Z p) x := by
-  let Xf : M → Real := fun p => extDerivFun (I := I) f p (X p)
-  let Yf : M → Real := fun p => extDerivFun (I := I) f p (Y p)
+  let Xf : M → Real := fun p => mvfderiv (I := I) f p (X p)
+  let Yf : M → Real := fun p => mvfderiv (I := I) f p (Y p)
   let YZ : (p : M) → TangentSpace I p :=
     fun p => (cov (fun q : M => Z q) p) (Y p)
   let XZ : (p : M) → TangentSpace I p :=
@@ -648,10 +657,10 @@ private theorem connectionRiemannCurvatureField_smul_right_smooth
   have hXZmd : MDiffAt (T% XZ) x :=
     cov_smooth_apply_mdiffAt (I := I) cov hcov X Z x
   have hYfmd : MDiffAt Yf x :=
-    (DifferentialGeometry.extDerivFun_apply_contMDiffAt (I := I)
+    (DifferentialGeometry.mvfderiv_apply_contMDiffAt (I := I)
       hf.contMDiffAt Y).mdifferentiableAt (by simp)
   have hXfmd : MDiffAt Xf x :=
-    (DifferentialGeometry.extDerivFun_apply_contMDiffAt (I := I)
+    (DifferentialGeometry.mvfderiv_apply_contMDiffAt (I := I)
       hf.contMDiffAt X).mdifferentiableAt (by simp)
   have hinnerY :
       (fun p : M => (cov (fun q : M => f q • Z q) p) (Y p)) =
@@ -660,12 +669,15 @@ private theorem connectionRiemannCurvatureField_smul_right_smooth
     have hleib :
         cov (fun q : M => f q • Z q) p =
           f p • cov (fun q : M => Z q) p +
-            (extDerivFun (I := I) f p).smulRight (Z p) := by
-      simpa using
+            (mvfderiv (I := I) f p).smulRight (Z p) := by
+      let h : cov (fun q : M => f q • Z q) p =
+          f p • cov (fun q : M => Z q) p +
+            (mvfderiv (I := I) f p).smulRight (Z p) :=
         (cov.isCovariantDerivativeOnUniv.leibniz
           (σ := fun q : M => Z q) (g := f) (x := p)
           (Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
           (hf.contMDiffAt.mdifferentiableAt (by simp)))
+      exact h
     simpa [YZ, Yf, Pi.add_apply, Pi.smul_apply] using
       congrArg (fun L : TangentSpace I p →L[Real] TangentSpace I p => L (Y p)) hleib
   have hinnerX :
@@ -675,12 +687,15 @@ private theorem connectionRiemannCurvatureField_smul_right_smooth
     have hleib :
         cov (fun q : M => f q • Z q) p =
           f p • cov (fun q : M => Z q) p +
-            (extDerivFun (I := I) f p).smulRight (Z p) := by
-      simpa using
+            (mvfderiv (I := I) f p).smulRight (Z p) := by
+      let h : cov (fun q : M => f q • Z q) p =
+          f p • cov (fun q : M => Z q) p +
+            (mvfderiv (I := I) f p).smulRight (Z p) :=
         (cov.isCovariantDerivativeOnUniv.leibniz
           (σ := fun q : M => Z q) (g := f) (x := p)
           (Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
           (hf.contMDiffAt.mdifferentiableAt (by simp)))
+      exact h
     simpa [XZ, Xf, Pi.add_apply, Pi.smul_apply] using
       congrArg (fun L : TangentSpace I p →L[Real] TangentSpace I p => L (X p)) hleib
   have hX2 :
@@ -700,10 +715,10 @@ private theorem connectionRiemannCurvatureField_smul_right_smooth
       rw [minSmoothness_of_isRCLikeNormedField]
       exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
   have hscalar :
-      extDerivFun (I := I) f x
+      mvfderiv (I := I) f x
           (VectorField.mlieBracket I (fun p : M => X p) (fun p : M => Y p) x) =
-        extDerivFun (I := I) Yf x (X x) -
-          extDerivFun (I := I) Xf x (Y x) := by
+        mvfderiv (I := I) Yf x (X x) -
+          mvfderiv (I := I) Xf x (Y x) := by
     simpa [vderiv, Xf, Yf] using
       (DifferentialGeometry.vderiv_mlieBracket
         (I := I) (fun p : M => X p) (fun p : M => Y p) f x hX2 hY2 hf2)
@@ -767,11 +782,13 @@ private theorem connectionRiemannCurvatureField_add_right_smooth
     have hleib :
         cov (fun q : M => (Z + Z') q) p =
           cov (fun q : M => Z q) p + cov (fun q : M => Z' q) p := by
-      simpa using
+      let h : cov (fun q : M => (Z + Z') q) p =
+          cov (fun q : M => Z q) p + cov (fun q : M => Z' q) p :=
         (cov.isCovariantDerivativeOnUniv.add
           (σ := fun q : M => Z q) (σ' := fun q : M => Z' q) (x := p)
           (Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
           (Z'.contMDiff.contMDiffAt.mdifferentiableAt (by simp)))
+      exact h
     simpa [YZ, YZ', Pi.add_apply] using
       congrArg (fun L : TangentSpace I p →L[Real] TangentSpace I p => L (Y p)) hleib
   have hinnerX :
@@ -780,11 +797,13 @@ private theorem connectionRiemannCurvatureField_add_right_smooth
     have hleib :
         cov (fun q : M => (Z + Z') q) p =
           cov (fun q : M => Z q) p + cov (fun q : M => Z' q) p := by
-      simpa using
+      let h : cov (fun q : M => (Z + Z') q) p =
+          cov (fun q : M => Z q) p + cov (fun q : M => Z' q) p :=
         (cov.isCovariantDerivativeOnUniv.add
           (σ := fun q : M => Z q) (σ' := fun q : M => Z' q) (x := p)
           (Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
           (Z'.contMDiff.contMDiffAt.mdifferentiableAt (by simp)))
+      exact h
     simpa [XZ, XZ', Pi.add_apply] using
       congrArg (fun L : TangentSpace I p →L[Real] TangentSpace I p => L (X p)) hleib
   simp only [DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField]
@@ -816,16 +835,26 @@ private theorem smooth_linear_tangentSection_pointwise
     let z : C^∞⟮I, M; Real⟯ := ⟨fun _ => (0 : Real), contMDiff_const⟩
     have h := hsmul z (0 :
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
-    simpa [z] using h
+    have hz : z • (0 :
+        ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)) = 0 := by
+      ext y
+      exact zero_smul _ _
+    rw [hz] at h
+    change Φ 0 = (0 : Real) • Φ 0 at h
+    rw [zero_smul] at h
+    exact h
   have hneg : ∀ σ, Φ (-σ) = -Φ σ := by
     intro σ
     let m : C^∞⟮I, M; Real⟯ := ⟨fun _ => (-1 : Real), contMDiff_const⟩
     have h := hsmul m σ
     have hm : m • σ = -σ := by
       ext y
-      simp [m, ContMDiffSection.coe_smulContMDiffMap]
+      change (-1 : Real) • σ y = -σ y
+      exact neg_one_smul Real (σ y)
     rw [hm] at h
-    simpa [m] using h
+    change Φ (-σ) = (-1 : Real) • Φ σ at h
+    rw [neg_one_smul] at h
+    exact h
   have hsub : ∀ σ τ, Φ (σ - τ) = Φ σ - Φ τ := by
     intro σ τ
     calc
@@ -888,8 +917,8 @@ private theorem smooth_linear_tangentSection_pointwise
     by_cases hy : y ∈ tsupport (χ : M → Real)
     · have hcoeff :
           ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞)
-            (fun y : M => e.localFrame_coeff I b i y (δ y)) y :=
-        contMDiffAt_localFrame_coeff b (hχsupp hy) δ.contMDiff.contMDiffAt i
+            (fun y : M => e.localFrameCoeff I b i y (δ y)) y :=
+        contMDiffAt_localFrameCoeff b (hχsupp hy) δ.contMDiff.contMDiffAt i
       have hχy : ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞) (χ : M → Real) y :=
         χ.contMDiff.contMDiffAt
       refine (hχy.smul hcoeff).congr_of_eventuallyEq ?_
@@ -898,8 +927,10 @@ private theorem smooth_linear_tangentSection_pointwise
         ext j
         simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame,
           Trivialization.basisAt, hz]
-      simp only [hframe.coeff_apply_of_mem hz,
-        e.localFrame_coeff_apply_of_mem_baseSet b hz, hbasis]
+      change χ z • hframe.coeff i z (δ z) =
+        χ z • e.localFrameCoeff I b i z (δ z)
+      rw [hframe.coeff_apply_of_mem hz,
+        e.localFrameCoeff_apply_of_mem_baseSet b hz, hbasis]
     · have hχ_zero : ∀ᶠ z in 𝓝 y, (χ : M → Real) z = 0 := by
         apply Filter.Eventually.mono
           ((isClosed_tsupport (χ : M → Real)).isOpen_compl.mem_nhds hy)

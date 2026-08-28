@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -45,7 +44,7 @@ noncomputable def prependCovGradSlot (g : SmoothRiemannianMetric I M) (r s : ℕ
     scalarSmul (I := I) (M := M) g r (s + 1) ζ
       (covGrad (I := I) (M := M) g r s S)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma prependCovGradSlot_toSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) :
@@ -59,39 +58,40 @@ private noncomputable def prependGradCLM
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M) :
     TangentSpace I x →L[ℝ] TensorRSSpace r s I x :=
-  (extDerivFun (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)
+  (mvfderiv (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma prependGradCLM_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M) (v : E) :
+    (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M)
+    (v : TangentSpace I x) :
     prependGradCLM (I := I) (M := M) g r s ζ S x v =
-      (extDerivFun (I := I) (ζ : M → ℝ) x v) • S.toSection x := by
+      (mvfderiv (I := I) (ζ : M → ℝ) x v) • S.toSection x := by
   rw [prependGradCLM, ContinuousLinearMap.smulRight_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma smulRight_add_right (r s : ℕ) {x : M}
     (φ : TangentSpace I x →L[ℝ] ℝ) (t₁ t₂ : TensorRSSpace r s I x) :
     φ.smulRight (t₁ + t₂) = φ.smulRight t₁ + φ.smulRight t₂ := by
   apply ContinuousLinearMap.ext
   intro v
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smulRight_apply,
+  rw [add_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smulRight_apply,
     smul_add]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma smulRight_smul_right (r s : ℕ) {x : M}
     (φ : TangentSpace I x →L[ℝ] ℝ) (c : ℝ) (t : TensorRSSpace r s I x) :
     φ.smulRight (c • t) = c • φ.smulRight t := by
   apply ContinuousLinearMap.ext
   intro v
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
+  rw [smul_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.smulRight_apply, smul_comm]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma prependGradCLM_eq_sub
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M) :
@@ -103,28 +103,32 @@ private lemma prependGradCLM_eq_sub
             (fun y : M => S.toSection y) x := by
   apply ContinuousLinearMap.ext
   intro v
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+  rw [sub_apply, smul_apply,
     prependGradCLM_apply]
   have hweighted :
       tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
           (fun y : M => (scalarSmul (I := I) (M := M) g r s ζ S).toSection y) x v =
         tensorCovDerivAt (I := I) (M := M) g r s
-          (scalarSmul (I := I) (M := M) g r s ζ S) x v := rfl
+          (scalarSmul (I := I) (M := M) g r s ζ S) x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := rfl
   have hplain :
       tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
           (fun y : M => S.toSection y) x v =
-        tensorCovDerivAt (I := I) (M := M) g r s S x v := rfl
+        tensorCovDerivAt (I := I) (M := M) g r s S x
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := rfl
   rw [hweighted, hplain]
-  rw [tensorCovDerivAt_scalarSmul (I := I) (M := M) g r s ζ S x v]
-  rw [add_sub_cancel_left]
+  rw [tensorCovDerivAt_scalarSmul (I := I) (M := M) g r s ζ S x
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x v)]
+  rw [add_sub_cancel_left,
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm_apply_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem prependCovGradSlot_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M) :
     (prependCovGradSlot (I := I) (M := M) g r s ζ S).toSection x =
       covGradBundleEquiv (I := I) (M := M) r s x
-        ((extDerivFun (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) := by
+        ((mvfderiv (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) := by
   rw [prependCovGradSlot_toSection]
   rw [show ((covGrad (I := I) (M := M) g r s
           (scalarSmul (I := I) (M := M) g r s ζ S)).toSection -
@@ -139,24 +143,26 @@ theorem prependCovGradSlot_toSection_apply
   rw [← prependGradCLM_eq_sub (I := I) (M := M) g r s ζ S x]
   rw [prependGradCLM]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem prependCovGradSlot_toSection_apply_eval
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M)
-    (D : Tensor0SSpace r I x) (v : Fin (s + 1) → TangentSpace I x) :
+    (D : Tensor0SSpace r I x) (v : Fin (s + 1) → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (prependCovGradSlot (I := I) (M := M) g r s ζ S).toSection x) D) v =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-          (extDerivFun (I := I) (ζ : M → ℝ) x (v 0)) • S.toSection x) D)
+          (mvfderiv (I := I) (ζ : M → ℝ) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) •
+              S.toSection x) D)
         (Matrix.vecTail v) := by
   rw [prependCovGradSlot_toSection_apply]
-  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r s x
-    ((extDerivFun (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) D v]
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) r s x
+    ((mvfderiv (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) D v]
   rw [ContinuousLinearMap.smulRight_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem prependCovGradSlot_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S₁ S₂ : SmoothCcTensor g r s) :
@@ -175,7 +181,7 @@ theorem prependCovGradSlot_add
   rw [show ((S₁ + S₂).toSection x) = S₁.toSection x + S₂.toSection x from rfl,
     smulRight_add_right (I := I) r s, map_add]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem prependCovGradSlot_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (c : ℝ) (S : SmoothCcTensor g r s) :
@@ -190,7 +196,7 @@ theorem prependCovGradSlot_smul
   rw [show ((c • S).toSection x) = c • S.toSection x from rfl,
     smulRight_smul_right (I := I) r s, map_smul]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] theorem prependCovGradSlot_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) :
@@ -210,7 +216,7 @@ private lemma crossLeft_tensorRSSpace_toModel_apply
           (Tensor0SSpace.ofModel Dm)) :=
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma crossLeft_covGrad_toModel_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) (x : M)
@@ -230,14 +236,15 @@ private lemma crossLeft_covGrad_toModel_apply
   rw [crossLeft_tensorRSSpace_toModel_apply (I := I) r s x
         (tensorCovDerivAt (I := I) (M := M) g r s w x (v 0)) Dm]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma crossLeft_prependCovGradSlot_toModel_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M)
     (Dm : Tensor0SModel r ℝ E) (v : Fin (s + 1) → E) :
     (TensorRSSpace.toModel
         ((prependCovGradSlot (I := I) (M := M) g r s ζ S).toSection x)) Dm v =
-      (extDerivFun (I := I) (ζ : M → ℝ) x (v 0)) •
+      (mvfderiv (I := I) (ζ : M → ℝ) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) •
         ((TensorRSSpace.toModel (S.toSection x)) Dm (Matrix.vecTail v)) := by
   change (show Tensor0SModel r ℝ E →L[ℝ] Tensor0SModel (s + 1) ℝ E from
       TensorRSSpace.toModel
@@ -247,9 +254,12 @@ private lemma crossLeft_prependCovGradSlot_toModel_apply
   rw [prependCovGradSlot_toSection_apply_eval (I := I) (M := M) g r s ζ S x
         (Tensor0SSpace.ofModel Dm) v]
   rw [show (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        (extDerivFun (I := I) (ζ : M → ℝ) x (v 0)) • S.toSection x)
+        (mvfderiv (I := I) (ζ : M → ℝ) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) •
+            S.toSection x)
           (Tensor0SSpace.ofModel Dm) =
-      (extDerivFun (I := I) (ζ : M → ℝ) x (v 0)) •
+      (mvfderiv (I := I) (ζ : M → ℝ) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) •
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
             S.toSection x) (Tensor0SSpace.ofModel Dm)) from rfl]
   rw [Tensor0SSpace.toModel_smul]
@@ -288,7 +298,7 @@ private lemma crossDiffSlot_succAbove_natAdd (r s : ℕ) (a : Fin s) :
   simp only [Fin.val_succ, Fin.val_natAdd]
   omega
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma crossLeft_lower_covGrad_insertNth_basis
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) (x : M)
@@ -334,7 +344,7 @@ private lemma crossLeft_lower_covGrad_insertNth_basis
         (fun j : Fin (s + 1) => (chartModelBasis E) (I' (Fin.natAdd r j)))]
   rw [hdir, hupper, hcov]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma crossLeft_lower_prependCovGradSlot_insertNth_basis
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M)
@@ -346,7 +356,9 @@ private lemma crossLeft_lower_prependCovGradSlot_insertNth_basis
         (fun a : Fin (r + (s + 1)) => (chartModelBasis E)
           ((Fin.insertNth (crossDiffSlot r s) l j : Fin (r + (s + 1)) →
             Fin (Module.finrank ℝ E)) a)) =
-      (extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) l)) *
+      (mvfderiv (I := I) (ζ : M → ℝ) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          ((chartModelBasis E) l))) *
         lowerAllUpperIndices (I := I) (M := M) g r s x
           (TensorRSSpace.toModel (S.toSection x))
           (fun a : Fin (r + s) => (chartModelBasis E) (j a)) := by
@@ -433,7 +445,7 @@ private lemma crossLeft_sum_reindex_diffSlot (r s : ℕ)
         (crossDiffSlot r s)) F).symm
   rw [h1, Fintype.sum_prod_type]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) :
@@ -463,7 +475,9 @@ theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
             Ginv k l *
               ((∏ a : Fin (r + s), Ginv (i a) (j a)) *
                 (lowW k) (fun a => (chartModelBasis E) (i a)) *
-                  ((extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) l)) *
+                  ((mvfderiv (I := I) (ζ : M → ℝ) x
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                        ((chartModelBasis E) l))) *
                     lowS (fun a => (chartModelBasis E) (j a))))
     with hcommon_def
   have hLHS : tensorCovDerivCrossLeft (I := I) (M := M) g r s ζ w S x =
@@ -471,7 +485,9 @@ theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
     rw [tensorCovDerivCrossLeft_def]
     have hexpand : ∀ k l : Fin (Module.finrank ℝ E),
         Ginv k l *
-            (extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) l) *
+            (mvfderiv (I := I) (ζ : M → ℝ) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((chartModelBasis E) l)) *
               tensorInnerPointwise (I := I) (M := M) g r s x
                 (TensorRSSpace.toModel
                   (tensorCovDerivAt (I := I) (M := M) g r s w x
@@ -482,8 +498,9 @@ theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
               Ginv k l *
                 ((∏ a : Fin (r + s), Ginv (i a) (j a)) *
                   (lowW k) (fun a => (chartModelBasis E) (i a)) *
-                    ((extDerivFun (I := I) (ζ : M → ℝ) x
-                        ((chartModelBasis E) l)) *
+                    ((mvfderiv (I := I) (ζ : M → ℝ) x
+                        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                          ((chartModelBasis E) l))) *
                       lowS (fun a => (chartModelBasis E) (j a)))) := by
       intro k l
       rw [show tensorInnerPointwise (I := I) (M := M) g r s x

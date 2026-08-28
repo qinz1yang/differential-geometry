@@ -33,7 +33,6 @@ private noncomputable local instance tensorSobolevEmbeddingRiemannianNormedAddCo
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-set_option backward.isDefEq.respectTransparency false in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [I.Boundaryless] in
@@ -83,8 +82,8 @@ theorem tensorChartComponentScalar_embedding_C0
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentScalar
             (I := I) (M := M) g r s T α Idx Jdx)).toReal) := by
   classical
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_smooth :
       ContMDiff I 𝓘(ℝ, ℝ) ∞
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentScalar

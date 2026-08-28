@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -56,17 +55,17 @@ lemma chartChristoffelBilin_apply
               (chartModelBasis E) k := by
   classical
   unfold chartChristoffelBilin
-  rw [ContinuousLinearMap.sum_apply]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [ContinuousLinearMap.smulRight_apply]
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   rw [ContinuousLinearMap.smulRight_apply]
   have hcoord_i : ((chartModelBasis E).coord i).toContinuousLinearMap v =
       ((chartModelBasis E).repr v) i := rfl
@@ -85,7 +84,7 @@ lemma chartChristoffelBilin_add_first
   rw [show chartChristoffelBilin (I := I) (M := M) g α b (v₁ + v₂) =
         chartChristoffelBilin (I := I) (M := M) g α b v₁ +
           chartChristoffelBilin (I := I) (M := M) g α b v₂ from map_add _ _ _,
-      ContinuousLinearMap.add_apply]
+      add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -95,7 +94,7 @@ lemma chartChristoffelBilin_smul_first
       c • chartChristoffelBilin (I := I) (M := M) g α b v w := by
   rw [show chartChristoffelBilin (I := I) (M := M) g α b (c • v) =
         c • chartChristoffelBilin (I := I) (M := M) g α b v from map_smul _ _ _,
-      ContinuousLinearMap.smul_apply]
+      smul_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

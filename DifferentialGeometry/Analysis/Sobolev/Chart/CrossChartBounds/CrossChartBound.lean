@@ -179,7 +179,7 @@ theorem cross_chart_bound_empty
   rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
     (d := Module.finrank ℝ E) hp_one
     (chartTargetEuclid_isOpen (I := I) (M := M) γ)]
-  exact zero_le _
+  exact zero_le
 
 end Chart
 end Sobolev

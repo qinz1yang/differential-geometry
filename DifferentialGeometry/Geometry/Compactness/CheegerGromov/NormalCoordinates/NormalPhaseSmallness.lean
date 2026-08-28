@@ -75,10 +75,10 @@ theorem phaseRadius_exp
       (X.obj k).t2TangentBundle
     Metric.ball (0 : E) (h.phaseRadius R) ⊆ Metric.ball (0 : E)
       (Geometry.Riemannian.expMapC2Radius (I := I) (X.obj k).metric x / 4) := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
   apply Metric.ball_subset_ball
   dsimp only [phaseRadius]
@@ -181,7 +181,8 @@ theorem exists_normal_q_lt
     mul_nonneg hqReal.le (sub_nonneg.mpr hlinear)
   refine ⟨q, ?_, ?_, ?_, herrQ⟩
   · exact_mod_cast hqReal
-  · simpa only [q, NNReal.coe_mk] using hqRadius'
+  · change 4 * qReal < r
+    exact hqRadius'
   · change 3 * C * (2 * qReal) ^ 2 ≤ qReal
     nlinarith
 
@@ -222,7 +223,7 @@ theorem exists_phase_scale
           aδ * hd.mu R ≤
             ((T - PhaseFlow.phaseErr (normalPhaseK hb (2 * q)) : NNReal) : Real) *
               ((q : Real) / 2) := by
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let N : NNReal :=
     ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
@@ -521,7 +522,8 @@ theorem exists_chart_q_lt
     mul_nonneg hqReal.le (sub_nonneg.mpr hlinear)
   refine ⟨q, ?_, ?_, ?_, herrQ⟩
   · exact_mod_cast hqReal
-  · simpa only [q, NNReal.coe_mk] using hqRadius'
+  · change 4 * qReal < r
+    exact hqRadius'
   · change 3 * C * (2 * qReal) ^ 2 ≤ qReal
     nlinarith
 
@@ -586,7 +588,8 @@ theorem exists_chart_biq_lt
     mul_nonneg hqReal.le (sub_nonneg.mpr hcoef)
   refine ⟨q, ?_, ?_, ?_, ?_⟩
   · exact_mod_cast hqReal
-  · simpa only [q, NNReal.coe_mk] using hqRadius'
+  · change 6 * qReal < r
+    exact hqRadius'
   · change 3 * C * (2 * qReal) ^ 2 ≤ (2 / 3 : Real) * qReal
     nlinarith
   · exact herrQ
@@ -606,7 +609,7 @@ theorem exists_chart_biq
       PhaseFlow.phaseErr (chartPhaseK g b (2 * q)) <
         ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
           (E × E) →L[Real] (E × E))‖₊⁻¹ := by
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   exact exists_chart_biq_lt (I := I) g b hr
     (PhaseFlow.freeDiagInv_pos (E := E))
@@ -630,7 +633,7 @@ theorem exists_chart_biq_inv
       PhaseFlow.phaseErr (chartPhaseK g b (2 * q)) < T ∧
       N * (T - PhaseFlow.phaseErr (chartPhaseK g b (2 * q)))⁻¹ *
           PhaseFlow.phaseErr (chartPhaseK g b (2 * q)) < 1 / 24 := by
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let N : NNReal :=
     ‖((PhaseFlow.freeDiagCLE (E := E)).symm :

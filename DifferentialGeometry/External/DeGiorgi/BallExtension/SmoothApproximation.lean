@@ -88,7 +88,7 @@ private theorem tendsto_eLpNorm_smoothUnitBallExtensionApprox_sub_unitBallExtens
     rw [MeasureTheory.memLp_indicator_iff_restrict (μ := volume)
       (s := Metric.closedBall (0 : E) (9 / 4 : ℝ))
       (p := ENNReal.ofReal p) Metric.isClosed_closedBall.measurableSet]
-    letI : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
+    let : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
       refine ⟨by simpa using (measure_closedBall_lt_top (x := (0 : E)) (r := (9 / 4 : ℝ)))⟩
     simpa using (memLp_const C : MemLp (fun _ : E => C) (ENNReal.ofReal p)
       (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))))
@@ -234,7 +234,7 @@ private theorem exists_gradApply_error_bound_badAnnulusOne
         simp [exactUnitBallExtensionGradApply, hxball]
       rw [hExact, show (fderiv ℝ (smoothUnitBallExtensionApprox (d := d) ε ψ) x) =
         fderiv ℝ ψ x + fderiv ℝ (fun y => sphereOneBlend (d := d) ε y * Eerr y) x from
-        hDeriv.trans (fderiv_add hψ_diff hprod_diff), ContinuousLinearMap.add_apply,
+        hDeriv.trans (fderiv_add hψ_diff hprod_diff), add_apply,
         add_sub_cancel_left]
     have hprod :=
       norm_fderiv_mul_le (d := d) (f := sphereOneBlend (d := d) ε) (g := Eerr) hβ_diff hEerr_diff
@@ -283,6 +283,11 @@ private theorem exists_gradApply_error_bound_badAnnulusOne
       have hγ_eq :
           fderiv ℝ (fun y => 1 - sphereOneBlend (d := d) ε y) x =
             -fderiv ℝ (sphereOneBlend (d := d) ε) x := by
+        have heq : (fun y => 1 - sphereOneBlend (d := d) ε y) =
+            (fun _ : E => (1 : ℝ)) - sphereOneBlend (d := d) ε := by
+          funext y
+          rfl
+        rw [heq]
         simpa using ((hasFDerivAt_const (1 : ℝ) x).sub hβ_diff.hasFDerivAt).fderiv
       rw [hγ_eq, norm_neg]
       exact hβ_fderiv
@@ -319,7 +324,7 @@ private theorem exists_gradApply_error_bound_badAnnulusOne
       rw [hExact, show (fderiv ℝ (smoothUnitBallExtensionApprox (d := d) ε ψ) x) =
         fderiv ℝ (unitBallShellFormula (d := d) ψ) x - fderiv ℝ Gerr x from
         hDeriv.trans (fderiv_sub hShell_hasFDerivAt.differentiableAt hGerr_diff),
-        ContinuousLinearMap.sub_apply, sub_sub_cancel_left]
+        sub_apply, sub_sub_cancel_left]
     have hprod :=
       norm_fderiv_mul_le (d := d) (f := fun y => 1 - sphereOneBlend (d := d) ε y)
         (g := Eerr) hγ_diff hEerr_diff
@@ -429,12 +434,17 @@ private theorem exists_gradApply_error_bound_badAnnulusTwo
         fderiv ℝ (unitBallShellFormula (d := d) ψ) x +
           fderiv ℝ (fun y => (sphereTwoBlend (d := d) ε y - 1) * Ferr y) x from
         hDeriv.trans (fderiv_add hShell_diff (hβm1_diff.mul hFerr_diff)),
-        ContinuousLinearMap.add_apply, add_sub_cancel_left]
+        add_apply, add_sub_cancel_left]
     have hβm1_fderiv :
         ‖fderiv ℝ (fun y => sphereTwoBlend (d := d) ε y - 1) x‖ ≤ ↑Mst / (2 * ε) := by
       have hβm1_eq :
           fderiv ℝ (fun y => sphereTwoBlend (d := d) ε y - 1) x =
             fderiv ℝ (sphereTwoBlend (d := d) ε) x := by
+        have heq : (fun y => sphereTwoBlend (d := d) ε y - 1) =
+            sphereTwoBlend (d := d) ε - fun _ : E => (1 : ℝ) := by
+          funext y
+          rfl
+        rw [heq]
         simpa using (hβ_diff.hasFDerivAt.sub (hasFDerivAt_const (1 : ℝ) x)).fderiv
       rw [hβm1_eq]
       exact hβ_fderiv
@@ -730,7 +740,7 @@ private theorem tendsto_eLpNorm_fderiv_smoothUnitBallExtensionApprox_sub_exactGr
     rw [MeasureTheory.memLp_indicator_iff_restrict (μ := volume)
       (s := Metric.closedBall (0 : E) (9 / 4 : ℝ))
       (p := ENNReal.ofReal p) Metric.isClosed_closedBall.measurableSet]
-    letI : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
+    let : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
       refine ⟨by simpa using measure_closedBall_lt_top (x := (0 : E)) (r := (9 / 4 : ℝ))⟩
     simpa using (memLp_const C : MemLp (fun _ : E => C) (ENNReal.ofReal p)
       (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))))
@@ -873,7 +883,7 @@ private theorem memLp_smoothUnitBallExtensionApprox_sub_unitBallExtension
     rw [MeasureTheory.memLp_indicator_iff_restrict (μ := volume)
       (s := Metric.closedBall (0 : E) (9 / 4 : ℝ))
       (p := ENNReal.ofReal p) Metric.isClosed_closedBall.measurableSet]
-    letI : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
+    let : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
       refine ⟨by
         simpa using (measure_closedBall_lt_top (x := (0 : E)) (r := (9 / 4 : ℝ)))⟩
     simpa using (memLp_const C : MemLp (fun _ : E => C) (ENNReal.ofReal p)
@@ -954,7 +964,7 @@ private theorem memLp_fderiv_smoothUnitBallExtensionApprox_sub_exactGradApply
     rw [MeasureTheory.memLp_indicator_iff_restrict (μ := volume)
       (s := Metric.closedBall (0 : E) (9 / 4 : ℝ))
       (p := ENNReal.ofReal p) Metric.isClosed_closedBall.measurableSet]
-    letI : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
+    let : IsFiniteMeasure (volume.restrict (Metric.closedBall (0 : E) (9 / 4 : ℝ))) := by
       refine ⟨by
         simpa using (measure_closedBall_lt_top (x := (0 : E)) (r := (9 / 4 : ℝ)))⟩
     simpa using (memLp_const C : MemLp (fun _ : E => C) (ENNReal.ofReal p)
@@ -1321,7 +1331,8 @@ theorem smooth_input_unitBallExtension_smoothing
       tendsto_eLpNorm_fderiv_smoothUnitBallExtensionApprox_sub_exactGradApply (d := d) hp hψ_smooth
     exact hasWeakPartials_of_global_smoothApprox (d := d) hp huExt_memLp hGψ_memLp
       hΦ_smooth hΦ_cpt hΦ_tendsto_fun (fun i => by
-        convert hΦ_tendsto_grad i using 2)
+        convert hΦ_tendsto_grad i using 2
+        congr 2)
   let hwExt : MemW1pWitness (ENNReal.ofReal p)
       (unitBallExtension (d := d) ψ) Set.univ :=
     { memLp := by rw [Measure.restrict_univ]; exact huExt_memLp
@@ -1500,7 +1511,8 @@ theorem weakGrad_component_cauchy_bound
         (d := d) hp hψ_smooth)
       (fun j => by
         convert tendsto_eLpNorm_fderiv_smoothUnitBallExtensionApprox_sub_exactGradApply
-          (d := d) hp hψ_smooth j using 2) i
+          (d := d) hp hψ_smooth j using 2
+        congr 2) i
   have hGdiff_loc : LocallyIntegrable (fun x => G₁ x i - G₂ x i)
       (volume.restrict Set.univ) := by
     rw [Measure.restrict_univ]

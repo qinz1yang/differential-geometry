@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Metric
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -47,7 +46,7 @@ private lemma exists_chartTensorInnerPointwise_rs_model_unit_sphere_upper_bound
           chartTensorInnerPointwise_rs_model (I := I) (M := M)
             g r s α b T T ≤ M_ub := by
   classical
-  haveI : ProperSpace (TensorRSModel r s ℝ E) :=
+  have : ProperSpace (TensorRSModel r s ℝ E) :=
     FiniteDimensional.proper_real (TensorRSModel r s ℝ E)
   set K_M : Set M := tsupport (fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hK_M_def
@@ -163,7 +162,7 @@ private lemma chartTensorInnerPointwise_rs_model_le_mul_sq_norm_on_pouTsupport
     rw [h_left, h_right]
   · have hT_ne : ‖T‖ ≠ 0 := norm_ne_zero_iff.mpr hT0
     have hT_pos : 0 < ‖T‖ := (norm_pos_iff).mpr hT0
-    letI : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
+    let : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
       NormedSpace.toNormSMulClass
     set T' : TensorRSModel r s ℝ E := ‖T‖⁻¹ • T with hT'_def
     have hT'_norm : ‖T'‖ = 1 := by

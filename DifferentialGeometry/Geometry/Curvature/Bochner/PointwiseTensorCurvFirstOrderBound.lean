@@ -25,7 +25,6 @@ open DifferentialGeometry.Integral.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -101,7 +100,7 @@ lemma tensor0S_zero_span' (x : M) (τ : Tensor0SSpace 0 I x) :
   apply tensor0S_eq_of_toModel_eq' (I := I) (M := M)
   intro v
   rw [show v = (fun k : Fin 0 => k.elim0) from funext (fun k => k.elim0)]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+  rw [Tensor0SSpace.toModel_smul, smul_apply]
   rw [show Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x)
       (fun k : Fin 0 => k.elim0) = 1 from by
     rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel,
@@ -149,7 +148,7 @@ lemma tensor0SAsRS_sub' (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     intro v
     rw [Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_sub,
       Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.sub_apply,
+    simp only [smul_apply, sub_apply,
       smul_eq_mul]
     ring
   exact h
@@ -479,7 +478,7 @@ private lemma slot0_read_curv_eq_sum_carrier
     rw [covGradBundleEquiv_secondCovDeriv_eq_covGrad_secondCovDerivCc (I := I) (M := M) g s S
       (smoothOrthoFrame_smooth (I := I) g x i) x]
   rw [hcurv]
-  rw [ContinuousLinearMap.sum_apply, map_sum, ContinuousLinearMap.sum_apply,
+  rw [sum_apply, map_sum, sum_apply,
     tensor0SAsRS_sum']
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [hD]
@@ -502,8 +501,8 @@ private lemma slot0_read_curv_eq_sum_carrier
           (secondCovDerivCc (I := I) (M := M) g s
             (smoothOrthoFrame_smooth (I := I) g x i) S)).toSection x)
         (unitZeroSec (I := I) (M := M) x) from by
-    rw [ContinuousLinearMap.sub_apply]]
-  rw [map_sub, ContinuousLinearMap.sub_apply]
+    rw [sub_apply]]
+  rw [map_sub, sub_apply]
   congr 1
   exact slot0Curry_secondCovDeriv_sub_eq_commutatorSum (I := I) (M := M) g s S
     (smoothOrthoFrame_smooth (I := I) g x i) hXs x
@@ -566,9 +565,9 @@ private lemma frameSum_secondCovDeriv_pair_eq_zero
         a i j • riemannOp (tensorCov (I := I) g 0 s) x (B i x) (B j x) (Sf x) := by
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [hsec_to_op (w i) (hwsm i) i, hexp i]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply]
+    rw [ContinuousLinearMap.map_smul, smul_apply]
   rw [hfirst, hsecond]
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_eq_zero (fun i _ => ?_)
@@ -680,26 +679,33 @@ lemma slot0_read_curv_eq_frameFree
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
-private lemma fiberNormSqComponent_eq_toModel_unitEval
+private lemma fiberNormSqComponent_eq_eval_unitEval
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ) (T : TensorRSSpace 0 s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n) (J : Fin s → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x 0 s T n e K₀ J =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T)
           (unitZeroSec (I := I) (M := M) x))
         (fun k => e (J k)) := by
   rw [fiberNormSqComponent]
-  have hscal : ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-        (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) =
+  have hscal : (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x).symm
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+          (fun k => g.inner x (e (K₀ k)))) =
       unitZeroSec (I := I) (M := M) x := by
     apply Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
     intro m
     have hL : Tensor0SSpace.toModel
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) m = 1 := by
-      change ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K₀ k)))) m = 1
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x).symm
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+            (fun k => g.inner x (e (K₀ k))))) m = 1 := by
+      rw [Tensor0SSpace.toModel_apply_model_vector]
+      change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x).symm
+            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+              (fun k => g.inner x (e (K₀ k))))))
+          (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) = 1
+      rw [ContinuousLinearEquiv.apply_symm_apply]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
         ContinuousMultilinearMap.mkPiAlgebra_apply]
       simp
@@ -708,7 +714,6 @@ private lemma fiberNormSqComponent_eq_toModel_unitEval
         ContinuousMultilinearMap.constOfIsEmpty_apply]
     rw [hL, hR]
   rw [hscal]
-  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
@@ -729,7 +734,7 @@ private lemma riemannianFiberNormSq_eq_embedRS_unitEval
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T)
         (unitZeroSec (I := I) (M := M) x))) K₀]
   refine Finset.sum_congr rfl (fun J _ => ?_)
-  rw [fiberNormSqComponent_eq_toModel_unitEval (I := I) (M := M) g x s T e K₀ J]
+  rw [fiberNormSqComponent_eq_eval_unitEval (I := I) (M := M) g x s T e K₀ J]
   rw [fiberNormSqComponent_embedRS (I := I) (M := M) g x s
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T)
       (unitZeroSec (I := I) (M := M) x)) e K₀ J]
@@ -849,7 +854,7 @@ lemma nablaTensorCurvSec_tensorRSCov_unitEval
     ContMDiffSection.mk (fun b => riemannSec (tensorCov (I := I) g 0 s)
       (fun b' => Y b') (fun b' => Z b') (fun b' => τ b') b) hRsec with hRsec_def
   rw [nablaTensorCurvSec_def, nablaTensor0SCurv_def]
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, sub_apply, sub_apply]
   refine congrArg₂ HSub.hSub (congrArg₂ HSub.hSub (congrArg₂ HSub.hSub ?_ ?_) ?_) ?_
   · have h1 := covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s Rsec x (X x)
     have hRsec_app : ∀ b, Rsec b = riemannSec (tensorCov (I := I) g 0 s)
@@ -931,7 +936,7 @@ private theorem exists_frameSummed_nablaTensorCurvSec_fiberNormSq_le
             nablaTensorCurvSec (I := I) g (tensorCov (I := I) g 0 s)
               (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
               (smoothOrthoFrame (I := I) g x a) (fun y : M => S.toSection y) x) from rfl]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     have hper : ∀ i : Fin (Module.finrank ℝ E),
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           nablaTensorCurvSec (I := I) g (tensorCov (I := I) g 0 s)
@@ -944,18 +949,16 @@ private theorem exists_frameSummed_nablaTensorCurvSec_fiberNormSq_le
     apply Tensor0SBundle.Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
     intro u
-    rw [show Tensor0SSpace.toModel (∑ i : Fin (Module.finrank ℝ E),
-          nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x) u =
-        ∑ i : Fin (Module.finrank ℝ E),
-          Tensor0SSpace.toModel (nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x) u from by
-      rw [← Tensor0SSpace.toModelL_apply (∑ i : Fin (Module.finrank ℝ E),
-          nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x),
-        map_sum (Tensor0SSpace.toModelL s x)]
-      rw [ContinuousMultilinearMap.sum_apply]
-      refine Finset.sum_congr rfl (fun i _ => ?_)
-      rw [Tensor0SSpace.toModelL_apply]]
+    let uT : Fin s → TangentSpace I x :=
+      fun k => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u k)
+    change Tensor0SSpace.eval (∑ i : Fin (Module.finrank ℝ E),
+        nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x) uT =
+      Tensor0SSpace.eval
+        (- ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
+          (tangentSlotCLM (I := I) s k W) (A x)) uT
+    rw [Tensor0SSpace.eval_sum]
     rw [frame_sum_nablaTensor0SCurv_diag_baseSlot_eval (I := I) g s Ba A
-      (contMDiff_unitEvalSection (I := I) (M := M) g s S) x u]
+      (contMDiff_unitEvalSection (I := I) (M := M) g s S) x uT]
     have hWuk : ∀ w : TangentSpace I x,
         (∑ i : Fin (Module.finrank ℝ E),
           nablaBaseSlotCurv (I := I) g
@@ -966,26 +969,11 @@ private theorem exists_frameSummed_nablaTensorCurvSec_fiberNormSq_le
       intro w
       rw [hW, nablaBaseSlotCurvFrameSumCLM_apply]
     simp_rw [hWuk]
-    rw [show ((fun T : Tensor0SSpace s I x => Tensor0SSpace.toModel T)
-          (- ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-            (tangentSlotCLM (I := I) s k W) (A x))) u =
-        Tensor0SSpace.toModel
-          (- ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-            (tangentSlotCLM (I := I) s k W) (A x)) u from rfl]
-    rw [Tensor0SSpace.toModel_neg, ContinuousMultilinearMap.neg_apply]
+    rw [Tensor0SSpace.eval_neg]
     refine congrArg Neg.neg ?_
-    rw [show Tensor0SSpace.toModel (∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-          (tangentSlotCLM (I := I) s k W) (A x))
-        = ∑ k : Fin s, Tensor0SSpace.toModel (tensorSlotSubstCLM (I := I) s x
-            (tangentSlotCLM (I := I) s k W) (A x)) from by
-      rw [← Tensor0SSpace.toModelL_apply (∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-          (tangentSlotCLM (I := I) s k W) (A x)),
-        map_sum (Tensor0SSpace.toModelL s x)]
-      refine Finset.sum_congr rfl (fun k _ => ?_)
-      rw [Tensor0SSpace.toModelL_apply]]
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [Tensor0SSpace.eval_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    rw [toModel_tensorSlotSubstCLM_apply (I := I) s x k W (A x) u]
+    rw [toModel_tensorSlotSubstCLM_apply (I := I) s x k W (A x) uT]
   rw [riemannianFiberNormSq_eq_embedRS_unitEval (I := I) (M := M) g x s V]
   rw [hVunit]
   have hSrhs : riemannianFiberNormSq (I := I) (M := M) g 0 s x (S.toSection x) =
@@ -1004,7 +992,7 @@ private lemma metric_inner_self_nonneg' (g : SmoothRiemannianMetric I M) (x : M)
   · rw [hv0]; simp
   · exact (g.pos x v hv0).le
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma riemannianFiberNormSq_tensorCovDerivAt_frame_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
@@ -1029,7 +1017,8 @@ private lemma riemannianFiberNormSq_tensorCovDerivAt_frame_le
       ((covGrad (I := I) (M := M) g 0 s S).toSection x) j]
     rw [curry_covGrad_unit_eval_general (I := I) (M := M) g s S x (e j)]
     rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          tensorCovDerivAt (I := I) (M := M) g 0 s S x (e j))
+          tensorCovDerivAt (I := I) (M := M) g 0 s S x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x (e j)))
           (unitZeroSec (I := I) (M := M) x) =
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j))
@@ -1040,6 +1029,7 @@ private lemma riemannianFiberNormSq_tensorCovDerivAt_frame_le
   exact riemannianFiberNormSq_slot0Curry_le_of_frame (I := I) (M := M) g s x e K₀
     hreprS hreprSucc ((covGrad (I := I) (M := M) g 0 s S).toSection x) j
 
+omit [CompactSpace M] in
 private lemma riemannianFiberNormSq_tensorCovDerivAt_direction_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (w : TangentSpace I x) :
@@ -1456,13 +1446,13 @@ private theorem tensorCurv_le_of
           x v w T₀ =
         - ∑ k : Fin s,
           tensorSlotSubstCLM (I := I) s x (tangentSlotCLM (I := I) s k W) T₀ := by
-    letI : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
+    let : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y)) := tensor0SBundle_topology s
-    letI : FiberBundle (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
+    let : FiberBundle (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
       tensor0SBundle_fiber s
-    letI : VectorBundle ℝ (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
+    let : VectorBundle ℝ (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
       tensor0SBundle_vector s
-    letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel s ℝ E)
+    let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) I := tensor0SBundle_smooth ∞ s
     set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
       ContMDiffSection.mk (smoothExtensionTangent (I := I) x v)
@@ -1498,7 +1488,16 @@ private theorem tensorCurv_le_of
     apply Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
     intro u
-    rw [riemannSec_tensor0SCov_apply_eval (I := I) g s X Y A hA_smooth x u]
+    let uT : Fin s → TangentSpace I x :=
+      fun k => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u k)
+    change Tensor0SSpace.eval
+        (riemannSec
+          (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
+          (fun y => X y) (fun y => Y y) A x) uT =
+      Tensor0SSpace.eval
+        (- ∑ k : Fin s,
+          tensorSlotSubstCLM (I := I) s x (tangentSlotCLM (I := I) s k W) T₀) uT
+    rw [riemannSec_tensor0SCov_apply_eval (I := I) g s X Y A hA_smooth x uT]
     rw [hAx]
     have hbase : ∀ z : TangentSpace I x, baseSlotCurv (I := I) g X Y x z = W z := by
       intro z
@@ -1507,19 +1506,10 @@ private theorem tensorCurv_le_of
         X.contMDiff Y.contMDiff (smoothExtensionTangent_contMDiff (I := I) x z)]
       rw [smoothExtensionTangent_eq (I := I) x z, hXx, hYx, hW]
     simp_rw [hbase]
-    rw [Tensor0SSpace.toModel_neg, ContinuousMultilinearMap.neg_apply]
-    rw [show Tensor0SSpace.toModel
-          (∑ k : Fin s,
-            tensorSlotSubstCLM (I := I) s x (tangentSlotCLM (I := I) s k W) T₀) =
-        ∑ k : Fin s, Tensor0SSpace.toModel
-          (tensorSlotSubstCLM (I := I) s x (tangentSlotCLM (I := I) s k W) T₀) from by
-      rw [← Tensor0SSpace.toModelL_apply, map_sum]
-      refine Finset.sum_congr rfl (fun k _ => ?_)
-      rw [Tensor0SSpace.toModelL_apply]]
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [Tensor0SSpace.eval_neg, Tensor0SSpace.eval_sum]
     congr 1
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    rw [toModel_tensorSlotSubstCLM_apply]
+    rw [toModel_tensorSlotSubstCLM_apply (I := I) s x k W T₀ uT]
   have hleft :
       riemannianFiberNormSq (I := I) (M := M) g 0 s x
           (riemannOp (tensorCov (I := I) g 0 s) x v w T) =
@@ -1620,7 +1610,7 @@ private theorem frameNablaR_le_of
             nablaTensorCurvSec (I := I) g (tensorCov (I := I) g 0 s)
               (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
               (smoothOrthoFrame (I := I) g x a) (fun y : M => S.toSection y) x) from rfl]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     have hper : ∀ i : Fin (Module.finrank ℝ E),
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           nablaTensorCurvSec (I := I) g (tensorCov (I := I) g 0 s)
@@ -1633,18 +1623,16 @@ private theorem frameNablaR_le_of
     apply Tensor0SBundle.Tensor0SSpace.toModel_injective
     apply ContinuousMultilinearMap.ext
     intro u
-    rw [show Tensor0SSpace.toModel (∑ i : Fin (Module.finrank ℝ E),
-          nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x) u =
-        ∑ i : Fin (Module.finrank ℝ E),
-          Tensor0SSpace.toModel (nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x) u from by
-      rw [← Tensor0SSpace.toModelL_apply (∑ i : Fin (Module.finrank ℝ E),
-          nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x),
-        map_sum (Tensor0SSpace.toModelL s x)]
-      rw [ContinuousMultilinearMap.sum_apply]
-      refine Finset.sum_congr rfl (fun i _ => ?_)
-      rw [Tensor0SSpace.toModelL_apply]]
+    let uT : Fin s → TangentSpace I x :=
+      fun k => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u k)
+    change Tensor0SSpace.eval (∑ i : Fin (Module.finrank ℝ E),
+        nablaTensor0SCurv (I := I) g s (B i) (B i) Ba A x) uT =
+      Tensor0SSpace.eval
+        (- ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
+          (tangentSlotCLM (I := I) s k W) (A x)) uT
+    rw [Tensor0SSpace.eval_sum]
     rw [frame_sum_nablaTensor0SCurv_diag_baseSlot_eval (I := I) g s Ba A
-      (contMDiff_unitEvalSection (I := I) (M := M) g s S) x u]
+      (contMDiff_unitEvalSection (I := I) (M := M) g s S) x uT]
     have hWuk : ∀ w : TangentSpace I x,
         (∑ i : Fin (Module.finrank ℝ E),
           nablaBaseSlotCurv (I := I) g
@@ -1655,26 +1643,11 @@ private theorem frameNablaR_le_of
       intro w
       rw [hW, nablaBaseSlotCurvFrameSumCLM_apply]
     simp_rw [hWuk]
-    rw [show ((fun T : Tensor0SSpace s I x => Tensor0SSpace.toModel T)
-          (- ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-            (tangentSlotCLM (I := I) s k W) (A x))) u =
-        Tensor0SSpace.toModel
-          (- ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-            (tangentSlotCLM (I := I) s k W) (A x)) u from rfl]
-    rw [Tensor0SSpace.toModel_neg, ContinuousMultilinearMap.neg_apply]
+    rw [Tensor0SSpace.eval_neg]
     refine congrArg Neg.neg ?_
-    rw [show Tensor0SSpace.toModel (∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-          (tangentSlotCLM (I := I) s k W) (A x))
-        = ∑ k : Fin s, Tensor0SSpace.toModel (tensorSlotSubstCLM (I := I) s x
-            (tangentSlotCLM (I := I) s k W) (A x)) from by
-      rw [← Tensor0SSpace.toModelL_apply (∑ k : Fin s, tensorSlotSubstCLM (I := I) s x
-          (tangentSlotCLM (I := I) s k W) (A x)),
-        map_sum (Tensor0SSpace.toModelL s x)]
-      refine Finset.sum_congr rfl (fun k _ => ?_)
-      rw [Tensor0SSpace.toModelL_apply]]
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [Tensor0SSpace.eval_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    rw [toModel_tensorSlotSubstCLM_apply (I := I) s x k W (A x) u]
+    rw [toModel_tensorSlotSubstCLM_apply (I := I) s x k W (A x) uT]
   rw [riemannianFiberNormSq_eq_embedRS_unitEval (I := I) (M := M) g x s V]
   rw [hVunit]
   have hSrhs : riemannianFiberNormSq (I := I) (M := M) g 0 s x (S.toSection x) =
@@ -1700,9 +1673,9 @@ private theorem frameSum_sq_le
   have hbnd : Bornology.IsVonNBounded ℝ
       {z : TangentSpace I x | RCLike.re (cd.inner z z) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   have hinner_eq : ∀ p q : TangentSpace I x, (inner ℝ p q : ℝ) = g.inner x p q :=
     fun _ _ => rfl
@@ -1770,10 +1743,21 @@ private theorem frameNablaCap_of
     intro i
     change nablaBaseSlotCurv (I := I) g (B i) (B i) Ba x u = _
     rw [nablaBaseSlotCurv_eq_nablaCurvSec]
-    have hsec := nablaRiemannOp_sec (I := I) g (B i) (B i) Ba
-      (ContMDiffSection.mk (smoothExtensionTangent (I := I) x u)
-        (smoothExtensionTangent_contMDiff (I := I) x u)) x
-    simpa only [ContMDiffSection.coeFn_mk, smoothExtensionTangent_eq] using hsec.symm
+    let Q : ContMDiffSection I E ∞ (fun y : M => TangentSpace I y) :=
+      ContMDiffSection.mk (smoothExtensionTangent (I := I) x u)
+        (smoothExtensionTangent_contMDiff (I := I) x u)
+    have hsec := nablaRiemannOp_sec (I := I) g (B i) (B i) Ba Q x
+    rw [show LeviCivita (I := I) g =
+      leviCivitaConnectionOfMetric (I := I) g from rfl]
+    have hBi : (fun y => B i y) = ⇑(B i) := rfl
+    have hBa' : (fun y => Ba y) = ⇑Ba := rfl
+    have hQ : (fun y => smoothExtensionTangent (I := I) x u y) = ⇑Q := rfl
+    rw [hBi, hBa', hQ]
+    have hQx : Q x = u := by
+      change smoothExtensionTangent (I := I) x u x = u
+      exact smoothExtensionTangent_eq (I := I) x u
+    rw [← hQx]
+    exact hsec.symm
   have hBinner : ∀ i : Fin (Module.finrank ℝ E),
       g.inner x (B i x) (B i x) = 1 := by
     intro i
@@ -1797,6 +1781,7 @@ private theorem frameNablaCap_of
     rw [nablaBaseSlotCurvFrameSumCLM_apply]
   rw [hsum_eq]
   exact frameSum_sq_le (I := I) (M := M) g x C1 hC1 u F hF_len
+omit [CompactSpace M] in
 private lemma covDeriv_dir_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (w : TangentSpace I x) {Kbase : ℝ} (hw : g.inner x w w ≤ Kbase) :
@@ -1842,6 +1827,7 @@ private lemma riemannianFiberNormSq_finSum_le
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
       ring
 
+omit [CompactSpace M] in
 private lemma covDeriv_sum_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (w : Fin n → TangentSpace I x) {Kbase : ℝ}
@@ -1878,6 +1864,7 @@ private lemma frameCurvVec_le
     (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x i x)
   simpa only [hi, ha, mul_one] using h
 
+omit [CompactSpace M] in
 private theorem frameCurvDir_le_of
     (g : SmoothRiemannianMetric I M) (s : ℕ) {Kbase : ℝ}
     (hKbase : ∀ (x : M) (v w u : TangentSpace I x),

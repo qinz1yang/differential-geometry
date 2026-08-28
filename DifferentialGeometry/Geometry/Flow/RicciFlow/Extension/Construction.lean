@@ -111,7 +111,7 @@ theorem ricci_flow_interior_restart
     intro x v
     have hA : 0 ≤ (g_fam α).inner x v v := by
       rcases eq_or_ne v 0 with rfl | hv
-      · rw [((g_fam α).inner x).map_zero, ContinuousLinearMap.zero_apply]
+      · rw [((g_fam α).inner x).map_zero, zero_apply]
       · exact ((g_fam α).pos x v hv).le
     obtain ⟨h1, h2⟩ := hell' t_star hstar_mem_1 x v
     exact ⟨le_trans (by gcongr) h1, le_trans h2 (by gcongr)⟩
@@ -312,7 +312,10 @@ theorem extend_construction_of_restart
       have hcomp : HasDerivAt (fun s : ℝ => (rr (s - t_star)).inner x v w)
           ((-2 : ℝ) * ricciTensor (I := I) (rr (t - t_star)) x v w) t := by
         have h := hd0.comp t hg
-        simpa using h
+        change HasDerivAt
+          ((fun u : ℝ => (rr u).inner x v w) ∘ fun s : ℝ => s - t_star)
+          ((-2 : ℝ) * ricciTensor (I := I) (rr (t - t_star)) x v w) t
+        simpa only [one_mul, mul_one] using h
       have hext_t : g_ext t = rr (t - t_star) := hext_eq_r t (by linarith)
       rw [show ricciTensor (I := I) (g_ext t) x v w
           = ricciTensor (I := I) (rr (t - t_star)) x v w from by rw [hext_t]]
@@ -362,9 +365,9 @@ theorem metricEquiv_of_ricBound
   intro s hs x v
   rcases eq_or_ne v 0 with rfl | hv
   · have h0α : (g_fam α).inner x (0 : TangentSpace I x) 0 = 0 := by
-      rw [((g_fam α).inner x).map_zero, ContinuousLinearMap.zero_apply]
+      rw [((g_fam α).inner x).map_zero, zero_apply]
     have h0s : (g_fam s).inner x (0 : TangentSpace I x) 0 = 0 := by
-      rw [((g_fam s).inner x).map_zero, ContinuousLinearMap.zero_apply]
+      rw [((g_fam s).inner x).map_zero, zero_apply]
     rw [h0α, h0s, mul_zero, mul_zero]
     exact ⟨le_refl 0, le_refl 0⟩
   have hpos : ∀ t : ℝ, 0 < (g_fam t).inner x v v := fun t => (g_fam t).pos x v hv

@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -70,13 +69,30 @@ def velocitySecondCovGradCc (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+private def unitModelTangent (g : SmoothRiemannianMetric I M) (n : ℕ)
+    (W : SmoothCcTensor g 0 n) (x : M) (v : Fin n → TangentSpace I x) : ℝ :=
+  Tensor0SBundle.Tensor0SSpace.eval
+    (unitEvalSection (I := I) (M := M) g n W x) v
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitEvalSection_eval_eq_unitModelTangent (g : SmoothRiemannianMetric I M) (n : ℕ)
+    (W : SmoothCcTensor g 0 n) (x : M) (v : Fin n → TangentSpace I x) :
+    Tensor0SBundle.Tensor0SSpace.eval
+        (unitEvalSection (I := I) (M := M) g n W x) v =
+      unitModelTangent (I := I) (M := M) g n W x v := rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_smul_two (g₀ : SmoothRiemannianMetric I M)
     (c : ℝ) (T : SmoothCcTensor g₀ 0 2) (x : M) :
     unitModel (I := I) (M := M) g₀ 2 (c • T) x =
       c • unitModel (I := I) (M := M) g₀ 2 T x := by
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul]
+    smul_apply, Tensor0SSpace.toModel_smul]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -87,16 +103,20 @@ private lemma unitModel_add_two (g₀ : SmoothRiemannianMetric I M)
       unitModel (I := I) (M := M) g₀ 2 S x + unitModel (I := I) (M := M) g₀ 2 S' x := by
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
+    add_apply, Tensor0SSpace.toModel_add]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma unitModel_add_two_apply (g₀ : SmoothRiemannianMetric I M)
     (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
-      unitModel (I := I) (M := M) g₀ 2 S x v + unitModel (I := I) (M := M) g₀ 2 S' x v := by
-  rw [unitModel_add_two, ContinuousMultilinearMap.add_apply]
+    unitModelTangent (I := I) (M := M) g₀ 2 (S + S') x v =
+      unitModelTangent (I := I) (M := M) g₀ 2 S x v +
+        unitModelTangent (I := I) (M := M) g₀ 2 S' x v := by
+  change unitModel (I := I) (M := M) g₀ 2 (S + S') x
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) = _
+  rw [unitModel_add_two, add_apply]
+  rfl
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -117,7 +137,7 @@ lemma ccTensorBilin_sub_two (g₀ : SmoothRiemannianMetric I M)
       ccTensorModel (I := I) g₀ T b - ccTensorModel (I := I) g₀ T' b := by
     unfold ccTensorModel
     rw [hmulti, Tensor0SBundle.Tensor0SSpace.toModel_sub]
-  rw [hmodel, ContinuousMultilinearMap.sub_apply]
+  rw [hmodel, sub_apply]
 
 end NormedVelocitySecondCovGrad
 
@@ -154,9 +174,10 @@ private lemma ccTensorBilin_smul_c (g : SmoothRiemannianMetric I M) (c : ℝ)
   have hmodel : ccTensorModel (I := I) g (c • S) b = c • ccTensorModel (I := I) g S b := by
     unfold ccTensorModel
     rw [hmulti, Tensor0SBundle.Tensor0SSpace.toModel_smul]
-  rw [hmodel, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [hmodel, smul_apply, smul_eq_mul]
 
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma iteratedCovGrad_smul_c (g : SmoothRiemannianMetric I M) (r s j : ℕ)
@@ -175,10 +196,106 @@ private lemma unitModel_smul_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
       c • unitModel (I := I) (M := M) g n W x := by
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    ContinuousLinearMap.smul_apply, Tensor0SBundle.Tensor0SSpace.toModel_smul]
+    smul_apply, Tensor0SBundle.Tensor0SSpace.toModel_smul]
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModel_sub_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
+    (S S' : SmoothCcTensor g 0 n) (x : M) :
+    unitModel (I := I) (M := M) g n (S - S') x =
+      unitModel (I := I) (M := M) g n S x - unitModel (I := I) (M := M) g n S' x := by
+  simp only [unitModel]
+  rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
+    sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModelTangent_smul_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
+    (c : ℝ) (W : SmoothCcTensor g 0 n) (x : M) (v : Fin n → TangentSpace I x) :
+    unitModelTangent (I := I) (M := M) g n (c • W) x v =
+      c * unitModelTangent (I := I) (M := M) g n W x v := by
+  change unitModel (I := I) (M := M) g n (c • W) x
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) = _
+  rw [unitModel_smul_gen, smul_apply, smul_eq_mul]
+  rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModelTangent_sub_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
+    (S S' : SmoothCcTensor g 0 n) (x : M) (v : Fin n → TangentSpace I x) :
+    unitModelTangent (I := I) (M := M) g n (S - S') x v =
+      unitModelTangent (I := I) (M := M) g n S x v -
+        unitModelTangent (I := I) (M := M) g n S' x v := by
+  change unitModel (I := I) (M := M) g n (S - S') x
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) = _
+  rw [unitModel_sub_gen, sub_apply]
+  rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModelTangent_eq_unitModel (g : SmoothRiemannianMetric I M) {n : ℕ}
+    (W : SmoothCcTensor g 0 n) (x : M) (v : Fin n → TangentSpace I x) :
+    unitModelTangent (I := I) (M := M) g n W x v =
+      unitModel (I := I) (M := M) g n W x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) := rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModel_eq_unitModelTangent_symm (g : SmoothRiemannianMetric I M) {n : ℕ}
+    (W : SmoothCcTensor g 0 n) (x : M) (v : Fin n → E) :
+    unitModel (I := I) (M := M) g n W x v =
+      unitModelTangent (I := I) (M := M) g n W x
+        (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) := by
+  rw [unitModelTangent_eq_unitModel]
+  congr 1
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private def tangentOfModel (x : M) (u : E) : TangentSpace I x :=
+  (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u
+
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [NeZero (Module.finrank ℝ E)]
+    [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+private lemma tangentOfModel_eq (x : M) (u : E) :
+    tangentOfModel (I := I) x u = (u : TangentSpace I x) := by
+  let uT : TangentSpace I x := u
+  change (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u = uT
+  apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
+  rw [ContinuousLinearEquiv.apply_symm_apply]
+  exact (tangentSpaceModelContinuousLinearEquiv_apply (I := I) x uT).symm
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModel_eq_unitModelTangent_modelArgs (g : SmoothRiemannianMetric I M) {n : ℕ}
+    (W : SmoothCcTensor g 0 n) (x : M) (v : Fin n → E) :
+    unitModel (I := I) (M := M) g n W x v =
+      unitModelTangent (I := I) (M := M) g n W x
+        (fun i => tangentOfModel (I := I) x (v i)) := by
+  rw [unitModelTangent_eq_unitModel]
+  congr 1
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModel_three_apply_tangent (g : SmoothRiemannianMetric I M)
+    (W : SmoothCcTensor g 0 3) (x : M) (a b c : TangentSpace I x) :
+    unitModel (I := I) (M := M) g 3 W x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x c] =
+      unitModelTangent (I := I) (M := M) g 3 W x ![a, b, c] := rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma koszulPair_eq_smul_dual_linearizedKoszul
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -215,7 +332,7 @@ private lemma koszulPair_eq_smul_dual_linearizedKoszul
     change ((metricPerturbationPath (I := I) g₀ T T' hδ hδ' 0).inner b
       (((0 : ℝ) - s) • DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 0) b _)) z = _
-    rw [map_smul, ContinuousLinearMap.smul_apply,
+    rw [map_smul, smul_apply,
       DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [hlm, dualToCotangent_smul_c]
 
@@ -258,19 +375,50 @@ private lemma velocity_unitEval_domDomCongr_swap
             (unitZeroSec (I := I) (M := M) y)) := by
   apply Tensor0SBundle.tensor0SSpace_ext 2 y
   intro m
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
-  have hswapargs : (show ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I y) ℝ from
+  change Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I y from
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+        (unitZeroSec (I := I) (M := M) y)) m =
+    Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I y from
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+        (unitZeroSec (I := I) (M := M) y))
+      (fun i => m ((Equiv.swap (0 : Fin 2) 1) i))
+  have hswapargs : Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I y from
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+        (unitZeroSec (I := I) (M := M) y))
+      (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) =
+      smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (m 1) (m 0) := by
+    change (show ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I y) ℝ from
       (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I y from
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
         (unitZeroSec (I := I) (M := M) y)) (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) =
       smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (m 1) (m 0) := by
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (m 1) (m 0)
+    have hswapvec : (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) = ![m 1, m 0] := by
+      funext i
+      fin_cases i <;> simp
+    rw [hswapvec, unitEval_bilin_eq (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+      (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y]
+    simp
+  have hargs : Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I y from
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+        (unitZeroSec (I := I) (M := M) y)) m =
+      smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (m 0) (m 1) := by
+    change (show ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I y) ℝ from
+      (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I y from
+        (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+        (unitZeroSec (I := I) (M := M) y)) m = _
     rw [unitEval_bilin_eq (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y]
-    congr 1
-  rw [unitEval_bilin_eq (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-    (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y]
-  rw [hswapargs]
+  rw [hargs, hswapargs]
   rw [show smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (m 0) (m 1) =
       smoothCcTensorBilinForm (I := I) g₀
@@ -307,11 +455,11 @@ lemma unitEval_tensorSectionMDiffAt (g : SmoothRiemannianMetric I M) (n : ℕ)
   exact ((hsm x).mdifferentiableAt (by simp))
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma unitModel_covGrad_eval (g : SmoothRiemannianMetric I M) (n : ℕ)
     (W : SmoothCcTensor g 0 n) (x : M) (v : Fin (n + 1) → TangentSpace I x) :
-    unitModel (I := I) (M := M) g (n + 1) (covGrad (I := I) (M := M) g 0 n W) x v =
-      Tensor0SBundle.Tensor0SSpace.toModel
+    unitModelTangent (I := I) (M := M) g (n + 1) (covGrad (I := I) (M := M) g 0 n W) x v =
+      Tensor0SBundle.Tensor0SSpace.eval
         (show Tensor0SBundle.Tensor0SSpace n I x from
           Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g)
             (fun y : M =>
@@ -319,12 +467,16 @@ lemma unitModel_covGrad_eval (g : SmoothRiemannianMetric I M) (n : ℕ)
                   Tensor0SBundle.Tensor0SSpace n I y from
                 W.toSection y) (unitZeroSec (I := I) (M := M) y)) x (v 0))
         (Matrix.vecTail v) := by
-  rw [unitModel]
-  rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 n W x
+  change Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace (n + 1) I x from
+        (covGrad (I := I) (M := M) g 0 n W).toSection x)
+        (unitZeroSec (I := I) (M := M) x)) v = _
+  rw [covGrad_toSection_apply_natural (I := I) (M := M) g 0 n W x
     (unitZeroSec (I := I) (M := M) x) v]
   congr 1
   rw [tensorCovDerivAt_def]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
   rw [TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) 0 n
     (LeviCivita (I := I) g) W.toSection (unitZeroSec (I := I) (M := M)) x (v 0)]
   rw [show (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)
@@ -349,7 +501,7 @@ private lemma cotangentToCLM_smul_c {x : M} (c : ℝ) (β : Tensor0SBundle.Tenso
     cotangentToCLM (I := I) (c • β) = c • cotangentToCLM (I := I) β := by
   apply ContinuousLinearMap.ext
   intro w
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   rw [show (cotangentToCLM (I := I) (c • β)) w = cotangentToDual (I := I) (c • β) w from rfl]
   rw [show (cotangentToCLM (I := I) β) w = cotangentToDual (I := I) β w from rfl]
   rw [cotangentToDual_apply, cotangentToDual_apply]
@@ -371,6 +523,7 @@ lemma toModel_apply_tangent {n : ℕ} (x : M)
 end NormedToModelApply
 
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem cotangentCov_linearizedKoszul_eval
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -386,42 +539,42 @@ private theorem cotangentCov_linearizedKoszul_eval
             (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b (Y b) (Z b)))) x (X x)) ζ =
       (1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+          (unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![X x, Z x, Y x, ζ]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+            + unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
                 (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![X x, Y x, Z x, ζ]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+            - unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
                 (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![X x, ζ, Z x, Y x])
         + (1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+          (unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
               (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
               ![(LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toFun
                   (fun b => Z b) x (X x), Y x, ζ]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+            + unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
                 (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
                 ![Z x, (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toFun
                     (fun b => Y b) x (X x), ζ]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+            + unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
                 (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
                 ![(LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toFun
                     (fun b => Y b) x (X x), Z x, ζ]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+            + unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
                 (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
                 ![Y x, (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toFun
                     (fun b => Z b) x (X x), ζ]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+            - unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
                 (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
                 ![ζ, (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toFun
                     (fun b => Z b) x (X x), Y x]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+            - unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
                 (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
                   (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
                 ![ζ, Z x, (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toFun
@@ -471,24 +624,24 @@ private theorem cotangentCov_linearizedKoszul_eval
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 0) Z Y x)
     (Set.mem_univ x)
   rw [ContinuousLinearMap.coe_coe] at h996
-  rw [hθ₀, hsc, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [hθ₀, hsc, smul_apply, smul_apply, smul_eq_mul]
   rw [h996]
-  rw [iteratedCovGrad_smul_c, covGrad_smul, unitModel_smul_gen, unitModel_smul_gen]
-  simp only [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  simp_rw [unitEvalSection_eval_eq_unitModelTangent]
+  simp_rw [iteratedCovGrad_smul_c, covGrad_smul, unitModelTangent_smul_gen]
   field_simp
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma velocity_covGrad_swap12
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) (x : M) (a b c : TangentSpace I x) :
-    unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+    unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
         (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![a, b, c] =
-      unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+      unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
         (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![a, c, b] := by
   rw [unitModel_covGrad_eval (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 2
@@ -512,21 +665,38 @@ private lemma velocity_covGrad_swap12
     (unitEval_tensorSectionMDiffAt (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 2
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) x)
     (fun y => velocity_unitEval_domDomCongr_swap (I := I) g₀ T T' hδ hδ' s y)
-  rw [toModel_apply_tangent, toModel_apply_tangent]
   have happ := congrArg
-    (fun (T : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ) =>
-      T ![b, c]) hnat
-  dsimp only at happ
-  rw [ContinuousMultilinearMap.domDomCongr_apply] at happ
+    (fun T : Tensor0SBundle.Tensor0SSpace 2 I x =>
+      Tensor0SBundle.Tensor0SSpace.eval T ![b, c]) hnat
+  have happ' : Tensor0SBundle.Tensor0SSpace.eval
+      (show Tensor0SBundle.Tensor0SSpace 2 I x from
+        Tensor0SNabla.tensor0SCovariantDerivative I M 2
+          (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+          (fun y : M =>
+            (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+                Tensor0SBundle.Tensor0SSpace 2 I y from
+              (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+              (unitZeroSec (I := I) (M := M) y)) x a) ![b, c] =
+    Tensor0SBundle.Tensor0SSpace.eval
+      (show Tensor0SBundle.Tensor0SSpace 2 I x from
+        Tensor0SNabla.tensor0SCovariantDerivative I M 2
+          (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+          (fun y : M =>
+            (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+                Tensor0SBundle.Tensor0SSpace 2 I y from
+              (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s).toSection y)
+              (unitZeroSec (I := I) (M := M) y)) x a)
+      (fun i => (![b, c] : Fin 2 → TangentSpace I x) ((Equiv.swap (0 : Fin 2) 1) i)) := by
+    exact happ
   have hvec : (fun i => (![b, c] : Fin 2 → TangentSpace I x) ((Equiv.swap (0 : Fin 2) 1) i)) =
       ![c, b] := by
     funext i
     fin_cases i <;> simp
-  rw [hvec] at happ
-  exact happ
+  rw [hvec] at happ'
+  exact happ'
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma velocity_covGrad_unitEval_domDomCongr_swap12
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -545,14 +715,26 @@ private lemma velocity_covGrad_unitEval_domDomCongr_swap12
             (unitZeroSec (I := I) (M := M) y)) := by
   apply Tensor0SBundle.tensor0SSpace_ext 3 y
   intro m
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  change Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 3 I y from
+        (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
+          (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)).toSection y)
+        (unitZeroSec (I := I) (M := M) y)) m =
+    Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 3 I y from
+        (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
+          (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)).toSection y)
+        (unitZeroSec (I := I) (M := M) y))
+      (fun i => m ((Equiv.swap (1 : Fin 3) 2) i))
   have h1 : ∀ (mm : Fin 3 → TangentSpace I y),
-      (show ContinuousMultilinearMap ℝ (fun _ : Fin 3 => TangentSpace I y) ℝ from
-        (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I y from
-          (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
-            (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)).toSection y)
-          (unitZeroSec (I := I) (M := M) y)) mm =
-      unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
+      Tensor0SBundle.Tensor0SSpace.eval
+        ((show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I y from
+            (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
+              (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)).toSection y)
+            (unitZeroSec (I := I) (M := M) y)) mm =
+      unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 3
         (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) y mm := fun mm => rfl
   rw [h1, h1]
@@ -567,17 +749,17 @@ private lemma velocity_covGrad_unitEval_domDomCongr_swap12
   exact velocity_covGrad_swap12 (I := I) g₀ T T' hδ hδ' s y (m 0) (m 1) (m 2)
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma velocity_secondCovGrad_swap23
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) (x : M) (a b c d : TangentSpace I x) :
-    unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+    unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
         (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![a, b, c, d] =
-      unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+      unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
         (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![a, b, d, c] := by
   have hunf : iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
@@ -613,21 +795,40 @@ private lemma velocity_secondCovGrad_swap23
       (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x)
     (fun y => velocity_covGrad_unitEval_domDomCongr_swap12 (I := I) g₀ T T' hδ hδ' s y)
-  rw [toModel_apply_tangent, toModel_apply_tangent]
   have happ := congrArg
-    (fun (T : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => TangentSpace I x) ℝ) =>
-      T ![b, c, d]) hnat
-  dsimp only at happ
-  rw [ContinuousMultilinearMap.domDomCongr_apply] at happ
+    (fun T : Tensor0SBundle.Tensor0SSpace 3 I x =>
+      Tensor0SBundle.Tensor0SSpace.eval T ![b, c, d]) hnat
+  have happ' : Tensor0SBundle.Tensor0SSpace.eval
+      (show Tensor0SBundle.Tensor0SSpace 3 I x from
+        Tensor0SNabla.tensor0SCovariantDerivative I M 3
+          (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+          (fun y : M =>
+            (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+                Tensor0SBundle.Tensor0SSpace 3 I y from
+              (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
+                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)).toSection y)
+              (unitZeroSec (I := I) (M := M) y)) x a) ![b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.eval
+      (show Tensor0SBundle.Tensor0SSpace 3 I x from
+        Tensor0SNabla.tensor0SCovariantDerivative I M 3
+          (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+          (fun y : M =>
+            (show Tensor0SBundle.Tensor0SSpace 0 I y →L[ℝ]
+                Tensor0SBundle.Tensor0SSpace 3 I y from
+              (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2
+                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)).toSection y)
+              (unitZeroSec (I := I) (M := M) y)) x a)
+      (fun i => (![b, c, d] : Fin 3 → TangentSpace I x) ((Equiv.swap (1 : Fin 3) 2) i)) := by
+    exact happ
   have hvec : (fun i => (![b, c, d] : Fin 3 → TangentSpace I x) ((Equiv.swap (1 : Fin 3) 2) i)) =
       ![b, d, c] := by
     funext i
     fin_cases i <;> simp [Equiv.swap_apply_def]
-  rw [hvec] at happ
-  exact happ
+  rw [hvec] at happ'
+  exact happ'
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma lkc_eq_endpoint_flat
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -657,7 +858,7 @@ private lemma lkc_eq_endpoint_flat
       (1 - s) *
         linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b u ζ z := by
-    rw [hkey, map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    rw [hkey, map_smul, smul_apply, smul_eq_mul,
       DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [LinearMap.smul_apply]
   rw [show (((metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1).inner b
@@ -670,7 +871,7 @@ private lemma lkc_eq_endpoint_flat
   field_simp
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma lkc_basis_contMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -728,7 +929,7 @@ private lemma lkc_basis_contMDiffOn
   exact hcomb.congr heq
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma metricSharp_linearizedKoszulCovec_contMDiff
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -751,6 +952,7 @@ private lemma metricSharp_linearizedKoszulCovec_contMDiff
   exact lkc_basis_contMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs Y Z α j
 
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covDerivLinearizedConn_inner_towers
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -765,13 +967,13 @@ private theorem covDerivLinearizedConn_inner_towers
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
           (fun b => X b) (fun b => Y b) (fun b => Z b) x) ζ =
       (1 / 2 : ℝ) *
-        (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+        (unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
             (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![X x, Y x, Z x, ζ]
-          + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+          + unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![X x, Z x, Y x, ζ]
-          - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+          - unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x ![X x, ζ, Y x, Z x]) := by
   classical
@@ -814,7 +1016,7 @@ private theorem covDerivLinearizedConn_inner_towers
     rw [inverseMetricSharpFib_dualToCotangent]
     rfl
   rw [covDerivLinearizedConn]
-  rw [map_sub, map_sub, ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [map_sub, map_sub, sub_apply, sub_apply]
   rw [hfield, hpar]
   rw [inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_dualToCotangent,
     ContinuousLinearMap.coe_coe]
@@ -843,6 +1045,7 @@ private theorem covDerivLinearizedConn_inner_towers
     DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [linearizedKoszulCovec_apply, linearizedKoszulCovec_apply]
   rw [covApply_apply, covApply_apply]
+  simp_rw [unitModel_three_apply_tangent]
   ring
 
 private def perm4_1023 : Equiv.Perm (Fin 4) :=
@@ -868,7 +1071,7 @@ private def cmmSlotPairCLM (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (p q : E) 
       map_add' := fun om om' => by
         apply ContinuousLinearMap.ext
         intro u
-        rw [ContinuousLinearMap.add_apply]
+        rw [add_apply]
         change (D : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
             (Function.update ![(0 : E), p, q, om + om'] 0 u) =
           (D : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
@@ -886,7 +1089,7 @@ private def cmmSlotPairCLM (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (p q : E) 
       map_smul' := fun c om => by
         apply ContinuousLinearMap.ext
         intro u
-        rw [RingHom.id_apply, ContinuousLinearMap.smul_apply]
+        rw [RingHom.id_apply, smul_apply]
         change (D : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
             (Function.update ![(0 : E), p, q, (c • om)] 0 u) =
           c • (D : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
@@ -912,6 +1115,51 @@ private lemma tensorRank4OuterSlotBilinearCLM_apply (D : Tensor0SBundle.Tensor0S
 private def sharpCovCLM (g₁ : SmoothRiemannianMetric I M) (x : M) :
     (E →L[ℝ] ℝ) →L[ℝ] E :=
   (cometricLmodel (I := I) g₁ x).comp (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E))
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private def tangentSharpCovCLM (g₁ : SmoothRiemannianMetric I M) (x : M)
+    (φ : E →L[ℝ] ℝ) : TangentSpace I x :=
+  tangentOfModel (I := I) x (sharpCovCLM (I := I) (M := M) g₁ x φ)
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private def modelBasisTangent (x : M)
+    (B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E) :
+    Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+  B.map (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toLinearEquiv
+
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [NeZero (Module.finrank ℝ E)]
+    [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+private lemma tangent_model_equiv_tangentOfModel (x : M) (u : E) :
+    tangentSpaceModelContinuousLinearEquiv (I := I) x (tangentOfModel (I := I) x u) = u := by
+  exact ContinuousLinearEquiv.apply_symm_apply _ _
+
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [NeZero (Module.finrank ℝ E)]
+    [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+private lemma modelBasisTangent_apply (x : M)
+    (B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
+    (i : Fin (Module.finrank ℝ E)) :
+    modelBasisTangent (I := I) x B i = tangentOfModel (I := I) x (B i) := rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma tangentSharpCovCLM_inner (g₁ : SmoothRiemannianMetric I M) (x : M)
+    (φ : E →L[ℝ] ℝ) (u : TangentSpace I x) :
+    g₁.inner x (tangentSharpCovCLM (I := I) (M := M) g₁ x φ) u =
+      φ (tangentSpaceModelContinuousLinearEquiv (I := I) x u) := by
+  rw [tangentSharpCovCLM, tangentOfModel_eq]
+  change g₁.inner x
+      (cometricLmodel (I := I) g₁ x
+        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) u = _
+  exact cometricLmodel_covectorOfCLM_inner (I := I) g₁ x φ u
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -1015,9 +1263,9 @@ private lemma bilinCLM_diag_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
             Λ (sharpCovCLM (I := I) (M := M) g₁ x (B.cDualBasis l)) (B l) := by
           refine Finset.sum_congr rfl (fun l _ => ?_)
           conv_rhs => rw [hexp l]
-          rw [map_sum, ContinuousLinearMap.sum_apply]
+          rw [map_sum, sum_apply]
           refine Finset.sum_congr rfl (fun k _ => ?_)
-          rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+          rw [map_smul, smul_apply, smul_eq_mul]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -1084,6 +1332,45 @@ private lemma slotPair_trace_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
   exact hswap
 
 
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma slotPair_trace_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x : M)
+    (D : Tensor0SBundle.Tensor0SSpace 4 I x) (p q : TangentSpace I x) :
+    (∑ i : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D
+          ![centeredChartTangentBasis (I := I) x i, p, q,
+            tangentSharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)]) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D
+          ![tangentSharpCovCLM (I := I) (M := M) g₁ x
+              ((Module.finBasis ℝ E).cDualBasis k), p, q,
+            modelBasisTangent (I := I) x (Module.finBasis ℝ E) k] := by
+  change (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (centeredChartTangentBasis (I := I) x i),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (tangentSharpCovCLM (I := I) (M := M) g₁ x
+              ((chartModelBasis E).cDualBasis i))]) =
+    ∑ k : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (tangentSharpCovCLM (I := I) (M := M) g₁ x
+              ((Module.finBasis ℝ E).cDualBasis k)),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (modelBasisTangent (I := I) x (Module.finBasis ℝ E) k)]
+  have h := slotPair_trace_swap (I := I) g₁ x
+    (Tensor0SBundle.Tensor0SSpace.toModel D)
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x q)
+  simpa only [tangentSharpCovCLM, modelBasisTangent_apply,
+    tangent_model_equiv_centered_chart_basis, tangent_model_equiv_tangentOfModel] using h
+
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma operatorFieldApplication_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -1123,16 +1410,6 @@ private lemma operatorFieldApplication_smul_left' (g : SmoothRiemannianMetric I 
   rw [ContinuousLinearMap.smul_comp]
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_sub_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
-    (S S' : SmoothCcTensor g 0 n) (x : M) :
-    unitModel (I := I) (M := M) g n (S - S') x =
-      unitModel (I := I) (M := M) g n S x - unitModel (I := I) (M := M) g n S' x := by
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    ContinuousLinearMap.sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
-
 private def perm4_1032 : Equiv.Perm (Fin 4) :=
   permOfImages ![1, 0, 3, 2] ![1, 0, 3, 2] (by decide) (by decide)
 
@@ -1167,6 +1444,74 @@ private lemma domDomCongr_1203_eval (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (
   fin_cases i <;> rfl
 
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private lemma eval_domDomCongr_0312 (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
+    (a b c d : TangentSpace I x) :
+    Tensor0SBundle.Tensor0SSpace.eval
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_0312) ![a, b, c, d] =
+      Tensor0SBundle.Tensor0SSpace.eval D ![a, d, b, c] := by
+  rw [Tensor0SBundle.Tensor0SSpace.eval_domDomCongr]
+  congr 1
+  funext i
+  fin_cases i <;> rfl
+
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private lemma eval_domDomCongr_1203 (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
+    (a b c d : TangentSpace I x) :
+    Tensor0SBundle.Tensor0SSpace.eval
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_1203) ![a, b, c, d] =
+      Tensor0SBundle.Tensor0SSpace.eval D ![b, c, a, d] := by
+  rw [Tensor0SBundle.Tensor0SSpace.eval_domDomCongr]
+  congr 1
+  funext i
+  fin_cases i <;> rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma slotPair_diag_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x : M)
+    (D : Tensor0SBundle.Tensor0SSpace 4 I x) (p q : TangentSpace I x) :
+    (∑ i : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D
+          ![p, centeredChartTangentBasis (I := I) x i,
+            tangentSharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i), q]) =
+      ∑ i : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D
+          ![p, tangentSharpCovCLM (I := I) (M := M) g₁ x
+              ((chartModelBasis E).cDualBasis i),
+            centeredChartTangentBasis (I := I) x i, q] := by
+  change (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (centeredChartTangentBasis (I := I) x i),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (tangentSharpCovCLM (I := I) (M := M) g₁ x
+              ((chartModelBasis E).cDualBasis i)),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q]) =
+    ∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (tangentSharpCovCLM (I := I) (M := M) g₁ x
+              ((chartModelBasis E).cDualBasis i)),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (centeredChartTangentBasis (I := I) x i),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q]
+  have hswap := bilinCLM_diag_swap (I := I) g₁ x (chartModelBasis E)
+    ((cmmSlotPairCLM (E := E)
+      (ContinuousMultilinearMap.domDomCongr perm4_1032
+        (Tensor0SBundle.Tensor0SSpace.toModel D))
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x q)).flip)
+  simpa only [ContinuousLinearMap.flip_apply, tensorRank4OuterSlotBilinearCLM_apply,
+    domDomCongr_1032_eval, tangent_model_equiv_centered_chart_basis,
+    tangentSharpCovCLM, tangent_model_equiv_tangentOfModel] using hswap
+
+
 private lemma finCons_vec3_eq {F : Type*} (a b c d : F) :
     (Fin.cons a ![b, c, d] : Fin 4 → F) = ![a, b, c, d] := by
   funext i
@@ -1178,6 +1523,7 @@ private lemma finCons_cons_pair_eq {F : Type*} (a b : F) (v : Fin 2 → F) :
   funext i
   fin_cases i <;> rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -1187,14 +1533,14 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     {s : ℝ} (hs : s ∈ Set.Ioo (0 : ℝ) 1) (x : M) (v : Fin 2 → TangentSpace I x) :
     linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
-      unitModel (I := I) (M := M) g₀ 2
+      unitModelTangent (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x v := by
   classical
   have hD4rfl : ∀ (m : Fin 4 → TangentSpace I x),
-      unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x m =
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+      unitModelTangent (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x m =
+        unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x m := fun m => rfl
   have hconv : ∀ k : Fin (Module.finrank ℝ E),
@@ -1203,90 +1549,93 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
         cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)) := fun k => rfl
-  have hRHS : unitModel (I := I) (M := M) g₀ 2
+  have hRHS : unitModelTangent (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2
         (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
         (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x v =
       (1 / 2 : ℝ) *
         ((∑ k : Fin (Module.finrank ℝ E),
-            unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+            unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1, (Module.finBasis ℝ E) k])
+                  ![tangentSharpCovCLM (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+                    ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1,
+                    modelBasisTangent (I := I) x (Module.finBasis ℝ E) k])
           + (∑ k : Fin (Module.finrank ℝ E),
-              unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+              unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 1, v 0, (Module.finBasis ℝ E) k])
+                  ![tangentSharpCovCLM (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+                    ((Module.finBasis ℝ E).cDualBasis k), v 1, v 0,
+                    modelBasisTangent (I := I) x (Module.finBasis ℝ E) k])
           - (∑ k : Fin (Module.finrank ℝ E),
-              unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+              unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k, v 0, v 1]))
+                  ![tangentSharpCovCLM (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+                    ((Module.finBasis ℝ E).cDualBasis k),
+                    modelBasisTangent (I := I) x (Module.finBasis ℝ E) k, v 0, v 1]))
       - (1 / 2 : ℝ) *
           (∑ k : Fin (Module.finrank ℝ E),
-            unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+            unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-                  x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k]) := by
+                  ![v 0, v 1, tangentSharpCovCLM (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+                    ((Module.finBasis ℝ E).cDualBasis k),
+                    modelBasisTangent (I := I) x (Module.finBasis ℝ E) k]) := by
     rw [show linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
         ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
           (1 / 2 : ℝ) • traceHessianCoeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) from rfl]
-    rw [operatorFieldApplication_sub_left, operatorFieldApplication_smul_left', unitModel_sub_gen, unitModel_smul_gen,
-      ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    rw [operatorFieldApplication_sub_left, operatorFieldApplication_smul_left',
+      unitModelTangent_sub_gen, unitModelTangent_smul_gen]
+    rw [unitModelTangent_eq_unitModel, unitModelTangent_eq_unitModel]
     rw [ricciDeTurckPrincipalCoefficient_operatorFieldApplication_eq_combinedTrace (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-        v]
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))]
     rw [traceHessianCoeff_apply_eq (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-        v]
-    have hterm : ∀ k : Fin (Module.finrank ℝ E),
-        (unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-            (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-              ![v 0, v 1, (Module.finBasis ℝ E) k])
-          + unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-              (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-                ![v 1, v 0, (Module.finBasis ℝ E) k])
-          - unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-              (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-                (Fin.cons ((Module.finBasis ℝ E) k) v))) =
-        (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1, (Module.finBasis ℝ E) k]
-          + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 1, v 0, (Module.finBasis ℝ E) k]
-          - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k, v 0, v 1]) := by
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))]
+    simp_rw [unitModel_eq_unitModelTangent_modelArgs]
+    have hargsFront : ∀ (k : Fin (Module.finrank ℝ E)) (p q : TangentSpace I x),
+        (fun i => tangentOfModel (I := I) x
+          ((Fin.cons
+            (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                ((Module.finBasis ℝ E).cDualBasis k)))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q,
+              (Module.finBasis ℝ E) k] : Fin 4 → E) i)) =
+          ![tangentSharpCovCLM (I := I) (M := M)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              ((Module.finBasis ℝ E).cDualBasis k), p, q,
+            modelBasisTangent (I := I) x (Module.finBasis ℝ E) k] := by
+      intro k p q
+      funext i
+      fin_cases i <;> simp [tangentSharpCovCLM, modelBasisTangent_apply, tangentOfModel, ← hconv k]
+    have hargsPair : ∀ k : Fin (Module.finrank ℝ E),
+        (fun i => tangentOfModel (I := I) x
+          ((Fin.cons
+            (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                ((Module.finBasis ℝ E).cDualBasis k)))
+            (Fin.cons ((Module.finBasis ℝ E) k)
+              (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))) : Fin 4 → E) i)) =
+          ![tangentSharpCovCLM (I := I) (M := M)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              ((Module.finBasis ℝ E).cDualBasis k),
+            modelBasisTangent (I := I) x (Module.finBasis ℝ E) k, v 0, v 1] := by
       intro k
-      rw [← hconv k]
-      rw [finCons_vec3_eq (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k)) (v 0) (v 1) ((Module.finBasis ℝ E) k)]
-      rw [finCons_vec3_eq (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k)) (v 1) (v 0) ((Module.finBasis ℝ E) k)]
-      rw [finCons_cons_pair_eq
-        (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k)) ((Module.finBasis ℝ E) k) v]
-      rw [hD4rfl, hD4rfl, hD4rfl]
+      funext i
+      fin_cases i
+      · simp [tangentSharpCovCLM, modelBasisTangent_apply, tangentOfModel, ← hconv k]
+      · simp [tangentSharpCovCLM, modelBasisTangent_apply, tangentOfModel, ← hconv k]
+      · exact ContinuousLinearEquiv.symm_apply_apply _ _
+      · exact ContinuousLinearEquiv.symm_apply_apply _ _
     have htrace : ∀ k : Fin (Module.finrank ℝ E),
         ContinuousMultilinearMap.domDomCongr traceHessianSlotPerm
             (Tensor0SBundle.Tensor0SSpace.toModel
@@ -1297,60 +1646,53 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
             (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
-              (Fin.cons ((Module.finBasis ℝ E) k) v)) =
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+              (Fin.cons ((Module.finBasis ℝ E) k)
+                (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j)))) =
+        unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-                  x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k] := by
+                  ![v 0, v 1, tangentSharpCovCLM (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+                    ((Module.finBasis ℝ E).cDualBasis k),
+                    modelBasisTangent (I := I) x (Module.finBasis ℝ E) k] := by
       intro k
       rw [ContinuousMultilinearMap.domDomCongr_apply]
-      have hargs : (fun i => (Fin.cons
-        (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-          (Fin.cons ((Module.finBasis ℝ E) k) v) : Fin 4 → TangentSpace I x)
-          (traceHessianSlotPerm i)) =
-        ![v 0, v 1, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k] := by
+      change unitModel (I := I) (M := M) g₀ 4
+          (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x _ = _
+      rw [unitModel_eq_unitModelTangent_modelArgs]
+      have hp0 : traceHessianSlotPerm 0 = 2 := by decide
+      have hp1 : traceHessianSlotPerm 1 = 3 := by decide
+      have hp2 : traceHessianSlotPerm 2 = 0 := by decide
+      have hp3 : traceHessianSlotPerm 3 = 1 := by decide
+      have hargs : (fun i => tangentOfModel (I := I) x
+          ((Fin.cons
+            (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                ((Module.finBasis ℝ E).cDualBasis k)))
+            (Fin.cons ((Module.finBasis ℝ E) k)
+              (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))) : Fin 4 → E)
+            (traceHessianSlotPerm i))) =
+        ![v 0, v 1, tangentSharpCovCLM (I := I) (M := M)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+          ((Module.finBasis ℝ E).cDualBasis k),
+          modelBasisTangent (I := I) x (Module.finBasis ℝ E) k] := by
         funext i
-        fin_cases i <;> rfl
+        fin_cases i
+        · have h := congrFun (hargsPair k) (traceHessianSlotPerm (0 : Fin 4))
+          rw [hp0] at h
+          exact h
+        · have h := congrFun (hargsPair k) (traceHessianSlotPerm (1 : Fin 4))
+          rw [hp1] at h
+          exact h
+        · have h := congrFun (hargsPair k) (traceHessianSlotPerm (2 : Fin 4))
+          rw [hp2] at h
+          exact h
+        · have h := congrFun (hargsPair k) (traceHessianSlotPerm (3 : Fin 4))
+          rw [hp3] at h
+          exact h
       rw [hargs]
       exact hD4rfl _
-    rw [show (∑ k : Fin (Module.finrank ℝ E),
-        (unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-            (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-              ![v 0, v 1, (Module.finBasis ℝ E) k])
-          + unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-              (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-                ![v 1, v 0, (Module.finBasis ℝ E) k])
-          - unitModel (I := I) (M := M) g₀ 4 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s) x
-              (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))
-                (Fin.cons ((Module.finBasis ℝ E) k) v)))) =
-        ∑ k : Fin (Module.finrank ℝ E),
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1, (Module.finBasis ℝ E) k]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 1, v 0, (Module.finBasis ℝ E) k]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k, v 0, v 1]) from
-      Finset.sum_congr rfl (fun k _ => hterm k)]
+    simp_rw [hargsFront, hargsPair, hD4rfl]
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         ContinuousMultilinearMap.domDomCongr traceHessianSlotPerm
             (Tensor0SBundle.Tensor0SSpace.toModel
@@ -1361,483 +1703,179 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
             (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
-              (Fin.cons ((Module.finBasis ℝ E) k) v))) =
+              (Fin.cons ((Module.finBasis ℝ E) k)
+                (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))))) =
         ∑ k : Fin (Module.finrank ℝ E),
-          unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
+          unitModelTangent (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
               (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-                  x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k] from
+                  ![v 0, v 1, tangentSharpCovCLM (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+                    ((Module.finBasis ℝ E).cDualBasis k),
+                    modelBasisTangent (I := I) x (Module.finBasis ℝ E) k] from
       Finset.sum_congr rfl (fun k _ => htrace k)]
     rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
   rw [hRHS]
+  let g₁ : SmoothRiemannianMetric I M :=
+    metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
+  let W : SmoothCcTensor g₁ 0 2 := realizedVelocityCc (I := I) g₀ T T' hδ hδ' s
+  let D : Tensor0SBundle.Tensor0SSpace 4 I x :=
+    unitEvalSection (I := I) (M := M) g₁ 4 (iteratedCovGrad (I := I) g₁ 0 2 2 W) x
+  let Bc : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    centeredChartTangentBasis (I := I) x
+  let Tc : Fin (Module.finrank ℝ E) → TangentSpace I x := fun i =>
+    tangentSharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)
+  let Bm : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    modelBasisTangent (I := I) x (Module.finBasis ℝ E)
+  let Tm : Fin (Module.finrank ℝ E) → TangentSpace I x := fun k =>
+    tangentSharpCovCLM (I := I) (M := M) g₁ x ((Module.finBasis ℝ E).cDualBasis k)
   have hks := linearizedRicciAt_eq_palatini_covDeriv (I := I) (g₀ := g₀) (T := T) (T' := T')
     (x := x) (v := v 0) (w := v 1) hδ_lt hδ hδ'_lt hδ' (s₀ := s) hs
   rw [hks]
+  change (∑ i : Fin (Module.finrank ℝ E),
+      Bc.repr
+        (covDerivLinearizedConn (I := I) g₁ W
+            (smoothExtensionTangent (I := I) x (Bc i))
+            (smoothExtensionTangent (I := I) x (v 0))
+            (smoothExtensionTangent (I := I) x (v 1)) x -
+          covDerivLinearizedConn (I := I) g₁ W
+            (smoothExtensionTangent (I := I) x (v 0))
+            (smoothExtensionTangent (I := I) x (Bc i))
+            (smoothExtensionTangent (I := I) x (v 1)) x) i) =
+    (1 / 2 : ℝ) *
+        (((∑ k : Fin (Module.finrank ℝ E),
+            Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, v 0, v 1, Bm k]) +
+          (∑ k : Fin (Module.finrank ℝ E),
+            Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, v 1, v 0, Bm k])) -
+        (∑ k : Fin (Module.finrank ℝ E),
+          Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, Bm k, v 0, v 1])) -
+      (1 / 2 : ℝ) *
+        (∑ k : Fin (Module.finrank ℝ E),
+          Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Tm k, Bm k])
   have hsum : ∀ i : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr
-        (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-          (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
-            (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+      Bc.repr
+        (covDerivLinearizedConn (I := I) g₁ W
+            (smoothExtensionTangent (I := I) x (Bc i))
             (smoothExtensionTangent (I := I) x (v 0))
-            (smoothExtensionTangent (I := I) x (v 1)) x
-          - covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-            (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
+            (smoothExtensionTangent (I := I) x (v 1)) x -
+          covDerivLinearizedConn (I := I) g₁ W
             (smoothExtensionTangent (I := I) x (v 0))
-            (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
-            (smoothExtensionTangent (I := I) x (v 1)) x)) i =
-      ((1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 1, v 0, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 0, v 1])
-        - (1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), (chartModelBasis E) i, v 1])) := by
+            (smoothExtensionTangent (I := I) x (Bc i))
+            (smoothExtensionTangent (I := I) x (v 1)) x) i =
+        (1 / 2 : ℝ) *
+            (Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, v 0, v 1, Tc i] +
+              Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, v 1, v 0, Tc i] -
+              Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, Tc i, v 0, v 1]) -
+          (1 / 2 : ℝ) *
+            (Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, v 1, Tc i] +
+              Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Bc i, Tc i] -
+              Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Tc i, Bc i, v 1]) := by
     intro i
-    have hrepr : ∀ (W : TangentSpace I x),
-        ((chartModelBasis E).repr W) i =
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner x W
-            (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) := by
-      intro W
-      rw [(metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).symm x W
-        (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)), inner_sharpCovCLM, cDualBasis_eq_coord]
+    have hrepr : ∀ W₀ : TangentSpace I x,
+        Bc.repr W₀ i = g₁.inner x W₀ (Tc i) := by
+      intro W₀
+      simp only [Bc, Tc, centeredChartTangentBasis_repr]
+      rw [g₁.symm x W₀]
+      rw [tangentSharpCovCLM_inner, centeredChartTangentEquiv_apply,
+        cDualBasis_eq_coord]
       rfl
     rw [map_sub, Finsupp.sub_apply, hrepr, hrepr]
-    set Bi : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-      ⟨smoothExtensionTangent (I := I) x ((chartModelBasis E) i),
-        smoothExtensionTangent_contMDiff (I := I) x ((chartModelBasis E) i)⟩ with hBi
-    set V0f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+    let Bi : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+      ⟨smoothExtensionTangent (I := I) x (Bc i),
+        smoothExtensionTangent_contMDiff (I := I) x (Bc i)⟩
+    let V0f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
       ⟨smoothExtensionTangent (I := I) x (v 0),
-        smoothExtensionTangent_contMDiff (I := I) x (v 0)⟩ with hV0f
-    set V1f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+        smoothExtensionTangent_contMDiff (I := I) x (v 0)⟩
+    let V1f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
       ⟨smoothExtensionTangent (I := I) x (v 1),
-        smoothExtensionTangent_contMDiff (I := I) x (v 1)⟩ with hV1f
-    have hBix : (Bi x : TangentSpace I x) = (chartModelBasis E) i := smoothExtensionTangent_eq
-      (I := I) x ((chartModelBasis E) i)
-    have hV0x : (V0f x : TangentSpace I x) = v 0 := smoothExtensionTangent_eq (I := I) x (v 0)
-    have hV1x : (V1f x : TangentSpace I x) = v 1 := smoothExtensionTangent_eq (I := I) x (v 1)
+        smoothExtensionTangent_contMDiff (I := I) x (v 1)⟩
+    have hBix : (Bi x : TangentSpace I x) = Bc i := by
+      change smoothExtensionTangent (I := I) x (Bc i) x = Bc i
+      exact smoothExtensionTangent_eq (I := I) x (Bc i)
+    have hV0x : (V0f x : TangentSpace I x) = v 0 := by
+      change smoothExtensionTangent (I := I) x (v 0) x = v 0
+      exact smoothExtensionTangent_eq (I := I) x (v 0)
+    have hV1x : (V1f x : TangentSpace I x) = v 1 := by
+      change smoothExtensionTangent (I := I) x (v 1) x = v 1
+      exact smoothExtensionTangent_eq (I := I) x (v 1)
     have hA := covDerivLinearizedConn_inner_towers (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs
-      Bi V0f V1f x (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i))
+      Bi V0f V1f x (Tc i)
     have hB := covDerivLinearizedConn_inner_towers (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs
-      V0f Bi V1f x (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i))
+      V0f Bi V1f x (Tc i)
     rw [hBix, hV0x, hV1x] at hA hB
-    have hA' : (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner x
-        (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-          (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
-          (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+    change g₁.inner x
+        (covDerivLinearizedConn (I := I) g₁ W
+          (smoothExtensionTangent (I := I) x (Bc i))
           (smoothExtensionTangent (I := I) x (v 0))
-          (smoothExtensionTangent (I := I) x (v 1)) x)
-            (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) =
-        (1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 1, v 0, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 0, v 1]) := hA
-    have hB' : (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner x
-        (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-          (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
+          (smoothExtensionTangent (I := I) x (v 1)) x) (Tc i) =
+      (1 / 2 : ℝ) *
+        (Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, v 0, v 1, Tc i] +
+          Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, v 1, v 0, Tc i] -
+          Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, Tc i, v 0, v 1]) at hA
+    change g₁.inner x
+        (covDerivLinearizedConn (I := I) g₁ W
           (smoothExtensionTangent (I := I) x (v 0))
-          (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
-          (smoothExtensionTangent (I := I) x (v 1)) x)
-            (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) =
-        (1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), (chartModelBasis E) i, v 1]) := hB
-    rw [hA', hB']
-  rw [show (∑ i : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr
-        (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-          (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
-            (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
-            (smoothExtensionTangent (I := I) x (v 0))
-            (smoothExtensionTangent (I := I) x (v 1)) x
-          - covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-            (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)
-            (smoothExtensionTangent (I := I) x (v 0))
-            (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
-            (smoothExtensionTangent (I := I) x (v 1)) x)) i) =
-    ∑ i : Fin (Module.finrank ℝ E),
-      ((1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 1, v 0, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 0, v 1])
-        - (1 / 2 : ℝ) *
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            + unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]
-            - unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), (chartModelBasis E) i, v 1])) from
-    Finset.sum_congr rfl (fun i _ => hsum i)]
+          (smoothExtensionTangent (I := I) x (Bc i))
+          (smoothExtensionTangent (I := I) x (v 1)) x) (Tc i) =
+      (1 / 2 : ℝ) *
+        (Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, v 1, Tc i] +
+          Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Bc i, Tc i] -
+          Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Tc i, Bc i, v 1]) at hB
+    exact congrArg₂ (fun a b : ℝ => a - b) hA hB
+  simp_rw [hsum]
   rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
     Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_add_distrib]
-  have hTA1 : (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]) =
-      ∑ k : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1, (Module.finBasis ℝ E) k] :=
-    slotPair_trace_swap (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x _ (v 0) (v 1)
-  have hTA2 : (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, v 1, v 0, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]) =
-      ∑ k : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 1, v 0, (Module.finBasis ℝ E) k] :=
-    slotPair_trace_swap (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x _ (v 1) (v 0)
-  have hTA3 : (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 0, v 1]) =
-      ∑ k : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k, v 0, v 1] := by
-    have hcan : ∀ i : Fin (Module.finrank ℝ E),
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 0, v 1] =
-          ContinuousMultilinearMap.domDomCongr perm4_0312
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)
-            ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)] := by
-      intro i
-      rw [domDomCongr_0312_eval]
-    have hcan' : ∀ k : Fin (Module.finrank ℝ E),
-        ContinuousMultilinearMap.domDomCongr perm4_0312
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)
-            ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1, (Module.finBasis ℝ E) k] =
-          unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k, v 0, v 1] := by
-      intro k
-      rw [domDomCongr_0312_eval]
-    rw [show (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![(chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 0, v 1]) =
-        ∑ i : Fin (Module.finrank ℝ E),
-          ContinuousMultilinearMap.domDomCongr perm4_0312
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)
-            ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)] from
-      Finset.sum_congr rfl (fun i _ => hcan i)]
-    rw [slotPair_trace_swap (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x _ (v 0) (v 1)]
-    exact Finset.sum_congr rfl (fun k _ => hcan' k)
-  have hTB2 : (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]) =
-      ∑ k : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-                  x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k] := by
-    have hcan : ∀ i : Fin (Module.finrank ℝ E),
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)] =
-          ContinuousMultilinearMap.domDomCongr perm4_1203
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)
-            ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)] := by
-      intro i
-      rw [domDomCongr_1203_eval]
-    have hcan' : ∀ k : Fin (Module.finrank ℝ E),
-        ContinuousMultilinearMap.domDomCongr perm4_1203
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)
-            ![sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((Module.finBasis ℝ E).cDualBasis k), v 0, v 1, (Module.finBasis ℝ E) k] =
-          unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-                  x
-                  ((Module.finBasis ℝ E).cDualBasis k), (Module.finBasis ℝ E) k] := by
-      intro k
-      rw [domDomCongr_1203_eval]
-    rw [show (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, v 1, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]) =
-        ∑ i : Fin (Module.finrank ℝ E),
-          ContinuousMultilinearMap.domDomCongr perm4_1203
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)
-            ![(chartModelBasis E) i, v 0, v 1, sharpCovCLM (I := I) (M := M)
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)] from
-      Finset.sum_congr rfl (fun i _ => hcan i)]
-    rw [slotPair_trace_swap (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x _ (v 0) (v 1)]
-    exact Finset.sum_congr rfl (fun k _ => hcan' k)
-  have hmid : (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)]) =
-      ∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), (chartModelBasis E) i, v 1] := by
+  have hTA1 : (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, v 0, v 1, Tc i]) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, v 0, v 1, Bm k] := by
+    simpa only [Bc, Tc, Bm, Tm] using
+      slotPair_trace_swap_tangent (I := I) g₁ x D (v 0) (v 1)
+  have hTA2 : (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, v 1, v 0, Tc i]) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, v 1, v 0, Bm k] := by
+    simpa only [Bc, Tc, Bm, Tm] using
+      slotPair_trace_swap_tangent (I := I) g₁ x D (v 1) (v 0)
+  have hTA3 : (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.eval D ![Bc i, Tc i, v 0, v 1]) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, Bm k, v 0, v 1] := by
+    simpa only [Bc, Tc, Bm, Tm, eval_domDomCongr_0312] using
+      slotPair_trace_swap_tangent (I := I) g₁ x
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_0312) (v 0) (v 1)
+  have hTB2 : (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Bc i, Tc i]) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Tm k, Bm k] := by
+    simpa only [Bc, Tc, Bm, Tm, eval_domDomCongr_1203] using
+      slotPair_trace_swap_tangent (I := I) g₁ x
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_1203) (v 0) (v 1)
+  have hmid : (∑ i : Fin (Module.finrank ℝ E),
+      Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, v 1, Tc i]) =
+      ∑ i : Fin (Module.finrank ℝ E),
+        Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Tc i, Bc i, v 1] := by
     have hstep1 : ∀ i : Fin (Module.finrank ℝ E),
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)] = unitModel (I := I) (M := M)
-                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 1] := by
+        Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, v 1, Tc i] =
+          Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, Tc i, v 1] := by
       intro i
-      exact velocity_secondCovGrad_swap23 (I := I) g₀ T T' hδ hδ' s x (v 0) ((chartModelBasis E) i)
-        (v 1) (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i))
-    have hswap := bilinCLM_diag_swap (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-      (chartModelBasis E)
-      ((cmmSlotPairCLM (E := E)
-        (ContinuousMultilinearMap.domDomCongr perm4_1032
-          (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)) (v 0) (v 1)).flip)
-    have hL : ∀ i : Fin (Module.finrank ℝ E),
-        ((cmmSlotPairCLM (E := E)
-          (ContinuousMultilinearMap.domDomCongr perm4_1032
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)) (v 0) (v 1)).flip)
-          ((chartModelBasis E) i) (sharpCovCLM (I := I) (M := M)
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) =
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 1] := by
-      intro i
-      rw [ContinuousLinearMap.flip_apply, tensorRank4OuterSlotBilinearCLM_apply,
-        domDomCongr_1032_eval]
-    have hR : ∀ i : Fin (Module.finrank ℝ E),
-        ((cmmSlotPairCLM (E := E)
-          (ContinuousMultilinearMap.domDomCongr perm4_1032
-            (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)) (v 0) (v 1)).flip)
-          (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) ((chartModelBasis E) i) =
-        unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), (chartModelBasis E) i, v 1] := by
-      intro i
-      rw [ContinuousLinearMap.flip_apply, tensorRank4OuterSlotBilinearCLM_apply,
-        domDomCongr_1032_eval]
-    calc (∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, v 1, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)])
-        = ∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, (chartModelBasis E) i, sharpCovCLM (I := I) (M := M)
-                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), v 1] :=
-          Finset.sum_congr rfl (fun i _ => hstep1 i)
+      change unitModelTangent (I := I) (M := M) g₁ 4
+          (iteratedCovGrad (I := I) g₁ 0 2 2 W) x ![v 0, Bc i, v 1, Tc i] =
+        unitModelTangent (I := I) (M := M) g₁ 4
+          (iteratedCovGrad (I := I) g₁ 0 2 2 W) x ![v 0, Bc i, Tc i, v 1]
+      exact velocity_secondCovGrad_swap23 (I := I) g₀ T T' hδ hδ' s x
+        (v 0) (Bc i) (v 1) (Tc i)
+    calc
+      (∑ i : Fin (Module.finrank ℝ E),
+          Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, v 1, Tc i]) =
+          ∑ i : Fin (Module.finrank ℝ E),
+            Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, Tc i, v 1] :=
+        Finset.sum_congr rfl (fun i _ => hstep1 i)
       _ = ∑ i : Fin (Module.finrank ℝ E),
-            ((cmmSlotPairCLM (E := E)
-              (ContinuousMultilinearMap.domDomCongr perm4_1032
-                (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)) (v 0) (v 1)).flip)
-              ((chartModelBasis E) i) (sharpCovCLM (I := I) (M := M)
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) :=
-          Finset.sum_congr rfl (fun i _ => (hL i).symm)
-      _ = ∑ i : Fin (Module.finrank ℝ E),
-            ((cmmSlotPairCLM (E := E)
-              (ContinuousMultilinearMap.domDomCongr perm4_1032
-                (unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x : ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 4 => E) ℝ)) (v 0) (v 1)).flip)
-              (sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i)) ((chartModelBasis E) i) := hswap
-      _ = ∑ i : Fin (Module.finrank ℝ E), unitModel (I := I) (M := M)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 4
-              (iteratedCovGrad (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) 0 2 2
-                (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s)) x
-                  ![v 0, sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                  ((chartModelBasis E).cDualBasis i), (chartModelBasis E) i, v 1] :=
-          Finset.sum_congr rfl (fun i _ => hR i)
+          Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Tc i, Bc i, v 1] := by
+        simpa only [Bc, Tc] using
+          slotPair_diag_swap_tangent (I := I) g₁ x D (v 0) (v 1)
   rw [hTA1, hTA2, hTA3, hTB2, hmid]
   ring
 

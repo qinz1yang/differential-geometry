@@ -127,7 +127,7 @@ theorem isMIntegralCurveOn_zero_section_eq_const
     fun _ : ℝ => (⟨p, (0 : E)⟩ : TangentBundle I M) with hc_def
   have hc_int : IsMIntegralCurve c (geodesicVectorFieldChart (I := I) g p) :=
     isMIntegralCurve_const_zero_section (I := I) g p
-  haveI : PreconnectedSpace (↥J) :=
+  have : PreconnectedSpace (↥J) :=
     isPreconnected_iff_preconnectedSpace.mp hJ_conn
   set Tsub : Set (↥J) := {t : ↥J | f (t : ℝ) = c (t : ℝ)} with hTsub_def
   suffices hTsub_univ : Tsub = Set.univ by
@@ -144,11 +144,11 @@ theorem isMIntegralCurveOn_zero_section_eq_const
   have hf_cont : ContinuousOn f J := hf.continuousOn
   have hc_cont : Continuous c := continuous_const
   have hf_sub_cont : Continuous (fun t : ↥J => f (t : ℝ)) := by
-    refine continuousOn_iff_continuous_restrict.mp ?_
+    refine continuousOn_iff_continuous_domRestrict.mp ?_
     exact hf_cont
   have hc_sub_cont : Continuous (fun t : ↥J => c (t : ℝ)) :=
     hc_cont.comp continuous_subtype_val
-  haveI : T2Space (TangentBundle I M) := inferInstance
+  have : T2Space (TangentBundle I M) := inferInstance
   have hTsub_closed : IsClosed Tsub := by
     have hdiag : IsClosed {p : TangentBundle I M × TangentBundle I M | p.1 = p.2} :=
       isClosed_diagonal

@@ -42,9 +42,9 @@ theorem riemannianFiberNormSq_comp_clm_le
         (show TensorRSSpace 0 s I x from
           φ.comp (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W)) ≤
         Cφ * riemannianFiberNormSq (I := I) (M := M) g 0 r x W := by
-  letI instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
+  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 r
-  letI instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
+  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 s
   let appOp : TensorRSSpace 0 r I x →L[ℝ] TensorRSSpace 0 s I x :=
     LinearMap.toContinuousLinearMap
@@ -60,14 +60,12 @@ theorem riemannianFiberNormSq_comp_clm_le
   rw [← happ]
   exact hCφ W
 
-set_option backward.isDefEq.respectTransparency false in
 def operatorFieldApplyPointwise (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) (x : M) :
     TensorRSSpace 0 s I x :=
   (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x).comp
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] [CompleteSpace E] in
 theorem operatorFieldApplyPointwise_contMDiff (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -97,7 +95,6 @@ theorem operatorFieldApplyPointwise_contMDiff (g : SmoothRiemannianMetric I M) (
     ContMDiff.clm_bundle_apply (b := id) W.toSection.contMDiff Y.contMDiff
   exact ContMDiff.clm_bundle_apply (b := id) Φ.toSection.contMDiff hWY
 
-set_option backward.isDefEq.respectTransparency false in
 def operatorFieldApply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) : SmoothCcTensor g 0 s where
   toSection :=
@@ -105,7 +102,6 @@ def operatorFieldApply (g : SmoothRiemannianMetric I M) (r s : ℕ)
       contMDiff_toFun := operatorFieldApplyPointwise_contMDiff (I := I) (M := M) g r s Φ W }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 @[simp] lemma operatorFieldApplication_toSection (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -114,7 +110,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x) := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 def slotExtendPointwise (r s : ℕ) (x : M)
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) :
     Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
@@ -133,7 +128,6 @@ def slotExtendPointwise (r s : ℕ) (x : M)
             (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
         rfl }
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
 @[simp] lemma slotExtendFib_apply (r s : ℕ) (x : M)
@@ -144,7 +138,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
   rw [slotExtendPointwise, LinearMap.coe_toContinuousLinearMap']
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
 lemma slotExtendFib_apply_eval (r s : ℕ) (x : M)
@@ -152,8 +145,9 @@ lemma slotExtendFib_apply_eval (r s : ℕ) (x : M)
     (v0 : E) (vs : Fin s → E) :
     Tensor0SSpace.toModel (slotExtendPointwise (I := I) (M := M) r s x A D) (Fin.cons v0 vs) =
       Tensor0SSpace.toModel
-        (A ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) D v0)) vs := by
-  rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s)
+        (A ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) D
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))) vs := by
+  rw [← TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := s)
     (slotExtendPointwise (I := I) (M := M) r s x A D) v0 vs]
   have hcurry : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
       (slotExtendPointwise (I := I) (M := M) r s x A D) =
@@ -162,7 +156,19 @@ lemma slotExtendFib_apply_eval (r s : ℕ) (x : M)
   rw [hcurry]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+lemma slotExtendFib_apply_natural (r s : ℕ) (x : M)
+    (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) (D : Tensor0SSpace (r + 1) I x)
+    (v0 : TangentSpace I x) (vs : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval (slotExtendPointwise (I := I) (M := M) r s x A D) (Fin.cons v0 vs) =
+      Tensor0SSpace.eval
+        (A ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) D v0)) vs := by
+  rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+    (T := slotExtendPointwise (I := I) (M := M) r s x A D) (v0 := v0) (vs := vs)]
+  rw [slotExtendFib_apply, ContinuousLinearEquiv.apply_symm_apply,
+    ContinuousLinearMap.comp_apply]
+
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
 theorem contMDiff_uncurriedSection_of_contMDiff_homSection {n : ℕ}
@@ -176,7 +182,7 @@ theorem contMDiff_uncurriedSection_of_contMDiff_homSection {n : ℕ}
         TotalSpace.mk' (Tensor0SModel (n + 1) ℝ E)
           (E := fun y : M => Tensor0SSpace (n + 1) I y) b
           ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) n b).symm (G b))) := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel (n + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel (n + 1) ℝ E)
       (fun y : M => Tensor0SSpace (n + 1) I y)) :=
     tensor0SBundle_topology (n + 1)
   intro x
@@ -212,7 +218,6 @@ theorem contMDiff_uncurriedSection_of_contMDiff_homSection {n : ℕ}
   exact (LinearIsometryEquiv.symm_apply_apply
     (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ) _).symm
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] [CompleteSpace E] in
 theorem slotExtendFib_contMDiff (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -277,7 +282,6 @@ theorem slotExtendFib_contMDiff (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (fun x : M => (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x).comp
       ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) (Y x))) hG
 
-set_option backward.isDefEq.respectTransparency false in
 def slotExtend (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) : SmoothCcTensor g (r + 1) (s + 1) where
   toSection :=
@@ -288,7 +292,6 @@ def slotExtend (g : SmoothRiemannianMetric I M) (r s : ℕ)
       contMDiff_toFun := slotExtendFib_contMDiff (I := I) (M := M) g r s Φ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 @[simp] lemma slotExtend_toSection (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -298,7 +301,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
         slotExtendPointwise (I := I) (M := M) r s x
           (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)) := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 theorem slotExtend_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -315,7 +317,7 @@ theorem slotExtend_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
       (slotExtend (I := I) (M := M) g r s X).toSection x -
         (slotExtend (I := I) (M := M) g r s Y).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   rw [show ((slotExtend (I := I) (M := M) g r s (X - Y)).toSection x) D =
       (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
@@ -343,7 +345,6 @@ theorem slotExtend_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
     rfl]
   rw [map_sub]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 theorem operatorFieldApplication_add_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -363,7 +364,6 @@ theorem operatorFieldApplication_add_right (g : SmoothRiemannianMetric I M) (r s
     rw [SmoothCcTensor.toSection_add]; rfl]
   rw [ContinuousLinearMap.comp_add]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 theorem operatorFieldApplication_smul_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -380,7 +380,6 @@ theorem operatorFieldApplication_smul_right (g : SmoothRiemannianMetric I M) (r 
     rw [SmoothCcTensor.toSection_smul]; rfl]
   rw [ContinuousLinearMap.comp_smul]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 theorem operatorFieldApplication_smul_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -397,7 +396,6 @@ theorem operatorFieldApplication_smul_left (g : SmoothRiemannianMetric I M) (r s
     rw [SmoothCcTensor.toSection_smul]; rfl]
   rw [ContinuousLinearMap.smul_comp]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 theorem operatorFieldApplication_add_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -417,7 +415,6 @@ theorem operatorFieldApplication_add_left (g : SmoothRiemannianMetric I M) (r s 
     rw [SmoothCcTensor.toSection_add]; rfl]
   rw [ContinuousLinearMap.add_comp]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem tensorCovDerivAt_operatorFieldApplication_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -449,11 +446,13 @@ theorem tensorCovDerivAt_operatorFieldApplication_eq (g : SmoothRiemannianMetric
             x v) d =
         (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
             (fun y : M =>
-              (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from Φ.toSection y) (Wd y)) x v) -
+              (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from Φ.toSection y) (Wd y)) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) -
           (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x)
               (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)
-                (fun y : M => dSec y) x v)) := by
+                (fun y : M => dSec y) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))) := by
     have hval : (fun y : M =>
           (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from
             (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection y) (dSec y)) =
@@ -466,7 +465,8 @@ theorem tensorCovDerivAt_operatorFieldApplication_eq (g : SmoothRiemannianMetric
       tensorCovDerivAt_def (I := I) (M := M) g 0 s (operatorFieldApply (I := I) (M := M) g r s Φ W)
         x v,
       tensorRSCovariantDerivative_apply (I := I) (M := M) 0 s (LeviCivita (I := I) g)
-        (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection dSec x v, hval,
+        (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection dSec x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v), hval,
       operatorFieldApplication_toSection (I := I) (M := M) g r s Φ W x, ContinuousLinearMap.comp_apply]
   have hT1 :
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
@@ -474,58 +474,61 @@ theorem tensorCovDerivAt_operatorFieldApplication_eq (g : SmoothRiemannianMetric
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x) d) =
         (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
             (fun y : M =>
-              (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from Φ.toSection y) (Wd y)) x v) -
+              (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from Φ.toSection y) (Wd y)) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) -
           (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
             (Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g)
-              (fun y : M => Wd y) x v) := by
+              (fun y : M => Wd y) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) := by
     rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x) d = Wd x
       from by
       rw [show d = dSec x from hdSec.symm]; rfl,
       tensorCovDerivAt_def (I := I) (M := M) g r s Φ x v,
       tensorRSCovariantDerivative_apply (I := I) (M := M) r s (LeviCivita (I := I) g)
-        Φ.toSection Wd x v]
+        Φ.toSection Wd x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)]
   have hT2 :
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from
           tensorCovDerivAt (I := I) (M := M) g 0 r W x v) d) =
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
           (Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g)
-              (fun y : M => Wd y) x v) -
+              (fun y : M => Wd y) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) -
           (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x)
               (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g)
-                (fun y : M => dSec y) x v)) := by
+                (fun y : M => dSec y) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))) := by
     rw [show d = dSec x from hdSec.symm,
       tensorCovDerivAt_def (I := I) (M := M) g 0 r W x v,
       tensorRSCovariantDerivative_apply (I := I) (M := M) 0 r (LeviCivita (I := I) g)
-        W.toSection dSec x v]
+        W.toSection dSec x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)]
     rw [map_sub (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)]
     rfl
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+  rw [add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     hLHS, hT1, hT2]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor0S_curry_covGrad_operatorFieldApplication_eq (g : SmoothRiemannianMetric I M) (r : ℕ)
     (W : SmoothCcTensor g 0 r) (x : M) (d : Tensor0SSpace 0 I x) (v0 : E) :
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (r + 1) I x from
-          (covGrad (I := I) (M := M) g 0 r W).toSection x) d) v0 =
+          (covGrad (I := I) (M := M) g 0 r W).toSection x) d)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from
         tensorCovDerivAt (I := I) (M := M) g 0 r W x v0) d := by
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
-  rw [tensor0S_curry_apply_eval (I := I) (M := M)
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
     (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (r + 1) I x from
       (covGrad (I := I) (M := M) g 0 r W).toSection x) d) (v0 := v0) (vs := m)]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 r W x d (Fin.cons v0 m)]
   simp only [Fin.cons_zero, Matrix.vecTail]
   rw [show (Fin.cons v0 m ∘ Fin.succ) = m from funext (fun j => by simp [Fin.cons_succ])]
 
-set_option backward.isDefEq.respectTransparency false in
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_operatorFieldApply_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
@@ -549,11 +552,11 @@ theorem covGrad_operatorFieldApply_eq (g : SmoothRiemannianMetric I M) (r s : �
           (covGrad (I := I) (M := M) g 0 r W)).toSection x from rfl]
   apply ContinuousLinearMap.ext
   intro d
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun v => ?_)
   beta_reduce
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [Tensor0SSpace.toModel_add, add_apply]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 s
     (operatorFieldApply (I := I) (M := M) g r s Φ W) x d v]
   rw [operatorFieldApplication_toSection (I := I) (M := M) g r (s + 1) (covGrad (I := I) (M := M) g r s Φ) W x,
@@ -593,8 +596,8 @@ theorem covGrad_operatorFieldApply_eq (g : SmoothRiemannianMetric I M) (r s : �
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from
             tensorCovDerivAt (I := I) (M := M) g 0 r W x (v 0)) from
     tensorCovDerivAt_operatorFieldApplication_eq (I := I) (M := M) g r s Φ W x (v 0)]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    Tensor0SSpace.toModel_add, add_apply]
 
 end Spectral
 end Analysis
@@ -610,7 +613,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-set_option backward.isDefEq.respectTransparency false in
 def slotExtendPointwise (r s : ℕ) (x : M)
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) :
     Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
@@ -634,7 +636,6 @@ abbrev slotExtendFib (r s : ℕ) (x : M)
     Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
   slotExtendPointwise r s x A
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma slotExtendFib_apply (r s : ℕ) (x : M)
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x)
     (D : Tensor0SSpace (r + 1) I x) :
@@ -644,15 +645,15 @@ set_option backward.isDefEq.respectTransparency false in
   rw [slotExtendPointwise, LinearMap.coe_toContinuousLinearMap']
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 lemma slotExtendFib_apply_eval (r s : ℕ) (x : M)
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x)
     (D : Tensor0SSpace (r + 1) I x) (v0 : E) (vs : Fin s → E) :
     Tensor0SSpace.toModel
         (slotExtendPointwise (I := I) (M := M) r s x A D) (Fin.cons v0 vs) =
       Tensor0SSpace.toModel
-        (A ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) D v0)) vs := by
-  rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s)
+        (A ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) D
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))) vs := by
+  rw [← TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := s)
     (slotExtendPointwise (I := I) (M := M) r s x A D) v0 vs]
   have hcurry : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
       (slotExtendPointwise (I := I) (M := M) r s x A D) =

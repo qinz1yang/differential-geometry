@@ -46,8 +46,8 @@ theorem exp_eq_intr_of_c2
     intrinsicGeodesic (I := I) g hEnorm p
       (show TangentSpace I p from u)
   have hlocal : γR =ᶠ[𝓝 (0 : Real)] γI := by
-    simpa only [γR, γI] using
-      exp_radial_eq_intr (I := I) g hEnorm p u
+    with_unfolding_all
+      exact exp_radial_eq_intr (I := I) g hEnorm p u
   have hlocal_mem : {s : Real | γR s = γI s} ∈ 𝓝 (0 : Real) := hlocal
   obtain ⟨U, hUsub, hUopen, h0U⟩ := mem_nhds_iff.mp hlocal_mem
   obtain ⟨ε, hε, hεsub⟩ := Metric.isOpen_iff.mp hUopen 0 h0U
@@ -169,7 +169,9 @@ theorem exp_eq_intr_of_c2
     intro s hs
     rw [closure_Ioo (by norm_num : (0 : Real) ≠ 1)]
     exact hs
-  simpa only [γR, γI, one_smul, expMapIntrinsic_def] using
+  change expMap (I := I) g p (show TangentSpace I p from u) =
+    intrinsicGeodesic (I := I) g hEnorm p (show TangentSpace I p from u) 1
+  simpa only [γR, γI, one_smul] using
     hEqClosed (by norm_num : (1 : Real) ∈ Set.Icc (0 : Real) 1)
 
 theorem exp_germ_eq_intr

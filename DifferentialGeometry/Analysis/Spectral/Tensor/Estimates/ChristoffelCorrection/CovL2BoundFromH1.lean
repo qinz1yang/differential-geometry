@@ -7,7 +7,6 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -144,7 +143,7 @@ private lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
     (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

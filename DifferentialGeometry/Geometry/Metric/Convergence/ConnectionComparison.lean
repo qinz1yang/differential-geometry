@@ -63,7 +63,7 @@ def akInnerPerm {q : ℕ} (s : Fin (q + 1)) : Equiv.Perm (Fin (q + 1)) :=
 theorem akInnerPerm_zero {q : ℕ} (s : Fin (q + 1)) :
     akInnerPerm s 0 = s := by
   have h0 : (finRotate (q + 1)).symm 0 = Fin.last q := by
-    rw [Equiv.symm_apply_eq, finRotate_succ_apply, Fin.last_add_one]
+    rw [Equiv.symm_apply_eq, finRotate_apply, Fin.last_add_one]
   rcases eq_or_ne s (Fin.last q) with rfl | hs
   · simp [akInnerPerm, h0]
   · simp [akInnerPerm, h0, Equiv.swap_apply_right]
@@ -72,7 +72,7 @@ theorem akInnerPerm_succ {q : ℕ} (s : Fin (q + 1)) (i : Fin q) :
     akInnerPerm s i.succ =
       if Fin.castSucc i = s then Fin.last q else Fin.castSucc i := by
   have hrot : (finRotate (q + 1)).symm i.succ = Fin.castSucc i := by
-    rw [Equiv.symm_apply_eq, finRotate_succ_apply]
+    rw [Equiv.symm_apply_eq, finRotate_apply]
     exact Fin.ext (by
       rw [Fin.val_add_one_of_lt (Fin.castSucc_lt_last i)]
       simp)
@@ -441,7 +441,6 @@ theorem exists_iterated_covariant_component_bound_of_connection_change {u : Set 
                   mul_le_mul_of_nonneg_left h2
                     (mul_nonneg (Nat.cast_nonneg _) (hCA0 c))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

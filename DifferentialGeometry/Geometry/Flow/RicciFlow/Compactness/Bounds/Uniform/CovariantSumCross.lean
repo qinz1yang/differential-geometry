@@ -211,18 +211,18 @@ theorem diffStep_norm_le
             (leviCivitaConnectionOfMetric (I := I) g₂) x)) *
         Real.sqrt (normSq0S (I := I) g₂ x s (S x)) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   let D := (tangentMetricData_gen (I := I) g₂ x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis
@@ -369,12 +369,6 @@ private theorem diff_swap
     (w u : TangentSpace I x) :
     ((CovariantDerivative.difference cov cov' x) w) u
       = -(((CovariantDerivative.difference cov' cov x) w) u) := by
-  haveI : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
-    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
-    TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   obtain ⟨σ, hσ⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w
   have hd1 := IsCovariantDerivativeOn.difference_apply
@@ -388,11 +382,13 @@ private theorem diff_swap
   have h1 : ((CovariantDerivative.difference cov cov' x) w) u
       = (cov (fun p => σ p) x) u - (cov' (fun p => σ p) x) u := by
     have h := congrArg (fun L : TangentSpace I x →L[Real] TangentSpace I x => L u) hd1
-    rw [← hσ]; simpa using h
+    rw [← hσ]
+    simpa only [CovariantDerivative.difference, sub_apply] using h
   have h2 : ((CovariantDerivative.difference cov' cov x) w) u
       = (cov' (fun p => σ p) x) u - (cov (fun p => σ p) x) u := by
     have h := congrArg (fun L : TangentSpace I x →L[Real] TangentSpace I x => L u) hd2
-    rw [← hσ]; simpa using h
+    rw [← hσ]
+    simpa only [CovariantDerivative.difference, sub_apply] using h
   rw [h1, h2]; abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -438,7 +434,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem metricCovDeriv_self_one_zero (g : SmoothRiemannianMetric I M) (x : M) :
     metricCovDeriv (I := I) g g 1 x = 0 := by
   classical
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   refine ContinuousMultilinearMap.ext (fun w => ?_)
   obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (w 0)
@@ -473,12 +469,12 @@ theorem diffStep_jet_one_le
       (s : ℝ) * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (s + 1)) *
         ((3 / 2 : Real) * (Real.sqrt (Λ ^ 3) * Λ')) *
         Real.sqrt (normSq0S (I := I) g₂ x s (S x)) := by
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   have hconn :
       Real.sqrt (normSqRS (I := I) (g := g₂) (x := x) 1 2
@@ -535,18 +531,18 @@ theorem covStepDiff_norm_le
             Real.sqrt (normSq0S (I := I) g₂ x (s + 1)
               (covStep (I := I) g₂ s S x))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   let D := (tangentMetricData_gen (I := I) g₂ x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis
@@ -730,12 +726,12 @@ theorem covStepDiff_jet_le
         (CA + (3 / 2 : Real) * (Real.sqrt (Λ ^ 3) * Λ')) *
         (Real.sqrt (normSq0S (I := I) g₂ x s (S x)) +
           Real.sqrt (normSq0S (I := I) g₂ x (s + 1) (covStep (I := I) g₂ s S x))) := by
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   have hconn :
       Real.sqrt (normSqRS (I := I) (g := g₂) (x := x) 1 2
@@ -818,10 +814,10 @@ private theorem exists_g_onbasis (g : SmoothRiemannianMetric I M) (x : M) :
           (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis
@@ -1039,7 +1035,7 @@ theorem iterCovG1_two
     (fun m => if m = 1 then
       (r : ℝ) * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (r + 2)) *
         (3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) + (3 / 2 : ℝ) * (Real.sqrt (Λ ^ 3) * Λ'))
-      else 0) (fun m => by dsimp only; split <;> [exact hCA_nn; exact le_refl 0])
+      else 0) (fun m => by split <;> [exact hCA_nn; exact le_refl 0])
     hEq hjet hx 2 ?_
   intro m hm
   interval_cases m

@@ -46,7 +46,9 @@ private theorem grad_sqrt_mix
       contMDiff_const
     have hb_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => b) :=
       contMDiff_const
-    simpa only [pow_two] using (ha_smooth.mul (hv.mul hv)).add hb_smooth
+    exact ((ha_smooth.mul (hv.mul hv)).add hb_smooth).congr fun y => by
+      change a * v y ^ 2 + b = a * (v y * v y) + b
+      rw [pow_two]
   have hw : ContMDiff I 𝓘(ℝ, ℝ) ∞ w := by
     intro y
     have hsqrt : ContDiffAt ℝ ∞ Real.sqrt (q y) :=
@@ -130,7 +132,7 @@ private theorem energy_mix_le
     apply (div_le_iff₀ (sq_pos_of_pos hwpos)).2
     nlinarith [mul_nonneg ha hb.le]
   rw [grad_sqrt_mix (I := I) g hv ha hb x]
-  rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+  rw [(g.inner x).map_smul, smul_apply,
     smul_eq_mul,
     (g.inner x (gradientFun (I := I) g v x)).map_smul, smul_eq_mul]
   rw [← mul_assoc, ← pow_two]
@@ -164,17 +166,17 @@ theorem exists_pos_wform
             tau * R x * v x ^ 2 - v x ^ 2 * Real.log (v x ^ 2) + C * v x ^ 2
           ∂(riemannianVolumeMeasure I M g)) + δ := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ :=
+  let : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
-  letI : μ.IsOpenPosMeasure :=
+  let : μ.IsOpenPosMeasure :=
     riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
   have hμpos : 0 < μ Set.univ :=
     isOpen_univ.measure_pos μ Set.univ_nonempty
-  letI : NeZero μ := ⟨by
+  let : NeZero μ := ⟨by
     intro hμ
     have hz : μ Set.univ = 0 := by
       rw [hμ, Measure.coe_zero, Pi.zero_apply]
@@ -189,7 +191,9 @@ theorem exists_pos_wform
   let H₀ : ℝ := ∫ x, Real.negMulLog (p x) ∂μ
   let R₀ : ℝ := ∫ x, R x ∂μ
   have hpcont : Continuous p := by
-    simpa only [p, pow_two] using (hv.mul hv).continuous
+    exact (hv.mul hv).continuous.congr fun x => by
+      change v x * v x = v x ^ 2
+      rw [pow_two]
   have hpint : Integrable p μ :=
     integrable_of_continuous_compactSpace (I := I) (M := M) g hpcont
   have hRpint : Integrable (fun x => R x * p x) μ :=
@@ -242,7 +246,9 @@ theorem exists_pos_wform
     dsimp only [q]
     have ha_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => a) := contMDiff_const
     have hb_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => b) := contMDiff_const
-    simpa only [pow_two] using (ha_smooth.mul (hv.mul hv)).add hb_smooth
+    exact ((ha_smooth.mul (hv.mul hv)).add hb_smooth).congr fun x => by
+      change a * v x ^ 2 + b = a * (v x * v x) + b
+      rw [pow_two]
   have hw : ContMDiff I 𝓘(ℝ, ℝ) ∞ w := by
     intro x
     exact (Real.contDiffAt_sqrt (hqpos x).ne').contMDiffAt.comp x (hq x)
@@ -287,7 +293,7 @@ theorem exists_pos_wform
     change gradientFun (I := I) g w x =
       (a * v x / w x) • gradientFun (I := I) g v x at hgrad
     dsimp only [energyW, coef, energy]
-    rw [hgrad, (g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+    rw [hgrad, (g.inner x).map_smul, smul_apply,
       smul_eq_mul, (g.inner x (gradientFun (I := I) g v x)).map_smul,
       smul_eq_mul]
     ring

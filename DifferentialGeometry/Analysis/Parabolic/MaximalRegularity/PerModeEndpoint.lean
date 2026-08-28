@@ -33,7 +33,7 @@ theorem duhamelKernelSqIntegral_le_t {lam t : ℝ} (hlam : 0 ≤ lam) (ht : 0 �
       ≤ ∫ _s in (0 : ℝ)..t, (1 : ℝ) := by
         refine intervalIntegral.integral_mono_on ht
           (Continuous.intervalIntegrable (by fun_prop) 0 t)
-          intervalIntegral.intervalIntegrable_const (fun s hs => ?_)
+          intervalIntegrable_const (fun s hs => ?_)
         refine Real.exp_le_one_iff.mpr ?_
         have : 0 ≤ 2 * lam * (t - s) := by nlinarith [hs.1, hs.2]
         linarith

@@ -254,8 +254,8 @@ theorem range_inclH_basisAddHaar_volume_zero :
     haveI : BorelSpace E := ⟨rfl⟩
     ((Module.finBasis ℝ E).addHaar : MeasureTheory.Measure E)
         (Set.range ((I : H → E) ∘ hI.inclH)) = 0 := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
   rw [hI.range_I_inclH]
   exact hI.range_frontier_basis_addHaar_zero
 
@@ -264,8 +264,8 @@ theorem subset_range_frontier_basisAddHaar_volume_zero
     letI : MeasurableSpace E := borel E
     haveI : BorelSpace E := ⟨rfl⟩
     ((Module.finBasis ℝ E).addHaar : MeasureTheory.Measure E) S = 0 := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
   exact MeasureTheory.measure_mono_null hS hI.range_frontier_basis_addHaar_zero
 
 end NullSetDerived

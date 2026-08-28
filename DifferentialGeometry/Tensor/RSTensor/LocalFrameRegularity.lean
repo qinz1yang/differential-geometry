@@ -17,7 +17,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
 theorem tensor0SConstInChart_contMDiffAt_of_mem {r : ℕ}
     (x₀ : M) (β : Tensor0SModel r 𝕜 E) {x : M}
@@ -40,10 +39,12 @@ theorem tensor0SConstInChart_contMDiffAt_of_mem {r : ℕ}
   have hcoe : ⇑(e.linearMapAt 𝕜 p) = fun z => (e ⟨p, z⟩).2 :=
     e.coe_linearMapAt_of_mem (R := 𝕜) hp
   change (e ⟨p, e.symmL 𝕜 p β⟩).2 = β
-  simpa [Bundle.Trivialization.continuousLinearMapAt_apply, hcoe] using
-    (e.continuousLinearMapAt_symmL (R := 𝕜) hp β)
+  calc
+    (e ⟨p, e.symmL 𝕜 p β⟩).2 =
+        (e.linearMapAt 𝕜 p) (e.symmL 𝕜 p β) :=
+      (congrFun hcoe (e.symmL 𝕜 p β)).symm
+    _ = β := e.continuousLinearMapAt_symmL (R := 𝕜) hp β
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
 theorem tensor0SConstInChart_contMDiffAt {r : ℕ}
     (x₀ : M) (β : Tensor0SModel r 𝕜 E) :
@@ -58,7 +59,6 @@ theorem tensor0SConstInChart_contMDiffAt {r : ℕ}
     x₀ β (mem_baseSet_trivializationAt
       (Tensor0SModel r 𝕜 E) (fun p : M => Tensor0SSpace r I p) x₀)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
 private theorem tensor0SModelInChart_contDiffWithinAt_center_of_contMDiffAt {r : ℕ}
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -121,7 +121,6 @@ private theorem tensor0SModelInChart_contDiffWithinAt_center_of_contMDiffAt {r :
     simp [tensor0SModelInChart, tensor0SModelAt, e]
   exact hmdiff.contDiffWithinAt
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace 𝕜] in
 theorem tensor0SModelInChart_differentiableWithinAt_center_of_contMDiffAt {r : ℕ}
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -140,7 +139,6 @@ theorem tensor0SModelInChart_differentiableWithinAt_center_of_contMDiffAt {r : �
   (tensor0SModelInChart_contDiffWithinAt_center_of_contMDiffAt
     (I := I) β x₀ hβ).differentiableWithinAt (by simp)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem tensorRS_eval_contMDiffAt {r s : ℕ}
     (T : (p : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r s p)
@@ -181,9 +179,8 @@ theorem tensorRS_eval_contMDiffAt {r s : ℕ}
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun p : M => T p (β p)) hApplied
     (v := V) hV
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hEval
+  exact hEval
 
-set_option backward.isDefEq.respectTransparency false in
 theorem tensor0S_eval_tangentConstInChart_contMDiffAt
     {s : ℕ}
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -227,7 +224,7 @@ theorem tensor0S_eval_tangentConstInChart_contMDiffAt
       tangentConstInChart (𝕜 := 𝕜) (I := I) x₀
         ((Module.finBasis 𝕜 E) (slots a)))
     (hv := hframe)
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hEval
+  exact hEval
 
 end Tensor0SBundle
 end DifferentialGeometry

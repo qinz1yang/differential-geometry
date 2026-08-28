@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -64,7 +63,7 @@ private lemma pureRDirCLMTensor_apply
         riemannOp (tensorCov (I := I) g 0 m) x (B i x) v
           ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ (B i x)) := by
   classical
-  rw [pureRDirCLMTensor, ContinuousLinearMap.sum_apply]
+  rw [pureRDirCLMTensor, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
 
@@ -164,17 +163,13 @@ private lemma covGradBundleEquiv_symm_apply_eq_curry
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w := by
   apply tensor0SSpace_ext (𝕜 := ℝ) m x
   intro v'
-  rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from
-        ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ) w) d v' =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from
-          ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ) w) d) v' from rfl]
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from
+        ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ) w) d) v' = _
   rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) 0 m x τ w d v']
-  rw [show tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w v' =
-      Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w) v' from rfl]
+  change _ = Tensor0SSpace.eval
+      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w) v'
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w v']
 
@@ -185,12 +180,12 @@ private lemma pureRDirCLMTensor_covGradEquiv_eval
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (x : M) (τ : TensorRSSpace 0 (m + 1) I x) (d : Tensor0SSpace 0 I x)
     (v : Fin (m + 1) → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 m x
             (pureRDirCLMTensor (I := I) (M := M) g m B x τ)) d) v =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) x
             (B i x) (v 0)
             (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
@@ -205,10 +200,8 @@ private lemma pureRDirCLMTensor_covGradEquiv_eval
         riemannOp (tensorCov (I := I) g 0 m) x (B i x) (v 0)
           ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ (B i x))) d from by
     rw [pureRDirCLMTensor_apply (I := I) (M := M) g m B x τ (v 0)]]
-  rw [ContinuousLinearMap.sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum,
-    ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.eval_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [Tensor0SSpace.toModelL_apply]
   rw [riemannOp_tensorCov_homNatural (I := I) (M := M) g m x (B i x) (v 0)
     ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ (B i x)) d]
   rw [covGradBundleEquiv_symm_apply_eq_curry (I := I) (M := M) m x τ (B i x) d]
@@ -219,14 +212,14 @@ private lemma pureREndoOpFibVal_eval
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (x : M) (S : Tensor0SSpace (m + 1) I x) (v : Fin (m + 1) → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 m x
             (pureRDirCLMTensor (I := I) (M := M) g m B x
               (unitScalarRSLift (I := I) (M := M) x S)))
           (unitZeroSec (I := I) (M := M) x)) v =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) x
             (B i x) (v 0)
             (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S (B i x)))
@@ -256,12 +249,10 @@ private theorem pureREndoOpFibFun_add
         pureREndoOpFibFun (I := I) (M := M) g m x S' := by
   apply tensor0SSpace_ext (𝕜 := ℝ) (m + 1) x
   intro v
-  rw [show pureREndoOpFibFun (I := I) (M := M) g m x (S + S') v =
-        Tensor0SSpace.toModel (pureREndoOpFibFun (I := I) (M := M) g m x (S + S')) v from rfl,
-    show (pureREndoOpFibFun (I := I) (M := M) g m x S +
-        pureREndoOpFibFun (I := I) (M := M) g m x S') v =
-      Tensor0SSpace.toModel (pureREndoOpFibFun (I := I) (M := M) g m x S) v +
-        Tensor0SSpace.toModel (pureREndoOpFibFun (I := I) (M := M) g m x S') v from rfl]
+  change Tensor0SSpace.eval (pureREndoOpFibFun (I := I) (M := M) g m x (S + S')) v =
+    Tensor0SSpace.eval (pureREndoOpFibFun (I := I) (M := M) g m x S +
+      pureREndoOpFibFun (I := I) (M := M) g m x S') v
+  rw [Tensor0SSpace.eval_add]
   rw [pureREndoOpFibFun, pureREndoOpFibVal_eval (I := I) (M := M) g m
       (smoothOrthoFrame (I := I) g x) x (S + S') v,
     pureREndoOpFibFun, pureREndoOpFibVal_eval (I := I) (M := M) g m
@@ -276,10 +267,10 @@ private theorem pureREndoOpFibFun_add
           tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S'
             (smoothOrthoFrame (I := I) g x i x) from by
     rw [map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x),
-      ContinuousLinearMap.add_apply]]
+      add_apply]]
   rw [map_add (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m
     (LeviCivita (I := I) g)) x (smoothOrthoFrame (I := I) g x i x) (v 0)),
-    Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+    Tensor0SSpace.eval_add]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -290,10 +281,9 @@ private theorem pureREndoOpFibFun_smul
       c • pureREndoOpFibFun (I := I) (M := M) g m x S := by
   apply tensor0SSpace_ext (𝕜 := ℝ) (m + 1) x
   intro v
-  rw [show pureREndoOpFibFun (I := I) (M := M) g m x (c • S) v =
-        Tensor0SSpace.toModel (pureREndoOpFibFun (I := I) (M := M) g m x (c • S)) v from rfl,
-    show (c • pureREndoOpFibFun (I := I) (M := M) g m x S) v =
-      c • Tensor0SSpace.toModel (pureREndoOpFibFun (I := I) (M := M) g m x S) v from rfl]
+  change Tensor0SSpace.eval (pureREndoOpFibFun (I := I) (M := M) g m x (c • S)) v =
+    Tensor0SSpace.eval (c • pureREndoOpFibFun (I := I) (M := M) g m x S) v
+  rw [Tensor0SSpace.eval_smul]
   rw [pureREndoOpFibFun, pureREndoOpFibVal_eval (I := I) (M := M) g m
       (smoothOrthoFrame (I := I) g x) x (c • S) v,
     pureREndoOpFibFun, pureREndoOpFibVal_eval (I := I) (M := M) g m
@@ -304,10 +294,10 @@ private theorem pureREndoOpFibFun_smul
         c • tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S
           (smoothOrthoFrame (I := I) g x i x) from by
     rw [map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x),
-      ContinuousLinearMap.smul_apply]]
+      smul_apply]]
   rw [map_smul (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m
     (LeviCivita (I := I) g)) x (smoothOrthoFrame (I := I) g x i x) (v 0)),
-    Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+    Tensor0SSpace.eval_smul, smul_eq_mul]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -345,27 +335,31 @@ private lemma pureRGenuineEndoFib_eq_comp
   intro d
   apply tensor0SSpace_ext (𝕜 := ℝ) (m + 1) x
   intro v
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
+        pureRGenuineEndoFib (I := I) (M := M) g m W x) d) v =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
+        TensorRSSpace.ofCLM
+          ((pureREndoOpFib (I := I) (M := M) g m x).comp
+            (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x))) d) v
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
-        pureRGenuineEndoFib (I := I) (M := M) g m W x) d v =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
-          covGradBundleEquiv (I := I) (M := M) 0 m x
-            (pureRDirCLMTensor (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x) x
-              (W.toSection x))) d) v from by
+        pureRGenuineEndoFib (I := I) (M := M) g m W x) d =
+      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
+        covGradBundleEquiv (I := I) (M := M) 0 m x
+          (pureRDirCLMTensor (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x) x
+            (W.toSection x))) d from by
     rw [pureRGenuineEndoFib, pureRFrozenEndoFib,
       pureRFrozenDirCLM_eq_pureRDirCLMTensor (I := I) (M := M) g m
-        (smoothOrthoFrame (I := I) g x) W x]
-    rfl]
+        (smoothOrthoFrame (I := I) g x) W x]]
   rw [pureRDirCLMTensor_covGradEquiv_eval (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x) x
     (W.toSection x) d v]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
         TensorRSSpace.ofCLM
           ((pureREndoOpFib (I := I) (M := M) g m x).comp
-            (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x))) d v =
-      Tensor0SSpace.toModel
-        (pureREndoOpFib (I := I) (M := M) g m x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x) d)) v from
-            rfl]
+            (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x))) d =
+      pureREndoOpFib (I := I) (M := M) g m x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x) d) from rfl]
   rw [pureREndoOpFib_apply (I := I) (M := M) g m x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x) d)]
   rw [pureRDirCLMTensor_covGradEquiv_eval (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x) x
@@ -378,12 +372,12 @@ private lemma pureRGenuineEndoFib_eq_comp
 theorem pureRGenuineDiffOp_zero_succ_toSection_unit_eval
     (g : SmoothRiemannianMetric I M) (m : ℕ) (W : SmoothCcTensor g 0 (m + 1)) (x : M)
     (v : Fin (m + 1) → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
           (pureRGenuineDiffOp (I := I) (M := M) g 0 (m + 1) W).toSection x)
           (unitZeroSec (I := I) (M := M) x)) v =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) x
             (smoothOrthoFrame (I := I) g x i x) (v 0)
             (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x

@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.FiberBundleT2
 import Mathlib.Analysis.Normed.Module.Connected
 open DifferentialGeometry.Geometry.Curvature
 
+
 noncomputable section
 
 open Bundle Manifold Metric Module Set
@@ -50,11 +51,11 @@ theorem orth_rep_of_iso
   have hfr : 1 < finrank ℝ E := by
     rw [show finrank ℝ E = n + 1 from Fact.out]
     exact Nat.succ_lt_succ hn
-  letI : NeZero n := ⟨Nat.ne_of_gt hn⟩
-  letI : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
+  let : NeZero n := ⟨Nat.ne_of_gt hn⟩
+  let : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
     rw [finrank_euclideanSpace_fin]
     infer_instance
-  letI : PreconnectedSpace (sphere (0 : E) 1) :=
+  let : PreconnectedSpace (sphere (0 : E) 1) :=
     Subtype.preconnectedSpace
       (isPreconnected_sphere
         (Module.one_lt_rank_of_one_lt_finrank hfr) (0 : E) 1)
@@ -84,7 +85,7 @@ theorem orth_rep_of_iso
       · apply Subtype.ext
         simpa only [sphereDiffeo_coe] using hep
       · ext v
-        simpa only [L, Diffeomorph.mfderivToContinuousLinearEquiv_coe] using hde v
+        with_unfolding_all exact hde v
     apply Diffeomorph.ext
     exact congrFun hfun
   choose e he using hex

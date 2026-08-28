@@ -102,7 +102,7 @@ theorem contDiffHolderSpaceVariableMatrixLaplacian_apply
         (hessianCurryEquiv (Euc n) F
           (iteratedFDeriv Real 2 (contDiffHolderSpaceFun u) x)) := by
   simp only [contDiffHolderSpaceVariableMatrixLaplacian,
-    ContinuousLinearMap.sum_apply, boundedHolderSpace_sum_apply,
+    sum_apply, boundedHolderSpace_sum_apply,
     ContinuousLinearMap.comp_apply, boundedHolderSpaceSmu_apply,
     boundedHolderSpaceMap_apply, contDiffHolderSpaceTopJet_apply,
     hessianComponentEval_apply, matrixLap]
@@ -207,7 +207,7 @@ theorem parabolicC2HolderSpaceVariableMatrixLaplacian_apply
         (hessianCurryEquiv (Euc n) F
           (parabolicSpatialJet 2 (parabolicC2HolderSpaceFun u) p)) := by
   simp only [parabolicC2HolderSpaceVariableMatrixLaplacian,
-    ContinuousLinearMap.sum_apply, boundedHolderSpace_sum_apply,
+    sum_apply, boundedHolderSpace_sum_apply,
     ContinuousLinearMap.comp_apply, boundedHolderSpaceSmu_apply,
     boundedHolderSpaceMap_apply,
     parabolicC2HolderSpaceSpatialHessian_apply,
@@ -314,7 +314,7 @@ theorem parabolicC2HolderSpaceVariableMatrixOperator_apply
           (hessianCurryEquiv (Euc n) F
             (parabolicSpatialJet 2 (parabolicC2HolderSpaceFun u) p)) := by
   simp only [parabolicC2HolderSpaceVariableMatrixOperator,
-    ContinuousLinearMap.sub_apply, boundedHolderSpace_sub_apply,
+    sub_apply, boundedHolderSpace_sub_apply,
     parabolicC2HolderSpaceTimeDerivative_apply,
     parabolicC2HolderSpaceVariableMatrixLaplacian_apply]
 
@@ -456,7 +456,7 @@ theorem hessianComponentBcf_holderWith
         (EuclideanSpace.basisFun n Real j) -
       d2u y (EuclideanSpace.basisFun n Real i)
         (EuclideanSpace.basisFun n Real j)‖ ≤ _
-    rw [← ContinuousLinearMap.sub_apply, ← ContinuousLinearMap.sub_apply]
+    rw [← sub_apply, ← sub_apply]
     calc
       ‖(d2u x - d2u y) (EuclideanSpace.basisFun n Real i)
           (EuclideanSpace.basisFun n Real j)‖ ≤ ‖d2u x - d2u y‖ := by
@@ -620,7 +620,7 @@ theorem norm_matrixLapFreezeDefect_le_of_support
             (hd2unorm x))
           (norm_nonneg _) (by positivity)
   · rw [hd2usupport x hx]
-    simp only [ContinuousLinearMap.zero_apply, smul_zero,
+    simp only [zero_apply, smul_zero,
       Finset.sum_const_zero, norm_zero]
     exact Finset.sum_nonneg fun i _ ↦
       Finset.sum_nonneg fun j _ ↦
@@ -634,7 +634,7 @@ theorem matrixLapFreezeDefect_holderWith_of_support
       (Euc n →L[Real] Euc n →L[Real] F))
     (Ka omega : n → n → NNReal) (M : NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ s → ‖a i j x0 - a i j x‖ ≤ omega i j)
     (hd2unorm : ∀ x, ‖d2u x‖ ≤ M)
     (hd2u : HolderWith Kd2u alpha
@@ -653,7 +653,7 @@ theorem matrixLapFreezeDefect_holderWith_of_support
             (EuclideanSpace.basisFun n Real j)) := by
     intro i j
     have hcoeff : HolderWith (Ka i j) alpha
-        (s.restrict fun x : Euc n ↦ a i j x0 - a i j x) := by
+        (s.domRestrict fun x : Euc n ↦ a i j x0 - a i j x) := by
       intro x y
       change edist (a i j x0 - a i j x.1) (a i j x0 - a i j y.1) ≤ _
       rw [show edist (a i j x0 - a i j x.1) (a i j x0 - a i j y.1) =
@@ -734,7 +734,11 @@ theorem frozen_matrix_laplacian_schauder_estimate
   let A : Matrix n n Real := fun i j ↦ a i j x0
   have heq : spdMatrixLap A hA d2u = frozenMatrixLap a x0 d2u := by
     ext x
-    simp only [spdMatrixLap_apply, frozenMatrixLap_apply, A]
+    let hspd : spdMatrixLap A hA d2u x = matrixLap A (d2u x) :=
+      spdMatrixLap_apply A hA d2u x
+    let hfrozen : frozenMatrixLap a x0 d2u x =
+        matrixLap A (d2u x) := frozenMatrixLap_apply a x0 d2u x
+    exact hspd.trans hfrozen.symm
   apply spd_laplacian_schauder_estimate halpha0 halpha1 A hA
     u du d2u hu hdu
   · rw [heq]
@@ -789,7 +793,7 @@ theorem variable_coefficient_schauder_estimate_of_coefficient_oscillation_on
     (hfHolder : HolderWith Kf alpha (variableMatrixLap a d2u))
     (Ka omega : n → n → NNReal) (M : NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ s → ‖a i j x0 - a i j x‖ ≤ omega i j)
     (hd2unorm : ∀ x, ‖d2u x‖ ≤ M)
     (hd2uHolder : HolderWith Kd2u alpha
@@ -864,7 +868,7 @@ theorem variable_coefficient_schauder_estimate_of_interpolated_hessian_control_o
     (hfHolder : HolderWith Kf alpha (variableMatrixLap a d2u))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ s → ‖a i j x0 - a i j x‖ ≤ omega i j)
     (hd2uHolder : HolderWith X alpha
       (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F))
@@ -1023,7 +1027,7 @@ theorem variable_coefficient_schauder_estimate_of_interpolation_scale_on
     (hfHolder : HolderWith Kf alpha (variableMatrixLap a d2u))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ s → ‖a i j x0 - a i j x‖ ≤ omega i j)
     (hd2unorm0 : ∀ x, ‖d2u x‖ ≤ M)
     (hd2uHolder : HolderWith Kd2u alpha
@@ -1053,9 +1057,9 @@ theorem variable_coefficient_schauder_estimate_of_interpolation_scale_on
     intro j hj x hx
     interval_cases j
     · rw [norm_iteratedFDeriv_zero]
-      simpa only [Cspatial] using u.norm_coe_le_norm x
+      simpa only [Cspatial, coe_nnnorm] using u.norm_coe_le_norm x
     · rw [norm_iteratedFDeriv_one, (hu x).fderiv]
-      simpa only [Cspatial] using du.norm_coe_le_norm x
+      simpa only [Cspatial, coe_nnnorm] using du.norm_coe_le_norm x
     · rw [← e.norm_map (iteratedFDeriv Real 2 (u : Euc n → F) x), heq]
       simpa only [Cspatial] using hd2unorm0 x
   have hiterHolder : HolderWith Kd2u alpha
@@ -1083,12 +1087,12 @@ theorem variable_coefficient_schauder_estimate_of_interpolation_scale_on
     hcoeX.ge
   have hiterRestrict := topSpatialJet_holderWith_restrict hgaugeLeX
   have hd2uRestrict : HolderWith X alpha
-      ((Set.univ : Set (Euc n)).restrict
+      ((Set.univ : Set (Euc n)).domRestrict
         (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F)) := by
     have hcomp := e.lipschitz.holderWith.comp hiterRestrict
-    have hfun : e ∘ ((Set.univ : Set (Euc n)).restrict
+    have hfun : e ∘ ((Set.univ : Set (Euc n)).domRestrict
         (iteratedFDeriv Real 2 (u : Euc n → F))) =
-      (Set.univ : Set (Euc n)).restrict
+      (Set.univ : Set (Euc n)).domRestrict
         (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) := by
       funext x
       exact heq x
@@ -1097,9 +1101,12 @@ theorem variable_coefficient_schauder_estimate_of_interpolation_scale_on
   have hd2uHolderX : HolderWith X alpha
       (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) := by
     intro x y
-    simpa using hd2uRestrict
-      (⟨x, Set.mem_univ x⟩ : Set.univ)
-      (⟨y, Set.mem_univ y⟩ : Set.univ)
+    let h : edist (d2u x) (d2u y) ≤
+        (X : ENNReal) * edist x y ^ (alpha : Real) :=
+      hd2uRestrict
+        (⟨x, Set.mem_univ x⟩ : Set.univ)
+        (⟨y, Set.mem_univ y⟩ : Set.univ)
+    exact h
   exact variable_coefficient_schauder_estimate_of_interpolated_hessian_control_on
     halpha0 halpha1 hepsilon s a x0 hA u du d2u hu hdu hfBound hfHolder
     Ka omega ha homega hd2uHolderX hd2usupport hcoeX.le hsmall
@@ -1121,7 +1128,7 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_of_hessian_c
     (hfHolder : HolderWith Kf alpha (variableMatrixLap a d2u))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ s → ‖a i j x0 - a i j x‖ ≤ omega i j)
     (hd2unorm : ∀ x, ‖d2u x‖ ≤ X)
     (hd2uHolder : HolderWith X alpha
@@ -1249,7 +1256,7 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_on
     (hfHolder : HolderWith Kf alpha (variableMatrixLap a d2u))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ s → ‖a i j x0 - a i j x‖ ≤ omega i j)
     (hd2unorm0 : ∀ x, ‖d2u x‖ ≤ M)
     (hd2uHolder : HolderWith Kd2u alpha
@@ -1278,9 +1285,9 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_on
     intro j hj x hx
     interval_cases j
     · rw [norm_iteratedFDeriv_zero]
-      simpa only [Cspatial] using u.norm_coe_le_norm x
+      simpa only [Cspatial, coe_nnnorm] using u.norm_coe_le_norm x
     · rw [norm_iteratedFDeriv_one, (hu x).fderiv]
-      simpa only [Cspatial] using du.norm_coe_le_norm x
+      simpa only [Cspatial, coe_nnnorm] using du.norm_coe_le_norm x
     · rw [← e.norm_map (iteratedFDeriv Real 2 (u : Euc n → F) x), heq]
       simpa only [Cspatial] using hd2unorm0 x
   have hiterHolder : HolderWith Kd2u alpha
@@ -1315,12 +1322,12 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_on
       _ ≤ X := spatialJet_norm_le hgaugeLeX le_rfl (Set.mem_univ x)
   have hiterRestrict := topSpatialJet_holderWith_restrict hgaugeLeX
   have hd2uRestrict : HolderWith X alpha
-      ((Set.univ : Set (Euc n)).restrict
+      ((Set.univ : Set (Euc n)).domRestrict
         (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F)) := by
     have hcomp := e.lipschitz.holderWith.comp hiterRestrict
-    have hfun : e ∘ ((Set.univ : Set (Euc n)).restrict
+    have hfun : e ∘ ((Set.univ : Set (Euc n)).domRestrict
         (iteratedFDeriv Real 2 (u : Euc n → F))) =
-      (Set.univ : Set (Euc n)).restrict
+      (Set.univ : Set (Euc n)).domRestrict
         (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) := by
       funext x
       exact heq x
@@ -1329,9 +1336,12 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_on
   have hd2uHolderX : HolderWith X alpha
       (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) := by
     intro x y
-    simpa using hd2uRestrict
-      (⟨x, Set.mem_univ x⟩ : Set.univ)
-      (⟨y, Set.mem_univ y⟩ : Set.univ)
+    let h : edist (d2u x) (d2u y) ≤
+        (X : ENNReal) * edist x y ^ (alpha : Real) :=
+      hd2uRestrict
+        (⟨x, Set.mem_univ x⟩ : Set.univ)
+        (⟨y, Set.mem_univ y⟩ : Set.univ)
+    exact h
   exact variable_coefficient_schauder_estimate_of_small_oscillation_of_hessian_control_on
     halpha0 halpha1 s a x0 hA u du d2u hu hdu hfBound hfHolder
     Ka omega ha homega hd2unorm hd2uHolderX hd2usupport hcoeX.le hsmall
@@ -1420,9 +1430,9 @@ theorem variable_coefficient_schauder_norm_estimate_of_small_oscillation
     fun i j ↦ boundedHolderSpaceOscillationAt (a i j) x0
   have hu : ∀ x : Euc n, HasFDerivAt (u0 : Euc n → F) (du x) x := by
     intro x
-    simpa only [u0, du,
-      contDiffHolderSpaceToBoundedContinuousFunction_apply] using
+    let h : HasFDerivAt (u0 : Euc n → F) (du x) x :=
       contDiffHolderSpace_hasFDerivAt 2 alpha (by omega) u x
+    exact h
   have hdu : ∀ x : Euc n,
       HasFDerivAt (du : Euc n → Euc n →L[Real] F) (d2u x) x := by
     intro x
@@ -1450,14 +1460,15 @@ theorem variable_coefficient_schauder_norm_estimate_of_small_oscillation
     simpa using norm_boundedHolderSpace_apply_le f x
   have hfHolder : HolderWith ‖f‖₊ alpha (variableMatrixLap a0 d2u) := by
     rw [hsource]
-    simpa only [boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith f
+    let h : HolderWith ‖f‖₊ alpha (f0 : Euc n → F) :=
+      boundedHolderSpace_holderWith f
+    exact h
   have ha : ∀ i j, HolderWith (Ka i j) alpha
       (a0 i j : Euc n → Real) := by
     intro i j
-    simpa only [Ka, a0,
-      boundedHolderSpaceToBoundedContinuousFunction_apply] using
+    let h : HolderWith (Ka i j) alpha (a0 i j : Euc n → Real) :=
       boundedHolderSpace_holderWith_holderConst (a i j)
+    exact h
   have homega : ∀ i j x, ‖a0 i j x0 - a0 i j x‖ ≤ omega i j := by
     intro i j x
     simp only [a0, boundedHolderSpaceToBoundedContinuousFunction_apply]
@@ -1468,8 +1479,10 @@ theorem variable_coefficient_schauder_norm_estimate_of_small_oscillation
     simpa using norm_boundedHolderSpace_apply_le d2 x
   have hd2uHolder : HolderWith ‖d2‖₊ alpha
       (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) := by
-    simpa only [d2u, boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith d2
+    let h : HolderWith ‖d2‖₊ alpha
+        (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) :=
+      boundedHolderSpace_holderWith d2
+    exact h
   have hsmall' : spdLaplacianSchauderDefectConst
       (fun i j ↦ a0 i j x0) hA alpha
         (∑ i, ∑ j, (omega i j + Ka i j))
@@ -1481,10 +1494,10 @@ theorem variable_coefficient_schauder_norm_estimate_of_small_oscillation
       Ka omega ha homega hd2unorm hd2uHolder hsmall'
   rw [norm_contDiffHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top hgauge
-  simpa only [u0, f, a0,
-    boundedHolderSpaceToBoundedContinuousFunction_apply,
-    variableCoefficientSchauderNormConst,
-    variableCoefficientSchauderDefectConst, omega, Ka] using hreal
+  let h :
+      (eContDiffHolderGaugeOn 2 alpha Set.univ (contDiffHolderSpaceFun u)).toReal ≤
+        (variableCoefficientSchauderNormConst alpha a x0 hA u : Real) := hreal
+  exact h
 
 end Estimates
 

@@ -119,7 +119,11 @@ private theorem opNorm_le_sum_basisE {m : ℕ}
     have h := f.toMultilinearMap.map_sum
       (g := fun (i : Fin m) (j : Fin (Module.finrank ℝ E)) =>
         (v i j) • EuclideanSpace.single j (1 : ℝ))
-    convert h using 1
+    change f (fun i : Fin m =>
+        ∑ j : Fin (Module.finrank ℝ E), (v i j) • EuclideanSpace.single j (1 : ℝ)) =
+      ∑ α : Fin m → Fin (Module.finrank ℝ E),
+        f (fun i => (v i (α i)) • EuclideanSpace.single (α i) (1 : ℝ)) at h
+    exact h
   rw [h_sum_expand]
   refine (norm_sum_le _ _).trans ?_
   have h_norm_eq : ∀ α : Fin m → Fin (Module.finrank ℝ E),
@@ -137,7 +141,9 @@ private theorem opNorm_le_sum_basisE {m : ℕ}
     have h := f.toMultilinearMap.map_smul_univ
       (fun i : Fin m => v i (α i))
       (fun i : Fin m => EuclideanSpace.single (α i) (1 : ℝ))
-    simpa [basisTupleE] using h
+    change f (fun i => (v i (α i)) • EuclideanSpace.single (α i) (1 : ℝ)) =
+      (∏ i : Fin m, v i (α i)) • f (basisTupleE (E := E) α) at h
+    exact h
   have h_each : ∀ α : Fin m → Fin (Module.finrank ℝ E),
       |f (fun i => (v i (α i)) •
           EuclideanSpace.single (α i) (1 : ℝ))| ≤
@@ -256,6 +262,7 @@ lemma abs_rawPullR_le_zeroContentR (g : SmoothRiemannianMetric I M)
     Finset.single_le_sum (f := f) (fun q _ => abs_nonneg _) (Finset.mem_univ _)
   simpa [tensorComponentAbsSum, hf] using h
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fderiv_rawPullR_single_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -652,6 +659,7 @@ def christoffelOrderBoundOn (K : Set EuclN)
       ‖iteratedFDeriv ℝ l
         (covDerivLowerOrderCoeff (I := I) (M := M) g r (s + p) α m Idx q.1 Jdx q.2) y‖ ≤ Γ
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 lemma iteratedFDeriv_euclidPartial_le_of_order_bounds
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) (P : ℕ)
@@ -1029,7 +1037,12 @@ private lemma reverse_pointwise_integrand_le
             (tensorComponentEuclideanChart (I := I) (M := M) g r s T α IJ.1 IJ.2) y)
             (fun i => EuclideanSpace.basisFun (Fin n) ℝ (bIdx i))| := abs_nonneg _
         refine pow_le_pow_left₀ h_abs_nn ?_ 2
-        simpa [basisTupleE, EuclideanSpace.basisFun_apply, hn_def] using h_le
+        have harg : (fun i => EuclideanSpace.basisFun (Fin n) ℝ (bIdx i)) =
+            basisTupleE (E := E) bIdx := by
+          funext i
+          simp only [basisTupleE, EuclideanSpace.basisFun_apply]
+        rw [harg, hFop_def]
+        exact h_le
       have hFop_le : Fop ≤ Cpeel * ∑ i ∈ Finset.range (j + 1),
           tensorComponentAbsSum (I := I) (M := M) g r (s + (0 + i))
             (iteratedCovGrad g r s (0 + i) T) α y := by
@@ -1303,7 +1316,7 @@ private lemma sumIntegrals_eq_integral_sumR
                     (Fin (Module.finrank ℝ E)) ℝ (bIdx i))| ^ 2))
         ∂(volume : Measure EuclN) := by
     intro IJ j
-    rw [MeasureTheory.lintegral_finset_sum' _
+    rw [MeasureTheory.lintegral_finsetSum' _
       (fun bIdx _ => rawPullRIntegrand_aemeasurable (I := I) (M := M) g r' s' S α IJ j bIdx)]
   have h_j : ∀ (IJ : (Fin r' → Fin (Module.finrank ℝ E)) ×
         (Fin s' → Fin (Module.finrank ℝ E))),
@@ -1347,7 +1360,7 @@ private lemma sumIntegrals_eq_integral_sumR
           rawPullRIntegrand_aemeasurable (I := I) (M := M) g r' s' S α IJ j bIdx)
       refine h.congr (Filter.EventuallyEq.of_eq (funext (fun y => ?_)))
       rw [Finset.sum_apply]
-    rw [MeasureTheory.lintegral_finset_sum' _ hmeas]
+    rw [MeasureTheory.lintegral_finsetSum' _ hmeas]
   calc (∑ IJ : (Fin r' → Fin (Module.finrank ℝ E)) ×
           (Fin s' → Fin (Module.finrank ℝ E)),
         ∑ j ∈ Finset.range K,
@@ -1415,7 +1428,7 @@ private lemma sumIntegrals_eq_integral_sumR
                 (Filter.EventuallyEq.of_eq (funext (fun y => by rw [Finset.sum_apply]))))
           refine h.congr (Filter.EventuallyEq.of_eq (funext (fun y => ?_)))
           rw [Finset.sum_apply]
-        rw [MeasureTheory.lintegral_finset_sum' _ hmeas2]
+        rw [MeasureTheory.lintegral_finsetSum' _ hmeas2]
     _ = ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           ENNReal.ofReal
             (((chartAtlasPOU I M α : M → ℝ)
@@ -1448,6 +1461,7 @@ private lemma sumIntegrals_eq_integral_sumR
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private lemma rhsInner_eq_integral_hsZeroContent
     (g : SmoothRiemannianMetric I M) (r s i : ℕ) (T : SmoothCcTensor g r s)
     (α : M) :
@@ -1491,6 +1505,7 @@ private lemma rhsInner_eq_integral_hsZeroContent
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private lemma reverse_per_alpha_inner_bound
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : SmoothCcTensor g r s)
     (α : M) (C : ℝ) (hC_nn : 0 ≤ C)
@@ -1574,7 +1589,7 @@ private lemma reverse_per_alpha_inner_bound
           ∂(volume : Measure EuclN) from
     Finset.sum_congr rfl (fun i _ =>
       rhsInner_eq_integral_hsZeroContent (I := I) (M := M) g r s i T α)]
-  rw [← MeasureTheory.lintegral_finset_sum']
+  rw [← MeasureTheory.lintegral_finsetSum']
   swap
   · intro i _
     have h_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
@@ -1601,7 +1616,7 @@ private lemma reverse_per_alpha_inner_bound
           (fun y : EuclN => tensorComponentSqSum (I := I) (M := M) g r (s + (0 + i))
             (iteratedCovGrad g r s (0 + i) T) α y)
           (chartTargetEuclid (I := I) (M := M) α) := by
-        refine continuousOn_finset_sum _ (fun q _ => ?_)
+        refine continuousOn_finsetSum _ (fun q _ => ?_)
         have h_cont : ContinuousOn
             (tensorComponentEuclideanChart (I := I) (M := M) g r (s + (0 + i))
               (iteratedCovGrad g r s (0 + i) T) α q.1 q.2)
@@ -1708,7 +1723,7 @@ private lemma exists_tensorPouSobolevHsNormSq_le
     · have hbound := reverse_per_alpha_inner_bound (I := I) (M := M) g r s k T α
         (Cα α) (hCα_nn α) (fun {y} hy => hCα α T hy)
       refine le_trans hbound ?_
-      exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (hCmax_ge α hα)) (zero_le _)
+      exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (hCmax_ge α hα)) (zero_le)
     · have hρ0 : ∀ x : M, ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0 :=
         chartAtlasPOU_eq_zero_of_notMem_activeFinset (I := I) (M := M) hα
       have hlhs0 : reverseLhsInner (I := I) (M := M) g r s k T α = 0 := by
@@ -1721,7 +1736,7 @@ private lemma exists_tensorPouSobolevHsNormSq_le
         have hzero : ((chartAtlasPOU I M α : M → ℝ)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) = 0 := hρ0 _
         rw [hzero, zero_mul, ENNReal.ofReal_zero]
-      rw [hlhs0]; exact zero_le _
+      rw [hlhs0]; exact zero_le
   simp only [reverseLhsInner, reverseRhsInner] at h_perα
   refine le_trans (ENNReal.tsum_le_tsum h_perα) (le_of_eq ?_)
   rw [ENNReal.tsum_mul_left]
@@ -1738,7 +1753,7 @@ private lemma enn_sum_sq_le_sq_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ�
     _ ≤ ∑ i ∈ s, f i * ∑ j ∈ s, f j :=
         Finset.sum_le_sum (fun i hi => by
           gcongr
-          exact Finset.single_le_sum (fun j _ => zero_le _) hi)
+          exact Finset.single_le_sum (fun j _ => zero_le) hi)
     _ = (∑ i ∈ s, f i) * (∑ j ∈ s, f j) := by rw [← Finset.sum_mul]
     _ = (∑ i ∈ s, f i) ^ 2 := by rw [sq]
 

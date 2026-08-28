@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -106,14 +105,12 @@ private theorem repr_lap_inner
   rw [hrepr_x]
   rw [Tensor0SField.toRS0_eq]
   rw [inner_toRS0_zero (I := I) (M := M) g x]
-  have hlap : tensor0SSpace_evalScalar x
+  have hlap : tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x
       ((Tensor0SNabla.tensor0Iso I M x).symm
         (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x)) =
       Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x := by
-    change Tensor0SNabla.tensor0Iso I M x
-      ((Tensor0SNabla.tensor0Iso I M x).symm _) = _
-    rw [ContinuousLinearEquiv.apply_symm_apply]
-  have hrepr : tensor0SSpace_evalScalar x
+    exact (Tensor0SNabla.tensor0Iso I M x).apply_symm_apply _
+  have hrepr : tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x
       (Tensor0SField.fromScalarField ∞
         (reprScalar0 (I := I) (M := M) v hv)
         (reprScalar0_smooth (I := I) (M := M) v hv) x) =
@@ -148,12 +145,18 @@ theorem grad_energy_eq
         -∫ x, reprScalar0 (I := I) (M := M) v hv x *
           Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-    simpa only [normGradSqFun_def, grad_g_apply] using
-      (green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
-        (I := I) g
-        (reprScalar0_smooth (I := I) (M := M) v hv)
-        (reprScalar0_smooth (I := I) (M := M) v hv)
-        (HasCompactSupport.of_compactSpace _))
+    have h := green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
+      (I := I) g
+      (reprScalar0_smooth (I := I) (M := M) v hv)
+      (reprScalar0_smooth (I := I) (M := M) v hv)
+      (HasCompactSupport.of_compactSpace _)
+    change ∫ x, normGradSqFun (I := I) g
+        (reprScalar0 (I := I) (M := M) v hv) x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      -∫ x, reprScalar0 (I := I) (M := M) v hv x *
+        Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) at h
+    exact h
   have htensor :
       ‖covGrad (I := I) (M := M) g 0 0 S‖ ^ 2 =
         -tensorL2Inner (I := I) (M := M) g 0 0 L.toFun S.toFun := by

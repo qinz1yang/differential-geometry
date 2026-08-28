@@ -220,7 +220,7 @@ theorem evolving_local_boundedness_of_subsolution_of_lt_two_of_volume_le
           localizedSpacetimeRpowNorm (I := I) (M := M)
             (spatialCutoffBetween rho outerLower outerUpper) u p τ D := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let alpha := p / 2

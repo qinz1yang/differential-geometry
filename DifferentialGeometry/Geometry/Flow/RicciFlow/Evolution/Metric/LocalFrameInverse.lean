@@ -97,7 +97,7 @@ theorem localFrameInv_time
     ContDiffOn Real ∞
       (fun t : Real => localFrameInv (I := I) S frame hframe t x i j) K := by
   classical
-  letI := Fintype.ofFinite Idx
+  let := Fintype.ofFinite Idx
   by_cases hx : x ∈ u
   · have hgram := frameGram_time (I := I) S frame x (hmetric x hx)
     have hinvSmooth : ContDiffOn Real ∞

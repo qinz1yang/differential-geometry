@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Exponential.GaussLemma
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 open DifferentialGeometry.Geometry.Curvature
 
+
 noncomputable section
 
 open Filter Set Bundle Manifold
@@ -58,26 +59,28 @@ theorem properBall_to_exp
     Metric.closedBall c R ⊆
       (fun v : E => expMap (I := I) Y.metric c
         (show TangentSpace I c from v)) '' Metric.ball 0 σ := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := ms
-  letI : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := ms
+  let : RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
     ⟨Y.metric.toRiemannianMetric⟩
   have hEnorm :
       ∀ x : Y.M, ∀ v : TangentSpace I x,
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (Y.metric.inner x v v)) := by
     intro x v
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
   intro q hq
   have hdistLe : dist c q ≤ R := by
     simpa [dist_comm] using (Metric.mem_closedBall.mp hq)
   have hed : riemannianEDist I c q = ENNReal.ofReal (dist c q) := by
-    have h := hreal c q
-    simpa [PointedRiemannianManifold.emetricSpace] using h
+    calc
+      riemannianEDist I c q =
+          (letI : EMetricSpace Y.M := Y.emetricSpace (I := I); edist c q) := by rfl
+      _ = ENNReal.ofReal (dist c q) := hreal c q
   have hfin : riemannianEDist I c q ≠ (⊤ : ℝ≥0∞) := by
     rw [hed]
     exact ENNReal.ofReal_ne_top
@@ -118,6 +121,7 @@ theorem properBall_to_exp
       _ ≤ R := hmetricLe
   exact hnormLe.trans_lt hσ
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exp_sigma_maps
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (ms : MetricSpace Y.M)
@@ -148,19 +152,19 @@ theorem exp_sigma_maps
     Set.MapsTo
       (fun z : E => expMap (I := I) Y.metric x (show TangentSpace I x from z))
       (Metric.ball 0 (8 * lam)) (Metric.ball x (16 * lam)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := ms
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace I y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := ms
+  let : RiemannianBundle (fun y : Y.M => TangentSpace I y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   have hEnorm :
       ∀ y : Y.M, ∀ v : TangentSpace I y,
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (Y.metric.inner y v v)) := by
     intro y v
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
   intro z hz
   rw [Metric.mem_ball, dist_zero_right] at hz
@@ -172,9 +176,14 @@ theorem exp_sigma_maps
           (expMap (I := I) Y.metric x (show TangentSpace I x from z)) =
         ENNReal.ofReal
           (dist x (expMap (I := I) Y.metric x (show TangentSpace I x from z))) := by
-    have h := hreal x
-      (expMap (I := I) Y.metric x (show TangentSpace I x from z))
-    simpa [PointedRiemannianManifold.emetricSpace] using h
+    calc
+      riemannianEDist I x
+          (expMap (I := I) Y.metric x (show TangentSpace I x from z)) =
+          (letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
+           edist x (expMap (I := I) Y.metric x (show TangentSpace I x from z))) := by rfl
+      _ = ENNReal.ofReal
+          (dist x (expMap (I := I) Y.metric x (show TangentSpace I x from z))) :=
+        hreal x (expMap (I := I) Y.metric x (show TangentSpace I x from z))
   have hdistSqrt :
       dist x (expMap (I := I) Y.metric x (show TangentSpace I x from z)) ≤
         Real.sqrt (Y.metric.inner x z z) := by

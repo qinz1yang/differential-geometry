@@ -104,7 +104,7 @@ theorem velocity_coord_diff
     filter_upwards [hsrc, hγ'] with u hu hu2
     have hbridge := chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (hu2.mdifferentiableAt (by decide)) α hu
-    simpa only [sec, α] using hbridge
+    simpa only [sec, α] using! hbridge
   exact (heq.differentiableAt_iff).mpr (hsec.differentiableAt (by norm_num))
 
 theorem continuousOn_fderiv_extChartAt_comp_curve

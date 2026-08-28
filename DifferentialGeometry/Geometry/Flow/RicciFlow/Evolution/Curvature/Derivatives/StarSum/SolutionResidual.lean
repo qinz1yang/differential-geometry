@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Residual
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.SwapRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureEvolution
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -85,11 +87,11 @@ private theorem rmResidual_local
         (m : Fin (4 + k) → Idx),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun z : M =>
               iteratedRmComp (I := I) frame (lfChr (I := I) S frame hframe)
                 (lfBase (I := I) S frame) k s z m) y (frame d y))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun z : M =>
             iteratedRmCompDt (I := I) frame (lfChr (I := I) S frame hframe) chrDt
               (lfBase (I := I) S frame) baseDt k (t : Real) z m) y (frame d y))
@@ -191,7 +193,7 @@ theorem rmResidual_cost
     rmResidual_local (I := I) S hS t frame hframe1 hu horthU
       baseDt chrDt hrm hchr hchrId hswap k x hx I0
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem resStarSol
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
@@ -277,22 +279,33 @@ theorem resStarSol
       (m : Fin (4 + k') -> Fin 3),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun z : M =>
               iteratedRmComp (I := I) frame (lfChr (I := I) S' frame hframe1)
                 (lfBase (I := I) S' frame) k' s z m)
             y (frame d y))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun z : M =>
             iteratedRmCompDt (I := I) frame (lfChr (I := I) S' frame hframe1)
               chrDt (lfBase (I := I) S' frame) baseDt k' (t : Real) z m)
           y (frame d y))
         D'.carrier (t : Real) := by
     intro y hy k' d m
-    simpa only [lfChr, lfBase, S', D'] using
-      hswap k' m (t : Real) t.2 y hy (frame d y)
-  simpa only [S', D'] using
+    unfold lfChr lfBase
+    exact hswap k' m (t : Real) t.2 y hy (frame d y)
+  have hbasis (y : M) (hy : y ∈ u) :
+      hframe1.toBasisAt hy = hframe.toBasisAt hy := by
+    ext i
+    simp only [IsLocalFrameOn.toBasisAt_coe]
+  obtain ⟨T, hstar, C, hcost, hC, hderiv, hbound⟩ :=
     resStarBoundLF (I := I) S' k t frame hframe1 hu hdim horthU
       hbase baseDt chrDt hrm' hchr' hchrId' hswap'
+  refine ⟨T, hstar, C, hcost, hC, ?_, ?_⟩
+  · intro y hy I0
+    rw [← hbasis y hy]
+    exact hderiv y hy I0
+  · intro y hy m
+    rw [← hbasis y hy]
+    exact hbound y hy m
 
 end DifferentialGeometry.PDE.RicciFlow

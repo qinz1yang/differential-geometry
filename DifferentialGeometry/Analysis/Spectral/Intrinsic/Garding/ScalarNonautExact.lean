@@ -212,16 +212,24 @@ theorem lapHs_dyn_on
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
   let D₂ := iterCovGradHs (I := I) (M := M) q 0 2 m
   let D₁ := (iterCovGradHs (I := I) (M := M) q 0 1 m).comp J
-  let V₂ : ℝ → tensorHs (I := I) (M := M) q 0 2 (m : ℝ) :=
+  let V₂ : ℝ → tensorHs (I := I) (M := M) q 0 (0 + 2) (m : ℝ) :=
     fun s => D₂ (U s)
-  let V₁ : ℝ → tensorHs (I := I) (M := M) q 0 1 (m : ℝ) :=
+  let V₁ : ℝ → tensorHs (I := I) (M := M) q 0 (0 + 1) (m : ℝ) :=
     fun s => D₁ (U s)
   have hV₂ : ContDiffOn ℝ k V₂ (Set.Ioo (0 : ℝ) tau) := by
-    simpa only [V₂, Function.comp_apply] using
-      D₂.contDiff.comp_contDiffOn hU
+    have hc := D₂.contDiff.comp_contDiffOn hU
+    have hfun : D₂ ∘ U = V₂ := by
+      funext s
+      rfl
+    rw [hfun] at hc
+    exact hc
   have hV₁ : ContDiffOn ℝ k V₁ (Set.Ioo (0 : ℝ) tau) := by
-    simpa only [V₁, Function.comp_apply] using
-      D₁.contDiff.comp_contDiffOn hU
+    have hc := D₁.contDiff.comp_contDiffOn hU
+    have hfun : D₁ ∘ U = V₁ := by
+      funext s
+      rfl
+    rw [hfun] at hc
+    exact hc
   have hback : Set.Ioo (0 : ℝ) tau ⊆
       {s : ℝ | (T : ℝ) - s ∈ D.regular} := by
     intro s hs

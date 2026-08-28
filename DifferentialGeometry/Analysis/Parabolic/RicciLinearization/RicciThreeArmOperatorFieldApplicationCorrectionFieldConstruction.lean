@@ -27,7 +27,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -199,7 +198,8 @@ theorem ricciArmOrder1KoszulCoeff_operatorFieldApplication_eq
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               ![(Module.finBasis ℝ E) k,
-                raisedKoszulVec (I := I) g₀ g₁ x (v 0) (v 1)]) := by
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (raisedKoszulVec (I := I) g₀ g₁ x (v 0) (v 1))]) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁).toSection x).comp
@@ -229,7 +229,8 @@ theorem ricciArmOrder1KoszulCoeff_operatorFieldApplication_eq
       (cometricDoubleTraceFib (I := I) g₁ 1 x
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
           W.toSection x) (unitTensor (I := I) (M := M) x)))
-      (fun _ : Fin 1 => raisedKoszulVec (I := I) g₀ g₁ x (v 0) (v 1)) = _
+      (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (raisedKoszulVec (I := I) g₀ g₁ x (v 0) (v 1))) = _
   rw [cometricDoubleTraceFib_toModel,
     modelDoubleTrace_apply (E := E) 1 (cometricLmodel (I := I) g₁ x)]
   refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -391,7 +392,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
                   + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
                     ((ricciArmOrder0CurvCoeff (I := I) (M := M) g₀
                       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x))) := by
-          letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
+          let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
             Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 2
           rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
             ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
@@ -448,7 +449,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
               + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
                 ((ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x)) := by
-          letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
+          let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
             Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 3 2
           rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
             ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
@@ -742,7 +743,7 @@ theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             (((exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose s).toSection
               x)) := by
-      letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
+      let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 2
       rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
@@ -767,7 +768,7 @@ theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
             (((exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
               s).toSection
               x)) := by
-      letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
+      let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 3 2
       rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,

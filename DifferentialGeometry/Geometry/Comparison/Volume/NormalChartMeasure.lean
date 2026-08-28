@@ -96,9 +96,36 @@ def radialJacobiField (g : SmoothRiemannianMetric I M) (p : M)
     (x w : E) (t : ℝ) :
     TangentSpace I
       ((expMap (I := I) g p (show TangentSpace I p from (t • x)) : M)) :=
-  mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-    (expMap (I := I) g p
-      (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)
+  (tangentSpaceModelContinuousLinearEquiv (I := I)
+      (expMap (I := I) g p (show TangentSpace I p from (t • x)))).symm
+    (tangentSpaceModelContinuousLinearEquiv (I := I)
+      (expMap (I := I) g p
+        (show TangentSpace I p from (t • (x + (0 : ℝ) • w))))
+      (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
+        (expMap (I := I) g p
+          (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)))
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
+    [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+lemma radialJacobiField_eq
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : ℝ) :
+    radialJacobiField (I := I) g p x w t =
+      (show TangentSpace I
+          (expMap (I := I) g p (show TangentSpace I p from (t • x))) from
+        mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
+          (expMap (I := I) g p
+            (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)) := by
+  apply (tangentSpaceModelContinuousLinearEquiv (I := I)
+    (expMap (I := I) g p (show TangentSpace I p from (t • x)))).injective
+  rw [radialJacobiField, ContinuousLinearEquiv.apply_symm_apply]
+  have hbase :
+      (expMap (I := I) g p
+          (show TangentSpace I p from (t • (x + (0 : ℝ) • w))) : M) =
+        expMap (I := I) g p (show TangentSpace I p from (t • x)) := by
+    apply congrArg (fun z : E =>
+      (expMap (I := I) g p (show TangentSpace I p from z) : M))
+    module
+  rw [hbase]
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
@@ -106,18 +133,29 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_zero
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) :
     radialJacobiField (I := I) g p x w 0 = 0 := by
-  simpa [radialJacobiField] using
-    DifferentialGeometry.Geometry.Riemannian.radial_jacobi_zero (I := I) g p x w
+  rw [radialJacobiField_eq (I := I)]
+  exact DifferentialGeometry.Geometry.Riemannian.radial_jacobi_zero (I := I) g p x w
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_radialJacobi_radius
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r → ∀ t₀ ∈ Set.Ioo (0 : ℝ) 1,
       IsJacobiAt (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) t₀ := by
-  simpa [radialJacobiField] using
+  obtain ⟨r, hr, h⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_radial_jacobi_radius (I := I) g p
+  refine ⟨r, hr, ?_⟩
+  intro x w hx hw t₀ ht₀
+  rw [show radialJacobiField (I := I) g p x w = fun v =>
+      (show TangentSpace I
+          (expMap (I := I) g p (show TangentSpace I p from (v • x))) from
+        mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
+          (expMap (I := I) g p
+            (show TangentSpace I p from (v • (x + s • w))) : M)) 0 (1 : ℝ)) by
+    funext v
+    exact radialJacobiField_eq (I := I) g p x w v]
+  exact h x w hx hw t₀ ht₀
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -132,19 +170,41 @@ theorem exists_radialJacobi_zero_radius
       IsJacobiAt (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) 0 := by
-  simpa [radialJacobiField] using
+  obtain ⟨r, hr, h⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_jacobi_zero (I := I) g hEnorm p
+  refine ⟨r, hr, ?_⟩
+  intro x w hx hw
+  rw [show radialJacobiField (I := I) g p x w = fun v =>
+      (show TangentSpace I
+          (expMap (I := I) g p (show TangentSpace I p from (v • x))) from
+        mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
+          (expMap (I := I) g p
+            (show TangentSpace I p from (v • (x + s • w))) : M)) 0 (1 : ℝ)) by
+    funext v
+    exact radialJacobiField_eq (I := I) g p x w v]
+  exact h x w hx hw
 
 omit [T2Space M] in
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_radialJacobi_deriv_radius
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       (covDerivAlong (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) 0 : E) = w := by
-  simpa [radialJacobiField] using
+  obtain ⟨r, hr, h⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_radial_jacobi_deriv_radius (I := I) g p
+  refine ⟨r, hr, ?_⟩
+  intro x w hx hw
+  rw [show radialJacobiField (I := I) g p x w = fun v =>
+      (show TangentSpace I
+          (expMap (I := I) g p (show TangentSpace I p from (v • x))) from
+        mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
+          (expMap (I := I) g p
+            (show TangentSpace I p from (v • (x + s • w))) : M)) 0 (1 : ℝ)) by
+    funext v
+    exact radialJacobiField_eq (I := I) g p x w v]
+  exact h x w hx hw
 
 def radialJacobiGram (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
@@ -164,15 +224,26 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space
         (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1) :=
   rfl
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_one
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
     radialJacobiField (I := I) g p x w 1 =
       mfderiv 𝓘(ℝ, E) I
-        (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x w := by
-  simpa [radialJacobiField] using
+        (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x).symm w) := by
+  rw [radialJacobiField_eq (I := I)]
+  have hbase :
+      (expMap (I := I) g p
+          (show TangentSpace I p from ((1 : ℝ) • (x + (0 : ℝ) • w))) : M) =
+        expMap (I := I) g p (show TangentSpace I p from ((1 : ℝ) • x)) := by
+    apply congrArg (fun z : E =>
+      (expMap (I := I) g p (show TangentSpace I p from z) : M))
+    module
+  have h :=
     DifferentialGeometry.Geometry.Riemannian.radial_jacobi_one (I := I) g p x w hx
+  rw [hbase] at h
+  with_unfolding_all exact h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -193,18 +264,19 @@ lemma radialJacobi_scale
   rw [hfun]
   rfl
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : ℝ)
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
     radialJacobiField (I := I) g p x w t =
       mfderiv 𝓘(ℝ, E) I
         (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-        (t • x) (t • w) := by
+        (t • x) ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) (t • x)).symm
+          (t • w)) := by
   rw [radialJacobi_scale (I := I) g p x w t,
     radialJacobi_one (I := I) g p (t • x) (t • w) htx]
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_sum_at
     {ι : Type*} [Fintype ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -214,10 +286,12 @@ lemma radialJacobi_sum_at
       ∑ i, c i • radialJacobiField (I := I) g p x (w i) t := by
   classical
   rw [radialJacobi_at (I := I) g p x (∑ i, c i • w i) t htx]
-  set L :=
-    mfderiv 𝓘(ℝ, E) I
+  set L : E →L[ℝ] TangentSpace I
+      (expMap (I := I) g p (show TangentSpace I p from t • x)) :=
+    (mfderiv 𝓘(ℝ, E) I
       (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-      (t • x)
+      (t • x)).comp
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) (t • x)).symm.toContinuousLinearMap
   have hinput : t • ∑ i, c i • w i = ∑ i, c i • (t • w i) := by
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -225,8 +299,7 @@ lemma radialJacobi_sum_at
   rw [hinput]
   have hmap : L (∑ i, c i • (t • w i)) =
       ∑ i, L (c i • (t • w i)) := by
-    simpa only using
-      (map_sum L (fun i : ι => c i • (t • w i)) Finset.univ)
+    exact map_sum L (fun i : ι => c i • (t • w i)) Finset.univ
   calc
     L (∑ i, c i • (t • w i)) = ∑ i, L (c i • (t • w i)) := hmap
     _ = ∑ i, c i • radialJacobiField (I := I) g p x (w i) t := by
@@ -236,8 +309,9 @@ lemma radialJacobi_sum_at
           L.map_smul (c i) (t • w i)
         _ = c i • radialJacobiField (I := I) g p x (w i) t := by
           rw [radialJacobi_at (I := I) g p x (w i) t htx]
+          rfl
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_one_smul
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (a : ℝ)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
@@ -246,9 +320,10 @@ lemma radialJacobi_one_smul
   rw [radialJacobi_one (I := I) g p x (a • w) hx,
     radialJacobi_one (I := I) g p x w hx]
   exact (mfderiv 𝓘(ℝ, E) I
-    (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x).map_smul a w
+    (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x).map_smul a
+      ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x).symm w)
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_sum
     {ι : Type*} [Fintype ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -258,9 +333,11 @@ lemma radialJacobi_sum
       ∑ i, c i • radialJacobiField (I := I) g p x (w i) 1 := by
   classical
   rw [radialJacobi_one (I := I) g p x (∑ i, c i • w i) hx]
-  set L :=
-    mfderiv 𝓘(ℝ, E) I
-      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x
+  set L : E →L[ℝ] TangentSpace I
+      (expMap (I := I) g p (show TangentSpace I p from x)) :=
+    (mfderiv 𝓘(ℝ, E) I
+      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x).comp
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x).symm.toContinuousLinearMap
   change L (∑ i, c i • w i) =
     ∑ i, c i • radialJacobiField (I := I) g p x (w i) 1
   rw [map_sum L]
@@ -268,7 +345,7 @@ lemma radialJacobi_sum
   rw [radialJacobi_one (I := I) g p x (w i) hx]
   exact L.map_smul (c i) (w i)
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_one_sum
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     (c : Fin (Module.finrank ℝ E) → ℝ)
@@ -295,7 +372,7 @@ lemma expDiffeo_mfderiv
     exact expMapDiffeo_apply_eq (I := I) g p hy
   exact hagree.mfderiv_eq
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma normalGram_radial
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
     (hxsrc : x ∈ (expMapDiffeo (I := I) g p).source)
@@ -320,11 +397,24 @@ lemma normalGram_radial
           (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
           x ((chartModelBasis E) j) :=
     congrArg (fun L => L ((chartModelBasis E) j)) hderiv
+  have hiRadial :
+      mfderiv 𝓘(ℝ, E) I
+          (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
+          x ((chartModelBasis E) i) =
+        radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1 := by
+    with_unfolding_all exact
+      (radialJacobi_one (I := I) g p x ((chartModelBasis E) i) hxrad).symm
+  have hjRadial :
+      mfderiv 𝓘(ℝ, E) I
+          (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
+          x ((chartModelBasis E) j) =
+        radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1 := by
+    with_unfolding_all exact
+      (radialJacobi_one (I := I) g p x ((chartModelBasis E) j) hxrad).symm
   rw [hi, hj, hbase]
-  rw [← radialJacobi_one (I := I) g p x ((chartModelBasis E) i) hxrad]
-  rw [← radialJacobi_one (I := I) g p x ((chartModelBasis E) j) hxrad]
+  rw [hiRadial, hjRadial]
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma normalGram_radialMat
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
     (hxsrc : x ∈ (expMapDiffeo (I := I) g p).source)
@@ -333,7 +423,7 @@ lemma normalGram_radialMat
   ext i j
   exact normalGram_radial (I := I) g p hxsrc hxrad i j
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 lemma normalDensity_radial
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
     (hxsrc : x ∈ (expMapDiffeo (I := I) g p).source)
@@ -357,6 +447,7 @@ theorem normalChart_volume_eq
     riemannianVolumeMeasure_param_target_eq (I := I) (M := M) g
       (expMapDiffeo (I := I) g p) hA_meas hA_target
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalChart_volume_radial
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)

@@ -22,12 +22,14 @@ import Mathlib.LinearAlgebra.QuadraticForm.Real
 import Mathlib.LinearAlgebra.QuadraticForm.Signature
 import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
 
+open scoped Filter Interval Topology
+
+
 namespace DifferentialGeometry.Topology.Morse
 
 open Filter QuadraticForm
 open MeasureTheory
 open DifferentialGeometry.Analysis
-open scoped Filter Interval Topology
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
@@ -465,7 +467,8 @@ theorem morseCompletionDeriv_injective (a : MorseModel (n + 1) → LinearMap.Bil
     exact this
   have htail : morseTail v = morseTail w := by
     have := congrArg morseTail h
-    simpa [morseCompletionDeriv, morseCompletionDerivMap, morseTail] using this
+    rw [morseTail_completionDeriv, morseTail_completionDeriv] at this
+    exact this
   have hsq : Real.sqrt |morsePivot a 0| ≠ 0 := by
     exact (Real.sqrt_pos.2 (abs_pos.mpr hpiv)).ne'
   have hmain : morseHead v + d' v / morsePivot a 0 = morseHead w + d' w / morsePivot a 0 := by
@@ -606,7 +609,10 @@ theorem hasFDerivAt_morseComplete
         (morseHeadProj + (morsePivot a 0)⁻¹ • d') 0 :=
       HasFDerivAt.add hasFDerivAt_morseHead hdiv
     simpa [morseCompleteDeriv] using hadd
-  simpa [morseComplete] using hsum
+  change HasFDerivAt
+    (fun x => morseHead x + a x morseE0 (morseCons (0 : ℝ) (morseTail x)) / morsePivot a x)
+    (morseCompleteDeriv a d') 0
+  exact hsum
 
 noncomputable def morseConsLinear : (ℝ × MorseModel n) →ₗ[ℝ] MorseModel (n + 1) :=
   { toFun := fun p => morseCons p.1 p.2
@@ -676,14 +682,27 @@ theorem hasFDerivAt_morseCompletionMap
       morseCompletionDeriv, morseCompletionDerivMap, morseHeadProj, morseHead]
     cases i using Fin.cases with
     | zero =>
-        simp only [morseCons, Fin.cons_zero, div_eq_mul_inv]
-        ring_nf
+        simp only [morseCons, Fin.cons_zero, div_eq_mul_inv,
+          add_apply, smul_apply]
+        have hproj : (LinearMap.toContinuousLinearMap (LinearMap.proj (R := ℝ) 0)) v = v 0 := by
+          simpa only [LinearMap.coe_toContinuousLinearMap'] using
+            (LinearMap.proj_apply (R := ℝ) 0 v)
+        rw [hproj]
+        simp only [smul_eq_mul]
+        ring
     | succ j =>
         simp only [morseCons, Fin.cons_succ]
   have hfinal : HasFDerivAt (fun x => morseConsLinearCLM (Real.sqrt |morsePivot a x| * morseComplete a x, morseTail x))
       (morseCompletionDeriv a d').toContinuousLinearMap 0 := by
     simpa [heq] using hcomp
-  simpa [morseCompletionMap, Function.comp_def] using hfinal
+  have hfun :
+      (fun x => morseConsLinearCLM
+        (Real.sqrt |morsePivot a x| * morseComplete a x, morseTail x)) =
+        morseCompletionMap a := by
+    funext x i
+    rfl
+  rw [← hfun]
+  exact hfinal
 
 noncomputable def morseCompletionDerivCLE
     (a : MorseModel (n + 1) → LinearMap.BilinForm ℝ (MorseModel (n + 1)))
@@ -701,7 +720,13 @@ theorem hasFDerivAt_morseCompletionMap_CLE
     (hpiv : morsePivot a 0 ≠ 0) (hd₀ : d' morseE0 = 0) :
     HasFDerivAt (morseCompletionMap a)
       (morseCompletionDerivCLE a d' hpiv hd₀ : MorseModel (n + 1) →L[ℝ] MorseModel (n + 1)) 0 := by
-  simpa [morseCompletionDerivCLE] using hasFDerivAt_morseCompletionMap a p' d' hs hd hpiv
+  have heq :
+      (morseCompletionDerivCLE a d' hpiv hd₀ : MorseModel (n + 1) →L[ℝ] MorseModel (n + 1)) =
+        (morseCompletionDeriv a d').toContinuousLinearMap := by
+    ext v
+    rfl
+  rw [heq]
+  exact hasFDerivAt_morseCompletionMap a p' d' hs hd hpiv
 
 theorem contDiffAt_morsePivotSqrt
     (a : MorseModel (n + 1) → LinearMap.BilinForm ℝ (MorseModel (n + 1)))
@@ -730,7 +755,10 @@ theorem contDiffAt_morseComplete
   have hadd : ContDiffAt ℝ 1
       (fun x => morseHead x + a x morseE0 (morseCons (0 : ℝ) (morseTail x)) * (morsePivot a x)⁻¹) 0 :=
     ContDiffAt.add hhead hquot
-  simpa [morseComplete, div_eq_mul_inv] using hadd
+  change ContDiffAt ℝ 1
+    (fun x => morseHead x +
+      a x morseE0 (morseCons (0 : ℝ) (morseTail x)) * (morsePivot a x)⁻¹) 0
+  exact hadd
 
 theorem contDiffAt_morseCompletionMap
     (a : MorseModel (n + 1) → LinearMap.BilinForm ℝ (MorseModel (n + 1)))
@@ -758,7 +786,14 @@ theorem contDiffAt_morseCompletionMap
   have hcomp : ContDiffAt ℝ 1
       (fun x => morseConsLinearCLM (Real.sqrt |morsePivot a x| * morseComplete a x, morseTail x)) 0 :=
     ContDiffAt.comp 0 hcons hpair
-  simpa [morseCompletionMap, Function.comp_def] using hcomp
+  have hfun :
+      (fun x => morseConsLinearCLM
+        (Real.sqrt |morsePivot a x| * morseComplete a x, morseTail x)) =
+        morseCompletionMap a := by
+    funext x i
+    rfl
+  rw [← hfun]
+  exact hcomp
 
 theorem isLocalHomeomorphAt_morseCompletionMap
     (a : MorseModel (n + 1) → LinearMap.BilinForm ℝ (MorseModel (n + 1)))
@@ -806,7 +841,10 @@ theorem morsePartialDeriv_injective (p' : MorseModel (n + 1) →L[ℝ] ℝ)
     simpa [morsePartialDeriv, morseHead, morseCons] using this
   have htail : morseTail v = morseTail w := by
     have := congrArg morseTail h
-    simpa [morsePartialDeriv, morseTail, morseCons] using this
+    change morseTail (morseCons (p' v) (morseTail v)) =
+      morseTail (morseCons (p' w) (morseTail w)) at this
+    rw [morseCons_tail, morseCons_tail] at this
+    exact this
   have hlin : ∀ u : MorseModel (n + 1),
       p' u = morseHead u * p' morseE0 + p' (morseCons (0 : ℝ) (morseTail u)) := by
     intro u
@@ -881,7 +919,13 @@ theorem hasFDerivAt_morsePartialMap (f : MorseModel (n + 1) → ℝ)
     ext v
     simp [morseConsLinearCLM, morseConsLinear, morseTailProj, morsePartialDerivCLE,
       morsePartialDeriv]
-  simpa [morsePartialMap, heq, Function.comp_def] using hcomp
+  rw [heq] at hcomp
+  have hfun :
+      (fun x => morseConsLinearCLM (morsePartial f x, morseTail x)) = morsePartialMap f := by
+    funext x i
+    rfl
+  rw [← hfun]
+  exact hcomp
 
 theorem isLocalHomeomorphAt_morsePartialMap (f : MorseModel (n + 1) → ℝ)
     (hdf : DifferentiableAt ℝ (morsePartial f) 0)
@@ -905,7 +949,12 @@ theorem isLocalHomeomorphAt_morsePartialMap (f : MorseModel (n + 1) → ℝ)
     have hcomp : ContDiffAt ℝ 1
         (fun x => morseConsLinearCLM (morsePartial f x, morseTail x)) 0 :=
       ContDiffAt.comp 0 hcons hpair
-    simpa [morsePartialMap, Function.comp_def] using hcomp
+    have hfun :
+        (fun x => morseConsLinearCLM (morsePartial f x, morseTail x)) = morsePartialMap f := by
+      funext x i
+      rfl
+    rw [← hfun]
+    exact hcomp
   let φ : OpenPartialHomeomorph (MorseModel (n + 1)) (MorseModel (n + 1)) :=
     ContDiffAt.toOpenPartialHomeomorph (f := morsePartialMap f)
       (f' := morsePartialDerivCLE (fderiv ℝ (morsePartial f) 0) h₀)
@@ -1136,7 +1185,12 @@ theorem hasFDerivAt_morseTaylorBilin (g : E → ℝ) (hg : ContDiff ℝ 3 g) (x�
       have hderiv : HasFDerivAt (fun x : E => fderiv ℝ (fderiv ℝ g) (t • x))
           ((fderiv ℝ (fderiv ℝ (fderiv ℝ g)) (t • x)).comp (t • (1 : E →L[ℝ] E))) x :=
         hasFDerivAt_third_morse g hg x t
-      simpa [F, F'] using hderiv.const_smul (1 - t))
+      change HasFDerivAt
+        (fun y : E => (1 - t) • fderiv ℝ (fderiv ℝ g) (t • y)) (F' x t) x
+      have hscaled := hderiv.const_smul (1 - t)
+      change HasFDerivAt
+        ((1 - t) • fun y : E => fderiv ℝ (fderiv ℝ g) (t • y)) (F' x t) x at hscaled
+      exact hscaled)
   have hmain := hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume) (a := (0 : ℝ)) (b := 1)
     (s := s) (x₀ := x₀) (F := F) (F' := F') (bound := fun _ : ℝ => C) hs hF_meas hF_int hF'_meas
     h_bound (intervalIntegrable_const : IntervalIntegrable (fun _ : ℝ => C) volume (0 : ℝ) 1) h_diff
@@ -1226,7 +1280,7 @@ noncomputable def morseSegDeriv (t : ℝ) : (E × E) →L[ℝ] E :=
 omit [FiniteDimensional ℝ E] in
 theorem morseSegPath_apply_deriv (p : E × E) (t : ℝ) :
     morseSegPath p t = morseSegDeriv t p := by
-  dsimp [morseSegPath, morseSegDeriv]
+  change p.1 + t • (p.2 - p.1) = (1 - t) • p.1 + t • p.2
   rw [smul_sub, sub_smul, one_smul]
   abel
 
@@ -1565,7 +1619,10 @@ theorem continuous_morseTaylorBilinAtDeriv (g : E → ℝ) (hg : ContDiff ℝ 3 
     have hC : Continuous (fun q : (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))) × ((E × E) →L[ℝ] E) =>
         C q.1 q.2) := by
       exact (ContinuousLinearMap.continuous₂ C)
-    simpa using hC.comp (hhess.prodMk hsegDeriv)
+    change Continuous (fun q : (E × E) × ℝ =>
+      C (fderiv ℝ (fderiv ℝ (fderiv ℝ g)) (morseSegPath q.1 q.2))
+        (morseSegDeriv q.2))
+    exact hC.comp (hhess.prodMk hsegDeriv)
   have hscalar : Continuous (fun q : (E × E) × ℝ => 1 - q.2) :=
     continuous_const.sub continuous_snd
   have hG : Continuous G.uncurry := by
@@ -1637,7 +1694,10 @@ theorem contDiffOn_morseTaylorBilinAt_smooth (g : E → ℝ)
   have hmain := DifferentialGeometry.Analysis.Calculus.contDiffOn_paramIntervalIntegral
     (f := fun p : E × E => fun t : ℝ =>
     (1 - t) • fderiv ℝ (fderiv ℝ g) (morseSegPath p t)) hH
-  simpa [morseTaylorBilinAt] using hmain
+  change ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+    (fun p : E × E => ∫ t in (0 : ℝ)..1,
+      (1 - t) • fderiv ℝ (fderiv ℝ g) (morseSegPath p t)) Set.univ
+  exact hmain
 
 theorem contDiffAt_morseTaylorBilinAt_smooth (g : E → ℝ)
     (hg : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) g) (c₀ x₀ : E) :

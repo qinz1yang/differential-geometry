@@ -21,7 +21,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -173,7 +172,7 @@ theorem lieArm1Piece_connectionDifference_metricPerturbationPath_jetL2_perOrder_
           (Finset.sum_nonneg fun n _ => hQ_nn n)
       · exact mul_nonneg hΛcom_nn (mul_nonneg (by positivity) (hFcd_nn i))
     · intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i hi s hs
-      haveI := hM
+      have := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
         lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -226,7 +225,7 @@ theorem lieArm1Piece_connectionDifference_metricPerturbationPath_jetL2_perOrder_
           (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) hS0 hT0)
       refine le_trans hmaster (le_of_eq ?_)
       rw [Real.sq_sqrt hΛcom_nn, Real.sq_sqrt (mul_nonneg (by positivity) hΛcd_nn)]
-  · haveI hIsE := not_nonempty_iff.mp hM
+  · have hIsE := not_nonempty_iff.mp hM
     refine ⟨fun _ => 0, fun _ => le_rfl, ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i hi s hs
     have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
@@ -287,7 +286,7 @@ theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_jetL2
           Finset.sum_nonneg fun l _ => sq_nonneg _
         linarith
     · intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i hi s hs
-      haveI := hM
+      have := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
         lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -384,7 +383,7 @@ theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_jetL2
           (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) hS0 hT0)
       refine le_trans hmaster (le_of_eq ?_)
       rw [Real.sq_sqrt hΛcom_nn, Real.sq_sqrt (mul_nonneg (by positivity) hΨ0_nn)]
-  · haveI hIsE := not_nonempty_iff.mp hM
+  · have hIsE := not_nonempty_iff.mp hM
     refine ⟨fun _ => 0, fun _ => le_rfl, ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i hi s hs
     have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
@@ -433,7 +432,7 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_jetL2_perOrder_ballUniform
           (Finset.sum_nonneg fun n _ => hQ_nn n)
       · exact mul_nonneg hΛcom_nn (mul_nonneg (by positivity) (hFpb_nn i))
     · intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i hi s hs
-      haveI := hM
+      have := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
         lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -487,7 +486,7 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_jetL2_perOrder_ballUniform
           (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) hS0 hT0)
       refine le_trans hmaster (le_of_eq ?_)
       rw [Real.sq_sqrt hΛcom_nn, Real.sq_sqrt (mul_nonneg (by positivity) hΛpb_nn)]
-  · haveI hIsE := not_nonempty_iff.mp hM
+  · have hIsE := not_nonempty_iff.mp hM
     refine ⟨fun _ => 0, fun _ => le_rfl, ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ i hi s hs
     have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
@@ -525,7 +524,7 @@ theorem lieArm1Piece_connectionDifference_metricPerturbationPath_riemannianFiber
     refine ⟨Λcom * ((Module.finrank ℝ E : ℝ) ^ 2 * Λcd),
       mul_nonneg hΛcom_nn (mul_nonneg (by positivity) hΛcd_nn), ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x
-    haveI := hM
+    have := hM
     obtain ⟨htie, hδP, hδP_le⟩ :=
       lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
     have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -551,7 +550,7 @@ theorem lieArm1Piece_connectionDifference_metricPerturbationPath_riemannianFiber
     refine mul_le_mul h1 h2 ?_ hΛcom_nn
     exact mul_nonneg (by positivity)
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 1 2 x _)
-  · haveI hIsE := not_nonempty_iff.mp hM
+  · have hIsE := not_nonempty_iff.mp hM
     exact ⟨0, le_rfl, fun T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x =>
       (hIsE.false x).elim⟩
 
@@ -585,7 +584,7 @@ theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_riema
     refine ⟨Λcom * ((Module.finrank ℝ E : ℝ) ^ 2 * (2 * Λcd + 2 * Λfx)),
       mul_nonneg hΛcom_nn (mul_nonneg (by positivity) (by linarith)), ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x
-    haveI := hM
+    have := hM
     obtain ⟨htie, hδP, hδP_le⟩ :=
       lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
     have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -622,7 +621,7 @@ theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_riema
     refine mul_le_mul h1 h2 ?_ hΛcom_nn
     exact mul_nonneg (by positivity)
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 1 2 x _)
-  · haveI hIsE := not_nonempty_iff.mp hM
+  · have hIsE := not_nonempty_iff.mp hM
     exact ⟨0, le_rfl, fun T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x =>
       (hIsE.false x).elim⟩
 
@@ -653,7 +652,7 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_riemannianFiberNormSq_order0_ba
     refine ⟨Λcom * ((Module.finrank ℝ E : ℝ) ^ 2 * Λpb),
       mul_nonneg hΛcom_nn (mul_nonneg (by positivity) hΛpb_nn), ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x
-    haveI := hM
+    have := hM
     obtain ⟨htie, hδP, hδP_le⟩ :=
       lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
     have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -680,7 +679,7 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_riemannianFiberNormSq_order0_ba
     refine mul_le_mul h1 h2 ?_ hΛcom_nn
     exact mul_nonneg (by positivity)
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 1 2 x _)
-  · haveI hIsE := not_nonempty_iff.mp hM
+  · have hIsE := not_nonempty_iff.mp hM
     exact ⟨0, le_rfl, fun T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x =>
       (hIsE.false x).elim⟩
 

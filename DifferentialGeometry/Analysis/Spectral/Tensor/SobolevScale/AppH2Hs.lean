@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H4Principal
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricAppHs
 
+
 noncomputable section
 
 open Bundle Manifold
@@ -61,7 +62,9 @@ theorem appHs_h2_norm
   have hJ :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 b j W‖ ≤ B := by
-    simpa only [B, N, Nat.reduceAdd] using hin W
+    have h := hin W
+    rw [show (((2 : ℕ) : ℝ)) = 2 by norm_num] at h
+    simpa only [B, N, Nat.reduceAdd] using h
   have hWsq :
       (∑ j ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g 0 b j W‖ ^ 2) ≤ B ^ 2 := by
@@ -102,7 +105,9 @@ theorem appHs_h2_norm
       ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ) Y‖ ≤
         Csp * ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 c j Y‖ := by
-    simpa only [Nat.reduceAdd] using hsp Y
+    have h := hsp Y
+    rw [show (((2 : ℕ) : ℝ)) = 2 by norm_num] at h
+    simpa only [Nat.reduceAdd] using h
   change ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ) Y‖ ≤
     (C * A) * N
   calc

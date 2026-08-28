@@ -22,6 +22,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantCommutationCurvature
 import DifferentialGeometry.Geometry.Comparison.Variation.RegularParameterFirstVariation
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -72,7 +73,7 @@ open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open Geometry.Riemannian.CovariantDerivativeAlong
 
-def indexFormIntegrand [Module.Finite ℝ E] [IsManifold I ∞ M]
+def indexFormIntegrand
     (g : SmoothRiemannianMetric I M)
     (γ : ℝ → M) (V W : ∀ t, TangentSpace I (γ t)) (t : ℝ) : ℝ :=
   let nablaV : TangentSpace I (γ t) :=
@@ -113,9 +114,10 @@ lemma continuousOn_g_inner_along_curve
     (hw : ContinuousOn (fun t : ℝ => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) (γ t) (w t)) s) :
     ContinuousOn (fun t : ℝ => g.inner (γ t) (v t) (w t)) s := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let _ : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) := cg
+  let _ : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := ContinuousOn.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := γ) (v := v) (w := w)
@@ -145,10 +147,10 @@ theorem riemannOp_along_curve_continuousOn
     (I := I) g).comp_continuousOn hγ).clm_bundle_apply hv).clm_bundle_apply
       hw).clm_bundle_apply hz
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem second_variation_of_arcLength_eq_indexForm
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (f : ℝ → ℝ → M) (L : ℝ)
-    (V : ℝ → E)
+    (V : ∀ t : ℝ, TangentSpace I (γ t))
     (hf : IsSmoothVariation (I := I) f) (hL : 0 < L)
     (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) (hfc : ∀ t : ℝ, f 0 t = γ t)
     (hVeq : ∀ t : ℝ, V t = mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ))
@@ -250,7 +252,9 @@ theorem second_variation_of_arcLength_eq_indexForm
         have hslice0 : HasDerivAt (fun u : ℝ => G (u, t)) (fderiv ℝ G (s, t) (1, 0)) (s + 0) := by
           rw [add_zero]; exact hGslice
         have hcomp := hslice0.comp 0 hshift
-        simpa using hcomp
+        rw [show ((fun u : ℝ => G (u, t)) ∘ HAdd.hAdd s) =
+          (fun a : ℝ => G (s + a, t)) by rfl, mul_one] at hcomp
+        exact hcomp
       have hGval := hGsh.unique hS1'
       have hfoot0 : fsh 0 t = f s t := by rw [hfsh]; simp
       have hcov_shift :
@@ -640,7 +644,9 @@ theorem second_variation_of_arcLength_eq_indexForm
               ((hGcdiff.differentiable (by simp)).differentiableAt)
             simpa using this
           have hcomp := hslice0.comp 0 hshift
-          simpa using hcomp
+          rw [show ((fun u : ℝ => G (u, t)) ∘ HAdd.hAdd s) =
+            (fun a : ℝ => G (s + a, t)) by rfl, mul_one] at hcomp
+          exact hcomp
         have hGval := hGsh.unique hS1'
         have hfoot0 : fsh 0 t = c s := by rw [hfsh, hc]; simp
         have hcov_shift :
@@ -798,7 +804,7 @@ theorem second_variation_of_arcLength_eq_indexForm
         rw [hgss_pt t ht]
         have hWexp : g.inner (γ t) (W2 t) (γ' t)
             = g.inner (γ t) (Bsec t) (γ' t) + g.inner (γ t) (Rsec t) (γ' t) := by
-          rw [hcurv t, map_add, ContinuousLinearMap.add_apply]
+          rw [hcurv t, map_add, add_apply]
         have hVsecfun : Vsec = (fun t : ℝ => V t) := by funext s; exact hVsec_eq s
         have hIFI : indexFormIntegrand (I := I) g γ V V t
             = g.inner (γ t) (covDerivAlong (I := I) g γ V t) (covDerivAlong (I := I) g γ V t)
@@ -820,7 +826,11 @@ theorem second_variation_of_arcLength_eq_indexForm
           sectionAlongCurve_continuousOn_totalSpace_of_contMDiffOn (I := I) γ Vsec hγ_C1On
             (fun t _ => hVdiff t)
         refine hsec.congr (fun t _ => ?_)
-        rw [hVsec_eq t]
+        exact congrArg
+          (fun v : TangentSpace I (γ t) =>
+            (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+              (γ t) v : TangentBundle I M))
+          (hVsec_eq t).symm
       have hγ'_total : ContinuousOn
           (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (γ t) (γ' t) : TangentBundle I M)) (Set.Icc 0 L) :=
@@ -1078,7 +1088,7 @@ theorem indexFormIntegrand_intervalIntegrable
     have key : ∀ (x : TangentSpace I (γ t)) (a : ℝ),
         g.inner (γ t) (a • x) (a • x) = (a * a) * g.inner (γ t) x x := by
       intro x a
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       ring
     exact key ((e i).toFun t) (deriv c t)
   have hfac2 : g.inner (γ t)
@@ -1103,7 +1113,7 @@ theorem indexFormIntegrand_intervalIntegrable
                 (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
                 x w w) x := by
       intro x w a
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       ring
     exact key ((e i).toFun t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) (c t)
   unfold indexFormIntegrand

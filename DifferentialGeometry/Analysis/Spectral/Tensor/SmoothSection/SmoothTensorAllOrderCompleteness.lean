@@ -69,7 +69,7 @@ theorem exists_zeroContentR_le_fiberNorm_on_pouKernel
           C * ‖S.toSection
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   set Tα : Set M := tsupport
     (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hTα_def
@@ -182,7 +182,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
   have hfibSum_nn : 0 ≤ fibSum := by
     rw [hfibSum_def]
     refine Finset.sum_nonneg (fun i _ => ?_)
-    letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
+    let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
       Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
     exact norm_nonneg _
   by_cases hyK : y ∈ chartPouKernel (I := I) (M := M) α
@@ -260,7 +260,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
             have := Finset.mem_range.mp hi; omega
           have hib := hCfib i (iteratedCovGrad g r s i D) hyK
           refine le_trans hib ?_
-          letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
+          let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
             Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
           exact mul_le_mul_of_nonneg_right
             (Finset.le_sup' Cfib (Finset.mem_range.mpr (by omega))) (norm_nonneg _)
@@ -288,7 +288,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
                 exact Finset.mem_range.mpr
                   (lt_of_lt_of_le (Finset.mem_range.mp hi)
                     (Nat.succ_le_succ (Nat.sub_le j l)))
-              · letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
+              · let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
                   Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
                 exact norm_nonneg _
       have hchoose_nn : 0 ≤ (j.choose l : ℝ) := by positivity
@@ -636,7 +636,7 @@ private lemma chartLimitComp_memLp
     (α : M) (P : TensorCompIdx (E := E) r s) :
     MemLp (chartLimitComp (I := I) (M := M) g r s F hF_cauchy α P) 2
       (chartL2Measure (I := I) (M := M) α) := by
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure]; infer_instance
   exact Continuous.memLp_of_hasCompactSupport
     (chartLimitComp_continuous (I := I) (M := M) g r s F hF_cauchy α P)
@@ -655,7 +655,7 @@ private lemma chartComponent_toLp_tendsto
       atTop (𝓝 ((chartLimitComp_memLp (I := I) (M := M) g r s F hF_cauchy α P).toLp
         (chartLimitComp (I := I) (M := M) g r s F hF_cauchy α P))) := by
   classical
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure]; infer_instance
   set μ : Measure EuclN := chartL2Measure (I := I) (M := M) α with hμ_def
   set K : Set EuclN := chartPouKernel (I := I) (M := M) α ∪
@@ -706,11 +706,11 @@ private lemma chartComponent_toLp_tendsto
     rcases eq_or_ne ε ⊤ with hεtop | hεtop
     · obtain ⟨N, hN⟩ := heLp_le 1 one_pos
       exact ⟨N, fun n hn => hεtop ▸ le_top⟩
-    rcases eq_or_lt_of_le (zero_le c) with hc0 | hc0
+    rcases eq_or_lt_of_le (bot_le : 0 ≤ c) with hc0 | hc0
     · obtain ⟨N, hN⟩ := heLp_le 1 one_pos
       refine ⟨N, fun n hn => le_trans (hN n hn) ?_⟩
-      rw [← hc0, zero_mul]
-      exact zero_le _
+      rw [← hc0, ENNReal.bot_eq_zero, zero_mul]
+      exact bot_le
     · have hc_ne : c ≠ ⊤ := hc_lt.ne
       have hdiv_ne_top : ε / c ≠ ⊤ := by
         rw [Ne, ENNReal.div_eq_top]; push Not
@@ -820,9 +820,9 @@ private lemma tensorChartComponentRaw_chartLimitSection_eq_zero_off_source
     tensorChartComponentRaw (I := I) (M := M) g r s
         (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α)
         β P.1 P.2 x = 0 := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+  let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+  let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_normedSpace r s
   have hsec : (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α).toSection x = 0 :=
     chartLimitSection_toSection_eq_zero_off_source (I := I) (M := M) g r s F hF_cauchy α hx

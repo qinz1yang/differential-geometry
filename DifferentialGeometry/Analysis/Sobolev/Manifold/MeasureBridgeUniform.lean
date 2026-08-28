@@ -92,7 +92,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of
       have hx_notsupp : x ∉ tsupport u := by rw [hu_supp_eq]; simp
       exact image_eq_zero_of_notMem_tsupport hx_notsupp
     rw [hu_zero, eLpNorm_zero]
-    exact zero_le _
+    exact zero_le
 
 theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform_of_subset
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -144,7 +144,7 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform_of
         rfl
       · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α (0 : M → ℝ) hy]
     rw [hchartPushedRaw_zero, eLpNorm_zero']
-    exact zero_le _
+    exact zero_le
 
 end Chart
 end Sobolev

@@ -145,8 +145,10 @@ lemma sphereOneBlend_fderiv_bound {ε : ℝ} (hε : 0 < ε) (x : E) :
   have hEq :
       fderiv ℝ (sphereOneBlend (d := d) ε) x =
         -(fderiv ℝ (myCutoff (0 : E) (1 - ε) (1 + ε)) x) := by
-    simpa [sphereOneBlend] using
-      (fderiv_const_sub (𝕜 := ℝ) (f := myCutoff (0 : E) (1 - ε) (1 + ε)) (c := (1 : ℝ)) (x := x))
+    unfold sphereOneBlend
+    exact
+      fderiv_const_sub (𝕜 := ℝ) (f := myCutoff (0 : E) (1 - ε) (1 + ε))
+        (c := (1 : ℝ)) (x := x)
   calc
     ‖fderiv ℝ (sphereOneBlend (d := d) ε) x‖
         = ‖fderiv ℝ (myCutoff (0 : E) (1 - ε) (1 + ε)) x‖ := by
@@ -161,7 +163,8 @@ lemma sphereTwoBlend_fderiv_bound {ε : ℝ} (hε : 0 < ε) (x : E) :
       ‖fderiv ℝ (myCutoff (0 : E) (2 - ε) (2 + ε)) x‖ ≤ ↑Mst * ((2 + ε) - (2 - ε))⁻¹ :=
     myCutoff_fderiv_bound (d := d) (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) (by linarith) x
   have hden : ((2 + ε) - (2 - ε))⁻¹ = (ε + ε)⁻¹ := by ring_nf
-  simpa [sphereTwoBlend, hden] using hcut
+  unfold sphereTwoBlend
+  simpa only [hden] using hcut
 
 omit [NeZero d] in
 lemma norm_fderiv_mul_le
@@ -172,7 +175,12 @@ lemma norm_fderiv_mul_le
   have hfg :
       fderiv ℝ (fun y => f y * g y) x =
         f x • fderiv ℝ g x + g x • fderiv ℝ f x := by
-    simpa using (hf.hasFDerivAt.mul hg.hasFDerivAt).fderiv
+    have hfun : (fun y => f y * g y) = f * g := by
+      funext y
+      change f y * g y = f y * g y
+      rfl
+    rw [hfun]
+    exact (hf.hasFDerivAt.mul hg.hasFDerivAt).fderiv
   calc
     ‖fderiv ℝ (fun y => f y * g y) x‖
         = ‖f x • fderiv ℝ g x + g x • fderiv ℝ f x‖ := by rw [hfg]

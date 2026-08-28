@@ -80,13 +80,13 @@ theorem invComp_symm [DecidableEq Idx]
   let G : Matrix Idx Idx Real := fun i j => g.inner x (frame i x) (frame j x)
   have hAG : A * G = 1 := by
     ext a b
-    simpa [A, G, Matrix.mul_apply] using (hinv x a b).1
+    simpa [A, G, Matrix.mul_apply] using! (hinv x a b).1
   have hGA : G * A = 1 := by
     ext a b
-    simpa [A, G, Matrix.mul_apply] using (hinv x a b).2
+    simpa [A, G, Matrix.mul_apply] using! (hinv x a b).2
   have hGt : Matrix.transpose G = G := by
     ext a b
-    simpa [G] using g.symm x (frame b x) (frame a x)
+    simpa [G] using! g.symm x (frame b x) (frame a x)
   have hAtG : Matrix.transpose A * G = 1 := by
     calc
       Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
@@ -100,7 +100,7 @@ theorem invComp_symm [DecidableEq Idx]
       _ = 1 * A := by rw [hAtG]
       _ = A := by simp
   have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
-  simpa [A] using hentry
+  simpa [A] using! hentry
 
 def ricciFromRiemann04TraceInFrame
     (Riemann04 : RawFourTensorField (I := I) (M := M))

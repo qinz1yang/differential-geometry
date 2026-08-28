@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -39,11 +38,11 @@ theorem riemannSec_tensorCov_baseSlot_eval
       (fun b => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SSpace s I z) b (A b)))
     (x : M) (u : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         (riemannSec (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
           (fun b => X b) (fun b => W b) A x) u =
       - ∑ k : Fin s,
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u k (baseSlotCurv (I := I) g X W x (u k))) :=
   riemannSec_tensor0SCov_apply_eval (I := I) (M := M) g s X W A hA x u
 

@@ -64,7 +64,7 @@ theorem norm_toFun_sub_init_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0
     ((TimeSobolev.integrableOn u.deriv).mono_set (Icc_subset_Icc le_rfl ht.2)).norm
   refine setIntegral_mono_set hintt ?_ ?_
   · filter_upwards with s using norm_nonneg _
-  · exact HasSubset.Subset.eventuallyLE Ioc_subset_Icc_self
+  · exact LE.le.eventuallyLE Ioc_subset_Icc_self
 
 omit [CompleteSpace X] in
 theorem state_le_of_sqrt_floor (u : timeH1 X T) (hinit : u.init = 0) {B : ℝ}

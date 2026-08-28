@@ -809,12 +809,12 @@ theorem HasStageRootCube.symm_dist_tail
   let Lphi := L.subseq hphi
   let Y := X.obj (Lphi.φ n)
   let c := seqCenterD inp.decay P Lphi n (alpha.1 : Nat)
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := (P (Lphi.φ n)).ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := (P (Lphi.φ n)).ms
   have hcoord : dist (Phi3 n k l z) z ≤ delta := by
     simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq, dist_eq_norm] using
       hN n hn k hk l hl 0 le_rfl z hz
@@ -835,9 +835,13 @@ theorem HasStageRootCube.symm_dist_tail
         (I := I) Y.metric c).target := by
     intro w hw
     have hwBall := hExp hw
+    have hwBall' : w ∈ Metric.ball (0 : E)
+        (Geometry.Riemannian.expMapC2Radius (I := I) Y.metric c) := by
+      with_unfolding_all
+        exact hwBall
     have hwNorm : ‖w‖ < Geometry.Riemannian.expMapC2Radius
         (I := I) Y.metric c := by
-      simpa only [Metric.mem_ball, dist_zero_right] using hwBall
+      simpa only [Metric.mem_ball, dist_zero_right] using hwBall'
     exact Geometry.Riemannian.ball_subset_normalChartAt_target
       (I := I) Y.metric c hwNorm
   have hman := NormalCoordMetricEquivOn.symm_dist_le
@@ -912,22 +916,34 @@ theorem HasSuppConvData.pts_dist_tail
   let Lphi := L.subseq hphi
   let Y := X.obj (Lphi.φ l)
   let c := seqCenterD inp.decay P Lphi l (alpha.1 : Nat)
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := (P (Lphi.φ l)).ms
-  have htuple :
-      ‖(fun gamma => stagePtsSub inp P L phi hphi alpha k l z gamma - z)‖ ≤
-        delta := by
-    simpa only [PhiPts, mapDerivNorm, norm_iteratedFDeriv_zero] using
-      hN N le_rfl k hk l hl 0 le_rfl z hz
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := (P (Lphi.φ l)).ms
+  have htuple := hN N le_rfl k hk l hl 0 le_rfl z hz
+  simp only [PhiPts, mapDerivNorm, norm_iteratedFDeriv_zero] at htuple
+  let gamma' : Fin (inp.toCore.pack.A r) := by
+    with_unfolding_all
+      exact gamma
+  let diff : Fin (inp.toCore.pack.A r) → E := fun gamma =>
+    stagePtsSub inp.toCore P L phi hphi alpha k l z gamma - z
+  have hdiff : diff =
+      (fun gamma : Fin (inp.toCore.pack.A r) =>
+        stagePtsSub inp.toCore P L phi hphi alpha k l z gamma) -
+        fun _ => z := by
+    funext i
+    rfl
+  have htupleDiff : ‖diff‖ ≤ delta := by
+    rw [hdiff]
+    exact htuple
+  have hcomp' : ‖diff gamma'‖ ≤ delta :=
+    (norm_le_pi_norm diff gamma').trans htupleDiff
   have hcomp :
-      ‖stagePtsSub inp P L phi hphi alpha k l z gamma - z‖ ≤ delta :=
-    (norm_le_pi_norm
-      (fun gamma => stagePtsSub inp P L phi hphi alpha k l z gamma - z)
-      gamma).trans htuple
+      ‖stagePtsSub inp P L phi hphi alpha k l z gamma - z‖ ≤ delta := by
+    with_unfolding_all
+      simpa only [diff, gamma'] using hcomp'
   have hcoord :
       dist z (stagePtsSub inp P L phi hphi alpha k l z gamma) ≤ delta := by
     simpa only [dist_eq_norm, norm_sub_rev] using hcomp
@@ -949,9 +965,13 @@ theorem HasSuppConvData.pts_dist_tail
         (I := I) Y.metric c).target := by
     intro w hw
     have hwBall := hExp hw
+    have hwBall' : w ∈ Metric.ball (0 : E)
+        (Geometry.Riemannian.expMapC2Radius (I := I) Y.metric c) := by
+      with_unfolding_all
+        exact hwBall
     have hwNorm : ‖w‖ < Geometry.Riemannian.expMapC2Radius
         (I := I) Y.metric c := by
-      simpa only [Metric.mem_ball, dist_zero_right] using hwBall
+      simpa only [Metric.mem_ball, dist_zero_right] using hwBall'
     exact Geometry.Riemannian.ball_subset_normalChartAt_target
       (I := I) Y.metric c hwNorm
   have hman := NormalCoordMetricEquivOn.symm_dist_le
@@ -1014,11 +1034,11 @@ theorem BoundedGeometryNormalData.pts_dist_tail
   let Lphi := L.subseq hphi
   let Y := X.obj (Lphi.φ l)
   let c := seqCenterD inp.decay P Lphi l (alpha.1 : Nat)
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := (P (Lphi.φ l)).ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := (P (Lphi.φ l)).ms
   let target :=
     stagePtsSub inp P L phi hphi alpha k l z gamma (chart := d.chart)
   have hcoord : dist z target < delta := by

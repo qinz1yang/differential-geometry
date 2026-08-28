@@ -803,7 +803,7 @@ noncomputable def iteratedDiffChartBilinearData_step
       have hvolK_finite' : (volume.restrict K : Measure EuclN) Set.univ < (⊤ : ℝ≥0∞) := by
         rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
         exact hvolK_finite
-      haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+      have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
       have h_M_m_int : IntegrableOn
           (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m
             D_m.directions) K (volume : Measure EuclN) := by
@@ -924,10 +924,10 @@ noncomputable def iteratedDiffChartBilinearData_step
                     (m + 1) (Fin.cons i D_m.directions) y *
                   (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1))
             ∂(volume : Measure EuclN)) = _
-        rw [integral_finset_sum _ (fun i _ =>
-          (integrable_finset_sum _ (fun j _ => h_int_LHS_m_pair i j)))]
+        rw [integral_finsetSum _ (fun i _ =>
+          (integrable_finsetSum _ (fun j _ => h_int_LHS_m_pair i j)))]
         refine Finset.sum_congr rfl ?_; intro i _
-        rw [integral_finset_sum _ (fun j _ => h_int_LHS_m_pair i j)]
+        rw [integral_finsetSum _ (fun j _ => h_int_LHS_m_pair i j)]
       have h_sum_principal :
           ∑ i, ∑ j, INT_LHS_m_pair i j =
           (∑ i, ∑ j, A_pair i j) + (∑ i, ∑ j, B_pair i j) - (∑ i, ∑ j, PR_pair i j) := by
@@ -1026,10 +1026,10 @@ noncomputable def iteratedDiffChartBilinearData_step
                     (m + 2) (Fin.cons i (Fin.snoc D_m.directions l)) y *
                   (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
             ∂(volume : Measure EuclN)) = _
-        rw [integral_finset_sum _ (fun i _ =>
-          (integrable_finset_sum _ (fun j _ => h_int_PR_pair i j)))]
+        rw [integral_finsetSum _ (fun i _ =>
+          (integrable_finsetSum _ (fun j _ => h_int_PR_pair i j)))]
         refine Finset.sum_congr rfl ?_; intro i _
-        rw [integral_finset_sum _ (fun j _ => h_int_PR_pair i j)]
+        rw [integral_finsetSum _ (fun j _ => h_int_PR_pair i j)]
       have h_M_m_ae :
           chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m D_m.directions
             =ᵐ[(volume : Measure EuclN).restrict (Ω \ Kα)]
@@ -1214,11 +1214,11 @@ noncomputable def iteratedDiffChartBilinearData_step
           ring
         rw [setIntegral_congr_fun hΩ_meas (fun y _ => h_integrand_eq y)]
         have hint_A : Integrable f_A ((volume : Measure EuclN).restrict Ω) :=
-          integrable_finset_sum _ (fun i _ =>
-            integrable_finset_sum _ (fun j _ => h_int_A_pair i j))
+          integrable_finsetSum _ (fun i _ =>
+            integrable_finsetSum _ (fun j _ => h_int_A_pair i j))
         have hint_B : Integrable f_B ((volume : Measure EuclN).restrict Ω) :=
-          integrable_finset_sum _ (fun i _ =>
-            integrable_finset_sum _ (fun j _ => h_int_B_pair i j))
+          integrable_finsetSum _ (fun i _ =>
+            integrable_finsetSum _ (fun j _ => h_int_B_pair i j))
         have hint_C : Integrable f_C ((volume : Measure EuclN).restrict Ω) :=
           h_int_C.neg
         have hint_D : Integrable f_D ((volume : Measure EuclN).restrict Ω) :=
@@ -1245,10 +1245,10 @@ noncomputable def iteratedDiffChartBilinearData_step
                   chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                     (m + 1) (Fin.cons i D_m.directions) y * ψ y
               ∂(volume : Measure EuclN)) = _
-          rw [integral_finset_sum _ (fun i _ =>
-            (integrable_finset_sum _ (fun j _ => h_int_A_pair i j)))]
+          rw [integral_finsetSum _ (fun i _ =>
+            (integrable_finsetSum _ (fun j _ => h_int_A_pair i j)))]
           refine Finset.sum_congr rfl ?_; intro i _
-          rw [integral_finset_sum _ (fun j _ => h_int_A_pair i j)]
+          rw [integral_finsetSum _ (fun j _ => h_int_A_pair i j)]
         have h_int_f_B : (∫ y in Ω, f_B y ∂(volume : Measure EuclN)) =
             ∑ i, ∑ j, B_pair i j := by
           change (∫ y in Ω,
@@ -1258,10 +1258,10 @@ noncomputable def iteratedDiffChartBilinearData_step
                   chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                     (m + 2) (Fin.cons i (Fin.snoc D_m.directions j)) y * ψ y
               ∂(volume : Measure EuclN)) = _
-          rw [integral_finset_sum _ (fun i _ =>
-            (integrable_finset_sum _ (fun j _ => h_int_B_pair i j)))]
+          rw [integral_finsetSum _ (fun i _ =>
+            (integrable_finsetSum _ (fun j _ => h_int_B_pair i j)))]
           refine Finset.sum_congr rfl ?_; intro i _
-          rw [integral_finset_sum _ (fun j _ => h_int_B_pair i j)]
+          rw [integral_finsetSum _ (fun j _ => h_int_B_pair i j)]
         have h_int_f_C : (∫ y in Ω, f_C y ∂(volume : Measure EuclN)) = -N_C := by
           change (∫ y in Ω,
               - (densityDerivOnEuclid (I := I) g α l y *

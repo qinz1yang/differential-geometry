@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators

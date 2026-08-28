@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -338,7 +337,7 @@ theorem tensorSection_L2NormSq_le_chartSobolevSectionNormPou
                 (((chartAtlasPOU I M α : M → ℝ) x) ^ 2 * ‖T.toSection x‖ ^ 2)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
             congr 1
-            exact lintegral_finset_sum _ (fun α _ => by
+            exact lintegral_finsetSum _ (fun α _ => by
               have hρ_cont :
                   Continuous (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) :=
                 ((chartAtlasPOU I M α)).contMDiff.continuous

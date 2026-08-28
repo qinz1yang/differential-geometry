@@ -56,7 +56,7 @@ lemma unitModel_add_pt (s : ℕ) (A B : SmoothCcTensor g₀ 0 s) (x : M) :
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from A.toSection x) +
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from B.toSection x) from by
       rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
+  rw [add_apply, Tensor0SSpace.toModel_add]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -172,7 +172,6 @@ lemma unitModel_eq_ccTensorBilin_pt (S : SmoothCcTensor g₀ 0 2) (b : M)
   funext k
   fin_cases k <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma reindexCoeffGen_one_eq (r s : ℕ) (R : SmoothCcTensor g₀ r s) :
@@ -231,8 +230,8 @@ lemma tangent_eq_sum_inner_smoothOrthoFrame (g : SmoothRiemannianMetric I M) (x 
     v = ∑ i : Fin (Module.finrank ℝ E),
       g.inner x (smoothOrthoFrame (I := I) g x i x) v • smoothOrthoFrame (I := I) g x i x := by
   classical
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   set B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun i => smoothOrthoFrame (I := I) g x i x with hB_def
@@ -244,10 +243,10 @@ lemma tangent_eq_sum_inner_smoothOrthoFrame (g : SmoothRiemannianMetric I M) (x 
     have hpair : g.inner x (∑ i, c i • B i) (B j) = 0 := by
       rw [hc]
       simp
-    rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+    rw [map_sum, sum_apply] at hpair
     have hsimp : ∀ i, g.inner x (c i • B i) (B j) = c i * (if i = j then (1 : ℝ) else 0) := by
       intro i
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul, horth i j]
+      rw [map_smul, smul_apply, smul_eq_mul, horth i j]
     rw [Finset.sum_congr rfl (fun i _ => hsimp i)] at hpair
     have hcol : (∑ i, c i * (if i = j then (1 : ℝ) else 0)) = c j := by simp
     rw [hcol] at hpair
@@ -279,7 +278,6 @@ lemma tangent_eq_sum_inner_smoothOrthoFrame (g : SmoothRiemannianMetric I M) (x 
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [hrepr v i, hbB_coe i]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtend_toModel_cons (r s : ℕ) (Φ : SmoothCcTensor g₀ r s) (x : M)
@@ -299,7 +297,6 @@ lemma slotExtend_toModel_cons (r s : ℕ) (Φ : SmoothCcTensor g₀ r s) (x : M)
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x) D
     (show E from v0) vs
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
@@ -327,8 +324,30 @@ lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
             (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X)).toSection x) D)
         (fun k : Fin 6 => (u k : E))) from rfl]
   rw [hu]
-  rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 1 5
-    (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X) x D (u 0)]
+  change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (slotExtend (I := I) (M := M) g₀ 1 5
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X)).toSection x) D)
+      (Fin.cons (show E from u 0)
+        (Fin.cons (show E from u 1)
+          (fun k : Fin 4 => (u (Fin.natAdd 2 k) : E)))) = _
+  rw [show Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (slotExtend (I := I) (M := M) g₀ 1 5
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X)).toSection x) D)
+      (Fin.cons (show E from u 0)
+        (Fin.cons (show E from u 1)
+          (fun k : Fin 4 => (u (Fin.natAdd 2 k) : E)))) =
+      Tensor0SSpace.toModel
+        ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x)
+          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))
+        (Fin.cons (show E from u 1)
+          (fun k : Fin 4 => (u (Fin.natAdd 2 k) : E))) from by
+      convert! slotExtend_toModel_cons (I := I) (M := M) g₀ 1 5
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X) x D (u 0)
+        (vs := Fin.cons (show E from u 1)
+          (fun k : Fin 4 => (u (Fin.natAdd 2 k) : E))) using 1]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x)
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) =
@@ -336,20 +355,23 @@ lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
         (slotExtend (I := I) (M := M) g₀ 0 4 X).toSection x)
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 0 4 X x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1)]
+    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1)
+    (vs := fun k : Fin 4 => (u (Fin.natAdd 2 k) : E))]
   set t : Tensor0SSpace 0 I x :=
     tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
       (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D ![u 0, u 1] := by
     rw [ht_def]
-    have h1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (v0 := (u 1 : E))
-      (vs := fun i : Fin 0 => i.elim0)
-    rw [h1]
-    have h2 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
-      (T := D) (v0 := (u 0 : E)) (vs := Fin.cons (show E from u 1) (fun i : Fin 0 => i.elim0))
-    rw [h2]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 0)
+      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))
+      (v0 := u 1) (vs := fun i : Fin 0 => i.elim0)]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 1) (T := D) (v0 := u 0)
+      (vs := Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 1))
+        (fun i : Fin 0 => i.elim0))]
     refine congrArg _ ?_
     funext k
     refine Fin.cases rfl (fun i => ?_) k
@@ -357,10 +379,8 @@ lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
   have hdecomp := tensor0S_rank0_eq_smul_unit (I := I) (M := M) x t
   rw [htval] at hdecomp
   rw [hdecomp, map_smul]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-  rfl
+  with_unfolding_all rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
@@ -390,8 +410,20 @@ lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
             (slotExtendIter (I := I) (M := M) g₀ 0 3 2 X)).toSection x) D)
         (fun k : Fin 6 => (u k : E))) from rfl]
   rw [hu]
-  rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 2 5
-    (slotExtendIter (I := I) (M := M) g₀ 0 3 2 X) x D (u 0)]
+  change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (slotExtend (I := I) (M := M) g₀ 2 5
+          (slotExtendIter (I := I) (M := M) g₀ 0 3 2 X)).toSection x) D)
+      (Fin.cons (show E from u 0)
+        (Fin.cons (show E from u 1)
+          (Fin.cons (show E from u 2)
+            (fun k : Fin 3 => (u (Fin.natAdd 3 k) : E))))) = _
+  with_unfolding_all
+    rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 2 5
+      (slotExtendIter (I := I) (M := M) g₀ 0 3 2 X) x D (u 0)
+      (vs := Fin.cons (show E from u 1)
+        (Fin.cons (show E from u 2)
+          (fun k : Fin 3 => (u (Fin.natAdd 3 k) : E))))]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2 X).toSection x)
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))) =
@@ -412,7 +444,8 @@ lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
           (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 0 3 X x
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (u 2)]
+      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (u 2)
+    (vs := fun k : Fin 3 => (u (Fin.natAdd 3 k) : E))]
   set t : Tensor0SSpace 0 I x :=
     tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
       (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
@@ -420,20 +453,24 @@ lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D ![u 0, u 1, u 2] := by
     rw [ht_def]
-    have h1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 0)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 0)
       (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (v0 := (u 2 : E))
-      (vs := fun i : Fin 0 => i.elim0)
-    rw [h1]
-    have h2 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (v0 := (u 1 : E))
-      (vs := Fin.cons (show E from u 2) (fun i : Fin 0 => i.elim0))
-    rw [h2]
-    have h3 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2)
-      (T := D) (v0 := (u 0 : E))
-      (vs := Fin.cons (show E from u 1)
-        (Fin.cons (show E from u 2) (fun i : Fin 0 => i.elim0)))
-    rw [h3]
+        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))
+      (v0 := u 2) (vs := fun i : Fin 0 => i.elim0)]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 1)
+      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))
+      (v0 := u 1)
+      (vs := Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 2))
+        (fun i : Fin 0 => i.elim0))]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 2) (T := D) (v0 := u 0)
+      (vs := Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 1))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 2))
+          (fun i : Fin 0 => i.elim0)))]
     refine congrArg _ ?_
     funext k
     refine Fin.cases rfl (fun i => ?_) k
@@ -442,10 +479,8 @@ lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
   have hdecomp := tensor0S_rank0_eq_smul_unit (I := I) (M := M) x t
   rw [htval] at hdecomp
   rw [hdecomp, map_smul]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-  rfl
+  with_unfolding_all rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
@@ -469,8 +504,23 @@ lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
           (slotExtendIter (I := I) (M := M) g₀ 0 2 3 S)).toSection x) G)
       (fun k : Fin 6 => (u k : E)) = _
   rw [hu]
-  rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 3 5
-    (slotExtendIter (I := I) (M := M) g₀ 0 2 3 S) x G (u 0)]
+  with_unfolding_all
+    change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (slotExtend (I := I) (M := M) g₀ 3 5
+          (slotExtendIter (I := I) (M := M) g₀ 0 2 3 S)).toSection x) G)
+      (Fin.cons (show E from u 0)
+        (Fin.cons (show E from u 1)
+          (Fin.cons (show E from u 2)
+            (Fin.cons (show E from u 3)
+              (fun k : Fin 2 => (u (Fin.natAdd 4 k) : E)))))) = _
+  with_unfolding_all
+    rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 3 5
+      (slotExtendIter (I := I) (M := M) g₀ 0 2 3 S) x G (u 0)
+      (vs := Fin.cons (show E from u 1)
+        (Fin.cons (show E from u 2)
+          (Fin.cons (show E from u 3)
+            (fun k : Fin 2 => (u (Fin.natAdd 4 k) : E)))))]
   rw [show ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 2 3 S).toSection x)
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))) =
@@ -507,7 +557,8 @@ lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 0 2 S x
     (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
       (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)) (u 3)]
+        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)) (u 3)
+    (vs := fun k : Fin 2 => (u (Fin.natAdd 4 k) : E))]
   set t : Tensor0SSpace 0 I x :=
     tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
       (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
@@ -516,35 +567,40 @@ lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel G ![u 0, u 1, u 2, u 3] := by
     rw [ht_def]
-    have h1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 0)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 0)
       (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
           (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))
-      (v0 := u 3) (vs := fun i : Fin 0 => i.elim0)
-    rw [h1]
-    have h2 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
+      (v0 := u 3) (vs := fun i : Fin 0 => i.elim0)]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 1)
       (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))
-      (v0 := u 2) (vs := Fin.cons (u 3) (fun i : Fin 0 => i.elim0))
-    rw [h2]
-    have h3 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2)
+      (v0 := u 2)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 3))
+        (fun i : Fin 0 => i.elim0))]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 2)
       (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))
-      (v0 := u 1) (vs := Fin.cons (u 2) (Fin.cons (u 3) (fun i : Fin 0 => i.elim0)))
-    rw [h3]
-    have h4 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 3)
-      (T := G) (v0 := u 0)
-      (vs := Fin.cons (u 1) (Fin.cons (u 2) (Fin.cons (u 3) (fun i : Fin 0 => i.elim0))))
-    rw [h4]
+      (v0 := u 1)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 2))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 3))
+          (fun i : Fin 0 => i.elim0)))]
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+      (I := I) (M := M) (n := 3) (T := G) (v0 := u 0)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 1))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 2))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 3))
+            (fun i : Fin 0 => i.elim0))))]
     refine congrArg _ ?_
     funext k
     fin_cases k <;> rfl
   have hdecomp := tensor0S_rank0_eq_smul_unit (I := I) (M := M) x t
   rw [htval] at hdecomp
   rw [hdecomp, map_smul]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-  rfl
+  with_unfolding_all rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma metricCcTensor_unitModel_apply (g : SmoothRiemannianMetric I M) (x : M)
@@ -575,9 +631,9 @@ lemma tensorBilinearPairing_expand_left (S : SmoothCcTensor g₀ 0 2) (x : M)
           smoothCcTensorBilinForm (I := I) g₀ S x (smoothOrthoFrame (I := I) g₀ x e x) w := by
   conv_lhs => rw [orthoFrame_expansion_at_center (I := I) (M := M) g₀ x u]
   rw [map_sum (smoothCcTensorBilinForm (I := I) g₀ S x) _ Finset.univ,
-    ContinuousLinearMap.sum_apply]
+    sum_apply]
   refine Finset.sum_congr rfl fun e _ => ?_
-  rw [map_smul (smoothCcTensorBilinForm (I := I) g₀ S x), ContinuousLinearMap.smul_apply,
+  rw [map_smul (smoothCcTensorBilinForm (I := I) g₀ S x), smul_apply,
     smul_eq_mul]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]

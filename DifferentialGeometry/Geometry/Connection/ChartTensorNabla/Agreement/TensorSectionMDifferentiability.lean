@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
@@ -50,10 +49,10 @@ theorem differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
       (tensor0SChartE_section_repr (I := I) n α T ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
   classical
-  letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
+  let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
       (fun x : M => Tensor0SSpace n I x)) :=
     tensor0SBundle_topology n
-  letI _h_fib : FiberBundle (Tensor0SModel n ℝ E)
+  let _h_fib : FiberBundle (Tensor0SModel n ℝ E)
       (fun x : M => Tensor0SSpace n I x) :=
     tensor0SBundle_fiber n
   have hb_base_α : b ∈ (trivializationAt (Tensor0SModel n ℝ E)
@@ -137,7 +136,7 @@ theorem TensorSectionMDiffAt_partialEval
       (tensor0SPartialEval I M T (chartParallelExtend (I := I) α b v)) b := by
   classical
   unfold TensorSectionMDiffAt
-  letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
+  let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x)) :=
     tensor0SBundle_topology s
   have hY_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))

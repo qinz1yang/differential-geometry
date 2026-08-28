@@ -221,7 +221,7 @@ theorem exists_polynomial_bound_canonicalLateBombieriGiustiReverseCost
           g hdim rho τ c d D lower upper k ≤
         C * (k + 1 : ℝ) ^ (2 * (Module.finrank ℝ E + 2)) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let theta := parabolicMoserDecay n

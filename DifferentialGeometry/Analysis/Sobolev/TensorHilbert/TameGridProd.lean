@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureDecom
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -48,14 +47,14 @@ private theorem intCapMul (g₀ : SmoothRiemannianMetric I M) {r s t : ℕ}
           riemannianFiberNormSq (I := I) (M := M) g₀ r t x (B.toSection x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤ Λ ^ 2 * ‖B‖ ^ 2 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   have hBint : MeasureTheory.Integrable
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ r t x (B.toSection x)) μ := by
     rw [hμ]
@@ -254,14 +253,14 @@ theorem gridIntGrad (g₀ : SmoothRiemannianMetric I M) :
   refine ⟨fun k => max (K2 (k - 1)) 1, fun k => le_trans zero_le_one (le_max_right _ _), ?_⟩
   intro P Λ₁ hΛ₁0 hcap k c₁ c₂ hc₁ hc₂ hsum
   obtain ⟨m, rfl⟩ : ∃ m, k = 1 + m := ⟨k - 1, by omega⟩
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   set Rtop : ℝ := ‖iteratedCovGrad (I := I) g₀ 0 2 (1 + m) P‖ with hRtop
   have hRtop_nn : (0 : ℝ) ≤ Rtop ^ 2 := sq_nonneg _
   have hKidx : (1 + m) - 1 = m := by omega
@@ -363,16 +362,16 @@ theorem gridIntPull (g₀ : SmoothRiemannianMetric I M) :
   obtain ⟨K, hK_nn, hK⟩ := gridIntUnit (I := I) (M := M) g₀ 0 2
   refine ⟨K, hK_nn, ?_⟩
   intro P Λ₀ Λ₁ hΛ₀0 hΛ₀1 hsup hcap k hk1 n hn e he
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   have hGcont : Continuous (fun x : M => ∏ m : Fin n,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) :=
-    continuous_finset_prod _ (fun m _ => contRiemannianFiberNormSq (I := I) (M := M) g₀ _)
+    continuous_finsetProd _ (fun m _ => contRiemannianFiberNormSq (I := I) (M := M) g₀ _)
   have hGint : MeasureTheory.Integrable (fun x : M => ∏ m : Fin n,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))

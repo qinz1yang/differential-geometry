@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -250,9 +249,9 @@ noncomputable def flowUpgrade_of_maps
   · intro k
     exact Geometry.isSigmaCompact_of_isOpen I (PointedCGHMaps.source_open (I := I) Φ' k)
   · intro k
-    letI : TopologicalSpace (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).charted
-    letI : SigmaCompactSpace (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).sigmaCompact
+    let : TopologicalSpace (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).topology
+    let : ChartedSpace H (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).charted
+    let : SigmaCompactSpace (X.term (mc'.subseq k)).M := (X.term (mc'.subseq k)).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I (PointedCGHMaps.target_open (I := I) Φ' k)
   · intro k
     exact fun _ => refRes (I := I) Φ' R k
@@ -793,15 +792,15 @@ theorem flowLimit_endgame
             (endgameCo Φ₀ R bf hsrc htgt β ψ hβψ hwin gRefT B Crel Bmax hBmax hCrel1 hBmax1
             hequivT hrel hShiT hcovSrc hlipG).φ))) :
     CompactnessConclusion (I := I) X := by
-  letI : TopologicalSpace mc.limit.M := mc.limit.topology
-  letI : ChartedSpace H mc.limit.M := mc.limit.charted
-  letI : T2Space mc.limit.M := mc.limit.t2
-  letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
-  letI : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
-  letI : IsManifold I 1 mc.limit.M :=
+  let : TopologicalSpace mc.limit.M := mc.limit.topology
+  let : ChartedSpace H mc.limit.M := mc.limit.charted
+  let : T2Space mc.limit.M := mc.limit.t2
+  let : IsManifold I ∞ mc.limit.M := mc.limit.smooth
+  let : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
+  let : IsManifold I 1 mc.limit.M :=
     IsManifold.of_le (I := I) (M := mc.limit.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
     change IsManifold I ∞ mc.limit.M
     infer_instance
   let co := endgameCo Φ₀ R bf hsrc htgt β ψ hβψ hwin gRefT B Crel Bmax hBmax
@@ -849,20 +848,20 @@ theorem flowLimit_endgame
         (metricRicci (I := I) (co.gInf t) x)))
     refine Filter.Tendsto.congr' (Filter.Eventually.of_forall (fun k => ?_))
       (hricRaw t ht x)
-    letI : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).topology
-    letI : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).charted
-    letI : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).smooth
-    letI : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).sigmaCompact
-    letI : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
       (X.term ((mc.subseq ∘ co.φ) k)).t2
-    letI : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
+    let : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
       IsManifold.of_le (n := ∞)
         (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (X.term ((mc.subseq ∘ co.φ) k)).M := by
       change IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M
       infer_instance
@@ -997,15 +996,15 @@ theorem flowLimit_of_reg
       CompactnessConclusion (I := I) X := by
   dsimp only
   intro hsmooth hscalarCont hscalarTime hricciCont hrm04Cont
-  letI : TopologicalSpace mc.limit.M := mc.limit.topology
-  letI : ChartedSpace H mc.limit.M := mc.limit.charted
-  letI : T2Space mc.limit.M := mc.limit.t2
-  letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
-  letI : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
-  letI : IsManifold I 1 mc.limit.M :=
+  let : TopologicalSpace mc.limit.M := mc.limit.topology
+  let : ChartedSpace H mc.limit.M := mc.limit.charted
+  let : T2Space mc.limit.M := mc.limit.t2
+  let : IsManifold I ∞ mc.limit.M := mc.limit.smooth
+  let : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
+  let : IsManifold I 1 mc.limit.M :=
     IsManifold.of_le (I := I) (M := mc.limit.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
     change IsManifold I ∞ mc.limit.M
     infer_instance
   let co := endgameCo Φ₀ R bf hsrc htgt β ψ hβψ hwin gRefT B Crel Bmax hBmax
@@ -1067,8 +1066,28 @@ theorem flowLimit_of_reg
     unfold ScalarPullbackTendsto FunctionPullbackTendsto
     intro t ht x
     change mc.limit.M at x
-    simpa only [hmap, flowOfMetric, DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar,
-      DifferentialGeometry.PDE.RicciFlow.SolutionFamily.scalar] using hscalarRaw t ht x
+    change Filter.Tendsto _ Filter.atTop
+      (nhds (metricScalarAt (I := I) (co.gInf t) x))
+    refine Filter.Tendsto.congr' (Filter.Eventually.of_forall (fun k => ?_))
+      (hscalarRaw t ht x)
+    let : TopologicalSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+      (X.term ((mc.subseq ∘ co.φ) k)).topology
+    let : ChartedSpace H (X.term ((mc.subseq ∘ co.φ) k)).M :=
+      (X.term ((mc.subseq ∘ co.φ) k)).charted
+    let : IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M :=
+      (X.term ((mc.subseq ∘ co.φ) k)).smooth
+    let : SigmaCompactSpace (X.term ((mc.subseq ∘ co.φ) k)).M :=
+      (X.term ((mc.subseq ∘ co.φ) k)).sigmaCompact
+    let : T2Space (X.term ((mc.subseq ∘ co.φ) k)).M :=
+      (X.term ((mc.subseq ∘ co.φ) k)).t2
+    let : IsManifold I 1 (X.term ((mc.subseq ∘ co.φ) k)).M :=
+      IsManifold.of_le (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+        (X.term ((mc.subseq ∘ co.φ) k)).M := by
+      change IsManifold I ∞ (X.term ((mc.subseq ∘ co.φ) k)).M
+      infer_instance
+    exact congrArg
+      (fun y => (X.term ((mc.subseq ∘ co.φ) k)).S.scalar t y) (hmap k x).symm
   exact flowLimit_endgame (I := I) mc Φ₀ R bf hsrc htgt β ψ hβψ hwin gRefT B Crel
     Bmax hBmax hCrel1 hBmax1 hequivT hrel hShiT hcovSrc hlipG hcarrier h0 hcp
     hsol scalar

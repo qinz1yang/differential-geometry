@@ -7,7 +7,6 @@ namespace DifferentialGeometry.Geometry.Connection.Realization
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open _root_.Bundle CovariantDerivative
@@ -64,7 +63,7 @@ theorem concreteConn_add_right
   have hZ : MDiffAt (T% fun x => Z x) x := Z.mdifferentiableAt
   rw [show (fun x => Y x + Z x) = ((fun x => Y x) + fun x => Z x) from rfl,
     cov.isCovariantDerivativeOn.add hY hZ]
-  simp [ContinuousLinearMap.add_apply]
+  simp [add_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem concreteConn_add_left
@@ -104,7 +103,7 @@ theorem concreteConn_leibniz
     f.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hfY_eq : (fun x => (f : M → ℝ) x • Y x) = ((f : M → ℝ) • fun x => Y x) := rfl
   rw [hfY_eq, cov.isCovariantDerivativeOn.leibniz hY hf]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply]
   simp only [vectorFieldActionSmooth, ContMDiffMap.coeFn_mk, vectorFieldAction]
   abel

@@ -22,7 +22,7 @@ namespace WithBoundary
 
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -34,7 +34,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -79,7 +78,6 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
     integral_congr_ae (Filter.Eventually.of_forall hRHS_eq)
   rw [← hLHS_int, h_ibp, hRHS_int]
 
-omit [InnerProductSpace ℝ E] in
 private theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary'
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -122,7 +120,6 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
     integral_congr_ae (Filter.Eventually.of_forall hRHS_eq)
   rw [← hLHS_int, h_ibp, hRHS_int]
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_smul_laplacian_sub_eq_zero_with_boundary
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -148,7 +145,7 @@ theorem integral_smul_laplacian_sub_eq_zero_with_boundary
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       rw [← h1, h2]
     linarith
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hΔh_cont : Continuous (Δ_g_with_boundary (I := I) g hh hh_int) :=
     Δ_g_with_boundary_continuous (I := I) g hh hh_int

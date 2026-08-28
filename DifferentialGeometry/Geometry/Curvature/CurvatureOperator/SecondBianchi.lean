@@ -102,7 +102,7 @@ lemma covApply_riemannSec_section_distrib
     (((covApply_covApply_contMDiff (cov := cov) hY hZ hW).sub_section
       (covApply_covApply_contMDiff (cov := cov) hZ hY hW)) x).mdifferentiableAt (by simp)
   rw [cov_toFun_sub cov h12 h3, cov_toFun_sub cov h1 h2]
-  simp only [ContinuousLinearMap.sub_apply]
+  simp only [sub_apply]
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma covApply_torsionFree_inner_section_eq_zero
@@ -114,7 +114,7 @@ lemma covApply_torsionFree_inner_section_eq_zero
     covApply cov (covApply cov A B) W - covApply cov (covApply cov B A) W
       - covApply cov (VectorField.mlieBracket I A B) W = 0 := by
   classical
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   funext b
@@ -170,7 +170,7 @@ lemma covApply_outer_torsionFree_collapse
     rw [cov_toFun_sub cov h12 h3, cov_toFun_sub cov h1 h2]
   rw [key] at hd
   have := congrFun (congrArg DFunLike.coe hd.symm) (a x)
-  simpa [ContinuousLinearMap.sub_apply] using this
+  simpa [sub_apply] using this
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma nablaCurvSec_flat
@@ -206,7 +206,7 @@ lemma cov_toFun_torsionFree_vector_collapse
     (hA : MDiffAt (T% A) x) (hB : MDiffAt (T% B) x) :
     cov.toFun S x ((covApply cov A B) x) - cov.toFun S x ((covApply cov B A) x)
       - cov.toFun S x (VectorField.mlieBracket I A B x) = 0 := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   have htf : covApply cov A B x - covApply cov B A x = VectorField.mlieBracket I A B x :=
@@ -223,7 +223,7 @@ lemma covApply_eq_swap_add_mlieBracket
     (hA : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% A))
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B)) :
     covApply cov A B = covApply cov B A + VectorField.mlieBracket I A B := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   funext b
@@ -245,7 +245,7 @@ lemma mlieBracket_covApply_pair
     VectorField.mlieBracket I (covApply cov A B) C x
       + VectorField.mlieBracket I C (covApply cov B A) x =
       VectorField.mlieBracket I (VectorField.mlieBracket I A B) C x := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
   rw [VectorField.mlieBracket_swap_apply (V := C) (W := covApply cov B A)]
@@ -269,10 +269,10 @@ lemma bianchi_bracket_jacobi_sum_eq_zero
       + VectorField.mlieBracket I (covApply cov Z X) Y x
       + VectorField.mlieBracket I X (covApply cov Z Y) x = 0 := by
   classical
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
-  haveI : IsManifold I (minSmoothness ℝ 3) M := by
+  have : IsManifold I (minSmoothness ℝ 3) M := by
     rw [minSmoothness_of_isRCLikeNormedField]; infer_instance
   have hcYX : MDiffAt (T% (covApply cov Y X)) x :=
     (covApply_contMDiff (cov := cov) hY hX x).mdifferentiableAt (by simp)

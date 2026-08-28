@@ -2,12 +2,11 @@ import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.CauchySchwarz
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.Topology.Algebra.Support
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix

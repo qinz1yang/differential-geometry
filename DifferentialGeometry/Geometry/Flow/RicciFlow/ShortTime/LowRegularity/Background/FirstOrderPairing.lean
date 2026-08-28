@@ -6,7 +6,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ricc
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -50,6 +49,7 @@ private noncomputable def bg0Fam
     RicciDeTurckLowOrder.pathIntegrand (I := I) (M := M)
       g g T hδ hδZ s
 
+omit [SigmaCompactSpace M] in
 private theorem bg0Fam_eq
     (g gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -68,6 +68,7 @@ private theorem bg0Fam_eq
   simp only [bg0Fam, RicciDeTurckLowOrder.pathIntegrand]
   module
 
+omit [SigmaCompactSpace M] in
 private theorem bg0Fam_joint
     (g gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -110,6 +111,28 @@ private noncomputable def bg0PairInt
       (bg0Fam_joint (I := I) (M := M) g gB T hδT hδZ)
       (bg0Fam_joint (I := I) (M := M) g gB U hδU hδZ))
 
+omit [SigmaCompactSpace M] in
+private theorem bg0PairInt_toModel
+    (g gB : SmoothRiemannianMetric I M)
+    (T U : SmoothCcTensor g 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδT : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g T) δ)
+    (hδU : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g U) δ)
+    (hδZ : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ)
+    (x : M) :
+    TensorRSSpace.toModel
+        ((bg0PairInt (I := I) (M := M)
+          g gB T U hδ_lt hδT hδU hδZ).toSection x) =
+      ∫ s in (0 : ℝ)..1, TensorRSSpace.toModel
+        ((bg0Fam (I := I) (M := M) g gB T hδT hδZ s -
+          bg0Fam (I := I) (M := M) g gB U hδU hδZ s).toSection x) := by
+  unfold bg0PairInt
+  exact pathIntegralCoeffField_toModel (I := I) (M := M) g 2 2 _ _ _ _ _ x
+
+omit [SigmaCompactSpace M] in
 private theorem bg0_int_eq
     (g gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -192,8 +215,14 @@ private theorem bg0_int_eq
           (I := I) (M := M) g g U hδU hδZ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (h0U.mono hSI).intervalIntegrable
-  simp only [RicciDeTurckLowOrder.selfLowInt, bg0PairInt, bg0Fam,
-    pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
+  simp only [SmoothCcTensor.toSection_sub,
+    ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
+  rw [RicciDeTurckLowOrder.selfLowInt_toModel,
+    RicciDeTurckLowOrder.selfLowInt_toModel,
+    RicciDeTurckLowOrder.selfLowInt_toModel,
+    RicciDeTurckLowOrder.selfLowInt_toModel,
+    bg0PairInt_toModel]
+  simp only [bg0Fam, SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub (hBTi.sub h0Ti) (hBUi.sub h0Ui),
     intervalIntegral.integral_sub hBTi h0Ti,
@@ -341,7 +370,7 @@ theorem bg0_pair_h1
           ccTensorBilin (I := I) g P x v u := by
       intro x u v
       simp only [hP, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hT x u v
     have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -349,7 +378,7 @@ theorem bg0_pair_h1
           ccTensorBilin (I := I) g Q x v u := by
       intro x u v
       simp only [hQ, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hU x u v
     have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -539,7 +568,7 @@ theorem bg0_pair_h2
           ccTensorBilin (I := I) g P x v u := by
       intro x u v
       simp only [hP, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hT x u v
     have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -547,7 +576,7 @@ theorem bg0_pair_h2
           ccTensorBilin (I := I) g Q x v u := by
       intro x u v
       simp only [hQ, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hU x u v
     have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -822,6 +851,30 @@ private noncomputable def firstOrderBackgroundCoefficientDifference
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gB T 0 hδT hδZ)
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gB U 0 hδU hδZ))
 
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem firstOrderBackgroundCoefficientDifference_toModel
+    (g gB : SmoothRiemannianMetric I M)
+    (T U : SmoothCcTensor g 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδT : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g T) δ)
+    (hδU : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g U) δ)
+    (hδZ : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ)
+    (x : M) :
+    TensorRSSpace.toModel
+        ((firstOrderBackgroundCoefficientDifference (I := I) (M := M)
+          g gB T U hδ_lt hδT hδU hδZ).toSection x) =
+      ∫ s in (0 : ℝ)..1, TensorRSSpace.toModel
+        ((ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+            g gB T 0 hδT hδZ s -
+          ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+            g gB U 0 hδU hδZ s).toSection x) := by
+  unfold firstOrderBackgroundCoefficientDifference
+  exact pathIntegralCoeffField_toModel (I := I) (M := M) g 3 2 _ _ _ _ _ x
+
 private theorem firstOrderBackgroundCoefficient_sub
     (g gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -871,8 +924,12 @@ private theorem firstOrderBackgroundCoefficient_sub
           U 0 hδU hδZ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (hUcont.mono hSI).intervalIntegrable
-  simp only [lowerScaleActionCoefficients, ricciDeTurckRemainderFirstOrderPathIntegral, firstOrderBackgroundCoefficientDifference,
-    pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
+  simp only [lowerScaleActionCoefficients, SmoothCcTensor.toSection_sub,
+    ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
+  rw [ricciDeTurckRemainderFirstOrderPathIntegral_toModel,
+    ricciDeTurckRemainderFirstOrderPathIntegral_toModel,
+    firstOrderBackgroundCoefficientDifference_toModel]
+  simp only [SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hTint hUint]
 
@@ -994,7 +1051,8 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_background_pairing_h2_bound
       simp only [B0, B1, XR, XL]
       ring
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [SigmaCompactSpace M] in
 private theorem rhs1_bg_sub
     (g gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -1109,7 +1167,7 @@ theorem firstOrderBackgroundCoefficient_pairing_h2_bound
           ccTensorBilin (I := I) g P x v u := by
       intro x u v
       simp only [hP, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hT x u v
     have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1117,7 +1175,7 @@ theorem firstOrderBackgroundCoefficient_pairing_h2_bound
           ccTensorBilin (I := I) g Q x v u := by
       intro x u v
       simp only [hQ, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hU x u v
     have hPtie : ∀ (x : M) (u v : TangentSpace I x),

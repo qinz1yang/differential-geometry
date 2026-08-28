@@ -406,7 +406,8 @@ private theorem lapDiff_sq_core
     have hh := delta_eq_lap (I := I) h hf x
     have hg := delta_eq_lap (I := I) g hf x
     rw [hh, hg]
-    simpa only [a, b, Hess, B, du, covH, covG, leviHessSec, LeviCivita] using hlap0
+    simpa only [a, b, Hess, B, du, covH, covG, leviHessSec, LeviCivita,
+      scalarLapTraceAt_eq_pair] using hlap0
   rw [hlap]
   have hsub : (a - b) ^ 2 <= 2 * a ^ 2 + 2 * b ^ 2 := by
     nlinarith [sq_nonneg (a + b)]

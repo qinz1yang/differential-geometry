@@ -250,11 +250,12 @@ private theorem exists_unitBallDilate_close_of_memLp
         (MeasureTheory.Measure.quasiMeasurePreserving_smul (μ := volume) (r := lam⁻¹)
           (inv_ne_zero (ne_of_gt hlam_pos))).mono_left
           Measure.restrict_le_self.absolutelyContinuous
-    simpa using hfg_mem.1.comp_quasiMeasurePreserving hqmp
+    exact (hfg_mem.1.comp_quasiMeasurePreserving hqmp).congr
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hb_aesm : AEStronglyMeasurable b μB := by
     dsimp [b, DeGiorgi.unitBallDilate]
     have hdil_cont : Continuous (fun x : E => g (lam⁻¹ • x)) := by
-      simpa using hg_cont.comp (by fun_prop)
+      exact (hg_cont.comp (by fun_prop)).congr fun _ => rfl
     exact hdil_cont.aestronglyMeasurable.sub hg_cont.aestronglyMeasurable
   have hc_aesm : AEStronglyMeasurable c μB := by
     dsimp [c]
@@ -555,11 +556,12 @@ private theorem exists_delta_unitBallDilate_close_of_memLp
         (MeasureTheory.Measure.quasiMeasurePreserving_smul (μ := volume) (r := lam⁻¹)
           (inv_ne_zero (ne_of_gt hlam_pos))).mono_left
           Measure.restrict_le_self.absolutelyContinuous
-    simpa using hfg_mem.1.comp_quasiMeasurePreserving hqmp
+    exact (hfg_mem.1.comp_quasiMeasurePreserving hqmp).congr
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hb_aesm : AEStronglyMeasurable b μB := by
     dsimp [b, DeGiorgi.unitBallDilate]
     have hdil_cont : Continuous (fun x : E => g (lam⁻¹ • x)) := by
-      simpa using hg_cont.comp (by fun_prop)
+      exact (hg_cont.comp (by fun_prop)).congr fun _ => rfl
     exact hdil_cont.aestronglyMeasurable.sub hg_cont.aestronglyMeasurable
   have hc_aesm : AEStronglyMeasurable c μB := by
     dsimp [c]
@@ -809,7 +811,8 @@ private theorem exists_delta_unitBallDilate_scaled_close_of_memLp
     have hdil0_aesm : AEStronglyMeasurable (fun x => DeGiorgi.unitBallDilate (d := d) lam f0 x)
       μB := by
       dsimp [DeGiorgi.unitBallDilate]
-      simpa using hf0.aestronglyMeasurable.comp_quasiMeasurePreserving hqmp
+      exact (hf0.aestronglyMeasurable.comp_quasiMeasurePreserving hqmp).congr
+        (Filter.Eventually.of_forall fun _ => rfl)
     exact hdil0_aesm.congr hEqAe.symm
   have hcoeff_inv_le_one : ENNReal.ofReal lam⁻¹ ≤ 1 := by
     simpa using
@@ -1363,7 +1366,10 @@ theorem exists_smooth_W1p_approx_on_unitBall
     have h_eps_tendsto_real : Tendsto eps atTop (nhds (0 : ℝ)) := by
       simpa [eps] using h_eps_tendsto_real'
     have h_eps_tendsto : Tendsto (fun n => ENNReal.ofReal (eps n)) atTop (nhds 0) := by
-      simpa using (ENNReal.continuous_ofReal.tendsto (0 : ℝ)).comp h_eps_tendsto_real
+      have h := (ENNReal.continuous_ofReal.tendsto (0 : ℝ)).comp h_eps_tendsto_real
+      change Tendsto (fun n => ENNReal.ofReal (eps n)) atTop
+        (nhds (ENNReal.ofReal 0)) at h
+      simpa only [ENNReal.ofReal_zero] using h
     refine ENNReal.tendsto_nhds_zero.2 ?_
     intro ε hε
     filter_upwards [ENNReal.tendsto_nhds_zero.1 h_eps_tendsto ε hε] with n hn
@@ -1375,7 +1381,10 @@ theorem exists_smooth_W1p_approx_on_unitBall
     have h_eps_tendsto_real : Tendsto eps atTop (nhds (0 : ℝ)) := by
       simpa [eps] using h_eps_tendsto_real'
     have h_eps_tendsto : Tendsto (fun n => ENNReal.ofReal (eps n)) atTop (nhds 0) := by
-      simpa using (ENNReal.continuous_ofReal.tendsto (0 : ℝ)).comp h_eps_tendsto_real
+      have h := (ENNReal.continuous_ofReal.tendsto (0 : ℝ)).comp h_eps_tendsto_real
+      change Tendsto (fun n => ENNReal.ofReal (eps n)) atTop
+        (nhds (ENNReal.ofReal 0)) at h
+      simpa only [ENNReal.ofReal_zero] using h
     refine ENNReal.tendsto_nhds_zero.2 ?_
     intro ε hε
     filter_upwards [ENNReal.tendsto_nhds_zero.1 h_eps_tendsto ε hε] with n hn

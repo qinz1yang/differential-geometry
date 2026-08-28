@@ -6,7 +6,6 @@ open DifferentialGeometry.Analysis.Spectral
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Topology Manifold BigOperators ContDiff
@@ -51,6 +50,7 @@ private theorem unitModel_add_local
     rfl]
   rw [Tensor0SSpace.toModel_add]
 
+omit [SigmaCompactSpace M] in
 theorem lieSlope_eq_arms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -93,7 +93,7 @@ theorem lieSlope_eq_arms
   rw [lieTopTail] at h2
   refine hsplit.trans ?_
   rw [unitModel_add_local (I := I) g₀ 2, unitModel_add_local (I := I) g₀ 2,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply]
+    add_apply, add_apply]
   linear_combination -h0 - h1 - h2
 
 end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

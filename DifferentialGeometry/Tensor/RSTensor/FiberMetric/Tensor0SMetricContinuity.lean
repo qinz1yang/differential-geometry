@@ -5,7 +5,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Topology.Instances.Matrix
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry
 namespace Tensor0SBundle
@@ -33,7 +32,9 @@ theorem tensor0SField_eval_cmdAt_slots {s : ℕ}
   have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun y : M => α y) hα_top (v := v) (hv := hv)
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hEval
+  let h : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => α y (fun a : Fin s => v a y)) x₀ := hEval
+  exact h
 
 section NormSqContinuity
 
@@ -97,9 +98,9 @@ theorem normSq0S_contAt {s : ℕ}
         exact Finset.sum_congr rfl fun i _ => by rw [map_smul]
       calc g.inner y w w = (∑ i, c i • ((g.inner y) (e.localFrame b i y))) w := by rw [hout]
         _ = ∑ i, c i • ((g.inner y (e.localFrame b i y)) w) := by
-            rw [ContinuousLinearMap.sum_apply]
+            rw [sum_apply]
             exact Finset.sum_congr rfl fun i _ => by
-              rw [ContinuousLinearMap.smul_apply]
+              rw [smul_apply]
         _ = 0 := by
             refine Finset.sum_eq_zero fun i _ => ?_
             rw [hrow0 i, smul_zero]
@@ -154,9 +155,9 @@ theorem normSq0S_contAt {s : ℕ}
           (∏ a : Fin s, (Gm y)⁻¹ (I0 a) (J0 a)) *
               (T y fun a : Fin s => e.localFrame b (I0 a) y) *
             (T y fun a : Fin s => e.localFrame b (J0 a) y)) x₀ := by
-    refine tendsto_finset_sum _ fun I0 _ => tendsto_finset_sum _ fun J0 _ => ?_
+    refine tendsto_finsetSum _ fun I0 _ => tendsto_finsetSum _ fun J0 _ => ?_
     have hprod : ContinuousAt (fun y => ∏ a : Fin s, (Gm y)⁻¹ (I0 a) (J0 a)) x₀ :=
-      tendsto_finset_prod _ fun a _ => hGinvEnt (I0 a) (J0 a)
+      tendsto_finsetProd _ fun a _ => hGinvEnt (I0 a) (J0 a)
     exact (hprod.mul (hslots s T I0)).mul (hslots s T J0)
   have hev : (fun y : M => normSq0S (I := I) g y s (T y)) =ᶠ[nhds x₀]
       fun y : M =>

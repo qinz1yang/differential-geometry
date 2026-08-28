@@ -251,8 +251,8 @@ theorem exists_trivONBasis
   let Q : LinearMap.BilinForm Real E :=
     LinearMap.mk₂ Real
       (fun v w => g.inner x (e₀.symmL Real x v) (e₀.symmL Real x w))
-      (fun _ _ _ => by simp [map_add, ContinuousLinearMap.add_apply])
-      (fun _ _ _ => by simp [map_smul, ContinuousLinearMap.smul_apply])
+      (fun _ _ _ => by simp [map_add, add_apply])
+      (fun _ _ _ => by simp [map_smul, smul_apply])
       (fun _ _ _ => by simp [map_add])
       (fun _ _ _ => by simp [map_smul])
   have hsymm : LinearMap.IsSymm Q :=
@@ -272,7 +272,9 @@ theorem exists_trivONBasis
   obtain ⟨b, hb⟩ := exists_orthonormalBasis_of_posDef Q hsymm hpos
   have hsymmL : ∀ k, e₀.symmL Real x (b k) = e₀.localFrame b k x := fun k => by
     rw [e₀.localFrame_apply_of_mem_baseSet (b := b) hxu0]
-    simp [Bundle.Trivialization.basisAt]
+    simp only [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
+      Trivialization.linearEquivAt_symm_apply]
+    exact e₀.symmL_apply hxu0 (b k)
   refine ⟨b, fun i j => ?_⟩
   rw [← hsymmL i, ← hsymmL j]
   simpa [Q, LinearMap.mk₂_apply] using hb i j
@@ -638,7 +640,6 @@ theorem sqrt_tower_le_compL2
               frame hframe y')
             (frameComp0S (I := I) T frame) j y)) from rfl, hsq]
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] [IsManifold I 2 M] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [Fintype Idx] [DecidableEq Idx] in

@@ -31,8 +31,7 @@ noncomputable def slot0Curry
   (tensor00Scalar (I := I) (M := M) x).smulRight
     (tensor0S_curry (I := I) (M := M) s x
       ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K₀ k)))))
+        (coframeS (I := I) (M := M) g x 0 e K₀))
       (e a))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -47,14 +46,12 @@ lemma slot0Curry_apply
       tensor00Scalar (I := I) (M := M) x τ •
         (tensor0S_curry (I := I) (M := M) s x
           ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
-            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-              (fun k => g.inner x (e (K₀ k)))))
+            (coframeS (I := I) (M := M) g x 0 e K₀))
           (e a)) := by
   change ((tensor00Scalar (I := I) (M := M) x).smulRight
     (tensor0S_curry (I := I) (M := M) s x
       ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K₀ k)))))
+        (coframeS (I := I) (M := M) g x 0 e K₀))
       (e a))) τ = _
   rw [ContinuousLinearMap.smulRight_apply]
 
@@ -71,17 +68,19 @@ lemma fiberNormSqComponent_slot0Curry
   classical
   unfold fiberNormSqComponent
   set ωK : Tensor0SSpace 0 I x :=
-    (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-      (fun k => g.inner x (e (K₀ k))) with hωK
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+        (fun k => g.inner x (e (K₀ k)))) with hωK
+  have hωco : ωK = coframeS (I := I) (M := M) g x 0 e K₀ := by
+    rw [hωK]
+    rfl
   set B : Tensor0SSpace (s + 1) I x :=
-    (T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x) ωK with hB
-  rw [slot0Curry_apply (I := I) (M := M) g x s e K₀ T a ωK, ← hB]
-  have hscalar : tensor00Scalar (I := I) (M := M) x ωK = 1 := by
-    rw [hωK,
-      show ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) =
-        coframeS (I := I) (M := M) g x 0 e K₀ from rfl,
-      tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
+    (T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
+      (coframeS (I := I) (M := M) g x 0 e K₀) with hB
+  rw [slot0Curry_apply (I := I) (M := M) g x s e K₀ T a ωK, hωco, ← hB]
+  have hscalar : tensor00Scalar (I := I) (M := M) x
+      (coframeS (I := I) (M := M) g x 0 e K₀) = 1 := by
+    rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
       coframeS_apply (I := I) (M := M) g x 0 e K₀]
     simp
   rw [hscalar, one_smul]
@@ -95,13 +94,8 @@ lemma fiberNormSqComponent_slot0Curry
     · intro j; simp
   change (B (fun k : Fin (s + 1) => e ((Fin.cons a J' : Fin (s + 1) → Fin n) k)) : ℝ) =
     (tensor0S_curry (I := I) (M := M) s x B (e a)) (fun k : Fin s => e (J' k))
-  rw [show (B (fun k : Fin (s + 1) => e ((Fin.cons a J' : Fin (s + 1) → Fin n) k)) : ℝ) =
-      Tensor0SSpace.toModel B (Fin.cons (e a) (fun k : Fin s => e (J' k))) from by
-    rw [htuple]; rfl]
-  rw [show ((tensor0S_curry (I := I) (M := M) s x B (e a)) (fun k : Fin s => e (J' k)) : ℝ) =
-      Tensor0SSpace.toModel (tensor0S_curry (I := I) (M := M) s x B (e a))
-        (fun k : Fin s => e (J' k)) from rfl]
-  rw [hcurry]
+  rw [htuple]
+  exact hcurry.symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -121,9 +115,9 @@ theorem riemannianFiberNormSq_succ_eq_sum_slot0Curry
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I x) with hn_def
   set eob : OrthonormalBasis (Fin n) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _

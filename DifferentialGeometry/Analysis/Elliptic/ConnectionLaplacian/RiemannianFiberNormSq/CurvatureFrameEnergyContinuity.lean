@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
@@ -88,9 +87,9 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
     fun u v => rfl
@@ -157,7 +156,7 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
     exact absurd hdt_le_nt (not_le.mpr (Nat.pow_lt_pow_left hlt (by omega)))
   have hcard : Fintype.card (Fin n) = d := by
     rw [Fintype.card_fin]; omega
-  haveI : Nonempty (Fin n) := by
+  have : Nonempty (Fin n) := by
     rw [← Fintype.card_pos_iff, hcard]; exact hd_pos
   refine ⟨basisOfLinearIndependentOfCardEqFinrank hli (by rw [hcard, hd_def]), ?_⟩
   intro i
@@ -200,9 +199,9 @@ theorem exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_const
     have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
         RCLike.re (cd.inner v v) < 1} :=
       g.toRiemannianMetric.isVonNBounded x
-    letI nag : NormedAddCommGroup (TangentSpace I x) :=
+    let nag : NormedAddCommGroup (TangentSpace I x) :=
       cd.toNormedAddCommGroupOfTopology hc hbnd
-    letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+    let ips : InnerProductSpace ℝ (TangentSpace I x) :=
       InnerProductSpace.ofCoreOfTopology cd hc hbnd
     have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
       fun u v => rfl

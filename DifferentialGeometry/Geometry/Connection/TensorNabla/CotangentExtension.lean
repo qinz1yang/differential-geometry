@@ -48,7 +48,7 @@ def cotangentScalar
       (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x))
     (θ : Π x : M, TangentSpace I x →L[ℝ] ℝ) (x : M)
     (X Y : Π x : M, TangentSpace I x) : ℝ :=
-  extDerivFun (I := I) (fun b => θ b (Y b)) x (X x) - θ x (cov Y x (X x))
+  mvfderiv (I := I) (fun b => θ b (Y b)) x (X x) - θ x (cov Y x (X x))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma cotangentScalar_def
@@ -57,15 +57,15 @@ lemma cotangentScalar_def
     (θ : Π x : M, TangentSpace I x →L[ℝ] ℝ) (x : M)
     (X Y : Π x : M, TangentSpace I x) :
     cotangentScalar cov θ x X Y =
-      extDerivFun (I := I) (fun b => θ b (Y b)) x (X x) - θ x (cov Y x (X x)) := rfl
+      mvfderiv (I := I) (fun b => θ b (Y b)) x (X x) - θ x (cov Y x (X x)) := rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
-lemma extDerivFun_mul_apply
+lemma mvfderiv_mul_apply
     {p q : M → ℝ} {x : M}
     (hp : MDifferentiableAt I 𝓘(ℝ, ℝ) p x) (hq : MDifferentiableAt I 𝓘(ℝ, ℝ) q x)
     (v : TangentSpace I x) :
-    extDerivFun (I := I) (fun b => p b * q b) x v =
-      p x * extDerivFun (I := I) q x v + q x * extDerivFun (I := I) p x v := by
+    mvfderiv (I := I) (fun b => p b * q b) x v =
+      p x * mvfderiv (I := I) q x v + q x * mvfderiv (I := I) p x v := by
   let mp : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) p x
   let mq : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) q x
   let mpq : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) (fun b : M => p b * q b) x
@@ -74,7 +74,7 @@ lemma extDerivFun_mul_apply
   have hmf : mpq = p x • mq + q x • mp := hLeib.mfderiv
   have hmf_v : mpq v = p x • mq v + q x • mp v := by
     have := congrArg (fun (L : TangentSpace I x →L[ℝ] ℝ) => L v) hmf
-    simpa [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply] using this
+    simpa [add_apply, smul_apply] using this
   change mpq v = p x * mq v + q x * mp v
   rw [hmf_v]
   rw [smul_eq_mul, smul_eq_mul]
@@ -108,7 +108,7 @@ lemma cotangentScalar_tensorialAt_X
     unfold cotangentScalar
     have hfX : (f • X) x = f x • X x := rfl
     rw [hfX]
-    rw [(extDerivFun (I := I) (fun b => θ b (Y b)) x).map_smul,
+    rw [(mvfderiv (I := I) (fun b => θ b (Y b)) x).map_smul,
         ContinuousLinearMap.map_smul, map_smul]
     rw [smul_sub]
   add {X X'} _hX _hX' := by
@@ -136,31 +136,30 @@ lemma cotangentScalar_tensorialAt_Y
     have hg' : MDifferentiableAt I 𝓘(ℝ, ℝ) g x := hg
     have hfun : (fun b : M => θ b ((g • Y) b)) = (fun b : M => g b * h b) := by
       funext b
-      change θ b ((g • Y) b) = g b * h b
       have : (g • Y) b = g b • Y b := rfl
       rw [this, ContinuousLinearMap.map_smul, smul_eq_mul]
-    change extDerivFun (I := I) (fun b => θ b ((g • Y) b)) x (X x) -
+    change mvfderiv (I := I) (fun b => θ b ((g • Y) b)) x (X x) -
         θ x (cov (g • Y) x (X x)) =
-      g x • (extDerivFun (I := I) h x (X x) - θ x (cov Y x (X x)))
-    rw [hfun, extDerivFun_mul_apply hg' hh, covOn.leibniz hY hg (Set.mem_univ x)]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+      g x • (mvfderiv (I := I) h x (X x) - θ x (cov Y x (X x)))
+    rw [hfun, mvfderiv_mul_apply hg' hh, covOn.leibniz hY hg (Set.mem_univ x)]
+    rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply,
         ContinuousLinearMap.map_add, ContinuousLinearMap.map_smul]
     have hhx : h x = θ x (Y x) := rfl
     rw [hhx]
-    change g x * extDerivFun (I := I) h x (X x) +
-        θ x (Y x) * extDerivFun (I := I) g x (X x) -
-        (g x • θ x (cov Y x (X x)) + θ x (extDerivFun (I := I) g x (X x) • Y x)) =
-      g x • (extDerivFun (I := I) h x (X x) - θ x (cov Y x (X x)))
+    change g x * mvfderiv (I := I) h x (X x) +
+        θ x (Y x) * mvfderiv (I := I) g x (X x) -
+        (g x • θ x (cov Y x (X x)) + θ x (mvfderiv (I := I) g x (X x) • Y x)) =
+      g x • (mvfderiv (I := I) h x (X x) - θ x (cov Y x (X x)))
     rw [θ x |>.map_smul]
     rw [smul_eq_mul, smul_eq_mul, smul_eq_mul]
     ring
   add {Y Y'} hY hY' := by
     classical
-    change extDerivFun (I := I) (fun b => θ b ((Y + Y') b)) x (X x) -
+    change mvfderiv (I := I) (fun b => θ b ((Y + Y') b)) x (X x) -
         θ x (cov (Y + Y') x (X x)) =
-      (extDerivFun (I := I) (fun b => θ b (Y b)) x (X x) - θ x (cov Y x (X x))) +
-      (extDerivFun (I := I) (fun b => θ b (Y' b)) x (X x) - θ x (cov Y' x (X x)))
+      (mvfderiv (I := I) (fun b => θ b (Y b)) x (X x) - θ x (cov Y x (X x))) +
+      (mvfderiv (I := I) (fun b => θ b (Y' b)) x (X x) - θ x (cov Y' x (X x)))
     have hadd_fun : (fun b : M => θ b ((Y + Y') b)) =
         (fun b : M => θ b (Y b)) + (fun b : M => θ b (Y' b)) := by
       funext b
@@ -171,12 +170,12 @@ lemma cotangentScalar_tensorialAt_Y
       mdifferentiableAt_pairing hθ hY
     have h2 : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun b : M => θ b (Y' b)) x :=
       mdifferentiableAt_pairing hθ hY'
-    have hext_add : extDerivFun (I := I) (fun b => θ b ((Y + Y') b)) x =
-        extDerivFun (I := I) (fun b => θ b (Y b)) x +
-        extDerivFun (I := I) (fun b => θ b (Y' b)) x := by
-      rw [hadd_fun, extDerivFun_add h1 h2]
-    rw [hext_add, ContinuousLinearMap.add_apply,
-        covOn.add hY hY' (Set.mem_univ x), ContinuousLinearMap.add_apply,
+    have hext_add : mvfderiv (I := I) (fun b => θ b ((Y + Y') b)) x =
+        mvfderiv (I := I) (fun b => θ b (Y b)) x +
+        mvfderiv (I := I) (fun b => θ b (Y' b)) x := by
+      rw [hadd_fun, mvfderiv_add h1 h2]
+    rw [hext_add, add_apply,
+        covOn.add hY hY' (Set.mem_univ x), add_apply,
         ContinuousLinearMap.map_add]
     abel
 
@@ -251,7 +250,7 @@ lemma cotangentCovFun_isCovariantDerivativeOn
     have hYx : Y x = y := by simp [Y]
     change (cotangentCovFun cov (θ + θ') x) v y =
       ((cotangentCovFun cov θ x) + (cotangentCovFun cov θ' x)) v y
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply]
+    rw [add_apply, add_apply]
     change cotangentCovFun cov (θ + θ') x v y =
       cotangentCovFun cov θ x v y + cotangentCovFun cov θ' x v y
     rw [show v = X x from hXx.symm, show y = Y x from hYx.symm]
@@ -259,11 +258,11 @@ lemma cotangentCovFun_isCovariantDerivativeOn
     rw [cotangentCovAt_apply_of_diff cov hsum_θ hX hY,
         cotangentCovAt_apply_of_diff cov hθ_cot hX hY,
         cotangentCovAt_apply_of_diff cov hθ'_cot hX hY]
-    change extDerivFun (I := I) (fun b => (θ + θ') b (Y b)) x (X x) -
+    change mvfderiv (I := I) (fun b => (θ + θ') b (Y b)) x (X x) -
         (θ + θ') x (cov.toFun Y x (X x)) =
-      (extDerivFun (I := I) (fun b => θ b (Y b)) x (X x) -
+      (mvfderiv (I := I) (fun b => θ b (Y b)) x (X x) -
         θ x (cov.toFun Y x (X x))) +
-      (extDerivFun (I := I) (fun b => θ' b (Y b)) x (X x) -
+      (mvfderiv (I := I) (fun b => θ' b (Y b)) x (X x) -
         θ' x (cov.toFun Y x (X x)))
     have hpair_θ : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun b : M => θ b (Y b)) x :=
       mdifferentiableAt_pairing hθ_cot hY
@@ -274,16 +273,16 @@ lemma cotangentCovFun_isCovariantDerivativeOn
       funext b
       change (θ + θ') b (Y b) = θ b (Y b) + θ' b (Y b)
       have : (θ + θ') b = θ b + θ' b := rfl
-      rw [this, ContinuousLinearMap.add_apply]
-    have hext_add : extDerivFun (I := I) (fun b => (θ + θ') b (Y b)) x =
-        extDerivFun (I := I) (fun b => θ b (Y b)) x +
-        extDerivFun (I := I) (fun b => θ' b (Y b)) x := by
-      rw [hpair_eq, extDerivFun_add hpair_θ hpair_θ']
-    rw [hext_add, ContinuousLinearMap.add_apply]
+      rw [this, add_apply]
+    have hext_add : mvfderiv (I := I) (fun b => (θ + θ') b (Y b)) x =
+        mvfderiv (I := I) (fun b => θ b (Y b)) x +
+        mvfderiv (I := I) (fun b => θ' b (Y b)) x := by
+      rw [hpair_eq, mvfderiv_add hpair_θ hpair_θ']
+    rw [hext_add, add_apply]
     have h_omega_add : (θ + θ') x (cov.toFun Y x (X x)) =
         θ x (cov.toFun Y x (X x)) + θ' x (cov.toFun Y x (X x)) := by
       have : (θ + θ') x = θ x + θ' x := rfl
-      rw [this, ContinuousLinearMap.add_apply]
+      rw [this, add_apply]
     rw [h_omega_add]
     ring
   leibniz {θ g x} hθ hg _hx := by
@@ -303,29 +302,28 @@ lemma cotangentCovFun_isCovariantDerivativeOn
     rw [show v = X x from hXx.symm, show y = Y x from hYx.symm]
     rw [cotangentCovFun_apply, cotangentCovFun_apply]
     rw [cotangentCovAt_apply_of_diff cov hsum_θ hX hY]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply,
-        ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-        ContinuousLinearMap.smul_apply]
+        add_apply, smul_apply,
+        smul_apply]
     rw [cotangentCovAt_apply_of_diff cov hθ' hX hY]
-    change extDerivFun (I := I) (fun b => (g • θ) b (Y b)) x (X x) -
+    change mvfderiv (I := I) (fun b => (g • θ) b (Y b)) x (X x) -
         (g • θ) x (cov.toFun Y x (X x)) =
-      g x • (extDerivFun (I := I) (fun b => θ b (Y b)) x (X x) -
+      g x • (mvfderiv (I := I) (fun b => θ b (Y b)) x (X x) -
         θ x (cov.toFun Y x (X x))) +
-      extDerivFun g x (X x) • θ x (Y x)
+      mvfderiv (I := I) g x (X x) • θ x (Y x)
     set h : M → ℝ := fun b => θ b (Y b) with hh_def
     have hh : MDifferentiableAt I 𝓘(ℝ, ℝ) h x := mdifferentiableAt_pairing hθ' hY
     have hg' : MDifferentiableAt I 𝓘(ℝ, ℝ) g x := hg
     have hpair_eq : (fun b : M => (g • θ) b (Y b)) = (fun b : M => g b * h b) := by
       funext b
-      change (g • θ) b (Y b) = g b * h b
       have : (g • θ) b = g b • θ b := rfl
-      rw [this, ContinuousLinearMap.smul_apply, smul_eq_mul]
-    rw [hpair_eq, extDerivFun_mul_apply hg' hh]
+      rw [this, smul_apply, smul_eq_mul]
+    rw [hpair_eq, mvfderiv_mul_apply hg' hh]
     have h_g_omega_apply : (g • θ) x (cov.toFun Y x (X x)) =
         g x • θ x (cov.toFun Y x (X x)) := by
       have : (g • θ) x = g x • θ x := rfl
-      rw [this, ContinuousLinearMap.smul_apply]
+      rw [this, smul_apply]
     rw [h_g_omega_apply]
     have hhx : h x = θ x (Y x) := rfl
     rw [hhx]
@@ -351,7 +349,7 @@ theorem cotangentCov_dualPairing
     (hθ : MDiffAtCotangent θ x)
     {Y : Π x : M, TangentSpace I x} (hY : MDiffAt (T% Y) x)
     (v : TangentSpace I x) :
-    extDerivFun (I := I) (fun b => θ b (Y b)) x v =
+    mvfderiv (I := I) (fun b => θ b (Y b)) x v =
       ((cotangentCov cov).toFun θ x v) (Y x) + θ x (cov.toFun Y x v) := by
   classical
   set X : Π x : M, TangentSpace I x := FiberBundle.extend E v
@@ -360,7 +358,7 @@ theorem cotangentCov_dualPairing
   rw [show v = X x from hXx.symm]
   rw [cotangentCov_toFun, cotangentCovFun_apply,
       cotangentCovAt_apply_of_diff cov hθ hX hY]
-  change extDerivFun (I := I) (fun b => θ b (Y b)) x (X x) =
+  change mvfderiv (I := I) (fun b => θ b (Y b)) x (X x) =
       cotangentScalar (cov.toFun) θ x X Y + θ x (cov.toFun Y x (X x))
   unfold cotangentScalar
   ring
@@ -471,7 +469,8 @@ theorem cotangentCov_clmSection_smooth_aux
       (fun x => ∑ i, b.repr v i • (e₂ ⟨x, φ x (Y i x)⟩).2) x₀ := by
     apply ContMDiffAt.sum
     intro i _
-    exact (contMDiffAt_const (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
+    exact (contMDiffAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+      (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
   refine hsum.congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ x in 𝓝 x₀, x ∈ e₁.baseSet :=
     e₁.open_baseSet.mem_nhds he₁
@@ -499,19 +498,20 @@ theorem cotangentCov_clmSection_smooth_aux
   have h_lf : e₁.symmL ℝ x (b i) = (Y i) x := by
     rw [hYx i]
     rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    change e₁.symmL ℝ x (b i) = (e₁.linearEquivAt ℝ x hx₁).symm (b i)
+    rw [e₁.symmL_apply hx₁, e₁.linearEquivAt_symm_apply]
   rw [h_lf]
   change (Trivialization.continuousLinearMapAt ℝ e₂ x) ((φ x) ((Y i) x)) = _
   rw [show ⇑(e₂.continuousLinearMapAt ℝ x) = ⇑(e₂.linearMapAt ℝ x) from rfl,
     e₂.coe_linearMapAt_of_mem hx₂]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem cotangentCov_extDerivFun_smooth
+theorem cotangentCov_mvfderiv_smooth
     {h : M → ℝ} (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] ℝ)
         (E := fun x : M => (TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x))
-        x (extDerivFun h x)) := by
+    x (mvfderiv (I := I) h x)) := by
   intro x₀
   rw [contMDiffAt_hom_bundle]
   refine ⟨contMDiffAt_id, ?_⟩
@@ -529,7 +529,7 @@ theorem cotangentCov_extDerivFun_smooth
     Bundle.Trivial.fiberBundle_trivializationAt',
     Bundle.Trivial.continuousLinearMapAt_trivialization,
     TangentBundle.continuousLinearMapAt_model_space,
-    extDerivFun, ContinuousLinearMap.coe_comp', Function.comp_apply,
+    mvfderiv, ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearMap.coe_id', id_eq]
   rfl
 
@@ -586,7 +586,7 @@ theorem cotangentCov_double_apply_smooth
       (fun x => ((cotangentCov cov).toFun θ x (Y x)) (Z x)) := by
   have h_eq : ∀ x : M,
       ((cotangentCov cov).toFun θ x (Y x)) (Z x) =
-        extDerivFun (I := I) (fun b => θ b (Z b)) x (Y x) -
+        mvfderiv (I := I) (fun b => θ b (Z b)) x (Y x) -
           θ x (cov.toFun Z x (Y x)) := by
     intro x
     have hθx : MDiffAtCotangent θ x := (hθ x).mdifferentiableAt (by simp)
@@ -603,18 +603,18 @@ theorem cotangentCov_double_apply_smooth
   have h_extDeriv : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x)
-        x (extDerivFun (I := I) (fun b => θ b (Z b)) x)) :=
-    cotangentCov_extDerivFun_smooth h_pair_θZ
+        x (mvfderiv (I := I) (fun b => θ b (Z b)) x)) :=
+    cotangentCov_mvfderiv_smooth h_pair_θZ
   have h_extDeriv_Y : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x => extDerivFun (I := I) (fun b => θ b (Z b)) x (Y x)) := by
+      (fun x => mvfderiv (I := I) (fun b => θ b (Z b)) x (Y x)) := by
     have hap : ContMDiff I (I.prod 𝓘(ℝ, ℝ)) ∞
         (fun x => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) x
-          (extDerivFun (I := I) (fun b => θ b (Z b)) x (Y x))) :=
+          (mvfderiv (I := I) (fun b => θ b (Z b)) x (Y x))) :=
       ContMDiff.clm_bundle_apply
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => (Bundle.Trivial M ℝ) x)
         (b := fun x : M => x)
-        (ϕ := fun x => extDerivFun (I := I) (fun b => θ b (Z b)) x)
+        (ϕ := fun x => mvfderiv (I := I) (fun b => θ b (Z b)) x)
         (v := fun x => Y x) h_extDeriv Y.contMDiff
     intro x
     exact (contMDiffAt_section (F := ℝ) (E := Bundle.Trivial M ℝ) x).mp (hap x)
@@ -634,7 +634,7 @@ theorem cotangentCov_double_apply_smooth
       (fun x => θ x (cov.toFun Z x (Y x))) :=
     cotangentCov_pairing_contMDiff hθ h_covZY
   have h_combined : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x => extDerivFun (I := I) (fun b => θ b (Z b)) x (Y x) -
+      (fun x => mvfderiv (I := I) (fun b => θ b (Z b)) x (Y x) -
         θ x (cov.toFun Z x (Y x))) :=
     h_extDeriv_Y.sub h_θ_covZY
   refine h_combined.congr ?_

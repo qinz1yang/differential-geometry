@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SChartLocalInnerC
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SInnerBridgeIdentity
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
@@ -95,8 +95,8 @@ lemma chartTensorInnerPointwise_0s_continuousOn_smooth_args
         funext b
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
-      refine continuousOn_finset_sum _ (fun i _ => ?_)
-      refine continuousOn_finset_sum _ (fun j _ => ?_)
+      refine continuousOn_finsetSum _ (fun i _ => ?_)
+      refine continuousOn_finsetSum _ (fun j _ => ?_)
       refine ContinuousOn.mul ?_ ?_
       · exact (chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j).continuousOn
       · have hT_curry : ContinuousOn
@@ -194,8 +194,8 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn_smooth_args
         funext b
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun i _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · exact chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
       · refine ih

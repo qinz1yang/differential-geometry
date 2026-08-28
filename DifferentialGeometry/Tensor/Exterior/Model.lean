@@ -60,7 +60,7 @@ theorem wedge_product_compContinuousLinearMap {E' : Type*} [NormedAddCommGroup E
         (h.compContinuousLinearMap A)) v
   rw [uncurryFinAdd, uncurryFinAdd, ContinuousAlternatingMap.domDomCongr_apply,
     ContinuousAlternatingMap.domDomCongr_apply, uncurrySum_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply]
+    _root_.sum_apply, _root_.sum_apply]
   apply Finset.sum_congr rfl
   intro σ hσ
   refine Quotient.inductionOn' σ ?_

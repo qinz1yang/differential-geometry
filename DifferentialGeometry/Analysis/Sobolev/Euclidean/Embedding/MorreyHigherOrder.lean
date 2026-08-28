@@ -96,9 +96,12 @@ private theorem opNorm_le_sum_basis
   have h_sum_expand :
       f (fun i : Fin m => ∑ j : Fin d, (v i j) • EuclideanSpace.single j (1 : ℝ)) =
         ∑ α : Fin m → Fin d, f (fun i => (v i (α i)) • EuclideanSpace.single (α i) (1 : ℝ)) := by
-    have h := f.toMultilinearMap.map_sum
+    change f.toMultilinearMap (fun i : Fin m => ∑ j : Fin d,
+        (v i j) • EuclideanSpace.single j (1 : ℝ)) =
+      ∑ α : Fin m → Fin d,
+        f.toMultilinearMap (fun i => (v i (α i)) • EuclideanSpace.single (α i) (1 : ℝ))
+    exact f.toMultilinearMap.map_sum
       (g := fun (i : Fin m) (j : Fin d) => (v i j) • EuclideanSpace.single j (1 : ℝ))
-    convert h using 1
   rw [h_sum_expand]
   refine (norm_sum_le _ _).trans ?_
   have h_norm_eq : ∀ α : Fin m → Fin d,
@@ -114,7 +117,11 @@ private theorem opNorm_le_sum_basis
     have h := f.toMultilinearMap.map_smul_univ
       (fun i : Fin m => v i (α i))
       (fun i : Fin m => EuclideanSpace.single (α i) (1 : ℝ))
-    simpa [basisTuple] using h
+    have hb : (fun i : Fin m => EuclideanSpace.single (α i) (1 : ℝ)) = basisTuple α := rfl
+    rw [hb] at h
+    change f.toMultilinearMap (fun i => (v i (α i)) • EuclideanSpace.single (α i) (1 : ℝ)) =
+      (∏ i : Fin m, v i (α i)) • f.toMultilinearMap (basisTuple α)
+    exact h
   have h_each : ∀ α : Fin m → Fin d,
       |f (fun i => (v i (α i)) • EuclideanSpace.single (α i) (1 : ℝ))| ≤
         |f (basisTuple α)| * ∏ i : Fin m, ‖v i‖ := by
@@ -246,7 +253,7 @@ private lemma smooth_iteratedFDeriv_norm_memLp_on_ball
     continuous_norm.comp h_iter_cont
   obtain ⟨M, hM⟩ := IsCompact.exists_bound_of_continuousOn
     (isCompact_closedBall x₀ R) hcont.continuousOn
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply_univ]
     exact measure_ball_lt_top
@@ -789,8 +796,8 @@ private lemma norm_iteratedFDeriv_mul_left_bound
     refine Finset.sum_nbij' (fun i : ℕ => j - i) (fun i : ℕ => j - i)
       (fun i hi => by simp only [Finset.mem_range] at hi ⊢; omega)
       (fun i hi => by simp only [Finset.mem_range] at hi ⊢; omega)
-      (fun i hi => by simp only [Finset.mem_range] at hi; change j - (j - i) = i; omega)
-      (fun i hi => by simp only [Finset.mem_range] at hi; change j - (j - i) = i; omega)
+      (fun i hi => by simp only [Finset.mem_range] at hi; omega)
+      (fun i hi => by simp only [Finset.mem_range] at hi; omega)
       (fun _ _ => rfl)
   have h2pow_Cψ_nn : 0 ≤ (2 : ℝ) ^ m * Cψ := by positivity
   calc ∑ i ∈ Finset.range (j + 1),
@@ -1334,7 +1341,7 @@ theorem morrey_iteratedFDeriv_representative
           (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R)) := by
       have h_uniq : ∀ α : Fin 0 → Fin d, α = (fun i => i.elim0) := fun α => by
         funext i; exact i.elim0
-      haveI : Unique (Fin 0 → Fin d) :=
+      have : Unique (Fin 0 → Fin d) :=
         { default := fun i : Fin 0 => i.elim0
           uniq := fun α => (h_uniq α).symm ▸ rfl }
       rw [Fintype.sum_unique
@@ -1346,7 +1353,7 @@ theorem morrey_iteratedFDeriv_representative
     have h_zero_mem : 0 ∈ Finset.range (m + 1 + 1) := by
       rw [Finset.mem_range]; omega
     rw [← h_term_eq, ← Finset.sum_erase_add _ _ h_zero_mem]
-    exact le_add_of_nonneg_left (Finset.sum_nonneg (fun _ _ => zero_le _))
+    exact le_add_of_nonneg_left (Finset.sum_nonneg (fun _ _ => zero_le))
   have h_eLp_tendsto : Filter.Tendsto
       (fun n => eLpNorm (fun y => χ y * u y - φ n y)
         (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R))) Filter.atTop (𝓝 0) := by
@@ -1359,9 +1366,9 @@ theorem morrey_iteratedFDeriv_representative
       have hε_pos_toReal : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hε_top
       obtain ⟨N, hN⟩ := exists_nat_one_div_lt hε_pos_toReal
       refine ⟨N, fun n hn => ?_⟩
-      have h_n_real : 0 ≤ (n : ℝ) := by exact_mod_cast Nat.zero_le n
+      have h_n_real : 0 ≤ (n : ℝ) := by exact_mod_cast Nat.zero_le (n := n)
       have h_pos : 0 < ((n : ℝ) + 1) := by linarith
-      have h_N_real : 0 ≤ (N : ℝ) := by exact_mod_cast Nat.zero_le N
+      have h_N_real : 0 ≤ (N : ℝ) := by exact_mod_cast Nat.zero_le (n := N)
       have h_pos_N : 0 < ((N : ℝ) + 1) := by linarith
       have h_N_le_n : (N : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
       have h_inc : ((N : ℝ) + 1) ≤ ((n : ℝ) + 1) := by linarith
@@ -1379,7 +1386,7 @@ theorem morrey_iteratedFDeriv_representative
       (g := fun _ : ℕ => (0 : ℝ≥0∞))
       (h := fun n : ℕ => ENNReal.ofReal (1 / ((n : ℝ) + 1)))
       tendsto_const_nhds h_close_tendsto
-      (fun _ => zero_le _) (fun n => le_trans (h_eLp_le_wkp n) (hφ_close n))
+      (fun _ => zero_le) (fun n => le_trans (h_eLp_le_wkp n) (hφ_close n))
   have h_eLp_tendsto' : Filter.Tendsto
       (fun n => eLpNorm (φ n - fun y => χ y * u y)
         (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R))) Filter.atTop (𝓝 0) := by

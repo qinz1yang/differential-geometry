@@ -23,7 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private theorem tensor0S_commutator_expansion_from_realizes
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -71,7 +70,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
     Fin.cons Xsec Vsec
   have hXY :
       nabla2Alpha (Fin.cons (Xsec x) (fun a : Fin (s + 1) => WY a x)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => nablaAlphaSec p (fun a : Fin (s + 1) => WY a p))
             x (Xsec x) -
           ∑ a : Fin (s + 1),
@@ -84,7 +83,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
     simpa using h
   have hYX :
       nabla2Alpha (Fin.cons (Ysec x) (fun a : Fin (s + 1) => WX a x)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => nablaAlphaSec p (fun a : Fin (s + 1) => WX a p))
             x (Ysec x) -
           ∑ a : Fin (s + 1),
@@ -98,7 +97,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
   have hFY (p : M) :
       nablaAlphaSec p
           (Fin.cons (Ysec p) (fun q : Fin s => Vsec q p)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun y : M => alphaSec y (fun q : Fin s => Vsec q y))
             p (Ysec p) -
           ∑ q : Fin s,
@@ -111,7 +110,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
   have hFX (p : M) :
       nablaAlphaSec p
           (Fin.cons (Xsec p) (fun q : Fin s => Vsec q p)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun y : M => alphaSec y (fun q : Fin s => Vsec q y))
             p (Xsec p) -
           ∑ q : Fin s,
@@ -164,7 +163,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
         ((Vsec a).contMDiff.contMDiffAt.of_le
           (by simp : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞)))
   have hDX_corrY (q : Fin s) :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => alphaSec p (fun a : Fin s => VYq q a p))
           x (Xsec x) =
         nablaAlphaSec x
@@ -178,7 +177,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
     rw [h]
     abel
   have hDY_corrX (q : Fin s) :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => alphaSec p (fun a : Fin s => VXq q a p))
           x (Ysec x) =
         nablaAlphaSec x
@@ -362,15 +361,15 @@ private theorem tensor0S_commutator_expansion_from_realizes
             exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞))))
     have hYbase_mdiff :
         MDifferentiableAt I 𝓘(Real, Real)
-          (fun p : M => extDerivFun (I := I) baseScalar p (Ysec p)) x := by
+          (fun p : M => mvfderiv (I := I) baseScalar p (Ysec p)) x := by
       exact
-        (DifferentialGeometry.extDerivFun_apply_contMDiffAt
+        (DifferentialGeometry.mvfderiv_apply_contMDiffAt
           (I := I) hbaseSmooth Ysec).mdifferentiableAt (by simp)
     have hXbase_mdiff :
         MDifferentiableAt I 𝓘(Real, Real)
-          (fun p : M => extDerivFun (I := I) baseScalar p (Xsec p)) x := by
+          (fun p : M => mvfderiv (I := I) baseScalar p (Xsec p)) x := by
       exact
-        (DifferentialGeometry.extDerivFun_apply_contMDiffAt
+        (DifferentialGeometry.mvfderiv_apply_contMDiffAt
           (I := I) hbaseSmooth Xsec).mdifferentiableAt (by simp)
     have hCY_mdiff (q : Fin s) :
         MDifferentiableAt I 𝓘(Real, Real)
@@ -425,7 +424,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
     have hFY_fun :
         (fun p : M => nablaAlphaSec p (fun a : Fin (s + 1) => WY a p)) =
           fun p : M =>
-            extDerivFun (I := I) baseScalar p (Ysec p) -
+            mvfderiv (I := I) baseScalar p (Ysec p) -
               ∑ q : Fin s, alphaSec p (fun a : Fin s => VYq q a p) := by
       funext p
       have hWYp :
@@ -456,20 +455,20 @@ private theorem tensor0S_commutator_expansion_from_realizes
                 (Fin.cons (Ysec p) (fun q : Fin s => Vsec q p)) := by
               rw [hWYp]
         _ =
-            extDerivFun (I := I) baseScalar p (Ysec p) -
+            mvfderiv (I := I) baseScalar p (Ysec p) -
               ∑ q : Fin s,
                 alphaSec p
                   (Function.update (fun r : Fin s => Vsec r p) q
                     ((cov (fun y : M => Vsec q y) p) (Ysec p))) := by
               simpa [baseScalar] using hFY p
         _ =
-            extDerivFun (I := I) baseScalar p (Ysec p) -
+            mvfderiv (I := I) baseScalar p (Ysec p) -
               ∑ q : Fin s, alphaSec p (fun a : Fin s => VYq q a p) := by
               rw [hsum]
     have hFX_fun :
         (fun p : M => nablaAlphaSec p (fun a : Fin (s + 1) => WX a p)) =
           fun p : M =>
-            extDerivFun (I := I) baseScalar p (Xsec p) -
+            mvfderiv (I := I) baseScalar p (Xsec p) -
               ∑ q : Fin s, alphaSec p (fun a : Fin s => VXq q a p) := by
       funext p
       have hWXp :
@@ -500,37 +499,37 @@ private theorem tensor0S_commutator_expansion_from_realizes
                 (Fin.cons (Xsec p) (fun q : Fin s => Vsec q p)) := by
               rw [hWXp]
         _ =
-            extDerivFun (I := I) baseScalar p (Xsec p) -
+            mvfderiv (I := I) baseScalar p (Xsec p) -
               ∑ q : Fin s,
                 alphaSec p
                   (Function.update (fun r : Fin s => Vsec r p) q
                     ((cov (fun y : M => Vsec q y) p) (Xsec p))) := by
               simpa [baseScalar] using hFX p
         _ =
-            extDerivFun (I := I) baseScalar p (Xsec p) -
+            mvfderiv (I := I) baseScalar p (Xsec p) -
               ∑ q : Fin s, alphaSec p (fun a : Fin s => VXq q a p) := by
               rw [hsum]
     have hFY_deriv :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => nablaAlphaSec p (fun a : Fin (s + 1) => WY a p))
             x (Xsec x) =
-          extDerivFun (I := I)
-              (fun p : M => extDerivFun (I := I) baseScalar p (Ysec p))
+          mvfderiv (I := I)
+              (fun p : M => mvfderiv (I := I) baseScalar p (Ysec p))
               x (Xsec x) -
             ∑ q : Fin s,
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun p : M => alphaSec p (fun a : Fin s => VYq q a p))
                 x (Xsec x) := by
       rw [hFY_fun]
-      rw [extDerivFun_sub_at (I := I) (x := x) (v := Xsec x)
+      rw [mvfderiv_sub_at (I := I) (x := x) (v := Xsec x)
         hYbase_mdiff hCY_sum_mdiff]
       have hsum :
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun p : M =>
                 ∑ q : Fin s, alphaSec p (fun a : Fin s => VYq q a p))
               x (Xsec x) =
             ∑ q : Fin s,
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun p : M => alphaSec p (fun a : Fin s => VYq q a p))
                 x (Xsec x) := by
         have hfun :
@@ -542,33 +541,33 @@ private theorem tensor0S_commutator_expansion_from_realizes
           simp
         rw [hfun]
         exact
-          extDerivFun_finset_sum_at (I := I) Finset.univ
+          mvfderiv_finset_sum_at (I := I) Finset.univ
             (fun q : Fin s => fun p : M =>
               alphaSec p (fun a : Fin s => VYq q a p))
             (x := x) (v := Xsec x)
             (by intro q hq; exact hCY_mdiff q)
       rw [hsum]
     have hFX_deriv :
-        extDerivFun (I := I)
+        mvfderiv (I := I)
             (fun p : M => nablaAlphaSec p (fun a : Fin (s + 1) => WX a p))
             x (Ysec x) =
-          extDerivFun (I := I)
-              (fun p : M => extDerivFun (I := I) baseScalar p (Xsec p))
+          mvfderiv (I := I)
+              (fun p : M => mvfderiv (I := I) baseScalar p (Xsec p))
               x (Ysec x) -
             ∑ q : Fin s,
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun p : M => alphaSec p (fun a : Fin s => VXq q a p))
                 x (Ysec x) := by
       rw [hFX_fun]
-      rw [extDerivFun_sub_at (I := I) (x := x) (v := Ysec x)
+      rw [mvfderiv_sub_at (I := I) (x := x) (v := Ysec x)
         hXbase_mdiff hCX_sum_mdiff]
       have hsum :
-          extDerivFun (I := I)
+          mvfderiv (I := I)
               (fun p : M =>
                 ∑ q : Fin s, alphaSec p (fun a : Fin s => VXq q a p))
               x (Ysec x) =
             ∑ q : Fin s,
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun p : M => alphaSec p (fun a : Fin s => VXq q a p))
                 x (Ysec x) := by
         have hfun :
@@ -580,30 +579,30 @@ private theorem tensor0S_commutator_expansion_from_realizes
           simp
         rw [hfun]
         exact
-          extDerivFun_finset_sum_at (I := I) Finset.univ
+          mvfderiv_finset_sum_at (I := I) Finset.univ
             (fun q : Fin s => fun p : M =>
               alphaSec p (fun a : Fin s => VXq q a p))
             (x := x) (v := Ysec x)
             (by intro q hq; exact hCX_mdiff q)
       rw [hsum]
-    haveI : CompleteSpace E := FiniteDimensional.complete Real E
-    haveI : IsManifold I 3 M := by
+    have : CompleteSpace E := FiniteDimensional.complete Real E
+    have : IsManifold I 3 M := by
       exact IsManifold.of_le (I := I) (M := M)
         (by exact WithTop.coe_le_coe.2 (le_top : (3 : ℕ∞) ≤ (⊤ : ℕ∞)))
     have hbracket :
-        extDerivFun (I := I) baseScalar x
+        mvfderiv (I := I) baseScalar x
             (VectorField.mlieBracket I Xf Yf x) =
-          extDerivFun (I := I)
-              (fun p : M => extDerivFun (I := I) baseScalar p (Ysec p))
+          mvfderiv (I := I)
+              (fun p : M => mvfderiv (I := I) baseScalar p (Ysec p))
               x (Xsec x) -
-            extDerivFun (I := I)
-              (fun p : M => extDerivFun (I := I) baseScalar p (Xsec p))
+            mvfderiv (I := I)
+              (fun p : M => mvfderiv (I := I) baseScalar p (Xsec p))
               x (Ysec x) := by
       simpa [Xf, Yf] using
-        DifferentialGeometry.extDerivFun_apply_mlieBracket
+        DifferentialGeometry.mvfderiv_apply_mlieBracket
           (I := I) Xf Yf baseScalar x hX2 hY2 hbase2
     have hbracket_eval :
-        extDerivFun (I := I) baseScalar x
+        mvfderiv (I := I) baseScalar x
             (VectorField.mlieBracket I Xf Yf x) =
           nablaAlpha
             (Fin.cons (VectorField.mlieBracket I Xf Yf x) slots) +
@@ -618,11 +617,11 @@ private theorem tensor0S_commutator_expansion_from_realizes
       rw [hnablaAlpha, halpha] at h0
       linarith
     have hbaseComm :
-        extDerivFun (I := I)
-            (fun p : M => extDerivFun (I := I) baseScalar p (Ysec p))
+        mvfderiv (I := I)
+            (fun p : M => mvfderiv (I := I) baseScalar p (Ysec p))
             x (Xsec x) -
-          extDerivFun (I := I)
-            (fun p : M => extDerivFun (I := I) baseScalar p (Xsec p))
+          mvfderiv (I := I)
+            (fun p : M => mvfderiv (I := I) baseScalar p (Xsec p))
             x (Ysec x) =
           nablaAlpha
             (Fin.cons (VectorField.mlieBracket I Xf Yf x) slots) +
@@ -634,8 +633,8 @@ private theorem tensor0S_commutator_expansion_from_realizes
       rw [← hbracket]
       exact hbracket_eval
     have hbaseComm_left :
-        extDerivFun (I := I)
-            (fun p : M => extDerivFun (I := I) baseScalar p (Ysec p))
+        mvfderiv (I := I)
+            (fun p : M => mvfderiv (I := I) baseScalar p (Ysec p))
             x (Xsec x) =
           (nablaAlpha
             (Fin.cons (VectorField.mlieBracket I Xf Yf x) slots) +
@@ -644,8 +643,8 @@ private theorem tensor0S_commutator_expansion_from_realizes
                 (Function.update slots q
                   ((cov (fun y : M => Vsec q y) x)
                     (VectorField.mlieBracket I Xf Yf x)))) +
-            extDerivFun (I := I)
-              (fun p : M => extDerivFun (I := I) baseScalar p (Xsec p))
+            mvfderiv (I := I)
+              (fun p : M => mvfderiv (I := I) baseScalar p (Xsec p))
               x (Ysec x) := by
       linarith
     rw [← hWYx, ← hWXx]
@@ -901,7 +900,6 @@ private theorem tensor0S_commutator_expansion_from_realizes
 
 theorem tensor0S_ricciIdentity_with_torsion
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -953,7 +951,6 @@ theorem tensor0S_ricciIdentity_with_torsion
 
 theorem tensor0S_ricciIdentity_of_torsionFree
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov

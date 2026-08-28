@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Variati
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.Flow.Defs
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -72,7 +74,11 @@ theorem hasDerivAt_clm_comp_right_local
   have hcompR : HasFDerivAt (fun L : E →L[ℝ] E => L.comp R)
       ((ContinuousLinearMap.compL ℝ E E E).flip R) (A t) :=
     ((ContinuousLinearMap.compL ℝ E E E).flip R).hasFDerivAt
-  simpa using hcompR.comp_hasDerivAt t hA
+  rw [show (fun s : ℝ => (A s).comp R) =
+      (fun L : E →L[ℝ] E => L.comp R) ∘ A by
+    funext s
+    rfl]
+  exact hcompR.comp_hasDerivAt t hA
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
   [BoundarylessManifold I M] in

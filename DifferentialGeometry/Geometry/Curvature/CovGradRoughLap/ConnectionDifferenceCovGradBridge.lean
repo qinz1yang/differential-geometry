@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -44,11 +43,11 @@ private lemma tensor0SOne_apply_add (x : M) (om : Tensor0SSpace 1 I x)
   let φ := continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ
     (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
   have ha : (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
-      (fun _ : Fin 1 => a) = φ a := by rw [continuousMultilinearCurryFin1_apply]; rfl
+      (fun _ : Fin 1 => a) = φ a := by rfl
   have hb : (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
-      (fun _ : Fin 1 => b) = φ b := by rw [continuousMultilinearCurryFin1_apply]; rfl
+      (fun _ : Fin 1 => b) = φ b := by rfl
   have hab : (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
-      (fun _ : Fin 1 => a + b) = φ (a + b) := by rw [continuousMultilinearCurryFin1_apply]; rfl
+      (fun _ : Fin 1 => a + b) = φ (a + b) := by rfl
   change (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ) (fun _ => a + b) =
     _
   rw [hab, ha, hb, map_add]
@@ -61,9 +60,9 @@ private lemma tensor0SOne_apply_smul (x : M) (om : Tensor0SSpace 1 I x)
   let φ := continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ
     (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
   have ha : (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
-      (fun _ : Fin 1 => a) = φ a := by rw [continuousMultilinearCurryFin1_apply]; rfl
+      (fun _ : Fin 1 => a) = φ a := by rfl
   have hca : (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ)
-      (fun _ : Fin 1 => c • a) = φ (c • a) := by rw [continuousMultilinearCurryFin1_apply]; rfl
+      (fun _ : Fin 1 => c • a) = φ (c • a) := by rfl
   change (om : ContinuousMultilinearMap ℝ (fun _ : Fin 1 => TangentSpace I x) ℝ) (fun _ => c • a) =
     _
   rw [hca, ha, map_smul]
@@ -98,7 +97,7 @@ def connectionDifferencePairing (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
         fin_cases i <;>
           · simp only [Fin.isValue, Fin.mk_zero, Fin.mk_one, Function.update_self,
               Function.update_of_ne, ne_eq, hne10, hne01, not_false_eq_true,
-              ContinuousLinearMap.add_apply, map_add]
+              add_apply, map_add]
             rw [tensor0SOne_apply_add (I := I) x om]
       map_update_smul' := by
         have hne10 : (1 : Fin 2) ≠ 0 := by decide
@@ -107,7 +106,7 @@ def connectionDifferencePairing (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
         fin_cases i <;>
           · simp only [Fin.isValue, Fin.mk_zero, Fin.mk_one, Function.update_self,
               Function.update_of_ne, ne_eq, hne10, hne01, not_false_eq_true,
-              ContinuousLinearMap.smul_apply, map_smul]
+              smul_apply, map_smul]
             rw [tensor0SOne_apply_smul (I := I) x om]
       cont := by
         have hpair : Continuous (fun YZ : Fin 2 → TangentSpace I x => (YZ 0, YZ 1)) :=
@@ -134,9 +133,7 @@ lemma connectionDifferencePairing_add (g₁ g₀ : SmoothRiemannianMetric I M) (
     (om om' : Tensor0SSpace 1 I x) :
     connectionDifferencePairing (I := I) g₁ g₀ x (om + om') =
       connectionDifferencePairing (I := I) g₁ g₀ x om + connectionDifferencePairing (I := I) g₁ g₀ x om' := by
-  apply ContinuousMultilinearMap.ext
-  intro YZ
-  exact ContinuousMultilinearMap.add_apply om om' _
+  rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -145,9 +142,7 @@ lemma connectionDifferencePairing_smul (g₁ g₀ : SmoothRiemannianMetric I M) 
     (c : ℝ) (om : Tensor0SSpace 1 I x) :
     connectionDifferencePairing (I := I) g₁ g₀ x (c • om) =
       c • connectionDifferencePairing (I := I) g₁ g₀ x om := by
-  apply ContinuousMultilinearMap.ext
-  intro YZ
-  exact ContinuousMultilinearMap.smul_apply om c _
+  rfl
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 def connectionDifferenceFib (g₁ g₀ : SmoothRiemannianMetric I M) (x : M) :
@@ -188,7 +183,7 @@ theorem connectionDifferenceFib_contMDiff (g₁ g₀ : SmoothRiemannianMetric I 
     (φ := fun x : M => (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       connectionDifferenceFib (I := I) g₁ g₀ x))
   intro om
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
@@ -220,10 +215,14 @@ theorem connectionDifferenceFib_contMDiff (g₁ g₀ : SmoothRiemannianMetric I 
     rw [continuousMultilinearMap_basis_repr]
     have hframe0 : e₁.symmL ℝ x (b (σ 0)) = (Y (σ 0)) x := by
       rw [hYx (σ 0), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-      simp [Trivialization.basisAt]
+      simp only [Trivialization.basisAt, Module.Basis.map_apply,
+        Trivialization.linearEquivAt_symm_apply]
+      exact e₁.symmL_apply hx₁ (b (σ 0))
     have hframe1 : e₁.symmL ℝ x (b (σ 1)) = (Y (σ 1)) x := by
       rw [hYx (σ 1), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-      simp [Trivialization.basisAt]
+      simp only [Trivialization.basisAt, Module.Basis.map_apply,
+        Trivialization.linearEquivAt_symm_apply]
+      exact e₁.symmL_apply hx₁ (b (σ 1))
     change (connectionDifferencePairing (I := I) g₁ g₀ x (om x))
         (fun j : Fin 2 => e₁.symmL ℝ x (b (σ j))) = _
     rw [connectionDifferencePairing_apply]
@@ -263,7 +262,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
   intro om
   apply ContinuousMultilinearMap.ext
   intro YZ
-  rw [connectionDifferenceFib_apply_eval, PDE.DeTurck.connectionDifference_self]
+  change (connectionDifferencePairing (I := I) g g x om) YZ = 0
+  rw [connectionDifferencePairing_apply, PDE.DeTurck.connectionDifference_self]
   change om (0 : Fin 1 → TangentSpace I x) = 0
   exact ContinuousMultilinearMap.map_zero om
 
@@ -280,7 +280,9 @@ private lemma connectionDifferenceSection_tensorCovDerivAt_homSplit
     (om : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun x : M => Tensor0SSpace 1 I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorCovDerivAt (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) x (X x))
+        tensorCovDerivAt (I := I) (M := M) g₀ 1 2
+          (connectionDifferenceSection (I := I) g₁ g₀) x
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)))
         (om x) =
       Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
           (fun y : M => connectionDifferencePairing (I := I) g₁ g₀ y (om y)) x (X x) -
@@ -299,7 +301,10 @@ private lemma connectionDifferenceSection_tensorCovDerivAt_homSplit
   have hV : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) y (X y)) x :=
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) x (X x)]
+  rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 1 2
+    (connectionDifferenceSection (I := I) g₁ g₀) x
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)),
+    ContinuousLinearEquiv.symm_apply_apply]
   have hsplit := tensorRSCovariantDerivative_apply_of_mdifferentiableAt (I := I) (M := M)
     1 2 (LeviCivita (I := I) g₀)
     (fun y : M => (connectionDifferenceSection (I := I) g₁ g₀).toSection y) (fun y : M => om y)
@@ -358,7 +363,8 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
     Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
           (fun y : M => connectionDifferencePairing (I := I) g₁ g₀ y (om y)) x (X x))
-        (Fin.cons (Y x) ![Z x]) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) =
       directionalDeriv (I := I)
           (fun b : M => om b (fun _ : Fin 1 => connectionDifference (I := I) g₁ g₀ b (Y b) (Z b))) x (X x)
         - om x (fun _ : Fin 1 =>
@@ -387,7 +393,8 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
       (b := id) (ϕ := fun y : M => Tensor0SNabla.curriedSection I M V y)
       (v := fun y : M => Y y) hCurried hY'
   have hpeel1 := tensor0SCovariantDerivative_succ_consEval_peel
-    (I := I) (M := M) g₀ 1 V hV Y (X x) ![Z x]
+    (I := I) (M := M) g₀ 1 V hV Y (X x)
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]
   have hpeel2 := tensor0SCovariantDerivative_succ_consEval_peel
     (I := I) (M := M) g₀ 0 W₁ hW₁_mdiff Z (X x) (fun i => Fin.elim0 i)
   have hbase : Tensor0SSpace.toModel
@@ -405,33 +412,72 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
     show Tensor0SSpace.toModel (Tensor0SNabla.curriedSection I M W₁ b (Z b))
         (fun i => Fin.elim0 i) = _
     rw [Tensor0SNabla.curriedSection_apply (s := 0) (T := W₁)]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-          (T := W₁ b) (v0 := Z b) (vs := (fun i => Fin.elim0 i))]
+    rw [show Tensor0SSpace.toModel
+          (tensor0S_curry (I := I) (M := M) 0 b (W₁ b) (Z b))
+          (fun i => Fin.elim0 i) =
+        Tensor0SSpace.toModel (W₁ b)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
+            (fun i => Fin.elim0 i)) from by
+      simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+        TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+          (T := W₁ b)
+          (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
+          (vs := (fun i => Fin.elim0 i))]
     change Tensor0SSpace.toModel (Tensor0SNabla.curriedSection I M V b (Y b))
-        (Fin.cons (Z b) (fun i => Fin.elim0 i)) = _
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
+          (fun i => Fin.elim0 i)) = _
     rw [Tensor0SNabla.curriedSection_apply (s := 1) (T := V)]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-          (T := V b) (v0 := Y b) (vs := Fin.cons (Z b) (fun i => Fin.elim0 i))]
+    rw [show Tensor0SSpace.toModel
+          (tensor0S_curry (I := I) (M := M) 1 b (V b) (Y b))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
+            (fun i => Fin.elim0 i)) =
+        Tensor0SSpace.toModel (V b)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Y b))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
+              (fun i => Fin.elim0 i))) from by
+      simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+        TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+          (T := V b)
+          (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) b (Y b))
+          (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
+            (fun i => Fin.elim0 i))]
     simp only [hVdef]
     rw [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
     rfl
   have hcorr2 : Tensor0SSpace.toModel (W₁ x)
-        (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)) (fun i => Fin.elim0 i)) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)))
+          (fun i => Fin.elim0 i)) =
       om x (fun _ : Fin 1 =>
         connectionDifference (I := I) g₁ g₀ x (Y x) ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)))
       := by
     have hW₁x : W₁ x = Tensor0SNabla.curriedSection I M V x (Y x) := rfl
     rw [hW₁x, Tensor0SNabla.curriedSection_apply]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := V x) (v0 := Y x)
-      (vs := Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x))
-        (fun i => Fin.elim0 i))]
+    rw [show Tensor0SSpace.toModel
+          (tensor0S_curry (I := I) (M := M) 1 x (V x) (Y x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)))
+            (fun i => Fin.elim0 i)) =
+        Tensor0SSpace.toModel (V x)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)))
+              (fun i => Fin.elim0 i))) from by
+      simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+        TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+          (T := V x)
+          (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)))
+            (fun i => Fin.elim0 i))]
     simp only [hVdef]
     rw [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
     rfl
   have hcorr1 : Tensor0SSpace.toModel (V x)
-        (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x))
-          (Fin.cons (Z x) (fun i => Fin.elim0 i))) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x))
+            (fun i => Fin.elim0 i))) =
       om x (fun _ : Fin 1 =>
         connectionDifference (I := I) g₁ g₀ x ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)) (Z x))
       := by
@@ -440,7 +486,9 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
     rfl
   rw [hpeel1]
   rw [show (fun y : M => Tensor0SNabla.curriedSection I M V y (Y y)) = W₁ from rfl]
-  rw [show (![Z x] : Fin 1 → E) = Fin.cons (Z x) (fun i => Fin.elim0 i) from by
+  rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)] : Fin 1 → E) =
+      Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x))
+        (fun i => Fin.elim0 i) from by
     funext k; refine Fin.cases rfl (fun j => j.elim0) k]
   rw [hpeel2, hbase, hcorr2, hcorr1]
   ring
@@ -477,7 +525,8 @@ private lemma connectionDifferencePairing_covariantDerivative01_eval
       Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
           (fun y : M => om y) x (X x))
-        (Fin.cons (WYZ x) (fun i => Fin.elim0 i)) := by
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (WYZ x))
+          (fun i => Fin.elim0 i)) := by
     rw [connectionDifferencePairing_apply]
     rw [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
     refine congrArg _ ?_
@@ -502,21 +551,33 @@ private lemma connectionDifferencePairing_covariantDerivative01_eval
         (Tensor0SNabla.curriedSection I M (fun y : M => om y) b (WYZ b))
         (fun i => Fin.elim0 i) = _
     rw [Tensor0SNabla.curriedSection_apply (s := 0) (T := fun y : M => om y)]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := om b) (v0 := WYZ b) (vs := (fun i => Fin.elim0 i))]
+    rw [show Tensor0SSpace.toModel
+          (tensor0S_curry (I := I) (M := M) 0 b (om b) (WYZ b))
+          (fun i => Fin.elim0 i) =
+        Tensor0SSpace.toModel (om b)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (WYZ b))
+            (fun i => Fin.elim0 i)) from by
+      simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+        TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+          (T := om b)
+          (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) b (WYZ b))
+          (vs := (fun i => Fin.elim0 i))]
     refine congrArg _ ?_
     funext k
     refine Fin.cases ?_ (fun j => j.elim0) k
     rw [hWYZdef]
     rfl
   have hcorr : Tensor0SSpace.toModel ((fun y : M => om y) x)
-        (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => WYZ b) x (X x)) (fun i => Fin.elim0 i))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g₀).toFun (fun b => WYZ b) x (X x)))
+          (fun i => Fin.elim0 i))
           =
       om x (fun _ : Fin 1 =>
         (LeviCivita (I := I) g₀).toFun
           (fun b => connectionDifference (I := I) g₁ g₀ b (Y b) (Z b)) x (X x)) := by
     change Tensor0SSpace.toModel (om x)
-        (Fin.cons ((LeviCivita (I := I) g₀).toFun (fun b => WYZ b) x (X x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g₀).toFun (fun b => WYZ b) x (X x)))
           (fun i => Fin.elim0 i)) = _
     refine congrArg _ ?_
     funext k
@@ -534,20 +595,32 @@ theorem connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
           (om x))
-        (Fin.cons (X x) (Fin.cons (Y x) ![Z x])) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)])) =
       om x (fun _ : Fin 1 => covDerivConnectionDifference (I := I) g₀ g₁ X Z Y x) := by
   classical
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) x
-    (om x) (Fin.cons (X x) (Fin.cons (Y x) ![Z x]))]
-  rw [show (Fin.cons (X x) (Fin.cons (Y x) ![Z x]) : Fin 3 → TangentSpace I x) 0 = X x from rfl]
-  rw [show Matrix.vecTail (Fin.cons (X x) (Fin.cons (Y x) ![Z x]) : Fin 3 → TangentSpace I x)
-        = Fin.cons (Y x) ![Z x] from by
+    (om x) (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]))]
+  rw [show (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) : Fin 3 → E) 0 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (X x) from rfl]
+  rw [show Matrix.vecTail
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) : Fin 3 → E) =
+        Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)] from by
       funext k; simp only [Matrix.vecTail, Function.comp]
       refine Fin.cases rfl (fun j => ?_) k
       refine Fin.cases rfl (fun j' => ?_) j
       exact j'.elim0]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-      tensorCovDerivAt (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) x (X x)) (om x)
+      tensorCovDerivAt (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))) (om x)
       = _ from connectionDifferenceSection_tensorCovDerivAt_homSplit (I := I) g₁ g₀ om X x]
   rw [show Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
@@ -555,23 +628,27 @@ theorem connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference
           connectionDifferencePairing (I := I) g₁ g₀ x
             (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
               (fun y : M => om y) x (X x)))
-        (Fin.cons (Y x) ![Z x]) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) =
       Tensor0SSpace.toModel
           (Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀)
             (fun y : M => connectionDifferencePairing (I := I) g₁ g₀ y (om y)) x (X x))
-          (Fin.cons (Y x) ![Z x])
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)])
         - Tensor0SSpace.toModel
             (connectionDifferencePairing (I := I) g₁ g₀ x
               (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
                 (fun y : M => om y) x (X x)))
-            (Fin.cons (Y x) ![Z x]) from by
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+              ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) from by
       rw [Tensor0SSpace.toModel_sub]; rfl]
   rw [connectionDifferencePairing_covariantDerivative02_eval (I := I) g₁ g₀ om X Y Z x]
   rw [show Tensor0SSpace.toModel
         (connectionDifferencePairing (I := I) g₁ g₀ x
           (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
             (fun y : M => om y) x (X x)))
-        (Fin.cons (Y x) ![Z x]) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (Z x)]) =
       connectionDifferencePairing (I := I) g₁ g₀ x
         (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
           (fun y : M => om y) x (X x))

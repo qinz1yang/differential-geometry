@@ -96,7 +96,7 @@ theorem wkpNorm_succ_eq
         eLpNorm u p (volume.restrict Ω) := by
     have hUniq : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) := fun α => by
       funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin d) :=
+    have : Unique (Fin 0 → Fin d) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α => (hUniq α).symm ▸ rfl }
     rw [Fintype.sum_unique
@@ -178,7 +178,7 @@ theorem wkpNorm_chosenWeakPartial_le_wkpNorm_succ
       (f := fun i : Fin d =>
         iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' p i u Ω) Ω)
       (s := (Finset.univ : Finset (Fin d)))
-      (fun _ _ => zero_le _)
+      (fun _ _ => zero_le)
       (Finset.mem_univ i)
   exact le_trans h_single (le_add_self)
 
@@ -763,10 +763,10 @@ theorem wkpNormChart_succ_subcritical_step
             ≤ ENNReal.ofReal C *
               wkpNormChart (I := I) (M := M) (k + 1) (ENNReal.ofReal p) u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set d : ℕ := Module.finrank ℝ E with hd_def
   set p_enn : ℝ≥0∞ := ENNReal.ofReal p with hp_enn_def
   set p_1_real : ℝ := (d : ℝ) * p / ((d : ℝ) - p) with hp_1_real_def
@@ -1696,7 +1696,7 @@ theorem iterated_sobolev_embedding_chart_C0
                   (chartTargetEuclid (I := I) (M := M) β)) =
               wkpNormChart (I := I) (M := M) k (ENNReal.ofReal p) u from rfl] at h_le
           rw [h_wkpNormChart_p_eq_zero] at h_le
-          exact le_antisymm h_le (zero_le _)
+          exact le_antisymm h_le (zero_le)
         have h_chart_pushed_ae_zero : ∀ α : M,
             (chartPushed (I := I) (M := M)
                 (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -1720,7 +1720,7 @@ theorem iterated_sobolev_embedding_chart_C0
                 (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
               (chartTargetEuclid (I := I) (M := M) α)
             rw [h_per_chart_p_zero α] at h_le
-            exact le_antisymm h_le (zero_le _)
+            exact le_antisymm h_le (zero_le)
           have hp_pos : ENNReal.ofReal p ≠ 0 := by
             rw [Ne, ENNReal.ofReal_eq_zero]; linarith
           have h_aesm := (hu α).memLp.aestronglyMeasurable
@@ -1797,7 +1797,6 @@ theorem iterated_sobolev_embedding_chart_C0
             push_cast at hkp_real ⊢
             linarith)
         rw [hp_1_eq]
-        push_cast at h_id
         rw [mul_one] at h_id
         exact h_id
       obtain ⟨p', hp'_one, hp'_lt, hkp', hp'_reg⟩ :=
@@ -1894,7 +1893,7 @@ theorem iterated_sobolev_embedding_chart_C0
                   (chartTargetEuclid (I := I) (M := M) β)) =
               wkpNormChart (I := I) (M := M) k' (ENNReal.ofReal p_1) u from rfl] at h_le
           rw [h_wkpNormChart_p1_eq_zero] at h_le
-          exact le_antisymm h_le (zero_le _)
+          exact le_antisymm h_le (zero_le)
         have h_chart_pushed_ae_zero : ∀ α : M,
             (chartPushed (I := I) (M := M)
                 (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -1918,7 +1917,7 @@ theorem iterated_sobolev_embedding_chart_C0
                 (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
               (chartTargetEuclid (I := I) (M := M) α)
             rw [h_per_chart_p1_zero α] at h_le
-            exact le_antisymm h_le (zero_le _)
+            exact le_antisymm h_le (zero_le)
           have hp1_pos : ENNReal.ofReal p_1 ≠ 0 := by
             rw [Ne, ENNReal.ofReal_eq_zero]; linarith
           have h_aesm := (h_mem_p1' α).memLp.aestronglyMeasurable

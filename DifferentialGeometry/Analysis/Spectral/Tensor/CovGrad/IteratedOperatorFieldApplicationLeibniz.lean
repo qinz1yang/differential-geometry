@@ -43,7 +43,7 @@ def operatorFieldApplicationLeibnizPsi (g : SmoothRiemannianMetric I M) (b c : �
 
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covGrad_operatorFieldApplicationLeibniz_sum (g : SmoothRiemannianMetric I M) (a b c i : ℕ)
     (Ψ : (k : ℕ) → SmoothCcTensor g (b + k) (c + i)) (W : SmoothCcTensor g a b) :
     covGrad (I := I) (M := M) g a (c + i)
@@ -65,7 +65,7 @@ private theorem covGrad_operatorFieldApplicationLeibniz_sum (g : SmoothRiemannia
 
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem operatorFieldApplicationLeibnizPsi_succ_zero (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) (i : ℕ) :
     operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ (i + 1) 0 =
@@ -74,7 +74,7 @@ private theorem operatorFieldApplicationLeibnizPsi_succ_zero (g : SmoothRiemanni
 
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem operatorFieldApplicationLeibnizPsi_succ_succ (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) (i j : ℕ) :
     operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ (i + 1) (j + 1) =
@@ -90,7 +90,7 @@ private theorem operatorFieldApplicationLeibnizPsi_succ_succ (g : SmoothRiemanni
 
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_operatorFieldComposition_eq (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b) (i : ℕ) :
     iteratedCovGrad (I := I) g a c i (ccOperatorFieldComp (I := I) (M := M) g a b c Φ W) =
@@ -183,7 +183,7 @@ theorem iteratedCovGrad_operatorFieldComposition_eq (g : SmoothRiemannianMetric 
 
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_operatorFieldApply_eq (g : SmoothRiemannianMetric I M) (b s : ℕ)
     (Φ : SmoothCcTensor g b s) (W : SmoothCcTensor g 0 b) (i : ℕ) :
     iteratedCovGrad (I := I) g 0 s i (operatorFieldApply (I := I) (M := M) g b s Φ W) =

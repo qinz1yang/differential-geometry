@@ -142,7 +142,7 @@ private lemma exists_uniform_wkpNorm_bound
       ∀ j : ι,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (f j) Ω ≤ ENNReal.ofReal C * a j := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   choose Cf hCf_nn hCf using h
   refine ⟨∑ j : ι, Cf j, Finset.sum_nonneg (fun j _ => hCf_nn j), fun j => ?_⟩
   refine (hCf j).trans (mul_le_mul_left ?_ (a j))
@@ -459,7 +459,7 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le
       rw [hSumcomp_def]
       exact Finset.single_le_sum
         (f := fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Acomp P) Ω)
-        (fun P _ => zero_le _) (Finset.mem_univ j.2.1)
+        (fun P _ => zero_le) (Finset.mem_univ j.2.1)
     refine le_trans (Finset.sum_le_sum (fun j _ => h_each j)) ?_
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast, mul_assoc]
@@ -476,10 +476,10 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le
         (Finset.single_le_sum
           (f := fun P => ∑ l : Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Apart P l) Ω)
-          (fun P _ => zero_le _) (Finset.mem_univ j.2.1))
+          (fun P _ => zero_le) (Finset.mem_univ j.2.1))
       exact Finset.single_le_sum
         (f := fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Apart j.2.1 l) Ω)
-        (fun l _ => zero_le _) (Finset.mem_univ j.1)
+        (fun l _ => zero_le) (Finset.mem_univ j.1)
     refine le_trans (Finset.sum_le_sum (fun j _ => h_each j)) ?_
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast, mul_assoc]
@@ -804,7 +804,7 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
       rw [hSumcomp_def]
       exact Finset.single_le_sum
         (f := fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Acomp P) Ω)
-        (fun P _ => zero_le _) (Finset.mem_univ j.2.1)
+        (fun P _ => zero_le) (Finset.mem_univ j.2.1)
     refine le_trans (Finset.sum_le_sum (fun j _ => h_each j)) ?_
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast, mul_assoc]
@@ -821,10 +821,10 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
         (Finset.single_le_sum
           (f := fun P => ∑ l : Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Apart P l) Ω)
-          (fun P _ => zero_le _) (Finset.mem_univ j.2.1))
+          (fun P _ => zero_le) (Finset.mem_univ j.2.1))
       exact Finset.single_le_sum
         (f := fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Apart j.2.1 l) Ω)
-        (fun l _ => zero_le _) (Finset.mem_univ j.1)
+        (fun l _ => zero_le) (Finset.mem_univ j.1)
     refine le_trans (Finset.sum_le_sum (fun j _ => h_each j)) ?_
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast, mul_assoc]

@@ -72,7 +72,7 @@ theorem inner0S_contMDiff {s : ℕ}
       (fun y : M => coordContract (U y) (cA y) (cB y)) x := by
     unfold coordContract
     refine ContMDiffAt.sum fun I0 _ => ContMDiffAt.sum fun J0 _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     have hprodU : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -177,7 +177,7 @@ theorem hessianSec_inner0S_slots {s : ℕ}
           inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y) := by
     intro y
     rw [duSec_apply]
-    rw [differential1FormFun_apply_eq_extDerivFun]
+    rw [differential1FormFun_apply_eq_mvfderiv]
     have hL := inner0S_nabla (I := I) cov g hmc A B Z y
     have hAderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov Z A y =
@@ -208,7 +208,7 @@ theorem hessianSec_inner0S_slots {s : ℕ}
         inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y)) x :=
     inner0S_mdiff (I := I) g A (partialEval0SField (I := I) nablaB Z) x
   have hderF :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           inner0S (I := I) g y s (partialEval0SField (I := I) nablaA Z y) (B y)) x (X x) =
         inner0S (I := I) g x s
@@ -238,7 +238,7 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     rw [h, hP, hBderiv, hPx]
     rw [hadd]
   have hderG :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y)) x (X x) =
         inner0S (I := I) g x s
@@ -276,7 +276,7 @@ theorem hessianSec_inner0S_slots {s : ℕ}
         (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x)
           ((cov (fun y : M => Z y) x) (X x))) := by
     rw [duSec_apply]
-    rw [differential1FormFun_apply_eq_extDerivFun]
+    rw [differential1FormFun_apply_eq_mvfderiv]
     let W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
       (ContMDiffSection.exists_eq_at_gen
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
@@ -302,36 +302,36 @@ theorem hessianSec_inner0S_slots {s : ℕ}
   have hEval' :
       (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 cov X du x)
         (fun _ : Fin 1 => Y) =
-      extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => Z y)) x (X x) -
+      mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => Z y)) x (X x) -
         du x (fun _ : Fin 1 => (cov (fun y : M => Z y) x) (X x)) := by
     simpa [hZ] using (nabla0SFun_one_eval_smooth_slots (I := I) cov X Z du x)
   have hfun' :
-      extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => Z y)) x (X x) =
-        extDerivFun (I := I)
+      mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => Z y)) x (X x) =
+        mvfderiv (I := I)
             (fun y : M =>
               inner0S (I := I) g y s (partialEval0SField (I := I) nablaA Z y) (B y)) x (X x) +
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M =>
               inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y)) x (X x) := by
     rw [hfun]
-    change extDerivFun (I := I)
+    change mvfderiv (I := I)
         ((fun y : M =>
             inner0S (I := I) g y s (partialEval0SField (I := I) nablaA Z y) (B y)) +
           (fun y : M =>
             inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y))) x (X x) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M =>
             inner0S (I := I) g y s (partialEval0SField (I := I) nablaA Z y) (B y)) x (X x) +
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y)) x (X x)
-    rw [extDerivFun_add (I := I)
+    rw [mvfderiv_add (I := I)
       (g := fun y : M =>
         inner0S (I := I) g y s (partialEval0SField (I := I) nablaA Z y) (B y))
       (g' := fun y : M =>
         inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y))
       (x := x) hFmdiff hGmdiff]
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
   have hmain :
       (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 cov X du x)
         (fun _ : Fin 1 => Y) =
@@ -410,6 +410,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
   have hlap : ScalarLaplacianRealizesTraceAt (I := I) cov g phi
       (hessianSec (I := I) cov hcov phi hphi x) :=
     scalarLap_smooth (I := I) (M := M) (cov := cov) hcov g hmc phi hphi
+  unfold ScalarLaplacianRealizesTraceAt at hlap
   have hlapAt : laplacianAt (I := I) G t phi x =
       metricTraceFirstTwo0SAt (I := I) g
         (hessianSec (I := I) cov hcov phi hphi x) Fin.elim0 := by

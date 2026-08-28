@@ -34,7 +34,7 @@ theorem gronwall_zero_on {a c K : ℝ} (hac : a < c)
   have hsub : Ioo a t ⊆ Ioo a c := fun s hs => ⟨hs.1, lt_of_lt_of_le hs.2 ht.2⟩
   have hlim : Filter.Tendsto energy (nhdsWithin a (Ioo a t)) (nhds 0) :=
     hlimc.mono_left (nhdsWithin_mono a hsub)
-  haveI : (nhdsWithin a (Ioo a t)).NeBot := by
+  have : (nhdsWithin a (Ioo a t)).NeBot := by
     rw [nhdsWithin_Ioo_eq_nhdsGT htpos]
     infer_instance
   have heps : Filter.Tendsto (fun ε : ℝ => ε) (nhdsWithin a (Ioo a t)) (nhds a) :=
@@ -238,7 +238,7 @@ theorem metric_eq_of_energy_zero (g₁ g₂ : ℝ → SmoothRiemannianMetric I M
       =ᵐ[riemannianMeasureFamily (I := I) (M := M) g₁ t] 0 :=
     (MeasureTheory.integral_eq_zero_iff_of_nonneg
       (fun x => density_nonneg (I := I) g₁ g₂ t x) hidens).mp hE
-  haveI : (riemannianMeasureFamily (I := I) (M := M) g₁ t).IsOpenPosMeasure := by
+  have : (riemannianMeasureFamily (I := I) (M := M) g₁ t).IsOpenPosMeasure := by
     rw [riemannianMeasureFamily_def]
     exact riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) (g₁ t)
   have heq : (fun x => forwardUniqueDensity (I := I) g₁ g₂ t x) = 0 :=

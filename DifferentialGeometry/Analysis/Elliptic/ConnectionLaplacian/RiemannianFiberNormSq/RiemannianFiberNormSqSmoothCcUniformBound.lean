@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -48,8 +47,8 @@ lemma sum_tensorChartComponentRaw_sq_continuousOn_pouTsupport
     rwa [DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source]
       at hb_base
   refine ContinuousOn.mono ?_ h_sub
-  refine continuousOn_finset_sum _ (fun Idx _ => ?_)
-  refine continuousOn_finset_sum _ (fun Jdx _ => ?_)
+  refine continuousOn_finsetSum _ (fun Idx _ => ?_)
+  refine continuousOn_finsetSum _ (fun Jdx _ => ?_)
   have h_raw : ContinuousOn
       (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx)
       ((chartAt H α).source) :=
@@ -97,7 +96,7 @@ lemma exists_uniform_bound_sum_tensorChartComponentRaw_sq_on_pouTsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ∃ Kα : ℝ, 0 ≤ Kα ∧
@@ -173,7 +172,7 @@ theorem exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_bound_riemannianFiberNormSq_smoothCcTensor
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ b : M,

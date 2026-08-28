@@ -313,7 +313,7 @@ lemma rhsZeroAggregate_le_energy_perK
       ENNReal.ofReal_le_ofReal hCmul_le
     have h_step : w ≤ ENNReal.ofReal (Cval * (i.fst.val)⁻¹ ^ e_max) * Rhs := by
       refine hw.trans ?_
-      exact mul_le_mul_of_nonneg_right h_eNN_le (by exact zero_le _)
+      exact mul_le_mul_of_nonneg_right h_eNN_le (by exact zero_le)
     have h_rw : ENNReal.ofReal (Cval * (i.fst.val)⁻¹ ^ e_max) * Rhs
           = ENNReal.ofReal Cval * Rhs_eff := by
       rw [hRhs_eff_def, ENNReal.ofReal_mul hCval_nn, mul_assoc]
@@ -1126,7 +1126,7 @@ theorem diffRHSAggregate_le_energy_perK
       ENNReal.ofReal_le_ofReal hCmul_le
     have h_step : w ≤ ENNReal.ofReal (Cval * (i.fst.val)⁻¹ ^ e_out) * Rhs := by
       refine hw.trans ?_
-      exact mul_le_mul_of_nonneg_right h_eNN_le (by exact zero_le _)
+      exact mul_le_mul_of_nonneg_right h_eNN_le (by exact zero_le)
     have h_rw : ENNReal.ofReal (Cval * (i.fst.val)⁻¹ ^ e_out) * Rhs
           = ENNReal.ofReal Cval * Rhs_eff := by
       rw [hRhs_eff_def, ENNReal.ofReal_mul hCval_nn, mul_assoc]
@@ -1295,7 +1295,7 @@ theorem diffRHSAggregate_le_energy_perK
                 m''' (K + (m - (m''' + 1))) l'
               ≤ ENNReal.ofReal Chead_max * Rhs_eff := by
           refine h_head.trans ?_
-          exact mul_le_mul_of_nonneg_right h_upgrade (by exact zero_le _)
+          exact mul_le_mul_of_nonneg_right h_upgrade (by exact zero_le)
         have h_combine :
             diffRHSHead (I := I) (M := M) g r s i α P₀
                 m''' (K + (m - (m''' + 1))) l'

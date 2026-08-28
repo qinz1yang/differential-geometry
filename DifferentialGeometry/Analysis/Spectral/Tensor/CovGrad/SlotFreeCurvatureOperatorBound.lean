@@ -72,10 +72,14 @@ private lemma sfOne_eval
         (Function.update m 0
           (riemannOp (LeviCivita (I := I) g) x u w (m 0))) := by
   rw [slotFreeOpCc_apply]
-  simpa only [Fin.sum_univ_one] using
-    slotFreeCurvOpFib_apply_eval (I := I) (M := M) g 1 x A u w m
+  change Tensor0SSpace.toModel
+      (curvatureOperatorOnTensorFib (I := I) (M := M) g 1 x A)
+      (Fin.cons u (Fin.cons w m)) = _
+  have h := slotFreeCurvOpFib_apply_eval (I := I) (M := M) g 1 x A u w m
+  rw [Fin.sum_univ_one] at h
+  exact h
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sfOne_cov_eval
     (g : SmoothRiemannianMetric I M) (x : M)
     (A : Tensor0SSpace 1 I x) (d u w : TangentSpace I x)
@@ -88,13 +92,24 @@ private lemma sfOne_cov_eval
       -Tensor0SSpace.toModel A
         (Function.update m 0
           (nablaRiemannOp (I := I) g x d u w (m 0))) := by
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g 1 3
-    (slotFreeOpCc (I := I) (M := M) g 1) x A,
-    Fin.cons_zero]
+  have h := covGrad_toSection_apply_eval (I := I) (M := M) g 1 3
+    (slotFreeOpCc (I := I) (M := M) g 1) x A
+    (Fin.cons d (Fin.cons u (Fin.cons w m)))
   change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
+        (covGrad (I := I) (M := M) g 1 3
+          (slotFreeOpCc (I := I) (M := M) g 1)).toSection x) A)
+      (Fin.cons d (Fin.cons u (Fin.cons w m))) =
+    Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         tensorCovDerivAt (I := I) (M := M) g 1 3
           (slotFreeOpCc (I := I) (M := M) g 1) x d) A)
+      (Fin.cons u (Fin.cons w m)) at h
+  rw [h]
+  change Tensor0SSpace.toModel
+      (TensorRSSpace.toCLM
+        (tensorCovDerivAt (I := I) (M := M) g 1 3
+          (slotFreeOpCc (I := I) (M := M) g 1) x (show E from d)) A)
       (Fin.cons u (Fin.cons w m)) = _
   rw [tensorCovDerivAt_def]
   change Tensor0SSpace.toModel
@@ -103,6 +118,14 @@ private lemma sfOne_cov_eval
           (LeviCivita (I := I) g)
           (slotFreeOpCc (I := I) (M := M) g 1).toSection x d) A)
       (Fin.cons u (Fin.cons w m)) = _
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
+        TensorRSNabla.tensorRSCovariantDerivative I M 1 3
+          (LeviCivita (I := I) g)
+          (slotFreeOpCc (I := I) (M := M) g 1).toSection x d) A)
+      (Fin.cons u (Fin.cons w m)) =
+    -Tensor0SSpace.eval A
+      (Function.update m 0 (nablaRiemannOp (I := I) g x d u w (m 0)))
   simpa only [Fin.sum_univ_one] using
     slotFree_cov_eval (I := I) (M := M) g 1 x d A u w m
 
@@ -162,7 +185,7 @@ private lemma sfOne_comp0_le
         Real.sqrt (C ^ 2) := Real.sqrt_le_sqrt hb
     _ = C := Real.sqrt_sq hC
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sfOne_comp1_le
     (g : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -260,7 +283,7 @@ theorem sfOne_riemannianFiberNormSq_zero
       push_cast
       ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem sfOne_riemannianFiberNormSq_one
     (g : SmoothRiemannianMetric I M) {C : ℝ} (hC : 0 ≤ C)
     (hR : ∀ (x : M) (D X Y Z : TangentSpace I x),

@@ -1,4 +1,5 @@
 import Mathlib.Analysis.ODE.PicardLindelof
+import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Geometry.Manifold.MFDeriv.Basic

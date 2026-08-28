@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.Family
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
+
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Filter Function
@@ -30,7 +31,7 @@ lemma metric_inner_smul_self
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (v : TangentSpace I x) :
     g.inner x (c • v) (c • v) = c ^ 2 * g.inner x v v := by
-  rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+  rw [(g.inner x).map_smul, smul_apply,
     (g.inner x v).map_smul, smul_eq_mul, smul_eq_mul]
   ring
 
@@ -62,7 +63,7 @@ lemma metric_inner_cauchy_schwarz_sq
         t * t * a + 2 * t * c + b := by
       have h1 : g.inner x (t • v + w) (t • v + w) =
           g.inner x (t • v) (t • v + w) + g.inner x w (t • v + w) := by
-        rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+        rw [map_add (g.inner x), add_apply]
       have h2 : g.inner x (t • v) (t • v + w) =
           g.inner x (t • v) (t • v) + g.inner x (t • v) w :=
         map_add (g.inner x (t • v)) (t • v) w
@@ -70,14 +71,11 @@ lemma metric_inner_cauchy_schwarz_sq
           g.inner x w (t • v) + g.inner x w w :=
         map_add (g.inner x w) (t • v) w
       have h4 : g.inner x (t • v) (t • v) = t * (t * a) := by
-        change g.inner x (t • v) (t • v) = t * (t * a)
-        rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply,
+        rw [map_smul (g.inner x), smul_apply,
           map_smul (g.inner x v), smul_eq_mul, smul_eq_mul]
       have h5 : g.inner x (t • v) w = t * c := by
-        change g.inner x (t • v) w = t * c
-        rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul]
+        rw [map_smul (g.inner x), smul_apply, smul_eq_mul]
       have h6 : g.inner x w (t • v) = t * c := by
-        change g.inner x w (t • v) = t * c
         rw [map_smul (g.inner x w), smul_eq_mul, g.symm x w v]
       rw [h1, h2, h3, h4, h5, h6]
       ring
@@ -134,7 +132,7 @@ lemma gNorm_add_le
       (abs_metric_inner_le_sqrt_metric_quadratic (I := I) (M := M) g x v w)
   have hexpand : g.inner x (v + w) (v + w) =
       g.inner x v v + 2 * g.inner x v w + g.inner x w w := by
-    rw [map_add (g.inner x), ContinuousLinearMap.add_apply,
+    rw [map_add (g.inner x), add_apply,
       map_add (g.inner x v), map_add (g.inner x w), g.symm x w v]
     ring
   have hsum : 0 ≤ Real.sqrt (g.inner x v v) + Real.sqrt (g.inner x w w) :=
@@ -148,12 +146,27 @@ lemma gNorm_add_le
 
 noncomputable def metricInnerOpNorm
     (g : SmoothRiemannianMetric I M) (x : M) : ℝ :=
-  ‖g.inner x‖
+  letI : NormedAddCommGroup (TangentSpace I x) :=
+    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedAddCommGroup x
+  letI : NormedSpace ℝ (TangentSpace I x) :=
+    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedSpace x
+  ContinuousLinearMap.opNorm (g.inner x)
+
+lemma metricInnerOpNorm_nonneg
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    0 ≤ metricInnerOpNorm (I := I) (M := M) g x := by
+  unfold metricInnerOpNorm
+  exact ContinuousLinearMap.opNorm_nonneg _
 
 lemma abs_metric_inner_le_metricInnerOpNorm
     (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     |g.inner x v w| ≤ metricInnerOpNorm (I := I) (M := M) g x * ‖v‖ * ‖w‖ := by
+  let : NormedAddCommGroup (TangentSpace I x) :=
+    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedAddCommGroup x
+  let : NormedSpace ℝ (TangentSpace I x) :=
+    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedSpace x
   have h := ContinuousLinearMap.le_opNorm₂ (g.inner x) v w
+  change |g.inner x v w| ≤ ContinuousLinearMap.opNorm (g.inner x) * ‖v‖ * ‖w‖
   rwa [Real.norm_eq_abs] at h
 
 end Laplacian

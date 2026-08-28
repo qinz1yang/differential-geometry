@@ -75,7 +75,7 @@ theorem hmfStateFlux_sub
     hmfStateFlux A p₁ d₁ z - hmfStateFlux A p₂ d₂ z =
       A z (p₁ z) (d₁ z - d₂ z) +
         (A z (p₁ z) - A z (p₂ z)) (d₂ z) := by
-  simp only [hmfStateFlux, map_sub, ContinuousLinearMap.sub_apply]
+  simp only [hmfStateFlux, map_sub, sub_apply]
   abel
 
 omit [NormedAddCommGroup V]

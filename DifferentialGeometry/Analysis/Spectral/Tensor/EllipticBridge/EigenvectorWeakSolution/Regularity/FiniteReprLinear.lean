@@ -58,14 +58,17 @@ omit [CompleteSpace E] in
     finiteReprLin (I := I) (M := M) g r s σ v =
       tensorHsSmoothRepr (I := I) (M := M) v.1 v.2 := by
   classical
+  let hv : (Function.support v.1.coeff).Finite := v.2
   change
     Finsupp.linearCombination ℝ
         (eigenvectorSmooth (I := I) (M := M) g r s)
-        (Finsupp.ofSupportFinite v.1.coeff v.2) =
-      tensorHsSmoothRepr (I := I) (M := M) v.1 v.2
+        (Finsupp.ofSupportFinite v.1.coeff hv) =
+      tensorHsSmoothRepr (I := I) (M := M) v.1 hv
+  have hsupp :
+      (Finsupp.ofSupportFinite v.1.coeff hv).support = hv.toFinset :=
+    Finsupp.ofSupportFinite_support hv
   rw [Finsupp.linearCombination_apply, Finsupp.sum,
-    Finsupp.ofSupportFinite_support,
-    tensorHsSmoothRepr_eq]
+    hsupp, tensorHsSmoothRepr_eq]
   rfl
 
 end TensorSpectral

@@ -251,7 +251,7 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
           eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y) 2
       ((volume : Measure EuclN).restrict K) := by
-    refine memLp_finset_sum _ (fun a _ => memLp_finset_sum _ (fun b _ => ?_))
+    refine memLp_finsetSum _ (fun a _ => memLp_finsetSum _ (fun b _ => ?_))
     have h_coeff : ContDiffOn ℝ ∞
         (fun y => (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α a b
               (l (Fin.last m))) y)
@@ -285,7 +285,7 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
             (chartTargetEuclid (I := I) (M := M) α) y) 2
       ((volume : Measure EuclN).restrict K) := by
-    refine memLp_finset_sum _ (fun a _ => memLp_finset_sum _ (fun b _ => ?_))
+    refine memLp_finsetSum _ (fun a _ => memLp_finsetSum _ (fun b _ => ?_))
     refine memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
       (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b (l (Fin.last m)))
       hK_compact hK_meas hK_in ?_

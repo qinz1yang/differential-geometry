@@ -81,7 +81,7 @@ private theorem orthoFrame_to_basis
     ∃ bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x),
       ∀ i : Fin (Module.finrank ℝ E), bse i = e i := by
   classical
-  haveI : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
+  have : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
@@ -96,7 +96,7 @@ private theorem orthoFrame_to_basis
     rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
     rwa [if_pos rfl, mul_one] at h_zero
-  have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
+  have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
   refine ⟨basisOfLinearIndependentOfCardEqFinrank he_li hcard, fun i => ?_⟩
   rw [coe_basisOfLinearIndependentOfCardEqFinrank]
@@ -184,23 +184,19 @@ private lemma riemannBiContr_fiberComponent_expand
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (riemannBiContrFib (I := I) g₁ x))
       (Module.finrank ℝ E) e K J =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((riemannBiContrFib (I := I) g₁ x)
           (coframeS (I := I) (M := M) g₀ x 2 e K))
-        (fun i => (e (J i) : E)) := by
+        (fun i => e (J i)) := by
     unfold fiberNormSqComponent coframeS; rfl
   rw [hcomp]
   rw [show (riemannBiContrFib (I := I) g₁ x) = riemannBiContrFibFixedFrame (I := I) g₁
       (smoothOrthoFrame (I := I) g₁ x) x from rfl]
-  rw [riemannBiContrFibFixedFrame_toModel]
+  rw [riemannBiContrFibFixedFrame_eval]
   refine congrArg (fun t => (2 : ℝ) * t) ?_
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   congr 1
-  rw [show (coframeS (I := I) (M := M) g₀ x 2 e K).toModel
-        ![(smoothOrthoFrame (I := I) g₁ x a x : E), (smoothOrthoFrame (I := I) g₁ x b x : E)]
-      = coframeS (I := I) (M := M) g₀ x 2 e K
-        ![smoothOrthoFrame (I := I) g₁ x a x, smoothOrthoFrame (I := I) g₁ x b x] from rfl]
-  rw [coframeS_apply, Fin.prod_univ_two]
+  rw [Tensor0SSpace.eval_eq, coframeS_apply, Fin.prod_univ_two]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -588,16 +584,12 @@ private lemma slotEndo_fiberComponent_slotk_eq
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 k x Λ)) n e K J =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((slotInsertEndoFib (I := I) (M := M) 2 k x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
         (fun i => e (J i)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, slotInsertEndoFib_apply_eval]
-  rw [show (coframeS (I := I) (M := M) g₀ x 2 e K).toModel
-        (Function.update (fun i => e (J i)) k (Λ (e (J k))))
-      = coframeS (I := I) (M := M) g₀ x 2 e K
-        (Function.update (fun i => e (J i)) k (Λ (e (J k)))) from rfl]
-  rw [coframeS_apply]
+  rw [hcomp, slotInsertEndoFib_apply_natural]
+  rw [Tensor0SSpace.eval_eq, coframeS_apply]
   rw [← Finset.prod_erase_mul Finset.univ
     (fun i : Fin 2 => g₀.inner x (e (K i))
       (Function.update (fun i => e (J i)) k (Λ (e (J k))) i)) (Finset.mem_univ k)]

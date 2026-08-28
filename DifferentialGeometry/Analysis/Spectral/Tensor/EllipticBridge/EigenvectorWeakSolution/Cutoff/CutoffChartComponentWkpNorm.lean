@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -79,10 +78,7 @@ private lemma wkpComp_const'_pos
     have h_le := Finset.single_le_sum (s := Finset.range (k + 1))
       (f := fun j => (Fintype.card (Fin j → Fin d) : ℝ))
       (fun j _ => by positivity) h_zero_in
-    rw [show ((fun j => (Fintype.card (Fin j → Fin d) : ℝ)) 0 : ℝ) =
-        (Fintype.card (Fin 0 → Fin d) : ℝ) from rfl] at h_le
-    rw [h_at_zero] at h_le
-    linarith
+    exact lt_of_lt_of_le (h_at_zero ▸ zero_lt_one) h_le
   have h_fact_pos : (0 : ℝ) < (k.factorial : ℝ) := by
     exact_mod_cast Nat.factorial_pos k
   have h_deriv_pos : (0 : ℝ) < Φ.derivBoundMaxOne ^ k :=
@@ -241,7 +237,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
       funext x; rfl
     rw [h_δcomp_eq] at hS1
     refine hS1.trans ?_
-    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le _)).trans ?_
+    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le)).trans ?_
     rw [← ENNReal.ofReal_mul hK_nonneg]
     refine ENNReal.ofReal_le_ofReal ?_
     calc K_const * (2 * ((1 : ℝ) / (N0 + 1 : ℝ)))
@@ -278,12 +274,12 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
       refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
       · intro j hj
         rw [Finset.mem_range] at hj ⊢; omega
-      · intros _ _ _; exact zero_le _
+      · intros _ _ _; exact zero_le
     have h_arg_eq : (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) =
         (fun x => (fun y => u y - ψ n y) (Φ.toFun x)) := by funext x; rfl
     rw [h_arg_eq]
     refine h_chg.trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact h_eLp_le_wkp.trans (hψ_close n)
   have h_uΦ_aestrong :
       AEStronglyMeasurable (fun x => u (Φ.toFun x)) (volume.restrict Ω) := by
@@ -327,7 +323,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
           unfold iteratedWeakSobolevNorm
           refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
           · intro j hj; rw [Finset.mem_range] at hj ⊢; omega
-          · intros _ _ _; exact zero_le _
+          · intros _ _ _; exact zero_le
         have h_second :
             eLpNorm (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) p
                 (volume.restrict Ω) ≤
@@ -355,7 +351,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
           rw [h_neg]
           exact h_Lp_close n
         exact add_le_add h_first h_second
-      apply le_antisymm _ (zero_le _)
+      apply le_antisymm _ (zero_le)
       have h_tendsto_first :
           Filter.Tendsto
             (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω)
@@ -395,7 +391,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
               (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
             tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
           have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
-          simpa [ENNReal.ofReal_zero] using h_ofReal
+          simpa only [Function.comp_def, ENNReal.ofReal_zero] using h_ofReal
         set C : ℝ≥0∞ := ENNReal.ofReal
             ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) with hC_def
         have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top
@@ -433,7 +429,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     have h_smooth := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ'
       k hk (hψ_smooth n) (hψ_cpt n) (hψ_supp n)
     refine h_smooth.trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     have hψn_alg : (ψ n) = (fun x => (ψ n x - u x) + u x) := by funext x; ring
     have h_sub_mem : MemWkp (d := d) k p (fun x => ψ n x - u x) Ω' :=
       MemWkp.sub (d := d) hp_one hΩ' (hψ_mem_target n) hu
@@ -515,10 +511,10 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
               (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
             tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
           have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
-          simpa [ENNReal.ofReal_zero] using h_ofReal
+          simpa only [Function.comp_def, ENNReal.ofReal_zero] using h_ofReal
         refine tendsto_of_tendsto_of_tendsto_of_le_of_le
           tendsto_const_nhds h_close_tendsto
-          (fun n => zero_le _) (fun n => hψ_close n)
+          (fun n => zero_le) (fun n => hψ_close n)
       have h_const :
           Filter.Tendsto
             (fun _ : ℕ => iteratedWeakSobolevNorm (d := d) k p u Ω')
@@ -743,7 +739,7 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
         iteratedWeakSobolevNorm (d := d) k 2 (fun y => v (Φ.toFun y)) Ωαβ
       ≤ ENNReal.ofReal Kc' *
           (ENNReal.ofReal Kcomp * iteratedWeakSobolevNorm (d := d) k 2 v Ωβα) := by
-        exact mul_le_mul_of_nonneg_left h_v_comp_le (zero_le _)
+        exact mul_le_mul_of_nonneg_left h_v_comp_le (zero_le)
     _ = ENNReal.ofReal Kc' *
           (ENNReal.ofReal Kcomp * iteratedWeakSobolevNorm (d := d) k 2 v Tβ) := by
         rw [h_v_norm_extend]
@@ -751,8 +747,8 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
           (ENNReal.ofReal Kcomp *
             (ENNReal.ofReal Kχ *
               iteratedWeakSobolevNorm (d := d) k 2 (fun y => (f : EuclN → ℝ) y) Tβ)) := by
-        refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
-        exact mul_le_mul_of_nonneg_left h_v_le_f (zero_le _)
+        refine mul_le_mul_of_nonneg_left ?_ (zero_le)
+        exact mul_le_mul_of_nonneg_left h_v_le_f (zero_le)
     _ = ENNReal.ofReal (Kc' * (Kcomp * Kχ)) *
           iteratedWeakSobolevNorm (d := d) k 2 (fun y => (f : EuclN → ℝ) y) Tβ := by
         rw [ENNReal.ofReal_mul hKc'_pos.le,
@@ -760,7 +756,7 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
         ring
 
 private lemma memWkp_finsetSum
-    {d : ℕ} [NeZero d] {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
+    {d k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ : IsOpen Ω)
     {ι : Type*} (T : Finset ι)
     (F : ι → EuclideanSpace ℝ (Fin d) → ℝ)
@@ -787,7 +783,7 @@ private lemma memWkp_finsetSum
       exact h_add
 
 private lemma wkpNorm_double_sum_le
-    {d : ℕ} [NeZero d] {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
+    {d : ℕ} {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ : IsOpen Ω)
     {ι κ : Type*} (S : Finset ι) [Fintype κ]
     (F : ι → κ → EuclideanSpace ℝ (Fin d) → ℝ)
@@ -924,7 +920,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
             (chartTargetEuclid (I := I) (M := M) β) := by
     intro β hβ Q
     refine (hCfun_bound β Q).trans ?_
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     exact ENNReal.ofReal_le_ofReal (hCfun_le_C β hβ Q)
   refine (Finset.sum_le_sum (fun β hβ =>
     Finset.sum_le_sum (fun Q _ => h_each_le β hβ Q))).trans ?_
@@ -1067,7 +1063,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
     intro β hβ Q
     refine (hF_spec β Q).2.trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (hCfun_le_C β hβ Q)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (hCfun_le_C β hβ Q)) (zero_le)
   refine (Finset.sum_le_sum (fun β hβ =>
     Finset.sum_le_sum (fun Q _ => h_each_le β hβ Q))).trans ?_
   refine le_of_eq ?_

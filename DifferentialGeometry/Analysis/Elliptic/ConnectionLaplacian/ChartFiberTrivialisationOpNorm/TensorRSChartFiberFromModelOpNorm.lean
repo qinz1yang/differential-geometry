@@ -9,7 +9,6 @@ import Mathlib.Topology.Separation.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -79,7 +78,7 @@ private lemma tensorRSChartFiberFromModel_local_bound
     rw [Trivialization.coordChangeL_apply _ _ ⟨hb_α_RS, hb_y₀_RS⟩]
     rw [Bundle.Trivialization.continuousLinearMapAt_apply,
       Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_y₀_RS,
-      Bundle.Trivialization.symmL_apply]
+      Bundle.Trivialization.symmL_apply _ hb_α_RS v]
   have h_symmL_clmAt :
       ey₀.symmL ℝ b (ey₀.continuousLinearMapAt ℝ b (eα.symmL ℝ b v)) =
       eα.symmL ℝ b v :=
@@ -126,9 +125,9 @@ private lemma exists_W_and_constant_symmL
             (fun y : M => TensorRSSpace r s I y) α).symmL ℝ b v :
             TensorRSSpace r s I b)‖ ≤ N * ‖v‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  haveI hICRB : IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
+  have hICRB : IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
       (fun b : M => TensorRSSpace r s I b) :=
     tensorRS_isContinuousRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₁, hC₁_pos, hC₁_ev⟩ :=
@@ -197,7 +196,7 @@ theorem tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
           (fun y : M => TensorRSSpace r s I y) α).symmL ℝ b v :
           TensorRSSpace r s I b)‖ ≤ C * ‖v‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
   let W : M → Set M := fun y₀ =>
     if hy : y₀ ∈ (chartAt H α).source then

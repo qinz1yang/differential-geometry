@@ -123,6 +123,7 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
     ENNReal.le_tsum α
   exact le_trans h_summand_le_tsum h_le
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_chart_limit
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
@@ -173,6 +174,7 @@ noncomputable def chartLimit
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   (exists_chart_limit (I := I) (M := M) hp_one h_cauchy α).choose
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartLimit_memWkp
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
@@ -189,6 +191,7 @@ lemma chartLimit_memWkp
       (chartTargetEuclid (I := I) (M := M) α) :=
   (exists_chart_limit (I := I) (M := M) hp_one h_cauchy α).choose_spec.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartLimit_tendsto
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
@@ -211,6 +214,7 @@ lemma chartLimit_tendsto
       atTop (𝓝 0) :=
   (exists_chart_limit (I := I) (M := M) hp_one h_cauchy α).choose_spec.2
 
+omit [NeZero (Module.finrank ℝ E)] in
 lemma chartLimit_ae_zero
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
@@ -326,7 +330,7 @@ lemma chartLimit_ae_zero
           atTop
           (𝓝 (chartLimit (I := I) (M := M) hp_one h_cauchy α y)) :=
     h_ae.filter_mono
-      (ae_mono (Measure.restrict_mono_set volume Set.diff_subset))
+      (ae_mono (Measure.restrict_mono_set volume Set.sdiff_subset))
   filter_upwards [h_ae_off, ae_restrict_mem h_off_meas] with y hy_tendsto hy_off
   have hzero : ∀ i, chartPushed (I := I) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
@@ -335,7 +339,10 @@ lemma chartLimit_ae_zero
     exact chartPushed_support_subset_compact_in_target (I := I) (M := M)
       α (wkpChartFun (f (ns i))) y hy_off.1 hy_off.2
   exact tendsto_nhds_unique hy_tendsto
-    (by simpa only [hzero] using tendsto_const_nhds)
+    (by
+      simp only [hzero]
+      change Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 (0 : ℝ))
+      exact tendsto_const_nhds)
 
 noncomputable def manifoldLimitFun
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]

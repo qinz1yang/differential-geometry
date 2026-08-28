@@ -148,7 +148,7 @@ theorem lambdaNet_cover (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Na
     ∃ x ∈ S, edist z x <
       ENNReal.ofReal (hd.lambda D (hd.dist k z (X.obj k).basepoint)) +
       ENNReal.ofReal (hd.lambda D (hd.dist k x (X.obj k).basepoint)) := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   by_cases hz : z ∈ S
   · refine ⟨z, hz, ?_⟩
     rw [edist_self]
@@ -171,7 +171,7 @@ theorem lambdaNet_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k 
     {x y : (X.obj k).M} (hx : x ∈ S) (hy : y ∈ S) (hxy : x ≠ y) :
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
     ENNReal.ofReal (hd.lambda D (hd.dist k x (X.obj k).basepoint)) ≤ edist x y := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   have hdisj := Set.disjoint_left.mp (hS hx hy hxy)
   by_contra hlt
   push Not at hlt
@@ -184,7 +184,7 @@ theorem lambdaNet_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k 
 theorem RealizesEdist.dist_comm {hd : InjRadiusDecayInput (I := I) X}
     (hre : hd.RealizesEdist) (k : Nat) (x y : (X.obj k).M) :
     hd.dist k x y = hd.dist k y x := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   have : ENNReal.ofReal (hd.dist k x y) = ENNReal.ofReal (hd.dist k y x) := by
     rw [← hre.edist_eq k x y, ← hre.edist_eq k y x, edist_comm]
   exact (ENNReal.ofReal_eq_ofReal_iff (hre.dist_nonneg k x y)
@@ -194,7 +194,7 @@ theorem RealizesEdist.dist_comm {hd : InjRadiusDecayInput (I := I) X}
 theorem RealizesEdist.dist_triangle {hd : InjRadiusDecayInput (I := I) X}
     (hre : hd.RealizesEdist) (k : Nat) (x y z : (X.obj k).M) :
     hd.dist k x z ≤ hd.dist k x y + hd.dist k y z := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   have h1 : ENNReal.ofReal (hd.dist k x z) ≤
       ENNReal.ofReal (hd.dist k x y) + ENNReal.ofReal (hd.dist k y z) := by
     rw [← hre.edist_eq k x z, ← hre.edist_eq k x y, ← hre.edist_eq k y z]
@@ -260,7 +260,7 @@ theorem lambdaNet_dist_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real
     (hS : S.PairwiseDisjoint (hd.lambdaBall D k))
     {x y : (X.obj k).M} (hx : x ∈ S) (hy : y ∈ S) (hxy : x ≠ y) :
     hd.lambda D (hd.dist k x (X.obj k).basepoint) ≤ hd.dist k x y := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   have hsep := hd.lambdaNet_separated D k hD hS hx hy hxy
   exact (ENNReal.ofReal_le_ofReal_iff (hre.dist_nonneg k x y)).mp
     (le_of_le_of_eq hsep (hre.edist_eq k x y))
@@ -312,8 +312,9 @@ def subseq {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     · intro x hx
       simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using hJr x hx
     · intro x hx y hy hxy
-      simpa [InjRadiusDecayInput.subseq, InjRadiusDecayInput.lambda,
-        InjRadiusDecayInput.mu, PointedRiemannianSeq.subseq] using hsep x hx y hy hxy
+      simpa only [InjRadiusDecayInput.lambda, InjRadiusDecayInput.mu,
+        InjRadiusDecayInput.subseq, BaseInjBound.subseq, PointedRiemannianSeq.subseq] using
+        hsep x hx y hy hxy
 
 end PackingBound
 
@@ -355,7 +356,7 @@ theorem exists_finite_cover (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Real
            edist z x <
              ENNReal.ofReal (hd.lambda D (hd.dist k z (X.obj k).basepoint)) +
              ENNReal.ofReal (hd.lambda D (hd.dist k x (X.obj k).basepoint))) := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   refine ⟨S ∩ {x | hd.dist k x (X.obj k).basepoint ≤ r + 2 * hd.lambda D 0},
     Set.inter_subset_left,
     hd.net_finite_in_ball hre D k hD pb hSdisj _, ?_⟩
@@ -373,7 +374,7 @@ theorem exists_finite_cover (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Real
   have hcomm := hre.dist_comm k x z
   have hlz := hd.lambda_antitone hD (hre.dist_nonneg k z (X.obj k).basepoint)
   have hlx := hd.lambda_antitone hD (hre.dist_nonneg k x (X.obj k).basepoint)
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   linarith
 
 structure GoodCovering (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
@@ -409,7 +410,7 @@ def lambdaBallC (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat) (c : 
 theorem lambdaBallC_subset (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
     (hD : 0 < D) {c : Real} (hc : c ≤ 1) (x : (X.obj k).M) :
     hd.lambdaBallC D k c x ⊆ hd.lambdaBall D k x := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   intro w hw
   exact lt_of_lt_of_le hw (ENNReal.ofReal_le_ofReal (by
     nlinarith [hd.lambda_pos hD (hd.dist k x (X.obj k).basepoint)]))
@@ -426,7 +427,7 @@ theorem mem_lambdaBallC_dist (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Rea
     (D : Real) (k : Nat) (c : Real) (x z : (X.obj k).M) :
     z ∈ hd.lambdaBallC D k c x ↔
       hd.dist k z x < c * hd.lambda D (hd.dist k x (X.obj k).basepoint) := by
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   change edist z x < ENNReal.ofReal (c * hd.lambda D (hd.dist k x (X.obj k).basepoint)) ↔ _
   rw [hre.edist_eq k z x]
   exact ENNReal.ofReal_lt_ofReal_iff_of_nonneg (hre.dist_nonneg k z x)

@@ -358,8 +358,14 @@ theorem pushforward_velocity_cancellation (p₀ q : M)
     rw [mfderivWithin_eq_fderivWithin]
     exact hfd.fderivWithin (hU.uniqueDiffWithinAt)
   rw [heqDeriv, hchain, hTderiv] at hid
+  rw [(extChartAt I q).left_inv hqq, (extChartAt I p₀).left_inv hq] at hid
   have hv := congrArg (fun L => L v) hid
-  simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using hv
+  rw [(extChartAt I p₀).left_inv hq]
+  let h :
+      (mfderivWithin 𝓘(ℝ, E) I (extChartAt I p₀).symm
+        (Set.range I) (extChartAt I p₀ q))
+          (tangentCoordChange I q p₀ q v) = v := hv
+  exact h
 
 omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [T2Space M] in
 theorem chartflow_eq_bareflow_on_U
@@ -403,15 +409,27 @@ theorem chartflow_eq_bareflow_on_U
     rw [hF t (u t)]
     rw [← hq_def, ← hq_round]
     exact pushforward_velocity_cancellation (I := I) p₀ q hq_src (X t q)
+  let w : TangentSpace 𝓘(ℝ, E) (u t) := F t (u t)
+  have hw :
+      (mfderivWithin 𝓘(ℝ, E) I (extChartAt I p₀).symm (Set.range I) (u t)) w =
+        X t q := hcancel
   have hvel :
       (mfderivWithin 𝓘(ℝ, E) I (extChartAt I p₀).symm (Set.range I) (u t)) ∘L
-          ((ContinuousLinearMap.id ℝ ℝ).smulRight (F t (u t)))
+          ((ContinuousLinearMap.id ℝ ℝ).smulRight w)
         = (1 : ℝ →L[ℝ] ℝ).smulRight (X t q) :=
     ContinuousLinearMap.ext fun r => by
-      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply,
-        ContinuousLinearMap.id_apply, ContinuousLinearMap.one_apply, map_smul, hcancel]
+      change (mfderivWithin 𝓘(ℝ, E) I (extChartAt I p₀).symm
+        (Set.range I) (u t)) (r • w) = r • X t q
+      rw [map_smul, hw]
+  change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+    (fun s => (extChartAt I p₀).symm (u s)) (Set.Ioo a b) t
+      ((1 : ℝ →L[ℝ] ℝ).smulRight (X t q))
   rw [← hvel]
-  exact hbridge
+  let h : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+      (fun s => (extChartAt I p₀).symm (u s)) (Set.Ioo a b) t
+        ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I p₀).symm (Set.range I) (u t)) ∘L
+          ((ContinuousLinearMap.id ℝ ℝ).smulRight w)) := hbridge
+  exact h
 
 omit [BoundarylessManifold I M] [T2Space M] in
 theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryless]

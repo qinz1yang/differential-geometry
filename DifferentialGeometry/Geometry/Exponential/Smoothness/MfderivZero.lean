@@ -551,15 +551,19 @@ theorem mfderiv_expMap_at_zero
     exact h1.prodMk h2
   have hΦv : HasFDerivAt (fun v : E => Φ (((x₀, v) : E × E), t'))
       (Lmap.comp Linl) (0 : E) := by
-    have := hΦ_fderiv.comp (0 : E) hincl
-    simpa using this
+    have h := hΦ_fderiv.comp (0 : E) hincl
+    change HasFDerivAt (fun v : E => Φ (((x₀, v) : E × E), t'))
+      (Lmap.comp Linl) (0 : E) at h
+    exact h
   have hΦv_fst : HasFDerivAt (fun v : E => (Φ (((x₀, v) : E × E), t')).1)
       ((ContinuousLinearMap.fst ℝ E E).comp (Lmap.comp Linl)) (0 : E) := by
     have hfst_clm : HasFDerivAt (Prod.fst : E × E → E)
         (ContinuousLinearMap.fst ℝ E E) (Φ (((x₀, (0 : E)) : E × E), t')) :=
       (ContinuousLinearMap.fst ℝ E E).hasFDerivAt
-    have := hfst_clm.comp (0 : E) hΦv
-    simpa using this
+    have h := hfst_clm.comp (0 : E) hΦv
+    change HasFDerivAt (fun v : E => (Φ (((x₀, v) : E × E), t')).1)
+      ((ContinuousLinearMap.fst ℝ E E).comp (Lmap.comp Linl)) (0 : E) at h
+    exact h
   have hcomp_eq :
       (ContinuousLinearMap.fst ℝ E E).comp (Lmap.comp Linl) =
         t' • ContinuousLinearMap.id ℝ E := by

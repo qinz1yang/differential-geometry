@@ -29,9 +29,11 @@ theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
   have hu_mf : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) u s' t
       ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) := by
     have h0 : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) u s t
-        ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) :=
-      (by simpa using hd.hasFDerivWithinAt :
-        HasFDerivWithinAt u _ _ _).hasMFDerivWithinAt
+        ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) := by
+      let hfd : HasFDerivWithinAt u
+          ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) s t :=
+        hd.hasFDerivWithinAt
+      exact hfd.hasMFDerivWithinAt
     exact h0.mono Set.inter_subset_left
   have hsymm_mf : HasMFDerivWithinAt 𝓘(ℝ, E) I (extChartAt I α).symm
       (Set.range I) (u t)

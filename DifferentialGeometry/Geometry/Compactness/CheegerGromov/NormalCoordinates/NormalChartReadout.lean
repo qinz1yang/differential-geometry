@@ -105,19 +105,19 @@ theorem chartCmC_zero_of_sum
     unfold DiagInvBranch.chartReadout
     rw [hinvBase i, c.tangentHome_symm_apply hzTarget]
   unfold chartCmEqnC
-  calc
-    ∑ i, mu i • B.chartReadout c (c.hom z, c.hom (xi i)) =
+  have hlinear :
+      ∑ i, mu i • B.chartReadout c (c.hom z, c.hom (xi i)) =
         mfderiv I (modelWithCornersSelf Real E) c.inv (c.hom z)
           (∑ i, mu i •
             (show TangentSpace I (c.hom z) from
               (B.inv (c.hom z, c.hom (xi i))).snd)) := by
-      simp_rw [hterm]
-      rw [map_sum]
-      exact Finset.sum_congr rfl
-        (fun i _ => (map_smul _ (mu i) _).symm)
-    _ = mfderiv I (modelWithCornersSelf Real E) c.inv (c.hom z) 0 := by
-      rw [hsum]
-    _ = 0 := map_zero _
+    simp_rw [hterm]
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    exact (map_smul _ (mu i) _).symm
+  rw [hlinear, hsum, map_zero]
+  rfl
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M] in
 omit [T2Space (TangentBundle I M)] in

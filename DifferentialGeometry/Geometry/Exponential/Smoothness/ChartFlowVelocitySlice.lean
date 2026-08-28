@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -278,11 +280,12 @@ lemma chartFlowCandidate_contMDiffAt_zero_at_origin
     have hsimp_range : (range (𝓘(ℝ, E) : ModelWithCorners ℝ E E)) = Set.univ :=
       ModelWithCorners.range_eq_univ _
     have hsimp_base : (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)) (0 : E) =
-        (0 : E) := by simp
+        (0 : E) := by simp [extChartAt, chartAt_self_eq]
     rw [hsimp_base, hsimp_range]
     have hsymm_id : ∀ v : E, (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)).symm v =
       v := by
-      intro v; simp
+      intro v
+      simp [extChartAt, chartAt_self_eq]
     change ContDiffWithinAt ℝ 1
         (extChartAt I p ∘ chartFlowCandidate (I := I) Φ p 0 ∘
           (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)).symm)
@@ -291,7 +294,8 @@ lemma chartFlowCandidate_contMDiffAt_zero_at_origin
         (extChartAt I p ∘ chartFlowCandidate (I := I) Φ p 0 ∘
           (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)).symm) =
         (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p 0 v)) := by
-      ext v; simp [Function.comp]
+      ext v
+      simp [Function.comp, extChartAt, chartAt_self_eq]
     rw [hgoal_eq]
     exact hchart_cd.contDiffWithinAt
 

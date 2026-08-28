@@ -9,7 +9,6 @@ open DifferentialGeometry.Tensor.Multilinear
 noncomputable section
 namespace DifferentialGeometry
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 
@@ -136,7 +135,7 @@ theorem toScalarField_add
   simp only [toScalarField, Pi.add_apply]
   show (α + β).toFun x Fin.elim0 = α.toFun x Fin.elim0 + β.toFun x Fin.elim0
   rw [show (α + β).toFun x = α.toFun x + β.toFun x from rfl]
-  exact ContinuousMultilinearMap.add_apply _ _ _
+  exact add_apply _ _ _
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F] in
 @[simp]
@@ -147,7 +146,7 @@ theorem toScalarField_smulByFun
   ext x
   simp only [toScalarField, Pi.mul_apply]
   change (φ x • α.toFun x) Fin.elim0 = φ x * α.toFun x Fin.elim0
-  rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
 
 end MultilinearSection
 

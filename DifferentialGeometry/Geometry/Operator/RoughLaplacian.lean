@@ -69,11 +69,11 @@ private theorem tensor0S_curry_apply_cons_local
       A (Fin.cons X tail) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (fun _ : Fin (s + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         X)
         tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         (Fin.cons X tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
 
@@ -87,7 +87,9 @@ private theorem tensor0SSpace_sum_apply {ι : Type*} [Fintype ι] {x : M} {s : �
   change ((∑ i ∈ S, T i) v) = ∑ i ∈ S, (T i) v
   induction S using Finset.induction_on with
   | empty =>
-      change (0 : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v = 0
+      change
+        (0 : ContinuousMultilinearMap Real
+          (fun _ : Fin s => TangentSpace I x) Real) v = 0
       simp
   | insert a S ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
@@ -718,10 +720,10 @@ theorem metricTracePair0SAt_sq_le_card_mul_normSq0S
     (metricTracePair0SAt (I := I) g A) ^ 2 <=
       (Fintype.card Idx : Real) * normSq0S (I := I) g x 2 A := by
   let D := tensor0SMetricData (I := I) g x 2
-  letI : PreInnerProductSpace.Core Real
+  let : PreInnerProductSpace.Core Real
       (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
     D.toCore.toCore
-  letI : Inner Real
+  let : Inner Real
       (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
     D.toCore.toCore.toInner
   have hcs :=

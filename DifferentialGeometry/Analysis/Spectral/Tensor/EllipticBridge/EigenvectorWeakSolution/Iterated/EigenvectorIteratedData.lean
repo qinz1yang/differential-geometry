@@ -53,7 +53,7 @@ private lemma chartTargetEuclid_sdiff_chartPouKernel_subset (α : M) :
     chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  Set.diff_subset
+  Set.sdiff_subset
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 lemma chosenWeakPartial'_ae_zero_off_chartPouKernel_of_ae_zero

@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -39,7 +38,7 @@ variable [CompleteSpace E]
 section RankCast
 
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covGrad_heq_congr_lg (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b} (hYZ : HEq Y Z) :
@@ -47,6 +46,7 @@ private theorem covGrad_heq_congr_lg (g : SmoothRiemannianMetric I M) (r : ℕ) 
   subst h
   rw [eq_of_heq hYZ]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_covGrad_comm_heq_lg (g : SmoothRiemannianMetric I M) (r s m : ℕ)
@@ -73,6 +73,7 @@ private theorem riemannianFiberNormSq_toSection_heq_congr_lg (g : SmoothRiemanni
   subst h
   rw [eq_of_heq hYZ]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_lg (g : SmoothRiemannianMetric I M)
@@ -89,7 +90,7 @@ private def castRankCc_lg (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
   h ▸ W
 
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_castRankCc_lg (g : SmoothRiemannianMetric I M) (r : ℕ)
     {a b : ℕ} (h : a = b) (W : SmoothCcTensor g r a) (j : ℕ) (x : M) :
@@ -115,13 +116,13 @@ def diffCurvOp : ∀ (p r : ℕ) (_ : SmoothCcTensor g 0 r), SmoothCcTensor g 0 
           (diffCurvOp p (r + 1) (covGrad (I := I) (M := M) g 0 r W))
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem diffCurvOp_zero (r : ℕ) (W : SmoothCcTensor g 0 r) :
     diffCurvOp (I := I) (M := M) g hX hY 0 r W =
       curvatureContraction (I := I) (M := M) g r W hX hY := rfl
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_diffCurvOp_eq (p r : ℕ) (W : SmoothCcTensor g 0 r) :
     covGrad (I := I) (M := M) g 0 (r + p) (diffCurvOp (I := I) (M := M) g hX hY p r W) =
       diffCurvOp (I := I) (M := M) g hX hY (p + 1) r W +
@@ -134,7 +135,7 @@ theorem covGrad_diffCurvOp_eq (p r : ℕ) (W : SmoothCcTensor g 0 r) :
           (covGrad (I := I) (M := M) g 0 r W))) + _
   rw [sub_add_cancel]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem diffCurvOp_isOrderZeroCurvFactor :
     IsPointwiseLinearLocalOperator (I := I) (M := M) g (diffCurvOp (I := I) (M := M) g hX hY) where
   linear := by
@@ -163,7 +164,6 @@ theorem diffCurvOp_isOrderZeroCurvFactor :
       curvatureContraction_toSection_apply (I := I) (M := M) g r W₁ hX hY x,
       curvatureContraction_toSection_apply (I := I) (M := M) g r W₂ hX hY x, hx]
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def diffCurvPhi0Fib (g : SmoothRiemannianMetric I M)
     (X Y : Π b : M, TangentSpace I b) (r : ℕ) (x : M) : TensorRSSpace r r I x :=
   (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace r I x from
@@ -171,7 +171,6 @@ noncomputable def diffCurvPhi0Fib (g : SmoothRiemannianMetric I M)
       (Y x) :
     TensorRSSpace r r I x)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem diffCurvPhi0Fib_contMDiff (g : SmoothRiemannianMetric I M)
@@ -209,7 +208,6 @@ theorem diffCurvPhi0Fib_contMDiff (g : SmoothRiemannianMetric I M)
     (cov := Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g))
     hX hY Z.contMDiff
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def diffCurvPhi0 (g : SmoothRiemannianMetric I M)
     {X Y : Π b : M, TangentSpace I b}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
@@ -219,8 +217,7 @@ noncomputable def diffCurvPhi0 (g : SmoothRiemannianMetric I M)
       contMDiff_toFun := diffCurvPhi0Fib_contMDiff (I := I) (M := M) g hX hY r }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem diffCurvOp_zero_eq_operatorFieldApply (g : SmoothRiemannianMetric I M)
     {X Y : Π b : M, TangentSpace I b}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
@@ -428,6 +425,7 @@ variable {kappa : ℕ → ℕ → ℝ} (hkappa_nn : ∀ p r, 0 ≤ kappa p r)
           ((iteratedCovGrad g 0 r q W).toSection x))
 
 include hkappa_nn hkappa in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_iteratedCovGrad_diffCurvOp_grid (j : ℕ) :
     ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r) (x : M),

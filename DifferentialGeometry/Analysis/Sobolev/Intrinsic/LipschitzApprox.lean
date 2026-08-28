@@ -75,7 +75,7 @@ private lemma raw_fderiv_eq
   change fderiv ℝ (scalarOnE (I := I) α f ∘ (toEuclidean (E := E)).symm) y
       (EuclideanSpace.single i 1) = _
   rw [(toEuclidean (E := E)).symm.comp_right_fderiv,
-    ContinuousLinearMap.coe_comp', Function.comp_apply]
+    ContinuousLinearMap.coe_comp, Function.comp_apply]
   have hb : ((toEuclidean (E := E)).symm :
       EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →L[ℝ] E)
       (EuclideanSpace.single i 1) = chartModelBasis E i := by
@@ -156,8 +156,7 @@ private lemma raw_wkp_eq
     (I := I) (M := M) (chartAtlasPOU I M) α u).symm
 
 private lemma grad_eq_pou
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
     (hu : MDifferentiableAt I 𝓘(ℝ, ℝ) u x)
     (hv : MDifferentiableAt I 𝓘(ℝ, ℝ) v x) :
@@ -205,8 +204,7 @@ private lemma gNorm_sum_le
             add_le_add_right ih (Real.sqrt (g.inner x (v i) (v i))))
 
 theorem gNorm_sub_le_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
     (hu : MDifferentiableAt I 𝓘(ℝ, ℝ) u x)
     (hv : MDifferentiableAt I 𝓘(ℝ, ℝ) v x) :
@@ -334,7 +332,6 @@ theorem grad_sub_chart_le
 
 private lemma local_grad_l2_le
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α : M)
     (hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u v : M → ℝ} {L B : NNReal},
@@ -360,10 +357,10 @@ private lemma local_grad_l2_le
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   let K : Set M := tsupport
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   have hKc : IsCompact K := (isClosed_tsupport _).isCompact
@@ -553,7 +550,6 @@ private lemma local_grad_l2_le
 
 theorem grad_sub_l2_le
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u v : M → ℝ} {L B : NNReal},
       (∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
@@ -566,10 +562,10 @@ theorem grad_sub_l2_le
       ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 1 2
         (fun x => u x - v x) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
   have hlocal (a : S) :=
     local_grad_l2_le (I := I) (M := M) g a.1 a.2
@@ -747,10 +743,10 @@ theorem exists_smooth_supp
           (gradFun (I := I) g (fun y => u y - φ y) x))) 2
         (riemannianVolumeMeasure I M g) ≤ ENNReal.ofReal ε := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨Cl2, hCl2, hl2⟩ :=
     DifferentialGeometry.Analysis.Sobolev.EquivalenceFull.eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       (I := I) (M := M) g (p := (2 : ENNReal)) (by norm_num) (by norm_num)

@@ -24,7 +24,7 @@ theorem klLateShell_eq_pre (x : V) (R : ℝ) (k : ℕ) :
       (fun y : V ↦ dist x y) ⁻¹'
         Ico ((k : ℝ) * R) (((k + 1 : ℕ) : ℝ) * R) := by
   ext y
-  simp only [klLateShell, mem_diff, Metric.mem_ball, mem_preimage, mem_Ico]
+  simp only [klLateShell, mem_sdiff, Metric.mem_ball, mem_preimage, mem_Ico]
   rw [dist_comm y x]
   constructor
   · rintro ⟨hout, hin⟩

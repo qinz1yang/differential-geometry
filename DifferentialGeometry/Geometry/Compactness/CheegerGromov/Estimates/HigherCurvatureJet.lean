@@ -351,8 +351,7 @@ noncomputable def IntrJetAtom.eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (atom : IntrJetAtom) (q : Real × Real) :
     TangentSpace I
       (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
@@ -383,8 +382,7 @@ theorem IntrJetAtom.pathDt_zero
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r t : Real) :
     IntrJetAtom.pathDt.eval (I := I) g hEnorm p u a b (r, t) = 0 := by
   let f : Real -> Real -> M := fun s v =>
@@ -400,7 +398,7 @@ theorem IntrJetAtom.pathDt_zero
               (modelWithCornersSelf Real Real))
           ∞ (fun v : Real => ((r, (0 : Real)), v)) :=
       (contMDiff_const.prodMk contMDiff_const).prodMk contMDiff_id
-    simpa only [gamma, f, Function.comp_apply] using
+    simpa only [gamma, f, Function.comp_def] using
       (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hgeo :
       DifferentialGeometry.Geometry.Riemannian.Geodesic.IsGeodesic
@@ -421,8 +419,7 @@ theorem IntrJetAtom.aJet_eq_self
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
     (IntrJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, t) =
       (IntrJetAtom.bJet n).eval (I := I) g hEnorm p u a a (r, t) := by
@@ -448,8 +445,7 @@ theorem IntrJetAtom.aTime_eq_self
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
     (IntrJetAtom.aTime n).eval (I := I) g hEnorm p u a b (r, t) =
       (IntrJetAtom.bTime n).eval (I := I) g hEnorm p u a a (r, t) := by
@@ -481,8 +477,7 @@ theorem IntrJetAtom.aJet_time0
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r : Real) :
     (IntrJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
   let f : Real -> Real -> M := fun s t =>
@@ -509,8 +504,7 @@ theorem IntrJetAtom.bJet_time0
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r : Real) :
     (IntrJetAtom.bJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
   change intrLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0
@@ -523,8 +517,7 @@ noncomputable def CurvJetTerm.eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     CurvJetTerm -> forall q : Real × Real,
       TangentSpace I
@@ -548,8 +541,7 @@ theorem CurvJetTerm.eval_le_at
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E)
     (C : Nat -> Real) (hC : forall k, 0 <= C k)
     (B : IntrJetAtom -> Real) (P : IntrJetAtom -> Prop)
@@ -621,9 +613,9 @@ theorem CurvJetTerm.eval_le_at
               (g.inner x
                 (y.eval (I := I) g hEnorm p u a b q)
                 (y.eval (I := I) g hEnorm p u a b q)) := by
-          simpa only [CurvJetTerm.eval] using
-            Geometry.Riemannian.sqrt_inner_smul (I := I) g x c
-              (y.eval (I := I) g hEnorm p u a b q)
+          rw [CurvJetTerm.eval.eq_def]
+          exact Geometry.Riemannian.sqrt_inner_smul (I := I) g x c
+            (y.eval (I := I) g hEnorm p u a b q)
         _ <= |c| * y.majorant C B :=
           mul_le_mul_of_nonneg_left (ih hterm) (abs_nonneg c)
         _ = (c • y).majorant C B := rfl
@@ -670,8 +662,7 @@ theorem CurvJetTerm.eval_le_atoms
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E)
     (C : Nat -> Real) (hC : forall k, 0 <= C k)
     (B : IntrJetAtom -> Real) (P : IntrJetAtom -> Prop)
@@ -710,8 +701,7 @@ theorem CurvJetTerm.eval_le_of
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E)
     (C : Nat -> Real) (hC : forall k, 0 <= C k)
     (B : IntrJetAtom -> Real)
@@ -757,21 +747,18 @@ theorem CurvJetTerm.eval_le_geom
     letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
     letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
       P.riemBundle (I := I)
-    letI : (x : P.M) -> InnerProductSpace Real (TangentSpace I x) :=
-      P.riemInner (I := I)
     letI : IsContinuousRiemannianBundle E
         (fun x : P.M => TangentSpace I x) :=
       P.riemBundle_cont (I := I)
     letI : EMetricSpace P.M := P.emetricSpace (I := I)
     letI : CompleteSpace P.M :=
       MetricComplete.complete (I := I) P hcomplete
-    let hEnorm : forall (x : P.M) (v : TangentSpace I x),
-        ‖v‖ₑ = ENNReal.ofReal
-          (Real.sqrt (P.metric.inner x v v)) := by
+    let hEnorm : IsMetricNorm (I := I) (M := P.M) P.metric := by
       intro x v
-      simpa using
-        (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) P.metric x v)
+      with_unfolding_all
+        exact
+          Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) P.metric x v
     (forall (atom : IntrJetAtom) (q : Real × Real),
       Real.sqrt
           (P.metric.inner
@@ -788,29 +775,26 @@ theorem CurvJetTerm.eval_le_geom
               (term.eval (I := I) P.metric hEnorm p u a b q)
               (term.eval (I := I) P.metric hEnorm p u a b q)) <=
           term.majorant hP.C B := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
-  letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
-  letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+  let _ : TopologicalSpace P.M := P.topology
+  let _ : ChartedSpace H P.M := P.charted
+  let _ : IsManifold I ∞ P.M := P.smooth
+  let _ : SigmaCompactSpace P.M := P.sigmaCompact
+  let _ : T2Space P.M := P.t2
+  let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let _ : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
     P.riemBundle (I := I)
-  letI : (x : P.M) -> InnerProductSpace Real (TangentSpace I x) :=
-    P.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun x : P.M => TangentSpace I x) :=
     P.riemBundle_cont (I := I)
-  letI : EMetricSpace P.M := P.emetricSpace (I := I)
-  letI : CompleteSpace P.M :=
+  let _ : EMetricSpace P.M := P.emetricSpace (I := I)
+  let _ : CompleteSpace P.M :=
     MetricComplete.complete (I := I) P hcomplete
-  let hEnorm : forall (x : P.M) (v : TangentSpace I x),
-      ‖v‖ₑ = ENNReal.ofReal
-        (Real.sqrt (P.metric.inner x v v)) := by
+  let hEnorm : IsMetricNorm (I := I) (M := P.M) P.metric := by
     intro x v
-    simpa using
-      (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) P.metric x v)
+    with_unfolding_all
+      exact
+        Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) P.metric x v
   dsimp only
   intro hatom term q
   apply CurvJetTerm.eval_le_of
@@ -827,8 +811,7 @@ private theorem IntrJetAtom.eval_smooth
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (atom : IntrJetAtom) :
     ContMDiff
       ((modelWithCornersSelf Real Real).prod
@@ -915,8 +898,7 @@ private theorem CurvJetTerm.finSum_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) {n : Nat}
     (terms : Fin n -> CurvJetTerm) (q : Real × Real) :
     (CurvJetTerm.finSum terms).eval (I := I) g hEnorm p u a b q =
@@ -945,8 +927,7 @@ private theorem CurvJetTerm.eval_launch_smooth
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (term : CurvJetTerm) (t : Real) :
     ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun r : Real =>
@@ -971,7 +952,7 @@ private theorem CurvJetTerm.eval_launch_smooth
       let Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M -> Type _) := 0
       have hzero := Z.contMDiff.comp hgamma
-      simpa only [CurvJetTerm.eval, gamma, Z, Function.comp_apply,
+      simpa only [CurvJetTerm.eval, gamma, Z, Function.comp_def,
         ContMDiffSection.coe_zero, Pi.zero_apply] using hzero
   | atom atom =>
       have hincl :
@@ -983,7 +964,7 @@ private theorem CurvJetTerm.eval_launch_smooth
         contMDiff_id.prodMk contMDiff_const
       have hatom :=
         (IntrJetAtom.eval_smooth (I := I) g hEnorm p u a b atom).comp hincl
-      simpa only [CurvJetTerm.eval, Function.comp_apply] using hatom
+      simpa only [CurvJetTerm.eval, Function.comp_def] using hatom
   | add x y ihx ihy =>
       let fields : Fin 2 -> forall r : Real, TangentSpace I (gamma r) :=
         Fin.cons
@@ -996,20 +977,34 @@ private theorem CurvJetTerm.eval_launch_smooth
               (gamma r) (fields i r) : TangentBundle I M)) := by
         intro i
         fin_cases i
-        · simpa only [fields, Fin.cons_zero, gamma] using ihx
-        · simpa only [fields, Fin.cons_succ, Fin.cons_zero, gamma] using ihy
+        · convert ihx using 1; rfl
+        · convert ihy using 1; rfl
       have hsum :=
         contMDiff_sum_along (I := I)
           (Finset.univ : Finset (Fin 2)) gamma fields hgamma
           (fun i _ => hfields i)
-      simpa only [CurvJetTerm.eval, fields, gamma, Fin.sum_univ_two,
-        Fin.cons_zero, Fin.cons_succ] using hsum
+      have hfun :
+          (fun r : Real =>
+            (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+              (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t))
+              ((CurvJetTerm.add x y).eval
+                (I := I) g hEnorm p u a b (r, t)) :
+                TangentBundle I M)) =
+            fun r : Real =>
+              (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+                (gamma r) (∑ i, fields i r) : TangentBundle I M) := by
+        funext r
+        congr 1
+        rw [CurvJetTerm.eval.eq_def]
+        simp only [Fin.sum_univ_two, fields, Fin.cons_zero, Fin.cons_one]
+      rw [hfun]
+      exact hsum
   | scale c x ih =>
       have hc : ContMDiff (modelWithCornersSelf Real Real)
           (modelWithCornersSelf Real Real) ∞ (fun _ : Real => c) :=
         contMDiff_const
-      simpa only [CurvJetTerm.eval, gamma] using
-        contMDiff_smul_bundleField_perp (I := I) hgamma hc ih
+      convert
+        contMDiff_smul_bundleField_perp (I := I) hgamma hc ih using 1; rfl
   | curv k slots ih =>
       simpa only [CurvJetTerm.eval, gamma] using
         curvOpN_smoothAlong (I := I) g k gamma
@@ -1023,8 +1018,7 @@ private theorem IntrJetAtom.launchDeriv_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (atom : IntrJetAtom) (r t : Real) :
     covFst (I := I) g
         (fun s v : Real =>
@@ -1162,9 +1156,21 @@ private theorem IntrJetAtom.launchDeriv_eval
           _ = _ := by
             rw [hcomm]
             abel
-      simpa only [CurvJetTerm.launchDeriv, CurvJetTerm.eval,
-        IntrJetAtom.eval, f, A, covFstIter_succ, varCurv,
-        curvAlong_eq_op0, hslots3] using hsum
+      refine hsum.trans ?_
+      symm
+      rw [CurvJetTerm.launchDeriv]
+      change
+        (CurvJetTerm.add
+          (CurvJetTerm.atom (IntrJetAtom.aTime (n + 1)))
+          (CurvJetTerm.curv 0
+            (slots3 (CurvJetTerm.atom (IntrJetAtom.aJet 0))
+              (CurvJetTerm.atom IntrJetAtom.pathT)
+              (CurvJetTerm.atom (IntrJetAtom.aJet n))))).eval
+            (I := I) g hEnorm p u a b (r, t) = _
+      rw [CurvJetTerm.eval.eq_def]
+      simp only [CurvJetTerm.eval, IntrJetAtom.eval, f, A,
+        covFstIter_zero, covFstIter_succ, varCurv, curvAlong_eq_op0,
+        hslots3]
   | bJet n =>
       rfl
   | bTime n =>
@@ -1200,9 +1206,21 @@ private theorem IntrJetAtom.launchDeriv_eval
           _ = _ := by
             rw [hcomm]
             abel
-      simpa only [CurvJetTerm.launchDeriv, CurvJetTerm.eval,
-        IntrJetAtom.eval, f, B, covFstIter_succ, varCurv,
-        curvAlong_eq_op0, hslots3] using hsum
+      refine hsum.trans ?_
+      symm
+      rw [CurvJetTerm.launchDeriv]
+      change
+        (CurvJetTerm.add
+          (CurvJetTerm.atom (IntrJetAtom.bTime (n + 1)))
+          (CurvJetTerm.curv 0
+            (slots3 (CurvJetTerm.atom (IntrJetAtom.aJet 0))
+              (CurvJetTerm.atom IntrJetAtom.pathT)
+              (CurvJetTerm.atom (IntrJetAtom.bJet n))))).eval
+            (I := I) g hEnorm p u a b (r, t) = _
+      rw [CurvJetTerm.eval.eq_def]
+      simp only [CurvJetTerm.eval, IntrJetAtom.eval, f, B,
+        covFstIter_zero, covFstIter_succ, varCurv, curvAlong_eq_op0,
+        hslots3]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -1212,8 +1230,7 @@ private theorem IntrJetAtom.covFst_time0_of_const
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b c : E) (atom : IntrJetAtom)
     (hconst : forall s,
       atom.eval (I := I) g hEnorm p u a b (s, 0) = c)
@@ -1243,11 +1260,9 @@ private theorem IntrJetAtom.covFst_time0_of_const
       (fun _ : Real => (show TangentSpace I p from c)) r (by fun_prop)
   change (covDerivAlong (I := I) g (fun s : Real => f s 0)
     (fun s : Real => V s 0) r : E) = 0
-  calc
-    _ = (covDerivAlong (I := I) g (fun _ : Real => p)
-          (fun _ : Real => (show TangentSpace I p from c)) r : E) := hcongr
-    _ = deriv (fun _ : Real => (c : E)) r := hflat
-    _ = 0 := deriv_const _ _
+  have hzero : deriv (fun _ : Real => (c : E)) r = 0 :=
+    deriv_const _ _
+  exact hcongr.trans (hflat.trans hzero)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -1257,8 +1272,7 @@ theorem IntrJetAtom.aTime_zero
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
     (IntrJetAtom.aTime 0).eval (I := I) g hEnorm p u a b (r, 0) = a := by
   let f : Real -> Real -> M := fun s t =>
@@ -1291,8 +1305,7 @@ theorem IntrJetAtom.bTime_zero
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
     (IntrJetAtom.bTime 0).eval (I := I) g hEnorm p u a b (r, 0) = b := by
   simpa only [IntrJetAtom.eval, covFstIter_zero] using
@@ -1306,8 +1319,7 @@ private theorem IntrJetAtom.timeCurv_time0
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (jet : IntrJetAtom) (r : Real) :
     (CurvJetTerm.curv 0
         (slots3 (CurvJetTerm.atom (.aJet 0))
@@ -1331,8 +1343,7 @@ private theorem IntrJetAtom.time_succ_zero
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b c : E) (time jet next : IntrJetAtom)
     (hlaunch :
       (CurvJetTerm.atom time).launchDeriv =
@@ -1366,8 +1377,7 @@ theorem IntrJetAtom.aTime_succ_time0
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     forall n r,
       (IntrJetAtom.aTime (n + 1)).eval
@@ -1393,8 +1403,7 @@ theorem IntrJetAtom.bTime_succ_time0
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     forall n r,
       (IntrJetAtom.bTime (n + 1)).eval
@@ -1420,8 +1429,7 @@ theorem CurvJetTerm.launchDeriv_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (term : CurvJetTerm) (r t : Real) :
     covFst (I := I) g
         (fun s v : Real =>
@@ -1478,7 +1486,7 @@ theorem CurvJetTerm.launchDeriv_eval
               (c • x).eval (I := I) g hEnorm p u a b (s, v)) r t =
             c • covFst (I := I) g f
               (fun s v => x.eval (I := I) g hEnorm p u a b (s, v)) r t := by
-          simpa only [CurvJetTerm.eval, covFst, f] using hsmul
+          convert hsmul using 1 <;> rfl
         _ = (c • x.launchDeriv).eval
               (I := I) g hEnorm p u a b (r, t) := by
           rw [ih]
@@ -1625,8 +1633,7 @@ theorem CurvJetTerm.launchIter_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (m : Nat) (term : CurvJetTerm) :
     covFstIter (I := I) g
         (fun s v : Real =>
@@ -1651,8 +1658,7 @@ theorem intrCorrTerm_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
     intrJetCorr (I := I) g hEnorm p u a b n (r, t) =
       (intrCorrTerm n).eval (I := I) g hEnorm p u a b (r, t) := by
@@ -1728,40 +1734,40 @@ theorem intrCorrTerm_eval
     contMDiff_id.prodMk contMDiff_const
   have hgammaT : ContMDiff (modelWithCornersSelf Real Real) I ∞
       (fun v : Real => f r v) := by
-    simpa only [Function.comp_apply] using hf.comp htime
+    simpa only [Function.comp_def] using hf.comp htime
   have hgammaA : ContMDiff (modelWithCornersSelf Real Real) I ∞
       (fun s : Real => f s t) := by
-    simpa only [Function.comp_apply] using hf.comp hlaunch
+    simpa only [Function.comp_def] using hf.comp hlaunch
   have hAT : ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun v : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f r v) (A r v) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using hA.comp htime
+    simpa only [Function.comp_def] using hA.comp htime
   have hAA : ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun s : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f s t) (A s t) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using hA.comp hlaunch
+    simpa only [Function.comp_def] using hA.comp hlaunch
   have hTT : ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun v : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f r v) (varSnd (I := I) f r v) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using hT.comp htime
+    simpa only [Function.comp_def] using hT.comp htime
   have hTA : ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun s : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f s t) (varSnd (I := I) f s t) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using hT.comp hlaunch
+    simpa only [Function.comp_def] using hT.comp hlaunch
   have hWT : ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun v : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f r v) (W r v) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using hW.comp htime
+    simpa only [Function.comp_def] using hW.comp htime
   have hWA : ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun s : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f s t) (W s t) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using hW.comp hlaunch
+    simpa only [Function.comp_def] using hW.comp hlaunch
   have hderivT :
       curvDerivAlong (I := I) g (fun v : Real => f r v)
           (fun v => A r v)
@@ -1819,15 +1825,20 @@ theorem intrCorrTerm_eval
       commute_ds_dt_intrinsic_shifted (I := I) g f hfvar t
     simpa only [covFst, covSnd, varFst, varSnd] using
       congrFun hcomm r
+  have hevalScale (c : Real) (term : CurvJetTerm) :
+      (c • term).eval (I := I) g hEnorm p u a b (r, t) =
+        c • term.eval (I := I) g hEnorm p u a b (r, t) := by
+    change c • term.eval (I := I) g hEnorm p u a b (r, t) = _
+    rfl
   change jacStepCorr (I := I) g f W r t =
     (intrCorrTerm n).eval (I := I) g hEnorm p u a b (r, t)
   unfold jacStepCorr
   rw [hderivT, hderivA]
   simp only [curvAlong_eq_op0]
   rw [hmix]
-  simp only [intrCorrTerm, CurvJetTerm.eval, hslots3, hslots4,
-    IntrJetAtom.eval, covFstIter_zero, varCurv, curvAlong_eq_op0,
-    f, A, B, W]
+  simp only [intrCorrTerm, CurvJetTerm.eval, hevalScale, hslots3,
+    hslots4, IntrJetAtom.eval, covFstIter_zero, varCurv,
+    curvAlong_eq_op0, f, A, B, W]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -1836,14 +1847,18 @@ theorem intrResidualTerm_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) :
     (fun r t : Real =>
       intrJetResidual (I := I) g hEnorm p u a b n (r, t)) =
         fun r t : Real =>
           (intrResidualTerm n).eval
             (I := I) g hEnorm p u a b (r, t) := by
+  have hevalScale (c : Real) (term : CurvJetTerm) (q : Real × Real) :
+      (c • term).eval (I := I) g hEnorm p u a b q =
+        c • term.eval (I := I) g hEnorm p u a b q := by
+    change c • term.eval (I := I) g hEnorm p u a b q = _
+    rfl
   induction n with
   | zero =>
       funext r t
@@ -1856,8 +1871,8 @@ theorem intrResidualTerm_eval
       rw [CurvJetTerm.launchDeriv_eval
         (I := I) g hEnorm p u a b (intrResidualTerm n) r t]
       rw [intrCorrTerm_eval (I := I) g hEnorm p u a b n r t]
-      simp only [intrResidualTerm, CurvJetTerm.eval, sub_eq_add_neg,
-        neg_one_smul]
+      simp only [intrResidualTerm, CurvJetTerm.eval, hevalScale,
+        sub_eq_add_neg, neg_one_smul]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -1866,8 +1881,7 @@ theorem intrCorrIter_eval
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : forall x : M, forall v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (m n : Nat) :
     covFstIter (I := I) g
         (fun s v : Real =>

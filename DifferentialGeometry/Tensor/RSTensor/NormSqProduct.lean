@@ -1,9 +1,9 @@
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.ContractionLeibniz
+import DifferentialGeometry.Tensor.RSTensor.Product
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -31,8 +31,7 @@ theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q) :
     normSq0S (I := I) g x (s + q)
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s) (q := q) A B x)
+        (tensor0SField_product (∞ : WithTop ℕ∞) A B x)
       = normSq0S (I := I) g x s (A x) * normSq0S (I := I) g x q (B x) := by
   classical
   rw [normSq0S_identity_eq_sum_sq (I := I) g x (s + q) basis hinv,
@@ -61,8 +60,7 @@ theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   intro slots
   have hprod :
       component0S (I := I) basis
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s) (q := q) A B x)
+          (tensor0SField_product (∞ : WithTop ℕ∞) A B x)
           slots
         = component0S (I := I) basis (A x) (slots ∘ Fin.castAdd q)
           * component0S (I := I) basis (B x) (slots ∘ Fin.natAdd s) := by
@@ -80,8 +78,7 @@ theorem normSq0S_prod {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x) :
     normSq0S (I := I) g x (s + q)
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) A B)
+        (Tensor0SSpace.product A B)
       = normSq0S (I := I) g x s A * normSq0S (I := I) g x q B := by
   classical
   rw [normSq0S_identity_eq_sum_sq (I := I) g x (s + q) basis hinv,
@@ -112,12 +109,11 @@ theorem normSq0S_prod {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   intro slots
   have hprod :
       component0S (I := I) basis
-          (Bundle.continuousMultilinearMap.product_fun
-            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) A B) slots
+          (Tensor0SSpace.product A B) slots
         = component0S (I := I) basis A (slots ∘ Fin.castAdd q) *
           component0S (I := I) basis B (slots ∘ Fin.natAdd s) := by
     rw [component0S_apply, component0S_apply, component0S_apply,
-      Bundle.continuousMultilinearMap.product_fun_apply]
+      Tensor0SSpace.product_apply]
     rfl
   rw [hprod, mul_pow]
   rfl

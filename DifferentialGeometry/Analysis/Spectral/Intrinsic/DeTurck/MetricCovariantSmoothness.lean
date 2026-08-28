@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceJets
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -132,7 +133,7 @@ private theorem tensor03Cov_quad_apply_smooth
       (fun x => ((((tensor03Cov cov).toFun S x (Y x)) (Z x)) (W x)) (U x)) := by
   have h_eq : ∀ x : M,
       ((((tensor03Cov cov).toFun S x (Y x)) (Z x)) (W x)) (U x) =
-        extDerivFun (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x)
+        mvfderiv (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x)
           - S x (cov.toFun Z x (Y x)) (W x) (U x)
           - S x (Z x) (cov.toFun W x (Y x)) (U x)
           - S x (Z x) (W x) (cov.toFun U x (Y x)) := by
@@ -150,18 +151,18 @@ private theorem tensor03Cov_quad_apply_smooth
   have h_extDeriv : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x)
-        x (extDerivFun (I := I) (fun b => S b (Z b) (W b) (U b)) x)) :=
-    cotangentCov_extDerivFun_smooth h_pair
+        x (mvfderiv (I := I) (fun b => S b (Z b) (W b) (U b)) x)) :=
+    cotangentCov_mvfderiv_smooth h_pair
   have h_extDeriv_Y : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x => extDerivFun (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x)) := by
+      (fun x => mvfderiv (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x)) := by
     have hap : ContMDiff I (I.prod 𝓘(ℝ, ℝ)) ∞
         (fun x => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) x
-          (extDerivFun (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x))) :=
+          (mvfderiv (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x))) :=
       ContMDiff.clm_bundle_apply
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => (Bundle.Trivial M ℝ) x)
         (b := fun x : M => x)
-        (ϕ := fun x => extDerivFun (I := I) (fun b => S b (Z b) (W b) (U b)) x)
+        (ϕ := fun x => mvfderiv (I := I) (fun b => S b (Z b) (W b) (U b)) x)
         (v := fun x => Y x) h_extDeriv Y.contMDiff
     intro x
     exact (contMDiffAt_section (F := ℝ) (E := Bundle.Trivial M ℝ) x).mp (hap x)
@@ -189,7 +190,7 @@ private theorem tensor03Cov_quad_apply_smooth
       (fun x => S x (Z x) (W x) (cov.toFun U x (Y x))) :=
     tensor03_pairing_contMDiff hS Z.contMDiff W.contMDiff (h_covApp U)
   have h_combined : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x => extDerivFun (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x)
+      (fun x => mvfderiv (I := I) (fun b => S b (Z b) (W b) (U b)) x (Y x)
         - S x (cov.toFun Z x (Y x)) (W x) (U x)
         - S x (Z x) (cov.toFun W x (Y x)) (U x)
         - S x (Z x) (W x) (cov.toFun U x (Y x))) :=
@@ -304,7 +305,7 @@ theorem tensor02CovIterate_metric_contMDiff
         (E := fun x : M => TangentSpace I x →L[ℝ]
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))) x
         (tensor02CovIterate (LeviCivita (I := I) g₀) (metricTensor02 (I := I) g) x)) := by
-  haveI hcov : CovariantDerivative.ContMDiffCovariantDerivative
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₀) ∞ := inferInstance
   have h_metric : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)

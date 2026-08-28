@@ -21,7 +21,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [IsManifold I ∞ M] in
 private lemma chartTransitionEuclid_comp_eq_id_on_overlap
-    [I.Boundaryless]
     (γ α : M) {y : EuclN}
     (hy : y ∈ chartOverlapEuclid (I := I) (M := M) γ α) :
     (fun z => chartTransitionEuclid (I := I) (M := M) α γ
@@ -95,7 +94,7 @@ private lemma chartTransitionEuclid_det_fderiv_ne_zero
           (chartTransitionEuclid (I := I) (M := M) γ α z)) y =
         ContinuousLinearMap.id ℝ EuclN := by
     rw [h_evt.fderiv_eq]
-    exact fderiv_id'
+    exact fderiv_fun_id
   have h_comp_eq :
       (fderiv ℝ (chartTransitionEuclid (I := I) (M := M) α γ)
           (chartTransitionEuclid (I := I) (M := M) γ α y)).comp
@@ -172,7 +171,6 @@ private lemma abs_det_fderiv_chartTransitionEuclid_continuousOn
   exact (h_cont_abs.comp h_cont_det).continuousOn.comp h_cont_fderiv (Set.mapsTo_univ _ _)
 
 private lemma chartTransitionEuclid_continuousOn_overlap
-    [I.Boundaryless]
     (γ α : M) :
     ContinuousOn (chartTransitionEuclid (I := I) (M := M) γ α)
       (chartOverlapEuclid (I := I) (M := M) γ α) :=

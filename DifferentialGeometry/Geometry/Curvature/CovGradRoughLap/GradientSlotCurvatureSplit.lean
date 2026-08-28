@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -56,30 +55,30 @@ def gradSlotCurv (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor 
   riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
     (fun b => X b) (fun b => W b) (unitGradFieldGen (I := I) (M := M) g s S) x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem gradSlotCurv_toModel_eq_baseSlot_sum
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (x : M) (u : Fin (s + 1) → TangentSpace I x) :
-    Tensor0SSpace.toModel (gradSlotCurv (I := I) (M := M) g s S X W x) u =
+    Tensor0SSpace.eval (gradSlotCurv (I := I) (M := M) g s S X W x) u =
       - ∑ k : Fin (s + 1),
-          Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x)
+          Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
             (Function.update u k (baseSlotCurv (I := I) g X W x (u k))) := by
   rw [gradSlotCurv]
   exact riemannSec_tensorCov_baseSlot_eval (I := I) (M := M) g (s + 1) X W
     (unitGradFieldGen (I := I) (M := M) g s S)
     (contMDiff_unitGradFieldGen (I := I) (M := M) g s S) x u
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem gradSlotCurv_toModel_eq_leading_add_tail
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (x : M) (u : Fin (s + 1) → TangentSpace I x) :
-    Tensor0SSpace.toModel (gradSlotCurv (I := I) (M := M) g s S X W x) u =
-      - (Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x)
+    Tensor0SSpace.eval (gradSlotCurv (I := I) (M := M) g s S X W x) u =
+      - (Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
             (Function.update u 0 (baseSlotCurv (I := I) g X W x (u 0))) +
           ∑ k : Fin s,
-            Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x)
+            Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
               (Function.update u k.succ
                 (baseSlotCurv (I := I) g X W x (u k.succ)))) := by
   rw [gradSlotCurv_toModel_eq_baseSlot_sum, Fin.sum_univ_succ]
@@ -94,20 +93,21 @@ omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
     (i : Fin (Module.finrank ℝ E)) (b : M) :
     orthoFrameSec (I := I) (M := M) g x i b = smoothOrthoFrame (I := I) g x i b := rfl
 
+omit [CompactSpace M] in
 theorem gradSlotCurv_frameSum_toModel_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (x : M) (u : Fin (s + 1) → TangentSpace I x) :
     (∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (gradSlotCurv (I := I) (M := M) g s S (orthoFrameSec (I := I) (M := M) g x i) W x) u) =
       ∑ i : Fin (Module.finrank ℝ E),
-        - (Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x)
+        - (Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
               (Function.update u 0
                 (riemannOp (LeviCivita (I := I) g) x
                   (smoothOrthoFrame (I := I) g x i x) (W x) (u 0))) +
             ∑ k : Fin s,
-              Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x)
+              Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
                 (Function.update u k.succ
                   (riemannOp (LeviCivita (I := I) g) x
                     (smoothOrthoFrame (I := I) g x i x) (W x) (u k.succ)))) := by
@@ -128,12 +128,12 @@ theorem ricEndoRaisedFib_inner_eq_frame_trace
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricTraceSection_apply_leadingSlot
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
-    (x : M) (v0 : E) (vs : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    (x : M) (v0 : TangentSpace I x) (vs : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (ricTraceSection (I := I) (M := M) g s S).toSection x)
           (unitZeroSec (I := I) (M := M) x)) (Fin.cons v0 vs) =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covGrad (I := I) (M := M) g 0 s S).toSection x)
           (unitZeroSec (I := I) (M := M) x))
@@ -215,16 +215,17 @@ private lemma curv_inner_left_reduce
       - ∑ k : Fin (s + 1), ∑ φ : Fin (s + 1) → Fin (Module.finrank ℝ E),
           ∑ c : Fin (Module.finrank ℝ E),
           g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-            (Tensor0SSpace.toModel (T x) (fun j => bse ((Function.update φ k c) j)) *
-              Tensor0SSpace.toModel (U x) (fun j => bse (φ j))) := by
+            (Tensor0SSpace.eval (T x) (fun j => bse ((Function.update φ k c) j)) *
+              Tensor0SSpace.eval (U x) (fun j => bse (φ j))) := by
   classical
   rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) g x (s + 1) bse hbse_orth]
+  simp only [Tensor0SSpace.toModel_apply_tangent]
   have hslot : ∀ φ : Fin (s + 1) → Fin (Module.finrank ℝ E),
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
           (riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
             (fun b => X b) (fun b => W b) T x) (fun k => bse (φ k)) =
         - ∑ k : Fin (s + 1),
-            Tensor0SSpace.toModel (T x)
+            Tensor0SSpace.eval (T x)
               (Function.update (fun j => bse (φ j)) k
                 (baseSlotCurv (I := I) g X W x ((fun j => bse (φ j)) k))) := by
     intro φ
@@ -232,12 +233,12 @@ private lemma curv_inner_left_reduce
       (fun j => bse (φ j))
   rw [Finset.sum_congr rfl (fun φ _ => by rw [hslot φ])]
   have hexp_slot : ∀ (φ : Fin (s + 1) → Fin (Module.finrank ℝ E)) (k : Fin (s + 1)),
-      Tensor0SSpace.toModel (T x)
+      Tensor0SSpace.eval (T x)
           (Function.update (fun j => bse (φ j)) k
             (baseSlotCurv (I := I) g X W x ((fun j => bse (φ j)) k))) =
         ∑ c : Fin (Module.finrank ℝ E),
           g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-            Tensor0SSpace.toModel (T x) (fun j => bse ((Function.update φ k c) j)) := by
+            Tensor0SSpace.eval (T x) (fun j => bse ((Function.update φ k c) j)) := by
     intro φ k
     have harg : baseSlotCurv (I := I) g X W x ((fun j => bse (φ j)) k)
         = baseSlotCurv (I := I) g X W x (bse (φ k)) := by simp
@@ -245,28 +246,30 @@ private lemma curv_inner_left_reduce
         = ∑ c, g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k))) • bse c :=
       hbse_exp (baseSlotCurv (I := I) g X W x (bse (φ k)))
     conv_lhs => rw [harg, hv]
-    have hsum := (Tensor0SSpace.toModel (T x)).toMultilinearMap.map_update_sum
+    have hsum := ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x)
+      (T x)).toMultilinearMap.map_update_sum
       (t := (Finset.univ : Finset (Fin (Module.finrank ℝ E)))) (i := k)
       (g := fun c => g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k))) • bse c)
       (m := fun j => bse (φ j))
     have hsum' :
-        Tensor0SSpace.toModel (T x)
+        Tensor0SSpace.eval (T x)
             (Function.update (fun j => bse (φ j)) k
               (∑ c, g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k))) • bse c)) =
-          ∑ c, Tensor0SSpace.toModel (T x)
+          ∑ c, Tensor0SSpace.eval (T x)
               (Function.update (fun j => bse (φ j)) k
                 (g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k))) • bse c)) := hsum
     rw [hsum']
     refine Finset.sum_congr rfl (fun c _ => ?_)
-    have hsmul := (Tensor0SSpace.toModel (T x)).toMultilinearMap.map_update_smul
+    have hsmul := ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x)
+      (T x)).toMultilinearMap.map_update_smul
       (m := fun j => bse (φ j)) (i := k)
       (c := g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k)))) (x := bse c)
     have hsmul' :
-        Tensor0SSpace.toModel (T x)
+        Tensor0SSpace.eval (T x)
             (Function.update (fun j => bse (φ j)) k
               (g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k))) • bse c)) =
           g.inner x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k))) •
-            Tensor0SSpace.toModel (T x)
+            Tensor0SSpace.eval (T x)
               (Function.update (fun j => bse (φ j)) k (bse c)) := hsmul
     rw [hsmul', smul_eq_mul, g.symm x (bse c) (baseSlotCurv (I := I) g X W x (bse (φ k)))]
     congr 1
@@ -282,12 +285,12 @@ private lemma curv_inner_left_reduce
   have hdist : ∀ φ : Fin (s + 1) → Fin (Module.finrank ℝ E),
       (-∑ k : Fin (s + 1), ∑ c : Fin (Module.finrank ℝ E),
           g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-            Tensor0SSpace.toModel (T x) (fun j => bse ((Function.update φ k c) j)))
-        * Tensor0SSpace.toModel (U x) (fun k => bse (φ k))
+            Tensor0SSpace.eval (T x) (fun j => bse ((Function.update φ k c) j)))
+        * Tensor0SSpace.eval (U x) (fun k => bse (φ k))
       = -∑ k : Fin (s + 1), ∑ c : Fin (Module.finrank ℝ E),
           g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-            (Tensor0SSpace.toModel (T x) (fun j => bse ((Function.update φ k c) j)) *
-              Tensor0SSpace.toModel (U x) (fun j => bse (φ j))) := by
+            (Tensor0SSpace.eval (T x) (fun j => bse ((Function.update φ k c) j)) *
+              Tensor0SSpace.eval (U x) (fun j => bse (φ j))) := by
     intro φ
     rw [neg_mul, Finset.sum_mul]
     congr 1
@@ -373,25 +376,25 @@ theorem tensor0SCov_riemannSec_metric_skew_section
   have hcore := slot_skew_cancel (n := Module.finrank ℝ E) (s := s) k
     (fun a c => g.inner x (baseSlotCurv (I := I) g X W x (bse a)) (bse c))
     (fun a c => hRmat_skew a c)
-    (fun φ => Tensor0SSpace.toModel (T x) (fun j => bse (φ j)))
-    (fun φ => Tensor0SSpace.toModel (U x) (fun j => bse (φ j)))
+    (fun φ => Tensor0SSpace.eval (T x) (fun j => bse (φ j)))
+    (fun φ => Tensor0SSpace.eval (U x) (fun j => bse (φ j)))
   have hgoal_eq :
       (∑ φ : Fin (s + 1) → Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
           g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-            (Tensor0SSpace.toModel (T x) (fun j => bse ((Function.update φ k c) j)) *
-              Tensor0SSpace.toModel (U x) (fun j => bse (φ j))))
+            (Tensor0SSpace.eval (T x) (fun j => bse ((Function.update φ k c) j)) *
+              Tensor0SSpace.eval (U x) (fun j => bse (φ j))))
         + (∑ φ : Fin (s + 1) → Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
             g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-              (Tensor0SSpace.toModel (U x) (fun j => bse ((Function.update φ k c) j)) *
-                Tensor0SSpace.toModel (T x) (fun j => bse (φ j)))) = 0 := by
+              (Tensor0SSpace.eval (U x) (fun j => bse ((Function.update φ k c) j)) *
+                Tensor0SSpace.eval (T x) (fun j => bse (φ j)))) = 0 := by
     rw [show (∑ φ : Fin (s + 1) → Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
           g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-            (Tensor0SSpace.toModel (U x) (fun j => bse ((Function.update φ k c) j)) *
-              Tensor0SSpace.toModel (T x) (fun j => bse (φ j))))
+            (Tensor0SSpace.eval (U x) (fun j => bse ((Function.update φ k c) j)) *
+              Tensor0SSpace.eval (T x) (fun j => bse (φ j))))
         = (∑ φ : Fin (s + 1) → Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
             g.inner x (baseSlotCurv (I := I) g X W x (bse (φ k))) (bse c) *
-              (Tensor0SSpace.toModel (T x) (fun j => bse (φ j)) *
-                Tensor0SSpace.toModel (U x) (fun j => bse ((Function.update φ k c) j))))
+              (Tensor0SSpace.eval (T x) (fun j => bse (φ j)) *
+                Tensor0SSpace.eval (U x) (fun j => bse ((Function.update φ k c) j))))
       from by
         refine Finset.sum_congr rfl (fun φ _ => Finset.sum_congr rfl (fun c _ => ?_))
         ring]
@@ -456,6 +459,7 @@ theorem tensor0SCov_riemannOp_metric_skew
   exact tensor0SCov_riemannSec_metric_skew_section (I := I) (M := M) g s Xext Wext Text Uext
     hTc hUc x
 
+omit [CompactSpace M] in
 theorem gradSlotCurv_pairing_covGrad_eq_zero
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :

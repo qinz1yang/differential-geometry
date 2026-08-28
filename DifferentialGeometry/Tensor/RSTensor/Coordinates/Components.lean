@@ -1,6 +1,7 @@
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Tensor.Multilinear.Tensor
 
+
 noncomputable section
 
 namespace DifferentialGeometry
@@ -22,7 +23,6 @@ variable {s q : Nat}
 variable (basis : Module.Basis Idx Real (TangentSpace I x))
 
 omit [FiniteDimensional ℝ E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_add
     (A B : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (A + B) slots =
@@ -30,7 +30,6 @@ theorem component0S_add
   rfl
 
 omit [FiniteDimensional ℝ E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_smul
     (c : Real) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (c • A) slots =

@@ -9,7 +9,6 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -115,7 +114,7 @@ private lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
     (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma ofReal_tensorL2Norm_toFun_eq_nnnorm_toCcTensor
@@ -206,7 +205,7 @@ theorem eLpNorm_chartPushed_tensorChartComponentScalar_le_const_mul_h1Norm
             (ENNReal.ofReal C₂ *
               ENNReal.ofReal
                 (tensorL2Norm (I := I) (M := M) g r s S.toCcTensor.toFun)) :=
-          mul_le_mul_of_nonneg_left hB (by exact zero_le _)
+          mul_le_mul_of_nonneg_left hB (by exact zero_le)
   have h_eq :
       ENNReal.ofReal
           (tensorL2Norm (I := I) (M := M) g r s S.toCcTensor.toFun) =
@@ -226,7 +225,7 @@ theorem eLpNorm_chartPushed_tensorChartComponentScalar_le_const_mul_h1Norm
     _ = ENNReal.ofReal (C₁ * C₂) * (‖S.toCcTensor‖₊ : ℝ≥0∞) := by
         rw [(ENNReal.ofReal_mul hC₁_nn).symm]
     _ ≤ ENNReal.ofReal (C₁ * C₂) * (‖S‖₊ : ℝ≥0∞) :=
-        mul_le_mul_of_nonneg_left h_le (by exact zero_le _)
+        mul_le_mul_of_nonneg_left h_le (by exact zero_le)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem eLpNorm_chartPushed_tensorChartComponentScalar_le_const_mul_h1Norm_forall

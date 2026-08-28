@@ -37,9 +37,8 @@ lemma extZeroForm_of_not_mem (U : Opens M)
     (gU : SmoothRiemannianMetric I U) {x : M} (hx : x ∉ U)
     (v w : TangentSpace I x) :
     extZeroForm (I := I) U gU x v w = 0 := by
-  simp only [extZeroForm]
-  rw [dif_neg hx]
-  simp
+  have h : extZeroForm (I := I) U gU x = 0 := dif_neg hx
+  exact DFunLike.congr_fun (DFunLike.congr_fun h v) w
 
 
 def bumpForm (R : SmoothRiemannianMetric I M) (U : Opens M)
@@ -52,7 +51,7 @@ lemma bumpForm_apply (R : SmoothRiemannianMetric I M) (U : Opens M)
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ) (x : M) (v w : TangentSpace I x) :
     bumpForm (I := I) R U gU χ x v w =
       χ x • extZeroForm (I := I) U gU x v w + (1 - χ x) • R.inner x v w := by
-  simp [bumpForm, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply]
+  simp [bumpForm, add_apply, smul_apply]
 
 
 omit [FiniteDimensional ℝ E] in
@@ -100,10 +99,11 @@ lemma frameVec_cmdiffAt' (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
   set b := Module.finBasis ℝ E with hb
   have hfr : frameVec (I := I) x₀ i =ᶠ[𝓝 x] e.localFrame b i := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
-    rw [e.localFrame_apply_of_mem_baseSet b hy]
-    change (e.symmL ℝ y) (b i) = e.basisAt b hy i
+    change (e.symmL ℝ y) (b i) = e.localFrame b i y
+    rw [Bundle.Trivialization.localFrame, dif_pos hy]
     rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
-      Bundle.Trivialization.symmL_apply, Bundle.Trivialization.linearEquivAt_symm_apply]
+      Bundle.Trivialization.linearEquivAt_symm_apply]
+    exact e.symmL_apply hy (b i)
   refine (contMDiffAt_localFrame_of_mem (I := I) (n := (∞ : WithTop ℕ∞)) (e := e) (b := b)
     (i := i) hx).congr_of_eventuallyEq ?_
   exact hfr.mono (fun y hy => congrArg (TotalSpace.mk' E y) hy)
@@ -117,9 +117,9 @@ lemma frameVec_sub_cmdiffAt (U : Opens M)
     ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
       (fun z : U => TotalSpace.mk' E (E := fun z : U => TangentSpace I z) z
         (frameVec (I := I) x₀ i (z : M))) ⟨x, hxU⟩ := by
-  letI : TopologicalSpace U := inferInstance
-  letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace (H := H) (M := M) (s := U)
-  letI : IsManifold I ∞ U := { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : TopologicalSpace U := inferInstance
+  let : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace (H := H) (M := M) (s := U)
+  let : IsManifold I ∞ U := { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
   have hf' : (mfderiv I I (Subtype.val : U → M) ⟨x, hxU⟩).IsInvertible := by
     rw [mfderiv_subtype_val (I := I) U ⟨x, hxU⟩]
     change (ContinuousLinearMap.id ℝ E).IsInvertible
@@ -155,9 +155,9 @@ lemma chiGU_coeff_cmdiffAt (U : Opens M)
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun y : M => χ y • extZeroForm (I := I) U gU y
         (frameVec (I := I) x₀ i y) (frameVec (I := I) x₀ j y)) x := by
-  letI : TopologicalSpace U := inferInstance
-  letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace (H := H) (M := M) (s := U)
-  letI : IsManifold I ∞ U := { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : TopologicalSpace U := inferInstance
+  let : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace (H := H) (M := M) (s := U)
+  let : IsManifold I ∞ U := { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
   rw [← contMDiffAt_subtype_iff (I := I) (I' := 𝓘(ℝ, ℝ)) (U := U) (n := ∞) (x := ⟨x, hxU⟩)]
   have heq : (fun z : U => χ (z : M) • extZeroForm (I := I) U gU (z : M)
         (frameVec (I := I) x₀ i (z : M)) (frameVec (I := I) x₀ j (z : M)))

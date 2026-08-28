@@ -21,7 +21,7 @@ namespace WithBoundary
 
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -33,7 +33,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -45,7 +44,6 @@ theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
   exact integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
     (I := I) (g_fam t) X hX_int
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support_family
     [T2Space M] [SigmaCompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -58,7 +56,6 @@ theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interi
   exact integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
     (I := I) (g_fam t) X hX hX_int
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary_family
     [T2Space M] [SigmaCompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -75,7 +72,6 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
   exact integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary
     (I := I) (g_fam t) hf hf_int X hX hX_int
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_tangentSectionAction_mul_add_eq_neg_with_boundary_family
     [T2Space M] [SigmaCompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -94,7 +90,6 @@ theorem integral_tangentSectionAction_mul_add_eq_neg_with_boundary_family
   exact integral_tangentSectionAction_mul_add_eq_neg_with_boundary
     (I := I) (g_fam t) hf hh hf_int X hX hX_int
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary_family
     [T2Space M] [SigmaCompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -111,7 +106,6 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary_family
   exact integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
     (I := I) (g_fam t) hf hh hf_int hh_int hh_supp
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_smul_laplacian_sub_eq_zero_with_boundary_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -130,7 +124,6 @@ section StokesGlobal
 
 variable [hI : HasSmoothBoundary E H I]
 
-omit [InnerProductSpace ℝ E] in
 theorem stokes_compact_via_pou_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -143,7 +136,6 @@ theorem stokes_compact_via_pou_family
   rw [riemannianMeasureFamily_def]
   exact stokes_compact_via_pou (I := I) (g_fam t) X
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -154,7 +146,6 @@ theorem integral_divergence_with_boundary_eq_boundaryFaceSum_family
   rw [riemannianMeasureFamily_def]
   exact integral_divergence_with_boundary_eq_boundaryFaceSum (I := I) (g_fam t) X
 
-omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -172,7 +163,6 @@ theorem green_first_with_boundary_family
   simp only [riemannianMeasureFamily_def]
   exact green_first_with_boundary (I := I) (g_fam t) hf hh hh_int
 
-omit [InnerProductSpace ℝ E] in
 theorem green_second_with_boundary_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -194,7 +184,6 @@ theorem green_second_with_boundary_family
 
 end StokesGlobal
 
-omit [InnerProductSpace ℝ E] in
 theorem volumeVariation_hasDerivAt_with_boundary
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M}

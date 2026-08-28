@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.Moser.LogTail
 import DifferentialGeometry.Analysis.Parabolic.Moser.SpacetimeMeasure
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
+
 noncomputable section
 
 open MeasureTheory Set
@@ -130,7 +131,7 @@ theorem integral_rpow_le_of_log_superlevel
         (∫ x, f x ^ q ∂μ) ^ (p / q) * tail ^ (1 - p / q) := by
   let S : Set α := {x | level < Real.log (f x)}
   let ν : Measure α := μ.restrict S
-  letI : IsFiniteMeasure ν := by
+  let : IsFiniteMeasure ν := by
     dsimp only [ν]
     infer_instance
   have hS : MeasurableSet S := measurableSet_lt measurable_const hf.log
@@ -168,7 +169,7 @@ theorem integral_rpow_le_of_log_superlevel
       f x ^ p ≤ Real.exp (p * level) := by
     filter_upwards [ae_restrict_mem hS.compl] with x hx
     have hxlog : Real.log (f x) ≤ level := by
-      exact le_of_not_gt (by simpa only [S, Set.mem_setOf_eq, Set.mem_compl_iff] using hx)
+      exact le_of_not_gt (by simpa only [S, Set.mem_ofPred_eq, Set.mem_compl_iff] using hx)
     rw [Real.rpow_def_of_pos (hf_pos x)]
     apply Real.exp_le_exp.mpr
     nlinarith
@@ -922,7 +923,9 @@ theorem localizedSpacetimeRpowNorm_le_exp_tsum_bombieriGiustiThreshold
         (fun t x => hf_pos (t, x)) p₀ c d
   have hmoment_pos : ∀ k, 0 < ∫ z, f z ^ p₀ ∂(mu k) := by
     intro k
-    simpa only [mu] using localizedSpacetimeRpowMoment_pos
+    change 0 < localizedSpacetimeRpowMoment (I := I) (M := M)
+      (cutoff k) (fun t x => f (t, x)) p₀ (a k) (b k)
+    exact localizedSpacetimeRpowMoment_pos
       (I := I) (M := M) (cutoff k) (fun t x => f (t, x)) hf
         (fun t x => hf_pos (t, x)) p₀ (a k) (b k) (hmeasure k)
   have hmu : ∀ k, mu k ≤ mu (k + 1) := by
@@ -938,7 +941,15 @@ theorem localizedSpacetimeRpowNorm_le_exp_tsum_bombieriGiustiThreshold
       mu nu f reverseCost hp₀ hc₀ hreverseCost hf.measurable hf_pos
         hnu_integrable hmoment_pos (by simpa only [mu] using hmass)
         hmu hdominated (by simpa only [mu] using htail)
-        (by simpa only [localizedSpacetimeRpowNorm, mu] using hreverse)
+        (by
+          intro k p hp hp₀'
+          change localizedSpacetimeRpowNorm (I := I) (M := M)
+              (cutoff k) (fun t x => f (t, x)) p₀ (a k) (b k) ≤
+            reverseCost k ^ (1 / p - 1 / p₀) *
+              localizedSpacetimeRpowNorm (I := I) (M := M)
+                (cutoff (k + 1)) (fun t x => f (t, x)) p
+                  (a (k + 1)) (b (k + 1))
+          exact hreverse k hp hp₀')
         hsummable
   simpa only [localizedSpacetimeRpowNorm, localizedSpacetimeRpowMoment, mu] using
     hbound
@@ -1015,7 +1026,7 @@ theorem late_localizedSpacetimeMeasure_neg_log_superlevel_tail_of_supersolution
       {z : ℝ × M | Real.log (rescaled z.1 z.2) < -r} := by
     apply Set.ext
     intro z
-    simp only [mem_setOf_eq]
+    simp only [mem_ofPred_eq]
     constructor <;> intro hz <;> linarith
   rw [hset]
   rw [localizedSpacetimeMeasure_real_sublevel

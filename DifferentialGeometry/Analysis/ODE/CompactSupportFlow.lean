@@ -1,5 +1,5 @@
 import Mathlib.Geometry.Manifold.IntegralCurve.UniformTime
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import DifferentialGeometry.Analysis.ODE.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
 
@@ -123,10 +123,8 @@ theorem exists_uniform_localFlow_on_compact [FiniteDimensional ℝ E] [CompleteS
         constructor <;> linarith [hεT i hi, ht.1, ht.2])
 
 theorem isMIntegralCurveOn_const_of_eq_zero (x : M) (hvx : v x = 0) :
-    IsMIntegralCurveOn (fun _ : ℝ => x) v Set.univ := by
-  intro t ht
-  simpa [hvx] using
-    (hasMFDerivAt_const (c := x) (x := t) (I := 𝓘(ℝ, ℝ)) (I' := I))
+    IsMIntegralCurveOn (fun _ : ℝ => x) v Set.univ :=
+  (isMIntegralCurve_const hvx).isMIntegralCurveOn Set.univ
 
 theorem curveAt_eq_self_of_not_mem_tsupport [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
@@ -139,17 +137,10 @@ theorem curveAt_eq_self_of_not_mem_tsupport [I.Boundaryless]
   have hxnot : x ∉ Function.support v := fun hs => hx (subset_closure hs)
   have hvx : v x = 0 := by
     by_contra h
-    exact hxnot (by simpa [Function.support] using h)
+    exact hxnot h
   have hconstOn : IsMIntegralCurveOn (fun _ : ℝ => x) v Set.univ :=
     isMIntegralCurveOn_const_of_eq_zero x hvx
-  have hconst : IsMIntegralCurve (fun _ : ℝ => x) v := by
-    rw [isMIntegralCurve_iff_isMIntegralCurveAt]
-    intro t
-    rw [isMIntegralCurveAt_iff']
-    refine ⟨1, by norm_num, ?_⟩
-    intro s hs
-    simpa [hvx] using
-      (hasMFDerivAt_const (c := x) (x := s) (I := 𝓘(ℝ, ℝ)) (I' := I)).hasMFDerivWithinAt
+  have hconst : IsMIntegralCurve (fun _ : ℝ => x) v := isMIntegralCurve_const hvx
   have hv1 : ContMDiff I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (show (1 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞) by
@@ -185,7 +176,7 @@ theorem exists_uniform_localIntegralCurveOn_of_compactSupport [FiniteDimensional
   · have hxnot : x ∉ Function.support v := fun hs => hxK (subset_closure hs)
     have hvx : v x = 0 := by
       by_contra h
-      exact hxnot (by simpa [Function.support] using h)
+      exact hxnot h
     refine ⟨fun _ : ℝ => x, rfl, ?_⟩
     exact (isMIntegralCurveOn_const_of_eq_zero x hvx).mono (fun t ht => Set.mem_univ t)
 
@@ -202,7 +193,7 @@ theorem exists_globalIntegralCurve_of_compactSupport [FiniteDimensional ℝ E] [
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   exact fun x => exists_isMIntegralCurve_of_isMIntegralCurveOn hv1 hε hlocal x
 
-private lemma contMDiffAt_globalFlow_step [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless]
+private lemma contMDiffAt_globalFlow_step [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
     (hv1 : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -399,7 +390,15 @@ theorem contMDiffAt_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [Comp
         curveAt_integralCurve v hcomplete x
       have hrev : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
         have hc := IsMIntegralCurve.comp_mul hγ (-1)
-        simpa [Pi.smul_apply] using hc
+        have hcurve : (curveAt v hcomplete x ∘ fun s : ℝ => s * (-1)) =
+            fun s : ℝ => curveAt v hcomplete x (-s) := by
+          funext s
+          exact congrArg (curveAt v hcomplete x) (mul_neg_one s)
+        have hfield : (-1 : ℝ) • v = -v := by
+          funext y
+          exact neg_one_smul ℝ (v y)
+        rw [hcurve, hfield] at hc
+        exact hc
       have h0 : curveAt v hcomplete x (-0) = curveAt (-v) hcomplete' x 0 := by
         simp [curveAt_zero v hcomplete x, curveAt_zero (-v) hcomplete' x]
       have hEq := integralCurve_eq_of_agree (t₀ := 0) (-v) hvneg1 hrev
@@ -588,7 +587,15 @@ theorem continuous_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [Compl
         curveAt_integralCurve v hcomplete x
       have hrev : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
         have hc := IsMIntegralCurve.comp_mul hγ (-1)
-        simpa [Pi.smul_apply] using hc
+        have hcurve : (curveAt v hcomplete x ∘ fun s : ℝ => s * (-1)) =
+            fun s : ℝ => curveAt v hcomplete x (-s) := by
+          funext s
+          exact congrArg (curveAt v hcomplete x) (mul_neg_one s)
+        have hfield : (-1 : ℝ) • v = -v := by
+          funext y
+          exact neg_one_smul ℝ (v y)
+        rw [hcurve, hfield] at hc
+        exact hc
       have h0 : curveAt v hcomplete x (-0) = curveAt (-v) hcomplete' x 0 := by
         simp [curveAt_zero v hcomplete x, curveAt_zero (-v) hcomplete' x]
       have hEq := integralCurve_eq_of_agree (t₀ := 0) (-v) hvneg1 hrev
@@ -799,7 +806,15 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport [FiniteDimensional ℝ E]
         curveAt_integralCurve v hcomplete x
       have hrev : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
         have hc := IsMIntegralCurve.comp_mul hγ (-1)
-        simpa [Pi.smul_apply] using hc
+        have hcurve : (curveAt v hcomplete x ∘ fun s : ℝ => s * (-1)) =
+            fun s : ℝ => curveAt v hcomplete x (-s) := by
+          funext s
+          exact congrArg (curveAt v hcomplete x) (mul_neg_one s)
+        have hfield : (-1 : ℝ) • v = -v := by
+          funext y
+          exact neg_one_smul ℝ (v y)
+        rw [hcurve, hfield] at hc
+        exact hc
       have h0 : curveAt v hcomplete x (-0) = curveAt (-v) hcomplete' x 0 := by
         simp [curveAt_zero v hcomplete x, curveAt_zero (-v) hcomplete' x]
       have hEq := integralCurve_eq_of_agree (t₀ := 0) (-v) hvneg1 hrev

@@ -192,9 +192,9 @@ theorem retractParametrix
   have hLHy := congrArg (fun A : V →L[ℝ] V => A (E y)) hLH
   have hREy := congrArg (fun A : Y →L[ℝ] Y => A y) hRE
   simp only [localParametrix, localErrorArm,
-    ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
+    ContinuousLinearMap.comp_apply, add_apply,
     ContinuousLinearMap.id_apply]
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply] at hTRy
+  simp only [ContinuousLinearMap.comp_apply, add_apply] at hTRy
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at hLHy hREy
   rw [hTRy, hLHy, hREy]
 
@@ -214,9 +214,9 @@ theorem retractParam_split
   have hLHy := congrArg (fun A : V →L[ℝ] V => A (E y)) hLH
   have hREy := congrArg (fun A : Y →L[ℝ] Y => A y) hRE
   simp only [localParametrix, localErrorArm,
-    ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
+    ContinuousLinearMap.comp_apply, add_apply,
     ContinuousLinearMap.id_apply]
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply] at hTRy
+  simp only [ContinuousLinearMap.comp_apply, add_apply] at hTRy
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at hLHy hREy
   rw [hTRy, hLHy, hREy]
 

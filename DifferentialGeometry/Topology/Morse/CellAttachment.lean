@@ -13,7 +13,8 @@ namespace DifferentialGeometry.Topology.Morse
 
 open Filter
 open DifferentialGeometry.Topology.Handle
-open scoped Topology
+open scoped _root_.Topology
+
 
 noncomputable section
 
@@ -36,11 +37,14 @@ theorem smoothTransition_deriv_eq {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
   have h2 : HasDerivAt (fun y : ℝ => expNegInvGlue (1 - y)) (-(expNegInvGlue (1 - x) * (1 - x)⁻¹ ^ 2)) x := by
     have h3 : HasDerivAt (fun y : ℝ => expNegInvGlue y) (expNegInvGlue (1 - x) * (1 - x)⁻¹ ^ 2) (1 - x) := hE (1 - x)
     have hneg : HasDerivAt (fun y : ℝ => 1 - y) (-1 : ℝ) x := by
-      simpa using (hasDerivAt_const (x := x) (c := (1 : ℝ))).sub (hasDerivAt_id x)
-    simpa using h3.comp x hneg
+      exact (((hasDerivAt_const (x := x) (c := (1 : ℝ))).sub
+        (hasDerivAt_id x)).congr_deriv (by ring)).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ => rfl)
+    exact (((h3.comp x hneg).congr_deriv (by ring)).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl))
   have hden : HasDerivAt (fun y : ℝ => expNegInvGlue y + expNegInvGlue (1 - y))
       (expNegInvGlue x * x⁻¹ ^ 2 - expNegInvGlue (1 - x) * (1 - x)⁻¹ ^ 2) x := by
-    simpa [sub_eq_add_neg] using hnum.add h2
+    exact (hnum.add h2).congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   have hden_ne : expNegInvGlue x + expNegInvGlue (1 - x) ≠ 0 := by
     have hpos1 : 0 < expNegInvGlue x := expNegInvGlue.pos_of_pos hx0
     have hpos2 : 0 < expNegInvGlue (1 - x) := expNegInvGlue.pos_of_pos (by linarith)
@@ -49,7 +53,8 @@ theorem smoothTransition_deriv_eq {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
       (((expNegInvGlue x * x⁻¹ ^ 2) * (expNegInvGlue x + expNegInvGlue (1 - x)) -
         expNegInvGlue x * (expNegInvGlue x * x⁻¹ ^ 2 - expNegInvGlue (1 - x) * (1 - x)⁻¹ ^ 2)) /
         (expNegInvGlue x + expNegInvGlue (1 - x)) ^ 2) x := by
-    convert hnum.div hden hden_ne using 1
+    exact (hnum.div hden hden_ne).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hdef : (fun y : ℝ => expNegInvGlue y / (expNegInvGlue y + expNegInvGlue (1 - y))) = Real.smoothTransition := by
     funext y
     rfl
@@ -504,14 +509,17 @@ theorem posPart_top {n : ℕ} (y : MorseModel n) :
   exact False.elim (Nat.not_lt_zero i.1 hi)
 
 theorem negPart_bot {n : ℕ} (y : MorseModel n) :
-    negPart (zero_le n) y = (0 : EuclideanSpace ℝ (Fin 0)) := by
+    negPart (Nat.zero_le n) y = (0 : EuclideanSpace ℝ (Fin 0)) := by
   ext i
   exact False.elim (Nat.not_lt_zero i.1 i.isLt)
 
 theorem posPart_bot {n : ℕ} (y : MorseModel n) :
-    (posPart (zero_le n) y : EuclideanSpace ℝ (Fin n)) = y := by
+    (posPart (Nat.zero_le n) y : EuclideanSpace ℝ (Fin n)) = y := by
   ext i
-  simp [posPart, posIdx]
+  change y (posIdx (Nat.zero_le n) i) = y i
+  congr 1
+  apply Fin.ext
+  simp [posIdx]
 
 def recombine {n k : ℕ} (hk : k ≤ n) (a : EuclideanSpace ℝ (Fin k))
     (b : EuclideanSpace ℝ (Fin (n - k))) : MorseModel n :=
@@ -544,7 +552,7 @@ theorem recombine_top {n : ℕ} (a : EuclideanSpace ℝ (Fin n))
 
 theorem recombine_bot {n : ℕ} (a : EuclideanSpace ℝ (Fin 0))
     (b : EuclideanSpace ℝ (Fin n)) :
-    recombine (zero_le n) a b = b := by
+    recombine (Nat.zero_le n) a b = b := by
   funext i
   dsimp [recombine]
 
@@ -1146,7 +1154,8 @@ theorem continuous_cellAttachmentMap {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) (h�
       fun y => spineMap hk y.1 := by
     funext y
     rfl
-  exact (Topology.IsInducing.subtypeVal.continuous_iff).2 (by simpa [hcomp] using h)
+  exact (Topology.IsInducing.subtypeVal.continuous_iff).2
+    (h.congr fun y => (congrFun hcomp y).symm)
 
 theorem continuous_cellAttachmentInclusion {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) (hε : 0 ≤ ε) :
     Continuous (cellAttachmentInclusion hk c ε hε) := by
@@ -1156,8 +1165,8 @@ theorem continuous_cellAttachmentInclusion {n k : ℕ} (hk : k ≤ n) (c ε : �
     funext z
     rfl
   exact (Topology.IsInducing.subtypeVal.continuous_iff).2
-    (by simpa [hcomp] using
-      (continuous_subtype_val : Continuous (fun z : lowerUnion hk c ε => (z : MorseModel n))))
+    ((continuous_subtype_val : Continuous (fun z : lowerUnion hk c ε => (z : MorseModel n))).congr
+      fun z => (congrFun hcomp z).symm)
 
 theorem continuous_cellRetractionHomotopyFun {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) :
     Continuous (cellRetractionHomotopyFun hk c ε) := by
@@ -1172,7 +1181,8 @@ theorem continuous_cellRetractionHomotopyFun {n k : ℕ} (hk : k ≤ n) (c ε : 
       fun p => cellRetractionStep hk (p.1 : ℝ) p.2.1 := by
     funext p
     rfl
-  exact (Topology.IsInducing.subtypeVal.continuous_iff).2 (by simpa [hcomp] using h)
+  exact (Topology.IsInducing.subtypeVal.continuous_iff).2
+    (h.congr fun p => (congrFun hcomp p).symm)
 
 theorem continuous_cellInclusionStepFun {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) :
     Continuous (cellInclusionStepFun hk c ε) := by
@@ -1187,7 +1197,8 @@ theorem continuous_cellInclusionStepFun {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) 
       fun p => cellRetractionStep hk (p.1 : ℝ) p.2.1 := by
     funext p
     rfl
-  exact (Topology.IsInducing.subtypeVal.continuous_iff).2 (by simpa [hcomp] using h)
+  exact (Topology.IsInducing.subtypeVal.continuous_iff).2
+    (h.congr fun p => (congrFun hcomp p).symm)
 
 private noncomputable def cellAttachmentMapC {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) (hε : 0 < ε) :
     C(upperSublevel hk c ε, lowerUnion hk c ε) :=
@@ -1440,13 +1451,15 @@ theorem negPart_recombine {n k : ℕ} (hk : k ≤ n) (a : EuclideanSpace ℝ (Fi
     (b : EuclideanSpace ℝ (Fin (n - k))) :
     negPart hk (recombine hk a b) = a := by
   ext i
-  simpa using (recombine_negPart hk a b i)
+  change recombine hk a b (negIdx hk i) = a i
+  exact recombine_negPart hk a b i
 
 theorem posPart_recombine {n k : ℕ} (hk : k ≤ n) (a : EuclideanSpace ℝ (Fin k))
     (b : EuclideanSpace ℝ (Fin (n - k))) :
     posPart hk (recombine hk a b) = b := by
   ext j
-  simpa using (recombine_posPart hk a b j)
+  change recombine hk a b (posIdx hk j) = b j
+  exact recombine_posPart hk a b j
 
 theorem recombine_contDiff {n k : ℕ} (hk : k ≤ n) (r ε : ℝ) :
     ContDiff ℝ (⊤ : ℕ∞)
@@ -2063,14 +2076,18 @@ theorem hasDerivAt_modelFlow_posPart_apply {n k : ℕ} (hk : k ≤ n) (t : ℝ) 
   have hpnz : ‖posPart hk y‖ ^ 2 ≠ 0 := ne_of_gt (sq_pos_of_pos (norm_pos_iff.mpr hzpos))
   have hlin : HasDerivAt (fun s : ℝ => 2 * s / ‖posPart hk y‖ ^ 2) (2 / ‖posPart hk y‖ ^ 2) t := by
     have hmul : HasDerivAt (fun s : ℝ => 2 * s) 2 t := by
-      simpa using ((hasDerivAt_const (c := (2 : ℝ)) t).mul (hasDerivAt_id t))
+      exact (((hasDerivAt_const (c := (2 : ℝ)) t).mul
+        (hasDerivAt_id t)).congr_deriv (by ring)).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ => rfl)
     simpa using (hmul.div_const (‖posPart hk y‖ ^ 2))
   have hinner : HasDerivAt (fun s : ℝ => 1 - 2 * s / ‖posPart hk y‖ ^ 2)
       (-(2 / ‖posPart hk y‖ ^ 2)) t := by
-    simpa [Pi.sub_apply] using ((hasDerivAt_const (c := (1 : ℝ)) t).sub hlin)
+    exact ((((hasDerivAt_const (c := (1 : ℝ)) t).sub hlin).congr_deriv
+      (by ring)).congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl))
   have hderiv_sqrt : HasDerivAt (fun s : ℝ => Real.sqrt (1 - 2 * s / ‖posPart hk y‖ ^ 2))
       (1 / (2 * Real.sqrt (1 - 2 * t / ‖posPart hk y‖ ^ 2)) * (-(2 / ‖posPart hk y‖ ^ 2))) t := by
-    simpa [div_eq_mul_inv] using (Real.hasDerivAt_sqrt harg_ne).comp t hinner
+    exact ((Real.hasDerivAt_sqrt harg_ne).comp t hinner).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hnorm_flow_sq : ‖posPart hk (modelFlow hk t y)‖ ^ 2 =
       ‖posPart hk y‖ ^ 2 * (1 - 2 * t / ‖posPart hk y‖ ^ 2) := by
     rw [modelFlow_posPart]
@@ -2716,7 +2733,10 @@ theorem smoothCap_contDiff (ε r δ : ℝ) : ContDiff ℝ (⊤ : ℕ∞) (smooth
       (fun t : ℝ => r ^ 2 + (t - 2 * ε - r ^ 2) * Real.smoothTransition
         ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ))) := by
     fun_prop
-  simpa [smoothCap] using hcomp
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+    r ^ 2 + (t - 2 * ε - r ^ 2) * Real.smoothTransition
+      ((t - (r ^ 2 + 2 * ε - δ)) / (2 * δ)))
+  exact hcomp
 
 theorem smoothCap_lower {ε r δ t : ℝ} (hδ : 0 < δ) (ht : t ≤ r ^ 2 + 2 * ε - δ) :
     smoothCap ε r δ t = r ^ 2 := by
@@ -4579,7 +4599,6 @@ theorem modelHandle_eq_inter {n k : ℕ} (hk : k ≤ n) (c ε r : ℝ) (hr : 0 �
     · exact (sq_le_sq).2 (by
         simpa [abs_of_nonneg (norm_nonneg (posPart hk y)), abs_of_nonneg hr] using hy.1)
     · have hy2 : c - ε ≤ morseNormalForm hk c y := by
-        change c - ε ≤ morseNormalForm hk c y
         exact hy.2
       rw [morseNormalForm_split_ge] at hy2
       exact hy2
@@ -4918,8 +4937,12 @@ theorem fderiv_coord_sq {n : ℕ} (i : Fin n) (y w : MorseModel n) :
     exact hL
   have hpow : fderiv ℝ (fun z : ℝ => z ^ 2) (y i) =
       (2 * y i) • (1 : ℝ →L[ℝ] ℝ) := by
-    simpa using (fderiv_pow (𝕜 := ℝ) (f := fun z : ℝ => z) (n := 2) (x := y i)
-      differentiableAt_id)
+    rw [show (fun z : ℝ => z ^ 2) = (fun z : ℝ => z) ^ 2 by rfl]
+    rw [fderiv_pow (𝕜 := ℝ) (f := fun z : ℝ => z) (n := 2) (x := y i)
+      differentiableAt_id]
+    apply ContinuousLinearMap.ext
+    intro z
+    simp
   have hfun : (fun y : MorseModel n => (y i) ^ 2) =
       (fun z : ℝ => z ^ 2) ∘ (fun y : MorseModel n => L y) := by
     funext y
@@ -4948,7 +4971,7 @@ theorem fderiv_posPart_normSq {n k : ℕ} (hk : k ≤ n) (y w : MorseModel n) :
     rw [Finset.sum_apply]
   rw [hfun]
   rw [fderiv_sum]
-  · rw [ContinuousLinearMap.coe_sum']
+  · rw [FunLike.coe_sum]
     rw [Finset.sum_apply]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl (by
@@ -4969,7 +4992,7 @@ theorem fderiv_negPart_normSq {n k : ℕ} (hk : k ≤ n) (y w : MorseModel n) :
     rw [Finset.sum_apply]
   rw [hfun]
   rw [fderiv_sum]
-  · rw [ContinuousLinearMap.coe_sum']
+  · rw [FunLike.coe_sum]
     rw [Finset.sum_apply]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl (by
@@ -5101,8 +5124,8 @@ theorem fderiv_morseNormalForm_ne_zero_lower {n k : ℕ} (hk : k ≤ n) (c a : �
       (recombine hk (negPart hk y) (0 : EuclideanSpace ℝ (Fin (n - k)))) =
       2 * ‖negPart hk y‖ ^ 2 :=
     fderiv_negPart_normSq_self hk y
-  rw [ContinuousLinearMap.smul_apply] at hw
-  rw [ContinuousLinearMap.sub_apply] at hw
+  rw [smul_apply] at hw
+  rw [sub_apply] at hw
   rw [hd, hdNeg] at hw
   have hw' : (1 / 2 : ℝ) * (0 - 2 * ‖negPart hk y‖ ^ 2) = 0 := by
     simpa using hw
@@ -5157,8 +5180,8 @@ theorem fderiv_morseNormalForm_ne_zero {n k : ℕ} (hk : k ≤ n) (c a : ℝ) (h
   have hdNeg : (fderiv ℝ (fun z : MorseModel n => ‖negPart hk z‖ ^ 2) y)
       (recombine hk (0 : EuclideanSpace ℝ (Fin k)) (posPart hk y)) = 0 :=
     fderiv_negPart_normSq_zero_direction hk y
-  rw [ContinuousLinearMap.smul_apply] at hw
-  rw [ContinuousLinearMap.sub_apply] at hw
+  rw [smul_apply] at hw
+  rw [sub_apply] at hw
   rw [hd, hdNeg] at hw
   have hw' : (1 / 2 : ℝ) * (2 * ‖posPart hk y‖ ^ 2) = 0 := by
     simpa using hw
@@ -5351,7 +5374,8 @@ theorem continuous_ballCellAttachmentMap {n k : ℕ} (hk : k ≤ n) (c ε R : �
       fun y => spineMap hk y.1 := by
     funext y
     rfl
-  exact (Topology.IsInducing.subtypeVal.continuous_iff).2 (by simpa [hcomp] using h)
+  exact (Topology.IsInducing.subtypeVal.continuous_iff).2
+    (h.congr fun y => (congrFun hcomp y).symm)
 
 theorem continuous_ballCellAttachmentInclusion {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ) (hε : 0 ≤ ε)
     (hR : Real.sqrt (2 * ε) ≤ R) : Continuous (ballCellAttachmentInclusion hk c ε R hε hR) := by
@@ -5361,8 +5385,8 @@ theorem continuous_ballCellAttachmentInclusion {n k : ℕ} (hk : k ≤ n) (c ε 
     funext z
     rfl
   exact (Topology.IsInducing.subtypeVal.continuous_iff).2
-    (by simpa [hcomp] using
-      (continuous_subtype_val : Continuous (fun z : ballLowerUnion hk c ε R => (z : MorseModel n))))
+    ((continuous_subtype_val : Continuous (fun z : ballLowerUnion hk c ε R => (z : MorseModel n))).congr
+      fun z => (congrFun hcomp z).symm)
 
 theorem continuous_ballCellRetractionHomotopyFun {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ) :
     Continuous (ballCellRetractionHomotopyFun hk c ε R) := by
@@ -5377,7 +5401,8 @@ theorem continuous_ballCellRetractionHomotopyFun {n k : ℕ} (hk : k ≤ n) (c �
       fun p => cellRetractionStep hk (p.1 : ℝ) p.2.1 := by
     funext p
     rfl
-  exact (Topology.IsInducing.subtypeVal.continuous_iff).2 (by simpa [hcomp] using h)
+  exact (Topology.IsInducing.subtypeVal.continuous_iff).2
+    (h.congr fun p => (congrFun hcomp p).symm)
 
 theorem continuous_ballCellInclusionStepFun {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ)
     (hR : Real.sqrt (2 * ε) ≤ R) : Continuous (ballCellInclusionStepFun hk c ε R hR) := by
@@ -5392,7 +5417,8 @@ theorem continuous_ballCellInclusionStepFun {n k : ℕ} (hk : k ≤ n) (c ε R :
       fun p => cellRetractionStep hk (p.1 : ℝ) p.2.1 := by
     funext p
     rfl
-  exact (Topology.IsInducing.subtypeVal.continuous_iff).2 (by simpa [hcomp] using h)
+  exact (Topology.IsInducing.subtypeVal.continuous_iff).2
+    (h.congr fun p => (congrFun hcomp p).symm)
 
 private noncomputable def ballCellAttachmentMapC {n k : ℕ} (hk : k ≤ n) (c ε R : ℝ) (hε : 0 < ε) :
     C(ballUpperSublevel hk c ε R, ballLowerUnion hk c ε R) :=
@@ -5464,7 +5490,7 @@ noncomputable def ballCellAdjunctionHomeo {n k : ℕ} (hk : k ≤ n) (c ε R : �
     rfl
   · exact cellMap_injective hk ε hε
   · exact continuous_cellMap (Real.sqrt (2 * ε))
-  · rw [Set.disjoint_left]
+  · refine Set.disjoint_left.mpr ?_
     intro y hyA hyB
     exact (Set.disjoint_left.mp (cellInterior_disjoint hk c ε hε)) hyA hyB.1
   · have hclosed : IsClosed {y : MorseModel n |
@@ -5582,7 +5608,13 @@ theorem exists_reindexEquiv {n k : ℕ} (hk : k ≤ n) (w : Fin n → ℝ)
             dsimp
             rw [dif_neg hnot']
             apply congrArg Sum.inr
-            convert (poss.orderIsoOfFin hpos_card).symm_apply_apply j using 1
+            calc
+              (poss.orderIsoOfFin hpos_card).symm ⟨poss.orderEmbOfFin hpos_card j, _⟩ =
+                  (poss.orderIsoOfFin hpos_card).symm ((poss.orderIsoOfFin hpos_card) j) := by
+                    apply congrArg (poss.orderIsoOfFin hpos_card).symm
+                    apply Subtype.ext
+                    rfl
+              _ = j := (poss.orderIsoOfFin hpos_card).symm_apply_apply j
       right_inv := by
         intro z
         by_cases h : z ∈ negs
@@ -6155,7 +6187,8 @@ theorem continuous_modelSharpUnionRound {n k : ℕ} (hk : k ≤ n) (ε r δ : �
         intro h
         rw [h] at hδr
         nlinarith only [hδ0, hδr])
-    simpa [hlfun] using (Real.continuous_sqrt.comp (hsc.div hB (fun y => ne_of_gt (hBpos y))))
+    exact (Real.continuous_sqrt.comp (hsc.div hB (fun y => ne_of_gt (hBpos y)))).congr
+      (fun _ => rfl)
   have hpair : Continuous (fun y : MorseModel n =>
       (negPart hk y, hlfun y • posPart hk y)) :=
     (continuous_negPart hk).prodMk (hl.smul (continuous_posPart hk))
@@ -6180,7 +6213,8 @@ theorem continuous_modelSharpUnionUnround {n k : ℕ} (hk : k ≤ n) (ε r δ : 
         (((continuous_norm.comp (continuous_negPart hk)).pow 2).sub continuous_const))
     have hscpos : ∀ y : MorseModel n, 0 < smoothCap ε r δ (‖negPart hk y‖ ^ 2) := fun y =>
       smoothCap_pos hδ0 hδr
-    simpa [hmfun] using (Real.continuous_sqrt.comp (hB.div hsc (fun y => ne_of_gt (hscpos y))))
+    exact (Real.continuous_sqrt.comp (hB.div hsc (fun y => ne_of_gt (hscpos y)))).congr
+      (fun _ => rfl)
   have hpair : Continuous (fun y : MorseModel n =>
       (negPart hk y, hmfun y • posPart hk y)) :=
     (continuous_negPart hk).prodMk (hm.smul (continuous_posPart hk))
@@ -6262,7 +6296,10 @@ theorem modelFlow_posPart_ne_zero_of_negTime {n k : ℕ} (hk : k ≤ n) (t : ℝ
     posPart hk (modelFlow hk t y) ≠ 0 := by
   have hup := modelFlow_up_posPart_norm_sq hk (-t) y (by linarith : 0 ≤ -t) hy
   have hmain : ‖posPart hk (modelFlow hk t y)‖ ^ 2 = ‖posPart hk y‖ ^ 2 - 2 * t := by
-    simpa [neg_neg] using hup
+    calc
+      ‖posPart hk (modelFlow hk t y)‖ ^ 2 = ‖posPart hk y‖ ^ 2 + 2 * (-t) := by
+        simpa only [neg_neg] using hup
+      _ = ‖posPart hk y‖ ^ 2 - 2 * t := by ring
   have hpos : 0 < ‖posPart hk (modelFlow hk t y)‖ ^ 2 := by
     rw [hmain]
     nlinarith only [sq_pos_of_pos hy, ht]
@@ -6346,7 +6383,8 @@ noncomputable def modelRoundGap (ε r δ : ℝ) (t : ℝ) : ℝ :=
 
 theorem contDiff_modelRoundGap (ε r δ : ℝ) : ContDiff ℝ (⊤ : ℕ∞) (modelRoundGap ε r δ) := by
   have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t - 2 * ε) := by fun_prop
-  simpa [modelRoundGap] using hlin.sub (smoothCap_contDiff ε r δ)
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t - 2 * ε - smoothCap ε r δ t)
+  exact hlin.sub (smoothCap_contDiff ε r δ)
 
 theorem modelRoundGap_nonpos_of_le {ε r δ t : ℝ} (ht : t ≤ r ^ 2 + 2 * ε) :
     modelRoundGap ε r δ t ≤ 0 := by
@@ -6371,7 +6409,9 @@ theorem contDiff_modelRoundDip {ε r δ θ : ℝ} :
   have htr : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
       Real.smoothTransition ((t - (r ^ 2 + 2 * ε - θ)) / θ)) := by fun_prop
   have hgap : ContDiff ℝ (⊤ : ℕ∞) (modelRoundGap ε r δ) := contDiff_modelRoundGap ε r δ
-  simpa [modelRoundDip] using htr.mul hgap
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+    Real.smoothTransition ((t - (r ^ 2 + 2 * ε - θ)) / θ) * modelRoundGap ε r δ t)
+  exact htr.mul hgap
 
 noncomputable def modelRoundBound (ε r δ θ : ℝ) (t : ℝ) : ℝ :=
   t - 2 * ε - modelRoundDip ε r δ θ t
@@ -6380,7 +6420,8 @@ theorem contDiff_modelRoundBound {ε r δ θ : ℝ} :
     ContDiff ℝ (⊤ : ℕ∞) (modelRoundBound ε r δ θ) := by
   have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t - 2 * ε) := by fun_prop
   have hdip : ContDiff ℝ (⊤ : ℕ∞) (modelRoundDip ε r δ θ) := contDiff_modelRoundDip
-  simpa [modelRoundBound] using hlin.sub hdip
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t - 2 * ε - modelRoundDip ε r δ θ t)
+  exact hlin.sub hdip
 
 theorem modelRoundBound_eq_self_of_le {ε r δ θ t : ℝ} (hθ : 0 < θ)
     (ht : t ≤ r ^ 2 + 2 * ε - θ) :
@@ -6441,7 +6482,9 @@ theorem contDiffOn_modelRoundRatio {ε r δ : ℝ} :
     intro t ht
     change 2 * ε < t at ht
     linarith [ht]
-  simpa [modelRoundRatio] using hdiv
+  change ContDiffOn ℝ (⊤ : ℕ∞) (fun t : ℝ => smoothCap ε r δ t / (t - 2 * ε))
+    {t : ℝ | 2 * ε < t}
+  exact hdiv
 
 noncomputable def modelRoundScale (ε r δ θ : ℝ) (t : ℝ) : ℝ :=
   1 - Real.smoothTransition ((t - (r ^ 2 + 2 * ε - θ)) / θ) *
@@ -6493,7 +6536,9 @@ theorem contDiff_modelRoundScale {ε r δ θ : ℝ} (hθ : 0 < θ) (hδ : 0 < δ
     exact htr'.mul hsub
   have hU₂ : ContDiffOn ℝ (⊤ : ℕ∞) (modelRoundScale ε r δ θ)
       {t : ℝ | 2 * ε < t} := by
-    dsimp [modelRoundScale]
+    change ContDiffOn ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+      1 - Real.smoothTransition ((t - (r ^ 2 + 2 * ε - θ)) / θ) *
+        (1 - Real.sqrt (modelRoundRatio ε r δ t))) {t : ℝ | 2 * ε < t}
     exact (contDiff_const : ContDiff ℝ (⊤ : ℕ∞) (fun _ : ℝ => (1 : ℝ))).contDiffOn.sub hmain
   rw [contDiff_iff_contDiffAt]
   intro t
@@ -6750,7 +6795,9 @@ theorem contDiff_modelLowerRoundBound {ε r δ θ : ℝ} (hθ : 0 < θ) (hδ : 0
   have hsq : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => modelRoundScale ε r δ θ t ^ 2) :=
     hsc.pow 2
   have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t - 2 * ε) := by fun_prop
-  simpa [modelLowerRoundBound] using hsq.mul hlin
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+    modelRoundScale ε r δ θ t ^ 2 * (t - 2 * ε))
+  exact hsq.mul hlin
 
 theorem contDiff_modelLowerRoundMap {n k : ℕ} (hk : k ≤ n) (ε r δ θ : ℝ)
     (hθ : 0 < θ) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2) :
@@ -6764,7 +6811,6 @@ theorem contDiff_modelLowerRoundMap {n k : ℕ} (hk : k ≤ n) (ε r δ θ : ℝ
   · have hcoord : (fun y : MorseModel n => modelLowerRoundMap hk ε r δ θ y i) =
         fun y : MorseModel n => (negPart hk y) ⟨i.val, hi⟩ := by
       funext y
-      change (modelLowerRoundMap hk ε r δ θ y) i = (negPart hk y) ⟨i.val, hi⟩
       have hneq : i = negIdx hk ⟨i.val, hi⟩ := by
         apply Fin.ext
         rfl
@@ -6781,8 +6827,6 @@ theorem contDiff_modelLowerRoundMap {n k : ℕ} (hk : k ≤ n) (ε r δ θ : ℝ
         fun y : MorseModel n =>
           modelRoundScale ε r δ θ (‖negPart hk y‖ ^ 2) * (posPart hk y) ⟨i.val - k, hi'⟩ := by
       funext y
-      change (modelLowerRoundMap hk ε r δ θ y) i =
-          modelRoundScale ε r δ θ (‖negPart hk y‖ ^ 2) * (posPart hk y) ⟨i.val - k, hi'⟩
       have hneq : i = posIdx hk ⟨i.val - k, hi'⟩ := by
         apply Fin.ext
         dsimp [posIdx]
@@ -6843,7 +6887,10 @@ theorem contDiff_modelLowerRoundMapGlobal {n k : ℕ} (hk : k ≤ n) (c ε r δ 
       (morseNormalForm hk c y - (c - ε)) / η) := by
     exact (hnf.sub contDiff_const).div_const η
   have hg : ContDiff ℝ (⊤ : ℕ∞) (modelLowerRoundScaleGlobal hk c ε r δ θ η) := by
-    dsimp [modelLowerRoundScaleGlobal]
+    change ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n =>
+      modelRoundScale ε r δ θ (‖negPart hk y‖ ^ 2) +
+        Real.smoothTransition ((morseNormalForm hk c y - (c - ε)) / η) *
+          (1 - modelRoundScale ε r δ θ (‖negPart hk y‖ ^ 2)))
     have ht : ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n =>
         Real.smoothTransition ((morseNormalForm hk c y - (c - ε)) / η)) :=
       (Real.smoothTransition.contDiff (n := (⊤ : ℕ∞))).comp harg
@@ -6855,7 +6902,6 @@ theorem contDiff_modelLowerRoundMapGlobal {n k : ℕ} (hk : k ≤ n) (c ε r δ 
   · have hcoord : (fun y : MorseModel n => modelLowerRoundMapGlobal hk c ε r δ θ η y i) =
         fun y : MorseModel n => (negPart hk y) ⟨i.val, hi⟩ := by
       funext y
-      change (modelLowerRoundMapGlobal hk c ε r δ θ η y) i = (negPart hk y) ⟨i.val, hi⟩
       have hneq : i = negIdx hk ⟨i.val, hi⟩ := by
         apply Fin.ext
         rfl
@@ -6872,8 +6918,6 @@ theorem contDiff_modelLowerRoundMapGlobal {n k : ℕ} (hk : k ≤ n) (c ε r δ 
         fun y : MorseModel n =>
           modelLowerRoundScaleGlobal hk c ε r δ θ η y * (posPart hk y) ⟨i.val - k, hi'⟩ := by
       funext y
-      change (modelLowerRoundMapGlobal hk c ε r δ θ η y) i =
-          modelLowerRoundScaleGlobal hk c ε r δ θ η y * (posPart hk y) ⟨i.val - k, hi'⟩
       have hneq : i = posIdx hk ⟨i.val - k, hi'⟩ := by
         apply Fin.ext
         dsimp [posIdx]
@@ -7129,8 +7173,9 @@ noncomputable def modelRoundCapGap (ε r δ θ : ℝ) (t : ℝ) : ℝ :=
 theorem contDiff_modelRoundCapGap {ε r δ θ : ℝ} (hθ : 0 < θ) (hδ : 0 < δ)
     (hδr : δ < r ^ 2) (hθr : θ < r ^ 2) :
     ContDiff ℝ (⊤ : ℕ∞) (modelRoundCapGap ε r δ θ) := by
-  simpa [modelRoundCapGap] using
-    ((smoothCap_contDiff ε r δ).sub (contDiff_modelLowerRoundBound hθ hδ hδr hθr))
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+    smoothCap ε r δ t - modelLowerRoundBound ε r δ θ t)
+  exact (smoothCap_contDiff ε r δ).sub (contDiff_modelLowerRoundBound hθ hδ hδr hθr)
 
 noncomputable def modelRoundCapFactor (ε r δ θ : ℝ) (t : ℝ) : ℝ :=
   - DifferentialGeometry.Analysis.Calculus.hadamardFactor (modelRoundCapGap ε r δ θ)
@@ -7167,9 +7212,11 @@ theorem contDiff_modelRoundCapFactor {ε r δ θ : ℝ} (hθ : 0 < θ) (hδ : 0 
     ContDiff ℝ (⊤ : ℕ∞) (modelRoundCapFactor ε r δ θ) := by
   have hD : ContDiff ℝ (⊤ : ℕ∞) (modelRoundCapGap ε r δ θ) :=
     contDiff_modelRoundCapGap hθ hδ hδr hθr
-  simpa [modelRoundCapFactor] using
-    (DifferentialGeometry.Analysis.Calculus.hadamardFactor_contDiff
-      (modelRoundCapGap ε r δ θ) hD (r ^ 2 + 2 * ε)).neg
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+    -DifferentialGeometry.Analysis.Calculus.hadamardFactor
+      (modelRoundCapGap ε r δ θ) (r ^ 2 + 2 * ε) t)
+  exact (DifferentialGeometry.Analysis.Calculus.hadamardFactor_contDiff
+    (modelRoundCapGap ε r δ θ) hD (r ^ 2 + 2 * ε)).neg
 
 noncomputable def modelRoundCapQext (ε r δ θ : ℝ) (a b : ℝ) : ℝ :=
   modelLowerRoundBound ε r δ θ ((2 * ε + r ^ 2 * b) * a) +
@@ -8093,7 +8140,6 @@ theorem contDiff_modelLowerRoundMapUnround {n k : ℕ} (hk : k ≤ n) (ε r δ �
   · have hcoord : (fun y : MorseModel n => modelLowerRoundMapUnround hk ε r δ θ y i) =
         fun y : MorseModel n => (negPart hk y) ⟨i.val, hi⟩ := by
       funext y
-      change (modelLowerRoundMapUnround hk ε r δ θ y) i = (negPart hk y) ⟨i.val, hi⟩
       have hneq : i = negIdx hk ⟨i.val, hi⟩ := by
         apply Fin.ext
         rfl
@@ -8110,8 +8156,6 @@ theorem contDiff_modelLowerRoundMapUnround {n k : ℕ} (hk : k ≤ n) (ε r δ �
         fun y : MorseModel n =>
           (modelRoundScale ε r δ θ (‖negPart hk y‖ ^ 2))⁻¹ * (posPart hk y) ⟨i.val - k, hi'⟩ := by
       funext y
-      change (modelLowerRoundMapUnround hk ε r δ θ y) i =
-          (modelRoundScale ε r δ θ (‖negPart hk y‖ ^ 2))⁻¹ * (posPart hk y) ⟨i.val - k, hi'⟩
       have hneq : i = posIdx hk ⟨i.val - k, hi'⟩ := by
         apply Fin.ext
         dsimp [posIdx]
@@ -8745,9 +8789,7 @@ theorem modelHandleRoundMap_norm_le {n k : ℕ} (hk : k ≤ n) (ε r δ θ : ℝ
     (p : StandardHandle k (n - k)) :
     morseNorm n (modelHandleRoundMap hk ε r δ θ p) ≤ Real.sqrt (2 * ε + 2 * r ^ 2) := by
   apply le_of_sq_le_sq
-  · change morseNorm n (modelHandleRoundMap hk ε r δ θ p) ^ 2 ≤
-      (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2
-    rw [morseNorm_sq_eq_negPart_add_posPart hk]
+  · rw [morseNorm_sq_eq_negPart_add_posPart hk]
     rw [modelHandleRoundMap_negPart_norm_sq hk ε r δ θ (le_of_lt hε) p]
     rw [modelHandleRoundMap_posPart_norm_sq hk ε r δ θ hε hδ hθ hδr hθr hr p]
     have hsqrt : (Real.sqrt (2 * ε + 2 * r ^ 2)) ^ 2 = 2 * ε + 2 * r ^ 2 :=
@@ -10279,13 +10321,13 @@ theorem contDiffOn_modelHandleRoundMap_ambient_closed {n k : ℕ} (hk : k ≤ n)
       have hpos : 0 < 2 * ε + r ^ 2 * ‖p.2‖ ^ 2 := by nlinarith only [hε, sq_nonneg (‖p.2‖ : ℝ)]
       exact ne_of_gt hpos)
   have hSpos : ContDiffOn ℝ (⊤ : ℕ∞) (modelHandleRoundMapAmbient hk ε r δ θ) (S ∩ S_pos) := by
-    simpa [modelHandleRoundMapAmbient] using
-      (contDiffOn_recombine_handle hk (S ∩ S_pos)
-        (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
-          Real.sqrt (2 * ε + r ^ 2 * ‖p.2‖ ^ 2))
-        (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
-          Real.sqrt (modelRoundCapQ ε r δ θ (‖p.1‖ ^ 2) (‖p.2‖ ^ 2)) / ‖p.2‖)
-        hsqrtArg_pos hdiv)
+    have hraw := contDiffOn_recombine_handle hk (S ∩ S_pos)
+      (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
+        Real.sqrt (2 * ε + r ^ 2 * ‖p.2‖ ^ 2))
+      (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
+        Real.sqrt (modelRoundCapQ ε r δ θ (‖p.1‖ ^ 2) (‖p.2‖ ^ 2)) / ‖p.2‖)
+      hsqrtArg_pos hdiv
+    exact hraw.congr fun _ _ => rfl
   have hsqrtArg_flat : ContDiffOn ℝ (⊤ : ℕ∞)
       (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
         Real.sqrt (2 * ε + r ^ 2 * ‖p.2‖ ^ 2)) (S ∩ S_flat) := by

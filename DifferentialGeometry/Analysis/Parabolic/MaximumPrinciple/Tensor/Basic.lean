@@ -14,7 +14,6 @@ import Mathlib.Topology.Order.IntermediateValue
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -512,31 +511,34 @@ theorem metricFamQuadCont
           (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
           (metricTensorField (I := I) (G q.1.1) q.2.proj))) :
     Continuous (metricBundleQuad (I := I) (M := M) G K) := by
-  let P := {t : Real // t ∈ K} × TangentBundle I M
-  let b : P -> M := fun q => q.2.proj
-  let T : (q : P) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+  let b : ({t : Real // t ∈ K} × TangentBundle I M) -> M := fun q => q.2.proj
+  let T : (q : {t : Real // t ∈ K} × TangentBundle I M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (b q) :=
     fun q => metricTensorField (I := I) (G q.1.1) (b q)
-  let v : Fin 2 -> (q : P) -> TangentSpace I (b q) :=
+  let v : Fin 2 -> (q : {t : Real // t ∈ K} × TangentBundle I M) ->
+      TangentSpace I (b q) :=
     fun _ q => q.2.2
   have hb : Continuous b := by
     dsimp [b]
     exact (FiberBundle.continuous_proj E (TangentSpace I)).comp continuous_snd
-  have hT : Continuous (fun q : P =>
+  have hT : Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) (b q) (T q)) := by
-    simpa [P, b, T] using hG
-  have hv : ∀ i : Fin 2, Continuous (fun q : P =>
+    simpa [b, T] using hG
+  have hv : ∀ i : Fin 2, Continuous
+      (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
       TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b q) (v i q)) := by
     intro i
-    simpa [P, b, v] using (continuous_snd :
-      Continuous (fun q : P => (q.2 : TangentBundle I M)))
+    simpa [b, v] using (continuous_snd :
+      Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
+        (q.2 : TangentBundle I M)))
   have hEval := TensorMultilinear.continuous_section_apply_base
-    (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
+    (𝕜 := Real) (I := I) (M := M)
+    (P := {t : Real // t ∈ K} × TangentBundle I M) (n := 2)
     b hb T hT v hv
-  simpa [metricBundleQuad, metricTimeBundleQuad, T, b, v,
-    Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply,
-    metricTensorField_apply, vec2_self_eq_const] using hEval
+  let h : Continuous (metricBundleQuad (I := I) (M := M) G K) := hEval
+  exact h
 
 omit [IsManifold I 2 M] in
 theorem tensorQuadCont
@@ -547,30 +549,34 @@ theorem tensorQuadCont
           (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
           (S q.1.1 q.2.proj))) :
     Continuous (tensorSecBundleQuad (I := I) (M := M) S K) := by
-  let P := {t : Real // t ∈ K} × TangentBundle I M
-  let b : P -> M := fun q => q.2.proj
-  let T : (q : P) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+  let b : ({t : Real // t ∈ K} × TangentBundle I M) -> M := fun q => q.2.proj
+  let T : (q : {t : Real // t ∈ K} × TangentBundle I M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (b q) :=
     fun q => S q.1.1 (b q)
-  let v : Fin 2 -> (q : P) -> TangentSpace I (b q) :=
+  let v : Fin 2 -> (q : {t : Real // t ∈ K} × TangentBundle I M) ->
+      TangentSpace I (b q) :=
     fun _ q => q.2.2
   have hb : Continuous b := by
     dsimp [b]
     exact (FiberBundle.continuous_proj E (TangentSpace I)).comp continuous_snd
-  have hT : Continuous (fun q : P =>
+  have hT : Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) (b q) (T q)) := by
-    simpa [P, b, T] using hS
-  have hv : ∀ i : Fin 2, Continuous (fun q : P =>
+    simpa [b, T] using hS
+  have hv : ∀ i : Fin 2, Continuous
+      (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
       TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b q) (v i q)) := by
     intro i
-    simpa [P, b, v] using (continuous_snd :
-      Continuous (fun q : P => (q.2 : TangentBundle I M)))
+    simpa [b, v] using (continuous_snd :
+      Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
+        (q.2 : TangentBundle I M)))
   have hEval := TensorMultilinear.continuous_section_apply_base
-    (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
+    (𝕜 := Real) (I := I) (M := M)
+    (P := {t : Real // t ∈ K} × TangentBundle I M) (n := 2)
     b hb T hT v hv
-  simpa [tensorSecBundleQuad, T, b, v, vec2_self_eq_const,
-    Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hEval
+  let h : Continuous (tensorSecBundleQuad (I := I) (M := M) S K) := hEval
+  exact h
 
 def barrierBundleQuad
     (G : Real -> SmoothRiemannianMetric I M)
@@ -665,10 +671,10 @@ theorem barrierTimeCont
       Continuous (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G K =>
         (p.1 : {t : Real // t ∈ K} × TangentBundle I M)) :=
     continuous_subtype_val
-  simpa [barrierTimeSlabQuad, barrierBundleQuad,
-    MetricUnitTangentTimeSlab.time, MetricUnitTangentTimeSlab.base,
-    MetricUnitTangentTimeSlab.vec, MetricUnitTangentTimeSlab.bundlePoint]
-    using hbundle.comp hsub
+  change Continuous (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G K =>
+    barrierBundleQuad (I := I) (M := M) G
+      (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0 K p.1)
+  exact hbundle.comp hsub
 
 omit [IsManifold I 2 M] in
 theorem negBarrier_timeSlab

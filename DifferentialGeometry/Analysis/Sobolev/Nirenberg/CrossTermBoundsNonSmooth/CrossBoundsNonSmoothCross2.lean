@@ -652,7 +652,7 @@ theorem cross_2_bound_nonsmooth_quantitative
               (diffQuot k h (g j) x)^2 ∂(volume : Measure E)) =
           ∫ x, ∑ j : Fin d, ((η x)^2 *
               (diffQuot k h (g j) x)^2) ∂(volume : Measure E)
-          from (integral_finset_sum _ (fun j _ => h_eta_sq_diffQuot_int j)).symm]
+          from (integral_finsetSum _ (fun j _ => h_eta_sq_diffQuot_int j)).symm]
       have h_swap : (fun x : E => ∑ j : Fin d, ((η x)^2 *
               (diffQuot k h (g j) x)^2)) =
           fun x : E => (η x)^2 *
@@ -710,7 +710,7 @@ theorem cross_2_bound_nonsmooth_quantitative
         ∫ x, ∑ i : Fin d, ((η x)^2 *
               (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
               ((g i) x)^2) ∂(volume : Measure E) from
-        (integral_finset_sum _ (fun i _ => h_inner_int i)).symm]
+        (integral_finsetSum _ (fun i _ => h_inner_int i)).symm]
     have h_swap : (fun x : E => ∑ i : Fin d, ((η x)^2 *
               (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
               ((g i) x)^2)) =
@@ -817,7 +817,7 @@ theorem cross_2_bound_nonsmooth_quantitative
       have h_sum_int : Integrable (fun x : E => ∑ i : Fin d, (η x)^2 *
             ((Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
             ((g i) x)^2)) volume :=
-        integrable_finset_sum (Finset.univ : Finset (Fin d)) (fun i _ => h_each_int i)
+        integrable_finsetSum (Finset.univ : Finset (Fin d)) (fun i _ => h_each_int i)
       have h_eq : (fun x : E => ∑ i : Fin d, (η x)^2 *
             ((Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
             ((g i) x)^2)) =
@@ -851,7 +851,7 @@ theorem cross_2_bound_nonsmooth_quantitative
       exact h_g_norm_sq_int
     have h_sum_g_sq_int : Integrable (fun x : E =>
         ∑ i : Fin d, ((g i) x)^2) (volume : Measure E) :=
-      integrable_finset_sum (Finset.univ : Finset (Fin d))
+      integrable_finsetSum (Finset.univ : Finset (Fin d))
         (fun i _ => h_g_sq_int i)
     have h_sum_g_sq_intOn : IntegrableOn (fun x : E =>
         ∑ i : Fin d, ((g i) x)^2) Ω' (volume : Measure E) :=

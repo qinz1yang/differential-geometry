@@ -14,7 +14,11 @@ import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
 import Mathlib.Topology.Algebra.Module.FiniteDimension
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 
 namespace DifferentialGeometry.Tensor.Product
 
@@ -105,8 +109,8 @@ omit [FiniteDimensional 𝕜 F₂]
 
 lemma finrank_continuousLinearMap :
     Module.finrank 𝕜 (F₁ →L[𝕜] F₂) = Module.finrank 𝕜 F₁ * Module.finrank 𝕜 F₂ := by
-  haveI : Module.Free 𝕜 F₁ := inferInstance
-  haveI : Module.Free 𝕜 F₂ := inferInstance
+  have : Module.Free 𝕜 F₁ := inferInstance
+  have : Module.Free 𝕜 F₂ := inferInstance
   have e : (F₁ →L[𝕜] F₂) ≃ₗ[𝕜] (F₁ →ₗ[𝕜] F₂) := LinearMap.toContinuousLinearMap.symm
   rw [e.finrank_eq]
   rw [Module.finrank_linearMap 𝕜 𝕜]

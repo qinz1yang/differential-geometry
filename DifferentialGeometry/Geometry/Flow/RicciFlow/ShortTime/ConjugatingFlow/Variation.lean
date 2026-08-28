@@ -146,7 +146,8 @@ private lemma flowTimeRetract_mem_Ioo (t T δ w : ℝ) (hδ : 0 ≤ δ) (hw : 0 
   exact ⟨by linarith [h.1], by linarith [h.2]⟩
 
 private noncomputable def chartLineCurve (x : M) (v : TangentSpace I x) (δ : ℝ) : ℝ → M :=
-  fun r => (extChartAt I x).symm (extChartAt I x x + (reparam δ r) • (show E from v))
+  fun r => (extChartAt I x).symm
+    (extChartAt I x x + (reparam δ r) • tangentSpaceModelContinuousLinearEquiv (I := I) x v)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -156,10 +157,13 @@ private lemma exists_chartLineCurve_global
       ContMDiff 𝓘(ℝ, ℝ) I ∞ (chartLineCurve (I := I) x v δ) ∧
       chartLineCurve (I := I) x v δ 0 = x ∧
       HasMFDerivAt 𝓘(ℝ, ℝ) I (chartLineCurve (I := I) x v δ) 0
-        ((1 : ℝ →L[ℝ] ℝ).smulRight v) := by
+        (tangentLinearMapOfModel (I := 𝓘(ℝ, ℝ)) (I' := I)
+          (x := 0) (y := chartLineCurve (I := I) x v δ 0)
+          ((1 : ℝ →L[ℝ] ℝ).smulRight
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x v))) := by
   classical
   set φ : E := extChartAt I x x with hφ
-  set vE : E := (show E from v) with hvE
+  set vE : E := tangentSpaceModelContinuousLinearEquiv (I := I) x v with hvE
   set L : ℝ → E := fun t : ℝ => φ + t • vE with hL
   have hLcont : Continuous L := by fun_prop
   have hL0 : L 0 = φ := by simp [hL]
@@ -170,6 +174,10 @@ private lemma exists_chartLineCurve_global
     rw [ContinuousAt, hL0] at this
     exact this htgt
   obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hpre
+  have hcurve : chartLineCurve (I := I) x v ε =
+      fun r : ℝ => (extChartAt I x).symm (φ + (reparam ε r) • vE) := by
+    funext r
+    simp only [chartLineCurve, hφ, hvE]
   refine ⟨ε, hε, ?_, ?_, ?_⟩
   · have hreparam : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (fun r : ℝ => φ + (reparam ε r) • vE) := by
       rw [contMDiff_iff_contDiff]
@@ -186,11 +194,12 @@ private lemma exists_chartLineCurve_global
     have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I x).symm (extChartAt I x).target :=
       contMDiffOn_extChartAt_symm (n := (∞ : WithTop ℕ∞)) x
     have hcomp := hsymm.comp_contMDiff hreparam hmaps
-    simpa [chartLineCurve, Function.comp_def, hφ] using hcomp
+    rw [hcurve]
+    exact hcomp
   · simp [chartLineCurve, reparam_zero]
   · have hLine : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun r : ℝ => φ + (reparam ε r) • vE) 0
-        ((1 : ℝ →L[ℝ] ℝ).smulRight vE) := by
-      rw [hasMFDerivAt_iff_hasFDerivAt]
+        (modelLinearMapToTangent
+          (A := (1 : ℝ →L[ℝ] ℝ).smulRight vE)) := by
       have hrd : HasDerivAt (reparam ε) 1 0 := hasDerivAt_reparam_zero ε hε
       have hsmul : HasDerivAt (fun r : ℝ => (reparam ε r) • vE) ((1 : ℝ) • vE) 0 := by
         have := hrd.smul_const vE
@@ -198,33 +207,51 @@ private lemma exists_chartLineCurve_global
       have hadd0 : HasDerivAt (fun r : ℝ => φ + (reparam ε r) • vE) (0 + (1 : ℝ) • vE) 0 :=
         (hasDerivAt_const (0 : ℝ) φ).add hsmul
       rw [zero_add, one_smul] at hadd0
-      rw [hasDerivAt_iff_hasFDerivAt] at hadd0
-      exact hadd0
+      exact HasFDerivAt.hasMFDerivAt_model hadd0.hasFDerivAt
     have hsymmD : HasMFDerivAt 𝓘(ℝ, E) I (extChartAt I x).symm φ
-        (ContinuousLinearMap.id ℝ E) := by
+        (tangentLinearMapOfModel (I := 𝓘(ℝ, E)) (I' := I)
+          (x := φ) (y := (extChartAt I x).symm φ) (ContinuousLinearMap.id ℝ E)) := by
       have hmem : φ ∈ (extChartAt I x).target := by rw [hφ]; exact mem_extChartAt_target x
       have hdiff : MDifferentiableWithinAt 𝓘(ℝ, E) I (extChartAt I x).symm univ φ := by
         have := mdifferentiableWithinAt_extChartAt_symm (I := I) (x := x) hmem
         rwa [I.range_eq_univ] at this
-      have heq : mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm univ φ
-          = ContinuousLinearMap.id ℝ E := by
+      have heq : tangentLinearMapToModel
+          (mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm univ φ) =
+          ContinuousLinearMap.id ℝ E := by
         rw [hφ, ← I.range_eq_univ]
-        exact mfderivWithin_range_extChartAt_symm
-      have hwd : HasMFDerivWithinAt 𝓘(ℝ, E) I (extChartAt I x).symm univ φ
-          (ContinuousLinearMap.id ℝ E) := heq ▸ hdiff.hasMFDerivWithinAt
+        have hraw := mfderivWithin_range_extChartAt_symm (I := I) (x := x)
+        exact congrArg tangentLinearMapToModel hraw
+      have heqNative : mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm univ φ =
+          tangentLinearMapOfModel (I := 𝓘(ℝ, E)) (I' := I)
+            (x := φ) (y := (extChartAt I x).symm φ) (ContinuousLinearMap.id ℝ E) := by
+        apply tangentLinearMapToModel_injective
+        rw [heq, tangentLinearMapToModel_ofModel]
       rw [← hasMFDerivWithinAt_univ]
-      exact hwd
+      exact heqNative ▸ hdiff.hasMFDerivWithinAt
     have hLine0 : (fun r : ℝ => φ + (reparam ε r) • vE) 0 = φ := by
       simp [reparam_zero]
     have hcomp := (hLine0.symm ▸ hsymmD).comp 0 hLine
     rw [Function.comp_def] at hcomp
-    have hcomp' : HasMFDerivAt 𝓘(ℝ, ℝ) I
-        (fun r : ℝ => (extChartAt I x).symm (φ + (reparam ε r) • vE)) 0
-        ((ContinuousLinearMap.id ℝ E).comp ((1 : ℝ →L[ℝ] ℝ).smulRight vE)) := hcomp
-    rw [ContinuousLinearMap.id_comp] at hcomp'
-    simpa [chartLineCurve, hφ] using hcomp'
+    have hmap :
+        (tangentLinearMapOfModel (I := 𝓘(ℝ, E)) (I' := I)
+          (x := (fun r : ℝ => φ + (reparam ε r) • vE) 0)
+          (y := (extChartAt I x).symm ((fun r : ℝ => φ + (reparam ε r) • vE) 0))
+          (ContinuousLinearMap.id ℝ E)).comp
+            (modelLinearMapToTangent
+              (A := (1 : ℝ →L[ℝ] ℝ).smulRight vE)) =
+          tangentLinearMapOfModel (I := 𝓘(ℝ, ℝ)) (I' := I)
+            (x := 0)
+            (y := (extChartAt I x).symm ((fun r : ℝ => φ + (reparam ε r) • vE) 0))
+            ((1 : ℝ →L[ℝ] ℝ).smulRight vE) := by
+      apply tangentLinearMapToModel_injective
+      rw [tangentLinearMapToModel_comp, tangentLinearMapToModel_ofModel,
+        tangentLinearMapToModel_modelLinearMapToTangent, ContinuousLinearMap.id_comp,
+        tangentLinearMapToModel_ofModel]
+    rw [hmap] at hcomp
+    rw [hcurve]
+    simpa [hLine0, hvE] using hcomp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem flow_cov_variation
     (g : SmoothRiemannianMetric I M)
     (X : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -232,7 +259,9 @@ theorem flow_cov_variation
     (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
         (Set.Ici (0 : ℝ)) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (-(X t ((Φ_fam t : M → M) x)))))
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, ℝ)) t).toContinuousLinearMap.smulRight
+            (-(X t ((Φ_fam t : M → M) x)))))
     (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
       (fun q : ℝ × M => (Φ_fam q.1 : M → M) q.2)
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
@@ -249,10 +278,11 @@ theorem flow_cov_variation
   have h8le : ((8 : ℕ) : WithTop ℕ∞) ≤ ∞ := by
     show ((8 : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞)
     exact WithTop.coe_le_coe.mpr (le_top : ((8 : ℕ) : ℕ∞) ≤ ⊤)
-  have hcc_mderiv : mfderiv 𝓘(ℝ, ℝ) I cc 0 (1 : ℝ) = v := by
+  have hcc_mderiv : mfderiv 𝓘(ℝ, ℝ) I cc 0
+      (constantModelVectorField (1 : ℝ) 0) = v := by
     rw [hcc_vel.mfderiv]
-    change (1 : ℝ →L[ℝ] ℝ) 1 • v = v
-    rw [ContinuousLinearMap.one_apply, one_smul]
+    rw [hcc0]
+    simp [tangentLinearMapOfModel, constantModelVectorField]
   have hcc_mdiff : MDifferentiableAt 𝓘(ℝ, ℝ) I cc 0 :=
     hcc_smooth.contMDiffAt.mdifferentiableAt (by simp)
   set η : ℝ := min t (T - t) / 4 with hη_def
@@ -291,14 +321,15 @@ theorem flow_cov_variation
     have hcomp := hjoint8.comp_contMDiff hinner hmaps
     exact (hcomp : ContMDiff _ _ _ _)
   have hchain : ∀ u : ℝ,
-      mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam u : M → M) (cc w)) 0 (1 : ℝ)
+      mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam u : M → M) (cc w)) 0
+        (constantModelVectorField (1 : ℝ) 0)
         = mfderiv I I (Φ_fam u : M → M) x v := by
     intro u
     have hg : MDifferentiableAt I I (Φ_fam u : M → M) (cc 0) :=
       (((Φ_fam u).contMDiff).contMDiffAt).mdifferentiableAt (by simp)
     have hcompeq : (fun w : ℝ => (Φ_fam u : M → M) (cc w)) = (Φ_fam u : M → M) ∘ cc := rfl
-    rw [hcompeq, mfderiv_comp 0 hg hcc_mdiff, ContinuousLinearMap.comp_apply, hcc_mderiv]
-    rw [hcc0]
+    rw [hcompeq, mfderiv_comp 0 hg hcc_mdiff, ContinuousLinearMap.comp_apply,
+      hcc_mderiv, hcc0]
   have horbit_nhds : ∀ r : ℝ,
       (fun w : ℝ => Gg w r) =ᶠ[𝓝 t] (fun w : ℝ => (Φ_fam w : M → M) (cc r)) := by
     intro r
@@ -306,22 +337,28 @@ theorem flow_cov_variation
     simp only [hGg_def]
     rw [hw]
   have hsec : ∀ r : ℝ,
-      mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg w r) t (1 : ℝ)
+      mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg w r) t
+        (constantModelVectorField (1 : ℝ) t)
         = -(X t ((Φ_fam t : M → M) (cc r))) := by
     intro r
+    have hbase : Gg t r = (Φ_fam t : M → M) (cc r) :=
+      (horbit_nhds r).eq_of_nhds
+    rw [hbase]
     rw [(horbit_nhds r).mfderiv_eq]
     have hmf : HasMFDerivAt 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam w : M → M) (cc r)) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight
-          (-(X t ((Φ_fam t : M → M) (cc r))))) :=
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, ℝ)) t).toContinuousLinearMap.smulRight
+            (-(X t ((Φ_fam t : M → M) (cc r))))) :=
       (hΦode (cc r) t ⟨ht0, htT⟩).hasMFDerivAt (Ici_mem_nhds ht0)
     rw [hmf.mfderiv]
-    change (1 : ℝ →L[ℝ] ℝ) 1 • (-(X t ((Φ_fam t : M → M) (cc r)))) = _
-    rw [ContinuousLinearMap.one_apply, one_smul]
+    rw [ContinuousLinearMap.smulRight_apply]
+    simp [constantModelVectorField]
   have hGg0 : ∀ s : ℝ, Gg s 0 = (Φ_fam (ρ s) : M → M) x := by
     intro s; simp only [hGg_def]; rw [hcc0]
   have hbundle : ∀ u : ℝ,
       (TotalSpace.mk' E ((Φ_fam u : M → M) (cc 0))
-          (mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam u : M → M) (cc w)) 0 (1 : ℝ))
+          (mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam u : M → M) (cc w)) 0
+            (constantModelVectorField (1 : ℝ) 0))
           : TangentBundle I M)
         = TotalSpace.mk' E ((Φ_fam u : M → M) x) (mfderiv I I (Φ_fam u : M → M) x v) := by
     intro u
@@ -331,7 +368,8 @@ theorem flow_cov_variation
   have hcomm_t := congrFun hcomm t
   have hfoot_t : Gg t 0 = (Φ_fam t : M → M) x := by rw [hGg0 t, hρt]
   have hL : covDerivAlong (I := I) g (fun s' : ℝ => Gg s' 0)
-        (fun s' : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg s' w) 0 (1 : ℝ)) t
+        (fun s' : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg s' w) 0
+          (constantModelVectorField (1 : ℝ) 0)) t
       = covDerivAlong (I := I) g (fun s' : ℝ => (Φ_fam s' : M → M) x)
         (fun s' : ℝ => mfderiv I I (Φ_fam s' : M → M) x v) t := by
     refine covDerivAlong_locality (I := I) g (fun s' : ℝ => Gg s' 0)
@@ -344,22 +382,27 @@ theorem flow_cov_variation
         funext w; simp only [hGg_def]; rw [hs']
       have hpt : Gg s' 0 = (Φ_fam s' : M → M) (cc 0) := by simp only [hGg_def, hs']
       calc (TotalSpace.mk' E (Gg s' 0)
-              (mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg s' w) 0 (1 : ℝ)) : TangentBundle I M)
+              (mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg s' w) 0
+                (constantModelVectorField (1 : ℝ) 0)) : TangentBundle I M)
           = TotalSpace.mk' E ((Φ_fam s' : M → M) (cc 0))
-              (mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam s' : M → M) (cc w)) 0 (1 : ℝ)) :=
+              (mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam s' : M → M) (cc w)) 0
+                (constantModelVectorField (1 : ℝ) 0)) :=
             congrArg (fun g : ℝ → M =>
-              (TotalSpace.mk' E (g 0) (mfderiv 𝓘(ℝ, ℝ) I g 0 (1 : ℝ)) : TangentBundle I M)) hslice
+              (TotalSpace.mk' E (g 0) (mfderiv 𝓘(ℝ, ℝ) I g 0
+                (constantModelVectorField (1 : ℝ) 0)) : TangentBundle I M)) hslice
         _ = TotalSpace.mk' E ((Φ_fam s' : M → M) x) (mfderiv I I (Φ_fam s' : M → M) x v) :=
             hbundle s'
   have hR : covDerivAlong (I := I) g (fun r : ℝ => Gg t r)
-        (fun r : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg w r) t (1 : ℝ)) 0
+        (fun r : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg w r) t
+          (constantModelVectorField (1 : ℝ) t)) 0
       = -((LeviCivita (I := I) g) (X t : ∀ y : M, TangentSpace I y)
         ((Φ_fam t : M → M) x)
         (mfderiv I I (Φ_fam t : M → M) x v)) := by
     have hRb : ∀ r : ℝ, Gg t r = (Φ_fam t : M → M) (cc r) := by
       intro r; simp only [hGg_def, hρt]
     have hstep1 : covDerivAlong (I := I) g (fun r : ℝ => Gg t r)
-          (fun r : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg w r) t (1 : ℝ)) 0
+          (fun r : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun w : ℝ => Gg w r) t
+            (constantModelVectorField (1 : ℝ) t)) 0
         = covDerivAlong (I := I) g (fun r : ℝ => (Φ_fam t : M → M) (cc r))
           (fun r : ℝ => -(X t ((Φ_fam t : M → M) (cc r)))) 0 := by
       refine covDerivAlong_locality (I := I) g (fun r : ℝ => Gg t r)
@@ -379,7 +422,8 @@ theorem flow_cov_variation
           (fun r : ℝ => X t ((Φ_fam t : M → M) (cc r))) 0
         = (LeviCivita (I := I) g) (X t : ∀ y : M, TangentSpace I y)
           ((Φ_fam t : M → M) (cc 0))
-          (mfderiv 𝓘(ℝ, ℝ) I (fun r : ℝ => (Φ_fam t : M → M) (cc r)) 0 (1 : ℝ)) := by
+          (mfderiv 𝓘(ℝ, ℝ) I (fun r : ℝ => (Φ_fam t : M → M) (cc r)) 0
+            (constantModelVectorField (1 : ℝ) 0)) := by
       have hγsmooth : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun r : ℝ => (Φ_fam t : M → M) (cc r)) :=
         ((Φ_fam t).contMDiff).comp hcc_smooth
       exact covDerivAlong_restrict_eq_leviCivita (I := I) g
@@ -391,15 +435,16 @@ theorem flow_cov_variation
   exact hL.symm.trans (hcomm_t.trans hR)
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  [CompactSpace M] [SigmaCompactSpace M] in
 theorem conjugating_flow_covariant_variational_eq
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
         (Set.Ici (0 : ℝ)) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight
-          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, ℝ)) t).toContinuousLinearMap.smulRight
+            (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
     (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
       (fun q : ℝ × M => (Φ_fam q.1 : M → M) q.2)
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))

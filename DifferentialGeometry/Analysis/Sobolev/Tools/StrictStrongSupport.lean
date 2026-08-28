@@ -29,7 +29,7 @@ lemma exists_compact_neighborhood_of_tsupport_pou
       tsupport
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ interior K := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     DifferentialGeometry.Integral.Measure.locallyCompactSpace_of_chartedSpace
       E H I M
   have h_tsupp_compact : IsCompact

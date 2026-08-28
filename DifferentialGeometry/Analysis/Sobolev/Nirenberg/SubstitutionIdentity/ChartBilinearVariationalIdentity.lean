@@ -45,7 +45,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private theorem exists_chart_target_cutoff_strong
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless]
     {α : M}
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
     {R₀ : ℝ} {h : ℝ} (_hh_le : |h| ≤ R₀)
@@ -681,7 +681,7 @@ theorem variational_identity_at_v_h_of_compact_support
           standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
         ∂(volume : Measure EuclN) := by
   classical
-  letI : NeZero (Module.finrank ℝ E) :=
+  let _ : NeZero (Module.finrank ℝ E) :=
     ⟨Nat.ne_of_gt (Nat.zero_lt_of_lt k.isLt)⟩
   obtain ⟨δ, χ, hδ_pos, hχ_smooth, hχ_cs, hχ_nn, hχ_le_one,
     hχ_one_strong, hχ_supp⟩ :=
@@ -1060,7 +1060,6 @@ private lemma diffQuot_uChart_memLp_K_0
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma translate_weightedInvGramOnEuclid_continuousOn_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (k : Fin (Module.finrank ℝ E))
@@ -1090,7 +1089,6 @@ private lemma translate_weightedInvGramOnEuclid_continuousOn_K_0
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma diffQuot_weightedInvGramOnEuclid_continuousOn_K_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (k : Fin (Module.finrank ℝ E))
@@ -1145,7 +1143,7 @@ private lemma integrable_bdd_bdd_L2_L2
     Integrable (fun y => c y * bdd_factor y * F1 y * F2 y)
       ((volume : Measure EuclN).restrict K_0) := by
   classical
-  haveI : ENNReal.HolderTriple (2 : ℝ≥0∞) 2 1 := by
+  let _ : ENNReal.HolderTriple (2 : ℝ≥0∞) 2 1 := by
     constructor
     rw [show (1 : ℝ≥0∞)⁻¹ = 1 from inv_one]
     rw [ENNReal.inv_two_add_inv_two]
@@ -1159,7 +1157,7 @@ private lemma integrable_bdd_bdd_L2_L2
     have h := MemLp.integrable_mul (μ :=
       (volume : Measure EuclN).restrict K_0)
       (p := (2 : ℝ≥0∞)) (q := (2 : ℝ≥0∞)) hF1_lp hF2_lp
-    simpa using h
+    exact h.congr (Filter.Eventually.of_forall fun _ ↦ rfl)
   have h_bdd_aesm : AEStronglyMeasurable bdd_factor
       ((volume : Measure EuclN).restrict K_0) :=
     h_bdd_cont.aestronglyMeasurable.mono_measure
@@ -1654,24 +1652,24 @@ private lemma principal_post_ibp_integral_eq_symbolic
       h_thick i j
   have hT1_sum_int : Integrable (fun y => ∑ i, ∑ j, T1 i j y)
       ((volume : Measure EuclN).restrict K_0) := by
-    refine integrable_finset_sum _ ?_
+    refine integrable_finsetSum _ ?_
     intro i _
-    exact integrable_finset_sum _ (fun j _ => hT1_ij_int i j)
+    exact integrable_finsetSum _ (fun j _ => hT1_ij_int i j)
   have hT2_sum_int : Integrable (fun y => ∑ i, ∑ j, T2 i j y)
       ((volume : Measure EuclN).restrict K_0) := by
-    refine integrable_finset_sum _ ?_
+    refine integrable_finsetSum _ ?_
     intro i _
-    exact integrable_finset_sum _ (fun j _ => hT2_ij_int i j)
+    exact integrable_finsetSum _ (fun j _ => hT2_ij_int i j)
   have hT3_sum_int : Integrable (fun y => ∑ i, ∑ j, T3 i j y)
       ((volume : Measure EuclN).restrict K_0) := by
-    refine integrable_finset_sum _ ?_
+    refine integrable_finsetSum _ ?_
     intro i _
-    exact integrable_finset_sum _ (fun j _ => hT3_ij_int i j)
+    exact integrable_finsetSum _ (fun j _ => hT3_ij_int i j)
   have hT4_sum_int : Integrable (fun y => ∑ i, ∑ j, T4 i j y)
       ((volume : Measure EuclN).restrict K_0) := by
-    refine integrable_finset_sum _ ?_
+    refine integrable_finsetSum _ ?_
     intro i _
-    exact integrable_finset_sum _ (fun j _ => hT4_ij_int i j)
+    exact integrable_finsetSum _ (fun j _ => hT4_ij_int i j)
   have h_split :
       ∫ y in K_0,
           ((∑ i, ∑ j, T1 i j y) + (∑ i, ∑ j, T2 i j y) +
@@ -1702,14 +1700,14 @@ private lemma principal_post_ibp_integral_eq_symbolic
         ∑ j : Fin (Module.finrank ℝ E), T2 i j y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
           (fun y' => ∑ j : Fin (Module.finrank ℝ E), T2 i j y') y) from rfl]
-    rw [integral_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => hT2_ij_int i j))]
+    rw [integral_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => hT2_ij_int i j))]
     refine Finset.sum_congr rfl ?_
     intro i _
     rw [show (fun y' : EuclN => ∑ j : Fin (Module.finrank ℝ E), T2 i j y') =
         (fun y' => ∑ j : Fin (Module.finrank ℝ E), (fun y'' => T2 i j y'') y')
         from rfl]
-    rw [integral_finset_sum _ (fun j _ => hT2_ij_int i j)]
+    rw [integral_finsetSum _ (fun j _ => hT2_ij_int i j)]
   have h_cross2 : ∫ y in K_0, (∑ i, ∑ j, T3 i j y)
       ∂(volume : Measure EuclN) =
       cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
@@ -1717,14 +1715,14 @@ private lemma principal_post_ibp_integral_eq_symbolic
         ∑ j : Fin (Module.finrank ℝ E), T3 i j y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
           (fun y' => ∑ j : Fin (Module.finrank ℝ E), T3 i j y') y) from rfl]
-    rw [integral_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => hT3_ij_int i j))]
+    rw [integral_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => hT3_ij_int i j))]
     refine Finset.sum_congr rfl ?_
     intro i _
     rw [show (fun y' : EuclN => ∑ j : Fin (Module.finrank ℝ E), T3 i j y') =
         (fun y' => ∑ j : Fin (Module.finrank ℝ E), (fun y'' => T3 i j y'') y')
         from rfl]
-    rw [integral_finset_sum _ (fun j _ => hT3_ij_int i j)]
+    rw [integral_finsetSum _ (fun j _ => hT3_ij_int i j)]
   have h_cross3 : ∫ y in K_0, (∑ i, ∑ j, T4 i j y)
       ∂(volume : Measure EuclN) =
       cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
@@ -1732,14 +1730,14 @@ private lemma principal_post_ibp_integral_eq_symbolic
         ∑ j : Fin (Module.finrank ℝ E), T4 i j y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
           (fun y' => ∑ j : Fin (Module.finrank ℝ E), T4 i j y') y) from rfl]
-    rw [integral_finset_sum _ (fun i _ =>
-      integrable_finset_sum _ (fun j _ => hT4_ij_int i j))]
+    rw [integral_finsetSum _ (fun i _ =>
+      integrable_finsetSum _ (fun j _ => hT4_ij_int i j))]
     refine Finset.sum_congr rfl ?_
     intro i _
     rw [show (fun y' : EuclN => ∑ j : Fin (Module.finrank ℝ E), T4 i j y') =
         (fun y' => ∑ j : Fin (Module.finrank ℝ E), (fun y'' => T4 i j y'') y')
         from rfl]
-    rw [integral_finset_sum _ (fun j _ => hT4_ij_int i j)]
+    rw [integral_finsetSum _ (fun j _ => hT4_ij_int i j)]
   rw [h_int_expand, h_thick_to_K_0, h_split, h_principalTerm, h_cross1,
     h_cross2, h_cross3]
 

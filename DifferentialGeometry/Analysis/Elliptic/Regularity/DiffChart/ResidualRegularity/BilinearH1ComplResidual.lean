@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegul
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.LpIdentity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -183,7 +185,8 @@ lemma smoothFChartResidual_tendsto_fChartResidual_lp_weighted
           smoothMulLp (I := I) (M := M) g Δρα
             (H1ComplToLp (I := I) (M := M) g u_h))) :=
       h_A.sub h_B
-    convert h_sub using 1
+    simpa only [DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fHLeibnizResidualLp,
+      ρα, Δρα] using h_sub
   have h_chartPulled_tendsto : Tendsto (fun n =>
       chartPushedRawLpFromLp (I := I) (M := M) g α
         (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fHLeibnizResidualLp
@@ -214,7 +217,15 @@ lemma smoothFChartResidual_tendsto_fChartResidual_lp_weighted
           (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fHLeibnizResidualLp
             (I := I) (M := M) g α u_h)))
       simpa using this
-    simpa using (continuous_norm.tendsto (0 :
+    change Tendsto
+      ((fun a => ‖a‖) ∘ fun n =>
+        chartPushedRawLpFromLp (I := I) (M := M) g α
+            (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fHLeibnizResidualLp
+              (I := I) (M := M) g α (smoothToH1Compl (I := I) (M := M) g (v n))) -
+          chartPushedRawLpFromLp (I := I) (M := M) g α
+            (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fHLeibnizResidualLp
+              (I := I) (M := M) g α u_h)) atTop (𝓝 0)
+    simpa only [norm_zero] using (continuous_norm.tendsto (0 :
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)))).comp h_sub
   have h_two_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
@@ -330,6 +341,7 @@ theorem memW1p_fChartResidual_of_wkpNorm_cauchy_and_lim_eq
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     h_F_lim_aeEq).mp h_F_lim_w1p
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem memW1p_fChartResidual_of_wkpNorm_cauchy_identification
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

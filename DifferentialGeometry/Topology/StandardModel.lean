@@ -51,7 +51,7 @@ private noncomputable def stdCharts
   ChartedSpace.comp F H M
 
 private noncomputable def std_diffeo
-    [I.Boundaryless] [IsManifold I ∞ M]
+    [I.Boundaryless]
     {F : Type uF} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (e : E ≃L[ℝ] F) :
     @Diffeomorph ℝ _ E _ _ F _ _ H _ F _ I 𝓘(ℝ, F)
@@ -90,7 +90,7 @@ private theorem std_mfld
   let h := modelHomeo (I := I) e
   let hs : ChartedSpace F H :=
     h.toOpenPartialHomeomorph.singletonChartedSpace (by simp [h])
-  letI : ChartedSpace F H := hs
+  let : ChartedSpace F H := hs
   let dH :
       @Diffeomorph ℝ _ E _ _ F _ _ H _ F _ I 𝓘(ℝ, F)
         H _ (chartedSpaceSelf H) H _ hs ∞ := by
@@ -117,10 +117,10 @@ private theorem std_mfld
             y
         rw [(extChartAt 𝓘(ℝ, F) x).right_inv hy.1]
       · simp
-  letI : IsManifold 𝓘(ℝ, F) ∞ H :=
+  let : IsManifold 𝓘(ℝ, F) ∞ H :=
     h.toOpenPartialHomeomorph.isManifold_singleton (by simp [h])
-  letI : ChartedSpace F M := stdCharts (I := I) e
-  letI : HasGroupoid M (contDiffGroupoid ∞ 𝓘(ℝ, F)) :=
+  let : ChartedSpace F M := stdCharts (I := I) e
+  let : HasGroupoid M (contDiffGroupoid ∞ 𝓘(ℝ, F)) :=
     StructureGroupoid.HasGroupoid.comp (G₂ := contDiffGroupoid ∞ I) (by
       intro f hf
       rw [isLocalStructomorphOn_contDiffGroupoid_iff]
@@ -131,10 +131,11 @@ private theorem std_mfld
             ContMDiffOn 𝓘(ℝ, F) I ∞ (f ∘ dH.symm) f.source := by
           refine hfI.comp dH.symm.contMDiff.contMDiffOn ?_
           intro x hx
-          simpa [dH] using hx
+          change x ∈ f.source
+          exact hx
         have hpost :=
           dH.contMDiff.comp_contMDiffOn hpre
-        simpa [dH, Function.comp_def] using hpost
+        exact hpost.congr fun _ _ => rfl
       · have hfI : ContMDiffOn I I ∞ f.symm f.target :=
           contMDiffOn_of_mem_contDiffGroupoid
             ((contDiffGroupoid ∞ I).symm hf)
@@ -142,10 +143,11 @@ private theorem std_mfld
             ContMDiffOn 𝓘(ℝ, F) I ∞ (f.symm ∘ dH.symm) f.target := by
           refine hfI.comp dH.symm.contMDiff.contMDiffOn ?_
           intro x hx
-          simpa [dH] using hx
+          change x ∈ f.target
+          exact hx
         have hpost :=
           dH.contMDiff.comp_contMDiffOn hpre
-        simpa [dH, Function.comp_def] using hpost)
+        exact hpost.congr fun _ _ => rfl)
   exact IsManifold.mk' 𝓘(ℝ, F) ∞ M
 
 noncomputable def stdModelCopy
@@ -165,10 +167,10 @@ noncomputable def stdModelCopy
   letI : ChartedSpace M (ULift.{0} M) := qBase
   letI : ChartedSpace F (ULift.{0} M) := qCharts
   letI : IsManifold 𝓘(ℝ, F) ∞ (ULift.{0} M) := by
-    letI : HasGroupoid (ULift.{0} M) (@idRestrGroupoid M _) :=
+    let : HasGroupoid (ULift.{0} M) (@idRestrGroupoid M _) :=
       h.toOpenPartialHomeomorph.singleton_hasGroupoid (by simp [h])
         (@idRestrGroupoid M _)
-    letI :
+    let :
         HasGroupoid (ULift.{0} M) (contDiffGroupoid ∞ 𝓘(ℝ, F)) :=
       StructureGroupoid.HasGroupoid.comp
         (G₂ := @idRestrGroupoid M _) (by

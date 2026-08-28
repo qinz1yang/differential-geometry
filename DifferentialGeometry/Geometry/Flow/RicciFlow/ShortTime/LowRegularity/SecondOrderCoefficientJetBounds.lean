@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Mose
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -65,6 +64,7 @@ theorem path_sub_eq
         (fun t => Φ t - Ψ t)
         (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
         metricPerturbationPathDomain_isOpen hSI hD := by
+  rw [linearizedRicciThreeArmHjoint] at hΦ hΨ hD
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro y
@@ -81,8 +81,20 @@ theorem path_sub_eq
       TensorRSSpace.toModel ((Ψ t).toSection y))
       MeasureTheory.volume 0 1 :=
     (hcΨ.mono hSI).intervalIntegrable
-  simp only [pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
+  have hΦmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 Φ
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    metricPerturbationPathDomain_isOpen hSI hΦ y
+  have hΨmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 Ψ
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    metricPerturbationPathDomain_isOpen hSI hΨ y
+  have hDmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g r 2
+    (fun t => Φ t - Ψ t) (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    metricPerturbationPathDomain_isOpen hSI hD y
+  simp only [SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
+  rw [hΦmodel, hΨmodel, hDmodel]
+  simp only [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
+    Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hIΦ hIΨ]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -108,6 +120,7 @@ theorem path_add_sub_eq
         (fun t => Φ t + Ψ t - C)
         (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
         metricPerturbationPathDomain_isOpen hSI hK := by
+  rw [linearizedRicciThreeArmHjoint] at hΦ hΨ hK
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro y
@@ -124,10 +137,23 @@ theorem path_add_sub_eq
       TensorRSSpace.toModel ((Ψ t).toSection y))
       MeasureTheory.volume 0 1 :=
     (hcΨ.mono hSI).intervalIntegrable
-  simp only [pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_add,
+  have hΦmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 Φ
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    metricPerturbationPathDomain_isOpen hSI hΦ y
+  have hΨmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 Ψ
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    metricPerturbationPathDomain_isOpen hSI hΨ y
+  have hKmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g r 2
+    (fun t => Φ t + Ψ t - C) (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    metricPerturbationPathDomain_isOpen hSI hK y
+  simp only [SmoothCcTensor.toSection_add,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_add,
     ContMDiffSection.coe_sub, Pi.add_apply, Pi.sub_apply,
     TensorRSSpace.toModel_add, TensorRSSpace.toModel_sub]
+  rw [hΦmodel, hΨmodel, hKmodel]
+  simp only [SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_sub,
+    ContMDiffSection.coe_add, ContMDiffSection.coe_sub, Pi.add_apply,
+    Pi.sub_apply, TensorRSSpace.toModel_add, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub (hIΦ.add hIΨ) intervalIntegrable_const,
     intervalIntegral.integral_add hIΦ hIΨ, intervalIntegral.integral_const]
   norm_num

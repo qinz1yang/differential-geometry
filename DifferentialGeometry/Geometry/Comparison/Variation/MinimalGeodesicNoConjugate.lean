@@ -43,7 +43,10 @@ theorem not_conj_of_min_len
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : E)
-    (hunit : g.inner p u u = 1)
+    (hunit :
+      g.inner p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) = 1)
     (L : ℝ) (hL : 0 < L)
     (hmin : ∀ η : ℝ → M,
       ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →
@@ -57,6 +60,17 @@ theorem not_conj_of_min_len
     {c : ℝ} (hc : c ∈ Ioo (0 : ℝ) L) :
     ¬ IsConjVec (I := I) g hEnorm p (c • u) := by
   classical
+  let eP : TangentSpace I p ≃L[ℝ] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
+  have huP : (show TangentSpace I p from u) = eP.symm u := by
+    apply eP.injective
+    rfl
+  have hunitLegacy :
+      g.inner p
+        (show TangentSpace I p from u)
+        (show TangentSpace I p from u) = 1 := by
+    rw [huP]
+    exact hunit
   intro hconj
   obtain ⟨z, hz, hJc_raw⟩ :=
     conjVec_jacobi_at (I := I) g hEnorm p u hc.1.ne' hconj
@@ -69,6 +83,11 @@ theorem not_conj_of_min_len
         (show TangentSpace I p from u) := by
     funext t
     simp only [γ, f, zero_smul, add_zero]
+  have hγe :
+      γ = intrinsicGeodesic (I := I) g hEnorm p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) := by
+    rw [← huP]
+    exact hγ
   let J : ∀ t : ℝ, TangentSpace I (γ t) := fun t =>
     mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f s t) 0 (1 : ℝ)
   let DJ : ∀ t : ℝ, TangentSpace I (γ t) :=
@@ -78,8 +97,16 @@ theorem not_conj_of_min_len
     have hincl : ContMDiff 𝓘(ℝ, ℝ)
         (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞ (fun t : ℝ => ((0 : ℝ), t)) :=
       contMDiff_const.prodMk contMDiff_id
-    simpa only [γ, f, Function.comp_apply, zero_smul, smul_zero, add_zero] using
-      hvar.comp hincl
+    have hcomp := hvar.comp hincl
+    have heq :
+        ((fun q : ℝ × ℝ =>
+          intrinsicGeodesic (I := I) g hEnorm p
+            (show TangentSpace I p from u + q.1 • (0 : E)) q.2) ∘
+              fun t : ℝ => ((0 : ℝ), t)) = γ := by
+      funext t
+      simp only [γ, f, Function.comp_apply, zero_smul, add_zero]
+    rw [← heq]
+    exact hcomp
   have hgeo : IsGeodesic (I := I) g γ := by
     simpa only [γ, f, zero_smul, add_zero] using
       intrinsicGeodesic_isGeodesic (I := I) g hEnorm p
@@ -137,7 +164,7 @@ theorem not_conj_of_min_len
       (show E from mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ))
       (show E from mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) = 1
     rw [hvel0]
-    exact hunit
+    exact hunitLegacy
   obtain ⟨F, hFdiff, hFpar, hON, hFperp, hFbundle⟩ :=
     exists_parallel_perp_frame (I := I) g γ hγ_smooth
       (L := L) hL (hgeo.isGeodesicOn (Icc 0 L)) hunit0
@@ -156,12 +183,13 @@ theorem not_conj_of_min_len
         (curveVelocity (I := I) γ t) := by
     have hsq :=
       intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
-        (show TangentSpace I p from u) t
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) t
+    have hsqUnit := hsq.trans hunit
     have hsq' :
         g.inner (γ t) (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t) = 1 := by
-      rw [hγ]
-      simpa only [curveVelocity] using hsq.trans hunit
+      rw [hγe]
+      exact hsqUnit
     rw [hsq']
     exact zero_lt_one
   have hode (t : ℝ) (ht : t ∈ Icc (0 : ℝ) L) :
@@ -237,8 +265,9 @@ theorem not_conj_of_min_len
   have hveldiff :
       DifferentiableAt ℝ
         (chartRepAt (I := I) γ (curveVelocity (I := I) γ) 0) 0 := by
-    simpa only [curveVelocity] using
-      velocity_chartRepAt_differentiableAt (I := I) γ hγ_smooth 0
+    change DifferentiableAt ℝ
+      (chartRepAt (I := I) γ (fun s => mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ)) 0) 0
+    exact velocity_chartRepAt_differentiableAt (I := I) γ hγ_smooth 0
   have hvelpar :
       covDerivAlong (I := I) g γ (curveVelocity (I := I) γ) 0 = 0 :=
     (covDerivAlong_velocity_eq_zero_iff_hasGeodesicEquationAt
@@ -279,6 +308,7 @@ theorem not_conj_of_min_len
       hDJperp (fun i j => hON 0 ⟨le_rfl, hL.le⟩ i j) hDJ0_ne
   have hne : ∃ t ∈ Icc (0 : ℝ) L, y t ≠ 0 := by
     have hev : {t : ℝ | y t ≠ 0} ∈ 𝓝[≠] (0 : ℝ) := by
+      change ∀ᶠ t in 𝓝[≠] (0 : ℝ), y t ≠ 0
       simpa only [hy0] using
         ((hode 0 ⟨le_rfl, hL.le⟩).1.eventually_ne hv0_ne :
           ∀ᶠ t in 𝓝[≠] (0 : ℝ), y t ≠ 0)
@@ -345,9 +375,10 @@ theorem not_conj_of_min_len
     intro t _
     have hsq :=
       intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
-        (show TangentSpace I p from u) t
-    rw [hγ]
-    simpa only [hunit] using hsq
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) t
+    have hsqUnit := hsq.trans hunit
+    rw [hγe]
+    exact hsqUnit
   have hminγ :
       ∀ η : ℝ → M,
         ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →
@@ -381,7 +412,10 @@ theorem not_conj_of_min
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : E)
-    (hunit : g.inner p u u = 1)
+    (hunit :
+      g.inner p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) = 1)
     (hmin : ∀ η : ℝ → M,
       ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 1) →
       η 0 = p →

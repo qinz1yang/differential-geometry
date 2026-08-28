@@ -78,7 +78,7 @@ theorem intrPullVol_le_hyp
         ENNReal.ofReal
           (hypRadVol q (Module.finrank Real E - 1) R) := by
   classical
-  letI : Nontrivial E :=
+  let : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let L : E ≃L[Real] E := normalFrame (I := I) (E := E) g p
@@ -107,7 +107,8 @@ theorem intrPullVol_le_hyp
         q hq hu0 (hno z hz hz0) hRic
     have hsqrt :
         Real.sqrt (g.inner p (L z) (L z)) = ‖z‖ := by
-      simpa only [L] using normalFrame_sqrt (I := I) g p z
+      with_unfolding_all
+        exact normalFrame_sqrt (I := I) g p z
     apply ENNReal.ofReal_le_ofReal
     simpa only [Dn, Dh, hsqrt] using hdens
   have hmono :
@@ -162,7 +163,7 @@ private theorem ratio_le_half
     _ = (V + P) * ENNReal.ofReal (L / 2) := by
       rw [add_comm P V, mul_comm]
 
-omit [T2Space (TangentBundle I M)] in
+omit [T2Space (TangentBundle I M)] [ConnectedSpace M] in
 theorem flatLoop_ge_cgt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -286,11 +287,11 @@ theorem flatLoop_ge_cgt
         CGT.intrFiber_count_core (I := I) g hEnorm p
           hR h4rR hL.le hr₀.le hfitL hloc hK.le hsmall hRmLocal
           c hc hcLenL A hA (N - 1) hpredMul hs has
-          (q := y) (by simpa only [S, Set.mem_setOf_eq] using hy)
+          (q := y) (by simpa only [S, Set.mem_ofPred_eq] using hy)
       have hENat :
           ((N - 1 : Nat) : ENat) + 1 = (N : ENat) := by
         exact_mod_cast Nat.sub_add_cancel hNge
-      simpa only [U, CGT.intrFiber, Set.mem_setOf_eq,
+      simpa only [U, CGT.intrFiber, Set.mem_ofPred_eq,
         hENat] using hcount'
     have harea :=
       framed_mul_le_area (I := I) g hEnorm p hU hS
@@ -338,7 +339,7 @@ theorem flatLoop_ge_cgt
   dsimp only [L] at hArealL
   linarith
 
-omit [T2Space (TangentBundle I M)] in
+omit [T2Space (TangentBundle I M)] [ConnectedSpace M] in
 theorem collision_ge_cgt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -483,7 +484,7 @@ theorem collision_ge_cgt
     flatLoop_ge_cgt (I := I) g hEnorm p hK hR hRpi hRm hloc
       hr₀ hs hfit hquarter c hc hell hcLen A hA
 
-omit [T2Space (TangentBundle I M)] in
+omit [T2Space (TangentBundle I M)] [ConnectedSpace M] in
 theorem intrLoop_ge_cgt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -543,6 +544,7 @@ theorem intrLoop_ge_cgt
       hr₀ hs hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
 theorem intrInj_ge_cgt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),

@@ -20,7 +20,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -45,7 +45,11 @@ import Mathlib.LinearAlgebra.Contraction
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Multilinear.Flip
@@ -78,7 +82,6 @@ import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 namespace DifferentialGeometry.Tensor.RSTensor
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open _root_.Bundle Manifold DifferentialGeometry.Tensor0SBundle
 
@@ -103,24 +106,33 @@ private noncomputable def to02Tensor_uCLM :
       ContinuousMultilinearMap ℝ (fun _ : Fin 2 => E) ℝ :=
   (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 2 => E) ℝ).symm.toContinuousLinearMap
 
+private noncomputable def to02TensorFiber {x : M}
+    (A : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :
+    Tensor0SSpace 2 I x :=
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
+    ((to02Tensor_eCLM (E := E)).comp A).uncurryLeft
+
 private lemma to02Tensor_trivialization_eq {x₀ x : M}
     (A : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     (trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (fun y => Tensor0SBundle.Tensor0SSpace 2 I y) x₀
-      ⟨x, ((to02Tensor_eCLM (E := E)).comp A).uncurryLeft⟩).2
+      ⟨x, to02TensorFiber (I := I) (M := M) A⟩).2
       =
     (to02Tensor_uCLM (E := E)) ((to02Tensor_eCLM (E := E)).comp
       ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
       (fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x₀ ⟨x, A⟩).2)) := by
   let e₀ := trivializationAt E (TangentSpace I) x₀
+  rw [show to02TensorFiber (I := I) (M := M) A =
+      ((to02Tensor_eCLM (E := E)).comp A).uncurryLeft from
+    tensor0SSpaceFiberContinuousLinearEquiv_symm_apply (I := I) 2 x _]
   ext m
   change (((e₀.continuousMultilinearMap ℝ 2)
       ⟨x, ((to02Tensor_eCLM (E := E)).comp
         A).uncurryLeft⟩).2) m = _
   rw [_root_.Bundle.Trivialization.continuousMultilinearMap_apply]
   simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    ContinuousLinearMap.uncurryLeft_apply]
+    ]
   have hx' : x ∈ (trivializationAt (E →L[ℝ] ℝ)
       (fun y => TangentSpace I y →L[ℝ] ℝ) x₀).baseSet := by
     rw [hom_trivializationAt_baseSet]
@@ -133,9 +145,15 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
       (fun y => TangentSpace I y →L[ℝ] ℝ) x₀ x x₀ x
       A (m 0))
       (Fin.tail m)
-  rw [ContinuousLinearMap.inCoordinates_eq hx hx']
-  simp [to02Tensor_eCLM, hom_trivializationAt, Trivialization.continuousLinearMap_apply]
-  rfl
+  change A ((Trivialization.symmL ℝ e₀ x) (m 0))
+      ((Trivialization.symmL ℝ e₀ x) (Fin.tail m 0)) =
+    ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+      (fun y => TangentSpace I y →L[ℝ] ℝ) x₀ x x₀ x A (m 0) (Fin.tail m 0)
+  rw [inCoordinates_apply_eq₂ hx hx (by simp)]
+  dsimp only [e₀]
+  simp only [Trivialization.symmL_apply (trivializationAt E (TangentSpace I) x₀) hx,
+    Bundle.Trivial.fiberBundle_trivializationAt', Bundle.Trivial.linearMapAt_trivialization,
+    LinearMap.id_coe, id_eq]
 
 theorem joint_to02 {S : Set ℝ}
     (A : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1 →L[ℝ] ℝ)
@@ -152,7 +170,7 @@ theorem joint_to02 {S : Set ℝ}
         (((continuousMultilinearCurryFin1 ℝ E ℝ).symm.toContinuousLinearMap.comp
           (A p)).uncurryLeft))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology
+  let := Tensor0SBundle.tensor0SBundle_topology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   intro p₀ hp₀
   rw [_root_.Bundle.contMDiffWithinAt_totalSpace]
@@ -203,12 +221,15 @@ def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : With
   let eCLM := to02Tensor_eCLM (E := E)
   let uCLM := to02Tensor_uCLM (E := E)
   let gI := _root_.Bundle.ContMDiffRiemannianMetric.inner g
-  exact ⟨fun x => (eCLM.comp (gI x)).uncurryLeft, by
+  exact ⟨fun x => to02TensorFiber (I := I) (M := M) (gI x), by
     rcases hM with ⟨⟩
-    letI : IsManifold I (n + 1) M := IsManifold.mk
-    haveI := Tensor0SBundle.tensor0SBundle_smooth
+    let : IsManifold I (n + 1) M := IsManifold.mk
+    have := Tensor0SBundle.tensor0SBundle_smooth
       (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := n) 2
-    intro x₀; rw [contMDiffAt_section]
+    intro x₀
+    refine (contMDiffAt_section (F := Tensor0SModel 2 ℝ E)
+      (E := fun x : M => Tensor0SSpace 2 I x)
+      (s := fun x => to02TensorFiber (I := I) (M := M) (gI x)) x₀).mpr ?_
     have hTriv := (contMDiffAt_section (F := E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         (s := gI) (x₀ := x₀)).mp (g.contMDiff.contMDiffAt (x := x₀))
@@ -232,8 +253,7 @@ theorem RiemannianMetric_gen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n 
     (x : M) (v : Fin 2 -> TangentSpace I x) :
     RiemannianMetric_gen.to02Tensor_gen (I := I) (n := n) g x v =
       (_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
-  simp only [to02Tensor_gen, tensor0SBundle_fiber.eq_1, to02Tensor_eCLM,
-    LinearIsometryEquiv.toLinearEquiv_symm, id_eq, ContMDiffSection.coeFn_mk, Fin.isValue]
+  simp only [to02Tensor_gen, tensor0SBundle_fiber.eq_1,     id_eq, Fin.isValue]
   change ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
     ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
   simp [Fin.tail]

@@ -70,7 +70,7 @@ private lemma fixedFrame_metricComp_eq_sum
       ∑ a : Fin 3, P a i * P a j := by
   classical
   rw [fixedFrame_sum_repr f e P hP i, fixedFrame_sum_repr f e P hP j]
-  simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_smul',
+  simp only [map_sum, map_smul, FunLike.coe_sum, FunLike.coe_smul,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -113,11 +113,13 @@ private lemma fixedFrame_ginvP_eq_kd
   let Gi : Matrix (Fin 3) (Fin 3) ℝ := gInvAt
   have hg : Gm = Matrix.transpose Pm * Pm := by
     ext i j
-    simp only [Gm, Pm, Matrix.mul_apply, Matrix.transpose_apply]
+    simp only [Gm, Pm]
     exact fixedFrame_metricComp_eq_sum (I := I) (M := M) S t e f P hP horth i j
   have hgi : Gi * Gm = 1 := by
     ext i j
-    simpa [Gi, Gm, Matrix.mul_apply] using hginv i j
+    change (∑ k : Fin 3, gInvAt i k * (S.base.metric t).inner x (e k) (e j)) =
+      if i = j then 1 else 0
+    simpa only [kd] using hginv i j
   have h1 : (Gi * Matrix.transpose Pm) * Pm = 1 := by
     calc
       (Gi * Matrix.transpose Pm) * Pm = Gi * (Matrix.transpose Pm * Pm) := by rw [Matrix.mul_assoc]
@@ -137,7 +139,10 @@ private lemma fixedFrame_ginvP_eq_kd
             _ = P E e0 * (∑ g0 : Fin 3, gInvAt e0 g0 * P G g0) := by
                   rw [Finset.mul_sum]
     _ = (Pm * (Gi * Matrix.transpose Pm)) E G := by
-          simp [Pm, Gi, Matrix.mul_apply]
+          change
+            (∑ e0 : Fin 3, P E e0 * (∑ g0 : Fin 3, gInvAt e0 g0 * P G g0)) =
+              ∑ e0 : Fin 3, P E e0 * (∑ g0 : Fin 3, gInvAt e0 g0 * P G g0)
+          rfl
     _ = (1 : Matrix (Fin 3) (Fin 3) ℝ) E G := congrFun (congrFun h2 E) G
     _ = kd E G := by
           rfl
@@ -861,7 +866,7 @@ lemma uhlenbeckBTensorInFrame_fixedFrame_pullback
             funext p
             fin_cases p <;> simp [slots4, vec4]
       _ = rm Rf u v w z := by
-            simpa [slots4, Fin.isValue, Fin.reduceEq, reduceIte] using h
+            simpa [Rf, slots4, Fin.isValue, Fin.reduceEq, reduceIte] using h
   have hB : ∀ I0 : Fin 4 → Fin 3,
       Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) =
         ∑ E : Fin 3, ∑ F : Fin 3,
@@ -931,7 +936,7 @@ private lemma riemann04RicciDriftInFrame_fixedFrame_pullback
             funext p
             fin_cases p <;> simp [slots4, vec4]
       _ = rm Rf u v w z := by
-            simpa [slots4, Fin.isValue, Fin.reduceEq, reduceIte] using h
+            simpa [Rf, slots4, Fin.isValue, Fin.reduceEq, reduceIte] using h
   have hRexp : ∀ (i j : Fin 3),
       S.ricciAt t x (vec2 (I := I) (e i) (e j)) =
         ∑ A : Fin 3, ∑ J : Fin 3, P A i * P J j * Rf A J := by
@@ -1397,7 +1402,7 @@ private lemma sum_lin_comb (w A B1 B2 B3 B4 D : (Fin 4 → Fin 3) → ℝ) :
     rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_sub_distrib]]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem solutionRm04CompInFrame_fixed_frame_evolution
     (T : ℝ) (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -1560,7 +1565,8 @@ theorem solutionRm04CompInFrame_fixed_frame_evolution
               (fun a _ => e a))
             (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a))
             (t : ℝ) x a b c d := by
-        simp [riemann04RicciDriftInFrame, solutionRicciOneUpInFrame, solutionRm04CompInFrame, rm04Comp, e]
+        unfold riemann04RicciDriftInFrame
+        congr 1
       exact hA.trans hT3
     have hlap : metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : ℝ)) (nablaKRm04Field (I := I) S (t : ℝ) 2 x)
           (vec4 (I := I) (e a) (e b) (e c) (e d)) =
@@ -1810,6 +1816,6 @@ theorem solutionRm04CompInFrame_fixed_frame_evolution
       rw [hfun]
       exact hmain
     simpa [hEq, e, solutionRm04CompInFrame, rm04Comp] using hdev
-  simpa [solutionRicciOneUpInFrame, e] using hfin
+  exact hfin
 
 end DifferentialGeometry.PDE.RicciFlow

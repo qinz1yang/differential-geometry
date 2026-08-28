@@ -25,7 +25,7 @@ theorem hasDerivAt_matrix
     (A : ℝ → Matrix n n ℝ) (A' : Matrix n n ℝ) (t : ℝ)
     (hA : ∀ i j, HasDerivAt (fun s => A s i j) (A' i j) t) :
     HasDerivAt A A' t := by
-  letI : Fintype n := Fintype.ofFinite n
+  let : Fintype n := Fintype.ofFinite n
   exact hasDerivAt_pi.mpr fun i => hasDerivAt_pi.mpr fun j => hA i j
 
 variable [Fintype n]
@@ -56,8 +56,8 @@ theorem hasDerivAt_inv_mul
       HasDerivAt (fun s => Ring.inverse (G s))
         (-((G t)⁻¹ * G' * (G t)⁻¹)) t := by
     simpa [Function.comp_def, hu, ContinuousLinearMap.mulLeftRight_apply,
-      Matrix.nonsing_inv_eq_ringInverse] using hinvF.comp_hasDerivAt t hG
-  simpa [Matrix.nonsing_inv_eq_ringInverse, Matrix.mul_assoc] using hinv.mul hB
+      Matrix.nonsing_inv_eq_ringInverse] using! hinvF.comp_hasDerivAt t hG
+  simpa [Matrix.nonsing_inv_eq_ringInverse, Matrix.mul_assoc] using! hinv.mul hB
 
 theorem trace_inv_mul_conj
     (G A : Matrix n n ℝ) (hdet : IsUnit G.det) :

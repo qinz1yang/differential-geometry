@@ -160,7 +160,7 @@ theorem wkpNorm_smul_smooth_bounded_le_one
   | 0, _ =>
     have h0 : ∀ x ∈ Ω, ‖η x‖ ≤ C := by
       intro x hx
-      have h := hη_bound 0 (zero_le _) x hx
+      have h := hη_bound 0 (Nat.zero_le _) x hx
       rwa [norm_iteratedFDeriv_zero] at h
     refine ⟨C + 1, by linarith, ?_⟩
     intro u hu
@@ -223,7 +223,7 @@ theorem wkpNorm_smul_smooth_bounded_le_one
       rw [Finset.sum_range_succ, Finset.sum_range_one]
       have h0_unique : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) :=
         fun α => by funext i; exact i.elim0
-      haveI : Unique (Fin 0 → Fin d) :=
+      have : Unique (Fin 0 → Fin d) :=
         { default := fun i : Fin 0 => i.elim0
           uniq := fun α => (h0_unique α).symm ▸ rfl }
       rw [Fintype.sum_unique
@@ -240,7 +240,7 @@ theorem wkpNorm_smul_smooth_bounded_le_one
       rw [Finset.sum_range_succ, Finset.sum_range_one]
       have h0_unique : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) :=
         fun α => by funext i; exact i.elim0
-      haveI : Unique (Fin 0 → Fin d) :=
+      have : Unique (Fin 0 → Fin d) :=
         { default := fun i : Fin 0 => i.elim0
           uniq := fun α => (h0_unique α).symm ▸ rfl }
       rw [Fintype.sum_unique

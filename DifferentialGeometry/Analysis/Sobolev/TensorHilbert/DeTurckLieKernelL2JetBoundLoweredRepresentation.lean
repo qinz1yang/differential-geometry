@@ -32,7 +32,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -79,8 +78,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
         (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) =
@@ -94,6 +92,8 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro w
+  let v : Fin 3 → TangentSpace I x := fun i =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w i)
   have hexp_sub : ∀ (F G : SmoothCcTensor g₀ 1 3),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from ((F - G).toSection x)) om) w =
@@ -108,7 +108,7 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
         (F.toSection x - G.toSection x)) om) =
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from F.toSection x) om -
           (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from G.toSection x) om from rfl]
-    rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+    rw [Tensor0SSpace.toModel_sub, sub_apply]
   have hexp_add : ∀ (F G : SmoothCcTensor g₀ 1 3),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from ((F + G).toSection x)) om) w =
@@ -123,7 +123,7 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
         (F.toSection x + G.toSection x)) om) =
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from F.toSection x) om +
           (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from G.toSection x) om from rfl]
-    rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+    rw [Tensor0SSpace.toModel_add, add_apply]
   have hA : ∀ (gc : SmoothRiemannianMetric I M),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -131,36 +131,37 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
         w =
       cotangentToDual (I := I) (x := x) om
         (covDerivConnectionDifference (I := I) g₀ gc
-          (smoothExtensionTangent (I := I) x (w 0))
-          (smoothExtensionTangent (I := I) x (w 2))
-          (smoothExtensionTangent (I := I) x (w 1)) x) := by
+          (smoothExtensionTangent (I := I) x (v 0))
+          (smoothExtensionTangent (I := I) x (v 2))
+          (smoothExtensionTangent (I := I) x (v 1)) x) := by
     intro gc
     have hb := connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference (I := I) gc g₀
       (deTurckLieConnectionDifferenceDerivativeCovectorExtensionSection (I := I) (M := M) g₀ x om)
-      (smoothExtensionTangentSection (I := I) (M := M) x (w 0))
-      (smoothExtensionTangentSection (I := I) (M := M) x (w 1))
-      (smoothExtensionTangentSection (I := I) (M := M) x (w 2)) x
+      (smoothExtensionTangentSection (I := I) (M := M) x (v 0))
+      (smoothExtensionTangentSection (I := I) (M := M) x (v 1))
+      (smoothExtensionTangentSection (I := I) (M := M) x (v 2)) x
     rw [deTurckLieConnectionDifferenceDerivativeCovectorExtensionSection_self (I := I) (M := M) g₀ x om] at hb
-    rw [show smoothExtensionTangentSection (I := I) (M := M) x (w 0) x = w 0 from
-      smoothExtensionTangent_eq (I := I) x (w 0)] at hb
-    rw [show smoothExtensionTangentSection (I := I) (M := M) x (w 1) x = w 1 from
-      smoothExtensionTangent_eq (I := I) x (w 1)] at hb
-    rw [show smoothExtensionTangentSection (I := I) (M := M) x (w 2) x = w 2 from
-      smoothExtensionTangent_eq (I := I) x (w 2)] at hb
-    rw [show (Fin.cons (w 0) (Fin.cons (w 1) ![w 2]) : Fin 3 → TangentSpace I x) = w from by
+    rw [show smoothExtensionTangentSection (I := I) (M := M) x (v 0) x = v 0 from
+      smoothExtensionTangent_eq (I := I) x (v 0)] at hb
+    rw [show smoothExtensionTangentSection (I := I) (M := M) x (v 1) x = v 1 from
+      smoothExtensionTangent_eq (I := I) x (v 1)] at hb
+    rw [show smoothExtensionTangentSection (I := I) (M := M) x (v 2) x = v 2 from
+      smoothExtensionTangent_eq (I := I) x (v 2)] at hb
+    rw [show (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 1))
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (v 2)]) : Fin 3 → E) = w from by
       funext k
-      refine Fin.cases rfl (fun j => ?_) k
-      refine Fin.cases rfl (fun j' => ?_) j
-      refine Fin.cases rfl (fun j'' => j''.elim0) j'] at hb
+      fin_cases k <;> simp [v]] at hb
     rw [hb]
     rw [show covDerivConnectionDifference (I := I) g₀ gc
-        (fun b => smoothExtensionTangentSection (I := I) (M := M) x (w 0) b)
-        (fun b => smoothExtensionTangentSection (I := I) (M := M) x (w 2) b)
-        (fun b => smoothExtensionTangentSection (I := I) (M := M) x (w 1) b) x =
+        (fun b => smoothExtensionTangentSection (I := I) (M := M) x (v 0) b)
+        (fun b => smoothExtensionTangentSection (I := I) (M := M) x (v 2) b)
+        (fun b => smoothExtensionTangentSection (I := I) (M := M) x (v 1) b) x =
       covDerivConnectionDifference (I := I) g₀ gc
-        (smoothExtensionTangent (I := I) x (w 0))
-        (smoothExtensionTangent (I := I) x (w 2))
-        (smoothExtensionTangent (I := I) x (w 1)) x from rfl]
+        (smoothExtensionTangent (I := I) x (v 0))
+        (smoothExtensionTangent (I := I) x (v 2))
+        (smoothExtensionTangent (I := I) x (v 1)) x from rfl]
     exact (cotangentToDual_apply (I := I) (x := x) om _).symm
   have hswap0 : (Equiv.swap (0 : Fin 3) 2) 0 = 2 := Equiv.swap_apply_left 0 2
   have hswap1 : (Equiv.swap (0 : Fin 3) 2) 1 = 1 := by decide
@@ -175,7 +176,7 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
             (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb)).toSection x) om) w =
       cotangentToDual (I := I) (x := x) om
         (PDE.DeTurck.connectionDifference (I := I) gb g₀ x
-          (PDE.DeTurck.connectionDifference (I := I) ga g₀ x (w (σ 1)) (w (σ 2))) (w (σ 0))) := by
+          (PDE.DeTurck.connectionDifference (I := I) ga g₀ x (v (σ 1)) (v (σ 2))) (v (σ 0))) := by
     intro σ ga gb
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 σ
@@ -186,13 +187,15 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) σ
       ((deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb).toSection x) om]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    exact deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (I := I) (M := M) g₀ ga gb x om (fun i => w (σ i))
+    simpa only [v] using
+      deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (I := I) (M := M)
+        g₀ ga gb x om (fun i => w (σ i))
   have hL : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
           (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) om) w =
       cotangentToDual (I := I) (x := x) om
-        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (w 0) (w 1) (w 2)) := by
+        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 0) (v 1) (v 2)) := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
           (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) om) =
@@ -212,17 +215,20 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
         unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x
         from rfl]
     rw [deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x]
-    rw [show (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-        (fun k => (show E from w k)) : Fin 4 → TangentSpace I x) 0 =
-        inverseMetricSharpFib (I := I) g₀ x om from rfl]
-    rw [show (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-        (fun k => (show E from w k)) : Fin 4 → TangentSpace I x) 1 = w 0 from rfl]
-    rw [show (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-        (fun k => (show E from w k)) : Fin 4 → TangentSpace I x) 2 = w 1 from rfl]
-    rw [show (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-        (fun k => (show E from w k)) : Fin 4 → TangentSpace I x) 3 = w 2 from rfl]
+    rw [show (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)) w : Fin 4 → E) 1 = w 0 from rfl]
+    rw [show (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)) w : Fin 4 → E) 2 = w 1 from rfl]
+    rw [show (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)) w : Fin 4 → E) 3 = w 2 from rfl]
+    change g₀.inner x
+      (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 0) (v 1) (v 2))
+      (inverseMetricSharpFib (I := I) g₀ x om) = _
     rw [cotangentToDual_eq_inner_sharp_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ x om
-      (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (w 0) (w 1) (w 2))]
+      (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 0) (v 1) (v 2))]
   rw [hL]
   rw [deTurckLieConnectionDifferenceDerivativeKernelRaisedCc]
   rw [hexp_add, hexp_sub, hexp_add, hexp_sub, hexp_sub, hexp_add, hexp_sub]
@@ -232,48 +238,49 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
         (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g₁ g₁).toSection x) om) w =
       cotangentToDual (I := I) (x := x) om
         (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2)) (w 0)) from
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) (v 2)) (v 0)) from by
+    simpa only [v] using
     deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (I := I) (M := M) g₀ g₁ g₁ x om w]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g_bg g₁).toSection x) om) w =
       cotangentToDual (I := I) (x := x) om
         (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (w 1) (w 2)) (w 0)) from
+          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (v 1) (v 2)) (v 0)) from by
+    simpa only [v] using
     deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (I := I) (M := M) g₀ g_bg g₁ x om w]
   rw [hQperm (Equiv.swap (0 : Fin 3) 2) g₁ g₁, hQperm (Equiv.swap (0 : Fin 3) 2) g₁ g_bg,
     hQperm (finRotate 3) g₁ g₁, hQperm (finRotate 3) g₁ g_bg]
   rw [hswap0, hswap1, hswap2, hrot0, hrot1, hrot2]
-  rw [deTurckLieConnectionDifferenceDerivativeCovKernel_backgroundSplit (I := I) g₀ g₁ g_bg x (w 0) (w 1) (w 2)]
+  rw [deTurckLieConnectionDifferenceDerivativeCovKernel_backgroundSplit (I := I) g₀ g₁ g_bg x (v 0) (v 1) (v 2)]
   have hcocy : ∀ u v : TangentSpace I x,
       PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x u v =
         PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u v -
           PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x u v :=
     fun u v => eq_sub_of_add_eq (connectionDifference_cocycle (I := I) g₁ g_bg g₀ x u v)
-  rw [hcocy (w 1) (w 2)]
+  rw [hcocy (v 1) (v 2)]
   rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2) -
-        PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (w 1) (w 2)) (w 0) =
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) (v 2) -
+        PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (v 1) (v 2)) (v 0) =
       PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2)) (w 0) -
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) (v 2)) (v 0) -
         PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (w 1) (w 2)) (w 0) from by
+          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (v 1) (v 2)) (v 0) from by
     rw [map_sub]
     rfl]
-  rw [hcocy (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 0)) (w 2)]
-  rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (w 1)
-      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0)) =
+  rw [hcocy (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) (v 0)) (v 2)]
+  rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (v 1)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 2) (v 0)) =
       PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
-        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0)) (w 1) from
-    PDE.DeTurck.connectionDifference_symm (I := I) g₁ g_bg x (w 1)
-      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0))]
-  rw [hcocy (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 2) (w 0)) (w 1)]
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 2) (v 0)) (v 1) from
+    PDE.DeTurck.connectionDifference_symm (I := I) g₁ g_bg x (v 1)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 2) (v 0))]
+  rw [hcocy (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 2) (v 0)) (v 1)]
   rw [cotangentToDual_map_sub_deTurckLieConnectionDifferenceDerivative, cotangentToDual_map_sub_deTurckLieConnectionDifferenceDerivative, cotangentToDual_map_add_deTurckLieConnectionDifferenceDerivative,
     cotangentToDual_map_sub_deTurckLieConnectionDifferenceDerivative, cotangentToDual_map_sub_deTurckLieConnectionDifferenceDerivative, cotangentToDual_map_sub_deTurckLieConnectionDifferenceDerivative,
     cotangentToDual_map_sub_deTurckLieConnectionDifferenceDerivative]
   ring
 
-set_option backward.isDefEq.respectTransparency false in
 private noncomputable def deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=
@@ -323,7 +330,6 @@ private lemma inner_deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib 
   exact inner_metricSharp (I := I) g₀ x
     (ccTensorBilinSymm (I := I) g₀ T x v).toLinearMap w
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
@@ -385,9 +391,14 @@ noncomputable def deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g₀ 0 2) (b : M) (u w : TangentSpace I b) :
-    unitModel (I := I) (M := M) g₀ 2 S b ![u, w] = smoothCcTensorBilinForm (I := I) g₀ S b u w := by
-  rw [ccTensorBilin_apply (I := I) g₀ S b u w, ccTensorModel]
+    (S : SmoothCcTensor g₀ 0 2) (b : M) (u w : E) :
+    unitModel (I := I) (M := M) g₀ 2 S b ![u, w] =
+      smoothCcTensorBilinForm (I := I) g₀ S b
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm u)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm w) := by
+  rw [ccTensorBilin_apply (I := I) g₀ S b
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm u)
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm w), ccTensorModel]
   rw [show ccTensorMultilinear (I := I) g₀ S b =
       (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from S.toSection b)
         (unitZeroSec (I := I) (M := M) b) from rfl]
@@ -396,7 +407,6 @@ lemma unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (g₀ 
   funext k
   fin_cases k <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -419,7 +429,8 @@ lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_s
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T)).toSection x) om) w =
-      ccTensorBilinSymm (I := I) g₀ T x (w 0)
+      ccTensorBilinSymm (I := I) g₀ T x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
         (inverseMetricSharpFib (I := I) g₀ x om) := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -428,12 +439,15 @@ lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_s
           (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) om from rfl]
     rw [slotInsertEndoFib_apply_eval]
     rw [toModel_om_single_eq_cotangentToDual_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) x om
-      (Function.update w 0 (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (w 0)))]
-    rw [Function.update_self]
+      (Function.update w 0 (tangentLinearMapToModel
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (w 0)))]
+    rw [Function.update_self, tangentLinearMapToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply]
     rw [show (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) =
         deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (I := I) (M := M) g₀ T x from rfl]
     rw [cotangentToDual_eq_inner_sharp_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ x om
-      (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (I := I) (M := M) g₀ T x (w 0))]
+      (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (I := I) (M := M) g₀ T x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0)))]
     rw [inner_deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib]
   rw [hLHS]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -461,13 +475,17 @@ lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_s
     (ccTensor02Symm (I := I) (M := M) g₀ T) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
-      (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x om)
-        (fun k => (show E from w k)) : Fin 2 → E) ((Equiv.swap (0 : Fin 2) 1) i)) =
-      (![(w 0 : E), (show E from inverseMetricSharpFib (I := I) g₀ x om)] : Fin 2 → E) from by
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)) w : Fin 2 → E)
+        ((Equiv.swap (0 : Fin 2) 1) i)) =
+      (![w 0, tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x om)] : Fin 2 → E) from by
     funext i
     fin_cases i <;> rfl]
   rw [unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x
-    (w 0) (inverseMetricSharpFib (I := I) g₀ x om)]
+    (w 0) (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (inverseMetricSharpFib (I := I) g₀ x om))]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
   rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x]
 
 noncomputable def deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (g₀ : SmoothRiemannianMetric I M)
@@ -486,7 +504,7 @@ noncomputable def deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (g₀ : Sm
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma unitModel_add_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
-    (A B : SmoothCcTensor g₀ 0 s) (x : M) (m : Fin s → TangentSpace I x) :
+    (A B : SmoothCcTensor g₀ 0 s) (x : M) (m : Fin s → E) :
     unitModel (I := I) (M := M) g₀ s (A + B) x m =
       unitModel (I := I) (M := M) g₀ s A x m + unitModel (I := I) (M := M) g₀ s B x m := by
   rw [unitModel, unitModel, unitModel]
@@ -498,19 +516,22 @@ lemma unitModel_add_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiema
           (unitTensor (I := I) (M := M) x) +
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from B.toSection x)
           (unitTensor (I := I) (M := M) x) from rfl]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [Tensor0SSpace.toModel_add, add_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 lemma deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
-    (m : Fin 4 → TangentSpace I x) :
+    (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg) x m =
       ccTensorBilinSymm (I := I) g₀ T x
-        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3)) (m 0) := by
+        (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
   have hsec : unitModel (I := I) (M := M) g₀ 4
       (deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg) x m =
       Tensor0SSpace.toModel
@@ -538,23 +559,38 @@ lemma deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (
       unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x from rfl]
   rw [deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x]
   rw [show (Function.update m 0
-      (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (m 0))) 0 =
-      deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (m 0) from Function.update_self _ _ _]
+      (tangentLinearMapToModel
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (m 0))) 0 =
+      tangentLinearMapToModel
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (m 0) from
+    Function.update_self _ _ _]
   rw [show (Function.update m 0
-      (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (m 0))) 1 = m 1 from
+      (tangentLinearMapToModel
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (m 0))) 1 = m 1 from
     Function.update_of_ne (by decide) _ _]
   rw [show (Function.update m 0
-      (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (m 0))) 2 = m 2 from
+      (tangentLinearMapToModel
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (m 0))) 2 = m 2 from
     Function.update_of_ne (by decide) _ _]
   rw [show (Function.update m 0
-      (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (m 0))) 3 = m 3 from
+      (tangentLinearMapToModel
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (m 0))) 3 = m 3 from
     Function.update_of_ne (by decide) _ _]
-  rw [g₀.symm x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3))
-    (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x (m 0))]
+  rw [tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply]
+  rw [g₀.symm x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
+    (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)))]
   rw [show (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) =
       deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (I := I) (M := M) g₀ T x from rfl]
-  rw [inner_deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (I := I) (M := M) g₀ T x (m 0)
-    (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3))]
+  rw [inner_deTurckLieConnectionDifferenceDerivativePerturbSharpEndoFib (I := I) (M := M) g₀ T x
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))
+    (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))]
   exact ccTensorBilinSymm_symm (I := I) g₀ T x (m 0)
     (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (m 1) (m 2) (m 3))
 
@@ -583,6 +619,7 @@ lemma riemannianFiberNormSq_smul_deTurckLieConnectionDifferenceDerivative (g : S
   rw [TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
@@ -607,6 +644,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenc
   refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g r (s + j) x _ _) ?_
   rw [riemannianFiberNormSq_neg_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g r (s + j) x]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
@@ -665,7 +703,6 @@ private lemma g0_inner_inverseMetricSharp_mixed_deTurckLieConnectionDifferenceDe
     (inverseMetricSharpFib (I := I) g₁ x om)]
   rw [g₀.symm x v (inverseMetricSharpFib (I := I) g₁ x om)]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma sharpFlatEndoCc_eq_slotInsert_fullRaised_deTurckLieConnectionDifferenceDerivative (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -690,12 +727,15 @@ lemma sharpFlatEndoCc_eq_slotInsert_fullRaised_deTurckLieConnectionDifferenceDer
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) om from rfl]
   rw [slotInsertEndoFib_apply_eval]
   rw [toModel_om_single_eq_cotangentToDual_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) x om
-    (Function.update m 0 (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x (m 0)))]
-  rw [Function.update_self]
+    (Function.update m 0 (tangentLinearMapToModel
+      (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) (m 0)))]
+  rw [Function.update_self, tangentLinearMapToModel_apply,
+    ContinuousLinearEquiv.symm_apply_apply]
   rw [toModel_om_single_eq_cotangentToDual_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) x
     ((g0FlatCLM (I := I) g₀ x) (inverseMetricSharpFib (I := I) g₁ x om)) m]
   rw [cotangentToDual_g0FlatCLM]
-  rw [g0_inner_inverseMetricSharp_mixed_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ g₁ x om (m 0)]
+  rw [g0_inner_inverseMetricSharp_mixed_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ g₁ x om
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
   rw [metricComparisonEndomorphismField_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
@@ -714,7 +754,7 @@ private lemma metricComparisonEndomorphismField_diff_split_deTurckLieConnectionD
     rw [ContMDiffSection.coe_add]; rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x) = metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
     from rfl]
   rw [metricComparisonEndomorphismField_apply]
@@ -722,7 +762,6 @@ private lemma metricComparisonEndomorphismField_diff_split_deTurckLieConnectionD
   rw [show metricComparisonEndomorphism (I := I) g₀ g₀ x v = v from by
     rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_add_endo_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -741,12 +780,11 @@ private lemma slotInsertEndoCc_add_endo_deTurckLieConnectionDifferenceDerivative
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ s A).toSection x +
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
     rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -770,8 +808,7 @@ private lemma endoCovariantDerivative_fullRaised_id_eq_zero_deTurckLieConnection
     rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
   rw [sub_self]
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covGrad_slotInsert_fullRaised_id_eq_zero_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M) :
     covGrad (I := I) (M := M) g₀ 1 1
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -781,19 +818,22 @@ private lemma covGrad_slotInsert_fullRaised_id_eq_zero_deTurckLieConnectionDiffe
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  apply Tensor0SSpace.toModel_injective
-  refine ContinuousMultilinearMap.ext (fun m => ?_)
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g₀ 1 1
+  apply tensor0SSpace_ext (I := I) 2 x
+  intro m
+  rw [← Tensor0SSpace.eval_eq, ← Tensor0SSpace.eval_eq]
+  rw [covGrad_toSection_apply_natural (I := I) (M := M) g₀ 1 1
     (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀)) x D m]
   rw [tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g₀ 0
-    (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x (m 0)]
+    (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0))]
+  rw [ContinuousLinearEquiv.symm_apply_apply]
   rw [show ((endoCovariantDerivative (I := I) (M := M) g₀)
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x (m 0)) =
       (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from by
     apply ContinuousLinearMap.ext
     intro w
-    rw [ContinuousLinearMap.zero_apply]
+    rw [zero_apply]
     obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at (I := I)
       (F := E) (V := fun y : M => TangentSpace I y) (n := (⊤ : ℕ∞)) x w
     rw [← hY]
@@ -806,6 +846,7 @@ private lemma covGrad_slotInsert_fullRaised_id_eq_zero_deTurckLieConnectionDiffe
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma iteratedCovGrad_slotInsert_fullRaised_id_succ_eq_zero_deTurckLieConnectionDifferenceDerivative
     (g₀ : SmoothRiemannianMetric I M) (m : ℕ) :
     iteratedCovGrad (I := I) g₀ 1 1 (m + 1)

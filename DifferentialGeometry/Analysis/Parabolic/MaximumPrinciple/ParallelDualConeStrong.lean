@@ -26,8 +26,9 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+omit [CompleteSpace E] in
 theorem parallelProperCone_mem_dualZeroFace_of_terminal_eq_zero
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -78,8 +79,9 @@ theorem parallelProperCone_mem_dualZeroFace_of_terminal_eq_zero
       (transportedSectionFamily F P x₀ u t x)).2 (hfixed_face t ht x)
   simpa using htransported
 
+omit [CompleteSpace E] in
 theorem parallelProperCone_mem_dualZeroFace_of_terminal_eq_zero_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

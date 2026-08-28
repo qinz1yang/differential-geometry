@@ -296,7 +296,10 @@ theorem exists_shi_barrier_cutoff_data_of_solution
     have hreal :
         Continuous
           (fun p : Real × M => Real.exp (Λ * p.1) / R n) := by
-      simpa only [div_eq_mul_inv] using
+      change Continuous
+        (fun p : Real × M =>
+          Real.exp ((d ^ 2 * Real.sqrt K) * p.1) * (R n)⁻¹)
+      exact
         (Real.continuous_exp.comp
           (continuous_const.mul continuous_fst)).mul continuous_const
     have hcoef :
@@ -329,7 +332,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
         ContinuousOn
           (fun p : Real × M => chi n p.1 p.2)
           (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
-      simpa only [chi, z, Function.comp_apply] using hcomp
+      with_unfolding_all exact hcomp
     exact hcomp'.mono fun p hp => ⟨hp.1, Set.mem_univ p.2⟩
   have hsupport_zero :
       ∀ n s, s ∈ Set.Icc 0 T →
@@ -387,7 +390,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
         ¬ riemannianEDistOf
             (I := I) (S.base.metric 0) O y ≤
           ENNReal.ofReal (2 * R n) := by
-      simpa only [support, Set.mem_setOf_eq] using hy
+      simpa only [support, Set.mem_ofPred_eq] using hy
     have hlarge :
         ENNReal.ofReal (2 * R n) <
           ENNReal.ofReal (Real.exp (Λ * s)) *
@@ -556,7 +559,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
         ∀ᶠ y in 𝓝 x,
           MDifferentiableAt I 𝓘(Real, Real) (u t) y := by
       filter_upwards [hrho_space] with y hy
-      simpa only [u] using hy.const_smul (a n)
+      with_unfolding_all exact hy.const_smul (a n)
     have hlin : Differentiable Real (fun q : Real => a n * q) :=
       fun q => (hasDerivAt_const_mul (x := q) (a n)).differentiableAt
     have hlin' :
@@ -603,7 +606,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
     have hphi_time :
         DifferentiableWithinAt Real
           (fun s => phi s x) (Set.Icc 0 T) t := by
-      simpa only [phi, Function.comp_apply] using
+      with_unfolding_all exact
         (hvalue (u t x)).comp_differentiableWithinAt t hu_time
     have hphi_space :
         ∀ᶠ y in 𝓝 x,
@@ -694,7 +697,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
                 gradientFun
                   (I := I) ((flowG (I := I) S).metric t)
                   (rho t) x := by
-          simpa only [u, Pi.smul_apply, smul_eq_mul] using
+          with_unfolding_all exact
             (gradientFun_const_smul
               (I := I) ((flowG (I := I) S).metric t)
               (a n) hrho_xdiff)
@@ -832,7 +835,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
                 laplacianAt
                   (I := I) (flowG (I := I) S) t (rho t) x := by
           rw [laplacianAt_eq, laplacianAt_eq]
-          simpa only [u, Pi.smul_apply, smul_eq_mul] using
+          with_unfolding_all exact
             (laplacian_smul_at
               (I := I)
               (LeviCivita
@@ -957,7 +960,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
                   gradientFun
                     (I := I) ((flowG (I := I) S).metric t)
                     (rho t) x := by
-            simpa only [u, Pi.smul_apply, smul_eq_mul] using
+            with_unfolding_all exact
               (gradientFun_const_smul
                 (I := I) ((flowG (I := I) S).metric t)
                 (a n) hrho_space.self_of_nhds)

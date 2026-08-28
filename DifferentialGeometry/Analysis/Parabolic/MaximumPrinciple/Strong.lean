@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LocalStrong
+import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction
+
 
 set_option autoImplicit false
 
@@ -45,9 +47,9 @@ private def strongStaticMetricFamily
   metric := fun _ => g
   connection := fun _ => LeviCivita (I := I) g
   metricCompatible := by
-    intro t
-    simpa using
-      (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
+    intro _
+    rw [LeviCivita_eq_leviCivitaConnectionOfMetric (I := I) g]
+    exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
 
 @[simp] private theorem strongStaticMetricFamily_metric
     (g : SmoothRiemannianMetric I M) (t : Real) :
@@ -92,10 +94,12 @@ private theorem strongBarrierPhase_time_derivWithin
       (fun s => strongBarrierPhase rho kappa tau s x)
       (2 * kappa * (t - tau)) t := by
     unfold strongBarrierPhase
-    convert (hasDerivAt_const t (rho x)).add
-      (((hasDerivAt_id t).sub_const tau).pow 2 |>.const_mul kappa) using 1
-    simp only [id_eq]
-    ring
+    have h := (hasDerivAt_const t (rho x)).add
+      (((hasDerivAt_id t).sub_const tau).pow 2 |>.const_mul kappa)
+    exact (h.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (by
+        simp only [id_eq]
+        ring)
   exact hderiv.hasDerivWithinAt.derivWithin
     ((uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht)
 
@@ -112,7 +116,6 @@ private theorem strongBarrierPhase_gradient
   rw [gradientFun_const, add_zero]
 
 private theorem strongBarrierPhase_parabolicOperator
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 < T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -130,7 +133,13 @@ private theorem strongBarrierPhase_parabolicOperator
       heatOperatorWithDrift (I := I) G t (X t) rho x := by
     have hsub := heatOperatorWithDrift_sub_const (I := I)
       G t (X t) (-(kappa * (t - tau) ^ 2)) hrho x
-    simpa only [sub_neg_eq_add] using hsub
+    have heq : strongBarrierPhase rho kappa tau t =
+        fun y => rho y - (-(kappa * (t - tau) ^ 2)) := by
+      funext y
+      unfold strongBarrierPhase
+      ring
+    rw [heq]
+    exact hsub
   rw [hheat]
 
 private def expNegMulStrong (alpha : Real) : Real → Real :=
@@ -139,14 +148,18 @@ private def expNegMulStrong (alpha : Real) : Real → Real :=
 private theorem expNegMulStrong_hasDerivAt (alpha s : Real) :
     HasDerivAt (expNegMulStrong alpha)
       (-alpha * Real.exp (-alpha * s)) s := by
-  have hraw := (Real.hasDerivAt_exp (-alpha * s)).comp s
-    ((hasDerivAt_id s).const_mul (-alpha))
+  have hlinear : HasDerivAt (fun y : Real => -alpha * y) (-alpha) s := by
+    have h := (hasDerivAt_id s).const_mul (-alpha)
+    exact (h.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (mul_one _)
+  have hraw := (Real.hasDerivAt_exp (-alpha * s)).scomp s hlinear
   have hev : expNegMulStrong alpha =ᶠ[nhds s]
       Real.exp ∘ HMul.hMul (-alpha) :=
     Filter.Eventually.of_forall fun y => by simp [expNegMulStrong]
-  have h := hraw.congr_of_eventuallyEq hev
-  convert h using 1
-  ring
+  have h : HasDerivAt (expNegMulStrong alpha)
+      ((-alpha) • Real.exp (-alpha * s)) s :=
+    hraw.congr_of_eventuallyEq hev
+  exact h.congr_deriv (by simp [mul_comm])
 
 private theorem expNegMulStrong_deriv (alpha s : Real) :
     deriv (expNegMulStrong alpha) s = -alpha * Real.exp (-alpha * s) :=
@@ -348,7 +361,7 @@ private theorem strong_derivWithin_add_eps_mul_time
   have hlinear : DifferentiableWithinAt Real (fun s => epsilon * s)
       (Set.Icc 0 T) t := by
     simpa using
-      (differentiableWithinAt_id' (s := Set.Icc 0 T) (x := t)).const_mul epsilon
+      (differentiableWithinAt_fun_id (s := Set.Icc 0 T) (x := t)).const_mul epsilon
   have hderiv_linear : derivWithin (fun s => epsilon * s)
       (Set.Icc 0 T) t = epsilon := by
     rw [derivWithin_const_mul epsilon (d := fun s : Real => s)
@@ -358,7 +371,6 @@ private theorem strong_derivWithin_add_eps_mul_time
   rw [derivWithin_fun_add hw hlinear, hderiv_linear]
 
 theorem strict_barrier_on_compact_set_of_isInteriorPoint
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -427,7 +439,7 @@ theorem strict_barrier_on_compact_set_of_isInteriorPoint
     have htime_diff : DifferentiableWithinAt Real
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 :=
       (hw_time t0 ht0 ht0pos x0 hx0int).add
-        ((differentiableWithinAt_id' (s := Set.Icc 0 T) (x := t0)).const_mul epsilon)
+        ((differentiableWithinAt_fun_id (s := Set.Icc 0 T) (x := t0)).const_mul epsilon)
     have hderiv_nonpos : derivWithin
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 ≤ 0 :=
       strong_derivWithin_nonpos_at_Icc_min_of_pos
@@ -485,7 +497,6 @@ theorem strict_barrier_on_compact_set_of_isInteriorPoint
 
 theorem strict_barrier_on_compact_set
     [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -539,7 +550,6 @@ private theorem deriv_nonneg_at_right_endpoint
 
 theorem scalar_hopf_boundary_point_of_barrier_of_isInteriorPoint
     [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -603,7 +613,6 @@ theorem scalar_hopf_boundary_point_of_barrier_of_isInteriorPoint
 theorem scalar_hopf_boundary_point_of_barrier
     [I.Boundaryless]
     [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -648,16 +657,10 @@ private theorem hasDerivAt_comp_mfderiv
     HasDerivAt (fun s => f (gamma s))
       (NormedSpace.fromTangentSpace (f (gamma t))
         (mfderiv I (modelWithCornersSelf Real Real) f (gamma t)
-          (mfderiv (modelWithCornersSelf Real Real) I gamma t 1))) t := by
-  rw [hasDerivAt_iff_hasFDerivAt]
-  have hcomp := hf.hasMFDerivAt.comp t hgamma.hasMFDerivAt
-  have hcomp' := hcomp.hasFDerivAt
-  convert hcomp' using 1
-  change ContinuousLinearMap.toSpanSingleton Real
-      (((mfderiv I (modelWithCornersSelf Real Real) f (gamma t)).comp
-        (mfderiv (modelWithCornersSelf Real Real) I gamma t)) 1) = _
-  exact ContinuousLinearMap.toSpanSingleton_apply_map_one
-    (R₁ := Real) (M₂ := Real) _
+          (mfderiv (modelWithCornersSelf Real Real) I gamma t
+            (DifferentialGeometry.Analysis.Calculus.realTangentOne t)))) t :=
+  DifferentialGeometry.Analysis.Calculus.hasDerivAt_comp_mfderiv_along
+    I f gamma t hf hgamma
 
 private theorem hasDerivAt_comp_neg_gradient
     (g : SmoothRiemannianMetric I M)
@@ -1363,7 +1366,11 @@ theorem scalar_strong_maximum_principle_fixed_metric_of_barrier
       (hu_space t ht htpos) rfl x
     unfold parabolicOperatorWithDrift heatOperatorWithDrift driftTerm
     rw [hlap]
-    simpa using hu_super t ht htpos x
+    rw [show G.metric t = g from rfl]
+    have hzero : g.inner x ((fun _ _ => 0) t x) (gradientAt G t (u t) x) = 0 := by
+      simp only [map_zero, zero_apply]
+    rw [hzero, add_zero]
+    exact hu_super t ht htpos x
   apply scalar_strong_maximum_principle_of_barrier (I := I)
     G hT (fun _ _ => 0) u hu_cont hu_nonneg hu_time hu_mdiff hu_grad
     hu_super' hrho hrho_nonneg hR hdelta heta hlocal
@@ -1375,7 +1382,11 @@ theorem scalar_strong_maximum_principle_fixed_metric_of_barrier
     have habs := hlap_bound x (by exact ⟨hxr, hxR⟩)
     unfold heatOperatorWithDrift driftTerm
     rw [hlap]
-    simpa using le_trans (le_abs_self _) habs
+    rw [show G.metric t = g from rfl]
+    have hzero : g.inner x ((fun _ => 0) x) (gradientAt G t rho x) = 0 := by
+      simp only [map_zero, zero_apply]
+    rw [hzero, add_zero]
+    exact le_trans (le_abs_self _) habs
   · exact hkappa
   · exact hinit
   · exact htime
@@ -1439,7 +1450,8 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_of_barrier
       (hu_space t ht htpos) rfl x
     unfold parabolicOperatorWithDrift heatOperatorWithDrift driftTerm gradientAt
     rw [hlap]
-    simpa using hu_super t ht htpos x
+    rw [show G.metric t = g from rfl]
+    exact hu_super t ht htpos x
   apply scalar_strong_maximum_principle_of_barrier (I := I)
     G hT X u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super'
     hrho hrho_nonneg hR hdelta heta hlocal

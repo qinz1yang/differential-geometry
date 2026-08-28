@@ -140,7 +140,7 @@ theorem supersolution_iteration_forward
             superStepConstFwd (d := d) A p₀ n *
               superIterNormFwd (d := d) (u := u) p₀ n := by
         rw [heq_norm, heq_step]
-        convert hNorm_succ using 2
+        simpa [superIterNormFwd, superIterIntegralFwd, p_n] using hNorm_succ
       calc superIterNormFwd (d := d) (u := u) p₀ (n + 1)
           ≤ superStepConstFwd (d := d) A p₀ n *
               superIterNormFwd (d := d) (u := u) p₀ n := hstep_bound

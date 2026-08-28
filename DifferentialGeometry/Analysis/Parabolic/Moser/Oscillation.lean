@@ -152,7 +152,7 @@ theorem localized_l2_oscillation_eq
         localizedIntegral (I := I) (M := M) cutoff u ^ 2 /
           cutoffMass (I := I) (M := M) cutoff := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -182,7 +182,7 @@ theorem localized_l2_deviation_eq_oscillation_add
         cutoffMass (I := I) (M := M) cutoff *
           (center - localizedAverage (I := I) (M := M) cutoff u) ^ 2 := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g

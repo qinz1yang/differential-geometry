@@ -64,11 +64,11 @@ theorem localizedSpacetimeMeasure_real_superlevel_le_evolvingLocalizedSuperlevel
     let μ := riemannianMeasureFamily (I := I) (M := M) g t
     let S : Set M := {x | level < u t x}
     let f : M → ℝ := fun x => cutoff.toFun x ^ 2
-    letI : IsFiniteMeasure μ := by
+    let : IsFiniteMeasure μ := by
       dsimp only [μ, riemannianMeasureFamily]
       exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
         (I := I) (M := M) (g t)
-    letI : IsFiniteMeasure (C • μ) := μ.smul_finite hC
+    let : IsFiniteMeasure (C • μ) := μ.smul_finite hC
     have hf_int : Integrable f (C • μ) :=
       cutoff.smooth.continuous.pow 2 |>.integrable_of_hasCompactSupport
         (HasCompactSupport.of_compactSpace _)

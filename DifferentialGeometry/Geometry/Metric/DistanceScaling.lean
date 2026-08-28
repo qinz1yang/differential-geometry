@@ -32,7 +32,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem riemannianEDistOf_self
     (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianEDistOf (I := I) g x x = 0 := by
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   change Manifold.riemannianEDist I x x = 0
   exact Manifold.riemannianEDist_self
@@ -45,14 +45,14 @@ theorem edistOf_iInf
       ⨅ (γ : Path x y) (_ : CMDiff 1 γ),
         ∫⁻ t, ENNReal.ofReal (Real.sqrt
           (g.inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) := by
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   change Manifold.riemannianEDist I x y = _
   rw [Manifold.riemannianEDist]
   refine iInf_congr fun γ => ?_
   refine iInf_congr fun hγ => ?_
   refine lintegral_congr fun t => ?_
-  rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   congr 2
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -159,7 +159,7 @@ theorem edistBall_scale
           ENNReal.ofReal (Real.sqrt c * r)} =
       {y : M | riemannianEDistOf (I := I) g x y < ENNReal.ofReal r} := by
   ext y
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   rw [edistOf_scale]
   rw [ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
   let a : ℝ≥0∞ := ENNReal.ofReal (Real.sqrt c)

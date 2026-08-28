@@ -31,11 +31,11 @@ theorem tensor0SBundle_enorm_eq_riemannianBundle_enorm
     letI _rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
       ⟨cg.toRiemannianMetric⟩
     ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)) := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI _rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let _rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
-  rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   have hinner : (inner ℝ v v : ℝ) = g.inner x v v := rfl
   rw [hinner]
 

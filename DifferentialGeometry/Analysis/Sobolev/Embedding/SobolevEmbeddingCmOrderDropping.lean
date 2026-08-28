@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -30,6 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Analysis.Sobolev.Chart
   DifferentialGeometry.Analysis.Laplacian.TensorRegularity in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covGradCompPull_eqOn
@@ -110,6 +110,7 @@ private lemma rawPull_contDiffAt (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (rawPull_contDiffOn (I := I) (M := M) g r s T α Idx Jdx).contDiffAt
     ((chartTargetEuclid_isOpen (I := I) (M := M) α).mem_nhds hy)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covGrad_iteratedFDeriv_eq (g : SmoothRiemannianMetric I M)
@@ -402,6 +403,7 @@ private lemma pouPull_eq_zero_off_kernel (α : M) (y : EuclN)
   refine ⟨(extChartAt I α) b, ⟨b, hb_supp, rfl⟩, ?_⟩
   rw [h_round]; simp
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covGrad_component_iteratedFDeriv_norm_le
@@ -585,6 +587,7 @@ private lemma rawPull_iteratedFDeriv_norm_sq_le_rhsHsContent
     (fun q' _ => Finset.sum_nonneg (fun l' _ => hbasisSum_nn q' l'))
     (Finset.mem_univ q)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 private lemma covGradComp_basisSum_le_rhsHsContent
     (g : SmoothRiemannianMetric I M) (r s σ : ℕ) (T : SmoothCcTensor g r s)
@@ -746,17 +749,19 @@ private lemma covGradComp_basisSum_le_rhsHsContent
   exact key
 
 private def combinedConst (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] (r s σ : ℕ) (Γbd : ℝ) : ℝ :=
+    (r s σ : ℕ) (Γbd : ℝ) : ℝ :=
   (Fintype.card ((Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin (s + 1) → Fin (Module.finrank ℝ E))) : ℝ) * ((2 * σ + 1 : ℕ) : ℝ) *
     ((Module.finrank ℝ E) ^ (2 * σ) : ℝ) *
     (1 + Γbd * (Fintype.card ((Fin r → Fin (Module.finrank ℝ E)) ×
       (Fin s → Fin (Module.finrank ℝ E))) : ℝ) * (2 : ℝ) ^ (2 * σ)) ^ 2
 
+omit [FiniteDimensional ℝ E] in
 private lemma combinedConst_nonneg (r s σ : ℕ) {Γbd : ℝ} (hΓbd_nn : 0 ≤ Γbd) :
     0 ≤ combinedConst E r s σ Γbd := by
   unfold combinedConst; positivity
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 private lemma covGrad_pointwise_integrand_le
     (g : SmoothRiemannianMetric I M) (r s σ : ℕ) (T : SmoothCcTensor g r s)
@@ -975,7 +980,7 @@ private lemma sumIntegrals_eq_integral_sum
                     (Fin (Module.finrank ℝ E)) ℝ (bIdx i))| ^ 2))
         ∂(volume : Measure EuclN) := by
     intro IJ j
-    rw [MeasureTheory.lintegral_finset_sum' _
+    rw [MeasureTheory.lintegral_finsetSum' _
       (fun bIdx _ => rawPullIntegrand_aemeasurable (I := I) (M := M) g r' s' S α IJ j bIdx)]
   have h_j : ∀ (IJ : (Fin r' → Fin (Module.finrank ℝ E)) ×
         (Fin s' → Fin (Module.finrank ℝ E))),
@@ -1019,7 +1024,7 @@ private lemma sumIntegrals_eq_integral_sum
           rawPullIntegrand_aemeasurable (I := I) (M := M) g r' s' S α IJ j bIdx)
       refine h.congr (Filter.EventuallyEq.of_eq (funext (fun y => ?_)))
       rw [Finset.sum_apply]
-    rw [MeasureTheory.lintegral_finset_sum' _ hmeas]
+    rw [MeasureTheory.lintegral_finsetSum' _ hmeas]
   calc (∑ IJ : (Fin r' → Fin (Module.finrank ℝ E)) ×
           (Fin s' → Fin (Module.finrank ℝ E)),
         ∑ j ∈ Finset.range K,
@@ -1086,7 +1091,7 @@ private lemma sumIntegrals_eq_integral_sum
                 (Filter.EventuallyEq.of_eq (funext (fun y => by rw [Finset.sum_apply]))))
           refine h.congr (Filter.EventuallyEq.of_eq (funext (fun y => ?_)))
           rw [Finset.sum_apply]
-        rw [MeasureTheory.lintegral_finset_sum' _ hmeas2]
+        rw [MeasureTheory.lintegral_finsetSum' _ hmeas2]
     _ = ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           ENNReal.ofReal
             (((chartAtlasPOU I M α : M → ℝ)
@@ -1249,7 +1254,7 @@ private lemma covGrad_per_alpha_inner_bound
       simp only [Pi.zero_apply]
       rw [hρ0, zero_mul, ENNReal.ofReal_zero]
     rw [hzero]
-    exact zero_le _
+    exact zero_le
 
 omit [BoundarylessManifold I M] in
 theorem exists_covGrad_tensorPouSobolevHsNorm_le

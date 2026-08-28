@@ -330,7 +330,7 @@ theorem chartChristoffelCorrectionWeak_memLp_chartTarget_compact
       ((volume : Measure EuclN).restrict K) := by
   classical
   unfold chartChristoffelCorrectionWeak
-  exact MeasureTheory.memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  exact MeasureTheory.memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun m _ => chartChristoffelCorrectionWeak_summand_memLp
       (I := I) (M := M) g α hu_h k l m hK_compact hK_in)
 

@@ -63,7 +63,14 @@ theorem oneForm_pair_coordFrame_eventually
           hframe.coeff j y (Z y) *
             α y (Function.update (fun _ : Fin 1 => Z y) (0 : Fin 1)
               (coordinateFrameAt (I := I) x₀ j y)) := by
-          simpa using hmap
+          change (α y).toMultilinearMap
+            (Function.update (fun _ : Fin 1 => Z y) (0 : Fin 1)
+              (∑ j : CoordinateIdx (𝕜 := 𝕜) E,
+                hframe.coeff j y (Z y) • coordinateFrameAt (I := I) x₀ j y)) = _
+          rw [hmap]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [MultilinearMap.map_update_smul]
+          rfl
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
           hframe.coeff j y (Z y) *
             α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y) := by
@@ -82,7 +89,7 @@ theorem oneForm_pair_coordFrame_product_rule
       z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx (𝕜 := 𝕜) E,
       dz j =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y))
           x₀ (X x₀))
@@ -93,7 +100,7 @@ theorem oneForm_pair_coordFrame_product_rule
     (hdiff_α : ∀ j : CoordinateIdx (𝕜 := 𝕜) E,
       MDifferentiableAt I 𝓘(𝕜, 𝕜)
         (fun y : M => α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)) x₀) :
-    extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
+    mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
       ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
         (dz j * coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => j) +
           z j *
@@ -107,10 +114,10 @@ theorem oneForm_pair_coordFrame_product_rule
     fun j y => α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)
   have hpair_ev := oneForm_pair_coordFrame_eventually (I := I) Z α x₀
   have hderiv_congr :
-      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
-        extDerivFun (I := I)
+      mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
+        mvfderiv (I := I)
           (fun y : M => ∑ j : CoordinateIdx (𝕜 := 𝕜) E, zfun j y * afun j y) x₀ (X x₀) := by
-    exact oneForm_extDerivFun_congr_eventually (I := I) (X x₀) (by
+    exact oneForm_mvfderiv_congr_eventually (I := I) (X x₀) (by
       simpa [zfun, afun] using hpair_ev)
   rw [hderiv_congr]
   have hsum_fun :
@@ -120,26 +127,23 @@ theorem oneForm_pair_coordFrame_product_rule
     funext y
     simp
   rw [hsum_fun]
-  rw [oneForm_extDerivFun_finset_sum (I := I) (t := Finset.univ)
+  rw [oneForm_mvfderiv_finset_sum (I := I) (t := Finset.univ)
     (f := fun j y => zfun j y * afun j y) (x := x₀) (v := X x₀)]
   · refine Finset.sum_congr rfl fun j _ => ?_
-    rw [oneForm_extDerivFun_mul (I := I) (f := zfun j) (g := afun j) (x := x₀)
+    rw [oneForm_mvfderiv_mul (I := I) (f := zfun j) (g := afun j) (x := x₀)
       (v := X x₀) (hdiff_z j) (hdiff_α j)]
     have hzj : zfun j x₀ = z j := by
       rw [hz j]
       exact oneForm_coordinateFrame_coeff_at_base_eq_coord (I := I) x₀ (Z x₀) j
-    have hdzj : extDerivFun (I := I) (zfun j) x₀ (X x₀) = dz j := by
+    have hdzj : mvfderiv (I := I) (zfun j) x₀ (X x₀) = dz j := by
       exact (hdz j).symm
     have haj :
         afun j x₀ = coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => j) := by
       simp [afun, coordComponent0SAt, component0S]
     have hdaj :
-        extDerivFun (I := I) (afun j) x₀ (X x₀) =
+        mvfderiv (I := I) (afun j) x₀ (X x₀) =
           coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => α x)
             (fun _ : Fin 1 => j) := by
-      change (mfderiv I 𝓘(𝕜, 𝕜) (afun j) x₀) (X x₀) =
-          coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => α x)
-            (fun _ : Fin 1 => j)
       simp [afun, coordDeriv0SAt]
     rw [hzj, hdzj, haj, hdaj]
     ring

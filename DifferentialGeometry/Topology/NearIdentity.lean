@@ -22,7 +22,7 @@ theorem inj_of_unif_close
   obtain ⟨V, hV, hVsymm, hVV⟩ := comp_symm_mem_uniformity_sets hW
   refine ⟨V, hV, ?_⟩
   intro f hclose hinj x y hxy
-  letI : SetRel.IsSymm V := hVsymm
+  let : SetRel.IsSymm V := hVsymm
   obtain ⟨z, hz⟩ := hcover x (Set.mem_univ x)
   apply hinj z
   · exact hz (mem_ball_self x hW)

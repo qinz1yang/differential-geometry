@@ -41,7 +41,6 @@ theorem solution_isMetricCompatible
 
 open DifferentialGeometry.Integral.DivergenceTheorem
   DifferentialGeometry.Integral.Measure in
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem rmFrozenSlot_chartBasis_contMDiffOn
@@ -80,7 +79,11 @@ theorem rmFrozenSlot_chartBasis_contMDiffOn
     ((freezeAllBut04Field (I := I) (M := M) (S.base.rm04 t) q Y).contMDiff x₀)
     (v := fun _ : Fin 1 => fun b : M => chartBasisVecFiber (I := I) α j b)
     (fun _ => hv_at)
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using h_eval
+  change ContMDiffAt I 𝓘(Real, Real) ∞
+    (fun b : M =>
+      ((freezeAllBut04Field (I := I) (M := M) (S.base.rm04 t) q Y) b).toModel
+        (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b)) x₀
+  exact h_eval
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [Module.Finite ℝ E] in
@@ -158,7 +161,7 @@ theorem rmRaise_summand_covDeriv
     (hVc : ((S.family.connection (t : Real) (fun p : M => Vc p) x₀) (X x₀)) = 0)
     (hVm : ∀ i : Fin 4,
       ((S.family.connection (t : Real) (fun p : M => Vm i p) x₀) (X x₀)) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           S.base.rm04 (t : Real) y
             (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
@@ -309,7 +312,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
       nabla3Rm04Field (I := I) S (t : Real) x₀
         (Fin.cons (X x₀)
           (metricTraceInput (I := I) (Vc x₀) (Vb x₀) (fun i : Fin 4 => Vm i x₀))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
             (S.base.rm04 (t : Real) y) (Vb y) (Vc y) (fun i : Fin 4 => Vm i y))
@@ -377,7 +380,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
     (tensor0SField_eval_smooth_slots_contMDiffAt
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (nabla2Rm04Field (I := I) S (t : Real)) Wcb x₀).mdifferentiableAt (by simp)
-  rw [← extDerivFun_sub_at (I := I) (X x₀) hmdiff_bc hmdiff_cb]
+  rw [← mvfderiv_sub_at (I := I) (X x₀) hmdiff_bc hmdiff_cb]
   have hfield :
       (fun y : M =>
           nabla2Rm04Field (I := I) S (t : Real) y (fun a : Fin 6 => Wbc a y) -
@@ -467,21 +470,21 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
       simp [rmRaiseSlotSections, vec4, rmFrozenSlotSharpSection_apply,
         Matrix.cons_val_zero, Matrix.cons_val_one]
   have hstep3 :
-      extDerivFun (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
-        -∑ q : Fin 4, extDerivFun (I := I) (g q) x₀ (X x₀) := by
+      mvfderiv (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
+        -∑ q : Fin 4, mvfderiv (I := I) (g q) x₀ (X x₀) := by
     have hsumfun : (fun y : M => ∑ q : Fin 4, g q y) =
         (Finset.univ : Finset (Fin 4)).sum g := by
       funext y; simp [Finset.sum_apply]
     have hneg :
-        extDerivFun (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
-          -extDerivFun (I := I) (fun y : M => ∑ q : Fin 4, g q y) x₀ (X x₀) :=
-      extDerivFun_neg_at (I := I) (f := fun y : M => ∑ q : Fin 4, g q y) (X x₀)
+        mvfderiv (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
+          -mvfderiv (I := I) (fun y : M => ∑ q : Fin 4, g q y) x₀ (X x₀) :=
+      mvfderiv_neg_at (I := I) (f := fun y : M => ∑ q : Fin 4, g q y) (X x₀)
         (by
           rw [hsumfun]
           exact MDifferentiableAt.sum (𝕜 := Real) (I := I)
             (t := (Finset.univ : Finset (Fin 4))) (fun q _ => hmdiff_q q))
     rw [hneg, hsumfun]
-    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real (I := I)
+    rw [DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real (I := I)
       (t := (Finset.univ : Finset (Fin 4))) g (X x₀) (fun q _ => hmdiff_q q)]
   rw [hstep3]
   congr 1
@@ -717,6 +720,7 @@ theorem rmFrozenSlot_basis_component
   rmFrozenSlotField_apply_vec (I := I) S t q Vm x₀ e
 
 open DifferentialGeometry.TensorLieDeriv in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T1_covConst_le
@@ -917,6 +921,7 @@ theorem abs_nablaLapComm_T1_covConst_le
   rfl
 
 open DifferentialGeometry.TensorLieDeriv in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T1_orthoBasis_le
@@ -1025,6 +1030,7 @@ theorem compNormSqMulti_eq_compNormSq4_basis
   · intro y _ hy; exact absurd (Subsingleton.elim y default) hy
   · intro h; exact absurd (Finset.mem_univ _) h
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapCommReactionTermF_orthoBasis_le
@@ -1061,6 +1067,7 @@ theorem abs_nablaLapCommReactionTermF_orthoBasis_le
   refine le_trans hsum (le_of_eq ?_)
   ring
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
@@ -1102,6 +1109,7 @@ theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
   apply le_of_eq
   ring
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_spatialCommNablaRm_orthoFrame_le

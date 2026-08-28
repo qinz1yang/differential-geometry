@@ -37,6 +37,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem norm_iterCovGrad_comp
     (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ) (S : SmoothCcTensor g₀ 0 s) :
@@ -64,6 +65,7 @@ private theorem norm_iterCovGrad_comp
   have h2 : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 0 s (j + i) S‖ := norm_nonneg _
   nlinarith [hsq, h1, h2]
 
+omit [CompactSpace M] in
 private theorem rawLap_le_secGrad_dim
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     ‖rawTensorConnLapSmooth (I := I) g₀ 0 s S‖ ≤
@@ -251,6 +253,7 @@ theorem bochner_step_unif
       (covGrad (I := I) (M := M) g₀ 0 (s + k) P).toFun)
   exact bochner_scalar_close hbase_le hpair_bound hneg_le
 
+omit [CompactSpace M] in
 theorem roughLapComm_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -399,6 +402,7 @@ theorem roughLapComm_unif
         ≤ Fc p * fullSum + Cm (p + 1) * fullSum := add_le_add harm1 harm2
       _ = (Fc p + Cm (p + 1)) * fullSum := hfinal
 
+omit [CompactSpace M] in
 theorem rawConnLapIter_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -879,6 +883,7 @@ theorem jetEven_unif
     _ = ((2 * k + 1 : ℕ) : ℝ) * (Cg * ((k : ℝ) + 1)) * Nspec := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; push_cast; ring
 
+omit [CompactSpace M] in
 theorem iterRawLap_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1204,6 +1209,7 @@ theorem hsCovsum_unif
   rw [Real.sqrt_sq hnorm_nn, Real.sqrt_sq hrhs_nn] at hsqrt
   simpa only [hSall_def] using hsqrt
 
+omit [CompactSpace M] in
 theorem iterLapGradComm_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1373,6 +1379,7 @@ theorem iterLapGradComm_unif
         _ = (Fc p * (∑ a ∈ Finset.range (p + 2), Cmaster a) +
               coefB p * (∑ q ∈ Finset.range (p + 3), Cfun q)) * FULL := by ring
 
+omit [CompactSpace M] in
 theorem rawConnLapCovComm_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1392,7 +1399,7 @@ theorem rawConnLapCovComm_unif
   have h := hbound 0 S
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem norm_iteratedCovGrad_order_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {n n' : ℕ} (h : n = n')
     (S : SmoothCcTensor g₀ 0 s) :
@@ -2160,6 +2167,7 @@ theorem covsum_hs_three
       dsimp [C₂, C₃, N, h3CovsumC]
       ring
 
+omit [CompactSpace M] in
 theorem roughLapComm_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -2304,6 +2312,7 @@ theorem roughLapComm_const
         ≤ Fc p * fullSum + roughLapCommC Fc m (p + 1) * fullSum := add_le_add harm1 harm2
       _ = (Fc p + roughLapCommC Fc m (p + 1)) * fullSum := hfinal
 
+omit [CompactSpace M] in
 theorem rawConnLapIter_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -2819,6 +2828,7 @@ theorem jetEven_const
     _ = ((2 * k + 1 : ℕ) : ℝ) * (ellipticEngC Fc (Module.finrank ℝ E) (2 * k) * ((k : ℝ) + 1)) * Nspec := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; push_cast; ring
 
+omit [CompactSpace M] in
 theorem iterRawLap_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -3119,6 +3129,7 @@ theorem hsCovsum_unif_const
   rw [Real.sqrt_sq hnorm_nn, Real.sqrt_sq hrhs_nn] at hsqrt
   simpa only [hSall_def] using hsqrt
 
+omit [CompactSpace M] in
 theorem lapGradComm_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -3295,6 +3306,7 @@ theorem lapGradComm_const
               (∑ q ∈ Finset.range (p + 3), lapGradCommC Fc (Module.finrank ℝ E) i q)) * FULL := by
           ring
 
+omit [CompactSpace M] in
 theorem lapCovComm_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)

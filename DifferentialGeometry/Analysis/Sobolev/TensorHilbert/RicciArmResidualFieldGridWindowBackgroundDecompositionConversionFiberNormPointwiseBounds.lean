@@ -51,6 +51,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -97,7 +98,7 @@ lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt
       ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g x r s S n e K J) ^ 2 := by
   classical
-  haveI : Nonempty (Fin n) := by
+  have : Nonempty (Fin n) := by
     rw [hn]
     exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
@@ -201,6 +202,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_of_ball (T : SmoothCcTensor g₀ 0 2) 
           ring
         rw [hc0, hc2, one_mul, hnE]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (T : SmoothCcTensor g₀ 0 2) (k : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x
@@ -246,6 +248,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (T : SmoothCcTensor 
     _ = riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x (A.toSection x) := by
         rw [hRB]; ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_pointwise (T : SmoothCcTensor g₀ 0 2)
     (i : ℕ) (x : M) :

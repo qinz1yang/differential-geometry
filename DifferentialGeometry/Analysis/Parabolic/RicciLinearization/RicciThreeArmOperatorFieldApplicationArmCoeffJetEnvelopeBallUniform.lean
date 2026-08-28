@@ -24,7 +24,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -66,6 +65,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma jetEnvelope_covGrad_one_le (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (x : M) (B : ℝ)
     (henv : (∑ j ∈ Finset.range 3,
@@ -88,6 +88,7 @@ private lemma jetEnvelope_covGrad_one_le (g₀ : SmoothRiemannianMetric I M)
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
@@ -134,7 +135,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
             cometricDoubleTraceFib (I := I) g₁ 1 x)) := rfl
   rw [hlin_eq]
   refine hcomp.trans ?_
-  letI instTens12 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
+  let instTens12 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   set N : ℝ := ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖ with hN_def
   have hN_nn : 0 ≤ N := norm_nonneg _
@@ -181,6 +182,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPath_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
@@ -243,6 +245,7 @@ theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPa
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
     ∃ Λarm1 : ℝ, 0 ≤ Λarm1 ∧

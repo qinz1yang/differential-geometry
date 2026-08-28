@@ -334,7 +334,7 @@ theorem eigenChartIncrementMode_iteratedFDerivWithin_summable_majorant
   have hweyl : Summable (fun i : TensorEigenIdx (I := I) (M := M) g 0 2 =>
       tensorSobolevWeight (I := I) (M := M) i (-(2 * (sW : ℝ)))) := by
     refine tensorEigen_summable_negpow (I := I) (M := M) g (2 * (sW : ℝ)) ?_
-    rw [hsW_def]; push_cast; have := weylSobolevExp_gt_finrank (E := E); push_cast at this ⊢
+    rw [hsW_def]; push_cast; have := weylSobolevExp_gt_finrank (E := E)
     have h0 : (0:ℝ) ≤ (weylSobolevExp (E := E) : ℝ) := by positivity
     nlinarith [h0]
   have hbase_pos : ∀ i : TensorEigenIdx (I := I) (M := M) g 0 2,

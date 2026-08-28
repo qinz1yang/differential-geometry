@@ -28,6 +28,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_transition_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
@@ -119,6 +120,7 @@ theorem exists_normal_transition_limit_subsequence
   · simpa [PointedRiemannianSeq.subseq] using hconv
   · simpa [PointedRiemannianSeq.subseq] using hconvbar
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_finite_normal_transition_limit_subsequence
     {ι : Type*} (s : Finset ι)
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -269,6 +271,7 @@ theorem exists_finite_normal_transition_limit_subsequence
         · simpa [Function.comp_apply] using hconv.comp_subseq hphi1
         · simpa [Function.comp_apply] using hconvbar.comp_subseq hphi1
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_transition_limit_subsequence_of_finite
     {ι : Type*} [Finite ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -351,7 +354,7 @@ theorem exists_normal_transition_limit_subsequence_of_finite
           (forall z, z ∈ U i -> Jinf i z ∈ V i -> Jbarinf i (Jinf i z) = z) /\
           (forall w, w ∈ V i -> Jbarinf i w ∈ U i -> Jinf i (Jbarinf i w) = w) := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨phi, hphi, hlim⟩ :=
     exists_finite_normal_transition_limit_subsequence (I := I) (Finset.univ : Finset ι) metricInput x y U V Ua Va
       (fun i _ => hU i) (fun i _ => hV i)
@@ -467,6 +470,7 @@ structure NormalTransAt
     normalTransition (I := I) (X.obj k) (x i k) (y i k)
       (normalTransition (I := I) (X.obj k) (y i k) (x i k) w) = w
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem existsTransTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)} {ι : Type*} [Finite ι]
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
@@ -494,14 +498,15 @@ theorem existsTransTail
           (∀ z, z ∈ U i → Jinf i z ∈ V i → Jbarinf i (Jinf i z) = z) ∧
           (∀ w, w ∈ V i → Jbarinf i w ∈ U i → Jinf i (Jbarinf i w) = w) := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   have hall : ∀ᶠ k in atTop, ∀ i : ι,
       NormalTransAt (I := I) metricInput x y U V Ua Va i k :=
     Filter.eventually_all.mpr htail
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hall
   let tau : Nat → Nat := fun k => k + N
   have htau : StrictMono tau := by
-    simpa only [tau] using strictMono_id.add_const N
+    intro a b hab
+    exact Nat.add_lt_add_right hab N
   have hdata (k : Nat) (i : ι) :=
     hN (tau k) (by simpa only [tau] using Nat.le_add_left N k) i
   let xt : ι → ∀ k : Nat, ((X.subseq tau).obj k).M :=

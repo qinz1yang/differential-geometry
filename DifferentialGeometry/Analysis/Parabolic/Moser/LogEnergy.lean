@@ -61,7 +61,7 @@ theorem inner_gradientFun_log_self
           (gradientFun (I := I) g f x)
           (gradientFun (I := I) g f x) := by
   rw [gradientFun_log (I := I) g hf hpos]
-  simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [map_smul, smul_apply, smul_eq_mul]
   field_simp
 
 variable [SigmaCompactSpace M]
@@ -98,8 +98,8 @@ private theorem twice_cutoff_inner_grad_le
   have hnonneg := metric_inner_self_nonneg (I := I) (M := M) g x
     (cutoff.toFun x • gradFun (I := I) g w.toFun x -
       (2 : ℝ) • gradFun (I := I) g cutoff.toFun x)
-  simp only [map_sub, ContinuousLinearMap.sub_apply, map_smul,
-    ContinuousLinearMap.smul_apply, smul_eq_mul] at hnonneg
+  simp only [map_sub, sub_apply, map_smul,
+    smul_apply, smul_eq_mul] at hnonneg
   rw [g.symm x
     (gradFun (I := I) g cutoff.toFun x)
     (gradFun (I := I) g w.toFun x)] at hnonneg
@@ -154,7 +154,13 @@ theorem log_supersolution
     unfold SmoothScalar.toContMDiffMap
     rw [← laplacian_levi_eq (I := I) g logut.smooth x,
       ← laplacian_levi_eq (I := I) g ut.smooth x]
-    simpa only [ut, logut, smoothScalarSlice_toFun] using hlap_raw
+    change laplacian (LeviCivita (I := I) g) g
+        (fun y : M => Real.log (u t y)) x =
+      (u t x)⁻¹ * laplacian (LeviCivita (I := I) g) g (fun y : M => u t y) x -
+        (u t x ^ 2)⁻¹ *
+          g.inner x (gradientFun (I := I) g (fun y : M => u t y) x)
+            (gradientFun (I := I) g (fun y : M => u t y) x)
+    exact hlap_raw
   have hloggrad := inner_gradientFun_log_self (I := I) g
     (ut.smooth.mdifferentiable (by simp) x) (hpos t x)
   have hloggrad' :
@@ -176,8 +182,8 @@ theorem log_supersolution
       (u t x)⁻¹ * source t x ≤
     (u t x)⁻¹ * deriv (fun s => u s x) t
   rw [hlap, hloggrad']
-  convert hmul using 1
-  all_goals ring
+  rw [mul_add] at hmul
+  linarith
 
 variable [CompactSpace M]
 
@@ -206,7 +212,7 @@ theorem log_energy_differential_of_supersolution
   let w := smoothScalarSlice (I := I) g (fun s x => Real.log (u s x)) hlog t
   let test : SmoothScalar g :=
     ⟨fun x => cutoff.toFun x ^ 2, cutoff.smooth.pow 2⟩
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -214,12 +220,19 @@ theorem log_energy_differential_of_supersolution
       g.inner x
         (gradFun (I := I) g w.toFun x)
         (gradFun (I := I) g w.toFun x)) := by
-    simpa only [grad_g_apply] using w.continuous_inner_grad w
+    have h := w.continuous_inner_grad w
+    change Continuous (fun x : M =>
+      g.inner x (gradFun (I := I) g w.toFun x) (gradFun (I := I) g w.toFun x)) at h
+    exact h
   have hcutoffgrad_cont : Continuous (fun x : M =>
       g.inner x
         (gradFun (I := I) g cutoff.toFun x)
         (gradFun (I := I) g cutoff.toFun x)) := by
-    simpa only [grad_g_apply] using cutoff.continuous_inner_grad cutoff
+    have h := cutoff.continuous_inner_grad cutoff
+    change Continuous (fun x : M =>
+      g.inner x (gradFun (I := I) g cutoff.toFun x)
+        (gradFun (I := I) g cutoff.toFun x)) at h
+    exact h
   have hcross_cont : Continuous (fun x : M =>
       cutoff.toFun x *
         g.inner x
@@ -227,7 +240,11 @@ theorem log_energy_differential_of_supersolution
           (gradFun (I := I) g w.toFun x)) := by
     have hinner := contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
       (grad_g (I := I) g cutoff.toContMDiffMap) (grad_g (I := I) g w.toContMDiffMap)
-    exact cutoff.smooth.continuous.mul (by simpa only [grad_g_apply] using hinner.continuous)
+    have hinner' := hinner.continuous
+    change Continuous (fun x : M =>
+      g.inner x (gradFun (I := I) g cutoff.toFun x) (gradFun (I := I) g w.toFun x))
+      at hinner'
+    exact cutoff.smooth.continuous.mul hinner'
   have hlap_cont : Continuous (fun x : M => Δ_g (I := I) g w.toContMDiffMap x) :=
     (Δ_g_contMDiff (I := I) g w.toContMDiffMap).continuous
   let F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯ :=
@@ -286,8 +303,8 @@ theorem log_energy_differential_of_supersolution
             (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
             (gradientFun (I := I) g (fun y => Real.log (u t y)) x) ≤
       cutoff.toFun x ^ 2 * deriv (fun s => Real.log (u s x)) t
-    convert hmul using 1
-    all_goals ring
+    rw [mul_add] at hmul
+    exact hmul
   have htime_le :
       (∫ x, cutoff.toFun x ^ 2 * Δ_g (I := I) g w.toContMDiffMap x ∂μ) +
           ∫ x, cutoff.toFun x ^ 2 *
@@ -312,7 +329,7 @@ theorem log_energy_differential_of_supersolution
     dsimp only [test]
     rw [gradientFun_pow (I := I) g 1
       (cutoff.smooth.mdifferentiable (by simp) x)]
-    simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [map_smul, smul_apply, smul_eq_mul]
     rw [gradient_eq_gradFun (I := I), gradient_eq_gradFun (I := I)]
     ring
   have hlap_identity :
@@ -343,7 +360,12 @@ theorem log_energy_differential_of_supersolution
               exact integral_congr_ae (ae_of_all μ fun x => by
                 simpa only [mul_assoc] using (htest_pointwise x).symm)
         _ = -∫ x, cutoff.toFun x ^ 2 * Δ_g (I := I) g w.toContMDiffMap x ∂μ := by
-              simpa only [μ, test, smoothScalarSlice_toFun, grad_g_apply] using hgreen
+              change (∫ x, g.inner x
+                    (gradientFun (I := I) g test.toFun x)
+                    (gradientFun (I := I) g w.toFun x) ∂μ) =
+                -∫ x, cutoff.toFun x ^ 2 * Δ_g (I := I) g w.toContMDiffMap x ∂μ
+                at hgreen
+              exact hgreen
     linarith
   have hcross :
       2 * ∫ x, cutoff.toFun x *

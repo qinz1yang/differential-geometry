@@ -71,8 +71,14 @@ theorem intrMetricJet_zero
         (intrLaunchJ (I := I) g hEnorm p u a b (r, 1))
         (intrLaunchJ (I := I) g hEnorm p u a b (r, 1)) := by
   simp only [intrMetricJet, Nat.zero_add, Finset.sum_range_one,
-    Nat.choose_zero_right, Nat.cast_one, one_mul, Nat.zero_sub,
-    intrLaunchJet_zero]
+    Nat.choose_zero_right, Nat.cast_one, one_mul, Nat.zero_sub]
+  let hMetric : IsMetricNorm (I := I) (M := M) g := by
+    unfold IsMetricNorm
+    exact hEnorm
+  have hzero : intrLaunchJet (I := I) g hEnorm p u a b 0 (r, 1) =
+      intrLaunchJ (I := I) g hEnorm p u a b (r, 1) := by
+    exact intrLaunchJet_zero (I := I) g hMetric p u a b (r, 1)
+  rw [hzero]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -89,16 +95,90 @@ theorem intrMetric_line
     (p : M) (z a b : E) (r : Real) :
     intrFrameMetric (I := I) g hEnorm p (z + r • a) b b =
       intrMetricJet (I := I) g hEnorm p
-        (normalFrame (I := I) g p z)
-        (normalFrame (I := I) g p a)
-        (normalFrame (I := I) g p b) 0 r := by
-  rw [intrMetricJet_zero, intr_metric_jacobi, intrLaunchJ_at,
-    intrFrame_apply, expMapIntrinsic_def,
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p z))
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p a))
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p b)) 0 r := by
+  let hMetric : IsMetricNorm (I := I) (M := M) g := by
+    unfold IsMetricNorm
+    exact hEnorm
+  have hJ :
+      intrLaunchJ (I := I) g hEnorm p
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p z))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p a))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p b)) (r, 1) =
+        intrinsicJacobi (I := I) g hEnorm p
+          (show TangentSpace I p from
+            tangentSpaceModelContinuousLinearEquiv (I := I) p
+                (normalFrame (I := I) g p z) +
+              r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+                (normalFrame (I := I) g p a))
+          (show TangentSpace I p from
+            tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p b)) 1 := by
+    convert intrLaunchJ_at (I := I) g hMetric p
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p
+        (normalFrame (I := I) g p z))
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p
+        (normalFrame (I := I) g p a))
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p
+        (normalFrame (I := I) g p b)) r 1 using 1
+  have hu :
+      (show TangentSpace I p from
+        tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p z) +
+          r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p a)) =
+        normalFrame (I := I) g p z + r • normalFrame (I := I) g p a := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) p).injective
+    exact tangentSpaceModelContinuousLinearEquiv_apply (I := I) p
+      (normalFrame (I := I) g p z + r • normalFrame (I := I) g p a)
+  have hb :
+      (show TangentSpace I p from
+        tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p b)) = normalFrame (I := I) g p b := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) p).injective
+    rfl
+  have hbase :
+      (show TangentSpace I p from
+        tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p z) +
+            r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p a) +
+          (0 : Real) • tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p b)) =
+        normalFrame (I := I) g p z + r • normalFrame (I := I) g p a := by
+    have hmodel :
+        tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p z) +
+            r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p a) +
+          (0 : Real) • tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p b) =
+          tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p z) +
+            r • tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p a) := by
+      rw [zero_smul, add_zero]
+    have ht := congrArg
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p).symm hmodel
+    convert ht.trans hu using 1
+    all_goals rfl
+  rw [intrMetricJet_zero, intr_metric_jacobi, hJ,
+    intrFrame_apply,
     (normalFrame (I := I) g p).map_add,
     (normalFrame (I := I) g p).map_smul]
-  unfold intrLaunch3
-  rw [zero_smul, add_zero]
-  rfl
+  unfold expMapIntrinsic intrLaunch3
+  rw [hu, hb]
+  congr 3
+  convert congrArg
+    (fun v : TangentSpace I p => intrinsicGeodesic (I := I) g hMetric p v 1)
+    hbase.symm using 1
 
 private theorem metricJet_pascal (n : Nat) (q : Nat → Real) :
     (∑ i ∈ Finset.range (n + 1), (n.choose i : Real) * q (i + 1)) +
@@ -233,9 +313,12 @@ theorem intrMetric_diag_jet
     iteratedFDeriv Real n (intrFrameMetric (I := I) g hEnorm p) z
         (fun _ => a) b b =
       intrMetricJet (I := I) g hEnorm p
-        (normalFrame (I := I) g p z)
-        (normalFrame (I := I) g p a)
-        (normalFrame (I := I) g p b) n 0 := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p z))
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p a))
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p b)) n 0 := by
   have haff :
       ContDiffAt Real ∞ (fun r : Real => z + r • a) 0 :=
     (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffAt
@@ -247,7 +330,9 @@ theorem intrMetric_diag_jet
         ContDiffAt Real ∞ (intrFrameMetric (I := I) g hEnorm p)
           (z + (0 : Real) • a) := by
       simpa only [zero_smul, add_zero] using hsmooth
-    simpa only [Function.comp_apply] using hsmooth0.comp 0 haff
+    change ContDiffAt Real ∞
+      (intrFrameMetric (I := I) g hEnorm p ∘ fun r : Real => z + r • a) 0
+    exact hsmooth0.comp 0 haff
   have hdiag :
       iteratedDeriv n
           (fun r : Real =>
@@ -273,9 +358,12 @@ theorem intrMetric_diag_jet
       (fun r : Real =>
         intrFrameMetric (I := I) g hEnorm p (z + r • a) b b) =
         intrMetricJet (I := I) g hEnorm p
-          (normalFrame (I := I) g p z)
-          (normalFrame (I := I) g p a)
-          (normalFrame (I := I) g p b) 0 := by
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p z))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p a))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p b)) 0 := by
     funext r
     exact intrMetric_line (I := I) g hEnorm p z a b r
   rw [hfun, intrMetricJet_iter] at hdiag

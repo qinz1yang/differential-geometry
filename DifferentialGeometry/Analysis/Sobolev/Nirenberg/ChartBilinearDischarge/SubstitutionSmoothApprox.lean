@@ -339,7 +339,7 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
         χ x * (fderiv ℝ ψ x) ei + ψ x * (fderiv ℝ χ x) ei := by
     intro x
     rw [fderiv_fun_mul (hχ_diff.differentiableAt) (hψ_diff.differentiableAt)]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
       smul_eq_mul]
   have hχ_cont : Continuous χ := hχ_smooth.continuous
   have hψ_cont : Continuous ψ := hψ_smooth.continuous
@@ -397,10 +397,10 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
   have hwp_l2_supp : MemLp (D.weak_partial i) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     D.weak_partial_locally_memLp i (tsupport χ) h_supp_compact hχ_supp_in
-  haveI h_finite_meas_fact :
+  have h_finite_meas_fact :
       Fact ((volume : Measure EuclN) (tsupport χ) < (⊤ : ℝ≥0∞)) :=
     Fact.mk h_supp_compact.measure_lt_top
-  haveI h_restrict_finite : IsFiniteMeasure
+  have h_restrict_finite : IsFiniteMeasure
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     Restrict.isFiniteMeasure (volume : Measure EuclN)
   have hu_l1_supp : Integrable D.u_chart
@@ -566,34 +566,34 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
         χ x * D.u_chart x * (fderiv ℝ ψ x) ei =
       ∫ x in tsupport χ, χ x * D.u_chart x * (fderiv ℝ ψ x) ei :=
-    setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_LHS_zero_outside x hx.2)
   have h_RHS_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α, G x * ψ x =
       ∫ x in tsupport χ, G x * ψ x :=
-    setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_RHS_zero_outside x hx.2)
   have h_term1_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
         D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) =
       ∫ x in tsupport χ, D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) :=
-    setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_term1_zero_outside x hx.2)
   have h_term3_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
         D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) =
       ∫ x in tsupport χ, D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) :=
-    setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_term3_zero_outside x hx.2)
   have h_term2_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
         D.weak_partial i x * (χ x * ψ x) =
       ∫ x in tsupport χ, D.weak_partial i x * (χ x * ψ x) :=
-    setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_term2_zero_outside x hx.2)
   have h_ibp_chart_LHS_split :
@@ -616,7 +616,7 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
         D.u_chart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei =
       ∫ x in tsupport χ,
         D.u_chart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei := by
-    refine setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in (fun x hx => ?_)
     have hx_notin_χψ : x ∉ tsupport (fun y => χ y * ψ y) :=
       fun h => hx.2 (hχψ_supp_in_χ h)
@@ -1191,12 +1191,12 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_const_tendsto
       ?_ ?_
     · refine Filter.Eventually.of_forall (fun n => ?_)
-      exact zero_le _
+      exact zero_le
     · exact Filter.Eventually.of_forall h_bound
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_univ_tendsto
     ?_ ?_
   · refine Filter.Eventually.of_forall (fun n => ?_)
-    exact zero_le _
+    exact zero_le
   · refine Filter.Eventually.of_forall (fun n => ?_)
     exact MeasureTheory.eLpNorm_mono_measure
       (fun x =>

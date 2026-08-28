@@ -58,7 +58,7 @@ theorem localized_energy_differential_of_supersolution
   let ut := smoothScalarSlice (I := I) g u hu t
   let test : SmoothScalar g :=
     ⟨fun x => cutoff.toFun x ^ 2, cutoff.smooth.pow 2⟩
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -73,8 +73,16 @@ theorem localized_energy_differential_of_supersolution
           (gradientFun (I := I) g ut.toFun x)) := by
     have hinner := contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
       (grad_g (I := I) g cutoff.toContMDiffMap) (grad_g (I := I) g ut.toContMDiffMap)
-    exact cutoff.smooth.continuous.mul
-      (by simpa only [grad_g_apply] using hinner.continuous)
+    have hinner' : Continuous (fun x : M =>
+        g.inner x
+          (gradientFun (I := I) g cutoff.toFun x)
+          (gradientFun (I := I) g ut.toFun x)) := by
+      change Continuous (fun x : M =>
+        g.inner x
+          (grad_g (I := I) g cutoff.toContMDiffMap x)
+          (grad_g (I := I) g ut.toContMDiffMap x))
+      exact hinner.continuous
+    exact cutoff.smooth.continuous.mul hinner'
   have hlap_cont : Continuous (fun x : M => Δ_g (I := I) g ut.toContMDiffMap x) :=
     (Δ_g_contMDiff (I := I) g ut.toContMDiffMap).continuous
   let F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯ := ⟨fun p => u p.1 p.2, hu⟩
@@ -117,6 +125,14 @@ theorem localized_energy_differential_of_supersolution
   have hgreen :=
     green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
       (I := I) g test.smooth ut.smooth (HasCompactSupport.of_compactSpace _)
+  change (∫ x, g.inner x
+      (gradFun (I := I) g test.toFun x)
+      (gradFun (I := I) g ut.toFun x)
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
+    -∫ x, test.toFun x * Δ_g (I := I) g ut.toContMDiffMap x
+      ∂(riemannianVolumeMeasure (I := I) (M := M) g) at hgreen
+  have hgradient (f : M → ℝ) (x : M) :
+      gradientFun (I := I) g f x = gradFun (I := I) g f x := rfl
   have htest_pointwise : ∀ x : M,
       g.inner x
           (gradientFun (I := I) g test.toFun x)
@@ -129,7 +145,7 @@ theorem localized_energy_differential_of_supersolution
     dsimp only [test]
     rw [gradientFun_pow (I := I) g 1
       (cutoff.smooth.mdifferentiable (by simp) x)]
-    simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [map_smul, smul_apply, smul_eq_mul]
     ring
   have hlap_identity :
       (∫ x, cutoff.toFun x ^ 2 * Δ_g (I := I) g ut.toContMDiffMap x ∂μ) =
@@ -160,7 +176,7 @@ theorem localized_energy_differential_of_supersolution
                 simpa only [mul_assoc] using (htest_pointwise x).symm)
         _ = -∫ x, cutoff.toFun x ^ 2 * Δ_g (I := I) g ut.toContMDiffMap x ∂μ := by
               simpa only [μ, test, ut, smoothScalarSlice_toFun,
-                grad_g_apply] using hgreen
+                hgradient] using hgreen
     linarith
   have hcross_integral :
       2 * ∫ x, cutoff.toFun x *

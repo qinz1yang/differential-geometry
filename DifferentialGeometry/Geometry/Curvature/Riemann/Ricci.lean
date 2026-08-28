@@ -465,7 +465,7 @@ private lemma partialDeriv_doubleSum_invGram_partialGram
               partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
           ((chartModelBasis E) k)
     rw [fderiv_fun_sum (fun j _ => hdiff_inner j)]
-    rw [ContinuousLinearMap.coe_sum', Finset.sum_apply]
+    rw [FunLike.coe_sum, Finset.sum_apply]
   rw [hsum_outer]
   refine Finset.sum_congr rfl ?_
   intro j _
@@ -488,7 +488,7 @@ private lemma partialDeriv_doubleSum_invGram_partialGram
             partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
           ((chartModelBasis E) k)
     rw [fderiv_fun_sum (fun l _ => hdiff_innermost j l)]
-    rw [ContinuousLinearMap.coe_sum', Finset.sum_apply]
+    rw [FunLike.coe_sum, Finset.sum_apply]
   rw [hsum_inner]
   refine Finset.sum_congr rfl ?_
   intro l _
@@ -507,7 +507,7 @@ private lemma partialDeriv_doubleSum_invGram_partialGram
         partialDeriv (E := E) k
           (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j)) y
   rw [fderiv_fun_mul (𝕜 := ℝ) hu hv]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     smul_eq_mul]
   change chartInvGramOnE (I := I) g α j l y *
       (partialDeriv (E := E) k
@@ -814,7 +814,7 @@ lemma sum_partialDeriv_eq_partialDeriv_sum_christ
         (fun y' : E => chartChristoffel (I := I) g α i j j y') y :=
     fun j => chartChristoffel_diag_diffAt_int (I := I) g α i j hy
   rw [fderiv_fun_sum (fun j _ => hdiff_each j)]
-  rw [ContinuousLinearMap.coe_sum', Finset.sum_apply]
+  rw [FunLike.coe_sum, Finset.sum_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRicciTensor_symm

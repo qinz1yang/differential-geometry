@@ -49,12 +49,12 @@ private lemma pou_hasCompactSupport
   (isClosed_tsupport _).isCompact
 
 private lemma hasCompactSupport_chartStrictCutoff
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] (α : M) :
+    [T2Space M] [CompactSpace M] (α : M) :
     HasCompactSupport (chartStrictCutoff (I := I) (M := M) α) :=
   (isClosed_tsupport _).isCompact
 
 private lemma prod_pou_strictCutoff_v_eq_zero_off
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (γ α : M) (v : M → ℝ) {x : M}
     (hx : x ∉ tsupport (pou (I := I) (M := M) γ) ∩
       tsupport (chartStrictCutoff (I := I) (M := M) α)) :
@@ -71,7 +71,7 @@ private lemma prod_pou_strictCutoff_v_eq_zero_off
     rw [h0]; ring
 
 private lemma strictCutoff_mul_v_eq_finset_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (α : M) (v : M → ℝ) (x : M) :
     chartStrictCutoff (I := I) (M := M) α x * v x =
       ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
@@ -99,7 +99,7 @@ private lemma strictCutoff_mul_v_eq_finset_sum
       rw [Finset.sum_mul]
 
 private lemma chartPushedRaw_strictCutoff_eq_finset_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (α : M) (v : M → ℝ) (y : EuclN) :
     chartPushedRaw (I := I) (M := M) α
         (fun x => chartStrictCutoff (I := I) (M := M) α x * v x) y =
@@ -132,7 +132,7 @@ private lemma chartPushedRaw_strictCutoff_eq_finset_sum
     rw [Finset.sum_eq_zero (fun γ _ => h_zero γ)]
 
 private lemma chartPushedRaw_pou_strictCutoff_v_zero_of_disjoint
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (γ α : M) (v : M → ℝ)
     (hKM_empty : tsupport (pou (I := I) (M := M) γ) ∩
       tsupport (chartStrictCutoff (I := I) (M := M) α) = ∅) :
@@ -222,7 +222,7 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
     · rw [h_zero]
       rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
         (d := Module.finrank ℝ E) hp_one hΩα_target_open]
-      exact zero_le _
+      exact zero_le
   obtain ⟨Ω_α, Ω_γ, hΩα_open, hΩγ_open, hΩα_subset_target, hΩγ_subset_target,
     hΩα_subset_overlap, _hΩγ_subset_overlap, hKM_image_α_in_Ωα, Φ,
     hΦ_eq_on_Ωα, _hΦ_inv_eq_on_Ωγ⟩ :=
@@ -379,8 +379,6 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
       have h_le := Finset.single_le_sum (s := Finset.range (k + 1))
         (f := fun j => (Fintype.card (Fin j → Fin (Module.finrank ℝ E)) : ℝ))
         (fun j _ => by positivity) h_zero_in
-      rw [show ((fun j => (Fintype.card (Fin j → Fin (Module.finrank ℝ E)) : ℝ)) 0 : ℝ) =
-          (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) from rfl] at h_le
       rw [h_at_zero] at h_le
       linarith
     have h_kfact_D_pos : 0 < (k.factorial : ℝ) * Φ.derivBoundMaxOne ^ k := by
@@ -719,8 +717,8 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) k p chartPushedγV Ωγ_target) := by
     refine h_chain_step_target.trans ?_
-    exact mul_le_mul_of_nonneg_left h_leib_γ_step (zero_le _)
-  refine (mul_le_mul_of_nonneg_left h_chain_combined (zero_le _)).trans ?_
+    exact mul_le_mul_of_nonneg_left h_leib_γ_step (zero_le)
+  refine (mul_le_mul_of_nonneg_left h_chain_combined (zero_le)).trans ?_
   have h_K_eq : ENNReal.ofReal K_leib_α *
       (ENNReal.ofReal K_chain * (ENNReal.ofReal K_leib_γ *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -964,7 +962,7 @@ theorem wkpNorm_chartPushedRaw_strictCutoff_mul_le
     refine (hCγ_bound γ hv).2.2.2.trans ?_
     have h_ofReal_le : ENNReal.ofReal (Cγ γ) ≤ ENNReal.ofReal Cmax :=
       ENNReal.ofReal_le_ofReal (hCmax_ge γ hγ)
-    exact mul_le_mul_of_nonneg_right h_ofReal_le (zero_le _)
+    exact mul_le_mul_of_nonneg_right h_ofReal_le (zero_le)
   have h_sum_bound : ∑ γ ∈ S,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) k p
@@ -981,7 +979,7 @@ theorem wkpNorm_chartPushedRaw_strictCutoff_mul_le
             (chartTargetEuclid (I := I) (M := M) γ) := Finset.sum_le_sum h_bound_each
   refine h_sum_bound.trans ?_
   rw [← Finset.mul_sum]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   unfold wkpNormChart
   exact ENNReal.sum_le_tsum S
 

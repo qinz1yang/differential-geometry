@@ -62,10 +62,10 @@ lemma inner_metricSharpChartLocal_chartBasis
                 chartBasisVecFiber (I := I) α i x)) =
             (∑ i, metricSharpChartCoeff (I := I) g α cv i x •
                 g.inner x (chartBasisVecFiber (I := I) α i x)) from ?_]
-    · rw [ContinuousLinearMap.sum_apply]
+    · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
     · rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -185,6 +185,22 @@ lemma metricSharpChartLocal_eq_metricSharp
   congr 1
   rw [inner_metricSharpChartLocal_chartBasis (I := I) g α cv hx k]
 
+lemma metricSharp_eq_chartBasis_sum
+    (g : SmoothRiemannianMetric I M) (α : M) {x : M}
+    (cvx : TangentSpace I x →ₗ[ℝ] ℝ)
+    (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
+    metricSharp (I := I) g x cvx =
+      ∑ i : Fin (Module.finrank ℝ E),
+        (∑ j : Fin (Module.finrank ℝ E),
+          chartInvGramMatrix (I := I) g α x i j *
+            cvx (chartBasisVecFiber (I := I) α j x)) •
+          chartBasisVecFiber (I := I) α i x := by
+  classical
+  let cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ :=
+    fun b => if h : b = x then h ▸ cvx else 0
+  have h := metricSharpChartLocal_eq_metricSharp (I := I) g α cv hx
+  simpa [metricSharpChartLocal, metricSharpChartCoeff, cv] using h.symm
+
 lemma metricSharpChartCoeff_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     {cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ}
@@ -196,7 +212,7 @@ lemma metricSharpChartCoeff_contMDiffOn
     ContMDiffOn I 𝓘(ℝ) ∞ (metricSharpChartCoeff (I := I) g α cv i)
       (chartAt H α).source := by
   classical
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   refine ContMDiffOn.mul ?_ (hcv j)
   have h1 : ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M => chartInvGramMatrix (I := I) g α x i j)

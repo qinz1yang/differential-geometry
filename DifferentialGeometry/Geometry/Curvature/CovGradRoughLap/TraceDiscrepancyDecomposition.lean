@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -53,6 +52,7 @@ noncomputable def covGradRoughLapTraceDiscrepancy
           (smoothOrthoFrame (I := I) g x i x))
       (unitZeroSec (I := I) (M := M) x)
 
+omit [CompactSpace M] in
 lemma covGradRoughLapTraceDiscrepancy_def
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -70,6 +70,7 @@ lemma covGradRoughLapTraceDiscrepancy_def
               (smoothOrthoFrame (I := I) g x i x))
           (unitZeroSec (I := I) (M := M) x) := rfl
 
+omit [CompactSpace M] in
 theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -90,7 +91,7 @@ theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual
           (rawTensorConnLapSmooth (I := I) g 0 2 T₀)).toSection x := by
     rw [covGradRoughLapCurv, SmoothCcTensor.toSection_sub]; rfl
   rw [hdef]
-  rw [ContinuousLinearMap.sub_apply, map_sub, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, map_sub, sub_apply]
   rw [covGrad_rawConnLap_unit_eval_curry (I := I) (M := M) g T₀ x w]
   have hswap := frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv
     (I := I) (M := M) g T₀ x w
@@ -116,6 +117,7 @@ noncomputable def covGradRoughLapTraceDiscrepancy_gen
           (smoothOrthoFrame (I := I) g x i x))
       (unitZeroSec (I := I) (M := M) x)
 
+omit [CompactSpace M] in
 lemma covGradRoughLapTraceDiscrepancy_gen_def
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
@@ -133,6 +135,7 @@ lemma covGradRoughLapTraceDiscrepancy_gen_def
               (smoothOrthoFrame (I := I) g x i x))
           (unitZeroSec (I := I) (M := M) x) := rfl
 
+omit [CompactSpace M] in
 theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
@@ -153,7 +156,7 @@ theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen
           (rawTensorConnLapSmooth (I := I) g 0 s T₀)).toSection x := by
     rw [covGradRoughLapCurv_gen, SmoothCcTensor.toSection_sub]; rfl
   rw [hdef]
-  rw [ContinuousLinearMap.sub_apply, map_sub, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, map_sub, sub_apply]
   rw [covGrad_rawConnLap_unit_eval_curry_gen (I := I) (M := M) g s T₀ x w]
   have hswap := frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen
     (I := I) (M := M) g s T₀ x w

@@ -9,7 +9,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix

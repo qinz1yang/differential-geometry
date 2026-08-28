@@ -127,11 +127,11 @@ theorem ricciEigen3
           l1 l2 l3 basis := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let T := ricciEndAt (I := I) g Ric
   have hT : T.IsSymmetric := by
@@ -179,7 +179,8 @@ theorem ricciEigen3
           _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
                 change g.inner x (T (ob i)) (ob j) =
                   g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
-                simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+                rw [heig]
+                rfl
           _ = hT.eigenvalues hdim i * delta3 i j := by
                 have horth :
                     g.inner x (basis i) (basis j) = delta3 i j := by
@@ -210,11 +211,11 @@ theorem ricciEigen3_ordered
           l1 l2 l3 basis := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let T := ricciEndAt (I := I) g Ric
   have hT : T.IsSymmetric := by
@@ -264,7 +265,8 @@ theorem ricciEigen3_ordered
           _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
                 change g.inner x (T (ob i)) (ob j) =
                   g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
-                simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+                rw [heig]
+                rfl
           _ = hT.eigenvalues hdim i * delta3 i j := by
                 have horthij :
                     g.inner x (basis i) (basis j) = delta3 i j := by
@@ -303,11 +305,11 @@ theorem ricciEigenBasis3
         0 <= l1 /\ 0 <= l2 /\ 0 <= l3 := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let T := ricciEndAt (I := I) g Ric
   have hT : T.IsSymmetric := by
@@ -355,7 +357,8 @@ theorem ricciEigenBasis3
           _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
                 change g.inner x (T (ob i)) (ob j) =
                   g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
-                simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+                rw [heig]
+                rfl
           _ = hT.eigenvalues hdim i * delta3 i j := by
                 have horth :
                     g.inner x (basis i) (basis j) = delta3 i j := by
@@ -389,7 +392,8 @@ theorem ricciEigenBasis3
             _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
                   change g.inner x (T (ob i)) (ob j) =
                     g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
-                  simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+                  rw [heig]
+                  rfl
             _ = hT.eigenvalues hdim i * delta3 i j := by
                   have horth :
                       g.inner x (basis i) (basis j) = delta3 i j := by
@@ -428,7 +432,8 @@ theorem ricciEigenBasis3
             _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
                   change g.inner x (T (ob i)) (ob j) =
                     g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
-                  simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+                  rw [heig]
+                  rfl
             _ = hT.eigenvalues hdim i * delta3 i j := by
                   have horth :
                       g.inner x (basis i) (basis j) = delta3 i j := by
@@ -467,7 +472,8 @@ theorem ricciEigenBasis3
             _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
                   change g.inner x (T (ob i)) (ob j) =
                     g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
-                  simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+                  rw [heig]
+                  rfl
             _ = hT.eigenvalues hdim i * delta3 i j := by
                   have horth :
                       g.inner x (basis i) (basis j) = delta3 i j := by
@@ -537,11 +543,11 @@ theorem metricTrace_pos_of_posDef
     0 < DifferentialGeometry.Geometry.Operator.metricTracePair0SAt (I := I) g Ric := by
   classical
   let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   have htrace :
       0 < LinearMap.trace Real (TangentSpace I x)

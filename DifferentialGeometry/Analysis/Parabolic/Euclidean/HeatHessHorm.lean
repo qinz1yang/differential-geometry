@@ -4,6 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.Prod
 
+
 noncomputable section
 
 open MeasureTheory Real Set Filter
@@ -301,10 +302,11 @@ private theorem d2Space_point {t : ℝ} (h v w x : V) :
         (-heatD3 t h v w (γ s)) s := by
     intro s
     have h0 := (heatD2_hasFDeriv (t := t) v w (γ s)).comp_hasDerivAt s (hγ s)
-    convert h0 using 1
-    simp only [heatD3Map_apply]
-    simp [heatD3, baseD3]
-    ring
+    have hderiv : heatD3Map t v w (γ s) (-h) = -heatD3 t h v w (γ s) := by
+      rw [heatD3Map_apply]
+      simp [heatD3, baseD3]
+      ring
+    exact h0.congr_deriv hderiv
   have hderiv : IntervalIntegrable
       (fun s : ℝ => -heatD3 t h v w (γ s)) volume 0 1 := by
     apply Continuous.intervalIntegrable
@@ -360,7 +362,9 @@ theorem heatD2_space_diff {t : ℝ} (ht : 0 < t) (h v w : V) :
       rw [integral_congr_ae (Eventually.of_forall fun x => by
         rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)])]
       exact hslice_eq s
-    simpa only [μ, heq] using hconst
+    change IntegrableOn (fun s : ℝ => ∫ x : V, ‖G (s, x)‖) (Set.Ioc 0 1)
+    rw [heq]
+    exact hconst
   have hGint : Integrable G (μ.prod (volume : Measure V)) := by
     exact (integrable_prod_iff hGmeas).2
       ⟨Eventually.of_forall hslice_int, houter⟩
@@ -435,8 +439,9 @@ private theorem d2Time_point {t a : ℝ} (hta : |a| < t)
   let γ : ℝ → ℝ := fun s => t - s * a
   have hγ : ∀ s : ℝ, HasDerivAt γ (-a) s := by
     intro s
-    simpa only [γ, Pi.sub_apply, id_eq, zero_sub, one_mul] using (hasDerivAt_const s t).sub
-      ((hasDerivAt_id s).mul_const a)
+    change HasDerivAt (fun r : ℝ => t - r * a) (-a) s
+    exact (((hasDerivAt_const s t).sub ((hasDerivAt_id s).mul_const a)).congr_deriv
+      (by ring)).congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   have hcomp : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       HasDerivAt (fun r : ℝ => heatD2 (γ r) v w x)
         (-a * heatD2Dt (γ s) v w x) s := by
@@ -444,8 +449,7 @@ private theorem d2Time_point {t a : ℝ} (hta : |a| < t)
     have hpos : 0 < γ s := (timeSeg_lower hta hs).1.trans_le
       (timeSeg_lower hta hs).2
     have h0 := (heatD2_time hpos v w x).comp s (hγ s)
-    convert h0 using 1
-    all_goals ring
+    exact h0.congr_deriv (by ring)
   have hderiv : IntervalIntegrable
       (fun s : ℝ => -a * heatD2Dt (γ s) v w x) volume 0 1 := by
     apply ContinuousOn.intervalIntegrable

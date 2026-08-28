@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.TopKernelPairingBounds
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -464,9 +463,16 @@ theorem ricciDeTurck_remainder_pairing_h5_bound_of_low_order_action_pairing_boun
       2 * |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun Yc.toFun| ≤
         e * z ^ 2 + Lc := by
     simpa only [Yc, V, A, LT, e, z] using hcarrier
-  exact center_sum_h5 (I := I) (M := M) g V J Cross Yc Yp Yd
+  have hfinal := center_sum_h5 (I := I) (M := M) g V J Cross Yc Yp Yd
     P20 P11L P11R eta e Lc C4 Gmix Gd Gcorner G y q z rfl rfl
     hC4 hGmix hGd hGcorner hnf hcarrier' hprincipal' hdefect' hcorner'
+  generalize hleft :
+      2 * |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun (J + Cross).toFun| = lhs
+      at hfinal ⊢
+  generalize hright :
+      eta * z ^ 2 + Lc + G * (q ^ 2 + y ^ 2 * q ^ 2 + y ^ 4) = rhs
+      at hfinal ⊢
+  exact hfinal
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

@@ -434,9 +434,11 @@ theorem ae_posPart_le_localMoserBound_on_quarterBall
             (p₀ / (p₀ - 1)) ^ (d : ℝ) *
             (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
               ∫ z in Metric.ball x (1 / 2 : ℝ), |max (u z) 0| ^ p₀ ∂volume) := by
-    convert hlinfty_raw using 1
-    · simp [ballMeasure, div_eq_mul_inv]
+    have hradius : (1 / 2 : ℝ) / 2 = 1 / 4 := by
       norm_num
+    rw [hradius] at hlinfty_raw
+    simpa [ballMeasure, Ahalf, NormalizedEllipticCoeff.restrict,
+      div_eq_mul_inv] using hlinfty_raw
   have hhalf_pos_le_abs :
       ∫ z in Metric.ball x (1 / 2 : ℝ), |max (u z) 0| ^ p₀ ∂volume ≤
         ∫ z in Metric.ball x (1 / 2 : ℝ), |u z| ^ p₀ ∂volume := by

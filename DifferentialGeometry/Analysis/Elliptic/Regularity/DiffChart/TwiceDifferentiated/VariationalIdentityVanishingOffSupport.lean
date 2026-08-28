@@ -337,7 +337,7 @@ private lemma locallyIntegrableOn_of_locally_memLp_two_chart
   have hf_K : MemLp f 2 ((volume : Measure EuclN).restrict B) :=
     hf B hB_compact hB_subset_Ω
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -576,7 +576,7 @@ private lemma base_f_chart_ae_zero_off_K_α
         D.f_chart y) 2 ((volume : Measure EuclN).restrict B) :=
       MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fchart_K_memLp h_density_memLp_top
     have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-    haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+    have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hB_finite

@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
@@ -34,11 +34,11 @@ def metricFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
   map_add' v w := by
     ext u
     change g.inner x (v + w) u = g.inner x v u + g.inner x w u
-    rw [map_add, ContinuousLinearMap.add_apply]
+    rw [map_add, add_apply]
   map_smul' c v := by
     ext u
     change g.inner x (c • v) u = c • g.inner x v u
-    rw [map_smul, ContinuousLinearMap.smul_apply]
+    rw [map_smul, smul_apply]
 
 omit [Module.Finite ℝ E] in
 @[simp] lemma metricFlatLinear_apply (g : SmoothRiemannianMetric I M) (x : M)
@@ -54,7 +54,7 @@ lemma metricFlatLinear_injective (g : SmoothRiemannianMetric I M) (x : M) :
     have h := congrArg (fun L : TangentSpace I x →ₗ[ℝ] ℝ => L z) hvw
     simp only [metricFlatLinear_apply] at h
     have hsub : g.inner x (v - w) z = g.inner x v z - g.inner x w z := by
-      rw [map_sub, ContinuousLinearMap.sub_apply]
+      rw [map_sub, sub_apply]
     rw [hsub, sub_eq_zero]
     exact h
   by_contra hne
@@ -135,11 +135,7 @@ lemma gradFun_eq_zero_of_mfderiv_eq_zero
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) {x : M}
     (hf : mfderiv I 𝓘(ℝ, ℝ) f x = 0) :
     gradFun (I := I) g f x = (0 : TangentSpace I x) := by
-  rw [gradFun_def, metricSharp_def]
-  have htoLM : (mfderiv I 𝓘(ℝ, ℝ) f x).toLinearMap =
-      (0 : TangentSpace I x →ₗ[ℝ] ℝ) := by
-    rw [hf]; rfl
-  rw [htoLM]
+  rw [gradFun_def, hf]
   exact LinearEquiv.map_zero _
 
 def chartInvGramMatrix (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
@@ -189,9 +185,9 @@ lemma chartGramMatrix_adjugate_entry_contMDiffOn
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp2]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   by_cases hσk : σ k = j
   · have heq : (fun x : M => (chartGramMatrix (I := I) g α x).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
@@ -264,7 +260,7 @@ lemma chartInvGramMatrix_l1Sum_continuousOn
       (chartAt H α).source := by
   classical
   unfold chartInvGramMatrix_l1Sum
-  refine continuousOn_finset_sum _ (fun ij _ => ?_)
+  refine continuousOn_finsetSum _ (fun ij _ => ?_)
   have h_base_eq :
       (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source := rfl
   have h1 :
@@ -368,14 +364,14 @@ lemma mfderiv_chartBasisVecFiber_of_mdifferentiableAt
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
     have heq : chartBasisVecFiber (I := I) α i x = T.symm x ((chartModelBasis E) i) :=
-      rfl
+      by rw [chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
         T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i))
           = (chartModelBasis E) i := by
       have heqsymm : T.symm x ((chartModelBasis E) i)
             = T.symmL ℝ x ((chartModelBasis E) i) := by
-        rw [Trivialization.symmL_apply]
+        exact (Trivialization.symmL_apply T hbase _).symm
       rw [heqsymm, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
@@ -404,10 +400,10 @@ lemma inner_gradChartLocal_chartBasis
               chartBasisVecFiber (I := I) α i x)) =
           (∑ i, gradChartCoeff (I := I) g α f i x •
               g.inner x (chartBasisVecFiber (I := I) α i x)) from ?_]
-    · rw [ContinuousLinearMap.sum_apply]
+    · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
     · rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -752,7 +748,7 @@ private lemma gradChartCoeff_contMDiffOn
       ((extChartAt I α).source ∩
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) := by
   classical
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   refine ContMDiffOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞
         (fun x => chartInvGramMatrix (I := I) g α x i j)

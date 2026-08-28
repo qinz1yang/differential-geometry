@@ -47,6 +47,7 @@ theorem tensorL2Inner_eq_zero_of_pointwise_inner_eq_divergence
   exact integral_divergence_eq_zero_of_hasCompactSupport (I := I) g X
     (HasCompactSupport.of_compactSpace _)
 
+omit [CompactSpace M] in
 theorem tensorL2Inner_movingFrameRemainder_eq_zero_of_bracketFreePairing
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (Gcurv GcurvDeriv : SmoothCcTensor g 0 (s + 1))

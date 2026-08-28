@@ -31,6 +31,7 @@ import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
@@ -62,7 +63,7 @@ private theorem directionalDeriv_congr_nhds
     (hfh : f =ᶠ[𝓝 x] h) :
     directionalDerivAlong (I := I) X f x = directionalDerivAlong (I := I) X h x := by
   have hx : f x = h x := hfh.self_of_nhds
-  unfold directionalDerivAlong extDerivFun
+  unfold directionalDerivAlong mvfderiv
   rw [hfh.mfderiv_eq]
   rw [hx]
 
@@ -77,10 +78,10 @@ private theorem directionalDeriv_add_fun
         directionalDerivAlong (I := I) X f x +
         directionalDerivAlong (I := I) X h x := by
   unfold directionalDerivAlong
-  change (extDerivFun (I := I) (f + h) x) (X x) =
-    (extDerivFun (I := I) f x) (X x) + (extDerivFun (I := I) h x) (X x)
-  rw [extDerivFun_add hf hh]
-  rw [ContinuousLinearMap.add_apply]
+  change (mvfderiv (I := I) (f + h) x) (X x) =
+    (mvfderiv (I := I) f x) (X x) + (mvfderiv (I := I) h x) (X x)
+  rw [mvfderiv_add hf hh]
+  rw [add_apply]
 
 omit [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     [SigmaCompactSpace M] [T2Space M] in
@@ -93,17 +94,17 @@ private theorem directionalDeriv_sub_fun
         directionalDerivAlong (I := I) X f x -
         directionalDerivAlong (I := I) X h x := by
   unfold directionalDerivAlong
-  change (extDerivFun (I := I) (f - h) x) (X x) =
-    (extDerivFun (I := I) f x) (X x) - (extDerivFun (I := I) h x) (X x)
+  change (mvfderiv (I := I) (f - h) x) (X x) =
+    (mvfderiv (I := I) f x) (X x) - (mvfderiv (I := I) h x) (X x)
   have hsub :
-      extDerivFun (I := I) (f - h) x =
-        extDerivFun (I := I) f x - extDerivFun (I := I) h x := by
-    unfold extDerivFun
+      mvfderiv (I := I) (f - h) x =
+        mvfderiv (I := I) f x - mvfderiv (I := I) h x := by
+    unfold mvfderiv
     ext v
     simp [mfderiv_sub hf hh, NormedSpace.fromTangentSpace]
     rfl
   rw [hsub]
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -230,7 +231,7 @@ private theorem nabla0SFun_two_eval_smooth_slots
     (A : TwoTensorSection (I := I) (M := M)) (x : M) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 cov X A x) (vec2 (Y x) (Z x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => A p (vec2 (Y p) (Z p))) x (X x) -
         (A x) (vec2 ((cov (fun p : M => Y p) x) (X x)) (Z x)) -
         (A x) (vec2 (Y x) ((cov (fun p : M => Z p) x) (X x))) := by
@@ -306,13 +307,13 @@ private theorem nabla0SFun_two_eval_smooth_slots
       2 cov X A x) (vec2 (Y x) (Z x))
         = (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 cov X A x) (fun a : Fin 2 => V a x) := by rw [hslots]
-    _ = extDerivFun (I := I) (fun p : M => A p (fun a : Fin 2 => V a p))
+    _ = mvfderiv (I := I) (fun p : M => A p (fun a : Fin 2 => V a p))
           x (X x) -
         ∑ a : Fin 2,
           A x
             (Function.update (fun b : Fin 2 => V b x) a
               ((cov (V a) x) (X x))) := h
-    _ = extDerivFun (I := I)
+    _ = mvfderiv (I := I)
           (fun p : M => A p (vec2 (Y p) (Z p))) x (X x) -
         (A x) (vec2 ((cov (fun p : M => Y p) x) (X x)) (Z x)) -
         (A x) (vec2 (Y x) ((cov (fun p : M => Z p) x) (X x))) := by
@@ -333,7 +334,7 @@ private theorem cov_smoothSections_apply_contMDiffAt_one
       (fun p : M =>
         (⟨p, (cov (fun q : M => Y q) p) (X p)⟩ :
           TotalSpace E (TangentSpace I : M -> Type _))) x := by
-  haveI : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
     have h : ((1 : WithTop ℕ∞) + 1) = (2 : WithTop ℕ∞) := by
       norm_num
     exact h.symm ▸ (inferInstance : IsManifold I 2 M)
@@ -381,12 +382,15 @@ private theorem coordinateFrame_coeff_mdiffAt_of_contMDiffAt_one
         (fun y : M =>
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y)) x₀ := by
     have hraw :=
-      contMDiffAt_localFrame_coeff
+      contMDiffAt_localFrameCoeff
         (I := I) (V := TangentSpace I) (e := e)
         (b := Module.finBasis Real E) (s := Z)
         (k := (1 : WithTop ℕ∞)) hx hZ j
-    simpa [e, coordinateTrivializationAt, coordinateFrameAt_isLocalFrame_one,
-      coordinateFrameAt] using hraw
+    convert hraw using 1
+    · rfl
+    · rfl
+    · funext y
+      rfl
   exact hcoeff.mdifferentiableAt (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
 
 omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -444,7 +448,7 @@ private theorem nablaOneFormSectionRealizes_eval_moving_C1_slot
       (fun y : M =>
         (⟨y, Z y⟩ : TotalSpace E (TangentSpace I : M -> Type _))) x) :
     nablaAlpha x (vec2 (X x) (Z x)) =
-      extDerivFun (I := I) (fun y : M => alpha y (fun _ : Fin 1 => Z y)) x (X x) -
+      mvfderiv (I := I) (fun y : M => alpha y (fun _ : Fin 1 => Z y)) x (X x) -
         alpha x (fun _ : Fin 1 => (cov Z x) (X x)) := by
   have hraw := nabla0SFun_one_eval_coordFrame_moving_raw
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -461,7 +465,7 @@ private theorem nablaOneFormSectionRealizes_eval_moving_C1_slot
     nablaAlpha x (vec2 (X x) (Z x))
         = (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             1 cov X alpha x) (fun _ : Fin 1 => Z x) := hreal
-    _ = extDerivFun (I := I) (fun y : M => alpha y (fun _ : Fin 1 => Z y)) x (X x) -
+    _ = mvfderiv (I := I) (fun y : M => alpha y (fun _ : Fin 1 => Z y)) x (X x) -
         alpha x (fun _ : Fin 1 => (cov Z x) (X x)) := hraw
 
 omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -474,7 +478,8 @@ private theorem mdifferentiableAt_tangentConstAt_of_mem
         (p : M) -> TangentSpace I p)) p := by
   unfold tangentConstAt
   exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-    (𝕜 := Real) (I := I) (x₀ := x₀) (p := p) v hp
+    (𝕜 := Real) (I := I) (x₀ := x₀) (p := p)
+      ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt Real x₀ v) hp
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
@@ -483,10 +488,10 @@ private theorem contMDiffAt_tangentConstAt_self_minTwo
     ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2)
       (T% (tangentConstAt (I := I) x₀ v :
         (p : M) -> TangentSpace I p)) x₀ := by
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  let _ : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 2 M)
-  haveI : IsManifold I ((minSmoothness Real 2 : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((minSmoothness Real 2 : WithTop ℕ∞) + 1) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     have h : ((2 : WithTop ℕ∞) + 1) = (3 : WithTop ℕ∞) := by
       norm_num
@@ -499,7 +504,8 @@ private theorem contMDiffAt_tangentConstAt_self_minTwo
     simpa [tangentConstAt] using
       (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
         (𝕜 := Real) (I := I) (M := M)
-        (n := minSmoothness Real 2) x₀ v)
+        (n := minSmoothness Real 2) x₀
+        ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt Real x₀ v))
   exact (h_on x₀ (mem_baseSet_trivializationAt E (TangentSpace I) x₀)).contMDiffAt
     ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
       (mem_baseSet_trivializationAt E (TangentSpace I) x₀))
@@ -516,11 +522,11 @@ private theorem cov_tangentConstAt_apply_contMDiffOn_baseSet
           ((tangentConstAt (I := I) x₀ v) p)))
       (trivializationAt E (TangentSpace I) x₀).baseSet := by
   let e := trivializationAt E (TangentSpace I) x₀
-  haveI : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
     have h : ((1 : WithTop ℕ∞) + 1) = (2 : WithTop ℕ∞) := by
       norm_num
     exact h.symm ▸ (inferInstance : IsManifold I 2 M)
-  haveI : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
+  let _ : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
     have h : (((1 : WithTop ℕ∞) + 1) + 1) = (3 : WithTop ℕ∞) := by
       norm_num
     exact h.symm ▸ (inferInstance : IsManifold I 3 M)
@@ -531,7 +537,8 @@ private theorem cov_tangentConstAt_apply_contMDiffOn_baseSet
     simpa [e, tangentConstAt] using
       (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
         (𝕜 := Real) (I := I) (M := M)
-        (n := (1 : WithTop ℕ∞) + 1) x₀ w)
+        (n := (1 : WithTop ℕ∞) + 1) x₀
+        ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt Real x₀ w))
   have hcovw :
       ContMDiffOn I (I.prod 𝓘(Real, E →L[Real] E)) (1 : WithTop ℕ∞)
         (fun p : M =>
@@ -548,7 +555,8 @@ private theorem cov_tangentConstAt_apply_contMDiffOn_baseSet
     simpa [e, tangentConstAt] using
       (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
         (𝕜 := Real) (I := I) (M := M)
-        (n := (1 : WithTop ℕ∞)) x₀ v)
+        (n := (1 : WithTop ℕ∞)) x₀
+        ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt Real x₀ v))
   simpa [e] using hcovw.clm_bundle_apply hv
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -591,36 +599,37 @@ private theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
   classical
   let e := trivializationAt E (TangentSpace I) x
   let b := Module.finBasis Real E
+  let vModel : E := e.continuousLinearMapAt Real x v
   have he : x ∈ e.baseSet := by
     simp [e]
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
   obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
   let V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    ∑ i, (b.repr v i) • s' i
+    ∑ i, (b.repr vModel i) • s' i
   have hV : (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v := by
     filter_upwards [hs', e.open_baseSet.mem_nhds he] with p hs'p hp
     have hbasis :
-        (∑ i, (b.repr v i) • e.localFrame b i p) =
+        (∑ i, (b.repr vModel i) • e.localFrame b i p) =
           tangentConstAt (I := I) x v p := by
       have hframe_apply (i) :
           e.localFrame b i p = e.symmL Real p (b i) := by
         rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
           (e := e) (b := b) (i := i) hp]
-        simp [e, Bundle.Trivialization.basisAt, Trivialization.symmL_apply]
+        exact (Bundle.Trivialization.symmL_apply e hp (b i)).symm
       calc
-        (∑ i, (b.repr v i) • e.localFrame b i p)
-            = ∑ i, (b.repr v i) • e.symmL Real p (b i) := by
+        (∑ i, (b.repr vModel i) • e.localFrame b i p)
+            = ∑ i, (b.repr vModel i) • e.symmL Real p (b i) := by
               exact Finset.sum_congr rfl (fun i _ => by rw [hframe_apply i])
-        _ = e.symmL Real p (∑ i, (b.repr v i) • b i) := by
+        _ = e.symmL Real p (∑ i, (b.repr vModel i) • b i) := by
               rw [map_sum]
               simp
         _ = tangentConstAt (I := I) x v p := by
-              rw [b.sum_repr]
+              rw [show (∑ i, (b.repr vModel i) • b i) = vModel from b.sum_repr vModel]
               rfl
     calc
-      V p = ∑ i, (b.repr v i) • s' i p := by
+      V p = ∑ i, (b.repr vModel i) • s' i p := by
         simp [V, ContMDiffSection.finset_sum_apply_gen]
-      _ = ∑ i, (b.repr v i) • e.localFrame b i p := by
+      _ = ∑ i, (b.repr vModel i) • e.localFrame b i p := by
         apply Finset.sum_congr rfl
         intro i hi
         rw [hs'p i]
@@ -777,7 +786,8 @@ private theorem rm04_tconst_eval
           (tangentConstAt (I := I) x Z)) x) := by
           rw [hWx, ← hcurv]
 
-omit [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] in
 theorem directionalDeriv_directionalDeriv_sub_commutator
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
@@ -792,7 +802,7 @@ theorem directionalDeriv_directionalDeriv_sub_commutator
   rw [h]
   ring
 
-omit [SigmaCompactSpace M] [T2Space M] in
+omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatible
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -841,30 +851,30 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
       (by
         simpa [minSmoothness_of_isRCLikeNormedField] using
           (by decide : (2 : WithTop ℕ∞) <= ∞))
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  let _ : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 2 M)
   have hYZ : MDiffAt (T% YZc) x := by
-    simpa [YZc, Yc, Zc, tangentConstAt] using
-      CovariantDerivative.tangentConst_cov_mdiffAt
-        (𝕜 := Real) (I := I) cov hcov (x := x) (v := Y) (w := Z)
+    simpa [YZc, Yc, Zc] using
+      cov_tangentConstAt_apply_mdiffAt_of_mem (I := I) cov hcov x Y Z
+        (mem_baseSet_trivializationAt E (TangentSpace I) x)
   have hYW : MDiffAt (T% YWc) x := by
-    simpa [YWc, Yc, Wc, tangentConstAt] using
-      CovariantDerivative.tangentConst_cov_mdiffAt
-        (𝕜 := Real) (I := I) cov hcov (x := x) (v := Y) (w := W)
+    simpa [YWc, Yc, Wc] using
+      cov_tangentConstAt_apply_mdiffAt_of_mem (I := I) cov hcov x Y W
+        (mem_baseSet_trivializationAt E (TangentSpace I) x)
   have hXZ : MDiffAt (T% XZc) x := by
-    simpa [XZc, Xc, Zc, tangentConstAt] using
-      CovariantDerivative.tangentConst_cov_mdiffAt
-        (𝕜 := Real) (I := I) cov hcov (x := x) (v := X) (w := Z)
+    simpa [XZc, Xc, Zc] using
+      cov_tangentConstAt_apply_mdiffAt_of_mem (I := I) cov hcov x X Z
+        (mem_baseSet_trivializationAt E (TangentSpace I) x)
   have hXW : MDiffAt (T% XWc) x := by
-    simpa [XWc, Xc, Wc, tangentConstAt] using
-      CovariantDerivative.tangentConst_cov_mdiffAt
-        (𝕜 := Real) (I := I) cov hcov (x := x) (v := X) (w := W)
+    simpa [XWc, Xc, Wc] using
+      cov_tangentConstAt_apply_mdiffAt_of_mem (I := I) cov hcov x X W
+        (mem_baseSet_trivializationAt E (TangentSpace I) x)
   have hX2nat : ContMDiffAt I (I.prod 𝓘(Real, E)) (2 : ℕ∞) (T% Xc) x := by
     simpa [minSmoothness_of_isRCLikeNormedField] using hX2
   have hY2nat : ContMDiffAt I (I.prod 𝓘(Real, E)) (2 : ℕ∞) (T% Yc) x := by
     simpa [minSmoothness_of_isRCLikeNormedField] using hY2
-  haveI : IsManifold I (((2 : ℕ∞) : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I (((2 : ℕ∞) : WithTop ℕ∞) + 1) M := by
     change IsManifold I (3 : WithTop ℕ∞) M
     exact (inferInstance : IsManifold I 3 M)
   have hB1 : ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : ℕ∞) (T% Bc) x := by
@@ -889,7 +899,7 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
       simpa [Wc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x W hp
     have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
       (x := p) Yc Zc Wc hYp hZp hWp
-    simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace, f, YZc, YWc]
+    simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace, f, YZc, YWc]
       using hmetric
   have hXf_eq :
       (fun p : M => directionalDerivAlong (I := I) Xc f p) =ᶠ[𝓝 x]
@@ -905,7 +915,7 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
       simpa [Wc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x W hp
     have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
       (x := p) Xc Zc Wc hXp hZp hWp
-    simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace, f, XZc, XWc]
+    simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace, f, XZc, XWc]
       using hmetric
   have hYZ_W : MDiffAt (fun p : M => g.inner p (YZc p) (Wc p)) x :=
     mdifferentiableAt_metric_inner (I := I) g hYZ hW
@@ -928,14 +938,14 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
         directionalDerivAlong (I := I) Xc (fun p : M => g.inner p (YZc p) (Wc p)) x =
           g.inner x ((cov YZc x) (Xc x)) (Wc x) +
             g.inner x (YZc x) ((cov Wc x) (Xc x)) := by
-      simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace] using h1
+      simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace] using h1
     have h2 := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
       (x := x) Xc Zc YWc hX hZ hYW
     have h2' :
         directionalDerivAlong (I := I) Xc (fun p : M => g.inner p (Zc p) (YWc p)) x =
           g.inner x ((cov Zc x) (Xc x)) (YWc x) +
             g.inner x (Zc x) ((cov YWc x) (Xc x)) := by
-      simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace] using h2
+      simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace] using h2
     calc
       directionalDerivAlong (I := I) Xc
           (fun y : M => directionalDerivAlong (I := I) Yc f y) x
@@ -962,14 +972,14 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
         directionalDerivAlong (I := I) Yc (fun p : M => g.inner p (XZc p) (Wc p)) x =
           g.inner x ((cov XZc x) (Yc x)) (Wc x) +
             g.inner x (XZc x) ((cov Wc x) (Yc x)) := by
-      simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace] using h1
+      simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace] using h1
     have h2 := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
       (x := x) Yc Zc XWc hY hZ hXW
     have h2' :
         directionalDerivAlong (I := I) Yc (fun p : M => g.inner p (Zc p) (XWc p)) x =
           g.inner x ((cov Zc x) (Yc x)) (XWc x) +
             g.inner x (Zc x) ((cov XWc x) (Yc x)) := by
-      simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace] using h2
+      simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace] using h2
     calc
       directionalDerivAlong (I := I) Yc
           (fun y : M => directionalDerivAlong (I := I) Xc f y) x
@@ -989,7 +999,7 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
           g.inner x (Zc x) ((cov Wc x) (Bc x)) := by
     have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
       (x := x) Bc Zc Wc hB hZ hW
-    simpa [directionalDerivAlong, extDerivFun, NormedSpace.fromTangentSpace, f] using hmetric
+    simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace, f] using hmetric
   have hcomm :=
     directionalDeriv_directionalDeriv_sub_commutator
       (I := I) Xc Yc f x hX2 hY2 hf2
@@ -1028,8 +1038,8 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
           ((cov YWc x) X - (cov XWc x) Y - (cov Wc x) (Bc x)) = 0 := by
     rw [g.symm x W
       ((cov YZc x) X - (cov XZc x) Y - (cov Zc x) (Bc x))]
-    simp only [map_add, map_neg, sub_eq_add_neg, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.neg_apply]
+    simp only [map_add, map_neg, sub_eq_add_neg, add_apply,
+      neg_apply]
     ring_nf at hcurv_zero ⊢
     exact hcurv_zero
   have hgoal :
@@ -1414,13 +1424,13 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       MDifferentiableAt I 𝓘(Real, Real)
         (fun p : M => directionalDerivAlong (I := I) Yf f p) x := by
     simpa [directionalDerivAlong, Yf] using
-      (extDerivFun_apply_contMDiffAt I hf_smooth.contMDiffAt Ysec).mdifferentiableAt
+      (mvfderiv_apply_contMDiffAt I hf_smooth.contMDiffAt Ysec).mdifferentiableAt
         (by simp)
   have hXf_mdiff :
       MDifferentiableAt I 𝓘(Real, Real)
         (fun p : M => directionalDerivAlong (I := I) Xf f p) x := by
     simpa [directionalDerivAlong, Xf] using
-      (extDerivFun_apply_contMDiffAt I hf_smooth.contMDiffAt Xsec).mdifferentiableAt
+      (mvfderiv_apply_contMDiffAt I hf_smooth.contMDiffAt Xsec).mdifferentiableAt
         (by simp)
   have hgYZ_mdiff : MDifferentiableAt I 𝓘(Real, Real) gYZ x := by
     simpa [gYZ] using
@@ -1547,14 +1557,14 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
           directionalDerivAlong (I := I) YXf f x =
         directionalDerivAlong (I := I)
           (fun p : M => VectorField.mlieBracket I Xf Yf p) f x := by
-    change (extDerivFun (I := I) f x) (XYf x) -
-        (extDerivFun (I := I) f x) (YXf x) =
-      (extDerivFun (I := I) f x) (VectorField.mlieBracket I Xf Yf x)
-    change (extDerivFun (I := I) f x) (XYsec x) -
-        (extDerivFun (I := I) f x) (YXsec x) =
-      (extDerivFun (I := I) f x) (VectorField.mlieBracket I Xf Yf x)
+    change (mvfderiv (I := I) f x) (XYf x) -
+        (mvfderiv (I := I) f x) (YXf x) =
+      (mvfderiv (I := I) f x) (VectorField.mlieBracket I Xf Yf x)
+    change (mvfderiv (I := I) f x) (XYsec x) -
+        (mvfderiv (I := I) f x) (YXsec x) =
+      (mvfderiv (I := I) f x) (VectorField.mlieBracket I Xf Yf x)
     rw [hXYsecx, hYXsecx]
-    rw [← map_sub (extDerivFun (I := I) f x) XYv YXv]
+    rw [← map_sub (mvfderiv (I := I) f x) XYv YXv]
     rw [htorsion]
   have hcurv :
       connectionRiemannCurvatureField (I := I) cov Xf Yf Zf x =

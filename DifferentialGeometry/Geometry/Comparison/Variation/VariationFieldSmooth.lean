@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -142,7 +144,19 @@ theorem varField_smooth
   have hincl : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
       (fun t : ℝ => (t, (0 : ℝ))) :=
     contMDiff_id.prodMk contMDiff_const
-  simpa only [fSwap] using hvel.comp hincl
+  rw [show (fun t : ℝ =>
+      (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (f 0 t)
+        (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f s t) 0 (1 : ℝ)) :
+          TangentBundle I M)) =
+      (fun p : ℝ × ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (f p.2 p.1)
+          (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => f u p.1) p.2 (1 : ℝ)) :
+            TangentBundle I M)) ∘ fun t : ℝ => (t, 0) by
+    funext t
+    rfl]
+  exact hvel.comp hincl
 
 end Variation
 end Riemannian

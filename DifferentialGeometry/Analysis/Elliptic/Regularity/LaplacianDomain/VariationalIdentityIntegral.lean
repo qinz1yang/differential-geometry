@@ -174,7 +174,7 @@ private lemma principalMultiplier_continuousOn
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   unfold principalMultiplier
-  refine continuousOn_finset_sum _ fun j _ => ?_
+  refine continuousOn_finsetSum _ fun j _ => ?_
   have h_inv : ContinuousOn (invGramOnEuclid (I := I) g α i j)
       (chartTargetEuclid (I := I) (M := M) α) :=
     (invGramOnEuclid_contDiffOn (I := I) g α i j).continuousOn
@@ -475,8 +475,12 @@ lemma chartPushedLpFromLp_tendsto
     have h_sub : Tendsto (fun n => u n - u_lim) atTop (𝓝 0) := by
       have := h_tendsto.sub (tendsto_const_nhds (x := u_lim))
       simpa using this
-    simpa using (continuous_norm.tendsto (0 :
-      Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
+    change Tendsto
+      ((fun a : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) => ‖a‖) ∘
+        fun n => u n - u_lim) atTop (nhds 0)
+    simpa only [norm_zero] using
+      (continuous_norm.tendsto (0 :
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
   have h_eLpNorm_eq : ∀ n,
       eLpNorm (((u n - u_lim) : Lp ℝ 2 _) : M → ℝ) 2
         (riemannianVolumeMeasure (I := I) (M := M) g) =
@@ -575,7 +579,14 @@ lemma chartPushedLpFromLp_tendsto
           (chartTargetEuclid (I := I) (M := M) α)))) atTop (𝓝 0) := by
     have h_comp := (ENNReal.tendsto_toReal (by norm_num : (0 : ℝ≥0∞) ≠ ⊤)).comp
       h_chartPushed_eLp_tendsto
-    simpa using h_comp
+    change Tendsto (ENNReal.toReal ∘ fun n => eLpNorm (fun y =>
+      DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
+        (chartAtlasPOU I M) α ((u n : Lp ℝ 2 _) : M → ℝ) y -
+      DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
+        (chartAtlasPOU I M) α ((u_lim : Lp ℝ 2 _) : M → ℝ) y) 2
+      ((chartPulledWeightedMeasure (I := I) g α).restrict
+        (chartTargetEuclid (I := I) (M := M) α))) atTop (nhds 0)
+    exact h_comp
   exact h_toReal_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -680,7 +691,7 @@ private lemma chartPushedLpFromLp_smoothToLp_aeEq
           (chartAtlasPOU I M) α v.toFun y) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) = 0 :=
-    le_antisymm h_diff_bound (zero_le _)
+    le_antisymm h_diff_bound (zero_le)
   have h_aestrong : AEStronglyMeasurable (fun y =>
       DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
         (chartAtlasPOU I M) α (((smoothToLp (I := I) (M := M) g v :
@@ -1134,7 +1145,7 @@ private lemma general_lhs_principal_eq_sum_inner
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ)) 2 μ :=
       Lp.memLp _
     exact MemLp.integrable_mul h_P h_C
-  rw [MeasureTheory.integral_finset_sum _ (fun i _ => h_per_i_integrable i)]
+  rw [MeasureTheory.integral_finsetSum _ (fun i _ => h_per_i_integrable i)]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [L2.inner_def (𝕜 := ℝ)]
   refine MeasureTheory.integral_congr_ae ?_
@@ -1510,7 +1521,7 @@ theorem laplacianDomain_variational_identity_general
       have h_C := h_per_i_memLp_C i
       exact MemLp.integrable_mul h_P h_C
     rw [h_full_eq]
-    rw [MeasureTheory.integral_finset_sum _ (fun i _ => h_per_i_integrable i)]
+    rw [MeasureTheory.integral_finsetSum _ (fun i _ => h_per_i_integrable i)]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     exact (h_per_i_eq i).symm
   have h_lhs_principal_tendsto : Tendsto (fun n =>
@@ -1538,7 +1549,7 @@ theorem laplacianDomain_variational_identity_general
               chartPushedPartial (I := I) (M := M) g α i (v n) y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) from funext h_swap_n]
-    exact tendsto_finset_sum _ (fun i _ => h_per_i_tendsto i)
+    exact tendsto_finsetSum _ (fun i _ => h_per_i_tendsto i)
   have h_lhs_mass_tendsto :=
     smooth_lhs_mass_tendsto (I := I) (M := M) g α hψ hψ_cs hψ_supp h_v_tendsto
   have h_rhs_tendsto := rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz_general

@@ -369,7 +369,7 @@ lemma transitionMatrix_mul_reverse
         = (chartModelBasis E) j := by
     rw [← hlin, ← hexp]; exact heval
   have happ := congrArg ((chartModelBasis E).repr · i) heval'
-  simp only [map_sum, Finsupp.coe_finset_sum, Finset.sum_apply,
+  simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply,
     map_smul, Finsupp.smul_apply, smul_eq_mul] at happ
   have hrhs : ((chartModelBasis E).repr ((chartModelBasis E) j)) i
                 = if i = j then (1 : ℝ) else 0 := by
@@ -516,7 +516,7 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
   classical
   have hVol_eq :=
     riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g
-  haveI hFin :
+  have hFin :
       MeasureTheory.IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   obtain ⟨C, hC⟩ : ∃ C, ∀ x, ‖h x‖ ≤ C := by
@@ -539,7 +539,7 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
       (s := chartAtlasPOU_finset (I := I) (M := M))
       (fun _ _ => Measure.zero_le _) hα
   conv_lhs => rw [hVol_eq]
-  exact integral_finset_sum_measure hsummand_int
+  exact integral_finsetSum_measure hsummand_int
 
 theorem chart_sum_integral
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -568,7 +568,7 @@ theorem chart_sum_integral
           ∫ x, h x ∂((chartLocalMeasure (I := I) g α).withDensity
             (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
     conv_lhs => rw [hVol_eq]
-    exact integral_finset_sum_measure hsummand_int
+    exact integral_finsetSum_measure hsummand_int
   rw [hglobal]
   refine Finset.sum_congr rfl (fun α _ => ?_)
   let ρ : M → ℝ := fun x => (chartAtlasPOU I M) α x

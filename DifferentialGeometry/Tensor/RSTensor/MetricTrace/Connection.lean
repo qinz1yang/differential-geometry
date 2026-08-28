@@ -204,7 +204,7 @@ private theorem traceFlat_apply_sum
             componentRS_gen (I := I) basis A r
               (fun a : Fin 2 => if a = 0 then i else j) := by
           rw [hslots]
-          simpa [component0S_apply] using h
+          simpa only [component0S_apply, fin2_apply_ite] using h
     _ =
       ∑ r : Idx,
         g.inner x (basis q) (basis r) *
@@ -212,7 +212,8 @@ private theorem traceFlat_apply_sum
             (fun _ : Fin 1 => r)
             (fun a : Fin 2 => if a = 0 then i else j) := by
         rw [sumFinOne]
-        simp [dualToCotangent_apply_gen, tangentFlatLinear_apply_gen]
+        refine Finset.sum_congr rfl (fun r _ => ?_)
+        congr 1
 
 private theorem sumFourComm
     {ι κ η μ α : Type*} [Fintype ι] [Fintype κ] [Fintype η] [Fintype μ]
@@ -362,7 +363,7 @@ theorem connTraceCoeff
     simp only [map_smul, Module.Basis.repr_self]
     simp only [Finsupp.smul_single, smul_eq_mul, mul_one]
     change (∑ c : Idx, Finsupp.single c (coeff c)) p = coeff p
-    rw [Finsupp.finset_sum_apply
+    rw [Finsupp.finsetSum_apply
       (S := Finset.univ)
       (f := fun c : Idx => (Finsupp.single c (coeff c) : Idx →₀ Real))
       (a := p)]
@@ -398,7 +399,7 @@ private theorem gInvComp_contMDiffAt
       (fun y : M =>
         inverseMetricFlatModelInChart_component (I := I) g x₀ i j
           (extChartAt I x₀ y)) x₀ := by
-  haveI : CompleteSpace E := FiniteDimensional.complete Real E
+  have : CompleteSpace E := FiniteDimensional.complete Real E
   let f : E → Real :=
     inverseMetricFlatModelInChart_component (I := I) g x₀ i j
   have hf :
@@ -487,7 +488,7 @@ theorem trace02_smooth
           coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y))
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (gInvComp_contMDiffAt (I := I) g x₀ i j).mul
@@ -564,7 +565,7 @@ theorem normSq02_smooth
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ =>
       ContMDiffAt.sum fun k _ => ContMDiffAt.sum fun l _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (((gInvComp_contMDiffAt (I := I) g x₀ i k).mul
@@ -671,7 +672,7 @@ theorem connTraceCoeff_eventually
                 (fun q : Fin 2 =>
                   coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y) := by
   classical
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
   filter_upwards
@@ -749,7 +750,7 @@ private theorem connTraceCoeff_contMDiffAt
                     coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y))
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (gInvComp_contMDiffAt (I := I) g x₀ i j).mul

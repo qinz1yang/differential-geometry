@@ -27,25 +27,28 @@ theorem arzelaAscoli_subseq_tendsto
     exists (phi : Nat -> Nat) (g : C(X, Real)),
       StrictMono phi ∧ Tendsto (fun n => f (phi n)) atTop (𝓝 g) := by
   classical
-  haveI : WeaklyLocallyCompactSpace X := inferInstance
-  haveI : CompactlyCoherentSpace X := inferInstance
+  have : WeaklyLocallyCompactSpace X := inferInstance
+  have : CompactlyCoherentSpace X := inferInstance
   have hclosedEmbedding :
       IsClosedEmbedding
         (UniformOnFun.ofFun {K : Set X | IsCompact K} ∘
           (fun g : C(X, Real) => (g : X -> Real))) := by
-    refine ⟨?_, ?_⟩
-    · simpa [ContinuousMap.toUniformOnFunIsCompact, Function.comp_def] using
-        (ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
-          (α := X) (β := Real)).isEmbedding
+    refine ⟨⟨⟨?_⟩, DFunLike.coe_injective⟩, ?_⟩
+    · change ContinuousMap.compactOpen =
+        TopologicalSpace.induced ContinuousMap.toUniformOnFunIsCompact _
+      unfold UniformOnFun.topologicalSpace
+      rw [← (ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
+          (α := X) (β := Real)).isInducing.eq_induced]
+      unfold ContinuousMap.compactConvergenceUniformSpace
+      rfl
     · rw [show
           Set.range
               (UniformOnFun.ofFun {K : Set X | IsCompact K} ∘
                 (fun g : C(X, Real) => (g : X -> Real))) =
             {g : UniformOnFun X Real {K : Set X | IsCompact K} |
               Continuous (UniformOnFun.toFun {K : Set X | IsCompact K} g)} by
-          simpa [ContinuousMap.toUniformOnFunIsCompact, Function.comp_def] using
-            (ContinuousMap.range_toUniformOnFunIsCompact (α := X) (β := Real))]
-      exact UniformOnFun.isClosed_setOf_continuous
+          exact ContinuousMap.range_toUniformOnFunIsCompact]
+      exact UniformOnFun.isClosed_setOfPred_continuous
         (β := Real) (𝔖 := {K : Set X | IsCompact K})
         CompactlyCoherentSpace.isCoherentWith
   have hEq :
@@ -125,25 +128,28 @@ theorem arzelaAscoli_isCompact_closure
     (hbdd : forall x : X, exists M : Real, forall k : Nat, ‖f k x‖ <= M) :
     IsCompact (closure (Set.range f : Set C(X, V))) := by
   classical
-  haveI : WeaklyLocallyCompactSpace X := inferInstance
-  haveI : CompactlyCoherentSpace X := inferInstance
+  have : WeaklyLocallyCompactSpace X := inferInstance
+  have : CompactlyCoherentSpace X := inferInstance
   have hclosedEmbedding :
       IsClosedEmbedding
         (UniformOnFun.ofFun {K : Set X | IsCompact K} ∘
           (fun g : C(X, V) => (g : X -> V))) := by
-    refine ⟨?_, ?_⟩
-    · simpa [ContinuousMap.toUniformOnFunIsCompact, Function.comp_def] using
-        (ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
-          (α := X) (β := V)).isEmbedding
+    refine ⟨⟨⟨?_⟩, DFunLike.coe_injective⟩, ?_⟩
+    · change ContinuousMap.compactOpen =
+        TopologicalSpace.induced ContinuousMap.toUniformOnFunIsCompact _
+      unfold UniformOnFun.topologicalSpace
+      rw [← (ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
+          (α := X) (β := V)).isInducing.eq_induced]
+      unfold ContinuousMap.compactConvergenceUniformSpace
+      rfl
     · rw [show
           Set.range
               (UniformOnFun.ofFun {K : Set X | IsCompact K} ∘
                 (fun g : C(X, V) => (g : X -> V))) =
             {g : UniformOnFun X V {K : Set X | IsCompact K} |
               Continuous (UniformOnFun.toFun {K : Set X | IsCompact K} g)} by
-          simpa [ContinuousMap.toUniformOnFunIsCompact, Function.comp_def] using
-            (ContinuousMap.range_toUniformOnFunIsCompact (α := X) (β := V))]
-      exact UniformOnFun.isClosed_setOf_continuous
+          exact ContinuousMap.range_toUniformOnFunIsCompact]
+      exact UniformOnFun.isClosed_setOfPred_continuous
         (β := V) (𝔖 := {K : Set X | IsCompact K})
         CompactlyCoherentSpace.isCoherentWith
   have hEq :

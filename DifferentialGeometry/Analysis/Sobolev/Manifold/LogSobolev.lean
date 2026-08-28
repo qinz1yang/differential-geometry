@@ -36,11 +36,11 @@ theorem logSobolev_closed
                 ∂(riemannianVolumeMeasure I M g)) -
             ((3 : Real) / 2) * Real.log tau + L := by
   classical
-  letI : NeZero (Module.finrank Real E) := ⟨by rw [hdim]; norm_num⟩
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let _ : NeZero (Module.finrank Real E) := ⟨by rw [hdim]; norm_num⟩
+  let _ : MeasurableSpace M := borel M
+  let _ : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure I M g
-  letI : IsFiniteMeasure μ := by
+  let _ : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -86,8 +86,10 @@ theorem logSobolev_closed
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
       (grad_g (I := I) g ⟨_, hv⟩) (grad_g (I := I) g ⟨_, hv⟩)
-    exact Real.continuous_sqrt.comp (by
-      simpa only [gradNorm, grad_g_apply] using hinner)
+    have hinner' : Continuous (fun x ↦
+        g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x)) :=
+      hinner.congr (fun _ ↦ rfl)
+    exact Real.continuous_sqrt.comp hinner'
   have hv_mem2 : MemLp v (2 : ENNReal) μ := by
     exact hv.continuous.memLp_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)

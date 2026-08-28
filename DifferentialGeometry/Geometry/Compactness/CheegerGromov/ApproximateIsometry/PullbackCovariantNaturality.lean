@@ -54,12 +54,10 @@ private theorem srm_ext {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem covNormWith_pd_zone [I.Boundaryless]
+theorem covNormWith_pd_zone
     [T2Space N]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 1 N] [IsManifold I 2 N] (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {V : Opens M} [SigmaCompactSpace V]
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 1 N] [IsManifold I 2 N] (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {V : Opens M}
     (hV : (V : Set M) ⊆ Φ.source)
-    [SigmaCompactSpace
-      (⟨(Φ : M → N) '' (V : Set M), image_opens_isOpen Φ hV⟩ : Opens N)]
     (g' : SmoothRiemannianMetric I N)
     (δN : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := N) (n := (∞ : WithTop ℕ∞)) 2)
@@ -77,7 +75,7 @@ theorem covNormWith_pd_zone [I.Boundaryless]
       = tensor02CovDerivNormWith (I := I) a δN g' g' ((Φ : M → N) x) := by
   classical
   set W : Opens N := ⟨(Φ : M → N) '' (V : Set M), image_opens_isOpen Φ hV⟩ with hWdef
-  haveI : Nonempty W := ⟨⟨(Φ : M → N) x, x, hx, rfl⟩⟩
+  have : Nonempty W := ⟨⟨(Φ : M → N) x, x, hx, rfl⟩⟩
   set F := PartialDiffeomorph.toOpensDiffeo Φ hV with hFdef
   set xV : V := ⟨x, hx⟩ with hxVdef
   have hmfd : ∀ (p : V) (v : TangentSpace I p),
@@ -104,15 +102,35 @@ theorem covNormWith_pd_zone [I.Boundaryless]
             (mfderiv I I (Subtype.val : V → M) p) :=
       mfderiv_comp p hΦd hvalV
     have happ := DFunLike.congr_fun (h1.symm.trans h2) v
-    simpa [ContinuousLinearMap.comp_apply,
+    rw [ContinuousLinearMap.comp_apply,
       mfderiv_subtype_val (I := I) W (F p),
-      mfderiv_subtype_val (I := I) V p] using happ
+      mfderiv_subtype_val (I := I) V p] at happ
+    change mfderiv I I (F : V → W) p v =
+      mfderiv I I (Φ : M → N) (p : M) v at happ
+    exact happ
+  have hmfdAmbient (p : V) (v : TangentSpace I p) :
+      mfderiv I I (Subtype.val : W → N) (F p)
+          (mfderiv I I (F : V → W) p v) =
+        mfderiv I I (Φ : M → N) (p : M)
+          (mfderiv I I (Subtype.val : V → M) p v) := by
+    rw [mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
+    exact hmfd p v
   set δMV := restrictOpen0S (I := I) 2 (V := V) δM with hδMVdef
   set δNW := restrictOpen0S (I := I) 2 (V := W) δN with hδNWdef
   have hδMV_apply : ∀ (p : V) (slots : Fin 2 → TangentSpace I p),
       δMV p slots = δM (p : M) slots := fun _ _ => rfl
   have hδNW_apply : ∀ (q : W) (slots : Fin 2 → TangentSpace I q),
       δNW q slots = δN (q : N) slots := fun _ _ => rfl
+  have hδMV_model (p : V) :
+      Tensor0SBundle.Tensor0SSpace.toModel (δMV p) =
+        Tensor0SBundle.Tensor0SSpace.toModel (δM (p : M)) := by
+    rw [hδMVdef]
+    rfl
+  have hδNW_model (q : W) :
+      Tensor0SBundle.Tensor0SSpace.toModel (δNW q) =
+        Tensor0SBundle.Tensor0SSpace.toModel (δN (q : N)) := by
+    rw [hδNWdef]
+    rfl
   have hswap : G.restrictOpen (I := I) V
       = Diffeomorph.pullbackMetric (I := I) (g'.restrictOpen (I := I) W) F := by
     apply srm_ext
@@ -128,15 +146,52 @@ theorem covNormWith_pd_zone [I.Boundaryless]
   have hA0 : ∀ (p : V) (slots : Fin 2 → TangentSpace I p),
       δMV p slots = δNW (F p) (fun q => mfderiv I I (F : V → W) p (slots q)) := by
     intro p slots
-    rw [hδMV_apply, hδNW_apply, hδ (p : M) p.2]
-    change δN ((Φ : M → N) (p : M)) _ = δN ((F p : W) : N) _
+    let slotsE : Fin 2 → E :=
+      fun q => tangentSpaceModelContinuousLinearEquiv (I := I) p (slots q)
+    let slotsM : Fin 2 → TangentSpace I (p : M) :=
+      fun q => (tangentSpaceModelContinuousLinearEquiv (I := I) (p : M)).symm (slotsE q)
+    have hbase := hδ (p : M) p.2 slotsM
+    change Tensor0SBundle.Tensor0SSpace.toModel (δMV p) slotsE =
+      Tensor0SBundle.Tensor0SSpace.toModel (δNW (F p))
+        (fun q => tangentSpaceModelContinuousLinearEquiv (I := I) (F p)
+          (mfderiv I I (F : V → W) p (slots q)))
+    rw [hδMV_model, hδNW_model]
+    rw [Tensor0SBundle.Tensor0SSpace.toModel_apply_model_vector,
+      Tensor0SBundle.Tensor0SSpace.toModel_apply_model_vector]
+    convert hbase using 1
+    rw [← show ((F p : W) : N) = (Φ : M → N) (p : M) from rfl]
     congr 1
     funext q
-    rw [hmfd]
+    have hleft :
+        (tangentSpaceModelContinuousLinearEquiv (I := I) ((F p : W) : N)).symm
+            (tangentSpaceModelContinuousLinearEquiv (I := I) (F p)
+              (mfderiv I I (F : V → W) p (slots q))) =
+          mfderiv I I (Subtype.val : W → N) (F p)
+            (mfderiv I I (F : V → W) p (slots q)) := by
+      apply (tangentSpaceModelContinuousLinearEquiv
+        (I := I) ((F p : W) : N)).injective
+      rw [ContinuousLinearEquiv.apply_symm_apply, mfderiv_subtype_val_apply]
+      exact (tangentSpaceModelContinuousLinearEquiv_apply (I := I) (F p)
+        (mfderiv I I (F : V → W) p (slots q))).trans
+          (tangentSpaceModelContinuousLinearEquiv_apply (I := I) ((F p : W) : N)
+            (mfderiv I I (F : V → W) p (slots q))).symm
+    rw [hleft, hmfdAmbient]
+    congr 1
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) (p : M)).injective
+    rw [mfderiv_subtype_val_apply]
+    change tangentSpaceModelContinuousLinearEquiv (I := I) (p : M) (slots q) =
+      tangentSpaceModelContinuousLinearEquiv (I := I) (p : M)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) (p : M)).symm
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p (slots q)))
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    exact (tangentSpaceModelContinuousLinearEquiv_apply (I := I) (p : M) (slots q)).trans
+      (tangentSpaceModelContinuousLinearEquiv_apply (I := I) p (slots q)).symm
   have hres1 := covDerivOfField_restrictOpen (I := I) G V δMV δM hδMV_apply a xV
   have hpull := covDerivOfField_pullback (I := I) (g'.restrictOpen (I := I) W) F δMV δNW
     hA0 a xV
   have hres2 := covDerivOfField_restrictOpen (I := I) g' W δNW δN hδNW_apply a (F xV)
+  have hFx : ((F xV : W) : N) = (Φ : M → N) x := by
+    rfl
   have htensor1 : ∀ slots : Fin (a + 2) → TangentSpace I x,
       covDerivOfField (I := I) G δM a x slots
         = covDerivOfField (I := I) (Diffeomorph.pullbackMetric (I := I)
@@ -150,9 +205,13 @@ theorem covNormWith_pd_zone [I.Boundaryless]
         = covDerivOfField (I := I) g' δN a ((Φ : M → N) x)
             (fun q => mfderiv I I (F : V → W) xV (slots q)) := by
     intro slots
-    rw [hpull]
-    have := hres2 (fun q => mfderiv I I (F : V → W) xV (slots q))
-    convert this using 2
+    calc
+      _ = covDerivOfField (I := I) (g'.restrictOpen (I := I) W) δNW a (F xV)
+            (fun q => mfderiv I I (F : V → W) xV (slots q)) := hpull slots
+      _ = covDerivOfField (I := I) g' δN a ((F xV : W) : N)
+            (fun q => mfderiv I I (F : V → W) xV (slots q)) :=
+        hres2 (fun q => mfderiv I I (F : V → W) xV (slots q))
+      _ = _ := by rw [hFx]
   have hT1 : covDerivOfField (I := I) G δM a x
       = covDerivOfField (I := I) (Diffeomorph.pullbackMetric (I := I)
           (g'.restrictOpen (I := I) W) F) δMV a xV :=

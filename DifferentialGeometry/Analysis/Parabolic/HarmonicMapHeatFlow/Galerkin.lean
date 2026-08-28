@@ -70,19 +70,22 @@ theorem coerciveODE_exists
       exact_mod_cast hsharp_norm t ht
     have hKL : ‖(hco t ht).sharpCLM‖₊ * L ≤ K := by
       simpa only [K, mul_comm] using mul_le_mul_left hnorm_nn L
-    simpa only [f, dif_pos ht] using hcomp.weaken hKL
+    rw [show f t = (hco t ht).sharpCLM ∘ resid t by
+      funext v
+      simp only [f, dif_pos ht, Function.comp_apply]]
+    exact hcomp.weaken hKL
   have hsharp_cont : Continuous
       (fun t : Icc (0 : ℝ) T => (hco t t.2).sharpCLM) := by
     exact IsCoercive.sharpCLM_cont_sub mass hmass hco
   have hcont_f : ∀ v : V, ContinuousOn (fun t => f t v) (Icc (0 : ℝ) T) := by
     intro v
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hres : Continuous (fun t : Icc (0 : ℝ) T => resid t v) :=
-      (hcont v).restrict
+      (hcont v).domRestrict
     have happ := hsharp_cont.clm_apply hres
     convert happ using 1
     ext t
-    simp only [f, Set.restrict_apply, dif_pos t.property]
+    simp only [f, Set.domRestrict_apply, dif_pos t.property]
   have haff_f : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
       ‖f t v‖ ≤ c⁻¹ * A + (K : ℝ) * ‖v‖ := by
     intro t ht v
@@ -96,8 +99,8 @@ theorem coerciveODE_exists
       _ ≤ c⁻¹ * (A + (L : ℝ) * ‖v‖) :=
         mul_le_mul (hsharp_norm t ht) (haff t ht v) (norm_nonneg _) hcnn
       _ = c⁻¹ * A + (K : ℝ) * ‖v‖ := by
-        simp only [K, cinv, NNReal.coe_mul, NNReal.coe_mk]
-        ring
+        simp only [K, NNReal.coe_mul]
+        rw [show (cinv : ℝ) = c⁻¹ from rfl, mul_add, mul_assoc]
   have hA' : 0 ≤ c⁻¹ * A := mul_nonneg (inv_nonneg.mpr hc.le) hA
   obtain ⟨γ, hγ0, hγcont, hγderiv⟩ :=
     forward_solution_of_lipschitzWith_affineBound

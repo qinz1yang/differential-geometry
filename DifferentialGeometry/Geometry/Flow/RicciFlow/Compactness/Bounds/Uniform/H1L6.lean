@@ -53,7 +53,7 @@ private theorem lpNorm_vol_cross
   let μg := riemannianVolumeMeasure (I := I) (M := M) g
   let L : ℝ := Real.sqrt (Λ ^ Module.finrank ℝ E)
   have hL : 0 ≤ L := Real.sqrt_nonneg _
-  letI : IsFiniteMeasure μB :=
+  let : IsFiniteMeasure μB :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) gBase
   have hfB : MemLp f 6 μB :=
@@ -116,7 +116,7 @@ theorem h1Lp6RS_uniform
   have hK : 0 ≤ K := kjetOneC_nonneg hΛ0 _ _
   refine ⟨C, by dsimp [C]; positivity, ?_⟩
   intro g hEq hjet S
-  letI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   let L : SmoothCcTensor g 0 (r + s) :=
     lowerCc (I := I) (M := M) g r s S.toCcTensor

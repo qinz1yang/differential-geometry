@@ -37,6 +37,12 @@ theorem metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (g₀
   intro x
   apply ContinuousMultilinearMap.ext
   intro m
+  let v : Fin 3 → TangentSpace I x := fun i =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)
+  have hm : (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) = m := by
+    funext i
+    exact ContinuousLinearEquiv.apply_symm_apply _ _
+  rw [← hm]
   rw [metricLoweredConnectionDifference_unitModel_apply, connectionDifferenceLoweredCc_unitModel_apply']
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -87,6 +93,7 @@ theorem deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp (g�
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem deTurckVectorFieldCovector_sub_eq_reindexedPureTrace_ccOperatorFieldComp (g₀ g₁ gA gB : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gA -
         deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gB =

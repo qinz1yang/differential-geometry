@@ -367,7 +367,7 @@ theorem deTurckRemainderOnLowerState_affine_background
         smoothRem_congr (I := I) (M := M) g gB hrad hδ _ _
       rw [← hrem, add_assoc, ← hsplit, hz0, ← hz1]
       abel
-    rw [Set.mem_setOf_eq, hLHS, hu, hRHS]
+    rw [Set.mem_ofPred_eq, hLHS, hu, hRHS]
   have hclos : closure (smoothCore (I := I) (M := M) g R) ⊆
       {v : lowerState (I := I) (M := M) g 1 R |
         tensorHsCongr (I := I) (M := M) g 0 2

@@ -235,7 +235,7 @@ theorem first_var_joint
       intro p (hp : p ∈ Set.univ ×ˢ
         (trivializationAt E (TangentSpace I) x₀).baseSet)
       exact ⟨hρmem p.1, hp.2⟩)
-    simpa only [Function.comp_apply, g'] using hcomp
+    exact hcomp.congr (by intro p hp; rfl)
   have hg'reg : MetricFamilyRegularAt (I := I) g' t := by
     refine
       { hasDerivAt_chartGramMatrix := ?_
@@ -257,8 +257,8 @@ theorem first_var_joint
         ((hg'smooth x₀ i j) (s, x) hp).contMDiffAt (hopen.mem_nhds hp)
       have hslice : ContMDiffAt 𝓘(Real, Real) 𝓘(Real, Real) ∞
           (fun r : Real => chartGramMatrix (I := I) (g' r) x₀ x i j) s := by
-        simpa only [Function.comp_apply] using
-          hAt.comp s (contMDiffAt_id.prodMk contMDiffAt_const)
+        exact (hAt.comp s (contMDiffAt_id.prodMk contMDiffAt_const)).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun r => by rfl)
       have hdiff : DifferentiableAt Real
           (fun r : Real => chartGramMatrix (I := I) (g' r) x₀ x i j) s :=
         (contMDiffAt_iff_contDiffAt.mp hslice).differentiableAt (by simp)

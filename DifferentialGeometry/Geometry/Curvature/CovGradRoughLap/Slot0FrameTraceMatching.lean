@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -57,6 +56,7 @@ def slot0FrameTraceMatching
           (smoothOrthoFrame (I := I) g x i x))
       (unitZeroSec (I := I) (M := M) x)
 
+omit [CompactSpace M] in
 lemma rawConnLap_covGrad_curry_eq_abstractRoughLap_curry
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
@@ -194,6 +194,7 @@ lemma frameTraceSummand_unit_eq_abstract
                   (unitZeroSec (I := I) (M := M) z)) y) x
           (smoothOrthoFrame (I := I) g x i x) := rfl
 
+omit [CompactSpace M] in
 theorem covGradRoughLapCurv_curry_eq_of_slot0Matching
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x)
@@ -214,7 +215,7 @@ theorem covGradRoughLapCurv_curry_eq_of_slot0Matching
           (rawTensorConnLapSmooth (I := I) g 0 2 T₀)).toSection x := by
     rw [covGradRoughLapCurv, SmoothCcTensor.toSection_sub]; rfl
   rw [hdef]
-  rw [ContinuousLinearMap.sub_apply, map_sub, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, map_sub, sub_apply]
   unfold slot0FrameTraceMatching at hmatch
   rw [hmatch]
   rw [covGrad_rawConnLap_unit_eval_curry (I := I) (M := M) g T₀ x w]

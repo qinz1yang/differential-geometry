@@ -1,9 +1,11 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 -- Modified 2026-08-12: merged isolated tactic bullets
+-- Modified 2026-08-23: migrated volume preservation and rescaling to the Mathlib 4.33 API
 import DifferentialGeometry.External.DeGiorgi.Supersolutions
 import DifferentialGeometry.External.DeGiorgi.Crossover
 import DifferentialGeometry.External.DeGiorgi.Support.MeasureBounds
+
 
 /-!
 # Chapter 06: Weak Harnack Inequality
@@ -303,7 +305,7 @@ private theorem quarterBall_volume_real_le_one :
     rcases abs_lt.mp habs with ⟨hleft, hright⟩
     simpa [Set.mem_Ioo] using And.intro hleft hright
   have hpres : MeasurePreserving T volume volume := by
-    simpa [T] using (PiLp.volume_preserving_ofLp (ι := Fin d))
+    exact EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin d)
   have hQ_meas : MeasurableSet Q := by
     simpa [Q] using MeasurableSet.univ_pi (fun _ => isOpen_Ioo.measurableSet)
   have hQ_null : NullMeasurableSet Q volume := hQ_meas.nullMeasurableSet
@@ -1041,8 +1043,17 @@ private theorem weak_harnack_chain_shifted
       hsuper.restrict_ball (d := d) Metric.isOpen_ball hR hsub
     have hrescale :=
       rescaleToUnitBall_isSupersolution (d := d) (x₀ := (0 : E)) hR _ hsuper_half
-    convert hrescale using 2
-    ext z; change v z = u (0 + (1 / 2) • z); simp [v, zero_add]
+    change IsSupersolution
+      (rescaleCoeffToUnitBall (d := d) (x₀ := (0 : E)) (R := 1 / 2) hR
+        (A.restrict (ball_subset_ball (by norm_num : (1 / 2 : ℝ) ≤ 1))).1) v
+    have hrescale' : IsSupersolution
+        (rescaleCoeffToUnitBall (d := d) (x₀ := (0 : E)) (R := 1 / 2) hR
+          (A.restrict (ball_subset_ball (by norm_num : (1 / 2 : ℝ) ≤ 1))).1)
+        (rescaleToUnitBall (d := d) (x₀ := (0 : E)) (R := 1 / 2) u) := by
+      simpa only [NormalizedEllipticCoeff.restrict, EllipticCoeff.restrict] using hrescale
+    exact hrescale'.congr_ae (by
+      filter_upwards with z
+      simp only [rescaleToUnitBall, v, zero_add])
   -- A' has the same Λ as A, so the same p₀.
   have hΛ_eq : A'.1.Λ = A.1.Λ := rescaledCoeff_Λ_eq A
   have hp₀_eq : weakHarnackP0 A' = p₀ := by
@@ -1149,7 +1160,7 @@ private theorem weak_harnack_chain_shifted
         ball (0 : E) (1 / 2 : ℝ) ⊆ ball (0 : E) 1 :=
       Metric.ball_subset_ball (by norm_num : (1 / 2 : ℝ) ≤ 1)
     exact Measure.restrict_mono_set volume hsubset
-  haveI : IsFiniteMeasure (volume.restrict (ball (0 : E) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let huW : MemW1pWitness 2 u (ball (0 : E) 1) := hsuper.1.someWitness
@@ -1624,7 +1635,7 @@ theorem weak_harnack_chain
     let huW : MemW1pWitness 2 u (ball (0 : E) 1) := hsuper.1.someWitness
     have hq'_int_ball1 :
         IntegrableOn (fun x => |u x| ^ q') (ball (0 : E) 1) volume := by
-      haveI : IsFiniteMeasure (volume.restrict (ball (0 : E) 1)) := by
+      have : IsFiniteMeasure (volume.restrict (ball (0 : E) 1)) := by
         rw [isFiniteMeasure_restrict]
         exact measure_ball_lt_top.ne
       have hmem_q' : MemLp u (ENNReal.ofReal q') (volume.restrict (ball (0 : E) 1)) := by

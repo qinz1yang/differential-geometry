@@ -79,7 +79,7 @@ theorem integral_smul_weak_partial_eq
       fderiv_fun_mul hφ_diff.differentiableAt hψ_diff.differentiableAt
     have hξ_eq : (fderiv ℝ ξ y) ej = (fderiv ℝ (fun z => φ z * ψ z) y) ej := rfl
     rw [hξ_eq, hfd]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
       smul_eq_mul]
     ring
   have key :
@@ -96,7 +96,7 @@ theorem integral_smul_weak_partial_eq
   have hvolK_finite' : (volume.restrict K : Measure E) Set.univ < ∞ := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hvolK_finite
-  haveI : IsFiniteMeasure ((volume : Measure E).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure E).restrict K) := ⟨hvolK_finite'⟩
   have hv_int_K : IntegrableOn v K (volume : Measure E) :=
     hvK_memLp.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have hw_int_K : IntegrableOn (w j) K (volume : Measure E) :=

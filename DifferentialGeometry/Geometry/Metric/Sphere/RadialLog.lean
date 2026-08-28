@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.Sphere.PolarBij
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundIntrinsic
 import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
 import DifferentialGeometry.Geometry.Exponential.DiagInvFixed
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -22,8 +24,10 @@ def radialLog (p x : E) : E :=
 
 theorem radialLog_smooth (p : E) :
     ContDiffOn ℝ ∞ (radialLog p) {x : E | |⟪p, x⟫_ℝ| < 1} := by
-  simpa only [radialLog] using
-    (polarInv_smooth p).fst.smul (polarInv_smooth p).snd
+  rw [show radialLog p =
+    ((fun x : E ↦ (spherePolarInv p x).1) •
+      fun x : E ↦ (spherePolarInv p x).2) by rfl]
+  exact (polarInv_smooth p).fst.smul (polarInv_smooth p).snd
 
 theorem radialLog_orth {p : E} (hp : ‖p‖ = 1) (x : E) :
     ⟪p, radialLog p x⟫_ℝ = 0 := by
@@ -62,7 +66,7 @@ private instance sphereModel_neZero :
 def roundLog
     (p x : sphere (0 : E) 1) : EuclideanSpace ℝ (Fin n) :=
   (dInclEquiv (n := n) p).symm
-    (((ℝ ∙ (p : E))ᗮ).orthogonalProjection (radialLog (p : E) (x : E)))
+    (((ℝ ∙ (p : E))ᗮ).orthogonalProjectionOnto (radialLog (p : E) (x : E)))
 
 omit [FiniteDimensional ℝ E] [NeZero n] in
 theorem roundLog_val
@@ -73,21 +77,24 @@ theorem roundLog_val
   have hmem : radialLog (p : E) (x : E) ∈ K := by
     rw [Submodule.mem_orthogonal_singleton_iff_inner_right]
     exact radialLog_orth (norm_eq_of_mem_sphere p) (x : E)
+  change dIncl (n := n) p
+      ((tangentSpaceModelContinuousLinearEquiv (I := 𝓡 n) p).symm
+        (roundLog (n := n) p x)) = radialLog (p : E) (x : E)
   rw [← dInclEquiv_coe (n := n) p]
   change
     (((dInclEquiv (n := n) p)
       ((dInclEquiv (n := n) p).symm
-        (K.orthogonalProjection (radialLog (p : E) (x : E))))) : K) =
+        (K.orthogonalProjectionOnto (radialLog (p : E) (x : E))))) : K) =
       radialLog (p : E) (x : E)
   rw [(dInclEquiv (n := n) p).apply_symm_apply]
   exact congrArg Subtype.val
-    (K.orthogonalProjection_mem_subspace_eq_self
+    (K.orthogonalProjectionOnto_mem_subspace_eq_self
       ⟨radialLog (p : E) (x : E), hmem⟩)
 
 omit [FiniteDimensional ℝ E] [NeZero n] in
 @[simp] theorem roundLog_self (p : sphere (0 : E) 1) :
     roundLog (n := n) p p = 0 := by
-  apply mfderiv_coe_sphere_injective p
+  apply injective_mvfderiv_subtypeVal_sphere p
   change dIncl (n := n) p (roundLog (n := n) p p) =
     dIncl (n := n) p 0
   rw [roundLog_val, map_zero]
@@ -139,11 +146,13 @@ theorem roundLog_smooth_off (p : sphere (0 : E) 1) :
     hradAt.contMDiffAt.comp x hcoe
   let L : E →L[ℝ] EuclideanSpace ℝ (Fin n) :=
     (dInclEquiv (n := n) p).symm.toContinuousLinearMap.comp
-      (((ℝ ∙ (p : E))ᗮ).orthogonalProjection)
+      (((ℝ ∙ (p : E))ᗮ).orthogonalProjectionOnto)
   have hL :
       ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ L :=
     L.contDiff.contMDiff
-  simpa only [roundLog, L] using (hL.contMDiffAt.comp x hrad).contMDiffWithinAt
+  rw [show roundLog (n := n) p =
+    (fun y : sphere (0 : E) 1 ↦ L (radialLog (p : E) (y : E))) by rfl]
+  exact (hL.contMDiffAt.comp x hrad).contMDiffWithinAt
 
 omit [FiniteDimensional ℝ E] [NeZero n] in
 theorem roundLog_tendsto (p : sphere (0 : E) 1) :
@@ -160,8 +169,11 @@ theorem roundLog_tendsto (p : sphere (0 : E) 1) :
       (Real.continuous_arccos.comp hinner).continuousAt (x := p)
     have hpp : ⟪(p : E), (p : E)⟫_ℝ = 1 :=
       inner_self_eq_one_of_norm_eq_one (norm_eq_of_mem_sphere p)
-    simpa only [ContinuousAt, Function.comp_apply, a, hpp,
-      Real.arccos_one] using h
+    rw [show a = Real.arccos ∘
+      (fun x : sphere (0 : E) 1 ↦ ⟪(p : E), (x : E)⟫_ℝ) by rfl]
+    rw [show (0 : ℝ) = Real.arccos ⟪(p : E), (p : E)⟫_ℝ by
+      simp only [hpp, Real.arccos_one]]
+    exact h
   have hpneg : p ≠ -p := ne_neg_of_mem_unit_sphere ℝ p
   have hnotneg : ∀ᶠ x in 𝓝 p, x ≠ -p := by
     have hopen : IsOpen {x : sphere (0 : E) 1 | x ≠ -p} := by
@@ -189,11 +201,15 @@ theorem roundLog_tendsto (p : sphere (0 : E) 1) :
     exact ha.congr' hnorm.symm
   let L : E →L[ℝ] EuclideanSpace ℝ (Fin n) :=
     (dInclEquiv (n := n) p).symm.toContinuousLinearMap.comp
-      (((ℝ ∙ (p : E))ᗮ).orthogonalProjection)
+      (((ℝ ∙ (p : E))ᗮ).orthogonalProjectionOnto)
   have hL : Tendsto L (𝓝 0) (𝓝 0) := by
     have hLc : ContinuousAt L 0 := L.continuous.continuousAt
     simpa only [ContinuousAt, map_zero] using hLc
-  simpa only [roundLog, L] using hL.comp hrad
+  rw [show roundLog (n := n) p =
+    (fun x : sphere (0 : E) 1 ↦ L (radialLog (p : E) (x : E))) by rfl]
+  rw [show (fun x : sphere (0 : E) 1 ↦ L (radialLog (p : E) (x : E))) =
+    L ∘ (fun x : sphere (0 : E) 1 ↦ radialLog (p : E) (x : E)) by rfl]
+  exact hL.comp hrad
 
 variable
   [RiemannianBundle
@@ -230,7 +246,7 @@ theorem round_exp_log
     rw [hdv]
     exact hwn
   have hlog : roundLog (n := n) p x = r • v := by
-    apply mfderiv_coe_sphere_injective p
+    apply injective_mvfderiv_subtypeVal_sphere p
     change dIncl (n := n) p (roundLog (n := n) p x) =
       dIncl (n := n) p (r • v)
     rw [roundLog_val, map_smul, hdv]
@@ -283,7 +299,17 @@ private theorem log_eq_branch
       round_exp_log hEnorm p x hxp hxneg
     have hmap :
         B.fixedPD (roundLog (n := n) p x) = x := by
-      simpa only [DiagInvBranch.fixedPD_apply] using hexp
+      change expMapIntrinsic (I := 𝓡 n)
+          (roundMetric (E := E) (n := n)) hEnorm p
+            ((tangentSpaceModelContinuousLinearEquiv (I := 𝓡 n) p).symm
+              (roundLog (n := n) p x)) = x
+      convert hexp using 1
+      exact congrArg
+        (fun v : TangentSpace (𝓡 n) p =>
+          expMapIntrinsic (I := 𝓡 n)
+            (roundMetric (E := E) (n := n)) hEnorm p v)
+        (tangentSpaceModelContinuousLinearEquiv_symm_apply
+          (I := 𝓡 n) p (roundLog (n := n) p x))
     have hleft := B.fixedPD.left_inv hxsrc
     rw [hmap] at hleft
     exact hleft.symm
@@ -353,6 +379,8 @@ theorem roundLog_mfd_self
     mfderiv_comp
       (I := 𝓡 n) (I' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
       (I'' := 𝓡 n) p hexp hlog
+  have hid := Filter.EventuallyEq.mfderiv_eq
+    (I := 𝓡 n) (I' := 𝓡 n) hident
   have hp0 : logf p = 0 := by
     simp only [logf, roundLog_self]
   have hexp0 :
@@ -361,11 +389,44 @@ theorem roundLog_mfd_self
     simpa only [expf] using
       mfderiv_expMapIntrinsic_at_zero (I := 𝓡 n)
         (roundMetric (E := E) (n := n)) hEnorm p
-  rw [hident.mfderiv_eq, mfderiv_id, hp0, hexp0] at hchain
-  ext v
-  have hv := DFunLike.congr_fun hchain v
-  simpa only [ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.id_apply, logf] using hv.symm
+  apply ContinuousLinearMap.ext
+  intro v
+  have hv := DFunLike.congr_fun hid v
+  rw [hchain, mfderiv_id] at hv
+  change
+    mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (𝓡 n) expf (logf p)
+        (mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) logf p v) = v at hv
+  rw [hp0, hexp0] at hv
+  apply (tangentSpaceModelContinuousLinearEquiv
+    (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) (roundLog (n := n) p p)).injective
+  have hvModel := congrArg
+    (tangentSpaceModelContinuousLinearEquiv (I := 𝓡 n) (expf 0)) hv
+  have hvModel' := hvModel.trans
+    (tangentSpaceModelContinuousLinearEquiv_apply (I := 𝓡 n) (expf 0) v)
+  have hvModelNormalized :=
+    (tangentSpaceModelContinuousLinearEquiv_apply (I := 𝓡 n) (expf 0)
+      (ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n))
+        (mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) logf p v))).symm.trans
+      hvModel'
+  change mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+      (roundLog (n := n) p) p v =
+    ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n)) v
+  have hvModel'' :
+      ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n))
+          (show EuclideanSpace ℝ (Fin n) from
+            mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+              (roundLog (n := n) p) p v) =
+        (show EuclideanSpace ℝ (Fin n) from v) := by
+    simpa only [logf] using hvModelNormalized
+  exact (by rfl :
+      (show EuclideanSpace ℝ (Fin n) from
+        mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+          (roundLog (n := n) p) p v) =
+      ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n))
+        (show EuclideanSpace ℝ (Fin n) from
+          mfderiv (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+            (roundLog (n := n) p) p v)).trans
+      (hvModel''.trans (by rfl))
 
 end Geometry
 end DifferentialGeometry

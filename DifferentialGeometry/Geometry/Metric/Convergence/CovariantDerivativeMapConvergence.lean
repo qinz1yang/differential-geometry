@@ -58,22 +58,31 @@ private theorem iterCovComp_succ_eq_step
   rw [iterCovComp_succ]
   unfold covCompStep covDerivStepComp frameExtData
   congr 1
-  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv, mfderiv_eq_fderiv]
+  rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv, mfderiv_eq_fderiv]
   have hdiff : DifferentiableAt Real
       (iterCovComp (I := 𝓘(Real, E)) (constFrame e) chr base a) x :=
     (hbase.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hx)
   have hdiffm : ∀ m : Fin (r + a) → Idx, DifferentiableAt Real
       (fun y ↦ iterCovComp (I := 𝓘(Real, E)) (constFrame e) chr base a y m) x := by
     intro m
-    simpa only [Function.comp_apply] using
-      (differentiable_apply (𝕜 := Real) m).differentiableAt.comp x hdiff
+    change DifferentiableAt Real
+      ((fun f : ((Fin (r + a) → Idx) → Real) ↦ f m) ∘
+        iterCovComp (constFrame e) chr base a) x
+    exact (differentiable_apply (𝕜 := Real) m).differentiableAt.comp x hdiff
   have hpi := fderiv_pi (𝕜 := Real) (x := x)
     (φ := fun m y ↦ iterCovComp (I := 𝓘(Real, E)) (constFrame e) chr base a y m)
     hdiffm
   have happ := congrArg
     (fun L : E →L[Real] ((Fin (r + a) → Idx) → Real) ↦
       L (e (n 0)) (Fin.tail n)) hpi
-  simpa only [constFrame, ContinuousLinearMap.pi_apply] using happ.symm
+  have hfun :
+      (fun x i ↦ iterCovComp (constFrame e) chr base a x i) =
+        iterCovComp (constFrame e) chr base a := by
+    funext y m
+    rfl
+  rw [hfun] at happ
+  rw [ContinuousLinearMap.pi_apply] at happ
+  exact happ.symm
 
 omit [CompleteSpace E] in
 theorem iter_comp_conv
@@ -90,8 +99,8 @@ theorem iter_comp_conv
     (hbaseInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) baseInf U)
     (a : Nat) :
     MapCInfConvOnCompacts U
-      (fun n ↦ iterCovComp (I := 𝓘(Real, E)) (fun i _ ↦ e i) (chr n) (base n) a)
-      (iterCovComp (I := 𝓘(Real, E)) (fun i _ ↦ e i) chrInf baseInf a) := by
+      (fun n ↦ iterCovComp (I := 𝓘(Real, E)) (constFrame e) (chr n) (base n) a)
+      (iterCovComp (I := 𝓘(Real, E)) (constFrame e) chrInf baseInf a) := by
   have hall : ∀ q : Nat,
       MapCInfConvOnCompacts U
           (fun n ↦ iterCovComp (I := 𝓘(Real, E))
@@ -234,7 +243,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 private theorem iterCovComp_zero_base
     (e : Idx → E) {r : Nat}
     (chr : E → Idx → Idx → Idx → Real) (a : Nat) :
-    iterCovComp (I := 𝓘(Real, E)) (fun i _ ↦ e i) chr
+    iterCovComp (I := 𝓘(Real, E)) (constFrame e) chr
         (fun (_ : E) (_ : Fin r → Idx) ↦ (0 : Real)) a =
       fun (_ : E) (_ : Fin (r + a) → Idx) ↦ (0 : Real) := by
   classical
@@ -244,9 +253,8 @@ private theorem iterCovComp_zero_base
       funext x n
       rw [iterCovComp_succ, ih]
       simp only [covDerivStepComp, frameExtData,
-        DifferentialGeometry.extDerivFun_real_eq_mfderiv, mfderiv_const,
-        ContinuousLinearMap.zero_apply, mul_zero, Finset.sum_const_zero, sub_zero]
-      rfl
+        DifferentialGeometry.mvfderiv_real_eq_mfderiv, mfderiv_const,
+        zero_apply, map_zero, mul_zero, Finset.sum_const_zero, sub_zero]
 
 omit [CompleteSpace E] in
 theorem iter_comp_zero
@@ -262,7 +270,7 @@ theorem iter_comp_zero
     (hbase_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (base n) U)
     (a : Nat) :
     MapCInfConvOnCompacts U
-      (fun n ↦ iterCovComp (I := 𝓘(Real, E)) (fun i _ ↦ e i) (chr n) (base n) a)
+      (fun n ↦ iterCovComp (I := 𝓘(Real, E)) (constFrame e) (chr n) (base n) a)
       (fun (_ : E) (_ : Fin (r + a) → Idx) ↦ (0 : Real)) := by
   simpa only [iterCovComp_zero_base] using
     iter_comp_conv hU e chr chrInf base

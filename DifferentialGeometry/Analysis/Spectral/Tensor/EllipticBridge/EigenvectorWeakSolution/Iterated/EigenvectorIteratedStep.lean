@@ -594,7 +594,7 @@ noncomputable def eigenvectorIteratedTensorChartBilinearData_step
           (volume.restrict K : Measure EuclN) Set.univ < (⊤ : ℝ≥0∞) := by
         rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
         exact hvolK_finite
-      haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) :=
+      have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) :=
         ⟨hvolK_finite'⟩
       have h_restrict_K_eq : ((volume : Measure EuclN).restrict Ω).restrict K =
           (volume : Measure EuclN).restrict K := by
@@ -720,10 +720,10 @@ noncomputable def eigenvectorIteratedTensorChartBilinearData_step
                     g r s i α P₀ (m + 1) (Fin.cons a D_m.directions) y *
                   (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1))
             ∂(volume : Measure EuclN)) = _
-        rw [integral_finset_sum _ (fun a _ =>
-          (integrable_finset_sum _ (fun j _ => h_int_LHS_m_pair a j)))]
+        rw [integral_finsetSum _ (fun a _ =>
+          (integrable_finsetSum _ (fun j _ => h_int_LHS_m_pair a j)))]
         refine Finset.sum_congr rfl ?_; intro a _
-        rw [integral_finset_sum _ (fun j _ => h_int_LHS_m_pair a j)]
+        rw [integral_finsetSum _ (fun j _ => h_int_LHS_m_pair a j)]
       have h_sum_principal :
           ∑ a, ∑ j, INT_LHS_m_pair a j =
           (∑ a, ∑ j, A_pair a j) + (∑ a, ∑ j, B_pair a j) - (∑ a, ∑ j, PR_pair a j) := by
@@ -819,10 +819,10 @@ noncomputable def eigenvectorIteratedTensorChartBilinearData_step
                     g r s i α P₀ (m + 2) (Fin.cons a (Fin.snoc D_m.directions l)) y *
                   (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
             ∂(volume : Measure EuclN)) = _
-        rw [integral_finset_sum _ (fun a _ =>
-          (integrable_finset_sum _ (fun j _ => h_int_PR_pair a j)))]
+        rw [integral_finsetSum _ (fun a _ =>
+          (integrable_finsetSum _ (fun j _ => h_int_PR_pair a j)))]
         refine Finset.sum_congr rfl ?_; intro a _
-        rw [integral_finset_sum _ (fun j _ => h_int_PR_pair a j)]
+        rw [integral_finsetSum _ (fun j _ => h_int_PR_pair a j)]
       have h_M_m_ae :
           eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ m D_m.directions
@@ -1036,11 +1036,11 @@ noncomputable def eigenvectorIteratedTensorChartBilinearData_step
               exact h_g_K.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2))
             hψ_cont hψ_supp_K
         have hint_A : Integrable f_A ((volume : Measure EuclN).restrict Ω) :=
-          integrable_finset_sum _ (fun a _ =>
-            integrable_finset_sum _ (fun b _ => h_int_A_pair a b))
+          integrable_finsetSum _ (fun a _ =>
+            integrable_finsetSum _ (fun b _ => h_int_A_pair a b))
         have hint_B : Integrable f_B ((volume : Measure EuclN).restrict Ω) :=
-          integrable_finset_sum _ (fun a _ =>
-            integrable_finset_sum _ (fun b _ => h_int_B_pair_wp a b))
+          integrable_finsetSum _ (fun a _ =>
+            integrable_finsetSum _ (fun b _ => h_int_B_pair_wp a b))
         have hint_C : Integrable f_C ((volume : Measure EuclN).restrict Ω) :=
           h_int_C.neg
         have hint_D : Integrable f_D ((volume : Measure EuclN).restrict Ω) :=
@@ -1067,10 +1067,10 @@ noncomputable def eigenvectorIteratedTensorChartBilinearData_step
                   eigenvectorChartIteratedPartial (I := I) (M := M)
                     g r s i α P₀ (m + 1) (Fin.cons a D_m.directions) y * ψ y
               ∂(volume : Measure EuclN)) = _
-          rw [integral_finset_sum _ (fun a _ =>
-            (integrable_finset_sum _ (fun b _ => h_int_A_pair a b)))]
+          rw [integral_finsetSum _ (fun a _ =>
+            (integrable_finsetSum _ (fun b _ => h_int_A_pair a b)))]
           refine Finset.sum_congr rfl ?_; intro a _
-          rw [integral_finset_sum _ (fun b _ => h_int_A_pair a b)]
+          rw [integral_finsetSum _ (fun b _ => h_int_A_pair a b)]
         have h_int_f_B : (∫ y in Ω, f_B y ∂(volume : Measure EuclN)) =
             ∑ a, ∑ j, B_pair a j := by
           change (∫ y in Ω,
@@ -1082,10 +1082,10 @@ noncomputable def eigenvectorIteratedTensorChartBilinearData_step
                       g r s i α P₀ (m + 1) (Fin.cons a D_m.directions))
                     (chartTargetEuclid (I := I) (M := M) α) y * ψ y
               ∂(volume : Measure EuclN)) = _
-          rw [integral_finset_sum _ (fun a _ =>
-            (integrable_finset_sum _ (fun b _ => h_int_B_pair_wp a b)))]
+          rw [integral_finsetSum _ (fun a _ =>
+            (integrable_finsetSum _ (fun b _ => h_int_B_pair_wp a b)))]
           refine Finset.sum_congr rfl ?_; intro a _
-          rw [integral_finset_sum _ (fun b _ => h_int_B_pair_wp a b)]
+          rw [integral_finsetSum _ (fun b _ => h_int_B_pair_wp a b)]
           refine Finset.sum_congr rfl ?_; intro b _
           have h_eq :
               eigenvectorChartIteratedPartial (I := I) (M := M)

@@ -202,7 +202,7 @@ private theorem invGram_conv
     MapCInfConvOnCompacts U
       (fun n x => Ring.inverse (gramCLM (g n x)))
       (fun x => Ring.inverse (gramCLM (gInf x))) := by
-  letI : ProperSpace (E →L[Real] E) := FiniteDimensional.proper Real _
+  let : ProperSpace (E →L[Real] E) := FiniteDimensional.proper Real _
   have hgram_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun x => gramCLM (g n x)) U := fun n => by
     simpa [Function.comp_def] using gramCLM.contDiff.comp_contDiffOn (hg_cd n)
@@ -230,7 +230,6 @@ private theorem koszulRiesz_smooth
       (by rw [show (∞ : WithTop ℕ∞) + 1 = ∞ from rfl]))
 
 private theorem koszulRiesz_conv
-    [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
     {gInf : E → E →L[Real] E →L[Real] Real}
@@ -278,7 +277,7 @@ theorem raisedKoszulOp_conv
     MapCInfConvOnCompacts U
       (fun n x => raisedKoszulOp (g n x) (fderiv Real (g n) x))
       (fun x => raisedKoszulOp (gInf x) (fderiv Real gInf x)) := by
-  letI : ProperSpace
+  let : ProperSpace
       ((E →L[Real] E) × (E →L[Real] E →L[Real] E)) :=
     FiniteDimensional.proper Real _
   have hinv := invGram_conv hU hg_cd hgInf_cd hg_co hgInf_co hg_conv
@@ -312,8 +311,8 @@ private theorem raisedDiag_conv
     (hR_conv : MapCInfConvOnCompacts U R RInf) :
     MapCInfConvOnCompacts (U ×ˢ Set.univ)
       (fun n q => R n q.1 q.2 q.2) (fun q => RInf q.1 q.2 q.2) := by
-  letI : ProperSpace E := FiniteDimensional.proper Real _
-  letI : ProperSpace ((E →L[Real] E →L[Real] E) × E) :=
+  let : ProperSpace E := FiniteDimensional.proper Real _
+  let : ProperSpace ((E →L[Real] E →L[Real] E) × E) :=
     FiniteDimensional.proper Real _
   let phaseU : Set (E × E) := U ×ˢ Set.univ
   have hphaseU : IsOpen phaseU := hU.prod isOpen_univ
@@ -364,7 +363,10 @@ theorem metricSpray_contDiffOn
       (fun q : E × E => R q.1 q.2 q.2) (U ×ˢ Set.univ) :=
     (((hR.comp contDiffOn_fst (fun q hq => hq.1)).clm_apply
       contDiffOn_snd).clm_apply contDiffOn_snd)
-  simpa only [metricSpray, R] using contDiffOn_snd.prodMk hdiag.neg
+  change ContDiffOn Real (∞ : WithTop ℕ∞)
+    (fun q : E × E => (q.2, -raisedKoszulOp (g q.1) (fderiv Real g q.1) q.2 q.2))
+    (U ×ˢ Set.univ)
+  exact contDiffOn_snd.prodMk hdiag.neg
 
 theorem metricSpray_conv
     [FiniteDimensional Real E]
@@ -406,10 +408,13 @@ theorem metricSpray_conv
   have hnegInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun q : E × E => negCLM (RInf q.1 q.2 q.2)) (U ×ˢ Set.univ) :=
     negCLM.contDiff.comp_contDiffOn hdiagInf_cd
-  simpa [metricSpray, R, RInf, negCLM] using
-    (mapCInfConv_prodMk (hU.prod isOpen_univ)
-      (mapCInfConv_const (U := U ×ˢ Set.univ) (fun q : E × E => q.2)) hneg
-      (fun _ => contDiffOn_snd) contDiffOn_snd hneg_cd hnegInf_cd)
+  have hmain := mapCInfConv_prodMk (hU.prod isOpen_univ)
+    (mapCInfConv_const (U := U ×ˢ Set.univ) (fun q : E × E => q.2)) hneg
+    (fun _ => contDiffOn_snd) contDiffOn_snd hneg_cd hnegInf_cd
+  change MapCInfConvOnCompacts (U ×ˢ Set.univ)
+    (fun n q => (q.2, -raisedKoszulOp (g n q.1) (fderiv Real (g n) q.1) q.2 q.2))
+    (fun q => (q.2, -raisedKoszulOp (gInf q.1) (fderiv Real gInf q.1) q.2 q.2)) at hmain
+  exact hmain
 
 end MetricKoszul
 end DifferentialGeometry

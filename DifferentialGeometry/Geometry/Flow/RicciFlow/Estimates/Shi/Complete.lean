@@ -107,52 +107,52 @@ private theorem parabolic_mul_nhds
       hv_grad hu_space.self_of_nhds]
     rw [(G.connection t).isCovariantDerivativeOnUniv.leibniz
       hu_grad hv_space.self_of_nhds]
-    simp only [ContinuousLinearMap.coe_add, map_add,
-      ContinuousLinearMap.coe_smul]
+    simp only [ContinuousLinearMap.toLinearMap_add, map_add,
+      ContinuousLinearMap.toLinearMap_smul]
     rw [map_smul, map_smul]
     have htrace_u :
         LinearMap.trace Real (TangentSpace I x)
-            ((extDerivFun (I := I) (u t) x).toLinearMap.smulRight
+            ((mvfderiv (I := I) (u t) x).toLinearMap.smulRight
               (gradientFun (I := I) (G.metric t) (v t) x)) =
-          extDerivFun (I := I) (u t) x
+          mvfderiv (I := I) (u t) x
             (gradientFun (I := I) (G.metric t) (v t) x) :=
       LinearMap.trace_smulRight _ _
     have htrace_v :
         LinearMap.trace Real (TangentSpace I x)
-            ((extDerivFun (I := I) (v t) x).toLinearMap.smulRight
+            ((mvfderiv (I := I) (v t) x).toLinearMap.smulRight
               (gradientFun (I := I) (G.metric t) (u t) x)) =
-          extDerivFun (I := I) (v t) x
+          mvfderiv (I := I) (v t) x
             (gradientFun (I := I) (G.metric t) (u t) x) :=
       LinearMap.trace_smulRight _ _
     change
       u t x • LinearMap.trace Real (TangentSpace I x)
           (G.connection t (gradientFun (I := I) (G.metric t) (v t)) x).toLinearMap +
           LinearMap.trace Real (TangentSpace I x)
-            ((extDerivFun (I := I) (u t) x).toLinearMap.smulRight
+            ((mvfderiv (I := I) (u t) x).toLinearMap.smulRight
               (gradientFun (I := I) (G.metric t) (v t) x)) +
         (v t x • LinearMap.trace Real (TangentSpace I x)
             (G.connection t (gradientFun (I := I) (G.metric t) (u t)) x).toLinearMap +
           LinearMap.trace Real (TangentSpace I x)
-            ((extDerivFun (I := I) (v t) x).toLinearMap.smulRight
+            ((mvfderiv (I := I) (v t) x).toLinearMap.smulRight
               (gradientFun (I := I) (G.metric t) (u t) x))) = _
     rw [htrace_u, htrace_v]
-    simp only [gradientAt, extDerivFun]
+    simp only [gradientAt]
     have huv :
-        extDerivFun (I := I) (u t) x
+        mvfderiv (I := I) (u t) x
             (gradientFun (I := I) (G.metric t) (v t) x) =
           (G.metric t).inner x
             (gradientFun (I := I) (G.metric t) (u t) x)
             (gradientFun (I := I) (G.metric t) (v t) x) := by
-      simpa [extDerivFun] using
+      simpa [mvfderiv] using
         (inner_gradientFun (I := I) (G.metric t) (u t) x
           (gradientFun (I := I) (G.metric t) (v t) x)).symm
     have hvu :
-        extDerivFun (I := I) (v t) x
+        mvfderiv (I := I) (v t) x
             (gradientFun (I := I) (G.metric t) (u t) x) =
           (G.metric t).inner x
             (gradientFun (I := I) (G.metric t) (v t) x)
             (gradientFun (I := I) (G.metric t) (u t) x) := by
-      simpa [extDerivFun] using
+      simpa [mvfderiv] using
         (inner_gradientFun (I := I) (G.metric t) (v t) x
           (gradientFun (I := I) (G.metric t) (u t) x)).symm
     rw [huv, hvu]
@@ -482,7 +482,7 @@ private theorem parabolic_aff_nhds
   have hAtime : DifferentiableWithinAt Real
       (fun s : Real => A s x) (Set.Icc 0 T) t :=
     (differentiableWithinAt_const a).add
-      ((differentiableWithinAt_id'
+      ((differentiableWithinAt_fun_id
         (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b)
   have hAspace : ∀ᶠ y in 𝓝 x,
       MDifferentiableAt I 𝓘(Real, Real) (A t) y :=
@@ -514,8 +514,10 @@ private theorem parabolic_aff_nhds
     exact congrArg (fun b =>
       (⟨y, b⟩ : TotalSpace E (TangentSpace I : M → Type _)))
       (by
-        simpa only [Pi.smul_apply, smul_eq_mul] using
-          gradientFun_const_smul (I := I) (G.metric t) (-1) hy)
+        rw [show (fun z => (-1 : Real) * F t z) = (-1 : Real) • F t by
+          funext z
+          rw [Pi.smul_apply, smul_eq_mul]]
+        exact gradientFun_const_smul (I := I) (G.metric t) (-1) hy)
   have hadd := parabolic_add_nhds (I := I) T X A
     (fun s y => (-1 : Real) * F s y) t x
     hAtime hnegtime hAspace hnegspace hAgrad hneggrad
@@ -532,10 +534,14 @@ private theorem parabolic_aff_nhds
         (x := t) (s := Set.Icc 0 T) (c := a)).derivWithin huniq
     have hdb :
         derivWithin (fun s : Real => b * s) (Set.Icc 0 T) t = b := by
-      simpa only [mul_one] using
+      have hdb' :=
         ((hasDerivWithinAt_id t (Set.Icc 0 T)).const_mul b).derivWithin huniq
+      rw [show (fun y : Real => b * id y) = (fun s : Real => b * s) by
+        funext y
+        rw [id_eq]] at hdb'
+      simpa only [mul_one] using hdb'
     rw [derivWithin_fun_add (differentiableWithinAt_const a)
-      ((differentiableWithinAt_id'
+      ((differentiableWithinAt_fun_id
         (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b),
       hda, hdb]
     rw [show gradientFun (I := I) (G.metric t) (fun _ : M => a + b * t) =
@@ -685,7 +691,7 @@ theorem pow_parabolic_le
             (fun y : M => (cut.chi n t y) ^ (p + 1)) x)
           (gradientAt (I := I) G t (cut.chi n t) x) := by
         simp only [gradientAt_eq, hgrad, map_smul,
-          ContinuousLinearMap.smul_apply, smul_eq_mul]
+          smul_apply, smul_eq_mul]
         exact mul_nonneg
           (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hchi p))
           (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
@@ -785,7 +791,7 @@ theorem pow_cross_le
     dsimp [c, r, c₀, a]
     rw [gradientFun_pow (I := I) (G.metric t)
       (f := cut.chi n t) p (cut.space_diff (n := n) ht x)]
-    simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [map_smul, smul_apply, smul_eq_mul]
   have hr2 : 0 ≤ r ^ 2 := sq_nonneg r
   have hsq : c ^ 2 ≤ q₁ * q₂ := by
     rw [hc]
@@ -902,7 +908,7 @@ private theorem support_pow_para
           (gradientAt (I := I) G t (support.phi t) x) := by
         dsimp only [qpow]
         simp only [gradientAt_eq, hgrad, map_smul,
-          ContinuousLinearMap.smul_apply, smul_eq_mul]
+          smul_apply, smul_eq_mul]
         exact mul_nonneg
           (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hphi0 p))
           (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
@@ -974,7 +980,7 @@ private theorem support_pow_cross
     dsimp [c, r, c₀, a]
     rw [gradientFun_pow (I := I) (G.metric t) p
       support.space_diff_nhds.self_of_nhds]
-    simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [map_smul, smul_apply, smul_eq_mul]
   have hsq : c ^ 2 ≤ q₁ * q₂ := by
     rw [hc]
     calc
@@ -1076,7 +1082,7 @@ theorem GfunCut_cont
           (cut.chi n p.1 p.2) ^ (i + 1) * B.w i p.1 p.2) from by
     funext p
     rw [GfunCut]]
-  apply continuousOn_finset_sum
+  apply continuousOn_finsetSum
   intro i hi
   exact (((continuous_const.mul (continuous_fst.pow i)).continuousOn.mul
     ((cut.joint_cont n).pow (i + 1))).mul (B.hw_cont i))
@@ -1449,19 +1455,32 @@ private theorem supportLevel_le
   let v : Real → M → Real := fun s y => s ^ i * B.w i s y
   have hq_time : DifferentiableWithinAt Real
       (fun s : Real => qpow s x) (Set.Icc 0 B.T) t := by
-    simpa [qpow] using support.time_diff.pow (i + 1)
+    have hpow := support.time_diff.pow (i + 1)
+    rw [show (fun s : Real => support.phi s x) ^ (i + 1) =
+        (fun s => support.phi s x ^ (i + 1)) by
+      funext s
+      rw [Pi.pow_apply]] at hpow
+    exact hpow
   have hv_time : DifferentiableWithinAt Real
       (fun s : Real => v s x) (Set.Icc 0 B.T) t := by
     exact (((hasDerivWithinAt_id t (Set.Icc 0 B.T)).pow i).mul hd).differentiableWithinAt
   have hq_space : ∀ᶠ y in 𝓝 x,
       MDifferentiableAt I 𝓘(Real, Real) (qpow t) y := by
     filter_upwards [support.space_diff_nhds] with y hy
-    simpa [qpow] using hy.pow (i + 1)
+    have hpow := hy.pow (i + 1)
+    rw [show support.phi t ^ (i + 1) =
+        (fun z => support.phi t z ^ (i + 1)) by
+      funext z
+      rw [Pi.pow_apply]] at hpow
+    exact hpow
   have hv_space : ∀ y : M,
       MDifferentiableAt I 𝓘(Real, Real) (v t) y := by
     intro y
     have h := (B.hw_space i t ht htpos y).const_smul (t ^ i)
-    simpa [v, smul_eq_mul] using h
+    rw [show t ^ i • B.w i t = (fun z => t ^ i * B.w i t z) by
+      funext z
+      rw [Pi.smul_apply, smul_eq_mul]] at h
+    exact h
   have hq_grad :
       MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun z : M =>
         gradientFun (I := I) (G.metric t) (qpow t) z) x := by
@@ -1526,8 +1545,15 @@ private theorem supportLevel_le
       (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt ht
     have htime : derivWithin (fun s : Real => v s x) (Set.Icc 0 B.T) t =
         (i : Real) * t ^ (i - 1) * B.w i t x + t ^ i * d := by
-      simpa [v] using
+      have hder :=
         (((hasDerivWithinAt_id t (Set.Icc 0 B.T)).pow i).mul hd).derivWithin huniq
+      rw [show id ^ i * (fun s : Real => B.w i s x) =
+          (fun s => s ^ i * B.w i s x) by
+        funext s
+        rw [Pi.mul_apply, Pi.pow_apply, id_eq]] at hder
+      rw [show (fun s : Real => v s x) =
+          (fun s => s ^ i * B.w i s x) by rfl]
+      simpa only [id_eq, Pi.pow_apply, mul_one] using hder
     have hheat : heatOperatorWithDrift (I := I) G t
         (fun y : M => (0 : TangentSpace I y)) (v t) x =
         t ^ i * B.wLap i t x := by
@@ -1563,7 +1589,14 @@ private theorem supportLevel_le
       filter_upwards [hq_space] with y hy
       exact hy.mul (hv_space y))
     hprod_grad huniq
-  have hq_bound := support_pow_para (I := I) support ht i
+  have hq_bound :
+      parabolicOperatorWithDrift (I := I) G B.T
+          (fun _ y => (0 : TangentSpace I y)) qpow t x ≤
+        (((i + 1 : Nat) : Real) * eps) * (support.phi t x) ^ i := by
+    change parabolicOperatorWithDrift (I := I) G B.T
+        (fun _ y => (0 : TangentSpace I y))
+        (fun s y => support.phi s y ^ (i + 1)) t x ≤ _
+    exact support_pow_para (I := I) support ht i
   have hcross := support_pow_cross (I := I) B (m := m) (k := i) (p := i)
     hgrad hi support ht htpos heps
   have hcoef0 : 0 ≤ BernsteinTower.Gcoef (I := I) B m i :=
@@ -1577,9 +1610,16 @@ private theorem supportLevel_le
           t ^ i * (support.phi t x) ^ i * B.w i t x := by
     have hmult := mul_le_mul_of_nonneg_left hq_bound
       (mul_nonneg hti0 hwi0)
-    dsimp [qpow, v]
-    convert hmult using 1
-    ring
+    dsimp [qpow, v] at hmult ⊢
+    calc
+      t ^ i * B.w i t x *
+            parabolicOperatorWithDrift (I := I) G B.T
+              (fun _ y => (0 : TangentSpace I y))
+              (fun s y => support.phi s y ^ (i + 1)) t x ≤
+          t ^ i * B.w i t x *
+            (((i + 1 : Nat) : Real) * eps * support.phi t x ^ i) := hmult
+      _ = (((i + 1 : Nat) : Real) * eps) *
+          t ^ i * support.phi t x ^ i * B.w i t x := by ring
   have hcross_term :
       -2 * (G.metric t).inner x
           (gradientAt (I := I) G t (qpow t) x)
@@ -1591,9 +1631,24 @@ private theorem supportLevel_le
     rw [hv_gradient]
     simp only [map_smul, smul_eq_mul]
     have hmult := mul_le_mul_of_nonneg_left hcross hti0
-    dsimp [qpow]
+    dsimp [qpow] at hmult ⊢
     unfold gradientAt
-    convert hmult using 1 <;> ring
+    calc
+      -2 * (t ^ i * (G.metric t).inner x
+            (gradientFun (I := I) (G.metric t)
+              (fun y : M => support.phi t y ^ (i + 1)) x)
+            (gradientFun (I := I) (G.metric t) (B.w i t) x)) =
+          t ^ i * (-2 * (G.metric t).inner x
+            (gradientFun (I := I) (G.metric t)
+              (fun y : M => support.phi t y ^ (i + 1)) x)
+            (gradientFun (I := I) (G.metric t) (B.w i t) x)) := by ring
+      _ ≤ t ^ i * ((1 / 2 : Real) * support.phi t x ^ (i + 1) *
+          B.w (i + 1) t x + 8 * (((i + 1 : Nat) : Real) ^ 2) * eps *
+            support.phi t x ^ i * B.w i t x) := hmult
+      _ = (1 / 2 : Real) * t ^ i * support.phi t x ^ (i + 1) *
+            B.w (i + 1) t x +
+          8 * (((i + 1 : Nat) : Real) ^ 2) * eps * t ^ i *
+            support.phi t x ^ i * B.w i t x := by ring
   rw [show (fun s y => BernsteinTower.Gcoef (I := I) B m i *
         (s ^ i * (support.phi s y) ^ (i + 1) * B.w i s y)) =
       (fun s y => BernsteinTower.Gcoef (I := I) B m i *
@@ -1761,7 +1816,7 @@ private theorem GfunSupport_parabolic_le
       ((((hasDerivWithinAt_id t (Set.Icc 0 B.T)).pow i).differentiableWithinAt.mul
         (support.time_diff.pow (i + 1))).mul
           (hd i).differentiableWithinAt)
-    simpa only [term, mul_assoc] using
+    simpa only [term, Pi.mul_apply, Pi.pow_apply, id_eq, mul_assoc] using
       hprod.const_mul (BernsteinTower.Gcoef (I := I) B m i)
   have hspace : ∀ i ∈ Finset.range (m + 1), ∀ᶠ y in 𝓝 x,
       MDifferentiableAt I 𝓘(Real, Real) (term i t) y := by
@@ -1783,7 +1838,12 @@ private theorem GfunSupport_parabolic_le
     have hq_space : ∀ᶠ z in 𝓝 x,
         MDifferentiableAt I 𝓘(Real, Real) qpow z := by
       filter_upwards [support.space_diff_nhds] with z hz
-      simpa only [qpow] using hz.pow (i + 1)
+      have hpow := hz.pow (i + 1)
+      rw [show support.phi t ^ (i + 1) =
+          (fun y => support.phi t y ^ (i + 1)) by
+        funext y
+        rw [Pi.pow_apply]] at hpow
+      exact hpow
     have hw_space : ∀ z : M, MDifferentiableAt I 𝓘(Real, Real) wi z := by
       intro z
       simpa only [wi] using B.hw_space i t ht htpos z
@@ -2068,9 +2128,13 @@ theorem GfunCut_parabolic_le
       grad_diff := cut.grad_diff ht x
       grad_sq_le := cut.grad_sq_le n t ht htpos x
       parabolic_le := cut.parabolic_le n t ht htpos x }
-  simpa only [GfunCut, GfunLocal] using
+  have hbound :=
     (GfunSupport_parabolic_le (I := I) B hm hgrad support ht htpos
       (cut.range n t x ht) (cut.err_nonneg n) hIH hsmall).2.2.2
+  rw [show GfunLocal (I := I) B (cut.chi n) m = GfunCut (I := I) B cut m n by
+    funext s y
+    rw [GfunLocal, GfunCut]] at hbound
+  exact hbound
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
@@ -2106,7 +2170,7 @@ private theorem GfunCut_time_diff
       ((((hasDerivWithinAt_id t (Set.Icc 0 B.T)).pow i).differentiableWithinAt.mul
         ((cut.time_diff n t ht htpos x).pow (i + 1))).mul
           (hd i).differentiableWithinAt)
-    simpa only [term, mul_assoc] using
+    simpa only [term, Pi.mul_apply, Pi.pow_apply, id_eq, mul_assoc] using
       hprod.const_mul (BernsteinTower.Gcoef (I := I) B m i)
   rw [show (fun s : Real ↦ GfunCut (I := I) B cut m n s x) =
       (fun s : Real ↦ ∑ i ∈ Finset.range (m + 1), term i s) by
@@ -2252,7 +2316,12 @@ theorem estimate_cutoff_at
             have hq_space : ∀ z : M,
                 MDifferentiableAt I 𝓘(Real, Real) qpow z := by
               intro z
-              simpa only [qpow] using (cut.space_diff (n := n) hs z).pow (i + 1)
+              have hpow := (cut.space_diff (n := n) hs z).pow (i + 1)
+              rw [show cut.chi n s ^ (i + 1) =
+                  (fun y => cut.chi n s y ^ (i + 1)) by
+                funext y
+                rw [Pi.pow_apply]] at hpow
+              exact hpow
             have hw_space : ∀ z : M,
                 MDifferentiableAt I 𝓘(Real, Real) wi z := by
               intro z
@@ -2358,7 +2427,13 @@ theorem estimate_cutoff_at
               (fun p : Real × M ↦ aBar + bBar n * p.1)
               (Set.Icc 0 B.T ×ˢ cut.support n) :=
             (continuous_const.add (continuous_const.mul continuous_fst)).continuousOn
-          simpa only [w] using haffine.sub hFcont
+          have hsub := haffine.sub hFcont
+          rw [show (fun p : Real × M => aBar + bBar n * p.1) -
+                (fun p => F p.1 p.2) =
+              (fun p => aBar + bBar n * p.1 - F p.1 p.2) by
+            funext p
+            rw [Pi.sub_apply]] at hsub
+          exact hsub
         have hw0 : ∀ y : M, 0 ≤ w 0 y := by
           intro y
           have hy := hinit y
@@ -2371,14 +2446,25 @@ theorem estimate_cutoff_at
           have haffine : DifferentiableWithinAt Real
               (fun r : Real ↦ aBar + bBar n * r) (Set.Icc 0 B.T) s :=
             (differentiableWithinAt_const aBar).add
-              ((differentiableWithinAt_id' (𝕜 := Real)
+              ((differentiableWithinAt_fun_id (𝕜 := Real)
                 (s := Set.Icc 0 B.T) (x := s)).const_mul (bBar n))
-          simpa only [w] using haffine.sub (hFtime s hs hspos y)
+          have hsub := haffine.sub (hFtime s hs hspos y)
+          rw [show (fun r : Real => aBar + bBar n * r) - (fun r => F r y) =
+              (fun r => aBar + bBar n * r - F r y) by
+            funext r
+            rw [Pi.sub_apply]] at hsub
+          exact hsub
         have hw_mdiff : ∀ s : Real, s ∈ Set.Icc 0 B.T → 0 < s → ∀ y : M,
             MDifferentiableAt I 𝓘(Real, Real) (w s) y := by
           intro s hs hspos y
-          simpa only [w] using
-            mdifferentiableAt_const.sub (hFspace s hs hspos y)
+          have hconst : MDifferentiableAt I 𝓘(Real, Real)
+              (fun _z : M => aBar + bBar n * s) y := mdifferentiableAt_const
+          have hsub := hconst.sub (hFspace s hs hspos y)
+          rw [show (fun _z : M => aBar + bBar n * s) - F s =
+              (fun z => aBar + bBar n * s - F s z) by
+            funext z
+            rw [Pi.sub_apply]] at hsub
+          exact hsub
         have hw_grad : ∀ s : Real, s ∈ Set.Icc 0 B.T → 0 < s → ∀ y : M,
             MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun z : M ↦
               gradientFun (I := I) (G.metric s) (w s) z) y := by
@@ -2593,7 +2679,7 @@ theorem estimate_barrier_at
             funext p
             change GfunLocal (I := I) B (cut.chi n) m p.1 p.2 = _
             rw [GfunLocal]]
-          apply continuousOn_finset_sum
+          apply continuousOn_finsetSum
           intro i _
           exact (((continuous_const.mul (continuous_fst.pow i)).continuousOn.mul
             ((cut.joint_cont n).pow (i + 1))).mul
@@ -2717,11 +2803,18 @@ theorem estimate_barrier_at
             dsimp only [v, w]
             linarith
           · exact ((differentiableWithinAt_const aBar).add
-              ((differentiableWithinAt_id'
+              ((differentiableWithinAt_fun_id
                 (𝕜 := Real) (s := Set.Icc 0 B.T) (x := s)).const_mul bBar)).sub
               hrec.1
           · filter_upwards [hrec.2.1] with z hz
-            simpa only [v, Fs] using mdifferentiableAt_const.sub hz
+            have hconst : MDifferentiableAt I 𝓘(Real, Real)
+                (fun _y : M => aBar + bBar * s) z := mdifferentiableAt_const
+            have hsub := hconst.sub hz
+            rw [show (fun _y : M => aBar + bBar * s) - Fs s =
+                (fun y => aBar + bBar * s - Fs s y) by
+              funext y
+              rw [Pi.sub_apply]] at hsub
+            exact hsub
           · refine (hrec.2.2.1.smul_const_section
                 (a := (-1 : Real))).congr_of_eventuallyEq ?_
             filter_upwards [hrec.2.1] with z hz

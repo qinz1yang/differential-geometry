@@ -150,7 +150,11 @@ theorem intrFrame_not_conj
       mfderiv (modelWithCornersSelf Real E) I
           (intrinsicFramedExp (I := I) g hEnorm p) z =
         (mfderiv (modelWithCornersSelf Real E) I F (L z)).comp L := by
-    simpa only [intrinsicFramedExp, F, L, Function.comp_apply] using hchain
+    have hfun : intrinsicFramedExp (I := I) g hEnorm p = F ∘ L := by
+      funext w
+      rfl
+    rw [hfun]
+    exact hchain
   have hframe :
       Function.Injective
         (mfderiv (modelWithCornersSelf Real E) I
@@ -159,7 +163,8 @@ theorem intrFrame_not_conj
   have hLsurj : Function.Surjective L := by
     intro w
     refine ⟨(normalFrame (I := I) g p).symm w, ?_⟩
-    simp only [L, intrFrameCLM_apply, ContinuousLinearEquiv.apply_symm_apply]
+    change normalFrame (I := I) g p ((normalFrame (I := I) g p).symm w) = w
+    exact (normalFrame (I := I) g p).apply_symm_apply w
   have hraw :
       Function.Injective
         (mfderiv (modelWithCornersSelf Real E) I F (L z)) := by
@@ -174,7 +179,11 @@ theorem intrFrame_not_conj
     exact hab
   unfold IsConjVec
   push Not
-  simpa only [F, L, intrFrameCLM_apply] using hraw
+  intro a b hab
+  apply hraw
+  have hLz : L z = normalFrame (I := I) g p z := intrFrameCLM_apply (I := I) g p z
+  rw [hLz]
+  exact hab
 
 end NormalCoordinates
 end Riemannian

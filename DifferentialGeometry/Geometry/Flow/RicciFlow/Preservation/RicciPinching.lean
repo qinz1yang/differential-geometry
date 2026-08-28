@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -80,7 +79,7 @@ theorem pinchParabolic_of_react
 
 theorem pinchParabolic
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -110,9 +109,9 @@ theorem pinchSpatialModel
       (pinchNab2ModelSec (I := I) S delta) := by
   constructor
   · intro t
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3
     have hRic := (ricciSpatialWMP (I := I) S).first t
     have hRg := scalarMetric1Sec_realizes (I := I) S t
@@ -140,7 +139,11 @@ theorem pinchSpatialModel
                     (fun x : M => S.scalar t x) := by
                 simpa [SolutionOn.scalar, SolutionFamily.scalar] using
                   metricScalar_smooth (I := I) (M := M) (S.base.metric t)
-              simpa only [Pi.mul_apply] using (contMDiff_const.mul hR))
+              have hmul : ((fun _ : M => delta) * fun x : M => S.scalar t x) =
+                  fun x : M => delta * S.scalar t x := by
+                rfl
+              rw [← hmul]
+              exact contMDiff_const.mul hR)
             (metricTensorField (I := I) (S.base.metric t)))
           (delta • scalarMetric1Sec (I := I) S t) := by
       convert hscaled using 1
@@ -154,9 +157,9 @@ theorem pinchSpatialModel
       tensor0SField_smulByFun_apply, mul_assoc, mul_left_comm, mul_comm]
       using hadd
   · intro t
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4
     have hRic := (ricciSpatialWMP (I := I) S).second t
     have hRg := scalarMetric2Sec_realizes (I := I) S t
@@ -379,7 +382,7 @@ theorem tensorEval_contOn
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun t : Real => A t x (vec2 (I := I) v w)) K := by
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   let P := {t : Real // t ∈ K}
   let b : P -> M := fun _ => x
   let T : (p : P) ->
@@ -395,7 +398,11 @@ theorem tensorEval_contOn
         (E := fun x : M => Tensor0SSpace 2 I x) (b p) (T p)) := by
     have hincl : Continuous (fun p : P => (p, x)) :=
       continuous_id.prodMk continuous_const
-    simpa [P, b, T] using hA.comp hincl
+    change Continuous (((fun q : Real × M =>
+      TotalSpace.mk' (Tensor0SModel 2 Real E)
+        (E := fun x : M => Tensor0SSpace 2 I x) q.2 (A q.1 q.2)) ∘
+          fun p : P => ((p : Real), x)))
+    exact hA.comp hincl
   have hV : ∀ i : Fin 2, Continuous (fun p : P =>
       TotalSpace.mk' E (E := fun x : M => TangentSpace I x)
         (b p) (V i p)) := by
@@ -407,8 +414,13 @@ theorem tensorEval_contOn
   have hEval := TensorMultilinear.continuous_section_apply_base
     (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
     b hb T hT V hV
-  simpa [P, b, T, V, Tensor0SSpace.toModel,
-    tensor0SSpace_continuousLinearEquiv_apply] using hEval
+  have hfun : K.domRestrict (fun t : Real => A t x (vec2 (I := I) v w)) =
+      fun p : P => A p.1 x (vec2 (I := I) v w) := by
+    rfl
+  rw [hfun]
+  change Continuous (fun p : P =>
+    Tensor0SSpace.toModel (T p) (fun i : Fin 2 => V i p))
+  exact hEval
 
 theorem pinchEval_contOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -657,7 +669,19 @@ theorem pinchBarrierReg
       have hlin : Continuous (fun t : Real => d + t - t0) :=
         (continuous_const.add continuous_id).sub continuous_const
       exact (continuous_const.mul hlin).continuousOn
-    simpa [tensorBarrierFamily] using hScont.add (hcoef.mul hGcont)
+    unfold tensorBarrierFamily
+    have hadd := hScont.add (hcoef.mul hGcont)
+    have hfun :
+        ((fun t : Real => twoTensorSecToFamily (I := I) (M := M)
+            (pinchSec (I := I) S delta) t x v w) +
+          (fun t : Real => epsilon * (d + t - t0)) *
+            fun t : Real => (S.base.metric t).inner x v w) =
+          fun t : Real => twoTensorSecToFamily (I := I) (M := M)
+              (pinchSec (I := I) S delta) t x v w +
+            epsilon * (d + t - t0) * (S.base.metric t).inner x v w := by
+      rfl
+    rw [← hfun]
+    exact hadd
   metricGainControl :=
     pinchMetricGain (I := I) (M := M) S hS hTsub hTreg
   smallBarrierLip := by
@@ -1047,7 +1071,6 @@ theorem ricci_nonneg_wmp_raw
 theorem ricci_nonneg_wmp
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1072,7 +1095,6 @@ theorem ricci_nonneg_wmp
 theorem ricci_nonnegative_of_solution_wmp_data
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M]
@@ -1114,7 +1136,6 @@ theorem ricci_pinch_wmp_raw
 theorem ricci_pinch_wmp
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1144,7 +1165,6 @@ namespace PinchWMPData
 theorem preserve
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1168,7 +1188,6 @@ namespace PinchFlowWMPData
 theorem preserve
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M]
@@ -1189,7 +1208,6 @@ end PinchFlowWMPData
 theorem pinch_sol_closed
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
@@ -1213,7 +1231,6 @@ theorem pinch_sol_closed
 theorem pinch_sol_closed_nonneg
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
@@ -1240,7 +1257,6 @@ theorem pinch_sol_closed_nonneg
 theorem ricci_nonnegative_of_closed_solution_wmp_data
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
@@ -1272,7 +1288,6 @@ theorem ricci_nonnegative_of_closed_solution_wmp_data
 theorem pinch_init_wmp
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1295,7 +1310,6 @@ theorem pinch_init_wmp
 theorem pinch_init_wmp_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1318,7 +1332,6 @@ theorem pinch_init_wmp_lt
 theorem pinch_init_sol_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
@@ -1347,7 +1360,6 @@ theorem pinch_init_sol_lt
 theorem strict_pinch_wmp
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1371,7 +1383,6 @@ theorem strict_pinch_wmp
 theorem strict_pinch_wmp_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -1395,7 +1406,6 @@ theorem strict_pinch_wmp_lt
 theorem strict_pinch_min
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1421,7 +1431,6 @@ theorem strict_pinch_min
 theorem strict_pinch_min_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1447,7 +1456,6 @@ theorem strict_pinch_min_lt
 theorem strict_pinch_metric
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1474,7 +1482,6 @@ theorem strict_pinch_metric
 theorem strict_pinch_metric_lt
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1501,7 +1508,6 @@ theorem strict_pinch_metric_lt
 theorem strict_pinch_pos
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1527,7 +1533,6 @@ theorem strict_pinch_pos
 theorem strict_pinch_pos_lt
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1553,7 +1558,6 @@ theorem strict_pinch_pos_lt
 theorem strict_pinch_sol_lt
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]

@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -175,7 +174,7 @@ lemma thirdOrder_commutation_abstract
     rw [hSW]
     rw [cov.isCovariantDerivativeOnUniv.add h12 h3,
         cov.isCovariantDerivativeOnUniv.add h1 h2]
-    simp only [ContinuousLinearMap.add_apply]
+    simp only [add_apply]
   have hswap2 := covApply_outer_swap_eq_riemannSec cov B w (covApply cov B V) x
   have hcurv : cov.toFun (fun b : M => riemannSec cov B w V b) x (B x) =
       nablaTensorCurvSec (I := I) g cov B B w V x
@@ -278,9 +277,9 @@ lemma covGrad_covDeriv_innerSlot_secondOrder_eq_abstract
     funext y
     simp only [Pi.sub_apply, covApply_apply]]
   rw [cov_toFun_sub nab h1 h2]
-  simp only [ContinuousLinearMap.sub_apply]
+  simp only [sub_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma curry_covApply_unitGradFieldGen_eq_abstractHess
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B w : Π b : M, TangentSpace I b}
@@ -313,7 +312,7 @@ lemma curry_covApply_unitGradFieldGen_eq_abstractHess
     ((LeviCivita (I := I) g).toFun w y (B y))]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B w : Π b : M, TangentSpace I b}
@@ -368,7 +367,7 @@ lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
       (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
         (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S))).mp hBUsm
   rw [tensorSecondCovDeriv_covGrad_unit_eval_genVal (I := I) (M := M) g s S hB x]
-  rw [map_sub, ContinuousLinearMap.sub_apply]
+  rw [map_sub, sub_apply]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s
     (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
       (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S))
@@ -463,14 +462,14 @@ lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
       funext y; simp only [Pi.sub_apply, covApply_apply]]
     rw [cov_toFun_sub
       (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) h1 h2]
-    simp only [ContinuousLinearMap.sub_apply]
+    simp only [sub_apply]
   rw [hsplitB]
   rw [show ((LeviCivita (I := I) g).toFun w x ((covApply (LeviCivita (I := I) g) B B) x)) =
       (covApply (LeviCivita (I := I) g) (covApply (LeviCivita (I := I) g) B B) w x) from rfl]
   simp only [two_smul]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covGrad_covDeriv_leadingSlot_secondOrder_commutation
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B w : Π b : M, TangentSpace I b}

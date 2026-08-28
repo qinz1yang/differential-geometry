@@ -57,10 +57,10 @@ theorem framedCoordMetric_apply
           (fun u => framedExpDiffeo (I := I) Y.metric x u) z v)
         (mfderiv 𝓘(Real, E) I
           (fun u => framedExpDiffeo (I := I) Y.metric x u) z w) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact NormalCoordinates.framedMetric_apply (I := I) Y.metric x z v w
 
 omit [NeZero (Module.finrank Real E)] in
@@ -72,10 +72,10 @@ omit [NeZero (Module.finrank Real E)] in
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     framedCoordMetric (I := I) Y c 0 =
       (innerSL Real : E →L[Real] E →L[Real] Real) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact NormalCoordinates.framedMetric_zero (I := I) Y.metric c
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -97,11 +97,11 @@ theorem radialEnorm_framed
           t (1 : Real)‖ₑ =
         ENNReal.ofReal
           (Real.sqrt (framedCoordMetric (I := I) Y x (t • v) v v)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : RiemannianBundle (fun y : Y.M => TangentSpace I y) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : RiemannianBundle (fun y : Y.M => TangentSpace I y) :=
     ⟨Y.metric.toRiemannianMetric⟩
   intro t ht
   let a : E := show E from normalFrame (I := I) Y.metric x v
@@ -119,9 +119,10 @@ theorem radialEnorm_framed
     mem_expMapDiffeo_source_of_norm_lt_radius (I := I) Y.metric x hraw
   have hsrc : t • v ∈ (framedExpDiffeo (I := I) Y.metric x).source := by
     rw [framedExp_source]
-    change normalFrame (I := I) Y.metric x (t • v) ∈
+    change tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (normalFrame (I := I) Y.metric x (t • v)) ∈
       (expMapDiffeo (I := I) Y.metric x).source
-    simpa only [a, map_smul] using hsrcRaw
+    simpa only [a, map_smul, tangentSpaceModelContinuousLinearEquiv_apply] using hsrcRaw
   have hev : expMapDiffeo (I := I) Y.metric x =ᶠ[nhds (t • a)]
       (fun z : E => (expMap (I := I) Y.metric x
         (show TangentSpace I x from z) : Y.M)) := by
@@ -131,7 +132,7 @@ theorem radialEnorm_framed
     exact expMapDiffeo_apply_eq (I := I) Y.metric x hz
   simp only [a] at hev
   rw [mfderiv_exp_radial (I := I) Y.metric x a t hraw]
-  rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   have hinner :
       (inner Real
         (mfderiv 𝓘(Real, E) I
@@ -179,10 +180,10 @@ theorem framedExp_smoothOn
     ContMDiffOn 𝓘(Real, E) I ∞
       (fun z => framedExpDiffeo (I := I) Y.metric x z)
       (Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   have hmap : ContMDiffOn 𝓘(Real, E) I ∞
       (framedExpMap (I := I) Y.metric x)
       (Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
@@ -197,8 +198,15 @@ theorem framedExp_smoothOn
     have hframe : ContMDiffAt 𝓘(Real, E) 𝓘(Real, E) ∞
         (fun w : E => (show E from normalFrame (I := I) Y.metric x w)) z :=
       (normalFrame (I := I) Y.metric x).toContinuousLinearMap.contMDiff.contMDiffAt
-    simpa only [framedExpMap_apply, Function.comp_apply] using
-      (hexp.comp z hframe).contMDiffWithinAt
+    have hcomp := hexp.comp z hframe
+    have hfun :
+        ((fun u : E ↦ expMap (I := I) Y.metric x (show TangentSpace I x from u)) ∘
+            fun w : E ↦ (show E from normalFrame (I := I) Y.metric x w)) =
+          framedExpMap (I := I) Y.metric x := by
+      funext w
+      rfl
+    rw [← hfun]
+    exact hcomp.contMDiffWithinAt
   refine hmap.congr (fun z hz => ?_)
   rw [Metric.mem_ball, dist_zero_right] at hz
   have hzRaw : ‖(show E from normalFrame (I := I) Y.metric x z)‖ <
@@ -230,10 +238,10 @@ private theorem framedPush_smooth
         (framedExpDiffeo (I := I) Y.metric x z)
         (mfderiv 𝓘(Real, E) I
           (fun u => framedExpDiffeo (I := I) Y.metric x u) z v)) U := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   have htm := hf.contMDiffOn_tangentMapWithin (m := ∞) le_rfl hU.uniqueMDiffOn
   have hσ : ContMDiff 𝓘(Real, E) (𝓘(Real, E)).tangent ∞
       (fun z : E => (TotalSpace.mk' E z v : TangentBundle 𝓘(Real, E) E)) :=
@@ -275,10 +283,10 @@ theorem framedCoordMetric_contDiffOn_of_smooth
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContDiffOn Real (⊤ : ℕ∞) (framedCoordMetric (I := I) Y x) S := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   have hscalar : ∀ v w : E, ContMDiffOn 𝓘(Real, E) 𝓘(Real, Real) ∞
       (fun z => Y.metric.inner (framedExpDiffeo (I := I) Y.metric x z)
           (mfderiv 𝓘(Real, E) I
@@ -339,10 +347,10 @@ theorem framedCoordMetric_contDiffOn
       ContDiffOn Real (⊤ : ℕ∞) (framedCoordMetric (I := I) Y x)
         (Metric.ball (0 : E) δ ∩
           (framedExpDiffeo (I := I) Y.metric x).source) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   refine ⟨expRadiusGp (I := I) Y.metric x,
     expRadiusGp_pos (I := I) Y.metric x, ?_⟩
   exact (framedCoordMetric_contDiffOn_of_smooth (I := I) Y x
@@ -353,10 +361,10 @@ theorem framedCoordMetric_contDiffOn_ball
     ∃ r : Real, 0 < r ∧
       ContDiffOn Real (⊤ : ℕ∞) (framedCoordMetric (I := I) Y x)
         (Metric.ball (0 : E) r) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   obtain ⟨δ, hδ, hsm⟩ := framedCoordMetric_contDiffOn (I := I) Y x
   obtain ⟨r₀, hr₀, hsub⟩ :=
     Metric.isOpen_iff.mp (framedExpDiffeo (I := I) Y.metric x).open_source 0
@@ -377,10 +385,10 @@ theorem framedCoordMetric_contDiffOn_expBall
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContDiffOn Real (⊤ : ℕ∞) (framedCoordMetric (I := I) Y x)
       (Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact framedCoordMetric_contDiffOn_of_smooth (I := I) Y x Metric.isOpen_ball
     (framedExp_smoothOn (I := I) Y x)
 
@@ -408,10 +416,10 @@ theorem framedChart_smooth
     ContMDiffOn I 𝓘(Real, E) ∞ (framedChartAt (I := I) Y.metric x)
       (framedExpMap (I := I) Y.metric x ''
         Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rintro _ ⟨v, hv, rfl⟩
   rw [Metric.mem_ball, dist_zero_right] at hv
   have hvRaw : ‖(show E from normalFrame (I := I) Y.metric x v)‖ <
@@ -424,8 +432,15 @@ theorem framedChart_smooth
       (normalChartAt (I := I) Y.metric x
         (framedExpMap (I := I) Y.metric x v)) :=
     (normalFrame (I := I) Y.metric x).symm.toContinuousLinearMap.contMDiff.contMDiffAt
-  simpa only [framedChart_apply, framedExpMap_apply, Function.comp_apply] using
-    (hframe.comp (framedExpMap (I := I) Y.metric x v) hchart).contMDiffWithinAt
+  have hcomp := hframe.comp (framedExpMap (I := I) Y.metric x v) hchart
+  have hfun :
+      ((fun w : E ↦ (normalFrame (I := I) Y.metric x).symm w) ∘
+          fun q : Y.M ↦ normalChartAt (I := I) Y.metric x q) =
+        (framedChartAt (I := I) Y.metric x : Y.M → E) := by
+    funext q
+    rfl
+  rw [← hfun]
+  exact hcomp.contMDiffWithinAt
 
 theorem contDiffOn_framedTransition
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) {U : Set E}
@@ -448,10 +463,10 @@ theorem contDiffOn_framedTransition
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContDiffOn Real (⊤ : ℕ∞) (framedTransition (I := I) Y.metric x y) U := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [← contMDiffOn_iff_contDiffOn]
   have hexp : ContMDiffOn 𝓘(Real, E) I ∞
       (fun z => framedExpDiffeo (I := I) Y.metric x z) U :=

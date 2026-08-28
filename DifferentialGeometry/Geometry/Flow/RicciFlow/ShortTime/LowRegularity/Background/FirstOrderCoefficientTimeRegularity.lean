@@ -76,6 +76,7 @@ private noncomputable def zeroData
   firstOrderCoefficient := 0
   secondOrderCoefficient := 0
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem zeroData_a1
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2) :
@@ -83,6 +84,7 @@ private theorem zeroData_a1
   simp only [zeroData, LowerScaleActionCoefficients.firstOrderAction, ← operatorFieldComposition_zero_eq_operatorFieldApply,
     operatorFieldComposition_zero_left, zero_add]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iter_zero
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) :
@@ -92,6 +94,7 @@ private theorem iter_zero
     (0 : ℝ) (0 : SmoothCcTensor g r s)
   simpa only [zero_smul] using h
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem lowJet_zero
     (g : SmoothRiemannianMetric I M) (r s m : ℕ) :
@@ -378,9 +381,13 @@ private theorem firstOrderCoefficient_core_pairing
           map_sub (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)) S V]
       exact hSV3
     refine (hjet3 (S - V)).trans ?_
+    have hnorm' :
+        ‖ccTensorToHs (I := I) (M := M) g 2 ((3 : ℕ) : ℝ) (S - V)‖ ≤
+          L * D := by
+      simpa only [Nat.cast_ofNat] using hnorm
     simpa only [D3, mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC3 (norm_nonneg _))
-      (mul_le_mul_of_nonneg_left hnorm hC3) 2
+      (mul_le_mul_of_nonneg_left hnorm' hC3) 2
   have hraw := hcoeff S V
     (lowRadial_symm (I := I) (M := M) g ρ T)
     (lowRadial_symm (I := I) (M := M) g ρ U)
@@ -427,8 +434,43 @@ private theorem firstOrderCoefficient_core_pairing
       covariantJetNormSq (I := I) (M := M) g 2 (AT.zeroOrderCoefficient - AU.zeroOrderCoefficient) +
           covariantJetNormSq (I := I) (M := M) g 2 (AT.firstOrderCoefficient - AU.firstOrderCoefficient) ≤
         (K0 * D) ^ 2 := by
-    simpa only [AT, AU, c1Part, lowCoreActionCoefficientsBackground, S, V, sub_self,
-      lowJet_zero (I := I) (M := M), zero_add] using hcoeffBound
+    have hzero : AT.zeroOrderCoefficient - AU.zeroOrderCoefficient = 0 := by
+      simp only [AT, AU, c1Part, sub_self]
+    have hcoreT :
+        lowCoreActionCoefficientsBackground (I := I) (M := M)
+            g gB hρ.le hδ0 hδ_le hreal T =
+          lowerScaleActionCoefficients (I := I) (M := M) g gB S
+            (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ := by
+      unfold lowCoreActionCoefficientsBackground
+      dsimp only [S]
+    have hcoreU :
+        lowCoreActionCoefficientsBackground (I := I) (M := M)
+            g gB hρ.le hδ0 hδ_le hreal U =
+          lowerScaleActionCoefficients (I := I) (M := M) g gB V
+            (lt_of_le_of_lt hδ_le (by norm_num)) hVδ hZδ := by
+      unfold lowCoreActionCoefficientsBackground
+      dsimp only [V]
+    have hAT :
+        AT.firstOrderCoefficient =
+          (lowerScaleActionCoefficients (I := I) (M := M) g gB S
+            (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ).firstOrderCoefficient := by
+      dsimp only [AT, c1Part]
+      rw [hcoreT]
+    have hAU :
+        AU.firstOrderCoefficient =
+          (lowerScaleActionCoefficients (I := I) (M := M) g gB V
+            (lt_of_le_of_lt hδ_le (by norm_num)) hVδ hZδ).firstOrderCoefficient := by
+      dsimp only [AU, c1Part]
+      rw [hcoreU]
+    have hfirst :
+        AT.firstOrderCoefficient - AU.firstOrderCoefficient =
+          (lowerScaleActionCoefficients (I := I) (M := M) g gB S
+              (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ).firstOrderCoefficient -
+            (lowerScaleActionCoefficients (I := I) (M := M) g gB V
+              (lt_of_le_of_lt hδ_le (by norm_num)) hVδ hZδ).firstOrderCoefficient := by
+      rw [hAT, hAU]
+    rw [hzero, lowJet_zero (I := I) (M := M), zero_add, hfirst]
+    exact hcoeffBound
   have hop := hact AT AU (K0 * D) (mul_nonneg hK0 hD) hcoeffAct
   change
     ‖AT.firstOrderActionThirdToSecondOrder (I := I) (M := M) - AU.firstOrderActionThirdToSecondOrder (I := I) (M := M)‖ ≤ K * D ∧

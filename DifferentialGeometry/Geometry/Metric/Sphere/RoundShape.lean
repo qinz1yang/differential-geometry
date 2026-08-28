@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConnLC
 import Mathlib.Analysis.InnerProductSpace.Orthogonal
+
+
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
@@ -33,7 +35,7 @@ theorem ambDeriv_inner_normal {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 
   have hf0 : (fun b => ⟪dInclField (n := n) Y b, (↑b : E)⟫) = fun _ => (0 : ℝ) := by
     funext b
     refine Submodule.inner_left_of_mem_orthogonal (Submodule.mem_span_singleton_self (↑b : E)) ?_
-    rw [dInclField_apply, ← range_mfderiv_coe_sphere (n := n) b]
+    rw [dInclField_apply, ← range_mvfderiv_subtypeVal (n := n) b]
     exact ⟨Y b, rfl⟩
   have hmf := mfderiv_inner (n := n) hYd hcoe v
   have hf0' : mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
@@ -61,7 +63,7 @@ theorem ambDeriv_gauss {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x}
     rw [Submodule.starProjection_singleton, hnorm]; norm_num
   have hproj : dIncl (n := n) x (projConn (n := n) Y x v)
       = ambDeriv (n := n) Y x v - ⟪(↑x : E), ambDeriv (n := n) Y x v⟫ • (↑x : E) := by
-    rw [dIncl_projConn, Submodule.coe_orthogonalProjection_apply]
+    rw [dIncl_projConn, Submodule.coe_orthogonalProjectionOnto_apply]
     have hsplit := (ℝ ∙ (↑x : E)).starProjection_add_starProjection_orthogonal
       (ambDeriv (n := n) Y x v)
     rw [hsing] at hsplit
@@ -74,15 +76,14 @@ theorem ambDeriv_gauss {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x}
 noncomputable def ambDeriv2
     (Z W : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n), (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯)
     (x : sphere (0 : E) 1) : TangentSpace (𝓡 n) x →L[ℝ] E :=
-  (mfderiv (𝓡 n) 𝓘(ℝ, E) (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x :
-    TangentSpace (𝓡 n) x →L[ℝ] E)
+  mvfderiv (𝓡 n) (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem ambDeriv2_apply
     (Z W : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n), (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯)
     (x : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) x) :
     ambDeriv2 (n := n) Z W x v
-      = mfderiv (𝓡 n) 𝓘(ℝ, E) (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x v := rfl
+      = mvfderiv (𝓡 n) (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x v := rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem ambDeriv_bracket_symm
@@ -104,7 +105,7 @@ theorem ambDeriv_bracket_symm
     funext p
     change vectorFieldAction (𝓡 n) (sphere (0 : E) 1) Z (innerCoordFun w) p = _
     simp only [vectorFieldAction]
-    rw [show extDerivFun (I := 𝓡 n) (innerCoordFun w) p (Z p)
+    rw [show mvfderiv (I := 𝓡 n) (innerCoordFun w) p (Z p)
           = mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (innerCoordFun (E := E) (n := n) w) p (Z p) from rfl,
       mfderiv_innerCoordFun, dInclField_apply]
   have hWlevel : ∀ (W : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n),
@@ -115,24 +116,19 @@ theorem ambDeriv_bracket_symm
     funext p
     change vectorFieldAction (𝓡 n) (sphere (0 : E) 1) W gw p = _
     simp only [vectorFieldAction]
-    rw [show extDerivFun (I := 𝓡 n) gw p (W p)
-          = mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (⇑gw) p (W p) from rfl,
-      hgw, mfderiv_inner_left w (hZdiff p) (W p), ambDeriv_apply]
+    rw [hgw, mvfderiv_inner_left w (hZdiff p) (W p), ambDeriv_apply]
   have hsecond : ∀ (V W : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯),
       MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x →
       (embedDeriv (𝓡 n) (sphere (0 : E) 1) V
           (embedDeriv (𝓡 n) (sphere (0 : E) 1) W gw) : sphere (0 : E) 1 → ℝ) x
-        = ⟪w, mfderiv (𝓡 n) 𝓘(ℝ, E)
+        = ⟪w, mvfderiv (𝓡 n)
             (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x (V x)⟫ := by
     intro V W hD
     change vectorFieldAction (𝓡 n) (sphere (0 : E) 1) V
       (embedDeriv (𝓡 n) (sphere (0 : E) 1) W gw) x = _
     simp only [vectorFieldAction]
-    rw [show extDerivFun (I := 𝓡 n) (embedDeriv (𝓡 n) (sphere (0 : E) 1) W gw) x (V x)
-          = mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
-              (⇑(embedDeriv (𝓡 n) (sphere (0 : E) 1) W gw)) x (V x) from rfl,
-      hWlevel W, mfderiv_inner_left w hD (V x)]
+    rw [hWlevel W, mvfderiv_inner_left w hD (V x)]
   have hbr := embedDeriv_mlieBracket (I := 𝓡 n) (M := sphere (0 : E) 1) X Y gw
   have hbrx : (embedDeriv (𝓡 n) (sphere (0 : E) 1)
         (mlieBracketSection (𝓡 n) (sphere (0 : E) 1) X Y) gw : sphere (0 : E) 1 → ℝ) x
@@ -163,7 +159,7 @@ theorem inner_dIncl_metricCov
       = ⟪ambDeriv (n := n) S x v, dIncl (n := n) x W⟫ := by
   rw [← projConn_eq_metricCov hS v, dIncl_projConn, ← Submodule.starProjection_apply]
   have hmem : dIncl (n := n) x W ∈ (ℝ ∙ (↑x : E))ᗮ := by
-    rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨W, rfl⟩
+    rw [← range_mvfderiv_subtypeVal (n := n) x]; exact ⟨W, rfl⟩
   have h0 := Submodule.starProjection_inner_eq_zero (K := (ℝ ∙ (↑x : E))ᗮ)
     (ambDeriv (n := n) S x v) (dIncl (n := n) x W) hmem
   rw [inner_sub_left, sub_eq_zero] at h0
@@ -173,7 +169,7 @@ omit [FiniteDimensional ℝ E] in
 theorem mdiffAt_inner_left (w : E) {F : sphere (0 : E) 1 → E} {x : sphere (0 : E) 1}
     (hF : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) F x) :
     MDifferentiableAt (𝓡 n) 𝓘(ℝ, ℝ) (fun p => ⟪w, F p⟫) x := by
-  haveI : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (F x)) :=
+  have : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (F x)) :=
     inferInstanceAs (InnerProductSpace ℝ E)
   exact ((innerSL ℝ w).hasFDerivAt.hasMFDerivAt.comp x hF.hasMFDerivAt).mdifferentiableAt
 
@@ -182,20 +178,26 @@ theorem mfderiv_mul_innerCoordFun_of_inner_eq_zero
     (w : E) {φ : sphere (0 : E) 1 → ℝ} {x : sphere (0 : E) 1}
     (hφ : MDifferentiableAt (𝓡 n) 𝓘(ℝ, ℝ) φ x) (horth : ⟪w, (↑x : E)⟫ = 0)
     (v : TangentSpace (𝓡 n) x) :
-    mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
+    mvfderiv (𝓡 n)
         (fun p => φ p * (innerCoordFun (E := E) (n := n) w) p) x v
       = φ x * ⟪w, dIncl (n := n) x v⟫ := by
   set ψ : sphere (0 : E) 1 → ℝ := ⇑(innerCoordFun (E := E) (n := n) w) with hψdef
   have hψ : MDifferentiableAt (𝓡 n) 𝓘(ℝ, ℝ) ψ x :=
     (innerCoordFun (E := E) (n := n) w).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  have hψx : ψ x = 0 := by rw [hψdef]; simpa [innerCoordFun] using horth
-  have hψCLM : mfderiv (𝓡 n) 𝓘(ℝ, ℝ) ψ x = (innerSL ℝ w).comp (dIncl (n := n) x) := by
+  have hψx : ψ x = 0 := by
+    rw [hψdef]
+    change ⟪w, (↑x : E)⟫ = 0
+    exact horth
+  have hψCLM : mvfderiv (𝓡 n) ψ x = (innerSL ℝ w).comp (dIncl (n := n) x) := by
     ext u
-    change mfderiv (𝓡 n) 𝓘(ℝ, ℝ) ψ x u = ⟪w, dIncl (n := n) x u⟫
-    exact mfderiv_innerCoordFun (E := E) (n := n) w x u
-  change mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (φ * ψ) x v = φ x * ⟪w, dIncl (n := n) x v⟫
-  rw [(hφ.hasMFDerivAt.mul hψ.hasMFDerivAt).mfderiv]
-  simp only [hψx, hψCLM, zero_smul, add_zero]
+    change mvfderiv (𝓡 n) ψ x u = ⟪w, dIncl (n := n) x u⟫
+    rw [hψdef]
+    exact mvfderiv_inner_left w
+      ((contMDiff_coe_sphere.contMDiffAt.mdifferentiableAt one_ne_zero)) u
+  change mvfderiv (𝓡 n) (φ * ψ) x v = φ x * ⟪w, dIncl (n := n) x v⟫
+  have hprod := congrArg
+    (fun L : TangentSpace (𝓡 n) x →L[ℝ] ℝ => L v) (mvfderiv_mul hφ hψ)
+  rw [hprod, hψCLM, hψx, zero_smul, add_zero]
   change φ x • (((innerSL ℝ w).comp (dIncl (n := n) x)) v) = φ x * ⟪w, dIncl (n := n) x v⟫
   rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, smul_eq_mul]
 
@@ -249,8 +251,10 @@ theorem inner_ambDeriv_nested
     rw [hAfun]; exact hD.add (hφ.smul hcoeM)
   have hψ0 : ⟪dIncl (n := n) x W, (↑x : E)⟫ = (0 : ℝ) :=
     Submodule.inner_left_of_mem_orthogonal (Submodule.mem_span_singleton_self _)
-      (by rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨W, rfl⟩)
-  rw [ambDeriv_apply, real_inner_comm, ← mfderiv_inner_left (dIncl (n := n) x W) hAd v]
+      (by rw [← range_mvfderiv_subtypeVal (n := n) x]; exact ⟨W, rfl⟩)
+  rw [ambDeriv_apply]
+  rw [real_inner_comm]
+  rw [← mvfderiv_inner_left (dIncl (n := n) x W) hAd v]
   have hscal : (fun p => ⟪dIncl (n := n) x W, dInclField (n := n)
         (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
           (n := n)) (⇑Z) p (Yf p)) p⟫)
@@ -268,34 +272,40 @@ theorem inner_ambDeriv_nested
         * (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) p) x :=
     hφ.mul ((innerCoordFun (E := E) (n := n)
       (dIncl (n := n) x W)).contMDiff.contMDiffAt.mdifferentiableAt (by simp))
-  have h1CLM : mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
+  have h1CLM : mvfderiv (𝓡 n)
       (fun p => ⟪dIncl (n := n) x W, ambDeriv (n := n) (⇑Z) p (Yf p)⟫) x
         = (innerSL ℝ (dIncl (n := n) x W)).comp (ambDeriv2 (n := n) Z Yf x) := by
     ext u
-    change mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
+    change mvfderiv (𝓡 n)
         (fun p => ⟪dIncl (n := n) x W, ambDeriv (n := n) (⇑Z) p (Yf p)⟫) x u
           = ⟪dIncl (n := n) x W, ambDeriv2 (n := n) Z Yf x u⟫
-    rw [mfderiv_inner_left (dIncl (n := n) x W) hD u, ← ambDeriv2_apply]
+    rw [mvfderiv_inner_left (dIncl (n := n) x W) hD u, ← ambDeriv2_apply]
   have hψ0' : (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) x = 0 := by
-    simpa [innerCoordFun] using hψ0
-  have hψCLM : mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) x
+    change ⟪dIncl (n := n) x W, (↑x : E)⟫ = 0
+    exact hψ0
+  have hψCLM : mvfderiv (𝓡 n) (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) x
       = (innerSL ℝ (dIncl (n := n) x W)).comp (dIncl (n := n) x) := by
     ext u
-    change mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) x u
+    change mvfderiv (𝓡 n) (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) x u
         = ⟪dIncl (n := n) x W, dIncl (n := n) x u⟫
-    exact mfderiv_innerCoordFun (E := E) (n := n) (dIncl (n := n) x W) x u
-  have h2CLM : mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
+    rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
+    have hraw := mfderiv_innerCoordFun
+      (E := E) (n := n) (dIncl (n := n) x W) x u
+    have h := congrArg
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ)
+        ((innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) x)) hraw
+    with_unfolding_all exact h
+  have h2CLM : mvfderiv (𝓡 n)
       (fun p => roundInner (n := n) p (Z p) (Yf p)
         * (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) p) x
         = (roundInner (n := n) x (Z x) (Yf x))
           • (innerSL ℝ (dIncl (n := n) x W)).comp (dIncl (n := n) x) := by
-    change mfderiv (𝓡 n) 𝓘(ℝ, ℝ) ((fun p => roundInner (n := n) p (Z p) (Yf p))
+    change mvfderiv (𝓡 n) ((fun p => roundInner (n := n) p (Z p) (Yf p))
         * ⇑(innerCoordFun (E := E) (n := n) (dIncl (n := n) x W))) x = _
-    rw [(hφ.hasMFDerivAt.mul ((innerCoordFun (E := E) (n := n)
-      (dIncl (n := n) x W)).contMDiff.contMDiffAt.mdifferentiableAt
-        (by simp)).hasMFDerivAt).mfderiv,
+    rw [mvfderiv_mul hφ ((innerCoordFun (E := E) (n := n)
+      (dIncl (n := n) x W)).contMDiff.contMDiffAt.mdifferentiableAt (by simp)),
       hψCLM, hψ0', zero_smul, add_zero]
-  rw [hscal, mfderiv_add hMh1 hMh2, h1CLM, h2CLM]
+  rw [hscal, mvfderiv_add hMh1 hMh2, h1CLM, h2CLM]
   rfl
 
 omit [FiniteDimensional ℝ E] in

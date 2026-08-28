@@ -23,7 +23,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -53,6 +52,21 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+private abbrev modelTangent (x : M) (v : E) : TangentSpace I x :=
+  (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v
+
+private abbrev tangentModel (x : M) (v : TangentSpace I x) : E :=
+  tangentSpaceModelContinuousLinearEquiv (I := I) x v
+
+private abbrev finBasisTangent (x : M) (k : Fin (Module.finrank ℝ E)) : TangentSpace I x :=
+  modelTangent (I := I) x ((Module.finBasis ℝ E) k)
+
+private abbrev cometricDualBasisTangent (g : SmoothRiemannianMetric I M) (x : M)
+    (k : Fin (Module.finrank ℝ E)) : TangentSpace I x :=
+  modelTangent (I := I) x (cometricLmodel (I := I) g x
+    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      ((Module.finBasis ℝ E).cDualBasis k)))
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -100,7 +114,7 @@ private theorem exists_orthoFrame_basis_local (g : SmoothRiemannianMetric I M) (
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x := e0 with he_def
   have horth : ∀ a b : Fin (Module.finrank ℝ E),
       g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0 := horth0
-  haveI : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
+  have : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
@@ -114,8 +128,9 @@ private theorem exists_orthoFrame_basis_local (g : SmoothRiemannianMetric I M) (
     rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
     rwa [if_pos rfl, mul_one] at h_zero
-  have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
-      Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
+  have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
+      Module.finrank ℝ (TangentSpace I x) := by
+    rw [Fintype.card_fin, hn]
   refine ⟨e, basisOfLinearIndependentOfCardEqFinrank he_li hcard, fun i => ?_, horth⟩
   rw [coe_basisOfLinearIndependentOfCardEqFinrank]
 
@@ -167,17 +182,17 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma cometric_sum_eq_invSharp (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (b : TangentSpace I x) :
     ∑ k : Fin (Module.finrank ℝ E),
-        g₀.inner x b ((Module.finBasis ℝ E) k) •
-          cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k)) =
+        g₀.inner x b (finBasisTangent (I := I) x k) •
+          cometricDualBasisTangent (I := I) g₁ x k =
       inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x b) := by
   classical
   apply metricInner_injective_local (I := I) g₁ x
   intro w
   have hcoord : ∀ k : Fin (Module.finrank ℝ E),
-      (Module.finBasis ℝ E).cDualBasis k (w : E) =
-        (Module.finBasis ℝ E).repr (w : E) k := by
+      (Module.finBasis ℝ E).cDualBasis k
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x w) =
+        (Module.finBasis ℝ E).repr
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x w) k := by
     intro k
     rw [show ((Module.finBasis ℝ E).cDualBasis k) =
         LinearMap.toContinuousLinearMap ((Module.finBasis ℝ E).coord k) from by
@@ -185,41 +200,34 @@ private lemma cometric_sum_eq_invSharp (g₀ g₁ : SmoothRiemannianMetric I M) 
       congr 1
       exact congrFun (Module.Basis.coe_dualBasis (Module.finBasis ℝ E)) k]
     rw [LinearMap.coe_toContinuousLinearMap', Module.Basis.coord_apply]
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, sum_apply]
   have hlhs : ∀ k : Fin (Module.finrank ℝ E),
-      (g₁.inner x (g₀.inner x b ((Module.finBasis ℝ E) k) •
-          cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k)))) w =
-        g₀.inner x b ((Module.finBasis ℝ E) k) *
-          (Module.finBasis ℝ E).repr (w : E) k := by
+      (g₁.inner x (g₀.inner x b (finBasisTangent (I := I) x k) •
+          cometricDualBasisTangent (I := I) g₁ x k)) w =
+        g₀.inner x b (finBasisTangent (I := I) x k) *
+          (Module.finBasis ℝ E).repr
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x w) k := by
     intro k
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
     congr 1
-    have hinner : g₁.inner x (cometricLmodel (I := I) g₁ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))) w =
-        (Module.finBasis ℝ E).cDualBasis k (w : E) := by
-      have h1 : cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k)) =
-          inverseMetricSharpFib (I := I) g₁ x
-            ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x).symm
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k))) := rfl
-      rw [h1, inverseMetricSharpFib_inner (I := I) g₁ x _ w, cotangentToDualLinear_apply,
-        cotangentToDual_apply]
-      change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k)) (fun _ : Fin 1 => (w : E)) = _
-      rw [Tensor0SBundle.model_covectorOfCLM_apply]
+    have hinner : g₁.inner x (cometricDualBasisTangent (I := I) g₁ x k) w =
+        (Module.finBasis ℝ E).cDualBasis k
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x w) := by
+      with_unfolding_all
+        exact cometricLmodel_covectorOfCLM_inner (I := I) g₁ x
+          ((Module.finBasis ℝ E).cDualBasis k) w
     rw [hinner, hcoord k]
   rw [Finset.sum_congr rfl (fun k _ => hlhs k)]
   rw [inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
   have hwexp : (w : TangentSpace I x) =
       ∑ k : Fin (Module.finrank ℝ E),
-        (Module.finBasis ℝ E).repr (w : E) k • ((Module.finBasis ℝ E) k : TangentSpace I x) := by
-    have h := (Module.finBasis ℝ E).sum_repr (w : E)
-    exact h.symm
+        (Module.finBasis ℝ E).repr
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x w) k •
+          finBasisTangent (I := I) x k := by
+    have h := (Module.finBasis ℝ E).sum_repr
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+    simpa only [map_sum, map_smul, ContinuousLinearEquiv.symm_apply_apply] using congrArg
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm h.symm
   conv_rhs => rw [hwexp, map_sum]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [ContinuousLinearMap.map_smul, smul_eq_mul, mul_comm]
@@ -267,31 +275,23 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma cometric_dualsum_inner_collapse (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (a c : TangentSpace I x) :
     (∑ k : Fin (Module.finrank ℝ E),
-        g₀.inner x c ((Module.finBasis ℝ E) k) *
-          g₀.inner x a (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k)))) =
+        g₀.inner x c (finBasisTangent (I := I) x k) *
+          g₀.inner x a (cometricDualBasisTangent (I := I) g₁ x k)) =
       g₀.inner x a (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x c)) := by
   classical
   have hsumeq := cometric_sum_eq_invSharp (I := I) g₀ g₁ x c
   calc (∑ k : Fin (Module.finrank ℝ E),
-        g₀.inner x c ((Module.finBasis ℝ E) k) *
-          g₀.inner x a (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k))))
+        g₀.inner x c (finBasisTangent (I := I) x k) *
+          g₀.inner x a (cometricDualBasisTangent (I := I) g₁ x k))
       = ∑ k : Fin (Module.finrank ℝ E), g₀.inner x a
-          (g₀.inner x c ((Module.finBasis ℝ E) k) •
-            cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k))) := by
+          (g₀.inner x c (finBasisTangent (I := I) x k) •
+            cometricDualBasisTangent (I := I) g₁ x k) := by
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [ContinuousLinearMap.map_smul, smul_eq_mul]
     _ = g₀.inner x a
           (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x c ((Module.finBasis ℝ E) k) •
-              cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))) := (map_sum (g₀.inner x a) _ _).symm
+            g₀.inner x c (finBasisTangent (I := I) x k) •
+              cometricDualBasisTangent (I := I) g₁ x k) := (map_sum (g₀.inner x a) _ _).symm
     _ = g₀.inner x a (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x c)) := by
         rw [hsumeq]
 
@@ -466,49 +466,51 @@ theorem ricciDeTurckPrincipalCoefficientFiber_fiberComponent_Ksum_sq_le
         Tensor0SSpace.toModel
           ((ricciDeTurckPrincipalCoefficientAtPoint (I := I) g₁ x)
             (coframeS (I := I) (M := M) g₀ x 4 e K))
-          (fun k => e (J k)) := by
+          (fun k => tangentModel (I := I) x (e (J k))) := by
       unfold fiberNormSqComponent coframeS; rfl
     rw [hread, ricciDeTurckPrincipalCoefficientFiber_toModel,
       ricciPrincipalCoefficientDoubleTraceModel_apply (E := E) (cometricLmodel (I := I) g₁ x) _
-        (fun k => e (J k))]
+        (fun k => tangentModel (I := I) x (e (J k)))]
     have hev : ∀ (v : Fin 4 → E),
         Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K) v =
-          ∏ i : Fin 4, g₀.inner x (e (K i)) (v i) :=
-      fun v => coframeS_apply (I := I) (M := M) g₀ x 4 e K v
+          ∏ i : Fin 4, g₀.inner x (e (K i)) (modelTangent (I := I) x (v i)) := by
+      intro v
+      rw [Tensor0SSpace.toModel_apply_model_vector]
+      exact coframeS_apply (I := I) (M := M) g₀ x 4 e K
+        (fun i => modelTangent (I := I) x (v i))
     have hterm : ∀ k : Fin (Module.finrank ℝ E),
         (Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K)
             (Fin.cons (cometricLmodel (I := I) g₁ x
                 (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
-              ![e (J 0), e (J 1), (Module.finBasis ℝ E) k])
+              ![tangentModel (I := I) x (e (J 0)), tangentModel (I := I) x (e (J 1)),
+                (Module.finBasis ℝ E) k])
           + Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K)
               (Fin.cons (cometricLmodel (I := I) g₁ x
                   (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
-                ![e (J 1), e (J 0), (Module.finBasis ℝ E) k])
+                ![tangentModel (I := I) x (e (J 1)), tangentModel (I := I) x (e (J 0)),
+                  (Module.finBasis ℝ E) k])
           - Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K)
               (Fin.cons (cometricLmodel (I := I) g₁ x
                   (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
-                (Fin.cons ((Module.finBasis ℝ E) k) (fun l => e (J l))))) =
-          g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) *
+                (Fin.cons ((Module.finBasis ℝ E) k)
+                  (fun l => tangentModel (I := I) x (e (J l)))))) =
+          g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
                 (g₀.inner x (e (K 1)) (e (J 0)) * g₀.inner x (e (K 2)) (e (J 1))))
-          + g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) *
+          + g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
                 (g₀.inner x (e (K 1)) (e (J 1)) * g₀.inner x (e (K 2)) (e (J 0))))
-          - g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-              (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) *
+          - g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+              (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
                 (g₀.inner x (e (K 2)) (e (J 0)) * g₀.inner x (e (K 3)) (e (J 1)))) := by
       intro k
-      have hthird : (Fin.cons ((Module.finBasis ℝ E) k) (fun l : Fin 2 => e (J l)) :
-          Fin 3 → E) = ![(Module.finBasis ℝ E) k, e (J 0), e (J 1)] := by
+      have hthird : (Fin.cons ((Module.finBasis ℝ E) k)
+          (fun l : Fin 2 => tangentModel (I := I) x (e (J l))) :
+          Fin 3 → E) = ![(Module.finBasis ℝ E) k, tangentModel (I := I) x (e (J 0)),
+            tangentModel (I := I) x (e (J 1))] := by
         funext i; fin_cases i <;> rfl
       rw [hev, hev, hev, hthird, Fin.prod_univ_four, Fin.prod_univ_four, Fin.prod_univ_four]
       have hcons4 : ∀ (c : E) (a b d : E),
@@ -520,77 +522,63 @@ theorem ricciDeTurckPrincipalCoefficientFiber_fiberComponent_Ksum_sq_le
         refine ⟨rfl, ?_, ?_, ?_⟩ <;> rfl
       obtain ⟨t1_0, t1_1, t1_2, t1_3⟩ := hcons4 (cometricLmodel (I := I) g₁ x
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))) (e (J 0)) (e (J 1)) ((Module.finBasis ℝ E) k)
+          ((Module.finBasis ℝ E).cDualBasis k))) (tangentModel (I := I) x (e (J 0)))
+            (tangentModel (I := I) x (e (J 1))) ((Module.finBasis ℝ E) k)
       obtain ⟨t2_0, t2_1, t2_2, t2_3⟩ := hcons4 (cometricLmodel (I := I) g₁ x
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))) (e (J 1)) (e (J 0)) ((Module.finBasis ℝ E) k)
+          ((Module.finBasis ℝ E).cDualBasis k))) (tangentModel (I := I) x (e (J 1)))
+            (tangentModel (I := I) x (e (J 0))) ((Module.finBasis ℝ E) k)
       obtain ⟨t3_0, t3_1, t3_2, t3_3⟩ := hcons4 (cometricLmodel (I := I) g₁ x
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))) ((Module.finBasis ℝ E) k) (e (J 0)) (e (J 1))
+          ((Module.finBasis ℝ E).cDualBasis k))) ((Module.finBasis ℝ E) k)
+            (tangentModel (I := I) x (e (J 0))) (tangentModel (I := I) x (e (J 1)))
       rw [t1_0, t1_1, t1_2, t1_3, t2_0, t2_1, t2_2, t2_3, t3_0, t3_1, t3_2, t3_3]
+      simp only [ContinuousLinearEquiv.symm_apply_apply]
       ring
     rw [Finset.sum_congr rfl (fun k _ => hterm k)]
     rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
     have hcolA : (∑ k : Fin (Module.finrank ℝ E),
-          g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-            (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))) *
+          g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+            (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
               (g₀.inner x (e (K 1)) (e (J 0)) * g₀.inner x (e (K 2)) (e (J 1)))))
         = A * (g₀.inner x (e (K 1)) (e (J 0)) * g₀.inner x (e (K 2)) (e (J 1))) := by
       rw [show (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) *
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
                 (g₀.inner x (e (K 1)) (e (J 0)) * g₀.inner x (e (K 2)) (e (J 1))))) =
           (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))) *
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k)) *
             (g₀.inner x (e (K 1)) (e (J 0)) * g₀.inner x (e (K 2)) (e (J 1))) from by
         rw [Finset.sum_mul]; refine Finset.sum_congr rfl (fun k _ => ?_); ring]
       rw [cometric_dualsum_inner_collapse (I := I) g₀ g₁ x (e (K 0)) (e (K 3)), ← hfA, ← hA]
     have hcolB : (∑ k : Fin (Module.finrank ℝ E),
-          g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-            (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))) *
+          g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+            (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
               (g₀.inner x (e (K 1)) (e (J 1)) * g₀.inner x (e (K 2)) (e (J 0)))))
         = A * (g₀.inner x (e (K 1)) (e (J 1)) * g₀.inner x (e (K 2)) (e (J 0))) := by
       rw [show (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) *
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
                 (g₀.inner x (e (K 1)) (e (J 1)) * g₀.inner x (e (K 2)) (e (J 0))))) =
           (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))) *
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k)) *
             (g₀.inner x (e (K 1)) (e (J 1)) * g₀.inner x (e (K 2)) (e (J 0))) from by
         rw [Finset.sum_mul]; refine Finset.sum_congr rfl (fun k _ => ?_); ring]
       rw [cometric_dualsum_inner_collapse (I := I) g₀ g₁ x (e (K 0)) (e (K 3)), ← hfA, ← hA]
     have hcolC : (∑ k : Fin (Module.finrank ℝ E),
-          g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-            (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))) *
+          g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+            (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
               (g₀.inner x (e (K 2)) (e (J 0)) * g₀.inner x (e (K 3)) (e (J 1)))))
         = C * (g₀.inner x (e (K 2)) (e (J 0)) * g₀.inner x (e (K 3)) (e (J 1))) := by
       rw [show (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-              (g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) *
+            g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+              (g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k) *
                 (g₀.inner x (e (K 2)) (e (J 0)) * g₀.inner x (e (K 3)) (e (J 1))))) =
           (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-              g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))) *
+            g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+              g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k)) *
             (g₀.inner x (e (K 2)) (e (J 0)) * g₀.inner x (e (K 3)) (e (J 1))) from by
         rw [Finset.sum_mul]; refine Finset.sum_congr rfl (fun k _ => ?_); ring]
       rw [cometric_dualsum_inner_collapse (I := I) g₀ g₁ x (e (K 0)) (e (K 1)), ← hfC, ← hC]
@@ -687,33 +675,37 @@ theorem traceHessianFib_fiberComponent_Ksum_sq_le
         (show TensorRSSpace 4 2 I x from traceHessianFib (I := I) g₁ x) (Module.finrank ℝ E) e K J =
         Tensor0SSpace.toModel
           ((traceHessianFib (I := I) g₁ x) (coframeS (I := I) (M := M) g₀ x 4 e K))
-          (fun k => e (J k)) := by
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J k))) := by
       unfold fiberNormSqComponent coframeS; rfl
     rw [hread, traceHessianFib_toModel]
-    rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₁ x) _ (fun k => e (J k))]
+    rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₁ x) _
+      (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J k)))]
     have hterm : ∀ k : Fin (Module.finrank ℝ E),
         (ContinuousMultilinearMap.domDomCongr traceHessianSlotPerm
             (Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K)))
           (Fin.cons (cometricLmodel (I := I) g₁ x
               (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
-            (Fin.cons ((Module.finBasis ℝ E) k) (fun l => e (J l)))) =
+            (Fin.cons ((Module.finBasis ℝ E) k)
+              (fun l => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J l))))) =
           g₀.inner x (e (K 0)) (e (J 0)) * g₀.inner x (e (K 1)) (e (J 1)) *
-            (g₀.inner x (e (K 2)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))) *
-              g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k)) := by
+            (g₀.inner x (e (K 2)) (cometricDualBasisTangent (I := I) g₁ x k) *
+              g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k)) := by
       intro k
       rw [ContinuousMultilinearMap.domDomCongr_apply]
       set base : Fin 4 → E :=
         Fin.cons (cometricLmodel (I := I) g₁ x
             (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
-          (Fin.cons ((Module.finBasis ℝ E) k) (fun l => e (J l))) with hbase
+          (Fin.cons ((Module.finBasis ℝ E) k)
+            (fun l => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J l)))) with hbase
       have hcfeval : Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e K)
             (fun i => base (traceHessianSlotPerm i)) =
-          ∏ i : Fin 4, g₀.inner x (e (K i)) (base (traceHessianSlotPerm i)) :=
-        coframeS_apply (I := I) (M := M) g₀ x 4 e K (fun i => base (traceHessianSlotPerm i))
+          ∏ i : Fin 4, g₀.inner x (e (K i))
+            (modelTangent (I := I) x (base (traceHessianSlotPerm i))) := by
+        rw [Tensor0SSpace.toModel_apply_model_vector]
+        exact coframeS_apply (I := I) (M := M) g₀ x 4 e K
+          (fun i => modelTangent (I := I) x (base (traceHessianSlotPerm i)))
       rw [hcfeval, Fin.prod_univ_four]
       have hp0 : traceHessianSlotPerm 0 = 2 := by decide
       have hp1 : traceHessianSlotPerm 1 = 3 := by decide
@@ -725,60 +717,47 @@ theorem traceHessianFib_fiberComponent_Ksum_sq_le
       have hb1 : base 1 = (Module.finBasis ℝ E) k := by
         rw [hbase]
         rw [show (1 : Fin 4) = Fin.succ 0 from rfl, Fin.cons_succ, Fin.cons_zero]
-      have hb2 : base 2 = e (J 0) := by
+      have hb2 : base 2 = tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 0)) := by
         rw [hbase]
         rw [show (2 : Fin 4) = Fin.succ 1 from rfl, Fin.cons_succ,
           show (1 : Fin 3) = Fin.succ 0 from rfl, Fin.cons_succ]
-      have hb3 : base 3 = e (J 1) := by
+      have hb3 : base 3 = tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 1)) := by
         rw [hbase]
         rw [show (3 : Fin 4) = Fin.succ 2 from rfl, Fin.cons_succ,
           show (2 : Fin 3) = Fin.succ 1 from rfl, Fin.cons_succ]
       rw [hp0, hp1, hp2, hp3, hb0, hb1, hb2, hb3]
+      simp only [ContinuousLinearEquiv.symm_apply_apply]
       ring
     rw [Finset.sum_congr rfl (fun k _ => hterm k)]
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         g₀.inner x (e (K 0)) (e (J 0)) * g₀.inner x (e (K 1)) (e (J 1)) *
-          (g₀.inner x (e (K 2)) (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k))) *
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k))) =
+          (g₀.inner x (e (K 2)) (cometricDualBasisTangent (I := I) g₁ x k) *
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k))) =
         g₀.inner x (e (K 0)) (e (J 0)) * g₀.inner x (e (K 1)) (e (J 1)) *
           (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              g₀.inner x (e (K 2)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)))) from by
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              g₀.inner x (e (K 2)) (cometricDualBasisTangent (I := I) g₁ x k)) from by
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl (fun k _ => ?_); ring]
     have hcollapse : (∑ k : Fin (Module.finrank ℝ E),
-          g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-            g₀.inner x (e (K 2)) (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k)))) =
+          g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+            g₀.inner x (e (K 2)) (cometricDualBasisTangent (I := I) g₁ x k)) =
         g₀.inner x (e (K 2)) fK3 := by
       have hsumeq : (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) •
-              cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))) = fK3 := by
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) •
+              cometricDualBasisTangent (I := I) g₁ x k) = fK3 := by
         rw [hfK3]; exact cometric_sum_eq_invSharp (I := I) g₀ g₁ x (e (K 3))
       calc (∑ k : Fin (Module.finrank ℝ E),
-            g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) *
-              g₀.inner x (e (K 2)) (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k))))
+            g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) *
+              g₀.inner x (e (K 2)) (cometricDualBasisTangent (I := I) g₁ x k))
           = ∑ k : Fin (Module.finrank ℝ E), g₀.inner x (e (K 2))
-              (g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) •
-                cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) := by
+              (g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) •
+                cometricDualBasisTangent (I := I) g₁ x k) := by
             refine Finset.sum_congr rfl (fun k _ => ?_)
             rw [ContinuousLinearMap.map_smul, smul_eq_mul]
         _ = g₀.inner x (e (K 2))
-              (∑ k : Fin (Module.finrank ℝ E), g₀.inner x (e (K 3)) ((Module.finBasis ℝ E) k) •
-                cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                    ((Module.finBasis ℝ E).cDualBasis k))) :=
+              (∑ k : Fin (Module.finrank ℝ E), g₀.inner x (e (K 3)) (finBasisTangent (I := I) x k) •
+                cometricDualBasisTangent (I := I) g₁ x k) :=
                       (map_sum (g₀.inner x (e (K 2))) _ _).symm
         _ = g₀.inner x (e (K 2)) fK3 := by rw [hsumeq]
     rw [hcollapse, horth (K 0) (J 0), horth (K 1) (J 1)]
@@ -880,54 +859,55 @@ private lemma cometricDoubleTraceFib_fiberComponent_eq
         (Module.finrank ℝ E) e K J =
       Tensor0SSpace.toModel
         ((cometricDoubleTraceFib (I := I) g₁ 1 x) (coframeS (I := I) (M := M) g₀ x 3 e K))
-        (fun k => e (J k)) := by
+        (fun k => tangentModel (I := I) x (e (J k))) := by
     unfold fiberNormSqComponent coframeS; rfl
   rw [hread, cometricDoubleTraceFib_toModel]
-  rw [modelDoubleTrace_apply (E := E) 1 (cometricLmodel (I := I) g₁ x) _ (fun k => e (J k))]
+  rw [modelDoubleTrace_apply (E := E) 1 (cometricLmodel (I := I) g₁ x) _
+    (fun k => tangentModel (I := I) x (e (J k)))]
   have hterm : ∀ k : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 3 e K)
-        (Fin.cons (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k)))
-          (Fin.cons ((Module.finBasis ℝ E) k) (fun l => e (J l)))) =
-        g₀.inner x (e (K 2)) (e (J 0)) *
-          (g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-            g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
+          (Fin.cons (cometricLmodel (I := I) g₁ x
               (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k)))) := by
+                ((Module.finBasis ℝ E).cDualBasis k)))
+          (Fin.cons ((Module.finBasis ℝ E) k)
+            (fun l => tangentModel (I := I) x (e (J l))))) =
+        g₀.inner x (e (K 2)) (e (J 0)) *
+          (g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+            g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k)) := by
     intro k
     set base : Fin 3 → E :=
       Fin.cons (cometricLmodel (I := I) g₁ x
           (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
-        (Fin.cons ((Module.finBasis ℝ E) k) (fun l => e (J l))) with hbase
+        (Fin.cons ((Module.finBasis ℝ E) k)
+          (fun l => tangentModel (I := I) x (e (J l)))) with hbase
     have hcfeval : Tensor0SBundle.Tensor0SSpace.toModel
           (coframeS (I := I) (M := M) g₀ x 3 e K) base =
-        ∏ i : Fin 3, g₀.inner x (e (K i)) (base i) :=
-      coframeS_apply (I := I) (M := M) g₀ x 3 e K base
+        ∏ i : Fin 3, g₀.inner x (e (K i)) (modelTangent (I := I) x (base i)) := by
+      rw [Tensor0SSpace.toModel_apply_model_vector]
+      exact coframeS_apply (I := I) (M := M) g₀ x 3 e K
+        (fun i => modelTangent (I := I) x (base i))
     rw [hcfeval, Fin.prod_univ_three]
     have hb0 : base 0 = cometricLmodel (I := I) g₁ x
         (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)) := by rw [hbase, Fin.cons_zero]
     have hb1 : base 1 = (Module.finBasis ℝ E) k := by
       rw [hbase, show (1 : Fin 3) = Fin.succ 0 from rfl, Fin.cons_succ, Fin.cons_zero]
-    have hb2 : base 2 = e (J 0) := by
+    have hb2 : base 2 = tangentModel (I := I) x (e (J 0)) := by
       rw [hbase, show (2 : Fin 3) = Fin.succ 1 from rfl, Fin.cons_succ,
         show (1 : Fin 2) = Fin.succ 0 from rfl, Fin.cons_succ]
-    rw [hb0, hb1, hb2]; ring
+    rw [hb0, hb1, hb2]
+    simp only [ContinuousLinearEquiv.symm_apply_apply]
+    ring
   rw [Finset.sum_congr rfl (fun k _ => hterm k)]
   have hpull : (∑ k : Fin (Module.finrank ℝ E),
       g₀.inner x (e (K 2)) (e (J 0)) *
-        (g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-          g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-              ((Module.finBasis ℝ E).cDualBasis k))))) =
+        (g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+          g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k))) =
       g₀.inner x (e (K 2)) (e (J 0)) *
         (∑ k : Fin (Module.finrank ℝ E),
-          g₀.inner x (e (K 1)) ((Module.finBasis ℝ E) k) *
-            g₀.inner x (e (K 0)) (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k)))) := by
+          g₀.inner x (e (K 1)) (finBasisTangent (I := I) x k) *
+            g₀.inner x (e (K 0)) (cometricDualBasisTangent (I := I) g₁ x k)) := by
     rw [Finset.mul_sum]
   rw [hpull, cometric_dualsum_inner_collapse (I := I) g₀ g₁ x (e (K 0)) (e (K 1)),
     horth (K 2) (J 0)]

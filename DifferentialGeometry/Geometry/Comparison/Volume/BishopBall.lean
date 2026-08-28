@@ -165,14 +165,14 @@ private theorem clm_sum_apply
     {F κ : Type*} [NormedAddCommGroup F] [NormedSpace Real F] [Fintype κ]
     (B : F →L[Real] F →L[Real] Real) (v : κ → F) (w : F) :
     B (∑ i, v i) w = ∑ i, B (v i) w := by
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, _root_.sum_apply]
 
 private theorem clm_smul_apply
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     (B : F →L[Real] F →L[Real] Real) (c : Real) (v w : F) :
     B (c • v) w = c * B v w := by
   have h := congrArg (fun L : F →L[Real] Real => L w) (B.map_smul c v)
-  simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+  simpa only [_root_.smul_apply, smul_eq_mul] using h
 
 private theorem linIndep_of_ortho
     {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
@@ -181,27 +181,34 @@ private theorem linIndep_of_ortho
     [IsManifold I (⊤ : WithTop ℕ∞) M]
     {κ : Type*} [Finite κ] [DecidableEq κ]
     (g : SmoothRiemannianMetric I M) (x : M) (e : κ → E)
-    (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0) :
+    (hON : ∀ i j,
+      tangentBilinearFormToModel (I := I) x (g.inner x) (e i) (e j) =
+        if i = j then 1 else 0) :
     LinearIndependent Real e := by
   classical
-  letI := Fintype.ofFinite κ
+  let _ := Fintype.ofFinite κ
+  let B : E →L[Real] E →L[Real] Real :=
+    tangentBilinearFormToModel (I := I) x (g.inner x)
+  have hONModel : ∀ i j, B (e i) (e j) = if i = j then 1 else 0 := by
+    intro i j
+    simpa only [B] using hON i j
   rw [Fintype.linearIndependent_iff]
   intro c hc j
-  have hpair := congrArg (fun z : E => g.inner x z (e j)) hc
-  change g.inner x (∑ i, c i • e i) (e j) = g.inner x 0 (e j) at hpair
-  rw [clm_sum_apply, map_zero, ContinuousLinearMap.zero_apply] at hpair
+  have hpair := congrArg (fun z : E => B z (e j)) hc
+  change B (∑ i, c i • e i) (e j) = B 0 (e j) at hpair
+  rw [clm_sum_apply, map_zero, _root_.zero_apply] at hpair
   rw [Finset.sum_eq_single j] at hpair
   · calc
       c j = c j * 1 := by rw [mul_one]
-      _ = c j * g.inner x (e j) (e j) := by rw [hON j j, if_pos rfl]
-      _ = g.inner x (c j • e j) (e j) :=
-        (clm_smul_apply (g.inner x) (c j) (e j) (e j)).symm
+      _ = c j * B (e j) (e j) := by rw [hONModel j j, if_pos rfl]
+      _ = B (c j • e j) (e j) :=
+        (clm_smul_apply B (c j) (e j) (e j)).symm
       _ = 0 := hpair
   · intro i _ hij
     calc
-      g.inner x (c i • e i) (e j) = c i * g.inner x (e i) (e j) :=
-        clm_smul_apply (g.inner x) (c i) (e i) (e j)
-      _ = c i * (if i = j then 1 else 0) := by rw [hON i j]
+      B (c i • e i) (e j) = c i * B (e i) (e j) :=
+        clm_smul_apply B (c i) (e i) (e j)
+      _ = c i * (if i = j then 1 else 0) := by rw [hONModel i j]
       _ = c i * 0 := by rw [if_neg (by simpa using hij)]
       _ = 0 := mul_zero _
   · intro hj
@@ -214,18 +221,19 @@ private noncomputable def optionFamily
 
 private theorem exists_scaled_basis
     {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
-    [FiniteDimensional Real E]
+    [hfinite : FiniteDimensional Real E]
     [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I (⊤ : WithTop ℕ∞) M]
     {d : Nat} (g : SmoothRiemannianMetric I M) (p : M)
     (x : E) (e : Fin d → E)
-    (hON : ∀ i j, g.inner p (optionFamily x e i) (optionFamily x e j) =
-      if i = j then 1 else 0)
+    (hON : ∀ i j, tangentBilinearFormToModel (I := I) p (g.inner p)
+      (optionFamily x e i) (optionFamily x e j) = if i = j then 1 else 0)
     (hcard : d + 1 = Module.finrank Real E)
     {δ : Real} (hδ : δ ≠ 0) :
     ∃ B : Module.Basis (Option (Fin d)) Real E,
       B none = δ • x ∧ ∀ i, B (some i) = δ • e i := by
+  let _ := hfinite
   classical
   have hLI : LinearIndependent Real (optionFamily x e) :=
     linIndep_of_ortho g p (optionFamily x e) hON
@@ -269,10 +277,10 @@ theorem volSphere_finrank
     (volume : Measure E).toSphere Set.univ =
       (volume : Measure
         (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ := by
-  letI : Nontrivial E :=
+  let _ : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
-  letI : Nonempty (Fin (Module.finrank Real E)) :=
+  let _ : Nonempty (Fin (Module.finrank Real E)) :=
     Fin.pos_iff_nonempty.mp
       (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   rw [Measure.toSphere_apply_univ, Measure.toSphere_apply_univ,
@@ -338,7 +346,7 @@ theorem hypBall_lintegral
       (volume : Measure E).toSphere Set.univ *
         ENNReal.ofReal
           (hypRadVol q (Module.finrank Real E - 1) R) := by
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let _ : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let d : Nat := Module.finrank Real E - 1
   let F : E → ENNReal :=
@@ -441,9 +449,12 @@ theorem exists_framed_ratio
   let d : Nat := Module.finrank Real E - 1
   obtain ⟨r₀, hr₀, hcmp⟩ :=
     exists_radial_cmp (I := I) (ι := Fin d) g hEnorm p
+  let ιp : TangentSpace I p ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
   let rExp : Real := expMapC2Radius (I := I) g p
   let L : E →L[Real] E :=
-    (normalFrame (I := I) g p).toContinuousLinearMap
+    ιp.toContinuousLinearMap.comp
+      (normalFrame (I := I) g p).toContinuousLinearMap
   let C : Real := ‖L‖
   let a : Real := min r₀ rExp
   let δ : Real := a / (2 * (C + 1))
@@ -480,7 +491,6 @@ theorem exists_framed_ratio
       ball (0 : E) ρ ⊆ (framedExpDiffeo (I := I) g p).source := by
     intro z hz
     rw [framedExp_source]
-    apply mem_expMapDiffeo_source_of_norm_lt_radius (I := I) g p
     have hzρ : ‖z‖ < ρ := by
       simpa only [mem_ball, dist_zero_right] using hz
     have hρδ : ρ < δ := by
@@ -488,52 +498,76 @@ theorem exists_framed_ratio
       linarith
     have hzδ : ‖z‖ < δ := hzρ.trans hρδ
     have hLz := L.le_opNorm z
-    calc
-      ‖(show E from normalFrame (I := I) g p z)‖ ≤ C * ‖z‖ := by
-        simpa only [L, C] using hLz
-      _ ≤ (C + 1) * ‖z‖ :=
-        mul_le_mul_of_nonneg_right (by linarith) (norm_nonneg z)
-      _ < (C + 1) * δ := mul_lt_mul_of_pos_left hzδ hC1
-      _ = δ * (C + 1) := mul_comm _ _
-      _ = a / 2 := hδC1
-      _ < a := by linarith
-      _ ≤ rExp := min_le_right _ _
-      _ = expMapC2Radius (I := I) g p := rfl
+    have hL_apply :
+        L z = ιp (normalFrame (I := I) g p z) := by rfl
+    have hmodel :
+        ‖ιp (normalFrame (I := I) g p z)‖ < expMapC2Radius (I := I) g p := by
+      calc
+        ‖ιp (normalFrame (I := I) g p z)‖ = ‖L z‖ := by rw [hL_apply]
+        _ ≤ C * ‖z‖ := by simpa only [C] using hLz
+        _ ≤ (C + 1) * ‖z‖ :=
+          mul_le_mul_of_nonneg_right (by linarith) (norm_nonneg z)
+        _ < (C + 1) * δ := mul_lt_mul_of_pos_left hzδ hC1
+        _ = δ * (C + 1) := mul_comm _ _
+        _ = a / 2 := hδC1
+        _ < a := by linarith
+        _ ≤ rExp := min_le_right _ _
+        _ = expMapC2Radius (I := I) g p := rfl
+    have hmem := mem_expMapDiffeo_source_of_norm_lt_radius (I := I) g p hmodel
+    with_unfolding_all exact hmem
   refine ⟨ρ, hρ, hballSource, ?_⟩
   intro u
-  let x : E := normalFrame (I := I) g p u.1
+  let x : E := L u.1
+  have hxFrame : x = ιp (normalFrame (I := I) g p u.1) := by rfl
   have huNorm : ‖u.1‖ = 1 := by
     simpa only [mem_sphere_zero_iff_norm] using u.2
-  have hxUnit : g.inner p x x = 1 := by
-    dsimp only [x]
+  have hxTangent :
+    ιp.symm x = normalFrame (I := I) g p u.1 := by
+    rw [hxFrame, ContinuousLinearEquiv.symm_apply_apply]
+  have hxUnit : g.inner p (ιp.symm x) (ιp.symm x) = 1 := by
+    rw [hxTangent]
     rw [normalFrame_inner, real_inner_self_eq_norm_sq, huNorm, one_pow]
-  obtain ⟨e, heON, hePerp⟩ := exists_ortho_perp (I := I) g p x hxUnit
-  have hxPerp : ∀ i : Fin d, g.inner p x (e i) = 0 := by
+  obtain ⟨e, heON, hePerp⟩ :=
+    exists_ortho_perp (I := I) g p (ιp.symm x) hxUnit
+  let eE : Fin d → E := fun i => ιp (e i)
+  let gp : E →L[Real] E →L[Real] Real :=
+    tangentBilinearFormToModel (I := I) p (g.inner p)
+  have hxUnitModel : gp x x = 1 := by
+    simpa only [gp, tangentBilinearFormToModel_apply] using hxUnit
+  have heONModel : ∀ i j, gp (eE i) (eE j) = if i = j then 1 else 0 := by
+    intro i j
+    simpa only [gp, eE, ιp, tangentBilinearFormToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply] using heON i j
+  have hePerpModel : ∀ i : Fin d, gp (eE i) x = 0 := by
     intro i
-    rw [g.symm]
-    exact hePerp i
+    simpa only [gp, eE, ιp, tangentBilinearFormToModel_apply,
+      ContinuousLinearEquiv.symm_apply_apply] using hePerp i
+  have hxPerpModel : ∀ i : Fin d, gp x (eE i) = 0 := by
+    intro i
+    rw [tangentBilinearFormToModel_apply, g.symm]
+    simpa only [eE, ιp, ContinuousLinearEquiv.symm_apply_apply] using hePerp i
   have hfullON : ∀ i j : Option (Fin d),
-      g.inner p (optionFamily x e i) (optionFamily x e j) =
+      gp (optionFamily x eE i) (optionFamily x eE j) =
         if i = j then 1 else 0 := by
     intro i j
     cases i with
     | none =>
         cases j with
-        | none => simpa only [optionFamily, if_pos] using hxUnit
-        | some j => simp [optionFamily, hxPerp j]
+        | none => simpa only [optionFamily, if_pos] using hxUnitModel
+        | some j => simp [optionFamily, hxPerpModel j]
     | some i =>
         cases j with
-        | none => simp [optionFamily, hePerp i]
-        | some j => simpa only [optionFamily, Option.some.injEq] using heON i j
+        | none => simp [optionFamily, hePerpModel i]
+        | some j => simpa only [optionFamily, Option.some.injEq] using heONModel i j
   have hcardPlus : d + 1 = Module.finrank Real E := by
     dsimp only [d]
     omega
   obtain ⟨B, hBnone, hBsome⟩ :=
-    exists_scaled_basis g p x e hfullON hcardPlus hδ.ne'
+    exists_scaled_basis g p x eE hfullON hcardPlus hδ.ne'
   have hxC : ‖x‖ ≤ C := by
     have hLu := L.le_opNorm u.1
-    simpa only [x, L, C, huNorm, mul_one] using hLu
-  have heC : ∀ i : Fin d, ‖(show E from e i)‖ ≤ C := by
+    simpa only [x, C, huNorm, mul_one] using hLu
+  have heC : ∀ i : Fin d, ‖eE i‖ ≤ C := by
     intro i
     let w : E := (normalFrame (I := I) g p).symm (e i)
     have hwNorm : ‖w‖ = 1 := by
@@ -543,9 +577,9 @@ theorem exists_framed_ratio
       rw [heON i i, if_pos rfl, Real.sqrt_one] at hframe
       exact hframe.symm
     have hLw := L.le_opNorm w
-    have happly : L w = (show E from e i) := by
-      dsimp only [L, w]
-      exact (normalFrame (I := I) g p).apply_symm_apply (e i)
+    have happly : L w = eE i := by
+      change ιp (normalFrame (I := I) g p w) = ιp (e i)
+      exact congrArg ιp ((normalFrame (I := I) g p).apply_symm_apply (e i))
     rw [happly] at hLw
     simpa only [C, hwNorm, mul_one] using hLw
   have hBnone_r₀ : ‖B none‖ < r₀ := by
@@ -553,32 +587,40 @@ theorem exists_framed_ratio
     exact (mul_le_mul_of_nonneg_left hxC hδ.le).trans_lt hδC_r₀
   have hBsome_r₀ : ∀ i : Fin d, ‖B (some i)‖ < r₀ := by
     intro i
-    rw [hBsome i, norm_smul, Real.norm_of_nonneg hδ.le]
+    with_unfolding_all
+      rw [hBsome i, norm_smul, Real.norm_of_nonneg hδ.le]
     exact (mul_le_mul_of_nonneg_left (heC i) hδ.le).trans_lt hδC_r₀
   have hBnone_exp : ‖B none‖ < rExp := by
     rw [hBnone, norm_smul, Real.norm_of_nonneg hδ.le]
     exact (mul_le_mul_of_nonneg_left hxC hδ.le).trans_lt hδC_rExp
   have htransLI : LinearIndependent Real (fun i : Fin d => B (some i)) :=
     B.linearIndependent.comp (fun i : Fin d => some i) (Option.some_injective (Fin d))
-  have hscaledPerp : ∀ i : Fin d, g.inner p (B none) (B (some i)) = 0 := by
+  have hscaledPerpModel : ∀ i : Fin d, gp (B none) (B (some i)) = 0 := by
     intro i
     rw [hBnone, hBsome i]
     calc
-      g.inner p (δ • x) (δ • e i) = δ * g.inner p x (δ • e i) :=
-        clm_smul_apply (g.inner p) δ x (δ • e i)
-      _ = δ * (δ * g.inner p x (e i)) := by
-        rw [(g.inner p x).map_smul]
+      gp (δ • x) (δ • eE i) = δ * gp x (δ • eE i) :=
+        clm_smul_apply gp δ x (δ • eE i)
+      _ = δ * (δ * gp x (eE i)) := by
+        rw [(gp x).map_smul]
         simp only [smul_eq_mul]
-      _ = 0 := by rw [hxPerp i, mul_zero, mul_zero]
-  have hscaledInner : g.inner p (B none) (B none) = δ ^ 2 := by
+      _ = 0 := by rw [hxPerpModel i, mul_zero, mul_zero]
+  have hscaledPerp : ∀ i : Fin d, g.inner p (B none) (B (some i)) = 0 := by
+    intro i
+    simpa only [gp, tangentBilinearFormToModel_apply,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply] using hscaledPerpModel i
+  have hscaledInnerModel : gp (B none) (B none) = δ ^ 2 := by
     rw [hBnone]
-    have hright : g.inner p x (δ • x) = δ * g.inner p x x := by
-      simpa only [smul_eq_mul] using (g.inner p x).map_smul δ x
+    have hright : gp x (δ • x) = δ * gp x x := by
+      simpa only [smul_eq_mul] using (gp x).map_smul δ x
     calc
-      g.inner p (δ • x) (δ • x) = δ * g.inner p x (δ • x) :=
-        clm_smul_apply (g.inner p) δ x (δ • x)
-      _ = δ * (δ * g.inner p x x) := by rw [hright]
-      _ = δ ^ 2 := by rw [hxUnit]; ring
+      gp (δ • x) (δ • x) = δ * gp x (δ • x) :=
+        clm_smul_apply gp δ x (δ • x)
+      _ = δ * (δ * gp x x) := by rw [hright]
+      _ = δ ^ 2 := by rw [hxUnitModel]; ring
+  have hscaledInner : g.inner p (B none) (B none) = δ ^ 2 := by
+    simpa only [gp, tangentBilinearFormToModel_apply,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply] using hscaledInnerModel
   have hscaledSqrt : Real.sqrt (g.inner p (B none) (B none)) = δ := by
     rw [hscaledInner, Real.sqrt_sq hδ.le]
   have hcard : Fintype.card (Fin d) = Module.finrank Real E - 1 := by
@@ -622,9 +664,10 @@ theorem exists_framed_ratio
   have hrawPhysical := ratio_rescale F q δ (1 / 2) d hq hδ hrawParam
   have hrawPhysical' : AntitoneOn
       (fun s => s ^ d * normalChartDensity (I := I) g p
-          (s • normalFrame (I := I) g p u.1) / hypDensity q d s)
+          (s • ιp (normalFrame (I := I) g p u.1)) / hypDensity q d s)
       (Ioo (0 : Real) ρ) := by
-    simpa only [F, x, ρ, div_eq_mul_inv, one_mul] using hrawPhysical
+    rw [← hxFrame]
+    simpa only [F, ρ, div_eq_mul_inv, one_mul] using hrawPhysical
   have hframedSrc : MapsTo (fun s : Real => s • u.1)
       (Ioo (0 : Real) ρ) (framedExpDiffeo (I := I) g p).source := by
     intro s hs
@@ -653,12 +696,12 @@ theorem normalBall_cross
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
           normalBallVolume (I := I) g p r *
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let _ : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
-  letI : MeasurableSpace E := borel E
-  letI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace E := borel E
+  let _ : BorelSpace E := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  let _ : BorelSpace M := ⟨rfl⟩
   let d : Nat := Module.finrank Real E - 1
   obtain ⟨ρ, hρ, hsource, hratio⟩ :=
     exists_framed_ratio (I := I) g hEnorm p q hq hd hRic
@@ -792,19 +835,19 @@ theorem normalBall_cross_of_complete_metric
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
           normalBallVolume (I := I) g p r *
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
-  letI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let _ : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let _ : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
@@ -824,19 +867,19 @@ theorem normalBall_ratio_of_complete_metric
         (fun R => normalBallVolume (I := I) g p R /
           ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
-  letI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let _ : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let _ : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

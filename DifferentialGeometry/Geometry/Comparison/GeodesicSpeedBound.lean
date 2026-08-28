@@ -116,7 +116,7 @@ theorem geodesic_speed_constant
           (mfderiv 𝓘(ℝ, ℝ) I γ s 1) =
         (g.inner (γ t)) (mfderiv 𝓘(ℝ, ℝ) I γ t 1)
           (mfderiv 𝓘(ℝ, ℝ) I γ t 1) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hγ_mdiff : MDifferentiable 𝓘(ℝ, ℝ) I γ := hγ_C1.mdifferentiable (by norm_num)
   set F : ℝ → ℝ := fun t =>
       (g.inner (γ t)) (mfderiv 𝓘(ℝ, ℝ) I γ t 1)
@@ -221,7 +221,7 @@ theorem isGeodesicOn_speedSq_hasDerivAt_zero
     HasDerivAt (fun r =>
       (g.inner (γ r)) (mfderiv 𝓘(ℝ, ℝ) I γ r 1)
         (mfderiv 𝓘(ℝ, ℝ) I γ r 1)) 0 t := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hγ_mdiff_on : MDifferentiableOn 𝓘(ℝ, ℝ) I γ s :=
     hγ_C1.mdifferentiableOn (by norm_num)
   have hγ_mdiffAt : ∀ r ∈ s, MDifferentiableAt 𝓘(ℝ, ℝ) I γ r :=
@@ -367,8 +367,8 @@ theorem maximalGeodesic_edist_le_speed_mul_time
         (maximalGeodesic (I := I) g p v s)
         (maximalGeodesic (I := I) g p v t) ≤
       ENNReal.ofReal (Real.sqrt ((g.inner p) v v) * (t - s)) := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set γ : ℝ → M := maximalGeodesic (I := I) g p v with hγ_def
   set c : ℝ := Real.sqrt ((g.inner p) v v) with hc_def
   have hc_nonneg : (0 : ℝ) ≤ c := Real.sqrt_nonneg _
@@ -497,7 +497,7 @@ theorem maximalGeodesic_limit_exists_tangent_speed_eq
       (g.inner y) w w = (g.inner p) v v := by
   have hfin_pos : 0 < Module.finrank ℝ E :=
     Nat.pos_of_ne_zero (NeZero.ne _)
-  haveI hNT : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
+  have hNT : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
   obtain ⟨u, hu_ne⟩ : ∃ u : TangentSpace I y, u ≠ 0 :=
     ⟨(exists_ne (0 : E)).choose, (exists_ne (0 : E)).choose_spec⟩
   set r : ℝ := (g.inner p) v v with hr_def
@@ -513,7 +513,7 @@ theorem maximalGeodesic_limit_exists_tangent_speed_eq
   refine ⟨s • u, ?_⟩
   have step1 :
       (g.inner y) (s • u) (s • u) = s * s * (g.inner y) u u := by
-    rw [map_smul (g.inner y), ContinuousLinearMap.smul_apply,
+    rw [map_smul (g.inner y), smul_apply,
         map_smul (g.inner y u), smul_eq_mul, smul_eq_mul]
     ring
   have hs_sq : s * s = r / (g.inner y) u u := by
@@ -572,11 +572,11 @@ theorem curve_exists_limit_of_bounded_speed
       ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c) :
     ∃ y : M, Tendsto γ (nhdsWithin b (Set.Iio b))
       (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
-  haveI hNB : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
+  have hNB : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
   suffices hcauchy : Cauchy (Filter.map γ (nhdsWithin b (Set.Iio b))) by
     exact cauchy_map_iff_exists_tendsto.mp hcauchy
   refine EMetric.cauchy_iff.mpr ⟨?_, ?_⟩
-  · haveI : (Filter.map γ (nhdsWithin b (Set.Iio b))).NeBot := Filter.map_neBot
+  · have : (Filter.map γ (nhdsWithin b (Set.Iio b))).NeBot := Filter.map_neBot
     exact Filter.NeBot.ne this
   · intro ε hε
     obtain ⟨δ₀, _hδ₀_nn, hδ₀_ofReal_pos, hδ₀_ofReal_lt⟩ :=
@@ -658,10 +658,10 @@ theorem eventually_mem_nhds_of_tendsto_riemannianEDist
     {α : Type*} {l : Filter α} {f : α → M} {p : M} {s : Set M} (hs : s ∈ 𝓝 p)
     (h : Tendsto (fun a => riemannianEDist I p (f a)) l (𝓝 (0 : ℝ≥0∞))) :
     ∀ᶠ a in l, f a ∈ s := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  haveI : RegularSpace M := inferInstance
-  obtain ⟨c, c_pos, hc⟩ := setOf_riemannianEDist_lt_subset_nhds' I hs
+  have : RegularSpace M := inferInstance
+  obtain ⟨c, c_pos, hc⟩ := setOfPred_riemannianEDist_lt_subset_nhds' I hs
   have hIio : Set.Iio c ∈ 𝓝 (0 : ℝ≥0∞) := Iio_mem_nhds c_pos
   have hev : ∀ᶠ a in l, riemannianEDist I p (f a) < c := h hIio
   filter_upwards [hev] with a ha

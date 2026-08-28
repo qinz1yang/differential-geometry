@@ -300,7 +300,7 @@ theorem tangentConst_covariantDeriv_apply_contMDiffAt
   have hx₀ : x₀ ∈ e.baseSet := FiberBundle.mem_baseSet_trivializationAt' x₀
   let Xinf : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     ⟨fun p : M => X p, X.contMDiff.of_le (by simp)⟩
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1 + 1) M :=
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (by simp)
   have hW_on :
       CMDiff[e.baseSet] (∞ : WithTop ℕ∞)
@@ -313,7 +313,6 @@ theorem tangentConst_covariantDeriv_apply_contMDiffAt
   exact ((hW_on x₀ hx₀).contMDiffAt (e.open_baseSet.mem_nhds hx₀)).of_le
     (by simp : (∞ : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
 
-set_option backward.isDefEq.respectTransparency false in
 theorem tensor0S_eval_tangentConst_covariantDerivative_slot_contMDiffAt
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -389,10 +388,18 @@ theorem tensor0S_eval_tangentConst_covariantDerivative_slot_contMDiffAt
           a
           (W p) i)
     (hv := hframe)
-  simpa [αinf, W, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-    using hEval
+  let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+      (fun p : M =>
+        α p
+          (Function.update
+            (fun b : Fin s =>
+              tangentConstInChart (𝕜 := 𝕜) (I := I) x₀
+                ((Module.finBasis 𝕜 E) (slots b)) p)
+            a
+            ((cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀
+              ((Module.finBasis 𝕜 E) (slots a))) p) (X p)))) x₀ := hEval
+  exact h
 
-set_option backward.isDefEq.respectTransparency false in
 theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_contMDiffAt
     {r : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -449,12 +456,13 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
       (I := I) (M := M) (n := r) (x₀ := x₀)
       (T := βsec) hβsec
       (v := V) hV
-    simpa [pair, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-      using hEval
+    let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+        (fun p : M => βsec p (fun a : Fin r => V a p)) x₀ := hEval
+    exact h
   have hderiv :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
-        (fun p : M => extDerivFun (I := I) pair p (X p)) x₀ := by
-    simpa [Xinf] using DifferentialGeometry.extDerivFun_apply_contMDiffAt I hpair Xinf
+        (fun p : M => mvfderiv (I := I) pair p (X p)) x₀ := by
+    simpa [Xinf] using DifferentialGeometry.mvfderiv_apply_contMDiffAt I hpair Xinf
   have hcorr_sum :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
         (fun p : M =>
@@ -491,12 +499,16 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
       (v := fun i : Fin r => fun p : M =>
         Function.update (fun b : Fin r => V b p) a (W p) i)
       (hv := hframe)
-    simpa [W, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-      using hEval
+    let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+        (fun p : M =>
+          βsec p
+            (Function.update (fun b : Fin r => V b p) a
+              ((cov (V a) p) (X p)))) x₀ := hEval
+    exact h
   have hmain :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
         (fun p : M =>
-          extDerivFun (I := I) pair p (X p) -
+          mvfderiv (I := I) pair p (X p) -
             ∑ a : Fin r,
               βsec p
                 (Function.update
@@ -543,8 +555,9 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
         (I := I) (M := M) (n := r) (x₀ := p)
         (T := βsec) hβ_p
         (v := V) hV_p
-      simpa [pair, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-        using hEval
+      let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+          (fun y : M => βsec y (fun a : Fin r => V a y)) p := hEval
+      exact h
     exact hpair_p.mdifferentiableAt (by simp)
   have hβmodel_p :
       DifferentiableWithinAt 𝕜
@@ -574,7 +587,6 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
   rw [localCovariantDerivTensor0SAt_eval_moving_raw
     (I := I) cov X βsec V p hpair_md hβmodel_p hV_md hVmodel_p hcoord_p]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem localCovariantDerivTensor0SAt_constInChart_contMDiffAt
     {r : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -627,23 +639,23 @@ theorem localCovariantDerivTensor0SAt_constInChart_contMDiffAt
               ((Module.finBasis 𝕜 E) (σ a)) p)
       rw [continuousMultilinearMap_basis_repr]
       change ((trivializationAt (Tensor0SModel r 𝕜 E)
-          (Bundle.continuousMultilinearMap 𝕜 r E (TangentSpace I : M -> Type _)) x₀
+          (fun p : M => Tensor0SSpace r I p) x₀
           ⟨p, F p⟩).2)
           (fun a : Fin r => b (σ a)) =
         F p
           (fun a : Fin r =>
             tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b (σ a)) p)
-      change (F p).compContinuousLinearMap
+      change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r p (F p)).compContinuousLinearMap
           (fun _ : Fin r =>
             (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL 𝕜 p)
           (fun a : Fin r => b (σ a)) =
         F p
           (fun a : Fin r =>
             tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b (σ a)) p)
-      rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+      rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+        tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
       congr)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nabla0SFun_eval_smooth_slots {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -654,7 +666,7 @@ theorem nabla0SFun_eval_smooth_slots {s : ℕ}
     (x₀ : M) :
     (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       s cov X α x₀) (fun a : Fin s => V a x₀) =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
         x₀ (X x₀) -
         ∑ a : Fin s,
           α x₀
@@ -679,8 +691,9 @@ theorem nabla0SFun_eval_smooth_slots {s : ℕ}
         (T := fun y : M => α y) hα
         (v := fun a : Fin s => W a)
         (hv := hV_at)
-      simpa [W, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-        using hEval
+      let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+          (fun p : M => α p (fun a : Fin s => W a p)) x₀ := hEval
+      exact h
     exact hpair_top.mdifferentiableAt (by simp)
   have hV_md : ∀ a : Fin s, MDiffAt (T% (W a)) x₀ :=
     fun a => (hV_at a).mdifferentiableAt (by simp)
@@ -704,7 +717,6 @@ theorem nabla0SFun_eval_smooth_slots {s : ℕ}
     nabla0SFun_eval_coordFrame_moving_raw
       (I := I) cov X W α x₀ hpair hV_md hVmodel hcoord
 
-set_option backward.isDefEq.respectTransparency false in
 omit [IsManifold I 2 M] in
 theorem tensor0SField_eval_smooth_slots_contMDiffAt {s : ℕ}
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -726,10 +738,10 @@ theorem tensor0SField_eval_smooth_slots_contMDiffAt {s : ℕ}
     (T := fun y : M => α y) hα_top
     (v := fun a : Fin s => fun y : M => V a y)
     (hv := hV_top)
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-    using hEval
+  let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+      (fun p : M => α p (fun a : Fin s => V a p)) x₀ := hEval
+  exact h
 
-set_option backward.isDefEq.respectTransparency false in
 omit [IsManifold I 2 M] in
 theorem tensor0SField_eval_C1_slots_contMDiffAt_one {s : ℕ}
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -749,10 +761,10 @@ theorem tensor0SField_eval_C1_slots_contMDiffAt_one {s : ℕ}
     (T := fun y : M => α y) hα_one
     (v := fun a : Fin s => V a)
     (hv := hV_at)
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-    using hEval
+  let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (1 : WithTop ℕ∞)
+      (fun p : M => α p (fun a : Fin s => V a p)) x₀ := hEval
+  exact h
 
-set_option backward.isDefEq.respectTransparency false in
 omit [IsManifold I 2 M] in
 theorem tensor0SField_eval_C1_slots_mdiffAt {s : ℕ}
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -768,7 +780,6 @@ theorem tensor0SField_eval_C1_slots_mdiffAt {s : ℕ}
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     α V x₀ hV_at).mdifferentiableAt (by norm_num)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nabla0SFun_eval_C1_slots {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -781,7 +792,7 @@ theorem nabla0SFun_eval_C1_slots {s : ℕ}
         (fun y : M => (⟨y, V a y⟩ : TotalSpace E (TangentSpace I : M -> Type _))) x₀) :
     (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       s cov X α x₀) (fun a : Fin s => V a x₀) =
-      extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => α p (fun a : Fin s => V a p))
         x₀ (X x₀) -
         ∑ a : Fin s,
           α x₀
@@ -813,7 +824,6 @@ theorem nabla0SFun_eval_C1_slots {s : ℕ}
     nabla0SFun_eval_coordFrame_moving_raw
       (I := I) cov X V α x₀ hpair hV_md hVmodel hcoord
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -842,8 +852,8 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
         (I := I) α x₀ slots
   have hderiv :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
-        (fun p : M => extDerivFun (I := I) pair p (X p)) x₀ := by
-    simpa [Xinf] using DifferentialGeometry.extDerivFun_apply_contMDiffAt I hpair Xinf
+        (fun p : M => mvfderiv (I := I) pair p (X p)) x₀ := by
+    simpa [Xinf] using DifferentialGeometry.mvfderiv_apply_contMDiffAt I hpair Xinf
   have hcorr_sum :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
         (fun p : M =>
@@ -861,7 +871,7 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
   have hmain :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
         (fun p : M =>
-          extDerivFun (I := I) pair p (X p) -
+          mvfderiv (I := I) pair p (X p) -
             ∑ a : Fin s,
               α p
                 (Function.update
@@ -894,8 +904,9 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
         (T := fun y : M => α y) hα
         (v := fun a : Fin s => V a)
         (hv := hV_at)
-      simpa [pair, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-        using hEval
+      let h : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
+          (fun y : M => α y (fun a : Fin s => V a y)) p := hEval
+      exact h
     exact hpair_p.mdifferentiableAt (by simp)
   have hV_md : ∀ a : Fin s, MDiffAt (T% (V a)) p :=
     fun a => (hV_at a).mdifferentiableAt (by simp)
@@ -918,7 +929,6 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
   rw [nabla0SFun_eval_coordFrame_moving_raw
     (I := I) cov X V α p hpair_md hV_md hVmodel_p hcoord_p]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nabla0S_reg (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -927,7 +937,7 @@ theorem nabla0S_reg (s : ℕ)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) :
     Nabla0SRegular (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) s
   let F : (p : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s p :=
@@ -953,21 +963,22 @@ theorem nabla0S_reg (s : ℕ)
     filter_upwards [e.open_baseSet.mem_nhds hx₀] with p hp
     rw [continuousMultilinearMap_basis_repr]
     change ((trivializationAt (Tensor0SModel s 𝕜 E)
-        (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M -> Type _)) x₀
+        (fun p : M => Tensor0SSpace s I p) x₀
         ⟨p, F p⟩).2)
         (fun a : Fin s => b (σ a)) =
       (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s cov X α p)
         (fun a : Fin s =>
           tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b (σ a)) p)
-    change (F p).compContinuousLinearMap
+    change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s p (F p)).compContinuousLinearMap
         (fun _ : Fin s =>
           (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL 𝕜 p)
         (fun a : Fin s => b (σ a)) =
       F p
         (fun a : Fin s =>
           tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b (σ a)) p)
-    rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+    rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
     congr
   exact hsec
 

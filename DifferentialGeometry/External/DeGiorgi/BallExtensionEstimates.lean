@@ -51,8 +51,12 @@ private theorem cauchy_Lp_component_limit
   -- Assemble vector limit: Gext x = (g_0 x, g_1 x, ..., g_{d-1} x) as EuclideanSpace
   refine ⟨fun x => EuclideanSpace.equiv (ι := Fin d) ℝ |>.symm (fun i => g_i i x),
     fun i => ?_, fun i => ?_⟩
-  · convert hg_i_memLp i using 1
-  · convert hg_i_tendsto i using 2
+  · change MemLp (g_i i) (ENNReal.ofReal p) volume
+    exact hg_i_memLp i
+  · change Tendsto
+      (fun n => eLpNorm (fun x => G n x i - g_i i x) (ENNReal.ofReal p) volume)
+      atTop (nhds 0)
+    exact hg_i_tendsto i
 
 omit [NeZero d] in
 private theorem aestronglyMeasurable_euclidean_of_components
@@ -215,7 +219,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
     exact (hasWeakPartials_of_global_smoothApprox (d := d) hp
       (hV_memLp n) (fun j => hG_comp_memLp n j)
       hΦn_smooth hΦn_cpt hΦn_fun hΦn_grad) i
-  letI : Fact (1 ≤ ENNReal.ofReal p) := ⟨by simpa using ENNReal.ofReal_le_ofReal hp.le⟩
+  let : Fact (1 ≤ ENNReal.ofReal p) := ⟨by simpa using ENNReal.ofReal_le_ofReal hp.le⟩
   -- Function energy bound (doesn't need MemLp)
   have huExt_fun_bound :
       (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) u x|) ^ p ∂volume)
@@ -424,7 +428,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
             atTop (nhds 0) := by
           have h0 : (0 : ℝ≥0∞) = ∑ _j : Fin d, (0 : ℝ≥0∞) := by simp
           rw [h0]
-          exact tendsto_finset_sum Finset.univ (fun j _ => by
+          exact tendsto_finsetSum Finset.univ (fun j _ => by
             simpa [H, PiLp.toLp_apply] using hcomp_pair j)
         exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum
           (fun _ => bot_le) hle
@@ -522,7 +526,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
             atTop (nhds 0) := by
           have h0 : (0 : ℝ≥0∞) = ∑ _i : Fin d, (0 : ℝ≥0∞) := by simp
           rw [h0]
-          exact tendsto_finset_sum Finset.univ (fun i _ => hG_comp_tendsto i)
+          exact tendsto_finsetSum Finset.univ (fun i _ => hG_comp_tendsto i)
         exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum
           (fun _ => bot_le) hle
       have hGnorm_tendsto :
@@ -566,9 +570,10 @@ theorem exists_smooth_global_approx_of_unitBallExtension
                             ext x
                             simp
                     _ = eLpNorm (fun x => G n x - Gext x) (ENNReal.ofReal p) volume := by
-                          simpa only using
-                            (eLpNorm_neg (f := fun x => G n x - Gext x)
-                              (p := ENNReal.ofReal p) (μ := volume))
+                          change eLpNorm (-(fun x => G n x - Gext x))
+                            (ENNReal.ofReal p) volume = _
+                          exact eLpNorm_neg (fun x => G n x - Gext x)
+                            (ENNReal.ofReal p) volume
                 simp [hneg_eq]
         refine tendsto_of_tendsto_of_tendsto_of_le_of_le ?_ ?_
           (fun n => tsub_le_iff_right.mpr (by simpa [add_comm] using hge n))
@@ -579,9 +584,12 @@ theorem exists_smooth_global_approx_of_unitBallExtension
                   eLpNorm Gext (ENNReal.ofReal p) volume -
                     eLpNorm (fun x => G n x - Gext x) (ENNReal.ofReal p) volume)
                 atTop (nhds (eLpNorm Gext (ENNReal.ofReal p) volume - 0)) := by
-              simpa using
-                (((ENNReal.continuous_sub_left hGext_memLp_vec.eLpNorm_ne_top).tendsto 0).comp
-                  hG_tendsto)
+              change Tendsto
+                ((fun x => eLpNorm Gext (ENNReal.ofReal p) volume - x) ∘
+                  fun n => eLpNorm (fun x => G n x - Gext x) (ENNReal.ofReal p) volume)
+                atTop (nhds (eLpNorm Gext (ENNReal.ofReal p) volume - 0))
+              exact ((ENNReal.continuous_sub_left hGext_memLp_vec.eLpNorm_ne_top).tendsto 0).comp
+                hG_tendsto
           simpa using hsub
         · have hadd :
               Tendsto
@@ -669,9 +677,8 @@ theorem exists_smooth_global_approx_of_unitBallExtension
                             ext x
                             ring
                     _ = eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal p) μB := by
-                          simpa only using
-                            (eLpNorm_neg (f := fun x => ψ n x - u x)
-                              (p := ENNReal.ofReal p) (μ := μB))
+                          change eLpNorm (-(fun x => ψ n x - u x)) (ENNReal.ofReal p) μB = _
+                          exact eLpNorm_neg (fun x => ψ n x - u x) (ENNReal.ofReal p) μB
                 simp [hneg_eq]
         -- Squeeze: eLpNorm(u) - eLpNorm(ψ n - u) ≤ eLpNorm(ψ n) ≤ eLpNorm(ψ n - u) + eLpNorm(u)
         refine tendsto_of_tendsto_of_tendsto_of_le_of_le ?_ ?_
@@ -688,8 +695,11 @@ theorem exists_smooth_global_approx_of_unitBallExtension
                   eLpNorm u (ENNReal.ofReal p) μB -
                     eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal p) μB)
                 atTop (nhds (eLpNorm u (ENNReal.ofReal p) μB - 0)) := by
-              simpa using
-                (((ENNReal.continuous_sub_left hw.memLp.eLpNorm_ne_top).tendsto 0).comp hψ_fun)
+              change Tendsto
+                ((fun x => eLpNorm u (ENNReal.ofReal p) μB - x) ∘
+                  fun n => eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal p) μB)
+                atTop (nhds (eLpNorm u (ENNReal.ofReal p) μB - 0))
+              exact ((ENNReal.continuous_sub_left hw.memLp.eLpNorm_ne_top).tendsto 0).comp hψ_fun
           simpa using hsub
         · have hadd :
               Tendsto
@@ -751,7 +761,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
               atTop (nhds 0) := by
             have h0 : (0 : ℝ≥0∞) = ∑ _i : Fin d, (0 : ℝ≥0∞) := by simp
             rw [h0]
-            exact tendsto_finset_sum Finset.univ (fun i _ => by
+            exact tendsto_finsetSum Finset.univ (fun i _ => by
               simpa [gradVec, PiLp.toLp_apply] using hψ_grad i)
           exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum
             (fun _ => bot_le) hle
@@ -797,9 +807,10 @@ theorem exists_smooth_global_approx_of_unitBallExtension
                               ext x
                               simp
                       _ = eLpNorm (fun x => gradVec n x - hw.weakGrad x) (ENNReal.ofReal p) μB := by
-                            simpa only using
-                              (eLpNorm_neg (f := fun x => gradVec n x - hw.weakGrad x)
-                                (p := ENNReal.ofReal p) (μ := μB))
+                            change eLpNorm (-(fun x => gradVec n x - hw.weakGrad x))
+                              (ENNReal.ofReal p) μB = _
+                            exact eLpNorm_neg (fun x => gradVec n x - hw.weakGrad x)
+                              (ENNReal.ofReal p) μB
                   simp [hneg_eq]
           refine tendsto_of_tendsto_of_tendsto_of_le_of_le ?_ ?_
             (fun n => by
@@ -815,9 +826,14 @@ theorem exists_smooth_global_approx_of_unitBallExtension
                     eLpNorm hw.weakGrad (ENNReal.ofReal p) μB -
                       eLpNorm (fun x => gradVec n x - hw.weakGrad x) (ENNReal.ofReal p) μB)
                   atTop (nhds (eLpNorm hw.weakGrad (ENNReal.ofReal p) μB - 0)) := by
-                simpa using
-                  (((ENNReal.continuous_sub_left hweakGrad_memLp_vec.eLpNorm_ne_top).tendsto 0).comp
-                    hgradVec_tendsto)
+                change Tendsto
+                  ((fun x => eLpNorm hw.weakGrad (ENNReal.ofReal p) μB - x) ∘
+                    fun n => eLpNorm (fun x => gradVec n x - hw.weakGrad x)
+                      (ENNReal.ofReal p) μB)
+                  atTop (nhds (eLpNorm hw.weakGrad (ENNReal.ofReal p) μB - 0))
+                exact
+                  ((ENNReal.continuous_sub_left hweakGrad_memLp_vec.eLpNorm_ne_top).tendsto 0).comp
+                    hgradVec_tendsto
             simpa using hsub
           · have hadd :
                 Tendsto

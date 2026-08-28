@@ -74,11 +74,13 @@ def finAddCongr_equiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin
   left_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    simp only [Function.comp_apply, Perm.sumCongrPerm_sumCongrPerm]
+    change Quot.mk _ (Perm.sumCongrPerm (Perm.sumCongrPerm σ₁)) = Quot.mk _ σ₁
+    rw [Perm.sumCongrPerm_sumCongrPerm]
   right_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    simp only [Function.comp_apply, Perm.sumCongrPerm_sumCongrPerm]
+    change Quot.mk _ (Perm.sumCongrPerm (Perm.sumCongrPerm σ₁)) = Quot.mk _ σ₁
+    rw [Perm.sumCongrPerm_sumCongrPerm]
 
 @[simps!]
 def sumCommPerm : Equiv.Perm (Fin m ⊕ Fin n) ≃ Equiv.Perm (Fin n ⊕ Fin m) :=
@@ -129,11 +131,13 @@ def finAddFlip_equiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin 
   left_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    simp only [Function.comp_apply, sumCommPerm_sumCommPerm]
+    change Quot.mk _ (sumCommPerm (sumCommPerm σ₁)) = Quot.mk _ σ₁
+    rw [sumCommPerm_sumCommPerm]
   right_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    simp only [Function.comp_apply, sumCommPerm_sumCommPerm]
+    change Quot.mk _ (sumCommPerm (sumCommPerm σ₁)) = Quot.mk _ σ₁
+    rw [sumCommPerm_sumCommPerm]
 
 @[simps!]
 def sumCommPerm_eqFin : Equiv.Perm (Fin m ⊕ Fin m) ≃ Equiv.Perm (Fin m ⊕ Fin m) :=
@@ -186,11 +190,13 @@ def finAddFlip_equiv_eqFin : ModSumCongr (Fin m) (Fin m) ≃ ModSumCongr (Fin m)
   left_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    simp only [Function.comp_apply, sumCommPerm_eqFin_sumCommPerm_eqFin]
+    change Quot.mk _ (sumCommPerm_eqFin (sumCommPerm_eqFin σ₁)) = Quot.mk _ σ₁
+    rw [sumCommPerm_eqFin_sumCommPerm_eqFin]
   right_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    simp only [Function.comp_apply, sumCommPerm_eqFin_sumCommPerm_eqFin]
+    change Quot.mk _ (sumCommPerm_eqFin (sumCommPerm_eqFin σ₁)) = Quot.mk _ σ₁
+    rw [sumCommPerm_eqFin_sumCommPerm_eqFin]
 
 noncomputable instance : Fintype (Fin k ↪o Fin n) :=
   Fintype.ofEquiv _
@@ -311,7 +317,7 @@ theorem addCasesSwapPerm_sign (m n : ℕ) :
     obtain ⟨k, hk⟩ := Nat.exists_eq_succ_of_ne_zero hm_ne
     have h_sign : Equiv.Perm.sign (finRotate (m + n)) = (-1) ^ (m + n - 1) := by
       rw [hk]
-      exact sign_finRotate k
+      exact sign_finRotate k.succ
     rw [h_sign, ← pow_mul]
     have e1 : (-1 : ℤˣ) ^ ((m + n - 1) * m) = (-1 : ℤˣ) ^ (((m + n - 1) * m) % 2) :=
       Int.units_pow_eq_pow_mod_two (-1 : ℤˣ) ((m + n - 1) * m)

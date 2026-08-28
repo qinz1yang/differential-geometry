@@ -189,7 +189,8 @@ theorem coordRicciMdiff
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (S.ricci t) V x
       (fun q => (hV q).of_le (by simp))
-  simpa [hfun] using hEval
+  rw [← hfun]
+  exact hEval
 
 omit [SigmaCompactSpace M] in
 theorem coordNablaReg
@@ -881,7 +882,7 @@ theorem coordNab2Can
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (frame d x0) (frame a x0)
           (frame i x0)
           (frame j x0)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             nablaRicComp (I := I) S (coordinateFrameAt (I := I) x0)
               t y a i j) x0 (frame d x0) -
@@ -922,8 +923,12 @@ theorem coordMetricDeriv
   · intro s hs x hx
     exact coordMetricMdiffOn (I := I) S x₀ s x hx a b
   · intro t ht x hx
-    simpa [smul_eq_mul] using
-      (coordRicciMdiff (I := I) S x₀ t x hx a b).const_smul (-2 : Real)
+    have h := (coordRicciMdiff (I := I) S x₀ t x hx a b).const_smul (-2 : Real)
+    change MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M => (-2 : Real) *
+        ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
+          t y a b) x at h
+    exact h
   · intro t ht x
     exact
       metricCompInFrame_hasDerivWithinAt
@@ -1029,7 +1034,7 @@ theorem coordGammaMdiff
   have hcont :
       ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M =>
-          e.localFrame_coeff I b k y
+          e.localFrameCoeff I b k y
             ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
                 (I := I) (S.family.metric s) (e.localFrame b j) y)
               (e.localFrame b i y))) x := by
@@ -1046,7 +1051,7 @@ theorem coordGammaMdiff
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀) y i j k)
         =ᶠ[nhds x]
       fun y : M =>
-        e.localFrame_coeff I b k y
+        e.localFrameCoeff I b k y
           ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
               (I := I) (S.family.metric s) (e.localFrame b j) y)
             (e.localFrame b i y)) := by
@@ -1073,9 +1078,9 @@ theorem coordGammaMdiff
           (e.localFrame b i z)
     change
       hframe.coeff k y (V y) =
-        e.localFrame_coeff I b k y (V y)
+        e.localFrameCoeff I b k y (V y)
     rw [hframe.coeff_apply_of_mem hy V k]
-    rw [Bundle.Trivialization.localFrame_coeff_apply_of_mem_baseSet
+    rw [Bundle.Trivialization.localFrameCoeff_apply_of_mem_baseSet
       (I := I) e b hye V k]
     rw [hbasis]
   exact hmdiff.congr_of_eventuallyEq heq.symm
@@ -1133,8 +1138,13 @@ theorem coordGammaRhsMd
             nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)
               t y l i j) x :=
       coordNablaRegOn (I := I) S x₀ t x hx l i j
-    simpa [christoffelVariationLoweredRHSInFrame] using
-      hg.mul (((h₁.neg).sub h₂).add h₃)
+    have h := hg.mul (((h₁.neg).sub h₂).add h₃)
+    change MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M => coordInv (I := I) S x₀ t y k l *
+        christoffelVariationLoweredRHSInFrame
+          (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
+          t y i j l) x at h
+    exact h
   exact hsum.congr_of_eventuallyEq (by
     filter_upwards with y
     simp [Finset.sum_apply])
@@ -1173,7 +1183,7 @@ private theorem coordDgSmAt
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
         (∞ : WithTop ℕ∞)
         (fun p : Real × M =>
-          extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
+          mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
         ((t : Real), x) :=
     prodExtDerivAt_inf (I := I) (F := F) (X := X) hF hX
   have heq :
@@ -1185,7 +1195,7 @@ private theorem coordDgSmAt
           ((Module.finBasis Real E) a))
         =ᶠ[nhds ((t : Real), x)]
       fun p : Real × M =>
-        extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2) := by
+        mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2) := by
     have hopen :
         IsOpen {p : Real × M | p.2 ∈ coordinateFrameSet (I := I) x₀} :=
       (coordinateFrameSet_open (I := I) x₀).preimage continuous_snd
@@ -1194,7 +1204,8 @@ private theorem coordDgSmAt
       DifferentialGeometry.Geometry.Connection.metricFlatModelInChart_component_deriv_of_mem
         (I := I) (g := S.family.metric p.1) x₀ hp a i j
     simpa [F, X, frame, metricCompInFrame,
-      DifferentialGeometry.Geometry.Connection.directionalDeriv] using hflat
+      DifferentialGeometry.Geometry.Connection.directionalDeriv,
+      DifferentialGeometry.Geometry.Connection.directionalDerivAlong] using hflat
   exact hD.congr_of_eventuallyEq heq
 
 omit [SigmaCompactSpace M] in
@@ -1230,7 +1241,16 @@ private theorem gammaRhsSm
                   (extChartAt I x₀ p.2)))
               (LinearMap.toContinuousLinearMap
                 ((Module.finBasis Real E).coord l)))) ((t : Real), x) := by
-    simpa [coordInv] using hInv
+    change ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M =>
+        (Module.finBasis Real E).coord k
+          ((ContinuousLinearMap.inverse
+              (DifferentialGeometry.Geometry.Connection.metricFlatModelInChart
+                (I := I) (S.family.metric p.1) x₀
+                (extChartAt I x₀ p.2)))
+            (LinearMap.toContinuousLinearMap
+              ((Module.finBasis Real E).coord l)))) ((t : Real), x) at hInv
+    exact hInv
   have h₁ := coordDgSmAt (I := I) S hS x₀ t x hx i j l
   have h₂ := coordDgSmAt (I := I) S hS x₀ t x hx j i l
   have h₃ := coordDgSmAt (I := I) S hS x₀ t x hx l i j

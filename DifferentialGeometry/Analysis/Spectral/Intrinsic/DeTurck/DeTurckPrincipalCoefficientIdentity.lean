@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipal
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -48,8 +47,8 @@ private lemma trace42_apply
               (fun j : Fin 2 => m ((Equiv.swap (0 : Fin 2) 1) j))
           - modelDoubleTrace (E := E) 2 L D m) := by
   change ricciPrincipalCoefficientDoubleTraceModel (E := E) L D m = _
-  rw [ricciPrincipalCoefficientDoubleTraceModel, ContinuousLinearMap.smul_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [ricciPrincipalCoefficientDoubleTraceModel, smul_apply,
+    smul_apply, smul_eq_mul]
   congr 1
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -77,25 +76,25 @@ theorem ricci2_pcc_eq (g₀ g₁ : SmoothRiemannianMetric I M) :
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   beta_reduce
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+    add_apply, Tensor0SSpace.toModel_add,
+    add_apply]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-    ContinuousMultilinearMap.sub_apply, ricciDeTurckPrincipalCoefficient_toSection,
+    sub_apply, Tensor0SSpace.toModel_sub,
+    sub_apply, ricciDeTurckPrincipalCoefficient_toSection,
     ricciDeTurckPrincipalCoefficient_toSection, ricciDeTurckPrincipalCoefficientFiber_toModel,
     ricciDeTurckPrincipalCoefficientFiber_toModel, trace42_apply, trace42_apply]
   rw [SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add,
     ContMDiffSection.coe_sub, ContMDiffSection.coe_add, Pi.sub_apply, Pi.add_apply,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
+    sub_apply, add_apply,
     Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.add_apply]
+    sub_apply, add_apply]
   simp only [reindexCoeffGen_toSection, reindexCoeffFibGen_apply,
     rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq,
     cometricDoubleTraceFib_toModel,
     Tensor0SSpace.toModel_ofModel, Tensor0SSpace.toModel_sub,
-    ContinuousLinearMap.sub_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.sub_apply]
+    sub_apply, ContinuousMultilinearMap.domDomCongr_apply,
+    sub_apply]
   ring
 
 end TensorSpectral

@@ -1,7 +1,9 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-23: made affine rescaling identities explicit for the Mathlib 4.33 API
 import DifferentialGeometry.External.DeGiorgi.BallScaling
 import DifferentialGeometry.External.DeGiorgi.Localization
 import DifferentialGeometry.External.DeGiorgi.WeakHarnack
+
 
 /-!
 # Chapter 07: Scaled Moser Corollaries
@@ -141,8 +143,13 @@ private lemma integrableOn_rescaleToUnitBall_iff
         IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) := by
     have hmap_iff :=
       hT_emb.integrableOn_map_iff (μ := volume) (s := Metric.ball x₀ (R * ρ)) (f := f)
-    simpa [T, affine_preimage_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := ρ) hR] using
-      hmap_iff.symm
+    have hpre : T ⁻¹' Metric.ball x₀ (R * ρ) = Metric.ball (0 : E) ρ := by
+      simpa only [T] using
+        affine_preimage_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := ρ) hR
+    rw [hpre] at hmap_iff
+    change IntegrableOn (f ∘ T) (Metric.ball (0 : E) ρ) volume ↔
+      IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume)
+    exact hmap_iff.symm
   have hsmul :
       IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) ↔
         IntegrableOn f (Metric.ball x₀ (R * ρ)) volume := by
@@ -220,7 +227,8 @@ theorem linfty_subsolution_Moser_on_ball
       ∫ z in Metric.ball (0 : E) 1, |max (uR z) 0| ^ p₀ ∂volume =
         (R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume := by
-    simpa [uR] using integral_comp_affine_ball
+    rw [show uR = fun z => u (x₀ + R • z) by rfl]
+    simpa only [mul_one] using integral_comp_affine_ball
       (d := d) (x₀ := x₀) (R := R) (ρ := (1 : ℝ)) hR
       (fun x => |max (u x) 0| ^ p₀)
   have hunit :
@@ -232,17 +240,17 @@ theorem linfty_subsolution_Moser_on_ball
               ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume) := by
     have hbase := linfty_subsolution_Moser (d := d) hd AR hp₀ hsubR hIntR
     rw [hInt_eq] at hbase
-    simpa [uR, AR] using hbase
-  have hRhalf : R * (1 / 2 : ℝ) = R / 2 := by
-    ring
+    rw [show uR = fun z => u (x₀ + R • z) by rfl,
+      show AR.1.Λ = A.1.Λ by rfl] at hbase
+    exact hbase
   have hmap_half :
       Measure.map (fun x : E => R⁻¹ • (x - x₀))
         (volume.restrict (Metric.ball x₀ (R / 2 : ℝ))) =
       ENNReal.ofReal (|R⁻¹ ^ Module.finrank ℝ E|⁻¹) •
         (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))) := by
-    simpa [hRhalf] using
-      inverse_affine_map_restrict_ball_mul
-        (d := d) (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
+    rw [show R / 2 = R * (1 / 2 : ℝ) by ring]
+    exact inverse_affine_map_restrict_ball_mul
+      (d := d) (x₀ := x₀) (R := R) (ρ := (1 / 2 : ℝ)) hR
   have hscaled :
       ∀ᵐ z ∂ ENNReal.ofReal (|R⁻¹ ^ Module.finrank ℝ E|⁻¹) •
           (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
@@ -326,14 +334,15 @@ theorem weak_harnack_on_ball
         (R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ (R / 4 : ℝ),
             |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)) ∂volume := by
-    dsimp [uR]
-    simpa [show R * (1 / 4 : ℝ) = R / 4 by ring] using
-      integral_comp_affine_ball
-        (d := d) (x₀ := x₀) (R := R) (ρ := (1 / 4 : ℝ)) hR
-        (fun x => |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)))
+    rw [show uR = fun z => u (x₀ + R • z) by rfl]
+    rw [show R / 4 = R * (1 / 4 : ℝ) by ring]
+    exact integral_comp_affine_ball
+      (d := d) (x₀ := x₀) (R := R) (ρ := (1 / 4 : ℝ)) hR
+      (fun x => |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)))
   have hbase := weak_harnack (d := d) hd AR hq hq1 hposR hsuperR
   rw [hInt_eq] at hbase
-  simpa [AR, uR, rescaleNormalizedCoeffToUnitBall, rescaleCoeffToUnitBall,
-    rescaleToUnitBall] using hbase
+  rw [show uR = fun z => u (x₀ + R • z) by rfl,
+    show AR.1.Λ = A.1.Λ by rfl] at hbase
+  exact hbase
 
 end DeGiorgi

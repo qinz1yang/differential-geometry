@@ -76,7 +76,7 @@ theorem paramTangentVF_contDiffOn
   have hpartial : ContDiffOn ℝ ∞
       (fun q : ℝ × X => fderiv ℝ (v q.1) q.2) (J ×ˢ V) := by
     apply contDiffOn_partial_fderiv_of_succ_local (hJ.prod hV)
-    simpa only [top_add] using hv
+    exact hv.of_le (by simp)
   have hA : ContDiffOn ℝ ∞
       (fun q : ℝ × (X × (P →L[ℝ] X)) => fderiv ℝ (v q.1) q.2.1) D :=
     hpartial.comp hproj hprojMap
@@ -136,10 +136,10 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
   · intro t ht
     have ht : t = t₀ := by simpa only [Icc_self, mem_singleton_iff] using ht
     subst t
-    simpa only [Icc_self] using
-      (HasFDerivWithinAt.singleton :
-        HasDerivWithinAt (paramTangentCurve γ p)
-          (paramTangentVF P v t₀ (paramTangentCurve γ p t₀)) {t₀} t₀)
+    let h : HasDerivWithinAt (paramTangentCurve γ p)
+        (paramTangentVF P v t₀ (paramTangentCurve γ p t₀)) {t₀} t₀ :=
+      HasFDerivWithinAt.singleton
+    simpa only [Icc_self] using h
   · let G : ℝ → P → X := fun t q => γ q t
     let swap : ℝ × P → P × ℝ := fun q => (q.2, q.1)
     have hswap_cd : ContDiffOn ℝ ∞ swap (Icc t₀ t₁ ×ˢ A) :=
@@ -147,8 +147,9 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
     have hswap_maps : MapsTo swap (Icc t₀ t₁ ×ˢ A)
         (A ×ˢ Icc t₀ t₁) := fun _ hq => ⟨hq.2, hq.1⟩
     have hG : ContDiffOn ℝ ∞ (uncurry G) (Icc t₀ t₁ ×ˢ A) := by
-      simpa only [G, swap, uncurry_apply_pair] using
+      let h : ContDiffOn ℝ ∞ (uncurry G) (Icc t₀ t₁ ×ˢ A) :=
         hγjoint.comp hswap_cd hswap_maps
+      exact h
     have hUD : UniqueDiffOn ℝ (Icc t₀ t₁) := uniqueDiffOn_Icc ht₀₁
     have hsacc : Icc t₀ t₁ ⊆ closure (interior (Icc t₀ t₁)) := by
       rw [closure_interior_Icc (ne_of_lt ht₀₁)]
@@ -158,9 +159,11 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
     intro t ht
     have hZslice : ContDiffOn ℝ ∞
         (fun s => fderiv ℝ (fun q => γ q s) p) (Icc t₀ t₁) := by
-      simpa only [G, uncurry_apply_pair] using
+      let h : ContDiffOn ℝ ∞
+          (fun s => fderiv ℝ (fun q => γ q s) p) (Icc t₀ t₁) :=
         hDG.comp (contDiff_id.prodMk contDiff_const).contDiffOn
           (fun s hs => ⟨hs, hp⟩)
+      exact h
     have hZderiv : HasDerivWithinAt
         (fun s => fderiv ℝ (fun q => γ q s) p)
         (derivWithin (fun s => fderiv ℝ (fun q => γ q s) p)
@@ -191,7 +194,11 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
     have hchain : fderiv ℝ (fun q => v t (γ q t)) p =
         (fderiv ℝ (v t) (γ p t)).comp
           (fderiv ℝ (fun q => γ q t) p) := by
-      simpa only [comp_apply] using fderiv_comp p hvdiff hγdiff
+      let h : fderiv ℝ (fun q => v t (γ q t)) p =
+          (fderiv ℝ (v t) (γ p t)).comp
+            (fderiv ℝ (fun q => γ q t) p) :=
+        fderiv_comp p hvdiff hγdiff
+      exact h
     have hZeq :
         derivWithin (fun s => fderiv ℝ (fun q => γ q s) p)
             (Icc t₀ t₁) t =
@@ -199,8 +206,10 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
             (fderiv ℝ (fun q => γ q t) p) := by
       rw [← hcomm, hevol_nhds.fderiv_eq, hchain]
     have hstate := (hγ p hp).2 t ht
-    simpa only [paramTangentCurve, paramTangentVF] using
+    let h : HasDerivWithinAt (paramTangentCurve γ p)
+        (paramTangentVF P v t (paramTangentCurve γ p t)) (Icc t₀ t₁) t :=
       hstate.prodMk (hZderiv.congr_deriv hZeq)
+    exact h
 
 end Flow
 end ODE

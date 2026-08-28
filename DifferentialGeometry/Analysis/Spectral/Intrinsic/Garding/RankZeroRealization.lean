@@ -19,7 +19,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -102,13 +101,13 @@ theorem rawLap_cc_scalar
       (TensorRSField.lift_scalar0
         (n := (∞ : WithTop ℕ∞)) S.toSection)
   rw [hlift] at hraw
-  change tensor0SSpace_evalScalar x
+  change (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
       ((rawTensorConnLapSmooth (I := I) g 0 0 S).toSection x
         (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) (∞ : WithTop ℕ∞) x)) = _
   rw [rawTensorConnLapSmooth_toSection_apply (I := I) (M := M) g 0 0 S x,
     hraw, Tensor0SSpace.toRS0_apply]
-  have hone : tensor0SSpace_evalScalar x
+  have hone : (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
       (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
         (I := I) (M := M) (∞ : WithTop ℕ∞) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply]
@@ -172,7 +171,7 @@ theorem grad_repr_apply
     (v : tensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) (x : M)
     (X : TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
           (iteratedCovGrad (I := I) (M := M) g 0 0 1
             (tensorHsSmoothRepr (I := I) (M := M) v hv)).toSection x)
@@ -186,7 +185,8 @@ theorem grad_repr_apply
       (reprScalar0 (I := I) (M := M) v hv)
       (reprScalar0_smooth (I := I) (M := M) v hv)
   have hunit (y : M) :
-      tensor0SSpace_evalScalar y (unitZeroSec (I := I) (M := M) y) = 1 := by
+      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) y)
+        (unitZeroSec (I := I) (M := M) y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
       Fin.elim0 = 1
@@ -211,16 +211,16 @@ theorem grad_repr_apply
       (reprScalar0 (I := I) (M := M) v hv)
       (reprScalar0_smooth (I := I) (M := M) v hv)) y
   rw [iteratedCovGrad_succ, iteratedCovGrad_zero]
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 0
+  rw [covGrad_toSection_apply_natural (I := I) (M := M) g 0 0
     (tensorHsSmoothRepr (I := I) (M := M) v hv) x
     (unitZeroSec (I := I) (M := M) x) (fun _ : Fin 1 => X)]
   rw [tensorCovDerivAt_def,
     tensorRSCovariantDerivative_zeroS_unit_eval, hsection,
     Tensor0SNabla.tensor0SCovariantDerivative_apply_zero, hscalar,
-    duSec_apply, differential1FormFun_apply_eq_extDerivFun]
+    duSec_apply, differential1FormFun_apply_eq_mvfderiv]
   change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (reprScalar0 (I := I) (M := M) v hv) x X)) = _
   rw [ContinuousLinearEquiv.apply_symm_apply]
 
@@ -229,7 +229,7 @@ theorem grad2_repr_diag
     (v : tensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite)
     (B : ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) (x : M) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
           (iteratedCovGrad (I := I) (M := M) g 0 0 2
             (tensorHsSmoothRepr (I := I) (M := M) v hv)).toSection x)
@@ -285,7 +285,8 @@ theorem grad2_repr_diag
   rw [hslots]
   rw [Tensor0SSpace.toRS0_apply]
   have hunit :
-      tensor0SSpace_evalScalar x (unitZeroSec (I := I) (M := M) x) = 1 := by
+      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+        (unitZeroSec (I := I) (M := M) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
       Fin.elim0 = 1

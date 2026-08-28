@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CometricTraceS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -57,6 +56,7 @@ private theorem selfTraceC_nonneg (i : ℕ) :
     positivity
   · simp [selfTraceC, hi]
 
+omit [SigmaCompactSpace M] in
 private theorem doubleTrace_grid
     (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
@@ -105,6 +105,7 @@ private theorem pureSelf_eq (g : SmoothRiemannianMetric I M) :
   intro x
   rw [cometricDoubleTraceCoefficient_toSection, cometricDoubleTraceField_toSection]
 
+omit [SigmaCompactSpace M] in
 private theorem traceSelf_grid
     (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
@@ -117,6 +118,7 @@ private theorem traceSelf_grid
     (cometricDoubleTraceField (I := I) g 2) traceHessianSlotPerm i x]
   exact doubleTrace_grid (I := I) (M := M) g i x
 
+omit [SigmaCompactSpace M] in
 private theorem pureSelf_grid
     (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
@@ -140,6 +142,7 @@ private theorem DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smu
     tensorInnerPointwise_smul_right]
   ring
 
+omit [SigmaCompactSpace M] in
 private theorem ricciSelf_riemannianFiberNormSq_le
     (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
@@ -236,6 +239,7 @@ private theorem ricciSelf_riemannianFiberNormSq_le
   linarith [hkey,
     riemannianFiberNormSq_nonneg (I := I) (M := M) g 4 (2 + i) x PC]
 
+omit [SigmaCompactSpace M] in
 private theorem ricciSelf_grid
     (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
@@ -249,10 +253,10 @@ private theorem ricciSelf_grid
       have htie : ∀ (y : M) (v w : TangentSpace I y),
           g.inner y v w = g.inner y v w + z y v w := by
         intro y v w
-        simp only [z, ContinuousLinearMap.zero_apply, add_zero]
+        simp only [z, zero_apply, add_zero]
       have hz : gFibreOpBound (I := I) (M := M) g z 0 := by
         intro y v w
-        simp only [z, ContinuousLinearMap.zero_apply, abs_zero, zero_mul, le_refl]
+        simp only [z, zero_apply, abs_zero, zero_mul, le_refl]
       have hricci := riemannianFiberNormSq_ricciDeTurckPrincipalCoefficientFiber_le
         (I := I) (M := M) g g z htie
           (show (0 : ℝ) < 1 by norm_num) (show (0 : ℝ) ≤ 0 by norm_num) hz x
@@ -270,6 +274,7 @@ private theorem ricciSelf_grid
       simp only [selfTraceC, Nat.succ_ne_zero, if_false] at htrace ⊢
       linarith
 
+omit [SigmaCompactSpace M] in
 theorem phiSelf_grid
     (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
