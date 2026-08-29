@@ -1,7 +1,0 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
-
-namespace DifferentialGeometry.Analysis.Spectral
-
-alias lieOne_cov_eq_raw := lieArm_arm1_value_eq_order1Raw_add_tail
-
-end DifferentialGeometry.Analysis.Spectral

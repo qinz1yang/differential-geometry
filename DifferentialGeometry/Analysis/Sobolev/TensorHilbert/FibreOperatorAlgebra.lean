@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Inherited
+import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
 import DifferentialGeometry.Tensor.Auxiliary.BanachAlgebraSmoothness
 
 

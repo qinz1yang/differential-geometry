@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Inherited
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNormReverseOrderZero
 import Mathlib.Analysis.Normed.Operator.Extend
 

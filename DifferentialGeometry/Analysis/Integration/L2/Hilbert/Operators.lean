@@ -1,5 +1,4 @@
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Inherited
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs

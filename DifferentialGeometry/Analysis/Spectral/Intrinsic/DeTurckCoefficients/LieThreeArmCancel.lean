@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathOrderSplit
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroField
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieOneReanchor
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 
@@ -86,7 +86,7 @@ theorem lieSlope_eq_arms
   have hsplit := lieDeTurckChartSlope_eq_orderSplit (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' g_bg x i j s hy
   have h0 := lie0_order0_eq (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg s x i j
-  have h1 := lieOne_cov_eq_raw (I := I) g₀ g_bg T T'
+  have h1 := lieArm_arm1_value_eq_order1Raw_add_tail (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' s x i j
   have h2 := lieTop_cov_eq_raw (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j
